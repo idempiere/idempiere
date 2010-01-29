@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<target name="Equinox Target">
+<locations>
+<location path="/Users/viola/Workspaces/adempiere/equinox-target" type="Directory"/>
+</locations>
+</target>
