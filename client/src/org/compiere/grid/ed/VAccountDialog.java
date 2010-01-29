@@ -226,15 +226,15 @@ public final class VAccountDialog extends CDialog
 		toolBar.setRequestFocusEnabled(false);
 		toolBar.setBorderPainted(false);
 		toolBar.setMargin(new Insets(5, 5, 5, 5));
-		bSave.setIcon(new ImageIcon(org.compiere.Adempiere.class.getResource("images/Save24.gif")));
+		bSave.setIcon(new ImageIcon(org.compiere.Adempiere.getResource("images/Save24.gif")));
 		bSave.setMargin(new Insets(2, 2, 2, 2));
 		bSave.setToolTipText(Msg.getMsg(Env.getCtx(),"AccountNewUpdate"));
 		bSave.addActionListener(this);
-		bRefresh.setIcon(new ImageIcon(org.compiere.Adempiere.class.getResource("images/Refresh24.gif")));
+		bRefresh.setIcon(new ImageIcon(org.compiere.Adempiere.getResource("images/Refresh24.gif")));
 		bRefresh.setMargin(new Insets(2, 2, 2, 2));
 		bRefresh.setToolTipText(Msg.getMsg(Env.getCtx(),"Refresh"));
 		bRefresh.addActionListener(this);
-		bIgnore.setIcon(new ImageIcon(org.compiere.Adempiere.class.getResource("images/Ignore24.gif")));
+		bIgnore.setIcon(new ImageIcon(org.compiere.Adempiere.getResource("images/Ignore24.gif")));
 		bIgnore.setMargin(new Insets(2, 2, 2, 2));
 		bIgnore.setToolTipText(Msg.getMsg(Env.getCtx(),"Ignore"));
 		bIgnore.addActionListener(this);

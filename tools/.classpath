@@ -25,5 +25,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/jcommon-1.0.14.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jfreechart-1.0.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/javaee.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="lib/c3p0-0.9.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="lib/postgresql.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

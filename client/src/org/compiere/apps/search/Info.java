@@ -402,7 +402,7 @@ public abstract class Info extends CDialog
 		//
 		popup.add(calcMenu);
 		calcMenu.setText(Msg.getMsg(Env.getCtx(), "Calculator"));
-		calcMenu.setIcon(new ImageIcon(org.compiere.Adempiere.class.getResource("images/Calculator16.gif")));
+		calcMenu.setIcon(new ImageIcon(org.compiere.Adempiere.getResource("images/Calculator16.gif")));
 		calcMenu.addActionListener(this);
 		//
 		p_table.getSelectionModel().addListSelectionListener(this);

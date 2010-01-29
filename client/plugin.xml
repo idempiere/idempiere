@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="RF"
+         name="RF"
+         point="org.adempiere.base.ResourceFinder">
+      <client
+            class="org.compiere.util.ResourceFinder">
+      </client>
+   </extension>
+
+</plugin>

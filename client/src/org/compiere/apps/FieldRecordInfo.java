@@ -63,7 +63,7 @@ public class FieldRecordInfo extends CDialog
 	
 	public static final String CHANGE_LOG_COMMAND = "ChangeLog";
 	/** The Menu Icon               */
-	private static Icon s_icon = new ImageIcon(org.compiere.Adempiere.class.getResource("images/ChangeLog16.png"));
+	private static Icon s_icon = new ImageIcon(org.compiere.Adempiere.getResource("images/ChangeLog16.png"));
 	
 	private int AD_Table_ID;
 	private int AD_Column_ID;

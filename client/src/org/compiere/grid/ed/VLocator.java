@@ -144,7 +144,7 @@ public class VLocator extends JComponent
 		m_text.addActionListener(this);
 		this.add(m_text, BorderLayout.CENTER);
 
-		m_button.setIcon(new ImageIcon(org.compiere.Adempiere.class.getResource("images/Locator10.gif")));
+		m_button.setIcon(new ImageIcon(org.compiere.Adempiere.getResource("images/Locator10.gif")));
 		m_button.setMargin(new Insets(0, 0, 0, 0));
 		m_button.setPreferredSize(new Dimension(height, height));
 		m_button.addActionListener(this);
