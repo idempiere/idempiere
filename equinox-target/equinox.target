@@ -3,6 +3,6 @@
 
 <target name="Equinox Target">
 <locations>
-<location path="/Users/viola/Workspaces/adempiere/equinox-target" type="Directory"/>
+<location path="/Users/viola/Workspaces/adempiere/adempiereTrunk/equinox-target" type="Directory"/>
 </locations>
 </target>
