@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Compile org.adempiere.webstart" default="main">
+	<target name="main">
+		<ant antfile="build.xml" dir="../adempiereTrunk/tools" target="build.jars"/>
+		<ant antfile="build.xml" dir="../adempiereTrunk/base" target="build.jars"/>
+		<ant antfile="build.xml" dir="../adempiereTrunk/client" target="build.jars"/>
+	</target>
+</project>
