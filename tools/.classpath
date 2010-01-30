@@ -29,5 +29,6 @@
 	<classpathentry kind="lib" path="lib/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/ojdbc14.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql.jar"/>
+	<classpathentry kind="lib" path="lib/looks-2.0.4.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
