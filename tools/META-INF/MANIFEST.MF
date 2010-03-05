@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.adempiere.tools
 Bundle-SymbolicName: org.adempiere.tools
 Bundle-Version: 0.0.0.1
+Eclipse-BuddyPolicy: dependent
 Bundle-ClassPath: tools.jar,
  lib/jstl.jar,
  lib/Verisign.jar,
@@ -48,7 +49,6 @@ Bundle-ClassPath: tools.jar,
  lib/ocrs12.jar,
  lib/ojdbc14.jar,
  lib/postgresql.jar,
- lib/servlet-api.jar,
  lib/wizard.jar,
  lib/xercesImpl.jar,
  lib/xjavadoc-1.1.jar,
@@ -510,29 +510,6 @@ Export-Package: Lib,
  javax.resource.spi.work;uses:="javax.resource,javax.transaction.xa",
  javax.script,
  javax.security.jacc;uses:="javax.servlet.http",
- javax.servlet,
- javax.servlet.http;uses:="javax.servlet",
- javax.servlet.jsp;
-  uses:="javax.servlet.http,
-   javax.servlet,
-   javax.servlet.jsp.tagext,
-   javax.servlet.jsp.el,
-   javax.el",
- javax.servlet.jsp.el;
-  uses:="javax.servlet.http,
-   javax.servlet,
-   javax.servlet.jsp,
-   javax.el",
- javax.servlet.jsp.jstl.core;
-  uses:="javax.servlet.http,
-   javax.servlet,
-   javax.servlet.jsp.tagext,
-   javax.servlet.jsp,
-   javax.el",
- javax.servlet.jsp.jstl.fmt;uses:="javax.servlet.jsp",
- javax.servlet.jsp.jstl.sql,
- javax.servlet.jsp.jstl.tlv;uses:="javax.servlet.jsp.tagext",
- javax.servlet.jsp.tagext;uses:="javax.servlet.jsp",
  javax.transaction;uses:="javax.transaction.xa",
  javax.transaction.xa,
  javax.xml.bind;
