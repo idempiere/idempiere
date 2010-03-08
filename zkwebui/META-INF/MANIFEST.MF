@@ -98,15 +98,6 @@ Export-Package: com.keypoint,
  javax.resource.spi.security,
  javax.resource.spi.work,
  javax.security.jacc,
- javax.servlet,
- javax.servlet.http,
- javax.servlet.jsp,
- javax.servlet.jsp.el,
- javax.servlet.jsp.jstl.core,
- javax.servlet.jsp.jstl.fmt,
- javax.servlet.jsp.jstl.sql,
- javax.servlet.jsp.jstl.tlv,
- javax.servlet.jsp.tagext,
  javax.transaction,
  javax.transaction.xa,
  javax.xml.bind,
@@ -525,3 +516,4 @@ Require-Bundle: org.eclipse.equinox.http.registry;bundle-version="1.0.0";resolut
  org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.tools;bundle-version="0.0.0"
 Bundle-Activator: org.adempiere.webui.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

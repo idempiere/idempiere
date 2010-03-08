@@ -12,4 +12,5 @@ Export-Package: org.compiere.interfaces,
  org.compiere.report,
  org.compiere.utils
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.JasperReportsTools;bundle-version="1.0.0"
+ org.adempiere.JasperReportsTools;bundle-version="1.0.0",
+ org.adempiere.client;bundle-version="0.0.0"
