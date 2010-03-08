@@ -16,14 +16,41 @@
  *****************************************************************************/
 package org.adempiere.base.equinox;
 
-import org.adempiere.base.IResourceFinder;
+import java.util.List;
+
+import org.adempiere.base.IService;
 import org.adempiere.base.IServiceLocator;
+import org.adempiere.base.ServiceQuery;
 
 
+/**
+ * This is the Equinox implementation of the ADempiere Service Locator.
+ * It delegates work to the ExtensionList that lookups up services as extensions.
+ * The ids of extension points have to correspond to the interface names of the services.
+ *  
+ * @author viola
+ *
+ */
 public class EquinoxServiceLocator implements IServiceLocator {
 
-	public IResourceFinder getResourceFinder() {
-		return new EquinoxResourceFinder();
+	public <T extends IService> List<T> list(Class<T> type) {
+		ExtensionList<T> list = new ExtensionList<T>(type, type.getName());
+		return list.asList();
+	}
+
+	public <T extends IService> List<T> list(Class<T> type, ServiceQuery query) {
+		ExtensionList<T> list = new ExtensionList<T>(type, type.getName(), query);
+		return list.asList();
+	}
+
+	public <T extends IService> T locate(Class<T> type) {
+		ExtensionList<T> list = new ExtensionList<T>(type, type.getName());
+		return list.first();
+	}
+
+	public <T extends IService> T locate(Class<T> type, ServiceQuery query) {
+		ExtensionList<T> list = new ExtensionList<T>(type, type.getName(), query);
+		return list.first();
 	}
 
 }

@@ -16,26 +16,46 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import java.util.List;
+
 import org.adempiere.base.equinox.EquinoxServiceLocator;
 
 /**
  * This is a very simple factory for service locators
+ * 
  * @author viola
- *
+ * 
  */
 public class Service {
 
 	private static IServiceLocator theLocator;
 
 	public static IServiceLocator locator() {
-		if (theLocator==null) {
+		if (theLocator == null) {
 			synchronized (Service.class) {
-				if (theLocator==null) {
+				if (theLocator == null) {
 					theLocator = new EquinoxServiceLocator();
+					System.out
+							.println("Started service locator: " + theLocator);
 				}
 			}
 		}
 		return theLocator;
 	}
 
+	public static <T extends IService> T locate(Class<T> type) {
+		return locator().locate(type);
+	}
+
+	public static <T extends IService> T locate(Class<T> type, ServiceQuery query) {
+		return locator().locate(type, query);
+	}
+
+	public static <T extends IService> List<T> list(Class<T> type) {
+		return locator().list(type);
+	}
+
+	public static <T extends IService> List<T> list(Class<T> type, ServiceQuery query) {
+		return locator().list(type, query);
+	}
 }

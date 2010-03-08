@@ -4,7 +4,7 @@
    <extension
          id="RF"
          name="RF"
-         point="org.adempiere.base.ResourceFinder">
+         point="org.adempiere.base.IResourceFinder">
       <client
             class="org.compiere.util.ResourceFinder">
       </client>

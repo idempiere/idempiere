@@ -16,16 +16,24 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import java.util.List;
+
+import org.compiere.model.Callout;
+
 
 /**
  * A service locator looks up services.
  * This is the central authority for adempiere service definition,
  * because each service defined has to be looked up via this interface.
+ * 
+ * A service in adempiere is an interface extended from the tagging interface IService.
+ * 
  * @author viola
  *
  */
 public interface IServiceLocator {
-
-	IResourceFinder getResourceFinder();
-
+	<T extends IService> T locate(Class<T> type);
+	<T extends IService> T locate(Class<T> type, ServiceQuery query);
+	<T extends IService> List<T> list(Class<T> type);
+	<T extends IService> List<T> list(Class<T> type, ServiceQuery query);
 }

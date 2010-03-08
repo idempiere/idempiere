@@ -37,6 +37,8 @@ import java.util.logging.Level;
 import javax.script.ScriptEngine;
 import javax.swing.event.EventListenerList;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.Service;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -2682,6 +2684,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public String processCallout (GridField field)
 	{
+		Object value = field.getValue();
+		Object oldValue = field.getOldValue();
+		Callout co = Core.getCallout(getTableName(), field.getColumnName());
+		if (co!=null) {
+			return co.start(m_vo.ctx, "", m_vo.WindowNo, this, field, value, oldValue);
+		}
+		
 		String callout = field.getCallout();
 		if (callout.length() == 0)
 			return "";
@@ -2689,8 +2698,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (isProcessed() && !field.isAlwaysUpdateable())		//	only active records
 			return "";			//	"DocProcessed";
 
-		Object value = field.getValue();
-		Object oldValue = field.getOldValue();
 		log.fine(field.getColumnName() + "=" + value
 			+ " (" + callout + ") - old=" + oldValue);
 

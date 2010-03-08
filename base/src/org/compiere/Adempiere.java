@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -30,6 +31,8 @@ import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
 import javax.swing.ImageIcon;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IResourceFinder;
 import org.adempiere.base.Service;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
@@ -337,7 +340,7 @@ public final class Adempiere
 		if (s_imageLogo == null)
 		{
 			Toolkit tk = Toolkit.getDefaultToolkit();
-			URL url = Service.locator().getResourceFinder().getResource(s_file100x30);
+			URL url = Core.getResourceFinder().getResource(s_file100x30);
 //			URL url = org.compiere.Adempiere.class.getResource(s_file100x30);
 		//	System.out.println(url);
 			if (url == null)
@@ -583,7 +586,7 @@ public final class Adempiere
 	}	//	startupEnvironment
 
 	public static URL getResource(String name) {
-		return Service.locator().getResourceFinder().getResource(name);
+		return Core.getResourceFinder().getResource(name);
 	}
 
 

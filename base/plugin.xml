@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.adempiere.base.ResourceFinder" name="org.adempiere.base.ResourceFinder" schema="schema/ResourceFinder.exsd"/>
+   <extension-point id="org.adempiere.base.IResourceFinder" name="ResourceFinder" schema="schema/ResourceFinder.exsd"/>
+   <extension-point id="org.adempiere.base.Callout" name="Callout" schema="schema/org.adempiere.base.Callout.exsd"/>
 
 </plugin>

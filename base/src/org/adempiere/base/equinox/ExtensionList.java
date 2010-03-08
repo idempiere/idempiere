@@ -16,12 +16,28 @@
  *****************************************************************************/
 package org.adempiere.base.equinox;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
+import org.adempiere.base.ServiceQuery;
+import org.compiere.model.Callout;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
+/**
+ * This List looks up services as extensions in equinox.
+ * The extension point must be the class name of the service interface.
+ * The query attributes are checked against the attributes
+ * of the extension configuration element. 
+ * 
+ * In order to minimize equinox lookups, a filtering iterator is used. 
+ * @author viola
+ *
+ * @param <T> The service this list holds implementations of.
+ */
 public class ExtensionList<T> implements Iterable<T>{
 
 	public class ExtensionIterator<T> implements Iterator<T> {
@@ -29,11 +45,31 @@ public class ExtensionList<T> implements Iterable<T>{
 		private int index = 0;
 
 		public boolean hasNext() {
+			iterateUntilAccepted();
 			return index<elements.length;
+		}
+
+		private void iterateUntilAccepted() {
+			while (index<elements.length) {
+				if (accept(elements[index]))
+					break;
+				index++;
+			}
+		}
+
+		private boolean accept(IConfigurationElement element) {
+			for (String name : filters.keySet()) {
+				String expected = filters.get(name);
+				String actual = element.getAttribute(name);
+				if (!expected.equals(actual))
+					return false;
+			}
+			return true;
 		}
 
 		@SuppressWarnings("unchecked")
 		public T next() {
+			iterateUntilAccepted();
 			IConfigurationElement e = elements[index++];
 			try {
 				return (T) e.createExecutableExtension("class");
@@ -49,6 +85,7 @@ public class ExtensionList<T> implements Iterable<T>{
 	}
 
 	private IConfigurationElement[] elements;
+	private HashMap<String, String> filters = new HashMap<String, String>();
 
 	public ExtensionList(Class<T> clazz, String id) {
 		try {
@@ -58,8 +95,34 @@ public class ExtensionList<T> implements Iterable<T>{
 		}
 	}
 	
+	public ExtensionList(Class<T> type, String name, ServiceQuery query) {
+		this(type, name);
+		for (String key : query.keySet()) {
+			addFilter(key, query.get(key));
+		}
+	}
+
 	public Iterator<T> iterator() {
 		return new ExtensionIterator<T>();
+	}
+
+	public void addFilter(String name, String value) {
+		filters.put(name, value);
+	}
+
+	public T first() {
+		Iterator<T> i = iterator();
+		if (!i.hasNext())
+			return null;
+		return i.next();
+	}
+
+	public List<T> asList() {
+		List<T> result = new ArrayList<T>();
+		for (T t : this) {
+			result.add(t);
+		}
+		return result;
 	}
 
 }

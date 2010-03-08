@@ -46,6 +46,7 @@ import javax.swing.JFrame;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.base.Service;
 import org.compiere.Adempiere;
@@ -1485,7 +1486,7 @@ public final class Env
 	 */
 	public static Image getImage (String fileNameInImageDir)
 	{
-		IResourceFinder rf = Service.locator().getResourceFinder();
+		IResourceFinder rf = Core.getResourceFinder();
 		URL url =  rf.getResource("images/" + fileNameInImageDir);
 
 //		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
@@ -1506,7 +1507,7 @@ public final class Env
 	 */
 	public static ImageIcon getImageIcon (String fileNameInImageDir)
 	{
-		IResourceFinder rf = Service.locator().getResourceFinder();
+		IResourceFinder rf = Core.getResourceFinder();
 		URL url =  rf.getResource("images/" + fileNameInImageDir);
 //		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
 		if (url == null)
@@ -1528,7 +1529,7 @@ public final class Env
 	 */
 	public static ImageIcon getImageIcon2 (String fileName)
 	{
-		IResourceFinder rf = Service.locator().getResourceFinder();
+		IResourceFinder rf = Core.getResourceFinder();
 		URL url =  rf.getResource("images/" + fileName+".gif");
 //		URL url = Adempiere.class.getResource("images/" + fileName+".gif");
 		if (url == null)
