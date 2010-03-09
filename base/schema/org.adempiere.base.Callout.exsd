@@ -58,7 +58,7 @@ Instead, you specify Table and Column in the extension declaration.
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.compiere.model.Callout"/>
+                  <meta.attribute kind="java" basedOn=":org.adempiere.base.IColumnCallout"/>
                </appinfo>
             </annotation>
          </attribute>

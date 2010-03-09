@@ -14,20 +14,17 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.adempiere.base;
 
 import java.util.Properties;
 
-import org.adempiere.base.IService;
+import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
 
 /**
- *  Callout Interface for Callout.
- *  Used in MTab and ImpFormatRow
- *
- *  @author     Jorg Janke
- *  @version    $Id: Callout.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
+ *  Column Callout Interface
  */
-public interface Callout
+public interface IColumnCallout extends IService
 {
 	/**
 	 *	Start Callout.
@@ -38,7 +35,6 @@ public interface Callout
 	 *	When invoked, the Tab model has the new value!
 	 *
 	 *  @param ctx      Context
-	 *  @param method   Method name
 	 *  @param WindowNo current Window No
 	 *  @param mTab     Model Tab
 	 *  @param mField   Model Field
@@ -46,17 +42,7 @@ public interface Callout
 	 *  @param oldValue The old value
 	 *  @return Error message or ""
 	 */
-	public String start (Properties ctx, String method, int WindowNo,
+	public String start (Properties ctx, int WindowNo,
 		GridTab mTab, GridField mField, Object value, Object oldValue);
 
-	/**
-	 *	Conversion Rules.
-	 *	Convert a String
-	 *
-	 *	@param method   in notation User_Function
-	 *  @param value    the value
-	 *	@return converted String or Null if no method found
-	 */
-	public String convert (String method, String value);
-
-}   //  callout
+}
