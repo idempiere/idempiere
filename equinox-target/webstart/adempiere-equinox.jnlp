@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp 
     spec="1.0+" 
-    codebase="file:///Users/viola/Workspaces/adempiere/adempiereTrunk/equinox-target" 
+    codebase="http://localhost:8080/webstart" 
     href="adempiere-equinox.jnlp"> <!-- URL to the site containing the jnlp application. It should match the value used on  export. Href, the name of this file -->
   <information>
 	<title>Adempiere Client 3.5.4a</title>
