@@ -2,7 +2,8 @@
 <feature
       id="org.adempiere.webstart"
       label="Adempiere"
-      version="0.0.0.1">
+      version="0.0.0.1"
+      provider-name="Adempiere">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -90,6 +91,13 @@
 
    <plugin
          id="org.eclipse.equinox.launcher"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi.services"
          download-size="0"
          install-size="0"
          version="0.0.0"
