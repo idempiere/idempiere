@@ -3,9 +3,6 @@ package org.adempiere.base;
 import java.net.URL;
 import java.util.List;
 
-import org.adempiere.base.equinox.ExtensionList;
-import org.compiere.model.Callout;
-
 /**
  * This is a facade class for the Service Locator.
  * It provides simple access to all core services.

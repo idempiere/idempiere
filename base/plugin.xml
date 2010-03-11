@@ -2,6 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.adempiere.base.IResourceFinder" name="ResourceFinder" schema="schema/ResourceFinder.exsd"/>
-   <extension-point id="org.adempiere.base.Callout" name="Callout" schema="schema/org.adempiere.base.Callout.exsd"/>
+   <extension-point id="org.adempiere.base.IColumnCallout" name="Callout" schema="schema/org.adempiere.base.Callout.exsd"/>
 
 </plugin>
