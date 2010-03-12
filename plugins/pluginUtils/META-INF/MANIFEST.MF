@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PluginUtils
+Bundle-SymbolicName: org.adempiere.pluginUtils
+Bundle-Version: 0.0.0.1
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.adempiere.base,
+ org.compiere.model,
+ org.compiere.util,
+ org.osgi.framework;version="1.5.0"
+Export-Package: org.adempiere.plugin.utils
