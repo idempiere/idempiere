@@ -1,22 +1,19 @@
 package org.adempiere.testplugin;
 
+import org.adempiere.base.Service;
+import org.adempiere.plugin.utils.AdempiereActivator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class Activator extends AdempiereActivator {
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
+	@Override
+	protected void start() {
+		System.out.println("Testplugin starting...");
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
+	
+	@Override
+	protected void stop() {
+		System.out.println("Testplugin stopping...");
 	}
-
 }
