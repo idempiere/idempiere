@@ -24,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -45,7 +44,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.MimeType;
 import org.w3c.dom.Document;
@@ -72,7 +70,7 @@ public class MAttachment extends X_AD_Attachment
 
 
 	/**
-	 * 	Get Attachment
+	 * 	Get Attachment (if there are more than one attachment it gets the first in no specific order)
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -80,35 +78,10 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID)
 	{
-		MAttachment retValue = null;
-		PreparedStatement pstmt = null;
-		String sql = "SELECT * FROM AD_Attachment WHERE AD_Table_ID=? AND Record_ID=?";
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, AD_Table_ID);
-			pstmt.setInt (2, Record_ID);
-			ResultSet rs = pstmt.executeQuery ();
-			if (rs.next ())
-				retValue = new MAttachment (ctx, rs, null);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		try
-		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
+		final String whereClause = I_AD_Attachment.COLUMNNAME_AD_Table_ID+"=? AND "+I_AD_Attachment.COLUMNNAME_Record_ID+"=?";
+		MAttachment retValue = new Query(ctx,I_AD_Attachment.Table_Name,whereClause, null)
+		.setParameters(AD_Table_ID, Record_ID)
+		.first();
 		return retValue;
 	}	//	get
 	

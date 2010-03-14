@@ -86,9 +86,8 @@ public class MProduct extends X_M_Product
 	 */
 	public static MProduct[] get (Properties ctx, String whereClause, String trxName)
 	{
-		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		List<MProduct> list = new Query(ctx, Table_Name, "AD_Client_ID=? AND "+whereClause, trxName)
-								.setParameters(new Object[]{AD_Client_ID})
+		List<MProduct> list = new Query(ctx, Table_Name, whereClause, trxName)
+								.setClient_ID()
 								.list();
 		return list.toArray(new MProduct[list.size()]);
 	}	//	get
@@ -102,9 +101,9 @@ public class MProduct extends X_M_Product
 	 */
 	public static List<MProduct> getByUPC(Properties ctx, String upc, String trxName)
 	{
-		String whereClause = "AD_Client_ID=? AND UPC=?";
+		final String whereClause = "UPC=?";
 		Query q = new Query(ctx, Table_Name, whereClause, trxName);
-		q.setParameters(new Object[]{Env.getAD_Client_ID(ctx), upc});
+		q.setParameters(upc).setClient_ID();
 		return(q.list());
 	}
 
@@ -533,10 +532,10 @@ public class MProduct extends X_M_Product
 		if (m_downloads != null && !requery)
 			return m_downloads;
 		//
-		List<MProductDownload> list = new Query(getCtx(), MProductDownload.Table_Name, "M_Product_ID=?", get_TrxName())
+		List<MProductDownload> list = new Query(getCtx(), I_M_ProductDownload.Table_Name, "M_Product_ID=?", get_TrxName())
 										.setOnlyActiveRecords(true)
-										.setOrderBy(MProductDownload.COLUMNNAME_Name)
-										.setParameters(new Object[]{get_ID()})
+										.setOrderBy(I_M_ProductDownload.COLUMNNAME_Name)
+										.setParameters(get_ID())
 										.list();
 		m_downloads = list.toArray(new MProductDownload[list.size()]);
 		return m_downloads;
@@ -610,6 +609,21 @@ public class MProduct extends X_M_Product
 		if (m_precision != null && is_ValueChanged("C_UOM_ID"))
 			m_precision = null;
 		
+		// AttributeSetInstance reset
+		if (is_ValueChanged(COLUMNNAME_M_AttributeSet_ID))
+		{
+			MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
+			setM_AttributeSetInstance_ID(0);
+			// Delete the old m_attributesetinstance
+			try {
+				asi.deleteEx(true, get_TrxName());
+			} catch (AdempiereException ex)
+			{
+				log.saveError("Error", "Error deleting the AttributeSetInstance");
+				return false;
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 
@@ -631,10 +645,10 @@ public class MProduct extends X_M_Product
 		}
 
 		//check if it has cost
-		boolean hasCosts = new Query(getCtx(), MCostDetail.Table_Name,
-										MCostDetail.COLUMNNAME_M_Product_ID+"=?", get_TrxName())
+		boolean hasCosts = new Query(getCtx(), I_M_CostDetail.Table_Name,
+				I_M_CostDetail.COLUMNNAME_M_Product_ID+"=?", get_TrxName())
 									.setOnlyActiveRecords(true)
-									.setParameters(new Object[]{get_ID()})
+									.setParameters(get_ID())
 									.match();
 		if (hasCosts)
 		{

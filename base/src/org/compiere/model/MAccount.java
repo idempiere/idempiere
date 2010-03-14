@@ -41,9 +41,7 @@ public class MAccount extends X_C_ValidCombination
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8887316767838767993L;
-
-
+	private static final long serialVersionUID = -1936396369349550834L;
 
 	/**
 	 * 	Get existing Account or create it 
@@ -242,9 +240,9 @@ public class MAccount extends X_C_ValidCombination
 	 */
 	public static MAccount get (Properties ctx, int C_AcctSchema_ID, String alias)
 	{
-		String whereClause = "C_AcctSchema_ID=? AND Alias=?";
-		MAccount retValue =  new Query(ctx,MAccount.Table_Name,whereClause.toString(),null)
-		.setParameters(new Object[]{C_AcctSchema_ID,alias})
+		final String whereClause = "C_AcctSchema_ID=? AND Alias=?";
+		MAccount retValue =  new Query(ctx,I_C_ValidCombination.Table_Name,whereClause,null)
+		.setParameters(C_AcctSchema_ID,alias)
 		.firstOnly();
 		return retValue;
 	}	//	get
@@ -358,7 +356,7 @@ public class MAccount extends X_C_ValidCombination
 	 *	@param where where clause
 	 *	@param trxName transaction
 	 */
-	public static void updateValueDescription (Properties ctx, String where, String trxName)
+	public static void updateValueDescription (Properties ctx, final String where, String trxName)
 	{
 		List<MAccount> accounts=  new Query(ctx,MAccount.Table_Name,where,trxName)
 		.setOrderBy(MAccount.COLUMNNAME_C_ValidCombination_ID).list();

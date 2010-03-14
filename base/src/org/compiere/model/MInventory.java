@@ -48,8 +48,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 910998472569265447L;
-
+	private static final long serialVersionUID = -7137974064086172763L;
 
 	/**
 	 * 	Get Inventory from Cache
@@ -145,8 +144,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 			return m_lines;
 		}
 		//
-		List<MInventoryLine> list = new Query(getCtx(), MInventoryLine.Table_Name, "M_Inventory_ID=?", get_TrxName())
-										.setParameters(new Object[]{get_ID()})
+		List<MInventoryLine> list = new Query(getCtx(), I_M_InventoryLine.Table_Name, "M_Inventory_ID=?", get_TrxName())
+										.setParameters(get_ID())
 										.setOrderBy(MInventoryLine.COLUMNNAME_Line)
 										.list();
 		m_lines = list.toArray(new MInventoryLine[list.size()]);

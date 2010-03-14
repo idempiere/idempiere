@@ -54,9 +54,9 @@ public class MLot extends X_M_Lot
 	public static MLot[] getProductLots (Properties ctx, int M_Product_ID, String trxName)
 	{
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		String whereClause = "M_Product_ID=?";
-		List <MLot> list = new Query(ctx, MLot.Table_Name, whereClause, trxName)
-			.setParameters(new Object[]{M_Product_ID})
+		final String whereClause = "M_Product_ID=?";
+		List <MLot> list = new Query(ctx, I_M_Lot.Table_Name, whereClause, trxName)
+			.setParameters(M_Product_ID)
  			.list();
 		//
 		MLot[] retValue = new MLot[list.size()];
@@ -70,32 +70,15 @@ public class MLot extends X_M_Lot
 	 *	@param M_Product_ID product
 	 *	@param lot
 	 *	@param trxName transaction
-	 *	@return Array of Lots for Product
+	 *	@return Last Lot for Product
 	 */
 	public static MLot getProductLot (Properties ctx, int M_Product_ID, String lot, String trxName)
 	{
-		String sql = "SELECT * FROM M_Lot WHERE M_Product_ID=? AND Name=?";
-		MLot retValue = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, trxName);
-			pstmt.setInt (1, M_Product_ID);
-			pstmt.setString(2, lot);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-				retValue = new MLot (ctx, rs, trxName);
- 		}
-		catch (SQLException ex)
-		{
-			s_log.log(Level.SEVERE, sql, ex);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+		final String whereClause = "M_Product_ID=? AND Name=?";
+		MLot retValue = new Query(ctx, I_M_Lot.Table_Name, whereClause, trxName)
+			.setParameters(M_Product_ID, lot)
+			.setOrderBy(I_M_Lot.COLUMNNAME_M_Lot_ID + " DESC")
+ 			.first();
 		return retValue;
 	}	//	getProductLot
 

@@ -15,11 +15,11 @@
  *****************************************************************************/
 package org.eevolution.process;
 
-import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.I_EXP_Format;
 import org.compiere.model.MColumn;
 import org.compiere.model.MEXPFormat;
 import org.compiere.model.MEXPFormatLine;
@@ -46,7 +46,7 @@ public class ExportFormatGenerator extends SvrProcess
 	private int			p_AD_Window_ID = 0;
 	private boolean     p_IsMandatory = false;
 	private boolean     p_IsInsertRecord= false;
-	private Hashtable m_formats = new Hashtable();
+	private Hashtable<String, MEXPFormat> m_formats = new Hashtable<String, MEXPFormat>();
 	private String version = "3.2.0";
 	private String m_parent_table = null;
 	private String m_format_value = null;
@@ -147,7 +147,7 @@ public class ExportFormatGenerator extends SvrProcess
 			return format.getValue();
 		
 		String where=" value = ? ";
-		Query sql = new Query(getCtx(),MEXPFormat.Table_Name,where,get_TrxName()).setParameters(new Object[]{formatValue});
+		Query sql = new Query(getCtx(),I_EXP_Format.Table_Name,where,get_TrxName()).setParameters(formatValue);
 		if(sql.match())
 		{
 			format = (MEXPFormat) sql.first();

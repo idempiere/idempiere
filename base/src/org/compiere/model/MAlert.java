@@ -88,9 +88,9 @@ public class MAlert extends X_AD_Alert
 		if (m_rules != null && !reload)
 			return m_rules;
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		String whereClause = "AD_Alert_ID=?";
-		List <MAlertRule> list = new Query(getCtx(), MAlertRule.Table_Name, whereClause, null)
-			.setParameters(new Object[]{getAD_Alert_ID()})
+		final String whereClause = "AD_Alert_ID=?";
+		List <MAlertRule> list = new Query(getCtx(), I_AD_AlertRule.Table_Name, whereClause, null)
+			.setParameters(getAD_Alert_ID())
 			.setOrderBy("Name, AD_AlertRule_ID")
 			.setOnlyActiveRecords(true)
 			.list()
@@ -115,9 +115,9 @@ public class MAlert extends X_AD_Alert
 		if (m_recipients != null && !reload)
 			return m_recipients;
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		String whereClause = "AD_Alert_ID=?";
-		List <MAlertRecipient> list = new Query(getCtx(), MAlertRecipient.Table_Name, whereClause, null)
-			.setParameters(new Object[]{getAD_Alert_ID()})
+		final String whereClause = "AD_Alert_ID=?";
+		List <MAlertRecipient> list = new Query(getCtx(), I_AD_AlertRecipient.Table_Name, whereClause, null)
+			.setParameters(getAD_Alert_ID())
 			.setOnlyActiveRecords(true)
 			.list()
 		;

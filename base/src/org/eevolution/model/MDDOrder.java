@@ -66,7 +66,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2407222565384020843L;
+	private static final long serialVersionUID = -5997157712614274458L;
 
 	/**
 	 * 	Create new Order by copying
@@ -433,10 +433,10 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	{
 		StringBuffer whereClauseFinal = new StringBuffer(MDDOrderLine.COLUMNNAME_DD_Order_ID).append("=?");
 		if (!Util.isEmpty(whereClause, true))
-			whereClauseFinal.append("AND (").append(whereClause).append(")");
+			whereClauseFinal.append(" AND (").append(whereClause).append(")");
 		//
-		List<MDDOrderLine> list = new Query(getCtx(), MDDOrderLine.Table_Name, whereClauseFinal.toString(), get_TrxName())
-												.setParameters(new Object[]{getDD_Order_ID()})
+		List<MDDOrderLine> list = new Query(getCtx(), I_DD_OrderLine.Table_Name, whereClauseFinal.toString(), get_TrxName())
+												.setParameters(getDD_Order_ID())
 												.setOrderBy(orderClause)
 												.list();
 		return list.toArray(new MDDOrderLine[list.size()]);		

@@ -138,9 +138,9 @@ public final class MAccountLookup extends Lookup implements Serializable
 		if (ID == C_ValidCombination_ID)	//	already loaded
 			return true;
 		
-		String whereClause = "C_ValidCombination_ID=?";
-		MAccount account = new Query(Env.getCtx(),MAccount.Table_Name,whereClause,null)
-		.setParameters(new Object[]{ID})
+		final String whereClause = "C_ValidCombination_ID=?";
+		MAccount account = new Query(Env.getCtx(),I_C_ValidCombination.Table_Name,whereClause,null)
+		.setParameters(ID)
 		.firstOnly();
 		
 		if(account == null)
@@ -178,12 +178,12 @@ public final class MAccountLookup extends Lookup implements Serializable
 			list.add(new KeyNamePair (-1, ""));
 		//
 		ArrayList<Object> params = new ArrayList<Object>();
-		String whereClause = "AD_Client_ID=?";
+		final String whereClause = "AD_Client_ID=?";
 		params.add(Env.getAD_Client_ID(m_ctx));
 		
-		List<MAccount> accounts = new Query(Env.getCtx(),MAccount.Table_Name,whereClause,null)
+		List<MAccount> accounts = new Query(Env.getCtx(),I_C_ValidCombination.Table_Name,whereClause,null)
 		.setParameters(params)
-		.setOrderBy(MAccount.COLUMNNAME_Combination)
+		.setOrderBy(I_C_ValidCombination.COLUMNNAME_Combination)
 		.setOnlyActiveRecords(onlyActive)
 		.list();
 		

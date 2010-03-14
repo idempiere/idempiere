@@ -39,8 +39,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1336000922103246463L;
-
+	private static final long serialVersionUID = 5649152656460089476L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -55,8 +54,8 @@ public class MInventoryLine extends X_M_InventoryLine
 	{
 		final String whereClause = "M_Inventory_ID=? AND M_Locator_ID=?"
 									+" AND M_Product_ID=? AND M_AttributeSetInstance_ID=?";
-		return new Query(inventory.getCtx(), MInventoryLine.Table_Name, whereClause, inventory.get_TrxName())
-			.setParameters(new Object[]{inventory.get_ID(), M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID})
+		return new Query(inventory.getCtx(), I_M_InventoryLine.Table_Name, whereClause, inventory.get_TrxName())
+			.setParameters(inventory.get_ID(), M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID)
 			.firstOnly();
 	}	//	get
 	

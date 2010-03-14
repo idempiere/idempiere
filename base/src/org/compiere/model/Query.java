@@ -126,7 +126,7 @@ public class Query
 	 * Set query parameters
 	 * @param parameters
 	 */
-	public Query setParameters(Object[] parameters)
+	public Query setParameters(Object ...parameters)
 	{
 		this.parameters = parameters;
 		return this;
@@ -754,4 +754,5 @@ public class Query
 		}
 		return retValue;
 	}	//	get_IDs
+
 }

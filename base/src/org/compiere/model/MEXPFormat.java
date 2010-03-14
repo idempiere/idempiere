@@ -87,7 +87,7 @@ public class MEXPFormat extends X_EXP_Format {
 		final String clauseWhere = X_EXP_FormatLine.COLUMNNAME_EXP_Format_ID + "=?";	
 		m_lines = new Query(getCtx() , I_EXP_FormatLine.Table_Name, clauseWhere , get_TrxName())
 						.setOnlyActiveRecords(true)
-						.setParameters(new Object[]{getEXP_Format_ID()})
+						.setParameters(getEXP_Format_ID())
 						.setOrderBy(orderBy)
 						.list();
 		return m_lines;
@@ -102,7 +102,7 @@ public class MEXPFormat extends X_EXP_Format {
 								 + " AND " + X_EXP_FormatLine.COLUMNNAME_IsPartUniqueIndex +"= ?";
 		m_lines_unique = new Query(getCtx(), I_EXP_FormatLine.Table_Name, clauseWhere, get_TrxName())
 													 .setOnlyActiveRecords(true)
-													 .setParameters(new Object[]{getEXP_Format_ID(), "Y"})
+													 .setParameters(getEXP_Format_ID(), "Y")
 													 .setOrderBy(X_EXP_FormatLine.COLUMNNAME_Position)
 													 .list();
 		return m_lines_unique;
@@ -130,18 +130,18 @@ public class MEXPFormat extends X_EXP_Format {
 		if(retValue!=null)
 			return retValue;
 		
-		StringBuffer whereCluse = new StringBuffer(X_EXP_Format.COLUMNNAME_Value).append("=?")
+		StringBuffer whereClause = new StringBuffer(X_EXP_Format.COLUMNNAME_Value).append("=?")
 		.append(" AND AD_Client_ID = ?")
 		.append(" AND ").append(X_EXP_Format.COLUMNNAME_Version).append(" = ?");
 
-		retValue = (MEXPFormat) new Query(ctx,X_EXP_Format.Table_Name,whereCluse.toString(),trxName)
-					.setParameters(new Object[] {value,AD_Client_ID,version}).first();
+		retValue = (MEXPFormat) new Query(ctx,X_EXP_Format.Table_Name,whereClause.toString(),trxName)
+					.setParameters(value,AD_Client_ID,version).first();
 		
 		if(retValue != null)
 		{	
-		retValue.getFormatLines();
-		s_cache.put (key, retValue);
-		exp_format_by_id_cache.put(retValue.getEXP_Format_ID(), retValue);
+			retValue.getFormatLines();
+			s_cache.put (key, retValue);
+			exp_format_by_id_cache.put(retValue.getEXP_Format_ID(), retValue);
 		}
 		
 		return retValue;
@@ -161,13 +161,13 @@ public class MEXPFormat extends X_EXP_Format {
 			.append("  AND ").append(X_EXP_Format.COLUMNNAME_Version).append(" = ?");
 
 		retValue = (MEXPFormat) new Query(ctx,X_EXP_Format.Table_Name,whereClause.toString(),trxName)
-						.setParameters(new Object[] {AD_Client_ID,AD_Table_ID,version})
+						.setParameters(AD_Client_ID,AD_Table_ID,version)
 						.first();
 		if(retValue!=null)
 		{	
-		retValue.getFormatLines();
-		s_cache.put (key, retValue);
-		exp_format_by_id_cache.put(retValue.getEXP_Format_ID(), retValue);
+			retValue.getFormatLines();
+			s_cache.put (key, retValue);
+			exp_format_by_id_cache.put(retValue.getEXP_Format_ID(), retValue);
 		}
 		
 		return retValue;

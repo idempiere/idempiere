@@ -623,8 +623,8 @@ public class MInOut extends X_M_InOut implements DocAction
 			set_TrxName(m_lines, get_TrxName());
 			return m_lines;
 		}
-		List<MInOutLine> list = new Query(getCtx(), MInOutLine.Table_Name, "M_InOut_ID=?", get_TrxName())
-		.setParameters(new Object[]{getM_InOut_ID()})
+		List<MInOutLine> list = new Query(getCtx(), I_M_InOutLine.Table_Name, "M_InOut_ID=?", get_TrxName())
+		.setParameters(getM_InOut_ID())
 		.setOrderBy(MInOutLine.COLUMNNAME_Line)
 		.list();
 		//
@@ -655,8 +655,8 @@ public class MInOut extends X_M_InOut implements DocAction
 			set_TrxName(m_confirms, get_TrxName());
 			return m_confirms;
 		}
-		List<MInOutConfirm> list = new Query(getCtx(), MInOutConfirm.Table_Name, "M_InOut_ID=?", get_TrxName())
-		.setParameters(new Object[]{getM_InOut_ID()})
+		List<MInOutConfirm> list = new Query(getCtx(), I_M_InOutConfirm.Table_Name, "M_InOut_ID=?", get_TrxName())
+		.setParameters(getM_InOut_ID())
 		.list();
 		m_confirms = new MInOutConfirm[list.size ()];
 		list.toArray (m_confirms);
@@ -1486,6 +1486,9 @@ public class MInOut extends X_M_InOut implements DocAction
 							m_processMsg = CLogger.retrieveErrorString("Could not create Inv Matching");
 							return DocAction.STATUS_Invalid;
 						}
+						if (MClient.isClientAccountingImmediate()) {
+							String ignoreError = DocumentEngine.postImmediate(inv.getCtx(), inv.getAD_Client_ID(), inv.get_Table_ID(), inv.get_ID(), true, inv.get_TrxName());						
+						}
 					}
 				}
 
@@ -1499,6 +1502,9 @@ public class MInOut extends X_M_InOut implements DocAction
 					{
 						m_processMsg = "Could not create PO Matching";
 						return DocAction.STATUS_Invalid;
+					}
+					if (MClient.isClientAccountingImmediate()) {
+						String ignoreError = DocumentEngine.postImmediate(po.getCtx(), po.getAD_Client_ID(), po.get_Table_ID(), po.get_ID(), true, po.get_TrxName());						
 					}
 					//	Update PO with ASI
 					if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
@@ -1522,6 +1528,9 @@ public class MInOut extends X_M_InOut implements DocAction
 						{
 							m_processMsg = "Could not create PO(Inv) Matching";
 							return DocAction.STATUS_Invalid;
+						}
+						if (MClient.isClientAccountingImmediate()) {
+							String ignoreError = DocumentEngine.postImmediate(po.getCtx(), po.getAD_Client_ID(), po.get_Table_ID(), po.get_ID(), true, po.get_TrxName());						
 						}
 						//	Update PO with ASI
 						oLine = new MOrderLine (getCtx(), po.getC_OrderLine_ID(), get_TrxName());

@@ -49,6 +49,8 @@ import org.compiere.util.KeyNamePair;
  * 					https://sourceforge.net/tracker/?func=detail&aid=2804135&group_id=176962&atid=879332
  * 				<li>BF [ 2819617 ] NPE if script validator rule returns null
  * 					https://sourceforge.net/tracker/?func=detail&aid=2819617&group_id=176962&atid=879332
+ * @author victor.perez@e-evolution.com, www.e-evolution.com
+ * 				<li>BF [ 2947607 ] Model Validator Engine duplicate listeners 
  */
 public class ModelValidationEngine 
 {
@@ -213,7 +215,7 @@ public class ModelValidationEngine
 		}
 		
 		// now process the script model validator login
-		ArrayList<MRule> loginRules = MRule.getModelValidatorLoginRules (Env.getCtx());
+		List<MRule> loginRules = MRule.getModelValidatorLoginRules (Env.getCtx());
 		if (loginRules != null) {
 			for (MRule loginRule : loginRules) {
 				// currently just JSR 223 supported
@@ -431,8 +433,10 @@ public class ModelValidationEngine
 			list.add(listener);
 			m_docValidateListeners.put(propertyName, list);
 		}
-		else
-			list.add(listener);
+		else if (!list.contains(listener))
+		{    
+		    list.add(listener);
+		}
 	}	//	addDocValidate
 
 	/**
@@ -848,5 +852,4 @@ public class ModelValidationEngine
 			}
 		}
 	}
-
 }	//	ModelValidatorEngine

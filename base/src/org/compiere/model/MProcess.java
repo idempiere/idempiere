@@ -26,6 +26,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Trx;
+import org.compiere.wf.MWFNode;
 
 /**
  *  Process Model
@@ -71,10 +72,10 @@ public class MProcess extends X_AD_Process
 	 */
 	public static MProcess getFromMenu (Properties ctx, int AD_Menu_ID)
 	{
-		String whereClause = "EXISTS (SELECT 1 FROM AD_Menu m"
+		final String whereClause = "EXISTS (SELECT 1 FROM AD_Menu m"
 							+" WHERE m.AD_Process_ID=AD_Process.AD_Process_ID AND m.AD_Menu_ID=?)";
-		MProcess p = new Query(ctx, MProcess.Table_Name, whereClause, null)
-			.setParameters(new Object[]{AD_Menu_ID})
+		MProcess p = new Query(ctx, I_AD_Process.Table_Name, whereClause, null)
+			.setParameters(AD_Menu_ID)
 			.firstOnly();
 		if (p != null)
 		{
@@ -133,9 +134,9 @@ public class MProcess extends X_AD_Process
 		if (m_parameters != null)
 			return m_parameters;
 		//
-		String whereClause = MProcessPara.COLUMNNAME_AD_Process_ID+"=?";
-		List<MProcessPara> list = new Query(getCtx(), MProcessPara.Table_Name, whereClause, get_TrxName())
-			.setParameters(new Object[]{get_ID()})
+		final String whereClause = MProcessPara.COLUMNNAME_AD_Process_ID+"=?";
+		List<MProcessPara> list = new Query(getCtx(), I_AD_Process_Para.Table_Name, whereClause, get_TrxName())
+			.setParameters(get_ID())
 			.setOrderBy(MProcessPara.COLUMNNAME_SeqNo)
 			.list();
 		//
@@ -372,7 +373,7 @@ public class MProcess extends X_AD_Process
 				menues[i].setDescription(getDescription());
 				menues[i].saveEx();
 			}
-			X_AD_WF_Node[] nodes = MWindow.getWFNodes(getCtx(), "AD_Process_ID=" + getAD_Process_ID(), get_TrxName());
+			MWFNode[] nodes = MWindow.getWFNodes(getCtx(), "AD_Process_ID=" + getAD_Process_ID(), get_TrxName());
 			for (int i = 0; i < nodes.length; i++)
 			{
 				boolean changed = false;

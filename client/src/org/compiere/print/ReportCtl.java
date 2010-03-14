@@ -29,6 +29,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -266,7 +267,9 @@ public class ReportCtl
 			{
 				try 
 				{
-					ClassLoader loader = ReportCtl.class.getClassLoader();
+					ClassLoader loader = Thread.currentThread().getContextClassLoader();
+					if (loader == null)
+						loader = ReportCtl.class.getClassLoader();
 					Class<?> clazz = loader.loadClass("org.adempiere.webui.window.FDialog");
 					Method m = clazz.getMethod("error", Integer.TYPE, String.class);
 					m.invoke(null, 0, "NoDocPrintFormat");
@@ -280,11 +283,18 @@ public class ReportCtl
 		
 		if(re.getPrintFormat() != null)
 		{
-			if(re.getPrintFormat().getJasperProcess_ID() > 0)	
+			MPrintFormat format = re.getPrintFormat();
+			if(format.getJasperProcess_ID() > 0)	
 			{
-				ProcessInfo pi = new ProcessInfo ("", re.getPrintFormat().getJasperProcess_ID());
+				PrintInfo info = re.getPrintInfo();
+				ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
 				pi.setPrintPreview( !IsDirectPrint );
 				pi.setRecord_ID ( Record_ID );
+				if (info.isDocument()) {
+					ProcessInfoParameter pip = new ProcessInfoParameter("CURRENT_LANG", format.getLanguage(), null, null, null);
+					pi.setParameter(new ProcessInfoParameter[]{pip});
+				}
+				
 				//	Execute Process
 				if (Ini.isClient())
 				{

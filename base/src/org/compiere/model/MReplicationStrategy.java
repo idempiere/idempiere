@@ -17,7 +17,7 @@
 
 package org.compiere.model;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
@@ -27,12 +27,15 @@ import org.compiere.util.CLogger;
  * @author victor.perez@e-evolution.com, e-Evolution
  * <li> BF2875989 Deactivate replication records are include to replication
  * <li> https://sourceforge.net/tracker/?func=detail&aid=2875989&group_id=176962&atid=879332
+ * <li> BF2947615 The document recplicacion not working
+ * <li> https://sourceforge.net/tracker/?func=detail&aid=2947615&group_id=176962&atid=879332
  */
 public class MReplicationStrategy extends X_AD_ReplicationStrategy {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1921892820183119329L;
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -3017484140206284805L;
 	public static final int REPLICATION_TABLE =0;
 	public static final int REPLICATION_DOCUMENT =1;
 	
@@ -52,12 +55,13 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	}
 	
 	/**
-	 * @return the collection the X_AD_ReplicationTable
+	 * @return the list the X_AD_ReplicationTable
 	 */
-	public Collection <X_AD_ReplicationTable> getReplicationTables() {
-		String whereClause = new StringBuffer(X_AD_ReplicationTable.COLUMNNAME_AD_ReplicationStrategy_ID)+"=?"; // #1
-		return new Query(getCtx(), X_AD_ReplicationTable.Table_Name, whereClause, get_TrxName())
-			.setParameters(new Object[]{getAD_ReplicationStrategy_ID()})
+	public List <X_AD_ReplicationTable> getReplicationTables() {
+		final String whereClause = I_AD_ReplicationTable.COLUMNNAME_AD_ReplicationStrategy_ID+"=?"; // #1
+		return new Query(getCtx(), I_AD_ReplicationTable.Table_Name, whereClause, get_TrxName())
+			.setClient_ID()
+			.setParameters(getAD_ReplicationStrategy_ID())
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
 			.list()
@@ -65,12 +69,13 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	}
 	
 	/**
-	 * @return the collection the X_AD_ReplicationDocument
+	 * @return the list the X_AD_ReplicationDocument
 	 */
-	public Collection<X_AD_ReplicationDocument> getReplicationDocuments() {
-		String whereClause = "AD_ReplicationStrategy_ID=?"; // #1
-		return new Query(getCtx(),X_AD_ReplicationDocument.Table_Name,whereClause,get_TrxName())
-			.setParameters(new Object[]{getAD_ReplicationStrategy_ID()})
+	public List<X_AD_ReplicationDocument> getReplicationDocuments() {
+	    	final String whereClause = I_AD_ReplicationDocument.COLUMNNAME_AD_ReplicationStrategy_ID+"=?"; // #1
+		return new Query(getCtx(),I_AD_ReplicationDocument.Table_Name,whereClause,get_TrxName())
+			.setClient_ID()
+			.setParameters(getAD_ReplicationStrategy_ID())
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
 			.list()
@@ -84,11 +89,13 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	 */
 	public static X_AD_ReplicationTable getReplicationTable(Properties ctx ,int AD_ReplicationStrategy_ID, int AD_Table_ID)
 	{
-		String whereClause = "AD_ReplicationStrategy_ID=? AND AD_Table_ID=?";
-		return new Query(ctx, X_AD_ReplicationTable.Table_Name, whereClause, null)
+	    	final String whereClause = I_AD_ReplicationTable.COLUMNNAME_AD_ReplicationStrategy_ID + "=? AND "
+	    				 			 + I_AD_ReplicationTable.COLUMNNAME_AD_Table_ID + "=?";
+		return new Query(ctx, I_AD_ReplicationTable.Table_Name, whereClause, null)
+			.setClient_ID()
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
-			.setParameters(new Object[]{AD_ReplicationStrategy_ID, AD_Table_ID})
+			.setParameters(AD_ReplicationStrategy_ID, AD_Table_ID)
 			.first()
 		;	
 	}
@@ -100,13 +107,33 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	 */
 	public static X_AD_ReplicationDocument getReplicationDocument(Properties ctx ,int AD_ReplicationStrategy_ID , int AD_Table_ID)
 	{
-		String whereClause = "AD_ReplicationStrategy_ID=? AND AD_Table_ID=?";
-		return new Query(ctx, X_AD_ReplicationDocument.Table_Name, whereClause, null)
+	    	final String whereClause = I_AD_ReplicationDocument.COLUMNNAME_AD_ReplicationStrategy_ID + "=? AND "
+			 		 				 + I_AD_ReplicationDocument.COLUMNNAME_AD_Table_ID + "=?";
+		return new Query(ctx, I_AD_ReplicationDocument.Table_Name, whereClause, null)
+			.setClient_ID()
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
-			.setParameters(new Object[]{AD_ReplicationStrategy_ID, AD_Table_ID})
+			.setParameters(AD_ReplicationStrategy_ID, AD_Table_ID)
 			.first()
 		;
+	}
+	
+	/**
+	 * 
+	 * @param AD_Table_ID
+	 * @return X_AD_ReplicationDocument Document to replication
+	 */
+	public static X_AD_ReplicationDocument getReplicationDocument(Properties ctx ,int AD_ReplicationStrategy_ID , int AD_Table_ID, int C_DocType_ID)
+	{
+	    final String whereClause = I_AD_ReplicationDocument.COLUMNNAME_AD_ReplicationStrategy_ID + "=? AND "
+	    						 + I_AD_ReplicationDocument.COLUMNNAME_AD_Table_ID + "=? AND "
+	    						 + I_AD_ReplicationDocument.COLUMNNAME_C_DocType_ID + "=?";
+		return new Query(ctx, X_AD_ReplicationDocument.Table_Name, whereClause, null)
+			.setClient_ID()
+			.setOnlyActiveRecords(true)
+			.setApplyAccessFilter(false)
+			.setParameters(AD_ReplicationStrategy_ID, AD_Table_ID, C_DocType_ID)
+			.first();
 	}
 
 }

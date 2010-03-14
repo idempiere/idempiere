@@ -1,4 +1,4 @@
-/**********************************************************************
+/***********************************************************************
  * This file is part of Adempiere ERP Bazaar                           *
  * http://www.adempiere.org                                            *
  *                                                                     *
@@ -23,16 +23,32 @@
  * Sponsors:                                                           *
  * - Company (http://www.notima.se)                                    *
  * - Company (http://www.cyberphoto.se)                                *
- ***********************************************************************/
+ **********************************************************************/
 
 package org.adempiere.process;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.logging.*;
-import org.compiere.model.*;
-import org.compiere.process.*;
-import org.compiere.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.logging.Level;
+
+import org.compiere.model.I_C_ElementValue;
+import org.compiere.model.I_C_ValidCombination;
+import org.compiere.model.I_M_Product;
+import org.compiere.model.I_M_Product_Acct;
+import org.compiere.model.MAccount;
+import org.compiere.model.MElementValue;
+import org.compiere.model.MPriceList;
+import org.compiere.model.MPriceListVersion;
+import org.compiere.model.MProduct;
+import org.compiere.model.MProductPrice;
+import org.compiere.model.Query;
+import org.compiere.model.X_M_Product_Acct;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
+import org.compiere.util.Env;
 
 /**
  * Creates expense type products from a given range of expense account 
@@ -107,8 +123,8 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         MProduct product;
 
         // Read all existing applicable products into memory for quick comparison.
-        List<MProduct> products = new Query(getCtx(), MProduct.Table_Name, "ProductType=?", get_TrxName())
-                .setParameters(new Object[]{MProduct.PRODUCTTYPE_ExpenseType})
+        List<MProduct> products = new Query(getCtx(), I_M_Product.Table_Name, "ProductType=?", get_TrxName())
+                .setParameters(MProduct.PRODUCTTYPE_ExpenseType)
                 .list();
 
         Map<String,MProduct> productMap = new TreeMap<String, MProduct>();
@@ -121,10 +137,10 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         MAccount validComb;
         List<MAccount> validCombs = new Query(
                     getCtx(),
-                    MAccount.Table_Name,
+                    I_C_ValidCombination.Table_Name,
                     "C_AcctSchema_ID=? and AD_Client_ID=? and AD_Org_ID=0",
                     get_TrxName())
-                .setParameters(new Object[]{m_acctSchemaId, m_clientId})
+                .setParameters(m_acctSchemaId, m_clientId)
                 .list();
 
         Map<Integer, MAccount> validCombMap = new TreeMap<Integer, MAccount>();
@@ -136,10 +152,10 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         // Read all accounttypes that fit the given criteria.
         List<MElementValue> result = new Query(
                     getCtx(),
-                    MElementValue.Table_Name,
+                    I_C_ElementValue.Table_Name,
                     "AccountType=? and isSummary='N' and Value>=? and Value<=? and AD_Client_ID=?",
                     get_TrxName())
-                .setParameters(new Object[]{MElementValue.ACCOUNTTYPE_Expense, m_startElement, m_endElement, m_clientId})
+                .setParameters(MElementValue.ACCOUNTTYPE_Expense, m_startElement, m_endElement, m_clientId)
                 .list();
 
         MElementValue elem;
@@ -195,8 +211,8 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
 
                 // TODO: It might be needed to make the accounting more specific, but the purpose
                 // of the process now is to create general accounts so this is intentional.
-                productAcct = new Query(getCtx(), X_M_Product_Acct.Table_Name, "M_Product_ID=? and C_AcctSchema_ID=?", get_TrxName())
-                        .setParameters(new Object[]{product.get_ID(), m_acctSchemaId})
+                productAcct = new Query(getCtx(), I_M_Product_Acct.Table_Name, "M_Product_ID=? and C_AcctSchema_ID=?", get_TrxName())
+                        .setParameters(product.get_ID(), m_acctSchemaId)
                         .first();
                 productAcct.setP_Expense_Acct(validComb.get_ID());
                 productAcct.setP_Revenue_Acct(validComb.get_ID());

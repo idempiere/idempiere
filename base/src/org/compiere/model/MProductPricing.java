@@ -716,31 +716,13 @@ public class MProductPricing
 	{
 		if (m_M_Product_ID == 0)
 			return;
-		//
-		String sql = "SELECT C_UOM_ID, M_Product_Category_ID FROM M_Product WHERE M_Product_ID=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_M_Product_ID);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				m_C_UOM_ID = rs.getInt (1);
-				m_M_Product_Category_ID = rs.getInt(2);
-			}
+		
+		MProduct product = MProduct.get(Env.getCtx(), m_M_Product_ID);
+		if (product != null) {
+			 m_C_UOM_ID = product.getC_UOM_ID();
+			 m_M_Product_Category_ID = product.getM_Product_Category_ID();
 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
+		
 	}	//	setBaseInfo
 
 	/**

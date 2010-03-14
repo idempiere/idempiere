@@ -18,7 +18,6 @@ package org.compiere.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -39,10 +38,11 @@ import org.compiere.util.Env;
  */
 public class MRequestType extends X_R_RequestType
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6235793036503665638L;
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6235793036503665638L;
 
 	/**
 	 * 	Get Request Type (cached)
@@ -74,39 +74,17 @@ public class MRequestType extends X_R_RequestType
 	 */
 	public static MRequestType getDefault (Properties ctx)
 	{
-		MRequestType retValue = null;
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		String sql = "SELECT * FROM R_RequestType "
-			+ "WHERE AD_Client_ID IN (0," + AD_Client_ID + ") "
-			+ "ORDER BY IsDefault DESC, AD_Client_ID DESC";
-		PreparedStatement pstmt = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
-			if (rs.next ())
-			{
-				retValue = new MRequestType (ctx, rs, null);
-				if (!retValue.isDefault())
-					retValue = null;
-			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
-		}
-		catch (SQLException ex)
-		{
-			s_log.log(Level.SEVERE, sql, ex);
-		}
-		try
-		{
-			if (pstmt != null)
-				pstmt.close ();
-		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
+ 
+		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
+		final String whereClause = "AD_Client_ID IN (0," + AD_Client_ID + ")";
+		MRequestType retValue = new Query(ctx, I_R_RequestType.Table_Name, whereClause, null)
+			.setOrderBy("IsDefault DESC, AD_Client_ID DESC")
+			.first();
+		
+		if (retValue != null && !retValue.isDefault())	 
+            retValue = null;
+	
 		return retValue;
 	}	//	get
 

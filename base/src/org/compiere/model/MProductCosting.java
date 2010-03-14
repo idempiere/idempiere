@@ -34,8 +34,7 @@ public class MProductCosting extends X_M_Product_Costing
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7980130899951986948L;
-
+	private static final long serialVersionUID = 5563448335633481151L;
 
 	/**
 	 * 	Get Costing Of Product
@@ -46,10 +45,10 @@ public class MProductCosting extends X_M_Product_Costing
 	 */
 	public static MProductCosting[] getOfProduct (Properties ctx, int M_Product_ID, String trxName)
 	{		
-		String whereClause = "M_Product_ID=?";
+		final String whereClause = "M_Product_ID=?";
 		
-		List<MProductCosting> costs =new Query(ctx, MProductCosting.Table_Name,whereClause, trxName )
-		.setParameters(new Object[]{M_Product_ID})
+		List<MProductCosting> costs =new Query(ctx, I_M_Product_Costing.Table_Name,whereClause, trxName )
+		.setParameters(M_Product_ID)
 		.list();	
 		return costs.toArray(new MProductCosting[costs.size()]);
 	}	//	getOfProduct
@@ -65,10 +64,10 @@ public class MProductCosting extends X_M_Product_Costing
 	public static MProductCosting get (Properties ctx, int M_Product_ID, 
 		int C_AcctSchema_ID, String trxName)
 	{
-		String whereClause = "M_Product_ID=? AND C_AcctSchema_ID=?";
+		final String whereClause = "M_Product_ID=? AND C_AcctSchema_ID=?";
 		
-		return new Query(ctx, MProductCosting.Table_Name,whereClause, trxName )
-		.setParameters(new Object[]{M_Product_ID, C_AcctSchema_ID})
+		return new Query(ctx, I_M_Product_Costing.Table_Name,whereClause, trxName )
+		.setParameters(M_Product_ID, C_AcctSchema_ID)
 		.firstOnly();	
 	}	//	get
 	

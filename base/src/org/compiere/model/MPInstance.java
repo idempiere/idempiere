@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -39,10 +40,11 @@ import org.compiere.util.Env;
  */
 public class MPInstance extends X_AD_PInstance
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 209806970824523840L;
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5848424269552679604L;
 
 	/**
 	 * 	Standard Constructor
@@ -124,38 +126,12 @@ public class MPInstance extends X_AD_PInstance
 	{
 		if (m_parameters != null)
 			return m_parameters;
-		ArrayList<MPInstancePara> list = new ArrayList<MPInstancePara>();
-		//
-		String sql = "SELECT * FROM AD_PInstance_Para WHERE AD_PInstance_ID=?";
-		PreparedStatement pstmt = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, getAD_PInstance_ID());
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				list.add(new MPInstancePara(getCtx(), rs, null));
-			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
-			pstmt = null;
-		}
+		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
+		final String whereClause = "AD_PInstance_ID=?";
+		List <MPInstancePara> list = new Query(getCtx(), I_AD_PInstance_Para.Table_Name, whereClause, null) // @TODO: Review implications of using transaction 
+		.setParameters(getAD_PInstance_ID())
+		.list();
+
 		//
 		m_parameters = new MPInstancePara[list.size()];
 		list.toArray(m_parameters);

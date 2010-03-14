@@ -16,12 +16,9 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -33,10 +30,11 @@ import org.compiere.util.Env;
  */
 public class MPaySelection extends X_C_PaySelection
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6521282913549455131L;
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6521282913549455131L;
 
 	/**
 	 * 	Default Constructor
@@ -86,34 +84,13 @@ public class MPaySelection extends X_C_PaySelection
 			set_TrxName(m_lines, get_TrxName());
 			return m_lines;
 		}
-		ArrayList<MPaySelectionLine> list = new ArrayList<MPaySelectionLine>();
-		String sql = "SELECT * FROM C_PaySelectionLine WHERE C_PaySelection_ID=? ORDER BY Line";
-		PreparedStatement pstmt = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
-			pstmt.setInt (1, getC_PaySelection_ID());
-			ResultSet rs = pstmt.executeQuery ();
-			while (rs.next ())
-				list.add (new MPaySelectionLine(getCtx(), rs, get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "getLines", e); 
-		}
-		try
-		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
+		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
+		final String whereClause = "C_PaySelection_ID=?";
+		List <MPaySelectionLine> list = new Query(getCtx(), I_C_PaySelectionLine.Table_Name, whereClause, get_TrxName())
+			.setParameters(getC_PaySelection_ID())
+			.setOrderBy("Line")
+			.list()
+		;
 		//
 		m_lines = new MPaySelectionLine[list.size ()];
 		list.toArray (m_lines);

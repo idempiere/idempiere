@@ -8,6 +8,11 @@
             columnName="Description"
             tableName="C_Order">
       </client>
+      <client
+            class="testplugin.ColumnCallout1"
+            columnName="TestPlugin.client1"
+            tableName="TestPlugin.client1">
+      </client>
    </extension>
 
 </plugin>

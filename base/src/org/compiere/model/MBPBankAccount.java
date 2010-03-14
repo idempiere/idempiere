@@ -16,14 +16,11 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 
 /**
  *  BP Bank Account Model
@@ -33,48 +30,24 @@ import org.compiere.util.DB;
  */
 public class MBPBankAccount extends X_C_BP_BankAccount
 {
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2580706419593695062L;
 
 	/**
-	 * 	Get Accounst Of BPartner
+	 * 	Get Accounts Of BPartner
 	 *	@param ctx context
 	 *	@param C_BPartner_ID bpartner
 	 *	@return
 	 */
 	public static MBPBankAccount[] getOfBPartner (Properties ctx, int C_BPartner_ID)
 	{
-		String sql = "SELECT * FROM C_BP_BankAccount WHERE C_BPartner_ID=? AND IsActive='Y'";
-		ArrayList<MBPBankAccount> list = new ArrayList<MBPBankAccount>();
-		PreparedStatement pstmt = null;
-		try 
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
-				list.add(new MBPBankAccount(ctx, rs, null));
-			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
-		} 
-		catch (Exception e) 
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		try {
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		} catch (Exception e) {
-			pstmt = null;
-		}
-		
+		final String whereClause = MBPBankAccount.COLUMNNAME_C_BPartner_ID+"=?";
+		List<MBPBankAccount>list = new Query(ctx,I_C_BP_BankAccount.Table_Name,whereClause,null)
+		.setParameters(C_BPartner_ID)
+		.setOnlyActiveRecords(true)
+		.list();
 		
 		MBPBankAccount[] retValue = new MBPBankAccount[list.size()];
 		list.toArray(retValue);

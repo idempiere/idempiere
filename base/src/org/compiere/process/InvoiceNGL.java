@@ -17,10 +17,7 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -220,9 +217,9 @@ public class InvoiceNGL extends SvrProcess
 	private String createGLJournal()
 	{
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query
- 	 	String whereClause = "AD_PInstance_ID=?";
+ 	 	final String whereClause = "AD_PInstance_ID=?";
 	 	List <X_T_InvoiceGL> list = new Query(getCtx(), X_T_InvoiceGL.Table_Name, whereClause, get_TrxName())
-			.setParameters(new Object[]{getAD_PInstance_ID()})
+			.setParameters(getAD_PInstance_ID())
 			.setOrderBy("AD_Org_ID")
 			.list();	
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query

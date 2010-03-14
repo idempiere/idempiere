@@ -31,15 +31,17 @@ import org.compiere.util.TimeUtil;
  *
  *	@author Jorg Janke
  *	@version $Id: MTax.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
- * 	red1 - FR: [ 2214883 ] Remove SQL code and Replace for Query 
+ * 	red1 - FR: [ 2214883 ] Remove SQL code and Replace for Query
+ *  trifonnt - BF [2913276] - Allow only one Default Tax Rate per Tax Category
+ *  mjmckay - BF [2948632] - Allow edits to the Defautl Tax Rate 
  */
 public class MTax extends X_C_Tax
-{	
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4140382472528327237L;
-
+	private static final long serialVersionUID = 6423328193350641479L;
+	
 	/**	Cache						*/
 	private static CCache<Integer,MTax>		s_cache	= new CCache<Integer,MTax>(Table_Name, 5);
 	/**	Cache of Client						*/
@@ -67,9 +69,8 @@ public class MTax extends X_C_Tax
 
 		//	Create it
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		String whereClause = "AD_Client_ID=?";
-		List<MTax> list = new Query(ctx, MTax.Table_Name, whereClause, null)
-								.setParameters(new Object[]{AD_Client_ID})
+		List<MTax> list = new Query(ctx, I_C_Tax.Table_Name, null, null)
+								.setClient_ID()
 								.setOrderBy("C_Country_ID, C_Region_ID, To_Country_ID, To_Region_ID")
 								.setOnlyActiveRecords(true)
 								.list();
@@ -167,9 +168,9 @@ public class MTax extends X_C_Tax
 			return m_childTaxes;
 		//
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		String whereClause = COLUMNNAME_Parent_Tax_ID+"=?";
-		List<MTax> list = new Query(getCtx(), MTax.Table_Name, whereClause,  get_TrxName())
-			.setParameters(new Object[]{getC_Tax_ID()})
+		final String whereClause = COLUMNNAME_Parent_Tax_ID+"=?";
+		List<MTax> list = new Query(getCtx(), I_C_Tax.Table_Name, whereClause,  get_TrxName())
+			.setParameters(getC_Tax_ID())
 			.setOnlyActiveRecords(true)
 			.list();	
 		//red1 - end -
@@ -190,11 +191,11 @@ public class MTax extends X_C_Tax
 			return m_postals;
 
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		String whereClause = MTaxPostal.COLUMNNAME_C_Tax_ID+"=?";
-		List<MTaxPostal> list = new Query(getCtx(), MTaxPostal.Table_Name, whereClause,  get_TrxName())
-			.setParameters(new Object[]{getC_Tax_ID()})
+		final String whereClause = MTaxPostal.COLUMNNAME_C_Tax_ID+"=?";
+		List<MTaxPostal> list = new Query(getCtx(), I_C_TaxPostal.Table_Name, whereClause,  get_TrxName())
+			.setParameters(getC_Tax_ID())
 			.setOnlyActiveRecords(true)
-			.setOrderBy(MTaxPostal.COLUMNNAME_Postal+", "+MTaxPostal.COLUMNNAME_Postal_To)
+			.setOrderBy(I_C_TaxPostal.COLUMNNAME_Postal+", "+I_C_TaxPostal.COLUMNNAME_Postal_To)
 			.list();	
 		//red1 - end -
 
@@ -280,9 +281,12 @@ public class MTax extends X_C_Tax
 	protected boolean beforeSave(boolean newRecord) {
 		if (isDefault()) {
 			// @Trifon - Ensure that only one tax rate is set as Default!
-			String whereClause = MTax.COLUMNNAME_C_TaxCategory_ID+"=? AND IsDefault='Y'";
-			List<MTax> list = new Query(getCtx(), MTax.Table_Name, whereClause,  get_TrxName())
-				.setParameters(new Object[]{getC_TaxCategory_ID()})
+			// @Mckay - Allow edits to the Default tax rate
+			String whereClause = MTax.COLUMNNAME_C_TaxCategory_ID+"=? AND " + 
+								 MTax.COLUMNNAME_C_Tax_ID+"<>? AND "+
+								 "IsDefault='Y'";
+			List<MTax> list = new Query(getCtx(), I_C_Tax.Table_Name, whereClause,  get_TrxName())
+				.setParameters(getC_TaxCategory_ID(), getC_Tax_ID())
 				.setOnlyActiveRecords(true)
 				.list();
 			if (list.size() >= 1) {

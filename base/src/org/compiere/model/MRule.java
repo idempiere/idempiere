@@ -17,20 +17,17 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
@@ -44,7 +41,8 @@ public class MRule extends X_AD_Rule
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 343261652226641676L;
+	private static final long serialVersionUID = -9166262780531877045L;
+	
 	//global or login context variable prefix
 	public final static String GLOBAL_CONTEXT_PREFIX = "G_";
 	//window context variable prefix
@@ -84,7 +82,7 @@ public class MRule extends X_AD_Rule
 	{
 		if (ruleValue == null)
 			return null;
-		Iterator it = s_cache.values().iterator();
+		Iterator<MRule> it = s_cache.values().iterator();
 		while (it.hasNext())
 		{
 			MRule retValue = (MRule)it.next();
@@ -92,26 +90,11 @@ public class MRule extends X_AD_Rule
 				return retValue;
 		}
 		//
-		MRule retValue = null;
-		String sql = "SELECT * FROM AD_Rule WHERE Value=? AND IsActive='Y'";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setString(1, ruleValue);
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-				retValue = new MRule (ctx, rs, null);
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+		final String whereClause = "Value=?";
+		MRule retValue = new Query(ctx,I_AD_Rule.Table_Name,whereClause,null)
+		.setParameters(ruleValue)
+		.setOnlyActiveRecords(true)
+		.first();
 		
 		if (retValue != null)
 		{
@@ -126,32 +109,13 @@ public class MRule extends X_AD_Rule
 	 *	@param ctx context
 	 *	@return Rule
 	 */
-	public static ArrayList<MRule> getModelValidatorLoginRules (Properties ctx)
+	public static List<MRule> getModelValidatorLoginRules (Properties ctx)
 	{
-		ArrayList<MRule> rules = new ArrayList<MRule>();
-		MRule rule = null;
-		String sql = "SELECT * FROM AD_Rule WHERE EventType=? AND IsActive='Y'";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setString(1, EVENTTYPE_ModelValidatorLoginEvent);
-			rs = pstmt.executeQuery ();
-			while (rs.next ()) {
-				rule = new MRule (ctx, rs, null);
-				rules.add(rule);
-			}
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		
+		final String whereClause = "EventType=?";
+		List<MRule> rules = new Query(ctx,I_AD_Rule.Table_Name,whereClause,null)
+		.setParameters(EVENTTYPE_ModelValidatorLoginEvent)
+		.setOnlyActiveRecords(true)
+		.list();
 		if (rules != null && rules.size() > 0)
 			return rules;
 		else

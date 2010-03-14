@@ -51,12 +51,10 @@ import org.compiere.util.TimeUtil;
  */
 public class MPeriod extends X_C_Period
 {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4342181292848531751L;
-
+	private static final long serialVersionUID = 6498973218391994963L;
 
 	/**
 	 * Get Period from Cache
@@ -515,7 +513,7 @@ public class MPeriod extends X_C_Period
 			}
 			if (date2.after(last))
 			{
-				log.warning ("Automatic Period Control:" + date2 + " after last day - " + first);
+				log.warning ("Automatic Period Control:" + date2 + " after last day - " + last);
 				return false;
 			}
 			//	We are OK
@@ -589,9 +587,9 @@ public class MPeriod extends X_C_Period
 				" AND (? BETWEEN StartDate AND EndDate" +
 				" OR ? BETWEEN StartDate AND EndDate)" +
 				" AND PeriodType=?",get_TrxName());
-		query.setParameters(new Object[] {year.getC_Calendar_ID(),
+		query.setParameters(year.getC_Calendar_ID(),
 				getStartDate(), getEndDate(),
-				getPeriodType()});
+				getPeriodType());
 		
 		List<MPeriod> periods = query.list();
 		

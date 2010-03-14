@@ -20,12 +20,13 @@ import java.awt.Dimension;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.wf.MWFNode;
 
 /**
  *	Window Model
@@ -38,7 +39,7 @@ public class MWindow extends X_AD_Window
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6783399136841920556L;
+	private static final long serialVersionUID = -7604318488890368565L;
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWindow.class);
 	
@@ -97,27 +98,11 @@ public class MWindow extends X_AD_Window
 	{
 		if (m_tabs != null && !reload)
 			return m_tabs;
-		String sql = "SELECT * FROM AD_Tab WHERE AD_Window_ID=? ORDER BY SeqNo";
-		ArrayList<MTab> list = new ArrayList<MTab>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, trxName);
-			pstmt.setInt (1, getAD_Window_ID());
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-				list.add (new MTab (getCtx(), rs, trxName));
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+		final String whereClause = I_AD_Tab.COLUMNNAME_AD_Window_ID+"=?";
+		List<MTab> list = new Query(getCtx(),I_AD_Tab.Table_Name,whereClause,trxName)
+		.setParameters(getAD_Window_ID())
+		.setOrderBy(I_AD_Tab.COLUMNNAME_SeqNo)
+		.list();
 		//
 		m_tabs = new MTab[list.size ()];
 		list.toArray (m_tabs);
@@ -155,7 +140,7 @@ public class MWindow extends X_AD_Window
 				menues[i].save();
 			}
 			//
-			X_AD_WF_Node[] nodes = getWFNodes(getCtx(), "AD_Window_ID=" + getAD_Window_ID(), get_TrxName());
+			MWFNode[] nodes = getWFNodes(getCtx(), "AD_Window_ID=" + getAD_Window_ID(), get_TrxName());
 			for (int i = 0; i < nodes.length; i++)
 			{
 				boolean changed = false;
@@ -187,30 +172,11 @@ public class MWindow extends X_AD_Window
 	 * @param trxName transaction
 	 * @return nodes
 	 */
-	public static X_AD_WF_Node[] getWFNodes (Properties ctx, String whereClause, String trxName)
-	{
-		String sql = "SELECT * FROM AD_WF_Node";
-		if (whereClause != null && whereClause.length() > 0)
-			sql += " WHERE " + whereClause;
-		ArrayList<X_AD_WF_Node> list = new ArrayList<X_AD_WF_Node>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, trxName);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-				list.add (new X_AD_WF_Node (ctx, rs, trxName));
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		X_AD_WF_Node[] retValue = new X_AD_WF_Node[list.size()];
+	public static MWFNode[] getWFNodes (Properties ctx, String whereClause, String trxName)
+	{		
+		List<MWFNode> list = new Query(ctx,I_AD_WF_Node.Table_Name,whereClause,trxName)
+		.list();
+		MWFNode[] retValue = new MWFNode[list.size()];
 		list.toArray (retValue);
 		return retValue;
 	}	//	getWFNode

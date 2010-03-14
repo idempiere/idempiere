@@ -49,7 +49,6 @@ public class MBPartner extends X_C_BPartner
 	 */
 	private static final long serialVersionUID = -3669895599574182217L;
 
-
 	/**
 	 * 	Get Empty Template Business Partner
 	 * 	@param ctx context
@@ -97,38 +96,10 @@ public class MBPartner extends X_C_BPartner
 	 */
 	public static MBPartner getBPartnerCashTrx (Properties ctx, int AD_Client_ID)
 	{
-		MBPartner retValue = null;
-		String sql = "SELECT * FROM C_BPartner "
-			+ "WHERE C_BPartner_ID IN (SELECT C_BPartnerCashTrx_ID FROM AD_ClientInfo WHERE AD_Client_ID=?)";
-		PreparedStatement pstmt = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next())
-				retValue = new MBPartner (ctx, rs, null);
-			else
-				s_log.log(Level.SEVERE, "Not found for AD_Client_ID=" + AD_Client_ID);
-			rs.close();
-			pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
-			pstmt = null;
-		}
+		MBPartner retValue = (MBPartner) MClientInfo.get(ctx, AD_Client_ID).getC_BPartnerCashTrx();
+		if (retValue == null)
+			s_log.log(Level.SEVERE, "Not found for AD_Client_ID=" + AD_Client_ID);
+	
 		return retValue;
 	}	//	getBPartnerCashTrx
 
@@ -142,9 +113,9 @@ public class MBPartner extends X_C_BPartner
 	{
 		if (Value == null || Value.length() == 0)
 			return null;
-		String whereClause = "Value=? AND AD_Client_ID=?";
-		MBPartner retValue = new Query(ctx,MBPartner.Table_Name,whereClause.toString(),null)
-		.setParameters(new Object[]{Value,Env.getAD_Client_ID(ctx)})
+		final String whereClause = "Value=? AND AD_Client_ID=?";
+		MBPartner retValue = new Query(ctx, I_C_BPartner.Table_Name, whereClause, null)
+		.setParameters(Value,Env.getAD_Client_ID(ctx))
 		.firstOnly();
 		return retValue;
 	}	//	get
@@ -157,9 +128,9 @@ public class MBPartner extends X_C_BPartner
 	 */
 	public static MBPartner get (Properties ctx, int C_BPartner_ID)
 	{
-		String whereClause = "C_BPartner_ID=? AND AD_Client_ID=?";
-		MBPartner retValue = new Query(ctx,MBPartner.Table_Name,whereClause.toString(),null)
-		.setParameters(new Object[]{C_BPartner_ID,Env.getAD_Client_ID(ctx)})
+		final String whereClause = "C_BPartner_ID=? AND AD_Client_ID=?";
+		MBPartner retValue = new Query(ctx,I_C_BPartner.Table_Name,whereClause,null)
+		.setParameters(C_BPartner_ID,Env.getAD_Client_ID(ctx))
 		.firstOnly();
 		return retValue;
 	}	//	get

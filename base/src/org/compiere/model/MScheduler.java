@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import it.sauronsoftware.cron4j.SchedulingPattern;
+
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
@@ -27,18 +29,17 @@ import org.compiere.util.DB;
 
 /**
  *	Scheduler Model
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: MScheduler.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
 public class MScheduler extends X_AD_Scheduler
-	implements AdempiereProcessor
+	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1887276680441074725L;
-
+	private static final long serialVersionUID = 6563650236096742870L;
 
 	/**
 	 * 	Get Active
@@ -54,7 +55,7 @@ public class MScheduler extends X_AD_Scheduler
 		list.toArray (retValue);
 		return retValue;
 	}	//	getActive
-	
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -94,7 +95,7 @@ public class MScheduler extends X_AD_Scheduler
 	private MSchedulerPara[] m_parameter = null;
 	/** Process Recipients			*/
 	private MSchedulerRecipient[]	m_recipients = null;
-	
+
 	/**
 	 * 	Get Server ID
 	 *	@return id
@@ -123,8 +124,8 @@ public class MScheduler extends X_AD_Scheduler
 	public AdempiereProcessorLog[] getLogs ()
 	{
 		final String whereClause = MSchedulerLog.COLUMNNAME_AD_Scheduler_ID+"=?";
-		List<MSchedulerLog> list = new Query(getCtx(), MSchedulerLog.Table_Name, whereClause, get_TrxName())
-		.setParameters(new Object[]{getAD_Scheduler_ID()})
+		List<MSchedulerLog> list = new Query(getCtx(), I_AD_SchedulerLog.Table_Name, whereClause, get_TrxName())
+		.setParameters(getAD_Scheduler_ID())
 		.setOrderBy("Created DESC")
 		.list();
 		MSchedulerLog[] retValue = new MSchedulerLog[list.size ()];
@@ -141,7 +142,7 @@ public class MScheduler extends X_AD_Scheduler
 		if (getKeepLogDays() < 1)
 			return 0;
 		String sql = "DELETE AD_SchedulerLog "
-			+ "WHERE AD_Scheduler_ID=" + getAD_Scheduler_ID() 
+			+ "WHERE AD_Scheduler_ID=" + getAD_Scheduler_ID()
 			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
 		int no = DB.executeUpdateEx(sql, get_TrxName());
 		return no;
@@ -155,7 +156,7 @@ public class MScheduler extends X_AD_Scheduler
 	{
 		return MProcess.get(getCtx(), getAD_Process_ID());
 	}	//	getProcess
-	
+
 	/**
 	 * 	Get Parameters
 	 *	@param reload reload
@@ -167,15 +168,15 @@ public class MScheduler extends X_AD_Scheduler
 			return m_parameter;
 		//
 		final String whereClause = MSchedulerPara.COLUMNNAME_AD_Scheduler_ID+"=?";
-		List<MSchedulerPara> list = new Query(getCtx(), MSchedulerPara.Table_Name, whereClause, get_TrxName())
-		.setParameters(new Object[]{getAD_Scheduler_ID()})
+		List<MSchedulerPara> list = new Query(getCtx(), I_AD_Scheduler_Para.Table_Name, whereClause, get_TrxName())
+		.setParameters(getAD_Scheduler_ID())
 		.setOnlyActiveRecords(true)
 		.list();
 		m_parameter = new MSchedulerPara[list.size()];
 		list.toArray(m_parameter);
 		return m_parameter;
 	}	//	getParameter
-	
+
 	/**
 	 * 	Get Recipients
 	 *	@param reload reload
@@ -186,16 +187,16 @@ public class MScheduler extends X_AD_Scheduler
 		if (!reload && m_recipients != null)
 			return m_recipients;
 		//
-		String whereClause = MSchedulerRecipient.COLUMNNAME_AD_Scheduler_ID+"=?";
-		final List<MSchedulerRecipient> list = new Query(getCtx(), MSchedulerRecipient.Table_Name, whereClause, get_TrxName())
-		.setParameters(new Object[]{getAD_Scheduler_ID()})
+		final String whereClause = MSchedulerRecipient.COLUMNNAME_AD_Scheduler_ID+"=?";
+		List<MSchedulerRecipient> list = new Query(getCtx(), I_AD_SchedulerRecipient.Table_Name, whereClause, get_TrxName())
+		.setParameters(getAD_Scheduler_ID())
 		.setOnlyActiveRecords(true)
 		.list();
 		m_recipients = new MSchedulerRecipient[list.size()];
 		list.toArray(m_recipients);
 		return m_recipients;
 	}	//	getRecipients
-	
+
 	/**
 	 * 	Get Recipient AD_User_IDs
 	 *	@return array of user IDs
@@ -221,25 +222,26 @@ public class MScheduler extends X_AD_Scheduler
 					MUserRoles ur = urs[j];
 					if (!ur.isActive())
 						continue;
-					list.add(ur.getAD_User_ID());
+					if (!list.contains(ur.getAD_User_ID()))
+						list.add(ur.getAD_User_ID());
 				}
 			}
 		}
 		//	Add Updater
 		if (list.size() == 0)
 		{
-			list.add(getUpdatedBy());
+			list.add(getCreatedBy());
 		}
 		//
 		return list.toArray(new Integer[list.size()]);
 	}	//	getRecipientAD_User_IDs
-	
+
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
-	protected boolean beforeSave(boolean newRecord) 
+	protected boolean beforeSave(boolean newRecord)
 	{
 		//	Set Schedule Type & Frequencies
 		if (SCHEDULETYPE_Frequency.equals(getScheduleType()))
@@ -248,22 +250,23 @@ public class MScheduler extends X_AD_Scheduler
 				setFrequencyType(FREQUENCYTYPE_Day);
 			if (getFrequency() < 1)
 				setFrequency(1);
+			setCronPattern(null);
 		}
-		else if (SCHEDULETYPE_MonthDay.equals(getScheduleType()))
+		else if (SCHEDULETYPE_CronSchedulingPattern.equals(getScheduleType()))
 		{
-			if (getMonthDay() < 1 || getMonthDay() > 31)
-				setMonthDay(1);
-		}
-		else //	SCHEDULETYPE_WeekDay
-		{
-			if (getScheduleType() == null)
-				setScheduleType(SCHEDULETYPE_WeekDay);
-			if (getWeekDay() == null)
-				setWeekDay(WEEKDAY_Monday);
+			String pattern = getCronPattern();
+			if (pattern != null && pattern.trim().length() > 0)
+			{
+				if (!SchedulingPattern.validate(pattern))
+				{
+					log.saveError("Error", "InvalidCronPattern");
+					return false;
+				}
+			}
 		}
 		return true;
 	}	//	beforeSave
-	
+
 	/**
 	 * 	String Representation
 	 *	@return info
@@ -274,5 +277,5 @@ public class MScheduler extends X_AD_Scheduler
 		sb.append (get_ID ()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
 }	//	MScheduler
