@@ -4,7 +4,7 @@
    <extension
          point="org.adempiere.base.IDictionaryService">
       <client
-            class="org.adempiere.pipo.PipoDictionaryService">
+            class="org.adempiere.pipo.srv.PipoDictionaryService">
       </client>
    </extension>
 

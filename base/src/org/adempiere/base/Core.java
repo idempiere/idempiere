@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class Core {
 
+	public static final String OSGI_PREFIX = "osgi://";
+
 	public static IResourceFinder getResourceFinder() {
 		return new IResourceFinder() {
 
@@ -32,6 +34,10 @@ public class Core {
 		query.put("columnName", columnName);
 
 		return Service.list(IColumnCallout.class, query);
+	}
+
+	public static boolean isExtension(String className) {
+		return className.startsWith(OSGI_PREFIX);
 	}
 
 

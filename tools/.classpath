@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jstl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/Verisign.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/standard.jar"/>

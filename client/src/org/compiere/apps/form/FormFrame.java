@@ -32,6 +32,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.KeyStroke;
 
+import org.adempiere.base.Core;
+import org.adempiere.client.Client;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.AGlassPane;
 import org.compiere.apps.AMenu;
@@ -303,7 +305,10 @@ public class FormFrame extends CFrame
 		try
 		{
 			//	Create instance w/o parameters
-			m_panel = (FormPanel)Class.forName(className).newInstance();
+			if (Core.isExtension(className))
+				m_panel = Client.getFormPanel(className);
+			else
+				m_panel = (FormPanel)Class.forName(className).newInstance();
 		}
 		catch (Exception e)
 		{

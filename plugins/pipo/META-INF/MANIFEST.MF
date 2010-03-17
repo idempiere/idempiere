@@ -8,3 +8,6 @@ Import-Package: org.adempiere.base,
  org.adempiere.pipo,
  org.compiere,
  org.compiere.util
+Export-Package: org.adempiere.pipo.srv
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.adempiere.tools;bundle-version="0.0.0"

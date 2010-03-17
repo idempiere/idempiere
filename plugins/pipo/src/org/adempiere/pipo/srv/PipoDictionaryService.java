@@ -1,4 +1,4 @@
-package org.adempiere.pipo;
+package org.adempiere.pipo.srv;
 
 import java.io.File;
 import java.io.InputStream;
@@ -9,6 +9,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.adempiere.base.IDictionaryService;
+import org.adempiere.pipo.PackIn;
+import org.adempiere.pipo.PackInHandler;
 import org.compiere.Adempiere;
 import org.compiere.util.DB;
 import org.compiere.util.Trx;
