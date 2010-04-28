@@ -22,16 +22,18 @@ if  [ ! -f $JAVA_HOME/lib/tools.jar ] ; then
    exit
 fi
 
-#classpath
-export ANT_CLASSPATH=$CLASSPATH:../tools/lib/ant.jar:../tools/lib/ant-launcher.jar:../tools/lib/ant-swing.jar:../tools/lib/ant-commons-net.jar:../tools/lib/commons-net.jar:$JAVA_HOME/lib/tools.jar
+ANTLIB="-lib ../tools/lib/ant4eclipse/ -lib ../equinox-target/org.eclipse.osgi_3.5.0.v20090520.jar -lib ../tools/lib/ant-contrib-1.0b1.jar"
 
-export ANT_OPTS="-Xms128m -Xmx512m"
+#classpath
+export ANT_CLASSPATH=../tools/lib/ant-launcher.jar
+
+export ANT_OPTS="-Xms128m -Xmx512m -Dworkspace=`pwd`/.."
 
 echo Cleanup ...
-$JAVA_HOME/bin/java $ANT_OPTS -classpath $ANT_CLASSPATH -Dant.home="." org.apache.tools.ant.Main clean
+$JAVA_HOME/bin/java $ANT_OPTS -classpath $ANT_CLASSPATH org.apache.tools.ant.launch.Launcher $ANTLIB clean 
 
 echo Building ...
-$JAVA_HOME/bin/java $ANT_OPTS -classpath $ANT_CLASSPATH -Dant.home="." org.apache.tools.ant.Main -logger org.apache.tools.ant.listener.MailLogger complete
+$JAVA_HOME/bin/java $ANT_OPTS -classpath $ANT_CLASSPATH org.apache.tools.ant.launch.Launcher -logger org.apache.tools.ant.listener.MailLogger $ANTLIB complete
 
 echo Done ...
 

@@ -2,7 +2,7 @@
 <!-- Adempiere Build                                   -->
 <!-- ================================================ -->
 <!-- $Header: /cvs/adempiere/utils_dev/build.xml,v 1.4 2006/10/12 00:03:11 jjanke Exp $ -->
-<project name="adempiere" default="complete" basedir="../">
+<project name="adempiere" default="complete" basedir="../" xmlns:ant4eclipse="antlib:org.ant4eclipse">
 	<description>
     This buildfile is used to build the Adempiere system.
   </description>
@@ -31,9 +31,10 @@
 		<ant inheritAll="false" dir="posterita/posterita"/>
 		<ant inheritAll="false" dir="zkwebui"/>
 	</target>
-	<target name="build" depends="jar">
+	<target name="build" depends="plugins">
 		<ant inheritAll="false" dir="install"/>		
 	</target>	
+	
 	<target name="clean">
 		<ant inheritAll="false" dir="tools" target="clean"/>
 		<ant inheritAll="false" dir="base" target="clean"/>
@@ -91,6 +92,32 @@
 		<antcall target="runSetup"/>
 		-->
 	</target>
+	
+	<!-- ================================================ -->
+	<!-- Adempiere OSGi Update                            -->
+	<!-- ================================================ -->
+	  <target name="plugin">
+		<buildPlugin workspaceDirectory=".."
+		             projectName="${plugin}"
+		             targetPlatformId="target.platform"
+		             destination="${env.ADEMPIERE_ROOT}/Adempiere/osgi"
+		 			 buildSourceJar="false"
+					 clean="no"/>
+	  </target>		
+
+	<target name="plugins">
+		<ant4eclipse:executeProjectSet workspaceDirectory=".." allWorkspaceProjects="true">
+			<ant4eclipse:forEachProject filter="(executeProjectSet.org.eclipse.pde.PluginNature=*)">
+				<buildPlugin workspaceDirectory=".."
+				             projectName="${executeProjectSet.project.name}"
+				             targetPlatformId="target.platform"
+				             destination="${env.ADEMPIERE_ROOT}/Adempiere/osgi"
+				 			 buildSourceJar="false"
+							 clean="no"/>
+			</ant4eclipse:forEachProject>
+		</ant4eclipse:executeProjectSet>
+	</target>
+
 	
 	<!-- ================================================ -->
 	<!-- Adempiere Local Update                           -->
