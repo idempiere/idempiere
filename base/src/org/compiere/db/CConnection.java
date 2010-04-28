@@ -18,6 +18,7 @@ package org.compiere.db;
 
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
+import java.rmi.RMISecurityManager;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -1630,7 +1631,6 @@ public class CConnection implements Serializable, Cloneable
 
 	private Object lookup(String jndiName) throws NamingException {
 		InitialContext ctx = getInitialContext(Ini.isClient());
-
 		if (useComponentNamespace)
 		{
 			try

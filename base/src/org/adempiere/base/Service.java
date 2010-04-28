@@ -18,8 +18,6 @@ package org.adempiere.base;
 
 import java.util.List;
 
-import org.adempiere.base.equinox.EquinoxServiceLocator;
-
 /**
  * This is a very simple factory for service locators
  * 
@@ -28,19 +26,35 @@ import org.adempiere.base.equinox.EquinoxServiceLocator;
  */
 public class Service {
 
+	private static final String LOCATOR_CLASS = "ServiceLocator";
+	private static final String DEFAULT_LOCATOR_CLASS = "org.adempiere.base.equinox.EquinoxServiceLocator";
+
 	private static IServiceLocator theLocator;
 
 	public static IServiceLocator locator() {
 		if (theLocator == null) {
 			synchronized (Service.class) {
 				if (theLocator == null) {
-					theLocator = new EquinoxServiceLocator();
-					System.out
-							.println("Started service locator: " + theLocator);
+					theLocator = createServiceLocator();
 				}
 			}
 		}
 		return theLocator;
+	}
+
+	private static IServiceLocator createServiceLocator() {
+		String className = System.getProperty(LOCATOR_CLASS);
+		if (className==null)
+			className = DEFAULT_LOCATOR_CLASS;
+		try {
+			Class<?> clazz = Class.forName(className);
+			IServiceLocator locator =  (IServiceLocator) clazz.newInstance();
+			System.out.println("Started service locator: " + locator);
+			return locator;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static <T extends IService> T locate(Class<T> type) {

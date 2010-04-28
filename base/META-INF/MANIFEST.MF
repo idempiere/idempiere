@@ -62,4 +62,5 @@ Export-Package: org.adempiere.apps.graph,
  org.compiere.util,
  org.compiere.wf
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
- org.adempiere.tools;bundle-version="0.0.0"
+ org.adempiere.tools;bundle-version="0.0.0",
+ org.adempiere.jboss;bundle-version="0.0.0"

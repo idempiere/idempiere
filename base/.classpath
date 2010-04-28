@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="/tools/lib/ant.jar"/>
 	<classpathentry kind="lib" path="/tools/lib/jpedal.jar"/>
 	<classpathentry kind="lib" path="/tools/lib/jnlp.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="/tools/lib/junit.jar"/>
 	<classpathentry kind="lib" path="/jboss/client/jbossall-client.jar"/>
 	<classpathentry kind="lib" path="/tools/lib/postgresql.jar"/>
