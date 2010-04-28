@@ -338,7 +338,7 @@
 	<!-- ==================================================== -->
 	<!-- Setup Lib                                            -->
 	<!-- ==================================================== -->
-	<target name="setupLib" depends="setupInit, setupWin, setupNonWin, setupCLib, setupSLib, setupALib, setupWLib, signOtherJars"
+	<target name="setupLib" depends="setupInit, setupWin, setupNonWin"
 		description="Setup Adempiere Lib directory">
 
 		<!--	Filter files Overwrite			-->
@@ -349,7 +349,7 @@
 		<copy file="${basedir}/utils/adempiereDirectTemplate.jnlp"
 			tofile="${basedir}/lib/adempiereDirect.jnlp" filtering="yes" overwrite="yes" />
 
-		<!--	Create Client Zip		-->
+		<!--	Create Client Zip	
 		<zip zipfile="${basedir}/lib/AdempiereClient.zip">
 			<zipfileset dir="." prefix="Adempiere"
 				includes="*.html" />
@@ -360,7 +360,7 @@
 			<zipfileset dir="lib" prefix="Adempiere/lib"
 				includes="Adempiere.exe,*.ico,customization.jar,patches.jar,CompiereJasperReqs.jar,Adempiere.jar,AdempiereCLib.jar,adempiereDirect.jnlp,index.html,*.0" />
 		</zip>
-
+		-->
 		<!--	Save properties		-->
 		<copy file="AdempiereEnv.properties"
 			tofile="AdempiereEnv.properties.save" />
@@ -515,7 +515,7 @@
 	<!-- ==================================================== -->
 	<!-- Setup (Main)                                         -->
 	<!-- ==================================================== -->
-	<target name="setup" depends="setupDeploy"
+	<target name="setup" depends=""
 		description="Setup Adempiere">
 	</target>
 

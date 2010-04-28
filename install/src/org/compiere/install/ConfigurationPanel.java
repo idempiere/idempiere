@@ -36,6 +36,7 @@ import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
+import org.adempiere.base.Core;
 import org.apache.tools.ant.Main;
 import org.compiere.Adempiere;
 import org.compiere.swing.CButton;
@@ -46,6 +47,8 @@ import org.compiere.swing.CPanel;
 import org.compiere.swing.CPassword;
 import org.compiere.swing.CTextField;
 import org.compiere.util.CLogger;
+
+import com.sfcommerce.jpaymentcomponent.ssl.Client;
 
 
 /**
@@ -98,8 +101,8 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	private ConfigurationData	m_data = new ConfigurationData(this);
 
 	private static ImageIcon iOpen = new ImageIcon(ConfigurationPanel.class.getResource("openFile.gif"));
-	private static ImageIcon iSave = new ImageIcon(Adempiere.class.getResource("images/Save16.gif"));
-	private static ImageIcon iHelp = new ImageIcon(Adempiere.class.getResource("images/Help16.gif"));
+	private static ImageIcon iSave = new ImageIcon(Core.getResourceFinder().getResource("images/Save16.gif"));
+	private static ImageIcon iHelp = new ImageIcon(Core.getResourceFinder().getResource("images/Help16.gif"));
 
 
 	//	-------------	Static UI
