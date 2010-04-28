@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/activemq-core-5.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-net-1.4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cron4j-2.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/payflow.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ant.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jpedal.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-collections-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jstl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/Verisign.jar"/>
@@ -11,8 +19,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/iText-2.1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/swingx-0.9.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/miglayout-3.7.1-swing.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/payflow.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/cron4j-2.2.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activation.jar"/>
