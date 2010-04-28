@@ -43,6 +43,14 @@ the following responsibilities:
 		<java  dir="${dist-standalone}" fork="true" jvmversion="1.6" jar="${dist-standalone}/${osgi-runtime}">
 			<arg value="-console"/>
 			<arg value="-clean"/>
+		</java>
+	</target>
+
+	<target name="debug-standalone">
+		<move failonerror="false" file="${dist-standalone}/plugins/${adempiere-client}" todir="${dist-standalone}" />
+		<java  dir="${dist-standalone}" fork="true" jvmversion="1.6" jar="${dist-standalone}/${osgi-runtime}">
+			<arg value="-console"/>
+			<arg value="-clean"/>
 			<jvmarg value="-Xdebug"/>
 			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"/>
 		</java>
