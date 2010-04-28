@@ -9,5 +9,12 @@
             class="org.compiere.util.ResourceFinder">
       </client>
    </extension>
+   <extension
+         id="org.adempiere.Client"
+         point="org.eclipse.core.runtime.applications">
+         <application>
+         	<run class="org.adempiere.client.Application" />
+		 </application>
+   </extension>
 
 </plugin>

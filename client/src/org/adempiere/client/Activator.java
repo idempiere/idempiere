@@ -1,5 +1,7 @@
 package org.adempiere.client;
 
+import java.rmi.RMISecurityManager;
+
 import org.compiere.util.CLogger;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.Bundle;
@@ -12,8 +14,6 @@ public class Activator extends Plugin {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		log.info("Starting client");
-		org.compiere.AdempiereClient.main(new String[]{});
 		activateAll(context.getBundles());
 	}
 
