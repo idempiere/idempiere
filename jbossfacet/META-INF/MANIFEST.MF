@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: jbossfacet
 Bundle-SymbolicName: org.adempiere.jbossfacet;singleton:=true
 Bundle-Version: 0.0.0.1
+Bundle-ClassPath: jbossfacet.jar
 Export-Package: org.adempiere.as.jboss
 Require-Bundle: org.adempiere.jboss;bundle-version="0.0.0"
 Import-Package: org.adempiere.as,
