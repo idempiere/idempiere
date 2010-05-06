@@ -111,7 +111,7 @@
 				<buildPlugin workspaceDirectory=".."
 				             projectName="${executeProjectSet.project.name}"
 				             targetPlatformId="target.platform"
-				             destination="${env.ADEMPIERE_ROOT}/Adempiere/osgi"
+				             destination="lib"
 				 			 buildSourceJar="false"
 							 clean="no"/>
 			</ant4eclipse:forEachProject>
