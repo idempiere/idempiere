@@ -197,6 +197,14 @@
 		</fileset>
 	</copy>
   	
+  	<!-- Bridge webapp -->
+	<mkdir dir="${build.dir}/Adempiere/webapp"/>
+	<copy overwrite="true" todir="${build.dir}/Adempiere/webapp" >
+		<fileset dir="../lib">
+			<include name="bridge.war"/>
+		</fileset>
+	</copy>
+  	
 	<!-- Utils Directory		-->
 	<mkdir dir="${build.dir}/Adempiere/utils"/>
 	<copy todir="${build.dir}/Adempiere/utils">

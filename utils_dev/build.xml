@@ -103,6 +103,13 @@
 		             destination="${env.ADEMPIERE_ROOT}/Adempiere/osgi"
 		 			 buildSourceJar="false"
 					 clean="no"/>
+	  	<!-- TODO make this faster -->
+		<buildPlugin workspaceDirectory=".."
+		             projectName="${plugin}"
+		             targetPlatformId="target.platform"
+		             destination="${env.ADEMPIERE_ROOT}/Adempiere/webapp/bridge/WEB-INF/eclipse"
+		 			 buildSourceJar="false"
+					 clean="no"/>
 	  </target>		
 
 	<target name="plugins">

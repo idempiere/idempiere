@@ -515,8 +515,21 @@
 	<!-- ==================================================== -->
 	<!-- Setup (Main)                                         -->
 	<!-- ==================================================== -->
-	<target name="setup" depends=""
+	<target name="setup" depends="setupWar"
 		description="Setup Adempiere">
+	</target>
+
+	<!-- ==================================================== -->
+	<!-- Setup (War)                                         -->
+	<!-- ==================================================== -->
+	<target name="setupWar" 
+		description="Setup Adempiere ZK Webui">
+		<unzip src="webapp/bridge.war" dest="webapp/bridge" />
+		<copy todir="webapp/bridge/WEB-INF/eclipse/plugins">
+			<fileset dir="osgi/plugins">
+			    <include name="**/*"/>
+			</fileset>
+		</copy>
 	</target>
 
 

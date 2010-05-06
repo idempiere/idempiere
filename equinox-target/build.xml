@@ -69,6 +69,14 @@ the following responsibilities:
 			</fileset>
 		</copy>
 	</target>
+	
+	<target name="war" depends="dist-web">
+		<war destfile="../lib/bridge.war">
+			<fileset dir="${dist-web}">
+				<include name="**/*"/>
+			</fileset>
+		</war>
+	</target>
 
 	<target name="dist-webstart">
 		<mkdir dir="${dist-webstart}"/>
