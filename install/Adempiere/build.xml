@@ -515,7 +515,7 @@
 	<!-- ==================================================== -->
 	<!-- Setup (Main)                                         -->
 	<!-- ==================================================== -->
-	<target name="setup" depends="setupWar"
+	<target name="setup" depends="setupInit, setupWin, setupNonWin, setupWar"
 		description="Setup Adempiere">
 	</target>
 
