@@ -48,6 +48,8 @@ import javax.swing.SwingUtilities;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
+import org.adempiere.base.Service;
+import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookupCache;
@@ -55,6 +57,10 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
 import org.compiere.swing.CFrame;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+
+import com.sun.xml.internal.ws.util.ServiceFinder;
 
 
 /**
