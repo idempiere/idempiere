@@ -69,6 +69,7 @@ import org.compiere.db.CConnection;
 import org.compiere.interfaces.MD5;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MProcess;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_PInstance_Para;

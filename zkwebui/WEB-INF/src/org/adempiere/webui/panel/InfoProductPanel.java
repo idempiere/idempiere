@@ -332,7 +332,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		row.appendChild(statusBar);
 		row.setSpans("6");
 		statusBar.setEastVisibility(false);
-
+		
 		// Product Attribute Instance
 		m_PAttributeButton = confirmPanel.createButton(ConfirmPanel.A_PATTRIBUTE);
 		confirmPanel.addComponentsLeft(m_PAttributeButton);

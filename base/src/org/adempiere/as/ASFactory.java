@@ -14,6 +14,8 @@ package org.adempiere.as;
 
 import java.util.Hashtable;
 
+import org.adempiere.base.Service;
+
 /**
  * 
  * @author Low Heng Sin
@@ -28,24 +30,10 @@ public class ASFactory {
 		JBOSS, GLASS_FISH
 	};
 	
-	private final static String[] AS_Classes = new String[] {
-		"org.adempiere.as.jboss.JBoss",
-		"org.adempiere.as.glassfish.GlassFish"
-	};
-	
 	private static IApplicationServer applicationServer;
 	
 	static {
-		//detect the installed application server
-		for(String s : AS_Classes) {
-			try {
-				Class<?> c = Class.forName(s);
-				IApplicationServer server = (IApplicationServer) c.newInstance();
-				applicationServer = server;
-				break;
-			} catch (Throwable t) {
-			}
-		}
+		applicationServer = Service.locate(IApplicationServer.class);
 		if (applicationServer == null) {
 			applicationServer = new IApplicationServer() {
 

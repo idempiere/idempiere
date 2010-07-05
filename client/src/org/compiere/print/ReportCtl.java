@@ -337,6 +337,11 @@ public class ReportCtl
 			// We have a Jasper Print Format
 			// ==============================
 			if(format.getJasperProcess_ID() > 0)	
+				if (info.isDocument()) {
+					ProcessInfoParameter pip = new ProcessInfoParameter("CURRENT_LANG", format.getLanguage(), null, null, null);
+					pi.setParameter(new ProcessInfoParameter[]{pip});
+				}
+				
 			{
 				ServerReportCtl.runJasperProcess(Record_ID, re, IsDirectPrint, printerName);
 			}

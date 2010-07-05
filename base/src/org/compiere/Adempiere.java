@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -30,6 +31,9 @@ import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
 import javax.swing.ImageIcon;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IResourceFinder;
+import org.adempiere.base.Service;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
 import org.compiere.model.MSystem;
@@ -43,7 +47,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.Login;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.SecureInterface;
-import org.compiere.util.Splash;
+//import org.compiere.util.Splash;
 import org.compiere.util.Util;
 
 /**
@@ -336,7 +340,8 @@ public final class Adempiere
 		if (s_imageLogo == null)
 		{
 			Toolkit tk = Toolkit.getDefaultToolkit();
-			URL url = org.compiere.Adempiere.class.getResource(s_file100x30);
+			URL url = Core.getResourceFinder().getResource(s_file100x30);
+//			URL url = org.compiere.Adempiere.class.getResource(s_file100x30);
 		//	System.out.println(url);
 			if (url == null)
 				return null;
@@ -579,37 +584,41 @@ public final class Adempiere
 		return true;
 	}	//	startupEnvironment
 
+	public static URL getResource(String name) {
+		return Core.getResourceFinder().getResource(name);
+	}
+
 
 	/**
 	 *  Main Method
 	 *
 	 *  @param args optional start class
 	 */
-	public static void main (String[] args)
-	{
-		Splash.getSplash();
-		startup(true);     //  error exit and initUI
-
-		//  Start with class as argument - or if nothing provided with Client
-		String className = "org.compiere.apps.AMenu";
-		for (int i = 0; i < args.length; i++)
-		{
-			if (!args[i].equals("-debug"))  //  ignore -debug
-			{
-				className = args[i];
-				break;
-			}
-		}
-		//
-		try
-		{
-			Class<?> startClass = Class.forName(className);
-			startClass.newInstance();
-		}
-		catch (Exception e)
-		{
-			System.err.println("ADempiere starting: " + className + " - " + e.toString());
-			e.printStackTrace();
-		}
-	}   //  main
+//	public static void main (String[] args)
+//	{
+//		Splash.getSplash();
+//		startup(true);     //  error exit and initUI
+//
+//		//  Start with class as argument - or if nothing provided with Client
+//		String className = "org.compiere.apps.AMenu";
+//		for (int i = 0; i < args.length; i++)
+//		{
+//			if (!args[i].equals("-debug"))  //  ignore -debug
+//			{
+//				className = args[i];
+//				break;
+//			}
+//		}
+//		//
+//		try
+//		{
+//			Class<?> startClass = Class.forName(className);
+//			startClass.newInstance();
+//		}
+//		catch (Exception e)
+//		{
+//			System.err.println("ADempiere starting: " + className + " - " + e.toString());
+//			e.printStackTrace();
+//		}
+//	}   //  main
 }	//	Adempiere

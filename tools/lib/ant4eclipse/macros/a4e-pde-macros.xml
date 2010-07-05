@@ -1,0 +1,852 @@
+<?xml version="1.0"?>
+<project name="build"
+         basedir="."
+         xmlns:ant4eclipse="antlib:org.ant4eclipse"
+         xmlns:antcontrib="antlib:net.sf.antcontrib">
+
+  <!-- define antcontrib tasks -->
+  <taskdef uri="antlib:net.sf.antcontrib"
+           resource="net/sf/antcontrib/antlib.xml" />
+
+  <!-- define ant4eclipse tasks -->
+  <taskdef uri="antlib:org.ant4eclipse"
+           resource="org/ant4eclipse/ant/antlib.xml" />
+
+  <!--definition of directory properties -->
+  <property name="a4e.plugins.directory" value="plugins" />
+  <property name="a4e.features.directory" value="features" />
+  <property name="a4e.temp.directory" value="temp" />
+  <property name="a4e.self.directory" value="@dot" />
+
+  <!-- =================================
+          target: buildPlugin
+         ================================= -->
+  <macrodef name="buildPlugin" description="builds a single plug-in project.">
+    <attribute name="workspaceDirectory" />
+    <attribute name="projectName" />
+    <attribute name="targetPlatformId" />
+    <attribute name="destination" />
+    <attribute name="packageAsJar" default="true" />
+    <attribute name="buildSourceJar" default="true" />
+    <attribute name="defaultCompilerOptionsFile" default="" />
+    <attribute name="newBundleVersion" default="" />
+    <attribute name="clean" default="true" />
+
+    <!-- element definitions for lifecycle phases -->
+    <element name="validate"
+             optional="true"
+             description="Validate the project if it's correct and all necessary information is available." />
+    <element name="initialize"
+             optional="true"
+             description="Initialize build state, e.g. set properties or create directories." />
+    <element name="generate-sources"
+             optional="true"
+             description="Generate any source code for inclusion in compilation." />
+    <element name="generate-resources"
+             optional="true"
+             description="Generate resources for inclusion in the package." />
+    <element name="pre-compile"
+             optional="true"
+             description="Execute additional steps before compilation." />
+    <element name="post-compile"
+             optional="true"
+             description="Post-process the generated files from compilation, for example to do bytecode enhancement on Java classes." />
+    <element name="pre-package-library"
+             optional="true"
+             description="Execute additonal steps before packaging a library" />
+    <element name="post-package-library"
+             optional="true"
+             description="Execute additonal steps after packaging a library" />
+    <element name="prepare-package"
+             optional="true"
+             description="Copy the final package from the destination to aremote repository or whatever." />
+    <element name="deploy"
+             optional="true"
+             description="Perform any operations necessary to prepare a package before the actual packaging." />
+
+    <sequential>
+
+      <ant4eclipse:executePluginProject workspaceDirectory="@{workspaceDirectory}"
+                                        projectName="@{projectName}"
+                                        prefix="buildPlugin">
+
+        <ant4eclipse:forProject>
+
+          <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            - Step 1: Set the bundle version
+            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+          <condition property="buildPlugin.newBundleVersion"
+                     value="${buildPlugin.bundle.resolved.version}"
+                     else="@{newBundleVersion}">
+            <equals arg1="@{newBundleVersion}" arg2="" />
+          </condition>
+
+          <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            - Step 2: Validate
+            - Validate the project is correct and all necessary information is available.
+            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+          <!-- check project consistency -->
+          <ant4eclipse:checkPluginProject workspaceDirectory="@{workspaceDirectory}"
+                                          projectName="@{projectName}" />
+
+          <!-- template element 'validate' -->
+          <validate />
+
+          <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            - Step 3: Initialize
+            - Initialize build state, e.g. set properties or create directories.
+            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+          <!-- try to create the target directory -->
+          <mkdir dir="@{destination}" />
+
+          <!-- template element 'intialize' -->
+          <initialize />
+
+          <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            - Step 4: Generate-sources
+            - Generate any source code for inclusion in compilation.
+            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+          <!-- template element 'generate-sources' -->
+          <generate-sources />
+
+          <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            - Step 5: Generate-resources
+            - Generate resources for inclusion in the package.
+            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+          <!-- template element 'generate-resources' -->
+          <generate-resources />
+
+        </ant4eclipse:forProject>
+
+      </ant4eclipse:executePluginProject>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        - Step 6: Compile
+        - Compiles the plug-in project (only in case that the project has the nature 'org.eclipse.jdt.core.javanature').
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <antcontrib:if>
+        <ant4eclipse:hasNature workspaceDirectory="@{workspaceDirectory}"
+                               projectName="@{projectName}"
+                               nature="org.eclipse.jdt.core.javanature" />
+        <antcontrib:then>
+
+          <!-- Execute the JDT project -->
+          <ant4eclipse:executeJdtProject workspaceDirectory="@{workspaceDirectory}"
+                                         projectName="@{projectName}"
+                                         prefix="buildPlugin">
+
+            <jdtClasspathContainerArgument key="target.platform"
+                                           value="@{targetPlatformId}" />
+
+            <!-- Step 6.1: Clean all output directories -->
+            <ant4eclipse:forEachOutputDirectory if="@{clean}">
+              <scrub-directory dir="${buildPlugin.output.directory}" />
+            </ant4eclipse:forEachOutputDirectory>
+
+            <!-- Step 6.2: Compile the sources -->
+            <ant4eclipse:forProject filter="(buildPlugin.source.directories=*)">
+
+              <!-- template element 'pre-compile' -->
+              <pre-compile />
+
+              <echo>Compiling pde project '${buildPlugin.project.name}'</echo>
+<!--              <echo>  - source directories -> ${buildPlugin.source.directories}</echo>
+              <echo>  - output directories -> ${buildPlugin.default.output.directory}</echo>
+              <echo>  - bootclasspath      -> ${buildPlugin.boot.classpath}</echo>
+              <echo>  - classpath          -> ${buildPlugin.classpath.absolute.compiletime}</echo> -->
+			  <mkdir dir="${buildPlugin.default.output.directory}" />
+              <javac destdir="${buildPlugin.default.output.directory}"
+                     compiler="org.ant4eclipse.ant.jdt.ecj.JDTCompilerAdapter"
+                     source="1.5"
+                     target="1.5">
+
+                <src refid="buildPlugin.source.directories.path" />
+                <bootclasspath refid="buildPlugin.boot.classpath.path" />
+                <classpath refid="buildPlugin.classpath.absolute.compiletime.path" />
+
+                <!-- we have to pass in the reference to the additional compiler arguments -->
+                <compilerarg value="compiler.args.refid=buildPlugin.compiler.args"
+                             compiler="org.ant4eclipse.ant.jdt.ecj.JDTCompilerAdapter" />
+
+                <!-- we also have to pass path of the compiler options file to support project specific compiler options -->
+                <compilerarg value="compiler.options.file=${buildPlugin.project.directory}/.settings/org.eclipse.jdt.core.prefs"
+                             compiler="org.ant4eclipse.ant.jdt.ecj.JDTCompilerAdapter" />
+
+                <!-- pass the path of the default compiler options file -->
+                <compilerarg value="default.compiler.options.file=@{defaultCompilerOptionsFile}"
+                             compiler="org.ant4eclipse.ant.jdt.ecj.JDTCompilerAdapter" />
+              </javac>
+
+              <!-- template element 'post-compile' -->
+              <post-compile />
+
+            </ant4eclipse:forProject>
+
+            <!-- Step 6.3: Copy the resources -->
+            <ant4eclipse:forEachSourceDirectory>
+              <echo>Copying resources from directory '${buildPlugin.source.directory}' to '${buildPlugin.output.directory}'</echo>
+              <copy todir="${buildPlugin.output.directory}">
+                <fileset dir="${buildPlugin.source.directory}">
+                  <exclude name="**/*.java" />
+                </fileset>
+              </copy>
+            </ant4eclipse:forEachSourceDirectory>
+
+          </ant4eclipse:executeJdtProject>
+        </antcontrib:then>
+      </antcontrib:if>
+
+      <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        - Step 7: Package the bundle
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+      <ant4eclipse:executePluginProject workspaceDirectory="@{workspaceDirectory}"
+                                        projectName="@{projectName}"
+                                        prefix="buildPlugin">
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 7.1: Pack all libraries except the 'self' library
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forEachPluginLibrary filter="(buildPlugin.library.isSelf=false)">
+
+          <echo>Packing library '${buildPlugin.library.name}'</echo>
+
+          <!-- template element 'pre-package-library' -->
+          <pre-package-library />
+
+          <!-- copy the content of the library to a temporary folder -->
+          <ant4eclipse:executePluginLibrary workspace="@{workspaceDirectory}"
+                                            projectname="${buildPlugin.project.name}"
+                                            libraryname="${buildPlugin.library.name}">
+
+            <ant4eclipse:forEachOutputDirectory>
+              <echo>Copying resources from directory '${executePluginLibrary.output.directory}' to '@{destination}/${a4e.temp.directory}/${buildPlugin.library.name}'</echo>
+              <copy todir="@{destination}/${a4e.temp.directory}/${buildPlugin.library.name}">
+                <fileset dir="${executePluginLibrary.output.directory}" />
+              </copy>
+            </ant4eclipse:forEachOutputDirectory>
+
+            <ant4eclipse:forEachSourceDirectory>
+              <echo>Copying resources from directory '${executePluginLibrary.source.directory}' to '@{destination}/${a4e.temp.directory}/${buildPlugin.library.name}'</echo>
+              <copy todir="@{destination}/${a4e.temp.directory}/${buildPlugin.library.name}"
+                    overwrite="true">
+                <fileset dir="${executePluginLibrary.source.directory}">
+                  <exclude name="**/*.java" />
+                </fileset>
+              </copy>
+            </ant4eclipse:forEachSourceDirectory>
+
+          </ant4eclipse:executePluginLibrary>
+
+          <!--delete the library file if on exists -->
+          <delete file="@{destination}/${a4e.plugins.directory}/${buildPlugin.library.name}/${buildPlugin.library.name}"
+                  quiet="true" />
+          <mkdir dir="@{destination}/${a4e.plugins.directory}/${buildPlugin.library.name}" />
+
+          <!-- jar the library file if on exists -->
+          <jar destfile="@{destination}/${a4e.plugins.directory}/${buildPlugin.library.name}/${buildPlugin.library.name}"
+               basedir="@{destination}/${a4e.temp.directory}/${buildPlugin.library.name}" />
+
+          <!-- move the jar file to the pde project folder project -->
+          <move file="@{destination}/${a4e.plugins.directory}/${buildPlugin.library.name}/${buildPlugin.library.name}"
+                todir="${buildPlugin.project.directory}" />
+
+          <!-- finally delete the temp file -->
+          <delete dir="@{destination}/${a4e.plugins.directory}/${buildPlugin.library.name}" />
+          <delete dir="@{destination}/${a4e.temp.directory}/" />
+
+          <!-- template element 'post-package-library' -->
+          <post-package-library />
+
+        </ant4eclipse:forEachPluginLibrary>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 7.2: Package the 'self' library
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forEachPluginLibrary filter="(buildPlugin.library.isSelf=true)">
+          <echo>Packing library '.'</echo>
+
+          <!-- template element 'pre-package-library' -->
+          <pre-package-library />
+
+          <!-- just copy everything to the 'self' directory -->
+          <ant4eclipse:executePluginLibrary workspaceDirectory="@{workspaceDirectory}"
+                                            projectname="${buildPlugin.project.name}"
+                                            libraryname="${buildPlugin.library.name}">
+
+            <ant4eclipse:forEachOutputDirectory>
+              <echo>Copying resources from directory '${executePluginLibrary.output.directory}' to '${buildPlugin.project.directory}/${a4e.self.directory}'</echo>
+              <copy todir="${buildPlugin.project.directory}/${a4e.self.directory}">
+                <fileset dir="${executePluginLibrary.output.directory}" />
+              </copy>
+            </ant4eclipse:forEachOutputDirectory>
+
+            <ant4eclipse:forEachSourceDirectory>
+              <echo>Copying resources from directory '${executePluginLibrary.source.directory}' to '${buildPlugin.project.directory}/${a4e.self.directory}'</echo>
+              <copy todir="${buildPlugin.project.directory}/${a4e.self.directory}">
+                <fileset dir="${executePluginLibrary.source.directory}">
+                  <exclude name="**/*.java" />
+                </fileset>
+              </copy>
+            </ant4eclipse:forEachSourceDirectory>
+
+          </ant4eclipse:executePluginLibrary>
+
+          <!-- template element 'post-package-library' -->
+          <post-package-library />
+
+        </ant4eclipse:forEachPluginLibrary>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 7.3: Package the bundle
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject>
+
+          <!-- template element 'prepare-package' -->
+          <prepare-package />
+
+          <!-- copy the (in the build.properties) specified content to the destination directory -->
+          <copy todir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}_${buildPlugin.newBundleVersion}"
+                overwrite="true">
+
+            <!-- file set defined by the projects build properties -->
+            <ant4eclipse:pdeProjectFileSet workspaceDirectory="@{workspaceDirectory}"
+                                           projectname="@{projectName}" />
+          </copy>
+
+          <!-- delete the (temporary) self-directory -->
+          <delete dir="${buildPlugin.project.directory}/${a4e.self.directory}"
+                  quiet="true" />
+
+          <!-- 'patch' the manifest with the resolved bundle version -->
+          <manifest file="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}_${buildPlugin.newBundleVersion}/META-INF/MANIFEST.MF"
+                    mode="update">
+            <attribute name="Bundle-Version"
+                       value="${buildPlugin.newBundleVersion}" />
+          </manifest>
+        </ant4eclipse:forProject>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - if bundle should be packaged as a jar file (the default),
+                  - we have to jar the bundle.
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject if="@{packageAsJar}">
+          <jar destfile="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}_${buildPlugin.newBundleVersion}.jar"
+               basedir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}_${buildPlugin.newBundleVersion}"
+               manifest="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}_${buildPlugin.newBundleVersion}/META-INF/MANIFEST.MF" />
+        </ant4eclipse:forProject>
+
+        <ant4eclipse:forProject if="@{packageAsJar}">
+          <delete dir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}_${buildPlugin.newBundleVersion}"
+                  quiet="true"
+                  deleteonexit="true" />
+        </ant4eclipse:forProject>
+
+        <ant4eclipse:forProject>
+          <!-- template element 'deploy' -->
+          <deploy />
+        </ant4eclipse:forProject>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 8: Build the source bundle
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject if="@{buildSourceJar}">
+          <buildSourceBundle workspaceDirectory="@{workspaceDirectory}"
+                             projectName="@{projectName}"
+                             destination="@{destination}"
+                             newBundleVersion="@{newBundleVersion}" />
+        </ant4eclipse:forProject>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 9: Cleaning up
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject>
+          <!-- the property has been set, so we need to remove it otherwise it cannot be altered -->
+          <!-- by subsequent calls of this macro. -->
+          <antcontrib:var unset="true" name="buildPlugin.newBundleVersion" />
+        </ant4eclipse:forProject>
+
+      </ant4eclipse:executePluginProject>
+
+
+
+    </sequential>
+  </macrodef>
+
+  <!-- =================================
+          target: buildSourceBundle
+          Builds a source bundle for a given eclipse plug-in project.
+         ================================= -->
+  <macrodef name="buildSourceBundle"
+            description="builds a source bundle for a given plug-in project.">
+    <attribute name="workspaceDirectory" />
+    <attribute name="projectName" />
+    <attribute name="destination" />
+    <attribute name="newBundleVersion" default="" />
+    <sequential>
+
+      <ant4eclipse:executePluginProject workspaceDirectory="@{workspaceDirectory}"
+                                        projectName="@{projectName}"
+                                        prefix="buildPlugin">
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 1: Set the bundle version
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject>
+          <condition property="buildPlugin.newBundleVersion"
+                     value="@{newBundleVersion}"
+                     else="${buildPlugin.bundle.resolved.version}">
+            <isset property="@{newBundleVersion}" />
+          </condition>
+        </ant4eclipse:forProject>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 2: Copy the source of the 'self' library to the
+          -         destination location
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forEachPluginLibrary filter="(buildPlugin.library.isSelf=true)">
+
+          <ant4eclipse:executePluginLibrary workspaceDirectory="@{workspaceDirectory}"
+                                            projectname="${buildPlugin.project.name}"
+                                            libraryname="${buildPlugin.library.name}">
+
+            <ant4eclipse:forEachSourceDirectory>
+              <copy todir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}/">
+                <fileset dir="${executePluginLibrary.source.directory}" />
+              </copy>
+            </ant4eclipse:forEachSourceDirectory>
+
+          </ant4eclipse:executePluginLibrary>
+        </ant4eclipse:forEachPluginLibrary>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 3: Package the source of all the library source (except
+          -         the 'self' library ) to the destination location
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forEachPluginLibrary filter="(buildPlugin.library.isSelf=false)">
+
+          <ant4eclipse:executePluginLibrary workspaceDirectory="@{workspaceDirectory}"
+                                            projectname="${buildPlugin.project.name}"
+                                            libraryname="${buildPlugin.library.name}">
+
+            <ant4eclipse:forEachSourceDirectory>
+              <copy todir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}/${buildPlugin.library.name}.src">
+                <fileset dir="${executePluginLibrary.source.directory}" />
+              </copy>
+            </ant4eclipse:forEachSourceDirectory>
+
+          </ant4eclipse:executePluginLibrary>
+        </ant4eclipse:forEachPluginLibrary>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 4: Copy all 'non-library' resources to the destination
+          -         location and create the manifest file
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject>
+
+          <!-- copy the (in the build.properties) specified content to the destination directory -->
+          <copy todir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}"
+                overwrite="true">
+
+            <!-- file set defined by the projects build properties -->
+            <ant4eclipse:pdeProjectFileSet workspaceDirectory="@{workspaceDirectory}"
+                                           projectname="@{projectName}"
+                                           excludeLibraries="true"
+                                           sourceBundle="true" />
+          </copy>
+
+          <mkdir dir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}/META-INF" />
+
+          <!-- create the bundle manifest -->
+          <manifest file="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}/META-INF/MANIFEST.MF">
+            <attribute name="Bundle-ManifestVersion" value="2" />
+            <attribute name="Bundle-Version"
+                       value="${buildPlugin.newBundleVersion}" />
+            <attribute name="Bundle-SymbolicName"
+                       value="${buildPlugin.bundle.symbolicname}.source" />
+            <attribute name="Eclipse-SourceBundle"
+                       value="${buildPlugin.bundle.symbolicname};version=&quot;${buildPlugin.newBundleVersion}&quot;;roots:=&quot;${buildPlugin.build.librarysourceroots}&quot;" />
+          </manifest>
+
+        </ant4eclipse:forProject>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            - Step 5: create the jar file
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject>
+          <jar destfile="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}.jar"
+               basedir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}"
+               manifest="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}/META-INF/MANIFEST.MF" />
+        </ant4eclipse:forProject>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 6: delete the (temporary) bundle directory
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject>
+          <delete dir="@{destination}/${a4e.plugins.directory}/${buildPlugin.bundle.symbolicname}.source_${buildPlugin.newBundleVersion}"
+                  quiet="true"
+                  deleteonexit="true" />
+        </ant4eclipse:forProject>
+
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          - Step 7: Cleaning up
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <ant4eclipse:forProject>
+          <!-- the property has been set, so we need to remove it otherwise it cannot be altered -->
+          <!-- by subsequent calls of this macro. -->
+          <antcontrib:var unset="true" name="buildPlugin.newBundleVersion" />
+        </ant4eclipse:forProject>
+
+      </ant4eclipse:executePluginProject>
+
+    </sequential>
+  </macrodef>
+
+  <!-- ~~~ PRIVATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- Clears a directory under a certain condition.                                           -->
+  <!--                                                                                         -->
+  <!-- @param dir         The directory which has to be cleaned.                               -->
+  <!-- @param condition   The condition which decides whether the cleanup takes place or not.  -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <macrodef name="scrub-directory">
+    <attribute name="dir" />
+    <attribute name="condition" default="true" />
+    <sequential>
+      <antcontrib:if>
+        <antcontrib:istrue value="@{condition}" />
+        <antcontrib:then>
+          <echo>Scrubbing directory '@{dir}'</echo>
+          <delete dir="@{dir}" quiet="true" />
+          <mkdir dir="@{dir}" />
+        </antcontrib:then>
+      </antcontrib:if>
+    </sequential>
+  </macrodef>
+
+  <!-- =================================
+          macro       : buildProduct
+          description : Builds an eclipse product. Each contained plug-in project will be build.
+       ================================= -->
+  <macrodef name="buildProduct">
+
+    <attribute name="workspaceDirectory" />
+    <attribute name="productfile" />
+    <attribute name="targetPlatformId" />
+    <attribute name="destination" />
+    <attribute name="os" default="win32" />
+    <attribute name="clearDestination" default="false" />
+    <attribute name="defaultCompilerOptionsFile" default="" />
+    <attribute name="packageAsJar" default="false" />
+    <attribute name="commandline" default="false" />
+    <attribute name="packageSources" default="true" />
+
+    <!-- element definitions for lifecycle phases -->
+    <element name="validate"
+             optional="true"
+             description="Validate the project if it's correct and all necessary information is available. Scope: forProduct." />
+
+    <element name="deploy"
+             optional="true"
+             description="Perform any operations necessary to prepare a package before the actual packaging. Scope: forProduct." />
+
+    <sequential>
+
+      <ant4eclipse:executeProduct workspaceDirectory="@{workspaceDirectory}"
+                                  targetPlatformId="@{targetPlatformId}"
+                                  product="@{productfile}"
+                                  os="@{os}">
+
+        <ant4eclipse:forProduct>
+          <echo>Building product ${executeProduct.product.name} version ${executeProduct.product.version}</echo>
+        </ant4eclipse:forProduct>
+
+        <ant4eclipse:forProduct>
+          <validate />
+        </ant4eclipse:forProduct>
+
+        <!-- Step 1: Scrub destination directory if requested -->
+        <ant4eclipse:forProduct if="@{clearDestination}">
+          <echo>Scrubbing directory '@{destination}'</echo>
+          <delete dir="@{destination}" quiet="true" />
+        </ant4eclipse:forProduct>
+
+        <!-- Step 2: Assure a necessary structure. -->
+        <ant4eclipse:forProduct>
+          <mkdir dir="@{destination}/configuration" />
+        </ant4eclipse:forProduct>
+
+        <!-- Step 3: Build features or plugins -->
+
+        <!-- Step 3a: Build included features if this product is based on features -->
+        <ant4eclipse:forEachFeature>
+          <antcontrib:if>
+            <istrue value="${executeProduct.product.basedonfeatures}" />
+            <then>
+              <echo> -> Building included feature '${executeProduct.feature.id}' - '${executeProduct.feature.version}'</echo>
+              <buildFeature workspaceDirectory="@{workspaceDirectory}"
+                            featureId="${executeProduct.feature.id}"
+                            featureVersion="${executeProduct.feature.version}"
+                            targetPlatformId="@{targetPlatformId}"
+                            destination="@{destination}"
+                            packageAsJar="@{packageAsJar}"
+                            packagePluginsAsJar="@{packageAsJar}"
+                            packagePluginSourcesAsJar="@{packageSources}"
+                            defaultCompilerOptionsFile="@{defaultCompilerOptionsFile}" />
+            </then>
+          </antcontrib:if>
+        </ant4eclipse:forEachFeature>
+
+        <!-- Step 3b: Build included plugins if this product is based on plugins -->
+        <ant4eclipse:forEachPlugin filter="(executeProduct.plugin.isSource=true)">
+          <antcontrib:if>
+            <isfalse value="${executeProduct.product.basedonfeatures}" />
+            <then>
+              <echo> -> Building included plugin '${executeProduct.plugin.id}' from project: ${executeProduct.plugin.projectName}</echo>
+              <buildPlugin projectName="${executeProduct.plugin.projectName}"
+                           workspaceDirectory="@{workspaceDirectory}"
+                           targetPlatformId="@{targetPlatformId}"
+                           packageAsJar="@{packageAsJar}"
+                           destination="@{destination}"
+                           defaultCompilerOptionsFile="@{defaultCompilerOptionsFile}"
+                           buildSourceJar="@{packageSources}" />
+            </then>
+          </antcontrib:if>
+        </ant4eclipse:forEachPlugin>
+
+        <!-- Step 3c: Copy plugins from the target platform -->
+        <ant4eclipse:forEachPlugin filter="(executeProduct.plugin.isSource=false)">
+          <antcontrib:if>
+            <isfalse value="${executeProduct.product.basedonfeatures}" />
+            <then>
+              <echo>Copying bundle '${executeProduct.plugin.file} (${executeProduct.plugin.id})' </echo>
+              <copy todir="@{destination}/${a4e.plugins.directory}">
+                <filelist refid="executeProduct.plugin.filelist" />
+              </copy>
+            </then>
+          </antcontrib:if>
+        </ant4eclipse:forEachPlugin>
+
+        <!-- Step 4: Generate artifacts -->
+        <ant4eclipse:forProduct>
+
+          <!-- create the .eclipseproduct file -->
+          <echo file="@{destination}/.eclipseproduct">version=1.0.0&#10;</echo>
+          <echo file="@{destination}/.eclipseproduct" append="true">name=${executeProduct.product.name}&#10;</echo>
+          <echo file="@{destination}/.eclipseproduct" append="true">id=${executeProduct.product.id}&#10;</echo>
+
+          <!-- create the ini file for the launcher -->
+          <antcontrib:if>
+            <equals arg1="" arg2="${executeProduct.product.vmargs}" />
+            <then>
+              <!-- no arguments to set -->
+              <echo file="@{destination}/${executeProduct.product.launchername}.ini">
+              </echo>
+            </then>
+            <else>
+              <!-- set vm arguments -->
+              <echo file="@{destination}/${executeProduct.product.launchername}.ini">-vmargs&#10;</echo>
+              <antcontrib:for param="vmarg"
+                              list="${executeProduct.product.vmargs}"
+                              delimiter=" "
+                              trim="true">
+                <sequential>
+                  <echo file="@{destination}/${executeProduct.product.launchername}.ini"
+                        append="true">@{vmarg}&#10;</echo>
+                </sequential>
+              </antcontrib:for>
+            </else>
+          </antcontrib:if>
+
+          <antcontrib:if>
+            <and>
+              <not>
+                <equals arg1="" arg2="${executeProduct.product.configini}" />
+              </not>
+              <available file="${executeProduct.product.configini}"
+                         type="file" />
+            </and>
+            <then>
+              <!-- copy the config.ini provided by the product configuration. -->
+              <copy file="${executeProduct.product.configini}"
+                    todir="@{destination}/configuration"
+                    overwrite="true" />
+            </then>
+            <else>
+              <!-- generate a default config.ini which just starts the workbench. -->
+              <echo file="@{destination}/configuration/config.ini" append="false"># Product Runtime Configuration File</echo>
+              <echo file="@{destination}/configuration/config.ini" append="true">eclipse.application=${executeProduct.product.applicationid}</echo>
+              <echo file="@{destination}/configuration/config.ini" append="true">osgi.bundles.defaultStartLevel=4</echo>
+              <echo file="@{destination}/configuration/config.ini" append="true">eclipse.product=${executeProduct.product.id}</echo>
+              <echo file="@{destination}/configuration/config.ini" append="true">osgi.splashPath=platform:/base/plugins/org.eclipse.platform</echo>
+              <echo file="@{destination}/configuration/config.ini" append="true">osgi.bundles=org.eclipse.core.runtime@start,org.eclipse.osgi@start,org.eclipse.equinox.common@2:start,org.eclipse.update.configurator@3:start</echo>
+            </else>
+          </antcontrib:if>
+
+          <antcontrib:if>
+            <istrue value="@{commandline}" />
+            <then>
+              <copy file="${executeProduct.product.cmdexe}"
+                    tofile="@{destination}/${executeProduct.product.launchername}.exe"
+                    overwrite="true" />
+            </then>
+            <else>
+              <copy file="${executeProduct.product.guiexe}"
+                    tofile="@{destination}/${executeProduct.product.launchername}.exe"
+                    overwrite="true" />
+              <copy file="${executeProduct.product.cmdexe}"
+                    tofile="@{destination}/${executeProduct.product.launchername}c.exe"
+                    overwrite="true" />
+            </else>
+          </antcontrib:if>
+
+        </ant4eclipse:forProduct>
+
+        <ant4eclipse:forProduct>
+          <!-- template element 'deploy' -->
+          <deploy />
+        </ant4eclipse:forProduct>
+
+        <ant4eclipse:forProduct>
+          <echo>Building product ${executeProduct.product.name} successfully build.</echo>
+        </ant4eclipse:forProduct>
+
+      </ant4eclipse:executeProduct>
+
+    </sequential>
+
+  </macrodef>
+
+  <!-- =================================
+          target      : buildFeature
+          description : Builds an eclipse feature project. Each contained plug-in project will be build.
+         ================================= -->
+  <macrodef name="buildFeature">
+
+    <attribute name="workspaceDirectory" />
+    <attribute name="projectName" default="" />
+    <attribute name="featureId" default="" />
+    <attribute name="featureVersion" default="" />
+    <attribute name="targetPlatformId" />
+    <attribute name="destination" />
+    <attribute name="clearDestination" default="false" />
+    <attribute name="skipBuildFeature" default="false" />
+    <attribute name="packageAsJar" default="true" />
+    <attribute name="packagePluginsAsJar" default="true" />
+    <attribute name="packagePluginSourcesAsJar" default="true" />
+    <attribute name="defaultCompilerOptionsFile" default="" />
+    <attribute name="cleanPluginBuild" default="true" />
+    <sequential>
+
+      <!-- executes the defined feature -->
+      <ant4eclipse:executeFeature workspaceDirectory="@{workspaceDirectory}"
+                                  projectName="@{projectName}"
+                                  featureId="@{featureId}"
+                                  featureVersion="@{featureVersion}"
+                                  targetPlatformId="@{targetPlatformId}">
+
+        <ant4eclipse:forRootFeature>
+          <echo>Building feature '${executeFeature.feature.id}_${executeFeature.feature.version}'</echo>
+          <echo> - feature.isSource: '${executeFeature.feature.isSource}'</echo>
+        </ant4eclipse:forRootFeature>
+
+        <!-- Step 1: Scrub destination directory  -->
+        <ant4eclipse:forRootFeature if="@{clearDestination}">
+          <echo>Scrubbing directory '@{destination}'</echo>
+          <delete dir="@{destination}" quiet="true" />
+          <mkdir dir="@{destination}" />
+        </ant4eclipse:forRootFeature>
+
+        <!-- Step 2: Build included features  -->
+        <ant4eclipse:forEachIncludedFeature>
+          <echo> -> Building included feature '${executeFeature.feature.id}'</echo>
+          <buildFeature workspaceDirectory="@{workspaceDirectory}"
+                        featureId="${executeFeature.feature.id}"
+                        featureVersion="${executeFeature.feature.resolved.version}"
+                        targetPlatformId="@{targetPlatformId}"
+                        destination="@{destination}"
+                        packageAsJar="@{packageAsJar}" />
+        </ant4eclipse:forEachIncludedFeature>
+
+        <!-- Step 3: Build the plug-ins  -->
+        <!-- Step 3.1: Build the plug-ins  -->
+        <ant4eclipse:forEachPlugin filter="(executeFeature.plugin.isSource=true)">
+          <echo>Building plug-in project '${executeFeature.plugin.filename} (${executeFeature.plugin.id}_${executeFeature.plugin.resolvedversion})' </echo>
+          <buildPlugin workspaceDirectory="@{workspaceDirectory}"
+                       projectName="${executeFeature.plugin.filename}"
+                       targetplatformid="@{targetPlatformId}"
+                       destination="@{destination}"
+                       packageAsJar="@{packagePluginsAsJar}"
+                       buildSourceJar="@{packagePluginSourcesAsJar}"
+                       defaultCompilerOptionsFile="@{defaultCompilerOptionsFile}"
+                       clean="@{cleanPluginBuild}" />
+        </ant4eclipse:forEachPlugin>
+
+        <!-- Step 3.2: Copy plug-ins  -->
+        <ant4eclipse:forEachPlugin filter="(executeFeature.plugin.isSource=false)">
+          <echo>Copying bundle '${executeFeature.plugin.file} (${executeFeature.plugin.id}_${executeFeature.plugin.resolvedversion})' </echo>
+          <copy todir="@{destination}/${a4e.plugins.directory}">
+            <filelist refid="executeFeature.plugin.filelist" />
+          </copy>
+        </ant4eclipse:forEachPlugin>
+
+        <!-- Step 4: Build feature itself -->
+        <ant4eclipse:forRootFeature unless="@{skipBuildFeature}"
+                                    filter="(executeFeature.feature.isSource=true)">
+
+          <echo>Building feature project '${executeFeature.feature.file.name} (${executeFeature.feature.id}_${executeFeature.feature.resolved.version})' </echo>
+
+          <!-- Step 4.1: Copy all files defined in the build.properties to the destination directory  -->
+          <copy todir="@{destination}/${a4e.features.directory}/${executeFeature.feature.id}_${executeFeature.feature.resolved.version}"
+                overwrite="true">
+
+            <!-- file set defined by the projects build properties -->
+            <ant4eclipse:pdeProjectFileSet workspaceDirectory="@{workspaceDirectory}"
+                                           projectname="${executeFeature.feature.file.name}" />
+          </copy>
+
+          <!-- Step 4.2: Patch the feature.xml -->
+          <ant4eclipse:patchFeatureManifest featureXmlFile="@{destination}/features/${executeFeature.feature.id}_${executeFeature.feature.resolved.version}/feature.xml"
+                                            pluginVersions="${executeFeature.feature.plugins.resolved.versions}" />
+
+          <!-- Step 4.3: Package the feature as a jar -->
+          <!-- skip this step if 'packageAsJar' is 'false' -->
+          <antcontrib:if>
+            <istrue value="@{packageAsJar}" />
+            <antcontrib:then>
+
+              <!-- jar the feature -->
+              <jar destfile="@{destination}/${a4e.features.directory}/${executeFeature.feature.id}_${executeFeature.feature.resolved.version}.jar"
+                   basedir="@{destination}/${a4e.features.directory}/${executeFeature.feature.id}_${executeFeature.feature.resolved.version}" />
+
+              <!-- delete the base directory -->
+              <delete dir="@{destination}/${a4e.features.directory}/${executeFeature.feature.id}_${executeFeature.feature.resolved.version}" />
+            </antcontrib:then>
+          </antcontrib:if>
+
+        </ant4eclipse:forRootFeature>
+
+        <!-- if feature is already built, we only have to copy the jar / directory -->
+        <ant4eclipse:forRootFeature unless="@{skipBuildFeature}"
+                                    filter="(executeFeature.feature.isSource=false)">
+
+          <echo>Copying feature '${executeFeature.feature.file} (${executeFeature.feature.id}_${executeFeature.feature.resolved.version})' </echo>
+
+          <copy todir="@{destination}/${a4e.features.directory}">
+            <filelist refid="executeFeature.feature.filelist" />
+          </copy>
+
+        </ant4eclipse:forRootFeature>
+
+        <ant4eclipse:forRootFeature>
+          <echo>Feature '${executeFeature.feature.id}_${executeFeature.feature.version}' successfully built.</echo>
+        </ant4eclipse:forRootFeature>
+
+      </ant4eclipse:executeFeature>
+
+    </sequential>
+  </macrodef>
+
+</project>

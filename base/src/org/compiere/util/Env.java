@@ -46,6 +46,9 @@ import javax.swing.JFrame;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IResourceFinder;
+import org.adempiere.base.Service;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
@@ -54,6 +57,10 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
 import org.compiere.swing.CFrame;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+
+import com.sun.xml.internal.ws.util.ServiceFinder;
 
 
 /**
@@ -1497,7 +1504,10 @@ public final class Env
 	 */
 	public static Image getImage (String fileNameInImageDir)
 	{
-		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
+		IResourceFinder rf = Core.getResourceFinder();
+		URL url =  rf.getResource("images/" + fileNameInImageDir);
+
+//		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
 		if (url == null)
 		{
 			s_log.log(Level.SEVERE, "Not found: " +  fileNameInImageDir);
@@ -1515,7 +1525,9 @@ public final class Env
 	 */
 	public static ImageIcon getImageIcon (String fileNameInImageDir)
 	{
-		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
+		IResourceFinder rf = Core.getResourceFinder();
+		URL url =  rf.getResource("images/" + fileNameInImageDir);
+//		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
 		if (url == null)
 		{
 			s_log.log(Level.INFO, "Not found: " +  fileNameInImageDir);
@@ -1535,9 +1547,12 @@ public final class Env
 	 */
 	public static ImageIcon getImageIcon2 (String fileName)
 	{
-		URL url = Adempiere.class.getResource("images/" + fileName+".gif");
+		IResourceFinder rf = Core.getResourceFinder();
+		URL url =  rf.getResource("images/" + fileName+".gif");
+//		URL url = Adempiere.class.getResource("images/" + fileName+".gif");
 		if (url == null)
-			url = Adempiere.class.getResource("images/" + fileName+".png");
+			url = rf.getResource("images/" + fileName+".png");
+//			url = Adempiere.class.getResource("images/" + fileName+".png");
 		if (url == null)
 		{
 			s_log.log(Level.INFO, "GIF/PNG Not found: " + fileName);

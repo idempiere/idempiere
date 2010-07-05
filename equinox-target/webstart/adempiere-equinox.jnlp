@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp 
+    spec="1.0+" 
+    codebase="http://localhost:8080/webstart" 
+    href="adempiere-equinox.jnlp"> <!-- URL to the site containing the jnlp application. It should match the value used on  export. Href, the name of this file -->
+  <information>
+	<title>Adempiere Client 3.5.4a</title>
+	<vendor>ADempiere, Inc.</vendor>
+	<homepage href = "http://www.adempiere.org"/>
+	<offline-allowed/>
+	<description>Adempiere ERP+CRM ($$context) - Smart Business Solution for Distribution and Service - globally</description>
+	<description kind = "short">Adempiere ERP+CRM ($$context)</description>
+	<description kind = "one-line">Adempiere ERP+CRM</description>
+	<description kind = "tooltip">Adempiere ERP+CRM ($$context)</description>
+    <icon kind="splash" href="splash.gif"/>
+  </information>
+ 
+  <!--request all permissions from the application. This does not change-->
+  <security>
+    <all-permissions/>
+  </security>
+ 
+  <!-- The name of the main class to execute. This does not change-->
+  <application-desc main-class="org.eclipse.equinox.launcher.WebStartMain">
+    <argument>-consoleLog</argument>
+  </application-desc>
+ 
+  <resources>
+    <!-- Reference to the launcher jar. The version segment must be updated to the version being used-->
+    <jar href="plugins/org.eclipse.equinox.launcher_1.0.200.v20090520.jar"/>
+ 
+    <!-- Reference to all the plugins and features constituting the application -->
+    <!-- Here we are referring to the wrapper feature since it transitively refers to all the other plug-ins  necessary -->
+    <extension 
+        name="Wrapper feature"
+        href="features/org.adempiere.webstart_0.0.0.1.jnlp"/>
+ 
+    <!-- Information usually specified in the config.ini -->
+	<property name="osgi.noShutdown" value="true" />
+	<property name="eclipse.ignoreApp" value="true" />
+    <property name="org.osgi.framework.bootdelegation" value="*"/>
+    <property name="osgi.bundles" 
+        value="org.eclipse.equinox.common@2:start, org.eclipse.update.configurator@3:start, org.eclipse.core.runtime@4:start, org.adempiere.client@5:start"/>
+    <property name="eclipse.product" value="adempiere"/>
+  </resources>
+
+  <!-- Indicate on a platform basis which JRE to use --> 
+  <resources os="Mac">
+    <j2se version="1.6+"/>
+  </resources>
+  <resources os="Windows">
+    <j2se version="1.4+"/>
+  </resources>
+  <resources os="Linux">
+    <j2se version="1.4+"/>
+  </resources>
+</jnlp>

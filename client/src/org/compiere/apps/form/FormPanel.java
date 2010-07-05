@@ -16,13 +16,15 @@
  *****************************************************************************/
 package org.compiere.apps.form;
 
+import org.adempiere.base.IService;
+
 /**
  *	Form Panel Interface.
  *	for communicating between FormFrame and JPanel
  * 	@author 	Jorg Janke
  * 	@version 	$Id: FormPanel.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
-public interface FormPanel
+public interface FormPanel extends IService
 {
 	/**
 	 *	Initialize Panel

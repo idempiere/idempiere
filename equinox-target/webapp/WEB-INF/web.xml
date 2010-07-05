@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<web-app id="WebApp">
+	<servlet id="bridge">
+		<servlet-name>equinoxbridgeservlet</servlet-name>
+		<display-name>Equinox Bridge Servlet</display-name>
+		<description>Equinox Bridge Servlet</description>
+		<servlet-class>org.eclipse.equinox.servletbridge.BridgeServlet</servlet-class>
+		<init-param>
+			<param-name>commandline</param-name>
+			<param-value>-console -clean</param-value>			
+		</init-param>		
+		<init-param>
+			<param-name>enableFrameworkControls</param-name>
+			<param-value>true</param-value>			
+		</init-param>
+		<!--
+		  org.eclipse.equinox.servletbridge and the Servlet API are exported automatically to the underlying OSGi framework.
+		  The extendedFrameworkExports parameter allows the specification of additional java package exports.
+		  The format is a comma separated list of exports as specified by the "Export-Package" bundle manifest header.
+		  For example: com.mycompany.exports; version=1.0.0, com.mycompany.otherexports; version=1.0.0
+		  -->
+		<init-param>
+			<param-name>extendedFrameworkExports</param-name>
+			<param-value></param-value>			
+		</init-param>
+
+		<!-- 
+		  You can specify your own framework launcher here.
+		  The default is: org.eclipse.equinox.servletbridge.FrameworkLauncher
+		<init-param>
+			<param-name>frameworkLauncherClass</param-name>
+			<param-value>org.eclipse.equinox.servletbridge.FrameworkLauncher</param-value>
+		</init-param>	
+		-->		
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>equinoxbridgeservlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	<!--
+	  This is required if your application bundles expose JSPs. 
+	-->	
+	<servlet-mapping>
+		<servlet-name>equinoxbridgeservlet</servlet-name>
+		<url-pattern>*.jsp</url-pattern>
+	</servlet-mapping>	
+</web-app>

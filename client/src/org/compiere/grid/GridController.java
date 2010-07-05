@@ -33,6 +33,7 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -48,6 +49,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IColumnCallout;
 import org.adempiere.plaf.AdempiereLookAndFeel;
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
@@ -801,11 +804,13 @@ public class GridController extends CPanel
 		//  Process Callout
 		GridField mField = m_mTab.getField(col);
 		if (mField != null
-			&& (mField.getCallout().length() > 0 || m_mTab.hasDependants(mField.getColumnName())))
-		{
-			String msg = m_mTab.processFieldChange(mField);     //  Dependencies & Callout
-			if (msg.length() > 0)
-				ADialog.error(m_WindowNo, this, msg);
+			List<IColumnCallout> callouts = Core.findCallout(m_mTab.getTableName(), mField.getColumnName());
+			if (mField.getCallout().length() > 0 || callouts.size()>0 || m_mTab.hasDependants(mField.getColumnName()))
+			{
+				String msg = m_mTab.processFieldChange(mField);     //  Dependencies & Callout
+				if (msg.length() > 0)
+					ADialog.error(m_WindowNo, this, msg);
+			}
 		}
 		//if (col >= 0)
 		dynamicDisplay(col);

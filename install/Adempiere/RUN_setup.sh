@@ -26,7 +26,10 @@ ARGS=CONFIG
 # To test the OCI driver, add -DTestOCI=Y to the command - example:
 # $JAVA -classpath $CP -DADEMPIERE_HOME=$ADEMPIERE_HOME -DTestOCI=Y org.compiere.install.Setup $ARGS
 
-$JAVA -classpath $CP -DADEMPIERE_HOME=$ADEMPIERE_HOME org.compiere.install.Setup $ARGS
+# $JAVA -classpath $CP -DADEMPIERE_HOME=$ADEMPIERE_HOME org.compiere.install.Setup $ARGS
+# OSGi:
+$JAVA -jar osgi/org.eclipse.osgi_3.5.0.v20090520.jar -clean -console -application org.adempiere.Install
+
 
 #echo ===================================
 #echo Setup Adempiere Server Environment
@@ -41,7 +44,7 @@ find . -name '*.sh' -exec chmod a+x '{}' \;
 
 # Sign database build
 cd utils
-. ./RUN_SignDatabaseBuild.sh 
+#. ./RUN_SignDatabaseBuild.sh 
 
 . ./RUN_UnixEnv.sh
 

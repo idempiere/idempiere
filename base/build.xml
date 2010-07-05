@@ -18,6 +18,7 @@
   <property name="dist.dir" value="."/>
   <property name="jar.path" value="../lib"/>
   <property name="jar.name" value="Base"/>
+  <import file="../utils_dev/properties.xml"/>
 
   <!-- set path to include the necessary jar files for javac -->
   <path id="project.class.path">
@@ -104,6 +105,29 @@
   <target name="dist" depends="compile">
     <!-- put everything from ${build.dir} into the ${jar.name}.jar file -->
     <jar jarfile="${dist.dir}/${jar.name}.jar" basedir="${build.dir}"/>
+  </target>
+
+	  <target name="plugin">
+		<buildPlugin workspaceDirectory=".."
+		             projectName="base"
+		             targetPlatformId="target.platform"
+		             destination="../lib"
+		 			 buildSourceJar="false"
+					 clean="no"/>
+	  </target>		
+		
+	  <target name="plugin-dist">
+		<buildPlugin workspaceDirectory=".."
+		             projectName="base"
+		             targetPlatformId="target.platform"
+		             destination="${env.ADEMPIERE_ROOT}/Adempiere/osgi"
+		 			 buildSourceJar="false"
+					 clean="no"/>
+	  </target>		
+		
+  <target name="dist-standalone" depends="plugin">
+  	<copy file="${dist.dir}/${bundle.name}_${bundle.version}.jar"
+  		todir="${equinox.target}/dist/standalone/plugins"/>
   </target>
 
   <path id="class.path.test">

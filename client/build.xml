@@ -17,13 +17,24 @@
   <property name="build.dir" value="build"/>
   <property name="dist.dir" value="../lib"/>
   <property name="jar.path" value="../lib"/>
+  <property name="jar.name" value="client.jar"/>
   <!--<property environment="env"/>-->
   <import file="../utils_dev/properties.xml"/>
+  <property name="equinox.target" value="../equinox-target"/>
+  <property name="bundle.name" value="org.adempiere.client"/>
+  <property name="bundle.version" value="0.0.0.2"/>
+	
+  <path id="osgi.libs">
+  	<fileset dir="${equinox.target}/plugins">
+	    <include name="*.jar"/>
+	</fileset>
+  </path>
 
   <!-- set path to include the necessary jar files for javac -->
   <path id="project.class.path">
     <pathelement path="${classpath}"/>
     <pathelement path="${jar.path}/CCTools.jar"/>
+    <path refid="osgi.libs"/>
     <pathelement path="../base/Base.jar"/>
     <pathelement path="../lib/customization.jar"/>
     <pathelement path="../lib/patches.jar"/>
@@ -112,7 +123,14 @@
       </manifest> 
     </jar>
   </target>
-
+	
+  <target name="plugin">
+	<buildPlugin workspaceDirectory=".."
+	             projectName="client"
+	             targetPlatformId="target.platform"
+	             destination="${dist.dir}"
+	 			 buildSourceJar="false" />
+  </target>		
 
   <target name="clean">
     <!-- Delete the ${build.dir} directory trees -->

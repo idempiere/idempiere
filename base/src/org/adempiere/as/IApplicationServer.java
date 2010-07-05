@@ -14,12 +14,14 @@ package org.adempiere.as;
 
 import java.util.Hashtable;
 
+import org.adempiere.base.IService;
+
 /**
  * 
  * @author Low Heng Sin
  *
  */
-public interface IApplicationServer {
+public interface IApplicationServer extends IService {
 	/**
 	 * @param AppsHost
 	 * @param AppsPort

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.equinox.servletbridge.feature"
+      label="Servletbridge Feature"
+      version="1.0.0"
+      provider-name="eclipse.org">
+
+   <description>
+      The Servletbridge feature is used to hold the default plugins and dependencies used to build the bridge WebARchive.
+   </description>
+
+   <copyright>
+      2006 Cognos Inc.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      ECLIPSE FOUNDATION SOFTWARE USER AGREEMENT
+   </license>
+
+   <plugin
+         id="org.eclipse.osgi"
+         download-size="0"
+         install-size="0"
+         version="3.3.0.200704022148"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi.services"
+         download-size="0"
+         install-size="0"
+         version="3.1.100.200704022148"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.common"
+         download-size="0"
+         install-size="0"
+         version="3.3.0.200704022148"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.registry"
+         download-size="0"
+         install-size="0"
+         version="3.3.0.v20070318"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.update.configurator"
+         download-size="0"
+         install-size="0"
+         version="3.2.100.v20070322"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http.registry"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.200704022148"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http.servlet"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.200704022148"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http.servletbridge"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.200704022148"
+         unpack="false"/>
+
+</feature>

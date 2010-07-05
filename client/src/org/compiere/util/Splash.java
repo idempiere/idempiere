@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.Locale;
 
 import org.compiere.Adempiere;
+import org.compiere.AdempiereClient;
 
 /**
  *  Splash Screen.
@@ -94,6 +95,7 @@ public class Splash extends Frame
 	public Splash (String text)
 	{
 		super("Adempiere");
+		System.out.println(text);
 		message.setText(text);
 		try
 		{
@@ -268,9 +270,9 @@ public class Splash extends Frame
 		public AImage()
 		{
 			super();
-			URL url = org.compiere.Adempiere.class.getResource("images/Java_anim.gif");
+			URL url = org.compiere.AdempiereClient.class.getResource("images/Java_anim.gif");
 			if (url == null)
-				url = org.compiere.Adempiere.class.getResource("images/Java_logo.gif");
+				url = org.compiere.AdempiereClient.class.getResource("images/Java_logo.gif");
 			if (url != null)
 			{
 				m_image = Toolkit.getDefaultToolkit().getImage(url);

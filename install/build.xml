@@ -16,6 +16,7 @@
   <property name="web.dir" value="../../adempiereWeb"/>
   <property name="dbStartup.dir" value="../db/database/Startup"/>
   <property name="lib.dir" value="../lib"/>
+  <property name="dist.dir" value="../lib"/>
   <property name="utils.dir" value="../utils"/>
   <property name="launch.dir" value="../launch"/>
   <property name="keystore.dir" value="../keystore"/>
@@ -117,7 +118,7 @@
   <!-- ======================================================= -->
   <!-- Update from Web Site + Clean .sh                        -->
   <!-- ======================================================= -->
-  <target name="installUpdate" depends="installCompile"
+  <target name="installUpdate" depends=""
 	description="Update install directory with copies of web site">
 
 	<fixcrlf srcdir="${src.dir}"
@@ -182,12 +183,32 @@
 	  </fileset>
 	</copy>
 	<copy file="${launch.dir}/Release/Adempiere.exe" todir="${build.dir}/Adempiere/lib"/>
-	<copy file="CInstall.jar" todir="${build.dir}/Adempiere/lib"/>
+ <!--	<copy file="CInstall.jar" todir="${build.dir}/Adempiere/lib"/>
 	<copy file="../sqlj/sqlj.jar" todir="${build.dir}/Adempiere/lib"/>
-	<copy file="../JasperReports/CompiereJasperReqs.jar" todir="${build.dir}/Adempiere/lib"/>
+	<copy file="../JasperReports/CompiereJasperReqs.jar" todir="${build.dir}/Adempiere/lib"/> -->
 	<concat destfile="${build.dir}/Adempiere/lib/index.html">AdempiereHome</concat>
 
-
+	<!-- OSGi Container 		-->
+	<mkdir dir="${build.dir}/Adempiere/osgi"/>
+	<copy overwrite="true" todir="${build.dir}/Adempiere/osgi" >
+		<fileset dir="../equinox-target">
+			<include name="configuration/**/*"/>
+			<include name="plugins/**/*"/>
+			<include name="org.eclipse.*.jar"/>
+		</fileset>
+		<fileset dir="../lib">
+			<include name="plugins/**/*"/>
+		</fileset>
+	</copy>
+  	
+  	<!-- Bridge webapp -->
+	<mkdir dir="${build.dir}/Adempiere/webapp"/>
+	<copy overwrite="true" todir="${build.dir}/Adempiere/webapp" >
+		<fileset dir="../lib">
+			<include name="bridge.war"/>
+		</fileset>
+	</copy>
+  	
 	<!-- Utils Directory		-->
 	<mkdir dir="${build.dir}/Adempiere/utils"/>
 	<copy todir="${build.dir}/Adempiere/utils">
@@ -268,6 +289,13 @@
 
   </target>
 
+  <target name="plugin">
+	<buildPlugin workspaceDirectory=".."
+	             projectName="install"
+	             targetPlatformId="target.platform"
+	             destination="${dist.dir}"
+	 			 buildSourceJar="false" />
+  </target>		
 
   <target name="clean" description="deletes build">
 	<delete dir="${build.dir}"/>

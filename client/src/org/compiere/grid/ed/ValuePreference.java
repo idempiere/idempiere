@@ -162,7 +162,7 @@ public class ValuePreference extends CDialog
 	/** The Name of the Editor      */
 	public static final String      NAME = "ValuePreference";
 	/** The Menu Icon               */
-	private static Icon             s_icon = new ImageIcon(org.compiere.Adempiere.class.getResource("images/VPreference16.gif"));
+	private static Icon             s_icon = new ImageIcon(org.compiere.AdempiereClient.class.getResource("images/VPreference16.gif"));
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ValuePreference.class);
 	

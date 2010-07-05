@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.adempiere.osgi.IMenuAction" name="MenuAction" schema="schema/org.adempiere.osgi.IMenuAction.exsd"/>
+   <extension
+         id="RF"
+         name="RF"
+         point="org.adempiere.base.IResourceFinder">
+      <client
+            class="org.compiere.util.ResourceFinder">
+      </client>
+   </extension>
+   <extension
+         id="org.adempiere.Client"
+         point="org.eclipse.core.runtime.applications">
+         <application>
+         	<run class="org.adempiere.client.Application" />
+		 </application>
+   </extension>
+
+</plugin>

@@ -1,5 +1,7 @@
 <?xml version='1.0'?>
-<project name="properties" basedir=".">
+<project name="properties" basedir="."
+    xmlns:ant4eclipse="antlib:org.ant4eclipse" >
+	
     <description>
         This project file sets all properties needed during build and
         installation. This file is imported in all other build.xml
@@ -14,4 +16,21 @@
 
     <!-- Here we could add most common buildpaths -->
 
+	<!-- ant4eclipse -->
+	
+	<import file="../tools/lib/ant4eclipse/macros/a4e-pde-macros.xml"/>
+	
+	<taskdef uri="antlib:net.sf.antcontrib"
+	        resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef uri="antlib:org.ant4eclipse"
+	        resource="org/ant4eclipse/antlib.xml" />
+
+	<ant4eclipse:jdtClassPathLibrary name="org.eclipse.pde.core.externalJavaSearch">
+	  <fileset dir="."/>
+	</ant4eclipse:jdtClassPathLibrary >
+	
+	<ant4eclipse:targetPlatform id="target.platform"> 
+		<location dir="${workspace}/equinox-target/plugins" />
+	</ant4eclipse:targetPlatform>
 </project>

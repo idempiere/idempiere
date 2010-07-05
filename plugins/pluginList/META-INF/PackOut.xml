@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adempiereAD 
+	Name="PluginList" Version="0.0.0.1" CompVer="all"  DataBase="1" 
+	Description="List of Plugins" 
+	creator="-" creatorcontact="-" createddate="2009-03-25 15:52:18" updateddate="2009-03-25 15:52:18" PackOutVer="005">
+    <menu 
+    	ADMenuNameID="Plugin List" ADWindowNameID="" ADProcessNameID="" ADFormNameID="Plugin List" ADTaskNameID="" ADWorkbenchNameID="" ADWorkflowNameID="" 
+     	ADParentMenuNameID="System Rules" ADParentSeqno="0" Action="X" Description="Plugin List" EntityType="U" isActive="true" isReadOnly="false" isSOTrx="false" isSummary="false">
+        <form 
+        	ADFormNameID="Plugin List" Classname="osgi://org.adempiere.plugin.list.PluginList" 
+        	isBetaFunctionality="false" AccessLevel="6" Description="" isActive="true" EntityType="U" Help="" Name="Plugin List"/>
+    </menu>
+</adempiereAD>

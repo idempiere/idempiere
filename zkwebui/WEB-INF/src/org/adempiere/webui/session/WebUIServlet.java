@@ -60,10 +60,15 @@ public class WebUIServlet extends DHtmlLayoutServlet
         logger = CLogger.getCLogger(WebUIServlet.class); 
     }
 
+	private ServletConfig servletConfig;
+
     public void init(ServletConfig servletConfig) throws ServletException
     {
         super.init(servletConfig);
 
+        // HttpBrigde requires config
+        this.servletConfig = servletConfig;
+        
         /** Initialise context for the current thread*/
         ServerContext.newInstance();
         Env.setContextProvider(new ZkContextProvider());
@@ -108,7 +113,8 @@ public class WebUIServlet extends DHtmlLayoutServlet
 
     public ServletConfig getServletConfig()
     {
-        return super.getServletConfig();
+		return servletConfig;
+//        return super.getServletConfig();
     }
 
     public String getServletInfo()

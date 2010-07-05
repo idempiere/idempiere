@@ -21,6 +21,9 @@
 	<!--<property environment="env"/>-->
 	<import file="../utils_dev/properties.xml" />
 
+	<property name="bundle.name" value="org.adempiere.tools"/>
+	<property name="bundle.version" value="0.0.0.2"/>
+
 	<!-- set path to include the necessary jar files for javac -->
 	<path id="project.class.path">
 		<pathelement path="${classpath}" />
@@ -474,6 +477,66 @@
 	<!-- ============================================= -->
 	<target name="toolsDistribution" depends="toolsServer, toolsClient, toolsAppsServer, toolsDatabase" unless="jars.uptodate" description="Create jars">
 
+	</target>
+
+	<target name="plugin">
+	  	<jar destfile="${dist.dir}/plugins/${bundle.name}_${bundle.version}.jar" manifest="META-INF/MANIFEST.MF">
+	  		<fileset dir="${basedir}">
+	  			<include name="lib/jstl.jar"/>
+	  			<include name="lib/Verisign.jar"/>
+	  			<include name="lib/standard.jar"/>
+	  			<include name="lib/barbecue-1.5-beta1.jar"/>
+	  			<include name="lib/poi-3.0.1-FINAL-20070705.jar"/>
+	  			<include name="lib/jnlp.jar"/>
+	  			<include name="lib/iText-2.1.7.jar"/>
+	  			<include name="lib/swingx-0.9.0.jar"/>
+	  			<include name="lib/miglayout-3.7.1-swing.jar"/>
+	  			<include name="lib/log4j.jar"/>
+	  			<include name="lib/activation.jar"/>
+	  			<include name="lib/mail.jar"/>
+	  			<include name="lib/jpayment.jar"/>
+	  			<include name="lib/bsh-2.0b5.jar"/>
+	  			<include name="lib/script-api.jar"/>
+	  			<include name="lib/bsh-engine.jar"/>
+	  			<include name="lib/groovy-all-1.5.1.jar"/>
+	  			<include name="lib/groovy-engine.jar"/>
+	  			<include name="lib/jython.jar"/>
+	  			<include name="lib/jython-engine.jar"/>
+	  			<include name="lib/jcommon-1.0.14.jar"/>
+	  			<include name="lib/jfreechart-1.0.11.jar"/>
+	  			<include name="lib/javaee.jar"/>
+	  			<include name="lib/activemq-core-5.0.0.jar"/>
+	  			<include name="lib/ant-commons-net.jar"/>
+	  			<include name="lib/ant-contrib-1.0b1.jar"/>
+	  			<include name="lib/ant-launcher.jar"/>
+	  			<include name="lib/ant.jar"/>
+	  			<include name="lib/c3p0-0.9.1.2.jar"/>
+	  			<include name="lib/c3p0-oracle-thin-extras-0.9.1.2.jar"/>
+	  			<include name="lib/cglib.jar"/>
+	  			<include name="lib/commons-codec.jar"/>
+	  			<include name="lib/commons-collections-3.1.jar"/>
+	  			<include name="lib/commons-logging.jar"/>
+	  			<include name="lib/commons-net-1.4.0.jar"/>
+	  			<include name="lib/copyLibraries.bat"/>
+	  			<include name="lib/jgraph.jar"/>
+	  			<include name="lib/jpedal.jar"/>
+	  			<include name="lib/jsp-api.jar"/>
+	  			<include name="lib/junit.jar"/>
+	  			<include name="lib/logkit.jar"/>
+	  			<include name="lib/looks-2.0.4.jar"/>
+	  			<include name="lib/ocrs12.jar"/>
+	  			<include name="lib/ojdbc14.jar"/>
+	  			<include name="lib/postgresql.jar"/>
+	  			<include name="lib/wizard.jar"/>
+	  			<include name="lib/xjavadoc-1.1.jar"/>
+	  			<include name="lib/xml-apis.jar"/>
+	  			<include name="lib/cron4j-2.2.1.jar"/>
+	  			<include name="lib/payflow.jar"/>
+	  			<include name="lib/xercesImpl.jar"/>
+	  			<include name="META-INF/**/*"/>
+	  			<include name="plugin.xml"/>
+	  		</fileset>
+	  	</jar>
 	</target>
 
 

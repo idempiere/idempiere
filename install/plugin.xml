@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.adempiere.Install"
+         point="org.eclipse.core.runtime.applications">
+         <application>
+         	<run class="org.compiere.install.Application" />
+		 </application>
+   </extension>
+
+</plugin>

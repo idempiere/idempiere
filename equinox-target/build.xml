@@ -1,0 +1,90 @@
+<!--
+The equinox target project holds the equinox framework components and has 
+the following responsibilities:
+- acting as an equinox-target for the eclipse dev environment
+- providing setup for an OSGi container for developing swing client in OSGi
+- providing setup for a servlet bridge webapp for developing web clients in OSGi
+- providing setup for a webstart jnlp for developing webstart clients in OSGi
+- installing equinox runtime components in the ADempiere install process
+-->
+
+<project name="equinox-target" basedir="." default="all">
+	
+	<property name="src" value="." />
+	<property name="dist" value="./dist" />
+	<property name="dist-standalone" value="${dist}/standalone" />
+	<property name="dist-web" value="${dist}/web" />
+	<property name="dist-webstart" value="${dist}/webstart" />
+	<property name="osgi-runtime" value="org.eclipse.osgi_3.5.0.v20090520.jar" />
+	<property name="adempiere-client" value="org.adempiere.client_0.0.0.2.jar" />
+	
+	<target name="all" depends="clean,dist-standalone,dist-web,dist-webstart"/>
+	
+	<target name="clean">
+		<delete dir="${dist}"/>
+	</target>
+	
+	<target name="dist-standalone">
+		<mkdir dir="${dist-standalone}"/>
+		<copy overwrite="true" todir="${dist-standalone}" >
+			<fileset dir="${src}">
+				<include name="configuration/**/*"/>
+				<include name="plugins/**/*"/>
+				<include name="${osgi-runtime}"/>
+				<include name="org.eclipse.equinox.common_*.jar"/>
+				<include name="org.eclipse.update.configurator_*.jar"/>
+			</fileset>
+		</copy>
+		<echo message="Remember: Copy client bundle into ${dist-standalone}."/>
+	</target>
+	
+	<target name="run-standalone">
+		<move failonerror="false" file="${dist-standalone}/plugins/${adempiere-client}" todir="${dist-standalone}" />
+		<java  dir="${dist-standalone}" fork="true" jvmversion="1.6" jar="${dist-standalone}/${osgi-runtime}">
+			<arg value="-console"/>
+			<arg value="-clean"/>
+		</java>
+	</target>
+
+	<target name="debug-standalone">
+		<move failonerror="false" file="${dist-standalone}/plugins/${adempiere-client}" todir="${dist-standalone}" />
+		<java  dir="${dist-standalone}" fork="true" jvmversion="1.6" jar="${dist-standalone}/${osgi-runtime}">
+			<arg value="-console"/>
+			<arg value="-clean"/>
+			<jvmarg value="-Xdebug"/>
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"/>
+		</java>
+	</target>
+
+	<target name="dist-web">
+		<mkdir dir="${dist-web}"/>
+		<copy overwrite="true" todir="${dist-web}" >
+			<fileset dir="${src}/webapp">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy overwrite="true" todir="${dist-web}/WEB-INF/eclipse/plugins" >
+			<fileset dir="${src}/plugins">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="war" depends="dist-web">
+		<war destfile="../lib/bridge.war">
+			<fileset dir="${dist-web}">
+				<include name="**/*"/>
+			</fileset>
+		</war>
+	</target>
+
+	<target name="dist-webstart">
+		<mkdir dir="${dist-webstart}"/>
+		<copy overwrite="true" todir="${dist-webstart}" >
+			<fileset dir="${src}/webstart">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	</target>
+	
+</project>

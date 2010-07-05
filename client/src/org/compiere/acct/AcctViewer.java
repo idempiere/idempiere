@@ -122,7 +122,7 @@ public class AcctViewer extends CFrame
 	/** State Info          */
 	private AcctViewerData	m_data = null;
 	/** Image Icon			*/
-	private ImageIcon 		m_iFind = new ImageIcon(org.compiere.Adempiere.class.getResource("images/Find16.gif"));
+	private ImageIcon 		m_iFind = new ImageIcon(org.compiere.Adempiere.getResource("images/Find16.gif"));
 	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(AcctViewer.class);
@@ -210,7 +210,7 @@ public class AcctViewer extends CFrame
 	 */
 	private void jbInit() throws Exception
 	{
-		ImageIcon ii = new ImageIcon(org.compiere.Adempiere.class.getResource("images/InfoAccount16.gif"));
+		ImageIcon ii = new ImageIcon(org.compiere.Adempiere.getResource("images/InfoAccount16.gif"));
 		setIconImage(ii.getImage());
 		//
 		mainLayout.setHgap(5);
