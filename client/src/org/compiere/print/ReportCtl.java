@@ -42,7 +42,7 @@ import org.compiere.util.Trx;
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ReportCtl.java,v 1.3 2006/10/08 07:05:08 comdivision Exp $
- * 
+ *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1866739 ] ReportCtl: use printformat from the transient/serializable
  */
@@ -60,7 +60,7 @@ public class ReportCtl
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINT_INFO}
 	 */
 	public static final String PARAM_PRINT_INFO = ServerReportCtl.PARAM_PRINT_INFO;
-	
+
 	/**
 	 *	Constructor - prevent instance
 	 */
@@ -68,12 +68,12 @@ public class ReportCtl
 	{
 	}	//	ReportCtrl
 
-	
+
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (ReportCtl.class);
-	
-	private static ReportViewerProvider viewerProvider = new SwingViewerProvider(); 
-	
+
+	private static ReportViewerProvider viewerProvider = new SwingViewerProvider();
+
 	/**
 	 *	Create Report.
 	 *	Called from ProcessCtl.
@@ -87,7 +87,7 @@ public class ReportCtl
 	{
 		return start(null, -1, pi, IsDirectPrint);
 	}
-	
+
 	/**
 	 *	Create Report.
 	 *	Called from ProcessCtl.
@@ -104,7 +104,7 @@ public class ReportCtl
 		pi.setPrintPreview(!IsDirectPrint);
 		return start(parent, WindowNo, pi);
 	}
-	
+
 	/**
 	 *	Create Report.
 	 *	Called from ProcessCtl.
@@ -170,7 +170,7 @@ public class ReportCtl
 		pi.setPrintPreview(!IsDirectPrint);
 		return startStandardReport(pi);
 	}
-	
+
 	/**************************************************************************
 	 *	Start Standard Report.
 	 *  - Get Table Info & submit.<br>
@@ -211,7 +211,7 @@ public class ReportCtl
 				return false;
 			}
 		}
-		
+
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startStandardReport
@@ -244,7 +244,7 @@ public class ReportCtl
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startFinReport
-	
+
 	/**
 	 * 	Start Document Print for Type.
 	 *  	Called also directly from ProcessDialog, VInOutGen, VInvoiceGen, VPayPrint
@@ -257,7 +257,7 @@ public class ReportCtl
 	{
 		return startDocumentPrint(type, Record_ID, null, -1, IsDirectPrint);
 	}
-	
+
 	/**
 	 * 	Start Document Print for Type with specified printer. Always direct print.
 	 * 	@param type document type in ReportEngine
@@ -268,7 +268,7 @@ public class ReportCtl
 	 * 	@param printerName 	Specified printer name
 	 * 	@return true if success
 	 */
-	public static boolean startDocumentPrint(int type, MPrintFormat customPrintFormat, int Record_ID, ASyncProcess parent, int WindowNo, String printerName) 
+	public static boolean startDocumentPrint(int type, MPrintFormat customPrintFormat, int Record_ID, ASyncProcess parent, int WindowNo, String printerName)
 	{
 		return(startDocumentPrint(type, customPrintFormat, Record_ID, parent, WindowNo, true, printerName));
 	}
@@ -284,7 +284,7 @@ public class ReportCtl
 	 * 	@return true if success
 	 */
 	public static boolean startDocumentPrint(int type, int Record_ID, ASyncProcess parent, int WindowNo,
-			boolean IsDirectPrint) 
+			boolean IsDirectPrint)
 	{
 		return(startDocumentPrint(type, null, Record_ID, parent, WindowNo, IsDirectPrint, null ));
 	}
@@ -298,7 +298,7 @@ public class ReportCtl
 	 * 	@param printerName 	Specified printer name
 	 * 	@return true if success
 	 */
-	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, ASyncProcess parent, int WindowNo, 
+	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, ASyncProcess parent, int WindowNo,
 			boolean IsDirectPrint, String printerName)
 	{
 		ReportEngine re = ReportEngine.get (Env.getCtx(), type, Record_ID);
@@ -310,7 +310,7 @@ public class ReportCtl
 			}
 			else
 			{
-				try 
+				try
 				{
 					ClassLoader loader = Thread.currentThread().getContextClassLoader();
 					if (loader == null)
@@ -318,7 +318,7 @@ public class ReportCtl
 					Class<?> clazz = loader.loadClass("org.adempiere.webui.window.FDialog");
 					Method m = clazz.getMethod("error", Integer.TYPE, String.class);
 					m.invoke(null, 0, "NoDocPrintFormat");
-				} catch (Exception e) 
+				} catch (Exception e)
 				{
 					throw new AdempiereException(e);
 				}
@@ -329,19 +329,14 @@ public class ReportCtl
 			// Use custom print format if available
 			re.setPrintFormat(customPrintFormat);
 		}
-		
+
 		if(re.getPrintFormat()!=null)
 		{
 			MPrintFormat format = re.getPrintFormat();
-			
+
 			// We have a Jasper Print Format
 			// ==============================
-			if(format.getJasperProcess_ID() > 0)	
-				if (info.isDocument()) {
-					ProcessInfoParameter pip = new ProcessInfoParameter("CURRENT_LANG", format.getLanguage(), null, null, null);
-					pi.setParameter(new ProcessInfoParameter[]{pip});
-				}
-				
+			if(format.getJasperProcess_ID() > 0)
 			{
 				ServerReportCtl.runJasperProcess(Record_ID, re, IsDirectPrint, printerName);
 			}
@@ -358,7 +353,7 @@ public class ReportCtl
 		}
 		return true;
 	}	//	StartDocumentPrint
-	
+
 	/**
 	 * 	Start Check Print.
 	 * 	Find/Create
@@ -368,14 +363,14 @@ public class ReportCtl
 	 */
 	public static boolean startCheckPrint (int C_Payment_ID, boolean IsDirectPrint)
 	{
-		
+
 		// afalcone - [ 1871567 ] Wrong value in Payment document
 		boolean ok = MPaySelectionCheck.deleteGeneratedDraft(Env.getCtx(), C_Payment_ID, null);
 		//
-		
+
 		int C_PaySelectionCheck_ID = 0;
 		MPaySelectionCheck psc = MPaySelectionCheck.getOfPayment(Env.getCtx(), C_Payment_ID, null);
-		
+
 		if (psc != null)
 			C_PaySelectionCheck_ID = psc.getC_PaySelectionCheck_ID();
 		else
@@ -386,7 +381,7 @@ public class ReportCtl
 		}
 		return startDocumentPrint (ReportEngine.CHECK, C_PaySelectionCheck_ID, null, -1, IsDirectPrint);
 	}	//	startCheckPrint
-	
+
 	private static void createOutput(ReportEngine re, boolean printPreview, String printerName)
 	{
 		if (printPreview)
@@ -398,24 +393,24 @@ public class ReportCtl
 				re.print();
 		}
 	}
-	
+
 	/**
 	 * Launch viewer for report
 	 * @param re
 	 */
-	public static void preview(ReportEngine re) 
+	public static void preview(ReportEngine re)
 	{
 		ReportViewerProvider provider = getReportViewerProvider();
 		provider.openViewer(re);
 	}
-	
+
 	public static void setReportViewerProvider(ReportViewerProvider provider)
 	{
 		if (provider == null)
 			throw new IllegalArgumentException("Cannot set report viewer provider to null");
 		viewerProvider = provider;
 	}
-	
+
 	public static ReportViewerProvider getReportViewerProvider()
 	{
 		return viewerProvider;

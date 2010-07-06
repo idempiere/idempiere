@@ -1,26 +1,26 @@
 /**********************************************************************
- * This file is part of Adempiere ERP Bazaar                          * 
- * http://www.adempiere.org                                           * 
- *                                                                    * 
- * Copyright (C) Trifon Trifonov.                                     * 
- * Copyright (C) Contributors                                         * 
- *                                                                    * 
- * This program is free software; you can redistribute it and/or      * 
- * modify it under the terms of the GNU General Public License        * 
- * as published by the Free Software Foundation; either version 2     * 
- * of the License, or (at your option) any later version.             * 
- *                                                                    * 
- * This program is distributed in the hope that it will be useful,    * 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of     * 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the       * 
- * GNU General Public License for more details.                       * 
- *                                                                    * 
- * You should have received a copy of the GNU General Public License  * 
- * along with this program; if not, write to the Free Software        * 
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,         * 
- * MA 02110-1301, USA.                                                * 
- *                                                                    * 
- * Contributors:                                                      * 
+ * This file is part of Adempiere ERP Bazaar                          *
+ * http://www.adempiere.org                                           *
+ *                                                                    *
+ * Copyright (C) Trifon Trifonov.                                     *
+ * Copyright (C) Contributors                                         *
+ *                                                                    *
+ * This program is free software; you can redistribute it and/or      *
+ * modify it under the terms of the GNU General Public License        *
+ * as published by the Free Software Foundation; either version 2     *
+ * of the License, or (at your option) any later version.             *
+ *                                                                    *
+ * This program is distributed in the hope that it will be useful,    *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of     *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the       *
+ * GNU General Public License for more details.                       *
+ *                                                                    *
+ * You should have received a copy of the GNU General Public License  *
+ * along with this program; if not, write to the Free Software        *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,         *
+ * MA 02110-1301, USA.                                                *
+ *                                                                    *
+ * Contributors:                                                      *
  *  - Trifon Trifonov (trifonnt@users.sourceforge.net)                *
  *  - Antonio Cañaveral, e-Evolution								  *
  *                                                                    *
@@ -74,32 +74,32 @@ import org.w3c.dom.Text;
  *
  */
 public class ExportHelper {
-	
+
 	/**	Logger					*/
 	private static CLogger log = CLogger.getCLogger(ExportHelper.class);
-	
+
 	/** XML Document 			*/
-	private Document outDocument = null; 
-	
+	private Document outDocument = null;
+
 	/** Custom Date Format		*/
 	private SimpleDateFormat	m_customDateFormat = null;
-	
+
 	/** Client					*/
 	private int		m_AD_Client_ID = -1;
-	
+
 	/** Replication Strategy	*/
 	MReplicationStrategy m_rplStrategy = null;
-	
-	
+
+
 	public ExportHelper(MClient client, MReplicationStrategy rplStrategy) {
 		m_AD_Client_ID = client.getAD_Client_ID();
 		m_rplStrategy = rplStrategy;
 	}
-	
+
 	public ExportHelper(Properties ctx , int AD_Client_ID) {
 		m_AD_Client_ID = AD_Client_ID;
 	}
-	
+
 		/**
 	 * 	Process - Generate Export Format
 	 *	@return info
@@ -109,17 +109,17 @@ public class ExportHelper {
 	{
 		MClient client = MClient.get (po.getCtx(), m_AD_Client_ID);
 		log.info("Client = " + client.toString());
-		
+
 		log.info("po.getAD_Org_ID() = " + po.getAD_Org_ID());
-		
+
 		log.info("po.get_TrxName() = " + po.get_TrxName());
 		if (po.get_TrxName() == null || po.get_TrxName().equals("")) {
 			po.set_TrxName("exportRecord");
 		}
-		
-		
+
+
 		log.info("Table = " + po.get_TableName());
-		
+
 		if (po.get_KeyColumns().length < 1) {
 			throw new Exception(Msg.getMsg (po.getCtx(), "ExportNoneColumnKeyNotSupported"));//TODO: Create Mesagge.
 		}
@@ -135,9 +135,9 @@ public class ExportHelper {
 			MClient systemClient = MClient.get (po.getCtx(), 0);
 			log.info(systemClient.toString());
 			exportFormat = MEXPFormat.getFormatByAD_Client_IDAD_Table_IDAndVersion(po.getCtx(), 0, po.get_Table_ID(), version, po.get_TrxName());
-			
+
 			if (exportFormat == null || exportFormat.getEXP_Format_ID() == 0) {
-				throw new Exception(Msg.getMsg(po.getCtx(), "EXPFormatNotFound"));	
+				throw new Exception(Msg.getMsg(po.getCtx(), "EXPFormatNotFound"));
 			}
 		}
 
@@ -146,10 +146,10 @@ public class ExportHelper {
 		HashMap<String, Integer> variableMap = new HashMap<String, Integer>();
 
 		Element rootElement = outDocument.createElement(exportFormat.getValue());
-		if (exportFormat.getDescription() != null && !"".equals(exportFormat.getDescription())) 
+		if (exportFormat.getDescription() != null && !"".equals(exportFormat.getDescription()))
 		{
 		    rootElement.appendChild(outDocument.createComment(exportFormat.getDescription()));
-		}	
+		}
 		rootElement.setAttribute("AD_Client_Value", client.getValue());
 		rootElement.setAttribute("Version", exportFormat.getVersion());
 		rootElement.setAttribute("ReplicationMode", ReplicationMode.toString());
@@ -157,22 +157,22 @@ public class ExportHelper {
 		rootElement.setAttribute("ReplicationEvent", ReplicationEvent.toString());
 		outDocument.appendChild(rootElement);
 		generateExportFormat(rootElement, exportFormat, po, po.get_ID(), variableMap);
-		    		
+
 		MEXPProcessor mExportProcessor = null;
 		mExportProcessor = new MEXPProcessor (po.getCtx(), m_rplStrategy.getEXP_Processor_ID(), po.get_TrxName() );
 		log.fine("ExportProcessor = " + mExportProcessor);
 		int EXP_ProcessorType_ID = 0;
 		EXP_ProcessorType_ID = mExportProcessor.getEXP_Processor_Type_ID();
 		MEXPProcessorType expProcessor_Type = new MEXPProcessorType(po.getCtx(), EXP_ProcessorType_ID, po.get_TrxName() );
-		
-        
+
+
 		String javaClass = expProcessor_Type.getJavaClass();
 		try {
 			Class clazz = Class.forName(javaClass);
 			IExportProcessor exportProcessor = (IExportProcessor)clazz.newInstance();
-			
+
 			exportProcessor.process(po.getCtx(), mExportProcessor, outDocument, Trx.get( po.get_TrxName(), false ));
-			
+
 		} catch (Exception e) {
 			log.severe(e.toString());
 			throw e;
@@ -180,12 +180,12 @@ public class ExportHelper {
 
 		return outDocument.toString();
 	}
-	
-	
+
+
 	/**
 	 * 	Process - Generate Export Format
-	 *  @param 
-	 * 
+	 *  @param
+	 *
 	 *	@return Document
 	 */
 	public Document exportRecord (MEXPFormat exportFormat, String where , Integer ReplicationMode , String ReplicationType, Integer ReplicationEvent) throws Exception
@@ -193,30 +193,30 @@ public class ExportHelper {
 		MClient client = MClient.get (exportFormat.getCtx(), m_AD_Client_ID);
 		MTable table = MTable.get(exportFormat.getCtx(), exportFormat.getAD_Table_ID());
 		log.info("Table = " + table);
-		
+
 		Collection<PO> records = new Query(exportFormat.getCtx(),table.getTableName(), exportFormat.getWhereClause(), exportFormat.get_TrxName())
 		.setOnlyActiveRecords(true)
 		.list();
-		
+
 		for (PO po : records)
-		{	
+		{
 				log.info("Client = " + client.toString());
 				log.finest("po.getAD_Org_ID() = " + po.getAD_Org_ID());
 				log.finest("po.get_TrxName() = " + po.get_TrxName());
 				if (po.get_TrxName() == null || po.get_TrxName().equals("")) {
 					po.set_TrxName("exportRecord");
 				}
-				
+
 				if (po.get_KeyColumns().length < 1) {
 					throw new Exception(Msg.getMsg (po.getCtx(), "ExportNoneColumnKeyNotSupported"));//TODO: Create Mesagge.
 				}
-				
-				outDocument = createNewDocument();
-		
 
-				HashMap<String, Integer> variableMap = new HashMap<String, Integer>();		
+				outDocument = createNewDocument();
+
+
+				HashMap<String, Integer> variableMap = new HashMap<String, Integer>();
 				Element rootElement = outDocument.createElement(exportFormat.getValue());
-				if (exportFormat.getDescription() != null && !"".equals(exportFormat.getDescription())) 
+				if (exportFormat.getDescription() != null && !"".equals(exportFormat.getDescription()))
 				{
 				    rootElement.appendChild(outDocument.createComment(exportFormat.getDescription()));
 				}
@@ -224,29 +224,29 @@ public class ExportHelper {
 				rootElement.setAttribute("Version", exportFormat.getVersion());
 				rootElement.setAttribute("ReplicationMode", ReplicationMode.toString());
 				rootElement.setAttribute("ReplicationType", ReplicationType);
-				rootElement.setAttribute("ReplicationEvent", ReplicationEvent.toString());						
+				rootElement.setAttribute("ReplicationEvent", ReplicationEvent.toString());
 				outDocument.appendChild(rootElement);
-				generateExportFormat(rootElement, exportFormat, po, po.get_ID(), variableMap);			
+				generateExportFormat(rootElement, exportFormat, po, po.get_ID(), variableMap);
 		}// finish record read
 		return outDocument;
-	}	
+	}
 
 
 	/*
-	 * Trifon Generate Export Format process; RESULT = 
+	 * Trifon Generate Export Format process; RESULT =
 	 * <C_Invoice>
 	 *   <DocumentNo>101</DocumentNo>
 	 * </C_Invoice>
 	 */
-	private void generateExportFormat(Element rootElement, MEXPFormat exportFormat, PO masterPO, int masterID, HashMap<String, Integer> variableMap) throws SQLException, Exception 
+	private void generateExportFormat(Element rootElement, MEXPFormat exportFormat, PO masterPO, int masterID, HashMap<String, Integer> variableMap) throws SQLException, Exception
 	{
 		Collection<MEXPFormatLine> formatLines = exportFormat.getFormatLines();
 		@SuppressWarnings("unused")
 		boolean elementHasValue = false;
-		
+
 		//for (int i = 0; i < formatLines.length; i++) {
 		for (MEXPFormatLine formatLine : formatLines)
-		{	
+		{
 			if ( formatLine.getType().equals(X_EXP_FormatLine.TYPE_XMLElement) ) {
 				// process single XML Attribute
 				// Create new element
@@ -263,13 +263,13 @@ public class ExportHelper {
 					log.info("This is Virtual Column!");
 				} else { }
 				//log.info("["+column.getColumnName()+"]");
-				
+
 				Object value = masterPO.get_Value(column.getColumnName());
 				String valueString = null;
 				if (value != null) {
 					valueString = value.toString();
 				} else {
-					//  Could remove this exception and create empty XML Element when column do not have value. 
+					//  Could remove this exception and create empty XML Element when column do not have value.
 					if (formatLine.isMandatory()) {
 						//throw new Exception(Msg.getMsg (masterPO.getCtx(), "EXPFieldMandatory"));
 					}
@@ -278,14 +278,14 @@ public class ExportHelper {
 					if (valueString != null) {
 						if (formatLine.getDateFormat() != null && !"".equals(formatLine.getDateFormat())) {
 							m_customDateFormat = new SimpleDateFormat( formatLine.getDateFormat() ); // "MM/dd/yyyy"
-						
+
 							valueString = m_customDateFormat.format(Timestamp.valueOf (valueString));
 							newElement.setAttribute("DateFormat", m_customDateFormat.toPattern()); // Add "DateForamt attribute"
-						} else 
+						} else
 						{
-								newElement.setAttribute("DateFormat", valueString);	
+								newElement.setAttribute("DateFormat", valueString);
 						}
-								
+
 					}
 				} else if (column.getAD_Reference_ID() == DisplayType.DateTime) {
 					if (valueString != null) {
@@ -294,7 +294,7 @@ public class ExportHelper {
 							valueString = m_customDateFormat.format(Timestamp.valueOf (valueString));
 							newElement.setAttribute("DateFormat", m_customDateFormat.toPattern()); // Add "DateForamt attribute"
 						} else {
-							newElement.setAttribute("DateFormat", valueString);	
+							newElement.setAttribute("DateFormat", valueString);
 						}
 					}
 				}
@@ -326,7 +326,7 @@ public class ExportHelper {
 					log.info("This is Virtual Column!");
 				} else { }
 				//log.info("["+column.getColumnName()+"]");
-				
+
 				Object value = masterPO.get_Value(column.getColumnName());
 				String valueString = null;
 				if (value != null) {
@@ -345,7 +345,7 @@ public class ExportHelper {
 						} else {
 							valueString = m_dateFormat.format (Timestamp.valueOf (valueString));
 						}
-								
+
 					}
 				} else if (column.getAD_Reference_ID() == DisplayType.DateTime) {
 					if (valueString != null) {
@@ -366,21 +366,21 @@ public class ExportHelper {
 				} else {
 					// Empty field.
 				}
-			} 
-			else if ( formatLine.getType().equals(X_EXP_FormatLine.TYPE_EmbeddedEXPFormat) ) 
+			}
+			else if ( formatLine.getType().equals(X_EXP_FormatLine.TYPE_EmbeddedEXPFormat) )
 			{
 				// process Embedded Export Format
-				
+
 				int embeddedFormat_ID = formatLine.getEXP_EmbeddedFormat_ID();
 				//get from cache
 				MEXPFormat embeddedFormat = MEXPFormat.get(masterPO.getCtx(), embeddedFormat_ID, masterPO.get_TrxName());
-				
+
 				MTable tableEmbedded = MTable.get(masterPO.getCtx(), embeddedFormat.getAD_Table_ID());
 				log.info("Table Embedded = " + tableEmbedded);
-				
+
 				final StringBuffer whereClause = new StringBuffer(masterPO.get_KeyColumns()[0] +"=?");
 
-				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause())) 
+				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause()))
 				{
 				    whereClause.append(" AND ").append(embeddedFormat.getWhereClause());
 				}
@@ -389,41 +389,42 @@ public class ExportHelper {
 					masterPO.get_TrxName()).setClient_ID().setParameters(
 					new Object[] { masterID }).list();
 
-				for (PO instance : instances) 
-				{		
+				for (PO instance : instances)
+				{
         				Element embeddedElement = outDocument.createElement(formatLine.getValue());
-        				if (formatLine.getDescription() != null && !"".equals(formatLine.getDescription())) 
+        				if (formatLine.getDescription() != null && !"".equals(formatLine.getDescription()))
         				{
         					embeddedElement.appendChild(outDocument.createComment(formatLine.getDescription()));
         				}
-        					
+
         				generateExportFormat(embeddedElement, embeddedFormat, instance, instance.get_ID(), variableMap);
         				rootElement.appendChild(embeddedElement);
 				}
 
 
-			} 
-			else if ( formatLine.getType().equals(X_EXP_FormatLine.TYPE_ReferencedEXPFormat) ) 
+			}
+			else if ( formatLine.getType().equals(X_EXP_FormatLine.TYPE_ReferencedEXPFormat) )
 			{
 				// process Referenced Export Format
-				
+
 				int embeddedFormat_ID = formatLine.getEXP_EmbeddedFormat_ID();
 				//get from cache
 				MEXPFormat embeddedFormat =  MEXPFormat.get(masterPO.getCtx(), embeddedFormat_ID, masterPO.get_TrxName());
-				
+
 				MTable tableEmbedded = MTable.get(masterPO.getCtx(), embeddedFormat.getAD_Table_ID());
 				log.info("Table Embedded = " + tableEmbedded);
 
 				final StringBuffer whereClause = new StringBuffer(tableEmbedded.getTableName() + "_ID =?");
-				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause())) 
+				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause()))
 				{
 				    whereClause.append(" AND ").append(embeddedFormat.getWhereClause());
-				
+				}
 				String columnName = "";
 				if(formatLine.getAD_Reference_ID()== DisplayType.Table | formatLine.getAD_Reference_ID()==DisplayType.Search)
 				{
 					MColumn column = MColumn.get(masterPO.getCtx(), formatLine.getAD_Column_ID());
 					columnName = column.getColumnName();
+				}
 				else
 				{
 					columnName = tableEmbedded.getTableName() + "_ID";
@@ -431,33 +432,33 @@ public class ExportHelper {
 
 				Object value = masterPO.get_Value(columnName);
 				if (value == null)
-				{	
+				{
 				    continue;
 				}
-				
+
 				Collection<PO> instances = new Query(masterPO.getCtx(),tableEmbedded.getTableName(), whereClause.toString(),masterPO.get_TrxName())
                                 				.setClient_ID()
                                 				.setParameters(value)
                                 				.list();
 
 				for (PO instance : instances)
-				{		
+				{
         				Element embeddedElement = outDocument.createElement(formatLine.getValue());
-        				if (formatLine.getDescription() != null && !"".equals(formatLine.getDescription())) 
+        				if (formatLine.getDescription() != null && !"".equals(formatLine.getDescription()))
         				{
         					embeddedElement.appendChild(outDocument.createComment(formatLine.getDescription()));
         				}
-        				
+
         				generateExportFormat(embeddedElement, embeddedFormat, instance, instance.get_ID(), variableMap);
         						rootElement.appendChild(embeddedElement);
-				}		
+				}
 
 			}
-			
+
 			else {
 				throw new Exception(Msg.getMsg (masterPO.getCtx(), "EXPUnknownLineType"));
 			}
-		} 
+		}
 	}
 
 	/**
@@ -479,20 +480,20 @@ public class ExportHelper {
 
 	/**
 	 * Utility method which is responsible to create new XML Document
-	 * 
+	 *
 	 * @return Document
 	 * @throws ParserConfigurationException
 	 */
 	// create new Document
-	Document createNewDocument() throws ParserConfigurationException 
+	Document createNewDocument() throws ParserConfigurationException
 	{
 		Document result = null;
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		
+
 		result = documentBuilder.newDocument();
 		return result;
 	}
-	
+
 
 }

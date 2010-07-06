@@ -803,7 +803,7 @@ public class GridController extends CPanel
 
 		//  Process Callout
 		GridField mField = m_mTab.getField(col);
-		if (mField != null
+		if (mField != null) {
 			List<IColumnCallout> callouts = Core.findCallout(m_mTab.getTableName(), mField.getColumnName());
 			if (mField.getCallout().length() > 0 || callouts.size()>0 || m_mTab.hasDependants(mField.getColumnName()))
 			{
