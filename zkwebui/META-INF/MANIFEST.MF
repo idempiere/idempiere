@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: zkwebui
 Bundle-SymbolicName: webui.war;singleton:=true
 Bundle-Version: 0.0.0.2
+Web-ContextPath: webui
 Bundle-ClassPath: WEB-INF/classes/,
  WEB-INF/lib/zk.jar,
  WEB-INF/lib/zcommon.jar,
@@ -372,5 +373,6 @@ Require-Bundle: org.eclipse.osgi.services;bundle-version="3.1.100",
  JasperReports;bundle-version="1.0.0",
  org.adempiere.client;bundle-version="0.0.0",
  org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.tools;bundle-version="0.0.0"
+ org.adempiere.tools;bundle-version="0.0.0",
+ org.adempiere.JasperReportsTools;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

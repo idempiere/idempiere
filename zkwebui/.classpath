@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="WEB-INF/src"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/classes/"/>
 	<classpathentry kind="src" path="/base"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/asm.jar"/>
