@@ -193,6 +193,5 @@ Export-Package: com.keypoint,
  org.jfree.util
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.eclipse.core.runtime;bundle-version="3.5.0",
- org.adempiere.tools;bundle-version="0.0.0",
- org.adempiere.jbossfacet;bundle-version="0.0.0"
+ org.adempiere.tools;bundle-version="0.0.0"
 Bundle-Activator: org.adempiere.client.Activator
