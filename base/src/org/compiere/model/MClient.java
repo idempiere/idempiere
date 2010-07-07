@@ -46,7 +46,7 @@ import org.compiere.util.Language;
  *
  *  @author Jorg Janke
  *  @version $Id: MClient.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
- *  
+ *
  * @author Carlos Ruiz - globalqss
  *    integrate bug fix reported by Teo Sarca
  *    [ 1619085 ] Client setup creates duplicate trees
@@ -56,7 +56,7 @@ import org.compiere.util.Language;
 public class MClient extends X_AD_Client
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6482473737885701403L;
 
@@ -110,7 +110,7 @@ public class MClient extends X_AD_Client
 	/**	Cache						*/
 	private static CCache<Integer,MClient>	s_cache = new CCache<Integer,MClient>("AD_Client", 3);
 
-	
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 * 	@param ctx context
@@ -130,7 +130,7 @@ public class MClient extends X_AD_Client
 			//	setName (null);
 				setAD_Org_ID(0);
 				setIsMultiLingualDocument (false);
-				setIsSmtpAuthorization (false);	
+				setIsSmtpAuthorization (false);
 				setIsUseBetaFunctions (true);
 				setIsServerEMail(false);
 				setAD_Language(Language.getBaseAD_Language());
@@ -246,8 +246,8 @@ public class MClient extends X_AD_Client
 		}
 		return m_language;
 	}	//	getLanguage
-	
-	
+
+
 	/**
 	 * 	Set AD_Language
 	 *	@param AD_Language new language
@@ -257,7 +257,7 @@ public class MClient extends X_AD_Client
 		m_language = null;
 		super.setAD_Language (AD_Language);
 	}	//	setAD_Language
-	
+
 	/**
 	 * 	Get AD_Language
 	 *	@return Language
@@ -281,8 +281,8 @@ public class MClient extends X_AD_Client
 			return lang.getLocale();
 		return Locale.getDefault();
 	}	//	getLocale
-	
-	
+
+
 	/**************************************************************************
 	 * 	Create Trees and Setup Client Info
 	 * 	@param language language
@@ -390,7 +390,7 @@ public class MClient extends X_AD_Client
 
 		//	Create ClientInfo
 		MClientInfo clientInfo = new MClientInfo (this,
-			AD_Tree_Org_ID, AD_Tree_BPartner_ID, AD_Tree_Project_ID, 
+			AD_Tree_Org_ID, AD_Tree_BPartner_ID, AD_Tree_Project_ID,
 			AD_Tree_SalesRegion_ID, AD_Tree_Product_ID,
 			AD_Tree_Campaign_ID, AD_Tree_Activity_ID, get_TrxName());
 		success = clientInfo.save();
@@ -398,7 +398,7 @@ public class MClient extends X_AD_Client
 	}	//	createTrees
 
 	/**
-	 * 	Get AD_Tree_Account_ID created in setup client info 
+	 * 	Get AD_Tree_Account_ID created in setup client info
 	 *	@return Account Tree ID
 	 */
 	public int getSetup_AD_Tree_Account_ID()
@@ -415,8 +415,8 @@ public class MClient extends X_AD_Client
 		String aa = getAutoArchive();
 		return aa != null && !aa.equals(AUTOARCHIVE_None);
 	}	//	isAutoArchive
-	
-	
+
+
 	/**
 	 * 	Update Trl Tables automatically?
 	 * 	@param TableName table name
@@ -433,7 +433,7 @@ public class MClient extends X_AD_Client
 			return false;
 		return true;
 	}	//	isMultiLingualDocument
-	
+
 	/**
 	 *	Get Primary Accounting Schema
 	 *	@return Acct Schema or null
@@ -450,7 +450,7 @@ public class MClient extends X_AD_Client
 		}
 		return null;
 	}	//	getMClientInfo
-	
+
 	/**
 	 * 	Save
 	 *	@return true if saved
@@ -461,8 +461,8 @@ public class MClient extends X_AD_Client
 			return saveUpdate();
 		return super.save ();
 	}	//	save
-	
-	
+
+
 	/**************************************************************************
 	 * 	Test EMail
 	 *	@return OK or error
@@ -473,7 +473,7 @@ public class MClient extends X_AD_Client
 			return "No Request EMail for " + getName();
 		//
 		EMail email = createEMail (getRequestEMail(),
-			"Adempiere EMail Test", 
+			"Adempiere EMail Test",
 			"Adempiere EMail Test: " + toString());
 		if (email == null)
 			return "Could not create EMail: " + getName();
@@ -500,7 +500,7 @@ public class MClient extends X_AD_Client
 			return ex.getLocalizedMessage();
 		}
 	}	//	testEMail
-	
+
 	/**
 	 * 	Send EMail from Request User - with trace
 	 *	@param AD_User_ID recipient
@@ -509,7 +509,7 @@ public class MClient extends X_AD_Client
 	 *	@param attachment optional attachment
 	 *	@return true if sent
 	 */
-	public boolean sendEMail (int AD_User_ID, 
+	public boolean sendEMail (int AD_User_ID,
 			String subject, String message, File attachment)
 	{
 		Collection<File> attachments = new ArrayList<File>();
@@ -517,7 +517,7 @@ public class MClient extends X_AD_Client
 			attachments.add(attachment);
 		return sendEMailAttachments(AD_User_ID, subject, message, attachments);
 	}
-	
+
 	/**
 	 * 	Send EMail from Request User - with trace
 	 *	@param AD_User_ID recipient
@@ -526,12 +526,12 @@ public class MClient extends X_AD_Client
 	 *	@param attachment optional collection of attachments
 	 *	@return true if sent
 	 */
-	public boolean sendEMailAttachments (int AD_User_ID, 
+	public boolean sendEMailAttachments (int AD_User_ID,
 		String subject, String message, Collection<File> attachments)
 	{
 		return sendEMailAttachments(AD_User_ID, subject, message, attachments, false);
 	}
-	
+
 	/**
 	 * 	Send EMail from Request User - with trace
 	 *	@param AD_User_ID recipient
@@ -541,11 +541,11 @@ public class MClient extends X_AD_Client
 	 *  @param html
 	 *	@return true if sent
 	 */
-	public boolean sendEMailAttachments (int AD_User_ID, 
+	public boolean sendEMailAttachments (int AD_User_ID,
 		String subject, String message, Collection<File> attachments, boolean html)
 	{
 		MUser to = MUser.get(getCtx(), AD_User_ID);
-		String toEMail = to.getEMail(); 
+		String toEMail = to.getEMail();
 		if (toEMail == null || toEMail.length() == 0)
 		{
 			log.warning("No EMail for recipient: " + to);
@@ -565,7 +565,7 @@ public class MClient extends X_AD_Client
 			return false;
 		}
 	}	//	sendEMail
-	
+
 	/**
 	 * 	Send EMail from Request User - no trace
 	 *	@param to recipient email address
@@ -574,12 +574,12 @@ public class MClient extends X_AD_Client
 	 *	@param attachment optional attachment
 	 *	@return true if sent
 	 */
-	public boolean sendEMail (String to, 
+	public boolean sendEMail (String to,
 		String subject, String message, File attachment)
 	{
 		return sendEMail(to, subject, message, attachment, false);
 	}
-	
+
 	/**
 	 * 	Send EMail from Request User - no trace
 	 *	@param to recipient email address
@@ -589,7 +589,7 @@ public class MClient extends X_AD_Client
 	 *  @param html
 	 *	@return true if sent
 	 */
-	public boolean sendEMail (String to, 
+	public boolean sendEMail (String to,
 		String subject, String message, File attachment, boolean html)
 	{
 		EMail email = createEMail(to, subject, message, html);
@@ -607,7 +607,7 @@ public class MClient extends X_AD_Client
 			}
 			else
 			{
-				log.warning("Could NOT Send Email: " + subject 
+				log.warning("Could NOT Send Email: " + subject
 					+ " to " + to + ": " + msg
 					+ " (" + getName() + ")");
 				return false;
@@ -629,12 +629,12 @@ public class MClient extends X_AD_Client
 	 *	@param attachment optional attachment
 	 *	@return true if sent
 	 */
-	public boolean sendEMail (MUser from, MUser to, 
+	public boolean sendEMail (MUser from, MUser to,
 		String subject, String message, File attachment)
 	{
 		return sendEMail(from, to, subject, message, attachment, false);
 	}
-	
+
 	/**
 	 * 	Send EMail from User
 	 * 	@param from sender
@@ -645,13 +645,13 @@ public class MClient extends X_AD_Client
 	 *  @param isHtml
 	 *	@return true if sent
 	 */
-	public boolean sendEMail (MUser from, MUser to, 
+	public boolean sendEMail (MUser from, MUser to,
 		String subject, String message, File attachment, boolean isHtml)
 	{
 		EMail email = createEMail(from, to, subject, message, isHtml);
 		if (email == null)
 			return false;
-		
+
 		if (attachment != null)
 			email.addAttachment(attachment);
 		InternetAddress emailFrom = email.getFrom();
@@ -696,11 +696,11 @@ public class MClient extends X_AD_Client
 		if (email.isSentOK())
 		{
 			if (from != null)
-				log.info("Sent Email: " + email.getSubject() 
+				log.info("Sent Email: " + email.getSubject()
 					+ " from " + from.getEMail()
 					+ " to " + to.getEMail());
 			else
-				log.info("Sent Email: " + email.getSubject() 
+				log.info("Sent Email: " + email.getSubject()
 					+ " to " + to.getEMail());
 			return true;
 		}
@@ -726,12 +726,12 @@ public class MClient extends X_AD_Client
 	 *	@param message nessage
 	 *	@return EMail
 	 */
-	public EMail createEMail (String to, 
+	public EMail createEMail (String to,
 		String subject, String message)
 	{
 		return createEMail(to, subject, message, false);
 	}
-	
+
 	/************
 	 * 	Create EMail from Request User
 	 *	@param to recipient
@@ -740,7 +740,7 @@ public class MClient extends X_AD_Client
 	 *  @param html
 	 *	@return EMail
 	 */
-	public EMail createEMail (String to, 
+	public EMail createEMail (String to,
 		String subject, String message, boolean html)
 	{
 		if (to == null || to.length() == 0)
@@ -759,11 +759,11 @@ public class MClient extends X_AD_Client
 				{	//	See ServerBean
 					if (html && message != null)
 						message = EMail.HTML_MAIL_MARKER + message;
-					email = server.createEMail(Env.getRemoteCallCtx(getCtx()), getAD_Client_ID(), 
+					email = server.createEMail(Env.getRemoteCallCtx(getCtx()), getAD_Client_ID(),
 						to, subject, message);
 				}
 				else
-					log.log(Level.WARNING, "No AppsServer"); 
+					log.log(Level.WARNING, "No AppsServer");
 			}
 			catch (Exception ex)
 			{
@@ -787,12 +787,12 @@ public class MClient extends X_AD_Client
 	 *	@param message nessage
 	 *	@return EMail
 	 */
-	public EMail createEMail (MUser from, MUser to, 
+	public EMail createEMail (MUser from, MUser to,
 		String subject, String message)
 	{
 		return createEMail(from, to, subject, message, false);
 	}
-	
+
 	/**
 	 * 	Create EMail from User
 	 * 	@param from optional sender
@@ -802,7 +802,7 @@ public class MClient extends X_AD_Client
 	 *  @param html
 	 *	@return EMail
 	 */
-	public EMail createEMail (MUser from, MUser to, 
+	public EMail createEMail (MUser from, MUser to,
 		String subject, String message, boolean html)
 	{
 		if (to == null)
@@ -817,7 +817,7 @@ public class MClient extends X_AD_Client
 		}
 		return createEMail (from, to.getEMail(), subject, message, html);
 	}	//	createEMail
-	
+
 	/**
 	 * 	Create EMail from User
 	 * 	@param from optional sender
@@ -826,12 +826,12 @@ public class MClient extends X_AD_Client
 	 *	@param message nessage
 	 *	@return EMail
 	 */
-	public EMail createEMail (MUser from, String to, 
+	public EMail createEMail (MUser from, String to,
 		String subject, String message)
 	{
 		return createEMail(from, to, subject, message, false);
 	}
-	
+
 	/**
 	 * 	Create EMail from User
 	 * 	@param from optional sender
@@ -841,7 +841,7 @@ public class MClient extends X_AD_Client
 	 *  @param html
 	 *	@return EMail
 	 */
-	public EMail createEMail (MUser from, String to, 
+	public EMail createEMail (MUser from, String to,
 		String subject, String message, boolean html)
 	{
 		if (to == null || to.length() == 0)
@@ -853,7 +853,7 @@ public class MClient extends X_AD_Client
 		if (from == null)
 			return createEMail (to, subject, message, html);
 		//	No From details - Error
-		if (from.getEMail() == null 
+		if (from.getEMail() == null
 			|| from.getEMailUser() == null
 			|| (isSmtpAuthorization() && from.getEMailUserPW() == null) ) // is SMTP authorization and password is null - teo_sarca [ 1723309 ]
 		{
@@ -876,7 +876,7 @@ public class MClient extends X_AD_Client
 						to, subject, message);
 				}
 				else
-					log.log(Level.WARNING, "No AppsServer"); 
+					log.log(Level.WARNING, "No AppsServer");
 			}
 			catch (Exception ex)
 			{
@@ -885,9 +885,9 @@ public class MClient extends X_AD_Client
 		}
 		if (email == null)
 			email = new EMail (this,
-				   from.getEMail(), 
+				   from.getEMail(),
 				   to,
-				   subject, 
+				   subject,
 				   message, html);
 		if (isSmtpAuthorization())
 			email.createAuthenticator (from.getEMailUser(), from.getEMailUserPW());
@@ -900,7 +900,7 @@ public class MClient extends X_AD_Client
 	 *   D - Disabled (default)
 	 *   Q - Queue (enabled to post by hand - queue documents for posterior processing)
 	 *   I - Immediate (immediate post - allow complete on errors)
-	 *   
+	 *
 	 *	@return boolean representing if client accounting is enabled and it's on a client
 	 */
 	private static final String CLIENT_ACCOUNTING_DISABLED = "D";
@@ -909,21 +909,21 @@ public class MClient extends X_AD_Client
 
 	public static boolean isClientAccounting() {
 		String ca = MSysConfig.getValue("CLIENT_ACCOUNTING",
-				CLIENT_ACCOUNTING_DISABLED, // default
+				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE) || ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE));
 	}
 
 	public static boolean isClientAccountingQueue() {
 		String ca = MSysConfig.getValue("CLIENT_ACCOUNTING",
-				CLIENT_ACCOUNTING_DISABLED, // default
+				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE);
 	}
 
 	public static boolean isClientAccountingImmediate() {
 		String ca = MSysConfig.getValue("CLIENT_ACCOUNTING",
-				CLIENT_ACCOUNTING_DISABLED, // default
+				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE);
 	}
@@ -991,7 +991,7 @@ public class MClient extends X_AD_Client
 				 + "           WHERE ce.AD_Client_ID = " + getAD_Client_ID()
 				 + "             AND ce.IsActive = 'Y' "
 				 + "             AND ce.AD_Field_ID IS NOT NULL "
-				 + "             AND ce.ASP_Status = 'H')" 
+				 + "             AND ce.ASP_Status = 'H')"
 				 + " ORDER BY AD_Field_ID";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
