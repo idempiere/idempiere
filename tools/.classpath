@@ -135,5 +135,12 @@
 	<classpathentry exported="true" kind="lib" path="lib/jpedal.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant-commons-net.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="lib/cglib.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/logkit.jar"/>
+	<classpathentry kind="lib" path="lib/jgraph.jar"/>
+	<classpathentry kind="lib" path="lib/wizard.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
