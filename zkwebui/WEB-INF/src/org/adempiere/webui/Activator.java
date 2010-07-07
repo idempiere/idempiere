@@ -21,7 +21,7 @@ import org.zkoss.zk.au.http.DHtmlUpdateServlet;
 public class Activator extends Plugin {
 
 	private ServiceTracker httpServiceTracker;
-	
+
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Starting WebUI");
 		httpServiceTracker = new HttpServiceTracker(context);
@@ -35,23 +35,23 @@ public class Activator extends Plugin {
 	}
 
 	private class HttpServiceTracker extends ServiceTracker {
-
+		private BundleContext context;
 		public HttpServiceTracker(BundleContext context) {
 			super(context, HttpService.class.getName(), null);
+			this.context = context;
 		}
 
 		public Object addingService(ServiceReference reference) {
 			HttpService httpService = (HttpService) context.getService(reference);
 			System.out.println("Adding zkLoader: "+httpService);
-			try {			
+			try {
 //				MappingServlet mapping = new MappingServlet();
 
 				Hashtable<String, String> params = new Hashtable<String, String>();
 				params.put("update-uri", "/zkau");
 				HttpContext ctx = httpService.createDefaultHttpContext();
-				httpService.registerServlet("/*.zul", new WebUIServlet(), params , ctx); //$NON-NLS-1$
-				httpService.registerServlet("/*.zhtml", new WebUIServlet(), params , ctx); //$NON-NLS-1$
-				
+				WebUIServlet webuiServlet = new WebUIServlet();
+				httpService.registerServlet("/*.zul", webuiServlet, params , ctx); //$NON-NLS-1$
 				DelegatingServlet updateServlet = new DelegatingServlet(new DHtmlUpdateServlet()) {
 					private ServletConfig cfg;
 					@Override
@@ -66,19 +66,21 @@ public class Activator extends Plugin {
 					}
 				};
 				httpService.registerServlet("/zkau", updateServlet, params , ctx); //$NON-NLS-1$
-				
-				httpService.registerResources("/", "/", ctx);
-				
+//				httpService.registerServlet("/*.zhtml", webuiServlet, params , ctx); //$NON-NLS-1$
+				httpService.registerResources("/", "/WebContent", ctx);
+				httpService.registerResources("/WEB-INF/zk.xml", "/zk.xml", ctx);
+
 				System.out.println("zkLoader added: " + httpService.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			return httpService;
-		}		
-		
+		}
+
 		public void removedService(ServiceReference reference, Object service) {
 			HttpService httpService = (HttpService) service;
 			httpService.unregister("/"); //$NON-NLS-1$
+			System.out.println("zkLoader removedss: " + httpService.toString());
 			super.removedService(reference, service);
 		}
 	}

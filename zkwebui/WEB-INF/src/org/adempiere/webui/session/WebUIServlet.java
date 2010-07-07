@@ -40,7 +40,7 @@ import org.compiere.util.Ini;
 import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
 
 /**
- * 
+ *
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -48,40 +48,51 @@ import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
 public class WebUIServlet extends DHtmlLayoutServlet
 {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 261899419681731L;
-	
+
 	/** Logger for the class * */
     private static final CLogger logger;
 
     static
     {
-        logger = CLogger.getCLogger(WebUIServlet.class); 
+        logger = CLogger.getCLogger(WebUIServlet.class);
     }
 
 	private ServletConfig servletConfig;
 
     public void init(ServletConfig servletConfig) throws ServletException
     {
+    	System.out.println("WebUIServlet init ...");
         super.init(servletConfig);
 
         // HttpBrigde requires config
         this.servletConfig = servletConfig;
-        
+
         /** Initialise context for the current thread*/
         ServerContext.newInstance();
         Env.setContextProvider(new ZkContextProvider());
-        
+
         /**
          * Start ADempiere
          */
+        logger.info("Starting ADempiere...");
+        try
+        {
+            CLogMgt.initialize(false);
+        }
+        catch(Exception ex)
+        {
+            logger.log(Level.SEVERE, "Could not initialize ADempiere logging Management", ex);
+        }
+
         boolean started = Adempiere.startup(false);
         if(!started)
         {
             throw new ServletException("Could not start ADempiere");
         }
-        
+
         // hengsin: temporary solution for problem with zk client
         Ini.setProperty(Ini.P_ADEMPIERESYS, false);
         ReportCtl.setReportViewerProvider(new ZkReportViewerProvider());
@@ -101,7 +112,7 @@ public class WebUIServlet extends DHtmlLayoutServlet
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException
     {
-        
+
         super.doPost(request, response);
     }
 
