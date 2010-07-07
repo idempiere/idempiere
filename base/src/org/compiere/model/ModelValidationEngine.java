@@ -35,10 +35,10 @@ import org.compiere.util.KeyNamePair;
 
 /**
  *	Model Validation Engine
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: ModelValidationEngine.java,v 1.2 2006/07/30 00:58:38 jjanke Exp $
- * 
+ *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>FR [ 1670025 ] ModelValidator.afterLoadPreferences will be useful
  * 				<li>BF [ 1679692 ] fireDocValidate doesn't treat exceptions as errors
@@ -50,9 +50,9 @@ import org.compiere.util.KeyNamePair;
  * 				<li>BF [ 2819617 ] NPE if script validator rule returns null
  * 					https://sourceforge.net/tracker/?func=detail&aid=2819617&group_id=176962&atid=879332
  * @author victor.perez@e-evolution.com, www.e-evolution.com
- * 				<li>BF [ 2947607 ] Model Validator Engine duplicate listeners 
+ * 				<li>BF [ 2947607 ] Model Validator Engine duplicate listeners
  */
-public class ModelValidationEngine 
+public class ModelValidationEngine
 {
 
 	/**
@@ -65,13 +65,13 @@ public class ModelValidationEngine
 			s_engine = new ModelValidationEngine();
 		return s_engine;
 	}	//	get
-	
+
 	/** Engine Singleton				*/
 	private static ModelValidationEngine s_engine = null;
 	/* flag to indicate a missing model validation class */
-	private static String missingModelValidationMessage = null; 
-	
-	
+	private static String missingModelValidationMessage = null;
+
+
 	/**************************************************************************
 	 * 	Constructor.
 	 * 	Creates Model Validators
@@ -80,7 +80,7 @@ public class ModelValidationEngine
 	{
 		super ();
 		// Load global validators
-		
+
 		MTable table = MTable.get(Env.getCtx(), X_AD_ModelValidator.Table_ID);
 		Query query = table.createQuery("IsActive='Y'", null);
 		query.setOrderBy("SeqNo");
@@ -96,14 +96,13 @@ public class ModelValidationEngine
 		} catch (Exception e)
 		{
 			//logging to db will try to init ModelValidationEngine again!
-			//log.warning(e.getLocalizedMessage());
-			// System.err.println(e.getLocalizedMessage());
+			e.printStackTrace();
 			missingModelValidationMessage = missingModelValidationMessage + e.toString() + " global" + '\n';
 		}
-		
-		// Go through all Clients and start Validators 
+
+		// Go through all Clients and start Validators
 		MClient[] clients = MClient.getAll(Env.getCtx());
-		for (int i = 0; i < clients.length; i++) 
+		for (int i = 0; i < clients.length; i++)
 		{
 			String classNames = clients[i].getModelValidationClasses();
 			if (classNames == null || classNames.length() == 0)
@@ -114,13 +113,13 @@ public class ModelValidationEngine
 		//log.config(toString());
 		// System.out.println(toString());
 	}	//	ModelValidatorEngine
-	
-	private void loadValidatorClasses(MClient client, String classNames) 
+
+	private void loadValidatorClasses(MClient client, String classNames)
 	{
 		StringTokenizer st = new StringTokenizer(classNames, ";");
 		while (st.hasMoreTokens())
 		{
-			String className = null;			
+			String className = null;
 			try
 			{
 				className = st.nextToken();
@@ -130,36 +129,34 @@ public class ModelValidationEngine
 				if (className.length() == 0)
 					continue;
 				//
-				loadValidatorClass(client, className);					
+				loadValidatorClass(client, className);
 			}
 			catch (Exception e)
 			{
 				//logging to db will try to init ModelValidationEngine again!
-				//log.log(Level.SEVERE, className + ": " + e.getMessage());
-				// System.err.println(className + ": " + e.getMessage());
+				e.printStackTrace();
 				missingModelValidationMessage = missingModelValidationMessage + e.toString() + " on client " + client.getName() + '\n';
 			}
 		}
 	}
-	
+
 	private void loadValidatorClass(MClient client, String className) {
 		try
 		{
 			//
 			Class<?> clazz = Class.forName(className);
 			ModelValidator validator = (ModelValidator)clazz.newInstance();
-			initialize(validator, client);					
+			initialize(validator, client);
 		}
 		catch (Exception e)
 		{
 			//logging to db will try to init ModelValidationEngine again!
-			//log.log(Level.SEVERE, className + ": " + e.getMessage());
-			// System.err.println(e.toString());
-			missingModelValidationMessage = missingModelValidationMessage + e.toString() + 
+			e.printStackTrace();
+			missingModelValidationMessage = missingModelValidationMessage + e.toString() +
 			 (client != null ? (" on client " + client.getName()) : " global") + '\n';
 		}
 	}
-	
+
 	/**	Logger					*/
 	private static CLogger log = CLogger.getCLogger(ModelValidationEngine.class);
 //	/** Change Support			*/
@@ -175,9 +172,9 @@ public class ModelValidationEngine
 	private Hashtable<String,ArrayList<FactsValidator>>m_factsValidateListeners = new Hashtable<String,ArrayList<FactsValidator>>();
 	/** Data Import Validation Listeners   */
 	private Hashtable<String,ArrayList<ImportValidator>>m_impValidateListeners = new Hashtable<String,ArrayList<ImportValidator>>();
-	
+
 	private ArrayList<ModelValidator> m_globalValidators = new ArrayList<ModelValidator>();
-	
+
 	/**
 	 * 	Initialize and add validator
 	 *	@param validator
@@ -188,8 +185,8 @@ public class ModelValidationEngine
 		if (client == null)
 			m_globalValidators.add(validator);
 		m_validators.add(validator);
-		validator.initialize(this, client);		
-		
+		validator.initialize(this, client);
+
 	}	//	initialize
 
 	/**
@@ -202,7 +199,7 @@ public class ModelValidationEngine
 	 */
 	public String loginComplete (int AD_Client_ID, int AD_Org_ID, int AD_Role_ID, int AD_User_ID)
 	{
-		for (int i = 0; i < m_validators.size(); i++) 
+		for (int i = 0; i < m_validators.size(); i++)
 		{
 			ModelValidator validator = (ModelValidator)m_validators.get(i);
 			if (AD_Client_ID == validator.getAD_Client_ID()
@@ -213,7 +210,7 @@ public class ModelValidationEngine
 					return error;
 			}
 		}
-		
+
 		// now process the script model validator login
 		List<MRule> loginRules = MRule.getModelValidatorLoginRules (Env.getCtx());
 		if (loginRules != null) {
@@ -226,13 +223,13 @@ public class ModelValidationEngine
 						ScriptEngine engine = loginRule.getScriptEngine();
 
 						MRule.setContext(engine, Env.getCtx(), 0);  // no window
-						// now add the method arguments to the engine 
+						// now add the method arguments to the engine
 						engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", Env.getCtx());
 						engine.put(MRule.ARGUMENTS_PREFIX + "AD_Client_ID", AD_Client_ID);
 						engine.put(MRule.ARGUMENTS_PREFIX + "AD_Org_ID", AD_Org_ID);
 						engine.put(MRule.ARGUMENTS_PREFIX + "AD_Role_ID", AD_Role_ID);
 						engine.put(MRule.ARGUMENTS_PREFIX + "AD_User_ID", AD_User_ID);
-					
+
 						Object retval = engine.eval(loginRule.getScript());
 						error = (retval == null ? "" : retval.toString());
 					} catch (Exception e) {
@@ -245,7 +242,7 @@ public class ModelValidationEngine
 			}
 		}
 		//
-		
+
 		if (AD_User_ID == 0 && AD_Role_ID == 0)
 			; // don't validate for user system on role system
 		else
@@ -256,8 +253,8 @@ public class ModelValidationEngine
 			}
 		return null;
 	}	//	loginComplete
-	
-	
+
+
 	/**************************************************************************
 	 * 	Add Model Change Listener
 	 *	@param tableName table name
@@ -269,7 +266,7 @@ public class ModelValidationEngine
 			return;
 		//
 		String propertyName =
-			m_globalValidators.contains(listener) 
+			m_globalValidators.contains(listener)
 				? tableName + "*"
 				: tableName + listener.getAD_Client_ID();
 		ArrayList<ModelValidator> list = (ArrayList<ModelValidator>)m_modelChangeListeners.get(propertyName);
@@ -292,8 +289,8 @@ public class ModelValidationEngine
 	{
 		if (tableName == null || listener == null)
 			return;
-		String propertyName = 
-			m_globalValidators.contains(listener) 
+		String propertyName =
+			m_globalValidators.contains(listener)
 				? tableName + "*"
 				: tableName + listener.getAD_Client_ID();
 		ArrayList<ModelValidator> list = m_modelChangeListeners.get(propertyName);
@@ -303,7 +300,7 @@ public class ModelValidationEngine
 		if (list.size() == 0)
 			m_modelChangeListeners.remove(propertyName);
 	}	//	removeModelValidator
-	
+
 	/**
 	 * 	Fire Model Change.
 	 * 	Call modelChange method of added validators
@@ -315,7 +312,7 @@ public class ModelValidationEngine
 	{
 		if (po == null || m_modelChangeListeners.size() == 0)
 			return null;
-		
+
 		String propertyName = po.get_TableName() + "*";
 		ArrayList<ModelValidator> list = m_modelChangeListeners.get(propertyName);
 		if (list != null)
@@ -325,7 +322,7 @@ public class ModelValidationEngine
 			if (error != null && error.length() > 0)
 				return error;
 		}
-		
+
 		propertyName = po.get_TableName() + po.getAD_Client_ID();
 		list = m_modelChangeListeners.get(propertyName);
 		if (list != null)
@@ -335,18 +332,18 @@ public class ModelValidationEngine
 			if (error != null && error.length() > 0)
 				return error;
 		}
-		
+
 		// now process the script model validator for this event
-		List<MTableScriptValidator> scriptValidators = 
+		List<MTableScriptValidator> scriptValidators =
 			MTableScriptValidator.getModelValidatorRules(
-					po.getCtx(), 
+					po.getCtx(),
 					po.get_Table_ID(),
 					ModelValidator.tableEventValidators[changeType]);
 		if (scriptValidators != null) {
 			for (MTableScriptValidator scriptValidator : scriptValidators) {
 				MRule rule = MRule.get(po.getCtx(), scriptValidator.getAD_Rule_ID());
 				// currently just JSR 223 supported
-				if (   rule != null 
+				if (   rule != null
 					&& rule.isActive()
 					&& rule.getRuleType().equals(MRule.RULETYPE_JSR223ScriptingAPIs)
 					&& rule.getEventType().equals(MRule.EVENTTYPE_ModelValidatorTableEvent)) {
@@ -355,12 +352,12 @@ public class ModelValidationEngine
 						ScriptEngine engine = rule.getScriptEngine();
 
 						MRule.setContext(engine, po.getCtx(), 0);  // no window
-						// now add the method arguments to the engine 
+						// now add the method arguments to the engine
 						engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", po.getCtx());
 						engine.put(MRule.ARGUMENTS_PREFIX + "PO", po);
 						engine.put(MRule.ARGUMENTS_PREFIX + "Type", changeType);
 						engine.put(MRule.ARGUMENTS_PREFIX + "Event", ModelValidator.tableEventValidators[changeType]);
-					
+
 						Object retval = engine.eval(rule.getScript());
 						error = (retval == null ? "" : retval.toString());
 					} catch (Exception e) {
@@ -373,10 +370,10 @@ public class ModelValidationEngine
 			}
 		}
 		//
-		
+
 		return null;
 	}	//	fireModelChange
-	
+
 	private String fireModelChange(PO po, int changeType, ArrayList<ModelValidator> list)
 	{
 		for (int i = 0; i < list.size(); i++)
@@ -410,8 +407,8 @@ public class ModelValidationEngine
 		}
 		return null;
 	}
-	
-	
+
+
 	/**************************************************************************
 	 * 	Add Document Validation Listener
 	 *	@param tableName table name
@@ -422,8 +419,8 @@ public class ModelValidationEngine
 		if (tableName == null || listener == null)
 			return;
 		//
-		String propertyName = 
-			m_globalValidators.contains(listener) 
+		String propertyName =
+			m_globalValidators.contains(listener)
 				? tableName + "*"
 				: tableName + listener.getAD_Client_ID();
 		ArrayList<ModelValidator> list = (ArrayList<ModelValidator>)m_docValidateListeners.get(propertyName);
@@ -434,7 +431,7 @@ public class ModelValidationEngine
 			m_docValidateListeners.put(propertyName, list);
 		}
 		else if (!list.contains(listener))
-		{    
+		{
 		    list.add(listener);
 		}
 	}	//	addDocValidate
@@ -448,8 +445,8 @@ public class ModelValidationEngine
 	{
 		if (tableName == null || listener == null)
 			return;
-		String propertyName = 
-			m_globalValidators.contains(listener) 
+		String propertyName =
+			m_globalValidators.contains(listener)
 				? tableName + "*"
 				: tableName + listener.getAD_Client_ID();
 		ArrayList<ModelValidator> list = m_docValidateListeners.get(propertyName);
@@ -459,7 +456,7 @@ public class ModelValidationEngine
 		if (list.size() == 0)
 			m_docValidateListeners.remove(propertyName);
 	}	//	removeDocValidate
-	
+
 	/**
 	 * 	Fire Document Validation.
 	 * 	Call docValidate method of added validators
@@ -471,7 +468,7 @@ public class ModelValidationEngine
 	{
 		if (po == null || m_docValidateListeners.size() == 0)
 			return null;
-		
+
 		String propertyName = po.get_TableName() + "*";
 		ArrayList<ModelValidator> list = m_docValidateListeners.get(propertyName);
 		if (list != null)
@@ -481,7 +478,7 @@ public class ModelValidationEngine
 			if (error != null && error.length() > 0)
 				return error;
 		}
-		
+
 		propertyName = po.get_TableName() + po.getAD_Client_ID();
 		list = m_docValidateListeners.get(propertyName);
 		if (list != null)
@@ -491,18 +488,18 @@ public class ModelValidationEngine
 			if (error != null && error.length() > 0)
 				return error;
 		}
-		
+
 		// now process the script model validator for this event
-		List<MTableScriptValidator> scriptValidators = 
+		List<MTableScriptValidator> scriptValidators =
 			MTableScriptValidator.getModelValidatorRules(
-					po.getCtx(), 
+					po.getCtx(),
 					po.get_Table_ID(),
 					ModelValidator.documentEventValidators[docTiming]);
 		if (scriptValidators != null) {
 			for (MTableScriptValidator scriptValidator : scriptValidators) {
 				MRule rule = MRule.get(po.getCtx(), scriptValidator.getAD_Rule_ID());
 				// currently just JSR 223 supported
-				if (   rule != null 
+				if (   rule != null
 					&& rule.isActive()
 					&& rule.getRuleType().equals(MRule.RULETYPE_JSR223ScriptingAPIs)
 					&& rule.getEventType().equals(MRule.EVENTTYPE_ModelValidatorDocumentEvent)) {
@@ -511,12 +508,12 @@ public class ModelValidationEngine
 						ScriptEngine engine = rule.getScriptEngine();
 
 						MRule.setContext(engine, po.getCtx(), 0);  // no window
-						// now add the method arguments to the engine 
+						// now add the method arguments to the engine
 						engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", po.getCtx());
 						engine.put(MRule.ARGUMENTS_PREFIX + "PO", po);
 						engine.put(MRule.ARGUMENTS_PREFIX + "Type", docTiming);
 						engine.put(MRule.ARGUMENTS_PREFIX + "Event", ModelValidator.documentEventValidators[docTiming]);
-					
+
 						Object retval = engine.eval(rule.getScript());
 						error = (retval == null ? "" : retval.toString());
 					} catch (Exception e) {
@@ -532,7 +529,7 @@ public class ModelValidationEngine
 
 		return null;
 	}	//	fireDocValidate
-	
+
 	private String fireDocValidate(PO po, int docTiming, ArrayList<ModelValidator> list)
 	{
 		for (int i = 0; i < list.size(); i++)
@@ -568,7 +565,7 @@ public class ModelValidationEngine
 		}
 		return null;
 	}
-	
+
 	/**************************************************************************
 	 * 	Add Accounting Facts Validation Listener
 	 *	@param tableName table name
@@ -579,8 +576,8 @@ public class ModelValidationEngine
 		if (tableName == null || listener == null)
 			return;
 		//
-		String propertyName = 
-			m_globalValidators.contains(listener) 
+		String propertyName =
+			m_globalValidators.contains(listener)
 				? tableName + "*"
 				: tableName + listener.getAD_Client_ID();
 		ArrayList<FactsValidator> list = (ArrayList<FactsValidator>)m_factsValidateListeners.get(propertyName);
@@ -624,8 +621,8 @@ public class ModelValidationEngine
 	{
 		if (tableName == null || listener == null)
 			return;
-		String propertyName = 
-			m_globalValidators.contains(listener) 
+		String propertyName =
+			m_globalValidators.contains(listener)
 				? tableName + "*"
 				: tableName + listener.getAD_Client_ID();
 		ArrayList<FactsValidator> list = m_factsValidateListeners.get(propertyName);
@@ -635,7 +632,7 @@ public class ModelValidationEngine
 		if (list.size() == 0)
 			m_factsValidateListeners.remove(propertyName);
 	}	//	removeFactsValidate
-	
+
 	/**
 	 * Fire Accounting Facts Validation.
 	 * Call factsValidate method of added validators
@@ -649,7 +646,7 @@ public class ModelValidationEngine
 	{
 		if (schema == null || facts == null || po == null || m_factsValidateListeners.size() == 0)
 			return null;
-		
+
 		String propertyName = po.get_TableName() + "*";
 		ArrayList<FactsValidator> list = (ArrayList<FactsValidator>)m_factsValidateListeners.get(propertyName);
 		if (list != null)
@@ -659,7 +656,7 @@ public class ModelValidationEngine
 			if (error != null && error.length() > 0)
 				return error;
 		}
-		
+
 		propertyName = po.get_TableName() + po.getAD_Client_ID();
 		list = (ArrayList<FactsValidator>)m_factsValidateListeners.get(propertyName);
 		if (list != null)
@@ -669,10 +666,10 @@ public class ModelValidationEngine
 			if (error != null && error.length() > 0)
 				return error;
 		}
-		
+
 		return null;
 	}	//	fireFactsValidate
-	
+
 	private String fireFactsValidate(MAcctSchema schema, List<Fact> facts, PO po,  ArrayList<FactsValidator> list)
 	{
 		for (int i = 0; i < list.size(); i++)
@@ -699,7 +696,7 @@ public class ModelValidationEngine
 			{
 				//log the stack trace
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				// Exeptions are errors and should stop the document processing - teo_sarca [ 1679692 ]				
+				// Exeptions are errors and should stop the document processing - teo_sarca [ 1679692 ]
 				String error = e.getLocalizedMessage();
 				if (error == null)
 					error = e.toString();
@@ -713,7 +710,7 @@ public class ModelValidationEngine
 	 * Fire Import Validation.
 	 * Call {@link ImportValidator#validate(ImportProcess, Object, Object, int)} or registered validators.
 	 * @param process import process
-	 * @param importModel import record (e.g. X_I_BPartner)  
+	 * @param importModel import record (e.g. X_I_BPartner)
 	 * @param targetModel target model (e.g. MBPartner, MBPartnerLocation, MUser)
 	 * @param timing see ImportValidator.TIMING_* constants
 	 */
@@ -721,7 +718,7 @@ public class ModelValidationEngine
 	{
 		if (m_impValidateListeners.size() == 0)
 			return;
-		
+
 		String propertyName = process.getImportTableName() + "*";
 		ArrayList<ImportValidator> list = (ArrayList<ImportValidator>)m_impValidateListeners.get(propertyName);
 		if (list != null)
@@ -732,7 +729,7 @@ public class ModelValidationEngine
 			}
 		}
 	}
-	
+
 	/**
 	* 	String Representation
 	*	@return info
@@ -746,13 +743,13 @@ public class ModelValidationEngine
 			.append("]");
 		return sb.toString();
 	}	//	toString
-	
+
 	/**
 	 *  Create Model Validators Info
 	 *  @param sb optional string buffer
 	 *  @param ctx context
 	 *  @return Model Validators Info
-	 *  
+	 *
 	 *  @author Teo Sarca, FR [ 1724662 ]
 	 */
 	public StringBuffer getInfoDetail(StringBuffer sb, Properties ctx) {
@@ -789,7 +786,7 @@ public class ModelValidationEngine
 		//
 		return sb;
 	}
-	
+
 	/**
 	 * After Load Preferences into Context for selected client.
 	 * @param ctx context
@@ -799,7 +796,7 @@ public class ModelValidationEngine
 	public void afterLoadPreferences (Properties ctx)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		for (int i = 0; i < m_validators.size(); i++) 
+		for (int i = 0; i < m_validators.size(); i++)
 		{
 			ModelValidator validator = (ModelValidator)m_validators.get(i);
 			if (AD_Client_ID == validator.getAD_Client_ID()
