@@ -1,5 +1,5 @@
 <!--
-The equinox target project holds the equinox framework components and has 
+The equinox target project holds the equinox framework components and has
 the following responsibilities:
 - acting as an equinox-target for the eclipse dev environment
 - providing setup for an OSGi container for developing swing client in OSGi
@@ -9,21 +9,20 @@ the following responsibilities:
 -->
 
 <project name="equinox-target" basedir="." default="all">
-	
+
 	<property name="src" value="." />
 	<property name="dist" value="./dist" />
 	<property name="dist-standalone" value="${dist}/standalone" />
 	<property name="dist-web" value="${dist}/web" />
-	<property name="dist-webstart" value="${dist}/webstart" />
-	<property name="osgi-runtime" value="org.eclipse.osgi_3.5.0.v20090520.jar" />
+	<property name="osgi-runtime" value="org.eclipse.osgi_3.6.0.v20100517.jar" />
 	<property name="adempiere-client" value="org.adempiere.client_0.0.0.2.jar" />
-	
-	<target name="all" depends="clean,dist-standalone,dist-web,dist-webstart"/>
-	
+
+	<target name="all" depends="clean,dist-standalone,dist-web"/>
+
 	<target name="clean">
 		<delete dir="${dist}"/>
 	</target>
-	
+
 	<target name="dist-standalone">
 		<mkdir dir="${dist-standalone}"/>
 		<copy overwrite="true" todir="${dist-standalone}" >
@@ -37,7 +36,7 @@ the following responsibilities:
 		</copy>
 		<echo message="Remember: Copy client bundle into ${dist-standalone}."/>
 	</target>
-	
+
 	<target name="run-standalone">
 		<move failonerror="false" file="${dist-standalone}/plugins/${adempiere-client}" todir="${dist-standalone}" />
 		<java  dir="${dist-standalone}" fork="true" jvmversion="1.6" jar="${dist-standalone}/${osgi-runtime}">
@@ -59,32 +58,21 @@ the following responsibilities:
 	<target name="dist-web">
 		<mkdir dir="${dist-web}"/>
 		<copy overwrite="true" todir="${dist-web}" >
+			<fileset dir="${src}">
+				<include name="plugins/**/*"/>
+				<include name="${osgi-runtime}"/>
+				<include name="org.eclipse.equinox.common_*.jar"/>
+				<include name="org.eclipse.update.configurator_*.jar"/>
+			</fileset>
 			<fileset dir="${src}/webapp">
-				<include name="**/*"/>
+				<include name="configuration/**/*"/>
 			</fileset>
-		</copy>
-		<copy overwrite="true" todir="${dist-web}/WEB-INF/eclipse/plugins" >
-			<fileset dir="${src}/plugins">
-				<include name="**/*"/>
+			<fileset dir="${src}/jetty">
+				<include name="plugins/**/*"/>
 			</fileset>
-		</copy>
-	</target>
-	
-	<target name="war" depends="dist-web">
-		<war destfile="../lib/bridge.war">
-			<fileset dir="${dist-web}">
-				<include name="**/*"/>
-			</fileset>
-		</war>
-	</target>
-
-	<target name="dist-webstart">
-		<mkdir dir="${dist-webstart}"/>
-		<copy overwrite="true" todir="${dist-webstart}" >
-			<fileset dir="${src}/webstart">
-				<include name="**/*"/>
+			<fileset dir="${src}/spring">
+				<include name="plugins/**/*"/>
 			</fileset>
 		</copy>
 	</target>
-	
 </project>

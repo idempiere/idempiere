@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticValidate" value="true"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="true"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/adempiere_equinox_web"/>
+<booleanAttribute key="default" value="true"/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="4"/>
+<stringAttribute key="deselected_workspace_plugins" value="org.adempiere.base.TestPlugin,org.adempiere.pipo,org.adempiere.install,org.adempiere.pluginUtils,org.adempiere.plugin.list"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true -DPropertyFile=${workspace_loc}/adempiere-local.properties -DADEMPIERE_HOME=${workspace_loc}"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="target_bundles" value="com.springsource.net.sf.cglib@default:default,org.apache.xml.serializer@default:default,org.springframework.beans@default:default,com.springsource.javax.annotation@default:default,com.springsource.javax.el@default:default,org.springframework.osgi.web@default:default,org.apache.xml.resolver@default:default,org.springframework.context@default:default,org.springframework.osgi.catalina.start.osgi@default:default,com.springsource.javax.xml.ws@default:default,com.springsource.org.apache.jasper.org.eclipse.jdt@default:default,com.springsource.javax.xml.stream@default:default,org.eclipse.osgi@-1:true,org.springframework.osgi.extender@default:default,org.eclipse.core.jobs@default:default,com.springsource.javax.mail@default:default,org.eclipse.core.runtime@default:true,com.springsource.javax.activation@default:default,com.springsource.javax.xml.bind@default:default,com.springsource.org.apache.catalina@default:default,com.springsource.org.apache.jasper@default:false,com.springsource.org.apache.juli.extras@default:default,com.springsource.org.apache.coyote@default:false,javax.xml@default:default,org.eclipse.update.configurator@3:true,org.eclipse.osgi.services@default:default,org.eclipse.equinox.common@2:true,com.springsource.javax.xml.rpc@default:default,com.springsource.javax.servlet.jsp@default:default,org.springframework.osgi.web.extender@default:default,org.eclipse.core.contenttype@default:default,com.springsource.javax.persistence@default:default,com.springsource.javax.ejb@default:default,org.eclipse.equinox.registry@default:default,com.springsource.javax.servlet@default:default,org.eclipse.equinox.launcher@default:default,com.springsource.javax.xml.soap@default:default,org.eclipse.equinox.preferences@default:default,org.springframework.core@default:default,com.springsource.org.apache.commons.logging@default:default,org.springframework.osgi.core@default:default,org.eclipse.equinox.app@default:default,org.springframework.aop@default:default,org.apache.xerces@default:default,com.springsource.org.apache.el@default:default,org.springframework.osgi.io@default:default,com.springsource.org.aopalliance@default:default"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<stringAttribute key="workspace_bundles" value="org.adempiere.base@default:default,webui.war@default:default,org.adempiere.client@default:default,org.adempiere.tools@default:default,org.adempiere.JasperReportsTools@default:default,JasperReports@default:default"/>
+</launchConfiguration>

@@ -3,9 +3,7 @@
 
 <target name="Equinox Target">
 <locations>
-<location path="${workspace_loc}/equinox-target" type="Directory"/>
-<location path="${workspace_loc}/equinox-target/webapp/WEB-INF/eclipse" type="Directory"/>
-<location path="${workspace_loc}/equinox-target/jetty" type="Directory"/>
 <location path="${workspace_loc}/equinox-target/spring" type="Directory"/>
+<location path="${workspace_loc}/equinox-target" type="Directory"/>
 </locations>
 </target>
