@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#	This script rebuilds Adempiere 
+#	This script rebuilds Adempiere
 #	Ported from Windows script Marek Mosiewicz<marek.mosiewicz@jotel.com.pl>
 #	If you have difficulties, compare it with the Windows version.
 #
@@ -8,7 +8,7 @@
 
 #check java home
 if [ $JAVA_HOME ]; then
-  export PATH=$JAVA_HOME/bin:$PATH	
+  export PATH=$JAVA_HOME/bin:$PATH
 else
   echo JAVA_HOME is not set.
   echo You may not be able to build Adempiere
@@ -22,7 +22,7 @@ if  [ ! -f $JAVA_HOME/lib/tools.jar ] ; then
    exit
 fi
 
-ANTLIB="-lib ../tools/lib/ant4eclipse/ -lib ../equinox-target/org.eclipse.osgi_3.5.0.v20090520.jar -lib ../tools/lib/ant-contrib-1.0b1.jar"
+ANTLIB="-lib ../tools/lib/ant4eclipse/ -lib ../equinox-target/org.eclipse.osgi_3.6.0.v20100517.jar -lib ../tools/lib/ant-contrib-1.0b1.jar"
 
 #classpath
 export ANT_CLASSPATH=../tools/lib/ant-launcher.jar
@@ -30,7 +30,7 @@ export ANT_CLASSPATH=../tools/lib/ant-launcher.jar
 export ANT_OPTS="-Xms128m -Xmx512m -Dworkspace=`pwd`/.."
 
 echo Cleanup ...
-$JAVA_HOME/bin/java $ANT_OPTS -classpath $ANT_CLASSPATH org.apache.tools.ant.launch.Launcher $ANTLIB clean 
+$JAVA_HOME/bin/java $ANT_OPTS -classpath $ANT_CLASSPATH org.apache.tools.ant.launch.Launcher $ANTLIB clean
 
 echo Building ...
 $JAVA_HOME/bin/java $ANT_OPTS -classpath $ANT_CLASSPATH org.apache.tools.ant.launch.Launcher -logger org.apache.tools.ant.listener.MailLogger $ANTLIB complete

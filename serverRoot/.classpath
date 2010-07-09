@@ -8,5 +8,7 @@
 	<classpathentry kind="lib" path="/tools/lib/activemq-core-5.0.0.jar"/>
 	<classpathentry kind="lib" path="/tools/lib/cron4j-2.2.1.jar"/>
 	<classpathentry kind="src" path="/serverApps"/>
+	<classpathentry kind="lib" path="/equinox-target/spring/plugins/com.springsource.javax.jms-1.1.0.jar"/>
+	<classpathentry kind="lib" path="/equinox-target/spring/plugins/com.springsource.javax.servlet-2.5.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

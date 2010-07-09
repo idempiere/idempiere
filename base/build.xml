@@ -7,7 +7,7 @@
 <project name="base" default="dist" basedir=".">
 
   <description>
-    This buildfile is used to build the base subproject within 
+    This buildfile is used to build the base subproject within
     the Adempiere project.
   </description>
 
@@ -31,7 +31,7 @@
     <pathelement path="../tools/lib/junit.jar"/>
     <pathelement path="../tools/lib/j2ee.jar"/>
     <pathelement path="../tools/lib/jnlp.jar"/>
-    <pathelement path="../tools/lib/servlet-api.jar" />  	
+    <pathelement path="../tools/lib/servlet-api.jar" />
   	<pathelement path="../tools/lib/cron4j-2.2.1.jar" />
   </path>
 
@@ -51,14 +51,12 @@
     <mkdir dir="${dist.dir}"/>
   </target>
 
-  
+
   <target name="compile" depends="makedir">
     <!-- compile the java code from ${src} into ${build.dir} -->
     <javac target="1.6" fork="true" destdir="${build.dir}" deprecation="on" debug="on" memoryinitialsize="512m" memorymaximumsize="512m">
       <src path="${src}"/>
       <src path="${looksSrc}"/>
-      <src path="../glassfishfacet/src"/>
-      <src path="../jbossfacet/src"/>
       <classpath refid="project.class.path"/>
     </javac>
     <!-- copy all image & sound files from src to the build directory -->
@@ -89,13 +87,6 @@
         <exclude name="**/package.html"/>
       </fileset>
     </copy>
-
-    <!-- copy login.conf -->
-    <copy todir="${build.dir}">
-      <fileset dir="../glassfishfacet/src">
-      	<include name="**/glassfish/login.conf"/>
-  	</fileset>
-    </copy>
   </target>
 
 
@@ -114,8 +105,8 @@
 		             destination="../lib"
 		 			 buildSourceJar="false"
 					 clean="no"/>
-	  </target>		
-		
+	  </target>
+
 	  <target name="plugin-dist">
 		<buildPlugin workspaceDirectory=".."
 		             projectName="base"
@@ -123,8 +114,8 @@
 		             destination="${env.ADEMPIERE_ROOT}/Adempiere/osgi"
 		 			 buildSourceJar="false"
 					 clean="no"/>
-	  </target>		
-		
+	  </target>
+
   <target name="dist-standalone" depends="plugin">
   	<copy file="${dist.dir}/${bundle.name}_${bundle.version}.jar"
   		todir="${equinox.target}/dist/standalone/plugins"/>
@@ -143,7 +134,7 @@
     <pathelement path="./base.jar" />
   </path>
 
-<target name="GenerateModel" depends="dist"> 
+<target name="GenerateModel" depends="dist">
       <java fork="true" classname="org.compiere.util.GenerateModel">
       	<classpath refid="class.path.test" />
 	<arg value="/work2/adempiere/base/src/org/compiere/model/"/>

@@ -11,8 +11,6 @@
 
   <property name="src.dir" value="${basedir}/src"/>
   <property name="src.main.dir" value="${src.dir}/main"/>
-  <property name="src.ear.dir" value="${src.dir}/ear"/>
-  <property name="src.ejb.dir" value="${src.main.dir}/ejb"/>
   <property name="src.servlet.dir" value="${src.main.dir}/servlet"/>
   <property name="src.server.dir" value="${src.main.dir}/server"/>
   <property name="src.resources.dir" value="${src.dir}/resources"/>
@@ -40,36 +38,25 @@
 	<pathelement location="../tools/lib/junit.jar" />
   	<pathelement location="../tools/lib/cron4j-2.2.1.jar" />
 	<pathelement location="../lib/oracle.jar" />
-	<pathelement location="../lib/jboss.jar" />
 	<pathelement location="../lib/postgresql.jar" />
     <pathelement location="${build.classes.dir}" />
   </path>
 
 
-  <!-- =================================================================== -->
-  <!-- Copy JBoss specific deployment descriptor     					   -->
-  <!-- =================================================================== -->
-  <target name="adempiereRootXml" depends="adempiereRootInit">
-  	<copyfile dest="${build.dir}/META-INF/jboss.xml" src="${src.ejb.dir}/jboss.xml"/>
-  	<copyfile dest="${build.dir}/META-INF/sun-ejb-jar.xml" src="${src.ejb.dir}/sun-ejb-jar.xml"/>
-  </target>
-
-
   <!-- =========================================== -->
   <!-- Compiles the source code                    -->
   <!-- =========================================== -->
-  <target name="adempiereRootCompile" depends="adempiereRootXml">
+  <target name="adempiereRootCompile" depends="adempiereRootInit">
     <mkdir dir="${build.classes.dir}"/>
 
     <!--	Compile all -->
     <javac
-      target="1.5" 
+      target="1.5"
 	  destdir="${build.classes.dir}"
 	  debug="on"
 	  deprecation="off"
 	  optimize="on"
       classpathref="base.path">
-      <src path="${src.ejb.dir}"/>
       <src path="${src.servlet.dir}"/>
       <src path="${src.server.dir}"/>
     </javac>
@@ -139,8 +126,6 @@
 	<copy todir="../lib">
 		<fileset dir="${build.deploy.dir}"/>
 	</copy>
-	<copy file="${src.ear.dir}/application.xml" 
-		tofile="../lib/adempiereRoot.xml"/>
   </target>
 
 
