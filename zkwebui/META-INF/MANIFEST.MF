@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: zkwebui
-Bundle-SymbolicName: webui.war;singleton:=true
+Bundle-Name: org.adempiere.webui
+Bundle-SymbolicName: org.adempiere.webui;singleton:=true
 Bundle-Version: 0.0.0.2
 Web-ContextPath: webui
 Bundle-ClassPath: WEB-INF/classes/,
