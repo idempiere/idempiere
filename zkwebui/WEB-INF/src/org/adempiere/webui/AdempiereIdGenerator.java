@@ -21,12 +21,11 @@ import org.zkoss.zk.ui.sys.IdGenerator;
 
 public class AdempiereIdGenerator implements IdGenerator {
 
+	public static final String ZK_COMPONENT_PREFIX = "zk_component_prefix";
+
 	@Override
 	public String nextComponentUuid(Desktop desktop, Component comp) {
-		String id = (String) comp.getAttribute("zk_component_ID");
-		if (id != null && id.length() > 0)
-			return id;
-		String prefix = (String) comp.getAttribute("zk_component_prefix");
+		String prefix = (String) comp.getAttribute(ZK_COMPONENT_PREFIX);
 		if (prefix == null || prefix.length() == 0)
 			prefix = "zk_comp_";
 		int     i = Integer.parseInt(desktop.getAttribute("Id_Num").toString());
