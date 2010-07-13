@@ -3,12 +3,14 @@
 <!-- ============================================= -->
 <!-- $Header: /cvs/adempiere/extend/build.xml,v 1.1 2006/04/21 17:55:19 jjanke Exp $ -->
 
-<project name="extend" default="dist" basedir=".">
+<project name="extend" default="plugin" basedir=".">
 
   <description>
-    This buildfile is used to build the extend subproject within 
+    This buildfile is used to build the extend subproject within
     the Adempiere project.
   </description>
+
+  <import file="../utils_dev/properties.xml"/>
 
   <!-- set global properties for this build -->
   <property name="src" value="src"/>
@@ -27,51 +29,11 @@
     <pathelement path="../adempiere/Adempiere/lib/Adempiere.jar" />
 	<fileset dir="../tools/lib/testing/">
 		<include name="*.jar"/>
-	</fileset> 
+	</fileset>
   </path>
 
   <target name="init" description="initialization target">
     <echo message="=========== Build Extend"/>
-    <!-- create the time stamp -->
-    <tstamp/>
-    <!-- create the build directory structure used by compile -->
-    <mkdir dir="${build.dir}"/>
-    <!-- check for the distribution directory -->
-    <available file="${dist.dir}" type="dir" property="dist.dir.exists"/>
-  </target>
-
-  <target name="makedir" depends="init" unless="dist.dir.exists">
-    <!-- create the distribution directory if not available -->
-    <mkdir dir="${dist}/${dist.dir}"/>
-  </target>
-  
-  <target name="compile" depends="makedir">
-    <!-- compile the java code from ${src} into ${build.dir} -->
-    <javac target="1.6" srcdir="${src}" destdir="${build.dir}" deprecation="on" debug="on">
-      <classpath refid="project.class.path"/>
-    </javac>
-    <!-- copy all image & sound files from src to the build directory -->
-    <copy todir="${build.dir}">
-      <fileset dir="${src}">
-        <include name="**/images/*"/>
-        <include name="**/*.gif"/>
-        <include name="**/*.jpg"/>
-        <include name="**/*.wav"/>
-        <include name="**/*.htm"/>
-        <include name="**/*.html"/>
-        <include name="**/*.properties"/>
-        <exclude name="**/package.html"/>
-      </fileset>
-    </copy>
-  </target>
-
-
-  <!-- =========================================== -->
-  <!-- Distribution                                -->
-  <!-- =========================================== -->
-  <target name="dist" depends="compile">
-    <!-- put everything from ${build.dir} into the ${jar.name}.jar file -->
-    <jar jarfile="${dist.dir}/${jar.name}.jar" basedir="${build.dir}"/>
   </target>
 
   <path id="class.path.test">
@@ -88,7 +50,7 @@
     <!-- pathelement path="/root/RmiJdbc/dist/lib/RmiJdbc.jar" / -->
   </path>
 
-  <target name="functionaltest" depends="dist">
+  <target name="functionaltest" depends="init">
     <junit>
       <classpath refid="class.path.test" />
       <formatter type="brief" usefile="false" />
@@ -106,7 +68,7 @@
     </junit>
   </target>
 
-  <target name="performance.test" depends="dist">
+  <target name="performance.test" depends="init">
     <junit printsummary="no" fork="no" maxmemory="1024m" haltonfailure="yes">
       <!--jvmarg value="-Djava.compiler=NONE"/-->
       <classpath refid="class.path.test" />
@@ -114,18 +76,28 @@
       <test name="test.performance.MProductTest" />
     </junit>
   </target>
-	
-  <target name="run" depends="dist">
+
+  <target name="run" depends="init">
       <java fork="true" classname="test.functional.XMLImportStructureTest">
         <classpath refid="class.path.test" />
       </java>
   </target>
 
 
-  <target name="clean">
-    <!-- Delete the ${build.dir} directory trees -->
-    <delete dir="${build.dir}"/>
-    <delete file="${dist.dir}/${jar.name}.jar" failonerror="false"/>
-  </target>
+	 <target name="plugin" depends="init">
+			<buildPlugin workspaceDirectory="${workspace}"
+			             projectName="extend"
+			             targetPlatformId="target.platform"
+						 destination="../lib"
+			 			 buildSourceJar="false" />
+	  </target>
+
+	  <target name="clean">
+	  	<delete>
+	   		<fileset dir="../lib/plugins">
+				<include name="org.adempiere.extend*.jar"/>
+			</fileset>
+	   	</delete>
+	  </target>
 
 </project>
