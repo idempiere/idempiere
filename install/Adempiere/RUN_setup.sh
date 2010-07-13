@@ -18,23 +18,10 @@ fi
 echo ===================================
 echo Setup Dialog
 echo ===================================
-CP=lib/CInstall.jar:lib/Adempiere.jar:lib/CCTools.jar:lib/oracle.jar:lib/jboss.jar:lib/postgresql.jar:
 
-# Trace Level Parameter, e.g. ARGS=ALL
-ARGS=CONFIG
-
-# To test the OCI driver, add -DTestOCI=Y to the command - example:
-# $JAVA -classpath $CP -DADEMPIERE_HOME=$ADEMPIERE_HOME -DTestOCI=Y org.compiere.install.Setup $ARGS
-
-# $JAVA -classpath $CP -DADEMPIERE_HOME=$ADEMPIERE_HOME org.compiere.install.Setup $ARGS
 # OSGi:
-$JAVA -jar osgi/org.eclipse.osgi_3.5.0.v20090520.jar -clean -console -application org.adempiere.Install
+$JAVA -jar osgi/org.eclipse.osgi_3.6.0.v20100517.jar -clean -console -install osgi -configuration osgi/client -application org.adempiere.Install
 
-
-#echo ===================================
-#echo Setup Adempiere Server Environment
-#echo ===================================
-#$JAVA -classpath $CP -DADEMPIERE_HOME=$ADEMPIERE_HOME -Dant.home="." org.apache.tools.ant.launch.Launcher setup
 
 echo ===================================
 echo Make .sh executable & set Env
@@ -43,15 +30,10 @@ chmod -R a+x *.sh
 find . -name '*.sh' -exec chmod a+x '{}' \;
 
 # Sign database build
-cd utils
-#. ./RUN_SignDatabaseBuild.sh 
+# cd utils
+#. ./RUN_SignDatabaseBuild.sh
 
 . ./RUN_UnixEnv.sh
-
-#echo ================================
-#echo	Test local Connection
-#echo ================================
-#%JAVA% -classpath lib/Adempiere.jar:lib/AdempiereCLib.jar org.compiere.install.ConnectTest localhost
 
 echo .
 echo For problems, check log file in base directory

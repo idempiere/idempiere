@@ -38,7 +38,6 @@ import javax.swing.border.TitledBorder;
 
 import org.adempiere.base.Core;
 import org.apache.tools.ant.Main;
-import org.compiere.Adempiere;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CCheckBox;
 import org.compiere.swing.CComboBox;
@@ -47,9 +46,6 @@ import org.compiere.swing.CPanel;
 import org.compiere.swing.CPassword;
 import org.compiere.swing.CTextField;
 import org.compiere.util.CLogger;
-
-import com.sfcommerce.jpaymentcomponent.ssl.Client;
-
 
 /**
  *	Configuration Panel
@@ -60,7 +56,7 @@ import com.sfcommerce.jpaymentcomponent.ssl.Client;
 public class ConfigurationPanel extends CPanel implements ActionListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5113669370606054608L;
 
@@ -93,8 +89,6 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	/** Translation				*/
 	static ResourceBundle 		res = ResourceBundle.getBundle("org.compiere.install.SetupRes");
 
-	/**	Setup Frame				*/
-	private Setup				m_setup = null;
 	/** Status Bar				*/
 	private JLabel 				m_statusBar;
 	/**	Configuration Data		*/
@@ -123,20 +117,10 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	private CLabel 		lKeyStore = new CLabel();
 	CPassword 	fKeyStore = new CPassword();
 	CCheckBox 	okKeyStore = new CCheckBox();
-	//	Apps Server  - Type 
+	//	Apps Server  - Type
 	CLabel lAppsServer = new CLabel();
 	CTextField fAppsServer = new CTextField(FIELDLENGTH);
 	CCheckBox okAppsServer = new CCheckBox();
-	private CLabel lAppsType = new CLabel();
-	CComboBox 	fAppsType = new CComboBox(ConfigurationData.APPSTYPE);
-	//	Deployment Directory - JNP
-	private CLabel 		lDeployDir = new CLabel();
-	CTextField 	fDeployDir = new CTextField(FIELDLENGTH);
-	CCheckBox 	okDeployDir = new CCheckBox();
-	CButton 	bDeployDir = new CButton(iOpen);
-	private CLabel lJNPPort = new CLabel();
-	CTextField fJNPPort = new CTextField(FIELDLENGTH);
-	CCheckBox okJNPPort = new CCheckBox();
 	//	Web Ports
 	private CLabel lWebPort = new CLabel();
 	CTextField fWebPort = new CTextField(FIELDLENGTH);
@@ -181,7 +165,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	private CButton bHelp = new CButton(iHelp);
 	private CButton bTest = new CButton();
 	private CButton bSave = new CButton(iSave);
-	
+
 
 	/**
 	 * 	Static Layout Init
@@ -192,7 +176,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		this.setLayout(gridBagLayout);
 		Insets bInsets = new Insets(0, 5, 0, 5);
 		TitledBorder titledBorder = new TitledBorder("dummy");
-		
+
 		//	Java
 		lJavaHome.setToolTipText(res.getString("JavaHomeInfo"));
 		lJavaHome.setText(res.getString("JavaHome"));
@@ -203,7 +187,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		lJavaType.setToolTipText(res.getString("JavaTypeInfo"));
 		lJavaType.setText(res.getString("JavaType"));
 		fJavaType.setPreferredSize(fJavaHome.getPreferredSize());
-		
+
 		JLabel sectionLabel = new JLabel("Java");
 		sectionLabel.setForeground(titledBorder.getTitleColor());
 		JSeparator separator = new JSeparator();
@@ -211,7 +195,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(15, 5, 0, 10), 0, 0));
 		this.add(separator,    new GridBagConstraints(0, 1, 7, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 10), 0, 0));
-		
+
 		this.add(lJavaHome,    new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 2, 5), 0, 0));
 		this.add(fJavaHome,    new GridBagConstraints(1, 2, 1, 1, 0.5, 0.0
@@ -235,7 +219,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		lKeyStore.setToolTipText(res.getString("KeyStorePasswordInfo"));
 		fKeyStore.setText("");
 		okKeyStore.setEnabled(false);
-		
+
 		sectionLabel = new JLabel("Adempiere");
 		sectionLabel.setForeground(titledBorder.getTitleColor());
 		separator = new JSeparator();
@@ -263,9 +247,6 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		lAppsServer.setFont(lAppsServer.getFont().deriveFont(Font.BOLD));
 		fAppsServer.setText(".");
 		okAppsServer.setEnabled(false);
-		lAppsType.setToolTipText(res.getString("AppsTypeInfo"));
-		lAppsType.setText(res.getString("AppsType"));
-		fAppsType.setPreferredSize(fAppsServer.getPreferredSize());
 		sectionLabel = new JLabel(res.getString("AppsServer"));
 		sectionLabel.setForeground(titledBorder.getTitleColor());
 		separator = new JSeparator();
@@ -279,35 +260,6 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 			,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 2, 0), 0, 0));
 		this.add(okAppsServer,  new GridBagConstraints(2, 8, 1, 1, 0.0, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 0, 2, 5), 0, 0));
-		this.add(lAppsType,     new GridBagConstraints(4, 8, 1, 1, 0.0, 0.0
-			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 2, 5), 0, 0));
-		this.add(fAppsType,     new GridBagConstraints(5, 8, 1, 1, 0.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 2, 0), 0, 0));
-		// 	Deployment - JNP
-		lDeployDir.setToolTipText(res.getString("DeployDirInfo"));
-		lDeployDir.setText(res.getString("DeployDir"));
-		fDeployDir.setText(".");
-		okDeployDir.setEnabled(false);
-		bDeployDir.setMargin(bInsets);
-		bDeployDir.setToolTipText(res.getString("DeployDirInfo"));
-		lJNPPort.setToolTipText(res.getString("JNPPortInfo"));
-		lJNPPort.setText(res.getString("JNPPort"));
-		fJNPPort.setText(".");
-		okJNPPort.setEnabled(false);
-		this.add(lDeployDir,	new GridBagConstraints(0, 9, 1, 1, 0.0, 0.0
-			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 5, 2, 5), 0, 0));
-		this.add(fDeployDir,	new GridBagConstraints(1, 9, 1, 1, 0.5, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(2, 5, 2, 0), 0, 0));
-		this.add(okDeployDir,	new GridBagConstraints(2, 9, 1, 1, 0.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 0, 2, 5), 0, 0));
-		this.add(bDeployDir,    new GridBagConstraints(3, 9, 1, 1, 0.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		this.add(lJNPPort,      new GridBagConstraints(4, 9, 1, 1, 0.0, 0.0
-			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 5, 2, 5), 0, 0));
-		this.add(fJNPPort,      new GridBagConstraints(5, 9, 1, 1, 0.5, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(2, 5, 2, 0), 0, 0));
-		this.add(okJNPPort,     new GridBagConstraints(6, 9, 1, 1, 0.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 0, 2, 5), 0, 0));
 		//	Web Ports
 		lWebPort.setToolTipText(res.getString("WebPortInfo"));
 		lWebPort.setText(res.getString("WebPort"));
@@ -357,7 +309,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		lDatabaseName.setToolTipText(res.getString("DatabaseNameInfo"));
 		lDatabaseName.setText(res.getString("DatabaseName"));
 		fDatabaseName.setText(".");
-		
+
 		//TNS/Native connection
 		lDatabaseDiscovered.setToolTipText(res.getString("TNSNameInfo"));
 		lDatabaseDiscovered.setText(res.getString("TNSName"));
@@ -438,7 +390,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 2, 5), 0, 0));
 		this.add(fAdminEMail,   new GridBagConstraints(5, 19, 1, 1, 0.5, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 2, 0), 0, 0));
-		
+
 		//	Mail User = Password
 		lMailUser.setToolTipText(res.getString("MailUserInfo"));
 		lMailUser.setText(res.getString("MailUser"));
@@ -464,7 +416,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		filler.setBorder(null);
 		this.add(filler,    		new GridBagConstraints(0, 21, 1, 1, 0.0, 1.0
 				,GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(0, 0, 0, 0), 0, 0));
-		
+
 		//	End
 		bTest.setToolTipText(res.getString("TestInfo"));
 		bTest.setText(res.getString("Test"));
@@ -480,9 +432,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		//
 		bAdempiereHome.addActionListener(this);
 		bJavaHome.addActionListener(this);
-		bDeployDir.addActionListener(this);
 		fJavaType.addActionListener(this);
-		fAppsType.addActionListener(this);
 		fDatabaseType.addActionListener(this);
 		fDatabaseDiscovered.addActionListener(this);
 		bHelp.addActionListener(this);
@@ -508,8 +458,8 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	{
 		m_statusBar.setText(text);
 	}	//	setStatusBar
-	
-	
+
+
 	/**************************************************************************
 	 * 	ActionListener
 	 *  @param e event
@@ -528,8 +478,6 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		//
 		else if (e.getSource() == fJavaType)
 			m_data.initJava();
-		else if (e.getSource() == fAppsType)
-			m_data.initAppsServer();
 		else if (e.getSource() == fDatabaseType)
 			m_data.initDatabase("");
 		//
@@ -537,8 +485,6 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 			setPath (fJavaHome);
 		else if (e.getSource() == bAdempiereHome)
 			setPath (fAdempiereHome);
-		else if (e.getSource() == bDeployDir)
-			setPath (fDeployDir);
 		else if (e.getSource() == bHelp)
 			new Setup_Help((Frame)SwingUtilities.getWindowAncestor(this));
 		else if (e.getSource() == bTest)
@@ -547,8 +493,8 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 			startTest(true);
 	}	//	actionPerformed
 
-	
-	
+
+
 	/**
 	 * 	Set Path in Field
 	 * 	@param field field to set Path
@@ -564,7 +510,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 			field.setText(fc.getSelectedFile().getAbsolutePath());
 	}	//	setPath
 
-	
+
 	/**************************************************************************
 	 * 	Start Test Async.
 	 * 	@param saveIt save
@@ -605,8 +551,8 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 				if (m_errorString != null)
 				{
 					CLogger.get().severe(m_errorString);
-					JOptionPane.showConfirmDialog (m_statusBar.getParent(), 
-						m_errorString, 
+					JOptionPane.showConfirmDialog (m_statusBar.getParent(),
+						m_errorString,
 						res.getString("ServerError"),
 						JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
 				}
@@ -641,7 +587,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	 *	@param critical true if critical
 	 *	@param errorMsg error Message
 	 */
-	void signalOK (CCheckBox cb, String resString, 
+	void signalOK (CCheckBox cb, String resString,
 		boolean pass, boolean critical, String errorMsg)
 	{
 		m_errorString = res.getString(resString);
@@ -672,10 +618,10 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		bSave.setEnabled(false);
 		bTest.setEnabled(false);
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		
+
 		if (!m_data.save())
 			return;
-		
+
 		//	Final Info
 		JOptionPane.showConfirmDialog(this, res.getString("EnvironmentSaved"),
 			res.getString("AdempiereServerSetup"),
@@ -695,7 +641,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 		{
 			CLogger.get().log(Level.SEVERE, "ant", e);
 		}
-			
+
 		//	To be sure
 		((Frame)SwingUtilities.getWindowAncestor(this)).dispose();
 		System.exit(0);		//	remains active when License Dialog called

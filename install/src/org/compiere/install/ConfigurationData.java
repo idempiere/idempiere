@@ -52,7 +52,7 @@ import org.compiere.util.Ini;
 
 /**
  *	Configuration Data
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: ConfigurationData.java,v 1.4 2006/07/30 00:57:42 jjanke Exp $
  */
@@ -75,14 +75,14 @@ public class ConfigurationData
 	/**	Adempiere Home			*/
 	private File				m_adempiereHome;
 
-	
+
 	/**	Static Logger	*/
 	static CLogger	log	= CLogger.getCLogger (ConfigurationData.class);
 
 
 	/** Properties File	name			*/
 	public static final String	ADEMPIERE_ENV_FILE		= "AdempiereEnv.properties";
-	
+
 	/** Adempiere Home					*/
 	public static final String	ADEMPIERE_HOME 			= "ADEMPIERE_HOME";
 	/** 				*/
@@ -108,7 +108,7 @@ public class ConfigurationData
 	public static final String	ADEMPIERE_SSL_PORT 		= "ADEMPIERE_SSL_PORT";
 	/** 				*/
 	public static final String	ADEMPIERE_WEB_ALIAS 	= "ADEMPIERE_WEB_ALIAS";
-	
+
 	/** 				*/
 	public static final String	ADEMPIERE_KEYSTORE 		= "ADEMPIERE_KEYSTORE";
 	/** 				*/
@@ -117,17 +117,17 @@ public class ConfigurationData
 	public static final String	ADEMPIERE_KEYSTORECODEALIAS	= "ADEMPIERE_KEYSTORECODEALIAS";
 	/** 				*/
 	public static final String	ADEMPIERE_KEYSTOREWEBALIAS	= "ADEMPIERE_KEYSTOREWEBALIAS";
-	
+
 	public static final String	ADEMPIERE_CERT_CN	= "ADEMPIERE_CERT_CN";
-	
+
 	public static final String	ADEMPIERE_CERT_ORG	= "ADEMPIERE_CERT_ORG";
-	
+
 	public static final String	ADEMPIERE_CERT_ORG_UNIT	= "ADEMPIERE_CERT_ORG_UNIT";
-	
+
 	public static final String	ADEMPIERE_CERT_LOCATION	= "ADEMPIERE_CERT_LOCATION";
-	
+
 	public static final String	ADEMPIERE_CERT_STATE	= "ADEMPIERE_CERT_STATE";
-	
+
 	public static final String	ADEMPIERE_CERT_COUNTRY	= "ADEMPIERE_CERT_COUNTRY";
 
 	/** DB Type			*/
@@ -173,8 +173,8 @@ public class ConfigurationData
 
 	/** 				*/
 	public static final String	ADEMPIERE_WEBSTORES		= "ADEMPIERE_WEBSTORES";
-	
-	
+
+
 	private void updateProperty(String property, String value) {
 		if (value == null) value = "";
 		String currentValue = (String)p_properties.get(property);
@@ -183,7 +183,7 @@ public class ConfigurationData
 		else if (!currentValue.equals(value))
 			p_properties.put(property, value);
 	}
-	
+
 	/**
 	 * 	Load Configuration Data
 	 * 	@return true if loaded
@@ -194,7 +194,7 @@ public class ConfigurationData
 		String adempiereHome = System.getProperty(ADEMPIERE_HOME);
 		if (adempiereHome == null || adempiereHome.length() == 0)
 			adempiereHome = System.getProperty("user.dir");
-		
+
 		boolean envLoaded = false;
 		String fileName = adempiereHome + File.separator + ADEMPIERE_ENV_FILE;
 		File env = new File (fileName);
@@ -213,7 +213,7 @@ public class ConfigurationData
 			log.info(env.toString());
 			if (p_properties.size() > 5)
 				envLoaded = true;
-			
+
 			Properties loaded = new Properties();
 			loaded.putAll(p_properties);
 			//
@@ -231,14 +231,8 @@ public class ConfigurationData
 			}
 			setKeyStore(s);
 			//
-			int appServerIndex = setAppsServerType((String)p_properties.get(ADEMPIERE_APPS_TYPE));
-			initAppsServer(appServerIndex);
 			if (loaded.containsKey(ADEMPIERE_APPS_SERVER))
 				setAppsServer((String)loaded.get(ADEMPIERE_APPS_SERVER));
-			if (loaded.containsKey(ADEMPIERE_APPS_DEPLOY))
-				setAppsServerDeployDir((String)loaded.get(ADEMPIERE_APPS_DEPLOY));
-			if (loaded.containsKey(ADEMPIERE_JNP_PORT))
-				setAppsServerJNPPort((String)loaded.get(ADEMPIERE_JNP_PORT));
 			if (loaded.containsKey(ADEMPIERE_WEB_PORT))
 				setAppsServerWebPort((String)loaded.get(ADEMPIERE_WEB_PORT));
 			if (loaded.containsKey(ADEMPIERE_SSL_PORT))
@@ -281,7 +275,7 @@ public class ConfigurationData
 		{
 			log.severe("Cannot get local host name");
 		}
-		
+
 		//	No environment file found - defaults
 	//	envLoaded = false;
 		if (!envLoaded)
@@ -329,9 +323,9 @@ public class ConfigurationData
 		//	Web Alias
 		if (!p_properties.containsKey(ADEMPIERE_WEB_ALIAS) && localhost != null)
 			p_properties.setProperty(ADEMPIERE_WEB_ALIAS, localhost.getCanonicalHostName());
-		
+
 		//	(String)p_properties.get(ADEMPIERE_DB_URL)	//	derived
-		
+
 		//	Keystore Alias
 		if (!p_properties.containsKey(ADEMPIERE_KEYSTORECODEALIAS))
 			p_properties.setProperty(ADEMPIERE_KEYSTORECODEALIAS, "adempiere");
@@ -340,8 +334,8 @@ public class ConfigurationData
 
 		return true;
 	}	//	load
-	
-	
+
+
 	public String resolveDatabaseName(String connectionName) {
 		int index = p_panel.fDatabaseType.getSelectedIndex();
 		if (index < 0 || index >= DBTYPE.length)
@@ -365,7 +359,7 @@ public class ConfigurationData
 			log.severe(error);
 			return false;
 		}
-		
+
 		error = testAdempiere();
 		if (error != null)
 		{
@@ -381,7 +375,7 @@ public class ConfigurationData
 			log.warning(error);
 			return false;
 		}
-		
+
 		if (p_panel != null)
 			p_panel.setStatusBar(p_panel.lDatabaseServer.getText());
 		error = testDatabase();
@@ -399,10 +393,10 @@ public class ConfigurationData
 			log.warning(error);
 			return false;
 		}
-		
+
 		return true;
 	}	//	test
-	
+
 
 	/**
 	 * 	Test Adempiere and set AdempiereHome
@@ -415,27 +409,27 @@ public class ConfigurationData
 		boolean pass =m_adempiereHome.exists();
 		String error = "Not found: AdempiereHome = " + m_adempiereHome;
 		if (p_panel != null)
-			p_panel.signalOK(p_panel.okAdempiereHome, "ErrorAdempiereHome", 
+			p_panel.signalOK(p_panel.okAdempiereHome, "ErrorAdempiereHome",
 					pass, true, error);
 		if (!pass)
 			return error;
 		log.info("OK: AdempiereHome = " + m_adempiereHome);
 		p_properties.setProperty(ADEMPIERE_HOME, m_adempiereHome.getAbsolutePath());
 		System.setProperty(ADEMPIERE_HOME, m_adempiereHome.getAbsolutePath());
-		
+
 		//	KeyStore
 		String fileName = KeyStoreMgt.getKeystoreFileName(m_adempiereHome.getAbsolutePath());
 		p_properties.setProperty(ADEMPIERE_KEYSTORE, fileName);
-		
+
 		//	KeyStore Password
-		String pw = p_panel != null 
+		String pw = p_panel != null
 			? new String(p_panel.fKeyStore.getPassword())
 			: (String)p_properties.get(ADEMPIERE_KEYSTOREPASS);
 		pass = pw != null && pw.length() > 0;
 		error = "Invalid Key Store Password = " + pw;
 		if (p_panel != null)
-			p_panel.signalOK(p_panel.okKeyStore, "KeyStorePassword", 
-					pass, true, error); 
+			p_panel.signalOK(p_panel.okKeyStore, "KeyStorePassword",
+					pass, true, error);
 		if (!pass)
 			return error;
 		p_properties.setProperty(ADEMPIERE_KEYSTOREPASS, pw);
@@ -448,20 +442,20 @@ public class ConfigurationData
 		ks.setLocation((String)p_properties.getProperty(ADEMPIERE_CERT_LOCATION));
 		ks.setState((String)p_properties.getProperty(ADEMPIERE_CERT_STATE));
 		ks.setCountry((String)p_properties.getProperty(ADEMPIERE_CERT_COUNTRY));
-		error = p_panel != null 
+		error = p_panel != null
 			? ks.verify((JFrame)SwingUtilities.getWindowAncestor(p_panel))
 			: ks.verify(null);
 		pass = error == null;
 		if (p_panel != null)
-			p_panel.signalOK(p_panel.okKeyStore, "KeyStorePassword", 
+			p_panel.signalOK(p_panel.okKeyStore, "KeyStorePassword",
 					pass, true, error);
 		if (!pass)
 			return error;
 		log.info("OK: KeyStore = " + fileName);
 		return null;
 	}	//	testAdempiere
-	
-	
+
+
 	/**************************************************************************
 	 * 	Test (optional) Mail
 	 *	@return error message or null, if OK
@@ -473,7 +467,7 @@ public class ConfigurationData
 			? p_panel.fMailServer.getText()
 			: (String)p_properties.get(ADEMPIERE_MAIL_SERVER);
 		boolean pass = server != null && server.length() > 0
-			&& server.toLowerCase().indexOf("localhost") == -1 
+			&& server.toLowerCase().indexOf("localhost") == -1
 			&& !server.equals("127.0.0.1");
 		String error = "Error Mail Server = " + server;
 		InetAddress	mailServer = null;
@@ -498,7 +492,7 @@ public class ConfigurationData
 		p_properties.setProperty(ADEMPIERE_MAIL_SERVER, mailServer.getHostName());
 
 		//	Mail User
-		String mailUser = p_panel != null 
+		String mailUser = p_panel != null
 			? p_panel.fMailUser.getText()
 			: (String)p_properties.get(ADEMPIERE_MAIL_USER);
 		String mailPassword = p_panel != null
@@ -508,7 +502,7 @@ public class ConfigurationData
 	//	log.config("Mail User = " + mailUser + "/" + mailPassword);
 
 		//	Mail Address
-		String adminEMailString = p_panel != null 
+		String adminEMailString = p_panel != null
 			? p_panel.fAdminEMail.getText()
 			: (String)p_properties.get(ADEMPIERE_ADMIN_EMAIL);
 		InternetAddress adminEMail = null;
@@ -528,7 +522,7 @@ public class ConfigurationData
 			pass = testMailServer(mailServer, adminEMail, mailUser, mailPassword);
 		}
 		if (p_panel != null)
-			p_panel.signalOK(p_panel.okMailUser, "ErrorMail", 
+			p_panel.signalOK(p_panel.okMailUser, "ErrorMail",
 					pass, false, error);
 		if (pass)
 		{
@@ -548,7 +542,7 @@ public class ConfigurationData
 		}
 		return null;
 	}	//	testMail
-	
+
 	/**
 	 * 	Test Mail
 	 * 	@param mailServer mail server
@@ -598,7 +592,7 @@ public class ConfigurationData
 			EMail email = new EMail (new Properties(),
 					mailServer.getHostName (),
 					adminEMail.toString (), adminEMail.toString(),
-					"Adempiere Server Setup Test", 
+					"Adempiere Server Setup Test",
 					"Test: " + getProperties());
 			email.createAuthenticator (mailUser, mailPassword);
 			if (EMail.SENT_OK.equals (email.send ()))
@@ -673,8 +667,8 @@ public class ConfigurationData
 		}
 		return true;
 	}	//	testMailServer
-	
-	
+
+
 	/**************************************************************************
 	 * 	Test Apps Server Port (client perspective)
 	 *  @param protocol protocol (http, ..)
@@ -693,7 +687,7 @@ public class ConfigurationData
 		}
 		catch (MalformedURLException ex)
 		{
-			log.severe("No URL for Protocol=" + protocol 
+			log.severe("No URL for Protocol=" + protocol
 				+ ", Server=" + server
 				+ ": " + ex.getMessage());
 			return false;
@@ -763,7 +757,7 @@ public class ConfigurationData
 		}
 		if (!shouldBeUsed)
 			log.warning("Open Socket " + host + ":" + port + " - " + pingSocket);
-		
+
 		log.fine(host + ":" + port + " - " + pingSocket);
 		if (pingSocket == null)
 			return false;
@@ -779,7 +773,7 @@ public class ConfigurationData
 		return true;
 	}	//	testPort
 
-	
+
 	/**************************************************************************
 	 * 	Save Settings
 	 *	@return true if saved
@@ -792,7 +786,7 @@ public class ConfigurationData
 		p_properties.setProperty("ADEMPIERE_DB_VERSION", Adempiere.DB_VERSION);
 
 		log.finest(p_properties.toString());
-		
+
 		//	Before we save, load Ini
 		Ini.setClient(false);
 		String fileName = m_adempiereHome.getAbsolutePath() + File.separator + Ini.ADEMPIERE_PROPERTY_FILE;
@@ -811,8 +805,8 @@ public class ConfigurationData
 		{
 			log.severe("Cannot save Properties to " + fileName + " - " + e.toString());
 			if (p_panel != null)
-				JOptionPane.showConfirmDialog(p_panel, 
-					ConfigurationPanel.res.getString("ErrorSave"), 
+				JOptionPane.showConfirmDialog(p_panel,
+					ConfigurationPanel.res.getString("ErrorSave"),
 					ConfigurationPanel.res.getString("AdempiereServerSetup"),
 					JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
 			else
@@ -823,8 +817,8 @@ public class ConfigurationData
 		{
 			log.severe("Cannot save Properties to " + fileName + " - " + t.toString());
 			if (p_panel != null)
-				JOptionPane.showConfirmDialog(p_panel, 
-					ConfigurationPanel.res.getString("ErrorSave"), 
+				JOptionPane.showConfirmDialog(p_panel,
+					ConfigurationPanel.res.getString("ErrorSave"),
 					ConfigurationPanel.res.getString("AdempiereServerSetup"),
 					JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
 			else
@@ -834,10 +828,10 @@ public class ConfigurationData
 		log.info(fileName);
 		return saveIni();
 	}	//	save
-	
+
 	/**
 	 * 	Synchronize and save Connection Info in Ini
-	 * 	@return true 
+	 * 	@return true
 	 */
 	private boolean saveIni()
 	{
@@ -854,7 +848,6 @@ public class ConfigurationData
 				getDatabaseServer(), getDatabasePort(), getDatabaseName(),
 				getDatabaseUser(), getDatabasePassword());
 			cc.setAppsHost(getAppsServer());
-			cc.setAppsPort(getAppsServerJNPPort());
 			cc.setConnectionProfile(CConnection.PROFILE_LAN);
 		}
 		catch(Exception e)
@@ -871,8 +864,8 @@ public class ConfigurationData
 		Ini.saveProperties(false);
 		return true;
 	}	//	saveIni
-	
-	
+
+
 	/**
 	 * 	Get Properties
 	 *	@return properties
@@ -881,14 +874,14 @@ public class ConfigurationData
 	{
 		return p_properties;
 	}	//	getProperties
-	
+
 	/**
 	 * 	Get Adempiere Home
 	 *	@return adempiere home
 	 */
 	public String getAdempiereHome()
 	{
-		return p_panel != null 
+		return p_panel != null
 			? p_panel.fAdempiereHome.getText()
 			: (String)p_properties.get(ADEMPIERE_HOME);
 	}	//	getAdempiereHome
@@ -904,7 +897,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_HOME, adempiereHome);
 	}	//	setAdempiereHome
-	
+
 	/**
 	 * 	Get Key Store
 	 *	@return password
@@ -928,8 +921,8 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_KEYSTOREPASS, password);
 	}	//	setKeyStore
-	
-	
+
+
 	/**************************************************************************
 	 * 	Java Settings
 	 *************************************************************************/
@@ -945,10 +938,11 @@ public class ConfigurationData
 	/** Java VM Types		*/
 	static String[]	JAVATYPE = new String[]
 		{JAVATYPE_SUN, JAVATYPE_OPENJDK, JAVATYPE_MAC, JAVATYPE_IBM};
-	
+
 	/** Virtual machine Configurations	*/
 	private Config[] m_javaConfig = new Config[]
 	    {new ConfigVMSun(this), new ConfigVMOpenJDK(this), new ConfigVMMac(this), null};
+	private ConfigAppServer m_appsConfig = new ConfigAppServer(this);
 
 	/**
 	 * 	Init Database
@@ -958,7 +952,7 @@ public class ConfigurationData
 		int index = (p_panel != null ? p_panel.fJavaType.getSelectedIndex() : 0);
 		initJava(index);
 	}	//	initDatabase
-	
+
 	private void initJava(int index)
 	{
 		if (index < 0 || index >= JAVATYPE.length)
@@ -972,14 +966,14 @@ public class ConfigurationData
 		else
 			m_javaConfig[index].init();
 	}
-	
+
 	/**
 	 * 	Test Java
 	 *	@return error message or null of OK
 	 */
 	public String testJava()
 	{
-		int index = p_panel != null 
+		int index = p_panel != null
 			? p_panel.fJavaType.getSelectedIndex()
 			: setJavaType((String)p_properties.get(JAVA_TYPE));
 		if (index < 0 || index >= JAVATYPE.length)
@@ -988,7 +982,7 @@ public class ConfigurationData
 			return "JavaType Config class missing: " + index;
 		return m_javaConfig[index].test();
 	}	//	testJava
-	
+
 	/**
 	 * 	Set Java Type
 	 *	@param javaType The javaType to set.
@@ -1013,7 +1007,7 @@ public class ConfigurationData
 			p_panel.fJavaType.setSelectedIndex(index);
 		else
 			updateProperty(JAVA_TYPE, javaType);
-		
+
 		return index;
 	}	//	setJavaType
 
@@ -1048,110 +1042,30 @@ public class ConfigurationData
 		else
 			updateProperty(JAVA_HOME, javaHome);
 	}
-	
-	/**************************************************************************
-	 * 	Apps Server Settings
-	 *************************************************************************/
-
-	/**	JBoss (default)		*/
-	protected static String	APPSTYPE_JBOSS = "jboss";
-	/** GlassFish            */
-    protected static String APPSTYPE_GLASSFISH = "glassfish";
-	/** Application Server Type		*/
-	static String[]	APPSTYPE = new String[]
-		{ APPSTYPE_JBOSS
-		, APPSTYPE_GLASSFISH
-		};
-	/** Database Configs	*/
-	private Config[] m_appsConfig = new Config[]
-	    { new ConfigJBoss(this)
-	    , new ConfigGlassfish( this )
-	    };
 
 	/**
 	 * 	Init Apps Server
 	 */
 	public void initAppsServer()
 	{
-		int index = (p_panel != null ? p_panel.fAppsType.getSelectedIndex() : 0);
-		initAppsServer(index);
+		m_appsConfig.init();
 	}	//	initAppsServer
-	
-	private void initAppsServer(int index)
-	{
-		if (index < 0 || index >= APPSTYPE.length)
-			log.warning("AppsServerType Index invalid: " + index);
-		else if (m_appsConfig[index] == null)
-		{
-			log.warning("AppsServerType Config missing: " + APPSTYPE[index]);
-			p_panel.fAppsType.setSelectedIndex(0);
-		}
-		else
-			m_appsConfig[index].init();
-	}
-	
+
 	/**
 	 * 	Test Apps Server
 	 *	@return error message or null of OK
 	 */
 	public String testAppsServer()
 	{
-		int index = p_panel != null 
-			? p_panel.fAppsType.getSelectedIndex()
-			: setAppsServerType((String)p_properties.get(ADEMPIERE_APPS_TYPE));
-		if (index < 0 || index >= APPSTYPE.length)
-			return "AppsServerType Index invalid: " + index;
-		else if (m_appsConfig[index] == null)
-			return "AppsServerType Config class missing: " + index;
-		return m_appsConfig[index].test();
+		return m_appsConfig.test();
 	}	//	testAppsServer
-	
-	
-	/**
-	 * 	Set Apps Server Type
-	 *	@param appsType The appsType to set.
-	 */
-	public int setAppsServerType (String appsType)
-	{
-		int index = -1;
-		for (int i = 0; i < APPSTYPE.length; i++)
-		{
-			if (APPSTYPE[i].equals(appsType))
-			{
-				index = i;
-				break;
-			}
-		}
-		if (index == -1)
-		{
-			index = 0;
-			log.warning("Invalid AppsType=" + appsType);
-		}
-		if (p_panel != null)
-			p_panel.fAppsType.setSelectedIndex(index);
-		else
-			updateProperty(ADEMPIERE_APPS_TYPE, appsType);
-			
-		return index;
-	}	//	setAppsServerType
-
-	/**
-	 * 	Get Apps Server Type
-	 *	@return Apps Server Type
-	 */
-	public String getAppsServerType ()
-	{
-		return p_panel != null
-			? (String)p_panel.fAppsType.getSelectedItem()
-			: (String)p_properties.get(ADEMPIERE_APPS_TYPE);
-	}	//	setDatabaseType
 
 	/**
 	 * @return Returns the appsServer.
 	 */
 	public String getAppsServer ()
 	{
-		return p_panel != null 
+		return p_panel != null
 			? p_panel.fAppsServer.getText()
 			: (String)p_properties.get(ADEMPIERE_APPS_SERVER);
 	}
@@ -1165,74 +1079,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_APPS_SERVER, appsServer);
 	}
-	
-	/**
-	 * @return Returns the appsServerDeployDir.
-	 */
-	public String getAppsServerDeployDir ()
-	{
-		return p_panel != null
-			? p_panel.fDeployDir.getText()
-			: (String)p_properties.get(ADEMPIERE_APPS_DEPLOY);
-	}
-	/**
-	 * @param appsServerDeployDir The appsServerDeployDir to set.
-	 */
-	public void setAppsServerDeployDir (String appsServerDeployDir)
-	{
-		if (p_panel != null)
-			p_panel.fDeployDir.setText(appsServerDeployDir);
-		else
-			updateProperty(ADEMPIERE_APPS_DEPLOY, appsServerDeployDir);
-	}
-	/**
-	 * @param enable if true enable entry
-	 */
-	public void setAppsServerDeployDir (boolean enable)
-	{
-		if (p_panel != null)
-		{
-			p_panel.fDeployDir.setEnabled(enable);
-			p_panel.bDeployDir.setEnabled(enable);
-		}
-	}
-	/**
-	 * @return Returns the appsServerJNPPort.
-	 */
-	public int getAppsServerJNPPort ()
-	{
-		String port = p_panel != null
-			? p_panel.fJNPPort.getText()
-			: (String)p_properties.get(ADEMPIERE_JNP_PORT);
-		try
-		{
-			return Integer.parseInt(port);
-		}
-		catch (Exception e)
-		{
-			setAppsServerJNPPort("0");
-		}
-		return 0;
-	}
-	/**
-	 * @param appsServerJNPPort The appsServerJNPPort to set.
-	 */
-	public void setAppsServerJNPPort (String appsServerJNPPort)
-	{
-		if (p_panel != null)
-			p_panel.fJNPPort.setText(appsServerJNPPort);
-		else
-			updateProperty(ADEMPIERE_JNP_PORT, appsServerJNPPort);
-	}
 
-	/**
-	 * @param enable if enable JNP entry
-	 */
-	public void setAppsServerJNPPort (boolean enable)
-	{
-		if (p_panel != null)
-			p_panel.fJNPPort.setEnabled(enable);
-	}
 	/**
 	 * @return Returns the appsServerSSLPort.
 	 */
@@ -1305,36 +1152,36 @@ public class ConfigurationData
 		if (p_panel != null)
 			p_panel.fWebPort.setEnabled(enable);
 	}
-	
-	
+
+
 	/**************************************************************************
 	 * 	Database Settings
 	 *************************************************************************/
-	
+
 	/** Oracle directory	*/
 	private static String	DBTYPE_ORACLE = "oracle";
 	/** Oracle XP	*/
 	private static String	DBTYPE_ORACLEXE = "oracleXE";
-        
+
 	/** PostgreSQL          */
 	private static String	DBTYPE_POSTGRESQL = "postgresql";
-	
+
 	/** Database Types		*/
 	static String[]	DBTYPE = new String[]
 	{	DBTYPE_ORACLEXE,
-		DBTYPE_ORACLE, 
+		DBTYPE_ORACLE,
         //begin e-evolution vpj-cd 02/07/2005 PostgreSQL
-        DBTYPE_POSTGRESQL 
+        DBTYPE_POSTGRESQL
     };
 	    //end e-evolution vpj-cd 02/07/2005 PostgreSQL
-		
+
 	/** Database Configs	*/
 	private Config[] m_databaseConfig = new Config[]
 	    {
-		new ConfigOracle(this,true), 
-		new ConfigOracle(this,false), 
+		new ConfigOracle(this,true),
+		new ConfigOracle(this,false),
 		//begin e-evolution vpj-cd 02/07/2005 PostgreSQL
-		new ConfigPostgreSQL(this)  
+		new ConfigPostgreSQL(this)
 		//		end e-evolution vpj-cd 02/07/2005 PostgreSQL
 		};
 
@@ -1347,7 +1194,7 @@ public class ConfigurationData
 		int index = (p_panel != null ? p_panel.fDatabaseType.getSelectedIndex() : 0);
 		initDatabase(selected, index);
 	}	//	initDatabase
-	
+
 	private void initDatabase(String selected, int index)
 	{
 		if (index < 0 || index >= DBTYPE.length)
@@ -1361,26 +1208,26 @@ public class ConfigurationData
 		else
 		{
 			m_databaseConfig[index].init();
-			
-			if (p_panel != null) 
+
+			if (p_panel != null)
 			{
 				String[] databases = m_databaseConfig[index].discoverDatabases(selected);
 				DefaultComboBoxModel model = new DefaultComboBoxModel(databases);
-				p_panel.fDatabaseDiscovered.setModel(model); 
+				p_panel.fDatabaseDiscovered.setModel(model);
 				p_panel.fDatabaseDiscovered.setEnabled(databases.length != 0);
 				if (databases.length > 0)
 					p_panel.fDatabaseName.setText(databases[0]);
 			}
 		}
 	}
-	
+
 	/**
 	 * 	Test Database
 	 *	@return error message or null of OK
 	 */
 	public String testDatabase()
 	{
-		int index = p_panel != null 
+		int index = p_panel != null
 			? p_panel.fDatabaseType.getSelectedIndex()
 			: setDatabaseType((String)p_properties.get(ADEMPIERE_DB_TYPE));
 		if (index < 0 || index >= DBTYPE.length)
@@ -1389,8 +1236,8 @@ public class ConfigurationData
 			return "DatabaseType Config class missing: " + index;
 		return m_databaseConfig[index].test();
 	}	//	testDatabase
-	
-	
+
+
 	/**
 	 * 	Set Database Type
 	 *	@param databaseType The databaseType to set.
@@ -1415,10 +1262,10 @@ public class ConfigurationData
 			p_panel.fDatabaseType.setSelectedIndex(index);
 		else
 			updateProperty(ADEMPIERE_DB_TYPE, databaseType);
-		
+
 		return index;
 	}	//	setDatabaseType
-	
+
 	/**
 	 * @return Returns the databaseType.
 	 */
@@ -1443,7 +1290,7 @@ public class ConfigurationData
 		if (p_panel != null)
 			p_panel.fDatabaseDiscovered.setSelectedItem(databaseDiscovered);
 	}
-	
+
 	/**
 	 * @return Returns the databaseName.
 	 */
@@ -1463,7 +1310,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_DB_NAME, databaseName);
 	}
-	
+
 	/**
 	 * @return Returns the database User Password.
 	 */
@@ -1594,5 +1441,5 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_DB_USER, databaseUser);
 	}
-	
+
 }	//	ConfigurationData

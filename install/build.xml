@@ -21,7 +21,6 @@
   <property name="launch.dir" value="../launch"/>
   <property name="keystore.dir" value="../keystore"/>
   <property name="data.dir" value="../data"/>
-  <property name="jboss.dir" value="../jboss"/>
 
   <property name="src" value="src"/>
   <property name="compile.dir" value="lib"/>
@@ -54,71 +53,12 @@
 	<!-- create the time stamp -->
 	<tstamp/>
 	<mkdir dir="${build.dir}"/>
-	<mkdir dir="${compile.dir}"/>
   </target>
-
-  <!-- ======================================================= -->
-  <!-- Compile & Jar                                           -->
-  <!-- ======================================================= -->
-  <target name="installCompile" depends="installInit">
-	<!-- compile the java code from ${src} into ${build.dir} -->
-	<javac target="1.6" srcdir="${src}" destdir="${compile.dir}" deprecation="on" debug="on">
-	  <classpath refid="project.class.path"/>
-	</javac>
-	<!-- copy all image & sound files from src to the build directory -->
-	<copy todir="${compile.dir}">
-	  <fileset dir="${src}">
-		<include name="**/images/*"/>
-		<include name="**/*.gif"/>
-		<include name="**/*.jpg"/>
-		<include name="**/*.wav"/>
-		<include name="**/*.htm"/>
-		<include name="**/*.html"/>
-		<include name="**/*.properties"/>
-		<exclude name="**/package.html"/>
-	  </fileset>
-	</copy>
-	
-		<!-- put everything into the $CInstall.jar file -->
-	<jar
-	  jarfile="CInstall.jar"
-	  index="yes"
-	  duplicate="preserve">
-	  <fileset dir="${compile.dir}"/>
-	  <!-- Ant (with ftp) files -->
-	  <zipfileset src="../tools/lib/ant.jar" >
-		<patternset refid="manifest.exclude"/>
-	  </zipfileset>
-	  <zipfileset src="../tools/lib/ant-launcher.jar" >
-		<patternset refid="manifest.exclude"/>
-	  </zipfileset>
-	  <zipfileset src="../tools/lib/ant-commons-net.jar" >
-		<patternset refid="manifest.exclude"/>
-	  </zipfileset>
-	  <zipfileset src="../tools/lib/commons-net-1.4.0.jar" >
-		<patternset refid="manifest.exclude"/>
-	  </zipfileset>
-			
-	  <manifest>
-		<attribute name="Specification-Title" value="CInstall"/>
-		<attribute name="Specification-Version" value="${env.ADEMPIERE_VERSION}"/>
-		<attribute name="Specification-Vendor" value="Adempiere.org"/>
-		<attribute name="Implementation-Title" value="CInstall ${env.ADEMPIERE_VERSION}"/>
-		<attribute name="Implementation-Version" value="${env.ADEMPIERE_VERSION} ${DSTAMP}-${TSTAMP}"/>
-		<attribute name="Implementation-Vendor" value="${env.ADEMPIERE_VENDOR}"/>
-		<attribute name="Implementation-URL" value="http://www.adempiere.org"/>
-		<attribute name="Main-Class" value="org.compiere.install.Setup"/>
-		<attribute name="Class-Path" value="CTools.jar CClient.jar oracle.jar"/>
-	  </manifest>
-	</jar>
-
-  </target>
-
 
   <!-- ======================================================= -->
   <!-- Update from Web Site + Clean .sh                        -->
   <!-- ======================================================= -->
-  <target name="installUpdate" depends=""
+  <target name="installUpdate" depends="plugin"
 	description="Update install directory with copies of web site">
 
 	<fixcrlf srcdir="${src.dir}"
@@ -143,20 +83,6 @@
 	<mkdir dir="${build.dir}"/>
 	<mkdir dir="${build.dir}/Adempiere"/>
 	<mkdir dir="${build.dir}/Adempiere/images"/>
-  	<mkdir dir="${build.dir}/Adempiere/packages"/>
-  	<mkdir dir="${build.dir}/Adempiere/zkpackages"/>
-  	
-	<mkdir dir="${build.dir}/Adempiere/packages/liberoMFG"/>
-	<mkdir dir="${build.dir}/Adempiere/packages/liberoMFG/lib"/>
-  	<copy file="../packages/liberoMFG.jar" tofile="${build.dir}/Adempiere/packages/liberoMFG/lib/liberoMFG.jar"/>
-  	
-	<mkdir dir="${build.dir}/Adempiere/zkpackages/liberoMFG"/>
-	<mkdir dir="${build.dir}/Adempiere/zkpackages/liberoMFG/lib"/>
-  	<copy file="../zkpackages/liberozkMFG.jar" tofile="${build.dir}/Adempiere/zkpackages/liberoMFG/lib/liberozkMFG.jar"/>
-  	
-  	<mkdir dir="${build.dir}/Adempiere/packages/liberoHR"/>
-  	<mkdir dir="${build.dir}/Adempiere/packages/liberoHR/lib"/>
-  	<copy file="../packages/liberoHR.jar" tofile="${build.dir}/Adempiere/packages/liberoHR/lib/liberoHR.jar"/>
 
   	<copy file="../lib/CheckConflicts.sh" tofile="${build.dir}/Adempiere/lib/CheckConflicts.sh"/>
 
@@ -182,33 +108,34 @@
 	  	<include name="**/*0"/>
 	  </fileset>
 	</copy>
-	<copy file="${launch.dir}/Release/Adempiere.exe" todir="${build.dir}/Adempiere/lib"/>
- <!--	<copy file="CInstall.jar" todir="${build.dir}/Adempiere/lib"/>
-	<copy file="../sqlj/sqlj.jar" todir="${build.dir}/Adempiere/lib"/>
-	<copy file="../JasperReports/CompiereJasperReqs.jar" todir="${build.dir}/Adempiere/lib"/> -->
 	<concat destfile="${build.dir}/Adempiere/lib/index.html">AdempiereHome</concat>
 
 	<!-- OSGi Container 		-->
 	<mkdir dir="${build.dir}/Adempiere/osgi"/>
 	<copy overwrite="true" todir="${build.dir}/Adempiere/osgi" >
 		<fileset dir="../equinox-target">
-			<include name="configuration/**/*"/>
 			<include name="plugins/**/*"/>
 			<include name="org.eclipse.*.jar"/>
 		</fileset>
+		<fileset dir="../equinox-target/spring">
+			<include name="plugins/**/*"/>
+		</fileset>
 		<fileset dir="../lib">
 			<include name="plugins/**/*"/>
 		</fileset>
 	</copy>
-  	
-  	<!-- Bridge webapp -->
-	<mkdir dir="${build.dir}/Adempiere/webapp"/>
-	<copy overwrite="true" todir="${build.dir}/Adempiere/webapp" >
-		<fileset dir="../lib">
-			<include name="bridge.war"/>
+  	<copy overwrite="true" todir="${build.dir}/Adempiere/osgi/client" >
+  		<fileset dir="../equinox-target/configuration">
+			<include name="*.ini"/>
 		</fileset>
-	</copy>
-  	
+  	</copy>
+  	<copy overwrite="true" todir="${build.dir}/Adempiere/osgi/server" >
+  		<fileset dir="../equinox-target/webapp/configuration">
+			<include name="*.ini"/>
+		</fileset>
+  	</copy>
+  	<delete dir="${build.dir}/Adempiere/lib/plugins"/>
+
 	<!-- Utils Directory		-->
 	<mkdir dir="${build.dir}/Adempiere/utils"/>
 	<copy todir="${build.dir}/Adempiere/utils">
@@ -237,36 +164,12 @@
 	    <include name="**/Accounting*.*"/>
 	    <include name="Example*.csv"/>
 	  </fileset>
-	</copy> 
+	</copy>
     <copy todir="${build.dir}/Adempiere/data/">
 	  <fileset dir="${data.dir}/seed/">
       	<include name="**/*.jar"/>
       </fileset>
 	</copy>
-
-
-	<!-- JBoss Directory		-->
-	<mkdir dir="${build.dir}/Adempiere/jboss"/>
-	<mkdir dir="${build.dir}/Adempiere/jboss/bin"/>
-	<copy todir="${build.dir}/Adempiere/jboss/bin">
-	  <fileset dir="${jboss.dir}/bin" excludes="**/CVS/**"/>
-	</copy>
-	<mkdir dir="${build.dir}/Adempiere/jboss/lib"/>
-	<copy todir="${build.dir}/Adempiere/jboss/lib">
-	  <fileset dir="${jboss.dir}/lib" excludes="**/CVS/**"/>
-	</copy>
-	<mkdir dir="${build.dir}/Adempiere/jboss/server"/>
-	<copy todir="${build.dir}/Adempiere/jboss/server">
-	  <fileset dir="${jboss.dir}/server"
-		excludes="**/CVS/**"/>
-	</copy>
-  	
-  	<!-- GlassFish -->
-  	<mkdir dir="${build.dir}/Adempiere/glassfish"/>
-  	<copy todir="${build.dir}/Adempiere/glassfish">
-  		<fileset dir="../glassfishfacet/config"/>
-  	</copy>
-
 
 	<!-- Create Install ZIP		-->
 	<zip zipfile="${build.dir}/Adempiere_${env.ADEMPIERE_VERSION_FILE}.zip"
@@ -289,17 +192,20 @@
 
   </target>
 
-  <target name="plugin">
-	<buildPlugin workspaceDirectory=".."
+  <target name="plugin" depends="installInit">
+	<buildPlugin workspaceDirectory="${workspace}"
 	             projectName="install"
 	             targetPlatformId="target.platform"
-	             destination="${dist.dir}"
+	             destination="../lib"
 	 			 buildSourceJar="false" />
-  </target>		
+  </target>
 
   <target name="clean" description="deletes build">
-	<delete dir="${build.dir}"/>
-	<delete dir="${compile.dir}"/>
+  	<delete>
+   		<fileset dir="../lib/plugins">
+			<include name="org.adempiere.install*.jar"/>
+		</fileset>
+   	</delete>
   </target>
 
 </project>
