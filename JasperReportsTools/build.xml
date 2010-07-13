@@ -1,0 +1,31 @@
+<!-- ============================================= -->
+<!-- jasperreport                                  -->
+<!-- ============================================= -->
+
+
+<project name="JasperReportsTools" default="plugin" basedir=".">
+
+  <description>
+    build jasper reports bundle for adempiere
+  </description>
+
+  <!-- set global properties for this build -->
+  <import file="../utils_dev/properties.xml"/>
+
+	<target name="clean" description="delete class directory">
+	   <delete>
+	   		<fileset dir="../lib">
+    			<include name="org.adempiere.JasperReportsTools*.jar"/>
+			</fileset>
+	   </delete>
+	</target>
+
+	<target name="plugin">
+		<buildPlugin workspaceDirectory="${workspace}"
+			             projectName="JasperReportsTools"
+			             targetPlatformId="target.platform"
+			             destination="../lib"
+			 			 buildSourceJar="false"
+						 clean="no"/>
+	</target>
+</project>
