@@ -11,8 +11,8 @@
 
     <dirname property="adempiere.base" file="${ant.file.properties}/.."/>
     <property file="${user.home}/.adempiere.properties"/>
-    <property file="${adempiere.base}/utils_dev/mybuild.properties"/>
     <property file="${adempiere.base}/utils_dev/build.properties"/>
+	<property file="${adempiere.base}/utils_dev/mybuild.properties"/>
 
     <!-- Here we could add most common buildpaths -->
 
@@ -32,8 +32,6 @@
 
 	<ant4eclipse:targetPlatform id="target.platform">
 		<location dir="${workspace}/equinox-target/plugins" />
-		<location dir="${workspace}/equinox-target/webapp/plugins" />
-		<location dir="${workspace}/equinox-target/jetty/plugins" />
 		<location dir="${workspace}/equinox-target/spring/plugins" />
 	</ant4eclipse:targetPlatform>
 </project>

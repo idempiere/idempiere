@@ -15,6 +15,11 @@
 		<echo message="=========== Build Adempiere - ${env.ENCODING}"/>
 		<!-- Create the time stamp -->
 		<tstamp/>
+		<delete>
+	   		<fileset dir="lib/plugins">
+				<include name="*.jar"/>
+			</fileset>
+	   	</delete>
 	</target>
 	<target name="jar" depends="init">
 		<ant inheritAll="false" dir="tools"/>
@@ -22,32 +27,25 @@
 		<ant inheritAll="false" dir="extend"/>
 		<ant inheritAll="false" dir="client"/>
 		<ant inheritAll="false" dir="JasperReports"/>
-		<ant inheritAll="false" dir="JasperReportsWebApp"/>
+		<ant inheritAll="false" dir="JasperReportsTools"/>
 		<ant inheritAll="false" dir="serverRoot"/>
 		<ant inheritAll="false" dir="serverApps"/>
 		<ant inheritAll="false" dir="webStore"/>
-		<ant inheritAll="false" dir="webCM"/>
-		<ant inheritAll="false" dir="sqlj"/>
-		<ant inheritAll="false" dir="posterita/posterita"/>
 		<ant inheritAll="false" dir="zkwebui"/>
 	</target>
-	<target name="build" depends="plugins">
-		<ant inheritAll="false" dir="install"/>		
-	</target>	
-	
+	<target name="build" depends="jar">
+		<ant inheritAll="false" dir="install"/>
+	</target>
+
 	<target name="clean">
 		<ant inheritAll="false" dir="tools" target="clean"/>
 		<ant inheritAll="false" dir="base" target="clean"/>
 		<ant inheritAll="false" dir="extend" target="clean"/>
 		<ant inheritAll="false" dir="JasperReports" target="clean"/>
-		<ant inheritAll="false" dir="JasperReportsWebApp" target="clean"/>
 		<ant inheritAll="false" dir="client" target="clean"/>
 		<ant inheritAll="false" dir="serverRoot" target="clean"/>
 		<ant inheritAll="false" dir="serverApps" target="clean"/>
 		<ant inheritAll="false" dir="webStore" target="clean"/>
-		<ant inheritAll="false" dir="webCM" target="clean"/>
-		<ant inheritAll="false" dir="sqlj" target="clean"/>
-		<ant inheritAll="false" dir="posterita/posterita" target="clean"/>
 		<ant inheritAll="false" dir="install" target="clean"/>
 		<ant inheritAll="false" dir="zkwebui" target="clean"/>
 	</target>
@@ -61,11 +59,11 @@
 		<ant inheritAll="false" dir="extend" target="compile"/>
 		<ant inheritAll="false" dir="client"/>
 	</target>
-	
+
 	<target name="update-serverRoot" depends="init">
 		<ant inheritAll="false" dir="serverRoot"/>
 	</target>
-	
+
 	<!-- ================================================ -->
 	<!-- Adempiere Local Install                           -->
 	<!-- ================================================ -->
@@ -80,38 +78,22 @@
 			<fileset dir="${env.ADEMPIERE_HOME}/jboss"/>
 		</delete>
 		<!-- Unzip Install File			-->
-		<unzip src="install/build/Adempiere_${env.ADEMPIERE_VERSION_FILE}.zip" 
-			dest="${env.ADEMPIERE_ROOT}" 
+		<unzip src="install/build/Adempiere_${env.ADEMPIERE_VERSION_FILE}.zip"
+			dest="${env.ADEMPIERE_ROOT}"
 			overwrite="yes"/>
 		<!-- Run Setup				-->
 		<!--
-		<input addproperty="runSetupInput" 
-			message="Run Setup(Y/N) ? " 
+		<input addproperty="runSetupInput"
+			message="Run Setup(Y/N) ? "
 			validargs="Y,y,N,n"/>
-		
+
 		<antcall target="runSetup"/>
 		-->
 	</target>
-	
+
 	<!-- ================================================ -->
 	<!-- Adempiere OSGi Update                            -->
 	<!-- ================================================ -->
-	  <target name="plugin">
-		<buildPlugin workspaceDirectory=".."
-		             projectName="${plugin}"
-		             targetPlatformId="target.platform"
-		             destination="${env.ADEMPIERE_ROOT}/Adempiere/osgi"
-		 			 buildSourceJar="false"
-					 clean="no"/>
-	  	<!-- TODO make this faster -->
-		<buildPlugin workspaceDirectory=".."
-		             projectName="${plugin}"
-		             targetPlatformId="target.platform"
-		             destination="${env.ADEMPIERE_ROOT}/Adempiere/webapp/bridge/WEB-INF/eclipse"
-		 			 buildSourceJar="false"
-					 clean="no"/>
-	  </target>		
-
 	<target name="plugins">
 		<ant4eclipse:executeProjectSet workspaceDirectory=".." allWorkspaceProjects="true">
 			<ant4eclipse:forEachProject filter="(executeProjectSet.org.eclipse.pde.PluginNature=*)">
@@ -125,7 +107,7 @@
 		</ant4eclipse:executeProjectSet>
 	</target>
 
-	
+
 	<!-- ================================================ -->
 	<!-- Adempiere Local Update                           -->
 	<!-- ================================================ -->
@@ -135,33 +117,33 @@
 			<fileset dir="install/build" includes="Adempiere_*"/>
 		</copy>
 		<!-- Unzip Install File			-->
-		<unzip src="install/build/Adempiere_${env.ADEMPIERE_VERSION_FILE}.zip" 
-			dest="${env.ADEMPIERE_ROOT}" 
+		<unzip src="install/build/Adempiere_${env.ADEMPIERE_VERSION_FILE}.zip"
+			dest="${env.ADEMPIERE_ROOT}"
 			overwrite="yes"/>
 		<!-- Run Setup				-->
 		<antcall target="runUpdateWin"></antcall>
 		<antcall target="runUpdateNonWin"></antcall>
 	</target>
-	
+
 	<target name="runSetupInit">
 		<condition property="isWindows">
 			<os family="windows" />
 		</condition>
 	</target>
-	
+
 	<target name="runSetupWin" depends="runSetupInit" if="isWindows" >
-		<exec dir="${env.ADEMPIERE_HOME}" executable="RUN_setup.bat" 
+		<exec dir="${env.ADEMPIERE_HOME}" executable="RUN_setup.bat"
 			spawn="false" resolveexecutable="true">
 		</exec>
 	</target>
-	
+
   <target name="runSetupNonWin" depends="runSetupInit" unless="isWindows" >
     <chmod dir="${env.ADEMPIERE_HOME}" perm="ugo+rx" includes="RUN_setup.sh"/>
-		<exec dir="${env.ADEMPIERE_HOME}" executable="RUN_setup.sh" 
+		<exec dir="${env.ADEMPIERE_HOME}" executable="RUN_setup.sh"
 			spawn="false" resolveexecutable="true">
 		</exec>
 	</target>
-	
+
 	<target name="runSetupCheck">
 		<condition property="setup.yes">
 			<or>
@@ -170,21 +152,21 @@
 			</or>
 		</condition>
 	</target>
-	
+
 	<target name="runSetup" depends="runSetupCheck" if="setup.yes">
 		<antcall target="runSetupWin"></antcall>
 		<antcall target="runSetupNonWin"></antcall>
 	</target>
 
 	<target name="runUpdateWin" depends="runSetupInit" if="isWindows" >
-		<exec dir="${env.ADEMPIERE_HOME}" executable="RUN_update.bat" 
+		<exec dir="${env.ADEMPIERE_HOME}" executable="RUN_update.bat"
 			spawn="false" resolveexecutable="true">
 		</exec>
 	</target>
-	
+
   <target name="runUpdateNonWin" depends="runSetupInit" unless="isWindows" >
     <chmod dir="${env.ADEMPIERE_HOME}" perm="ugo+rx" includes="RUN_update.sh"/>
-		<exec dir="${env.ADEMPIERE_HOME}" executable="RUN_update.sh" 
+		<exec dir="${env.ADEMPIERE_HOME}" executable="RUN_update.sh"
 			spawn="false" resolveexecutable="true">
 		</exec>
 	</target>
@@ -194,7 +176,7 @@
 	<!-- ================================================ -->
 	<target name="complete" depends="build, install">
 	</target>
-	
+
 	<!-- ================================================ -->
 	<!-- update                                           -->
 	<!-- ================================================ -->
