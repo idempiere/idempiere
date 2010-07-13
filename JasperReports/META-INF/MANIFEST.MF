@@ -1,18 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JasperReports
-Bundle-SymbolicName: JasperReports
+Bundle-SymbolicName: org.adempiere.JasperReports
 Bundle-Version: 1.0.0.qualifier
-Bundle-ClassPath: JasperReports.jar,
- lib/postgresql.jar,
- lib/ocrs12.jar,
- lib/ojdbc14.jar,
- lib/barbecue-1.5-beta1.jar
+Bundle-ClassPath: JasperReports.jar
 Export-Package: org.compiere.interfaces,
  org.compiere.report,
  org.compiere.utils
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.JasperReportsTools;bundle-version="1.0.0",
  org.adempiere.client;bundle-version="0.0.0",
- com.springsource.javax.ejb;bundle-version="3.0.0"
+ com.springsource.javax.ejb;bundle-version="3.0.0",
+ org.adempiere.tools;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
