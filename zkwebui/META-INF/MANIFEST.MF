@@ -370,9 +370,10 @@ Require-Bundle: org.eclipse.osgi.services;bundle-version="3.1.100",
  org.apache.xerces;bundle-version="2.9.0",
  org.apache.xml.serializer;bundle-version="2.7.1",
  com.springsource.javax.servlet;bundle-version="2.5.0",
- JasperReports;bundle-version="1.0.0",
+ org.adempiere.JasperReports;bundle-version="1.0.0",
  org.adempiere.client;bundle-version="0.0.0",
  org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.tools;bundle-version="0.0.0",
  org.adempiere.JasperReportsTools;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-ExtensibleAPI: true

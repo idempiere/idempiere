@@ -3,39 +3,27 @@
 <!-- Zk Ajax UI (Web UI)                               -->
 <!-- ======================================================== -->
 
-<project name="ZkWebUI" default="plugin-dist" basedir=".">
+<project name="ZkWebUI" default="plugin" basedir=".">
 	<description>
 	    This buildfile is used to build the Zk WebUI client.
   	</description>
 
+	<import file="../utils_dev/properties.xml"/>
+
 	<target name="clean" description="delete class directory">
 	   <delete>
-	   		<fileset dir="../lib">
-    			<include name="*webui*.jar"/>
-			</fileset>
-	   </delete>
-	   <delete>
-	   		<fileset dir="${env.ADEMPIERE_ROOT}/Adempiere/osgi">
+	   		<fileset dir="../lib/plugins">
     			<include name="*webui*.jar"/>
 			</fileset>
 	   </delete>
 	</target>
 
 	<target name="plugin">
-		<buildPlugin workspaceDirectory=".."
-			             projectName="webui"
+		<buildPlugin workspaceDirectory="${workspace}"
+			             projectName="zkwebui"
 			             targetPlatformId="target.platform"
 			             destination="../lib"
 			 			 buildSourceJar="false"
 						 clean="no"/>
-	</target>
-
-	<target name="plugin-dist">
-		<buildPlugin workspaceDirectory=".."
-			      projectName="webui"
-			      targetPlatformId="target.platform"
-			      destination="${env.ADEMPIERE_ROOT}/Adempiere/osgi"
-			 	  buildSourceJar="false"
-				  clean="no"/>
 	</target>
 </project>
