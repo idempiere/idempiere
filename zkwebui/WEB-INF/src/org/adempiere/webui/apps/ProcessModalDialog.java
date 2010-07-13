@@ -28,7 +28,6 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.compiere.apps.ProcessCtl;
-import org.compiere.apps.ProcessDialog;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
@@ -46,7 +45,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 
 /**
- * 
+ *
  *	Modal Dialog to Start process.
  *	Displays information about the process
  *		and lets the user decide to start it
@@ -78,8 +77,8 @@ public class ProcessModalDialog extends Window implements EventListener
 		m_WindowNo = WindowNo;
 		m_pi = pi;
 		m_autoStart = autoStart;
-		
-		log.info("Process=" + pi.getAD_Process_ID());		
+
+		log.info("Process=" + pi.getAD_Process_ID());
 		try
 		{
 			initComponents();
@@ -90,7 +89,7 @@ public class ProcessModalDialog extends Window implements EventListener
 			log.log(Level.SEVERE, "", ex);
 		}
 	}
-	
+
 	/**
 	 * Dialog to start a process/report
 	 * @param ctx
@@ -102,10 +101,10 @@ public class ProcessModalDialog extends Window implements EventListener
 	 * @param autoStart
 	 */
 	public ProcessModalDialog (  ASyncProcess aProcess, int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
-	{						
-		this(aProcess, WindowNo, new ProcessInfo("", AD_Process_ID, tableId, recordId), autoStart);		
+	{
+		this(aProcess, WindowNo, new ProcessInfo("", AD_Process_ID, tableId, recordId), autoStart);
 	}
-	
+
 	/**
 	 * Dialog to start a process/report
 	 * @param ctx
@@ -119,7 +118,7 @@ public class ProcessModalDialog extends Window implements EventListener
 	 * @param autoStart
 	 * @deprecated
 	 */
-	public ProcessModalDialog (Window parent, String title, 
+	public ProcessModalDialog (Window parent, String title,
 			ASyncProcess aProcess, int WindowNo, int AD_Process_ID,
 			int tableId, int recordId, boolean autoStart)
 	{
@@ -144,17 +143,17 @@ public class ProcessModalDialog extends Window implements EventListener
 		btn.setId("Ok");
 		btn.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btn);
-		
+
 		btn = new Button("Cancel");
 		btn.setId("Cancel");
 		LayoutUtils.addSclass("action-text-button", btn);
 		btn.addEventListener(Events.ON_CLICK, this);
-		
+
 		hbox.appendChild(btn);
 		div.appendChild(hbox);
 		dialogBody.appendChild(div);
 		this.appendChild(dialogBody);
-		
+
 	}
 
 	private ASyncProcess m_ASyncProcess;
@@ -164,20 +163,20 @@ public class ProcessModalDialog extends Window implements EventListener
 	private StringBuffer	m_messageText = new StringBuffer();
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
 	private boolean m_valid = true;
-	
+
 	private Panel centerPanel = null;
 	private Html message = null;
-	
+
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(ProcessDialog.class);
+	private static CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
 	//
 	private ProcessParameterPanel parameterPanel = null;
-	
+
 	private ProcessInfo m_pi = null;
 	private BusyDialog progressWindow;
-	
+
 	/**
-	 * 	Set Visible 
+	 * 	Set Visible
 	 * 	(set focus to OK if visible)
 	 * 	@param visible true if visible
 	 */
@@ -190,7 +189,7 @@ public class ProcessModalDialog extends Window implements EventListener
 	 *	Dispose
 	 */
 	public void dispose()
-	{		
+	{
 		parameterPanel.restoreContext();
 		m_valid = false;
 		this.detach();
@@ -222,7 +221,7 @@ public class ProcessModalDialog extends Window implements EventListener
 				+ "FROM AD_Process p, AD_Process_Trl t "
 				+ "WHERE p.AD_Process_ID=t.AD_Process_ID"
 				+ " AND p.AD_Process_ID=? AND t.AD_Language=?";
-		
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -244,7 +243,7 @@ public class ProcessModalDialog extends Window implements EventListener
 				else
 					m_messageText.append(s);
 				m_messageText.append("</b>");
-				
+
 				s = rs.getString(3);			//	Help
 				if (!rs.wasNull())
 					m_messageText.append("<p>").append(s).append("</p>");
@@ -265,7 +264,7 @@ public class ProcessModalDialog extends Window implements EventListener
 		//
 		this.setTitle(m_Name);
 		message.setContent(m_messageText.toString());
-		
+
 		//	Move from APanel.actionButton
 		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
@@ -284,12 +283,12 @@ public class ProcessModalDialog extends Window implements EventListener
 				return true;
 			}
 		}
-		
+
 		// Check if the process is a silent one
 		if(isValid() && m_ShowHelp != null && m_ShowHelp.equals("S"))
 		{
 			this.getFirstChild().setVisible(false);
-			startProcess();			
+			startProcess();
 		}
 		return true;
 	}	//	init
@@ -298,16 +297,16 @@ public class ProcessModalDialog extends Window implements EventListener
 	 * launch process
 	 */
 	private void startProcess()
-	{			
+	{
 		m_pi.setPrintPreview(true);
-		
+
 		if (m_ASyncProcess != null) {
 			m_ASyncProcess.lockUI(m_pi);
 			Clients.showBusy(null, false);
 		}
-		
+
 		showBusyDialog();
-		
+
 		//use echo, otherwise lock ui wouldn't work
 		Clients.response(new AuEcho(this, "runProcess", null));
 	}
@@ -320,18 +319,18 @@ public class ProcessModalDialog extends Window implements EventListener
 		progressWindow = new BusyDialog();
 		this.appendChild(progressWindow);
 	}
-	
+
 	/**
 	 * internal use, don't call this directly
 	 */
 	public void runProcess() {
 		try {
-			ProcessCtl.process(null, m_WindowNo, parameterPanel, m_pi, null);					
+			ProcessCtl.process(null, m_WindowNo, parameterPanel, m_pi, null);
 		} finally {
 			dispose();
 			if (m_ASyncProcess != null) {
 				m_ASyncProcess.unlockUI(m_pi);
-			} 
+			}
 			hideBusyDialog();
 		}
 	}
@@ -342,12 +341,12 @@ public class ProcessModalDialog extends Window implements EventListener
 			progressWindow = null;
 		}
 	}
-	
+
 	/**
 	 * handle events
 	 */
 	public void onEvent(Event event) {
-		Component component = event.getTarget(); 
+		Component component = event.getTarget();
 		if (component instanceof Button) {
 			Button element = (Button)component;
 			if ("Ok".equalsIgnoreCase(element.getId())) {
@@ -355,7 +354,7 @@ public class ProcessModalDialog extends Window implements EventListener
 			} else if ("Cancel".equalsIgnoreCase(element.getId())) {
 				this.dispose();
 			}
-		}		
+		}
 	}
-	
+
 }	//	ProcessDialog
