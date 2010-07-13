@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.adempiere.libero.mfg.zk
+Bundle-SymbolicName: org.adempiere.libero.mfg.zk
+Bundle-Version: 1.0.0
+Bundle-ClassPath: liberozkMFG.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Fragment-Host: org.adempiere.webui;bundle-version="0.0.0"
+Eclipse-PatchFragment: true

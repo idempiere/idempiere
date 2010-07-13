@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================== -->
+<!-- Adempiere Web Store Application                           -->
+<!-- ======================================================== -->
+<!-- $Header: /cvs/adempiere/webStore/build.xml,v 1.2 2006/06/10 21:59:22 jjanke Exp $-->
+
+<project name="adempiereWebStore" default="plugin" basedir=".">
+
+  <!--<property environment="env"/>-->
+  <import file="../utils_dev/properties.xml"/>
+
+  <target name="init">
+    <echo message="=========== Build Web Store"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the plugin                                            -->
+  <!-- =================================================================== -->
+  <target name="plugin">
+		<buildPlugin workspaceDirectory="${workspace}"
+			             projectName="webStore"
+			             targetPlatformId="target.platform"
+			             destination="../lib"
+			 			 buildSourceJar="false"
+						 clean="no"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Cleans up the current build                                         -->
+  <!-- =================================================================== -->
+  <target name="clean">
+    <delete>
+    	<fileset dir="../lib/plugins">
+			<include name="org.adempiere.wstore*.jar"/>
+		</fileset>
+    </delete>
+  </target>
+
+</project>
