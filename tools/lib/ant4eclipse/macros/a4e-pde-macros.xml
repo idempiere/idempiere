@@ -218,7 +218,7 @@
           <pre-package-library />
 
           <!-- copy the content of the library to a temporary folder -->
-          <ant4eclipse:executePluginLibrary workspace="@{workspaceDirectory}"
+          <ant4eclipse:executePluginLibrary workspaceDirectory="@{workspaceDirectory}"
                                             projectname="${buildPlugin.project.name}"
                                             libraryname="${buildPlugin.library.name}">
 
