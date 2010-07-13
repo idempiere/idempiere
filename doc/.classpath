@@ -9,6 +9,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/install"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/serverApps"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/serverRoot"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/sqlj"/>
 	<classpathentry kind="output" path="lib"/>
 </classpath>

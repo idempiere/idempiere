@@ -4,10 +4,15 @@ build
 syntax: regexp
 ^adempiere$
 ^base/Base\.jar$
+^base/base\.jar$
+^client/client\.jar$
 ^extend/Extend\.jar$
+^extend/extend\.jar$
 ^install/lib$
 ^install/CInstall\.jar$
+^install/install\.jar$
 ^JasperReports/needed$
+^JasperReports/JasperReports\.jar$
 ^JasperReports/CompiereJasper\.jar$
 ^JasperReports/CompiereJasperReqs\.jar$
 ^JasperReportsWebApp/webApp\.ear$
@@ -39,7 +44,14 @@ syntax: regexp
 ^packages/liberoMFG\.jar$
 ^posterita/posterita/dist$
 ^posterita/posterita/web/WEB-INF/classes$
+^serverApps/serverApps\.jar$
 ^sqlj/sqlj\.jar$
+^tools/tools\.jar$
+^utils_dev/mybuild\.properties$
 ^webCM/deploy$
 ^zkwebui/dist$
 ^zkwebui/WEB-INF/classes$
+
+syntax: regexp
+^lib/plugins$
+^plugins/.*\.class$
