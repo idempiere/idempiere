@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.adempiere.base
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
-Bundle-Version: 0.0.0.2
+Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: base.jar
 Export-Package: com.akunagroup.uk.postcode,
  org.adempiere.apps.graph,
@@ -42,10 +42,10 @@ Export-Package: com.akunagroup.uk.postcode,
  org.compiere.tools,
  org.compiere.util,
  org.compiere.wf
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
- org.adempiere.tools;bundle-version="0.0.0",
+Require-Bundle: org.adempiere.tools;bundle-version="1.0.0",
  com.springsource.javax.servlet;bundle-version="2.5.0",
  com.springsource.javax.jms;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
+Import-Package: org.eclipse.core.runtime;version="3.4.0"
 
