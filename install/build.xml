@@ -122,6 +122,7 @@
 		</fileset>
 		<fileset dir="../lib">
 			<include name="plugins/**/*"/>
+			<exclude name="plugins/org.adempiere.tomcat.config*"/>
 		</fileset>
 	</copy>
   	<copy overwrite="true" todir="${build.dir}/Adempiere/osgi/client" >
@@ -134,6 +135,11 @@
 			<include name="*.ini"/>
 		</fileset>
   	</copy>
+  	<unjar dest="${build.dir}/Adempiere/osgi/plugins/org.adempiere.tomcat.config" overwrite="true">
+  		<fileset dir="../lib/plugins">
+  			<include name="org.adempiere.tomcat.config*.jar"/>
+  		</fileset>
+  	</unjar>
   	<delete dir="${build.dir}/Adempiere/lib/plugins"/>
 
 	<!-- Utils Directory		-->

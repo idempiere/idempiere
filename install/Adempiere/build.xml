@@ -46,7 +46,10 @@
 		<condition property="isWindows">
 			<os family="windows" />
 		</condition>
-		<echo message="Windows=${isWindows} JBoss=${isAppsJBoss} Glassfish=${isAppsGlassfish}" />
+		<echo message="Windows=${isWindows}" />
+
+		<copy file="osgi/plugins/org.adempiere.tomcat.config/META-INF/tomcat/serverTemplate.xml"
+			tofile="osgi/plugins/org.adempiere.tomcat.config/META-INF/tomcat/server.xml" filtering="yes" overwrite="yes"/>
 
 	</target>
 

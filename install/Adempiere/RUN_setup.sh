@@ -20,7 +20,7 @@ echo Setup Dialog
 echo ===================================
 
 # OSGi:
-$JAVA -jar osgi/org.eclipse.osgi_3.6.0.v20100517.jar -clean -console -install osgi -configuration osgi/client -application org.adempiere.Install
+$JAVA -Dosgi.compatibility.bootdelegation=true -jar osgi/org.eclipse.osgi_3.6.0.v20100517.jar -clean -console -install osgi -configuration osgi/client -application org.adempiere.Install
 
 
 echo ===================================
