@@ -28,17 +28,18 @@ else
 fi
 
 
-# To switch between multiple installs, copy the created Adempiere.properties file
-# Select the configuration by setting the PROP variable
-PROP=
-#PROP=-DPropertyFile=test.properties
+# Check Argument
+if [ $1 ]; then
+	PROP=-DPropertyFile=$1
+else
+	PROP=
+fi
 
 #  To use your own Encryption class (implementing org.compiere.util.SecureInterface),
 #  you need to set it here (and in the server start script) - example:
 #  SECURE=-DADEMPIERE_SECURE=org.compiere.util.Secure
 SECURE=
 
-#$JAVA -Xms32m -Xmx512m -DADEMPIERE_HOME=$ADEMPIERE_HOME $PROP $SECURE -classpath $CLASSPATH org.compiere.Adempiere
 # OSGi:
-$JAVA -Xms32m -Xmx512m -DADEMPIERE_HOME=$ADEMPIERE_HOME $PROP $SECURE -jar $ADEMPIERE_HOME/osgi/org.eclipse.osgi_3.6.0.v20100517.jar -clean -console -install $ADEMPIERE_HOME/osgi -configuration $ADEMPIERE_HOME/osgi/client -application org.adempiere.Client
+$JAVA -Xms32m -Xmx512m -Dosgi.compatibility.bootdelegation=true -DADEMPIERE_HOME=$ADEMPIERE_HOME $PROP $SECURE -jar $ADEMPIERE_HOME/osgi/org.eclipse.osgi_3.6.0.v20100517.jar -clean -console -install $ADEMPIERE_HOME/osgi -configuration $ADEMPIERE_HOME/osgi/client -application org.adempiere.Client
 

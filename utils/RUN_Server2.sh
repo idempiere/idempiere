@@ -22,7 +22,7 @@ fi
 # SECURE=-DADEMPIERE_SECURE=org.compiere.util.Secure
 SECURE=
 
-VMARGS="-Djava.awt.headless=true -Declipse.ignoreApp=true -Dosgi.noShutdown=true -DADEMPIERE_HOME=$ADEMPIERE_HOME"
+VMARGS="-Dosgi.compatibility.bootdelegation=true -Djava.awt.headless=true -Declipse.ignoreApp=true -Dosgi.noShutdown=true -DADEMPIERE_HOME=$ADEMPIERE_HOME"
 # headless option if you don't have X installed on the server
 $JAVA -server $VMARGS -jar $ADEMPIERE_HOME/osgi/org.eclipse.osgi_3.6.0.v20100517.jar -install $ADEMPIERE_HOME/osgi -configuration $ADEMPIERE_HOME/osgi/server -clean -console
 
