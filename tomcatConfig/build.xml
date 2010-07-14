@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- ============================================= -->
+<!-- Adempiere Server Root                          -->
+<!-- ============================================= -->
+<!-- $Header: /cvs/adempiere/serverRoot/build.xml,v 1.4 2006/06/10 21:58:02 jjanke Exp $-->
+
+<project name="tomcatConfig" default="plugin" basedir=".">
+
+  <!--<property environment="env"/>-->
+  <import file="../utils_dev/properties.xml"/>
+
+  <target name="init">
+    <echo message="=========== Build Tomcat Config Fragment"/>
+  </target>
+
+  <target name="clean" description="delete class directory">
+	   <delete>
+	   		<fileset dir="../lib/plugins">
+    			<include name="org.adempiere.tomcat.config*.jar"/>
+			</fileset>
+	   </delete>
+	</target>
+
+	<target name="plugin">
+		<buildPlugin workspaceDirectory="${workspace}"
+			             projectName="tomcatConfig"
+			             targetPlatformId="target.platform"
+			             destination="../lib"
+			 			 buildSourceJar="false"
+						 clean="no"/>
+	</target>
+</project>

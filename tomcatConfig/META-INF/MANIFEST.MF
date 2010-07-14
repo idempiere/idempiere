@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: TomcatConfig
+Bundle-SymbolicName: org.adempiere.tomcat.config
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.eclipse.gemini.web.tomcat;bundle-version="1.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
