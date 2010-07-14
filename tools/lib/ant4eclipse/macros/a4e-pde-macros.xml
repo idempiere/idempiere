@@ -161,8 +161,8 @@
 			  <mkdir dir="${buildPlugin.default.output.directory}" />
               <javac destdir="${buildPlugin.default.output.directory}"
                      compiler="org.ant4eclipse.ant.jdt.ecj.JDTCompilerAdapter"
-                     source="1.5"
-                     target="1.5">
+                     source="1.6" debug="true"
+                     target="1.6">
 
                 <src refid="buildPlugin.source.directories.path" />
                 <bootclasspath refid="buildPlugin.boot.classpath.path" />

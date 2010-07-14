@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.adempiere.tools
 Bundle-SymbolicName: org.adempiere.tools
-Bundle-Version: 0.0.0.1
+Bundle-Version: 1.0.0.qualifier
 Eclipse-BuddyPolicy: dependent
 Bundle-ClassPath: tools.jar,
  lib/jstl.jar,
