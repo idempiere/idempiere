@@ -6,10 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
 
-import org.apache.commons.codec.binary.Base64; 
-
-import sun.security.provider.Sun;
-
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author rlemeill
@@ -19,14 +16,14 @@ import sun.security.provider.Sun;
 public class DigestOfFile
 {
     /**
-     * @param mode ie MD5
+     * @param algorithm ie MD5
      * @throws Exception
      */
-    public DigestOfFile(String mode) throws Exception
+    public DigestOfFile(String algorithm) throws Exception
     {
-       digestAgent = MessageDigest.getInstance(mode, "SUN");
+       digestAgent = MessageDigest.getInstance(algorithm);
     }
-    
+
     /**
      * @param file to hash
      * @return hash
@@ -44,14 +41,14 @@ public class DigestOfFile
         byte[] digest = digestAgent.digest();
         return digest;
     }
-    
+
     public synchronized byte[] digestAsByteArray(byte[] input) throws Exception
     {
     	digestAgent.reset();
         byte[] digest = digestAgent.digest(input);
         return digest;
     }
-    
+
     /**
      * @author rlemeill
      * @param file
@@ -65,7 +62,7 @@ public class DigestOfFile
         String digestAsBase64 = new String(encoder.encode(digest),"ASCII");
         return digestAsBase64;
     }
-    
+
     /**
      * @param input
      * @return hash (base64 encoded)
@@ -78,15 +75,15 @@ public class DigestOfFile
     	String digestAsBase64 = new String(encoder.encode(digest),"ASCII");
         return digestAsBase64;
     }
-    
-   
-    
+
+
+
     //private static final char[] HEX_CHARS = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-    
+
     private MessageDigest digestAgent;
     //private Base64 base64Encoder = new Base64();
     private byte[] buffer = new byte[4096];
-    
+
     /**
      * @author rlemeill
      * @param args file
@@ -95,10 +92,8 @@ public class DigestOfFile
     {
         try
         {
-            java.security.Security.addProvider(new Sun());
-
             DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
-            
+
             for (int argIndex = 0; argIndex < args.length; argIndex++)
             {
                 {
@@ -112,8 +107,8 @@ public class DigestOfFile
             e.printStackTrace(System.out);
         }
     }
- 
-    
+
+
     /**
      * @param file1 first file to compare
      * @param file2 second file to compare
@@ -124,7 +119,6 @@ public class DigestOfFile
     	//compute Hash of exisiting and downloaded
     	String hashFile1;
     	String hashFile2;
-    	java.security.Security.addProvider(new Sun());
     	try{
     		DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
     		hashFile1 = md5DigestAgent.digestAsBase64(file1);
@@ -134,8 +128,8 @@ public class DigestOfFile
 		{
     		return false;			//if there is an error during comparison return files are difs
 		}
-    }    
-    
+    }
+
     /**
      * @param file
      * @return md5 hash null if file is not found or other error
@@ -143,7 +137,6 @@ public class DigestOfFile
     public static String GetLocalMD5Hash(File file)
     {
     	String hash;
-    	java.security.Security.addProvider(new Sun());
     	try{
     		DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
     		hash = md5DigestAgent.digestAsBase64(file);
@@ -153,7 +146,7 @@ public class DigestOfFile
     		return null;			//if there is an error during comparison return files are difs
 		}
     }
-    
+
     /**
      * Get md5 hash from byte[]
      * @param input
@@ -162,7 +155,6 @@ public class DigestOfFile
     public static String getMD5Hash(byte[] input)
     {
     	String hash;
-    	java.security.Security.addProvider(new Sun());
     	try{
     		DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
     		hash = md5DigestAgent.digestAsBase64(input);
