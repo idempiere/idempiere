@@ -14,6 +14,7 @@
 package org.compiere.report;
 
 import java.awt.print.PrinterJob;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,12 +25,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,15 +36,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.logging.Level;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
@@ -65,17 +61,13 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.compiere.db.CConnection;
-import org.compiere.interfaces.MD5;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
-import org.compiere.model.MBPartner;
 import org.compiere.model.MProcess;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_PInstance_Para;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.PrintUtil;
-import org.compiere.print.ReportCtl;
 import org.compiere.print.ServerReportCtl;
 import org.compiere.process.ClientProcess;
 import org.compiere.process.ProcessCall;
@@ -124,90 +116,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
 	private ProcessInfo processInfo;
 	private MAttachment attachment;
-
-
-    /**
-     * @param requestURL
-     * @return true if the report is on the same ip address than Application Server
-     */
-    private boolean isRequestedonAS(URL requestURL)
-    {
-    	boolean tBool = false;
-    	try{
-    		InetAddress[] request_iaddrs = InetAddress.getAllByName(requestURL.getHost());
-    		InetAddress as_iaddr = InetAddress.getByName(CConnection.get().getAppsHost());
-    		for(int i=0;i<request_iaddrs.length;i++)
-    		{
-    			log.info("Got "+request_iaddrs[i].toString()+" for "+requestURL+" as address #"+i);
-    			if(request_iaddrs[i].equals(as_iaddr))
-    			{
-    				log.info("Requested report is on application server host");
-    				tBool = true;
-    				break;
-    			}
-    		}
-    	}
-    	catch (UnknownHostException e) {
-    		log.severe("Unknown dns lookup error");
-    		return false;
-    	}
-    	return tBool;
-
-    }
-
-    /**
-     * @return true if the class org.compiere.interfaces.MD5Home is present
-     */
-    private boolean isMD5HomeInterfaceAvailable()
-    {
-    	try
-		{
-    		Class.forName("org.compiere.interfaces.MD5");
-    		log.info("EJB client for MD5 remote hashing is present");
-    		return true;
-		}
-    	catch (ClassNotFoundException e)
-		{
-    		log.warning("EJB Client for MD5 remote hashing absent\nyou need the class org.compiere.interfaces.MD5 - from webEJB-client.jar - in classpath");
-    		return false;
-		}
-    }
-
-    /**
-     * @param requestedURLString
-     * @return md5 hash of remote file computed directly on application server
-     * 			null if problem or if report doesn't seem to be on AS (different IP or 404)
-     */
-    private String ejbGetRemoteMD5(String requestedURLString)
-    {
-		InitialContext context = null;
-		String md5Hash = null;
-    	try {
-    		URL requestURL = new URL(requestedURLString);
-    		//String requestURLHost = requestURL.getHost();
-    		Hashtable<String, String> env = new Hashtable<String, String>();
-    		env.put(InitialContext.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-    		env.put(InitialContext.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
-    		env.put(InitialContext.PROVIDER_URL, requestURL.getHost() + ":" + CConnection.get().getAppsPort());
-    		context = new InitialContext(env);
-    		if (isRequestedonAS(requestURL) && isMD5HomeInterfaceAvailable())
-    		{
-    			MD5 md5 = (MD5) context.lookup(MD5.JNDI_NAME);
-    			md5Hash = md5.getFileMD5(requestedURLString);
-    			log.info("MD5 for " + requestedURLString + " is " + md5Hash);
-    		}
-
-    	}
-    	catch (MalformedURLException e) {
-    		log.severe("URL is invalid: "+ e.getMessage());
-    		return null;
-    	}
-    	catch (NamingException e){
-    		log.warning("Unable to create jndi context did you deployed webApp.ear package?\nRemote hashing is impossible");
-    		return null;
-    	}
-    	return md5Hash;
-    }
 
     /**
      * @author rlemeill
@@ -303,7 +211,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     		if (reportFile.exists())
     		{
     			String localMD5hash = DigestOfFile.GetLocalMD5Hash(reportFile);
-    			String remoteMD5Hash = ejbGetRemoteMD5(reportLocation);
+    			String remoteMD5Hash = getRemoteMD5(reportLocation);
     			log.info("MD5 for local file is "+localMD5hash );
     			if ( remoteMD5Hash != null)
     			{
@@ -350,7 +258,32 @@ public class ReportStarter implements ProcessCall, ClientProcess
     	return reportFile;
     }
 
-    /**
+    private String getRemoteMD5(String reportLocation) {
+    	try{
+    		String md5url = reportLocation;
+    		if (md5url.indexOf("?") > 0)
+    			md5url = md5url + "&md5=true";
+    		else
+    			md5url = md5url + "?md5=true";
+    		URL reportURL = new URL(md5url);
+			InputStream in = reportURL.openStream();
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte buf[] = new byte[1024];
+			int s = 0;
+ 			while((s = in.read(buf, 0, 1024)) > 0)
+				baos.write(buf, 0, s);
+
+    		in.close();
+    		String hash = new String(baos.toByteArray());
+    		return hash;
+    	} catch (IOException e) {
+			log.severe("I/O error when trying to download (sub)report from server "+ e.getMessage());
+    		return null;
+    	}
+	}
+
+	/**
      * Returns the Server Connection if direct connection is not available
      * (VPN, WAN, Terminal) and thus query has to be run on server only else return
      * a direct connection to DB.
@@ -383,7 +316,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		String Name=pi.getTitle();
         int AD_PInstance_ID=pi.getAD_PInstance_ID();
         int Record_ID=pi.getRecord_ID();
-        
+
         log.info( "Name="+Name+"  AD_PInstance_ID="+AD_PInstance_ID+" Record_ID="+Record_ID);
         String trxName = null;
         if (trx != null) {
@@ -439,7 +372,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         String jasperName = data.getJasperName();
         String name =  jasperReport.getName();
         File reportDir = data.getReportDir();
-        
+
        	// Add reportDir to class path
 		ClassLoader scl = ClassLoader.getSystemClassLoader();
 		try {
@@ -466,7 +399,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			{
 				subreports = getResourceSubreports(name+ "Subreport", reportPath, fileExtension);
 			}
-			// TODO: Implement file:/ lookup for subreports
 			else
 			{
 				// Locate subreports from local/remote filesystem
@@ -518,17 +450,16 @@ public class ReportStarter implements ProcessCall, ClientProcess
         			printerName = printFormat.getPrinterName();
         		}
         	}
-        	
+
            	params.put("CURRENT_LANG", currLang.getAD_Language());
            	params.put(JRParameter.REPORT_LOCALE, currLang.getLocale());
-           	
+
             // Resources
             File resFile = null;
             if (reportPath.startsWith("attachment:") && attachment != null) {
             	resFile = getAttachmentResourceFile(jasperName, currLang);
             } else if (reportPath.startsWith("resource:")) {
                 	resFile = getResourcesForResourceFile(jasperName, currLang);
-            // TODO: Implement file:/ for resources
             } else {
             	resFile = new File(jasperName+"_"+currLang.getLocale().getLanguage()+".properties");
             	if (!resFile.exists()) {
@@ -559,14 +490,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
                     log.info( "ReportStarter.startProcess print report -" + jasperPrint.getName());
                     //RF 1906632
                     if (!processInfo.isBatch()) {
-                    	
+
                     	// Get printer job
                     	PrinterJob printerJob = org.compiere.print.CPrinter.getPrinterJob(printerName);
                     	// Set print request attributes
-                    	
+
                 		//	Paper Attributes:
                 		PrintRequestAttributeSet prats = new HashPrintRequestAttributeSet();
- 
+
                 		//	add:				copies, job-name, priority
                 		if (printInfo.isDocumentCopy() || printInfo.getCopies() < 1)
                 			prats.add (new Copies(1));
@@ -587,7 +518,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
                     	exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
                     	// Print report / document
                     	exporter.exportReport();
-                    	
+
                     }
                     else
                     {
@@ -726,7 +657,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
 			subreports.add(subreport);
 		}
-		
+
 		File[] subreportsTemp = new File[subreports.size()];
 		subreportsTemp = subreports.toArray(subreportsTemp);
 		return subreportsTemp;
