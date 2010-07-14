@@ -4,30 +4,21 @@
  * TODO Pour changer le modčle de ce fichier généré, allez ŕ :
  * Fenętre - Préférences - Java - Style de code - Modčles de code
  */
-package org.compiere.ejb;
+package org.compiere.utils;
 
 import java.net.URL;
 
-import javax.ejb.Stateless;
-
-import org.compiere.interfaces.MD5;
-import org.compiere.util.CLogger;
 import org.compiere.utils.DigestOfFile;
 
-/**
- *  @ejb:ejb-ref ejb-name="compiere/MD5"
- *              ref-name="compiere/MD5"
- */
-@Stateless(mappedName=MD5.JNDI_NAME, name=MD5.EJB_NAME)
-public class MD5Bean implements MD5 {
+public class MD5Impl {
 	/**
-	 * 
+	 *
 	 */
 	private CLogger log = null;
-	
-	public MD5Bean() {
+
+	public MD5Impl() {
 		super();
-		log = CLogger.getCLogger(MD5Bean.class);
+		log = CLogger.getCLogger(MD5Impl.class);
 	}
 
 	/**
@@ -56,23 +47,23 @@ public class MD5Bean implements MD5 {
 			{
 				absoluteFilename = FileName;
 			}
-			
+
 			if (absoluteFilename != null)
 			{
 				DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
-				hash = md5DigestAgent.digestAsBase64(new java.io.File(absoluteFilename));	
+				hash = md5DigestAgent.digestAsBase64(new java.io.File(absoluteFilename));
 			}
-			
+
 		}
 		catch(Exception e)
 		{
 			log.severe(e.getMessage());
 			return null;
 		}
-		
+
 		return hash;
 	}
-	
+
 	/**
 	 * Business method
 	 * @param Filename

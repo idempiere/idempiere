@@ -30,14 +30,14 @@
 		<servlet-class>
 			org.compiere.web.GetMD5FileServlet
 		</servlet-class>
-
-		<init-param>
-			<param-name>A parameter</param-name>
-			<param-value>A value</param-value>
-		</init-param>
-
 	</servlet>
 
+	<filter>
+		<filter-name>MD5Filter</filter-name>
+		<filter-class>
+			org.compiere.web.MD5Filter
+		</filter-class>
+	</filter>
 	<!--
 		To use non XDoclet servlets, create a servlets.xml file that
 		contains the additional servlets (eg Struts) and place it in your
@@ -51,17 +51,21 @@
 		<url-pattern>/GetMD5File</url-pattern>
 	</servlet-mapping>
 
+	<filter-mapping>
+		<filter-name>MD5Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 	<!--
 		To specify mime mappings, create a file named mime-mappings.xml, put it in your project's mergedir.
 		Organize mime-mappings.xml following this DTD slice:
-		
+
 		<!ELEMENT mime-mapping (extension, mime-type)>
 	-->
 
 	<!--
 		To specify error pages, create a file named error-pages.xml, put it in your project's mergedir.
 		Organize error-pages.xml following this DTD slice:
-		
+
 		<!ELEMENT error-page ((error-code | exception-type), location)>
 	-->
 
@@ -73,7 +77,7 @@
 	<!--
 		To set up security settings for your web app, create a file named web-security.xml, put it in your project's mergedir.
 		Organize web-security.xml following this DTD slice:
-		
+
 		<!ELEMENT security-constraint (display-name?, web-resource-collection+, auth-constraint?, user-data-constraint?)>
 		<!ELEMENT web-resource-collection (web-resource-name, description?, url-pattern*, http-method*)>
 		<!ELEMENT web-resource-name (#PCDATA)>
@@ -81,7 +85,7 @@
 		<!ELEMENT http-method (#PCDATA)>
 		<!ELEMENT user-data-constraint (description?, transport-guarantee)>
 		<!ELEMENT transport-guarantee (#PCDATA)>
-		
+
 		<!ELEMENT login-config (auth-method?, realm-name?, form-login-config?)>
 		<!ELEMENT auth-method (#PCDATA)>
 		<!ELEMENT realm-name (#PCDATA)>
@@ -89,10 +93,5 @@
 		<!ELEMENT form-login-page (#PCDATA)>
 		<!ELEMENT form-error-page (#PCDATA)>
 	-->
-
-	<ejb-ref>
-		<ejb-ref-name>ejb/compiere/MD5</ejb-ref-name>
-		<ejb-ref-type>Session</ejb-ref-type>
-	</ejb-ref>
 
 </web-app>
