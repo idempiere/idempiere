@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.adempiere.client
 Bundle-SymbolicName: org.adempiere.client;singleton:=true
-Bundle-Version: 0.0.0.2
+Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: client.jar
 Export-Package: de.schaeffer.compiere.tools,
  org.adempiere.apps.graph,
@@ -22,9 +22,11 @@ Export-Package: de.schaeffer.compiere.tools,
  org.compiere.pos,
  org.compiere.print,
  org.eevolution.form
-Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.eclipse.core.runtime;bundle-version="3.5.0",
- org.adempiere.tools;bundle-version="0.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
+ org.adempiere.tools;bundle-version="1.0.0"
 Bundle-Activator: org.adempiere.client.Activator
 Eclipse-ExtensibleAPI: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.equinox.app,
+ org.osgi.framework;version="1.5.0"
