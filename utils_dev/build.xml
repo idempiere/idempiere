@@ -28,10 +28,12 @@
 		<ant inheritAll="false" dir="client"/>
 		<ant inheritAll="false" dir="JasperReports"/>
 		<ant inheritAll="false" dir="JasperReportsTools"/>
+		<ant inheritAll="false" dir="JasperReportsWebApp"/>
 		<ant inheritAll="false" dir="serverRoot"/>
 		<ant inheritAll="false" dir="serverApps"/>
 		<ant inheritAll="false" dir="webStore"/>
 		<ant inheritAll="false" dir="zkwebui"/>
+		<ant inheritAll="false" dir="tomcatConfig"/>
 	</target>
 	<target name="build" depends="jar">
 		<ant inheritAll="false" dir="install"/>
@@ -48,6 +50,7 @@
 		<ant inheritAll="false" dir="webStore" target="clean"/>
 		<ant inheritAll="false" dir="install" target="clean"/>
 		<ant inheritAll="false" dir="zkwebui" target="clean"/>
+		<ant inheritAll="false" dir="tomcatConfig" target="clean"/>
 	</target>
 
   <target name="clean-all" depends="clean">
