@@ -3,27 +3,17 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-	<distributable />
 
-	<!--
-		To use non XDoclet filters, create a filters.xml file that
-		contains the additional filters (eg Sitemesh) and place it in your
-		project's merge dir.  Don't include filter-mappings in this file,
-		include them in a file called filter-mappings.xml and put that in
-		the same directory.
-	-->
-
-	<!--
-		To use non XDoclet filter-mappings, create a filter-mappings.xml file that
-		contains the additional filter-mappings and place it in your
-		project's merge dir.
-	-->
-
-	<!--
-		To use non XDoclet listeners, create a listeners.xml file that
-		contains the additional listeners and place it in your
-		project's merge dir.
-	-->
+	<filter>
+		<filter-name>MD5Filter</filter-name>
+		<filter-class>
+			org.compiere.web.MD5Filter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>MD5Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<servlet>
 		<servlet-name>GetMD5File</servlet-name>
@@ -32,29 +22,10 @@
 		</servlet-class>
 	</servlet>
 
-	<filter>
-		<filter-name>MD5Filter</filter-name>
-		<filter-class>
-			org.compiere.web.MD5Filter
-		</filter-class>
-	</filter>
-	<!--
-		To use non XDoclet servlets, create a servlets.xml file that
-		contains the additional servlets (eg Struts) and place it in your
-		project's merge dir.  Don't include servlet-mappings in this file,
-		include them in a file called servlet-mappings.xml and put that in
-		the same directory.
-	-->
-
 	<servlet-mapping>
 		<servlet-name>GetMD5File</servlet-name>
 		<url-pattern>/GetMD5File</url-pattern>
 	</servlet-mapping>
-
-	<filter-mapping>
-		<filter-name>MD5Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 	<!--
 		To specify mime mappings, create a file named mime-mappings.xml, put it in your project's mergedir.
 		Organize mime-mappings.xml following this DTD slice:

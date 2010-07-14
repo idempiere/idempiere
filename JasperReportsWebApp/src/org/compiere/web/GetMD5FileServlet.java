@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.compiere.interfaces.MD5;
 import org.compiere.util.Util;
 import org.compiere.utils.MD5Impl;
 
@@ -37,7 +36,6 @@ public class GetMD5FileServlet extends HttpServlet {
 
 	public GetMD5FileServlet() {
 		super();
-		// TODO Raccord de constructeur auto-généré
 	}
 
 	public void init(ServletConfig config) throws ServletException {
@@ -53,7 +51,7 @@ public class GetMD5FileServlet extends HttpServlet {
 		String output = req.getParameter("output");
 		if ("text".equalsIgnoreCase(output))
 		{
-			resp.setContextType("text/plain");
+			resp.setContentType("text/plain");
 			PrintWriter out = resp.getWriter();
 			out.print(md5.getFileMD5(file));
 		}

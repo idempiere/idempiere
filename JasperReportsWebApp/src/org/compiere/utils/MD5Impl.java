@@ -8,6 +8,7 @@ package org.compiere.utils;
 
 import java.net.URL;
 
+import org.compiere.util.CLogger;
 import org.compiere.utils.DigestOfFile;
 
 public class MD5Impl {

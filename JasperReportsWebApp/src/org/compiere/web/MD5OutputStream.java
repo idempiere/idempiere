@@ -10,7 +10,7 @@ import java.security.NoSuchProviderException;
 
 import javax.servlet.ServletOutputStream;
 
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author hengsin
@@ -46,8 +46,8 @@ public class MD5OutputStream extends ServletOutputStream {
 	 */
 	public String getMD5Hash() {
 		byte[] digest = digestAgent.digest();
-		BASE64Encoder base64Encoder = new BASE64Encoder();
-		String digestAsBase64 = base64Encoder.encode(digest);
+		Base64 base64 = new Base64();
+		String digestAsBase64 = new String(base64.encode(digest));
 		return digestAsBase64;
 	}
 }

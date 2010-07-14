@@ -71,7 +71,7 @@ public class MD5Filter implements Filter{
 
         if (request instanceof HttpServletRequest) {
             // is md5 request
-            String s = (String) ((HttpServletRequest)request).getParameter("md5");
+            String s = ((HttpServletRequest)request).getParameter("md5");
             if (!"true".equals(s)) {
                 chain.doFilter(request, response);
                 return;
