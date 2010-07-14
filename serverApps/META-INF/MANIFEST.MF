@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: serverApps
 Bundle-SymbolicName: org.adempiere.serverApps;singleton:=true
-Bundle-Version: 0.0.0.1
+Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: serverApps.jar,
  src/web/WEB-INF/lib/commons-beanutils-bean-collections.jar,
  src/web/WEB-INF/lib/commons-beanutils-core.jar,
@@ -13,14 +13,12 @@ Bundle-ClassPath: serverApps.jar,
  src/web/WEB-INF/lib/commons-lang-2.1.jar,
  src/web/WEB-INF/lib/commons-validator-1.2.0.jar
 Eclipse-RegisterBuddy: org.adempiere.tools
-Require-Bundle: org.eclipse.osgi.services;bundle-version="3.1.100",
- org.eclipse.core.runtime;bundle-version="3.5.0",
- org.apache.xerces;bundle-version="2.9.0",
+Require-Bundle: org.apache.xerces;bundle-version="2.9.0",
  org.apache.xml.serializer;bundle-version="2.7.1",
  com.springsource.javax.servlet;bundle-version="2.5.0",
- org.adempiere.client;bundle-version="0.0.0",
- org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.tools;bundle-version="0.0.0",
+ org.adempiere.client;bundle-version="1.0.0",
+ org.adempiere.base;bundle-version="1.0.0",
+ org.adempiere.tools;bundle-version="1.0.0",
  com.springsource.javax.servlet.jsp;bundle-version="2.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.apache.commons.beanutils,
