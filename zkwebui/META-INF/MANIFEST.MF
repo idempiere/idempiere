@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.adempiere.webui
 Bundle-SymbolicName: org.adempiere.webui;singleton:=true
-Bundle-Version: 0.0.0.2
+Bundle-Version: 1.0.0.qualifier
 Web-ContextPath: webui
 Bundle-ClassPath: WEB-INF/classes/,
  WEB-INF/lib/zk.jar,
@@ -365,15 +365,13 @@ Export-Package: junit.extensions,
  web.zul.img.vd,
  web.zul.img.wnd
 Eclipse-RegisterBuddy: org.adempiere.tools
-Require-Bundle: org.eclipse.osgi.services;bundle-version="3.1.100",
- org.eclipse.core.runtime;bundle-version="3.5.0",
- org.apache.xerces;bundle-version="2.9.0",
+Require-Bundle: org.apache.xerces;bundle-version="2.9.0",
  org.apache.xml.serializer;bundle-version="2.7.1",
  com.springsource.javax.servlet;bundle-version="2.5.0",
  org.adempiere.JasperReports;bundle-version="1.0.0",
- org.adempiere.client;bundle-version="0.0.0",
- org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.tools;bundle-version="0.0.0",
+ org.adempiere.client;bundle-version="1.0.0",
+ org.adempiere.base;bundle-version="1.0.0",
+ org.adempiere.tools;bundle-version="1.0.0",
  org.adempiere.JasperReportsTools;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
