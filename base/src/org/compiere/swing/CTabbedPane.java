@@ -31,8 +31,7 @@ import javax.swing.KeyStroke;
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.plaf.CompiereLookAndFeel;
-
-import sun.swing.UIAction;
+import org.jdesktop.swingx.UIAction;
 
 /**
  *  Adempiere Color Tabbed Pane
@@ -43,7 +42,7 @@ import sun.swing.UIAction;
 public class CTabbedPane extends JTabbedPane
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 5845265820245543812L;
 
@@ -110,7 +109,7 @@ public class CTabbedPane extends JTabbedPane
 	{
 	}   //  init
 
-	
+
 	/**************************************************************************
 	 *  Set Background - ignored by UI -
 	 *  @param bg ignored
@@ -162,7 +161,7 @@ public class CTabbedPane extends JTabbedPane
 		return null;
 	}   //  getBackgroundColor
 
-	
+
 	/**************************************************************************
 	 * Insert tab.
 	 * If the component is a JPanel, the backround is set to the default
@@ -207,7 +206,7 @@ public class CTabbedPane extends JTabbedPane
 				//p.setOpaque(true);
 			}
 		}
-		//	Set first	
+		//	Set first
 		if (index == 0)
 			getActionMap().put(ACTION_SELECT, s_action);
 		//
@@ -247,8 +246,8 @@ public class CTabbedPane extends JTabbedPane
 		super.setTitleAt (index, title);
 	//	setMnemonicAt(index, text);
 	}	//	setTitleAt
-	
-	
+
+
 	/**
 	 * 	Set Mnemonic for Index based on text
 	 *	@param index for index
@@ -325,7 +324,7 @@ public class CTabbedPane extends JTabbedPane
 	/** Used Mnemonics		*/
 	private ArrayList<Character> m_mnemonic = new ArrayList<Character>(10);
 
-	
+
 	/**
 	 *  String representation
 	 *  @return String representation
@@ -345,10 +344,10 @@ public class CTabbedPane extends JTabbedPane
 	private static final String		ACTION_SELECT = "CAS";
 	/** Select Action				*/
 	private static CTAction			s_action = new CTAction(ACTION_SELECT);
-	
+
 	/**
 	 * 	Select Action
-	 *	
+	 *
 	 *  @author Jorg Janke
 	 *  @version $Id: CTabbedPane.java,v 1.2 2006/07/30 00:52:24 jjanke Exp $
 	 */
@@ -365,7 +364,7 @@ public class CTabbedPane extends JTabbedPane
 		public void actionPerformed (ActionEvent e)
 		{
             String key = getName();
-            if (!key.equals(ACTION_SELECT) 
+            if (!key.equals(ACTION_SELECT)
             	|| !(e.getSource() instanceof CTabbedPane))
             	return;
             CTabbedPane pane = (CTabbedPane)e.getSource();
@@ -378,7 +377,7 @@ public class CTabbedPane extends JTabbedPane
             else
             	System.out.println("Action: " + e);
 		}	//	actionPerformed
-		
+
 	}	//	Action
 
 }   //  CTabbedPane

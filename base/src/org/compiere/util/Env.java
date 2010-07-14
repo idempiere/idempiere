@@ -48,8 +48,6 @@ import javax.swing.SwingUtilities;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
-import org.adempiere.base.Service;
-import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookupCache;
@@ -57,18 +55,13 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
 import org.compiere.swing.CFrame;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
-
-import com.sun.xml.internal.ws.util.ServiceFinder;
-
 
 /**
  *  System Environment and static variables.
- *  
+ *
  *  @author     Jorg Janke
  *  @version    $Id: Env.java,v 1.3 2006/07/30 00:54:36 jjanke Exp $
- * 
+ *
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 1619390 ] Use default desktop browser as external browser
  * 			<li>BF [ 2017987 ] Env.getContext(TAB_INFO) should NOT use global context
@@ -78,15 +71,15 @@ public final class Env
 {
 	/**	Logging								*/
 	private static CLogger				s_log = CLogger.getCLogger(Env.class);
-		
+
 	private static ContextProvider contextProvider = new DefaultContextProvider();
-	
+
 	public static void setContextProvider(ContextProvider provider)
 	{
 		contextProvider = provider;
 		getCtx().put(LANGUAGE, Language.getBaseAD_Language());
 	}
-	
+
 	/**
 	 *	Exit System
 	 *  @param status System exit status (usually 0 for no error)
@@ -122,10 +115,10 @@ public final class Env
 		//
 		reset(true);	// final cache reset
 		//
-		
+
 		CConnection.get().setAppServerCredential(null, null);
 	}
-	
+
 	/**
 	 * 	Reset Cache
 	 * 	@param finalCall everything otherwise login data remains
@@ -136,7 +129,7 @@ public final class Env
 		if (Ini.isClient())
 		{
 			closeWindows();
-			
+
 			//	Dismantle windows
 			/**
 			for (int i = 0; i < s_windows.size(); i++)
@@ -267,7 +260,7 @@ public final class Env
 		{	//	JDBC Format	2005-05-09 00:00:00.0
 			String stringValue = value.toString();
 			//	Chop off .0 (nanos)
-			stringValue = stringValue.substring(0, stringValue.indexOf("."));		
+			stringValue = stringValue.substring(0, stringValue.indexOf("."));
 			ctx.setProperty(context, stringValue);
 			s_log.finer("Context " + context + "==" + stringValue);
 		}
@@ -339,7 +332,7 @@ public final class Env
 		{	//	JDBC Format	2005-05-09 00:00:00.0
 			String stringValue = value.toString();
 			//	Chop off .0 (nanos)
-			stringValue = stringValue.substring(0, stringValue.indexOf("."));		
+			stringValue = stringValue.substring(0, stringValue.indexOf("."));
 			ctx.setProperty(WindowNo+"|"+context, stringValue);
 			s_log.finer("Context("+WindowNo+") " + context + "==" + stringValue);
 		}
@@ -447,8 +440,8 @@ public final class Env
 			return;
 		ctx.setProperty(WindowNo+"|AutoNew", autoNew ? "Y" : "N");
 	}	//	setAutoNew
-	
-	
+
+
 	/**
 	 *	Set SO Trx
 	 *  @param ctx context
@@ -555,7 +548,7 @@ public final class Env
 		final boolean onlyWindow = onlyTab ? true : false;
 		return getContext(ctx, WindowNo, TabNo, context, onlyTab, onlyWindow);
 	}
-	
+
 	/**
 	 * Get Value of Context for Window & Tab,
 	 * if not found global context if available.
@@ -719,7 +712,7 @@ public final class Env
 		return isAutoCommit(ctx);
 	}	//	isAutoCommit
 
-	
+
 	/**
 	 *	Is Auto New Record
 	 *  @param ctx context
@@ -755,8 +748,8 @@ public final class Env
 		}
 		return isAutoNew(ctx);
 	}	//	isAutoNew
-	
-	
+
+
 	/**
 	 *	Is Sales Order Trx
 	 *  @param ctx context
@@ -854,7 +847,7 @@ public final class Env
 	{
 		return Env.getContextAsInt(ctx, "#AD_User_ID");
 	}	//	getAD_User_ID
-	
+
 	/**
 	 * 	Get Login AD_Role_ID
 	 *	@param ctx context
@@ -864,7 +857,7 @@ public final class Env
 	{
 		return Env.getContextAsInt(ctx, "#AD_Role_ID");
 	}	//	getAD_Role_ID
-	
+
 	/**************************************************************************
 	 *	Get Preference.
 	 *  <pre>
@@ -908,7 +901,7 @@ public final class Env
 
 	/** Context Language identifier */
 	static public final String      LANGUAGE = "#AD_Language";
-	
+
 	/** Context for POS ID */
 	static public final String		POS_ID = "#POS_ID";
 
@@ -973,12 +966,12 @@ public final class Env
 	 */
 	public static boolean isBaseTranslation (String tableName)
 	{
-		if (tableName.startsWith("AD") 
+		if (tableName.startsWith("AD")
 			|| tableName.equals("C_Country_Trl") )
 			return true;
 		return false;
 	}	//	isBaseTranslation
-	
+
 	/**
 	 * 	Do we have Multi-Lingual Documents.
 	 *  Set in DB.loadOrgs
@@ -1042,7 +1035,7 @@ public final class Env
 	{
 		if (language.isBaseLanguage())
 			return;
-		
+
 		boolean isSystemLanguage = false;
 		ArrayList<String> AD_Languages = new ArrayList<String>();
 		String sql = "SELECT DISTINCT AD_Language FROM AD_Message_Trl";
@@ -1081,7 +1074,7 @@ public final class Env
 			language.setAD_Language(Language.getBaseAD_Language());
 			return;
 		}
-		
+
 		for (int i = 0; i < AD_Languages.size(); i++)
 		{
 			String AD_Language = (String)AD_Languages.get(i);	//	en_US
@@ -1202,7 +1195,7 @@ public final class Env
 	 *	@param value Message to be parsed
 	 *  @param onlyWindow if true, no defaults are used
 	 * 	@param ignoreUnparsable if true, unsuccessful @return parsed String or "" if not successful and ignoreUnparsable
-	 *	@return parsed context 
+	 *	@return parsed context
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, String value,
 		boolean onlyWindow, boolean ignoreUnparsable)
@@ -1263,9 +1256,9 @@ public final class Env
 	{
 		return parseContext(ctx, WindowNo, value, onlyWindow, false);
 	}	//	parseContext
-	
+
 	/**
-	 * Parse expression, replaces global or PO properties @tag@ with actual value. 
+	 * Parse expression, replaces global or PO properties @tag@ with actual value.
 	 * @param expression
 	 * @param po
 	 * @param trxName
@@ -1293,7 +1286,7 @@ public final class Env
 			}
 
 			token = inStr.substring(0, j);
-			
+
 			//format string
 			String format = "";
 			int f = token.indexOf('<');
@@ -1301,7 +1294,7 @@ public final class Env
 				format = token.substring(f+1, token.length()-1);
 				token = token.substring(0, f);
 			}
-			
+
 			if (token.startsWith("#") || token.startsWith("$")) {
 				//take from context
 				Properties ctx = po != null ? po.getCtx() : Env.getCtx();
@@ -1319,7 +1312,7 @@ public final class Env
 							int tblIndex = format.indexOf(".");
 							String table = tblIndex > 0 ? format.substring(0, tblIndex) : token.substring(0, token.length() - 3);
 							String column = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
-							outStr.append(DB.getSQLValueString(trxName, 
+							outStr.append(DB.getSQLValueString(trxName,
 									"select " + column + " from  " + table + " where " + table + "_id = ?", (Integer)v));
 						} else if (v instanceof Date) {
 							SimpleDateFormat df = new SimpleDateFormat(format);
@@ -1560,7 +1553,7 @@ public final class Env
 		}
 		return new ImageIcon(url);
 	}   //  getImageIcon2
-	
+
 
 	/***************************************************************************
 	 *  Start Browser
@@ -1571,18 +1564,18 @@ public final class Env
 		s_log.info(url);
 		contextProvider.showURL(url);
 	}   //  startBrowser
-	
+
 	/**
 	 * 	Do we run on Apple
 	 *	@return true if Mac
 	 */
-	public static boolean isMac() 
+	public static boolean isMac()
    	{
    		String osName = System.getProperty ("os.name");
    		osName = osName.toLowerCase();
    		return osName.indexOf ("mac") != -1;
    	}	//	isMac
-   	
+
    	/**
    	 * 	Do we run on Windows
    	 *	@return true if windows
@@ -1594,12 +1587,12 @@ public final class Env
    		return osName.indexOf ("windows") != -1;
    	}	//	isWindows
 
-   	
+
 	/** Array of hidden Windows				*/
 	private static ArrayList<CFrame>	s_hiddenWindows = new ArrayList<CFrame>();
 	/** Closing Window Indicator			*/
 	private static boolean 				s_closingWindows = false;
-	
+
 	/**
 	 * 	Hide Window
 	 *	@param window window
@@ -1637,7 +1630,7 @@ public final class Env
 		}
 		return false;
 	}	//	hideWindow
-	
+
 	/**
 	 * 	Show Window
 	 *	@param AD_Window_ID window
@@ -1697,12 +1690,12 @@ public final class Env
 		}
 		s_log.info("End");
 	}	//	sleep
-	
+
 	/**
 	 * Update all windows after look and feel changes.
-	 * @since 2006-11-27 
+	 * @since 2006-11-27
 	 */
-	public static Set<Window>updateUI() 
+	public static Set<Window>updateUI()
 	{
 		Set<Window> updated = new HashSet<Window>();
 		for (Container c : s_windows)
@@ -1737,20 +1730,20 @@ public final class Env
 		}
 		return updated;
 	}
-	
+
 	/**
-	 * Prepare the context for calling remote server (for e.g, ejb), 
+	 * Prepare the context for calling remote server (for e.g, ejb),
 	 * only default and global variables are pass over.
-	 * It is too expensive and also can have serialization issue if 
+	 * It is too expensive and also can have serialization issue if
 	 * every remote call to server is passing the whole client context.
 	 * @param ctx
 	 * @return Properties
 	 */
-	public static Properties getRemoteCallCtx(Properties ctx) 
+	public static Properties getRemoteCallCtx(Properties ctx)
 	{
 		Properties p = new Properties();
 		Set<Object> keys = ctx.keySet();
-		for (Object key : keys) 
+		for (Object key : keys)
 		{
 			String s = key.toString();
 			if (s.startsWith("#") || s.startsWith("$"))
@@ -1758,11 +1751,11 @@ public final class Env
 				p.put(key, ctx.get(key));
 			}
 		}
-		
+
 		return p;
 	}
-	
-	
+
+
 	/**************************************************************************
 	 *  Static Variables
 	 */

@@ -27,11 +27,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentInputMapUIResource;
 import javax.swing.plaf.metal.MetalLabelUI;
 
-import sun.swing.UIAction;
+import org.jdesktop.swingx.UIAction;
 
 /**
  * 	Adempiere Label UI
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: CompiereLabelUI.java,v 1.2 2005/12/05 02:38:28 jjanke Exp $
  */
@@ -45,11 +45,11 @@ public class AdempiereLabelUI extends MetalLabelUI
      *	@param c component
      *	@return singleton
      */
-    public static AdempiereLabelUI createUI(JComponent c) 
+    public static AdempiereLabelUI createUI(JComponent c)
     {
     	return adempiereLabelUI;
     }	//	createUI
-	
+
 	/**
 	 * 	Install Keyboard Actions
 	 *	@param l label
@@ -72,18 +72,18 @@ public class AdempiereLabelUI extends MetalLabelUI
 					SwingUtilities.replaceUIInputMap (l, JComponent.WHEN_IN_FOCUSED_WINDOW, inputMap);
 				}
 				inputMap.clear ();
-				inputMap.put (KeyStroke.getKeyStroke (dka, 
+				inputMap.put (KeyStroke.getKeyStroke (dka,
 					ActionEvent.SHIFT_MASK+ActionEvent.CTRL_MASK, false), PRESS);
 			}
 		}
 	}	//	installKeyboardActions
-	
-	
+
+
 	/**	Action Name					*/
 	private static final String PRESS   = "press";
 	/** Press Action				*/
 	private static PressAction	ACTION_PRESS = new PressAction();
-	
+
 	/**
 	 * 	Compiere Label UI Actions
 	 */
@@ -122,32 +122,32 @@ public class AdempiereLabelUI extends MetalLabelUI
 				}
 				else
 				{
-				 	if (owner instanceof Container) 
+				 	if (owner instanceof Container)
 				 	{
 				 	    Container container = (Container)owner;
-				 	    if (container.isFocusCycleRoot()) 
+				 	    if (container.isFocusCycleRoot())
 				 	    {
 				 	    	FocusTraversalPolicy policy = container.getFocusTraversalPolicy();
 				 	    	Component comp = policy.getDefaultComponent(container);
-				 	    	if (comp != null) 
+				 	    	if (comp != null)
 				 	    	{
 				 	    		comp.requestFocus();
 				 	    		return;
 				 	    	}
 				 	    }
 				 	    Container rootAncestor = container.getFocusCycleRootAncestor();
-				 	    if (rootAncestor != null) 
+				 	    if (rootAncestor != null)
 				 	    {
 				 	    	FocusTraversalPolicy policy = rootAncestor.getFocusTraversalPolicy();
 				 	    	Component comp = policy.getComponentAfter(rootAncestor, container);
-				 	    	if (comp != null && SwingUtilities.isDescendingFrom(comp, container)) 
+				 	    	if (comp != null && SwingUtilities.isDescendingFrom(comp, container))
 				 	    	{
 				 	    		comp.requestFocus();
 				 	    		return;
 				 	    	}
 				 	    }
 				 	}
-			        if (owner.isFocusable()) 
+			        if (owner.isFocusable())
 			        {
 				 	    owner.requestFocus();
 				 	    return;
