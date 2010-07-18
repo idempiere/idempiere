@@ -52,10 +52,10 @@ import org.compiere.model.ModelValidationEngine;
  *	Load & Save INI Settings from property file
  *	Initiated in Adempiere.startup
  *	Settings activated in ALogin.getIni
- * 
+ *
  *  @author     Jorg Janke
  *  @version    $Id$
- * 
+ *
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 1658127 ] Select charset encoding on import
  * 			<li>FR [ 2406123 ] Ini.saveProperties fails if target directory does not exist
@@ -63,7 +63,7 @@ import org.compiere.model.ModelValidationEngine;
 public final class Ini implements Serializable
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3666529972922769528L;
 
@@ -103,16 +103,16 @@ public final class Ini implements Serializable
 
     private static final String	DEFAULT_UI_LOOK =	AdempiereLookAndFeel.NAME;
 	/** UI Theme			*/
-        
-	private static final String	DEFAULT_UI_THEME =	AdempiereThemeInnova.NAME;        
+
+	private static final String	DEFAULT_UI_THEME =	AdempiereThemeInnova.NAME;
 	/** UI Theme			*/
 	public static final String	P_UI_THEME =		"UITheme";
-	
-	/** Flat Color UI		
+
+	/** Flat Color UI
 	public static final String	P_UI_FLAT =			"UIFlat";
 	private static final boolean DEFAULT_UI_FLAT =	false;
 	*/
-	
+
 	/** Auto Save			*/
 	public static final String  P_A_COMMIT =		"AutoCommit";
 	private static final boolean DEFAULT_A_COMMIT =	true;
@@ -167,11 +167,11 @@ public final class Ini implements Serializable
 	/** Validate connection on startup */
 	public static final String P_VALIDATE_CONNECTION_ON_STARTUP = "ValidateConnectionOnStartup";
 	private static final boolean DEFAULT_VALIDATE_CONNECTION_ON_STARTUP = false;
-	
+
 	/** Single instance per window id **/
 	public static final String P_SINGLE_INSTANCE_PER_WINDOW = "SingleInstancePerWindow";
 	public static final boolean DEFAULT_SINGLE_INSTANCE_PER_WINDOW = false;
-		
+
 	/** Open new windows as maximized **/
 	public static final String P_OPEN_WINDOW_MAXIMIZED = "OpenWindowMaximized";
 	public static final boolean DEFAULT_OPEN_WINDOW_MAXIMIZED = false;
@@ -180,7 +180,7 @@ public final class Ini implements Serializable
 	private static final String DEFAULT_WARNING =	"Do_not_change_any_of_the_data_as_they_will_have_undocumented_side_effects.";
 	private static final String P_WARNING_de =		"WarningD";
 	private static final String DEFAULT_WARNING_de ="Einstellungen_nicht_aendern,_da_diese_undokumentierte_Nebenwirkungen_haben.";
-	
+
 	/** Charset */
 	public static final String P_CHARSET = "Charset";
 	/** Charser Default Value */
@@ -188,17 +188,17 @@ public final class Ini implements Serializable
 
 	/** Load tab fields meta data using background thread **/
 	public static final String P_LOAD_TAB_META_DATA_BG = "LoadTabMetaDataBackground";
-	
+
 	public static final String DEFAULT_LOAD_TAB_META_DATA_BG = "N";
-	
+
 	/** Ini Properties		*/
 	private static final String[]   PROPERTIES = new String[] {
-		P_UID, P_PWD, P_TRACELEVEL, P_TRACEFILE, 
+		P_UID, P_PWD, P_TRACELEVEL, P_TRACEFILE,
 		P_LANGUAGE, P_INI,
 		P_CONNECTION, P_STORE_PWD,
 		P_UI_LOOK, P_UI_THEME, /* P_UI_FLAT,*/
-		P_A_COMMIT, P_A_LOGIN, P_A_NEW, 
-		P_ADEMPIERESYS, P_LOGMIGRATIONSCRIPT, P_SHOW_ACCT, P_SHOW_TRL, 
+		P_A_COMMIT, P_A_LOGIN, P_A_NEW,
+		P_ADEMPIERESYS, P_LOGMIGRATIONSCRIPT, P_SHOW_ACCT, P_SHOW_TRL,
 		P_SHOW_ADVANCED, P_CACHE_WINDOW,
 		P_CONTEXT, P_TEMP_DIR,
 		P_ROLE, P_CLIENT, P_ORG, P_PRINTER, P_WAREHOUSE, P_TODAY,
@@ -216,7 +216,7 @@ public final class Ini implements Serializable
 		DEFAULT_CONNECTION, DEFAULT_STORE_PWD?"Y":"N",
 		DEFAULT_UI_LOOK, DEFAULT_UI_THEME, /* DEFAULT_UI_FLAT?"Y":"N", */
 		DEFAULT_A_COMMIT?"Y":"N", DEFAULT_A_LOGIN?"Y":"N", DEFAULT_A_NEW?"Y":"N",
-		DEFAULT_ADEMPIERESYS?"Y":"N", DEFAULT_LOGMIGRATIONSCRIPT?"Y":"N", DEFAULT_SHOW_ACCT?"Y":"N", DEFAULT_SHOW_TRL?"Y":"N", 
+		DEFAULT_ADEMPIERESYS?"Y":"N", DEFAULT_LOGMIGRATIONSCRIPT?"Y":"N", DEFAULT_SHOW_ACCT?"Y":"N", DEFAULT_SHOW_TRL?"Y":"N",
 		DEFAULT_SHOW_ADVANCED?"Y":"N", DEFAULT_CACHE_WINDOW?"Y":"N",
 		DEFAULT_CONTEXT, DEFAULT_TEMP_DIR,
 		DEFAULT_ROLE, DEFAULT_CLIENT, DEFAULT_ORG, DEFAULT_PRINTER, DEFAULT_WAREHOUSE, DEFAULT_TODAY.toString(),
@@ -230,11 +230,11 @@ public final class Ini implements Serializable
 
 	/**	Container for Properties    */
 	private static Properties 		s_prop = new Properties();
-	
+
 	private static String s_propertyFileName = null;
-	
+
 	/**	Logger						*/
-	private static Logger			log = null;
+	private static Logger			log = Logger.getLogger(Ini.class.getName());
 
 	/**
 	 *	Save INI parameters to disk
@@ -301,16 +301,16 @@ public final class Ini implements Serializable
 		boolean loadOK = true;
 		boolean firstTime = false;
 		s_prop = new Properties();
-		
-		PersistenceService ps; 
 
-	    try { 
-	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService"); 
-	    } catch (UnavailableServiceException e) {	    	
-	        ps = null; 
+		PersistenceService ps;
+
+	    try {
+	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService");
+	    } catch (UnavailableServiceException e) {
+	        ps = null;
 	        log.log(Level.SEVERE, e.toString());
 	        return false;
-	    } 
+	    }
 
 	    FileContents fc = null;
 	    try {
@@ -324,16 +324,16 @@ public final class Ini implements Serializable
 				ps.setTag(getCodeBase(), PersistenceService.DIRTY);
 				fc = ps.get(getCodeBase());
 			} catch (Exception e1) {
-				
+
 			}
 		} catch (IOException e) {
 			log.log(Level.SEVERE, e.toString());
 			return false;
 		}
-	    
+
 		try
 		{
-			InputStream is = fc.getInputStream(); 
+			InputStream is = fc.getInputStream();
 			s_prop.load(is);
 			is.close();
 		}
@@ -351,28 +351,28 @@ public final class Ini implements Serializable
 		}
 
 		checkProperties();
-		
+
 		//  Save if not exist or could not be read
 		if (!loadOK || firstTime)
 			saveWebStartProperties();
 		s_loaded = true;
 		s_propertyFileName = getCodeBase().toString();
-		
+
 		return firstTime;
-		
+
 	}
 
 	private static void saveWebStartProperties() {
-		PersistenceService ps; 
+		PersistenceService ps;
 
-	    try { 
-	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService"); 
-	    } catch (UnavailableServiceException e) { 
-	        ps = null; 
+	    try {
+	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService");
+	    } catch (UnavailableServiceException e) {
+	        ps = null;
 	        log.log(Level.SEVERE, e.toString());
 	        return;
-	    } 
-	    
+	    }
+
 	    try
 		{
 	    	OutputStream os = ps.get(getCodeBase()).getOutputStream(true);
@@ -385,7 +385,7 @@ public final class Ini implements Serializable
 			log.log(Level.SEVERE, "Cannot save Properties to " + getCodeBase() + " - " + t.toString());
 			return;
 		}
-		
+
 	}
 
 	/**
@@ -396,16 +396,16 @@ public final class Ini implements Serializable
 	{
 		try
 		{
-			BasicService bs = (BasicService)ServiceManager.lookup("javax.jnlp.BasicService"); 
+			BasicService bs = (BasicService)ServiceManager.lookup("javax.jnlp.BasicService");
 			URL url = bs.getCodeBase();
 	        return url;
-		} 
-		catch(UnavailableServiceException ue) 
+		}
+		catch(UnavailableServiceException ue)
 		{
-			return null; 
-		} 
+			return null;
+		}
 	}	//	getCodeBase
-	
+
 	/**
 	 * @return True if client is started using web start
 	 */
@@ -413,7 +413,7 @@ public final class Ini implements Serializable
 	{
 		return getCodeBase() != null;
 	}
-	
+
 	/**
 	 *  Load INI parameters from filename.
 	 *  Logger is on default level (INFO)
@@ -457,14 +457,14 @@ public final class Ini implements Serializable
 		}
 
 		checkProperties();
-		
+
 		//  Save if not exist or could not be read
 		if (!loadOK || firstTime)
 			saveProperties(true);
 		s_loaded = true;
 		log.info(filename + " #" + s_prop.size());
 		s_propertyFileName = filename;
-		
+
 		return firstTime;
 	}	//	loadProperties
 
@@ -507,7 +507,7 @@ public final class Ini implements Serializable
 			}
 		}
 	}	//	deleteProperties
-	
+
 	/**
 	 *	Load property and set to default, if not existing
 	 *
@@ -564,7 +564,7 @@ public final class Ini implements Serializable
 		return base + ADEMPIERE_PROPERTY_FILE;
 	}	//	getFileName
 
-	
+
 	/**************************************************************************
 	 *	Set Property
 	 *  @param key   Key
@@ -627,7 +627,7 @@ public final class Ini implements Serializable
 		if (retStr == null || retStr.length() == 0)
 			return "";
 		//
-		String value = SecureEngine.decrypt(retStr); 
+		String value = SecureEngine.decrypt(retStr);
 	//	log.finer(key + "=" + value);
 		if (value == null)
 			return "";
@@ -652,7 +652,7 @@ public final class Ini implements Serializable
 	{
 		return getProperty (P_CACHE_WINDOW).equals("Y");
 	}	//	isCacheWindow
-	
+
 	/**************************************************************************
 	 *  Get Properties
 	 *
@@ -670,7 +670,7 @@ public final class Ini implements Serializable
 	public static String getAsString()
 	{
 		StringBuffer buf = new StringBuffer ("Ini[");
-		Enumeration e = s_prop.keys();
+		Enumeration<?> e = s_prop.keys();
 		while (e.hasMoreElements())
 		{
 			String key = (String)e.nextElement();
@@ -681,7 +681,7 @@ public final class Ini implements Serializable
 		return buf.toString();
 	}   //  toString
 
-	
+
 	/*************************************************************************/
 
 	/** System environment prefix                                       */
@@ -711,13 +711,10 @@ public final class Ini implements Serializable
 	 */
 	public static void setClient (boolean client)
 	{
-		if (log != null) //already initialized
-			return;
 		s_client = client;
 		CLogMgt.initialize(client);
-		log = Logger.getLogger(Ini.class.getName());
 	}   //  setClient
-	
+
 	/**
 	 * Set show license dialog for new setup
 	 * @param b
@@ -726,7 +723,7 @@ public final class Ini implements Serializable
 	{
 		s_license_dialog = b;
 	}
-	
+
 	/**
 	 * Is show license dialog for new setup
 	 * @return boolean
@@ -734,8 +731,8 @@ public final class Ini implements Serializable
 	public static boolean isShowLicenseDialog()
 	{
 		return s_license_dialog;
-	}	
-	
+	}
+
 	/**
 	 *  Are the properties loaded?
 	 *  @return true if properties loaded.
@@ -763,7 +760,7 @@ public final class Ini implements Serializable
 				// teo_sarca: if you uncomment the line below you will get an NPE when generating models
 				//log.fine( "Not found 'java:comp/env/"+ADEMPIERE_HOME+"' in Initial Context. " +e.getMessage());
 			}
-			
+
 		}
 		if (env == null || "".equals(env) )	//	Fallback
 			env = File.separator + "Adempiere";
@@ -789,7 +786,7 @@ public final class Ini implements Serializable
 		String ch = getAdempiereHome();
 		if (ch != null)
 			return ch;
-		
+
 		File[] roots = File.listRoots();
 		for (int i = 0; i < roots.length; i++)
 		{
@@ -798,7 +795,7 @@ public final class Ini implements Serializable
 			File[] subs = roots[i].listFiles();
 			if (subs == null)
 				continue;
-			for (int j = 0; j < subs.length; j++) 
+			for (int j = 0; j < subs.length; j++)
 			{
 				if (!subs[j].isDirectory())
 					continue;
@@ -816,7 +813,7 @@ public final class Ini implements Serializable
 		}
 		return ch;
 	}	//	findAdempiereHome
-	
+
 	/**************************************************************************
 	 * 	Get Window Dimension
 	 *	@param AD_Window_ID window no
@@ -842,9 +839,9 @@ public final class Ini implements Serializable
 		}
 		return null;
 	}	//	getWindowDimension
-	
+
 	/**
-	 * 	Set Window Dimension 
+	 * 	Set Window Dimension
 	 *	@param AD_Window_ID window
 	 *	@param windowDimension dimension - null to remove
 	 */
@@ -859,7 +856,7 @@ public final class Ini implements Serializable
 		else
 			s_prop.remove(key);
 	}	//	setWindowDimension
-	
+
 	/**
 	 * 	Get Window Location
 	 *	@param AD_Window_ID window id
@@ -885,7 +882,7 @@ public final class Ini implements Serializable
 		}
 		return null;
 	}	//	getWindowLocation
-	
+
 	/**
 	 * 	Set Window Location
 	 *	@param AD_Window_ID window
@@ -902,7 +899,7 @@ public final class Ini implements Serializable
 		else
 			s_prop.remove(key);
 	}	//	setWindowLocation
-	
+
 	/**
 	 * 	Get Divider Location
 	 *	@return location
@@ -922,7 +919,7 @@ public final class Ini implements Serializable
 		}
 		return 0;
 	}	//	getDividerLocation
-	
+
 	/**
 	 * 	Set Divider Location
 	 *	@param dividerLocation location
@@ -945,7 +942,7 @@ public final class Ini implements Serializable
 		col.toArray(arr);
 		return arr;
 	}
-	
+
 	/**
 	 * Get current charset
 	 * @return current charset
@@ -961,8 +958,8 @@ public final class Ini implements Serializable
 		}
 		return Charset.defaultCharset();
 	}
-	
-	public static String getPropertyFileName() 
+
+	public static String getPropertyFileName()
 	{
 		return s_propertyFileName;
 	}

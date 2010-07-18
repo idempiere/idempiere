@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -32,8 +31,6 @@ import javax.jnlp.UnavailableServiceException;
 import javax.swing.ImageIcon;
 
 import org.adempiere.base.Core;
-import org.adempiere.base.IResourceFinder;
-import org.adempiere.base.Service;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
 import org.compiere.model.MSystem;
@@ -47,7 +44,6 @@ import org.compiere.util.Ini;
 import org.compiere.util.Login;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.SecureInterface;
-//import org.compiere.util.Splash;
 import org.compiere.util.Util;
 
 /**
@@ -80,7 +76,6 @@ public final class Adempiere
 	static private final String	s_file32x32		= "images/AD32.gif";
 	/** 100*30 Product Image.  	*/
 	static private final String	s_file100x30	= "images/AD10030.png";
-//	static private final String	s_file100x30HR	= "images/AD10030HR.png";
 	/** 48*15 Product Image.   	*/
 	static private final String	s_file48x15		= "images/Adempiere.png";
 	static private final String	s_file48x15HR	= "images/AdempiereHR.png";
