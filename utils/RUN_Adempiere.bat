@@ -2,7 +2,7 @@
 @Rem $Id: RUN_Adempiere.bat,v 1.24 2005/08/24 22:50:37 jjanke Exp $
 @Echo off
 
-@Rem Set/Overwrite ADEMPIERE_HOME/JAVA_HOME 
+@Rem Set/Overwrite ADEMPIERE_HOME/JAVA_HOME
 @Rem explicitly here for different versions, etc. e.g.
 @Rem
 @Rem SET ADEMPIERE_HOME=C:\R251\Adempiere
@@ -11,7 +11,7 @@
 :CHECK_JAVA:
 @if not "%JAVA_HOME%" == "" goto JAVA_HOME_OK
 @Set JAVA=java
-@Echo JAVA_HOME is not set.  
+@Echo JAVA_HOME is not set.
 @Echo   You may not be able to start Adempiere
 @Echo   Set JAVA_HOME to the directory of your local JDK.
 @Echo   You could set it via WinEnv.js e.g.:
@@ -22,16 +22,14 @@
 
 :CHECK_ADEMPIERE
 @if not "%ADEMPIERE_HOME%" == "" goto ADEMPIERE_HOME_OK
-Set CLASSPATH=lib\Adempiere.jar;lib\AdempiereCLib.jar;lib\CompiereJasperReqs.jar;%CLASSPATH%
 set ADEMPIERE_HOME=%~dp0..
-@Echo ADEMPIERE_HOME is not set.  
+@Echo ADEMPIERE_HOME is not set.
 @Echo   You may not be able to start Adempiere
 @Echo   Set ADEMPIERE_HOME to the directory of Adempiere.
 @Echo   You could set it via WinEnv.js e.g.:
 @Echo     cscript WinEnv.js C:\Adempiere C:\j2sdk1.4.2_08
 @goto MULTI_INSTALL
 :ADEMPIERE_HOME_OK
-@Set CLASSPATH=%ADEMPIERE_HOME%\lib\Adempiere.jar;%ADEMPIERE_HOME%\lib\AdempiereCLib.jar;%ADEMPIERE_HOME%\lib\CompiereJasperReqs.jar;%CLASSPATH%
 
 :MULTI_INSTALL
 @REM  To switch between multiple installs, copy the created Adempiere.properties file
@@ -49,7 +47,7 @@ set ADEMPIERE_HOME=%~dp0..
 @SET SECURE=
 
 :START
-@"%JAVA%" -Xms32m -Xmx512m -DADEMPIERE_HOME=%ADEMPIERE_HOME% %PROP% %SECURE% -classpath "%CLASSPATH%" org.compiere.Adempiere 
+@"%JAVA%" -Xms32m -Xmx512m -Dosgi.compatibility.bootdelegation=true -DADEMPIERE_HOME=%ADEMPIERE_HOME% %PROP% %SECURE% -jar %ADEMPIERE_HOME%/osgi/org.eclipse.osgi_3.6.0.v20100517.jar -clean -console -install %ADEMPIERE_HOME%/osgi -configuration %ADEMPIERE_HOME%/osgi/client -application org.adempiere.Client
 
 @Rem @sleep 15
 @CHOICE /C YN /T 15 /D N > NUL
