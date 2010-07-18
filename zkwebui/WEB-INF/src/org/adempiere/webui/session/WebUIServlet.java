@@ -33,6 +33,7 @@ import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
 import org.compiere.print.ReportCtl;
 import org.compiere.report.ReportStarter;
+import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
@@ -69,6 +70,7 @@ public class WebUIServlet extends DHtmlLayoutServlet
 				SessionManager.getAppDesktop().showURL(url, true);
 			}
 		});
+        serverContext.put(CLogMgt.ROOT_LOGGER_NAME_PROPERTY, "org.adempiere.webui");
         ServerContext.setCurrentInstance(serverContext);
 
         boolean started = Adempiere.startup(false);

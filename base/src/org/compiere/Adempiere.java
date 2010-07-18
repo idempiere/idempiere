@@ -51,7 +51,7 @@ import org.compiere.util.Util;
  *
  *  @author Jorg Janke
  *  @version $Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $
- *  
+ *
  */
 public final class Adempiere
 {
@@ -95,7 +95,7 @@ public final class Adempiere
 	static private Image 		s_imageLogo;
 	static private ImageIcon 	s_imageIcon32;
 	static private ImageIcon 	s_imageIconLogo;
-	
+
 	static private final String ONLINE_HELP_URL = "http://www.adempiere.com/wiki/index.php/Manual";
 
 	/**	Logging								*/
@@ -118,12 +118,12 @@ public final class Adempiere
 				if (properties.containsKey("IMPLEMENTATION_VERSION"))
 					s_ImplementationVersion = properties.getProperty("IMPLEMENTATION_VERSION");
 				if (properties.containsKey("IMPLEMENTATION_VENDOR"))
-					s_ImplementationVendor = properties.getProperty("IMPLEMENTATION_VENDOR"); 
+					s_ImplementationVendor = properties.getProperty("IMPLEMENTATION_VENDOR");
 			} catch (IOException e) {
 			}
 		}
 	}
-	
+
 	/**
 	 *  Get Product Name
 	 *  @return Application Name
@@ -244,7 +244,7 @@ public final class Adempiere
 	 */
 	public static String getJavaInfo()
 	{
-		return System.getProperty("java.vm.name") 
+		return System.getProperty("java.vm.name")
 			+ " " + System.getProperty("java.vm.version");
 	}	//	getJavaInfo
 
@@ -254,8 +254,8 @@ public final class Adempiere
 	 */
 	public static String getOSInfo()
 	{
-		return System.getProperty("os.name") + " " 
-			+ System.getProperty("os.version") + " " 
+		return System.getProperty("os.name") + " "
+			+ System.getProperty("os.version") + " "
 			+ System.getProperty("sun.os.patch.level");
 	}	//	getJavaInfo
 
@@ -267,7 +267,7 @@ public final class Adempiere
 	{
 		return "http://" + URL;
 	}   //  getURL
-	
+
 	/**
 	 * @return URL
 	 */
@@ -425,16 +425,16 @@ public final class Adempiere
 	{
 		try
 		{
-			BasicService bs = (BasicService)ServiceManager.lookup("javax.jnlp.BasicService"); 
+			BasicService bs = (BasicService)ServiceManager.lookup("javax.jnlp.BasicService");
 			URL url = bs.getCodeBase();
 	        return url;
-		} 
-		catch(UnavailableServiceException ue) 
+		}
+		catch(UnavailableServiceException ue)
 		{
-			return null; 
-		} 
+			return null;
+		}
 	}	//	getCodeBase
-	
+
 	/**
 	 * @return True if client is started using web start
 	 */
@@ -488,18 +488,17 @@ public final class Adempiere
 
 		//  System properties
 		Ini.loadProperties (false);
-		
+
 		//	Set up Log
 		CLogMgt.setLevel(Ini.getProperty(Ini.P_TRACELEVEL));
-		if (isClient && Ini.isPropertyBool(Ini.P_TRACEFILE)
-			&& CLogFile.get(false, null, isClient) == null)
-			CLogMgt.addHandler(CLogFile.get (true, Ini.findAdempiereHome(), isClient));
+		if (isClient && Ini.isPropertyBool(Ini.P_TRACEFILE))
+			CLogMgt.addHandler(new CLogFile(Ini.findAdempiereHome(), true, isClient));
 
 		//	Set UI
 		if (isClient)
 		{
 			if (CLogMgt.isLevelAll())
-				log.log(Level.FINEST, System.getProperties().toString());			
+				log.log(Level.FINEST, System.getProperties().toString());
 		}
 
 		//  Set Default Database Connection from Ini
@@ -507,7 +506,7 @@ public final class Adempiere
 
 		if (isClient)		//	don't test connection
 			return false;	//	need to call
-		
+
 		return startupEnvironment(isClient);
 	}   //  startup
 
@@ -529,7 +528,7 @@ public final class Adempiere
 		MSystem system = MSystem.get(Env.getCtx());	//	Initializes Base Context too
 		if (system == null)
 			return false;
-		
+
 		//	Initialize main cached Singletons
 		ModelValidationEngine.get();
 		try
@@ -547,9 +546,9 @@ public final class Adempiere
 				}
 			}
 			SecureEngine.init(className);
-			
+
 			//
-			if (isClient)	
+			if (isClient)
 				MClient.get(Env.getCtx(),0);			//	Login Client loaded later
 			else
 				MClient.getAll(Env.getCtx());
@@ -558,7 +557,7 @@ public final class Adempiere
 		{
 			log.warning("Environment problems: " + e.toString());
 		}
-		
+
 		//	Start Workflow Document Manager (in other package) for PO
 		String className = null;
 		try
@@ -573,7 +572,7 @@ public final class Adempiere
 		{
 			log.warning("Not started: " + className + " - " + e.getMessage());
 		}
-		
+
 		if (!isClient)
 			DB.updateMail();
 		return true;

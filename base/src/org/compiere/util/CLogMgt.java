@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -41,25 +42,25 @@ import org.compiere.model.MClient;
 
 /**
  *	Adempiere Log Management.
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: CLogMgt.java,v 1.4 2006/07/30 00:54:36 jjanke Exp $
  */
 public class CLogMgt
 {
+	public static final String DEFAULT_ROOT_LOGGER_NAME = "adempiere";
+	public static final String ROOT_LOGGER_NAME_PROPERTY = "org.adempiere.log.root";
+
 	/**
 	 * 	Initialize Logging
 	 * 	@param isClient client
 	 */
 	public static void initialize(boolean isClient)
 	{
-		if (s_handlers != null)
-			return;
-		
 		if (isClient)
 		{
 			LogManager mgr = LogManager.getLogManager();
-			try 
+			try
 			{	//	Load Logging config from org.compiere.util.*properties
 				String fileName = "logClient.properties";
 				InputStream in = CLogMgt.class.getResourceAsStream(fileName);
@@ -72,19 +73,18 @@ public class CLogMgt
 				e.printStackTrace();
 			}
 		}
-		
-		//	Create Handler List
-		s_handlers = new ArrayList<Handler>();
+
+		//	Handler List
+		List<String>handlerNames = new ArrayList<String>();
 		try
 		{
-			Logger rootLogger = Logger.getLogger("");
+			Logger rootLogger = Logger.getLogger(getRootLoggerName());
+			rootLogger.setUseParentHandlers(false);
 		//	System.out.println(rootLogger.getName() + " (" + rootLogger + ")");
 			Handler[] handlers = rootLogger.getHandlers();
 			for (int i = 0; i < handlers.length; i ++)
 			{
-			//	System.out.println("  > " + handlers[i]);
-				if (!s_handlers.contains(handlers[i]))
-					s_handlers.add(handlers[i]);
+				handlerNames.add(handlers[i].getClass().getName());
 			}
 			/**
 			Enumeration en = mgr.getLoggerNames();
@@ -144,22 +144,17 @@ public class CLogMgt
 			else
 				System.err.println(e.toString());
 		}
-	//	System.out.println("Handlers=" + s_handlers.size());
-		
 		//	Check Loggers
-		if (CLogErrorBuffer.get(false) == null)
-			addHandler(CLogErrorBuffer.get(true));
-		if (CLogConsole.get(false) == null)
-			addHandler(CLogConsole.get(true));
-		CLogFile fh = CLogFile.get (false, null, isClient); 
-		if (fh == null && !isClient)
+		if (!handlerNames.contains(CLogErrorBuffer.class.getName()))
+			addHandler(new CLogErrorBuffer());
+		if (!handlerNames.contains(CLogConsole.class.getName()))
+			addHandler(new CLogConsole());
+		if (!handlerNames.contains(CLogFile.class.getName()))
 		{
-			fh = CLogFile.get (true, null, isClient);
+			Handler fh = new CLogFile(null, true, isClient);
 			addHandler(fh);
 		}
-		if (fh != null && !isClient)
-			System.out.println(fh);
-		
+
 		setFormatter(CLogFormatter.get());
 		setFilter(CLogFilter.get());
 	//	setLevel(s_currentLevel);
@@ -169,19 +164,22 @@ public class CLogMgt
 	//	System.out.println("Handlers=" + s_handlers.size() + ", Level=" + s_currentLevel);
 	}	//	initialize
 
-	
-	/** Handlers			*/
-	private static ArrayList<Handler>	s_handlers = null;
-	/** Current Log Level	*/
-	private static Level		s_currentLevel = Level.INFO;
+
+	public static String getRootLoggerName() {
+		String root = Env.getCtx().getProperty(ROOT_LOGGER_NAME_PROPERTY);
+		if (root == null || root.trim().length() == 0)
+			root = DEFAULT_ROOT_LOGGER_NAME;
+		return root;
+	}
+
 
 	/** Logger				*/
 	private static Logger		log = Logger.getAnonymousLogger();
 	/** LOG Levels			*/
-	public static final Level[]	LEVELS = new Level[] 
+	public static final Level[]	LEVELS = new Level[]
 		{Level.OFF, Level.SEVERE, Level.WARNING, Level.INFO,
 		Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.ALL};
-	
+
 	/** New Line			*/
 	private static final String NL = System.getProperty("line.separator");
 
@@ -191,12 +189,12 @@ public class CLogMgt
 	 */
 	protected static Handler[] getHandlers()
 	{
-		Handler[] handlers = new Handler[s_handlers.size()];
-		for (int i = 0; i < s_handlers.size(); i++)
-			handlers[i] = (Handler)s_handlers.get(i);
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		rootLogger.setUseParentHandlers(false);
+		Handler[] handlers = rootLogger.getHandlers();
 		return handlers;
 	}	//	getHandlers
-	
+
 	/**
 	 * 	Add Handler (to root logger)
 	 *	@param handler new Handler
@@ -205,24 +203,25 @@ public class CLogMgt
 	{
 		if (handler == null)
 			return;
-		Logger rootLogger = Logger.getLogger("");
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
 		rootLogger.addHandler(handler);
 		//
-		s_handlers.add(handler);
 		log.log(Level.CONFIG, "Handler=" + handler);
 	}	//	addHandler
-	
-	
+
+
 	/**
 	 * 	Set Formatter for all handlers
 	 *	@param formatter formatter
 	 */
 	protected static void setFormatter (java.util.logging.Formatter formatter)
 	{
-		for (int i = 0; i < s_handlers.size(); i++)
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		rootLogger.setUseParentHandlers(false);
+		Handler[] handlers = rootLogger.getHandlers();
+		for (int i = 0; i < handlers.length; i++)
 		{
-			Handler handler = (Handler)s_handlers.get(i);
-			handler.setFormatter(formatter);
+			handlers[i].setFormatter(formatter);
 		}
 		log.log(Level.CONFIG, "Formatter=" + formatter);
 	}	//	setFormatter
@@ -233,10 +232,12 @@ public class CLogMgt
 	 */
 	protected static void setFilter (Filter filter)
 	{
-		for (int i = 0; i < s_handlers.size(); i++)
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		rootLogger.setUseParentHandlers(false);
+		Handler[] handlers = rootLogger.getHandlers();
+		for (int i = 0; i < handlers.length; i++)
 		{
-			Handler handler = (Handler)s_handlers.get(i);
-			handler.setFilter(filter);
+			handlers[i].setFilter(filter);
 		}
 		log.log(Level.CONFIG, "Filter=" + filter);
 	}	//	setFilter
@@ -255,7 +256,7 @@ public class CLogMgt
 		while (en.hasMoreElements())
 		{
 			String name = en.nextElement().toString();
-			if (loggerNamePart == null 
+			if (loggerNamePart == null
 				|| name.indexOf(loggerNamePart) != -1)
 			{
 				Logger lll = Logger.getLogger(name);
@@ -272,23 +273,22 @@ public class CLogMgt
 	{
 		if (level == null)
 			return;
-		if (s_handlers == null)
-			initialize(true);
-		//
-		for (int i = 0; i < s_handlers.size(); i++)
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		rootLogger.setUseParentHandlers(false);
+		Handler[] handlers = rootLogger.getHandlers();
+		if (handlers == null || handlers.length == 0)
 		{
-			Handler handler = (Handler)s_handlers.get(i);
-			handler.setLevel(level);
+			initialize(true);
+			handlers = rootLogger.getHandlers();
+		}
+		//
+		for (int i = 0; i < handlers.length; i++)
+		{
+			handlers[i].setLevel(level);
 		}
 		//	JDBC if ALL
-		setJDBCDebug(s_currentLevel.intValue() == Level.ALL.intValue());
+		setJDBCDebug(level.intValue() == Level.ALL.intValue());
 		//
-		if (level.intValue() != s_currentLevel.intValue())
-		{
-			setLoggerLevel(level, null);
-			log.config(level.toString());
-		}
-		s_currentLevel = level;
 	}	//	setHandlerLevel
 
 	/**
@@ -299,7 +299,7 @@ public class CLogMgt
 	{
 		setLevel(String.valueOf(intLevel));
 	}	//	setLevel
-	
+
 	/**
 	 * 	Set Level
 	 *	@param levelString string representation of level
@@ -309,9 +309,9 @@ public class CLogMgt
 		if (levelString == null)
 			return;
 		//
-		for (int i = 0; i < LEVELS.length; i++) 
+		for (int i = 0; i < LEVELS.length; i++)
 		{
-		    if (LEVELS[i].getName().equals(levelString)) 
+		    if (LEVELS[i].getName().equals(levelString))
 		    {
 		    	setLevel(LEVELS[i]);
 		    	return;
@@ -331,25 +331,27 @@ public class CLogMgt
 		else
 			DriverManager.setLogWriter(null);
 	}	//	setJDBCDebug
-	
+
 	/**
 	 * 	Get logging Level of handlers
 	 *	@return logging level
 	 */
 	public static Level getLevel()
 	{
-		return s_currentLevel;
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		return rootLogger.getLevel();
 	}	//	getLevel
-	
+
 	/**
 	 * 	Get logging Level of handlers
 	 *	@return logging level
 	 */
 	public static int getLevelAsInt()
 	{
-		return s_currentLevel.intValue();
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		return rootLogger.getLevel().intValue();
 	}	//	getLevel
-	
+
 	/**
 	 * 	Is Logging Level logged
 	 *	@param level level
@@ -359,16 +361,16 @@ public class CLogMgt
 	{
 		if (level == null)
 			return false;
-		return level.intValue() >= s_currentLevel.intValue(); 
+		return level.intValue() >= getLevelAsInt();
 	}	//	isLevel
-	
+
 	/**
 	 * 	Is Logging Level FINEST logged
 	 *	@return true if it is logged
 	 */
 	public static boolean isLevelAll ()
 	{
-		return Level.ALL.intValue() == s_currentLevel.intValue(); 
+		return Level.ALL.intValue() == getLevelAsInt();
 	}	//	isLevelFinest
 
 	/**
@@ -377,25 +379,25 @@ public class CLogMgt
 	 */
 	public static boolean isLevelFinest ()
 	{
-		return Level.FINEST.intValue() >= s_currentLevel.intValue(); 
+		return Level.FINEST.intValue() >= getLevelAsInt();
 	}	//	isLevelFinest
-	
+
 	/**
 	 * 	Is Logging Level FINER logged
 	 *	@return true if it is logged
 	 */
 	public static boolean isLevelFiner ()
 	{
-		return Level.FINER.intValue() >= s_currentLevel.intValue(); 
+		return Level.FINER.intValue() >= getLevelAsInt();
 	}	//	isLevelFiner
-	
+
 	/**
 	 * 	Is Logging Level FINE logged
 	 *	@return true if it is logged
 	 */
 	public static boolean isLevelFine ()
 	{
-		return Level.FINE.intValue() >= s_currentLevel.intValue(); 
+		return Level.FINE.intValue() >= getLevelAsInt();
 	}	//	isLevelFine
 
 	/**
@@ -404,7 +406,7 @@ public class CLogMgt
 	 */
 	public static boolean isLevelInfo ()
 	{
-		return Level.INFO.intValue() >= s_currentLevel.intValue(); 
+		return Level.INFO.intValue() >= getLevelAsInt();
 	}	//	isLevelFine
 
 	/**
@@ -413,18 +415,19 @@ public class CLogMgt
 	 */
 	public static void enable (boolean enableLogging)
 	{
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		rootLogger.setUseParentHandlers(false);
+
 		if (enableLogging)
-			setLevel(s_currentLevel);
+			setLevel(rootLogger.getLevel());
 		else
 		{
-			Level level = s_currentLevel;
 			setLevel(Level.OFF);
-			s_currentLevel = level;
 		}
 	}	//	enable
-	
 
-	
+
+
 	/**
 	 * 	Shutdown Logging system
 	 */
@@ -433,8 +436,8 @@ public class CLogMgt
 		LogManager mgr = LogManager.getLogManager();
 		mgr.reset();
 	}	//	shutdown
-	
-	
+
+
 	/**
 	 *  Print Properties
 	 *
@@ -450,8 +453,7 @@ public class CLogMgt
 			log.info(description + " - Size=" + p.size()
 				+ ", Hash=" + p.hashCode() + "\n" + getLocalHost());
 		else
-			System.out.println("Log.printProperties = " + description + ", Size=" + p.size()
-				+ ", Hash=" + p.hashCode() + "\n" + getLocalHost());
+			System.out.println("Log.printProperties = " + description + ", Size=" + p.size());
 
 		Object[] pp = p.keySet().toArray();
 		Arrays.sort(pp);
@@ -466,7 +468,7 @@ public class CLogMgt
 		}
 	}   //  printProperties
 
-	
+
 	/**
 	 *  Get Adempiere System Info
 	 *  @param sb buffer to append or null
@@ -523,13 +525,13 @@ public class CLogMgt
 		sb.append(Adempiere.getJavaInfo()).append(NL);
 		sb.append("java.io.tmpdir="+System.getProperty("java.io.tmpdir")).append(NL);
 		sb.append(Adempiere.getOSInfo()).append(NL);
-		
+
 		//report memory info
-		Runtime runtime = Runtime.getRuntime();		
+		Runtime runtime = Runtime.getRuntime();
 		//max heap size
-		sb.append("Max Heap = "+formatMemoryInfo(runtime.maxMemory())).append(NL);		
+		sb.append("Max Heap = "+formatMemoryInfo(runtime.maxMemory())).append(NL);
 		//allocated heap size
-		sb.append("Allocated Heap = "+formatMemoryInfo(runtime.totalMemory())).append(NL);		
+		sb.append("Allocated Heap = "+formatMemoryInfo(runtime.totalMemory())).append(NL);
 		//free heap size
 		sb.append("Free Heap = "+formatMemoryInfo(runtime.freeMemory())).append(NL);
 		//
@@ -554,7 +556,7 @@ public class CLogMgt
 		}
 		return size + unit;
 	}
-	
+
 	/**
 	 *  Create System Info
 	 *  @param sb Optional string buffer
@@ -653,7 +655,7 @@ public class CLogMgt
 
 		return sb.toString();
 	}   //  getDatabaseInfo
-	
+
 	/**
 	 *  Get Localhost
 	 *  @return local host
@@ -672,7 +674,7 @@ public class CLogMgt
 		return "-no local host info -";
 	}   //  getLocalHost
 
-	
+
 	/**************************************************************************
 	 * 	CLogMgt
 	 */
@@ -705,7 +707,7 @@ public class CLogMgt
 				log1.info("thread info");
 			}
 		}.start();
-		
+
 		try
 		{
 			Integer.parseInt("ABC");
@@ -717,7 +719,7 @@ public class CLogMgt
 		log1.log(Level.INFO, "info message 1", "1Param");
 		log1.log(Level.INFO, "info message n", new Object[]{"1Param","2Param"});
 	}	//	testLog
-	
+
 	/**
 	 * 	Test
 	 *	@param args ignored

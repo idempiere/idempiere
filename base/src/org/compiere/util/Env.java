@@ -70,9 +70,6 @@ import org.compiere.swing.CFrame;
  */
 public final class Env
 {
-	/**	Logging								*/
-	private static CLogger				s_log = CLogger.getCLogger(Env.class);
-
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 
 	/**
@@ -98,7 +95,6 @@ public final class Env
 		}
 		//
 		reset(true);	// final cache reset
-		s_log.info("");
 		//
 		CLogMgt.shutdown();
 		//
@@ -128,7 +124,6 @@ public final class Env
 	 */
 	public static void reset (boolean finalCall)
 	{
-		s_log.info("finalCall=" + finalCall);
 		if (Ini.isClient())
 		{
 			closeWindows();
@@ -243,13 +238,17 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		s_log.finer("Context " + context + "==" + value);
+		getLogger().finer("Context " + context + "==" + value);
 		//
 		if (value == null || value.length() == 0)
 			ctx.remove(context);
 		else
 			ctx.setProperty(context, value);
 	}	//	setContext
+
+	private static CLogger getLogger() {
+		return CLogger.getCLogger(Env.class.getName());
+	}
 
 	/**
 	 *	Set Global Context to Value
@@ -264,7 +263,7 @@ public final class Env
 		if (value == null)
 		{
 			ctx.remove(context);
-			s_log.finer("Context " + context + "==" + value);
+			getLogger().finer("Context " + context + "==" + value);
 		}
 		else
 		{	//	JDBC Format	2005-05-09 00:00:00.0
@@ -272,7 +271,7 @@ public final class Env
 			//	Chop off .0 (nanos)
 			stringValue = stringValue.substring(0, stringValue.indexOf("."));
 			ctx.setProperty(context, stringValue);
-			s_log.finer("Context " + context + "==" + stringValue);
+			getLogger().finer("Context " + context + "==" + stringValue);
 		}
 	}	//	setContext
 
@@ -286,7 +285,7 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		s_log.finer("Context " + context + "==" + value);
+		getLogger().finer("Context " + context + "==" + value);
 		//
 		ctx.setProperty(context, String.valueOf(value));
 	}	//	setContext
@@ -314,7 +313,7 @@ public final class Env
 		if (ctx == null || context == null)
 			return;
 		if (WindowNo != WINDOW_FIND && WindowNo != WINDOW_MLOOKUP)
-			s_log.finer("Context("+WindowNo+") " + context + "==" + value);
+			getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
 		//
 		if (value == null || value.equals(""))
 			ctx.remove(WindowNo+"|"+context);
@@ -336,7 +335,7 @@ public final class Env
 		if (value == null)
 		{
 			ctx.remove(WindowNo+"|"+context);
-			s_log.finer("Context("+WindowNo+") " + context + "==" + value);
+			getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
 		}
 		else
 		{	//	JDBC Format	2005-05-09 00:00:00.0
@@ -344,7 +343,7 @@ public final class Env
 			//	Chop off .0 (nanos)
 			stringValue = stringValue.substring(0, stringValue.indexOf("."));
 			ctx.setProperty(WindowNo+"|"+context, stringValue);
-			s_log.finer("Context("+WindowNo+") " + context + "==" + stringValue);
+			getLogger().finer("Context("+WindowNo+") " + context + "==" + stringValue);
 		}
 	}	//	setContext
 
@@ -360,7 +359,7 @@ public final class Env
 		if (ctx == null || context == null)
 			return;
 		if (WindowNo != WINDOW_FIND && WindowNo != WINDOW_MLOOKUP)
-			s_log.finer("Context("+WindowNo+") " + context + "==" + value);
+			getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
 		//
 		ctx.setProperty(WindowNo+"|"+context, String.valueOf(value));
 	}	//	setContext
@@ -390,7 +389,7 @@ public final class Env
 		if (ctx == null || context == null)
 			return;
 		if (WindowNo != WINDOW_FIND && WindowNo != WINDOW_MLOOKUP)
-			s_log.finest("Context("+WindowNo+","+TabNo+") " + context + "==" + value);
+			getLogger().finest("Context("+WindowNo+","+TabNo+") " + context + "==" + value);
 		//
 		if (value == null)
 			if (context.endsWith("_ID"))
@@ -607,7 +606,7 @@ public final class Env
 		}
 		catch (NumberFormatException e)
 		{
-			s_log.log(Level.SEVERE, "(" + context + ") = " + s, e);
+			getLogger().log(Level.SEVERE, "(" + context + ") = " + s, e);
 		}
 		return 0;
 	}	//	getContextAsInt
@@ -631,7 +630,7 @@ public final class Env
 		}
 		catch (NumberFormatException e)
 		{
-			s_log.log(Level.SEVERE, "(" + context + ") = " + s, e);
+			getLogger().log(Level.SEVERE, "(" + context + ") = " + s, e);
 		}
 		return 0;
 	}	//	getContextAsInt
@@ -656,7 +655,7 @@ public final class Env
 		}
 		catch (NumberFormatException e)
 		{
-			s_log.log(Level.SEVERE, "(" + context + ") = " + s, e);
+			getLogger().log(Level.SEVERE, "(" + context + ") = " + s, e);
 		}
 		return 0;
 	}	//	getContextAsInt
@@ -681,7 +680,7 @@ public final class Env
 		}
 		catch (NumberFormatException e)
 		{
-			s_log.log(Level.SEVERE, "(" + context + ") = " + s, e);
+			getLogger().log(Level.SEVERE, "(" + context + ") = " + s, e);
 		}
 		return 0;
 	}	//	getContextAsInt
@@ -815,7 +814,7 @@ public final class Env
 		//	JDBC Format YYYY-MM-DD	example 2000-09-11 00:00:00.0
 		if (s == null || s.equals(""))
 		{
-			s_log.log(Level.SEVERE, "No value for: " + context);
+			getLogger().log(Level.SEVERE, "No value for: " + context);
 			return new Timestamp(System.currentTimeMillis());
 		}
 
@@ -1068,7 +1067,7 @@ public final class Env
 		}
 		catch (SQLException e)
 		{
-			s_log.log(Level.SEVERE, "", e);
+			getLogger().log(Level.SEVERE, "", e);
 		}
 		finally {
 			DB.close(rs, pstmt);
@@ -1080,7 +1079,7 @@ public final class Env
 		//	No Language - set to System
 		if (AD_Languages.size() == 0)
 		{
-			s_log.warning ("NO System Language - Set to Base " + Language.getBaseAD_Language());
+			getLogger().warning ("NO System Language - Set to Base " + Language.getBaseAD_Language());
 			language.setAD_Language(Language.getBaseAD_Language());
 			return;
 		}
@@ -1093,7 +1092,7 @@ public final class Env
 			String langCompare = language.getAD_Language().substring(0, 2);
 			if (lang.equals(langCompare))
 			{
-				s_log.fine("Found similar Language " + AD_Language);
+				getLogger().fine("Found similar Language " + AD_Language);
 				language.setAD_Language(AD_Language);
 				return;
 			}
@@ -1102,7 +1101,7 @@ public final class Env
 		//	We found same language
 	//	if (!"0".equals(Msg.getMsg(AD_Language, "0")))
 
-		s_log.warning ("Not System Language=" + language
+		getLogger().warning ("Not System Language=" + language
 			+ " - Set to Base Language " + Language.getBaseAD_Language());
 		language.setAD_Language(Language.getBaseAD_Language());
 	}   //  verifyLanguage
@@ -1226,7 +1225,7 @@ public final class Env
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
-				s_log.log(Level.SEVERE, "No second tag: " + inStr);
+				getLogger().log(Level.SEVERE, "No second tag: " + inStr);
 				return "";						//	no second tag
 			}
 
@@ -1237,7 +1236,7 @@ public final class Env
 				ctxInfo = getContext(ctx, token);	// get global context
 			if (ctxInfo.length() == 0)
 			{
-				s_log.config("No Context Win=" + WindowNo + " for: " + token);
+				getLogger().config("No Context Win=" + WindowNo + " for: " + token);
 				if (!ignoreUnparsable)
 					return "";						//	token not found
 			}
@@ -1291,7 +1290,7 @@ public final class Env
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
-				s_log.log(Level.SEVERE, "No second tag: " + inStr);
+				getLogger().log(Level.SEVERE, "No second tag: " + inStr);
 				return "";						//	no second tag
 			}
 
@@ -1410,7 +1409,7 @@ public final class Env
 		}
 		catch (Exception e)
 		{
-			s_log.log(Level.SEVERE, e.toString());
+			getLogger().log(Level.SEVERE, e.toString());
 		}
 		return retValue;
 	}	//	getWindow
@@ -1513,7 +1512,7 @@ public final class Env
 //		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
 		if (url == null)
 		{
-			s_log.log(Level.SEVERE, "Not found: " +  fileNameInImageDir);
+			getLogger().log(Level.SEVERE, "Not found: " +  fileNameInImageDir);
 			return null;
 		}
 		Toolkit tk = Toolkit.getDefaultToolkit();
@@ -1533,7 +1532,7 @@ public final class Env
 //		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
 		if (url == null)
 		{
-			s_log.log(Level.INFO, "Not found: " +  fileNameInImageDir);
+			getLogger().log(Level.INFO, "Not found: " +  fileNameInImageDir);
 			return null;
 		}
 		return new ImageIcon(url);
@@ -1558,7 +1557,7 @@ public final class Env
 //			url = Adempiere.class.getResource("images/" + fileName+".png");
 		if (url == null)
 		{
-			s_log.log(Level.INFO, "GIF/PNG Not found: " + fileName);
+			getLogger().log(Level.INFO, "GIF/PNG Not found: " + fileName);
 			return null;
 		}
 		return new ImageIcon(url);
@@ -1571,7 +1570,7 @@ public final class Env
 	 */
 	public static void startBrowser (String url)
 	{
-		s_log.info(url);
+		getLogger().info(url);
 		getContextProvider().showURL(url);
 	}   //  startBrowser
 
@@ -1615,7 +1614,7 @@ public final class Env
 		for (int i = 0; i < s_hiddenWindows.size(); i++)
 		{
 			CFrame hidden = s_hiddenWindows.get(i);
-			s_log.info(i + ": " + hidden);
+			getLogger().info(i + ": " + hidden);
 			if (hidden.getAD_Window_ID() == window.getAD_Window_ID())
 				return false;	//	already there
 		}
@@ -1624,7 +1623,7 @@ public final class Env
 			if (s_hiddenWindows.add(window))
 			{
 				window.setVisible(false);
-				s_log.info(window.toString());
+				getLogger().info(window.toString());
 			//	window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_ICONIFIED));
 				if (s_hiddenWindows.size() > 10) {
 					CFrame toClose = s_hiddenWindows.remove(0);		//	sort of lru
@@ -1654,7 +1653,7 @@ public final class Env
 			if (hidden.getAD_Window_ID() == AD_Window_ID)
 			{
 				s_hiddenWindows.remove(i);
-				s_log.info(hidden.toString());
+				getLogger().info(hidden.toString());
 				hidden.setVisible(true);
 				// De-iconify window - teo_sarca [ 1707221 ]
 				int state = hidden.getExtendedState();
@@ -1689,16 +1688,16 @@ public final class Env
 	 */
 	public static void sleep (int sec)
 	{
-		s_log.info("Start - Seconds=" + sec);
+		getLogger().info("Start - Seconds=" + sec);
 		try
 		{
 			Thread.sleep(sec*1000);
 		}
 		catch (Exception e)
 		{
-			s_log.log(Level.WARNING, "", e);
+			getLogger().log(Level.WARNING, "", e);
 		}
-		s_log.info("End");
+		getLogger().info("End");
 	}	//	sleep
 
 	/**

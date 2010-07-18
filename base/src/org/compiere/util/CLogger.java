@@ -23,14 +23,14 @@ import java.util.logging.Logger;
 
 /**
  *	Adempiere Logger
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: CLogger.java,v 1.3 2006/08/09 16:38:47 jjanke Exp $
  */
 public class CLogger extends Logger implements Serializable
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6492376264463028357L;
 	private static final String LAST_INFO = "org.compiere.util.CLogger.lastInfo";
@@ -44,12 +44,14 @@ public class CLogger extends Logger implements Serializable
 	 *	@param className class name
 	 *	@return Logger
 	 */
-    public static synchronized CLogger getCLogger (String className) 
+    public static synchronized CLogger getCLogger (String className)
     {
    	//	CLogMgt.initialize();
     	LogManager manager = LogManager.getLogManager();
-    	if (className == null)
-    		className = "";
+    	if (className == null || className.trim().length() == 0)
+    		className = CLogMgt.getRootLoggerName();
+    	else
+    		className = CLogMgt.getRootLoggerName() + "." + className;
     	Logger result = manager.getLogger(className);
     	if (result != null && result instanceof CLogger)
     		return (CLogger)result;
@@ -83,11 +85,11 @@ public class CLogger extends Logger implements Serializable
     		s_logger = getCLogger("org.compiere.default");
     	return s_logger;
     }	//	get
-    
+
     /**	Default Logger			*/
     private static CLogger	s_logger = null;
-    
-    
+
+
 	/**************************************************************************
 	 * 	Standard constructor
 	 *	@param name logger name
@@ -99,7 +101,7 @@ public class CLogger extends Logger implements Serializable
 	//	setLevel(Level.ALL);
 	}	//	CLogger
 
-    
+
 	/*************************************************************************/
 
 	/**
@@ -116,7 +118,7 @@ public class CLogger extends Logger implements Serializable
 	/**
 	 *  Set and issue Error and save as ValueNamePair
 	 *  @param AD_Message message key
-	 *  @param ex exception 
+	 *  @param ex exception
 	 *  @return true (to avoid removal of method)
 	 */
 	public boolean saveError (String AD_Message, Exception ex)
@@ -128,8 +130,8 @@ public class CLogger extends Logger implements Serializable
 	/**
 	 *  Set and issue (if specified) Error and save as ValueNamePair
 	 *  @param AD_Message message key
-	 *  @param ex exception 
-	 *  @param issueError if true will issue an error 
+	 *  @param ex exception
+	 *  @param issueError if true will issue an error
 	 *  @return true (to avoid removal of method)
 	 */
 	public boolean saveError (String AD_Message, Exception ex, boolean issueError)
@@ -137,7 +139,7 @@ public class CLogger extends Logger implements Serializable
 		Env.getCtx().put(LAST_EXCEPTION, ex);
 		return saveError (AD_Message, ex.getLocalizedMessage(), issueError);
 	}   //  saveError
-	
+
 	/**
 	 *  Set Error and save as ValueNamePair
 	 *  @param AD_Message message key
@@ -161,10 +163,10 @@ public class CLogger extends Logger implements Serializable
 	 */
 	public static ValueNamePair retrieveError()
 	{
-		ValueNamePair vp = (ValueNamePair) Env.getCtx().remove(LAST_ERROR);		
+		ValueNamePair vp = (ValueNamePair) Env.getCtx().remove(LAST_ERROR);
 		return vp;
 	}   //  retrieveError
-	
+
 	/**
 	 * Get Error message from stack
 	 * @param defaultMsg default message (used when there are no errors on stack)
@@ -249,7 +251,7 @@ public class CLogger extends Logger implements Serializable
 		Env.getCtx().remove(LAST_WARNING);
 		Env.getCtx().remove(LAST_INFO);
 	}	//	resetLast
-	
+
 	/**
 	 * Get root cause
 	 * @param t
@@ -261,10 +263,10 @@ public class CLogger extends Logger implements Serializable
 		while (cause.getCause() != null)
 		{
 			cause = cause.getCause();
-		} 
+		}
 		return cause;
 	}
-	
+
 	/**
 	 * 	String Representation
 	 *	@return info
@@ -276,7 +278,7 @@ public class CLogger extends Logger implements Serializable
 			.append (",Level=").append (getLevel()).append ("]");
 		return sb.toString ();
 	}	 //	toString
-	
+
 	/**
 	 * 	Write Object - Serialization
 	 *	@param out out
@@ -287,9 +289,9 @@ public class CLogger extends Logger implements Serializable
 		out.writeObject(getName());
 		System.out.println("====writeObject:" + getName());
 	}	//	writeObject
-	
+
 	private String m_className = null;
-	
+
 	private void readObject (ObjectInputStream in) throws IOException
 	{
 		try
@@ -302,7 +304,7 @@ public class CLogger extends Logger implements Serializable
 		}
 		System.out.println("====readObject:" + m_className);
 	}
-	
+
 	protected Object readResolve() throws ObjectStreamException
 	{
 		System.out.println("====readResolve:" + m_className);

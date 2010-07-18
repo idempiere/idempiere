@@ -33,30 +33,10 @@ import java.util.logging.LogRecord;
 public class CLogConsole extends Handler
 {
 	/**
-	 * 	Get Console Handler
-	 *	@param create create if not exists
-	 *	@return console hander or null
-	 */
-	public static CLogConsole get (boolean create)
-	{
-		if (s_console == null && create)
-			s_console = new CLogConsole();
-		return s_console;
-	}	//	get
-	
-	private static CLogConsole	s_console = null;
-	
-	/**
 	 *	Constructor
 	 */
 	public CLogConsole ()
 	{
-		if (s_console == null)
-			s_console = this;
-		else
-			reportError("Console Handler exists already", 
-				new IllegalStateException("Existing Handler"), 
-				ErrorManager.GENERIC_FAILURE);
 		initialize();
 	}	// CLogConsole
 
@@ -77,12 +57,12 @@ public class CLogConsole extends Handler
 		String encoding = getEncoding();
 		if (encoding != null)
 		{
-		    try 
+		    try
 		    {
 		    	m_writerOut = new PrintWriter(new OutputStreamWriter(System.out, encoding));
 		    	m_writerErr = new PrintWriter(new OutputStreamWriter(System.err, encoding));
 		    }
-		    catch (UnsupportedEncodingException ex) 
+		    catch (UnsupportedEncodingException ex)
 		    {
 				reportError ("Opening encoded Writers", ex, ErrorManager.OPEN_FAILURE);
 		    }
@@ -91,7 +71,7 @@ public class CLogConsole extends Handler
 			m_writerOut = new PrintWriter(System.out);
 		if (m_writerErr == null)
 			m_writerErr = new PrintWriter(System.err);
-		
+
     	//	Formatting
 		setFormatter(CLogFormatter.get());
 		//	Default Level
@@ -100,7 +80,7 @@ public class CLogConsole extends Handler
 		setFilter(CLogFilter.get());
 		//
     }	//	initialize
-	
+
     /**
      * 	Set Encoding
      *	@param encoding encoding
@@ -116,7 +96,7 @@ public class CLogConsole extends Handler
 		initialize();
 	}	//	setEncoding
 
-    
+
 	/**
 	 * 	Set Level
 	 *	@see java.util.logging.Handler#setLevel(java.util.logging.Level)
@@ -135,7 +115,7 @@ public class CLogConsole extends Handler
 		else
 			DriverManager.setLogWriter(null);
 	}	//	setLevel
-    
+
 	/**
 	 *	Publish
 	 *	@see java.util.logging.Handler#publish(java.util.logging.LogRecord)
@@ -145,7 +125,7 @@ public class CLogConsole extends Handler
 	{
 		if (!isLoggable (record) || m_writerOut == null)
 			return;
-		
+
 		//	Format
 		String msg = null;
 		try
@@ -165,7 +145,7 @@ public class CLogConsole extends Handler
 				m_writerOut.write (getFormatter().getHead (this));
 				m_doneHeader = true;
 			}
-			if (record.getLevel() == Level.SEVERE 
+			if (record.getLevel() == Level.SEVERE
 				|| record.getLevel() == Level.WARNING)
 			{
 				flush();
@@ -212,7 +192,7 @@ public class CLogConsole extends Handler
 
 	/**
 	 * Close
-	 * 
+	 *
 	 * @see java.util.logging.Handler#close()
 	 * @throws SecurityException
 	 */
@@ -255,7 +235,7 @@ public class CLogConsole extends Handler
 		}
 		m_writerErr = null;
 	}	// close
-	
+
 	/**
 	 * 	String Representation
 	 *	@return info

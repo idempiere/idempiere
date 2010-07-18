@@ -27,28 +27,12 @@ import java.util.logging.LogRecord;
 
 /**
  *	Adempiere Log File Handler
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: CLogFile.java,v 1.3 2006/07/30 00:54:35 jjanke Exp $
  */
 public class CLogFile extends Handler
 {
-	/**
-	 * 	Get File Logger
-	 *	@param create create if not exists
-	 *	@param adempiereHome adempiere home
-	 *	@param isClient client
-	 *	@return file logger
-	 */
-	public static CLogFile get (boolean create, String adempiereHome, boolean isClient)
-	{
-		if (s_logFile == null && create)
-			s_logFile = new CLogFile(adempiereHome, true, isClient);
-		return s_logFile;
-	}	//	get
-	
-	private static CLogFile	s_logFile = null;
-	
 	/**************************************************************************
 	 *	Constructor
 	 *	@param adempiereHome adempiere home
@@ -57,12 +41,6 @@ public class CLogFile extends Handler
 	 */
 	public CLogFile (String adempiereHome, boolean createLogDir, boolean isClient)
 	{
-		if (s_logFile == null)
-			s_logFile = this;
-		else
-			reportError("File Handler exists already", 
-				new IllegalStateException("Existing Handler"), 
-				ErrorManager.GENERIC_FAILURE);
 		//
 		if (adempiereHome != null && adempiereHome.length() > 0)
 			m_adempiereHome = adempiereHome;
@@ -83,7 +61,7 @@ public class CLogFile extends Handler
     private String		m_fileNameDate = "";
     /** Record Counter			*/
     private int			m_records = 0;
-    
+
 	/**
 	 * 	Initialize
 	 * 	@param adempiereHome log file base directory name
@@ -112,7 +90,7 @@ public class CLogFile extends Handler
 			m_writer = null;
 		}
 	//	System.out.println(getFileName());
-		
+
     	//	Formatting
 		setFormatter(CLogFormatter.get());
 		//	Level
@@ -162,6 +140,8 @@ public class CLogFile extends Handler
 				fileName += File.separator;
 				if (isClient)
 					fileName += "client";
+				else
+					fileName += (CLogMgt.getRootLoggerName() +".");
 				m_fileNameDate = getFileNameDate(System.currentTimeMillis());
 				fileName	+= m_fileNameDate + "_";
 				for (int i = 0; i < 100; i++)
@@ -188,7 +168,7 @@ public class CLogFile extends Handler
 		}
 		return true;
 	}	//	createFile
-	
+
 	/**
 	 * 	Get File Name Date portion
 	 * 	@param time time in ms
@@ -200,7 +180,7 @@ public class CLogFile extends Handler
 		String s = ts.toString();
 		return s.substring(0, 10);
 	}	//	getFileNameDate
-	
+
 	/**
 	 * 	Rotate Log when day changes
 	 *	@param time time
@@ -212,7 +192,7 @@ public class CLogFile extends Handler
 			return;
 		rotateLog();
 	}	//	rotateLog
-	
+
 	/**
 	 * 	Rotate Log
 	 * 	Called after Initialization
@@ -221,7 +201,7 @@ public class CLogFile extends Handler
 	{
 		initialize(m_adempiereHome, true, Ini.isClient());
 	}	//	rotateLog
-	
+
 	/**
 	 * 	Get File Name
 	 *	@return file name
@@ -243,8 +223,8 @@ public class CLogFile extends Handler
 			return m_file.getParentFile();
 		return null;
 	}	//	getLogDirectory
-	
-	
+
+
 	/**
 	 * 	Set Level
 	 *	@see java.util.logging.Handler#setLevel(java.util.logging.Level)
@@ -268,9 +248,9 @@ public class CLogFile extends Handler
 	{
 		if (!isLoggable (record) || m_writer == null)
 			return;
-		
+
 		rotateLog(record.getMillis());
-		
+
 		//	Format
 		String msg = null;
 		try
@@ -331,7 +311,7 @@ public class CLogFile extends Handler
 	{
 		if (m_writer == null)
 			return;
-		
+
 		//	Write Tail
 		try
 		{
@@ -358,7 +338,7 @@ public class CLogFile extends Handler
 		m_writer = null;
 		m_file = null;
 	}	//	close
-	
+
 	/**
 	 * 	String Representation
 	 *	@return info
@@ -370,5 +350,21 @@ public class CLogFile extends Handler
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
+	public static CLogFile get(boolean create, String adempiereHome, boolean isClient) {
+		Handler[] handlers = CLogMgt.getHandlers();
+		for (Handler handler : handlers)
+		{
+			if (handler instanceof CLogFile)
+				return (CLogFile) handler;
+		}
+		if (create)
+		{
+			CLogFile handler = new CLogFile(adempiereHome, true, isClient);
+			CLogMgt.addHandler(handler);
+			return handler;
+		}
+		return null;
+	}
+
 }	//	CLogFile

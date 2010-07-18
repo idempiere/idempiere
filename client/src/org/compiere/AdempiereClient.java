@@ -51,7 +51,7 @@ import org.compiere.util.Util;
  *
  *  @author Jorg Janke
  *  @version $Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $
- *  
+ *
  */
 public final class AdempiereClient
 {
@@ -92,18 +92,17 @@ public final class AdempiereClient
 
 		//  System properties
 		Ini.loadProperties (false);
-		
+
 		//	Set up Log
 		CLogMgt.setLevel(Ini.getProperty(Ini.P_TRACELEVEL));
-		if (isClient && Ini.isPropertyBool(Ini.P_TRACEFILE)
-			&& CLogFile.get(false, null, isClient) == null)
-			CLogMgt.addHandler(CLogFile.get (true, Ini.findAdempiereHome(), isClient));
+		if (isClient && Ini.isPropertyBool(Ini.P_TRACEFILE))
+			CLogMgt.addHandler(new CLogFile(Ini.findAdempiereHome(), true, isClient));
 
 		//	Set UI
 		if (isClient)
 		{
 			if (CLogMgt.isLevelAll())
-				log.log(Level.FINEST, System.getProperties().toString());			
+				log.log(Level.FINEST, System.getProperties().toString());
 		}
 
 		//  Set Default Database Connection from Ini
@@ -111,7 +110,7 @@ public final class AdempiereClient
 
 		if (isClient)		//	don't test connection
 			return false;	//	need to call
-		
+
 		return startupEnvironment(isClient);
 	}   //  startup
 
@@ -133,7 +132,7 @@ public final class AdempiereClient
 		MSystem system = MSystem.get(Env.getCtx());	//	Initializes Base Context too
 		if (system == null)
 			return false;
-		
+
 		//	Initialize main cached Singletons
 		ModelValidationEngine.get();
 		try
@@ -151,9 +150,9 @@ public final class AdempiereClient
 				}
 			}
 			SecureEngine.init(className);
-			
+
 			//
-			if (isClient)	
+			if (isClient)
 				MClient.get(Env.getCtx(),0);			//	Login Client loaded later
 			else
 				MClient.getAll(Env.getCtx());
@@ -162,7 +161,7 @@ public final class AdempiereClient
 		{
 			log.warning("Environment problems: " + e.toString());
 		}
-		
+
 		//	Start Workflow Document Manager (in other package) for PO
 		String className = null;
 		try
@@ -177,7 +176,7 @@ public final class AdempiereClient
 		{
 			log.warning("Not started: " + className + " - " + e.getMessage());
 		}
-		
+
 		if (!isClient)
 			DB.updateMail();
 		return true;

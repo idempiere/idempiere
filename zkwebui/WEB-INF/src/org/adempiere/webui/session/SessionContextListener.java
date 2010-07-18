@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpSession;
 
+import org.compiere.util.CLogMgt;
 import org.compiere.util.Env;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
@@ -80,7 +81,7 @@ public class SessionContextListener implements ExecutionInit,
 					SessionManager.getAppDesktop().showURL(url, true);
 				}
 			});
-
+			ctx.put(CLogMgt.ROOT_LOGGER_NAME_PROPERTY, "org.adempiere.webui");
 			ctx.setProperty(SERVLET_SESSION_ID, httpSession.getId());
 		    session.setAttribute(SESSION_CTX, ctx);
 		}
