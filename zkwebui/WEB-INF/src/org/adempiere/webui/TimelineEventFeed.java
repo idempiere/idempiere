@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adempiere.util.ServerContext;
 import org.adempiere.webui.component.ZkCssHelper;
-import org.adempiere.webui.session.ServerContext;
 import org.adempiere.webui.session.SessionContextListener;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.ScheduleUtil;
@@ -29,7 +29,7 @@ import org.zkoss.xml.XMLs;
 public class TimelineEventFeed extends HttpServlet {
 
 	/**
-	 * 
+	 * generated serial version Id
 	 */
 	private static final long serialVersionUID = 5507229085571123451L;
 
@@ -40,15 +40,18 @@ public class TimelineEventFeed extends HttpServlet {
 		Properties ctx = (Properties)req.getSession().getAttribute(SessionContextListener.SESSION_CTX);
         if (ctx == null) {
              return;
-        } 
-        
-        ServerContext serverContext = ServerContext.getCurrentInstance();
-        if (serverContext == null) {
-        	serverContext = ServerContext.newInstance();
         }
-        serverContext.clear();
-        serverContext.putAll(ctx);
-         
+
+        ServerContext.setCurrentInstance(ctx);
+        try {
+        	doGet0(req, resp);
+        } finally {
+        	ServerContext.dispose();
+        }
+	}
+
+	private void doGet0(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
 		int resourceId  = 0;
 		String resourceIdParam = req.getParameter("S_Resource_ID");
 		if (resourceIdParam != null && resourceIdParam.trim().length() > 0) {

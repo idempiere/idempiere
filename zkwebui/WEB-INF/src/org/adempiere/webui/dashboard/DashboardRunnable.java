@@ -20,9 +20,9 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.desktop.IDesktop;
-import org.adempiere.webui.session.ServerContext;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.MSysConfig;
@@ -30,6 +30,7 @@ import org.compiere.util.CLogger;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
+import org.zkoss.zk.ui.event.Events;
 
 /**
  *
@@ -39,9 +40,9 @@ import org.zkoss.zk.ui.DesktopUnavailableException;
  */
 public class DashboardRunnable implements Runnable, Serializable
 {
-	
+
 	private static final long serialVersionUID = 5995227773511788894L;
-	
+
 	private Desktop desktop;
 	private boolean stop = false;
 	private List<DashboardPanel> dashboardPanels;
@@ -146,7 +147,7 @@ public class DashboardRunnable implements Runnable, Serializable
 			catch (Exception e1) {}
 		}
 	}
-	
+
 	/**
 	 * Refresh dashboard content
 	 */
@@ -154,44 +155,35 @@ public class DashboardRunnable implements Runnable, Serializable
 	{
 
 		ServerPushTemplate template = new ServerPushTemplate(desktop);
-    	for(int i = 0; i < dashboardPanels.size(); i++)
-    	{
-    		//make sure context is correct
-    		Properties ctx = (Properties)template.getDesktop().getSession().getAttribute(SessionContextListener.SESSION_CTX);
-    		if (ctx != null)
-    		{
-    			ServerContext serverContext = ServerContext.getCurrentInstance();
-    			if (serverContext == null) {
-    				serverContext = ServerContext.newInstance();	        	
-    				serverContext.putAll(ctx);
-    			} else {
-    				String id = ctx.getProperty(SessionContextListener.SERVLET_SESSION_ID);
-    				if (id == null || !id.equals(serverContext.getProperty(SessionContextListener.SERVLET_SESSION_ID))) {
-    					serverContext.clear();
-    					serverContext.putAll(ctx);
-    				}
-    			}
-    		}
-    		dashboardPanels.get(i).refresh(template);
-    	}
+		//set thread local context if not in event thread
+		Properties ctx = null;
+		boolean isEventThread = Events.inEventListener();
+		if (!isEventThread)
+		{
+			ctx = (Properties)template.getDesktop().getSession().getAttribute(SessionContextListener.SESSION_CTX);
+			if (ctx == null)
+				return;
+		}
+		try
+		{
+			if (!isEventThread)
+			{
+				ServerContext.setCurrentInstance(ctx);
+			}
+	    	for(int i = 0; i < dashboardPanels.size(); i++)
+	    	{
+	    		dashboardPanels.get(i).refresh(template);
+	    	}
 
-    	//make sure context is correct
-    	Properties ctx = (Properties)template.getDesktop().getSession().getAttribute(SessionContextListener.SESSION_CTX);
-    	if (ctx != null)
-    	{
-    		ServerContext serverContext = ServerContext.getCurrentInstance();
-    		if (serverContext == null) {
-    			serverContext = ServerContext.newInstance();	        	
-    			serverContext.putAll(ctx);
-    		} else {
-    			String id = ctx.getProperty(SessionContextListener.SERVLET_SESSION_ID);
-				if (id == null || !id.equals(serverContext.getProperty(SessionContextListener.SERVLET_SESSION_ID))) {
-					serverContext.clear();
-					serverContext.putAll(ctx);
-				}
-    		}
-    	}
-    	appDesktop.onServerPush(template);
+    		appDesktop.onServerPush(template);
+		}
+		finally
+		{
+			if (!isEventThread)
+			{
+				ServerContext.dispose();
+			}
+		}
 	}
 
 	public void stop() {

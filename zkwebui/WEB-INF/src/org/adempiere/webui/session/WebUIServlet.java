@@ -18,6 +18,7 @@
 package org.adempiere.webui.session;
 
 import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
@@ -27,17 +28,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.adempiere.webui.ZkContextProvider;
 import org.adempiere.webui.window.ZkJRViewerProvider;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
 import org.compiere.print.ReportCtl;
 import org.compiere.report.ReportStarter;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
-import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
+
+import org.adempiere.util.ServerContext;
+import org.adempiere.util.ServerContextURLHandler;
 
 /**
  *
@@ -47,45 +48,28 @@ import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
  */
 public class WebUIServlet extends DHtmlLayoutServlet
 {
-    /**
-	 *
-	 */
-	private static final long serialVersionUID = 261899419681731L;
+    private static final long    serialVersionUID = 1L;
 
-	/** Logger for the class * */
-    private static final CLogger logger;
+    /** Logger for the class * */
+    private static CLogger logger;
 
     static
     {
         logger = CLogger.getCLogger(WebUIServlet.class);
     }
 
-	private ServletConfig servletConfig;
-
     public void init(ServletConfig servletConfig) throws ServletException
     {
-    	System.out.println("WebUIServlet init ...");
         super.init(servletConfig);
 
-        // HttpBrigde requires config
-        this.servletConfig = servletConfig;
-
         /** Initialise context for the current thread*/
-        ServerContext.newInstance();
-        Env.setContextProvider(new ZkContextProvider());
-
-        /**
-         * Start ADempiere
-         */
-        logger.info("Starting ADempiere...");
-        try
-        {
-            CLogMgt.initialize(false);
-        }
-        catch(Exception ex)
-        {
-            logger.log(Level.SEVERE, "Could not initialize ADempiere logging Management", ex);
-        }
+        Properties serverContext = new Properties();
+        serverContext.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, new ServerContextURLHandler() {
+			public void showURL(String url) {
+				SessionManager.getAppDesktop().showURL(url, true);
+			}
+		});
+        ServerContext.setCurrentInstance(serverContext);
 
         boolean started = Adempiere.startup(false);
         if(!started)
@@ -97,7 +81,7 @@ public class WebUIServlet extends DHtmlLayoutServlet
         Ini.setProperty(Ini.P_ADEMPIERESYS, false);
         ReportCtl.setReportViewerProvider(new ZkReportViewerProvider());
         ReportStarter.setReportViewerProvider(new ZkJRViewerProvider());
-        logger.info("ADempiere started successfully");
+        logger.log(Level.OFF, "ADempiere started successfully");
         /**
          * End ADempiere Start
          */
@@ -124,8 +108,7 @@ public class WebUIServlet extends DHtmlLayoutServlet
 
     public ServletConfig getServletConfig()
     {
-		return servletConfig;
-//        return super.getServletConfig();
+        return super.getServletConfig();
     }
 
     public String getServletInfo()
