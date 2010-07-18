@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -93,7 +94,7 @@ public abstract class PO
 	implements Serializable, Comparator, Evaluatee
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6604764467216189092L;
 
@@ -684,7 +685,7 @@ public abstract class PO
 				value = Integer.parseInt((String)value);
 			}
 		}
-		
+
 		return set_Value (index, value);
 	}   //  setValue
 
@@ -721,7 +722,7 @@ public abstract class PO
 			log.log(Level.WARNING, "Virtual Column" + colInfo);
 			return false;
 		}
-		
+
 		//
 		// globalqss -- Bug 1618469 - is throwing not updateable even on new records
 		// if (!p_info.isColumnUpdateable(index))
@@ -819,16 +820,16 @@ public abstract class PO
 				log.finest(ColumnName + " = " + m_newValues[index] + " (OldValue="+m_oldValues[index]+")");
 		}
 		set_Keys (ColumnName, m_newValues[index]);
-		
+
 		// FR 2962094 Fill ProcessedOn when the Processed column is changing from N to Y
 		setProcessedOn(ColumnName, value, m_oldValues[index]);
-		
+
 		return true;
 	}   //  setValue
 
 	/* FR 2962094 - Finish implementation of weighted average costing
-	   Fill the column ProcessedOn (if it exists) with a bigdecimal representation of current timestamp (with nanoseconds) 
-	*/ 
+	   Fill the column ProcessedOn (if it exists) with a bigdecimal representation of current timestamp (with nanoseconds)
+	*/
 	public void setProcessedOn(String ColumnName, Object value, Object oldValue) {
 		if ("Processed".equals(ColumnName)
 				&& value instanceof Boolean
@@ -926,7 +927,7 @@ public abstract class PO
 
 		// FR 2962094 Fill ProcessedOn when the Processed column is changing from N to Y
 		setProcessedOn(ColumnName, value, m_oldValues[index]);
-		
+
 		return true;
 	}   //  set_ValueNoCheck
 
@@ -2016,7 +2017,7 @@ public abstract class PO
 			// If not a localTrx we need to set a savepoint for rollback
 			if (localTrx == null)
 				savepoint = trx.setSavepoint(null);
-			
+
 			if (!beforeSave(newRecord))
 			{
 				log.warning("beforeSave failed - " + toString());
@@ -2546,7 +2547,7 @@ public abstract class PO
 			int no = saveNew_getID();
 			if (no <= 0)
 				no = DB.getNextID(getAD_Client_ID(), p_info.getTableName(), m_trxName);
-			// the primary key is not overwrite with the local sequence	
+			// the primary key is not overwrite with the local sequence
 			if (isReplication())
 			{
 				if (get_ID() > 0)
@@ -2561,6 +2562,17 @@ public abstract class PO
 			}
 			m_IDs[0] = new Integer(no);
 			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+		}
+		//uuid secondary key
+		int uuidIndex = p_info.getColumnIndex(get_TableName()+"_UU");
+		if (uuidIndex >= 0)
+		{
+			String value = (String)get_Value(uuidIndex);
+			if (p_info.getColumn(uuidIndex).FieldLength == 36 && (value == null || value.length() == 0))
+			{
+				UUID uuid = UUID.randomUUID();
+				set_ValueNoCheck(p_info.getColumnName(uuidIndex), uuid.toString());
+			}
 		}
 		if (m_trxName == null)
 			log.fine(p_info.getTableName() + " - " + get_WhereClause(true));
@@ -3964,7 +3976,7 @@ public abstract class PO
 		for (PO line : lines)
 			line.set_TrxName(trxName);
 	}
-	
+
 	/**
 	 * Get Integer Value
 	 * @param columnName
@@ -3979,19 +3991,19 @@ public abstract class PO
 		}
 		return get_ValueAsInt(idx);
 	}
-	
+
 	/**
-	 * Get value as Boolean 
+	 * Get value as Boolean
 	 * @param columnName
 	 * @return boolean value
 	 */
 	public boolean get_ValueAsBoolean(String columnName)
 	{
 		Object oo = get_Value(columnName);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
