@@ -13,14 +13,20 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Vector;
+import java.util.logging.Level;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.FolderBrowser;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
@@ -29,25 +35,32 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.Adempiere;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogErrorBuffer;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Pre;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.MaximizeEvent;
 import org.zkoss.zk.ui.event.SizeEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -58,7 +71,7 @@ import org.zkoss.zul.Vbox;
 public class AboutWindow extends Window implements EventListener {
 
 	/**
-	 *
+	 * generated serial version id
 	 */
 	private static final long serialVersionUID = -257313771447940626L;
 	private Checkbox bErrorsOnly;
@@ -67,6 +80,13 @@ public class AboutWindow extends Window implements EventListener {
 	private Tabpanels tabPanels;
 	private Button btnDownload;
 	private Button btnErrorEmail;
+	private Button btnViewLog;
+
+	private Button btnAdempiereLog;
+
+	private Button btnServerLog;
+
+	private Listbox levelListBox;
 
 	public AboutWindow() {
 		super();
@@ -74,14 +94,15 @@ public class AboutWindow extends Window implements EventListener {
 	}
 
 	private void init() {
-		this.setWidth("500px");
-		this.setHeight("450px");
+
 		this.setPosition("center");
 		this.setTitle(ThemeManager.getBrowserTitle());
 		this.setClosable(true);
+		this.setMaximizable(true);
 		this.setSizable(true);
 
 		this.addEventListener(Events.ON_SIZE, this);
+		this.addEventListener(Events.ON_MAXIMIZE, this);
 
 		Vbox layout = new Vbox();
 		layout.setWidth("100%");
@@ -136,6 +157,9 @@ public class AboutWindow extends Window implements EventListener {
 		btnOk.setParent(hbox);
 
 		this.setBorder("normal");
+		this.setWidth("500px");
+		this.setHeight("450px");
+		doResize(500, 450);
 	}
 
 	private Tabpanel createTrace() {
@@ -152,12 +176,72 @@ public class AboutWindow extends Window implements EventListener {
 		bErrorsOnly.setChecked(true);
 		bErrorsOnly.addEventListener(Events.ON_CHECK, this);
 		hbox.appendChild(bErrorsOnly);
+		hbox.appendChild(new Space());
 		btnDownload = new Button(Msg.getMsg(Env.getCtx(), "SaveFile"));
+		btnDownload .setTooltiptext("Download session log");
 		btnDownload.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnDownload);
+		hbox.appendChild(new Space());
 		btnErrorEmail = new Button(Msg.getMsg(Env.getCtx(), "SendEMail"));
+		btnErrorEmail.setTooltiptext("Email session log");
 		btnErrorEmail.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnErrorEmail);
+		hbox.appendChild(new Space());
+		btnViewLog = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "View")));
+		btnViewLog.setTooltiptext("View session log");
+		btnViewLog.addEventListener(Events.ON_CLICK, this);
+		hbox.appendChild(btnViewLog);
+		vbox.appendChild(hbox);
+
+		hbox = new Hbox();
+		hbox.setAlign("center");
+		hbox.setPack("start");
+		Label levelLabel = new Label("Trace Level:");
+		levelLabel.setHeight("100%");
+		hbox.appendChild(levelLabel);
+		levelListBox = ListboxFactory.newDropdownListbox();
+		levelListBox.addEventListener(Events.ON_SELECT, this);
+		hbox.appendChild(levelListBox);
+		for (Level level : CLogMgt.LEVELS)
+		{
+			levelListBox.appendItem(level.getName(), level);
+		}
+
+		Level level = CLogMgt.getLevel();
+		for (int i = 0; i < CLogMgt.LEVELS.length; i++)
+		{
+			if (CLogMgt.LEVELS[i].intValue() == level.intValue())
+			{
+				levelListBox.setSelectedIndex(i);
+				break;
+			}
+		}
+
+		levelListBox.setEnabled(false);
+		if (Env.getAD_Client_ID(Env.getCtx()) == 0)
+		{
+			MUser user = MUser.get(Env.getCtx());
+			if (user.isAdministrator())
+			{
+				levelListBox.setEnabled(true);
+				levelListBox.setTooltiptext("Set trace level. Warning: this will effect all session not just the current session");
+				levelLabel.setTooltiptext("Set trace level. Warning: this will effect all session not just the current session");
+				btnAdempiereLog = new Button("Adempiere Log");
+				btnAdempiereLog.setTooltiptext("Download adempiere log file from server");
+				btnAdempiereLog.addEventListener(Events.ON_CLICK, this);
+
+				btnServerLog = new Button("JBoss Log");
+				btnServerLog.setTooltiptext("Download JBoss console log file from server");
+				btnServerLog.addEventListener(Events.ON_CLICK, this);
+
+				hbox.appendChild(new Space());
+				hbox.appendChild(btnAdempiereLog);
+				hbox.appendChild(new Space());
+				hbox.appendChild(btnServerLog);
+
+			}
+		}
+
 		vbox.appendChild(hbox);
 
 		Vector<String> columnNames = CLogErrorBuffer.get(true).getColumnNames(Env.getCtx());
@@ -174,7 +258,7 @@ public class AboutWindow extends Window implements EventListener {
 
 		vbox.appendChild(logTable);
 		logTable.setWidth("480px");
-		logTable.setHeight("310px");
+		logTable.setHeight("300px");
 		logTable.setVflex(false);
 
 		updateLogTable();
@@ -355,24 +439,104 @@ public class AboutWindow extends Window implements EventListener {
 		}
 		else if (event.getTarget() == btnDownload)
 			downloadLog();
+		else if (event.getTarget() == btnViewLog)
+			viewLog();
 		else if (event.getTarget() == btnErrorEmail)
 			cmd_errorEMail();
+		else if (event.getTarget() == btnAdempiereLog)
+			downloadAdempiereLogFile();
+		else if (event.getTarget() == btnServerLog)
+			downloadServerLogFile();
+		else if (event.getTarget() == levelListBox)
+			setTraceLevel();
 		else if (event instanceof SizeEvent)
 			doResize((SizeEvent)event);
+		else if (event instanceof MaximizeEvent)
+		{
+			MaximizeEvent me = (MaximizeEvent) event;
+			if (me.isMaximized())
+				doResize(SessionManager.getAppDesktop().getClientInfo().desktopWidth, SessionManager.getAppDesktop().getClientInfo().desktopHeight);
+			else
+			{
+				int width = parseHtmlSizeString(me.getWidth());
+				int height = parseHtmlSizeString(me.getHeight());
+				doResize(width, height);
+			}
+		}
 		else if (Events.ON_CLICK.equals(event.getName()))
 			this.detach();
+	}
+
+	private int parseHtmlSizeString(String sizeStr)
+	{
+		StringBuffer buffer = new StringBuffer();
+		for(char ch : sizeStr.toCharArray())
+		{
+			if (Character.isDigit(ch))
+				buffer.append(ch);
+			else
+				break;
+		}
+		return Integer.parseInt(buffer.toString());
+	}
+
+	private void setTraceLevel() {
+		Listitem item = levelListBox.getSelectedItem();
+		if (item != null && item.getValue() != null) {
+			Level level = (Level) item.getValue();
+			CLogMgt.setLevel(level);
+			Ini.setProperty(Ini.P_TRACELEVEL, CLogMgt.getLevel().getName());
+			Ini.saveProperties(false);
+		}
+	}
+
+	private void downloadServerLogFile() {
+		String path = Ini.getAdempiereHome() + File.separator + "jboss" + File.separator
+			+ "server" + File.separator + "adempiere" + File.separator + "log";
+		FolderBrowser fileBrowser = new FolderBrowser(path, false);
+		String selected = fileBrowser.getPath();
+		if (selected != null && selected.trim().length() > 0) {
+			File file = new File(selected);
+			if (file.exists() && file.isFile() && file.canRead()) {
+				try {
+					AMedia media = new AMedia(file, "text/plain", null);
+					Filedownload.save(media);
+				} catch (FileNotFoundException e) {
+				}
+			}
+		}
+	}
+
+	private void downloadAdempiereLogFile() {
+		String path = Ini.getAdempiereHome() + File.separator + "log";
+		FolderBrowser fileBrowser = new FolderBrowser(path, false);
+		String selected = fileBrowser.getPath();
+		if (selected != null && selected.trim().length() > 0) {
+			File file = new File(selected);
+			if (file.exists() && file.isFile() && file.canRead()) {
+				try {
+					AMedia media = new AMedia(file, "text/plain", null);
+					Filedownload.save(media);
+				} catch (FileNotFoundException e) {
+				}
+			}
+		}
 	}
 
 	private void doResize(SizeEvent event) {
 		int width = Integer.parseInt(event.getWidth().substring(0, event.getWidth().length() - 2));
 		int height = Integer.parseInt(event.getHeight().substring(0, event.getHeight().length() - 2));
 
+		doResize(width, height);
+	}
+
+	private void doResize(int width, int height) {
 		tabbox.setWidth((width - 20) + "px");
 		tabbox.setHeight((height - 70) + "px");
 
 		tabPanels.setWidth((width - 20) + "px");
 
-		logTable.setHeight((height - 140) + "px");
+		logTable.setHeight((height - 160) + "px");
 		logTable.setWidth((width - 30) + "px");
 	}
 
@@ -380,6 +544,26 @@ public class AboutWindow extends Window implements EventListener {
 		String log = CLogErrorBuffer.get(true).getErrorInfo(Env.getCtx(), bErrorsOnly.isChecked());
 		AMedia media = new AMedia("trace.log", null, "text/plain", log.getBytes());
 		Filedownload.save(media);
+	}
+
+	private void viewLog() {
+		String log = CLogErrorBuffer.get(true).getErrorInfo(Env.getCtx(), bErrorsOnly.isChecked());
+		Window w = new Window();
+		w.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		w.setTitle("View Log");
+		w.setBorder("normal");
+		w.setClosable(true);
+		w.setMaximizable(true);
+		w.setSizable(true);
+		w.setWidth("600px");
+		w.setHeight("500px");
+		Textarea textbox = new Textarea();
+		textbox.setDynamicProperty("readonly", "true");
+		textbox.setStyle("width:100%; height: 100%");
+		w.appendChild(textbox);
+		Text text = new Text(log);
+		textbox.appendChild(text);
+		AEnv.showCenterScreen(w);
 	}
 
 	/**

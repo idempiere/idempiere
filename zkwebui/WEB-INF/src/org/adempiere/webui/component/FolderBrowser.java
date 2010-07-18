@@ -35,29 +35,44 @@ import org.zkoss.zkex.zul.South;
 public class FolderBrowser extends Window implements EventListener
 {
 	/**
-	 * 
+	 * generated serial version id
 	 */
 	private static final long serialVersionUID = -923063158885832812L;
 	
 	private Textbox txtPath = new Textbox();
 	private Listbox listDir = new Listbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
-	
-	private final File root = new File(Ini.getAdempiereHome());
-	
-	private boolean showDirOnly = false;
+
+	private boolean browseForFolder = false;
 	private String path;
-	
+	private File root;
+
 	public FolderBrowser()
 	{
-		this(false);
+		this(Ini.getAdempiereHome(), false);
 	}
-	
-	public FolderBrowser(boolean showDirOnly)
+
+	/**
+	 *
+	 * @param browseForFolder
+	 */
+	public FolderBrowser(boolean browseForFolder)
 	{
-		this.showDirOnly = showDirOnly;
-		
-		setTitle(showDirOnly ? "Directory Browser" : "File Browser");
+		this(Ini.getAdempiereHome(), browseForFolder);
+	}
+
+	/**
+	 *
+	 * @param rootPath
+	 * @param browseForFolder
+	 */
+	public FolderBrowser(String rootPath, boolean browseForFolder)
+	{
+		root = new File(rootPath);
+
+		this.browseForFolder = browseForFolder;
+
+		setTitle(browseForFolder ? "Directory Browser" : "File Browser");
 		setWidth("500px");
 		setHeight("500px");
 		setBorder("normal");
@@ -85,7 +100,8 @@ public class FolderBrowser extends Window implements EventListener
 		getFileListing(root.getPath());
 		listDir.setMultiple(false);
 		listDir.addDoubleClickListener(this);
-		
+		listDir.addActionListener(this);
+
 		confirmPanel.addActionListener(this);
 
 		AEnv.showWindow(this);
@@ -119,14 +135,15 @@ public class FolderBrowser extends Window implements EventListener
 					listDir.appendChild(li);
 				}
 			}
-			
-			if(!showDirOnly)
+
+			if(!browseForFolder)
 			{
 				for(File file: files)
 				{
 					if(file.isFile())
 					{
-						listDir.addItem(new ValueNamePair(file.getAbsolutePath(), file.getName()));
+						ListItem li = new ListItem(file.getName(), file.getAbsolutePath());
+						listDir.appendChild(li);
 					}
 				}
 			}
@@ -140,8 +157,20 @@ public class FolderBrowser extends Window implements EventListener
 		if(e.getName() == Events.ON_DOUBLE_CLICK && e.getTarget() instanceof ListItem)
 		{
 			int index = listDir.getSelectedIndex();
-			ValueNamePair vnp = listDir.getItemAtIndex(index).toValueNamePair();
-			getFileListing(vnp.getValue());
+			if (index >= 0)
+			{
+				ValueNamePair vnp = listDir.getItemAtIndex(index).toValueNamePair();
+				getFileListing(vnp.getValue());
+			}
+		}
+		else if(e.getName() == Events.ON_SELECT && e.getTarget() == listDir)
+		{
+			int index = listDir.getSelectedIndex();
+			if (index >= 0)
+			{
+				ValueNamePair vnp = listDir.getItemAtIndex(index).toValueNamePair();
+				txtPath.setValue(vnp.getValue());
+			}
 		}
 		if(e.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK))
 		{
@@ -149,8 +178,8 @@ public class FolderBrowser extends Window implements EventListener
 			if(path != null)
 			{
 				File file = new File(path);
-				
-				if(showDirOnly)
+
+				if(browseForFolder)
 				{
 					if(!file.isDirectory() || !file.exists())
 					{
