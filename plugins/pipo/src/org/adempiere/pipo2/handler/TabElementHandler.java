@@ -1,0 +1,208 @@
+/******************************************************************************
+ * Product: Adempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2006 Adempiere, Inc. All Rights Reserved.                *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *
+ * Copyright (C) 2005 Robert Klein. robeklein@hotmail.com
+ * Contributor(s): Low Heng Sin hengsin@avantz.com
+ *****************************************************************************/
+package org.adempiere.pipo2.handler;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+
+import javax.xml.transform.sax.TransformerHandler;
+
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.IPackOutHandler;
+import org.adempiere.pipo2.PoExporter;
+import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.exception.DatabaseAccessException;
+import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.MTab;
+import org.compiere.model.X_AD_Field;
+import org.compiere.model.X_AD_Package_Imp_Detail;
+import org.compiere.model.X_AD_Tab;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
+
+public class TabElementHandler extends AbstractElementHandler {
+
+	private FieldElementHandler fieldHandler = new FieldElementHandler();
+
+	public void startElement(Properties ctx, Element element) throws SAXException {
+		List<String> excludes = defaultExcludeList(X_AD_Tab.Table_Name);
+
+		String entitytype = getStringValue(element, "EntityType");
+		if (isProcessElement(ctx, entitytype)) {
+			if (isParentDefer(element, "window")) {
+				element.defer = true;
+				return;
+			}
+			String name = getStringValue(element, "Name", excludes);
+
+			String windowName = getStringValue(element, "AD_Window_ID", excludes);
+			int windowId = 0;
+			if (getParentId(element, "window") > 0) {
+				windowId = getParentId(element, "window");
+			} else {
+				windowId = findIdByName(ctx, "AD_Window", windowName);
+			}
+			if (windowId <= 0) {
+				element.defer = true;
+				return;
+			}
+
+			String tableName = getStringValue(element, "AD_Table_ID", excludes);
+			int tableId = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
+			if (tableId <= 0) {
+				element.defer = true;
+				return;
+			}
+
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Tab.Table_Name,
+					X_AD_Tab.Table_ID);
+
+			String sql = "SELECT AD_Tab_ID FROM AD_Tab where AD_Window_ID = ? "
+					+ " AND Name = ?"
+					+ " AND AD_Table_ID = ?";
+
+			int id = DB.getSQLValue(getTrxName(ctx), sql, windowId, tableName, tableId);
+			MTab mTab = new MTab(ctx, id, getTrxName(ctx));
+			PoFiller filler = new PoFiller(ctx, mTab, element, this);
+			if (id <= 0 && isOfficialId(element, "AD_Tab_ID"))
+				mTab.setAD_Tab_ID(getIntValue(element, "AD_Tab_ID"));
+			String action = null;
+			if (id > 0){
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Tab.Table_Name,mTab);
+				action = "Update";
+			}
+			else{
+				action = "New";
+			}
+			mTab.setAD_Table_ID(tableId);
+			mTab.setName(name);
+			String columnName = getStringValue(element,"AD_Column_ID", excludes);
+			if (columnName != null && columnName.trim().length() > 0){
+				int columnId = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);
+				mTab.setAD_Column_ID(columnId);
+			}
+
+			columnName = getStringValue(element, X_AD_Tab.COLUMNNAME_AD_ColumnSortOrder_ID, excludes);
+			if (columnName != null && columnName.trim().length() > 0){
+				int columnId = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);
+				mTab.setAD_ColumnSortOrder_ID(columnId);
+			}
+
+			columnName = getStringValue(element, X_AD_Tab.COLUMNNAME_AD_ColumnSortYesNo_ID, excludes);
+			if (columnName != null && columnName.trim().length() > 0){
+				int columnId = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);
+				mTab.setAD_ColumnSortYesNo_ID(columnId);
+			}
+
+			mTab.setAD_Window_ID(windowId);
+
+			List<String> notfounds = filler.autoFill(excludes);
+			if (notfounds.size() > 0) {
+				element.defer = true;
+				return;
+			}
+			if (mTab.save(getTrxName(ctx)) == true){
+				logImportDetail (ctx, impDetail, 1, mTab.getName(), mTab.get_ID(),action);
+				element.recordId = mTab.getAD_Tab_ID();
+			} else {
+				logImportDetail (ctx, impDetail, 0, mTab.getName(), mTab.get_ID(),action);
+				throw new POSaveFailedException("Tab");
+			}
+		} else {
+			element.skip = true;
+		}
+
+	}
+
+	public void endElement(Properties ctx, Element element) throws SAXException {
+	}
+
+	public void create(Properties ctx, TransformerHandler document)
+			throws SAXException {
+		PackOut packOut = getPackOutProcess(ctx);
+		int AD_Tab_ID = Env.getContextAsInt(ctx, X_AD_Tab.COLUMNNAME_AD_Tab_ID);
+		X_AD_Tab m_Tab = new X_AD_Tab (ctx, AD_Tab_ID, getTrxName(ctx));
+		AttributesImpl atts = new AttributesImpl();
+		atts.addAttribute("", "", "type", "CDATA", "object");
+		atts.addAttribute("", "", "type-name", "CDATA", "ad.window.tab");
+		document.startElement("","","tab",atts);
+		createTabBinding(ctx,document,m_Tab);
+		//Fields tags.
+		String sql = "SELECT AD_Field_ID FROM AD_FIELD WHERE AD_TAB_ID = " + AD_Tab_ID
+			+ "ORDER BY SEQNO asc";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement (sql, getTrxName(ctx));
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				createField(ctx, document, rs.getInt("AD_Field_ID"));
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE,e.getLocalizedMessage(), e);
+			throw new DatabaseAccessException("Failed to export window tab", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		document.endElement("","","tab");
+
+		if(m_Tab.getAD_Process_ID() > 0 )
+		{
+			try
+			{
+				IPackOutHandler handler = packOut.getHandler("P");
+				handler.packOut(packOut,null,null,document,null,m_Tab.getAD_Process_ID());
+			}
+			catch(Exception e)
+			{
+				throw new AdempiereException(e);
+			}
+		}
+
+	}
+
+	private void createField(Properties ctx, TransformerHandler document,
+			int AD_Field_ID) throws SAXException {
+		Env.setContext(ctx, X_AD_Field.COLUMNNAME_AD_Field_ID, AD_Field_ID);
+		fieldHandler.create(ctx, document);
+		ctx.remove(X_AD_Field.COLUMNNAME_AD_Field_ID);
+	}
+
+	private void createTabBinding(Properties ctx, TransformerHandler document, X_AD_Tab m_Tab)
+	{
+		PoExporter filler = new PoExporter(ctx, document, m_Tab);
+		List<String> excludes = defaultExcludeList(X_AD_Tab.Table_Name);
+
+		if (m_Tab.getAD_Tab_ID() <= PackOut.MAX_OFFICIAL_ID)
+			filler.add("AD_Tab_ID", new AttributesImpl());
+
+		filler.export(excludes);
+	}
+}
