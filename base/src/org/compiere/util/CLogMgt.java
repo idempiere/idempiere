@@ -275,6 +275,7 @@ public class CLogMgt
 			return;
 		Logger rootLogger = Logger.getLogger(getRootLoggerName());
 		rootLogger.setUseParentHandlers(false);
+		rootLogger.setLevel(level);
 		Handler[] handlers = rootLogger.getHandlers();
 		if (handlers == null || handlers.length == 0)
 		{
@@ -286,6 +287,7 @@ public class CLogMgt
 		{
 			handlers[i].setLevel(level);
 		}
+				
 		//	JDBC if ALL
 		setJDBCDebug(level.intValue() == Level.ALL.intValue());
 		//

@@ -234,7 +234,7 @@ public final class Ini implements Serializable
 	private static String s_propertyFileName = null;
 
 	/**	Logger						*/
-	private static Logger			log = Logger.getLogger(Ini.class.getName());
+	private static Logger			log = null;
 
 	/**
 	 *	Save INI parameters to disk
@@ -284,6 +284,7 @@ public final class Ini implements Serializable
 	 */
 	public static void loadProperties (boolean reload)
 	{
+		log = Logger.getLogger(Ini.class.getName());
 		if (reload || s_prop.size() == 0)
 		{
 			if (isWebStartClient())
@@ -690,7 +691,7 @@ public final class Ini implements Serializable
 	public static final String  ADEMPIERE_HOME = "ADEMPIERE_HOME";
 
 	/** IsClient Internal marker            */
-	private static boolean      s_client = true;
+	private static boolean      s_client = false;
 	/** IsClient Internal marker            */
 	private static boolean      s_loaded = false;
 	/** Show license dialog for first time **/
@@ -711,8 +712,7 @@ public final class Ini implements Serializable
 	 */
 	public static void setClient (boolean client)
 	{
-		s_client = client;
-		CLogMgt.initialize(client);
+		s_client = client;		
 	}   //  setClient
 
 	/**

@@ -455,6 +455,11 @@ public final class Adempiere
 		return url.getHost();
 	}	//	getCodeBase
 
+	public static synchronized boolean isStarted() 
+	{
+		return (log != null);
+	}
+	
 	/*************************************************************************
 	 *  Startup Client/Server.
 	 *  - Print greeting,
@@ -477,6 +482,7 @@ public final class Adempiere
 			System.exit(1);
 
 		Ini.setClient (isClient);		//	init logging in Ini
+		CLogMgt.initialize(isClient);
 		//	Init Log
 		log = CLogger.getCLogger(Adempiere.class);
 		//	Greeting

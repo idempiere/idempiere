@@ -88,7 +88,7 @@ public class GridTable extends AbstractTableModel
 	implements Serializable
 {
 	/**
-	 * 
+	 * generated
 	 */
 	private static final long serialVersionUID = 7799823493936826600L;
 	

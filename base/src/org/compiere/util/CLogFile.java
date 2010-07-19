@@ -276,6 +276,7 @@ public class CLogFile extends Handler
 			//
 			if (record.getLevel() == Level.SEVERE
 				|| record.getLevel() == Level.WARNING
+				|| record.getLevel() == Level.OFF
 				||	m_records % 10 == 0)	//	flush every 10 records
 				flush();
 		}
