@@ -358,13 +358,22 @@ public class GridField
 		return isDisplayed (checkContext);
 	}
 	
-	
 	/**
 	 *	Is it Editable - checks IsActive, IsUpdateable, and isDisplayed
 	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
 	 *  @return true, if editable
 	 */
 	public boolean isEditable (boolean checkContext)
+	{
+		return isEditable(m_vo.ctx, checkContext);
+	}
+	
+	/**
+	 *	Is it Editable - checks IsActive, IsUpdateable, and isDisplayed
+	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
+	 *  @return true, if editable
+	 */
+	public boolean isEditable (Properties ctx, boolean checkContext)
 	{
 		if (isVirtualColumn())
 			return false;
@@ -392,7 +401,7 @@ public class GridField
 		}
 
 		//	Field is the Link Column of the tab
-		if (m_vo.ColumnName.equals(Env.getContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_LinkColumnName)))
+		if (m_vo.ColumnName.equals(Env.getContext(ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_LinkColumnName)))
 		{
 			log.finest(m_vo.ColumnName + " NO - LinkColumn");
 			return false;
@@ -401,19 +410,19 @@ public class GridField
 		//	Role Access & Column Access			
 		if (checkContext)
 		{
-			int AD_Client_ID = Env.getContextAsInt(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, "AD_Client_ID");
-			int AD_Org_ID = Env.getContextAsInt(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, "AD_Org_ID");
-			String keyColumn = Env.getContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_KeyColumnName);
+			int AD_Client_ID = Env.getContextAsInt(ctx, m_vo.WindowNo, m_vo.TabNo, "AD_Client_ID");
+			int AD_Org_ID = Env.getContextAsInt(ctx, m_vo.WindowNo, m_vo.TabNo, "AD_Org_ID");
+			String keyColumn = Env.getContext(ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_KeyColumnName);
 			if ("EntityType".equals(keyColumn))
 				keyColumn = "AD_EntityType_ID";
 			if (!keyColumn.endsWith("_ID"))
 				keyColumn += "_ID";			//	AD_Language_ID
-			int Record_ID = Env.getContextAsInt(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, keyColumn);
+			int Record_ID = Env.getContextAsInt(ctx, m_vo.WindowNo, m_vo.TabNo, keyColumn);
 			int AD_Table_ID = m_vo.AD_Table_ID;
-			if (!MRole.getDefault(m_vo.ctx, false).canUpdate(
+			if (!MRole.getDefault(ctx, false).canUpdate(
 				AD_Client_ID, AD_Org_ID, AD_Table_ID, Record_ID, false))
 				return false;
-			if (!MRole.getDefault(m_vo.ctx, false).isColumnAccess(AD_Table_ID, m_vo.AD_Column_ID, false))
+			if (!MRole.getDefault(ctx, false).isColumnAccess(AD_Table_ID, m_vo.AD_Column_ID, false))
 				return false;
 		}
 			
@@ -428,7 +437,7 @@ public class GridField
 		
 		//BF [ 2910368 ]
 		//  Always editable if Active
-		if (checkContext && "Y".equals(Env.getContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, "IsActive"))
+		if (checkContext && "Y".equals(Env.getContext(ctx, m_vo.WindowNo, m_vo.TabNo, "IsActive"))
 				&& (   m_vo.ColumnName.equals("Processing")
 					|| m_vo.ColumnName.equals("PaymentRule")
 					|| m_vo.ColumnName.equals("DocAction") 
@@ -445,11 +454,11 @@ public class GridField
 			return true;
 		// BF [ 2910368 ]
 		// Record is not Active
-		if (checkContext && !Env.getContext(m_vo.ctx, m_vo.WindowNo,m_vo.TabNo, "IsActive").equals("Y"))
+		if (checkContext && !Env.getContext(ctx, m_vo.WindowNo,m_vo.TabNo, "IsActive").equals("Y"))
 			return false;
 
 		//  ultimately visibility decides
-		return isDisplayed (checkContext);
+		return isDisplayed (ctx, checkContext);
 	}	//	isEditable
 
 	/**
@@ -773,6 +782,16 @@ public class GridField
 	 */
 	public boolean isDisplayed (boolean checkContext)
 	{
+		return isDisplayed(m_vo.ctx, checkContext);
+	}
+
+	/**************************************************************************
+	 *	Is the Column Visible ?
+	 *  @param checkContext - check environment (requires correct row position)
+	 *  @return true, if visible
+	 */
+	public boolean isDisplayed (final Properties ctx, boolean checkContext)
+	{
 		//  ** static content **
 		//  not displayed
 		if (!m_vo.IsDisplayed)
@@ -784,7 +803,12 @@ public class GridField
 		//  ** dynamic content **
 		if (checkContext)
 		{
-			boolean retValue = Evaluator.evaluateLogic(this, m_vo.DisplayLogic);
+			Evaluatee evaluatee = new Evaluatee() {
+				public String get_ValueAsString(String variableName) {
+					return GridField.this.get_ValueAsString(ctx, variableName);
+				}
+			};
+			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
 			log.finest(m_vo.ColumnName 
 				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
 			return retValue;
@@ -799,10 +823,20 @@ public class GridField
 	 */
 	public String get_ValueAsString (String variableName)
 	{
+		return get_ValueAsString(m_vo.ctx, variableName);
+	}
+	
+	/**
+	 * 	Get Variable Value (Evaluatee)
+	 *	@param variableName name
+	 *	@return value
+	 */
+	public String get_ValueAsString (Properties ctx, String variableName)
+	{
 	   if( m_vo.TabNo == 0)
-	    	return Env.getContext (m_vo.ctx, m_vo.WindowNo, variableName, true);
+	    	return Env.getContext (ctx, m_vo.WindowNo, variableName, true);
 	    else
-		return Env.getContext (m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, variableName, false, true);
+		return Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, false, true);
 	}	//	get_ValueAsString
 
 

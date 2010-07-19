@@ -21,11 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
 import org.adempiere.webui.editor.WebEditorFactory;
+import org.adempiere.webui.event.ActionEvent;
+import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.panel.AbstractADWindowPanel;
 import org.adempiere.webui.session.SessionManager;
@@ -219,10 +222,27 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
     		return value.toString();
 	}
 
-	private Component getDisplayComponent(Object value, GridField gridField) {
+	private Component getDisplayComponent(int rowIndex, Object value, GridField gridField) {
 		Component component;
 		if (gridField.getDisplayType() == DisplayType.YesNo) {
 			component = createReadonlyCheckbox(value);
+		} else if (gridField.getDisplayType() == DisplayType.Button) {
+			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
+			WButtonEditor editor = new WButtonEditor(gridField);
+			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
+			editor.setReadWrite(gridField.isEditable(gridRowCtx, true));
+			editor.getComponent().setAttribute("grid.row.index", rowIndex);
+			editor.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					WButtonEditor editor = (WButtonEditor) event.getSource();
+					int rowIndex = (Integer) editor.getComponent().getAttribute("grid.row.index");
+					int newRowIndex = gridTab.navigate(rowIndex);
+					if (newRowIndex == rowIndex) {
+						m_windowPanel.actionPerformed(event);
+					}
+				}
+			});
+			component = editor.getComponent();
 		} else {
 			String text = getDisplayText(value, gridField);
 
@@ -363,7 +383,7 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
 			org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 			if (column.isVisible()) {
 				compCount++;
-				Component component = getDisplayComponent(currentValues[i], gridField[i]);
+				Component component = getDisplayComponent(rowIndex, currentValues[i], gridField[i]);
 				div.appendChild(component);
 //				if (compCount == 1) {
 					//add hidden input component to help focusing to row
@@ -553,12 +573,16 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
 				Component c = toFocus.getComponent();
 				if (c instanceof EditorBox) {
 					c = ((EditorBox)c).getTextbox();
+				} else if (c instanceof NumberBox) {
+					c = ((NumberBox)c).getDecimalbox();
 				}
 				Clients.response(new AuFocus(c));
 			} else if (firstEditor != null) {
 				Component c = firstEditor.getComponent();
 				if (c instanceof EditorBox) {
 					c = ((EditorBox)c).getTextbox();
+				} else if (c instanceof NumberBox) {
+					c = ((NumberBox)c).getDecimalbox();
 				}
 				Clients.response(new AuFocus(c));
 			}
