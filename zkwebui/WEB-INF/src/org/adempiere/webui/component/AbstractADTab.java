@@ -136,21 +136,22 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
 		if (newTab != null)
 		{
 			List<Integer> parents = new ArrayList<Integer>();
-			//get parent list
+			//get parent list, always include first tab (0)
 			if (newIndex > 0)
 			{
 				int currentLevel = newTab.getTabLevel();
-				for (int i = newIndex - 1; i >= 0; i--)
+				for (int i = newIndex - 1; i > 0; i--)
 				{
 					IADTabpanel adtab = tabPanelList.get(i);
 					if (adtab.getGridTab() == null) continue;
 					if (adtab instanceof ADSortTab) continue;
-					if (adtab.getTabLevel() < currentLevel || i == 0)
+					if (adtab.getTabLevel() < currentLevel)
 					{
 						parents.add(i);
 						currentLevel = adtab.getTabLevel();
 					}
 				}
+				parents.add(0);
 				Collections.reverse(parents);
 			}
 			else
@@ -172,17 +173,14 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
 			}
 
 			//add parent value to context
-			if (!parents.isEmpty())
+			for(int i : parents)
 			{
-				for(int i : parents)
-				{
-					IADTabpanel adtab = tabPanelList.get(i);
+				IADTabpanel adtab = tabPanelList.get(i);
 
-					GridField[] fields = adtab.getGridTab().getFields();
-					for (GridField gf : fields)
-					{
-						gf.updateContext();
-					}
+				GridField[] fields = adtab.getGridTab().getFields();
+				for (GridField gf : fields)
+				{
+					gf.updateContext();
 				}
 			}
 		}
