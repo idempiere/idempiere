@@ -61,7 +61,6 @@ import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.Lookup;
-import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -69,9 +68,9 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.ASyncProcess;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.WebDoc;
@@ -1522,19 +1521,40 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		final Listbox listbox = new Listbox();
 		listbox.setHeight("400px");
 
-		Vector<String> data = new Vector<String>();
-		// FR [ 2877111 ]
-		final String keyColumnName = curTab.getKeyColumnName();
-		String sql = null;
-		if (! "".equals(keyColumnName)) {
-			sql = MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(ctx), keyColumnName, "[?","?]")
-			   .replace("[?.?]", "?");
+		// Display the first 5 fields data exclude Organization, Client and YesNo field data
+		Vector<String> columnNames = new Vector<String>();
+		GridField[] fields = curTab.getFields();
+		if(curTab.getField("DocumentNo")!=null){
+			columnNames.add(curTab.getField("DocumentNo").getColumnName());
 		}
+		if(curTab.getField("Line")!=null){
+			columnNames.add(curTab.getField("Line").getColumnName());
+		}
+		if(curTab.getField("Value")!=null){
+			columnNames.add(curTab.getField("Value").getColumnName());
+		}
+		if(curTab.getField("Name")!=null){
+			columnNames.add(curTab.getField("Name").getColumnName());
+		}
+		for(int i = 0; i < fields.length; i++)
+		{
+			GridField field = fields[i];
+			if(field.getColumnName().equalsIgnoreCase("AD_Org_ID")
+					|| field.getColumnName().equalsIgnoreCase("AD_Client_ID")
+					|| field.getDisplayType() == DisplayType.YesNo)
+				continue;
+			if (!columnNames.contains(field.getColumnName()))
+			{
+				columnNames.add(field.getColumnName());
+			}
+		}
+
+		Vector<String> data = new Vector<String>();
 		int noOfRows = curTab.getRowCount();
 		for(int i=0; i<noOfRows; i++)
 		{
 			StringBuffer displayValue = new StringBuffer();
-			if ("".equals(keyColumnName))
+			if("".equals(curTab.getKeyColumnName()))
 			{
 				ArrayList<String> parentColumnNames = curTab.getParentColumnNames();
 				for (Iterator<String> iter = parentColumnNames.iterator(); iter.hasNext();)
@@ -1553,23 +1573,38 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 					}
 				}
 			} else {
-				final int id = curTab.getKeyID(i);
-				String value = DB.getSQLValueStringEx(null, sql, id);
-				if (value != null)
-					value = value.replace(" - ", " | ");
-				displayValue.append(value);
-				// Append ID
-				if (displayValue.length() == 0 || CLogMgt.isLevelFine())
-				{
-					if (displayValue.length() > 0)
-						displayValue.append(" | ");
-					displayValue.append("<").append(id).append(">");
-				}
+				displayValue = displayValue.append(curTab.getValue(i,curTab.getKeyColumnName()));
 			}
-			//
+
+			int count = 0;
+			for(int j=0; j < columnNames.size() && count < 5; j++)
+			{
+				Object value = curTab.getValue(i, columnNames.get(j));
+				if(value == null) continue; // skip when value is null
+				String text = value.toString().trim();
+				if(text.length() == 0) continue; // skip when value is empty
+				GridField field = curTab.getField(columnNames.get(j));
+				if(field != null)
+				{
+					if (field.isLookup())
+					{
+						Lookup lookup = field.getLookup();
+						if (lookup != null)
+							text = lookup.getDisplay(value);
+					}
+					else if (DisplayType.isDate(field.getDisplayType()))
+					{
+						text = DisplayType.getDateFormat(field.getDisplayType()).format(value);
+					}
+				}
+				if(text.length() > 30)
+					text = text.substring(0, 30); // display the first 30 characters
+				displayValue = displayValue.append(" | ").append(text);
+				count++;
+			}
+
 			data.add(displayValue.toString());
 		}
-		// FR [ 2877111 ]
 
 		for(int i = 0; i < data.size(); i++)
 		{
@@ -2006,7 +2041,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 						tableId, recordId, force);
 
 					if (error != null)
-						FDialog.error(curWindowNo, null, "PostingError-N", error);
+						statusBar.setStatusLine(error, true, true);
 
 					onRefresh(false);
 				}
@@ -2142,8 +2177,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		else
 		{
 			try {
-				//get full control of desktop
-				Executions.activate(getComponent().getDesktop(), 500);
+				//acquire desktop, 2 second timeout
+				Executions.activate(getComponent().getDesktop(), 2000);
 				try {
 					Clients.showBusy(null, true);
                 } catch(Error ex){
@@ -2182,8 +2217,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		else
 		{
 			try {
-				//get full control of desktop
-				Executions.activate(getComponent().getDesktop(), 500);
+				//acquire desktop, 2 second timeout
+				Executions.activate(getComponent().getDesktop(), 2000);
 				try {
 					if (notPrint)		//	refresh if not print
 					{
