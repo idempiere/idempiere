@@ -58,6 +58,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.ListModelExt;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.event.ZulEvents;
@@ -546,9 +548,20 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
     	//cacheStart & cacheEnd - 1 based index, start & end - 0 based index
     	if (cacheStart >= 1 && cacheEnd > cacheStart)
     	{
-    		if (start+1 >= cacheStart && end+1 <= cacheEnd)
+    		if (m_useDatabasePaging)
     		{
-    			return end == -1 ? line : line.subList(start-cacheStart+1, end-cacheStart+2);
+    			if (start+1 >= cacheStart && end+1 <= cacheEnd)
+    			{
+    				return end == -1 ? line : line.subList(start-cacheStart+1, end-cacheStart+2);
+    			}
+    		}
+    		else
+    		{
+    			if (end >= cacheEnd || end <= 0)
+    			{
+    				end = cacheEnd-1;
+    			}
+    			return line.subList(start, end+1);
     		}
     	}
 
@@ -632,7 +645,11 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 			DB.close(m_rs, m_pstmt);
 		}
 
-		return line;
+		if (end >= cacheEnd || end <= 0)
+		{
+			end = cacheEnd-1;
+		}
+		return line.subList(start, end+1);
 	}
 
     private void addDoubleClickListener() {
@@ -1076,6 +1093,8 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
             		pageNo = pgNo;
             		int start = pageNo * PAGE_SIZE;
             		int end = start + PAGE_SIZE;
+            		if (end >= m_count)
+            			end = m_count - 1;
             		List<Object> subList = readLine(start, end);
         			model = new ListModelTable(subList);
         			model.setSorter(this);
@@ -1109,6 +1128,15 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
     {
     	try
     	{
+    		Listhead listHead = contentPanel.getListHead();
+    		if (listHead != null) {
+    			List<?> headers = listHead.getChildren();
+    			for(Object obj : headers)
+    			{
+    				Listheader header = (Listheader) obj;
+    				header.setSortDirection("natural");
+    			}
+    		}
             	executeQuery();
                 renderItems();
             }
