@@ -49,15 +49,12 @@ import org.adempiere.util.ServerContextURLHandler;
  */
 public class WebUIServlet extends DHtmlLayoutServlet
 {
-    private static final long    serialVersionUID = 1L;
+    public static final String WEBUI_ROOT_LOGGER_NAME = "webui";
+
+	private static final long    serialVersionUID = 1L;
 
     /** Logger for the class * */
     private static CLogger logger;
-
-    static
-    {
-        logger = CLogger.getCLogger(WebUIServlet.class);
-    }
 
     public void init(ServletConfig servletConfig) throws ServletException
     {
@@ -70,20 +67,30 @@ public class WebUIServlet extends DHtmlLayoutServlet
 				SessionManager.getAppDesktop().showURL(url, true);
 			}
 		});
-        serverContext.put(CLogMgt.ROOT_LOGGER_NAME_PROPERTY, "org.adempiere.webui");
+        serverContext.put(CLogMgt.ROOT_LOGGER_NAME_PROPERTY, WEBUI_ROOT_LOGGER_NAME);
         ServerContext.setCurrentInstance(serverContext);
 
-        boolean started = Adempiere.startup(false);
-        if(!started)
+        if (!Adempiere.isStarted())
         {
-            throw new ServletException("Could not start ADempiere");
+	        boolean started = Adempiere.startup(false);
+	        if(!started)
+	        {
+	            throw new ServletException("Could not start ADempiere");
+	        }
         }
+        else
+        {
+        	CLogMgt.initialize(false);
+        	CLogMgt.setLevel(Ini.getProperty(Ini.P_TRACELEVEL));
+        }
+        
+        logger = CLogger.getCLogger(WebUIServlet.class);
 
         // hengsin: temporary solution for problem with zk client
         Ini.setProperty(Ini.P_ADEMPIERESYS, false);
         ReportCtl.setReportViewerProvider(new ZkReportViewerProvider());
         ReportStarter.setReportViewerProvider(new ZkJRViewerProvider());
-        logger.log(Level.OFF, "ADempiere started successfully");
+        logger.log(Level.OFF, "ADempiere web ui service started successfully");
         /**
          * End ADempiere Start
          */

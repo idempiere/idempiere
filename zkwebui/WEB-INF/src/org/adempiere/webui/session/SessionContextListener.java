@@ -81,7 +81,7 @@ public class SessionContextListener implements ExecutionInit,
 					SessionManager.getAppDesktop().showURL(url, true);
 				}
 			});
-			ctx.put(CLogMgt.ROOT_LOGGER_NAME_PROPERTY, "org.adempiere.webui");
+			ctx.put(CLogMgt.ROOT_LOGGER_NAME_PROPERTY, WebUIServlet.WEBUI_ROOT_LOGGER_NAME);
 			ctx.setProperty(SERVLET_SESSION_ID, httpSession.getId());
 		    session.setAttribute(SESSION_CTX, ctx);
 		}
