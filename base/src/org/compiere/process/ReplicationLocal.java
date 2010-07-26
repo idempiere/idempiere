@@ -137,7 +137,6 @@ public class ReplicationLocal extends SvrProcess
 		int AppsPort = m_replication.getHostPort();
 		
 		CConnection connection = new CConnection(AppsHost);
-		connection.setAppsPort(AppsPort);
 		log.info (AppsHost + ":" + AppsPort);
 		try
 		{

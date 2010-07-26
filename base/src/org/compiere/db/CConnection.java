@@ -195,8 +195,6 @@ public class CConnection implements Serializable, Cloneable
 
 	/** Application Host    */
 	private String 		m_apps_host = "MyAppsServer";
-	/** Application Port    */
-	private int 		m_apps_port = 0;
 
 	/** Database Type       */
 	private String 		m_type = "";
@@ -295,44 +293,6 @@ public class CConnection implements Serializable, Cloneable
 		m_name = toString ();
 		m_okApps = false;
 	}
-
-	/**
-	 * Get Apps Port
-	 * @return port
-	 */
-	public int getAppsPort ()
-	{
-		return m_apps_port;
-	}
-
-	/**
-	 * Set Apps Port
-	 * @param apps_port apps port
-	 */
-	public void setAppsPort (int apps_port)
-	{
-		m_apps_port = apps_port;
-		m_okApps = false;
-	}
-
-	/**
-	 * 	Set Apps Port
-	 * 	@param apps_portString appd port as String
-	 */
-	public void setAppsPort (String apps_portString)
-	{
-		try
-		{
-			if (apps_portString == null || apps_portString.length() == 0)
-				;
-			else
-				setAppsPort (Integer.parseInt (apps_portString));
-		}
-		catch (Exception e)
-		{
-			log.severe(e.toString ());
-		}
-	} 	//  setAppsPort
 
 	/**
 	 *  Is Application Server OK
@@ -1009,7 +969,6 @@ public class CConnection implements Serializable, Cloneable
 		StringBuffer sb = new StringBuffer ("CConnection[");
 		sb.append ("name=").append (m_name)
 		  .append (",AppsHost=").append (m_apps_host)
-		  .append (",AppsPort=").append (m_apps_port)
 		  .append (",type=").append (m_type)
 		  .append (",DBhost=").append (m_db_host)
 		  .append (",DBport=").append (m_db_port)
@@ -1035,8 +994,6 @@ public class CConnection implements Serializable, Cloneable
 		{
 			setName (attributes.substring (attributes.indexOf ("name=") + 5, attributes.indexOf (",AppsHost=")));
 			setAppsHost (attributes.substring (attributes.indexOf ("AppsHost=") + 9, attributes.indexOf (",AppsPort=")));
-			int index = attributes.indexOf("AppsPort=");
-			setAppsPort (attributes.substring (index + 9, attributes.indexOf (",", index)));
 			//
 			setType (attributes.substring (attributes.indexOf ("type=")+5, attributes.indexOf (",DBhost=")));
 			setDbHost (attributes.substring (attributes.indexOf ("DBhost=") + 7, attributes.indexOf (",DBport=")));
@@ -1069,7 +1026,6 @@ public class CConnection implements Serializable, Cloneable
 		{
 			CConnection cc = (CConnection)o;
 			if (cc.getAppsHost().equals (m_apps_host)
-			  && cc.getAppsPort() == m_apps_port
 			  && cc.getDbHost().equals (m_db_host)
 			  && cc.getDbPort() == m_db_port
 			  && cc.getDbName().equals(m_db_name)

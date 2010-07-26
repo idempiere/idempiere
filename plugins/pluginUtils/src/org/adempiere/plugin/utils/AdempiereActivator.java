@@ -8,7 +8,6 @@ import org.adempiere.base.IDictionaryService;
 import org.adempiere.base.Service;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp;
-import org.compiere.model.X_AD_Package_Imp_Inst;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleActivator;

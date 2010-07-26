@@ -624,9 +624,7 @@ public class CLogMgt
 		StringBuffer sb = new StringBuffer();
 		CConnection cc = CConnection.get();
 		//  Host
-		sb.append(cc.getAppsHost()).append(" : ")
-			.append(cc.getAppsPort())
-			.append(" (");
+		sb.append(cc.getAppsHost()).append(" (");
 
 		//  Server
 		if (cc.isAppsServerOK(false))

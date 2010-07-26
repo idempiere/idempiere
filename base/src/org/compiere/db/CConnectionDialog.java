@@ -101,13 +101,10 @@ public class CConnectionDialog extends CDialog implements ActionListener
 	
 	/**	 Default HTTP Port					*/
 	public static final String	APPS_PORT_HTTP = "80";
-	/** Default RMI Port					*/
-	public static final String	APPS_PORT_JNP = "1099";
 	/** Connection							*/
 	private CConnection 	m_cc = null;
 	private CConnection 	m_ccResult = null;
 	private boolean 		m_updating = false;
-	private boolean     	m_saved = false;
 
 	/**	Logger	*/
 	private static CLogger	log	= CLogger.getCLogger (CConnectionDialog.class);
@@ -139,8 +136,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 	private CCheckBox cbBequeath = new CCheckBox();
 	private CLabel appsHostLabel = new CLabel();
 	private CTextField appsHostField = new CTextField();
-	private CLabel appsPortLabel = new CLabel();
-	private CTextField appsPortField = new CTextField();
 	private CButton bTestApps = new CButton();
 	//private CCheckBox cbOverwrite = new CCheckBox();
 	private CLabel dbUidLabel = new CLabel();
@@ -181,8 +176,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 		cbBequeath.setText(res.getString("BequeathConnection"));
 		appsHostLabel.setText(res.getString("AppsHost"));
 		appsHostField.setColumns(30);
-		appsPortLabel.setText(res.getString("AppsPort"));
-		appsPortField.setColumns(10);
 		bTestApps.setText(res.getString("TestApps"));
 		bTestApps.setHorizontalAlignment(JLabel.LEFT);
 		//cbOverwrite.setText(res.getString("Overwrite"));
@@ -203,10 +196,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 		centerPanel.add(appsHostField, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 12), 0, 0));
 		
-		centerPanel.add(appsPortLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
-			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 12, 5, 5), 0, 0));
-		centerPanel.add(appsPortField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		//
 		centerPanel.add(bTestApps, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0
 			,GridBagConstraints.SOUTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 12, 0), 0, 0));
@@ -252,7 +241,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 		//
 		nameField.addActionListener(this);
 		appsHostField.addActionListener(this);
-		appsPortField.addActionListener(this);
 		//cbOverwrite.addActionListener(this);
 		bTestApps.addActionListener(this);
 		//
@@ -273,8 +261,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 		{
 			appsHostLabel.setVisible(false);
 			appsHostField.setVisible(false);
-			appsPortLabel.setVisible(false);
-			appsPortField.setVisible(false);
 			bTestApps.setVisible(false);
 		}
 		else	//	Client
@@ -393,8 +379,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 			//hengsin: avoid unnecessary requery of application server status
 			if (!appsHostField.getText().equals(m_cc.getAppsHost()))
 				m_cc.setAppsHost(appsHostField.getText());
-			if (!appsPortField.getText().equals(Integer.toString(m_cc.getAppsPort())))
-				m_cc.setAppsPort(appsPortField.getText());
 		}
 		else
 			m_cc.setAppsHost("localhost");
@@ -419,7 +403,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 		m_updating = true;
 		nameField.setText(m_cc.getName());
 		appsHostField.setText(m_cc.getAppsHost());
-		appsPortField.setText(String.valueOf(m_cc.getAppsPort()));
 		//
 		bTestApps.setIcon(getStatusIcon(m_cc.isAppsServerOK(false)));
 	//	bTestApps.setToolTipText(m_cc.getRmiUri());
