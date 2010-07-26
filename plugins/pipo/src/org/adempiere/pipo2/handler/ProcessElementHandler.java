@@ -30,6 +30,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Process;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.Query;
@@ -49,29 +50,18 @@ public class ProcessElementHandler extends AbstractElementHandler implements IPa
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		int id = 0;
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
+			X_AD_Process mProcess = findPO(ctx, element);
+			if (mProcess == null) {
+				String value = getStringValue(element, "Value");
 
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Process.Table_Name,
-					X_AD_Process.Table_ID);
-
-			String value = getStringValue(element, "Value");
-
-			// Get New process.
-			id = findIdByColumn(ctx, "AD_Process", "Value", value);
-
-			X_AD_Process mProcess = null;
-			String action = null;
-			if (id > 0) {
-				mProcess = new X_AD_Process(ctx, id, getTrxName(ctx));
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Process.Table_Name, mProcess);
-				action = "Update";
-			} else {
-				mProcess = new X_AD_Process(ctx, id, getTrxName(ctx));
-				action = "New";
+				// Get New process.
+				int id = findIdByColumn(ctx, "AD_Process", "Value", value);
+				mProcess = new X_AD_Process(ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
-			if (id <= 0 && isOfficialId(element, "AD_Process_ID"))
+			
+			if (mProcess.getAD_Process_ID() == 0 && isOfficialId(element, "AD_Process_ID"))
 				mProcess.setAD_Process_ID(Integer.parseInt(getStringValue(element, "AD_Process_ID")));
 
 			PoFiller filler = new PoFiller(ctx, mProcess, element, this);
@@ -83,14 +73,26 @@ public class ProcessElementHandler extends AbstractElementHandler implements IPa
 				return;
 			}
 
-			if (mProcess.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, mProcess.getName(), mProcess
-						.get_ID(), action);
-				element.recordId = mProcess.getAD_Process_ID();
-			} else {
-				logImportDetail(ctx, impDetail, 0, mProcess.getName(), mProcess
-						.get_ID(), action);
-				throw new POSaveFailedException("Process");
+			if (mProcess.is_new() || mProcess.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Process.Table_Name,
+						X_AD_Process.Table_ID);
+				String action = null;
+				if (!mProcess.is_new()) {				
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Process.Table_Name, mProcess);
+					action = "Update";
+				} else {
+					action = "New";
+				}			
+			
+				if (mProcess.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, mProcess.getName(), mProcess
+							.get_ID(), action);
+					element.recordId = mProcess.getAD_Process_ID();
+				} else {
+					logImportDetail(ctx, impDetail, 0, mProcess.getName(), mProcess
+							.get_ID(), action);
+					throw new POSaveFailedException("Process");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -117,7 +119,6 @@ public class ProcessElementHandler extends AbstractElementHandler implements IPa
 			{
 				IPackOutHandler handler = packOut.getHandler("R");
 				handler.packOut(packOut,null,null,document,null,m_Process.getAD_ReportView_ID());
-
 			}
 			if (m_Process.isReport() && m_Process.getAD_PrintFormat_ID() > 0)
 			{
@@ -128,9 +129,8 @@ public class ProcessElementHandler extends AbstractElementHandler implements IPa
 				IPackOutHandler handler = packOut.getHandler("F");
 				handler.packOut(packOut,null,null,document,null,m_Process.getAD_Workflow_ID());
 			}
-			atts.addAttribute("", "", "type", "CDATA", "object");
-			atts.addAttribute("", "", "type-name", "CDATA", "ad.process");
-			document.startElement("", "", "process", atts);
+			addTypeName(atts, "ad.process");
+			document.startElement("", "", I_AD_Process.Table_Name, atts);
 			createProcessBinding(ctx, document, m_Process);
 
 			Query query = new Query(ctx, "AD_Process_PARA", "AD_Process_ID = ?", getTrxName(ctx));
@@ -157,8 +157,7 @@ public class ProcessElementHandler extends AbstractElementHandler implements IPa
 				createProcessPara(ctx, document, para.getAD_Process_Para_ID());
 			}
 
-
-			document.endElement("", "", "process");
+			document.endElement("", "", I_AD_Process.Table_Name);
 		} catch (Exception e) {
 			throw new AdempiereException(e);
 		}

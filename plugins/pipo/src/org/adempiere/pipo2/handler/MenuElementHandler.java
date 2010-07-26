@@ -32,6 +32,8 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
+import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Menu;
@@ -49,38 +51,40 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-
-		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Menu.Table_Name,
-				X_AD_Menu.Table_ID);
-		String action = null;
+		
 		List<String> excludes = defaultExcludeList(X_AD_Menu.Table_Name);
 
-		StringBuffer sqlB = null;
-
-		String menuName = getStringValue(element, "Name", excludes);
-		int menuId = findIdByColumn(ctx, "AD_Menu", "Name", menuName);
-		X_AD_Menu mMenu = new X_AD_Menu(ctx, menuId, getTrxName(ctx));
+		X_AD_Menu mMenu = findPO(ctx, element);
+		if (mMenu == null) {
+			String menuName = getStringValue(element, "Name");
+			int menuId = findIdByColumn(ctx, "AD_Menu", "Name", menuName);
+			mMenu = new X_AD_Menu(ctx, menuId > 0 ? menuId : 0, getTrxName(ctx));
+		}
 		PoFiller filler = new PoFiller(ctx, mMenu, element, this);
 
-		if (menuId <= 0 && isOfficialId(element, "AD_Menu_ID"))
+		if (mMenu.getAD_Menu_ID() == 0 && isOfficialId(element, "AD_Menu_ID"))
 		{
 			filler.setInteger("AD_Menu_ID");
 		}
-		if (menuId > 0) {
-			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Menu.Table_Name, mMenu);
-			action = "Update";
-		} else {
-			action = "New";
-		}
-
-		mMenu.setName(menuName);
-
+		
 		List<String> notFounds = filler.autoFill(excludes);
 		if (notFounds.size() > 0) {
 			element.defer = true;
 			return;
 		}
 
+		if (!mMenu.is_new() && !mMenu.is_Changed())
+			return;
+		
+		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Menu.Table_Name,
+				X_AD_Menu.Table_ID);
+		String action = null;
+		if (!mMenu.is_new()) {
+			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Menu.Table_Name, mMenu);
+			action = "Update";
+		} else {
+			action = "New";
+		}
 		if (mMenu.save(getTrxName(ctx)) == true) {
 			try {
 				logImportDetail(ctx, impDetail, 1, mMenu.getName(), mMenu
@@ -96,11 +100,19 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 				log.info("setmenu:" + e);
 			}
 		}
-		String parent = getStringValue(element, "ADParentMenuNameID");
-		int parentId = findIdByName(ctx, "AD_Menu", parent);
+		
+		Element parentElement = element.properties.get("Parent_ID");
+		int parentId = 0;
+		if (ReferenceUtils.isIDLookup(parentElement) || ReferenceUtils.isUUIDLookup(parentElement)) {
+			parentId = ReferenceUtils.resolveReference(ctx, parentElement);
+		} else {
+			String parent = getStringValue(element, "Parent_ID");
+			parentId = findIdByName(ctx, "AD_Menu", parent);
+		}
 
+		StringBuffer updateSQL = null;
 		String sql = "SELECT count(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID = 10"
-				+ " AND Node_ID = " + menuId;
+				+ " AND Node_ID = " + mMenu.getAD_Menu_ID();
 		int countRecords = DB.getSQLValue(getTrxName(ctx), sql);
 		if (countRecords > 0) {
 			sql = "select * from AD_TREENODEMM where AD_Tree_ID = 10 and "
@@ -110,7 +122,7 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 			try {
 				pstmt = DB.prepareStatement(sql,
 						getTrxName(ctx));
-				pstmt.setInt(1, menuId);
+				pstmt.setInt(1, mMenu.getAD_Menu_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next()) {
 
@@ -152,20 +164,20 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 				DB.close(rs, pstmt);
 			}
 
-			sqlB = new StringBuffer("UPDATE AD_TREENODEMM ").append(
+			updateSQL = new StringBuffer("UPDATE AD_TREENODEMM ").append(
 					"SET Parent_ID = " + parentId).append(
-					" , SeqNo = " + getStringValue(element, "ADParentSeqno")).append(
+					" , SeqNo = " + getStringValue(element, "SeqNo")).append(
 					" WHERE AD_Tree_ID = 10").append(
 					" AND Node_ID = " + mMenu.getAD_Menu_ID());
 		} else {
-			sqlB = new StringBuffer("Insert INTO AD_TREENODEMM").append(
+			updateSQL = new StringBuffer("Insert INTO AD_TREENODEMM").append(
 					"(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, ").append(
 					"Parent_ID, SeqNo, AD_Tree_ID, Node_ID)").append(
 					"VALUES(0, 0, 0, 0, ").append(
-					parentId + "," + getStringValue(element, "ADParentSeqno") + ", 10, "
+					parentId + "," + getStringValue(element, "SeqNo") + ", 10, "
 							+ mMenu.getAD_Menu_ID() + ")");
 		}
-		DB.executeUpdateEx(sqlB.toString(), getTrxName(ctx));
+		DB.executeUpdateEx(updateSQL.toString(), getTrxName(ctx));
 	}
 
 	public void endElement(Properties ctx, Element element) throws SAXException {
@@ -179,12 +191,11 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 			createApplication(ctx, document, AD_Menu_ID);
 		} else {
 			AttributesImpl atts = new AttributesImpl();
-			atts.addAttribute("", "", "type", "CDATA", "object");
-			atts.addAttribute("", "", "type-name", "CDATA", "ad.menu");
-			document.startElement("", "", "menu", atts);
+			addTypeName(atts, "ad.menu");
+			document.startElement("", "", I_AD_Menu.Table_Name, atts);
 			createMenuBinding(ctx, document, m_Menu);
 			createModule(ctx, document, AD_Menu_ID);
-			document.endElement("", "", "menu");
+			document.endElement("", "", I_AD_Menu.Table_Name);
 		}
 	}
 
@@ -193,18 +204,14 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 
 		PoExporter filler = new PoExporter(ctx, document, m_Menu);
 		List<String> excludes = defaultExcludeList(X_AD_Menu.Table_Name);
-		String sql = null;
-		String name = null;
-		sql = "SELECT Parent_ID FROM AD_TreeNoDemm WHERE AD_Tree_ID = 10 and Node_ID=?";
+		String sql = "SELECT Parent_ID FROM AD_TreeNoDemm WHERE AD_Tree_ID = 10 and Node_ID=?";
 		int id = DB.getSQLValue(null, sql, m_Menu.getAD_Menu_ID());
 		if (id > 0) {
-			sql = "SELECT Name FROM AD_Menu WHERE AD_Menu_ID=?";
-			name = DB.getSQLValueString(null, sql, id);
-			filler.addString("ADParentMenuNameID", name, new AttributesImpl());
+			filler.addTableReference("Parent_ID", "AD_Menu", "Name", id, new AttributesImpl());
 		}
 		sql = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID = 10 and Node_ID=?";
 		int seqNo = DB.getSQLValue(null, sql, m_Menu.getAD_Menu_ID());
-		filler.addString("ADParentSeqno", Integer.toString(seqNo), new AttributesImpl());
+		filler.addString("SeqNo", Integer.toString(seqNo), new AttributesImpl());
 		if (m_Menu.getAD_Menu_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.addString("AD_Menu_ID", Integer.toString(m_Menu.getAD_Menu_ID()), new AttributesImpl());
 
@@ -232,7 +239,7 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 
 				X_AD_Menu m_Menu = new X_AD_Menu(ctx, rs.getInt("AD_Menu_ID"),
 						null);
-				document.startElement("", "", "menu", atts);
+				document.startElement("", "", I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
 				if (rs.getInt("AD_WINDOW_ID") > 0
 						|| rs.getInt("AD_WORKFLOW_ID") > 0
@@ -268,7 +275,7 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 				} else {
 					createModule(ctx, document, rs.getInt("Node_ID"));
 				}
-				document.endElement("", "", "menu");
+				document.endElement("", "", I_AD_Menu.Table_Name);
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "getWindows", e);
@@ -298,7 +305,7 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 				// Menu tag Start.
 				X_AD_Menu m_Menu = new X_AD_Menu(ctx, rs.getInt("AD_Menu_ID"),
 						null);
-				document.startElement("", "", "menu", atts);
+				document.startElement("", "", I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
 				if (rs.getInt("AD_WINDOW_ID") > 0
 						|| rs.getInt("AD_WORKFLOW_ID") > 0
@@ -335,7 +342,7 @@ public class MenuElementHandler extends AbstractElementHandler implements IPackO
 				} else {
 					createModule(ctx, document, rs.getInt("Node_ID"));
 				}
-				document.endElement("", "", "menu");
+				document.endElement("", "", I_AD_Menu.Table_Name);
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "getWindows", e);

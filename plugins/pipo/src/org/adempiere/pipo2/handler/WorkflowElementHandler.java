@@ -32,6 +32,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -61,45 +62,51 @@ public class WorkflowElementHandler extends AbstractElementHandler implements IP
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 
-			String workflowValue = getStringValue(element, "Value", excludes);
-			int id = findIdByColumn(ctx, "AD_Workflow", "Value", workflowValue);
-			if (id > 0 && workflows.contains(id)) {
-				element.skip = true;
-				return;
+			MWorkflow mWorkflow = findPO(ctx, element);
+			if (mWorkflow == null) {
+				String workflowValue = getStringValue(element, "Value", excludes);
+				int id = findIdByColumn(ctx, "AD_Workflow", "Value", workflowValue);
+				if (id > 0 && workflows.contains(id)) {
+					element.skip = true;
+					return;
+				}
+	
+				mWorkflow = new MWorkflow(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mWorkflow.setValue(workflowValue);
 			}
-
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Workflow.Table_Name,
-					X_AD_Workflow.Table_ID);
-
-			MWorkflow mWorkflow = new MWorkflow(ctx, id, getTrxName(ctx));
+						
 			PoFiller filler = new PoFiller(ctx, mWorkflow, element, this);
-			String action = null;
-			if (id <= 0 && isOfficialId(element, "AD_Workflow_ID"))
+			if (mWorkflow.getAD_Workflow_ID() == 0 && isOfficialId(element, "AD_Workflow_ID"))
 				filler.setInteger("AD_Workflow_ID");
-			if (id > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Workflow.Table_Name, mWorkflow);
-				action = "Update";
-			} else {
-				action = "New";
-			}
-
-			mWorkflow.setValue(workflowValue);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-			if (mWorkflow.save(getTrxName(ctx)) == true) {
-				log.info("m_Workflow save success");
-				logImportDetail(ctx,impDetail, 1, mWorkflow.getName(), mWorkflow
-						.get_ID(), action);
-				workflows.add(mWorkflow.getAD_Workflow_ID());
-				element.recordId = mWorkflow.getAD_Workflow_ID();
-			} else {
-				log.info("m_Workflow save failure");
-				logImportDetail(ctx, impDetail, 0, mWorkflow.getName(), mWorkflow
-						.get_ID(), action);
-				throw new POSaveFailedException("MWorkflow");
+			
+			if (mWorkflow.is_new() || mWorkflow.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Workflow.Table_Name,
+						X_AD_Workflow.Table_ID);
+				String action = null;
+				
+				if (!mWorkflow.is_new()) {
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Workflow.Table_Name, mWorkflow);
+					action = "Update";
+				} else {
+					action = "New";
+				}
+				if (mWorkflow.save(getTrxName(ctx)) == true) {
+					log.info("m_Workflow save success");
+					logImportDetail(ctx,impDetail, 1, mWorkflow.getName(), mWorkflow
+							.get_ID(), action);
+					workflows.add(mWorkflow.getAD_Workflow_ID());
+					element.recordId = mWorkflow.getAD_Workflow_ID();
+				} else {
+					log.info("m_Workflow save failure");
+					logImportDetail(ctx, impDetail, 0, mWorkflow.getName(), mWorkflow
+							.get_ID(), action);
+					throw new POSaveFailedException("MWorkflow");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -160,7 +167,7 @@ public class WorkflowElementHandler extends AbstractElementHandler implements IP
 
 		atts.addAttribute("", "", "type", "CDATA", "object");
 		atts.addAttribute("", "", "type-name", "CDATA", "ad.workflow");
-		document.startElement("", "", "workflow", atts);
+		document.startElement("", "", I_AD_Workflow.Table_Name, atts);
 		createWorkflowBinding(ctx, document, m_Workflow);
 		String sql = "SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID = "
 						+ AD_Workflow_ID;
@@ -197,7 +204,7 @@ public class WorkflowElementHandler extends AbstractElementHandler implements IP
 			throw new DBException(e);
 		} finally {
 			DB.close(rs, pstmt);
-			document.endElement("", "", "workflow");
+			document.endElement("", "", I_AD_Workflow.Table_Name);
 		}
 	}
 

@@ -31,6 +31,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp_Backup;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
@@ -227,7 +228,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 
 	    		backup.setAD_Column_ID(columnID);
 	    		backup.setAD_Reference_ID(referenceID);
-				backup.setColValue(from.get_Value(i) != null ? from.get_Value(i).toString() : null);
+	    		Object value = from.get_ValueOld(i);
+				backup.setColValue(value != null ? value.toString() : null);
 
 				backup.saveEx(getTrxName(ctx));
 		    }
@@ -516,4 +518,37 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		char[] contents = str != null ? str.toCharArray() : new char[0];
 		document.characters(contents,0,contents.length);
 	}
+    
+    /**
+     * Find po by uuid or id
+     * @param <T>
+     * @param ctx
+     * @param element
+     * @return T
+     */
+    protected <T extends PO> T findPO(Properties ctx, Element element) {
+    	T po = null;
+    	String tableName = element.getElementValue();
+    	String uuidColumn = tableName + "_UU";
+    	String idColumn = tableName + "_ID";
+    	if (element.properties.containsKey(uuidColumn)) {    		
+    		String uuid = element.properties.get(uuidColumn).contents.toString();
+    		if (uuid != null && uuid.trim().length() == 36) {
+    			Query query = new Query(ctx, tableName, uuidColumn+"=?", getTrxName(ctx));
+    			po = query.setParameters(uuid.trim()).firstOnly();
+    		}
+    	} else if (element.properties.containsKey(idColumn)) {
+    		String id = element.properties.get(idColumn).contents.toString();
+    		if (id != null && id.trim().length() > 0) {
+    			Query query = new Query(ctx, tableName, idColumn+"=?", getTrxName(ctx));
+    			po = query.setParameters(id.trim()).firstOnly();
+    		}
+    	}
+    	return po;
+    }
+    
+    protected void addTypeName(AttributesImpl atts, String typeName) {
+    	atts.addAttribute("", "", "type", "CDATA", "object");
+		atts.addAttribute("", "", "type-name", "CDATA", typeName);
+    }
 }

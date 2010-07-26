@@ -204,8 +204,7 @@ public class CodeSnippetElementHandler extends AbstractElementHandler implements
 		String NewCode = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_New);
 		String ReleaseNo = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.code-snippet");
+		addTypeName(atts, "ad.code-snippet");
 		createSnipitBinding(atts, FileDir, FileName, OldCode, NewCode, ReleaseNo);
 		document.startElement("","","codesnippet",atts);
 		document.endElement("","","codesnippet");

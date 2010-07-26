@@ -32,6 +32,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_ReportView;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -51,37 +52,44 @@ public class ReportViewElementHandler extends AbstractElementHandler implements 
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		String action = null;
+		
 		List<String> excludes = defaultExcludeList(X_AD_ReportView.Table_Name);
-
-		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ReportView.Table_Name,
-				X_AD_ReportView.Table_ID);
-
-		String name = getStringValue(element, "Name");
-		int id = findIdByName(ctx, "AD_ReportView", name);
-		X_AD_ReportView mReportview = new X_AD_ReportView(ctx, id, getTrxName(ctx));
-		PoFiller filler = new PoFiller(ctx, mReportview, element, this);
-		if (id <= 0 && isOfficialId(element, "AD_ReportView_ID"))
-			mReportview.setAD_ReportView_ID(getIntValue(element, "AD_ReportView_ID"));
-		if (id > 0) {
-			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ReportView.Table_Name, mReportview);
-			action = "Update";
-		} else {
-			action = "New";
+		
+		X_AD_ReportView mReportview = findPO(ctx, element);
+		if (mReportview == null) {
+			String name = getStringValue(element, "Name");
+			int id = findIdByName(ctx, "AD_ReportView", name);
+			mReportview = new X_AD_ReportView(ctx, id, getTrxName(ctx));
 		}
+		PoFiller filler = new PoFiller(ctx, mReportview, element, this);
+		if (mReportview.getAD_ReportView_ID() == 0 && isOfficialId(element, "AD_ReportView_ID"))
+			mReportview.setAD_ReportView_ID(getIntValue(element, "AD_ReportView_ID"));
+		
 		List<String> notfound = filler.autoFill(excludes);
 		if (notfound.size() > 0) {
 			element.defer = true;
 			return;
 		}
-		if (mReportview.save(getTrxName(ctx)) == true) {
-			logImportDetail(ctx, impDetail, 1, mReportview.getName(),
-					mReportview.get_ID(), action);
-			element.recordId = mReportview.getAD_ReportView_ID();
-		} else {
-			logImportDetail(ctx, impDetail, 0, mReportview.getName(),
-					mReportview.get_ID(), action);
-			throw new POSaveFailedException("ReportView");
+		
+		if (mReportview.is_new() || mReportview.is_Changed()) {
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ReportView.Table_Name,
+					X_AD_ReportView.Table_ID);
+			String action = null;
+			if (!mReportview.is_new()) {
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ReportView.Table_Name, mReportview);
+				action = "Update";
+			} else {
+				action = "New";
+			}
+			if (mReportview.save(getTrxName(ctx)) == true) {
+				logImportDetail(ctx, impDetail, 1, mReportview.getName(),
+						mReportview.get_ID(), action);
+				element.recordId = mReportview.getAD_ReportView_ID();
+			} else {
+				logImportDetail(ctx, impDetail, 0, mReportview.getName(),
+						mReportview.get_ID(), action);
+				throw new POSaveFailedException("ReportView");
+			}
 		}
 	}
 
@@ -107,11 +115,10 @@ public class ReportViewElementHandler extends AbstractElementHandler implements 
 			throw new AdempiereException(e);
 		}
 
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.report-view");
-		document.startElement("", "", "reportView", atts);
+		addTypeName(atts, "ad.report-view");
+		document.startElement("", "", I_AD_ReportView.Table_Name, atts);
 		createReportViewBinding(ctx, document, m_Reportview);
-		document.endElement("", "", "reportView");
+		document.endElement("", "", I_AD_ReportView.Table_Name);
 
 		String sql = "SELECT AD_PrintFormat_ID FROM AD_PrintFormat WHERE AD_ReportView_ID= "
 				+ AD_ReportView_ID;

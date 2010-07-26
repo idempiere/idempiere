@@ -25,11 +25,13 @@ import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
+import org.compiere.model.I_AD_Role;
+import org.compiere.model.I_AD_Workflow_Access;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Role;
 import org.compiere.model.X_AD_Workflow;
 import org.compiere.model.X_AD_Workflow_Access;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -41,24 +43,27 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 		int workflowid =0;
 		List<String> excludes = defaultExcludeList(X_AD_Workflow_Access.Table_Name);
 
-		String roleName = getStringValue(element, "AD_Role.Name", excludes);
-		if (getParentId(element, "role") > 0) {
-			roleid = getParentId(element, "role");
-		} else {
-			roleid = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Role_ID FROM AD_Role WHERE Name = ? AND AD_Client_ID = ?", roleName, Env.getAD_Client_ID(ctx));
-		}
-
-		String workflowValue = getStringValue(element, "AD_Workflow.Value", excludes);
-		if (workflowValue != null && workflowValue.trim().length() > 0)
-			workflowid = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Workflow_ID FROM AD_Workflow WHERE Value = ? AND AD_Client_ID = ?", workflowValue, Env.getAD_Client_ID(ctx));
-
-		X_AD_Workflow_Access po = null;
-		Query query = new Query(ctx, "AD_Workflow_Access", "AD_Role_ID=? and AD_Workflow_ID=?", getTrxName(ctx));
-		po = query.setParameters(new Object[]{roleid, workflowid}).first();
+		X_AD_Workflow_Access po = findPO(ctx, element);
 		if (po == null) {
-			po = new X_AD_Workflow_Access(ctx, 0, getTrxName(ctx));
-			po.setAD_Role_ID(roleid);
-			po.setAD_Workflow_ID(workflowid);
+			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
+				roleid = getParentId(element, I_AD_Role.Table_Name);
+			} else {
+				Element roleElement = element.properties.get(I_AD_Workflow_Access.COLUMNNAME_AD_Role_ID);
+				roleid = ReferenceUtils.resolveReference(ctx, roleElement);
+			}
+	
+			Element wfElement = element.properties.get(I_AD_Workflow_Access.COLUMNNAME_AD_Workflow_ID);
+			workflowid = ReferenceUtils.resolveReference(ctx, wfElement);
+	
+			Query query = new Query(ctx, "AD_Workflow_Access", "AD_Role_ID=? and AD_Workflow_ID=?", getTrxName(ctx));
+			po = query.setParameters(new Object[]{roleid, workflowid}).first();
+			if (po == null) {
+				po = new X_AD_Workflow_Access(ctx, 0, getTrxName(ctx));
+				po.setAD_Role_ID(roleid);
+				po.setAD_Workflow_ID(workflowid);
+			}
+			excludes.add(I_AD_Workflow_Access.COLUMNNAME_AD_Role_ID);
+			excludes.add(I_AD_Workflow_Access.COLUMNNAME_AD_Workflow_ID);
 		}
 
 		PoFiller filler = new PoFiller(ctx, po, element, this);
@@ -78,11 +83,10 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 		int AD_Workflow_ID = Env.getContextAsInt(ctx, X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.workflow-access");
-		document.startElement("", "", "workflowAccess", atts);
+		addTypeName(atts, "ad.workflow-access");
+		document.startElement("", "", I_AD_Workflow_Access.Table_Name, atts);
 		createWorkflowAccessBinding(ctx, document, AD_Workflow_ID, AD_Role_ID);
-		document.endElement("", "", "workflowAccess");
+		document.endElement("", "", I_AD_Workflow_Access.Table_Name);
 	}
 
 	private void createWorkflowAccessBinding(Properties ctx, TransformerHandler document,

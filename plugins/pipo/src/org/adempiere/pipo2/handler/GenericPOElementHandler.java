@@ -62,48 +62,51 @@ public class GenericPOElementHandler extends AbstractElementHandler implements I
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String tableName = element.getElementValue();
 
-		MTable table = MTable.get(ctx, tableName);
-		POInfo info = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
-		MColumn columns[] = table.getColumns(false);
-		StringBuffer whereClause = new StringBuffer();
-		List<Object> parameters = new ArrayList<Object>();
-		for(int i = 0; i < columns.length; i++) {
-			MColumn column = columns[i];
-			if (column.isIdentifier()) {
-				if (whereClause.length() > 0)
-					whereClause.append(" AND ");
-				whereClause.append(column.getColumnName()).append(" = ? ");
-				parameters.add(getStringValue(element, column.getColumnName()));
-			} else if (column.isParent()) {
-				int parentId = 0;
-				String parentTableName = null;
-				if (column.getAD_Reference_ID() == DisplayType.TableDir) {
-					parentTableName = column.getColumnName().substring(0, column.getColumnName().length() - 3);
-				} else {
-					String searchColumn = info.getColumnLookup(i).getColumnName();
-					parentTableName = searchColumn.substring(0, searchColumn.indexOf("."));
-				}
-
-				Element parent = element.parent;
-				while (parent != null) {
-					if (parent.getElementValue().equalsIgnoreCase(parentTableName)) {
-						parentId = parent.recordId;
-						break;
-					}
-					parent = parent.parent;
-				}
-				if (parentId > 0) {
+		PO po = findPO(ctx, element);
+		if (po == null) {
+			MTable table = MTable.get(ctx, tableName);
+			POInfo info = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
+			MColumn columns[] = table.getColumns(false);
+			StringBuffer whereClause = new StringBuffer();
+			List<Object> parameters = new ArrayList<Object>();
+			for(int i = 0; i < columns.length; i++) {
+				MColumn column = columns[i];
+				if (column.isIdentifier()) {
 					if (whereClause.length() > 0)
 						whereClause.append(" AND ");
-					whereClause.append(column.getColumnName()).append(" = ?");
-					parameters.add(parentId);
+					whereClause.append(column.getColumnName()).append(" = ? ");
+					parameters.add(getStringValue(element, column.getColumnName()));
+				} else if (column.isParent()) {
+					int parentId = 0;
+					String parentTableName = null;
+					if (column.getAD_Reference_ID() == DisplayType.TableDir) {
+						parentTableName = column.getColumnName().substring(0, column.getColumnName().length() - 3);
+					} else {
+						String searchColumn = info.getColumnLookup(i).getColumnName();
+						parentTableName = searchColumn.substring(0, searchColumn.indexOf("."));
+					}
+	
+					Element parent = element.parent;
+					while (parent != null) {
+						if (parent.getElementValue().equalsIgnoreCase(parentTableName)) {
+							parentId = parent.recordId;
+							break;
+						}
+						parent = parent.parent;
+					}
+					if (parentId > 0) {
+						if (whereClause.length() > 0)
+							whereClause.append(" AND ");
+						whereClause.append(column.getColumnName()).append(" = ?");
+						parameters.add(parentId);
+					}
 				}
 			}
-		}
-		Query query = new Query(ctx, table, whereClause.toString(), getTrxName(ctx));
-		PO po = query.setParameters(parameters).first();
-		if (po == null) {
-			po = new GenericPO(tableName, ctx, 0);
+			Query query = new Query(ctx, table, whereClause.toString(), getTrxName(ctx));
+			po = query.setParameters(parameters).first();
+			if (po == null) {
+				po = new GenericPO(tableName, ctx, 0);
+			}
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 		List<String> excludes = defaultExcludeList(tableName);
@@ -144,8 +147,7 @@ public class GenericPOElementHandler extends AbstractElementHandler implements I
 				int AD_Client_ID = po.getAD_Client_ID();
 				if (AD_Client_ID != Env.getAD_Client_ID(ctx))
 					continue;
-				atts.addAttribute("", "", "type", "CDATA", "object");
-				atts.addAttribute("", "", "type-name", "CDATA", "ad.po.generic");
+				addTypeName(atts, "ad.po.generic");
 				document.startElement("","", tableName, atts);
 				PoExporter filler = new PoExporter(ctx, document, po);
 				filler.export(excludes);

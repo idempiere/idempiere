@@ -33,6 +33,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_ImpFormat;
@@ -52,41 +53,47 @@ public class ImpFormatElementHandler extends AbstractElementHandler  implements 
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ImpFormat.Table_Name,
-				X_AD_ImpFormat.Table_ID);
-
-		String action = null;
+		
 		List<String> excludes = defaultExcludeList(X_AD_ImpFormat.Table_Name);
 		String name = getStringValue(element, "Name");
 
-		int id = findIdByName(ctx, "AD_ImpFormat", name);
-		X_AD_ImpFormat mImpFormat = new X_AD_ImpFormat(ctx, id,
-				getTrxName(ctx));
+		X_AD_ImpFormat mImpFormat = findPO(ctx, element);
+		if (mImpFormat == null) {
+			int id = findIdByName(ctx, "AD_ImpFormat", name);
+			mImpFormat = new X_AD_ImpFormat(ctx, id > 0 ? id : 0,
+					getTrxName(ctx));
+		}
 		PoFiller filler = new PoFiller(ctx, mImpFormat, element, this);
 
-		if (id <= 0 && isOfficialId(element, "AD_ImpFormat_ID"))
+		if (mImpFormat.getAD_ImpFormat_ID() == 0 && isOfficialId(element, "AD_ImpFormat_ID"))
 		{
 			filler.setInteger("AD_ImpFormat_ID");
 		}
-		if (id > 0) {
-			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ImpFormat.Table_Name, mImpFormat);
-			action = "Update";
-		} else {
-			action = "New";
-		}
-
+		
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
 			return;
 		}
-		if (mImpFormat.save(getTrxName(ctx)) == true) {
-			logImportDetail(ctx, impDetail, 1, mImpFormat.getName(), mImpFormat
-					.get_ID(), action);
-		} else {
-			logImportDetail(ctx, impDetail, 0, mImpFormat.getName(), mImpFormat
-					.get_ID(), action);
-			throw new POSaveFailedException("Failed to save Import Format.");
+		
+		if (mImpFormat.is_new() || mImpFormat.is_Changed()) {
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ImpFormat.Table_Name,
+					X_AD_ImpFormat.Table_ID);
+			String action = null;
+			if (!mImpFormat.is_new()) {
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ImpFormat.Table_Name, mImpFormat);
+				action = "Update";
+			} else {
+				action = "New";
+			}
+			if (mImpFormat.save(getTrxName(ctx)) == true) {
+				logImportDetail(ctx, impDetail, 1, mImpFormat.getName(), mImpFormat
+						.get_ID(), action);
+			} else {
+				logImportDetail(ctx, impDetail, 0, mImpFormat.getName(), mImpFormat
+						.get_ID(), action);
+				throw new POSaveFailedException("Failed to save Import Format.");
+			}
 		}
 	}
 
@@ -103,9 +110,8 @@ public class ImpFormatElementHandler extends AbstractElementHandler  implements 
 		formats.add(import_id);
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_ImpFormat m_ImpFormat = new X_AD_ImpFormat(ctx, import_id, null);
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.import-format");
-		document.startElement("", "", "impformat", atts);
+		addTypeName(atts, "ad.import-format");
+		document.startElement("", "", I_AD_ImpFormat.Table_Name, atts);
 		createImpFormatBinding(ctx, document, m_ImpFormat);
 
 		String sql = "SELECT * FROM AD_ImpFormat_Row WHERE AD_ImpFormat_ID= "
@@ -127,7 +133,7 @@ public class ImpFormatElementHandler extends AbstractElementHandler  implements 
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		document.endElement("", "", "impformat");
+		document.endElement("", "", I_AD_ImpFormat.Table_Name);
 
 	}
 

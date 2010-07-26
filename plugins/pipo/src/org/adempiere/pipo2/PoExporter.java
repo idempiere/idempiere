@@ -11,9 +11,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -154,42 +152,18 @@ public class PoExporter {
 	}
 
 	public void addTableReference(String tableName, String searchColumn, AttributesImpl atts) {
-		addTableReference(tableName + "_ID", tableName, searchColumn, atts);
+		String columnName = tableName + "_ID"; 		
+		addTableReference(columnName, tableName, searchColumn, atts);
 	}
 
 	public void addTableReference(String columnName, String tableName, String searchColumn, AttributesImpl atts) {
-		String keyColumn = tableName + "_ID";
-		String sql = "SELECT " + searchColumn + " FROM "
-			+ tableName + " WHERE " + keyColumn + " = ?";
 		int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : 0;
-		if (id > 0 && id <= PackOut.MAX_OFFICIAL_ID)
-		{
-			atts.addAttribute("", "", "reference", "CDATA", "id");
-			String value = Integer.toString(id);
-			addString(columnName, value, atts);
-		}
-		else
-		{
-			MTable table = MTable.get(Env.getCtx(), tableName);
-			if (table.get_ColumnIndex(tableName + "_UU") >= 0 )
-			{
-				sql = "SELECT " + tableName + "_UU" + " FROM "
-						+ tableName + " WHERE " + keyColumn + " = ?";
-				String value = id > 0 ? DB.getSQLValueString(null, sql, id) : "";
-				atts.addAttribute("", "", "reference", "CDATA", "uuid");
-				atts.addAttribute("", "", "reference-key", "CDATA", tableName);
-				addString(columnName, value, atts);
-			}
-			else
-			{
-				String value = id > 0 ? DB.getSQLValueString(null, sql, id) : "";
-				StringBuffer buffer = new StringBuffer();
-				buffer.append(tableName).append(".").append(searchColumn);
-				atts.addAttribute("", "", "reference", "CDATA", "table");
-				atts.addAttribute("", "", "reference-key", "CDATA", buffer.toString());
-				addString(columnName, value, atts);
-			}
-		}
+		addTableReference(columnName, tableName, searchColumn, id, atts);
+	}
+	
+	public void addTableReference(String columnName, String tableName, String searchColumn, int id, AttributesImpl atts) {
+		String value = ReferenceUtils.getTableReference(tableName, searchColumn, id, atts);
+		addString(columnName, value, atts);
 	}
 
 	public void export(List<String> excludes) {
@@ -269,19 +243,7 @@ public class PoExporter {
 						searchColumn = "DocumentNo";
 					}
 				}
-				if (searchColumn.endsWith("_ID")) {
-					StringBuffer buffer = new StringBuffer();
-					if (!columnName.equals(searchColumn))
-					{
-						buffer.append(columnName).append(".");
-					}
-					buffer.append(tableName).append(".").append(searchColumn);
-					int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : 0;
-					String value = id > 0 ? Integer.toString(id) : "";
-					addString(buffer.toString(), value, new AttributesImpl());
-				} else {
-					addTableReference(columnName, tableName, searchColumn, new AttributesImpl());
-				}
+				addTableReference(columnName, tableName, searchColumn, new AttributesImpl());
 			} else if (DisplayType.List == displayType) {
 				add(columnName, "", new AttributesImpl());
 			} else if (DisplayType.isLookup(displayType)) {
@@ -316,19 +278,7 @@ public class PoExporter {
 						}
 					}
 				}
-				if (searchColumn.endsWith("_ID")) {
-					StringBuffer buffer = new StringBuffer();
-					if (!columnName.equals(searchColumn))
-					{
-						buffer.append(columnName).append(".");
-					}
-					buffer.append(tableName).append(".").append(searchColumn);
-					int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : 0;
-					String value = id > 0 ? Integer.toString(id) : "";
-					addString(buffer.toString(), value, new AttributesImpl());
-				} else {
-					addTableReference(columnName, tableName, searchColumn, new AttributesImpl());
-				}
+				addTableReference(columnName, tableName, searchColumn, new AttributesImpl());
 			} else if (DisplayType.isLOB(displayType)) {
 				addBlob(columnName);
 			} else {

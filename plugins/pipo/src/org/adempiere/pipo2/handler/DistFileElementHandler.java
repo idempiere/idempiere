@@ -185,8 +185,7 @@ public class DistFileElementHandler extends AbstractElementHandler {
 		String Target_Directory = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory);
 		String ReleaseNo = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.dist-file");
+		addTypeName(atts, "ad.dist-file");
 		document.startElement("","","distfile",atts);
 		addTextProperty(document,"filename",FileName);
 		addTextProperty(document,"sourceDirectory",Source_Directory);

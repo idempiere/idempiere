@@ -25,11 +25,12 @@ import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
+import org.compiere.model.I_AD_User_Roles;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Role;
 import org.compiere.model.X_AD_User;
 import org.compiere.model.X_AD_User_Roles;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -43,26 +44,32 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 
 		List<String> excludes = defaultExcludeList(X_AD_User_Roles.Table_Name);
 
-		String userName = getStringValue(element, "AD_User.Name", excludes);
-		userid = DB.getSQLValue(getTrxName(ctx), "SELECT AD_User_ID FROM AD_User WHERE Name = ? AND AD_Client_ID = ?", userName, Env.getAD_Client_ID(ctx));
-
-		String roleName = getStringValue(element, "rolename", excludes);
-		if (getParentId(element, "role") > 0) {
-			roleid = getParentId(element, "role");
-		} else {
-			roleid = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Role_ID FROM AD_Role WHERE Name= ? AND AD_Client_ID = ?", roleName, Env.getAD_Client_ID(ctx));
-		}
-
-		String orgName = getStringValue(element, "AD_Org.Name", excludes);
-		orgid = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Org_ID FROM AD_Org WHERE Name = ? AND AD_Client_ID = ?", orgName, Env.getAD_Client_ID(ctx));
-
-		Query query = new Query(ctx, "AD_User_Roles", "AD_User_ID = ? AND AD_Role_ID = ? AND AD_Org_ID = ?", getTrxName(ctx));
-		X_AD_User_Roles po = query.setParameters(new Object[]{userid, roleid, orgid}).first();
+		X_AD_User_Roles po = findPO(ctx, element);
 		if (po == null) {
-			po = new X_AD_User_Roles(ctx, 0, getTrxName(ctx));
-			po.setAD_Org_ID(orgid);
-			po.setAD_Role_ID(roleid);
-			po.setAD_User_ID(userid);
+			Element userElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_User_ID);
+			userid = ReferenceUtils.resolveReference(ctx, userElement);			
+	
+			if (getParentId(element, "role") > 0) {
+				roleid = getParentId(element, "role");
+			} else {
+				Element roleElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_Role_ID);
+				roleid = ReferenceUtils.resolveReference(ctx, roleElement);
+			}
+	
+			Element orgElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_Org_ID);
+			orgid = ReferenceUtils.resolveReference(ctx, orgElement);
+	
+			Query query = new Query(ctx, "AD_User_Roles", "AD_User_ID = ? AND AD_Role_ID = ? AND AD_Org_ID = ?", getTrxName(ctx));
+			po = query.setParameters(new Object[]{userid, roleid, orgid}).first();
+			if (po == null) {
+				po = new X_AD_User_Roles(ctx, 0, getTrxName(ctx));
+				po.setAD_Org_ID(orgid);
+				po.setAD_Role_ID(roleid);
+				po.setAD_User_ID(userid);				
+			}
+			excludes.add(I_AD_User_Roles.COLUMNNAME_AD_User_ID);
+			excludes.add(I_AD_User_Roles.COLUMNNAME_AD_Role_ID);
+			excludes.add(I_AD_User_Roles.COLUMNNAME_AD_Org_ID);
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 		List<String> notfounds = filler.autoFill(excludes);
@@ -82,11 +89,10 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 		int AD_Role_ID = Env.getContextAsInt(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		int AD_Org_ID = Env.getContextAsInt(ctx, "AD_Org_ID");
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.user-role");
-		document.startElement("", "", "userRole", atts);
+		addTypeName(atts, "ad.user-role");
+		document.startElement("", "", I_AD_User_Roles.Table_Name, atts);
 		createUserAssignBinding(ctx, document, AD_User_ID,AD_Role_ID, AD_Org_ID);
-		document.endElement("", "", "userRole");
+		document.endElement("", "", I_AD_User_Roles.Table_Name);
 	}
 
 	private void createUserAssignBinding(Properties ctx, TransformerHandler document,

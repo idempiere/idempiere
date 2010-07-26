@@ -26,7 +26,10 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Ref_List;
+import org.compiere.model.I_AD_Reference;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Ref_List;
 import org.compiere.util.Env;
@@ -37,7 +40,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		String action = null;
+		
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 			if (isParentSkip(element, null)) {
@@ -45,29 +48,24 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Ref_List.Table_Name,
-					X_AD_Ref_List.Table_ID);
-
-			String value = getStringValue(element, "Value");
-			int AD_Reference_ID = 0;
-			if (getParentId(element, "reference") > 0) {
-				AD_Reference_ID = getParentId(element, "reference");
-			} else {
-				String referenceName = getStringValue(element, "AD_Reference.Name");
-				AD_Reference_ID = findIdByColumn(ctx, "AD_Reference", "Name", referenceName);
+			X_AD_Ref_List mRefList = findPO(ctx, element);
+			if (mRefList == null) {
+				String value = getStringValue(element, "Value");
+				int AD_Reference_ID = 0;
+				if (getParentId(element, I_AD_Reference.Table_Name) > 0) {
+					AD_Reference_ID = getParentId(element, I_AD_Reference.Table_Name);
+				} else {
+					Element referenceElement = element.properties.get(I_AD_Ref_List.COLUMNNAME_AD_Reference_ID);
+					AD_Reference_ID = ReferenceUtils.resolveReference(ctx, referenceElement);
+				}
+	
+				int AD_Ref_List_ID = findIdByColumnAndParentId(ctx, "AD_Ref_List", "Value", value, "AD_Reference", AD_Reference_ID);
+				mRefList = new X_AD_Ref_List(ctx, AD_Ref_List_ID, getTrxName(ctx));
 			}
-
-			int AD_Ref_List_ID = findIdByColumnAndParentId(ctx, "AD_Ref_List", "Value", value, "AD_Reference", AD_Reference_ID);
-			X_AD_Ref_List mRefList = new X_AD_Ref_List(ctx, AD_Ref_List_ID, getTrxName(ctx));
-			if (AD_Ref_List_ID <= 0 && isOfficialId(element, "AD_Ref_List_ID"))
+			
+			if (mRefList.getAD_Ref_List_ID() == 0 && isOfficialId(element, "AD_Ref_List_ID"))
 				mRefList.setAD_Ref_List_ID(getIntValue(element, "AD_Ref_List_ID"));
-			if (AD_Ref_List_ID > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Ref_List.Table_Name, mRefList);
-				action = "Update";
-			} else {
-				action = "New";
-			}
-
+			
 			PoFiller filler = new PoFiller(ctx, mRefList, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_Ref_List.Table_Name);
 			List<String> notfounds = filler.autoFill(excludes);
@@ -76,13 +74,24 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			if (mRefList.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, mRefList.getName(),
-						mRefList.get_ID(), action);
-			} else {
-				logImportDetail(ctx, impDetail, 0, mRefList.getName(),
-						mRefList.get_ID(), action);
-				throw new POSaveFailedException("ReferenceList");
+			if (mRefList.is_new() || mRefList.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Ref_List.Table_Name,
+						X_AD_Ref_List.Table_ID);
+				String action = null;
+				if (!mRefList.is_new()) {
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Ref_List.Table_Name, mRefList);
+					action = "Update";
+				} else {
+					action = "New";
+				}
+				if (mRefList.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, mRefList.getName(),
+							mRefList.get_ID(), action);
+				} else {
+					logImportDetail(ctx, impDetail, 0, mRefList.getName(),
+							mRefList.get_ID(), action);
+					throw new POSaveFailedException("ReferenceList");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -99,11 +108,10 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 		X_AD_Ref_List m_Ref_List = new X_AD_Ref_List(ctx, AD_Ref_List_ID,
 				getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.reference.list");
-		document.startElement("", "", "referencelist", atts);
+		addTypeName(atts, "ad.reference.list");
+		document.startElement("", "", I_AD_Ref_List.Table_Name, atts);
 		createRefListBinding(ctx, document, m_Ref_List);
-		document.endElement("", "", "referencelist");
+		document.endElement("", "", I_AD_Ref_List.Table_Name);
 	}
 
 	private void createRefListBinding(Properties ctx, TransformerHandler document,

@@ -33,6 +33,7 @@ import org.adempiere.pipo2.PackIn;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Table;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MTable;
@@ -57,48 +58,57 @@ public class TableElementHandler extends AbstractElementHandler implements IPack
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 
-			String tableName = getStringValue(element, "TableName", excludes);
+			MTable mTable = findPO(ctx, element);
+			if (mTable == null) {
+				String tableName = getStringValue(element, "TableName", excludes);
 
-			int id = packIn.getTableId(tableName);
-			if (id <= 0) {
-				id = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
-				if (id > 0)
-					packIn.addTable(tableName, id);
+				int id = packIn.getTableId(tableName);
+				if (id <= 0) {
+					id = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
+					if (id > 0)
+						packIn.addTable(tableName, id);
+				}
+				if (id > 0 && isTableProcess(ctx, id)) {
+					return;
+				}
+
+				mTable = new MTable(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mTable.setTableName(tableName);
 			}
-			if (id > 0 && isTableProcess(ctx, id)) {
-				return;
-			}
-
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Table.Table_Name,
-					X_AD_Table.Table_ID);
-
-
-			MTable mTable = new MTable(ctx, id, getTrxName(ctx));
-			if (id <= 0 && isOfficialId(element, "AD_Table_ID"))
+						
+			if (mTable.getAD_Table_ID() == 0 && isOfficialId(element, "AD_Table_ID"))
 			{
 				mTable.setAD_Table_ID(getIntValue(element, "AD_Table_ID"));
 			}
-			String action = null;
-			if (id > 0){
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(),X_AD_Table.Table_Name,mTable);
-				action = "Update";
-			}
-			else{
-				action = "New";
-				mTable.setTableName(tableName);
-			}
-
+			
 			PoFiller filler = new PoFiller(ctx, mTable, element, this);
-			filler.autoFill(excludes);
-			if (mTable.save(getTrxName(ctx)) == true){
-				logImportDetail (ctx, impDetail, 1, mTable.getName(),mTable.get_ID(),action);
-				tables.add(mTable.getAD_Table_ID());
-				packIn.addTable(tableName, mTable.getAD_Table_ID());
-				element.recordId = mTable.getAD_Table_ID();
+			List<String> notfounds = filler.autoFill(excludes);
+			if (notfounds.size() > 0) {
+				element.defer = true;
+				return;
 			}
-			else{
-				logImportDetail (ctx, impDetail, 0, mTable.getName(), mTable.get_ID(),action);
-				throw new POSaveFailedException("Table");
+			
+			if (mTable.is_new() || mTable.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Table.Table_Name,
+						X_AD_Table.Table_ID);
+				String action = null;
+				if (!mTable.is_new()){
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(),X_AD_Table.Table_Name,mTable);
+					action = "Update";
+				}
+				else{
+					action = "New";				
+				}
+				if (mTable.save(getTrxName(ctx)) == true){
+					logImportDetail (ctx, impDetail, 1, mTable.getName(),mTable.get_ID(),action);
+					tables.add(mTable.getAD_Table_ID());
+					packIn.addTable(mTable.getTableName(), mTable.getAD_Table_ID());
+					element.recordId = mTable.getAD_Table_ID();
+				}
+				else{
+					logImportDetail (ctx, impDetail, 0, mTable.getName(), mTable.get_ID(),action);
+					throw new POSaveFailedException("Table");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -118,9 +128,8 @@ public class TableElementHandler extends AbstractElementHandler implements IPack
 		//Export table if not already done so
 		if (!exported){
 			X_AD_Table m_Table = new X_AD_Table (ctx, AD_Table_ID, null);
-			atts.addAttribute("", "", "type", "CDATA", "object");
-			atts.addAttribute("", "", "type-name", "CDATA", "ad.table");
-			document.startElement("","","table",atts);
+			addTypeName(atts, "ad.table");
+			document.startElement("","",I_AD_Table.Table_Name,atts);
 			createTableBinding(ctx,document,m_Table);
 
 			String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID = ? "
@@ -169,7 +178,7 @@ public class TableElementHandler extends AbstractElementHandler implements IPack
 			} finally	{
 				DB.close(rs, pstmt);
 			}
-			document.endElement("","","table");
+			document.endElement("","",I_AD_Table.Table_Name);
 		}
 
 	}
@@ -191,14 +200,13 @@ public class TableElementHandler extends AbstractElementHandler implements IPack
 
 	private void createTableBinding(Properties ctx, TransformerHandler document, X_AD_Table m_Table)
 	{
+		PoExporter filler = new PoExporter(ctx, document, m_Table);
 		if (m_Table.getAD_Table_ID() <= PackOut.MAX_OFFICIAL_ID)
 		{
-			PoExporter filler = new PoExporter(ctx, document, null);
-			filler.addString("AD_Table_ID", Integer.toString(m_Table.getAD_Table_ID()), new AttributesImpl());
+			filler.add("AD_Table_ID", new AttributesImpl());
 		}
 
-		List<String> excludes = defaultExcludeList(X_AD_Table.Table_Name);
-		PoExporter filler = new PoExporter(ctx, document, m_Table);
+		List<String> excludes = defaultExcludeList(X_AD_Table.Table_Name);		
 		filler.export(excludes);
 	}
 

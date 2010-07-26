@@ -30,6 +30,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Task;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MTask;
@@ -50,34 +51,41 @@ public class TaskElementHandler extends AbstractElementHandler implements IPackO
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Task.Table_Name,
-					X_AD_Task.Table_ID);
-
-			String name = getStringValue(element, "Name");
-			int id = findIdByName(ctx, "AD_Task", name);
-			MTask mTask = new MTask(ctx, id, getTrxName(ctx));
-			String action = null;
-			if (id <= 0 && isOfficialId(element, "AD_Task_ID"))
-				mTask.setAD_Task_ID(getIntValue(element, "AD_Task_ID"));
-			if (id > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Task.Table_Name, mTask);
-				action = "Update";
-			} else {
-				action = "New";
+			MTask mTask = findPO(ctx, element);
+			if (mTask == null) {
+				String name = getStringValue(element, "Name");
+				int id = findIdByName(ctx, "AD_Task", name);
+				mTask = new MTask(ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
+			
+			if (mTask.getAD_Task_ID() == 0 && isOfficialId(element, "AD_Task_ID"))
+				mTask.setAD_Task_ID(getIntValue(element, "AD_Task_ID"));
+						
 			PoFiller filler = new PoFiller(ctx, mTask, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-			if (mTask.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, mTask.getName(), mTask.get_ID(),
-						action);
-			} else {
-				logImportDetail(ctx, impDetail, 0, mTask.getName(), mTask.get_ID(),
-						action);
-				throw new POSaveFailedException("Task");
+			
+			if (mTask.is_new() || mTask.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Task.Table_Name,
+						X_AD_Task.Table_ID);
+				String action = null;
+				if (!mTask.is_new()) {
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Task.Table_Name, mTask);
+					action = "Update";
+				} else {
+					action = "New";
+				}
+				if (mTask.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, mTask.getName(), mTask.get_ID(),
+							action);
+				} else {
+					logImportDetail(ctx, impDetail, 0, mTask.getName(), mTask.get_ID(),
+							action);
+					throw new POSaveFailedException("Task");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -95,11 +103,10 @@ public class TaskElementHandler extends AbstractElementHandler implements IPackO
 		tasks.add(AD_Task_ID);
 		X_AD_Task m_Task = new X_AD_Task(ctx, AD_Task_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.task");
-		document.startElement("", "", "task", atts);
+		addTypeName(atts, "ad.task");
+		document.startElement("", "", I_AD_Task.Table_Name, atts);
 		createTaskBinding(ctx, document, m_Task);
-		document.endElement("", "", "task");
+		document.endElement("", "", I_AD_Task.Table_Name);
 
 	}
 

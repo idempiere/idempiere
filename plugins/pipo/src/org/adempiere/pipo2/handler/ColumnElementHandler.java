@@ -29,11 +29,12 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
-import org.adempiere.pipo2.PackIn;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Column;
+import org.compiere.model.I_AD_Table;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_Column;
@@ -50,52 +51,35 @@ public class ColumnElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		PackIn packIn = (PackIn)ctx.get("PackInProcess");
 		int success = 0;
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
-			if (isParentDefer(element, "table")) {
+			if (isParentDefer(element, I_AD_Table.Table_Name)) {
 				element.defer = true;
 				return;
 			}
-
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Column.Table_Name, X_AD_Column.Table_ID);
+			
 			List<String> excludes = defaultExcludeList(X_AD_Column.Table_Name);
-
 			String columnName = getStringValue(element, "ColumnName", excludes);
-			String tableName = getStringValue(element, "AD_Table_ID", excludes);
-
-			int tableid = 0;
-			if (getParentId(element, "table") > 0) {
-				tableid = getParentId(element, "table");
-			} else {
-				tableid = packIn.getTableId(tableName);
-			}
-			if (tableid <= 0) {
-				tableid = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
-				if (tableid > 0)
-					packIn.addTable(tableName, tableid);
-			}
-			int id = packIn.getColumnId(tableName, columnName);
-			if (id <= 0) {
-				id = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName",
-					columnName, "AD_Table", tableid);
-				if (id > 0) {
-					packIn.addColumn(tableName, columnName, id);
+			
+			MColumn mColumn = findPO(ctx, element);
+			if (mColumn == null) {
+				int tableid = 0;
+				if (getParentId(element, I_AD_Table.Table_Name) > 0) {
+					tableid = getParentId(element, "table");
+				} else {
+					mColumn = new MColumn(ctx, 0, getTrxName(ctx));
+					PoFiller filler = new PoFiller(ctx, mColumn, element, this);
+					filler.setTableReference("AD_Table_ID");
+					tableid = mColumn.getAD_Table_ID();
 				}
-			}
-			MColumn mColumn = new MColumn(ctx, id, getTrxName(ctx));
-			if (id <= 0 && isOfficialId(element, "AD_Column_ID")) {
-				mColumn.setAD_Column_ID(getIntValue(element, "AD_Column_ID"));
-			}
-			String action = null;
-			if (id > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), "AD_Column", mColumn);
-				action = "Update";
-			} else {
-				action = "New";
-				mColumn.setAD_Table_ID(tableid);
-			}
+				int AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnName, "AD_Table", tableid);
+				mColumn = new MColumn(ctx, AD_Column_ID > 0 ? AD_Column_ID : 0, getTrxName(ctx));
+				if (mColumn.getAD_Column_ID() == 0 && isOfficialId(element, "AD_Column_ID")) {
+					mColumn.setAD_Column_ID(getIntValue(element, "AD_Column_ID"));
+				}
+			}			
+						
 			mColumn.setColumnName(columnName);
 			mColumn.setIsSyncDatabase(getStringValue(element, "IsSyncDatabase", excludes));
 
@@ -104,6 +88,18 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
+			}
+			
+			if (!mColumn.is_new() && !mColumn.is_Changed())
+				return;
+
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Column.Table_Name, X_AD_Column.Table_ID);
+			String action = null;
+			if (!mColumn.is_new()) {
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), "AD_Column", mColumn);
+				action = "Update";
+			} else {
+				action = "New";
 			}
 
 			// Setup Element.
@@ -311,11 +307,10 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Column m_Column = new X_AD_Column(ctx, AD_Column_ID,
 				getTrxName(ctx));
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.table.column");
-		document.startElement("", "", "column", atts);
+		addTypeName(atts, "ad.table.column");
+		document.startElement("", "", I_AD_Column.Table_Name, atts);
 		createColumnBinding(ctx, document, m_Column);
-		document.endElement("", "", "column");
+		document.endElement("", "", I_AD_Column.Table_Name);
 	}
 
 	private void createColumnBinding(Properties ctx, TransformerHandler document,

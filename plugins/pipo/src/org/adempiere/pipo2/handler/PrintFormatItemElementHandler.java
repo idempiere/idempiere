@@ -28,7 +28,9 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_PrintFormatItem;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -42,62 +44,65 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler implem
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		String action = null;
+		
 		List<String> excludes = defaultExcludeList(X_AD_PrintFormatItem.Table_Name);
 
-		if (isParentDefer(element, "printformat")) {
+		if (isParentDefer(element, I_AD_PrintFormatItem.Table_Name)) {
 			element.defer = true;
 			return;
 		}
 
-		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_PrintFormatItem.Table_Name,
-				X_AD_PrintFormatItem.Table_ID);
-
-		String printformatName = getStringValue(element, "AD_PrintFormat.Name", excludes);
-		int parentId = 0;
-		if (getParentId(element, "printformat") > 0) {
-			parentId = getParentId(element, "printformat");
-		} else {
-			parentId = findIdByColumn(ctx, "AD_PrintFormat", "Name", printformatName);
+		X_AD_PrintFormatItem mPrintFormatItem = findPO(ctx, element);
+		if (mPrintFormatItem == null) {		
+			int parentId = 0;
+			if (getParentId(element, I_AD_PrintFormatItem.Table_Name) > 0) {
+				parentId = getParentId(element, I_AD_PrintFormatItem.Table_Name);
+			} else {
+				Element pfElement = element.properties.get(I_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormat_ID);
+				parentId = ReferenceUtils.resolveReference(ctx, pfElement);
+			}
+			if (parentId <= 0) {
+				element.defer = true;
+				return;
+			}
+	
+			String name = getStringValue(element, "Name");
+			int id = findIdByNameAndParentId(ctx, "AD_PrintFormatItem", name, "AD_PrintFormat", parentId);	
+			mPrintFormatItem = new X_AD_PrintFormatItem(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			mPrintFormatItem.setAD_PrintFormat_ID(parentId);
+			excludes.add(I_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormat_ID);
 		}
-		if (parentId <= 0) {
-			element.defer = true;
-			return;
-		}
-
-		String name = getStringValue(element, "Name");
-		int id = findIdByNameAndParentId(ctx, "AD_PrintFormatItem", name, "AD_PrintFormat", parentId);
-
-		X_AD_PrintFormatItem mPrintFormatItem = new X_AD_PrintFormatItem(ctx,
-				id, getTrxName(ctx));
 		PoFiller filler = new PoFiller(ctx, mPrintFormatItem, element, this);
 
-		if (id <= 0 && isOfficialId(element, "AD_PrintFormatItem_ID"))
+		if (mPrintFormatItem.getAD_PrintFormatItem_ID() == 0 && isOfficialId(element, "AD_PrintFormatItem_ID"))
 			filler.setInteger("AD_PrintFormatItem_ID");
-		if (id > 0) {
-			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_PrintFormatItem.Table_Name, mPrintFormatItem);
-			action = "Update";
+		
+		excludes.add("AD_Table_ID");
+		excludes.add("AD_Column_ID");
+		int columnId = 0;
+		Element columnElement = element.properties.get("AD_Column_ID");
+		if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
+			columnId = ReferenceUtils.resolveReference(ctx, columnElement);
 		} else {
-			action = "New";
-		}
-		mPrintFormatItem.setAD_PrintFormat_ID(parentId);
-		String tableName = getStringValue(element, "AD_Table.TableName", excludes);
-		int tableId = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
-		String columnName = getStringValue(element, "AD_Column.ColumnName", excludes);
-		int columnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnName,
+			Element tableElement = element.properties.get("AD_Table_ID");
+			int tableId = ReferenceUtils.resolveReference(ctx, tableElement);
+			String columnName = getStringValue(element, "AD_Column_ID");
+			columnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnName,
 				"AD_Table", tableId);
+		}			
 		if (columnId > 0)
 			mPrintFormatItem.setAD_Column_ID(columnId);
 
-		String pftChildName = getStringValue(element, "AD_PrintFormatChild_ID.AD_PrintFormat.Name", excludes);
-		if (pftChildName != null && pftChildName.trim().length() > 0) {
-			id = findIdByColumn(ctx, "AD_PrintFormat", "Name", pftChildName);
-			if (id <= 0) {
-				element.defer = true;
-				element.unresolved = "AD_PrintFormat: " + pftChildName;
-				return;
-			}
-			mPrintFormatItem.setAD_PrintFormatChild_ID(id);
+		excludes.add("AD_PrintFormatChild_ID");
+		Element pfchildElement = element.properties.get(I_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormatChild_ID);
+		int AD_PrintFormatChild_ID = ReferenceUtils.resolveReference(ctx, pfchildElement);
+		if (AD_PrintFormatChild_ID > 0) {
+			mPrintFormatItem.setAD_PrintFormatChild_ID(AD_PrintFormatChild_ID);
+		} else if (pfchildElement.contents != null && pfchildElement.contents.length() > 0) {
+			element.defer = true;
+			element.unresolved = "AD_PrintFormat: " + pfchildElement.contents;
+			return;
+			
 		}
 
 		List<String> notfounds = filler.autoFill(excludes);
@@ -106,13 +111,24 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler implem
 			return;
 		}
 
-		if (mPrintFormatItem.save(getTrxName(ctx)) == true) {
-			logImportDetail(ctx, impDetail, 1, mPrintFormatItem.getName(),
-					mPrintFormatItem.get_ID(), action);
-		} else {
-			logImportDetail(ctx, impDetail, 0, mPrintFormatItem.getName(),
-					mPrintFormatItem.get_ID(), action);
-			throw new POSaveFailedException("PrintFormatItem");
+		if (mPrintFormatItem.is_new() || mPrintFormatItem.is_Changed()) {
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_PrintFormatItem.Table_Name,
+					X_AD_PrintFormatItem.Table_ID);
+			String action = null;
+			if (!mPrintFormatItem.is_new()) {
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_PrintFormatItem.Table_Name, mPrintFormatItem);
+				action = "Update";
+			} else {
+				action = "New";
+			}
+			if (mPrintFormatItem.save(getTrxName(ctx)) == true) {
+				logImportDetail(ctx, impDetail, 1, mPrintFormatItem.getName(),
+						mPrintFormatItem.get_ID(), action);
+			} else {
+				logImportDetail(ctx, impDetail, 0, mPrintFormatItem.getName(),
+						mPrintFormatItem.get_ID(), action);
+				throw new POSaveFailedException("PrintFormatItem");
+			}
 		}
 	}
 
@@ -126,29 +142,27 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler implem
 		X_AD_PrintFormatItem m_PrintFormatItem = new X_AD_PrintFormatItem(ctx,
 				AD_PrintFormatItem_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.print-format.item");
-		document.startElement("", "", "printformatitem", atts);
+		addTypeName(atts, "ad.print-format.item");
+		document.startElement("", "", I_AD_PrintFormatItem.Table_Name, atts);
 		createPrintFormatItemBinding(ctx, document, m_PrintFormatItem);
-		document.endElement("", "", "printformatitem");
+		document.endElement("", "", I_AD_PrintFormatItem.Table_Name);
 	}
 
 	private void createPrintFormatItemBinding(Properties ctx, TransformerHandler document,
-			X_AD_PrintFormatItem m_PrintformatItem) {
+			X_AD_PrintFormatItem mPrintformatItem) {
 
-		PoExporter filler = new PoExporter(ctx, document, m_PrintformatItem);
+		PoExporter filler = new PoExporter(ctx, document, mPrintformatItem);
 		List<String> excludes = defaultExcludeList(X_AD_PrintFormatItem.Table_Name);
 
-		if (m_PrintformatItem.getAD_PrintFormatItem_ID() <= PackOut.MAX_OFFICIAL_ID)
+		if (mPrintformatItem.getAD_PrintFormatItem_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.add("AD_PrintFormatItem_ID", new AttributesImpl());
 
-		if (m_PrintformatItem.getAD_Column_ID() > 0) {
+		if (mPrintformatItem.getAD_Column_ID() > 0) {
 			String sql = "SELECT AD_Table_ID FROM AD_Column WHERE AD_Column_ID=?";
-			int tableID = DB.getSQLValue(null, sql, m_PrintformatItem
-					.getAD_Column_ID());
-			sql = "SELECT TableName FROM AD_Table WHERE AD_Table_ID=?";
-			String name = DB.getSQLValueString(null, sql, tableID);
-			filler.addString("AD_Table.TableName", name, new AttributesImpl());
+			int tableID = DB.getSQLValue(null, sql, mPrintformatItem.getAD_Column_ID());
+			AttributesImpl referenceAtts = new AttributesImpl();
+			String value = ReferenceUtils.getTableReference("AD_Table", "TableName", tableID, referenceAtts);
+			filler.addString("AD_Table.TableName", value, referenceAtts);
 		}
 
 		filler.export(excludes);

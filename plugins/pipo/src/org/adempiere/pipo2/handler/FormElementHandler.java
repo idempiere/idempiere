@@ -30,6 +30,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Form;
 import org.compiere.model.MForm;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
@@ -48,38 +49,45 @@ public class FormElementHandler extends AbstractElementHandler implements IPackO
 		List<String> excludes = defaultExcludeList(X_AD_Form.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Form.Table_Name,
-					X_AD_Form.Table_ID);
-			String name = getStringValue(element, "Name");
-			int id = findIdByName(ctx, "AD_Form", name);
-			MForm mForm = new MForm(ctx, id, getTrxName(ctx));
+		if (isProcessElement(ctx, entitytype)) {			
+			MForm mForm = findPO(ctx, element);
+			if (mForm == null) {
+				String name = getStringValue(element, "Name");
+				int id = findIdByName(ctx, "AD_Form", name);
+				mForm = new MForm(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			}
 			PoFiller filler = new PoFiller(ctx, mForm, element, this);
-
-			String action = null;
-			if (id <= 0 && isOfficialId(element, "AD_Form_ID"))
+			
+			if (mForm.getAD_Form_ID() == 0 && isOfficialId(element, "AD_Form_ID"))
 			{
 				filler.setInteger("AD_Form_ID");
 			}
-			if (id > 0){
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Form.Table_Name, mForm);
-				action = "Update";
-			}
-			else{
-				action = "New";
-			}
+						
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
 
-			if (mForm.save(getTrxName(ctx)) == true){
-				logImportDetail (ctx, impDetail, 1, mForm.getName(), mForm.get_ID(), action);
-			}
-			else{
-				logImportDetail (ctx, impDetail, 0, mForm.getName(), mForm.get_ID(), action);
-				throw new POSaveFailedException("Failed to save form definition");
+			if (mForm.is_new() || mForm.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Form.Table_Name,
+						X_AD_Form.Table_ID);
+				String action = null;
+				if (!mForm.is_new()){
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Form.Table_Name, mForm);
+					action = "Update";
+				}
+				else{
+					action = "New";
+				}
+				
+				if (mForm.save(getTrxName(ctx)) == true){
+					logImportDetail (ctx, impDetail, 1, mForm.getName(), mForm.get_ID(), action);
+				}
+				else{
+					logImportDetail (ctx, impDetail, 0, mForm.getName(), mForm.get_ID(), action);
+					throw new POSaveFailedException("Failed to save form definition");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -97,11 +105,10 @@ public class FormElementHandler extends AbstractElementHandler implements IPackO
 		forms.add(AD_Form_ID);
 		X_AD_Form m_Form = new X_AD_Form (ctx, AD_Form_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.form");
-		document.startElement("","","form",atts);
+		addTypeName(atts, "ad.form");
+		document.startElement("","",I_AD_Form.Table_Name,atts);
 		createFormBinding(ctx, document, m_Form);
-		document.endElement("","","form");
+		document.endElement("","",I_AD_Form.Table_Name);
 	}
 
 	private void createFormBinding(Properties ctx, TransformerHandler document, X_AD_Form m_Form)

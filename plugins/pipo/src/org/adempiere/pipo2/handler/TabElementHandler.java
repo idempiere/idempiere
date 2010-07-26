@@ -31,8 +31,11 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Tab;
+import org.compiere.model.I_AD_Window;
 import org.compiere.model.MTab;
 import org.compiere.model.X_AD_Field;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -51,84 +54,103 @@ public class TabElementHandler extends AbstractElementHandler {
 
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
-			if (isParentDefer(element, "window")) {
+			if (isParentDefer(element, I_AD_Window.Table_Name)) {
 				element.defer = true;
 				return;
 			}
-			String name = getStringValue(element, "Name", excludes);
-
-			String windowName = getStringValue(element, "AD_Window_ID", excludes);
-			int windowId = 0;
-			if (getParentId(element, "window") > 0) {
-				windowId = getParentId(element, "window");
-			} else {
-				windowId = findIdByName(ctx, "AD_Window", windowName);
+			
+			MTab mTab = findPO(ctx, element);
+			if (mTab == null) {
+				String name = getStringValue(element, "Name", excludes);
+	
+				int windowId = 0;
+				if (getParentId(element, I_AD_Window.Table_Name) > 0) {
+					windowId = getParentId(element, I_AD_Window.Table_Name);
+				} else {
+					Element windowElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Window_ID);
+					windowId = ReferenceUtils.resolveReference(ctx, windowElement);
+				}
+				if (windowId <= 0) {
+					element.defer = true;
+					return;
+				}
+	
+				Element tableElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Table_ID);
+				int tableId = ReferenceUtils.resolveReference(ctx, tableElement);
+				if (tableId <= 0) {
+					element.defer = true;
+					return;
+				}
+	
+				String sql = "SELECT AD_Tab_ID FROM AD_Tab where AD_Window_ID = ? "
+						+ " AND Name = ?"
+						+ " AND AD_Table_ID = ?";
+	
+				int id = DB.getSQLValue(getTrxName(ctx), sql, windowId, name, tableId);
+				mTab = new MTab(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mTab.setAD_Table_ID(tableId);
+				mTab.setName(name);
+				mTab.setAD_Window_ID(windowId);
 			}
-			if (windowId <= 0) {
-				element.defer = true;
-				return;
-			}
-
-			String tableName = getStringValue(element, "AD_Table_ID", excludes);
-			int tableId = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
-			if (tableId <= 0) {
-				element.defer = true;
-				return;
-			}
-
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Tab.Table_Name,
-					X_AD_Tab.Table_ID);
-
-			String sql = "SELECT AD_Tab_ID FROM AD_Tab where AD_Window_ID = ? "
-					+ " AND Name = ?"
-					+ " AND AD_Table_ID = ?";
-
-			int id = DB.getSQLValue(getTrxName(ctx), sql, windowId, tableName, tableId);
-			MTab mTab = new MTab(ctx, id, getTrxName(ctx));
+						
 			PoFiller filler = new PoFiller(ctx, mTab, element, this);
-			if (id <= 0 && isOfficialId(element, "AD_Tab_ID"))
+			if (mTab.getAD_Tab_ID() == 0 && isOfficialId(element, "AD_Tab_ID"))
 				mTab.setAD_Tab_ID(getIntValue(element, "AD_Tab_ID"));
-			String action = null;
-			if (id > 0){
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Tab.Table_Name,mTab);
-				action = "Update";
+			
+			Element columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Column_ID);
+			int AD_Column_ID = 0;
+			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);
+			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
+				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(), 
+						"AD_Table", mTab.getAD_Table_ID());				
 			}
-			else{
-				action = "New";
-			}
-			mTab.setAD_Table_ID(tableId);
-			mTab.setName(name);
-			String columnName = getStringValue(element,"AD_Column_ID", excludes);
-			if (columnName != null && columnName.trim().length() > 0){
-				int columnId = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);
-				mTab.setAD_Column_ID(columnId);
-			}
+			mTab.setAD_Column_ID(AD_Column_ID);
 
-			columnName = getStringValue(element, X_AD_Tab.COLUMNNAME_AD_ColumnSortOrder_ID, excludes);
-			if (columnName != null && columnName.trim().length() > 0){
-				int columnId = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);
-				mTab.setAD_ColumnSortOrder_ID(columnId);
+			columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_ColumnSortOrder_ID);
+			AD_Column_ID = 0;
+			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);
+			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
+				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(), 
+						"AD_Table", mTab.getAD_Table_ID());
 			}
-
-			columnName = getStringValue(element, X_AD_Tab.COLUMNNAME_AD_ColumnSortYesNo_ID, excludes);
-			if (columnName != null && columnName.trim().length() > 0){
-				int columnId = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);
-				mTab.setAD_ColumnSortYesNo_ID(columnId);
+			mTab.setAD_ColumnSortOrder_ID(AD_Column_ID);
+			
+			columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_ColumnSortYesNo_ID);
+			AD_Column_ID = 0;
+			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);
+			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
+				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(), 
+						"AD_Table", mTab.getAD_Table_ID());
 			}
-
-			mTab.setAD_Window_ID(windowId);
+			mTab.setAD_ColumnSortYesNo_ID(AD_Column_ID);
 
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-			if (mTab.save(getTrxName(ctx)) == true){
-				logImportDetail (ctx, impDetail, 1, mTab.getName(), mTab.get_ID(),action);
-				element.recordId = mTab.getAD_Tab_ID();
-			} else {
-				logImportDetail (ctx, impDetail, 0, mTab.getName(), mTab.get_ID(),action);
-				throw new POSaveFailedException("Tab");
+			
+			if (mTab.is_new() || mTab.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Tab.Table_Name,
+						X_AD_Tab.Table_ID);
+				String action = null;
+				if (!mTab.is_new()){
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Tab.Table_Name,mTab);
+					action = "Update";
+				}
+				else{
+					action = "New";
+				}
+				if (mTab.save(getTrxName(ctx)) == true){
+					logImportDetail (ctx, impDetail, 1, mTab.getName(), mTab.get_ID(),action);
+					element.recordId = mTab.getAD_Tab_ID();
+				} else {
+					logImportDetail (ctx, impDetail, 0, mTab.getName(), mTab.get_ID(),action);
+					throw new POSaveFailedException("Tab");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -145,9 +167,8 @@ public class TabElementHandler extends AbstractElementHandler {
 		int AD_Tab_ID = Env.getContextAsInt(ctx, X_AD_Tab.COLUMNNAME_AD_Tab_ID);
 		X_AD_Tab m_Tab = new X_AD_Tab (ctx, AD_Tab_ID, getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.window.tab");
-		document.startElement("","","tab",atts);
+		addTypeName(atts, "ad.window.tab");
+		document.startElement("","",I_AD_Tab.Table_Name,atts);
 		createTabBinding(ctx,document,m_Tab);
 		//Fields tags.
 		String sql = "SELECT AD_Field_ID FROM AD_FIELD WHERE AD_TAB_ID = " + AD_Tab_ID
@@ -171,7 +192,7 @@ public class TabElementHandler extends AbstractElementHandler {
 		{
 			DB.close(rs, pstmt);
 		}
-		document.endElement("","","tab");
+		document.endElement("","",I_AD_Tab.Table_Name);
 
 		if(m_Tab.getAD_Process_ID() > 0 )
 		{

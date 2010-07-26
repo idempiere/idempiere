@@ -25,10 +25,12 @@ import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
-import org.adempiere.pipo2.PackIn;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Field;
+import org.compiere.model.I_AD_Tab;
 import org.compiere.model.MField;
 import org.compiere.model.X_AD_Field;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -41,61 +43,54 @@ public class FieldElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		PackIn packIn = getPackInProcess(ctx);
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
-			if (isParentDefer(element, "tab")) {
+			if (isParentDefer(element, I_AD_Tab.Table_Name)) {
 				element.defer = true;
 				return;
 			}
-
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Field.Table_Name,
-					X_AD_Field.Table_ID);
+			
 			List<String>excludes = defaultExcludeList(X_AD_Field.Table_Name);
 
-			int tabid = getParentId(element, "tab") ;
+			int tabid = getParentId(element, I_AD_Tab.Table_Name) ;
 			if (tabid <= 0) {
 				element.defer = true;
 				return;
 			}
 
-			String tableName = element.parent.properties.get("AD_Table_ID").contents.toString();
-			String colname = getStringValue(element, "AD_Column_ID", excludes);
-			int columnid = packIn.getColumnId(tableName, colname);
-			if (columnid <= 0) {
-				int tableid = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Table_ID FROM AD_Tab WHERE AD_Tab_ID = ?", tabid);
-				columnid = findIdByColumnAndParentId(ctx, "AD_Column",
-					"ColumnName", colname, "AD_Table", tableid);
-				if (columnid > 0)
-					packIn.addColumn(tableName, colname, columnid);
+			MField mField = findPO(ctx, element);
+			if (mField == null)
+			{
+				int AD_Table_ID = ReferenceUtils.resolveReference(ctx, element.parent.properties.get("AD_Table_ID"));
+				Element columnElement = element.parent.properties.get("AD_Column_ID");
+				int AD_Column_ID = 0;
+				if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement))
+				{
+					AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);
+				}
+				else
+				{
+					String colname = getStringValue(element, "AD_Column_ID", excludes);
+					AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", colname, "AD_Table", AD_Table_ID);
+				}
+				 
+				
+				StringBuffer sqlB = new StringBuffer(
+						"select AD_Field_ID from AD_Field where AD_Column_ID = ")
+						.append(AD_Column_ID)
+						.append(" and AD_Tab_ID = ?");
+				int id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), tabid);
+				mField = new MField(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				if (mField.is_new()) {
+					mField.setAD_Column_ID(AD_Column_ID);
+					mField.setAD_Tab_ID(tabid);
+				}
 			}
-			if (columnid <= 0) {
-				element.defer = true;
-				return;
-			}
-
-			StringBuffer sqlB = new StringBuffer(
-					"select AD_Field_ID from AD_Field where AD_Column_ID = ")
-					.append(columnid)
-					.append(" and AD_Tab_ID = ?");
-			int id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), tabid);
-			MField mField = new MField(ctx, id, getTrxName(ctx));
 			PoFiller filler = new PoFiller(ctx, mField, element, this);
-			if (id <= 0 && isOfficialId(element, "AD_Field_ID"))
+			if (mField.getAD_Field_ID() == 0 && isOfficialId(element, "AD_Field_ID"))
 			{
 				filler.setInteger("AD_Field_ID");
 			}
-
-			String action = null;
-			if (id > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Field.Table_Name, mField);
-				action = "Update";
-			} else {
-				action = "New";
-			}
-
-			mField.setAD_Column_ID(columnid);
-			mField.setAD_Tab_ID(tabid);
 
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
@@ -103,14 +98,27 @@ public class FieldElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			if (mField.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, mField.getName(), mField
-						.get_ID(), action);
-				element.recordId = mField.getAD_Field_ID();
-			} else {
-				logImportDetail(ctx, impDetail, 0, mField.getName(), mField
-						.get_ID(), action);
-				throw new POSaveFailedException("Failed to save field definition.");
+			if (mField.is_new() || mField.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Field.Table_Name,
+						X_AD_Field.Table_ID);
+				String action = null;
+				if (!mField.is_new()){
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), I_AD_Field.Table_Name, mField);
+					action = "Update";
+				}
+				else{
+					action = "New";
+				}
+				
+				if (mField.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, mField.getName(), mField
+							.get_ID(), action);
+					element.recordId = mField.getAD_Field_ID();
+				} else {
+					logImportDetail(ctx, impDetail, 0, mField.getName(), mField
+							.get_ID(), action);
+					throw new POSaveFailedException("Failed to save field definition.");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -126,9 +134,8 @@ public class FieldElementHandler extends AbstractElementHandler {
 				X_AD_Field.COLUMNNAME_AD_Field_ID);
 		X_AD_Field m_Field = new X_AD_Field(ctx, AD_Field_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.tab.field");
-		document.startElement("", "", "field", atts);
+		addTypeName(atts, "ad.tab.field");
+		document.startElement("", "", I_AD_Field.Table_Name, atts);
 		createFieldBinding(ctx, document, m_Field);
 
 		PackOut packOut = (PackOut)ctx.get("PackOutProcess");
@@ -164,7 +171,7 @@ public class FieldElementHandler extends AbstractElementHandler {
 			log.info(e.toString());
 		}
 
-		document.endElement("", "", "field");
+		document.endElement("", "", I_AD_Field.Table_Name);
 	}
 
 	private void createFieldBinding(Properties ctx, TransformerHandler document,

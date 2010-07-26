@@ -31,8 +31,10 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Role;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MRole;
@@ -65,65 +67,19 @@ public class RoleElementHandler extends AbstractElementHandler implements IPackO
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
 
-		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Role.Table_Name,
-				X_AD_Role.Table_ID);
-
 		List<String> excludes = defaultExcludeList(X_AD_Role.Table_Name);
 
-		String name = getStringValue(element, "Name", excludes);
-		int id = findIdByName(ctx, "AD_Role", name);
-		MRole mRole = new MRole(ctx, id, getTrxName(ctx));
-
-		String action = null;
-		if (id <= 0 && isOfficialId(element, "AD_Role_ID"))
+		MRole mRole = findPO(ctx, element);
+		if (mRole == null) {
+			String name = getStringValue(element, "Name", excludes);
+			int id = findIdByName(ctx, "AD_Role", name);
+			mRole = new MRole(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			mRole.setName(name);
+		}
+		
+		if (mRole.getAD_Role_ID() == 0 && isOfficialId(element, "AD_Role_ID"))
 			mRole.setAD_Role_ID(getIntValue(element, "AD_Role_ID"));
-		if (id > 0) {
-			action = "Update";
-		} else {
-			action = "New";
-		}
-
-		mRole.setName(name);
-		name = getStringValue(element, "treemenuname", excludes);
-		if (name != null && name.trim().length() > 0) {
-			id = findIdByColumn(ctx, "AD_Tree", "Name", name);
-			if (id <= 0) {
-				element.defer = true;
-				return;
-			}
-			mRole.setAD_Tree_Menu_ID(id);
-		}
-
-		name = getStringValue(element, "treeorgname", excludes);
-		if (name != null && name.trim().length() > 0) {
-			id = findIdByColumn(ctx, "AD_Tree", "Name", name);
-			if (id <= 0) {
-				element.defer = true;
-				return;
-			}
-			mRole.setAD_Tree_Org_ID(id);
-		}
-
-		name = getStringValue(element, "currencycode", excludes);
-		if (name != null && name.trim().length() > 0) {
-			id = findIdByColumn(ctx, "C_Currency", "ISO_Code", name);
-			if (id <= 0) {
-				element.defer = true;
-				return;
-			}
-			mRole.setC_Currency_ID(id);
-		}
-
-		name = getStringValue(element, "supervisorid", excludes);
-		if (name != null && name.trim().length() > 0) {
-			id = findIdByColumn(ctx, "AD_User", "Name", name);
-			if (id <= 0) {
-				element.defer = true;
-				return;
-			}
-			mRole.setC_Currency_ID(id);
-		}
-
+		
 		PoFiller filler = new PoFiller(ctx, mRole, element, this);
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
@@ -131,15 +87,25 @@ public class RoleElementHandler extends AbstractElementHandler implements IPackO
 			return;
 		}
 
-		if (mRole.save(getTrxName(ctx)) == true) {
-			element.recordId = mRole.getAD_Role_ID();
-			logImportDetail(ctx, impDetail, 1, mRole.getName(), mRole.get_ID(),
-					action);
-		} else {
-
-			logImportDetail(ctx, impDetail, 0, mRole.getName(), mRole.get_ID(),
-					action);
-			throw new POSaveFailedException("Role");
+		if (mRole.is_new() || mRole.is_Changed()) {
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Role.Table_Name,
+					X_AD_Role.Table_ID);
+			String action = null;
+			if (!mRole.is_new()) {
+				action = "Update";
+			} else {
+				action = "New";
+			}
+			if (mRole.save(getTrxName(ctx)) == true) {
+				element.recordId = mRole.getAD_Role_ID();
+				logImportDetail(ctx, impDetail, 1, mRole.getName(), mRole.get_ID(),
+						action);
+			} else {
+	
+				logImportDetail(ctx, impDetail, 0, mRole.getName(), mRole.get_ID(),
+						action);
+				throw new POSaveFailedException("Role");
+			}
 		}
 	}
 
@@ -155,9 +121,8 @@ public class RoleElementHandler extends AbstractElementHandler implements IPackO
 		roles.add(Role_id);
 		X_AD_Role m_Role = new X_AD_Role(ctx, Role_id, null);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.role");
-		document.startElement("", "", "role", atts);
+		addTypeName(atts, "ad.role");
+		document.startElement("", "", I_AD_Role.Table_Name, atts);
 		createRoleBinding(ctx, document, m_Role);
 
 		// Process org access
@@ -279,7 +244,7 @@ public class RoleElementHandler extends AbstractElementHandler implements IPackO
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		document.endElement("", "", "role");
+		document.endElement("", "", I_AD_Role.Table_Name);
 	}
 
 	private void createTaskAccess(Properties ctx, TransformerHandler document,
@@ -349,46 +314,19 @@ public class RoleElementHandler extends AbstractElementHandler implements IPackO
 
 	private void createRoleBinding(Properties ctx, TransformerHandler document,
 			X_AD_Role m_Role) {
-		String sql = null;
-		String name = null;
-
 		PoExporter filler = new PoExporter(ctx, document, m_Role);
 		List<String> excludes = defaultExcludeList(X_AD_Role.Table_Name);
 		if (m_Role.getAD_Role_ID() <= PackOut.MAX_OFFICIAL_ID)
 	        filler.add("AD_Role_ID", new AttributesImpl());
 
-		if (m_Role.getAD_Tree_Menu_ID() > 0) {
-			sql = "SELECT Name FROM AD_Tree WHERE AD_Tree_ID=? AND AD_Tree.TreeType='MM'";
-			name = DB.getSQLValueString(null, sql, m_Role.getAD_Tree_Menu_ID());
-			filler.addString("treemenuname", name, new AttributesImpl());
-		} else
-			filler.addString("treemenuname", "", new AttributesImpl());
-
-		if (m_Role.getAD_Tree_Org_ID() > 0) {
-			sql = "SELECT Name FROM AD_Tree WHERE AD_Tree_ID=? AND AD_Tree.TreeType='OO'";
-			name = DB.getSQLValueString(null, sql, m_Role.getAD_Tree_Org_ID());
-			filler.addString("treeorgname", name, new AttributesImpl());
-		} else
-			filler.addString("treeorgname", "", new AttributesImpl());
-
 		if (m_Role.getC_Currency_ID() > 0) {
-			sql = "SELECT ISO_Code FROM C_Currency WHERE C_Currency_ID=?";
-			name = DB.getSQLValueString(null, sql, m_Role.getC_Currency_ID());
-			filler.addString("currencycode", name, new AttributesImpl());
+			AttributesImpl currencyAtts = new AttributesImpl();
+			String value = ReferenceUtils.getTableReference("C_Currency", "ISO_Code", m_Role.getC_Currency_ID(), currencyAtts);
+			filler.addString("C_Currency_ID", value, currencyAtts);
 		} else
-			filler.addString("currencycode", "", new AttributesImpl());
+			filler.addString("C_Currency_ID", "", new AttributesImpl());
 
-		if (m_Role.getSupervisor_ID() > 0) {
-			sql = "SELECT Name FROM AD_User WHERE AD_User_ID=?";
-			name = DB.getSQLValueString(null, sql, m_Role.getC_Currency_ID());
-			filler.addString("supervisorid", name, new AttributesImpl());
-		} else
-			filler.addString("supervisorid", "", new AttributesImpl());
-
-		excludes.add(X_AD_Role.COLUMNNAME_Supervisor_ID);
 		excludes.add(X_AD_Role.COLUMNNAME_C_Currency_ID);
-		excludes.add(X_AD_Role.COLUMNNAME_AD_Tree_Org_ID);
-		excludes.add(X_AD_Role.COLUMNNAME_AD_Tree_Menu_ID);
 		filler.export(excludes);
 	}
 

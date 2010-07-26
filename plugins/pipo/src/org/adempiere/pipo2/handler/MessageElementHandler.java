@@ -29,6 +29,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Message;
 import org.compiere.model.MMessage;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
@@ -45,38 +46,44 @@ public class MessageElementHandler extends AbstractElementHandler implements IPa
 
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Message.Table_Name,
-					X_AD_Message.Table_ID);
-			String value = getStringValue(element, "Value");
-			int id = findIdByColumn(ctx, "AD_Message", "value", value);
+		if (isProcessElement(ctx, entitytype)) {			
+			MMessage mMessage = findPO(ctx, element);
+			if (mMessage == null) {				
+				String value = getStringValue(element, "Value");
+				int id = findIdByColumn(ctx, "AD_Message", "value", value);
 
-			MMessage mMessage = new MMessage(ctx, id, getTrxName(ctx));
+				mMessage = new MMessage(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			}
 			PoFiller filler = new PoFiller(ctx, mMessage, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_Message.Table_Name);
-			String action = null;
-			if (id <= 0 && isOfficialId(element, "AD_Message_ID"))
-				filler.setInteger("AD_Message_ID");
-
-			if (id > 0){
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Message.Table_Name, mMessage);
-				action = "Update";
-			}
-			else{
-				action = "New";
-			}
+						
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
 
-			if (mMessage.save(getTrxName(ctx)) == true){
-				logImportDetail (ctx, impDetail, 1, mMessage.getValue(), mMessage.get_ID(),action);
-			}
-			else{
-				logImportDetail (ctx, impDetail, 0, mMessage.getValue(), mMessage.get_ID(),action);
-				throw new POSaveFailedException("Failed to save message.");
+			if (mMessage.is_new() || mMessage.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Message.Table_Name,
+						X_AD_Message.Table_ID);
+				String action = null;
+				if (mMessage.getAD_Message_ID() == 0 && isOfficialId(element, "AD_Message_ID"))
+					filler.setInteger("AD_Message_ID");
+	
+				if (!mMessage.is_new()){
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Message.Table_Name, mMessage);
+					action = "Update";
+				}
+				else{
+					action = "New";
+				}
+				if (mMessage.save(getTrxName(ctx)) == true){
+					logImportDetail (ctx, impDetail, 1, mMessage.getValue(), mMessage.get_ID(),action);
+				}
+				else{
+					logImportDetail (ctx, impDetail, 0, mMessage.getValue(), mMessage.get_ID(),action);
+					throw new POSaveFailedException("Failed to save message.");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -95,11 +102,10 @@ public class MessageElementHandler extends AbstractElementHandler implements IPa
 		messages.add(AD_Message_ID);
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Message m_Message = new X_AD_Message (ctx, AD_Message_ID, null);
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.message");
-		document.startElement("","","message",atts);
+		addTypeName(atts, "ad.message");
+		document.startElement("","",I_AD_Message.Table_Name,atts);
 		createMessageBinding(ctx,document,m_Message);
-		document.endElement("","","message");
+		document.endElement("","",I_AD_Message.Table_Name);
 	}
 
 	private void createMessageBinding(Properties ctx, TransformerHandler document, X_AD_Message m_Message)

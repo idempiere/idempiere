@@ -30,6 +30,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_FieldGroup;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_FieldGroup;
@@ -56,48 +57,53 @@ public class FieldGroupElementHandler extends AbstractElementHandler  implements
 
 		if (isProcessElement(ctx, entitytype)) {
 
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_FieldGroup.Table_Name,
-					X_AD_FieldGroup.Table_ID);
-			int id = findIdByColumn(ctx, X_AD_FieldGroup.Table_Name, X_AD_FieldGroup.COLUMNNAME_Name, name);
-
-			X_AD_FieldGroup fieldGroup = new X_AD_FieldGroup(ctx, id,
-					getTrxName(ctx));
+			X_AD_FieldGroup fieldGroup = findPO(ctx, element);
+			if (fieldGroup == null)
+			{
+				int id = findIdByColumn(ctx, X_AD_FieldGroup.Table_Name, X_AD_FieldGroup.COLUMNNAME_Name, name);
+				fieldGroup = new X_AD_FieldGroup(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			}
 			PoFiller pf = new PoFiller(ctx, fieldGroup, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_FieldGroup.Table_Name);
-			if (id <= 0 && isOfficialId(element, "AD_FieldGroup_ID"))
+			if (fieldGroup.getAD_FieldGroup_ID() == 0 && isOfficialId(element, "AD_FieldGroup_ID"))
 			{
 				pf.setInteger("AD_FieldGroup_ID");
 			}
 
-			if (id > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_FieldGroup.Table_Name, fieldGroup);
-				action = "Update";
-				if (processedFieldGroups.contains(id)) {
-					element.skip = true;
-					return;
-				}
-			} else {
-				action = "New";
+			if (processedFieldGroups.contains(fieldGroup.getAD_FieldGroup_ID())) {
+				element.skip = true;
+				return;
 			}
-
+			
 			List<String> notfounds = pf.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
 
-			if (fieldGroup.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, fieldGroup.getName(),
-						fieldGroup.get_ID(), action);
-
-				element.recordId = fieldGroup.getAD_FieldGroup_ID();
-
-				processedFieldGroups.add(fieldGroup.getAD_FieldGroup_ID());
-
-			} else {
-				logImportDetail(ctx, impDetail, 0, fieldGroup.getName(),
-						fieldGroup.get_ID(), action);
-				throw new POSaveFailedException("Reference");
+			if (fieldGroup.is_new() || fieldGroup.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_FieldGroup.Table_Name,
+						X_AD_FieldGroup.Table_ID);
+				if (!fieldGroup.is_new()) {				
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_FieldGroup.Table_Name, fieldGroup);
+					action = "Update";				
+				} else {
+					action = "New";
+				}
+				
+				if (fieldGroup.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, fieldGroup.getName(),
+							fieldGroup.get_ID(), action);
+	
+					element.recordId = fieldGroup.getAD_FieldGroup_ID();
+	
+					processedFieldGroups.add(fieldGroup.getAD_FieldGroup_ID());
+	
+				} else {
+					logImportDetail(ctx, impDetail, 0, fieldGroup.getName(),
+							fieldGroup.get_ID(), action);
+					throw new POSaveFailedException("Reference");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -122,9 +128,8 @@ public class FieldGroupElementHandler extends AbstractElementHandler  implements
 		X_AD_FieldGroup fieldGroup = new X_AD_FieldGroup(ctx, fieldGroup_id, null);
 
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.field-group");
-		document.startElement("", "", "fieldgroup", atts);
+		addTypeName(atts, "ad.field-group");
+		document.startElement("", "", I_AD_FieldGroup.Table_Name, atts);
 
 		createAdElementBinding(ctx, document, fieldGroup);
 
@@ -137,7 +142,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler  implements
 		{
 			log.info(e.toString());
 		}
-		document.endElement("", "", "fieldgroup");
+		document.endElement("", "", I_AD_FieldGroup.Table_Name);
 	}
 
 

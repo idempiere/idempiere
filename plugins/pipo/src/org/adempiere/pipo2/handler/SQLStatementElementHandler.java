@@ -95,8 +95,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler implement
 		String SQLStatement = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement);
 		String DBType = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_DBType);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.sql-statement");
+		addTypeName(atts, "ad.sql-statement");
 		document.startElement("","","SQLStatement",atts);
 		createSQLStatmentBinding(document, SQLStatement, DBType);
 		document.endElement("","","SQLStatement");

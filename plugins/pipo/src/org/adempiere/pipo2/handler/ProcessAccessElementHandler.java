@@ -25,11 +25,13 @@ import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
+import org.compiere.model.I_AD_Process_Access;
+import org.compiere.model.I_AD_Role;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Process;
 import org.compiere.model.X_AD_Process_Access;
 import org.compiere.model.X_AD_Role;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -41,24 +43,28 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 		int processid =0;
 		List<String> excludes = defaultExcludeList(X_AD_Process_Access.Table_Name);
 
-		String roleName = getStringValue(element, "AD_Role.Name", excludes);
-		if (getParentId(element, "role") > 0) {
-			roleid = getParentId(element, "role");
-		} else {
-			roleid = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Role_ID FROM AD_Role WHERE Name = ? AND AD_Client_ID = ?", roleName, Env.getAD_Client_ID(ctx));
-		}
+		X_AD_Process_Access po = findPO(ctx, element);
+		if (po == null) {
+			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
+				roleid = getParentId(element, I_AD_Role.Table_Name);
+			} else {
+				Element roleElement = element.properties.get(I_AD_Process_Access.COLUMNNAME_AD_Role_ID);
+				roleid = ReferenceUtils.resolveReference(ctx, roleElement);			
+			}
 
-		String processName = getStringValue(element, "AD_Process.Value", excludes);
-		processid = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Process_ID FROM AD_Process WHERE Value = ? AND AD_Client_ID = ?", processName, Env.getAD_Client_ID(ctx));
-
-		X_AD_Process_Access po = null;
-		Query query = new Query(ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
-		po = query.setParameters(new Object[]{roleid, processid}).first();
-		if (po == null)
-		{
-			po = new X_AD_Process_Access(ctx, 0, getTrxName(ctx));
-			po.setAD_Process_ID(processid);
-			po.setAD_Role_ID(roleid);
+			Element processElement = element.properties.get(I_AD_Process_Access.COLUMNNAME_AD_Process_ID);
+			processid = ReferenceUtils.resolveReference(ctx, processElement);
+	
+			Query query = new Query(ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
+			po = query.setParameters(new Object[]{roleid, processid}).first();
+			if (po == null)
+			{
+				po = new X_AD_Process_Access(ctx, 0, getTrxName(ctx));
+				po.setAD_Process_ID(processid);
+				po.setAD_Role_ID(roleid);
+			}
+			excludes.add(I_AD_Process_Access.COLUMNNAME_AD_Role_ID);
+			excludes.add(I_AD_Process_Access.COLUMNNAME_AD_Process_ID);
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 		List<String> notfounds = filler.autoFill(excludes);
@@ -77,11 +83,10 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 		int AD_Process_ID = Env.getContextAsInt(ctx, X_AD_Process.COLUMNNAME_AD_Process_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.process-access");
-		document.startElement("", "", "processaccess", atts);
+		addTypeName(atts, "ad.process-access");
+		document.startElement("", "", I_AD_Process_Access.Table_Name, atts);
 		createProcessAccessBinding(ctx, document, AD_Process_ID, AD_Role_ID);
-		document.endElement("", "", "processaccess");
+		document.endElement("", "", I_AD_Process_Access.Table_Name);
 	}
 
 	private void createProcessAccessBinding(Properties ctx, TransformerHandler document,

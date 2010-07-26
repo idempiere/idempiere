@@ -26,7 +26,10 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_ReportView;
+import org.compiere.model.I_AD_ReportView_Col;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_ReportView_Col;
 import org.compiere.util.DB;
@@ -37,67 +40,68 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ReportViewColElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
-			throws SAXException {
-		String action = null;
+			throws SAXException {		
 		List<String> excludes = defaultExcludeList(X_AD_ReportView_Col.Table_Name);
 
 		String entitytype = getStringValue(element,"EntityType");
 		if (isProcessElement(ctx, entitytype)) {
-			String name = getStringValue(element, "AD_ReportView.Name", excludes);
-			int AD_ReportView_ID = 0;
-			if (getParentId(element, "reportview") > 0) {
-				AD_ReportView_ID = getParentId(element, "reportview");
-			} else {
-				AD_ReportView_ID = findIdByColumn(ctx, "AD_ReportView", "Name", name);
-			}
-			if (AD_ReportView_ID <= 0) {
-				element.defer = true;
-				return;
-			}
-
-			name = getStringValue(element, "AD_Column.ColumnName", excludes);
-			int AD_Column_ID = 0;
-			if (name != null && name.trim().length() > 0) {
-				AD_Column_ID = findIdByColumn(ctx, "AD_Column", "Name", name);
-				if (AD_Column_ID <= 0) {
+			excludes.add("AD_Table_ID");
+			X_AD_ReportView_Col mReportviewCol = findPO(ctx, element);
+			if (mReportviewCol == null) {
+				int AD_ReportView_ID = 0;
+				if (getParentId(element, I_AD_ReportView.Table_Name) > 0) {
+					AD_ReportView_ID = getParentId(element, I_AD_ReportView.Table_Name);
+				} else {
+					Element rvElement = element.properties.get(I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_ID);
+					AD_ReportView_ID = ReferenceUtils.resolveReference(ctx, rvElement);
+				}
+				if (AD_ReportView_ID <= 0) {
 					element.defer = true;
 					return;
 				}
+	
+				int AD_Column_ID = 0;
+				Element columnElement = element.properties.get(I_AD_ReportView_Col.COLUMNNAME_AD_Column_ID);
+				if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
+					AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);					
+				} else {
+					if (columnElement.contents != null && columnElement.contents.length() > 0) {
+						Element tableElement = element.properties.get("AD_Table_ID");
+						int AD_Table_ID = ReferenceUtils.resolveReference(ctx, tableElement);						
+						AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnElement.contents.toString(), 
+								"AD_Table", AD_Table_ID);
+						if (AD_Column_ID <= 0) {
+							element.defer = true;
+							return;
+						}
+					}
+				}
+	
+				String functionColumn = getStringValue(element, "FunctionColumn");
+				StringBuffer sql = new StringBuffer("SELECT AD_Reportview_Col_ID FROM AD_Reportview_Col ")
+					.append(" WHERE AD_Column_ID ");
+				if (AD_Column_ID > 0)
+					sql.append(" = " + AD_Column_ID);
+				else
+					sql.append(" IS NULL ");
+				sql.append(" AND FunctionColumn = ?");
+				sql.append(" AND AD_ReportView_ID = ?");
+	
+				int id = DB.getSQLValue(getTrxName(ctx), sql.toString(), functionColumn, AD_ReportView_ID);
+				mReportviewCol = new X_AD_ReportView_Col(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mReportviewCol.setAD_ReportView_ID(AD_ReportView_ID);
+				if (AD_Column_ID > 0) {
+					mReportviewCol.setAD_Column_ID(id);
+				}
+				mReportviewCol.setFunctionColumn(functionColumn);
+				excludes.add("FunctionColumn");
+				excludes.add("AD_ReportView_ID");
+				excludes.add("AD_Column_ID");
 			}
-
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ReportView_Col.Table_Name,
-					X_AD_ReportView_Col.Table_ID);
-
-			String functionColumn = getStringValue(element, "FunctionColumn", excludes);
-			StringBuffer sql = new StringBuffer("SELECT AD_Reportview_Col_ID FROM AD_Reportview_Col ")
-				.append(" WHERE AD_Column_ID ");
-			if (AD_Column_ID > 0)
-				sql.append(" = " + AD_Column_ID);
-			else
-				sql.append(" IS NULL ");
-			sql.append(" AND FunctionColumn = ?");
-			sql.append(" AND AD_ReportView_ID = ?");
-
-			int id = DB.getSQLValue(getTrxName(ctx), sql.toString(), functionColumn, AD_ReportView_ID);
-			if (id < 0) id = 0;
-			X_AD_ReportView_Col mReportviewCol = new X_AD_ReportView_Col(ctx,
-					id, getTrxName(ctx));
-			if (id <= 0 && isOfficialId(element, "AD_ReportView_Col_ID"))
+			
+			if (mReportviewCol.getAD_ReportView_Col_ID() == 0 && isOfficialId(element, "AD_ReportView_Col_ID"))
 				mReportviewCol.setAD_ReportView_Col_ID(getIntValue(element, "AD_ReportView_Col_ID"));
-			if (id > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ReportView_Col.Table_Name,
-						mReportviewCol);
-				action = "Update";
-			} else {
-				action = "New";
-			}
-
-			mReportviewCol.setAD_ReportView_ID(AD_ReportView_ID);
-			if (AD_Column_ID > 0) {
-				mReportviewCol.setAD_Column_ID(id);
-			}
-			mReportviewCol.setFunctionColumn(functionColumn);
-
+			
 			PoFiller filler = new PoFiller(ctx, mReportviewCol, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
@@ -105,13 +109,25 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			if (mReportviewCol.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, "" + mReportviewCol.getAD_ReportView_ID(),
-						mReportviewCol.get_ID(), action);
-			} else {
-				logImportDetail(ctx, impDetail, 0, "" + mReportviewCol.getAD_ReportView_ID(),
-						mReportviewCol.get_ID(),action);
-				throw new POSaveFailedException("ReportViewCol");
+			if (mReportviewCol.is_new() || mReportviewCol.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ReportView_Col.Table_Name,
+						X_AD_ReportView_Col.Table_ID);
+				String action = null;
+				if (!mReportviewCol.is_new()) {
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ReportView_Col.Table_Name,
+							mReportviewCol);
+					action = "Update";
+				} else {
+					action = "New";
+				}
+				if (mReportviewCol.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, "" + mReportviewCol.getAD_ReportView_ID(),
+							mReportviewCol.get_ID(), action);
+				} else {
+					logImportDetail(ctx, impDetail, 0, "" + mReportviewCol.getAD_ReportView_ID(),
+							mReportviewCol.get_ID(),action);
+					throw new POSaveFailedException("ReportViewCol");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -128,11 +144,10 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 		X_AD_ReportView_Col m_Reportview_Col = new X_AD_ReportView_Col(ctx,
 				AD_ReportView_Col_ID, getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.report-view.column");
-		document.startElement("", "", "reportviewcol", atts);
+		addTypeName(atts, "ad.report-view.column");
+		document.startElement("", "", I_AD_ReportView_Col.Table_Name, atts);
 		createReportViewColBinding(ctx, document, m_Reportview_Col);
-		document.endElement("", "", "reportviewcol");
+		document.endElement("", "", I_AD_ReportView_Col.Table_Name);
 	}
 
 	private void createReportViewColBinding(Properties ctx, TransformerHandler document,
@@ -142,9 +157,14 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 		List<String> excludes = defaultExcludeList(X_AD_ReportView_Col.Table_Name);
 		if (m_Reportview_Col.getAD_ReportView_Col_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.add("AD_ReportView_Col_ID", new AttributesImpl());
+		
+		if (m_Reportview_Col.getAD_Column_ID() > 0) {
+			int AD_Table_ID = m_Reportview_Col.getAD_Column().getAD_Table_ID();
+			AttributesImpl tableAtts = new AttributesImpl();
+			String value = ReferenceUtils.getTableReference("AD_Table", "TableName", AD_Table_ID, tableAtts);
+			filler.addString("AD_Table_ID", value, tableAtts);
+		}
 
-		filler.addTableReference("AD_Column_ID", "AD_Column", "ColumnName", new AttributesImpl());
-		excludes.add("AD_Column_ID");
 		filler.export(excludes);
 	}
 }

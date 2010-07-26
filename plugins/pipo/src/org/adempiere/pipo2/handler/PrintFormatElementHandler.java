@@ -33,6 +33,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -50,40 +51,43 @@ public class PrintFormatElementHandler extends AbstractElementHandler implements
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_PrintFormat.Table_Name,
-				X_AD_PrintFormat.Table_ID);
-
-		String action = null;
-
-		String name = getStringValue(element, "Name");
-		int id = findIdByColumn(ctx, "AD_PrintFormat", "Name", name);
-		X_AD_PrintFormat mPrintFormat = new X_AD_PrintFormat(ctx, id, getTrxName(ctx));
+		
+		X_AD_PrintFormat mPrintFormat = findPO(ctx, element);
+		if (mPrintFormat == null) {
+			String name = getStringValue(element, "Name");
+			int id = findIdByColumn(ctx, "AD_PrintFormat", "Name", name);
+			mPrintFormat = new X_AD_PrintFormat(ctx, id > 0 ? id : 0, getTrxName(ctx));
+		}
 		PoFiller filler = new PoFiller(ctx, mPrintFormat, element, this);
 		List<String> excludes = defaultExcludeList(X_AD_PrintFormat.Table_Name);
-		if (id <= 0 && isOfficialId(element, "AD_PrintFormat_ID"))
+		if (mPrintFormat.getAD_PrintFormat_ID() == 0 && isOfficialId(element, "AD_PrintFormat_ID"))
 			mPrintFormat.setAD_PrintFormat_ID(getIntValue(element, "AD_PrintFormat_ID"));
-		if (id > 0) {
-			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_PrintFormat.Table_Name, mPrintFormat);
-			action = "Update";
-		} else {
-			action = "New";
-		}
-
-
+		
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
 			return;
 		}
 
-		if (mPrintFormat.save(getTrxName(ctx)) == true) {
-			logImportDetail(ctx, impDetail, 1, mPrintFormat.getName(),
-					mPrintFormat.get_ID(), action);
-			element.recordId = mPrintFormat.getAD_PrintFormat_ID();
-		} else {
-			logImportDetail(ctx, impDetail, 0, mPrintFormat.getName(),
-					mPrintFormat.get_ID(), action);
-			throw new POSaveFailedException("Failed to save Print Format");
+		if (mPrintFormat.is_new() || mPrintFormat.is_Changed()) {
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_PrintFormat.Table_Name,
+					X_AD_PrintFormat.Table_ID);		
+			String action = null;
+			if (!mPrintFormat.is_new()) {
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_PrintFormat.Table_Name, mPrintFormat);
+				action = "Update";
+			} else {
+				action = "New";
+			}
+			if (mPrintFormat.save(getTrxName(ctx)) == true) {
+				logImportDetail(ctx, impDetail, 1, mPrintFormat.getName(),
+						mPrintFormat.get_ID(), action);
+				element.recordId = mPrintFormat.getAD_PrintFormat_ID();
+			} else {
+				logImportDetail(ctx, impDetail, 0, mPrintFormat.getName(),
+						mPrintFormat.get_ID(), action);
+				throw new POSaveFailedException("Failed to save Print Format");
+			}
 		}
 	}
 
@@ -108,9 +112,8 @@ public class PrintFormatElementHandler extends AbstractElementHandler implements
 				throw new SAXException(e);
 			}
 		}
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.print-format");
-		document.startElement("", "", "printformat", atts);
+		addTypeName(atts, "ad.print-format");
+		document.startElement("", "", I_AD_PrintFormat.Table_Name, atts);
 		createPrintFormatBinding(ctx, document, m_Printformat);
 
 		String sql = "SELECT AD_PrintFormatItem_ID FROM AD_PrintFormatItem WHERE AD_PrintFormat_ID= "
@@ -129,7 +132,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler implements
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		document.endElement("", "", "printformat");
+		document.endElement("", "", I_AD_PrintFormat.Table_Name);
 
 	}
 
@@ -147,6 +150,9 @@ public class PrintFormatElementHandler extends AbstractElementHandler implements
 
 		PoExporter filler = new PoExporter(ctx, document, m_Printformat);
 		List<String> excludes = defaultExcludeList(X_AD_PrintFormat.Table_Name);
+		if (m_Printformat.getAD_PrintFormat_ID() <= PackOut.MAX_OFFICIAL_ID) {
+			filler.add("AD_PrintFormat_ID", new AttributesImpl());
+		}
 
 		filler.export(excludes);
 	}

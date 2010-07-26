@@ -34,6 +34,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Reference;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -55,48 +56,51 @@ public class ReferenceElementHandler extends AbstractElementHandler implements I
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		String Object_Status = null;
-
 		String entitytype = getStringValue(element, "EntityType");
 		String name = getStringValue(element, "Name");
 
 		if (isProcessElement(ctx, entitytype)) {
 
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Reference.Table_Name,
-					X_AD_Reference.Table_ID);
-
-			int id = findIdByName(ctx, "AD_Reference", name);
-
-			X_AD_Reference m_Reference = new X_AD_Reference(ctx, id, getTrxName(ctx));
-			List<String> excludes = defaultExcludeList(X_AD_Reference.Table_Name);
-			if (id <= 0 && isOfficialId(element, "AD_Reference_ID"))
-				m_Reference.setAD_Reference_ID(getIntValue(element, "AD_Reference_ID"));
-			if (id > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_ID(), X_AD_Reference.Table_Name, m_Reference);
-				Object_Status = "Update";
-				if (references.contains(id)) {
-					element.skip = true;
-					return;
-				}
-			} else {
-				Object_Status = "New";
+			X_AD_Reference mReference = findPO(ctx, element);
+			if (mReference == null) {
+				int id = findIdByName(ctx, "AD_Reference", name);
+				mReference = new X_AD_Reference(ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
-
-			PoFiller filler = new PoFiller(ctx, m_Reference, element, this);
+			List<String> excludes = defaultExcludeList(X_AD_Reference.Table_Name);
+			if (mReference.getAD_Reference_ID() == 0 && isOfficialId(element, "AD_Reference_ID"))
+				mReference.setAD_Reference_ID(getIntValue(element, "AD_Reference_ID"));
+			
+			PoFiller filler = new PoFiller(ctx, mReference, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-			if (m_Reference.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, m_Reference.getName(),
-						m_Reference.get_ID(), Object_Status);
-				references.add(m_Reference.getAD_Reference_ID());
-				element.recordId = m_Reference.getAD_Reference_ID();
-			} else {
-				logImportDetail(ctx, impDetail, 0, m_Reference.getName(),
-						m_Reference.get_ID(), Object_Status);
-				throw new POSaveFailedException("Reference");
+			
+			if (mReference.is_new() || mReference.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Reference.Table_Name,
+						X_AD_Reference.Table_ID);
+				String action = null;
+				if (!mReference.is_new()) {
+					if (references.contains(mReference.getAD_Reference_ID())) {
+						element.skip = true;
+						return;
+					}
+					backupRecord(ctx, impDetail.getAD_Package_Imp_ID(), X_AD_Reference.Table_Name, mReference);
+					action = "Update";				
+				} else {
+					action = "New";
+				}
+				if (mReference.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, mReference.getName(),
+							mReference.get_ID(), action);
+					references.add(mReference.getAD_Reference_ID());
+					element.recordId = mReference.getAD_Reference_ID();
+				} else {
+					logImportDetail(ctx, impDetail, 0, mReference.getName(),
+							mReference.get_ID(), action);
+					throw new POSaveFailedException("Reference");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -119,9 +123,8 @@ public class ReferenceElementHandler extends AbstractElementHandler implements I
 
 		X_AD_Reference m_Reference = new X_AD_Reference(ctx, Reference_id, getTrxName(ctx));
 
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.reference");
-		document.startElement("", "", "reference", atts);
+		addTypeName(atts, "ad.reference");
+		document.startElement("", "", I_AD_Reference.Table_Name, atts);
 		createReferenceBinding(ctx, document, m_Reference);
 
 		if (m_Reference.getValidationType().compareTo("L") == 0) {
@@ -156,7 +159,7 @@ public class ReferenceElementHandler extends AbstractElementHandler implements I
 		} else if (m_Reference.getValidationType().compareTo("T") == 0) {
 			createReferenceTable(ctx, document, Reference_id);
 		}
-		document.endElement("", "", "reference");
+		document.endElement("", "", I_AD_Reference.Table_Name);
 
 	}
 

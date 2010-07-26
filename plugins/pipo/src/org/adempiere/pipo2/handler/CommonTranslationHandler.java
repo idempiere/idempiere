@@ -208,8 +208,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			while(rs.next()){
 
 				AttributesImpl atts = new AttributesImpl();
-				atts.addAttribute("", "", "type", "CDATA", "object");
-				atts.addAttribute("", "", "type-name", "CDATA", "ad.trl");
+				addTypeName(atts, "ad.trl");
 				document.startElement("", "", "trl", atts);
 				addTextProperty(null, SPECIAL_ATRRIBUTE_TABLE_NAME, parentTable);
 				getAttsForOneTrlRow(ctx, document, exportableColumns, rs);

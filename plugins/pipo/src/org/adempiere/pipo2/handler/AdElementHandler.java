@@ -32,6 +32,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
+import org.compiere.model.M_Element;
 import org.compiere.model.X_AD_Element;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 
@@ -54,44 +55,50 @@ public class AdElementHandler extends AbstractElementHandler implements IPackOut
 		String ColumnName = getStringValue(element, "ColumnName");
 
 		if (isProcessElement(ctx, entitytype)) {
-
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Element.Table_Name, X_AD_Element.Table_ID);
-			int id = findIdByColumn(ctx, X_AD_Element.Table_Name, X_AD_Element.COLUMNNAME_ColumnName, ColumnName);
-
-			X_AD_Element mAdElement = new X_AD_Element(ctx, id, getTrxName(ctx));
+			
+			M_Element mElement = findPO(ctx, element);
+			if (mElement == null) {
+				int id = findIdByColumn(ctx, X_AD_Element.Table_Name, X_AD_Element.COLUMNNAME_ColumnName, ColumnName);
+				mElement = new M_Element(ctx, id, getTrxName(ctx));
+			}
 			List<String> excludes = defaultExcludeList(X_AD_Element.Table_Name);
-			if (id <= 0 && isOfficialId(element, "AD_Element_ID"))
-				mAdElement.setAD_Element_ID(getIntValue(element, "AD_Element_ID"));
-			if (id > 0) {
-				if (processedElements.contains(id)) {
-					element.skip = true;
-					return;
-				}
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), AD_ELEMENT, mAdElement);
-				action = "Update";
-			} else {
-				action = "New";
+			if (mElement.getAD_Element_ID() == 0 && isOfficialId(element, "AD_Element_ID"))
+				mElement.setAD_Element_ID(getIntValue(element, "AD_Element_ID"));
+			
+			if (processedElements.contains(mElement.getAD_Element_ID())) {
+				element.skip = true;
+				return;
 			}
 
-			PoFiller pf = new PoFiller(ctx, mAdElement, element, this);
+			PoFiller pf = new PoFiller(ctx, mElement, element, this);
 			List<String> notfounds = pf.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-
-			if (mAdElement.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, mAdElement.getName(),
-						mAdElement.get_ID(), action);
-
-				element.recordId = mAdElement.getAD_Element_ID();
-
-				processedElements.add(mAdElement.getAD_Element_ID());
-
-			} else {
-				logImportDetail(ctx, impDetail, 0, mAdElement.getName(),
-						mAdElement.get_ID(), action);
-				throw new POSaveFailedException("Reference");
+			
+			if (mElement.is_new() || mElement.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Element.Table_Name, X_AD_Element.Table_ID);
+				if (!mElement.is_new()) {				
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), AD_ELEMENT, mElement);
+					action = "Update";
+				} else {
+					action = "New";
+				}
+	
+				if (mElement.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, mElement.getName(),
+							mElement.get_ID(), action);
+	
+					element.recordId = mElement.getAD_Element_ID();
+	
+					processedElements.add(mElement.getAD_Element_ID());
+	
+				} else {
+					logImportDetail(ctx, impDetail, 0, mElement.getName(),
+							mElement.get_ID(), action);
+					throw new POSaveFailedException("Reference");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -116,9 +123,8 @@ public class AdElementHandler extends AbstractElementHandler implements IPackOut
 		X_AD_Element m_AdElement = new X_AD_Element(ctx, adElement_id, null);
 
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.element");
-		document.startElement("", "", "element", atts);
+		addTypeName(atts, "ad.element");
+		document.startElement("", "", "AD_Element", atts);
 		createAdElementBinding(ctx, document, m_AdElement);
 
 		PackOut packOut = (PackOut)ctx.get("PackOutProcess");
@@ -132,7 +138,7 @@ public class AdElementHandler extends AbstractElementHandler implements IPackOut
 			log.info(e.toString());
 		}
 
-		document.endElement("", "", "element");
+		document.endElement("", "", "AD_Element");
 	}
 
 

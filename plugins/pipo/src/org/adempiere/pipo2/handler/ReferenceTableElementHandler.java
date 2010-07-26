@@ -29,7 +29,10 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
+import org.compiere.model.I_AD_Ref_Table;
+import org.compiere.model.I_AD_Reference;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Ref_Table;
 import org.compiere.util.DB;
@@ -45,61 +48,76 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 		List<String > excludes = defaultExcludeList(X_AD_Ref_Table.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		String name = getStringValue(element, "AD_Reference_ID", excludes);
 		if (isProcessElement(ctx, entitytype)) {
 			if (isParentSkip(element, null)) {
 				element.skip = true;
 				return;
 			}
 
-			int AD_Reference_ID = 0;
-			if (getParentId(element, "reference") > 0) {
-				AD_Reference_ID = getParentId(element, "reference");
-			} else {
-				AD_Reference_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Reference_ID FROM AD_Reference WHERE Name = ? AND AD_Client_ID = ?", name, Env.getAD_Client_ID(ctx));
-			}
-			if (AD_Reference_ID <= 0 && isOfficialId(element, "AD_Reference_ID"))
-				AD_Reference_ID = getIntValue(element, "AD_Reference_ID");
-
-			String sql = "SELECT * FROM AD_Ref_Table WHERE AD_Reference_ID = ?";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try {
-				pstmt = DB.prepareStatement(sql, getTrxName(ctx));
-				pstmt.setInt(1, AD_Reference_ID);
-				rs = pstmt.executeQuery();
-				X_AD_Ref_Table refTable = null;
-				String action = null;
-				if (rs.next()) {
-					refTable = new X_AD_Ref_Table(ctx, rs, getTrxName(ctx));
-					action = "Update";
+			X_AD_Ref_Table refTable = findPO(ctx, element);
+			if (refTable == null) {
+				int AD_Reference_ID = 0;
+				if (getParentId(element, I_AD_Reference.Table_Name) > 0) {
+					AD_Reference_ID = getParentId(element, I_AD_Reference.Table_Name);
 				} else {
-					refTable = new X_AD_Ref_Table(ctx, 0, getTrxName(ctx));
-					action = "New";
+					Element referenceElement = element.properties.get(I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
+					AD_Reference_ID = ReferenceUtils.resolveReference(ctx, referenceElement);
 				}
-				PoFiller filler = new PoFiller(ctx, refTable, element, this);
-				List<String> notfounds = filler.autoFill(excludes);
-				if (notfounds.size() > 0) {
-					element.defer = true;
-					return;
+				if (AD_Reference_ID <= 0 && isOfficialId(element, "AD_Reference_ID"))
+					AD_Reference_ID = getIntValue(element, "AD_Reference_ID");
+	
+				String sql = "SELECT * FROM AD_Ref_Table WHERE AD_Reference_ID = ?";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				try {
+					pstmt = DB.prepareStatement(sql, getTrxName(ctx));
+					pstmt.setInt(1, AD_Reference_ID);
+					rs = pstmt.executeQuery();
+					if (rs.next()) {
+						refTable = new X_AD_Ref_Table(ctx, rs, getTrxName(ctx));
+					} else {
+						refTable = new X_AD_Ref_Table(ctx, 0, getTrxName(ctx));
+					}					
+				} catch (Exception e) {
+					throw new DatabaseAccessException(e.getLocalizedMessage(), e);
+				} finally {
+					DB.close(rs, pstmt);
 				}
-				int tableId = refTable.getAD_Table_ID();
-				String columnName = getStringValue(element, "AD_Display", excludes);
-				int columnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnName, "AD_Table", tableId);
-				refTable.setAD_Display(columnId);
-				columnName = getStringValue(element, "AD_Key", excludes);
-				columnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnName, "AD_Table", tableId);
-				refTable.setAD_Key(columnId);
+			}
+			String action = refTable.is_new() ? "New" : "Update";
+			PoFiller filler = new PoFiller(ctx, refTable, element, this);
+			List<String> notfounds = filler.autoFill(excludes);
+			if (notfounds.size() > 0) {
+				element.defer = true;
+				return;
+			}
+			int tableId = refTable.getAD_Table_ID();
+			Element displayElement = element.properties.get("AD_Display");
+			int displayColumnId = 0;
+			if (ReferenceUtils.isIDLookup(displayElement) || ReferenceUtils.isUUIDLookup(displayElement)) {
+				displayColumnId = ReferenceUtils.resolveReference(ctx, displayElement);
+			} else {
+				displayColumnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", displayElement.contents.toString(), "AD_Table", tableId);
+			}				
+			refTable.setAD_Display(displayColumnId);
+			
+			
+			Element keyElement = element.properties.get("AD_Key");
+			int keyColumnId = 0;
+			if (ReferenceUtils.isIDLookup(keyElement) || ReferenceUtils.isUUIDLookup(keyElement)) {
+				keyColumnId = ReferenceUtils.resolveReference(ctx, keyElement);
+			} else {
+				keyColumnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", keyElement.contents.toString(), "AD_Table", tableId);
+			}				
+			refTable.setAD_Key(keyColumnId);
+			
+			if (refTable.is_new() || refTable.is_Changed()) {
 				refTable.saveEx();
-
+	
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Ref_Table.Table_Name,
 						X_AD_Ref_Table.Table_ID);
-
-				logImportDetail(ctx, impDetail, 1, name, AD_Reference_ID, action);
-			} catch (Exception e) {
-				throw new DatabaseAccessException(e.getLocalizedMessage(), e);
-			} finally {
-				DB.close(rs, pstmt);
+	
+				logImportDetail(ctx, impDetail, 1, refTable.getAD_Reference().getName(), refTable.getAD_Reference_ID(), action);
 			}
 		} else {
 			element.skip = true;
@@ -114,11 +132,10 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 		int Reference_id = Env.getContextAsInt(ctx,
 				X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.reference.table");
-		document.startElement("", "", "referencetable", atts);
+		addTypeName(atts, "ad.reference.table");
+		document.startElement("", "", I_AD_Ref_Table.Table_Name, atts);
 		createReferenceTableBinding(ctx, document, Reference_id);
-		document.endElement("", "", "referencetable");
+		document.endElement("", "", I_AD_Ref_Table.Table_Name);
 	}
 
 	private void createReferenceTableBinding(Properties ctx,

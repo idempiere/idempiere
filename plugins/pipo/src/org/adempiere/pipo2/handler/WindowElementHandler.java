@@ -34,6 +34,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Window;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MWindow;
@@ -60,43 +61,53 @@ public class WindowElementHandler extends AbstractElementHandler implements IPac
 
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
-			String name = getStringValue(element, "Name", excludes);
-			int id = findIdByName(ctx, "AD_Window", name);
-			if (id > 0 && windows.contains(id)) {
-				return;
-			}
-
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Window.Table_Name,
-					X_AD_Window.Table_ID);
-
-			MWindow mWindow = new MWindow(ctx, id, getTrxName(ctx));
-			if (id <= 0 && isOfficialId(element, "AD_Window_ID"))
-				mWindow.setAD_Window_ID(getIntValue(element, "AD_Window_ID"));
-			String action = null;
-			if (id > 0) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Window.Table_Name, mWindow);
-				action = "Update";
+			MWindow mWindow = findPO(ctx, element);
+			if (mWindow == null) {
+				String name = getStringValue(element, "Name", excludes);
+				int id = findIdByName(ctx, "AD_Window", name);
+				if (id > 0 && windows.contains(id)) {
+					return;
+				}
+	
+				mWindow = new MWindow(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mWindow.setName(name);
 			} else {
-				action = "New";
+				if (windows.contains(mWindow.getAD_Window_ID())) {
+					return;
+				}
 			}
-			mWindow.setName(name);
+						
+			if (mWindow.getAD_Window_ID() == 0 && isOfficialId(element, "AD_Window_ID"))
+				mWindow.setAD_Window_ID(getIntValue(element, "AD_Window_ID"));
+									
 			PoFiller filler = new PoFiller(ctx, mWindow, element, this);
-			excludes.add("Name");
-
+			
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-			if (mWindow.save(getTrxName(ctx)) == true) {
-				logImportDetail(ctx, impDetail, 1, mWindow.getName(), mWindow
-						.get_ID(), action);
-				element.recordId = mWindow.getAD_Window_ID();
-				windows.add(mWindow.getAD_Window_ID());
-			} else {
-				logImportDetail(ctx, impDetail, 0, mWindow.getName(), mWindow
-						.get_ID(), action);
-				throw new POSaveFailedException("Window");
+			
+			if (mWindow.is_new() || mWindow.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Window.Table_Name,
+						X_AD_Window.Table_ID);
+				String action = null;
+				if (!mWindow.is_new()) {
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Window.Table_Name, mWindow);
+					action = "Update";
+				} else {
+					action = "New";
+				}
+				if (mWindow.save(getTrxName(ctx)) == true) {
+					logImportDetail(ctx, impDetail, 1, mWindow.getName(), mWindow
+							.get_ID(), action);
+					element.recordId = mWindow.getAD_Window_ID();
+					windows.add(mWindow.getAD_Window_ID());
+				} else {
+					logImportDetail(ctx, impDetail, 0, mWindow.getName(), mWindow
+							.get_ID(), action);
+					throw new POSaveFailedException("Window");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -113,9 +124,8 @@ public class WindowElementHandler extends AbstractElementHandler implements IPac
 
 		X_AD_Window m_Window = new X_AD_Window(ctx, AD_Window_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.window");
-		document.startElement("", "", "window", atts);
+		addTypeName(atts, "ad.window");
+		document.startElement("", "", I_AD_Window.Table_Name, atts);
 		createWindowBinding(ctx, document, m_Window);
 		// Tab Tag
 		String sql = "SELECT AD_Tab_ID, AD_Table_ID FROM AD_TAB WHERE AD_WINDOW_ID = "
@@ -148,7 +158,7 @@ public class WindowElementHandler extends AbstractElementHandler implements IPac
 		//TODO: export of ad_image and ad_color use
 
 		// Loop tags.
-		document.endElement("", "", "window");
+		document.endElement("", "", I_AD_Window.Table_Name);
 
 		// Preference Tag
 		sql = "SELECT AD_Preference_ID FROM AD_PREFERENCE WHERE AD_WINDOW_ID = ?";

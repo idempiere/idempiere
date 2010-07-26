@@ -27,6 +27,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MPreference;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -40,50 +41,61 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
 
-		MPreference m_Preference = new MPreference(ctx, 0, getTrxName(ctx));
 		List<String> excludes = defaultExcludeList(X_AD_Preference.Table_Name);
-		PoFiller filler = new PoFiller(ctx, m_Preference, element, this);
-		List<String> notFounds = filler.autoFill(excludes);
-		if (notFounds.size() > 0) {
-			element.defer = true;
-			return;
-		}
-
-		Query query = new Query(ctx, "AD_Preference", "Attribute = ? AND coalesce(AD_User_ID,0) = ? AND coalesce(AD_Window_ID,0) = ?", getTrxName(ctx));
-		MPreference tmp = query
-							.setParameters(new Object[]{m_Preference.getAttribute(), m_Preference.getAD_User_ID(), m_Preference.getAD_Window_ID()})
-							.first();
-		if (tmp != null) {
-			filler = new PoFiller(ctx, tmp, element, this);
-			List<String> notfounds = filler.autoFill(excludes);
-			if (notfounds.size() > 0) {
+		MPreference mPreference = findPO(ctx, element);
+		if (mPreference == null) {
+			mPreference = new MPreference(ctx, 0, getTrxName(ctx));			
+			PoFiller filler = new PoFiller(ctx, mPreference, element, this);
+			List<String> notFounds = filler.autoFill(excludes);
+			if (notFounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-			m_Preference = tmp;
-		}
 
-		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Preference.Table_Name,
-				X_AD_Preference.Table_ID);
-		String Object_Status = null;
-		int id = m_Preference.get_ID();
-		if (id <= 0 && isOfficialId(element, "AD_Preference_ID"))
-			m_Preference.setAD_Preference_ID(Integer.parseInt(getStringValue(element, "AD_Preference_ID")));
-
-		if (id > 0) {
-			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Preference.Table_Name, m_Preference);
-			Object_Status = "Update";
+			Query query = new Query(ctx, "AD_Preference", "Attribute = ? AND coalesce(AD_User_ID,0) = ? AND coalesce(AD_Window_ID,0) = ?", getTrxName(ctx));
+			MPreference tmp = query
+								.setParameters(new Object[]{mPreference.getAttribute(), mPreference.getAD_User_ID(), mPreference.getAD_Window_ID()})
+								.first();
+			if (tmp != null) {
+				filler = new PoFiller(ctx, tmp, element, this);
+				List<String> notfounds = filler.autoFill(excludes);
+				if (notfounds.size() > 0) {
+					element.defer = true;
+					return;
+				}
+				mPreference = tmp;
+			}
 		} else {
-			Object_Status = "New";
+			PoFiller filler = new PoFiller(ctx, mPreference, element, this);
+			List<String> notFounds = filler.autoFill(excludes);
+			if (notFounds.size() > 0) {
+				element.defer = true;
+				return;
+			}
 		}
+				
+		if (mPreference.get_ID() == 0 && isOfficialId(element, "AD_Preference_ID"))
+			mPreference.setAD_Preference_ID(Integer.parseInt(getStringValue(element, "AD_Preference_ID")));
 
-		if (m_Preference.save(getTrxName(ctx)) == true) {
-			logImportDetail(ctx, impDetail, 1, m_Preference.getAttribute(),
-					m_Preference.get_ID(), Object_Status);
-		} else {
-			logImportDetail(ctx, impDetail, 0, m_Preference.getAttribute(),
-					m_Preference.get_ID(), Object_Status);
-			throw new POSaveFailedException("Failed to save Preference");
+		if (mPreference.is_new() || mPreference.is_Changed()) {
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Preference.Table_Name,
+					X_AD_Preference.Table_ID);
+			String action = null;
+			if (!mPreference.is_new()) {
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Preference.Table_Name, mPreference);
+				action = "Update";
+			} else {
+				action = "New";
+			}
+	
+			if (mPreference.save(getTrxName(ctx)) == true) {
+				logImportDetail(ctx, impDetail, 1, mPreference.getAttribute(),
+						mPreference.get_ID(), action);
+			} else {
+				logImportDetail(ctx, impDetail, 0, mPreference.getAttribute(),
+						mPreference.get_ID(), action);
+				throw new POSaveFailedException("Failed to save Preference");
+			}
 		}
 	}
 
@@ -97,11 +109,10 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 		X_AD_Preference m_Preference = new X_AD_Preference(ctx,
 				AD_Preference_ID, getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.preference");
-		document.startElement("", "", "preference", atts);
+		addTypeName(atts, "ad.preference");
+		document.startElement("", "", I_AD_Preference.Table_Name, atts);
 		createPreferenceBinding(ctx, document, m_Preference);
-		document.endElement("", "", "preference");
+		document.endElement("", "", I_AD_Preference.Table_Name);
 	}
 
 	private void createPreferenceBinding(Properties ctx, TransformerHandler document,

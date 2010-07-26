@@ -29,6 +29,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Val_Rule;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -45,23 +46,16 @@ public class DynValRuleElementHandler extends AbstractElementHandler implements 
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Val_Rule.Table_Name,
-					X_AD_Val_Rule.Table_ID);
-
 			String name = getStringValue(element, "Name");
-			int id = findIdByColumn(ctx, "AD_Val_Rule", "Name", name);
-
-			X_AD_Val_Rule mValRule = new X_AD_Val_Rule(ctx, id, getTrxName(ctx));
-			if (id <= 0 && isOfficialId(element, "AD_Val_Rule_ID"))
+			
+			X_AD_Val_Rule mValRule = findPO(ctx, element);
+			if (mValRule == null)
+			{
+				int id = findIdByColumn(ctx, "AD_Val_Rule", "Name", name);
+				mValRule = new X_AD_Val_Rule(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			}
+			if (mValRule.getAD_Val_Rule_ID() == 0 && isOfficialId(element, "AD_Val_Rule_ID"))
 				mValRule.setAD_Val_Rule_ID(getIntValue(element, "AD_Val_Rule_ID"));
-			String action = null;
-			if (id > 0){
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Val_Rule.Table_Name, mValRule);
-				action = "Update";
-			}
-			else{
-				action = "New";
-			}
 
 			List<String> excludes = defaultExcludeList(X_AD_Val_Rule.Table_Name);
 
@@ -71,13 +65,26 @@ public class DynValRuleElementHandler extends AbstractElementHandler implements 
 				element.defer = true;
 				return;
 			}
-
-			if (mValRule.save(getTrxName(ctx)) == true){
-				logImportDetail (ctx, impDetail, 1, mValRule.getName(), mValRule.get_ID(),action);
-			}
-			else{
-				logImportDetail (ctx, impDetail, 0, mValRule.getName(), mValRule.get_ID(),action);
-				throw new POSaveFailedException("Failed to save dynamic validation rule.");
+			
+			if (mValRule.is_new() || mValRule.is_Changed()) {
+				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Val_Rule.Table_Name,
+						X_AD_Val_Rule.Table_ID);
+				String action = null;
+				if (!mValRule.is_new()){
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Val_Rule.Table_Name, mValRule);
+					action = "Update";
+				}
+				else{
+					action = "New";
+				}
+	
+				if (mValRule.save(getTrxName(ctx)) == true){
+					logImportDetail (ctx, impDetail, 1, mValRule.getName(), mValRule.get_ID(),action);
+				}
+				else{
+					logImportDetail (ctx, impDetail, 0, mValRule.getName(), mValRule.get_ID(),action);
+					throw new POSaveFailedException("Failed to save dynamic validation rule.");
+				}
 			}
 		} else {
 			element.skip = true;
@@ -96,11 +103,10 @@ public class DynValRuleElementHandler extends AbstractElementHandler implements 
 		rules.add(AD_Val_Rule_ID);
 		X_AD_Val_Rule m_ValRule = new X_AD_Val_Rule (ctx, AD_Val_Rule_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.dynamic-validation");
-		document.startElement("","","dynvalrule", atts);
+		addTypeName(atts, "ad.dynamic-validation");
+		document.startElement("","",I_AD_Val_Rule.Table_Name, atts);
 		createDynamicValidationRuleBinding(ctx,document,m_ValRule);
-		document.endElement("","","dynvalrule");
+		document.endElement("","",I_AD_Val_Rule.Table_Name);
 
 	}
 
