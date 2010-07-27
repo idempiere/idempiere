@@ -110,6 +110,18 @@ public class GenericPOElementHandler extends AbstractElementHandler implements I
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 		List<String> excludes = defaultExcludeList(tableName);
+		if (po.get_ID() == 0) {
+			Element idElement = element.properties.get(tableName + "_ID");
+			if (idElement != null && idElement.contents != null && idElement.contents.length() > 0) {
+				int id = 0;
+				try {
+					id = Integer.parseInt(idElement.contents.toString());
+					if (id > 0 && id <= PackOut.MAX_OFFICIAL_ID) {
+						po.set_ValueOfColumn(tableName + "_ID", id);
+					}
+				} catch (Exception e) {}
+			}
+		}
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;

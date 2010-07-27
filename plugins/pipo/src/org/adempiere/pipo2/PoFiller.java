@@ -138,54 +138,26 @@ public class PoFiller{
 		Element e = element.properties.get(qName);
 		if (e == null)
 			return 0;
-
+		
 		String value = e.contents.toString();
-		String reference = e.attributes.getValue("reference");
-		String referenceKey = e.attributes.getValue("reference-key");
 		String columnName = qName;
-		if (value != null && value.trim().length() > 0)
-		{
-			if ("table".equals(reference))
-			{
-				String[] names = referenceKey.split("[.]");
-				if (names.length < 2)
-					return 0;
-				if (po.get_ColumnIndex(columnName) >= 0) {
-					String tableName = names[0];
-					String searchColumn = names[1];
-
-					int id = handler.findIdByColumn(po.getCtx(), tableName, searchColumn, value.trim());
-					if (id > 0) {
-						po.set_ValueOfColumn(columnName, id);
-						return id;
-					}
+		if (value != null && value.trim().length() > 0) {
+			int id = ReferenceUtils.resolveReference(ctx, e);
+			if (columnName.equals("AD_Client_ID") && id > 0) {
+				if (id != Env.getAD_Client_ID(ctx)) {
 					return -1;
-				} else {
-					return 0;
 				}
 			}
-			else if ("id".equals(reference))
-			{
-				int id = Integer.parseInt(value);
-				po.set_ValueOfColumn(e.getElementValue(), id);
-				return id;
-			}
-			else if ("uuid".equals(reference))
-			{
-				int id = handler.findIdByColumn(po.getCtx(), referenceKey, referenceKey + "_UU", value.trim());
+			if (po.get_ColumnIndex(columnName) >= 0) {
 				if (id > 0) {
 					po.set_ValueOfColumn(columnName, id);
 					return id;
 				}
-				return -1;
+				return -1; 
+			} else {
+				return 0;
 			}
-			else
-			{
-				throw new IllegalArgumentException("Unknown table reference type="+reference);
-			}
-		}
-		else
-		{
+		} else {
 			return 0;
 		}
 	}
@@ -205,8 +177,10 @@ public class PoFiller{
 			po.setAD_Org_ID(0);
 		else if (sAD_Org_ID != null && sAD_Org_ID.equals("@AD_Org_ID@"))
 			po.setAD_Org_ID(Env.getAD_Org_ID(ctx));
-		else
-			setTableReference("AD_Org.Value");
+		else {
+			if (setTableReference("AD_Client_ID") >= 0)
+				setTableReference("AD_Org_ID");
+		}
 
 		for(String qName : element.properties.keySet()) {
 			if (excludes != null ){
