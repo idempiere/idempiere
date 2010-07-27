@@ -173,7 +173,6 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 	private int 		    m_AD_Process_ID;
 	private String		    m_Name = null;
 	
-	private boolean		    m_IsReport = false;
 	private int[]		    m_ids = null;
 	private StringBuffer	m_messageText = new StringBuffer();
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
@@ -191,6 +190,7 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 	
 	private ProcessInfo m_pi = null;
 	private boolean m_isLocked = false;
+	private boolean isParameterPage = true;
 	private String initialMessage;
 	private BusyDialog progressWindow;
 
@@ -244,7 +244,6 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 			if (rs.next())
 			{
 				m_Name = rs.getString(1);
-				m_IsReport = rs.getString(4).equals("Y");
 				m_ShowHelp = rs.getString(5);
 				//
 				m_messageText.append("<b>");
@@ -321,10 +320,10 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 		if (component instanceof Button) {
 			Button element = (Button)component;
 			if ("Ok".equalsIgnoreCase(element.getId())) {
-				if (element.getLabel().length() > 0)
+				if (isParameterPage)
 					this.startProcess();
 				else
-					this.dispose();
+					restart();
 			} else if ("Cancel".equalsIgnoreCase(element.getId())) {
 				this.dispose();
 			}
@@ -369,7 +368,10 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 		m_messageText.append(pi.getLogInfo(true));
 		message.setContent(m_messageText.toString());
 		
-		bOK.setLabel("");		
+		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Parameter"));
+		bOK.setImage("/images/Reset16.png");
+		isParameterPage = false;
+
 		m_ids = pi.getIDs();
 		
 		//move message div to center to give more space to display potentially very long log info
@@ -383,14 +385,37 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 		Clients.response(new AuEcho(this, "onAfterProcess", null));
 	}
 	
+	private void restart() {
+		m_messageText = new StringBuffer(initialMessage);
+		message.setContent(initialMessage);
+
+		north.setVisible(true);
+		messageDiv.detach();
+		messageDiv.setStyle(MESSAGE_DIV_STYLE);
+		north.appendChild(messageDiv);
+
+		center.appendChild(centerPanel);
+
+		isParameterPage = true;
+
+		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Start"));
+		bOK.setImage("/images/Ok16.png");
+
+		//recreate process info
+		m_pi = new WProcessInfo(m_Name, m_AD_Process_ID);
+		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
+		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+		parameterPanel.setProcessInfo(m_pi);
+
+		m_ids = null;
+
+		invalidate();
+	}
+
 	public void onAfterProcess() 
 	{
 		//
 		afterProcessTask();
-
-		// Close automatically
-		if (m_IsReport && !m_pi.isError())
-			this.dispose();
 
 		// If the process is a silent one and no errors occured, close the dialog
 		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
