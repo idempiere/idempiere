@@ -19,10 +19,14 @@ package org.adempiere.webui.panel;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
@@ -36,7 +40,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.au.AuScript;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -51,18 +55,16 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
-import org.zkoss.zul.Timer;
 
 /**
  * 
  * @author Low Heng Sin
  *
  */
-@SuppressWarnings("deprecation")
 public class WAttachment extends Window implements EventListener
 {
 	/**
-	 * 
+	 * generated serial version Id
 	 */
 	private static final long serialVersionUID = 2923895336573554570L;
 
@@ -80,6 +82,8 @@ public class WAttachment extends Window implements EventListener
 	private Iframe preview = new Iframe();
 
 	private Textbox text = new Textbox();
+
+	private Label sizeLabel = new Label();
 
 	private Listbox cbContent = new Listbox();
 
@@ -100,6 +104,17 @@ public class WAttachment extends Window implements EventListener
 	private Hbox confirmPanel = new Hbox();
 
 	private int displayIndex;
+
+	private static List<String> autoPreviewList;
+
+	static {
+		autoPreviewList = new ArrayList<String>();
+		autoPreviewList.add("image/jpeg");
+		autoPreviewList.add("image/png");
+		autoPreviewList.add("image/gif");
+		autoPreviewList.add("text/plan");
+		autoPreviewList.add("application/pdf");
+	}
 
 	/**
 	 *	Constructor.
@@ -142,10 +157,12 @@ public class WAttachment extends Window implements EventListener
 		{
 			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);			
 			AEnv.showWindow(this);
-			displayData(0, true);
-			String script = "setTimeout(\"$e('"+ preview.getUuid() + "').src = $e('" +
-			preview.getUuid() + "').src\", 1000)";
-			Clients.response(new AuScript(null, script));
+			if (autoPreview(0, true))
+			{
+				String script = "setTimeout(\"$e('"+ preview.getUuid() + "').src = $e('" +
+				preview.getUuid() + "').src\", 1000)";
+				Clients.response(new AuScript(null, script));
+			}
 			
 			//enter modal
 			doModal();
@@ -195,6 +212,7 @@ public class WAttachment extends Window implements EventListener
 		toolBar.appendChild(bDelete);
 		toolBar.appendChild(bSave);
 		toolBar.appendChild(cbContent);
+		toolBar.appendChild(sizeLabel);
 		
 		mainPanel.appendChild(northPanel);
 		Div div = new Div();
@@ -248,6 +266,8 @@ public class WAttachment extends Window implements EventListener
 		confirmPanel.appendChild(bRefresh);
 		confirmPanel.appendChild(bCancel);
 		confirmPanel.appendChild(bOk);
+
+		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));
 	}
 	
 	/**
@@ -291,6 +311,32 @@ public class WAttachment extends Window implements EventListener
 		
 	} // loadAttachment
 	
+	private boolean autoPreview(int index, boolean immediate)
+	{
+		MAttachmentEntry entry = m_attachment.getEntry(index);
+		String mimeType = entry.getContentType();
+		byte[] data = entry.getData();
+		String unit = " KB";
+		BigDecimal size = new BigDecimal(data != null ? data.length : 0);
+		size = size.divide(new BigDecimal("1024"));
+		if (size.compareTo(new BigDecimal("1024")) >= 0)
+		{
+			size = size.divide(new BigDecimal("1024"));
+			unit = " MB";
+		}
+		size = size.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		sizeLabel.setText(size.toPlainString() + unit);
+		if (autoPreviewList.contains(mimeType))
+		{
+			displayData(index, immediate);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	/**
 	 *  Display gif or jpg in gifPanel
 	 * 	@param index index
@@ -312,6 +358,12 @@ public class WAttachment extends Window implements EventListener
 			Clients.response(new AuEcho(this, "displaySelected", null));
 	}   //  displayData
 
+	private void clearPreview()
+	{
+		preview.setSrc(null);
+		preview.setVisible(false);
+	}
+
 	/**
 	 * Use to refresh preview frame, don't call directly.
 	 */
@@ -327,7 +379,8 @@ public class WAttachment extends Window implements EventListener
 
 			try
 			{
-				AMedia media = new AMedia(entry.getName(), null, entry.getContentType(), entry.getData());
+				String contentType = entry.getContentType();
+				AMedia media = new AMedia(entry.getName(), null, contentType, entry.getData());
 				
 				preview.setContent(media);
 				preview.setVisible(true);
@@ -421,7 +474,10 @@ public class WAttachment extends Window implements EventListener
 		//	Show Data
 		
 		else if (e.getTarget() == cbContent)
-			displayData (cbContent.getSelectedIndex(), false);
+		{
+			clearPreview();
+			autoPreview (cbContent.getSelectedIndex(), false);
+		}
 		
 		//	Load Attachment
 		
@@ -434,9 +490,7 @@ public class WAttachment extends Window implements EventListener
 			saveAttachmentToFile();
 		
 		else if (e.getTarget() == bRefresh)
-			displayData(displayIndex, true);
-		else if (e.getTarget() instanceof Timer)
-			displayData(displayIndex, true);
+			displayData(cbContent.getSelectedIndex(), true);
 		
 	}	//	onEvent
 	
@@ -484,7 +538,8 @@ public class WAttachment extends Window implements EventListener
 			{
 				m_attachment.updateEntry(i, getMediaData(media));
 				cbContent.setSelectedIndex(i);
-				displayData(cbContent.getSelectedIndex(), false);
+				clearPreview();
+				autoPreview(cbContent.getSelectedIndex(), false);
 				m_change = true;
 				return;
 			}
@@ -495,7 +550,8 @@ public class WAttachment extends Window implements EventListener
 		{
 			cbContent.appendItem(media.getName(), media.getName());
 			cbContent.setSelectedIndex(cbContent.getItemCount()-1);
-			displayData(cbContent.getSelectedIndex(), false);
+			autoPreview(cbContent.getSelectedIndex(), false);
+			clearPreview();
 			m_change = true;
 		}
 	}	//	getFileName
