@@ -701,7 +701,7 @@ public abstract class PO
 	}   //  setValueE
 
 	/**
-	 *  Set Value if updteable and correct class.
+	 *  Set Value if updateable and correct class.
 	 *  (and to NULL if not mandatory)
 	 *  @param index index
 	 *  @param value value
@@ -2775,7 +2775,7 @@ public abstract class PO
 	 */
 	protected int saveNew_getID()
 	{
-		if (get_ID() < 999999) // 2Pack assigns official ID's when importing
+		if (get_ID() > 0 && get_ID() < 999999) // 2Pack assigns official ID's when importing
 			return get_ID();
 		return 0;
 	}	//	saveNew_getID
