@@ -66,6 +66,7 @@ import org.zkoss.zkex.zul.Center;
 import org.zkoss.zkex.zul.South;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -165,6 +166,8 @@ public class WPAttributeDialog extends Window implements EventListener
 	private static final int		INSTANCE_VALUE_LENGTH = 40;
 
 	private Checkbox	cbNewEdit = new Checkbox();
+	private Button		bNewRecord = new Button(Msg.getMsg(Env.getCtx(), "NewRecord"));
+	private Listbox		existingCombo = new Listbox();
 	private Button		bSelect = new Button(); 
 	//	Lot
 //	private VString fieldLotString = new VString ("Lot", false, false, true, 20, 20, null, null);
@@ -245,7 +248,7 @@ public class WPAttributeDialog extends Window implements EventListener
 		else 
 		{
 			int M_AttributeSet_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNoParent, "M_AttributeSet_ID");
-			m_masi = new MAttributeSetInstance (Env.getCtx(), 0, M_AttributeSet_ID, null);
+			m_masi = new MAttributeSetInstance (Env.getCtx(), m_M_AttributeSetInstance_ID, M_AttributeSet_ID, null);
 			as = m_masi.getMAttributeSet();
 		}
 		
@@ -265,10 +268,49 @@ public class WPAttributeDialog extends Window implements EventListener
 		//	Show Product Attributes
 		if (m_productWindow)
 		{
+			Row row = new Row();
+			row.setParent(rows);
+			cbNewEdit.setLabel(Msg.getMsg(Env.getCtx(), "EditRecord"));
+			cbNewEdit.addEventListener(Events.ON_CHECK, this);
+			row.appendChild(cbNewEdit);
+						
+			String sql = "SELECT M_AttributeSetInstance_ID, Description"
+				+ " FROM M_AttributeSetInstance"
+				+ " WHERE M_AttributeSet_ID = " + as.getM_AttributeSet_ID()
+				+ " AND EXISTS ("
+				+ " SELECT 1 FROM M_AttributeInstance INNER JOIN M_Attribute"
+				+ " ON (M_AttributeInstance.M_Attribute_ID = M_Attribute.M_Attribute_ID)"
+				+ " WHERE M_AttributeInstance.M_AttributeSetInstance_ID = M_AttributeSetInstance.M_AttributeSetInstance_ID"
+				+ " AND M_Attribute.IsInstanceAttribute = 'N')";
+			existingCombo.setMold("select");
+			KeyNamePair[] keyNamePairs = DB.getKeyNamePairs(sql, true);
+			for (KeyNamePair pair : keyNamePairs) {
+				existingCombo.appendItem(pair.getName(), pair.getKey());
+			}
+			existingCombo.addActionListener(this);
+			row.appendChild(existingCombo);
+			
+			row = new Row();
+			row.setParent(rows);
+			bNewRecord.addActionListener(this);
+			row.appendChild(bNewRecord);
+			row.appendChild(new Space());
 			MAttribute[] attributes = as.getMAttributes (false);
 			log.fine ("Product Attributes=" + attributes.length);
 			for (int i = 0; i < attributes.length; i++)
-				addAttributeLine (rows, attributes[i], true, !m_productWindow);
+				addAttributeLine (rows, attributes[i], true, false);
+			if (m_M_AttributeSetInstance_ID > 0)
+			{
+				for(int i = 0; i < existingCombo.getItemCount(); i++)
+				{
+					ListItem pp = existingCombo.getItemAtIndex(i);
+					if (pp.getValue() != null && (Integer)pp.getValue() == m_M_AttributeSetInstance_ID)
+					{
+						existingCombo.setSelectedIndex(i);
+						break;
+					}
+				}
+			}
 		}
 		else	//	Set Instance Attributes
 		{
@@ -415,6 +457,23 @@ public class WPAttributeDialog extends Window implements EventListener
 			cbNewEdit.setChecked(m_M_AttributeSetInstance_ID == 0);
 			cmd_newEdit();
 		}
+		else
+		{
+			cbNewEdit.setSelected(false);
+			cbNewEdit.setEnabled(m_M_AttributeSetInstance_ID > 0);
+			bNewRecord.setEnabled(m_M_AttributeSetInstance_ID > 0);
+			boolean rw = m_M_AttributeSetInstance_ID == 0;
+			for (int i = 0; i < m_editors.size(); i++)
+			{
+				HtmlBasedComponent editor = m_editors.get(i);
+				if (editor instanceof InputElement)
+					((InputElement)editor).setReadonly(!rw);
+				else if (editor instanceof Listbox)
+					((Listbox)editor).setEnabled(rw);
+				else if (editor instanceof NumberBox)
+					((NumberBox)editor).setEnabled(rw);
+			}
+		}
 
 		//	Attrribute Set Instance Description
 		Label label = new Label (Msg.translate(Env.getCtx(), "Description"));
@@ -450,7 +509,7 @@ public class WPAttributeDialog extends Window implements EventListener
 		Row row = rows.newRow();
 		row.appendChild(label.rightAlign());
 		//
-		MAttributeInstance instance = attribute.getMAttributeInstance (m_M_AttributeSetInstance_ID);
+		
 		if (MAttribute.ATTRIBUTEVALUETYPE_List.equals(attribute.getAttributeValueType()))
 		{
 			MAttributeValue[] values = attribute.getMAttributeValues();	//	optional = null
@@ -461,40 +520,17 @@ public class WPAttributeDialog extends Window implements EventListener
 				ListItem item = new ListItem(value != null ? value.getName() : "", value);
 				editor.appendChild(item);
 			}
-			boolean found = false;
-			if (instance != null)
-			{
-				for (int i = 0; i < values.length; i++)
-				{
-					if (values[i] != null && values[i].getM_AttributeValue_ID () == instance.getM_AttributeValue_ID ())
-					{
-						editor.setSelectedIndex (i);
-						found = true;
-						break;
-					}
-				}
-				if (found)
-					log.fine("Attribute=" + attribute.getName() + " #" + values.length + " - found: " + instance);
-				else
-					log.warning("Attribute=" + attribute.getName() + " #" + values.length + " - NOT found: " + instance);
-			}	//	setComboBox
-			else
-				log.fine("Attribute=" + attribute.getName() + " #" + values.length + " no instance");
-			row.appendChild(editor);
 			if (readOnly)
 				editor.setEnabled(false);
 			else
 				m_editors.add (editor);
+			row.appendChild(editor);
+			setListAttribute(attribute, editor);
 		}
 		else if (MAttribute.ATTRIBUTEVALUETYPE_Number.equals(attribute.getAttributeValueType()))
 		{
-//			VNumber editor = new VNumber(attribute.getName(), attribute.isMandatory(), 
-//				false, true, DisplayType.Number, attribute.getName());
 			NumberBox editor = new NumberBox(false);
-			if (instance != null)
-				editor.setValue(instance.getValueNumber());
-			else
-				editor.setValue(Env.ZERO);
+			setNumberAttribute(attribute, editor);
 			row.appendChild(editor);
 			if (readOnly)
 				editor.setEnabled(false);
@@ -503,11 +539,8 @@ public class WPAttributeDialog extends Window implements EventListener
 		}
 		else	//	Text Field
 		{
-//			VString editor = new VString (attribute.getName(), attribute.isMandatory(), 
-//				false, true, 20, INSTANCE_VALUE_LENGTH, null, null);
 			Textbox editor = new Textbox();
-			if (instance != null)
-				editor.setText(instance.getValue());
+			setStringAttribute(attribute, editor);
 			row.appendChild(editor);
 			if (readOnly)
 				editor.setEnabled(false);
@@ -515,6 +548,63 @@ public class WPAttributeDialog extends Window implements EventListener
 				m_editors.add (editor);
 		}
 	}	//	addAttributeLine
+
+	private void updateAttributeEditor(MAttribute attribute, int index) {
+		if (MAttribute.ATTRIBUTEVALUETYPE_List.equals(attribute.getAttributeValueType()))
+		{
+			Listbox editor = (Listbox) m_editors.get(index);
+			setListAttribute(attribute, editor);
+			
+		}
+		else if (MAttribute.ATTRIBUTEVALUETYPE_Number.equals(attribute.getAttributeValueType()))
+		{
+			NumberBox editor = (NumberBox) m_editors.get(index);
+			setNumberAttribute(attribute, editor);
+		}
+		else	//	Text Field
+		{
+			Textbox editor = (Textbox) m_editors.get(index);
+			setStringAttribute(attribute, editor);
+		}
+	}
+	
+	private void setStringAttribute(MAttribute attribute, Textbox editor) {
+		MAttributeInstance instance = attribute.getMAttributeInstance (m_M_AttributeSetInstance_ID);
+		if (instance != null)
+			editor.setText(instance.getValue());
+	}
+
+	private void setNumberAttribute(MAttribute attribute, NumberBox editor) {
+		MAttributeInstance instance = attribute.getMAttributeInstance (m_M_AttributeSetInstance_ID);
+		if (instance != null)
+			editor.setValue(instance.getValueNumber());
+		else
+			editor.setValue(Env.ZERO);		
+	}
+
+	private void setListAttribute(MAttribute attribute, Listbox editor) {
+		boolean found = false;
+		MAttributeInstance instance = attribute.getMAttributeInstance (m_M_AttributeSetInstance_ID);
+		MAttributeValue[] values = attribute.getMAttributeValues();	//	optional = null
+		if (instance != null)
+		{
+			for (int i = 0; i < values.length; i++)
+			{
+				if (values[i] != null && values[i].getM_AttributeValue_ID () == instance.getM_AttributeValue_ID ())
+				{
+					editor.setSelectedIndex (i);
+					found = true;
+					break;
+				}
+			}
+			if (found)
+				log.fine("Attribute=" + attribute.getName() + " #" + values.length + " - found: " + instance);
+			else
+				log.warning("Attribute=" + attribute.getName() + " #" + values.length + " - NOT found: " + instance);
+		}	//	setComboBox
+		else
+			log.fine("Attribute=" + attribute.getName() + " #" + values.length + " no instance");
+	}
 
 	/**
 	 *	dispose
@@ -542,7 +632,22 @@ public class WPAttributeDialog extends Window implements EventListener
 		//	New/Edit
 		else if (e.getTarget() == cbNewEdit)
 		{
-			cmd_newEdit();
+			if (m_productWindow)
+			{
+				cmd_edit();
+			}
+			else
+			{
+				cmd_newEdit();
+			}
+		}
+		else if (e.getTarget() == bNewRecord)
+		{
+			cmd_newRecord();
+		}
+		else if (e.getTarget() == existingCombo)
+		{
+			cmd_existingCombo();
 		}
 		//	Select Lot from existing
 		else if (e.getTarget() == fieldLot)
@@ -599,6 +704,72 @@ public class WPAttributeDialog extends Window implements EventListener
 		else
 			log.log(Level.SEVERE, "not found - " + e);
 	}	//	actionPerformed
+
+	private void cmd_existingCombo() {
+		ListItem pp = existingCombo.getSelectedItem();
+		if (pp != null && (Integer)pp.getValue() != -1)
+		{
+			m_M_AttributeSetInstance_ID = (Integer) pp.getValue();
+			m_masi = MAttributeSetInstance.get(Env.getCtx(), m_M_AttributeSetInstance_ID, m_M_Product_ID);
+			// Get Attribute Set
+			MAttributeSet as = m_masi.getMAttributeSet();
+			MAttribute[] attributes = as.getMAttributes (false);
+			log.fine ("Product Attributes=" + attributes.length);
+			for (int i = 0; i < attributes.length; i++)
+				updateAttributeEditor(attributes[i], i);
+			
+			cbNewEdit.setEnabled(true);
+			cbNewEdit.setSelected(false);
+			bNewRecord.setEnabled(true);
+			cmd_edit();
+		}
+	}
+
+	private void cmd_newRecord() {
+		cbNewEdit.setSelected(false);
+		cbNewEdit.setEnabled(false);
+		bNewRecord.setEnabled(false);
+		existingCombo.setSelectedItem(null);
+		
+		m_M_AttributeSetInstance_ID = 0;
+		int M_AttributeSet_ID = m_masi.getM_AttributeSet_ID();
+		m_masi = new MAttributeSetInstance (Env.getCtx(), m_M_AttributeSetInstance_ID, M_AttributeSet_ID, null);		
+		for (int i = 0; i < m_editors.size(); i++)
+		{
+			HtmlBasedComponent editor = m_editors.get(i);
+			if (editor instanceof InputElement)
+			{
+				((InputElement)editor).setReadonly(false);
+				((InputElement)editor).setText(null);
+			}
+			else if (editor instanceof Listbox)
+			{
+				((Listbox)editor).setEnabled(true);
+				((Listbox)editor).setSelectedItem(null);
+			}
+			else if (editor instanceof NumberBox)
+			{
+				((NumberBox)editor).setEnabled(true);
+				((NumberBox)editor).setValue(null);
+			}
+		}
+		fieldDescription.setText("");
+	}
+
+	private void cmd_edit() {
+		boolean check = cbNewEdit.isSelected();
+		for (int i = 0; i < m_editors.size(); i++)
+		{
+			HtmlBasedComponent editor = m_editors.get(i);
+			if (editor instanceof InputElement)
+				((InputElement)editor).setReadonly(!check);
+			else if (editor instanceof Listbox)
+				((Listbox)editor).setEnabled(check);
+			else if (editor instanceof NumberBox)
+				((NumberBox)editor).setEnabled(check);
+		}	
+		
+	}
 
 	/**
 	 * 	Instance Selection Button
