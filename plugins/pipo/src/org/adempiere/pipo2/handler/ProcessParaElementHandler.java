@@ -23,7 +23,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
+import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -123,15 +123,15 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 
 		if (m_Processpara.getAD_Element_ID() > 0) {
 			PackOut packOut = getPackOutProcess(ctx);
-			IPackOutHandler handler = packOut.getHandler("ELE");
+			ElementHandler handler = packOut.getHandler("ELE");
 			try {
-				handler.packOut(packOut,null,null,document,null,m_Processpara.getAD_Element_ID());
+				handler.packOut(packOut,document,null,m_Processpara.getAD_Element_ID());
 			} catch (Exception e) {
 				throw new AdempiereException(e);
 			}
 		}
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.process.parameter");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Process_Para.Table_Name, atts);
 		createProcessParaBinding(ctx, document, m_Processpara);
 		document.endElement("", "", I_AD_Process_Para.Table_Name);
@@ -146,5 +146,13 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 		if (m_Processpara.getAD_Process_Para_ID() <= PackOut.MAX_OFFICIAL_ID)
 	        filler.add("AD_Process_Para_ID", new AttributesImpl());
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

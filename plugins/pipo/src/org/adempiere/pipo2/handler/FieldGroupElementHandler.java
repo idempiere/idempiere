@@ -24,22 +24,19 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_FieldGroup;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class FieldGroupElementHandler extends AbstractElementHandler  implements IPackOutHandler{
+public class FieldGroupElementHandler extends AbstractElementHandler {
 
 
 	private List<Integer> processedFieldGroups = new ArrayList<Integer>();
@@ -128,7 +125,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler  implements
 		X_AD_FieldGroup fieldGroup = new X_AD_FieldGroup(ctx, fieldGroup_id, null);
 
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.field-group");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_FieldGroup.Table_Name, atts);
 
 		createAdElementBinding(ctx, document, fieldGroup);
@@ -136,7 +133,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler  implements
 		PackOut packOut = (PackOut)ctx.get("PackOutProcess");
 
 		try{
-			new CommonTranslationHandler().packOut(packOut,null,null,document,null,fieldGroup.get_ID());
+			new CommonTranslationHandler().packOut(packOut,document,null,fieldGroup.get_ID());
 		}
 		catch(Exception e)
 		{
@@ -158,11 +155,11 @@ public class FieldGroupElementHandler extends AbstractElementHandler  implements
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx(), X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID, recordId);
 
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID);
 	}
 }

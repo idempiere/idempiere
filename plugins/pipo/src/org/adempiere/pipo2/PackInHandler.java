@@ -22,16 +22,13 @@ package org.adempiere.pipo2;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -43,7 +40,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Inst;
@@ -60,20 +56,18 @@ import org.xml.sax.helpers.DefaultHandler;
  * SAX Handler for parsing XML description of the GUI.
  *
  * @author Marco LOMBARDO, lombardo@mayking.com
- * @author Robert KLEIN, robeklein@hotmail
+ * @author Robert KLEIN, robeklein@hotmailo
  *
  * Contributor: William G. Heath - Import of workflows and dynamic validations
  */
 public class PackInHandler extends DefaultHandler {
 
 	public static final String PACK_IN_PROCESS_CTX_KEY = "PackInProcess";
-	private static Properties handlerRegistry;
 
 	/**
      * 	PackInHandler Handler
      */
     public PackInHandler () {
-
     	setupHandlers();
     }   // PackInHandler
 
@@ -95,7 +89,7 @@ public class PackInHandler extends DefaultHandler {
 	private	String 		m_trxName = null;
 	private Properties  m_ctx = null;
 
-	private Map<String, ElementHandler>handlers = null;
+	private IHandlerRegistry handlerRegistry = null;
 	private List<DeferEntry> defer = new ArrayList<DeferEntry>();
 	private Stack<Element> stack = new Stack<Element>();
 	private PackIn packIn;
@@ -145,8 +139,7 @@ public class PackInHandler extends DefaultHandler {
 	}
 
 	private void setupHandlers() {
-
-    	handlers = new HashMap<String, ElementHandler>();
+		handlerRegistry = new PropertyHandlerRegistry();
 	}
 
     /**
@@ -245,7 +238,7 @@ public class PackInHandler extends DefaultHandler {
 			{
 				e.parent = stack.peek();
 				String reference = atts.getValue("type");
-				if ("object".equals(reference))
+				if (!IHandlerRegistry.ELEMENT_TYPE_PROPERTIES.equals(reference))
 				{
 					e.parent.childrens.add(e);
 				}
@@ -260,7 +253,7 @@ public class PackInHandler extends DefaultHandler {
 
 	private void processElement(Element element) throws SAXException
 	{
-		ElementHandler handler = getHandler(element);
+		ElementHandler handler = handlerRegistry.getHandler(element);
 		if (handler != null)
 			handler.startElement(m_ctx, element);
 		if (element.defer)
@@ -302,34 +295,6 @@ public class PackInHandler extends DefaultHandler {
 		PackOut.addTextElement(logDocument, "AdempiereVersion", atts.getValue("AdempiereVersion"), attsOut);
 		PackOut.addTextElement(logDocument, "H3", "Min. Database Date:", attsOut);
 		PackOut.addTextElement(logDocument, "Database", atts.getValue("Database"), attsOut);
-	}
-
-	/**
-	 * @param element
-	 * @return ElementHandler
-	 */
-	public ElementHandler getHandler(Element element)
-	{
-		String elementType = element.attributes.getValue("type-name");
-		ElementHandler handler = handlers.get(elementType);
-		if (handler == null)
-		{
-			String className = handlerRegistry.getProperty(elementType);
-			if (className != null)
-			{
-				try
-				{
-					Class<?> clazz = getClass().getClassLoader().loadClass(className);
-					handler = (ElementHandler) clazz.newInstance();
-				}
-				catch (Exception e)
-				{
-					throw new AdempiereException(e.getLocalizedMessage(), e);
-				}
-				handlers.put(elementType, handler);
-			}
-		}
-		return handler;
 	}
 
 	/**
@@ -418,7 +383,7 @@ public class PackInHandler extends DefaultHandler {
     				log.info("Processeing Element: " + d.element.getElementValue() + " - "
 						+ d.element.attributes.getValue(0));
     			}
-    			ElementHandler handler = handlers.get(d.element.getElementValue());
+    			ElementHandler handler = handlerRegistry.getHandler(d.element);
     			if (handler != null) {
     				if (d.startElement)
     					handler.startElement(m_ctx, d.element);
@@ -490,14 +455,4 @@ public class PackInHandler extends DefaultHandler {
 			startElement = b;
 		}
 	}
-
-	static {
-    	handlerRegistry = new Properties();
-		try {
-			handlerRegistry.load((PackInHandler.class.getResourceAsStream("packin-handler.properties")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-
 }   // PackInHandler

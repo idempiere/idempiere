@@ -23,15 +23,12 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Val_Rule;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Val_Rule;
@@ -39,7 +36,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class DynValRuleElementHandler extends AbstractElementHandler implements IPackOutHandler {
+public class DynValRuleElementHandler extends AbstractElementHandler {
 
 	private List<Integer> rules = new ArrayList<Integer>();
 
@@ -103,7 +100,7 @@ public class DynValRuleElementHandler extends AbstractElementHandler implements 
 		rules.add(AD_Val_Rule_ID);
 		X_AD_Val_Rule m_ValRule = new X_AD_Val_Rule (ctx, AD_Val_Rule_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.dynamic-validation");
+		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Val_Rule.Table_Name, atts);
 		createDynamicValidationRuleBinding(ctx,document,m_ValRule);
 		document.endElement("","",I_AD_Val_Rule.Table_Name);
@@ -122,15 +119,12 @@ public class DynValRuleElementHandler extends AbstractElementHandler implements 
 	}
 
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-
-		if(recordId <= 0 )
-			recordId = detail.getAD_Val_Rule_ID();
 
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID, recordId);
 
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID);
 	}
 }

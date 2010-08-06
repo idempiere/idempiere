@@ -26,7 +26,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
+import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackIn;
@@ -34,8 +34,6 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Table;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_Column;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -46,7 +44,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class TableElementHandler extends AbstractElementHandler implements IPackOutHandler{
+public class TableElementHandler extends AbstractElementHandler {
 	private ColumnElementHandler columnHandler = new ColumnElementHandler();
 
 	private List<Integer>tables = new ArrayList<Integer>();
@@ -128,7 +126,7 @@ public class TableElementHandler extends AbstractElementHandler implements IPack
 		//Export table if not already done so
 		if (!exported){
 			X_AD_Table m_Table = new X_AD_Table (ctx, AD_Table_ID, null);
-			addTypeName(atts, "ad.table");
+			addTypeName(atts, "table");
 			document.startElement("","",I_AD_Table.Table_Name,atts);
 			createTableBinding(ctx,document,m_Table);
 
@@ -144,31 +142,31 @@ public class TableElementHandler extends AbstractElementHandler implements IPack
 				rs = pstmt.executeQuery();
 
 				while (rs.next()){
-					IPackOutHandler handler = packOut.getHandler("ELE");
-					handler.packOut(packOut,null,null,document,null,rs.getInt(X_AD_Column.COLUMNNAME_AD_Element_ID));
+					ElementHandler handler = packOut.getHandler("ELE");
+					handler.packOut(packOut,document,null,rs.getInt(X_AD_Column.COLUMNNAME_AD_Element_ID));
 
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID)>0)
 					{
 						handler = packOut.getHandler("REF");
-						handler.packOut(packOut,null,null,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID));
+						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID));
 					}
 
 					if (rs.getInt("AD_Reference_Value_ID")>0)
 					{
 						handler = packOut.getHandler("REF");
-						handler.packOut(packOut,null,null,document,null,rs.getInt("AD_Reference_Value_ID"));
+						handler.packOut(packOut,document,null,rs.getInt("AD_Reference_Value_ID"));
 					}
 
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID)>0)
 					{
 						handler = packOut.getHandler("P");
-						handler.packOut(packOut,null,null,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID));
+						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID));
 					}
 
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID)>0)
 					{
 						handler = packOut.getHandler("V");
-						handler.packOut(packOut,null,null,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID));
+						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID));
 					}
 
 					createColumn(ctx, document, rs.getInt("AD_Column_ID"));
@@ -210,14 +208,10 @@ public class TableElementHandler extends AbstractElementHandler implements IPack
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if(recordId <= 0)
-			recordId = detail.getAD_Table_ID();
-
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID, recordId);
-
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
 	}
 }

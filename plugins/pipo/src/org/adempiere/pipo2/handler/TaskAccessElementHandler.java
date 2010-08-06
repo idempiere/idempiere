@@ -22,6 +22,7 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
@@ -82,7 +83,7 @@ public class TaskAccessElementHandler extends AbstractElementHandler {
 		int AD_Task_ID = Env.getContextAsInt(ctx, X_AD_Task.COLUMNNAME_AD_Task_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.task-access");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Task_Access.Table_Name, atts);
 		createTaskAccessBinding(ctx, document, AD_Task_ID, AD_Role_ID);
 		document.endElement("", "", I_AD_Task_Access.Table_Name);
@@ -97,5 +98,13 @@ public class TaskAccessElementHandler extends AbstractElementHandler {
 			List<String> excludes = defaultExcludeList(X_AD_Task_Access.Table_Name);
 			filler.export(excludes);
 		}
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

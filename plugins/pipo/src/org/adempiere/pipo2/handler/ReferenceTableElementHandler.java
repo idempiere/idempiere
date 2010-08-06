@@ -132,7 +132,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 		int Reference_id = Env.getContextAsInt(ctx,
 				X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.reference.table");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Ref_Table.Table_Name, atts);
 		createReferenceTableBinding(ctx, document, Reference_id);
 		document.endElement("", "", I_AD_Ref_Table.Table_Name);
@@ -170,5 +170,13 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 		} finally {
 			DB.close(rs, pstmt);
 		}
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -108,7 +108,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 		X_AD_Ref_List m_Ref_List = new X_AD_Ref_List(ctx, AD_Ref_List_ID,
 				getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.reference.list");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Ref_List.Table_Name, atts);
 		createRefListBinding(ctx, document, m_Ref_List);
 		document.endElement("", "", I_AD_Ref_List.Table_Name);
@@ -122,5 +122,13 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 			filler.add("AD_Ref_List_ID", new AttributesImpl());
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

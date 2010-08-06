@@ -18,14 +18,17 @@ package org.adempiere.pipo2;
 
 import java.util.Properties;
 
+import javax.xml.transform.sax.TransformerHandler;
+
+import org.adempiere.base.IService;
 import org.xml.sax.SAXException;
 
 /**
- * Interface for handling import of table data from xml
+ * Interface for handling import and export of table data using xml
  * @author Low Heng Sin
  *
  */
-public interface ElementHandler {
+public interface ElementHandler extends IService {
 
 	/**
 	 * Handle start of xml element ( import ).
@@ -43,4 +46,13 @@ public interface ElementHandler {
 	 * @throws SAXException
 	 */
 	public void endElement (Properties ctx, Element element) throws SAXException;
+	
+	/**
+	 * @param packout
+	 * @param packoutHandler
+	 * @param docHandler
+	 * @param recordId
+	 * @throws Exception
+	 */
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception;
 }

@@ -23,7 +23,6 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -31,8 +30,6 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormatItem;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.DB;
@@ -40,7 +37,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class PrintFormatItemElementHandler extends AbstractElementHandler implements IPackOutHandler {
+public class PrintFormatItemElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
@@ -142,7 +139,7 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler implem
 		X_AD_PrintFormatItem m_PrintFormatItem = new X_AD_PrintFormatItem(ctx,
 				AD_PrintFormatItem_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.print-format.item");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_PrintFormatItem.Table_Name, atts);
 		createPrintFormatItemBinding(ctx, document, m_PrintFormatItem);
 		document.endElement("", "", I_AD_PrintFormatItem.Table_Name);
@@ -168,14 +165,13 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler implem
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp packageExp,
-			MPackageExpDetail packageExpDetail,
-			TransformerHandler packOutDocument,
-			TransformerHandler packageDocument, int recordId) throws Exception {
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
 
 		Env.setContext(packout.getCtx(), X_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormatItem_ID, recordId);
 
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormatItem_ID);
 	}
 }

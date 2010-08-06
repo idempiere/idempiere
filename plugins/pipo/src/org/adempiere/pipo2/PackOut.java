@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -39,6 +38,19 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.compiere.model.I_AD_Form;
+import org.compiere.model.I_AD_ImpFormat;
+import org.compiere.model.I_AD_Menu;
+import org.compiere.model.I_AD_Message;
+import org.compiere.model.I_AD_PrintFormat;
+import org.compiere.model.I_AD_Process;
+import org.compiere.model.I_AD_Reference;
+import org.compiere.model.I_AD_ReportView;
+import org.compiere.model.I_AD_Role;
+import org.compiere.model.I_AD_Table;
+import org.compiere.model.I_AD_Val_Rule;
+import org.compiere.model.I_AD_Window;
+import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.MClient;
 import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
@@ -68,7 +80,6 @@ public class PackOut extends SvrProcess
 {
 	private static final String TRX_NAME_CTX_KEY = "TrxName";
 	public static final String PACK_OUT_PROCESS_CTX_KEY = "PackOutProcess";
-	private static Properties handlerRegistry;
 	/** Record ID				*/
 	private int p_PackOut_ID = 0;
 	private String PackOutVer = "005";
@@ -76,22 +87,14 @@ public class PackOut extends SvrProcess
     public final static int MAX_OFFICIAL_ID = 999999;
 
     private Properties localContext = null;
-	private HashMap<String, IPackOutHandler> handlers;
 	private MPackageExp packageExp;
+	private MPackageExpDetail packageExpDetail;
 	private String packOutDir;
 	private String packageDir;
 	private int blobCount = 0;
 
-    static {
-    	handlerRegistry = new Properties();
-		try {
-			handlerRegistry.load((PackOut.class.getResourceAsStream("packout-handler.properties")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-
-
+	private IHandlerRegistry handlerRegistry = null;
+	
     /**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -122,7 +125,7 @@ public class PackOut extends SvrProcess
 	{
 		initContext();
 
-		handlers = new HashMap<String, IPackOutHandler>();
+		handlerRegistry = new PropertyHandlerRegistry();
 
 		OutputStream  packageDocStream = null;
 		OutputStream  packOutDocStream = null;
@@ -162,15 +165,16 @@ public class PackOut extends SvrProcess
 																 .setOrderBy("Line")
 																 .setParameters(new Object[]{p_PackOut_ID})
 																 .list();
-				for(MPackageExpDetail packageExpDetail : packageExpDetails){
-					String Type = packageExpDetail.getType();
+				for(MPackageExpDetail dtl : packageExpDetails){
+					packageExpDetail = dtl;
+					String type = packageExpDetail.getType();
 					log.info(Integer.toString(packageExpDetail.getLine()));
 
-					IPackOutHandler handler = getHandler(Type);
+					ElementHandler handler = handlerRegistry.getHandler(getTypeName(type));
 					if (handler != null)
-						handler.packOut(this,packageExp,packageExpDetail,packOutDocument,packageDocument,0);
+						handler.packOut(this,packOutDocument,packageDocument,dtl.getExpRecordId());
 					else
-						throw new IllegalArgumentException("Packout handler not found for type " + Type);
+						throw new IllegalArgumentException("Packout handler not found for type " + type);
 
 					processedCount++;
 				}
@@ -303,59 +307,41 @@ public class PackOut extends SvrProcess
 		return packageDocument;
 	}
 
-	public IPackOutHandler getHandler(String type) {
-		String className = handlerRegistry.getProperty(getTypeName(type));
-		IPackOutHandler handler = className != null ? handlers.get(className) : null;
-		if (handler == null && className != null)
-		{
-			try
-			{
-				Class<?> clazz = getClass().getClassLoader().loadClass(className);
-				handler = (IPackOutHandler)clazz.newInstance();
-				handlers.put(className, handler);
-			} catch (Exception e)
-			{
-				throw new AdempiereException(e.getLocalizedMessage(), e);
-			}
-		}
-		return handler;
-	}
-
 	private String getTypeName(String type) {
 		if (X_AD_Package_Exp_Detail.TYPE_ApplicationOrModule.equals(type))
-			return "ad.menu";
+			return I_AD_Menu.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_CodeSnipit.equals(type))
-			return "ad.code-snippet";
+			return "Code_Snipit";
 		else if (X_AD_Package_Exp_Detail.TYPE_Data.equals(type))
-			return "ad.po.generic";
+			return IHandlerRegistry.TABLE_GENERIC_HANDLER;
 		else if (X_AD_Package_Exp_Detail.TYPE_DynamicValidationRule.equals(type))
-			return "ad.dynamic-validation";
+			return I_AD_Val_Rule.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_File_CodeOrOther.equals(type))
-			return "ad.dist-file";
+			return "Dist_File";
 		else if (X_AD_Package_Exp_Detail.TYPE_Form.equals(type))
-			return "ad.form";
+			return I_AD_Form.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_ImportFormat.equals(type))
-			return "ad.import-format";
+			return I_AD_ImpFormat.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_Message.equals(type))
-			return "ad.message";
+			return I_AD_Message.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_PrintFormat.equals(type))
-			return "ad.printformat";
+			return I_AD_PrintFormat.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_ProcessReport.equals(type))
-			return "ad.process";
+			return I_AD_Process.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_Reference.equals(type))
-			return "ad.reference";
+			return I_AD_Reference.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_ReportView.equals(type))
-			return "ad.report-view";
+			return I_AD_ReportView.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_Role.equals(type))
-			return "ad.role";
+			return I_AD_Role.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_SQLStatement.equals(type))
-			return "ad.SQLStatement";
+			return "SQL_Statement";
 		else if (X_AD_Package_Exp_Detail.TYPE_Table.equals(type))
-			return "ad.table";
+			return I_AD_Table.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_Window.equals(type))
-			return "ad.window";
+			return I_AD_Window.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_Workflow.equals(type))
-			return "ad.workflow";
+			return I_AD_Workflow.Table_Name;
 
 		return type;
 	}
@@ -369,6 +355,10 @@ public class PackOut extends SvrProcess
 		localContext = tmp;
 	}
 
+	/**
+	 * @param sourceName
+	 * @param destName
+	 */
 	public void copyFile (String sourceName, String destName ) {
 		InputStream source = null;  // Stream for reading from the source file.
 		OutputStream copy= null;   // Stream for writing the copy.
@@ -457,5 +447,26 @@ public class PackOut extends SvrProcess
 		}
 		return fileName;
 	}
+	
+	/**
+	 * @return MPackageExp
+	 */
+	public MPackageExp getPackageExp() {
+		return packageExp;
+	}
 
+	/**
+	 * @return MPackageExpDetail
+	 */
+	public MPackageExpDetail getPackageExpDetail() {
+		return packageExpDetail;
+	}
+
+	/**
+	 * @param name
+	 * @return ElementHandler
+	 */
+	public ElementHandler getHandler(String name) {
+		return handlerRegistry.getHandler(name);
+	}
 }	//	PackOut

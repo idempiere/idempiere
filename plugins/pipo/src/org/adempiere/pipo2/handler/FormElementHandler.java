@@ -24,7 +24,6 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -32,8 +31,6 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Form;
 import org.compiere.model.MForm;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Form;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -41,7 +38,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class FormElementHandler extends AbstractElementHandler implements IPackOutHandler {
+public class FormElementHandler extends AbstractElementHandler {
 
 	private List<Integer> forms = new ArrayList<Integer>();
 
@@ -105,7 +102,7 @@ public class FormElementHandler extends AbstractElementHandler implements IPackO
 		forms.add(AD_Form_ID);
 		X_AD_Form m_Form = new X_AD_Form (ctx, AD_Form_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.form");
+		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Form.Table_Name,atts);
 		createFormBinding(ctx, document, m_Form);
 		document.endElement("","",I_AD_Form.Table_Name);
@@ -122,14 +119,10 @@ public class FormElementHandler extends AbstractElementHandler implements IPackO
 	}
 
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if(recordId <= 0)
-			recordId = detail.getAD_Form_ID();
-
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID, recordId);
-
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID);
 	}
 }

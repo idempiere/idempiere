@@ -23,6 +23,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
@@ -84,7 +85,7 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 		int AD_Org_ID = Env.getContextAsInt(ctx, "AD_Org_ID");
 		int AD_Role_ID = Env.getContextAsInt(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.organization-role");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Role_OrgAccess.Table_Name, atts);
 		createOrgAccessBinding(ctx, document, AD_Org_ID, AD_Role_ID);
 		document.endElement("", "", I_AD_Role_OrgAccess.Table_Name);
@@ -108,5 +109,13 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 		excludes.add("AD_Org_ID");
 		excludes.add("AD_Role_ID");
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

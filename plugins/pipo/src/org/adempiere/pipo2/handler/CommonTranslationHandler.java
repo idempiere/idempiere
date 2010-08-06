@@ -11,7 +11,6 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
@@ -21,18 +20,14 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Element;
 
-public class CommonTranslationHandler extends AbstractElementHandler implements ElementHandler,IPackOutHandler{
+public class CommonTranslationHandler extends AbstractElementHandler implements ElementHandler {
 
 	public static final String CONTEXT_KEY_PARENT_TABLE = "currentParentTableForTranslation";
 	public static final String CONTEXT_KEY_PARENT_RECORD_ID = "currentParentTableRecordID_ForTranslation";
-	public static final String SPECIAL_ATRRIBUTE_TABLE_NAME = "ParentTable";
 
-
-	private HashMap<String, ArrayList<String>> cached_PIPO_ColumnsByTable = new HashMap<String, ArrayList<String>>();//Key: table name. Value: set of PIPO columns
+	private HashMap<String, ArrayList<String>> cacheColumns = new HashMap<String, ArrayList<String>>();//Key: table name. Value: set of PIPO columns
 
 
 	public void startElement(Properties ctx, Element element) throws SAXException {
@@ -56,25 +51,24 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		if(parentID ==0)
 			throw new SAXException();
 
-		String parentTable = getStringValue(element, SPECIAL_ATRRIBUTE_TABLE_NAME);
 		String language = getStringValue(element, "AD_Language");
 
-		log.info(elementValue+" "+parentTable+" "+getStringValue(element, "Name"));
+		log.info(elementValue+" "+getStringValue(element, "Name"));
 
-		if(isRecordExists(parentTable, parentID, language, ctx)){
-			updateTranslation(parentTable, parentID, ctx, element);
+		if(isRecordExists(elementValue, parentID, language, ctx)){
+			updateTranslation(elementValue, parentID, ctx, element);
 		}else{
-			insertTranslation(parentTable, parentID, ctx, element);
+			insertTranslation(elementValue, parentID, ctx, element);
 		}
 	}
 
 
-	private boolean isRecordExists(String parentTable, int parentID,
+	private boolean isRecordExists(String tableName, int parentID,
 			String language, Properties ctx) {
 
 		String sql =
-			"SELECT AD_Client_ID FROM " + parentTable +"_TRL WHERE " +
-			parentTable + "_ID = ? AND AD_Language = ?";
+			"SELECT AD_Client_ID FROM " + tableName +" WHERE " +
+			tableName.substring(0, tableName.length()-4) + "_ID = ? AND AD_Language = ?";
 
 		if(DB.getSQLValue(getTrxName(ctx), sql, parentID, language) == -1){
 			return false;
@@ -84,17 +78,22 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	}
 
 
-	private void insertTranslation(String parentTable, int parentID,
+	private void insertTranslation(String tableName, int parentID,
 			Properties ctx, Element element) throws SAXException{
 
-		ArrayList<String> pipoColumns = getExportableColumns(parentTable);
-		StringBuffer sql = new StringBuffer(
-			"INSERT INTO " + parentTable + "_TRL (" + parentTable + "_ID, " +
-			" AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, " + cast(pipoColumns) +
-			") values ( ?, ?, ?, ?, ? ");
+		String parentTable = tableName.substring(0, tableName.length()-4);
+		ArrayList<String> columns = getTranslatedColumns(parentTable);
+		StringBuffer sql = new StringBuffer();
+		sql.append("INSERT INTO ")
+			.append(tableName)
+			.append(" (")
+			.append(parentTable)
+			.append("_ID, ")
+			.append(" AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, ")
+			.append(cast(columns))
+			.append(") values ( ?, ?, ?, ?, ? ");
 
-
-		for (int i = 0; i<pipoColumns.size(); i++) {
+		for (int i = 0; i<columns.size(); i++) {
 			sql.append(",?");
 		}
 
@@ -110,7 +109,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			pstm.setInt(5, 0);
 
 			int i = 5;
-			for (String columnName : pipoColumns) {
+			for (String columnName : columns) {
 				i++;
 
 				String value = getStringValue(element, columnName);
@@ -133,17 +132,16 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	}
 
 
-	private void updateTranslation(String parentTable, int parentID,
+	private void updateTranslation(String tableName, int parentID,
 			Properties ctx, Element element) throws SAXException{
-		ArrayList<String> pipoColumns = getExportableColumns(parentTable);
-		StringBuffer sqlBuf = new StringBuffer("UPDATE "+parentTable+"_TRL SET ");
-		for (String columnName : pipoColumns) {
-
-			sqlBuf.append(columnName).append("=?,");
+		String parentTable = tableName.substring(0, tableName.length()-4);
+		ArrayList<String> columns = getTranslatedColumns(parentTable);
+		StringBuffer buffer = new StringBuffer("UPDATE "+tableName+" SET ");
+		for (String columnName : columns) {
+			buffer.append(columnName).append("=?,");
 		}
 
-		String sql =  sqlBuf.substring(0, sqlBuf.length()-1);
-
+		String sql =  buffer.substring(0, buffer.length()-1);
 		sql += " WHERE AD_Language = '"+getStringValue(element, "AD_Language")+
 		"' AND "+parentTable+"_ID="+parentID;
 
@@ -151,8 +149,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		try {
 			pstm = DB.prepareStatement(sql,getTrxName(ctx));
 			int i=0;
-			for (String columnName : pipoColumns) {
-
+			for (String columnName : columns) {
 				String value = getStringValue(element, columnName);
 				i++;
 
@@ -194,52 +191,47 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	private void createTranslationTags(Properties ctx, String parentTable,
 			int parentRecordID, TransformerHandler document) throws SAXException {
 
-		ArrayList<String> exportableColumns = getExportableColumns(parentTable);
+		ArrayList<String> translatedColumns = getTranslatedColumns(parentTable);
 
 		String sql =
-			"select "+cast(exportableColumns)+" from "+parentTable+"_trl where "+
+			"select "+cast(translatedColumns)+" from "+parentTable+"_trl where "+
 			parentTable+"_ID="+parentRecordID;
 
-		PreparedStatement pstm = DB.prepareStatement(sql, null);
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
 		try {
 
-			ResultSet rs = pstm.executeQuery();
+			pstm = DB.prepareStatement(sql, null);
+			rs = pstm.executeQuery();
 
+			String elementName = parentTable + "_Trl";
 			while(rs.next()){
-
 				AttributesImpl atts = new AttributesImpl();
-				addTypeName(atts, "ad.trl");
-				document.startElement("", "", "trl", atts);
-				addTextProperty(null, SPECIAL_ATRRIBUTE_TABLE_NAME, parentTable);
-				getAttsForOneTrlRow(ctx, document, exportableColumns, rs);
-				document.endElement("", "", "trl");
+				addTypeName(atts, "translation");
+				document.startElement("", "", elementName, atts);
+				exportRow(ctx, document, translatedColumns, rs);
+				document.endElement("", "", elementName);
 			}
-
-			rs.close();
-			pstm.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new SAXException();
+		} finally {
+			DB.close(rs, pstm);
 		}
 	}
 
-	private void getAttsForOneTrlRow(Properties ctx, TransformerHandler document, ArrayList<String> exportableColumns,
+	private void exportRow(Properties ctx, TransformerHandler document, ArrayList<String> columns,
 			ResultSet rs) throws Exception {
 
-		AttributesImpl atts = new AttributesImpl();
 		PoExporter af = new PoExporter(ctx, document, null);
 
-		for (String columnName : exportableColumns) {
-
+		for (String columnName : columns) {
 			if(columnName.equalsIgnoreCase("IsActive")||
-					columnName.equalsIgnoreCase("IsTranslated")){
-
-				af.addBoolean(columnName, rs.getString(columnName).equalsIgnoreCase("Y"), atts);
-
-			}else{
-
-				af.addString(columnName, rs.getString(columnName), atts);
+					columnName.equalsIgnoreCase("IsTranslated")) {
+				af.addBoolean(columnName, rs.getString(columnName).equalsIgnoreCase("Y"), new AttributesImpl());
+			} else{
+				af.addString(columnName, rs.getString(columnName), new AttributesImpl());
 			}
 		}
 	}
@@ -250,59 +242,57 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	 * @return
 	 * @throws SAXException
 	 */
-	@SuppressWarnings("unchecked")
-	private ArrayList<String> getExportableColumns(String parentTable) throws SAXException {
+	private ArrayList<String> getTranslatedColumns(String parentTable) throws SAXException {
 
 
-		Object pipolColumns = cached_PIPO_ColumnsByTable.get(parentTable);
+		ArrayList<String> pipolColumns = cacheColumns.get(parentTable);
 		if(pipolColumns != null){
-			return (ArrayList<String>)pipolColumns;
+			return pipolColumns;
 		}
 
-		ArrayList<String> new_PIPO_Columns = new ArrayList<String>();
+		ArrayList<String> columns = new ArrayList<String>();
 		String sql = "select * from ad_column where ad_table_id = " +
 				"(select ad_table_id from ad_table where tableName = ?)" +
 				"and isTranslated='Y'";
 
-		PreparedStatement pstm = DB.prepareStatement(sql, null);
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
 		try {
-
+			pstm = DB.prepareStatement(sql, null);
 			pstm.setString(1, parentTable);
 
-			ResultSet rs = pstm.executeQuery();
+			rs = pstm.executeQuery();
 			while(rs.next()){
-
-				new_PIPO_Columns.add(rs.getString("columnName"));
+				columns.add(rs.getString("columnName"));
 			}
-
-			pstm.close();
-			rs.close();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SAXException();
+		} finally {
+			DB.close(rs, pstm);
 		}
 
-		new_PIPO_Columns.add("AD_Language");
-		new_PIPO_Columns.add("IsActive");
-		new_PIPO_Columns.add("IsTranslated");
+		columns.add("AD_Language");
+		columns.add("IsActive");
+		columns.add("IsTranslated");
 
 		//Putting in cache
-		cached_PIPO_ColumnsByTable.put(parentTable, new_PIPO_Columns);
+		cacheColumns.put(parentTable, columns);
 
-		return (ArrayList<String>)new_PIPO_Columns;
+		return columns;
 	}
 
 	private String cast(ArrayList<String> arg){
-		return arg.toString().substring(1,  arg.toString().length()-1);
+		String str = arg.toString();
+		return str.substring(1,  str.length()-1);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		if("true".equals(packout.getCtx().getProperty("isHandleTranslations"))){
 			Env.setContext(packout.getCtx(), CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE,X_AD_Element.Table_Name);
 			Env.setContext(packout.getCtx(), CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID,recordId);
-			this.create(packout.getCtx(), packOutDocument);
+			this.create(packout.getCtx(), packoutHandler);
 			packout.getCtx().remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE);
 			packout.getCtx().remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID);
 

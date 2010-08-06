@@ -27,15 +27,12 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_PrintFormat;
@@ -45,7 +42,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class PrintFormatElementHandler extends AbstractElementHandler implements IPackOutHandler {
+public class PrintFormatElementHandler extends AbstractElementHandler {
 
 	private List<Integer> formats = new ArrayList<Integer>();
 
@@ -107,12 +104,12 @@ public class PrintFormatElementHandler extends AbstractElementHandler implements
 		X_AD_PrintFormat m_Printformat = new X_AD_PrintFormat(ctx, AD_PrintFormat_ID, null);
 		if (m_Printformat.getAD_PrintPaper_ID() > 0) {
 			try {
-				getPackOutProcess(ctx).getHandler("PP").packOut(getPackOutProcess(ctx), null, null, document, getLogDocument(ctx), m_Printformat.getAD_PrintPaper_ID());
+				getPackOutProcess(ctx).getHandler("PP").packOut(getPackOutProcess(ctx), document, getLogDocument(ctx), m_Printformat.getAD_PrintPaper_ID());
 			} catch (Exception e) {
 				throw new SAXException(e);
 			}
 		}
-		addTypeName(atts, "ad.print-format");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_PrintFormat.Table_Name, atts);
 		createPrintFormatBinding(ctx, document, m_Printformat);
 
@@ -139,7 +136,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler implements
 	private void createItem(Properties ctx, TransformerHandler document,
 			int AD_PrintFormatItem_ID) throws SAXException {
 		try {
-			getPackOutProcess(ctx).getHandler("ad.printformat.item").packOut(getPackOutProcess(ctx), null, null, document, getLogDocument(ctx), AD_PrintFormatItem_ID);
+			getPackOutProcess(ctx).getHandler("ad.printformat.item").packOut(getPackOutProcess(ctx), document, getLogDocument(ctx), AD_PrintFormatItem_ID);
 		} catch (Exception e) {
 			throw new SAXException(e);
 		}
@@ -157,14 +154,10 @@ public class PrintFormatElementHandler extends AbstractElementHandler implements
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if(recordId <= 0)
-			recordId = detail.getAD_PrintFormat_ID();
-
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID, recordId);
-
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID);
 	}
 }

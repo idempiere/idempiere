@@ -22,7 +22,7 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
+import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -134,7 +134,7 @@ public class FieldElementHandler extends AbstractElementHandler {
 				X_AD_Field.COLUMNNAME_AD_Field_ID);
 		X_AD_Field m_Field = new X_AD_Field(ctx, AD_Field_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.tab.field");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Field.Table_Name, atts);
 		createFieldBinding(ctx, document, m_Field);
 
@@ -144,26 +144,26 @@ public class FieldElementHandler extends AbstractElementHandler {
 		{
 			if(m_Field.getAD_FieldGroup_ID() > 0)
 			{
-				IPackOutHandler handler = packOut.getHandler("FG");
-				handler.packOut(packOut,null,null,document,null,m_Field.getAD_FieldGroup_ID());
+				ElementHandler handler = packOut.getHandler("FG");
+				handler.packOut(packOut,document,null,m_Field.getAD_FieldGroup_ID());
 			}
 
 			if (m_Field.getAD_Reference_ID()>0)
 			{
-				IPackOutHandler handler = packOut.getHandler("REF");
-				handler.packOut(packOut,null,null,document,null,m_Field.getAD_Reference_ID());
+				ElementHandler handler = packOut.getHandler("REF");
+				handler.packOut(packOut,document,null,m_Field.getAD_Reference_ID());
 			}
 
 			if (m_Field.getAD_Reference_Value_ID()>0)
 			{
-				IPackOutHandler handler = packOut.getHandler("REF");
-				handler.packOut(packOut,null,null,document,null,m_Field.getAD_Reference_Value_ID());
+				ElementHandler handler = packOut.getHandler("REF");
+				handler.packOut(packOut,document,null,m_Field.getAD_Reference_Value_ID());
 			}
 
 			if (m_Field.getAD_Val_Rule_ID()>0)
 			{
-				IPackOutHandler handler = packOut.getHandler("V");
-				handler.packOut(packOut,null,null,document,null,m_Field.getAD_Val_Rule_ID());
+				ElementHandler handler = packOut.getHandler("V");
+				handler.packOut(packOut,document,null,m_Field.getAD_Val_Rule_ID());
 			}
 		}
 		catch(Exception e)
@@ -184,5 +184,13 @@ public class FieldElementHandler extends AbstractElementHandler {
 		}
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

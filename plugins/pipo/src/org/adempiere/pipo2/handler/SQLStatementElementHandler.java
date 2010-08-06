@@ -26,9 +26,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PackOut;
-import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.util.DB;
@@ -36,7 +34,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class SQLStatementElementHandler extends AbstractElementHandler implements IPackOutHandler{
+public class SQLStatementElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String elementValue = element.getElementValue();
@@ -95,7 +93,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler implement
 		String SQLStatement = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement);
 		String DBType = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_DBType);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.sql-statement");
+		addTypeName(atts, "custom");
 		document.startElement("","","SQLStatement",atts);
 		createSQLStatmentBinding(document, SQLStatement, DBType);
 		document.endElement("","","SQLStatement");
@@ -115,11 +113,12 @@ public class SQLStatementElementHandler extends AbstractElementHandler implement
 
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int field) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int field) throws Exception
 	{
+		MPackageExpDetail detail = packout.getPackageExpDetail();
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement, detail.getSQLStatement());
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_DBType, detail.getDBType());
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_DBType);
 	}

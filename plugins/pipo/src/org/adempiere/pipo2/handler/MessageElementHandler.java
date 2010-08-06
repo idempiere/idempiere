@@ -23,7 +23,6 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -31,8 +30,6 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Message;
 import org.compiere.model.MMessage;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Message;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -40,7 +37,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class MessageElementHandler extends AbstractElementHandler implements IPackOutHandler{
+public class MessageElementHandler extends AbstractElementHandler {
 
 	private List<Integer> messages = new ArrayList<Integer>();
 
@@ -102,7 +99,7 @@ public class MessageElementHandler extends AbstractElementHandler implements IPa
 		messages.add(AD_Message_ID);
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Message m_Message = new X_AD_Message (ctx, AD_Message_ID, null);
-		addTypeName(atts, "ad.message");
+		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Message.Table_Name,atts);
 		createMessageBinding(ctx,document,m_Message);
 		document.endElement("","",I_AD_Message.Table_Name);
@@ -118,14 +115,10 @@ public class MessageElementHandler extends AbstractElementHandler implements IPa
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if(recordId <= 0)
-			recordId = detail.getAD_Message_ID();
-
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID, recordId);
-
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID);
 	}
 }

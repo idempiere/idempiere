@@ -28,13 +28,11 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.compiere.model.MColumn;
-import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -54,7 +52,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Low Heng Sin
  *
  */
-public class GenericPOElementHandler extends AbstractElementHandler implements IPackOutHandler {
+public class GenericPOElementHandler extends AbstractElementHandler {
 
 	public GenericPOElementHandler() {
 	}
@@ -159,7 +157,7 @@ public class GenericPOElementHandler extends AbstractElementHandler implements I
 				int AD_Client_ID = po.getAD_Client_ID();
 				if (AD_Client_ID != Env.getAD_Client_ID(ctx))
 					continue;
-				addTypeName(atts, "ad.po.generic");
+				addTypeName(atts, "table");
 				document.startElement("","", tableName, atts);
 				PoExporter filler = new PoExporter(ctx, document, po);
 				filler.export(excludes);
@@ -209,11 +207,12 @@ public class GenericPOElementHandler extends AbstractElementHandler implements I
 
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
+		MPackageExpDetail detail = packout.getPackageExpDetail();
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID, detail.getAD_Table_ID());
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement, detail.getSQLStatement());
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement);
 	}

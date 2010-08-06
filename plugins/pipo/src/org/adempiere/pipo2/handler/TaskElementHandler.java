@@ -24,15 +24,12 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Task;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MTask;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Task;
@@ -40,7 +37,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class TaskElementHandler extends AbstractElementHandler implements IPackOutHandler{
+public class TaskElementHandler extends AbstractElementHandler {
 
 	private List<Integer> tasks = new ArrayList<Integer>();
 
@@ -103,7 +100,7 @@ public class TaskElementHandler extends AbstractElementHandler implements IPackO
 		tasks.add(AD_Task_ID);
 		X_AD_Task m_Task = new X_AD_Task(ctx, AD_Task_ID, null);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.task");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Task.Table_Name, atts);
 		createTaskBinding(ctx, document, m_Task);
 		document.endElement("", "", I_AD_Task.Table_Name);
@@ -119,11 +116,11 @@ public class TaskElementHandler extends AbstractElementHandler implements IPackO
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx(), X_AD_Task.COLUMNNAME_AD_Task_ID, recordId);
 
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Task.COLUMNNAME_AD_Task_ID);
 	}
 }

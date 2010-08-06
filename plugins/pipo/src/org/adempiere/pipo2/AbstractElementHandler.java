@@ -548,7 +548,6 @@ public abstract class AbstractElementHandler implements ElementHandler {
     }
     
     protected void addTypeName(AttributesImpl atts, String typeName) {
-    	atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", typeName);
+    	atts.addAttribute("", "", "type", "CDATA", typeName);
     }
 }

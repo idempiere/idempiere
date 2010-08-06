@@ -26,15 +26,13 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
+import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_ReportView;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_ReportView;
@@ -44,7 +42,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class ReportViewElementHandler extends AbstractElementHandler implements IPackOutHandler{
+public class ReportViewElementHandler extends AbstractElementHandler {
 
 	private ReportViewColElementHandler columnHandler = new ReportViewColElementHandler();
 
@@ -108,14 +106,14 @@ public class ReportViewElementHandler extends AbstractElementHandler implements 
 		X_AD_ReportView m_Reportview = new X_AD_ReportView(ctx, AD_ReportView_ID, getTrxName(ctx));
 
 		// Export Table if neccessary
-		IPackOutHandler tableHandler = packOut.getHandler("T");
+		ElementHandler tableHandler = packOut.getHandler("T");
 		try {
-			tableHandler.packOut(packOut, null, null, document, null,m_Reportview.getAD_Table_ID());
+			tableHandler.packOut(packOut, document, null, m_Reportview.getAD_Table_ID());
 		} catch (Exception e) {
 			throw new AdempiereException(e);
 		}
 
-		addTypeName(atts, "ad.report-view");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_ReportView.Table_Name, atts);
 		createReportViewBinding(ctx, document, m_Reportview);
 		document.endElement("", "", I_AD_ReportView.Table_Name);
@@ -128,8 +126,8 @@ public class ReportViewElementHandler extends AbstractElementHandler implements 
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				IPackOutHandler pftHandler = packOut.getHandler("PFT");
-				pftHandler.packOut(packOut, null, null, document, null, rs.getInt(1));
+				ElementHandler pftHandler = packOut.getHandler("PFT");
+				pftHandler.packOut(packOut, document, null, rs.getInt(1));
 
 			}
 		} catch (Exception e) {
@@ -175,14 +173,10 @@ public class ReportViewElementHandler extends AbstractElementHandler implements 
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if(recordId <= 0)
-			recordId = detail.getAD_ReportView_ID();
-
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_ReportView_ID, recordId);
-
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_ReportView_ID);
 	}
 }

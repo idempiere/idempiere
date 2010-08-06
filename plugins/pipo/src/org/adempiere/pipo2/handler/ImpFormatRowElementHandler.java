@@ -146,7 +146,7 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 		int AD_ImpFormat_Row_ID = Env.getContextAsInt(ctx, X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID);
 		X_AD_ImpFormat_Row m_ImpFormat_Row = new X_AD_ImpFormat_Row (ctx, AD_ImpFormat_Row_ID, getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.import-format.row");
+		addTypeName(atts, "table");
 		document.startElement("","",I_AD_ImpFormat_Row.Table_Name,atts);
 		createImpFormatRowBinding(ctx,document,m_ImpFormat_Row);
 		document.endElement("","",I_AD_ImpFormat_Row.Table_Name);
@@ -168,5 +168,13 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 		}
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

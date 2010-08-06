@@ -144,7 +144,7 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 		X_AD_ReportView_Col m_Reportview_Col = new X_AD_ReportView_Col(ctx,
 				AD_ReportView_Col_ID, getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.report-view.column");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_ReportView_Col.Table_Name, atts);
 		createReportViewColBinding(ctx, document, m_Reportview_Col);
 		document.endElement("", "", I_AD_ReportView_Col.Table_Name);
@@ -166,5 +166,13 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 		}
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

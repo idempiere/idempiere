@@ -34,7 +34,6 @@ import javax.xml.transform.sax.TransformerHandler;
 
 
 import org.compiere.Adempiere;
-import org.compiere.model.MPackageExp;
 import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Backup;
@@ -46,10 +45,9 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PackOut;
 
-public class CodeSnippetElementHandler extends AbstractElementHandler implements IPackOutHandler {
+public class CodeSnippetElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String action = null;
@@ -204,10 +202,10 @@ public class CodeSnippetElementHandler extends AbstractElementHandler implements
 		String NewCode = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_New);
 		String ReleaseNo = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.code-snippet");
+		addTypeName(atts, "custom");
 		createSnipitBinding(atts, FileDir, FileName, OldCode, NewCode, ReleaseNo);
-		document.startElement("","","codesnippet",atts);
-		document.endElement("","","codesnippet");
+		document.startElement("","","Code_Snipit",atts);
+		document.endElement("","","Code_Snipit");
 	}
 
 	private AttributesImpl createSnipitBinding( AttributesImpl atts, String FileDir, String FileName, String OldCode, String NewCode, String ReleaseNo)
@@ -231,14 +229,15 @@ public class CodeSnippetElementHandler extends AbstractElementHandler implements
 		return atts;
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
+		MPackageExpDetail detail = packout.getPackageExpDetail();
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_Destination_Directory, detail.getDestination_Directory());
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_FileName, detail.getDestination_FileName());
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_Old, detail.getAD_Package_Code_Old());
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_New, detail.getAD_Package_Code_New());
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo,detail.getReleaseNo());
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_File_Directory);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_FileName);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_Old);

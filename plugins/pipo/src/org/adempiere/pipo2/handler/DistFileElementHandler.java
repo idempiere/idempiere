@@ -185,14 +185,14 @@ public class DistFileElementHandler extends AbstractElementHandler {
 		String Target_Directory = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory);
 		String ReleaseNo = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.dist-file");
-		document.startElement("","","distfile",atts);
+		addTypeName(atts, "custom");
+		document.startElement("","","Dist_File",atts);
 		addTextProperty(document,"filename",FileName);
 		addTextProperty(document,"sourceDirectory",Source_Directory);
 		addTextProperty(document,"targetDirectory",Target_Directory);
 		addTextProperty(document,"ReleaseNo",ReleaseNo);
 		atts.addAttribute("","","ReleaseNo","CDATA",ReleaseNo);
-		document.endElement("","","distfile");
+		document.endElement("","","Dist_File");
 	}
 
 	public void doPackout(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,AttributesImpl atts,int recordId) throws Exception
@@ -206,5 +206,13 @@ public class DistFileElementHandler extends AbstractElementHandler {
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory);
 		packout.getCtx().remove("Source_Directory");
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

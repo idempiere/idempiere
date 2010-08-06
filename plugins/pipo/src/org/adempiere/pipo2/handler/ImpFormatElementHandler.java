@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -34,8 +33,6 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_ImpFormat;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_ImpFormat;
 import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -45,7 +42,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class ImpFormatElementHandler extends AbstractElementHandler  implements IPackOutHandler {
+public class ImpFormatElementHandler extends AbstractElementHandler {
 
 	private ImpFormatRowElementHandler rowHandler = new ImpFormatRowElementHandler();
 
@@ -110,7 +107,7 @@ public class ImpFormatElementHandler extends AbstractElementHandler  implements 
 		formats.add(import_id);
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_ImpFormat m_ImpFormat = new X_AD_ImpFormat(ctx, import_id, null);
-		addTypeName(atts, "ad.import-format");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_ImpFormat.Table_Name, atts);
 		createImpFormatBinding(ctx, document, m_ImpFormat);
 
@@ -157,13 +154,10 @@ public class ImpFormatElementHandler extends AbstractElementHandler  implements 
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if(recordId <= 0)
-			recordId = detail.getAD_ImpFormat_ID();
-
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_ImpFormat_ID, recordId);
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_ImpFormat_ID);
 	}
 }

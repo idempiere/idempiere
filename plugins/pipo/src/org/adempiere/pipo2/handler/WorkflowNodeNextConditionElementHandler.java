@@ -167,7 +167,7 @@ public class WorkflowNodeNextConditionElementHandler extends
 		X_AD_WF_NextCondition m_WF_NodeNextCondition = new X_AD_WF_NextCondition(
 				ctx, ad_wf_nodenextcondition_id, null);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.workflow.node.next-condition");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_WF_NextCondition.Table_Name, atts);
 		createWorkflowNodeNextConditionBinding(ctx, document, m_WF_NodeNextCondition);
 		document.endElement("", "", I_AD_WF_NextCondition.Table_Name);
@@ -203,6 +203,14 @@ public class WorkflowNodeNextConditionElementHandler extends
 		} 
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

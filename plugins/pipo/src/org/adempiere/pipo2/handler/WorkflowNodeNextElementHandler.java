@@ -144,7 +144,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 		X_AD_WF_NodeNext m_WF_NodeNext = new X_AD_WF_NodeNext(
 				ctx, ad_wf_nodenext_id, null);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.workflow.node.next-element");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_WF_NodeNext.Table_Name, atts);
 		createWorkflowNodeNextBinding(ctx, document, m_WF_NodeNext);
 		document.endElement("", "", I_AD_WF_NodeNext.Table_Name);
@@ -162,5 +162,13 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 	        filler.add("AD_WF_NodeNext_ID", new AttributesImpl());
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

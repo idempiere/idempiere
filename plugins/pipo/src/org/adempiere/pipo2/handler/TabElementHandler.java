@@ -26,7 +26,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
+import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -167,7 +167,7 @@ public class TabElementHandler extends AbstractElementHandler {
 		int AD_Tab_ID = Env.getContextAsInt(ctx, X_AD_Tab.COLUMNNAME_AD_Tab_ID);
 		X_AD_Tab m_Tab = new X_AD_Tab (ctx, AD_Tab_ID, getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.window.tab");
+		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Tab.Table_Name,atts);
 		createTabBinding(ctx,document,m_Tab);
 		//Fields tags.
@@ -198,8 +198,8 @@ public class TabElementHandler extends AbstractElementHandler {
 		{
 			try
 			{
-				IPackOutHandler handler = packOut.getHandler("P");
-				handler.packOut(packOut,null,null,document,null,m_Tab.getAD_Process_ID());
+				ElementHandler handler = packOut.getHandler("P");
+				handler.packOut(packOut,document,null,m_Tab.getAD_Process_ID());
 			}
 			catch(Exception e)
 			{
@@ -225,5 +225,13 @@ public class TabElementHandler extends AbstractElementHandler {
 			filler.add("AD_Tab_ID", new AttributesImpl());
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

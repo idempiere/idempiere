@@ -24,14 +24,11 @@ import java.util.Properties;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.M_Element;
 import org.compiere.model.X_AD_Element;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -40,7 +37,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class AdElementHandler extends AbstractElementHandler implements IPackOutHandler {
+public class AdElementHandler extends AbstractElementHandler {
 
 	private List<Integer> processedElements = new ArrayList<Integer>();
 
@@ -123,7 +120,7 @@ public class AdElementHandler extends AbstractElementHandler implements IPackOut
 		X_AD_Element m_AdElement = new X_AD_Element(ctx, adElement_id, null);
 
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.element");
+		addTypeName(atts, "table");
 		document.startElement("", "", "AD_Element", atts);
 		createAdElementBinding(ctx, document, m_AdElement);
 
@@ -131,7 +128,7 @@ public class AdElementHandler extends AbstractElementHandler implements IPackOut
 
 
 		try{
-			new CommonTranslationHandler().packOut(packOut,null,null,document,null,m_AdElement.get_ID());
+			new CommonTranslationHandler().packOut(packOut,document,null,m_AdElement.get_ID());
 		}
 		catch(Exception e)
 		{
@@ -153,10 +150,10 @@ public class AdElementHandler extends AbstractElementHandler implements IPackOut
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp packageExp, MPackageExpDetail packageExpDetail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx(), X_AD_Element.COLUMNNAME_AD_Element_ID, recordId);
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Element.COLUMNNAME_AD_Element_ID);
 	}
 }

@@ -24,15 +24,13 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
+import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Process;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -42,7 +40,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class ProcessElementHandler extends AbstractElementHandler implements IPackOutHandler{
+public class ProcessElementHandler extends AbstractElementHandler {
 
 	private ProcessParaElementHandler paraHandler = new ProcessParaElementHandler();
 
@@ -117,19 +115,19 @@ public class ProcessElementHandler extends AbstractElementHandler implements IPa
 		try {
 			if (m_Process.isReport() && m_Process.getAD_ReportView_ID() > 0)
 			{
-				IPackOutHandler handler = packOut.getHandler("R");
-				handler.packOut(packOut,null,null,document,null,m_Process.getAD_ReportView_ID());
+				ElementHandler handler = packOut.getHandler("R");
+				handler.packOut(packOut,document,null,m_Process.getAD_ReportView_ID());
 			}
 			if (m_Process.isReport() && m_Process.getAD_PrintFormat_ID() > 0)
 			{
-				IPackOutHandler handler = packOut.getHandler("PFT");
-				handler.packOut(packOut,null,null,document,null,m_Process.getAD_PrintFormat_ID());
+				ElementHandler handler = packOut.getHandler("PFT");
+				handler.packOut(packOut,document,null,m_Process.getAD_PrintFormat_ID());
 			}
 			if (m_Process.getAD_Workflow_ID() > 0) {
-				IPackOutHandler handler = packOut.getHandler("F");
-				handler.packOut(packOut,null,null,document,null,m_Process.getAD_Workflow_ID());
+				ElementHandler handler = packOut.getHandler("F");
+				handler.packOut(packOut,document,null,m_Process.getAD_Workflow_ID());
 			}
-			addTypeName(atts, "ad.process");
+			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Process.Table_Name, atts);
 			createProcessBinding(ctx, document, m_Process);
 
@@ -138,20 +136,20 @@ public class ProcessElementHandler extends AbstractElementHandler implements IPa
 			for (X_AD_Process_Para para : paralist) {
 				if (para.getAD_Reference_ID()>0)
 				{
-					IPackOutHandler handler = packOut.getHandler("REF");
-					handler.packOut(packOut,null,null,document,null,para.getAD_Reference_ID());
+					ElementHandler handler = packOut.getHandler("REF");
+					handler.packOut(packOut,document,null,para.getAD_Reference_ID());
 				}
 
 				if (para.getAD_Reference_Value_ID()>0)
 				{
-					IPackOutHandler handler = packOut.getHandler("REF");
-					handler.packOut(packOut,null,null,document,null,para.getAD_Reference_Value_ID());
+					ElementHandler handler = packOut.getHandler("REF");
+					handler.packOut(packOut,document,null,para.getAD_Reference_Value_ID());
 				}
 
 				if (para.getAD_Val_Rule_ID() > 0)
 				{
-					IPackOutHandler handler = packOut.getHandler("V");
-					handler.packOut(packOut,null,null,document,null,para.getAD_Val_Rule_ID());
+					ElementHandler handler = packOut.getHandler("V");
+					handler.packOut(packOut,document,null,para.getAD_Val_Rule_ID());
 				}
 
 				createProcessPara(ctx, document, para.getAD_Process_Para_ID());
@@ -183,14 +181,10 @@ public class ProcessElementHandler extends AbstractElementHandler implements IPa
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if(recordId <= 0)
-			recordId = detail.getAD_Process_ID();
-
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID, recordId);
-
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID);
 	}
 }

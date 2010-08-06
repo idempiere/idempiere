@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.IPackOutHandler;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -35,8 +34,6 @@ import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Role;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_Form;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -52,7 +49,7 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class RoleElementHandler extends AbstractElementHandler implements IPackOutHandler{
+public class RoleElementHandler extends AbstractElementHandler {
 
 	private List<Integer> roles = new ArrayList<Integer>();
 
@@ -121,7 +118,7 @@ public class RoleElementHandler extends AbstractElementHandler implements IPackO
 		roles.add(Role_id);
 		X_AD_Role m_Role = new X_AD_Role(ctx, Role_id, null);
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.role");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Role.Table_Name, atts);
 		createRoleBinding(ctx, document, m_Role);
 
@@ -330,14 +327,10 @@ public class RoleElementHandler extends AbstractElementHandler implements IPackO
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,int recordId) throws Exception
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if(recordId <= 0)
-			recordId = detail.getAD_Role_ID();
-
 		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID, recordId);
-
-		this.create(packout.getCtx(), packOutDocument);
+		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID);
 	}
 }

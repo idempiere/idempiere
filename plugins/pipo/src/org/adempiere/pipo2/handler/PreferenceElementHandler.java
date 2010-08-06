@@ -109,7 +109,7 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 		X_AD_Preference m_Preference = new X_AD_Preference(ctx,
 				AD_Preference_ID, getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "ad.preference");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Preference.Table_Name, atts);
 		createPreferenceBinding(ctx, document, m_Preference);
 		document.endElement("", "", I_AD_Preference.Table_Name);
@@ -124,5 +124,13 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 			filler.addString("AD_Preference_ID", Integer.toString(m_Preference.getAD_Preference_ID()), new AttributesImpl());
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

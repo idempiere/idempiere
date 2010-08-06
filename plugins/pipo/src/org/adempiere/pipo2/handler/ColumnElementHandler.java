@@ -307,7 +307,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Column m_Column = new X_AD_Column(ctx, AD_Column_ID,
 				getTrxName(ctx));
-		addTypeName(atts, "ad.table.column");
+		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Column.Table_Name, atts);
 		createColumnBinding(ctx, document, m_Column);
 		document.endElement("", "", I_AD_Column.Table_Name);
@@ -331,5 +331,13 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		excludes.add("AD_Reference_Value_ID");
 
 		filler.export(excludes);
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+			TransformerHandler docHandler,
+			int recordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

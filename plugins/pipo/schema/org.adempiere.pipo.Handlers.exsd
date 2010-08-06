@@ -52,7 +52,7 @@
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  object type name, e.g ad.table, ad.table.column, etc
+                  element name like AD_Message, AD_Table, Code_Snippet, etc
                </documentation>
             </annotation>
          </attribute>
@@ -62,15 +62,8 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.adempiere.pipo2.IPackOutHandler"/>
+                  <meta.attribute kind="java" basedOn=":org.adempiere.pipo2.ElementHandler"/>
                </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="name" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
             </annotation>
          </attribute>
       </complexType>
