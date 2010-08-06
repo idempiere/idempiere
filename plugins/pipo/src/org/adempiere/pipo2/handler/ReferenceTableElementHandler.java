@@ -176,7 +176,8 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-		
+		Env.setContext(packout.getCtx(), I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID, recordId);
+		create(packout.getCtx(), packoutHandler);
+		packout.getCtx().remove(I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
 	}
 }

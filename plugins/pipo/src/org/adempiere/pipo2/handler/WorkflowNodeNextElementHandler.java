@@ -168,7 +168,8 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-		
+		Env.setContext(packout.getCtx(), I_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID, recordId);
+		create(packout.getCtx(), packoutHandler);
+		packout.getCtx().remove(I_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID);
 	}
 }

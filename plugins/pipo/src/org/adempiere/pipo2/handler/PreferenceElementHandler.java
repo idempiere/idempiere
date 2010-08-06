@@ -130,7 +130,9 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
+		Env.setContext(packout.getCtx(), I_AD_Preference.COLUMNNAME_AD_Preference_ID, recordId);
+		create(packout.getCtx(), packoutHandler);
+		packout.getCtx().remove(I_AD_Preference.COLUMNNAME_AD_Preference_ID);
 		
 	}
 }

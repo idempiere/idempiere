@@ -337,7 +337,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-		
+		Env.setContext(packout.getCtx(), I_AD_Column.COLUMNNAME_AD_Column_ID, recordId);
+		create(packout.getCtx(), packoutHandler);
+		packout.getCtx().remove(I_AD_Column.COLUMNNAME_AD_Column_ID);
 	}
 }

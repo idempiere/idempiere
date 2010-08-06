@@ -110,7 +110,6 @@ public class WindowAccessElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-		
+		create(packout.getCtx(), packoutHandler);
 	}
 }

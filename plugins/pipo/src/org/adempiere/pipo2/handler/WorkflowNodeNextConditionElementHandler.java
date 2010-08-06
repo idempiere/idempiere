@@ -209,8 +209,9 @@ public class WorkflowNodeNextConditionElementHandler extends
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-		
+		Env.setContext(packout.getCtx(), I_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID, recordId);
+		create(packout.getCtx(), packoutHandler);
+		packout.getCtx().remove(I_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID);
 	}
 
 }

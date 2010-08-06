@@ -152,7 +152,8 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-		
+		Env.setContext(packout.getCtx(), I_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID, recordId);
+		create(packout.getCtx(), packoutHandler);
+		packout.getCtx().remove(I_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID);
 	}
 }

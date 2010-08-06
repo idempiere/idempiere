@@ -174,7 +174,8 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-		
+		Env.setContext(packout.getCtx(), I_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID, recordId);
+		create(packout.getCtx(), packoutHandler);
+		packout.getCtx().remove(I_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID);
 	}
 }
