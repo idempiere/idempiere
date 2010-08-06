@@ -79,4 +79,49 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 		//
 		return true;
 	}
+	
+	/**
+	 * 
+	 * @return record id to export
+	 */
+	public int getExpRecordId() {
+		String type = getType();
+		if (TYPE_ApplicationOrModule.equals(type)) {
+			return getAD_Menu_ID();
+		} else if (TYPE_CodeSnipit.equals(type)) {
+			return 0;
+		} else if (TYPE_Data.equals(type)) {
+			return 0;
+		} else if (TYPE_DynamicValidationRule.equals(type)) {
+			return getAD_Val_Rule_ID();
+		} else if (TYPE_Form.equals(type)) {
+			return getAD_Form_ID();
+		} else if (TYPE_ImportFormat.equals(type)) {
+			return getAD_ImpFormat_ID();
+		} else if (TYPE_Message.equals(type)) {
+			return getAD_Message_ID();
+		} else if (TYPE_PrintFormat.equals(type)) {
+			return getAD_PrintFormat_ID();
+		} else if (TYPE_ModelValidator.equals(type)) {
+			return getAD_ModelValidator_ID();
+		} else if (TYPE_ProcessReport.equals(type)) {
+			return getAD_Process_ID();
+		} else if (TYPE_Reference.equals(type)) {
+			return getAD_Reference_ID();
+		} else if (TYPE_ReportView.equals(type)) {
+			return getAD_ReportView_ID();
+		} else if (TYPE_Role.equals(type)) {
+			return getAD_Role_ID();
+		} else if (TYPE_Table.equals(type)) {
+			return getAD_Table_ID();
+		} else if (TYPE_Window.equals(type)) {
+			return getAD_Window_ID();
+		} else if (TYPE_Workflow.equals(type)) {
+			return getAD_Workflow_ID();
+		} else if (TYPE_EntityType.equals(type)) {
+			return getAD_EntityType_ID();
+		} else {
+			return 0;
+		}
+	}
 }	//	MMenu
