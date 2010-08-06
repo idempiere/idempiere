@@ -18,9 +18,6 @@ package org.adempiere.base;
 
 import java.util.List;
 
-import org.compiere.model.Callout;
-
-
 /**
  * A service locator looks up services.
  * This is the central authority for adempiere service definition,
@@ -33,7 +30,11 @@ import org.compiere.model.Callout;
  */
 public interface IServiceLocator {
 	<T extends IService> T locate(Class<T> type);
+	<T extends IService> T locate(Class<T> type, String id);
 	<T extends IService> T locate(Class<T> type, ServiceQuery query);
+	<T extends IService> T locate(Class<T> type, String id, ServiceQuery query);
 	<T extends IService> List<T> list(Class<T> type);
+	<T extends IService> List<T> list(Class<T> type, String id);
 	<T extends IService> List<T> list(Class<T> type, ServiceQuery query);
+	<T extends IService> List<T> list(Class<T> type, String id, ServiceQuery query);
 }

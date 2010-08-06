@@ -58,18 +58,34 @@ public class Service {
 	}
 
 	public static <T extends IService> T locate(Class<T> type) {
-		return locator().locate(type);
+		return locate(type, type.getName());
 	}
 
+	public static <T extends IService> T locate(Class<T> type, String id) {
+		return locator().locate(type, id);
+	}
+	
 	public static <T extends IService> T locate(Class<T> type, ServiceQuery query) {
-		return locator().locate(type, query);
+		return locate(type, type.getName(), query);
 	}
 
+	public static <T extends IService> T locate(Class<T> type, String id, ServiceQuery query) {
+		return locator().locate(type, id, query);
+	}
+	
 	public static <T extends IService> List<T> list(Class<T> type) {
-		return locator().list(type);
+		return list(type, type.getName());
 	}
 
+	public static <T extends IService> List<T> list(Class<T> type, String id) {
+		return locator().list(type, id);
+	}
+	
 	public static <T extends IService> List<T> list(Class<T> type, ServiceQuery query) {
-		return locator().list(type, query);
+		return locator().list(type, type.getName(), query);
+	}
+	
+	public static <T extends IService> List<T> list(Class<T> type, String id, ServiceQuery query) {
+		return locator().list(type, id, query);
 	}
 }

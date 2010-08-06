@@ -34,23 +34,43 @@ import org.adempiere.base.ServiceQuery;
 public class EquinoxServiceLocator implements IServiceLocator {
 
 	public <T extends IService> List<T> list(Class<T> type) {
-		ExtensionList<T> list = new ExtensionList<T>(type, type.getName());
+		return list(type, type.getName());
+	}
+	
+	@Override
+	public <T extends IService> List<T> list(Class<T> type, String id) {
+		ExtensionList<T> list = new ExtensionList<T>(type, id);
 		return list.asList();
 	}
 
 	public <T extends IService> List<T> list(Class<T> type, ServiceQuery query) {
-		ExtensionList<T> list = new ExtensionList<T>(type, type.getName(), query);
+		return list(type, type.getName(), query);
+	}
+	
+	@Override
+	public <T extends IService> List<T> list(Class<T> type, String id,
+			ServiceQuery query) {
+		ExtensionList<T> list = new ExtensionList<T>(type, id, query);
 		return list.asList();
 	}
-
+		
 	public <T extends IService> T locate(Class<T> type) {
-		ExtensionList<T> list = new ExtensionList<T>(type, type.getName());
-		return list.first();
+		return locate(type, type.getName());
 	}
 
+	@Override
+	public <T extends IService> T locate(Class<T> type, String id) {
+		ExtensionList<T> list = new ExtensionList<T>(type, id);
+		return list.first();
+	}
+	
 	public <T extends IService> T locate(Class<T> type, ServiceQuery query) {
+		return locate(type, type.getName(), query);
+	}
+
+	@Override
+	public <T extends IService> T locate(Class<T> type, String id, ServiceQuery query) {
 		ExtensionList<T> list = new ExtensionList<T>(type, type.getName(), query);
 		return list.first();
-	}
-
+	}	
 }

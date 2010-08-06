@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.adempiere.base.ServiceQuery;
-import org.compiere.model.Callout;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
