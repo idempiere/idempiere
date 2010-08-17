@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.Hashtable;
 import java.util.logging.Level;
 
 import javax.naming.InitialContext;
@@ -993,7 +992,7 @@ public class CConnection implements Serializable, Cloneable
 		try
 		{
 			setName (attributes.substring (attributes.indexOf ("name=") + 5, attributes.indexOf (",AppsHost=")));
-			setAppsHost (attributes.substring (attributes.indexOf ("AppsHost=") + 9, attributes.indexOf (",AppsPort=")));
+			setAppsHost (attributes.substring (attributes.indexOf ("AppsHost=") + 9, attributes.indexOf (",type=")));
 			//
 			setType (attributes.substring (attributes.indexOf ("type=")+5, attributes.indexOf (",DBhost=")));
 			setDbHost (attributes.substring (attributes.indexOf ("DBhost=") + 7, attributes.indexOf (",DBport=")));
