@@ -36,6 +36,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.ScriptEditor;
 import org.compiere.swing.CMenuItem;
 import org.compiere.swing.CTextArea;
@@ -194,7 +195,7 @@ public class VMemo extends CTextArea
 			String s = null;
 			if (m_columnName.equals("Script") || m_columnName.endsWith("_Script"))
 				s = ScriptEditor.start (
-						Env.getFrame(this.getParent()),
+						AEnv.getFrame(this.getParent()),
 						Msg.translate(Env.getCtx(), m_columnName), getText(), isEditable(), 
 						findWindowNo());
 			else
@@ -213,7 +214,7 @@ public class VMemo extends CTextArea
 	
 	private int findWindowNo() {
 		Container c = this.getParent();		
-		return c != null ? Env.getWindowNo(c) : 0;
+		return c != null ? AEnv.getWindowNo(c) : 0;
 	}
 
 	/**

@@ -31,6 +31,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -155,9 +157,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	/** Layout					*/
 	private LayoutEngine 	m_layout = null;
 	/**	Printer					*/
-	private String			m_printerName = Ini.getProperty(Ini.P_PRINTER);
-	/**	View					*/
-	private View			m_view = null;
+	private String			m_printerName = Ini.getProperty(Ini.P_PRINTER);	
 	/** Transaction Name 		*/
 	private String 			m_trxName = null;
 	/** Where filter */
@@ -166,6 +166,18 @@ public class ReportEngine implements PrintServiceAttributeListener
 	private int m_windowNo = 0;
 	
 	private boolean m_summary = false;
+	
+	private List<IReportEngineEventListener> eventListeners = new ArrayList<IReportEngineEventListener>();
+
+	public void addEventListener(IReportEngineEventListener listener)
+	{
+		eventListeners.add(listener);
+	}
+	
+	public boolean removeEventListener(IReportEngineEventListener listener)
+	{
+		return eventListeners.remove(listener);
+	}
 	
 	/**
 	 * 	Set PrintFormat.
@@ -181,8 +193,12 @@ public class ReportEngine implements PrintServiceAttributeListener
 			m_layout.setPrintFormat(pf, false);
 			m_layout.setPrintData(m_printData, m_query, true);	//	format changes data
 		}
-		if (m_view != null)
-			m_view.revalidate();
+		
+		IReportEngineEventListener[] listeners = eventListeners.toArray(new IReportEngineEventListener[0]);
+		for(IReportEngineEventListener listener : listeners)
+		{
+			listener.onPrintFormatChanged(new ReportEngineEvent(this));
+		}
 	}	//	setPrintFormat
 	
 	/**
@@ -199,8 +215,12 @@ public class ReportEngine implements PrintServiceAttributeListener
 		setPrintData();
 		if (m_layout != null)
 			m_layout.setPrintData(m_printData, m_query, true);
-		if (m_view != null)
-			m_view.revalidate();
+		
+		IReportEngineEventListener[] listeners = eventListeners.toArray(new IReportEngineEventListener[0]);
+		for(IReportEngineEventListener listener : listeners)
+		{
+			listener.onQueryChanged(new ReportEngineEvent(this));
+		}
 	}	//	setQuery
 
 	/**
@@ -330,20 +350,6 @@ public class ReportEngine implements PrintServiceAttributeListener
 
 	
 	/**************************************************************************
-	 * 	Get View Panel
-	 * 	@return view panel
-	 */
-	public View getView()
-	{
-		if (m_layout == null)
-			layout();
-		if (m_view == null)
-			m_view = new View (m_layout);
-		return m_view;
-	}	//	getView
-
-	
-	/**************************************************************************
 	 * 	Print Report
 	 */
 	public void print ()
@@ -434,8 +440,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	private PrinterJob getPrinterJob (String printerName)
 	{
 		if (printerName != null && printerName.length() > 0)
-			return CPrinter.getPrinterJob(printerName);
-		return CPrinter.getPrinterJob(m_printerName);
+			return PrintUtil.getPrinterJob(printerName);
+		return PrintUtil.getPrinterJob(m_printerName);
 	}	//	getPrinterJob
 
 	/**
@@ -447,8 +453,12 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		if (m_layout == null)
 			layout();
 		m_layout.pageSetupDialog(getPrinterJob(m_printerName));
-		if (m_view != null)
-			m_view.revalidate();
+		
+		IReportEngineEventListener[] listeners = eventListeners.toArray(new IReportEngineEventListener[0]);
+		for(IReportEngineEventListener listener : listeners)
+		{
+			listener.onPageSetupChanged(new ReportEngineEvent(this));
+		}
 	}	//	pageSetupDialog
 
 	/**

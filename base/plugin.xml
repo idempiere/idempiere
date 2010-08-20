@@ -4,7 +4,7 @@
    <extension-point id="org.adempiere.base.IResourceFinder" name="ResourceFinder" schema="schema/ResourceFinder.exsd"/>
    <extension-point id="org.adempiere.base.IColumnCallout" name="Callout" schema="schema/org.adempiere.base.Callout.exsd"/>
    <extension-point id="org.adempiere.base.IDictionaryService" name="DictionaryService" schema="schema/org.adempiere.base.IDictionaryService.exsd"/>
-   <extension-point id="org.compiere.apps.form.FormPanel" name="FormPanel" schema="schema/org.compiere.apps.form.FormPanel.exsd"/>
-   <extension-point id="org.adempiere.as.IApplicationServer" name="ApplicationServer" schema="schema/org.adempiere.as.IApplicationServer.exsd"/>
+   <extension-point id="org.adempiere.base.Process" name="Process" schema="schema/org.adempiere.base.Process.exsd"/>
+   <extension-point id="org.adempiere.base.ModelValidator" name="Model Validator" schema="schema/org.adempiere.base.ModelValidator.exsd"/>
 
 </plugin>

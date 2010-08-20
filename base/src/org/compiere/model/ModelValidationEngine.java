@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
 
+import org.adempiere.base.Core;
 import org.adempiere.model.ImportValidator;
 import org.adempiere.process.ImportProcess;
 import org.compiere.acct.Fact;
@@ -144,8 +145,16 @@ public class ModelValidationEngine
 		try
 		{
 			//
-			Class<?> clazz = Class.forName(className);
-			ModelValidator validator = (ModelValidator)clazz.newInstance();
+			ModelValidator validator = null;
+			if (Core.isExtension(className)) 
+			{
+				validator = Core.getModelValidator(className);
+			}
+			if (validator == null)
+			{
+				Class<?> clazz = Class.forName(className);
+				validator = (ModelValidator)clazz.newInstance();
+			}
 			initialize(validator, client);
 		}
 		catch (Exception e)

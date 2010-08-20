@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <choice>
-            <element ref="client"/>
+            <element ref="finder"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="client">
+   <element name="finder">
       <complexType>
          <attribute name="class" type="string">
             <annotation>

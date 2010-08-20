@@ -13,7 +13,7 @@
 	<target name="clean" description="delete class directory">
 	   <delete>
 	   		<fileset dir="../lib/plugins">
-    			<include name="*webui*.jar"/>
+    			<include name="org.adempiere.webui_*.jar"/>
 			</fileset>
 	   </delete>
 	</target>

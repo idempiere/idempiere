@@ -462,7 +462,7 @@ public final class APanel extends CPanel
 		}
 
 		//Window
-		AMenu aMenu = (AMenu)Env.getWindow(0);
+		AMenu aMenu = (AMenu)AEnv.getWindow(0);
 		m_WindowMenu = new WindowMenu(aMenu.getWindowManager(), m_window);
 		menuBar.add(m_WindowMenu);
 		aShowAllWindow = addAction("ShowAllWindow", null, KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK),	false);
@@ -682,7 +682,7 @@ public final class APanel extends CPanel
 		for (int wb = 0; wb < m_mWorkbench.getWindowCount(); wb++)
 		{
 			//  Get/set WindowNo
-			m_curWindowNo = Env.createWindowNo (this);			                //  Timing: ca. 1.5 sec
+			m_curWindowNo = AEnv.createWindowNo (this);			                //  Timing: ca. 1.5 sec
 			m_mWorkbench.setWindowNo(wb, m_curWindowNo);
 			//  Set AutoCommit for this Window
 			Env.setAutoCommit(m_ctx, m_curWindowNo, Env.isAutoCommit(m_ctx));
@@ -717,7 +717,7 @@ public final class APanel extends CPanel
 			{
 				includedMap = new HashMap<Integer,GridController>(4);
 				//
-				GridWindowVO wVO = AEnv.getMWindowVO(m_curWindowNo, m_mWorkbench.getWindowID(wb), 0);
+				GridWindowVO wVO = Env.getMWindowVO(m_curWindowNo, m_mWorkbench.getWindowID(wb), 0);
 				if (wVO == null)
 				{
 					ADialog.error(0, null, "AccessTableNoView", "(No Window Model Info)");
@@ -795,7 +795,7 @@ public final class APanel extends CPanel
 					else	//	normal tab
 					{
 						GridController gc = new GridController();			        //  Timing: ca. .1 sec
-						CompiereColor cc = mWindow.getColor();
+						CompiereColor cc = CompiereColor.getCompiereColor(mWindow.getColor());
 						if (cc != null)
 							gc.setBackgroundColor(cc);                  //  set color on Window level
 						gc.initGrid(gTab, false, m_curWindowNo, this, mWindow, (tab != 0));  //  will set color on Tab level
@@ -1092,7 +1092,7 @@ public final class APanel extends CPanel
 		if (require)
 		{
 			GridField[] findFields = mTab.getFields();
-			Find find = new Find (Env.getFrame(this), m_curWindowNo, mTab.getName(),
+			Find find = new Find (AEnv.getFrame(this), m_curWindowNo, mTab.getName(),
 				mTab.getAD_Tab_ID(), mTab.getAD_Table_ID(), mTab.getTableName(),
 				where.toString(), findFields, 10);	//	no query below 10
 			query = find.getQuery();
@@ -1287,7 +1287,7 @@ public final class APanel extends CPanel
 	{
 		m_isLocked = busy;
 		//
-		JFrame frame = Env.getFrame(this);
+		JFrame frame = AEnv.getFrame(this);
 		if (frame == null)  //  during init
 			return;
 		if (frame instanceof AWindow)
@@ -1722,7 +1722,7 @@ public final class APanel extends CPanel
 			else if (cmd.equals(aHome.getName())) {
 				// show main menu - teo_sarca [ 1706409, 1707221 ]
 				setBusy(false, false);
-				AEnv.showWindow(Env.getWindow(0));
+				AEnv.showWindow(AEnv.getWindow(0));
 				return;
 			}
 			else if (cmd.equals(aFirst.getName()))
@@ -1821,7 +1821,7 @@ public final class APanel extends CPanel
 	}	//	actionPerformed
 
 	private void cmd_logout() {
-		JFrame top = Env.getWindow(0);
+		JFrame top = AEnv.getWindow(0);
 		if (top instanceof AMenu) {
 			((AMenu)top).logout();
 		}
@@ -2233,7 +2233,7 @@ public final class APanel extends CPanel
 		pi.setAD_Client_ID (Env.getAD_Client_ID(m_ctx));
 		pi.setPrintPreview(printPreview);
 
-		ProcessCtl.process(this, m_curWindowNo, pi, null); //  calls lockUI, unlockUI
+		ClientProcessCtrl.process(this, m_curWindowNo, pi, null); //  calls lockUI, unlockUI
 		statusBar.setStatusLine(pi.getSummary(), pi.isError());
 	}   //  cmd_print
 
@@ -2247,7 +2247,7 @@ public final class APanel extends CPanel
 		cmd_save(false);
 		//	Gets Fields from AD_Field_v
 		GridField[] findFields = GridField.createFields(m_ctx, m_curWindowNo, 0, m_curTab.getAD_Tab_ID());
-		Find find = new Find (Env.getFrame(this), m_curWindowNo, m_curTab.getName(),
+		Find find = new Find (AEnv.getFrame(this), m_curWindowNo, m_curTab.getName(),
 			m_curTab.getAD_Tab_ID(), m_curTab.getAD_Table_ID(), m_curTab.getTableName(),
 			m_curTab.getWhereExtended(), findFields, 1);
 		MQuery query = find.getQuery();
@@ -2278,7 +2278,7 @@ public final class APanel extends CPanel
 		}
 
 	//	Attachment va =
-		new Attachment (Env.getFrame(this), m_curWindowNo,
+		new Attachment (AEnv.getFrame(this), m_curWindowNo,
 			m_curTab.getAD_AttachmentID(), m_curTab.getAD_Table_ID(), record_ID, null);
 		//
 		m_curTab.loadAttachments();				//	reload
@@ -2314,7 +2314,7 @@ public final class APanel extends CPanel
 		String description = infoName + ": " + infoDisplay;
 		//
 	//	AChat va =
-		new AChat (Env.getFrame(this), m_curWindowNo,
+		new AChat (AEnv.getFrame(this), m_curWindowNo,
 			m_curTab.getCM_ChatID(), m_curTab.getAD_Table_ID(), record_ID,
 			description, null);
 		//
@@ -2336,7 +2336,7 @@ public final class APanel extends CPanel
 		//	Control Pressed
 		if ((m_lastModifiers & InputEvent.CTRL_MASK) != 0)
 		{
-			new RecordAccessDialog(Env.getFrame(this), m_curTab.getAD_Table_ID(), record_ID);
+			new RecordAccessDialog(AEnv.getFrame(this), m_curTab.getAD_Table_ID(), record_ID);
 		}
 		else
 		{
@@ -2359,7 +2359,7 @@ public final class APanel extends CPanel
 
 			Point pt = new Point (0, aHistory.getButton().getBounds().height);
 			SwingUtilities.convertPointToScreen(pt, aHistory.getButton());
-			VOnlyCurrentDays ocd = new VOnlyCurrentDays(Env.getFrame(this), pt);
+			VOnlyCurrentDays ocd = new VOnlyCurrentDays(AEnv.getFrame(this), pt);
 			if (!ocd.isCancel()) {
 				m_onlyCurrentDays = ocd.getCurrentDays();
 				if (m_onlyCurrentDays == 1)	//	Day
@@ -2393,7 +2393,7 @@ public final class APanel extends CPanel
 	private void cmd_help()
 	{
 		log.info("");
-		Help hlp = new Help (Env.getFrame(this), this.getTitle(), m_mWorkbench.getMWindow(getWindowIndex()));
+		Help hlp = new Help (AEnv.getFrame(this), this.getTitle(), m_mWorkbench.getMWindow(getWindowIndex()));
 		hlp.setVisible(true);
 	}	//	cmd_help
 
@@ -2409,7 +2409,7 @@ public final class APanel extends CPanel
 		if (exit && ADialog.ask(m_curWindowNo, this, "ExitApplication?"))
 			exitSystem = true;
 
-		Env.getFrame(this).dispose();		//	calls this dispose
+		AEnv.getFrame(this).dispose();		//	calls this dispose
 
 		if (exitSystem)
 			AEnv.exit(0);
@@ -2656,14 +2656,14 @@ public final class APanel extends CPanel
 			return;
 		}
 		else {
-			ProcessModalDialog dialog = new ProcessModalDialog(m_ctx, Env.getWindow(m_curWindowNo), Env.getHeader(m_ctx, m_curWindowNo),
+			ProcessModalDialog dialog = new ProcessModalDialog(m_ctx, AEnv.getWindow(m_curWindowNo), Env.getHeader(m_ctx, m_curWindowNo),
 					this, m_curWindowNo, vButton.getProcess_ID(), table_ID,
 					record_ID, startWOasking);
 			if (dialog.isValidDialog())
 			{
 				dialog.validate();
 				dialog.pack();
-				AEnv.showCenterWindow(Env.getWindow(m_curWindowNo), dialog);
+				AEnv.showCenterWindow(AEnv.getWindow(m_curWindowNo), dialog);
 			}
 		}
 	}	//	actionButton
@@ -2874,5 +2874,4 @@ public final class APanel extends CPanel
 	public boolean isNested() {
 		return isNested;
 	}
-
 }	//	APanel

@@ -15,7 +15,9 @@
  *****************************************************************************/
 package org.adempiere.base;
 
-import java.io.InputStream;
+import java.io.File;
+
+import org.osgi.framework.BundleContext;
 
 /**
  * A dictionary service provides for easy handling of dynamic Adempiere
@@ -24,6 +26,6 @@ import java.io.InputStream;
  * @author Joerg Viola
  * 
  */
-public interface IDictionaryService extends IService {
-	void merge(InputStream model) throws Exception;
+public interface IDictionaryService {
+	void merge(BundleContext context, File packageFile) throws Exception;
 }

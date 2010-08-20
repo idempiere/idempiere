@@ -266,7 +266,7 @@ public class WindowMenu extends JMenu {
         }
         	
         if ( !(frame instanceof AMenu) ) {
-        	JFrame frame = Env.getWindow(0);
+        	JFrame frame = AEnv.getWindow(0);
         	if (frame != null && frame instanceof AMenu) {
         		menu = new ChildMenuItem((AMenu)frame);
                 menu.setState(false);
@@ -338,7 +338,7 @@ public class WindowMenu extends JMenu {
 			int width = ( s.width - 30 ) / 3;
 			int height = ( s.height - 30 ) / 3;
 			int count = 0;
-			JFrame frame = Env.getWindow(0);
+			JFrame frame = AEnv.getWindow(0);
 	    	if (frame != null && frame instanceof AMenu) {
 	    		JXTitledPanel box = createImageBox(p, dialog, width, height,
 						(CFrame)frame);

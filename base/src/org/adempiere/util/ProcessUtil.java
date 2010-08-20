@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
 
+import org.adempiere.base.Core;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRule;
 import org.compiere.process.ProcessCall;
@@ -119,39 +120,46 @@ public final class ProcessUtil {
 			if (proc.getJasperReport() != null)
 				className = JASPER_STARTER_CLASS;
 		}
-		//Get Class
-		Class<?> processClass = null;
-		//use context classloader if available
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		if (classLoader == null)
-			classLoader = ProcessUtil.class.getClassLoader();
-		try
-		{
-			processClass = classLoader.loadClass(className);
-		}
-		catch (ClassNotFoundException ex)
-		{
-			log.log(Level.WARNING, className, ex);
-			pi.setSummary ("ClassNotFound", true);
-			return false;
-		}
 		
-		//Get Process
 		ProcessCall process = null;
-		try
-		{
-			process = (ProcessCall)processClass.newInstance();
-		}
-		catch (Exception ex)
-		{
-			log.log(Level.WARNING, "Instance for " + className, ex);
-			pi.setSummary ("InstanceError", true);
-			return false;
+		if (Core.isExtension(className)) {
+			process = Core.getProcess(className);
 		}
 		
-		if (processClass == null) {
-			pi.setSummary("No Instance for " + pi.getClassName(), true);
-			return false;
+		if (process == null) {
+			//Get Class
+			Class<?> processClass = null;
+			//use context classloader if available
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			if (classLoader == null)
+				classLoader = ProcessUtil.class.getClassLoader();
+			try
+			{
+				processClass = classLoader.loadClass(className);
+			}
+			catch (ClassNotFoundException ex)
+			{
+				log.log(Level.WARNING, className, ex);
+				pi.setSummary ("ClassNotFound", true);
+				return false;
+			}
+			
+			if (processClass == null) {
+				pi.setSummary("No Instance for " + pi.getClassName(), true);
+				return false;
+			}
+			
+			//Get Process		
+			try
+			{
+				process = (ProcessCall)processClass.newInstance();
+			}
+			catch (Exception ex)
+			{
+				log.log(Level.WARNING, "Instance for " + className, ex);
+				pi.setSummary ("InstanceError", true);
+				return false;
+			}									
 		}
 		
 		boolean success = false;

@@ -26,6 +26,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.AppsAction;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.StatusBar;
@@ -33,7 +34,6 @@ import org.compiere.minigrid.MiniTable;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CDialog;
 import org.compiere.swing.CPanel;
-import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
 
@@ -53,7 +53,7 @@ public class VCreateFromDialog extends CDialog implements ActionListener, TableM
 	
 	public VCreateFromDialog(CreateFrom createFrom, int windowNo, boolean modal)
 	{
-		super(Env.getWindow(windowNo), modal);
+		super(AEnv.getWindow(windowNo), modal);
 		
 		this.createFrom = createFrom;
 		this.windowNo = windowNo;

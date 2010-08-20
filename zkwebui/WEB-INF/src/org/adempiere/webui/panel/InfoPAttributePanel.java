@@ -32,7 +32,6 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WStringEditor;
-import org.compiere.apps.search.InfoPAttribute;
 import org.compiere.model.MAttribute;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MRole;
@@ -103,7 +102,7 @@ public class InfoPAttributePanel extends Window implements EventListener
 	private ArrayList<Component>	m_instanceEditors = new ArrayList<Component>();
 	private ArrayList<Component>	m_instanceEditorsTo = new ArrayList<Component>();
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(InfoPAttribute.class);
+	private static CLogger log = CLogger.getCLogger(InfoPAttributePanel.class);
 
 	private Rows rows = null;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);

@@ -64,7 +64,7 @@ public class PosApplication {
 			System.exit(1);		
 		MSession.get (Env.getCtx(), true);		//	Start Session
 		
-		int m_WindowNo = Env.createWindowNo(frame);
+		int m_WindowNo = AEnv.createWindowNo(frame);
 		
 	//  Default Image
 		frame.setIconImage(Adempiere.getImage16());

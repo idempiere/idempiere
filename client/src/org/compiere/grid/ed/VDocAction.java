@@ -72,7 +72,7 @@ public class VDocAction extends CDialog
 	 */
 	public VDocAction (int WindowNo, GridTab mTab, VButton button, int Record_ID)
 	{
-		super(Env.getWindow(WindowNo), Msg.translate(Env.getCtx(), "DocAction"), true);
+		super(AEnv.getWindow(WindowNo), Msg.translate(Env.getCtx(), "DocAction"), true);
 		log.config("");
 		m_WindowNo = WindowNo;
 		m_mTab = mTab;
@@ -93,7 +93,7 @@ public class VDocAction extends CDialog
 		//
 		dynInit(Record_ID);
 		//
-		AEnv.positionCenterWindow(Env.getWindow(WindowNo), this);
+		AEnv.positionCenterWindow(AEnv.getWindow(WindowNo), this);
 	}	//	VDocAction
 
 	//

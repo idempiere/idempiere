@@ -89,7 +89,7 @@ public class VCreateFromShipmentUI extends CreateFromShipment implements ActionL
 			log.log(Level.SEVERE, "", e);
 			setInitOK(false);
 		}
-		AEnv.positionCenterWindow(Env.getWindow(p_WindowNo), dialog);
+		AEnv.positionCenterWindow(AEnv.getWindow(p_WindowNo), dialog);
 	}   //  VCreateFrom
 	
 	/** Window No               */

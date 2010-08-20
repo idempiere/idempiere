@@ -65,6 +65,7 @@ import javax.swing.tree.TreePath;
 import org.adempiere.plaf.AdempierePLAF;
 import org.adempiere.plaf.AdempiereTaskPaneUI;
 import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.swing.CButton;
@@ -78,8 +79,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Trx;
-import org.compiere.util.TrxRunnable;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 
@@ -1005,7 +1004,7 @@ public final class VTreePanel extends CPanel
 	 */
 	private void setBusy (boolean busy)
 	{
-		JFrame frame = Env.getFrame(this);
+		JFrame frame = AEnv.getFrame(this);
 		log.info("frame: " + frame);
 		if (frame == null)  //  during init
 			return;

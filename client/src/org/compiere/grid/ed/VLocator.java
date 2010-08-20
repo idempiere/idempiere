@@ -406,7 +406,7 @@ public class VLocator extends JComponent
 		//
 		m_mLocator.setOnly_Warehouse_ID(only_Warehouse_ID);
 		m_mLocator.setOnly_Product_ID(getOnly_Product_ID());
-		VLocatorDialog ld = new VLocatorDialog(Env.getFrame(this),
+		VLocatorDialog ld = new VLocatorDialog(AEnv.getFrame(this),
 			Msg.translate(Env.getCtx(), m_columnName),
 			m_mLocator, M_Locator_ID, isMandatory(), only_Warehouse_ID);
 		//	display

@@ -15,7 +15,6 @@ Export-Package: com.akunagroup.uk.postcode,
  org.adempiere.pipo,
  org.adempiere.pipo.exception,
  org.adempiere.pipo.handler,
- org.adempiere.plaf,
  org.adempiere.print.export,
  org.adempiere.process,
  org.adempiere.process.rpl,
@@ -31,14 +30,12 @@ Export-Package: com.akunagroup.uk.postcode,
  org.compiere.impexp,
  org.compiere.interfaces,
  org.compiere.model,
- org.compiere.plaf,
  org.compiere.print,
  org.compiere.print.layout,
  org.compiere.process,
  org.compiere.report,
  org.compiere.report.core,
  org.compiere.sla,
- org.compiere.swing,
  org.compiere.tools,
  org.compiere.util,
  org.compiere.wf
@@ -48,5 +45,6 @@ Require-Bundle: org.adempiere.tools;bundle-version="1.0.0",
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
 Import-Package: net.sf.cglib.proxy,
- org.eclipse.core.runtime;version="3.4.0"
+ org.eclipse.core.runtime;version="3.4.0",
+ org.osgi.framework
 

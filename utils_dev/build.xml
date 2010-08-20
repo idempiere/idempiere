@@ -15,25 +15,30 @@
 		<echo message="=========== Build Adempiere - ${env.ENCODING}"/>
 		<!-- Create the time stamp -->
 		<tstamp/>
-		<delete>
+		<delete failonerror="false">
 	   		<fileset dir="lib/plugins">
 				<include name="*.jar"/>
 			</fileset>
 	   	</delete>
+		<mkdir dir="lib/plugins"/>
 	</target>
 	<target name="jar" depends="init">
 		<ant inheritAll="false" dir="tools"/>
 		<ant inheritAll="false" dir="base"/>
 		<ant inheritAll="false" dir="extend"/>
+		<ant inheritAll="false" dir="uibase"/>
 		<ant inheritAll="false" dir="client"/>
 		<ant inheritAll="false" dir="JasperReports"/>
 		<ant inheritAll="false" dir="JasperReportsTools"/>
 		<ant inheritAll="false" dir="JasperReportsWebApp"/>
+		<ant inheritAll="false" dir="JasperReportsClient"/>
 		<ant inheritAll="false" dir="serverRoot"/>
 		<ant inheritAll="false" dir="serverApps"/>
 		<ant inheritAll="false" dir="webStore"/>
 		<ant inheritAll="false" dir="zkwebui"/>
 		<ant inheritAll="false" dir="tomcatConfig"/>
+		<ant inheritAll="false" dir="pipo"/>
+		<ant inheritAll="false" dir="pipoHandlers"/>
 	</target>
 	<target name="build" depends="jar">
 		<ant inheritAll="false" dir="install"/>
@@ -44,6 +49,10 @@
 		<ant inheritAll="false" dir="base" target="clean"/>
 		<ant inheritAll="false" dir="extend" target="clean"/>
 		<ant inheritAll="false" dir="JasperReports" target="clean"/>
+		<ant inheritAll="false" dir="JasperReportsTools" target="clean"/>
+		<ant inheritAll="false" dir="JasperReportsWebApp" target="clean"/>
+		<ant inheritAll="false" dir="JasperReportsClient" target="clean"/>
+		<ant inheritAll="false" dir="uibase" target="clean"/>
 		<ant inheritAll="false" dir="client" target="clean"/>
 		<ant inheritAll="false" dir="serverRoot" target="clean"/>
 		<ant inheritAll="false" dir="serverApps" target="clean"/>
@@ -51,6 +60,8 @@
 		<ant inheritAll="false" dir="install" target="clean"/>
 		<ant inheritAll="false" dir="zkwebui" target="clean"/>
 		<ant inheritAll="false" dir="tomcatConfig" target="clean"/>
+		<ant inheritAll="false" dir="pipo" target="clean"/>
+		<ant inheritAll="false" dir="pipoHandlers" target="clean"/>
 	</target>
 
   <target name="clean-all" depends="clean">

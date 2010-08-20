@@ -79,7 +79,7 @@ public class POSKeyboard extends CDialog implements ActionListener, PosKeyListen
 	}
 
 	public POSKeyboard(PosBasePanel posPanel, int keyLayoutId) {
-		super(Env.getFrame(posPanel), true);
+		super(AEnv.getFrame(posPanel), true);
 		keylayout = MPOSKeyLayout.get(posPanel.getCtx(), keyLayoutId);
 		init( keyLayoutId );
 	}

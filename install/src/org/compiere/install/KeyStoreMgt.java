@@ -453,13 +453,14 @@ public class KeyStoreMgt
 		list.toArray(args);
 	//	System.out.println(" args #" + args.length);
                 //vpj-cd add support java 6
-                try
-                {
-		KeyTool.main(args);
-                }
-                catch (Exception e)
-                {                     
-                }
+		try
+        {
+			KeyTool.main(args);
+        }
+        catch (Exception e)
+        {
+        	e.printStackTrace();
+        }
 	}	//	ketyool
 	
 	/**

@@ -18,8 +18,6 @@ package org.compiere.model;
 
 import java.util.Properties;
 
-import org.adempiere.base.IService;
-
 /**
  *  Callout Interface for Callout.
  *  Used in MTab and ImpFormatRow

@@ -93,7 +93,7 @@ public class FormFrame extends CFrame
 			}
 		});
 		
-		m_WindowNo = Env.createWindowNo (this);
+		m_WindowNo = AEnv.createWindowNo (this);
 	    setGlassPane(m_glassPane);
 		try
 		{
@@ -219,7 +219,7 @@ public class FormFrame extends CFrame
 		}
 		
 		//		Window
-		AMenu aMenu = (AMenu)Env.getWindow(0);
+		AMenu aMenu = (AMenu)AEnv.getWindow(0);
 		JMenu mWindow = new WindowMenu(aMenu.getWindowManager(), this);
 		menuBar.add(mWindow);
 
@@ -367,7 +367,7 @@ public class FormFrame extends CFrame
 			sb.append("<h2>").append(m_Description).append("</h2>");
 		if (m_Help != null && m_Help.length() > 0)
 			sb.append("<p>").append(m_Help);
-		Help hlp = new Help (Env.getFrame(this), this.getTitle(), sb.toString());
+		Help hlp = new Help (AEnv.getFrame(this), this.getTitle(), sb.toString());
 		hlp.setVisible(true);
 	}	//	actionHelp
 

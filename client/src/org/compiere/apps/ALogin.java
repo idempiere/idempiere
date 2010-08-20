@@ -88,7 +88,7 @@ public final class ALogin extends CDialog
 		super (parent, "Login", true);	//	Modal
 		log.finer("");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		m_WindowNo = Env.createWindowNo (null);
+		m_WindowNo = AEnv.createWindowNo (null);
 		res = ResourceBundle.getBundle(RESOURCE);
 		//
 		try

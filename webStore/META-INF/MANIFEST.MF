@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.adempiere.wstore;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: com.springsource.javax.servlet;bundle-version="2.5.0",
  org.adempiere.JasperReports;bundle-version="1.0.0",
- org.adempiere.client;bundle-version="1.0.0",
  org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.tools;bundle-version="1.0.0",
  org.adempiere.JasperReportsTools;bundle-version="1.0.0",

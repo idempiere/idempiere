@@ -11,8 +11,8 @@ public class Client {
 		if (Core.isExtension(className))
 			className = className.substring(Core.OSGI_PREFIX.length());
 		ServiceQuery query = new ServiceQuery();
-		query.put("class", className);
-		return Service.locate(FormPanel.class, query );
+		query.put("id", className);
+		return Service.locate(FormPanel.class, "org.adempiere.apps.Form", query);
 	}
 
 }

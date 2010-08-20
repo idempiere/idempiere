@@ -78,7 +78,7 @@ public class VLocatorDialog extends CDialog
 		int M_Locator_ID, boolean mandatory, int only_Warehouse_ID)
 	{
 		super (frame, title, true);
-		m_WindowNo = Env.getWindowNo(frame);
+		m_WindowNo = AEnv.getWindowNo(frame);
 		try
 		{
 			jbInit();

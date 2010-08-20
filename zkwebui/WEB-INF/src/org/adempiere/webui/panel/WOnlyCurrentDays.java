@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Window;
-import org.compiere.grid.VOnlyCurrentDays;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -81,7 +80,7 @@ public class WOnlyCurrentDays extends Window implements EventListener
 	private int 	m_days = 0;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(VOnlyCurrentDays.class);
+	private static CLogger log = CLogger.getCLogger(WOnlyCurrentDays.class);
 
 	/**
 	 * 	Static Initializer

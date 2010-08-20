@@ -24,7 +24,7 @@ import org.compiere.model.GridTab;
 /**
  *  Column Callout Interface
  */
-public interface IColumnCallout extends IService
+public interface IColumnCallout
 {
 	/**
 	 *	Start Callout.

@@ -541,7 +541,7 @@ public class VDate extends JComponent
 		log.config("Date=" + value);
 
 		//	Find frame
-		Frame frame = Env.getFrame(jc);
+		Frame frame = AEnv.getFrame(jc);
 		//	Actual Call
 		Calendar cal = new Calendar(frame, title, value, displayType);
 		AEnv.showCenterWindow(frame, cal);

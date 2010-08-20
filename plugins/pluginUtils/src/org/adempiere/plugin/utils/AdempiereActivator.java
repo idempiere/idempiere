@@ -1,6 +1,7 @@
 package org.adempiere.plugin.utils;
 
-import java.io.InputStream;
+import java.io.File;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,23 +60,16 @@ public class AdempiereActivator implements BundleActivator {
 	}
 
 	protected void packIn(String trxName) {
-		InputStream packout = this.getClass().getResourceAsStream(
-				"/META-INF/PackOut.xml");
+		URL packout = this.getClass().getResource(
+				"/META-INF/2Pack.zip");
 		if (packout != null) {
 			IDictionaryService service = Service.locate(IDictionaryService.class);
 			try {
-				service.merge(packout);
+				service.merge(context, new File(packout.getFile()));
 			} catch (Exception e) {
 				logger.log(Level.WARNING, "Error on Dictionary service", e);
 			}
 		} 
-		X_AD_Package_Imp pkg = new X_AD_Package_Imp(Env.getCtx(),
-				0, trxName);
-		pkg.setName(getName());
-		pkg.setPK_Version(getVersion());
-		pkg.setPK_Status("Installed.");
-		pkg.setDescription(getDescription());
-		pkg.save(trxName);
 	}
 
 	protected BundleContext getContext() {
@@ -98,5 +92,4 @@ public class AdempiereActivator implements BundleActivator {
 
 	protected void stop() {
 	};
-
 }

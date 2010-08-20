@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.adempiere.osgi.IMenuAction" name="MenuAction" schema="schema/org.adempiere.osgi.IMenuAction.exsd"/>
+   <extension-point id="org.adempiere.apps.Form" name="Form" schema="schema/org.adempiere.apps.Form.exsd"/>
    <extension
          id="RF"
          name="RF"

@@ -21,6 +21,12 @@
 
 package org.adempiere.webui.apps.form;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
@@ -28,8 +34,8 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.panel.ADForm;
-import org.compiere.apps.form.VSQLProcess;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
@@ -51,10 +57,15 @@ public class WSQLProcess extends ADForm implements EventListener
 	 * 
 	 */
 	private static final long serialVersionUID = -2038792517003449189L;
-
+	
 	/** Log. */
-    private static CLogger  log = CLogger.getCLogger(VSQLProcess.class);
+    private static CLogger  log = CLogger.getCLogger(WSQLProcess.class);
 
+    /** DML Statement		*/
+	private static final String[] DML_KEYWORDS = new String[]{
+		"SELECT", "UPDATE", "DELETE", "TRUNCATE"
+	};
+	
     /** Grid used to layout components. */
     private Grid m_grdMain = new Grid();
     /** SQL label. */
@@ -144,7 +155,18 @@ public class WSQLProcess extends ADForm implements EventListener
      */
     public static String processStatements (String sqlStatements, boolean allowDML)
     {
-        return VSQLProcess.processStatements(sqlStatements, allowDML);
+    	if (sqlStatements == null || sqlStatements.length() == 0)
+			return "";
+		StringBuffer result = new StringBuffer();
+		//
+		StringTokenizer st = new StringTokenizer(sqlStatements, ";", false);
+		while (st.hasMoreTokens())
+		{
+			result.append(processStatement(st.nextToken(), allowDML));
+			result.append(Env.NL);
+		}
+		//
+		return result.toString();
     }
 
     /**
@@ -156,7 +178,88 @@ public class WSQLProcess extends ADForm implements EventListener
      */
     public static String processStatement (String sqlStatement, boolean allowDML)
     {
-        return VSQLProcess.processStatement(sqlStatement, allowDML);
+    	if (sqlStatement == null)
+			return "";
+		StringBuffer sb = new StringBuffer();
+		char[] chars = sqlStatement.toCharArray();
+		for (int i = 0; i < chars.length; i++)
+		{
+			char c = chars[i];
+			if (Character.isWhitespace(c))
+				sb.append(' ');
+			else
+				sb.append(c);
+		}
+		String sql = sb.toString().trim();
+		if (sql.length() == 0)
+			return "";
+		//
+		StringBuffer result = new StringBuffer("SQL> ")
+			.append(sql)
+			.append(Env.NL);
+		if (!allowDML)
+		{
+			boolean error = false;
+			String SQL = sql.toUpperCase();
+			for (int i = 0; i < DML_KEYWORDS.length; i++)
+			{
+				if (SQL.startsWith(DML_KEYWORDS[i] + " ") 
+					|| SQL.indexOf(" " + DML_KEYWORDS[i] + " ") != -1
+					|| SQL.indexOf("(" + DML_KEYWORDS[i] + " ") != -1)
+				{
+					result.append("===> ERROR: Not Allowed Keyword ")
+						.append(DML_KEYWORDS[i])
+						.append(Env.NL);
+					error = true;	
+				}
+			}
+			if (error)
+				return result.toString();
+		}	//	!allowDML
+		
+		//	Process
+		Connection conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
+		Statement stmt = null;
+		try
+		{
+			stmt = conn.createStatement(); 
+			boolean OK = stmt.execute(sql);
+			int count = stmt.getUpdateCount();
+			if (count == -1)
+			{
+				result.append("---> ResultSet");
+			}
+			else
+				result.append("---> Result=").append(count);
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, "process statement: " + sql + " - " + e.toString());
+			result.append("===> ").append(e.toString());
+		}
+		
+		//	Clean up
+		try
+		{
+			stmt.close();
+		}
+		catch (SQLException e1)
+		{
+			log.log(Level.SEVERE, "processStatement - close statement", e1);
+		}
+		stmt = null;
+		try
+		{
+			conn.close();
+		}
+		catch (SQLException e2)
+		{
+			log.log(Level.SEVERE, "processStatement - close connection", e2);
+		}
+		conn = null;
+		//
+		result.append(Env.NL);
+		return result.toString();
     }
 
 

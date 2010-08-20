@@ -18,8 +18,8 @@ package org.compiere.print;
 
 import javax.swing.JFrame;
 
+import org.compiere.apps.AEnv;
 import org.compiere.apps.AMenu;
-import org.compiere.util.Env;
 
 /**
  * 
@@ -30,7 +30,7 @@ public class SwingViewerProvider implements ReportViewerProvider {
 
 	public void openViewer(ReportEngine re) {
 		Viewer viewer = new Viewer(re);
-		JFrame top = Env.getWindow(0);
+		JFrame top = AEnv.getWindow(0);
 		if (top instanceof AMenu)
 			((AMenu)top).getWindowManager().add(viewer);
 	}

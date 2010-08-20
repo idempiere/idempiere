@@ -40,6 +40,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.FieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.MAccountLookup;
@@ -320,7 +321,7 @@ public final class VAccount extends JComponent
 		{
 			C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID");
 		}
-		VAccountDialog ad = new VAccountDialog (Env.getFrame(this), m_title, 
+		VAccountDialog ad = new VAccountDialog (AEnv.getFrame(this), m_title, 
 			m_mAccount, C_AcctSchema_ID);
 		setCursor(Cursor.getDefaultCursor());
 		//

@@ -121,7 +121,7 @@ public final class VAccountDialog extends CDialog
 			+ ", C_ValidCombination_ID=" + mAccount.C_ValidCombination_ID);
 		m_mAccount = mAccount;
 		m_C_AcctSchema_ID = C_AcctSchema_ID;
-		m_WindowNo = Env.createWindowNo (this);
+		m_WindowNo = AEnv.createWindowNo (this);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		try
 		{
@@ -273,7 +273,7 @@ public final class VAccountDialog extends CDialog
 
 		//  Model
 		int AD_Window_ID = 153;		//	Maintain Account Combinations 
-		GridWindowVO wVO = AEnv.getMWindowVO (m_WindowNo, AD_Window_ID, 0);     
+		GridWindowVO wVO = Env.getMWindowVO (m_WindowNo, AD_Window_ID, 0);     
 		if (wVO == null)
 			return false;
 		m_mWindow = new GridWindow (wVO);

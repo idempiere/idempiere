@@ -19,6 +19,8 @@ package org.adempiere.webui.panel;
 
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
@@ -286,7 +288,7 @@ public abstract class ADForm extends Window implements EventListener
 	 */
 	public static ADForm openForm (int adFormID)
 	{
-		Object obj;
+		Object obj = null;
 		ADForm form;
 		String webClassName = "";
 		MForm mform = new MForm(Env.getCtx(), adFormID, null);
@@ -299,33 +301,40 @@ public abstract class ADForm extends Window implements EventListener
     	}
     	else
     	{
-
     		logger.info("AD_Form_ID=" + adFormID + " - Class=" + richClassName);
 
-    		//static lookup
-    		webClassName = ADClassNameMap.get(richClassName);
-    		//fallback to dynamic translation
-    		if (webClassName == null || webClassName.trim().length() == 0)
+    		if (Core.isExtension(richClassName)) 
     		{
-    			webClassName = translateFormClassName(richClassName);
+    			obj = Extensions.getForm(richClassName);
     		}
     		
-    		if (webClassName == null)
+    		if (obj == null) 
     		{
-    			throw new ApplicationException("Web UI form not implemented for the swing form " +
- 					   richClassName);
-    		}
-
-    		try
-    		{
-    			//	Create instance w/o parameters
-        		obj = ADForm.class.getClassLoader().loadClass(webClassName).newInstance();
-    		}
-    		catch (Exception e)
-    		{
-    			throw new ApplicationException("The selected web user interface custom form '" +
-    					   webClassName +
-    					   "' is not accessible.", e);
+	    		//static lookup
+	    		webClassName = ADClassNameMap.get(richClassName);
+	    		//fallback to dynamic translation
+	    		if (webClassName == null || webClassName.trim().length() == 0)
+	    		{
+	    			webClassName = translateFormClassName(richClassName);
+	    		}
+	    		
+	    		if (webClassName == null)
+	    		{
+	    			throw new ApplicationException("Web UI form not implemented for the swing form " +
+	 					   richClassName);
+	    		}
+	
+	    		try
+	    		{
+	    			//	Create instance w/o parameters
+	        		obj = ADForm.class.getClassLoader().loadClass(webClassName).newInstance();
+	    		}
+	    		catch (Exception e)
+	    		{
+	    			throw new ApplicationException("The selected web user interface custom form '" +
+	    					   webClassName +
+	    					   "' is not accessible.", e);
+	    		}
     		}
 
         	try

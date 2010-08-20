@@ -16,7 +16,7 @@
   <target name="clean" description="delete class directory">
 	   <delete>
 	   		<fileset dir="../lib/plugins">
-    			<include name="org.adempiere.adempiereRoot*.jar"/>
+    			<include name="org.adempiere.adempiereRoot_*.jar"/>
 			</fileset>
 	   </delete>
 	</target>

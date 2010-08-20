@@ -124,7 +124,7 @@ import org.compiere.util.ValueNamePair;
  * 
  */
 public class Viewer extends CFrame
-	implements ActionListener, ChangeListener, WindowStateListener
+	implements ActionListener, ChangeListener, WindowStateListener, IReportEngineEventListener
 {
 	/**
 	 * 
@@ -150,7 +150,7 @@ public class Viewer extends CFrame
 	{
 		super(gc);
 		log.info("");
-		m_WindowNo = Env.createWindowNo(this);
+		m_WindowNo = AEnv.createWindowNo(this);
 		m_reportEngine = re;
 		m_AD_Table_ID = re.getPrintFormat().getAD_Table_ID();
 		if (!MRole.getDefault().isCanReport(m_AD_Table_ID))
@@ -161,7 +161,8 @@ public class Viewer extends CFrame
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
 		try
 		{
-			m_viewPanel = re.getView();
+			m_viewPanel = new View(re.getLayout());
+			re.addEventListener(this);
 			m_ctx = m_reportEngine.getCtx();
 			jbInit();
 			dynInit();
@@ -591,7 +592,7 @@ public class Viewer extends CFrame
 		AEnv.addMenuItem("Preference", null, null, mTools, this);
 		
 		//		Window
-		AMenu aMenu = (AMenu)Env.getWindow(0);
+		AMenu aMenu = (AMenu)AEnv.getWindow(0);
 		JMenu mWindow = new WindowMenu(aMenu.getWindowManager(), this);
 		menuBar.add(mWindow);
 
@@ -1331,6 +1332,24 @@ public class Viewer extends CFrame
 
 		new Viewer(re);
 	}	//	main
+
+	@Override
+	public void onPrintFormatChanged(ReportEngineEvent event) {
+		if (m_viewPanel != null)
+			m_viewPanel.revalidate();
+	}
+
+	@Override
+	public void onQueryChanged(ReportEngineEvent event) {
+		if (m_viewPanel != null)
+			m_viewPanel.revalidate();
+	}
+
+	@Override
+	public void onPageSetupChanged(ReportEngineEvent event) {
+		if (m_viewPanel != null)
+			m_viewPanel.revalidate();
+	}
 
 }	//	Viewer
 

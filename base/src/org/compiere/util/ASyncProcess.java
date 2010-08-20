@@ -64,5 +64,4 @@ public interface ASyncProcess
 	 *  @param pi ProcessInfo
 	 */
 	public void executeASync (ProcessInfo pi);
-
 }   //  ASyncProcess

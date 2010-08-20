@@ -111,7 +111,7 @@ public class BeanShellEditor extends CDialog implements ActionListener
 		m_owner = owner;
 		m_WindowNo = WindowNo;
 		if (m_WindowNo == 0)
-			m_WindowNo = Env.createWindowNo(this);
+			m_WindowNo = AEnv.createWindowNo(this);
 		log.info("Window=" + m_WindowNo);
 		try
 		{

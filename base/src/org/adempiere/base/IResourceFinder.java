@@ -18,7 +18,7 @@ package org.adempiere.base;
 
 import java.net.URL;
 
-public interface IResourceFinder extends IService {
+public interface IResourceFinder {
 
 	URL getResource(String name);
 

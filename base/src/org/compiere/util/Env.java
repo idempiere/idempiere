@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -33,29 +32,27 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.db.CConnection;
+import org.compiere.model.GridWindowVO;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookupCache;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
-import org.compiere.swing.CFrame;
 
 /**
  *  System Environment and static variables.
@@ -72,6 +69,8 @@ public final class Env
 {
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 
+	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
+	
 	/**
 	 * @param provider
 	 * @deprecated
@@ -80,6 +79,23 @@ public final class Env
 	{
 	}
 
+	/**
+	 * @param listener
+	 */
+	public static void addEventListener(IEnvEventListener listener)
+	{
+		eventListeners.add(listener);
+	}
+
+	/**
+	 * @param listener
+	 * @return boolean
+	 */
+	public static boolean removeEventListener(IEnvEventListener listener)
+	{
+		return eventListeners.remove(listener);
+	}
+	
 	/**
 	 *	Exit System
 	 *  @param status System exit status (usually 0 for no error)
@@ -124,35 +140,12 @@ public final class Env
 	 */
 	public static void reset (boolean finalCall)
 	{
-		if (Ini.isClient())
+		IEnvEventListener[] listeners = eventListeners.toArray(new IEnvEventListener[0]);
+		for(IEnvEventListener listener : listeners)
 		{
-			closeWindows();
-
-			//	Dismantle windows
-			/**
-			for (int i = 0; i < s_windows.size(); i++)
-			{
-				Container win = (Container)s_windows.get(i);
-				if (win.getClass().getName().endsWith("AMenu")) // Null pointer
-					;
-				else if (win instanceof Window)
-					((Window)win).dispose();
-				else
-					win.removeAll();
-			}
-			**/
-			//bug [ 1574630 ]
-			if (s_windows.size() > 0) {
-				if (!finalCall) {
-					Container c = s_windows.get(0);
-					s_windows.clear();
-					createWindowNo(c);
-				} else {
-					s_windows.clear();
-				}
-			}
+			listener.onReset(finalCall);
 		}
-
+		
 		//	Clear all Context
 		if (finalCall)
 			getCtx().clear();
@@ -1179,8 +1172,11 @@ public final class Env
 		MLookupCache.cacheReset(WindowNo);
 	//	MLocator.cacheReset(WindowNo);
 		//
-		if (Ini.isClient())
-			removeWindow(WindowNo);
+		IEnvEventListener[] listeners = eventListeners.toArray(new IEnvEventListener[0]);
+		for(IEnvEventListener listener : listeners)
+		{
+			listener.onClearWindowContext(WindowNo);
+		}	
 	}	//	clearWinContext
 
 	/**
@@ -1351,79 +1347,7 @@ public final class Env
 	}
 
 	/*************************************************************************/
-
-	//	Array of active Windows
-	private static ArrayList<Container>	s_windows = new ArrayList<Container>(20);
-
-	/**
-	 *	Add Container and return WindowNo.
-	 *  The container is a APanel, AWindow or JFrame/JDialog
-	 *  @param win window
-	 *  @return WindowNo used for context
-	 */
-	public static int createWindowNo(Container win)
-	{
-		int retValue = s_windows.size();
-		s_windows.add(win);
-		return retValue;
-	}	//	createWindowNo
-
-	/**
-	 *	Search Window by comparing the Frames
-	 *  @param container container
-	 *  @return WindowNo of container or 0
-	 */
-	public static int getWindowNo (Container container)
-	{
-		if (container == null)
-			return 0;
-		JFrame winFrame = getFrame(container);
-		if (winFrame == null)
-			return 0;
-
-		//  loop through windows
-		for (int i = 0; i < s_windows.size(); i++)
-		{
-			Container cmp = (Container)s_windows.get(i);
-			if (cmp != null)
-			{
-				JFrame cmpFrame = getFrame(cmp);
-				if (winFrame.equals(cmpFrame))
-					return i;
-			}
-		}
-		return 0;
-	}	//	getWindowNo
-
-	/**
-	 *	Return the JFrame pointer of WindowNo - or null
-	 *  @param WindowNo window
-	 *  @return JFrame of WindowNo
-	 */
-	public static JFrame getWindow (int WindowNo)
-	{
-		JFrame retValue = null;
-		try
-		{
-			retValue = getFrame ((Container)s_windows.get(WindowNo));
-		}
-		catch (Exception e)
-		{
-			getLogger().log(Level.SEVERE, e.toString());
-		}
-		return retValue;
-	}	//	getWindow
-
-	/**
-	 *	Remove window from active list
-	 *  @param WindowNo window
-	 */
-	private static void removeWindow (int WindowNo)
-	{
-		if (WindowNo < s_windows.size())
-			s_windows.set(WindowNo, null);
-	}	//	removeWindow
-
+	
 	/**
 	 *	Clean up context for Window (i.e. delete it)
 	 *  @param WindowNo window
@@ -1440,24 +1364,6 @@ public final class Env
 	{
 		getCtx().clear();
 	}	//	clearContext
-
-
-	/**************************************************************************
-	 *	Get Frame of Window
-	 *  @param container Container
-	 *  @return JFrame of container or null
-	 */
-	public static JFrame getFrame (Container container)
-	{
-		Container element = container;
-		while (element != null)
-		{
-			if (element instanceof JFrame)
-				return (JFrame)element;
-			element = element.getParent();
-		}
-		return null;
-	}	//	getFrame
 
 	/**
 	 *	Get Graphics of container or its parent.
@@ -1596,92 +1502,6 @@ public final class Env
    		return osName.indexOf ("windows") != -1;
    	}	//	isWindows
 
-
-	/** Array of hidden Windows				*/
-	private static ArrayList<CFrame>	s_hiddenWindows = new ArrayList<CFrame>();
-	/** Closing Window Indicator			*/
-	private static boolean 				s_closingWindows = false;
-
-	/**
-	 * 	Hide Window
-	 *	@param window window
-	 *	@return true if window is hidden, otherwise close it
-	 */
-	static public boolean hideWindow(CFrame window)
-	{
-		if (!Ini.isCacheWindow() || s_closingWindows)
-			return false;
-		for (int i = 0; i < s_hiddenWindows.size(); i++)
-		{
-			CFrame hidden = s_hiddenWindows.get(i);
-			getLogger().info(i + ": " + hidden);
-			if (hidden.getAD_Window_ID() == window.getAD_Window_ID())
-				return false;	//	already there
-		}
-		if (window.getAD_Window_ID() != 0)	//	workbench
-		{
-			if (s_hiddenWindows.add(window))
-			{
-				window.setVisible(false);
-				getLogger().info(window.toString());
-			//	window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_ICONIFIED));
-				if (s_hiddenWindows.size() > 10) {
-					CFrame toClose = s_hiddenWindows.remove(0);		//	sort of lru
-					try {
-						s_closingWindows = true;
-						toClose.dispose();
-					} finally {
-						s_closingWindows = false;
-					}
-				}
-				return true;
-			}
-		}
-		return false;
-	}	//	hideWindow
-
-	/**
-	 * 	Show Window
-	 *	@param AD_Window_ID window
-	 *	@return true if window re-displayed
-	 */
-	static public CFrame showWindow (int AD_Window_ID)
-	{
-		for (int i = 0; i < s_hiddenWindows.size(); i++)
-		{
-			CFrame hidden = s_hiddenWindows.get(i);
-			if (hidden.getAD_Window_ID() == AD_Window_ID)
-			{
-				s_hiddenWindows.remove(i);
-				getLogger().info(hidden.toString());
-				hidden.setVisible(true);
-				// De-iconify window - teo_sarca [ 1707221 ]
-				int state = hidden.getExtendedState();
-				if ((state & CFrame.ICONIFIED) > 0)
-					hidden.setExtendedState(state & ~CFrame.ICONIFIED);
-				//
-				hidden.toFront();
-				return hidden;
-			}
-		}
-		return null;
-	}	//	showWindow
-
-	/**
-	 * 	Clode Windows.
-	 */
-	static void closeWindows ()
-	{
-		s_closingWindows = true;
-		for (int i = 0; i < s_hiddenWindows.size(); i++)
-		{
-			CFrame hidden = s_hiddenWindows.get(i);
-			hidden.dispose();
-		}
-		s_hiddenWindows.clear();
-		s_closingWindows = false;
-	}	//	closeWindows
-
 	/**
 	 * 	Sleep
 	 *	@param sec seconds
@@ -1699,46 +1519,6 @@ public final class Env
 		}
 		getLogger().info("End");
 	}	//	sleep
-
-	/**
-	 * Update all windows after look and feel changes.
-	 * @since 2006-11-27
-	 */
-	public static Set<Window>updateUI()
-	{
-		Set<Window> updated = new HashSet<Window>();
-		for (Container c : s_windows)
-		{
-			Window w = getFrame(c);
-			if (w == null) continue;
-			if (updated.contains(w)) continue;
-			SwingUtilities.updateComponentTreeUI(w);
-			w.validate();
-			RepaintManager mgr = RepaintManager.currentManager(w);
-			Component childs[] = w.getComponents();
-			for (Component child : childs) {
-				if (child instanceof JComponent)
-					mgr.markCompletelyDirty((JComponent)child);
-			}
-			w.repaint();
-			updated.add(w);
-		}
-		for (Window w : s_hiddenWindows)
-		{
-			if (updated.contains(w)) continue;
-			SwingUtilities.updateComponentTreeUI(w);
-			w.validate();
-			RepaintManager mgr = RepaintManager.currentManager(w);
-			Component childs[] = w.getComponents();
-			for (Component child : childs) {
-				if (child instanceof JComponent)
-					mgr.markCompletelyDirty((JComponent)child);
-			}
-			w.repaint();
-			updated.add(w);
-		}
-		return updated;
-	}
 
 	/**
 	 * Prepare the context for calling remote server (for e.g, ejb),
@@ -1764,6 +1544,63 @@ public final class Env
 		return p;
 	}
 
+	/**	Window Cache		*/
+	private static CCache<Integer,GridWindowVO>	s_windowsvo 
+		= new CCache<Integer,GridWindowVO>("AD_Window", 10);
+	
+	/**
+	 *  Get Window Model
+	 *
+	 *  @param WindowNo  Window No
+	 *  @param AD_Window_ID window
+	 *  @param AD_Menu_ID menu
+	 *  @return Model Window Value Obkect
+	 */
+	public static GridWindowVO getMWindowVO (int WindowNo, int AD_Window_ID, int AD_Menu_ID)
+	{
+		getLogger().config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
+		GridWindowVO mWindowVO = null;
+		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
+		{
+			mWindowVO = s_windowsvo.get(AD_Window_ID);
+			if (mWindowVO != null)
+			{
+				mWindowVO = mWindowVO.clone(WindowNo);
+				getLogger().info("Cached=" + mWindowVO);
+			}
+		}
+		
+		//  Create Window Model on Client
+		if (mWindowVO == null)
+		{
+			getLogger().config("create local");
+			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
+			if (mWindowVO != null)
+				s_windowsvo.put(AD_Window_ID, mWindowVO);
+		}	//	from Client
+		if (mWindowVO == null)
+			return null;
+		
+		//  Check (remote) context
+		if (!mWindowVO.ctx.equals(Env.getCtx()))
+		{
+			//  Remote Context is called by value, not reference
+			//  Add Window properties to context
+			Enumeration<?> keyEnum = mWindowVO.ctx.keys();
+			while (keyEnum.hasMoreElements())
+			{
+				String key = (String)keyEnum.nextElement();
+				if (key.startsWith(WindowNo+"|"))
+				{
+					String value = mWindowVO.ctx.getProperty (key);
+					Env.setContext(Env.getCtx(), key, value);
+				}
+			}
+			//  Sync Context
+			mWindowVO.setCtx(Env.getCtx());
+		}
+		return mWindowVO;
+	}   //  getWindow
 
 	/**************************************************************************
 	 *  Static Variables

@@ -34,6 +34,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.FieldRecordInfo;
 import org.compiere.apps.ScriptEditor;
 import org.compiere.model.GridField;
@@ -185,7 +186,7 @@ public class VText extends CTextArea
 			String s = null;
 			if (m_columnName.equals("Script") || m_columnName.endsWith("_Script"))
 				s = ScriptEditor.start (
-						Env.getFrame(this.getParent()),
+						AEnv.getFrame(this.getParent()),
 						Msg.translate(Env.getCtx(), m_columnName), getText(), isEditable(), 
 						findWindowNo());
 			else
@@ -208,7 +209,7 @@ public class VText extends CTextArea
 
 	private int findWindowNo() {
 		Container c = this.getParent();		
-		return c != null ? Env.getWindowNo(c) : 0;
+		return c != null ? AEnv.getWindowNo(c) : 0;
 	}
 
 	/**

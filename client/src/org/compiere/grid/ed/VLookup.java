@@ -819,7 +819,7 @@ public class VLookup extends JComponent
 		if (m_lookup == null)
 			return;		//	leave button disabled
 		m_text.requestFocus();						//  closes other editors
-		Frame frame = Env.getFrame(this);
+		Frame frame = AEnv.getFrame(this);
 
 		/**
 		 *  Three return options:
@@ -1305,7 +1305,7 @@ public class VLookup extends JComponent
 	 */
 	private void actionBPartner (boolean newRecord)
 	{
-		VBPartner vbp = new VBPartner (Env.getFrame(this), m_lookup.getWindowNo());
+		VBPartner vbp = new VBPartner (AEnv.getFrame(this), m_lookup.getWindowNo());
 		int BPartner_ID = 0;
 		//  if update, get current value
 		if (!newRecord)

@@ -195,11 +195,16 @@ public class ModelInterfaceGenerator
 			 .append("    /** TableName=").append(tableName).append(" */\n")
 			 .append("    public static final String Table_Name = \"").append(tableName).append("\";\n")
 			 
-			 .append("    /** AD_Table_ID=").append(AD_Table_ID).append(" */\n")
-			 .append("    public static final int Table_ID = MTable.getTable_ID(Table_Name);\n")
+			 .append("    /** AD_Table_ID=").append(AD_Table_ID).append(" */\n");
+		
+		//MTable.getTable_ID unnecessary for official ID
+		if (AD_Table_ID <= MTable.MAX_OFFICIAL_ID)
+			start.append("    public static final int Table_ID = ").append(AD_Table_ID).append(";\n");
+		else
+			start.append("    public static final int Table_ID = MTable.getTable_ID(Table_Name);\n");
 			 
 			 //.append("    protected KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);\n")
-			 .append("    KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);\n") // INFO - Should this be here???
+		start.append("    KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);\n") // INFO - Should this be here???
 			 
 			 .append("    /** AccessLevel = ").append(accessLevelInfo).append("\n")
 			 .append("     */\n")

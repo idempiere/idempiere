@@ -25,6 +25,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.compiere.apps.AEnv;
 import org.compiere.apps.AppsAction;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.minigrid.MiniTable;
@@ -80,7 +81,7 @@ public abstract class PosQuery extends CDialog implements MouseListener, ListSel
 	 */
 	public PosQuery (PosBasePanel posPanel)
 	{
-		super(Env.getFrame(posPanel), true);
+		super(AEnv.getFrame(posPanel), true);
 		p_posPanel = posPanel;
 		p_pos = posPanel.p_pos;
 		p_ctx = p_pos.getCtx();

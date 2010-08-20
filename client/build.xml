@@ -29,7 +29,7 @@
   <target name="clean">
   	<delete>
    		<fileset dir="../lib/plugins">
-			<include name="org.adempiere.client*.jar"/>
+			<include name="org.adempiere.client_*.jar"/>
 		</fileset>
    	</delete>
   </target>

@@ -78,8 +78,8 @@ public class CLogMgt
 		List<String>handlerNames = new ArrayList<String>();
 		try
 		{
-			Logger rootLogger = Logger.getLogger(getRootLoggerName());
-			rootLogger.setUseParentHandlers(false);
+			Logger rootLogger = getRootLogger();
+			
 		//	System.out.println(rootLogger.getName() + " (" + rootLogger + ")");
 			Handler[] handlers = rootLogger.getHandlers();
 			for (int i = 0; i < handlers.length; i ++)
@@ -189,8 +189,7 @@ public class CLogMgt
 	 */
 	protected static Handler[] getHandlers()
 	{
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
-		rootLogger.setUseParentHandlers(false);
+		Logger rootLogger = getRootLogger();
 		Handler[] handlers = rootLogger.getHandlers();
 		return handlers;
 	}	//	getHandlers
@@ -203,7 +202,7 @@ public class CLogMgt
 	{
 		if (handler == null)
 			return;
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		Logger rootLogger = getRootLogger();
 		rootLogger.addHandler(handler);
 		//
 		log.log(Level.CONFIG, "Handler=" + handler);
@@ -216,8 +215,7 @@ public class CLogMgt
 	 */
 	protected static void setFormatter (java.util.logging.Formatter formatter)
 	{
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
-		rootLogger.setUseParentHandlers(false);
+		Logger rootLogger = getRootLogger();
 		Handler[] handlers = rootLogger.getHandlers();
 		for (int i = 0; i < handlers.length; i++)
 		{
@@ -232,8 +230,7 @@ public class CLogMgt
 	 */
 	protected static void setFilter (Filter filter)
 	{
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
-		rootLogger.setUseParentHandlers(false);
+		Logger rootLogger = getRootLogger();
 		Handler[] handlers = rootLogger.getHandlers();
 		for (int i = 0; i < handlers.length; i++)
 		{
@@ -273,8 +270,7 @@ public class CLogMgt
 	{
 		if (level == null)
 			return;
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
-		rootLogger.setUseParentHandlers(false);
+		Logger rootLogger = getRootLogger();
 		rootLogger.setLevel(level);
 		Handler[] handlers = rootLogger.getHandlers();
 		if (handlers == null || handlers.length == 0)
@@ -340,7 +336,7 @@ public class CLogMgt
 	 */
 	public static Level getLevel()
 	{
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		Logger rootLogger = getRootLogger();
 		return rootLogger.getLevel();
 	}	//	getLevel
 
@@ -350,7 +346,7 @@ public class CLogMgt
 	 */
 	public static int getLevelAsInt()
 	{
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		Logger rootLogger = getRootLogger();
 		return rootLogger.getLevel().intValue();
 	}	//	getLevel
 
@@ -417,8 +413,7 @@ public class CLogMgt
 	 */
 	public static void enable (boolean enableLogging)
 	{
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
-		rootLogger.setUseParentHandlers(false);
+		Logger rootLogger = getRootLogger();
 
 		if (enableLogging)
 			setLevel(rootLogger.getLevel());
@@ -674,7 +669,22 @@ public class CLogMgt
 		return "-no local host info -";
 	}   //  getLocalHost
 
-
+	private static Logger getRootLogger()
+	{
+		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		if (rootLogger.getUseParentHandlers())
+		{
+			rootLogger.setUseParentHandlers(false);
+		}
+		//set default level
+		if (rootLogger.getLevel() == null)
+		{
+			rootLogger.setLevel(Level.WARNING);
+		}
+		
+		return rootLogger;
+	}
+	
 	/**************************************************************************
 	 * 	CLogMgt
 	 */

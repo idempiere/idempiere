@@ -731,7 +731,7 @@ public final class VNumber extends JComponent
 		}
 		
 		//	Find frame
-		Frame frame = Env.getFrame(jc);
+		Frame frame = AEnv.getFrame(jc);
 		//	Actual Call
 		Calculator calc = new Calculator(frame, title,
 			displayType, format, startValue);

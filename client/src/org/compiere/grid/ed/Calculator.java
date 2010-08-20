@@ -45,6 +45,7 @@ import javax.swing.SwingConstants;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
 import org.compiere.model.MConversionRate;
 import org.compiere.swing.CDialog;
 import org.compiere.swing.CPanel;
@@ -83,7 +84,7 @@ public final class Calculator extends CDialog
 		super(frame, title, true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		//  Get WindowNo for Currency
-		m_WindowNo = Env.getWindowNo(frame);
+		m_WindowNo = AEnv.getWindowNo(frame);
 		//
 		m_DisplayType = displayType;
 		if (!DisplayType.isNumeric(m_DisplayType))

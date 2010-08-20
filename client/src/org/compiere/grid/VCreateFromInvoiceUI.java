@@ -70,7 +70,7 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 			log.log(Level.SEVERE, "", e);
 			setInitOK(false);
 		}
-		AEnv.positionCenterWindow(Env.getWindow(p_WindowNo), dialog);
+		AEnv.positionCenterWindow(AEnv.getWindow(p_WindowNo), dialog);
 	}   //  VCreateFrom
 	
 	/** Window No               */

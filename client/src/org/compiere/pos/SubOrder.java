@@ -39,6 +39,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerInfo;
@@ -608,7 +609,7 @@ public class SubOrder extends PosSubPanel
 					PrintLabel.printLabelTicket(order.getC_Order_ID(), p_pos.getAD_PrintLabel_ID());
 				*/ 
 				//print standard document
-				ReportCtl.startDocumentPrint(ReportEngine.ORDER, order.getC_Order_ID(), null, Env.getWindowNo(this), true);
+				ReportCtl.startDocumentPrint(ReportEngine.ORDER, order.getC_Order_ID(), null, AEnv.getWindowNo(this), true);
 				
 			}
 			catch (Exception e) 

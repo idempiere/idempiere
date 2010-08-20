@@ -102,7 +102,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	private static CLogger log = CLogger.getCLogger(ReportStarter.class);
 	private static File REPORT_HOME = null;
 
-	private static JRViewerProvider viewerProvider = new SwingJRViewerProvider();
+	private static JRViewerProvider viewerProvider = null;
 	private static JasperPrint jasperPrint;
 
     static {
@@ -492,7 +492,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
                     if (!processInfo.isBatch()) {
 
                     	// Get printer job
-                    	PrinterJob printerJob = org.compiere.print.CPrinter.getPrinterJob(printerName);
+                    	PrinterJob printerJob = PrintUtil.getPrinterJob(printerName);
                     	// Set print request attributes
 
                 		//	Paper Attributes:

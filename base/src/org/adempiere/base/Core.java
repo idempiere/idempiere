@@ -3,6 +3,9 @@ package org.adempiere.base;
 import java.net.URL;
 import java.util.List;
 
+import org.compiere.model.ModelValidator;
+import org.compiere.process.ProcessCall;
+
 /**
  * This is a facade class for the Service Locator.
  * It provides simple access to all core services.
@@ -11,7 +14,7 @@ import java.util.List;
  */
 public class Core {
 
-	public static final String OSGI_PREFIX = "osgi://";
+	public static final String OSGI_PREFIX = "osgi:";
 
 	public static IResourceFinder getResourceFinder() {
 		return new IResourceFinder() {
@@ -40,5 +43,22 @@ public class Core {
 		return className.startsWith(OSGI_PREFIX);
 	}
 
+	public static ProcessCall getProcess(String className) {
+		if (isExtension(className))
+			className = className.substring(Core.OSGI_PREFIX.length());
+		
+		ServiceQuery query = new ServiceQuery();
+		query.put("id", className);
+		return Service.locate(ProcessCall.class, "org.adempiere.base.Process", query);
+	}
+	
+	public static ModelValidator getModelValidator(String className) {
+		if (isExtension(className))
+			className = className.substring(Core.OSGI_PREFIX.length());
+		
+		ServiceQuery query = new ServiceQuery();
+		query.put("id", className);
+		return Service.locate(ModelValidator.class, "org.adempiere.base.ModelValidator", query);
+	}
 
 }

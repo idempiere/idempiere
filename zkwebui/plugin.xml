@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.adempiere.webui.Form" name="Web Form" schema="schema/org.adempiere.webui.Form.exsd"/>
+
+</plugin>

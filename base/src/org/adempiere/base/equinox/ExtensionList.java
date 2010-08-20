@@ -86,16 +86,16 @@ public class ExtensionList<T> implements Iterable<T>{
 	private IConfigurationElement[] elements;
 	private HashMap<String, String> filters = new HashMap<String, String>();
 
-	public ExtensionList(Class<T> clazz, String id) {
+	public ExtensionList(Class<T> clazz, String extensionPointId) {
 		try {
-			elements = Platform.getExtensionRegistry().getConfigurationElementsFor(id);
+			elements = Platform.getExtensionRegistry().getConfigurationElementsFor(extensionPointId);
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
 	}
 	
-	public ExtensionList(Class<T> type, String name, ServiceQuery query) {
-		this(type, name);
+	public ExtensionList(Class<T> type, String extensionPointId, ServiceQuery query) {
+		this(type, extensionPointId);
 		for (String key : query.keySet()) {
 			addFilter(key, query.get(key));
 		}
@@ -105,8 +105,8 @@ public class ExtensionList<T> implements Iterable<T>{
 		return new ExtensionIterator<T>();
 	}
 
-	public void addFilter(String name, String value) {
-		filters.put(name, value);
+	public void addFilter(String attribute, String value) {
+		filters.put(attribute, value);
 	}
 
 	public T first() {

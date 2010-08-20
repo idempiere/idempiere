@@ -21,7 +21,7 @@ Instead, you specify Table and Column in the extension declaration.
       </annotation>
       <complexType>
          <choice>
-            <element ref="client" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="callout" minOccurs="1" maxOccurs="unbounded"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -50,7 +50,7 @@ Instead, you specify Table and Column in the extension declaration.
       </complexType>
    </element>
 
-   <element name="client">
+   <element name="callout">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>

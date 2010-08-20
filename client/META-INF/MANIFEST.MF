@@ -7,6 +7,7 @@ Bundle-ClassPath: client.jar
 Export-Package: de.schaeffer.compiere.tools,
  org.adempiere.apps.graph,
  org.adempiere.osgi,
+ org.adempiere.plaf,
  org.compiere,
  org.compiere.acct,
  org.compiere.apps,
@@ -19,11 +20,14 @@ Export-Package: de.schaeffer.compiere.tools,
  org.compiere.images,
  org.compiere.install,
  org.compiere.minigrid,
+ org.compiere.plaf,
  org.compiere.pos,
  org.compiere.print,
+ org.compiere.swing,
  org.eevolution.form
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
- org.adempiere.tools;bundle-version="1.0.0"
+ org.adempiere.tools;bundle-version="1.0.0",
+ org.adempiere.ui.base;bundle-version="1.0.0"
 Eclipse-ExtensibleAPI: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.runtime;version="3.4.0",

@@ -31,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.model.MPaySelectionCheck;
@@ -389,7 +390,7 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener
 		{
 			MPaySelectionCheck check = m_checks[i];
 			//	ReportCtrl will check BankAccountDoc for PrintFormat
-			boolean ok = ReportCtl.startDocumentPrint(ReportEngine.CHECK, check.get_ID(), null, Env.getWindowNo(panel), directPrint);
+			boolean ok = ReportCtl.startDocumentPrint(ReportEngine.CHECK, check.get_ID(), null, AEnv.getWindowNo(panel), directPrint);
 			if (!somethingPrinted && ok)
 				somethingPrinted = true;
 		}
@@ -413,7 +414,7 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener
 			for (int i = 0; i < m_checks.length; i++)
 			{
 				MPaySelectionCheck check = m_checks[i];
-				ReportCtl.startDocumentPrint(ReportEngine.REMITTANCE, check.get_ID(), null, Env.getWindowNo(panel), directPrint);
+				ReportCtl.startDocumentPrint(ReportEngine.REMITTANCE, check.get_ID(), null, AEnv.getWindowNo(panel), directPrint);
 			}
 		}	//	remittance
 

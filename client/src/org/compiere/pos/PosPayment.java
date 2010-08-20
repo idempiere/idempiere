@@ -43,6 +43,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.AppsAction;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MLookup;
@@ -193,7 +194,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 	private CButton f_bCancel;
 
 	public PosPayment(PosBasePanel posPanel) {
-		super(Env.getFrame(posPanel),true);
+		super(AEnv.getFrame(posPanel),true);
 		p_posPanel = posPanel;
 		p_pos = posPanel.p_pos;
 		p_ctx = p_pos.getCtx();

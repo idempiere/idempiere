@@ -36,6 +36,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.FieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -415,7 +416,7 @@ public class VPAttribute extends JComponent
 		}
 		else
 		{
-			VPAttributeDialog vad = new VPAttributeDialog (Env.getFrame (this), 
+			VPAttributeDialog vad = new VPAttributeDialog (AEnv.getFrame (this), 
 				M_AttributeSetInstance_ID, M_Product_ID, m_C_BPartner_ID,
 				productWindow, m_AD_Column_ID, m_WindowNo);
 			if (vad.isChanged())

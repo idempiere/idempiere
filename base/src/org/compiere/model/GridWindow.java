@@ -41,7 +41,6 @@ import org.apache.ecs.xhtml.table;
 import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.th;
 import org.apache.ecs.xhtml.tr;
-import org.compiere.plaf.CompiereColor;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -267,14 +266,14 @@ public class GridWindow implements Serializable
 
 	/**
 	 *  Get Color
-	 *  @return AdempiereColor or null
+	 *  @return MColor or null
 	 */
-	public CompiereColor getColor()
+	public MColor getColor()
 	{
 		if (m_vo.AD_Color_ID == 0)
 			return null;
 		MColor mc = new MColor(m_vo.ctx,  m_vo.AD_Color_ID, null);
-		return mc.getAdempiereColor();
+		return mc;
 	}   //  getColor
 
 	/**

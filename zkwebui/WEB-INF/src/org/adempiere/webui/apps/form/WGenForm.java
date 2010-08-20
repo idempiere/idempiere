@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.WProcessCtl;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DesktopTabpanel;
 import org.adempiere.webui.component.Grid;
@@ -40,7 +41,6 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
-import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.form.GenForm;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MQuery;
@@ -291,7 +291,7 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 	 */
 	public void runProcess() 
 	{
-		final ProcessCtl worker = new ProcessCtl(null, getWindowNo(), genForm.getProcessInfo(), genForm.getTrx());
+		final WProcessCtl worker = new WProcessCtl(null, getWindowNo(), genForm.getProcessInfo(), genForm.getTrx());
 		try {                    						
 			worker.run();     //  complete tasks in unlockUI / generateShipments_complete						
 		} finally{						

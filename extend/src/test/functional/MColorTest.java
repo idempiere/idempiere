@@ -14,7 +14,6 @@
 package test.functional;
 
 import org.compiere.model.MColor;
-import org.compiere.plaf.CompiereColor;
 import org.compiere.util.Env;
 
 import test.AdempiereTestCase;
@@ -34,8 +33,7 @@ public class MColorTest extends AdempiereTestCase
 	public void testQuery() throws Exception
 	{
 		MColor clr = new MColor(getCtx(),1,getTrxName()); //red1 put in dummy record that has COLORTYPE = 'R' for and ADImageID = 101
-		CompiereColor url = clr.getAdempiereColor();
-		assertTrue("Color must be right", url.toString().length()>0);		
+		assertTrue("Color must be right", clr.getAD_Image_ID() > 0);		
 
 	}
 

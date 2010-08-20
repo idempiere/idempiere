@@ -100,7 +100,7 @@ public class ProcessDialog extends CFrame
 		log.info("Process=" + AD_Process_ID + "; SOTrx=" + isSOTrx);
 		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
 		m_AD_Process_ID = AD_Process_ID;
-		m_WindowNo = Env.createWindowNo (this);
+		m_WindowNo = AEnv.createWindowNo (this);
 		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
 		try
 		{
@@ -468,7 +468,7 @@ public class ProcessDialog extends CFrame
 			for (int i = 0; i < m_ids.length; i++)
 			{
 				int M_InOut_ID = m_ids[i];
-				ReportCtl.startDocumentPrint(ReportEngine.SHIPMENT, M_InOut_ID, this, Env.getWindowNo(this), true);
+				ReportCtl.startDocumentPrint(ReportEngine.SHIPMENT, M_InOut_ID, this, AEnv.getWindowNo(this), true);
 			}
 			ADialogDialog d = new ADialogDialog (this,
 				Env.getHeader(Env.getCtx(), m_WindowNo),
@@ -497,7 +497,7 @@ public class ProcessDialog extends CFrame
 			for (int i = 0; i < m_ids.length; i++)
 			{
 				int AD_Invoice_ID = m_ids[i];
-				ReportCtl.startDocumentPrint(ReportEngine.INVOICE, AD_Invoice_ID, this, Env.getWindowNo(this), true);
+				ReportCtl.startDocumentPrint(ReportEngine.INVOICE, AD_Invoice_ID, this, AEnv.getWindowNo(this), true);
 			}
 			ADialogDialog d = new ADialogDialog (this,
 				Env.getHeader(Env.getCtx(), m_WindowNo),

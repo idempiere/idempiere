@@ -29,7 +29,8 @@ import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -47,7 +48,6 @@ import javax.swing.SwingUtilities;
 import org.compiere.db.CConnection;
 import org.compiere.grid.ed.Calculator;
 import org.compiere.interfaces.Server;
-import org.compiere.model.GridWindowVO;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -55,7 +55,6 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
 import org.compiere.swing.CMenuItem;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -77,6 +76,95 @@ import org.compiere.util.Splash;
  */
 public final class AEnv
 {
+	// Array of active Windows
+	private static ArrayList<Container>	s_windows = new ArrayList<Container>(20);
+	
+	/** Array of hidden Windows				*/
+	private static ArrayList<CFrame>	s_hiddenWindows = new ArrayList<CFrame>();
+	
+	/** Closing Window Indicator			*/
+	private static boolean 				s_closingWindows = false;
+	
+	/**
+	 * 	Hide Window
+	 *	@param window window
+	 *	@return true if window is hidden, otherwise close it
+	 */
+	static public boolean hideWindow(CFrame window)
+	{
+		if (!Ini.isCacheWindow() || s_closingWindows)
+			return false;
+		for (int i = 0; i < s_hiddenWindows.size(); i++)
+		{
+			CFrame hidden = s_hiddenWindows.get(i);
+			log.info(i + ": " + hidden);
+			if (hidden.getAD_Window_ID() == window.getAD_Window_ID())
+				return false;	//	already there
+		}
+		if (window.getAD_Window_ID() != 0)	//	workbench
+		{
+			if (s_hiddenWindows.add(window))
+			{
+				window.setVisible(false);
+				log.info(window.toString());
+			//	window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_ICONIFIED));
+				if (s_hiddenWindows.size() > 10) {
+					CFrame toClose = s_hiddenWindows.remove(0);		//	sort of lru
+					try {
+						s_closingWindows = true;
+						toClose.dispose();
+					} finally {
+						s_closingWindows = false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}	//	hideWindow
+
+	/**
+	 * 	Show Window
+	 *	@param AD_Window_ID window
+	 *	@return true if window re-displayed
+	 */
+	static public CFrame showWindow (int AD_Window_ID)
+	{
+		for (int i = 0; i < s_hiddenWindows.size(); i++)
+		{
+			CFrame hidden = s_hiddenWindows.get(i);
+			if (hidden.getAD_Window_ID() == AD_Window_ID)
+			{
+				s_hiddenWindows.remove(i);
+				log.info(hidden.toString());
+				hidden.setVisible(true);
+				// De-iconify window - teo_sarca [ 1707221 ]
+				int state = hidden.getExtendedState();
+				if ((state & CFrame.ICONIFIED) > 0)
+					hidden.setExtendedState(state & ~CFrame.ICONIFIED);
+				//
+				hidden.toFront();
+				return hidden;
+			}
+		}
+		return null;
+	}	//	showWindow
+
+	/**
+	 * 	Clode Windows.
+	 */
+	static void closeWindows ()
+	{
+		s_closingWindows = true;
+		for (int i = 0; i < s_hiddenWindows.size(); i++)
+		{
+			CFrame hidden = s_hiddenWindows.get(i);
+			hidden.dispose();
+		}
+		s_hiddenWindows.clear();
+		s_closingWindows = false;
+	}	//	closeWindows
+	
 	/**
 	 * Show window: de-iconify and bring it to front
 	 * @author teo_sarca [ 1707221 ]
@@ -355,11 +443,11 @@ public final class AEnv
 		//  File Menu   ------------------------
 		if (actionCommand.equals("PrintScreen"))
 		{
-			PrintScreenPainter.printScreen (Env.getFrame(c));
+			PrintScreenPainter.printScreen (getFrame(c));
 		}
 		else if (actionCommand.equals("ScreenShot"))
 		{
-			ScreenShot.createJPEG(Env.getFrame(c), null);
+			ScreenShot.createJPEG(getFrame(c), null);
 		}
 	//	else if (actionCommand.equals("Report"))
 	//	{
@@ -369,28 +457,28 @@ public final class AEnv
 		{
 			if (ADialog.ask(WindowNo, c, "ExitApplication?"))
 			{
-				AMenu aMenu = (AMenu)Env.getWindow(0);
+				AMenu aMenu = (AMenu)getWindow(0);
 				aMenu.dispose() ;
 			}
 		}
 		else if (actionCommand.equals("Logout"))
 		{
-			AMenu aMenu = (AMenu)Env.getWindow(0);
+			AMenu aMenu = (AMenu)getWindow(0);
 			aMenu.logout();
 		}
 
 		//  View Menu   ------------------------
 		else if (actionCommand.equals("InfoProduct") && AEnv.canAccessInfo("PRODUCT"))
 		{
-			org.compiere.apps.search.Info.showProduct (Env.getFrame(c), WindowNo);
+			org.compiere.apps.search.Info.showProduct (getFrame(c), WindowNo);
 		}
 		else if (actionCommand.equals("InfoBPartner") && AEnv.canAccessInfo("BPARTNER"))
 		{
-			org.compiere.apps.search.Info.showBPartner (Env.getFrame(c), WindowNo);
+			org.compiere.apps.search.Info.showBPartner (getFrame(c), WindowNo);
 		}
 		else if (actionCommand.equals("InfoAsset") && AEnv.canAccessInfo("ASSET"))
 		{
-			org.compiere.apps.search.Info.showAsset (Env.getFrame(c), WindowNo);
+			org.compiere.apps.search.Info.showAsset (getFrame(c), WindowNo);
 		}
 		else if (actionCommand.equals("InfoAccount") && 
 				  MRole.getDefault().isShowAcct() &&
@@ -400,12 +488,12 @@ public final class AEnv
 		}
 		else if (actionCommand.equals("InfoSchedule") && AEnv.canAccessInfo("SCHEDULE"))
 		{
-			new org.compiere.apps.search.InfoSchedule (Env.getFrame(c), null, false);
+			new org.compiere.apps.search.InfoSchedule (getFrame(c), null, false);
 		}
 		//FR [ 1966328 ] 
 		else if (actionCommand.equals("InfoMRP") && AEnv.canAccessInfo("MRP"))
 		{
-			CFrame frame = (CFrame) Env.getFrame(c);
+			CFrame frame = (CFrame) getFrame(c);
 			int	m_menu_id = MMenu.getMenu_ID("MRP Info");
 			AMenu menu = AEnv.getAMenu(frame);
 			AMenuStartItem form = new AMenuStartItem (m_menu_id, true, Msg.translate(Env.getCtx(), "MRP Info"), menu);		//	async load
@@ -413,7 +501,7 @@ public final class AEnv
 		}
 		else if (actionCommand.equals("InfoCRP") && AEnv.canAccessInfo("CRP"))
 		{
-			CFrame frame = (CFrame) Env.getFrame(c);
+			CFrame frame = (CFrame) getFrame(c);
 			int	m_menu_id = MMenu.getMenu_ID("CRP Info");
 			AMenu menu = AEnv.getAMenu(frame);
 			AMenuStartItem form = new AMenuStartItem (m_menu_id, true, Msg.translate(Env.getCtx(), "CRP Info"), menu);		//	async load
@@ -421,27 +509,27 @@ public final class AEnv
 		}
 		else if (actionCommand.equals("InfoOrder") && AEnv.canAccessInfo("ORDER"))
 		{
-			org.compiere.apps.search.Info.showOrder (Env.getFrame(c), WindowNo, "");
+			org.compiere.apps.search.Info.showOrder (getFrame(c), WindowNo, "");
 		}
 		else if (actionCommand.equals("InfoInvoice") && AEnv.canAccessInfo("INVOICE"))
 		{
-			org.compiere.apps.search.Info.showInvoice (Env.getFrame(c), WindowNo, "");
+			org.compiere.apps.search.Info.showInvoice (getFrame(c), WindowNo, "");
 		}
 		else if (actionCommand.equals("InfoInOut") && AEnv.canAccessInfo("INOUT"))
 		{
-			org.compiere.apps.search.Info.showInOut (Env.getFrame(c), WindowNo, "");
+			org.compiere.apps.search.Info.showInOut (getFrame(c), WindowNo, "");
 		}
 		else if (actionCommand.equals("InfoPayment") && AEnv.canAccessInfo("PAYMENT"))
 		{
-			org.compiere.apps.search.Info.showPayment (Env.getFrame(c), WindowNo, "");
+			org.compiere.apps.search.Info.showPayment (getFrame(c), WindowNo, "");
 		}
 		else if (actionCommand.equals("InfoCashLine") && AEnv.canAccessInfo("CASHJOURNAL"))
 		{
-			org.compiere.apps.search.Info.showCashLine (Env.getFrame(c), WindowNo, "");
+			org.compiere.apps.search.Info.showCashLine (getFrame(c), WindowNo, "");
 		}
 		else if (actionCommand.equals("InfoAssignment") && AEnv.canAccessInfo("RESOURCE"))
 		{
-			org.compiere.apps.search.Info.showAssignment (Env.getFrame(c), WindowNo, "");
+			org.compiere.apps.search.Info.showAssignment (getFrame(c), WindowNo, "");
 		}
 		
 
@@ -452,32 +540,32 @@ public final class AEnv
 		}
 		else if (actionCommand.equals("Home"))
 		{
-			showWindow(Env.getWindow(0));
+			showWindow(getWindow(0));
 		}
 
 		//  Tools Menu  ------------------------
 		else if (actionCommand.equals("Calculator"))
 		{
-			Calculator calc = new org.compiere.grid.ed.Calculator(Env.getFrame(c));
+			Calculator calc = new org.compiere.grid.ed.Calculator(getFrame(c));
 			calc.setDisposeOnEqual(false);
 			AEnv.showCenterScreen (calc);
 		}
 		else if (actionCommand.equals("Calendar"))
 		{
-			AEnv.showCenterScreen (new org.compiere.grid.ed.Calendar(Env.getFrame(c)));
+			AEnv.showCenterScreen (new org.compiere.grid.ed.Calendar(getFrame(c)));
 		}
 		else if (actionCommand.equals("Editor"))
 		{
-			AEnv.showCenterScreen (new org.compiere.grid.ed.Editor(Env.getFrame(c)));
+			AEnv.showCenterScreen (new org.compiere.grid.ed.Editor(getFrame(c)));
 		}
 		else if (actionCommand.equals("Script"))
 		{
-			new BeanShellEditor(Env.getFrame(c));
+			new BeanShellEditor(getFrame(c));
 		}
 		else if (actionCommand.equals("Preference"))
 		{
 			if (role.isShowPreference()) {
-				AEnv.showCenterScreen(new Preference (Env.getFrame(c), WindowNo));
+				AEnv.showCenterScreen(new Preference (getFrame(c), WindowNo));
 			}
 		}
 
@@ -488,11 +576,11 @@ public final class AEnv
 		}
 		else if (actionCommand.equals("EMailSupport"))
 		{
-			ADialog.createSupportEMail(Env.getFrame(c), Env.getFrame(c).getTitle(), "\n\n");
+			ADialog.createSupportEMail(getFrame(c), getFrame(c).getTitle(), "\n\n");
 		}
 		else if (actionCommand.equals("About"))
 		{
-			AEnv.showCenterScreen(new AboutBox(Env.getFrame(c)));
+			AEnv.showCenterScreen(new AboutBox(getFrame(c)));
 		}
 		else
 			return false;
@@ -658,7 +746,7 @@ public final class AEnv
 	 */
 	public static void addToWindowManager(CFrame frame)
 	{
-		JFrame top = Env.getWindow(0);
+		JFrame top = getWindow(0);
 		if (top instanceof AMenu)
 		{
 			((AMenu)top).getWindowManager().add(frame);
@@ -672,7 +760,7 @@ public final class AEnv
 	 */
 	public static AMenu getAMenu(CFrame frame)
 	{
-		JFrame top = Env.getWindow(0);
+		JFrame top = getWindow(0);
 		if (top instanceof AMenu)
 		{
 			return (AMenu)top;
@@ -826,64 +914,6 @@ public final class AEnv
 		return CConnection.get().getServerVersion();
 	}   //  getServerVersion
 
-	/**	Window Cache		*/
-	private static CCache<Integer,GridWindowVO>	s_windows 
-		= new CCache<Integer,GridWindowVO>("AD_Window", 10); 
-	
-	/**
-	 *  Get Window Model
-	 *
-	 *  @param WindowNo  Window No
-	 *  @param AD_Window_ID window
-	 *  @param AD_Menu_ID menu
-	 *  @return Model Window Value Obkect
-	 */
-	public static GridWindowVO getMWindowVO (int WindowNo, int AD_Window_ID, int AD_Menu_ID)
-	{
-		log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
-		GridWindowVO mWindowVO = null;
-		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
-		{
-			mWindowVO = s_windows.get(AD_Window_ID);
-			if (mWindowVO != null)
-			{
-				mWindowVO = mWindowVO.clone(WindowNo);
-				log.info("Cached=" + mWindowVO);
-			}
-		}
-		
-		//  Create Window Model on Client
-		if (mWindowVO == null)
-		{
-			log.config("create local");
-			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
-			if (mWindowVO != null)
-				s_windows.put(AD_Window_ID, mWindowVO);
-		}	//	from Client
-		if (mWindowVO == null)
-			return null;
-		
-		//  Check (remote) context
-		if (!mWindowVO.ctx.equals(Env.getCtx()))
-		{
-			//  Remote Context is called by value, not reference
-			//  Add Window properties to context
-			Enumeration<?> keyEnum = mWindowVO.ctx.keys();
-			while (keyEnum.hasMoreElements())
-			{
-				String key = (String)keyEnum.nextElement();
-				if (key.startsWith(WindowNo+"|"))
-				{
-					String value = mWindowVO.ctx.getProperty (key);
-					Env.setContext(Env.getCtx(), key, value);
-				}
-			}
-			//  Sync Context
-			mWindowVO.setCtx(Env.getCtx());
-		}
-		return mWindowVO;
-	}   //  getWindow
-
 	/**
 	 *  Post Immediate
 	 *  @param  WindowNo 		window
@@ -940,8 +970,8 @@ public final class AEnv
 	 */
 	public static void updateUI()
 	{
-		Set<Window> updated = Env.updateUI();
-		JFrame top = Env.getWindow(0);
+		Set<Window> updated = updateUI0();
+		JFrame top = getWindow(0);
 		if (top instanceof AMenu)
 		{
 			CFrame[] frames = ((AMenu)top).getWindowManager().getWindows();
@@ -1008,5 +1038,159 @@ public final class AEnv
 	
 		return result; 
 	} // 	canAccessInfo
+	
+	/**
+	 * Update all windows after look and feel changes.
+	 * @since 2006-11-27
+	 */
+	public static Set<Window>updateUI0()
+	{
+		Set<Window> updated = new HashSet<Window>();
+		for (Container c : s_windows)
+		{
+			Window w = getFrame(c);
+			if (w == null) continue;
+			if (updated.contains(w)) continue;
+			SwingUtilities.updateComponentTreeUI(w);
+			w.validate();
+			RepaintManager mgr = RepaintManager.currentManager(w);
+			Component childs[] = w.getComponents();
+			for (Component child : childs) {
+				if (child instanceof JComponent)
+					mgr.markCompletelyDirty((JComponent)child);
+			}
+			w.repaint();
+			updated.add(w);
+		}
+		for (Window w : s_hiddenWindows)
+		{
+			if (updated.contains(w)) continue;
+			SwingUtilities.updateComponentTreeUI(w);
+			w.validate();
+			RepaintManager mgr = RepaintManager.currentManager(w);
+			Component childs[] = w.getComponents();
+			for (Component child : childs) {
+				if (child instanceof JComponent)
+					mgr.markCompletelyDirty((JComponent)child);
+			}
+			w.repaint();
+			updated.add(w);
+		}
+		return updated;
+	}
  
+	/**
+	 *	Add Container and return WindowNo.
+	 *  The container is a APanel, AWindow or JFrame/JDialog
+	 *  @param win window
+	 *  @return WindowNo used for context
+	 */
+	public static int createWindowNo(Container win)
+	{
+		int retValue = s_windows.size();
+		s_windows.add(win);
+		return retValue;
+	}	//	createWindowNo
+
+	/**
+	 *	Search Window by comparing the Frames
+	 *  @param container container
+	 *  @return WindowNo of container or 0
+	 */
+	public static int getWindowNo (Container container)
+	{
+		if (container == null)
+			return 0;
+		JFrame winFrame = getFrame(container);
+		if (winFrame == null)
+			return 0;
+
+		//  loop through windows
+		for (int i = 0; i < s_windows.size(); i++)
+		{
+			Container cmp = (Container)s_windows.get(i);
+			if (cmp != null)
+			{
+				JFrame cmpFrame = getFrame(cmp);
+				if (winFrame.equals(cmpFrame))
+					return i;
+			}
+		}
+		return 0;
+	}	//	getWindowNo
+
+	/**
+	 *	Return the JFrame pointer of WindowNo - or null
+	 *  @param WindowNo window
+	 *  @return JFrame of WindowNo
+	 */
+	public static JFrame getWindow (int WindowNo)
+	{
+		JFrame retValue = null;
+		try
+		{
+			retValue = getFrame ((Container)s_windows.get(WindowNo));
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, e.toString());
+		}
+		return retValue;
+	}	//	getWindow
+
+	/**
+	 *	Remove window from active list
+	 *  @param WindowNo window
+	 */
+	public static void removeWindow (int WindowNo)
+	{
+		if (WindowNo < s_windows.size())
+			s_windows.set(WindowNo, null);
+	}	//	removeWindow
+
+	/**************************************************************************
+	 *	Get Frame of Window
+	 *  @param container Container
+	 *  @return JFrame of container or null
+	 */
+	public static JFrame getFrame (Container container)
+	{
+		Container element = container;
+		while (element != null)
+		{
+			if (element instanceof JFrame)
+				return (JFrame)element;
+			element = element.getParent();
+		}
+		return null;
+	}	//	getFrame
+
+	public static void reset(boolean finalCall) 
+	{
+		closeWindows();
+
+		//	Dismantle windows
+		/**
+		for (int i = 0; i < s_windows.size(); i++)
+		{
+			Container win = (Container)s_windows.get(i);
+			if (win.getClass().getName().endsWith("AMenu")) // Null pointer
+				;
+			else if (win instanceof Window)
+				((Window)win).dispose();
+			else
+				win.removeAll();
+		}
+		**/
+		//bug [ 1574630 ]
+		if (s_windows.size() > 0) {
+			if (!finalCall) {
+				Container c = s_windows.get(0);
+				s_windows.clear();
+				createWindowNo(c);
+			} else {
+				s_windows.clear();
+			}
+		}
+	}	
 }	//	AEnv

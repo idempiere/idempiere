@@ -33,7 +33,6 @@ import org.adempiere.webui.exception.ApplicationException;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
-import org.compiere.minigrid.MiniTable;
 import org.compiere.model.MRole;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
@@ -63,7 +62,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	private static final long serialVersionUID = 8717707799347994189L;
 
 	/**	Logger. */
-	private static CLogger logger = CLogger.getCLogger(MiniTable.class);
+	private static CLogger logger = CLogger.getCLogger(WListbox.class);
 
 	/** Model Index of Key Column.   */
 	protected int m_keyColumnIndex = -1;

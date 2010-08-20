@@ -33,7 +33,7 @@
   <target name="clean">
   	<delete>
    		<fileset dir="../lib">
-			<include name="org.adempiere.tools*.jar"/>
+			<include name="org.adempiere.tools_*.jar"/>
 		</fileset>
    	</delete>
   </target>

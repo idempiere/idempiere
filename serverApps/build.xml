@@ -24,7 +24,7 @@
   <target name="clean">
   	<delete>
    		<fileset dir="../lib">
-			<include name="org.adempiere.serverApp*.jar"/>
+			<include name="org.adempiere.serverApps_*.jar"/>
 		</fileset>
    	</delete>
   </target>

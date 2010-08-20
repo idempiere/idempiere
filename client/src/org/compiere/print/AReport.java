@@ -28,6 +28,7 @@ import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 
 import org.compiere.apps.ADialog;
+import org.compiere.apps.ClientProcessCtrl;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -230,7 +231,7 @@ public class AReport implements ActionListener
 			ProcessInfo pi = new ProcessInfo ("", pf.getJasperProcess_ID(), pf.getAD_Table_ID(), Record_ID);
 			
 			//	Execute Process
-			ProcessCtl worker = ProcessCtl.process(parent, WindowNo, pi, null);
+			ProcessCtl worker = ClientProcessCtrl.process(parent, WindowNo, pi, null);
 		}
 		else
 		{

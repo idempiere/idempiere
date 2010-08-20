@@ -8,6 +8,7 @@ import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.compiere.apps.AEnv;
 import org.compiere.apps.AppsAction;
 import org.compiere.model.MUser;
 import org.compiere.swing.CButton;
@@ -34,7 +35,7 @@ public class PosLogin extends CDialog implements ActionListener {
 	 */
 	public PosLogin (PosBasePanel posPanel)
 	{
-		super (Env.getFrame(posPanel),Msg.translate(posPanel.getCtx(), "Login"), true);
+		super (AEnv.getFrame(posPanel),Msg.translate(posPanel.getCtx(), "Login"), true);
 		init();
 		this.posPanel = posPanel;
 	}

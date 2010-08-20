@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.adempiere.pipo.Handlers" name="Element Handlers" schema="schema/org.adempiere.pipo.Handlers.exsd"/>
+   <extension
+         point="org.adempiere.base.IDictionaryService">
+      <client
+            class="org.adempiere.pipo.srv.PipoDictionaryService">
+      </client>
+   </extension>
+
+</plugin>

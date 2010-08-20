@@ -16,7 +16,6 @@ Eclipse-RegisterBuddy: org.adempiere.tools
 Require-Bundle: org.apache.xerces;bundle-version="2.9.0",
  org.apache.xml.serializer;bundle-version="2.7.1",
  com.springsource.javax.servlet;bundle-version="2.5.0",
- org.adempiere.client;bundle-version="1.0.0",
  org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.tools;bundle-version="1.0.0",
  com.springsource.javax.servlet.jsp;bundle-version="2.1.0"

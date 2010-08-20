@@ -70,7 +70,7 @@ public final class ADialog
 		//
 		Window parent = Env.getParent(c);
 		if (parent == null)
-			parent = Env.getWindow(WindowNo);
+			parent = AEnv.getWindow(WindowNo);
 		//
 		if (showDialog  && parent != null)
 		{
@@ -111,7 +111,7 @@ public final class ADialog
 		//
 		Window parent = Env.getParent(c);
 		if (parent == null)
-			parent = Env.getWindow(WindowNo);
+			parent = AEnv.getWindow(WindowNo);
 		//
 		if (showDialog && parent != null)
 		{
@@ -164,7 +164,7 @@ public final class ADialog
 		//
 		Window parent = Env.getParent(c);
 		if (parent == null)
-			parent = Env.getWindow(WindowNo);
+			parent = AEnv.getWindow(WindowNo);
 		//
 		if (showDialog  && parent != null)
 		{
@@ -219,7 +219,7 @@ public final class ADialog
 		//
 		Window parent = Env.getParent(c);
 		if (parent == null)
-			parent = Env.getWindow(WindowNo);
+			parent = AEnv.getWindow(WindowNo);
 		//
 		if (showDialog && parent != null)
 		{
@@ -235,7 +235,7 @@ public final class ADialog
 					JOptionPane.ERROR_MESSAGE);
 		}
 		else
-			JOptionPane.showMessageDialog(Env.getWindow(WindowNo),
+			JOptionPane.showMessageDialog(AEnv.getWindow(WindowNo),
 				out.toString() + "\n",			//	message
 				Env.getHeader(ctx, WindowNo),	//	title
 				JOptionPane.ERROR_MESSAGE);
@@ -273,7 +273,7 @@ public final class ADialog
 		//
 		Window parent = Env.getParent(c);
 		if (parent == null)
-			parent = Env.getWindow(WindowNo);
+			parent = AEnv.getWindow(WindowNo);
 
 		boolean retValue = false;
 		if (showDialog && parent != null)
@@ -340,7 +340,7 @@ public final class ADialog
 		//
 		Window parent = Env.getParent(c);
 		if (parent == null)
-			parent = Env.getWindow(WindowNo);
+			parent = AEnv.getWindow(WindowNo);
 		//
 		if (showDialog && parent != null)
 		{

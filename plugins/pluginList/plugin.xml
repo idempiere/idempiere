@@ -2,10 +2,10 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.compiere.apps.form.FormPanel">
-      <client
+         point="org.adempiere.apps.Form"
+         id="org.adempiere.plugin.list.PluginList">         
+      <form
             class="org.adempiere.plugin.list.PluginList">
-      </client>
+      </form>
    </extension>
-
 </plugin>

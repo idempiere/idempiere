@@ -18,7 +18,6 @@ package org.adempiere.base.equinox;
 
 import java.util.List;
 
-import org.adempiere.base.IService;
 import org.adempiere.base.IServiceLocator;
 import org.adempiere.base.ServiceQuery;
 
@@ -33,44 +32,44 @@ import org.adempiere.base.ServiceQuery;
  */
 public class EquinoxServiceLocator implements IServiceLocator {
 
-	public <T extends IService> List<T> list(Class<T> type) {
+	public <T> List<T> list(Class<T> type) {
 		return list(type, type.getName());
 	}
 	
 	@Override
-	public <T extends IService> List<T> list(Class<T> type, String id) {
-		ExtensionList<T> list = new ExtensionList<T>(type, id);
+	public <T> List<T> list(Class<T> type, String extensionPointId) {
+		ExtensionList<T> list = new ExtensionList<T>(type, extensionPointId);
 		return list.asList();
 	}
 
-	public <T extends IService> List<T> list(Class<T> type, ServiceQuery query) {
+	public <T> List<T> list(Class<T> type, ServiceQuery query) {
 		return list(type, type.getName(), query);
 	}
 	
 	@Override
-	public <T extends IService> List<T> list(Class<T> type, String id,
+	public <T> List<T> list(Class<T> type, String extensionPointId,
 			ServiceQuery query) {
-		ExtensionList<T> list = new ExtensionList<T>(type, id, query);
+		ExtensionList<T> list = new ExtensionList<T>(type, extensionPointId, query);
 		return list.asList();
 	}
 		
-	public <T extends IService> T locate(Class<T> type) {
+	public <T> T locate(Class<T> type) {
 		return locate(type, type.getName());
 	}
 
 	@Override
-	public <T extends IService> T locate(Class<T> type, String id) {
-		ExtensionList<T> list = new ExtensionList<T>(type, id);
+	public <T> T locate(Class<T> type, String extensionPointId) {
+		ExtensionList<T> list = new ExtensionList<T>(type, extensionPointId);
 		return list.first();
 	}
 	
-	public <T extends IService> T locate(Class<T> type, ServiceQuery query) {
+	public <T> T locate(Class<T> type, ServiceQuery query) {
 		return locate(type, type.getName(), query);
 	}
 
 	@Override
-	public <T extends IService> T locate(Class<T> type, String id, ServiceQuery query) {
-		ExtensionList<T> list = new ExtensionList<T>(type, type.getName(), query);
+	public <T> T locate(Class<T> type, String extensionPointId, ServiceQuery query) {
+		ExtensionList<T> list = new ExtensionList<T>(type, extensionPointId, query);
 		return list.first();
 	}	
 }

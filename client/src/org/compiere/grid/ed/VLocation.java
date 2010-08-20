@@ -35,6 +35,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.FieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -351,7 +352,7 @@ public class VLocation extends JComponent
 			m_value = null;        //  create new
 		//
 		log.config( "actionPerformed - " + m_value);
-		VLocationDialog ld = new VLocationDialog(Env.getFrame(this),
+		VLocationDialog ld = new VLocationDialog(AEnv.getFrame(this),
 			Msg.getMsg(Env.getCtx(), "Location"), m_value);
 		ld.setVisible(true);
 		Object oldValue = getValue();

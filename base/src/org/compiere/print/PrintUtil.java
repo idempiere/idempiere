@@ -43,6 +43,7 @@ import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 
@@ -78,6 +79,15 @@ public class PrintUtil
 	}   //  getDefaultFlavor
 
 	/**
+	 * Get Print Services for all flavor and pratt
+	 * @return print services
+	 */
+	public static PrintService[] getAllPrintServices() 
+	{
+		return PrintServiceLookup.lookupPrintServices(null,null);
+	}
+	
+	/**
 	 *  Get Print Services for standard flavor and pratt
 	 *  @return print services
 	 */
@@ -96,6 +106,75 @@ public class PrintUtil
 	}   //  getPrintServices
 
 
+	/**
+	 *  Return default PrinterJob
+	 *  @return PrinterJob
+	 */
+	public static PrinterJob getPrinterJob()
+	{
+		return getPrinterJob(Ini.getProperty(Ini.P_PRINTER));
+	}   //  getPrinterJob
+
+	/**
+	 *  Return PrinterJob with selected printer name.
+	 *  @param printerName if null, get default printer (Ini)
+	 *  @return PrinterJob
+	 */
+	public static PrinterJob getPrinterJob (String printerName)
+	{
+		PrinterJob pj = null;
+		PrintService ps = null;
+		try
+		{
+			pj = PrinterJob.getPrinterJob();
+
+			//  find printer service
+			if (printerName == null || printerName.length() == 0)
+				printerName = Ini.getProperty(Ini.P_PRINTER);
+			if (printerName != null && printerName.length() != 0)
+			{
+			//	System.out.println("CPrinter.getPrinterJob - searching " + printerName);
+				PrintService[] services = getAllPrintServices();
+				for (int i = 0; i < services.length; i++)
+				{
+					String serviceName = services[i].getName();
+					if (printerName.equals(serviceName))
+					{
+						ps = services[i];
+					//	System.out.println("CPrinter.getPrinterJob - found " + printerName);
+						break;
+					}
+				//	System.out.println("CPrinter.getPrinterJob - not: " + serviceName);
+				}
+			}   //  find printer service
+
+			try
+			{
+				if (ps != null)
+					pj.setPrintService(ps);
+			}
+			catch (Exception e)
+			{
+				log.warning("Could not set Print Service: " + e.toString());
+			}
+			//
+			PrintService psUsed = pj.getPrintService();
+			if (psUsed == null)
+				log.warning("Print Service not Found");
+			else
+			{
+				String serviceName = psUsed.getName();
+				if (printerName != null && !printerName.equals(serviceName))
+					log.warning("Not found: " + printerName + " - Used: " + serviceName);
+			}
+		}
+		catch (Exception e)
+		{
+			log.warning("Could not create for " + printerName + ": " + e.toString());
+		}
+		return pj;
+	}   //  getPrinterJob
+	
 	/*************************************************************************/
 
 	/**
@@ -115,7 +194,7 @@ public class PrintUtil
 		if (jobName != null)
 			name += jobName;
 		//
-		PrinterJob job = CPrinter.getPrinterJob(printerName);
+		PrinterJob job = getPrinterJob(printerName);
 		job.setJobName (name);
 		job.setPageable (pageable);
 		//	Attributes
@@ -139,7 +218,7 @@ public class PrintUtil
 	 */
 	static public void print (Pageable pageable, PrintRequestAttributeSet prats)
 	{
-		PrinterJob job = CPrinter.getPrinterJob();
+		PrinterJob job = getPrinterJob();
 		job.setPageable(pageable);
 		print (job, prats, true, false);
 	}	//	print

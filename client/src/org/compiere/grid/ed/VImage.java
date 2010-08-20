@@ -26,6 +26,7 @@ import java.beans.PropertyVetoException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import org.compiere.apps.AEnv;
 import org.compiere.model.MImage;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -216,7 +217,7 @@ public class VImage extends JButton
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		VImageDialog vid = new VImageDialog(Env.getWindow(m_WindowNo), m_mImage);
+		VImageDialog vid = new VImageDialog(AEnv.getWindow(m_WindowNo), m_mImage);
 		vid.setVisible(true);
 		int AD_Image_ID = vid.getAD_Image_ID();
 		Integer newValue = null;

@@ -123,7 +123,7 @@ public class VPayment extends CDialog
 	 */
 	public VPayment (int WindowNo, GridTab mTab, VButton button)
 	{
-		super(Env.getWindow(WindowNo), Msg.getMsg(Env.getCtx(), "Payment"), true);
+		super(AEnv.getWindow(WindowNo), Msg.getMsg(Env.getCtx(), "Payment"), true);
 		m_WindowNo = WindowNo;
 		m_isSOTrx = "Y".equals(Env.getContext(Env.getCtx(), WindowNo, "IsSOTrx"));
 		m_mTab = mTab;
@@ -139,7 +139,7 @@ public class VPayment extends CDialog
 			m_initOK = false;
 		}
 		//
-		AEnv.positionCenterWindow(Env.getWindow(WindowNo), this);
+		AEnv.positionCenterWindow(AEnv.getWindow(WindowNo), this);
 	}	//	VPayment
 
 	/**	Window						*/

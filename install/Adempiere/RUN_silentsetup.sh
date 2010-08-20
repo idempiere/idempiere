@@ -35,7 +35,7 @@ find . -name '*.sh' -exec chmod a+x '{}' \;
 cd utils
 . ./RUN_SignDatabaseBuild.sh 
 
-. ./RUN_UnixEnv.sh
+. utils/RUN_UnixEnv.sh
 
 echo .
 echo For problems, check log file in base directory

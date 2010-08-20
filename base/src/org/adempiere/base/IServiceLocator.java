@@ -29,12 +29,12 @@ import java.util.List;
  *
  */
 public interface IServiceLocator {
-	<T extends IService> T locate(Class<T> type);
-	<T extends IService> T locate(Class<T> type, String id);
-	<T extends IService> T locate(Class<T> type, ServiceQuery query);
-	<T extends IService> T locate(Class<T> type, String id, ServiceQuery query);
-	<T extends IService> List<T> list(Class<T> type);
-	<T extends IService> List<T> list(Class<T> type, String id);
-	<T extends IService> List<T> list(Class<T> type, ServiceQuery query);
-	<T extends IService> List<T> list(Class<T> type, String id, ServiceQuery query);
+	<T> T locate(Class<T> type);
+	<T> T locate(Class<T> type, String extensionPointId);
+	<T> T locate(Class<T> type, ServiceQuery query);
+	<T> T locate(Class<T> type, String extensionPointId, ServiceQuery query);
+	<T> List<T> list(Class<T> type);
+	<T> List<T> list(Class<T> type, String extensionPointId);
+	<T> List<T> list(Class<T> type, ServiceQuery query);
+	<T> List<T> list(Class<T> type, String extensionPointId, ServiceQuery query);
 }

@@ -27,7 +27,6 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
-import org.compiere.apps.ProcessCtl;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
@@ -325,7 +324,7 @@ public class ProcessModalDialog extends Window implements EventListener
 	 */
 	public void runProcess() {
 		try {
-			ProcessCtl.process(null, m_WindowNo, parameterPanel, m_pi, null);
+			WProcessCtl.process(null, m_WindowNo, parameterPanel, m_pi, null);
 		} finally {
 			dispose();
 			if (m_ASyncProcess != null) {

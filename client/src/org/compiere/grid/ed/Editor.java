@@ -81,7 +81,7 @@ public class Editor extends CDialog
 	public static String startEditor(Container jc, String header, String text, boolean editable, int maxSize)
 	{
 		//	Find frame
-		JFrame frame = Env.getFrame(jc);
+		JFrame frame = AEnv.getFrame(jc);
 		String hdr = header;
 		if (hdr == null || hdr.length() == 0)
 			hdr = Msg.getMsg(Env.getCtx(), "Editor");

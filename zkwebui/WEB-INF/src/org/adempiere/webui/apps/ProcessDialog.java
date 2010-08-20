@@ -19,7 +19,6 @@ import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
-import org.compiere.apps.ProcessCtl;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -309,7 +308,7 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 
 	public void runProcess() {
 		try {
-			ProcessCtl.process(null, m_WindowNo, parameterPanel, m_pi, null);
+			WProcessCtl.process(null, m_WindowNo, parameterPanel, m_pi, null);
 		} finally {
 			unlockUI(m_pi);
 		}

@@ -24,7 +24,6 @@ import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
-import org.compiere.apps.search.PAttributeInstance;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.util.CLogger;
@@ -111,7 +110,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	private String				m_M_AttributeSetInstanceName = null;
 	private String				m_sql;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(PAttributeInstance.class);
+	private static CLogger log = CLogger.getCLogger(InfoPAttributeInstancePanel.class);
 
 	/**
 	 * 	Static Init

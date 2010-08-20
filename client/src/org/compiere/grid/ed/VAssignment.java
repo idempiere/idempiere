@@ -40,6 +40,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.FieldRecordInfo;
 import org.compiere.apps.search.InfoSchedule;
 import org.compiere.model.GridField;
@@ -392,13 +393,13 @@ public class VAssignment extends JComponent
 		//	Start VAssignment Dialog
 		if (S_ResourceAssignment_ID != 0)
 		{
-			VAssignmentDialog vad = new VAssignmentDialog (Env.getFrame(this), ma, true, true);
+			VAssignmentDialog vad = new VAssignmentDialog (AEnv.getFrame(this), ma, true, true);
 			ma = vad.getMResourceAssignment();
 		}
 		//	Start InfoSchedule directly
 		else
 		{
-			InfoSchedule is = new InfoSchedule(Env.getFrame(this), ma, true);
+			InfoSchedule is = new InfoSchedule(AEnv.getFrame(this), ma, true);
 			ma = is.getMResourceAssignment();
 		}
 

@@ -45,8 +45,8 @@ import org.compiere.model.MClient;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
-import org.compiere.print.AReport;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
@@ -579,7 +579,7 @@ public class ZkReportViewer extends Window implements EventListener {
 	 */
 	private void executeDrill (MQuery query, Component component)
 	{
-		int AD_Table_ID = AReport.getAD_Table_ID(query.getTableName());
+		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
 			FDialog.error(m_WindowNo, this, "AccessCannotReport", query.getTableName());

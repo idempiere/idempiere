@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.jnlp.BasicService;
 import javax.jnlp.FileContents;
@@ -44,8 +43,6 @@ import javax.jnlp.UnavailableServiceException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.adempiere.plaf.AdempiereLookAndFeel;
-import org.adempiere.plaf.AdempiereThemeInnova;
 import org.compiere.model.ModelValidationEngine;
 
 /**
@@ -101,10 +98,10 @@ public final class Ini implements Serializable
 	/** Look & Feel			*/
 	public static final String	P_UI_LOOK =			"UILookFeel";
 
-    private static final String	DEFAULT_UI_LOOK =	AdempiereLookAndFeel.NAME;
+    private static final String	DEFAULT_UI_LOOK =	"Adempiere";
 	/** UI Theme			*/
 
-	private static final String	DEFAULT_UI_THEME =	AdempiereThemeInnova.NAME;
+	private static final String	DEFAULT_UI_THEME =	"Adempiere Theme";
 	/** UI Theme			*/
 	public static final String	P_UI_THEME =		"UITheme";
 
@@ -233,8 +230,9 @@ public final class Ini implements Serializable
 
 	private static String s_propertyFileName = null;
 
-	/**	Logger						*/
-	private static Logger			log = null;
+	private static CLogger getLogger() {
+		return CLogger.getCLogger(Ini.class.getName());
+	}
 
 	/**
 	 *	Save INI parameters to disk
@@ -266,15 +264,15 @@ public final class Ini implements Serializable
 			}
 			catch (Exception e)
 			{
-				log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString());
+				getLogger().log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString());
 				return;
 			}
 			catch (Throwable t)
 			{
-				log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString());
+				getLogger().log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString());
 				return;
 			}
-			log.finer(fileName);
+			getLogger().finer(fileName);
 		}
 	}	//	save
 
@@ -284,7 +282,6 @@ public final class Ini implements Serializable
 	 */
 	public static void loadProperties (boolean reload)
 	{
-		log = Logger.getLogger(Ini.class.getName());
 		if (reload || s_prop.size() == 0)
 		{
 			if (isWebStartClient())
@@ -309,7 +306,7 @@ public final class Ini implements Serializable
 	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService");
 	    } catch (UnavailableServiceException e) {
 	        ps = null;
-	        log.log(Level.SEVERE, e.toString());
+	        getLogger().log(Level.SEVERE, e.toString());
 	        return false;
 	    }
 
@@ -317,7 +314,7 @@ public final class Ini implements Serializable
 	    try {
 			fc = ps.get(getCodeBase());
 		} catch (MalformedURLException e) {
-			log.log(Level.SEVERE, e.toString());
+			getLogger().log(Level.SEVERE, e.toString());
 			return false;
 		} catch (FileNotFoundException e) {
 			try {
@@ -328,7 +325,7 @@ public final class Ini implements Serializable
 
 			}
 		} catch (IOException e) {
-			log.log(Level.SEVERE, e.toString());
+			getLogger().log(Level.SEVERE, e.toString());
 			return false;
 		}
 
@@ -340,15 +337,12 @@ public final class Ini implements Serializable
 		}
 		catch (Throwable t)
 		{
-			log.log(Level.SEVERE, t.toString());
+			getLogger().log(Level.SEVERE, t.toString());
 			loadOK = false;
 		}
 		if (!loadOK || s_prop.getProperty(P_TODAY, "").equals(""))
 		{
 			firstTime = true;
-			if (isShowLicenseDialog())
-				if (!IniDialog.accept())
-					System.exit(-1);
 		}
 
 		checkProperties();
@@ -370,7 +364,7 @@ public final class Ini implements Serializable
 	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService");
 	    } catch (UnavailableServiceException e) {
 	        ps = null;
-	        log.log(Level.SEVERE, e.toString());
+	        getLogger().log(Level.SEVERE, e.toString());
 	        return;
 	    }
 
@@ -383,7 +377,7 @@ public final class Ini implements Serializable
 		}
 		catch (Throwable t)
 		{
-			log.log(Level.SEVERE, "Cannot save Properties to " + getCodeBase() + " - " + t.toString());
+			getLogger().log(Level.SEVERE, "Cannot save Properties to " + getCodeBase() + " - " + t.toString());
 			return;
 		}
 
@@ -435,26 +429,23 @@ public final class Ini implements Serializable
 		}
 		catch (FileNotFoundException e)
 		{
-			log.warning(filename + " not found");
+			getLogger().warning(filename + " not found");
 			loadOK = false;
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, filename + " - " + e.toString());
+			getLogger().log(Level.SEVERE, filename + " - " + e.toString());
 			loadOK = false;
 		}
 		catch (Throwable t)
 		{
-			log.log(Level.SEVERE, filename + " - " + t.toString());
+			getLogger().log(Level.SEVERE, filename + " - " + t.toString());
 			loadOK = false;
 		}
 		if (!loadOK || s_prop.getProperty(P_TODAY, "").equals(""))
 		{
-			log.config(filename);
+			getLogger().config(filename);
 			firstTime = true;
-			if (isShowLicenseDialog())
-				if (!IniDialog.accept())
-					System.exit(-1);
 		}
 
 		checkProperties();
@@ -463,7 +454,7 @@ public final class Ini implements Serializable
 		if (!loadOK || firstTime)
 			saveProperties(true);
 		s_loaded = true;
-		log.info(filename + " #" + s_prop.size());
+		getLogger().info(filename + " #" + s_prop.size());
 		s_propertyFileName = filename;
 
 		return firstTime;
@@ -500,11 +491,11 @@ public final class Ini implements Serializable
 				if (!file.delete())
 					file.deleteOnExit();
 				s_prop = new Properties();
-				log.config (fileName);
+				getLogger().config (fileName);
 			}
 			catch (Exception e)
 			{
-				log.log (Level.WARNING, "Cannot delete Property file", e);
+				getLogger().log (Level.WARNING, "Cannot delete Property file", e);
 			}
 		}
 	}	//	deleteProperties
@@ -573,7 +564,7 @@ public final class Ini implements Serializable
 	 */
 	public static void setProperty (String key, String value)
 	{
-	//	log.finer(key + "=" + value);
+	//	getLogger().finer(key + "=" + value);
 		if (s_prop == null)
 			s_prop = new Properties();
 		if (key.equals(P_WARNING) || key.equals(P_WARNING_de))
@@ -629,7 +620,7 @@ public final class Ini implements Serializable
 			return "";
 		//
 		String value = SecureEngine.decrypt(retStr);
-	//	log.finer(key + "=" + value);
+	//	getLogger().finer(key + "=" + value);
 		if (value == null)
 			return "";
 		return value;
@@ -758,7 +749,7 @@ public final class Ini implements Serializable
 				env = (String) context.lookup("java:comp/env/"+ADEMPIERE_HOME);
 			} catch (NamingException e) {
 				// teo_sarca: if you uncomment the line below you will get an NPE when generating models
-				//log.fine( "Not found 'java:comp/env/"+ADEMPIERE_HOME+"' in Initial Context. " +e.getMessage());
+				//getLogger().fine( "Not found 'java:comp/env/"+ADEMPIERE_HOME+"' in Initial Context. " +e.getMessage());
 			}
 
 		}

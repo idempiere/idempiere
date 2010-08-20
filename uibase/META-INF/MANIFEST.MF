@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UI base
+Bundle-SymbolicName: org.adempiere.ui.base
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Export-Package: org.compiere.apps,
+ org.compiere.apps.form,
+ org.compiere.apps.wf,
+ org.compiere.grid,
+ org.compiere.grid.ed,
+ org.compiere.install,
+ org.compiere.minigrid,
+ org.compiere.print,
+ org.netbeans.api.visual.action,
+ org.netbeans.api.visual.anchor,
+ org.netbeans.api.visual.border,
+ org.netbeans.api.visual.graph,
+ org.netbeans.api.visual.graph.layout,
+ org.netbeans.api.visual.layout,
+ org.netbeans.api.visual.model,
+ org.netbeans.api.visual.router,
+ org.netbeans.api.visual.widget
+Bundle-ClassPath: org-netbeans-api-visual.jar,
+ org-openide-util.jar,
+ .

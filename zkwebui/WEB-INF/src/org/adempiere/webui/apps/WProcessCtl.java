@@ -17,8 +17,8 @@
 package org.adempiere.webui.apps;
 
 import org.adempiere.webui.component.Window;
+import org.compiere.apps.AbstractProcessCtl;
 import org.compiere.apps.IProcessParameter;
-import org.compiere.apps.ProcessCtl;
 import org.compiere.model.MPInstance;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.ASyncProcess;
@@ -32,7 +32,7 @@ import org.compiere.util.Trx;
  * @author hengsin
  *
  */
-public class WProcessCtl {
+public class WProcessCtl extends AbstractProcessCtl {
 	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WProcessCtl.class);
@@ -113,6 +113,80 @@ public class WProcessCtl {
 	 */
 	public static void process(ASyncProcess parent, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
 	{
-		ProcessCtl.process(parent, WindowNo, parameter, pi, trx);
+		log.fine("WindowNo=" + WindowNo + " - " + pi);
+
+		MPInstance instance = null; 
+		try 
+		{ 
+			instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID()); 
+		} 
+		catch (Exception e) 
+		{ 
+			pi.setSummary (e.getLocalizedMessage()); 
+			pi.setError (true); 
+			log.warning(pi.toString()); 
+			return; 
+		} 
+		catch (Error e) 
+		{ 
+			pi.setSummary (e.getLocalizedMessage()); 
+			pi.setError (true); 
+			log.warning(pi.toString()); 
+			return; 
+		}
+		if (!instance.save())
+		{
+			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
+			pi.setError (true);
+			return;
+		}
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+
+		//	Get Parameters
+		if (parameter != null) {
+			if (!parameter.saveParameters())
+			{
+				pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessCancelled"));
+				pi.setError (true);
+				return;
+			}
+		}
+
+		//	execute
+		WProcessCtl worker = new WProcessCtl(parent, WindowNo, pi, trx);
+		worker.run();
+	}
+
+	/**
+	 * @param parent
+	 * @param WindowNo
+	 * @param pi
+	 * @param trx
+	 */
+	public WProcessCtl(ASyncProcess parent, int WindowNo, ProcessInfo pi,
+			Trx trx) {
+		super(parent, WindowNo, pi, trx);
+	}
+
+	@Override
+	protected void updateProgressWindowTimerEstimate(int estSeconds) {
+	}
+
+	@Override
+	protected void updateProgressWindowTitle(String title) {
+	}
+
+	@Override
+	protected void lock() {
+		if (getParent() != null) {
+			getParent().lockUI(getProcessInfo());
+		}
+	}
+
+	@Override
+	protected void unlock() {
+		if (getParent() != null) {
+			getParent().unlockUI(getProcessInfo());
+		}
 	}
 }

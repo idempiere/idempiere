@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JasperReportsClient
+Bundle-SymbolicName: org.adempiere.apps.JasperReportsClient
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
+ org.adempiere.client;bundle-version="1.0.0",
+ org.adempiere.JasperReports;bundle-version="1.0.0",
+ org.adempiere.JasperReportsTools;bundle-version="1.0.0",
+ org.adempiere.tools;bundle-version="1.0.0"
+Import-Package: org.osgi.framework

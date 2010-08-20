@@ -31,7 +31,7 @@
   <target name="clean">
     <delete>
     	<fileset dir="../lib/plugins">
-			<include name="org.adempiere.wstore*.jar"/>
+			<include name="org.adempiere.wstore_*.jar"/>
 		</fileset>
     </delete>
   </target>

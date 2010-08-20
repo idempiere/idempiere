@@ -62,6 +62,8 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MUser;
+import org.compiere.print.ReportCtl;
+import org.compiere.print.SwingViewerProvider;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
 import org.compiere.swing.CPanel;
@@ -70,6 +72,7 @@ import org.compiere.swing.CTabbedPane;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.IEnvEventListener;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
@@ -89,7 +92,7 @@ import org.compiere.util.Splash;
  * 
  */
 public final class AMenu extends CFrame
-	implements ActionListener, PropertyChangeListener, ChangeListener
+	implements ActionListener, PropertyChangeListener, ChangeListener, IEnvEventListener
 {
 	/**
 	 * generated serialVersionUID
@@ -109,7 +112,7 @@ public final class AMenu extends CFrame
 		log.info("CodeBase=" + Adempiere.getCodeBase());		
 		Splash splash = Splash.getSplash();
 		//
-		m_WindowNo = Env.createWindowNo(this);
+		m_WindowNo = AEnv.createWindowNo(this);
 		//	Login
 		initSystem (splash);        //	login
 		splash.setText(Msg.getMsg(m_ctx, "Loading"));
@@ -188,6 +191,10 @@ public final class AMenu extends CFrame
 		infoUpdater = new InfoUpdater();
 		infoUpdaterThread = new Thread(infoUpdater, "InfoUpdater");
 		infoUpdaterThread.start();
+		//
+		Env.addEventListener(this);
+		//
+		ReportCtl.setReportViewerProvider(new SwingViewerProvider());
 		//
 		splash.dispose();
 		splash = null;		
@@ -808,6 +815,17 @@ public final class AMenu extends CFrame
 				} catch(InterruptedException ire) { }
 			}
 		}
+	}
+
+
+	@Override
+	public void onClearWindowContext(int windowNo) {
+		AEnv.removeWindow(windowNo);
+	}
+
+	@Override
+	public void onReset(boolean finalCall) {
+		AEnv.reset(finalCall);
 	}
 
 }	//	AMenu

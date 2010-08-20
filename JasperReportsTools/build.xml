@@ -15,7 +15,7 @@
 	<target name="clean" description="delete class directory">
 	   <delete>
 	   		<fileset dir="../lib">
-    			<include name="org.adempiere.JasperReportsTools*.jar"/>
+    			<include name="org.adempiere.JasperReportsTools_*.jar"/>
 			</fileset>
 	   </delete>
 	</target>

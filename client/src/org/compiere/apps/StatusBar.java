@@ -262,7 +262,7 @@ public class StatusBar extends CPanel implements IStatusBar
 			return;
 		//
 		String title = Msg.getMsg(Env.getCtx(), "Who") + m_text;
-		RecordInfo info = new RecordInfo (Env.getFrame(this), title, m_dse);
+		RecordInfo info = new RecordInfo (AEnv.getFrame(this), title, m_dse);
 		AEnv.showCenterScreen(info);
 	}	//	addStatusComponent
 

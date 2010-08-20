@@ -30,6 +30,7 @@ import javax.swing.event.TableModelListener;
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ADialogDialog;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.StatusBar;
@@ -243,7 +244,7 @@ public class VGenPanel extends CPanel implements ActionListener, ChangeListener,
 	public void generate()
 	{
 		info.setText(genForm.generate());
-		ProcessCtl worker = new ProcessCtl(this, Env.getWindowNo(this), genForm.getProcessInfo(), genForm.getTrx());
+		ProcessCtl worker = new ProcessCtl(this, AEnv.getWindowNo(this), genForm.getProcessInfo(), genForm.getTrx());
 		worker.start();
 		//
 	}
@@ -306,7 +307,7 @@ public class VGenPanel extends CPanel implements ActionListener, ChangeListener,
 						new Viewer(m_frame.getGraphicsConfiguration(), re);
 					}
 					else
-					ReportCtl.startDocumentPrint(genForm.getReportEngineType(), Record_ID, this, Env.getWindowNo(this), true);
+					ReportCtl.startDocumentPrint(genForm.getReportEngineType(), Record_ID, this, AEnv.getWindowNo(this), true);
 					
 				}
 				ADialogDialog d = new ADialogDialog (m_frame,

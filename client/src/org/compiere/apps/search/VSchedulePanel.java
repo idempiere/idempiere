@@ -37,6 +37,7 @@ import java.util.GregorianCalendar;
 
 import javax.swing.JComponent;
 
+import org.compiere.apps.AEnv;
 import org.compiere.grid.ed.VAssignmentDialog;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.MResourceAssignment;
@@ -378,7 +379,7 @@ public class VSchedulePanel extends JComponent implements MouseListener
 				if (!mas.isAssignment())
 					return;
 				//
-				VAssignmentDialog vad = new VAssignmentDialog (Env.getFrame(this),
+				VAssignmentDialog vad = new VAssignmentDialog (AEnv.getFrame(this),
 					m_slots[i].getMAssignment(), false, m_createNew);
 				m_infoSchedule.mAssignmentCallback(vad.getMResourceAssignment());
 				return;
@@ -391,7 +392,7 @@ public class VSchedulePanel extends JComponent implements MouseListener
 			ma.setAssignDateFrom(TimeUtil.getDayTime(TimeUtil.addDays(m_startDate, dayIndex),
 				m_timePanel.getTimeSlot(timeIndex).getStartTime()));
 			ma.setQty(new BigDecimal(1));
-			VAssignmentDialog vad =  new VAssignmentDialog (Env.getFrame(this), ma, false, m_createNew);
+			VAssignmentDialog vad =  new VAssignmentDialog (AEnv.getFrame(this), ma, false, m_createNew);
 			m_infoSchedule.mAssignmentCallback(vad.getMResourceAssignment());
 			return;
 		}

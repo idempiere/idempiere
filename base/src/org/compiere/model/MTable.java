@@ -56,6 +56,8 @@ public class MTable extends X_AD_Table
 	 */
 	private static final long serialVersionUID = -2367316254623142732L;
 
+	public final static int MAX_OFFICIAL_ID = 999999;
+	
 	/**
 	 * 	Get Table from Cache
 	 *	@param ctx context

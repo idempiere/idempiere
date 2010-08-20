@@ -40,6 +40,7 @@ import javax.swing.event.TableModelListener;
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ADialogDialog;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.StatusBar;
@@ -615,7 +616,7 @@ public class VInOutInvoiceGen extends CPanel
 		}
 
 		//	Execute Process
-		ProcessCtl worker = new ProcessCtl(this, Env.getWindowNo(this), pi, trx);
+		ProcessCtl worker = new ProcessCtl(this, AEnv.getWindowNo(this), pi, trx);
 		worker.start();     //  complete tasks in unlockUI / generateShipments_complete
 		//
 	}	//	generateShipments
@@ -665,7 +666,7 @@ public class VInOutInvoiceGen extends CPanel
 				for (int i = 0; i < ids.length; i++)
 				{
 					int M_InOut_ID = ids[i];
-					ReportCtl.startDocumentPrint(ReportEngine.SHIPMENT, M_InOut_ID, this, Env.getWindowNo(this), true);
+					ReportCtl.startDocumentPrint(ReportEngine.SHIPMENT, M_InOut_ID, this, AEnv.getWindowNo(this), true);
 				}
 				ADialogDialog d = new ADialogDialog (m_frame,
 					Env.getHeader(Env.getCtx(), m_WindowNo),
@@ -781,7 +782,7 @@ public class VInOutInvoiceGen extends CPanel
 		}
 
 		//	Execute Process
-		ProcessCtl worker = new ProcessCtl(this, Env.getWindowNo(this), pi, trx);
+		ProcessCtl worker = new ProcessCtl(this, AEnv.getWindowNo(this), pi, trx);
 		worker.start();     //  complete tasks in unlockUI / generateInvoice_complete
 	}	//	generateInvoices
 
@@ -829,7 +830,7 @@ public class VInOutInvoiceGen extends CPanel
 				for (int i = 0; i < ids.length; i++)
 				{
 					int C_Invoice_ID = ids[i];
-					ReportCtl.startDocumentPrint(ReportEngine.INVOICE, C_Invoice_ID, this, Env.getWindowNo(this), true);
+					ReportCtl.startDocumentPrint(ReportEngine.INVOICE, C_Invoice_ID, this, AEnv.getWindowNo(this), true);
 				}
 				ADialogDialog d = new ADialogDialog (m_frame,
 					Env.getHeader(Env.getCtx(), m_WindowNo),
@@ -894,5 +895,4 @@ public class VInOutInvoiceGen extends CPanel
 	public void executeASync (ProcessInfo pi)
 	{
 	}   //  executeASync
-
 }	//	VInOutGen

@@ -57,35 +57,35 @@ public class Service {
 		}
 	}
 
-	public static <T extends IService> T locate(Class<T> type) {
+	public static <T> T locate(Class<T> type) {
 		return locate(type, type.getName());
 	}
 
-	public static <T extends IService> T locate(Class<T> type, String id) {
+	public static <T> T locate(Class<T> type, String id) {
 		return locator().locate(type, id);
 	}
 	
-	public static <T extends IService> T locate(Class<T> type, ServiceQuery query) {
+	public static <T> T locate(Class<T> type, ServiceQuery query) {
 		return locate(type, type.getName(), query);
 	}
 
-	public static <T extends IService> T locate(Class<T> type, String id, ServiceQuery query) {
+	public static <T> T locate(Class<T> type, String id, ServiceQuery query) {
 		return locator().locate(type, id, query);
 	}
 	
-	public static <T extends IService> List<T> list(Class<T> type) {
+	public static <T> List<T> list(Class<T> type) {
 		return list(type, type.getName());
 	}
 
-	public static <T extends IService> List<T> list(Class<T> type, String id) {
+	public static <T> List<T> list(Class<T> type, String id) {
 		return locator().list(type, id);
 	}
 	
-	public static <T extends IService> List<T> list(Class<T> type, ServiceQuery query) {
+	public static <T> List<T> list(Class<T> type, ServiceQuery query) {
 		return locator().list(type, type.getName(), query);
 	}
 	
-	public static <T extends IService> List<T> list(Class<T> type, String id, ServiceQuery query) {
+	public static <T> List<T> list(Class<T> type, String id, ServiceQuery query) {
 		return locator().list(type, id, query);
 	}
 }

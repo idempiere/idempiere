@@ -112,14 +112,9 @@ public class CConnection implements Serializable, Cloneable
 				if (s_cc == null)
 				{
 					if (cc == null) cc = new CConnection(apps_host);
-					CConnectionDialog ccd = new CConnectionDialog (cc);
-					s_cc = ccd.getConnection ();
-					if (!s_cc.isDatabaseOK() && !ccd.isCancel()) {
-						s_cc.testDatabase(true);
-					}
-					//  set also in ALogin and Ctrl
-					Ini.setProperty (Ini.P_CONNECTION, s_cc.toStringLong ());
-					Ini.saveProperties (Ini.isClient ());
+					s_cc = cc;
+					Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
+					Ini.saveProperties(Ini.isClient());
 				}
 			}
 			else
@@ -1395,34 +1390,4 @@ public class CConnection implements Serializable, Cloneable
 		c.m_info = info;
 		return c;
 	}
-
-	/**************************************************************************
-	 *  Testing
-	 *  @param args ignored
-	 */
-	public static void main (String[] args)
-	{
-		boolean server = true;
-		if (args.length == 0)
-			System.out.println("CConnection <server|client>");
-		else
-			server = "server".equals(args[0]);
-		System.out.println("CConnection - " + (server ? "server" : "client"));
-		//
-		if (server) {
-			Adempiere.startup(false);
-		} else {
-			Adempiere.startup(true);
-		}
-		//
-		System.out.println ("Connection = ");
-		//	CConnection[name=localhost{dev-dev1-adempiere},AppsHost=localhost,AppsPort=1099,type=Oracle,DBhost=dev,DBport=1521,DBname=dev1,BQ=false,FW=false,FWhost=,FWport=1630,UID=adempiere,PWD=adempiere]
-//		System.out.println (Ini.getProperty (Ini.P_CONNECTION));
-
-		CConnection cc = CConnection.get ();
-//		System.out.println (">> " + cc.toStringLong ());
-		Connection con = cc.getConnection (false,
-						 Connection.TRANSACTION_READ_COMMITTED);
-		new CConnectionDialog(cc);
-	}	//	main
 }	//  CConnection

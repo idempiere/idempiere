@@ -226,7 +226,7 @@ public class AMenuStartItem extends Thread implements ActionListener
 		 */
 		private void startWindow(int AD_Workbench_ID, int AD_Window_ID)
 		{
-			AWindow frame = (AWindow)Env.showWindow(AD_Window_ID); 
+			AWindow frame = (AWindow)AEnv.showWindow(AD_Window_ID); 
 			if (frame != null) {
 				m_menu.getWindowManager().add(frame);
 				return;
