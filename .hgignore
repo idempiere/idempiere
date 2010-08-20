@@ -56,3 +56,8 @@ syntax: regexp
 ^lib/plugins$
 ^plugins/.*\.class$
 ^adempiere-local\.properties$
+^uibase/.*\.class$
+^pipoHandlers/.*\.class$
+^pipo/.*\.class$
+^JasperReportsClient/.*\.class
+^tomcatConfig/bin/\.hgignore$
