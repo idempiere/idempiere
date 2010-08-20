@@ -83,10 +83,11 @@
     <Connector port="@ADEMPIERE_SSL_PORT@" maxHttpHeaderSize="8192"
                maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
                enableLookups="false" disableUploadTimeout="true"
-               acceptCount="100" scheme="https" secure="true"
+               acceptCount="100" scheme="https" secure="true" SSLEnabled="true"
                clientAuth="false"
 	           keystoreFile="@ADEMPIERE_KEYSTORE@"
     	       keystorePass="@ADEMPIERE_KEYSTOREPASS@"
+    	       keyAlias="adempiere"
                sslProtocol="TLS" />
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
