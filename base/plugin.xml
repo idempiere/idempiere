@@ -6,5 +6,6 @@
    <extension-point id="org.adempiere.base.IDictionaryService" name="DictionaryService" schema="schema/org.adempiere.base.IDictionaryService.exsd"/>
    <extension-point id="org.adempiere.base.Process" name="Process" schema="schema/org.adempiere.base.Process.exsd"/>
    <extension-point id="org.adempiere.base.ModelValidator" name="Model Validator" schema="schema/org.adempiere.base.ModelValidator.exsd"/>
+   <extension-point id="org.compiere.db.AdempiereDatabase" name="Adempiere Database Interface" schema="schema/org.compiere.db.AdempiereDatabase.exsd"/>
 
 </plugin>

@@ -102,15 +102,7 @@ public class CreateAdempiere
 	{
 		try
 		{
-			for (int i = 0; i < Database.DB_NAMES.length; i++)
-			{
-				if (Database.DB_NAMES[i].equals (databaseType))
-				{
-					m_dbTarget = (AdempiereDatabase)Database.DB_CLASSES[i].
-						   newInstance ();
-					break;
-				}
-			}
+			m_dbTarget = Database.getDatabase(databaseType);
 		}
 		catch (Exception e)
 		{

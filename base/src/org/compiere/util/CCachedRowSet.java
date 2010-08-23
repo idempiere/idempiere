@@ -26,8 +26,6 @@ import java.util.Locale;
 import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 
-import oracle.jdbc.rowset.OracleCachedRowSet;
-
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 
@@ -106,7 +104,7 @@ public class CCachedRowSet extends CachedRowSetImpl implements CachedRowSet
 			Statement stmt = conn.createStatement
 				(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet rs = stmt.executeQuery(sql);
-			OracleCachedRowSet crs = new OracleCachedRowSet();
+			CachedRowSetImpl crs = new CachedRowSetImpl();
 			crs.populate(rs);
 			rs.close();
 			stmt.close();
@@ -133,7 +131,7 @@ public class CCachedRowSet extends CachedRowSetImpl implements CachedRowSet
 	{
 		if (db.getName().equals(Database.DB_ORACLE))
 		{
-			OracleCachedRowSet crs = new OracleCachedRowSet();
+			CachedRowSetImpl crs = new CachedRowSetImpl();
 			crs.populate(rs);
 			return crs;
 		}

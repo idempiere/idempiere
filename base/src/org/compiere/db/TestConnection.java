@@ -82,7 +82,7 @@ public class TestConnection
 		{
 			try
 			{
-				DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+				DriverManager.registerDriver(Database.getDatabase(Database.DB_ORACLE).getDriver());
 			}
 			catch (SQLException ex)
 			{

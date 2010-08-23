@@ -17,7 +17,8 @@ package org.compiere.install;
 import java.net.InetAddress;
 import java.sql.Connection;
 
-import org.compiere.db.DB_PostgreSQL;
+import org.compiere.db.AdempiereDatabase;
+import org.compiere.db.Database;
 
 /**
  *	PostgreSQL Configuration
@@ -39,15 +40,15 @@ public class ConfigPostgreSQL extends Config
 
 	/** Discovered TNS			*/
 	private String[] 			p_discovered = null;
-	/**	PostgreSQL DB Info			*/
-	private DB_PostgreSQL			p_db = new DB_PostgreSQL();
+	
+	private AdempiereDatabase p_db = Database.getDatabase(Database.DB_POSTGRESQL);
 	
 	/**
 	 * 	Init
 	 */
 	public void init()
 	{
-		p_data.setDatabasePort(String.valueOf(DB_PostgreSQL.DEFAULT_PORT));
+		p_data.setDatabasePort(String.valueOf(Database.DB_POSTGRESQL_DEFAULT_PORT));
 	}	//	init
 
 	/**

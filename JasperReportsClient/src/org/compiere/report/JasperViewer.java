@@ -117,13 +117,7 @@ public class JasperViewer extends javax.swing.JFrame {
 		CConnection compiereConnection = CConnection.get();
 		
         try {
-        	if (compiereConnection.isOracle())
-        		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        	if (compiereConnection.isPostgreSQL())
-        		DriverManager.registerDriver(new org.postgresql.Driver());
-//        	if (compiereConnection.isSybase())
-        		//DriverManager.registerDriver(new com.sybase.jdbc3.jdbc.SybDriver());
-//        		DriverManager.registerDriver(new net.sourceforge.jtds.jdbc.Driver());
+        	DriverManager.registerDriver(compiereConnection.getDatabase().getDriver());
         	
             //this is for test only
             return DriverManager.getConnection(args[1], args[2], args[3]);
@@ -132,9 +126,11 @@ public class JasperViewer extends javax.swing.JFrame {
             return null;
         }		
 	}
+	
     public static Connection getConnection() {
+    	CConnection compiereConnection = CConnection.get();
         try {
-            DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+            DriverManager.registerDriver(compiereConnection.getDatabase().getDriver());
             //this is for test only prefer testingby calling org.compiere.report.JaserViewer JDBC_CONNECTION JDBC_USER JDBC_PASS
             return DriverManager.getConnection("jdbc:oracle:thin:@abalone.lesmuids.com:1521:abalone", "adempiere", "adempiere");
         } catch (SQLException e) {

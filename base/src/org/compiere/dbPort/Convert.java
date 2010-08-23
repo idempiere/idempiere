@@ -35,6 +35,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.compiere.db.Database;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -442,7 +443,7 @@ public abstract class Convert
 			try {
 				if (pgStatement == null) {
 					// if oracle call convert for postgres before logging
-					Convert_PostgreSQL convert = new Convert_PostgreSQL();
+					Convert convert = Database.getDatabase(Database.DB_POSTGRESQL).getConvert();
 					String[] r = convert.convert(oraStatement);
 					pgStatement = r[0];
 				}

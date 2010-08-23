@@ -4,7 +4,7 @@
 <!-- PIPO                                        -->
 <!-- ============================================= -->
 
-<project name="pipoHandlers" default="plugin" basedir=".">
+<project name="oracleProvider" default="plugin" basedir=".">
 
   <description>
     This buildfile is used to build the client subproject within
@@ -14,12 +14,12 @@
   <import file="../utils_dev/properties.xml"/>
 
   <target name="init" description="initialization target">
-    <echo message="=========== Build pipo default handlers"/>
+    <echo message="=========== Build Oracle Provider"/>
   </target>
 
   <target name="plugin" depends="init">
 	<buildPlugin workspaceDirectory="${workspace}"
-	             projectName="pipoHandlers"
+	             projectName="oracleProvider"
 	             targetPlatformId="target.platform"
 				 destination="../lib"
 	 			 buildSourceJar="false" />
@@ -28,7 +28,7 @@
   <target name="clean">
   	<delete>
    		<fileset dir="../lib/plugins">
-			<include name="org.adempiere.pipo.defaultHandlers_*.jar"/>
+			<include name="org.compiere.db.oracleProvider_*.jar"/>
 		</fileset>
    	</delete>
   </target>

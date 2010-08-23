@@ -39,6 +39,8 @@
 		<ant inheritAll="false" dir="tomcatConfig"/>
 		<ant inheritAll="false" dir="pipo"/>
 		<ant inheritAll="false" dir="pipoHandlers"/>
+		<ant inheritAll="false" dir="oracleProvider"/>
+		<ant inheritAll="false" dir="postgresqlProvider"/>
 	</target>
 	<target name="build" depends="jar">
 		<ant inheritAll="false" dir="install"/>
@@ -62,6 +64,8 @@
 		<ant inheritAll="false" dir="tomcatConfig" target="clean"/>
 		<ant inheritAll="false" dir="pipo" target="clean"/>
 		<ant inheritAll="false" dir="pipoHandlers" target="clean"/>
+		<ant inheritAll="false" dir="oracleProvider" target="clean"/>
+		<ant inheritAll="false" dir="postgresqlProvider" target="clean"/>
 	</target>
 
   <target name="clean-all" depends="clean">

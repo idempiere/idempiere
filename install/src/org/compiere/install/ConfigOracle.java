@@ -26,10 +26,7 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import oracle.jdbc.OracleDriver;
-
-import org.compiere.db.DB_Oracle;
-
+import org.compiere.db.Database;
 
 /**
  *	Oracle Configuration
@@ -50,8 +47,6 @@ public class ConfigOracle extends Config
 		m_XE = XE;
 	}	//	ConfigOracle
 	
-	/**	Oracle Driver			*/
-	private static OracleDriver s_oracleDriver = null;
 	/** Discoverd TNS			*/
 	private String[] 			p_discovered = null;
 	/** Discovered Database Name */
@@ -66,7 +61,7 @@ public class ConfigOracle extends Config
 	 */
 	public void init()
 	{
-		p_data.setDatabasePort(String.valueOf(DB_Oracle.DEFAULT_PORT));
+		p_data.setDatabasePort(String.valueOf(Database.DB_ORACLE_DEFAULT_PORT));
 		//
 		p_data.setDatabaseSystemPassword(true);
 	}	//	init
@@ -428,11 +423,7 @@ public class ConfigOracle extends Config
 		log.fine("Url=" + url + ", UID=" + uid);
 		try
 		{
-			if (s_oracleDriver == null)
-			{
-				s_oracleDriver = new OracleDriver();
-				DriverManager.registerDriver(s_oracleDriver);
-			}
+			DriverManager.registerDriver(Database.getDatabase(Database.DB_ORACLE).getDriver());
 			m_con = DriverManager.getConnection(url, uid, pwd);
 		}
 		catch (UnsatisfiedLinkError ule)

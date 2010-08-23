@@ -701,21 +701,17 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	public void setType (String type)
 	{
-		for (int i = 0; i < Database.DB_NAMES.length; i++)
+		if (Database.getDatabase(type) != null)
 		{
-			if (Database.DB_NAMES[i].equals (type))
-			{
-				m_type = type;
-				m_okDB = false;
-				break;
-			}
+			m_type = type;
+			m_okDB = false;
 		}
 		//  Oracle
 		if (isOracle ())
 		{
-			if (getDbPort () != DB_Oracle.DEFAULT_PORT)
-				setDbPort (DB_Oracle.DEFAULT_PORT);
-			setFwPort (DB_Oracle.DEFAULT_CM_PORT);
+			if (getDbPort () != Database.DB_ORACLE_DEFAULT_PORT)
+				setDbPort (Database.DB_ORACLE_DEFAULT_PORT);
+			setFwPort (Database.DB_ORACLE_DEFAULT_CM_PORT);
 		}
 		else
 		{
@@ -727,8 +723,8 @@ public class CConnection implements Serializable, Cloneable
 		//  PostgreSQL
 		if (isPostgreSQL ())
 		{
-			if (getDbPort () != DB_PostgreSQL.DEFAULT_PORT)
-				setDbPort (DB_PostgreSQL.DEFAULT_PORT);
+			if (getDbPort () != Database.DB_POSTGRESQL_DEFAULT_PORT)
+				setDbPort (Database.DB_POSTGRESQL_DEFAULT_PORT);
 		}
 		//end vpj-cd e-evolution 09 ene 2006
 	} 	//  setType
@@ -1070,15 +1066,7 @@ public class CConnection implements Serializable, Cloneable
 		{
 			try
 			{
-		         for (int i = 0; i < Database.DB_NAMES.length; i++)
-	             {
-	                     if (Database.DB_NAMES[i].equals (m_type))
-	                     {
-	                             m_db = (AdempiereDatabase)Database.DB_CLASSES[i].
-	                                        newInstance ();
-	                             break;
-	                     }
-	             }
+		         m_db = Database.getDatabase(m_type);
 		         if (m_db != null)		//	test class loader ability
 		        	 m_db.getDataSource(this);
 			}

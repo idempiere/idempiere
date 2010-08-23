@@ -132,7 +132,7 @@ public class CConnectionDialog extends CDialog implements ActionListener
 	private CTextField fwPortField = new CTextField();
 	private CButton bTestDB = new CButton();
 	private CLabel dbTypeLabel = new CLabel();
-	private CComboBox dbTypeField = new CComboBox(Database.DB_NAMES);
+	private CComboBox dbTypeField = new CComboBox(Database.getDatabaseNames());
 	private CCheckBox cbBequeath = new CCheckBox();
 	private CLabel appsHostLabel = new CLabel();
 	private CTextField appsHostField = new CTextField();

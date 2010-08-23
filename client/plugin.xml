@@ -7,9 +7,9 @@
          id="RF"
          name="RF"
          point="org.adempiere.base.IResourceFinder">
-      <client
+      <finder
             class="org.compiere.util.ResourceFinder">
-      </client>
+      </finder>
    </extension>
    <extension
          id="org.adempiere.Client"

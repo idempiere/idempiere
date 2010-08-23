@@ -4,7 +4,7 @@
 <!-- PIPO                                        -->
 <!-- ============================================= -->
 
-<project name="pipo" default="plugin" basedir=".">
+<project name="JasperReportClient" default="plugin" basedir=".">
 
   <description>
     This buildfile is used to build the client subproject within

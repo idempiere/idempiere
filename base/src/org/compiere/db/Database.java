@@ -16,7 +16,14 @@
  *****************************************************************************/
 package org.compiere.db;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.adempiere.base.Service;
+import org.adempiere.base.ServiceQuery;
 import org.compiere.util.CLogger;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 
 /**
  *  General Database Constants and Utilities
@@ -34,39 +41,40 @@ public class Database
     /** PostgreSQL ID   */
 	public static String        DB_POSTGRESQL = "PostgreSQL";
 
-	/** Supported Databases     */
-	public static String[]      DB_NAMES = new String[] {
-		 DB_ORACLE
-		,DB_POSTGRESQL 
-	};
-
-	/** Database Classes        */
-	protected static Class[]    DB_CLASSES = new Class[] {
-		DB_Oracle.class
-		,DB_PostgreSQL.class
-	};
-
 	/** Connection Timeout in seconds   */
 	public static int           CONNECTION_TIMEOUT = 10;
+	
+	/** Default Port                */
+    public static final int         DB_ORACLE_DEFAULT_PORT = 1521;
+    /** Default Connection Manager Port */
+    public static final int         DB_ORACLE_DEFAULT_CM_PORT = 1630;
+    
+    /** Default Port            */
+	public static final int         DB_POSTGRESQL_DEFAULT_PORT = 5432;
 	
 	/**
 	 *  Get Database by database Id.
 	 *  @return database
 	 */
 	public static AdempiereDatabase getDatabase (String type)
-	throws Exception
 	{
-		AdempiereDatabase db = null;
-		for (int i = 0; i < Database.DB_NAMES.length; i++)
-		{
-			if (Database.DB_NAMES[i].equals (type))
-			{
-				db = (AdempiereDatabase)Database.DB_CLASSES[i].
-					   newInstance ();
-				break;
-			}
-		}
+		ServiceQuery query = new ServiceQuery();
+		query.put("id", type);
+		AdempiereDatabase db = Service.locate(AdempiereDatabase.class, query);
 		return db;
+	}
+	
+	public static String[] getDatabaseNames()
+	{
+		List<String> names = new ArrayList<String>();
+		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(AdempiereDatabase.class.getName());		
+		for(IConfigurationElement element : elements)
+		{
+			String type = element.getAttribute("id");
+			names.add(type);
+		}
+		String[] nameArray = names.toArray(new String[0]);
+		return nameArray;
 	}
 	
 	/**
@@ -83,9 +91,9 @@ public class Database
 			return null;
 		}
 		if (url.indexOf("oracle") != -1)
-			return new DB_Oracle();
+			return getDatabase(DB_ORACLE);
         if (url.indexOf("postgresql") != -1)
-			return new DB_PostgreSQL();
+			return getDatabase(DB_POSTGRESQL);
 
 		log.severe("No Database for " + url);
 		return null;
