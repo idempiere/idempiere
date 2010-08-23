@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- ============================================= -->
-<!-- PIPO                                        -->
+<!-- JasperReport Client                           -->
 <!-- ============================================= -->
 
 <project name="JasperReportClient" default="plugin" basedir=".">

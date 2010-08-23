@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- ============================================= -->
-<!-- PIPO                                        -->
+<!-- postgresql provider                                  -->
 <!-- ============================================= -->
 
 <project name="postgresqlProvider" default="plugin" basedir=".">
@@ -14,7 +14,7 @@
   <import file="../utils_dev/properties.xml"/>
 
   <target name="init" description="initialization target">
-    <echo message="=========== Build Oracle Provider"/>
+    <echo message="=========== Build postgresql Provider"/>
   </target>
 
   <target name="plugin" depends="init">

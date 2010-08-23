@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- ============================================= -->
-<!-- PIPO                                        -->
+<!-- oracle provider                                        -->
 <!-- ============================================= -->
 
 <project name="oracleProvider" default="plugin" basedir=".">
