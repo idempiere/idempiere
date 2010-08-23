@@ -59,5 +59,8 @@ syntax: regexp
 ^uibase/.*\.class$
 ^pipoHandlers/.*\.class$
 ^pipo/.*\.class$
-^JasperReportsClient/.*\.class
+^JasperReportsClient/.*\.class$
 ^tomcatConfig/bin/\.hgignore$
+^oracleProvider/bin/.*\.class$
+^postgresqlProvider/bin/.*\.class$
+
