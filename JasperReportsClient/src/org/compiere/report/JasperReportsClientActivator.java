@@ -21,7 +21,6 @@ public class JasperReportsClientActivator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext arg0) throws Exception {
-		ReportStarter.setReportViewerProvider(new SwingJRViewerProvider());
 	}
 
 	@Override

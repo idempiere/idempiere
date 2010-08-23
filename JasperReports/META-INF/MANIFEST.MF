@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JasperReports
-Bundle-SymbolicName: org.adempiere.JasperReports
+Bundle-SymbolicName: org.adempiere.JasperReports;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: JasperReports.jar
 Export-Package: org.compiere.interfaces,

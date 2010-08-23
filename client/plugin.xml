@@ -18,5 +18,11 @@
          	<run class="org.adempiere.client.Application" />
 		 </application>
    </extension>
+   <extension
+         point="org.compiere.print.ReportViewerProvider">
+      <provider
+            class="org.compiere.print.SwingViewerProvider">
+      </provider>
+   </extension>
 
 </plugin>

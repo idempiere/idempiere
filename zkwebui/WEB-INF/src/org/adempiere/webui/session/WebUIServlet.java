@@ -28,11 +28,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.adempiere.webui.window.ZkJRViewerProvider;
-import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
-import org.compiere.print.ReportCtl;
-import org.compiere.report.ReportStarter;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
@@ -88,8 +84,6 @@ public class WebUIServlet extends DHtmlLayoutServlet
 
         // hengsin: temporary solution for problem with zk client
         Ini.setProperty(Ini.P_ADEMPIERESYS, false);
-        ReportCtl.setReportViewerProvider(new ZkReportViewerProvider());
-        ReportStarter.setReportViewerProvider(new ZkJRViewerProvider());
         logger.log(Level.OFF, "ADempiere web ui service started successfully");
         /**
          * End ADempiere Start

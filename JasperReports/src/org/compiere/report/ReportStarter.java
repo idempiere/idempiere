@@ -59,6 +59,7 @@ import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MAttachment;
@@ -102,7 +103,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	private static CLogger log = CLogger.getCLogger(ReportStarter.class);
 	private static File REPORT_HOME = null;
 
-	private static JRViewerProvider viewerProvider = null;
 	private static JasperPrint jasperPrint;
 
     static {
@@ -540,7 +540,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 //                        JasperExportManager.exportReportToPdfFile(jasperPrint, "BasicReport.pdf");
                 } else {
                     log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
-                    JRViewerProvider viewerLauncher = getReportViewerProvider();
+                    JRViewerProvider viewerLauncher = Service.locate(JRViewerProvider.class);
                     viewerLauncher.openViewer(jasperPrint, pi.getTitle()+" - " + reportPath);
                 }
             } catch (JRException e) {
@@ -1088,24 +1088,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
             DB.close(rs, pstmt);
             rs = null; pstmt = null;
         }
-    }
-
-    /**
-     * Set jasper report viewer provider.
-     * @param provider
-     */
-    public static void setReportViewerProvider(JRViewerProvider provider) {
-    	if (provider == null)
-    		throw new IllegalArgumentException("Cannot set report viewer provider to null");
-    	viewerProvider = provider;
-    }
-
-    /**
-     * Get the current jasper report viewer provider
-     * @return JRViewerProvider
-     */
-    public static JRViewerProvider getReportViewerProvider() {
-    	return viewerProvider;
     }
 
     class ReportData {

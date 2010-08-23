@@ -2,5 +2,17 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.adempiere.webui.Form" name="Web Form" schema="schema/org.adempiere.webui.Form.exsd"/>
+   <extension
+         point="org.compiere.print.ReportViewerProvider">
+      <provider
+            class="org.adempiere.webui.window.ZkReportViewerProvider">
+      </provider>
+   </extension>
+   <extension
+         point="org.compiere.report.JRViewerProvider">
+      <provider
+            class="org.adempiere.webui.window.ZkJRViewerProvider">
+      </provider>
+   </extension>
 
 </plugin>

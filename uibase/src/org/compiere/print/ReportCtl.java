@@ -19,6 +19,7 @@ package org.compiere.print;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProcess;
@@ -64,8 +65,6 @@ public class ReportCtl
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (ReportCtl.class);
-
-	private static ReportViewerProvider viewerProvider = null; 
 
 	/**
 	 *	Create Report.
@@ -374,19 +373,8 @@ public class ReportCtl
 	 */
 	public static void preview(ReportEngine re)
 	{
-		ReportViewerProvider provider = getReportViewerProvider();
-		provider.openViewer(re);
+		ReportViewerProvider viewer = Service.locate(ReportViewerProvider.class);
+		viewer.openViewer(re);
 	}
 
-	public static void setReportViewerProvider(ReportViewerProvider provider)
-	{
-		if (provider == null)
-			throw new IllegalArgumentException("Cannot set report viewer provider to null");
-		viewerProvider = provider;
-	}
-
-	public static ReportViewerProvider getReportViewerProvider()
-	{
-		return viewerProvider;
-	}
 }	//	ReportCtl

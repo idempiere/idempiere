@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI base
-Bundle-SymbolicName: org.adempiere.ui.base
+Bundle-SymbolicName: org.adempiere.ui.base;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0"

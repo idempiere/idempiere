@@ -194,7 +194,7 @@ public final class AMenu extends CFrame
 		//
 		Env.addEventListener(this);
 		//
-		ReportCtl.setReportViewerProvider(new SwingViewerProvider());
+//		ReportCtl.setReportViewerProvider(new SwingViewerProvider());
 		//
 		splash.dispose();
 		splash = null;		
