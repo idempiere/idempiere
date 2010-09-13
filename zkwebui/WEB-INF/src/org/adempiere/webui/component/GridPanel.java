@@ -272,21 +272,29 @@ public class GridPanel extends Borderlayout implements EventListener
 				column.setLabel(gridField[i].getHeader());
 				int l = DisplayType.isNumeric(gridField[i].getDisplayType())
 					? 120 : gridField[i].getDisplayLength() * 9;
-				if (gridField[i].getHeader().length() * 9 > l)
-					l = gridField[i].getHeader().length() * 9;
-				if (l > MAX_COLUMN_WIDTH)
-					l = MAX_COLUMN_WIDTH;
-				else if ( l < MIN_COLUMN_WIDTH)
-					l = MIN_COLUMN_WIDTH;
-				if (gridField[i].getDisplayType() == DisplayType.Table || gridField[i].getDisplayType() == DisplayType.TableDir)
+				//special treatment for line
+				if (DisplayType.isNumeric(gridField[i].getDisplayType()) && "Line".equals(gridField[i].getColumnName()))
 				{
-					if (l < MIN_COMBOBOX_WIDTH)
-						l = MIN_COMBOBOX_WIDTH;
+					l = 60;
 				}
-				else if (DisplayType.isNumeric(gridField[i].getDisplayType()))
+				else
 				{
-					if (l < MIN_NUMERIC_COL_WIDTH)
-						l = MIN_NUMERIC_COL_WIDTH;
+					if (gridField[i].getHeader().length() * 9 > l)
+						l = gridField[i].getHeader().length() * 9;
+					if (l > MAX_COLUMN_WIDTH)
+						l = MAX_COLUMN_WIDTH;
+					else if ( l < MIN_COLUMN_WIDTH)
+						l = MIN_COLUMN_WIDTH;
+					if (gridField[i].getDisplayType() == DisplayType.Table || gridField[i].getDisplayType() == DisplayType.TableDir)
+					{
+						if (l < MIN_COMBOBOX_WIDTH)
+							l = MIN_COMBOBOX_WIDTH;
+					}
+					else if (DisplayType.isNumeric(gridField[i].getDisplayType()))
+					{
+						if (l < MIN_NUMERIC_COL_WIDTH)
+							l = MIN_NUMERIC_COL_WIDTH;
+					}
 				}
 				column.setWidth(Integer.toString(l) + "px");
 				columns.appendChild(column);
@@ -299,7 +307,8 @@ public class GridPanel extends Borderlayout implements EventListener
 		LayoutUtils.addSclass("adtab-grid-panel", this);
 
 		listbox.setVflex(true);
-		listbox.setFixedLayout(true);
+		//true is faster but render badly on some browser
+		listbox.setFixedLayout(false);
 		listbox.addEventListener(Events.ON_CLICK, this);
 
 		updateModel();
@@ -634,7 +643,13 @@ public class GridPanel extends Borderlayout implements EventListener
 				editor.setHasFocus(false);
 			else if (columnName.equals(editor.getColumnName())) {
 				editor.setHasFocus(true);
-				Clients.response(new AuFocus(editor.getComponent()));
+				Component c = editor.getComponent();
+				if (c instanceof EditorBox) {
+					c = ((EditorBox)c).getTextbox();
+				} else if (c instanceof NumberBox) {
+					c = ((NumberBox)c).getDecimalbox();
+				}
+				Clients.response(new AuFocus(c));
 				found = true;
 			}
 		}
