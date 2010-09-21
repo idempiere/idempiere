@@ -32,13 +32,11 @@ import java.util.logging.Level;
 import javax.mail.internet.InternetAddress;
 
 import org.compiere.db.CConnection;
-import org.compiere.interfaces.Server;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.Language;
 
 /**
@@ -106,6 +104,7 @@ public class MClient extends X_AD_Client
 	}	//	get
 
 	/**	Static Logger				*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MClient.class);
 	/**	Cache						*/
 	private static CCache<Integer,MClient>	s_cache = new CCache<Integer,MClient>("AD_Client", 3);
@@ -479,7 +478,15 @@ public class MClient extends X_AD_Client
 			return "Could not create EMail: " + getName();
 		try
 		{
-			String msg = email.send();
+			String msg = null;
+			if (isServerEMail())
+			{
+				msg = CConnection.get().getServer().sendEMail(Env.getRemoteCallCtx(Env.getCtx()), email);
+			}
+			else
+			{
+				msg = email.send();
+			}
 			if (EMail.SENT_OK.equals (msg))
 			{
 				log.info("Sent Test EMail to " + getRequestEMail());
@@ -599,7 +606,15 @@ public class MClient extends X_AD_Client
 			email.addAttachment(attachment);
 		try
 		{
-			String msg = email.send();
+			String msg = null;
+			if (isServerEMail())
+			{
+				msg = CConnection.get().getServer().sendEMail(Env.getRemoteCallCtx(Env.getCtx()), email);
+			}
+			else
+			{
+				msg = email.send();
+			}
 			if (EMail.SENT_OK.equals (msg))
 			{
 				log.info("Sent EMail " + subject + " to " + to);
@@ -676,7 +691,15 @@ public class MClient extends X_AD_Client
 	 */
 	public boolean sendEmailNow(MUser from, MUser to, EMail email)
 	{
-		String msg = email.send();
+		String msg = null;
+		if (isServerEMail())
+		{
+			msg = CConnection.get().getServer().sendEMail(Env.getRemoteCallCtx(Env.getCtx()), email);
+		}
+		else
+		{
+			msg = email.send();
+		}
 		//
 		X_AD_UserMail um = new X_AD_UserMail(getCtx(), 0, null);
 		um.setClientOrg(this);
@@ -749,29 +772,7 @@ public class MClient extends X_AD_Client
 			return null;
 		}
 		//
-		EMail email = null;
-		if (isServerEMail() && Ini.isClient())
-		{
-			Server server = CConnection.get().getServer();
-			try
-			{
-				if (server != null)
-				{	//	See ServerBean
-					if (html && message != null)
-						message = EMail.HTML_MAIL_MARKER + message;
-					email = server.createEMail(Env.getRemoteCallCtx(getCtx()), getAD_Client_ID(),
-						to, subject, message);
-				}
-				else
-					log.log(Level.WARNING, "No AppsServer");
-			}
-			catch (Exception ex)
-			{
-				log.log(Level.SEVERE, getName() + " - AppsServer error", ex);
-			}
-		}
-		if (email == null)
-			email = new EMail (this,
+		EMail email = new EMail (this,
 				   getRequestEMail(), to,
 				   subject, message, html);
 		if (isSmtpAuthorization())
@@ -861,30 +862,7 @@ public class MClient extends X_AD_Client
 			return null;
 		}
 		//
-		EMail email = null;
-		if (isServerEMail() && Ini.isClient())
-		{
-			Server server = CConnection.get().getServer();
-			try
-			{
-				if (server != null)
-				{	//	See ServerBean
-					if (html && message != null)
-						message = EMail.HTML_MAIL_MARKER + message;
-					email = server.createEMail(Env.getRemoteCallCtx(getCtx()), getAD_Client_ID(),
-						from.getAD_User_ID(),
-						to, subject, message);
-				}
-				else
-					log.log(Level.WARNING, "No AppsServer");
-			}
-			catch (Exception ex)
-			{
-				log.log(Level.SEVERE, getName() + " - AppsServer error", ex);
-			}
-		}
-		if (email == null)
-			email = new EMail (this,
+		EMail email = new EMail (this,
 				   from.getEMail(),
 				   to,
 				   subject,

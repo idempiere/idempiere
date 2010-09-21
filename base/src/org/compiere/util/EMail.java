@@ -19,6 +19,7 @@ package org.compiere.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -170,7 +171,7 @@ public final class EMail implements Serializable
 	/**	SMTP enable start TLS		*/
 	// @TODO - make tls configurable - private boolean 			m_smtpStarttlsEnable = false;
 	/**	Attachments					*/
-	private ArrayList<Object>	m_attachments;
+	private ArrayList<DataSource>	m_attachments;
 	/**	UserName and Password		*/
 	private EMailAuthenticator	m_auth = null;
 	/**	Message						*/
@@ -406,7 +407,7 @@ public final class EMail implements Serializable
 			return;
 		try
 		{
-			Enumeration e = m_msg.getAllHeaderLines ();
+			Enumeration<?> e = m_msg.getAllHeaderLines ();
 			while (e.hasMoreElements ())
 				log.fine("- " + e.nextElement ());
 		}
@@ -785,8 +786,8 @@ public final class EMail implements Serializable
 		if (file == null)
 			return;
 		if (m_attachments == null)
-			m_attachments = new ArrayList<Object>();
-		m_attachments.add(file);
+			m_attachments = new ArrayList<DataSource>();
+		m_attachments.add(new FileDataSource(file));
 	}	//	addAttachment
 	
 	/**
@@ -811,8 +812,12 @@ public final class EMail implements Serializable
 		if (url == null)
 			return;
 		if (m_attachments == null)
-			m_attachments = new ArrayList<Object>();
-		m_attachments.add(url);
+			m_attachments = new ArrayList<DataSource>();
+		try {
+			m_attachments.add(new URLDataSource(url.toURL()));
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
 	}	//	addAttachment
 
 	/**
@@ -837,7 +842,7 @@ public final class EMail implements Serializable
 		if (dataSource == null)
 			return;
 		if (m_attachments == null)
-			m_attachments = new ArrayList<Object>();
+			m_attachments = new ArrayList<DataSource>();
 		m_attachments.add(dataSource);
 	}	//	addAttachment
 

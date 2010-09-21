@@ -24,14 +24,11 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.db.CConnection;
-import org.compiere.interfaces.Server;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 
 /**
@@ -74,7 +71,7 @@ public class MStore extends X_W_Store
 	public static MStore get (Properties ctx, String contextPath)
 	{
 		MStore wstore = null;
-		Iterator it = s_cache.values().iterator();
+		Iterator<?> it = s_cache.values().iterator();
 		while (it.hasNext())
 		{
 			wstore = (MStore)it.next();
@@ -204,7 +201,7 @@ public class MStore extends X_W_Store
 		s_log.info("");
 		try
 		{
-			Collection cc = s_cache.values();
+			Collection<?> cc = s_cache.values();
 			Object[] oo = cc.toArray();
 			for (int i = 0; i < oo.length; i++)
 				s_log.info(i + ": " + oo[i]);
@@ -353,31 +350,11 @@ public class MStore extends X_W_Store
 			return null;
 		}
 		//
-		EMail email = null;
 		MClient client = MClient.get(getCtx(), getAD_Client_ID());
-		if (client.isServerEMail() && Ini.isClient())
-		{
-			Server server = CConnection.get().getServer();
-			try
-			{
-				if (server != null)
-				{	//	See ServerBean
-					email = server.createEMail(Env.getRemoteCallCtx(getCtx()), getAD_Client_ID(), 
-						to, subject, message);
-				}
-				else
-					log.log(Level.WARNING, "No AppsServer"); 
-			}
-			catch (Exception ex)
-			{
-				log.log(Level.SEVERE, getName() + " - AppsServer error", ex);
-			}
-		}
 		String from = getWStoreEMail();
 		if (from == null || from.length() == 0)
 			from = client.getRequestEMail();
-		if (email == null)
-			email = new EMail (client,
+		EMail email = new EMail (client,
 				   from, to,
 				   subject, message);
 		//	Authorizetion

@@ -29,6 +29,7 @@ Export-Package: com.akunagroup.uk.postcode,
  org.compiere.dbPort,
  org.compiere.impexp,
  org.compiere.interfaces,
+ org.compiere.interfaces.impl,
  org.compiere.model,
  org.compiere.print,
  org.compiere.print.layout,
@@ -46,5 +47,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
 Import-Package: net.sf.cglib.proxy,
  org.eclipse.core.runtime;version="3.4.0",
- org.osgi.framework
+ org.osgi.framework,
+ org.restlet.representation,
+ org.restlet.util
 

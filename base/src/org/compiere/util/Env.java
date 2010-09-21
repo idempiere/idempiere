@@ -1534,11 +1534,14 @@ public final class Env
 		Set<Object> keys = ctx.keySet();
 		for (Object key : keys)
 		{
-			String s = key.toString();
-			if (s.startsWith("#") || s.startsWith("$"))
-			{
-				p.put(key, ctx.get(key));
-			}
+			if(!(key instanceof String))
+				continue;
+			
+			Object value = ctx.get(key);
+			if (!(value instanceof String))
+				continue;
+			
+			p.put(key, value);
 		}
 
 		return p;

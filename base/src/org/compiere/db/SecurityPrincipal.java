@@ -19,11 +19,11 @@ import java.io.Serializable;
  * @author Low Heng Sin
  *
  */
-class SecurityPrincipal implements Serializable {
+public class SecurityPrincipal implements Serializable {
 	/**
-	 * 
+	 * generated serial version id
 	 */
-	private static final long serialVersionUID = -4703480025159571932L;
-	String principal;
-	String credential;
+	private static final long serialVersionUID = -6924078376448056295L;
+	public String identity;
+	public char[] secret;
 }

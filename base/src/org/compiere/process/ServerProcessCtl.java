@@ -141,7 +141,6 @@ public class ServerProcessCtl implements Runnable {
 		int     AD_ReportView_ID = 0;
 		int		AD_Workflow_ID = 0;
 		boolean IsReport = false;
-		boolean isPrintPreview = m_pi.isPrintPreview();
 
 		//
 		String sql = "SELECT p.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
@@ -428,7 +427,6 @@ public class ServerProcessCtl implements Runnable {
 		//  execute on this thread/connection
 		log.fine(ProcedureName + "(" + m_pi.getAD_PInstance_ID() + ")");
 		boolean started = false;
-		String trxName = m_trx != null ? m_trx.getTrxName() : null;
 		if (m_IsServerProcess)
 		{
 			Server server = CConnection.get().getServer();
@@ -436,7 +434,7 @@ public class ServerProcessCtl implements Runnable {
 			{
 				if (server != null)
 				{	//	See ServerBean
-					m_pi = server.dbProcess(m_pi, ProcedureName);
+					m_pi = server.dbProcess(Env.getRemoteCallCtx(Env.getCtx()), m_pi, ProcedureName);
 					log.finest("server => " + m_pi);
 					started = true;		
 				}

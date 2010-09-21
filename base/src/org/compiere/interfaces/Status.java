@@ -5,10 +5,6 @@ package org.compiere.interfaces;
  */
 public interface Status
 {
-   public final static String JNDI_NAME="adempiere/Status";
-   
-   public final static String EJB_NAME="adempiereStatus";
-   
    /**
     * Get Version (Date)
     * @return version e.g. 2002-09-02    */
@@ -63,19 +59,4 @@ public interface Status
     * Get Connection Manager Port
     * @return Connection Manager Port    */
    public int getFwPort(  );
-
-   /**
-    * Get Version Count
-    * @return number of version inquiries    */
-   public int getVersionCount(  );
-
-   /**
-    * Get Database Count
-    * @return number of database inquiries    */
-   public int getDatabaseCount(  );
-
-   /**
-    * Describes the instance and its content for debugging purpose
-    * @return Debugging information about the instance and its content    */
-   public String getStatus(  );
 }

@@ -26,11 +26,11 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.swing.JOptionPane;
 
+import org.adempiere.base.Service;
 import org.compiere.Adempiere;
 import org.compiere.interfaces.Server;
 import org.compiere.interfaces.Status;
 import org.compiere.util.CLogger;
-import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.ValueNamePair;
 
@@ -72,9 +72,6 @@ public class CConnection implements Serializable, Cloneable
 	@Deprecated
 	public static final String	PROFILE_WAN = "W";
 
-	/** System property flag to embed server bean in process **/
-	public final static String SERVER_EMBEDDED = "org.adempiere.server.embedded";
-
 	/**
 	 *  Get/Set default client/server Connection
 	 *  @return Connection Descriptor
@@ -98,7 +95,7 @@ public class CConnection implements Serializable, Cloneable
 			{
 				//hengsin, zero setup for webstart client
 				CConnection cc = null;
-				if (apps_host != null && Adempiere.isWebStartClient() && !CConnection.isServerEmbedded())
+				if (apps_host != null && Adempiere.isWebStartClient())
 				{
 					cc = new CConnection(apps_host);
 					cc.setConnectionProfile(CConnection.PROFILE_LAN);
@@ -238,8 +235,10 @@ public class CConnection implements Serializable, Cloneable
 	private Server		m_server = null;
 	/** DB Info				*/
 	private String		m_dbInfo = null;
-
-	private final static String SECURITY_PRINCIPAL = "org.adempiere.security.principal";
+	private int m_webPort;
+	private int m_sslPort;
+	private boolean m_queryAppsServer;
+	private SecurityPrincipal securityPrincipal;
 
 	/*************************************************************************
 	 *  Get Name
@@ -262,7 +261,7 @@ public class CConnection implements Serializable, Cloneable
 	/**
 	 *  Set Name
 	 */
-	protected void setName ()
+	public void setName ()
 	{
 		m_name = toString ();
 	} 	//  setName
@@ -289,12 +288,104 @@ public class CConnection implements Serializable, Cloneable
 	}
 
 	/**
+	 * @return web port
+	 */
+	public int getWebPort()
+	{
+		return m_webPort;
+	}
+	
+	/**
+	 * set web port
+	 * @param webPort
+	 */
+	public void setWebPort(int webPort)
+	{
+		m_webPort = webPort;
+	}
+	
+	/**
+	 * Set Web Port
+	 * @param webPortString web port as String
+	 */
+	public void setWebPort (String webPortString)
+	{
+		try
+		{
+			if (webPortString == null || webPortString.length() == 0)
+				;
+			else
+				setWebPort (Integer.parseInt (webPortString));
+		}
+		catch (Exception e)
+		{
+			log.severe(e.toString ());
+		}
+	} 	
+	
+	/**
+	 * @return ssl port
+	 */
+	public int getSSLPort()
+	{
+		return m_sslPort;
+	}
+	
+	/**
+	 * set ssl port
+	 * @param sslPort
+	 */
+	public void setSSLPort(int sslPort)
+	{
+		m_sslPort = sslPort;
+	}
+	
+	/**
+	 * Set SSL Port
+	 * @param sslPortString web port as String
+	 */
+	public void setSSLPort (String sslPortString)
+	{
+		try
+		{
+			if (sslPortString == null || sslPortString.length() == 0)
+				;
+			else
+				setSSLPort (Integer.parseInt (sslPortString));
+		}
+		catch (Exception e)
+		{
+			log.severe(e.toString ());
+		}
+	}
+	
+	/**
 	 *  Is Application Server OK
 	 *  @param tryContactAgain try to contact again
 	 *  @return true if Apps Server exists
 	 */
 	public boolean isAppsServerOK (boolean tryContactAgain)
 	{
+		if (!tryContactAgain && m_queryAppsServer)
+			return m_okApps;
+		
+		if (getAppServerCredential() == null)
+		{
+			m_okApps = false;
+			return m_okApps;
+		}
+		
+		m_queryAppsServer = true;
+				
+		try 
+		{
+			Status status = Service.locate(Status.class);
+			m_version = status.getDateVersion();
+		} 
+		catch (Throwable t)
+		{
+			m_okApps = false;
+		}
 		return m_okApps;
 	} 	//  isAppsOK
 
@@ -304,6 +395,7 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	public synchronized Exception testAppsServer ()
 	{
+		m_appsException = null;
 		queryAppsServerInfo();
 		return getAppsServerException ();
 	} 	//  testAppsServer
@@ -314,6 +406,10 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	public Server getServer()
 	{
+		if (m_server == null)
+		{
+			m_server = Service.locate(Server.class);
+		}
 		return m_server;
 	}	//	getServer
 
@@ -957,22 +1053,34 @@ public class CConnection implements Serializable, Cloneable
 	public String toStringLong ()
 	{
 		StringBuffer sb = new StringBuffer ("CConnection[");
-		sb.append ("name=").append (m_name)
-		  .append (",AppsHost=").append (m_apps_host)
-		  .append (",type=").append (m_type)
-		  .append (",DBhost=").append (m_db_host)
+		sb.append ("name=").append (escape(m_name))
+		  .append (",AppsHost=").append (escape(m_apps_host))
+		  .append (",WebPort=").append (m_webPort)
+		  .append (",SSLPort=").append (m_sslPort)
+		  .append (",type=").append (escape(m_type))
+		  .append (",DBhost=").append (escape(m_db_host))
 		  .append (",DBport=").append (m_db_port)
-		  .append (",DBname=").append (m_db_name)
+		  .append (",DBname=").append (escape(m_db_name))
 		  .append (",BQ=").append (m_bequeath)
 		  .append (",FW=").append (m_firewall)
-		  .append (",FWhost=").append (m_fw_host)
+		  .append (",FWhost=").append (escape(m_fw_host))
 		  .append (",FWport=").append (m_fw_port)
-		  .append (",UID=").append (m_db_uid)
-		  .append (",PWD=").append (m_db_pwd)
+		  .append (",UID=").append (escape(m_db_uid))
+		  .append (",PWD=").append (escape(m_db_pwd))		
+		  .append("]");
 		  ;		//	the format is read by setAttributes
-		sb.append ("]");
 		return sb.toString ();
 	}	//  toStringLong
+
+	private String escape(String value) {
+		if (value == null)
+			return null;
+		
+		// use html like escape sequence to escape = and ,
+		value = value.replace("=", "&eq;");
+		value = value.replace(",", "&comma;");
+		return value;
+	}
 
 	/**
 	 *  Set Attributes from String (pares toStringLong())
@@ -982,28 +1090,82 @@ public class CConnection implements Serializable, Cloneable
 	{
 		try
 		{
-			setName (attributes.substring (attributes.indexOf ("name=") + 5, attributes.indexOf (",AppsHost=")));
-			setAppsHost (attributes.substring (attributes.indexOf ("AppsHost=") + 9, attributes.indexOf (",type=")));
-			//
-			setType (attributes.substring (attributes.indexOf ("type=")+5, attributes.indexOf (",DBhost=")));
-			setDbHost (attributes.substring (attributes.indexOf ("DBhost=") + 7, attributes.indexOf (",DBport=")));
-			setDbPort (attributes.substring (attributes.indexOf ("DBport=") + 7, attributes.indexOf (",DBname=")));
-			setDbName (attributes.substring (attributes.indexOf ("DBname=") + 7, attributes.indexOf (",BQ=")));
-			//
-			setBequeath (attributes.substring (attributes.indexOf ("BQ=") + 3, attributes.indexOf (",FW=")));
-			setViaFirewall (attributes.substring (attributes.indexOf ("FW=") + 3, attributes.indexOf (",FWhost=")));
-			setFwHost (attributes.substring (attributes.indexOf ("FWhost=") + 7, attributes.indexOf (",FWport=")));
-			setFwPort (attributes.substring (attributes.indexOf ("FWport=") + 7, attributes.indexOf (",UID=")));
-			//
-			setDbUid (attributes.substring (attributes.indexOf ("UID=") + 4, attributes.indexOf (",PWD=")));
-			setDbPwd (attributes.substring (attributes.indexOf ("PWD=") + 4, attributes.indexOf ("]")));
-			//
+			attributes = attributes.substring(attributes.indexOf("[")+1, attributes.length() - 1);
+			String[] pairs= attributes.split("[,]");
+			for(String pair : pairs)
+			{
+				String[] pairComponents = pair.split("[=]");
+				String key = pairComponents[0];
+				String value = unescape(pairComponents[1]);
+				if ("name".equalsIgnoreCase(key))
+				{
+					setName(value);
+				}
+				else if ("AppsHost".equalsIgnoreCase(key))
+				{
+					setAppsHost(value);
+				}
+				else if ("type".equalsIgnoreCase(key))
+				{
+					setType(value);
+				}
+				else if ("DBhost".equalsIgnoreCase(key))
+				{
+					setDbHost(value);
+				}
+				else if ("DBport".equalsIgnoreCase(key))
+				{
+					setDbPort(value);
+				}
+				else if ("DbName".equalsIgnoreCase(key))
+				{
+					setDbName(value);
+				}
+				else if ("BQ".equalsIgnoreCase(key))
+				{
+					setBequeath(value);
+				}
+				else if ("FW".equalsIgnoreCase(key))
+				{
+					setViaFirewall(value);
+				}
+				else if ("FWhost".equalsIgnoreCase(key))
+				{
+					setFwHost(value);
+				}
+				else if ("FWport".equalsIgnoreCase(key))
+				{
+					setFwPort(value);
+				}
+				else if ("UID".equalsIgnoreCase(key))
+				{
+					setDbUid(value);
+				}
+				else if ("PWD".equalsIgnoreCase(key))
+				{
+					setDbPwd(value);
+				}
+				else if ("WebPort".equalsIgnoreCase(key))
+				{
+					setWebPort(value);
+				}
+				else if ("SSLPort".equalsIgnoreCase(key))
+				{
+					setSSLPort(value);
+				}
+			}			
 		}
 		catch (Exception e)
 		{
 			log.severe(attributes + " - " + e.toString ());
 		}
 	}	//  setAttributes
+
+	private String unescape(String value) {
+		value = value.replace("&eq;", "=");
+		value = value.replace("&comma;", ",");
+		return value;
+	}
 
 	/**
 	 *  Equals
@@ -1104,37 +1266,6 @@ public class CConnection implements Serializable, Cloneable
 		else
 			return "";
 	} 	//  getConnectionURL
-
-	/**
-	 *  Get Server Connection - do close
-	 *  @param autoCommit true if autocommit connection
-	 *  @param trxLevel Connection transaction level
-	 *  @return Connection
-	 */
-	public Connection getServerConnection (boolean autoCommit, int trxLevel)
-	{
-		Connection conn = null;
-		//	Server Connection
-		if (m_ds != null)
-		{
-			try
-			{
-				conn = m_ds.getConnection ();
-				conn.setAutoCommit (autoCommit);
-				conn.setTransactionIsolation (trxLevel);
-				m_okDB = true;
-			}
-			catch (SQLException ex)
-			{
-				m_dbException = ex;
-				log.log(Level.SEVERE, "", ex);
-			}
-		}
-
-		//	Server
-		return conn;
-	} 	//	getServerConnection
-
 
 	/**
 	 *  Create Connection - no not close.
@@ -1261,6 +1392,22 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	private boolean queryAppsServerInfo ()
 	{
+		m_okApps = false;
+		m_queryAppsServer = true;
+		
+		if (getAppsHost().equalsIgnoreCase("MyAppsServer")) {
+			log.warning (getAppsHost() + " ignored");
+			return m_okApps; // false
+		}
+		
+		Status status = Service.locate(Status.class);
+		try {
+			updateInfoFromServer(status);
+			m_okApps = true;
+		} catch (Exception e) {
+			m_appsException = e;
+		}
+			
 		return m_okApps;
 	}	//  setAppsServerInfo
 
@@ -1293,7 +1440,7 @@ public class CConnection implements Serializable, Cloneable
 		//
 		setFwHost (svr.getFwHost ());
 		setFwPort (svr.getFwPort ());
-		if (getFwHost ().length () == 0)
+		if (getFwHost() == null || getFwHost().length () == 0)
 			setViaFirewall (false);
 		m_version = svr.getDateVersion ();
 		log.config("Server=" + getDbHost() + ", DB=" + getDbName());
@@ -1353,20 +1500,17 @@ public class CConnection implements Serializable, Cloneable
 		return "<?" + transactionIsolation + "?>";
 	}	//	getTransactionIsolationInfo
 
-	/**
-	 * @return true if server is embedded in process
-	 */
-	public static boolean isServerEmbedded() {
-		return "true".equalsIgnoreCase(System.getProperty(SERVER_EMBEDDED));
-	}
-
-	public void setAppServerCredential(String principal, String credential)
+	public void setAppServerCredential(String identity, char[] secret)
 	{
-		SecurityPrincipal sp = new SecurityPrincipal();
-		sp.principal = principal;
-		sp.credential = credential;
-		Env.getCtx().put(SECURITY_PRINCIPAL, sp);
+		securityPrincipal = new SecurityPrincipal();
+		securityPrincipal.identity = identity;
+		securityPrincipal.secret= secret;
 		m_server = null;
+	}
+	
+	public SecurityPrincipal getAppServerCredential()
+	{
+		return securityPrincipal;
 	}
 
 	@Override

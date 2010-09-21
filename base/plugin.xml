@@ -7,5 +7,7 @@
    <extension-point id="org.adempiere.base.Process" name="Process" schema="schema/org.adempiere.base.Process.exsd"/>
    <extension-point id="org.adempiere.base.ModelValidator" name="Model Validator" schema="schema/org.adempiere.base.ModelValidator.exsd"/>
    <extension-point id="org.compiere.db.AdempiereDatabase" name="Adempiere Database Interface" schema="schema/org.compiere.db.AdempiereDatabase.exsd"/>
+   <extension-point id="org.compiere.interfaces.Server" name="Server Interface" schema="schema/org.compiere.interfaces.Server.exsd"/>
+   <extension-point id="org.compiere.interfaces.Status" name="Status interface" schema="schema/org.compiere.interfaces.Status.exsd"/>
 
 </plugin>
