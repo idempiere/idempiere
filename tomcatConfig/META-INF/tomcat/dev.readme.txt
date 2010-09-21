@@ -1,0 +1,5 @@
+For development, save server.dev.xml as server.xml and change the ssl keystorepass to match 
+the keystorepass you use for your development jre. 
+
+This step is to enabled tomcat ssl connector which is needed for the swing client to use the 
+remote Server and Status service.  
