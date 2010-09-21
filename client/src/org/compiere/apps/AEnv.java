@@ -953,7 +953,7 @@ public final class AEnv
 				Server server = CConnection.get().getServer();
 				if (server != null)
 				{
-					server.cacheReset(tableName, Record_ID); 
+					server.cacheReset(Env.getRemoteCallCtx(Env.getCtx()), tableName, Record_ID); 
 				}
 			}
 			catch (Exception e)

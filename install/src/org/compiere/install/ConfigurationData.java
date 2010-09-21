@@ -759,8 +759,6 @@ public class ConfigurationData
 			log.warning("Open Socket " + host + ":" + port + " - " + pingSocket);
 
 		log.fine(host + ":" + port + " - " + pingSocket);
-		if (pingSocket == null)
-			return false;
 		//	success
 		try
 		{
@@ -848,16 +846,12 @@ public class ConfigurationData
 				getDatabaseServer(), getDatabasePort(), getDatabaseName(),
 				getDatabaseUser(), getDatabasePassword());
 			cc.setAppsHost(getAppsServer());
-			cc.setConnectionProfile(CConnection.PROFILE_LAN);
+			cc.setWebPort(getAppsServerWebPort());
+			cc.setSSLPort(getAppsServerSSLPort());
 		}
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "connection", e);
-			return false;
-		}
-		if (cc == null)
-		{
-			log.warning("No Connection");
 			return false;
 		}
 		Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
@@ -1339,6 +1333,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_DB_PASSWORD, databasePassword);
 	}
+	
 	/**
 	 * @return Returns the databasePort.
 	 */

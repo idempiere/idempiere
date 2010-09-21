@@ -464,7 +464,7 @@ public abstract class AbstractProcessCtl implements Runnable
 			{
 				if (server != null)
 				{	//	See ServerBean
-					m_pi = server.dbProcess(m_pi, ProcedureName);
+					m_pi = server.dbProcess(Env.getRemoteCallCtx(Env.getCtx()), m_pi, ProcedureName);
 					log.finest("server => " + m_pi);
 					started = true;		
 				}

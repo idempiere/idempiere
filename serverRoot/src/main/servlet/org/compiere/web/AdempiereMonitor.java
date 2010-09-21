@@ -19,6 +19,7 @@ package org.compiere.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.RuntimeMXBean;
@@ -105,21 +106,45 @@ public class AdempiereMonitor extends HttpServlet
 	protected void doGet (HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
+		boolean xmlOutput = false;
+		String responseType = request.getParameter("responseContentType");
+		xmlOutput = "xml".equalsIgnoreCase(responseType);
+			
 		m_message = null;
 		if (processLogParameter (request, response))
+		{
+			if (xmlOutput)
+				createXMLSummaryPage(request, response);
 			return;
+		}
 		if (processTraceParameter (request, response))
+		{
+			if (xmlOutput)
+				createXMLSummaryPage(request, response);
 			return;
+		}
 		if (processEMailParameter (request, response))
+		{
+			if (xmlOutput)
+				createXMLSummaryPage(request, response);
 			return;
+		}
 		if (processCacheParameter (request, response))
+		{
+			if (xmlOutput)
+				createXMLSummaryPage(request, response);
 			return;
+		}
 		//
 		if (processRunNowParameter (request))
 			;
 		else
 			processActionParameter (request);
-		createSummaryPage(request, response);
+		
+		if (xmlOutput)
+			createXMLSummaryPage(request, response);
+		else
+			createSummaryPage(request, response);
 	}	//	doGet
 	
 	/**
@@ -667,6 +692,107 @@ public class AdempiereMonitor extends HttpServlet
 
 		//	fini
 		WebUtil.createResponse (request, response, this, null, doc, false);
+	}	//	createSummaryPage
+	
+	/**************************************************************************
+	 * 	Create & Return Summary Page
+	 *	@param request request
+	 *	@param response response
+	 *	@throws ServletException
+	 *	@throws IOException
+	 */
+	private void createXMLSummaryPage (HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException
+	{
+		response.setContentType("text/xml");
+		PrintWriter writer = response.getWriter();
+
+		writer.println("<server-response>");
+
+		//	message
+		writer.println("\t<message>");
+		if (m_message != null)
+		{
+			writer.println(m_message);
+		}
+		writer.println("\t</message>");
+		
+		//	Summary
+		writer.print("\t<name>");
+		writer.print(Adempiere.getName());
+		writer.println("</name>");
+		
+		writer.print("\t<version>");
+		writer.print(Adempiere.getVersion());
+		writer.println("</version>");
+
+		writer.print("\t<implementation-vendor>");
+		writer.print(Adempiere.getImplementationVendor());
+		writer.println("</implementation-vendor>");
+		
+		writer.print("\t<implementation-version>");
+		writer.print(Adempiere.getImplementationVersion());
+		writer.println("</implementation-version>");
+
+		writer.println("\t<server-manager>");
+		writer.print("\t\t<description>");
+		writer.print(m_serverMgr.getDescription());
+		writer.println("</description>");
+		writer.print("\t\t<start-time>");
+		writer.print(m_serverMgr.getStartTime());
+		writer.println("</start-time>");
+		writer.print("\t\t<server-count>");
+		writer.print(m_serverMgr.getServerCount());
+		writer.println("</server-count>");
+		
+		AdempiereServer[] servers = m_serverMgr.getAll();		
+		for (int i = 0; i < servers.length; i++)
+		{
+			AdempiereServer server = servers[i];
+			writer.println("\t\t<server>");
+			writer.print("\t\t\t<id>");
+			writer.print(server.getServerID());
+			writer.println("</id>");
+			writer.print("\t\t\t<name>");
+			writer.print(server.getName());
+			writer.println("</name>");
+			writer.print("\t\t\t<description>");
+			writer.print(server.getDescription());
+			writer.println("</description>");
+			writer.print("\t\t\t<info>");
+			writer.print(server.getServerInfo());
+			writer.println("</info>");
+			writer.print("\t\t\t<status>");
+			if (server.isAlive())
+			{
+				if (server.isInterrupted())
+					writer.print("Interrupted");
+				else if (server.isSleeping())
+					writer.print("Sleeping");
+				else
+					writer.print("Running");
+			}
+			else
+				writer.print("Stopped");
+			writer.println("</status>");
+			writer.print("\t\t\t<start-time>");
+			writer.print(server.getStartTime());
+			writer.println("</start-time>");
+			writer.print("\t\t\t<last-run>");
+			writer.print(server.getDateLastRun());
+			writer.println("</last-run>");
+			writer.print("\t\t\t<next-run>");
+			writer.print(server.getDateNextRun(false));
+			writer.println("</next-run>");
+			writer.print("\t\t\t<statistics>");
+			writer.print(server.getStatistics());
+			writer.println("</statistics>");
+			writer.println("\t\t</server>");
+		}
+		
+		writer.println("\t</server-manager>");
+		
+		writer.flush();
 	}	//	createSummaryPage
 	
 	/**

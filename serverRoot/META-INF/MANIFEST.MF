@@ -15,3 +15,12 @@ Eclipse-RegisterBuddy: org.adempiere.tools
 Bundle-ClassPath: WEB-INF/lib/jardiff.jar,
  WEB-INF/lib/jnlp-servlet.jar,
  .
+Import-Package: org.restlet,
+ org.restlet.data,
+ org.restlet.ext.servlet,
+ org.restlet.representation,
+ org.restlet.resource,
+ org.restlet.routing,
+ org.restlet.security,
+ org.restlet.service,
+ org.restlet.util

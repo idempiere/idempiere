@@ -21,16 +21,12 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingEnumeration;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
-import org.compiere.interfaces.Server;
-import org.compiere.interfaces.Status;
+import org.compiere.db.CConnection;
 
 /**
  *	Status Info Servlet
@@ -69,58 +65,10 @@ public class StatusInfo extends HttpServlet
 		out.println("<head><title>Status Info</title></head>");
 		out.println("<body>");
 
-		InitialContext context = null;
 		try
 		{
-			context = new InitialContext();
-		}
-		catch (Exception ex)
-		{
-			out.println("<p><b>" + ex + "</b></p>");
-		}
-
-		try
-		{
-			Status status = (Status)context.lookup (Status.JNDI_NAME);
-			out.println("<p>" + status.getStatus() + "</p>");
-		}
-		catch (Exception ex)
-		{
-			out.println("<p><b>" + ex + "</b></p>");
-		}
-
-		try
-		{
-			Server server = (Server)context.lookup (Server.JNDI_NAME);
-			out.println("<p>" + server.getStatus() + "</p>");
-		}
-		catch (Exception ex)
-		{
-			out.println("<p><b>" + ex + "</b></p>");
-		}
-
-		try
-		{
-			out.println("<h2>-- /</h2>");
-			NamingEnumeration ne = context.list("/");
-			while (ne.hasMore())
-				out.println("<br>   " + ne.nextElement());
-			out.println("<h2>-- java</h2>");
-			ne = context.list("java:");
-			while (ne.hasMore())
-				out.println("<br>   " + ne.nextElement());
-			out.println("<h2>-- ejb</h2>");
-			ne = context.list("ejb");
-			while (ne.hasMore())
-				out.println("<br>   " + ne.nextElement());
-
 			//
-
-			out.println("<h2>-- DS</h2>");
-			DataSource ds = (DataSource)context.lookup("java:/OracleDS");
-			out.println("<br>  DataSource " + ds.getClass().getName() + " LoginTimeout=" + ds.getLoginTimeout());
-
-			Connection con = ds.getConnection("adempiere","adempiere");
+			Connection con = CConnection.get().getConnection(true, Connection.TRANSACTION_READ_COMMITTED);
 			out.println("<br>  Connection ");
 
 			getServletContext().log("Connection closed=" + con.isClosed());

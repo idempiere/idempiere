@@ -112,7 +112,6 @@ public final class ALogin extends CDialog
 
 	private CPanel mainPanel = new CPanel(new BorderLayout());
 	private CTabbedPane loginTabPane = new CTabbedPane();
-//	private BorderLayout conTabLayout = new BorderLayout();
 	private CPanel connectionPanel = new CPanel();
 	private CLabel hostLabel = new CLabel();
 	private CConnectionEditor hostField = new CConnectionEditor();
@@ -121,7 +120,6 @@ public final class ALogin extends CDialog
 	private CLabel passwordLabel = new CLabel();
 	private JPasswordField passwordField = new JPasswordField();
 	private CPanel defaultPanel = new CPanel();
-//	private BorderLayout defaultLayout = new BorderLayout();
 	private CLabel clientLabel = new CLabel();
 	private CLabel orgLabel = new CLabel();
 	private CLabel dateLabel = new CLabel();
@@ -147,17 +145,13 @@ public final class ALogin extends CDialog
 	private BorderLayout southLayout = new BorderLayout();
 	private StatusBar statusBar = new StatusBar();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, false, false, false, false, false);
-	//private OnlineHelp onlineHelp = new OnlineHelp(true);
-	//private CPanel helpPanel = new CPanel();
-	// private JScrollPane helpScrollPane = new JScrollPane();
-	// private BorderLayout helpLayout = new BorderLayout();
 
 	/** Server Connection       */
 	private CConnection 	m_cc;
 	/** Application User        */
 	private String 			m_user;
 	/** Application Password    */
-	private String 			m_pwd;
+	private char[] 			m_pwd = new char[0];
 	
 	/**	Combo Active			*/
 	private boolean			m_comboActive = false;
@@ -411,8 +405,11 @@ public final class ALogin extends CDialog
 	}   //  processWindowEvent
 
 	private void validateAppServer() {
-		if (!CConnection.isServerEmbedded())
-			m_cc.testAppsServer();
+		m_user = userTextField.getText();
+		m_pwd = passwordField.getPassword();
+		
+		m_cc.setAppServerCredential(m_user, m_pwd);
+		m_cc.testAppsServer();
 	}
 	
 	private void connectToDatabase() {
@@ -557,7 +554,7 @@ public final class ALogin extends CDialog
 		if (loginTabPane.getSelectedIndex() == 2)   //  allow access to help
 			return;
 
-		if (!(String.valueOf(passwordField.getPassword()).equals(m_pwd)
+		if (!(String.valueOf(passwordField.getPassword()).equals(String.valueOf(m_pwd))
 			&& userTextField.getText().equals(m_user)))
 			m_connectionOK = false;
 		//
@@ -623,7 +620,7 @@ public final class ALogin extends CDialog
 	private boolean tryConnection()
 	{
 		m_user = userTextField.getText();
-		m_pwd = new String (passwordField.getPassword());
+		m_pwd = passwordField.getPassword();
 
 		//	Establish connection
 		if (!DB.isConnected(false))
@@ -647,7 +644,7 @@ public final class ALogin extends CDialog
 		KeyNamePair[] roles = null;
 		try 
 		{
-			roles = m_login.getRoles(m_user, m_pwd);
+			roles = m_login.getRoles(m_user, new String(m_pwd));
 			if (roles == null || roles.length == 0)
 			{
 				statusBar.setStatusLine(txt_UserPwdError, true);
@@ -945,7 +942,8 @@ public final class ALogin extends CDialog
 		txt_LoggedIn = res.getString("Authorized");
 		//
 		loginTabPane.setTitleAt(0, res.getString("Connection"));
-		loginTabPane.setTitleAt(1, res.getString("Defaults"));
+		if (loginTabPane.getTabCount() > 1)
+			loginTabPane.setTitleAt(1, res.getString("Defaults"));
 		confirmPanel.getOKButton().setToolTipText(res.getString("Ok"));
 		confirmPanel.getCancelButton().setToolTipText(res.getString("Cancel"));
 

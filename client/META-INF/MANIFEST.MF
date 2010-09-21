@@ -30,6 +30,17 @@ Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.ui.base;bundle-version="1.0.0"
 Eclipse-ExtensibleAPI: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.core.runtime;version="3.4.0",
+Import-Package: javax.net.ssl,
+ org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.equinox.app,
- org.osgi.framework;version="1.5.0"
+ org.osgi.framework;version="1.5.0",
+ org.restlet,
+ org.restlet.data,
+ org.restlet.engine,
+ org.restlet.engine.security,
+ org.restlet.ext.net,
+ org.restlet.representation,
+ org.restlet.resource,
+ org.restlet.security,
+ org.restlet.service,
+ org.restlet.util

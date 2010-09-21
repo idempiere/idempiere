@@ -37,6 +37,7 @@ import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
@@ -55,6 +56,7 @@ import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.Adempiere;
 import org.compiere.apps.wf.WFActivity;
 import org.compiere.apps.wf.WFPanel;
+import org.compiere.db.CConnection;
 import org.compiere.grid.tree.VTreePanel;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
@@ -62,8 +64,6 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MUser;
-import org.compiere.print.ReportCtl;
-import org.compiere.print.SwingViewerProvider;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
 import org.compiere.swing.CPanel;
@@ -122,7 +122,11 @@ public final class AMenu extends CFrame
 		//
 		if (!Adempiere.startupEnvironment(true)) // Load Environment
 			System.exit(1);		
-		MSession.get (Env.getCtx(), true);		//	Start Session
+		MSession session = MSession.get (Env.getCtx(), true);		//	Start Session
+		session.setWebSession(UUID.randomUUID().toString());
+		session.setDescription(session.getDescription() + " " + "Swing Client");
+		session.saveEx();
+		CConnection.get().setAppServerCredential("AD_Session_ID#"+session.getAD_Session_ID(), session.getWebSession().toCharArray());
 
 		// Setting close operation/listener - teo_sarca [ 1684168 ]
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

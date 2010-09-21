@@ -24,5 +24,17 @@
             class="org.compiere.print.SwingViewerProvider">
       </provider>
    </extension>
+   <extension
+         point="org.compiere.interfaces.Server">
+      <interface
+            class="org.adempiere.client.ServerInterface">
+      </interface>
+   </extension>
+   <extension
+         point="org.compiere.interfaces.Status">
+      <interface
+            class="org.adempiere.client.StatusInterface">
+      </interface>
+   </extension>
 
 </plugin>

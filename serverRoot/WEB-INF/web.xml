@@ -42,6 +42,16 @@
 		<servlet-class>org.compiere.web.AdempiereMonitor</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<!-- Restlet adapter -->  
+   <servlet>  
+      <servlet-name>RestletServlet</servlet-name>  
+      <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+      <init-param>
+            <!-- Application class name -->
+            <param-name>org.restlet.application</param-name>
+            <param-value>org.adempiere.web.server.ServerApplication</param-value>
+      </init-param>
+   </servlet>
 	<servlet-mapping>
 		<servlet-name>JnlpDownloadServlet</servlet-name>
 		<url-pattern>*.jnlp</url-pattern>
@@ -54,6 +64,10 @@
 		<servlet-name>AdempiereMonitor</servlet-name>
 		<url-pattern>/adempiereMonitor/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>  
+      <servlet-name>RestletServlet</servlet-name>  
+      <url-pattern>/server/*</url-pattern>  
+   </servlet-mapping>
 	<session-config>
 		<session-timeout>15</session-timeout>
 	</session-config>
@@ -69,6 +83,19 @@
 		<extension>jnlp</extension>
 		<mime-type>application/x-java-jnlp-file</mime-type>
 	</mime-mapping>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>admin</web-resource-name>
+			<url-pattern>/adempiereMonitor/*</url-pattern>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>service</web-resource-name>
+			<url-pattern>/server/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
 	<welcome-file-list>
 		<welcome-file>adempiere.html</welcome-file>
 	</welcome-file-list>
