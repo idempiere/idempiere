@@ -14,5 +14,17 @@
             class="org.adempiere.webui.window.ZkJRViewerProvider">
       </provider>
    </extension>
+   <extension
+         point="org.compiere.interfaces.Server">
+      <interface
+            class="org.compiere.interfaces.impl.ServerBean">
+      </interface>
+   </extension>
+   <extension
+         point="org.compiere.interfaces.Status">
+      <interface
+            class="org.compiere.interfaces.impl.StatusBean">
+      </interface>
+   </extension>
 
 </plugin>
