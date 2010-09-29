@@ -1,4 +1,0 @@
-org.compiere.session
-org.compiere.jsp
-org.compiere.wstore
-org.compiere.www

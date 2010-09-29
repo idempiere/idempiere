@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JasperReports Swing Client
+Bundle-SymbolicName: org.adempiere.report.jasper.swing;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
+ org.adempiere.ui.swing;bundle-version="1.0.0",
+ org.adempiere.report.jasper;bundle-version="1.0.0",
+ org.adempiere.report.jasper.library;bundle-version="1.0.0"
+Import-Package: org.osgi.framework

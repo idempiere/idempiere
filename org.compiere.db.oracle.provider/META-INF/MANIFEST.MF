@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OracleProvider
+Bundle-SymbolicName: org.compiere.db.oracle.provider;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Bundle-ClassPath: .,
+ ojdbc6.jar,
+ c3p0-0.9.1.2.jar,
+ c3p0-oracle-thin-extras-0.9.1.2.jar
+

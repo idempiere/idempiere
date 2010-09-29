@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Old Pipo
+Bundle-SymbolicName: org.adempiere.pipo.legacy
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Export-Package: org.adempiere.pipo,
+ org.adempiere.pipo.exception,
+ org.adempiere.pipo.handler
+Import-Package: junit.framework;version="3.8.2",
+ org.apache.tools.ant,
+ org.apache.tools.ant.taskdefs

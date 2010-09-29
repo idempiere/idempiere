@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.adempiere.server.IServerFactory">
+      <factory
+            class="org.adempiere.server.rpl.imp.ReplicationServerFactory">
+      </factory>
+   </extension>
+
+</plugin>

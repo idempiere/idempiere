@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.adempiere.server.IServerFactory" name="Adempiere Server Factory" schema="schema/org.adempiere.server.IServerFactory.exsd"/>
+   <extension
+         id="org.adempiere.server.product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.adempiere.server.application"
+            name="name">
+      </product>
+   </extension>
+   <extension
+         id="org.adempiere.server.application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.adempiere.server.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.adempiere.server.application"
+            name="Adempiere Server">
+         <property
+               name="appName"
+               value="Adempiere Server">
+         </property>
+      </product>
+   </extension>
+
+</plugin>

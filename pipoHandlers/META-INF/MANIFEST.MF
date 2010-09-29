@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: PipoHandlers
-Bundle-SymbolicName: org.adempiere.pipo.defaultHandlers;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.adempiere.pipo;bundle-version="1.0.0",
- org.adempiere.base;bundle-version="1.0.0"

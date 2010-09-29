@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Processor
+Bundle-SymbolicName: org.adempiere.payment.processor
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Bundle-ClassPath: jpayment.jar,
+ payflow.jar,
+ Verisign.jar,
+ .
+Eclipse-RegisterBuddy: org.adempiere.base

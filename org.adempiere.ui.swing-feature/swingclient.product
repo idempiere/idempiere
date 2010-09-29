@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Adempiere Swing Client" uid="org.adempiere.ui.swing.product" application="org.adempiere.ui.swing.client" version="1.0.0" useFeatures="true" includeLaunchers="false">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-console</programArgs>
+      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -DPropertyFile=/media/W/Workspace/hengsin/trunk-local.properties</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.adempiere.base" version="1.0.0.qualifier"/>
+      <feature id="org.adempiere.ui.swing" version="1.0.0.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.restlet" autoStart="true" startLevel="0" />
+      <plugin id="org.restlet.ext.net" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Replication
+Bundle-SymbolicName: org.adempiere.replication;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Export-Package: org.adempiere.process.rpl,
+ org.adempiere.process.rpl.exp,
+ org.adempiere.process.rpl.imp
+Import-Package: javax.jms;version="1.1.0",
+ org.apache.activemq;version="5.3.0"
+Eclipse-RegisterBuddy: org.adempiere.base

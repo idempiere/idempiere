@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/servlet"/>
-	<classpathentry exported="true" kind="lib" path="src/web/WEB-INF/lib/commons-beanutils-bean-collections.jar"/>
-	<classpathentry exported="true" kind="lib" path="src/web/WEB-INF/lib/commons-beanutils-core.jar"/>
-	<classpathentry exported="true" kind="lib" path="src/web/WEB-INF/lib/commons-beanutils.jar"/>
-	<classpathentry exported="true" kind="lib" path="src/web/WEB-INF/lib/commons-collections-3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="src/web/WEB-INF/lib/commons-digester-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="src/web/WEB-INF/lib/commons-fileupload.jar"/>
-	<classpathentry exported="true" kind="lib" path="src/web/WEB-INF/lib/commons-lang-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="src/web/WEB-INF/lib/commons-validator-1.2.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="output" path="build/classes"/>

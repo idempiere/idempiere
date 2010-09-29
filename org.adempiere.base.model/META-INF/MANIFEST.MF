@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Adempiere Model
+Bundle-SymbolicName: org.adempiere.base.model
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.adempiere.base;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

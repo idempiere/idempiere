@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="jpedal.jar"/>
+	<classpathentry exported="true" kind="lib" path="miglayout-3.7.1-swing.jar"/>
+	<classpathentry exported="true" kind="lib" path="looks-2.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="swingx-1.6.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

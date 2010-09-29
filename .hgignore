@@ -3,22 +3,22 @@ build
 
 syntax: regexp
 ^adempiere$
-^base/Base\.jar$
-^base/base\.jar$
-^client/client\.jar$
+^org\.adempiere\.base/Base\.jar$
+^org\.adempiere\.base/base\.jar$
+^org\.adempiere\.ui\.swing/client\.jar$
 ^extend/Extend\.jar$
 ^extend/extend\.jar$
-^install/lib$
-^install/CInstall\.jar$
-^install/install\.jar$
-^JasperReports/needed$
-^JasperReports/JasperReports\.jar$
-^JasperReports/CompiereJasper\.jar$
-^JasperReports/CompiereJasperReqs\.jar$
-^JasperReportsWebApp/webApp\.ear$
-^JasperReportsWebApp/webApp\.war$
-^JasperReportsWebApp/webAppEJB\.jar$
-^JasperReportsWebApp/webEJB-client\.jar$
+^org\.adempiere\.install/lib$
+^org\.adempiere\.install/CInstall\.jar$
+^org\.adempiere\.install/install\.jar$
+^org\.adempiere\.report\.jasper/needed$
+^org\.adempiere\.report\.jasper/JasperReports\.jar$
+^org\.adempiere\.report\.jasper/CompiereJasper\.jar$
+^org\.adempiere\.report\.jasper/CompiereJasperReqs\.jar$
+^org\.adempiere\.report\.jasper\.webapp/webApp\.ear$
+^org\.adempiere\.report\.jasper\.webapp/webApp\.war$
+^org\.adempiere\.report\.jasper\.webapp/webAppEJB\.jar$
+^org\.adempiere\.report\.jasper\.webapp/webEJB-client\.jar$
 ^lib/Adempiere\.jar$
 ^lib/adempiereApps\.jar$
 ^lib/adempiereApps\.war$
@@ -49,18 +49,32 @@ syntax: regexp
 ^tools/tools\.jar$
 ^utils_dev/mybuild\.properties$
 ^webCM/deploy$
-^zkwebui/dist$
-^zkwebui/WEB-INF/classes$
+^org\.adempiere\.ui\.zk/dist$
+^org\.adempiere\.ui\.zk/WEB-INF/classes$
 
 syntax: regexp
 ^lib/plugins$
 ^plugins/.*\.class$
 ^adempiere-local\.properties$
-^uibase/.*\.class$
-^pipoHandlers/.*\.class$
-^pipo/.*\.class$
-^JasperReportsClient/.*\.class$
+^org\.adempiere\.ui/.*\.class$
+^org\.adempiere\.pipo.handlers/.*\.class$
+^org\.adempiere\.pipo/.*\.class$
+^org\.adempiere\.report\.jasper\.swing/.*\.class$
 ^tomcatConfig/bin/\.hgignore$
-^oracleProvider/bin/.*\.class$
-^postgresqlProvider/bin/.*\.class$
+^org\.compiere\.db\.oracle\.provider/bin/.*\.class$
+^org\.compiere\.db\.postgresql\.provider/bin/.*\.class$
+
+
+syntax: regexp
+^tomcatConfig/META-INF/tomcat/server\.xml$
+^org\.apache\.ecs/bin/.*\.class$
+^org\.adempiere\.replication/bin/.*\.class$
+^org\.adempiere\.replication\.server/bin/.*\.class$
+^org\.adempiere\.pipo\.legacy/bin/.*\.class$
+^org\.adempiere\.base\.callout/bin/.*\.class$
+^org\.adempiere\.base\.process/bin/.*\.class$
+^org\.adempiere\.payment\.processor/bin/.*\.class$
+^org\.adempiere\.ui\.swing\.pluginlist/bin/.*\.class$
+^org\.adempiere\.plugin\.utils/bin/.*\.class$
+
 

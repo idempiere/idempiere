@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Adempiere Processes
+Bundle-SymbolicName: org.adempiere.base.process
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Export-Package: org.adempiere.process
+Import-Package: javax.mail;version="1.4.1",
+ javax.mail.internet;version="1.4.1",
+ javax.servlet;version="2.5.0",
+ javax.servlet.http;version="2.5.0",
+ org.apache.commons.collections.keyvalue;version="3.2.1"
+Eclipse-RegisterBuddy: org.adempiere.base

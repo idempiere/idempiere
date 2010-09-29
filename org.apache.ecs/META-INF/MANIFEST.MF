@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache ECS
+Bundle-SymbolicName: org.apache.ecs
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.apache.ecs.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.osgi.framework;version="1.3.0"
+Export-Package: org.apache.ecs;uses:="org.apache.ecs.xhtml",
+ org.apache.ecs.filter;uses:="org.apache.ecs",
+ org.apache.ecs.storage,
+ org.apache.ecs.xhtml;uses:="org.apache.ecs",
+ org.apache.ecs.xml;uses:="org.apache.ecs"

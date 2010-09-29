@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: install
+Bundle-SymbolicName: org.adempiere.install;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: install.jar,
+ ant-contrib-1.0b3.jar
+Export-Package: org.compiere.install
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
+ org.adempiere.ui.swing;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: javax.mail;version="1.4.1",
+ javax.mail.internet;version="1.4.1",
+ org.apache.tools.ant,
+ org.eclipse.equinox.app
