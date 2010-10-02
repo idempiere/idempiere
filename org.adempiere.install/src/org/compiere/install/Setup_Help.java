@@ -32,10 +32,10 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.compiere.apps.OnlineHelp;
-import org.compiere.swing.CPanel;
+import org.compiere.install.util.OnlineHelp;
 
 /**
  *	Setup Online Help
@@ -104,8 +104,8 @@ public class Setup_Help extends JDialog implements ActionListener
 
 
 	static ResourceBundle res = ResourceBundle.getBundle("org.compiere.install.SetupRes");
-	private CPanel mainPanel = new CPanel();
-	private CPanel southPanel = new CPanel();
+	private JPanel mainPanel = new JPanel();
+	private JPanel southPanel = new JPanel();
 	private JButton bOK = new JButton();
 	private BorderLayout mainLayout = new BorderLayout();
 	private JScrollPane centerScrollPane = new JScrollPane();

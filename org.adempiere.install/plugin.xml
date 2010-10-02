@@ -2,11 +2,22 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="org.adempiere.Install"
+         id="org.adempiere.install.application"
          point="org.eclipse.core.runtime.applications">
          <application>
          	<run class="org.compiere.install.Application" />
 		 </application>
    </extension>
-
+   <extension
+         id="org.adempiere.install.console.application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.compiere.install.console.Application">
+         </run>
+      </application>
+   </extension>
 </plugin>

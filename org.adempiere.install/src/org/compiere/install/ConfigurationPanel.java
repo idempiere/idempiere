@@ -29,22 +29,21 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 import org.adempiere.base.Core;
 import org.apache.tools.ant.Main;
-import org.compiere.swing.CButton;
-import org.compiere.swing.CCheckBox;
-import org.compiere.swing.CComboBox;
-import org.compiere.swing.CLabel;
-import org.compiere.swing.CPanel;
-import org.compiere.swing.CPassword;
-import org.compiere.swing.CTextField;
 import org.compiere.util.CLogger;
 
 /**
@@ -53,7 +52,7 @@ import org.compiere.util.CLogger;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ConfigurationPanel.java,v 1.3 2006/07/30 00:57:42 jjanke Exp $
  */
-public class ConfigurationPanel extends CPanel implements ActionListener
+public class ConfigurationPanel extends JPanel implements ActionListener
 {
 	/**
 	 *
@@ -103,68 +102,68 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	private GridBagLayout gridBagLayout = new GridBagLayout();
 	private static final int	FIELDLENGTH = 15;
 	//	Java
-	private CLabel 		lJavaHome = new CLabel();
-	CTextField 	fJavaHome = new CTextField(FIELDLENGTH);
-	CCheckBox 	okJavaHome = new CCheckBox();
-	private CButton 	bJavaHome = new CButton(iOpen);
-	private CLabel 		lJavaType = new CLabel();
-	CComboBox 	fJavaType = new CComboBox(ConfigurationData.JAVATYPE);
+	private JLabel 		lJavaHome = new JLabel();
+	JTextField 	fJavaHome = new JTextField(FIELDLENGTH);
+	JCheckBox 	okJavaHome = new JCheckBox();
+	private JButton 	bJavaHome = new JButton(iOpen);
+	private JLabel 		lJavaType = new JLabel();
+	JComboBox 	fJavaType = new JComboBox(ConfigurationData.JAVATYPE);
 	//	Adempiere - KeyStore
-	private CLabel 		lAdempiereHome = new CLabel();
-	CTextField 	fAdempiereHome = new CTextField(FIELDLENGTH);
-	CCheckBox 	okAdempiereHome = new CCheckBox();
-	private CButton 	bAdempiereHome = new CButton(iOpen);
-	private CLabel 		lKeyStore = new CLabel();
-	CPassword 	fKeyStore = new CPassword();
-	CCheckBox 	okKeyStore = new CCheckBox();
+	private JLabel 		lAdempiereHome = new JLabel();
+	JTextField 	fAdempiereHome = new JTextField(FIELDLENGTH);
+	JCheckBox 	okAdempiereHome = new JCheckBox();
+	private JButton 	bAdempiereHome = new JButton(iOpen);
+	private JLabel 		lKeyStore = new JLabel();
+	JPasswordField 	fKeyStore = new JPasswordField();
+	JCheckBox 	okKeyStore = new JCheckBox();
 	//	Apps Server  - Type
-	CLabel lAppsServer = new CLabel();
-	CTextField fAppsServer = new CTextField(FIELDLENGTH);
-	CCheckBox okAppsServer = new CCheckBox();
+	JLabel lAppsServer = new JLabel();
+	JTextField fAppsServer = new JTextField(FIELDLENGTH);
+	JCheckBox okAppsServer = new JCheckBox();
 	//	Web Ports
-	private CLabel lWebPort = new CLabel();
-	CTextField fWebPort = new CTextField(FIELDLENGTH);
-	CCheckBox okWebPort = new CCheckBox();
-	private CLabel lSSLPort = new CLabel();
-	CTextField fSSLPort = new CTextField(FIELDLENGTH);
-	CCheckBox okSSLPort = new CCheckBox();
+	private JLabel lWebPort = new JLabel();
+	JTextField fWebPort = new JTextField(FIELDLENGTH);
+	JCheckBox okWebPort = new JCheckBox();
+	private JLabel lSSLPort = new JLabel();
+	JTextField fSSLPort = new JTextField(FIELDLENGTH);
+	JCheckBox okSSLPort = new JCheckBox();
 	//	Database
-	private CLabel lDatabaseType = new CLabel();
-	CComboBox fDatabaseType = new CComboBox(ConfigurationData.DBTYPE);
+	private JLabel lDatabaseType = new JLabel();
+	JComboBox fDatabaseType = new JComboBox(ConfigurationData.DBTYPE);
 	//
-	CLabel lDatabaseServer = new CLabel();
-	CTextField fDatabaseServer = new CTextField(FIELDLENGTH);
-	private CLabel lDatabaseName = new CLabel();
-	CTextField fDatabaseName = new CTextField(FIELDLENGTH);
-	private CLabel lDatabaseDiscovered = new CLabel();
-	CComboBox fDatabaseDiscovered = new CComboBox();
-	private CLabel lDatabasePort = new CLabel();
-	CTextField fDatabasePort = new CTextField(FIELDLENGTH);
-	private CLabel lSystemPassword = new CLabel();
-	CPassword fSystemPassword = new CPassword();
-	private CLabel lDatabaseUser = new CLabel();
-	CTextField fDatabaseUser = new CTextField(FIELDLENGTH);
-	private CLabel lDatabasePassword = new CLabel();
-	CPassword fDatabasePassword = new CPassword();
-	CCheckBox okDatabaseServer = new CCheckBox();
-	CCheckBox okDatabaseUser = new CCheckBox();
-	CCheckBox okDatabaseSystem = new CCheckBox();
-	CCheckBox okDatabaseSQL = new CCheckBox();
+	JLabel lDatabaseServer = new JLabel();
+	JTextField fDatabaseServer = new JTextField(FIELDLENGTH);
+	private JLabel lDatabaseName = new JLabel();
+	JTextField fDatabaseName = new JTextField(FIELDLENGTH);
+	private JLabel lDatabaseDiscovered = new JLabel();
+	JComboBox fDatabaseDiscovered = new JComboBox();
+	private JLabel lDatabasePort = new JLabel();
+	JTextField fDatabasePort = new JTextField(FIELDLENGTH);
+	private JLabel lSystemPassword = new JLabel();
+	JPasswordField fSystemPassword = new JPasswordField();
+	private JLabel lDatabaseUser = new JLabel();
+	JTextField fDatabaseUser = new JTextField(FIELDLENGTH);
+	private JLabel lDatabasePassword = new JLabel();
+	JPasswordField fDatabasePassword = new JPasswordField();
+	JCheckBox okDatabaseServer = new JCheckBox();
+	JCheckBox okDatabaseUser = new JCheckBox();
+	JCheckBox okDatabaseSystem = new JCheckBox();
+	JCheckBox okDatabaseSQL = new JCheckBox();
 	//
-	CLabel lMailServer = new CLabel();
-	CTextField fMailServer = new CTextField(FIELDLENGTH);
-	private CLabel lAdminEMail = new CLabel();
-	CTextField fAdminEMail = new CTextField(FIELDLENGTH);
-	private CLabel lMailUser = new CLabel();
-	CTextField fMailUser = new CTextField(FIELDLENGTH);
-	private CLabel lMailPassword = new CLabel();
-	CPassword fMailPassword = new CPassword();
-	CCheckBox okMailServer = new CCheckBox();
-	CCheckBox okMailUser = new CCheckBox();
+	JLabel lMailServer = new JLabel();
+	JTextField fMailServer = new JTextField(FIELDLENGTH);
+	private JLabel lAdminEMail = new JLabel();
+	JTextField fAdminEMail = new JTextField(FIELDLENGTH);
+	private JLabel lMailUser = new JLabel();
+	JTextField fMailUser = new JTextField(FIELDLENGTH);
+	private JLabel lMailPassword = new JLabel();
+	JPasswordField fMailPassword = new JPasswordField();
+	JCheckBox okMailServer = new JCheckBox();
+	JCheckBox okMailUser = new JCheckBox();
 	//
-	private CButton bHelp = new CButton(iHelp);
-	private CButton bTest = new CButton();
-	private CButton bSave = new CButton(iSave);
+	private JButton bHelp = new JButton(iHelp);
+	private JButton bTest = new JButton();
+	private JButton bSave = new JButton(iSave);
 
 
 	/**
@@ -411,7 +410,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 0, 2, 5), 0, 0));
 
 		//grap extra space when window is maximized
-		CPanel filler = new CPanel();
+		JPanel filler = new JPanel();
 		filler.setOpaque(false);
 		filler.setBorder(null);
 		this.add(filler,    		new GridBagConstraints(0, 21, 1, 1, 0.0, 1.0
@@ -499,7 +498,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	 * 	Set Path in Field
 	 * 	@param field field to set Path
 	 */
-	private void setPath (CTextField field)
+	private void setPath (JTextField field)
 	{
 		JFileChooser fc = new JFileChooser(field.getText());
 		fc.setDialogType(JFileChooser.OPEN_DIALOG);
@@ -516,9 +515,9 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	 * 	@param saveIt save
 	 *  @return SwingWorker
 	 */
-	private org.compiere.apps.SwingWorker startTest(final boolean saveIt)
+	private org.compiere.install.util.SwingWorker startTest(final boolean saveIt)
 	{
-		org.compiere.apps.SwingWorker worker = new org.compiere.apps.SwingWorker()
+		org.compiere.install.util.SwingWorker worker = new org.compiere.install.util.SwingWorker()
 		{
 			//	Start it
 			public Object construct()
@@ -587,7 +586,7 @@ public class ConfigurationPanel extends CPanel implements ActionListener
 	 *	@param critical true if critical
 	 *	@param errorMsg error Message
 	 */
-	void signalOK (CCheckBox cb, String resString,
+	void signalOK (JCheckBox cb, String resString,
 		boolean pass, boolean critical, String errorMsg)
 	{
 		m_errorString = res.getString(resString);

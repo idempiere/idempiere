@@ -21,18 +21,19 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-import org.compiere.apps.AEnv;
-import org.compiere.apps.ALayout;
-import org.compiere.apps.ALayoutConstraint;
-import org.compiere.apps.ConfirmPanel;
-import org.compiere.swing.CButton;
-import org.compiere.swing.CDialog;
-import org.compiere.swing.CLabel;
-import org.compiere.swing.CPanel;
-import org.compiere.swing.CTextField;
+import org.compiere.install.util.AEnv;
+import org.compiere.install.util.ALayout;
+import org.compiere.install.util.ALayoutConstraint;
+import org.compiere.install.util.ConfirmPanel;
 
 
 /**
@@ -41,7 +42,7 @@ import org.compiere.swing.CTextField;
  *  @author Jorg Janke
  *  @version $Id: KeyStoreDialog.java,v 1.3 2006/07/30 00:57:42 jjanke Exp $
  */
-public class KeyStoreDialog extends CDialog
+public class KeyStoreDialog extends JDialog implements ActionListener
 {
 
 	/**
@@ -73,21 +74,21 @@ public class KeyStoreDialog extends CDialog
 		AEnv.showCenterWindow(owner, this);
 	}	//	KeyStoreDialog
 
-	private CLabel 		lCN = new CLabel("(ON) Common Name");
-	private CTextField 	fCN = new CTextField(20);
-	private CLabel 		lOU = new CLabel("(OU) Organization Unit");
-	private CTextField 	fOU = new CTextField(20);
-	private CLabel 		lO = new CLabel("(O) Organization");
-	private CTextField 	fO = new CTextField(20);
-	private CLabel 		lL = new CLabel("(L) Locale/Town");
-	private CTextField 	fL = new CTextField(20);
-	private CLabel 		lS = new CLabel("(S) State");
-	private CTextField 	fS = new CTextField(20);
-	private CLabel 		lC = new CLabel("(C) Country (2 Char)");
-	private CTextField 	fC = new CTextField(2);
+	private JLabel 		lCN = new JLabel("(ON) Common Name");
+	private JTextField 	fCN = new JTextField(20);
+	private JLabel 		lOU = new JLabel("(OU) Organization Unit");
+	private JTextField 	fOU = new JTextField(20);
+	private JLabel 		lO = new JLabel("(O) Organization");
+	private JTextField 	fO = new JTextField(20);
+	private JLabel 		lL = new JLabel("(L) Locale/Town");
+	private JTextField 	fL = new JTextField(20);
+	private JLabel 		lS = new JLabel("(S) State");
+	private JTextField 	fS = new JTextField(20);
+	private JLabel 		lC = new JLabel("(C) Country (2 Char)");
+	private JTextField 	fC = new JTextField(2);
 
-	private CButton		bOK = ConfirmPanel.createOKButton("OK");
-	private CButton		bCancel = ConfirmPanel.createCancelButton("Cancel");
+	private JButton		bOK = ConfirmPanel.createOKButton("OK");
+	private JButton		bCancel = ConfirmPanel.createCancelButton("Cancel");
 	private boolean		m_ok = false;
 	
 	/**
@@ -95,7 +96,7 @@ public class KeyStoreDialog extends CDialog
 	 */
 	private void jbInit()
 	{
-		CPanel panel = new CPanel(new ALayout());
+		JPanel panel = new JPanel(new ALayout());
 		panel.add(lCN, new ALayoutConstraint(0, 0));
 		panel.add(fCN, null);
 		panel.add(lOU, new ALayoutConstraint(1, 0));
@@ -113,7 +114,7 @@ public class KeyStoreDialog extends CDialog
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add (panel, BorderLayout.CENTER);
 		//
-		CPanel confirmPanel = new CPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		confirmPanel.add(bCancel);
 		confirmPanel.add(bOK);
 		getContentPane().add (confirmPanel, BorderLayout.SOUTH);

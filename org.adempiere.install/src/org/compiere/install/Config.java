@@ -20,7 +20,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.compiere.swing.CCheckBox;
+import javax.swing.JCheckBox;
+
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
@@ -119,7 +120,7 @@ public abstract class Config
 	 *	@param critical true if critical
 	 *	@param errorMsg error Message
 	 */
-	void signalOK (CCheckBox cb, String resString, 
+	void signalOK (JCheckBox cb, String resString, 
 		boolean pass, boolean critical, String errorMsg)
 	{
 		p_data.p_panel.signalOK(cb, resString, pass, critical, errorMsg);

@@ -175,13 +175,18 @@ public class ConfigurationData
 	public static final String	ADEMPIERE_WEBSTORES		= "ADEMPIERE_WEBSTORES";
 
 
-	private void updateProperty(String property, String value) {
+	public void updateProperty(String property, String value) {
 		if (value == null) value = "";
 		String currentValue = (String)p_properties.get(property);
 		if (currentValue == null)
 			p_properties.put(property, value);
 		else if (!currentValue.equals(value))
 			p_properties.put(property, value);
+	}
+	
+	public String getProperty(String property)
+	{
+		return p_properties.getProperty(property);
 	}
 
 	/**
@@ -291,7 +296,7 @@ public class ConfigurationData
 			//	Database Server
 			initDatabase("");
 			String connectionName = getDatabaseDiscovered();
-			if (connectionName != null) {
+			if (connectionName != null && connectionName.trim().length() > 0) {
 				setDatabaseName(resolveDatabaseName(connectionName));
 			}
 			setDatabaseSystemPassword("");
@@ -402,7 +407,7 @@ public class ConfigurationData
 	 * 	Test Adempiere and set AdempiereHome
 	 *	@return error message or null if OK
 	 */
-	private String testAdempiere()
+	public String testAdempiere()
 	{
 		//	Adempiere Home
 		m_adempiereHome = new File (getAdempiereHome());
@@ -460,15 +465,13 @@ public class ConfigurationData
 	 * 	Test (optional) Mail
 	 *	@return error message or null, if OK
 	 */
-	private String testMail()
+	public String testMail()
 	{
 		//	Mail Server
 		String server = p_panel != null
 			? p_panel.fMailServer.getText()
 			: (String)p_properties.get(ADEMPIERE_MAIL_SERVER);
-		boolean pass = server != null && server.length() > 0
-			&& server.toLowerCase().indexOf("localhost") == -1
-			&& !server.equals("127.0.0.1");
+		boolean pass = server != null && server.length() > 0;
 		String error = "Error Mail Server = " + server;
 		InetAddress	mailServer = null;
 		try
@@ -898,9 +901,18 @@ public class ConfigurationData
 	 */
 	public String getKeyStore ()
 	{
-		char[] pw = p_panel.fKeyStore.getPassword();
-		if (pw != null)
-			return new String(pw);
+		if (p_panel != null)
+		{
+			char[] pw = p_panel.fKeyStore.getPassword();
+			if (pw != null)
+				return new String(pw);
+		}
+		else
+		{
+			String pw = getProperty(ADEMPIERE_KEYSTOREPASS);
+			if (pw != null)
+				return pw;
+		}
 		return "";
 	}	//	getKeyStore
 
@@ -925,17 +937,15 @@ public class ConfigurationData
 	private static String	JAVATYPE_SUN = "sun";
 	/** Apple VM			*/
 	private static String	JAVATYPE_MAC = "mac";
-	/** IBM VM				*/
-	private static String	JAVATYPE_IBM = "<ibm>";
 	/** Open JDK			*/
 	private static String	JAVATYPE_OPENJDK = "OpenJDK";
 	/** Java VM Types		*/
-	static String[]	JAVATYPE = new String[]
-		{JAVATYPE_SUN, JAVATYPE_OPENJDK, JAVATYPE_MAC, JAVATYPE_IBM};
+	public static String[]	JAVATYPE = new String[]
+		{JAVATYPE_SUN, JAVATYPE_OPENJDK, JAVATYPE_MAC};
 
 	/** Virtual machine Configurations	*/
 	private Config[] m_javaConfig = new Config[]
-	    {new ConfigVMSun(this), new ConfigVMOpenJDK(this), new ConfigVMMac(this), null};
+	    {new ConfigVMSun(this), new ConfigVMOpenJDK(this), new ConfigVMMac(this)};
 	private ConfigAppServer m_appsConfig = new ConfigAppServer(this);
 
 	/**
@@ -947,7 +957,7 @@ public class ConfigurationData
 		initJava(index);
 	}	//	initDatabase
 
-	private void initJava(int index)
+	public void initJava(int index)
 	{
 		if (index < 0 || index >= JAVATYPE.length)
 			log.warning("JavaType Index invalid: " + index);
@@ -1154,16 +1164,13 @@ public class ConfigurationData
 
 	/** Oracle directory	*/
 	private static String	DBTYPE_ORACLE = "oracle";
-	/** Oracle XP	*/
-	private static String	DBTYPE_ORACLEXE = "oracleXE";
 
 	/** PostgreSQL          */
 	private static String	DBTYPE_POSTGRESQL = "postgresql";
 
 	/** Database Types		*/
-	static String[]	DBTYPE = new String[]
-	{	DBTYPE_ORACLEXE,
-		DBTYPE_ORACLE,
+	public static String[]	DBTYPE = new String[]
+	{	DBTYPE_ORACLE,
         //begin e-evolution vpj-cd 02/07/2005 PostgreSQL
         DBTYPE_POSTGRESQL
     };
@@ -1173,7 +1180,6 @@ public class ConfigurationData
 	private Config[] m_databaseConfig = new Config[]
 	    {
 		new ConfigOracle(this,true),
-		new ConfigOracle(this,false),
 		//begin e-evolution vpj-cd 02/07/2005 PostgreSQL
 		new ConfigPostgreSQL(this)
 		//		end e-evolution vpj-cd 02/07/2005 PostgreSQL
@@ -1185,7 +1191,20 @@ public class ConfigurationData
 	 */
 	public void initDatabase(String selected)
 	{
-		int index = (p_panel != null ? p_panel.fDatabaseType.getSelectedIndex() : 0);
+		int index = (p_panel != null ? p_panel.fDatabaseType.getSelectedIndex() : -1);
+		if (index < 0)
+		{
+			for(int i = 0; i < DBTYPE.length; i++)
+			{
+				if (DBTYPE[i].equals(selected))
+				{
+					index = i;
+					break;
+				}
+			}
+			if (index < 0)
+				index = 0;
+		}
 		initDatabase(selected, index);
 	}	//	initDatabase
 
@@ -1274,7 +1293,9 @@ public class ConfigurationData
 	 */
 	public String getDatabaseDiscovered ()
 	{
-		return (String)p_panel.fDatabaseDiscovered.getSelectedItem();
+		return p_panel != null
+			? (String)p_panel.fDatabaseDiscovered.getSelectedItem()
+			: "";
 	}
 	/**
 	 * @param databaseDiscovered The database Discovered to set.
@@ -1436,5 +1457,91 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_DB_USER, databaseUser);
 	}
-
+	
+	/**
+	 * @return Returns the mail Server.
+	 */
+	public String getMailServer ()
+	{
+		return p_panel != null
+			? p_panel.fMailServer.getText()
+			: (String)p_properties.get(ADEMPIERE_MAIL_SERVER);
+	}
+	
+	public void setMailServer(String mailServer)
+	{
+		if (p_panel != null)
+			p_panel.fMailServer.setText(mailServer);
+		else
+			updateProperty(ADEMPIERE_MAIL_SERVER, mailServer);
+	}
+	
+	/**
+	 * @return Returns the mailUser.
+	 */
+	public String getMailUser ()
+	{
+		return p_panel != null
+			? p_panel.fMailUser.getText()
+			: (String)p_properties.get(ADEMPIERE_MAIL_USER);
+	}
+	/**
+	 * @param mailUser The mailUser to set.
+	 */
+	public void setMailUser (String mailUser)
+	{
+		if (p_panel != null)
+			p_panel.fMailUser.setText(mailUser);
+		else
+			updateProperty(ADEMPIERE_MAIL_USER, mailUser);
+	}
+	
+	/**
+	 * @return Returns the mail User Password.
+	 */
+	public String getMailPassword ()
+	{
+		if (p_panel != null)
+		{
+			char[] pw = p_panel.fMailPassword.getPassword();
+			if (pw != null)
+				return new String(pw);
+			return "";
+		}
+		else
+		{
+			String pw = (String)p_properties.get(ADEMPIERE_MAIL_PASSWORD);
+			return (pw != null ? pw : "");
+		}
+	}
+	/**
+	 * @param mailPassword The mailPassword to set.
+	 */
+	public void setMailPassword (String mailPassword)
+	{
+		if (p_panel != null)
+			p_panel.fMailPassword.setText(mailPassword);
+		else
+			updateProperty(ADEMPIERE_MAIL_PASSWORD, mailPassword);
+	}
+	
+	/**
+	 * @return Returns the admin email
+	 */
+	public String getAdminEMail()
+	{
+		return p_panel != null
+			? p_panel.fAdminEMail.getText()
+			: (String)p_properties.get(ADEMPIERE_ADMIN_EMAIL);
+	}
+	/**
+	 * @param adminEMail The admin email
+	 */
+	public void setAdminEMail(String adminEMail)
+	{
+		if (p_panel != null)
+			p_panel.fAdminEMail.setText(adminEMail);
+		else
+			updateProperty(ADEMPIERE_ADMIN_EMAIL, adminEMail);
+	}
 }	//	ConfigurationData

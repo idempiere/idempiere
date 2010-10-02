@@ -30,12 +30,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import org.compiere.Adempiere;
-import org.compiere.apps.AEnv;
-import org.compiere.swing.CFrame;
-import org.compiere.swing.CMenuItem;
+import org.compiere.install.util.AEnv;
 import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -46,7 +45,7 @@ import org.compiere.util.CLogger;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Setup.java,v 1.2 2006/07/30 00:57:42 jjanke Exp $
  */
-public class Setup extends CFrame implements ActionListener
+public class Setup extends JFrame implements ActionListener
 {
 	/**
 	 * 
@@ -94,9 +93,9 @@ public class Setup extends CFrame implements ActionListener
 	private JPanel contentPane;
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu menuFile = new JMenu();
-	private CMenuItem menuFileExit = new CMenuItem();
+	private JMenuItem menuFileExit = new JMenuItem();
 	private JMenu menuHelp = new JMenu();
-	private CMenuItem menuHelpInfo = new CMenuItem();
+	private JMenuItem menuHelpInfo = new JMenuItem();
 	private JLabel statusBar = new JLabel();
 	private BorderLayout borderLayout = new BorderLayout();
 	private ConfigurationPanel configurationPanel = new ConfigurationPanel (statusBar);
