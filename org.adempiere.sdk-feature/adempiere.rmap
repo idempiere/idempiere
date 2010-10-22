@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
+  <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
+  <rm:locator pattern="^javax\.xml(\..+)?" searchPathRef="orbit" failOnError="false"/>
+  <rm:locator pattern="^org\.apache\.ant(\..+)?" searchPathRef="orbit"/>
+  <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit"/>
+  <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="external.p2" failOnError="false"/>
+  <rm:locator pattern="^org\.springframework(\..+)?" searchPathRef="external.p2" failOnError="false"/>
+  <rm:locator pattern="^org\.eclipse\.gemini(\..+)?" searchPathRef="external.p2" failOnError="false"/>
+  <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="external.p2" failOnError="false"/>
+  <rm:locator pattern="^org\.eclipse\.virgo(\..+)?" searchPathRef="external.p2" failOnError="false"/>
+  <rm:locator searchPathRef="workspace.bundle" failOnError="false"/>
+  <rm:locator searchPathRef="workspace.feature"/>
+  <rm:searchPath name="equinox">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="">
+      <rm:uri format="http://download.eclipse.org/releases/helios"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="workspace.bundle">
+    <rm:provider componentTypes="osgi.bundle" readerType="local">
+      <rm:uri format="{0}/{1}">
+        <bc:propertyRef key="workspace.root"/>
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="workspace.feature">
+    <rm:provider componentTypes="eclipse.feature" readerType="local">
+      <rm:uri format="{0}/{1}-feature">
+        <bc:propertyRef key="workspace.root"/>
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="external.p2">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
+      <rm:uri format="http://hengsin.googlecode.com/hg/adempiere.osgi.dep-1.0.0/p2"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="orbit">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
+      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite"/>
+    </rm:provider>
+  </rm:searchPath>
+</rm:rmap>
