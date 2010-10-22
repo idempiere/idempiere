@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Adempiere Swing Client" uid="org.adempiere.ui.swing.product" application="org.adempiere.ui.swing.client" version="1.0.0" useFeatures="true" includeLaunchers="true">
+<product name="Adempiere Swing Client" uid="org.adempiere.ui.swing.product" id="org.adempiere.ui.swing.client_product" application="org.adempiere.ui.swing.client" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

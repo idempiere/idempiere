@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Adempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.product" application="org.adempiere.server.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+<product name="Adempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

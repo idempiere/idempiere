@@ -3,14 +3,6 @@
 <plugin>
    <extension-point id="org.adempiere.server.IServerFactory" name="Adempiere Server Factory" schema="schema/org.adempiere.server.IServerFactory.exsd"/>
    <extension
-         id="org.adempiere.server.product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.adempiere.server.application"
-            name="name">
-      </product>
-   </extension>
-   <extension
          id="org.adempiere.server.application"
          point="org.eclipse.core.runtime.applications">
       <application
@@ -23,7 +15,7 @@
       </application>
    </extension>
    <extension
-         id="product"
+         id="server_product"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.adempiere.server.application"

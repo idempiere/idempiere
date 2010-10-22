@@ -37,5 +37,17 @@
             class="org.adempiere.client.StatusInterface">
       </interface>
    </extension>
+   <extension
+         id="client_product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.adempiere.ui.swing.client"
+            name="Adempiere Swing Client">
+         <property
+               name="appName"
+               value="Adempiere Swing Client">
+         </property>
+      </product>
+   </extension>
 
 </plugin>
