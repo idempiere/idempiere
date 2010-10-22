@@ -36,6 +36,18 @@
          id="org.adempiere.report.jasper"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.equinox.executable"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.equinox.server.core"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.equinox.server.p2"
+         version="0.0.0"/>
+
    <plugin
          id="org.adempiere.base"
          download-size="0"
@@ -81,13 +93,6 @@
 
    <plugin
          id="org.eclipse.core.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -191,7 +196,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.commons.logging"
+         id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -205,56 +210,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.jobs"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.app"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.preferences"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.registry"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.services"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.springsource.javax.ejb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.springsource.javax.el"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -275,7 +231,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.commons.codec"
+         id="org.apache.commons.codec"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -318,21 +274,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.util"
+         id="com.springsource.org.apache.commons.logging"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.launcher"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.ds"
+         id="com.springsource.javax.el"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Adempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.product" application="org.adempiere.server.application" version="1.0.0" useFeatures="true" includeLaunchers="false">
+<product name="Adempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.product" application="org.adempiere.server.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-console</programArgs>
-      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -DPropertyFile=/media/W/Workspace/hengsin/trunk-local.properties</vmArgs>
+      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
 
-   <launcher>
+   <launcher name="adempiere">
       <solaris/>
       <win useIco="false">
          <bmp/>

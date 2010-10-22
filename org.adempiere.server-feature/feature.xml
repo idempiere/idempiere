@@ -90,7 +90,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.jasper.org.eclipse.jdt.springsource"
+         id="com.springsource.org.eclipse.jdt.core.compiler.batch"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -274,6 +274,22 @@
 
    <plugin
          id="com.springsource.slf4j.simple"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.springsource.org.apache.catalina.ha.springsource"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.springsource.org.apache.catalina.tribes.springsource"
          download-size="0"
          install-size="0"
          version="0.0.0"

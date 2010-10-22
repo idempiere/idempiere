@@ -29,7 +29,7 @@
             id="AD_Form">
       </handler>
       <handler
-            class="Forms"
+            class="org.adempiere.pipo2.handler.FormAccessElementHandler"
             id="AD_Form_Access">
       </handler>
       <handler
