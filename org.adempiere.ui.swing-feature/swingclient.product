@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Adempiere Swing Client" uid="org.adempiere.ui.swing.product" application="org.adempiere.ui.swing.client" version="1.0.0" useFeatures="true" includeLaunchers="false">
+<product name="Adempiere Swing Client" uid="org.adempiere.ui.swing.product" application="org.adempiere.ui.swing.client" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-console</programArgs>
-      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -DPropertyFile=/media/W/Workspace/hengsin/trunk-local.properties</vmArgs>
+      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <launcher>
+   <launcher name="adempiere">
       <solaris/>
       <win useIco="false">
          <bmp/>
