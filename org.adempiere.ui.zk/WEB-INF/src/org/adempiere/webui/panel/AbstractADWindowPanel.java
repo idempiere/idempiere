@@ -51,6 +51,7 @@ import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.FindWindow;
+import org.adempiere.webui.window.WChat;
 import org.adempiere.webui.window.WRecordAccessDialog;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.model.DataStatusEvent;
@@ -859,6 +860,38 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		focusToActivePanel();
 	}
 
+    public void onChat()
+    {
+    	int recordId = curTab.getRecord_ID();
+    	logger.info("Record_ID=" + recordId);
+
+		if (recordId== -1)	//	No Key
+		{
+			return;
+		}
+
+		//	Find display
+		String infoName = null;
+		String infoDisplay = null;
+		for (int i = 0; i < curTab.getFieldCount(); i++)
+		{
+			GridField field = curTab.getField(i);
+			if (field.isKey())
+				infoName = field.getHeader();
+			if ((field.getColumnName().equals("Name") || field.getColumnName().equals("DocumentNo") )
+				&& field.getValue() != null)
+				infoDisplay = field.getValue().toString();
+			if (infoName != null && infoDisplay != null)
+				break;
+		}
+		String description = infoName + ": " + infoDisplay;
+		
+    	new WChat(curWindowNo, curTab.getCM_ChatID(), curTab.getAD_Table_ID(), recordId, description, null);
+    	curTab.loadChats();
+		toolbar.getButton("Chat").setPressed(curTab.hasChat());
+		focusToActivePanel();
+    }
+    
     /**
      * @see ToolbarListener#onToggle()
      */
@@ -1065,6 +1098,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		        curTabIndex < (adTab.getTabCount() - 1));
 
 		toolbar.getButton("Attachment").setPressed(curTab.hasAttachment());
+		toolbar.getButton("Chat").setPressed(curTab.hasChat());
 		if (isFirstTab())
         {
             toolbar.getButton("HistoryRecords").setPressed(!curTab.isOnlyCurrentRows());
@@ -1231,6 +1265,27 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
             toolbar.enableAttachment(false);
         }
 
+        // Check Chat
+        boolean canHaveChat = true;
+        if (e.isLoading() &&
+                curTab.getCurrentRow() > e.getLoadedRows())
+        {
+            canHaveChat = false;
+        }
+        if (canHaveChat && curTab.getRecord_ID() == -1)    //   No Key
+        {
+            canHaveChat = false;
+        }
+        if (canHaveChat)
+        {
+            toolbar.enableChat(true);
+            toolbar.getButton("Chat").setPressed(curTab.hasChat());
+        }
+        else
+        {
+        	toolbar.enableChat(false);
+        }
+        
         toolbar.getButton("Find").setPressed(curTab.isQueryActive());
 
         // Elaine 2008/12/05
