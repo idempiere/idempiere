@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="Adempiere Target Platform">
+<locations>
+<location path="${project_loc}" type="Directory"/>
+<location includeAllPlatforms="true" includeMode="slicer" type="InstallableUnit">
+<unit id="org.adempiere.bundles.external.feature.group" version="1.0.0.201009222137"/>
+<unit id="org.adempiere.geminiweb.feature.group" version="1.1.0.RC1"/>
+<repository location="http://hengsin.googlecode.com/hg/adempiere.osgi.dep-1.0.0/p2"/>
+</location>
+<location includeAllPlatforms="true" includeMode="slicer" type="InstallableUnit">
+<unit id="org.eclipse.equinox.server.core.feature.group" version="1.0.0.v20100510-7K7QErDzbb9z-yqHb55T7I"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.4.1.R36x_v20100823-7M7K7JF90dnJ-WLf3cf4yi"/>
+<unit id="org.eclipse.equinox.p2.user.ui.feature.group" version="2.0.1.r361_v20100903-897HFZFFZRuSD2LMtVxyz0Vr"/>
+<unit id="org.eclipse.equinox.server.p2.feature.group" version="1.0.0.v20100503-7x7IFGOFQ74dz0POCNUBjA6L"/>
+<repository location="http://download.eclipse.org/releases/helios"/>
+</location>
+</locations>
+</target>
