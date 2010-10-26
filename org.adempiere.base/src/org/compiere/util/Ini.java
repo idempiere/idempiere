@@ -533,7 +533,7 @@ public final class Ini implements Serializable
 	 *  @param tryUserHome get user home first
 	 *  @return file name
 	 */
-	private static String getFileName (boolean tryUserHome)
+	public static String getFileName (boolean tryUserHome)
 	{
 		if (System.getProperty("PropertyFile") != null)
 			return System.getProperty("PropertyFile");
@@ -703,7 +703,7 @@ public final class Ini implements Serializable
 	 */
 	public static void setClient (boolean client)
 	{
-		s_client = client;		
+		s_client = client;
 	}   //  setClient
 
 	/**
@@ -740,20 +740,24 @@ public final class Ini implements Serializable
 	public static String getAdempiereHome()
 	{
 		String env = System.getProperty (ENV_PREFIX + ADEMPIERE_HOME);
-		if (env == null)
+		if (env == null || env.trim().length() == 0)
 			env = System.getProperty (ADEMPIERE_HOME);
-		if (env == null && ! isClient()) {
-			InitialContext context;
-			try {
-				context = new InitialContext();
-				env = (String) context.lookup("java:comp/env/"+ADEMPIERE_HOME);
-			} catch (NamingException e) {
-				// teo_sarca: if you uncomment the line below you will get an NPE when generating models
-				//getLogger().fine( "Not found 'java:comp/env/"+ADEMPIERE_HOME+"' in Initial Context. " +e.getMessage());
+		if (env == null || env.trim().length() == 0)
+		{
+			//client - user home, server - current working directory
+			String current = isClient() ? System.getProperty("user.home")
+					: System.getProperty("user.dir");
+			if (current != null && current.trim().length() > 0)
+			{
+				//check directory exists and writable
+				File file = new File(current);
+				if (file.exists() && file.canWrite())
+				{
+					env = current;
+				}
 			}
-
 		}
-		if (env == null || "".equals(env) )	//	Fallback
+		if (env == null || env.trim().length() == 0 )	//	Fallback
 			env = File.separator + "Adempiere";
 		return env;
 	}   //  getAdempiereHome
@@ -774,35 +778,7 @@ public final class Ini implements Serializable
 	 */
 	public static String findAdempiereHome()
 	{
-		String ch = getAdempiereHome();
-		if (ch != null)
-			return ch;
-
-		File[] roots = File.listRoots();
-		for (int i = 0; i < roots.length; i++)
-		{
-			if (roots[i].getAbsolutePath().startsWith("A:"))
-				continue;
-			File[] subs = roots[i].listFiles();
-			if (subs == null)
-				continue;
-			for (int j = 0; j < subs.length; j++)
-			{
-				if (!subs[j].isDirectory())
-					continue;
-				String fileName = subs[j].getAbsolutePath();
-				// globalqss, it's leaving log in first directory with lib subdirectory. i.e. Oracle
-				// if (fileName.indexOf("Adempiere") != 1)
-				if (fileName.indexOf("Adempiere") != -1)
-				{
-					String libDir = fileName + File.separator + "lib";
-					File lib = new File(libDir);
-					if (lib.exists() && lib.isDirectory())
-						return fileName;
-				}
-			}
-		}
-		return ch;
+		return getAdempiereHome();
 	}	//	findAdempiereHome
 
 	/**************************************************************************

@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -126,7 +127,7 @@ public class WebEnv
 		}
 
 		boolean retValue = initWeb (config.getServletContext());
-		
+
 		//	Logging now initiated
 		log.info(info.toString());
 		return retValue;
@@ -145,7 +146,7 @@ public class WebEnv
 			log.info(context.getServletContextName());
 			return true;
 		}
-		
+
 		//  Load Environment Variables (serverApps/src/web/WEB-INF/web.xml)
 		Enumeration en = context.getInitParameterNames();
 		StringBuffer info = new StringBuffer("Servlet Context Init Parameters: ")
@@ -158,13 +159,19 @@ public class WebEnv
 			info.append("\n").append(name).append("=").append(value);
 		}
 
+		String propertyFile = Ini.getFileName(false);
+		File file = new File(propertyFile);
+		if (!file.exists())
+		{
+			throw new java.lang.IllegalStateException("Adempiere.properties is not setup. PropertyFile="+propertyFile);
+		}
 		try
 		{
 			s_initOK = Adempiere.startup(false);
 		}
 		catch (Exception ex)
 		{
-			log.log(Level.SEVERE, "startup", ex); 
+			log.log(Level.SEVERE, "startup", ex);
 		}
 		if (!s_initOK)
 			return false;
@@ -175,14 +182,14 @@ public class WebEnv
 		Properties ctx = new Properties();
 		MClient client = MClient.get(ctx, 0);
 		MSystem system = MSystem.get(ctx);
-		client.sendEMail(client.getRequestEMail(), 
-			"Server started: " + system.getName(), 
+		client.sendEMail(client.getRequestEMail(),
+			"Server started: " + system.getName(),
 			"ServerInfo: " + context.getServerInfo(), null);
 
 		return s_initOK;
 	}	//	initWeb
 
-	
+
 	/**************************************************************************
 	 *  Get Base Directory entry.
 	 *  <br>
@@ -251,7 +258,7 @@ public class WebEnv
 	public static img getLogo()
 	{
 		return new img(getLogoURL()).setAlign(AlignType.RIGHT)
-			.setAlt("&copy; Jorg Janke/adempiere");	
+			.setAlt("&copy; Jorg Janke/adempiere");
 	}   //  getLogo
 
 	/**
@@ -384,7 +391,7 @@ public class WebEnv
 			+ ", ServletPath=" + request.getServletPath()
 			+ ", Query=" + request.getQueryString());
 		log.finer("- From " + request.getRemoteHost() + "/" + request.getRemoteAddr()
-			//	+ ":" + request.getRemotePort() 
+			//	+ ":" + request.getRemotePort()
 				+ " - User=" + request.getRemoteUser());
 		log.finer("- URI=" + request.getRequestURI() + ", URL=" + request.getRequestURL());
 		log.finer("- AuthType=" + request.getAuthType());
@@ -467,7 +474,7 @@ public class WebEnv
 		log.finer("- Class=" + request.getClass().getName());
 	}	//	dump (Request)
 
-	
+
 	/**************************************************************************
 	 *  Add Footer (with diagnostics)
 	 *  @param request request
