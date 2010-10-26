@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.session;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -66,6 +67,12 @@ public class WebUIServlet extends DHtmlLayoutServlet
         serverContext.put(CLogMgt.ROOT_LOGGER_NAME_PROPERTY, WEBUI_ROOT_LOGGER_NAME);
         ServerContext.setCurrentInstance(serverContext);
 
+        String propertyFile = Ini.getFileName(false);
+        File file = new File(propertyFile);
+        if (!file.exists())
+        {
+        	throw new IllegalStateException("Adempiere.properties is not setup. PropertyFile="+propertyFile);
+        }
         if (!Adempiere.isStarted())
         {
 	        boolean started = Adempiere.startup(false);
@@ -79,7 +86,7 @@ public class WebUIServlet extends DHtmlLayoutServlet
         	CLogMgt.initialize(false);
         	CLogMgt.setLevel(Ini.getProperty(Ini.P_TRACELEVEL));
         }
-        
+
         logger = CLogger.getCLogger(WebUIServlet.class);
 
         // hengsin: temporary solution for problem with zk client
