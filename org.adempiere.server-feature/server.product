@@ -33,6 +33,7 @@
    </features>
 
    <configurations>
+      <plugin id="org.adempiere.install" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.replication.server" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.report.jasper.webapp" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.server" autoStart="true" startLevel="4" />
