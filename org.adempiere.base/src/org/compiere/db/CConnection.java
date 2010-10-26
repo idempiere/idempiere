@@ -294,7 +294,7 @@ public class CConnection implements Serializable, Cloneable
 	{
 		return m_webPort;
 	}
-	
+
 	/**
 	 * set web port
 	 * @param webPort
@@ -303,7 +303,7 @@ public class CConnection implements Serializable, Cloneable
 	{
 		m_webPort = webPort;
 	}
-	
+
 	/**
 	 * Set Web Port
 	 * @param webPortString web port as String
@@ -321,8 +321,8 @@ public class CConnection implements Serializable, Cloneable
 		{
 			log.severe(e.toString ());
 		}
-	} 	
-	
+	}
+
 	/**
 	 * @return ssl port
 	 */
@@ -330,7 +330,7 @@ public class CConnection implements Serializable, Cloneable
 	{
 		return m_sslPort;
 	}
-	
+
 	/**
 	 * set ssl port
 	 * @param sslPort
@@ -339,7 +339,7 @@ public class CConnection implements Serializable, Cloneable
 	{
 		m_sslPort = sslPort;
 	}
-	
+
 	/**
 	 * Set SSL Port
 	 * @param sslPortString web port as String
@@ -358,7 +358,7 @@ public class CConnection implements Serializable, Cloneable
 			log.severe(e.toString ());
 		}
 	}
-	
+
 	/**
 	 *  Is Application Server OK
 	 *  @param tryContactAgain try to contact again
@@ -368,20 +368,20 @@ public class CConnection implements Serializable, Cloneable
 	{
 		if (!tryContactAgain && m_queryAppsServer)
 			return m_okApps;
-		
+
 		if (getAppServerCredential() == null)
 		{
 			m_okApps = false;
 			return m_okApps;
 		}
-		
+
 		m_queryAppsServer = true;
-				
-		try 
+
+		try
 		{
 			Status status = Service.locate(Status.class);
 			m_version = status.getDateVersion();
-		} 
+		}
 		catch (Throwable t)
 		{
 			m_okApps = false;
@@ -1066,7 +1066,7 @@ public class CConnection implements Serializable, Cloneable
 		  .append (",FWhost=").append (escape(m_fw_host))
 		  .append (",FWport=").append (m_fw_port)
 		  .append (",UID=").append (escape(m_db_uid))
-		  .append (",PWD=").append (escape(m_db_pwd))		
+		  .append (",PWD=").append (escape(m_db_pwd))
 		  .append("]");
 		  ;		//	the format is read by setAttributes
 		return sb.toString ();
@@ -1075,7 +1075,7 @@ public class CConnection implements Serializable, Cloneable
 	private String escape(String value) {
 		if (value == null)
 			return null;
-		
+
 		// use html like escape sequence to escape = and ,
 		value = value.replace("=", "&eq;");
 		value = value.replace(",", "&comma;");
@@ -1096,7 +1096,7 @@ public class CConnection implements Serializable, Cloneable
 			{
 				String[] pairComponents = pair.split("[=]");
 				String key = pairComponents[0];
-				String value = unescape(pairComponents[1]);
+				String value = pairComponents.length == 2 ? unescape(pairComponents[1]) : "";
 				if ("name".equalsIgnoreCase(key))
 				{
 					setName(value);
@@ -1153,11 +1153,11 @@ public class CConnection implements Serializable, Cloneable
 				{
 					setSSLPort(value);
 				}
-			}			
+			}
 		}
 		catch (Exception e)
 		{
-			log.severe(attributes + " - " + e.toString ());
+			log.log(Level.SEVERE, attributes + " - " + e.toString (), e);
 		}
 	}	//  setAttributes
 
@@ -1394,12 +1394,12 @@ public class CConnection implements Serializable, Cloneable
 	{
 		m_okApps = false;
 		m_queryAppsServer = true;
-		
+
 		if (getAppsHost().equalsIgnoreCase("MyAppsServer")) {
 			log.warning (getAppsHost() + " ignored");
 			return m_okApps; // false
 		}
-		
+
 		Status status = Service.locate(Status.class);
 		try {
 			updateInfoFromServer(status);
@@ -1407,7 +1407,7 @@ public class CConnection implements Serializable, Cloneable
 		} catch (Exception e) {
 			m_appsException = e;
 		}
-			
+
 		return m_okApps;
 	}	//  setAppsServerInfo
 
@@ -1507,7 +1507,7 @@ public class CConnection implements Serializable, Cloneable
 		securityPrincipal.secret= secret;
 		m_server = null;
 	}
-	
+
 	public SecurityPrincipal getAppServerCredential()
 	{
 		return securityPrincipal;
