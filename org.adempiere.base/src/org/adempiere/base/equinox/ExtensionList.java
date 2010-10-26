@@ -30,9 +30,9 @@ import org.eclipse.core.runtime.Platform;
  * This List looks up services as extensions in equinox.
  * The extension point must be the class name of the service interface.
  * The query attributes are checked against the attributes
- * of the extension configuration element. 
- * 
- * In order to minimize equinox lookups, a filtering iterator is used. 
+ * of the extension configuration element.
+ *
+ * In order to minimize equinox lookups, a filtering iterator is used.
  * @author viola
  *
  * @param <T> The service this list holds implementations of.
@@ -59,9 +59,15 @@ public class ExtensionList<T> implements Iterable<T>{
 		private boolean accept(IConfigurationElement element) {
 			for (String name : filters.keySet()) {
 				String expected = filters.get(name);
-				String actual = element.getAttribute(name);
-				if (!expected.equals(actual))
-					return false;
+				if (name.equals("Extension.ID")) {
+					String id = element.getDeclaringExtension().getUniqueIdentifier();
+					if (!expected.equals(id))
+						return false;
+				} else {
+					String actual = element.getAttribute(name);
+					if (!expected.equals(actual))
+						return false;
+				}
 			}
 			return true;
 		}
@@ -70,6 +76,17 @@ public class ExtensionList<T> implements Iterable<T>{
 		public T next() {
 			iterateUntilAccepted();
 			IConfigurationElement e = elements[index++];
+			if (e.getAttribute("class") == null) {
+				IConfigurationElement[] childs = e.getChildren();
+				if (childs != null && childs.length > 0) {
+					for(IConfigurationElement child : childs) {
+						if (child.getAttribute("class") != null) {
+							e = child;
+							break;
+						}
+					}
+				}
+			}
 			try {
 				return (T) e.createExecutableExtension("class");
 			} catch (CoreException ex) {
@@ -93,7 +110,7 @@ public class ExtensionList<T> implements Iterable<T>{
 			System.out.println(ex.getMessage());
 		}
 	}
-	
+
 	public ExtensionList(Class<T> type, String extensionPointId, ServiceQuery query) {
 		this(type, extensionPointId);
 		for (String key : query.keySet()) {
