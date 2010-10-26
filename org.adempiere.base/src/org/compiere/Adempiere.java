@@ -387,13 +387,6 @@ public final class Adempiere
 	{
 		//  Try Environment
 		String retValue = Ini.getAdempiereHome();
-		//	Look in current Directory
-		if (retValue == null && System.getProperty("user.dir").indexOf("Adempiere") != -1)
-		{
-			retValue = System.getProperty("user.dir");
-			int pos = retValue.indexOf("Adempiere");
-			retValue = retValue.substring(pos+9);
-		}
 		if (retValue == null)
 			retValue = File.separator + "Adempiere";
 		return retValue;
@@ -455,11 +448,11 @@ public final class Adempiere
 		return url.getHost();
 	}	//	getCodeBase
 
-	public static synchronized boolean isStarted() 
+	public static synchronized boolean isStarted()
 	{
 		return (log != null);
 	}
-	
+
 	/*************************************************************************
 	 *  Startup Client/Server.
 	 *  - Print greeting,
