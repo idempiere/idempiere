@@ -24,12 +24,12 @@ import org.compiere.wf.MWFProcess;
 import org.compiere.wf.MWorkflow;
 
 /**
- * 
+ *
  * @author Low Heng Sin
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1757523 ] Server Processes are using Server's context
  * 				<li>BF [ 2528297 ] Poor error message on jasper fail
- * 				<li>BF [ 2530847 ] Report is displayed even if java process fails 
+ * 				<li>BF [ 2530847 ] Report is displayed even if java process fails
  */
 public final class ProcessUtil {
 
@@ -37,9 +37,9 @@ public final class ProcessUtil {
 
 	/**	Logger				*/
 	private static CLogger log = CLogger.getCLogger(ProcessUtil.class);
-	
+
 	private ProcessUtil() {}
-	
+
 	/**
 	 * @param processInfo
 	 * @param ProcedureName
@@ -63,7 +63,7 @@ public final class ProcessUtil {
 		try
 		{
 			//hengsin, add trx support, updateable support.
-			CallableStatement cstmt = DB.prepareCall(sql, ResultSet.CONCUR_UPDATABLE, trxName);	
+			CallableStatement cstmt = DB.prepareCall(sql, ResultSet.CONCUR_UPDATABLE, trxName);
 			cstmt.setInt(1, processInfo.getAD_PInstance_ID());
 			cstmt.executeUpdate();
 			cstmt.close();
@@ -90,12 +90,12 @@ public final class ProcessUtil {
 		}
 		return true;
 	}
-	
+
 	@Deprecated
 	public static boolean startJavaProcess(ProcessInfo pi, Trx trx) {
 		return startJavaProcess(Env.getCtx(), pi, trx);
 	}
-	
+
 	/**
 	 * @param ctx
 	 * @param pi
@@ -120,36 +120,49 @@ public final class ProcessUtil {
 			if (proc.getJasperReport() != null)
 				className = JASPER_STARTER_CLASS;
 		}
-		
+
 		ProcessCall process = null;
 		if (Core.isExtension(className)) {
 			process = Core.getProcess(className);
 		}
-		
+
 		if (process == null) {
 			//Get Class
 			Class<?> processClass = null;
 			//use context classloader if available
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			if (classLoader == null)
+			if (classLoader != null)
+			{
+				try
+				{
+					processClass = classLoader.loadClass(className);
+				}
+				catch (ClassNotFoundException ex)
+				{
+					log.log(Level.FINE, className, ex);
+				}
+			}
+			if (processClass == null)
+			{
 				classLoader = ProcessUtil.class.getClassLoader();
-			try
-			{
-				processClass = classLoader.loadClass(className);
+				try
+				{
+					processClass = classLoader.loadClass(className);
+				}
+				catch (ClassNotFoundException ex)
+				{
+					log.log(Level.WARNING, className, ex);
+					pi.setSummary ("ClassNotFound", true);
+					return false;
+				}
 			}
-			catch (ClassNotFoundException ex)
-			{
-				log.log(Level.WARNING, className, ex);
-				pi.setSummary ("ClassNotFound", true);
-				return false;
-			}
-			
+
 			if (processClass == null) {
 				pi.setSummary("No Instance for " + pi.getClassName(), true);
 				return false;
 			}
-			
-			//Get Process		
+
+			//Get Process
 			try
 			{
 				process = (ProcessCall)processClass.newInstance();
@@ -159,9 +172,9 @@ public final class ProcessUtil {
 				log.log(Level.WARNING, "Instance for " + className, ex);
 				pi.setSummary ("InstanceError", true);
 				return false;
-			}									
+			}
 		}
-		
+
 		boolean success = false;
 		try
 		{
@@ -188,11 +201,11 @@ public final class ProcessUtil {
 		}
 		return success;
 	}
-	
+
 	public static boolean startScriptProcess(Properties ctx, ProcessInfo pi, Trx trx) {
 		String msg = null;
 		boolean success = true;
-		try 
+		try
 		{
 			String cmd = pi.getClassName();
 			MRule rule = MRule.get(ctx, cmd.substring(MRule.SCRIPT_PREFIX.length()));
@@ -201,7 +214,7 @@ public final class ProcessUtil {
 				pi.setSummary ("ScriptNotFound", true);
 				return false;
 			}
-			if ( !  (rule.getEventType().equals(MRule.EVENTTYPE_Process) 
+			if ( !  (rule.getEventType().equals(MRule.EVENTTYPE_Process)
 				  && rule.getRuleType().equals(MRule.RULETYPE_JSR223ScriptingAPIs))) {
 				log.log(Level.WARNING, cmd + " must be of type JSR 223 and event Process");
 				pi.setSummary ("ScriptNotFound", true);
@@ -215,7 +228,7 @@ public final class ProcessUtil {
 			// Method arguments context are A_
 			// Parameter context are P_
 			MRule.setContext(engine, ctx, 0);  // no window
-			// now add the method arguments to the engine 
+			// now add the method arguments to the engine
 			engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", ctx);
 			if (trx == null)
 				trx = Trx.get(pi.getTitle()+"_"+pi.getAD_PInstance_ID(), true);
@@ -258,16 +271,16 @@ public final class ProcessUtil {
 				}
 			}
 			engine.put(MRule.ARGUMENTS_PREFIX + "ProcessInfo", pi);
-		
+
 			msg = engine.eval(rule.getScript()).toString();
 			//transaction should rollback if there are error in process
 			if ("@Error@".equals(msg))
 				success = false;
-			
+
 			//	Parse Variables
 			msg = Msg.parseTranslation(ctx, msg);
 			pi.setSummary (msg, !success);
-			
+
 		}
 		catch (Exception e)
 		{
@@ -278,7 +291,7 @@ public final class ProcessUtil {
 		if (success) {
 			if (trx != null)
 			{
-				try 
+				try
 				{
 					trx.commit(true);
 				} catch (Exception e)
@@ -299,7 +312,7 @@ public final class ProcessUtil {
 		}
 		return success;
 	}
-	
+
 	public static MWFProcess startWorkFlow(Properties ctx, ProcessInfo pi, int AD_Workflow_ID) {
 		MWorkflow wf = MWorkflow.get (ctx, AD_Workflow_ID);
 		MWFProcess wfProcess = null;
@@ -322,6 +335,6 @@ public final class ProcessUtil {
 	public static boolean startJavaProcessWithoutTrxClose(Properties ctx, ProcessInfo pi, Trx trx) {
 		return startJavaProcess(ctx, pi, trx, false);
 	}
-	
-	
+
+
 }

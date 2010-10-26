@@ -70,7 +70,7 @@ public final class Env
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
-	
+
 	/**
 	 * @param provider
 	 * @deprecated
@@ -95,7 +95,7 @@ public final class Env
 	{
 		return eventListeners.remove(listener);
 	}
-	
+
 	/**
 	 *	Exit System
 	 *  @param status System exit status (usually 0 for no error)
@@ -145,7 +145,7 @@ public final class Env
 		{
 			listener.onReset(finalCall);
 		}
-		
+
 		//	Clear all Context
 		if (finalCall)
 			getCtx().clear();
@@ -1027,6 +1027,33 @@ public final class Env
 		return Language.getLoginLanguage();
 	}	//	getLanguage
 
+	public static ArrayList<String> getSupportedLanguages()
+	{
+		ArrayList<String> AD_Languages = new ArrayList<String>();
+		String sql = "SELECT DISTINCT AD_Language FROM AD_Message_Trl";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				String AD_Language = rs.getString(1);
+				AD_Languages.add(AD_Language);
+			}
+		}
+		catch (SQLException e)
+		{
+			getLogger().log(Level.SEVERE, "", e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		return AD_Languages;
+	}
+
 	/**
 	 *  Verify Language.
 	 *  Check that language is supported by the system
@@ -1176,7 +1203,7 @@ public final class Env
 		for(IEnvEventListener listener : listeners)
 		{
 			listener.onClearWindowContext(WindowNo);
-		}	
+		}
 	}	//	clearWinContext
 
 	/**
@@ -1347,7 +1374,7 @@ public final class Env
 	}
 
 	/*************************************************************************/
-	
+
 	/**
 	 *	Clean up context for Window (i.e. delete it)
 	 *  @param WindowNo window
@@ -1536,11 +1563,11 @@ public final class Env
 		{
 			if(!(key instanceof String))
 				continue;
-			
+
 			Object value = ctx.get(key);
 			if (!(value instanceof String))
 				continue;
-			
+
 			p.put(key, value);
 		}
 
@@ -1548,9 +1575,9 @@ public final class Env
 	}
 
 	/**	Window Cache		*/
-	private static CCache<Integer,GridWindowVO>	s_windowsvo 
+	private static CCache<Integer,GridWindowVO>	s_windowsvo
 		= new CCache<Integer,GridWindowVO>("AD_Window", 10);
-	
+
 	/**
 	 *  Get Window Model
 	 *
@@ -1572,7 +1599,7 @@ public final class Env
 				getLogger().info("Cached=" + mWindowVO);
 			}
 		}
-		
+
 		//  Create Window Model on Client
 		if (mWindowVO == null)
 		{
@@ -1583,7 +1610,7 @@ public final class Env
 		}	//	from Client
 		if (mWindowVO == null)
 			return null;
-		
+
 		//  Check (remote) context
 		if (!mWindowVO.ctx.equals(Env.getCtx()))
 		{

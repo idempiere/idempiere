@@ -30,7 +30,7 @@ import java.util.logging.Level;
  *  </pre>
  *  @author     Jorg Janke
  *  @version    $Id: DisplayType.java,v 1.6 2006/08/30 20:30:44 comdivision Exp $
- * 
+ *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1810632 ] PricePrecision error in InfoProduct (and similar)
  */
@@ -100,8 +100,8 @@ public final class DisplayType
 	public static final int URL  = 40;
 	/** Display Type 42	PrinterName	*/
 	public static final int PrinterName  = 42;
-	//	Candidates: 
-	
+	//	Candidates:
+
 	/**
 	 *	- New Display Type
 		INSERT INTO AD_REFERENCE
@@ -130,7 +130,7 @@ public final class DisplayType
 
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (DisplayType.class);
-	
+
 	/**
 	 *	Returns true if (numeric) ID (Table, Search, Account, ..).
 	 *  (stored as Integer)
@@ -155,12 +155,12 @@ public final class DisplayType
 	 */
 	public static boolean isNumeric(int displayType)
 	{
-		if (displayType == Amount || displayType == Number || displayType == CostPrice 
+		if (displayType == Amount || displayType == Number || displayType == CostPrice
 			|| displayType == Integer || displayType == Quantity)
 			return true;
 		return false;
 	}	//	isNumeric
-	
+
 	/**
 	 * 	Get Default Precision.
 	 * 	Used for databases who cannot handle dynamic number precision.
@@ -173,12 +173,12 @@ public final class DisplayType
 			return 2;
 		if (displayType == Number)
 			return 6;
-		if (displayType == CostPrice 
+		if (displayType == CostPrice
 			|| displayType == Quantity)
 			return 4;
 		return 0;
 	}	//	getDefaultPrecision
-	
+
 
 	/**
 	 *	Returns true, if DisplayType is text (String, Text, TextLong, Memo).
@@ -187,7 +187,7 @@ public final class DisplayType
 	 */
 	public static boolean isText(int displayType)
 	{
-		if (displayType == String || displayType == Text 
+		if (displayType == String || displayType == Text
 			|| displayType == TextLong || displayType == Memo
 			|| displayType == FilePath || displayType == FileName
 			|| displayType == URL || displayType == PrinterName)
@@ -221,7 +221,7 @@ public final class DisplayType
 			return true;
 		return false;
 	}	//	isLookup
-	
+
 	/**
 	 * 	Returns true if DisplayType is a Large Object
 	 *	@param displayType Display Type
@@ -229,7 +229,7 @@ public final class DisplayType
 	 */
 	public static boolean isLOB (int displayType)
 	{
-		if (displayType == Binary 
+		if (displayType == Binary
 			|| displayType == TextLong)
 			return true;
 		return false;
@@ -295,7 +295,7 @@ public final class DisplayType
 		}
 		return format;
 	}	//	getDecimalFormat
-	
+
 	/**************************************************************************
 	 *	Return Format for numeric DisplayType
 	 *  @param displayType Display Type (default Number)
@@ -306,7 +306,7 @@ public final class DisplayType
 	{
 		return getNumberFormat(displayType, language, null);
 	}
-	
+
 	/**
 	 *	Return Format for numeric DisplayType
 	 *  @param displayType Display Type
@@ -368,7 +368,7 @@ public final class DisplayType
 	{
 		Language myLanguage = language;
 		if (myLanguage == null)
-			myLanguage = Language.getLoginLanguage();
+			myLanguage = Env.getLanguage(Env.getCtx());
 		//
 		if ( pattern != null && pattern.length() > 0)
 		{
@@ -381,7 +381,7 @@ public final class DisplayType
 				s_log.log(Level.WARNING, "Invalid date pattern: " + pattern);
 			}
 		}
-		
+
 		if (displayType == DateTime)
 			return myLanguage.getDateTimeFormat();
 		else if (displayType == Time)
@@ -454,8 +454,8 @@ public final class DisplayType
 				&& columnName.equals("BinaryData"))
 				return "BLOB";
 			//	ID, CreatedBy/UpdatedBy, Acct
-			else if (columnName.endsWith("_ID") 
-				|| columnName.endsWith("tedBy") 
+			else if (columnName.endsWith("_ID")
+				|| columnName.endsWith("tedBy")
 				|| columnName.endsWith("_Acct") )
 				return "NUMBER(10)";
 			else if (fieldLength < 4)
@@ -472,7 +472,7 @@ public final class DisplayType
 			return "NUMBER";
 		if (displayType == DisplayType.Binary)
 			return "BLOB";
-		if (displayType == DisplayType.TextLong 
+		if (displayType == DisplayType.TextLong
 			|| (displayType == DisplayType.Text && fieldLength >= 4000))
 			return "CLOB";
 		if (displayType == DisplayType.YesNo)
@@ -481,7 +481,7 @@ public final class DisplayType
 			if (fieldLength == 1)
 				return "CHAR(" + fieldLength + ")";
 			else
-				return "NVARCHAR2(" + fieldLength + ")";			
+				return "NVARCHAR2(" + fieldLength + ")";
 		}
 		if (displayType == DisplayType.Color) // this condition is never reached - filtered above in isID
 		{
@@ -499,10 +499,10 @@ public final class DisplayType
 		}
 		if (!DisplayType.isText(displayType))
 			s_log.severe("Unhandled Data Type = " + displayType);
-				
+
 		return "NVARCHAR2(" + fieldLength + ")";
 	}	//	getSQLDataType
-	
+
 	/**
 	 * 	Get Description
 	 *	@param displayType display Type
@@ -577,5 +577,5 @@ public final class DisplayType
 		//
 		return "UNKNOWN DisplayType=" + displayType;
 	}	//	getDescription
-	
+
 }	//	DisplayType

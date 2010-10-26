@@ -29,6 +29,7 @@ import javax.sql.RowSet;
 
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintFormat;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -49,7 +50,7 @@ import org.compiere.util.Util;
 public class MPrintFormat extends X_AD_PrintFormat
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3626220385155526700L;
 
@@ -64,7 +65,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	{
 		super (ctx, AD_PrintFormat_ID, trxName);
 		//	Language=[Deutsch,Locale=de_DE,AD_Language=en_US,DatePattern=DD.MM.YYYY,DecimalPoint=false]
-		m_language = Language.getLoginLanguage();
+		m_language = Env.getLanguage(ctx);
 		if (AD_PrintFormat_ID == 0)
 		{
 			setStandardHeaderFooter(true);
@@ -74,7 +75,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		}
 		m_items = getItems();
 	}	//	MPrintFormat
-	
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context
@@ -84,7 +85,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	public MPrintFormat (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-		m_language = Language.getLoginLanguage();
+		m_language = Env.getLanguage(ctx);
 		m_items = getItems();
 	}	//	MPrintFormat
 
@@ -192,7 +193,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			//	Display restrictions - Passwords, etc.
 			+ " AND NOT EXISTS (SELECT * FROM AD_Field f "
 				+ "WHERE pfi.AD_Column_ID=f.AD_Column_ID"
-				+ " AND (f.IsEncrypted='Y' OR f.ObscureType IS NOT NULL))" 
+				+ " AND (f.IsEncrypted='Y' OR f.ObscureType IS NOT NULL))"
 			+ "ORDER BY SeqNo";
 		MRole role = MRole.getDefault(getCtx(), false);
 		PreparedStatement pstmt = null;
@@ -260,7 +261,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		log.fine("setTranslation #" + no);
 	}	//	setTranslation
 
-	
+
 	/**************************************************************************
 	 * 	Set Standard Header
 	 *	@param standardHeaderFooter true if std header
@@ -287,7 +288,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			super.setIsForm(false);
 	}	//	setIsTableBased
 
-	
+
 	/**************************************************************************
 	 * 	Set Translation View Language.
 	 * 	@param language language (checked for base language)
@@ -331,7 +332,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		}
 	}	//	setTranslationViewQuery
 
-	
+
 	/**************************************************************************
 	 * 	Get Optional TableFormat
 	 * 	@param AD_PrintTableFormat_ID table format
@@ -367,7 +368,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		return sb.toString();
 	}	//	toString
 
-	
+
 	/**************************************************************************
 	 *  Load Special data (images, ..).
 	 *  To be extended by sub-classes
@@ -421,7 +422,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 *  @param AD_PrintFormat_ID 0 or existing PrintFormat
 	 * 	@return print format
 	 */
-	static public MPrintFormat createFromTable (Properties ctx, 
+	static public MPrintFormat createFromTable (Properties ctx,
 		int AD_Table_ID, int AD_PrintFormat_ID)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
@@ -650,13 +651,13 @@ public class MPrintFormat extends X_AD_PrintFormat
 			catch (SQLException e)
 			{
 				s_log.log(Level.SEVERE, "(table) - " + sql, e);
-			}			
+			}
 			finally {
 				DB.close(rs, pstmt);
 				rs = null; pstmt = null;
 			}
 		}
-		
+
 		//
 		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
 		list.toArray(retValue);
@@ -694,18 +695,18 @@ public class MPrintFormat extends X_AD_PrintFormat
      *	@param fromItems from items
      *	@param toItems to items
      */
-    static private void copyTranslationItems (MPrintFormatItem[] fromItems, 
+    static private void copyTranslationItems (MPrintFormatItem[] fromItems,
     	MPrintFormatItem[] toItems)
     {
     	if (fromItems == null || toItems == null)
             return;		//	should not happen
-        
+
     	int counter = 0;
         for (int i = 0; i < fromItems.length; i++)
-        {   
+        {
             int fromID = fromItems[i].getAD_PrintFormatItem_ID();
             int toID = toItems[i].getAD_PrintFormatItem_ID();
-            
+
             StringBuffer sql = new StringBuffer("UPDATE AD_PrintFormatItem_Trl new ")
             	//	Set
             	.append("SET (PrintName, PrintNameSuffix, IsTranslated) = ")
@@ -730,7 +731,7 @@ public class MPrintFormat extends X_AD_PrintFormat
         s_log.finest("#" + counter);
     }	//	copyTranslationItems
 
-	
+
 	/**************************************************************************
 	 * 	Copy existing Definition To Client
 	 * 	@param ctx context
@@ -738,7 +739,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 * 	@param to_AD_PrintFormat_ID format
 	 * 	@return print format
 	 */
-	public static MPrintFormat copy (Properties ctx, 
+	public static MPrintFormat copy (Properties ctx,
 		int from_AD_PrintFormat_ID, int to_AD_PrintFormat_ID)
 	{
 		return copy (ctx, from_AD_PrintFormat_ID, to_AD_PrintFormat_ID, -1);
@@ -751,7 +752,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 * 	@param to_Client_ID to client
 	 * 	@return print format
 	 */
-	public static MPrintFormat copyToClient (Properties ctx, 
+	public static MPrintFormat copyToClient (Properties ctx,
 		int AD_PrintFormat_ID, int to_Client_ID)
 	{
 		return copy (ctx, AD_PrintFormat_ID, 0, to_Client_ID);
@@ -769,7 +770,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		int to_AD_PrintFormat_ID, int to_Client_ID)
 	{
 		s_log.info ("From AD_PrintFormat_ID=" + from_AD_PrintFormat_ID
-			+ ", To AD_PrintFormat_ID=" + to_AD_PrintFormat_ID 
+			+ ", To AD_PrintFormat_ID=" + to_AD_PrintFormat_ID
 			+ ", To Client_ID=" + to_Client_ID);
 		if (from_AD_PrintFormat_ID == 0)
 			throw new IllegalArgumentException ("From_AD_PrintFormat_ID is 0");
@@ -786,8 +787,8 @@ public class MPrintFormat extends X_AD_PrintFormat
 		}
 		//	Set Name - Remove TEMPLATE - add copy
 		to.setName(Util.replace(to.getName(), "TEMPLATE", String.valueOf(to_Client_ID)));
-		to.setName(to.getName() 
-			+ " " + Msg.getMsg(ctx, "Copy")		 
+		to.setName(to.getName()
+			+ " " + Msg.getMsg(ctx, "Copy")
 			+ " " + to.hashCode());		//	unique name
 		//
 		to.save();
@@ -823,6 +824,15 @@ public class MPrintFormat extends X_AD_PrintFormat
 			else
 				s_formats.put(key, pf);
 		}
+
+		if (pf != null)
+		{
+			try {
+				pf = pf.clone();
+			} catch (CloneNotSupportedException e) {
+				throw new RuntimeException(e);
+			}
+		}
 		return pf;
 	}	//	get
 
@@ -843,7 +853,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			sql += "AD_ReportView_ID=?";
 		else
 			sql += "AD_Table_ID=?";
-		sql += " ORDER BY IsDefault DESC"; 
+		sql += " ORDER BY IsDefault DESC";
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
@@ -872,7 +882,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		Integer key = new Integer(AD_PrintFormat_ID);
 		s_formats.put(key, null);
 	}	//	deleteFromCache
-	
+
     //begin vpj-cd e-evolution
 	/**
 	 * Get ID of Print Format use Name
@@ -888,10 +898,10 @@ public class MPrintFormat extends X_AD_PrintFormat
 		return DB.getSQLValue(null, sql, formatName, AD_Table_ID, AD_Client_ID);
 	}
 	//end vpj-cd e-evolution
-	
+
 	/**
 	 * @param AD_Table_ID
-	 * @param AD_Client_ID use -1 to retrieve from all client 
+	 * @param AD_Client_ID use -1 to retrieve from all client
 	 * @param trxName
 	 */
 	public static RowSet getAccessiblePrintFormats (int AD_Table_ID, int AD_Client_ID, String trxName)
@@ -904,7 +914,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		{
 			sql = sql + " AND AD_Client_ID = ? ";
 		}
-		sql = sql + "ORDER BY AD_Client_ID DESC, IsDefault DESC, Name"; //	Own First 
+		sql = sql + "ORDER BY AD_Client_ID DESC, IsDefault DESC, Name"; //	Own First
 		//
 		sql = MRole.getDefault().addAccessSQL (
 			sql, "AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
@@ -925,11 +935,23 @@ public class MPrintFormat extends X_AD_PrintFormat
 			DB.close(pstmt);
 			pstmt = null;
 		}
-		
+
 		return rowSet;
 	}
 
-	
+	@Override
+	public MPrintFormat clone() throws CloneNotSupportedException {
+		MPrintFormat clone = (MPrintFormat) super.clone();
+		clone.m_items = m_items == null ? null : new MPrintFormatItem[m_items.length];
+		for(int i = 0; i < m_items.length; i++) {
+			clone.m_items[i] = m_items[i];
+		}
+		clone.m_tFormat = m_tFormat;
+		clone.m_language = Env.getLanguage(Env.getCtx());
+		clone.m_translationViewLanguage = null;
+		return clone;
+	}
+
 	/**************************************************************************
 	 * 	Test
 	 * 	@param args arga
