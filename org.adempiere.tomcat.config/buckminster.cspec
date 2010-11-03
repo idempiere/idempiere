@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.adempiere.tomcat.config" componentType="osgi.bundle" version="1.0.0">
+    <cs:dependencies>
+        <cs:dependency name="org.eclipse.gemini.web.tomcat" componentType="osgi.bundle" versionDesignator="1.1.0" filter="(bundleHost=true)"/>
+    </cs:dependencies>
+    <cs:generators>
+        <cs:generator generates="org.adempiere.tomcat.config.source" attribute="source.bundle.jar" generatesType="osgi.bundle"/>
+    </cs:generators>
+    <cs:artifacts>
+        <cs:public name="build.properties" path="build.properties"/>
+        <cs:public name="manifest" path="MANIFEST.MF" base="META-INF/"/>
+        <cs:private name="bin.excludes">
+            <cs:path path="META-INF/tomcat/server.xml"/>
+            <cs:path path="META-INF/tomcat/server.dev.xml"/>
+            <cs:path path="META-INF/tomcat/dev.readme.txt"/>
+        </cs:private>
+        <cs:private name="bin.includes" path="META-INF/"/>
+        <cs:private name="eclipse.build.source" base="src/"/>
+    </cs:artifacts>
+    <cs:actions>
+        <cs:public name="bundle.jar" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFileId" value="buckminster.pdetasks"/>
+                <cs:property key="targets" value="create.bundle.jar"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="manifest" alias="manifest"/>
+                <cs:attribute name="jar.contents" alias="action.requirements"/>
+            </cs:prerequisites>
+            <cs:products alias="action.output" base="${buckminster.output}/jar/" fileCount="1" upToDatePolicy="COUNT"/>
+        </cs:public>
+        <cs:public name="source.bundle.jar" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFileId" value="buckminster.pdetasks"/>
+                <cs:property key="targets" value="create.bundle.jar"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="src.includes" alias="action.requirements"/>
+                <cs:attribute name="source.manifest" alias="manifest"/>
+            </cs:prerequisites>
+            <cs:products alias="action.output" base="${buckminster.output}/source.jar/"/>
+        </cs:public>
+        <cs:private name="buckminster.rm.build.dir" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFileId" value="buckminster.pdetasks"/>
+                <cs:property key="targets" value="delete.dir"/>
+            </cs:actorProperties>
+            <cs:properties>
+                <cs:property key="dir.to.delete" value="${buckminster.output}/"/>
+            </cs:properties>
+        </cs:private>
+        <cs:private name="eclipse.build" actor="eclipse.build" always="true">
+            <cs:prerequisites>
+                <cs:attribute name="eclipse.build.source"/>
+            </cs:prerequisites>
+            <cs:products>
+                <cs:private name="eclipse.build.output.bin" base="${buckminster.home}/bin/"/>
+            </cs:products>
+        </cs:private>
+        <cs:private name="eclipse.clean" actor="eclipse.clean" always="true"/>
+        <cs:private name="source.manifest" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFileId" value="buckminster.pdetasks"/>
+                <cs:property key="targets" value="create.source.manifest"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="manifest" alias="manifest"/>
+                <cs:attribute name="build.properties" alias="properties"/>
+            </cs:prerequisites>
+            <cs:products alias="action.output" base="${buckminster.output}/temp/">
+                <cs:path path="SOURCE_MANIFEST.MF"/>
+            </cs:products>
+        </cs:private>
+    </cs:actions>
+    <cs:groups>
+        <cs:public name="buckminster.clean">
+            <cs:attribute name="buckminster.rm.build.dir"/>
+            <cs:attribute name="eclipse.clean"/>
+        </cs:public>
+        <cs:public name="bundle.and.fragments">
+            <cs:attribute name="bundle.jar"/>
+        </cs:public>
+        <cs:public name="bundle.and.fragments.source">
+            <cs:attribute name="source.bundle.jar"/>
+        </cs:public>
+        <cs:public name="bundle.jars">
+            <cs:attribute name="bundle.and.fragments"/>
+        </cs:public>
+        <cs:public name="java.binaries">
+            <cs:attribute name="eclipse.build"/>
+        </cs:public>
+        <cs:public name="product.configuration.exports"/>
+        <cs:private name="jar.contents">
+            <cs:attribute name="bin.includes"/>
+            <cs:attribute name="eclipse.build.output.bin"/>
+        </cs:private>
+        <cs:private name="src.includes">
+            <cs:attribute name="eclipse.build.source"/>
+        </cs:private>
+    </cs:groups>
+</cs:cspec>
