@@ -59,7 +59,7 @@ public class ExtensionList<T> implements Iterable<T>{
 		private boolean accept(IConfigurationElement element) {
 			for (String name : filters.keySet()) {
 				String expected = filters.get(name);
-				if (name.equals("Extension.ID")) {
+				if (name.equals(ServiceQuery.EXTENSION_ID)) {
 					String id = element.getDeclaringExtension().getUniqueIdentifier();
 					if (!expected.equals(id))
 						return false;

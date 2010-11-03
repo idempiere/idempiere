@@ -6,4 +6,5 @@ public class ServiceQuery extends HashMap<String, String> {
 
 	private static final long serialVersionUID = -3624488575106821781L;
 
+	public static final String EXTENSION_ID = "Extension.ID";
 }

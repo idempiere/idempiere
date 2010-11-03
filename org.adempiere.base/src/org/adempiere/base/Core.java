@@ -46,18 +46,18 @@ public class Core {
 	public static ProcessCall getProcess(String className) {
 		if (isExtension(className))
 			className = className.substring(Core.OSGI_PREFIX.length());
-		
+
 		ServiceQuery query = new ServiceQuery();
-		query.put("id", className);
+		query.put(ServiceQuery.EXTENSION_ID, className);
 		return Service.locate(ProcessCall.class, "org.adempiere.base.Process", query);
 	}
-	
+
 	public static ModelValidator getModelValidator(String className) {
 		if (isExtension(className))
 			className = className.substring(Core.OSGI_PREFIX.length());
-		
+
 		ServiceQuery query = new ServiceQuery();
-		query.put("id", className);
+		query.put(ServiceQuery.EXTENSION_ID, className);
 		return Service.locate(ModelValidator.class, "org.adempiere.base.ModelValidator", query);
 	}
 
