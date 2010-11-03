@@ -1,0 +1,45 @@
+<project>
+	 <pathconvert property="equinox.launcher.jar">
+	   <first count="1">
+	     <sort>
+	       <fileset dir="${eclipse.home}/plugins" includes="**/org.eclipse.equinox.launcher_*.jar"/>
+	       <reverse xmlns="antlib:org.apache.tools.ant.types.resources.comparators">
+	         <date/>
+	       </reverse>
+	     </sort>
+	   </first>
+	 </pathconvert>
+
+	<target name="create.product">
+		<property name="destination" location="${sp:destination}"/>
+		<delete dir="${destination}"/>
+		<makeurl property="repository" file="${sp:repository}"/>
+		<mkdir dir="${destination}"/>
+		<echoproperties/>
+		<echo message="${equinox.launcher.jar}"/>
+		<echo message="${repository}"/>
+		<echo message="${destination}"/>
+		<java jar="${equinox.launcher.jar}" fork="true" failonerror="true" >
+			<arg value="-application"/>
+			<arg value="org.eclipse.equinox.p2.director"/>
+			<arg value="-repository"/>
+			<arg value="${repository}"/>
+			<arg value="-destination"/>
+			<arg value="${destination}/adempiere-server"/>
+			<arg value="-profile"/>
+			<arg value="${profile}"/>
+			<arg value="-profileProperties" />
+			<arg value="org.eclipse.update.install.features=true" />
+			<arg value="-installIU"/>
+			<arg value="${iu}"/>
+			<arg value="-p2.os" />
+			<arg value="${target.os}" />
+			<arg value="-p2.ws" />
+			<arg value="${target.ws}" />
+			<arg value="-p2.arch" />
+			<arg value="${target.arch}" />
+			<arg value="-consoleLog"/>
+			<!-- jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/ -->
+		</java>
+	</target>
+</project>

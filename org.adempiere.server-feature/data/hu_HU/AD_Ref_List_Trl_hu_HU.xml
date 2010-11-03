@@ -1,0 +1,3605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Adempiere(r) Release 3.3.1b_2007-12-05 -Smart Suite ERP,CRM and SCM- (c) 1999-2007 Adempiere (r); Implementation: ${env.ADEMPIERE_VERSION} 20071229-0902 - ${env.ADEMPIERE_VENDOR}-->
+<!--<!DOCTYPE adempiereTrl PUBLIC "-//ComPiere, Inc.//DTD Adempiere Translation 1.0//EN" "http://www.adempiere.com/dtd/adempiereTrl.dtd">-->
+<adempiereTrl language="hu_HU" table="AD_Ref_List">
+ <row id="51" trl="N">
+  <value column="Name" original="Organization">Költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="53" trl="N">
+  <value column="Name" original="Client+Organization">Vállalat és költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="54" trl="N">
+  <value column="Name" original="System only">Csak rendszer</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="57" trl="N">
+  <value column="Name" original="All">Minden</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="91" trl="N">
+  <value column="Name" original="List Validation">Érvényesítési lista</value>
+  <value column="Description" original="List Validation">Érvényesítési lista</value>
+ </row>
+ <row id="92" trl="N">
+  <value column="Name" original="DataType">Adat típus</value>
+  <value column="Description" original="DataType">Adat típus</value>
+ </row>
+ <row id="93" trl="N">
+  <value column="Name" original="Table Validation">Érvényesítési tábla</value>
+  <value column="Description" original="Table Validation">Érvényesítési tábla</value>
+ </row>
+ <row id="100" trl="N">
+  <value column="Name" original="SQL">SQL</value>
+  <value column="Description" original="SQL">SQL</value>
+ </row>
+ <row id="101" trl="N">
+  <value column="Name" original="Java Language">Java nyelv</value>
+  <value column="Description" original="Java Language">Java nyelv</value>
+ </row>
+ <row id="102" trl="N">
+  <value column="Name" original="Java Script">Java program utasítás</value>
+  <value column="Description" original="ECMA Script">ECMA program utasítás</value>
+ </row>
+ <row id="103" trl="N">
+  <value column="Name" original="Window">Ablak</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="104" trl="N">
+  <value column="Name" original="Task">Feladat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="105" trl="N">
+  <value column="Name" original="WorkFlow">Munkafolyamat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="106" trl="N">
+  <value column="Name" original="Process">Feldolgoz</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="107" trl="N">
+  <value column="Name" original="Error">Hiba</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="108" trl="N">
+  <value column="Name" original="Information">Információ</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="109" trl="N">
+  <value column="Name" original="Menu">Menü</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="110" trl="N">
+  <value column="Name" original="Single Record">Egyes rekord</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="111" trl="N">
+  <value column="Name" original="Maintain">Beállítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="112" trl="N">
+  <value column="Name" original="Transaction">Tranzakció</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="113" trl="N">
+  <value column="Name" original="Query Only">Csak lekérdezés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="114" trl="N">
+  <value column="Name" original="Spot">Azonnali</value>
+  <value column="Description" original="Spot Conversation Rate Type">Azonnali átváltási arány típusa</value>
+ </row>
+ <row id="115" trl="N">
+  <value column="Name" original="Period End">Periódus vége</value>
+  <value column="Description" original="Period Conversion Type">Periódus átváltási típus</value>
+ </row>
+ <row id="116" trl="N">
+  <value column="Name" original="Standard Calendar Period">Általános naptári periódus</value>
+  <value column="Description" original="Periods with non overlapping calendar days">Periódusok, melyek nem fedik egymást a naptárban</value>
+ </row>
+ <row id="117" trl="N">
+  <value column="Name" original="Adjustment Period">Periódus beállítása</value>
+  <value column="Description" original="Period without calendar days">Periódus naptári napok nélkül</value>
+ </row>
+ <row id="118" trl="N">
+  <value column="Name" original="Account">Számla</value>
+  <value column="Description" original="Account Element">Könyvelési elemek</value>
+ </row>
+ <row id="119" trl="N">
+  <value column="Name" original="User defined">Felhasználó által meghatározott</value>
+  <value column="Description" original="User defined element">Felhasználó által meghatározott elem</value>
+ </row>
+ <row id="120" trl="N">
+  <value column="Name" original="Asset">Eszköz</value>
+  <value column="Description" original="Asset (Balance Sheet) Account">Eszköz (Mérleg) számla</value>
+ </row>
+ <row id="121" trl="N">
+  <value column="Name" original="Liability">Forrás</value>
+  <value column="Description" original="Liability (Balance Sheet) Account">Forrás (mérleg) számla</value>
+ </row>
+ <row id="122" trl="N">
+  <value column="Name" original="Revenue">Árbevétel</value>
+  <value column="Description" original="Revenue (P&amp;L) Account">Árbevétel (eredm.) számla</value>
+ </row>
+ <row id="123" trl="N">
+  <value column="Name" original="Expense">Költség, ráfordítás</value>
+  <value column="Description" original="Expense (P&amp;L) Account">Költség/ráfordítás (eredm.) számla</value>
+ </row>
+ <row id="124" trl="N">
+  <value column="Name" original="Owner's Equity">Saját tőke</value>
+  <value column="Description" original="Owner's Equity (Balance Sheet) Account">Saját tőke (Mérleg) számla</value>
+ </row>
+ <row id="125" trl="N">
+  <value column="Name" original="Memo">Statisztikai</value>
+  <value column="Description" original="Memo (Non Balance Sheet nor P&amp;L) Account">Statisztikai (nem mérleg, vagy eredm.) számla</value>
+ </row>
+ <row id="126" trl="N">
+  <value column="Name" original="Natural">Főkönyvi számla</value>
+  <value column="Description" original="Natural sign of the Account Type">A számla típusának fökönyvi jelölése</value>
+ </row>
+ <row id="127" trl="N">
+  <value column="Name" original="Debit">Tartozik</value>
+  <value column="Description" original="Debit Balance Account">Tartozik egyenlegű számla</value>
+ </row>
+ <row id="128" trl="N">
+  <value column="Name" original="Credit">Követel</value>
+  <value column="Description" original="Credit Balance Account">Követel egyenlegű számla</value>
+ </row>
+ <row id="129" trl="N">
+  <value column="Name" original="Menu">Menü</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="130" trl="N">
+  <value column="Name" original="Element Value">Elem értéke</value>
+  <value column="Description" original="Account, etc.">Számla, stb.</value>
+ </row>
+ <row id="131" trl="N">
+  <value column="Name" original="Product">Termék</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="132" trl="N">
+  <value column="Name" original="BPartner">Üzleti partner</value>
+  <value column="Description" original="Business Partner">Üzleti partner</value>
+ </row>
+ <row id="133" trl="N">
+  <value column="Name" original="Regional Office">Regionális iroda</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="134" trl="N">
+  <value column="Name" original="Accounts Payable Office">Irodai szállítói kötelezettségek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="135" trl="N">
+  <value column="Name" original="Plant">Üzem</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="136" trl="N">
+  <value column="Name" original="Small Business">Kisvállalat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="137" trl="N">
+  <value column="Name" original="Minority-Owned Small Business">Kisvállalat kisebbségi tulajdonosai</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="138" trl="N">
+  <value column="Name" original="Minority-Owned Business">Vállalat kisebbségi tulajdonosai</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="139" trl="N">
+  <value column="Name" original="Woman-Owned Small Business">Kisvállalat tulajdonosai</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="140" trl="N">
+  <value column="Name" original="Woman-Owned Business">Vállalat tulajdonosai</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="141" trl="N">
+  <value column="Name" original="Subcontractor">Alvállalkozó</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="142" trl="N">
+  <value column="Name" original="Individual">Egyéni</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="143" trl="N">
+  <value column="Name" original="Partnership">Együttműködés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="144" trl="N">
+  <value column="Name" original="Corporation">Vállalat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="145" trl="N">
+  <value column="Name" original="Drop-off Location">Kimaradt helység</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="146" trl="N">
+  <value column="Name" original="Standard Costing">Standard (ön)költség</value>
+  <value column="Description" original="Standard Purchase Order Price Costing">Standard beszerzési rendelési ár-költség</value>
+ </row>
+ <row id="147" trl="N">
+  <value column="Name" original="Average PO">Átlag beszerzési rendelési ár</value>
+  <value column="Description" original="Weighted Average Purchase Order Price Costing">Súlyozott átlag beszerzési rendelési ár-költség</value>
+ </row>
+ <row id="148" trl="N">
+  <value column="Name" original="Lifo">Lifo</value>
+  <value column="Description" original="Last In First Out Costing">Last In First Out költség</value>
+ </row>
+ <row id="149" trl="N">
+  <value column="Name" original="Fifo">Fifo</value>
+  <value column="Description" original="First In First Out Costing">First In First Out költség</value>
+ </row>
+ <row id="150" trl="N">
+  <value column="Name" original="International GAAP">Nemzetközi GAAP</value>
+  <value column="Description" original="International GAAP">Nemzetközi GAAP</value>
+ </row>
+ <row id="151" trl="N">
+  <value column="Name" original="US GAAP">US GAAP</value>
+  <value column="Description" original="United States GAAP">Amerikai GAAP</value>
+ </row>
+ <row id="152" trl="N">
+  <value column="Name" original="German HGB">Német HGB</value>
+  <value column="Description" original="German HGB">Német HGB</value>
+ </row>
+ <row id="153" trl="N">
+  <value column="Name" original="Actual">Aktuális</value>
+  <value column="Description" original="Actual Postings">Aktuális feladások</value>
+ </row>
+ <row id="154" trl="N">
+  <value column="Name" original="Budget">Költségvetés</value>
+  <value column="Description" original="Budget Postings">Kötségvetési feladás</value>
+ </row>
+ <row id="155" trl="N">
+  <value column="Name" original="Commitment">Kötelezettség</value>
+  <value column="Description" original="External Encumbrance or Commitment Postings">Külső tehelés vagy kötelezettség feladások</value>
+ </row>
+ <row id="156" trl="N">
+  <value column="Name" original="Statistical">Statisztikai</value>
+  <value column="Description" original="Statistical Postings">Statisztikai feladások</value>
+ </row>
+ <row id="157" trl="N">
+  <value column="Name" original="Local">Helyi</value>
+  <value column="Description" original="Local &lt;-">Helyi &lt;-</value>
+ </row>
+ <row id="159" trl="N">
+  <value column="Name" original="Merge">Egyesít</value>
+  <value column="Description" original="Merge &lt;--&gt;">Egyesít &lt;--&gt;</value>
+ </row>
+ <row id="160" trl="N">
+  <value column="Name" original="Reference">Hivatkozás</value>
+  <value column="Description" original="Reference -&gt;">Hivatkozás -&gt;</value>
+ </row>
+ <row id="164" trl="N">
+  <value column="Name" original="Drafted">Vázolt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="165" trl="N">
+  <value column="Name" original="Completed">Végrehajtott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="166" trl="N">
+  <value column="Name" original="Approved">Engedélyezés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="168" trl="N">
+  <value column="Name" original="Not Approved">Nem engedélyezett</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="172" trl="N">
+  <value column="Name" original="Voided">Érvénytelenített</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="173" trl="N">
+  <value column="Name" original="Invalid">Érvénytelen</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="176" trl="N">
+  <value column="Name" original="Reversed">Megfordított</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="177" trl="N">
+  <value column="Name" original="Closed">Zárt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="178" trl="N">
+  <value column="Name" original="Complete">Elkészít</value>
+  <value column="Description" original="Generate documents and complete transaction">Dokumentumok létrehozása és a tranzakciók vérehajtása</value>
+ </row>
+ <row id="179" trl="N">
+  <value column="Name" original="Approve">Jóváhagy</value>
+  <value column="Description" original="Approve this transaction">A tranzakció jóváhagyása</value>
+ </row>
+ <row id="180" trl="N">
+  <value column="Name" original="Reject">Visszautasít</value>
+  <value column="Description" original="Reject the approval of the document. ">Dokumentum jóváhagyásának elutasítása.</value>
+ </row>
+ <row id="181" trl="N">
+  <value column="Name" original="Post">Feladás</value>
+  <value column="Description" original="Post transaction">Tranzakció feladása</value>
+ </row>
+ <row id="182" trl="N">
+  <value column="Name" original="Void">Érvénytelen</value>
+  <value column="Description" original="Set all quantities to zero and complete transaction">Állítson minden értéket nullára és hajtsa végre a tranzakciót</value>
+ </row>
+ <row id="183" trl="N">
+  <value column="Name" original="Close">Lezárás</value>
+  <value column="Description" original="Finally close this transaction. It cannot be re-activated.">Végül zárja le azt a tranzakciót. Ezt nem lehet újra aktíválni.</value>
+ </row>
+ <row id="184" trl="N">
+  <value column="Name" original="Reverse - Correct">Sztornó - Javít</value>
+  <value column="Description" original="Reverse Transaction (correction) by reversing sign with same date">Tranzakció megfordítása (javítása) ugyanzon dátummal és az ellentét jelölésével.</value>
+ </row>
+ <row id="185" trl="N">
+  <value column="Name" original="Reverse - Accrual">Sztornó - Pontosít</value>
+  <value column="Description" original="Reverse by switching Dr/Cr with current date">A Tartozik-Követel oldal megfordítása a jelenlegi dátummal.</value>
+ </row>
+ <row id="187" trl="N">
+  <value column="Name" original="Invalidate">Érvénytelenít</value>
+  <value column="Description" original="Invalidate Document">Dokumentum érvénytelenítése</value>
+ </row>
+ <row id="188" trl="N">
+  <value column="Name" original="Re-activate">Újra aktívál</value>
+  <value column="Description" original="Reopen Document and Reverse automaticly generated documents; You need to Complete the transaction after the change. ">Újra megnyitja és sztornózza az automatikusan létrehozott dokumentumokat; a tranzakciót be kell fejeznie a változtatás után.</value>
+ </row>
+ <row id="189" trl="N">
+  <value column="Name" original="&lt;None&gt;">&lt;Nincs&gt;</value>
+  <value column="Description" original="No action">Nincs művelet</value>
+ </row>
+ <row id="190" trl="N">
+  <value column="Name" original="Unknown">Ismeretlen</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="194" trl="N">
+  <value column="Name" original="System+Client">Rendszer és vállalat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="198" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original="No Conversion Rate">Nincs átváltási arány</value>
+ </row>
+ <row id="199" trl="N">
+  <value column="Name" original="Fixed">Rögzített</value>
+  <value column="Description" original="Euro Fixed Currency">EURO-ban rögzített deviza</value>
+ </row>
+ <row id="200" trl="N">
+  <value column="Name" original="Average">Átlag</value>
+  <value column="Description" original="Average Rates">Átlagos arány</value>
+ </row>
+ <row id="201" trl="N">
+  <value column="Name" original="Company">Vállalat</value>
+  <value column="Description" original="Company Rate">Vállalati arány</value>
+ </row>
+ <row id="202" trl="N">
+  <value column="Name" original="User Type">Felhasználó típus</value>
+  <value column="Description" original="User Rate Type">Felhasználói arány típus</value>
+ </row>
+ <row id="203" trl="N">
+  <value column="Name" original="Manual Rate">Kézi arány</value>
+  <value column="Description" original="Manual Rate">Kézi arány</value>
+ </row>
+ <row id="204" trl="N">
+  <value column="Name" original="On Credit Order">Hitelezési megbízásra</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="205" trl="N">
+  <value column="Name" original="POS Order">KP rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="206" trl="N">
+  <value column="Name" original="Warehouse Order">Raktári rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="207" trl="N">
+  <value column="Name" original="Standard Order">Standard rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="208" trl="N">
+  <value column="Name" original="Proposal">Javaslat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="209" trl="N">
+  <value column="Name" original="Quotation">Ajánlat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="210" trl="N">
+  <value column="Name" original="Amex">Amex</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="211" trl="N">
+  <value column="Name" original="MasterCard">MasterCard</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="212" trl="N">
+  <value column="Name" original="Visa">Visa</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="213" trl="N">
+  <value column="Name" original="ATM">ATM</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="214" trl="N">
+  <value column="Name" original="After Order delivered">Rendelés után szállított</value>
+  <value column="Description" original="Invoice for every order">Számla minden rendeléshez</value>
+ </row>
+ <row id="215" trl="N">
+  <value column="Name" original="After Delivery">Teljesítést követő</value>
+  <value column="Description" original="Invoice per Delivery">Számla szállításonként</value>
+ </row>
+ <row id="216" trl="N">
+  <value column="Name" original="Customer Schedule after Delivery">Vevőre szabott számlázási ütem szállítást követően</value>
+  <value column="Description" original="Invoice per Customer Invoice Schedule">Számlázás a vevőre szabott számlázási ütem szerint</value>
+ </row>
+ <row id="217" trl="N">
+  <value column="Name" original="After Receipt">Nyugtát követően</value>
+  <value column="Description" original="After receipt of cash">Készpénzes nyugtát követően</value>
+ </row>
+ <row id="218" trl="N">
+  <value column="Name" original="Availability">Rendelkezésre állás</value>
+  <value column="Description" original="As soon as an item becomes available">Amint a tétel rendelkezésre áll</value>
+ </row>
+ <row id="219" trl="N">
+  <value column="Name" original="Complete Line">Sor teljesítése</value>
+  <value column="Description" original="As soon as all items of a line become available">Amint a sor tétele rendelkezésre áll</value>
+ </row>
+ <row id="220" trl="N">
+  <value column="Name" original="Complete Order">Rendelés teljesítése</value>
+  <value column="Description" original="As soon as all items of an order are available">Amint a rendelés összes tétele rendelkezésre áll</value>
+ </row>
+ <row id="221" trl="N">
+  <value column="Name" original="Immediate">Azonnali</value>
+  <value column="Description" original="Immediate Invoice">Azonnali számlázás</value>
+ </row>
+ <row id="222" trl="N">
+  <value column="Name" original="Pickup">Hozott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="223" trl="N">
+  <value column="Name" original="Delivery">Szállítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="224" trl="N">
+  <value column="Name" original="Shipper">Fuvarozók</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="225" trl="N">
+  <value column="Name" original="Freight included">Szállítást magában foglal</value>
+  <value column="Description" original="Freight cost included">Szállítási díjat magában foglal</value>
+ </row>
+ <row id="226" trl="N">
+  <value column="Name" original="Fix price">Rögzített ár</value>
+  <value column="Description" original="Fixed freight price">Rögzített szállítási ár</value>
+ </row>
+ <row id="227" trl="N">
+  <value column="Name" original="Calculated">Számított</value>
+  <value column="Description" original="Calculated based on Product Freight Rule">A számítás a termék szállítási szabályán alapul</value>
+ </row>
+ <row id="228" trl="N">
+  <value column="Name" original="Line">Sor</value>
+  <value column="Description" original="Entered at Line level">Sor szinten megadott</value>
+ </row>
+ <row id="229" trl="N">
+  <value column="Name" original="High">Magas</value>
+  <value column="Description" original="High priority">Magas prioritás</value>
+ </row>
+ <row id="230" trl="N">
+  <value column="Name" original="Medium">Közepes</value>
+  <value column="Description" original="Medium Priority">közepes prioritás</value>
+ </row>
+ <row id="231" trl="N">
+  <value column="Name" original="Low">Alacsony</value>
+  <value column="Description" original="Low priority">Alacsony prioritás</value>
+ </row>
+ <row id="232" trl="N">
+  <value column="Name" original="Whole Number .00">Teljes szám .00</value>
+  <value column="Description" original="Number w/o decimals">Teljes szám tizedesekkel</value>
+ </row>
+ <row id="233" trl="N">
+  <value column="Name" original="No Rounding">Nincs kerekítés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="234" trl="N">
+  <value column="Name" original="Quarter .25 .50 .75">Negyed .25 .50 .75</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="235" trl="N">
+  <value column="Name" original="Dime .10, .20, .30, ...">Tized .10, .20, .30, ...</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="236" trl="N">
+  <value column="Name" original="Nickel .05, .10, .15, ...">Ötöd .05, .10, .15, ...</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="237" trl="N">
+  <value column="Name" original="Ten 10.00, 20.00, ..">Tíz 10.00, 20.00, ..</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="239" trl="N">
+  <value column="Name" original="Last PO Price">Utolsó beszerzési ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="240" trl="N">
+  <value column="Name" original="Maintain Maximum Level">Maximális szint beállítása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="242" trl="N">
+  <value column="Name" original="Manual">Kézi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="244" trl="N">
+  <value column="Name" original="Reorder below Minimum Level">Utánrendelés minimum szint alatt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="245" trl="N">
+  <value column="Name" original="Sunday">Vasárnap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="246" trl="N">
+  <value column="Name" original="Monday">Hétfő</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="247" trl="N">
+  <value column="Name" original="Tuesday">Kedd</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="248" trl="N">
+  <value column="Name" original="Wednesday">Szerda</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="249" trl="N">
+  <value column="Name" original="Thursday">Csütörtök</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="250" trl="N">
+  <value column="Name" original="Friday">Péntek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="251" trl="N">
+  <value column="Name" original="Saturday">Szombat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="252" trl="N">
+  <value column="Name" original="Daily">Napi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="253" trl="N">
+  <value column="Name" original="Weekly">Heti</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="254" trl="N">
+  <value column="Name" original="Monthly">Havi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="255" trl="N">
+  <value column="Name" original="Twice Monthly">Kéthavi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="258" trl="N">
+  <value column="Name" original="Open Period">Periódus megnyitása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="259" trl="N">
+  <value column="Name" original="Close Period">Pariódu zárása</value>
+  <value column="Description" original="Soft close - can be re-opened">Átmeneti zárás - ismételten megnyitható</value>
+ </row>
+ <row id="260" trl="N">
+  <value column="Name" original="Permanently Close Period">Végleges periódus zárás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="261" trl="N">
+  <value column="Name" original="Open">Nyitott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="262" trl="N">
+  <value column="Name" original="Closed">Zárt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="263" trl="N">
+  <value column="Name" original="Permanently closed">Véglegesen zárt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="264" trl="N">
+  <value column="Name" original="Never opened">Nem nyitható</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="266" trl="N">
+  <value column="Name" original="Draft">Vázlat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="267" trl="N">
+  <value column="Name" original="Approved">Engedélyezés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="268" trl="N">
+  <value column="Name" original="Error">Hiba</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="269" trl="N">
+  <value column="Name" original="Warning">Figyelmeztetés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="270" trl="N">
+  <value column="Name" original="Information">Információ</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="271" trl="N">
+  <value column="Name" original="&lt;No Action&gt;">&lt;Nincs művelet&gt;</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="272" trl="N">
+  <value column="Name" original="Organization">Költséghely</value>
+  <value column="Description" original="Owning Organization">Tulajdonos költséghely</value>
+ </row>
+ <row id="273" trl="N">
+  <value column="Name" original="Account">Számla</value>
+  <value column="Description" original="Natural Account">Főkönyvi számla</value>
+ </row>
+ <row id="274" trl="N">
+  <value column="Name" original="Product">Termék</value>
+  <value column="Description" original="Product">Termék</value>
+ </row>
+ <row id="275" trl="N">
+  <value column="Name" original="BPartner">Üzleti partner</value>
+  <value column="Description" original="Business Partner">Üzleti partner</value>
+ </row>
+ <row id="276" trl="N">
+  <value column="Name" original="Org Trx">Tranz. ktghely.</value>
+  <value column="Description" original="Transaction Organization">Tranzakciós költséghely</value>
+ </row>
+ <row id="277" trl="N">
+  <value column="Name" original="Location From">Raktárból</value>
+  <value column="Description" original="Location From">Raktárból</value>
+ </row>
+ <row id="278" trl="N">
+  <value column="Name" original="Location To">Raktárba</value>
+  <value column="Description" original="Location To">Raktárba</value>
+ </row>
+ <row id="279" trl="N">
+  <value column="Name" original="Sales Region">Értékesítési régiók</value>
+  <value column="Description" original="Sales Region">Értékesítési régiók</value>
+ </row>
+ <row id="280" trl="N">
+  <value column="Name" original="Project">Projekt</value>
+  <value column="Description" original="Project">Projekt</value>
+ </row>
+ <row id="281" trl="N">
+  <value column="Name" original="Campaign">Kampány</value>
+  <value column="Description" original="Marketing Campaign">Marketing kampány</value>
+ </row>
+ <row id="282" trl="N">
+  <value column="Name" original="User List 1">Felhasználói lista 1</value>
+  <value column="Description" original="User 1">Felhasználói 1</value>
+ </row>
+ <row id="283" trl="N">
+  <value column="Name" original="User List 2">Felhasználói lista 2</value>
+  <value column="Description" original="User 2">Felhasználói 2</value>
+ </row>
+ <row id="284" trl="N">
+  <value column="Name" original="Organization">Költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="285" trl="N">
+  <value column="Name" original="BoM">Anyagjegyzék</value>
+  <value column="Description" original="Bill of Materials">Anyagjegyzék</value>
+ </row>
+ <row id="286" trl="N">
+  <value column="Name" original="Project">Projekt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="287" trl="N">
+  <value column="Name" original="Sales Region">Értékesítési régiók</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="288" trl="N">
+  <value column="Name" original="Product Category">Termékcsoport</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="289" trl="N">
+  <value column="Name" original="Campaign">Kampány</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="302" trl="N">
+  <value column="Name" original="GL Journal">FK napló</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="303" trl="N">
+  <value column="Name" original="GL Document">FK dokumentum</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="304" trl="N">
+  <value column="Name" original="AP Invoice">Bejövő számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="305" trl="N">
+  <value column="Name" original="AP Payment">Kifizetés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="306" trl="N">
+  <value column="Name" original="AR Invoice">Kimenő számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="307" trl="N">
+  <value column="Name" original="AR Receipt">Bevétel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="308" trl="N">
+  <value column="Name" original="Sales Order">Vevői rendelések</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="312" trl="N">
+  <value column="Name" original="Customer Shipment">Vevői szállítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="313" trl="N">
+  <value column="Name" original="Customer Returns">Vevői visszatérítés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="314" trl="N">
+  <value column="Name" original="Vendor Receipts">Szálítói átvételek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="315" trl="N">
+  <value column="Name" original="Vendor Returns">Szállítói visszatérítés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="316" trl="N">
+  <value column="Name" original="Inventory Out">Készletről</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="317" trl="N">
+  <value column="Name" original="Inventory In">Készletre</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="318" trl="N">
+  <value column="Name" original="Activity">Tevékenység</value>
+  <value column="Description" original="Business Activity">Üzleti tevékenység</value>
+ </row>
+ <row id="319" trl="N">
+  <value column="Name" original="Activity">Tevékenység</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="320" trl="N">
+  <value column="Name" original="Return Material">Visszáru</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="322" trl="N">
+  <value column="Name" original="AR Pro Forma Invoice">Kimenő proforma számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="323" trl="N">
+  <value column="Name" original="Material Delivery">Áruszállítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="324" trl="N">
+  <value column="Name" original="Material Receipt">Áruátvétel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="325" trl="N">
+  <value column="Name" original="List Price">Lista ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="326" trl="N">
+  <value column="Name" original="Standard Price">Standard ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="327" trl="N">
+  <value column="Name" original="Limit (PO) Price">Besz.rend. árszint</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="328" trl="N">
+  <value column="Name" original="Material Movement">készletmozgás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="329" trl="N">
+  <value column="Name" original="Purchase Order">Beszerzési rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="330" trl="N">
+  <value column="Name" original="Purchase Requisition">Beszerzési igény</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="331" trl="N">
+  <value column="Name" original="Prepay Order">Rendelés előrefizetése</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="332" trl="N">
+  <value column="Name" original="Cash">Készpénz</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="333" trl="N">
+  <value column="Name" original="Credit Card">Hitelkártya</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="334" trl="N">
+  <value column="Name" original="Direct Deposit">Közvetlen letét</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="335" trl="N">
+  <value column="Name" original="Check">Csekk</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="337" trl="N">
+  <value column="Name" original="On Credit">Átutalásos</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="338" trl="N">
+  <value column="Name" original="Month">Hónap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="339" trl="N">
+  <value column="Name" original="Quarter">Negyedév</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="340" trl="N">
+  <value column="Name" original="Year">Év</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="341" trl="N">
+  <value column="Name" original="In Progress">Folyamatban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="342" trl="N">
+  <value column="Name" original="Blind list (w/o book quantity)">Vaktabló (mennyiség nélkül)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="343" trl="N">
+  <value column="Name" original="Count list (with book quantity)">Leltárlista (mennyiségekkel)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="344" trl="N">
+  <value column="Name" original="Control list">Egyeztető lista</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="345" trl="N">
+  <value column="Name" original="Prepare">Felkészít</value>
+  <value column="Description" original="Check Document conistency and check Inventory">Dokumentum következetesség és készlet ellenőrzése</value>
+ </row>
+ <row id="346" trl="N">
+  <value column="Name" original="Waiting Payment">Várakozás kifizetésre</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="347" trl="N">
+  <value column="Name" original="Unlock">Felold</value>
+  <value column="Description" original="Unlock Transaction (process error)">Tranzakció feloldása (folyamat hiba)</value>
+ </row>
+ <row id="348" trl="N">
+  <value column="Name" original="Material Physical Inventory">Fizikai készlet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="349" trl="N">
+  <value column="Name" original="Movement From">Raktárról</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="350" trl="N">
+  <value column="Name" original="Movement To">Raktárra</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="351" trl="N">
+  <value column="Name" original="Report">Jelentés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="352" trl="N">
+  <value column="Name" original="ASC X12 ">ASC X12 </value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="353" trl="N">
+  <value column="Name" original="EDIFACT">EDI TÉNY</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="354" trl="N">
+  <value column="Name" original="Email EDI">E-mail EDI</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="355" trl="N">
+  <value column="Name" original="Draft">Vázlat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="356" trl="N">
+  <value column="Name" original="Sent">Elküldött</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="357" trl="N">
+  <value column="Name" original="Acknowledged">Tudomásulvett</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="358" trl="N">
+  <value column="Name" original="Answered (complete)">Megválaszolt (elkészült)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="359" trl="N">
+  <value column="Name" original="Inquiry">Ajánlat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="360" trl="N">
+  <value column="Name" original="Purchase Order">Beszerzési rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="361" trl="N">
+  <value column="Name" original="AP Credit Memo">Szállítói követelés bizonylat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="362" trl="N">
+  <value column="Name" original="AR Credit Memo">Vevői követelés bizonylat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="363" trl="N">
+  <value column="Name" original="Form">Űrlap</value>
+  <value column="Description" original="Special Forms">Speciális űrlapok</value>
+ </row>
+ <row id="364" trl="N">
+  <value column="Name" original="And">ÉS</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="365" trl="N">
+  <value column="Name" original="Or">VAGY</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="366" trl="N">
+  <value column="Name" original=" ="> =</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="367" trl="N">
+  <value column="Name" original="&gt;=">&gt;=</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="368" trl="N">
+  <value column="Name" original="&gt;">&gt;</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="369" trl="N">
+  <value column="Name" original="&lt;">&lt;</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="370" trl="N">
+  <value column="Name" original=" ~"> ~</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="371" trl="N">
+  <value column="Name" original="&lt;=">&lt;=</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="372" trl="N">
+  <value column="Name" original="|&lt;x&gt;|">|&lt;x&gt;|</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="373" trl="N">
+  <value column="Name" original="sql">SQL</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="374" trl="N">
+  <value column="Name" original="Manual">Kézi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="375" trl="N">
+  <value column="Name" original="Import">Importálás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="376" trl="N">
+  <value column="Name" original="Document">Dokumentum</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="377" trl="N">
+  <value column="Name" original="Product">Termék</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="378" trl="N">
+  <value column="Name" original="Business Partner">Üzleti partner</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="379" trl="N">
+  <value column="Name" original="Accounts">Számlák</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="380" trl="N">
+  <value column="Name" original="GL Balances">FK egyenlegek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="381" trl="N">
+  <value column="Name" original="Exchange Rates">Átváltási arányok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="382" trl="N">
+  <value column="Name" original="Inventory Count">Készlet leltár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="383" trl="N">
+  <value column="Name" original="Fixed Position">Rögzített pozíció</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="384" trl="N">
+  <value column="Name" original="Comma Separated">Vesszővel elválasztott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="385" trl="N">
+  <value column="Name" original="Tab Separated">Tabulátorral elválasztott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="386" trl="N">
+  <value column="Name" original="XML">XML</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="387" trl="N">
+  <value column="Name" original="String">Kar. lánc</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="388" trl="N">
+  <value column="Name" original="Number">Szám</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="389" trl="N">
+  <value column="Name" original="Date">Szabadnap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="390" trl="N">
+  <value column="Name" original="Constant">Konstans</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="391" trl="N">
+  <value column="Name" original="Production +">Termelés +</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="392" trl="N">
+  <value column="Name" original="Production -">Termelés -</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="393" trl="N">
+  <value column="Name" original="&gt; 0">&gt; 0</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="394" trl="N">
+  <value column="Name" original="= 0">= 0</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="395" trl="N">
+  <value column="Name" original="&lt; 0">&lt; 0</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="396" trl="N">
+  <value column="Name" original="not 0">Nem 0</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="397" trl="N">
+  <value column="Name" original="Match">Pontozás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="398" trl="N">
+  <value column="Name" original="No Match">Nincs egyezés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="399" trl="N">
+  <value column="Name" original="Unavailable">Nem elérhető</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="400" trl="N">
+  <value column="Name" original="Credit Card">Hitelkártya</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="401" trl="N">
+  <value column="Name" original="Check">Csekk</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="402" trl="N">
+  <value column="Name" original="Direct Deposit">Közvetlen letét</value>
+  <value column="Description" original="ACH Automatic Clearing House">ACH Elszámolóház</value>
+ </row>
+ <row id="403" trl="N">
+  <value column="Name" original="Sales">Értékesítés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="404" trl="N">
+  <value column="Name" original="Delayed Capture">Utólagos terhelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="405" trl="N">
+  <value column="Name" original="Credit (Payment)">Hitel (fizetés)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="406" trl="N">
+  <value column="Name" original="Voice Authorization">Hangazonosítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="407" trl="N">
+  <value column="Name" original="Authorization">Azonosítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="408" trl="N">
+  <value column="Name" original="Void">Érvénytelen</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="409" trl="N">
+  <value column="Name" original="Checking">Pénzforgami</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="410" trl="N">
+  <value column="Name" original="Savings">Megtakarítási</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="411" trl="N">
+  <value column="Name" original="Bank Account Transfer">Átutalás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="412" trl="N">
+  <value column="Name" original="Invoice">Számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="413" trl="N">
+  <value column="Name" original="General Expense">Általános költség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="414" trl="N">
+  <value column="Name" original="General Receipts">Általános bevétel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="415" trl="N">
+  <value column="Name" original="Charge">Terhelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="416" trl="N">
+  <value column="Name" original="Difference">Eltérés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="417" trl="N">
+  <value column="Name" original="Diners">Diners</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="418" trl="N">
+  <value column="Name" original="Discover">Discover</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="419" trl="N">
+  <value column="Name" original="Purchase Card">Társasági kártya</value>
+  <value column="Description" original="Corporate Purchase Card">Társasági kártya</value>
+ </row>
+ <row id="420" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="421" trl="N">
+  <value column="Name" original="Follow up">Nyomon követés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="422" trl="N">
+  <value column="Name" original="Information">Információ</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="423" trl="N">
+  <value column="Name" original="Service">Szolgáltatás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="424" trl="N">
+  <value column="Name" original="Charge">Terhelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="425" trl="N">
+  <value column="Name" original="Account">Számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="426" trl="N">
+  <value column="Name" original="Help">Segítség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="427" trl="N">
+  <value column="Name" original="Alert">Figyelmeztetés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="428" trl="N">
+  <value column="Name" original="Warranty">Garancia</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="429" trl="N">
+  <value column="Name" original="Other">Más</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="439" trl="N">
+  <value column="Name" original="Minute">Perc</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="440" trl="N">
+  <value column="Name" original="Hour">Óra</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="441" trl="N">
+  <value column="Name" original="Day">Nap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="442" trl="N">
+  <value column="Name" original="Overdue">Lejárt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="443" trl="N">
+  <value column="Name" original="Due">Esedékes</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="444" trl="N">
+  <value column="Name" original="Scheduled">Ütemezett</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="445" trl="N">
+  <value column="Name" original="Order">Rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="446" trl="N">
+  <value column="Name" original="Invoice">Számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="447" trl="N">
+  <value column="Name" original="Receipt">Átvétel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="448" trl="N">
+  <value column="Name" original="Weekly">Heti</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="449" trl="N">
+  <value column="Name" original="Monthly">Havi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="450" trl="N">
+  <value column="Name" original="Quarterly">Negyedéves</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="451" trl="N">
+  <value column="Name" original="System">Rendszer</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="452" trl="N">
+  <value column="Name" original="Client">Vállalat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="453" trl="N">
+  <value column="Name" original="Organization">Költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="454" trl="N">
+  <value column="Name" original="Client+Organization">Vállalat és költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="455" trl="N">
+  <value column="Name" original="Manual">Kézi</value>
+  <value column="Description" original="Manual Entry">Kézi bevitel</value>
+ </row>
+ <row id="456" trl="N">
+  <value column="Name" original="Calculated">Számított</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="457" trl="N">
+  <value column="Name" original="Achievements">Eredmények</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="458" trl="N">
+  <value column="Name" original="Not Posted">Nem feladott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="459" trl="N">
+  <value column="Name" original="Posted">Feladott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="460" trl="N">
+  <value column="Name" original="Not Balanced">Nincs egyensúlyban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="461" trl="N">
+  <value column="Name" original="Not Convertible (no rate)">Nem konvertálható (nincs arány)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="462" trl="N">
+  <value column="Name" original="Period Closed">Zárt periódus</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="463" trl="N">
+  <value column="Name" original="Post Prepared">Elkészített feladás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="464" trl="N">
+  <value column="Name" original="Invalid Account">Érvénytelen számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="465" trl="N">
+  <value column="Name" original="Bank Statement">Bankkivonat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="466" trl="N">
+  <value column="Name" original="Cash Journal">Pénztárnapló</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="467" trl="N">
+  <value column="Name" original="Payment Allocation">Fizetés elosztása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="468" trl="N">
+  <value column="Name" original="Total Debit Only">Csak tartozik összesen</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="469" trl="N">
+  <value column="Name" original="Total Credit Only">Csak követel összesen</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="470" trl="N">
+  <value column="Name" original="Total Balance">Teljes egyenleg</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="471" trl="N">
+  <value column="Name" original="Add (Op1+Op2)">Összeadás (Op1+Op2)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="472" trl="N">
+  <value column="Name" original="Subtract (Op1-Op2)">Kivonás (Op1-Op2)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="473" trl="N">
+  <value column="Name" original="Percentage (Op1 of Op2)">Százalék (Op1 Op2 arányában)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="474" trl="N">
+  <value column="Name" original="Add Range (Op1 to Op2)">Intervallum megadása (Op1-től Op2-ig)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="475" trl="N">
+  <value column="Name" original="Relative Period">Relatív periódus</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="476" trl="N">
+  <value column="Name" original="Calculation">Kalkuláció</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="477" trl="N">
+  <value column="Name" original="Segment Value">Részérték</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="478" trl="N">
+  <value column="Name" original="Source Currency">Forrás deviza</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="479" trl="N">
+  <value column="Name" original="Accounting Currency">Könyvelési deviza</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="480" trl="N">
+  <value column="Name" original="Segment Value">Részérték</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="481" trl="N">
+  <value column="Name" original="Calculation">Kalkuláció</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="482" trl="N">
+  <value column="Name" original="Normal (Flat)">Normál (Alap)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="483" trl="N">
+  <value column="Name" original="Gradient">Emelkedés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="484" trl="N">
+  <value column="Name" original="Line">Sor</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="485" trl="N">
+  <value column="Name" original="Texture (Picture)">Szerkezet (kép)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="486" trl="N">
+  <value column="Name" original="Workbench">Munkaterület</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="487" trl="N">
+  <value column="Name" original="Dictionary">Nyilvántartás</value>
+  <value column="Description" original="Application Dictionary (synchronized)">Alkalmazás nyilvántartás (szinkronizált)</value>
+ </row>
+ <row id="488" trl="N">
+  <value column="Name" original="Adempiere">Adempiere</value>
+  <value column="Description" original="Adempiere Application (synchronized)">Adempiere alkalmazás (szinkronizált)</value>
+ </row>
+ <row id="489" trl="N">
+  <value column="Name" original="User maintained">Felhasználó által karbantartott</value>
+  <value column="Description" original="User maintained Entity (not synchronized)">Felhasználó által karbantartott elem (nem szinkronizált)</value>
+ </row>
+ <row id="490" trl="N">
+  <value column="Name" original="Applications">Alkalmazások</value>
+  <value column="Description" original="Other Applications (not synchronized)">Más alkalmazások (nem szinkronizált)</value>
+ </row>
+ <row id="491" trl="N">
+  <value column="Name" original="Material Production">Termelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="492" trl="N">
+  <value column="Name" original="Match Invoice">Számla pontozása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="493" trl="N">
+  <value column="Name" original="Match PO">Beszerzési rendelés pontozása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="496" trl="N">
+  <value column="Name" original="Line">Sor</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="497" trl="N">
+  <value column="Name" original="Flat Percent">Meghatározott százalék</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="498" trl="N">
+  <value column="Name" original="Formula">Képlet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="499" trl="N">
+  <value column="Name" original="Breaks">Kivételek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="500" trl="N">
+  <value column="Name" original="Pricelist">Árlista</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="501" trl="N">
+  <value column="Name" original="North">Észak</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="502" trl="N">
+  <value column="Name" original="North East">Észak-kelet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="503" trl="N">
+  <value column="Name" original="East">Kelet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="504" trl="N">
+  <value column="Name" original="South East">Dél-kelet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="505" trl="N">
+  <value column="Name" original="South">Dél</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="506" trl="N">
+  <value column="Name" original="South West">Dél-nyugat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="507" trl="N">
+  <value column="Name" original="West">Nyugat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="508" trl="N">
+  <value column="Name" original="North West">Észak-nyugat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="509" trl="N">
+  <value column="Name" original="Standard Cost">Standard (ön)költség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="510" trl="N">
+  <value column="Name" original="Average PO">Átlag beszerzési rendelési ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="511" trl="N">
+  <value column="Name" original="Last PO Price">Utolsó beszerzési ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="512" trl="N">
+  <value column="Name" original="Last Invoice Price">Utolsó számlázott ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="513" trl="N">
+  <value column="Name" original="Price List (Limit)">Árlista (szint)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="514" trl="N">
+  <value column="Name" original="Average PO History">Hisztorikus átlag beszerzési rendelési ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="515" trl="N">
+  <value column="Name" original="Average Invoice History">Hisztorikus átlag számlázási ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="516" trl="N">
+  <value column="Name" original="Fixed Price">Rörgzített ár</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="517" trl="N">
+  <value column="Name" original="Default">Alap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="518" trl="N">
+  <value column="Name" original="Leading (left)">Vezető (bal)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="519" trl="N">
+  <value column="Name" original="Trailing (right)">Küszöb (jobb)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="520" trl="N">
+  <value column="Name" original="Block">Blokk</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="521" trl="N">
+  <value column="Name" original="Leading (left)">Vezető (bal)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="522" trl="N">
+  <value column="Name" original="Center">Közép</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="523" trl="N">
+  <value column="Name" original="Trailing (right)">Küszöb (jobb)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="524" trl="N">
+  <value column="Name" original="Center">Közép</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="525" trl="N">
+  <value column="Name" original="Field">Mező</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="526" trl="N">
+  <value column="Name" original="Text">Szöveg</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="527" trl="N">
+  <value column="Name" original="Print Format">Nyomtatási formátum</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="528" trl="N">
+  <value column="Name" original="Content">Tartalom</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="529" trl="N">
+  <value column="Name" original="Header">Fejléc</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="530" trl="N">
+  <value column="Name" original="Footer">Lábléc</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="531" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="532" trl="N">
+  <value column="Name" original="Image">Kép</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="533" trl="N">
+  <value column="Name" original="Pie Chart">Kör diagram</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="534" trl="N">
+  <value column="Name" original="Line Chart">Vonal diagram</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="535" trl="N">
+  <value column="Name" original="Bar Chart">Oszlop diagram</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="536" trl="N">
+  <value column="Name" original="Period Balance">Periódus egyenlege</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="537" trl="N">
+  <value column="Name" original="Period Credit Only">Priódus csak követel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="538" trl="N">
+  <value column="Name" original="Period Debit Only">Priódus csak tartozik</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="539" trl="N">
+  <value column="Name" original="Item">Tétel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="540" trl="N">
+  <value column="Name" original="Service">Szolgáltatás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="541" trl="N">
+  <value column="Name" original="Resource">Erőforrás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="542" trl="N">
+  <value column="Name" original="Expense type">Ráfordítás típusa</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="543" trl="N">
+  <value column="Name" original="Online">Online</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="544" trl="N">
+  <value column="Name" original="Currency Precision">Deviza pontosság</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="545" trl="N">
+  <value column="Name" original="Period Quantity">Periódus mennyiség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="546" trl="N">
+  <value column="Name" original="Total Quantity">Teljes mennyiség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="547" trl="N">
+  <value column="Name" original="Year Balance">Éves egyenleg</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="548" trl="N">
+  <value column="Name" original="Year Credit Only">Éves csak követel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="549" trl="N">
+  <value column="Name" original="Year Debit Only">Éves csak tartozik</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="550" trl="N">
+  <value column="Name" original="Year Quantity">Éves mennyiség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="551" trl="N">
+  <value column="Name" original="Standard Part">Általános rész</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="552" trl="N">
+  <value column="Name" original="Optional Part">Választható rész</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="553" trl="N">
+  <value column="Name" original="In alternative Group 1">1 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="554" trl="N">
+  <value column="Name" original="In alternative Group 2">2 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="555" trl="N">
+  <value column="Name" original="In alternaltve Group 3">3 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="556" trl="N">
+  <value column="Name" original="In alternative Group 4">4 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="557" trl="N">
+  <value column="Name" original="Field">Mező</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="558" trl="N">
+  <value column="Name" original="Text">Szöveg</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="559" trl="N">
+  <value column="Name" original="Invoice">Számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="560" trl="N">
+  <value column="Name" original="Daily">Napi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="561" trl="N">
+  <value column="Name" original="Weekly">Heti</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="562" trl="N">
+  <value column="Name" original="Monthly">Havi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="563" trl="N">
+  <value column="Name" original="Quarterly">Negyedéves</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="564" trl="N">
+  <value column="Name" original="Order">Rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="565" trl="N">
+  <value column="Name" original="GL Journal">FK napló</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="567" trl="N">
+  <value column="Name" original="Project">Projekt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="568" trl="N">
+  <value column="Name" original="Both">Mindkettő</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="569" trl="N">
+  <value column="Name" original="Sales Tax">Értékesítéshez kapcs. adó</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="570" trl="N">
+  <value column="Name" original="Purchase Tax">Beszerzés adó</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="571" trl="N">
+  <value column="Name" original="General">Általános</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="572" trl="N">
+  <value column="Name" original="Asset Project">Saját beruházás (projekt)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="573" trl="N">
+  <value column="Name" original="Work Order (Job)">Munkarendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="574" trl="N">
+  <value column="Name" original="Service (Charge) Project">Szolgáltatási (terhelési) projekt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="575" trl="N">
+  <value column="Name" original="French Accounting Standard">Francia könyvelési szabályok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="576" trl="N">
+  <value column="Name" original="Custom Accounting Rules">Egyedi könyvelési szabályok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="577" trl="N">
+  <value column="Name" original="Credit Stop">Hitelkeret felfüggesztés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="578" trl="N">
+  <value column="Name" original="Credit Hold">Hitelkeret kihasználva</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="579" trl="N">
+  <value column="Name" original="Credit Watch">Hitelkeret figyelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="580" trl="N">
+  <value column="Name" original="No Credit Check">Nincs hitelkeret ellenőrzés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="581" trl="N">
+  <value column="Name" original="Credit OK">Hitelkeret rendben</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="582" trl="N">
+  <value column="Name" original="Work Order +">Munkarendelés +</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="583" trl="N">
+  <value column="Name" original="Work Order -">Munkarendelés -</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="584" trl="N">
+  <value column="Name" original="Project Issue">Projekt felhasználás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="585" trl="N">
+  <value column="Name" original="Obscure Digits but last 4">Utolsó 4 számjegy elhagyása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="586" trl="N">
+  <value column="Name" original="Obscure Digits but first/last 4">Első/utolsó 4 számjegy elhagyása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="587" trl="N">
+  <value column="Name" original="Obscure AlphaNumeric but first/last 4">Első/utolsó 4 számjegy elhagyása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="588" trl="N">
+  <value column="Name" original="Obscure AlphaNumeric but last 4">Első/utolsó 4 számjegy elhagyása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="589" trl="N">
+  <value column="Name" original="Inventory Difference">Készlet eltérés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="590" trl="N">
+  <value column="Name" original="Charge Account">Terhelési számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="591" trl="N">
+  <value column="Name" original="Accessing">Elérés</value>
+  <value column="Description" original="General Access">Általános elérés</value>
+ </row>
+ <row id="592" trl="N">
+  <value column="Name" original="Reporting">Jelentés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="593" trl="N">
+  <value column="Name" original="Exporting">Exportálás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="594" trl="N">
+  <value column="Name" original="Client only">Csak vállalati</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="595" trl="N">
+  <value column="Name" original="LiFo">Lifo</value>
+  <value column="Description" original="Last In First Out">Last In First Out</value>
+ </row>
+ <row id="596" trl="N">
+  <value column="Name" original="FiFo">Fifo</value>
+  <value column="Description" original="First In First Out">First In First Out</value>
+ </row>
+ <row id="597" trl="N">
+  <value column="Name" original="Yearly">Éves</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="598" trl="N">
+  <value column="Name" original="Year">Év</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="599" trl="N">
+  <value column="Name" original="Month">Hónap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="600" trl="N">
+  <value column="Name" original="Day">Nap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="601" trl="N">
+  <value column="Name" original="hour">óra</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="602" trl="N">
+  <value column="Name" original="minute">perc</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="603" trl="N">
+  <value column="Name" original="second">másodperc</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="604" trl="N">
+  <value column="Name" original="Regular">Általános</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="605" trl="N">
+  <value column="Name" original="Loop Begin">Hurok kezdete</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="606" trl="N">
+  <value column="Name" original="Loop End">Hurok vége</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="607" trl="N">
+  <value column="Name" original="AND">ÉS</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="608" trl="N">
+  <value column="Name" original="XOR">XOR</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="609" trl="N">
+  <value column="Name" original="Wait (Sleep)">Várakozás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="610" trl="N">
+  <value column="Name" original="User Choice">Felhasználó választás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="611" trl="N">
+  <value column="Name" original="Sub Workflow">Al-munkafolyamat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="612" trl="N">
+  <value column="Name" original="Set Variable">Változó megadása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="613" trl="N">
+  <value column="Name" original="Automatic">Automatikus</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="614" trl="N">
+  <value column="Name" original="Manual">Kézi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="615" trl="N">
+  <value column="Name" original="User Window">Felhasználói ablak</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="616" trl="N">
+  <value column="Name" original="Organization">Költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="617" trl="N">
+  <value column="Name" original="Human">Humán</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="618" trl="N">
+  <value column="Name" original="Role">Jogosultság</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="619" trl="N">
+  <value column="Name" original="System Resource">Rendszer erőforrás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="620" trl="N">
+  <value column="Name" original="Not Started">Nem indított</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="621" trl="N">
+  <value column="Name" original="Running">Futó</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="622" trl="N">
+  <value column="Name" original="Suspended">Felfügesztett</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="623" trl="N">
+  <value column="Name" original="Completed">Végrehajtott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="624" trl="N">
+  <value column="Name" original="Aborted">Kilépett</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="625" trl="N">
+  <value column="Name" original="Terminated">Megszakított</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="626" trl="N">
+  <value column="Name" original="Process Created">Létrehozott folyamat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="627" trl="N">
+  <value column="Name" original="State Changed">Megváltozott állapot</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="628" trl="N">
+  <value column="Name" original="Asynchronously">Aszinkronban</value>
+  <value column="Description" original="Fork">Elágazás</value>
+ </row>
+ <row id="629" trl="N">
+  <value column="Name" original="Synchronously">Szinkronban</value>
+  <value column="Description" original="Serial">Széria</value>
+ </row>
+ <row id="630" trl="N">
+  <value column="Name" original="While Loop">Amíg hurok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="631" trl="N">
+  <value column="Name" original="Repeat Until Loop">Ismétlése míg hurok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="633" trl="N">
+  <value column="Name" original="User Form">Felhasználói űrlap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="634" trl="N">
+  <value column="Name" original="Apps Task">Alkalmazás feladat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="636" trl="N">
+  <value column="Name" original="Apps Report">Alkalmazás jelentés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="637" trl="N">
+  <value column="Name" original="Apps Process">Alkalmazás folyamat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="639" trl="N">
+  <value column="Name" original="In alternative Group 5">5 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="640" trl="N">
+  <value column="Name" original="In alternative Group 6">6 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="641" trl="N">
+  <value column="Name" original="In alternative Group 7">7 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="642" trl="N">
+  <value column="Name" original="In alternative Group 8">8 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="643" trl="N">
+  <value column="Name" original="In alternative Group 9">9 Alternatív csoportban</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="644" trl="N">
+  <value column="Name" original="Released">Kiadott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="645" trl="N">
+  <value column="Name" original="Test">Teszt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="646" trl="N">
+  <value column="Name" original="Under Revision">Felülvizsgálat alatt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="647" trl="N">
+  <value column="Name" original="Void">Érvénytelen</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="648" trl="N">
+  <value column="Name" original="Re-Create Translation">Fordítás ismételt létrehozása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="649" trl="N">
+  <value column="Name" original="Add Missing Translations">Hiányzó fordítás hozzáadása</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="650" trl="N">
+  <value column="Name" original="Delete Translation">Fordítás törlése</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="651" trl="N">
+  <value column="Name" original="Direct Debit">Közvetlen letét</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="652" trl="N">
+  <value column="Name" original="Direct Debit">Közvetlen letét</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="653" trl="N">
+  <value column="Name" original="Solid Line">Teli vonal</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="654" trl="N">
+  <value column="Name" original="Dashed Line">Szaggatott vonal</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="655" trl="N">
+  <value column="Name" original="Dotted Line">Pontozott vonal</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="656" trl="N">
+  <value column="Name" original="Dash-Dotted Line">Pont-vonalas sor</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="657" trl="N">
+  <value column="Name" original="Web Promotion">Webes reklámozás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="658" trl="N">
+  <value column="Name" original="Quote Total only">Csak teljesen ajánlja</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="659" trl="N">
+  <value column="Name" original="Quote Selected Lines">Csak a kiválasztott sorokat ajánlja</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="660" trl="N">
+  <value column="Name" original="Quote All Lines">Minden sort ajánlja</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="661" trl="N">
+  <value column="Name" original="Funding - All Bidders help funding a Topic">Támogató - minden licitáló támogat egy  tételt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="662" trl="N">
+  <value column="Name" original="Auction - The highest Bidder wins the Topic">Aukció - A legmagasabb licitáló nyeri a tételt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="663" trl="N">
+  <value column="Name" original="Frequency">Gyakoriság</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="664" trl="N">
+  <value column="Name" original="Week Day">Hét napja</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="665" trl="N">
+  <value column="Name" original="Month Day">Hónap napja</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="666" trl="N">
+  <value column="Name" original="Customization">Egyedi beállítás</value>
+  <value column="Description" original="Distributed Extensions should have 4 characters">A megosztott kiterjesztéseknek 4 karaktereseknek kell lennie</value>
+ </row>
+ <row id="667" trl="N">
+  <value column="Name" original="Yes">Igen</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="668" trl="N">
+  <value column="Name" original="No">Nem</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="669" trl="N">
+  <value column="Name" original="Document Action">Dokumentum művelet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="670" trl="N">
+  <value column="Name" original="Waiting Confirmation">Várakozás megerősítésre</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="671" trl="N">
+  <value column="Name" original="Process Completed">Folyamat befejezve</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="672" trl="N">
+  <value column="Name" original="!=">!=</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="673" trl="N">
+  <value column="Name" original="Vendor Confirmation">Szállító megerősítés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="674" trl="N">
+  <value column="Name" original="Customer Confirmation">Vevő megerősítés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="675" trl="N">
+  <value column="Name" original="Drop Ship Confirm">Közvetlen szállítás megerősítése</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="676" trl="N">
+  <value column="Name" original="Ship/Receipt Confirm">Beszállítás/kiszállítás megerősítése</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="677" trl="N">
+  <value column="Name" original="Pick/QA Confirm">Minbizt. ellenőrzés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="678" trl="N">
+  <value column="Name" original="Force">Kényszerít</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="679" trl="N">
+  <value column="Name" original="Alternative">Alternatíva</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="680" trl="N">
+  <value column="Name" original="Supplemental">Kiegészítő</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="681" trl="N">
+  <value column="Name" original="Not Mandatary">Nem kötelező</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="682" trl="N">
+  <value column="Name" original="Always Mandatory">Mindig kötelező</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="683" trl="N">
+  <value column="Name" original="When Shipping">Szállításkor</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="684" trl="N">
+  <value column="Name" original="Posting Error">Feladási hiba</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="685" trl="N">
+  <value column="Name" original="String (max 40)">Karakterlánc (max. 40)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="686" trl="N">
+  <value column="Name" original="Number">Szám</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="687" trl="N">
+  <value column="Name" original="List">Lista</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="688" trl="N">
+  <value column="Name" original="General">Általános</value>
+  <value column="Description" original="General Workflow">Általános munkafolyamat</value>
+ </row>
+ <row id="689" trl="N">
+  <value column="Name" original="Document Process">Dokumentum folyamat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="690" trl="N">
+  <value column="Name" original="Document Value">Dokumentum érték</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="691" trl="N">
+  <value column="Name" original="Wait Complete">Várakozás vége</value>
+  <value column="Description" original="Wait Condition ok, Complete Docuement">Várakozási feltétel rendben, dokumentum befejezve</value>
+ </row>
+ <row id="692" trl="N">
+  <value column="Name" original="Purchase Order">Beszerzési rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="693" trl="N">
+  <value column="Name" original="Requisition">Foglalás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="695" trl="N">
+  <value column="Name" original="Client">Vállalat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="696" trl="N">
+  <value column="Name" original="Organization">Költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="697" trl="N">
+  <value column="Name" original="User">Felhasználó</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="698" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="699" trl="N">
+  <value column="Name" original="Receivables &amp; Payables">Követelés &amp; kötelezettség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="700" trl="N">
+  <value column="Name" original="Receivables only">Csak bevételek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="701" trl="N">
+  <value column="Name" original="Payables only">Csak kötelezettségek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="702" trl="N">
+  <value column="Name" original="Rectangle">Téglalap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="703" trl="N">
+  <value column="Name" original="Line">Sor</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="704" trl="N">
+  <value column="Name" original="3D Rectangle">3D Téglalap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="705" trl="N">
+  <value column="Name" original="Oval">Ovális</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="706" trl="N">
+  <value column="Name" original="Round Rectangle">Lekerekített téglalap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="707" trl="N">
+  <value column="Name" original="Normal Rectangle">Normál téglalap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="708" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="709" trl="N">
+  <value column="Name" original="All (Reports, Documents)">Minden (jelentések, dokumentumok)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="710" trl="N">
+  <value column="Name" original="Documents">Dokumentumok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="711" trl="N">
+  <value column="Name" original="External Documents">Külső dokumentumok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="712" trl="N">
+  <value column="Name" original="LiFo">Lifo</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="713" trl="N">
+  <value column="Name" original="FiFo">Fifo</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="714" trl="N">
+  <value column="Name" original="Material">Anyag</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="715" trl="N">
+  <value column="Name" original="Overhead">Fixköltség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="716" trl="N">
+  <value column="Name" original="Burden (M.Overhead)">Terhelés (anyag fixktg.)</value>
+  <value column="Description" original="Material Overhead">Anyag fixköltség</value>
+ </row>
+ <row id="717" trl="N">
+  <value column="Name" original="Outside Processing">Külső feldolgozás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="718" trl="N">
+  <value column="Name" original="Resource">Erőforrás</value>
+  <value column="Description" original="Labor">Munkaerő</value>
+ </row>
+ <row id="719" trl="N">
+  <value column="Name" original="Quantity">Mennyiség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="720" trl="N">
+  <value column="Name" original="Line">Sor</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="721" trl="N">
+  <value column="Name" original="Volume">Mennyiség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="722" trl="N">
+  <value column="Name" original="Weight">Súly</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="723" trl="N">
+  <value column="Name" original="Costs">Költségek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="724" trl="N">
+  <value column="Name" original="Public Information">Publikus információ</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="726" trl="N">
+  <value column="Name" original="Partner Confidential">Bizalmas partner</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="727" trl="N">
+  <value column="Name" original="Order Acknowledgement">Rendelés tudomásul vétele</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="728" trl="N">
+  <value column="Name" original="Payment Acknowledgement">Fizetés tudomásul vétele</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="729" trl="N">
+  <value column="Name" original="Payment Error">Fizetési hiba</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="730" trl="N">
+  <value column="Name" original="User Verification">Felhasználó ellenőrzése</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="731" trl="N">
+  <value column="Name" original="User Password">Felhasználói jelszó</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="732" trl="N">
+  <value column="Name" original="EMail">E-Mail</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="733" trl="N">
+  <value column="Name" original="Notice">Üzenet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="734" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="735" trl="N">
+  <value column="Name" original="EMail+Notice">E-Mail és megjegyzés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="736" trl="N">
+  <value column="Name" original="Hourly">Órás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="737" trl="N">
+  <value column="Name" original="Daily">Napi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="738" trl="N">
+  <value column="Name" original="Weekly">Heti</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="739" trl="N">
+  <value column="Name" original="Monthly">Havi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="740" trl="N">
+  <value column="Name" original="Twice Monthly">Kéthavi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="741" trl="N">
+  <value column="Name" original="Bi-Weekly">Kétheti</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="742" trl="N">
+  <value column="Name" original="Current Active">Jelenleg aktív</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="743" trl="N">
+  <value column="Name" original="Make-To-Order">Rendeléssé alakít</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="744" trl="N">
+  <value column="Name" original="Previous">Megelőző</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="745" trl="N">
+  <value column="Name" original="Previous, Spare">Megelőző, nélkülözhető</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="746" trl="N">
+  <value column="Name" original="Future">Jövő</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="747" trl="N">
+  <value column="Name" original="Maintenance">Karbantartás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="748" trl="N">
+  <value column="Name" original="Repair">Javítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="749" trl="N">
+  <value column="Name" original="Master">Mester</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="750" trl="N">
+  <value column="Name" original="Engineering">Tervezés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="751" trl="N">
+  <value column="Name" original="Manufacturing">Termelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="752" trl="N">
+  <value column="Name" original="Planning">Tervezés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="753" trl="N">
+  <value column="Name" original="Standard Product">Standard termék</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="754" trl="N">
+  <value column="Name" original="Optional Product">Választható termék</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="755" trl="N">
+  <value column="Name" original="Alternative">Alternatíva</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="756" trl="N">
+  <value column="Name" original="Alternative (Default)">Alternatíva (alap)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="757" trl="N">
+  <value column="Name" original="Outside Processing">Külső feldolgozás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="758" trl="N">
+  <value column="Name" original="Internal">Belső</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="759" trl="N">
+  <value column="Name" original="Urgent">Sürgős</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="760" trl="N">
+  <value column="Name" original="Minor">Minimális</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="761" trl="N">
+  <value column="Name" original="Same">Azonos</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="762" trl="N">
+  <value column="Name" original="Lower">Alacsony</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="763" trl="N">
+  <value column="Name" original="Higher">Magas</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="764" trl="N">
+  <value column="Name" original="Subscribe">Felíratkozás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="765" trl="N">
+  <value column="Name" original="UnSubscribe">Leíratkozás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="766" trl="N">
+  <value column="Name" original="User Account">Felhasználói fiók</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="767" trl="N">
+  <value column="Name" original="Request">Igény</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="768" trl="N">
+  <value column="Name" original="Encrypted">Titkosított</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="769" trl="N">
+  <value column="Name" original="Not Encrypted">Nem titkosított</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="770" trl="N">
+  <value column="Name" original="Inventory Move">Raktárközi mozgások</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="772" trl="N">
+  <value column="Name" original="Custom">Egyedi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="773" trl="N">
+  <value column="Name" original="Client">Vállalat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="774" trl="N">
+  <value column="Name" original="Organization">Költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="775" trl="N">
+  <value column="Name" original="Batch/Lot">köteg/Lot</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="776" trl="N">
+  <value column="Name" original="Average Invoice">Átlag számla</value>
+  <value column="Description" original="Weighted Average Purchase Invoice Price Costing">Súlyozott átlag beszerzési számla ár-költség</value>
+ </row>
+ <row id="777" trl="N">
+  <value column="Name" original="Last Invoice">Utolsó számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="778" trl="N">
+  <value column="Name" original="User Defined">Felhasználó által meghatározott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="779" trl="N">
+  <value column="Name" original="Business Documents">Üzleti dokumentumok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="780" trl="N">
+  <value column="Name" original="Requests">Igénylések</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="781" trl="N">
+  <value column="Name" original="Assets, Download">Eszközök, letöltések</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="782" trl="N">
+  <value column="Name" original="_">_</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="783" trl="N">
+  <value column="Name" original="Reservation">Foglalás</value>
+  <value column="Description" original="Internal Commitment">Belső kötelezettség</value>
+ </row>
+ <row id="784" trl="N">
+  <value column="Name" original="PO Commitment only">Csak beszerzési rendelési kötelezettség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="785" trl="N">
+  <value column="Name" original="PO Commitment &amp; Reservation">Beszerzési kötelezettség &amp; foglalás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="786" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="787" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="788" trl="N">
+  <value column="Name" original="Receipt">Átvétel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="789" trl="N">
+  <value column="Name" original="Purchase Order">Beszerzési rendelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="790" trl="N">
+  <value column="Name" original="Purchase Order and Receipt">Beszerzési rendelés és bevétel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="791" trl="N">
+  <value column="Name" original="Manual">Kézi</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="792" trl="N">
+  <value column="Name" original="Period only">Csak periódus</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="793" trl="N">
+  <value column="Name" original="Year To Date">Dátum, év</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="794" trl="N">
+  <value column="Name" original="Total">Összes</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="795" trl="N">
+  <value column="Name" original="Sub Account">Alszámla</value>
+  <value column="Description" original="Sub Account for Element Value">Az elemhez kapcsolódó alszámla értéke</value>
+ </row>
+ <row id="796" trl="N">
+  <value column="Name" original="User Element 1">Felhasználói elem 1</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="797" trl="N">
+  <value column="Name" original="User Element 2">Felhasználói elem 2</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="798" trl="N">
+  <value column="Name" original="EMail">E-Mail</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="799" trl="N">
+  <value column="Name" original="Document Owner">Dokumentum tulajdonosa</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="800" trl="N">
+  <value column="Name" original="Document Business Partner">Üzleti partner dokumentum</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="801" trl="N">
+  <value column="Name" original="WF Responsible">MF felelőse</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="802" trl="N">
+  <value column="Name" original="LAN">LAN</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="803" trl="N">
+  <value column="Name" original="Terminal Server">Terminál Szerver</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="804" trl="N">
+  <value column="Name" original="VPN">VPN</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="805" trl="N">
+  <value column="Name" original="WAN">WAN</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="806" trl="N">
+  <value column="Name" original="Client (all shared)">Vállalat (mind megosztott)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="807" trl="N">
+  <value column="Name" original="Org (not shared)">Ktghely. (nem megosztott)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="808" trl="N">
+  <value column="Name" original="Client or Org">Vállalat vagy költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="809" trl="N">
+  <value column="Name" original="FiFo">Fifo</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="810" trl="N">
+  <value column="Name" original="LiFo">Lifo</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="811" trl="N">
+  <value column="Name" original="Average Invoice">Átlag számla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="812" trl="N">
+  <value column="Name" original="Old Standard Cost">Múltbeli standard (ön)költség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="813" trl="N">
+  <value column="Name" original="Future Standard Cost">jövőbeli standard (ön)költség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="814" trl="N">
+  <value column="Name" original="System generated">Rendszer által előállított</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="815" trl="N">
+  <value column="Name" original=" 0% Not Started">0% Nem indított</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="816" trl="N">
+  <value column="Name" original="100% Complete">100% Befejezve</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="817" trl="N">
+  <value column="Name" original=" 20% Started">20% Elkezdődött</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="818" trl="N">
+  <value column="Name" original=" 80% Nearly Done">80% Még nem kész</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="819" trl="N">
+  <value column="Name" original=" 40% Busy">40% Tevékeny</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="820" trl="N">
+  <value column="Name" original=" 60% Good Progress">60% Jó feldolgozottság</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="821" trl="N">
+  <value column="Name" original=" 90% Finishing">90% Zárás előtt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="822" trl="N">
+  <value column="Name" original=" 95% Almost Done">95% Majdem kész</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="823" trl="N">
+  <value column="Name" original=" 99% Cleaning up">99% Rendrakás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="824" trl="N">
+  <value column="Name" original="Year">Év</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="825" trl="N">
+  <value column="Name" original="Quarter">Negyedév</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="826" trl="N">
+  <value column="Name" original="Month">Hónap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="827" trl="N">
+  <value column="Name" original="Total">Összes</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="828" trl="N">
+  <value column="Name" original="Week">Hét</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="829" trl="N">
+  <value column="Name" original="Day">Nap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="830" trl="N">
+  <value column="Name" original="Organization">Költséghely</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="831" trl="N">
+  <value column="Name" original="Business Partner">Üzleti partner</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="832" trl="N">
+  <value column="Name" original="Product">Termék</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="833" trl="N">
+  <value column="Name" original="Bus.Partner Group">Partner csoport</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="834" trl="N">
+  <value column="Name" original="Product Category">Termékcsoport</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="835" trl="N">
+  <value column="Name" original="User defined">Felhasználó által meghatározott</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="836" trl="N">
+  <value column="Name" original="Qty/Amount in Time">Menny./összeg időben</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="837" trl="N">
+  <value column="Name" original="Status Qty/Amount">Stárusz menny./összeg</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="838" trl="N">
+  <value column="Name" original="Ratio">Arány</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="839" trl="N">
+  <value column="Name" original="Average">Átlag</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="840" trl="N">
+  <value column="Name" original="Sum">Összeg</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="841" trl="N">
+  <value column="Name" original="Ratio">Arány</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="842" trl="N">
+  <value column="Name" original="Constant">Konstans</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="843" trl="N">
+  <value column="Name" original="Plus">Plusz</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="844" trl="N">
+  <value column="Name" original="Minus">Mínusz</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="845" trl="N">
+  <value column="Name" original="Multiply">Szorzás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="846" trl="N">
+  <value column="Name" original="Divide">Osztás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="848" trl="N">
+  <value column="Name" original="Calculation">Kalkuláció</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="849" trl="N">
+  <value column="Name" original="Account Value">Könyvelési érték</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="850" trl="N">
+  <value column="Name" original="Evaluation">Értékelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="851" trl="N">
+  <value column="Name" original="Implementation">Bevezetés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="852" trl="N">
+  <value column="Name" original="Production">Termelés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="853" trl="N">
+  <value column="Name" original="Request">Igény</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="854" trl="N">
+  <value column="Name" original="Project">Projekt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="855" trl="N">
+  <value column="Name" original="MM">MM</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="856" trl="N">
+  <value column="Name" original="Inch">Inch</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="857" trl="N">
+  <value column="Name" original="On Hand Qty">Készlet menny.</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="858" trl="N">
+  <value column="Name" original="Zero">Nulla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="859" trl="N">
+  <value column="Name" original="Codabar 2 of 7 linear">Vonalkód 7 vonalból 2</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="860" trl="N">
+  <value column="Name" original="Code 39  3 of 9 linear w/o Checksum">kód 39 9 vonalból 3 ellenőrző összeg nélkül</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="861" trl="N">
+  <value column="Name" original="Codeabar linear">Vonalkód</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="862" trl="N">
+  <value column="Name" original="Code 128 dynamically switching">Kód 128 dinamikusan változó</value>
+  <value column="Description" original="Barcode that dynamically switches between character sets to give the smallest possible encoding">Vonalkód, amely dinamikusan változik a karakter készleteket tekintve, hogy legkisebb karakter kódolás kerüljön alkalmazásra.</value>
+ </row>
+ <row id="863" trl="N">
+  <value column="Name" original="Code 128 A character set">Kód 128 A karakterkészlet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="864" trl="N">
+  <value column="Name" original="Code 128 B character set">Kód 128 B karakterkészlet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="865" trl="N">
+  <value column="Name" original="Code 128 C character set">Kód 128 C karakterkészlet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="866" trl="N">
+  <value column="Name" original="Code 39 linear with Checksum">Kód 39 lineáris ellenőrző összeggel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="867" trl="N">
+  <value column="Name" original="EAN 128">EAN 128</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="868" trl="N">
+  <value column="Name" original="Global Trade Item No GTIN UCC/EAN 128">Nemzetközi kereskedelmi tétel száma GTIN UCC/EAN 128</value>
+  <value column="Description" original="Global Trade Name">Nemzetközi kereskedelmi név</value>
+ </row>
+ <row id="869" trl="N">
+  <value column="Name" original="Codabar Monarch linear">Monarch vonalkód</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="870" trl="N">
+  <value column="Name" original="Codabar NW-7 linear">NW-7 Vonalkód</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="871" trl="N">
+  <value column="Name" original="PDF417 two dimensional">PDF417 kétdimenziós</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="872" trl="N">
+  <value column="Name" original="SCC-14 shipping code UCC/EAN 128">SCC-14 szállítási kód UCC/EAN 128</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="873" trl="N">
+  <value column="Name" original="Shipment ID number UCC/EAN 128">UCC/EAN 128 szállítási azonosító szám</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="874" trl="N">
+  <value column="Name" original="UCC 128">UCC 128</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="875" trl="N">
+  <value column="Name" original="Code 39 USD3 with Checksum">Kód 39 USD3 ellenőrző összeggel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="876" trl="N">
+  <value column="Name" original="Codabar USD-4 linear">USD-4 vonalkód</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="877" trl="N">
+  <value column="Name" original="US Postal Service UCC/EAN 128">USA Postai szolgáltatás UCC/EAN 128</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="878" trl="N">
+  <value column="Name" original="SSCC-18 number UCC/EAN 128">SSCC-18 szám UCC/EAN 128</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="879" trl="N">
+  <value column="Name" original="Code 39 USD3 w/o Checksum">Kód 39 USD3 ellenőrző összeg nélkül</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="880" trl="N">
+  <value column="Name" original="Code 39  3 of 9 linear with Checksum">kód 39 9 vonalból 3 ellenőrző összeggel</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="882" trl="N">
+  <value column="Name" original="Code 39 linear w/o Checksum">kód 39 ellenőrző összeg nélkül</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="883" trl="N">
+  <value column="Name" original="Private Information">Privát információ</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="884" trl="N">
+  <value column="Name" original="User 1">Felhasználói 1</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="885" trl="N">
+  <value column="Name" original="User 2">Felhasználói 2</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="886" trl="N">
+  <value column="Name" original="User 3">Felhasználói 3</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="887" trl="N">
+  <value column="Name" original="User 4">Felhasználói 4</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="888" trl="N">
+  <value column="Name" original="CM Container">CM tároló</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="889" trl="N">
+  <value column="Name" original="CM Container Stage">CM megjelenített tároló</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="890" trl="N">
+  <value column="Name" original="CM Template">CM sablon</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="891" trl="N">
+  <value column="Name" original="CM Media">CM média</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="892" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="893" trl="N">
+  <value column="Name" original="Committed Amount">Kötelező összeg</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="894" trl="N">
+  <value column="Name" original="Time&amp;Material max Comitted">Max. foglalt anyag&amp;idő</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="895" trl="N">
+  <value column="Name" original="Time&amp;Material">Anyag&amp;idő</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="896" trl="N">
+  <value column="Name" original="Product  Quantity">Termék mennyiség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="897" trl="N">
+  <value column="Name" original="Project">Projekt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="898" trl="N">
+  <value column="Name" original="Phase">Fázis</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="899" trl="N">
+  <value column="Name" original="Task">Feladat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="900" trl="N">
+  <value column="Name" original="Document">Dokumentum</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="901" trl="N">
+  <value column="Name" original="Internal Link">Belső kapcsolat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="902" trl="N">
+  <value column="Name" original="External URL">Külső URL</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="903" trl="N">
+  <value column="Name" original="image/gif">Kép/gif</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="904" trl="N">
+  <value column="Name" original="image/jpeg">Kép/jpeg</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="905" trl="N">
+  <value column="Name" original="image/png">Kép/png</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="906" trl="N">
+  <value column="Name" original="application/pdf">Alkalmazás/pdf</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="907" trl="N">
+  <value column="Name" original="text/css">Szöveg/css</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="908" trl="N">
+  <value column="Name" original="Web Access">Webes elérés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="909" trl="N">
+  <value column="Name" original="Ad display">Hirdetés megjelenítése</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="910" trl="N">
+  <value column="Name" original="Redirect">Átirányít</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="911" trl="N">
+  <value column="Name" original="Collaboration Management">Csoportmunka menedzsment</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="912" trl="N">
+  <value column="Name" original="Java Client">Java kliens</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="913" trl="N">
+  <value column="Name" original="HTML Client">HTML kliens</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="914" trl="N">
+  <value column="Name" original="Self Service">Önkiszolgáló</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="915" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="916" trl="N">
+  <value column="Name" original="Write-off only">Csak leírás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="917" trl="N">
+  <value column="Name" original="Discount only">Csak kedvezmény</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="918" trl="N">
+  <value column="Name" original="Write-off and Discount">Kedvezmény és leírás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="919" trl="N">
+  <value column="Name" original="text/js">Szöveg/js</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="920" trl="N">
+  <value column="Name" original="None">Nincs</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="921" trl="N">
+  <value column="Name" original="Both">Mindkettő</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="922" trl="N">
+  <value column="Name" original="Direct Debit">Közvetlen letét</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="923" trl="N">
+  <value column="Name" original="Direct Deposit">Közvetlen letét</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="924" trl="N">
+  <value column="Name" original="Dunning">Felszólítások</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="925" trl="N">
+  <value column="Name" original="Collection Agency">Beszedő társaság</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="926" trl="N">
+  <value column="Name" original="Legal Procedure">Jogi folyamat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="927" trl="N">
+  <value column="Name" original="Uncollectable">Behajthatatlan</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="928" trl="N">
+  <value column="Name" original="Not moderated">Nem moderált</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="929" trl="N">
+  <value column="Name" original="Before Publishing">Megjelentetés előtt</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="930" trl="N">
+  <value column="Name" original="After Publishing">Megjelentetés után</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="931" trl="N">
+  <value column="Name" original="Not Displayed">Nem megjelenített</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="932" trl="N">
+  <value column="Name" original="Published">Publikált</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="933" trl="N">
+  <value column="Name" original="To be reviewed">Áttekintésre</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="934" trl="N">
+  <value column="Name" original="Suspicious">Gyanús</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="935" trl="N">
+  <value column="Name" original="SQL Command">SQL utasítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="936" trl="N">
+  <value column="Name" original="Internal Link">Belső kapcsolat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="937" trl="N">
+  <value column="Name" original="External Link">Külső kapcsolat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="939" trl="N">
+  <value column="Name" original="Style">Stílus</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="940" trl="N">
+  <value column="Name" original="Wiki">Wiki</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="941" trl="N">
+  <value column="Name" original="Note (flat)">Jegyzet (alap)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="942" trl="N">
+  <value column="Name" original="Forum (threaded)">Fórum (csoportosított)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50001" trl="N">
+  <value column="Name" original="Local Transfer">Helyi átvitel</value>
+  <value column="Description" original="This type of transfer will transfer objects to the same Adempiere instance">Ez az átviteli forma egyazon Adempiere környezetbe mozgat át objektumokat.</value>
+ </row>
+ <row id="50002" trl="N">
+  <value column="Name" original="Remote Transfer">Távoli átvitel</value>
+  <value column="Description" original="This type of transfer will transfer objects to another Adempiere installation accessible by network.">Ez az átviteli forma egy másik, hálózaton elérhető Adempiere környezetbe mozgat át objektumokat.</value>
+ </row>
+ <row id="50003" trl="N">
+  <value column="Name" original="XML File">XML Fájl</value>
+  <value column="Description" original="This type of transfer will create a XML file ">Ez az átviteli forma XML fájlt készít.</value>
+ </row>
+ <row id="50004" trl="N">
+  <value column="Name" original="Release 2.5.2a">2.5.2a kiadás</value>
+  <value column="Description" original="Release 2.5.2a">2.5.2a kiadás</value>
+ </row>
+ <row id="50005" trl="N">
+  <value column="Name" original="Release 2.5.2b">2.5.2b kiadás</value>
+  <value column="Description" original="Release 2.5.2b">2.5.2b kiadás</value>
+ </row>
+ <row id="50006" trl="N">
+  <value column="Name" original="Release 2.5.2c">2.5.2c kiadás</value>
+  <value column="Description" original="Release 2.5.2c">2.5.2c kiadás</value>
+ </row>
+ <row id="50007" trl="N">
+  <value column="Name" original="Release 2.5.2d">2.5.2d kiadás</value>
+  <value column="Description" original="Release 2.5.2d">2.5.2d kiadás</value>
+ </row>
+ <row id="50008" trl="N">
+  <value column="Name" original="Release 2.5.2e">2.5.2e kiadás</value>
+  <value column="Description" original="Release 2.5.2e">2.5.2e kiadás</value>
+ </row>
+ <row id="50009" trl="N">
+  <value column="Name" original="Release 2.5.3a">2.5.3a kiadás</value>
+  <value column="Description" original="Release 2.5.3a">2.5.3a kiadás</value>
+ </row>
+ <row id="50010" trl="N">
+  <value column="Name" original="Release 2.5.3b">2.5.3b kiadás</value>
+  <value column="Description" original="Release 2.5.3b">2.5.3b kiadás</value>
+ </row>
+ <row id="50011" trl="N">
+  <value column="Name" original="No specific release">Nem függ a kiadástól</value>
+  <value column="Description" original="No specific release">Nem függ a kiadástól</value>
+ </row>
+ <row id="50012" trl="N">
+  <value column="Name" original="All Database Types">Minden adatbázis típus</value>
+  <value column="Description" original="Use this when a SQL command syntax is the same between database types">Alkalmazza ezt, amikor az SQL parancs formátuma az adatbázis típusoknak egyformán megfelel.</value>
+ </row>
+ <row id="50013" trl="N">
+  <value column="Name" original="DB2">DB2</value>
+  <value column="Description" original="DB2 Database">DB2 Adatbázis</value>
+ </row>
+ <row id="50014" trl="N">
+  <value column="Name" original="Firebird">Firebird</value>
+  <value column="Description" original="Firebird Database">Firebird Adatbázis</value>
+ </row>
+ <row id="50015" trl="N">
+  <value column="Name" original="MySQL">MySQL</value>
+  <value column="Description" original="MySQL Database">MySQL Adatbázis</value>
+ </row>
+ <row id="50016" trl="N">
+  <value column="Name" original="Oracle">Oracle</value>
+  <value column="Description" original="Oracle Database">Oracle Adatbázis</value>
+ </row>
+ <row id="50017" trl="N">
+  <value column="Name" original="Postgres">Postgres</value>
+  <value column="Description" original="Postgres Database">Postgres Adatbázis</value>
+ </row>
+ <row id="50018" trl="N">
+  <value column="Name" original="SQL Server">SQL Szerver</value>
+  <value column="Description" original="SQL Server Database">SQL Szerver Adatbázis</value>
+ </row>
+ <row id="50019" trl="N">
+  <value column="Name" original="Sybase">Sybase</value>
+  <value column="Description" original="Sybase Database">Sybase Adatbázis</value>
+ </row>
+ <row id="50020" trl="N">
+  <value column="Name" original="Workbench">Munkaterület</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50021" trl="N">
+  <value column="Name" original="File - Code or other">Fájl - Kód vagy más</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50022" trl="N">
+  <value column="Name" original="Data">Adatok</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50023" trl="N">
+  <value column="Name" original="Workflow">Munkafolyamat</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50024" trl="N">
+  <value column="Name" original="Import Format">Importálás formátuma</value>
+  <value column="Description" original="Exports Import Format">Import formátum exportálása</value>
+ </row>
+ <row id="50025" trl="N">
+  <value column="Name" original="Application or Module">Alkalmazás vagy modul</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50026" trl="N">
+  <value column="Name" original="Process/Report">Folyamat/Jelentés</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50027" trl="N">
+  <value column="Name" original="ReportView">Jelentés nézet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50028" trl="N">
+  <value column="Name" original="Role">Jogosultság</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50029" trl="N">
+  <value column="Name" original="Code Snipit">Kód-rész</value>
+  <value column="Description" original="Replace a code snipit with in a file">Egy kód-rész cseréje fájllal</value>
+ </row>
+ <row id="50030" trl="N">
+  <value column="Name" original="SQL Statement">SQL utasítás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50031" trl="N">
+  <value column="Name" original="Table">Tábla</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50032" trl="N">
+  <value column="Name" original="Window">Ablak</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50033" trl="N">
+  <value column="Name" original="Form">Űrlap</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50034" trl="N">
+  <value column="Name" original="File">Fájl</value>
+  <value column="Description" original="Package is file based">A csomag fájl alapú</value>
+ </row>
+ <row id="50035" trl="N">
+  <value column="Name" original="WebService">Webes szolgáltatás</value>
+  <value column="Description" original="Package is available via WebService">A csomag webes szolgáltatáson keresztül érhető el</value>
+ </row>
+ <row id="50037" trl="N">
+  <value column="Name" original="Ask user (for future use)">Kérdés a Felhasználóhoz (jövőbeli alkalmazáshoz)</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50038" trl="N">
+  <value column="Name" original="Don't show help">Súgó megjelenítésének mellőzése</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50039" trl="N">
+  <value column="Name" original="Show Help">Súgó megjelenítése</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50040" trl="N">
+  <value column="Name" original="Run silently - Take Defaults">Csendes futtatás - Alapbeállításokkal</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50041" trl="N">
+  <value column="Name" original="Dynamic Validation Rule">Dinamikus érvényesítési feltételek</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50042" trl="N">
+  <value column="Name" original="Ending in 9/5">9/5 végződéssel</value>
+  <value column="Description" original="The price ends in either a 5 or 9 whole unit">Az árak vagy 5-re, vagy 9-re végződnek az termékegységek esetében</value>
+ </row>
+ <row id="50043" trl="N">
+  <value column="Name" original="Message">Üzenet</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="50044" trl="N">
+  <value column="Name" original="PrintFormat">Nyomtatási formátum</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="53000" trl="N">
+  <value column="Name" original="Tab">Elválasztás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="53001" trl="N">
+  <value column="Name" original="Label">Cimke</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="53002" trl="N">
+  <value column="Name" original="Collapse">Legördülő</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="53223" trl="N">
+  <value column="Name" original="PO/SO Commitment &amp; Reservation">Beszerzési, Vevői kötelezettség &amp; foglalás</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="53224" trl="N">
+  <value column="Name" original="SO Commitment only">Csak értékesítés rendelési kötelezettség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="53225" trl="N">
+  <value column="Name" original="PO/SO Commitment">Beszerzési, Vevői kötelezettség</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000000" trl="N">
+  <value column="Name" original="Amount">Összeg</value>
+  <value column="Description" original="Depreciation entered in field is an amount">Az értékcsökkenés összegét adja meg a mezőben</value>
+ </row>
+ <row id="1000001" trl="N">
+  <value column="Name" original="Rate">Arány</value>
+  <value column="Description" original="Depreciation entered in field is a rate">A megadott értékcsökkenés egy arányszám a mezőben</value>
+ </row>
+ <row id="1000002" trl="N">
+  <value column="Name" original="Period">Periódus</value>
+  <value column="Description" original="Amount entered in the Manual Depreciation Field is by period">A mezőben megadott érték periódus szerint</value>
+ </row>
+ <row id="1000003" trl="N">
+  <value column="Name" original="Yearly">Éves</value>
+  <value column="Description" original="The amount entered into the manual depreciation field is for the year">A megadott összeg az értékcsökkentés évére vonatkozik</value>
+ </row>
+ <row id="1000004" trl="N">
+  <value column="Name" original="Depreciation">Értékcsökkenés</value>
+  <value column="Description" original="Depreciation Entries">Értékcsökkenési feljegyzések</value>
+ </row>
+ <row id="1000005" trl="N">
+  <value column="Name" original="Disposals">Kivezetések</value>
+  <value column="Description" original="Disposal Entries for Fixed Assets">Tárgyi eszköz kivezetések feljegyzései</value>
+ </row>
+ <row id="1000006" trl="N">
+  <value column="Name" original="Forecasts">Előrejelzések</value>
+  <value column="Description" original="Forecasts">Előrejelzések</value>
+ </row>
+ <row id="1000007" trl="N">
+  <value column="Name" original="New">Új</value>
+  <value column="Description" original="New Assets">Új eszközök</value>
+ </row>
+ <row id="1000008" trl="N">
+  <value column="Name" original="Splits">Megosztások</value>
+  <value column="Description" original="Split Entries for Fixed Assets">Tárgyi eszközök megosztási feljegyzései</value>
+ </row>
+ <row id="1000009" trl="N">
+  <value column="Name" original="Transfers">Átcsoportosítások</value>
+  <value column="Description" original="Transfer Entries for Fixed Assets">Tárgyi eszköz átcsoportosítások feljegyzései</value>
+ </row>
+ <row id="1000010" trl="N">
+  <value column="Name" original="Default">Alap</value>
+  <value column="Description" original="Default">Alap</value>
+ </row>
+ <row id="1000011" trl="N">
+  <value column="Name" original="Inception to date">Aktiválás dátumra</value>
+  <value column="Description" original="Revaluate each year seperately">Minden év külön átérékelése</value>
+ </row>
+ <row id="1000012" trl="N">
+  <value column="Name" original="Year Balances">Éves egyenlegek</value>
+  <value column="Description" original="Revaluate current year to date balances and then revaluates the beginning balance">Átértékelés folyó év egy dátumának egyenlegére, majd a kiinduló egyenleg átértékelése</value>
+ </row>
+ <row id="1000013" trl="N">
+  <value column="Name" original="Factor">Állandó</value>
+  <value column="Description" original="Revaluation Code Type is a Factor ">Az átértékelési kód típusa egy állandó</value>
+ </row>
+ <row id="1000014" trl="N">
+  <value column="Name" original="Index">Mutató</value>
+  <value column="Description" original="Revaluation Code Type is an Index ">Az átértékelési kód típusa egy mutató</value>
+ </row>
+ <row id="1000015" trl="N">
+  <value column="Name" original="Date Aquired">Beszerzés dátuma</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000016" trl="N">
+  <value column="Name" original="Revaluation Date">Átértékelés dátuma</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000017" trl="N">
+  <value column="Name" original="Date Depreciation Started">Értékcsökkentés kezdő dátuma</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000018" trl="N">
+  <value column="Name" original="Revaluation Code #1">Ártértékelési kód #1</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000019" trl="N">
+  <value column="Name" original="Revaluation Code #2">Ártértékelési kód #2</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000020" trl="N">
+  <value column="Name" original="Revaluation Code #3">Ártértékelési kód #3</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000021" trl="N">
+  <value column="Name" original="Amount">Összeg</value>
+  <value column="Description" original="Split Asset by Currency Amount">Eszköz felosztása a deviza összegével</value>
+ </row>
+ <row id="1000022" trl="N">
+  <value column="Name" original="Percentage">Százalék</value>
+  <value column="Description" original="Split Asset by Percentage">Eszközmegosztás százalékkal</value>
+ </row>
+ <row id="1000023" trl="N">
+  <value column="Name" original="Quantity">Mennyiség</value>
+  <value column="Description" original="Split Percentage by Quantity">Megosztási arány mennyiség alapján</value>
+ </row>
+ <row id="1000024" trl="N">
+  <value column="Name" original="Charity">Adományok</value>
+  <value column="Description" original="Donated to Charity">Adományok</value>
+ </row>
+ <row id="1000025" trl="N">
+  <value column="Name" original="Destroyed">Megsemmisített</value>
+  <value column="Description" original="Asset Destroyed">Megsemmisített eszköz</value>
+ </row>
+ <row id="1000026" trl="N">
+  <value column="Name" original="Scraped">Leselejtezett</value>
+  <value column="Description" original="Scraped">Leselejtezett</value>
+ </row>
+ <row id="1000027" trl="N">
+  <value column="Name" original="Sold">Eladott</value>
+  <value column="Description" original="Asset Sold">Eladott eszköz</value>
+ </row>
+ <row id="1000028" trl="N">
+  <value column="Name" original="Sold w/Trade">Kereskedelmeben értékesített</value>
+  <value column="Description" original="Asset Sold with trade">Kereskedelmeben értékesített</value>
+ </row>
+ <row id="1000029" trl="N">
+  <value column="Name" original="Theft">Eltulajdonított</value>
+  <value column="Description" original="Asset Stolen">Ellopott eszközök</value>
+ </row>
+ <row id="1000030" trl="N">
+  <value column="Name" original="Cash">Készpénz</value>
+  <value column="Description" original="Sold for cash">Készpénzért eladott</value>
+ </row>
+ <row id="1000031" trl="N">
+  <value column="Name" original="Simple">Egyszerű</value>
+  <value column="Description" original="No cash or trade">Nem kp-s, vagy kereskedelmi</value>
+ </row>
+ <row id="1000032" trl="N">
+  <value column="Name" original="Trade">Kereskedelmi</value>
+  <value column="Description" original="Traded in">Értékesített</value>
+ </row>
+ <row id="1000033" trl="N">
+  <value column="Name" original="Trade w/cash">Készpénzért értékesít</value>
+  <value column="Description" original="Traded In with cash">Készpénzért értékesít</value>
+ </row>
+ <row id="1000034" trl="N">
+  <value column="Name" original="Capitalized Lease">Pénzügyi lízing</value>
+  <value column="Description" original="Asset is on a capitalized lease">Az eszköz pénzügyi lízinggel finanszírozott</value>
+ </row>
+ <row id="1000035" trl="N">
+  <value column="Name" original="Non-Capitalized Lease">Nem pénzügyi lízing</value>
+  <value column="Description" original="Asset is on a non-capitalized lease">Az eszköz nem pénzügyi lízinggel finanszírozott</value>
+ </row>
+ <row id="1000036" trl="N">
+  <value column="Name" original="Owned">Tulajdonban áll</value>
+  <value column="Description" original="Asset owned outright">Tulajdonban lévő eszköz</value>
+ </row>
+ <row id="1000037" trl="N">
+  <value column="Name" original="Rented">Bérelt</value>
+  <value column="Description" original="Asset is rented">Az eszköz bérelt</value>
+ </row>
+ <row id="1000038" trl="N">
+  <value column="Name" original="15th of every month">Minden hónap 15.-e</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000039" trl="N">
+  <value column="Name" original="1st of every month">Minden hónap 1.-je</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000040" trl="N">
+  <value column="Name" original="Beginning of every month">Minden hónap kezdete</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000041" trl="N">
+  <value column="Name" original="Yearly on or before contract date">Éves alapon vagy a szerződés dátumát megelőzően</value>
+  <value column="Description" original=""/>
+ </row>
+ <row id="1000042" trl="N">
+  <value column="Name" original="Addition">Ráaktiválás</value>
+  <value column="Description" original="Cost/quantity addition to asset">Költség/mennyiség aktiválása az eszközre</value>
+ </row>
+ <row id="1000043" trl="N">
+  <value column="Name" original="Balance">Egyenleg</value>
+  <value column="Description" original="Transaction updating the cost or accum depr balance">A tranzakció aktualizálja az ÉCS halmozott egyenlegét</value>
+ </row>
+ <row id="1000044" trl="N">
+  <value column="Name" original="Create">Létrehoz</value>
+  <value column="Description" original="Asset Master Record Created">Mestereszköz létrehozása megtörtént</value>
+ </row>
+ <row id="1000045" trl="N">
+  <value column="Name" original="Depreciation">Értékcsökkenés</value>
+  <value column="Description" original="Depreciation Expense Recorded">ÉCS ráfordítási rögzítve</value>
+ </row>
+ <row id="1000046" trl="N">
+  <value column="Name" original="Disposal">Kivezetés</value>
+  <value column="Description" original="Disposal of Asset">Eszköz kivezetése</value>
+ </row>
+ <row id="1000047" trl="N">
+  <value column="Name" original="Expense">Költség, ráfordítás</value>
+  <value column="Description" original="Expense invoice was recorded against this asset">Költségszámla rögzítése az eszközre</value>
+ </row>
+ <row id="1000048" trl="N">
+  <value column="Name" original="Forecast">Előrejelzés</value>
+  <value column="Description" original="Forecast Type">Előrejelzés típusa</value>
+ </row>
+ <row id="1000049" trl="N">
+  <value column="Name" original="Import">Importálás</value>
+  <value column="Description" original="Asset created by import">Eszköz létrehozásra került importálás nyomán</value>
+ </row>
+ <row id="1000050" trl="N">
+  <value column="Name" original="Revaluation">Átértékelés</value>
+  <value column="Description" original="Revaluation of Asset">Eszköz átértékelése</value>
+ </row>
+ <row id="1000051" trl="N">
+  <value column="Name" original="Setup">Beállítás</value>
+  <value column="Description" original="Asset Accounting Setup Modified">Eszköz könyvelési beállításának módosítása</value>
+ </row>
+ <row id="1000052" trl="N">
+  <value column="Name" original="Split">Megosztás</value>
+  <value column="Description" original="Asset Split">Eszköz megosztása</value>
+ </row>
+ <row id="1000053" trl="N">
+  <value column="Name" original="Transfer">Átcsoportosítás</value>
+  <value column="Description" original="Asset Transfered">Eszköz átcsoportosítás</value>
+ </row>
+ <row id="1000054" trl="N">
+  <value column="Name" original="Update">Aktualizál</value>
+  <value column="Description" original="Asset Master Record Updated">Mestereszköz rekord aktualizálva</value>
+ </row>
+ <row id="1000055" trl="N">
+  <value column="Name" original="Usage">Alkalmazás</value>
+  <value column="Description" original="Record asset usage">Eszköz alkalmazásának rekordja</value>
+ </row>
+ <row id="1000056" trl="N">
+  <value column="Name" original="Imported">Importálva</value>
+  <value column="Description" original="This entry was created from an imported document">Ez a feljegyzés egy importált dokumentum alapján került létrehozásra.</value>
+ </row>
+ <row id="1000057" trl="N">
+  <value column="Name" original="Invoice">Számla</value>
+  <value column="Description" original="This entry is related to an invoice">Ez a feljegyzés egy számlához kapcsolódik</value>
+ </row>
+ <row id="1000058" trl="N">
+  <value column="Name" original="Journal Entry">Napló feljegyzés</value>
+  <value column="Description" original="The entry was created from a journal entry">Ez a feljegyzés egy napló feljegyzésből került létrehozásra</value>
+ </row>
+ <row id="1000059" trl="N">
+  <value column="Name" original="Manual">Kézi</value>
+  <value column="Description" original="This entry was manually created">Ez a feljegyzés manuálisan rögzített</value>
+ </row>
+ <row id="1000060" trl="N">
+  <value column="Name" original="Capital">Befektetett Tőke</value>
+  <value column="Description" original="Indicates cost associated with this entry is capital">Jelöli, hogy a kapcsolódó összeg aktiválva van</value>
+ </row>
+ <row id="1000061" trl="N">
+  <value column="Name" original="Expense">Költség, ráfordítás</value>
+  <value column="Description" original="Inidicates this charge is an expense">Jelöli, hogy a kapcsolódó összeg egy ráfordítás</value>
+ </row>
+</adempiereTrl>
