@@ -7,12 +7,12 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-console</programArgs>
-      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal</vmArgs>
+      <programArgs>--launcher.XXMaxPermSize 192m</programArgs>
+      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dosgi.compatibility.bootdelegation=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <launcher name="adempiere">
+   <launcher name="adempiere-client">
       <solaris/>
       <win useIco="false">
          <bmp/>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cspecExtension
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
+	<dependencies>
+		<!-- Place your Dependencies here -->
+	</dependencies>
+	<generators>
+		<!-- Place your Generators here -->
+	</generators>
+	<artifacts>
+		<!-- Place your Artifacts here -->
+	</artifacts>
+	<actions>
+        <public name="create.product" actor="ant">
+            <actorProperties>
+                <property key="buildFile" value="product.ant" />
+                <property key="targets" value="create.product" />
+            </actorProperties>
+            <properties>
+                <property key="profile" value="ServerProfile" />
+                <property key="iu" value="org.adempiere.server.product" />
+            </properties>
+            <prerequisites alias="repository">
+                <attribute name="site.p2" />
+            </prerequisites>
+            <products alias="destination" base="${buckminster.output}">
+                <path path="adempiere.${target.ws}.${target.os}.${target.arch}/" />
+            </products>
+        </public>
+        <public name="create.product.zip" actor="ant">
+            <actorProperties>
+                <property key="buildFileId" value="buckminster.pdetasks" />
+                <property key="targets" value="create.zip" />
+            </actorProperties>
+            <prerequisites alias="action.requirements">
+                <attribute name="create.product" />
+            </prerequisites>
+            <products alias="action.output" base="${buckminster.output}">
+                <path path="adempiere.${target.ws}.${target.os}.${target.arch}.zip" />
+            </products>
+        </public>
+    </actions>
+	<groups>
+		<!-- Place your Groups here -->
+	</groups>
+	<alterDependencies>
+		<!-- Place your Dependency alterations here -->
+	</alterDependencies>
+	<alterArtifacts>
+		<!-- Place your Artifact alterations here -->
+	</alterArtifacts>
+	<alterActions>
+		<!-- Place your Action alterations here -->
+	</alterActions>
+	<alterGroups>
+		<!-- Place your Group alterations here -->
+	</alterGroups>
+</cspecExtension>
