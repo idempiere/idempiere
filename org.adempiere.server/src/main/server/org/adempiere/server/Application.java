@@ -1,13 +1,15 @@
 /**
- * 
+ *
  */
 package org.adempiere.server;
 
+import java.io.File;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
+import org.compiere.util.Ini;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -25,6 +27,12 @@ public class Application implements IApplication {
 		/** Initialise context for the current thread*/
         Properties serverContext = new Properties();
         ServerContext.setCurrentInstance(serverContext);
+
+        String propertyFile = Ini.getFileName(false);
+        File file = new File(propertyFile);
+        if (!file.exists()) {
+        	throw new IllegalStateException("Adempiere.properties file missing. Path="+file.getAbsolutePath());
+        }
         if (!Adempiere.isStarted())
         {
 	        boolean started = Adempiere.startup(false);
@@ -33,7 +41,7 @@ public class Application implements IApplication {
 	            throw new AdempiereException("Could not start ADempiere");
 	        }
         }
-        
+
 		return IApplication.EXIT_OK;
 	}
 
