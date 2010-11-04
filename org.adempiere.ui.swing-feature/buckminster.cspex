@@ -19,8 +19,8 @@
                 <property key="targets" value="create.product" />
             </actorProperties>
             <properties>
-                <property key="profile" value="ServerProfile" />
-                <property key="iu" value="org.adempiere.server.product" />
+                <property key="profile" value="ClientProfile" />
+                <property key="iu" value="org.adempiere.ui.swing.product" />
             </properties>
             <prerequisites alias="repository">
                 <attribute name="site.p2" />
