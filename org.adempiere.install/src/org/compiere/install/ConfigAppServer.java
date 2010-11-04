@@ -42,9 +42,9 @@ public class ConfigAppServer extends Config
 	 */
 	public void init()
 	{
-		p_data.setAppsServerWebPort("80");
+		p_data.setAppsServerWebPort("8080");
 		p_data.setAppsServerWebPort(true);
-		p_data.setAppsServerSSLPort("443");
+		p_data.setAppsServerSSLPort("8443");
 		p_data.setAppsServerSSLPort(true);
 	}	//	init
 

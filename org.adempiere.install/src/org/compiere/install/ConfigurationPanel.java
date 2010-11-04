@@ -94,8 +94,8 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 	private ConfigurationData	m_data = new ConfigurationData(this);
 
 	private static ImageIcon iOpen = new ImageIcon(ConfigurationPanel.class.getResource("openFile.gif"));
-	private static ImageIcon iSave = new ImageIcon(Core.getResourceFinder().getResource("images/Save16.gif"));
-	private static ImageIcon iHelp = new ImageIcon(Core.getResourceFinder().getResource("images/Help16.gif"));
+	private static ImageIcon iSave = new ImageIcon(ConfigurationPanel.class.getResource("images/Save16.gif"));
+	private static ImageIcon iHelp = new ImageIcon(ConfigurationPanel.class.getResource("images/Help16.gif"));
 
 
 	//	-------------	Static UI
