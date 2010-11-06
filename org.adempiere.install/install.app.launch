@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+<booleanAttribute key="append.args" value="true"/>
+<stringAttribute key="application" value="org.adempiere.install.application"/>
+<booleanAttribute key="askclear" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<booleanAttribute key="clearws" value="false"/>
+<booleanAttribute key="clearwslog" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/New_configuration"/>
+<booleanAttribute key="default" value="false"/>
+<booleanAttribute key="includeOptional" value="false"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-install.app"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -noExit"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc}"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="org.adempiere.server.server_product"/>
+<stringAttribute key="selected_target_plugins" value="com.springsource.javax.mail@default:default,com.springsource.org.apache.activemq@default:default,org.eclipse.equinox.common@2:true,org.eclipse.core.jobs@default:default,org.eclipse.osgi@-1:true,com.springsource.org.apache.poi@default:default,com.springsource.org.junit@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.runtime@default:true,com.springsource.javax.jms@default:default,com.springsource.javax.xml.rpc@default:default,com.springsource.net.sf.cglib@default:default,com.springsource.javax.ejb@default:default,org.restlet@default:default,org.apache.ant@default:default,com.springsource.org.apache.commons.collections@default:default,com.springsource.org.apache.commons.logging@default:default,com.springsource.org.apache.commons.net@default:default,org.eclipse.equinox.registry@default:default,com.springsource.javax.servlet@default:default,com.springsource.javax.activation@default:default,org.eclipse.equinox.app@default:default,com.springsource.org.apache.kahadb@default:default,com.springsource.javax.xml.soap@default:default,com.springsource.javax.management.j2ee@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="org.adempiere.base@default:default,org.adempiere.extend@default:false,org.adempiere.install@default:true,org.apache.ecs@default:default"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<booleanAttribute key="useProduct" value="false"/>
+</launchConfiguration>

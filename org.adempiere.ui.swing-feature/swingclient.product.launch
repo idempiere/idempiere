@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+<booleanAttribute key="append.args" value="true"/>
+<stringAttribute key="application" value="org.adempiere.ui.swing.client"/>
+<booleanAttribute key="askclear" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<booleanAttribute key="clearws" value="false"/>
+<booleanAttribute key="clearwslog" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/swingclient.product"/>
+<booleanAttribute key="default" value="false"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-swingclient.product"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc}"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="org.adempiere.ui.swing.client_product"/>
+<stringAttribute key="productFile" value="/org.adempiere.ui.swing-feature/swingclient.product"/>
+<stringAttribute key="selected_target_plugins" value="org.eclipse.osgi.services@default:default,org.eclipse.equinox.util@default:default,org.eclipse.equinox.p2.ql@default:default,com.springsource.javax.mail@default:default,com.springsource.org.apache.activemq@default:default,org.eclipse.ecf.provider.filetransfer.ssl@default:false,org.apache.commons.httpclient@default:default,com.springsource.org.apache.xmlcommons@default:default,org.eclipse.ecf.provider.filetransfer.httpclient@default:default,org.eclipse.equinox.p2.touchpoint.eclipse@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.http.registry@default:default,com.springsource.org.apache.xerces@default:false,org.eclipse.equinox.p2.metadata.repository@default:default,com.springsource.org.apache.xml.resolver@default:default,org.eclipse.core.jobs@default:default,javax.xml@default:default,org.eclipse.osgi@-1:true,com.springsource.org.apache.poi@default:default,com.springsource.org.junit@default:default,org.eclipse.ecf.provider.filetransfer@default:default,org.sat4j.core@default:default,org.eclipse.equinox.simpleconfigurator@1:true,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.launcher.gtk.linux.x86@default:false,org.eclipse.equinox.frameworkadmin.equinox@default:default,org.eclipse.equinox.p2.artifact.repository@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.equinox.p2.repository@default:default,org.eclipse.equinox.p2.garbagecollector@default:default,org.restlet.ext.net@default:true,org.eclipse.core.runtime@default:true,com.springsource.javax.jms@default:default,com.springsource.javax.xml.rpc@default:default,com.springsource.javax.el@default:default,org.eclipse.equinox.p2.jarprocessor@default:default,com.springsource.net.sf.cglib@default:default,org.eclipse.ecf.filetransfer@default:default,org.eclipse.equinox.frameworkadmin@default:default,org.eclipse.equinox.p2.engine@default:default,org.apache.commons.codec@default:default,com.springsource.javax.ejb@default:default,org.restlet@default:true,org.eclipse.equinox.ds@1:true,org.eclipse.equinox.security@default:default,org.eclipse.equinox.p2.director@default:default,com.springsource.org.apache.xml.serializer@default:default,org.eclipse.ecf.provider.filetransfer.httpclient.ssl@default:false,org.eclipse.equinox.simpleconfigurator.manipulator@default:default,org.apache.ant@default:default,com.springsource.org.apache.commons.collections@default:default,org.apache.commons.logging@default:default,org.eclipse.equinox.launcher@default:default,com.springsource.org.apache.commons.logging@default:default,org.sat4j.pb@default:default,org.eclipse.ecf.ssl@default:false,org.eclipse.ecf.identity@default:default,org.eclipse.ecf@default:default,com.springsource.org.apache.commons.net@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.p2.console@default:default,com.springsource.javax.servlet@default:default,com.springsource.javax.activation@default:default,org.eclipse.equinox.app@default:default,com.springsource.org.apache.kahadb@default:default,com.springsource.javax.xml.soap@default:default,org.eclipse.equinox.p2.core@default:default,org.eclipse.equinox.p2.metadata@default:default,org.eclipse.equinox.p2.touchpoint.natives@default:default,com.springsource.javax.management.j2ee@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="org.adempiere.base@default:default,org.adempiere.extend@default:false,org.adempiere.ui@default:default,org.adempiere.report.jasper.swing@default:default,org.adempiere.plugin.utils@default:default,org.adempiere.report.jasper@default:default,org.adempiere.report.jasper.library@default:default,org.adempiere.pipo@default:default,org.apache.ecs@default:default,org.adempiere.replication@default:default,org.adempiere.payment.processor@default:default,org.adempiere.base.callout@default:default,org.adempiere.pipo.handlers@default:default,org.compiere.db.oracle.provider@default:default,org.adempiere.ui.swing@default:default,org.compiere.db.postgresql.provider@default:default,org.adempiere.base.process@default:default"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<booleanAttribute key="useProduct" value="true"/>
+<booleanAttribute key="usefeatures" value="false"/>
+</launchConfiguration>
