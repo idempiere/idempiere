@@ -76,5 +76,9 @@ syntax: regexp
 ^org\.adempiere\.payment\.processor/bin/.*\.class$
 ^org\.adempiere\.ui\.swing\.pluginlist/bin/.*\.class$
 ^org\.adempiere\.plugin\.utils/bin/.*\.class$
-
-
+^targetPlatform/.*$
+^\.metadata/.*$
+^org\.apache\.ecs/bin/.*$
+^keystore/.*$
+^log/.*$
+^.*\.log$
