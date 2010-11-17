@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NavigableSet;
+import java.util.TreeMap;
 
 import org.adempiere.base.ServiceQuery;
 import org.eclipse.core.runtime.CoreException;
@@ -106,9 +108,48 @@ public class ExtensionList<T> implements Iterable<T>{
 	public ExtensionList(Class<T> clazz, String extensionPointId) {
 		try {
 			elements = Platform.getExtensionRegistry().getConfigurationElementsFor(extensionPointId);
+			if (elements != null && elements.length > 1) {
+				elements = sort(elements);
+			}
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
+	}
+
+	private IConfigurationElement[] sort(IConfigurationElement[] elementArray) {
+		IConfigurationElement[] result = elementArray;
+		TreeMap<Integer, List<IConfigurationElement>> elementMap = new TreeMap<Integer, List<IConfigurationElement>>();
+		List<IConfigurationElement> elementList = new ArrayList<IConfigurationElement>();
+		for(IConfigurationElement element : elementArray) {
+			int priority = ExtensionPriorityManager.getInstance().getPriority(element);
+			if (priority > 0) {
+				List<IConfigurationElement> list = elementMap.get(priority);
+				if (list == null) {
+					list = new ArrayList<IConfigurationElement>();
+					elementMap.put(priority, list);
+				}
+				list.add(element);
+			} else {
+				elementList.add(element);
+			}
+		}
+		if (!elementMap.isEmpty()) {
+			result = new IConfigurationElement[elementArray.length];
+			NavigableSet<Integer> keySet = elementMap.descendingKeySet();
+			int i = 0;
+			for(Integer key : keySet) {
+				List<IConfigurationElement> list= elementMap.get(key);
+				for(IConfigurationElement element : list) {
+					result[i] = element;
+					i++;
+				}
+			}
+			for(IConfigurationElement element : elementList) {
+				result[i] = element;
+				i++;
+			}
+		}
+		return result;
 	}
 
 	public ExtensionList(Class<T> type, String extensionPointId, ServiceQuery query) {

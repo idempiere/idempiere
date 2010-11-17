@@ -1,3 +1,16 @@
+/******************************************************************************
+ * Product: Adempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 2010 Heng Sin Low                							  *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.compiere.install.console;
 
 import java.io.BufferedReader;
@@ -11,30 +24,35 @@ import org.compiere.install.ConfigurationData;
 import org.compiere.install.KeyStoreMgt;
 import org.compiere.util.Ini;
 
+/**
+ *
+ * @author hengsin
+ *
+ */
 public class ConfigurationConsole {
 
 	ConfigurationData data = new ConfigurationData(null);
-	
+
 	public void doSetup() {
 		BufferedReader reader = null;
 		PrintWriter writer  = null;
 		reader = new BufferedReader(new InputStreamReader(System.in));
 		writer = new PrintWriter(System.out, true);
-		
+
 		Ini.setShowLicenseDialog(false);
 		data.load();
-		
+
 		try {
-			jvmType(reader, writer);		
+			jvmType(reader, writer);
 			jvmHome(reader, writer);
-			
-			adempiereHome(reader, writer);						
+
+			adempiereHome(reader, writer);
 			keyStorePass(reader, writer);
-			
+
 			appServerHostname(reader, writer);
 			appServerWebPort(reader, writer);
 			appServerSSLPort(reader, writer);
-			
+
 			dbType(reader, writer);
 			dbHostname(reader, writer);
 			dbPort(reader, writer);
@@ -42,10 +60,10 @@ public class ConfigurationConsole {
 			dbUser(reader, writer);
 			dbPassword(reader, writer);
 			dbSystemPassword(reader, writer);
-			
+
 			mailServer(reader, writer);
 			mailUser(reader, writer);
-			mailPassword(reader, writer);		
+			mailPassword(reader, writer);
 			mailAdmin(reader, writer);
 			writer.println("Save changes (Y/N) [Y]: ");
 			String yesNo = reader.readLine();
@@ -63,7 +81,7 @@ public class ConfigurationConsole {
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}						
+		}
 	}
 
 	private void mailAdmin(BufferedReader reader, PrintWriter writer) throws IOException {
@@ -122,7 +140,7 @@ public class ConfigurationConsole {
 			String input = reader.readLine();
 			if (input != null && input.trim().length() > 0)
 			{
-				try 
+				try
 				{
 					int inputPort = Integer.parseInt(input);
 					if (inputPort <= 0 || inputPort > 65535)
@@ -182,7 +200,7 @@ public class ConfigurationConsole {
 		if (dbUser != null && dbUser.trim().length() > 0)
 		{
 			data.setDatabaseUser(dbUser);
-		}		
+		}
 	}
 
 	private void dbName(BufferedReader reader, PrintWriter writer) throws IOException {
@@ -191,7 +209,7 @@ public class ConfigurationConsole {
 		if (dbName != null && dbName.trim().length() > 0)
 		{
 			data.setDatabaseName(dbName);
-		}		
+		}
 	}
 
 	private void dbHostname(BufferedReader reader, PrintWriter writer) throws IOException {
@@ -207,10 +225,10 @@ public class ConfigurationConsole {
 		while (true)
 		{
 			writer.println("Application Server SSL Port["+data.getAppsServerSSLPort()+"]:");
-			String input = reader.readLine();			
+			String input = reader.readLine();
 			if (input != null && input.trim().length() > 0)
 			{
-				try 
+				try
 				{
 					int inputPort = Integer.parseInt(input);
 					if (inputPort <= 0 || inputPort > 65535)
@@ -236,7 +254,7 @@ public class ConfigurationConsole {
 			}
 			break;
 		}
-		
+
 	}
 
 	private void appServerWebPort(BufferedReader reader, PrintWriter writer) throws IOException {
@@ -246,7 +264,7 @@ public class ConfigurationConsole {
 			String input = reader.readLine();
 			if (input != null && input.trim().length() > 0)
 			{
-				try 
+				try
 				{
 					int inputPort = Integer.parseInt(input);
 					if (inputPort <= 0 || inputPort > 65535)
@@ -264,7 +282,7 @@ public class ConfigurationConsole {
 			}
 			break;
 		}
-		
+
 	}
 
 	private void appServerHostname(BufferedReader reader, PrintWriter writer) throws IOException {
@@ -289,7 +307,7 @@ public class ConfigurationConsole {
 			{
 				password = data.getKeyStore();
 			}
-			
+
 			File adempiereHome = new File(data.getAdempiereHome());
 			String fileName = KeyStoreMgt.getKeystoreFileName(adempiereHome.getAbsolutePath());
 			KeyStoreMgt storeMgt = new KeyStoreMgt (fileName, password.toCharArray());
@@ -313,7 +331,7 @@ public class ConfigurationConsole {
 				String country = data.getProperty(ConfigurationData.ADEMPIERE_CERT_COUNTRY);
 				if (country == null)
 					country = System.getProperty("user.country");
-				
+
 				writer.println("KeyStore Settings.");
 				writer.println("(ON) Common Name [" + cn + "]:");
 				String input = reader.readLine();
@@ -322,7 +340,7 @@ public class ConfigurationConsole {
 					cn = input;
 					data.updateProperty(ConfigurationData.ADEMPIERE_CERT_CN, input);
 				}
-				
+
 				writer.println("(OU) Organization Unit [" + ou + "]:");
 				input = reader.readLine();
 				if (input != null && input.trim().length() > 0)
@@ -330,7 +348,7 @@ public class ConfigurationConsole {
 					ou = input;
 					data.updateProperty(ConfigurationData.ADEMPIERE_CERT_ORG_UNIT, ou);
 				}
-				
+
 				writer.println("(O) Organization [" + o + "]:");
 				input = reader.readLine();
 				if (input != null && input.trim().length() > 0)
@@ -338,7 +356,7 @@ public class ConfigurationConsole {
 					o = input;
 					data.updateProperty(ConfigurationData.ADEMPIERE_CERT_ORG, o);
 				}
-				
+
 				writer.println("(L) Locale/Town [" + lt + "]:");
 				input = reader.readLine();
 				if (input != null && input.trim().length() > 0)
@@ -346,7 +364,7 @@ public class ConfigurationConsole {
 					lt = input;
 					data.updateProperty(ConfigurationData.ADEMPIERE_CERT_LOCATION, lt);
 				}
-				
+
 				writer.println("(S) State [" + st + "]:");
 				input = reader.readLine();
 				if (input != null && input.trim().length() > 0)
@@ -354,7 +372,7 @@ public class ConfigurationConsole {
 					st = input;
 					data.updateProperty(ConfigurationData.ADEMPIERE_CERT_STATE, st);
 				}
-				
+
 				writer.println("(C) Country (2 Char) [" + country +"]");
 				input = reader.readLine();
 				if (input != null && input.trim().length() > 0)
@@ -362,9 +380,9 @@ public class ConfigurationConsole {
 					country = input;
 					data.updateProperty(ConfigurationData.ADEMPIERE_CERT_COUNTRY, input);
 				}
-				
+
 			}
-		
+
 			String error = data.testAdempiere();
 			if (error != null && error.trim().length() > 0)
 			{
@@ -382,7 +400,7 @@ public class ConfigurationConsole {
 		if (input != null && input.trim().length() > 0)
 		{
 			data.setAdempiereHome(input);
-		}			
+		}
 	}
 
 	private void jvmHome(BufferedReader reader, PrintWriter writer) throws IOException {
@@ -395,7 +413,7 @@ public class ConfigurationConsole {
 				data.setJavaHome(input);
 			}
 			String error = data.testJava();
-			if (error != null && error.trim().length() > 0) 
+			if (error != null && error.trim().length() > 0)
 			{
 				writer.println("JVM test fail: " + error);
 				jvmType(reader, writer);
@@ -409,7 +427,7 @@ public class ConfigurationConsole {
 		//java type
 		String javaType = data.getJavaType();
 		int javaTypeSelected = 0;
-		for(int i = 0; i < ConfigurationData.JAVATYPE.length; i++) 
+		for(int i = 0; i < ConfigurationData.JAVATYPE.length; i++)
 		{
 			if (ConfigurationData.JAVATYPE[i].equals(javaType))
 			{
@@ -422,14 +440,14 @@ public class ConfigurationConsole {
 		{
 			writer.println((i+1) + ". " + ConfigurationData.JAVATYPE[i]);
 		}
-		
+
 		while (true)
 		{
 			writer.println("JVM Type [" + (javaTypeSelected+1) + "]:");
 			String input = reader.readLine();
 			if (input != null && input.trim().length() > 0)
 			{
-				try 
+				try
 				{
 					int inputIndex = Integer.parseInt(input);
 					if (inputIndex <= 0 || inputIndex > ConfigurationData.JAVATYPE.length)
@@ -454,11 +472,11 @@ public class ConfigurationConsole {
 			break;
 		}
 	}
-	
+
 	private void dbType(BufferedReader reader, PrintWriter writer) throws IOException {
 		String dbType = data.getDatabaseType();
 		int dbTypeSelected = 0;
-		for(int i = 0; i < ConfigurationData.DBTYPE.length; i++) 
+		for(int i = 0; i < ConfigurationData.DBTYPE.length; i++)
 		{
 			if (ConfigurationData.DBTYPE[i].equals(dbType))
 			{
@@ -471,14 +489,14 @@ public class ConfigurationConsole {
 		{
 			writer.println((i+1)+". "+ConfigurationData.DBTYPE[i]);
 		}
-		
+
 		while (true)
 		{
 			writer.println("Database Type ["+(dbTypeSelected+1)+"]");
 			String input = reader.readLine();
 			if (input != null && input.trim().length() > 0)
 			{
-				try 
+				try
 				{
 					int inputIndex = Integer.parseInt(input);
 					if (inputIndex <= 0 || inputIndex > ConfigurationData.DBTYPE.length)
@@ -496,5 +514,5 @@ public class ConfigurationConsole {
 			}
 			break;
 		}
-	}	
+	}
 }
