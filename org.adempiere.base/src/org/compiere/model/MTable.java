@@ -17,20 +17,20 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.lang.reflect.Constructor;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IModelFactory;
+import org.adempiere.base.Service;
 import org.adempiere.model.GenericPO;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
-import org.compiere.util.Util;
 
 /**
  *	Persistent Table Model
@@ -52,12 +52,12 @@ public class MTable extends X_AD_Table
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2367316254623142732L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
-	
+
 	/**
 	 * 	Get Table from Cache
 	 *	@param ctx context
@@ -92,9 +92,9 @@ public class MTable extends X_AD_Table
 		while (it.hasNext())
 		{
 			MTable retValue = it.next();
-			if (tableName.equalsIgnoreCase(retValue.getTableName()) 
-					&& retValue.getCtx() == ctx 
-				) 
+			if (tableName.equalsIgnoreCase(retValue.getTableName())
+					&& retValue.getCtx() == ctx
+				)
 			{
 				return retValue;
 		}
@@ -128,7 +128,7 @@ public class MTable extends X_AD_Table
 		{
 			pstmt = null;
 		}
-		
+
 		if (retValue != null)
 		{
 			Integer key = new Integer (retValue.getAD_Table_ID());
@@ -136,7 +136,7 @@ public class MTable extends X_AD_Table
 		}
 		return retValue;
 	}	//	get
-	
+
 	/**
 	 * 	Get Table Name
 	 *	@param ctx context
@@ -147,39 +147,16 @@ public class MTable extends X_AD_Table
 	{
 		return MTable.get(ctx, AD_Table_ID).getTableName();
 	}	//	getTableName
-	
-	
+
+
 	/**	Cache						*/
 	private static CCache<Integer,MTable> s_cache = new CCache<Integer,MTable>("AD_Table", 20);
-	private static CCache<String,Class<?>> s_classCache = new CCache<String,Class<?>>("PO_Class", 20);
-	
+
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTable.class);
-	
-	/**	Packages for Model Classes	*/
-	private static final String[]	s_packages = new String[] {
 
-		"org.compiere.model", "org.compiere.wf", 
-		"org.compiere.print", "org.compiere.impexp",
-		"compiere.model",			//	globalqss allow compatibility with other plugins 	
-		"adempiere.model",			//	Extensions
-		"org.adempiere.model"
-	};
-	
-	/**	Special Classes				*/
-	private static final String[]	s_special = new String[] {
-		"AD_Element", "org.compiere.model.M_Element",
-		"AD_Registration", "org.compiere.model.M_Registration",
-		"AD_Tree", "org.compiere.model.MTree_Base",
-		"R_Category", "org.compiere.model.MRequestCategory",
-		"GL_Category", "org.compiere.model.MGLCategory",
-		"K_Category", "org.compiere.model.MKCategory",
-		"C_ValidCombination", "org.compiere.model.MAccount",
-		"C_Phase", "org.compiere.model.MProjectTypePhase",
-		"C_Task", "org.compiere.model.MProjectTypeTask"
-	//	AD_Attribute_Value, AD_TreeNode
-	};
-	
+
+
 	/**
 	 * 	Get Persistence Class for Table
 	 *	@param tableName table name
@@ -187,194 +164,17 @@ public class MTable extends X_AD_Table
 	 */
 	public static Class<?> getClass (String tableName)
 	{
-		//	Not supported
-		if (tableName == null || tableName.endsWith("_Trl"))
+		List<IModelFactory> factoryList = Service.list(IModelFactory.class);
+		if (factoryList == null)
 			return null;
-		
-		//check cache
-		Class<?> cache = s_classCache.get(tableName);
-		if (cache != null) 
-		{
-			//Object.class indicate no generated PO class for tableName
-			if (cache.equals(Object.class))
-				return null;
-			else
-				return cache;
-		}
-
-		MTable table = MTable.get(Env.getCtx(), tableName);
-		String entityType = table.getEntityType();
-		
-		//	Import Tables (Name conflict)
-		//  Import Tables doesn't manage model M classes, just X_
-		if (tableName.startsWith("I_"))
-		{
-			MEntityType et = MEntityType.get(Env.getCtx(), entityType);
-			String etmodelpackage = et.getModelPackage();
-			if (etmodelpackage == null || MEntityType.ENTITYTYPE_Dictionary.equals(entityType))
-				etmodelpackage = "org.compiere.model"; // fallback for dictionary or empty model package on entity type
-			Class<?> clazz = getPOclass(etmodelpackage + ".X_" + tableName, tableName);
+		for(IModelFactory factory : factoryList) {
+			Class<?> clazz = factory.getClass(tableName);
 			if (clazz != null)
-			{
-				s_classCache.put(tableName, clazz);
 				return clazz;
-			}
-			s_log.warning("No class for table: " + tableName);
-			return null;
 		}
-		
-		//	Special Naming
-		for (int i = 0; i < s_special.length; i++)
-		{
-			if (s_special[i++].equals(tableName))
-			{
-				Class<?> clazz = getPOclass(s_special[i], tableName);
-				if (clazz != null)
-				{
-					s_classCache.put(tableName, clazz);
-					return clazz;
-				}
-				break;
-			}
-		}
-		
-		//begin [ 1784588 ] Use ModelPackage of EntityType to Find Model Class - vpj-cd
-		if (!MEntityType.ENTITYTYPE_Dictionary.equals(entityType))
-		{
-			MEntityType et = MEntityType.get(Env.getCtx(), entityType);
-			String etmodelpackage = et.getModelPackage();
-			if (etmodelpackage != null)
-			{						
-				Class<?> clazz = null;
-				clazz = getPOclass(etmodelpackage + ".M" + Util.replace(tableName, "_", ""), tableName);
-				if (clazz != null) {
-					s_classCache.put(tableName, clazz);
-					return clazz;
-				}
-				clazz = getPOclass(etmodelpackage + ".X_" + tableName, tableName);
-				if (clazz != null) {
-					s_classCache.put(tableName, clazz);
-					return clazz;
-				}
-				s_log.warning("No class for table with it entity: " + tableName);					
-			}
-		}	
-		//end [ 1784588 ] 
-
-		//	Strip table name prefix (e.g. AD_) Customizations are 3/4
-		String className = tableName;
-		int index = className.indexOf('_');
-		if (index > 0)
-		{
-			if (index < 3)		//	AD_, A_
-				 className = className.substring(index+1);
-			/* DELETEME: this part is useless - teo_sarca, [ 1648850 ]
-			else
-			{
-				String prefix = className.substring(0,index);
-				if (prefix.equals("Fact"))		//	keep custom prefix
-					className = className.substring(index+1);
-			}
-			*/
-		}
-		//	Remove underlines
-		className = Util.replace(className, "_", "");
-	
-		//	Search packages
-		for (int i = 0; i < s_packages.length; i++)
-		{
-			StringBuffer name = new StringBuffer(s_packages[i]).append(".M").append(className);
-			Class<?> clazz = getPOclass(name.toString(), tableName);
-			if (clazz != null)
-			{
-				s_classCache.put(tableName, clazz);
-				return clazz;
-			}
-		}
-		
-		
-		//	Adempiere Extension
-		Class<?> clazz = getPOclass("adempiere.model.X_" + tableName, tableName);
-		if (clazz != null)
-		{
-			s_classCache.put(tableName, clazz);
-			return clazz;
-		}
-		
-		//hengsin - allow compatibility with compiere plugins
-		//Compiere Extension
-		clazz = getPOclass("compiere.model.X_" + tableName, tableName);
-		if (clazz != null)
-		{
-			s_classCache.put(tableName, clazz);
-			return clazz;
-		}
-
-		//	Default
-		clazz = getPOclass("org.compiere.model.X_" + tableName, tableName);
-		if (clazz != null)
-		{
-			s_classCache.put(tableName, clazz);
-			return clazz;
-		}
-
-		//Object.class to indicate no PO class for tableName
-		s_classCache.put(tableName, Object.class);
 		return null;
 	}	//	getClass
-	
-	/**
-	 * Get PO class
-	 * @param className fully qualified class name
-	 * @return class or null
-	 * @deprecated Use {@link #getPOclass(String, String)}
-	 */
-	private static Class<?> getPOclass (String className)
-	{
-		return getPOclass(className, null);
-	}
-	
-	/**
-	 * Get PO class
-	 * @param className fully qualified class name
-	 * @param tableName Optional. If specified, the loaded class will be validated for that table name
-	 * @return class or null
-	 */
-	private static Class<?> getPOclass (String className, String tableName)
-	{
-		try
-		{
-			Class<?> clazz = Class.forName(className);
-			// Validate if the class is for specified tableName
-			if (tableName != null)
-			{
-				String classTableName = clazz.getField("Table_Name").get(null).toString();
-				if (!tableName.equals(classTableName))
-				{
-					s_log.finest("Invalid class for table: " + className+" (tableName="+tableName+", classTableName="+classTableName+")");
-					return null;
-				}
-			}
-			//	Make sure that it is a PO class
-			Class<?> superClazz = clazz.getSuperclass();
-			while (superClazz != null)
-			{
-				if (superClazz == PO.class)
-				{
-					s_log.fine("Use: " + className);
-					return clazz;
-				}
-				superClazz = superClazz.getSuperclass();
-			}
-		}
-		catch (Exception e)
-		{
-		}
-		s_log.finest("Not found: " + className);
-		return null;
-	}	//	getPOclass
 
-	
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -396,7 +196,7 @@ public class MTable extends X_AD_Table
 			setIsSecurityEnabled (false);
 			setIsView (false);	// N
 			setReplicationType (REPLICATIONTYPE_Local);
-		}	
+		}
 	}	//	MTable
 
 	/**
@@ -409,10 +209,10 @@ public class MTable extends X_AD_Table
 	{
 		super(ctx, rs, trxName);
 	}	//	MTable
-	
+
 	/**	Columns				*/
 	private MColumn[]	m_columns = null;
-	
+
 	/**
 	 * 	Get Columns
 	 *	@param requery requery
@@ -455,7 +255,7 @@ public class MTable extends X_AD_Table
 		list.toArray (m_columns);
 		return m_columns;
 	}	//	getColumns
-	
+
 	/**
 	 * 	Get Column
 	 *	@param columnName (case insensitive)
@@ -474,7 +274,7 @@ public class MTable extends X_AD_Table
 		}
 		return null;
 	}	//	getColumn
-	
+
 	/**
 	 * 	Table has a single Key
 	 *	@return true if table has single key column
@@ -484,7 +284,7 @@ public class MTable extends X_AD_Table
 		String[] keys = getKeyColumns();
 		return keys.length == 1;
 	}	//	isSingleKey
-	
+
 	/**
 	 * 	Get Key Columns of Table
 	 *	@return key columns
@@ -506,7 +306,7 @@ public class MTable extends X_AD_Table
 		retValue = list.toArray(retValue);
 		return retValue;
 	}	//	getKeyColumns
-	
+
 	/**************************************************************************
 	 * 	Get PO Class Instance
 	 *	@param Record_ID record
@@ -521,62 +321,34 @@ public class MTable extends X_AD_Table
 			log.log(Level.WARNING, "(id) - Multi-Key " + tableName);
 			return null;
 		}
-		Class<?> clazz = getClass(tableName);
-		if (clazz == null)
+
+		PO po = null;
+		List<IModelFactory> factoryList = Service.list(IModelFactory.class);
+		if (factoryList != null)
 		{
-			//log.log(Level.WARNING, "(id) - Class not found for " + tableName);
-			//return null;
-			log.log(Level.INFO, "Using GenericPO for " + tableName);
-			GenericPO po = new GenericPO(tableName, getCtx(), new Integer(Record_ID), trxName);
-			return po;
-		}
-		
-		boolean errorLogged = false;
-		try
-		{
-			Constructor<?> constructor = null;
-			try
+			for(IModelFactory factory : factoryList)
 			{
-				constructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, int.class, String.class});
-			}
-			catch (Exception e)
-			{
-				String msg = e.getMessage();
-				if (msg == null)
-					msg = e.toString();
-				log.warning("No transaction Constructor for " + clazz + " (" + msg + ")");
-			}
-			
-			PO po = (PO)constructor.newInstance(new Object[] {getCtx(), new Integer(Record_ID), trxName});
-			if (po != null && po.get_ID() != Record_ID && Record_ID > 0)
-				return null;
-			return po;
-		}
-		catch (Exception e)
-		{
-			if (e.getCause() != null)
-			{
-				Throwable t = e.getCause();
-				log.log(Level.SEVERE, "(id) - Table=" + tableName + ",Class=" + clazz, t);
-				errorLogged = true;
-				if (t instanceof Exception)
-					log.saveError("Error", (Exception)e.getCause());
-				else
-					log.saveError("Error", "Table=" + tableName + ",Class=" + clazz);
-			}
-			else
-			{
-				log.log(Level.SEVERE, "(id) - Table=" + tableName + ",Class=" + clazz, e);
-				errorLogged = true;
-				log.saveError("Error", "Table=" + tableName + ",Class=" + clazz);
+				po = factory.getPO(tableName, Record_ID, trxName);
+				if (po != null)
+				{
+					if (po.get_ID() != Record_ID && Record_ID > 0)
+						po = null;
+					else
+						break;
+				}
 			}
 		}
-		if (!errorLogged)
-			log.log(Level.SEVERE, "(id) - Not found - Table=" + tableName 
-				+ ", Record_ID=" + Record_ID);
-		return null;
+
+		if (po == null)
+		{
+			po = new GenericPO(tableName, getCtx(), new Integer(Record_ID), trxName);
+			if (po.get_ID() != Record_ID && Record_ID > 0)
+				po = null;
+		}
+
+		return po;
 	}	//	getPO
-	
+
 	/**
 	 * 	Get PO Class Instance
 	 *	@param rs result set
@@ -586,32 +358,24 @@ public class MTable extends X_AD_Table
 	public PO getPO (ResultSet rs, String trxName)
 	{
 		String tableName = getTableName();
-		Class<?> clazz = getClass(tableName);
-		if (clazz == null)
+
+		PO po = null;
+		List<IModelFactory> factoryList = Service.list(IModelFactory.class);
+		if (factoryList != null)
 		{
-			//log.log(Level.SEVERE, "(rs) - Class not found for " + tableName);
-			//return null;
-			log.log(Level.INFO, "Using GenericPO for " + tableName);
-			GenericPO po = new GenericPO(tableName, getCtx(), rs, trxName);
-			return po;
+			for(IModelFactory factory : factoryList) {
+				po = factory.getPO(tableName, rs, trxName);
+				if (po != null)
+					break;
+			}
 		}
-		
-		boolean errorLogged = false;
-		try
+
+		if (po == null)
 		{
-			Constructor<?> constructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, ResultSet.class, String.class});
-			PO po = (PO)constructor.newInstance(new Object[] {getCtx(), rs, trxName});
-			return po;
+			po = new GenericPO(tableName, getCtx(), rs, trxName);
 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(rs) - Table=" + tableName + ",Class=" + clazz, e);
-			errorLogged = true;
-			log.saveError("Error", "Table=" + tableName + ",Class=" + clazz);
-		}
-		if (!errorLogged)
-			log.log(Level.SEVERE, "(rs) - Not found - Table=" + tableName);
-		return null;
+
+		return po;
 	}	//	getPO
 
 	/**
@@ -624,7 +388,7 @@ public class MTable extends X_AD_Table
 	{
 		return getPO(whereClause, null, trxName);
 	}	//	getPO
-	
+
 	/**
 	 * Get PO class instance
 	 * @param whereClause
@@ -642,46 +406,38 @@ public class MTable extends X_AD_Table
 		if (info == null) return null;
 		StringBuffer sqlBuffer = info.buildSelect();
 		sqlBuffer.append(" WHERE ").append(whereClause);
-		String sql = sqlBuffer.toString(); 
+		String sql = sqlBuffer.toString();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
-			if (params != null && params.length > 0) 
+			if (params != null && params.length > 0)
 			{
 				for (int i = 0; i < params.length; i++)
 				{
 					pstmt.setObject(i+1, params[i]);
 				}
 			}
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
 				po = getPO(rs, trxName);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			log.saveError("Error", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
+			DB.close(rs, pstmt);
 		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
-		
+
 		return po;
 	}
-	
+
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
@@ -694,7 +450,7 @@ public class MTable extends X_AD_Table
 		//
 		return true;
 	}	//	beforeSave
-	
+
 	/**
 	 * 	After Save
 	 *	@param newRecord new
@@ -720,11 +476,11 @@ public class MTable extends X_AD_Table
 				seq.setName(getTableName());
 				seq.save();
 			}
-		}	
-		
+		}
+
 		return success;
 	}	//	afterSave
-	
+
 	/**
 	 * 	Get SQL Create
 	 *	@return create table DDL
@@ -759,7 +515,7 @@ public class MTable extends X_AD_Table
 			if (constraint != null && constraint.length() > 0)
 				constraints.append(", ").append(constraint);
 		}
-		//	Multi Column PK 
+		//	Multi Column PK
 		if (!hasPK && hasParents)
 		{
 			StringBuffer cols = new StringBuffer();
@@ -781,7 +537,7 @@ public class MTable extends X_AD_Table
 			.append(")");
 		return sb.toString();
 	}	//	getSQLCreate
-	
+
 	// globalqss
 	/**
 	 * 	Grant independence to GenerateModel from AD_Table_ID
@@ -808,14 +564,14 @@ public class MTable extends X_AD_Table
 		}
 		return retValue;
 	}
-	
+
 	/**
 	 * Create query to retrieve one or more PO.
 	 * @param whereClause
 	 * @param trxName
 	 * @return Query
 	 */
-	public Query createQuery(String whereClause, String trxName) 
+	public Query createQuery(String whereClause, String trxName)
 	{
 		return new Query(this.getCtx(), this, whereClause, trxName);
 	}
@@ -830,5 +586,5 @@ public class MTable extends X_AD_Table
 		sb.append (get_ID()).append ("-").append (getTableName()).append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
 }	//	MTable

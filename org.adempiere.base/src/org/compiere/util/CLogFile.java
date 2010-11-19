@@ -139,7 +139,7 @@ public class CLogFile extends Handler
 			{
 				fileName += File.separator;
 				if (isClient)
-					fileName += "client";
+					fileName += "client.";
 				else
 					fileName += (CLogMgt.getRootLoggerName() +".");
 				m_fileNameDate = getFileNameDate(System.currentTimeMillis());

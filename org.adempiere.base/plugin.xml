@@ -9,5 +9,15 @@
    <extension-point id="org.compiere.db.AdempiereDatabase" name="Adempiere Database Interface" schema="schema/org.compiere.db.AdempiereDatabase.exsd"/>
    <extension-point id="org.compiere.interfaces.Server" name="Server Interface" schema="schema/org.compiere.interfaces.Server.exsd"/>
    <extension-point id="org.compiere.interfaces.Status" name="Status interface" schema="schema/org.compiere.interfaces.Status.exsd"/>
+   <extension-point id="org.adempiere.base.IModelFactory" name="Model Factory" schema="schema/org.adempiere.base.IModelFactory.exsd"/>
+   <extension
+         id="org.adempiere.base.DefaultModelFactory"
+         name="Default model factory"
+         point="org.adempiere.base.IModelFactory">
+      <factory
+            class="org.adempiere.base.DefaultModelFactory"
+            priority="0">
+      </factory>
+   </extension>
 
 </plugin>
