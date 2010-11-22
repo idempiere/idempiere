@@ -40,13 +40,13 @@ public class Doc_Cash extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Cash (MAcctSchema[] ass, ResultSet rs, String trxName)
+	public Doc_Cash (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super(ass, MCash.class, rs, DOCTYPE_CashJournal, trxName);
+		super(as, MCash.class, rs, DOCTYPE_CashJournal, trxName);
 	}	//	Doc_Cash
 
 	/**
@@ -97,7 +97,7 @@ public class Doc_Cash extends Doc
 		return dls;
 	}	//	loadLines
 
-	
+
 	/**************************************************************************
 	 *  Get Source Currency Balance - subtracts line amounts from total - no rounding
 	 *  @return positive amount, if total invoice is bigger than lines

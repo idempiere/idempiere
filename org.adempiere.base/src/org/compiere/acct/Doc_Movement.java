@@ -42,16 +42,16 @@ public class Doc_Movement extends Doc
 {
 	private int				m_Reversal_ID = 0;
 	private String			m_DocStatus = "";
-	
+
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Movement (MAcctSchema[] ass, ResultSet rs, String trxName)
+	public Doc_Movement (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super (ass, MMovement.class, rs, DOCTYPE_MatMovement, trxName);
+		super (as, MMovement.class, rs, DOCTYPE_MatMovement, trxName);
 	}   //  Doc_Movement
 
 	/**
@@ -132,7 +132,7 @@ public class Doc_Movement extends Doc
 		{
 			DocLine line = p_lines[i];
 			// MZ Goodwill
-			// if Inventory Move CostDetail exist then get Cost from Cost Detail 
+			// if Inventory Move CostDetail exist then get Cost from Cost Detail
 			BigDecimal costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_MovementLine_ID=? AND IsSOTrx='N'");
 			// end MZ
 
@@ -147,14 +147,14 @@ public class Doc_Movement extends Doc
 			if (m_DocStatus.equals(MMovement.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0)
 			{
 				//	Set AmtAcctDr from Original Movement
-				if (!dr.updateReverseLine (MMovement.Table_ID, 
+				if (!dr.updateReverseLine (MMovement.Table_ID,
 						m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
 				{
 					p_Error = "Original Inventory Move not posted yet";
 					return null;
 				}
 			}
-			
+
 			//  ** InventoryTo     DR      CR
 			cr = fact.createLine(line,
 				line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
@@ -166,7 +166,7 @@ public class Doc_Movement extends Doc
 			if (m_DocStatus.equals(MMovement.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0)
 			{
 				//	Set AmtAcctCr from Original Movement
-				if (!cr.updateReverseLine (MMovement.Table_ID, 
+				if (!cr.updateReverseLine (MMovement.Table_ID,
 						m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
 				{
 					p_Error = "Original Inventory Move not posted yet";
@@ -192,7 +192,7 @@ public class Doc_Movement extends Doc
 					costs.negate(), line.getQty().negate(), true,
 					description + "(|->)", getTrxName());
 				//	Cost Detail To
-				MCostDetail.createMovement(as, cr.getAD_Org_ID(),	//	locator org 
+				MCostDetail.createMovement(as, cr.getAD_Org_ID(),	//	locator org
 					line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 					line.get_ID(), 0,
 					costs, line.getQty(), false,

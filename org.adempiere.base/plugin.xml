@@ -10,12 +10,21 @@
    <extension-point id="org.compiere.interfaces.Server" name="Server Interface" schema="schema/org.compiere.interfaces.Server.exsd"/>
    <extension-point id="org.compiere.interfaces.Status" name="Status interface" schema="schema/org.compiere.interfaces.Status.exsd"/>
    <extension-point id="org.adempiere.base.IModelFactory" name="Model Factory" schema="schema/org.adempiere.base.IModelFactory.exsd"/>
+   <extension-point id="org.adempiere.base.IDocFactory" name="Financial Document Factory" schema="schema/org.adempiere.base.IDocFactory.exsd"/>
    <extension
          id="org.adempiere.base.DefaultModelFactory"
          name="Default model factory"
          point="org.adempiere.base.IModelFactory">
       <factory
             class="org.adempiere.base.DefaultModelFactory"
+            priority="0">
+      </factory>
+   </extension>
+   <extension
+         point="org.adempiere.base.IDocFactory">
+      <factory
+            class="org.adempiere.base.DefaultDocumentFactory"
+            gaap="*"
             priority="0">
       </factory>
    </extension>

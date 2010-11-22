@@ -33,9 +33,9 @@ import org.compiere.util.Env;
 /**
  *	Project Issue.
  *	Note:
- *		Will load the default GL Category. 
- *		Set up a document type to set the GL Category. 
- *	
+ *		Will load the default GL Category.
+ *		Set up a document type to set the GL Category.
+ *
  *  @author Jorg Janke
  *  @version $Id: Doc_ProjectIssue.java,v 1.2 2006/07/30 00:53:33 jjanke Exp $
  */
@@ -43,13 +43,13 @@ public class Doc_ProjectIssue extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_ProjectIssue (MAcctSchema[] ass, ResultSet rs, String trxName)
+	public Doc_ProjectIssue (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super (ass, MProjectIssue.class, rs, DOCTYPE_ProjectIssue, trxName);
+		super (as, MProjectIssue.class, rs, DOCTYPE_ProjectIssue, trxName);
 	}   //  Doc_ProjectIssue
 
 	/**	Pseudo Line								*/
@@ -67,11 +67,11 @@ public class Doc_ProjectIssue extends Doc
 		m_issue = (MProjectIssue)getPO();
 		setDateDoc (m_issue.getMovementDate());
 		setDateAcct(m_issue.getMovementDate());
-			
+
 		//	Pseudo Line
-		m_line = new DocLine (m_issue, this); 
+		m_line = new DocLine (m_issue, this);
 		m_line.setQty (m_issue.getMovementQty(), true);    //  sets Trx and Storage Qty
-		
+
 		//	Pseudo Line Check
 		if (m_line.getM_Product_ID() == 0)
 			log.warning(m_line.toString() + " - No Product");
@@ -122,7 +122,7 @@ public class Doc_ProjectIssue extends Doc
 		MProject project = new MProject (getCtx(), m_issue.getC_Project_ID(), getTrxName());
 		String ProjectCategory = project.getProjectCategory();
 		MProduct product = MProduct.get(getCtx(), m_issue.getM_Product_ID());
-			
+
 		//  Line pointers
 		FactLine dr = null;
 		FactLine cr = null;
@@ -135,7 +135,7 @@ public class Doc_ProjectIssue extends Doc
 			cost = getLaborCost(as);
 		if (cost == null)	//	standard Product Costs
 			cost = m_line.getProductCosts(as, getAD_Org_ID(), false);
-		
+
 		//  Project         DR
 		int acctType = ACCTTYPE_ProjectWIP;
 		if (MProject.PROJECTCATEGORY_AssetProject.equals(ProjectCategory))
@@ -143,7 +143,7 @@ public class Doc_ProjectIssue extends Doc
 		dr = fact.createLine(m_line,
 			getAccount(acctType, as), as.getC_Currency_ID(), cost, null);
 		dr.setQty(m_line.getQty().negate());
-		
+
 		//  Inventory               CR
 		acctType = ProductCost.ACCTTYPE_P_Asset;
 		if (product.isService())
@@ -211,24 +211,24 @@ public class Doc_ProjectIssue extends Doc
 
 	private BigDecimal getLaborCost(MAcctSchema as)
 	{
-		// Todor Lulov 30.01.2008		
+		// Todor Lulov 30.01.2008
 		BigDecimal retValue = Env.ZERO;
 		BigDecimal qty = Env.ZERO;
 
-		String sql = "SELECT ConvertedAmt, Qty FROM S_TimeExpenseLine " + 
+		String sql = "SELECT ConvertedAmt, Qty FROM S_TimeExpenseLine " +
 			  " WHERE S_TimeExpenseLine.S_TimeExpenseLine_ID = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString (), getTrxName());
-			pstmt.setInt(1, m_issue.getS_TimeExpenseLine_ID());	
-			rs = pstmt.executeQuery();			
+			pstmt.setInt(1, m_issue.getS_TimeExpenseLine_ID());
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				retValue = rs.getBigDecimal(1);
 				qty = rs.getBigDecimal(2);
-				retValue = retValue.multiply(qty); 
+				retValue = retValue.multiply(qty);
 				log.fine("ExpLineCost = " + retValue);
 			}
 			else
@@ -242,7 +242,7 @@ public class Doc_ProjectIssue extends Doc
 		{
 			DB.close(rs, pstmt);
 			pstmt = null; rs = null;
-		}		
+		}
 		return retValue;
 	}	//	getLaborCost
 

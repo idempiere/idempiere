@@ -36,27 +36,27 @@ import org.compiere.util.Env;
  *  </pre>
  *  @author Jorg Janke
  *  @version  $Id: Doc_Bank.java,v 1.3 2006/07/30 00:53:33 jjanke Exp $
- *  
- *  FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual 
+ *
+ *  FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual
  *  Avoid posting if both accounts BankAsset and BankInTransit are equal
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
- * 				<li>FR [ 2520591 ] Support multiples calendar for Org 
- * 				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
- *  
+ * 				<li>FR [ 2520591 ] Support multiples calendar for Org
+ * 				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ *
  */
 public class Doc_BankStatement extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_BankStatement (MAcctSchema[] ass, ResultSet rs, String trxName)
+	public Doc_BankStatement (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super (ass, MBankStatement.class, rs, DOCTYPE_BankStatement, trxName);
+		super (as, MBankStatement.class, rs, DOCTYPE_BankStatement, trxName);
 	}	//	Doc_Bank
-	
+
 	/** Bank Account			*/
 	private int			m_C_BankAccount_ID = 0;
 
@@ -69,7 +69,7 @@ public class Doc_BankStatement extends Doc
 		MBankStatement bs = (MBankStatement)getPO();
 		setDateDoc(bs.getStatementDate());
 		setDateAcct(bs.getStatementDate());	//	Overwritten on Line Level
-		
+
 		m_C_BankAccount_ID = bs.getC_BankAccount_ID();
 		//	Amounts
 		setAmount(AMTTYPE_Gross, bs.getStatementDifference());
@@ -118,7 +118,7 @@ public class Doc_BankStatement extends Doc
 		return dls;
 	}	//	loadLines
 
-	
+
 	/**************************************************************************
 	 *  Get Source Currency Balance - subtracts line amounts from total - no rounding
 	 *  @return positive amount, if total invoice is bigger than lines
@@ -170,20 +170,20 @@ public class Doc_BankStatement extends Doc
 		{
 			DocLine_Bank line = (DocLine_Bank)p_lines[i];
 			int C_BPartner_ID = line.getC_BPartner_ID();
-			
+
 			// Avoid usage of clearing accounts
 			// If both accounts BankAsset and BankInTransit are equal
 			// then remove the posting
-			
+
 			MAccount acct_bank_asset =  getAccount(Doc.ACCTTYPE_BankAsset, as);
 			MAccount acct_bank_in_transit = getAccount(Doc.ACCTTYPE_BankInTransit, as);
-			
+
 			// if ((!as.isPostIfClearingEqual()) && acct_bank_asset.equals(acct_bank_in_transit) && (!isInterOrg)) {
 			// don't validate interorg on banks for this - normally banks are balanced by orgs
 			if ((!as.isPostIfClearingEqual()) && acct_bank_asset.equals(acct_bank_in_transit)) {
 				// Not using clearing accounts
 				// just post the difference (if any)
-				
+
 				BigDecimal amt_stmt_minus_trx = line.getStmtAmt().subtract(line.getTrxAmt());
 				if (amt_stmt_minus_trx.compareTo(Env.ZERO) != 0) {
 
@@ -195,13 +195,13 @@ public class Doc_BankStatement extends Doc
 						fl.setAD_Org_ID(AD_Org_ID);
 					if (fl != null && C_BPartner_ID != 0)
 						fl.setC_BPartner_ID(C_BPartner_ID);
-					
+
 				}
-				
+
 			} else {
-			
+
 				// Normal Adempiere behavior -- unchanged if using clearing accounts
-				
+
 				//  BankAsset       DR      CR  (Statement)
 				fl = fact.createLine(line,
 					getAccount(Doc.ACCTTYPE_BankAsset, as),
@@ -210,7 +210,7 @@ public class Doc_BankStatement extends Doc
 					fl.setAD_Org_ID(AD_Org_ID);
 				if (fl != null && C_BPartner_ID != 0)
 					fl.setC_BPartner_ID(C_BPartner_ID);
-				
+
 				//  BankInTransit   DR      CR              (Payment)
 				fl = fact.createLine(line,
 					getAccount(Doc.ACCTTYPE_BankInTransit, as),
@@ -224,10 +224,10 @@ public class Doc_BankStatement extends Doc
 					else
 						fl.setAD_Org_ID(line.getAD_Org_ID(true)); // from payment
 				}
-			
+
 			}
 			// End Avoid usage of clearing accounts
-			
+
 			//  Charge          DR          (Charge)
 			if (line.getChargeAmt().compareTo(Env.ZERO) > 0) {
 				fl = fact.createLine(line,
@@ -269,12 +269,12 @@ public class Doc_BankStatement extends Doc
 			// no org element or not need to be balanced
 			return false;
 		}
-		
+
 		if (p_lines.length <= 0) {
 			// no lines
 			return false;
 		}
-		
+
 		int startorg = getBank_Org_ID();
 		if (startorg == 0)
 			startorg = p_lines[0].getAD_Org_ID();
@@ -283,7 +283,7 @@ public class Doc_BankStatement extends Doc
 			if (p_lines[i].getAD_Org_ID() != startorg)
 				return true;
 		}
-		
+
 		return false;
 	}
 	 */

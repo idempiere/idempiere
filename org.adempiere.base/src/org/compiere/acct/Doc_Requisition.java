@@ -30,12 +30,12 @@ import org.compiere.util.Env;
 
 /**
  * Post Order Documents.
- * 
+ *
  * <pre>
  *   Table:              M_Requisition
  *   Document Types:     POR (Requisition)
  * </pre>
- * 
+ *
  * @author Jorg Janke
  * @version $Id: Doc_Requisition.java,v 1.3 2006/07/30 00:53:33 jjanke Exp $
  */
@@ -43,13 +43,13 @@ public class Doc_Requisition extends Doc
 {
 	/**
 	 * Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Requisition (MAcctSchema[]  ass, ResultSet rs, String trxName)
+	public Doc_Requisition (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super (ass, MRequisition.class, rs, DOCTYPE_PurchaseRequisition, trxName);
+		super (as, MRequisition.class, rs, DOCTYPE_PurchaseRequisition, trxName);
 	}	//	Doc_Requisition
 
 	/**
@@ -100,7 +100,7 @@ public class Doc_Requisition extends Doc
 	/***************************************************************************
 	 * Get Source Currency Balance - subtracts line and tax amounts from total -
 	 * no rounding
-	 * 
+	 *
 	 * @return positive amount, if total invoice is bigger than lines
 	 */
 	public BigDecimal getBalance ()
@@ -151,7 +151,7 @@ public class Doc_Requisition extends Doc
 			fact.createLine (null, offset, getC_Currency_ID(), null, total);
 			facts.add(fact);
 		}
-		
+
 		return facts;
 	} // createFact
 } // Doc_Requisition

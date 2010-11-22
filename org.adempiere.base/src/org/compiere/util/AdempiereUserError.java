@@ -21,14 +21,14 @@ package org.compiere.util;
  *	Adempiere User Error.
  *	Cuased by (lack of) user input/selection.
  * 	(No program error)
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: AdempiereUserError.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $
  */
-public class AdempiereUserError extends Exception
+public class AdempiereUserError extends RuntimeException
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5318376918072817705L;
 
@@ -64,7 +64,7 @@ public class AdempiereUserError extends Exception
 
 	/**	Additional Info how to fix	**/
 	private String	m_fixHint = null;
-	
+
 	/**
 	 * @return Returns the fixHint.
 	 */
@@ -72,7 +72,7 @@ public class AdempiereUserError extends Exception
 	{
 		return m_fixHint;
 	}	//	getFixHint
-	
+
 	/**
 	 * 	Set Fix Hint
 	 *	@param fixHint fix hint
@@ -81,8 +81,8 @@ public class AdempiereUserError extends Exception
 	{
 		m_fixHint = fixHint;
 	}	//	setFixHint
-	
-	
+
+
 	/**
 	 * 	String Representation
 	 *	@return info
@@ -96,5 +96,5 @@ public class AdempiereUserError extends Exception
 			sb.append(" (").append(m_fixHint).append (")");
 		return sb.toString ();
 	}	//	toString
-	
+
 }	//	AdempiereUserError

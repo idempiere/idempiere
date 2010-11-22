@@ -42,8 +42,8 @@ import org.compiere.util.Env;
  *  Update Costing Records
  *  @author Jorg Janke
  *  @version  $Id: Doc_MatchInv.java,v 1.3 2006/07/30 00:53:33 jjanke Exp $
- *  
- *  FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual 
+ *
+ *  FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual
  *  Avoid posting if both accounts Not Invoiced Receipts and Inventory Clearing are equal
  *  BF [ 2789949 ] Multicurrency in matching posting
  */
@@ -51,25 +51,25 @@ public class Doc_MatchInv extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param ass accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_MatchInv (MAcctSchema[] ass, ResultSet rs, String trxName)
+	public Doc_MatchInv (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super(ass, MMatchInv.class, rs, DOCTYPE_MatMatchInv, trxName);
+		super(as, MMatchInv.class, rs, DOCTYPE_MatMatchInv, trxName);
 	}   //  Doc_MatchInv
 
 	/** Invoice Line			*/
 	private MInvoiceLine	m_invoiceLine = null;
 	/** Material Receipt		*/
 	private MInOutLine		m_receiptLine = null;
-	
+
 	private ProductCost		m_pc = null;
 
 	/** Commitments			*/
 //	private DocLine[]		m_commitments = null;
-	
+
 	/**
 	 *  Load Specific Document Details
 	 *  @return error message or null
@@ -84,16 +84,16 @@ public class Doc_MatchInv extends Doc
 		int C_InvoiceLine_ID = matchInv.getC_InvoiceLine_ID();
 		m_invoiceLine = new MInvoiceLine (getCtx(), C_InvoiceLine_ID, null);
 		//		BP for NotInvoicedReceipts
-		int C_BPartner_ID = m_invoiceLine.getParent().getC_BPartner_ID(); 
+		int C_BPartner_ID = m_invoiceLine.getParent().getC_BPartner_ID();
 		setC_BPartner_ID(C_BPartner_ID);
 		//
 		int M_InOutLine_ID = matchInv.getM_InOutLine_ID();
-		m_receiptLine = new MInOutLine (getCtx(), M_InOutLine_ID, null);		
+		m_receiptLine = new MInOutLine (getCtx(), M_InOutLine_ID, null);
 		//
-		m_pc = new ProductCost (Env.getCtx(), 
+		m_pc = new ProductCost (Env.getCtx(),
 			getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(), null);
 		m_pc.setQty(getQty());
-		
+
 		return null;
 	}   //  loadDocumentDetails
 
@@ -107,7 +107,7 @@ public class Doc_MatchInv extends Doc
 		return Env.ZERO;
 	}   //  getBalance
 
-	
+
 	/**
 	 *  Create Facts (the accounting logic) for
 	 *  MXI.
@@ -136,7 +136,7 @@ public class Doc_MatchInv extends Doc
 			return facts;
 		}
 //		MMatchInv matchInv = (MMatchInv)getPO();
-		
+
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 		setC_Currency_ID (as.getC_Currency_ID());
@@ -149,8 +149,8 @@ public class Doc_MatchInv extends Doc
 			return fact;
 		}
 		**/
-		
-		
+
+
 		//  NotInvoicedReceipt      DR
 		//  From Receipt
 		BigDecimal multiplier = getQty()
@@ -178,7 +178,7 @@ public class Doc_MatchInv extends Doc
 			p_Error = "Mat.Receipt not posted yet";
 			return null;
 		}
-		log.fine("CR - Amt(" + temp + "->" + dr.getAcctBalance() 
+		log.fine("CR - Amt(" + temp + "->" + dr.getAcctBalance()
 			+ ") - " + dr.toString());
 
 		//  InventoryClearing               CR
@@ -203,7 +203,7 @@ public class Doc_MatchInv extends Doc
 			{
 				log.fine("Line Net Amt=0 - M_Product_ID=" + getM_Product_ID()
 					+ ",Qty=" + getQty() + ",InOutQty=" + m_receiptLine.getMovementQty());
-				
+
 				//  Invoice Price Variance
 				BigDecimal ipv = dr.getSourceBalance().negate();
 				if (ipv.signum() != 0)
@@ -235,14 +235,14 @@ public class Doc_MatchInv extends Doc
 				p_Error = "Invoice not posted yet";
 				return null;
 			}
-			log.fine("DR - Amt(" + temp + "->" + cr.getAcctBalance() 
+			log.fine("DR - Amt(" + temp + "->" + cr.getAcctBalance()
 				+ ") - " + cr.toString());
 		}
 		else	//	Cash Acct
 		{
 			MInvoice invoice = m_invoiceLine.getParent();
 			if (as.getC_Currency_ID() != invoice.getC_Currency_ID())
-				LineNetAmt = MConversionRate.convert(getCtx(), LineNetAmt, 
+				LineNetAmt = MConversionRate.convert(getCtx(), LineNetAmt,
 					invoice.getC_Currency_ID(), as.getC_Currency_ID(),
 					invoice.getDateAcct(), invoice.getC_ConversionType_ID(),
 					invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
@@ -260,32 +260,32 @@ public class Doc_MatchInv extends Doc
 		cr.setUser2_ID(m_invoiceLine.getUser2_ID());
 
 		//AZ Goodwill
-		//Desc: Source Not Balanced problem because Currency is Difference - PO=CNY but AP=USD 
+		//Desc: Source Not Balanced problem because Currency is Difference - PO=CNY but AP=USD
 		//see also Fact.java: checking for isMultiCurrency()
 		if (dr.getC_Currency_ID() != cr.getC_Currency_ID())
 			setIsMultiCurrency(true);
 		//end AZ
-		
+
 		// Avoid usage of clearing accounts
 		// If both accounts Not Invoiced Receipts and Inventory Clearing are equal
 		// then remove the posting
-		
+
 		MAccount acct_db =  dr.getAccount(); // not_invoiced_receipts
 		MAccount acct_cr = cr.getAccount(); // inventory_clearing
-		
+
 		if ((!as.isPostIfClearingEqual()) && acct_db.equals(acct_cr) && (!isInterOrg)) {
-			
+
 			BigDecimal debit = dr.getAmtSourceDr();
 			BigDecimal credit = cr.getAmtSourceCr();
-			
+
 			if (debit.compareTo(credit) == 0) {
 				fact.remove(dr);
 				fact.remove(cr);
 			}
-		
+
 		}
 		// End Avoid usage of clearing accounts
-		
+
 
 		//  Invoice Price Variance 	difference
 		BigDecimal ipv = cr.getAcctBalance().add(dr.getAcctBalance()).negate();
@@ -304,8 +304,8 @@ public class Doc_MatchInv extends Doc
 			pv.setUser2_ID(m_invoiceLine.getUser2_ID());
 		}
 		log.fine("IPV=" + ipv + "; Balance=" + fact.getSourceBalance());
-		
-// Elaine 2008/6/20		
+
+// Elaine 2008/6/20
 /* Source move to MInvoice.createMatchInvCostDetail()
 		//	Cost Detail Record - data from Expense/IncClearing (CR) record
 		// MZ Goodwill
@@ -324,12 +324,12 @@ public class Doc_MatchInv extends Doc
 			}
 		}
 		tAmt = tAmt.add(cr.getAcctBalance().negate()); //Invoice Price
-		
+
 		// 	Different currency
 		MInvoice invoice = m_invoiceLine.getParent();
 		if (as.getC_Currency_ID() != invoice.getC_Currency_ID())
 		{
-			tAmt = MConversionRate.convert(getCtx(), tAmt, 
+			tAmt = MConversionRate.convert(getCtx(), tAmt,
 				invoice.getC_Currency_ID(), as.getC_Currency_ID(),
 				invoice.getDateAcct(), invoice.getC_ConversionType_ID(),
 				invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
@@ -339,37 +339,37 @@ public class Doc_MatchInv extends Doc
 				return null;
 			}
 		}
-		
+
 		// set Qty to negative value when MovementType is Vendor Returns
 		MInOut receipt = m_receiptLine.getParent();
 		if (receipt.getMovementType().equals(MInOut.MOVEMENTTYPE_VendorReturns))
 			tQty = tQty.add(getQty().negate()); //	Qty is set to negative value
 		else
 			tQty = tQty.add(getQty());
-	
-		// Set Total Amount and Total Quantity from Matched Invoice 
-		MCostDetail.createInvoice(as, getAD_Org_ID(), 
+
+		// Set Total Amount and Total Quantity from Matched Invoice
+		MCostDetail.createInvoice(as, getAD_Org_ID(),
 				getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 				m_invoiceLine.getC_InvoiceLine_ID(), 0,		//	No cost element
 				tAmt, tQty,	getDescription(), getTrxName());
 		// end MZ
 */
 		//  Update Costing
-		updateProductInfo(as.getC_AcctSchema_ID(), 
+		updateProductInfo(as.getC_AcctSchema_ID(),
 			MAcctSchema.COSTINGMETHOD_StandardCosting.equals(as.getCostingMethod()));
 		//
 		facts.add(fact);
-		
+
 		/** Commitment release										****/
 		if (as.isAccrual() && as.isCreatePOCommitment())
 		{
-			fact = Doc_Order.getCommitmentRelease(as, this, 
+			fact = Doc_Order.getCommitmentRelease(as, this,
 				getQty(), m_invoiceLine.getC_InvoiceLine_ID(), Env.ONE);
 			if (fact == null)
 				return null;
 			facts.add(fact);
 		}	//	Commitment
-		
+
 		return facts;
 	}   //  createFact
 
@@ -386,7 +386,7 @@ public class Doc_MatchInv extends Doc
 		// verify if org of receipt line is different from org of invoice line
 		if (m_receiptLine != null && m_invoiceLine != null && m_receiptLine.getAD_Org_ID() != m_invoiceLine.getAD_Org_ID())
 			return true;
-		
+
 		return false;
 	}
 
@@ -422,7 +422,7 @@ public class Doc_MatchInv extends Doc
 			+ "WHERE pc.C_AcctSchema_ID=").append(C_AcctSchema_ID).append(
 			  " AND EXISTS (SELECT * FROM M_MatchInv m "
 				+ "WHERE pc.M_Product_ID=m.M_Product_ID"
-				+ " AND m.M_MatchInv_ID=").append(get_ID()).append(")"); 
+				+ " AND m.M_MatchInv_ID=").append(get_ID()).append(")");
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		log.fine("M_Product_Costing - Qty/Amt Updated #=" + no);
 
@@ -434,7 +434,7 @@ public class Doc_MatchInv extends Doc
 			.append(" AND M_Product_ID=").append(getM_Product_ID());
 		no = DB.executeUpdate(sql.toString(), getTrxName());
 		log.fine("M_Product_Costing - AvgCost Updated #=" + no);
-		
+
 
 		//  Update Current Cost
 		if (!standardCosting)

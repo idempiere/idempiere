@@ -45,13 +45,13 @@ public class Doc_Production extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Production (MAcctSchema[] ass, ResultSet rs, String trxName)
+	public Doc_Production (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super (ass, X_M_Production.class, rs, DOCTYPE_MatProduction, trxName);
+		super (as, X_M_Production.class, rs, DOCTYPE_MatProduction, trxName);
 	}   //  Doc_Production
 
 	/**
@@ -174,15 +174,15 @@ public class Doc_Production extends Doc
 			DocLine line = p_lines[i];
 			//	Calculate Costs
 			BigDecimal costs = null;
-			
+
 			// MZ Goodwill
-			// if Production CostDetail exist then get Cost from Cost Detail 
-			MCostDetail cd = MCostDetail.get (as.getCtx(), "M_ProductionLine_ID=?", 
+			// if Production CostDetail exist then get Cost from Cost Detail
+			MCostDetail cd = MCostDetail.get (as.getCtx(), "M_ProductionLine_ID=?",
 					line.get_ID(), line.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
 			if (cd != null)
 				costs = cd.getAmt();
 			else
-			{	
+			{
 				if (line.isProductionBOM())
 				{
 					//	Get BOM Cost - Sum of individual lines
@@ -209,7 +209,7 @@ public class Doc_Production extends Doc
 					costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
 			}
 			// end MZ
-			
+
 			//  Inventory       DR      CR
 			fl = fact.createLine(line,
 				line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
@@ -221,17 +221,17 @@ public class Doc_Production extends Doc
 			}
 			fl.setM_Locator_ID(line.getM_Locator_ID());
 			fl.setQty(line.getQty());
-			
+
 			//	Cost Detail
 			String description = line.getDescription();
 			if (description == null)
 				description = "";
 			if (line.isProductionBOM())
 				description += "(*)";
-			MCostDetail.createProduction(as, line.getAD_Org_ID(), 
-				line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), 
-				line.get_ID(), 0, 
-				costs, line.getQty(), 
+			MCostDetail.createProduction(as, line.getAD_Org_ID(),
+				line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+				line.get_ID(), 0,
+				costs, line.getQty(),
 				description, getTrxName());
 		}
 		//

@@ -28,14 +28,12 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.DBException;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
 import org.compiere.model.MNote;
 import org.compiere.model.MPeriod;
-import org.compiere.model.MTable;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
@@ -74,7 +72,7 @@ import org.compiere.util.Trx;
  *
  *  M_Production:       MMP
  *      Doc_Production  325 - DocType fixed
- *      
+ *
  * M_Production:        MMO
  *      Doc_CostCollector  330 - DocType fixed
  *
@@ -98,22 +96,16 @@ import org.compiere.util.Trx;
  *
  *	Project Issue		PJI
  *		C_ProjectIssue	623 - DocType fixed
- *	
+ *
  *  </pre>
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
- * 				<li>FR [ 2520591 ] Support multiples calendar for Org 
- *				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ * 				<li>FR [ 2520591 ] Support multiples calendar for Org
+ *				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
  *  @version  $Id: Doc.java,v 1.6 2006/07/30 00:53:33 jjanke Exp $
  */
 public abstract class Doc
 {
-	/** AD_Table_ID's of documents          */
-	private static int[]  documentsTableID = null;
-	
-	/** Table Names of documents          */
-	private static String[]  documentsTableName = null;
-
 	/**************************************************************************
 	 * 	 Document Types
 	 *  --------------
@@ -175,7 +167,7 @@ public abstract class Doc
 	/** Purchase Requisition    */
 	public static final String	DOCTYPE_PurchaseRequisition	= "POR";
 
-		
+
 	//  Posting Status - AD_Reference_ID=234     //
 	/**	Document Status         */
 	public static final String 	STATUS_NotPosted        = "N";
@@ -194,144 +186,32 @@ public abstract class Doc
 	/**	Document Status         */
 	public static final String 	STATUS_Error            = "E";
 
-	
+
 	/**
 	 *  Create Posting document
-	 *	@param ass accounting schema
+	 *	@param as accounting schema
 	 *  @param AD_Table_ID Table ID of Documents
 	 *  @param Record_ID record ID to load
 	 *  @param trxName transaction name
 	 *  @return Document or null
 	 */
-	public static Doc get (MAcctSchema[] ass, int AD_Table_ID, int Record_ID, String trxName)
+	public static Doc get (MAcctSchema as, int AD_Table_ID, int Record_ID, String trxName)
 	{
-		String TableName = null;
-		for (int i = 0; i < getDocumentsTableID().length; i++)
-		{
-			if (getDocumentsTableID()[i] == AD_Table_ID)
-			{
-				TableName = getDocumentsTableName()[i];
-				break;
-			}
-		}
-		if (TableName == null)
-		{
-			s_log.severe("Not found AD_Table_ID=" + AD_Table_ID);
-			return null;
-		}
-		//
-		Doc doc = null;
-		StringBuffer sql = new StringBuffer("SELECT * FROM ")
-			.append(TableName)
-			.append(" WHERE ").append(TableName).append("_ID=? AND Processed='Y'");
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql.toString(), trxName);
-			pstmt.setInt (1, Record_ID);
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-			{
-				doc = get (ass, AD_Table_ID, rs, trxName);
-			}
-			else
-				s_log.severe("Not Found: " + TableName + "_ID=" + Record_ID);
-		}
-		catch (Exception e)
-		{
-			s_log.log (Level.SEVERE, sql.toString(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; 
-			pstmt = null;
-		}
-		return doc;
+		return DocManager.getDocument(as, AD_Table_ID, Record_ID, trxName);
 	}	//	get
-	
+
 	/**
 	 *  Create Posting document
-	 *	@param ass accounting schema
+	 *	@param as accounting schema
 	 *  @param AD_Table_ID Table ID of Documents
 	 *  @param rs ResultSet
 	 *  @param trxName transaction name
 	 *  @return Document
-	 * @throws AdempiereUserError 
+	 * @throws AdempiereUserError
 	 */
-	public static Doc get (MAcctSchema[] ass, int AD_Table_ID, ResultSet rs, String trxName) throws AdempiereUserError
+	public static Doc get (MAcctSchema as, int AD_Table_ID, ResultSet rs, String trxName)
 	{
-		Doc doc = null;
-		
-		/* Classname of the Doc class follows this convention:
-		 * if the prefix (letters before the first underscore _) is 1 character, then the class is Doc_TableWithoutPrefixWithoutUnderscores
-		 * otherwise Doc_WholeTableWithoutUnderscores
-		 * i.e. following this query
-              SELECT t.ad_table_id, tablename, 
-              	CASE 
-              		WHEN instr(tablename, '_') = 2 
-              		THEN 'Doc_' || substr(tablename, 3) 
-              		WHEN instr(tablename, '_') > 2 
-              		THEN 'Doc_' || 
-              		ELSE '' 
-              	REPLACE
-              		(
-              			tablename, '_', ''
-              		)
-              	END AS classname 
-              FROM ad_table t, ad_column C 
-              WHERE t.ad_table_id = C.ad_table_id AND
-              	C.columnname = 'Posted' AND
-              	isview = 'N' 
-              ORDER BY 1
-		 * This is:
-		 * 224		GL_Journal			Doc_GLJournal
-		 * 259		C_Order				Doc_Order
-		 * 318		C_Invoice			Doc_Invoice
-		 * 319		M_InOut				Doc_InOut
-		 * 321		M_Inventory			Doc_Inventory
-		 * 323		M_Movement			Doc_Movement
-		 * 325		M_Production		Doc_Production
-		 * 335		C_Payment			Doc_Payment
-		 * 392		C_BankStatement		Doc_BankStatement
-		 * 407		C_Cash				Doc_Cash
-		 * 472		M_MatchInv			Doc_MatchInv
-		 * 473		M_MatchPO			Doc_MatchPO
-		 * 623		C_ProjectIssue		Doc_ProjectIssue
-		 * 702		M_Requisition		Doc_Requisition
-		 * 735		C_AllocationHdr		Doc_AllocationHdr
-		 * 53027	PP_Order			Doc_PPOrder
-		 * 53035	PP_Cost_Collector	Doc_PPCostCollector
-		 * 53037	DD_Order			Doc_DDOrder
-		 * 53092	HR_Process			Doc_HRProcess
-		 */
-		
-		String tableName = MTable.getTableName(Env.getCtx(), AD_Table_ID);
-		String packageName = "org.compiere.acct";
-		String className = null;
-
-		int firstUnderscore = tableName.indexOf("_");
-		if (firstUnderscore == 1)
-			className = packageName + ".Doc_" + tableName.substring(2).replaceAll("_", "");
-		else
-			className = packageName + ".Doc_" + tableName.replaceAll("_", "");
-		
-		try
-		{
-			Class<?> cClass = Class.forName(className);
-			Constructor<?> cnstr = cClass.getConstructor(new Class[] {MAcctSchema[].class, ResultSet.class, String.class});
-			doc = (Doc) cnstr.newInstance(ass, rs, trxName);
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, "Doc Class invalid: " + className + " (" + e.toString() + ")");
-			throw new AdempiereUserError("Doc Class invalid: " + className + " (" + e.toString() + ")");
-		}
-
-		if (doc == null)
-			s_log.log(Level.SEVERE, "Unknown AD_Table_ID=" + AD_Table_ID);
-		return doc;
+		return DocManager.getDocument(as, AD_Table_ID, rs, trxName);
 	}   //  get
 
 	/**
@@ -343,13 +223,10 @@ public abstract class Doc
 	 *  @param trxName			transaction
 	 *  @return null if the document was posted or error message
 	 */
-	public static String postImmediate (MAcctSchema[] ass, 
+	public static String postImmediate (MAcctSchema[] ass,
 		int AD_Table_ID, int Record_ID, boolean force, String trxName)
 	{
-		Doc doc = get (ass, AD_Table_ID, Record_ID, trxName);
-		if (doc != null)
-			return doc.post (force, true);	//	repost
-		return "NoDoc";
+		return DocManager.postDocument(ass, AD_Table_ID, Record_ID, force, true, trxName);
 	}   //  post
 
 	/**	Static Log						*/
@@ -357,25 +234,25 @@ public abstract class Doc
 	/**	Log	per Document				*/
 	protected CLogger			log = CLogger.getCLogger(getClass());
 
-	/* If the transaction must be managed locally (false if it's managed externally by the caller) */ 
+	/* If the transaction must be managed locally (false if it's managed externally by the caller) */
 	private boolean m_manageLocalTrx;
 
-	
+
 	/**************************************************************************
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param clazz Document Class
 	 * 	@param rs result set
 	 * 	@param defaultDocumentType default document type or null
 	 * 	@param trxName trx
 	 */
-	Doc (MAcctSchema[] ass, Class<?> clazz, ResultSet rs, String defaultDocumentType, String trxName)
+	Doc (MAcctSchema as, Class<?> clazz, ResultSet rs, String defaultDocumentType, String trxName)
 	{
 		p_Status = STATUS_Error;
-		m_ass = ass;
-		m_ctx = new Properties(m_ass[0].getCtx());
-		m_ctx.setProperty("#AD_Client_ID", String.valueOf(m_ass[0].getAD_Client_ID()));
-		
+		m_as = as;
+		m_ctx = new Properties(m_as.getCtx());
+		m_ctx.setProperty("#AD_Client_ID", String.valueOf(m_as.getAD_Client_ID()));
+
 		String className = clazz.getName();
 		className = className.substring(className.lastIndexOf('.')+1);
 		try
@@ -389,31 +266,32 @@ public abstract class Doc
 			log.severe(msg);
 			throw new IllegalArgumentException(msg);
 		}
-		
+
 		//	DocStatus
 		int index = p_po.get_ColumnIndex("DocStatus");
 		if (index != -1)
 			m_DocStatus = (String)p_po.get_Value(index);
-		
+
 		//	Document Type
 		setDocumentType (defaultDocumentType);
 		m_trxName = trxName;
 		m_manageLocalTrx = false;
-		if (m_trxName == null) {
+		if (m_trxName == null)
+		{
 			m_trxName = "Post" + m_DocumentType + p_po.get_ID();
 			m_manageLocalTrx = true;
 		}
 		p_po.set_TrxName(m_trxName);
 
 		//	Amounts
-		m_Amounts[0] = Env.ZERO;
-		m_Amounts[1] = Env.ZERO;
-		m_Amounts[2] = Env.ZERO;
-		m_Amounts[3] = Env.ZERO;
+		for(int i = 0; i < m_Amounts.length; i++)
+		{
+			m_Amounts[i] = Env.ZERO;
+		}
 	}   //  Doc
 
-	/** Accounting Schema Array     */
-	private MAcctSchema[]    	m_ass = null;
+	/** Accounting Schema */
+	private MAcctSchema    		m_as = null;
 	/** Properties					*/
 	private Properties			m_ctx = null;
 	/** Transaction Name			*/
@@ -467,7 +345,7 @@ public abstract class Doc
 
 	/** No Currency in Document Indicator (-1)	*/
 	protected static final int  NO_CURRENCY = -2;
-	
+
 	/**	Actual Document Status  */
 	protected String			p_Status = null;
 	public String getPostStatus() {
@@ -476,8 +354,8 @@ public abstract class Doc
 
 	/** Error Message			*/
 	protected String			p_Error = null;
-	
-	
+
+
 	/**
 	 * 	Get Context
 	 *	@return context
@@ -495,7 +373,7 @@ public abstract class Doc
 	{
 		return p_po.get_TableName();
 	}	//	get_TableName
-	
+
 	/**
 	 * 	Get Table ID
 	 *	@return table id
@@ -513,16 +391,16 @@ public abstract class Doc
 	{
 		return p_po.get_ID();
 	}	//	get_ID
-	
+
 	/**
 	 * 	Get Persistent Object
 	 *	@return po
 	 */
-	protected PO getPO()
+	public PO getPO()
 	{
 		return p_po;
 	}	//	getPO
-	
+
 	/**
 	 *  Post Document.
 	 *  <pre>
@@ -550,14 +428,14 @@ public abstract class Doc
 		else
 			return "Invalid DocStatus='" + m_DocStatus + "' for DocumentNo=" + getDocumentNo();
 		//
-		if (p_po.getAD_Client_ID() != m_ass[0].getAD_Client_ID())
+		if (p_po.getAD_Client_ID() != m_as.getAD_Client_ID())
 		{
 			String error = "AD_Client_ID Conflict - Document=" + p_po.getAD_Client_ID()
-				+ ", AcctSchema=" + m_ass[0].getAD_Client_ID();
+				+ ", AcctSchema=" + m_as.getAD_Client_ID();
 			log.severe(error);
 			return error;
 		}
-		
+
 		//  Lock Record ----
 		String trxName = null;	//	outside trx if on server
 		if (! m_manageLocalTrx)
@@ -574,13 +452,13 @@ public abstract class Doc
 			log.info("Locked: " + get_TableName() + "_ID=" + get_ID());
 		else
 		{
-			log.log(Level.SEVERE, "Resubmit - Cannot lock " + get_TableName() + "_ID=" 
+			log.log(Level.SEVERE, "Resubmit - Cannot lock " + get_TableName() + "_ID="
 				+ get_ID() + ", Force=" + force + ",RePost=" + repost);
 			if (force)
 				return "Cannot Lock - ReSubmit";
 			return "Cannot Lock - ReSubmit or RePost with Force";
 		}
-		
+
 		p_Error = loadDocumentDetails();
 		if (p_Error != null)
 			return p_Error;
@@ -606,43 +484,36 @@ public abstract class Doc
 			trx.commit(); trx.close();
 			return "AlreadyPosted";
 		}
-		
+
 		p_Status = STATUS_NotPosted;
 
 		//  Create Fact per AcctSchema
 		m_fact = new ArrayList<Fact>();
 
-		//  for all Accounting Schema
-		boolean OK = true;
 		getPO().setDoc(this);
 		try
 		{
-			for (int i = 0; OK && i < m_ass.length; i++)
+			//	if acct schema has "only" org, skip
+			boolean skip = false;
+			if (m_as.getAD_OrgOnly_ID() != 0)
 			{
-				//	if acct schema has "only" org, skip
-				boolean skip = false;
-				if (m_ass[i].getAD_OrgOnly_ID() != 0)
+				//	Header Level Org
+				skip = m_as.isSkipOrg(getAD_Org_ID());
+				//	Line Level Org
+				if (p_lines != null)
 				{
-					//	Header Level Org
-					skip = m_ass[i].isSkipOrg(getAD_Org_ID());
-					//	Line Level Org
-					if (p_lines != null)
+					for (int line = 0; skip && line < p_lines.length; line++)
 					{
-						for (int line = 0; skip && line < p_lines.length; line++)
-						{
-							skip = m_ass[i].isSkipOrg(p_lines[line].getAD_Org_ID());
-							if (!skip)
-								break;
-						}
+						skip = m_as.isSkipOrg(p_lines[line].getAD_Org_ID());
+						if (!skip)
+							break;
 					}
 				}
-				if (skip)
-					continue;
+			}
+			if (!skip)
+			{
 				//	post
-				log.info("(" + i + ") " + p_po);
-				p_Status = postLogic (i);
-				if (!p_Status.equals(STATUS_Posted))
-					OK = false;
+				p_Status = postLogic ();
 			}
 		}
 		catch (Exception e)
@@ -650,39 +521,36 @@ public abstract class Doc
 			log.log(Level.SEVERE, "", e);
 			p_Status = STATUS_Error;
 			p_Error = e.toString();
-			OK = false;
 		}
 
 		String validatorMsg = null;
 		// Call validator on before post
-		if (p_Status.equals(STATUS_Posted)) {			
+		if (!p_Status.equals(STATUS_Error)) {
 			validatorMsg = ModelValidationEngine.get().fireDocValidate(getPO(), ModelValidator.TIMING_BEFORE_POST);
 			if (validatorMsg != null) {
 				p_Status = STATUS_Error;
 				p_Error = validatorMsg;
-				OK = false;
 			}
 		}
 
 		//  commitFact
 		p_Status = postCommit (p_Status);
 
-		if (p_Status.equals(STATUS_Posted)) {
+		if (!p_Status.equals(STATUS_Error)) {
 			validatorMsg = ModelValidationEngine.get().fireDocValidate(getPO(), ModelValidator.TIMING_AFTER_POST);
 			if (validatorMsg != null) {
 				p_Status = STATUS_Error;
 				p_Error = validatorMsg;
-				OK = false;
 			}
 		}
-		  
+
 		//  Create Note
 		if (!p_Status.equals(STATUS_Posted))
 		{
 			//  Insert Note
 			String AD_MessageValue = "PostingError-" + p_Status;
 			int AD_User_ID = p_po.getUpdatedBy();
-			MNote note = new MNote (getCtx(), AD_MessageValue, AD_User_ID, 
+			MNote note = new MNote (getCtx(), AD_MessageValue, AD_User_ID,
 				getAD_Client_ID(), getAD_Org_ID(), null);
 			note.setRecord(p_po.get_Table_ID(), p_po.get_ID());
 			//  Reference
@@ -699,7 +567,8 @@ public abstract class Doc
 				.append(", Amount=").append(getAmount())
 				.append(", Sta=").append(p_Status)
 				.append(" - PeriodOpen=").append(isPeriodOpen())
-				.append(", Balanced=").append(isBalanced());
+				.append(", Balanced=").append(isBalanced())
+				.append(", Schema=").append(m_as.getName());
 			note.setTextMsg(Text.toString());
 			note.save();
 			p_Error = Text.toString();
@@ -723,11 +592,12 @@ public abstract class Doc
 	 * 	Delete Accounting
 	 *	@return number of records
 	 */
-	private int deleteAcct()
+	protected int deleteAcct()
 	{
 		StringBuffer sql = new StringBuffer ("DELETE Fact_Acct WHERE AD_Table_ID=")
 			.append(get_Table_ID())
-			.append(" AND Record_ID=").append(p_po.get_ID());
+			.append(" AND Record_ID=").append(p_po.get_ID())
+			.append(" AND C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		if (no != 0)
 			log.info("deleted=" + no);
@@ -736,19 +606,16 @@ public abstract class Doc
 
 	/**
 	 *  Posting logic for Accounting Schema index
-	 *  @param  index   Accounting Schema index
 	 *  @return posting status/error code
 	 */
-	private final String postLogic (int index)
+	private final String postLogic ()
 	{
-		log.info("(" + index + ") " + p_po);
-		
 		//  rejectUnbalanced
-		if (!m_ass[index].isSuspenseBalancing() && !isBalanced())
+		if (!m_as.isSuspenseBalancing() && !isBalanced())
 			return STATUS_NotBalanced;
 
 		//  rejectUnconvertible
-		if (!isConvertible(m_ass[index]))
+		if (!isConvertible(m_as))
 			return STATUS_NotConvertible;
 
 		//  rejectPeriodClosed
@@ -756,17 +623,17 @@ public abstract class Doc
 			return STATUS_PeriodClosed;
 
 		//  createFacts
-		ArrayList<Fact> facts = createFacts (m_ass[index]);
+		ArrayList<Fact> facts = createFacts (m_as);
 		if (facts == null)
 			return STATUS_Error;
-		
+
 		// call modelValidator
-		String validatorMsg = ModelValidationEngine.get().fireFactsValidate(m_ass[index], facts, getPO());
+		String validatorMsg = ModelValidationEngine.get().fireFactsValidate(m_as, facts, getPO());
 		if (validatorMsg != null) {
 			p_Error = validatorMsg;
 			return STATUS_Error;
 		}
-		
+
 		for (int f = 0; f < facts.size(); f++)
 		{
 			Fact fact = facts.get(f);
@@ -779,11 +646,11 @@ public abstract class Doc
 			//	check accounts
 			if (!fact.checkAccounts())
 				return STATUS_InvalidAccount;
-			
+
 			//	distribute
 			if (!fact.distribute())
 				return STATUS_Error;
-			
+
 			//  balanceSource
 			if (!fact.isSourceBalanced())
 			{
@@ -807,9 +674,9 @@ public abstract class Doc
 				if (!fact.isAcctBalanced())
 					return STATUS_NotBalanced;
 			}
-			
+
 		}	//	for all facts
-		
+
 		return STATUS_Posted;
 	}   //  postLogic
 
@@ -821,7 +688,7 @@ public abstract class Doc
 	 */
 	private final String postCommit (String status)
 	{
-		log.info("Sta=" + status + " DT=" + getDocumentType() 
+		log.info("Sta=" + status + " DT=" + getDocumentType()
 			+ " ID=" +  p_po.get_ID());
 		p_Status = status;
 
@@ -851,17 +718,9 @@ public abstract class Doc
 					}
 				}
 			}
-			//  Commit Doc
-			if (!save(getTrxName()))     //  contains unlock & document status update
-			{
-				log.log(Level.SEVERE, "(doc not saved) ... rolling back");
-				if (m_manageLocalTrx) {
-					trx.rollback();
-					trx.close();
-				}
-				unlock();
-				return STATUS_Error;
-			}
+
+			unlock();
+
 			//	Success
 			if (m_manageLocalTrx) {
 				trx.commit(true);
@@ -899,7 +758,7 @@ public abstract class Doc
 	{
 		return m_trxName;
 	}	//	getTrxName
-	
+
 	/**
 	 *  Unlock Document
 	 */
@@ -960,13 +819,13 @@ public abstract class Doc
 			finally
 			{
 				DB.close(rsDT, pstmt);
-				rsDT = null; 
+				rsDT = null;
 				pstmt = null;
 			}
 		}
 		if (m_DocumentType == null)
 		{
-			log.log(Level.SEVERE, "No DocBaseType for C_DocType_ID=" 
+			log.log(Level.SEVERE, "No DocBaseType for C_DocType_ID="
 				+ getC_DocType_ID() + ", DocumentNo=" + getDocumentNo());
 		}
 
@@ -1021,7 +880,7 @@ public abstract class Doc
 			throw new IllegalStateException("Document Type not found");
 	}	//	setDocumentType
 
-	
+
 	/**************************************************************************
 	 *  Is the Source Document Balanced
 	 *  @return true if (source) balanced
@@ -1109,7 +968,7 @@ public abstract class Doc
 	{
 		if (m_period != null)
 			return;
-		
+
 		//	Period defined in GL Journal (e.g. adjustment period)
 		int index = p_po.get_ColumnIndex("C_Period_ID");
 		if (index != -1)
@@ -1121,13 +980,13 @@ public abstract class Doc
 		if (m_period == null)
 			m_period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID());
 		//	Is Period Open?
-		if (m_period != null 
+		if (m_period != null
 			&& m_period.isOpen(getDocumentType(), getDateAcct()))
 			m_C_Period_ID = m_period.getC_Period_ID();
 		else
 			m_C_Period_ID = -1;
 		//
-		log.fine(	// + AD_Client_ID + " - " 
+		log.fine(	// + AD_Client_ID + " - "
 			getDateAcct() + " - " + getDocumentType() + " => " + m_C_Period_ID);
 	}   //  setC_Period_ID
 
@@ -1234,7 +1093,7 @@ public abstract class Doc
 		}
 		return m_qty;
 	}   //  getQty
-	
+
 	/*************************************************************************/
 
 	/**	Account Type - Invoice - Charge  */
@@ -1372,7 +1231,7 @@ public abstract class Doc
 			sql = "SELECT B_PaymentSelect_Acct FROM C_BankAccount_Acct WHERE C_BankAccount_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BankAccount_ID();
 		}
-		
+
 		/** Account Type - Allocation   */
 		else if (AcctType == ACCTTYPE_DiscountExp)
 		{
@@ -1545,25 +1404,6 @@ public abstract class Doc
 		return acct;
 	}	//	getAccount
 
-	
-	/**************************************************************************
-	 *  Save to Disk - set posted flag
-	 *  @param trxName transaction name
-	 *  @return true if saved
-	 */
-	private final boolean save (String trxName)
-	{
-		log.fine(toString() + "->" + p_Status);
-
-		StringBuffer sql = new StringBuffer("UPDATE ");
-		sql.append(get_TableName()).append(" SET Posted='").append(p_Status)
-			.append("',Processing='N' ")
-			.append("WHERE ")
-			.append(get_TableName()).append("_ID=").append(p_po.get_ID());
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		return no == 1;
-	}   //  save
-
 	/**
 	 *  Get DocLine with ID
 	 *  @param Record_ID Record ID
@@ -1591,7 +1431,7 @@ public abstract class Doc
 		return p_po.toString();
 	}   //  toString
 
-	
+
 	/**
 	 * 	Get AD_Client_ID
 	 *	@return client
@@ -1600,7 +1440,7 @@ public abstract class Doc
 	{
 		return p_po.getAD_Client_ID();
 	}	//	getAD_Client_ID
-	
+
 	/**
 	 * 	Get AD_Org_ID
 	 *	@return org
@@ -1626,7 +1466,7 @@ public abstract class Doc
 		m_DocumentNo = (String)p_po.get_Value(index);
 		return m_DocumentNo;
 	}	//	getDocumentNo
-	
+
 	/**
 	 * 	Get Description
 	 *	@return Description
@@ -1643,7 +1483,7 @@ public abstract class Doc
 		}
 		return m_Description;
 	}	//	getDescription
-	
+
 	/**
 	 * 	Get C_Currency_ID
 	 *	@return currency
@@ -1664,7 +1504,7 @@ public abstract class Doc
 		}
 		return m_C_Currency_ID;
 	}	//	getC_Currency_ID
-	
+
 	/**
 	 * 	Set C_Currency_ID
 	 *	@param C_Currency_ID id
@@ -1673,7 +1513,7 @@ public abstract class Doc
 	{
 		m_C_Currency_ID = C_Currency_ID;
 	}	//	setC_Currency_ID
-	
+
 	/**
 	 * 	Is Multi Currency
 	 *	@return mc
@@ -1691,7 +1531,7 @@ public abstract class Doc
 	{
 		m_MultiCurrency = mc;
 	}	//	setIsMultiCurrency
-	
+
 	/**
 	 * 	Is Tax Included
 	 *	@return tax incl
@@ -1709,7 +1549,7 @@ public abstract class Doc
 	{
 		m_TaxIncluded = ti;
 	}	//	setIsTaxIncluded
-	
+
 	/**
 	 * 	Get C_ConversionType_ID
 	 *	@return ConversionType
@@ -1725,7 +1565,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getC_ConversionType_ID
-	
+
 	/**
 	 * 	Get GL_Category_ID
 	 *	@return category
@@ -1734,7 +1574,7 @@ public abstract class Doc
 	{
 		return m_GL_Category_ID;
 	}	//	getGL_Category_ID
-	
+
 	/**
 	 * 	Get GL_Category_ID
 	 *	@return category
@@ -1777,7 +1617,7 @@ public abstract class Doc
 	{
 		m_DateAcct = da;
 	}	//	setDateAcct
-	
+
 	/**
 	 * 	Get Document Date
 	 *	@return currency
@@ -1797,7 +1637,7 @@ public abstract class Doc
 		}
 		throw new IllegalStateException("No DateDoc");
 	}	//	getDateDoc
-	
+
 	/**
 	 * 	Set Date Doc
 	 *	@param dd document date
@@ -1824,7 +1664,7 @@ public abstract class Doc
 		}
 		throw new IllegalStateException("No Posted");
 	}	//	isPosted
-	
+
 	/**
 	 * 	Is Sales Trx
 	 *	@return true if posted
@@ -1867,7 +1707,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getC_DocType_ID
-	
+
 	/**
 	 * 	Get header level C_Charge_ID
 	 *	@return Charge
@@ -1899,7 +1739,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getSalesRep_ID
-	
+
 	/**
 	 * 	Get C_BankAccount_ID
 	 *	@return BankAccount
@@ -1929,7 +1769,7 @@ public abstract class Doc
 	{
 		m_C_BankAccount_ID = C_BankAccount_ID;
 	}	//	setC_BankAccount_ID
-		
+
 	/**
 	 * 	Get C_CashBook_ID
 	 *	@return CashBook
@@ -1976,7 +1816,7 @@ public abstract class Doc
 		return 0;
 	}	//	getM_Warehouse_ID
 
-	
+
 	/**
 	 * 	Get C_BPartner_ID
 	 *	@return BPartner
@@ -2006,7 +1846,7 @@ public abstract class Doc
 	{
 		m_C_BPartner_ID = C_BPartner_ID;
 	}	//	setC_BPartner_ID
-	
+
 	/**
 	 * 	Get C_BPartner_Location_ID
 	 *	@return BPartner Location
@@ -2038,7 +1878,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getC_Project_ID
-	
+
 	/**
 	 * 	Get C_ProjectPhase_ID
 	 *	@return Project Phase
@@ -2054,7 +1894,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getC_ProjectPhase_ID
-	
+
 	/**
 	 * 	Get C_ProjectTask_ID
 	 *	@return Project Task
@@ -2070,7 +1910,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getC_ProjectTask_ID
-	
+
 	/**
 	 * 	Get C_SalesRegion_ID
 	 *	@return Sales Region
@@ -2086,7 +1926,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getC_SalesRegion_ID
-	
+
 	/**
 	 * 	Get C_SalesRegion_ID
 	 *	@return Sales Region
@@ -2116,7 +1956,7 @@ public abstract class Doc
 	{
 		m_BP_C_SalesRegion_ID = C_SalesRegion_ID;
 	}	//	setBP_C_SalesRegion_ID
-	
+
 	/**
 	 * 	Get C_Activity_ID
 	 *	@return Activity
@@ -2189,7 +2029,7 @@ public abstract class Doc
 	{
 		return m_C_LocFrom_ID;
 	}	//	getC_LocFrom_ID
-	
+
 	/**
 	 * 	Set C_LocFrom_ID
 	 *	@param C_LocFrom_ID loc from
@@ -2232,7 +2072,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getUser1_ID
-	
+
 	/**
 	 * 	Get User2_ID
 	 *	@return Campaign
@@ -2248,7 +2088,7 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getUser2_ID
-        
+
         	/**
 	 * 	Get User Defined value
 	 *	@return User defined
@@ -2264,8 +2104,8 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getValue
-	
-	
+
+
 	/*************************************************************************/
 	//  To be overwritten by Subclasses
 
@@ -2295,60 +2135,4 @@ public abstract class Doc
 	public ArrayList<Fact> getFacts() {
 		return m_fact;
 	}
-
-	/*
-	 * Array of tables with Post column
-	 */
-	public static int[] getDocumentsTableID() {
-		fillDocumentsTableArrays();
-		return documentsTableID;
-	}
-
-	public static String[] getDocumentsTableName() {
-		fillDocumentsTableArrays();
-		return documentsTableName;
-	}
-
-	private static void fillDocumentsTableArrays() {
-		if (documentsTableID == null) {
-			String sql = "SELECT t.AD_Table_ID, t.TableName " +
-					"FROM AD_Table t, AD_Column c " +
-					"WHERE t.AD_Table_ID=c.AD_Table_ID AND " +
-					"c.ColumnName='Posted' AND " +
-					"IsView='N' " +
-					"ORDER BY t.AD_Table_ID";
-			ArrayList<Integer> tableIDs = new ArrayList<Integer>();
-			ArrayList<String> tableNames = new ArrayList<String>();
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql, null);
-				rs = pstmt.executeQuery();
-				while (rs.next())
-				{
-					tableIDs.add(rs.getInt(1));
-					tableNames.add(rs.getString(2));
-				}
-			}
-			catch (SQLException e)
-			{
-				throw new DBException(e, sql);
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-			//	Convert to array
-			documentsTableID = new int[tableIDs.size()];
-			documentsTableName = new String[tableIDs.size()];
-			for (int i = 0; i < documentsTableID.length; i++)
-			{
-				documentsTableID[i] = tableIDs.get(i);
-				documentsTableName[i] = tableNames.get(i);
-			}
-		}
-	}
-	
 }   //  Doc

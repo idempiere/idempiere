@@ -38,7 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.compiere.acct.Doc;
+import org.compiere.acct.DocManager;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
@@ -52,7 +52,7 @@ import org.compiere.util.Trx;
 
 /**
  * 	Client Accounting Processor
- *	
+ *
  *  @author Carlos Ruiz
  */
 public class ClientAcctProcessor extends SvrProcess
@@ -68,7 +68,7 @@ public class ClientAcctProcessor extends SvrProcess
 	private MClient 			m_client = null;
 	/**	Accounting Schema			*/
 	private MAcctSchema[] 		m_ass = null;
-	
+
 	/**
 	 * 	Prepare
 	 */
@@ -97,17 +97,17 @@ public class ClientAcctProcessor extends SvrProcess
 	protected String doIt () throws Exception
 	{
 		log.info("C_AcctSchema_ID=" + p_C_AcctSchema_ID + ", AD_Table_ID=" + p_AD_Table_ID);
-		
+
 		if (! MClient.isClientAccounting())
 			throw new AdempiereUserError(Msg.getMsg(getCtx(), "ClientAccountingNotEnabled"));
 
 		m_client = MClient.get(getCtx(), getAD_Client_ID());
-		
+
 		if (p_C_AcctSchema_ID == 0)
 			m_ass = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
 		else	//	only specific accounting schema
 			m_ass = new MAcctSchema[] {new MAcctSchema (getCtx(), p_C_AcctSchema_ID, get_TrxName())};
-		
+
 		postSession();
 		MCost.create(m_client);
 
@@ -132,10 +132,10 @@ public class ClientAcctProcessor extends SvrProcess
 		ts = new Timestamp(ms);
 		long mili = ts.getTime();
 		BigDecimal value = new BigDecimal(Long.toString(mili));
-		
+
 		//first pass, collect all ts (FR 2962094 - required for weighted average costing)
-		int[] documentsTableID = Doc.getDocumentsTableID();
-		String[] documentsTableName = Doc.getDocumentsTableName();
+		int[] documentsTableID = DocManager.getDocumentsTableID();
+		String[] documentsTableName = DocManager.getDocumentsTableName();
 		for (int i = 0; i < documentsTableID.length; i++)
 		{
 			int AD_Table_ID = documentsTableID[i];
@@ -144,7 +144,7 @@ public class ClientAcctProcessor extends SvrProcess
 			if (p_AD_Table_ID != 0
 				&& p_AD_Table_ID != AD_Table_ID)
 				continue;
-			
+
 			StringBuffer sql = new StringBuffer ("SELECT DISTINCT ProcessedOn FROM ").append(TableName)
 				.append(" WHERE AD_Client_ID=? AND ProcessedOn<?")
 				.append(" AND Processed='Y' AND Posted='N' AND IsActive='Y'");
@@ -180,12 +180,12 @@ public class ClientAcctProcessor extends SvrProcess
 			count[i] = 0;
 			countError[i] = 0;
 		}
-		
+
 	  //sort and post in the processed date order
 	  Collections.sort(listProcessedOn);
 	  for (BigDecimal processedOn : listProcessedOn)
 	  {
-		
+
 		for (int i = 0; i < documentsTableID.length; i++)
 		{
 			int AD_Table_ID = documentsTableID[i];
@@ -220,21 +220,11 @@ public class ClientAcctProcessor extends SvrProcess
 					// Run every posting document in own transaction
 					String innerTrxName = Trx.createTrxName("CAP");
 					Trx innerTrx = Trx.get(innerTrxName, true);
-					String postStatus = Doc.STATUS_NotPosted; 
-					Doc doc = Doc.get (m_ass, AD_Table_ID, rs, innerTrxName);
+
 					try
 					{
-						if (doc == null)
-						{
-							log.severe(getName() + ": No Doc for " + TableName);
-							ok = false;
-						}
-						else
-						{
-							String error = doc.post(false, false);   //  post no force/repost
-							ok = (error == null);
-							postStatus = doc.getPostStatus();
-						}
+						String error = DocManager.postDocument(m_ass, AD_Table_ID, rs, false, false, innerTrxName);
+						ok = (error == null);
 					}
 					catch (Exception e)
 					{
@@ -243,18 +233,7 @@ public class ClientAcctProcessor extends SvrProcess
 					}
 					finally
 					{
-						if (ok)
-							innerTrx.commit();
-						else {
-							innerTrx.rollback();
-							// save the posted status error (out of trx)
-							StringBuffer sqlupd = new StringBuffer("UPDATE ")
-								.append(doc.get_TableName()).append(" SET Posted='").append(postStatus)
-								.append("',Processing='N' ")
-								.append("WHERE ")
-								.append(doc.get_TableName()).append("_ID=").append(doc.get_ID());
-							DB.executeUpdateEx(sqlupd.toString(), null);
-						}
+						innerTrx.commit();
 						innerTrx.close();
 						innerTrx = null;
 					}
@@ -270,11 +249,11 @@ public class ClientAcctProcessor extends SvrProcess
 			{
 				DB.close(rs, pstmt);
 			}
-			
+
 		} // for tableID
-		
+
 	  } // for processedOn
-	  
+
 		for (int i = 0; i < documentsTableID.length; i++)
 		{
 			String TableName = documentsTableName[i];
@@ -289,7 +268,7 @@ public class ClientAcctProcessor extends SvrProcess
 			else
 				log.finer(getName() + ": " + TableName + " - no work");
 		}
-		
+
 	}	//	postSession
 
 }	//	ClientAcctProcessor

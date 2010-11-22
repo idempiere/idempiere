@@ -49,13 +49,13 @@ public class Doc_Order extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Order (MAcctSchema[] ass, ResultSet rs, String trxName)
+	public Doc_Order (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super (ass, MOrder.class, rs, null, trxName);
+		super (as, MOrder.class, rs, null, trxName);
 	}	//	Doc_Order
 
 	/** Contained Optional Tax Lines    */
@@ -78,7 +78,7 @@ public class Doc_Order extends Doc
 		setAmount(AMTTYPE_Gross, order.getGrandTotal());
 		setAmount(AMTTYPE_Net, order.getTotalLines());
 		setAmount(AMTTYPE_Charge, order.getChargeAmt());
-				
+
 		//	Contained Objects
 		m_taxes = loadTaxes();
 		p_lines = loadLines(order);
@@ -136,7 +136,7 @@ public class Doc_Order extends Doc
 					PriceList = PriceList.subtract(PriceListTax);
 				}
 			}	//	correct included Tax
-			
+
 			docLine.setAmount (LineNetAmt, PriceList, Qty);
 			list.add(docLine);
 		}
@@ -146,8 +146,8 @@ public class Doc_Order extends Doc
 		list.toArray(dl);
 		return dl;
 	}	//	loadLines
-	
-	
+
+
 	/**
 	 * 	Load Requisitions
 	 *	@return requisition lines of Order
@@ -208,14 +208,14 @@ public class Doc_Order extends Doc
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		
+
 		// Return Array
 		DocLine[] dls = new DocLine[list.size ()];
 		list.toArray (dls);
 		return dls;
 	}	// loadRequisitions
 
-	
+
 	/**
 	 * 	Get Currency Precision
 	 *	@return precision
@@ -254,7 +254,7 @@ public class Doc_Order extends Doc
 				BigDecimal amount = rs.getBigDecimal(5);
 				boolean salesTax = "Y".equals(rs.getString(6));
 				//
-				DocTax taxLine = new DocTax(C_Tax_ID, name, rate, 
+				DocTax taxLine = new DocTax(C_Tax_ID, name, rate,
 					taxBaseAmt, amount, salesTax);
 				list.add(taxLine);
 			}
@@ -274,7 +274,7 @@ public class Doc_Order extends Doc
 		return tl;
 	}	//	loadTaxes
 
-	
+
 	/**************************************************************************
 	 *  Get Source Currency Balance - subtracts line and tax amounts from total - no rounding
 	 *  @return positive amount, if total invoice is bigger than lines
@@ -309,7 +309,7 @@ public class Doc_Order extends Doc
 			sb.append("]");
 		}
 		//
-		if (retValue.signum() != 0		//	Sum of Cost(vs. Price) in lines may not add up 
+		if (retValue.signum() != 0		//	Sum of Cost(vs. Price) in lines may not add up
 			&& getDocumentType().equals(DOCTYPE_POrder))	//	PO
 		{
 			log.fine(toString() + " Balance=" + retValue + sb.toString() + " (ignored)");
@@ -320,7 +320,7 @@ public class Doc_Order extends Doc
 		return retValue;
 	}   //  getBalance
 
-	
+
 	/*************************************************************************
 	 *  Create Facts (the accounting logic) for
 	 *  SOO, POO.
@@ -377,7 +377,7 @@ public class Doc_Order extends Doc
 				//
 				facts.add(fact);
 			}
-			
+
 			//  Reverse Reservation
 			if (as.isCreateReservation())
 			{
@@ -446,12 +446,12 @@ public class Doc_Order extends Doc
 				//
 				facts.add(fact);
 			}
-			
+
 		}
 		return facts;
 	}   //  createFact
 
-	
+
 	/**
 	 * 	Update ProductPO PriceLastPO
 	 *	@param as accounting schema
@@ -473,7 +473,7 @@ public class Doc_Order extends Doc
 			{
 				sql.append(" AND ROWNUM=1 ");
 			}
-			else 
+			else
 				sql.append(" AND ol.C_OrderLine_ID = (SELECT MIN(ol1.C_OrderLine_ID) "
 						+ "FROM C_Order o1, C_OrderLine ol1 "
 						+ "WHERE o1.C_Order_ID=ol1.C_Order_ID"
@@ -488,8 +488,8 @@ public class Doc_Order extends Doc
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		log.fine("Updated=" + no);
 	}	//	updateProductPO
-	
-	
+
+
 	/**
 	 * 	Get Commitments
 	 * 	@param doc document
@@ -545,7 +545,7 @@ public class Doc_Order extends Doc
 				else
 					LineNetAmt = Qty.multiply(PriceActual);
 				maxQty = maxQty.subtract(Qty);
-				
+
 				docLine.setAmount (LineNetAmt);	//	DR
 				BigDecimal PriceList = line.getPriceList();
 				int C_Tax_ID = docLine.getC_Tax_ID();
@@ -562,7 +562,7 @@ public class Doc_Order extends Doc
 						PriceList = PriceList.subtract(PriceListTax);
 					}
 				}	//	correct included Tax
-				
+
 				docLine.setAmount (LineNetAmt, PriceList, Qty);
 				list.add(docLine);
 			}
@@ -576,7 +576,7 @@ public class Doc_Order extends Doc
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		
+
 		//	Return Array
 		DocLine[] dl = new DocLine[list.size()];
 		list.toArray(dl);
@@ -593,13 +593,13 @@ public class Doc_Order extends Doc
 	 *	@param multiplier 1 for accrual
 	 *	@return Fact
 	 */
-	protected static Fact getCommitmentRelease(MAcctSchema as, Doc doc, 
+	protected static Fact getCommitmentRelease(MAcctSchema as, Doc doc,
 		BigDecimal Qty, int C_InvoiceLine_ID, BigDecimal multiplier)
 	{
 		Fact fact = new Fact(doc, as, Fact.POST_Commitment);
-		DocLine[] commitments = Doc_Order.getCommitments(doc, Qty, 
+		DocLine[] commitments = Doc_Order.getCommitments(doc, Qty,
 				C_InvoiceLine_ID);
-		
+
 		BigDecimal total = Env.ZERO;
 		FactLine fl = null;
 		int C_Currency_ID = -1;
@@ -634,7 +634,7 @@ public class Doc_Order extends Doc
 			C_Currency_ID, total, null);
 		return fact;
 	}	//	getCommitmentRelease
-	
+
 	/**
 	 * 	Get Commitments Sales
 	 * 	@param doc document
@@ -685,7 +685,7 @@ public class Doc_Order extends Doc
 				else
 					LineNetAmt = Qty.multiply(PriceActual);
 				maxQty = maxQty.subtract(Qty);
-				
+
 				docLine.setAmount (LineNetAmt);	//	DR
 				BigDecimal PriceList = line.getPriceList();
 				int C_Tax_ID = docLine.getC_Tax_ID();
@@ -702,7 +702,7 @@ public class Doc_Order extends Doc
 						PriceList = PriceList.subtract(PriceListTax);
 					}
 				}	//	correct included Tax
-				
+
 				docLine.setAmount (LineNetAmt, PriceList, Qty);
 				list.add(docLine);
 			}
@@ -716,7 +716,7 @@ public class Doc_Order extends Doc
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		
+
 		//	Return Array
 		DocLine[] dl = new DocLine[list.size()];
 		list.toArray(dl);
@@ -733,13 +733,13 @@ public class Doc_Order extends Doc
 	 *	@param multiplier 1 for accrual
 	 *	@return Fact
 	 */
-	protected static Fact getCommitmentSalesRelease(MAcctSchema as, Doc doc, 
+	protected static Fact getCommitmentSalesRelease(MAcctSchema as, Doc doc,
 		BigDecimal Qty, int M_InOutLine_ID, BigDecimal multiplier)
 	{
 		Fact fact = new Fact(doc, as, Fact.POST_Commitment);
-		DocLine[] commitments = Doc_Order.getCommitmentsSales(doc, Qty, 
+		DocLine[] commitments = Doc_Order.getCommitmentsSales(doc, Qty,
 				M_InOutLine_ID);
-		
+
 		BigDecimal total = Env.ZERO;
 		FactLine fl = null;
 		int C_Currency_ID = -1;
@@ -774,7 +774,7 @@ public class Doc_Order extends Doc
 			C_Currency_ID, null, total);
 		return fact;
 	}	//	getCommitmentSalesRelease
-	
+
 	/**************************************************************************
 	 *  Update Product Info (old)
 	 *  - Costing (PriceLastPO)
@@ -803,7 +803,7 @@ public class Doc_Order extends Doc
 			{
 				sql.append(" AND ROWNUM=1 ");
 			}
-			else 
+			else
 				sql.append(" AND ol.C_OrderLine_ID = (SELECT MIN(ol1.C_OrderLine_ID) "
 						+ "FROM C_Order o1, C_OrderLine ol1 "
 						+ "WHERE o1.C_Order_ID=ol1.C_Order_ID"

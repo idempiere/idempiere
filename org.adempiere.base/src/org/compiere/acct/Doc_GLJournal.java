@@ -40,19 +40,19 @@ public class Doc_GLJournal extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_GLJournal (MAcctSchema[] ass, ResultSet rs, String trxName)
+	public Doc_GLJournal (MAcctSchema as, ResultSet rs, String trxName)
 	{
-		super(ass, MJournal.class, rs, null, trxName);
+		super(as, MJournal.class, rs, null, trxName);
 	}	//	Doc_GL_Journal
 
 	/** Posting Type				*/
 	private String			m_PostingType = null;
 	private int				m_C_AcctSchema_ID = 0;
-	
+
 	/**
 	 *  Load Specific Document Details
 	 *  @return error message or null
@@ -62,7 +62,7 @@ public class Doc_GLJournal extends Doc
 		MJournal journal = (MJournal)getPO();
 		m_PostingType = journal.getPostingType();
 		m_C_AcctSchema_ID = journal.getC_AcctSchema_ID();
-			
+
 		//	Contained Objects
 		p_lines = loadLines(journal);
 		log.fine("Lines=" + p_lines.length);
@@ -82,7 +82,7 @@ public class Doc_GLJournal extends Doc
 		for (int i = 0; i < lines.length; i++)
 		{
 			MJournalLine line = lines[i];
-			DocLine docLine = new DocLine (line, this); 
+			DocLine docLine = new DocLine (line, this);
 			//  --  Source Amounts
 			docLine.setAmount (line.getAmtSourceDr(), line.getAmtSourceCr());
 			//  --  Converted Amounts
@@ -100,7 +100,7 @@ public class Doc_GLJournal extends Doc
 		return dls;
 	}	//	loadLines
 
-	
+
 	/**************************************************************************
 	 *  Get Source Currency Balance - subtracts line and tax amounts from total - no rounding
 	 *  @return positive amount, if total invoice is bigger than lines
@@ -137,7 +137,7 @@ public class Doc_GLJournal extends Doc
 		//	Other Acct Schema
 		if (as.getC_AcctSchema_ID() != m_C_AcctSchema_ID)
 			return facts;
-		
+
 		//  create Fact Header
 		Fact fact = new Fact (this, as, m_PostingType);
 

@@ -3,7 +3,7 @@
 <schema targetNamespace="org.adempiere.base" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.IModelFactory" name="Model Factory"/>
+         <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.IDocFactory" name="Financial Document Factory"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -49,6 +49,13 @@
 
    <element name="factory">
       <complexType>
+         <attribute name="gaap" type="string" use="required">
+            <annotation>
+               <documentation>
+                  use * to match everything
+               </documentation>
+            </annotation>
+         </attribute>
          <attribute name="priority" type="string">
             <annotation>
                <documentation>
@@ -62,7 +69,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.adempiere.base.IModelFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.adempiere.base.IDocFactory"/>
                </appinfo>
             </annotation>
          </attribute>
