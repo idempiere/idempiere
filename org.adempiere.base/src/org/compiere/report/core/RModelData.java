@@ -41,7 +41,7 @@ import org.compiere.util.KeyNamePair;
  *  @author Jorg Janke
  *  @version  $Id: RModelData.java,v 1.2 2006/07/30 00:51:06 jjanke Exp $
  */
-class RModelData
+public class RModelData
 {
 	/**
 	 *  Constructor. Use query method to populate data
@@ -80,7 +80,7 @@ class RModelData
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(RModelData.class);
-	
+
 	/**
 	 *  Dispose
 	 */
@@ -351,7 +351,7 @@ class RModelData
 		m_rows.clear();
 	}   //  process
 
-	
+
 	/**************************************************************************
 	 *  Is Row a Group Row
 	 *  @param row row index

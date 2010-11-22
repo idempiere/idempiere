@@ -28,14 +28,14 @@ import org.compiere.util.CLogger;
  *
  *  @author Jorg Janke
  *  @version  $Id: RModel.java,v 1.2 2006/07/30 00:51:06 jjanke Exp $
- * 
+ *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1778373 ] AcctViewer: data is not sorted proper
  */
 public class RModel implements Serializable
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1283407521250413019L;
 
@@ -62,19 +62,19 @@ public class RModel implements Serializable
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(RModel.class);
-	
+
 	/**************************************************************************
 	 *  Get Column Display Name
 	 *  @param col
 	 *  @return RColumn
 	 */
-	protected RColumn getRColumn (int col)
+	public RColumn getRColumn (int col)
 	{
 		if (col < 0 || col > m_data.cols.size())
 			throw new java.lang.IllegalArgumentException("Column invalid");
 		return (RColumn)m_data.cols.get(col);
 	}   //  getRColumn
-	
+
 	/**
 	 * Get column by column name
 	 * @param columnName
@@ -93,7 +93,7 @@ public class RModel implements Serializable
 		return null;
 	}
 
-	
+
 	/**************************************************************************
 	 *  Add Column
 	 *  @param rc
@@ -176,7 +176,7 @@ public class RModel implements Serializable
 		return -1;
 	}   //  getColumnIndex
 
-	
+
 	/**************************************************************************
 	 *  Query
 	 *  @param ctx
@@ -188,7 +188,7 @@ public class RModel implements Serializable
 		m_data.query (ctx, whereClause, orderClause);
 	}   //  query
 
-	
+
 	/**************************************************************************
 	 *  Set a group column
 	 *  @param columnName
@@ -388,7 +388,7 @@ public class RModel implements Serializable
 	{
 		m_data.moveRow(from,to);
 	}   //  moveRow
-	
+
 	/**
 	 * Returns the ArrayList of ArrayLists that contains the table's data values.
 	 * The ArrayLists contained in the outer vector are each a single row of values.

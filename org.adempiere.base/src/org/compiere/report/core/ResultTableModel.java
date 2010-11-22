@@ -27,10 +27,10 @@ import javax.swing.table.AbstractTableModel;
  *  @author Jorg Janke
  *  @version  $Id: ResultTableModel.java,v 1.2 2006/07/30 00:51:06 jjanke Exp $
  */
-class ResultTableModel extends AbstractTableModel
+public class ResultTableModel extends AbstractTableModel
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9197559914473854935L;
 
