@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="org.adempiere.webui.Form" name="Web Form" schema="schema/org.adempiere.webui.Form.exsd"/>
    <extension-point id="org.adempiere.webui.factory.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.webui.factory.IInfoFactory.exsd"/>
+   <extension-point id="org.adempiere.webui.factory.IEditorFactory" name="Field editor factory" schema="schema/org.adempiere.webui.factory.IEditorFactory.exsd"/>
    <extension
          point="org.compiere.print.ReportViewerProvider">
       <provider
@@ -33,6 +34,15 @@
          point="org.adempiere.webui.factory.IInfoFactory">
       <factory
             class="org.adempiere.webui.factory.DefaultInfoFactory"
+            priority="0">
+      </factory>
+   </extension>
+   <extension
+         id="org.adempiere.webui.factory.DefaultEditorFactory"
+         name="Default field editor factory"
+         point="org.adempiere.webui.factory.IEditorFactory">
+      <factory
+            class="org.adempiere.webui.factory.DefaultEditorFactory"
             priority="0">
       </factory>
    </extension>

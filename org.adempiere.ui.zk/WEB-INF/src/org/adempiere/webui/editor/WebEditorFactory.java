@@ -17,17 +17,20 @@
 
 package org.adempiere.webui.editor;
 
+import java.util.List;
+
+import org.adempiere.base.Service;
+import org.adempiere.webui.factory.IEditorFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.util.CLogger;
-import org.compiere.util.DisplayType;
 
 /**
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
  * @version $Revision: 0.10 $
- * 
+ *
  * @author Low Heng Sin
  * @date 	July 14 2008
  */
@@ -36,145 +39,27 @@ public class WebEditorFactory
 
     @SuppressWarnings("unused")
 	private final static CLogger logger;
-    
+
     static
     {
         logger = CLogger.getCLogger(WebEditorFactory.class);
     }
-    
+
     public static WEditor getEditor(GridField gridField, boolean tableEditor)
     {
     	return getEditor(null, gridField, tableEditor);
     }
-    
+
     public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor)
     {
-        if (gridField == null)
-        {
-            return null;
-        }
-
         WEditor editor = null;
-        int displayType = gridField.getDisplayType();
-        
-        /** Not a Field */
-        if (gridField.isHeading())
+        List<IEditorFactory> factoryList = Service.list(IEditorFactory.class);
+        for(IEditorFactory factory : factoryList)
         {
-            return null;
+        	editor = factory.getEditor(gridTab, gridField, tableEditor);
+        	if (editor != null)
+        		break;
         }
-
-        /** String (clear/password) */
-        if (displayType == DisplayType.String
-            || displayType == DisplayType.PrinterName 
-            || (tableEditor && (displayType == DisplayType.Text || displayType == DisplayType.TextLong)))
-        {
-            if (gridField.isEncryptedField())
-            {
-                editor = new WPasswordEditor(gridField);
-            }
-            else
-            {
-                editor = new WStringEditor(gridField, tableEditor);
-            }
-        }
-        /** File */
-        else if (displayType == DisplayType.FileName)
-        {
-        	editor = new WFilenameEditor(gridField);
-        }
-        /** File Path */
-        else if (displayType == DisplayType.FilePath)
-        {
-        	editor = new WFileDirectoryEditor(gridField);
-        }
-        /** Number */
-        else if (DisplayType.isNumeric(displayType))
-        {
-            editor = new WNumberEditor(gridField);
-        }
-
-        /** YesNo */
-        else if (displayType == DisplayType.YesNo)
-        {
-            editor = new WYesNoEditor(gridField);
-            if (tableEditor)
-            	((WYesNoEditor)editor).getComponent().setLabel("");
-        }
-
-        /** Text */
-        else if (displayType == DisplayType.Text || displayType == DisplayType.Memo || displayType == DisplayType.TextLong)
-        {
-            editor = new WStringEditor(gridField);
-        }
-        
-        /** Date */
-        else if (DisplayType.isDate(displayType))
-        {
-        	if (displayType == DisplayType.Time)
-        		editor = new WTimeEditor(gridField);
-        	else if (displayType == DisplayType.DateTime)
-        		editor = new WDatetimeEditor(gridField);
-        	else
-        		editor = new WDateEditor(gridField);
-        }
-        
-        /**  Button */
-        else if (displayType == DisplayType.Button)
-        {
-            editor = new WButtonEditor(gridField);
-        }
-
-        /** Table Direct */
-        else if (displayType == DisplayType.TableDir || 
-                displayType == DisplayType.Table || displayType == DisplayType.List
-                || displayType == DisplayType.ID )
-        {
-            editor = new WTableDirEditor(gridField);
-        }
-                   
-        else if (displayType == DisplayType.URL)
-        {
-        	editor = new WUrlEditor(gridField);
-        }
-        
-        else if (displayType == DisplayType.Search)
-        {
-        	editor = new WSearchEditor(gridField);
-        }
-        
-        else if (displayType == DisplayType.Location)
-        {
-            editor = new WLocationEditor(gridField);
-        }
-        else if (displayType == DisplayType.Locator)
-        {
-        	editor = new WLocatorEditor(gridField); 
-        }
-        else if (displayType == DisplayType.Account)
-        {
-        	editor = new WAccountEditor(gridField);
-        }
-        else if (displayType == DisplayType.Image)
-        {
-        	editor = new WImageEditor(gridField);
-        }
-        else if (displayType == DisplayType.Binary)
-        {
-        	editor = new WBinaryEditor(gridField);        	
-        }
-        else if (displayType == DisplayType.PAttribute)
-        {
-        	editor = new WPAttributeEditor(gridTab, gridField);
-        }
-        else if (displayType == DisplayType.Assignment)
-        {
-        	editor = new WAssignmentEditor(gridField);
-        }
-        else
-        {
-            editor = new WUnknownEditor(gridField);
-        }
-        
         return editor;
     }
 }
