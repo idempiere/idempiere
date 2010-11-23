@@ -4,6 +4,7 @@
    <extension-point id="org.adempiere.osgi.IMenuAction" name="MenuAction" schema="schema/org.adempiere.osgi.IMenuAction.exsd"/>
    <extension-point id="org.adempiere.apps.Form" name="Form" schema="schema/org.adempiere.apps.Form.exsd"/>
    <extension-point id="org.adempiere.osgi.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.osgi.IInfoFactory.exsd"/>
+   <extension-point id="org.adempiere.osgi.IEditorFactory" name="Field editor factory" schema="schema/org.adempiere.osgi.IEditorFactory.exsd"/>
    <extension
          id="RF"
          name="RF"
@@ -56,6 +57,15 @@
          point="org.adempiere.osgi.IInfoFactory">
       <factory
             class="org.adempiere.osgi.DefaultInfoFactory"
+            priority="0">
+      </factory>
+   </extension>
+   <extension
+         id="org.adempiere.osgi.DefaultEditorFactory"
+         name="Default field editor factory"
+         point="org.adempiere.osgi.IEditorFactory">
+      <factory
+            class="org.adempiere.osgi.DefaultEditorFactory"
             priority="0">
       </factory>
    </extension>
