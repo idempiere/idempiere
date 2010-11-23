@@ -356,7 +356,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	protected WListbox contentPanel = new WListbox();
 	protected Paging paging;
 	protected int pageNo;
-	private int m_count;
+	protected int m_count;
 	private int cacheStart;
 	private int cacheEnd;
 	private boolean m_useDatabasePaging = false;
@@ -656,7 +656,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	 * 	Test Row Count
 	 *	@return true if display
 	 */
-	private boolean testCount()
+	protected boolean testCount()
 	{
 		long start = System.currentTimeMillis();
 		String dynWhere = getSQLWhere();

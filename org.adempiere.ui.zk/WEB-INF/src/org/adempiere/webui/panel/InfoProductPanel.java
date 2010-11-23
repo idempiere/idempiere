@@ -95,7 +95,7 @@ import org.zkoss.zkex.zul.South;
 public class InfoProductPanel extends InfoPanel implements EventListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6804975825156657866L;
 	private Label lblValue = new Label();
@@ -194,7 +194,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		//
 		initComponents();
 		init();
-		initInfo (value, M_Warehouse_ID, M_PriceList_ID);
+		initInfo (M_Warehouse_ID, M_PriceList_ID);
 		m_C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), windowNo, "C_BPartner_ID");
 
         int no = contentPanel.getRowCount();
@@ -203,6 +203,14 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		//	AutoQuery
 		if (value != null && value.length() > 0)
         {
+			//	Set Value or Name
+			fieldValue.setText(value);
+			testCount();
+			if (m_count <= 0) {
+				fieldValue.setText("");
+				fieldName.setValue(value);
+			}
+
 			executeQuery();
             renderItems();
         }
@@ -326,13 +334,13 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		row.appendChild(pickProductCategory);
 		row.appendChild(lblAS.rightAlign());
 		row.appendChild(pickAS);
-		
+
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(statusBar);
 		row.setSpans("6");
 		statusBar.setEastVisibility(false);
-		
+
 		// Product Attribute Instance
 		m_PAttributeButton = confirmPanel.createButton(ConfirmPanel.A_PATTRIBUTE);
 		confirmPanel.addComponentsLeft(m_PAttributeButton);
@@ -609,20 +617,14 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 	/**
 	 *	Dynamic Init
 	 *
-	 * @param value value
 	 * @param M_Warehouse_ID warehouse
 	 * @param M_PriceList_ID price list
 	 */
-	private void initInfo (String value, int M_Warehouse_ID, int M_PriceList_ID)
+	private void initInfo (int M_Warehouse_ID, int M_PriceList_ID)
 	{
 		//	Pick init
 		fillPicks(M_PriceList_ID);
 		int M_PriceList_Version_ID = findPLV (M_PriceList_ID);
-		//	Set Value or Name
-		if (value.startsWith("@") && value.endsWith("@"))
-			fieldName.setText(value.substring(1,value.length()-1));
-		else
-			fieldValue.setText(value);
 		//	Set Warehouse
 		if (M_Warehouse_ID == 0)
 			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), "#M_Warehouse_ID");
@@ -1450,7 +1452,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		return M_Product_Category_ID;
 	}
     //
-    
+
     public int getM_AttributeSet_ID()
     {
 		int M_AttributeSet_ID = 0;
@@ -1461,5 +1463,5 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 
 		return M_AttributeSet_ID;
 	}
-    
+
 }	//	InfoProduct
