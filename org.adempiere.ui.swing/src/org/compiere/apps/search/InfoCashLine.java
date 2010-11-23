@@ -46,14 +46,14 @@ import org.compiere.util.Util;
  *
  *  @author Jorg Janke
  *  @version  $Id: InfoCashLine.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
- * 
+ *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1976044 ] Info Cash Line: search by Charge
  */
 public class InfoCashLine extends Info
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -3315036454469996930L;
 
@@ -66,7 +66,7 @@ public class InfoCashLine extends Info
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause whwre clause
 	 */
-	protected InfoCashLine(Frame frame, boolean modal, int WindowNo, String value,
+	public InfoCashLine(Frame frame, boolean modal, int WindowNo, String value,
 		boolean multiSelection, String whereClause)
 	{
 		super (frame, modal, WindowNo, "cl", "C_CashLine_ID", multiSelection, whereClause);
@@ -244,7 +244,7 @@ public class InfoCashLine extends Info
 		return true;
 	}	//	initInfo
 
-	
+
 	/**************************************************************************
 	 *	Construct SQL Where Clause and define parameters
 	 *  (setParameters needs to set parameters)

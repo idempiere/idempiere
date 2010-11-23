@@ -65,12 +65,12 @@ import org.zkoss.zul.Vbox;
  *
  * Zk Port
  * @author Elaine
- * @version	InfoInvoice.java Adempiere Swing UI 3.4.1 
+ * @version	InfoInvoice.java Adempiere Swing UI 3.4.1
  **/
 public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 5632526399922930978L;
 
@@ -82,12 +82,12 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
      * @param whereClause where clause
     *
      */
-    protected InfoInvoicePanel(int WindowNo, String value,
+    public InfoInvoicePanel(int WindowNo, String value,
             boolean multiSelection, String whereClause)
     {
     	this(WindowNo, value, multiSelection, whereClause, true);
     }
-    
+
 	/**
      * Detail protected constructor
      * @param WindowNo window no
@@ -96,16 +96,16 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
      * @param whereClause where clause
     *
      */
-    protected InfoInvoicePanel(int WindowNo, String value,
+    public InfoInvoicePanel(int WindowNo, String value,
             boolean multiSelection, String whereClause, boolean lookup)
     {
         super ( WindowNo, "i", "C_Invoice_ID", multiSelection, whereClause, lookup);
-        
+
         setTitle(Msg.getMsg(Env.getCtx(), "InfoInvoice"));
         //
         initComponents();
         init();
-           
+
        p_loadedOK = initInfo ();
        int no = contentPanel.getRowCount();
        setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
@@ -123,24 +123,24 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
     private Label lblDescription;
     private Label lblDateInvoiced;
     private Label lblGrandTotal;
-    
+
     private Textbox txtDocumentNo;
     private Textbox txtDescription;
-    
+
     private Datebox dateFrom;
     private Datebox dateTo;
-    
+
     private NumberBox amountFrom;
     private NumberBox amountTo;
-    
+
     private WSearchEditor editorBPartner;
     private WSearchEditor editorOrder;
-    
+
     private Checkbox isSoTrx;
     private Checkbox isPaid;
 	private Borderlayout layout;
 	private Vbox southBody;
-    
+
     /**  Array of Column Info    */
     private static final ColumnInfo[] s_invoiceLayout = {
         new ColumnInfo(" ", "i.C_Invoice_ID", IDColumn.class),
@@ -157,25 +157,25 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         new ColumnInfo(Msg.translate(Env.getCtx(), "POReference"), "i.POReference", String.class),
         new ColumnInfo("", "''", KeyNamePair.class, "i.C_InvoicePaySchedule_ID")
     };
-    
+
     private static int INDEX_PAYSCHEDULE = s_invoiceLayout.length - 1;  //  last item
-   
+
     private void initComponents()
     {
         lblDocumentNo = new Label(Util.cleanAmp(Msg.translate(Env.getCtx(), "DocumentNo")));
         lblDescription = new Label(Msg.translate(Env.getCtx(), "Description"));
         lblDateInvoiced = new Label(Msg.translate(Env.getCtx(), "DateInvoiced"));
         lblGrandTotal = new Label(Msg.translate(Env.getCtx(), "GrandTotal"));
-        
+
         txtDocumentNo = new Textbox();
         txtDescription = new Textbox();
-        
+
         dateFrom = new Datebox();
         dateTo= new Datebox();
-        
+
         amountFrom = new NumberBox(false);
         amountTo = new NumberBox(false);
-        
+
         isPaid = new Checkbox();
         isPaid.setLabel(Msg.translate(Env.getCtx(), "IsPaid"));
         isPaid.setChecked(false);
@@ -187,14 +187,14 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         editorBPartner = new WSearchEditor(lookupBP, Msg.translate(
                 Env.getCtx(), "C_BPartner_ID"), "", false, false, true);
         editorBPartner.addValueChangeListener(this);
-        
+
         MLookup lookupOrder = MLookupFactory.get(Env.getCtx(), p_WindowNo,
                 0, 4247, DisplayType.Search);
         editorOrder = new WSearchEditor(lookupOrder, Msg.translate(
                 Env.getCtx(), "C_Order_ID"), "", false, false, true);
         editorOrder.addValueChangeListener(this);
     }
-    
+
     private void init()
     {
     	txtDocumentNo.setWidth("100%");
@@ -203,12 +203,12 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 		dateTo.setWidth("165px");
 		amountFrom.getDecimalbox().setWidth("155px");
 		amountTo.getDecimalbox().setWidth("155px");
-    	
+
         Grid grid = GridFactory.newGridLayout();
-		
+
 		Rows rows = new Rows();
 		grid.appendChild(rows);
-		
+
 		Row row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblDocumentNo.rightAlign());
@@ -217,7 +217,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 		row.appendChild(editorBPartner.getComponent());
 		row.appendChild(isSoTrx);
 		row.appendChild(isPaid);
-		
+
 		row = new Row();
 		row.setSpans("1, 1, 1, 3");
 		rows.appendChild(row);
@@ -229,7 +229,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(dateTo);
 		row.appendChild(hbox);
-		
+
 		row = new Row();
 		row.setSpans("1, 1, 1, 3");
 		rows.appendChild(row);
@@ -241,7 +241,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(amountTo);
 		row.appendChild(hbox);
-		
+
 		layout = new Borderlayout();
         layout.setWidth("100%");
         layout.setHeight("100%");
@@ -267,7 +267,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         contentPanel.setVflex(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-        
+
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
@@ -277,7 +277,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 		southBody.appendChild(new Separator());
 		southBody.appendChild(statusBar);
     }
-    
+
     /**
      *  General Init
      *  @return true, if success
@@ -299,7 +299,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
             "2,3,4");
         //
         return true;
-           
+
     }   //  initInfo
     @Override
     public String getSQLWhere()
@@ -323,7 +323,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         }
         catch (WrongValueException e)
         {
-            
+
         }
         try
         {
@@ -331,7 +331,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         }
         catch (WrongValueException e)
         {
-            
+
         }
         if (fromDate == null && toDate != null)
         {
@@ -356,7 +356,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
             }
             catch (NumberFormatException e)
             {
-                
+
             }
         }
         if (!Util.isEmpty(amountTo.getText()))
@@ -367,7 +367,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
             }
             catch (NumberFormatException e)
             {
-                
+
             }
         }
         if (fromAmount == null && toAmount != null)
@@ -396,7 +396,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
             pstmt.setString(index++, getSQLText(txtDocumentNo));
         if (txtDescription.getText().length() > 0)
             pstmt.setString(index++, getSQLText(txtDescription));
-        
+
         //
         if (editorBPartner.getValue() != null)
         {
@@ -425,7 +425,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         }
         catch (WrongValueException e)
         {
-            
+
         }
         try
         {
@@ -437,9 +437,9 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         }
         catch (WrongValueException e)
         {
-            
+
         }
-        
+
         log.fine("Date From=" + from + ", To=" + to);
         if (from == null && to != null)
         {
@@ -454,13 +454,13 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
             pstmt.setTimestamp(index++, from);
             pstmt.setTimestamp(index++, to);
         }
-    
+
     //
         BigDecimal fromBD = null;
         BigDecimal toBD = null;
         Double fromAmt = null;
         Double toAmt = null;
-        
+
         if (!Util.isEmpty(amountFrom.getText()))
         {
             try
@@ -470,10 +470,10 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
             }
             catch (Exception e)
             {
-                
+
             }
         }
-        
+
         if (!Util.isEmpty(amountTo.getText()))
         {
             try
@@ -483,10 +483,10 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
             }
             catch (Exception e)
             {
-                
+
             }
         }
-        
+
         if (fromBD == null && toBD != null)
         {
             pstmt.setBigDecimal(index++, toBD);
@@ -502,7 +502,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         }
         pstmt.setString(index++,isPaid.isChecked() ? "Y" : "N");
         pstmt.setString(index++,isSoTrx.isChecked() ? "Y" : "N");
-       
+
     }
 
     /**
@@ -518,7 +518,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         log.fine("String=" + s);
         return s;
     }   //  getSQLText
-    
+
     // Elaine 2008/12/16
 	/**
 	 *	Zoom
@@ -545,10 +545,10 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 		return true;
 	}	//	hasZoom
 	//
-    
+
     public void tableChanged(WTableModelEvent event)
     {
-        
+
     }
     public void valueChange(ValueChangeEvent evt)
     {

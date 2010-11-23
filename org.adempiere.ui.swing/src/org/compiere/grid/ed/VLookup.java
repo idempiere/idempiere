@@ -46,22 +46,16 @@ import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 
+import org.adempiere.osgi.InfoManager;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.AWindow;
 import org.compiere.apps.FieldRecordInfo;
 import org.compiere.apps.search.Info;
-import org.compiere.apps.search.InfoBPartner;
-import org.compiere.apps.search.InfoFactory;
-import org.compiere.apps.search.InfoProduct;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
-import org.compiere.model.MColumn;
-import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import org.compiere.model.MOrderLine;
-import org.compiere.model.MProductPrice;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.swing.CButton;
@@ -75,7 +69,6 @@ import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
-import org.eevolution.model.I_PP_Product_BOMLine;
 
 /**
  *  Lookup Visual Field.
@@ -96,7 +89,7 @@ import org.eevolution.model.I_PP_Product_BOMLine;
  *				<li>BF [ 1979213 ] VLookup.getDirectAccessSQL issue
  *				<li>BF [ 2552901 ] VLookup: TAB is not working OK
  *  @author		Michael Judd (MultiSelect)
- *  
+ *
  *  @author hengsin, hengsin.low@idalica.com
  *  @see FR [2887701] https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2887701&group_id=176962
  *  @sponsor www.metas.de
@@ -141,8 +134,8 @@ public class VLookup extends JComponent
 		}	//	mouse Clicked
 
 	}	//	VLookup_mouseAdapter
-	
-	
+
+
 	@Override
 	protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
 			int condition, boolean pressed) {
@@ -680,7 +673,7 @@ public class VLookup extends JComponent
 		if (m_mField != null
 			&& MRole.getDefault().isShowPreference())
 			ValuePreference.addMenu (this, popupMenu);
-		
+
 		if (m_mField != null)
 			FieldRecordInfo.addMenu(this, popupMenu);
 	}   //  setField
@@ -799,7 +792,7 @@ public class VLookup extends JComponent
 		{
 			//  happens if VLookup is used outside of APanel/GridController (no property listener)
 			log.fine(m_columnName + " - Value explicitly set - new=" + updatedValue + ", old=" + m_value);
-			
+
 			// phib: the following check causes the update to fail on jre > 1.6.0_13
 			// commenting out as it does not appear to be necessary
 			//if (getListeners(PropertyChangeListener.class).length <= 0)
@@ -832,82 +825,30 @@ public class VLookup extends JComponent
 		boolean cancelled = false;
 		boolean multipleSelection = false;
 		//
-		String col = m_lookup.getColumnName();		//	fully qualified name
-		if (col.indexOf('.') != -1)
-			col = col.substring(col.indexOf('.')+1);
 		//  Zoom / Validation
 		String whereClause = getWhereClause();
 		//
-		log.fine(col
+		log.fine(m_lookup.getColumnName()
 			+ ", Zoom=" + m_lookup.getZoom()
 			+ " (" + whereClause + ")");
 		//
-		boolean resetValue = false;	//	reset value so that is always treated as new entry
-		String infoFactoryClass = m_lookup.getInfoFactoryClass();
-		if (infoFactoryClass != null && infoFactoryClass.trim().length() > 0)
-		{
-			try {
-				Class<InfoFactory> clazz = (Class<InfoFactory>)this.getClass().getClassLoader().loadClass(infoFactoryClass);
-				InfoFactory factory = clazz.newInstance();
-				if (m_tableName == null)	//	sets table name & key column
-					getDirectAccessSQL("*");
-				Info ig = factory.create (frame, true, m_lookup.getWindowNo(),
-					m_tableName, m_keyColumnName, queryValue, false, whereClause);
-				ig.setVisible(true);
-				cancelled = ig.isCancelled();
-				result = ig.getSelectedKeys();
-			} catch (Exception e) {
-				log.log(Level.SEVERE, "Failed to load custom InfoFactory - " + e.getLocalizedMessage(), e);
-			}
-		}
-		else if (col.equals("M_Product_ID"))
-		{
-			//	Reset
-			resetTabInfo();
-			//  Replace Value with name if no value exists
-			if (queryValue.length() == 0 && m_text.getText().length() > 0)
-				queryValue = "@" + m_text.getText() + "@";   //  Name indicator - otherwise Value
-			int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), m_lookup.getWindowNo(), "M_Warehouse_ID");
-			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), m_lookup.getWindowNo(), "M_PriceList_ID");
+		Info info = null;
 
-			if(m_mField != null)
-			{
-			int AD_Table_ID = MColumn.getTable_ID(Env.getCtx(), m_mField.getAD_Column_ID(), null);
+		//	Reset
+		resetTabInfo();
+		if (m_tableName == null)	//	sets table name & key column
+			getDirectAccessSQL("*");
 
-			multipleSelection = (MOrderLine.Table_ID ==  AD_Table_ID) || (MInvoiceLine.Table_ID == AD_Table_ID) || (I_PP_Product_BOMLine.Table_ID == AD_Table_ID) || (MProductPrice.Table_ID == AD_Table_ID);
-			}
-			//	Show Info
-			InfoProduct ip = new InfoProduct (frame, true, m_lookup.getWindowNo(),
-				M_Warehouse_ID, M_PriceList_ID, queryValue, multipleSelection, whereClause);
-			ip.setVisible(true);
-			cancelled = ip.isCancelled();
-			result = ip.getSelectedKeys();
-			resetValue = true;
-		}
-		else if (col.equals("C_BPartner_ID"))
-		{
-			//  Replace Value with name if no value exists
-			if (queryValue.length() == 0 && m_text.getText().length() > 0)
-				queryValue = m_text.getText();
-			boolean isSOTrx = true;     //  default
-			if (Env.getContext(Env.getCtx(), m_lookup.getWindowNo(), "IsSOTrx").equals("N"))
-				isSOTrx = false;
-			InfoBPartner ip = new InfoBPartner (frame, true, m_lookup.getWindowNo(),
-				queryValue, isSOTrx, multipleSelection, whereClause);
-			ip.setVisible(true);
-			cancelled = ip.isCancelled();
-			result = ip.getSelectedKeys();
-		}
-		else	//	General Info
-		{
-			if (m_tableName == null)	//	sets table name & key column
-				getDirectAccessSQL("*");
-			Info ig = Info.create (frame, true, m_lookup.getWindowNo(),
-				m_tableName, m_keyColumnName, queryValue, multipleSelection, whereClause);
-			ig.setVisible(true);
-			cancelled = ig.isCancelled();
-			result = ig.getSelectedKeys();
-		}
+		//  Replace Value with name if no value exists
+		if (queryValue.length() == 0 && m_text.getText().length() > 0)
+			queryValue = m_text.getText();
+
+		info = InfoManager.create(frame, true, m_lookup, m_mField, m_tableName, m_keyColumnName,
+				queryValue, multipleSelection, whereClause);
+
+		info.setVisible(true);
+		cancelled = info.isCancelled();
+		result = info.getSelectedKeys();
 
 		//  Result
 		if (result != null && result.length > 0)
@@ -915,7 +856,7 @@ public class VLookup extends JComponent
 			log.config(m_columnName + " - Result = " + result.toString() + " (" + result.getClass().getName() + ")");
 			//  make sure that value is in cache
 			m_lookup.getDirect(result[0], false, true);
-			if (resetValue)
+			if (info.isResetValue())
 				actionCombo (null);
 			// juddm added logic for multi-select handling
 			if (result.length > 1)

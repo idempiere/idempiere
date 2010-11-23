@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="org.adempiere.osgi.IMenuAction" name="MenuAction" schema="schema/org.adempiere.osgi.IMenuAction.exsd"/>
    <extension-point id="org.adempiere.apps.Form" name="Form" schema="schema/org.adempiere.apps.Form.exsd"/>
+   <extension-point id="org.adempiere.osgi.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.osgi.IInfoFactory.exsd"/>
    <extension
          id="RF"
          name="RF"
@@ -48,6 +49,15 @@
                value="Adempiere Swing Client">
          </property>
       </product>
+   </extension>
+   <extension
+         id="org.adempiere.osgi.DefaultInfoFactory"
+         name="Default Info Factory"
+         point="org.adempiere.osgi.IInfoFactory">
+      <factory
+            class="org.adempiere.osgi.DefaultInfoFactory"
+            priority="0">
+      </factory>
    </extension>
 
 </plugin>

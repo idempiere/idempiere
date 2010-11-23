@@ -57,29 +57,29 @@ import org.zkoss.zul.Vbox;
 
 /**
 * Based on InfoCashLine written by Jorg Janke
-*  
+*
 * @author 	Niraj Sohun
 * 			Aug 03, 2007
-* 
+*
 * Zk Port
 * @author Elaine
-* @version	InfoCashLine.java Adempiere Swing UI 3.4.1 
+* @version	InfoCashLine.java Adempiere Swing UI 3.4.1
 */
 
 public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener, EventListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3042929765363185887L;
 	private Textbox fName = new Textbox();
 	private Textbox fAmtTo = new Textbox();
 	private Textbox fAmtFrom = new Textbox();
-	
+
 	private WEditor fCashBook_ID;
 	private WEditor fInvoice_ID;
 	private WEditor fBankAccount_ID;
-	
+
 	private Datebox fDateFrom = new Datebox();
 	private Datebox fDateTo = new Datebox();
 
@@ -88,7 +88,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 	private Label lName = new Label(Msg.translate(Env.getCtx(), "Name"));
 	private Label lDateFrom = new Label(Msg.translate(Env.getCtx(), "StatementDate"));
 	private Label lDateTo = new Label("-");
-	private Label lAmtFrom = new Label(Msg.translate(Env.getCtx(), "Amount")); 
+	private Label lAmtFrom = new Label(Msg.translate(Env.getCtx(), "Amount"));
 	private Label lAmtTo = new Label("-");
 	private Borderlayout layout;
 	private Vbox southBody;
@@ -124,18 +124,18 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 
 	/**
 	 *  Detail Protected Constructor
-	 *  
+	 *
 	 *  @param WindowNo window no
 	 *  @param value query value
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
 	 */
-	protected InfoCashLinePanel(	int WindowNo, String value,
+	public InfoCashLinePanel(	int WindowNo, String value,
 									boolean multiSelection, String whereClause)
 	{
 		this(WindowNo, value, multiSelection, whereClause, true);
 	}
-	
+
 	/**
 	 *  Detail Protected Constructor
 	 *
@@ -144,7 +144,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
 	 */
-	protected InfoCashLinePanel(	int WindowNo, String value,
+	public InfoCashLinePanel(	int WindowNo, String value,
 									boolean multiSelection, String whereClause, boolean lookup)
 	{
 		super (WindowNo, "cl", "C_CashLine_ID", multiSelection, whereClause, lookup);
@@ -164,19 +164,19 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		int no = contentPanel.getRowCount();
 		setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
 		setStatusDB(Integer.toString(no));
-		
+
 		if (value != null && value.length() > 0)
 		{
 			fName .setValue(value);
 			executeQuery();
 		}
 	} // InfoCashLinePanel
-	
+
 	/**
 	 *	Static Setup - add fields to parameterPanel
 	 *  @throws Exception if Lookups cannot be created
 	 */
-	
+
 	private void statInit() throws Exception
 	{
 		fName.setWidth("180px");
@@ -184,38 +184,38 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		fDateTo.setWidth("165px");
 		fAmtFrom.setWidth("180px");
 		fAmtTo.setWidth("180px");
-		
+
 		fName.addEventListener(Events.ON_CHANGE, this);
-		
+
 		// 5249 - C_Cash.C_CashBook_ID
 		fCashBook_ID = new WSearchEditor(
-				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 5249, DisplayType.TableDir), 
+				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 5249, DisplayType.TableDir),
 				Msg.translate(Env.getCtx(), "C_CashBook_ID"), "", false, false, true);
 		fCashBook_ID.addValueChangeListener(this);
-		
+
 		// 5354 - C_CashLine.C_Invoice_ID
 		fInvoice_ID = new WSearchEditor(
-				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 5354, DisplayType.Search), 
+				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 5354, DisplayType.Search),
 				Msg.translate(Env.getCtx(), "C_Invoice_ID"), "", false, false, true);
 		fInvoice_ID.addValueChangeListener(this);
-		
+
 		//	5295 - C_CashLine.C_BankAccount_ID
 		fBankAccount_ID = new WSearchEditor(
-				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 5295, DisplayType.TableDir), 
+				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 5295, DisplayType.TableDir),
 				Msg.translate(Env.getCtx(), "C_BankAccount_ID"), "", false, false, true);
 		fBankAccount_ID.addValueChangeListener(this);
-		
+
 		//	5296 - C_CashLine.C_Charge_ID
 		//	5291 - C_CashLine.C_Cash_ID
 
 		cbAbsolute.setLabel(Msg.translate(Env.getCtx(), "AbsoluteAmt"));
 		cbAbsolute.addEventListener(Events.ON_CHECK, this);
-		
+
 		Grid grid = GridFactory.newGridLayout();
-		
+
 		Rows rows = new Rows();
 		grid.appendChild(rows);
-		
+
 		Row row = new Row();
 		rows.appendChild(row);
 		row.appendChild(fCashBook_ID.getLabel().rightAlign());
@@ -223,7 +223,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		row.appendChild(lName.rightAlign());
 		row.appendChild(fName);
 		row.appendChild(cbAbsolute);
-		
+
 		row = new Row();
 		row.setSpans("1, 1, 1, 2");
 		rows.appendChild(row);
@@ -232,10 +232,10 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		row.appendChild(lDateFrom.rightAlign());
 		Hbox hbox = new Hbox();
 		hbox.appendChild(fDateFrom);
-		hbox.appendChild(lDateTo);		
+		hbox.appendChild(lDateTo);
 		hbox.appendChild(fDateTo);
 		row.appendChild(hbox);
-		
+
 		row = new Row();
 		row.setSpans("1, 1, 1, 2");
 		rows.appendChild(row);
@@ -247,7 +247,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		hbox.appendChild(lAmtTo);
 		hbox.appendChild(fAmtTo);
 		row.appendChild(hbox);
-		
+
 		layout = new Borderlayout();
         layout.setWidth("100%");
         layout.setHeight("100%");
@@ -273,7 +273,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
         contentPanel.setVflex(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-        
+
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
@@ -283,7 +283,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		southBody.appendChild(new Separator());
 		southBody.appendChild(statusBar);
 	}
-	
+
 	/**
 	 *	General Init
 	 *	@return true, if success
@@ -292,42 +292,42 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 	{
 		// Prepare table
 		StringBuffer where = new StringBuffer("cl.IsActive='Y'");
-		
+
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(Util.replace(p_whereClause, "C_CashLine.", "cl."));
-		
+
 		prepareTable (	s_cashLayout,	"C_CashLine cl INNER JOIN C_Cash c ON (cl.C_Cash_ID=c.C_Cash_ID)",
 						where.toString(), "2,3,cl.Line");
 
 		return true;
 	} // initInfo
 
-	
+
 	/**************************************************************************
 	 *	Construct SQL Where Clause and define parameters
 	 *  (setParameters needs to set parameters)
 	 *  Includes first AND
 	 *  @return sql where clause
 	 */
-	
+
 	protected String getSQLWhere()
 	{
 		StringBuffer sql = new StringBuffer();
-	
+
 		if (fName.getText().length() > 0)
 			sql.append(" AND UPPER(c.Name) LIKE ?");
 
 		if (fCashBook_ID.getDisplay() != "")
 			sql.append(" AND c.C_CashBook_ID=?");
-		
+
 		if (fInvoice_ID.getDisplay() != "")
 			sql.append(" AND cl.C_Invoice_ID=?");
-		
+
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
 			Date f = fDateFrom.getValue();
 			Timestamp from = new Timestamp(f.getTime());
-			
+
 			Date t = fDateTo.getValue();
 			Timestamp to = new Timestamp(t.getTime());
 
@@ -343,7 +343,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		{
 			BigDecimal from = isEmpty(fAmtFrom.getValue()) ? null : new BigDecimal(fAmtFrom.getValue());
 			BigDecimal to = isEmpty(fAmtTo.getValue()) ? null : new BigDecimal(fAmtTo.getValue());
-			
+
 			if (cbAbsolute .isChecked())
 				sql.append(" AND ABS(cl.Amount)");
 			else
@@ -377,7 +377,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 	 *  @param forCount for counting records
 	 *  @throws SQLException
 	 */
-	
+
 	protected void setParameters(PreparedStatement pstmt, boolean forCount) throws SQLException
 	{
 		int index = 1;
@@ -402,12 +402,12 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		{
 			Date f = fDateFrom.getValue();
 			Timestamp from = new Timestamp(f.getTime());
-			
+
 			Date t = fDateTo.getValue();
 			Timestamp to = new Timestamp(t.getTime());
 
 			log.fine("Date From=" + from + ", To=" + to);
-			
+
 			if (from == null && to != null)
 				pstmt.setTimestamp(index++, to);
 			else if (from != null && to == null)
@@ -431,9 +431,9 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 				if (to != null)
 					to = to.abs();
 			}
-			
+
 			log.fine("Amt From=" + from + ", To=" + to + ", Absolute=" + cbAbsolute.isChecked());
-			
+
 			if (from == null && to != null)
 				pstmt.setBigDecimal(index++, to);
 			else if (from != null && to == null)
@@ -456,33 +456,33 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 	 *  @param f field
 	 *  @return Upper case text with % at the end
 	 */
-	
+
 	private String getSQLText (Textbox f)
 	{
 		String s = f.getText().toUpperCase();
-		
+
 		if (!s.endsWith("%"))
 			s += "%";
-		
+
 		log.fine( "String=" + s);
-		
+
 		return s;
 	} // getSQLText
 
-	public void valueChange(ValueChangeEvent evt) 
+	public void valueChange(ValueChangeEvent evt)
 	{
-		
+
 	}
 
-	public void tableChanged(WTableModelEvent event) 
+	public void tableChanged(WTableModelEvent event)
 	{
 	}
-		
+
 	@Override
 	protected void insertPagingComponent()
     {
 		southBody.insertBefore(paging, southBody.getFirstChild());
 		layout.invalidate();
 	}
-	
+
 }

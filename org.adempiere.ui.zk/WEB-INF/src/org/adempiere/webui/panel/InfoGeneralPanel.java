@@ -52,46 +52,51 @@ import org.zkoss.zul.Vbox;
 /**
  * Zk Port
  * @author Elaine
- * @version	InfoGeneral.java Adempiere Swing UI 3.4.1 
+ * @version	InfoGeneral.java Adempiere Swing UI 3.4.1
  */
 public class InfoGeneralPanel extends InfoPanel implements EventListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -665127800885078238L;
 	private Textbox txt1;
 	private Textbox txt2;
 	private Textbox txt3;
 	private Textbox txt4;
-	
+
 	private Label lbl1;
 	private Label lbl2;
 	private Label lbl3;
 	private Label lbl4;
-	
+
 	/** String Array of Column Info */
 	private ColumnInfo[] m_generalLayout;
-	
+
 	/** list of query columns */
 	private ArrayList<String> m_queryColumns = new ArrayList<String>();
-	
+
 	/** list of query columns (SQL) */
 	private ArrayList<String> m_queryColumnsSql = new ArrayList<String>();
 	private Borderlayout layout;
 	private Vbox southBody;
-	
-	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean isSOTrx, String whereClause) 
+
+	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean isSOTrx, String whereClause)
+	{
+		this(queryValue, windowNo, tableName, keyColumn, isSOTrx, whereClause, true);
+	}
+
+	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean isSOTrx, String whereClause, boolean lookup)
 	{
 		super(windowNo, tableName, keyColumn, false,whereClause);
-				
+
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
 
 		try
 		{
 			init();
 			initComponents();
-			
+
 			if (queryValue != null && queryValue.length() > 0)
 			{
 				txt1.setValue(queryValue);
@@ -109,22 +114,22 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 		setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
 		setStatusDB(Integer.toString(no));
 		//
-		
+
 		if (queryValue != null && queryValue.length() > 0)
         {
             executeQuery();
             renderItems();
         }
-		
+
 	}
-	
+
 	private void initComponents()
 	{
 		Grid grid = GridFactory.newGridLayout();
-		
+
 		Rows rows = new Rows();
 		grid.appendChild(rows);
-		
+
 		Row row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lbl1.rightAlign());
@@ -135,7 +140,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 		row.appendChild(txt3);
 		row.appendChild(lbl4.rightAlign());
 		row.appendChild(txt4);
-		
+
 		layout = new Borderlayout();
         layout.setWidth("100%");
         layout.setHeight("100%");
@@ -148,7 +153,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
         North north = new North();
         layout.appendChild(north);
 		north.appendChild(grid);
-        
+
         Center center = new Center();
 		layout.appendChild(center);
 		center.setFlex(true);
@@ -161,7 +166,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
         contentPanel.setVflex(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-		
+
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
@@ -178,30 +183,30 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 		txt2 = new Textbox();
 		txt3 = new Textbox();
 		txt4 = new Textbox();
-		
+
 		lbl1 = new Label();
 		lbl2 = new Label();
 		lbl3 = new Label();
 		lbl4 = new Label();
 	}
-	
+
 	private boolean initInfo ()
 	{
 		if (!initInfoTable())
 			return false;
 
 		//  Prepare table
-		
+
 		StringBuffer where = new StringBuffer("IsActive='Y'");
-		
+
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(p_whereClause);
 		prepareTable(m_generalLayout, p_tableName, where.toString(), "2");
 
 		//	Set & enable Fields
-		
+
 		lbl1.setValue(Util.cleanAmp(Msg.translate(Env.getCtx(), m_queryColumns.get(0).toString())));
-		
+
 		if (m_queryColumns.size() > 1)
 		{
 			lbl2.setValue(Msg.translate(Env.getCtx(), m_queryColumns.get(1).toString()));
@@ -211,7 +216,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 			lbl2.setVisible(false);
 			txt2.setVisible(false);
 		}
-		
+
 		if (m_queryColumns.size() > 2)
 		{
 			lbl3.setValue(Msg.translate(Env.getCtx(), m_queryColumns.get(2).toString()));
@@ -221,7 +226,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 			lbl3.setVisible(false);
 			txt3.setVisible(false);
 		}
-		
+
 		if (m_queryColumns.size() > 3)
 		{
 			lbl4.setValue(Msg.translate(Env.getCtx(), m_queryColumns.get(3).toString()));
@@ -237,7 +242,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 	private boolean initInfoTable ()
 	{
 		//	Get Query Columns
-		
+
 		String sql = "SELECT c.ColumnName, t.AD_Table_ID, t.TableName, c.ColumnSql "
 			+ "FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID)"
@@ -248,26 +253,26 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 				+ "WHERE f.AD_Column_ID=c.AD_Column_ID"
 				+ " AND f.IsDisplayed='Y' AND f.IsEncrypted='N' AND f.ObscureType IS NULL) "
 			+ "ORDER BY c.IsIdentifier DESC, c.SeqNo";
-		
+
 		int AD_Table_ID = 0;
 		String tableName = null;
-		
+
 		try
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, p_tableName);
 			ResultSet rs = pstmt.executeQuery();
-		
+
 			while (rs.next())
 			{
 				m_queryColumns.add(rs.getString(1));
 				String columnSql = rs.getString(4);
-				
+
 				if (columnSql != null && columnSql.length() > 0)
 					m_queryColumnsSql.add(columnSql);
 				else
 					m_queryColumnsSql.add(rs.getString(1));
-				
+
 				if (AD_Table_ID == 0)
 				{
 					AD_Table_ID = rs.getInt(2);
@@ -282,34 +287,34 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 			log.log(Level.SEVERE, sql, e);
 			return false;
 		}
-		
+
 		//	Miminum check
 		if (m_queryColumns.size() == 0)
 		{
 			log.log(Level.SEVERE, "No query columns found");
 			return false;
 		}
-		
-		log.finest("Table " + tableName + ", ID=" + AD_Table_ID 
+
+		log.finest("Table " + tableName + ", ID=" + AD_Table_ID
 			+ ", QueryColumns #" + m_queryColumns.size());
-		
+
 		//	Only 4 Query Columns
-		while (m_queryColumns.size() > 4) 
+		while (m_queryColumns.size() > 4)
 		{
 			m_queryColumns.remove(m_queryColumns.size()-1);
 			m_queryColumnsSql.remove(m_queryColumnsSql.size()-1);
 		}
-		
+
 		//  Set Title
 		String title = Msg.translate(Env.getCtx(), tableName + "_ID");  //  best bet
-		
+
 		if (title.endsWith("_ID"))
 			title = Msg.translate(Env.getCtx(), tableName);             //  second best bet
-		
+
 		setTitle(getTitle() + " " + title);
 
 		//	Get Display Columns
-		
+
 		ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
 		sql = "SELECT c.ColumnName, c.AD_Reference_ID, c.IsKey, f.IsDisplayed, c.AD_Reference_Value_ID, c.ColumnSql "
 			+ "FROM AD_Column c"
@@ -320,7 +325,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 			+ " AND (c.IsKey='Y' OR "
 				+ " (f.IsEncrypted='N' AND f.ObscureType IS NULL)) "
 			+ "ORDER BY c.IsKey DESC, f.SeqNo";
-		
+
 		try
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql, null);
@@ -337,11 +342,11 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 
 				if (columnSql == null || columnSql.length() == 0)
 					columnSql = columnName;
-				
+
 				//  Default
 				StringBuffer colSql = new StringBuffer(columnSql);
 				Class<?> colClass = null;
-				
+
 				if (isKey)
 					colClass = IDColumn.class;
 				else if (!isDisplayed)
@@ -390,24 +395,24 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 			log.log(Level.SEVERE, sql, e);
 			return false;
 		}
-		
+
 		if (list.size() == 0)
 		{
 			FDialog.error(p_WindowNo, this, "Error", "No Info Columns");
 			log.log(Level.SEVERE, "No Info for AD_Table_ID=" + AD_Table_ID + " - " + sql);
 			return false;
 		}
-		
-		log.finest("InfoColumns #" + list.size()); 
+
+		log.finest("InfoColumns #" + list.size());
 
 		//  Convert ArrayList to Array
 		m_generalLayout = new ColumnInfo[list.size()];
 		list.toArray(m_generalLayout);
 		return true;
 	}
-	
+
 	@Override
-	public String getSQLWhere() 
+	public String getSQLWhere()
 	{
 		StringBuffer sql = new StringBuffer();
 		addSQLWhere (sql, 0, txt1.getText().toUpperCase());
@@ -416,7 +421,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 		addSQLWhere (sql, 3, txt4.getText().toUpperCase());
 		return sql.toString();
 	}
-	
+
 	private void addSQLWhere(StringBuffer sql, int index, String value)
 	{
 		if (!(value.equals("") || value.equals("%")) && index < m_queryColumns.size())
@@ -463,7 +468,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
     public void tableChanged(WTableModelEvent event)
     {
     }
-        
+
     @Override
 	protected void insertPagingComponent()
     {

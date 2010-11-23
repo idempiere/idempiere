@@ -49,7 +49,7 @@ import org.compiere.util.Util;
 public class InfoPayment extends Info
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2917241055484901704L;
 
@@ -62,10 +62,26 @@ public class InfoPayment extends Info
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause whwre clause
 	 */
-	protected InfoPayment(Frame frame, boolean modal, int WindowNo, String value,
+	public InfoPayment(Frame frame, boolean modal, int WindowNo, String value,
 		boolean multiSelection, String whereClause)
 	{
-		super (frame, modal, WindowNo, "p", "C_Payment_ID", multiSelection, whereClause);
+		this(frame, modal, WindowNo, value, multiSelection, whereClause, true);
+	}
+
+	/**
+	 *  Detail Protected Contructor
+	 *  @param frame parent frame
+	 *  @param modal modal
+	 *  @param WindowNo window no
+	 *  @param value query value
+	 *  @param multiSelection multiple selections
+	 *  @param whereClause whwre clause
+	 *  @param lookup
+	 */
+	public InfoPayment(Frame frame, boolean modal, int WindowNo, String value,
+		boolean multiSelection, String whereClause, boolean lookup)
+	{
+		super (frame, modal, WindowNo, "p", "C_Payment_ID", multiSelection, whereClause, lookup);
 		log.info( "InfoPayment");
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoPayment"));
 		//
@@ -228,7 +244,7 @@ public class InfoPayment extends Info
 		return true;
 	}	//	initInfo
 
-	
+
 	/**************************************************************************
 	 *	Construct SQL Where Clause and define parameters
 	 *  (setParameters needs to set parameters)
@@ -340,7 +356,7 @@ public class InfoPayment extends Info
 		log.fine( "String=" + s);
 		return s;
 	}   //  getSQLText
-	
+
 	/**
 	 *	Zoom
 	 */
@@ -365,5 +381,5 @@ public class InfoPayment extends Info
 	{
 		return true;
 	}	//	hasZoom
-	
+
 }   //  InfoPayment

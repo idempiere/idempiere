@@ -30,10 +30,9 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.grid.WBPartner;
-import org.adempiere.webui.panel.InfoBPartnerPanel;
 import org.adempiere.webui.panel.InfoPanel;
-import org.adempiere.webui.panel.InfoProductPanel;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
@@ -73,19 +72,19 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		super(new Searchbox(), gridField);
 
 		lookup = gridField.getLookup();
-		
+
 		if (lookup != null)
 			columnName = lookup.getColumnName();
-		
+
 		init();
 	}
 
-	
+
     @Override
 	public Searchbox getComponent() {
 		return (Searchbox) super.getComponent();
 	}
-    
+
 	@Override
 	public boolean isReadWrite() {
 		return getComponent().isEnabled();
@@ -124,7 +123,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}
 
 	public WSearchEditor(String columnName, boolean mandatory, boolean readonly, boolean updateable,
-    		Lookup lookup) 
+    		Lookup lookup)
 	{
 		super(new Searchbox(), null, null, mandatory, readonly, updateable);
 
@@ -148,7 +147,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
-                
+
 		if (columnName.equals("C_BPartner_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, true, true, true);
@@ -164,7 +163,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			popupMenu = new WEditorPopupMenu(true, true, true, false, false);
 			getComponent().setButtonImage("/images/PickOpen10.png");
 		}
-		
+
 		getComponent().getTextbox().setContext(popupMenu.getId());
 		if (gridField != null && gridField.getGridTab() != null)
 		{
@@ -234,7 +233,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			actionButton("");
 		}
 	}
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
@@ -405,14 +404,14 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		ValueChangeEvent evt = new ValueChangeEvent(this, this.getColumnName(), getValue(), value);
 		// -> ADTabpanel - valuechange
 		fireValueChange(evt);
-		
+
 		//  is the value updated ?
 		boolean updated = false;
 		if (value instanceof Object[] && ((Object[])value).length > 0)
 		{
 			value = ((Object[])value)[0];
 		}
-		
+
 		if (value == null && getValue() == null)
 			updated = true;
 		else if (value != null && value.equals(getValue()))
@@ -427,12 +426,12 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	 *	Action - Special BPartner Screen
 	 *  @param newRecord true if new record should be created
 	 */
-	
+
 	private void actionBPartner (boolean newRecord)
 	{
 		WBPartner vbp = new WBPartner (lookup.getWindowNo());
 		int BPartner_ID = 0;
-		
+
 		//  if update, get current value
 		if (!newRecord)
 		{
@@ -443,31 +442,31 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 
 		vbp.loadBPartner (BPartner_ID);
-		
-		
+
+
 		vbp.setVisible(true);
 		AEnv.showWindow(vbp);
-		
+
 		//  get result
 		int result = vbp.getC_BPartner_ID();
-		
+
 		if (result == 0					//	0 = not saved
 			&& result == BPartner_ID)	//	the same
 			return;
-		
+
 		//  Maybe new BPartner - put in cache
 		lookup.getDirect(new Integer(result), false, true);
 		setValue(new Integer(result));
 		actionCombo (new Integer(result));      //  data binding
-		
+
 		//setValue(getValue());
 	}	//	actionBPartner
-	
+
 	private void actionButton(String queryValue)
 	{
 		if (lookup == null)
 			return;		//	leave button disabled
-		
+
 		/**
 		 *  Three return options:
 		 *  - Value Selected & OK pressed   => store result => result has value
@@ -475,97 +474,33 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		 *  - Window closed                 -> ignore       => result == null && !cancalled
 		 */
 
-		Object result[] = null;			
-		boolean cancelled = false;	
-
-		String col = lookup.getColumnName();		//	fully qualified name
-
-		if (col.indexOf('.') != -1)
-			col = col.substring(col.indexOf('.')+1);
+		Object result[] = null;
+		boolean cancelled = false;
 
 		//  Zoom / Validation
 		String whereClause = getWhereClause();
 
-		log.fine(col + ", Zoom=" + lookup.getZoom() + " (" + whereClause + ")");
+		log.fine(lookup.getColumnName() + ", Zoom=" + lookup.getZoom() + " (" + whereClause + ")");
 
 		// boolean resetValue = false;	// Reset value so that is always treated as new entry
 
-		if (col.equals("M_Product_ID"))
-		{
-			//	Reset
-			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Product_ID", "0");
-			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_AttributeSetInstance_ID", "0");
-			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Lookup_ID", "0");
+		//  Replace Value with name if no value exists
+		if (queryValue.length() == 0 && getComponent().getText().length() > 0)
+			queryValue = getComponent().getText();
 
-			//  Replace Value with name if no value exists
-			if (queryValue.length() == 0 && getComponent().getText().length() > 0)
-				queryValue = "@" + getComponent().getText() + "@";   //  Name indicator - otherwise Value
+		if (m_tableName == null)	//	sets table name & key column
+			getDirectAccessSQL("*");
 
-			int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), lookup.getWindowNo(), "M_Warehouse_ID");
-			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), lookup.getWindowNo(), "M_PriceList_ID");
-
-			//	Show Info
-			InfoProductPanel ip = new InfoProductPanel (lookup.getWindowNo(),
-					M_Warehouse_ID, M_PriceList_ID, true, queryValue, whereClause);
-
-			ip.setVisible(true);
-			ip.setTitle("Product Info");
-			ip.setStyle("border: 2px");
-			ip.setClosable(true);
-			ip.setAttribute("mode", "modal");
-			ip.addValueChangeListener(this);
-			infoPanel = ip;
-			AEnv.showWindow(ip);
-			
-			cancelled = ip.isCancelled();
-			result = ip.getSelectedKeys();
-		}
-		else if (col.equals("C_BPartner_ID"))
-		{
-			//  Replace Value with name if no value exists
-			if (queryValue.length() == 0 && getComponent().getText().length() > 0)
-				queryValue = getComponent().getText();
-
-			boolean isSOTrx = true;     //  default
-
-			if (Env.getContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx").equals("N"))
-				isSOTrx = false;
-
-			InfoBPartnerPanel ip = new InfoBPartnerPanel(queryValue, lookup.getWindowNo(), isSOTrx,false, whereClause);
-
-			ip.setVisible(true);
-			ip.setTitle("Business Partner Info");
-			ip.setStyle("border: 2px");
-			ip.setClosable(true);
-			ip.setAttribute("mode", "modal");
-			ip.addValueChangeListener(this);
-			infoPanel = ip;
-			AEnv.showWindow(ip);
-
-			cancelled = ip.isCancelled();
-			result = ip.getSelectedKeys();
-		}
-		else	//	General Info
-		{
-			if (m_tableName == null)	//	sets table name & key column
-				getDirectAccessSQL("*");
-
-            if (queryValue.length() == 0 && getComponent().getText().length() > 0)
-                queryValue = getComponent().getText();
-
-			InfoPanel ig = InfoPanel.create(lookup.getWindowNo(), m_tableName,m_keyColumnName,queryValue, false, whereClause);
-			ig.setVisible(true);
-			ig.setStyle("border: 2px");
-			ig.setClosable(true);
-			ig.setAttribute("mode", "modal");
-			ig.addValueChangeListener(this);
-			infoPanel = ig;
-			AEnv.showWindow(ig);
-
-			cancelled = ig.isCancelled();
-			result = ig.getSelectedKeys();
-
-		}
+		InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, false, whereClause);
+		ip.setVisible(true);
+		ip.setStyle("border: 2px");
+		ip.setClosable(true);
+		ip.setAttribute("mode", "modal");
+		ip.addValueChangeListener(this);
+		infoPanel = ip;
+		AEnv.showWindow(ip);
+		cancelled = ip.isCancelled();
+		result = ip.getSelectedKeys();
 
 		infoPanel = null;
 		//  Result
@@ -586,7 +521,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		{
 			log.config(getColumnName() + " - Result = null (not cancelled)");
 		}
-		
+
 	}
 
 	/**
@@ -601,7 +536,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	private String getDirectAccessSQL (String text)
 	{
 		String m_columnName = getColumnName();
-		
+
 		StringBuffer sql = new StringBuffer();
 		m_tableName = m_columnName.substring(0, m_columnName.length()-3);
 		m_keyColumnName = m_columnName;
@@ -653,35 +588,35 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		{
 			sql.append("SELECT AD_User_ID FROM AD_User WHERE UPPER(Name) LIKE ")
 				.append(DB.TO_STRING(text));
-			
+
 			m_tableName = "AD_User";
 			m_keyColumnName = "AD_User_ID";
 		}
-		
+
 		//	Predefined
-		
+
 		if (sql.length() > 0)
 		{
 			String wc = getWhereClause();
-			
+
 			if (wc != null && wc.length() > 0)
 				sql.append(" AND ").append(wc);
-			
+
 			sql.append(" AND IsActive='Y'");
 			//	***
-			
+
 			log.finest(m_columnName + " (predefined) " + sql.toString());
-			
+
 			return MRole.getDefault().addAccessSQL(sql.toString(),
 				m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		}
-		
+
 		//	Check if it is a Table Reference
-		
+
 		if (lookup != null && lookup instanceof MLookup)
 		{
 			int AD_Reference_ID = ((MLookup)lookup).getAD_Reference_Value_ID();
-		
+
 			if (AD_Reference_ID != 0)
 			{
 				boolean isValueDisplayed = false;
@@ -691,17 +626,17 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 					+ " INNER JOIN AD_Column dc ON (rt.AD_Display=dc.AD_Column_ID)"
 					+ " INNER JOIN AD_Table t ON (rt.AD_Table_ID=t.AD_Table_ID) "
 					+ "WHERE rt.AD_Reference_ID=?";
-				
+
 				String displayColumnName = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				
+
 				try
 				{
 					pstmt = DB.prepareStatement(query, null);
 					pstmt.setInt(1, AD_Reference_ID);
 					rs = pstmt.executeQuery();
-				
+
 					if (rs.next())
 					{
 						m_keyColumnName = rs.getString(1);
@@ -719,8 +654,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				{
 					DB.close(rs, pstmt);
 				}
-				
-				
+
+
 				if (displayColumnName != null)
 				{
 					sql = new StringBuffer();
@@ -735,24 +670,24 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 					}
 					sql.append(")");
 					sql.append(" AND IsActive='Y'");
-				
+
 					String wc = getWhereClause();
-					
+
 					if (wc != null && wc.length() > 0)
 						sql.append(" AND ").append(wc);
-					
+
 					//	***
-					
+
 					log.finest(m_columnName + " (Table) " + sql.toString());
-					
+
 					return MRole.getDefault().addAccessSQL(sql.toString(),
 								m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 				}
 			} // Table Reference
 		} // MLookup
-		
+
 		/** Check Well Known Columns of Table - assumes TableDir	**/
-		
+
 		String query = "SELECT t.TableName, c.ColumnName "
 			+ "FROM AD_Column c "
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID AND t.IsView='N') "
@@ -760,26 +695,26 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			+ " AND c.AD_Reference_ID IN (10,14)"
 			+ " AND EXISTS (SELECT * FROM AD_Column cc WHERE cc.AD_Table_ID=t.AD_Table_ID"
 				+ " AND cc.IsKey='Y' AND cc.ColumnName=?)";
-		
+
 		m_keyColumnName = m_columnName;
 		sql = new StringBuffer();
 		PreparedStatement pstmt = null;
-		
+
 		try
 		{
 			pstmt = DB.prepareStatement(query, null);
 			pstmt.setString(1, m_keyColumnName);
 			ResultSet rs = pstmt.executeQuery();
-		
+
 			while (rs.next())
 			{
 				if (sql.length() != 0)
 					sql.append(" OR ");
-			
+
 				m_tableName = rs.getString(1);
 				sql.append("UPPER(").append(rs.getString(2)).append(") LIKE ").append(DB.TO_STRING(text));
 			}
-			
+
 			rs.close();
 			pstmt.close();
 			pstmt = null;
@@ -788,7 +723,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		{
 			log.log(Level.SEVERE, query, ex);
 		}
-		
+
 		try
 		{
 			if (pstmt != null)
@@ -809,9 +744,9 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			.append(m_columnName).append(" FROM ").append(m_tableName)
 			.append(" WHERE ").append(sql)
 			.append(" AND IsActive='Y'");
-		
+
 		String wc = getWhereClause();
-		
+
 		if (wc != null && wc.length() > 0)
 			retValue.append(" AND ").append(wc);
 		//	***
@@ -819,7 +754,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		return MRole.getDefault().addAccessSQL(retValue.toString(),
 					m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 	}
-	
+
 	private String getWhereClause()
 	{
 		String whereClause = "";
@@ -888,7 +823,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		int AD_Column_ID = 3499;    //  C_Invoice.C_BPartner_ID
 		try
 		{
-			Lookup lookup = MLookupFactory.get (Env.getCtx(), windowNo, 
+			Lookup lookup = MLookupFactory.get (Env.getCtx(), windowNo,
 				0, AD_Column_ID, DisplayType.Search);
 			return new WSearchEditor ("C_BPartner_ID", false, false, true, lookup);
 		}
@@ -901,13 +836,13 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	/**
 	 * @param windowNo
-	 * @return WSearchEditor 
+	 * @return WSearchEditor
 	 */
 	public static WSearchEditor createProduct(int windowNo) {
 		int AD_Column_ID = 3840;    //  C_InvoiceLine.M_Product_ID
 		try
 		{
-			Lookup lookup = MLookupFactory.get (Env.getCtx(), windowNo, 0, 
+			Lookup lookup = MLookupFactory.get (Env.getCtx(), windowNo, 0,
 				AD_Column_ID, DisplayType.Search);
 			return new WSearchEditor("M_Product_ID", false, false, true, lookup);
 		}

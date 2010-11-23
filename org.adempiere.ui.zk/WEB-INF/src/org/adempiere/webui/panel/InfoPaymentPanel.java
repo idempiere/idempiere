@@ -58,10 +58,10 @@ import org.zkoss.zul.Vbox;
 
 /**
 * Based on InfoPayment written by Jorg Janke
-*  
+*
 * @author 	Niraj Sohun
 * 			Aug, 02, 2007
-* 
+*
 * Zk Port
 * @author Elaine
 * @version	InfoPayment.java Adempiere Swing UI 3.4.1
@@ -70,7 +70,7 @@ import org.zkoss.zul.Vbox;
 public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, EventListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7346527589727807179L;
 	private Textbox fDocumentNo = new Textbox();
@@ -83,7 +83,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	private Datebox fDateFrom = new Datebox();
 
 	private Checkbox fIsReceipt = new Checkbox();
-	
+
 	private Label lDocumentNo = new Label(Msg.translate(Env.getCtx(), "DocumentNo"));
 	private Label lDateFrom = new Label(Msg.translate(Env.getCtx(), "DateTrx"));
 	private Label lDateTo = new Label("-");
@@ -118,22 +118,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		new ColumnInfo(Msg.translate(Env.getCtx(), "IsAllocated"),
 			"p.IsAllocated",  Boolean.class)
 	};
-	
-	/**
-	 *  Detail Protected Constructor
-	 *  
-	 *  @param modal modal
-	 *  @param WindowNo window no
-	 *  @param value query value
-	 *  @param multiSelection multiple selections
-	 *  @param whereClause where clause
-	 */
-	protected InfoPaymentPanel(int WindowNo, String value,
-			boolean multiSelection, String whereClause)
-	{
-		this(WindowNo, value, multiSelection, whereClause, true);
-	}
-	
+
 	/**
 	 *  Detail Protected Constructor
 	 *
@@ -143,11 +128,26 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
 	 */
-	protected InfoPaymentPanel(int WindowNo, String value,
+	public InfoPaymentPanel(int WindowNo, String value,
+			boolean multiSelection, String whereClause)
+	{
+		this(WindowNo, value, multiSelection, whereClause, true);
+	}
+
+	/**
+	 *  Detail Protected Constructor
+	 *
+	 *  @param modal modal
+	 *  @param WindowNo window no
+	 *  @param value query value
+	 *  @param multiSelection multiple selections
+	 *  @param whereClause where clause
+	 */
+	public InfoPaymentPanel(int WindowNo, String value,
 			boolean multiSelection, String whereClause, boolean lookup)
 	{
 		super(WindowNo, "p", "C_Payment_ID", multiSelection, whereClause, lookup);
-		
+
 		log.info( "InfoPaymentPanel");
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoPayment"));
 
@@ -162,10 +162,10 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		}
 
 		int no = contentPanel.getRowCount();
-		
+
 		setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
 		setStatusDB(Integer.toString(no));
-		
+
 		if (value != null && value.length() > 0)
 		{
 			fDocumentNo .setValue(value);
@@ -177,7 +177,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	 *	Static Setup - add fields to parameterPanel
 	 *  @throws Exception if Lookups cannot be created
 	 */
-	
+
 	private void statInit() throws Exception
 	{
 		fDocumentNo.setWidth("100%");
@@ -185,23 +185,23 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		fDateTo.setWidth("165px");
 		fAmtFrom.setWidth("180px");
 		fAmtTo.setWidth("180px");
-		
+
 		fDocumentNo.addEventListener(Events.ON_CHANGE, this);
-		
+
 		fIsReceipt.setLabel(Msg.translate(Env.getCtx(), "IsReceipt"));
 		fIsReceipt.addEventListener(Events.ON_CHECK, this);
 		fIsReceipt.setChecked(!"N".equals(Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx")));
-		
-		fBPartner_ID = new WSearchEditor(	
-				MLookupFactory.get(Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search), 
+
+		fBPartner_ID = new WSearchEditor(
+				MLookupFactory.get(Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search),
 				Msg.translate(Env.getCtx(), "C_BPartner_ID"), "", false, false, true);
 		fBPartner_ID.addValueChangeListener(this);
-		
+
 		Grid grid = GridFactory.newGridLayout();
-		
+
 		Rows rows = new Rows();
 		grid.appendChild(rows);
-		
+
 		Row row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lDocumentNo.rightAlign());
@@ -209,7 +209,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		row.appendChild(fBPartner_ID.getLabel().rightAlign());
 		row.appendChild(fBPartner_ID.getComponent());
 		row.appendChild(fIsReceipt);
-		
+
 		row = new Row();
 		row.setSpans("3, 2");
 		rows.appendChild(row);
@@ -219,7 +219,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		hbox.appendChild(lDateTo);
 		hbox.appendChild(fDateTo);
 		row.appendChild(hbox);
-		
+
 		row = new Row();
 		row.setSpans("3, 2");
 		rows.appendChild(row);
@@ -229,7 +229,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		hbox.appendChild(lAmtTo);
 		hbox.appendChild(fAmtTo);
 		row.appendChild(hbox);
-		
+
 		layout = new Borderlayout();
         layout.setWidth("100%");
         layout.setHeight("100%");
@@ -255,7 +255,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
         contentPanel.setVflex(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-        
+
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
@@ -265,43 +265,43 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		southBody.appendChild(new Separator());
 		southBody.appendChild(statusBar);
 	}
-	
+
 	/**
 	 *	General Init
 	 *	@return true, if success
 	 */
-	
+
 	private boolean initInfo ()
 	{
 		//  Set Defaults
 		String bp = Env.getContext(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
-		
+
 		if (bp != null && bp.length() != 0)
 			fBPartner_ID.setValue(new Integer(bp));
 
 		// Prepare table
 		StringBuffer where = new StringBuffer("p.IsActive='Y'");
-		
+
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(Util.replace(p_whereClause, "C_Payment.", "p."));
-		
+
 		prepareTable(s_paymentLayout, " C_Payment_v p", where.toString(), "2,3,4");
-		
+
 		return true;
 	} // initInfo
-	
-	
+
+
 	/**************************************************************************
 	 *	Construct SQL Where Clause and define parameters
 	 *  (setParameters needs to set parameters)
 	 *  Includes first AND
 	 *  @return sql where clause
 	 */
-	
+
 	protected String getSQLWhere()
 	{
 		StringBuffer sql = new StringBuffer();
-		
+
 		if (fDocumentNo.getText().length() > 0)
 			sql.append(" AND UPPER(p.DocumentNo) LIKE ?");
 
@@ -312,7 +312,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		{
 			Date f = fDateFrom.getValue();
 			Timestamp from = new Timestamp(f.getTime());
-			
+
 			Date t = fDateTo.getValue();
 			Timestamp to = new Timestamp(t.getTime());
 
@@ -328,7 +328,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		{
 			BigDecimal from = new BigDecimal(fAmtFrom.getValue());
 			BigDecimal to = new BigDecimal(fAmtTo.getValue());
-			
+
 			if (from == null && to != null)
 				sql.append(" AND p.PayAmt <= ?");
 			else if (from != null && to == null)
@@ -336,7 +336,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 			else if (from != null && to != null)
 				sql.append(" AND p.PayAmt BETWEEN ? AND ?");
 		}
-		
+
 		sql.append(" AND p.IsReceipt=?");
 
 		log.fine(sql.toString());
@@ -350,11 +350,11 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	 *  @param forCount for counting records
 	 *  @throws SQLException
 	 */
-	
+
 	protected void setParameters(PreparedStatement pstmt, boolean forCount) throws SQLException
 	{
 		int index = 1;
-	
+
 		if (fDocumentNo.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(fDocumentNo));
 
@@ -369,12 +369,12 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		{
 			Date f = fDateFrom.getValue();
 			Timestamp from = new Timestamp(f.getTime());
-			
+
 			Date t = fDateTo.getValue();
 			Timestamp to = new Timestamp(t.getTime());
-			
+
 			log.fine("Date From=" + from + ", To=" + to);
-		
+
 			if (from == null && to != null)
 				pstmt.setTimestamp(index++, to);
 			else if (from != null && to == null)
@@ -391,7 +391,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 			BigDecimal from = new BigDecimal(fAmtFrom.getValue());
 			BigDecimal to = new BigDecimal(fAmtTo.getValue());
 			log.fine("Amt From=" + from + ", To=" + to);
-			
+
 			if (from == null && to != null)
 				pstmt.setBigDecimal(index++, to);
 			else if (from != null && to == null)
@@ -402,7 +402,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 				pstmt.setBigDecimal(index++, to);
 			}
 		}
-		
+
 		pstmt.setString(index++, fIsReceipt.isChecked() ? "Y" : "N");
 	} // setParameters
 
@@ -411,16 +411,16 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	 *  @param f field
 	 *  @return Upper case text with % at the end
 	 */
-	
+
 	private String getSQLText (Textbox f)
 	{
 		String s = f.getText().toUpperCase();
-		
+
 		if (!s.endsWith("%"))
 			s += "%";
-		
+
 		log.fine( "String=" + s);
-		
+
 		return s;
 	} // getSQLText
 
@@ -441,17 +441,17 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		AEnv.zoom (AD_WindowNo, query);
 	}	//	zoom
 	//
-	
+
 	/**
 	 *	Has Zoom
 	 *  @return true
 	 */
-	
+
 	protected boolean hasZoom()
 	{
 		return true;
 	} // hasZoom
-	
+
 	public void valueChange(ValueChangeEvent evt)
 	{
 		if (fBPartner_ID.equals(evt.getSource()))
@@ -463,7 +463,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	public void tableChanged(WTableModelEvent event)
 	{
 	}
-		
+
 	@Override
 	protected void insertPagingComponent()
 	{

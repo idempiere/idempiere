@@ -40,6 +40,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.adempiere.osgi.InfoManager;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.AWindow;
@@ -49,6 +50,15 @@ import org.compiere.apps.StatusBar;
 import org.compiere.grid.ed.Calculator;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.MiniTable;
+import org.compiere.model.I_A_Asset;
+import org.compiere.model.I_C_BPartner;
+import org.compiere.model.I_C_CashLine;
+import org.compiere.model.I_C_Invoice;
+import org.compiere.model.I_C_Order;
+import org.compiere.model.I_C_Payment;
+import org.compiere.model.I_M_InOut;
+import org.compiere.model.I_M_Product;
+import org.compiere.model.I_S_ResourceAssignment;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -75,7 +85,7 @@ import org.compiere.util.Msg;
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: Info.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
- *  
+ *
  *  @author Teo Sarca
  *  		<li>FR [ 2846869 ] Info class - add more helper methods
  *  			https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2846869&group_id=176962
@@ -88,10 +98,10 @@ public abstract class Info extends CDialog
 	implements ListSelectionListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5606614040914295869L;
-	
+
 	public static final String SYSCONFIG_INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
 	public static final String SYSCONFIG_INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
 
@@ -112,39 +122,8 @@ public abstract class Info extends CDialog
 		String tableName, String keyColumn, String value,
 		boolean multiSelection, String whereClause)
 	{
-		Info info = null;
-
-		if (tableName.equals("C_BPartner"))
-			info = new InfoBPartner (frame, modal, WindowNo,  value, !Env.getContext(Env.getCtx(),"IsSOTrx").equals("N"),
-					multiSelection, whereClause);
-		else if (tableName.equals("M_Product"))
-			info = new InfoProduct (frame, modal, WindowNo,  0,0, value,
-					multiSelection, whereClause);
-		else if (tableName.equals("C_Invoice"))
-			info = new InfoInvoice (frame, modal, WindowNo, value,
-					multiSelection, whereClause);
-		else if (tableName.equals("A_Asset"))
-			info = new InfoAsset (frame, modal, WindowNo, 0, value,
-					multiSelection, whereClause);
-		else if (tableName.equals("C_Order"))
-			info = new InfoOrder (frame, modal, WindowNo, value,
-					multiSelection, whereClause);
-		else if (tableName.equals("M_InOut"))
-			info = new InfoInOut (frame, modal, WindowNo, value,
-					multiSelection, whereClause);
-		else if (tableName.equals("C_Payment"))
-			info = new InfoPayment (frame, modal, WindowNo, value,
-					multiSelection, whereClause);
-		else if (tableName.equals("C_CashLine"))
-			info = new InfoCashLine (frame, modal, WindowNo, value,
-					multiSelection, whereClause);
-		else if (tableName.equals("S_ResourceAssigment"))
-			info = new InfoAssignment (frame, modal, WindowNo, value,
-					multiSelection, whereClause);
-		else
-			info = new InfoGeneral (frame, modal, WindowNo, value, 
-				tableName, keyColumn, 
-				multiSelection, whereClause);
+		Info info = InfoManager.create(frame, modal, WindowNo, tableName, keyColumn, value,
+				multiSelection, whereClause, true);
 		//
 		AEnv.positionCenterWindow(frame, info);
 		return info;
@@ -157,8 +136,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showBPartner (Frame frame, int WindowNo)
 	{
-		Info info = new InfoBPartner (frame, false, WindowNo,  "",
-			!Env.getContext(Env.getCtx(),"IsSOTrx").equals("N"), false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_C_BPartner_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showBPartner
 
@@ -169,8 +149,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showAsset (Frame frame, int WindowNo)
 	{
-		Info info = new InfoAsset (frame, false, WindowNo,  
-			0, "", false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_A_Asset.Table_Name, I_A_Asset.COLUMNNAME_A_Asset_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showBPartner
 
@@ -181,11 +162,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showProduct (Frame frame, int WindowNo)
 	{
-		Info info = new InfoProduct (frame, false, WindowNo,
-			Env.getContextAsInt(Env.getCtx(), WindowNo, "M_Warehouse_ID"),
-			Env.getContextAsInt(Env.getCtx(), WindowNo, "M_PriceList_ID"), 
-			"",		//	value 
-			false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_M_Product.Table_Name, I_M_Product.COLUMNNAME_M_Product_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showProduct
 
@@ -197,8 +176,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showOrder (Frame frame, int WindowNo, String value)
 	{
-		Info info = new InfoOrder (frame, false, WindowNo, value,
-			false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_C_Order.Table_Name, I_C_Order.COLUMNNAME_C_Order_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showOrder
 
@@ -210,8 +190,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showInvoice (Frame frame, int WindowNo, String value)
 	{
-		Info info = new InfoInvoice (frame, false, WindowNo, value,
-			false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_C_Invoice.Table_Name, I_C_Invoice.COLUMNNAME_C_Invoice_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showInvoice
 
@@ -223,8 +204,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showInOut (Frame frame, int WindowNo, String value)
 	{
-		Info info = new InfoInOut (frame, false, WindowNo, value,
-			false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_M_InOut.Table_Name, I_M_InOut.COLUMNNAME_M_InOut_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showInOut
 
@@ -236,8 +218,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showPayment (Frame frame, int WindowNo, String value)
 	{
-		Info info = new InfoPayment (frame, false, WindowNo, value,
-			false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_C_Payment.Table_Name, I_C_Payment.COLUMNNAME_C_Payment_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showPayment
 
@@ -249,8 +232,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showCashLine (Frame frame, int WindowNo, String value)
 	{
-		Info info = new InfoCashLine (frame, false, WindowNo, value,
-			false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_C_CashLine.Table_Name, I_C_CashLine.COLUMNNAME_C_CashLine_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showCashLine
 
@@ -262,8 +246,9 @@ public abstract class Info extends CDialog
 	 */
 	public static void showAssignment (Frame frame, int WindowNo, String value)
 	{
-		Info info = new InfoAssignment (frame, false, WindowNo, value,
-			false, "");
+		Info info = InfoManager.create(frame, false, WindowNo,
+				I_S_ResourceAssignment.Table_Name, I_S_ResourceAssignment.COLUMNNAME_S_ResourceAssignment_ID,
+				"", false, "", false);
 		AEnv.showCenterWindow(frame, info);
 	}   //  showAssignment
 
@@ -273,7 +258,9 @@ public abstract class Info extends CDialog
 
 	protected final int        INFO_WIDTH = screensize.width > 1500 ? 1500 : screensize.width - 100;
 	protected final int        SCREEN_HEIGHT = screensize.height;
-	
+
+	private boolean p_lookup;
+
 	/**************************************************************************
 	 *	Detail Constructor
 	 *  @param frame parent frame
@@ -288,12 +275,31 @@ public abstract class Info extends CDialog
 		String tableName, String keyColumn,
 		boolean multiSelection, String whereClause)
 	{
+		this(frame,modal,WindowNo,tableName,keyColumn,multiSelection,whereClause,true);
+	}
+
+	/**************************************************************************
+	 *	Detail Constructor
+	 *  @param frame parent frame
+	 *  @param modal modal
+	 *  @param WindowNo window no
+	 *  @param tableName table name
+	 *  @param keyColumn key column name
+	 *  @param multiSelection multiple selection
+	 *  @param whereClause where clause
+	 *  @param lookup
+	 */
+	protected Info (Frame frame, boolean modal, int WindowNo,
+		String tableName, String keyColumn,
+		boolean multiSelection, String whereClause, boolean lookup)
+	{
 		super (frame, modal);
 		log.info("WinNo=" + p_WindowNo + " " + whereClause);
 		p_WindowNo = WindowNo;
 		p_tableName = tableName;
 		p_keyColumn = keyColumn;
 		p_multiSelection = multiSelection;
+		p_lookup = lookup;
 		if (whereClause == null || whereClause.indexOf('@') == -1)
 			p_whereClause = whereClause;
 		else
@@ -358,7 +364,7 @@ public abstract class Info extends CDialog
 
 	/** Worker                  */
 	private Worker              m_worker = null;
-	
+
 	/**	Logger			*/
 	protected CLogger log = CLogger.getCLogger(getClass());
 
@@ -443,7 +449,7 @@ public abstract class Info extends CDialog
 	}	//	setStatusDB
 
 
-	
+
 	/**************************************************************************
 	 *  Prepare Table, Construct SQL (m_m_sqlMain, m_sqlAdd)
 	 *  and size Window
@@ -472,13 +478,13 @@ public abstract class Info extends CDialog
 			if (layout[i].getColClass() == IDColumn.class)
 				m_keyColumnIndex = i;
 		}
-		
+
 		//  Table Selection (Invoked before setting column class so that row selection is enabled)
 		p_table.setRowSelectionAllowed(true);
 		p_table.addMouseListener(this);
 		p_table.setMultiSelection(p_multiSelection);
 		p_table.setShowTotals(true);
-		
+
 		//  set editors (two steps)
 		for (int i = 0; i < layout.length; i++)
 			p_table.setColumnClass(i, layout[i].getColClass(), layout[i].isReadOnly(), layout[i].getColHeader());
@@ -495,7 +501,7 @@ public abstract class Info extends CDialog
 
 		if (m_keyColumnIndex == -1)
 			log.log(Level.SEVERE, "No KeyColumn - " + sql);
-		
+
 		//  Window Sizing
 		parameterPanel.setPreferredSize(new Dimension (INFO_WIDTH, parameterPanel.getPreferredSize().height));
 		//Begin - [FR 1823612 ] Product Info Screen Improvements
@@ -503,7 +509,7 @@ public abstract class Info extends CDialog
 		//End - [FR 1823612 ] Product Info Screen Improvements
 	}   //  prepareTable
 
-	
+
 	/**************************************************************************
 	 *  Execute Query
 	 */
@@ -534,7 +540,7 @@ public abstract class Info extends CDialog
 		if (dynWhere.length() > 0)
 			sql.append(dynWhere);   //  includes first AND
 		String countSql = Msg.parseTranslation(Env.getCtx(), sql.toString());	//	Variables
-		countSql = MRole.getDefault().addAccessSQL(countSql, getTableName(), 
+		countSql = MRole.getDefault().addAccessSQL(countSql, getTableName(),
 			MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		log.finer(countSql);
 		PreparedStatement pstmt = null;
@@ -559,12 +565,12 @@ public abstract class Info extends CDialog
 		}
 		log.fine("#" + no + " - " + (System.currentTimeMillis()-start) + "ms");
 		//Armen: add role checking (Patch #1694788 )
-		MRole role = MRole.getDefault(); 		
+		MRole role = MRole.getDefault();
 		if (role.isQueryMax(no))
 			return ADialog.ask(p_WindowNo, this, "InfoHighRecordCount", String.valueOf(no));
 		return true;
 	}	//	testCount
-			
+
 
 	/**
 	 *	Save Selection	- Called by dispose
@@ -620,7 +626,7 @@ public abstract class Info extends CDialog
 			return selectedDataList.get(0);
 		}
 	}   //  getSelectedRowKey
-	
+
 	/**
      *  Get the keys of selected row/s based on layout defined in prepareTable
      *  @return IDs if selection present
@@ -629,12 +635,12 @@ public abstract class Info extends CDialog
     protected ArrayList<Integer> getSelectedRowKeys()
     {
         ArrayList<Integer> selectedDataList = new ArrayList<Integer>();
-        
+
         if (m_keyColumnIndex == -1)
         {
             return selectedDataList;
         }
-        
+
         if (p_multiSelection)
         {
         	int rows = p_table.getRowCount();
@@ -660,7 +666,7 @@ public abstract class Info extends CDialog
                 }
             }
         }
-        
+
         if (selectedDataList.size() == 0)
         {
         	int row = p_table.getSelectedRow();
@@ -673,7 +679,7 @@ public abstract class Info extends CDialog
     				selectedDataList.add((Integer)data);
     		}
         }
-      
+
         return selectedDataList;
     }   //  getSelectedRowKeys
 
@@ -722,7 +728,7 @@ public abstract class Info extends CDialog
 		Object[] keys = getSelectedKeys();
 		if (keys == null || keys.length == 0)
 		{
-			log.config("No Results - OK=" 
+			log.config("No Results - OK="
 				+ m_ok + ", Cancel=" + m_cancel);
 			return "";
 		}
@@ -748,7 +754,7 @@ public abstract class Info extends CDialog
 		return sb.toString();
 	}	//	getSelectedSQL;
 
-	
+
 	/**************************************************************************
 	 *	(Button) Action Listener & Popup Menu
 	 *  @param e event
@@ -891,7 +897,7 @@ public abstract class Info extends CDialog
 		return p_keyColumn;
 	}   //  getKeyColumn
 
-	
+
 	/**************************************************************************
 	 *  Table Selection Changed
 	 *  @param e event
@@ -913,21 +919,21 @@ public abstract class Info extends CDialog
 	{
 		boolean enable = (p_table.getSelectedRowCount() == 1);
 		confirmPanel.getOKButton().setEnabled(p_table.getSelectedRowCount() > 0);
-		
+
 		if (hasHistory())
 			confirmPanel.getHistoryButton().setEnabled(enable);
 		if (hasZoom())
 			confirmPanel.getZoomButton().setEnabled(enable);
 	}   //  enableButtons
 
-	
+
 	/**************************************************************************
 	 *  Get dynamic WHERE part of SQL
 	 *	To be overwritten by concrete classes
 	 *  @return WHERE clause
 	 */
 	protected abstract String getSQLWhere();
-	
+
 	/**
 	 *  Set Parameters for Query
 	 *	To be overwritten by concrete classes
@@ -935,7 +941,7 @@ public abstract class Info extends CDialog
 	 *  @param forCount for counting records
 	 *  @throws SQLException
 	 */
-	protected abstract void setParameters (PreparedStatement pstmt, boolean forCount) 
+	protected abstract void setParameters (PreparedStatement pstmt, boolean forCount)
 		throws SQLException;
 
 	/**
@@ -1028,34 +1034,34 @@ public abstract class Info extends CDialog
 			return m_PO_Window_ID;
 		return m_SO_Window_ID;
 	}	//	getAD_Window_ID
-	
+
 	/**
-	 * 
+	 *
 	 * @return Index of Key Column
 	 */
 	protected int getKeyColumnIndex()
 	{
 		return m_keyColumnIndex;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return true if OK button was pressed
 	 */
 	public boolean isOkPressed()
 	{
 		return m_ok;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return true if Cancel button was pressed
 	 */
 	public boolean isCancelPressed()
 	{
 		return m_cancel;
 	}
-	
+
 	/**
 	 * Specify if the records should be checked(selected) by default.
 	 * (for multi-selection only)
@@ -1065,7 +1071,7 @@ public abstract class Info extends CDialog
 	{
 		p_isDefaultSelected = value;
 	}
-	
+
 	/**
 	 * (for multi-selection only)
 	 * @return true if records are selected by default
@@ -1074,7 +1080,7 @@ public abstract class Info extends CDialog
 	{
 		return p_isDefaultSelected;
 	}
-	
+
 	/**
 	 * (for multi-selection only)
 	 * @param value true if double click should toggle record selection
@@ -1083,7 +1089,7 @@ public abstract class Info extends CDialog
 	{
 		p_doubleClickTogglesSelection = value;
 	}
-	
+
 	/**
 	 * (for multi-selection only)
 	 * @return true if double click should toggle record selection
@@ -1093,6 +1099,16 @@ public abstract class Info extends CDialog
 		return p_doubleClickTogglesSelection;
 	}
 
+//	reset value so that is always treated as new entry
+	public boolean isResetValue()
+	{
+		return false;
+	}
+
+	public boolean isLookup()
+	{
+		return p_lookup;
+	}
 
 	/**************************************************************************
 	 *  Mouse Clicked
@@ -1107,7 +1123,7 @@ public abstract class Info extends CDialog
 		//  Double click with selected row => exit/zoom
 		if (e.getClickCount() > 1 && p_table.getSelectedRow() != -1)
 		{
-			if (p_multiSelection && isDoubleClickTogglesSelection())
+			if (isLookup() && p_multiSelection && isDoubleClickTogglesSelection())
 			{
 				if (m_keyColumnIndex >= 0)
 				{
@@ -1121,7 +1137,17 @@ public abstract class Info extends CDialog
 				}
 			}
 			else
-				dispose(true);
+			{
+				if (isLookup())
+				{
+					dispose(true);
+				}
+				else
+				{
+					zoom();
+				}
+
+			}
 		}
 		//  Right Click => start Calculator
 		else if (SwingUtilities.isRightMouseButton(e))
@@ -1138,7 +1164,7 @@ public abstract class Info extends CDialog
 	{
 		private PreparedStatement m_pstmt = null;
 		private ResultSet m_rs = null;
-		
+
 		/**
 		 *  Do Work (load data)
 		 */
@@ -1157,7 +1183,7 @@ public abstract class Info extends CDialog
 				sql.append(dynWhere);   //  includes first AND
 			sql.append(m_sqlOrder);
 			String dataSql = Msg.parseTranslation(Env.getCtx(), sql.toString());	//	Variables
-			dataSql = MRole.getDefault().addAccessSQL(dataSql, getTableName(), 
+			dataSql = MRole.getDefault().addAccessSQL(dataSql, getTableName(),
 				MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 			log.finer(dataSql);
 
@@ -1238,7 +1264,7 @@ public abstract class Info extends CDialog
 				p_table.requestFocus();
 			}
 		}   //  run
-		
+
 		/**
 		 *	Close ResultSet and Statement
 		 */
@@ -1247,10 +1273,10 @@ public abstract class Info extends CDialog
 			m_rs = null;
 			m_pstmt = null;
 		}
-		
+
 		/**
 		 *	Interrupt this thread - cancel the query if still in execution
-		 *  Carlos Ruiz - globalqss - [2826660] - Info product performance BIG problem 
+		 *  Carlos Ruiz - globalqss - [2826660] - Info product performance BIG problem
 		 */
 		public void interrupt() {
 			if (m_pstmt != null) {

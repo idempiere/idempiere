@@ -57,10 +57,10 @@ import org.zkoss.zul.Vbox;
 
 /**
 * Based on InfoInOut written by Jorg Janke
-*  
+*
 * @author 	Niraj Sohun
 * 			Aug 03, 2007
-* 
+*
 * Zk Port
 * @author Elaine
 * @version	InfoInOut.java Adempiere Swing UI 3.4.1
@@ -69,7 +69,7 @@ import org.zkoss.zul.Vbox;
 public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, EventListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -3927370377224858985L;
 
@@ -109,18 +109,18 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 
 	/**
 	 *  Detail Protected Constructor
-	 *  
+	 *
 	 *  @param WindowNo window no
 	 *  @param value query value
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
 	 */
-	protected InfoInOutPanel(	int WindowNo, String value,
+	public InfoInOutPanel(	int WindowNo, String value,
 								boolean multiSelection, String whereClause)
 	{
 		this(WindowNo, value, multiSelection, whereClause, true);
 	}
-	
+
 	/**
 	 *  Detail Protected Constructor
 	 *
@@ -129,7 +129,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
 	 */
-	protected InfoInOutPanel(	int WindowNo, String value,
+	public InfoInOutPanel(	int WindowNo, String value,
 								boolean multiSelection, String whereClause, boolean lookup)
 	{
 		super (WindowNo, "i", "M_InOut_ID", multiSelection, whereClause, lookup);
@@ -149,7 +149,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		int no = contentPanel.getRowCount();
 		setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
 		setStatusDB(Integer.toString(no));
-		
+
 		if (value != null && value.length() > 0)
 		{
 			fDocumentNo.setValue(value);
@@ -161,7 +161,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 	 *	Static Setup - add fields to parameterPanel
 	 *  @throws Exception if Lookups cannot be initialized
 	 */
-	
+
 	private void statInit() throws Exception
 	{
 		fDocumentNo.setWidth("100%");
@@ -169,7 +169,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		fPOReference.setWidth("100%");
 		fDateFrom.setWidth("165px");
 		fDateTo.setWidth("165px");
-    	
+
 		fDocumentNo.addEventListener(Events.ON_CHANGE, this);
 		fDescription.addEventListener(Events.ON_CHANGE, this);
 		fPOReference.addEventListener(Events.ON_CHANGE, this);
@@ -177,17 +177,17 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		fIsSOTrx.setLabel(Msg.translate(Env.getCtx(), "IsSOTrx"));
 		fIsSOTrx.setChecked(!"N".equals(Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx")));
 		fIsSOTrx.addEventListener(Events.ON_CHECK, this);
-		
+
 		fBPartner_ID = new WSearchEditor(
-				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search), 
+				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search),
 				Msg.translate(Env.getCtx(), "BPartner"), "", false, false, true);
 		fBPartner_ID.addValueChangeListener(this);
-		
+
 		Grid grid = GridFactory.newGridLayout();
-		
+
 		Rows rows = new Rows();
 		grid.appendChild(rows);
-		
+
 		Row row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lDocumentNo.rightAlign());
@@ -195,7 +195,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		row.appendChild(fBPartner_ID.getLabel().rightAlign());
 		row.appendChild(fBPartner_ID.getComponent());
 		row.appendChild(fIsSOTrx);
-		
+
 		row = new Row();
 		row.setSpans("1, 1, 1, 2");
 		rows.appendChild(row);
@@ -207,14 +207,14 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		hbox.appendChild(lDateTo);
 		hbox.appendChild(fDateTo);
 		row.appendChild(hbox);
-		
+
 		row = new Row();
 		row.setSpans("1, 1, 3");
 		rows.appendChild(row);
 		row.appendChild(lPOReference.rightAlign());
-		row.appendChild(fPOReference);		
+		row.appendChild(fPOReference);
 		row.appendChild(new Label());
-		
+
 		layout = new Borderlayout();
         layout.setWidth("100%");
         layout.setHeight("100%");
@@ -223,11 +223,11 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
         	layout.setStyle("position: absolute");
         }
         this.appendChild(layout);
-        
+
         North north = new North();
         layout.appendChild(north);
 		north.appendChild(grid);
-        
+
         Center center = new Center();
 		layout.appendChild(center);
 		center.setFlex(true);
@@ -240,7 +240,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
         contentPanel.setVflex(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-        
+
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
@@ -250,27 +250,27 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		southBody.appendChild(new Separator());
 		southBody.appendChild(statusBar);
 	}
-	
+
 	/**
 	 *	General Init
 	 *	@return true, if success
 	 */
-	
+
 	private boolean initInfo ()
 	{
 		//  Set Defaults
 		String bp = Env.getContext(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
-	
+
 		if (bp != null && bp.length() != 0)
 			fBPartner_ID.setValue(new Integer(bp));
 
 		// Prepare table
-		
+
 		StringBuffer where = new StringBuffer("i.IsActive='Y'");
-		
+
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(Util.replace(p_whereClause, "M_InOut.", "i."));
-		
+
 		prepareTable(s_invoiceLayout, " M_InOut i", where.toString(), "2,3,4");
 
 		return true;
@@ -284,17 +284,17 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 	 *  Includes first AND
 	 * 	@return where clause
 	 */
-	
+
 	protected String getSQLWhere()
 	{
 		StringBuffer sql = new StringBuffer();
-		
+
 		if (fDocumentNo.getText().length() > 0)
 			sql.append(" AND UPPER(i.DocumentNo) LIKE ?");
-		
+
 		if (fDescription.getText().length() > 0)
 			sql.append(" AND UPPER(i.Description) LIKE ?");
-		
+
 		if (fPOReference.getText().length() > 0)
 			sql.append(" AND UPPER(i.POReference) LIKE ?");
 
@@ -305,7 +305,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		{
 			Date f = fDateFrom.getValue();
 			Timestamp from = new Timestamp(f.getTime());
-			
+
 			Date t = fDateTo.getValue();
 			Timestamp to = new Timestamp(t.getTime());
 
@@ -328,17 +328,17 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 	 *  @param forCount for counting records
 	 *  @throws SQLException
 	 */
-	
+
 	protected void setParameters(PreparedStatement pstmt, boolean forCount) throws SQLException
 	{
 		int index = 1;
-	
+
 		if (fDocumentNo.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(fDocumentNo));
-		
+
 		if (fDescription.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(fDescription));
-		
+
 		if (fPOReference.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(fPOReference));
 
@@ -353,12 +353,12 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		{
 			Date f = fDateFrom.getValue();
 			Timestamp from = new Timestamp(f.getTime());
-			
+
 			Date t = fDateTo.getValue();
 			Timestamp to = new Timestamp(t.getTime());
 
 			log.fine("Date From=" + from + ", To=" + to);
-			
+
 			if (from == null && to != null)
 				pstmt.setTimestamp(index++, to);
 			else if (from != null && to == null)
@@ -377,14 +377,14 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 	 *  @param f field
 	 *  @return sql part
 	 */
-	
+
 	private String getSQLText (Textbox f)
 	{
 		String s = f.getText().toUpperCase();
-	
+
 		if (!s.endsWith("%"))
 			s += "%";
-		
+
 		log.fine( "String=" + s);
 		return s;
 	} // getSQLText
@@ -406,18 +406,18 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		AEnv.zoom (AD_WindowNo, query);
 	}	//	zoom
 	//
-	
+
 	/**
 	 *	Has Zoom
 	 *  @return true
 	 */
-	
+
 	protected boolean hasZoom()
 	{
 		return true;
 	}	//	hasZoom
 
-	public void valueChange(ValueChangeEvent evt) 
+	public void valueChange(ValueChangeEvent evt)
 	{
 		if (fBPartner_ID.equals(evt.getSource()))
 		{
@@ -425,9 +425,9 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		}
 	}
 
-	public void tableChanged(WTableModelEvent event) 
+	public void tableChanged(WTableModelEvent event)
 	{
-		
+
 	}
 
 	@Override

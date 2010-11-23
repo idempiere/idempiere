@@ -48,7 +48,7 @@ import org.compiere.util.Msg;
 public class InfoAssignment extends Info
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 5017170699571459745L;
 
@@ -64,8 +64,24 @@ public class InfoAssignment extends Info
 	public InfoAssignment (Frame frame, boolean modal, int WindowNo,
 		String value, boolean multiSelection, String whereClause)
 	{
+		this(frame, modal, WindowNo, value, multiSelection, whereClause, true);
+	}
+
+	/**
+	 *  Constructor
+	 *  @param frame frame
+	 *  @param modal modal
+	 *  @param WindowNo WindowNo
+	 *  @param  value   Query value Name or Value if contains numbers
+	 *  @param multiSelection multiple selection
+	 *  @param whereClause where clause
+	 *  @param lookup
+	 */
+	public InfoAssignment (Frame frame, boolean modal, int WindowNo,
+		String value, boolean multiSelection, String whereClause, boolean lookup)
+	{
 		super (frame, modal, WindowNo, "ra", "S_ResourceAssigment_ID",
-			multiSelection, whereClause);
+			multiSelection, whereClause, lookup);
 		log.info(value);
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoAssignment"));
 		//

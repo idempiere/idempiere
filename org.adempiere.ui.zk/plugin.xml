@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.adempiere.webui.Form" name="Web Form" schema="schema/org.adempiere.webui.Form.exsd"/>
+   <extension-point id="org.adempiere.webui.factory.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.webui.factory.IInfoFactory.exsd"/>
    <extension
          point="org.compiere.print.ReportViewerProvider">
       <provider
@@ -25,6 +26,15 @@
       <interface
             class="org.compiere.interfaces.impl.StatusBean">
       </interface>
+   </extension>
+   <extension
+         id="org.adempiere.webui.factory.DefaultInfoFactory"
+         name="Default Info Factory"
+         point="org.adempiere.webui.factory.IInfoFactory">
+      <factory
+            class="org.adempiere.webui.factory.DefaultInfoFactory"
+            priority="0">
+      </factory>
    </extension>
 
 </plugin>

@@ -46,14 +46,14 @@ import org.compiere.util.Util;
  *
  *  @author Jorg Janke
  *  @version  $Id: InfoInvoice.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
- * 
+ *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			FR [ 1926882 ] Info Invoice: display Due Date
  */
 public class InfoInvoice extends Info
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2119484421367033632L;
 
@@ -67,10 +67,27 @@ public class InfoInvoice extends Info
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
 	 */
-	protected InfoInvoice(Frame frame, boolean modal, int WindowNo, String value,
+	public InfoInvoice(Frame frame, boolean modal, int WindowNo, String value,
 		boolean multiSelection, String whereClause)
 	{
-		super (frame, modal, WindowNo, "i", "C_Invoice_ID", multiSelection, whereClause);
+		this(frame, modal, WindowNo, value, multiSelection, whereClause, true);
+	}
+
+	/**
+	 *  Detail Protected Contructor
+	 *
+	 *  @param frame parent frame
+	 *  @param modal modal
+	 *  @param WindowNo window no
+	 *  @param value query value
+	 *  @param multiSelection multiple selections
+	 *  @param whereClause where clause
+	 *  @param lookup
+	 */
+	public InfoInvoice(Frame frame, boolean modal, int WindowNo, String value,
+		boolean multiSelection, String whereClause, boolean lookup)
+	{
+		super (frame, modal, WindowNo, "i", "C_Invoice_ID", multiSelection, whereClause, lookup);
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoInvoice"));
 		//
 		try
@@ -250,7 +267,7 @@ public class InfoInvoice extends Info
 		return true;
 	}	//	initInfo
 
-	
+
 	/**************************************************************************
 	 *	Construct SQL Where Clause and define parameters.
 	 *  (setParameters needs to set parameters)
@@ -382,7 +399,7 @@ public class InfoInvoice extends Info
 		log.fine( "String=" + s);
 		return s;
 	}   //  getSQLText
-	
+
 	/**
 	 *	Zoom
 	 */
@@ -430,6 +447,6 @@ public class InfoInvoice extends Info
 		else
 			Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_InvoicePaySchedule_ID", String.valueOf(C_InvoicePaySchedule_ID));
 	}	//	saveSelectionDetail
-	
-	
+
+
 }   //  InfoInvoice

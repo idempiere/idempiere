@@ -46,14 +46,14 @@ import org.compiere.util.Msg;
  * <ul>
  * <li>2007-02-14 - teo_sarca - [ 1659737 ] InfoGeneral not working with virtual columns
  * </ul>
- * 
+ *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: InfoGeneral.java,v 1.3 2006/10/06 00:42:38 jjanke Exp $
  */
 public class InfoGeneral extends Info
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7588425490485071820L;
 
@@ -69,11 +69,31 @@ public class InfoGeneral extends Info
 	 * 	@param multiSelection multiple selections
 	 * 	@param whereClause where clause
 	 */
-	protected InfoGeneral (Frame frame, boolean modal, int WindowNo, String value,
+	public InfoGeneral (Frame frame, boolean modal, int WindowNo, String value,
 		String tableName, String keyColumn,
 		boolean multiSelection, String whereClause)
 	{
-		super (frame, modal, WindowNo, tableName, keyColumn, multiSelection, whereClause);
+		this(frame, modal, WindowNo, value, tableName, keyColumn, multiSelection, whereClause, true);
+	}
+
+	/**
+	 *	Detail Protected Constructor.
+	 *
+	 * 	@param frame parent
+	 * 	@param modal modal
+	 * 	@param WindowNo window no
+	 * 	@param value QueryValue
+	 * 	@param tableName table name
+	 * 	@param keyColumn key column (ignored)
+	 * 	@param multiSelection multiple selections
+	 * 	@param whereClause where clause
+	 *  @param lookup
+	 */
+	public InfoGeneral (Frame frame, boolean modal, int WindowNo, String value,
+		String tableName, String keyColumn,
+		boolean multiSelection, String whereClause, boolean lookup)
+	{
+		super (frame, modal, WindowNo, tableName, keyColumn, multiSelection, whereClause, lookup);
 		log.info(tableName + " - " + keyColumn + " - " + whereClause);
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
 		//
@@ -81,7 +101,7 @@ public class InfoGeneral extends Info
 		p_loadedOK = initInfo ();
 		//
 		int no = p_table.getRowCount();
-		setStatusLine(Integer.toString(no) + " " 
+		setStatusLine(Integer.toString(no) + " "
 			+ Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
 		setStatusDB(Integer.toString(no));
 		//	Focus
@@ -234,7 +254,7 @@ public class InfoGeneral extends Info
 					m_queryColumnsSql.add(columnSql);
 				else
 					m_queryColumnsSql.add(rs.getString(1));
-				
+
 				if (AD_Table_ID == 0)
 				{
 					AD_Table_ID = rs.getInt(2);
@@ -259,7 +279,7 @@ public class InfoGeneral extends Info
 			log.log(Level.SEVERE, "No query columns found");
 			return false;
 		}
-		log.finest("Table " + tableName + ", ID=" + AD_Table_ID 
+		log.finest("Table " + tableName + ", ID=" + AD_Table_ID
 			+ ", QueryColumns #" + m_queryColumns.size());
 		//	Only 4 Query Columns
 		while (m_queryColumns.size() > 4) {
@@ -285,7 +305,7 @@ public class InfoGeneral extends Info
 			//	+ " (f.IsDisplayed='Y' AND f.IsEncrypted='N' AND f.ObscureType IS NULL)) "
 				+ " (f.IsEncrypted='N' AND f.ObscureType IS NULL)) "
 			+ "ORDER BY c.IsKey DESC, f.SeqNo";
-		
+
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
@@ -367,7 +387,7 @@ public class InfoGeneral extends Info
 			log.log(Level.SEVERE, "No Info for AD_Table_ID=" + AD_Table_ID + " - " + sql);
 			return false;
 		}
-		log.finest("InfoColumns #" + list.size()); 
+		log.finest("InfoColumns #" + list.size());
 
 		//  Convert ArrayList to Array
 		m_generalLayout = new Info_Column[list.size()];

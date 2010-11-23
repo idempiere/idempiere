@@ -48,7 +48,7 @@ import org.compiere.util.Util;
 public class InfoInOut extends Info
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2066307179999903184L;
 
@@ -61,10 +61,26 @@ public class InfoInOut extends Info
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
 	 */
-	protected InfoInOut(Frame frame, boolean modal, int WindowNo, String value,
+	public InfoInOut(Frame frame, boolean modal, int WindowNo, String value,
 		boolean multiSelection, String whereClause)
 	{
-		super (frame, modal, WindowNo, "i", "M_InOut_ID", multiSelection, whereClause);
+		this(frame, modal, WindowNo, value, multiSelection, whereClause, true);
+	}
+
+	/**
+	 *  Detail Protected Contructor
+	 *  @param frame parent frame
+	 *  @param modal modal
+	 *  @param WindowNo window no
+	 *  @param value query value
+	 *  @param multiSelection multiple selections
+	 *  @param whereClause where clause
+	 *  @param lookup
+	 */
+	public InfoInOut(Frame frame, boolean modal, int WindowNo, String value,
+		boolean multiSelection, String whereClause, boolean lookup)
+	{
+		super (frame, modal, WindowNo, "i", "M_InOut_ID", multiSelection, whereClause, lookup);
 		log.info( "InfoInOut");
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoInOut"));
 		//

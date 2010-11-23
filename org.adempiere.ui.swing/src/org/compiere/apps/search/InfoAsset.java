@@ -37,20 +37,19 @@ import org.compiere.util.Msg;
 
 /**
  *	Asset Information
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: InfoAsset.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
 public class InfoAsset extends Info
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6014685562933753813L;
 
 	/**
 	 *	Standard Constructor
-
 	 * @param frame frame
 	 * @param modal modal
 	 * @param WindowNo window no
@@ -62,6 +61,24 @@ public class InfoAsset extends Info
 	public InfoAsset (Frame frame, boolean modal, int WindowNo,
 		int A_Asset_ID, String value,
 		boolean multiSelection, String whereClause)
+	{
+		this(frame, modal, WindowNo, A_Asset_ID, value, multiSelection, whereClause, true);
+	}
+
+	/**
+	 *	Standard Constructor
+	 * @param frame frame
+	 * @param modal modal
+	 * @param WindowNo window no
+	 * @param A_Asset_ID asset
+	 * @param value    Query Value or Name if enclosed in @
+	 * @param multiSelection multiple selections
+	 * @param whereClause where clause
+	 * @param lookup
+	 */
+	public InfoAsset (Frame frame, boolean modal, int WindowNo,
+		int A_Asset_ID, String value,
+		boolean multiSelection, String whereClause, boolean lookup)
 	{
 		super (frame, modal, WindowNo, "a", "A_Asset_ID", multiSelection, whereClause);
 		log.info(value + ", ID=" + A_Asset_ID + ", WHERE=" + whereClause);
@@ -101,7 +118,7 @@ public class InfoAsset extends Info
 		new Info_Column(Msg.translate(Env.getCtx(), "GuaranteeDate"), "a.GuaranteeDate", Timestamp.class),
 		new Info_Column(Msg.translate(Env.getCtx(), "VersionNo"), "a.VersionNo", String.class)
 	};
-	
+
 	//
 	private CLabel labelValue = new CLabel();
 	private CTextField fieldValue = new CTextField(10);
@@ -112,7 +129,7 @@ public class InfoAsset extends Info
 	private VLookup fBPartner_ID;
 	private CLabel lProduct_ID = new CLabel(Msg.translate(Env.getCtx(), "Product"));
 	private VLookup fProduct_ID;
-	
+
 	/**
 	 *	Static Setup - add fields to parameterPanel
 	 */
@@ -140,7 +157,7 @@ public class InfoAsset extends Info
 		parameterPanel.add(fieldValue, null);
 		parameterPanel.add(lBPartner_ID, null);
 		parameterPanel.add(fBPartner_ID, null);
-		//		
+		//
 		parameterPanel.add(labelName, new ALayoutConstraint(1,0));
 		parameterPanel.add(fieldName, null);
 		parameterPanel.add(lProduct_ID, null);

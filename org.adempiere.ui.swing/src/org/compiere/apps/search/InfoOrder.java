@@ -49,7 +49,7 @@ import org.compiere.util.Util;
 public class InfoOrder extends Info
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2246871771555208114L;
 
@@ -62,10 +62,26 @@ public class InfoOrder extends Info
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
 	 */
-	protected InfoOrder(Frame frame, boolean modal, int WindowNo, String value,
+	public InfoOrder(Frame frame, boolean modal, int WindowNo, String value,
 		boolean multiSelection, String whereClause)
 	{
-		super (frame, modal, WindowNo, "o", "C_Order_ID", multiSelection, whereClause);
+		this(frame, modal, WindowNo, value, multiSelection, whereClause, true);
+	}
+
+	/**
+	 *  Detail Protected Contructor
+	 *  @param frame parent frame
+	 *  @param modal modal
+	 *  @param WindowNo window no
+	 *  @param value query value
+	 *  @param multiSelection multiple selections
+	 *  @param whereClause where clause
+	 *  @param lookup
+	 */
+	public InfoOrder(Frame frame, boolean modal, int WindowNo, String value,
+		boolean multiSelection, String whereClause, boolean lookup)
+	{
+		super (frame, modal, WindowNo, "o", "C_Order_ID", multiSelection, whereClause, lookup);
 		log.info( "InfoOrder");
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoOrder"));
 		//
@@ -228,7 +244,7 @@ public class InfoOrder extends Info
 		return true;
 	}	//	initInfo
 
-	
+
 	/**************************************************************************
 	 *	Construct SQL Where Clause and define parameters.
 	 *  (setParameters needs to set parameters)
@@ -348,7 +364,7 @@ public class InfoOrder extends Info
 		log.fine("String=" + s);
 		return s;
 	}   //  getSQLText
-	
+
 
 	/**
 	 *	Zoom
@@ -374,5 +390,5 @@ public class InfoOrder extends Info
 	{
 		return true;
 	}	//	hasZoom
-	
+
 }   //  InfoOrder

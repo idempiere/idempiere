@@ -59,10 +59,10 @@ import org.zkoss.zul.Vbox;
 /**
  * Search Order info and return selection
  * Based on InfoOrder by Jorg Janke
- * 
+ *
  * @author Sendy Yagambrum
  * @date July 27, 2007
- * 
+ *
  * Zk Port
  * @author Elaine
  * @version	InfoOrder.java Adempiere Swing UI 3.4.1
@@ -70,7 +70,7 @@ import org.zkoss.zul.Vbox;
 public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8725276769956103867L;
 	private Label lblDocumentNo;
@@ -78,23 +78,23 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
     private Label lblDateOrdered;
     private Label lblOrderRef;
     private Label lblGrandTotal;
-    
+
     private Textbox txtDocumentNo;
     private Textbox txtDescription;
     private Textbox txtOrderRef;
-    
+
     private Datebox dateFrom;
     private Datebox dateTo;
-    
+
     private NumberBox amountFrom;
     private NumberBox amountTo;
-    
+
     private WSearchEditor editorBPartner;
-    
+
     private Checkbox isSoTrx;
 	private Borderlayout layout;
 	private Vbox southBody;
-   
+
     /**  Array of Column Info    */
     private static final ColumnInfo[] s_invoiceLayout = {
         new ColumnInfo(" ", "o.C_Order_ID", IDColumn.class),
@@ -108,21 +108,21 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         new ColumnInfo(Msg.translate(Env.getCtx(), "Description"), "o.Description", String.class),
         new ColumnInfo(Msg.translate(Env.getCtx(), "POReference"), "o.POReference", String.class)
     };
-    
-    protected InfoOrderPanel(int WindowNo, String value,
+
+    public InfoOrderPanel(int WindowNo, String value,
             boolean multiSelection, String whereClause)
     {
     	this(WindowNo, value, multiSelection, whereClause, true);
     }
 
-    protected InfoOrderPanel(int WindowNo, String value,
+    public InfoOrderPanel(int WindowNo, String value,
             boolean multiSelection, String whereClause, boolean lookup)
     {
         super ( WindowNo, "o", "C_Order_ID", multiSelection, whereClause, lookup);
         log.info( "InfoOrder");
         setTitle(Msg.getMsg(Env.getCtx(), "InfoOrder"));
         //
-  
+
 		try
 		{
 	        initComponents();
@@ -133,7 +133,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		{
 			return;
 		}
-		
+
         int no = contentPanel.getRowCount();
         setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
         setStatusDB(Integer.toString(no));
@@ -153,17 +153,17 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         lblDateOrdered = new Label(Msg.translate(Env.getCtx(), "DateOrdered"));
         lblOrderRef = new Label(Msg.translate(Env.getCtx(), "POReference"));
         lblGrandTotal = new Label(Msg.translate(Env.getCtx(), "GrandTotal"));
-        
+
         txtDocumentNo = new Textbox();
         txtDescription = new Textbox();
         txtOrderRef = new Textbox();
-        
+
         dateFrom = new Datebox();
         dateTo= new Datebox();
-        
+
         amountFrom = new NumberBox(false);
         amountTo = new NumberBox(false);
-        
+
         isSoTrx = new Checkbox();
         isSoTrx.setLabel(Msg.translate(Env.getCtx(), "IsSOTrx"));
         isSoTrx.setChecked(!"N".equals(Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx")));
@@ -172,9 +172,9 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         editorBPartner = new WSearchEditor(lookupBP, Msg.translate(
                 Env.getCtx(), "C_BPartner_ID"), "", true, false, true);
         editorBPartner.addValueChangeListener(this);
-        
+
     }
-    
+
     public void init()
     {
     	txtDocumentNo.setWidth("100%");
@@ -184,12 +184,12 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		dateTo.setWidth("165px");
 		amountFrom.getDecimalbox().setWidth("155px");
 		amountTo.getDecimalbox().setWidth("155px");
-		
+
     	Grid grid = GridFactory.newGridLayout();
-		
+
 		Rows rows = new Rows();
 		grid.appendChild(rows);
-		
+
 		Row row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblDocumentNo.rightAlign());
@@ -197,7 +197,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		row.appendChild(editorBPartner.getLabel().rightAlign());
 		row.appendChild(editorBPartner.getComponent());
 		row.appendChild(isSoTrx);
-		
+
 		row = new Row();
 		row.setSpans("1, 1, 1, 2");
 		rows.appendChild(row);
@@ -209,7 +209,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(dateTo);
 		row.appendChild(hbox);
-		
+
 		row = new Row();
 		row.setSpans("1, 1, 1, 2");
 		rows.appendChild(row);
@@ -221,7 +221,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(amountTo);
 		row.appendChild(hbox);
-        
+
 		layout = new Borderlayout();
         layout.setWidth("100%");
         layout.setHeight("100%");
@@ -247,7 +247,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         contentPanel.setVflex(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-        
+
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
@@ -301,7 +301,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         }
         catch (WrongValueException e)
         {
-            
+
         }
         try
         {
@@ -309,7 +309,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         }
         catch (WrongValueException e)
         {
-            
+
         }
         if (fromDate == null && toDate != null)
         {
@@ -320,7 +320,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
             sql.append(" AND TRUNC(o.DateOrdered) >= ?");
         }
         else if (fromDate != null && toDate != null)
-        {    
+        {
                 sql.append(" AND TRUNC(o.DateOrdered) BETWEEN ? AND ?");
         }
         //
@@ -334,7 +334,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
             }
             catch (NumberFormatException e)
             {
-                
+
             }
         }
         if (amountTo.getText() != null && amountTo.getText().trim().length() > 0)
@@ -345,7 +345,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
             }
             catch (NumberFormatException e)
             {
-                
+
             }
         }
         if (fromAmount == null && toAmount != null)
@@ -384,7 +384,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
             log.fine("BPartner=" + bp);
         }
         //
-        
+
             Date fromD = null;
             Date toD = null;
             Timestamp from = null;
@@ -399,7 +399,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
             }
             catch (WrongValueException e)
             {
-                
+
             }
             try
             {
@@ -411,9 +411,9 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
             }
             catch (WrongValueException e)
             {
-                
+
             }
-            
+
             log.fine("Date From=" + from + ", To=" + to);
             if (from == null && to != null)
             {
@@ -428,13 +428,13 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
                 pstmt.setTimestamp(index++, from);
                 pstmt.setTimestamp(index++, to);
             }
-        
+
         //
         BigDecimal fromBD = null;
         BigDecimal toBD = null;
         Double fromAmt = null;
         Double toAmt = null;
-        
+
         if (amountFrom.getText() != null && amountFrom.getText().trim().length() > 0)
         {
             try
@@ -444,10 +444,10 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
             }
             catch (Exception e)
             {
-                
+
             }
         }
-        
+
         if (amountTo.getText() != null && amountTo.getText().trim().length() > 0)
         {
             try
@@ -457,10 +457,10 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
             }
             catch (Exception e)
             {
-                
+
             }
         }
-        
+
         if (fromBD == null && toBD != null)
         {
             pstmt.setBigDecimal(index++, toBD);
@@ -474,9 +474,9 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
               pstmt.setBigDecimal(index++, fromBD);
               pstmt.setBigDecimal(index++, toBD);
         }
-        
+
         pstmt.setString(index++, isSoTrx.isChecked() ? "Y" : "N");
-        
+
     }
 
     /**
@@ -492,7 +492,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         log.fine("String=" + s);
         return s;
     }   //  getSQLText
-    
+
     // Elaine 2008/12/16
 	/**
 	 *	Zoom
@@ -522,16 +522,16 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 
     public void tableChanged(WTableModelEvent event)
     {
-        
+
     }
-    
+
     public void valueChange(ValueChangeEvent evt)
     {
         if (editorBPartner.equals(evt.getSource()))
         {
             editorBPartner.setValue(evt.getNewValue());
         }
-        
+
     }
 
     @Override

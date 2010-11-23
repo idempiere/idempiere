@@ -21,6 +21,8 @@
       </factory>
    </extension>
    <extension
+         id="org.adempiere.base.DefaultDocFactory"
+         name="Default Document Factory"
          point="org.adempiere.base.IDocFactory">
       <factory
             class="org.adempiere.base.DefaultDocumentFactory"
