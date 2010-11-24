@@ -58,7 +58,7 @@ public class CWindowToolbar extends FToolbar implements EventListener
 	private static final String TOOLBAR_BUTTON_STYLE = "background-color: transparent; display:inline-block; margin-left: 1px; margin-right: 1px; width: 26px; height: 24px;";
 
 	private static final String EMBEDDED_TOOLBAR_BUTTON_STYLE = "background-color: transparent; display:inline-block; margin-left: 1px; margin-right: 1px; width: 20px; height: 18px;";
-	
+
     private static CLogger log = CLogger.getCLogger(CWindowToolbar.class);
 
     private ToolBarButton btnIgnore;
@@ -78,7 +78,9 @@ public class CWindowToolbar extends FToolbar implements EventListener
     private ToolBarButton btnZoomAcross, btnActiveWorkflows, btnRequests, btnProductInfo;
 
     private ToolBarButton btnChat;
-    
+
+    private ToolBarButton btnExport;
+
     private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
 
 //    private ToolBarButton btnExit;
@@ -168,6 +170,11 @@ public class CWindowToolbar extends FToolbar implements EventListener
         btnProductInfo.setDisabled(!isAllowProductInfo); // Elaine 2008/07/22
         btnArchive.setDisabled(false); // Elaine 2008/07/28
         btnLock.setDisabled(!isPersonalLock); // Elaine 2008/12/04
+
+        if (MRole.getDefault().isCanExport())
+        {
+        	btnExport = createButton("Export", "Export", "Export");
+        }
 
         configureKeyMap();
 
@@ -472,7 +479,7 @@ public class CWindowToolbar extends FToolbar implements EventListener
     {
         this.btnChat.setDisabled(!enabled);
     }
-    
+
     public void enablePrint(boolean enabled)
     {
     	this.btnPrint.setDisabled(!enabled);
@@ -589,5 +596,14 @@ public class CWindowToolbar extends FToolbar implements EventListener
 	 */
 	public void setWindowNo(int windowNo) {
 		this.windowNo = windowNo;
+	}
+
+	/**
+	 * Enable/disable export button
+	 * @param b
+	 */
+	public void enableExport(boolean b) {
+		if (btnExport != null)
+			btnExport.setDisabled(!b);
 	}
 }

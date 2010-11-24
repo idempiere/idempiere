@@ -47,6 +47,7 @@ import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.panel.action.ExportAction;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
@@ -265,7 +266,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			checkad_user_id = (Integer)currSess.getAttribute("Check_AD_User_ID");
 		if (checkad_user_id!=Env.getAD_User_ID(ctx))
 		{
-			String msg = "Timestamp=" + new Date() 
+			String msg = "Timestamp=" + new Date()
 					+ ", Bug 2832968 SessionUser="
 					+ checkad_user_id
 					+ ", ContextUser="
@@ -885,13 +886,13 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 				break;
 		}
 		String description = infoName + ": " + infoDisplay;
-		
+
     	new WChat(curWindowNo, curTab.getCM_ChatID(), curTab.getAD_Table_ID(), recordId, description, null);
     	curTab.loadChats();
 		toolbar.getButton("Chat").setPressed(curTab.hasChat());
 		focusToActivePanel();
     }
-    
+
     /**
      * @see ToolbarListener#onToggle()
      */
@@ -1162,7 +1163,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
                 {
                     sb.replace(pos, pos+1, " - ");
             	}
-                boolean showPopup = e.isError() 
+                boolean showPopup = e.isError()
                 	|| (!GridTab.DEFAULT_STATUS_MESSAGE.equals(e.getAD_Message()) && !GridTable.DATA_REFRESH_MESSAGE.equals(e.getAD_Message()));
                 statusBar.setStatusLine (sb.toString (), e.isError (), showPopup);
             }
@@ -1285,7 +1286,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         {
         	toolbar.enableChat(false);
         }
-        
+
         toolbar.getButton("Find").setPressed(curTab.isQueryActive());
 
         // Elaine 2008/12/05
@@ -1300,6 +1301,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
         toolbar.enablePrint(curTab.isPrinted());
         toolbar.enableReport(true);
+        toolbar.enableExport(!curTab.isSortTab());
     }
 
     /**
@@ -1432,7 +1434,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     {
         if (curTab == null)
             return;
-        
+
         if (!onSave(false))
         	return;
 
@@ -1899,6 +1901,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	}
 	//
 
+
 	// Elaine 2008/07/28
 	/**
      * @see ToolbarListener#onArchive()
@@ -1915,6 +1918,12 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	}
 
 	//
+
+	@Override
+	public void onExport() {
+		ExportAction action = new ExportAction(this);
+		action.export();
+	}
 
 	/**************************************************************************
 	 *	Start Button Process
