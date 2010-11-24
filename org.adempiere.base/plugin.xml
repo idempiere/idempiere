@@ -11,6 +11,7 @@
    <extension-point id="org.compiere.interfaces.Status" name="Status interface" schema="schema/org.compiere.interfaces.Status.exsd"/>
    <extension-point id="org.adempiere.base.IModelFactory" name="Model Factory" schema="schema/org.adempiere.base.IModelFactory.exsd"/>
    <extension-point id="org.adempiere.base.IDocFactory" name="Financial Document Factory" schema="schema/org.adempiere.base.IDocFactory.exsd"/>
+   <extension-point id="org.adempiere.base.IGridTabExporter" name="Grid data export extension" schema="schema/org.adempiere.base.IGridTabExporter.exsd"/>
    <extension
          id="org.adempiere.base.DefaultModelFactory"
          name="Default model factory"
@@ -29,6 +30,15 @@
             gaap="*"
             priority="0">
       </factory>
+   </extension>
+   <extension
+         id="org.adempiere.impexp.GridTabXlsExporter"
+         name="Grid data excel exporter"
+         point="org.adempiere.base.IGridTabExporter">
+      <exporter
+            class="org.adempiere.impexp.GridTabExcelExporter"
+            priority="0">
+      </exporter>
    </extension>
 
 </plugin>

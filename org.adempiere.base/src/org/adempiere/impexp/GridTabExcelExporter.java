@@ -13,9 +13,11 @@
  *****************************************************************************/
 package org.adempiere.impexp;
 
+import java.io.File;
 import java.util.HashMap;
-import java.util.Properties;
 
+import org.adempiere.base.IGridTabExporter;
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
@@ -23,22 +25,22 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * Excel Exporter Adapter for GridTab
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 1943731 ] Window data export functionality
  */
-public class GridTabExcelExporter extends AbstractExcelExporter
+public class GridTabExcelExporter extends AbstractExcelExporter implements IGridTabExporter
 {
 	private GridTab m_tab = null;
-	
-	public GridTabExcelExporter(Properties ctx, GridTab tab)
+
+	public GridTabExcelExporter()
 	{
-		m_tab = tab;
 		setFreezePane(0, 1);
 	}
-	
+
 	@Override
 	public int getColumnCount()
 	{
@@ -119,9 +121,9 @@ public class GridTabExcelExporter extends AbstractExcelExporter
 	{
 		; // nothing
 	}
-	
+
 	private HashMap<String, MLookup> m_buttonLookups = new HashMap<String, MLookup>();
-	
+
 	private MLookup getButtonLookup(GridField mField)
 	{
 		MLookup lookup = m_buttonLookups.get(mField.getColumnName());
@@ -142,5 +144,30 @@ public class GridTabExcelExporter extends AbstractExcelExporter
 		//
 		m_buttonLookups.put(mField.getColumnName(), lookup);
 		return lookup;
+	}
+
+	@Override
+	public void export(GridTab gridTab, File file) {
+		m_tab = gridTab;
+		try {
+			export(file, null);
+		} catch (Exception e) {
+			throw new AdempiereException(e);
+		}
+	}
+
+	@Override
+	public String getFileExtension() {
+		return "xls";
+	}
+
+	@Override
+	public String getFileExtensionLabel() {
+		return Msg.getMsg(Env.getCtx(), "FileXLS");
+	}
+
+	@Override
+	public String getContentType() {
+		return "application/vnd.ms-excel";
 	}
 }

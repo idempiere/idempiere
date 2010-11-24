@@ -16,18 +16,19 @@ package org.compiere.apps;
 import java.awt.Cursor;
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.swing.JFileChooser;
 
-import org.adempiere.impexp.GridTabExcelExporter;
+import org.adempiere.base.IGridTabExporter;
+import org.adempiere.base.Service;
 import org.compiere.model.GridTab;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
-import org.compiere.util.Env;
 import org.compiere.util.ExtensionFileFilter;
-import org.compiere.util.Msg;
 
 /**
  * Export button consequences
@@ -36,17 +37,33 @@ import org.compiere.util.Msg;
  */
 public class AExport
 {
-	private CLogger log = CLogger.getCLogger(getClass());	
-	private Properties m_ctx = null;
+	private CLogger log = CLogger.getCLogger(getClass());
 	private int m_WindowNo = 0;
-	
+	private Map<String, IGridTabExporter> exporterMap = null;
+	private Map<String, String> extensionMap = null;
+
 	public AExport(APanel parent)
 	{
-		m_ctx = Env.getCtx();
 		m_WindowNo = parent.getWindowNo();
 		//
+		exporterMap = new HashMap<String, IGridTabExporter>();
+		extensionMap = new HashMap<String, String>();
+		List<IGridTabExporter> exporterList = Service.list(IGridTabExporter.class);
+		for(IGridTabExporter exporter : exporterList)
+		{
+			String extension = exporter.getFileExtension();
+			if (!extensionMap.containsKey(extension))
+			{
+				extensionMap.put(extension, exporter.getFileExtensionLabel());
+				exporterMap.put(extension, exporter);
+			}
+		}
 		JFileChooser chooser = new JFileChooser();
-		chooser.addChoosableFileFilter(new ExtensionFileFilter("xls", Msg.getMsg(m_ctx, "FileXLS")));
+		for(Map.Entry<String, String> entry : extensionMap.entrySet())
+		{
+			chooser.addChoosableFileFilter(new ExtensionFileFilter(entry.getKey(), entry.getValue()));
+		}
+
 		if (chooser.showSaveDialog(parent) != JFileChooser.APPROVE_OPTION)
 			return;
 
@@ -76,9 +93,9 @@ public class AExport
 		parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		try
 		{
-			if (ext.equals("xls"))
+			if (extensionMap.containsKey(ext))
 			{
-				createXLS(outFile, parent.getCurrentTab());
+				export(outFile, parent.getCurrentTab(), ext);
 			}
 			else
 			{
@@ -96,11 +113,11 @@ public class AExport
 			parent.setCursor(Cursor.getDefaultCursor());
 		}
 	}
-	
-	private void createXLS(File outFile, GridTab tab)
+
+	private void export(File outFile, GridTab tab, String extension)
 	throws Exception
 	{
-		GridTabExcelExporter exporter = new GridTabExcelExporter(m_ctx, tab);
-		exporter.export(outFile, null);
+		IGridTabExporter exporter = exporterMap.get(extension);
+		exporter.export(tab, outFile);
 	}
 }
