@@ -22,22 +22,21 @@ import org.compiere.util.CLogMgt;
 
 
 /**
- *	Apple Mac Java VM Configuration
- *	
+ *	Java VM Configuration
+ *
  *  @author Jorg Janke
- *  @version $Id: ConfigVMMac.java,v 1.3 2006/07/30 00:57:42 jjanke Exp $
  */
-public class ConfigVMMac extends Config
+public class ConfigVM extends Config
 {
 	/**
-	 * 	ConfigVMMac
+	 * 	ConfigVM
 	 * 	@param data configuration
 	 */
-	public ConfigVMMac (ConfigurationData data)
+	public ConfigVM (ConfigurationData data)
 	{
 		super (data);
-	}	//	ConfigVMMac
-	
+	}	//	ConfigVMSun
+
 	/**
 	 * 	Init
 	 */
@@ -50,7 +49,7 @@ public class ConfigVMMac extends Config
 			javaHome = javaHome.substring(0, javaHome.length()-4);
 		p_data.setJavaHome(javaHome);
 	}	//	init
-	
+
 	/**
 	 * 	Test
 	 *	@return error message or null of OK
@@ -66,51 +65,32 @@ public class ConfigVMMac extends Config
 				pass, true, error);
 		if (!pass)
 			return error;
-		/**	Different VM structure
-		File tools = new File (p_data.getJavaHome() 
-			+ File.separator + "lib" + File.separator + "tools.jar");
-		pass = tools.exists();
-		error = "Not found: Java SDK = " + tools;
-		signalOK(getPanel().okJavaHome, "ErrorJavaHome",
-			pass, true, error);
-		if (!pass)
-			return error;
-		**/
+		//
 		if (CLogMgt.isLevelFinest())
 			CLogMgt.printProperties(System.getProperties(), "System", true);
 		//
 		log.info("OK: JavaHome=" + javaHome.getAbsolutePath());
 		setProperty(ConfigurationData.JAVA_HOME, javaHome.getAbsolutePath());
 		System.setProperty(ConfigurationData.JAVA_HOME, javaHome.getAbsolutePath());
-		
+
 		//	Java Version
-		final String VERSION = "1.5.0";
-		final String VERSION2 = "1.6.0";
+		final String VERSION = "1.6.0";
+		final String VERSION2 = "1.7.0";	//	The real one
 		pass = false;
-		String jh = javaHome.getAbsolutePath();
-		if (jh.indexOf(VERSION) != -1)	//	file name has version = assuming OK
+		String thisJV = System.getProperty("java.version");
+		pass = thisJV.indexOf(VERSION) != -1;
+		if (!pass && thisJV.indexOf(VERSION2) != -1)
 			pass = true;
-		if (!pass && jh.indexOf(VERSION2) != -1)	//
-			pass = true;
-		String thisJH = System.getProperty("java.home");
-		if (thisJH.indexOf(jh) != -1)	//	we are running the version currently
-		{
-			String thisJV = System.getProperty("java.version");
-			pass = thisJV.indexOf(VERSION) != -1;
-			if (!pass && thisJV.indexOf(VERSION2) != -1)
-				pass = true;
-			if (pass)
-			  log.info("OK: Version=" + thisJV);
-		}
-		error = "Wrong Java Version: Should be " + VERSION2;
+		if (pass)
+		  log.info("OK: Version=" + thisJV);
+
+		error = "Wrong Java Version: Should be " + VERSION + " and above.";
 		if (getPanel() != null)
 			signalOK(getPanel().okJavaHome, "ErrorJavaHome",
 					pass, true, error);
 		if (!pass)
 			return error;
-		//
-		setProperty(ConfigurationData.JAVA_TYPE, p_data.getJavaType());
-		
+
 		return null;
 	}	//	test
 

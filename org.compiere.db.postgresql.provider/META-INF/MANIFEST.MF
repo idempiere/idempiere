@@ -7,6 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  postgresql.jar,
  c3p0-0.9.1.2.jar
-Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
+ org.adempiere.install;bundle-version="1.0.0"
 Import-Package: junit.framework;version="3.8.2",
  org.junit;version="4.8.1"

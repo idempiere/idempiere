@@ -41,9 +41,9 @@ public class ConfigurationConsole {
 
 		Ini.setShowLicenseDialog(false);
 		data.load();
+		data.initJava();
 
 		try {
-			jvmType(reader, writer);
 			jvmHome(reader, writer);
 
 			adempiereHome(reader, writer);
@@ -169,7 +169,7 @@ public class ConfigurationConsole {
 			{
 				data.setDatabaseSystemPassword(dbPassword);
 			}
-			String error = data.testDatabase();
+			String error = data.testDatabase(null);
 			if (error != null && error.trim().length() > 0)
 			{
 				writer.println("Database test fail: " + error);
@@ -416,62 +416,12 @@ public class ConfigurationConsole {
 			if (error != null && error.trim().length() > 0)
 			{
 				writer.println("JVM test fail: " + error);
-				jvmType(reader, writer);
 				continue;
 			}
 			break;
 		}
 	}
 
-	private void jvmType(BufferedReader reader, PrintWriter writer) throws IOException {
-		//java type
-		String javaType = data.getJavaType();
-		int javaTypeSelected = 0;
-		for(int i = 0; i < ConfigurationData.JAVATYPE.length; i++)
-		{
-			if (ConfigurationData.JAVATYPE[i].equals(javaType))
-			{
-				javaTypeSelected = i;
-				break;
-			}
-		}
-//		console.writer().println("JVM Type:");
-		for(int i = 0; i < ConfigurationData.JAVATYPE.length; i++)
-		{
-			writer.println((i+1) + ". " + ConfigurationData.JAVATYPE[i]);
-		}
-
-		while (true)
-		{
-			writer.println("JVM Type [" + (javaTypeSelected+1) + "]:");
-			String input = reader.readLine();
-			if (input != null && input.trim().length() > 0)
-			{
-				try
-				{
-					int inputIndex = Integer.parseInt(input);
-					if (inputIndex <= 0 || inputIndex > ConfigurationData.JAVATYPE.length)
-					{
-						writer.println("Invalid input, please enter numeric value of 1 to " + ConfigurationData.JAVATYPE.length);
-						continue;
-					}
-					data.initJava(inputIndex-1);
-					data.setJavaType(ConfigurationData.JAVATYPE[inputIndex-1]);
-					break;
-				}
-				catch (NumberFormatException e){
-					writer.println("Invalid input, please enter numeric value of 1 to " + ConfigurationData.JAVATYPE.length);
-					continue;
-				}
-			}
-			else
-			{
-				data.initJava(javaTypeSelected);
-				data.setJavaType(ConfigurationData.JAVATYPE[javaTypeSelected]);
-			}
-			break;
-		}
-	}
 
 	private void dbType(BufferedReader reader, PrintWriter writer) throws IOException {
 		String dbType = data.getDatabaseType();

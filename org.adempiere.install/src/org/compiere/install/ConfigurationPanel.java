@@ -42,7 +42,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
-import org.adempiere.base.Core;
+import org.adempiere.install.DBConfigStatus;
+import org.adempiere.install.IDBConfigMonitor;
 import org.apache.tools.ant.Main;
 import org.compiere.util.CLogger;
 
@@ -52,7 +53,7 @@ import org.compiere.util.CLogger;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ConfigurationPanel.java,v 1.3 2006/07/30 00:57:42 jjanke Exp $
  */
-public class ConfigurationPanel extends JPanel implements ActionListener
+public class ConfigurationPanel extends JPanel implements ActionListener, IDBConfigMonitor
 {
 	/**
 	 *
@@ -106,8 +107,6 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 	JTextField 	fJavaHome = new JTextField(FIELDLENGTH);
 	JCheckBox 	okJavaHome = new JCheckBox();
 	private JButton 	bJavaHome = new JButton(iOpen);
-	private JLabel 		lJavaType = new JLabel();
-	JComboBox 	fJavaType = new JComboBox(ConfigurationData.JAVATYPE);
 	//	Adempiere - KeyStore
 	private JLabel 		lAdempiereHome = new JLabel();
 	JTextField 	fAdempiereHome = new JTextField(FIELDLENGTH);
@@ -145,10 +144,10 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 	JTextField fDatabaseUser = new JTextField(FIELDLENGTH);
 	private JLabel lDatabasePassword = new JLabel();
 	JPasswordField fDatabasePassword = new JPasswordField();
-	JCheckBox okDatabaseServer = new JCheckBox();
-	JCheckBox okDatabaseUser = new JCheckBox();
-	JCheckBox okDatabaseSystem = new JCheckBox();
-	JCheckBox okDatabaseSQL = new JCheckBox();
+	public JCheckBox okDatabaseServer = new JCheckBox();
+	public JCheckBox okDatabaseUser = new JCheckBox();
+	public JCheckBox okDatabaseSystem = new JCheckBox();
+	public JCheckBox okDatabaseSQL = new JCheckBox();
 	//
 	JLabel lMailServer = new JLabel();
 	JTextField fMailServer = new JTextField(FIELDLENGTH);
@@ -183,9 +182,6 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 		okJavaHome.setEnabled(false);
 		bJavaHome.setMargin(bInsets);
 		bJavaHome.setToolTipText(res.getString("JavaHomeInfo"));
-		lJavaType.setToolTipText(res.getString("JavaTypeInfo"));
-		lJavaType.setText(res.getString("JavaType"));
-		fJavaType.setPreferredSize(fJavaHome.getPreferredSize());
 
 		JLabel sectionLabel = new JLabel("Java");
 		sectionLabel.setForeground(titledBorder.getTitleColor());
@@ -203,10 +199,6 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 0, 2, 5), 0, 0));
 		this.add(bJavaHome,    new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		this.add(lJavaType,    new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0
-			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 2, 5), 0, 0));
-		this.add(fJavaType,    new GridBagConstraints(5, 2, 1, 1, 0.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 2, 0), 0, 0));
 		//	AdempiereHome - KeyStore
 		lAdempiereHome.setToolTipText(res.getString("AdempiereHomeInfo"));
 		lAdempiereHome.setText(res.getString("AdempiereHome"));
@@ -431,7 +423,6 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 		//
 		bAdempiereHome.addActionListener(this);
 		bJavaHome.addActionListener(this);
-		fJavaType.addActionListener(this);
 		fDatabaseType.addActionListener(this);
 		fDatabaseDiscovered.addActionListener(this);
 		bHelp.addActionListener(this);
@@ -475,8 +466,6 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 				fDatabaseName.setText(m_data.resolveDatabaseName(dbName));
 		}
 		//
-		else if (e.getSource() == fJavaType)
-			m_data.initJava();
 		else if (e.getSource() == fDatabaseType)
 			m_data.initDatabase("");
 		//
@@ -570,7 +559,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 	private void test() throws Exception
 	{
 		bSave.setEnabled(false);
-		if (!m_data.test())
+		if (!m_data.test(this))
 			return;
 		//
 		m_statusBar.setText(res.getString("Ok"));
@@ -621,30 +610,37 @@ public class ConfigurationPanel extends JPanel implements ActionListener
 		if (!m_data.save())
 			return;
 
-		//	Final Info
-		JOptionPane.showConfirmDialog(this, res.getString("EnvironmentSaved"),
-			res.getString("AdempiereServerSetup"),
-			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-
-		/**	Run Ant	**/
-		try
-		{
-			CLogger.get().info("Starting Ant ... ");
-			System.setProperty("ant.home", ".");
-			String[] 	args = new String[] {"setup"};
-		//	Launcher.main (args);	//	calls System.exit
-			Main antMain = new Main();
-			antMain.startAnt(args, null, null);
-		}
-		catch (Exception e)
-		{
-			CLogger.get().log(Level.SEVERE, "ant", e);
-		}
-
 		//	To be sure
 		((Frame)SwingUtilities.getWindowAncestor(this)).dispose();
 		System.exit(0);		//	remains active when License Dialog called
 		/** **/
 	}	//	save
+
+	/* (non-Javadoc)
+	 * @see org.adempiere.install.IDBConfigMonitor#update(org.adempiere.install.DBConfigStatus)
+	 */
+	@Override
+	public void update(DBConfigStatus status) {
+		if (status.getStatusType().equals(DBConfigStatus.DATABASE_SERVER))
+		{
+			signalOK(okDatabaseServer, status.getResourseString(),
+					status.isPass(), status.isCritical(), status.getErrorMessage());
+		}
+		else if (status.getStatusType().equals(DBConfigStatus.DATABASE_SYSTEM_PASSWORD))
+		{
+			signalOK(okDatabaseSystem, status.getResourseString(), status.isPass(),
+					status.isCritical(), status.getErrorMessage());
+		}
+		else if (status.getStatusType().equals(DBConfigStatus.DATABASE_USER))
+		{
+			signalOK(okDatabaseUser, status.getResourseString(), status.isPass(),
+					status.isCritical(), status.getErrorMessage());
+		}
+		else if (status.getStatusType().equals(DBConfigStatus.DATABASE_SQL_TEST))
+		{
+			signalOK(okDatabaseSQL, status.getResourseString(), status.isPass(),
+					status.isCritical(), status.getErrorMessage());
+		}
+	}
 
 }	//	ConfigurationPanel

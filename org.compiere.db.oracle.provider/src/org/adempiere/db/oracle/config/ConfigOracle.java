@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.install;
+package org.adempiere.db.oracle.config;
 
 import java.io.File;
 import java.io.FileReader;
@@ -26,27 +26,30 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import org.adempiere.install.DBConfigStatus;
+import org.adempiere.install.IDBConfigMonitor;
+import org.adempiere.install.IDatabaseConfig;
 import org.compiere.db.Database;
+import org.compiere.install.ConfigurationData;
+import org.compiere.util.CLogger;
 
 /**
  *	Oracle Configuration
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: ConfigOracle.java,v 1.3 2006/07/30 00:57:42 jjanke Exp $
  */
-public class ConfigOracle extends Config
+public class ConfigOracle implements IDatabaseConfig
 {
+	private final static CLogger log = CLogger.getCLogger(ConfigOracle.class);
+
 	/**
 	 * 	ConfigOracle
-	 * 	@param data configuration
-	 * 	@param XE express edition
 	 */
-	public ConfigOracle (ConfigurationData data, boolean XE)
+	public ConfigOracle ()
 	{
-		super (data);
-		m_XE = XE;
 	}	//	ConfigOracle
-	
+
 	/** Discoverd TNS			*/
 	private String[] 			p_discovered = null;
 	/** Discovered Database Name */
@@ -55,17 +58,17 @@ public class ConfigOracle extends Config
 	private Connection			m_con = null;
 	/** Express Edition			*/
 	private boolean 			m_XE = false;
-	
+
 	/**
 	 * 	Init
 	 */
-	public void init()
+	public void init(ConfigurationData configurationData)
 	{
-		p_data.setDatabasePort(String.valueOf(Database.DB_ORACLE_DEFAULT_PORT));
+		configurationData.setDatabasePort(String.valueOf(Database.DB_ORACLE_DEFAULT_PORT));
 		//
-		p_data.setDatabaseSystemPassword(true);
+		configurationData.setDatabaseSystemPassword(true);
 	}	//	init
-	
+
 	/**
 	 * 	Discover Databases.
 	 * 	To be overwritten by database configs
@@ -87,7 +90,7 @@ public class ConfigOracle extends Config
 			list.add(def.toLowerCase());
 			dblist.add(def.toLowerCase());
 		}
-		
+
 		if (m_XE)
 		{
 			String serviceName = "xe";
@@ -97,9 +100,9 @@ public class ConfigOracle extends Config
 				dblist.add(serviceName);
 			}
 		}
-		
+
 		String path = System.getenv("ORACLE_HOME");
-		if (path == null) 
+		if (path == null)
 		{
 			//	Search for Oracle Info
 			path = System.getProperty("java.library.path");
@@ -165,9 +168,9 @@ public class ConfigOracle extends Config
 		dblist.toArray(p_dbname);
 		return p_discovered;
 	}	//	discoverDatabases
-	
+
 	@Override
-	public String getDatabaseName(String nativeConnectioName) 
+	public String getDatabaseName(String nativeConnectioName)
 	{
 		int idx = -1;
 		if (p_discovered == null) return nativeConnectioName;
@@ -179,8 +182,8 @@ public class ConfigOracle extends Config
 				break;
 			}
 		}
-		if (idx >= 0 
-				&& p_dbname != null 
+		if (idx >= 0
+				&& p_dbname != null
 				&& idx < p_dbname.length)
 			return p_dbname[idx];
 		else
@@ -265,7 +268,7 @@ public class ConfigOracle extends Config
 					log.fine(entry);
 					list.add(entry);
 				}
-				
+
 			}
 		}
 		//	Convert to Array
@@ -275,18 +278,20 @@ public class ConfigOracle extends Config
 		list.toArray(retValue);
 		return retValue;
 	}	//	getTNS_Names
-	
-	
+
+
 	/**************************************************************************
 	 * 	Test
+	 *  @param monitor
+	 *  @param data
 	 *	@return error message or null if OK
 	 */
-	public String test()
+	public String test(IDBConfigMonitor monitor, ConfigurationData data)
 	{
 		//	Database Server
-		String server = p_data.getDatabaseServer();
+		String server = data.getDatabaseServer();
 		boolean pass = server != null && server.length() > 0
-			&& server.toLowerCase().indexOf("localhost") == -1 
+			&& server.toLowerCase().indexOf("localhost") == -1
 			&& !server.equals("127.0.0.1");
 		String error = "Not correct: DB Server = " + server;
 		InetAddress databaseServer = null;
@@ -300,35 +305,35 @@ public class ConfigOracle extends Config
 			error += " - " + e.getMessage();
 			pass = false;
 		}
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseServer, "ErrorDatabaseServer", 
-				pass, true, error); 
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabaseServer",
+				pass, true, error));
 		log.info("OK: Database Server = " + databaseServer);
-		setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer.getHostName());
-		setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, p_data.getDatabaseType());
-		setProperty(ConfigurationData.ADEMPIERE_DB_PATH, p_data.getDatabaseType());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer.getHostName());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, data.getDatabaseType());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_PATH, data.getDatabaseType());
 
 		//	Database Port
-		int databasePort = p_data.getDatabasePort();
-		pass = p_data.testPort (databaseServer, databasePort, true);
+		int databasePort = data.getDatabasePort();
+		pass = data.testPort (databaseServer, databasePort, true);
 		error = "DB Server Port = " + databasePort;
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseServer, "ErrorDatabasePort",
-				pass, true, error);
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabasePort",
+				pass, true, error));
 		if (!pass)
 			return error;
 		log.info("OK: Database Port = " + databasePort);
-		setProperty(ConfigurationData.ADEMPIERE_DB_PORT, String.valueOf(databasePort));
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_PORT, String.valueOf(databasePort));
 
 
 		//	JDBC Database Info
-		String databaseName = p_data.getDatabaseName();	//	Service Name
-		String systemPassword = p_data.getDatabaseSystemPassword();
+		String databaseName = data.getDatabaseName();	//	Service Name
+		String systemPassword = data.getDatabaseSystemPassword();
 		pass = systemPassword != null && systemPassword.length() > 0;
 		error = "No Database System Password entered";
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseSystem, "ErrorJDBC",
-				pass, true,	error);
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SYSTEM_PASSWORD, "ErrorJDBC",
+				pass, true,	error));
 		if (!pass)
 			return error;
 		//
@@ -337,48 +342,48 @@ public class ConfigOracle extends Config
 			+ ":" + databasePort
 			+ "/" + databaseName;
 		pass = testJDBC(url, "system", systemPassword);
-		error = "Error connecting: " + url 
+		error = "Error connecting: " + url
 			+ " - as system/" + systemPassword;
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseSystem, "ErrorJDBC",
-				pass, true, error);
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SYSTEM_PASSWORD, "ErrorJDBC",
+				pass, true, error));
 		if (!pass)
 			return error;
 		log.info("OK: Connection = " + url);
-		setProperty(ConfigurationData.ADEMPIERE_DB_URL, url);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_URL, url);
 		log.info("OK: Database System User " + databaseName);
-		setProperty(ConfigurationData.ADEMPIERE_DB_NAME, databaseName);
-		setProperty(ConfigurationData.ADEMPIERE_DB_SYSTEM, systemPassword);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_NAME, databaseName);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_SYSTEM, systemPassword);
 
 
 		//	Database User Info
-		String databaseUser = p_data.getDatabaseUser();	//	UID
-		String databasePassword = p_data.getDatabasePassword();	//	PWD
+		String databaseUser = data.getDatabaseUser();	//	UID
+		String databasePassword = data.getDatabasePassword();	//	PWD
 		pass = databasePassword != null && databasePassword.length() > 0;
 		error = "Invalid Database User Password";
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseUser, "ErrorJDBC",
-				pass, true, error); 
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC",
+				pass, true, error));
 		if (!pass)
 			return error;
 		//	Ignore result as it might not be imported
 		pass = testJDBC(url, databaseUser, databasePassword);
 		error = "Cannot connect to User: " + databaseUser + "/" + databasePassword + " - Database may not be imported yet (OK on initial run).";
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseUser, "ErrorJDBC",
-				pass, false, error);
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC",
+				pass, false, error));
 		if (pass)
 		{
 			log.info("OK: Database User = " + databaseUser);
 			if (m_con != null)
-				setProperty(ConfigurationData.ADEMPIERE_WEBSTORES, getWebStores(m_con));
+				data.setProperty(ConfigurationData.ADEMPIERE_WEBSTORES, data.getWebStores(m_con));
 		}
 		else
 			log.warning(error);
-		setProperty(ConfigurationData.ADEMPIERE_DB_USER, databaseUser);
-		setProperty(ConfigurationData.ADEMPIERE_DB_PASSWORD, databasePassword);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_USER, databaseUser);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_PASSWORD, databasePassword);
 
-		//	TNS Name Info via sqlplus 
+		//	TNS Name Info via sqlplus
 		String sqlplus = "sqlplus system/" + systemPassword + "@"
 			+ "//" + databaseServer.getHostName()
 			+ ":" + databasePort
@@ -387,12 +392,12 @@ public class ConfigOracle extends Config
 		log.config(sqlplus);
 		pass = testSQL(sqlplus);
 		error = "Error connecting via: " + sqlplus;
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseSQL, "ErrorTNS", 
-				pass, true, error);
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SQL_TEST, "ErrorTNS",
+				pass, true, error));
 		if (pass)
 			log.info("OK: Database SQL Connection");
-		
+
 		//	OCI Test
 		if (System.getProperty("TestOCI", "N").equals("Y"))
 		{
@@ -404,7 +409,7 @@ public class ConfigOracle extends Config
 				log.warning("Cannot connect via Net8: " + url);
 		}
 			log.info("OCI Test Skipped");
-		
+
 		//
 		m_con = null;
 		return null;
@@ -485,5 +490,5 @@ public class ConfigOracle extends Config
 			log.warning(sbErr.toString());
 		return result == 0;
 	}	//	testSQL
-			
+
 }	//	ConfigOracle

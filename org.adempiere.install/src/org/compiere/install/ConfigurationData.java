@@ -26,6 +26,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -40,11 +44,15 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.adempiere.base.Service;
+import org.adempiere.install.IDBConfigMonitor;
+import org.adempiere.install.IDatabaseConfig;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.db.Database;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.EMailAuthenticator;
 import org.compiere.util.Ini;
@@ -66,7 +74,18 @@ public class ConfigurationData
 	{
 		super ();
 		p_panel = panel;
+		initDatabaseConfig();
 	}	//	ConfigurationData
+
+	private void initDatabaseConfig()
+	{
+		List<IDatabaseConfig> configList = Service.list(IDatabaseConfig.class);
+		m_databaseConfig = new IDatabaseConfig[configList.size()];
+		for(int i = 0; i < configList.size(); i++)
+		{
+			m_databaseConfig[i] = configList.get(i);
+		}
+	}
 
 	/** UI Panel				*/
 	protected ConfigurationPanel	p_panel = null;
@@ -87,8 +106,6 @@ public class ConfigurationData
 	public static final String	ADEMPIERE_HOME 			= "ADEMPIERE_HOME";
 	/** 				*/
 	public static final String	JAVA_HOME 				= "JAVA_HOME";
-	/** 				*/
-	public static final String	JAVA_TYPE 				= "ADEMPIERE_JAVA_TYPE";
 	/** 				*/
 	public static final String	ADEMPIERE_JAVA_OPTIONS 	= "ADEMPIERE_JAVA_OPTIONS";
 	/** Default Keysore Password		*/
@@ -183,7 +200,7 @@ public class ConfigurationData
 		else if (!currentValue.equals(value))
 			p_properties.put(property, value);
 	}
-	
+
 	public String getProperty(String property)
 	{
 		return p_properties.getProperty(property);
@@ -222,8 +239,7 @@ public class ConfigurationData
 			Properties loaded = new Properties();
 			loaded.putAll(p_properties);
 			//
-			int javaIndex = setJavaType((String)p_properties.get(JAVA_TYPE));
-			initJava(javaIndex);
+			initJava();
 			if (loaded.containsKey(JAVA_HOME))
 				setJavaHome((String)loaded.get(JAVA_HOME));
 			//
@@ -356,7 +372,7 @@ public class ConfigurationData
 	 * 	test
 	 *	@return true if test ok
 	 */
-	public boolean test()
+	public boolean test(IDBConfigMonitor monitor)
 	{
 		String error = testJava();
 		if (error != null)
@@ -383,7 +399,7 @@ public class ConfigurationData
 
 		if (p_panel != null)
 			p_panel.setStatusBar(p_panel.lDatabaseServer.getText());
-		error = testDatabase();
+		error = testDatabase(monitor);
 		if (error != null)
 		{
 			log.warning(error);
@@ -680,7 +696,7 @@ public class ConfigurationData
 	 *  @param file file name
 	 *  @return true if able to connect
 	 */
-	protected boolean testPort (String protocol, String server, int port, String file)
+	public boolean testPort (String protocol, String server, int port, String file)
 	{
 		System.out.println("testPort[" + protocol + "," + server + ", " + port + ", " + file +"]");
 		URL url = null;
@@ -742,7 +758,7 @@ public class ConfigurationData
 	 *  @param shouldBeUsed true if it should be used
 	 *  @return true if some server answered on port
 	 */
-	protected boolean testPort (InetAddress host, int port, boolean shouldBeUsed)
+	public boolean testPort (InetAddress host, int port, boolean shouldBeUsed)
 	{
 		System.out.println("testPort[" + host.getHostAddress() + ", " + port + "]");
 		Socket pingSocket = null;
@@ -944,8 +960,7 @@ public class ConfigurationData
 		{JAVATYPE_SUN, JAVATYPE_OPENJDK, JAVATYPE_MAC};
 
 	/** Virtual machine Configurations	*/
-	private Config[] m_javaConfig = new Config[]
-	    {new ConfigVMSun(this), new ConfigVMOpenJDK(this), new ConfigVMMac(this)};
+	private Config m_javaConfig = new ConfigVM(this);
 	private ConfigAppServer m_appsConfig = new ConfigAppServer(this);
 
 	/**
@@ -953,23 +968,8 @@ public class ConfigurationData
 	 */
 	public void initJava()
 	{
-		int index = (p_panel != null ? p_panel.fJavaType.getSelectedIndex() : 0);
-		initJava(index);
+		m_javaConfig.init();
 	}	//	initDatabase
-
-	public void initJava(int index)
-	{
-		if (index < 0 || index >= JAVATYPE.length)
-			log.warning("JavaType Index invalid: " + index);
-		else if (m_javaConfig[index] == null)
-		{
-			log.warning("JavaType Config missing: " + JAVATYPE[index]);
-			if (p_panel != null)
-				p_panel.fJavaType.setSelectedIndex(0);
-		}
-		else
-			m_javaConfig[index].init();
-	}
 
 	/**
 	 * 	Test Java
@@ -977,54 +977,8 @@ public class ConfigurationData
 	 */
 	public String testJava()
 	{
-		int index = p_panel != null
-			? p_panel.fJavaType.getSelectedIndex()
-			: setJavaType((String)p_properties.get(JAVA_TYPE));
-		if (index < 0 || index >= JAVATYPE.length)
-			return "JavaType Index invalid: " + index;
-		else if (m_javaConfig[index] == null)
-			return "JavaType Config class missing: " + index;
-		return m_javaConfig[index].test();
+		return m_javaConfig.test();
 	}	//	testJava
-
-	/**
-	 * 	Set Java Type
-	 *	@param javaType The javaType to set.
-	 */
-	public int setJavaType (String javaType)
-	{
-		int index = -1;
-		for (int i = 0; i < JAVATYPE.length; i++)
-		{
-			if (JAVATYPE[i].equals(javaType))
-			{
-				index = i;
-				break;
-			}
-		}
-		if (index == -1)
-		{
-			index = 0;
-			log.warning("Invalid JavaType=" + javaType);
-		}
-		if (p_panel != null)
-			p_panel.fJavaType.setSelectedIndex(index);
-		else
-			updateProperty(JAVA_TYPE, javaType);
-
-		return index;
-	}	//	setJavaType
-
-	/**
-	 * @return Returns the javaType.
-	 */
-	public String getJavaType ()
-	{
-		if( p_panel != null )
-			return (String)p_panel.fJavaType.getSelectedItem();
-		else
-			return (String)p_properties.get(JAVA_TYPE);
-	}
 
 	/**
 	 * @return Returns the javaHome.
@@ -1177,13 +1131,7 @@ public class ConfigurationData
 	    //end e-evolution vpj-cd 02/07/2005 PostgreSQL
 
 	/** Database Configs	*/
-	private Config[] m_databaseConfig = new Config[]
-	    {
-		new ConfigOracle(this,true),
-		//begin e-evolution vpj-cd 02/07/2005 PostgreSQL
-		new ConfigPostgreSQL(this)
-		//		end e-evolution vpj-cd 02/07/2005 PostgreSQL
-		};
+	private IDatabaseConfig[] m_databaseConfig = null;
 
 	/**
 	 * 	Init Database
@@ -1220,7 +1168,7 @@ public class ConfigurationData
 		}
 		else
 		{
-			m_databaseConfig[index].init();
+			m_databaseConfig[index].init(this);
 
 			if (p_panel != null)
 			{
@@ -1236,9 +1184,10 @@ public class ConfigurationData
 
 	/**
 	 * 	Test Database
+	 * @param monitor
 	 *	@return error message or null of OK
 	 */
-	public String testDatabase()
+	public String testDatabase(IDBConfigMonitor monitor)
 	{
 		int index = p_panel != null
 			? p_panel.fDatabaseType.getSelectedIndex()
@@ -1247,7 +1196,7 @@ public class ConfigurationData
 			return "DatabaseType Index invalid: " + index;
 		else if (m_databaseConfig[index] == null)
 			return "DatabaseType Config class missing: " + index;
-		return m_databaseConfig[index].test();
+		return m_databaseConfig[index].test(monitor, this);
 	}	//	testDatabase
 
 
@@ -1354,7 +1303,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_DB_PASSWORD, databasePassword);
 	}
-	
+
 	/**
 	 * @return Returns the databasePort.
 	 */
@@ -1457,7 +1406,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_DB_USER, databaseUser);
 	}
-	
+
 	/**
 	 * @return Returns the mail Server.
 	 */
@@ -1467,7 +1416,7 @@ public class ConfigurationData
 			? p_panel.fMailServer.getText()
 			: (String)p_properties.get(ADEMPIERE_MAIL_SERVER);
 	}
-	
+
 	public void setMailServer(String mailServer)
 	{
 		if (p_panel != null)
@@ -1475,7 +1424,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_MAIL_SERVER, mailServer);
 	}
-	
+
 	/**
 	 * @return Returns the mailUser.
 	 */
@@ -1495,7 +1444,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_MAIL_USER, mailUser);
 	}
-	
+
 	/**
 	 * @return Returns the mail User Password.
 	 */
@@ -1524,7 +1473,7 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_MAIL_PASSWORD, mailPassword);
 	}
-	
+
 	/**
 	 * @return Returns the admin email
 	 */
@@ -1544,4 +1493,49 @@ public class ConfigurationData
 		else
 			updateProperty(ADEMPIERE_ADMIN_EMAIL, adminEMail);
 	}
+
+	/**
+	 * 	Get Web Store Context Names separated by ,
+	 *	@param con connection
+	 *	@return String of Web Store Names - e.g. /wstore
+	 */
+	public String getWebStores(Connection con)
+	{
+		String sql = "SELECT WebContext FROM W_Store WHERE IsActive='Y'";
+		Statement stmt = null;
+		ResultSet rs = null;
+		StringBuffer result = new StringBuffer();
+		try
+		{
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next ())
+			{
+				if (result.length() > 0)
+					result.append(",");
+				result.append(rs.getString(1));
+			}
+		}
+		catch (Exception e)
+		{
+			log.severe(e.toString());
+		}
+		finally
+		{
+			DB.close(rs, stmt);
+			rs = null;
+			stmt = null;
+		}
+		return result.toString();
+	}	//	getWebStores
+
+	/**
+	 * 	Set Configuration Property
+	 *	@param key key
+	 *	@param value value
+	 */
+	public void setProperty(String key, String value)
+	{
+		p_properties.setProperty(key, value);
+	}	//	setProperty
 }	//	ConfigurationData

@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.adempiere.install;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: install.jar,
  ant-contrib-1.0b3.jar
-Export-Package: org.compiere.install
+Export-Package: org.adempiere.install,
+ org.compiere.install
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.mail;version="1.4.0",

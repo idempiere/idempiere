@@ -18,7 +18,7 @@ public class SilentSetup {
 		String adempiereHome = System.getProperty(ConfigurationData.ADEMPIERE_HOME);
 		if (adempiereHome == null || adempiereHome.length() == 0)
 			adempiereHome = System.getProperty("user.dir");
-		
+
 //		boolean envLoaded = false;
 		String fileName = adempiereHome + File.separator + ConfigurationData.ADEMPIERE_ENV_FILE;
 		File env = new File(fileName);
@@ -27,18 +27,18 @@ public class SilentSetup {
 			System.err.println("Usage: Please edit AdempiereEnvTemplate.properties and save as AdempiereEnv.properties");
 			return;
 		}
-		
+
 		Ini.setShowLicenseDialog(false);
 		ConfigurationData data = new ConfigurationData(null);
 		if (!data.load()) return;
-		if (!data.test()) 
+		if (!data.test(null))
 		{
 			System.err.println("");
 			System.err.println("Warning: One or more of the configuration test failed.");
 			System.err.println("");
 		}
 		if (!data.save()) return;
-		
+
 		/**	Run Ant	**/
 		try
 		{
@@ -54,7 +54,7 @@ public class SilentSetup {
 			CLogger.get().log(Level.SEVERE, "ant", e);
 		}
 	}
-	
+
 	/**
 	 * 	Start
 	 * 	@param args Log Level e.g. ALL, FINE
@@ -72,7 +72,7 @@ public class SilentSetup {
 		//	File Logger at least FINE
 		if (fileHandler.getLevel().intValue() > Level.FINE.intValue())
 			fileHandler.setLevel(Level.FINE);
-		
+
 		new SilentSetup();
 	}
 }

@@ -11,7 +11,6 @@
 
 	<property environment="env" />
 	<property name="envFile" value="AdempiereEnv.properties" />
- 	<property name="server" value="nas" />
 
 	<!-- ==================================================== -->
 	<!-- Init                                                 -->

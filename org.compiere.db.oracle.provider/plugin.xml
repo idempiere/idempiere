@@ -8,5 +8,14 @@
             id="Oracle">
       </database>
    </extension>
+   <extension
+         id="org.adempiere.db.config.ConfigOracle"
+         name="Oracle Database Configuration"
+         point="org.adempiere.install.IDatabaseConfig">
+      <database
+            class="org.adempiere.db.oracle.config.ConfigOracle"
+            id="Oracle">
+      </database>
+   </extension>
 
 </plugin>

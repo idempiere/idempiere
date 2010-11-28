@@ -16,19 +16,13 @@
  *****************************************************************************/
 package org.compiere.install;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
 import javax.swing.JCheckBox;
 
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
-
 
 /**
  *	Configuration Setup and Test
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: Config.java,v 1.3 2006/07/30 00:57:42 jjanke Exp $
  */
@@ -48,13 +42,13 @@ public abstract class Config
 	protected ConfigurationData 	p_data = null;
 	/**	Logger	*/
 	static CLogger	log	= CLogger.getCLogger (Config.class);
-	
-	
+
+
 	/**
 	 * 	Initialize
 	 */
 	abstract void init();
-	
+
 	/**
 	 * 	Test
 	 *	@return error message or null of OK
@@ -71,18 +65,7 @@ public abstract class Config
 	{
 		return new String[]{};
 	}	//	discoverDatabases
-	
-	/**
-	 * Get real database name from native connection profile name
-	 * return from discoverDatabases
-	 * @param nativeConnectioName
-	 * @return Database name
-	 */
-	public String getDatabaseName(String nativeConnectioName)
-	{
-		return nativeConnectioName;
-	}
-	
+
 	/**
 	 * 	Get Panel
 	 *	@return panel
@@ -91,7 +74,7 @@ public abstract class Config
 	{
 		return p_data.p_panel;
 	}	//	getPanel
-	
+
 	/**
 	 * 	Set Configuration Property
 	 *	@param key key
@@ -99,7 +82,7 @@ public abstract class Config
 	 */
 	protected void setProperty(String key, String value)
 	{
-		p_data.p_properties.setProperty(key, value);
+		p_data.setProperty(key, value);
 	}	//	setProperty
 
         	/**
@@ -111,7 +94,7 @@ public abstract class Config
 	{
 		return p_data.p_properties.getProperty(key, "");
 	}	//	getProperty
-	
+
 	/**
 	 * 	UI Signal OK
 	 *	@param cb ckeck box
@@ -120,45 +103,10 @@ public abstract class Config
 	 *	@param critical true if critical
 	 *	@param errorMsg error Message
 	 */
-	void signalOK (JCheckBox cb, String resString, 
+	protected void signalOK (JCheckBox cb, String resString,
 		boolean pass, boolean critical, String errorMsg)
 	{
 		p_data.p_panel.signalOK(cb, resString, pass, critical, errorMsg);
 	}	//	signalOK
-
-	/**
-	 * 	Get Web Store Context Names separated by ,
-	 *	@param con connection
-	 *	@return String of Web Store Names - e.g. /wstore
-	 */
-	protected String getWebStores(Connection con)
-	{
-		String sql = "SELECT WebContext FROM W_Store WHERE IsActive='Y'";
-		Statement stmt = null;
-		ResultSet rs = null;
-		StringBuffer result = new StringBuffer();
-		try
-		{
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next ())
-			{
-				if (result.length() > 0)
-					result.append(",");
-				result.append(rs.getString(1));
-			}
-		}
-		catch (Exception e)
-		{
-			log.severe(e.toString());
-		}
-		finally
-		{
-			DB.close(rs, stmt);
-			rs = null; 
-			stmt = null;
-		}
-		return result.toString();
-	}	//	getWebStores	
 
 }	//	Config

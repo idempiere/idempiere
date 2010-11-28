@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.adempiere.install.IDatabaseConfig" name="Database configuration extension" schema="schema/org.adempiere.install.IDatabaseConfig.exsd"/>
    <extension
          id="org.adempiere.install.application"
          point="org.eclipse.core.runtime.applications">

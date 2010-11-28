@@ -1,0 +1,41 @@
+<!-- ====================================================== -->
+<!-- Setup Tomcat For Development Environment               -->
+<!-- ====================================================== -->
+
+<project name="setup" default="setup" basedir=".">
+
+	<description>
+	This buildfile is used to setup the Adempiere Environment.
+	</description>
+
+	<property environment="env" />
+	<property name="envFile" value="../AdempiereEnv.properties" />
+
+	<!-- ==================================================== -->
+	<!-- Init                                                 -->
+	<!-- ==================================================== -->
+	<target name="setupTomcat"
+		description="setup tomcat">
+
+		<echo message="Setup Tomcat ===================" />
+		<echo message="ADEMPIERE_HOME = ${env.ADEMPIERE_HOME}" />
+
+		<!-- create the time stamp and environment -->
+		<tstamp />
+		<available file="${envFile}" property="envFileExists" />
+		<fail message="**** RUN_setup was not successful - please re-run ****" unless="envFileExists" />
+		<property file="${envFile}"/>
+		<filter filtersfile="${envFile}" />
+
+		<copy file="../org.adempiere.tomcat.config/META-INF/tomcat/serverTemplate.xml"
+			tofile="../org.adempiere.tomcat.config/META-INF/tomcat/server.xml" filtering="yes" overwrite="yes"/>
+
+	</target>
+
+	<!-- ==================================================== -->
+	<!-- Setup (Main)                                         -->
+	<!-- ==================================================== -->
+	<target name="setup" depends="setupTomcat"
+		description="Setup Adempiere">
+	</target>
+</project>

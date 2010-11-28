@@ -12,43 +12,49 @@
  * Portions created by Victor Perez are Copyright (C) 1999-2005 e-Evolution,S.C
  * Contributor(s): Victor Perez
  *****************************************************************************/
-package org.compiere.install;
+package org.adempiere.db.postgresql.config;
 
 import java.net.InetAddress;
 import java.sql.Connection;
 
+import org.adempiere.install.DBConfigStatus;
+import org.adempiere.install.IDBConfigMonitor;
+import org.adempiere.install.IDatabaseConfig;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
+import org.compiere.install.ConfigurationData;
+import org.compiere.util.CLogger;
 
 /**
  *	PostgreSQL Configuration
- *	
+ *
  *  @author Victor Perez e-Evolution
  *  @version $Id: ConfigPostgreSQL.java,v 1.0 2005/01/31 06:08:15 vpj-cd Exp $
  */
-public class ConfigPostgreSQL extends Config
+public class ConfigPostgreSQL implements IDatabaseConfig
 {
+
+	private final static CLogger log = CLogger.getCLogger(ConfigPostgreSQL.class);
 
 	/**
 	 * 	ConfigPostgreSQL
-	 *	@param data
 	 */
-	public ConfigPostgreSQL (ConfigurationData data)
+	public ConfigPostgreSQL ()
 	{
-		super (data);
 	}	//	ConfigPostgreSQL
 
 	/** Discovered TNS			*/
 	private String[] 			p_discovered = null;
-	
+
 	private AdempiereDatabase p_db = Database.getDatabase(Database.DB_POSTGRESQL);
-	
+
 	/**
-	 * 	Init
+	 * Init
+	 * @param configurationData
 	 */
-	public void init()
+	public void init(ConfigurationData configurationData)
 	{
-		p_data.setDatabasePort(String.valueOf(Database.DB_POSTGRESQL_DEFAULT_PORT));
+		configurationData.setDatabasePort(String.valueOf(Database.DB_POSTGRESQL_DEFAULT_PORT));
 	}	//	init
 
 	/**
@@ -64,20 +70,22 @@ public class ConfigPostgreSQL extends Config
 		p_discovered = new String[]{};
 		return p_discovered;
 	}	//	discoveredDatabases
-	
-	
+
+
 	/**************************************************************************
 	 * 	Test
+	 *  @param monitor
+	 *  @param data
 	 *	@return error message or null if OK
 	 */
-	public String test()
+	public String test(IDBConfigMonitor monitor, ConfigurationData data)
 	{
 		//	Database Server
-		String server = p_data.getDatabaseServer();
+		String server = data.getDatabaseServer();
 		boolean pass = server != null && server.length() > 0;
-		// vpj-cd e-evolution && server.toLowerCase().indexOf("localhost") == -1                        
+		// vpj-cd e-evolution && server.toLowerCase().indexOf("localhost") == -1
 		// vpj-cd e-evolution && !server.equals("127.0.0.1");
-                        
+
 		String error = "Not correct: DB Server = " + server;
 		InetAddress databaseServer = null;
 		try
@@ -90,77 +98,77 @@ public class ConfigPostgreSQL extends Config
 			error += " - " + e.getMessage();
 			pass = false;
 		}
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseServer, "ErrorDatabaseServer", 
-				pass, true, error); 
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabaseServer",
+				pass, true, error));
 		log.info("OK: Database Server = " + databaseServer);
-		setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer.getHostName());
-		setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, p_data.getDatabaseType());
-		setProperty(ConfigurationData.ADEMPIERE_DB_PATH, p_data.getDatabaseType());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer.getHostName());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, data.getDatabaseType());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_PATH, data.getDatabaseType());
 
 		//	Database Port
-		int databasePort = p_data.getDatabasePort();
-		pass = p_data.testPort (databaseServer, databasePort, true);
+		int databasePort = data.getDatabasePort();
+		pass = data.testPort (databaseServer, databasePort, true);
 		error = "DB Server Port = " + databasePort;
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseServer, "ErrorDatabasePort",
-				pass, true, error);
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabasePort",
+				pass, true, error));
 		if (!pass)
 			return error;
 		log.info("OK: Database Port = " + databasePort);
-		setProperty(ConfigurationData.ADEMPIERE_DB_PORT, String.valueOf(databasePort));
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_PORT, String.valueOf(databasePort));
 
 
 		//	JDBC Database Info
-		String databaseName = p_data.getDatabaseName();	//	Service Name
-		String systemPassword = p_data.getDatabaseSystemPassword();
+		String databaseName = data.getDatabaseName();	//	Service Name
+		String systemPassword = data.getDatabaseSystemPassword();
 
 		//	URL (derived)
-		String urlSystem = p_db.getConnectionURL(databaseServer.getHostName(), databasePort, 
+		String urlSystem = p_db.getConnectionURL(databaseServer.getHostName(), databasePort,
 			p_db.getSystemDatabase(databaseName), p_db.getSystemUser());
 		pass = testJDBC(urlSystem, p_db.getSystemUser(), systemPassword);
-		error = "Error connecting: " + urlSystem 
+		error = "Error connecting: " + urlSystem
 			+ " - " + p_db.getSystemUser() + "/" + systemPassword;
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseSystem, "ErrorJDBC",
-				pass, true, error);
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SYSTEM_PASSWORD, "ErrorJDBC",
+				pass, true, error));
 		if (!pass)
 			return error;
 		log.info("OK: System Connection = " + urlSystem);
-		setProperty(ConfigurationData.ADEMPIERE_DB_SYSTEM, systemPassword);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_SYSTEM, systemPassword);
 
 
 		//	Database User Info
-		String databaseUser = p_data.getDatabaseUser();	//	UID
-		String databasePassword = p_data.getDatabasePassword();	//	PWD
+		String databaseUser = data.getDatabaseUser();	//	UID
+		String databasePassword = data.getDatabasePassword();	//	PWD
 		pass = databasePassword != null && databasePassword.length() > 0;
 		error = "Invalid Database User Password";
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseUser, "ErrorJDBC",
-				pass, true, error); 
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC",
+				pass, true, error));
 		if (!pass)
 			return error;
 		//
-		String url= p_db.getConnectionURL(databaseServer.getHostName(), databasePort, 
+		String url= p_db.getConnectionURL(databaseServer.getHostName(), databasePort,
 			databaseName, databaseUser);
 		//	Ignore result as it might not be imported
 		pass = testJDBC(url, databaseUser, databasePassword);
 		error = "Database imported? Cannot connect to User: " + databaseUser + "/" + databasePassword;
-		if (getPanel() != null)
-			signalOK(getPanel().okDatabaseUser, "ErrorJDBC",
-				pass, false, error);
+		if (monitor != null)
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC",
+				pass, false, error));
 		if (pass)
 			log.info("OK: Database User = " + databaseUser);
 		else
 			log.warning(error);
-		setProperty(ConfigurationData.ADEMPIERE_DB_URL, url);
-		setProperty(ConfigurationData.ADEMPIERE_DB_NAME, databaseName);
-		setProperty(ConfigurationData.ADEMPIERE_DB_USER, databaseUser);
-		setProperty(ConfigurationData.ADEMPIERE_DB_PASSWORD, databasePassword);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_URL, url);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_NAME, databaseName);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_USER, databaseUser);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_PASSWORD, databasePassword);
 
 		return null;
 	}	//	test
-	
+
 	/**
 	 * 	Test JDBC Connection to Server
 	 * 	@param url connection string
@@ -182,5 +190,10 @@ public class ConfigPostgreSQL extends Config
 		}
 		return true;
 	}	//	testJDBC
-	
+
+	@Override
+	public String getDatabaseName(String nativeConnectioName) {
+		return nativeConnectioName;
+	}
+
 }	//	ConfigPostgreSQL
