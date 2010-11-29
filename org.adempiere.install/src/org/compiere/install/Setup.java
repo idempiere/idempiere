@@ -48,7 +48,7 @@ import org.compiere.util.CLogger;
 public class Setup extends JFrame implements ActionListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1916571473738628986L;
 
@@ -100,6 +100,8 @@ public class Setup extends JFrame implements ActionListener
 	private BorderLayout borderLayout = new BorderLayout();
 	private ConfigurationPanel configurationPanel = new ConfigurationPanel (statusBar);
 
+	public static Setup instance;
+
 	/**
 	 * 	Static Init
 	 *  @throws Exception
@@ -141,7 +143,7 @@ public class Setup extends JFrame implements ActionListener
 		else if (e.getSource() == menuHelpInfo)
 			new Setup_Help(this);
 	}	//	actionPerformed
-	
+
 
 	/**
 	 * 	Start
@@ -160,8 +162,8 @@ public class Setup extends JFrame implements ActionListener
 		//	File Logger at least FINE
 		if (fileHandler.getLevel().intValue() > Level.FINE.intValue())
 			fileHandler.setLevel(Level.FINE);
-		
-		new Setup();
+
+		instance = new Setup();
 	}	//	main
 
 }	//	Setup

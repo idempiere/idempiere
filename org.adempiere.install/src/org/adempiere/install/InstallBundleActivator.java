@@ -13,48 +13,25 @@
  *****************************************************************************/
 package org.adempiere.install;
 
-import org.compiere.install.ConfigurationData;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  *
  * @author hengsin
  *
  */
-public interface IDatabaseConfig {
+public class InstallBundleActivator implements BundleActivator {
+	public static BundleContext bundleContext = null;
 
-	/**
-	 * Get real database name from native connection profile name
-	 * return from discoverDatabases
-	 * @param nativeConnectioName
-	 * @return Database name
-	 */
-	public String getDatabaseName(String nativeConnectioName);
+	@Override
+	public void start(BundleContext context) throws Exception {
+		bundleContext = context;
+	}
 
-	/**
-	 * Init Configuration Data
-	 * @param configurationData
-	 */
-	public void init(ConfigurationData configurationData);
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		bundleContext = null;
+	}
 
-	/**
-	 * 	Discover Databases.
-	 * 	To be overwritten by database configs
-	 *	@param selected selected database
-	 *	@return array of databases
-	 */
-	public String[] discoverDatabases(String selected);
-
-	/**************************************************************************
-	 * 	Test
-	 *  @param monitor
-	 *  @param data
-	 *	@return error message or null if OK
-	 */
-	public String test(IDBConfigMonitor monitor, ConfigurationData data);
-
-	/**
-	 *  Get Database Name
-	 *  @return database short name
-	 */
-	public String getName();
 }

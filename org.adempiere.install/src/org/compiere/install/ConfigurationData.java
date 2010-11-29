@@ -81,9 +81,11 @@ public class ConfigurationData
 	{
 		List<IDatabaseConfig> configList = Service.list(IDatabaseConfig.class);
 		m_databaseConfig = new IDatabaseConfig[configList.size()];
+		DBTYPE = new String[m_databaseConfig.length];
 		for(int i = 0; i < configList.size(); i++)
 		{
 			m_databaseConfig[i] = configList.get(i);
+			DBTYPE[i] = m_databaseConfig[i].getName();
 		}
 	}
 
@@ -1117,17 +1119,13 @@ public class ConfigurationData
 	 *************************************************************************/
 
 	/** Oracle directory	*/
-	private static String	DBTYPE_ORACLE = "oracle";
+	private static String	DBTYPE_ORACLE = "Oracle";
 
 	/** PostgreSQL          */
-	private static String	DBTYPE_POSTGRESQL = "postgresql";
+	private static String	DBTYPE_POSTGRESQL = "PostgreSQL";
 
 	/** Database Types		*/
-	public static String[]	DBTYPE = new String[]
-	{	DBTYPE_ORACLE,
-        //begin e-evolution vpj-cd 02/07/2005 PostgreSQL
-        DBTYPE_POSTGRESQL
-    };
+	public static String[]	DBTYPE = null;
 	    //end e-evolution vpj-cd 02/07/2005 PostgreSQL
 
 	/** Database Configs	*/

@@ -612,7 +612,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 
 		//	To be sure
 		((Frame)SwingUtilities.getWindowAncestor(this)).dispose();
-		System.exit(0);		//	remains active when License Dialog called
+//		System.exit(0);		//	remains active when License Dialog called
 		/** **/
 	}	//	save
 

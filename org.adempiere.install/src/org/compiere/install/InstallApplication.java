@@ -13,6 +13,12 @@
  *****************************************************************************/
 package org.compiere.install;
 
+import java.io.File;
+
+import org.apache.tools.ant.DefaultLogger;
+import org.apache.tools.ant.Project;
+import org.eclipse.ant.core.AntRunner;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -21,10 +27,26 @@ import org.eclipse.equinox.app.IApplicationContext;
  * @author hengsin
  *
  */
-public class Application implements IApplication {
+public class InstallApplication implements IApplication {
 
-	public Object start(IApplicationContext arg0) throws Exception {
+	public Object start(IApplicationContext context) throws Exception {
 		Setup.main(new String[]{});
+		Thread.sleep(10000);
+		while (Setup.instance.isDisplayable()) {
+			Thread.sleep(2000);
+		}
+		String path = System.getProperty("user.dir") + "/org.adempiere.install/build.xml";
+		File file = new File(path);
+		System.out.println("file="+path+" exists="+file.exists());
+		//only exists if it is running from development environment
+		if (file.exists()) {
+			AntRunner runner = new AntRunner();
+			runner.setBuildFileLocation(path);
+			runner.setMessageOutputLevel(Project.MSG_VERBOSE);
+			runner.addBuildLogger(DefaultLogger.class.getName());
+			runner.run();
+			runner.stop();
+		}
 		return null;
 	}
 

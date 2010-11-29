@@ -196,4 +196,9 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 		return nativeConnectioName;
 	}
 
+	@Override
+	public String getName() {
+		return Database.DB_POSTGRESQL;
+	}
+
 }	//	ConfigPostgreSQL

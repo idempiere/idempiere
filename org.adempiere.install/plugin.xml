@@ -6,7 +6,7 @@
          id="org.adempiere.install.application"
          point="org.eclipse.core.runtime.applications">
          <application>
-         	<run class="org.compiere.install.Application" />
+         	<run class="org.compiere.install.InstallApplication" />
 		 </application>
    </extension>
    <extension
@@ -17,7 +17,7 @@
             thread="main"
             visible="true">
          <run
-               class="org.compiere.install.console.Application">
+               class="org.compiere.install.console.ConsoleInstallApplication">
          </run>
       </application>
    </extension>

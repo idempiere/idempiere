@@ -491,4 +491,9 @@ public class ConfigOracle implements IDatabaseConfig
 		return result == 0;
 	}	//	testSQL
 
+	@Override
+	public String getName() {
+		return Database.DB_ORACLE;
+	}
+
 }	//	ConfigOracle

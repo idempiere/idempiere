@@ -12,4 +12,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.mail;version="1.4.0",
  javax.mail.internet;version="1.4.0",
  org.apache.tools.ant,
- org.eclipse.equinox.app
+ org.eclipse.ant.core,
+ org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.equinox.app,
+ org.osgi.framework
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.adempiere.install.InstallBundleActivator

@@ -18,7 +18,7 @@ goto START
 
 :START
 @REM Setup Adempiere.properties and AdempiereEnv.properties
-@"%JAVA%" -Dosgi.noShutdown=true -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.6.1.R36x_v20100806.jar -application org.adempiere.install.application -consoleLog
+@"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.6.1.R36x_v20100806.jar -application org.adempiere.install.application -consoleLog
 
 @Echo ErrorLevel = %ERRORLEVEL%
 @IF NOT ERRORLEVEL = 1 GOTO NEXT
