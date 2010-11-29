@@ -10,4 +10,7 @@ Bundle-ClassPath: .,
  ojdbc6.jar,
  c3p0-0.9.1.2.jar,
  c3p0-oracle-thin-extras-0.9.1.2.jar
+Import-Package: org.osgi.framework
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.adempiere.db.oracle.OracleBundleActivator
 

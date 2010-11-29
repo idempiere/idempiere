@@ -10,4 +10,7 @@ Bundle-ClassPath: .,
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.install;bundle-version="1.0.0"
 Import-Package: junit.framework;version="3.8.2",
- org.junit;version="4.8.1"
+ org.junit;version="4.8.1",
+ org.osgi.framework
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.adempiere.db.postgresql.PostgreSQLBundleActivator

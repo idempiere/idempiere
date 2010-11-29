@@ -16,7 +16,9 @@
  *****************************************************************************/
 package org.compiere.db;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Driver;
@@ -25,12 +27,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.Properties;
+import java.util.Random;
 import java.util.logging.Level;
 
 import javax.sql.DataSource;
 
 import oracle.jdbc.OracleDriver;
 
+import org.adempiere.db.oracle.OracleBundleActivator;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.dbPort.Convert;
@@ -40,6 +45,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -52,11 +58,12 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  *  ---
  *  Modifications: Refactoring. Replaced Oracle Cache Manager with C3P0
  *  connection pooling framework for better and more efficient connnection handling
- *  
+ *
  *  @author Ashley Ramdass (Posterita)
  */
 public class DB_Oracle implements AdempiereDatabase
 {
+
     /**
      *  Oracle Database
      */
@@ -97,8 +104,6 @@ public class DB_Oracle implements AdempiereDatabase
     /** Connection String           */
     private String                  m_connectionURL;
 
-    /** Statement Cache (50)        */
-    private static final String     MAX_STATEMENTS = "200";
     /** Data Source                 */
     private ComboPooledDataSource   m_ds = null;
 
@@ -113,6 +118,7 @@ public class DB_Oracle implements AdempiereDatabase
 
     private static int              m_maxbusyconnections = 0;
 
+    private Random rand = new Random();
 
     /**
      *  Get Database Name
@@ -333,6 +339,7 @@ public class DB_Oracle implements AdempiereDatabase
             sb.append(" , # Busy Connections: ").append(m_ds.getNumBusyConnections());
             sb.append(" , # Idle Connections: ").append(m_ds.getNumIdleConnections());
             sb.append(" , # Orphaned Connections: ").append(m_ds.getNumUnclosedOrphanedConnections());
+            sb.append(" , # Active Transactions: ").append(Trx.getActiveTransactions().length);
         }
         catch (Exception e)
         {}
@@ -546,6 +553,24 @@ public class DB_Oracle implements AdempiereDatabase
         if (m_ds != null)
             return m_ds;
 
+        URL url = Ini.isClient()
+        	? OracleBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.properties")
+        	: OracleBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.properties");
+        Properties poolProperties = new Properties();
+        try {
+			poolProperties.load(url.openStream());
+		} catch (IOException e) {
+			throw new DBException(e);
+		}
+
+		int idleConnectionTestPeriod = getIntProperty(poolProperties, "IdleConnectionTestPeriod", 1200);
+		int acquireRetryAttempts = getIntProperty(poolProperties, "AcquireRetryAttempts", 2);
+		int maxIdleTimeExcessConnections = getIntProperty(poolProperties, "MaxIdleTimeExcessConnections", 1200);
+		int maxIdleTime = getIntProperty(poolProperties, "MaxIdleTime", 1200);
+		int unreturnedConnectionTimeout = getIntProperty(poolProperties, "UnreturnedConnectionTimeout", 0);
+		boolean testConnectionOnCheckin = getBooleanProperty(poolProperties, "TestConnectionOnCheckin", false);
+		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", false);
+		int checkoutTimeout = getIntProperty(poolProperties, "CheckoutTimeout", 0);
         try
         {
             System.setProperty("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
@@ -558,34 +583,42 @@ public class DB_Oracle implements AdempiereDatabase
             cpds.setUser(connection.getDbUid());
             cpds.setPassword(connection.getDbPwd());
             cpds.setPreferredTestQuery(DEFAULT_CONN_TEST_SQL);
-            cpds.setIdleConnectionTestPeriod(1200);
-            cpds.setAcquireRetryAttempts(2);
-            //cpds.setTestConnectionOnCheckin(true);
-            //cpds.setTestConnectionOnCheckout(true);
-            //cpds.setCheckoutTimeout(60);
+            cpds.setIdleConnectionTestPeriod(idleConnectionTestPeriod);
+            cpds.setAcquireRetryAttempts(acquireRetryAttempts);
+            cpds.setTestConnectionOnCheckin(testConnectionOnCheckin);
+            cpds.setTestConnectionOnCheckout(testConnectionOnCheckout);
+            if (checkoutTimeout > 0)
+            	cpds.setCheckoutTimeout(checkoutTimeout);
 
+            cpds.setMaxIdleTimeExcessConnections(maxIdleTimeExcessConnections);
+            cpds.setMaxIdleTime(maxIdleTime);
             if (Ini.isClient())
             {
-                cpds.setInitialPoolSize(1);
-                cpds.setMinPoolSize(1);
-                cpds.setMaxPoolSize(15);
-                cpds.setMaxIdleTimeExcessConnections(1200);
-                cpds.setMaxIdleTime(900);
-                m_maxbusyconnections = 10;
+            	int maxPoolSize = getIntProperty(poolProperties, "MaxPoolSize", 15);
+            	int initialPoolSize = getIntProperty(poolProperties, "InitialPoolSize", 1);
+            	int minPoolSize = getIntProperty(poolProperties, "MinPoolSize", 1);
+                cpds.setInitialPoolSize(initialPoolSize);
+                cpds.setMinPoolSize(minPoolSize);
+                cpds.setMaxPoolSize(maxPoolSize);
+                m_maxbusyconnections = (int) (maxPoolSize * 0.9);
             }
             else
             {
-                cpds.setInitialPoolSize(10);
-                cpds.setMinPoolSize(5);
-                cpds.setMaxPoolSize(150);
-                cpds.setMaxIdleTimeExcessConnections(1200);
-                cpds.setMaxIdleTime(1200);
-                m_maxbusyconnections = 120;
+            	int maxPoolSize = getIntProperty(poolProperties, "MaxPoolSize", 400);
+            	int initialPoolSize = getIntProperty(poolProperties, "InitialPoolSize", 10);
+            	int minPoolSize = getIntProperty(poolProperties, "MinPoolSize", 5);
+                cpds.setInitialPoolSize(initialPoolSize);
+                cpds.setMinPoolSize(minPoolSize);
+                cpds.setMaxPoolSize(maxPoolSize);
+                m_maxbusyconnections = (int) (maxPoolSize * 0.9);
             }
 
-            //the following sometimes kill active connection!
-            //cpds.setUnreturnedConnectionTimeout(1200);
-            //cpds.setDebugUnreturnedConnectionStackTraces(true);
+            if (unreturnedConnectionTimeout > 0)
+            {
+	            //the following sometimes kill active connection!
+	            cpds.setUnreturnedConnectionTimeout(1200);
+	            cpds.setDebugUnreturnedConnectionStackTraces(true);
+            }
 
             m_ds = cpds;
         }
@@ -599,7 +632,6 @@ public class DB_Oracle implements AdempiereDatabase
 
         return m_ds;
     }   //  getDataSource
-
 
     /**
      *  Get Cached Connection
@@ -623,14 +655,27 @@ public class DB_Oracle implements AdempiereDatabase
             //
             try
             {
-                conn = (Connection)m_ds.getConnection();
+            	int numConnections = m_ds.getNumBusyConnections();
+        		if(numConnections >= m_maxbusyconnections && m_maxbusyconnections > 0)
+        		{
+        			//system is under heavy load, wait between 20 to 40 seconds
+        			int randomNum = rand.nextInt(40 - 20 + 1) + 20;
+        			Thread.sleep(randomNum * 1000);
+        		}
+        		conn = m_ds.getConnection();
+        		if (conn == null) {
+        			//try again after 10 to 30 seconds
+        			int randomNum = rand.nextInt(30 - 10 + 1) + 10;
+        			Thread.sleep(randomNum * 1000);
+        			conn = m_ds.getConnection();
+        		}
+
                 if (conn != null)
                 {
                     if (conn.getTransactionIsolation() != transactionIsolation)
                         conn.setTransactionIsolation(transactionIsolation);
                     if (conn.getAutoCommit() != autoCommit)
                         conn.setAutoCommit(autoCommit);
-//                      conn.setDefaultRowPrefetch(20);     //  10 default - reduces round trips
                 }
             }
             catch (Exception e)
@@ -668,18 +713,29 @@ public class DB_Oracle implements AdempiereDatabase
         try
         {
         	if (conn != null) {
+        		boolean trace = "true".equalsIgnoreCase(System.getProperty("org.adempiere.db.traceStatus"));
         		int numConnections = m_ds.getNumBusyConnections();
-	            if(numConnections >= m_maxbusyconnections && m_maxbusyconnections > 0)
-	            {
-	                log.warning(getStatus());
-	                //hengsin: make a best effort to reclaim leak connection
-	                Runtime.getRuntime().runFinalization();
-	            }
+        		if (numConnections > 1)
+        		{
+	    			if (trace)
+	    			{
+	    				log.warning(getStatus());
+	    			}
+	    			if(numConnections >= m_maxbusyconnections && m_maxbusyconnections > 0)
+		            {
+	    				if (!trace)
+	    					log.warning(getStatus());
+		                //hengsin: make a best effort to reclaim leak connection
+		                Runtime.getRuntime().runFinalization();
+		            }
+        		}
+        	} else {
+        		//don't use log.severe here as it will try to access db again
+        		System.err.println("Failed to acquire new connection. Status=" + getStatus());
         	}
         }
         catch (Exception ex)
         {
-
         }
         if (exception != null)
             throw exception;
@@ -1090,25 +1146,25 @@ public class DB_Oracle implements AdempiereDatabase
 		return m_sequence_id;
 	}
 
-	public boolean createSequence(String name , int increment , int minvalue , int maxvalue ,int  start , String trxName) 
+	public boolean createSequence(String name , int increment , int minvalue , int maxvalue ,int  start , String trxName)
 	{
 		int no = DB.executeUpdate("DROP SEQUENCE "+name.toUpperCase(), trxName);
-		no = DB.executeUpdateEx("CREATE SEQUENCE "+name.toUpperCase()													
-							+ " MINVALUE " + minvalue 
+		no = DB.executeUpdateEx("CREATE SEQUENCE "+name.toUpperCase()
+							+ " MINVALUE " + minvalue
 							+ " MAXVALUE " + maxvalue
-							+ " START WITH " + start 
+							+ " START WITH " + start
 							+ " INCREMENT BY " + increment +" CACHE 20", trxName)
 							;
 		if(no == -1 )
 			return false;
-		else 
+		else
 			return true;
 	}
 
 	public boolean isQueryTimeoutSupported() {
 		return true;
 	}
-	
+
 	public String addPagingSQL(String sql, int start, int end) {
 		//not supported, too many corner case that doesn't work using rownum. to investigate later
 		return sql;
@@ -1118,4 +1174,29 @@ public class DB_Oracle implements AdempiereDatabase
 		return false;
 	}
 
+	private int getIntProperty(Properties properties, String key, int defaultValue)
+	{
+		int i = defaultValue;
+		try
+		{
+			String s = properties.getProperty(key);
+			if (s != null && s.trim().length() > 0)
+				i = Integer.parseInt(s);
+		}
+		catch (Exception e) {}
+		return i;
+	}
+
+	private boolean getBooleanProperty(Properties properties, String key, boolean defaultValue)
+	{
+		boolean b = defaultValue;
+		try
+		{
+			String s = properties.getProperty(key);
+			if (s != null && s.trim().length() > 0)
+				b = Boolean.valueOf(s);
+		}
+		catch (Exception e) {}
+		return b;
+	}
 }   //  DB_Oracle
