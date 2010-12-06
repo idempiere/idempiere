@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: event.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: event.test.Activator
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.equinox.events;version="1.0.0",
+ org.osgi.framework,
+ org.osgi.service.event;version="1.2.0"
+Service-Component: OSGI-INF/event.xml

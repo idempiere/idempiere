@@ -59,6 +59,7 @@ Export-Package: bsh,
  net.sourceforge.barbecue.twod.pdf417,
  org.adempiere.apps.graph,
  org.adempiere.base,
+ org.adempiere.base.event,
  org.adempiere.exceptions,
  org.adempiere.impexp,
  org.adempiere.model,
@@ -164,6 +165,7 @@ Import-Package: com.sun.mail.smtp;version="1.4.0",
  org.eclipse.osgi.framework.console;version="1.1.0",
  org.eclipse.osgi.service.datalocation,
  org.osgi.framework,
+ org.osgi.service.event;version="1.2.0",
  org.restlet,
  org.restlet.data,
  org.restlet.representation,
@@ -171,3 +173,5 @@ Import-Package: com.sun.mail.smtp;version="1.4.0",
 Eclipse-BuddyPolicy: registered
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.adempiere.base.BaseActivator
+Service-Component: OSGI-INF/eventmanager.xml
+Bundle-ActivationPolicy: lazy

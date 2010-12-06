@@ -17,35 +17,37 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import org.adempiere.base.event.IEventTopics;
+
 /**
  *	Model Validator
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: ModelValidator.java,v 1.2 2006/07/30 00:58:18 jjanke Exp $
- *  
+ *
  *  2007/02/26 laydasalasc - globalqss - Add new timings for all before/after events on documents
  */
 public interface ModelValidator
 {
 	/** Model Change Type New		*/
-	public static final int TYPE_BEFORE_NEW = 1;			// teo_sarca [ 1675490 ] 
+	public static final int TYPE_BEFORE_NEW = 1;			// teo_sarca [ 1675490 ]
 	public static final int	TYPE_NEW = 1;
 	public static final int	CHANGETYPE_NEW = 1;				// Compatibility with Compiere 260c
-	public static final int TYPE_AFTER_NEW = 4;			// teo_sarca [ 1675490 ] 
+	public static final int TYPE_AFTER_NEW = 4;			// teo_sarca [ 1675490 ]
 	public static final int TYPE_AFTER_NEW_REPLICATION = 7;	// @Trifon
 	/** Model Change Type Change	*/
-	public static final int	TYPE_BEFORE_CHANGE = 2;		// teo_sarca [ 1675490 ] 
+	public static final int	TYPE_BEFORE_CHANGE = 2;		// teo_sarca [ 1675490 ]
 	public static final int	TYPE_CHANGE = 2;
 	public static final int	CHANGETYPE_CHANGE = 2;			// Compatibility with Compiere 260c
-	public static final int	TYPE_AFTER_CHANGE = 5;			// teo_sarca [ 1675490 ] 
+	public static final int	TYPE_AFTER_CHANGE = 5;			// teo_sarca [ 1675490 ]
 	public static final int	TYPE_AFTER_CHANGE_REPLICATION = 8; // @Trifon
 	/** Model Change Type Delete	*/
-	public static final int	TYPE_BEFORE_DELETE = 3;		// teo_sarca [ 1675490 ] 
+	public static final int	TYPE_BEFORE_DELETE = 3;		// teo_sarca [ 1675490 ]
 	public static final int	TYPE_DELETE = 3;
 	public static final int	CHANGETYPE_DELETE = 3;			// Compatibility with Compiere 260c
 	public static final int	TYPE_AFTER_DELETE = 6;			// teo_sarca [ 1675490 ]
-	public static final int	TYPE_BEFORE_DELETE_REPLICATION = 9; // @Trifon 
-	
+	public static final int	TYPE_BEFORE_DELETE_REPLICATION = 9; // @Trifon
+
 	// Correlation between constant events and list of event script model validators
 	public static String[] tableEventValidators = new String[] {
 		"", // 0
@@ -54,12 +56,26 @@ public interface ModelValidator
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableBeforeDelete, // TYPE_BEFORE_DELETE = 3
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableAfterNew,     // TYPE_AFTER_NEW = 4
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableAfterChange,  // TYPE_AFTER_CHANGE = 5
-		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableAfterDelete,   // TYPE_AFTER_DELETE = 6 
+		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableAfterDelete,   // TYPE_AFTER_DELETE = 6
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableAfterNewReplication,     // TYPE_AFTER_NEW_REPLICATION = 7
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableAfterChangeReplication,  // TYPE_AFTER_CHANGE_REPLICATION = 8
-		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableBeforeDeleteReplication   // TYPE_BEFORE_DELETE_REPLICATION = 9 
+		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_TableBeforeDeleteReplication   // TYPE_BEFORE_DELETE_REPLICATION = 9
 	};
-	
+
+	// Correlation between constant events and list of osgi event topic
+	public static String[] tableEventTopics = new String[] {
+		"", // 0
+		IEventTopics.PO_BEFORE_NEW,    // TYPE_BEFORE_NEW = 1
+		IEventTopics.PO_BEFORE_CHANGE, // TYPE_BEFORE_CHANGE = 2
+		IEventTopics.PO_BEFORE_DELETE, // TYPE_BEFORE_DELETE = 3
+		IEventTopics.PO_AFTER_NEW,     // TYPE_AFTER_NEW = 4
+		IEventTopics.PO_AFTER_CHANGE,  // TYPE_AFTER_CHANGE = 5
+		IEventTopics.PO_AFTER_DELETE,   // TYPE_AFTER_DELETE = 6
+		IEventTopics.PO_AFTER_NEW_REPLICATION,     // TYPE_AFTER_NEW_REPLICATION = 7
+		IEventTopics.PO_AFTER_CHANGE_REPLICATION,  // TYPE_AFTER_CHANGE_REPLICATION = 8
+		IEventTopics.PO_BEFORE_DELETE_REPLICATION// TYPE_BEFORE_DELETE_REPLICATION = 9
+	};
+
 	/** Called before document is prepared */
 	public static final int TIMING_BEFORE_PREPARE = 1;
 	public static final int DOCTIMING_BEFORE_PREPARE = 1; // Compatibility with Compiere 260c
@@ -94,7 +110,7 @@ public interface ModelValidator
 	public static final int TIMING_BEFORE_POST = 15;
 	/** Called after document is posted */
 	public static final int TIMING_AFTER_POST = 16;
-	
+
 	// Correlation between constant events and list of event script model validators
 	public static String[] documentEventValidators = new String[] {
 		"", // 0
@@ -115,10 +131,31 @@ public interface ModelValidator
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_DocumentBeforePost,           // TIMING_BEFORE_POST = 15
 		X_AD_Table_ScriptValidator.EVENTMODELVALIDATOR_DocumentAfterPost             // TIMING_AFTER_POST = 16
 	};
-	
+
+	// Correlation between constant events and list of osgi event topics
+	public static String[] documentEventTopics = new String[] {
+		"", // 0
+		IEventTopics.DOC_BEFORE_PREPARE,        // TIMING_BEFORE_PREPARE = 1
+		IEventTopics.DOC_BEFORE_VOID,           // TIMING_BEFORE_VOID = 2
+		IEventTopics.DOC_BEFORE_CLOSE,          // TIMING_BEFORE_CLOSE = 3
+		IEventTopics.DOC_BEFORE_REACTIVATE,     // TIMING_BEFORE_REACTIVATE = 4
+		IEventTopics.DOC_BEFORE_REVERSECORRECT, // TIMING_BEFORE_REVERSECORRECT = 5
+		IEventTopics.DOC_BEFORE_REVERSEACCRUAL, // TIMING_BEFORE_REVERSEACCRUAL = 6
+		IEventTopics.DOC_BEFORE_COMPLETE,       // TIMING_BEFORE_COMPLETE = 7
+		IEventTopics.DOC_AFTER_PREPARE,         // TIMING_AFTER_PREPARE = 8
+		IEventTopics.DOC_AFTER_COMPLETE,        // TIMING_AFTER_COMPLETE = 9
+		IEventTopics.DOC_AFTER_VOID,            // TIMING_AFTER_VOID = 10
+		IEventTopics.DOC_AFTER_CLOSE,           // TIMING_AFTER_CLOSE = 11
+		IEventTopics.DOC_AFTER_REACTIVATE,      // TIMING_AFTER_REACTIVATE = 12
+		IEventTopics.DOC_AFTER_REVERSECORRECT,  // TIMING_AFTER_REVERSECORRECT = 13
+		IEventTopics.DOC_AFTER_REVERSEACCRUAL,  // TIMING_AFTER_REVERSEACCRUAL = 14
+		IEventTopics.DOC_BEFORE_POST,           // TIMING_BEFORE_POST = 15
+		IEventTopics.DOC_AFTER_POST 			// TIMING_AFTER_POST = 16
+	};
+
 	/**
 	 * 	Initialize Validation
-	 * 	@param engine validation engine 
+	 * 	@param engine validation engine
 	 *	@param client client
 	 */
 	public void initialize (ModelValidationEngine engine, MClient client);
@@ -128,9 +165,9 @@ public interface ModelValidator
 	 *	@return AD_Client_ID
 	 */
 	public int getAD_Client_ID();
-	
+
 	/**
-	 * 	User logged in 
+	 * 	User logged in
 	 * 	Called before preferences are set
 	 *	@param AD_Org_ID org
 	 *	@param AD_Role_ID role
@@ -139,10 +176,10 @@ public interface ModelValidator
 	 */
 	public String login (int AD_Org_ID, int AD_Role_ID, int AD_User_ID);
 
-	
+
     /**
      * 	Model Change of a monitored Table.
-     * 	Called after PO.beforeSave/PO.beforeDelete 
+     * 	Called after PO.beforeSave/PO.beforeDelete
      * 	when you called addModelChange for the table
      * 	@param po persistent object
      * 	@param type TYPE_
@@ -151,18 +188,18 @@ public interface ModelValidator
      */
 	public String modelChange (PO po, int type) throws Exception;
 
-	
+
 	/**
 	 * 	Validate Document.
-	 * 	Called as first step of DocAction.prepareIt 
+	 * 	Called as first step of DocAction.prepareIt
 	 * 	or at the end of DocAction.completeIt
      * 	when you called addDocValidate for the table.
      * 	Note that totals, etc. may not be correct before the prepare stage.
 	 *	@param po persistent object
 	 *	@param timing see TIMING_ constants
-     *	@return error message or null - 
+     *	@return error message or null -
      *	if not null, the document will be marked as Invalid.
 	 */
 	public String docValidate (PO po, int timing);
-		
+
 }	//	ModelValidator

@@ -11,45 +11,51 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.base;
+package org.adempiere.base.event;
 
-import org.adempiere.base.equinox.StackTraceCommand;
-import org.eclipse.osgi.framework.console.CommandProvider;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import org.adempiere.process.ImportProcess;
+import org.compiere.model.PO;
 
 /**
+ *
  * @author hengsin
  *
  */
-public class BaseActivator implements BundleActivator {
-
-	private static BundleContext bundleContext = null;
+public class ImportEventData {
+	private ImportProcess importProcess;
+	private PO source;
+	private PO target;
 
 	/**
-	 * default constructor
+	 * @param importProcess
+	 * @param source
+	 * @param target
 	 */
-	public BaseActivator() {
+	public ImportEventData(ImportProcess importProcess, PO source, PO target) {
+		super();
+		this.importProcess = importProcess;
+		this.source = source;
+		this.target = target;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	/**
+	 * @return the importProcess
 	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		bundleContext = context;
-		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
+	public ImportProcess getImportProcess() {
+		return importProcess;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	/**
+	 * @return the source
 	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		bundleContext = null;
+	public PO getSource() {
+		return source;
 	}
 
-	public static BundleContext getBundleContext() {
-		return bundleContext;
+	/**
+	 * @return the target
+	 */
+	public PO getTarget() {
+		return target;
 	}
 }

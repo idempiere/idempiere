@@ -41,6 +41,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
@@ -57,6 +59,7 @@ import org.compiere.util.SecureEngine;
 import org.compiere.util.Trace;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
+import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -2219,6 +2222,11 @@ public abstract class PO
 		//	OK
 		if (success)
 		{
+			//post osgi event
+			String topic = newRecord ? IEventTopics.PO_POST_CREATE : IEventTopics.PO_POST_UPADTE;
+			Event event = EventManager.newEvent(topic, this);
+			EventManager.getInstance().postEvent(event);
+
 			if (s_docWFMgr == null)
 			{
 				try
@@ -3053,6 +3061,10 @@ public abstract class PO
 		//	Reset
 		if (success)
 		{
+			//osgi event handler
+			Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
+			EventManager.getInstance().postEvent(event);
+
 			m_idOld = 0;
 			int size = p_info.getColumnCount();
 			m_oldValues = new Object[size];

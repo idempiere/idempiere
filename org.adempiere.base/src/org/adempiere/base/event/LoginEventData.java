@@ -11,45 +11,60 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.base;
-
-import org.adempiere.base.equinox.StackTraceCommand;
-import org.eclipse.osgi.framework.console.CommandProvider;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+package org.adempiere.base.event;
 
 /**
+ *
  * @author hengsin
  *
  */
-public class BaseActivator implements BundleActivator {
-
-	private static BundleContext bundleContext = null;
+public class LoginEventData {
+	private int AD_Client_ID;
+	private int AD_Org_ID;
+	private int AD_Role_ID;
+	private int AD_User_ID;
 
 	/**
-	 * default constructor
+	 * @param aD_Client_ID
+	 * @param aD_Org_ID
+	 * @param aD_Role_ID
+	 * @param aD_User_ID
 	 */
-	public BaseActivator() {
+	public LoginEventData(int aD_Client_ID, int aD_Org_ID, int aD_Role_ID,
+			int aD_User_ID) {
+		super();
+		AD_Client_ID = aD_Client_ID;
+		AD_Org_ID = aD_Org_ID;
+		AD_Role_ID = aD_Role_ID;
+		AD_User_ID = aD_User_ID;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	/**
+	 * @return the aD_Client_ID
 	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		bundleContext = context;
-		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
+	public int getAD_Client_ID() {
+		return AD_Client_ID;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	/**
+	 * @return the aD_Org_ID
 	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		bundleContext = null;
+	public int getAD_Org_ID() {
+		return AD_Org_ID;
 	}
 
-	public static BundleContext getBundleContext() {
-		return bundleContext;
+	/**
+	 * @return the aD_Role_ID
+	 */
+	public int getAD_Role_ID() {
+		return AD_Role_ID;
 	}
+
+	/**
+	 * @return the aD_User_ID
+	 */
+	public int getAD_User_ID() {
+		return AD_User_ID;
+	}
+
 }

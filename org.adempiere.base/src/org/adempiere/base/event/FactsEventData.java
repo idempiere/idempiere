@@ -11,45 +11,54 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.base;
+package org.adempiere.base.event;
 
-import org.adempiere.base.equinox.StackTraceCommand;
-import org.eclipse.osgi.framework.console.CommandProvider;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import java.util.List;
+
+import org.compiere.acct.Fact;
+import org.compiere.model.MAcctSchema;
+import org.compiere.model.PO;
 
 /**
+ *
  * @author hengsin
  *
  */
-public class BaseActivator implements BundleActivator {
-
-	private static BundleContext bundleContext = null;
+public class FactsEventData {
+	private MAcctSchema acctSchema;
+	private List<Fact> facts;
+	private PO po;
 
 	/**
-	 * default constructor
+	 * @param acctSchema
+	 * @param facts
+	 * @param po
 	 */
-	public BaseActivator() {
+	public FactsEventData(MAcctSchema acctSchema, List<Fact> facts, PO po) {
+		super();
+		this.acctSchema = acctSchema;
+		this.facts = facts;
+		this.po = po;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	/**
+	 * @return the acctSchema
 	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		bundleContext = context;
-		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
+	public MAcctSchema getAcctSchema() {
+		return acctSchema;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	/**
+	 * @return the facts
 	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		bundleContext = null;
+	public List<Fact> getFacts() {
+		return facts;
 	}
 
-	public static BundleContext getBundleContext() {
-		return bundleContext;
+	/**
+	 * @return the po
+	 */
+	public PO getPo() {
+		return po;
 	}
 }

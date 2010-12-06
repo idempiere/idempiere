@@ -31,6 +31,10 @@
    </features>
 
    <configurations>
+      <plugin id="org.adempiere.base" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="3" />
       <plugin id="org.restlet" autoStart="true" startLevel="0" />
       <plugin id="org.restlet.ext.net" autoStart="true" startLevel="0" />
    </configurations>

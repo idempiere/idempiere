@@ -11,45 +11,24 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.base;
-
-import org.adempiere.base.equinox.StackTraceCommand;
-import org.eclipse.osgi.framework.console.CommandProvider;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+package org.adempiere.base.event;
 
 /**
+ *
  * @author hengsin
  *
  */
-public class BaseActivator implements BundleActivator {
-
-	private static BundleContext bundleContext = null;
+public class EventProperty {
+	public String name;
+	public Object value;
 
 	/**
-	 * default constructor
+	 * @param name
+	 * @param value
 	 */
-	public BaseActivator() {
-	}
-
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		bundleContext = context;
-		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		bundleContext = null;
-	}
-
-	public static BundleContext getBundleContext() {
-		return bundleContext;
+	public EventProperty(String name, Object value) {
+		super();
+		this.name = name;
+		this.value = value;
 	}
 }

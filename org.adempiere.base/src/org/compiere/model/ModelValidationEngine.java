@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -27,12 +28,20 @@ import java.util.logging.Level;
 import javax.script.ScriptEngine;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.EventProperty;
+import org.adempiere.base.event.FactsEventData;
+import org.adempiere.base.event.IEventManager;
+import org.adempiere.base.event.IEventTopics;
+import org.adempiere.base.event.ImportEventData;
+import org.adempiere.base.event.LoginEventData;
 import org.adempiere.model.ImportValidator;
 import org.adempiere.process.ImportProcess;
 import org.compiere.acct.Fact;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.osgi.service.event.Event;
 
 /**
  *	Model Validation Engine
@@ -146,7 +155,7 @@ public class ModelValidationEngine
 		{
 			//
 			ModelValidator validator = null;
-			if (Core.isExtension(className)) 
+			if (Core.isExtension(className))
 			{
 				validator = Core.getModelValidator(className);
 			}
@@ -250,7 +259,15 @@ public class ModelValidationEngine
 				}
 			}
 		}
-		//
+
+		//now process osgi event handler
+		LoginEventData eventData = new LoginEventData(AD_Client_ID, AD_Org_ID, AD_Role_ID, AD_User_ID);
+		Event event = EventManager.newEvent(IEventTopics.AFTER_LOGIN, eventData);
+		EventManager.getInstance().sendEvent(event);
+		@SuppressWarnings("unchecked")
+		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
+		if (errors != null && !errors.isEmpty())
+			return errors.get(0);
 
 		if (AD_User_ID == 0 && AD_Role_ID == 0)
 			; // don't validate for user system on role system
@@ -378,7 +395,15 @@ public class ModelValidationEngine
 				}
 			}
 		}
-		//
+
+		//now process osgi event handlers
+		Event event = EventManager.newEvent(ModelValidator.tableEventTopics[changeType],
+				new EventProperty(EventManager.EVENT_DATA, po), new EventProperty("tableName", po.get_TableName()));
+		EventManager.getInstance().sendEvent(event);
+		@SuppressWarnings("unchecked")
+		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
+		if (errors != null && !errors.isEmpty())
+			return errors.get(0);
 
 		return null;
 	}	//	fireModelChange
@@ -534,7 +559,15 @@ public class ModelValidationEngine
 				}
 			}
 		}
-		//
+
+		//now process osgi event handlers
+		Event event = EventManager.newEvent(ModelValidator.documentEventTopics[docTiming],
+				new EventProperty(EventManager.EVENT_DATA, po), new EventProperty("tableName", po.get_TableName()));
+		EventManager.getInstance().sendEvent(event);
+		@SuppressWarnings("unchecked")
+		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
+		if (errors != null && !errors.isEmpty())
+			return errors.get(0);
 
 		return null;
 	}	//	fireDocValidate
@@ -676,6 +709,15 @@ public class ModelValidationEngine
 				return error;
 		}
 
+		//process osgi event handlers
+		FactsEventData eventData = new FactsEventData(schema, facts, po);
+		Event event = EventManager.newEvent(IEventTopics.ACCT_FACTS_VALIDATE,
+				new EventProperty(EventManager.EVENT_DATA, eventData), new EventProperty("tableName", po.get_TableName()));
+		@SuppressWarnings("unchecked")
+		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
+		if (errors != null && !errors.isEmpty())
+			return errors.get(0);
+
 		return null;
 	}	//	fireFactsValidate
 
@@ -737,6 +779,20 @@ public class ModelValidationEngine
 				validator.validate(process, importModel, targetModel, timing);
 			}
 		}
+
+		//osgi event handler
+		ImportEventData eventData = new ImportEventData(process, importModel, targetModel);
+		String topic = null;
+		if (timing == ImportValidator.TIMING_AFTER_IMPORT)
+			topic = IEventTopics.IMPORT_AFTER_IMPORT;
+		else if (timing == ImportValidator.TIMING_AFTER_VALIDATE)
+			topic = IEventTopics.IMPORT_AFTER_VALIDATE;
+		else if (timing == ImportValidator.TIMING_BEFORE_IMPORT)
+			topic = IEventTopics.IMPORT_BEFORE_IMPORT;
+		else if (timing == ImportValidator.TIMING_BEFORE_VALIDATE)
+			topic = IEventTopics.IMPORT_BEFORE_VALIDATE;
+		Event event = EventManager.newEvent(topic, new EventProperty(EventManager.EVENT_DATA, eventData), new EventProperty("importTableName", process.getImportTableName()));
+		EventManager.getInstance().sendEvent(event);
 	}
 
 	/**
@@ -827,6 +883,11 @@ public class ModelValidationEngine
 				}
 			}
 		}
+
+		//osgi event handlers
+		@SuppressWarnings("rawtypes")
+		Event event = new Event(IEventTopics.PREF_AFTER_LOAD, (Map)null);
+		EventManager.getInstance().sendEvent(event);
 	}
 
 	/**
