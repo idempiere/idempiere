@@ -86,7 +86,7 @@ public class EventManager implements IEventManager {
 	@Override
 	public boolean sendEvent(Event event) {
 		if (eventAdmin != null) {
-			eventAdmin.postEvent(event);
+			eventAdmin.sendEvent(event);
 			return true;
 		}
 		return false;
