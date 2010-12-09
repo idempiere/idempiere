@@ -42,14 +42,20 @@ public class EventManager implements IEventManager {
 	private static IEventManager instance = null;
 	private final static CLogger log = CLogger.getCLogger(EventManager.class);
 
+	private final static Object mutex = new Object();
+
 	private Map<EventHandler, List<ServiceRegistration>> registrations = new HashMap<EventHandler, List<ServiceRegistration>>();
 
 	/**
 	 * @param eventAdmin
 	 */
 	public void bindEventAdmin(EventAdmin eventAdmin) {
-		if (instance == null)
-			instance  = this;
+		synchronized (mutex) {
+			if (instance == null) {
+				instance  = this;
+				mutex.notifyAll();
+			}
+		}
 		this.eventAdmin = eventAdmin;
 	}
 
@@ -65,6 +71,14 @@ public class EventManager implements IEventManager {
 	 * @return EventManager
 	 */
 	public static IEventManager getInstance() {
+		synchronized (mutex) {
+			if (instance == null) {
+				try {
+					mutex.wait(10000);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
 		return instance;
 	}
 
