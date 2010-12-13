@@ -29,18 +29,18 @@ import org.compiere.util.Util;
 public class ArrayExcelExporter extends AbstractExcelExporter {
 	private Properties m_ctx = null;
 	private ArrayList<ArrayList<Object>> m_data = null;
-	
+
 	public ArrayExcelExporter(Properties ctx, ArrayList<ArrayList<Object>> data) {
 		super();
 		m_ctx = ctx;
 		m_data = data;
 	}
-	
+
 	@Override
 	public Properties getCtx() {
 		return m_ctx;
 	}
-	
+
 	@Override
 	public int getColumnCount() {
 		return m_data.get(0).size();
@@ -112,5 +112,9 @@ public class ArrayExcelExporter extends AbstractExcelExporter {
 
 	@Override
 	protected void setCurrentRow(int row) {
+	}
+
+	protected int getCurrentRow() {
+		return 0;
 	}
 }

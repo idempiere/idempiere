@@ -55,27 +55,32 @@ public abstract class AbstractExcelExporter
 	 * @return true if function row
 	 */
 	public abstract boolean isFunctionRow();
-	
+
 	/**
 	 * Get Columns Count
 	 * @return number of columns
 	 */
 	public abstract int getColumnCount();
-	
+
 	/**
 	 * Get Rows Count
 	 * @return number of rows
 	 */
 	public abstract int getRowCount();
-	
+
 	/**
 	 * Set current row
 	 * @param row row index
 	 */
 	protected abstract void setCurrentRow(int row);
-	
+
 	/**
-	 * Check if column is printed (displayed) 
+	 * @return current row index
+	 */
+	protected abstract int getCurrentRow();
+
+	/**
+	 * Check if column is printed (displayed)
 	 * @param col column index
 	 * @return true if is visible
 	 */
@@ -87,7 +92,7 @@ public abstract class AbstractExcelExporter
 	 * @return header name
 	 */
 	public abstract String getHeaderName(int col);
-	
+
 	/**
 	 * Get cell display type (see {@link DisplayType})
 	 * @param row row index
@@ -95,7 +100,7 @@ public abstract class AbstractExcelExporter
 	 * @return display type
 	 */
 	public abstract int getDisplayType(int row, int col);
-	
+
 	/**
 	 * Get cell value
 	 * @param row row index
@@ -103,7 +108,7 @@ public abstract class AbstractExcelExporter
 	 * @return cell value
 	 */
 	public abstract Object getValueAt(int row, int col);
-	
+
 	/**
 	 * Check if there is a page break on given cell
 	 * @param row row index
@@ -124,6 +129,7 @@ public abstract class AbstractExcelExporter
 	//
 	private int m_colSplit = 1;
 	private int m_rowSplit = 1;
+	private boolean currentRowOnly = false;
 	/** Styles cache */
 	private HashMap<String, HSSFCellStyle> m_styles = new HashMap<String, HSSFCellStyle>();
 
@@ -349,6 +355,16 @@ public abstract class AbstractExcelExporter
 		ps.setLandscape(false);
 	}
 
+	protected boolean isCurrentRowOnly()
+	{
+		return currentRowOnly;
+	}
+
+	protected void setCurrentRowOnly(boolean b)
+	{
+		currentRowOnly = b;
+	}
+
 	/**
 	 * Export to given stream
 	 * @param out
@@ -361,9 +377,12 @@ public abstract class AbstractExcelExporter
 		String sheetName = null;
 		//
 		short colnumMax = 0;
-		for (int rownum = 0, xls_rownum = 1; rownum < getRowCount(); rownum++, xls_rownum++)
+		int rownum = isCurrentRowOnly() ? getCurrentRow() : 0;
+		int lastRowNum = isCurrentRowOnly() ? getRowCount() : getCurrentRow()+1;
+		for (int xls_rownum = 1; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
-			setCurrentRow(rownum);
+			if (!isCurrentRowOnly())
+				setCurrentRow(rownum);
 
 			boolean isPageBreak = false;
 			HSSFRow row = sheet.createRow(xls_rownum);
@@ -378,7 +397,7 @@ public abstract class AbstractExcelExporter
 				{
 					HSSFCell cell = row.createCell(colnum);
 					cell.setEncoding(HSSFCell.ENCODING_UTF_16); // Bug-2017673 - Export Report as Excel - Bad Encoding
-					
+
 					// line row
 					Object obj = getValueAt(rownum, col);
 					int displayType = getDisplayType(rownum, col);

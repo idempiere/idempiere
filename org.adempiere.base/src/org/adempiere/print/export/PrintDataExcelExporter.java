@@ -44,7 +44,7 @@ extends AbstractExcelExporter
 		this.m_printData = printData;
 		this.m_printFormat = printFormat;
 	}
-	
+
 	@Override
 	public int getColumnCount() {
 		return m_printFormat.getItemCount();
@@ -73,7 +73,7 @@ extends AbstractExcelExporter
 		return -1;
 		//
 	}
-	
+
 	@Override
 	public Object getValueAt(int row, int col) {
 		PrintDataElement pde = getPDE(row, col);
@@ -133,6 +133,10 @@ extends AbstractExcelExporter
 		m_printData.setRowIndex(row);
 	}
 
+	protected int getCurrentRow() {
+		return m_printData.getRowIndex();
+	}
+
 	@Override
 	public boolean isFunctionRow() {
 		return m_printData.isFunctionRow();
@@ -187,6 +191,6 @@ extends AbstractExcelExporter
 		sheet.setMargin(HSSFSheet.BottomMargin, ((double)paper.getMarginBottom()) / 72);
 		//
 	}
-	
-	
+
+
 }

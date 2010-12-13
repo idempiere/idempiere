@@ -24,15 +24,15 @@ import org.compiere.util.DB;
 
 /**
  *	Menu Model
- *	
+ *
  *  @author Jorg Janke
  *  @version $Id: MMenu.java,v 1.5 2005/05/14 05:32:16 jjanke Exp $
  */
 public class MPackageExpDetail extends X_AD_Package_Exp_Detail
-{	
-	
+{
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 5110078103695767282L;
 
@@ -45,8 +45,8 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 	 */
 	public MPackageExpDetail (Properties ctx, int AD_Package_Exp_ID, String trxName)
 	{
-		super(ctx, AD_Package_Exp_ID, trxName);		
-		
+		super(ctx, AD_Package_Exp_ID, trxName);
+
 	}	//	MPackageExp
 
 	/**
@@ -56,12 +56,12 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 	 */
 	public MPackageExpDetail (Properties ctx, ResultSet rs, String trxName)
 	{
-		super(ctx, rs, trxName);		
-		
-	}	//	MPackageExp
-	
+		super(ctx, rs, trxName);
 
-	
+	}	//	MPackageExp
+
+
+
 	/* (non-Javadoc)
 	 * @see org.compiere.model.PO#beforeSave(boolean)
 	 */
@@ -79,9 +79,9 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 		//
 		return true;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return record id to export
 	 */
 	public int getExpRecordId() {

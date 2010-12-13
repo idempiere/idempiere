@@ -34,8 +34,6 @@ import javax.xml.transform.sax.TransformerHandler;
 
 
 import org.compiere.Adempiere;
-import org.compiere.model.MPackageExpDetail;
-import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Backup;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 
@@ -44,8 +42,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.CodeSnippetElementParameters;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PackoutItem;
 
 public class CodeSnippetElementHandler extends AbstractElementHandler {
 
@@ -196,11 +196,11 @@ public class CodeSnippetElementHandler extends AbstractElementHandler {
 
 	public void create(Properties ctx, TransformerHandler document)
 			throws SAXException {
-		String FileDir = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_File_Directory);
-		String FileName = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_FileName);
-		String OldCode = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_Old);
-		String NewCode = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_New);
-		String ReleaseNo = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
+		String FileDir = Env.getContext(ctx, CodeSnippetElementParameters.DESTINATION_DIRECTORY);
+		String FileName = Env.getContext(ctx, CodeSnippetElementParameters.DESTINATION_FILE_NAME);
+		String OldCode = Env.getContext(ctx, CodeSnippetElementParameters.AD_Package_Code_Old);
+		String NewCode = Env.getContext(ctx, CodeSnippetElementParameters.AD_Package_Code_New);
+		String ReleaseNo = Env.getContext(ctx, CodeSnippetElementParameters.RELEASE_NO);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "custom");
 		createSnipitBinding(atts, FileDir, FileName, OldCode, NewCode, ReleaseNo);
@@ -231,17 +231,17 @@ public class CodeSnippetElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		MPackageExpDetail detail = packout.getPackageExpDetail();
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_Destination_Directory, detail.getDestination_Directory());
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_FileName, detail.getDestination_FileName());
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_Old, detail.getAD_Package_Code_Old());
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_New, detail.getAD_Package_Code_New());
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo,detail.getReleaseNo());
+		PackoutItem detail = packout.getCurrentPackoutItem();
+		Env.setContext(packout.getCtx(), CodeSnippetElementParameters.DESTINATION_DIRECTORY, (String)detail.getProperty(CodeSnippetElementParameters.DESTINATION_DIRECTORY));
+		Env.setContext(packout.getCtx(), CodeSnippetElementParameters.DESTINATION_FILE_NAME, (String)detail.getProperty(CodeSnippetElementParameters.DESTINATION_FILE_NAME));
+		Env.setContext(packout.getCtx(), CodeSnippetElementParameters.AD_Package_Code_Old, (String)detail.getProperty(CodeSnippetElementParameters.AD_Package_Code_Old));
+		Env.setContext(packout.getCtx(), CodeSnippetElementParameters.AD_Package_Code_New, (String)detail.getProperty(CodeSnippetElementParameters.AD_Package_Code_New));
+		Env.setContext(packout.getCtx(), CodeSnippetElementParameters.RELEASE_NO, (String)detail.getProperty(CodeSnippetElementParameters.RELEASE_NO));
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_File_Directory);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_FileName);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_Old);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Package_Code_New);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
+		packout.getCtx().remove(CodeSnippetElementParameters.DESTINATION_DIRECTORY);
+		packout.getCtx().remove(CodeSnippetElementParameters.DESTINATION_FILE_NAME);
+		packout.getCtx().remove(CodeSnippetElementParameters.AD_Package_Code_Old);
+		packout.getCtx().remove(CodeSnippetElementParameters.AD_Package_Code_New);
+		packout.getCtx().remove(CodeSnippetElementParameters.RELEASE_NO);
 	}
 }

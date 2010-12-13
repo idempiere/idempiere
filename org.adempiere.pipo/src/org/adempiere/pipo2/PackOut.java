@@ -38,26 +38,10 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.compiere.model.I_AD_Form;
-import org.compiere.model.I_AD_ImpFormat;
-import org.compiere.model.I_AD_Menu;
-import org.compiere.model.I_AD_Message;
-import org.compiere.model.I_AD_PrintFormat;
-import org.compiere.model.I_AD_Process;
-import org.compiere.model.I_AD_Reference;
-import org.compiere.model.I_AD_ReportView;
-import org.compiere.model.I_AD_Role;
-import org.compiere.model.I_AD_Table;
-import org.compiere.model.I_AD_Val_Rule;
-import org.compiere.model.I_AD_Window;
-import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.MClient;
-import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MTable;
-import org.compiere.model.Query;
-import org.compiere.model.X_AD_Package_Exp_Detail;
-import org.compiere.process.SvrProcess;
+import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -76,32 +60,28 @@ import org.adempiere.exceptions.AdempiereException;
  * 			<li>BF [ 1819319 ] PackOut: use just active AD_Package_Exp_Detail lines
  */
 
-public class PackOut extends SvrProcess
+public class PackOut
 {
+	/*** 1.0.0 **/
+	public final static String PackOutVersion = "100";
+	private final static CLogger log = CLogger.getCLogger(PackOut.class);
+
 	private static final String TRX_NAME_CTX_KEY = "TrxName";
 	public static final String PACK_OUT_PROCESS_CTX_KEY = "PackOutProcess";
-	/** Record ID				*/
-	private int p_PackOut_ID = 0;
-	private String PackOutVer = "005";
 
     private Properties localContext = null;
-	private MPackageExp packageExp;
-	private MPackageExpDetail packageExpDetail;
-	private String packOutDir;
-	private String packageDir;
+	private String packageDirectory;
 	private int blobCount = 0;
 
-	private IHandlerRegistry handlerRegistry = null;
-	
+	private IHandlerRegistry handlerRegistry = new OSGiHandlerRegistry();
+	private PackoutItem packoutItem;
+	private String trxName;
+	private PackoutDocument packoutDocument;
+	private int processedCount;
+	private String exportFile;
+	private String packoutDirectory;
+
 	public static final int MAX_OFFICIAL_ID = MTable.MAX_OFFICIAL_ID;
-	
-    /**
-	 *  Prepare - e.g., get Parameters.
-	 */
-	protected void prepare()
-	{
-		p_PackOut_ID = getRecord_ID();
-	}	//	prepare
 
 	public static void addTextElement(TransformerHandler handler, String qName, String text, AttributesImpl atts) throws SAXException {
 		handler.startElement("", "", qName, atts);
@@ -116,75 +96,60 @@ public class PackOut extends SvrProcess
 	}
 
 	/**
-	 * 	Start the transformation to XML
-	 *	@return info
-	 *	@throws Exception
+	 * Start the transformation to XML
+	 * @param packoutDirectory
+	 * @param destinationPath
+	 * @param packoutDocument
+	 * @param packoutItems
+	 * @param trxName
+	 * @throws java.lang.Exception
 	 */
-
-	protected String doIt() throws java.lang.Exception
+	public void export(String packoutDirectory, String destinationPath, PackoutDocument packoutDocument, List<PackoutItem> packoutItems, String trxName) throws java.lang.Exception
 	{
+		this.packoutDirectory = packoutDirectory;
+		this.packoutDocument = packoutDocument;
+		this.trxName = trxName;
+
 		initContext();
 
-		handlerRegistry = new OSGiHandlerRegistry();
+		OutputStream  docStream = null;
+		OutputStream  packoutStream = null;
 
-		OutputStream  packageDocStream = null;
-		OutputStream  packOutDocStream = null;
-		log.info("doIt - AD_PACKAGE_EXP_ID=" + p_PackOut_ID);
-
-		if (p_PackOut_ID == 0)
-			throw new IllegalArgumentException("No Record");
-
-		int processedCount = 0;
+		processedCount = 0;
 		try {
-
-			packageExp = new MPackageExp(getCtx(), p_PackOut_ID, get_TrxName());
-
-			if (packageExp.getAD_Package_Exp_ID() == p_PackOut_ID){
-				//Create the package documentation
-				packOutDir = packageExp.getFile_Directory().trim();
-				if (!packOutDir.endsWith("/") && !packOutDir.endsWith("\\"))
-					packOutDir+= File.separator;
-				packageDir = packOutDir+ packageExp.getName();
-				File packageDocDirFile = new File(packageDir+File.separator+"doc"+File.separator);
-				if (!packageDocDirFile.exists()) {
-					boolean success = packageDocDirFile.mkdirs();
-					if (!success) {
-						throw new AdempiereException("Failed to create directory for pack out. " + packageDir+File.separator+"doc"+File.separator);
-					}
+			packageDirectory = packoutDirectory+ packoutDocument.getPackageName();
+			File docDirectoryFile = new File(packageDirectory+File.separator+"doc"+File.separator);
+			if (!docDirectoryFile.exists()) {
+				boolean success = docDirectoryFile.mkdirs();
+				if (!success) {
+					throw new AdempiereException("Failed to create directory for pack out. " + packageDirectory+File.separator+"doc"+File.separator);
 				}
-				String docFileName = packageDir+File.separator+"doc"+File.separator+packageExp.getName()+"Doc.xml";
-				packageDocStream = new FileOutputStream (docFileName, false);
-				TransformerHandler packageDocument = createPackageDoc(packageExp, packageDocStream);
-
-				String packOutFileName = packageDir+File.separator+ "dict"+File.separator+"PackOut.xml";
-				packOutDocStream = new FileOutputStream (packOutFileName, false);
-				TransformerHandler packOutDocument = createPackOutDoc(packageExp, packOutDocStream);
-
-				Query query = new Query(getCtx(), MTable.get(getCtx(), X_AD_Package_Exp_Detail.Table_ID), "AD_Package_Exp_ID = ?", get_TrxName());
-				List<MPackageExpDetail> packageExpDetails = query.setOnlyActiveRecords(true)
-																 .setOrderBy("Line")
-																 .setParameters(new Object[]{p_PackOut_ID})
-																 .list();
-				for(MPackageExpDetail dtl : packageExpDetails){
-					packageExpDetail = dtl;
-					String type = packageExpDetail.getType();
-					log.info(Integer.toString(packageExpDetail.getLine()));
-
-					ElementHandler handler = handlerRegistry.getHandler(getTypeName(type));
-					if (handler != null)
-						handler.packOut(this,packOutDocument,packageDocument,dtl.getExpRecordId());
-					else
-						throw new IllegalArgumentException("Packout handler not found for type " + type);
-
-					processedCount++;
-				}
-
-				packOutDocument.endElement("","","adempiereAD");
-				packOutDocument.endDocument();
-				packageDocument.endElement("","","adempiereDocument");
-				packageDocument.endDocument();
-
 			}
+			String docFileName = packageDirectory+File.separator+"doc"+File.separator+packoutDocument.getPackageName()+"Doc.xml";
+			docStream = new FileOutputStream (docFileName, false);
+			TransformerHandler docHandler = createDocHandler(docStream);
+
+			String packoutFileName = packageDirectory+File.separator+ "dict"+File.separator+"PackOut.xml";
+			packoutStream = new FileOutputStream (packoutFileName, false);
+			TransformerHandler packoutHandler = createPackoutHandler(packoutStream);
+
+			for(PackoutItem packoutItem : packoutItems){
+				this.packoutItem = packoutItem;
+				String type = packoutItem.getType();
+
+				ElementHandler handler = handlerRegistry.getHandler(type);
+				if (handler != null)
+					handler.packOut(this,packoutHandler,docHandler,packoutItem.getRecordId());
+				else
+					throw new IllegalArgumentException("Packout handler not found for type " + type);
+
+				processedCount++;
+			}
+
+			packoutHandler.endElement("","","adempiereAD");
+			packoutHandler.endDocument();
+			docHandler.endElement("","","adempiereDocument");
+			docHandler.endDocument();
 		}
 		catch (Exception e)
 		{
@@ -194,53 +159,57 @@ public class PackOut extends SvrProcess
 		finally
 		{
 			// Close streams - teo_sarca [ 1704762 ]
-			if (packageDocStream != null)
+			if (docStream != null)
 				try {
-					packageDocStream.close();
+					docStream.close();
 				} catch (Exception e) {}
-			if (packOutDocStream != null)
+			if (packoutStream != null)
 				try {
-					packOutDocStream.close();
+					packoutStream.close();
 				} catch (Exception e) {}
 		}
 
 		//create compressed packages
 		//set the files
-		File srcFolder = new File(packOutDir);
-		File destZipFile = new File(packageDir+".zip");
-
+		File srcFolder = new File(packoutDirectory);
+		File destZipFile = null;
+		if (destinationPath != null && destinationPath.trim().length() > 0)
+		{
+			destZipFile = new File(destinationPath);
+		} else {
+			destZipFile = new File(packageDirectory+".zip");
+		}
 		//delete the old packages if necessary
 		destZipFile.delete();
 
 		//create the compressed packages
-		String includesdir = packageExp.getName() + File.separator +"**";
+		String includesdir = packoutDocument.getPackageName() + File.separator +"**";
 		Zipper.zipFolder(srcFolder, destZipFile, includesdir);
-
-		return "Exported="+processedCount + " File=" + destZipFile.getAbsolutePath();
+		exportFile = destZipFile.getAbsolutePath();
 	}	//	doIt
 
-	private TransformerHandler createPackOutDoc(MPackageExp packageExp,
-			OutputStream packOutDocStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
-		StreamResult packOutStreamResult = new StreamResult(new OutputStreamWriter(packOutDocStream,"utf-8"));
-		SAXTransformerFactory packOutFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-		packOutFactory.setAttribute("indent-number", new Integer(4));
-		TransformerHandler packOutDocument = packOutFactory.newTransformerHandler();
-		Transformer packOutTransformer = packOutDocument.getTransformer();
-		packOutTransformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
-		packOutTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
-		packOutDocument.setResult(packOutStreamResult);
-		packOutDocument.startDocument();
+	private TransformerHandler createPackoutHandler(
+			OutputStream packoutStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
+		StreamResult packoutStreamResult = new StreamResult(new OutputStreamWriter(packoutStream,"utf-8"));
+		SAXTransformerFactory packoutFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+		packoutFactory.setAttribute("indent-number", new Integer(4));
+		TransformerHandler packoutHandler = packoutFactory.newTransformerHandler();
+		Transformer packoutTransformer = packoutHandler.getTransformer();
+		packoutTransformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
+		packoutTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
+		packoutHandler.setResult(packoutStreamResult);
+		packoutHandler.startDocument();
 		AttributesImpl atts = new AttributesImpl();
-		atts.addAttribute("","","Name","CDATA",packageExp.getName());
-		atts.addAttribute("","","Version","CDATA",packageExp.getPK_Version());
-		atts.addAttribute("","","AdempiereVersion","CDATA",packageExp.getReleaseNo());
-		atts.addAttribute("","","DataBase","CDATA",packageExp.getVersion());
-		atts.addAttribute("","","Description","CDATA",packageExp.getDescription());
-		atts.addAttribute("","","Creator","CDATA",packageExp.getUserName());
-		atts.addAttribute("","","CreatorContact","CDATA",packageExp.getEMail());
-		atts.addAttribute("","","CreatedDate","CDATA",packageExp.getCreated().toString());
-		atts.addAttribute("","","UpdatedDate","CDATA",packageExp.getUpdated().toString());
-		atts.addAttribute("","","PackOutVersion","CDATA",PackOutVer);
+		atts.addAttribute("","","Name","CDATA",packoutDocument.getPackageName());
+		atts.addAttribute("","","Version","CDATA",packoutDocument.getPackageVersion());
+		atts.addAttribute("","","AdempiereVersion","CDATA",packoutDocument.getAdempiereVersion());
+		atts.addAttribute("","","DataBaseVersion","CDATA",packoutDocument.getDatabaseVersion());
+		atts.addAttribute("","","Description","CDATA",emptyIfNull(packoutDocument.getDescription()));
+		atts.addAttribute("","","Author","CDATA",packoutDocument.getAuthor());
+		atts.addAttribute("","","AuthorEmail","CDATA",emptyIfNull(packoutDocument.getAuthorEmail()));
+		atts.addAttribute("","","CreatedDate","CDATA",packoutDocument.getCreated().toString());
+		atts.addAttribute("","","UpdatedDate","CDATA",packoutDocument.getUpdated().toString());
+		atts.addAttribute("","","PackOutVersion","CDATA",PackOutVersion);
 
 		MClient client = MClient.get(localContext);
 		StringBuffer sb = new StringBuffer ()
@@ -251,42 +220,46 @@ public class PackOut extends SvrProcess
 			.append(client.getName());
 		atts.addAttribute("", "", "Client", "CDATA", sb.toString());
 
-		packOutDocument.startElement("","","adempiereAD",atts);
-		return packOutDocument;
+		packoutHandler.startElement("","","adempiereAD",atts);
+		return packoutHandler;
 	}
 
-	private TransformerHandler createPackageDoc(MPackageExp packageExp, OutputStream packageDocStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
-		StreamResult docStreamResult = new StreamResult(new OutputStreamWriter(packageDocStream,"utf-8"));
+	private String emptyIfNull(String input) {
+		return input != null ? input : "";
+	}
+
+	private TransformerHandler createDocHandler(OutputStream docStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
+		StreamResult docStreamResult = new StreamResult(new OutputStreamWriter(docStream,"utf-8"));
 		SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
 		transformerFactory.setAttribute("indent-number", new Integer(4));
-		TransformerHandler packageDocument = transformerFactory.newTransformerHandler();
-		Transformer transformer = packageDocument.getTransformer();
+		TransformerHandler docHandler = transformerFactory.newTransformerHandler();
+		Transformer transformer = docHandler.getTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
 		transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-		packageDocument.setResult(docStreamResult);
-		packageDocument.startDocument();
-		packageDocument.processingInstruction("xml-stylesheet","type=\"text/css\" href=\"adempiereDocument.css\"");
+		docHandler.setResult(docStreamResult);
+		docHandler.startDocument();
+		docHandler.processingInstruction("xml-stylesheet","type=\"text/css\" href=\"adempiereDocument.css\"");
 		AttributesImpl atts = new AttributesImpl();
-		packageDocument.startElement("","","adempiereDocument",atts);
-		addTextElement(packageDocument, "header", packageExp.getName()+" Package Description", atts);
-		addTextElement(packageDocument, "H1", "Package Name:", atts);
-		addTextElement(packageDocument, "packagename", packageExp.getName(), atts);
-		addTextElement(packageDocument, "H1", "Author:", atts);
-		addTextElement(packageDocument, "creator", packageExp.getUserName(), atts);
-		addTextElement(packageDocument, "H1", "Email Address:", atts);
-		addTextElement(packageDocument, "creatorcontact", packageExp.getEMail(), atts);
-		addTextElement(packageDocument, "H1", "Created:", atts);
-		addTextElement(packageDocument, "createddate", packageExp.getCreated().toString(), atts);
-		addTextElement(packageDocument, "H1", "Updated:", atts);
-		addTextElement(packageDocument, "updateddate", packageExp.getUpdated().toString(), atts);
-		addTextElement(packageDocument, "H1", "Description:", atts);
-		addTextElement(packageDocument, "description", packageExp.getDescription(), atts);
-		addTextElement(packageDocument, "H1", "Instructions:", atts);
-		addTextElement(packageDocument, "instructions", packageExp.getInstructions(), atts);
-		addTextElement(packageDocument, "H1", "Files in Package:", atts);
-		addTextElement(packageDocument, "file", "File: PackOut.xml", atts);
-		addTextElement(packageDocument, "filedirectory", "Directory: \\dict\\", atts);
-		addTextElement(packageDocument, "filenotes", "Notes: Contains all application/object settings for package", atts);
+		docHandler.startElement("","","adempiereDocument",atts);
+		addTextElement(docHandler, "header", packoutDocument.getPackageName()+" Package Description", atts);
+		addTextElement(docHandler, "H1", "Package Name:", atts);
+		addTextElement(docHandler, "packagename", packoutDocument.getPackageName(), atts);
+		addTextElement(docHandler, "H1", "Author:", atts);
+		addTextElement(docHandler, "Name:", packoutDocument.getAuthor(), atts);
+		addTextElement(docHandler, "H1", "Email Address:", atts);
+		addTextElement(docHandler, "Email", packoutDocument.getAuthorEmail(), atts);
+		addTextElement(docHandler, "H1", "Created:", atts);
+		addTextElement(docHandler, "Date", packoutDocument.getCreated().toString(), atts);
+		addTextElement(docHandler, "H1", "Updated:", atts);
+		addTextElement(docHandler, "Date", packoutDocument.getUpdated().toString(), atts);
+		addTextElement(docHandler, "H1", "Description:", atts);
+		addTextElement(docHandler, "description", packoutDocument.getDescription(), atts);
+		addTextElement(docHandler, "H1", "Instructions:", atts);
+		addTextElement(docHandler, "instructions", packoutDocument.getInstructions(), atts);
+		addTextElement(docHandler, "H1", "Files in Package:", atts);
+		addTextElement(docHandler, "file", "File: PackOut.xml", atts);
+		addTextElement(docHandler, "filedirectory", "Directory: \\dict\\", atts);
+		addTextElement(docHandler, "filenotes", "Notes: Contains all application/object settings for package", atts);
 
 		MClient client = MClient.get(localContext);
 		StringBuffer sb = new StringBuffer ()
@@ -295,62 +268,24 @@ public class PackOut extends SvrProcess
 			.append(client.getValue())
 			.append("-")
 			.append(client.getName());
-		addTextElement(packageDocument, "H1", "Client:", atts);
-		addTextElement(packageDocument, "Client", sb.toString(), atts);
+		addTextElement(docHandler, "H1", "Client:", atts);
+		addTextElement(docHandler, "Client", sb.toString(), atts);
 
-		File packageDictDirFile = new File(packageDir+File.separator+ "dict"+File.separator);
+		File packageDictDirFile = new File(packageDirectory+File.separator+ "dict"+File.separator);
 		if (!packageDictDirFile.exists()) {
 			boolean success = packageDictDirFile.mkdirs();
 			if (!success)
-				throw new AdempiereException("Failed to create directory. " + packageDir+File.separator+ "dict"+File.separator);
+				throw new AdempiereException("Failed to create directory. " + packageDirectory+File.separator+ "dict"+File.separator);
 		}
-		return packageDocument;
-	}
-
-	private String getTypeName(String type) {
-		if (X_AD_Package_Exp_Detail.TYPE_ApplicationOrModule.equals(type))
-			return I_AD_Menu.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_CodeSnipit.equals(type))
-			return "Code_Snipit";
-		else if (X_AD_Package_Exp_Detail.TYPE_Data.equals(type))
-			return IHandlerRegistry.TABLE_GENERIC_HANDLER;
-		else if (X_AD_Package_Exp_Detail.TYPE_DynamicValidationRule.equals(type))
-			return I_AD_Val_Rule.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_File_CodeOrOther.equals(type))
-			return "Dist_File";
-		else if (X_AD_Package_Exp_Detail.TYPE_Form.equals(type))
-			return I_AD_Form.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_ImportFormat.equals(type))
-			return I_AD_ImpFormat.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_Message.equals(type))
-			return I_AD_Message.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_PrintFormat.equals(type))
-			return I_AD_PrintFormat.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_ProcessReport.equals(type))
-			return I_AD_Process.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_Reference.equals(type))
-			return I_AD_Reference.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_ReportView.equals(type))
-			return I_AD_ReportView.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_Role.equals(type))
-			return I_AD_Role.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_SQLStatement.equals(type))
-			return "SQL_Statement";
-		else if (X_AD_Package_Exp_Detail.TYPE_Table.equals(type))
-			return I_AD_Table.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_Window.equals(type))
-			return I_AD_Window.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_Workflow.equals(type))
-			return I_AD_Workflow.Table_Name;
-
-		return type;
+		return docHandler;
 	}
 
 	private void initContext() {
 		Properties tmp = new Properties();
 		if (getCtx() != null)
 			tmp.putAll(getCtx());
-		tmp.put(TRX_NAME_CTX_KEY, get_TrxName());
+		if (trxName != null)
+			tmp.put(TRX_NAME_CTX_KEY, trxName);
 		tmp.put(PACK_OUT_PROCESS_CTX_KEY, this);
 		localContext = tmp;
 	}
@@ -417,9 +352,8 @@ public class PackOut extends SvrProcess
 		}
 	}
 
-	@Override
 	public Properties getCtx() {
-		return localContext != null ? localContext : super.getCtx();
+		return localContext != null ? localContext : Env.getCtx();
 	}
 
 	/**
@@ -430,7 +364,7 @@ public class PackOut extends SvrProcess
 	public String writeBlob(byte[] data) throws IOException {
 		blobCount++;
 		String fileName = blobCount + ".dat";
-		File path = new File(packageDir+File.separator+"blobs"+File.separator);
+		File path = new File(packageDirectory+File.separator+"blobs"+File.separator);
 		path.mkdirs();
 		File file = new File(path, fileName);
 		FileOutputStream os = null;
@@ -447,19 +381,24 @@ public class PackOut extends SvrProcess
 		}
 		return fileName;
 	}
-	
-	/**
-	 * @return MPackageExp
-	 */
-	public MPackageExp getPackageExp() {
-		return packageExp;
-	}
 
 	/**
 	 * @return MPackageExpDetail
 	 */
-	public MPackageExpDetail getPackageExpDetail() {
-		return packageExpDetail;
+	public PackoutItem getCurrentPackoutItem() {
+		return packoutItem;
+	}
+
+	/**
+	 *
+	 * @return PackoutDocument
+	 */
+	public PackoutDocument getPackoutDocument() {
+		return packoutDocument;
+	}
+
+	public String getPackoutDirectory() {
+		return packoutDirectory;
 	}
 
 	/**
@@ -468,5 +407,19 @@ public class PackOut extends SvrProcess
 	 */
 	public ElementHandler getHandler(String name) {
 		return handlerRegistry.getHandler(name);
+	}
+
+	/**
+	 * @return number of records exported
+	 */
+	public int getExportCount() {
+		return processedCount;
+	}
+
+	/**
+	 * @return absolute path for export file
+	 */
+	public String getExportFile() {
+		return exportFile;
 	}
 }	//	PackOut

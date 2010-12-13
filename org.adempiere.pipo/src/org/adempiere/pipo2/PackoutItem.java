@@ -11,41 +11,52 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.base;
+package org.adempiere.pipo2;
 
-import java.io.File;
-import java.util.List;
-
-import org.compiere.model.GridTab;
+import java.util.Map;
 
 /**
  *
  * @author hengsin
  *
  */
-public interface IGridTabExporter {
+public class PackoutItem {
+
+	private String type;
+	private int recordId;
+	private Map<String, Object> properties;
 
 	/**
-	 * export gridTab data to file
-	 * @param gridTab
-	 * @param childs
-	 * @param isCurrentRowOnly
-	 * @param file
+	 * @param type
+	 * @param recordId
 	 */
-	public void export(GridTab gridTab, List<GridTab> childs, boolean isCurrentRowOnly, File file);
+	public PackoutItem(String type, int recordId, Map<String, Object> properties) {
+		super();
+		this.type = type;
+		this.recordId = recordId;
+		this.properties = properties;
+	}
 
 	/**
-	 * @return file extension
+	 * @return the type
 	 */
-	public String getFileExtension();
+	public String getType() {
+		return type;
+	}
 
 	/**
-	 * @return description for file extension
+	 * @return the recordId
 	 */
-	public String getFileExtensionLabel();
+	public int getRecordId() {
+		return recordId;
+	}
 
 	/**
-	 * @return mime type
+	 *
+	 * @param key
+	 * @return property value
 	 */
-	public String getContentType();
+	public Object getProperty(String key) {
+		return properties != null ? properties.get(key) : null;
+	}
 }

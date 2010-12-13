@@ -29,9 +29,9 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PackoutItem;
 import org.compiere.Adempiere;
 import org.compiere.model.MPackageExp;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Backup;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -195,11 +195,11 @@ public class DistFileElementHandler extends AbstractElementHandler {
 		document.endElement("","","Dist_File");
 	}
 
-	public void doPackout(PackOut packout, MPackageExp header, MPackageExpDetail detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,AttributesImpl atts,int recordId) throws Exception
+	public void doPackout(PackOut packout, MPackageExp header, PackoutItem detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,AttributesImpl atts,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_FileName, detail.getFileName());
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo, detail.getReleaseNo());
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory, detail.getTarget_Directory());
+		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_FileName, (String)detail.getProperty("FileName"));
+		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo, (String)detail.getProperty("ReleaseNo"));
+		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory, (String)detail.getProperty("TargetDirectory"));
 		Env.setContext(packout.getCtx(), "Source_Directory", fileDest);
 		this.create(packout.getCtx(), packOutDocument);
 		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_FileName);
@@ -213,6 +213,6 @@ public class DistFileElementHandler extends AbstractElementHandler {
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

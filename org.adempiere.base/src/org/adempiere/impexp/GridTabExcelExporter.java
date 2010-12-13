@@ -15,6 +15,7 @@ package org.adempiere.impexp;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.exceptions.AdempiereException;
@@ -122,6 +123,11 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 		; // nothing
 	}
 
+	protected int getCurrentRow()
+	{
+		return m_tab.getCurrentRow();
+	}
+
 	private HashMap<String, MLookup> m_buttonLookups = new HashMap<String, MLookup>();
 
 	private MLookup getButtonLookup(GridField mField)
@@ -147,8 +153,9 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 	}
 
 	@Override
-	public void export(GridTab gridTab, File file) {
+	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file) {
 		m_tab = gridTab;
+		setCurrentRowOnly(currentRowOnly);
 		try {
 			export(file, null);
 		} catch (Exception e) {

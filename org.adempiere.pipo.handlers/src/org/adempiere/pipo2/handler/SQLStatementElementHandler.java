@@ -27,8 +27,8 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
-import org.compiere.model.MPackageExpDetail;
-import org.compiere.model.X_AD_Package_Exp_Detail;
+import org.adempiere.pipo2.PackoutItem;
+import org.adempiere.pipo2.SQLElementParameters;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -90,8 +90,8 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 
 	public void create(Properties ctx, TransformerHandler document)
 			throws SAXException {
-		String SQLStatement = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement);
-		String DBType = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_DBType);
+		String SQLStatement = Env.getContext(ctx, SQLElementParameters.SQL_STATEMENT);
+		String DBType = Env.getContext(ctx, SQLElementParameters.DB_TYPE);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "custom");
 		document.startElement("","","SQLStatement",atts);
@@ -115,11 +115,11 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int field) throws Exception
 	{
-		MPackageExpDetail detail = packout.getPackageExpDetail();
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement, detail.getSQLStatement());
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_DBType, detail.getDBType());
+		PackoutItem detail = packout.getCurrentPackoutItem();
+		Env.setContext(packout.getCtx(), SQLElementParameters.SQL_STATEMENT, (String)detail.getProperty(SQLElementParameters.SQL_STATEMENT));
+		Env.setContext(packout.getCtx(), SQLElementParameters.DB_TYPE, (String)detail.getProperty(SQLElementParameters.DB_TYPE));
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_DBType);
+		packout.getCtx().remove(SQLElementParameters.SQL_STATEMENT);
+		packout.getCtx().remove(SQLElementParameters.DB_TYPE);
 	}
 }

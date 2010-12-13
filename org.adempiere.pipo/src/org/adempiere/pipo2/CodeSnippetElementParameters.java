@@ -11,41 +11,17 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.base;
-
-import java.io.File;
-import java.util.List;
-
-import org.compiere.model.GridTab;
+package org.adempiere.pipo2;
 
 /**
  *
  * @author hengsin
  *
  */
-public interface IGridTabExporter {
-
-	/**
-	 * export gridTab data to file
-	 * @param gridTab
-	 * @param childs
-	 * @param isCurrentRowOnly
-	 * @param file
-	 */
-	public void export(GridTab gridTab, List<GridTab> childs, boolean isCurrentRowOnly, File file);
-
-	/**
-	 * @return file extension
-	 */
-	public String getFileExtension();
-
-	/**
-	 * @return description for file extension
-	 */
-	public String getFileExtensionLabel();
-
-	/**
-	 * @return mime type
-	 */
-	public String getContentType();
+public interface CodeSnippetElementParameters {
+	public final static String DESTINATION_DIRECTORY = "DestinationDirectory";
+	public final static String DESTINATION_FILE_NAME = "DestinationFileName";
+	public final static String AD_Package_Code_Old = "AD_Package_Code_Old";
+	public final static String AD_Package_Code_New = "AD_Package_Code_New";
+	public final static String RELEASE_NO = "ReleaseNo";
 }

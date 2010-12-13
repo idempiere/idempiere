@@ -14,21 +14,28 @@
 package org.adempiere.webui.panel.action;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.IADTab;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.AbstractADWindowPanel;
+import org.adempiere.webui.panel.IADTabpanel;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.model.GridTab;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
@@ -54,6 +61,7 @@ public class ExportAction implements EventListener
 	private Window winExportFile = null;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Listbox cboType = new Listbox();
+	private Checkbox chkCurrentRow = new Checkbox();
 
 	/**
 	 * @param panel
@@ -100,6 +108,10 @@ public class ExportAction implements EventListener
 
 			cboType.setSelectedIndex(0);
 
+			Vbox vb = new Vbox();
+			vb.setWidth("390px");
+			winExportFile.appendChild(vb);
+
 			Hbox hb = new Hbox();
 			Div div = new Div();
 			div.setAlign("right");
@@ -107,11 +119,14 @@ public class ExportAction implements EventListener
 			hb.appendChild(div);
 			hb.appendChild(cboType);
 			cboType.setWidth("100%");
-
-			Vbox vb = new Vbox();
-			vb.setWidth("390px");
-			winExportFile.appendChild(vb);
 			vb.appendChild(hb);
+
+			hb = new Hbox();
+			chkCurrentRow.setLabel("Export Current Row Only");
+			chkCurrentRow.setSelected(true);
+			hb.appendChild(chkCurrentRow);
+			vb.appendChild(hb);
+
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
 		}
@@ -144,8 +159,37 @@ public class ExportAction implements EventListener
 				return;
 			}
 
+			boolean currentRowOnly = chkCurrentRow.isSelected();
 			File file = File.createTempFile("Export", "."+ext);
-			exporter.export(panel.getActiveGridTab(), file);
+			IADTab adTab = panel.getADTab();
+			int selected = adTab.getSelectedIndex();
+			int tabLevel = panel.getActiveGridTab().getTabLevel();
+			Set<String> tables = new HashSet<String>();
+			List<GridTab> childs = new ArrayList<GridTab>();
+			List<GridTab> includedList = panel.getActiveGridTab().getIncludedTabs();
+			for(GridTab included : includedList)
+			{
+				String tableName = included.getTableName();
+				if (tables.contains(tableName))
+					continue;
+				tables.add(tableName);
+				childs.add(included);
+			}
+			for(int i = selected+1; i < adTab.getTabCount(); i++)
+			{
+				IADTabpanel adTabPanel = adTab.getADTabpanel(i);
+				if (adTabPanel.getGridTab().isSortTab())
+					continue;
+				if (adTabPanel.getGridTab().getTabLevel() <= tabLevel)
+					break;
+				String tableName = adTabPanel.getGridTab().getTableName();
+				if (tables.contains(tableName))
+					continue;
+				tables.add(tableName);
+				childs.add(adTabPanel.getGridTab());
+			}
+
+			exporter.export(panel.getActiveGridTab(), childs, currentRowOnly, file);
 
 			winExportFile.onClose();
 			winExportFile = null;

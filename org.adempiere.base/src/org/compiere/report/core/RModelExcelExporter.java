@@ -29,7 +29,7 @@ extends AbstractExcelExporter
 		super();
 		m_model = model;
 	}
-	
+
 	@Override
 	public int getColumnCount() {
 		return m_model.getColumnCount();
@@ -73,5 +73,9 @@ extends AbstractExcelExporter
 	@Override
 	protected void setCurrentRow(int row) {
 		m_currentRow = row;
+	}
+
+	protected int getCurrentRow() {
+		return m_currentRow;
 	}
 }

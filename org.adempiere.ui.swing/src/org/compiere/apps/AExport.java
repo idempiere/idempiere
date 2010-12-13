@@ -13,18 +13,24 @@
  *****************************************************************************/
 package org.compiere.apps;
 
+import java.awt.Component;
 import java.awt.Cursor;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.swing.JFileChooser;
 
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.base.Service;
+import org.compiere.grid.GridController;
+import org.compiere.grid.VTabbedPane;
 import org.compiere.model.GridTab;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -41,6 +47,7 @@ public class AExport
 	private int m_WindowNo = 0;
 	private Map<String, IGridTabExporter> exporterMap = null;
 	private Map<String, String> extensionMap = null;
+	private APanel parent;
 
 	public AExport(APanel parent)
 	{
@@ -91,6 +98,7 @@ public class AExport
 		log.config( "File=" + outFile.getPath() + "; Type=" + ext);
 
 		parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		this.parent = parent;
 		try
 		{
 			if (extensionMap.containsKey(ext))
@@ -117,7 +125,41 @@ public class AExport
 	private void export(File outFile, GridTab tab, String extension)
 	throws Exception
 	{
+		boolean currentRowOnly = ADialog.ask(m_WindowNo, parent, "Export current row only ?");
+
 		IGridTabExporter exporter = exporterMap.get(extension);
-		exporter.export(tab, outFile);
+		Set<String> tables = new HashSet<String>();
+		List<GridTab> childs = new ArrayList<GridTab>();
+		List<GridTab> includedList = tab.getIncludedTabs();
+		for(GridTab included : includedList)
+		{
+			String tableName = included.getTableName();
+			if (tables.contains(tableName))
+				continue;
+			tables.add(tableName);
+			childs.add(included);
+		}
+
+		int selected = parent.getSelectedTabIndex();
+		VTabbedPane tabbedPane = (VTabbedPane) parent.getCurrentTabbedPane();
+		for(int i = selected+1; i < tabbedPane.getTabCount(); i++)
+		{
+			Component c = tabbedPane.getComponentAt(i);
+			if (!(c instanceof GridController))
+				continue;
+
+			GridController gc = (GridController) c;
+			if (gc.getMTab() == null)
+				continue;
+			if (gc.getMTab().getTabLevel() <= tab.getTabLevel())
+				break;
+			String tableName = gc.getMTab().getTableName();
+			if (tables.contains(tableName))
+				continue;
+			tables.add(tableName);
+			childs.add(gc.getMTab());
+		}
+
+		exporter.export(tab, childs, currentRowOnly, outFile);
 	}
 }

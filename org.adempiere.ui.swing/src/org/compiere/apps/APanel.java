@@ -533,7 +533,7 @@ public final class APanel extends CPanel
 		for (IMenuAction action:osgiActions)	{
 			action.addAction(menuBar);
 		}
-		
+
 		//
 		if (CLogMgt.isLevelAll())
 			Util.printActionInputMap(this);
@@ -2871,7 +2871,17 @@ public final class APanel extends CPanel
 		getActionMap().put(aSwitchLinesUpAction.getName(), aSwitchLinesUpAction);
 	}
 
+	/**
+	 * @return boolean
+	 */
 	public boolean isNested() {
 		return isNested;
+	}
+
+	/**
+	 * @return JTabbedPane
+	 */
+	public JTabbedPane getCurrentTabbedPane() {
+		return m_curWinTab;
 	}
 }	//	APanel

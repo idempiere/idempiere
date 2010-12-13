@@ -28,18 +28,18 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.DataElementParameters;
+import org.adempiere.pipo2.PackoutItem;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.compiere.model.MColumn;
-import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.Query;
-import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -83,7 +83,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						String searchColumn = info.getColumnLookup(i).getColumnName();
 						parentTableName = searchColumn.substring(0, searchColumn.indexOf("."));
 					}
-	
+
 					Element parent = element.parent;
 					while (parent != null) {
 						if (parent.getElementValue().equalsIgnoreCase(parentTableName)) {
@@ -135,7 +135,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		AttributesImpl atts = new AttributesImpl();
 
-		String sql = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement);
+		String sql = Env.getContext(ctx, DataElementParameters.SQL_STATEMENT);
 		String components[] = null;
 		if (sql.indexOf(";") > 0) {
 			components = sql.split("[;]");
@@ -143,7 +143,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		} else {
 			components = new String[]{sql};
 		}
-		int tableId = Env.getContextAsInt(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
+		int tableId = Env.getContextAsInt(ctx, DataElementParameters.AD_TABLE_ID);
 		String tableName = MTable.getTableName(ctx, tableId);
 		List<String> excludes = defaultExcludeList(tableName);
 		Statement stmt = null;
@@ -209,11 +209,11 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		MPackageExpDetail detail = packout.getPackageExpDetail();
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID, detail.getAD_Table_ID());
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement, detail.getSQLStatement());
+		PackoutItem detail = packout.getCurrentPackoutItem();
+		Env.setContext(packout.getCtx(), DataElementParameters.AD_TABLE_ID, (Integer)detail.getProperty(DataElementParameters.AD_TABLE_ID));
+		Env.setContext(packout.getCtx(), DataElementParameters.SQL_STATEMENT, (String)detail.getProperty(DataElementParameters.SQL_STATEMENT));
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_SQLStatement);
+		packout.getCtx().remove(DataElementParameters.AD_TABLE_ID);
+		packout.getCtx().remove(DataElementParameters.SQL_STATEMENT);
 	}
 }

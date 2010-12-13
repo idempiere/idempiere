@@ -8,5 +8,14 @@
             class="org.adempiere.pipo.srv.PipoDictionaryService">
       </client>
    </extension>
+   <extension
+         id="org.adempiere.pipo2.GridTab2PackExporter"
+         name="2Pack Exporter"
+         point="org.adempiere.base.IGridTabExporter">
+      <exporter
+            class="org.adempiere.pipo2.GridTab2PackExporter"
+            priority="0">
+      </exporter>
+   </extension>
 
 </plugin>
