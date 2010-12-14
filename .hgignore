@@ -50,7 +50,8 @@ syntax: regexp
 ^utils_dev/mybuild\.properties$
 ^webCM/deploy$
 ^org\.adempiere\.ui\.zk/dist$
-^org\.adempiere\.ui\.zk/WEB-INF/classes$
+^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.class$
+^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.xml$
 
 syntax: regexp
 ^lib/plugins$
