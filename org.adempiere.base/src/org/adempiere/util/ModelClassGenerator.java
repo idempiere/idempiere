@@ -29,12 +29,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -79,13 +79,13 @@ public class ModelClassGenerator
 		StringBuffer sb = createColumns(AD_Table_ID, mandatory);
 
 		// Header
-		String tableName = createHeader(AD_Table_ID, sb, mandatory, packageName);
+		String className = createHeader(AD_Table_ID, sb, mandatory, packageName);
 
 		// Save
 		if ( ! directory.endsWith(File.separator) )
 			directory += File.separator;
 
-		writeToFile (sb, directory + tableName + ".java");
+		writeToFile (sb, directory + className + ".java");
 	}
 
 	public static final String NL = "\n";
@@ -755,7 +755,7 @@ public class ModelClassGenerator
 			fw.close ();
 			float size = out.length();
 			size /= 1024;
-			log.info(out.getAbsolutePath() + " - " + size + " kB");
+			System.out.println(out.getAbsolutePath() + " - " + size + " kB");
 		}
 		catch (Exception ex)
 		{
@@ -814,77 +814,77 @@ public class ModelClassGenerator
 		return sb.toString();
 	}
 
-
-
-	/**************************************************************************
-	 * 	Generate PO Model Class.
-	 * 	<pre>
-	 * 	Example: java GenerateModel.class mydirectory myPackage 'U','A'
-	 * 	would generate entity type User and Application classes into mydirectory.
-	 * 	Without parameters, the default is used:
-	 * 	C:\Compiere\compiere-all\extend\src\compiere\model\ compiere.model 'U','A'
-	 * 	</pre>
-	 * 	@param args directory package entityType
-	 * 	- directory where to save the generated file
-	 * 	- package of the classes to be generated
-	 * 	- entityType to be generated
+	/**
+	 * @param sourceFolder
+	 * @param packageName
+	 * @param entityType
+	 * @param tableLike
 	 */
-	public static void main (String[] args)
+	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName)
 	{
-		Adempiere.startupEnvironment(true);
-		CLogMgt.setLevel(Level.FINE);
-		log.info("Generate Model   $Revision: 1.42 $");
-		log.info("----------------------------------");
-		//	first parameter
-		String directory = "C:\\Adempiere\\adempiere-all\\extend\\src\\compiere\\model\\";
-		if (args.length > 0)
-			directory = args[0];
-		if (directory == null || directory.length() == 0)
-		{
-			System.err.println("No Directory");
-			System.exit(1);
-		}
-		log.info("Directory: " + directory);
+		if (sourceFolder == null || sourceFolder.trim().length() == 0)
+			throw new IllegalArgumentException("Must specify source folder");
 
-		//	second parameter
-		String packageName = "compiere.model";
-		if (args.length > 1)
-			packageName = args[1];
-		if (packageName == null || packageName.length() == 0)
-		{
-			System.err.println("No package");
-			System.exit(1);
-		}
-		log.info("Package:   " + packageName);
+		File file = new File(sourceFolder);
+		if (!file.exists())
+			throw new IllegalArgumentException("Source folder doesn't exists. sourceFolder="+sourceFolder);
 
-		//	third parameter
-		String entityType = "'U','A'";	//	User, Application
-		if (args.length > 2)
-			entityType = args[2];
-		if (entityType == null || entityType.length() == 0)
-		{
-			System.err.println("No EntityType");
-			System.exit(1);
-		}
-		StringBuffer sql = new StringBuffer("EntityType IN (")
-			.append(entityType).append(")");
-		log.info(sql.toString());
-		log.info("----------------------------------");
+		if (packageName == null || packageName.trim().length() == 0)
+			throw new IllegalArgumentException("Must specify package name");
 
-		String tableLike = "'%'";	//	All tables
-		//tableLike = "'AD_OrgInfo', 'AD_Role', 'C_CashLine', 'C_Currency', 'C_Invoice', 'C_Order', 'C_Payment', 'M_InventoryLine', 'M_PriceList', 'M_Product', 'U_POSTerminal'";
-		if (args.length > 3)
-			tableLike = args[3];
-		log.info("Table Like: " + tableLike);
+		if (tableName == null || tableName.trim().length() == 0)
+			throw new IllegalArgumentException("Must specify table name");
+
+		String tableLike = tableName.trim();
+		if (!tableLike.startsWith("'") || !tableLike.endsWith("'"))
+			tableLike = "'" + tableLike + "'";
+
+		String entityTypeFilter = null;
+		if (entityType != null && entityType.trim().length() > 0)
+		{
+			entityTypeFilter = "EntityType IN (";
+			StringTokenizer tokenizer = new StringTokenizer(entityType);
+			int i = 0;
+			while(tokenizer.hasMoreTokens()) {
+				String token = tokenizer.nextToken().trim();
+				if (!token.startsWith("'") || !token.endsWith("'"))
+					token = "'" + token + "'";
+				if (i > 0)
+					entityTypeFilter = entityTypeFilter + ",";
+				entityTypeFilter = entityTypeFilter + token;
+				i++;
+			}
+			entityTypeFilter = entityTypeFilter+")";
+		}
+		else
+		{
+			entityTypeFilter = "EntityType IN ('U','A')";
+		}
+
+		String directory = sourceFolder.trim();
+		String packagePath = packageName.replaceAll("[.]", File.separator);
+		if (!(directory.endsWith("/") || directory.endsWith("\\")))
+		{
+			directory = directory + File.separator;
+		}
+		if (File.separator.equals("/"))
+			directory = directory.replaceAll("[\\\\]", File.separator);
+		else
+			directory = directory.replaceAll("[/]", File.separator);
+		directory = directory + packagePath;
+		file = new File(directory);
+		if (!file.exists())
+			file.mkdirs();
 
 		//	complete sql
-		sql.insert(0, "SELECT AD_Table_ID "
-			+ "FROM AD_Table "
-			+ "WHERE (TableName IN ('RV_WarehousePrice','RV_BPartner')"	//	special views
-			+ " OR IsView='N')"
-			+ " AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' AND ");
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT AD_Table_ID ")
+			.append("FROM AD_Table ")
+			.append("WHERE (TableName IN ('RV_WarehousePrice','RV_BPartner')")	//	special views
+			.append(" OR IsView='N')")
+			.append(" AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' ");
 		sql.append(" AND TableName LIKE ").append(tableLike);
-
+		sql.append(" AND ").append(entityTypeFilter);
 		sql.append(" ORDER BY TableName");
 
 		//
@@ -910,7 +910,5 @@ public class ModelClassGenerator
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.info("Generated = " + count);
 	}
-
 }

@@ -39,6 +39,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Level;
 
@@ -47,7 +48,6 @@ import org.compiere.Adempiere;
 import org.compiere.model.MEntityType;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -56,12 +56,12 @@ import org.compiere.util.Env;
 /**
  *	@author Trifon Trifonov
  *	@version $Id$
- * 
+ *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1781629 ] Don't use Env.NL in model class/interface generators
  * 				<li>FR [ 1781630 ] Generated class/interfaces have a lot of unused imports
  * 				<li>BF [ 1781632 ] Generated class/interfaces should be UTF-8
- * 				<li>better formating of generated source  
+ * 				<li>better formating of generated source
  * 				<li>BF [ 1787833 ] ModelInterfaceGenerator: don't write timestamp
  * 				<li>FR [ 1803309 ] Model generator: generate get method for Search cols
  * 				<li>BF [ 1817768 ] Isolate hardcoded table direct columns
@@ -75,17 +75,17 @@ import org.compiere.util.Env;
  * 				<li>FR [ 3020635 ] Model Generator should use FQ class names
  * 					https://sourceforge.net/tracker/?func=detail&aid=3020635&group_id=176962&atid=879335
  * @author Victor Perez, e-Evolution
- * 				<li>FR [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class 
+ * 				<li>FR [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
  */
 public class ModelInterfaceGenerator
 {
-	
+
 	private String packageName = "";
-	
+
 	public static final String NL = "\n";
-	
+
 	/** File Header			*/
-	public static final String COPY = 
+	public static final String COPY =
 		 "/******************************************************************************\n"
 		+" * Product: Adempiere ERP & CRM Smart Business Solution                       *\n"
 		+" * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *\n"
@@ -102,32 +102,32 @@ public class ModelInterfaceGenerator
 		+" * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *\n"
 		+" * or via info@compiere.org or http://www.compiere.org/license.html           *\n"
 		+" *****************************************************************************/\n";
-	
+
 	/** Logger */
 	private static CLogger log = CLogger.getCLogger(ModelInterfaceGenerator.class);
-	
+
 	public ModelInterfaceGenerator(int AD_Table_ID, String directory, String packageName) {
 		this.packageName = packageName;
 		// create column access methods
 		StringBuffer mandatory = new StringBuffer();
 		StringBuffer sb = createColumns(AD_Table_ID, mandatory);
-		
+
 		// Header
 		String tableName = createHeader(AD_Table_ID, sb, mandatory);
-		
+
 		// Save
-		if (directory.endsWith("/") || directory.endsWith("\\")) 
+		if (directory.endsWith("/") || directory.endsWith("\\"))
 		{
-			
+
 		} else {
-			directory = directory + "/"; 
+			directory = directory + File.separator;
 		}
 		writeToFile(sb, directory + tableName + ".java");
 	}
 
 	/**
 	 * Add Header info to buffer
-	 * 
+	 *
 	 * @param AD_Table_ID	table
 	 * @param sb			buffer
 	 * @param mandatory		init call for mandatory columns
@@ -169,7 +169,7 @@ public class ModelInterfaceGenerator
 			accessLevelInfo += "- Client ";
 		if (accessLevel == 1 || accessLevel == 3 || accessLevel == 5 || accessLevel == 7)
 			accessLevelInfo += "- Org ";
-		
+
 		//
 		String className = "I_" + tableName;
 		//
@@ -177,13 +177,13 @@ public class ModelInterfaceGenerator
 			.append (COPY)
 			.append("package ").append(packageName).append(";").append(NL)
 		;
-		
+
 		if (!packageName.equals("org.compiere.model")) {
 			addImportClass("org.compiere.model.*");
 		}
 		addImportClass(java.math.BigDecimal.class);
 		addImportClass(org.compiere.util.KeyNamePair.class);
-		
+
 		createImports(start);
 		// Interface
 		start.append("/** Generated Interface for ").append(tableName).append("\n")
@@ -191,26 +191,26 @@ public class ModelInterfaceGenerator
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(NL) //.append(" - ").append(s_run).append("\n")
 			 .append(" */\n")
 			 .append("public interface ").append(className).append(" {").append("\n")
-			 
+
 			 .append("    /** TableName=").append(tableName).append(" */\n")
 			 .append("    public static final String Table_Name = \"").append(tableName).append("\";\n")
-			 
+
 			 .append("    /** AD_Table_ID=").append(AD_Table_ID).append(" */\n");
-		
+
 		//MTable.getTable_ID unnecessary for official ID
 		if (AD_Table_ID <= MTable.MAX_OFFICIAL_ID)
 			start.append("    public static final int Table_ID = ").append(AD_Table_ID).append(";\n");
 		else
 			start.append("    public static final int Table_ID = MTable.getTable_ID(Table_Name);\n");
-			 
+
 			 //.append("    protected KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);\n")
 		start.append("    KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);\n") // INFO - Should this be here???
-			 
+
 			 .append("    /** AccessLevel = ").append(accessLevelInfo).append("\n")
 			 .append("     */\n")
 			 //.append("    protected BigDecimal AccessLevel = new BigDecimal(").append(accessLevel).append(");\n")
 			 .append("    BigDecimal accessLevel = BigDecimal.valueOf(").append(accessLevel).append(");\n") // INFO - Should this be here???
-			 
+
 			 .append("    /** Load Meta Data */\n")
 			 //.append("    protected POInfo initPO (Properties ctx);")
 			 //.append("    POInfo initPO (Properties ctx);") // INFO - Should this be here???
@@ -226,7 +226,7 @@ public class ModelInterfaceGenerator
 
 	/**
 	 * Create Column access methods
-	 * 
+	 *
 	 * @param AD_Table_ID table
 	 * @param mandatory   init call for mandatory columns
 	 * @return set/get method
@@ -272,7 +272,7 @@ public class ModelInterfaceGenerator
 						&& ColumnSQL.length() > 0;
 				boolean IsEncrypted = "Y".equals(rs.getString(16));
 				boolean IsKey = "Y".equals(rs.getString(17));
-				
+
 				// Create COLUMNNAME_ property (teo_sarca, [ 1662447 ])
 				sb.append("\n")
 				  .append("    /** Column name ").append(columnName).append(" */\n")
@@ -301,7 +301,7 @@ public class ModelInterfaceGenerator
 
 	/**
 	 * Create set/get methods for column
-	 * 
+	 *
 	 * @param mandatory        init call for mandatory columns
 	 * @param columnName       column name
 	 * @param isUpdateable     updateable
@@ -357,7 +357,7 @@ public class ModelInterfaceGenerator
 			sb.append(" get").append(columnName);
 		sb.append("();");
 		//
-		
+
 		if (isGenerateModelGetter(columnName) && DisplayType.isID(displayType) && !IsKey)
 		{
 			String fieldName = getFieldName(columnName);
@@ -372,29 +372,29 @@ public class ModelInterfaceGenerator
 		addImportClass(clazz);
 		return sb.toString();
 	}
-	
+
 	// ****** Set/Get Comment ******
 	public void generateJavaComment(String startOfComment, String propertyName,	String description, StringBuffer result) {
 		result.append("\n")
 			  .append("\t/** ").append(startOfComment).append(" ")
 			  .append(propertyName);
-		
+
 		if (description != null && description.length() > 0)
 			result.append(".\n\t  * ").append(description).append(NL);
-		
+
 		result.append("\t  */\n");
 	}
 
 	/*
 	 * Write to file
-	 * 
+	 *
 	 * @param sb string buffer
 	 * @param fileName file name
 	 */
 	private void writeToFile(StringBuffer sb, String fileName) {
 		try {
 			File out = new File(fileName);
-			Writer fw = new OutputStreamWriter(new FileOutputStream(out, false), "UTF-8"); 
+			Writer fw = new OutputStreamWriter(new FileOutputStream(out, false), "UTF-8");
 			for (int i = 0; i < sb.length(); i++) {
 				char c = sb.charAt(i);
 				// after
@@ -417,17 +417,17 @@ public class ModelInterfaceGenerator
 			fw.close();
 			float size = out.length();
 			size /= 1024;
-			log.info(out.getAbsolutePath() + " - " + size + " kB");
+			System.out.println(out.getAbsolutePath() + " - " + size + " kB");
 		} catch (Exception ex) {
 			log.log(Level.SEVERE, fileName, ex);
 			throw new RuntimeException(ex);
 		}
 	}
-	
+
 	/** Import classes */
 	private Collection<String> s_importClasses = new TreeSet<String>();
 	/**
-	 * Add class name to class import list 
+	 * Add class name to class import list
 	 * @param className
 	 */
 	private void addImportClass(String className) {
@@ -446,7 +446,7 @@ public class ModelInterfaceGenerator
 		s_importClasses.add(className);
 	}
 	/**
-	 * Add class to class import list 
+	 * Add class to class import list
 	 * @param cl
 	 */
 	private void addImportClass(Class<?> cl) {
@@ -458,7 +458,7 @@ public class ModelInterfaceGenerator
 		addImportClass(cl.getCanonicalName());
 	}
 	/**
-	 * Generate java imports 
+	 * Generate java imports
 	 * @param sb
 	 */
 	private void createImports(StringBuffer sb) {
@@ -467,8 +467,8 @@ public class ModelInterfaceGenerator
 		}
 		sb.append(NL);
 	}
-	
-	
+
+
 	/**
 	 * Get class for given display type and reference
 	 * @param displayType
@@ -533,7 +533,7 @@ public class ModelInterfaceGenerator
 			return DisplayType.getClass(displayType, true);
 		}
 	}
-	
+
 	public static String getDataTypeName(Class<?> cl, int displayType)
 	{
 		String dataType = cl.getName();
@@ -547,7 +547,7 @@ public class ModelInterfaceGenerator
 		}
 		return dataType;
 	}
-	
+
 	/**
 	 * @param columnName
 	 * @return true if a setter method should be generated
@@ -578,9 +578,9 @@ public class ModelInterfaceGenerator
 			&& !"UpdatedBy".equals(columnName)
 		;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param AD_Table_ID
 	 * @param toEntityType
 	 * @return true if a model getter method (method that is returning referenced PO) should be generated
@@ -590,7 +590,7 @@ public class ModelInterfaceGenerator
 		final String fromEntityType = DB.getSQLValueString(null, "SELECT EntityType FROM AD_Table where AD_Table_ID=?", AD_Table_ID);
 		final MEntityType fromEntity = MEntityType.get(Env.getCtx(), fromEntityType);
 		final MEntityType toEntity = MEntityType.get(Env.getCtx(), toEntityType);
-		return 
+		return
 			// Same entities
 			fromEntityType.equals(toEntityType)
 			// Both are system entities
@@ -599,7 +599,7 @@ public class ModelInterfaceGenerator
 			|| (!fromEntity.isSystemMaintained() && toEntity.isSystemMaintained())
 		;
 	}
-	
+
 	/**
 	 * Get EntityType Model Package.
 	 * @author Victor Perez - [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
@@ -620,7 +620,7 @@ public class ModelInterfaceGenerator
 		}
 		return null;
 	}
-	
+
 	public static String getFieldName(String columnName)
 	{
 		String fieldName;
@@ -630,7 +630,7 @@ public class ModelInterfaceGenerator
 			fieldName = columnName.substring(0, columnName.length() - 3);
 		return fieldName;
 	}
-	
+
 	public static String getReferenceClassName(int AD_Table_ID, String columnName, int displayType, int AD_Reference_ID)
 	{
 		String referenceClassName = null;
@@ -640,19 +640,19 @@ public class ModelInterfaceGenerator
 		{
 			String refTableName = MQuery.getZoomTableName(columnName); // teo_sarca: BF [ 1817768 ] Isolate hardcoded table direct columns
 			referenceClassName = "I_"+refTableName;
-			
+
 			MTable table = MTable.get(Env.getCtx(), refTableName);
 			if (table != null)
 			{
 				String entityType = table.getEntityType();
 				String modelpackage = getModelPackage(entityType) ;
 				if (modelpackage != null)
-				{						
+				{
 					referenceClassName = modelpackage+"."+referenceClassName;
 				}
 				if (!isGenerateModelGetterForEntity(AD_Table_ID, entityType))
 				{
-					referenceClassName = null; 
+					referenceClassName = null;
 				}
 			}
 			else
@@ -741,7 +741,7 @@ public class ModelInterfaceGenerator
 
 	/**
 	 * String representation
-	 * 
+	 *
 	 * @return string representation
 	 */
 	public String toString() {
@@ -749,73 +749,77 @@ public class ModelInterfaceGenerator
 		return sb.toString();
 	}
 
-	/***************************************************************************
-	 * Generate Interface.
-	 * 
-	 * <pre>
-	 *  	Example: java GenerateInterafce.class mydirectory myPackage 'U','A'
-	 *  	would generate entity type User and Application classes into mydirectory.
-	 *  	Without parameters, the default is used:
-	 *  	C:\extend\src\compiere\model\ compiere.model 'U','A'
-	 *  	
-	 * </pre>
-	 * 
-	 * @param args
-	 *            directory package entityType - directory where to save the
-	 *            generated file - package of the classes to be generated -
-	 *            entityType to be generated
+	/**
+	 * @param sourceFolder
+	 * @param packageName
+	 * @param entityType
+	 * @param tableLike
 	 */
-	public static void main(String[] args) {
-		Adempiere.startupEnvironment(true);
-		CLogMgt.setLevel(Level.FINE);
-		log.info("Generate Interface   $Revision: 1.0 $");
-		log.info("----------------------------------");
-		// first parameter
-		String directory = "C:\\Adempiere\\adempiere-all\\extend\\src\\compiere\\model\\";
-		if (args.length > 0)
-			directory = args[0];
-		if (directory == null || directory.length() == 0) {
-			System.err.println("No Directory");
-			System.exit(1);
-		}
-		log.info("Directory: " + directory);
+	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName)
+	{
+		if (sourceFolder == null || sourceFolder.trim().length() == 0)
+			throw new IllegalArgumentException("Must specify source folder");
 
-		// second parameter
-		String packageName = "compiere.model";
-		if (args.length > 1)
-			packageName = args[1];
-		if (packageName == null || packageName.length() == 0) {
-			System.err.println("No package");
-			System.exit(1);
-		}
-		log.info("Package:   " + packageName);
+		File file = new File(sourceFolder);
+		if (!file.exists())
+			throw new IllegalArgumentException("Source folder doesn't exists. sourceFolder="+sourceFolder);
 
-		// third parameter
-		String entityType = "'U','A'"; // User, Application
-		if (args.length > 2)
-			entityType = args[2];
-		if (entityType == null || entityType.length() == 0) {
-			System.err.println("No EntityType");
-			System.exit(1);
+		if (packageName == null || packageName.trim().length() == 0)
+			throw new IllegalArgumentException("Must specify package name");
+
+		if (tableName == null || tableName.trim().length() == 0)
+			throw new IllegalArgumentException("Must specify table name");
+
+		String tableLike = tableName.trim();
+		if (!tableLike.startsWith("'") || !tableLike.endsWith("'"))
+			tableLike = "'" + tableLike + "'";
+
+		String entityTypeFilter = null;
+		if (entityType != null && entityType.trim().length() > 0)
+		{
+			entityTypeFilter = "EntityType IN (";
+			StringTokenizer tokenizer = new StringTokenizer(entityType);
+			int i = 0;
+			while(tokenizer.hasMoreTokens()) {
+				String token = tokenizer.nextToken().trim();
+				if (!token.startsWith("'") || !token.endsWith("'"))
+					token = "'" + token + "'";
+				if (i > 0)
+					entityTypeFilter = entityTypeFilter + ",";
+				entityTypeFilter = entityTypeFilter + token;
+				i++;
+			}
+			entityTypeFilter = entityTypeFilter+")";
 		}
-		StringBuffer sql = new StringBuffer("EntityType IN (").append(
-				entityType).append(")");
-		log.info(sql.toString());
-		log.info("----------------------------------");
-		
-		// Table name like
-		String tableLike = "'%'";	//	All tables
-		//tableLike = "'AD_OrgInfo', 'AD_Role', 'C_CashLine', 'C_Currency', 'C_Invoice', 'C_Order', 'C_Payment', 'M_InventoryLine', 'M_PriceList', 'M_Product', 'U_POSTerminal'"; // only specific tables
-		if (args.length > 3)
-			tableLike = args[3];
-		log.info("Table Like: " + tableLike);
-		
-		// complete sql
-		sql.insert(0, "SELECT AD_Table_ID " + "FROM AD_Table "
-				+ "WHERE (TableName IN ('RV_WarehousePrice','RV_BPartner')" // special views
-				+ " OR IsView='N') AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' AND ");
+		else
+		{
+			entityTypeFilter = "EntityType IN ('U','A')";
+		}
+
+		String directory = sourceFolder.trim();
+		String packagePath = packageName.replaceAll("[.]", File.separator);
+		if (!(directory.endsWith("/") || directory.endsWith("\\")))
+		{
+			directory = directory + File.separator;
+		}
+		if (File.separator.equals("/"))
+			directory = directory.replaceAll("[\\\\]", File.separator);
+		else
+			directory = directory.replaceAll("[/]", File.separator);
+		directory = directory + packagePath;
+		file = new File(directory);
+		if (!file.exists())
+			file.mkdirs();
+
+		//	complete sql
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT AD_Table_ID ")
+			.append("FROM AD_Table ")
+			.append("WHERE (TableName IN ('RV_WarehousePrice','RV_BPartner')")	//	special views
+			.append(" OR IsView='N')")
+			.append(" AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' ");
 		sql.append(" AND TableName LIKE ").append(tableLike);
-		//sql.append(" AND TableName IN (").append( tableLike ).append(")");
+		sql.append(" AND ").append(entityTypeFilter);
 		sql.append(" ORDER BY TableName");
 
 		//
@@ -826,7 +830,8 @@ public class ModelInterfaceGenerator
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			while (rs.next())
+			{
 				new ModelInterfaceGenerator(rs.getInt(1), directory, packageName);
 				count++;
 			}
@@ -840,8 +845,5 @@ public class ModelInterfaceGenerator
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.info("Generated = " + count);
-
 	}
-
 }

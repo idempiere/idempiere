@@ -175,3 +175,4 @@ Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.adempiere.base.BaseActivator
 Service-Component: OSGI-INF/eventmanager.xml
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.equinox.app;bundle-version="1.3.1"

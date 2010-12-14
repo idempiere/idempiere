@@ -40,5 +40,18 @@
             priority="0">
       </exporter>
    </extension>
+   <extension
+         id="org.adempiere.base.ModelGeneratorApplication"
+         name="Model Generator"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.adempiere.base.ModelGeneratorApplication">
+         </run>
+      </application>
+   </extension>
 
 </plugin>
