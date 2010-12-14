@@ -83,3 +83,8 @@ syntax: regexp
 ^keystore/.*$
 ^log/.*$
 ^.*\.log$
+^Adempiere.properties$
+^AdempiereEnv.properties$
+^event\.test/bin.*\.class$
+^packages/.*$
+^work/.*$
