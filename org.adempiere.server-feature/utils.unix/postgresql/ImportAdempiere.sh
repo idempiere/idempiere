@@ -3,9 +3,9 @@
 # $Id: ImportAdempiere.sh,v 1.10 2005/12/20 07:12:17 jjanke Exp $
 echo	Adempiere Database Import		$Revision: 1.10 $
 
-echo	Importing Adempiere DB from $ADEMPIERE_HOME/data/Adempiere_pg.dmp 
+echo	Importing Adempiere DB from $ADEMPIERE_HOME/data/Adempiere_pg.dmp
 
-if [ $# -le 2 ] 
+if [ $# -le 2 ]
   then
     echo "Usage:		$0 <systemAccount> <AdempiereID> <AdempierePWD> <PostgresPwd>"
     echo "Example:	$0 postgres adempiere adempiere postgresPwd"
@@ -36,7 +36,7 @@ ADEMPIERE_CREATE_ROLE_SQL=
 
 PGPASSWORD=$3
 export PGPASSWORD
-createdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -E UNICODE -O $2 -U $2 $ADEMPIERE_DB_NAME
+createdb  --template=template0 -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -E UNICODE -O $2 -U $2 $ADEMPIERE_DB_NAME
 
 echo -------------------------------------
 echo Import Adempiere_pg.dmp

@@ -24,7 +24,7 @@
 @set ADEMPIERE_CREATE_ROLE_SQL=
 
 @set PGPASSWORD=%3
-@createdb -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -E UNICODE -O %2 -U %2 %ADEMPIERE_DB_NAME%
+@createdb --template=template0 -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -E UNICODE -O %2 -U %2 %ADEMPIERE_DB_NAME%
 
 @echo -------------------------------------
 @echo Import Adempiere_pg.dmp
