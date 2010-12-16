@@ -10,7 +10,7 @@
 		 </application>
    </extension>
    <extension
-         id="org.adempiere.install.console.application"
+         id="org.adempiere.install.console-application"
          point="org.eclipse.core.runtime.applications">
       <application
             cardinality="singleton-global"

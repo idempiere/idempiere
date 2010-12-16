@@ -3,7 +3,7 @@
 
 
 @REM Setup Adempiere.properties and AdempiereEnv.properties
-adempiere --launcher.ini setup.ini -application org.adempiere.install.console.application
+adempiere --launcher.ini setup.ini -application org.adempiere.install.console-application
 
 @Echo ErrorLevel = %ERRORLEVEL%
 @IF NOT ERRORLEVEL = 1 GOTO NEXT

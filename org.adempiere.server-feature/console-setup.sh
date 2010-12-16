@@ -3,7 +3,7 @@
 echo Setup Adempiere Server
 
 # Setup Adempiere.properties and AdempiereEnv.properties
-./adempiere --launcher.ini setup.ini -application org.adempiere.install.console.application
+./adempiere --launcher.ini setup.ini -application org.adempiere.install.console-application
 
 # Setup Tomcat
 ./adempiere --launcher.ini setup.ini -application org.eclipse.ant.core.antRunner -buildfile build.xml
