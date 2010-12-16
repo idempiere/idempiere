@@ -55,6 +55,8 @@ public class AdempiereIdGenerator implements IdGenerator {
 			i = 1;
 		}
 		desktop.setAttribute(DESKTOP_ID_ATTRIBUTE, String.valueOf(i));
+		if (!prefix.endsWith("_"))
+			prefix = prefix + "_";
 		return prefix + i;
 	}
 
