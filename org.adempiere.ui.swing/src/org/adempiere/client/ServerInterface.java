@@ -43,18 +43,18 @@ public class ServerInterface implements Server {
 		resource.setChallengeResponse(createChallengeResponse());
 		return resource;
 	}
-	
+
 	private ChallengeResponse createChallengeResponse()
 	{
 		SecurityPrincipal principal = CConnection.get().getAppServerCredential();
 		ChallengeResponse cr = new ChallengeResponse(ChallengeScheme.HTTP_BASIC, principal.identity, principal.secret);
 		return cr;
-	}	
+	}
 
 	private Context getContext() {
 		return Application.context;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.compiere.interfaces.Server#postImmediate(java.util.Properties, int, int, int, boolean)
 	 */
@@ -66,9 +66,9 @@ public class ServerInterface implements Server {
 		map.put("AD_Table_ID", AD_Table_ID);
 		map.put("Record_ID", Record_ID);
 		map.put("force", force);
-		
+
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/command/postDocument", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/command/postDocument", null, null);
 			ClientResource resource = createClientResource(uri);
 			ObjectRepresentation<HashMap<String, Serializable>> entity = new ObjectRepresentation<HashMap<String,Serializable>>(map);
 			Representation response = resource.post(entity);
@@ -86,14 +86,14 @@ public class ServerInterface implements Server {
 		HashMap<String, Serializable> map = new HashMap<String, Serializable>();
 		map.put("context", ctx);
 		map.put("processInfo", pi);
-		
+
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/command/executeProcess", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/command/executeProcess", null, null);
 			ClientResource resource = createClientResource(uri);
 			ObjectRepresentation<Serializable> entity = new ObjectRepresentation<Serializable>(map);
 			Representation response = resource.post(entity);
 			ProcessInfo responseInfo = RestletUtil.toObject(response);
-			return responseInfo;			
+			return responseInfo;
 		} catch (Exception e) {
 			throw new AdempiereException(e);
 		}
@@ -108,9 +108,9 @@ public class ServerInterface implements Server {
 		HashMap<String, Serializable> map = new HashMap<String, Serializable>();
 		map.put("context", ctx);
 		map.put("AD_Workflow_ID", AD_Workflow_ID);
-		
+
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/command/executeWorkflow", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/command/executeWorkflow", null, null);
 			ClientResource resource = createClientResource(uri);
 			ObjectRepresentation<HashMap<String, Serializable>> entity = new ObjectRepresentation<HashMap<String,Serializable>>(map);
 			Representation response = resource.post(entity);
@@ -129,9 +129,9 @@ public class ServerInterface implements Server {
 		HashMap<String, Serializable> map = new HashMap<String, Serializable>();
 		map.put("context", ctx);
 		map.put("email", email);
-		
+
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/command/sendEmail", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/command/sendEmail", null, null);
 			ClientResource resource = createClientResource(uri);
 			ObjectRepresentation<HashMap<String, Serializable>> entity = new ObjectRepresentation<HashMap<String,Serializable>>(map);
 			Representation response = resource.post(entity);
@@ -149,9 +149,9 @@ public class ServerInterface implements Server {
 		HashMap<String, Serializable> map = new HashMap<String, Serializable>();
 		map.put("context", ctx);
 		map.put("AD_Task_ID", AD_Task_ID);
-		
+
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/command/executeTask", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/command/executeTask", null, null);
 			ClientResource resource = createClientResource(uri);
 			ObjectRepresentation<HashMap<String, Serializable>> entity = new ObjectRepresentation<HashMap<String,Serializable>>(map);
 			Representation response = resource.post(entity);
@@ -170,9 +170,9 @@ public class ServerInterface implements Server {
 		map.put("context", ctx);
 		map.put("tableName", tableName);
 		map.put("Record_ID", Record_ID);
-		
+
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/command/resetCache", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/command/resetCache", null, null);
 			ClientResource resource = createClientResource(uri);
 			ObjectRepresentation<HashMap<String, Serializable>> entity = new ObjectRepresentation<HashMap<String,Serializable>>(map);
 			Representation response = resource.post(entity);
@@ -192,9 +192,9 @@ public class ServerInterface implements Server {
 		map.put("context", ctx);
 		map.put("processInfo", processInfo);
 		map.put("procedureName", procedureName);
-		
+
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/command/executeProcess", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/command/executeProcess", null, null);
 			ClientResource resource = createClientResource(uri);
 			ObjectRepresentation<HashMap<String, Serializable>> entity = new ObjectRepresentation<HashMap<String,Serializable>>(map);
 			Representation response = resource.post(entity);

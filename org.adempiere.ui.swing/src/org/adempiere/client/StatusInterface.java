@@ -59,7 +59,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getDateVersion() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/version/date", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/version/date", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -72,7 +72,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getMainVersion() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/version/main", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/version/main", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -84,7 +84,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getDbType() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/type", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/type", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -96,7 +96,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getDbHost() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/host", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/host", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -108,7 +108,7 @@ public class StatusInterface implements Status {
 	@Override
 	public int getDbPort() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/port", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/port", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return Integer.parseInt(response.getText());
@@ -120,7 +120,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getDbName() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/name", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/name", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -132,7 +132,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getConnectionURL() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/url", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/url", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -144,7 +144,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getDbUid() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/uid", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/uid", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -156,7 +156,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getDbPwd() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/password", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/password", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -168,7 +168,7 @@ public class StatusInterface implements Status {
 	@Override
 	public String getFwHost() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/fwhost", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/fwhost", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return response != null ? response.getText() : "";
@@ -180,7 +180,7 @@ public class StatusInterface implements Status {
 	@Override
 	public int getFwPort() {
 		try {
-			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/admin/server/status/database/fwport", null, null);
+			URI uri = new URI("https", null, CConnection.get().getAppsHost(), CConnection.get().getSSLPort(), "/server/status/database/fwport", null, null);
 			ClientResource resource = createClientResource(uri);
 			Representation response = resource.get();
 			return Integer.parseInt(response.getText());
