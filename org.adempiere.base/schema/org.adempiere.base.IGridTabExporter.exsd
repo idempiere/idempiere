@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.IGridTabExporter" name="Grid data export extension"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension point to provide export service for data from that is generated from the AD_Window definition. The client in use ( swing or zk ) is responsible to present all available export extension to user to pick the one to use.
       </documentation>
    </annotation>
 
@@ -59,7 +59,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Implementation class name for the org.adempiere.base.IGridTabExporter interface
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":org.adempiere.base.IGridTabExporter"/>
@@ -74,7 +74,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         1.0.0
       </documentation>
    </annotation>
 
@@ -83,7 +83,15 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;extension
+         id=&quot;org.adempiere.impexp.GridTabXlsExporter&quot;
+         name=&quot;Grid data excel exporter&quot;
+         point=&quot;org.adempiere.base.IGridTabExporter&quot;&gt;
+      &lt;exporter
+            class=&quot;org.adempiere.impexp.GridTabExcelExporter&quot;
+            priority=&quot;0&quot;&gt;
+      &lt;/exporter&gt;
+&lt;/extension&gt;
       </documentation>
    </annotation>
 
@@ -92,7 +100,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         The class attribute must represent an implementor of org.adempiere.base.IGridTabExporter
       </documentation>
    </annotation>
 
@@ -101,9 +109,35 @@
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         excel export in org.adempiere.base and 2pack archive export in org.adempiere.pipo[Enter information about supplied implementation of this extension point.]
       </documentation>
    </annotation>
 
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         /******************************************************************************
+ * This file is part of Adempiere ERP Bazaar                                  *
+ * http://www.adempiere.org                                                   *
+ *                                                                            *
+ * Copyright (C) Heng Sin Low												  *
+ * Copyright (C) Contributors												  *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *                                                                            *
+ * Contributors:                                                              *
+ *****************************************************************************/
+      </documentation>
+   </annotation>
 
 </schema>

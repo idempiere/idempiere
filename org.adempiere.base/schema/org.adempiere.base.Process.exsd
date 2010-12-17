@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.Process" name="Process"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension to provide process implementation. Use the osgi:{extension id} syntax in AD_Process.ClassName to reference the extension that will provide the ProcessCall/SvrProcess instance (replace {extension id} with your actual extension id )
       </documentation>
    </annotation>
 
@@ -52,7 +52,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Implementation class name for the org.compiere.process.ProcessCall interface
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":org.compiere.process.ProcessCall"/>
@@ -67,7 +67,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         1.0.0
       </documentation>
    </annotation>
 
@@ -76,7 +76,14 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;extension
+         id=&quot;org.adempiere.extend.myProcess&quot;
+         name=&quot;My Process&quot;
+         point=&quot;org.adempiere.base.Process&quot;&gt;
+      &lt;process
+            class=&quot;org.adempiere.extend.MyProcess&quot;&gt;
+      &lt;/process&gt;
+&lt;/extension&gt;
       </documentation>
    </annotation>
 
@@ -85,7 +92,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         The class attribute must represent an implementor of org.compiere.process.ProcessCall .  Most of the time it should extend org.compiere.process.SvrProcess .
       </documentation>
    </annotation>
 
@@ -98,5 +105,31 @@
       </documentation>
    </annotation>
 
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         /******************************************************************************
+ * This file is part of Adempiere ERP Bazaar                                  *
+ * http://www.adempiere.org                                                   *
+ *                                                                            *
+ * Copyright (C) Jorg Viola												      *
+ * Copyright (C) Contributors												  *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *                                                                            *
+ * Contributors:                                                              *
+ *****************************************************************************/
+      </documentation>
+   </annotation>
 
 </schema>

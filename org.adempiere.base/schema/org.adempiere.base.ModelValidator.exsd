@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.ModelValidator" name="Model Validator"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension point to provide model validator instance. Use the osgi:{extension id} syntax in AD_ModelValidator.ModelValidationClass to reference the extension that will provide the  concrete ModelValidator instance ( replace {extension id} with your actual extension id ). Alternatively, you can use the EventManager service to listen to model and document event which doesn&apos;t need any AD table entry ( see event.test project for example ).
       </documentation>
    </annotation>
 
@@ -52,7 +52,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Implementation class name for the org.compiere.model.ModelValidator interface
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":org.compiere.model.ModelValidator"/>
@@ -67,7 +67,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         1.0.0
       </documentation>
    </annotation>
 
@@ -76,7 +76,15 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;extension
+         id=&quot;org.adempiere.extend.myModelValidator&quot;
+         name=&quot;My Model Validator&quot;
+         point=&quot;org.adempiere.base.ModelValidator&quot;&gt;
+      &lt;listener
+            class=&quot;org.adempiere.extend.MyModelValidator&quot;
+            priority=&quot;0&quot;&gt;
+      &lt;/listener&gt;
+&lt;/extension&gt;
       </documentation>
    </annotation>
 
@@ -85,18 +93,36 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         The class attribute must represent an implementor of org.compiere.model.ModelValidator
       </documentation>
    </annotation>
+
 
    <annotation>
       <appinfo>
-         <meta.section type="implementation"/>
+         <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         /******************************************************************************
+ * This file is part of Adempiere ERP Bazaar                                  *
+ * http://www.adempiere.org                                                   *
+ *                                                                            *
+ * Copyright (C) Jorg Viola												      *
+ * Copyright (C) Contributors												  *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *                                                                            *
+ * Contributors:                                                              *
+ *****************************************************************************/
       </documentation>
    </annotation>
-
 
 </schema>

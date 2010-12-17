@@ -6,7 +6,9 @@
          <meta.schema plugin="org.adempiere.base" id="org.compiere.db.AdempiereDatabase" name="Adempiere Database Interface"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension point for persistence framework to database interface. The id attribute of the database element in your extension definition must match the database type stored in Adempiere.properties .
+
+To support a database in adempiere, you need to extend this extension point and the org.adempiere.install.IDatabaseConfig extension point from the org.adempiere.install bundle. The id attribute of the two extension must match ( case sensitive ).
       </documentation>
    </annotation>
 
@@ -59,7 +61,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  Implementation class name
+                  Implementation class name for the org.compiere.db.AdempiereDatabase interface
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":org.compiere.db.AdempiereDatabase"/>
@@ -74,7 +76,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         1.0.0
       </documentation>
    </annotation>
 
@@ -83,7 +85,13 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;extension
+         point=&quot;org.compiere.db.AdempiereDatabase&quot;&gt;
+      &lt;database
+            class=&quot;org.compiere.db.DB_PostgreSQL&quot;
+            id=&quot;PostgreSQL&quot;&gt;
+      &lt;/database&gt;
+&lt;/extension&gt;
       </documentation>
    </annotation>
 
@@ -92,7 +100,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         The class attribute must represent an implementor of org.compiere.db.AdempiereDatabase
       </documentation>
    </annotation>
 
@@ -101,9 +109,35 @@
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         org.adempiere.db.oracle.provider and org.adempiere.db.postgresql.provider
       </documentation>
    </annotation>
 
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         /******************************************************************************
+ * This file is part of Adempiere ERP Bazaar                                  *
+ * http://www.adempiere.org                                                   *
+ *                                                                            *
+ * Copyright (C) Heng Sin Low												  *
+ * Copyright (C) Contributors												  *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *                                                                            *
+ * Contributors:                                                              *
+ *****************************************************************************/
+      </documentation>
+   </annotation>
 
 </schema>

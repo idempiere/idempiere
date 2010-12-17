@@ -3,10 +3,10 @@
 <schema targetNamespace="org.adempiere.base" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.IModelFactory" name="Model Factory"/>
+         <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.IResourceFinder" name="Resource Finder"/>
       </appinfo>
       <documentation>
-         Extension point to provide model factory. Extension is expected to provide model instance only for the table that it intends to support and can return null for other. The persistence framework will query all the available model factory extension following the priority sequence and will use the first model instance available.
+         The core classes will query all available resource finder to load resources like image, properties file, etc ( First non-null result will be used ).
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <choice>
-            <element ref="factory"/>
+            <element ref="finder"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,22 +47,15 @@
       </complexType>
    </element>
 
-   <element name="factory">
+   <element name="finder">
       <complexType>
-         <attribute name="priority" type="string">
-            <annotation>
-               <documentation>
-                  numeric priority value, higher value is of higher priority.
-               </documentation>
-            </annotation>
-         </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Implementation class for the org.compiere.util.IResourceFinder interface
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.adempiere.base.IModelFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.compiere.util.IResourceFinder"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -84,13 +77,12 @@
       </appinfo>
       <documentation>
          &lt;extension
-         id=&quot;org.adempiere.base.DefaultModelFactory&quot;
-         name=&quot;Default model factory&quot;
-         point=&quot;org.adempiere.base.IModelFactory&quot;&gt;
-      &lt;factory
-            class=&quot;org.adempiere.base.DefaultModelFactory&quot;
-            priority=&quot;0&quot;&gt;
-      &lt;/factory&gt;
+         id=&quot;RF&quot;
+         name=&quot;RF&quot;
+         point=&quot;org.adempiere.base.IResourceFinder&quot;&gt;
+      &lt;finder
+            class=&quot;org.compiere.util.ResourceFinder&quot;&gt;
+      &lt;/finder&gt;
 &lt;/extension&gt;
       </documentation>
    </annotation>
@@ -100,7 +92,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         The class attribute must represent an implementor of org.adempiere.base.IModelFactory
+         The class attribute must represent an implementor of org.adempiere.base.IResourceFinder
       </documentation>
    </annotation>
 
@@ -109,7 +101,7 @@
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         Default model class factory in org.adempiere.base bundle
+         extension at the org.adempiere.ui.swing and org.adempiere.ui.zk bundle.
       </documentation>
    </annotation>
 
@@ -122,7 +114,7 @@
  * This file is part of Adempiere ERP Bazaar                                  *
  * http://www.adempiere.org                                                   *
  *                                                                            *
- * Copyright (C) Heng Sin Low												  *
+ * Copyright (C) Jorg Viola												      *
  * Copyright (C) Contributors												  *
  *                                                                            *
  * This program is free software; you can redistribute it and/or modify it    *

@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.pipo" id="org.adempiere.pipo.packOutHandlers" name="Packout Handlers"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension point to provide 2pack handler implementation
       </documentation>
    </annotation>
 
@@ -66,6 +66,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="priority" type="string">
+            <annotation>
+               <documentation>
+                  numeric priority value, higher value is of higher priority
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -74,7 +81,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         1.0.0
       </documentation>
    </annotation>
 
@@ -83,7 +90,35 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;extension
+         id=&quot;defaultHandlers&quot;      name=&quot;Default Handlers&quot;
+         point=&quot;org.adempiere.pipo.Handlers&quot;&gt;
+      &lt;handler
+            class=&quot;org.adempiere.pipo2.handler.AdElementHandler&quot;
+            id=&quot;AD_Element&quot;&gt;
+      &lt;/handler&gt;
+      &lt;handler
+            class=&quot;org.adempiere.pipo2.handler.CodeSnippetElementHandler&quot;
+            id=&quot;Code_Snippet&quot;&gt;
+      &lt;/handler&gt;
+      &lt;handler
+            class=&quot;org.adempiere.pipo2.handler.ColumnElementHandler&quot;
+            id=&quot;AD_Column&quot;&gt;
+      &lt;/handler&gt;
+      ...
+      &lt;handler
+            class=&quot;org.adempiere.pipo2.handler.SQLStatementElementHandler&quot;
+            id=&quot;SQLStatement&quot;&gt;
+      &lt;/handler&gt;
+      &lt;handler
+            class=&quot;org.adempiere.pipo2.handler.CommonTranslationHandler&quot;
+            id=&quot;table.translationHandler&quot;&gt;
+      &lt;/handler&gt;
+      &lt;handler
+            class=&quot;org.adempiere.pipo2.handler.GenericPOElementHandler&quot;
+            id=&quot;table.genericHandler&quot;&gt;
+      &lt;/handler&gt;
+&lt;/extension&gt;
       </documentation>
    </annotation>
 
@@ -92,7 +127,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         The class attribute must represent an implementor of org.adempiere.pipo2.ElementHandler
       </documentation>
    </annotation>
 
@@ -101,9 +136,35 @@
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         Default implementation in the org.adempiere.pipo.handlers bundle
       </documentation>
    </annotation>
 
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         /******************************************************************************
+ * This file is part of Adempiere ERP Bazaar                                  *
+ * http://www.adempiere.org                                                   *
+ *                                                                            *
+ * Copyright (C) Heng Sin Low                                                 *
+ * Copyright (C) Contributors                                                 *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *                                                                            *
+ * Contributors:                                                              *
+ *****************************************************************************/
+      </documentation>
+   </annotation>
 
 </schema>

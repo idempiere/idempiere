@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.IDocFactory" name="Financial Document Factory"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension point for accounting document factory. Matching is done against the gaap attribute following the priority sequence ( start from larger number ). Extension is only expected to provide document instance for document type that it intents to support and can return null for others.
       </documentation>
    </annotation>
 
@@ -52,21 +52,21 @@
          <attribute name="gaap" type="string" use="required">
             <annotation>
                <documentation>
-                  use * to match everything
+                  gaap to match c_acctschema.gaap. you can use * to match everything
                </documentation>
             </annotation>
          </attribute>
          <attribute name="priority" type="string">
             <annotation>
                <documentation>
-                  
+                  numeric priority value, higher value is of higher priority.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Implementation class for the org.adempiere.base.IDocFactory
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":org.adempiere.base.IDocFactory"/>
@@ -81,7 +81,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         1.0.0
       </documentation>
    </annotation>
 
@@ -90,7 +90,16 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;extension
+         id=&quot;org.adempiere.base.DefaultDocFactory&quot;
+         name=&quot;Default Document Factory&quot;
+         point=&quot;org.adempiere.base.IDocFactory&quot;&gt;
+      &lt;factory
+            class=&quot;org.adempiere.base.DefaultDocumentFactory&quot;
+            gaap=&quot;*&quot;
+            priority=&quot;0&quot;&gt;
+      &lt;/factory&gt;
+&lt;/extension&gt;
       </documentation>
    </annotation>
 
@@ -99,7 +108,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         The class attribute must represent an implementor of org.adempiere.base.IDocFactory
       </documentation>
    </annotation>
 
@@ -108,9 +117,35 @@
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         Default document factory in the org.adempiere.base bundle.
       </documentation>
    </annotation>
 
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         /******************************************************************************
+ * This file is part of Adempiere ERP Bazaar                                  *
+ * http://www.adempiere.org                                                   *
+ *                                                                            *
+ * Copyright (C) Heng Sin Low                                                 *
+ * Copyright (C) Contributors                                                 *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *                                                                            *
+ * Contributors:                                                              *
+ *****************************************************************************/
+      </documentation>
+   </annotation>
 
 </schema>
