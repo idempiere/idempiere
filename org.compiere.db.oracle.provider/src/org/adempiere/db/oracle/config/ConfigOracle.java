@@ -311,7 +311,7 @@ public class ConfigOracle implements IDatabaseConfig
 		log.info("OK: Database Server = " + databaseServer);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer.getHostName());
 		//store as lower case for better script level backward compatibility
-		data.setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, data.getDatabaseType().toLowerCase());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, data.getDatabaseType());
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PATH, data.getDatabaseType().toLowerCase());
 
 		//	Database Port
