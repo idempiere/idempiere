@@ -294,8 +294,7 @@ public final class Adempiere
 		if (s_image16 == null)
 		{
 			Toolkit tk = Toolkit.getDefaultToolkit();
-			URL url = org.compiere.Adempiere.class.getResource(s_File16x16);
-		//	System.out.println(url);
+			URL url = Core.getResourceFinder().getResource(s_File16x16);
 			if (url == null)
 				return null;
 			s_image16 = tk.getImage(url);
@@ -315,10 +314,9 @@ public final class Adempiere
 			Toolkit tk = Toolkit.getDefaultToolkit();
 			URL url = null;
 			if (hr)
-				url = org.compiere.Adempiere.class.getResource(s_file48x15HR);
+				url = Core.getResourceFinder().getResource(s_file48x15HR);
 			else
-				url = org.compiere.Adempiere.class.getResource(s_file48x15);
-		//	System.out.println(url);
+				url = Core.getResourceFinder().getResource(s_file48x15);
 			if (url == null)
 				return null;
 			s_image48x15 = tk.getImage(url);
@@ -336,8 +334,6 @@ public final class Adempiere
 		{
 			Toolkit tk = Toolkit.getDefaultToolkit();
 			URL url = Core.getResourceFinder().getResource(s_file100x30);
-//			URL url = org.compiere.Adempiere.class.getResource(s_file100x30);
-		//	System.out.println(url);
 			if (url == null)
 				return null;
 			s_imageLogo = tk.getImage(url);
@@ -353,8 +349,7 @@ public final class Adempiere
 	{
 		if (s_imageIcon32 == null)
 		{
-			URL url = org.compiere.Adempiere.class.getResource(s_file32x32);
-		//	System.out.println(url);
+			URL url = Core.getResourceFinder().getResource(s_file32x32);
 			if (url == null)
 				return null;
 			s_imageIcon32 = new ImageIcon(url);
@@ -370,8 +365,7 @@ public final class Adempiere
 	{
 		if (s_imageIconLogo == null)
 		{
-			URL url = org.compiere.Adempiere.class.getResource(s_file100x30);
-		//	System.out.println(url);
+			URL url = Core.getResourceFinder().getResource(s_file100x30);
 			if (url == null)
 				return null;
 			s_imageIconLogo = new ImageIcon(url);
@@ -581,37 +575,4 @@ public final class Adempiere
 		return Core.getResourceFinder().getResource(name);
 	}
 
-
-	/**
-	 *  Main Method
-	 *
-	 *  @param args optional start class
-	 */
-//	public static void main (String[] args)
-//	{
-//		Splash.getSplash();
-//		startup(true);     //  error exit and initUI
-//
-//		//  Start with class as argument - or if nothing provided with Client
-//		String className = "org.compiere.apps.AMenu";
-//		for (int i = 0; i < args.length; i++)
-//		{
-//			if (!args[i].equals("-debug"))  //  ignore -debug
-//			{
-//				className = args[i];
-//				break;
-//			}
-//		}
-//		//
-//		try
-//		{
-//			Class<?> startClass = Class.forName(className);
-//			startClass.newInstance();
-//		}
-//		catch (Exception e)
-//		{
-//			System.err.println("ADempiere starting: " + className + " - " + e.toString());
-//			e.printStackTrace();
-//		}
-//	}   //  main
 }	//	Adempiere

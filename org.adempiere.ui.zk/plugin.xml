@@ -46,5 +46,12 @@
             priority="0">
       </factory>
    </extension>
+   <extension
+         id="org.adempiere.ui.zk.WebUIResourceFinder"
+         point="org.adempiere.base.IResourceFinder">
+      <finder
+            class="org.adempiere.webui.util.WebUIResourceFinder">
+      </finder>
+   </extension>
 
 </plugin>

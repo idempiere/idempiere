@@ -374,4 +374,7 @@ Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  org.apache.commons.codec.binary,
  org.apache.ecs,
- org.apache.ecs.xhtml
+ org.apache.ecs.xhtml,
+ org.osgi.framework;version="1.5.0"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.adempiere.webui.WebUIActivator
