@@ -83,7 +83,19 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;pre&gt;
+&lt;extension
+         id=&quot;org.compiere.model.PP_Authorize&quot;
+         name=&quot;Authorize.net&quot;
+         point=&quot;org.compiere.model.PaymentProcessor&quot;&gt;
+      &lt;processor
+            class=&quot;org.compiere.model.PP_Authorize&quot;
+            priority=&quot;0&quot;&gt;
+      &lt;/processor&gt;
+&lt;/extension&gt;
+
+C_PaymentProcessor.PayProcessorClass=&quot;org.compiere.model.PP_Authorize&quot;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -110,7 +122,7 @@
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+         This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
                                                                            
  Copyright (C) Jorg Viola.
  Copyright (C) Contributors.
