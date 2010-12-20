@@ -42,7 +42,7 @@ import org.compiere.util.Env;
  * @author Robert Klein
  *
  */
-public class PackRoll extends SvrProcess {
+public class PackRollProcess extends SvrProcess {
 	/** Package from Record */
 	private int m_AD_Package_Imp_ID = 0;
 	private String m_Processing = null;

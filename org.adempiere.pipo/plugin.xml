@@ -17,5 +17,29 @@
             priority="0">
       </exporter>
    </extension>
+   <extension
+         id="org.adempiere.pipo.PackOut"
+         name="PackOut Process"
+         point="org.adempiere.base.Process">
+      <process
+            class="org.adempiere.pipo2.PackOutProcess">
+      </process>
+   </extension>
+   <extension
+         id="org.adempiere.pipo.PackIn"
+         name="PackIn Process"
+         point="org.adempiere.base.Process">
+      <process
+            class="org.adempiere.pipo2.PackInProcess">
+      </process>
+   </extension>
+   <extension
+         id="org.adempiere.pipo.PackRoll"
+         name="PackRoll Process"
+         point="org.adempiere.base.Process">
+      <process
+            class="org.adempiere.pipo2.PackRollProcess">
+      </process>
+   </extension>
 
 </plugin>
