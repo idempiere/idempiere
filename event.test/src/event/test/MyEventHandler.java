@@ -56,8 +56,4 @@ public class MyEventHandler extends AbstractEventHandler {
 		registerTableEvent(IEventTopics.PO_BEFORE_NEW, I_C_BP_Group.Table_Name);
 		registerTableEvent(IEventTopics.PO_BEFORE_NEW, I_M_Product_Category.Table_Name);
 	}
-
-	public void unbindEventManager(IEventManager eventManager) {
-		eventManager.unregister(this);
-	}
 }
