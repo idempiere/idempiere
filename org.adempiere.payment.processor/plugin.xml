@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.compiere.model.PP_Authorize"
+         name="Authorize.net"
+         point="org.compiere.model.PaymentProcessor">
+      <processor
+            class="org.compiere.model.PP_Authorize"
+            priority="0">
+      </processor>
+   </extension>
+   <extension
+         id="org.compiere.model.PP_Optimal"
+         name="Optimal"
+         point="org.compiere.model.PaymentProcessor">
+      <processor
+            class="org.compiere.model.PP_Optimal"
+            priority="0">
+      </processor>
+   </extension>
+   <extension
+         id="org.compiere.model.PP_PayPal"
+         name="PayPal"
+         point="org.compiere.model.PaymentProcessor">
+      <processor
+            class="org.compiere.model.PP_PayPal"
+            priority="0">
+      </processor>
+   </extension>
+   <extension
+         id="org.compiere.model.PP_PayFlowPro"
+         name="Pay Flow Pro"
+         point="org.compiere.model.PaymentProcessor">
+      <processor
+            class="org.compiere.model.PP_PayFlowPro"
+            priority="0">
+      </processor>
+   </extension>
+   <extension
+         id="org.compiere.model.PP_PayFlowPro4"
+         name="Pay Flow Pro V4"
+         point="org.compiere.model.PaymentProcessor">
+      <processor
+            class="org.compiere.model.PP_PayFlowPro4"
+            priority="0">
+      </processor>
+   </extension>
+
+</plugin>

@@ -22,9 +22,14 @@ package org.adempiere.base;
 
 import java.net.URL;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.compiere.model.MPayment;
+import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.ModelValidator;
+import org.compiere.model.PaymentProcessor;
 import org.compiere.process.ProcessCall;
+import org.compiere.util.CLogger;
 
 /**
  * This is a facade class for the Service Locator.
@@ -34,6 +39,8 @@ import org.compiere.process.ProcessCall;
  * @author hengsin
  */
 public class Core {
+
+	private final static CLogger s_log = CLogger.getCLogger(Core.class);
 
 	/**
 	 * @return list of active resource finder
@@ -89,4 +96,43 @@ public class Core {
 		return Service.locate(ModelValidator.class, "org.adempiere.base.ModelValidator", query);
 	}
 
+	/**
+	 *  Factory
+	 * 	@param mpp payment processor model
+	 * 	@param mp payment model
+	 *  @return initialized PaymentProcessor or null
+	 */
+	public static PaymentProcessor getPaymentProcessor(MPaymentProcessor mpp, MPayment mp) {
+		s_log.info("create for " + mpp);
+		String className = mpp.getPayProcessorClass();
+		if (className == null || className.length() == 0) {
+			s_log.log(Level.SEVERE, "No PaymentProcessor class name in " + mpp);
+			return null;
+		}
+		//
+		PaymentProcessor myProcessor = null;
+		myProcessor = Service.locate(PaymentProcessor.class);
+		if (myProcessor == null) {
+			try {
+				Class<?> ppClass = Class.forName(className);
+				if (ppClass != null)
+					myProcessor = (PaymentProcessor)ppClass.newInstance();
+			} catch (Error e1) {   //  NoClassDefFound
+				s_log.log(Level.SEVERE, className + " - Error=" + e1.getMessage());
+				return null;
+			} catch (Exception e2) {
+				s_log.log(Level.SEVERE, className, e2);
+				return null;
+			}
+		}
+		if (myProcessor == null) {
+			s_log.log(Level.SEVERE, "Not found in extension registry and classpath");
+			return null;
+		}
+
+		//  Initialize
+		myProcessor.initialize(mpp, mp);
+		//
+		return myProcessor;
+	}
 }

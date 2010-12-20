@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.adempiere.base.Core;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -58,9 +59,20 @@ public abstract class PaymentProcessor
 	/** Encode Parameters		*/
 	private boolean 			m_encoded = false;
 	/** Ampersand				*/
-	public static final char	AMP = '&'; 
+	public static final char	AMP = '&';
 	/** Equals					*/
-	public static final char	EQ = '='; 
+	public static final char	EQ = '=';
+
+	/**
+	 *
+	 * @param mpp
+	 * @param mp
+	 */
+	public void initialize(MPaymentProcessor mpp, MPayment mp)
+	{
+		p_mp = mp;
+		p_mpp = mpp;
+	}
 
 	/**
 	 *  Factory
@@ -70,42 +82,7 @@ public abstract class PaymentProcessor
 	 */
 	public static PaymentProcessor create (MPaymentProcessor mpp, MPayment mp)
 	{
-		s_log.info("create for " + mpp);
-		String className = mpp.getPayProcessorClass();
-		if (className == null || className.length() == 0)
-		{
-			s_log.log(Level.SEVERE, "No PaymentProcessor class name in " + mpp);
-			return null;
-		}
-		//
-		PaymentProcessor myProcessor = null;
-		try
-		{
-			Class<?> ppClass = Class.forName(className);
-			if (ppClass != null)
-				myProcessor = (PaymentProcessor)ppClass.newInstance();
-		}
-		catch (Error e1)    //  NoClassDefFound
-		{
-			s_log.log(Level.SEVERE, className + " - Error=" + e1.getMessage());
-			return null;
-		}
-		catch (Exception e2)
-		{
-			s_log.log(Level.SEVERE, className, e2);
-			return null;
-		}
-		if (myProcessor == null)
-		{
-			s_log.log(Level.SEVERE, "no class");
-			return null;
-		}
-
-		//  Initialize
-		myProcessor.p_mpp = mpp;
-		myProcessor.p_mp = mp;
-		//
-		return myProcessor;
+		return Core.getPaymentProcessor(mpp, mp);
 	}   //  create
 
 	/*************************************************************************/
@@ -134,7 +111,7 @@ public abstract class PaymentProcessor
 	// Validation methods. Override if you have specific needs.
 
 	/**
-	 * Validate payment before process. 
+	 * Validate payment before process.
 	 *  @return  "" or Error AD_Message.
 	 *  @throws IllegalArgumentException
 	 */
@@ -149,7 +126,7 @@ public abstract class PaymentProcessor
 		}
 		return(msg);
 	}
-	
+
 	/**
 	 * Standard account validation.
 	 * @return
@@ -157,11 +134,11 @@ public abstract class PaymentProcessor
 	public String validateAccountNo() {
 		return MPaymentValidate.validateAccountNo(p_mp.getAccountNo());
 	}
-	
+
 	public String validateCheckNo() {
 		return MPaymentValidate.validateCheckNo(p_mp.getCheckNo());
 	}
-	
+
 	public String validateCreditCard() throws IllegalArgumentException {
 		String msg = MPaymentValidate.validateCreditCardNumber(p_mp.getCreditCardNumber(), p_mp.getCreditCardType());
 		if (msg != null && msg.length() > 0)
@@ -177,7 +154,7 @@ public abstract class PaymentProcessor
 		}
 		return(msg);
 	}
-	
+
 	/**************************************************************************
 	 * 	Set Timeout
 	 * 	@param newTimeout timeout
@@ -195,7 +172,7 @@ public abstract class PaymentProcessor
 		return m_timeout;
 	}
 
-	
+
 	/**************************************************************************
 	 *  Check for delimiter fields &= and add length of not encoded
 	 *  @param name name
@@ -235,7 +212,7 @@ public abstract class PaymentProcessor
 	 *  @param name name
 	 *  @param value value
 	 *  @param maxLength maximum length
-	 *  @return name[5]=value or name=value 
+	 *  @return name[5]=value or name=value
 	 */
 	protected String createPair(String name, String value, int maxLength)
 	{
@@ -243,10 +220,10 @@ public abstract class PaymentProcessor
 		if (name == null || name.length() == 0
 			|| value == null || value.length() == 0)
 			return "";
-		
+
 		if (value.length() > maxLength)
 			value = value.substring(0, maxLength);
-		
+
 		StringBuffer retValue = new StringBuffer(name);
 		if (m_encoded)
 			try
@@ -264,7 +241,7 @@ public abstract class PaymentProcessor
 		retValue.append(value);
 		return retValue.toString();
 	}   // createPair
-	
+
 	/**
 	 * 	Set Encoded
 	 *	@param doEncode true if encode
@@ -281,7 +258,7 @@ public abstract class PaymentProcessor
 	{
 		return m_encoded;
 	}	//	setEncode
-	
+
 	/**
 	 * 	Get Connect Post Properties
 	 *	@param urlString POST url string
@@ -321,7 +298,7 @@ public abstract class PaymentProcessor
 		log.fine(ms + "ms - " + prop.toString());
 		return prop;
 	}	//	connectPost
-	
+
 	/**
 	 * 	Connect via Post
 	 *	@param urlString url destination (assuming https)
@@ -360,5 +337,5 @@ public abstract class PaymentProcessor
 		//
 	    return response;
 	}	//	connectPost
-		
+
 }   //  PaymentProcessor
