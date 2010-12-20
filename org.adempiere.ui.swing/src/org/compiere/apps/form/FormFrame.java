@@ -33,7 +33,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.KeyStroke;
 
-import org.adempiere.base.Core;
 import org.adempiere.client.Client;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.AGlassPane;
@@ -55,15 +54,15 @@ import org.compiere.util.Trace;
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: FormFrame.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
- * 
- *  Colin Rooney 2007/03/20 RFE#1670185 & BUG#1684142 
+ *
+ *  Colin Rooney 2007/03/20 RFE#1670185 & BUG#1684142
  *                           Extend security to Info Queries
  */
-public class FormFrame extends CFrame 
-	implements ActionListener 
+public class FormFrame extends CFrame
+	implements ActionListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2559005548469735515L;
 
@@ -76,7 +75,7 @@ public class FormFrame extends CFrame
 	{
 		this(null);
 	}	//	FormFrame
-	
+
 	/**
 	 *	Create Form.
 	 *  Need to call openForm
@@ -85,14 +84,14 @@ public class FormFrame extends CFrame
 	public FormFrame (GraphicsConfiguration gc)
 	{
 		super(gc);
-		addWindowListener(new java.awt.event.WindowAdapter() 
+		addWindowListener(new java.awt.event.WindowAdapter()
 		{
-			public void windowOpened(java.awt.event.WindowEvent evt) 
+			public void windowOpened(java.awt.event.WindowEvent evt)
 			{
 				formWindowOpened(evt);
 			}
 		});
-		
+
 		m_WindowNo = AEnv.createWindowNo (this);
 	    setGlassPane(m_glassPane);
 		try
@@ -107,7 +106,7 @@ public class FormFrame extends CFrame
 	}	//	FormFrame
 
 	private ProcessInfo  m_pi;
-	
+
 	/**	WindowNo					*/
 	private int			m_WindowNo;
 	/** The GlassPane           	*/
@@ -124,7 +123,7 @@ public class FormFrame extends CFrame
 	public boolean 		m_maximize = false;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(FormFrame.class);
-	
+
 	/** Form ID			*/
 	private int		p_AD_Form_ID = 0;
 
@@ -160,7 +159,7 @@ public class FormFrame extends CFrame
 
 		if (MRole.getDefault().isAllow_Info_Product())
 		{
-			AEnv.addMenuItem("InfoProduct", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK), mView, this);			
+			AEnv.addMenuItem("InfoProduct", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK), mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_BPartner())
 		{
@@ -172,36 +171,36 @@ public class FormFrame extends CFrame
 		}
 		if (MRole.getDefault().isAllow_Info_Schedule())
 		{
-			AEnv.addMenuItem("InfoSchedule", null, null, mView, this);			
+			AEnv.addMenuItem("InfoSchedule", null, null, mView, this);
 		}
 		mView.addSeparator();
 		if (MRole.getDefault().isAllow_Info_Order())
 		{
-			AEnv.addMenuItem("InfoOrder", "Info", null, mView, this);	
+			AEnv.addMenuItem("InfoOrder", "Info", null, mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_Invoice())
 		{
-			AEnv.addMenuItem("InfoInvoice", "Info", null, mView, this);			
+			AEnv.addMenuItem("InfoInvoice", "Info", null, mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_InOut())
 		{
-			AEnv.addMenuItem("InfoInOut", "Info", null, mView, this);	
+			AEnv.addMenuItem("InfoInOut", "Info", null, mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_Payment())
 		{
-			AEnv.addMenuItem("InfoPayment", "Info", null, mView, this);	
+			AEnv.addMenuItem("InfoPayment", "Info", null, mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_CashJournal())
 		{
-			AEnv.addMenuItem("InfoCashLine", "Info", null, mView, this);	
+			AEnv.addMenuItem("InfoCashLine", "Info", null, mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_Resource())
 		{
-			AEnv.addMenuItem("InfoAssignment", "Info", null, mView, this);	
+			AEnv.addMenuItem("InfoAssignment", "Info", null, mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_Asset())
 		{
-			AEnv.addMenuItem("InfoAsset", "Info", null, mView, this);	
+			AEnv.addMenuItem("InfoAsset", "Info", null, mView, this);
 		}
 		//      Tools
 		JMenu mTools = AEnv.getMenu("Tools");
@@ -217,7 +216,7 @@ public class FormFrame extends CFrame
 			mTools.addSeparator();
 			AEnv.addMenuItem("Preference", null, null, mTools, this);
 		}
-		
+
 		//		Window
 		AMenu aMenu = (AMenu)AEnv.getWindow(0);
 		JMenu mWindow = new WindowMenu(aMenu.getWindowManager(), this);
@@ -299,7 +298,7 @@ public class FormFrame extends CFrame
 		//
 		return openForm(AD_Form_ID, className, name);
 	}	//	openForm
-	
+
 	/**
 	 * 	Open Form
 	 *	@param AD_Form_ID Form
@@ -316,10 +315,10 @@ public class FormFrame extends CFrame
 
 		try
 		{
-			//	Create instance w/o parameters
-			if (Core.isExtension(className))
-				m_panel = Client.getFormPanel(className);
-			else
+			// Create instance w/o parameters
+			// Try equinox extension then java classpath
+			m_panel = Client.getFormPanel(className);
+			if (m_panel == null)
 				m_panel = (FormPanel)Class.forName(className).newInstance();
 		}
 		catch (Exception e)
@@ -407,8 +406,8 @@ public class FormFrame extends CFrame
 	{
 		m_glassPane.setBusyTimer (time);
 	}   //  setBusyTimer
-	
-	 
+
+
 	/**
 	 * 	Set Maximize Window
 	 *	@param max maximize
@@ -417,14 +416,14 @@ public class FormFrame extends CFrame
 	{
 		m_maximize = max;
 	}	//	setMaximize
-	 
- 
+
+
 	/**
 	 * 	Form Window Opened.
 	 * 	Maximize window if required
 	 *	@param evt event
 	 */
-	private void formWindowOpened(java.awt.event.WindowEvent evt) 
+	private void formWindowOpened(java.awt.event.WindowEvent evt)
 	{
 		if (m_maximize == true)
 		{
@@ -434,20 +433,20 @@ public class FormFrame extends CFrame
    }	//	formWindowOpened
 
 // Add window and tab no called from
-	
+
 	public void setProcessInfo(ProcessInfo pi)
 	{
 		m_pi = pi;
-		
+
 	}
-	
+
 	public ProcessInfo getProcessInfo()
 	{
 		return m_pi;
 	}
 
 	// End
-	
+
 	/**
 	 * 	Start Batch
 	 *	@param process

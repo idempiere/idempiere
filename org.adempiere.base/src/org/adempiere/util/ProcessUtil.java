@@ -142,9 +142,8 @@ public final class ProcessUtil {
 		}
 
 		ProcessCall process = null;
-		if (Core.isExtension(className)) {
-			process = Core.getProcess(className);
-		}
+		//always query equinox extension first
+		process = Core.getProcess(className);
 
 		if (process == null) {
 			//Get Class

@@ -155,10 +155,9 @@ public class ModelValidationEngine
 		{
 			//
 			ModelValidator validator = null;
-			if (Core.isExtension(className))
-			{
-				validator = Core.getModelValidator(className);
-			}
+			//always query equinox extension first
+			validator = Core.getModelValidator(className);
+
 			if (validator == null)
 			{
 				Class<?> clazz = Class.forName(className);

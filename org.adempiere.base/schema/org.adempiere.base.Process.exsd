@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.Process" name="Process"/>
       </appinfo>
       <documentation>
-         Extension to provide process implementation. Use the osgi:{extension id} syntax in AD_Process.ClassName to reference the extension that will provide the ProcessCall/SvrProcess instance (replace {extension id} with your actual extension id )
+         Extension to provide process implementation. Use the {extension id} syntax in AD_Process.ClassName to reference the extension that will provide the ProcessCall/SvrProcess instance (replace {extension id} with your actual extension id )
       </documentation>
    </annotation>
 
@@ -76,7 +76,8 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         &lt;extension
+         &lt;pre&gt;
+&lt;extension
          id=&quot;org.adempiere.extend.myProcess&quot;
          name=&quot;My Process&quot;
          point=&quot;org.adempiere.base.Process&quot;&gt;
@@ -84,6 +85,9 @@
             class=&quot;org.adempiere.extend.MyProcess&quot;&gt;
       &lt;/process&gt;
 &lt;/extension&gt;
+
+AD_Process.ClassName=&quot;org.adempiere.extend.myProcess&quot;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -96,39 +100,26 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appinfo>
-         <meta.section type="implementation"/>
-      </appinfo>
-      <documentation>
-         [Enter information about supplied implementation of this extension point.]
-      </documentation>
-   </annotation>
 
    <annotation>
       <appinfo>
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         /******************************************************************************
- * This file is part of Adempiere ERP Bazaar                                  *
- * http://www.adempiere.org                                                   *
- *                                                                            *
- * Copyright (C) Jorg Viola												      *
- * Copyright (C) Contributors												  *
- *                                                                            *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- *                                                                            *
- * Contributors:                                                              *
- *****************************************************************************/
+          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+                                                                           
+ Copyright (C) Jorg Viola.
+ Copyright (C) Contributors.
+                                                                           
+ This program is free software; you can redistribute it and/or modify it   
+ under the terms version 2 of the GNU General Public License as published  
+ by the Free Software Foundation. This program is distributed in the hope  
+ that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.          
+ See the GNU General Public License for more details.                      
+ You should have received a copy of the GNU General Public License along   
+ with this program; if not, write to the Free Software Foundation, Inc.,   
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
       </documentation>
    </annotation>
 

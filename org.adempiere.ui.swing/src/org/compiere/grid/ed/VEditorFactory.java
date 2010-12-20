@@ -19,7 +19,7 @@ package org.compiere.grid.ed;
 import java.util.List;
 
 import org.adempiere.base.Service;
-import org.adempiere.osgi.IEditorFactory;
+import org.adempiere.ui.swing.factory.IEditorFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.swing.CLabel;

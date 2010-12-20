@@ -11,10 +11,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.osgi;
+package org.adempiere.client;
 
 import java.awt.Frame;
+import java.util.List;
 
+import org.adempiere.base.Service;
+import org.adempiere.ui.swing.factory.IInfoFactory;
 import org.compiere.apps.search.Info;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
@@ -24,8 +27,8 @@ import org.compiere.model.Lookup;
  * @author hengsin
  *
  */
-public interface IInfoFactory {
-
+public class InfoManager
+{
 	/**
 	 *  Factory Constructor
 	 *  @param  frame   parent frame
@@ -39,9 +42,21 @@ public interface IInfoFactory {
 	 *  @param  whereClause fully qualified where clause for the search
 	 *  @return special or general Info Window
 	 */
-	public Info create (Frame frame, boolean modal, Lookup lookup, GridField field,
-		String tableName, String keyColumn, String value,
-		boolean multiSelection, String whereClause);
+	public static Info create(Frame frame, boolean modal, Lookup lookup,
+			GridField field, String tableName, String keyColumn, String queryValue,
+			boolean multiSelection, String whereClause)
+	{
+		Info info = null;
+		List<IInfoFactory> factoryList = Service.list(IInfoFactory.class);
+		for(IInfoFactory factory : factoryList)
+		{
+			info = factory.create(frame, true, lookup, field, tableName, keyColumn,
+					queryValue, multiSelection, whereClause);
+			if (info != null)
+				break;
+		}
+		return info;
+	}
 
 	/**
 	 *  Factory Constructor
@@ -56,7 +71,21 @@ public interface IInfoFactory {
 	 *  @param  lookup
 	 *  @return special or general Info Window
 	 */
-	public Info create (Frame frame, boolean modal, int WindowNo,
-		String tableName, String keyColumn, String value,
-		boolean multiSelection, String whereClause, boolean lookup);
+	public static Info create(Frame frame, boolean modal, int WindowNo,
+			String tableName, String keyColumn, String value,
+			boolean multiSelection, String whereClause, boolean lookup)
+	{
+		Info info = null;
+
+		List<IInfoFactory> factoryList = Service.list(IInfoFactory.class);
+		for(IInfoFactory factory : factoryList)
+		{
+			info = factory.create(frame, modal, WindowNo, tableName, keyColumn, value,
+					multiSelection, whereClause, lookup);
+			if (info != null)
+				break;
+		}
+		//
+		return info;
+	}
 }

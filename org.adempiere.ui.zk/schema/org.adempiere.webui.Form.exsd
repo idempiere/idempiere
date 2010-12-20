@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.webui" id="org.adempiere.webui.Form" name="Web Form"/>
       </appinfo>
       <documentation>
-         Extension point to provide form controller implementation. Use the osgi:{extension id} in AD_Form.ClassName to reference the extension that will provide the form controller instance ( replace osgi:{extension id} with your actual extension id ). Note that if you intend to support both swing and zk client, you should use the same extension id for the swing and zk form extension ( of course, class name should be different ).
+         Extension point to provide form controller implementation. Use the {extension id} in AD_Form.ClassName to reference the extension that will provide the form controller instance ( replace {extension id} with your actual extension id ). Note that if you intend to support both swing and zk client, you should use the same extension id for the swing and zk form extension ( of course, class name should be different ).
       </documentation>
    </annotation>
 
@@ -76,14 +76,18 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         &lt;extension
-         id=&quot;org.adempiere.webui.extend.myForm&quot;
+         &lt;pre&gt;
+&lt;extension
+         id=&quot;org.adempiere.extend.myForm&quot;
          name=&quot;My Form&quot;
          point=&quot;org.adempiere.webui.Form&quot;&gt;
       &lt;process
-            class=&quot;org.adempiere.webui.extend.MyForm&quot;&gt;
+            class=&quot;org.adempiere.ui.zk.extend.MyForm&quot;&gt;
       &lt;/process&gt;
 &lt;/extension&gt;
+
+AD_Form.ClassName=&quot;org.adempiere.extend.myForm&quot;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -96,39 +100,27 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appinfo>
-         <meta.section type="implementation"/>
-      </appinfo>
-      <documentation>
-         [Enter information about supplied implementation of this extension point.]
-      </documentation>
-   </annotation>
 
    <annotation>
       <appinfo>
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         /******************************************************************************
- * This file is part of Adempiere ERP Bazaar                                  *
- * http://www.adempiere.org                                                   *
- *                                                                            *
- * Copyright (C) Heng Sin Low                                                 *
- * Copyright (C) Contributors                                                 *
- *                                                                            *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- *                                                                            *
- * Contributors:                                                              *
- *****************************************************************************/
+          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+                                                                           
+ Copyright (C) Heng Sin Low.       
+ Copyright (C) Contributors.
+                                                                           
+ This program is free software; you can redistribute it and/or modify it   
+ under the terms version 2 of the GNU General Public License as published  
+ by the Free Software Foundation. This program is distributed in the hope  
+ that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.          
+ See the GNU General Public License for more details.                      
+ You should have received a copy of the GNU General Public License along   
+ with this program; if not, write to the Free Software Foundation, Inc.,   
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
+
       </documentation>
    </annotation>
 

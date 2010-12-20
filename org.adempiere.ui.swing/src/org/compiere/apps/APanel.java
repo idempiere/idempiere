@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -60,8 +59,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.adempiere.base.Service;
-import org.adempiere.osgi.IMenuAction;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.search.Find;
 import org.compiere.grid.APanelTab;
@@ -526,12 +523,6 @@ public final class APanel extends CPanel
 			}
 			toolBar.addSeparator();
 			toolBar.add(aEnd.getButton());
-		}
-
-		// Create OSGi menu actions..
-		List<IMenuAction> osgiActions = Service.list(IMenuAction.class);
-		for (IMenuAction action:osgiActions)	{
-			action.addAction(menuBar);
 		}
 
 		//

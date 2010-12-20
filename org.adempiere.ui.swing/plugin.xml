@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.adempiere.osgi.IMenuAction" name="MenuAction" schema="schema/org.adempiere.osgi.IMenuAction.exsd"/>
    <extension-point id="org.adempiere.apps.Form" name="Form" schema="schema/org.adempiere.apps.Form.exsd"/>
-   <extension-point id="org.adempiere.osgi.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.osgi.IInfoFactory.exsd"/>
-   <extension-point id="org.adempiere.osgi.IEditorFactory" name="Field editor factory" schema="schema/org.adempiere.osgi.IEditorFactory.exsd"/>
+   <extension-point id="org.adempiere.ui.swing.factory.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.ui.swing.factory.IInfoFactory.exsd"/>
+   <extension-point id="org.adempiere.ui.swing.factory.IEditorFactory" name="Field editor factory" schema="schema/org.adempiere.ui.swing.factory.IEditorFactory.exsd"/>
    <extension
          id="RF"
          name="RF"
@@ -52,20 +51,20 @@
       </product>
    </extension>
    <extension
-         id="org.adempiere.osgi.DefaultInfoFactory"
+         id="org.adempiere.ui.swing.factory.DefaultInfoFactory"
          name="Default Info Factory"
-         point="org.adempiere.osgi.IInfoFactory">
+         point="org.adempiere.ui.swing.factory.IInfoFactory">
       <factory
-            class="org.adempiere.osgi.DefaultInfoFactory"
+            class="org.adempiere.ui.swing.factory.DefaultInfoFactory"
             priority="0">
       </factory>
    </extension>
    <extension
-         id="org.adempiere.osgi.DefaultEditorFactory"
+         id="org.adempiere.ui.swing.factory.DefaultEditorFactory"
          name="Default field editor factory"
-         point="org.adempiere.osgi.IEditorFactory">
+    	 point="org.adempiere.ui.swing.factory.IEditorFactory">
       <factory
-            class="org.adempiere.osgi.DefaultEditorFactory"
+            class="org.adempiere.ui.swing.factory.DefaultEditorFactory"
             priority="0">
       </factory>
    </extension>

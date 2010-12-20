@@ -19,7 +19,6 @@ package org.adempiere.webui.panel;
 
 import java.util.logging.Level;
 
-import org.adempiere.base.Core;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.exception.ApplicationException;
@@ -42,7 +41,7 @@ import org.zkoss.zk.ui.event.EventListener;
 public abstract class ADForm extends Window implements EventListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5183711788893823434L;
 	/** The class' logging enabler */
@@ -63,7 +62,7 @@ public abstract class ADForm extends Window implements EventListener
 
 
 	private ProcessInfo m_pi;
-	
+
 	private IFormController m_customForm;
 
     /**
@@ -157,7 +156,7 @@ public abstract class ADForm extends Window implements EventListener
 		if (tail != null)
 		{
 			zkName = zkPackage + tail;
-			
+
     		try {
 				Class<?> clazz = ADForm.class.getClassLoader().loadClass(zkName);
 				if (!isZkFormClass(clazz))
@@ -167,7 +166,7 @@ public abstract class ADForm extends Window implements EventListener
 			} catch (ClassNotFoundException e) {
 				zkName = null;
 			}
-			
+
 			//try replace package and add W prefix to class name
 			if (zkName == null)
 			{
@@ -184,7 +183,7 @@ public abstract class ADForm extends Window implements EventListener
 				{
 					className = tail;
 				}
-				
+
 				//try convert V* to W*
 				if (className.startsWith(swingPrefix))
 				{
@@ -199,7 +198,7 @@ public abstract class ADForm extends Window implements EventListener
 						zkName = null;
 					}
 				}
-				
+
 				//try append W prefix to original class name
 				if (zkName == null)
 				{
@@ -216,9 +215,9 @@ public abstract class ADForm extends Window implements EventListener
 				}
 			}
         }
-        
+
 		/*
-		 *  not found, try changing only the class name 
+		 *  not found, try changing only the class name
 		 */
 		if (zkName == null)
 		{
@@ -240,10 +239,10 @@ public abstract class ADForm extends Window implements EventListener
 					zkName = null;
 				}
 			}
-			
+
 			//try just append W to the original class name
 			if (zkName == null)
-			{				
+			{
 				String zkClassName = zkPrefix + className;
 				zkName = packageName + "." + zkClassName;
 				try {
@@ -256,7 +255,7 @@ public abstract class ADForm extends Window implements EventListener
 					zkName = null;
 				}
 			}
-			
+
 			if (zkName == null)
 			{
 				//finally try whether same name is used for zk
@@ -303,12 +302,8 @@ public abstract class ADForm extends Window implements EventListener
     	{
     		logger.info("AD_Form_ID=" + adFormID + " - Class=" + richClassName);
 
-    		if (Core.isExtension(richClassName)) 
-    		{
-    			obj = Extensions.getForm(richClassName);
-    		}
-    		
-    		if (obj == null) 
+    		obj = Extensions.getForm(richClassName);
+    		if (obj == null)
     		{
 	    		//static lookup
 	    		webClassName = ADClassNameMap.get(richClassName);
@@ -317,13 +312,13 @@ public abstract class ADForm extends Window implements EventListener
 	    		{
 	    			webClassName = translateFormClassName(richClassName);
 	    		}
-	    		
+
 	    		if (webClassName == null)
 	    		{
 	    			throw new ApplicationException("Web UI form not implemented for the swing form " +
 	 					   richClassName);
 	    		}
-	
+
 	    		try
 	    		{
 	    			//	Create instance w/o parameters
@@ -348,18 +343,10 @@ public abstract class ADForm extends Window implements EventListener
         		else if (obj instanceof IFormController)
         		{
         			IFormController customForm = (IFormController)obj;
-        			Object o = customForm.getForm();
-        			if(o instanceof ADForm)
-        			{
-        				form = (ADForm)o;
-        				form.setICustomForm(customForm);
-        				form.init(adFormID, name);
-        				return form;
-        			}
-        			else
-	        			throw new ApplicationException("The web user interface custom form '" +
-	    						webClassName +
-	    						"' cannot be displayed in the web user interface.");
+        			form = customForm.getForm();
+        			form.setICustomForm(customForm);
+        			form.init(adFormID, name);
+        			return form;
         		}
         		else
         		{
@@ -400,12 +387,12 @@ public abstract class ADForm extends Window implements EventListener
 	{
 		return m_pi;
 	}
-	
+
 	public void setICustomForm(IFormController customForm)
 	{
 		m_customForm = customForm;
 	}
-	
+
 	public IFormController getICustomForm()
 	{
 		return m_customForm;

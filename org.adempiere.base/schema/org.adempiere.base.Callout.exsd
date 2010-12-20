@@ -93,10 +93,12 @@ Instead, you specify Table and Column in the extension declaration.
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         &lt;extension id=&quot;org.adempiere.extend.myCallout point=&quot;org.adempiere.base.Callout&gt;
- &lt;callout class=&quot;org.adempiere.extend.MyCallout tableName=&quot;C_Order&quot; columnName=&quot;C_BPartner_ID&quot;&gt;
+         &lt;pre&gt;
+&lt;extension id=&quot;org.adempiere.extend.myCallout&quot; point=&quot;org.adempiere.base.Callout&quot;&gt;
+ &lt;callout class=&quot;org.adempiere.extend.MyCallout&quot; tableName=&quot;C_Order&quot; columnName=&quot;C_BPartner_ID&quot;&gt;
  &lt;/callout&gt;
 &lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -115,26 +117,24 @@ Instead, you specify Table and Column in the extension declaration.
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         /******************************************************************************
- * This file is part of Adempiere ERP Bazaar                                  *
- * http://www.adempiere.org                                                   *
- *                                                                            *
- * Copyright (C) Jorg Viola												      *
- * Copyright (C) Contributors												  *
- *                                                                            *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- *                                                                            *
- * Contributors:                                                              *
- * - Heng Sin Low                                                             *
- *****************************************************************************/
+          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+                                                                           
+ Copyright (C) Jorg Viola.
+ Copyright (C) Contributors.
+                                                                           
+ This program is free software; you can redistribute it and/or modify it   
+ under the terms version 2 of the GNU General Public License as published  
+ by the Free Software Foundation. This program is distributed in the hope  
+ that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.          
+ See the GNU General Public License for more details.                      
+ You should have received a copy of the GNU General Public License along   
+ with this program; if not, write to the Free Software Foundation, Inc.,   
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
+                                                                           
+ Contributors:                                                             
+   Heng Sin Low                                                            
+
       </documentation>
    </annotation>
 

@@ -3,7 +3,7 @@
 <schema targetNamespace="org.adempiere.pipo" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.adempiere.pipo" id="org.adempiere.pipo.packOutHandlers" name="Packout Handlers"/>
+         <meta.schema plugin="org.adempiere.pipo" id="org.adempiere.pipo.Handlers" name="2Pack Element Handlers"/>
       </appinfo>
       <documentation>
          Extension point to provide 2pack handler implementation
@@ -59,7 +59,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Implementation class name for the org.adempiere.pipo2.ElementHandler interface
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":org.adempiere.pipo2.ElementHandler"/>
@@ -90,35 +90,24 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         &lt;extension
+         &lt;pre&gt;
+&lt;extension
          id=&quot;defaultHandlers&quot;      name=&quot;Default Handlers&quot;
          point=&quot;org.adempiere.pipo.Handlers&quot;&gt;
-      &lt;handler
-            class=&quot;org.adempiere.pipo2.handler.AdElementHandler&quot;
-            id=&quot;AD_Element&quot;&gt;
-      &lt;/handler&gt;
-      &lt;handler
-            class=&quot;org.adempiere.pipo2.handler.CodeSnippetElementHandler&quot;
-            id=&quot;Code_Snippet&quot;&gt;
-      &lt;/handler&gt;
       &lt;handler
             class=&quot;org.adempiere.pipo2.handler.ColumnElementHandler&quot;
             id=&quot;AD_Column&quot;&gt;
       &lt;/handler&gt;
-      ...
       &lt;handler
             class=&quot;org.adempiere.pipo2.handler.SQLStatementElementHandler&quot;
             id=&quot;SQLStatement&quot;&gt;
-      &lt;/handler&gt;
-      &lt;handler
-            class=&quot;org.adempiere.pipo2.handler.CommonTranslationHandler&quot;
-            id=&quot;table.translationHandler&quot;&gt;
       &lt;/handler&gt;
       &lt;handler
             class=&quot;org.adempiere.pipo2.handler.GenericPOElementHandler&quot;
             id=&quot;table.genericHandler&quot;&gt;
       &lt;/handler&gt;
 &lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -145,25 +134,21 @@
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         /******************************************************************************
- * This file is part of Adempiere ERP Bazaar                                  *
- * http://www.adempiere.org                                                   *
- *                                                                            *
- * Copyright (C) Heng Sin Low                                                 *
- * Copyright (C) Contributors                                                 *
- *                                                                            *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- *                                                                            *
- * Contributors:                                                              *
- *****************************************************************************/
+          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+                                                                           
+ Copyright (C) Heng Sin Low.       
+ Copyright (C) Contributors.
+                                                                           
+ This program is free software; you can redistribute it and/or modify it   
+ under the terms version 2 of the GNU General Public License as published  
+ by the Free Software Foundation. This program is distributed in the hope  
+ that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.          
+ See the GNU General Public License for more details.                      
+ You should have received a copy of the GNU General Public License along   
+ with this program; if not, write to the Free Software Foundation, Inc.,   
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
+
       </documentation>
    </annotation>
 

@@ -85,13 +85,15 @@ To support a database in adempiere, you need to extend this extension point and 
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         &lt;extension
+         &lt;pre&gt;
+&lt;extension
          point=&quot;org.compiere.db.AdempiereDatabase&quot;&gt;
       &lt;database
             class=&quot;org.compiere.db.DB_PostgreSQL&quot;
             id=&quot;PostgreSQL&quot;&gt;
       &lt;/database&gt;
 &lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -118,25 +120,21 @@ To support a database in adempiere, you need to extend this extension point and 
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         /******************************************************************************
- * This file is part of Adempiere ERP Bazaar                                  *
- * http://www.adempiere.org                                                   *
- *                                                                            *
- * Copyright (C) Heng Sin Low												  *
- * Copyright (C) Contributors												  *
- *                                                                            *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- *                                                                            *
- * Contributors:                                                              *
- *****************************************************************************/
+          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+                                                                           
+ Copyright (C) Heng Sin Low.       
+ Copyright (C) Contributors.
+                                                                           
+ This program is free software; you can redistribute it and/or modify it   
+ under the terms version 2 of the GNU General Public License as published  
+ by the Free Software Foundation. This program is distributed in the hope  
+ that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.          
+ See the GNU General Public License for more details.                      
+ You should have received a copy of the GNU General Public License along   
+ with this program; if not, write to the Free Software Foundation, Inc.,   
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
+
       </documentation>
    </annotation>
 

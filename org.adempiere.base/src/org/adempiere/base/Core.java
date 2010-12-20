@@ -31,11 +31,13 @@ import org.compiere.process.ProcessCall;
  * It provides simple access to all core services.
  *
  * @author viola
+ * @author hengsin
  */
 public class Core {
 
-	public static final String OSGI_PREFIX = "osgi:";
-
+	/**
+	 * @return list of active resource finder
+	 */
 	public static IResourceFinder getResourceFinder() {
 		return new IResourceFinder() {
 
@@ -51,6 +53,12 @@ public class Core {
 		};
 	}
 
+	/**
+	 *
+	 * @param tableName
+	 * @param columnName
+	 * @return list of callout register for tableName.columnName
+	 */
 	public static List<IColumnCallout> findCallout(String tableName, String columnName) {
 		ServiceQuery query = new ServiceQuery();
 		query.put("tableName", tableName);
@@ -59,25 +67,25 @@ public class Core {
 		return Service.list(IColumnCallout.class, query);
 	}
 
-	public static boolean isExtension(String className) {
-		return className.startsWith(OSGI_PREFIX);
-	}
-
-	public static ProcessCall getProcess(String className) {
-		if (isExtension(className))
-			className = className.substring(Core.OSGI_PREFIX.length());
-
+	/**
+	 *
+	 * @param extensionId
+	 * @return ProcessCall instance or null if extensionId not found
+	 */
+	public static ProcessCall getProcess(String extensionId) {
 		ServiceQuery query = new ServiceQuery();
-		query.put(ServiceQuery.EXTENSION_ID, className);
+		query.put(ServiceQuery.EXTENSION_ID, extensionId);
 		return Service.locate(ProcessCall.class, "org.adempiere.base.Process", query);
 	}
 
-	public static ModelValidator getModelValidator(String className) {
-		if (isExtension(className))
-			className = className.substring(Core.OSGI_PREFIX.length());
-
+	/**
+	 *
+	 * @param extensionId
+	 * @return ModelValidator instance of null if extensionId not found
+	 */
+	public static ModelValidator getModelValidator(String extensionId) {
 		ServiceQuery query = new ServiceQuery();
-		query.put(ServiceQuery.EXTENSION_ID, className);
+		query.put(ServiceQuery.EXTENSION_ID, extensionId);
 		return Service.locate(ModelValidator.class, "org.adempiere.base.ModelValidator", query);
 	}
 
