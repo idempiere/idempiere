@@ -30,7 +30,12 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.I_AD_Process;
+import org.compiere.model.I_AD_Reference;
+import org.compiere.model.I_AD_ReportView;
+import org.compiere.model.I_AD_Val_Rule;
+import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -106,7 +111,7 @@ public class ProcessElementHandler extends AbstractElementHandler {
 		if (processes.contains(AD_Process_ID))
 			return;
 		processes.add(AD_Process_ID);
-		PackOut packOut = getPackOutProcess(ctx);
+		PackOut packOut = getPackOut(ctx);
 
 		X_AD_Process m_Process = new X_AD_Process(ctx, AD_Process_ID, getTrxName(ctx));
 
@@ -115,16 +120,16 @@ public class ProcessElementHandler extends AbstractElementHandler {
 		try {
 			if (m_Process.isReport() && m_Process.getAD_ReportView_ID() > 0)
 			{
-				ElementHandler handler = packOut.getHandler("R");
+				ElementHandler handler = packOut.getHandler(I_AD_ReportView.Table_Name);
 				handler.packOut(packOut,document,null,m_Process.getAD_ReportView_ID());
 			}
 			if (m_Process.isReport() && m_Process.getAD_PrintFormat_ID() > 0)
 			{
-				ElementHandler handler = packOut.getHandler("PFT");
+				ElementHandler handler = packOut.getHandler(I_AD_PrintFormat.Table_Name);
 				handler.packOut(packOut,document,null,m_Process.getAD_PrintFormat_ID());
 			}
 			if (m_Process.getAD_Workflow_ID() > 0) {
-				ElementHandler handler = packOut.getHandler("F");
+				ElementHandler handler = packOut.getHandler(I_AD_Workflow.Table_Name);
 				handler.packOut(packOut,document,null,m_Process.getAD_Workflow_ID());
 			}
 			addTypeName(atts, "table");
@@ -136,19 +141,19 @@ public class ProcessElementHandler extends AbstractElementHandler {
 			for (X_AD_Process_Para para : paralist) {
 				if (para.getAD_Reference_ID()>0)
 				{
-					ElementHandler handler = packOut.getHandler("REF");
+					ElementHandler handler = packOut.getHandler(I_AD_Reference.Table_Name);
 					handler.packOut(packOut,document,null,para.getAD_Reference_ID());
 				}
 
 				if (para.getAD_Reference_Value_ID()>0)
 				{
-					ElementHandler handler = packOut.getHandler("REF");
+					ElementHandler handler = packOut.getHandler(I_AD_Reference.Table_Name);
 					handler.packOut(packOut,document,null,para.getAD_Reference_Value_ID());
 				}
 
 				if (para.getAD_Val_Rule_ID() > 0)
 				{
-					ElementHandler handler = packOut.getHandler("V");
+					ElementHandler handler = packOut.getHandler(I_AD_Val_Rule.Table_Name);
 					handler.packOut(packOut,document,null,para.getAD_Val_Rule_ID());
 				}
 

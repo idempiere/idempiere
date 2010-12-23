@@ -134,7 +134,7 @@ public class WindowElementHandler extends AbstractElementHandler {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				ElementHandler handler = packOut.getHandler("T");
+				ElementHandler handler = packOut.getHandler("AD_Table");
 				handler.packOut(packOut,document,null,rs.getInt("AD_Table_ID"));
 
 				createTab(ctx, document, rs.getInt("AD_Tab_ID"));

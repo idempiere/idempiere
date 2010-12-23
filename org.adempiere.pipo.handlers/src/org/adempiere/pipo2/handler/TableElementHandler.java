@@ -50,7 +50,7 @@ public class TableElementHandler extends AbstractElementHandler {
 	private List<Integer>tables = new ArrayList<Integer>();
 
 	public void startElement(Properties ctx, Element element) throws SAXException {
-		PackIn packIn = getPackInProcess(ctx);
+		PackIn packIn = getPackIn(ctx);
 		List<String> excludes = defaultExcludeList(X_AD_Table.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
@@ -120,7 +120,7 @@ public class TableElementHandler extends AbstractElementHandler {
 			throws SAXException {
 
 		int AD_Table_ID = Env.getContextAsInt(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
-		PackOut packOut = getPackOutProcess(ctx);
+		PackOut packOut = getPackOut(ctx);
 		boolean exported = isTableProcess(ctx, AD_Table_ID);
 		AttributesImpl atts = new AttributesImpl();
 		//Export table if not already done so
@@ -142,30 +142,30 @@ public class TableElementHandler extends AbstractElementHandler {
 				rs = pstmt.executeQuery();
 
 				while (rs.next()){
-					ElementHandler handler = packOut.getHandler("ELE");
+					ElementHandler handler = packOut.getHandler("AD_Element");
 					handler.packOut(packOut,document,null,rs.getInt(X_AD_Column.COLUMNNAME_AD_Element_ID));
 
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID)>0)
 					{
-						handler = packOut.getHandler("REF");
+						handler = packOut.getHandler("AD_Reference");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID));
 					}
 
 					if (rs.getInt("AD_Reference_Value_ID")>0)
 					{
-						handler = packOut.getHandler("REF");
+						handler = packOut.getHandler("AD_Reference");
 						handler.packOut(packOut,document,null,rs.getInt("AD_Reference_Value_ID"));
 					}
 
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID)>0)
 					{
-						handler = packOut.getHandler("P");
+						handler = packOut.getHandler("AD_Process");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID));
 					}
 
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID)>0)
 					{
-						handler = packOut.getHandler("V");
+						handler = packOut.getHandler("AD_Val_Rule");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID));
 					}
 

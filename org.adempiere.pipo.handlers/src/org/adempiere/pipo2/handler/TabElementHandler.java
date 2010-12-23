@@ -34,6 +34,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Tab;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.MTab;
@@ -163,7 +164,7 @@ public class TabElementHandler extends AbstractElementHandler {
 
 	public void create(Properties ctx, TransformerHandler document)
 			throws SAXException {
-		PackOut packOut = getPackOutProcess(ctx);
+		PackOut packOut = getPackOut(ctx);
 		int AD_Tab_ID = Env.getContextAsInt(ctx, X_AD_Tab.COLUMNNAME_AD_Tab_ID);
 		X_AD_Tab m_Tab = new X_AD_Tab (ctx, AD_Tab_ID, getTrxName(ctx));
 		AttributesImpl atts = new AttributesImpl();
@@ -198,7 +199,7 @@ public class TabElementHandler extends AbstractElementHandler {
 		{
 			try
 			{
-				ElementHandler handler = packOut.getHandler("P");
+				ElementHandler handler = packOut.getHandler(I_AD_Process.Table_Name);
 				handler.packOut(packOut,document,null,m_Tab.getAD_Process_ID());
 			}
 			catch(Exception e)

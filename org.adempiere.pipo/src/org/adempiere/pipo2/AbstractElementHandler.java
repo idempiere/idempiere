@@ -75,11 +75,11 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	public int findIdByColumn (Properties ctx, String tableName, String columnName, Object value) {
 		int id = 0;
 		if ("AD_Table".equals(tableName) && "TableName".equals(columnName) && value != null) {
-			id = getPackInProcess(ctx).getTableId(value.toString());
+			id = getPackIn(ctx).getTableId(value.toString());
 			if (id <= 0) {
 				id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx), getTrxName(ctx));
 				if (id > 0) {
-					getPackInProcess(ctx).addTable(value.toString(), id);
+					getPackIn(ctx).addTable(value.toString(), id);
 				}
 			}
 		} else {
@@ -451,6 +451,11 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	return "true".equalsIgnoreCase(Env.getContext(ctx, "isHandleTranslations"));
     }
 
+    /**
+     *
+     * @param tableName
+     * @return list of column to exclude from processing
+     */
     protected List<String> defaultExcludeList(String tableName) {
     	List<String> excludes = new ArrayList<String>();
     	excludes.add("ad_client_id");
@@ -463,14 +468,30 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	return excludes;
     }
 
-    protected PackIn getPackInProcess(Properties ctx) {
+    /**
+     *
+     * @param ctx
+     * @return PackIn instance
+     */
+    protected PackIn getPackIn(Properties ctx) {
     	return (PackIn)ctx.get(PackInHandler.PACK_IN_PROCESS_CTX_KEY);
     }
 
-    protected PackOut getPackOutProcess(Properties ctx) {
+    /**
+     *
+     * @param ctx
+     * @return PackOut instance
+     */
+    protected PackOut getPackOut(Properties ctx) {
     	return (PackOut) ctx.get(PackOut.PACK_OUT_PROCESS_CTX_KEY);
     }
 
+    /**
+     *
+     * @param element
+     * @param expectedName
+     * @return Parent element record id
+     */
     protected int getParentId(Element element, String expectedName) {
     	if (element.parent != null && element.parent.getElementValue().equals(expectedName) &&
     			element.parent.recordId > 0)
@@ -479,6 +500,12 @@ public abstract class AbstractElementHandler implements ElementHandler {
     		return 0;
     }
 
+    /**
+     *
+     * @param element
+     * @param expectedName
+     * @return true if parent element is defer for next round of processing
+     */
     protected boolean isParentDefer(Element element, String expectedName) {
     	if (element.parent != null
     		&& (expectedName == null || element.parent.getElementValue().equals(expectedName))
@@ -488,6 +515,12 @@ public abstract class AbstractElementHandler implements ElementHandler {
     		return false;
     }
 
+    /**
+     *
+     * @param element
+     * @param expectedName
+     * @return true if parent element is being ignore
+     */
     protected boolean isParentSkip(Element element, String expectedName) {
     	if (element.parent != null
     		&& (expectedName == null || element.parent.getElementValue().equals(expectedName))
@@ -497,6 +530,12 @@ public abstract class AbstractElementHandler implements ElementHandler {
     		return false;
     }
 
+    /**
+     *
+     * @param element
+     * @param columnName
+     * @return true if value of columnName is office id.
+     */
     protected boolean isOfficialId(Element element, String columnName) {
     	int value = getIntValue(element, columnName);
     	if (value > 0 && value <= PackOut.MAX_OFFICIAL_ID)
@@ -505,6 +544,13 @@ public abstract class AbstractElementHandler implements ElementHandler {
     		return false;
     }
 
+    /**
+     *
+     * @param handler
+     * @param qName
+     * @param text
+     * @throws SAXException
+     */
     protected void addTextProperty(TransformerHandler handler, String qName, String text) throws SAXException {
     	AttributesImpl atts = new AttributesImpl();
     	atts.addAttribute("", "", qName, "reference", "property");
@@ -513,12 +559,18 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		handler.endElement("", "", qName);
 	}
 
+    /**
+     *
+     * @param document
+     * @param str
+     * @throws SAXException
+     */
     protected void append(TransformerHandler document, String str) throws SAXException
 	{
 		char[] contents = str != null ? str.toCharArray() : new char[0];
 		document.characters(contents,0,contents.length);
 	}
-    
+
     /**
      * Find po by uuid or id
      * @param <T>
@@ -531,7 +583,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	String tableName = element.getElementValue();
     	String uuidColumn = tableName + "_UU";
     	String idColumn = tableName + "_ID";
-    	if (element.properties.containsKey(uuidColumn)) {    		
+    	if (element.properties.containsKey(uuidColumn)) {
     		String uuid = element.properties.get(uuidColumn).contents.toString();
     		if (uuid != null && uuid.trim().length() == 36) {
     			Query query = new Query(ctx, tableName, uuidColumn+"=?", getTrxName(ctx));
@@ -546,7 +598,12 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	}
     	return po;
     }
-    
+
+    /**
+     *
+     * @param atts
+     * @param typeName
+     */
     protected void addTypeName(AttributesImpl atts, String typeName) {
     	atts.addAttribute("", "", "type", "CDATA", typeName);
     }

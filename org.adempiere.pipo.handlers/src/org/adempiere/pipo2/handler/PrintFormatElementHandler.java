@@ -33,6 +33,8 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
+import org.compiere.model.I_AD_PrintFormatItem;
+import org.compiere.model.I_AD_PrintPaper;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_PrintFormat;
@@ -104,7 +106,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		X_AD_PrintFormat m_Printformat = new X_AD_PrintFormat(ctx, AD_PrintFormat_ID, null);
 		if (m_Printformat.getAD_PrintPaper_ID() > 0) {
 			try {
-				getPackOutProcess(ctx).getHandler("PP").packOut(getPackOutProcess(ctx), document, getLogDocument(ctx), m_Printformat.getAD_PrintPaper_ID());
+				getPackOut(ctx).getHandler(I_AD_PrintPaper.Table_Name).packOut(getPackOut(ctx), document, getLogDocument(ctx), m_Printformat.getAD_PrintPaper_ID());
 			} catch (Exception e) {
 				throw new SAXException(e);
 			}
@@ -136,7 +138,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 	private void createItem(Properties ctx, TransformerHandler document,
 			int AD_PrintFormatItem_ID) throws SAXException {
 		try {
-			getPackOutProcess(ctx).getHandler("ad.printformat.item").packOut(getPackOutProcess(ctx), document, getLogDocument(ctx), AD_PrintFormatItem_ID);
+			getPackOut(ctx).getHandler(I_AD_PrintFormatItem.Table_Name).packOut(getPackOut(ctx), document, getLogDocument(ctx), AD_PrintFormatItem_ID);
 		} catch (Exception e) {
 			throw new SAXException(e);
 		}

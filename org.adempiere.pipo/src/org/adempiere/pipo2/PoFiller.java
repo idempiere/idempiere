@@ -233,7 +233,7 @@ public class PoFiller{
 			if (component.length == 2) {
 				String fileName = component[0];
 				String dataType = component[1];
-				PackIn packIn = handler.getPackInProcess(ctx);
+				PackIn packIn = handler.getPackIn(ctx);
 				try {
 					byte[] bytes = packIn.readBlob(fileName);
 					if ("byte[]".equals(dataType)) {

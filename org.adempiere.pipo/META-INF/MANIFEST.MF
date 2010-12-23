@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.tools.ant,
  org.apache.tools.ant.taskdefs,
+ org.apache.xerces.jaxp;version="2.9.1",
  org.osgi.framework
 Export-Package: org.adempiere.pipo.srv,
  org.adempiere.pipo2,

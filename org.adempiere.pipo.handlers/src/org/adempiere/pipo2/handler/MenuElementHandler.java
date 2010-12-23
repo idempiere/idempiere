@@ -33,7 +33,12 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
+import org.compiere.model.I_AD_Form;
 import org.compiere.model.I_AD_Menu;
+import org.compiere.model.I_AD_Process;
+import org.compiere.model.I_AD_Task;
+import org.compiere.model.I_AD_Window;
+import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.X_AD_Menu;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Backup;
@@ -247,26 +252,26 @@ public class MenuElementHandler extends AbstractElementHandler {
 					// Call CreateWindow.
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Window_ID)>0)
 					{
-						ElementHandler handler = packOut.getHandler("W");
+						ElementHandler handler = packOut.getHandler(I_AD_Window.Table_Name);
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Window_ID));
 					}
 					else if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID)>0)
 					{
-						ElementHandler handler = packOut.getHandler("P");
+						ElementHandler handler = packOut.getHandler(I_AD_Process.Table_Name);
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID));
 					} else if (rs.getInt(X_AD_Task.COLUMNNAME_AD_Task_ID)>0)
 					{
-						ElementHandler handler = packOut.getHandler("ad.task");
+						ElementHandler handler = packOut.getHandler(I_AD_Task.Table_Name);
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Task.COLUMNNAME_AD_Task_ID));
 					}
 					else if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID) > 0)
 					{
-						ElementHandler handler = packOut.getHandler("X");
+						ElementHandler handler = packOut.getHandler(I_AD_Form.Table_Name);
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID));
 					}
 					else if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID) > 0)
 					{
-						ElementHandler handler = packOut.getHandler("F");
+						ElementHandler handler = packOut.getHandler(I_AD_Workflow.Table_Name);
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID));
 					}
 					// Call CreateModule because entry is a summary menu
@@ -313,27 +318,27 @@ public class MenuElementHandler extends AbstractElementHandler {
 					// Call CreateWindow.
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Window_ID)>0)
 					{
-						ElementHandler handler = packOut.getHandler("W");
+						ElementHandler handler = packOut.getHandler("AD_Window");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Window_ID));
 					}
 					else if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID)>0)
 					{
-						ElementHandler handler = packOut.getHandler("P");
+						ElementHandler handler = packOut.getHandler("AD_Process");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID));
 					}
 					else if (rs.getInt(X_AD_Task.COLUMNNAME_AD_Task_ID)>0)
 					{
-						ElementHandler handler = packOut.getHandler("K");
+						ElementHandler handler = packOut.getHandler("AD_Task");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Task.COLUMNNAME_AD_Task_ID));
 					}
 					else if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID) > 0)
 					{
-						ElementHandler handler = packOut.getHandler("X");
+						ElementHandler handler = packOut.getHandler("AD_Form");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID));
 					}
 					else if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID) > 0)
 					{
-						ElementHandler handler = packOut.getHandler("F");
+						ElementHandler handler = packOut.getHandler("AD_Workflow");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID));
 					}
 					// Call CreateModule because entry is a summary menu

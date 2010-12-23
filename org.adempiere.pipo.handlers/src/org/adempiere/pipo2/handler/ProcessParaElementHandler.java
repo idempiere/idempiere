@@ -30,6 +30,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_Element;
 import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Process_Para;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -122,8 +123,8 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 				AD_Process_Para_ID, getTrxName(ctx));
 
 		if (m_Processpara.getAD_Element_ID() > 0) {
-			PackOut packOut = getPackOutProcess(ctx);
-			ElementHandler handler = packOut.getHandler("ELE");
+			PackOut packOut = getPackOut(ctx);
+			ElementHandler handler = packOut.getHandler(I_AD_Element.Table_Name);
 			try {
 				handler.packOut(packOut,document,null,m_Processpara.getAD_Element_ID());
 			} catch (Exception e) {

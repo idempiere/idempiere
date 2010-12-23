@@ -32,7 +32,9 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.I_AD_ReportView;
+import org.compiere.model.I_AD_Table;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_ReportView;
@@ -96,7 +98,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 
 	public void create(Properties ctx, TransformerHandler document)
 			throws SAXException {
-		PackOut packOut = getPackOutProcess(ctx);
+		PackOut packOut = getPackOut(ctx);
 		int AD_ReportView_ID = Env.getContextAsInt(ctx, "AD_ReportView_ID");
 		if (views.contains(AD_ReportView_ID))
 			return;
@@ -106,7 +108,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		X_AD_ReportView m_Reportview = new X_AD_ReportView(ctx, AD_ReportView_ID, getTrxName(ctx));
 
 		// Export Table if neccessary
-		ElementHandler tableHandler = packOut.getHandler("T");
+		ElementHandler tableHandler = packOut.getHandler(I_AD_Table.Table_Name);
 		try {
 			tableHandler.packOut(packOut, document, null, m_Reportview.getAD_Table_ID());
 		} catch (Exception e) {
@@ -126,7 +128,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				ElementHandler pftHandler = packOut.getHandler("PFT");
+				ElementHandler pftHandler = packOut.getHandler(I_AD_PrintFormat.Table_Name);
 				pftHandler.packOut(packOut, document, null, rs.getInt(1));
 
 			}
