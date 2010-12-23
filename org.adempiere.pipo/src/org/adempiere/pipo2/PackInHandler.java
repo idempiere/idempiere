@@ -180,7 +180,7 @@ public class PackInHandler extends DefaultHandler {
 			{
 				packageVersion = atts.getValue("Version");
 			}
-			
+
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try {
@@ -249,13 +249,13 @@ public class PackInHandler extends DefaultHandler {
 			{
 				e.parent = stack.peek();
 				String reference = atts.getValue("type");
-				if (!IHandlerRegistry.ELEMENT_TYPE_PROPERTIES.equals(reference))
+				if (reference == null || reference.equals(IHandlerRegistry.ELEMENT_TYPE_PROPERTIES))
 				{
-					e.parent.childrens.add(e);
+					e.parent.properties.put(qName, e);
 				}
 				else
 				{
-					e.parent.properties.put(qName, e);
+					e.parent.childrens.add(e);
 				}
 			}
 			stack.push(e);
