@@ -44,7 +44,7 @@ public class ReferenceUtils {
 			return 0;
 		}
 	}
-	
+
 	public static boolean isLookup(Element element)
 	{
 		if (isIDLookup(element) || isUUIDLookup(element) || isTableLookup(element))
@@ -52,23 +52,23 @@ public class ReferenceUtils {
 		else
 			return false;
 	}
-	
+
 	public static boolean isIDLookup(Element element)
 	{
-		return "id".equals(element.properties.get("reference"));
+		return "id".equals(element.attributes.getValue("reference"));
 	}
-	
+
 	public static boolean isUUIDLookup(Element element)
 	{
-		return "uuid".equals(element.properties.get("reference"));
+		return "uuid".equals(element.attributes.getValue("reference"));
 	}
-	
+
 	public static boolean isTableLookup(Element element)
 	{
-		return "table".equals(element.properties.get("reference"));
+		return "table".equals(element.attributes.getValue("reference"));
 	}
-	
-	public static String getTableReference(String tableName, String searchColumn, int id, AttributesImpl atts) 
+
+	public static String getTableReference(String tableName, String searchColumn, int id, AttributesImpl atts)
 	{
 		String keyColumn = tableName + "_ID";
 		String sql = "SELECT " + searchColumn + " FROM "
@@ -99,7 +99,7 @@ public class ReferenceUtils {
 					return value.trim();
 				}
 			}
-			
+
 			String value = DB.getSQLValueString(null, sql, id);
 			StringBuffer buffer = new StringBuffer();
 			buffer.append(tableName).append(".").append(searchColumn);
@@ -109,5 +109,5 @@ public class ReferenceUtils {
 		}
 	}
 }
-	
+
 
