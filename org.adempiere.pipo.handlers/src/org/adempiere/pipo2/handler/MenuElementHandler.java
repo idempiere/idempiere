@@ -54,7 +54,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		
+
 		List<String> excludes = defaultExcludeList(X_AD_Menu.Table_Name);
 
 		X_AD_Menu mMenu = findPO(ctx, element);
@@ -69,7 +69,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		{
 			filler.setInteger("AD_Menu_ID");
 		}
-		
+
 		List<String> notFounds = filler.autoFill(excludes);
 		if (notFounds.size() > 0) {
 			element.defer = true;
@@ -78,7 +78,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 
 		if (!mMenu.is_new() && !mMenu.is_Changed())
 			return;
-		
+
 		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Menu.Table_Name,
 				X_AD_Menu.Table_ID);
 		String action = null;
@@ -103,14 +103,16 @@ public class MenuElementHandler extends AbstractElementHandler {
 				log.info("setmenu:" + e);
 			}
 		}
-		
+
 		Element parentElement = element.properties.get("Parent_ID");
 		int parentId = 0;
-		if (ReferenceUtils.isIDLookup(parentElement) || ReferenceUtils.isUUIDLookup(parentElement)) {
-			parentId = ReferenceUtils.resolveReference(ctx, parentElement);
-		} else {
-			String parent = getStringValue(element, "Parent_ID");
-			parentId = findIdByName(ctx, "AD_Menu", parent);
+		if (parentElement != null) {
+			if (ReferenceUtils.isIDLookup(parentElement) || ReferenceUtils.isUUIDLookup(parentElement)) {
+				parentId = ReferenceUtils.resolveReference(ctx, parentElement);
+			} else {
+				String parent = getStringValue(element, "Parent_ID");
+				parentId = findIdByName(ctx, "AD_Menu", parent);
+			}
 		}
 
 		StringBuffer updateSQL = null;
