@@ -87,7 +87,7 @@ public class ReferenceUtils {
 		else
 		{
 			MTable table = MTable.get(Env.getCtx(), tableName);
-			if (table.get_ColumnIndex(tableName + "_UU") >= 0 )
+			if (table.getColumn(tableName + "_UU") != null)
 			{
 				sql = "SELECT " + tableName + "_UU" + " FROM "
 						+ tableName + " WHERE " + keyColumn + " = ?";
