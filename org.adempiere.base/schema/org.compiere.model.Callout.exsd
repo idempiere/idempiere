@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.adempiere.base" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.adempiere.base" id="org.compiere.model.Callout" name="Callout"/>
+      </appinfo>
+      <documentation>
+         Extension point for bundle to contribute Callout implementation. Use the {extension id}.{methodName} syntax in AD_Column.Callout to reference the extension that will provide the CalloutEngine instance (replace {extension id} with your actual extension id ). This extension point is provided to ease migration from pre-OSGi ADempiere code, new code is recommended to use the org.adempiere.base.IColumnCallout extension point.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="callout"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="callout">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Implementation class name that extend org.compiere.model.CalloutEngine
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.compiere.model.CalloutEngine:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="prioriy" type="string">
+            <annotation>
+               <documentation>
+                  numeric priority value, higher value is of higher priority.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         1.0.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;pre&gt;
+	&lt;extension 
+	      point=&quot;org.compiere.model.Callout&quot; 
+		  id=&quot;org.compiere.model.CalloutOrder&quot;
+		  name=&quot;Order Callout&quot;&gt;
+		&lt;callout 
+		    class=&quot;org.compiere.model.CalloutOrder&quot;&gt;
+		&lt;/callout&gt;
+	&lt;/extension&gt;
+	
+	AD_Column.Callout=&quot;org.compiere.model.CalloutOrder.bPartner
+&lt;/pre&gt;
+
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         Class attribute must represent a subclass of org.compiere.model.CalloutEngine
+      </documentation>
+   </annotation>
+
+
+
+</schema>

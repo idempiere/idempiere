@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.Process" name="Process"/>
       </appinfo>
       <documentation>
-         Extension to provide process implementation. Use the {extension id} syntax in AD_Process.ClassName to reference the extension that will provide the ProcessCall/SvrProcess instance (replace {extension id} with your actual extension id )
+         Extension point for bundle to contribute process implementation. Use the {extension id} syntax in AD_Process.ClassName to reference the extension that will provide the ProcessCall/SvrProcess instance (replace {extension id} with your actual extension id )
       </documentation>
    </annotation>
 
@@ -59,6 +59,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="priority" type="string">
+            <annotation>
+               <documentation>
+                  numeric priority value, higher value is of higher priority
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -106,7 +113,7 @@ AD_Process.ClassName=&quot;org.adempiere.extend.myProcess&quot;
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+         This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
                                                                            
  Copyright (C) Jorg Viola.
  Copyright (C) Contributors.
@@ -119,7 +126,7 @@ AD_Process.ClassName=&quot;org.adempiere.extend.myProcess&quot;
  See the GNU General Public License for more details.                      
  You should have received a copy of the GNU General Public License along   
  with this program; if not, write to the Free Software Foundation, Inc.,   
- 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
       </documentation>
    </annotation>
 

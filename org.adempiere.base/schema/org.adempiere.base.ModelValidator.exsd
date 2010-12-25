@@ -6,7 +6,7 @@
          <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.ModelValidator" name="Model Validator"/>
       </appinfo>
       <documentation>
-         Extension point to provide model validator instance. Use the {extension id} syntax in AD_ModelValidator.ModelValidationClass to reference the extension that will provide the  concrete ModelValidator instance ( replace {extension id} with your actual extension id ). Alternatively, you can use the EventManager service to listen to model and document event which doesn&apos;t need any AD table entry ( see event.test project for example ).
+         Extension point for bundle to contribute model validator implementation. Use the {extension id} syntax in AD_ModelValidator.ModelValidationClass to reference the extension that will provide the  concrete ModelValidator instance ( replace {extension id} with your actual extension id ). This extension point is provided to ease migration of pre-OSGi ADempiere code, new code is recommended to use the IEventManager service to listen to model and document event( see event.test project for example ).
       </documentation>
    </annotation>
 
@@ -59,6 +59,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="priority" type="string">
+            <annotation>
+               <documentation>
+                  numeric priority value, higher value is of higher priority
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -107,7 +114,7 @@ AD_ModelValidator.ModelValidationClass=&quot;org.adempiere.extend.myModelValidat
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+         This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
                                                                            
  Copyright (C) Jorg Viola.
  Copyright (C) Contributors.
@@ -120,7 +127,7 @@ AD_ModelValidator.ModelValidationClass=&quot;org.adempiere.extend.myModelValidat
  See the GNU General Public License for more details.                      
  You should have received a copy of the GNU General Public License along   
  with this program; if not, write to the Free Software Foundation, Inc.,   
- 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
       </documentation>
    </annotation>
 

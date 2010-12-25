@@ -13,6 +13,7 @@
    <extension-point id="org.adempiere.base.IDocFactory" name="Financial Document Factory" schema="schema/org.adempiere.base.IDocFactory.exsd"/>
    <extension-point id="org.adempiere.base.IGridTabExporter" name="Grid data export extension" schema="schema/org.adempiere.base.IGridTabExporter.exsd"/>
    <extension-point id="org.compiere.model.PaymentProcessor" name="Payment Processor" schema="schema/org.compiere.model.PaymentProcessor.exsd"/>
+   <extension-point id="org.compiere.model.Callout" name="Callout" schema="schema/org.compiere.model.Callout.exsd"/>
    <extension
          id="org.adempiere.base.DefaultModelFactory"
          name="Default model factory"

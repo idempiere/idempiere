@@ -2854,8 +2854,14 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				{
 					if (methodStart != -1)      //  no class
 					{
-						Class<?> cClass = Class.forName(cmd.substring(0,methodStart));
-						call = (Callout)cClass.newInstance();
+						String className = cmd.substring(0,methodStart);
+						//first, check matching extension id in extension registry
+						call = Service.locate(Callout.class, className);
+						if (call == null) {
+							//no match from extension registry, check java classpath
+							Class<?> cClass = Class.forName(className);
+							call = (Callout)cClass.newInstance();
+						}
 						method = cmd.substring(methodStart+1);
 					}
 				}
@@ -3170,7 +3176,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 		return tabNo;
 	}
-	
+
 	public GridTab getParentTab()
 	{
 		int parentTabNo = getParentTabNo();

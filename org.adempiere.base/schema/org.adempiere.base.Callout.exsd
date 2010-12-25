@@ -76,6 +76,13 @@ Instead, you specify Table and Column in the extension declaration.
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="priority" type="string">
+            <annotation>
+               <documentation>
+                  numeric priority value, higher value is of higher priority.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -117,7 +124,7 @@ Instead, you specify Table and Column in the extension declaration.
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-          This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
+         This file is part of Adempiere ERP Bazaar http://www.adempiere.org.
                                                                            
  Copyright (C) Jorg Viola.
  Copyright (C) Contributors.
@@ -133,8 +140,7 @@ Instead, you specify Table and Column in the extension declaration.
  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
                                                                            
  Contributors:                                                             
-   Heng Sin Low                                                            
-
+   Heng Sin Low
       </documentation>
    </annotation>
 
