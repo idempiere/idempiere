@@ -50,12 +50,12 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 				roleid = getParentId(element, I_AD_Role.Table_Name);
 			} else {
 				Element roleElement = element.properties.get(I_AD_Workflow_Access.COLUMNNAME_AD_Role_ID);
-				roleid = ReferenceUtils.resolveReference(ctx, roleElement);
+				roleid = ReferenceUtils.resolveReference(ctx, roleElement, getTrxName(ctx));
 			}
-	
+
 			Element wfElement = element.properties.get(I_AD_Workflow_Access.COLUMNNAME_AD_Workflow_ID);
-			workflowid = ReferenceUtils.resolveReference(ctx, wfElement);
-	
+			workflowid = ReferenceUtils.resolveReference(ctx, wfElement, getTrxName(ctx));
+
 			Query query = new Query(ctx, "AD_Workflow_Access", "AD_Role_ID=? and AD_Workflow_ID=?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{roleid, workflowid}).first();
 			if (po == null) {

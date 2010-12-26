@@ -51,58 +51,58 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 
 		X_AD_ImpFormat_Row mImpFormatRow = findPO(ctx, element);
 		if (mImpFormatRow == null) {
-			int impFormatId = 0;		
+			int impFormatId = 0;
 			if (getParentId(element, I_AD_ImpFormat.Table_Name) > 0) {
 				impFormatId = getParentId(element, I_AD_ImpFormat.Table_Name);
 			} else {
 				Element e = element.properties.get(I_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_ID);
 				if (ReferenceUtils.isIDLookup(e) || ReferenceUtils.isUUIDLookup(e))
-					impFormatId = ReferenceUtils.resolveReference(ctx, e);
+					impFormatId = ReferenceUtils.resolveReference(ctx, e, getTrxName(ctx));
 				else
 					impFormatId = findIdByName(ctx, "AD_ImpFormat", e.contents.toString());
 			}
-	
+
 			if (impFormatId <= 0) {
 				element.defer = true;
 				return;
 			}
-	
+
 			Element tableElement = element.properties.get(I_AD_ImpFormat.COLUMNNAME_AD_Table_ID);
 			int tableId = 0;
 			if (ReferenceUtils.isIDLookup(tableElement) || ReferenceUtils.isUUIDLookup(tableElement)) {
-				tableId = ReferenceUtils.resolveReference(ctx, tableElement);
+				tableId = ReferenceUtils.resolveReference(ctx, tableElement, getTrxName(ctx));
 			} else {
 				String tableName = getStringValue(element, I_AD_ImpFormat.COLUMNNAME_AD_Table_ID, excludes);
-			
+
 				if (tableName != null && tableName.trim().length() > 0) {
-					tableId = findIdByColumn(ctx, "AD_Table", "TableName", tableName);					
+					tableId = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
 				}
 				if (tableId <= 0) {
 					element.defer = true;
 					return;
 				}
 			}
-	
+
 			Element columnElement = element.properties.get(I_AD_ImpFormat_Row.COLUMNNAME_AD_Column_ID);
 			int columnId = 0;
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				columnId = ReferenceUtils.resolveReference(ctx, columnElement);
+				columnId = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
 			} else {
 				String columnName = getStringValue(element, I_AD_ImpFormat_Row.COLUMNNAME_AD_Column_ID, excludes);
-				
+
 				if (columnName != null && columnName.trim().length() > 0) {
-					columnId  = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);					
+					columnId  = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);
 				}
 				if (columnId <= 0) {
 					element.defer = true;
 					return;
 				}
 			}
-				
+
 			StringBuffer sqlB = new StringBuffer ("SELECT AD_ImpFormat_Row_ID FROM AD_ImpFormat_Row WHERE AD_Column_ID=? AND AD_ImpFormat_ID=?");
 			int id = DB.getSQLValue(getTrxName(ctx),sqlB.toString(),columnId,impFormatId);
 			mImpFormatRow = new X_AD_ImpFormat_Row(ctx, id > 0 ? id : 0, getTrxName(ctx));
-			
+
 			mImpFormatRow.setAD_Column_ID(columnId);
 			mImpFormatRow.setAD_ImpFormat_ID(impFormatId);
 		}
@@ -117,7 +117,7 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 			element.defer = true;
 			return;
 		}
-		
+
 		if (mImpFormatRow.is_new() || mImpFormatRow.is_Changed()) {
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ImpFormat_Row.Table_Name,
 					X_AD_ImpFormat_Row.Table_ID);

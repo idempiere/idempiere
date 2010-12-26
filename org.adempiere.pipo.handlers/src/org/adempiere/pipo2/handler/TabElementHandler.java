@@ -59,71 +59,71 @@ public class TabElementHandler extends AbstractElementHandler {
 				element.defer = true;
 				return;
 			}
-			
+
 			MTab mTab = findPO(ctx, element);
 			if (mTab == null) {
 				String name = getStringValue(element, "Name", excludes);
-	
+
 				int windowId = 0;
 				if (getParentId(element, I_AD_Window.Table_Name) > 0) {
 					windowId = getParentId(element, I_AD_Window.Table_Name);
 				} else {
 					Element windowElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Window_ID);
-					windowId = ReferenceUtils.resolveReference(ctx, windowElement);
+					windowId = ReferenceUtils.resolveReference(ctx, windowElement, getTrxName(ctx));
 				}
 				if (windowId <= 0) {
 					element.defer = true;
 					return;
 				}
-	
+
 				Element tableElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Table_ID);
-				int tableId = ReferenceUtils.resolveReference(ctx, tableElement);
+				int tableId = ReferenceUtils.resolveReference(ctx, tableElement, getTrxName(ctx));
 				if (tableId <= 0) {
 					element.defer = true;
 					return;
 				}
-	
+
 				String sql = "SELECT AD_Tab_ID FROM AD_Tab where AD_Window_ID = ? "
 						+ " AND Name = ?"
 						+ " AND AD_Table_ID = ?";
-	
+
 				int id = DB.getSQLValue(getTrxName(ctx), sql, windowId, name, tableId);
 				mTab = new MTab(ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mTab.setAD_Table_ID(tableId);
 				mTab.setName(name);
 				mTab.setAD_Window_ID(windowId);
 			}
-						
+
 			PoFiller filler = new PoFiller(ctx, mTab, element, this);
 			if (mTab.getAD_Tab_ID() == 0 && isOfficialId(element, "AD_Tab_ID"))
 				mTab.setAD_Tab_ID(getIntValue(element, "AD_Tab_ID"));
-			
+
 			Element columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Column_ID);
 			int AD_Column_ID = 0;
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
 			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
-				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(), 
-						"AD_Table", mTab.getAD_Table_ID());				
+				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(),
+						"AD_Table", mTab.getAD_Table_ID());
 			}
 			mTab.setAD_Column_ID(AD_Column_ID);
 
 			columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_ColumnSortOrder_ID);
 			AD_Column_ID = 0;
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
 			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
-				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(), 
+				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(),
 						"AD_Table", mTab.getAD_Table_ID());
 			}
 			mTab.setAD_ColumnSortOrder_ID(AD_Column_ID);
-			
+
 			columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_ColumnSortYesNo_ID);
 			AD_Column_ID = 0;
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
 			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
-				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(), 
+				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(),
 						"AD_Table", mTab.getAD_Table_ID());
 			}
 			mTab.setAD_ColumnSortYesNo_ID(AD_Column_ID);
@@ -133,7 +133,7 @@ public class TabElementHandler extends AbstractElementHandler {
 				element.defer = true;
 				return;
 			}
-			
+
 			if (mTab.is_new() || mTab.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Tab.Table_Name,
 						X_AD_Tab.Table_ID);

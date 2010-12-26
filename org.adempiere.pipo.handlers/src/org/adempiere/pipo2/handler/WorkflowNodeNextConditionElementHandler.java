@@ -59,47 +59,47 @@ public class WorkflowNodeNextConditionElementHandler extends
 				if (getParentId(element, I_AD_Workflow.Table_Name) > 0) {
 					workflowId = getParentId(element, I_AD_Workflow.Table_Name);
 				} else {
-					workflowId = ReferenceUtils.resolveReference(ctx, wfElement);
+					workflowId = ReferenceUtils.resolveReference(ctx, wfElement, getTrxName(ctx));
 				}
 				if (workflowId <= 0) {
 					element.defer = true;
 					element.unresolved = "AD_Workflow: " + wfElement.contents;
 					return;
 				}
-	
+
 				int AD_WF_NodeNext_ID = 0;
 				Element nodeNextElement = element.properties.get(I_AD_WF_NextCondition.COLUMNNAME_AD_WF_NodeNext_ID);
 				if (ReferenceUtils.isIDLookup(nodeNextElement) || ReferenceUtils.isUUIDLookup(nodeNextElement)) {
-					AD_WF_NodeNext_ID = ReferenceUtils.resolveReference(ctx, nodeNextElement);
+					AD_WF_NodeNext_ID = ReferenceUtils.resolveReference(ctx, nodeNextElement, getTrxName(ctx));
 				} else {
 					Element wfnElement = element.properties.get("AD_WF_Node_ID");
-					int wfNodeId = ReferenceUtils.resolveReference(ctx, wfnElement);
+					int wfNodeId = ReferenceUtils.resolveReference(ctx, wfnElement, getTrxName(ctx));
 					if (wfNodeId <= 0) {
 						element.unresolved = "AD_WF_Node=" + wfnElement.contents;
 						element.defer = true;
 						return;
 					}
-		
+
 					Element nextElement = element.properties.get("AD_WF_Next_ID");
-					int wfNodeNextId = ReferenceUtils.resolveReference(ctx, nextElement);
+					int wfNodeNextId = ReferenceUtils.resolveReference(ctx, nextElement, getTrxName(ctx));
 					if (wfNodeNextId <= 0) {
 						element.unresolved = "AD_WF_Node=" + nextElement.contents;
 						element.defer = true;
 						return;
 					}
-						
+
 					String sql = "SELECT AD_WF_NodeNext_ID FROM AD_WF_NodeNext  WHERE AD_WF_Node_ID =? and AD_WF_Next_ID =?";
 					AD_WF_NodeNext_ID = DB.getSQLValue(getTrxName(ctx), sql, wfNodeId, wfNodeNextId);
 				}
-	
+
 				String sql = "SELECT AD_WF_NextCondition_ID FROM AD_WF_NextCondition  WHERE AD_WF_NodeNext_ID =?";
 				int id = DB.getSQLValue(getTrxName(ctx), sql, AD_WF_NodeNext_ID);
-	
+
 				mWFNodeNextCondition = new MWFNextCondition(ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mWFNodeNextCondition.setAD_WF_NodeNext_ID(AD_WF_NodeNext_ID);
 			}
-			
-			PoFiller filler = new PoFiller(ctx, mWFNodeNextCondition, element, this);			
+
+			PoFiller filler = new PoFiller(ctx, mWFNodeNextCondition, element, this);
 			if (mWFNodeNextCondition.get_ID() == 0 && isOfficialId(element, "AD_WF_NextCondition_ID"))
 				filler.setInteger("AD_WF_NextCondition_ID");
 
@@ -107,19 +107,19 @@ public class WorkflowNodeNextConditionElementHandler extends
 			Element columnElement = element.properties.get("AD_Column_ID");
 			int columnId = 0;
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				columnId = ReferenceUtils.resolveReference(ctx, columnElement);
+				columnId = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
 			} else {
-				int AD_Table_ID = ReferenceUtils.resolveReference(ctx, tableElement);
+				int AD_Table_ID = ReferenceUtils.resolveReference(ctx, tableElement, getTrxName(ctx));
 				columnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnElement.contents.toString(), "AD_Table", AD_Table_ID);
 			}
 			mWFNodeNextCondition.setAD_Column_ID(columnId);
-			
+
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-			
+
 			if (mWFNodeNextCondition.is_new() || mWFNodeNextCondition.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_WF_NextCondition.Table_Name,
 						X_AD_WF_NextCondition.Table_ID);
@@ -200,7 +200,7 @@ public class WorkflowNodeNextConditionElementHandler extends
 			AttributesImpl tableAttributes = new AttributesImpl();
 			value = ReferenceUtils.getTableReference("AD_Table", "TableName", AD_Table_ID, tableAttributes);
 			filler.addString("AD_Table_ID", value, tableAttributes);
-		} 
+		}
 
 		filler.export(excludes);
 	}

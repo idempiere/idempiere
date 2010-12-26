@@ -40,7 +40,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
-		
+
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 			if (isParentSkip(element, null)) {
@@ -56,16 +56,16 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 					AD_Reference_ID = getParentId(element, I_AD_Reference.Table_Name);
 				} else {
 					Element referenceElement = element.properties.get(I_AD_Ref_List.COLUMNNAME_AD_Reference_ID);
-					AD_Reference_ID = ReferenceUtils.resolveReference(ctx, referenceElement);
+					AD_Reference_ID = ReferenceUtils.resolveReference(ctx, referenceElement, getTrxName(ctx));
 				}
-	
+
 				int AD_Ref_List_ID = findIdByColumnAndParentId(ctx, "AD_Ref_List", "Value", value, "AD_Reference", AD_Reference_ID);
 				mRefList = new X_AD_Ref_List(ctx, AD_Ref_List_ID, getTrxName(ctx));
 			}
-			
+
 			if (mRefList.getAD_Ref_List_ID() == 0 && isOfficialId(element, "AD_Ref_List_ID"))
 				mRefList.setAD_Ref_List_ID(getIntValue(element, "AD_Ref_List_ID"));
-			
+
 			PoFiller filler = new PoFiller(ctx, mRefList, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_Ref_List.Table_Name);
 			List<String> notfounds = filler.autoFill(excludes);

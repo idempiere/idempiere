@@ -275,21 +275,21 @@ public class PackInHandler extends DefaultHandler {
 		for (Element childElement : element.childrens)
 		{
 			processElement(childElement);
-			if (element.defer) {
-    			defer.add(new DeferEntry(element, false));
-    		} else {
-	    		if (handler != null)
-	    			handler.endElement(m_ctx, element);
-	    		if (element.defer || element.deferEnd)
-					defer.add(new DeferEntry(element, false));
-	    		else if (!element.skip) {
-	    			if (log.isLoggable(Level.INFO))
-	    				log.info("Processed: " + element.getElementValue() + " - " + element.attributes.getValue(0));
-	    			elementProcessed++;
-	    		}
-    		}
 		}
 
+		if (element.defer) {
+			defer.add(new DeferEntry(element, false));
+		} else {
+    		if (handler != null)
+    			handler.endElement(m_ctx, element);
+    		if (element.defer || element.deferEnd)
+				defer.add(new DeferEntry(element, false));
+    		else if (!element.skip) {
+    			if (log.isLoggable(Level.INFO))
+    				log.info("Processed: " + element.getElementValue() + " - " + element.attributes.getValue(0));
+    			elementProcessed++;
+    		}
+		}
 	}
 
 	private void createLogHeader(Attributes atts) throws SAXException {

@@ -9,7 +9,14 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class ReferenceUtils {
 
-	public static int resolveReference(Properties ctx, Element e)
+	/**
+	 *
+	 * @param ctx
+	 * @param e
+	 * @param trxName
+	 * @return positive id if found
+	 */
+	public static int resolveReference(Properties ctx, Element e, String trxName)
 	{
 		String value = e.contents.toString();
 		String referenceKey = e.attributes.getValue("reference-key");
@@ -23,7 +30,7 @@ public class ReferenceUtils {
 				String tableName = names[0];
 				String searchColumn = names[1];
 
-				return IDFinder.findIdByColumn(tableName, searchColumn, value.trim(), Env.getAD_Client_ID(ctx), null);
+				return IDFinder.findIdByColumn(tableName, searchColumn, value.trim(), Env.getAD_Client_ID(ctx), trxName);
 			}
 			else if (isIDLookup(e))
 			{
@@ -32,7 +39,7 @@ public class ReferenceUtils {
 			}
 			else if (isUUIDLookup(e))
 			{
-				return IDFinder.findIdByColumn(referenceKey, referenceKey + "_UU", value.trim(), Env.getAD_Client_ID(ctx), null);
+				return IDFinder.findIdByColumn(referenceKey, referenceKey + "_UU", value.trim(), Env.getAD_Client_ID(ctx), trxName);
 			}
 			else
 			{

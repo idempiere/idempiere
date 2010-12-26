@@ -61,11 +61,11 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 					AD_Reference_ID = getParentId(element, I_AD_Reference.Table_Name);
 				} else {
 					Element referenceElement = element.properties.get(I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
-					AD_Reference_ID = ReferenceUtils.resolveReference(ctx, referenceElement);
+					AD_Reference_ID = ReferenceUtils.resolveReference(ctx, referenceElement, getTrxName(ctx));
 				}
 				if (AD_Reference_ID <= 0 && isOfficialId(element, "AD_Reference_ID"))
 					AD_Reference_ID = getIntValue(element, "AD_Reference_ID");
-	
+
 				String sql = "SELECT * FROM AD_Ref_Table WHERE AD_Reference_ID = ?";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -77,7 +77,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 						refTable = new X_AD_Ref_Table(ctx, rs, getTrxName(ctx));
 					} else {
 						refTable = new X_AD_Ref_Table(ctx, 0, getTrxName(ctx));
-					}					
+					}
 				} catch (Exception e) {
 					throw new DatabaseAccessException(e.getLocalizedMessage(), e);
 				} finally {
@@ -95,28 +95,28 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			Element displayElement = element.properties.get("AD_Display");
 			int displayColumnId = 0;
 			if (ReferenceUtils.isIDLookup(displayElement) || ReferenceUtils.isUUIDLookup(displayElement)) {
-				displayColumnId = ReferenceUtils.resolveReference(ctx, displayElement);
+				displayColumnId = ReferenceUtils.resolveReference(ctx, displayElement, getTrxName(ctx));
 			} else {
 				displayColumnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", displayElement.contents.toString(), "AD_Table", tableId);
-			}				
+			}
 			refTable.setAD_Display(displayColumnId);
-			
-			
+
+
 			Element keyElement = element.properties.get("AD_Key");
 			int keyColumnId = 0;
 			if (ReferenceUtils.isIDLookup(keyElement) || ReferenceUtils.isUUIDLookup(keyElement)) {
-				keyColumnId = ReferenceUtils.resolveReference(ctx, keyElement);
+				keyColumnId = ReferenceUtils.resolveReference(ctx, keyElement, getTrxName(ctx));
 			} else {
 				keyColumnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", keyElement.contents.toString(), "AD_Table", tableId);
-			}				
+			}
 			refTable.setAD_Key(keyColumnId);
-			
+
 			if (refTable.is_new() || refTable.is_Changed()) {
 				refTable.saveEx();
-	
+
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Ref_Table.Table_Name,
 						X_AD_Ref_Table.Table_ID);
-	
+
 				logImportDetail(ctx, impDetail, 1, refTable.getAD_Reference().getName(), refTable.getAD_Reference_ID(), action);
 			}
 		} else {

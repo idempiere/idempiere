@@ -62,34 +62,34 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 				Element wfElement = element.properties.get(I_AD_WF_Node.COLUMNNAME_AD_Workflow_ID);
 				if (getParentId(element, I_AD_Workflow.Table_Name) > 0) {
 					workflowId = getParentId(element, I_AD_Workflow.Table_Name);
-				} else {					
-					workflowId = ReferenceUtils.resolveReference(ctx, wfElement);
+				} else {
+					workflowId = ReferenceUtils.resolveReference(ctx, wfElement, getTrxName(ctx));
 				}
 				if (workflowId <= 0) {
 					element.defer = true;
 					element.unresolved = "AD_Workflow: " + wfElement.contents;
 					return;
 				}
-	
+
 				String workflowNodeValue = getStringValue(element, "Value", excludes);
 				StringBuffer sqlB = new StringBuffer(
 						"SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID=? and Value =?");
-	
-				int id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), workflowId, workflowNodeValue);	
+
+				int id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), workflowId, workflowNodeValue);
 				mWFNode = new X_AD_WF_Node(ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mWFNode.setValue(workflowNodeValue);
 				mWFNode.setAD_Workflow_ID(workflowId);
 				excludes.add(I_AD_WF_Node.COLUMNNAME_AD_Workflow_ID);
 				excludes.add("Value");
 			}
-						
+
 			PoFiller filler = new PoFiller(ctx, mWFNode, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
 				return;
 			}
-			
+
 			if (mWFNode.is_new() || mWFNode.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_WF_Node.Table_Name,
 						X_AD_WF_Node.Table_ID);

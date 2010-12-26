@@ -48,11 +48,11 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 				roleId = getParentId(element, I_AD_Role.Table_Name);
 			} else {
 				Element roleElement = element.properties.get("AD_Role_ID");
-				roleId = ReferenceUtils.resolveReference(ctx, roleElement);
+				roleId = ReferenceUtils.resolveReference(ctx, roleElement, getTrxName(ctx));
 			}
 
 			Element orgElement = element.properties.get("AD_Org_ID");
-			int orgId = ReferenceUtils.resolveReference(ctx, orgElement);
+			int orgId = ReferenceUtils.resolveReference(ctx, orgElement, getTrxName(ctx));
 
 			Query query = new Query(ctx, "AD_Role_OrgAccess", "AD_Role_ID=? and AD_Org_ID=?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{roleId, orgId})
@@ -63,7 +63,7 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 				po = new X_AD_Role_OrgAccess(ctx, 0, getTrxName(ctx));
 				po.setAD_Org_ID(orgId);
 				po.setAD_Role_ID(roleId);
-			}			
+			}
 			excludes.add("AD_Org_ID");
 			excludes.add("AD_Role_ID");
 		}

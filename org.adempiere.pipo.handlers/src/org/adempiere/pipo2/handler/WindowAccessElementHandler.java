@@ -45,25 +45,25 @@ public class WindowAccessElementHandler extends AbstractElementHandler {
 		List<String> excludes = defaultExcludeList(X_AD_Window_Access.Table_Name);
 
 		X_AD_Window_Access po = findPO(ctx, element);
-		if (po == null) {			
+		if (po == null) {
 			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
 				roleid = getParentId(element, I_AD_Role.Table_Name);
 			} else {
 				Element roleElement = element.properties.get(I_AD_Window_Access.COLUMNNAME_AD_Role_ID);
-				roleid = ReferenceUtils.resolveReference(ctx, roleElement);
+				roleid = ReferenceUtils.resolveReference(ctx, roleElement, getTrxName(ctx));
 			}
 			if (roleid <= 0) {
 				element.defer = true;
 				return;
 			}
-	
+
 			Element windowElement = element.properties.get(I_AD_Window_Access.COLUMNNAME_AD_Window_ID);
-			windowid = ReferenceUtils.resolveReference(ctx, windowElement);
+			windowid = ReferenceUtils.resolveReference(ctx, windowElement, getTrxName(ctx));
 			if (windowid <= 0)  {
 				element.defer = true;
 				return;
 			}
-	
+
 			Query query = new Query(ctx, "AD_Window_Access", "AD_Role_ID=? and AD_Window_ID=?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{roleid, windowid}).first();
 			if (po == null) {

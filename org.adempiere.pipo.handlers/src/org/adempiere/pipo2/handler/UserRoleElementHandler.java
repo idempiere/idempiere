@@ -48,25 +48,25 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 		X_AD_User_Roles po = findPO(ctx, element);
 		if (po == null) {
 			Element userElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_User_ID);
-			userid = ReferenceUtils.resolveReference(ctx, userElement);			
-	
+			userid = ReferenceUtils.resolveReference(ctx, userElement, getTrxName(ctx));
+
 			if (getParentId(element, "role") > 0) {
 				roleid = getParentId(element, "role");
 			} else {
 				Element roleElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_Role_ID);
-				roleid = ReferenceUtils.resolveReference(ctx, roleElement);
+				roleid = ReferenceUtils.resolveReference(ctx, roleElement, getTrxName(ctx));
 			}
-	
+
 			Element orgElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_Org_ID);
-			orgid = ReferenceUtils.resolveReference(ctx, orgElement);
-	
+			orgid = ReferenceUtils.resolveReference(ctx, orgElement, getTrxName(ctx));
+
 			Query query = new Query(ctx, "AD_User_Roles", "AD_User_ID = ? AND AD_Role_ID = ? AND AD_Org_ID = ?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{userid, roleid, orgid}).first();
 			if (po == null) {
 				po = new X_AD_User_Roles(ctx, 0, getTrxName(ctx));
 				po.setAD_Org_ID(orgid);
 				po.setAD_Role_ID(roleid);
-				po.setAD_User_ID(userid);				
+				po.setAD_User_ID(userid);
 			}
 			excludes.add(I_AD_User_Roles.COLUMNNAME_AD_User_ID);
 			excludes.add(I_AD_User_Roles.COLUMNNAME_AD_Role_ID);

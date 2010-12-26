@@ -40,7 +40,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ReportViewColElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
-			throws SAXException {		
+			throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_ReportView_Col.Table_Name);
 
 		String entitytype = getStringValue(element,"EntityType");
@@ -53,22 +53,22 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 					AD_ReportView_ID = getParentId(element, I_AD_ReportView.Table_Name);
 				} else {
 					Element rvElement = element.properties.get(I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_ID);
-					AD_ReportView_ID = ReferenceUtils.resolveReference(ctx, rvElement);
+					AD_ReportView_ID = ReferenceUtils.resolveReference(ctx, rvElement, getTrxName(ctx));
 				}
 				if (AD_ReportView_ID <= 0) {
 					element.defer = true;
 					return;
 				}
-	
+
 				int AD_Column_ID = 0;
 				Element columnElement = element.properties.get(I_AD_ReportView_Col.COLUMNNAME_AD_Column_ID);
 				if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-					AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);					
+					AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
 				} else {
 					if (columnElement.contents != null && columnElement.contents.length() > 0) {
 						Element tableElement = element.properties.get("AD_Table_ID");
-						int AD_Table_ID = ReferenceUtils.resolveReference(ctx, tableElement);						
-						AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnElement.contents.toString(), 
+						int AD_Table_ID = ReferenceUtils.resolveReference(ctx, tableElement, getTrxName(ctx));
+						AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnElement.contents.toString(),
 								"AD_Table", AD_Table_ID);
 						if (AD_Column_ID <= 0) {
 							element.defer = true;
@@ -76,7 +76,7 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 						}
 					}
 				}
-	
+
 				String functionColumn = getStringValue(element, "FunctionColumn");
 				StringBuffer sql = new StringBuffer("SELECT AD_Reportview_Col_ID FROM AD_Reportview_Col ")
 					.append(" WHERE AD_Column_ID ");
@@ -86,7 +86,7 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 					sql.append(" IS NULL ");
 				sql.append(" AND FunctionColumn = ?");
 				sql.append(" AND AD_ReportView_ID = ?");
-	
+
 				int id = DB.getSQLValue(getTrxName(ctx), sql.toString(), functionColumn, AD_ReportView_ID);
 				mReportviewCol = new X_AD_ReportView_Col(ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mReportviewCol.setAD_ReportView_ID(AD_ReportView_ID);
@@ -98,10 +98,10 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 				excludes.add("AD_ReportView_ID");
 				excludes.add("AD_Column_ID");
 			}
-			
+
 			if (mReportviewCol.getAD_ReportView_Col_ID() == 0 && isOfficialId(element, "AD_ReportView_Col_ID"))
 				mReportviewCol.setAD_ReportView_Col_ID(getIntValue(element, "AD_ReportView_Col_ID"));
-			
+
 			PoFiller filler = new PoFiller(ctx, mReportviewCol, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
@@ -157,7 +157,7 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 		List<String> excludes = defaultExcludeList(X_AD_ReportView_Col.Table_Name);
 		if (m_Reportview_Col.getAD_ReportView_Col_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.add("AD_ReportView_Col_ID", new AttributesImpl());
-		
+
 		if (m_Reportview_Col.getAD_Column_ID() > 0) {
 			int AD_Table_ID = m_Reportview_Col.getAD_Column().getAD_Table_ID();
 			AttributesImpl tableAtts = new AttributesImpl();

@@ -52,7 +52,7 @@ public class FieldElementHandler extends AbstractElementHandler {
 				element.defer = true;
 				return;
 			}
-			
+
 			List<String>excludes = defaultExcludeList(X_AD_Field.Table_Name);
 
 			int tabid = getParentId(element, I_AD_Tab.Table_Name) ;
@@ -64,20 +64,20 @@ public class FieldElementHandler extends AbstractElementHandler {
 			MField mField = findPO(ctx, element);
 			if (mField == null)
 			{
-				int AD_Table_ID = ReferenceUtils.resolveReference(ctx, element.parent.properties.get("AD_Table_ID"));
+				int AD_Table_ID = ReferenceUtils.resolveReference(ctx, element.parent.properties.get("AD_Table_ID"), getTrxName(ctx));
 				Element columnElement = element.parent.properties.get("AD_Column_ID");
 				int AD_Column_ID = 0;
 				if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement))
 				{
-					AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement);
+					AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
 				}
 				else
 				{
 					String colname = getStringValue(element, "AD_Column_ID", excludes);
 					AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", colname, "AD_Table", AD_Table_ID);
 				}
-				 
-				
+
+
 				StringBuffer sqlB = new StringBuffer(
 						"select AD_Field_ID from AD_Field where AD_Column_ID = ")
 						.append(AD_Column_ID)
@@ -112,7 +112,7 @@ public class FieldElementHandler extends AbstractElementHandler {
 				else{
 					action = "New";
 				}
-				
+
 				if (mField.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mField.getName(), mField
 							.get_ID(), action);

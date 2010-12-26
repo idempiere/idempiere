@@ -50,12 +50,12 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 				roleid = getParentId(element, I_AD_Role.Table_Name);
 			} else {
 				Element roleElement = element.properties.get(I_AD_Process_Access.COLUMNNAME_AD_Role_ID);
-				roleid = ReferenceUtils.resolveReference(ctx, roleElement);			
+				roleid = ReferenceUtils.resolveReference(ctx, roleElement, getTrxName(ctx));
 			}
 
 			Element processElement = element.properties.get(I_AD_Process_Access.COLUMNNAME_AD_Process_ID);
-			processid = ReferenceUtils.resolveReference(ctx, processElement);
-	
+			processid = ReferenceUtils.resolveReference(ctx, processElement, getTrxName(ctx));
+
 			Query query = new Query(ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{roleid, processid}).first();
 			if (po == null)

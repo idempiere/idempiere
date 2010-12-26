@@ -57,21 +57,21 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				Element wfElement = element.properties.get(I_AD_WF_Node.COLUMNNAME_AD_Workflow_ID);
 				if (getParentId(element, I_AD_Workflow.Table_Name) > 0) {
 					workflowId = getParentId(element, I_AD_Workflow.Table_Name);
-				} else {					
-					workflowId = ReferenceUtils.resolveReference(ctx, wfElement);
+				} else {
+					workflowId = ReferenceUtils.resolveReference(ctx, wfElement, getTrxName(ctx));
 				}
 				if (workflowId <= 0) {
 					element.defer = true;
 					element.unresolved = "AD_Workflow: " + wfElement.contents;
 					return;
 				}
-	
+
 				int wfNodeId = 0;
 				Element wfnElement = element.properties.get(I_AD_WF_NodeNext.COLUMNNAME_AD_WF_Node_ID);
 				if (ReferenceUtils.isIDLookup(wfnElement) || ReferenceUtils.isUUIDLookup(wfnElement)) {
-					wfNodeId = ReferenceUtils.resolveReference(ctx, wfnElement);
+					wfNodeId = ReferenceUtils.resolveReference(ctx, wfnElement, getTrxName(ctx));
 				} else {
-					wfNodeId = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_Node_Id FROM AD_WF_Node WHERE AD_Workflow_ID=? AND Value=? AND AD_Client_ID=?", 
+					wfNodeId = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_Node_Id FROM AD_WF_Node WHERE AD_Workflow_ID=? AND Value=? AND AD_Client_ID=?",
 							workflowId, wfnElement.contents.toString(), Env.getAD_Client_ID(ctx));
 				}
 				if (wfNodeId <= 0) {
@@ -83,9 +83,9 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				int AD_WF_Next_ID = 0;
 				Element nextElement = element.properties.get(I_AD_WF_NodeNext.COLUMNNAME_AD_WF_Next_ID);
 				if (ReferenceUtils.isIDLookup(nextElement) || ReferenceUtils.isUUIDLookup(nextElement)) {
-					AD_WF_Next_ID = ReferenceUtils.resolveReference(ctx, nextElement);
+					AD_WF_Next_ID = ReferenceUtils.resolveReference(ctx, nextElement, getTrxName(ctx));
 				} else {
-					AD_WF_Next_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_Node_Id FROM AD_WF_Node WHERE AD_Workflow_ID=? AND Value=? AND AD_Client_ID=?", 
+					AD_WF_Next_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_Node_Id FROM AD_WF_Node WHERE AD_Workflow_ID=? AND Value=? AND AD_Client_ID=?",
 							workflowId, nextElement.contents.toString(), Env.getAD_Client_ID(ctx));
 				}
 				if (AD_WF_Next_ID <= 0) {
@@ -93,15 +93,15 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 					element.unresolved = "AD_WF_Node: " + nextElement.contents;
 					return;
 				}
-	
+
 				int AD_WF_NodeNext_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_NodeNext_ID FROM AD_WF_NodeNext WHERE AD_WF_Node_ID=? and AD_WF_NEXT_ID =?", wfNodeId, AD_WF_Next_ID);
-	
+
 				mWFNodeNext = new MWFNodeNext(ctx, AD_WF_NodeNext_ID, getTrxName(ctx));
 				mWFNodeNext.setAD_WF_Node_ID(wfNodeId);
 				mWFNodeNext.setAD_WF_Next_ID(AD_WF_Next_ID);
 			}
-			
-			PoFiller filler = new PoFiller(ctx, mWFNodeNext, element, this);			
+
+			PoFiller filler = new PoFiller(ctx, mWFNodeNext, element, this);
 			if (mWFNodeNext.getAD_WF_NodeNext_ID() == 0 && isOfficialId(element, "AD_WF_NodeNext_ID"))
 				mWFNodeNext.setAD_WF_NodeNext_ID(getIntValue(element, "AD_WF_NodeNext_ID"));
 
@@ -110,7 +110,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				element.defer = true;
 				return;
 			}
-			
+
 			if (mWFNodeNext.is_new() || mWFNodeNext.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_WF_NodeNext.Table_Name,
 						X_AD_WF_NodeNext.Table_ID);

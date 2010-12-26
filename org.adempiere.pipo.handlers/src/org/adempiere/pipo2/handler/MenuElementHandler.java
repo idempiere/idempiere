@@ -108,7 +108,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		int parentId = 0;
 		if (parentElement != null) {
 			if (ReferenceUtils.isIDLookup(parentElement) || ReferenceUtils.isUUIDLookup(parentElement)) {
-				parentId = ReferenceUtils.resolveReference(ctx, parentElement);
+				parentId = ReferenceUtils.resolveReference(ctx, parentElement, getTrxName(ctx));
 			} else {
 				String parent = getStringValue(element, "Parent_ID");
 				parentId = findIdByName(ctx, "AD_Menu", parent);

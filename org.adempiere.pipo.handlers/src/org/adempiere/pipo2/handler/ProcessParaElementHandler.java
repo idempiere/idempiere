@@ -62,7 +62,7 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 					masterId = getParentId(element, "process");
 				} else {
 					Element processElement = element.properties.get(I_AD_Process_Para.COLUMNNAME_AD_Process_ID);
-					masterId = ReferenceUtils.resolveReference(ctx, processElement);
+					masterId = ReferenceUtils.resolveReference(ctx, processElement, getTrxName(ctx));
 				}
 				if (masterId <= 0) {
 					element.defer = true;
@@ -75,12 +75,12 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 				mProcessPara.setAD_Process_ID(masterId);
 				excludes.add(I_AD_Process_Para.COLUMNNAME_AD_Process_ID);
 			}
-									
+
 			if (mProcessPara.getAD_Process_Para_ID() == 0 && isOfficialId(element, "AD_Process_Para_ID"))
 				mProcessPara.setAD_Process_Para_ID(Integer.parseInt(getStringValue(element, "AD_Process_Para_ID")));
-			
+
 			PoFiller filler = new PoFiller(ctx, mProcessPara, element, this);
-			
+
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;

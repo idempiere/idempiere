@@ -50,12 +50,12 @@ public class TaskAccessElementHandler extends AbstractElementHandler {
 				roleid = getParentId(element, I_AD_Role.Table_Name);
 			} else {
 				Element roleElement = element.properties.get(I_AD_Task_Access.COLUMNNAME_AD_Role_ID);
-				roleid = ReferenceUtils.resolveReference(ctx, roleElement);
+				roleid = ReferenceUtils.resolveReference(ctx, roleElement, getTrxName(ctx));
 			}
-	
+
 			Element taskElement = element.properties.get(I_AD_Task_Access.COLUMNNAME_AD_Task_ID);
-			taskid = ReferenceUtils.resolveReference(ctx, taskElement);
-	
+			taskid = ReferenceUtils.resolveReference(ctx, taskElement, getTrxName(ctx));
+
 			Query query = new Query(ctx, "AD_Task_Access", "AD_Role_ID=? and AD_Task_ID=?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{roleid, taskid}).first();
 			if (po == null){

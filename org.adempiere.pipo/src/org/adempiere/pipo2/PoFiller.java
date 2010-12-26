@@ -138,11 +138,11 @@ public class PoFiller{
 		Element e = element.properties.get(qName);
 		if (e == null)
 			return 0;
-		
+
 		String value = e.contents.toString();
 		String columnName = qName;
 		if (value != null && value.trim().length() > 0) {
-			int id = ReferenceUtils.resolveReference(ctx, e);
+			int id = ReferenceUtils.resolveReference(ctx, e, po.get_TrxName());
 			if (columnName.equals("AD_Client_ID") && id > 0) {
 				if (id != Env.getAD_Client_ID(ctx)) {
 					return -1;
@@ -153,7 +153,7 @@ public class PoFiller{
 					po.set_ValueOfColumn(columnName, id);
 					return id;
 				}
-				return -1; 
+				return -1;
 			} else {
 				return 0;
 			}

@@ -49,21 +49,21 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
 				AD_Role_ID = getParentId(element, I_AD_Role.Table_Name);
 			} else {
-				AD_Role_ID = ReferenceUtils.resolveReference(ctx, element.properties.get("AD_Role_ID"));
+				AD_Role_ID = ReferenceUtils.resolveReference(ctx, element.properties.get("AD_Role_ID"), getTrxName(ctx));
 			}
 			if (AD_Role_ID <= 0)
 			{
 				element.defer = true;
 				return;
 			}
-			
-			int AD_Form_ID = ReferenceUtils.resolveReference(ctx, element.properties.get("AD_Form_ID"));
+
+			int AD_Form_ID = ReferenceUtils.resolveReference(ctx, element.properties.get("AD_Form_ID"), getTrxName(ctx));
 			if (AD_Form_ID <= 0)
 			{
 				element.defer = true;
 				return;
 			}
-			
+
 			Query query = new Query(ctx, "AD_Form_Access", "AD_Form_ID = ? AND AD_Role_ID = ?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{AD_Form_ID, AD_Role_ID})
 					.setClient_ID()
@@ -72,9 +72,9 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 			{
 				po = new MFormAccess(ctx, 0, null);
 				po.setAD_Form_ID(AD_Form_ID);
-				po.setAD_Role_ID(AD_Role_ID);				
+				po.setAD_Role_ID(AD_Role_ID);
 			}
-			
+
 			excludes.add("AD_Form_ID");
 			excludes.add("AD_Role_ID");
 		}
@@ -119,7 +119,7 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
