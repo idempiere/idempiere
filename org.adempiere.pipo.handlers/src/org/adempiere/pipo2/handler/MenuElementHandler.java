@@ -234,7 +234,6 @@ public class MenuElementHandler extends AbstractElementHandler {
 				+ "WHERE A.Node_ID = "
 				+ AD_Menu_ID + " AND A.Node_ID = B.AD_Menu_ID";
 
-		AttributesImpl atts = new AttributesImpl();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -244,6 +243,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 
 				X_AD_Menu m_Menu = new X_AD_Menu(ctx, rs.getInt("AD_Menu_ID"),
 						null);
+				AttributesImpl atts = new AttributesImpl();
+				addTypeName(atts, "table");
 				document.startElement("", "", I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
 				if (rs.getInt("AD_WINDOW_ID") > 0
@@ -300,7 +301,6 @@ public class MenuElementHandler extends AbstractElementHandler {
 				+ "WHERE A.Parent_ID = "
 				+ menu_id + " AND A.Node_ID = B.AD_Menu_ID";
 
-		AttributesImpl atts = new AttributesImpl();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -310,6 +310,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 				// Menu tag Start.
 				X_AD_Menu m_Menu = new X_AD_Menu(ctx, rs.getInt("AD_Menu_ID"),
 						null);
+				AttributesImpl atts = new AttributesImpl();
+				addTypeName(atts, "table");
 				document.startElement("", "", I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
 				if (rs.getInt("AD_WINDOW_ID") > 0
