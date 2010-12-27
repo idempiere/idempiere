@@ -154,7 +154,7 @@ public class PoExporter {
 	}
 
 	public void addTableReference(String tableName, String searchColumn, AttributesImpl atts) {
-		String columnName = tableName + "_ID"; 		
+		String columnName = tableName + "_ID";
 		addTableReference(columnName, tableName, searchColumn, atts);
 	}
 
@@ -162,7 +162,7 @@ public class PoExporter {
 		int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : 0;
 		addTableReference(columnName, tableName, searchColumn, id, atts);
 	}
-	
+
 	public void addTableReference(String columnName, String tableName, String searchColumn, int id, AttributesImpl atts) {
 		String value = ReferenceUtils.getTableReference(tableName, searchColumn, id, atts);
 		addString(columnName, value, atts);
@@ -232,7 +232,7 @@ public class PoExporter {
 					tableName = columnName.substring(0, columnName.length() - 3);
 					if (tableName.equalsIgnoreCase("ad_table")) {
 						searchColumn = "TableName";
-					} else if (tableName.equalsIgnoreCase("ad_column")) {
+					} else if (tableName.equalsIgnoreCase("ad_column") || tableName.equalsIgnoreCase("ad_element")) {
 						searchColumn = "ColumnName";
 					}
 				}
@@ -268,7 +268,7 @@ public class PoExporter {
 				if (searchColumn.endsWith("_ID")) {
 					if (tableName.equalsIgnoreCase("ad_table")) {
 						searchColumn = "TableName";
-					} else if (tableName.equalsIgnoreCase("ad_column")){
+					} else if (tableName.equalsIgnoreCase("ad_column") || tableName.equalsIgnoreCase("ad_element")){
 						searchColumn = "ColumnName";
 					} else {
 						int AD_Table_ID = MTable.getTable_ID(tableName);
