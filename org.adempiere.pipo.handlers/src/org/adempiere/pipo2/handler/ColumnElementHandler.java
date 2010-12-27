@@ -58,15 +58,15 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				element.defer = true;
 				return;
 			}
-			
+
 			List<String> excludes = defaultExcludeList(X_AD_Column.Table_Name);
 			String columnName = getStringValue(element, "ColumnName", excludes);
-			
+
 			MColumn mColumn = findPO(ctx, element);
 			if (mColumn == null) {
 				int tableid = 0;
 				if (getParentId(element, I_AD_Table.Table_Name) > 0) {
-					tableid = getParentId(element, "table");
+					tableid = getParentId(element, I_AD_Table.Table_Name);
 				} else {
 					mColumn = new MColumn(ctx, 0, getTrxName(ctx));
 					PoFiller filler = new PoFiller(ctx, mColumn, element, this);
@@ -78,8 +78,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				if (mColumn.getAD_Column_ID() == 0 && isOfficialId(element, "AD_Column_ID")) {
 					mColumn.setAD_Column_ID(getIntValue(element, "AD_Column_ID"));
 				}
-			}			
-						
+			}
+
 			mColumn.setColumnName(columnName);
 			mColumn.setIsSyncDatabase(getStringValue(element, "IsSyncDatabase", excludes));
 
@@ -89,7 +89,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				element.defer = true;
 				return;
 			}
-			
+
 			if (!mColumn.is_new() && !mColumn.is_Changed())
 				return;
 
