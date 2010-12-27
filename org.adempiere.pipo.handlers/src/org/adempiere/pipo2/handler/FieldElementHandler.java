@@ -65,7 +65,7 @@ public class FieldElementHandler extends AbstractElementHandler {
 			if (mField == null)
 			{
 				int AD_Table_ID = ReferenceUtils.resolveReference(ctx, element.parent.properties.get("AD_Table_ID"), getTrxName(ctx));
-				Element columnElement = element.parent.properties.get("AD_Column_ID");
+				Element columnElement = element.properties.get("AD_Column_ID");
 				int AD_Column_ID = 0;
 				if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement))
 				{
@@ -77,6 +77,10 @@ public class FieldElementHandler extends AbstractElementHandler {
 					AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", colname, "AD_Table", AD_Table_ID);
 				}
 
+				if (AD_Column_ID == 0) {
+					element.defer = true;
+					return;
+				}
 
 				StringBuffer sqlB = new StringBuffer(
 						"select AD_Field_ID from AD_Field where AD_Column_ID = ")
