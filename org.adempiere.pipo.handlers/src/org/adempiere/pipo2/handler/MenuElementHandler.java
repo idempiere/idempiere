@@ -149,7 +149,10 @@ public class MenuElementHandler extends AbstractElementHandler {
 							else
 								colValue = "false";
 						else
-							colValue = rs.getObject(q).toString();
+						{
+							Object obj = rs.getObject(q);
+							colValue = obj == null ? "" : obj.toString();
+						}
 
 						X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx, 0, getTrxName(ctx));
 						backup.setAD_Package_Imp_Detail_ID(impDetail.getAD_Package_Imp_Detail_ID());
