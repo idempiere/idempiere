@@ -45,7 +45,13 @@ public class PoFiller{
 
 		value = "".equals(value) ? null : value;
 
-		po.set_ValueOfColumn(columnName, value);
+		Object oldValue = po.get_Value(columnName);
+		if (value == null && oldValue == null)
+			return;
+		else if (oldValue != null && oldValue.toString().equals(value))
+			return;
+		else
+			po.set_ValueOfColumn(columnName, value);
 	}
 
 	/**
@@ -59,7 +65,10 @@ public class PoFiller{
 
 		boolean bool = "true".equals(value) ? true : false;
 
-		po.set_ValueOfColumn(columnName, bool);
+		if (po.get_Value(columnName) != null && po.get_ValueAsBoolean(columnName) == bool)
+			return;
+		else
+			po.set_ValueOfColumn(columnName, bool);
 	}
 
 	/**
@@ -74,7 +83,13 @@ public class PoFiller{
 			value = null;
 		Timestamp ts = value != null ? Timestamp.valueOf(value) : null;
 
-		po.set_ValueOfColumn(qName, ts);
+		Object oldValue = po.get_Value(qName);
+		if (oldValue == null && ts == null)
+			return;
+		else if (oldValue != null && oldValue.equals(ts))
+			return;
+		else
+			po.set_ValueOfColumn(qName, ts);
 	}
 
 	/**
@@ -89,7 +104,13 @@ public class PoFiller{
 			value = null;
 		Integer i = value != null ? new Integer(value) : null;
 
-		po.set_ValueOfColumn(qName, i);
+		Object oldValue = po.get_Value(qName);
+		if (oldValue == null && i == null)
+			return;
+		else if (oldValue != null && oldValue.equals(i))
+			return;
+		else
+			po.set_ValueOfColumn(qName, i);
 	}
 
 	/**
@@ -104,7 +125,13 @@ public class PoFiller{
 			value = null;
 		BigDecimal bd = value != null ? new BigDecimal(value) : null;
 
-		po.set_ValueOfColumn(qName, bd);
+		Object oldValue = po.get_Value(qName);
+		if (oldValue == null && bd == null)
+			return;
+		else if (oldValue != null && oldValue.equals(bd))
+			return;
+		else
+			po.set_ValueOfColumn(qName, bd);
 	}
 
 	public static int findTableReference(Properties ctx, AbstractElementHandler handler, Element element, String qName) {
@@ -150,7 +177,9 @@ public class PoFiller{
 			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
 				if (id > 0) {
-					po.set_ValueOfColumn(columnName, id);
+					if (po.get_ValueAsInt(columnName) != id) {
+						po.set_ValueOfColumn(columnName, id);
+					}
 					return id;
 				}
 				return -1;
