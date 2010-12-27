@@ -226,7 +226,7 @@ public class PoFiller{
 					continue;
 			}
 			Element e = element.properties.get(qName);
-			if ("table".equalsIgnoreCase(e.attributes.getValue("reference"))) {
+			if (ReferenceUtils.isTableLookup(e) || ReferenceUtils.isUUIDLookup(e)) {
 				int id = setTableReference(qName);
 				if (id < 0) {
 					notFounds.add(qName);
