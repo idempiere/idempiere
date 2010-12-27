@@ -348,7 +348,11 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * @return transaction name
      */
     protected String getTrxName(Properties ctx) {
-    	return Env.getContext(ctx, "TrxName");
+    	String trxName = Env.getContext(ctx, "TrxName");
+    	if (trxName != null && trxName.trim().length() > 0)
+    		return trxName;
+    	else
+    		return null;
     }
 
     /**
