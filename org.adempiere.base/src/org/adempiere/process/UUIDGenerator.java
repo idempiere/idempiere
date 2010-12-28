@@ -234,6 +234,19 @@ public class UUIDGenerator extends SvrProcess {
 				}
 			}
 
+			if (no != -1)
+			{
+				String indexName = column.getColumnName()+"_idx";
+				if (indexName.length() > 30) {
+					int i = indexName.length() - 31;
+					indexName = column.getColumnName().substring(0, column.getColumnName().length() - i);
+					indexName = indexName + "_uu_idx";
+				}
+				String indexSql = "CREATE UNIQUE INDEX " + indexName + " ON " + tableName
+					+ "(" + column.getColumnName() +")";
+				DB.executeUpdateEx(indexSql, null);
+			}
+
 			if (no == -1)
 			{
 				String msg = "@Error@ ";
@@ -243,8 +256,6 @@ public class UUIDGenerator extends SvrProcess {
 				msg += sql;
 				throw new AdempiereUserError (msg);
 			}
-
-			//TODO: create unique index
 		} catch (SQLException e) {
 			throw new DBException(e);
 		} finally {
