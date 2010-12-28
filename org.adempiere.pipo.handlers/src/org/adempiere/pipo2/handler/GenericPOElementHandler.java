@@ -160,7 +160,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				addTypeName(atts, "table");
 				document.startElement("","", tableName, atts);
 				PoExporter filler = new PoExporter(ctx, document, po);
-				filler.export(excludes);
+				filler.export(excludes, true);
 
 				for (int i = 1; i < components.length; i++) {
 					String tables[] = components[i].split("[>]");
@@ -193,7 +193,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				List<String> excludes = defaultExcludeList(tables[index]);
 				document.startElement("", "", tables[index], atts);
 				PoExporter filler = new PoExporter(ctx, document, po);
-				filler.export(excludes);
+				filler.export(excludes, true);
 				if (index + 1 < tables.length) {
 					exportDetail(ctx, document, po, index+1, tables);
 				}
