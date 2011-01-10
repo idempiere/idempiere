@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Webstore Resource
+Bundle-SymbolicName: org.adempiere.webstore.resource
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Adempiere.org
+Fragment-Host: org.adempiere.webstore;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.compiere.wstore
