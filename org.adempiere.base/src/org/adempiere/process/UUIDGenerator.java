@@ -83,9 +83,7 @@ public class UUIDGenerator extends SvrProcess {
 			while(rs.next()) {
 				int AD_Table_ID = rs.getInt(1);
 				String cTableName = rs.getString(2);
-				//skip import and translation table
-				if (cTableName.startsWith("I_") || cTableName.endsWith("_Trl"))
-					continue;
+
 				String columnName = cTableName + "_UU";
 				int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column Where AD_Table_ID = ? AND ColumnName = ?", AD_Table_ID, columnName);
 				if (AD_Column_ID <= 0) {
@@ -125,7 +123,7 @@ public class UUIDGenerator extends SvrProcess {
 		return count + " table altered";
 	}
 
-	private void updateUUID(MColumn column) {
+	public static void updateUUID(MColumn column) {
 		MTable table = (MTable) column.getAD_Table();
 		int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column WHERE AD_Table_ID=? AND ColumnName=?", table.getAD_Table_ID(), table.getTableName()+"_ID");
 		StringBuffer sql = new StringBuffer("SELECT ");
@@ -138,6 +136,7 @@ public class UUIDGenerator extends SvrProcess {
 			keyColumn = "ctid";
 		}
 		sql.append(keyColumn).append(" FROM ").append(table.getTableName());
+		sql.append(" WHERE ").append(column.getColumnName()).append(" IS NULL ");
 		String updateSQL = "UPDATE "+table.getTableName()+" SET "+column.getColumnName()+"=? WHERE "+keyColumn+"=";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;

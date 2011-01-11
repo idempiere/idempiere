@@ -1591,7 +1591,7 @@ public final class DB
 	{
 		return getKeyNamePairs(null, sql, optional, params);
 	}
-	
+
 	/**
 	 * Get Array of Key Name Pairs
 	 * @param trxName
@@ -2199,7 +2199,7 @@ public final class DB
         }
 		return list.toArray(new KeyNamePair[list.size()]);
 	}
-	
+
 	/**
 	 * Create persistent selection in T_Selection table
 	 * @param AD_PInstance_ID
@@ -2221,8 +2221,8 @@ public final class DB
 			insert.append(", ");
 			insert.append(selectedId);
 			insert.append(" FROM DUAL ");
-			
-			if (counter >= 1000) 
+
+			if (counter >= 1000)
 			{
 				DB.executeUpdateEx(insert.toString(), trxName);
 				insert = new StringBuffer();
@@ -2235,7 +2235,19 @@ public final class DB
 			DB.executeUpdateEx(insert.toString(), trxName);
 		}
 	}
-	
+
+	/***
+	 * @return true if current db have working generate_uuid function. generate_uuid doesn't work on 64 bit postgresql
+	 * on windows yet.
+	 */
+	public static boolean isGenerateUUIDSupported() {
+		String uuidTest = null;
+		try {
+			uuidTest = getSQLValueStringEx(null, "SELECT Generate_UUID() FROM Dual");
+		} catch (Exception e) {}
+		return uuidTest != null && uuidTest.trim().length() == 36;
+	}
+
 	private static void verifyTrx(String trxName, String sql) {
 		if (trxName != null && Trx.get(trxName, false) == null) {
 			// Using a trx that was previously closed or never opened

@@ -45,6 +45,7 @@ import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.acct.Doc;
 import org.compiere.util.CLogMgt;
@@ -3180,22 +3181,42 @@ public abstract class PO
 
 		String tableName = p_info.getTableName();
 		String keyColumn = m_KeyColumns[0];
+
+		//check whether db have working generate_uuid function.
+		boolean uuidFunction = DB.isGenerateUUIDSupported();
+
+		//uuid column
+		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column as col INNER JOIN AD_Table as tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
+					tableName+"_Trl", tableName+"_Trl_UU");
+
 		StringBuffer sql = new StringBuffer ("INSERT INTO ")
 			.append(tableName).append("_Trl (AD_Language,")
 			.append(keyColumn).append(", ")
 			.append(iColumns)
-			.append(" IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) ")
-			.append("SELECT l.AD_Language,t.")
+			.append(" IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy");
+		if (uuidColumnId > 0 && uuidFunction)
+			sql.append(",").append(tableName).append("_Trl_UU ) ");
+		else
+			sql.append(" ) ");
+		sql.append("SELECT l.AD_Language,t.")
 			.append(keyColumn).append(", ")
 			.append(sColumns)
-			.append(" 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy ")
-			.append("FROM AD_Language l, ").append(tableName).append(" t ")
+			.append(" 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy");
+		if (uuidColumnId > 0 && uuidFunction)
+			sql.append(",Generate_UUID() ");
+		else
+			sql.append(" ");
+		sql.append("FROM AD_Language l, ").append(tableName).append(" t ")
 			.append("WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.")
 			.append(keyColumn).append("=").append(get_ID())
 			.append(" AND NOT EXISTS (SELECT * FROM ").append(tableName)
 			.append("_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.")
 			.append(keyColumn).append("=t.").append(keyColumn).append(")");
 		int no = DB.executeUpdate(sql.toString(), m_trxName);
+		if (uuidColumnId > 0 && !uuidFunction) {
+			MColumn column = new MColumn(getCtx(), uuidColumnId, get_TrxName());
+			UUIDGenerator.updateUUID(column);
+		}
 		log.fine("#" + no);
 		return no > 0;
 	}	//	insertTranslations
@@ -3340,12 +3361,24 @@ public abstract class PO
 			.append("_ID, C_AcctSchema_ID, AD_Client_ID,AD_Org_ID,IsActive, Created,CreatedBy,Updated,UpdatedBy ");
 		for (int i = 0; i < s_acctColumns.size(); i++)
 			sb.append(",").append(s_acctColumns.get(i));
+
+		//check whether db have working generate_uuid function.
+		boolean uuidFunction = DB.isGenerateUUIDSupported();
+
+		//uuid column
+		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column as col INNER JOIN AD_Table as tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
+				acctTable, acctTable+"_UU");
+		if (uuidColumnId > 0 && uuidFunction)
+			sb.append(",").append(acctTable).append("_UU");
 		//	..	SELECT
 		sb.append(") SELECT ").append(get_ID())
 			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', SysDate,")
 			.append(getUpdatedBy()).append(",SysDate,").append(getUpdatedBy());
 		for (int i = 0; i < s_acctColumns.size(); i++)
 			sb.append(",p.").append(s_acctColumns.get(i));
+		//uuid column
+		if (uuidColumnId > 0 && uuidFunction)
+			sb.append(",generate_uuid()");
 		//	.. 	FROM
 		sb.append(" FROM ").append(acctBaseTable)
 			.append(" p WHERE p.AD_Client_ID=").append(getAD_Client_ID());
@@ -3361,6 +3394,12 @@ public abstract class PO
 		else
 			log.warning("#" + no
 				+ " - Table=" + acctTable + " from " + acctBaseTable);
+
+		//fall back to the slow java client update code
+		if (uuidColumnId > 0 && !uuidFunction) {
+			MColumn column = new MColumn(getCtx(), uuidColumnId, get_TrxName());
+			UUIDGenerator.updateUUID(column);
+		}
 		return no > 0;
 	}	//	insert_Accounting
 
@@ -3394,13 +3433,30 @@ public abstract class PO
 	 */
 	protected boolean insert_Tree (String treeType, int C_Element_ID)
 	{
+		String tableName = MTree_Base.getNodeTableName(treeType);
+
+		//check whether db have working generate_uuid function.
+		boolean uuidFunction = DB.isGenerateUUIDSupported();
+
+		//uuid column
+		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column as col INNER JOIN AD_Table as tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
+				tableName, tableName+"_UU");
+
 		StringBuffer sb = new StringBuffer ("INSERT INTO ")
-			.append(MTree_Base.getNodeTableName(treeType))
+			.append(tableName)
 			.append(" (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, "
-				+ "AD_Tree_ID, Node_ID, Parent_ID, SeqNo) "
-				+ "SELECT t.AD_Client_ID, 0, 'Y', SysDate, "+getUpdatedBy()+", SysDate, "+getUpdatedBy()+","
-				+ "t.AD_Tree_ID, ").append(get_ID()).append(", 0, 999 "
-				+ "FROM AD_Tree t "
+				+ "AD_Tree_ID, Node_ID, Parent_ID, SeqNo");
+		if (uuidColumnId > 0 && uuidFunction)
+			sb.append(", ").append(tableName).append("_UU) ");
+		else
+			sb.append(") ");
+		sb.append("SELECT t.AD_Client_ID, 0, 'Y', SysDate, "+getUpdatedBy()+", SysDate, "+getUpdatedBy()+","
+				+ "t.AD_Tree_ID, ").append(get_ID()).append(", 0, 999");
+		if (uuidColumnId > 0 && uuidFunction)
+			sb.append(", Generate_UUID() ");
+		else
+			sb.append(" ");
+		sb.append("FROM AD_Tree t "
 				+ "WHERE t.AD_Client_ID=").append(getAD_Client_ID()).append(" AND t.IsActive='Y'");
 		//	Account Element Value handling
 		if (C_Element_ID != 0)
@@ -3416,6 +3472,12 @@ public abstract class PO
 			log.fine("#" + no + " - TreeType=" + treeType);
 		else
 			log.warning("#" + no + " - TreeType=" + treeType);
+
+		if (uuidColumnId > 0 && !uuidFunction )
+		{
+			MColumn column = new MColumn(getCtx(), uuidColumnId, get_TrxName());
+			UUIDGenerator.updateUUID(column);
+		}
 		return no > 0;
 	}	//	insert_Tree
 
