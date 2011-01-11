@@ -104,7 +104,7 @@
 			<param name="file.name" value="${basedir}/adempiere-fk.sql" />
 		</antcall>
 		<antcall target="load">
-			<param name="file.name" value="${basedir}/install_procedures.sql" />
+			<param name="file.name" value="${basedir}/uuid-ossp.sql" />
 		</antcall>
 	</target>
 
