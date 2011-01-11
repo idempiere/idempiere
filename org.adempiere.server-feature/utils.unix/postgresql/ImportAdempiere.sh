@@ -15,7 +15,7 @@ if [ "$ADEMPIERE_HOME" = "" -o  "$ADEMPIERE_DB_NAME" = "" -o "$ADEMPIERE_DB_SERV
   then
     echo "Please make sure that the environment variables are set correctly:"
     echo "	ADEMPIERE_HOME	e.g. /Adempiere"
-    echo "	ADEMPIERE_DB_NAME	e.g. adempiere or xe"
+    echo "	ADEMPIERE_DB_NAME	e.g. adempiere or orcl"
     echo "  ADEMPIERE_DB_SERVER e.g. dbserver.adempiere.org"
     echo "  ADEMPIERE_DB_PORT e.g. 5432 or 1521"
     exit 1
@@ -41,9 +41,8 @@ createdb  --template=template0 -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -E 
 echo -------------------------------------
 echo Import Adempiere_pg.dmp
 echo -------------------------------------
-ADEMPIERE_ALTER_ROLE_SQL="ALTER ROLE $2 SET search_path TO adempiere, sqlj, pg_catalog"
+ADEMPIERE_ALTER_ROLE_SQL="ALTER ROLE $2 SET search_path TO adempiere, pg_catalog"
 psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -c "$ADEMPIERE_ALTER_ROLE_SQL"
-psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -c "drop schema sqlj cascade"
 psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -f $ADEMPIERE_HOME/data/Adempiere_pg.dmp
 ADEMPIERE_ALTER_ROLE_SQL=
 PGPASSWORD=
