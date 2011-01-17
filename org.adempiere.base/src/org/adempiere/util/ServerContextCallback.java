@@ -41,6 +41,15 @@ public class ServerContextCallback implements InvocationHandler, Serializable {
 					types[1] == String.class && args != null && args[0] instanceof String &&
 					args[1] instanceof String)
 				return context.getProperty((String)args[0], (String)args[1]);
+		} else if (method.getName().equals("setProperty")) {
+			Class<?>[] types = method.getParameterTypes();
+			if (types != null && types.length == 2 && types[0] == String.class &&
+					types[1] == String.class && args != null && args[0] instanceof String &&
+					args[1] instanceof String)
+			{
+				context.setProperty((String)args[0], (String)args[1]);
+				return null;
+			}
 		}
 		Method m = context.getClass().getMethod(method.getName(), method.getParameterTypes());
 		return m.invoke(context, args);

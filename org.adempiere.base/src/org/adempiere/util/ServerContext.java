@@ -19,9 +19,6 @@ package org.adempiere.util;
 
 import java.util.Properties;
 
-import org.compiere.util.Env;
-import org.compiere.util.Language;
-
 /**
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
@@ -43,7 +40,6 @@ public final class ServerContext
         protected Properties initialValue()
         {
         	Properties ctx = new Properties();
-        	ctx.put(Env.LANGUAGE, Language.getBaseAD_Language());
             return ctx;
         }
     };

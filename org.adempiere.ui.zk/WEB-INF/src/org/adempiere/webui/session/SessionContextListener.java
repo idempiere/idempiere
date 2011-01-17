@@ -129,6 +129,11 @@ public class SessionContextListener implements ExecutionInit,
     public void prepare(Component comp, Event evt)
     {
     	//in servlet thread
+    	//check is thread local context have been setup
+    	if (ServerContext.getCurrentInstance().isEmpty())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
 		_ctx = ServerContext.getCurrentInstance();
     }
 
@@ -157,6 +162,11 @@ public class SessionContextListener implements ExecutionInit,
     public void beforeResume(Component comp, Event evt)
     {
     	//in servlet thread
+    	//check is thread local context have been setup
+    	if (ServerContext.getCurrentInstance().isEmpty())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
     	_ctx = ServerContext.getCurrentInstance();
     }
 
@@ -247,6 +257,5 @@ public class SessionContextListener implements ExecutionInit,
 	{
 		//in event processing thread
 		_ctx = ServerContext.getCurrentInstance();
-//    	ServerContext.dispose();
 	}
 }
