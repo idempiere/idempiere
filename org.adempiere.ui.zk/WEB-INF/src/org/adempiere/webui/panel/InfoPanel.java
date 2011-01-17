@@ -514,6 +514,19 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	            contentPanel.setData(model, null);
         	}
         }
+        else
+        {
+        	if (paging != null)
+    		{
+    			paging.setTotalSize(m_count);
+    			paging.setActivePage(0);
+    			pageNo = 0;
+    		}
+        	model = new ListModelTable(new ArrayList<Object>());
+        	model.setSorter(this);
+            model.addTableModelListener(this);
+            contentPanel.setData(model, null);
+        }
         int no = m_count;
         setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
         setStatusDB(Integer.toString(no));
@@ -690,11 +703,6 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		}
 
 		log.fine("#" + m_count + " - " + (System.currentTimeMillis()-start) + "ms");
-
-		//Armen: add role checking (Patch #1694788 )
-		//MRole role = MRole.getDefault();
-		//if (role.isQueryMax(no))
-		//	return ADialog.ask(p_WindowNo, this, "InfoHighRecordCount", String.valueOf(no));
 
 		return true;
 	}	//	testCount
@@ -1114,9 +1122,9 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
     				header.setSortDirection("natural");
     			}
     		}
-            	executeQuery();
-                renderItems();
-            }
+        	executeQuery();
+            renderItems();
+        }
     	finally
     	{
     		hideBusyDialog();
