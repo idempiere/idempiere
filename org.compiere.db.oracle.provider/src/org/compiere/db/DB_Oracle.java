@@ -553,9 +553,16 @@ public class DB_Oracle implements AdempiereDatabase
         if (m_ds != null)
             return m_ds;
 
+        //try fragment contributed properties then default properties
         URL url = Ini.isClient()
         	? OracleBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.properties")
         	: OracleBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.properties");
+        if (url == null)
+        {
+        	url = Ini.isClient()
+        		? OracleBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.default.properties")
+        		: OracleBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.default.properties");
+        }
         Properties poolProperties = new Properties();
         try {
 			poolProperties.load(url.openStream());

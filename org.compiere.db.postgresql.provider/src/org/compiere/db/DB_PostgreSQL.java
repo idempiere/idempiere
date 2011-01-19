@@ -616,9 +616,16 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		if (m_ds != null)
 			return m_ds;
 
+		//try fragment contributed properties then default properties
 		URL url = Ini.isClient()
-    	? PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.properties")
-    	: PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.properties");
+    		? PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.properties")
+    		: PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.properties");
+    	if (url == null)
+    	{
+    		url = Ini.isClient()
+    			? PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.default.properties")
+    			: PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.default.properties");
+    	}
 		Properties poolProperties = new Properties();
 		try {
 			poolProperties.load(url.openStream());
