@@ -493,15 +493,18 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 				document.close();
 
 				hideBusyDialog();
-				Window win = new SimplePDFViewer(this.getTitle(), new FileInputStream(outFile));
+				Window win = new SimplePDFViewer(m_pi.getTitle(), new FileInputStream(outFile));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			} finally {
+				//do no harm calling this twice
+				hideBusyDialog();
 			}
 		} else if (pdfList.size() > 0) {
 			hideBusyDialog();
 			try {
-				Window win = new SimplePDFViewer(this.getTitle(), new FileInputStream(pdfList.get(0)));
+				Window win = new SimplePDFViewer(m_pi.getTitle(), new FileInputStream(pdfList.get(0)));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e)
 			{
@@ -561,14 +564,18 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 				document.close();
 
 				hideBusyDialog();
-				Window win = new SimplePDFViewer(this.getTitle(), new FileInputStream(outFile));
+				Window win = new SimplePDFViewer(m_pi.getTitle(), new FileInputStream(outFile));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			} finally {
+				//do no harm calling this twice
+				hideBusyDialog();
 			}
 		} else if (pdfList.size() > 0) {
+			hideBusyDialog();
 			try {
-				Window win = new SimplePDFViewer(this.getTitle(), new FileInputStream(pdfList.get(0)));
+				Window win = new SimplePDFViewer(m_pi.getTitle(), new FileInputStream(pdfList.get(0)));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e)
 			{
