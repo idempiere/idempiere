@@ -57,7 +57,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
 
 /**
- * 
+ *
  * @author Low Heng Sin
  *
  */
@@ -72,10 +72,10 @@ public class WAttachment extends Window implements EventListener
 
 	/**	Window No				*/
 	private int	m_WindowNo;
-	
+
 	/** Attachment				*/
 	private MAttachment	m_attachment;
-	
+
 	/** Change					*/
 	private boolean m_change = false;
 
@@ -94,13 +94,13 @@ public class WAttachment extends Window implements EventListener
 	private Button bCancel = new Button();
 	private Button bOk = new Button();
 	private Button bRefresh = new Button();
-	
+
 	private Panel previewPanel = new Panel();
 
 	private Borderlayout mainPanel = new Borderlayout();
 
-	private Hbox toolBar = new Hbox();	
-	
+	private Hbox toolBar = new Hbox();
+
 	private Hbox confirmPanel = new Hbox();
 
 	private int displayIndex;
@@ -125,12 +125,12 @@ public class WAttachment extends Window implements EventListener
 	 *  @param Record_ID record key
 	 *  @param trxName transaction
 	 */
-	
+
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 						int AD_Table_ID, int Record_ID, String trxName)
 	{
 		super();
-		
+
 		log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 
 		m_WindowNo = WindowNo;
@@ -143,19 +143,19 @@ public class WAttachment extends Window implements EventListener
 		{
 			log.log(Level.SEVERE, "", ex);
 		}
-		
+
 		//	Create Model
-		
+
 		if (AD_Attachment_ID == 0)
 			m_attachment = new MAttachment (Env.getCtx(), AD_Table_ID, Record_ID, trxName);
 		else
 			m_attachment = new MAttachment (Env.getCtx(), AD_Attachment_ID, trxName);
-		
+
 		loadAttachments();
 
 		try
 		{
-			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);			
+			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 			AEnv.showWindow(this);
 			if (autoPreview(0, true))
 			{
@@ -163,14 +163,14 @@ public class WAttachment extends Window implements EventListener
 				preview.getUuid() + "').src\", 1000)";
 				Clients.response(new AuScript(null, script));
 			}
-			
+
 			//enter modal
 			doModal();
 		}
 		catch (Exception e)
 		{
 		}
-		
+
 	} // WAttachment
 
 	/**
@@ -186,7 +186,7 @@ public class WAttachment extends Window implements EventListener
 	 *  </pre>
 	 *  @throws Exception
 	 */
-	
+
 	void staticInit() throws Exception
 	{
 		this.setMaximizable(true);
@@ -198,22 +198,22 @@ public class WAttachment extends Window implements EventListener
 		this.setBorder("normal");
 		this.appendChild(mainPanel);
 		mainPanel.setHeight("100%");
-		mainPanel.setWidth("100%");		
-		
+		mainPanel.setWidth("100%");
+
 		North northPanel = new North();
 		northPanel.setCollapsible(false);
 		northPanel.setSplittable(false);
-		
+
 		cbContent.setMold("select");
 		cbContent.setRows(0);
 		cbContent.addEventListener(Events.ON_SELECT, this);
-		
+
 		toolBar.appendChild(bLoad);
 		toolBar.appendChild(bDelete);
 		toolBar.appendChild(bSave);
 		toolBar.appendChild(cbContent);
 		toolBar.appendChild(sizeLabel);
-		
+
 		mainPanel.appendChild(northPanel);
 		Div div = new Div();
 		div.appendChild(toolBar);
@@ -221,7 +221,7 @@ public class WAttachment extends Window implements EventListener
 		text.setWidth("100%");
 		div.appendChild(text);
 		northPanel.appendChild(div);
-		
+
 		bSave.setEnabled(false);
 		bSave.setImage("/images/Export24.png");
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
@@ -238,30 +238,30 @@ public class WAttachment extends Window implements EventListener
 		previewPanel.appendChild(preview);
 		preview.setHeight("100%");
 		preview.setWidth("100%");
-			
+
 		Center centerPane = new Center();
 		centerPane.setAutoscroll(true);
 		centerPane.setFlex(true);
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
-		
+
 		South southPane = new South();
 		mainPanel.appendChild(southPane);
 		southPane.appendChild(confirmPanel);
 		southPane.setHeight("30px");
-		
+
 		bCancel.setImage("/images/Cancel24.png");
 		bCancel.addEventListener(Events.ON_CLICK, this);
 
 		bOk.setImage("/images/Ok24.png");
 		bOk.addEventListener(Events.ON_CLICK, this);
-		
+
 		bDeleteAll.setImage("/images/Delete24.png");
 		bDeleteAll.addEventListener(Events.ON_CLICK, this);
-		
+
 		bRefresh.setImage("/images/Refresh24.png");
 		bRefresh.addEventListener(Events.ON_CLICK, this);
-		
+
 		confirmPanel.appendChild(bDeleteAll);
 		confirmPanel.appendChild(bRefresh);
 		confirmPanel.appendChild(bCancel);
@@ -269,70 +269,83 @@ public class WAttachment extends Window implements EventListener
 
 		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));
 	}
-	
+
 	/**
 	 * 	Dispose
 	 */
-	
+
 	public void dispose ()
 	{
 		preview = null;
 		this.detach();
 	} // dispose
-	
+
 	/**
 	 *	Load Attachments
 	 */
-	
+
 	private void loadAttachments()
 	{
 		log.config("");
-		
+
 		//	Set Text/Description
-		
+
 		String sText = m_attachment.getTextMsg();
-		
+
 		if (sText == null)
 			text .setText("");
 		else
 			text.setText(sText);
 
 		//	Set Combo
-		
+
 		int size = m_attachment.getEntryCount();
-		
+
 		for (int i = 0; i < size; i++)
 			cbContent.appendItem(m_attachment.getEntryName(i), m_attachment.getEntryName(i));
-		
+
 		if (size > 0)
 		{
-			cbContent.setSelectedIndex(0);					
-		}		
-		
+			cbContent.setSelectedIndex(0);
+		}
+
 	} // loadAttachment
-	
+
 	private boolean autoPreview(int index, boolean immediate)
 	{
 		MAttachmentEntry entry = m_attachment.getEntry(index);
-		String mimeType = entry.getContentType();
-		byte[] data = entry.getData();
-		String unit = " KB";
-		BigDecimal size = new BigDecimal(data != null ? data.length : 0);
-		size = size.divide(new BigDecimal("1024"));
-		if (size.compareTo(new BigDecimal("1024")) >= 0)
+		if (entry != null)
 		{
+			String mimeType = entry.getContentType();
+			byte[] data = entry.getData();
+			String unit = " KB";
+			BigDecimal size = new BigDecimal(data != null ? data.length : 0);
 			size = size.divide(new BigDecimal("1024"));
-			unit = " MB";
-		}
-		size = size.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		sizeLabel.setText(size.toPlainString() + unit);
-		if (autoPreviewList.contains(mimeType))
-		{
-			displayData(index, immediate);
-			return true;
+			if (size.compareTo(new BigDecimal("1024")) >= 0)
+			{
+				size = size.divide(new BigDecimal("1024"));
+				unit = " MB";
+			}
+			size = size.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+			sizeLabel.setText(size.toPlainString() + unit);
+
+			bSave.setEnabled(true);
+			bDelete.setEnabled(true);
+
+			if (autoPreviewList.contains(mimeType))
+			{
+				displayData(index, immediate);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
+			bSave.setEnabled(false);
+			bDelete.setEnabled(false);
 			return false;
 		}
 	}
@@ -341,15 +354,12 @@ public class WAttachment extends Window implements EventListener
 	 *  Display gif or jpg in gifPanel
 	 * 	@param index index
 	 */
-	
+
 	private void displayData (int index, boolean immediate)
 	{
-		//	Reset UI		
+		//	Reset UI
 		preview.setSrc(null);
 
-		bDelete.setEnabled(false);
-		bSave.setEnabled(false);
-		
 		displayIndex = index;
 
 		if (immediate)
@@ -368,20 +378,17 @@ public class WAttachment extends Window implements EventListener
 	 * Use to refresh preview frame, don't call directly.
 	 */
 	public void displaySelected() {
-		MAttachmentEntry entry = m_attachment.getEntry(displayIndex); 
+		MAttachmentEntry entry = m_attachment.getEntry(displayIndex);
 		log.config("Index=" + displayIndex + " - " + entry);
 		if (entry != null && entry.getData() != null)
 		{
-			bSave.setEnabled(true);
-			bDelete.setEnabled(true);
-			
 			log.config(entry.toStringX());
 
 			try
 			{
 				String contentType = entry.getContentType();
 				AMedia media = new AMedia(entry.getName(), null, contentType, entry.getData());
-				
+
 				preview.setContent(media);
 				preview.setVisible(true);
 				preview.invalidate();
@@ -392,23 +399,23 @@ public class WAttachment extends Window implements EventListener
 			}
 		}
 	}
-	
+
 	/**
 	 * 	Get File Name with index
 	 *	@param index index
 	 *	@return file name or null
 	 */
-	
+
 	private String getFileName (int index)
 	{
 		String fileName = null;
-	
+
 		if (cbContent.getItemCount() > index)
 		{
 			ListItem listitem = cbContent.getItemAtIndex(index);
 			fileName = (String)listitem.getValue();
 		}
-		
+
 		return fileName;
 	}	//	getFileName
 
@@ -416,26 +423,26 @@ public class WAttachment extends Window implements EventListener
 	 *	Action Listener
 	 *  @param e event
 	 */
-	
+
 	public void onEvent(Event e)
 	{
 		//	Save and Close
-		
+
 		if (e.getTarget() == bOk)
 		{
 			String newText = text.getText();
-			
+
 			if (newText == null)
 				newText = "";
-			
+
 			String oldText = m_attachment.getTextMsg();
-			
+
 			if (oldText == null)
 				oldText = "";
-			
+
 			if (!m_change)
 				m_change = !newText.equals(oldText);
-			
+
 			if (newText.length() > 0 || m_attachment.getEntryCount() > 0)
 			{
 				if (m_change)
@@ -447,92 +454,92 @@ public class WAttachment extends Window implements EventListener
 			}
 			else
 				m_attachment.delete(true);
-			
+
 			dispose();
 		}
-	
+
 		//	Cancel
-		
+
 		else if (e.getTarget() == bCancel)
 		{
 			dispose();
 		}
-		
+
 		//	Delete Attachment
-		
+
 		else if (e.getTarget() == bDeleteAll)
 		{
 			deleteAttachment();
 			dispose();
 		}
-		
+
 		//	Delete individual entry and Return
-		
+
 		else if (e.getTarget() == bDelete)
 			deleteAttachmentEntry();
-		
+
 		//	Show Data
-		
+
 		else if (e.getTarget() == cbContent)
 		{
 			clearPreview();
 			autoPreview (cbContent.getSelectedIndex(), false);
 		}
-		
+
 		//	Load Attachment
-		
+
 		else if (e.getTarget() == bLoad)
 			loadFile();
-		
+
 		//	Open Attachment
-		
+
 		else if (e.getTarget() == bSave)
 			saveAttachmentToFile();
-		
+
 		else if (e.getTarget() == bRefresh)
 			displayData(cbContent.getSelectedIndex(), true);
-		
+
 	}	//	onEvent
-	
+
 	/**************************************************************************
 	 *	Load file for attachment
 	 */
-	
+
 	private void loadFile()
 	{
 		log.info("");
-		
+
 		preview.setVisible(false);
-		
+
 		Media media = null;
-		
-		try 
+
+		try
 		{
-			media = Fileupload.get(true); 
-			
+			media = Fileupload.get(true);
+
 			if (media != null)
 			{
 //				pdfViewer.setContent(media);
 				;
 			}
-			else 
+			else
 			{
 				preview.setVisible(true);
 				preview.invalidate();
 				return;
 			}
 		}
-		catch (InterruptedException e) 
+		catch (InterruptedException e)
 		{
 			log.log(Level.WARNING, e.getLocalizedMessage(), e);
 		}
-	
-		String fileName = media.getName(); 
+
+		String fileName = media.getName();
 		log.config(fileName);
 		int cnt = m_attachment.getEntryCount();
-		
-		//update		
-		for (int i = 0; i < cnt; i++) 
+
+		//update
+		for (int i = 0; i < cnt; i++)
 		{
 			if (m_attachment.getEntryName(i).equals(fileName))
 			{
@@ -544,8 +551,8 @@ public class WAttachment extends Window implements EventListener
 				return;
 			}
 		}
-		
-		//new		
+
+		//new
 		if (m_attachment.addEntry(fileName, getMediaData(media)))
 		{
 			cbContent.appendItem(media.getName(), media.getName());
@@ -558,10 +565,10 @@ public class WAttachment extends Window implements EventListener
 
 	private byte[] getMediaData(Media media) {
 		byte[] bytes = null;
-		
+
 		if (media.inMemory())
 			bytes = media.getByteData();
-		else {			
+		else {
 			InputStream is = media.getStreamData();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte[] buf = new byte[ 1000 ];
@@ -575,7 +582,7 @@ public class WAttachment extends Window implements EventListener
 			}
 			bytes = baos.toByteArray();
 		}
-						
+
 		return bytes;
 	}
 
@@ -585,7 +592,7 @@ public class WAttachment extends Window implements EventListener
 	private void deleteAttachment()
 	{
 		log.info("");
-		
+
 		if (FDialog.ask(m_WindowNo, this, "AttachmentDelete?"))
 			m_attachment.delete(true);
 	}	//	deleteAttachment
@@ -593,14 +600,14 @@ public class WAttachment extends Window implements EventListener
 	/**
 	 *	Delete Attachment Entry
 	 */
-	
+
 	private void deleteAttachmentEntry()
 	{
 		log.info("");
-		
+
 		int index = cbContent.getSelectedIndex();
 		String fileName = getFileName(index);
-		
+
 		if (fileName == null)
 			return;
 
@@ -608,7 +615,7 @@ public class WAttachment extends Window implements EventListener
 		{
 			if (m_attachment.deleteEntry(index))
 				cbContent.removeItemAt(index);
-			
+
 			m_change = true;
 		}
 	}	//	deleteAttachment
@@ -616,12 +623,12 @@ public class WAttachment extends Window implements EventListener
 	/**
 	 *	Save Attachment to File
 	 */
-	
+
 	private void saveAttachmentToFile()
 	{
 		int index = cbContent.getSelectedIndex();
 		log.info("index=" + index);
-	
+
 		if (m_attachment.getEntryCount() < index)
 			return;
 
