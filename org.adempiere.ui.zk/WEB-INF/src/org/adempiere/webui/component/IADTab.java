@@ -12,6 +12,7 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.panel.AbstractADWindowPanel;
 import org.adempiere.webui.panel.IADTabpanel;
 import org.adempiere.webui.part.UIPart;
 import org.compiere.model.DataStatusEvent;
@@ -125,4 +126,10 @@ public interface IADTab extends UIPart {
 	 * @return IADTabpanel or null if not found
 	 */
 	public IADTabpanel findADTabpanel(GridTab gTab);
+
+	/**
+	 * 
+	 * @param abstractADWindowPanel
+	 */
+	public void setADWindowPanel(AbstractADWindowPanel abstractADWindowPanel);
 }

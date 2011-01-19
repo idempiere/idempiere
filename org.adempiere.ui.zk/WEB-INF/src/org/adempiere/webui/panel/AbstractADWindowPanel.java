@@ -209,6 +209,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 		adTab = createADTab();
 		adTab.addSelectionEventListener(this);
+		adTab.setADWindowPanel(this);
 
         return super.createPart(parent);
     }
