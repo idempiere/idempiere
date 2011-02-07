@@ -257,13 +257,9 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		m_InfoPAttributeButton.addEventListener(Events.ON_CLICK,this);
 
 		fieldValue = new Textbox();
-		fieldValue.setMaxlength(40);
 		fieldName = new Textbox();
-		fieldName.setMaxlength(40);
 		fieldUPC = new Textbox();
-		fieldUPC.setMaxlength(40);
 		fieldSKU = new Textbox();
-		fieldSKU.setMaxlength(40);
 		pickPriceList = new Listbox();
 		pickPriceList.setRows(0);
 		pickPriceList.setMultiple(false);
@@ -294,7 +290,6 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		pickWarehouse.addEventListener(Events.ON_SELECT, this);
 
 		fieldVendor = new Textbox();
-		fieldVendor.setMaxlength(40);
 
         contentPanel.setVflex(true);
 	}	//	initComponents
@@ -1164,7 +1159,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		if (s_productLayout == null)
 		{
 			ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
-			list.add(new ColumnInfo(" ", "p.M_Product_ID", IDColumn.class));
+			list.add(new ColumnInfo(" ", "p.M_Product_ID", IDColumn.class, false, false, null));
 			list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "Discontinued").substring(0, 1), "p.Discontinued", Boolean.class));
 			list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "Value"), "p.Value", String.class));
 			list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "Name"), "p.Name", String.class));
