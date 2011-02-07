@@ -16,6 +16,7 @@ package org.adempiere.webui.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
 import org.zkoss.zhtml.Button;
 import org.zkoss.zhtml.Text;
@@ -73,6 +74,7 @@ public class ADButtonTabList extends Panel implements IADTabList, EventListener 
 			ADTabLabel tabLabel = (ADTabLabel) items[i];
 			Button button = new Button();
 			button.setDynamicProperty("Title", tabLabel.description);
+			button.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "ADButtonTab" + i);
 			Text text = new Text(tabLabel.label);
 			button.appendChild(text);
 			int s = tabbox.getSelectedIndex();
