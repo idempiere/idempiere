@@ -21,7 +21,7 @@
 	<!--  change to false to use compress js which is much smaller -->
 	<client-config>
 		<debug-js>false</debug-js>
-		<processing-prompt-delay>100</processing-prompt-delay>
+		<processing-prompt-delay>500</processing-prompt-delay>
 	</client-config>
 
 	<!--
@@ -52,6 +52,12 @@
 	<device-config>
  		<device-type>ajax</device-type>
 		<server-push-class>org.zkoss.zkmax.ui.comet.CometServerPush</server-push-class>
+		<!-- Configure the progress message to show in the center -->
+	    <embed>
+	      <![CDATA[<script type="text/javascript">
+	        AU_progressbar=function(id,msg){Boot_progressbox(id,msg,"45%","45%",true,false);};
+	      </script>]]>
+	    </embed>
 	</device-config>
 
 	<library-property>
