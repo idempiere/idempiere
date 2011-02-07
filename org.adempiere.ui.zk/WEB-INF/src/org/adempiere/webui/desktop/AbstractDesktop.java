@@ -160,6 +160,8 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		
 		if (Window.MODE_MODAL.equals(mode))
 		{
+			if (pos != null)
+				win.setPosition(pos);
 			showModal(win);
 		}
 		else if (Window.MODE_POPUP.equals(mode))
