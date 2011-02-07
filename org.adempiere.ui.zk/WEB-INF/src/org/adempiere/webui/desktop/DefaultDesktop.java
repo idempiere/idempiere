@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.ServerContext;
+import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.graph.WGraph;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.component.Tabpanel;
@@ -34,6 +37,7 @@ import org.adempiere.webui.dashboard.DashboardRunnable;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.panel.HeaderPanel;
 import org.adempiere.webui.panel.SidePanel;
+import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
@@ -76,7 +80,7 @@ import org.zkoss.zul.Toolbarbutton;
 public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener, IServerPushCallback
 {
 	/**
-	 * generated serial version ID 
+	 * generated serial version ID
 	 */
 	private static final long serialVersionUID = -8203958978173990301L;
 
@@ -95,6 +99,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private int noOfRequest;
 
 	private int noOfWorkflow;
+
+	private Tabpanel homeTab;
 
     public DefaultDesktop()
     {
@@ -133,7 +139,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         w.setSplittable(true);
         w.setTitle("Menu");
         w.setFlex(true);
-        w.addEventListener(Events.ON_OPEN, new EventListener() {			
+        w.addEventListener(Events.ON_OPEN, new EventListener() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
@@ -153,15 +159,48 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
         windowContainer.createPart(windowArea);
 
-        createHomeTab();
+        homeTab = new Tabpanel();
+        windowContainer.addWindow(homeTab, Msg.getMsg(Env.getCtx(), "Home").replaceAll("&", ""), false);
+        BusyDialog busyDialog = new BusyDialog();
+        busyDialog.setShadow(false);
+        homeTab.appendChild(busyDialog);
+
+        if (!layout.getDesktop().isServerPushEnabled())
+    	{
+    		layout.getDesktop().enableServerPush(true);
+    	}
+
+        Runnable runnable = new Runnable() {
+			public void run() {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {}
+
+				IServerPushCallback callback = new IServerPushCallback() {
+					public void updateUI() {
+						Properties ctx = (Properties)layout.getDesktop().getSession().getAttribute(SessionContextListener.SESSION_CTX);
+						try {
+							ServerContext.setCurrentInstance(ctx);
+							renderHomeTab();
+						} finally {
+							ServerContext.dispose();
+						}
+					}
+				};
+				ServerPushTemplate template = new ServerPushTemplate(layout.getDesktop());
+				template.execute(callback);
+			}
+		};
+
+		Thread thread = new Thread(runnable);
+		thread.start();
 
         return layout;
     }
 
-	private void createHomeTab()
+	private void renderHomeTab()
 	{
-        Tabpanel homeTab = new Tabpanel();
-        windowContainer.addWindow(homeTab, Msg.getMsg(Env.getCtx(), "Home").replaceAll("&", ""), false);
+		homeTab.getChildren().clear();
 
         Portallayout portalLayout = new Portallayout();
         portalLayout.setWidth("100%");
@@ -196,6 +235,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        	Panel panel = new Panel();
 	        	panel.setStyle("margin-bottom:10px");
 	        	panel.setTitle(dp.getName());
+	        	panel.setMaximizable(true);
 
 	        	String description = dp.getDescription();
             	if(description != null)
@@ -249,6 +289,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 					ToolBarButton btn = new ToolBarButton(String.valueOf(AD_Menu_ID));
 					I_AD_Menu menu = dp.getAD_Menu();
 					btn.setLabel(menu.getName());
+					btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
 					btn.addEventListener(Events.ON_CLICK, this);
 					content.appendChild(btn);
 					panelEmpty = false;
@@ -275,7 +316,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 		            String goalDisplay = dp.getGoalDisplay();
 		            MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-		            WGraph graph = new WGraph(goal, 55, false, true, 
+		            WGraph graph = new WGraph(goal, 55, false, true,
 		            		!(X_PA_DashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
 		            		X_PA_DashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
 		            content.appendChild(graph);
@@ -318,9 +359,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         {
 			logger.log(Level.WARNING, "Failed to create dashboard content", e);
 		}
-        finally
-        {
-		}
         //
 
         //register as 0
@@ -329,11 +367,14 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         if (!portalLayout.getDesktop().isServerPushEnabled())
         	portalLayout.getDesktop().enableServerPush(true);
 
-        dashboardRunnable.refreshDashboard();
+        if (!dashboardRunnable.isEmpty())
+        {
+        	dashboardRunnable.refreshDashboard();
 
-        dashboardThread = new Thread(dashboardRunnable, "UpdateInfo");
-        dashboardThread.setDaemon(true);
-        dashboardThread.start();
+	        dashboardThread = new Thread(dashboardRunnable, "UpdateInfo");
+        	dashboardThread.setDaemon(true);
+        	dashboardThread.start();
+		}
 	}
 
     public void onEvent(Event event)
@@ -347,16 +388,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
             {
             	ToolBarButton btn = (ToolBarButton) comp;
 
-            	int menuId = 0;
-            	try
+            	if (btn.getAttribute("AD_Menu_ID") != null)
             	{
-            		menuId = Integer.valueOf(btn.getName());
+	            	int menuId = (Integer)btn.getAttribute("AD_Menu_ID");
+	            	if(menuId > 0) onMenuSelected(menuId);
             	}
-            	catch (Exception e) {
-
-				}
-
-            	if(menuId > 0) onMenuSelected(menuId);
             }
         }
     }
@@ -414,7 +450,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				+ ", " + Msg.translate(Env.getCtx(), "R_Request_ID") + " : " + noOfRequest
 				+ ", " + Msg.getMsg (Env.getCtx(), "WorkflowActivities") + " : " + noOfWorkflow);
 	}
-	
+
 	private void autoHideMenu() {
 		if (layout.getWest().isCollapsible() && !layout.getWest().isOpen())
 		{
@@ -431,8 +467,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	@Override
-	protected void preOpenNewTab() 
+	protected void preOpenNewTab()
 	{
 		autoHideMenu();
-	}	
+	}
 }

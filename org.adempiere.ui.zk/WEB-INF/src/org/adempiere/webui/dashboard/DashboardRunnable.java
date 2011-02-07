@@ -197,4 +197,11 @@ public class DashboardRunnable implements Runnable, Serializable
 	public void add(DashboardPanel dashboardPanel) {
 		dashboardPanels.add(dashboardPanel);
 	}
+	
+	/**
+	 * @return boolean
+	 */
+	public boolean isEmpty() {
+		return dashboardPanels == null || dashboardPanels.isEmpty() ? true : false;
+	}
 }

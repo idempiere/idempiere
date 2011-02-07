@@ -20,8 +20,12 @@ import java.io.Serializable;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.ServerContext;
+import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.graph.WGraph;
 import org.adempiere.webui.component.Accordion;
@@ -34,6 +38,7 @@ import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.HeaderPanel;
 import org.adempiere.webui.panel.SidePanel;
+import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
@@ -96,6 +101,8 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 	private int noOfRequest;
 
 	private int noOfWorkflow;
+
+	private Tabpanel homeTab;
 
     public NavBar2Desktop()
     {
@@ -191,15 +198,48 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 
         windowContainer.createPart(windowArea);
 
-        createHomeTab();
+        homeTab = new Tabpanel();
+        windowContainer.addWindow(homeTab, Msg.getMsg(Env.getCtx(), "Home").replaceAll("&", ""), false);
+        BusyDialog busyDialog = new BusyDialog();
+        busyDialog.setShadow(false);
+        homeTab.appendChild(busyDialog);
+        
+        if (!layout.getDesktop().isServerPushEnabled())
+    	{
+    		layout.getDesktop().enableServerPush(true);
+    	}
+        
+        Runnable runnable = new Runnable() {			
+			public void run() {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {}
+
+				IServerPushCallback callback = new IServerPushCallback() {					
+					public void updateUI() {
+						Properties ctx = (Properties)layout.getDesktop().getSession().getAttribute(SessionContextListener.SESSION_CTX);
+						try {
+							ServerContext.setCurrentInstance(ctx);
+							renderHomeTab();
+						} finally {
+							ServerContext.dispose();
+						}
+					}
+				};
+				ServerPushTemplate template = new ServerPushTemplate(layout.getDesktop());
+				template.execute(callback);
+			}
+		};
+		
+		Thread thread = new Thread(runnable);
+		thread.start();
 
         return layout;
     }
 
-	private void createHomeTab()
+	private void renderHomeTab()
 	{
-        Tabpanel homeTab = new Tabpanel();
-        windowContainer.addWindow(homeTab, Msg.getMsg(Env.getCtx(), "Home").replaceAll("&", ""), false);
+		homeTab.getChildren().clear();
 
         Portallayout portalLayout = new Portallayout();
         portalLayout.setWidth("100%");
