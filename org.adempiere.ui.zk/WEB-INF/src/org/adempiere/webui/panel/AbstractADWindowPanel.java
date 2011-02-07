@@ -1502,7 +1502,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     	if (curTab.isSortTab())
     	{
     		((ADSortTab)curTabpanel).saveData();
-    		toolbar.enableSave(true);	//	set explicitly
+    		toolbar.enableSave(false);	//	set explicitly
+    		toolbar.enableSaveAndCreate(false);
     		toolbar.enableIgnore(false);
     		return true;
     	}

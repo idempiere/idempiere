@@ -306,6 +306,8 @@ public final class APanel extends CPanel
 	public AppsAction		aIgnore;
 	/** Save Button			*/
 	public AppsAction		aSave;
+	/** Save & Create Button*/
+	public AppsAction		aSaveAndCreate;
 	/** Private Lock Button	*/
 	public AppsAction		aLock;
 	//	Local (added to toolbar)
@@ -348,6 +350,7 @@ public final class APanel extends CPanel
 		menuBar.add(mEdit);
 		aNew = 		addAction("New", 			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), false);
 		aSave = 	addAction("Save",			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0),	false);
+		aSaveAndCreate = addAction("SaveCreate", mEdit, null, false);
 		mEdit.addSeparator();
 		aCopy =		addAction("Copy", 			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F2, Event.SHIFT_MASK),	false);
 		aDelete = 	addAction("Delete",			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0),	false);
@@ -483,6 +486,7 @@ public final class APanel extends CPanel
 		toolBar.add(aDelete.getButton());
 		toolBar.add(aDeleteSelection.getButton());
 		toolBar.add(aSave.getButton());
+		toolBar.add(aSaveAndCreate.getButton());
 		toolBar.addSeparator();
 		toolBar.add(aRefresh.getButton());      //  F5
 		toolBar.add(aFind.getButton());
@@ -1200,7 +1204,7 @@ public final class APanel extends CPanel
 		boolean insertRecord = !readOnly;
 		if (insertRecord)
 			insertRecord = m_curTab.isInsertRecord();
-		aNew.setEnabled(((inserting && changedColumn>0) || !inserting) && insertRecord);
+		aNew.setEnabled(!changed && insertRecord);
 		aCopy.setEnabled(!changed && insertRecord);
 		aRefresh.setEnabled(!changed);
 		aDelete.setEnabled(!changed && !readOnly);
@@ -1210,6 +1214,7 @@ public final class APanel extends CPanel
 			readOnly = false;
 		aIgnore.setEnabled(changed && !readOnly);
 		aSave.setEnabled(changed && !readOnly);
+		aSaveAndCreate.setEnabled(changed && !readOnly);
 		//
 		//	No Rows
 		if (e.getTotalRows() == 0 && insertRecord) {
@@ -1481,6 +1486,7 @@ public final class APanel extends CPanel
 				else	//	No Records found
 				{
 					aSave.setEnabled(false);
+					aSaveAndCreate.setEnabled(false);
 					aDelete.setEnabled(false);
 					aDeleteSelection.setEnabled(false);
 				}
@@ -1686,6 +1692,8 @@ public final class APanel extends CPanel
 				cmd_new(false);
 			else if (cmd.equals(aSave.getName()))
 				cmd_save(true);
+			else if (cmd.equals(aSaveAndCreate.getName()))
+				cmd_saveAndCreate(true);
 			else if (cmd.equals(aCopy.getName()))
 				cmd_new(true);
 			else if (cmd.equals(aDelete.getName()))
@@ -2013,6 +2021,7 @@ public final class APanel extends CPanel
 		{
 			m_curAPanelTab.saveData();
 			aSave.setEnabled(false);	//	set explicitly
+			aSaveAndCreate.setEnabled(false);
 		}
 
 		if (m_curTab.getCommitWarning().length() > 0 && m_curTab.needSave(true, false))
@@ -2050,6 +2059,14 @@ public final class APanel extends CPanel
 		else
 			ADialog.error(m_curWindowNo, this, "SaveIgnored");
 		setStatusLine(Msg.getMsg(m_ctx, "SaveIgnored"), true);
+	}
+
+	public boolean cmd_saveAndCreate(boolean manualCmd)
+	{
+		boolean retValue = cmd_save(manualCmd);
+		if(retValue)
+			cmd_new(false);
+		return retValue;
 	}
 
 	/**
