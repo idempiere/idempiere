@@ -135,6 +135,11 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
 	
 	private void setValue (Object value, boolean fire)
 	{
+		if(m_mLocator==null)
+		{
+			return;
+		}
+			
 		if (value != null)
 		{
 			m_mLocator.setOnly_Warehouse_ID (getOnly_Warehouse_ID ());
