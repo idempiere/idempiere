@@ -66,6 +66,7 @@ import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MClient;
 import org.compiere.model.MDocType;
+import org.compiere.model.MImage;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogMgt;
@@ -1182,6 +1183,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 			list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "Vendor"), "bp.Name", String.class));
 			list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceLimit"), "bomPriceLimit(p.M_Product_ID, pr.M_PriceList_Version_ID) AS PriceLimit", BigDecimal.class));
 			list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "IsInstanceAttribute"), "pa.IsInstanceAttribute", Boolean.class));
+			list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "ImageURL"), "p.ImageURL", MImage.class));
 			s_productLayout = new ColumnInfo[list.size()];
 			list.toArray(s_productLayout);
 			INDEX_NAME = 3;
@@ -1226,7 +1228,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 
     	m_pAttributeWhere = null;
     	// Query Product Attribure Instance
-		int row = contentPanel.getSelectedRow();
+    	int row = contentPanel != null ? contentPanel.getSelectedRow() : -1;
 		if (component.equals(m_PAttributeButton) && row != -1)
 		{
 			Integer productInteger = getSelectedRowKey();
