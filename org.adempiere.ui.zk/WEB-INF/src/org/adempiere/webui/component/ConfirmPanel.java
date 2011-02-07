@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -103,6 +104,8 @@ public final class ConfirmPanel extends Hbox
         Button button = new Button();
         button.setName("btn"+name);
         button.setId(name);
+        button.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, button.getId());
+        
         String text = Msg.translate(Env.getCtx(), name);
         if (!name.equals(text))
         	text = text.replaceAll("[&]", "");

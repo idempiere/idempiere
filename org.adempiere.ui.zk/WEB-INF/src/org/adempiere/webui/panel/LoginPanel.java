@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
@@ -261,6 +262,7 @@ public class LoginPanel extends Window implements EventListener
 
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
+        txtUserId.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, txtUserId.getId());
         txtUserId.setCols(25);
         txtUserId.setMaxlength(40);
         txtUserId.setWidth("220px");
@@ -269,6 +271,8 @@ public class LoginPanel extends Window implements EventListener
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
+        txtPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, txtPassword.getId());
+        
         txtPassword.setCols(25);
 //        txtPassword.setMaxlength(40);
         txtPassword.setWidth("220px");
@@ -277,6 +281,7 @@ public class LoginPanel extends Window implements EventListener
         lstLanguage.setAutocomplete(true);
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
+        lstLanguage.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, lstLanguage.getId());
         lstLanguage.addEventListener(Events.ON_SELECT, this);
         lstLanguage.setWidth("220px");
 
