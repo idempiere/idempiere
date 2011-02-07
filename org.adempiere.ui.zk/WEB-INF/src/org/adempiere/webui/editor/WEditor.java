@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Datebox;
@@ -94,7 +95,10 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
         this.setComponent(comp);
         String gridTabName = gridField.getGridTab() != null
         		? "_" + gridField.getGridTab().getName() : "";
-        comp.setAttribute("zk_component_prefix", "Field_" + gridField.getColumnName() + gridTabName);
+        if (gridField.getGridTab() != null)
+        {
+        	comp.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "Field_" + gridField.getColumnName() + gridTabName);
+        }
         this.gridField = gridField;
         this.setMandatory(gridField.isMandatory(false));
         this.readOnly = gridField.isReadOnly();
