@@ -665,8 +665,11 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
             	// Title is not set when the number of rows is below the minRecords parameter (10)
                 if (!find.isCancel())
                 {
-                	query = find.getQuery();
                 	m_findCreateNew = find.isCreateNew();
+                	if (!m_findCreateNew)
+                	{
+                		query = find.getQuery();
+                	}
                 }
                 else
                 	m_findCancelled = true;
