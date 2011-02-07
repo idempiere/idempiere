@@ -23,9 +23,11 @@
 
 package org.adempiere.webui.panel;
 
+import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
@@ -38,6 +40,7 @@ import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.window.LoginWindow;
+import org.adempiere.webui.editor.WDateEditor;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
@@ -71,7 +74,7 @@ import org.zkoss.zul.Image;
 public class RolePanel extends Window implements EventListener, Deferrable
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2210467236654772389L;
 
@@ -82,7 +85,8 @@ public class RolePanel extends Window implements EventListener, Deferrable
     private KeyNamePair rolesKNPairs[];
 
     private Combobox lstRole, lstClient, lstOrganisation, lstWarehouse;
-    private Label lblRole, lblClient, lblOrganisation, lblWarehouse;
+    private Label lblRole, lblClient, lblOrganisation, lblWarehouse, lblDate;
+	private WDateEditor lstDate;
     private Button btnOk, btnCancel;
 
     public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, String password)
@@ -176,6 +180,18 @@ public class RolePanel extends Window implements EventListener, Deferrable
     	tr.appendChild(td);
     	td.appendChild(lstWarehouse);
 
+    	tr = new Tr();
+        tr.setId("rowDate");
+        table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(lblDate.rightAlign());
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(lstDate.getComponent());
+
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
         ConfirmPanel pnlButtons = new ConfirmPanel(true);
@@ -210,10 +226,16 @@ public class RolePanel extends Window implements EventListener, Deferrable
         lblWarehouse.setId("lblWarehouse");
         lblWarehouse.setValue(res.getString("Warehouse"));
 
+        lblDate = new Label();
+        lblDate.setId("lblDate");
+        lblDate.setValue(res.getString("Date"));
+
         lstRole = new Combobox();
         lstRole.setAutocomplete(true);
         lstRole.setAutodrop(true);
         lstRole.setId("lstRole");
+        lstRole.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, lstRole.getId());
+
         lstRole.addEventListener(Events.ON_SELECT, this);
         lstRole.setWidth("220px");
 
@@ -221,6 +243,8 @@ public class RolePanel extends Window implements EventListener, Deferrable
         lstClient.setAutocomplete(true);
         lstClient.setAutodrop(true);
         lstClient.setId("lstClient");
+        lstClient.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, lstClient.getId());
+
         lstClient.addEventListener(Events.ON_SELECT, this);
         lstClient.setWidth("220px");
 
@@ -228,6 +252,8 @@ public class RolePanel extends Window implements EventListener, Deferrable
         lstOrganisation.setAutocomplete(true);
         lstOrganisation.setAutodrop(true);
         lstOrganisation.setId("lstOrganisation");
+        lstOrganisation.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, lstOrganisation.getId());
+
         lstOrganisation.addEventListener(Events.ON_SELECT, this);
         lstOrganisation.setWidth("220px");
 
@@ -235,8 +261,13 @@ public class RolePanel extends Window implements EventListener, Deferrable
         lstWarehouse.setAutocomplete(true);
         lstWarehouse.setAutodrop(true);
         lstWarehouse.setId("lstWarehouse");
+        lstWarehouse.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, lstWarehouse.getId());
+
         lstWarehouse.addEventListener(Events.ON_SELECT, this);
         lstWarehouse.setWidth("220px");
+
+        lstDate = new WDateEditor();
+        lstDate.setValue(new Timestamp(System.currentTimeMillis()));
 
         btnOk = new Button();
         btnOk.setId("btnOk");
@@ -261,7 +292,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
         if (lstRole.getSelectedIndex() == -1 && lstRole.getItemCount() > 0)
         	lstRole.setSelectedIndex(0);
         //
-        
+
 		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
 		if (lstRole.getItemCount() == 1 && ! MSysConfig.getBooleanValue("ALogin_ShowOneRole", true))
 		{
@@ -274,7 +305,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
 			lblRole.setVisible(true);
 			lstRole.setVisible(true);
 		}
-        
+
         updateClientList();
     }
 
@@ -428,7 +459,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
 			throw new WrongValueException(msg);
 		}
 
-        msg = login.loadPreferences(orgKNPair, warehouseKNPair, null, null);
+		Timestamp date = (Timestamp)lstDate.getValue();
+
+		msg = login.loadPreferences(orgKNPair, warehouseKNPair, date, null);
+
         if(!(msg == null || msg.length() == 0))
         {
         	throw new WrongValueException(msg);
