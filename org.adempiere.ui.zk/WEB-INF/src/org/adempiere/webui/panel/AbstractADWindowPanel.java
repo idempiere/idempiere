@@ -1213,8 +1213,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         {
             insertRecord = curTab.isInsertRecord();
         }
-//        toolbar.enabledNew(!changed && insertRecord && !curTab.isSortTab());
-        toolbar.enabledNew(insertRecord && !curTab.isSortTab());
+        toolbar.enabledNew(!changed && insertRecord && !curTab.isSortTab());
         toolbar.enableCopy(!changed && insertRecord && !curTab.isSortTab());
         toolbar.enableRefresh(!changed);
         toolbar.enableDelete(!changed && !readOnly && !curTab.isSortTab());
@@ -1226,7 +1225,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         }
         toolbar.enableIgnore(changed && !readOnly);
         toolbar.enableSave(changed && !readOnly);
-
+        toolbar.enableSaveAndCreate(changed && !readOnly);
         //
         //  No Rows
         if (e.getTotalRows() == 0 && insertRecord)
@@ -1540,6 +1539,19 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		}
 		//other error will be catch in the dataStatusChanged event
 	}
+
+	/**
+	 * @see ToolbarListener#onSaveCreate()
+	 */
+	public void onSaveCreate()
+    {
+    	boolean retValue = onSave(true);
+    	if(retValue)
+    	{
+    		curTab.dataRefreshAll(true);
+    		onNew();
+    	}
+    }
 
     /**
      * @see ToolbarListener#onDelete()

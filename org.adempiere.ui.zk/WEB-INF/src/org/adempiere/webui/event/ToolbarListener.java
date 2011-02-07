@@ -96,6 +96,11 @@ public interface ToolbarListener
     public void onDelete();
 
     /**
+     * Delete selected record(s)
+     */
+    public void onDeleteSelection();
+
+    /**
      * Save current record
      */
     public void onSave();
@@ -140,6 +145,26 @@ public interface ToolbarListener
      */
     public void onProductInfo();
 
+	/**
+     * open chat window
+     */
+    public void onChat();
+
+    /**
+     * Personal lock
+     */
+    public void onLock();
+
+    /**
+     * Save and create
+     */
+    public void onSaveCreate();
+
+    /**
+     * Copy current record as a new record
+     */
+    public void onCopy();
+    
     /**
      * Export grid data
      */

@@ -11,7 +11,7 @@
 		<listener-class>org.adempiere.webui.session.SessionContextListener
 		</listener-class>
 	</listener>
-	
+
 	<log>
 		<description>[Optional] Monitor i3-log.conf and register a
 			handler for the specified log-base</description>
@@ -21,6 +21,7 @@
 	<!--  change to false to use compress js which is much smaller -->
 	<client-config>
 		<debug-js>false</debug-js>
+		<processing-prompt-delay>100</processing-prompt-delay>
 	</client-config>
 
 	<!--
@@ -33,7 +34,7 @@
 		<automatic-timeout/> <!-- the same as <automatic-timeout>true</automatic-timeout> -->
 		<timeout-uri>/timeout.zul</timeout-uri>
 	</session-config>
-	
+
 	<!--
 		Turn on the following if used with WebLogic 9.1 <system-config>
 		<cache-provider-class>org.zkoss.zk.ui.sys.GlobalDesktopCacheProvider</cache-provider-class>
@@ -46,7 +47,7 @@
 
 	<!--
 		polling - org.zkoss.zkex.ui.impl.PollingServerPush
-		comet - org.zkoss.zkmax.ui.comet.CometServerPush ( enterprise edition only )  
+		comet - org.zkoss.zkmax.ui.comet.CometServerPush ( enterprise edition only )
 	-->
 	<device-config>
  		<device-type>ajax</device-type>
