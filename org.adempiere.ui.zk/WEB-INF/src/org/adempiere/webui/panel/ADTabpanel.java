@@ -36,6 +36,7 @@ import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridPanel;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.SimpleTreeModel;
@@ -783,7 +784,10 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 			Component c = toFocus.getComponent();
 			if (c instanceof EditorBox) {
 				c = ((EditorBox)c).getTextbox();
-			}
+			} else if (c instanceof NumberBox) {
+				c = ((NumberBox)c).getDecimalbox();
+            }
+
 			Clients.response(new AuFocus(c));
 		}
 	}
@@ -1164,7 +1168,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 	}
 
 	/**
-	 * 
+	 *
 	 * @return GridPanel
 	 */
 	public GridPanel getGridView() {
