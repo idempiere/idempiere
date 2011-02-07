@@ -95,22 +95,31 @@ public class WFilenameEditor extends WEditor
 
 	public void onEvent(Event event)
 	{
+		String newValue = null;
+
 		if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
 		{
-			String newValue = getComponent().getText();
-			if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
-	    	    return;
-	    	}
-	        if (oldValue == null && newValue == null) {
-	        	return;
-	        }
-			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
-			fireValueChange(changeEvent);
+			newValue = getComponent().getText();
+
 		}
 		else if (Events.ON_CLICK.equals(event.getName()))
 		{
 			cmd_file();
+			newValue = getComponent().getText();
 		}
+		else
+		{
+			return;
+		}
+
+		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
+    	    return;
+    	}
+        if (oldValue == null && newValue == null) {
+        	return;
+        }
+		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
+		fireValueChange(changeEvent);
 	}
 
 	/**
