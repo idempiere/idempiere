@@ -31,6 +31,7 @@ public class WFileDirectoryEditor extends WEditor
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 
+	@SuppressWarnings("unused")
 	private static final CLogger log = CLogger.getCLogger(WFileDirectoryEditor.class);
 
 	private String oldValue;
@@ -87,22 +88,29 @@ public class WFileDirectoryEditor extends WEditor
 
 	public void onEvent(Event event)
 	{
+		String newValue = null;
 		if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
 		{
-			String newValue = getComponent().getText();
-			if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
-	    	    return;
-	    	}
-	        if (oldValue == null && newValue == null) {
-	        	return;
-	        }
-			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
-			fireValueChange(changeEvent);
+			newValue = getComponent().getText();
 		}
 		else if (Events.ON_CLICK.equals(event.getName()))
 		{
 			cmd_file();
+			newValue = getComponent().getText();
 		}
+		else
+		{
+			return;
+		}
+
+		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
+    	    return;
+    	}
+        if (oldValue == null && newValue == null) {
+        	return;
+        }
+		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
+		fireValueChange(changeEvent);
 	}
 
 	/**
@@ -113,6 +121,7 @@ public class WFileDirectoryEditor extends WEditor
 		FolderBrowser directoryDialog = new FolderBrowser(true);
 		String directory = directoryDialog.getPath();
 		getComponent().setText(directory);
+		getComponent().getTextbox().focus();
 	}   //  cmd_file
 
 	public String[] getEvents()
