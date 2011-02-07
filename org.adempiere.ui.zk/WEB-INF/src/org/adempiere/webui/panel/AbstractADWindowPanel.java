@@ -33,6 +33,7 @@ import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
 import org.adempiere.webui.WZoomAcross;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.BusyDialogTemplate;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WCreateFromFactory;
@@ -2004,7 +2005,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			if (vp.isInitOK())		//	may not be allowed
 			{
 				vp.setVisible(true);
-				AEnv.showWindow(vp);
+				AEnv.showCenterScreen(vp);
 			}
 			//vp.dispose();
 
@@ -2028,7 +2029,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			}
 			else
 			{
-				AEnv.showWindow(win);
+				AEnv.showCenterScreen(win);
 
 				if (!win.isStartProcess())
 					return;
@@ -2178,18 +2179,21 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	 * @param event
 	 * @see ActionListener#actionPerformed(ActionEvent)
 	 */
-	public void actionPerformed(ActionEvent event)
+	public void actionPerformed(final ActionEvent event)
 	{
-		 if (event.getSource() instanceof WButtonEditor)
-	     {
-			String error = processButtonCallout((WButtonEditor)event.getSource());
-			if (error != null && error.trim().length() > 0)
-			{
-				statusBar.setStatusLine(error, true);
-				return;
+		Runnable runnable = new Runnable() {
+			public void run() {
+				String error = processButtonCallout((WButtonEditor)event.getSource());
+				if (error != null && error.trim().length() > 0)
+				{
+					statusBar.setStatusLine(error, true);
+					return;
+				}
+				actionButton((WButtonEditor)event.getSource());
 			}
-			actionButton((WButtonEditor)event.getSource());
-	     }
+		};
+		BusyDialogTemplate template = new BusyDialogTemplate(runnable);
+		template.run();
 	}
 
 	/**************************************************************************

@@ -17,7 +17,10 @@
 
 package org.adempiere.webui.component;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -32,15 +35,18 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.model.MImage;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.MSort;
 import org.compiere.util.Util;
+import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -217,29 +223,51 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
 			}
 			else if (field instanceof Number)
 			{
-				DecimalFormat format = field instanceof BigDecimal
-					? DisplayType.getNumberFormat(DisplayType.Amount, AEnv.getLanguage(Env.getCtx()))
-				    : DisplayType.getNumberFormat(DisplayType.Integer, AEnv.getLanguage(Env.getCtx()));
-
-				// set cell value to allow sorting
-				listcell.setValue(field.toString());
-
-				if (isCellEditable)
+				if (m_tableColumns != null && columnIndex < m_tableColumns.size()
+						&& m_tableColumns.get(columnIndex).getColumnClass().getName().equals(MImage.class.getName()) && field instanceof Integer)
 				{
-					NumberBox numberbox = new NumberBox(false);
-					numberbox.setFormat(format);
-					numberbox.setValue(field);
-					numberbox.setWidth("100px");
-					numberbox.setEnabled(true);
-					numberbox.setStyle("text-align:right; "
-									+ listcell.getStyle());
-					numberbox.addEventListener(Events.ON_CHANGE, this);
-					listcell.appendChild(numberbox);
+					MImage mImage = MImage.get(Env.getCtx(), (Integer) field);
+					AImage img = null;
+					byte[] data = mImage.getData();
+					if (data != null && data.length > 0) {
+						try {
+							img = new AImage(null, data);
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
+					}
+					Image image = new Image();
+					image.setContent(img);
+					image.setStyle("width: 48px; height: 48px;");
+					listcell.appendChild(image);
+					listcell.setStyle("text-align: center;");
 				}
 				else
 				{
-					listcell.setLabel(format.format(((Number)field).doubleValue()));
-					ZkCssHelper.appendStyle(listcell, "text-align:right");
+					DecimalFormat format = field instanceof BigDecimal
+						? DisplayType.getNumberFormat(DisplayType.Amount, AEnv.getLanguage(Env.getCtx()))
+					    : DisplayType.getNumberFormat(DisplayType.Integer, AEnv.getLanguage(Env.getCtx()));
+
+					// set cell value to allow sorting
+					listcell.setValue(field.toString());
+
+					if (isCellEditable)
+					{
+						NumberBox numberbox = new NumberBox(false);
+						numberbox.setFormat(format);
+						numberbox.setValue(field);
+						numberbox.setWidth("100px");
+						numberbox.setEnabled(true);
+						numberbox.setStyle("text-align:right; "
+										+ listcell.getStyle());
+						numberbox.addEventListener(Events.ON_CHANGE, this);
+						listcell.appendChild(numberbox);
+					}
+					else
+					{
+						listcell.setLabel(format.format(((Number)field).doubleValue()));
+						ZkCssHelper.appendStyle(listcell, "text-align:right");
+					}
 				}
 			}
 			else if (field instanceof Timestamp)
@@ -262,17 +290,36 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
 			}
 			else if (field instanceof String)
 			{
-				listcell.setValue(field.toString());
-				if (isCellEditable)
+				if (m_tableColumns != null && columnIndex < m_tableColumns.size() && m_tableColumns.get(columnIndex).getColumnClass().getName().equals(MImage.class.getName()))
 				{
-					Textbox textbox = new Textbox();
-					textbox.setValue(field.toString());
-					textbox.addEventListener(Events.ON_CHANGE, this);
-					listcell.appendChild(textbox);
+					try {
+						URL url = new URL(field.toString());
+						AImage aImage = new AImage(url);
+						Image image = new Image();
+						image.setContent(aImage);
+						image.setStyle("width: 48px; height: 48px;");
+						listcell.appendChild(image);
+						listcell.setStyle("text-align: center;");
+					} catch (MalformedURLException e) {
+						throw new RuntimeException(e);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
 				}
 				else
 				{
-					listcell.setLabel(field.toString());
+					listcell.setValue(field.toString());
+					if (isCellEditable)
+					{
+						Textbox textbox = new Textbox();
+						textbox.setValue(field.toString());
+						textbox.addEventListener(Events.ON_CHANGE, this);
+						listcell.appendChild(textbox);
+					}
+					else
+					{
+						listcell.setLabel(field.toString());
+					}
 				}
 			}
 			// if ID column make it invisible
@@ -386,13 +433,13 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
         	{
 	            Comparator<Object> ascComparator =  getColumnComparator(true, headerIndex);
 	            Comparator<Object> dscComparator =  getColumnComparator(false, headerIndex);
-	
+
 	            header = new ListHeader(headerText);
-	
+
 	            header.setSort("auto");
 	            header.setSortAscending(ascComparator);
 	            header.setSortDescending(dscComparator);
-	
+
 	            int width = headerText.trim().length() * 9;
 	            if (width > 300)
 	            	width = 300;
@@ -414,7 +461,7 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
 	            }
 	            else if (width > 0 && width < 100)
 	            	width = 100;
-	
+
 	            header.setWidth(width + "px");
         	}
             m_headers.add(header);
