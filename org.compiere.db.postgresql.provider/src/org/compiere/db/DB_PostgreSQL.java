@@ -878,8 +878,13 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			return true;
 	}
 
+	/**
+	 * Postgresql jdbc driver doesn't support setQueryTimeout, query/statement timeout is
+	 * implemented using the "SET LOCAL statement_timeout TO" statement.
+	 * @return true
+	 */
 	public boolean isQueryTimeoutSupported() {
-		return false;
+		return true;
 	}
 
 	/**
