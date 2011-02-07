@@ -104,7 +104,8 @@ public abstract class PO
 
 	private static final String USE_TIMEOUT_FOR_UPDATE = "org.adempiere.po.useTimeoutForUpdate";
 
-	private static final int QUERY_TIME_OUT = 10;
+	/** default timeout, 300 seconds **/
+	private static final int QUERY_TIME_OUT = 300;
 
 	/**
 	 * 	Set Document Value Workflow Manager
