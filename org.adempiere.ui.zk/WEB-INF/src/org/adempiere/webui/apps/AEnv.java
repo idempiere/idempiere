@@ -320,7 +320,7 @@ public final class AEnv
 		log.info("Window=" + WindowNo
 			+ ", AD_Table_ID=" + AD_Table_ID + "/" + Record_ID
 			+ ", Force=" + force);
-		
+
 		String error = null;
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), AD_Client_ID);
 		error = Doc.postImmediate(ass, AD_Table_ID, Record_ID, force, null);
@@ -422,7 +422,7 @@ public final class AEnv
             	String tableName = column.substring(0, p);
             	column = column.substring(column.indexOf(".")+1);
             	zoomQuery.setZoomTableName(tableName);
-            	zoomQuery.setZoomColumnName(column);            	
+            	zoomQuery.setZoomColumnName(column);
             }
             else
             {
@@ -540,7 +540,7 @@ public final class AEnv
     		return false;
     	}
     }
-    
+
     /**
      * @return boolean
      */
@@ -558,12 +558,12 @@ public final class AEnv
     		} else if (userAgent.indexOf("AppleWebKit") >= 0) {
     			if (userAgent.indexOf("Chrome") >= 0 || userAgent.indexOf("Safari") >= 0) {
     				supported = true;
-    			} 
-    		} 
-    	} 
+    			}
+    		}
+    	}
     	return supported;
     }
-    
+
     /**
      * @return true if user agent is internet explorer 7 or lower
      */
@@ -625,8 +625,10 @@ public final class AEnv
 			PdfContentByte cb = copy.getDirectContent();
 			for (int i = 1; i <= pages; i++) {
 				document.newPage();
+				copy.newPage();
 				PdfImportedPage page = copy.getImportedPage(reader, i);
 				cb.addTemplate(page, 0, 0);
+				copy.releaseTemplate(page);
 			}
 		}
 		document.close();
@@ -696,7 +698,7 @@ public final class AEnv
 
         return locale;
 	}
-	
+
 	/**
 	 * Get title for dialog window
 	 * @param ctx
