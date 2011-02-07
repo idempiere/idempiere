@@ -26,7 +26,7 @@ package org.adempiere.webui.component;
 public class Tab extends org.zkoss.zul.Tab
 {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -550172446768384271L;
 
@@ -34,16 +34,18 @@ public class Tab extends org.zkoss.zul.Tab
     {
     	this.setLabel(str);
     }
-    
+
     public Tab()
     {
-    	
+
     }
 
 	@Override
 	public void onClose() {
 		Tabpanel tp = (Tabpanel) getLinkedPanel();
-		tp.onClose();
+		if (tp != null) {
+			tp.onClose();
+		}
 	}
 
 }
