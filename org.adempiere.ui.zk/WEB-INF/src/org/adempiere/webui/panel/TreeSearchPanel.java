@@ -19,6 +19,7 @@ package org.adempiere.webui.panel;
 
 import java.util.TreeMap;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
 import org.adempiere.webui.component.Label;
@@ -102,6 +103,9 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
 
         cmbSearch = new AutoComplete();
         cmbSearch.setAutodrop(true);
+        cmbSearch.setId("cmbSearch");
+        cmbSearch.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cmbSearch.getId());
+      
         cmbSearch.addEventListener(Events.ON_CHANGE, this);
         if (AEnv.isInternetExplorer())
         {
@@ -143,12 +147,13 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
         }
     }
 
-	private void refreshSearchList() {
+	public void refreshSearchList() {
 		treeNodeItemMap.clear();
 		if (tree.getModel() == null) {
 	    	TreeUtils.traverse(tree, new TreeItemAction() {
 				public void run(Treeitem treeItem) {
-					addTreeItem(treeItem);
+					if (treeItem.isVisible())
+						addTreeItem(treeItem);
 				}
 	    	});
 		} else {
