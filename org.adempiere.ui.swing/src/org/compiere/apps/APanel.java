@@ -350,7 +350,7 @@ public final class APanel extends CPanel
 		menuBar.add(mEdit);
 		aNew = 		addAction("New", 			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), false);
 		aSave = 	addAction("Save",			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0),	false);
-		aSaveAndCreate = addAction("SaveCreate", mEdit, null, false);
+		aSaveAndCreate = addAction("SaveCreate", mEdit, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK), false);
 		mEdit.addSeparator();
 		aCopy =		addAction("Copy", 			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F2, Event.SHIFT_MASK),	false);
 		aDelete = 	addAction("Delete",			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0),	false);

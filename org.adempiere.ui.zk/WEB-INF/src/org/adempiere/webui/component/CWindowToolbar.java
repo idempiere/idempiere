@@ -293,7 +293,7 @@ public class CWindowToolbar extends FToolbar implements EventListener
 		ctrlKeyMap.put(VK_P, btnPrint);
 		ctrlKeyMap.put(VK_N, btnNew);
 		ctrlKeyMap.put(VK_S, btnSave);
-		ctrlKeyMap.put(VK_A, btnSaveAndCreate);
+		ctrlKeyMap.put(VK_Q, btnSaveAndCreate);
 		ctrlKeyMap.put(VK_D, btnDelete);
 		ctrlKeyMap.put(VK_F, btnFind);
 	}
