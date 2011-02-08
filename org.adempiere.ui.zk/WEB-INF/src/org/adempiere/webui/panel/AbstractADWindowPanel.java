@@ -1490,7 +1490,12 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
      */
     public void onSave()
     {
-    	onSave(true);
+    	if(onSave(true))
+    	{
+    		String statusLine = statusBar.getStatusLine();
+    		curTab.dataRefreshAll(true, true);
+    		statusBar.setStatusLine(statusLine);
+    	}
     	focusToActivePanel();
     }
 
@@ -1549,7 +1554,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     	boolean retValue = onSave(true);
     	if(retValue)
     	{
-    		curTab.dataRefreshAll(true);
+    		curTab.dataRefreshAll(true, true);
     		onNew();
     	}
     }
