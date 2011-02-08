@@ -93,7 +93,7 @@ public final class MLookup extends Lookup implements Serializable
 	/** Inactive Marker End         */
 	public static final String  INACTIVE_E = "~";
 	/** Number of max rows to load	*/
-	private static final int	MAX_ROWS = 10000;
+	private static final int	MAX_ROWS = 5000;
 	/**	Indicator for Null			*/
 	private static Integer 		MINUS_ONE = new Integer(-1);
 
@@ -198,32 +198,6 @@ public final class MLookup extends Lookup implements Serializable
 				return retValue;
 		}
 
-		//  Always check for parents - not if we SQL was validated and completely loaded
-		if (!m_info.IsParent && m_info.IsValidated && m_allLoaded)
-		{
-			log.finer(m_info.KeyColumn + ": <NULL> - " + key // + "(" + key.getClass()
-					+ "; Size=" + m_lookup.size());
-		//	log.finest( m_lookup.keySet().toString(), "ContainsKey = " + m_lookup.containsKey(key));
-			//  also for new values and inactive ones
-			return getDirect(key, false, true);		//	cache locally    
-		}
-
-		log.finest (m_info.KeyColumn + ": " + key
-				+ "; Size=" + m_lookup.size() + "; Validated=" + m_info.IsValidated
-				+ "; All Loaded=" + m_allLoaded + "; HasInactive=" + m_hasInactive);
-		//	never loaded
-		if (!m_allLoaded 
-			&& m_lookup.size() == 0 
-			&& !m_info.IsCreadedUpdatedBy
-			&& !m_info.IsParent
-			&& getDisplayType() != DisplayType.Search)
-		{
-			m_loader = new MLoader();
-			m_loader.run();		//	sync!
-			retValue = (NamePair)m_lookup.get(key);
-			if (retValue != null)
-				return retValue;
-		}
 		//	Try to get it directly
 		boolean cacheLocal = m_info.IsValidated ; 
 		return getDirect(key, false, cacheLocal);	//	do NOT cache	
@@ -447,6 +421,8 @@ public final class MLookup extends Lookup implements Serializable
 		if (key == null || m_info.QueryDirect == null || m_info.QueryDirect.length() == 0)
 			return null;
 		if (key.equals(m_directNullKey))
+			return null;
+		if (key.toString().trim().length() == 0)
 			return null;
 		//
 		NamePair directValue = null;
@@ -737,11 +713,13 @@ public final class MLookup extends Lookup implements Serializable
 			boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 			m_hasInactive = false;
 			int rows = 0;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				//	SELECT Key, Value, Name, IsActive FROM ...
-				PreparedStatement pstmt = DB.prepareStatement(sql, null);
-				ResultSet rs = pstmt.executeQuery();
+				pstmt = DB.prepareStatement(sql, null);
+				rs = pstmt.executeQuery();
 
 				//	Get first ... rows
 				m_allLoaded = true;
@@ -750,7 +728,6 @@ public final class MLookup extends Lookup implements Serializable
 					if (rows++ > MAX_ROWS)
 					{
 						log.warning(m_info.KeyColumn + ": Loader - Too many records");
-						m_allLoaded = false;
 						break;
 					}
 					//  check for interrupted every 10 rows
@@ -779,12 +756,14 @@ public final class MLookup extends Lookup implements Serializable
 					}
 				//	log.fine( m_info.KeyColumn + ": " + name);
 				}
-				rs.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
 				log.log(Level.SEVERE, m_info.KeyColumn + ", " + m_info.Column_ID + " : Loader - " + sql, e);
+				m_allLoaded = false;
+			}
+			finally {
+				DB.close(rs, pstmt);
 			}
 			int size = m_lookup.size();
 			log.finer(m_info.KeyColumn
