@@ -57,7 +57,9 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
+import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.util.JRSwapFile;
 
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
@@ -484,8 +486,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
             Connection conn = null;
             try {
             	conn = getConnection();
-                jasperPrint = JasperFillManager.fillReport( jasperReport, params, conn);
-                if (reportData.isDirectPrint() || !processInfo.isPrintPreview())
+
+            	String swapPath = System.getProperty("java.io.tmpdir");
+				JRSwapFile swapFile = new JRSwapFile(swapPath, 1024, 1024);
+				JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(2, swapFile, true);
+				params.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
+
+                JasperPrint jasperPrint = JasperFillManager.fillReport( jasperReport, params, conn);
+                if (reportData.isDirectPrint())
                 {
                     log.info( "ReportStarter.startProcess print report -" + jasperPrint.getName());
                     //RF 1906632
