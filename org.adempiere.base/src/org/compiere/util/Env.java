@@ -188,6 +188,7 @@ public final class Env
 	/** WindowNo for PrintCustomize */
 	public static final int     WINDOW_CUSTOMIZE = 1112;
 	/** WindowNo for PrintCustomize */
+	@Deprecated
 	public static final int     WINDOW_INFO = 1113;
 
 	/** Tab for Info                */
