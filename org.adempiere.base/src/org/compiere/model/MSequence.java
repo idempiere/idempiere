@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -53,7 +54,7 @@ import org.compiere.util.Trx;
 public class MSequence extends X_AD_Sequence
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6827013120475678483L;
 	/** Use SQL procedure to get next id			*/
@@ -64,7 +65,7 @@ public class MSequence extends X_AD_Sequence
 	/** Log Level for Next ID Call					*/
 	private static final Level LOGLEVEL = Level.ALL;
 
-	private static final int QUERY_TIME_OUT = 10;
+	private static final int QUERY_TIME_OUT = 30;
 
 	public static int getNextID (int AD_Client_ID, String TableName)
 	{
@@ -132,8 +133,19 @@ public class MSequence extends X_AD_Sequence
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				pstmt.setString(1, TableName);
 				//
-				if (!USE_PROCEDURE && DB.getDatabase().isQueryTimeoutSupported())
-					pstmt.setQueryTimeout(QUERY_TIME_OUT);
+				if (!USE_PROCEDURE )
+				{
+					//postgresql use special syntax instead of the setQueryTimeout methodk
+					if (DB.isPostgreSQL())
+					{
+						Statement timeoutStatement = conn.createStatement();
+						timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
+					}
+					else if (DB.getDatabase().isQueryTimeoutSupported())
+					{
+						pstmt.setQueryTimeout(QUERY_TIME_OUT);
+					}
+				}
 				rs = pstmt.executeQuery();
 				if (CLogMgt.isLevelFinest())
 					s_log.finest("AC=" + conn.getAutoCommit() + ", RO=" + conn.isReadOnly()
@@ -178,7 +190,7 @@ public class MSequence extends X_AD_Sequence
 						queryProjectServer = true;
 					if (!queryProjectServer && MSequence.Table_Name.equalsIgnoreCase(TableName))
 						queryProjectServer = true;
-					
+
 					// If not official dictionary try to get the ID from http custom server - if configured
 					if (queryProjectServer && ( ! adempiereSys ) && ( ! isExceptionCentralized(TableName) ) ) {
 
@@ -292,7 +304,13 @@ public class MSequence extends X_AD_Sequence
 			cstmt.setInt(1, AD_Sequence_ID);
 			cstmt.setString(2, adempiereSys ? "Y" : "N");
 			cstmt.registerOutParameter(3, Types.INTEGER);
-			if (DB.getDatabase().isQueryTimeoutSupported())
+			//postgresql use special syntax instead of the setQueryTimeout method
+			if (DB.isPostgreSQL())
+			{
+				Statement timeoutStatement = conn.createStatement();
+				timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
+			}
+			else if (DB.getDatabase().isQueryTimeoutSupported())
 			{
 				cstmt.setQueryTimeout(QUERY_TIME_OUT);
 			}
@@ -334,7 +352,13 @@ public class MSequence extends X_AD_Sequence
 			cstmt.setInt(2, incrementNo);
 			cstmt.setString(3, calendarYear);
 			cstmt.registerOutParameter(4, Types.INTEGER);
-			if (DB.getDatabase().isQueryTimeoutSupported())
+			//postgresql use special syntax instead of the setQueryTimeout method
+			if (DB.isPostgreSQL())
+			{
+				Statement timeoutStatement = conn.createStatement();
+				timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
+			}
+			else if (DB.getDatabase().isQueryTimeoutSupported())
 			{
 				cstmt.setQueryTimeout(QUERY_TIME_OUT);
 			}
@@ -502,8 +526,19 @@ public class MSequence extends X_AD_Sequence
 				pstmt.setString(3, calendarYear);
 
 			//
-			if (!USE_PROCEDURE && DB.getDatabase().isQueryTimeoutSupported())
-				pstmt.setQueryTimeout(QUERY_TIME_OUT);
+			if (!USE_PROCEDURE)
+			{
+				//postgresql use special syntax instead of the setQueryTimeout method
+				if (DB.isPostgreSQL())
+				{
+					Statement timeoutStatement = conn.createStatement();
+					timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
+				}
+				else if (DB.getDatabase().isQueryTimeoutSupported())
+				{
+					pstmt.setQueryTimeout(QUERY_TIME_OUT);
+				}
+			}
 			rs = pstmt.executeQuery();
 		//	s_log.fine("AC=" + conn.getAutoCommit() + " -Iso=" + conn.getTransactionIsolation()
 		//		+ " - Type=" + pstmt.getResultSetType() + " - Concur=" + pstmt.getResultSetConcurrency());
@@ -786,8 +821,19 @@ public class MSequence extends X_AD_Sequence
 				pstmt.setString(2, calendarYear);
 
 			//
-			if (!USE_PROCEDURE && DB.getDatabase().isQueryTimeoutSupported())
-				pstmt.setQueryTimeout(QUERY_TIME_OUT);
+			if (!USE_PROCEDURE)
+			{
+				//postgresql use special syntax instead of the setQueryTimeout method
+				if (DB.isPostgreSQL())
+				{
+					Statement timeoutStatement = conn.createStatement();
+					timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
+				}
+				else if (DB.getDatabase().isQueryTimeoutSupported())
+				{
+					pstmt.setQueryTimeout(QUERY_TIME_OUT);
+				}
+			}
 			rs = pstmt.executeQuery();
 		//	s_log.fine("AC=" + conn.getAutoCommit() + " -Iso=" + conn.getTransactionIsolation()
 		//		+ " - Type=" + pstmt.getResultSetType() + " - Concur=" + pstmt.getResultSetConcurrency());
