@@ -68,7 +68,7 @@ import com.sun.mail.smtp.SMTPMessage;
 public final class EMail implements Serializable
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2526338392563042117L;
 	//use in server bean
@@ -81,12 +81,12 @@ public final class EMail implements Serializable
 	 *  @param subject  Subject of message
 	 *  @param message  The message
 	 */
-	public EMail (MClient client, String from, String to, 
+	public EMail (MClient client, String from, String to,
 		String subject, String message)
 	{
 		this (client.getCtx(), client.getSMTPHost(), from, to, subject, message);
 	}	//	EMail
-	
+
 	/**
 	 *	Full Constructor
 	 *  @param client the client
@@ -96,7 +96,7 @@ public final class EMail implements Serializable
 	 *  @param message  The message
 	 *  @param html
 	 */
-	public EMail (MClient client, String from, String to, 
+	public EMail (MClient client, String from, String to,
 		String subject, String message, boolean html)
 	{
 		this (client.getCtx(), client.getSMTPHost(), from, to, subject, message, html);
@@ -111,12 +111,12 @@ public final class EMail implements Serializable
 	 *  @param subject  Subject of message
 	 *  @param message  The message
 	 */
-	public EMail (Properties ctx, String smtpHost, String from, String to, 
-		String subject, String message) 
+	public EMail (Properties ctx, String smtpHost, String from, String to,
+		String subject, String message)
 	{
 		this(ctx, smtpHost, from, to, subject, message, false);
 	}
-	
+
 	/**
 	 *	Full Constructor
 	 *	@param ctx context
@@ -127,7 +127,7 @@ public final class EMail implements Serializable
 	 *  @param message  The message
 	 *  @param html html email
 	 */
-	public EMail (Properties ctx, String smtpHost, String from, String to, 
+	public EMail (Properties ctx, String smtpHost, String from, String to,
 		String subject, String message, boolean html)
 	{
 		setSmtpHost(smtpHost);
@@ -209,9 +209,9 @@ public final class EMail implements Serializable
 		props.put("mail.store.protocol", "smtp");
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.host", m_smtpHost);
-		//Timeout for sending the email defaulted to 20 seconds 
-		props.put("mail.smtp.timeout", 20000); 
-		
+		//Timeout for sending the email defaulted to 20 seconds
+		props.put("mail.smtp.timeout", 20000);
+
 		if (CLogMgt.isLevelFinest())
 			props.put("mail.debug", "true");
 		//
@@ -226,7 +226,7 @@ public final class EMail implements Serializable
 				props.put("mail.smtp.port", "587");
 				props.put("mail.smtp.starttls.enable", "true");
 			}
-			
+
 			session = Session.getInstance(props, m_auth);
 			session.setDebug(CLogMgt.isLevelFinest());
 		}
@@ -331,7 +331,7 @@ public final class EMail implements Serializable
 				{
 					sb.append(" - Invalid Username/Password - " + m_auth);
 				}
-				else	//	other MessagingException 
+				else	//	other MessagingException
 				{
 					String msg = ex.getLocalizedMessage();
 					if (msg == null)
@@ -360,7 +360,7 @@ public final class EMail implements Serializable
 					ex = ((MessagingException)ex).getNextException();
 				else
 					ex = null;
-			}	
+			}
 			while (ex != null);	//	error loop
 			//
 			if (CLogMgt.isLevelFinest())
@@ -391,7 +391,7 @@ public final class EMail implements Serializable
 	{
 		return m_sentMsg;
 	}	//	getSentMsg
-	
+
 	/**
 	 * 	Was sending the Msg OK
 	 *	@return msg == OK
@@ -400,7 +400,7 @@ public final class EMail implements Serializable
 	{
 		return m_sentMsg != null && SENT_OK.equals(m_sentMsg);
 	}	//	isSentOK
-	
+
 	/**
 	 * 	Dump Message Info
 	 */
@@ -664,7 +664,7 @@ public final class EMail implements Serializable
 		return m_replyTo;
 	}   //  getReplyTo
 
-	
+
 	/**************************************************************************
 	 *  Set Subject
 	 *  @param newSubject Subject
@@ -757,16 +757,15 @@ public final class EMail implements Serializable
 	{
 		m_subject = subject;
 		StringBuffer sb = new StringBuffer("<HTML>\n")
-			.append("<HEAD>\n")
-			.append("<TITLE>\n")
-			.append(subject + "\n")
-			.append("</TITLE>\n")
-			.append("</HEAD>\n");
-		sb.append("<BODY>\n")
-			.append("<H2>" + subject + "</H2>" + "\n")
-			.append(message)
-			.append("\n")
-			.append("</BODY>\n");
+				.append("<HEAD>\n")
+				.append("<TITLE>\n")
+				.append(subject + "\n")
+				.append("</TITLE>\n")
+				.append("</HEAD>\n");
+			sb.append("<BODY>\n")
+				.append(message)
+				.append("\n")
+				.append("</BODY>\n");
 		sb.append("</HTML>\n");
 		m_messageHTML = sb.toString();
 	}   //  setMessageHTML
@@ -792,7 +791,7 @@ public final class EMail implements Serializable
 			m_attachments = new ArrayList<DataSource>();
 		m_attachments.add(new FileDataSource(file));
 	}	//	addAttachment
-	
+
 	/**
 	 * Add a collection of attachments
 	 * @param files collection of files
@@ -932,7 +931,7 @@ public final class EMail implements Serializable
 		}	//	multi=part
 	}	//	setContent
 
-	
+
 	/**************************************************************************
 	 *  Set SMTP Host or address
 	 *  @param newSmtpHost Mail server
@@ -972,10 +971,10 @@ public final class EMail implements Serializable
 	{
 		if (!recheck)
 			return m_valid;
-			
+
 		//  From
-		if (m_from == null 
-			|| m_from.getAddress().length() == 0 
+		if (m_from == null
+			|| m_from.getAddress().length() == 0
 			|| m_from.getAddress().indexOf(' ') != -1)
 		{
 			log.warning("From is invalid=" + m_from);
@@ -990,7 +989,7 @@ public final class EMail implements Serializable
 		}
 		for (int i = 0; i < ias.length; i++)
 		{
-			if (ias[i] == null 
+			if (ias[i] == null
 				|| ias[i].getAddress().length() == 0
 				|| ias[i].getAddress().indexOf(' ') != -1)
 			{
@@ -1005,7 +1004,7 @@ public final class EMail implements Serializable
 			log.warning("SMTP Host is invalid" + m_smtpHost);
 			return false;
 		}
-		
+
 		//	Subject
 		if (m_subject == null || m_subject.length() == 0)
 		{
