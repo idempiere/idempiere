@@ -67,7 +67,7 @@ public class Trx implements VetoableChangeListener
 		if (s_cache == null)
 		{
 			s_cache = new CCache<String,Trx>("Trx", 10, -1);	//	no expiration
-			s_cache.addVetoableChangeListener(new Trx("controller"));
+			s_cache.addVetoableChangeListener(new Trx("controller_" + "_" + UUID.randomUUID()));
 		}
 		
 		Trx retValue = (Trx)s_cache.get(trxName);
@@ -82,6 +82,17 @@ public class Trx implements VetoableChangeListener
 	/**	Transaction Cache					*/
 	private static CCache<String,Trx> 	s_cache = null;	//	create change listener
 	
+	private static Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
+
+	static
+	{
+		Thread monitorThread = new Thread(s_monitor);
+		monitorThread.setDaemon(true);
+		monitorThread.setPriority(Thread.MIN_PRIORITY);
+		monitorThread.setName("Trx-Monitor");
+		monitorThread.start();
+	}
+
 	/**
 	 * 	Create unique Transaction Name
 	 *	@param prefix optional prefix
@@ -125,6 +136,11 @@ public class Trx implements VetoableChangeListener
 	{
 	//	log.info (trxName);
 		setTrxName (trxName);
+		if (trxName.length() < 36)
+		{
+			String msg = "Illegal transaction name format, not prefix+UUID or UUID: " + trxName;
+			log.log(Level.SEVERE, msg, new Exception(msg));
+		}
 		setConnection (con);
 	}	//	Trx
 
@@ -136,6 +152,9 @@ public class Trx implements VetoableChangeListener
 	private boolean		m_active = false;
 
 	private long m_startTime;
+
+	/** transaction timeout, in seconds **/
+	private int m_timeout = 60 * 120; //120 minutes
 
 	/**
 	 * Get connection
@@ -383,11 +402,21 @@ public class Trx implements VetoableChangeListener
 		//	Close Connection
 		try
 		{
-			m_connection.close();
+			m_connection.setAutoCommit(true);
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, m_trxName, e);
+		}
+		finally
+		{
+			try
+			{
+				m_connection.close();
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, m_trxName, e);
+			}
 		}
 		m_connection = null;
 		m_active = false;
@@ -474,6 +503,9 @@ public class Trx implements VetoableChangeListener
 	 */
 	public static Trx[] getActiveTransactions()
 	{
+		if (s_cache == null)
+			return new Trx[0];
+
 		Collection<Trx> collections = s_cache.values();
 		Trx[] trxs = new Trx[collections.size()];
 		collections.toArray(trxs);
@@ -557,4 +589,51 @@ public class Trx implements VetoableChangeListener
 		}
 	}
 	
+	/**
+	 * @return trx timoue value in second
+	 */
+	public int getTimeout() {
+		return m_timeout;
+	}
+
+	/**
+	 * set transaction timeout ( in seconds )
+	 * @param timeout
+	 */
+	public void setTimeout(int timeout) {
+		m_timeout = timeout;
+	}
+
+	static class TrxMonitor implements Runnable
+	{
+
+		public void run()
+		{
+			for(;;)
+			{
+				if (Trx.s_cache != null && !Trx.s_cache.isEmpty())
+				{
+					Trx[] trxs = Trx.s_cache.values().toArray(new Trx[0]);
+					for(int i = 0; i < trxs.length; i++)
+					{
+						if (trxs[i].m_startTime <= 0)
+							continue;
+
+						long since = System.currentTimeMillis() - trxs[i].m_startTime;
+						if (since > trxs[i].getTimeout() * 1000)
+						{
+							trxs[i].log.log(Level.WARNING, "Transaction timeout. Name="+trxs[i].getTrxName() + ", timeout(sec)="+(since / 1000));
+							trxs[i].close();
+						}
+					}
+				}
+				try {
+					Thread.sleep(1000 * 10);
+				} catch (InterruptedException e) {
+					Thread.interrupted();
+				}
+			}
+		}
+
+	}
 }	//	Trx
