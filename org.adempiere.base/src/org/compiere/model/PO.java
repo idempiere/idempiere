@@ -1225,6 +1225,7 @@ public abstract class PO
 	public static void copyValues (PO from, PO to)
 	{
 		s_log.fine("From ID=" + from.get_ID() + " - To ID=" + to.get_ID());
+		String uuidColumn = from.get_TableName()+"_UU";
 		//	Different Classes
 		if (from.getClass() != to.getClass())
 		{
@@ -1241,6 +1242,7 @@ public abstract class PO
 					|| colName.equals("AD_Client_ID")
 					|| colName.equals("AD_Org_ID")
 					|| colName.equals("Processing")
+					|| colName.equals(uuidColumn)
 					)
 					;	//	ignore
 				else
@@ -1271,6 +1273,7 @@ public abstract class PO
 					|| colName.equals("AD_Client_ID")
 					|| colName.equals("AD_Org_ID")
 					|| colName.equals("Processing")
+					|| colName.equals(uuidColumn)
 					)
 					;	//	ignore
 				else
