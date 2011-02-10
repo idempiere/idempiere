@@ -209,6 +209,9 @@ public final class EMail implements Serializable
 		props.put("mail.store.protocol", "smtp");
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.host", m_smtpHost);
+		//Timeout for sending the email defaulted to 20 seconds 
+		props.put("mail.smtp.timeout", 20000); 
+		
 		if (CLogMgt.isLevelFinest())
 			props.put("mail.debug", "true");
 		//
