@@ -808,7 +808,10 @@ public final class Env
 		//	JDBC Format YYYY-MM-DD	example 2000-09-11 00:00:00.0
 		if (s == null || s.equals(""))
 		{
-			getLogger().log(Level.SEVERE, "No value for: " + context);
+			if (!"#date".equalsIgnoreCase(context))
+			{
+				getLogger().log(Level.WARNING, "No value for: " + context);
+			}
 			return new Timestamp(System.currentTimeMillis());
 		}
 
