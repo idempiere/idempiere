@@ -51,17 +51,17 @@ import org.zkoss.zul.Space;
 public class WDocActionPanel extends Window implements EventListener
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5205192043399137291L;
 	private Label lblDocAction;
 	private Label label;
 	private Listbox lstDocAction;
 
-	private static GridTab gridTab;
-	private static String[]		s_value = null;
-	private static String[]		s_name;
-	private static String[]		s_description;
+	private GridTab gridTab;
+	private String[]		s_value = null;
+	private String[]		s_name;
+	private String[]		s_description;
 	private String DocStatus;
 	private String DocAction;
 	private int m_AD_Table_ID;
@@ -187,7 +187,7 @@ public class WDocActionPanel extends Window implements EventListener
 				if (options[i].equals(s_value[j]))
 				{
 					Listitem newitem = lstDocAction.appendItem(s_name[j],s_value[j]);
-					if (firstadded) { 
+					if (firstadded) {
 						// select by default the first added item - can be changed below
 						lstDocAction.setSelectedItem(newitem);
 						firstadded = false;
