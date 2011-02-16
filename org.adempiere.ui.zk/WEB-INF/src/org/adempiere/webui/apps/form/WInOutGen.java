@@ -44,12 +44,12 @@ import org.zkoss.zul.Space;
 
 /**
  * Generate Shipment (manual) view class
- * 
+ *
  */
 public class WInOutGen extends InOutGen implements IFormController, EventListener, ValueChangeListener
 {
-	private static WGenForm form;
-	
+	private WGenForm form;
+
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WInOutGen.class);
 	//
@@ -61,20 +61,20 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 	private Listbox  cmbDocType = ListboxFactory.newDropdownListbox();
 	private Label   lDocAction = new Label();
 	private WTableDirEditor docAction;
-	
+
 	public WInOutGen()
 	{
 		log.info("");
-		
+
 		form = new WGenForm(this);
 		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", "Y");
-		
+
 		try
 		{
 			super.dynInit();
 			dynInit();
 			zkInit();
-			
+
 			form.postQueryEvent();
 		}
 		catch(Exception ex)
@@ -82,7 +82,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 			log.log(Level.SEVERE, "init", ex);
 		}
 	}	//	init
-	
+
 	/**
 	 *	Static Init.
 	 *  <pre>
@@ -97,7 +97,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 	void zkInit() throws Exception
 	{
 		lBPartner.setText("BPartner");
-		
+
 		Row row = form.getParameterPanel().newRows().newRow();
 		row.appendChild(lWarehouse.rightAlign());
 		row.appendChild(fWarehouse.getComponent());
@@ -105,7 +105,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		row.appendChild(lBPartner.rightAlign());
 		row.appendChild(fBPartner.getComponent());
 		row.appendChild(new Space());
-		
+
 		row = new Row();
 		form.getParameterPanel().getRows().appendChild(row);
 		row.appendChild(lDocType.rightAlign());
@@ -149,10 +149,10 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		cmbDocType.addItem(new KeyNamePair(MRMA.Table_ID, Msg.translate(Env.getCtx(), "VendorRMA")));
 		cmbDocType.addActionListener(this);
 		cmbDocType.setSelectedIndex(0);
-		
+
 		form.getStatusBar().setStatusLine(Msg.getMsg(Env.getCtx(), "InOutGenerateSel"));//@@
 	}	//	fillPicks
-    
+
 	/**
 	 *  Query Info
 	 */
@@ -177,11 +177,11 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		    form.postQueryEvent();
 		    return;
 		}
-		
+
 		//
 		validate();
 	}	//	actionPerformed
-	
+
 	public void validate()
 	{
 		if (isSelectionActive() && getM_Warehouse_ID() <= 0)
@@ -190,7 +190,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		}
 
 		form.saveSelection();
-		
+
 		ArrayList<Integer> selection = getSelection();
 		if (selection != null
 			&& selection.size() > 0
@@ -220,17 +220,17 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		}
 		form.postQueryEvent();
 	}	//	vetoableChange
-	
+
 	/**************************************************************************
 	 *	Generate Shipments
 	 */
 	public String generate()
 	{
 		KeyNamePair docTypeKNPair = (KeyNamePair)cmbDocType.getSelectedItem().toKeyNamePair();
-		String docActionSelected = (String)docAction.getValue();	
+		String docActionSelected = (String)docAction.getValue();
 		return generate(form.getStatusBar(), docTypeKNPair, docActionSelected);
 	}	//	generateShipments
-	
+
 	public ADForm getForm()
 	{
 		return form;

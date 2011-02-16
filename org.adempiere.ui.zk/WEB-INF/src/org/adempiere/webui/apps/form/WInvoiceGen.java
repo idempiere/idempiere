@@ -43,12 +43,12 @@ import org.zkoss.zul.Space;
 
 /**
  * Generate Invoice (manual) view class
- * 
+ *
  */
 public class WInvoiceGen extends InvoiceGen implements IFormController, EventListener, ValueChangeListener
 {
-	private static WGenForm form;
-	
+	private WGenForm form;
+
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WInOutGen.class);
 	//
@@ -60,20 +60,20 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	private Listbox  cmbDocType = ListboxFactory.newDropdownListbox();
 	private Label   lDocAction = new Label();
 	private WTableDirEditor docAction;
-	
+
 	public WInvoiceGen()
 	{
 		log.info("");
-		
+
 		form = new WGenForm(this);
 		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", "Y");
-		
+
 		try
 		{
 			super.dynInit();
 			dynInit();
 			zkInit();
-			
+
 			form.postQueryEvent();
 		}
 		catch(Exception ex)
@@ -81,7 +81,7 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 			log.log(Level.SEVERE, "init", ex);
 		}
 	}	//	init
-	
+
 	/**
 	 *	Static Init.
 	 *  <pre>
@@ -97,7 +97,7 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	{
 		lOrg.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		lBPartner.setText("BPartner");
-		
+
 		Row row = form.getParameterPanel().newRows().newRow();
 		row.appendChild(lOrg.rightAlign());
 		row.appendChild(fOrg.getComponent());
@@ -105,7 +105,7 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 		row.appendChild(lBPartner.rightAlign());
 		row.appendChild(fBPartner.getComponent());
 		row.appendChild(new Space());
-		
+
 		row = new Row();
 		form.getParameterPanel().getRows().appendChild(row);
 		row.appendChild(lDocType.rightAlign());
@@ -140,17 +140,17 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 		docAction = new WTableDirEditor("DocAction", true, false, true,docActionL);
 		docAction.setValue(DocAction.ACTION_Complete);
 		docAction.addValueChangeListener(this);
-        
+
 //      Document Type Sales Order/Vendor RMA
         lDocType.setText(Msg.translate(Env.getCtx(), "C_DocType_ID"));
         cmbDocType.addItem(new KeyNamePair(MOrder.Table_ID, Msg.translate(Env.getCtx(), "Order")));
         cmbDocType.addItem(new KeyNamePair(MRMA.Table_ID, Msg.translate(Env.getCtx(), "CustomerRMA")));
         cmbDocType.addActionListener(this);
         cmbDocType.setSelectedIndex(0);
-        
+
         form.getStatusBar().setStatusLine(Msg.getMsg(Env.getCtx(), "InvGenerateSel"));//@@
 	}	//	fillPicks
-    
+
 	/**
 	 *  Query Info
 	 */
@@ -175,15 +175,15 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 		    form.postQueryEvent();
 		    return;
 		}
-		
+
 		//
 		validate();
 	}	//	actionPerformed
-	
+
 	public void validate()
 	{
 		form.saveSelection();
-		
+
 		ArrayList<Integer> selection = getSelection();
 		if (selection != null && selection.size() > 0 && isSelectionActive())
 			form.generate();
@@ -207,17 +207,17 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 		}
 		form.postQueryEvent();
 	}	//	vetoableChange
-	
+
 	/**************************************************************************
 	 *	Generate Shipments
 	 */
 	public String generate()
 	{
 		KeyNamePair docTypeKNPair = (KeyNamePair)cmbDocType.getSelectedItem().toKeyNamePair();
-		String docActionSelected = (String)docAction.getValue();	
+		String docActionSelected = (String)docAction.getValue();
 		return generate(form.getStatusBar(), docTypeKNPair, docActionSelected);
 	}	//	generateShipments
-	
+
 	public ADForm getForm()
 	{
 		return form;
