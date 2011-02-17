@@ -34,9 +34,9 @@ import org.compiere.util.Env;
 public class IDFinder {
 
 	private static CLogger log = CLogger.getCLogger(IDFinder.class);
-	
-	private static Map<String, Integer>idCache = new HashMap<String, Integer>(); 
-	
+
+	private static Map<String, Integer>idCache = new HashMap<String, Integer>();
+
 	/**
 	 * Get ID from column value for a table.
 	 *
@@ -48,10 +48,10 @@ public class IDFinder {
 	 */
 	public static int findIdByColumn (String tableName, String columnName, Object value, int AD_Client_ID, String trxName) {
 		int id = 0;
-		
+
 		if (value == null)
 			return id;
-		
+
 		//construct cache key
 		StringBuffer key = new StringBuffer();
 		key.append(tableName)
@@ -60,11 +60,11 @@ public class IDFinder {
 			.append("=")
 			.append(value.toString())
 			.append(" AND AD_Client_ID=").append(AD_Client_ID);
-		
+
 		//check cache
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
-		
+
 		StringBuffer sqlB = new StringBuffer ("SELECT ")
 		 	.append(tableName)
 		 	.append("_ID FROM ")
@@ -76,7 +76,7 @@ public class IDFinder {
 			.append(" Order By AD_Client_ID Desc, ")
 			.append(tableName)
 			.append("_ID");
-		
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -88,7 +88,7 @@ public class IDFinder {
 			else
 				pstmt.setObject(1, value);
 			pstmt.setInt(2, AD_Client_ID);
-			
+
 			rs = pstmt.executeQuery();
 			if (rs.next())
 				id = rs.getInt(1);
@@ -98,14 +98,14 @@ public class IDFinder {
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		
+
 		//update cache
 		if (id > 0)
 			idCache.put(key.toString(), id);
-		
+
 		return id;
 	}
-	
+
 	/**
 	 * Get ID from Name for a table with a parent name reference.
 	 *
@@ -126,19 +126,19 @@ public class IDFinder {
 			.append(tableNameMaster)
 			.append(".Name=")
 			.append(nameMaster);
-		
+
 		//check cache
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
-		
+
 		StringBuffer parentSql = new StringBuffer("SELECT ")
 				.append(tableNameMaster)
 				.append("_ID FROM ")
 				.append(tableNameMaster)
 				.append(" WHERE Name = ? AND AD_Client_ID IN (0, ?) ")
 				.append("ORDER BY AD_Client_ID  Desc");
-		int parentId = DB.getSQLValue(trxName, parentSql.toString(), Env.getAD_Client_ID(Env.getCtx()));
-		
+		int parentId = DB.getSQLValue(trxName, parentSql.toString(), name, Env.getAD_Client_ID(Env.getCtx()));
+
 		if (parentId > 0) {
 			StringBuffer sqlB = new StringBuffer ("SELECT ")
 				.append(tableName)
@@ -147,7 +147,7 @@ public class IDFinder {
 				.append(" WHERE Name = ? AND ")
 				.append(tableNameMaster)
 				.append("_ID = ?");
-			
+
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try {
@@ -164,14 +164,14 @@ public class IDFinder {
 				DB.close(rs, pstmt);
 			}
 		}
-		
+
 		//update cache
 		if (id > 0)
 			idCache.put(key.toString(), id);
-		
+
 		return id;
 	}
-	
+
 	/**
      * Get ID from column value for a table with a parent id reference.
      *
@@ -180,17 +180,17 @@ public class IDFinder {
      * @param tableNameMaster
      * @param masterID
      * @param trxName
-     */    
-    
+     */
+
 	public static int findIdByColumnAndParentId (String tableName, String columnName, String name, String tableNameMaster, int masterID, String trxName) {
 		int id = 0;
-		
+
 		//check cache
 		String key = tableName + "." + columnName + "=" + name + tableNameMaster + "=" + masterID;
-		
+
 		if (idCache.containsKey(key))
 			return idCache.get(key);
-		
+
 		StringBuffer sqlB = new StringBuffer ("SELECT ")
 			.append(tableName)
 			.append("_ID FROM ")
@@ -200,13 +200,13 @@ public class IDFinder {
 			.append(" = ? and ")
 			.append(tableNameMaster+"_ID = ? AND AD_Client_ID IN (0, ?) ")
 			.append("ORDER BY AD_Client_ID Desc ");
-		
+
 		log.info(sqlB.toString());
-		
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			
+
 			pstmt = DB.prepareStatement(sqlB.toString(), trxName);
 			pstmt.setString(1, name);
 			pstmt.setInt(2, masterID);
@@ -222,11 +222,11 @@ public class IDFinder {
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		
+
 		//update cache
 		if (id > 0)
 			idCache.put(key, id);
-		
+
 		return id;
 	}
 
@@ -238,10 +238,10 @@ public class IDFinder {
 	 * @param tableNameMaster
 	 * @param masterID
 	 * @param trxName
-	 */    
+	 */
 	public static int findIdByNameAndParentId (String tableName, String name, String tableNameMaster, int masterID, String trxName) {
 		int id = 0;
-		
+
 		//construct cache key
 		StringBuffer key = new StringBuffer();
 		key.append(tableName)
@@ -253,11 +253,11 @@ public class IDFinder {
 			.append(tableNameMaster)
 			.append("_ID=")
 			.append(masterID);
-		
+
 		//check cache
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
-		
+
 		StringBuffer sqlB = new StringBuffer ("SELECT ")
 			.append(tableName)
 			.append("_ID FROM ")
@@ -266,15 +266,15 @@ public class IDFinder {
 			.append(tableNameMaster)
 			.append("_ID=? AND AD_Client_ID IN (0, ?) ")
 			.append("ORDER BY AD_Client_ID Desc");
-		
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sqlB.toString(), trxName);
 			pstmt.setString(1, name);
-			pstmt.setInt(2, masterID);	
+			pstmt.setInt(2, masterID);
 			pstmt.setInt(3, Env.getAD_Client_ID(Env.getCtx()));
-			rs = pstmt.executeQuery();	    
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				id = rs.getInt(1);
 		}
@@ -283,11 +283,11 @@ public class IDFinder {
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		
+
 		//update cache
 		if (id > 0)
 			idCache.put(key.toString(), id);
-		
+
 		return id;
 	}
 
@@ -301,7 +301,7 @@ public class IDFinder {
 	 */
 	public static int findIdByName (String tableName, String name, int AD_Client_ID, String trxName) {
 		int id = 0;
-		
+
 		//construct cache key
 		StringBuffer key = new StringBuffer();
 		key.append(tableName)
@@ -309,11 +309,11 @@ public class IDFinder {
 			.append(name);
 		if (!tableName.startsWith("AD_"))
 			key.append(" AND AD_Client_ID=").append(AD_Client_ID);
-		
+
 		//check cache
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
-		
+
 		StringBuffer sql = new StringBuffer("SELECT ")
 			.append(tableName)
 			.append("_ID ")
@@ -323,7 +323,7 @@ public class IDFinder {
 			.append("WHERE Name=? ")
 			.append(" AND AD_Client_ID IN (0, ?) ")
 			.append(" ORDER BY AD_Client_ID Desc");
-		
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -339,11 +339,11 @@ public class IDFinder {
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		
+
 		//update cache
 		if (id > 0)
 			idCache.put(key.toString(), id);
-		
+
 		return id;
 	}
 
