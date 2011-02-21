@@ -151,11 +151,14 @@ public class UUIDGenerator extends SvrProcess {
 			stmt.setFetchSize(100);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				UUID uuid = UUID.randomUUID();
 				if (AD_Column_ID > 0) {
 					int recordId = rs.getInt(1);
-					DB.executeUpdateEx(updateSQL+recordId,new Object[]{uuid.toString()},null);
+					if (recordId > MTable.MAX_OFFICIAL_ID) {
+						UUID uuid = UUID.randomUUID();
+						DB.executeUpdateEx(updateSQL+recordId,new Object[]{uuid.toString()},null);
+					}
 				} else {
+					UUID uuid = UUID.randomUUID();
 					String rowId = rs.getString(1);
 					DB.executeUpdateEx(updateSQL+"'"+rowId+"'",new Object[]{uuid.toString()},null);
 				}
