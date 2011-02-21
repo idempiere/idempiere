@@ -287,13 +287,6 @@ public class PoExporter {
 			} else if (DisplayType.isLOB(displayType)) {
 				addBlob(columnName);
 			} else {
-				if (columnName.equals(po.get_TableName() +"_UU")) {
-					if (po.get_Value(columnName) == null) {
-						UUID uuid = UUID.randomUUID();
-						po.set_ValueOfColumn(columnName, uuid.toString());
-						po.saveEx();
-					}
-				}
 				add(columnName, "", new AttributesImpl());
 			}
 		}
