@@ -73,6 +73,9 @@ public class UUIDGenerator extends SvrProcess {
 		if (!tableName.endsWith("%"))
 			tableName = tableName + "%";
 		String sql = "SELECT AD_Table_ID, TableName FROM AD_Table WHERE TableName like ? AND IsView = 'N' AND IsActive='Y'";
+		if (DB.isOracle()) {
+			sql = sql + " ESCAPE '\' ";
+		}
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		int count = 0;
