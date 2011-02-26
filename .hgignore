@@ -78,6 +78,11 @@ syntax: regexp
 ^org\.adempiere\.ui\.swing\.pluginlist/bin/.*\.class$
 ^org\.adempiere\.plugin\.utils/bin/.*\.class$
 ^org\.adempiere\.tomcat\.config/META-INF/tomcat/server.xml$
+^org\.adempiere\.webstore\.servlet/bin/.*\.class$
+^org\.adempiere\.webstore\.servlet/bin/.*\.tld$
+^org\.adempiere\.eclipse\.equinox\.servletbridge/bin/.*\.class$
+^org\.adempiere\.eclipse\.equinox\.http\.servlet/bin/.*\.class$
+^org\.adempiere\.eclipse\.equinox\.http\.servletbridge/bin/.*\.class$
 ^targetPlatform/.*$
 ^\.metadata/.*$
 ^org\.apache\.ecs/bin/.*$
