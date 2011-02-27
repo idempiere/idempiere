@@ -1989,6 +1989,7 @@ public abstract class PO
 			{
 				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
 					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_ALL
 					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
 			}
 			if (reset)
