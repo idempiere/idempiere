@@ -1599,16 +1599,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			approveIt();
 		log.info(toString());
 		StringBuffer info = new StringBuffer();
-		
-		// POS supports multiple payments
-		boolean fromPOS = false;
-		if ( getC_Order_ID() > 0 )
-		{
-			fromPOS = getC_Order().getC_POS_ID() > 0;
-		}
 
   		//	Create Cash
-		if (PAYMENTRULE_Cash.equals(getPaymentRule()) && !fromPOS )
+		if (PAYMENTRULE_Cash.equals(getPaymentRule()))
 		{
 			// Modifications for POSterita
             //

@@ -24,7 +24,6 @@ import java.awt.event.InputMethodEvent;
 import java.awt.event.InputMethodListener;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Properties;
 
 import javax.swing.border.TitledBorder;
 
@@ -57,7 +56,7 @@ import org.compiere.util.TimeUtil;
  * 
  */
 
-public class CashSubFunctions extends PosQuery implements ActionListener, InputMethodListener
+public class CashSubFunctions extends PosSubPanel implements ActionListener, InputMethodListener
 {
 	/**
 	 * 
@@ -67,7 +66,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	/**
 	 * 	Constructor
 	 */
-	public CashSubFunctions (PosBasePanel posPanel)
+	public CashSubFunctions (PosPanel posPanel)
 	{
 		super(posPanel);
 	}	//	PosQueryProduct
@@ -101,7 +100,6 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	private CPanel 			panel;
 	private CScrollPane 	centerScroll;
 	private ConfirmPanel	confirm;
-	private Properties p_ctx;
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(SubCheckout.class);
@@ -111,15 +109,14 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	 */
 	protected void init()
 	{
-		CPanel main = new CPanel();
-		main.setLayout(new BorderLayout(2,6));
-		main.setPreferredSize(new Dimension(400,600));
-		getContentPane().add(main);
+		setLayout(new BorderLayout(2,6));
+		setVisible(false);
 		//	North
 		panel = new CPanel(new GridBagLayout());
-		main.add (panel, BorderLayout.CENTER);
+		add (panel, BorderLayout.CENTER);
 		panel.setBorder(new TitledBorder(Msg.getMsg(p_ctx, "Cash Functions")));
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = PosSubPanel.INSETS2;
 		//
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -206,6 +203,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 		cInitial.setVisible(false);
 		panel.add (cInitial, gbc);
 		GridBagConstraints gbc0 = new GridBagConstraints();
+		gbc0.insets = INSETS2;
 		gbc0.anchor = GridBagConstraints.CENTER;
 		//
 		gbc0.gridx = 0;
@@ -260,6 +258,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 		cScrutiny.setVisible(false);
 		panel.add (cScrutiny, gbc);
 		GridBagConstraints gbc1 = new GridBagConstraints();
+		gbc1.insets = INSETS2;
 		gbc1.anchor = GridBagConstraints.CENTER;
 		
 		//
@@ -317,6 +316,22 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 
 	
 	/**
+	 * 	Get GridBagConstraints
+	 *	@return constraints
+	 */
+	protected GridBagConstraints getGridBagConstraints ()
+	{
+	GridBagConstraints gbc = super.getGridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = GridBagConstraints.RELATIVE;
+		gbc.gridwidth = 2; //	GridBagConstraints.REMAINDER;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.5;
+		gbc.weighty = 0.5;
+		return gbc;
+	}	//	getGridBagConstraints
+	
+	/**
 	 * 	Dispose
 	 */
 	public void dispose()
@@ -326,6 +341,15 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 		centerScroll = null;
 		confirm = null;
 	}	//	dispose
+	
+	/**
+	 * 	Set Visible
+	 *	@param aFlag visible
+	 */
+	public void setVisible (boolean aFlag)
+	{
+		super.setVisible (aFlag);
+	}	//	setVisible
 	
 	/**
 	 * 	Action Listener
@@ -338,7 +362,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 			return;
 		log.info("PosCashSubFunctions - actionPerformed: " + action);
 		
-		//	to display panel with initial change
+		//	to display panel with initial changenicial
 		if (action.equals("displayInitialChange"))
 		{
 			cmd_displayInitialChange();
@@ -376,7 +400,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 		}
 		else if (action.equals("End"))
 		{
-			super.dispose();
+			p_posPanel.closeQuery(p_posPanel.f_cashfunctions);
 		}
 		else if (action.equals("saveChange"))
 		{
@@ -542,21 +566,6 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	public void inputMethodTextChanged(InputMethodEvent event) 
 	{
 		cmd_calculateDifference();
-	}
-
-
-	@Override
-	protected void close() {
-	}
-
-
-	@Override
-	protected void enableButtons() {		
-	}
-
-
-	@Override
-	public void reset() {		
 	}
 	
 }	//	CashSubFunctions
