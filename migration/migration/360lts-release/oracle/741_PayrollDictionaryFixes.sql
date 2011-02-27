@@ -35,3 +35,21 @@ UPDATE AD_Column SET AD_Reference_ID=15,Updated=TO_DATE('2010-10-13 15:45:43','Y
 UPDATE AD_Column SET AD_Reference_ID=15,Updated=TO_DATE('2010-10-13 15:45:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=55054
 ;
 
+-- 15-oct-2010 15:05:04 VET
+-- Payroll Concept Sign cannot be Natural
+INSERT INTO AD_Val_Rule (AD_Client_ID,AD_Org_ID,AD_Val_Rule_ID,Code,Created,CreatedBy,EntityType,IsActive,Name,Type,Updated,UpdatedBy) VALUES (0,0,52096,'AD_Ref_List.Value IN (''C'',''D'')',TO_DATE('2010-10-15 15:04:58','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_ElementValue Account Sign - No Natural','S',TO_DATE('2010-10-15 15:04:58','YYYY-MM-DD HH24:MI:SS'),100)
+;
+
+-- 15-oct-2010 15:05:25 VET
+UPDATE AD_Column SET AD_Val_Rule_ID=52096,Updated=TO_DATE('2010-10-15 15:05:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=54814
+;
+
+-- 15-oct-2010 15:12:23 VET
+-- Filter payroll period by payroll in payroll process
+INSERT INTO AD_Val_Rule (AD_Client_ID,AD_Org_ID,AD_Val_Rule_ID,Code,Created,CreatedBy,EntityType,IsActive,Name,Type,Updated,UpdatedBy) VALUES (0,0,52097,'HR_Period.HR_Payroll_ID=@HR_Payroll_ID@',TO_DATE('2010-10-15 15:12:18','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','HR_Period of Payroll Process','S',TO_DATE('2010-10-15 15:12:18','YYYY-MM-DD HH24:MI:SS'),100)
+;
+
+-- 15-oct-2010 15:12:35 VET
+UPDATE AD_Column SET AD_Val_Rule_ID=52097,Updated=TO_DATE('2010-10-15 15:12:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=54873
+;
+
