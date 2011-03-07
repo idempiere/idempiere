@@ -319,8 +319,11 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 		if (component instanceof Button) {
 			Button element = (Button)component;
 			if ("Ok".equalsIgnoreCase(element.getId())) {
-				if (isParameterPage)
+				if (isParameterPage) {
+					if (!parameterPanel.validateParameters())
+						return;
 					this.startProcess();
+				}
 				else
 					restart();
 			} else if ("Cancel".equalsIgnoreCase(element.getId())) {
