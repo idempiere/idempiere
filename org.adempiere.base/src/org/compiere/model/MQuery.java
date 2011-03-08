@@ -624,6 +624,9 @@ public class MQuery implements Serializable
 			qualified = false;
 		//
 		StringBuffer sb = new StringBuffer();
+		if (! isActive())
+			return sb.toString();
+		
 		sb.append('(');
 		for (int i = 0; i < m_list.size(); i++)
 		{
