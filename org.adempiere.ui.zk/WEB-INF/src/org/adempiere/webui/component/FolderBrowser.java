@@ -17,7 +17,9 @@ import java.io.File;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.Ini;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -35,9 +37,9 @@ import org.zkoss.zkex.zul.South;
 public class FolderBrowser extends Window implements EventListener
 {
 	/**
-	 * generated serial version id
+	 * 
 	 */
-	private static final long serialVersionUID = -923063158885832812L;
+	private static final long serialVersionUID = 5477614056976038703L;
 	
 	private Textbox txtPath = new Textbox();
 	private Listbox listDir = new Listbox();
@@ -49,7 +51,7 @@ public class FolderBrowser extends Window implements EventListener
 
 	public FolderBrowser()
 	{
-		this(Ini.getAdempiereHome(), false);
+		this(null, false);
 	}
 
 	/**
@@ -58,7 +60,7 @@ public class FolderBrowser extends Window implements EventListener
 	 */
 	public FolderBrowser(boolean browseForFolder)
 	{
-		this(Ini.getAdempiereHome(), browseForFolder);
+		this(null, browseForFolder);
 	}
 
 	/**
@@ -68,6 +70,9 @@ public class FolderBrowser extends Window implements EventListener
 	 */
 	public FolderBrowser(String rootPath, boolean browseForFolder)
 	{
+		if (Util.isEmpty(rootPath)) {
+			rootPath = MSysConfig.getValue("ZK_ROOT_FOLDER_BROWSER", Ini.getAdempiereHome());
+		}
 		root = new File(rootPath);
 
 		this.browseForFolder = browseForFolder;
