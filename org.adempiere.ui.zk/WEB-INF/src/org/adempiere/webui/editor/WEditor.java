@@ -432,7 +432,7 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
     {
         this.mandatory = mandatory;
         if (label != null)
-        	label.setMandatory(mandatory && isReadWrite());
+        	label.setMandatory(mandatory);
     }
 
     /**
