@@ -24,7 +24,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.ServerContext;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.graph.WGraph;
@@ -52,6 +51,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -139,7 +139,7 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
         w.setWidth("300px");
         w.setCollapsible(true);
         w.setSplittable(true);
-        w.setTitle("Menu");
+        w.setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Menu")));
         w.setFlex(true);
         w.addEventListener(Events.ON_OPEN, new EventListener() {			
 			@Override
@@ -199,7 +199,7 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
         windowContainer.createPart(windowArea);
 
         homeTab = new Tabpanel();
-        windowContainer.addWindow(homeTab, Msg.getMsg(Env.getCtx(), "Home").replaceAll("&", ""), false);
+        windowContainer.addWindow(homeTab, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")), false);
         BusyDialog busyDialog = new BusyDialog();
         busyDialog.setShadow(false);
         homeTab.appendChild(busyDialog);
