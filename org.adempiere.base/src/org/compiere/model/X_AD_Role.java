@@ -32,7 +32,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20110325L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -152,9 +152,9 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_Tree getAD_Tree_Menu() throws RuntimeException
+	public org.compiere.model.I_AD_Tree getAD_Tree_Menu() throws RuntimeException
     {
-		return (I_AD_Tree)MTable.get(getCtx(), I_AD_Tree.Table_Name)
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
 			.getPO(getAD_Tree_Menu_ID(), get_TrxName());	}
 
 	/** Set Menu Tree.
@@ -180,9 +180,9 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_Tree getAD_Tree_Org() throws RuntimeException
+	public org.compiere.model.I_AD_Tree getAD_Tree_Org() throws RuntimeException
     {
-		return (I_AD_Tree)MTable.get(getCtx(), I_AD_Tree.Table_Name)
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
 			.getPO(getAD_Tree_Org_ID(), get_TrxName());	}
 
 	/** Set Organization Tree.
@@ -501,9 +501,29 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return bd;
 	}
 
-	public I_C_Currency getC_Currency() throws RuntimeException
+	/** Set Approval Amount Accumulated.
+		@param AmtApprovalAccum 
+		The approval amount limit for this role accumulated on a period
+	  */
+	public void setAmtApprovalAccum (BigDecimal AmtApprovalAccum)
+	{
+		set_Value (COLUMNNAME_AmtApprovalAccum, AmtApprovalAccum);
+	}
+
+	/** Get Approval Amount Accumulated.
+		@return The approval amount limit for this role accumulated on a period
+	  */
+	public BigDecimal getAmtApprovalAccum () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtApprovalAccum);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
     {
-		return (I_C_Currency)MTable.get(getCtx(), I_C_Currency.Table_Name)
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
 			.getPO(getC_Currency_ID(), get_TrxName());	}
 
 	/** Set Currency.
@@ -575,6 +595,26 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public String getConnectionProfile () 
 	{
 		return (String)get_Value(COLUMNNAME_ConnectionProfile);
+	}
+
+	/** Set Days Approval Accumulated.
+		@param DaysApprovalAccum 
+		The days approval indicates the days to take into account to verify the accumulated approval amount.
+	  */
+	public void setDaysApprovalAccum (int DaysApprovalAccum)
+	{
+		set_Value (COLUMNNAME_DaysApprovalAccum, Integer.valueOf(DaysApprovalAccum));
+	}
+
+	/** Get Days Approval Accumulated.
+		@return The days approval indicates the days to take into account to verify the accumulated approval amount.
+	  */
+	public int getDaysApprovalAccum () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_DaysApprovalAccum);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.
@@ -973,9 +1013,9 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return (String)get_Value(COLUMNNAME_PreferenceType);
 	}
 
-	public I_AD_User getSupervisor() throws RuntimeException
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSupervisor_ID(), get_TrxName());	}
 
 	/** Set Supervisor.

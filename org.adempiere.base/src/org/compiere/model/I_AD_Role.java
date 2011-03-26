@@ -31,7 +31,7 @@ public interface I_AD_Role
     public static final String Table_Name = "AD_Role";
 
     /** AD_Table_ID=156 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 156;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_AD_Role
 	  */
 	public int getAD_Tree_Menu_ID();
 
-	public I_AD_Tree getAD_Tree_Menu() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_Menu() throws RuntimeException;
 
     /** Column name AD_Tree_Org_ID */
     public static final String COLUMNNAME_AD_Tree_Org_ID = "AD_Tree_Org_ID";
@@ -103,7 +103,7 @@ public interface I_AD_Role
 	  */
 	public int getAD_Tree_Org_ID();
 
-	public I_AD_Tree getAD_Tree_Org() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_Org() throws RuntimeException;
 
     /** Column name Allow_Info_Account */
     public static final String COLUMNNAME_Allow_Info_Account = "Allow_Info_Account";
@@ -235,6 +235,19 @@ public interface I_AD_Role
 	  */
 	public BigDecimal getAmtApproval();
 
+    /** Column name AmtApprovalAccum */
+    public static final String COLUMNNAME_AmtApprovalAccum = "AmtApprovalAccum";
+
+	/** Set Approval Amount Accumulated.
+	  * The approval amount limit for this role accumulated on a period
+	  */
+	public void setAmtApprovalAccum (BigDecimal AmtApprovalAccum);
+
+	/** Get Approval Amount Accumulated.
+	  * The approval amount limit for this role accumulated on a period
+	  */
+	public BigDecimal getAmtApprovalAccum();
+
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
 
@@ -248,7 +261,7 @@ public interface I_AD_Role
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name ConfirmQueryRecords */
     public static final String COLUMNNAME_ConfirmQueryRecords = "ConfirmQueryRecords";
@@ -291,6 +304,19 @@ public interface I_AD_Role
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DaysApprovalAccum */
+    public static final String COLUMNNAME_DaysApprovalAccum = "DaysApprovalAccum";
+
+	/** Set Days Approval Accumulated.
+	  * The days approval indicates the days to take into account to verify the accumulated approval amount.
+	  */
+	public void setDaysApprovalAccum (int DaysApprovalAccum);
+
+	/** Get Days Approval Accumulated.
+	  * The days approval indicates the days to take into account to verify the accumulated approval amount.
+	  */
+	public int getDaysApprovalAccum();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -531,7 +557,7 @@ public interface I_AD_Role
 	  */
 	public int getSupervisor_ID();
 
-	public I_AD_User getSupervisor() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

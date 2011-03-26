@@ -18,6 +18,7 @@ package org.compiere.wf;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
@@ -55,6 +56,7 @@ import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.StateEngine;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -687,6 +689,23 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				log.fine("Approved=" + approved
 					+ " - User=" + user.getName() + ", Role=" + role.getName()
 					+ ", ApprovalAmt=" + roleAmt);
+				if (approved) {
+					// Verify accumulated amount approval - FR [3123769] - Carlos Ruiz - GlobalQSS
+					BigDecimal roleAmtAcc = role.getAmtApprovalAccum();
+					Integer daysAmtAcc = role.getDaysApprovalAccum();
+					if (   roleAmtAcc != null && roleAmtAcc.signum() > 0
+						&& daysAmtAcc != null && daysAmtAcc.intValue() > 0) {
+						BigDecimal amtApprovedAccum = getAmtAccum(m_po, daysAmtAcc.intValue(), user.getAD_User_ID());
+						amtApprovedAccum = amtApprovedAccum.add(amount); // include amount of current doc
+						approved = amtApprovedAccum.compareTo(roleAmtAcc) <= 0;
+						log.info("ApprovedAccum=" + approved 
+								+ " - User=" + user.getName() + ", Role=" + role.getName()
+								+ ", ApprovalAmtAccum=" + roleAmtAcc
+								+ ", AccumDocsApproved=" + amtApprovedAccum
+								+ " in past " + daysAmtAcc.intValue() + " days");
+					}
+				}
+				
 				if (approved)
 					return user.getAD_User_ID();
 			}
@@ -733,6 +752,74 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		return -1;
 	}	//	getApproval
 
+	/**
+	 * 	Get The Amount of Accumulated Approvals of this same document within the indicated days
+	 *	@param po - the document being approved
+	 *	@param days - the days to check
+	 *	@param userid - user approving
+	 *	@return amount - approval amount of approved documents within the indicated days
+	 */
+	private BigDecimal getAmtAccum(PO po, int days, int userid) {
+		BigDecimal amtaccum = Env.ZERO;
+		String tablename = po.get_TableName();
+		MTable tablepo = MTable.get(getCtx(), po.get_Table_ID());
+		String checkSameSO = "";
+		if (po.get_ColumnIndex("IsSOTrx") > 0) {
+			checkSameSO = " AND doc.IsSOTrx='" + ((Boolean) po.get_Value("IsSOTrx") ? "Y" : "N") + "'";
+		}
+		String checkSameReceipt = "";
+		if (po.get_ColumnIndex("IsReceipt") > 0) {
+			checkSameReceipt = " AND doc.IsReceipt='" + ((Boolean) po.get_Value("IsReceipt") ? "Y" : "N") + "'";
+		}
+		String checkDocAction = "";
+		if (po.get_ColumnIndex("DocStatus") > 0) {
+			checkDocAction = " AND DocStatus IN ('CO','CL')";
+		}
+		String sql = ""
+			+ "SELECT DISTINCT doc." + tablename + "_ID "
+			+ " FROM  " + tablename + " doc, "
+			+ "       AD_WF_Activity a, "
+			+ "       AD_WF_Node n, "
+			+ "       AD_Column c "
+			+ " WHERE a.AD_WF_Node_ID = n.AD_WF_Node_ID "
+			+ "       AND n.AD_Column_ID = c.AD_Column_ID "
+			+ "       AND a.AD_Table_ID = " + po.get_Table_ID()
+			+ "       AND a.Record_ID = doc." + tablename + "_ID "
+			+ "       AND a.Record_ID != " + po.get_ID()
+			+ "       AND c.ColumnName = 'IsApproved' "
+			+ "       AND n.Action = 'C' "
+			+ "       AND a.WFState = 'CC' "
+			+ "       AND a.UpdatedBy = " + userid
+			+ "       AND a.Updated > Trunc(SYSDATE) - " + (days-1)
+			+ checkSameSO
+			+ checkSameReceipt
+			+ checkDocAction;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, get_TrxName());
+			rs = pstmt.executeQuery ();
+			while (rs.next ()) {
+				int doc_id = rs.getInt(1);
+				PO doc = tablepo.getPO(doc_id, get_TrxName());
+				BigDecimal docamt = ((DocAction) doc).getApprovalAmt();
+				if (docamt != null)
+					amtaccum = amtaccum.add(docamt);
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		return amtaccum;
+	}
 
 	/**************************************************************************
 	 * 	Execute Work.
