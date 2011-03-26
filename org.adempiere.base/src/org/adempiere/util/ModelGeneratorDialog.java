@@ -63,7 +63,7 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 
 		Panel filePanel = new Panel();
 		filePanel.setLayout(new BorderLayout());
-		fFolderName = new JTextField("/home/carlos/hgAdempiere/localosgi/org.adempiere.base/src");
+		fFolderName = new JTextField();
 		filePanel.add(fFolderName, BorderLayout.CENTER);
 		bFolder = new JButton("...");
 		bFolder.setMargin(new Insets(0, 0, 0, 0));
@@ -73,22 +73,22 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 		bFolder.addActionListener(this);
 
 		mainPanel.add(new JLabel("Package Name"));
-		fPackageName = new JTextField("org.compiere.model");
+		fPackageName = new JTextField("org.adempiere.model");
 		mainPanel.add(fPackageName);
 
 		mainPanel.add(new JLabel("Table Name"));
-		fTableName = new JTextField("AD_Role");
+		fTableName = new JTextField("%");
 		mainPanel.add(fTableName);
 
 		mainPanel.add(new JLabel("Entity Type"));
-		fEntityType = new JTextField("D");
+		fEntityType = new JTextField("U,A");
 		mainPanel.add(fEntityType);
 
 		fGenerateInterface = new JCheckBox("Generate Interface");
 		fGenerateInterface.setSelected(true);
 		mainPanel.add(fGenerateInterface);
 		fGenerateClass = new JCheckBox("Generate Class");
-		fGenerateClass.setSelected(true);
+		fGenerateClass.setSelected(false);
 		mainPanel.add(fGenerateClass);
 
 		bGenerate = new JButton("Generate Source");
