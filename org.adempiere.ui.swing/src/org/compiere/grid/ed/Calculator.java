@@ -484,6 +484,11 @@ public final class Calculator extends CDialog
 		//	get operand
 		char op = token.charAt(0);
 
+		if (op == '%') {
+			firstNo = firstNo.divide(new BigDecimal(100.0), m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
+			m_number = firstNo;
+		}
+		
 		//	no second number
 		if (!st.hasMoreTokens())
 			return m_number;
@@ -502,7 +507,7 @@ public final class Calculator extends CDialog
 		}
 		BigDecimal secondNo = new BigDecimal(secondNumber.toString());
 
-		//	Check the next operant
+		//	Check the next operand
 		char op2 = 0;
 		if (st.hasMoreTokens())
 		{
@@ -518,8 +523,7 @@ public final class Calculator extends CDialog
 
 		//	Percent operation
 		if (op2 == '%')
-			secondNo = firstNo.multiply(secondNo)
-				.divide(new BigDecimal(100.0), m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
+			secondNo = secondNo.divide(new BigDecimal(100.0), m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
 
 		switch (op)
 		{
@@ -650,6 +654,9 @@ public final class Calculator extends CDialog
 			input = 'C';
 		else if (code == KeyEvent.VK_ENTER)
 			input = '=';
+		else if (code == KeyEvent.VK_SHIFT)
+			// ignore
+			return;
 		//	abort
 		else if (code == KeyEvent.VK_CANCEL || code == KeyEvent.VK_ESCAPE)
 		{
