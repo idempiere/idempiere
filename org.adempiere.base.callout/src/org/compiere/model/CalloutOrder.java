@@ -44,7 +44,7 @@ public class CalloutOrder extends CalloutEngine
 
 	/**
 	 *	Order Header Change - DocType.
-	 *		- InvoiceRuld/DeliveryRule/PaymentRule
+	 *		- InvoiceRule/DeliveryRule/PaymentRule
 	 *		- temporary Document
 	 *  Context:
 	 *  	- DocSubTypeSO
@@ -515,7 +515,7 @@ public class CalloutOrder extends CalloutEngine
 
 				int bill_Location_ID = rs.getInt("Bill_Location_ID");
 				//	overwritten by InfoBP selection - works only if InfoWindow
-				//	was used otherwise creates error (uses last value, may belong to differnt BP)
+				//	was used otherwise creates error (uses last value, may belong to different BP)
 				if (bill_BPartner_ID.toString().equals(Env.getContext(ctx, WindowNo, Env.TAB_INFO, "C_BPartner_ID")))
 				{
 					int locationId = 0;
@@ -874,7 +874,7 @@ public class CalloutOrder extends CalloutEngine
 	 *	Order Line - Charge.
 	 * 		- updates PriceActual from Charge
 	 * 		- sets PriceLimit, PriceList to zero
-	 * 	Calles tax
+	 * 	Calls tax
 	 *  @param ctx context
 	 *  @param WindowNo current Window No
 	 *  @param mTab Grid Tab
@@ -935,7 +935,7 @@ public class CalloutOrder extends CalloutEngine
 	 *	Order Line - Tax.
 	 *		- basis: Product, Charge, BPartner Location
 	 *		- sets C_Tax_ID
-	 *  Calles Amount
+	 *  Calls Amount
 	 *  @param ctx context
 	 *  @param WindowNo current Window No
 	 *  @param mTab Grid Tab
