@@ -31,7 +31,7 @@ public interface I_C_Bank
     public static final String Table_Name = "C_Bank";
 
     /** AD_Table_ID=296 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 296;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
