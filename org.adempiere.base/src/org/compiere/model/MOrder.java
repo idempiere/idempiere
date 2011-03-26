@@ -1649,13 +1649,22 @@ public class MOrder extends X_C_Order implements DocAction
 		MPaymentTerm pt = new MPaymentTerm(getCtx(), getC_PaymentTerm_ID(), null);
 		log.fine(pt.toString());
 
+		int numSchema = pt.getSchedule(false).length;
+		
 		MOrderPaySchedule[] schedule = MOrderPaySchedule.getOrderPaySchedule
 			(getCtx(), getC_Order_ID(), 0, get_TrxName());
 		
-		if (schedule.length > 0)
+		if (schedule.length > 0) {
+			if (numSchema == 0)
+				return false; // created a schedule for a payment term that doesn't manage schedule
 			return validatePaySchedule();
-		else
-			return pt.applyOrder(this);		//	calls validate pay schedule
+		} else {
+			boolean isValid = pt.applyOrder(this);		//	calls validate pay schedule
+			if (numSchema == 0)
+				return true; // no schedule, no schema, OK
+			else
+				return isValid;
+		}
 	}	//	createPaySchedule
 	
 	

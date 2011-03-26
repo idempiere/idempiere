@@ -224,7 +224,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	/**
 	 * 	Apply Payment Term without schedule to Invoice
 	 *	@param invoice invoice
-	 *	@return true as no payment schedule
+	 *	@return false as no payment schedule
 	 */
 	private boolean applyNoSchedule (MInvoice invoice)
 	{
@@ -234,7 +234,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 			invoice.setC_PaymentTerm_ID(getC_PaymentTerm_ID());
 		if (invoice.isPayScheduleValid())
 			invoice.setIsPayScheduleValid(false);
-		return true;
+		return false;
 	}	//	applyNoSchedule
 
 	/**
@@ -324,7 +324,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	/**
 	 * 	Apply Payment Term without schedule to Order
 	 *	@param order order
-	 *	@return true as no payment schedule
+	 *	@return false as no payment schedule
 	 */
 	private boolean applyOrderNoSchedule (MOrder order)
 	{
@@ -334,7 +334,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 			order.setC_PaymentTerm_ID(getC_PaymentTerm_ID());
 		if (order.isPayScheduleValid())
 			order.setIsPayScheduleValid(false);
-		return true;
+		return false;
 	}	//	applyOrderNoSchedule
 
 	/**
