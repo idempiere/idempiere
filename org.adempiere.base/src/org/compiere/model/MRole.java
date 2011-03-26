@@ -2024,9 +2024,13 @@ public final class MRole extends X_AD_Role
 			where.append(")");
 		}
 		else if (excludes.size() == 1)
-			where.append(whereColumnName).append("<>").append(excludes.get(0));
+		{
+			where.append("(" + whereColumnName + " IS NULL OR ");
+			where.append(whereColumnName).append("<>").append(excludes.get(0)).append(")");
+		}
 		else if (excludes.size() > 1)
 		{
+			where.append("(" + whereColumnName + " IS NULL OR ");
 			where.append(whereColumnName).append(" NOT IN (");
 			for (int ii = 0; ii < excludes.size(); ii++)
 			{
@@ -2034,7 +2038,7 @@ public final class MRole extends X_AD_Role
 					where.append(",");
 				where.append(excludes.get(ii));
 			}
-			where.append(")");
+			where.append("))");
 		}
 		log.finest(where.toString());
 		return where.toString();
@@ -2325,7 +2329,8 @@ public final class MRole extends X_AD_Role
 			{
 				if (sb.length() > 0)
 					sb.append(" AND ");
-				sb.append(keyColumnName).append(lockedIDs);
+				sb.append(" (" + keyColumnName + " IS NULL OR ");
+				sb.append(keyColumnName).append(lockedIDs).append(") ");
 			}
 		}
 		//
