@@ -16,12 +16,19 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MInvoicePaySchedule;
+import org.compiere.model.MOrder;
+import org.compiere.model.MOrderPaySchedule;
+import org.compiere.model.PO;
+import org.compiere.util.Env;
  
 /**
  *	Create (Generate) Invoice from Shipment
@@ -72,7 +79,7 @@ public class InOutCreateInvoice extends SvrProcess
 		if (p_M_InOut_ID == 0)
 			throw new IllegalArgumentException("No Shipment");
 		//
-		MInOut ship = new MInOut (getCtx(), p_M_InOut_ID, null);
+		MInOut ship = new MInOut (getCtx(), p_M_InOut_ID, get_TrxName());
 		if (ship.get_ID() == 0)
 			throw new IllegalArgumentException("Shipment not found");
 		if (!MInOut.DOCSTATUS_Completed.equals(ship.getDocStatus()))
@@ -99,6 +106,44 @@ public class InOutCreateInvoice extends SvrProcess
 			line.setQtyInvoiced(sLine.getMovementQty());
 			if (!line.save())
 				throw new IllegalArgumentException("Cannot save Invoice Line");
+		}
+		
+		MOrder order = new MOrder(getCtx(), invoice.getC_Order_ID(), get_TrxName());
+		if (order != null) {
+			invoice.setPaymentRule(order.getPaymentRule());
+			invoice.setC_PaymentTerm_ID(order.getC_PaymentTerm_ID());
+			invoice.saveEx();
+			invoice.load(invoice.get_TrxName()); // refresh from DB
+			// copy payment schedule from order if invoice doesn't have a current payment schedule
+			MOrderPaySchedule[] opss = MOrderPaySchedule.getOrderPaySchedule(getCtx(), order.getC_Order_ID(), 0, get_TrxName());
+			MInvoicePaySchedule[] ipss = MInvoicePaySchedule.getInvoicePaySchedule(getCtx(), invoice.getC_Invoice_ID(), 0, get_TrxName());
+			if (ipss.length == 0 && opss.length > 0) {
+				BigDecimal ogt = order.getGrandTotal();
+				BigDecimal igt = invoice.getGrandTotal();
+				BigDecimal percent = Env.ONE;
+				if (ogt.compareTo(igt) != 0)
+					percent = igt.divide(ogt, 10, BigDecimal.ROUND_HALF_UP);
+				MCurrency cur = MCurrency.get(order.getCtx(), order.getC_Currency_ID());
+				int scale = cur.getStdPrecision();
+			
+				for (MOrderPaySchedule ops : opss) {
+					MInvoicePaySchedule ips = new MInvoicePaySchedule(getCtx(), 0, get_TrxName());
+					PO.copyValues(ops, ips);
+					if (percent != Env.ONE) {
+						BigDecimal propDueAmt = ops.getDueAmt().multiply(percent);
+						if (propDueAmt.scale() > scale)
+							propDueAmt = propDueAmt.setScale(scale, BigDecimal.ROUND_HALF_UP);
+						ips.setDueAmt(propDueAmt);
+					}
+					ips.setC_Invoice_ID(invoice.getC_Invoice_ID());
+					ips.setAD_Org_ID(ops.getAD_Org_ID());
+					ips.setProcessing(ops.isProcessing());
+					ips.setIsActive(ops.isActive());
+					ips.saveEx();
+				}
+			}
+			invoice.validatePaySchedule();
+			invoice.saveEx();
 		}
 		
 		return invoice.getDocumentNo();

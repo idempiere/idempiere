@@ -69,7 +69,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1575104995897726572L;
+	private static final long serialVersionUID = -846451837699702120L;
 
 	/**
 	 * 	Create new Order by copying
@@ -860,6 +860,45 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	
 	
+	/**
+	 * 	Validate Order Pay Schedule
+	 *	@return pay schedule is valid
+	 */
+	public boolean validatePaySchedule()
+	{
+		MOrderPaySchedule[] schedule = MOrderPaySchedule.getOrderPaySchedule
+			(getCtx(), getC_Order_ID(), 0, get_TrxName());
+		log.fine("#" + schedule.length);
+		if (schedule.length == 0)
+		{
+			setIsPayScheduleValid(false);
+			return false;
+		}
+		//	Add up due amounts
+		BigDecimal total = Env.ZERO;
+		for (int i = 0; i < schedule.length; i++)
+		{
+			schedule[i].setParent(this);
+			BigDecimal due = schedule[i].getDueAmt();
+			if (due != null)
+				total = total.add(due);
+		}
+		boolean valid = getGrandTotal().compareTo(total) == 0;
+		setIsPayScheduleValid(valid);
+		
+		//	Update Schedule Lines
+		for (int i = 0; i < schedule.length; i++)
+		{
+			if (schedule[i].isValid() != valid)
+			{
+				schedule[i].setIsValid(valid);
+				schedule[i].save(get_TrxName());				
+			}
+		}
+		return valid;
+	}	//	validatePaySchedule
+
+	
 	/**************************************************************************
 	 * 	Before Save
 	 *	@param newRecord new
@@ -1246,6 +1285,12 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
+		if (!createPaySchedule())
+		{
+			m_processMsg = "@ErrorPaymentSchedule@";
+			return DocAction.STATUS_Invalid;
+		}
+		
 		//	Credit Check
 		if (isSOTrx())
 		{
@@ -1594,6 +1639,27 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	
 	/**
+	 * 	(Re) Create Pay Schedule
+	 *	@return true if valid schedule
+	 */
+	private boolean createPaySchedule()
+	{
+		if (getC_PaymentTerm_ID() == 0)
+			return false;
+		MPaymentTerm pt = new MPaymentTerm(getCtx(), getC_PaymentTerm_ID(), null);
+		log.fine(pt.toString());
+
+		MOrderPaySchedule[] schedule = MOrderPaySchedule.getOrderPaySchedule
+			(getCtx(), getC_Order_ID(), 0, get_TrxName());
+		
+		if (schedule.length > 0)
+			return validatePaySchedule();
+		else
+			return pt.applyOrder(this);		//	calls validate pay schedule
+	}	//	createPaySchedule
+	
+	
+	/**
 	 * 	Approve Document
 	 * 	@return true if success 
 	 */
@@ -1890,6 +1956,21 @@ public class MOrder extends X_C_Order implements DocAction
 				}
 			}
 		}
+		
+		// Copy payment schedule from order to invoice if any
+		for (MOrderPaySchedule ops : MOrderPaySchedule.getOrderPaySchedule(getCtx(), getC_Order_ID(), 0, get_TrxName())) {
+			MInvoicePaySchedule ips = new MInvoicePaySchedule(getCtx(), 0, get_TrxName());
+			PO.copyValues(ops, ips);
+			ips.setC_Invoice_ID(invoice.getC_Invoice_ID());
+			ips.setAD_Org_ID(ops.getAD_Org_ID());
+			ips.setProcessing(ops.isProcessing());
+			ips.setIsActive(ops.isActive());
+			if (!ips.save()) {
+				m_processMsg = "ERROR: creating pay schedule for invoice from : "+ ops.toString();
+				return null;
+			}
+		}
+		
 		//	Manually Process Invoice
 		invoice.processIt(DocAction.ACTION_Complete);
 		invoice.saveEx(get_TrxName());

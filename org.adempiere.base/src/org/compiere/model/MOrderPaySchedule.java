@@ -30,50 +30,50 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 /**
- *	Invoice Payment Schedule Model 
+ *	Order Payment Schedule Model 
  *	
  *  @author Jorg Janke
- *  @version $Id: MInvoicePaySchedule.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
+ *  @version $Id: MOrderPaySchedule.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
+public class MOrderPaySchedule extends X_C_OrderPaySchedule
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1529278048406862670L;
+	private static final long serialVersionUID = -5506706349428999742L;
 
 	/**
-	 * 	Get Payment Schedule of the invoice
+	 * 	Get Payment Schedule of the Order
 	 * 	@param ctx context
-	 * 	@param C_Invoice_ID invoice id (direct)
-	 * 	@param C_InvoicePaySchedule_ID id (indirect)
+	 * 	@param C_Order_ID order id (direct)
+	 * 	@param C_OrderPaySchedule_ID id (indirect)
 	 *	@param trxName transaction
 	 *	@return array of schedule
 	 */
-	public static MInvoicePaySchedule[] getInvoicePaySchedule(Properties ctx, 
-		int C_Invoice_ID, int C_InvoicePaySchedule_ID, String trxName)
+	public static MOrderPaySchedule[] getOrderPaySchedule(Properties ctx, 
+		int C_Order_ID, int C_OrderPaySchedule_ID, String trxName)
 	{
-		String sql = "SELECT * FROM C_InvoicePaySchedule ips WHERE IsActive='Y' ";
-		if (C_Invoice_ID != 0)
-			sql += "AND C_Invoice_ID=? ";
+		String sql = "SELECT * FROM C_OrderPaySchedule ips WHERE IsActive='Y' ";
+		if (C_Order_ID != 0)
+			sql += "AND C_Order_ID=? ";
 		else
-			sql += "AND EXISTS (SELECT * FROM C_InvoicePaySchedule x"
-			+ " WHERE x.C_InvoicePaySchedule_ID=? AND ips.C_Invoice_ID=x.C_Invoice_ID) ";
+			sql += "AND EXISTS (SELECT * FROM C_OrderPaySchedule x"
+			+ " WHERE x.C_OrderPaySchedule_ID=? AND ips.C_Order_ID=x.C_Order_ID) ";
 		sql += "ORDER BY DueDate";
 		//
-		ArrayList<MInvoicePaySchedule> list = new ArrayList<MInvoicePaySchedule>();
+		ArrayList<MOrderPaySchedule> list = new ArrayList<MOrderPaySchedule>();
 		PreparedStatement pstmt = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
-			if (C_Invoice_ID != 0)
-				pstmt.setInt(1, C_Invoice_ID);
+			if (C_Order_ID != 0)
+				pstmt.setInt(1, C_Order_ID);
 			else
-				pstmt.setInt(1, C_InvoicePaySchedule_ID);
+				pstmt.setInt(1, C_OrderPaySchedule_ID);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				list.add (new MInvoicePaySchedule(ctx, rs, trxName));
+				list.add (new MOrderPaySchedule(ctx, rs, trxName));
 			}
 			rs.close();
 			pstmt.close();
@@ -81,7 +81,7 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 		}
 		catch (Exception e)
 		{
-			s_log.log(Level.SEVERE, "getInvoicePaySchedule", e); 
+			s_log.log(Level.SEVERE, "getOrderPaySchedule", e); 
 		}
 		try
 		{
@@ -94,13 +94,13 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 			pstmt = null;
 		}
 		
-		MInvoicePaySchedule[] retValue = new MInvoicePaySchedule[list.size()];
+		MOrderPaySchedule[] retValue = new MOrderPaySchedule[list.size()];
 		list.toArray(retValue);
 		return retValue;
 	}	//	getSchedule
 
 	/** Static Logger					*/
-	private static CLogger		s_log = CLogger.getCLogger (MInvoicePaySchedule.class);
+	private static CLogger		s_log = CLogger.getCLogger (MOrderPaySchedule.class);
 
 	/** 100								*/
 	private final static BigDecimal		HUNDRED = new BigDecimal(100);
@@ -109,22 +109,22 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param C_InvoicePaySchedule_ID id
+	 *	@param C_OrderPaySchedule_ID id
 	 *	@param trxName transaction
 	 */
-	public MInvoicePaySchedule (Properties ctx, int C_InvoicePaySchedule_ID, String trxName)
+	public MOrderPaySchedule (Properties ctx, int C_OrderPaySchedule_ID, String trxName)
 	{
-		super(ctx, C_InvoicePaySchedule_ID, trxName);
-		if (C_InvoicePaySchedule_ID == 0)
+		super(ctx, C_OrderPaySchedule_ID, trxName);
+		if (C_OrderPaySchedule_ID == 0)
 		{
-		//	setC_Invoice_ID (0);
+		//	setC_Order_ID (0);
 		//	setDiscountAmt (Env.ZERO);
 		//	setDiscountDate (new Timestamp(System.currentTimeMillis()));
 		//	setDueAmt (Env.ZERO);
 		//	setDueDate (new Timestamp(System.currentTimeMillis()));
 			setIsValid (false);
 		}
-	}	//	MInvoicePaySchedule
+	}	//	MOrderPaySchedule
 
 	/**
 	 * 	Load Constructor
@@ -132,27 +132,27 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	 *	@param rs result set
 	 *	@param trxName transaction
 	 */
-	public MInvoicePaySchedule (Properties ctx, ResultSet rs, String trxName)
+	public MOrderPaySchedule (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-	}	//	MInvoicePaySchedule
+	}	//	MOrderPaySchedule
 
 	/**
 	 * 	Parent Constructor
-	 *	@param invoice invoice
+	 *	@param order order
 	 *	@param paySchedule payment schedule
 	 */
-	public MInvoicePaySchedule (MInvoice invoice, MPaySchedule paySchedule)
+	public MOrderPaySchedule (MOrder order, MPaySchedule paySchedule)
 	{
-		super (invoice.getCtx(), 0, invoice.get_TrxName());
-		m_parent = invoice;
-		setClientOrg(invoice);
-		setC_Invoice_ID(invoice.getC_Invoice_ID());
+		super (order.getCtx(), 0, order.get_TrxName());
+		m_parent = order;
+		setClientOrg(order);
+		setC_Order_ID(order.getC_Order_ID());
 		setC_PaySchedule_ID(paySchedule.getC_PaySchedule_ID());
 		
 		//	Amounts
-		int scale = MCurrency.getStdPrecision(getCtx(), invoice.getC_Currency_ID());
-		BigDecimal due = invoice.getGrandTotal();
+		int scale = MCurrency.getStdPrecision(getCtx(), order.getC_Currency_ID());
+		BigDecimal due = order.getGrandTotal();
 		if (due.compareTo(Env.ZERO) == 0)
 		{
 			setDueAmt (Env.ZERO);
@@ -171,30 +171,30 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 		}
 		
 		//	Dates		
-		Timestamp dueDate = TimeUtil.addDays(invoice.getDateInvoiced(), paySchedule.getNetDays());
+		Timestamp dueDate = TimeUtil.addDays(order.getDateOrdered(), paySchedule.getNetDays());
 		setDueDate (dueDate);
-		Timestamp discountDate = TimeUtil.addDays(invoice.getDateInvoiced(), paySchedule.getDiscountDays());
+		Timestamp discountDate = TimeUtil.addDays(order.getDateOrdered(), paySchedule.getDiscountDays());
 		setDiscountDate (discountDate);
-	}	//	MInvoicePaySchedule
+	}	//	MOrderPaySchedule
 	
 	/**	Parent						*/
-	private MInvoice	m_parent = null;
+	private MOrder	m_parent = null;
 
 	
 	/**
 	 * @return Returns the parent.
 	 */
-	public MInvoice getParent ()
+	public MOrder getParent ()
 	{
 		if (m_parent == null)
-			m_parent = new MInvoice (getCtx(), getC_Invoice_ID(), get_TrxName()); 
+			m_parent = new MOrder (getCtx(), getC_Order_ID(), get_TrxName()); 
 		return m_parent;
 	}	//	getParent
 	
 	/**
 	 * @param parent The parent to set.
 	 */
-	public void setParent (MInvoice parent)
+	public void setParent (MOrder parent)
 	{
 		m_parent = parent;
 	}	//	setParent
@@ -205,7 +205,7 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MInvoicePaySchedule[");
+		StringBuffer sb = new StringBuffer("MOrderPaySchedule[");
 		sb.append(get_ID()).append("-Due=" + getDueDate() + "/" + getDueAmt())
 			.append(";Discount=").append(getDiscountDate() + "/" + getDiscountAmt())
 			.append("]");
@@ -248,4 +248,4 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	}	//	afterSave
 
 	
-}	//	MInvoicePaySchedule
+}	//	MOrderPaySchedule

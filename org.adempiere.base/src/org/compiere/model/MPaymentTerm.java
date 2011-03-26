@@ -40,11 +40,10 @@ import org.compiere.util.Msg;
  */
 public class MPaymentTerm extends X_C_PaymentTerm
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2494915482340569386L;
+	private static final long serialVersionUID = -4506224598566445450L;
 
 	/**
 	 * 	Standard Constructor
@@ -145,17 +144,17 @@ public class MPaymentTerm extends X_C_PaymentTerm
 				setIsValid(true);
 			return "@OK@";
 		}
-		if (m_schedule.length == 1)
-		{
-			if (isValid())
-				setIsValid(false);
-			if (m_schedule[0].isValid())
-			{
-				m_schedule[0].setIsValid(false);
-				m_schedule[0].save();
-			}
-			return "@Invalid@ @Count@ # = 1 (@C_PaySchedule_ID@)";
-		}
+		// Allow schedules with just one record
+		// if (m_schedule.length == 1)
+		// {
+		// 	setIsValid(false);
+		// 	if (m_schedule[0].isValid())
+		// 	{
+		// 		m_schedule[0].setIsValid(false);
+		// 		m_schedule[0].save();
+		// 	}
+		// 	return "@Invalid@ @Count@ # = 1 (@C_PaySchedule_ID@)";
+		// }
 		
 		//	Add up
 		BigDecimal total = Env.ZERO;
@@ -216,7 +215,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 			return applyNoSchedule (invoice);
 		//
 		getSchedule(true);
-		if (m_schedule.length <= 1)
+		if (m_schedule.length <= 0) // Allow schedules with just one record
 			return applyNoSchedule (invoice);
 		else	//	only if valid
 			return applySchedule(invoice);		
@@ -225,7 +224,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	/**
 	 * 	Apply Payment Term without schedule to Invoice
 	 *	@param invoice invoice
-	 *	@return false as no payment schedule
+	 *	@return true as no payment schedule
 	 */
 	private boolean applyNoSchedule (MInvoice invoice)
 	{
@@ -235,7 +234,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 			invoice.setC_PaymentTerm_ID(getC_PaymentTerm_ID());
 		if (invoice.isPayScheduleValid())
 			invoice.setIsPayScheduleValid(false);
-		return false;
+		return true;
 	}	//	applyNoSchedule
 
 	/**
@@ -281,6 +280,106 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		int no = DB.executeUpdate(sql, trxName);
 		log.fine("C_Invoice_ID=" + C_Invoice_ID + " - #" + no);
 	}	//	deleteInvoicePaySchedule
+
+	
+	/*************************************************************************
+	 * 	Apply Payment Term to Order -
+	 *	@param C_Order_ID order
+	 *	@return true if payment schedule is valid
+	 */
+	public boolean applyOrder (int C_Order_ID)
+	{
+		MOrder order = new MOrder (getCtx(), C_Order_ID, get_TrxName());
+		if (order == null || order.get_ID() == 0)
+		{
+			log.log(Level.SEVERE, "apply - Not valid C_Order_ID=" + C_Order_ID);
+			return false;
+		}
+		return applyOrder (order);
+	}	//	applyOrder
+	
+	/**
+	 * 	Apply Payment Term to Order
+	 *	@param order order
+	 *	@return true if payment schedule is valid
+	 */
+	public boolean applyOrder (MOrder order)
+	{
+		if (order == null || order.get_ID() == 0)
+		{
+			log.log(Level.SEVERE, "No valid order - " + order);
+			return false;
+		}
+
+		if (!isValid())
+			return applyOrderNoSchedule (order);
+		//
+		getSchedule(true);
+		if (m_schedule.length <= 0) // Allow schedules with just one record
+			return applyOrderNoSchedule (order);
+		else	//	only if valid
+			return applyOrderSchedule(order);
+	}	//	applyOrder
+
+	/**
+	 * 	Apply Payment Term without schedule to Order
+	 *	@param order order
+	 *	@return true as no payment schedule
+	 */
+	private boolean applyOrderNoSchedule (MOrder order)
+	{
+		deleteOrderPaySchedule (order.getC_Order_ID(), order.get_TrxName());
+		//	updateOrder
+		if (order.getC_PaymentTerm_ID() != getC_PaymentTerm_ID())
+			order.setC_PaymentTerm_ID(getC_PaymentTerm_ID());
+		if (order.isPayScheduleValid())
+			order.setIsPayScheduleValid(false);
+		return true;
+	}	//	applyOrderNoSchedule
+
+	/**
+	 * 	Apply Payment Term with schedule to Order
+	 *	@param order order
+	 *	@return true if payment schedule is valid
+	 */
+	private boolean applyOrderSchedule (MOrder order)
+	{
+		deleteOrderPaySchedule (order.getC_Order_ID(), order.get_TrxName());
+		//	Create Schedule
+		MOrderPaySchedule ops = null;
+		BigDecimal remainder = order.getGrandTotal();
+		for (int i = 0; i < m_schedule.length; i++)
+		{
+			ops = new MOrderPaySchedule (order, m_schedule[i]);
+			ops.save(order.get_TrxName());
+			log.fine(ops.toString());
+			remainder = remainder.subtract(ops.getDueAmt());
+		}	//	for all schedules
+		//	Remainder - update last
+		if (remainder.compareTo(Env.ZERO) != 0 && ops != null)
+		{
+			ops.setDueAmt(ops.getDueAmt().add(remainder));
+			ops.save(order.get_TrxName());
+			log.fine("Remainder=" + remainder + " - " + ops);
+		}
+		
+		//	updateOrder
+		if (order.getC_PaymentTerm_ID() != getC_PaymentTerm_ID())
+			order.setC_PaymentTerm_ID(getC_PaymentTerm_ID());
+		return order.validatePaySchedule();
+	}	//	applyOrderSchedule
+
+	/**
+	 * 	Delete existing Order Payment Schedule
+	 *	@param C_Order_ID id
+	 *	@param trxName transaction
+	 */
+	private void deleteOrderPaySchedule (int C_Order_ID, String trxName)
+	{
+		String sql = "DELETE C_OrderPaySchedule WHERE C_Order_ID=" + C_Order_ID;
+		int no = DB.executeUpdate(sql, trxName);
+		log.fine("C_Order_ID=" + C_Order_ID + " - #" + no);
+	}	//	deleteOrderPaySchedule
 
 	
 	/**************************************************************************

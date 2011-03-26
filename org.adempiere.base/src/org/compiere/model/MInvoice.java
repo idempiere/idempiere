@@ -1334,7 +1334,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 
-		createPaySchedule();
+		if (!createPaySchedule())
+		{
+			m_processMsg = "@ErrorPaymentSchedule@";
+			return DocAction.STATUS_Invalid;
+		}
 
 		//	Credit Status
 		if (isSOTrx() && !isReversal())
@@ -1550,6 +1554,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			return false;
 		MPaymentTerm pt = new MPaymentTerm(getCtx(), getC_PaymentTerm_ID(), null);
 		log.fine(pt.toString());
+		
+		MInvoicePaySchedule[] schedule = MInvoicePaySchedule.getInvoicePaySchedule
+		(getCtx(), getC_Invoice_ID(), 0, get_TrxName());
+
+		if (schedule.length > 0)
+			return validatePaySchedule();
+		else
 		return pt.apply(this);		//	calls validate pay schedule
 	}	//	createPaySchedule
 

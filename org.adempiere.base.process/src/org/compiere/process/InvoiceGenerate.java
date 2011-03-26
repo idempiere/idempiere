@@ -24,15 +24,19 @@ import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
+import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MInvoicePaySchedule;
 import org.compiere.model.MInvoiceSchedule;
 import org.compiere.model.MLocation;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MOrderPaySchedule;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -444,6 +448,44 @@ public class InvoiceGenerate extends SvrProcess
 	{
 		if (m_invoice != null)
 		{
+			MOrder order = new MOrder(getCtx(), m_invoice.getC_Order_ID(), get_TrxName());
+			if (order != null) {
+				m_invoice.setPaymentRule(order.getPaymentRule());
+				m_invoice.setC_PaymentTerm_ID(order.getC_PaymentTerm_ID());
+				m_invoice.saveEx();
+				m_invoice.load(m_invoice.get_TrxName()); // refresh from DB
+				// copy payment schedule from order if invoice doesn't have a current payment schedule
+				MOrderPaySchedule[] opss = MOrderPaySchedule.getOrderPaySchedule(getCtx(), order.getC_Order_ID(), 0, get_TrxName());
+				MInvoicePaySchedule[] ipss = MInvoicePaySchedule.getInvoicePaySchedule(getCtx(), m_invoice.getC_Invoice_ID(), 0, get_TrxName());
+				if (ipss.length == 0 && opss.length > 0) {
+					BigDecimal ogt = order.getGrandTotal();
+					BigDecimal igt = m_invoice.getGrandTotal();
+					BigDecimal percent = Env.ONE;
+					if (ogt.compareTo(igt) != 0)
+						percent = igt.divide(ogt, 10, BigDecimal.ROUND_HALF_UP);
+					MCurrency cur = MCurrency.get(order.getCtx(), order.getC_Currency_ID());
+					int scale = cur.getStdPrecision();
+				
+					for (MOrderPaySchedule ops : opss) {
+						MInvoicePaySchedule ips = new MInvoicePaySchedule(getCtx(), 0, get_TrxName());
+						PO.copyValues(ops, ips);
+						if (percent != Env.ONE) {
+							BigDecimal propDueAmt = ops.getDueAmt().multiply(percent);
+							if (propDueAmt.scale() > scale)
+								propDueAmt = propDueAmt.setScale(scale, BigDecimal.ROUND_HALF_UP);
+							ips.setDueAmt(propDueAmt);
+						}
+						ips.setC_Invoice_ID(m_invoice.getC_Invoice_ID());
+						ips.setAD_Org_ID(ops.getAD_Org_ID());
+						ips.setProcessing(ops.isProcessing());
+						ips.setIsActive(ops.isActive());
+						ips.save();
+					}
+					m_invoice.validatePaySchedule();
+					m_invoice.saveEx();
+				}
+			}
+			
 			if (!m_invoice.processIt(p_docAction))
 			{
 				log.warning("completeInvoice - failed: " + m_invoice);

@@ -31,7 +31,7 @@ public interface I_C_PaymentTerm
     public static final String Table_Name = "C_PaymentTerm";
 
     /** AD_Table_ID=113 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 113;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -337,6 +337,19 @@ public interface I_C_PaymentTerm
 	  * Net Days in which payment is due
 	  */
 	public int getNetDays();
+
+    /** Column name PaymentTermUsage */
+    public static final String COLUMNNAME_PaymentTermUsage = "PaymentTermUsage";
+
+	/** Set Payment Term Usage.
+	  * Payment term usage indicates if this payment term is used for sales, purchases or both.
+	  */
+	public void setPaymentTermUsage (String PaymentTermUsage);
+
+	/** Get Payment Term Usage.
+	  * Payment term usage indicates if this payment term is used for sales, purchases or both.
+	  */
+	public String getPaymentTermUsage();
 
     /** Column name Processing */
     public static final String COLUMNNAME_Processing = "Processing";

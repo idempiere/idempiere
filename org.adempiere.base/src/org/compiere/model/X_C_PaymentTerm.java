@@ -32,7 +32,7 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20110325L;
 
     /** Standard Constructor */
     public X_C_PaymentTerm (Properties ctx, int C_PaymentTerm_ID, String trxName)
@@ -51,6 +51,8 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 			setIsValid (false);
 			setName (null);
 			setNetDays (0);
+			setPaymentTermUsage (null);
+// B
 			setValue (null);
         } */
     }
@@ -497,6 +499,32 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** PaymentTermUsage AD_Reference_ID=53382 */
+	public static final int PAYMENTTERMUSAGE_AD_Reference_ID=53382;
+	/** Both = B */
+	public static final String PAYMENTTERMUSAGE_Both = "B";
+	/** Sales = S */
+	public static final String PAYMENTTERMUSAGE_Sales = "S";
+	/** Purchases = P */
+	public static final String PAYMENTTERMUSAGE_Purchases = "P";
+	/** Set Payment Term Usage.
+		@param PaymentTermUsage 
+		Payment term usage indicates if this payment term is used for sales, purchases or both.
+	  */
+	public void setPaymentTermUsage (String PaymentTermUsage)
+	{
+
+		set_Value (COLUMNNAME_PaymentTermUsage, PaymentTermUsage);
+	}
+
+	/** Get Payment Term Usage.
+		@return Payment term usage indicates if this payment term is used for sales, purchases or both.
+	  */
+	public String getPaymentTermUsage () 
+	{
+		return (String)get_Value(COLUMNNAME_PaymentTermUsage);
 	}
 
 	/** Set Process Now.

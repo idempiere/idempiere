@@ -721,6 +721,35 @@ public class CalloutOrder extends CalloutEngine
 		return "";
 	}	//	priceList
 
+	
+	/**
+	 *	Set Payment Term.
+	 *	Payment Term has changed 
+	 *	@param ctx context
+	 *	@param WindowNo window no
+	 *	@param mTab tab
+	 *	@param mField field
+	 *	@param value value
+	 *	@return null or error message
+	 */
+	public String paymentTerm (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		Integer C_PaymentTerm_ID = (Integer)value;
+		int C_Order_ID = Env.getContextAsInt(ctx, WindowNo, "C_Order_ID");
+		if (C_PaymentTerm_ID == null || C_PaymentTerm_ID.intValue() == 0
+			|| C_Order_ID == 0)	//	not saved yet
+			return "";
+		//
+		MPaymentTerm pt = new MPaymentTerm (ctx, C_PaymentTerm_ID.intValue(), null);
+		if (pt.get_ID() == 0)
+			return "PaymentTerm not found";
+		
+		boolean valid = pt.applyOrder (C_Order_ID);
+		mTab.setValue("IsPayScheduleValid", valid ? "Y" : "N");
+		
+		return "";
+	}	//	paymentTerm
+	
 
 	/*************************************************************************
 	 *	Order Line - Product.

@@ -23,16 +23,20 @@ import java.util.logging.Level;
 
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
+import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MInvoicePaySchedule;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MOrderPaySchedule;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.MUOMConversion;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -534,6 +538,43 @@ public class CreateFromInvoice extends CreateFrom
 				invoiceLine.saveEx();
 			}   //   if selected
 		}   //  for all rows
+
+		if (p_order != null) {
+			invoice.setPaymentRule(p_order.getPaymentRule());
+			invoice.setC_PaymentTerm_ID(p_order.getC_PaymentTerm_ID());
+			invoice.saveEx();
+			invoice.load(invoice.get_TrxName()); // refresh from DB
+			// copy payment schedule from order if invoice doesn't have a current payment schedule
+			MOrderPaySchedule[] opss = MOrderPaySchedule.getOrderPaySchedule(invoice.getCtx(), p_order.getC_Order_ID(), 0, invoice.get_TrxName());
+			MInvoicePaySchedule[] ipss = MInvoicePaySchedule.getInvoicePaySchedule(invoice.getCtx(), invoice.getC_Invoice_ID(), 0, invoice.get_TrxName());
+			if (ipss.length == 0 && opss.length > 0) {
+				BigDecimal ogt = p_order.getGrandTotal();
+				BigDecimal igt = invoice.getGrandTotal();
+				BigDecimal percent = Env.ONE;
+				if (ogt.compareTo(igt) != 0)
+					percent = igt.divide(ogt, 10, BigDecimal.ROUND_HALF_UP);
+				MCurrency cur = MCurrency.get(p_order.getCtx(), p_order.getC_Currency_ID());
+				int scale = cur.getStdPrecision();
+			
+				for (MOrderPaySchedule ops : opss) {
+					MInvoicePaySchedule ips = new MInvoicePaySchedule(invoice.getCtx(), 0, invoice.get_TrxName());
+					PO.copyValues(ops, ips);
+					if (percent != Env.ONE) {
+						BigDecimal propDueAmt = ops.getDueAmt().multiply(percent);
+						if (propDueAmt.scale() > scale)
+							propDueAmt = propDueAmt.setScale(scale, BigDecimal.ROUND_HALF_UP);
+						ips.setDueAmt(propDueAmt);
+					}
+					ips.setC_Invoice_ID(invoice.getC_Invoice_ID());
+					ips.setAD_Org_ID(ops.getAD_Org_ID());
+					ips.setProcessing(ops.isProcessing());
+					ips.setIsActive(ops.isActive());
+					ips.saveEx();
+				}
+				invoice.validatePaySchedule();
+				invoice.saveEx();
+			}
+		}
 
 		return true;
 	}   //  saveInvoice
