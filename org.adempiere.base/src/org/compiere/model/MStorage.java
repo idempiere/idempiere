@@ -29,6 +29,7 @@ import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * 	Inventory Storage Model
@@ -39,9 +40,9 @@ import org.compiere.util.Env;
 public class MStorage extends X_M_Storage
 {
 	/**
-	 * generated serialVersionUID
+	 * 
 	 */
-	private static final long serialVersionUID = 9086223702645715061L;
+	private static final long serialVersionUID = 3911132565445025309L;
 
 	/**
 	 * 	Get Storage Info
@@ -611,7 +612,6 @@ public class MStorage extends X_M_Storage
 		return retValue;
 	}	//	getQtyAvailable
 	
-	
 	/**************************************************************************
 	 * 	Persistency Constructor
 	 *	@param ctx context
@@ -689,6 +689,47 @@ public class MStorage extends X_M_Storage
 		return m_M_Warehouse_ID;
 	}	//	getM_Warehouse_ID
 	
+	/**
+	 * Before Save
+	 * @param newRecord new
+	 * @param success success
+	 * @return success
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) 
+	{
+		//	Negative Inventory check
+		if (newRecord || is_ValueChanged("QtyOnHand"))
+		{
+			MWarehouse wh = new MWarehouse(getCtx(), getM_Warehouse_ID(), get_TrxName());
+			if (wh.isDisallowNegativeInv())
+			{
+				String sql = "SELECT SUM(QtyOnHand) "
+					+ "FROM M_Storage s"
+					+ " INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID) "
+					+ "WHERE s.M_Product_ID=?"		//	#1
+					+ " AND l.M_Warehouse_ID=?"
+					+ " AND l.M_Locator_ID=?"
+					+ " AND s.M_AttributeSetInstance_ID<>?";
+				BigDecimal QtyOnHand = DB.getSQLValueBDEx(get_TrxName(), sql, new Object[] {getM_Product_ID(), getM_Warehouse_ID(), getM_Locator_ID(), getM_AttributeSetInstance_ID()});
+				if (QtyOnHand == null)
+					QtyOnHand = Env.ZERO;
+				
+				// Add qty onhand for current record
+				QtyOnHand = QtyOnHand.add(getQtyOnHand());
+				
+				if (getQtyOnHand().compareTo(BigDecimal.ZERO) < 0 ||
+						QtyOnHand.compareTo(Env.ZERO) < 0)
+				{
+					log.saveError("Error", Msg.getMsg(getCtx(), "NegativeInventoryDisallowed"));
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	/**
 	 *	String Representation
 	 * 	@return info

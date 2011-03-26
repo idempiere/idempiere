@@ -323,7 +323,7 @@ public class CalloutInOut extends CalloutEngine
 		if (M_Warehouse_ID == null || M_Warehouse_ID.intValue() == 0)
 			return "";
 
-		String sql = "SELECT w.AD_Org_ID, l.M_Locator_ID "
+		String sql = "SELECT w.AD_Org_ID, l.M_Locator_ID, w.IsDisallowNegativeInv  "
 			+ "FROM M_Warehouse w"
 			+ " LEFT OUTER JOIN M_Locator l ON (l.M_Warehouse_ID=w.M_Warehouse_ID AND l.IsDefault='Y') "
 			+ "WHERE w.M_Warehouse_ID=?";		//	1
@@ -352,6 +352,12 @@ public class CalloutInOut extends CalloutEngine
 					Env.setContext(ctx, WindowNo, "M_Locator_ID", ii.intValue());
 				}
 			}
+
+			Boolean disallowNegInv = rs.getString(3).equals("Y");
+			String DeliveryRule = mTab.get_ValueAsString("DeliveryRule");
+			if((disallowNegInv && DeliveryRule.equals(X_C_Order.DELIVERYRULE_Force)) ||
+					(DeliveryRule == null || DeliveryRule.length()==0))
+				mTab.setValue("DeliveryRule",X_C_Order.DELIVERYRULE_Availability);
 		}
 		catch (SQLException e)
 		{

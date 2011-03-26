@@ -31,7 +31,7 @@ public interface I_M_Warehouse
     public static final String Table_Name = "M_Warehouse";
 
     /** AD_Table_ID=190 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 190;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -119,6 +119,19 @@ public interface I_M_Warehouse
 	  */
 	public boolean isActive();
 
+    /** Column name IsDisallowNegativeInv */
+    public static final String COLUMNNAME_IsDisallowNegativeInv = "IsDisallowNegativeInv";
+
+	/** Set Disallow Negative Inventory.
+	  * Negative Inventory is not allowed in this warehouse
+	  */
+	public void setIsDisallowNegativeInv (boolean IsDisallowNegativeInv);
+
+	/** Get Disallow Negative Inventory.
+	  * Negative Inventory is not allowed in this warehouse
+	  */
+	public boolean isDisallowNegativeInv();
+
     /** Column name IsInTransit */
     public static final String COLUMNNAME_IsInTransit = "IsInTransit";
 
@@ -158,7 +171,7 @@ public interface I_M_Warehouse
 	  */
 	public int getM_WarehouseSource_ID();
 
-	public I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

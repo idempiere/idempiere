@@ -734,6 +734,21 @@ public class MMovement extends X_M_Movement implements DocAction
 				m_processMsg = "Could not create Movement Reversal Line";
 				return false;
 			}
+			
+			//We need to copy MA
+			if (rLine.getM_AttributeSetInstance_ID() == 0)
+			{
+				MMovementLineMA mas[] = MMovementLineMA.get(getCtx(),
+						oLine.getM_MovementLine_ID(), get_TrxName());
+				for (int j = 0; j < mas.length; j++)
+				{
+					MMovementLineMA ma = new MMovementLineMA (rLine, 
+							mas[j].getM_AttributeSetInstance_ID(),
+							mas[j].getMovementQty().negate());
+					ma.saveEx();
+				}
+			}
+			
 		}
 		//
 		if (!reversal.processIt(DocAction.ACTION_Complete))

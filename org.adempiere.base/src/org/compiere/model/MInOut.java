@@ -970,16 +970,22 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
 		//	Warehouse Org
 		if (newRecord)
 		{
-			MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
 			if (wh.getAD_Org_ID() != getAD_Org_ID())
 			{
 				log.saveError("WarehouseOrgConflict", "");
 				return false;
 			}
 		}
+
+		boolean disallowNegInv = wh.isDisallowNegativeInv();
+		String DeliveryRule = getDeliveryRule();
+		if((disallowNegInv && DELIVERYRULE_Force.equals(DeliveryRule)) ||
+				(DeliveryRule == null || DeliveryRule.length()==0))
+			setDeliveryRule(DELIVERYRULE_Availability);
 
         // Shipment/Receipt can have either Order/RMA (For Movement type)
         if (getC_Order_ID() != 0 && getM_RMA_ID() != 0)
@@ -1332,7 +1338,8 @@ public class MInOut extends X_M_InOut implements DocAction
 							sameWarehouse ? orderedDiff : Env.ZERO,
 							get_TrxName()))
 						{
-							m_processMsg = "Cannot correct Inventory (MA)";
+							String lastError = CLogger.retrieveErrorString("");
+							m_processMsg = "Cannot correct Inventory (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 						if (!sameWarehouse) {

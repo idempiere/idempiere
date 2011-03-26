@@ -898,14 +898,21 @@ public class MOrder extends X_C_Order implements DocAction
 				throw new FillMandatoryException(COLUMNNAME_M_Warehouse_ID);
 			}
 		}
+		MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
 		//	Warehouse Org
 		if (newRecord 
 			|| is_ValueChanged("AD_Org_ID") || is_ValueChanged("M_Warehouse_ID"))
 		{
-			MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
 			if (wh.getAD_Org_ID() != getAD_Org_ID())
 				log.saveWarning("WarehouseOrgConflict", "");
 		}
+
+		boolean disallowNegInv = wh.isDisallowNegativeInv();
+		String DeliveryRule = getDeliveryRule();
+		if((disallowNegInv && DELIVERYRULE_Force.equals(DeliveryRule)) ||
+				(DeliveryRule == null || DeliveryRule.length()==0))
+			setDeliveryRule(DELIVERYRULE_Availability);
+		
 		//	Reservations in Warehouse
 		if (!newRecord && is_ValueChanged("M_Warehouse_ID"))
 		{
@@ -1680,7 +1687,11 @@ public class MOrder extends X_C_Order implements DocAction
 			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO)) 
 		{
 			if (!DELIVERYRULE_Force.equals(getDeliveryRule()))
-				setDeliveryRule(DELIVERYRULE_Force);
+			{
+				MWarehouse wh = new MWarehouse (getCtx(), getM_Warehouse_ID(), get_TrxName());
+				if (!wh.isDisallowNegativeInv())
+					setDeliveryRule(DELIVERYRULE_Force);
+			}
 			//
 			shipment = createShipment (dt, realTimePOS ? null : getDateOrdered());
 			if (shipment == null)

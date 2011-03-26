@@ -30,7 +30,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20110325L;
 
     /** Standard Constructor */
     public X_M_Warehouse (Properties ctx, int M_Warehouse_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
       /** if (M_Warehouse_ID == 0)
         {
 			setC_Location_ID (0);
+			setIsDisallowNegativeInv (false);
+// N
 			setM_Warehouse_ID (0);
 			setName (null);
 			setSeparator (null);
@@ -120,6 +122,30 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set Disallow Negative Inventory.
+		@param IsDisallowNegativeInv 
+		Negative Inventory is not allowed in this warehouse
+	  */
+	public void setIsDisallowNegativeInv (boolean IsDisallowNegativeInv)
+	{
+		set_Value (COLUMNNAME_IsDisallowNegativeInv, Boolean.valueOf(IsDisallowNegativeInv));
+	}
+
+	/** Get Disallow Negative Inventory.
+		@return Negative Inventory is not allowed in this warehouse
+	  */
+	public boolean isDisallowNegativeInv () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDisallowNegativeInv);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set In Transit.
 		@param IsInTransit 
 		Movement is in transit
@@ -167,9 +193,9 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Warehouse getM_WarehouseSource() throws RuntimeException
+	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_WarehouseSource_ID(), get_TrxName());	}
 
 	/** Set Source Warehouse.

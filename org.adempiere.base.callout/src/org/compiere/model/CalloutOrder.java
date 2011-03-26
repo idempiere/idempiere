@@ -621,6 +621,32 @@ public class CalloutOrder extends CalloutEngine
 		return "";
 	}	//	bPartnerBill
 
+	/**
+	 *  Set Delivery Rule if Warehouse is changed.
+	 *	@param ctx context
+	 *	@param WindowNo window no
+	 *	@param mTab tab
+	 *	@param mField field
+	 *	@param value value
+	 *	@return null or error message
+	 */
+	public String warehouse (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		if (isCalloutActive())		//	assuming it is resetting value
+			return "";
+		
+		Integer M_Warehouse_ID = (Integer)value;
+		if (M_Warehouse_ID == null || M_Warehouse_ID.intValue() == 0)
+			return "";
+		
+		MWarehouse wh = MWarehouse.get(ctx, M_Warehouse_ID);
+		String DeliveryRule = mTab.get_ValueAsString("DeliveryRule");
+		if((wh.isDisallowNegativeInv() && DeliveryRule.equals(X_C_Order.DELIVERYRULE_Force)) ||
+				(DeliveryRule == null || DeliveryRule.length()==0))
+			mTab.setValue("DeliveryRule",X_C_Order.DELIVERYRULE_Availability);
+
+		return "";
+	}	//	warehouse
 
 	/**
 	 *	Order Header - PriceList.

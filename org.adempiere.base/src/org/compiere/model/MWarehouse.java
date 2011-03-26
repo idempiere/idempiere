@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Warehouse Model
@@ -37,7 +40,7 @@ public class MWarehouse extends X_M_Warehouse
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -848214135445693460L;
+	private static final long serialVersionUID = 7037547130625087045L;
 	/**
 	 * 	Get from Cache
 	 *	@param ctx context
@@ -196,6 +199,50 @@ public class MWarehouse extends X_M_Warehouse
 		log.info("Created default locator for " + getName());
 		return loc;
 	}	//	getLocators
+	
+	/**
+	 * Before Save
+	 * @param newRecord new
+	 * @param success success
+	 * @return success
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) 
+	{
+		/* Disallow Negative Inventory cannot be checked if there are storage records 
+		with negative onhand. */
+		if (is_ValueChanged("IsDisallowNegativeInv") && isDisallowNegativeInv())
+		{
+			String sql = "SELECT M_Product_ID FROM M_Storage s "+
+						 "WHERE s.M_Locator_ID IN (SELECT M_Locator_ID FROM M_Locator l " +
+						 				"WHERE M_Warehouse_ID=? )" +
+						 " GROUP BY M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID " +
+						 " HAVING SUM(s.QtyOnHand) < 0 ";
+			
+			int prdid = DB.getSQLValueEx(get_TrxName(), sql, getM_Warehouse_ID());
+			if (prdid > 0) {
+				log.saveError("Error", Msg.translate(getCtx(), "NegativeOnhandExists"));
+				return false;
+			}
+		}
+		
+		if (getAD_Org_ID() == 0)
+		{
+			int context_AD_Org_ID = Env.getAD_Org_ID(getCtx());
+			if (context_AD_Org_ID != 0)
+			{
+				setAD_Org_ID(context_AD_Org_ID);
+				log.warning("Changed Org to Context=" + context_AD_Org_ID);
+			}
+			else
+			{
+				log.saveError("Error", Msg.translate(getCtx(), "Org0NotAllowed"));
+				return false;
+			}
+		}
+		
+		return true;
+	}
 	
 	/**
 	 * 	After Save

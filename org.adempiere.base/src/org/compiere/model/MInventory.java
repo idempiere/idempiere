@@ -26,6 +26,7 @@ import java.util.Properties;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -438,7 +439,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 								ma.getM_AttributeSetInstance_ID(), 0, 
 								QtyMA.negate(), Env.ZERO, Env.ZERO, get_TrxName()))
 						{
-							m_processMsg = "Cannot correct Inventory (MA)";
+							String lastError = CLogger.retrieveErrorString("");
+							m_processMsg = "Cannot correct Inventory (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 
