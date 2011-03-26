@@ -107,7 +107,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -8055500064230704903L;
+	private static final long serialVersionUID = -3825605601192688998L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -196,7 +196,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private volatile boolean    m_loadComplete = false;
 	/** Is Tab Included in other Tab  */
 	private boolean    			m_included = false;
-
+	private boolean    			m_includedAlreadyCalc = false;
+	
 	/**	Logger			*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
 
@@ -1349,13 +1350,26 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean isIncluded()
 	{
+		if (! m_includedAlreadyCalc) {
+			m_included = false;
+			if (getParentTab() != null) {
+				for (GridTab tab : getParentTab().getIncludedTabs()) {
+					if (tab.equals(this)) {
+						m_included = true;
+						break;
+					}
+				}
+			}
+			m_includedAlreadyCalc = true;
+		}		
 		return m_included;
 	}   //  isIncluded
 
 	/**
 	 *  Is Tab Included in other Tab
 	 *  @param isIncluded true if included
-	 */
+	 *  @deprecated The method getIncluded now validate against the structure, this method is called nowhere
+	*/
 	public void setIncluded(boolean isIncluded)
 	{
 		m_included = isIncluded;
@@ -1603,6 +1617,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *	Get Included Tab ID
 	 *  @return Included_Tab_ID
+	 *  @deprecated the functionality related to AD_Tab.Included_Tab_ID was not developed
 	 */
 	public int getIncluded_Tab_ID()
 	{
