@@ -942,6 +942,14 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					setC_PaymentTerm_ID (ii);
 			}
 		}
+		
+		// assign cash plan line from order
+		if (getC_Order_ID() > 0 && getC_CashPlanLine_ID() <= 0) {
+			MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+			if (order.getC_CashPlanLine_ID() > 0)
+				setC_CashPlanLine_ID(order.getC_CashPlanLine_ID());
+		}
+		
 		return true;
 	}	//	beforeSave
 

@@ -440,6 +440,31 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_CashPlanLine getC_CashPlanLine() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_CashPlanLine)MTable.get(getCtx(), org.compiere.model.I_C_CashPlanLine.Table_Name)
+			.getPO(getC_CashPlanLine_ID(), get_TrxName());	}
+
+	/** Set Cash Plan Line.
+		@param C_CashPlanLine_ID Cash Plan Line	  */
+	public void setC_CashPlanLine_ID (int C_CashPlanLine_ID)
+	{
+		if (C_CashPlanLine_ID < 1) 
+			set_Value (COLUMNNAME_C_CashPlanLine_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_CashPlanLine_ID, Integer.valueOf(C_CashPlanLine_ID));
+	}
+
+	/** Get Cash Plan Line.
+		@return Cash Plan Line	  */
+	public int getC_CashPlanLine_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashPlanLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
     {
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)

@@ -228,6 +228,17 @@ public interface I_C_Order
 
 	public org.compiere.model.I_C_CashLine getC_CashLine() throws RuntimeException;
 
+    /** Column name C_CashPlanLine_ID */
+    public static final String COLUMNNAME_C_CashPlanLine_ID = "C_CashPlanLine_ID";
+
+	/** Set Cash Plan Line	  */
+	public void setC_CashPlanLine_ID (int C_CashPlanLine_ID);
+
+	/** Get Cash Plan Line	  */
+	public int getC_CashPlanLine_ID();
+
+	public org.compiere.model.I_C_CashPlanLine getC_CashPlanLine() throws RuntimeException;
+
     /** Column name C_Charge_ID */
     public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
 
