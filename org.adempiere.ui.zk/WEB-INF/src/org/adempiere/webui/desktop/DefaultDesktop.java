@@ -49,6 +49,7 @@ import org.compiere.model.X_PA_DashboardContent;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -137,7 +138,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         w.setWidth("300px");
         w.setCollapsible(true);
         w.setSplittable(true);
-        w.setTitle("Menu");
+        w.setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Menu")));
         w.setFlex(true);
         w.addEventListener(Events.ON_OPEN, new EventListener() {
 			@Override
@@ -160,7 +161,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         windowContainer.createPart(windowArea);
 
         homeTab = new Tabpanel();
-        windowContainer.addWindow(homeTab, Msg.getMsg(Env.getCtx(), "Home").replaceAll("&", ""), false);
+        windowContainer.addWindow(homeTab, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")), false);
         BusyDialog busyDialog = new BusyDialog();
         busyDialog.setShadow(false);
         homeTab.appendChild(busyDialog);
@@ -234,10 +235,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	        	Panel panel = new Panel();
 	        	panel.setStyle("margin-bottom:10px");
-	        	panel.setTitle(dp.getName());
-	        	panel.setMaximizable(true);
+	        	panel.setTitle(dp.get_Translation(MDashboardContent.COLUMNNAME_Name));
 
-	        	String description = dp.getDescription();
+	        	String description = dp.get_Translation(MDashboardContent.COLUMNNAME_Description);
             	if(description != null)
             		panel.setTooltiptext(description);
 
@@ -444,7 +444,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	public void updateUI() {
 		int total = noOfNotice + noOfRequest + noOfWorkflow;
-		windowContainer.setTabTitle(0, Msg.getMsg(Env.getCtx(), "Home").replaceAll("&", "")
+		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home"))
 				+ " (" + total + ")",
 				Msg.translate(Env.getCtx(), "AD_Note_ID") + " : " + noOfNotice
 				+ ", " + Msg.translate(Env.getCtx(), "R_Request_ID") + " : " + noOfRequest

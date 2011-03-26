@@ -149,9 +149,10 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 							continue;
 						//
 						appendToHome = dp.getHTML();
+						String descriptionTrl = dp.get_Translation(MDashboardContent.COLUMNNAME_Description);
 						if (appendToHome != null) {
-							if (dp.getDescription() != null)
-								result += "<H2>" + dp.getDescription() + "</H2>\n";
+							if (descriptionTrl != null)
+								result += "<H2>" + descriptionTrl + "</H2>\n";
 							result += stripHtml(appendToHome, false) + "<br>\n";
 						}
 						
@@ -159,7 +160,7 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 							result += "<a class=\"hrefNode\" href=\"http:///window/node#" 
 								   + String.valueOf( dp.getAD_Window_ID() // "AD_MENU_ID") fcsku 3.7.07
 								   + "\">" 	
-								   + dp.getDescription()
+								   + descriptionTrl
 								   + "</a><br>\n");
 						}
 						result += "<br>\n";
