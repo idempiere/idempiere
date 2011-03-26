@@ -1285,10 +1285,20 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
-		if (!createPaySchedule())
+		if (   getGrandTotal().signum() != 0
+			&& PAYMENTRULE_OnCredit.equals(getPaymentRule()))
 		{
-			m_processMsg = "@ErrorPaymentSchedule@";
-			return DocAction.STATUS_Invalid;
+			if (!createPaySchedule())
+			{
+				m_processMsg = "@ErrorPaymentSchedule@";
+				return DocAction.STATUS_Invalid;
+			}
+		} else {
+			if (MOrderPaySchedule.getOrderPaySchedule(getCtx(), getC_Order_ID(), 0, get_TrxName()).length > 0) 
+			{
+				m_processMsg = "@ErrorPaymentSchedule@";
+				return DocAction.STATUS_Invalid;
+			}
 		}
 		
 		//	Credit Check

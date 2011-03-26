@@ -1342,10 +1342,20 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 
-		if (!createPaySchedule())
+		if (   getGrandTotal().signum() != 0
+			&& PAYMENTRULE_OnCredit.equals(getPaymentRule()))
 		{
-			m_processMsg = "@ErrorPaymentSchedule@";
-			return DocAction.STATUS_Invalid;
+			if (!createPaySchedule())
+			{
+				m_processMsg = "@ErrorPaymentSchedule@";
+				return DocAction.STATUS_Invalid;
+			}
+		} else {
+			if (MInvoicePaySchedule.getInvoicePaySchedule(getCtx(), getC_Invoice_ID(), 0, get_TrxName()).length > 0) 
+			{
+				m_processMsg = "@ErrorPaymentSchedule@";
+				return DocAction.STATUS_Invalid;
+			}
 		}
 
 		//	Credit Status

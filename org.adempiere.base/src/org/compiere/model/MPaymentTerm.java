@@ -211,6 +211,11 @@ public class MPaymentTerm extends X_C_PaymentTerm
 			return false;
 		}
 
+		// do not apply payment term if the invoice is not on credit or if total is zero
+		if ( (! MInvoice.PAYMENTRULE_OnCredit.equals(invoice.getPaymentRule()) )
+			|| invoice.getGrandTotal().signum() == 0)
+			return false;
+			
 		if (!isValid())
 			return applyNoSchedule (invoice);
 		//
@@ -310,7 +315,12 @@ public class MPaymentTerm extends X_C_PaymentTerm
 			log.log(Level.SEVERE, "No valid order - " + order);
 			return false;
 		}
-
+		
+		// do not apply payment term if the order is not on credit or if total is zero
+		if ( (! MOrder.PAYMENTRULE_OnCredit.equals(order.getPaymentRule()) )
+			|| order.getGrandTotal().signum() == 0)
+			return false;
+			
 		if (!isValid())
 			return applyOrderNoSchedule (order);
 		//
