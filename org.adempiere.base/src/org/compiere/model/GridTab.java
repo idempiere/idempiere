@@ -1267,7 +1267,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		// set parent column name
 		String sql = "SELECT ColumnName FROM AD_Column WHERE AD_Column_ID=?";
-		m_parentColumnName = DB.getSQLValueString(null, sql, m_vo.Parent_Column_ID );
+		if (m_vo.Parent_Column_ID > 0)
+			m_parentColumnName = DB.getSQLValueString(null, sql, m_vo.Parent_Column_ID );
 		if ( m_parentColumnName == null )
 			m_parentColumnName = "";
 
