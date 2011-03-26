@@ -38,8 +38,8 @@ import org.zkoss.zul.Messagebox;
  **/
 public final class ConfirmPanel extends Hbox
 {
-    /**
-	 *
+	/**
+	 * 
 	 */
 	private static final long serialVersionUID = -6050634074454659578L;
 	/** Action String OK.        */
@@ -172,10 +172,10 @@ public final class ConfirmPanel extends Hbox
         init();
 
         setVisible(A_CANCEL, withCancelButton);
-        addComponentsRight(createButton(A_OK));
-
         if (withCancelButton)
         	addComponentsRight(createButton(A_CANCEL));
+
+        addComponentsRight(createButton(A_OK));
 
         if (withRefreshButton)
         {
@@ -400,10 +400,10 @@ public final class ConfirmPanel extends Hbox
      */
     public void setEnabledAll(boolean enabled)
     {
-        List list1 = pnlBtnLeft.getChildren();
-        List list2 = pnlBtnRight.getChildren();
-        Iterator iter1 = list1.iterator();
-        Iterator iter2 = list2.iterator();
+        List<?> list1 = pnlBtnLeft.getChildren();
+        List<?> list2 = pnlBtnRight.getChildren();
+        Iterator<?> iter1 = list1.iterator();
+        Iterator<?> iter2 = list2.iterator();
 
         while (iter1.hasNext())
         {
@@ -423,10 +423,10 @@ public final class ConfirmPanel extends Hbox
      */
     public void addActionListener(String event, EventListener listener)
     {
-        List list1 = pnlBtnLeft.getChildren();
-        List list2 = pnlBtnRight.getChildren();
-        Iterator iter1 = list1.iterator();
-        Iterator iter2 = list2.iterator();
+        List<?> list1 = pnlBtnLeft.getChildren();
+        List<?> list2 = pnlBtnRight.getChildren();
+        Iterator<?> iter1 = list1.iterator();
+        Iterator<?> iter2 = list2.iterator();
 
         while (iter1.hasNext())
         {
