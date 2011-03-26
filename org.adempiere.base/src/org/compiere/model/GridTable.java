@@ -1967,6 +1967,8 @@ public class GridTable extends AbstractTableModel
 
 			log.fine("Committing ...");
 			DB.commit(true, null);	//	no Trx
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 			//
 			lobSave(whereClause);
 			
