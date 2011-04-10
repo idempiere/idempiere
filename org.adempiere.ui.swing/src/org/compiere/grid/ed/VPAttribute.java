@@ -66,7 +66,7 @@ public class VPAttribute extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 108156477716619163L;
+	private static final long serialVersionUID = -1823370077523962901L;
 
 	/**
 	 *	Mouse Listener
@@ -351,6 +351,11 @@ public class VPAttribute extends JComponent
 		if (m_mField != null)
 			FieldRecordInfo.addMenu(this, popupMenu);
 	}	//	setField
+	
+	@Override
+	public GridField getField() {
+		return m_mField;
+	}
 
 	/**
 	 *  Action Listener Interface

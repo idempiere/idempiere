@@ -98,9 +98,9 @@ public class VLookup extends JComponent
 	implements VEditor, ActionListener, FocusListener
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -104909868954609498L;
+	private static final long serialVersionUID = 1307112072890929329L;
 
 	/*****************************************************************************
 	 *	Mouse Listener for Popup Menu
@@ -678,6 +678,10 @@ public class VLookup extends JComponent
 			FieldRecordInfo.addMenu(this, popupMenu);
 	}   //  setField
 
+	@Override
+	public GridField getField() {
+		return m_mField;
+	}
 
 	/**************************************************************************
 	 *	Action Listener	- data binding

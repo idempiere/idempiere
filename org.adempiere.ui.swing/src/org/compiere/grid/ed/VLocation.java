@@ -59,7 +59,7 @@ public class VLocation extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3155246553879767899L;
+	private static final long serialVersionUID = -288409058154703379L;
 
 	/**
 	 *	Mouse Listener for Popup Menu
@@ -396,6 +396,8 @@ public class VLocation extends JComponent
 		m_text.addActionListener(listener);
 	}   //  addActionListener
 
+	//	Field for Value Preference
+	private GridField          m_mField = null;
 	/**
 	 *  Set Field/WindowNo for ValuePreference (NOP)
 	 *  @param mField Model Field
@@ -406,6 +408,11 @@ public class VLocation extends JComponent
 		if (m_GridField != null)
 			FieldRecordInfo.addMenu(this, popupMenu);
 	}   //  setField
+
+	@Override
+	public GridField getField() {
+		return m_mField;
+	}
 
 }	//	VLocation
 
