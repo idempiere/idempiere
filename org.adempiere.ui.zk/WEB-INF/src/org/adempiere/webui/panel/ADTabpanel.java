@@ -908,7 +908,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
         	listPanel.dynamicDisplay(col);
         }
 
-        if (!includedPanel.isEmpty()) {
+        if (!includedPanel.isEmpty() && e.getChangedColumn() == -1) {
         	for (EmbeddedPanel panel : includedPanel)
         		panel.tabPanel.query(false, 0, 0);
         }
