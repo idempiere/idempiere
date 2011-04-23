@@ -56,9 +56,7 @@ public class ConfigAppServer extends Config
 	{
 		//	AppsServer
 		String server = p_data.getAppsServer();
-		boolean pass = server != null && server.length() > 0
-			&& server.toLowerCase().indexOf("localhost") == -1
-			&& !server.equals("127.0.0.1");
+		boolean pass = server != null && server.length() > 0;
 		InetAddress appsServer = null;
 		String error = "Not correct: AppsServer = " + server;
 		try

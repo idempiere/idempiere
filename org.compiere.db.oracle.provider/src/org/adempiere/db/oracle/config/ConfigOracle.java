@@ -290,9 +290,7 @@ public class ConfigOracle implements IDatabaseConfig
 	{
 		//	Database Server
 		String server = data.getDatabaseServer();
-		boolean pass = server != null && server.length() > 0
-			&& server.toLowerCase().indexOf("localhost") == -1
-			&& !server.equals("127.0.0.1");
+		boolean pass = server != null && server.length() > 0;
 		String error = "Not correct: DB Server = " + server;
 		InetAddress databaseServer = null;
 		try
