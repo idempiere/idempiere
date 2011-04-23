@@ -35,7 +35,7 @@
   </rm:searchPath>
   <rm:searchPath name="external.p2">
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
-      <rm:uri format="http://hengsin.googlecode.com/hg/adempiere.osgi.dep-1.0.0/p2"/>
+      <rm:uri format="http://idempiere.bitbucket.org/hg/idempiere.osgi.dep-1.0.0/p2"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="orbit">
