@@ -5,8 +5,8 @@
 @Rem 
 @Rem Parameter: <adempiereDBuser>/<adempiereDBpassword>
 
-@call %ADEMPIERE_DB_PATH%\DBExport %ADEMPIERE_DB_USER% %ADEMPIERE_DB_PASSWORD%
-@Rem call %ADEMPIERE_DB_PATH%\DBExportFull system/%ADEMPIERE_DB_SYSTEM%
+@call %ADEMPIERE_DB_PATH%\DBExportdp %ADEMPIERE_DB_USER% %ADEMPIERE_DB_PASSWORD% system/%ADEMPIERE_DB_SYSTEM%
+@Rem call %ADEMPIERE_DB_PATH%\DBExportFulldp system/%ADEMPIERE_DB_SYSTEM%
 
 @Echo If the following statement fails, fix your environment
 IF (%ADEMPIERE_HOME%) == () (CALL myDBcopy.bat) else (CALL %ADEMPIERE_HOME%\utils\myDBcopy.bat)

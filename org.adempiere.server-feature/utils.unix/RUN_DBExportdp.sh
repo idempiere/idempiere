@@ -10,9 +10,9 @@ echo 	Export Adempiere Database - $ADEMPIERE_HOME \($ADEMPIERE_DB_NAME\)
 
 
 # Parameter: <adempiereDBuser>/<adempiereDBpassword>
-sh $ADEMPIERE_DB_PATH/DBExport.sh $ADEMPIERE_DB_USER $ADEMPIERE_DB_PASSWORD
+sh $ADEMPIERE_DB_PATH/DBExportdp.sh $ADEMPIERE_DB_USER $ADEMPIERE_DB_PASSWORD system/$ADEMPIERE_DB_SYSTEM
 
-# sh $ADEMPIERE_DB_PATH/DBExportFull.sh system/$ADEMPIERE_DB_SYSTEM
+# sh $ADEMPIERE_DB_PATH/DBExportFulldp.sh system/$ADEMPIERE_DB_SYSTEM
 
 if [ $ADEMPIERE_HOME ]; then
   cd $ADEMPIERE_HOME/utils
