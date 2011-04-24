@@ -14,7 +14,7 @@
 <location includeAllPlatforms="true" includeMode="slicer" type="InstallableUnit">
 <unit id="org.adempiere.bundles.external.feature.group" version="1.0.0.201011072347"/>
 <unit id="org.adempiere.geminiweb.feature.group" version="1.1.0.RELEASE"/>
-<repository location="http://hengsin.googlecode.com/hg/adempiere.osgi.dep-1.0.0/p2"/>
+<repository location="http://idempiere.googlecode.com/hg/idempiere.osgi.dep-1.0.0/p2"/>
 </location>
 </locations>
 </target>
