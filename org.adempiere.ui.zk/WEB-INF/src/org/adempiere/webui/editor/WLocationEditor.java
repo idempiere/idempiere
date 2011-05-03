@@ -78,6 +78,7 @@ public class WLocationEditor extends WEditor implements EventListener, PropertyC
     public WLocationEditor(GridField gridField) {
 		super(new Locationbox(), gridField);
 		m_Location = (MLocationLookup)gridField.getLookup();
+        init();
 	}
 
     private void init()
