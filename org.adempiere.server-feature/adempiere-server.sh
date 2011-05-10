@@ -13,4 +13,4 @@ echo ===================================
 echo Starting Adempiere Server
 echo ===================================
 
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar -console -application org.adempiere.server.application
+$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar -console -application org.adempiere.server.application
