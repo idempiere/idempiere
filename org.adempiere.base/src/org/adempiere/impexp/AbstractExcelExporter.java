@@ -378,7 +378,7 @@ public abstract class AbstractExcelExporter
 		//
 		short colnumMax = 0;
 		int rownum = isCurrentRowOnly() ? getCurrentRow() : 0;
-		int lastRowNum = isCurrentRowOnly() ? getRowCount() : getCurrentRow()+1;
+		int lastRowNum = isCurrentRowOnly() ? getCurrentRow()+1 : getRowCount();
 		for (int xls_rownum = 1; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
 			if (!isCurrentRowOnly())
