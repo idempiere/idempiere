@@ -224,7 +224,9 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
 			else if (field instanceof Number)
 			{
 				if (m_tableColumns != null && columnIndex < m_tableColumns.size()
-						&& m_tableColumns.get(columnIndex).getColumnClass().getName().equals(MImage.class.getName()) && field instanceof Integer)
+						&& m_tableColumns.get(columnIndex).getColumnClass() != null
+						&& m_tableColumns.get(columnIndex).getColumnClass().getName().equals(MImage.class.getName()) 
+						&& field instanceof Integer)
 				{
 					MImage mImage = MImage.get(Env.getCtx(), (Integer) field);
 					AImage img = null;
@@ -290,7 +292,9 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
 			}
 			else if (field instanceof String)
 			{
-				if (m_tableColumns != null && columnIndex < m_tableColumns.size() && m_tableColumns.get(columnIndex).getColumnClass().getName().equals(MImage.class.getName()))
+				if (m_tableColumns != null && columnIndex < m_tableColumns.size()
+						&& m_tableColumns.get(columnIndex).getColumnClass() != null
+						&& m_tableColumns.get(columnIndex).getColumnClass().getName().equals(MImage.class.getName()))
 				{
 					try {
 						URL url = new URL(field.toString());
