@@ -122,7 +122,7 @@ public class ExportAction implements EventListener
 			vb.appendChild(hb);
 
 			hb = new Hbox();
-			chkCurrentRow.setLabel("Export Current Row Only");
+			chkCurrentRow.setLabel(Msg.getMsg(Env.getCtx(), "ExportCurrentRowOnly"));
 			chkCurrentRow.setSelected(true);
 			hb.appendChild(chkCurrentRow);
 			vb.appendChild(hb);

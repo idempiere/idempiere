@@ -125,7 +125,7 @@ public class AExport
 	private void export(File outFile, GridTab tab, String extension)
 	throws Exception
 	{
-		boolean currentRowOnly = ADialog.ask(m_WindowNo, parent, "Export current row only ?");
+		boolean currentRowOnly = ADialog.ask(m_WindowNo, parent, "ExportCurrentRowOnly");
 
 		IGridTabExporter exporter = exporterMap.get(extension);
 		Set<String> tables = new HashSet<String>();
