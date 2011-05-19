@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+<rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
   <rm:locator pattern="^javax\.xml(\..+)?" searchPathRef="orbit" failOnError="false"/>
   <rm:locator pattern="^org\.apache\.ant(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit"/>
-  <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="external.p2" failOnError="false"/>
-  <rm:locator pattern="^org\.springframework(\..+)?" searchPathRef="external.p2" failOnError="false"/>
-  <rm:locator pattern="^org\.eclipse\.gemini(\..+)?" searchPathRef="external.p2" failOnError="false"/>
-  <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="external.p2" failOnError="false"/>
-  <rm:locator pattern="^org\.eclipse\.virgo(\..+)?" searchPathRef="external.p2" failOnError="false"/>
+  <rm:locator pattern="^org\.eclipse\.gemini(\..+)?" searchPathRef="gemini.maven" failOnError="false"/>
+  <rm:locator pattern="^org\.eclipse\.virgo(\..+)?" searchPathRef="gemini.maven" failOnError="false"/>
+  <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="spring.external.maven" failOnError="false"/>
+  <rm:locator pattern="^org\.springframework(\..+)?" searchPathRef="spring.maven" failOnError="false"/>
+  <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven" failOnError="false"/>
   <rm:locator searchPathRef="workspace.bundle" failOnError="false"/>
   <rm:locator searchPathRef="workspace.feature"/>
   <rm:searchPath name="equinox">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="http://download.eclipse.org/releases/helios"/>
     </rm:provider>
   </rm:searchPath>
@@ -33,14 +35,107 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="external.p2">
-    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
-      <rm:uri format="http://idempiere.googlecode.com/hg/idempiere.osgi.dep-1.0.0/p2"/>
-    </rm:provider>
-  </rm:searchPath>
   <rm:searchPath name="orbit">
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="gemini.maven">
+    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle,eclipse.feature" readerType="maven2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="http://zodiac.springsource.com/maven/bundles/release"/>
+      <maven:mappings>
+        <maven:entry artifactId="org.eclipse.virgo.util.math" groupId="org.eclipse.virgo.util" name="org.eclipse.virgo.util.math"/>
+        <maven:entry artifactId="org.eclipse.virgo.util.common" groupId="org.eclipse.virgo.util" name="org.eclipse.virgo.util.common"/>
+        <maven:entry artifactId="org.eclipse.virgo.util.osgi" groupId="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi"/>
+        <maven:entry artifactId="org.eclipse.virgo.util.parser.manifest" groupId="org.eclipse.virgo.util" name="org.eclipse.virgo.util.parser.manifest"/>
+        <maven:entry artifactId="org.eclipse.virgo.util.io" groupId="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io"/>
+        <maven:entry artifactId="org.eclipse.gemini.web.core" groupId="org.eclipse.gemini.web" name="org.eclipse.gemini.web.core"/>
+        <maven:entry artifactId="org.eclipse.gemini.web.extender" groupId="org.eclipse.gemini.web" name="org.eclipse.gemini.web.extender"/>
+        <maven:entry artifactId="org.eclipse.gemini.web.tomcat" groupId="org.eclipse.gemini.web" name="org.eclipse.gemini.web.tomcat"/>
+      </maven:mappings>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="spring.maven">
+    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle,eclipse.feature" readerType="maven2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="http://repository.springsource.com/maven/bundles/release"/>
+      <maven:mappings>
+        <maven:entry artifactId="org.springframework.core" groupId="org.springframework" name="org.springframework.core"/>
+        <maven:entry artifactId="org.springframework.aop" groupId="org.springframework" name="org.springframework.aop"/>
+        <maven:entry artifactId="org.springframework.beans" groupId="org.springframework" name="org.springframework.beans"/>
+        <maven:entry artifactId="org.springframework.context" groupId="org.springframework" name="org.springframework.context"/>
+        <maven:entry artifactId="org.springframework.osgi.core" groupId="org.springframework.osgi" name="org.springframework.osgi.core"/>
+        <maven:entry artifactId="org.springframework.osgi.io" groupId="org.springframework.osgi" name="org.springframework.osgi.io"/>
+      </maven:mappings>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="spring.external.maven">
+    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle,eclipse.feature" readerType="maven2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="http://repository.springsource.com/maven/bundles/external"/>
+      <maven:mappings>
+        <maven:entry artifactId="com.springsource.slf4j.api" groupId="org.slf4j" name="com.springsource.slf4j.api"/>
+        <maven:entry artifactId="com.springsource.org.apache.xml.resolver" groupId="org.apache.xml" name="com.springsource.org.apache.xml.resolver"/>
+        <maven:entry artifactId="com.springsource.org.apache.xmlcommons" groupId="org.apache.xmlcommons" name="com.springsource.org.apache.xmlcommons"/>
+        <maven:entry artifactId="com.springsource.org.apache.xml.serializer" groupId="org.apache.xalan" name="com.springsource.org.apache.xml.serializer"/>
+        <maven:entry artifactId="com.springsource.javax.management.j2ee" groupId="org.apache.geronimo.specs" name="com.springsource.javax.management.j2ee"/>
+        <maven:entry artifactId="com.springsource.net.sf.cglib" groupId="net.sourceforge.cglib" name="com.springsource.net.sf.cglib"/>
+        <maven:entry artifactId="com.springsource.javax.persistence" groupId="javax.persistence" name="com.springsource.javax.persistence"/>
+        <maven:entry artifactId="com.springsource.javax.xml.stream" groupId="javax.xml.stream" name="com.springsource.javax.xml.stream"/>
+        <maven:entry artifactId="com.springsource.org.aopalliance" groupId="org.aopalliance" name="com.springsource.org.aopalliance"/>
+        <maven:entry artifactId="com.springsource.javax.activation" groupId="javax.activation" name="com.springsource.javax.activation"/>
+        <maven:entry artifactId="com.springsource.javax.annotation" groupId="javax.annotation" name="com.springsource.javax.annotation"/>
+        <maven:entry artifactId="com.springsource.org.apache.catalina.springsource" groupId="org.apache.catalina.springsource" name="com.springsource.org.apache.catalina.springsource"/>
+        <maven:entry artifactId="com.springsource.javax.transaction" groupId="javax.transaction" name="com.springsource.javax.transaction"/>
+        <maven:entry artifactId="com.springsource.javax.servlet.jsp" groupId="javax.servlet" name="com.springsource.javax.servlet.jsp"/>
+        <maven:entry artifactId="com.springsource.javax.servlet" groupId="javax.servlet" name="com.springsource.javax.servlet"/>
+        <maven:entry artifactId="com.springsource.org.apache.catalina.tribes.springsource" groupId="org.apache.catalina.springsource" name="com.springsource.org.apache.catalina.tribes.springsource"/>
+        <maven:entry artifactId="com.springsource.org.apache.catalina.ha.springsource" groupId="org.apache.catalina.springsource" name="com.springsource.org.apache.catalina.ha.springsource"/>
+        <maven:entry artifactId="com.springsource.org.apache.coyote.springsource" groupId="org.apache.coyote.springsource" name="com.springsource.org.apache.coyote.springsource"/>
+        <maven:entry artifactId="com.springsource.org.apache.el.springsource" groupId="org.apache.el.springsource" name="com.springsource.org.apache.el.springsource"/>
+        <maven:entry artifactId="com.springsource.org.apache.jasper.springsource" groupId="org.apache.jasper.springsource" name="com.springsource.org.apache.jasper.springsource"/>
+        <maven:entry artifactId="com.springsource.org.apache.juli.extras.springsource" groupId="org.apache.juli.springsource" name="com.springsource.org.apache.juli.extras.springsource"/>
+        <maven:entry artifactId="com.springsource.org.eclipse.jdt.core.compiler.batch" groupId="org.eclipse.jdt" name="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
+        <maven:entry artifactId="com.springsource.javax.xml.ws" groupId="javax.xml.ws" name="com.springsource.javax.xml.ws"/>
+        <maven:entry artifactId="com.springsource.javax.ejb" groupId="javax.ejb" name="com.springsource.javax.ejb"/>
+        <maven:entry artifactId="com.springsource.javax.el" groupId="javax.el" name="com.springsource.javax.el"/>
+        <maven:entry artifactId="com.springsource.javax.mail" groupId="javax.mail" name="com.springsource.javax.mail"/>
+        <maven:entry artifactId="com.springsource.org.apache.commons.collections" groupId="org.apache.commons" name="com.springsource.org.apache.commons.collections"/>
+        <maven:entry artifactId="com.springsource.org.apache.commons.net" groupId="org.apache.commons" name="com.springsource.org.apache.commons.net"/>
+        <maven:entry artifactId="com.springsource.org.apache.commons.logging" groupId="org.apache.commons" name="com.springsource.org.apache.commons.logging"/>
+        <maven:entry artifactId="com.springsource.slf4j.simple" groupId="org.slf4j" name="com.springsource.slf4j.simple"/>
+        <maven:entry artifactId="com.springsource.org.apache.el.springsource" groupId="org.apache.el.springsource" name="com.springsource.org.apache.el.springsource"/>
+        <maven:entry artifactId="com.springsource.javax.xml.rpc" groupId="javax.xml.rpc" name="com.springsource.javax.xml.rpc"/>
+        <maven:entry artifactId="com.springsource.javax.xml.bind" groupId="javax.xml.bind" name="com.springsource.javax.xml.bind"/>
+        <maven:entry artifactId="com.springsource.javax.xml.soap" groupId="javax.xml.soap" name="com.springsource.javax.xml.soap"/>
+        <maven:entry artifactId="com.springsource.org.apache.jasper.springsource" groupId="org.apache.jasper.springsource" name="com.springsource.org.apache.jasper.springsource"/>
+        <maven:entry artifactId="com.springsource.javax.servlet.jsp.jstl" groupId="javax.servlet" name="com.springsource.javax.servlet.jsp.jstl"/>
+        <maven:entry artifactId="com.springsource.javax.jms" groupId="javax.jms" name="com.springsource.javax.jms"/>
+        <maven:entry artifactId="com.springsource.org.apache.activemq" groupId="org.apache.activemq" name="com.springsource.org.apache.activemq"/>
+        <maven:entry artifactId="com.springsource.org.apache.kahadb" groupId="org.apache.activemq" name="com.springsource.org.apache.kahadb"/>
+        <maven:entry artifactId="com.springsource.org.apache.poi" groupId="org.apache.poi" name="com.springsource.org.apache.poi"/>
+        <maven:entry artifactId="com.springsource.org.apache.taglibs.standard" groupId="org.apache.taglibs" name="com.springsource.org.apache.taglibs.standard"/>
+        <maven:entry artifactId="com.springsource.org.apache.xerces" groupId="org.apache.xerces" name="com.springsource.org.apache.xerces"/>
+        <maven:entry artifactId="com.springsource.org.junit" groupId="org.junit" name="com.springsource.org.junit"/>
+      </maven:mappings>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="restlet.maven">
+    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle,eclipse.feature" readerType="maven2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="http://maven.restlet.org"/>
+      <maven:mappings>
+        <maven:entry artifactId="org.restlet" groupId="org.restlet.jee" name="org.restlet"/>
+        <maven:entry artifactId="org.restlet.ext.net" groupId="org.restlet.jee" name="org.restlet.ext.net"/>
+        <maven:entry artifactId="org.restlet.ext.servlet" groupId="org.restlet.jee" name="org.restlet.ext.servlet"/>
+      </maven:mappings>
     </rm:provider>
   </rm:searchPath>
 </rm:rmap>
