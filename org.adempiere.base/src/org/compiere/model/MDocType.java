@@ -302,5 +302,59 @@ public class MDocType extends X_C_DocType
 		}
 		return success;
 	} 	//	afterDelete
-	
+
+	/**
+     * Returns Document type for the shipment/receipt based
+     * on Document type provided for order/rma
+     * @param docTypeId
+     * @return shipment/receipt doctype id
+     */
+    public static int getShipmentReceiptDocType(int docTypeId)
+    {
+        int relatedDocTypeId = 0;
+        if (docTypeId != 0)
+        {
+            MDocType docType = MDocType.get(Env.getCtx(), docTypeId);
+            // FIXME: Should refactor code and remove the hard coded name
+            // Should change document type to allow query the value
+            if ("Return Material".equals(docType.getName()) ||
+                    "Vendor Return".equals(docType.getName())|| !docType.isSOTrx())
+            {
+                String relatedDocTypeName = null;
+                if (("Purchase Order").equals(docType.getName()))
+                {
+                    relatedDocTypeName = "MM Receipt";
+                }
+                else if ("Return Material".equals(docType.getName()))
+                {
+                    relatedDocTypeName = "MM Returns";
+                }
+                else if ("Vendor Return".equals(docType.getName()))
+                {
+                    relatedDocTypeName = "MM Vendor Returns";
+                }
+
+                if (relatedDocTypeName != null)
+                {
+                    StringBuffer whereClause = new StringBuffer(30);
+                    whereClause.append("Name='").append(relatedDocTypeName).append("' ");
+                    whereClause.append("and AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
+                    whereClause.append(" AND IsActive='Y'");
+
+                    int relDocTypeIds[] = MDocType.getAllIDs(MDocType.Table_Name, whereClause.toString(), null);
+
+                    if (relDocTypeIds.length > 0)
+                    {
+                        relatedDocTypeId = relDocTypeIds[0];
+                    }
+                }
+            }
+            else
+            {
+                relatedDocTypeId = docType.getC_DocTypeShipment_ID();
+            }
+        }
+
+        return relatedDocTypeId;
+    }
 }	//	MDocType

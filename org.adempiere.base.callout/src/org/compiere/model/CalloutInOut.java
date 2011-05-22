@@ -86,6 +86,20 @@ public class CalloutInOut extends CalloutEngine
 			else
 				mTab.setValue("AD_User_ID", null);
 		}
+        /**
+         * Modification: set corresponding document type
+         */
+        int docTypeId = order.getC_DocType_ID();
+        int relatedDocTypeId = 0;
+        
+        if (docTypeId == 0)
+        {
+            docTypeId = order.getC_DocTypeTarget_ID();
+        }
+        
+        relatedDocTypeId = MDocType.getShipmentReceiptDocType(docTypeId);
+        
+        mTab.setValue("C_DocType_ID", relatedDocTypeId);
 		return "";
 	}	//	order
 
@@ -179,6 +193,8 @@ public class CalloutInOut extends CalloutEngine
 				String DocBaseType = rs.getString("DocBaseType");
 				// BF [2708789] Read IsSOTrx from C_DocType
 				String trxFlag = rs.getString(7);
+				if (!(trxFlag.equals(mTab.getValue("IsSOTrx"))))
+					mTab.setValue("IsSOTrx", trxFlag);
 				if (DocBaseType.equals("MMS"))					//	Material Shipments
 				/**solve 1648131 bug vpj-cd e-evolution */
 				{
@@ -198,9 +214,7 @@ public class CalloutInOut extends CalloutEngine
 							mTab.setValue("MovementType", "C+"); // Customer Return
 						else
 							mTab.setValue("MovementType", "V+"); // Vendor Receipts
-				}
-				if (!(trxFlag.equals(mTab.getValue("IsSOTrx"))))
-					mTab.setValue("IsSOTrx", trxFlag);
+				}				
 				/**END vpj-cd e-evolution */
 
 				//	DocumentNo
