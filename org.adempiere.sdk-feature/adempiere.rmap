@@ -3,6 +3,8 @@
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
   <rm:locator pattern="^javax\.xml(\..+)?" searchPathRef="orbit" failOnError="false"/>
+  <rm:locator pattern="^javax\.persistence(\..+)?" searchPathRef="orbit"/>
+  <rm:locator pattern="^org\.slf4j(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.ant(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.eclipse\.gemini(\..+)?" searchPathRef="gemini.maven" failOnError="false"/>
@@ -39,7 +41,7 @@
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite"/>
+      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/S20110521195923/repository/"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="gemini.maven">
@@ -82,7 +84,6 @@
       <maven:mappings>
         <maven:entry artifactId="com.springsource.slf4j.api" groupId="org.slf4j" name="com.springsource.slf4j.api"/>
         <maven:entry artifactId="com.springsource.org.apache.xml.resolver" groupId="org.apache.xml" name="com.springsource.org.apache.xml.resolver"/>
-        <maven:entry artifactId="com.springsource.org.apache.xmlcommons" groupId="org.apache.xmlcommons" name="com.springsource.org.apache.xmlcommons"/>
         <maven:entry artifactId="com.springsource.org.apache.xml.serializer" groupId="org.apache.xalan" name="com.springsource.org.apache.xml.serializer"/>
         <maven:entry artifactId="com.springsource.javax.management.j2ee" groupId="org.apache.geronimo.specs" name="com.springsource.javax.management.j2ee"/>
         <maven:entry artifactId="com.springsource.net.sf.cglib" groupId="net.sourceforge.cglib" name="com.springsource.net.sf.cglib"/>
@@ -102,14 +103,13 @@
         <maven:entry artifactId="com.springsource.org.apache.jasper.springsource" groupId="org.apache.jasper.springsource" name="com.springsource.org.apache.jasper.springsource"/>
         <maven:entry artifactId="com.springsource.org.apache.juli.extras.springsource" groupId="org.apache.juli.springsource" name="com.springsource.org.apache.juli.extras.springsource"/>
         <maven:entry artifactId="com.springsource.org.eclipse.jdt.core.compiler.batch" groupId="org.eclipse.jdt" name="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
-        <maven:entry artifactId="com.springsource.javax.xml.ws" groupId="javax.xml.ws" name="com.springsource.javax.xml.ws"/>
         <maven:entry artifactId="com.springsource.javax.ejb" groupId="javax.ejb" name="com.springsource.javax.ejb"/>
         <maven:entry artifactId="com.springsource.javax.el" groupId="javax.el" name="com.springsource.javax.el"/>
         <maven:entry artifactId="com.springsource.javax.mail" groupId="javax.mail" name="com.springsource.javax.mail"/>
         <maven:entry artifactId="com.springsource.org.apache.commons.collections" groupId="org.apache.commons" name="com.springsource.org.apache.commons.collections"/>
         <maven:entry artifactId="com.springsource.org.apache.commons.net" groupId="org.apache.commons" name="com.springsource.org.apache.commons.net"/>
         <maven:entry artifactId="com.springsource.org.apache.commons.logging" groupId="org.apache.commons" name="com.springsource.org.apache.commons.logging"/>
-        <maven:entry artifactId="com.springsource.slf4j.simple" groupId="org.slf4j" name="com.springsource.slf4j.simple"/>
+        <maven:entry artifactId="com.springsource.slf4j.jcl" groupId="org.slf4j" name="com.springsource.slf4j.jcl"/>
         <maven:entry artifactId="com.springsource.org.apache.el.springsource" groupId="org.apache.el.springsource" name="com.springsource.org.apache.el.springsource"/>
         <maven:entry artifactId="com.springsource.javax.xml.rpc" groupId="javax.xml.rpc" name="com.springsource.javax.xml.rpc"/>
         <maven:entry artifactId="com.springsource.javax.xml.bind" groupId="javax.xml.bind" name="com.springsource.javax.xml.bind"/>

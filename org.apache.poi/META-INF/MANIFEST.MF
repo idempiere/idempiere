@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apache POI
 Bundle-SymbolicName: org.apache.poi
-Bundle-Version: 3.7.0.20101029
+Bundle-Version: 3.7.0.v20101029
 Bundle-Vendor: Apache
 Export-Package: org.apache.poi,
  org.apache.poi.common.usermodel,
@@ -53,13 +53,13 @@ Export-Package: org.apache.poi,
  org.apache.poi.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.imageio,
- javax.xml.transform; version="1.3.4",
+ javax.xml.transform,
  javax.crypto.spec,
  javax.crypto,
- org.apache.commons.logging; version="1.0.4",
+ org.apache.commons.logging; version="1.1.1",
  javax.imageio.metadata,
  javax.imageio.stream,
  javax.swing,
- javax.xml.parsers; version="1.3.4",
- javax.xml.transform.stream; version="1.3.4",
+ javax.xml.parsers,
+ javax.xml.transform.stream,
  org.w3c.dom; version="1.3.4"

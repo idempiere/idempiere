@@ -199,7 +199,7 @@
          id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.1.v201101211721"
          unpack="false"/>
 
    <plugin
@@ -268,13 +268,6 @@
 
    <plugin
          id="javax.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.springsource.org.apache.commons.logging"
          download-size="0"
          install-size="0"
          version="0.0.0"
