@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.ALayout;
 import org.compiere.apps.ALayoutConstraint;
 import org.compiere.minigrid.IDColumn;
@@ -109,6 +110,9 @@ public class InfoGeneral extends Info
 		textField1.requestFocus();
 		if (value != null && value.length() > 0)
 			executeQuery();
+		p_loadedOK = true;
+
+		AEnv.positionCenterWindow(frame, this);
 	}	//	InfoGeneral
 
 	/**  String Array of Column Info    */
