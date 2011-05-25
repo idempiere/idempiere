@@ -1,5 +1,5 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                        *
+ * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -13,8 +13,8 @@
  * For the text or an alternative of this public license, you may reach us    *
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
- * Portions created by Carlos Ruiz are Copyright (C) 2005 QSS Ltda.
- * Contributor(s): Carlos Ruiz (globalqss)
+ * Portions created by Carlos Ruiz are Copyright (C) 2005 QSS Ltda.           *
+ * Contributor(s): Carlos Ruiz (globalqss)                                    *
  *****************************************************************************/
 package org.eevolution.process;
 
@@ -34,7 +34,7 @@ import org.eevolution.model.MPPProductBOMLine;
 /**
  * Title: Check BOM Structure (free of cycles) Description: Tree cannot contain
  * BOMs which are already referenced
- * 
+ *
  * @author Tony Snook (tspc)
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
@@ -63,7 +63,7 @@ public class PP_Product_BOM_Check extends SvrProcess
 
 	/**
 	 * Process
-	 * 
+	 *
 	 * @return message
 	 * @throws Exception
 	 */
@@ -92,14 +92,14 @@ public class PP_Product_BOM_Check extends SvrProcess
 		if (tbom == null) {
 			raiseError("No Default BOM found: ", "Check BOM Parent search key");
 		}
-		
+
 		// Check All BOM Lines
 		if (tbom.getM_Product_ID() != 0)
 		{
 			MPPProductBOMLine[] tbomlines = tbom.getLines();
 			for (MPPProductBOMLine tbomline : tbomlines)
 			{
-				lowlevel = tbomline.getLowLevel(); 
+				lowlevel = tbomline.getLowLevel();
 				MProduct p = new MProduct(getCtx(), tbomline.getM_Product_ID(), get_TrxName());
 				p.setLowLevel(lowlevel);
 				p.setIsVerified(true);

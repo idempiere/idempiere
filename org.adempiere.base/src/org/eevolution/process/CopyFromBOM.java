@@ -29,9 +29,9 @@ import org.eevolution.model.MPPProductBOMLine;
 /**
  *	CopyFromBOM Process
  *	Copies BOM Lines from Selected BOM to the Current BOM
- *	The BOM being copied to must have no pre-existing BOM Lines  
- *	
- *  @author Tony Snook 
+ *	The BOM being copied to must have no pre-existing BOM Lines
+ *
+ *  @author Tony Snook
  *  @version $Id: CopyFromBOM.java,v 1.0 2008/07/04 05:24:03 tspc Exp $
  */
 public class CopyFromBOM extends SvrProcess {
@@ -88,7 +88,7 @@ public class CopyFromBOM extends SvrProcess {
 		}
 		return "OK";
 	}
-	
+
 	@Override
 	protected void postProcess(boolean success)
 	{
