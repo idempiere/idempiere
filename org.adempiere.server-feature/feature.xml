@@ -47,7 +47,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.xml.stream"
+         id="javax.xml.stream"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -206,7 +206,7 @@
          id="org.restlet.ext.servlet"
          download-size="0"
          install-size="0"
-         version="2.0.7.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -266,14 +266,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.persistence"
+         id="javax.persistence"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.slf4j.simple"
+         id="com.springsource.slf4j.jcl"
          download-size="0"
          install-size="0"
          version="0.0.0"

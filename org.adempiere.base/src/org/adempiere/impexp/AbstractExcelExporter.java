@@ -237,7 +237,7 @@ public abstract class AbstractExcelExporter
 			cs.setBorderBottom((short)1);
 			//
 			if (DisplayType.isDate(displayType)) {
-				cs.setDataFormat(m_dataFormat.getFormat("DD.MM.YYYY"));
+				cs.setDataFormat(m_dataFormat.getFormat(DisplayType.getDateFormat(getLanguage()).toPattern()));
 			}
 			else if (DisplayType.isNumeric(displayType)) {
 				DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
@@ -307,11 +307,11 @@ public abstract class AbstractExcelExporter
 
 	private void createTableHeader(HSSFSheet sheet)
 	{
-		short colnumMax = 0;
+		int colnumMax = 0;
 
 		HSSFRow row = sheet.createRow(0);
 		//	for all columns
-		short colnum = 0;
+		int colnum = 0;
 		for (int col = 0; col < getColumnCount(); col++)
 		{
 			if (colnum > colnumMax)
@@ -376,7 +376,7 @@ public abstract class AbstractExcelExporter
 		HSSFSheet sheet= createTableSheet();
 		String sheetName = null;
 		//
-		short colnumMax = 0;
+		int colnumMax = 0;
 		int rownum = isCurrentRowOnly() ? getCurrentRow() : 0;
 		int lastRowNum = isCurrentRowOnly() ? getCurrentRow()+1 : getRowCount();
 		for (int xls_rownum = 1; rownum < lastRowNum; rownum++, xls_rownum++)
@@ -387,7 +387,7 @@ public abstract class AbstractExcelExporter
 			boolean isPageBreak = false;
 			HSSFRow row = sheet.createRow(xls_rownum);
 			//	for all columns
-			short colnum = 0;
+			int colnum = 0;
 			for (int col = 0; col < getColumnCount(); col++)
 			{
 				if (colnum > colnumMax)
@@ -396,7 +396,6 @@ public abstract class AbstractExcelExporter
 				if (isColumnPrinted(col))
 				{
 					HSSFCell cell = row.createCell(colnum);
-					cell.setEncoding(HSSFCell.ENCODING_UTF_16); // Bug-2017673 - Export Report as Excel - Bad Encoding
 
 					// line row
 					Object obj = getValueAt(rownum, col);
@@ -449,8 +448,13 @@ public abstract class AbstractExcelExporter
 		}	//	for all rows
 		closeTableSheet(sheet, sheetName, colnumMax);
 		//
-		m_workbook.write(out);
-		out.close();
+		
+		if(out!=null)
+		{
+			m_workbook.write(out);
+			out.close();
+		}
+		
 		//
 		// Workbook Info
 		if (CLogMgt.isLevelFine()) {
@@ -488,5 +492,13 @@ public abstract class AbstractExcelExporter
 		export(out);
 		if (autoOpen && Ini.isClient())
 			Env.startBrowser(file.toURI().toString());
+	}
+
+	public void exportToWorkbook(HSSFWorkbook workbook, Language language)
+	throws Exception
+	{
+		m_lang = language;
+		m_workbook = workbook;
+		export(null);
 	}
 }
