@@ -204,4 +204,8 @@ Import-Package: com.lowagie.text,
  org.apache.commons.codec.binary;version="1.3.0",
  org.apache.commons.collections,
  org.apache.commons.logging;version="1.1.1",
- org.apache.commons.logging.impl;version="1.1.1"
+ org.apache.commons.logging.impl;version="1.1.1",
+ org.apache.poi.hssf.usermodel;version="3.7.0",
+ org.apache.poi.hssf.util;version="3.7.0",
+ org.apache.poi.ss.usermodel;version="3.7.0",
+ org.apache.poi.ss.util;version="3.7.0"
