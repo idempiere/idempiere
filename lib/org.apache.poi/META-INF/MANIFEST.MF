@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apache POI
 Bundle-SymbolicName: org.apache.poi
-Bundle-Version: 3.7.0.v20101029
+Bundle-Version: 3.7.0
 Bundle-Vendor: Apache
 Export-Package: org.apache.poi;version="3.7.0",
  org.apache.poi.common.usermodel;version="3.7.0",
