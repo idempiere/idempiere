@@ -22,7 +22,7 @@
          version="0.0.0"
          os="linux,macosx,win32"
          ws="cocoa,gtk,win32"
-         arch="x86"/>
+         arch="x86,x86_64"/>
 
    <includes
          id="org.eclipse.equinox.server.core"

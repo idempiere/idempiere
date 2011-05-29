@@ -2,10 +2,11 @@
 <cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="adempiere.rmap">
     <cq:rootRequest name="org.adempiere.sdk" componentType="eclipse.feature"/>
     <cq:advisorNode namePattern="^org\.restlet(\..+)?" componentType="osgi.bundle" versionOverride="[2.0.7,2.1.0)"/>
-    <cq:advisorNode namePattern="^org\.apache\.commons\.logging$" componentType="osgi.bundle" versionOverride="[1.1.0,2.0.0)"/>
     <cq:advisorNode namePattern="^javax\.persistence$" componentType="osgi.bundle" versionOverride="[1.0.0.0,1.0.1.0)"/>
     <cq:advisorNode namePattern="^javax\.xml\.stream$" componentType="osgi.bundle" versionOverride="[1.0.1.0,1.1.0.0)"/>
-    <cq:advisorNode namePattern="^com\.springsource\.slf4j\.api$" componentType="osgi.bundle" versionOverride="[1.6.1,1.7.0)"/>
+    <cq:advisorNode namePattern="^com\.springsource\.slf4j\.api$" componentType="osgi.bundle" versionOverride="[1.6.1,1.7.0)">
+        <cq:property key="jar.version" value="1.6.1"/>
+    </cq:advisorNode>
     <cq:advisorNode namePattern="^com\.springsource\.slf4j\.jcl$" componentType="osgi.bundle" versionOverride="[1.6.1,1.7.0)"/>
     <cq:advisorNode namePattern="^org\.eclipse\.virgo(\..+)?" componentType="osgi.bundle" versionOverride="[2.1.0.0,2.2.0.0)"/>
     <cq:advisorNode namePattern="^org\.eclipse\.gemini\.web(\..+)?" componentType="osgi.bundle" versionOverride="[1.1.0.0,1.2.0)"/>
@@ -13,7 +14,7 @@
     <cq:advisorNode namePattern="^org\.springframework(\..+)?" componentType="osgi.bundle" versionOverride="[3.0.0,3.1.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.catalina(\..+)?" componentType="osgi.bundle" versionOverride="[6.0.0,7.0.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.coyote\.springsource?" componentType="osgi.bundle" versionOverride="[6.0.0,7.0.0)"/>
-    <cq:advisorNode namePattern="^com\.springsource.org\.apache\.el\.springsource$" componentType="osgi.bundle" versionOverride="[6.0.0,7.0.0)"/>
+    <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.el\.springsource$" componentType="osgi.bundle" versionOverride="[6.0.0,7.0.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.jasper\.springsource$" componentType="osgi.bundle" versionOverride="[6.0.0,7.0.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.juli\.extras\.springsource$" componentType="osgi.bundle" versionOverride="[6.0.0,7.0.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.junit$" componentType="osgi.bundle" versionOverride="[4.8.1,4.9.0)"/>
@@ -41,4 +42,10 @@
     <cq:advisorNode namePattern="^com\.springsource\.javax\.ejb4" componentType="osgi.bundle" versionOverride="[3.0.0,3.1.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.javax\.annotation$" componentType="osgi.bundle" versionOverride="[1.0.0,2.0.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.javax\.activation$" componentType="osgi.bundle" versionOverride="[1.1.1,1.2.0)"/>
+    <cq:advisorNode namePattern="^org\.apache\.poi$" componentType="osgi.bundle" versionOverride="[3.7.0,4.0.0)">
+        <cq:property key="jar.version" value="3.7.0"/>
+    </cq:advisorNode>
+    <cq:advisorNode namePattern="^com\.springsource\.javax\.xml\.ws$" versionOverride="[2.1.1,2.2.0)">
+        <cq:property key="jar.version" value="2.1.1"/>
+    </cq:advisorNode>
 </cq:componentQuery>

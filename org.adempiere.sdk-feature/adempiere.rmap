@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:locator pattern="^org\.eclipse\.equinox\.server\.p2$" searchPathRef="workspace.feature.project"/>
+  <rm:locator pattern="^com\.springsource\.javax\.xml\.ws$" searchPathRef="workspace.bundle.jar"/>
+  <rm:locator pattern="^com\.springsource\.slf4j\.api4$" searchPathRef="workspace.bundle.jar"/>
+  <rm:locator pattern="^org\.apache\.poi$" searchPathRef="workspace.bundle.jar"/>
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
   <rm:locator pattern="^javax\.xml(\..+)?" searchPathRef="orbit" failOnError="false"/>
@@ -12,8 +16,8 @@
   <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="spring.external.maven" failOnError="false"/>
   <rm:locator pattern="^org\.springframework(\..+)?" searchPathRef="spring.maven" failOnError="false"/>
   <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven" failOnError="false"/>
-  <rm:locator searchPathRef="workspace.bundle" failOnError="false"/>
-  <rm:locator searchPathRef="workspace.feature"/>
+  <rm:locator searchPathRef="workspace.bundle.project" failOnError="false"/>
+  <rm:locator searchPathRef="workspace.feature.project"/>
   <rm:searchPath name="equinox">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
@@ -21,7 +25,7 @@
       <rm:uri format="http://download.eclipse.org/releases/helios"/>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="workspace.bundle">
+  <rm:searchPath name="workspace.bundle.project">
     <rm:provider componentTypes="osgi.bundle" readerType="local">
       <rm:uri format="{0}/{1}">
         <bc:propertyRef key="workspace.root"/>
@@ -29,7 +33,18 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="workspace.feature">
+  <rm:searchPath name="workspace.bundle.jar">
+    <rm:provider componentTypes="osgi.bundle" readerType="url" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="file://{0}/lib/plugins/{1}_{2}.jar">
+        <bc:propertyRef key="workspace.root"/>
+        <bc:propertyRef key="buckminster.component"/>
+        <bc:propertyRef key="jar.version"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="workspace.feature.project">
     <rm:provider componentTypes="eclipse.feature" readerType="local">
       <rm:uri format="{0}/{1}-feature">
         <bc:propertyRef key="workspace.root"/>
