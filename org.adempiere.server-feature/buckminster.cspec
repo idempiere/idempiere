@@ -2,11 +2,9 @@
 <cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.adempiere.server" componentType="eclipse.feature" version="1.0.0.qualifier">
     <cs:dependencies>
         <cs:dependency name="com.springsource.javax.annotation" componentType="osgi.bundle"/>
-        <cs:dependency name="com.springsource.javax.persistence" componentType="osgi.bundle"/>
         <cs:dependency name="com.springsource.javax.servlet.jsp" componentType="osgi.bundle"/>
         <cs:dependency name="com.springsource.javax.servlet.jsp.jstl" componentType="osgi.bundle"/>
         <cs:dependency name="com.springsource.javax.xml.bind" componentType="osgi.bundle"/>
-        <cs:dependency name="com.springsource.javax.xml.stream" componentType="osgi.bundle"/>
         <cs:dependency name="com.springsource.javax.xml.ws" componentType="osgi.bundle"/>
         <cs:dependency name="com.springsource.org.aopalliance" componentType="osgi.bundle"/>
         <cs:dependency name="com.springsource.org.apache.catalina.ha.springsource" componentType="osgi.bundle"/>
@@ -19,8 +17,13 @@
         <cs:dependency name="com.springsource.org.apache.taglibs.standard" componentType="osgi.bundle"/>
         <cs:dependency name="com.springsource.org.eclipse.jdt.core.compiler.batch" componentType="osgi.bundle"/>
         <cs:dependency name="com.springsource.slf4j.api" componentType="osgi.bundle"/>
-        <cs:dependency name="com.springsource.slf4j.simple" componentType="osgi.bundle"/>
+        <cs:dependency name="com.springsource.slf4j.jcl" componentType="osgi.bundle"/>
+        <cs:dependency name="javax.persistence" componentType="osgi.bundle"/>
+        <cs:dependency name="javax.xml.stream" componentType="osgi.bundle"/>
         <cs:dependency name="org.adempiere.base" componentType="eclipse.feature" versionDesignator="[1.0.0.qualifier,1.0.0.qualifier]"/>
+        <cs:dependency name="org.adempiere.eclipse.equinox.http.servlet" componentType="osgi.bundle"/>
+        <cs:dependency name="org.adempiere.eclipse.equinox.http.servletbridge" componentType="osgi.bundle"/>
+        <cs:dependency name="org.adempiere.eclipse.equinox.servletbridge" componentType="osgi.bundle"/>
         <cs:dependency name="org.adempiere.install" componentType="osgi.bundle"/>
         <cs:dependency name="org.adempiere.replication.server" componentType="eclipse.feature"/>
         <cs:dependency name="org.adempiere.report.jasper.webapp" componentType="osgi.bundle"/>
@@ -28,6 +31,8 @@
         <cs:dependency name="org.adempiere.tomcat.config" componentType="osgi.bundle"/>
         <cs:dependency name="org.adempiere.ui.zk" componentType="eclipse.feature"/>
         <cs:dependency name="org.adempiere.webstore" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.ant.core" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.core.variables" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.gemini.web.core" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.gemini.web.extender" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.gemini.web.tomcat" componentType="osgi.bundle"/>
@@ -43,6 +48,7 @@
         <cs:dependency name="org.springframework.core" componentType="osgi.bundle"/>
         <cs:dependency name="org.springframework.osgi.core" componentType="osgi.bundle"/>
         <cs:dependency name="org.springframework.osgi.io" componentType="osgi.bundle"/>
+        <cs:dependency name="org.apache.poi" componentType="osgi.bundle"/>
     </cs:dependencies>
     <cs:generators>
         <cs:generator generates="org.adempiere.server.source" attribute="source.feature.jar" generatesType="eclipse.feature"/>
@@ -63,11 +69,9 @@
             </cs:properties>
             <cs:prerequisites>
                 <cs:attribute name="buckminster.clean" component="com.springsource.javax.annotation"/>
-                <cs:attribute name="buckminster.clean" component="com.springsource.javax.persistence"/>
                 <cs:attribute name="buckminster.clean" component="com.springsource.javax.servlet.jsp"/>
                 <cs:attribute name="buckminster.clean" component="com.springsource.javax.servlet.jsp.jstl"/>
                 <cs:attribute name="buckminster.clean" component="com.springsource.javax.xml.bind"/>
-                <cs:attribute name="buckminster.clean" component="com.springsource.javax.xml.stream"/>
                 <cs:attribute name="buckminster.clean" component="com.springsource.javax.xml.ws"/>
                 <cs:attribute name="buckminster.clean" component="com.springsource.org.aopalliance"/>
                 <cs:attribute name="buckminster.clean" component="com.springsource.org.apache.catalina.ha.springsource"/>
@@ -80,8 +84,13 @@
                 <cs:attribute name="buckminster.clean" component="com.springsource.org.apache.taglibs.standard"/>
                 <cs:attribute name="buckminster.clean" component="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
                 <cs:attribute name="buckminster.clean" component="com.springsource.slf4j.api"/>
-                <cs:attribute name="buckminster.clean" component="com.springsource.slf4j.simple"/>
+                <cs:attribute name="buckminster.clean" component="com.springsource.slf4j.jcl"/>
+                <cs:attribute name="buckminster.clean" component="javax.persistence"/>
+                <cs:attribute name="buckminster.clean" component="javax.xml.stream"/>
                 <cs:attribute name="buckminster.clean" component="org.adempiere.base"/>
+                <cs:attribute name="buckminster.clean" component="org.adempiere.eclipse.equinox.http.servlet"/>
+                <cs:attribute name="buckminster.clean" component="org.adempiere.eclipse.equinox.http.servletbridge"/>
+                <cs:attribute name="buckminster.clean" component="org.adempiere.eclipse.equinox.servletbridge"/>
                 <cs:attribute name="buckminster.clean" component="org.adempiere.install"/>
                 <cs:attribute name="buckminster.clean" component="org.adempiere.replication.server"/>
                 <cs:attribute name="buckminster.clean" component="org.adempiere.report.jasper.webapp"/>
@@ -89,6 +98,8 @@
                 <cs:attribute name="buckminster.clean" component="org.adempiere.tomcat.config"/>
                 <cs:attribute name="buckminster.clean" component="org.adempiere.ui.zk"/>
                 <cs:attribute name="buckminster.clean" component="org.adempiere.webstore"/>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.ant.core"/>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.core.variables"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.gemini.web.core"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.gemini.web.extender"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.gemini.web.tomcat"/>
@@ -245,11 +256,9 @@
     <cs:groups>
         <cs:public name="bundle.jars">
             <cs:attribute name="bundle.and.fragments" component="com.springsource.javax.annotation"/>
-            <cs:attribute name="bundle.and.fragments" component="com.springsource.javax.persistence"/>
             <cs:attribute name="bundle.and.fragments" component="com.springsource.javax.servlet.jsp"/>
             <cs:attribute name="bundle.and.fragments" component="com.springsource.javax.servlet.jsp.jstl"/>
             <cs:attribute name="bundle.and.fragments" component="com.springsource.javax.xml.bind"/>
-            <cs:attribute name="bundle.and.fragments" component="com.springsource.javax.xml.stream"/>
             <cs:attribute name="bundle.and.fragments" component="com.springsource.javax.xml.ws"/>
             <cs:attribute name="bundle.and.fragments" component="com.springsource.org.aopalliance"/>
             <cs:attribute name="bundle.and.fragments" component="com.springsource.org.apache.catalina.ha.springsource"/>
@@ -262,8 +271,13 @@
             <cs:attribute name="bundle.and.fragments" component="com.springsource.org.apache.taglibs.standard"/>
             <cs:attribute name="bundle.and.fragments" component="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
             <cs:attribute name="bundle.and.fragments" component="com.springsource.slf4j.api"/>
-            <cs:attribute name="bundle.and.fragments" component="com.springsource.slf4j.simple"/>
+            <cs:attribute name="bundle.and.fragments" component="com.springsource.slf4j.jcl"/>
+            <cs:attribute name="bundle.and.fragments" component="javax.persistence"/>
+            <cs:attribute name="bundle.and.fragments" component="javax.xml.stream"/>
             <cs:attribute name="bundle.jars" component="org.adempiere.base"/>
+            <cs:attribute name="bundle.and.fragments" component="org.adempiere.eclipse.equinox.http.servlet"/>
+            <cs:attribute name="bundle.and.fragments" component="org.adempiere.eclipse.equinox.http.servletbridge"/>
+            <cs:attribute name="bundle.and.fragments" component="org.adempiere.eclipse.equinox.servletbridge"/>
             <cs:attribute name="bundle.and.fragments" component="org.adempiere.install"/>
             <cs:attribute name="bundle.jars" component="org.adempiere.replication.server"/>
             <cs:attribute name="bundle.and.fragments" component="org.adempiere.report.jasper.webapp"/>
@@ -271,6 +285,8 @@
             <cs:attribute name="bundle.and.fragments" component="org.adempiere.tomcat.config"/>
             <cs:attribute name="bundle.jars" component="org.adempiere.ui.zk"/>
             <cs:attribute name="bundle.jars" component="org.adempiere.webstore"/>
+            <cs:attribute name="bundle.and.fragments" component="org.eclipse.ant.core"/>
+            <cs:attribute name="bundle.and.fragments" component="org.eclipse.core.variables"/>
             <cs:attribute name="bundle.and.fragments" component="org.eclipse.gemini.web.core"/>
             <cs:attribute name="bundle.and.fragments" component="org.eclipse.gemini.web.extender"/>
             <cs:attribute name="bundle.and.fragments" component="org.eclipse.gemini.web.tomcat"/>
@@ -296,39 +312,31 @@
             <cs:attribute name="feature.references"/>
         </cs:public>
         <cs:public name="feature.references">
-            <cs:attribute name="feature.jars" component="org.adempiere.base"/>
             <cs:attribute name="feature.jars" component="org.adempiere.replication.server"/>
             <cs:attribute name="feature.jars" component="org.adempiere.ui.zk"/>
             <cs:attribute name="feature.jars" component="org.adempiere.webstore"/>
+            <cs:attribute name="feature.jars" component="org.adempiere.base"/>
         </cs:public>
         <cs:public name="product.configuration.exports">
-            <cs:attribute name="product.configurations"/>
-            <cs:attribute name="product.configuration.exports" component="com.springsource.javax.annotation"/>
-            <cs:attribute name="product.configuration.exports" component="com.springsource.javax.persistence"/>
+            <cs:attribute name="product.configuration.exports" component="org.adempiere.replication.server"/>
+            <cs:attribute name="product.configuration.exports" component="org.adempiere.ui.zk"/>
+            <cs:attribute name="product.configuration.exports" component="org.adempiere.webstore"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.javax.servlet.jsp"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.javax.servlet.jsp.jstl"/>
-            <cs:attribute name="product.configuration.exports" component="com.springsource.javax.xml.bind"/>
-            <cs:attribute name="product.configuration.exports" component="com.springsource.javax.xml.stream"/>
+            <cs:attribute name="product.configuration.exports" component="javax.xml.stream"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.javax.xml.ws"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.org.aopalliance"/>
-            <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.catalina.ha.springsource"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.catalina.springsource"/>
-            <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.catalina.tribes.springsource"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.coyote.springsource"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.el.springsource"/>
+            <cs:attribute name="product.configuration.exports" component="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.jasper.springsource"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.juli.extras.springsource"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.taglibs.standard"/>
-            <cs:attribute name="product.configuration.exports" component="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
             <cs:attribute name="product.configuration.exports" component="com.springsource.slf4j.api"/>
-            <cs:attribute name="product.configuration.exports" component="com.springsource.slf4j.simple"/>
-            <cs:attribute name="product.configuration.exports" component="org.adempiere.install"/>
-            <cs:attribute name="product.configuration.exports" component="org.adempiere.replication.server"/>
             <cs:attribute name="product.configuration.exports" component="org.adempiere.report.jasper.webapp"/>
             <cs:attribute name="product.configuration.exports" component="org.adempiere.server"/>
             <cs:attribute name="product.configuration.exports" component="org.adempiere.tomcat.config"/>
-            <cs:attribute name="product.configuration.exports" component="org.adempiere.ui.zk"/>
-            <cs:attribute name="product.configuration.exports" component="org.adempiere.webstore"/>
             <cs:attribute name="product.configuration.exports" component="org.eclipse.gemini.web.core"/>
             <cs:attribute name="product.configuration.exports" component="org.eclipse.gemini.web.extender"/>
             <cs:attribute name="product.configuration.exports" component="org.eclipse.gemini.web.tomcat"/>
@@ -344,39 +352,44 @@
             <cs:attribute name="product.configuration.exports" component="org.springframework.core"/>
             <cs:attribute name="product.configuration.exports" component="org.springframework.osgi.core"/>
             <cs:attribute name="product.configuration.exports" component="org.springframework.osgi.io"/>
+            <cs:attribute name="product.configuration.exports" component="com.springsource.javax.xml.bind"/>
+            <cs:attribute name="product.configuration.exports" component="com.springsource.javax.annotation"/>
+            <cs:attribute name="product.configuration.exports" component="javax.persistence"/>
+            <cs:attribute name="product.configuration.exports" component="com.springsource.slf4j.jcl"/>
+            <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.catalina.ha.springsource"/>
+            <cs:attribute name="product.configuration.exports" component="com.springsource.org.apache.catalina.tribes.springsource"/>
+            <cs:attribute name="product.configuration.exports" component="org.adempiere.install"/>
+            <cs:attribute name="product.configuration.exports" component="org.eclipse.ant.core"/>
+            <cs:attribute name="product.configuration.exports" component="org.eclipse.core.variables"/>
+            <cs:attribute name="product.configuration.exports" component="org.adempiere.eclipse.equinox.http.servlet"/>
+            <cs:attribute name="product.configuration.exports" component="org.adempiere.eclipse.equinox.http.servletbridge"/>
+            <cs:attribute name="product.configuration.exports" component="org.adempiere.eclipse.equinox.servletbridge"/>
+            <cs:attribute name="product.configurations"/>
         </cs:public>
         <cs:public name="site.feature.exports" rebase="${buckminster.output}/site/">
-            <cs:attribute name="copy.plugins"/>
             <cs:attribute name="copy.subfeatures"/>
+            <cs:attribute name="copy.plugins"/>
         </cs:public>
         <cs:public name="source.bundle.jars" filter="(!(cbi.include.source=false))">
-            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.annotation"/>
-            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.persistence"/>
+            <cs:attribute name="source.bundle.jars" component="org.adempiere.replication.server"/>
+            <cs:attribute name="source.bundle.jars" component="org.adempiere.ui.zk"/>
+            <cs:attribute name="source.bundle.jars" component="org.adempiere.webstore"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.servlet.jsp"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.servlet.jsp.jstl"/>
-            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.xml.bind"/>
-            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.xml.stream"/>
+            <cs:attribute name="bundle.and.fragments.source" component="javax.xml.stream"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.xml.ws"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.aopalliance"/>
-            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.catalina.ha.springsource"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.catalina.springsource"/>
-            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.catalina.tribes.springsource"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.coyote.springsource"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.el.springsource"/>
+            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.jasper.springsource"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.juli.extras.springsource"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.taglibs.standard"/>
-            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
             <cs:attribute name="bundle.and.fragments.source" component="com.springsource.slf4j.api"/>
-            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.slf4j.simple"/>
-            <cs:attribute name="source.bundle.jars" component="org.adempiere.base"/>
-            <cs:attribute name="bundle.and.fragments.source" component="org.adempiere.install"/>
-            <cs:attribute name="source.bundle.jars" component="org.adempiere.replication.server"/>
             <cs:attribute name="bundle.and.fragments.source" component="org.adempiere.report.jasper.webapp"/>
             <cs:attribute name="bundle.and.fragments.source" component="org.adempiere.server"/>
             <cs:attribute name="bundle.and.fragments.source" component="org.adempiere.tomcat.config"/>
-            <cs:attribute name="source.bundle.jars" component="org.adempiere.ui.zk"/>
-            <cs:attribute name="source.bundle.jars" component="org.adempiere.webstore"/>
             <cs:attribute name="bundle.and.fragments.source" component="org.eclipse.gemini.web.core"/>
             <cs:attribute name="bundle.and.fragments.source" component="org.eclipse.gemini.web.extender"/>
             <cs:attribute name="bundle.and.fragments.source" component="org.eclipse.gemini.web.tomcat"/>
@@ -392,16 +405,29 @@
             <cs:attribute name="bundle.and.fragments.source" component="org.springframework.core"/>
             <cs:attribute name="bundle.and.fragments.source" component="org.springframework.osgi.core"/>
             <cs:attribute name="bundle.and.fragments.source" component="org.springframework.osgi.io"/>
+            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.xml.bind"/>
+            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.javax.annotation"/>
+            <cs:attribute name="bundle.and.fragments.source" component="javax.persistence"/>
+            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.slf4j.jcl"/>
+            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.catalina.ha.springsource"/>
+            <cs:attribute name="bundle.and.fragments.source" component="com.springsource.org.apache.catalina.tribes.springsource"/>
+            <cs:attribute name="bundle.and.fragments.source" component="org.adempiere.install"/>
+            <cs:attribute name="bundle.and.fragments.source" component="org.eclipse.ant.core"/>
+            <cs:attribute name="bundle.and.fragments.source" component="org.eclipse.core.variables"/>
+            <cs:attribute name="bundle.and.fragments.source" component="org.adempiere.eclipse.equinox.http.servlet"/>
+            <cs:attribute name="bundle.and.fragments.source" component="org.adempiere.eclipse.equinox.http.servletbridge"/>
+            <cs:attribute name="bundle.and.fragments.source" component="org.adempiere.eclipse.equinox.servletbridge"/>
+            <cs:attribute name="source.bundle.jars" component="org.adempiere.base"/>
         </cs:public>
         <cs:public name="source.feature.jars" filter="(!(cbi.include.source=false))">
             <cs:attribute name="source.feature.jar"/>
             <cs:attribute name="source.feature.references"/>
         </cs:public>
         <cs:public name="source.feature.references" filter="(!(cbi.include.source=false))">
-            <cs:attribute name="source.feature.jars" component="org.adempiere.base"/>
             <cs:attribute name="source.feature.jars" component="org.adempiere.replication.server"/>
             <cs:attribute name="source.feature.jars" component="org.adempiere.ui.zk"/>
             <cs:attribute name="source.feature.jars" component="org.adempiere.webstore"/>
+            <cs:attribute name="source.feature.jars" component="org.adempiere.base"/>
         </cs:public>
         <cs:private name="product.configurations">
             <cs:attribute name="org.adempiere.server.product"/>
