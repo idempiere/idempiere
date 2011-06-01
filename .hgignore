@@ -83,6 +83,7 @@ syntax: regexp
 ^org\.adempiere\.eclipse\.equinox\.servletbridge/bin/.*\.class$
 ^org\.adempiere\.eclipse\.equinox\.http\.servlet/bin/.*\.class$
 ^org\.adempiere\.eclipse\.equinox\.http\.servletbridge/bin/.*\.class$
+^org\.adempiere\.webstore\.resource/bin/.*$
 ^targetPlatform/.*$
 ^\.metadata/.*$
 ^org\.apache\.ecs/bin/.*$
