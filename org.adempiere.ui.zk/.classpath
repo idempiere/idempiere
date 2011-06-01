@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="WEB-INF/src"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/classes/"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/classes" sourcepath="WEB-INF/classes"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zk.jar" sourcepath="WEB-INF/lib/zk-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zcommon.jar" sourcepath="WEB-INF/lib/zcommon-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zul.jar" sourcepath="WEB-INF/lib/zul-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/junit.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/keylistener.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/zkmax.jar" sourcepath="WEB-INF/lib/zkmax-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zkex.jar" sourcepath="WEB-INF/lib/zkex-sources.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/zkplus.jar" sourcepath="WEB-INF/lib/zkplus-sources.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/zhtml.jar" sourcepath="WEB-INF/lib/zhtml-sources.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/timelinez.jar" sourcepath="WEB-INF/lib/timelinez-sources.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/zweb.jar" sourcepath="WEB-INF/lib/zweb-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cglib.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/fckez.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/asm.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/bsh.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/commons-el.jar"/>
@@ -21,20 +36,5 @@
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zcommons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zml.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zk.jar" sourcepath="WEB-INF/lib/zk-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zcommon.jar" sourcepath="WEB-INF/lib/zcommon-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zul.jar" sourcepath="WEB-INF/lib/zul-sources.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/junit.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/keylistener.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/zkmax.jar" sourcepath="WEB-INF/lib/zkmax-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/zkex.jar" sourcepath="WEB-INF/lib/zkex-sources.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/zkplus.jar" sourcepath="WEB-INF/lib/zkplus-sources.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/zhtml.jar" sourcepath="WEB-INF/lib/zhtml-sources.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/timelinez.jar" sourcepath="WEB-INF/lib/timelinez-sources.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/zweb.jar" sourcepath="WEB-INF/lib/zweb-sources.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/cglib.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/fckez.jar"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

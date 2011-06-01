@@ -3,12 +3,6 @@
 	<name>org.adempiere.ui.swing</name>
 	<comment></comment>
 	<projects>
-		<project>base</project>
-		<project>dbPort</project>
-		<project>extend</project>
-		<project>looks</project>
-		<project>print</project>
-		<project>tools</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

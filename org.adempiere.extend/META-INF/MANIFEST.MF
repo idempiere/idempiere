@@ -3,7 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.adempiere.extend
 Bundle-SymbolicName: org.adempiere.extend;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-ClassPath: extend.jar
+Bundle-ClassPath: extend.jar,
+ spiffy-with_source-all-0.05.jar,
+ SuperCSV-with_src-1.52.jar
 Eclipse-RegisterBuddy: org.adempiere.tools
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: compiere.model,

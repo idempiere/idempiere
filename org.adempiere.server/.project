@@ -3,11 +3,6 @@
 	<name>org.adempiere.server</name>
 	<comment></comment>
 	<projects>
-		<project>base</project>
-		<project>dbPort</project>
-		<project>looks</project>
-		<project>server</project>
-		<project>tools</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -3,17 +3,6 @@
 	<name>org.adempiere.install</name>
 	<comment></comment>
 	<projects>
-		<project>base</project>
-		<project>client</project>
-		<project>dbPort</project>
-		<project>extend</project>
-		<project>jboss</project>
-		<project>looks</project>
-		<project>print</project>
-		<project>server</project>
-		<project>serverApps</project>
-		<project>serverRoot</project>
-		<project>tools</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -3,13 +3,6 @@
 	<name>org.adempiere.report.jasper</name>
 	<comment></comment>
 	<projects>
-		<project>base</project>
-		<project>client</project>
-		<project>dbPort</project>
-		<project>lib</project>
-		<project>looks</project>
-		<project>print</project>
-		<project>utils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

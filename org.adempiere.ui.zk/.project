@@ -3,13 +3,6 @@
 	<name>org.adempiere.ui.zk</name>
 	<comment></comment>
 	<projects>
-		<project>base</project>
-		<project>client</project>
-		<project>JasperReports</project>
-		<project>JasperReportsTools</project>
-		<project>tools</project>
-		<project>packages</project>
-		<project>extend</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
