@@ -2,7 +2,7 @@
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
   <rm:locator pattern="^org\.eclipse\.equinox\.server\.p2$" searchPathRef="workspace.feature.project"/>
   <rm:locator pattern="^com\.springsource\.javax\.xml\.ws$" searchPathRef="workspace.bundle.jar"/>
-  <rm:locator pattern="^com\.springsource\.slf4j\.api4$" searchPathRef="workspace.bundle.jar"/>
+  <rm:locator pattern="^com\.springsource\.slf4j\.api$" searchPathRef="workspace.bundle.jar"/>
   <rm:locator pattern="^org\.apache\.poi$" searchPathRef="workspace.bundle.jar"/>
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
