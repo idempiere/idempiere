@@ -5,7 +5,6 @@
 <locations>
 <location path="${workspace_loc}/targetPlatform" type="Directory"/>
 </locations>
-<includeBundles/>
 <environment>
 <os>*</os>
 <ws>*</ws>
