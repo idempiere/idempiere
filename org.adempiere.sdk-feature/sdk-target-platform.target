@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="Target Platform">
+<locations>
+<location path="${workspace_loc}/targetPlatform" type="Directory"/>
+</locations>
+<includeBundles>
+<plugin id="org.eclipse.core.contenttype.source"/>
+<plugin id="org.eclipse.equinox.event"/>
+<plugin id="org.apache.commons.codec"/>
+<plugin id="org.eclipse.equinox.util.source"/>
+<plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
+<plugin id="org.eclipse.equinox.registry"/>
+<plugin id="org.eclipse.equinox.p2.ql"/>
+<plugin id="org.eclipse.equinox.p2.repository"/>
+<plugin id="com.springsource.org.apache.el.springsource"/>
+<plugin id="org.springframework.context"/>
+<plugin id="org.eclipse.ecf"/>
+<plugin id="org.springframework.aop"/>
+<plugin id="org.eclipse.osgi"/>
+<plugin id="org.eclipse.equinox.registry.source"/>
+<plugin id="org.eclipse.equinox.launcher"/>
+<plugin id="org.eclipse.equinox.simpleconfigurator"/>
+<plugin id="org.apache.commons.logging"/>
+<plugin id="com.springsource.org.apache.taglibs.standard"/>
+<plugin id="com.springsource.org.apache.coyote.springsource"/>
+<plugin id="com.springsource.javax.servlet.jsp"/>
+<plugin id="com.springsource.org.apache.activemq"/>
+<plugin id="org.eclipse.equinox.preferences.source"/>
+<plugin id="org.eclipse.core.runtime.source"/>
+<plugin id="org.apache.ant"/>
+<plugin id="org.eclipse.equinox.common.source"/>
+<plugin id="com.springsource.org.apache.kahadb"/>
+<plugin id="org.eclipse.equinox.p2.director"/>
+<plugin id="com.springsource.org.apache.jasper.springsource"/>
+<plugin id="com.springsource.javax.xml.soap"/>
+<plugin id="com.springsource.org.apache.xerces"/>
+<plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+<plugin id="com.springsource.org.apache.catalina.ha.springsource"/>
+<plugin id="org.eclipse.equinox.ds.source"/>
+<plugin id="javax.persistence"/>
+<plugin id="org.eclipse.osgi.services.source"/>
+<plugin id="com.springsource.org.apache.catalina.tribes.springsource"/>
+<plugin id="com.springsource.javax.servlet"/>
+<plugin id="org.eclipse.equinox.event.source"/>
+<plugin id="org.eclipse.equinox.p2.engine"/>
+<plugin id="org.eclipse.osgi.services"/>
+<plugin id="org.eclipse.equinox.http.registry.source"/>
+<plugin id="org.eclipse.equinox.app.source"/>
+<plugin id="org.eclipse.equinox.security"/>
+<plugin id="org.eclipse.equinox.http.registry"/>
+<plugin id="org.apache.commons.httpclient"/>
+<plugin id="org.eclipse.gemini.web.tomcat"/>
+<plugin id="org.springframework.core"/>
+<plugin id="com.springsource.org.eclipse.jdt.core.compiler.batch"/>
+<plugin id="org.eclipse.equinox.util"/>
+<plugin id="org.eclipse.core.variables"/>
+<plugin id="org.springframework.beans"/>
+<plugin id="org.eclipse.equinox.p2.publisher"/>
+<plugin id="org.eclipse.equinox.frameworkadmin"/>
+<plugin id="com.springsource.org.apache.xml.resolver"/>
+<plugin id="javax.xml.stream"/>
+<plugin id="org.eclipse.osgi.source"/>
+<plugin id="javax.xml"/>
+<plugin id="org.eclipse.equinox.app"/>
+<plugin id="org.eclipse.equinox.p2.garbagecollector"/>
+<plugin id="com.springsource.org.aopalliance"/>
+<plugin id="org.eclipse.equinox.ds"/>
+<plugin id="com.springsource.javax.annotation"/>
+<plugin id="com.springsource.org.apache.commons.net"/>
+<plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
+<plugin id="org.eclipse.equinox.p2.core"/>
+<plugin id="com.springsource.org.apache.catalina.springsource"/>
+<plugin id="org.eclipse.gemini.web.core"/>
+<plugin id="com.springsource.javax.servlet.jsp.jstl"/>
+<plugin id="com.springsource.javax.management.j2ee"/>
+<plugin id="org.eclipse.virgo.util.common"/>
+<plugin id="org.eclipse.ecf.identity"/>
+<plugin id="org.apache.poi"/>
+<plugin id="com.springsource.javax.transaction"/>
+<plugin id="org.eclipse.gemini.web.extender"/>
+<plugin id="org.restlet"/>
+<plugin id="com.springsource.org.junit"/>
+<plugin id="org.eclipse.ecf.ssl"/>
+<plugin id="com.springsource.javax.el"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.ssl"/>
+<plugin id="org.eclipse.equinox.common"/>
+<plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
+<plugin id="org.sat4j.core"/>
+<plugin id="org.eclipse.core.jobs"/>
+<plugin id="org.springframework.osgi.core"/>
+<plugin id="org.eclipse.virgo.util.io"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer"/>
+<plugin id="org.eclipse.equinox.p2.artifact.repository"/>
+<plugin id="org.eclipse.equinox.p2.director.app"/>
+<plugin id="com.springsource.javax.xml.rpc"/>
+<plugin id="org.eclipse.virgo.util.osgi"/>
+<plugin id="org.eclipse.equinox.p2.console"/>
+<plugin id="com.springsource.javax.ejb"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.ssl"/>
+<plugin id="org.sat4j.pb"/>
+<plugin id="org.eclipse.core.jobs.source"/>
+<plugin id="org.eclipse.virgo.util.parser.manifest"/>
+<plugin id="com.springsource.org.apache.juli.extras.springsource"/>
+<plugin id="org.eclipse.ant.core"/>
+<plugin id="org.eclipse.equinox.p2.jarprocessor"/>
+<plugin id="com.springsource.javax.mail"/>
+<plugin id="org.springframework.osgi.io"/>
+<plugin id="org.eclipse.osgi.util.source"/>
+<plugin id="org.eclipse.core.runtime"/>
+<plugin id="org.restlet.ext.net"/>
+<plugin id="com.springsource.javax.xml.ws"/>
+<plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+<plugin id="org.eclipse.ecf.filetransfer"/>
+<plugin id="org.eclipse.core.contenttype"/>
+<plugin id="org.eclipse.equinox.p2.touchpoint.natives"/>
+<plugin id="org.eclipse.equinox.preferences"/>
+<plugin id="javax.xml.ws"/>
+<plugin id="com.springsource.net.sf.cglib"/>
+<plugin id="com.springsource.javax.jms"/>
+<plugin id="com.springsource.slf4j.api"/>
+<plugin id="com.springsource.org.apache.commons.collections"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient"/>
+<plugin id="org.restlet.ext.servlet"/>
+<plugin id="com.springsource.javax.xml.bind"/>
+<plugin id="com.springsource.org.apache.xml.serializer"/>
+<plugin id="org.eclipse.equinox.p2.metadata"/>
+<plugin id="com.springsource.slf4j.jcl"/>
+<plugin id="org.eclipse.equinox.security.source"/>
+<plugin id="com.springsource.javax.activation"/>
+<plugin id="com.springsource.org.apache.xmlcommons"/>
+<plugin id="org.eclipse.virgo.util.math"/>
+<plugin id="org.eclipse.equinox.launcher.win32.win32.x86"/>
+<plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64"/>
+<plugin id="org.eclipse.equinox.launcher.win32.win32.x86_64"/>
+<plugin id="org.eclipse.equinox.launcher.gtk.linux.x86"/>
+<plugin id="org.eclipse.equinox.launcher.cocoa.macosx.x86_64"/>
+<plugin id="org.eclipse.equinox.launcher.cocoa.macosx"/>
+</includeBundles>
+<environment>
+<os>*</os>
+<ws>*</ws>
+<arch>*</arch>
+<nl>en_US</nl>
+</environment>
+</target>
