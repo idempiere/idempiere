@@ -469,7 +469,9 @@ public final class Adempiere
 			System.exit(1);
 
 		Ini.setClient (isClient);		//	init logging in Ini
-		CLogMgt.initialize(isClient);
+		
+		if (! isClient)  // Calling this on client is dropping the link with eclipse console
+			CLogMgt.initialize(isClient);
 		//	Init Log
 		log = CLogger.getCLogger(Adempiere.class);
 		//	Greeting
