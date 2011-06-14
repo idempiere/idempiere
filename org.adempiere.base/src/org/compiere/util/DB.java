@@ -169,7 +169,7 @@ public final class DB
 		for (int i = 0; i < ass.length; i++)
 		{
 			ass[i].checkCosting();
-			ass[i].save();
+			ass[i].saveEx();
 		}
 
 		//	Reset Flag

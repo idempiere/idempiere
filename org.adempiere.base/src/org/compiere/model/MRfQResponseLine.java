@@ -92,7 +92,7 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 				if (get_ID() == 0)	//	save this line
 					save();
 				MRfQResponseLineQty qty = new MRfQResponseLineQty (this, qtys[i]);
-				qty.save();
+				qty.saveEx();
 			}
 		}
 	}	//	MRfQResponseLine
@@ -220,7 +220,7 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 				if (qty.isActive())
 				{
 					qty.setIsActive(false);
-					qty.save();
+					qty.saveEx();
 				}
 			}
 		}

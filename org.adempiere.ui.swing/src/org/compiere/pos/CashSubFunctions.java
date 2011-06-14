@@ -486,7 +486,7 @@ public class CashSubFunctions extends PosSubPanel implements ActionListener, Inp
 			cl.setCashType(MCashLine.CASHTYPE_Difference);
 			cl.setAmount(initialChange.subtract(cash.getEndingBalance()));
 			cl.setDescription("Initial Change Before: " + cash.getEndingBalance() + " Now: " + initialChange);
-			cl.save();			
+			cl.saveEx();			
 		}
 		v_PreviousChange.setValue(initialChange);
 	}
@@ -542,7 +542,7 @@ public class CashSubFunctions extends PosSubPanel implements ActionListener, Inp
 			cl.setCashType(MCashLine.CASHTYPE_Difference);
 			cl.setAmount(difference);
 			cl.setDescription(Msg.translate(p_pos.getCtx(), "Cash Scrutiny -> Before: ") + previousValue + " Now: " + actualValue);
-			cl.save();			
+			cl.saveEx();			
 		}
 		cash = MCash.get(p_pos.getCtx(), /*p_pos.getAD_Org_ID(),*/ p_pos.getC_CashBook_ID(), today, null);
 		v_previousBalance.setValue(cash.getEndingBalance());

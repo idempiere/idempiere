@@ -411,7 +411,7 @@ implements ImportProcess
 						if (impBP.getFax() != null)
 							bpl.setFax(impBP.getFax());
 						ModelValidationEngine.get().fireImportValidate(this, impBP, bpl, ImportValidator.TIMING_AFTER_IMPORT);
-						bpl.save();
+						bpl.saveEx();
 					}
 					else 	//	New Location
 						if (impBP.getC_Country_ID() != 0
@@ -569,7 +569,7 @@ implements ImportProcess
 					MContactInterest ci = MContactInterest.get(getCtx(), 
 							impBP.getR_InterestArea_ID(), user.getAD_User_ID(), 
 							true, get_TrxName());
-					ci.save();		//	don't subscribe or re-activate
+					ci.saveEx();		//	don't subscribe or re-activate
 				}
 				//
 				impBP.setI_IsImported(true);

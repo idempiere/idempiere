@@ -589,7 +589,7 @@ public class MSequence extends X_AD_Sequence
 				s_log.warning ("(Table) - no record found - " + TableName);
 				MSequence seq = new MSequence (Env.getCtx(), AD_Client_ID, TableName, null);
 				next = seq.getNextID();
-				seq.save();
+				seq.saveEx();
 			}
 			//	Commit
 			if (trx == null)

@@ -411,7 +411,7 @@ public class ArchiveViewer extends Archive
 		}
 		log.info("Update=" + update);
 		if (update)
-			ar.save();
+			ar.saveEx();
 		//
 		m_index++;
 		updateVDisplay(false);

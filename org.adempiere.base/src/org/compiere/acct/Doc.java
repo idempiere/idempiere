@@ -570,7 +570,7 @@ public abstract class Doc
 				.append(", Balanced=").append(isBalanced())
 				.append(", Schema=").append(m_as.getName());
 			note.setTextMsg(Text.toString());
-			note.save();
+			note.saveEx();
 			p_Error = Text.toString();
 		}
 

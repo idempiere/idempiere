@@ -59,7 +59,7 @@ public class WFPopupItem extends Menuitem {
 			int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 			MWFNodeNext newLine = new MWFNodeNext(m_node, m_AD_WF_NodeTo_ID);
 			newLine.setClientOrg(AD_Client_ID, 0);
-			newLine.save();
+			newLine.saveEx();
 			log.info("Add Line to " + m_node + " -> " + newLine);
 			wfp.reload(m_AD_Workflow_ID);
 		}

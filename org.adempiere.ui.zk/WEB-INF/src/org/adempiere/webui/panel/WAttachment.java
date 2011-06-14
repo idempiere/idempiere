@@ -449,7 +449,7 @@ public class WAttachment extends Window implements EventListener
 				{
 					m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
 					m_attachment.setTextMsg(text.getText());
-					m_attachment.save();
+					m_attachment.saveEx();
 				}
 			}
 			else

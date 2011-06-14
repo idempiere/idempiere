@@ -242,7 +242,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 			log.fine("afterSave");
 			getParent();
 			m_parent.validatePaySchedule();
-			m_parent.save();
+			m_parent.saveEx();
 		}
 		return success;
 	}	//	afterSave

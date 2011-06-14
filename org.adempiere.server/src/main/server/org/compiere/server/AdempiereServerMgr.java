@@ -94,7 +94,7 @@ public class AdempiereServerMgr
 		MSession session = MSession.get(getCtx(), true);
 		session.setWebStoreSession(false);
 		session.setWebSession("Server");
-		session.save();
+		session.saveEx();
 		//
 		return true;
 	}	//	startEnvironment

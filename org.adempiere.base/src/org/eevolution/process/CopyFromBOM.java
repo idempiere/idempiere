@@ -83,7 +83,7 @@ public class CopyFromBOM extends SvrProcess {
 			MPPProductBOMLine tobomline = new MPPProductBOMLine(ctx, 0, get_TrxName());
 			MPPProductBOMLine.copyValues(frombomline, tobomline);
 			tobomline.setPP_Product_BOM_ID(toBOM.getPP_Product_BOM_ID());
-			tobomline.save();
+			tobomline.saveEx();
 			++no;
 		}
 		return "OK";

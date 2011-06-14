@@ -1507,7 +1507,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						if (sLine.getM_AttributeSetInstance_ID() != iLine.getM_AttributeSetInstance_ID())
 						{
 							iLine.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
-							iLine.save();	//	update matched invoice with ASI
+							iLine.saveEx();	//	update matched invoice with ASI
 							inv.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
 						}
 						boolean isNewMatchInv = false;
@@ -1677,7 +1677,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			MOrderLine ol = new MOrderLine(getCtx(), dropLine.getC_OrderLine_ID(), null);
 			if ( ol.getC_OrderLine_ID() != 0 ) {
 				dropLine.setC_OrderLine_ID(ol.getLink_OrderLine_ID());
-				dropLine.save();
+				dropLine.saveEx();
 			}
 		}
 
@@ -1685,7 +1685,7 @@ public class MInOut extends X_M_InOut implements DocAction
 
 		dropShipment.setDocAction(DocAction.ACTION_Complete);
 		dropShipment.processIt(DocAction.ACTION_Complete);
-		dropShipment.save();
+		dropShipment.saveEx();
 
 		return dropShipment;
 	}
@@ -2077,7 +2077,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			{
 				asset.setIsActive(false);
 				asset.addDescription("(" + reversal.getDocumentNo() + " #" + rLine.getLine() + "<-)");
-				asset.save();
+				asset.saveEx();
 			}
 		}
 		reversal.setC_Order_ID(getC_Order_ID());

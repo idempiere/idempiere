@@ -181,7 +181,7 @@ public abstract class AdempiereServer extends Thread
 		m_runTotalMS += m_runLastMS;
 		//
 		p_model.setDateLastRun(new Timestamp(now));
-		p_model.save();
+		p_model.saveEx();
 		//
 		log.fine(getName() + ": " + getStatistics());
 	}	//	runNow
@@ -262,7 +262,7 @@ public abstract class AdempiereServer extends Thread
 			//
 			p_model.setDateLastRun(lastRun);
 			p_model.setDateNextRun(new Timestamp(m_nextWork));
-			p_model.save();
+			p_model.saveEx();
 			//
 			log.fine(getName() + ": " + getStatistics());
 			if (!sleep())

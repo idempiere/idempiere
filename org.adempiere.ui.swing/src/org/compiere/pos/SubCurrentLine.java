@@ -435,9 +435,9 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener {
 					{
 						lineas[i].setC_BPartner_ID(partner.getC_BPartner_ID());
 						lineas[i].setTax();
-						lineas[i].save();
+						lineas[i].saveEx();
 					}
-					m_order.save();
+					m_order.saveEx();
 				}
 			}
 	}
@@ -473,7 +473,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener {
 					double total = current + toadd;
 					lineas[i].setQty(new BigDecimal(total));
 					lineas[i].setPrice(); //	sets List/limit
-					lineas[i].save();
+					lineas[i].saveEx();
 					return lineas[i];
 				}
 			}
@@ -490,7 +490,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener {
 			
 		line.setPrice(); //	sets List/limit
 		line.setPrice(PriceActual);
-		line.save();
+		line.saveEx();
 		return line;
 			
 	} //	createLine
