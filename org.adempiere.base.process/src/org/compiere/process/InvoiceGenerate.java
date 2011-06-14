@@ -213,7 +213,7 @@ public class InvoiceGenerate extends SvrProcess
 					{
 						log.warning("BPartner has no Schedule - set to After Delivery");
 						order.setInvoiceRule(MOrder.INVOICERULE_AfterDelivery);
-						order.save();
+						order.saveEx();
 					}
 					else
 					{
@@ -479,7 +479,7 @@ public class InvoiceGenerate extends SvrProcess
 						ips.setAD_Org_ID(ops.getAD_Org_ID());
 						ips.setProcessing(ops.isProcessing());
 						ips.setIsActive(ops.isActive());
-						ips.save();
+						ips.saveEx();
 					}
 					m_invoice.validatePaySchedule();
 					m_invoice.saveEx();
@@ -491,13 +491,8 @@ public class InvoiceGenerate extends SvrProcess
 				log.warning("completeInvoice - failed: " + m_invoice);
 				addLog("completeInvoice - failed: " + m_invoice); // Elaine 2008/11/25
 			}
-			///fercho m_invoice.save();
-			if (!m_invoice.save())
-			{
-				log.warning("completeInvoice - failed: " + m_invoice);
-				addLog("completeInvoice - failed: " + m_invoice); 
-			}
-			///fercho
+			m_invoice.saveEx();
+
 			addLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, m_invoice.getDocumentNo());
 			m_created++;
 		}
