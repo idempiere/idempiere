@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -34,9 +35,13 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Tabbox;
+import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.ZoomEvent;
+import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
@@ -72,6 +77,7 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vbox;
@@ -94,11 +100,11 @@ import org.zkoss.zul.Vbox;
  * 
  * @author Low Heng Sin
  */
-public class ZkReportViewer extends Window implements EventListener {
+public class ZkReportViewer extends Window implements EventListener, ITabOnCloseHandler {
 	
 	private static final long serialVersionUID = 4640088641140012438L;
 	/** Window No					*/
-	private int                 m_WindowNo;
+	private int                 m_WindowNo = -1;
 	/**	Print Context				*/
 	private Properties			m_ctx;
 	/**	Setting Values				*/
@@ -515,12 +521,52 @@ public class ZkReportViewer extends Window implements EventListener {
 	 */
 	public void onClose()
 	{
-		SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
-		m_reportEngine = null;
-		m_ctx = null;
+		cleanUp();
 		super.onClose();
 	}	//	dispose
 
+	@Override
+	public void onClose(Tabpanel tabPanel) {
+		Tab tab = tabPanel.getLinkedTab();
+		Tabbox tabbox = (Tabbox) tab.getTabbox();
+		if (tabbox.getSelectedTab() == tab) {
+			Tabs tabs = (Tabs) tabbox.getTabs();
+			List<?> childs = tabs.getChildren();
+			for(int i = 0; i < childs.size(); i++) {
+				if (childs.get(i) == tab) {
+					if (i > 0)
+						tabbox.setSelectedIndex((i-1));
+					break;
+				}
+			}
+		}
+		tabPanel.detach();
+		tab.detach();
+		cleanUp();
+	}
+	
+	
+	@Override
+	public void setParent(Component parent) {
+		super.setParent(parent);
+		if (parent != null) {
+			if (parent instanceof Tabpanel) {
+				Tabpanel tabPanel = (Tabpanel) parent;
+				tabPanel.setOnCloseHandler(this);
+			}
+		}
+	}
+
+	private void cleanUp() {
+		if (m_reportEngine != null || m_WindowNo >= 0)
+		{
+			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
+			m_reportEngine = null;
+			m_ctx = null;
+			m_WindowNo = -1;
+		}
+	}
+	
 	public void onEvent(Event event) throws Exception {
 		
 		if(event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
@@ -949,5 +995,5 @@ public class ZkReportViewer extends Window implements EventListener {
 		int AD_Window_ID = 240;		//	hardcoded
 		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
 		AEnv.zoom(AD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
-	}	//	cmd_customize
+	}	//	cmd_customize	
 }
