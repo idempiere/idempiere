@@ -101,8 +101,11 @@ import org.zkoss.zul.Vbox;
  * @author Low Heng Sin
  */
 public class ZkReportViewer extends Window implements EventListener, ITabOnCloseHandler {
-	
-	private static final long serialVersionUID = 4640088641140012438L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7554542090648903080L;
+
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
 	/**	Print Context				*/
