@@ -2,6 +2,7 @@ package org.adempiere.webui.window;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +18,15 @@ import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Tabbox;
+import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.panel.ITabOnCloseHandler;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.util.CLogger;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -29,14 +36,15 @@ import org.zkoss.zkex.zul.Center;
 import org.zkoss.zkex.zul.North;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
 
-public class ZkJRViewer extends Window implements EventListener{
-
+public class ZkJRViewer extends Window implements EventListener, ITabOnCloseHandler {
 	/**
-	 * generated serial version id
+	 * 
 	 */
-	private static final long serialVersionUID = -7657218073670612078L;
+	private static final long serialVersionUID = 2776405512345445561L;
+
 	private JasperPrint jasperPrint;
 	private Listbox previewType = new Listbox();
 	private Iframe iframe;
@@ -44,9 +52,14 @@ public class ZkJRViewer extends Window implements EventListener{
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ZkJRViewer.class);
 	
+	/** Window No					*/
+	private int                 m_WindowNo = -1;
+	
 	public ZkJRViewer(JasperPrint jasperPrint, String title) {
+		super();
 		this.setTitle(title);
 		this.jasperPrint = jasperPrint;
+		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		init();
 	}
 	
@@ -88,7 +101,7 @@ public class ZkJRViewer extends Window implements EventListener{
 		center.appendChild(iframe);
 
 		this.setBorder("normal");
-	}		
+	}
 	
 	private String makePrefix(String name) {
 		StringBuffer prefix = new StringBuffer();
@@ -201,4 +214,45 @@ public class ZkJRViewer extends Window implements EventListener{
 	public void onRenderReport() {
 		iframe.setContent(media);
 	}
+
+	@Override
+	public void onClose(Tabpanel tabPanel) {
+		Tab tab = tabPanel.getLinkedTab();
+		Tabbox tabbox = (Tabbox) tab.getTabbox();
+		if (tabbox.getSelectedTab() == tab) {
+			Tabs tabs = (Tabs) tabbox.getTabs();
+			List<?> childs = tabs.getChildren();
+			for(int i = 0; i < childs.size(); i++) {
+				if (childs.get(i) == tab) {
+					if (i > 0)
+						tabbox.setSelectedIndex((i-1));
+					break;
+				}
+			}
+		}
+		tabPanel.detach();
+		tab.detach();
+		cleanUp();
+	}
+
+	@Override
+	public void setParent(Component parent) {
+		super.setParent(parent);
+		if (parent != null) {
+			if (parent instanceof Tabpanel) {
+				Tabpanel tabPanel = (Tabpanel) parent;
+				tabPanel.setOnCloseHandler(this);
+			}
+		}
+	}
+
+	private void cleanUp() {
+		if (jasperPrint != null || m_WindowNo >= 0)
+		{
+			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
+			jasperPrint = null;
+			m_WindowNo = -1;
+		}
+	}
+
 }
