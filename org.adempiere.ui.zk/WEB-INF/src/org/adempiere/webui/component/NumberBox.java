@@ -92,8 +92,8 @@ public class NumberBox extends Div
 		decimalBox = new Decimalbox();
     	if (integral)
     		decimalBox.setScale(0);
-    	decimalBox.setStyle("display: inline;");
-		td.appendChild(decimalBox);
+    	decimalBox.setStyle("display: inline;text-align:right");
+    	td.appendChild(decimalBox);
 		
 		Td btnColumn = new Td();
 		tr.appendChild(btnColumn);
