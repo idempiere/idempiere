@@ -345,6 +345,29 @@ public class DocLine
 	}   //  getDateAcct
 
 	/**
+	 *  Get FX Conversion Date
+	 *  
+	 *  The foreign exchange rate conversion date may be different from the accounting posting date in some cases (e.g. bank statement)
+	 *  
+	 *  @return FX conversion date 
+	 */
+	public Timestamp getDateConv ()
+	{
+		Timestamp dateConv = null;
+		int index = p_po.get_ColumnIndex("DateAcct");
+		if (index != -1)
+		{
+			dateConv = (Timestamp)p_po.get_Value(index);
+		}
+		
+
+		if (dateConv == null)
+			dateConv = getDateAcct();
+		
+		return dateConv;
+	}   //  getDateAcct
+	
+	/**
 	 *  Set Document Date
 	 *  @param dateDoc doc date
 	 */

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -705,14 +706,21 @@ public final class FactLine extends X_Fact_Acct
 			if (AD_Org_ID == 0)
 				AD_Org_ID = m_doc.getAD_Org_ID();
 		}
+		
+		Timestamp convDate = getDateAcct();
+
+		if ( m_doc instanceof Doc_BankStatement )
+			convDate = m_docLine.getDateConv();				
+			
+		
 		setAmtAcctDr (MConversionRate.convert (getCtx(),
 			getAmtSourceDr(), getC_Currency_ID(), m_acctSchema.getC_Currency_ID(),
-			getDateAcct(), C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID));
+			convDate, C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID));
 		if (getAmtAcctDr() == null)
 			return false;
 		setAmtAcctCr (MConversionRate.convert (getCtx(),
 			getAmtSourceCr(), getC_Currency_ID(), m_acctSchema.getC_Currency_ID(),
-			getDateAcct(), C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID));
+			convDate, C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID));
 		return true;
 	}	//	convert
 
