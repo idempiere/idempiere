@@ -107,9 +107,9 @@ public class InOutCreateInvoice extends SvrProcess
 			if (!line.save())
 				throw new IllegalArgumentException("Cannot save Invoice Line");
 		}
-		
-		MOrder order = new MOrder(getCtx(), invoice.getC_Order_ID(), get_TrxName());
-		if (order != null) {
+				
+		if (invoice.getC_Order_ID() > 0) {
+			MOrder order = new MOrder(getCtx(), invoice.getC_Order_ID(), get_TrxName());
 			invoice.setPaymentRule(order.getPaymentRule());
 			invoice.setC_PaymentTerm_ID(order.getC_PaymentTerm_ID());
 			invoice.saveEx();
