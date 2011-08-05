@@ -1147,6 +1147,10 @@ public class WAcctViewer extends Window implements EventListener
 			if (ase != null)
 				whereClause += " AND C_Element_ID=" + ase.getC_Element_ID();
 		}
+		else if (keyColumn.equals("AD_OrgTrx_ID"))
+		{
+			lookupColumn = "AD_Org_ID";
+		}
 		else if (selDocument.isChecked())
 			whereClause = "";
 
