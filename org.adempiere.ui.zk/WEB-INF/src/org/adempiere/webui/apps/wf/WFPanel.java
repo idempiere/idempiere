@@ -108,7 +108,7 @@ public class WFPanel extends Borderlayout implements EventListener
 		center.appendChild(table);
 		contentPanel.setStyle("width: 100%; heigh: 100%;");
 		center.setAutoscroll(true);
-		center.setFlex(true);
+		center.setFlex(false);
 		
 		South south = new South();
 		this.appendChild(south);

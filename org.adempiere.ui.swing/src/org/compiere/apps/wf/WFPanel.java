@@ -318,9 +318,7 @@ public class WFPanel extends CPanel
 		centerPanel.removeAll();
 		centerPanel.setReadWrite(readWrite);
 		centerPanel.getGraphScene().addObjectSceneListener(this, ObjectSceneEventType.OBJECT_SELECTION_CHANGED);
-
-		if (readWrite)
-			centerPanel.setWorkflow(m_wf);
+		centerPanel.setWorkflow(m_wf);
 		
 		// Add Nodes
 		MWFNode[] nodes = m_wf.getNodes(true, AD_Client_ID);
