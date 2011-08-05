@@ -3191,7 +3191,7 @@ public abstract class PO
 		boolean uuidFunction = DB.isGenerateUUIDSupported();
 
 		//uuid column
-		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column as col INNER JOIN AD_Table as tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
+		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column col INNER JOIN AD_Table tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
 					tableName+"_Trl", tableName+"_Trl_UU");
 
 		StringBuffer sql = new StringBuffer ("INSERT INTO ")
@@ -3371,7 +3371,7 @@ public abstract class PO
 		boolean uuidFunction = DB.isGenerateUUIDSupported();
 
 		//uuid column
-		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column as col INNER JOIN AD_Table as tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
+		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column col INNER JOIN AD_Table tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
 				acctTable, acctTable+"_UU");
 		if (uuidColumnId > 0 && uuidFunction)
 			sb.append(",").append(acctTable).append("_UU");
@@ -3444,7 +3444,7 @@ public abstract class PO
 		boolean uuidFunction = DB.isGenerateUUIDSupported();
 
 		//uuid column
-		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column as col INNER JOIN AD_Table as tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
+		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column col INNER JOIN AD_Table tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
 				tableName, tableName+"_UU");
 
 		StringBuffer sb = new StringBuffer ("INSERT INTO ")
