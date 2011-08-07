@@ -190,12 +190,12 @@ public class PackOut
 
 	private TransformerHandler createPackoutHandler(
 			OutputStream packoutStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
-		StreamResult packoutStreamResult = new StreamResult(new OutputStreamWriter(packoutStream,"ISO-8859-1"));
+		StreamResult packoutStreamResult = new StreamResult(new OutputStreamWriter(packoutStream,"UTF-8"));
 		SAXTransformerFactory packoutFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
 		packoutFactory.setAttribute("indent-number", new Integer(4));
 		TransformerHandler packoutHandler = packoutFactory.newTransformerHandler();
 		Transformer packoutTransformer = packoutHandler.getTransformer();
-		packoutTransformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
+		packoutTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		packoutTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
 		packoutHandler.setResult(packoutStreamResult);
 		packoutHandler.startDocument();
@@ -229,12 +229,12 @@ public class PackOut
 	}
 
 	private TransformerHandler createDocHandler(OutputStream docStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
-		StreamResult docStreamResult = new StreamResult(new OutputStreamWriter(docStream,"ISO-8859-1"));
+		StreamResult docStreamResult = new StreamResult(new OutputStreamWriter(docStream,"UTF-8"));
 		SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
 		transformerFactory.setAttribute("indent-number", new Integer(4));
 		TransformerHandler docHandler = transformerFactory.newTransformerHandler();
 		Transformer transformer = docHandler.getTransformer();
-		transformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
+		transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
 		transformer.setOutputProperty(OutputKeys.INDENT,"yes");
 		docHandler.setResult(docStreamResult);
 		docHandler.startDocument();
