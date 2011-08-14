@@ -4,7 +4,7 @@ CREATE OR REPLACE VIEW C_PAYSELECTION_CHECK_V
  BPTAXID, NAICS, DUNS, BPGREETING, NAME, 
  NAME2, C_LOCATION_ID, REFERENCENO, POREFERENCE, PAYDATE, 
  PAYAMT, AMTINWORDS, QTY, PAYMENTRULE, DOCUMENTNO, LOGO_ID,
- DOCUMENTTYPE, DOCUMENTTYPENOTE, DESCRIPTION)
+ DOCUMENTTYPE, DOCUMENTTYPENOTE, DESCRIPTION, BANKACCOUNTDESCRIPTION)
 AS 
 SELECT psc.AD_Client_ID, psc.AD_Org_ID, 
 	cast('en_US' as varchar2(6)) AS AD_Language,
@@ -18,10 +18,12 @@ SELECT psc.AD_Client_ID, psc.AD_Org_ID,
 	ps.PayDate,
 	psc.PayAmt, psc.PayAmt AS AmtInWords,
 	psc.Qty, psc.PaymentRule, psc.DocumentNo, COALESCE(oi.Logo_ID, ci.Logo_ID) AS Logo_ID,
-	dt.PrintName AS DocumentType, dt.DocumentNote AS DocumentTypeNote, p.Description
+	dt.PrintName AS DocumentType, dt.DocumentNote AS DocumentTypeNote, p.Description,
+        ba.Description AS BankAccountDescription
 FROM C_PaySelectionCheck psc
 	INNER JOIN C_PaySelection ps ON (psc.C_PaySelection_ID=ps.C_PaySelection_ID)
 	LEFT JOIN c_payment p ON (psc.c_payment_id = p.c_payment_id)
+	LEFT JOIN C_BankAccount ba ON (p.c_bankaccount_id=ba.c_bankaccount_id)
 	LEFT JOIN c_doctype dt ON (p.c_doctype_id = dt.c_doctype_id)
 	INNER JOIN C_BPartner bp ON (psc.C_BPartner_ID=bp.C_BPartner_ID)
 	LEFT OUTER JOIN C_Greeting bpg on (bp.C_Greeting_ID=bpg.C_Greeting_ID)
