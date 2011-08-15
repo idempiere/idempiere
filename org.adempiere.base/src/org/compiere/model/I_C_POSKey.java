@@ -31,7 +31,7 @@ public interface I_C_POSKey
     public static final String Table_Name = "C_POSKey";
 
     /** AD_Table_ID=750 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 750;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -48,6 +48,19 @@ public interface I_C_POSKey
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_Image_ID */
+    public static final String COLUMNNAME_AD_Image_ID = "AD_Image_ID";
+
+	/** Set Image.
+	  * Image or Icon
+	  */
+	public void setAD_Image_ID (int AD_Image_ID);
+
+	/** Get Image.
+	  * Image or Icon
+	  */
+	public int getAD_Image_ID();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -75,7 +88,22 @@ public interface I_C_POSKey
 	  */
 	public int getAD_PrintColor_ID();
 
-	public I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
+
+    /** Column name AD_PrintFont_ID */
+    public static final String COLUMNNAME_AD_PrintFont_ID = "AD_PrintFont_ID";
+
+	/** Set Print Font.
+	  * Maintain Print Font
+	  */
+	public void setAD_PrintFont_ID (int AD_PrintFont_ID);
+
+	/** Get Print Font.
+	  * Maintain Print Font
+	  */
+	public int getAD_PrintFont_ID();
+
+	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException;
 
     /** Column name C_POSKey_ID */
     public static final String COLUMNNAME_C_POSKey_ID = "C_POSKey_ID";
@@ -103,7 +131,16 @@ public interface I_C_POSKey
 	  */
 	public int getC_POSKeyLayout_ID();
 
-	public I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException;
+	public org.compiere.model.I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException;
+
+    /** Column name C_POSKey_UU */
+    public static final String COLUMNNAME_C_POSKey_UU = "C_POSKey_UU";
+
+	/** Set C_POSKey_UU	  */
+	public void setC_POSKey_UU (String C_POSKey_UU);
+
+	/** Get C_POSKey_UU	  */
+	public String getC_POSKey_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -160,7 +197,7 @@ public interface I_C_POSKey
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -202,6 +239,56 @@ public interface I_C_POSKey
  lowest number comes first
 	  */
 	public int getSeqNo();
+
+    /** Column name SpanX */
+    public static final String COLUMNNAME_SpanX = "SpanX";
+
+	/** Set Column span.
+	  * Number of columns spanned
+	  */
+	public void setSpanX (int SpanX);
+
+	/** Get Column span.
+	  * Number of columns spanned
+	  */
+	public int getSpanX();
+
+    /** Column name SpanY */
+    public static final String COLUMNNAME_SpanY = "SpanY";
+
+	/** Set Row Span.
+	  * Number of rows spanned
+	  */
+	public void setSpanY (int SpanY);
+
+	/** Get Row Span.
+	  * Number of rows spanned
+	  */
+	public int getSpanY();
+
+    /** Column name SubKeyLayout_ID */
+    public static final String COLUMNNAME_SubKeyLayout_ID = "SubKeyLayout_ID";
+
+	/** Set Key Layout.
+	  * Key Layout to be displayed when this key is pressed
+	  */
+	public void setSubKeyLayout_ID (int SubKeyLayout_ID);
+
+	/** Get Key Layout.
+	  * Key Layout to be displayed when this key is pressed
+	  */
+	public int getSubKeyLayout_ID();
+
+	public org.compiere.model.I_C_POSKeyLayout getSubKeyLayout() throws RuntimeException;
+
+    /** Column name Text */
+    public static final String COLUMNNAME_Text = "Text";
+
+	/** Set Text	  */
+	public void setText (String Text);
+
+	/** Get Text	  */
+	public String getText();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

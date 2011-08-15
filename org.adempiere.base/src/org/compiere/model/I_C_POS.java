@@ -31,7 +31,7 @@ public interface I_C_POS
     public static final String Table_Name = "C_POS";
 
     /** AD_Table_ID=748 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 748;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,6 +62,19 @@ public interface I_C_POS
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AutoLogoutDelay */
+    public static final String COLUMNNAME_AutoLogoutDelay = "AutoLogoutDelay";
+
+	/** Set Auto Logout Delay.
+	  * Automatically logout if terminal inactive for this period
+	  */
+	public void setAutoLogoutDelay (int AutoLogoutDelay);
+
+	/** Get Auto Logout Delay.
+	  * Automatically logout if terminal inactive for this period
+	  */
+	public int getAutoLogoutDelay();
+
     /** Column name CashDrawer */
     public static final String COLUMNNAME_CashDrawer = "CashDrawer";
 
@@ -84,7 +97,7 @@ public interface I_C_POS
 	  */
 	public int getC_BankAccount_ID();
 
-	public I_C_BankAccount getC_BankAccount() throws RuntimeException;
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name C_BPartnerCashTrx_ID */
     public static final String COLUMNNAME_C_BPartnerCashTrx_ID = "C_BPartnerCashTrx_ID";
@@ -99,7 +112,7 @@ public interface I_C_POS
 	  */
 	public int getC_BPartnerCashTrx_ID();
 
-	public I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException;
 
     /** Column name C_CashBook_ID */
     public static final String COLUMNNAME_C_CashBook_ID = "C_CashBook_ID";
@@ -114,7 +127,7 @@ public interface I_C_POS
 	  */
 	public int getC_CashBook_ID();
 
-	public I_C_CashBook getC_CashBook() throws RuntimeException;
+	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -129,7 +142,7 @@ public interface I_C_POS
 	  */
 	public int getC_DocType_ID();
 
-	public I_C_DocType getC_DocType() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_POS_ID */
     public static final String COLUMNNAME_C_POS_ID = "C_POS_ID";
@@ -157,7 +170,16 @@ public interface I_C_POS
 	  */
 	public int getC_POSKeyLayout_ID();
 
-	public I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException;
+	public org.compiere.model.I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException;
+
+    /** Column name C_POS_UU */
+    public static final String COLUMNNAME_C_POS_UU = "C_POS_UU";
+
+	/** Set C_POS_UU	  */
+	public void setC_POS_UU (String C_POS_UU);
+
+	/** Get C_POS_UU	  */
+	public String getC_POS_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -240,7 +262,7 @@ public interface I_C_POS
 	  */
 	public int getM_PriceList_ID();
 
-	public I_M_PriceList getM_PriceList() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -255,7 +277,7 @@ public interface I_C_POS
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -269,6 +291,36 @@ public interface I_C_POS
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name OSK_KeyLayout_ID */
+    public static final String COLUMNNAME_OSK_KeyLayout_ID = "OSK_KeyLayout_ID";
+
+	/** Set On Screen Keyboard layout.
+	  * The key layout to use for on screen keyboard for text fields.
+	  */
+	public void setOSK_KeyLayout_ID (int OSK_KeyLayout_ID);
+
+	/** Get On Screen Keyboard layout.
+	  * The key layout to use for on screen keyboard for text fields.
+	  */
+	public int getOSK_KeyLayout_ID();
+
+	public org.compiere.model.I_C_POSKeyLayout getOSK_KeyLayout() throws RuntimeException;
+
+    /** Column name OSNP_KeyLayout_ID */
+    public static final String COLUMNNAME_OSNP_KeyLayout_ID = "OSNP_KeyLayout_ID";
+
+	/** Set On Screen Number Pad layout.
+	  * The key layout to use for on screen number pad for numeric fields.
+	  */
+	public void setOSNP_KeyLayout_ID (int OSNP_KeyLayout_ID);
+
+	/** Get On Screen Number Pad layout.
+	  * The key layout to use for on screen number pad for numeric fields.
+	  */
+	public int getOSNP_KeyLayout_ID();
+
+	public org.compiere.model.I_C_POSKeyLayout getOSNP_KeyLayout() throws RuntimeException;
 
     /** Column name PrinterName */
     public static final String COLUMNNAME_PrinterName = "PrinterName";
@@ -296,7 +348,7 @@ public interface I_C_POS
 	  */
 	public int getSalesRep_ID();
 
-	public I_AD_User getSalesRep() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

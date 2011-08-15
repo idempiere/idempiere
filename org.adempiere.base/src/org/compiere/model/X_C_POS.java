@@ -30,7 +30,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20110815L;
 
     /** Standard Constructor */
     public X_C_POS (Properties ctx, int C_POS_ID, String trxName)
@@ -77,6 +77,26 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
       return sb.toString();
     }
 
+	/** Set Auto Logout Delay.
+		@param AutoLogoutDelay 
+		Automatically logout if terminal inactive for this period
+	  */
+	public void setAutoLogoutDelay (int AutoLogoutDelay)
+	{
+		set_Value (COLUMNNAME_AutoLogoutDelay, Integer.valueOf(AutoLogoutDelay));
+	}
+
+	/** Get Auto Logout Delay.
+		@return Automatically logout if terminal inactive for this period
+	  */
+	public int getAutoLogoutDelay () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AutoLogoutDelay);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set CashDrawer.
 		@param CashDrawer CashDrawer	  */
 	public void setCashDrawer (String CashDrawer)
@@ -91,9 +111,9 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return (String)get_Value(COLUMNNAME_CashDrawer);
 	}
 
-	public I_C_BankAccount getC_BankAccount() throws RuntimeException
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
     {
-		return (I_C_BankAccount)MTable.get(getCtx(), I_C_BankAccount.Table_Name)
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
 			.getPO(getC_BankAccount_ID(), get_TrxName());	}
 
 	/** Set Bank Account.
@@ -119,9 +139,9 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_BPartnerCashTrx_ID(), get_TrxName());	}
 
 	/** Set Template B.Partner.
@@ -147,9 +167,9 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_CashBook getC_CashBook() throws RuntimeException
+	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
     {
-		return (I_C_CashBook)MTable.get(getCtx(), I_C_CashBook.Table_Name)
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
 			.getPO(getC_CashBook_ID(), get_TrxName());	}
 
 	/** Set Cash Book.
@@ -175,9 +195,9 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_DocType getC_DocType() throws RuntimeException
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getC_DocType_ID(), get_TrxName());	}
 
 	/** Set Document Type.
@@ -226,9 +246,9 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException
+	public org.compiere.model.I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException
     {
-		return (I_C_POSKeyLayout)MTable.get(getCtx(), I_C_POSKeyLayout.Table_Name)
+		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_Name)
 			.getPO(getC_POSKeyLayout_ID(), get_TrxName());	}
 
 	/** Set POS Key Layout.
@@ -252,6 +272,20 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_POS_UU.
+		@param C_POS_UU C_POS_UU	  */
+	public void setC_POS_UU (String C_POS_UU)
+	{
+		set_Value (COLUMNNAME_C_POS_UU, C_POS_UU);
+	}
+
+	/** Get C_POS_UU.
+		@return C_POS_UU	  */
+	public String getC_POS_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_POS_UU);
 	}
 
 	/** Set Description.
@@ -312,9 +346,9 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return false;
 	}
 
-	public I_M_PriceList getM_PriceList() throws RuntimeException
+	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
     {
-		return (I_M_PriceList)MTable.get(getCtx(), I_M_PriceList.Table_Name)
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
 			.getPO(getM_PriceList_ID(), get_TrxName());	}
 
 	/** Set Price List.
@@ -340,9 +374,9 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_Warehouse_ID(), get_TrxName());	}
 
 	/** Set Warehouse.
@@ -393,6 +427,62 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	public org.compiere.model.I_C_POSKeyLayout getOSK_KeyLayout() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_Name)
+			.getPO(getOSK_KeyLayout_ID(), get_TrxName());	}
+
+	/** Set On Screen Keyboard layout.
+		@param OSK_KeyLayout_ID 
+		The key layout to use for on screen keyboard for text fields.
+	  */
+	public void setOSK_KeyLayout_ID (int OSK_KeyLayout_ID)
+	{
+		if (OSK_KeyLayout_ID < 1) 
+			set_Value (COLUMNNAME_OSK_KeyLayout_ID, null);
+		else 
+			set_Value (COLUMNNAME_OSK_KeyLayout_ID, Integer.valueOf(OSK_KeyLayout_ID));
+	}
+
+	/** Get On Screen Keyboard layout.
+		@return The key layout to use for on screen keyboard for text fields.
+	  */
+	public int getOSK_KeyLayout_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_OSK_KeyLayout_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_POSKeyLayout getOSNP_KeyLayout() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_Name)
+			.getPO(getOSNP_KeyLayout_ID(), get_TrxName());	}
+
+	/** Set On Screen Number Pad layout.
+		@param OSNP_KeyLayout_ID 
+		The key layout to use for on screen number pad for numeric fields.
+	  */
+	public void setOSNP_KeyLayout_ID (int OSNP_KeyLayout_ID)
+	{
+		if (OSNP_KeyLayout_ID < 1) 
+			set_Value (COLUMNNAME_OSNP_KeyLayout_ID, null);
+		else 
+			set_Value (COLUMNNAME_OSNP_KeyLayout_ID, Integer.valueOf(OSNP_KeyLayout_ID));
+	}
+
+	/** Get On Screen Number Pad layout.
+		@return The key layout to use for on screen number pad for numeric fields.
+	  */
+	public int getOSNP_KeyLayout_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_OSNP_KeyLayout_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Printer Name.
 		@param PrinterName 
 		Name of the Printer
@@ -410,9 +500,9 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return (String)get_Value(COLUMNNAME_PrinterName);
 	}
 
-	public I_AD_User getSalesRep() throws RuntimeException
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSalesRep_ID(), get_TrxName());	}
 
 	/** Set Sales Representative.
