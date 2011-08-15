@@ -174,6 +174,12 @@ public final class ALogin extends CDialog
 	private void jbInit() throws Exception
 	{
 		this.setName("Login");
+		//red1 - giving names to input fields for UISpec4J calling during tests
+		orgCombo.setName("orgCombo");
+		clientCombo.setName("clientCombo");
+		userTextField.setName("userTextField");
+		passwordField.setName("passwordField");
+		//red1 - end -
 		titleLabel.setFont(new java.awt.Font("Serif", 2, 10));
 		titleLabel.setForeground(Color.blue);
 		titleLabel.setRequestFocusEnabled(false);

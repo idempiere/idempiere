@@ -44,8 +44,11 @@ public class PosOrderModel extends MOrder {
 	
 	private MPOS m_pos;
 	
+	private String trxName;
+	
 	public PosOrderModel(Properties ctx, int C_Order_ID, String trxName, MPOS pos) {
 		super(ctx, C_Order_ID, trxName);
+		this.trxName = trxName;
 		m_pos = pos;
 	}
 
@@ -54,9 +57,9 @@ public class PosOrderModel extends MOrder {
 	 * 
 	 * @return order or null
 	 */
-	public static PosOrderModel createOrder(MPOS pos, MBPartner partner) {
+	public static PosOrderModel createOrder(MPOS pos, MBPartner partner, String trxName) {
 		
-		PosOrderModel order = new PosOrderModel(Env.getCtx(), 0, null, pos);
+		PosOrderModel order = new PosOrderModel(Env.getCtx(), 0, trxName, pos);
 		order.setAD_Org_ID(pos.getAD_Org_ID());
 		order.setIsSOTrx(true);
 		order.setC_POS_ID(pos.getC_POS_ID());
@@ -86,9 +89,9 @@ public class PosOrderModel extends MOrder {
 
 
 	/**
-	 * @author Comunidad de Desarrollo OpenXpertya 
-	 *         *Basado en Codigo Original Modificado, Revisado y Optimizado de:
-	 *         *Copyright � ConSerTi
+	 * @author Community Development OpenXpertya 
+	 *         *Based on Modified Original Code, Revised and Optimized:
+	 *         *Copyright ConSerTi
 	 */
 	public void setBPartner(MBPartner partner)
 	{
@@ -174,7 +177,7 @@ public class PosOrderModel extends MOrder {
 	 * 
 	 * @author Comunidad de Desarrollo OpenXpertya 
  *         *Basado en Codigo Original Modificado, Revisado y Optimizado de:
- *         *Copyright � ConSerTi
+ *         *Copyright ConSerTi
 	 */		
 	public boolean deleteOrder () {
 		if (getDocStatus().equals("DR"))
@@ -187,7 +190,7 @@ public class PosOrderModel extends MOrder {
 						for (int i = numLines - 1; i >= 0; i--)
 						{
 							if (lines[i] != null)
-								deleteLine(lines[i].getC_Order_ID());
+								deleteLine(lines[i].getC_OrderLine_ID());
 						}
 				}
 				
@@ -200,12 +203,16 @@ public class PosOrderModel extends MOrder {
 						{
 							if (taxs[i] != null)
 								taxs[i].delete(true);
+							taxs[i].saveEx();
 							taxs[i] = null;
 						}
 				}
 				
 				getLines(true, null);		// requery order
-				return delete(true);
+				setDocStatus("VO");//delete(true); red1 -- should not delete but void the order
+				setProcessed(true); //red1 -- to avoid been in history during query
+				save();
+				return true;
 			}
 		return false;
 	} //	deleteOrder
@@ -222,6 +229,7 @@ public class PosOrderModel extends MOrder {
 				if ( line.getC_OrderLine_ID() == C_OrderLine_ID )
 				{
 					line.delete(true);	
+					line.saveEx();
 				}
 			}
 		}
@@ -346,7 +354,7 @@ public class PosOrderModel extends MOrder {
 			String cardNo, String cvc, String cardtype) 
 	{
 
-		MPayment payment = createPayment(MPayment.TENDERTYPE_Check);
+		MPayment payment = createPayment(MPayment.TENDERTYPE_CreditCard);
 		payment.setAmount(getC_Currency_ID(), amt);
 		payment.setC_BankAccount_ID(m_pos.getC_BankAccount_ID());
 		payment.setCreditCard(MPayment.TRXTYPE_Sales, cardtype,
@@ -364,7 +372,7 @@ public class PosOrderModel extends MOrder {
 
 	private MPayment createPayment(String tenderType)
 	{
-		MPayment payment = new MPayment(getCtx(), 0, null);
+		MPayment payment = new MPayment(getCtx(), 0, trxName);
 		payment.setAD_Org_ID(m_pos.getAD_Org_ID());
 		payment.setTenderType(tenderType);
 		payment.setC_Order_ID(getC_Order_ID());

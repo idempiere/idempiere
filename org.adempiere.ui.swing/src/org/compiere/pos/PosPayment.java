@@ -24,7 +24,10 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.swing.DefaultComboBoxModel;
@@ -62,19 +65,31 @@ import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
 public class PosPayment extends CDialog implements PosKeyListener, VetoableChangeListener, ActionListener {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1961106531807910948L;
+	private static final long serialVersionUID = -1961758117289056671L;
+	
+	NumberFormat formatter = new DecimalFormat("#0.00"); //red1 - parser to remove commas or dots separator for above '000s.
+    NumberFormat nf = NumberFormat.getInstance(Locale.getDefault()); // make locale-specific
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
 		if ( e.getSource().equals(fTenderAmt) || e.getSource().equals(fPayAmt) )
 		{
-			BigDecimal tender = new BigDecimal( fTenderAmt.getText() );
-			BigDecimal pay = new BigDecimal( fPayAmt.getText() );
+			//red1 - remove commas from thousand value
+			BigDecimal tender = Env.ZERO;
+			BigDecimal pay = Env.ZERO;
+		    try
+		    {
+		      tender = new BigDecimal(formatter.format((nf.parse(fTenderAmt.getText())).floatValue()));
+		      pay =  new BigDecimal(formatter.format((nf.parse(fPayAmt.getText())).floatValue()));
+ 		    }
+		    catch (ParseException n)
+		    {
+		      n.printStackTrace();
+		    }
 			if ( tender.compareTo(Env.ZERO) != 0 )
 			{
 				fReturnAmt.setValue(tender.subtract(pay));
@@ -88,6 +103,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		}
 		if ( e.getSource().equals(f_bCancel))
 		{
+			paid = false;
 			dispose();
 			return;
 		}
@@ -102,7 +118,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		try {
 
 			String tenderType = ((ValueNamePair) tenderTypePick.getValue()).getID();
-			BigDecimal amt = new BigDecimal(fPayAmt.getText());
+			BigDecimal amt = new BigDecimal(formatter.format((nf.parse(fPayAmt.getText())).floatValue()));;
 
 			if ( tenderType.equals(MPayment.TENDERTYPE_Cash) )
 			{
@@ -253,6 +269,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		
 		tenderTypePick.setFont(font);
 		tenderTypePick.addActionListener(this);
+		tenderTypePick.setName("tenderTypePick"); //red1 for ID purpuse during testing
 		tenderTypePick.setRenderer(new ListCellRenderer() {
 			protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
@@ -323,6 +340,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		ValueNamePair[] ccs = p_order.getCreditCards((BigDecimal) fPayAmt.getValue());
 		//	Set Selection
 		fCCardType = new CComboBox(ccs);
+		fCCardType.setName("cardType"); //red1 Id for testing
 		fCCardType.setRenderer(new ListCellRenderer() {
 			protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
@@ -347,6 +365,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 			
 		fCCardNo = new PosTextField(Msg.translate(p_ctx, "CreditCardNumber"), p_posPanel, p_pos.getOSNP_KeyLayout_ID(),  new DecimalFormat("#"));
 		lCCardNo = new CLabel(Msg.translate(p_ctx, "CreditCardNumber"));
+		fCCardNo.setName("cardNo");
 		mainPanel.add(lCCardNo, "growx");
 		mainPanel.add(fCCardNo, "wrap, growx");
 		fCCardNo.setFont(font);
@@ -361,6 +380,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		
 		fCCardMonth = new PosTextField(Msg.translate(p_ctx, "Expires"), p_posPanel, p_pos.getOSNP_KeyLayout_ID(), new DecimalFormat("#"));
 		lCCardMonth = new CLabel(Msg.translate(p_ctx, "Expires"));
+		fCCardMonth.setName("expiry");
 		mainPanel.add(lCCardMonth, "growx");
 		mainPanel.add(fCCardMonth, "wrap, w 75!");
 		fCCardMonth.setFont(font);

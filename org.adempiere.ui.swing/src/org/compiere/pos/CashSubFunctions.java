@@ -343,6 +343,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 		if (action.equals("displayInitialChange"))
 		{
 			cmd_displayInitialChange();
+			cInitial.setVisible(false);
 		}
 		//  to display panel with cash closing
 		else if (action.equals("CashClosing"))
@@ -403,8 +404,10 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	 */
 	private void cmd_displayInitialChange()
 	{
-		cScrutiny.setVisible(false);
-		c.setVisible(false);
+ 		if (cScrutiny.isVisible())
+ 			cScrutiny.setVisible(false);
+ 		if (c.isVisible())
+ 			c.setVisible(false);
 		cInitial.setVisible(true);
 		
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -429,8 +432,10 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	 */
 	private void cmd_displayCashScrutiny()
 	{
-		cInitial.setVisible(false);
-		c.setVisible(false);
+		if (cInitial.isVisible())
+			cInitial.setVisible(false);
+		if (c.isVisible())
+			c.setVisible(false);
 		cScrutiny.setVisible(true);
 
 		// calculate total until the moment and shows it in scrutiny panel

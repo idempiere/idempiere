@@ -21,8 +21,12 @@ import java.util.Properties;
 
 import javax.swing.KeyStroke;
 
+import org.compiere.apps.AEnv;
 import org.compiere.apps.AppsAction;
+import org.compiere.model.MOrder;
 import org.compiere.model.MPOS;
+import org.compiere.print.ReportCtl;
+import org.compiere.print.ReportEngine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CPanel;
 import org.compiere.util.Env;
@@ -40,7 +44,7 @@ public abstract class PosSubPanel extends CPanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -158167614949876569L;
+	private static final long serialVersionUID = -8112502747494990955L;
 
 	/**
 	 * 	Constructor
@@ -61,6 +65,7 @@ public abstract class PosSubPanel extends CPanel
 	/** Context								*/
 	protected Properties			p_ctx = Env.getCtx();
 	
+	protected static CButton 		f_cashPayment;
 
 	/** Button Width = 50			*/
 	private static final int	WIDTH = 50;	
@@ -123,5 +128,38 @@ public abstract class PosSubPanel extends CPanel
 	public void actionPerformed (ActionEvent e)
 	{
 	}	//	actionPerformed
+	/**
+	 * 	Print Ticket
+	 *  @author Comunidad de Desarrollo OpenXpertya 
+	 *  *Basado en Codigo Original Modificado, Revisado y Optimizado de:
+	 *  *Copyright ConSerTi
+	 */
+	public void printTicket()
+	{
+		if ( p_posPanel.m_order == null )
+			return;
 
+		MOrder order = p_posPanel.m_order;
+		//int windowNo = p_posPanel.getWindowNo();
+		//Properties m_ctx = p_posPanel.getPropiedades();
+		
+		if (order != null)
+		{
+			try 
+			{
+				//TODO: to incorporate work from Posterita
+				/*
+				if (p_pos.getAD_PrintLabel_ID() != 0)
+					PrintLabel.printLabelTicket(order.getC_Order_ID(), p_pos.getAD_PrintLabel_ID());
+				*/ 
+				//print standard document
+				ReportCtl.startDocumentPrint(ReportEngine.ORDER, order.getC_Order_ID(), null, AEnv.getWindowNo(this), true);
+				
+			}
+			catch (Exception e) 
+			{
+				//log.severe("PrintTicket - Error Printing Ticket");
+			}
+		}	  
+	}
 }	//	PosSubPanel

@@ -50,18 +50,18 @@ import org.compiere.util.Msg;
 public class PosBasePanel extends CPanel
 	//implements FormPanel
 {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3010214392188209281L;
-
+	private static final long serialVersionUID = 7477837683408198860L;
+	
+	public static String trxName = null; //Trx.createTrxName("GUIPOSTesting_"); --red1 won't persist trx for recall in display
+	//trxName for not committing test so tests does not impact DB.. temporary halt due to above issue.
 	/**
 	 * 	Constructor - see init 
 	 */
 	public PosBasePanel()
 	{
-		
 		super (new MigLayout(" fill","[500!]10[300:350:, fill]",""));
 		originalKeyboardFocusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		m_focusMgr = new PosKeyboardFocusManager();
@@ -105,6 +105,10 @@ public class PosBasePanel extends CPanel
 	private CFrame frame;
 	private HashMap<Integer, POSKeyboard> keyboards = new HashMap<Integer, POSKeyboard>();
 	
+	
+	public String getTrxName(){
+		return trxName;
+	}
 	/**
 	 *	Initialize Panel
 	 *  @param WindowNo window
@@ -231,7 +235,7 @@ public class PosBasePanel extends CPanel
 		add (f_order, "split 2, flowy, growx, spany");
 		//
 		f_curLine = new SubCurrentLine (this);
-		add (f_curLine, "h 300, growx, growy, gaptop 30");
+		add (f_curLine, "h 300, growx, growy, gaptop 10");
 		
 		f_functionKeys = new SubFunctionKeys (this);
 		add (f_functionKeys, "aligny top, h 500, growx, growy, flowy, split 2");
@@ -310,7 +314,7 @@ public class PosBasePanel extends CPanel
 		log.info( "PosPanel.newOrder");
 		f_order.setC_BPartner_ID(0);
 		m_order = null;
-		m_order = PosOrderModel.createOrder(p_pos, f_order.getBPartner());
+		m_order = PosOrderModel.createOrder(p_pos, f_order.getBPartner(), trxName);
 		f_curLine.newLine();
 		f_curLine.f_name.requestFocusInWindow();
 		updateInfo();
@@ -362,7 +366,7 @@ public class PosBasePanel extends CPanel
 		if ( m_c_order_id == 0 )
 			m_order = null;
 		else 
-			m_order = new PosOrderModel(m_ctx , m_c_order_id, null, p_pos);
+			m_order = new PosOrderModel(m_ctx , m_c_order_id, trxName, p_pos);
 		updateInfo();
 	}
 	
@@ -374,7 +378,7 @@ public class PosBasePanel extends CPanel
 		if ( m_c_order_id == 0 )
 			m_order = null;
 		else
-			m_order = new PosOrderModel(m_ctx , m_c_order_id, null, p_pos);
+			m_order = new PosOrderModel(m_ctx , m_c_order_id, trxName, p_pos);
 	}
 
 	public POSKeyboard getKeyboard(int keyLayoutId) {

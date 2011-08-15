@@ -60,7 +60,9 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8998584388380857134L;
+	private static final long serialVersionUID = 8348032740580968638L;
+	
+	private String trxName;
 
 	/**
 	 * Constructor
@@ -69,6 +71,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 	 */
 	public SubCurrentLine(PosBasePanel posPanel) {
 		super(posPanel);
+		trxName = posPanel.getTrxName();
 	}
 
 	private CButton f_up;
@@ -129,18 +132,26 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 		String buttonSize = "w 50!, h 50!,";
 		//
 		f_bSearch = createButtonAction ("Product", KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.CTRL_MASK));
+		f_bSearch.setName("ProductSearch");
 		add (f_bSearch, buttonSize );
 		
 		CLabel productLabel = new CLabel(Msg.translate(Env.getCtx(), "M_Product_ID"));
-		add(productLabel, "split 2, spanx 4, flowy, h 15");
+		add(productLabel, ", flowy, h 15");
 		
 		f_name = new PosTextField(Msg.translate(Env.getCtx(), "M_Product_ID"), p_posPanel, p_pos.getOSK_KeyLayout_ID());
-		f_name.setName("Name");
+		f_name.setName("ProductInput");
 		f_name.addActionListener(this);
 		f_name.addFocusListener(this);
 		f_name.requestFocusInWindow();
 		
-		add (f_name, " growx, h 30:30:, wrap");
+		add (f_name, "spanx 3, growx, pushx, h 25!");
+
+ 		// PAYMENT
+		add (new CLabel(),"");
+ 		f_cashPayment = createButtonAction("Payment", null);
+		f_cashPayment.setActionCommand("Payment");
+		add (f_cashPayment, "w 75!, h 50!, pushx, wrap"); 
+		f_cashPayment.setEnabled(false);
 
 		m_table = new PosTable();
 		CScrollPane scroll = new CScrollPane(m_table);
@@ -238,7 +249,6 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 					p_posPanel.updateInfo();
 				}
 			}
-
 		}
 		//	Minus
 		else if (action.equals("Minus"))
@@ -255,6 +265,9 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 			}
 
 		}
+		else if (action.equals("Payment"))
+			payOrder();
+
 		//	VNumber
 		else if (e.getSource() == f_price)		{
 			MOrderLine line = new MOrderLine(p_ctx, orderLineId, null);
@@ -286,7 +299,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 			
 			int row = m_table.getSelectedRow();
 			if (row < 0) row = 0;
-			m_table.getSelectionModel().setSelectionInterval(row, row);
+//			m_table.getSelectionModel().setSelectionInterval(row, row); --red1 - use product window first will gives out of bound error
 			// https://sourceforge.net/tracker/?func=detail&atid=879332&aid=3121975&group_id=176962
 			m_table.scrollRectToVisible(m_table.getCellRect(row, 1, true)); //@Trifon - BF[3121975]
 		}
@@ -341,6 +354,30 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 		}
 		p_posPanel.updateInfo();
 	} //	actionPerformed
+	/**
+	 * 
+	 */
+	private void payOrder() {
+	
+		//Check if order is completed, if so, print and open drawer, create an empty order and set cashGiven to zero
+
+		if( p_posPanel.m_order != null ) //red1 wrong action flow below 
+		{
+			if (!PosPayment.pay(p_posPanel) )
+				return; //red1 not paid (cancelled) cannot continue process the order.
+			
+			if (!p_posPanel.m_order.isProcessed() && !p_posPanel.m_order.processOrder() )
+			{
+				ADialog.warn(0, p_posPanel, "PosOrderProcessFailed");
+				return;
+			}
+			else
+			{
+				printTicket();
+				p_posPanel.setOrder(0);
+			}
+		}	
+	}
 	
 	/**
 	 * 	Update Table
@@ -483,7 +520,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 		
 		if ( p_posPanel.m_order == null )
 		{
-			p_posPanel.m_order = PosOrderModel.createOrder(p_posPanel.p_pos, p_posPanel.f_order.getBPartner());
+			p_posPanel.m_order = PosOrderModel.createOrder(p_posPanel.p_pos, p_posPanel.f_order.getBPartner(),trxName);
 		}
 		
 		MOrderLine line = null;

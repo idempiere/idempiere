@@ -1,3 +1,4 @@
+//red1 -- use for POS GUI Testing in Fitnesse with UISpec4J.
 package org.compiere.pos;
 
 import java.awt.KeyboardFocusManager;
@@ -16,24 +17,19 @@ import org.compiere.model.MSession;
 import org.compiere.swing.CFrame;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
-import org.compiere.util.Splash;
 
 public class PosApplication {
-	
 	private Properties m_ctx;
 
 	PosApplication() {
 		Adempiere.startup(true);	//	needs to be here for UI
-		Splash splash = Splash.getSplash();
+//		Splash splash = Splash.getSplash(); -- red1 -- not mandatory, so its removed for faster GUI testing
 		final CFrame frame = new CFrame();
 		//  Focus Traversal
 		KeyboardFocusManager.setCurrentKeyboardFocusManager(AKeyboardFocusManager.get());
-	//	FocusManager.getCurrentManager().setDefaultFocusTraversalPolicy(AFocusTraversalPolicy.get());
-	//	this.setFocusTraversalPolicy(AFocusTraversalPolicy.get());
 
 
-		ALogin login = new ALogin(splash);
+		ALogin login = new ALogin(frame);
 		if (!login.initLogin())		//	no automatic login
 		{
 			//	Center the window
@@ -44,22 +40,14 @@ public class PosApplication {
 			catch (Exception ex)
 			{
 			}
-			if (!login.isConnected() || !login.isOKpressed())
+			if (!login.isConnected()) // '|| !login.isOKpressed()' -- red1 -- can't work during UISpec4J testing
 				AEnv.exit(1);
 		}
 
 		//  Check Build
-		if (!DB.isBuildOK(m_ctx))
+		if (!DB.isBuildOK(m_ctx)) // red1 - m_ctx seems null
 			AEnv.exit(1);
-
-		//  Check DB	(AppsServer Version checked in Login)
-		DB.isDatabaseOK(m_ctx);
-	
-		splash.setText(Msg.getMsg(m_ctx, "Loading"));
-		splash.toFront();
-		splash.paint(splash.getGraphics());
-	
-		//
+		Env.setContext( Env.getCtx(), "#M_Warehouse_ID", 104 ); //red1 - presetting to Store Central for GUI Testing
 		if (!Adempiere.startupEnvironment(true)) // Load Environment
 			System.exit(1);		
 		MSession.get (Env.getCtx(), true);		//	Start Session
@@ -88,8 +76,8 @@ public class PosApplication {
 		PosBasePanel pos = new PosBasePanel();
 		pos.init(0,frame);
 		frame.pack();
-		splash.dispose();
-		splash = null;	
+//		splash.dispose();
+//		splash = null;	
 		frame.setVisible(true);
 	}
 

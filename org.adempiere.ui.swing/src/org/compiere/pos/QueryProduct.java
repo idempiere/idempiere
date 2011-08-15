@@ -109,6 +109,7 @@ public class QueryProduct extends PosQuery
 		CLabel lvalue = new CLabel(Msg.translate(p_ctx, "Value"));
 		northPanel.add (lvalue, "growy");
 		f_value = new PosTextField("", p_posPanel, p_pos.getOSK_KeyLayout_ID());
+		f_value.setName("ProductKey"); //red1 for UISpec4J testing call
 		lvalue.setLabelFor(f_value);
 		northPanel.add(f_value,  "h 30, w 200");
 		f_value.addActionListener(this);
@@ -123,6 +124,7 @@ public class QueryProduct extends PosQuery
 		CLabel lname = new CLabel(Msg.translate(p_ctx, "Name"));
 		northPanel.add (lname, "growy");
 		f_name = new PosTextField("", p_posPanel, p_pos.getOSK_KeyLayout_ID());
+		f_name.setName("ProductName"); //red1 for UISpec4J testing call
 		lname.setLabelFor(f_name);
 		northPanel.add(f_name,  "h 30, w 200");
 		f_name.addActionListener(this);
@@ -167,7 +169,6 @@ public class QueryProduct extends PosQuery
 		m_table.getColumn(7).setPreferredWidth(75);
 		enableButtons();
 		m_table.setFillsViewportHeight( true ); //@Trifon
-//		m_table.setFocusable( true ); //@Trifon
 		m_table.growScrollbars();
 		centerScroll = new CScrollPane(m_table);
 		panel.add (centerScroll, "growx, growy,south");

@@ -14,6 +14,7 @@
 
 package org.compiere.pos;
 
+import java.awt.Color;
 import java.awt.Event;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -34,7 +35,6 @@ import net.miginfocom.swing.MigLayout;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
-import org.compiere.apps.AEnv;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerInfo;
 import org.compiere.model.MBPartnerLocation;
@@ -43,8 +43,6 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MUser;
-import org.compiere.print.ReportCtl;
-import org.compiere.print.ReportEngine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CLabel;
@@ -70,7 +68,7 @@ public class SubOrder extends PosSubPanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5895558315889871887L;
+	private static final long serialVersionUID = -2985454173868605178L;
 
 	/**
 	 * 	Constructor
@@ -82,12 +80,11 @@ public class SubOrder extends PosSubPanel
 	}	//	PosSubCustomer
 	
 	private CButton 		f_history;
-	private	CTextField		f_name;
+	private	PosTextField		f_name;
 	private CButton 		f_bNew;
 	private CButton 		f_bSearch;
 	private CComboBox		f_location;
 	private CComboBox		f_user;
-	private CButton 		f_cashPayment;
 	private CButton 		f_process;
 	private CButton 		f_print;
 	private CTextField 		f_DocumentNo;
@@ -95,7 +92,6 @@ public class SubOrder extends PosSubPanel
 	private JFormattedTextField f_net;
 	private JFormattedTextField f_tax;
 	private JFormattedTextField f_total;
-	private CTextField f_RepName;
 	
 	/**	The Business Partner		*/
 	private MBPartner	m_bpartner;
@@ -116,33 +112,28 @@ public class SubOrder extends PosSubPanel
 		MigLayout layout = new MigLayout("ins 0 0","[fill|fill|fill|fill]","[nogrid]unrel[||]");
 		setLayout(layout);
 		
-		Font bigFont = AdempierePLAF.getFont_Field().deriveFont(16f);
+		Font bigFont = AdempierePLAF.getFont_Field().deriveFont(20f);
 
 		String buttonSize = "w 50!, h 50!,";
 		// NEW
 		f_bNew = createButtonAction("New", KeyStroke.getKeyStroke(KeyEvent.VK_F2, Event.F2));
 		add (f_bNew, buttonSize);
-	
-		// EDIT
+			
+		// HISTORY
+		f_history = createButtonAction("History", null);
+ 		add (f_history, buttonSize); 
+
+ 		// EDIT
 		f_bEdit = createButtonAction("Edit", null);
 		add(f_bEdit, buttonSize);
  		f_bEdit.setEnabled(false);
 		
-		// HISTORY
-		f_history = createButtonAction("History", null);
- 		add (f_history, buttonSize); 
-		
 		// CANCEL
-		f_process = createButtonAction("Cancel", null);
+		f_process = createButtonAction("Delete", null);
  		add (f_process, buttonSize);
  		f_process.setEnabled(false);
  		
- 		// PAYMENT
- 		f_cashPayment = createButtonAction("Payment", null);
-		f_cashPayment.setActionCommand("Cash");
-		add (f_cashPayment, buttonSize); 
-		f_cashPayment.setEnabled(false);
-		
+
  		//PRINT
 		f_print = createButtonAction("Print", null);
  		add (f_print, buttonSize);
@@ -156,44 +147,36 @@ public class SubOrder extends PosSubPanel
 		f_logout = createButtonAction ("Logout", null);
 		add (f_logout, buttonSize + ", gapx 25, wrap");
 
- 		// DOC NO
+		// SALES REP
+		add(new CLabel(Msg.translate(Env.getCtx(), "Cashier")), "");
+		CLabel cashiername = new CLabel((p_ctx.getProperty("#AD_User_Name")).toUpperCase());
+		cashiername.setFont(bigFont);
+		cashiername.setFontBold(true);
+		cashiername.setForeground(Color.RED);
+		add (cashiername, "growx, pushx");
+		
+		CLabel lNet = new CLabel (Msg.translate(Env.getCtx(), "SubTotal"));
+		add(lNet, "");
+		f_net = new JFormattedTextField(DisplayType.getNumberFormat(DisplayType.Amount));
+		f_net.setHorizontalAlignment(JTextField.TRAILING);
+		f_net.setEditable(false);  
+		f_net.setFocusable(false);  
+		lNet.setLabelFor(f_net);
+		add(f_net, "wrap, growx, pushx");
+		f_net.setValue (Env.ZERO);
+		//
+
+		// BPARTNER
+//		f_bSearch = createButtonAction ("BPartner", KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.SHIFT_MASK+Event.CTRL_MASK));
+//		add (f_bSearch,buttonSize + ", spany 2");
+
+		// DOC NO
 		add (new CLabel(Msg.getMsg(Env.getCtx(),"DocumentNo")), "");
 		
 		f_DocumentNo = new CTextField("");
 		f_DocumentNo.setName("DocumentNo");
 		f_DocumentNo.setEditable(false);
 		add (f_DocumentNo, "growx, pushx");
-		
-		CLabel lNet = new CLabel (Msg.translate(Env.getCtx(), "SubTotal"));
-		add(lNet, "");
-		f_net = new JFormattedTextField(DisplayType.getNumberFormat(DisplayType.Amount));
-		f_net.setHorizontalAlignment(JTextField.TRAILING);
-		f_net.setEditable(false);
-		f_net.setFocusable(false);
-		lNet.setLabelFor(f_net);
-		add(f_net, "wrap, growx, pushx");
-		f_net.setValue (Env.ZERO);
-		//
-		
-		/*
-		// BPARTNER
-		f_bSearch = createButtonAction ("BPartner", KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.SHIFT_MASK+Event.CTRL_MASK));
-		add (f_bSearch,buttonSize + ", spany 2");
-	*/
-		
-		/*
-		 * f_name.setName("Name");
-		f_name.addActionListener(this);
-		f_name.addFocusListener(this);
-		add (f_name, "wrap");
-		*/
-
-		// SALES REP
-		add(new CLabel(Msg.translate(Env.getCtx(), "SalesRep_ID")), "");
-		f_RepName = new CTextField("");
-		f_RepName.setName("SalesRep");
-		f_RepName.setEditable(false);
-		add (f_RepName, "growx, pushx");
 
 		CLabel lTax = new CLabel (Msg.translate(Env.getCtx(), "TaxAmt"));
 		add(lTax);
@@ -212,22 +195,25 @@ public class SubOrder extends PosSubPanel
 	*/
 		
 		// BP
-		add(new CLabel(Msg.translate(Env.getCtx(), "C_BPartner_ID")), "");
-		f_name = new CTextField();
-		f_name.setEditable(false);
-		f_name.setName("Name");
-		add (f_name, "growx, pushx");
+		add(new CLabel(Msg.translate(Env.getCtx(), "Customer")), "");
+		f_name =new PosTextField(Msg.translate(Env.getCtx(), "C_Partner_ID"), p_posPanel, p_pos.getOSK_KeyLayout_ID());		
+		f_name.setEditable(true); //red1
+		f_name.setName("BPartner");
+		f_name.addActionListener(this);
+		f_name.addFocusListener(this);
+		add (f_name, " flowy, pushx, h 20!");
 
 		//
-		CLabel lTotal = new CLabel (Msg.translate(Env.getCtx(), "GrandTotal"));
+		CLabel lTotal = new CLabel (Msg.translate(Env.getCtx(), "TOTAL"));
 		lTotal.setFont(bigFont);
 		add(lTotal, "");
 		f_total = new JFormattedTextField(DisplayType.getNumberFormat(DisplayType.Amount));
-		f_total.setHorizontalAlignment(JTextField.TRAILING);f_total.setFont(bigFont);
+		f_total.setHorizontalAlignment(JTextField.TRAILING);f_total.setFont(bigFont);f_total.setForeground(Color.BLUE);
 		f_total.setEditable(false);
 		f_total.setFocusable(false);
+		f_total.setName("GrandTotal");
 		lTotal.setLabelFor(f_total);
-		add(f_total, "growx, pushx");
+		add(f_total, "spanx 3, growx, pushx");
 		f_total.setValue (Env.ZERO);
 		/*
 		//
@@ -272,10 +258,18 @@ public class SubOrder extends PosSubPanel
 			qt.setVisible(true);
 			return;
 		}
-		else if (action.equals("Cancel"))
-			deleteOrder();
-		else if (action.equals("Cash"))
-			payOrder();
+		else if (action.equals("Delete")) //red1 more apt description
+			{
+				deleteOrder();
+				p_posPanel.m_order = null;
+				p_posPanel.f_curLine.newLine();
+				p_posPanel.f_curLine.f_name.requestFocusInWindow();
+			}
+		else if (action.equals("Preference"))
+			{
+			CashSubFunctions csf = new CashSubFunctions(p_posPanel);
+			csf.setVisible(true);
+			}
 		else if (action.equals("Print"))
 			printOrder();
 		else if (action.equals("BPartner"))
@@ -310,28 +304,7 @@ public class SubOrder extends PosSubPanel
 		}
 	}
 
-	/**
-	 * 
-	 */
-	private void payOrder() {
 
-		//Check if order is completed, if so, print and open drawer, create an empty order and set cashGiven to zero
-
-		if( p_posPanel.m_order != null ) 
-		{
-			if ( !p_posPanel.m_order.isProcessed() && !p_posPanel.m_order.processOrder() )
-			{
-				ADialog.warn(0, p_posPanel, "PosOrderProcessFailed");
-				return;
-			}
-
-			if ( PosPayment.pay(p_posPanel) )
-			{
-				printTicket();
-				p_posPanel.setOrder(0);
-			}
-		}	
-	}
 
 	/**
 	 * 
@@ -577,41 +550,7 @@ public class SubOrder extends PosSubPanel
 			f_currency.setText(currency);
 	} //	setCurrency
 	
-	/**
-	 * 	Print Ticket
-	 *  @author Comunidad de Desarrollo OpenXpertya 
-	 *  *Basado en Codigo Original Modificado, Revisado y Optimizado de:
-	 *  *Copyright � ConSerTi
-	 */
-	public void printTicket()
-	{
-		if ( p_posPanel.m_order == null )
-			return;
-		
-		MOrder order = p_posPanel.m_order;
-		//int windowNo = p_posPanel.getWindowNo();
-		//Properties m_ctx = p_posPanel.getPropiedades();
-		
-		if (order != null)
-		{
-			try 
-			{
-				//TODO: to incorporate work from Posterita
-				/*
-				if (p_pos.getAD_PrintLabel_ID() != 0)
-					PrintLabel.printLabelTicket(order.getC_Order_ID(), p_pos.getAD_PrintLabel_ID());
-				*/ 
-				//print standard document
-				ReportCtl.startDocumentPrint(ReportEngine.ORDER, order.getC_Order_ID(), null, AEnv.getWindowNo(this), true);
-				
-			}
-			catch (Exception e) 
-			{
-				log.severe("PrintTicket - Error Printing Ticket");
-			}
-		}	  
-	}	
-	
+
 	/**
 	 * Is order fully pay ?
 	 * Calculates if the given money is sufficient to pay the order
@@ -656,7 +595,6 @@ public class SubOrder extends PosSubPanel
   				setC_BPartner_ID(order.getC_BPartner_ID());
   				f_bNew.setEnabled(order.getLines().length != 0);
   				f_bEdit.setEnabled(true);
-  				f_history.setEnabled(order.getLines().length != 0);
   				f_process.setEnabled(true);
   				f_print.setEnabled(order.isProcessed());
   				f_cashPayment.setEnabled(order.getLines().length != 0);
@@ -667,7 +605,6 @@ public class SubOrder extends PosSubPanel
 				setC_BPartner_ID(0);
 				f_bNew.setEnabled(true);
 				f_bEdit.setEnabled(false);
-				f_history.setEnabled(true);
 				f_process.setEnabled(false);
 				f_print.setEnabled(false);
 				f_cashPayment.setEnabled(false);
