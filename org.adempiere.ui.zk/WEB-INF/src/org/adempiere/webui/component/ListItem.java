@@ -1,5 +1,5 @@
 /******************************************************************************
- * Product: Posterita Ajax UI 												  *
+ * Product: Posterita Ajax UI                                                 *
  * Copyright (C) 2007 Posterita Ltd.  All Rights Reserved.                    *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -62,7 +62,7 @@ public class ListItem extends org.zkoss.zul.Listitem
     
     @Override
     public String toString() {
-    	return getValue().toString();
+    	return getValue() != null ? getValue().toString() : "";
     }
-    
+
 }
