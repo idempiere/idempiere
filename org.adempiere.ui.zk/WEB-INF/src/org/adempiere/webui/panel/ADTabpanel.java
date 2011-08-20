@@ -479,7 +479,6 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
                         	Label label = editor.getLabel();
 	                        if (popupMenu.isZoomEnabled() && editor instanceof IZoomableEditor)
 	                        {
-	                        	label.setZoomable(true);
 	                        	label.addEventListener(Events.ON_CLICK, new ZoomListener((IZoomableEditor) editor));
 	                        }
 
@@ -542,7 +541,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 
         for (WEditor comp : editors)
         {
-        	comp.setMandatoryLabels();
+        	comp.updateLabelStyle();
         }
         
         //  Selective

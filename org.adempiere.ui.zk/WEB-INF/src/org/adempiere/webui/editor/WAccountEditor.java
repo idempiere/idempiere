@@ -218,5 +218,14 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
+	@Override
+	public boolean isNullOrEmpty() {
+		Object value = getValue();
+		if (value != null && ((Integer) value).intValue() == 0)
+			value = null;
+		
+		return value == null;
+	}
 
+	
 }
