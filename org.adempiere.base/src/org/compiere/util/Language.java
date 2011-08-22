@@ -401,8 +401,8 @@ public class Language implements Serializable
 
 	
 	/**************************************************************************
-	 *  Get Default Login Language
-	 *  @return default Language
+	 *  Get Current Login Language
+	 *  @return login language
 	 */
 	public static Language getLoginLanguage ()
 	{
@@ -411,14 +411,14 @@ public class Language implements Serializable
 	}   //  getLanguage
 
 	/**
-	 *  Set Default Login Language
+	 *  Set Current Login Language
 	 *  @param language language
 	 */
 	public static void setLoginLanguage (Language language)
 	{
 		if (language != null)
 		{
-			s_loginLanguage = language;
+			Env.setContext(Env.getCtx(), Env.LANGUAGE, language.getAD_Language());
 			log.config(s_loginLanguage.toString());
 		}
 	}   //  setLanguage
