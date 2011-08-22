@@ -419,7 +419,7 @@ public class Language implements Serializable
 		if (language != null)
 		{
 			Env.setContext(Env.getCtx(), Env.LANGUAGE, language.getAD_Language());
-			log.config(s_loginLanguage.toString());
+			log.config(language.toString());
 		}
 	}   //  setLanguage
 
