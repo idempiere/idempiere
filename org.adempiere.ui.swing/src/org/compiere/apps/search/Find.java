@@ -68,7 +68,6 @@ import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.StatusBar;
-import org.compiere.grid.ed.AutoCompletion;
 import org.compiere.grid.ed.VEditor;
 import org.compiere.grid.ed.VEditorFactory;
 import org.compiere.grid.ed.VLookup;
@@ -86,6 +85,7 @@ import org.compiere.model.MUserQuery;
 import org.compiere.model.X_AD_Column;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
+import org.compiere.swing.CComboBoxEditable;
 import org.compiere.swing.CDialog;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
@@ -117,7 +117,7 @@ public final class Find extends CDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5064336990363669996L;
+	private static final long serialVersionUID = -8546399473944170334L;
 	private int m_AD_Tab_ID;
 
 	/**
@@ -222,7 +222,7 @@ public final class Find extends CDialog
 	private ConfirmPanel confirmPanelA = new ConfirmPanel(true, true, false, false, false, false, true);
 	private CButton bIgnore = new CButton();
 	private JToolBar toolBar = new JToolBar();
-	private CComboBox fQueryName = new CComboBox();
+	private CComboBoxEditable fQueryName = new CComboBoxEditable();
 	private CButton bSave = new CButton();
 	private CButton bNew = new CButton();
 	private CButton bDelete = new CButton();
@@ -467,7 +467,6 @@ public final class Find extends CDialog
 		for (int i = 0; i < m_findFields.length; i++)
 		{
 			GridField mField = m_findFields[i];
-			String columnName = mField.getColumnName();
 			
 			// Make Yes-No searchable as list
 			if (mField.getVO().displayType == DisplayType.YesNo)
