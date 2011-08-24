@@ -1833,12 +1833,18 @@ public class MOrder extends X_C_Order implements DocAction
 	private void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setDateOrdered(new Timestamp (System.currentTimeMillis()));
+			/* a42niem - BF IDEMPIERE-63 - check if document has been completed before */ 
+			if (this.getProcessedOn().compareTo(Env.ZERO) == 0) {
+				setDateOrdered(new Timestamp (System.currentTimeMillis()));
+			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
-			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
-			if (value != null)
-				setDocumentNo(value);
+			/* a42niem - BF IDEMPIERE-63 - check if document has been completed before */ 
+			if (this.getProcessedOn().compareTo(Env.ZERO) == 0) {
+				String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
+				if (value != null)
+					setDocumentNo(value);
+			}
 		}
 	}
 
