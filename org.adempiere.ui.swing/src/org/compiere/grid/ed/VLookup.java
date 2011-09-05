@@ -587,7 +587,7 @@ public class VLookup extends JComponent
 				m_text.setCaretPosition (0);	//	show beginning
 				notFound = m_lastDisplay.startsWith("<") && m_lastDisplay.endsWith(">");
 			}
-			if (notFound)	//	<key>
+			if (notFound && value instanceof Integer && m_lookup.getDisplayType() != DisplayType.ID) // for IDs is ok to be out of the list
 			{
 				m_value = null;
 				actionCombo (null);             //  data binding
@@ -608,9 +608,12 @@ public class VLookup extends JComponent
 			//  Not in Lookup - set to Null
 			if (m_combo.getSelectedItem() == null)
 			{
-				log.info(m_columnName + "=" + value + ": not in Lookup - set to NULL");
-				actionCombo (null);             //  data binding (calls setValue again)
-				m_value = null;
+				if (value instanceof Integer && m_lookup.getDisplayType() != DisplayType.ID) // for IDs is ok to be out of the list
+				{
+					log.info(m_columnName + "=" + value + ": not in Lookup - set to NULL");
+					actionCombo (null);             //  data binding (calls setValue again)
+					m_value = null;
+				}
 			}
 		}
 		m_settingValue = false;
