@@ -64,6 +64,7 @@ Export-Package: de.schaeffer.compiere.tools,
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.ui;bundle-version="1.0.0"
 Eclipse-ExtensibleAPI: true
+Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.net.ssl,
  org.apache.ecs,
