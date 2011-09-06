@@ -72,6 +72,22 @@ public class WReport implements EventListener {
 	public WReport (int AD_Table_ID, MQuery	query, Component parent, 
 			int WindowNo)
 	{
+		this(AD_Table_ID, query, parent, WindowNo, null);
+	}
+	
+	/**
+	 *	Constructor
+	 *
+	 *  @param AD_Table_ID table
+	 *  @param invoker component to display popup (optional)
+	 *  @param query query
+	 *  @param parent The invoking parent window
+	 *  @param WindowNo The invoking parent window number
+	 *  @param whereExtended
+	 */
+	public WReport (int AD_Table_ID, MQuery	query, Component parent, 
+			int WindowNo, String whereExtended)
+	{
 		log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
@@ -82,6 +98,7 @@ public class WReport implements EventListener {
 		m_query = query;
 		this.parent = parent;
 		this.WindowNo = WindowNo;
+		this.whereExtended = whereExtended;
 
 		//	See What is there
 		getPrintFormats (AD_Table_ID);
@@ -98,7 +115,9 @@ public class WReport implements EventListener {
 	Component parent;
 	/** The parent window number */
 	int WindowNo;
-
+	/** The filter to apply to this report */
+	private String whereExtended;
+	
 	/**
 	 * 	Get the Print Formats for the table.
 	 *  Fill the list and the popup menu
@@ -214,6 +233,8 @@ public class WReport implements EventListener {
 		{
 			// It's a default report using the standard printing engine
 			ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_query, info);
+			re.setWhereExtended(whereExtended);
+			re.setWindowNo(WindowNo);
 			ReportCtl.preview(re);
 		}
 	}	//	launchReport

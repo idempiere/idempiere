@@ -1023,6 +1023,7 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
 	{
 		//
 		m_query = new MQuery(m_tableName);
+		m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, m_whereExtended, false));
 		StringBuffer code = new StringBuffer();
 
         List<?> rowList = advancedPanel.getChildren();
@@ -1304,6 +1305,7 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
     {
         //  Create Query String
         m_query = new MQuery(m_tableName);
+        m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, m_whereExtended, false));
         if (hasValue && !fieldValue.getText().equals("%") && fieldValue.getText().length() != 0)
         {
             String value = fieldValue.getText().toUpperCase();
