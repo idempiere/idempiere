@@ -27,7 +27,12 @@ public class WebUIResourceFinder implements IResourceFinder {
 
 	@Override
 	public URL getResource(String name) {
-		return WebUIActivator.getBundleContext().getBundle().getEntry(name);
+		URL url = WebUIActivator.getBundleContext().getBundle().getEntry(name);
+		if (url == null && name.startsWith("org/compiere/images")) {
+			String t = name.substring("org/compiere/".length());
+			url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+		}
+		return url;
 	}
 
 }

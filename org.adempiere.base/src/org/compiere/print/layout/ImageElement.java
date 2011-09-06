@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MImage;
 import org.compiere.print.MPrintFormatItem;
@@ -209,6 +210,9 @@ public class ImageElement extends PrintElement
 		{
 			ClassLoader cl = getClass().getClassLoader();
 			url = cl.getResource(urlString);
+			if (url != null)
+				return url;
+			url = Core.getResourceFinder().getResource(urlString);
 			if (url != null)
 				return url;
 			log.log(Level.WARNING, "Not found - " + urlString);
