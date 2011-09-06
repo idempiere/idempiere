@@ -123,13 +123,24 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 		DecimalFormat format = DisplayType.getNumberFormat(displayType, AEnv.getLanguage(Env.getCtx()));
 		getComponent().getDecimalbox().setFormat(format.toPattern());
 		
-		popupMenu = new WEditorPopupMenu(true, true, false);
+		boolean valuePreference = false;
+		if (gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
+		{
+			valuePreference = true;
+		}
+		popupMenu = new WEditorPopupMenu(false, false, valuePreference);
     	if (gridField != null && gridField.getGridTab() != null)
 		{
 			WFieldRecordInfo.addMenu(popupMenu);
 		}
     	getComponent().setContext(popupMenu.getId());
     }
+
+	
+	@Override
+	public WEditorPopupMenu getPopupMenu() {
+		return popupMenu;
+	}
 
 	/**
 	 * Event handler
@@ -219,7 +230,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 	{
 	 	if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()) && gridField != null)
 		{
-			if (MRole.getDefault().isShowPreference())
+			if (MRole.getDefault().isShowPreference() && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
 		}

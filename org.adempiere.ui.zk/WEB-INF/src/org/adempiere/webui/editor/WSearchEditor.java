@@ -147,20 +147,24 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
-
+		boolean valuePreference = false;
+		if (gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn()) 
+		{
+			valuePreference = true;
+		}
 		if (columnName.equals("C_BPartner_ID"))
 		{
-			popupMenu = new WEditorPopupMenu(true, true, true, true, true);
+			popupMenu = new WEditorPopupMenu(true, true, valuePreference, true, true);
 			getComponent().setButtonImage("/images/BPartner10.png");
 		}
 		else if (columnName.equals("M_Product_ID"))
 		{
-			popupMenu = new WEditorPopupMenu(true, true, true, false, false);
+			popupMenu = new WEditorPopupMenu(true, true, valuePreference, false, false);
 			getComponent().setButtonImage("/images/Product10.png");
 		}
 		else
 		{
-			popupMenu = new WEditorPopupMenu(true, true, true, false, false);
+			popupMenu = new WEditorPopupMenu(true, true, valuePreference, false, false);
 			getComponent().setButtonImage("/images/PickOpen10.png");
 		}
 
@@ -278,7 +282,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
-			if (MRole.getDefault().isShowPreference())
+			if (MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
 		}

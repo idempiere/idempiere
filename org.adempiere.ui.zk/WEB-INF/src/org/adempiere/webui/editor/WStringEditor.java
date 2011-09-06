@@ -54,7 +54,8 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
     private WEditorPopupMenu	popupMenu;
 
-    private boolean tableEditor = false;
+    @SuppressWarnings("unused")
+	private boolean tableEditor = false;
 
     /**
      * to ease porting of swing form
@@ -140,7 +141,12 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        if (getComponent() instanceof Textbox)
 	        	((Textbox)getComponent()).setObscureType(obscureType);
 
-	        popupMenu = new WEditorPopupMenu(false, false, true);
+	        boolean valuePreference = false;
+	        if (gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn()) 
+	        {
+	        	valuePreference = true;
+	        }
+	        popupMenu = new WEditorPopupMenu(false, false, valuePreference);
 	        Menuitem editor = new Menuitem(Msg.getMsg(Env.getCtx(), "Editor"), "images/Editor16.png");
 	        editor.setAttribute("EVENT", EDITOR_EVENT);
 	        editor.addEventListener(Events.ON_CLICK, popupMenu);
@@ -236,7 +242,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	{
 		if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
-			if (MRole.getDefault().isShowPreference())
+			if (MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
 		}

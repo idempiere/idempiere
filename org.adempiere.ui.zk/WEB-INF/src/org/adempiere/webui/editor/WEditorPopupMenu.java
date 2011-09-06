@@ -23,6 +23,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -94,7 +95,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener
         {
             zoomItem = new Menuitem();
             zoomItem.setAttribute(EVENT_ATTRIBUTE, ZOOM_EVENT);
-            zoomItem.setLabel(Msg.getMsg(Env.getCtx(), "Zoom"));
+            zoomItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
             zoomItem.setImage("/images/Zoom16.png");
             zoomItem.addEventListener(Events.ON_CLICK, this);
             
@@ -105,7 +106,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener
         {
             requeryItem = new Menuitem();
             requeryItem.setAttribute(EVENT_ATTRIBUTE, REQUERY_EVENT);
-            requeryItem.setLabel(Msg.getMsg(Env.getCtx(), "Refresh"));
+            requeryItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
             requeryItem.setImage("/images/Refresh16.png");
             requeryItem.addEventListener(Events.ON_CLICK, this);
             this.appendChild(requeryItem);
@@ -115,7 +116,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener
         {
             prefItem = new Menuitem();
             prefItem.setAttribute(EVENT_ATTRIBUTE, PREFERENCE_EVENT);
-            prefItem.setLabel(Msg.getMsg(Env.getCtx(), "ValuePreference"));
+            prefItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ValuePreference")));
             prefItem.setImage("/images/VPreference16.png");
             prefItem.addEventListener(Events.ON_CLICK, this);
             this.appendChild(prefItem);
@@ -125,7 +126,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener
         {
         	newItem = new Menuitem();
         	newItem.setAttribute(EVENT_ATTRIBUTE, NEW_EVENT);
-        	newItem.setLabel(Msg.getMsg(Env.getCtx(), "New"));
+        	newItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
         	newItem.setImage("/images/New16.png");
         	newItem.addEventListener(Events.ON_CLICK, this);
         	this.appendChild(newItem);
@@ -136,7 +137,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener
         {
         	updateItem = new Menuitem();
         	updateItem.setAttribute(EVENT_ATTRIBUTE, UPDATE_EVENT);
-        	updateItem.setLabel(Msg.getMsg(Env.getCtx(), "Update"));
+        	updateItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Update")));
         	updateItem.setImage("/images/InfoBPartner16.png");
         	updateItem.addEventListener(Events.ON_CLICK, this);
         	this.appendChild(updateItem);

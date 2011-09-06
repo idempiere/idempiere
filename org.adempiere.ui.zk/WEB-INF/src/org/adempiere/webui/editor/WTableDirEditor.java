@@ -144,7 +144,12 @@ ContextMenuListener, IZoomableEditor
         
         if (gridField != null) 
         {
-        	popupMenu = new WEditorPopupMenu(zoom, true, true);
+        	boolean valuePreference = false;
+        	if (!gridField.isEncrypted() && !gridField.isEncryptedColumn())
+        	{
+        		valuePreference = true;
+        	}
+        	popupMenu = new WEditorPopupMenu(zoom, true, valuePreference);
         	if (gridField != null &&  gridField.getGridTab() != null)
     		{
     			WFieldRecordInfo.addMenu(popupMenu);
@@ -400,7 +405,7 @@ ContextMenuListener, IZoomableEditor
 		}
 		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
-			if (MRole.getDefault().isShowPreference())
+			if (MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
 		}
