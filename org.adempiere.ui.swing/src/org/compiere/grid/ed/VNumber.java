@@ -549,7 +549,7 @@ public final class VNumber extends JComponent
 		log.config(e.getActionCommand());
 		if (ValuePreference.NAME.equals(e.getActionCommand()))
 		{
-			if (MRole.getDefault().isShowPreference())
+			if (MRole.getDefault().isShowPreference() && !m_mField.isEncrypted() && !m_mField.isEncryptedColumn())
 				ValuePreference.start (m_mField, getValue());
 			return;
 		}
@@ -758,7 +758,8 @@ public final class VNumber extends JComponent
 		m_mField = mField;
 		
 		if (m_mField != null
-			&& MRole.getDefault().isShowPreference())
+			&& MRole.getDefault().isShowPreference()
+			&& !mField.isEncrypted() && !mField.isEncryptedColumn())
 			ValuePreference.addMenu (this, popupMenu);
 		
 		if (m_mField != null)

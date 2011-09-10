@@ -372,7 +372,7 @@ public class VURL extends JComponent
 	{
 		if (e.getActionCommand().equals(ValuePreference.NAME))
 		{
-			if (MRole.getDefault().isShowPreference())
+			if (MRole.getDefault().isShowPreference() && !m_mField.isEncrypted() && !m_mField.isEncryptedColumn())
 				ValuePreference.start (m_mField, getValue());
 			return;
 		}
@@ -436,7 +436,8 @@ public class VURL extends JComponent
 	{
 		m_mField = mField;
 		if (m_mField != null
-			&& MRole.getDefault().isShowPreference())
+			&& MRole.getDefault().isShowPreference()
+			&& !mField.isEncrypted() && !mField.isEncryptedColumn())
 			ValuePreference.addMenu (this, popupMenu);
 		if (m_mField != null)
 			FieldRecordInfo.addMenu(this, popupMenu);
