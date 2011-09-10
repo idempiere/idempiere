@@ -20,7 +20,7 @@ package org.adempiere.webui.editor;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
@@ -28,8 +28,6 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
-import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
@@ -51,8 +49,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     }
 
     private Timestamp oldValue = new Timestamp(0);
-	private WEditorPopupMenu popupMenu;
-
+    
     /**
      *
      * @param gridField
@@ -106,15 +103,13 @@ public class WDateEditor extends WEditor implements ContextMenuListener
 
 	private void init()
 	{
-		popupMenu = new WEditorPopupMenu(false, false, true);
+		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);
-		if (gridField != null && gridField.getGridTab() != null)
-		{
-			WFieldRecordInfo.addMenu(popupMenu);
-		}
+		addChangeLogMenu(popupMenu);
 		getComponent().setContext(popupMenu.getId());
 	}
 
+	
 	public void onEvent(Event event)
     {
 		if (Events.ON_CHANGE.equalsIgnoreCase(event.getName()) || Events.ON_OK.equalsIgnoreCase(event.getName()))
@@ -208,6 +203,12 @@ public class WDateEditor extends WEditor implements ContextMenuListener
 		if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{
 			WFieldRecordInfo.start(gridField);
+		}
+		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()) && gridField != null)
+		{
+			if (isShowPreference())
+				ValuePreference.start (this.getGridField(), getValue());
+			return;
 		}
 	}
 

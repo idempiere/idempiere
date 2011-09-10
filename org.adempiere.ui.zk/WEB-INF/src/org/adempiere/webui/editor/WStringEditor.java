@@ -30,13 +30,9 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
-import org.compiere.model.MRole;
 import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Menuitem;
 
 /**
  *
@@ -46,13 +42,9 @@ import org.zkoss.zul.Menuitem;
  */
 public class WStringEditor extends WEditor implements ContextMenuListener
 {
-    private static final String EDITOR_EVENT = "EDITOR";
-
 	private static final String[] LISTENER_EVENTS = {Events.ON_CHANGE, Events.ON_OK};
 
     private String oldValue;
-
-    private WEditorPopupMenu	popupMenu;
 
     @SuppressWarnings("unused")
 	private boolean tableEditor = false;
@@ -141,21 +133,9 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        if (getComponent() instanceof Textbox)
 	        	((Textbox)getComponent()).setObscureType(obscureType);
 
-	        boolean valuePreference = false;
-	        if (gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn()) 
-	        {
-	        	valuePreference = true;
-	        }
-	        popupMenu = new WEditorPopupMenu(false, false, valuePreference);
-	        Menuitem editor = new Menuitem(Msg.getMsg(Env.getCtx(), "Editor"), "images/Editor16.png");
-	        editor.setAttribute("EVENT", EDITOR_EVENT);
-	        editor.addEventListener(Events.ON_CLICK, popupMenu);
-	        popupMenu.appendChild(editor);
-	        
-	        if (gridField != null && gridField.getGridTab() != null)
-			{
-				WFieldRecordInfo.addMenu(popupMenu);
-			}
+	        popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
+	        addTextEditorMenu(popupMenu);
+	        addChangeLogMenu(popupMenu);
 
 	        getComponent().setContext(popupMenu.getId());
 
@@ -172,7 +152,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		}
     }
 
-    public void onEvent(Event event)
+	public void onEvent(Event event)
     {
     	if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
     	{
@@ -233,20 +213,15 @@ public class WStringEditor extends WEditor implements ContextMenuListener
         return LISTENER_EVENTS;
     }
 
-    public WEditorPopupMenu getPopupMenu()
-	{
-	   	return popupMenu;
-	}
-
     public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
-			if (MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
+			if (isShowPreference())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
 		}
-		else if (EDITOR_EVENT.equals(evt.getContextEvent()))
+		else if (WEditorPopupMenu.EDITOR_EVENT.equals(evt.getContextEvent()))
 		{
 			WTextEditorDialog dialog = new WTextEditorDialog(this.getColumnName(), getDisplay(),
 					isReadWrite(), gridField.getFieldLength());

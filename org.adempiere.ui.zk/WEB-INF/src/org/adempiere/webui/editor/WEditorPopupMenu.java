@@ -49,6 +49,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener
     public static final String NEW_EVENT = "NEW_RECORD";
     public static final String UPDATE_EVENT = "UPDATE_RECORD"; // Elaine 2009/02/16 - update record
     public static final String CHANGE_LOG_EVENT = "CHANGE_LOG";
+    public static final String EDITOR_EVENT = "EDITOR";
    
     private boolean newEnabled = true;
     private boolean updateEnabled = true; // Elaine 2009/02/16 - update record

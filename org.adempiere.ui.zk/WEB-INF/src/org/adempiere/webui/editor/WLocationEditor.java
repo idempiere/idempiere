@@ -20,6 +20,7 @@ package org.adempiere.webui.editor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Locationbox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -51,8 +52,6 @@ public class WLocationEditor extends WEditor implements EventListener, PropertyC
     private MLocationLookup     m_Location;
     private MLocation           m_value;
 
-	private WEditorPopupMenu popupMenu;
-    
     /**
      * Constructor without GridField
      * @param columnName    column name
@@ -85,12 +84,9 @@ public class WLocationEditor extends WEditor implements EventListener, PropertyC
     {
     	getComponent().setButtonImage("/images/Location10.png");
     	
-    	popupMenu = new WEditorPopupMenu(false, false, true);
+    	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	popupMenu.addMenuListener(this);
-    	if (gridField != null && gridField.getGridTab() != null)
-		{
-			WFieldRecordInfo.addMenu(popupMenu);
-		}
+    	addChangeLogMenu(popupMenu);
     	getComponent().setContext(popupMenu.getId());
     }
     
@@ -206,6 +202,11 @@ public class WLocationEditor extends WEditor implements EventListener, PropertyC
 		if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{
 			WFieldRecordInfo.start(gridField);
+		}
+		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
+		{
+			if (isShowPreference())
+				ValuePreference.start (this.getGridField(), getValue());
 		}
 	}
 }

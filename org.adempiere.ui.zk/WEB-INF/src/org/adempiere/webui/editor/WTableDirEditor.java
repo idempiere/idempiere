@@ -31,7 +31,6 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
-import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -63,7 +62,6 @@ ContextMenuListener, IZoomableEditor
     
     private Lookup  lookup;
     private Object oldValue;
-    private WEditorPopupMenu popupMenu;
        
     public WTableDirEditor(GridField gridField)
     {
@@ -144,16 +142,8 @@ ContextMenuListener, IZoomableEditor
         
         if (gridField != null) 
         {
-        	boolean valuePreference = false;
-        	if (!gridField.isEncrypted() && !gridField.isEncryptedColumn())
-        	{
-        		valuePreference = true;
-        	}
-        	popupMenu = new WEditorPopupMenu(zoom, true, valuePreference);
-        	if (gridField != null &&  gridField.getGridTab() != null)
-    		{
-    			WFieldRecordInfo.addMenu(popupMenu);
-    		}
+        	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference());
+        	addChangeLogMenu(popupMenu);
         	getComponent().setContext(popupMenu.getId());
         }
     }
@@ -364,11 +354,6 @@ ContextMenuListener, IZoomableEditor
     public void intervalRemoved(ListDataEvent e)
     {}
     
-    public WEditorPopupMenu getPopupMenu()
-    {
-    	return popupMenu;
-    }
-    
     public void actionRefresh()
     {    	
 		if (lookup != null)
@@ -405,7 +390,7 @@ ContextMenuListener, IZoomableEditor
 		}
 		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
-			if (MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
+			if (isShowPreference())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
 		}

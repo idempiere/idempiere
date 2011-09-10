@@ -61,7 +61,6 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	private String				m_tableName = null;
 	private String				m_keyColumnName = null;
 	private String 				columnName;
-	private WEditorPopupMenu	popupMenu;
     private Object              value;
     private InfoPanel			infoPanel = null;
 
@@ -147,39 +146,26 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
-		boolean valuePreference = false;
-		if (gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn()) 
-		{
-			valuePreference = true;
-		}
 		if (columnName.equals("C_BPartner_ID"))
 		{
-			popupMenu = new WEditorPopupMenu(true, true, valuePreference, true, true);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true);
 			getComponent().setButtonImage("/images/BPartner10.png");
 		}
 		else if (columnName.equals("M_Product_ID"))
 		{
-			popupMenu = new WEditorPopupMenu(true, true, valuePreference, false, false);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false);
 			getComponent().setButtonImage("/images/Product10.png");
 		}
 		else
 		{
-			popupMenu = new WEditorPopupMenu(true, true, valuePreference, false, false);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false);
 			getComponent().setButtonImage("/images/PickOpen10.png");
 		}
 
 		getComponent().getTextbox().setContext(popupMenu.getId());
-		if (gridField != null && gridField.getGridTab() != null)
-		{
-			WFieldRecordInfo.addMenu(popupMenu);
-		}
+		addChangeLogMenu(popupMenu);
 
 		return;
-	}
-
-	public WEditorPopupMenu getPopupMenu()
-	{
-	   	return popupMenu;
 	}
 
 	@Override
@@ -282,7 +268,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
-			if (MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
+			if (isShowPreference())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
 		}

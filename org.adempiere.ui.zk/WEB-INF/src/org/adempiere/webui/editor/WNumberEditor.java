@@ -28,7 +28,6 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
-import org.compiere.model.MRole;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
@@ -55,8 +54,6 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     private Object oldValue;
 
 	private int displayType;
-
-	private WEditorPopupMenu popupMenu;
 
     public WNumberEditor()
     {
@@ -123,25 +120,11 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 		DecimalFormat format = DisplayType.getNumberFormat(displayType, AEnv.getLanguage(Env.getCtx()));
 		getComponent().getDecimalbox().setFormat(format.toPattern());
 		
-		boolean valuePreference = false;
-		if (gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
-		{
-			valuePreference = true;
-		}
-		popupMenu = new WEditorPopupMenu(false, false, valuePreference);
-    	if (gridField != null && gridField.getGridTab() != null)
-		{
-			WFieldRecordInfo.addMenu(popupMenu);
-		}
+		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
+    	addChangeLogMenu(popupMenu);
     	getComponent().setContext(popupMenu.getId());
     }
-
 	
-	@Override
-	public WEditorPopupMenu getPopupMenu() {
-		return popupMenu;
-	}
-
 	/**
 	 * Event handler
 	 * @param event
@@ -228,9 +211,9 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
      */
     public void onMenu(ContextMenuEvent evt)
 	{
-	 	if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()) && gridField != null)
+	 	if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
-			if (MRole.getDefault().isShowPreference() && !gridField.isEncrypted() && !gridField.isEncryptedColumn())
+			if (isShowPreference())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
 		}

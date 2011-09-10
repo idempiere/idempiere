@@ -45,8 +45,6 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 
 	private Object m_value;
 
-	private WEditorPopupMenu popupMenu;
-
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WAccountEditor.class);
 
@@ -59,10 +57,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		
 		popupMenu = new WEditorPopupMenu(false, false, true);
 		popupMenu.addMenuListener(this);
-		if (gridField != null && gridField.getGridTab() != null)
-		{
-			WFieldRecordInfo.addMenu(popupMenu);
-		}
+		addChangeLogMenu(popupMenu);
 		getComponent().setContext(popupMenu.getId());
 	}
 
@@ -90,7 +85,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	{
 		return getComponent().getText();
 	}
-
+	
 	/**
 	 *	Button - Start Dialog
 	 */

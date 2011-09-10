@@ -6,10 +6,14 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.logging.Level;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.EditorBox;
+import org.adempiere.webui.event.ContextMenuEvent;
+import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.InfoSchedule;
 import org.adempiere.webui.window.WAssignmentDialog;
+import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.util.CLogger;
@@ -19,7 +23,7 @@ import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
-public class WAssignmentEditor extends WEditor {
+public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	
 	private final static CLogger log = CLogger.getCLogger(WAssignmentEditor.class);
 	
@@ -31,7 +35,7 @@ public class WAssignmentEditor extends WEditor {
 	
 	private DateFormat			m_dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
 	private NumberFormat		m_qtyFormat = DisplayType.getNumberFormat(DisplayType.Quantity);
-
+	
 	public WAssignmentEditor(GridField gridField) {
 		super(new EditorBox(), gridField);
 		
@@ -41,6 +45,11 @@ public class WAssignmentEditor extends WEditor {
 	private void initComponents() {
 		getComponent().getTextbox().setReadonly(true);
 		getComponent().setButtonImage("images/Assignment10.png");
+		
+		popupMenu = new WEditorPopupMenu(true, false, false);
+		popupMenu.addMenuListener(this);
+		addChangeLogMenu(popupMenu);
+		getComponent().setContext(popupMenu.getId());
 	}
 
 	
@@ -123,7 +132,7 @@ public class WAssignmentEditor extends WEditor {
 		}
 
 	}
-
+		
 	public void onEvent(Event event) throws Exception {
 		//
 		if (Events.ON_CLICK.equalsIgnoreCase(event.getName()))
@@ -161,6 +170,22 @@ public class WAssignmentEditor extends WEditor {
 				fireValueChange(vce);
 			}
 		}
+	}
+
+	@Override
+	public void onMenu(ContextMenuEvent evt) {
+		if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
+		{
+			WFieldRecordInfo.start(gridField);
+		} else if (WEditorPopupMenu.ZOOM_EVENT.equals(evt.getContextEvent()))
+		{
+			actionZoom();
+		}
+		
+	}
+
+	private void actionZoom() {
+		AEnv.zoom(gridField.getGridTab().getAD_Table_ID(), (Integer)getValue());
 	}
 
 }
