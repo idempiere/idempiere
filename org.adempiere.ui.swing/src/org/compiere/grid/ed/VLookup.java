@@ -1291,6 +1291,9 @@ public class VLookup extends JComponent
 		Object value = getValue();
 		if (value == null)
 			value = selectedItem;
+		// still null means the field is empty or not selected item
+		if (value == null)
+			value = -1;
 		//	If not already exist or exact value
 		if (zoomQuery == null || value != null)
 		{

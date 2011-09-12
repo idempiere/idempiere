@@ -411,6 +411,9 @@ public final class AEnv
             return;
         //
         MQuery zoomQuery = lookup.getZoomQuery();
+		// still null means the field is empty or not selected item
+		if (value == null)
+			value = -1;
 
         //  If not already exist or exact value
         if (zoomQuery == null || value != null)
