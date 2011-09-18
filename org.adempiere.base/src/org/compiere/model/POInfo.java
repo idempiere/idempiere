@@ -43,9 +43,12 @@ import org.compiere.util.Env;
  */
 public class POInfo implements Serializable
 {
-	/** Used by Remote FinReport			*/
-	static final long serialVersionUID = -5976719579744948419L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6383466650370705655L;
 
+	/** Used by Remote FinReport			*/
 	/**
 	 *  POInfo Factory
 	 *  @param ctx context
@@ -141,7 +144,7 @@ public class POInfo implements Serializable
 			+ "c.AD_Reference_Value_ID, vr.Code, "							//	12..13
 			+ "c.FieldLength, c.ValueMin, c.ValueMax, c.IsTranslated, "		//	14..17
 			+ "t.AccessLevel, c.ColumnSQL, c.IsEncrypted, "					// 18..20
-			+ "c.IsAllowLogging,t.IsChangeLog ");											// 21
+			+ "c.IsAllowLogging,c.IsAllowCopy,t.IsChangeLog ");											// 21..23
 		sql.append("FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID)"
 			+ " LEFT OUTER JOIN AD_Val_Rule vr ON (c.AD_Val_Rule_ID=vr.AD_Val_Rule_ID)"
@@ -189,7 +192,8 @@ public class POInfo implements Serializable
 				String ColumnSQL = rs.getString(19);
 				boolean IsEncrypted = "Y".equals(rs.getString(20));
 				boolean IsAllowLogging = "Y".equals(rs.getString(21));
-				m_IsChangeLog="Y".equals(rs.getString(22));
+				boolean IsAllowCopy = "Y".equals(rs.getString(22));
+				m_IsChangeLog="Y".equals(rs.getString(23));
 
 				POInfoColumn col = new POInfoColumn (
 					AD_Column_ID, ColumnName, ColumnSQL, AD_Reference_ID,
@@ -199,7 +203,7 @@ public class POInfo implements Serializable
 					AD_Reference_Value_ID, ValidationCode,
 					FieldLength, ValueMin, ValueMax,
 					IsTranslated, IsEncrypted,
-					IsAllowLogging);
+					IsAllowLogging, IsAllowCopy);
 				list.add(col);
 			}
 		}
@@ -598,6 +602,19 @@ public class POInfo implements Serializable
 			return false;
 		return m_columns[index].IsAllowLogging;
 	} // isAllowLogging
+
+	/**
+	 * Is allowed copying this column
+	 * 
+	 * @param index
+	 *            index
+	 * @return true if column is allowed to be copied
+	 */
+	public boolean isAllowCopy(int index) {
+		if (index < 0 || index >= m_columns.length)
+			return false;
+		return m_columns[index].IsAllowCopy;
+	} // isAllowCopy
 
 	/**
 	 *  Get Column FieldLength

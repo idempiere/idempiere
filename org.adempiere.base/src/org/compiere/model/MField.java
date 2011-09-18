@@ -128,6 +128,16 @@ public class MField extends X_AD_Field
 			setDescription (element.getDescription ());
 			setHelp (element.getHelp());
 		}
+		
+		if (getIsAllowCopy() != null) {
+			MColumn column = (MColumn) getAD_Column();
+			if (   column.isKey()
+				|| column.getColumnSQL() != null
+				|| column.isStandardColumn()
+			)
+				setIsAllowCopy(null);
+		}
+		
 
 		return true;
 	}	//	beforeSave

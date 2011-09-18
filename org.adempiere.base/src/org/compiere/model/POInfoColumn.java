@@ -30,9 +30,12 @@ import org.compiere.util.CLogger;
  */
 public class POInfoColumn implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3882249785085847367L;
+
 	/** Used by Remote FinReport			*/
-	static final long serialVersionUID = -3983585608504631958L;
-	
 	/**
 	 *  Constructor
 	 *	@param ad_Column_ID Column ID
@@ -54,6 +57,7 @@ public class POInfoColumn implements Serializable
 	 * 	@param isTranslated translated
 	 * 	@param isEncrypted encrypted 
 	 * 	@param isAllowLogging allow logging 
+	 * 	@param isAllowCopy allow copy 
 	 */
 	public POInfoColumn (int ad_Column_ID, String columnName, String columnSQL, int displayType,
 		boolean isMandatory, boolean isUpdateable, String defaultLogic,
@@ -61,7 +65,7 @@ public class POInfoColumn implements Serializable
 		boolean isKey, boolean isParent,
 		int ad_Reference_Value_ID, String validationCode,
 		int fieldLength, String valueMin, String valueMax,
-		boolean isTranslated, boolean isEncrypted, boolean isAllowLogging)
+		boolean isTranslated, boolean isEncrypted, boolean isAllowLogging,  boolean isAllowCopy)
 	{
 		AD_Column_ID = ad_Column_ID;
 		ColumnName = columnName;
@@ -120,6 +124,7 @@ public class POInfoColumn implements Serializable
 		IsTranslated = isTranslated;
 		IsEncrypted = isEncrypted;
 		IsAllowLogging = isAllowLogging;
+		IsAllowCopy = isAllowCopy;
 	}   //  Column
 
 	/** Column ID		*/
@@ -152,6 +157,8 @@ public class POInfoColumn implements Serializable
 	public boolean		IsEncrypted;
 	/**	Allow Logging		*/
 	public boolean		IsAllowLogging;
+	/**	Allow Copy		*/
+	public boolean		IsAllowCopy;
 	
 	/** Reference Value	*/
 	public int			AD_Reference_Value_ID;

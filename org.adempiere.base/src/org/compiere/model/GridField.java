@@ -77,7 +77,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6007475135643071025L;
+	private static final long serialVersionUID = -2943313231011246615L;
 
 	/**
 	 *  Field Constructor.
@@ -1026,6 +1026,13 @@ public class GridField
 	 */
 	public boolean isAutocomplete() {
 		return m_vo.IsAutocomplete;
+	}
+	/**
+	 * 	Is Allow Copy
+	 *	@return true if allow copy
+	 */
+	public boolean isAllowCopy() {
+		return m_vo.IsAllowCopy;
 	}
 	/**
 	 * 	Is Always Updateable

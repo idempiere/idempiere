@@ -41,6 +41,10 @@ import org.compiere.util.Env;
  */
 public class GridFieldVO implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3576685994073893942L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -178,6 +182,8 @@ public class GridFieldVO implements Serializable
 //				Feature Request FR [ 2003044 ]
 				else if (columnName.equalsIgnoreCase("IsAutocomplete"))
 					vo.IsAutocomplete  = "Y".equals(rs.getString(i));
+				else if (columnName.equalsIgnoreCase("IsAllowCopy"))
+					vo.IsAllowCopy  = "Y".equals(rs.getString(i));
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -345,8 +351,6 @@ public class GridFieldVO implements Serializable
 		tabReadOnly = TabReadOnly;
 	}   //  MFieldVO
 
-	static final long serialVersionUID = 4385061125114436797L;
-	
 	/** Context                     */
 	public Properties   ctx = null;
 	/** Window No                   */
@@ -458,6 +462,8 @@ public class GridFieldVO implements Serializable
 	public boolean IsCollapsedByDefault = false;
 	/**  Autocompletion for textfields - Feature Request FR [ 1757088 ] */
 	public boolean IsAutocomplete = false;
+	/* Allow copy - IDEMPIERE-67 - Carlos Ruiz - globalqss */
+	public boolean IsAllowCopy = false;
 	
 	/**
 	 *  Set Context including contained elements
@@ -554,6 +560,7 @@ public class GridFieldVO implements Serializable
 		clone.IsEncryptedColumn = IsEncryptedColumn;
 		clone.IsSelectionColumn = IsSelectionColumn;
 		clone.IsAutocomplete = IsAutocomplete;
+		clone.IsAllowCopy = IsAllowCopy;
 		clone.SortNo = SortNo;
 		clone.FieldLength = FieldLength;
 		clone.VFormat = VFormat;

@@ -145,8 +145,10 @@ public class MColumn extends X_AD_Column
 		if (columnName.equals("AD_Client_ID") 
 			|| columnName.equals("AD_Org_ID")
 			|| columnName.equals("IsActive")
-			|| columnName.startsWith("Created")
-			|| columnName.startsWith("Updated") )
+			|| columnName.equals("Created")
+			|| columnName.equals("CreatedBy")
+			|| columnName.equals("Updated")
+			|| columnName.equals("UpdatedBy") )
 			return true;
 		
 		return false;
@@ -270,6 +272,18 @@ public class MColumn extends X_AD_Column
 			setDescription (element.getDescription());
 			setHelp (element.getHelp());
 		}
+		
+		// Validations for IsAllowCopy - some columns must never be set as allowed copying
+		String colname = getColumnName();
+		if (isAllowCopy()) {
+			if (   isKey()
+				|| getColumnSQL() != null
+				|| colname.equals(getAD_Table().getTableName()+"_UU")
+				|| isStandardColumn()
+			)
+				setIsAllowCopy(false);
+		}
+		
 		return true;
 	}	//	beforeSave
 

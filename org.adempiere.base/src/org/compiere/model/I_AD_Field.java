@@ -31,7 +31,7 @@ public interface I_AD_Field
     public static final String Table_Name = "AD_Field";
 
     /** AD_Table_ID=107 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 107;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Column_ID();
 
-	public I_AD_Column getAD_Column() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_FieldGroup_ID */
     public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
@@ -77,7 +77,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_FieldGroup_ID();
 
-	public I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_Field_ID */
     public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
@@ -91,6 +91,15 @@ public interface I_AD_Field
 	  * Field on a database table
 	  */
 	public int getAD_Field_ID();
+
+    /** Column name AD_Field_UU */
+    public static final String COLUMNNAME_AD_Field_UU = "AD_Field_UU";
+
+	/** Set AD_Field_UU	  */
+	public void setAD_Field_UU (String AD_Field_UU);
+
+	/** Get AD_Field_UU	  */
+	public String getAD_Field_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -118,7 +127,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Reference_ID();
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
     public static final String COLUMNNAME_AD_Reference_Value_ID = "AD_Reference_Value_ID";
@@ -133,7 +142,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Reference_Value_ID();
 
-	public I_AD_Reference getAD_Reference_Value() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name AD_Tab_ID */
     public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
@@ -148,7 +157,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Tab_ID();
 
-	public I_AD_Tab getAD_Tab() throws RuntimeException;
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AD_Val_Rule_ID */
     public static final String COLUMNNAME_AD_Val_Rule_ID = "AD_Val_Rule_ID";
@@ -163,7 +172,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Val_Rule_ID();
 
-	public I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -276,7 +285,7 @@ public interface I_AD_Field
 	  */
 	public int getIncluded_Tab_ID();
 
-	public I_AD_Tab getIncluded_Tab() throws RuntimeException;
+	public org.compiere.model.I_AD_Tab getIncluded_Tab() throws RuntimeException;
 
     /** Column name InfoFactoryClass */
     public static final String COLUMNNAME_InfoFactoryClass = "InfoFactoryClass";
@@ -303,6 +312,19 @@ public interface I_AD_Field
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAllowCopy */
+    public static final String COLUMNNAME_IsAllowCopy = "IsAllowCopy";
+
+	/** Set Allow Copy.
+	  * Determine if a column must be copied when pushing the button to copy record
+	  */
+	public void setIsAllowCopy (String IsAllowCopy);
+
+	/** Get Allow Copy.
+	  * Determine if a column must be copied when pushing the button to copy record
+	  */
+	public String getIsAllowCopy();
 
     /** Column name IsCentrallyMaintained */
     public static final String COLUMNNAME_IsCentrallyMaintained = "IsCentrallyMaintained";
