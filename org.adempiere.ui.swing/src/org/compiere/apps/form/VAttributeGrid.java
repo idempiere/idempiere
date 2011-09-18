@@ -329,7 +329,7 @@ public class VAttributeGrid extends CPanel
 			xValues = m_attributes[indexAttr1-1].getMAttributeValues();
 		if (xValues != null)
 		{
-			cols = xValues.length;
+			cols = xValues.length + 1;
 			log.info("X - " + m_attributes[indexAttr1-1].getName() + " #" + xValues.length);
 		}
 		
@@ -340,7 +340,7 @@ public class VAttributeGrid extends CPanel
 			yValues = m_attributes[indexAttr2-1].getMAttributeValues();
 		if (yValues != null)
 		{
-			rows = yValues.length;
+			rows = yValues.length + 1;
 			log.info("Y - " + m_attributes[indexAttr2-1].getName() + " #" + yValues.length);
 		}
 		
@@ -356,11 +356,11 @@ public class VAttributeGrid extends CPanel
 			for (int col = 0; col < cols; col++)
 			{
 				MAttributeValue xValue = null;
-				if (xValues != null)
-					xValue = xValues[col];
+				if (xValues != null && col > 0)
+					xValue = xValues[col - 1];
 				MAttributeValue yValue = null;
-				if (yValues != null)
-					yValue = yValues[row];
+				if (yValues != null && row > 0)
+					yValue = yValues[row - 1];
 			//	log.fine("Row=" + row + " - Col=" + col);
 				//
 				if (row == 0 && col == 0)

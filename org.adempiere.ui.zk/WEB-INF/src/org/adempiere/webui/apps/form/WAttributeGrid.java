@@ -405,7 +405,7 @@ public class WAttributeGrid extends ADForm implements EventListener
 			}
 		}
 		if (xValues != null)
-			noOfCols = xValues.length;
+			noOfCols = xValues.length + 1;
 		
 		//	y dimension
 		int noOfRows = 2;
@@ -426,7 +426,7 @@ public class WAttributeGrid extends ADForm implements EventListener
 		}
 		
 		if (yValues != null)
-			noOfRows = yValues.length;
+			noOfRows = yValues.length + 1;
 		
 		gridView.getChildren().clear();
 		
@@ -443,11 +443,11 @@ public class WAttributeGrid extends ADForm implements EventListener
 			for (int colIndex = 0; colIndex < noOfCols; colIndex++)
 			{
 				MAttributeValue xValue = null;
-				if (xValues != null)
-					xValue = xValues[colIndex];
+				if (xValues != null && colIndex > 0)
+					xValue = xValues[colIndex - 1];
 				MAttributeValue yValue = null;
-				if (yValues != null)
-					yValue = yValues[rowIndex];
+				if (yValues != null && rowIndex > 0)
+					yValue = yValues[rowIndex - 1];
 				
 				if (rowIndex == 0 && colIndex == 0)
 				{
