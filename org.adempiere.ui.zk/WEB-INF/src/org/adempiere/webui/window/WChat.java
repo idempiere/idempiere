@@ -16,22 +16,33 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.*;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.compiere.model.*;
 import org.compiere.util.*;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zkex.zul.Borderlayout;
 import org.zkoss.zkex.zul.Center;
-import org.zkoss.zkex.zul.North;
 import org.zkoss.zkex.zul.South;
+import org.zkoss.zul.Detail;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Html;
+import org.zkoss.zul.Space;
 
 /**
  * 	Application Chat
@@ -41,6 +52,9 @@ import org.zkoss.zul.Html;
  */
 public class WChat extends Window implements EventListener
 {
+	private static final String REPLY_DIV_STYLE = "padding-left: 10px";
+	private static final String USER_LABEL_STYLE = "font-weight: bold";
+	private static final String TIME_LABEL_STYLE = "font-size:x-small;color:gray;margin-left:20px";
 	/**
 	 * Generated serial version Id
 	 */
@@ -102,10 +116,12 @@ public class WChat extends Window implements EventListener
 	private static CLogger log = CLogger.getCLogger(WChat.class);
 
 	private Borderlayout 	mainPanel = new Borderlayout();
-	private Div historyDiv;
-	private Html historyText = new Html();
 	private Textbox			newText = new Textbox();
-	private ConfirmPanel	confirmPanel = new ConfirmPanel(true);
+	private ConfirmPanel	confirmPanel = new ConfirmPanel(false);
+	private Grid			messageGrid = new Grid();
+	private Button addButton;
+	private Map<Integer, Component> entryMap = new HashMap<Integer, Component>();
+	private SimpleDateFormat m_format;
 
 	/**
 	 * 	Static Init.
@@ -116,35 +132,38 @@ public class WChat extends Window implements EventListener
 		this.appendChild(mainPanel);
 		mainPanel.setStyle("position:absolute; height:90%; width:95%; border: none; background-color: white;");
 		//
-		North north = new North();
-		north.setSplittable(true);
-		north.setStyle("border: none");
-		mainPanel.appendChild(north);
-		historyDiv = new Div();
-		historyDiv.setStyle("position:absolute; height:100%; width:100%; background-color: lightgray;");
-		historyDiv.appendChild(historyText);
-		north.appendChild(historyDiv);
-		north.setAutoscroll(true);
-		north.setHeight("150px");
-
+		
 		Center center = new Center();
-		center.appendChild(newText);
-		newText.setStyle("position:absolute; height:100%; width:100%");
-		newText.setMultiline(true);
+		center.appendChild(messageGrid);
+		center.setFlex(true);
+		center.setAutoscroll(true);
 		mainPanel.appendChild(center);
 		//
 		//	South
+		Div southDiv = new Div();
 		South south = new South();
-		south.setHeight("50px");
+		south.setHeight("130px");
 		south.setStyle("border: none; margin-top: 10px");
-		south.appendChild(confirmPanel);
+		south.appendChild(southDiv);
+		southDiv.setStyle("position:absolute; height:130px; width:100%");
+		
 		mainPanel.appendChild(south);
-		confirmPanel.addActionListener(this);
+		southDiv.appendChild(newText);
+		addButton = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Add")));
+		addButton.addActionListener(this);
+		southDiv.appendChild(addButton);
+		southDiv.appendChild(confirmPanel);
+		newText.setStyle("position:absolute; height:50px; width:99%");
+		newText.setMultiline(true);		
+		addButton.setStyle("position:absolute; top: 53px;");
+		confirmPanel.setStyle("position:absolute; height:30px; width:99%; top:80px;");
+		confirmPanel.addActionListener(this);				
 
-		this.setStyle("position: relative; height: 450px; width: 500px;");
+		this.setStyle("position: relative; height: 600px; width: 500px;");
 		this.setMaximizable(true);
 		this.setSizable(true);
 		this.setBorder("normal");
+		this.setClosable(true);
 	}	//	staticInit
 
 	/**
@@ -152,9 +171,130 @@ public class WChat extends Window implements EventListener
 	 */
 	private void loadChat()
 	{
-		String html = m_chat.getHistory(MChat.CONFIDENTIALTYPE_Internal).toString();
-		historyText.setContent(html);
+		messageGrid.newRows();
+		messageGrid.appendChild(new Columns());
+		
+		MChatEntry[] entries = m_chat.getEntries(true);
+		for(MChatEntry entry : entries)
+		{
+			addEntry(entry);
+		}
 	}	//	loadChat
+
+	protected void addEntry(MChatEntry entry) {
+		if (entry.getCM_ChatEntryParent_ID() == 0) {			
+			Rows rows = (Rows) messageGrid.getRows(); 
+			Row row = rows.newRow();
+			entryMap.put(entry.getCM_ChatEntry_ID(), row);
+			Label userLabel = createUserNameLabel(entry);
+			Div div = new Div();
+			div.appendChild(userLabel);
+			Label msgLabel = new Label(entry.getCharacterData());
+			div.appendChild(msgLabel);
+			Button button = createReplyButton(entry);
+			Label timeLabel = createTimestampLabel(entry);
+			div.appendChild(new Space());
+			div.appendChild(button);
+			div.appendChild(timeLabel);
+			row.appendChild(new Space());
+			row.appendChild(div);
+		} else {
+			Component comp = entryMap.get(entry.getCM_ChatEntryParent_ID());
+			if (comp != null && comp instanceof Row) {
+				Row row = (Row) comp;
+				Component firstChild = row.getFirstChild();
+				if (firstChild instanceof Space) {
+					Label userLabel = createUserNameLabel(entry);
+					Div div = new Div();
+					div.setWidth("100%");
+					div.appendChild(userLabel);
+					Label msgLabel = new Label(entry.getCharacterData());
+					div.appendChild(msgLabel);
+					Button button = createReplyButton(entry);
+					div.appendChild(new Space());
+					div.appendChild(button);
+					Label timeLabel = createTimestampLabel(entry);
+					div.appendChild(timeLabel);
+					div.setStyle(REPLY_DIV_STYLE);
+					Detail detail = new Detail();
+					detail.appendChild(div);
+					entryMap.put(entry.getCM_ChatEntry_ID(), detail);
+					row.insertBefore(detail, firstChild);
+					firstChild.detach();
+				} else {
+					Detail detail = (Detail) firstChild;
+					Label userLabel = createUserNameLabel(entry);
+					Div div = new Div();
+					div.setWidth("100%");
+					div.appendChild(userLabel);
+					Label msgLabel = new Label(entry.getCharacterData());
+					div.appendChild(msgLabel);
+					Button button = createReplyButton(entry);
+					div.appendChild(new Space());
+					div.appendChild(button);
+					Label timeLabel = createTimestampLabel(entry);
+					div.appendChild(timeLabel);
+					div.setStyle(REPLY_DIV_STYLE);
+					detail.appendChild(div);
+				}
+			} else if (comp != null && comp instanceof Detail) {
+				Detail parentDetail = (Detail) comp;
+				Div firstChild = (Div) parentDetail.getFirstChild();
+				firstChild.detach();
+				firstChild.setStyle("");
+				Grid grid = new Grid();
+				grid.appendChild(new Columns());
+				Rows rows = grid.newRows();
+				Row row = rows.newRow();
+				Detail detail = new Detail();
+				row.appendChild(detail);
+				row.appendChild(firstChild);
+				entryMap.remove(entry.getCM_ChatEntryParent_ID());
+				entryMap.put(entry.getCM_ChatEntryParent_ID(), row);								
+				entryMap.put(entry.getCM_ChatEntry_ID(), detail);
+				Label userLabel = createUserNameLabel(entry);
+				userLabel.setStyle(USER_LABEL_STYLE);
+				Div div = new Div();
+				div.appendChild(userLabel);
+				div.setStyle(REPLY_DIV_STYLE);
+				Label msgLabel = new Label(entry.getCharacterData());
+				div.appendChild(msgLabel);
+				Button button = createReplyButton(entry);
+				div.appendChild(new Space());
+				div.appendChild(button);
+				Label timeLabel = createTimestampLabel(entry);
+				div.appendChild(timeLabel);
+				detail.appendChild(div);				
+				
+				parentDetail.appendChild(grid);
+			}
+		}
+	}
+
+	protected Label createTimestampLabel(MChatEntry entry) {
+		Timestamp created = entry.getCreated();
+		if (m_format == null)
+			m_format = DisplayType.getDateFormat(DisplayType.DateTime);
+		Label timeLabel = new Label(m_format.format(created));
+		timeLabel.setStyle(TIME_LABEL_STYLE);
+		return timeLabel;
+	}
+
+	protected Label createUserNameLabel(MChatEntry entry) {
+		Label userLabel;
+		MUser user = MUser.get(Env.getCtx(), entry.getCreatedBy());
+		String userName = user.getName() + ": ";					
+		userLabel = new Label(userName);
+		userLabel.setStyle(USER_LABEL_STYLE);
+		return userLabel;
+	}
+
+	protected Button createReplyButton(MChatEntry entry) {
+		Button button = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Reply")));
+		button.addActionListener(this);
+		button.setAttribute("CM_ChatEntry_ID", entry.getCM_ChatEntry_ID());
+		return button;
+	}
 
 
 	/**
@@ -165,6 +305,10 @@ public class WChat extends Window implements EventListener
 	{
 		if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
+			dispose();			
+		}
+		else if (e.getTarget() == addButton)
+		{
 			String data = newText.getText();
 			if (data != null && data.length() > 0)
 			{
@@ -173,9 +317,48 @@ public class WChat extends Window implements EventListener
 					m_chat.saveEx();
 				MChatEntry entry = new MChatEntry(m_chat, data);
 				entry.saveEx();
+				newText.setText("");
+				addEntry(entry);
 			}	//	data to be saved
 		}
-		dispose();
+		else if (e.getTarget().getAttribute("CM_ChatEntry_ID") != null)
+		{
+			int CM_ChatEntry_ID = (Integer)e.getTarget().getAttribute("CM_ChatEntry_ID");
+			Div div = new Div();
+			div.setWidth("100%");
+			Textbox replyTextbox = new Textbox();
+			replyTextbox.setMultiline(true);
+			replyTextbox.setWidth("100%");
+			replyTextbox.setRows(3);
+			div.appendChild(replyTextbox);
+			Button btn = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Ok")));
+			div.appendChild(btn);
+			btn.addActionListener(this);
+			btn.setAttribute("CM_ChatEntryParent_ID", CM_ChatEntry_ID);
+			btn = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Cancel")));
+			div.appendChild(btn);
+			btn.addActionListener(this);
+			btn.setAttribute("CM_ChatEntryParent_ID", CM_ChatEntry_ID);
+			btn.setAttribute("cancel.button", true);
+			e.getTarget().getParent().appendChild(div);	
+			replyTextbox.focus();
+		}
+		else if (e.getTarget().getAttribute("CM_ChatEntryParent_ID") != null) 
+		{
+			if (e.getTarget().getAttribute("cancel.button") != null) 
+			{
+				e.getTarget().getParent().detach();
+				return;
+			}
+			int CM_ChatEntryParent_ID = (Integer)e.getTarget().getAttribute("CM_ChatEntryParent_ID");
+			Textbox textbox = (Textbox) e.getTarget().getParent().getFirstChild();
+			MChatEntry entry = new MChatEntry(m_chat, textbox.getText());
+			entry.setCM_ChatEntryParent_ID(CM_ChatEntryParent_ID);
+			entry.saveEx();
+			addEntry(entry);
+			e.getTarget().getParent().detach();
+		}
+		
 	}	//	actionPerformed
 
 	public void onEvent(Event event) throws Exception {
