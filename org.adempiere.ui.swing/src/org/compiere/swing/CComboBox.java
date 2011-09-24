@@ -35,7 +35,6 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JTextField;
 import javax.swing.MutableComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
@@ -134,7 +133,7 @@ public class CComboBox extends JComboBox
 	 * @param items  an array of vectors to insert into the combo box
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBox(Vector items)
+	public CComboBox(Vector<?> items)
 	{
 		super(items);
 		init();
@@ -168,9 +167,6 @@ public class CComboBox extends JComboBox
 
 	/** Key listener for triggering an update the filtering model .             */
 	private ReducibleKeyListener reducibleKeyListener = new ReducibleKeyListener();
-
-	/** Reference Field         */
-	private static  JTextField  s_text = new JTextField(15);
 
 	/**
 	 *  Common Init
@@ -947,7 +943,7 @@ public class CComboBox extends JComboBox
 		 * @see java.awt.event.KeyAdapter#keyPressed(java.awt.event.KeyEvent)
 		 */
 		public void keyPressed(KeyEvent ke) 
-		{   
+		{
 			if (ke.getKeyCode() != KeyEvent.VK_CONTROL &&
 					ke.getKeyCode() != KeyEvent.VK_ALT &&
 					ke.getKeyCode() != KeyEvent.VK_SHIFT && 
@@ -974,6 +970,9 @@ public class CComboBox extends JComboBox
 				{
 					// up or down selects new value
 					SwingUtilities.invokeLater(m_updateMenu);
+				}
+				else if (ke.getKeyChar() == KeyEvent.CHAR_UNDEFINED) {
+					; // ignore keys not modifying text
 				}
 				else
 				{
