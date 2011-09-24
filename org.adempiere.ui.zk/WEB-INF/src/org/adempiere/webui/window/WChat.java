@@ -52,13 +52,14 @@ import org.zkoss.zul.Space;
  */
 public class WChat extends Window implements EventListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5265835393257520762L;
+	
 	private static final String REPLY_DIV_STYLE = "padding-left: 10px";
 	private static final String USER_LABEL_STYLE = "font-weight: bold";
-	private static final String TIME_LABEL_STYLE = "font-size:x-small;color:gray;margin-left:20px";
-	/**
-	 * Generated serial version Id
-	 */
-	private static final long serialVersionUID = 5467212494843748048L;
+	private static final String TIME_LABEL_STYLE = "font-size:xx-small;color:gray;margin-left:20px";
 
 	/**
 	 *	Constructor.
