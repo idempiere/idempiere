@@ -55,7 +55,7 @@ public class WorkflowProcessor extends AdempiereServer
 	 */
 	public WorkflowProcessor (MWorkflowProcessor model)
 	{
-		super (model, 120);		//	2 minute dalay
+		super (model, 120);		//	2 minute delay
 		m_model = model;
 		m_client = MClient.get(model.getCtx(), model.getAD_Client_ID());
 	}	//	WorkflowProcessor
@@ -95,7 +95,7 @@ public class WorkflowProcessor extends AdempiereServer
 		String sql = "SELECT * "
 			+ "FROM AD_WF_Activity a "
 			+ "WHERE Processed='N' AND WFState='OS'"	//	suspended
-			+ " AND EndWaitTime > SysDate"
+			+ " AND EndWaitTime <= SysDate"
 			+ " AND AD_Client_ID=?"
 			+ " AND EXISTS (SELECT * FROM AD_Workflow wf "
 				+ " INNER JOIN AD_WF_Node wfn ON (wf.AD_Workflow_ID=wfn.AD_Workflow_ID) "
@@ -104,7 +104,6 @@ public class WorkflowProcessor extends AdempiereServer
 				+ " AND (wf.AD_WorkflowProcessor_ID IS NULL OR wf.AD_WorkflowProcessor_ID=?))";
 		PreparedStatement pstmt = null;
 		int count = 0;
-		int countEMails = 0;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
@@ -114,11 +113,11 @@ public class WorkflowProcessor extends AdempiereServer
 			while (rs.next ())
 			{
 				MWFActivity activity = new MWFActivity (getCtx(), rs, null);
-				activity.setWFState (StateEngine.STATE_Completed);	
+				activity.setWFState (StateEngine.STATE_Completed);
 				// saves and calls MWFProcess.checkActivities();
 				count++;
 			}
-			rs.close ();			
+			rs.close ();
 		}
 		catch (Exception e)
 		{
@@ -146,7 +145,6 @@ public class WorkflowProcessor extends AdempiereServer
 				+ " AND wfn.DynPriorityUnit IS NOT NULL AND wfn.DynPriorityChange IS NOT NULL)";
 		PreparedStatement pstmt = null;
 		int count = 0;
-		int countEMails = 0;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);

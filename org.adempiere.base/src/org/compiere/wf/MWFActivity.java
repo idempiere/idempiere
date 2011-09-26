@@ -192,7 +192,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			setEndWaitTime(new Timestamp(limitMS + System.currentTimeMillis()));
 		//	Responsible
 		setResponsible(process);
-		save();
+		saveEx();
 		//
 		m_audit = new MWFEventAudit(this);
 		m_audit.saveEx();
@@ -266,7 +266,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			log.fine(oldState + "->"+ WFState + ", Msg=" + getTextMsg());
 			super.setWFState (WFState);
 			m_state = new StateEngine (getWFState());
-			save();			//	closed in MWFProcess.checkActivities()
+			saveEx();			//	closed in MWFProcess.checkActivities()
 			updateEventAudit();
 
 			//	Inform Process
@@ -282,7 +282,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			log.log(Level.SEVERE, msg);
 			Trace.printStack();
 			setTextMsg(msg);
-			save();
+			saveEx();
 			// TODO: teo_sarca: throw exception ? please analyze the call hierarchy first
 		}
 	}	//	setWFState
@@ -958,10 +958,10 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		if (MWFNode.ACTION_WaitSleep.equals(action))
 		{
 			log.fine("Sleep:WaitTime=" + m_node.getWaitTime());
-			if (m_node.getWaitingTime() == 0)
+			if (m_node.getWaitTime() == 0) // IDEMPIERE-73 Carlos Ruiz - globalqss
 				return true;	//	done
 			Calendar cal = Calendar.getInstance();
-			cal.add(m_node.getDurationCalendarField(), m_node.getWaitTime());
+			cal.add(Calendar.MINUTE, m_node.getWaitTime());
 			setEndWaitTime(new Timestamp(cal.getTimeInMillis()));
 			return false;		//	not done
 		}
@@ -1434,7 +1434,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		//	Update
 		setAD_User_ID (user.getAD_User_ID());
 		setTextMsg(textMsg);
-		save();
+		saveEx();
 		//	Close up Old Event
 		getEventAudit();
 		m_audit.setAD_User_ID(oldUser.getAD_User_ID());

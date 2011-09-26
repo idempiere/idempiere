@@ -47,7 +47,7 @@ public class MWFProcess extends X_AD_WF_Process
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8992222567597358696L;
+	private static final long serialVersionUID = -4447369291008183913L;
 
 	/**
 	 * 	Standard Constructor
@@ -256,6 +256,7 @@ public class MWFProcess extends X_AD_WF_Process
 	 */
 	public void checkActivities(String trxName, PO lastPO)
 	{
+		this.set_TrxName(trxName); // ensure process is working on the same transaction
 		log.info("(" + getAD_Workflow_ID() + ") - " + getWFState() 
 			+ (trxName == null ? "" : "[" + trxName + "]"));
 		if (m_state.isClosed())
@@ -319,7 +320,7 @@ public class MWFProcess extends X_AD_WF_Process
 		{
 			setWFState(closedState);
 			getPO();
-			//hengsin: remmove lock/unlock in workflow which is causing deadlock in many place
+			//hengsin: remove lock/unlock in workflow which is causing deadlock in many place
 			//if (m_po != null)
 				//m_po.unlock(null);
 		}

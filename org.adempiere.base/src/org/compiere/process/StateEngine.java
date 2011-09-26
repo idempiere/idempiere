@@ -365,7 +365,7 @@ public class StateEngine
 		if (isRunning())
 			return new String[] {STATE_Suspended, STATE_Completed, STATE_Aborted, STATE_Terminated};
 		if (isSuspended())
-			return new String[] {STATE_Running, STATE_Aborted, STATE_Terminated};
+			return new String[] {STATE_Running, STATE_Aborted, STATE_Terminated, STATE_Completed};
 		//
 		return new String[] {};
 	}	//	getNewStateOptions
