@@ -137,7 +137,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 			dirty = true;
 		}
 		if (dirty)
-			save();
+			saveEx();
 	}	//	round
 	
 	/**

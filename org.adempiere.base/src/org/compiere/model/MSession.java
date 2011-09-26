@@ -233,7 +233,7 @@ public class MSession extends X_AD_Session
 	public void logout()
 	{
 		setProcessed(true);
-		save();
+		saveEx();
 		s_sessions.remove(new Integer(getAD_Session_ID()));
 		log.info(TimeUtil.formatElapsed(getCreated(), getUpdated()));
 	}	//	logout

@@ -224,7 +224,7 @@ public class MWFProcess extends X_AD_WF_Process
 			m_state = new StateEngine (getWFState());
 			if (m_state.isClosed())
 				setProcessed(true);
-			save();
+			saveEx();
 			//	Force close to all Activities
 			if (m_state.isClosed())
 			{

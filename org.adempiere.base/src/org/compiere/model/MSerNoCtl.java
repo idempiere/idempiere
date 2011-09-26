@@ -79,7 +79,7 @@ public class MSerNoCtl extends X_M_SerNoCtl
 		//
 		no += getIncrementNo();
 		setCurrentNext(no);
-		save();
+		saveEx();
 		return name.toString();
 	}	//	createSerNo
 

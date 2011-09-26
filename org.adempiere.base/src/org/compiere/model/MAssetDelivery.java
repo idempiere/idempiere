@@ -90,7 +90,7 @@ public class MAssetDelivery extends X_A_Asset_Delivery
 		//	Who
 		setAD_User_ID(AD_User_ID);
 		//
-		save();
+		saveEx();
 	}	//	MAssetDelivery
 
 	/**
@@ -115,7 +115,7 @@ public class MAssetDelivery extends X_A_Asset_Delivery
 		//	Who
 		setAD_User_ID(AD_User_ID);
 		//
-		save();
+		saveEx();
 	}	//	MAssetDelivery
 
 	/**

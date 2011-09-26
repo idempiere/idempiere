@@ -139,7 +139,7 @@ public class MRfQResponse extends X_C_RfQResponse
 				continue;
 			//
 			if (get_ID() == 0)	//	save Response
-				save();
+				saveEx();
 
 			MRfQResponseLine line = new MRfQResponseLine (this, lines[i]);
 			//	line is not saved (dumped) if there are no Qtys 
@@ -261,7 +261,7 @@ public class MRfQResponse extends X_C_RfQResponse
 		if (EMail.SENT_OK.equals(email.send()))
 		{
 			setDateInvited(new Timestamp (System.currentTimeMillis()));
-			save();
+			saveEx();
 			return true;
 		}
 		return false;

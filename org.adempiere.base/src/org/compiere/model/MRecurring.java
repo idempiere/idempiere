@@ -146,7 +146,7 @@ public class MRecurring extends X_C_Recurring
 		int current = DB.getSQLValue(get_TrxName(), sql, getC_Recurring_ID());
 		int remaining = getRunsMax() - current;
 		setRunsRemaining(remaining);
-		save();
+		saveEx();
 		return remaining > 0;
 	}	//	calculateRuns
 

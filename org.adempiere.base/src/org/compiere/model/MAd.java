@@ -60,7 +60,7 @@ public class MAd extends X_CM_Ad
 		setActualImpression(getActualImpression()+1);
 		if (getCurrentImpression()>=getMaxImpression()) 
 			setIsActive(false);
-		save();
+		saveEx();
 	}
 	
 	/**
@@ -95,6 +95,6 @@ public class MAd extends X_CM_Ad
 		setActualClick(getActualClick()+1);
 		if (getActualClick()>getMaxClick()) 
 			setIsActive(true);
-		save();
+		saveEx();
 	}
 } // MAd

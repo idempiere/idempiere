@@ -80,7 +80,7 @@ public class MLotCtl extends X_M_LotCtl
 		//
 		no += getIncrementNo();
 		setCurrentNext(no);
-		save();
+		saveEx();
 		//
 		MLot retValue = new MLot (this, M_Product_ID, name.toString());
 		retValue.saveEx();

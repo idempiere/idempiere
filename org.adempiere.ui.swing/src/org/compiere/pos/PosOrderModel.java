@@ -109,7 +109,7 @@ public class PosOrderModel extends MOrder {
 				{
 					lineas[i].setC_BPartner_ID(partner.getC_BPartner_ID());
 					lineas[i].setTax();
-					lineas[i].save();
+					lineas[i].saveEx();
 				}
 				saveEx();
 			}
@@ -148,7 +148,7 @@ public class PosOrderModel extends MOrder {
 					lines[i].setPrice(); //	sets List/limit
 					if ( PriceActual.compareTo(Env.ZERO) > 0 )
 						lines[i].setPrice(PriceActual);
-					lines[i].save();
+					lines[i].saveEx();
 					return lines[i];
 				}
 			}
@@ -166,7 +166,7 @@ public class PosOrderModel extends MOrder {
 		line.setPrice(); //	sets List/limit
 		if ( PriceActual.compareTo(Env.ZERO) > 0 )
 			line.setPrice(PriceActual);
-		line.save();
+		line.saveEx();
 		return line;
 			
 	} //	createLine
@@ -211,7 +211,7 @@ public class PosOrderModel extends MOrder {
 				getLines(true, null);		// requery order
 				setDocStatus("VO");//delete(true); red1 -- should not delete but void the order
 				setProcessed(true); //red1 -- to avoid been in history during query
-				save();
+				saveEx();
 				return true;
 			}
 		return false;
@@ -253,7 +253,7 @@ public class PosOrderModel extends MOrder {
 			{
 				if (processIt(DocAction.ACTION_Complete) )
 				{
-					save();
+					saveEx();
 				}
 				else
 				{
@@ -320,12 +320,12 @@ public class PosOrderModel extends MOrder {
 		payment.setC_CashBook_ID(m_pos.getC_CashBook_ID());
 		payment.setAmount(getC_Currency_ID(), amt);
 		payment.setC_BankAccount_ID(m_pos.getC_BankAccount_ID());
-		payment.save();
+		payment.saveEx();
 		payment.setDocAction(MPayment.DOCACTION_Complete);
 		payment.setDocStatus(MPayment.DOCSTATUS_Drafted);
 		if ( payment.processIt(MPayment.DOCACTION_Complete) )
 		{
-			payment.save();
+			payment.saveEx();
 			return true;
 		}
 		else return false;

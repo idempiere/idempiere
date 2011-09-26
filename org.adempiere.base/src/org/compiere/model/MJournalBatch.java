@@ -657,7 +657,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		
 		//[ 1948157  ]
 		setReversal_ID(reverse.getGL_JournalBatch_ID());
-		save();
+		saveEx();
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)

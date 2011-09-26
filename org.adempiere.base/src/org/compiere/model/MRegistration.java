@@ -210,7 +210,7 @@ public class MRegistration extends X_A_Registration
 	{
 		//	save if not saved
 		if (get_ID() == 0)
-			save();
+			saveEx();
 		int count = 0;
 		//	read values for all attributes
 		MRegistrationAttribute[] attributes = getAttributes();
@@ -238,7 +238,7 @@ public class MRegistration extends X_A_Registration
 	{
 		//	save if not saved
 		if (get_ID() == 0)
-			save();
+			saveEx();
 		int count = 0;
 
 		//	Get All Values

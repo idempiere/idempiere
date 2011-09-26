@@ -528,7 +528,7 @@ public final class MPayment extends X_C_Payment
 		}
 		//  Process it
 		retValue = processOnline();
-		save();
+		saveEx();
 		return retValue;    //  Payment processed
 	}   //  startProcess
 

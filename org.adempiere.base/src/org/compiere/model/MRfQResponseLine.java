@@ -90,7 +90,7 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 			if (qtys[i].isActive() && qtys[i].isRfQQty())
 			{
 				if (get_ID() == 0)	//	save this line
-					save();
+					saveEx();
 				MRfQResponseLineQty qty = new MRfQResponseLineQty (this, qtys[i]);
 				qty.saveEx();
 			}

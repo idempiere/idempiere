@@ -109,7 +109,7 @@ public class MDistributionList extends X_M_DistributionList
 		{
 			log.info("getLines - Set RatioTotal from " + getRatioTotal() + " to " + ratioTotal);
 			setRatioTotal(ratioTotal);
-			save();
+			saveEx();
 		}
 		
 		MDistributionListLine[] retValue = new MDistributionListLine[list.size ()];

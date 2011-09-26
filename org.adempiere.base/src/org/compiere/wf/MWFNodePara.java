@@ -106,7 +106,7 @@ public class MWFNodePara extends X_AD_WF_Node_Para
 		{
 			an = getProcessPara().getColumnName();
 			setAttributeName(an);
-			save();
+			saveEx();
 		}
 		return an;
 	}	//	getAttributeName

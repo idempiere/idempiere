@@ -256,7 +256,7 @@ public class MDistribution extends X_GL_Distribution
 		if (get_ID() != 0 && PercentTotal.compareTo(getPercentTotal()) != 0)
 		{
 			setPercentTotal(PercentTotal);
-			save();
+			saveEx();
 		}
 		//	return
 		m_lines = new MDistributionLine[list.size ()];
