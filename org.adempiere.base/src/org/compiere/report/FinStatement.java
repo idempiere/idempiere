@@ -109,7 +109,7 @@ public class FinStatement extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
+			if (para[i].getParameter() == null && para[i].getParameter_To() == null)
 				;
 			else if (name.equals("C_AcctSchema_ID"))
 				p_C_AcctSchema_ID = ((BigDecimal)para[i].getParameter()).intValue();

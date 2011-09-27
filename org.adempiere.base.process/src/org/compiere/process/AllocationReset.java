@@ -61,7 +61,7 @@ public class AllocationReset extends SvrProcess
 		{
 			log.fine("prepare - " + para[i]);
 			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
+			if (para[i].getParameter() == null && para[i].getParameter_To() == null)
 				;
 			else if (name.equals("C_BP_Group_ID"))
 				p_C_BP_Group_ID = para[i].getParameterAsInt();

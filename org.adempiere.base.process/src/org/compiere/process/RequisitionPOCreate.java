@@ -99,7 +99,7 @@ public class RequisitionPOCreate extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
+			if (para[i].getParameter() == null && para[i].getParameter_To() == null)
 				;
 			else if (name.equals("AD_Org_ID"))
 				p_AD_Org_ID = para[i].getParameterAsInt();

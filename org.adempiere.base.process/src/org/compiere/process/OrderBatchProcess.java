@@ -54,7 +54,7 @@ public class OrderBatchProcess extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
+			if (para[i].getParameter() == null && para[i].getParameter_To() == null)
 				;
 			else if (name.equals("C_DocTypeTarget_ID"))
 				p_C_DocTypeTarget_ID = para[i].getParameterAsInt();
