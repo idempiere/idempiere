@@ -510,7 +510,10 @@ public class GridFieldVO implements Serializable
 				lookupInfo = MLookupFactory.getLookupInfo (ctx, WindowNo, AD_Column_ID, displayType,
 					Env.getLanguage(ctx), ColumnName, AD_Reference_Value_ID,
 					IsParent, ValidationCode);
-				lookupInfo.InfoFactoryClass = this.InfoFactoryClass;
+				if (lookupInfo == null)
+					displayType = DisplayType.ID;
+				else
+					lookupInfo.InfoFactoryClass = this.InfoFactoryClass;
 			}
 			catch (Exception e)     //  Cannot create Lookup
 			{
