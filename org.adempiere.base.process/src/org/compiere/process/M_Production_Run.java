@@ -233,7 +233,7 @@ public class M_Production_Run extends SvrProcess {
 			
 			if(component.isBOM() && !component.isStocked())
 			{	
-				explosion(pp, component, bomline.getQtyBOM() , line);
+				explosion(pp, component, bomline.getQtyBOM().multiply(qty), line);
 			}
 			else
 			{	
