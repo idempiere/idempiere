@@ -351,6 +351,7 @@ public class MBPartner extends X_C_BPartner
 		setValue ("");
 		setName ("");
 		setName2(null);
+		set_ValueNoCheck ("C_BPartner_UU", "");
 		return success;
 	}	//	getTemplate
 
