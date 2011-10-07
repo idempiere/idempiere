@@ -250,15 +250,14 @@ public class MQuery implements Serializable
 		if (columnName.equals("C_LocFrom_ID") || columnName.equals("C_LocTo_ID"))
 			return "C_Location_ID";
 		if (columnName.equals("C_UOM_To_ID"))
-			return "C_UOM";
+			return "C_UOM_ID";
 		if (columnName.equals("M_AttributeSetInstanceTo_ID"))
-			return "M_AttributeSetInstance";
+			return "M_AttributeSetInstance_ID";
 		if (columnName.equals("M_LocatorTo_ID"))
-			return "M_Locator";
+			return "M_Locator_ID";
 		if (columnName.equals("AD_OrgBP_ID") || columnName.equals("AD_OrgTrx_ID") || columnName.equals("AD_OrgTo_ID"))
 			return "AD_Org_ID";
 		//	See also GridTab.validateQuery
-		//
 		return columnName;
 	}	//	getZoomColumnName
 	
