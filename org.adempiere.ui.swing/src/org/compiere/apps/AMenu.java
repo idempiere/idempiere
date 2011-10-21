@@ -785,6 +785,7 @@ public final class AMenu extends CFrame
 		{
 			if (e.getClickCount() > 1)
 			{
+				updateInfo();
 				System.gc();
 				//updateInfo();
 			}

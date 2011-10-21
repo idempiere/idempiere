@@ -92,7 +92,7 @@ public class WFActivity extends CPanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6917300855914216420L;
+	private static final long serialVersionUID = 3900449055030897013L;
 
 	private static final int MAX_ACTIVITIES_IN_LIST = MSysConfig.getIntValue("MAX_ACTIVITIES_IN_LIST", 200, Env.getAD_Client_ID(Env.getCtx()));
 
@@ -382,22 +382,10 @@ public class WFActivity extends CPanel
 	{
 		int count = 0;
 		
-		String sql = "SELECT count(*) FROM AD_WF_Activity a "
-			+ "WHERE a.Processed='N' AND a.WFState='OS' AND ("
-			//	Owner of Activity
-			+ " a.AD_User_ID=?"	//	#1
-			//	Invoker (if no invoker = all)
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND COALESCE(r.AD_User_ID,0)=0 AND COALESCE(r.AD_Role_ID,0)=0 AND (a.AD_User_ID=? OR a.AD_User_ID IS NULL))"	//	#2
-			// Responsible User
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND r.AD_User_ID=?)"		//	#3
-			//	Responsible Role
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
-			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND ur.AD_User_ID=?))";	//	#4
-			//
-			//+ ") ORDER BY a.Priority DESC, Created";
+		String sql = "SELECT COUNT(*) FROM AD_WF_Activity a "
+			+ "WHERE " + getWhereActivities();
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
+		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()));
 		sql = role.addAccessSQL(sql, "a", true, false);
 		PreparedStatement pstmt = null;
@@ -409,6 +397,7 @@ public class WFActivity extends CPanel
 			pstmt.setInt (2, AD_User_ID);
 			pstmt.setInt (3, AD_User_ID);
 			pstmt.setInt (4, AD_User_ID);
+			pstmt.setInt (5, AD_Client_ID);
 			rs = pstmt.executeQuery ();
 			if (rs.next ()) {
 				count = rs.getInt(1);
@@ -434,27 +423,15 @@ public class WFActivity extends CPanel
 	 */
 	public int loadActivities()
 	{
-		resetDisplay(null);
 		while (selTableModel.getRowCount() > 0)
 			selTableModel.removeRow(0);	
 		long start = System.currentTimeMillis();
 		ArrayList<MWFActivity> list = new ArrayList<MWFActivity>();
 		String sql = "SELECT * FROM AD_WF_Activity a "
-			+ "WHERE a.Processed='N' AND a.WFState='OS' AND ("
-			//	Owner of Activity
-			+ " a.AD_User_ID=?"	//	#1
-			//	Invoker (if no invoker = all)
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND COALESCE(r.AD_User_ID,0)=0 AND COALESCE(r.AD_Role_ID,0)=0 AND (a.AD_User_ID=? OR a.AD_User_ID IS NULL))"	//	#2
-			// Responsible User
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND r.AD_User_ID=?)"		//	#3
-			//	Responsible Role
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
-			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND ur.AD_User_ID=?)"	//	#4
-			//
-			+ ") ORDER BY a.Priority DESC, Created";
+			+ "WHERE " + getWhereActivities()
+			+ " ORDER BY a.Priority DESC, Created";
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
+		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()));
 		sql = role.addAccessSQL(sql, "a", true, false);
 		PreparedStatement pstmt = null;
@@ -466,6 +443,7 @@ public class WFActivity extends CPanel
 			pstmt.setInt (2, AD_User_ID);
 			pstmt.setInt (3, AD_User_ID);
 			pstmt.setInt (4, AD_User_ID);
+			pstmt.setInt (5, AD_Client_ID);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
@@ -495,13 +473,32 @@ public class WFActivity extends CPanel
 			rs = null; pstmt = null;
 		}
 		selTable.autoSize(false);
-	
+		display(null);
 
 		log.fine("#" + selTable.getModel().getRowCount() 
 			+ "(" + (System.currentTimeMillis()-start) + "ms)");
 		return selTable.getModel().getRowCount(); 
 	}	//	loadActivities
 	
+	private String getWhereActivities() {
+		final String where =
+			"a.Processed='N' AND a.WFState='OS' AND ("
+			//	Owner of Activity
+			+ " a.AD_User_ID=?"	//	#1
+			//	Invoker (if no invoker = all)
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
+			+ " AND r.ResponsibleType='H' AND COALESCE(r.AD_User_ID,0)=0 AND COALESCE(r.AD_Role_ID,0)=0 AND (a.AD_User_ID=? OR a.AD_User_ID IS NULL))"	//	#2
+			//  Responsible User
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
+			+ " AND r.ResponsibleType='H' AND r.AD_User_ID=?)"		//	#3
+			//	Responsible Role
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
+			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=?)"	//	#4
+			//
+			+ ") AND a.AD_Client_ID=?";	//	#5
+		return where;
+	}
+
 	/**
 	 * 	Display.
 	 * 	@param index index of table
