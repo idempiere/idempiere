@@ -40,7 +40,7 @@ public class MDocType extends X_C_DocType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1406832071359080959L;
+	private static final long serialVersionUID = 2641885482012907072L;
 
 	/**
 	 * Return the first Doc Type for this BaseType
@@ -289,19 +289,17 @@ public class MDocType extends X_C_DocType
 	}	//	afterSave
 	
 	/**
-	 * 	Executed after Delete operation.
-	 * 	@param success true if record deleted
+	 * 	Executed before Delete operation.
+	 *
 	 *	@return true if delete is a success
 	 */
-	protected boolean afterDelete (boolean success)
+	protected boolean beforeDelete ()
 	{
-		if(success) {
-			//delete access records
-			int docactDel = DB.executeUpdate("DELETE FROM AD_Document_Action_Access WHERE C_DocType_ID=" + get_IDOld(), get_TrxName());
-			log.fine("Delete AD_Document_Action_Access=" + docactDel + " for C_DocType_ID: " + get_IDOld());
-		}
-		return success;
-	} 	//	afterDelete
+		// delete access records
+		int docactDel = DB.executeUpdate("DELETE FROM AD_Document_Action_Access WHERE C_DocType_ID=" + get_ID(), get_TrxName());
+		log.fine("Delete AD_Document_Action_Access=" + docactDel + " for C_DocType_ID: " + get_ID());
+		return docactDel >= 0;
+	}   //  beforeDelete
 
 	/**
      * Returns Document type for the shipment/receipt based
