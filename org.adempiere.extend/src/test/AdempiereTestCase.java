@@ -171,13 +171,8 @@ public class AdempiereTestCase extends TestCase
 		if (trxName != null)
 			trx = Trx.get(trxName, false);
 		if (trx != null && trx.isActive()) {
-			try {
-				trx.commit(true);
-			} finally {
-				trx.close();
-			}
+			trx.commit(true);
 		}
-		trx = null;
 	}
 	
 	/**
@@ -188,13 +183,20 @@ public class AdempiereTestCase extends TestCase
 		if (trxName != null)
 			trx = Trx.get(trxName, false);
 		if (trx != null && trx.isActive()) {
-			try {
-				trx.rollback();
-			} finally {
-				trx.close();
-			}
+			trx.rollback();
 		}
-		trx = null;
+	}
+
+	/**
+	 * Close active transaction
+	 */
+	protected void close() {
+		Trx trx = null;
+		if (trxName != null)
+			trx = Trx.get(trxName, false);
+		if (trx != null) {
+			trx.close();
+		}
 	}
 
 	@Override
@@ -207,6 +209,8 @@ public class AdempiereTestCase extends TestCase
 			trx = Trx.get(trxName, false);
 		if (trx != null && trx.isActive()) { 
 			trx.rollback();
+		}
+		if (trx != null) {
 			trx.close();
 		}
 		trx = null;
