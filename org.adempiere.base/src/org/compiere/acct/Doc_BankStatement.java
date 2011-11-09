@@ -103,10 +103,6 @@ public class Doc_BankStatement extends Doc
 			MBankStatementLine line = lines[i];
 			DocLine_Bank docLine = new DocLine_Bank(line, this);
 			
-			MPeriod period = MPeriod.get(getCtx(), line.getDateAcct(), line.getAD_Org_ID());
-			if (period != null && period.isOpen(DOCTYPE_BankStatement, line.getDateAcct()))
-				docLine.setC_Period_ID(period.getC_Period_ID());
-			//
 			list.add(docLine);
 		}
 
