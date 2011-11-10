@@ -42,6 +42,7 @@ import org.compiere.apps.search.Info;
 import org.compiere.grid.ed.VDate;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
+import org.compiere.model.MColumn;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
 import org.compiere.report.core.RModelExcelExporter;
@@ -719,6 +720,18 @@ public class AcctViewer extends CFrame
 		else if (keyColumn.equals("AD_OrgTrx_ID"))
 		{
 			lookupColumn = "AD_Org_ID";
+		}
+		else if (keyColumn.equals("UserElement1_ID")) // KTU
+		{	
+			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElement1);
+			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
+			whereClause = "";
+		}
+		else if (keyColumn.equals("UserElement2_ID")) // KTU
+		{
+			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElement2);
+			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
+			whereClause = "";
 		}
 		else if (keyColumn.equals("M_Product_ID"))
 		{
