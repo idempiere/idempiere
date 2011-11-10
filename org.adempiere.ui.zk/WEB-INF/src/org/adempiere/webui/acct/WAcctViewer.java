@@ -43,6 +43,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
+import org.compiere.model.MColumn;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
 import org.compiere.util.CLogger;
@@ -1117,7 +1118,7 @@ public class WAcctViewer extends Window implements EventListener
 	{
 		String keyColumn = button.getName();
 		log.info(keyColumn);
-		String whereClause = ""; // Elaine 2008/07/28
+		String whereClause = "(IsSummary='N' OR IsSummary IS NULL)";
 		String lookupColumn = keyColumn;
 
 		if ("Account_ID".equals(keyColumn))
@@ -1151,11 +1152,26 @@ public class WAcctViewer extends Window implements EventListener
 		{
 			lookupColumn = "AD_Org_ID";
 		}
+		else if (keyColumn.equals("UserElement1_ID")) // KTU
+		{	
+			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElement1);
+			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
+			whereClause = "";
+		}
+		else if (keyColumn.equals("UserElement2_ID")) // KTU
+		{
+			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElement2);
+			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
+			whereClause = "";
+		}
+		else if (keyColumn.equals("M_Product_ID"))
+		{
+			whereClause = "";
+		}
 		else if (selDocument.isChecked())
 			whereClause = "";
 
 		String tableName = lookupColumn.substring(0, lookupColumn.length()-3);
-		whereClause = tableName + ".IsSummary='N'" + whereClause; // Elaine 2008/07/28
 
 		InfoPanel info = InfoPanel.create(m_data.WindowNo, tableName, lookupColumn, "", false, whereClause);
 
