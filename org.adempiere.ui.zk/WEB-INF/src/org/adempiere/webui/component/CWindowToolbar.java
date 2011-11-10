@@ -132,15 +132,10 @@ public class CWindowToolbar extends FToolbar implements EventListener
         addSeparator();
         btnHelp = createButton("Help", "Help","Help");
         btnNew = createButton("New", "New", "New");
-
-        btnNew.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "btnNew");
-
         btnCopy = createButton("Copy", "Copy", "Copy");
         btnDelete = createButton("Delete", "Delete", "Delete");
         btnDeleteSelection = createButton("DeleteSelection", "DeleteSelection", "DeleteSelection");
         btnSave = createButton("Save", "Save", "Save");
-        btnSave.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "btnSave");
-
         btnSaveAndCreate = createButton("SaveCreate", "SaveCreate", "SaveCreate");
         addSeparator();
         btnRefresh = createButton("Refresh", "Refresh", "Refresh");
@@ -148,8 +143,6 @@ public class CWindowToolbar extends FToolbar implements EventListener
         btnAttachment = createButton("Attachment", "Attachment", "Attachment");
         btnChat = createButton("Chat", "Chat", "Chat");
         btnGridToggle = createButton("Toggle", "Multi", "Multi");
-        btnGridToggle.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "btnGridToggle");
-
         btnHistoryRecords = createButton("HistoryRecords", "HistoryX", "History");
         addSeparator();
         btnParentRecord = createButton("ParentRecord", "Parent", "Parent");
@@ -211,6 +204,7 @@ public class CWindowToolbar extends FToolbar implements EventListener
     {
     	ToolBarButton btn = new ToolBarButton("");
         btn.setName("btn"+name);
+        btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, btn.getName());
         btn.setImage("/images/"+image + (embedded ? "16.png" : "24.png"));
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
         if (embedded)
