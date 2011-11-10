@@ -1769,6 +1769,47 @@ public final class DB
 	}	//	getKeyNamePairs
 
 	/**
+	 * Get Array of IDs
+	 * @param trxName
+	 * @param sql select with id as first column
+	 * @param params query parameters
+     * @throws DBException if there is any SQLException
+     */
+	public static int[] getIDsEx(String trxName, String sql, Object ... params) throws DBException
+	{
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        try
+        {
+            pstmt = DB.prepareStatement(sql, trxName);
+            setParameters(pstmt, params);
+            rs = pstmt.executeQuery();
+            while (rs.next())
+            {
+                list.add(rs.getInt(1));
+            }
+        }
+        catch (SQLException e)
+        {
+    		throw new DBException(e, sql);
+        }
+        finally
+        {
+            close(rs, pstmt);
+            rs= null;
+            pstmt = null;
+        }
+		//	Convert to array
+		int[] retValue = new int[list.size()];
+		for (int i = 0; i < retValue.length; i++)
+		{
+			retValue[i] = list.get(i);
+		}
+        return retValue;
+	}	//	getIDsEx
+	
+	/**
 	 * 	Is Sales Order Trx.
 	 * 	Assumes Sales Order. Queries IsSOTrx of table with where clause
 	 *	@param TableName table
@@ -2395,4 +2436,3 @@ public final class DB
 	}
 
 }	//	DB
-
