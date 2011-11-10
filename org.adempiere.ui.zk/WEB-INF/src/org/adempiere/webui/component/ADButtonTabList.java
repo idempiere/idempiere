@@ -76,6 +76,7 @@ public class ADButtonTabList extends Panel implements IADTabList, EventListener 
 			button.setDynamicProperty("Title", tabLabel.description);
 			button.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "ADButtonTab" + i);
 			Text text = new Text(tabLabel.label);
+			text.setAttribute("ad_tab_id", tabLabel.AD_Tab_ID);
 			button.appendChild(text);
 			int s = tabbox.getSelectedIndex();
 
@@ -155,7 +156,13 @@ public class ADButtonTabList extends Panel implements IADTabList, EventListener 
 		for (ADTabLabel tabLabel : listItems) {
 			Text text = (Text) button.getFirstChild();
 			if (tabLabel.label.equals(text.getValue())) {
-				break;
+				if (text.getAttribute("ad_tab_id") == null) {
+					break;
+				}
+				Integer tabId = (Integer) text.getAttribute("ad_tab_id");
+				if (tabLabel.AD_Tab_ID == tabId) {
+					break;
+				}
 			}
 			i++;
 		}

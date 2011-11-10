@@ -48,6 +48,8 @@ public class ADTabListModel extends AbstractListModel implements ListitemRendere
 		public String label;
 		public int tabLevel;
 		public String description;
+		public int windowNo = -1;
+		public int AD_Tab_ID = -1;
 		
 		public ADTabLabel(String label, int tabLevel) {
 			this.label = label;
@@ -57,6 +59,12 @@ public class ADTabListModel extends AbstractListModel implements ListitemRendere
 		public ADTabLabel(String label, int tabLevel, String description) {
 			this(label,tabLevel);
 			this.description = description;
+		}
+		
+		public ADTabLabel(String label, int tabLevel, String description, int windowNo, int AD_Tab_ID) {
+			this(label,tabLevel,description);
+			this.windowNo = windowNo;
+			this.AD_Tab_ID = AD_Tab_ID;
 		}
 	}
 

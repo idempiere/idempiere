@@ -71,7 +71,8 @@ public class CompositeADTab extends AbstractADTab
     	tabPanel.setParent(div);
         tabPanel.setVisible(false);
 
-        ADTabListModel.ADTabLabel tabLabel = new ADTabListModel.ADTabLabel(gTab.getName(), gTab.getTabLevel(),gTab.getDescription());
+        ADTabListModel.ADTabLabel tabLabel = new ADTabListModel.ADTabLabel(gTab.getName(), gTab.getTabLevel(),gTab.getDescription(),
+        		gTab.getWindowNo(),gTab.getAD_Tab_ID());
         tabLabelList.add(tabLabel);
 	}
 
