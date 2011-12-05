@@ -23,7 +23,9 @@
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.taglibs\.standard$" componentType="osgi.bundle" versionOverride="[1.1.2.0,1.2.0.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.xmlcommons$" componentType="osgi.bundle" versionOverride="[1.3.4,1.4.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.xml\.serializer$" componentType="osgi.bundle" versionOverride="[2.7.1,2.8.0)"/>
-    <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.xerces$" componentType="osgi.bundle" versionOverride="[2.9.1,3.0.0)"/>
+    <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.xerces$" componentType="osgi.bundle" versionOverride="[2.9.1,3.0.0)">
+        <cq:property key="jar.version" value="2.9.1"/>
+    </cq:advisorNode>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.xml\.resolver$" componentType="osgi.bundle" versionOverride="[1.2.0,1.3.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.commons\.collections$" componentType="osgi.bundle" versionOverride="[3.2.1,4.0.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.org\.apache\.commons\.net$" componentType="osgi.bundle" versionOverride="[2.0.0,3.0.0)"/>

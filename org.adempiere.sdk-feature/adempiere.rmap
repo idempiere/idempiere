@@ -14,6 +14,7 @@
   <rm:locator pattern="^org\.eclipse\.gemini(\..+)?" searchPathRef="gemini.maven" failOnError="false"/>
   <rm:locator pattern="^org\.eclipse\.virgo(\..+)?" searchPathRef="gemini.maven" failOnError="false"/>
   <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="spring.external.maven" failOnError="false"/>
+  <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="workspace.bundle.jar" failOnError="false"/>
   <rm:locator pattern="^org\.springframework(\..+)?" searchPathRef="spring.maven" failOnError="false"/>
   <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven" failOnError="false"/>
   <rm:locator searchPathRef="workspace.bundle.project" failOnError="false"/>
