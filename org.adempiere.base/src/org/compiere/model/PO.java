@@ -2550,7 +2550,7 @@ public abstract class PO
 			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
 		}
 		//uuid secondary key
-		int uuidIndex = p_info.getColumnIndex(get_TableName()+"_UU");
+		int uuidIndex = p_info.getColumnIndex(getUUIDColumnName());
 		if (uuidIndex >= 0)
 		{
 			String value = (String)get_Value(uuidIndex);
@@ -4060,6 +4060,27 @@ public abstract class PO
 		return false;
 	}
 
+	 /**
+	 * @return uuid column name
+	 */
+	public String getUUIDColumnName() {
+		return PO.getUUIDColumnName(get_TableName());
+	}
+
+	/**
+	 * 
+	 * @param tableName
+	 * @return uuid column name
+	 */
+	public static String getUUIDColumnName(String tableName) {
+		String columnName = tableName + "_UU";
+		if (columnName.length() > 30) {
+			int i = columnName.length() - 30;
+			columnName = tableName.substring(0, tableName.length() - i) + "_UU";
+		}
+		return columnName;
+	}
+	
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		PO clone = (PO) super.clone();

@@ -25,6 +25,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
+import org.compiere.model.PO;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
@@ -87,7 +88,7 @@ public class UUIDGenerator extends SvrProcess {
 				int AD_Table_ID = rs.getInt(1);
 				String cTableName = rs.getString(2);
 
-				String columnName = cTableName + "_UU";
+				String columnName = PO.getUUIDColumnName(cTableName);
 				int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column Where AD_Table_ID = ? AND ColumnName = ?", AD_Table_ID, columnName);
 				if (AD_Column_ID <= 0) {
 					System.out.println("Adding UUID to " + cTableName);
