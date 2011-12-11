@@ -39,6 +39,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.compiere.Adempiere;
 import org.compiere.model.MLanguage;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -303,6 +304,7 @@ public class Translation
 			+ "FROM AD_Column c"
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
 			+ "WHERE t.TableName=?"
+			+ " AND c.ColumnName NOT LIKE ? "
 			+ " AND c.AD_Reference_ID IN (10,14) "
 			+ "ORDER BY IsMandatory DESC, ColumnName";
 		ArrayList<String> list = new ArrayList<String>();
@@ -310,6 +312,7 @@ public class Translation
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, Base_Table + "_Trl");
+			pstmt.setString(2, PO.getUUIDColumnName(Base_Table));
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
