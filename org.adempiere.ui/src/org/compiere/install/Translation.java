@@ -312,7 +312,7 @@ public class Translation
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, Base_Table + "_Trl");
-			pstmt.setString(2, PO.getUUIDColumnName(Base_Table));
+			pstmt.setString(2, PO.getUUIDColumnName(Base_Table + "_Trl"));
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
