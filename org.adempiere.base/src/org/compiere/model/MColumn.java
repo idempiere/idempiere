@@ -278,7 +278,7 @@ public class MColumn extends X_AD_Column
 		if (isAllowCopy()) {
 			if (   isKey()
 				|| getColumnSQL() != null
-				|| colname.equals(getAD_Table().getTableName()+"_UU")
+				|| colname.equals(PO.getUUIDColumnName(getAD_Table().getTableName()))
 				|| isStandardColumn()
 			)
 				setIsAllowCopy(false);

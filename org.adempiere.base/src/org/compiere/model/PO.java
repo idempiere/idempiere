@@ -3164,7 +3164,7 @@ public abstract class PO
 
 		//uuid column
 		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column col INNER JOIN AD_Table tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
-					tableName+"_Trl", tableName+"_Trl_UU");
+					tableName+"_Trl", PO.getUUIDColumnName(tableName+"_Trl"));
 
 		StringBuffer sql = new StringBuffer ("INSERT INTO ")
 			.append(tableName).append("_Trl (AD_Language,")
@@ -3172,7 +3172,7 @@ public abstract class PO
 			.append(iColumns)
 			.append(" IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy");
 		if (uuidColumnId > 0 && uuidFunction)
-			sql.append(",").append(tableName).append("_Trl_UU ) ");
+			sql.append(",").append(PO.getUUIDColumnName(tableName+"_Trl")).append(" ) ");
 		else
 			sql.append(" ) ");
 		sql.append("SELECT l.AD_Language,t.")
@@ -3344,9 +3344,9 @@ public abstract class PO
 
 		//uuid column
 		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column col INNER JOIN AD_Table tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
-				acctTable, acctTable+"_UU");
+				acctTable, PO.getUUIDColumnName(acctTable));
 		if (uuidColumnId > 0 && uuidFunction)
-			sb.append(",").append(acctTable).append("_UU");
+			sb.append(",").append(PO.getUUIDColumnName(acctTable));
 		//	..	SELECT
 		sb.append(") SELECT ").append(get_ID())
 			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', SysDate,")
@@ -3417,14 +3417,14 @@ public abstract class PO
 
 		//uuid column
 		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column col INNER JOIN AD_Table tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
-				tableName, tableName+"_UU");
+				tableName, PO.getUUIDColumnName(tableName));
 
 		StringBuffer sb = new StringBuffer ("INSERT INTO ")
 			.append(tableName)
 			.append(" (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, "
 				+ "AD_Tree_ID, Node_ID, Parent_ID, SeqNo");
 		if (uuidColumnId > 0 && uuidFunction)
-			sb.append(", ").append(tableName).append("_UU) ");
+			sb.append(", ").append(PO.getUUIDColumnName(tableName)).append(") ");
 		else
 			sb.append(") ");
 		sb.append("SELECT t.AD_Client_ID, 0, 'Y', SysDate, "+getUpdatedBy()+", SysDate, "+getUpdatedBy()+","

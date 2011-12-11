@@ -3,6 +3,7 @@ package org.adempiere.pipo2;
 import java.util.Properties;
 
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.helpers.AttributesImpl;
@@ -39,7 +40,7 @@ public class ReferenceUtils {
 			}
 			else if (isUUIDLookup(e))
 			{
-				return IDFinder.findIdByColumn(referenceKey, referenceKey + "_UU", value.trim(), Env.getAD_Client_ID(ctx), trxName);
+				return IDFinder.findIdByColumn(referenceKey, PO.getUUIDColumnName(referenceKey), value.trim(), Env.getAD_Client_ID(ctx), trxName);
 			}
 			else
 			{
@@ -94,9 +95,9 @@ public class ReferenceUtils {
 		else
 		{
 			MTable table = MTable.get(Env.getCtx(), tableName);
-			if (table.getColumn(tableName + "_UU") != null)
+			if (table.getColumn(PO.getUUIDColumnName(tableName)) != null)
 			{
-				sql = "SELECT " + tableName + "_UU" + " FROM "
+				sql = "SELECT " + PO.getUUIDColumnName(tableName) + " FROM "
 						+ tableName + " WHERE " + keyColumn + " = ?";
 				String value = DB.getSQLValueString(null, sql, id);
 				if (value != null && value.trim().length() > 0)

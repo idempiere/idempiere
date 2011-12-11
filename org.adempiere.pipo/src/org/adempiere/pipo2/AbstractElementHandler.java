@@ -585,7 +585,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     protected <T extends PO> T findPO(Properties ctx, Element element) {
     	T po = null;
     	String tableName = element.getElementValue();
-    	String uuidColumn = tableName + "_UU";
+    	String uuidColumn = PO.getUUIDColumnName(tableName);
     	String idColumn = tableName + "_ID";
     	if (element.properties.containsKey(uuidColumn)) {
     		String uuid = element.properties.get(uuidColumn).contents.toString();
