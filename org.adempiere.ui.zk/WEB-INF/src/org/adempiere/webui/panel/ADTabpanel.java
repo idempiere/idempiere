@@ -908,10 +908,25 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
         }
 
         if (!includedPanel.isEmpty() && e.getChangedColumn() == -1) {
+        	ArrayList<String> parentColumnNames = new ArrayList<String>();
+        	GridField[] parentFields = gridTab.getFields();
+        	for (GridField parentField : parentFields)
+        		parentColumnNames.add(parentField.getColumnName());        	
+        	
         	for (EmbeddedPanel panel : includedPanel)
+        	{
+        		GridTab tab = panel.tabPanel.getGridTab();
+        		GridField[] fields = tab.getFields();
+        		for (GridField field : fields)
+        		{
+        			if (!parentColumnNames.contains(field.getColumnName()))
+        				Env.setContext(Env.getCtx(), field.getWindowNo(), field.getColumnName(), "");
+        		}
         		panel.tabPanel.query(false, 0, 0);
-        }
+        	}
 
+        	parentColumnNames = null;
+        }
     }
 
     private void deleteNode(int recordId) {

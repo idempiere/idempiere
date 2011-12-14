@@ -709,6 +709,25 @@ public class GridController extends CPanel
 	{
 		//  start loading while building screen
 		m_mTab.query(onlyCurrentRows, onlyCurrentDays, maxRows);
+		
+		//make sure value from previous query is clear from window context
+		if (m_mTab.getRowCount() == 0) 
+		{
+			if (getGCParent() != null)
+			{
+				ArrayList<String> parentColumnNames = new ArrayList<String>();
+	        	GridField[] parentFields = getGCParent().getMTab().getFields();
+	        	for (GridField parentField : parentFields)
+	        		parentColumnNames.add(parentField.getColumnName());
+	        	
+        		GridField[] fields = m_mTab.getFields();
+        		for (GridField field : fields)
+        		{
+        			if (!parentColumnNames.contains(field.getColumnName()))
+        				Env.setContext(Env.getCtx(), field.getWindowNo(), field.getColumnName(), "");
+        		}
+			}
+		}
 		//  Update UI
 		if (!isSingleRow())
 			vTable.autoSize(true);
