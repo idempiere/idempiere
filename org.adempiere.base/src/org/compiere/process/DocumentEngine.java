@@ -41,6 +41,7 @@ import org.compiere.model.MJournalBatch;
 import org.compiere.model.MMovement;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
+import org.compiere.model.MRMA;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -1137,6 +1138,17 @@ public class DocumentEngine implements DocAction
 					options[index++] = DocumentEngine.ACTION_Void;
 					options[index++] = DocumentEngine.ACTION_ReActivate;
 				}
+		}
+		/********************
+		 *  RMA Process
+		 */
+		else if (AD_Table_ID == MRMA.Table_ID)
+		{
+			if(docStatus.equals(DocumentEngine.STATUS_Completed))
+			{
+				// IDEMPIERE-98 - Implement void for completed RMAs - Diego Ruiz - globalqss
+				options[index++] = DocumentEngine.ACTION_Void;
+			}
 		}
 		return index;
 	}

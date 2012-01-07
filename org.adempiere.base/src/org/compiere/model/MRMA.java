@@ -623,19 +623,33 @@ public class MRMA extends X_M_RMA implements DocAction
 		if (m_processMsg != null)
 			return false;
 
-		MRMALine lines[] = getLines(true);
-		// Set Qty and Amt on all lines to be Zero
-		for (MRMALine rmaLine : lines)
+		// IDEMPIERE-98 - Implement void for completed RMAs - Diego Ruiz - globalqss		
+		String validation = "SELECT COUNT(1) "
+							+"FROM M_InOut "
+							+"WHERE M_RMA_ID=? AND (DocStatus NOT IN ('VO','RE'))";
+		int count = DB.getSQLValueEx(get_TrxName(), validation, getM_RMA_ID()) ;
+		
+		if (count == 0)
 		{
-		    rmaLine.addDescription(Msg.getMsg(getCtx(), "Voided") + " (" + rmaLine.getQty() + ")");
-		    rmaLine.setQty(Env.ZERO);
-		    rmaLine.setAmt(Env.ZERO);
-		    rmaLine.saveEx();
+			MRMALine lines[] = getLines(true);
+			// Set Qty and Amt on all lines to be Zero
+			for (MRMALine rmaLine : lines)
+			{
+				rmaLine.addDescription(Msg.getMsg(getCtx(), "Voided") + " (" + rmaLine.getQty() + ")");
+				rmaLine.setQty(Env.ZERO);
+				rmaLine.setAmt(Env.ZERO);
+				rmaLine.saveEx();
+			}
+
+			addDescription(Msg.getMsg(getCtx(), "Voided"));
+			setAmt(Env.ZERO);
 		}
-
-		addDescription(Msg.getMsg(getCtx(), "Voided"));
-		setAmt(Env.ZERO);
-
+		else
+		{
+			m_processMsg = Msg.getMsg(getCtx(), "RMACannotBeVoided");
+			return false;
+		}
+		
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
