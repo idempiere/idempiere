@@ -2876,6 +2876,15 @@ public abstract class PO
 			}	//	processed
 		}	//	force
 
+		// Carlos Ruiz - globalqss - IDEMPIERE-111
+		// Check if the role has access to this client
+		if (!MRole.getDefault().isClientAccess(getAD_Client_ID(), true))
+		{
+			log.warning("You cannot delete this record, role doesn't have access");
+			log.saveError("AccessCannotDelete", "", false);
+			return false;
+		}
+
 		Trx localTrx = null;
 		boolean success = false;
 		try
