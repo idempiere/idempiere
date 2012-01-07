@@ -40,7 +40,7 @@ public class TreeMaintenance {
 	public KeyNamePair[] getTreeData()
 	{
 		return DB.getKeyNamePairs(MRole.getDefault().addAccessSQL(
-				"SELECT AD_Tree_ID, Name FROM AD_Tree WHERE TreeType NOT IN ('BB','PC') ORDER BY 2", 
+				"SELECT AD_Tree_ID, Name FROM AD_Tree WHERE IsActive='Y' AND TreeType NOT IN ('BB','PC') ORDER BY 2", 
 				"AD_Tree", MRole.SQL_NOTQUALIFIED, MRole.SQL_RW), false);
 	}
 	
