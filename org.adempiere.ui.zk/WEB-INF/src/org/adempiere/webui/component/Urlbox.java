@@ -36,4 +36,9 @@ public class Urlbox extends EditorBox
         super();
         setText(url);
     }
+    
+    @Override
+	public void setEnabled(boolean enabled) {
+    	txt.setReadonly(!enabled);
+	}
 }
