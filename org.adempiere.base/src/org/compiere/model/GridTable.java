@@ -2550,7 +2550,17 @@ public class GridTable extends AbstractTableModel
 				return false;
 			}
 		}
-		
+		// Carlos Ruiz - globalqss - IDEMPIERE-111
+		// Check if the role has access to this client
+		//	Can we change?
+		int[] co = getClientOrg(m_rowChanged);
+		int AD_Client_ID = co[0]; 
+		int AD_Org_ID = co[1];
+		if (!MRole.getDefault(m_ctx, false).canUpdate(AD_Client_ID, AD_Org_ID, m_AD_Table_ID, 0, true))
+		{
+			fireDataStatusEEvent("AccessCannotDelete", "", true);
+			return false;
+		}
 
 		/** @todo check Access */
 		//  fireDataStatusEvent(Log.retrieveError());
