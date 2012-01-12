@@ -26,7 +26,7 @@
                 <attribute name="site.p2" />
             </prerequisites>
             <products alias="destination" base="${buckminster.output}">
-                <path path="adempiere.${target.ws}.${target.os}.${target.arch}/" />
+                <path path="adempiere.${target.ws}.${target.os}.${target.arch}/" ></path>
             </products>
         </public>
         <public name="create.product.zip" actor="ant">
@@ -38,7 +38,7 @@
                 <attribute name="create.product" />
             </prerequisites>
             <products alias="action.output" base="${buckminster.output}">
-                <path path="adempiere.${target.ws}.${target.os}.${target.arch}.zip" />
+                <path path="idempiereServer.${target.ws}.${target.os}.${target.arch}.zip" ></path>
             </products>
         </public>
     </actions>
