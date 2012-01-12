@@ -10,8 +10,8 @@
 
   <link href="standard.css" rel="stylesheet" type="text/css">
 
-  <script language="JavaScript" type="text/javascript">
 <!--
+  <script language="JavaScript" type="text/javascript">
 var javawsInstalled = false;
 if (navigator.mimeTypes && navigator.mimeTypes.length)
 javawsInstalled = navigator.mimeTypes['application/x-java-jnlp-file'];
@@ -50,7 +50,6 @@ function MM_swapImage() { //v3.0
 var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
 if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
 }
-//-->
   </script>
   <script language="VBScript" type="text/vbscript">
 on error resume next
@@ -62,6 +61,7 @@ javawsInstalled = true
 End If
 End If
   </script>
+//-->
 </head>
 <body leftmargin="0" topmargin="0" onload="MM_preloadImages('adempiere_logo2.gif')" marginheight="0" marginwidth="0">
 
@@ -115,6 +115,7 @@ End If
 
 <!--DWLayoutTable-->
         <tbody>
+<!-- !!! Comment webstart still not supported
           <tr>
 
             <td bgcolor="#e9eef5" valign="top" width="23%">
@@ -130,9 +131,6 @@ End If
             <img src="webstart.jpg" alt="iDempiere WebStart" align="right" border="0" height="57" width="237">
             </a>
             <script language="JavaScript" type="text/javascript">
-<!--
-insertLink ("adempiere.jnlp","iDempiere Web Start");
-// -->
             </script>
 Install &nbsp;<a href="http://java.sun.com/javase/downloads/index.jsp" target="sun">Java 6 JRE (Runtime)</a>
 and press WebStart<br>
@@ -146,7 +144,8 @@ If you have trouble starting, try <a href="/admin/adempiereHome/adempiereDirect.
             </td>
 
           </tr>
-
+-->
+<!-- !!! Comment local install supported in a different download
           <tr>
 
             <td bgcolor="#e9eef5">
@@ -158,6 +157,7 @@ If you have trouble starting, try <a href="/admin/adempiereHome/adempiereDirect.
 Start iDempiere via RUN_Adempiere </td>
 
           </tr>
+-->
 
           <tr>
 
@@ -204,7 +204,7 @@ Start iDempiere via RUN_Adempiere </td>
             <td bgcolor="#fbf8f1">
             <p><a href="http://www.adempiere.com/">Wiki</a> - <a href="http://www.adempiere.com/Manual">Manual</a> - <a href="http://webchat.freenode.net/?channels=idempiere">IRC Channel</a><br>
 
-            <a href="http://groups.google.com/group/idempiere">Forums</a> - <a href="http://hg.idempiere.com/idempiere/issues">Support Requests</a></p>
+            <a href="http://groups.google.com/group/idempiere">Forums</a> - <a href="http://jira.idempiere.com">Support Requests</a></p>
             </td>
 
           </tr>
