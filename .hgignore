@@ -95,3 +95,6 @@ syntax: regexp
 ^event\.test/bin.*\.class$
 ^packages/.*$
 ^work/.*$
+
+syntax: regexp
+swingclient.product .*
