@@ -85,8 +85,8 @@ UPDATE AD_COLUMN
            WHERE AD_COLUMN.ad_element_id = e.ad_element_id
              AND (   AD_COLUMN.columnname <> e.columnname
                   OR AD_COLUMN.NAME <> e.NAME
-                  OR COALESCE (AD_COLUMN.description, ' ') <> COALESCE (e.description, ' ')
-                  OR COALESCE (AD_COLUMN.HELP, ' ') <> COALESCE (e.HELP, ' ')
+                  OR COALESCE (to_char(AD_COLUMN.description), ' ') <> COALESCE (to_char(e.description), ' ')
+                  OR COALESCE (to_char(AD_COLUMN.HELP), ' ') <> COALESCE (to_char(e.HELP), ' ')
                  ));
 
 UPDATE AD_FIELD
@@ -115,8 +115,8 @@ UPDATE AD_FIELD
              AND c.ad_element_id = e.ad_element_id
              AND c.ad_process_id IS NULL
              AND (   AD_FIELD.NAME <> e.NAME
-                  OR COALESCE (AD_FIELD.description, ' ') <> COALESCE (e.description, ' ')
-                  OR COALESCE (AD_FIELD.HELP, ' ') <> COALESCE (e.HELP, ' ')
+                  OR COALESCE (to_char(AD_FIELD.description), ' ') <> COALESCE (to_char(e.description), ' ')
+                  OR COALESCE (to_char(AD_FIELD.HELP), ' ') <> COALESCE (to_char(e.HELP), ' ')
                  ));
 
 UPDATE AD_FIELD_TRL
@@ -160,8 +160,8 @@ UPDATE AD_FIELD_TRL
              AND f.iscentrallymaintained = 'Y'
              AND f.isactive = 'Y'
              AND (   AD_FIELD_TRL.NAME <> e.NAME
-                  OR COALESCE (AD_FIELD_TRL.description, ' ') <> COALESCE (e.description, ' ')
-                  OR COALESCE (AD_FIELD_TRL.HELP, ' ') <> COALESCE (e.HELP, ' ')
+                  OR COALESCE (to_char(AD_FIELD_TRL.description), ' ') <> COALESCE (to_char(e.description), ' ')
+                  OR COALESCE (to_char(AD_FIELD_TRL.HELP), ' ') <> COALESCE (to_char(e.HELP), ' ')
                  ));
 
 UPDATE AD_FIELD
@@ -190,8 +190,8 @@ UPDATE AD_FIELD
              AND c.ad_element_id = e.ad_element_id
              AND c.ad_process_id IS NULL
              AND (   AD_FIELD.NAME <> e.po_name
-                  OR COALESCE (AD_FIELD.description, ' ') <> COALESCE (e.po_description, ' ')
-                  OR COALESCE (AD_FIELD.HELP, ' ') <> COALESCE (e.po_help, ' ')
+                  OR COALESCE (to_char(AD_FIELD.description), ' ') <> COALESCE (to_char(e.po_description), ' ')
+                  OR COALESCE (to_char(AD_FIELD.HELP), ' ') <> COALESCE (to_char(e.po_help), ' ')
                  )
              AND e.po_name IS NOT NULL)
    AND EXISTS (
@@ -242,8 +242,8 @@ UPDATE AD_FIELD_TRL
              AND f.iscentrallymaintained = 'Y'
              AND f.isactive = 'Y'
              AND (   AD_FIELD_TRL.NAME <> e.po_name
-                  OR COALESCE (AD_FIELD_TRL.description, ' ') <> COALESCE (e.po_description, ' ')
-                  OR COALESCE (AD_FIELD_TRL.HELP, ' ') <> COALESCE (e.po_help, ' ')
+                  OR COALESCE (to_char(AD_FIELD_TRL.description), ' ') <> COALESCE (to_char(e.po_description), ' ')
+                  OR COALESCE (to_char(AD_FIELD_TRL.HELP), ' ') <> COALESCE (to_char(e.po_help), ' ')
                  )
              AND e.po_name IS NOT NULL)
    AND EXISTS (
@@ -279,8 +279,8 @@ UPDATE AD_FIELD
            WHERE c.ad_process_id = p.ad_process_id
              AND AD_FIELD.ad_column_id = c.ad_column_id
              AND (   AD_FIELD.NAME <> p.NAME
-                  OR COALESCE (AD_FIELD.description, ' ') <> COALESCE (p.description, ' ')
-                  OR COALESCE (AD_FIELD.HELP, ' ') <> COALESCE (p.HELP, ' ')
+                  OR COALESCE (to_char(AD_FIELD.description), ' ') <> COALESCE (to_char(p.description), ' ')
+                  OR COALESCE (to_char(AD_FIELD.HELP), ' ') <> COALESCE (to_char(p.HELP), ' ')
                  ));
 
 UPDATE AD_FIELD_TRL
@@ -323,8 +323,8 @@ UPDATE AD_FIELD_TRL
              AND f.iscentrallymaintained = 'Y'
              AND f.isactive = 'Y'
              AND (   AD_FIELD_TRL.NAME <> p.NAME
-                  OR COALESCE (AD_FIELD_TRL.description, ' ') <> COALESCE (p.description, ' ')
-                  OR COALESCE (AD_FIELD_TRL.HELP, ' ') <> COALESCE (p.HELP, ' ')
+                  OR COALESCE (to_char(AD_FIELD_TRL.description), ' ') <> COALESCE (to_char(p.description), ' ')
+                  OR COALESCE (to_char(AD_FIELD_TRL.HELP), ' ') <> COALESCE (to_char(p.HELP), ' ')
                  ));
 
 /*
@@ -384,8 +384,8 @@ UPDATE AD_PROCESS_PARA
             FROM AD_ELEMENT e
            WHERE e.columnname = AD_PROCESS_PARA.columnname
              AND (   AD_PROCESS_PARA.NAME <> e.NAME
-                  OR COALESCE (AD_PROCESS_PARA.description, ' ') <> COALESCE (e.description, ' ')
-                  OR COALESCE (AD_PROCESS_PARA.HELP, ' ') <> COALESCE (e.HELP, ' ')
+                  OR COALESCE (to_char(AD_PROCESS_PARA.description), ' ') <> COALESCE (to_char(e.description), ' ')
+                  OR COALESCE (to_char(AD_PROCESS_PARA.HELP), ' ') <> COALESCE (to_char(e.HELP), ' ')
                  ));
 
 UPDATE AD_PROCESS_PARA_TRL
@@ -428,8 +428,8 @@ UPDATE AD_PROCESS_PARA_TRL
              AND f.iscentrallymaintained = 'Y'
              AND f.isactive = 'Y'
              AND (   AD_PROCESS_PARA_TRL.NAME <> et.NAME
-                  OR COALESCE (AD_PROCESS_PARA_TRL.description, ' ') <> COALESCE (et.description, ' ')
-                  OR COALESCE (AD_PROCESS_PARA_TRL.HELP, ' ') <> COALESCE (et.HELP, ' ')
+                  OR COALESCE (to_char(AD_PROCESS_PARA_TRL.description), ' ') <> COALESCE (to_char(et.description), ' ')
+                  OR COALESCE (to_char(AD_PROCESS_PARA_TRL.HELP), ' ') <> COALESCE (to_char(et.HELP), ' ')
                  ));
 
 UPDATE AD_WF_NODE
@@ -448,8 +448,8 @@ UPDATE AD_WF_NODE
             FROM AD_WINDOW w
            WHERE w.ad_window_id = AD_WF_NODE.ad_window_id
              AND (   w.NAME <> AD_WF_NODE.NAME
-                  OR COALESCE (w.description, ' ') <> COALESCE (AD_WF_NODE.description, ' ')
-                  OR COALESCE (w.HELP, ' ') <> COALESCE (AD_WF_NODE.HELP, ' ')
+                  OR COALESCE (to_char(w.description), ' ') <> COALESCE (to_char(AD_WF_NODE.description), ' ')
+                  OR COALESCE (to_char(w.HELP), ' ') <> COALESCE (to_char(AD_WF_NODE.HELP), ' ')
                  ));
 
 UPDATE AD_WF_NODE_TRL
@@ -480,8 +480,8 @@ UPDATE AD_WF_NODE_TRL
              AND n.iscentrallymaintained = 'Y'
              AND n.isactive = 'Y'
              AND (   AD_WF_NODE_TRL.NAME <> t.NAME
-                  OR COALESCE (AD_WF_NODE_TRL.description, ' ') <> COALESCE (t.description, ' ')
-                  OR COALESCE (AD_WF_NODE_TRL.HELP, ' ') <> COALESCE (t.HELP, ' ')
+                  OR COALESCE (to_char(AD_WF_NODE_TRL.description), ' ') <> COALESCE (to_char(t.description), ' ')
+                  OR COALESCE (to_char(AD_WF_NODE_TRL.HELP), ' ') <> COALESCE (to_char(t.HELP), ' ')
                  ));
 
 UPDATE AD_WF_NODE
@@ -503,8 +503,8 @@ UPDATE AD_WF_NODE
             FROM AD_FORM f
            WHERE f.ad_form_id = AD_WF_NODE.ad_form_id
              AND (   f.NAME <> AD_WF_NODE.NAME
-                  OR COALESCE (f.description, ' ') <> COALESCE (AD_WF_NODE.description, ' ')
-                  OR COALESCE (f.HELP, ' ') <> COALESCE (AD_WF_NODE.HELP, ' ')
+                  OR COALESCE (to_char(f.description), ' ') <> COALESCE (to_char(AD_WF_NODE.description), ' ')
+                  OR COALESCE (to_char(f.HELP), ' ') <> COALESCE (to_char(AD_WF_NODE.HELP), ' ')
                  ));
 
 UPDATE AD_WF_NODE_TRL
@@ -535,8 +535,8 @@ UPDATE AD_WF_NODE_TRL
              AND n.iscentrallymaintained = 'Y'
              AND n.isactive = 'Y'
              AND (   AD_WF_NODE_TRL.NAME <> t.NAME
-                  OR COALESCE (AD_WF_NODE_TRL.description, ' ') <> COALESCE (t.description, ' ')
-                  OR COALESCE (AD_WF_NODE_TRL.HELP, ' ') <> COALESCE (t.HELP, ' ')
+                  OR COALESCE (to_char(AD_WF_NODE_TRL.description), ' ') <> COALESCE (to_char(t.description), ' ')
+                  OR COALESCE (to_char(AD_WF_NODE_TRL.HELP), ' ') <> COALESCE (to_char(t.HELP), ' ')
                  ));
 
 UPDATE AD_WF_NODE
@@ -558,8 +558,8 @@ UPDATE AD_WF_NODE
             FROM AD_PROCESS f
            WHERE f.ad_process_id = AD_WF_NODE.ad_process_id
              AND (   f.NAME <> AD_WF_NODE.NAME
-                  OR COALESCE (f.description, ' ') <> COALESCE (AD_WF_NODE.description, ' ')
-                  OR COALESCE (f.HELP, ' ') <> COALESCE (AD_WF_NODE.HELP, ' ')
+                  OR COALESCE (to_char(f.description), ' ') <> COALESCE (to_char(AD_WF_NODE.description), ' ')
+                  OR COALESCE (to_char(f.HELP), ' ') <> COALESCE (to_char(AD_WF_NODE.HELP), ' ')
                  ));
 
 UPDATE AD_WF_NODE_TRL
@@ -590,8 +590,8 @@ UPDATE AD_WF_NODE_TRL
              AND n.iscentrallymaintained = 'Y'
              AND n.isactive = 'Y'
              AND (   AD_WF_NODE_TRL.NAME <> t.NAME
-                  OR COALESCE (AD_WF_NODE_TRL.description, ' ') <> COALESCE (t.description, ' ')
-                  OR COALESCE (AD_WF_NODE_TRL.HELP, ' ') <> COALESCE (t.HELP, ' ')
+                  OR COALESCE (to_char(AD_WF_NODE_TRL.description), ' ') <> COALESCE (to_char(t.description), ' ')
+                  OR COALESCE (to_char(AD_WF_NODE_TRL.HELP), ' ') <> COALESCE (to_char(t.HELP), ' ')
                  ));
 
 UPDATE AD_PRINTFORMATITEM
