@@ -2553,8 +2553,8 @@ public class GridTable extends AbstractTableModel
 		// Carlos Ruiz - globalqss - IDEMPIERE-111
 		// Check if the role has access to this client
 		//	Can we change?
-		int[] co = getClientOrg(m_rowChanged);
-		int AD_Client_ID = co[0]; 
+		int[] co = getClientOrg(row);
+		int AD_Client_ID = co[0];
 		int AD_Org_ID = co[1];
 		if (!MRole.getDefault(m_ctx, false).canUpdate(AD_Client_ID, AD_Org_ID, m_AD_Table_ID, 0, true))
 		{
@@ -2562,15 +2562,12 @@ public class GridTable extends AbstractTableModel
 			return false;
 		}
 
-		/** @todo check Access */
-		//  fireDataStatusEvent(Log.retrieveError());
-
 		MSort sort = (MSort)m_sort.get(row);
 		Object[] rowData = getDataAtRow(row);
 		//
 		MTable table = MTable.get (m_ctx, m_AD_Table_ID);
 		PO po = null;
-		int Record_ID = getKeyID(m_rowChanged);
+		int Record_ID = getKeyID(row);
 		if (Record_ID != -1)
 			po = table.getPO(Record_ID, null);
 		else	//	Multi - Key
