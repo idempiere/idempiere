@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.logging.Level;
 
 import javax.sql.RowSet;
@@ -28,6 +29,7 @@ import org.compiere.util.CCachedRowSet;
 import org.compiere.util.CLogger;
 import org.compiere.util.CStatementVO;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Trx;
 
 /**
@@ -94,6 +96,29 @@ public class StatementProxy implements InvocationHandler {
 			return getSql();
 		}
 		
+		String logSql = null;
+		String logOperation = null;
+		if (log.isLoggable(Level.FINE) && getSql() != null)
+		{
+			if (name.equals("executeUpdate") || name.equals("execute"))
+			{
+				logSql = getSql().toUpperCase();
+				if (logSql.startsWith("UPDATE ")) {
+					logSql = logSql.substring("UPDATE ".length()).trim();
+					logOperation = "Update";
+				} else if (logSql.startsWith("INSERT INTO ")) {
+					logSql = logSql.substring("INSERT INTO ".length()).trim();
+					logOperation = "Insert";
+				} else if (logSql.startsWith("DELETE FROM ")) {
+					logSql = logSql.substring("DELETE FROM ".length()).trim();
+					logOperation = "Delete";
+				}
+				if (logOperation != null) {
+					logSql = logSql.substring(0, logSql.indexOf(' '));
+					log.fine((DisplayType.getDateFormat(DisplayType.DateTime)).format(new Date(System.currentTimeMillis()))+","+logOperation+","+logSql+","+(p_vo.getTrxName() != null ? p_vo.getTrxName() : "")+" (begin)");
+				}
+			}
+		}
 		Method m = p_stmt.getClass().getMethod(name, method.getParameterTypes());
 		try
 		{
@@ -102,6 +127,13 @@ public class StatementProxy implements InvocationHandler {
 		catch (InvocationTargetException e)
 		{
 			throw DB.getSQLException(e);
+		}
+		finally
+		{
+			if (log.isLoggable(Level.FINE) && logSql != null && logOperation != null)
+			{
+				log.fine((DisplayType.getDateFormat(DisplayType.DateTime)).format(new Date(System.currentTimeMillis()))+","+logOperation+","+logSql+","+(p_vo.getTrxName() != null ? p_vo.getTrxName() : "")+" (end)");
+			}
 		}
 	}
 	
