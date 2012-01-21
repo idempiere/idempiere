@@ -1012,50 +1012,17 @@ public final class DB
 		CPreparedStatement cs = ProxyFactory.newCPreparedStatement(ResultSet.TYPE_FORWARD_ONLY,
 			ResultSet.CONCUR_UPDATABLE, sql, trxName);	//	converted in call
 
-		boolean autoCommit = false;
-		int currentTimeout = 0;
+		int currentTimeout = -1;
 		try
 		{
 			setParameters(cs, params);
-			autoCommit = cs.getConnection().getAutoCommit();
 			//set timeout
 			if (timeOut > 0)
 			{
 				if (DB.isPostgreSQL())
-				{
-					try
-					{
-						Connection conn = cs.getConnection();
-						if (autoCommit)
-						{
-							conn.setAutoCommit(false);
-						}
-						else
-						{
-							ResultSet rs = null;
-							try
-							{
-								rs = conn.createStatement().executeQuery("select current_setting('statement_timeout')");
-								if (rs.next())
-									currentTimeout = rs.getInt(1);
-							}
-							finally
-							{
-								DB.close(rs);
-							}
-						}
-						Statement timeoutStatement = conn.createStatement();
-						timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( timeOut * 1000 ));
-						if (log.isLoggable(Level.FINEST))
-						{
-							log.finest("Set statement timeout to " + timeOut);
-						}
-					} catch (SQLException e) {}
-				}
+					currentTimeout = DB.getDatabase().setStatementTimeout(cs.getConnection(), timeOut);				
 				else
-				{
 					cs.setQueryTimeout(timeOut);
-				}
 			}
 			no = cs.executeUpdate();
 			//	No Transaction - Commit
@@ -1082,31 +1049,7 @@ public final class DB
 			{
 				try
 				{
-					if (autoCommit)
-					{
-						cs.getConnection().setAutoCommit(true);
-					}
-					else
-					{
-						if (currentTimeout > 0)
-						{
-							Statement timeoutStatement = cs.getConnection().createStatement();
-							timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( currentTimeout * 1000 ));
-							if (log.isLoggable(Level.FINEST))
-							{
-								log.finest("Reset statement timeout to " + currentTimeout);
-							}
-						}
-						else
-						{
-							Statement timeoutStatement = cs.getConnection().createStatement();
-							timeoutStatement.execute("SET LOCAL statement_timeout TO Default");
-							if (log.isLoggable(Level.FINEST))
-							{
-								log.finest("Reset statement timeout to default");
-							}
-						}
-					}
+					DB.getDatabase().setStatementTimeout(cs.getConnection(), currentTimeout);
 				}
 				catch (SQLException e) {}
 			}

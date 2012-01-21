@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,6 +40,7 @@ import org.adempiere.db.postgresql.PostgreSQLBundleActivator;
 import org.adempiere.exceptions.DBException;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_PostgreSQL;
+import org.compiere.model.PO;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -927,5 +929,79 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		}
 		catch (Exception e) {}
 		return b;
+	}
+
+	@Override
+	public int setStatementTimeout(Connection conn, int timeOut) throws SQLException {
+		int currentTimeout = 0;		
+		boolean autoCommit = conn.getAutoCommit();
+		ResultSet rs = null;
+		try
+		{
+			rs = conn.createStatement().executeQuery("select current_setting('statement_timeout')");
+			if (rs.next())
+				currentTimeout = rs.getInt(1) / 1000;
+		}
+		finally
+		{
+			DB.close(rs);
+		}
+		
+		Statement timeoutStatement = conn.createStatement();
+		String sql = "SET " + (autoCommit ? "SESSION" : "LOCAL") + " statement_timeout TO " + ( timeOut > 0 ? Integer.toString(timeOut * 1000) : " DEFAULT ");
+		timeoutStatement.execute(sql);
+		if (log.isLoggable(Level.FINEST))
+		{
+			log.finest("Set statement timeout to " + timeOut);
+		}
+		return currentTimeout;
+	}
+	
+	@Override
+	public boolean forUpdate(PO po, int timeout) {
+    	//only can lock for update if using trx
+    	if (po.get_TrxName() == null)
+    		return false;
+    	
+    	String[] keyColumns = po.get_KeyColumns();
+		if (keyColumns != null && keyColumns.length > 0 && !po.is_new()) {
+			StringBuffer sqlBuffer = new StringBuffer(" SELECT ");
+			sqlBuffer.append(keyColumns[0])
+				.append(" FROM ")
+				.append(po.get_TableName())
+				.append(" WHERE ");
+			for(int i = 0; i < keyColumns.length; i++) {
+				if (i > 0)
+					sqlBuffer.append(" AND ");
+				sqlBuffer.append(keyColumns[i]).append(" = ? ");
+			}
+			sqlBuffer.append(" FOR UPDATE ");
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			int currentTimeout = -1;
+			try {
+				stmt = DB.prepareStatement(sqlBuffer.toString(),
+					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE, po.get_TrxName());
+				for(int i = 0; i < keyColumns.length; i++) {
+					stmt.setObject(i+1, po.get_Value(keyColumns[i]));
+				}
+				currentTimeout = setStatementTimeout(stmt.getConnection(), (timeout > 0 ? timeout : LOCK_TIME_OUT));
+				
+				rs = stmt.executeQuery();
+				if (rs.next()) {
+					return true;
+				} else {
+					return false;
+				}
+			} catch (Exception e) {
+				log.log(Level.INFO, e.getLocalizedMessage(), e);				
+			} finally {
+				try {
+					setStatementTimeout(stmt.getConnection(), currentTimeout);
+				} catch (SQLException e) {}
+				DB.close(rs, stmt);
+			}			
+		}
+		return false;
 	}
 }   //  DB_PostgreSQL

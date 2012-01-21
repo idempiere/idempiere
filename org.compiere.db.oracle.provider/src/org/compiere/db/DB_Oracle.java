@@ -24,6 +24,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -40,6 +41,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_Oracle;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -1205,5 +1207,55 @@ public class DB_Oracle implements AdempiereDatabase
 		}
 		catch (Exception e) {}
 		return b;
+	}
+
+	@Override
+	public int setStatementTimeout(Connection conn, int timeout) throws SQLException {
+		//not supported by oracle
+		return -1;
+	}
+	
+	@Override
+	public boolean forUpdate(PO po, int timeout) {
+    	//only can lock for update if using trx
+    	if (po.get_TrxName() == null)
+    		return false;
+    	
+    	String[] keyColumns = po.get_KeyColumns();
+		if (keyColumns != null && keyColumns.length > 0 && !po.is_new()) {
+			StringBuffer sqlBuffer = new StringBuffer(" SELECT ");
+			sqlBuffer.append(keyColumns[0])
+				.append(" FROM ")
+				.append(po.get_TableName())
+				.append(" WHERE ");
+			for(int i = 0; i < keyColumns.length; i++) {
+				if (i > 0)
+					sqlBuffer.append(" AND ");
+				sqlBuffer.append(keyColumns[i]).append(" = ? ");
+			}
+			sqlBuffer.append(" FOR UPDATE ");
+			sqlBuffer.append(" WAIT ").append((timeout > 0 ? timeout : LOCK_TIME_OUT));
+			
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			try {
+				stmt = DB.prepareStatement(sqlBuffer.toString(),
+					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE, po.get_TrxName());
+				for(int i = 0; i < keyColumns.length; i++) {
+					stmt.setObject(i+1, po.get_Value(keyColumns[i]));
+				}
+				rs = stmt.executeQuery();
+				if (rs.next()) {
+					return true;
+				} else {
+					return false;
+				}
+			} catch (Exception e) {
+				log.log(Level.INFO, e.getLocalizedMessage(), e);				
+			} finally {
+				DB.close(rs, stmt);
+			}			
+		}
+		return false;
 	}
 }   //  DB_Oracle
