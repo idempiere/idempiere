@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.acct;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,6 +47,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MColumn;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
+import org.compiere.report.core.RModelExcelExporter;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -59,6 +61,7 @@ import org.zkoss.zkex.zul.Borderlayout;
 import org.zkoss.zkex.zul.Center;
 import org.zkoss.zkex.zul.South;
 import org.zkoss.zul.Caption;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listhead;
@@ -102,7 +105,7 @@ public class WAcctViewer extends Window implements EventListener
 	private Button selAcct = new Button();
 	private Button bQuery = new Button();
 	private Button bRePost = new Button();
-	private Button bPrint = new Button();
+	private Button bExport = new Button();
 	private Button sel1 = new Button();
 	private Button sel2 = new Button();
 	private Button sel3 = new Button();
@@ -167,6 +170,8 @@ public class WAcctViewer extends Window implements EventListener
 	private South pagingPanel;
 
 	private Borderlayout resultPanel;
+
+	private RModel m_rmodel;
 
 	/**	Logger				*/
 	private static CLogger log = CLogger.getCLogger(WAcctViewer.class);
@@ -491,16 +496,16 @@ public class WAcctViewer extends Window implements EventListener
 		bQuery.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
 		bQuery.addEventListener(Events.ON_CLICK, this);
 
-		bPrint.setImage("/images/Print16.png");
-		bPrint.setTooltiptext(Msg.getMsg(Env.getCtx(), "Print"));
-		bPrint.addEventListener(Events.ON_CLICK, this);
+		bExport.setImage("/images/Export16.png");
+		bExport.setTooltiptext(Msg.getMsg(Env.getCtx(), "Export"));
+		bExport.addEventListener(Events.ON_CLICK, this);
 
 		southPanel.setWidth("100%");
 		southPanel.setWidths("2%, 12%, 82%, 2%, 2%");
 		southPanel.appendChild(bRePost);
 		southPanel.appendChild(forcePost);
 		southPanel.appendChild(statusLine);
-		southPanel.appendChild(bPrint);
+		southPanel.appendChild(bExport);
 		southPanel.appendChild(bQuery);
 
 		// Result Tab
@@ -705,6 +710,7 @@ public class WAcctViewer extends Window implements EventListener
 		boolean visible = m_data.documentQuery && tabResult.isSelected();
 
 		bRePost.setVisible(visible);
+		bExport.setVisible(visible);
 
 		if (Ini.isPropertyBool(Ini.P_SHOW_ADVANCED))
 			forcePost.setVisible(visible);
@@ -735,9 +741,8 @@ public class WAcctViewer extends Window implements EventListener
 			actionTable();
 		else if (source == bRePost)
 			actionRePost();
-		else if  (source == bPrint)
-			;//PrintScreenPainter.printScreen(this);
-		//  InfoButtons
+		else if  (source == bExport)
+			actionExport();
 		else if (source instanceof Button)
 			actionButton((Button)source);
 		else if (source == paging)
@@ -752,6 +757,21 @@ public class WAcctViewer extends Window implements EventListener
 			table.setModel(model);
 		}
 	} // onEvent
+
+	private void actionExport() {
+		if (m_rmodel != null && m_rmodel.getRowCount() > 0) {
+			RModelExcelExporter exporter = new RModelExcelExporter(m_rmodel);
+			File file;
+			try {
+				file = File.createTempFile(getTitle(), ".xsl");
+				exporter.export(file, Env.getLanguage(Env.getCtx()));
+				Filedownload.save(file, "application/vnd.ms-excel");
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}			
+		}
+		
+	}
 
 	/**
 	 * 	New Acct Schema
@@ -996,8 +1016,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		//  Set TableModel with Query
 
-		RModel rmodel = m_data.query();
-		m_queryData = rmodel.getRows();
+		m_rmodel = m_data.query();
+		m_queryData = m_rmodel.getRows();
 		List<ArrayList<Object>> list = null;
 		paging.setPageSize(PAGE_SIZE);
 		if (m_queryData.size() > PAGE_SIZE)
@@ -1021,10 +1041,10 @@ public class WAcctViewer extends Window implements EventListener
 			Listhead listhead = new Listhead();
 			listhead.setSizable(true);
 
-			for (int i = 0; i < rmodel.getColumnCount(); i++)
+			for (int i = 0; i < m_rmodel.getColumnCount(); i++)
 			{
-				Listheader listheader = new Listheader(rmodel.getColumnName(i));
-				listheader.setTooltiptext(rmodel.getColumnName(i));
+				Listheader listheader = new Listheader(m_rmodel.getColumnName(i));
+				listheader.setTooltiptext(m_rmodel.getColumnName(i));
 				listhead.appendChild(listheader);
 			}
 
@@ -1039,9 +1059,9 @@ public class WAcctViewer extends Window implements EventListener
 			listhead.getChildren().clear();
 
 			// add in new column header
-			for (int i = 0; i < rmodel.getColumnCount(); i++)
+			for (int i = 0; i < m_rmodel.getColumnCount(); i++)
 			{
-				Listheader listheader = new Listheader(rmodel.getColumnName(i));
+				Listheader listheader = new Listheader(m_rmodel.getColumnName(i));
 				listhead.appendChild(listheader);
 			}
 		}
