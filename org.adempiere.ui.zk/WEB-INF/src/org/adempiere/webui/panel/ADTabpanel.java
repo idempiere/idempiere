@@ -311,10 +311,15 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
             		rows.appendChild(row);
             		includedTabFooter.put(field.getIncluded_Tab_ID(), (Groupfoot)row);
 
+            		row = new Row();
+            		row.setSpans("5");
+        			row.appendChild(new Separator());
+        			rows.appendChild(row);
+        			
             		for (EmbeddedPanel ep : includedPanel) {
             			if (ep.adTabId == field.getIncluded_Tab_ID()) {
             				ep.group = includedTab.get(ep.adTabId);
-            				createEmbeddedPanelUI(ep);
+            				createEmbeddedPanelUI(ep, field.getDisplayLength());
             				break;
             			}
             		}
@@ -1045,6 +1050,20 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 	 */
 	public void embed(Properties ctx, int windowNo, GridWindow gridWindow,
 			int adTabId, int tabIndex, IADTabpanel tabPanel) {
+		embed(ctx, windowNo, gridWindow, adTabId, tabIndex, tabPanel, 0);
+	}
+	
+	/**
+	 * Embed detail tab
+	 * @param ctx
+	 * @param windowNo
+	 * @param gridWindow
+	 * @param adTabId
+	 * @param tabIndex
+	 * @param tabPanel
+	 */
+	public void embed(Properties ctx, int windowNo, GridWindow gridWindow,
+			int adTabId, int tabIndex, IADTabpanel tabPanel, int height) {
 		EmbeddedPanel ep = new EmbeddedPanel();
 		ep.tabPanel = tabPanel;
 		ep.adTabId = adTabId;
@@ -1061,7 +1080,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 		ep.windowPanel = panel;
 
 		if (group != null) {
-			createEmbeddedPanelUI(ep);
+			createEmbeddedPanelUI(ep, height);
 			if (active)
 				activateChild(true, ep);
 		}
@@ -1086,19 +1105,22 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
         }
 	}
 
-	private void createEmbeddedPanelUI(EmbeddedPanel ep) {
+	private void createEmbeddedPanelUI(EmbeddedPanel ep, int height) {
 		org.zkoss.zul.Row row = new Row();
 		row.setSpans("5");
 		grid.getRows().insertBefore(row, includedTabFooter.get(ep.adTabId));
 		ep.windowPanel.createPart(row);
 		ep.windowPanel.getComponent().setWidth("100%");
-		ep.windowPanel.getComponent().setStyle("position: relative");
-		ep.windowPanel.getComponent().setHeight("400px");
+		ep.windowPanel.getComponent().setStyle("position: relative;");
+		//for backward compatibility, only treat display length > 50 as height for the embedded panel
+		if (height > 50)
+			ep.windowPanel.getComponent().setHeight(height + "px");
+		else
+			ep.windowPanel.getComponent().setHeight("400px");
 
 		Label title = new Label(ep.gridWindow.getTab(ep.tabIndex).getName());
 		ep.group.appendChild(title);
 		ep.group.appendChild(ep.windowPanel.getToolbar());
-		ep.windowPanel.getStatusBar().setZclass("z-group-foot");
 		ep.windowPanel.initPanel(-1, null);
 	}
 

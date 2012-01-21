@@ -104,6 +104,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
         	layout.setPage(page);
         }
 
+        //toolbar would be added to group for embedded tab
         if (!isEmbedded())
         {
 	        North n = new North();
@@ -115,10 +116,22 @@ public class ADWindowPanel extends AbstractADWindowPanel
 	        toolbar.setWindowNo(getWindowNo());
         }
 
-        South s = new South();
-        layout.appendChild(s);
-        s.setCollapsible(false);
-        statusBar.setParent(s);
+        //status bar on top for embedded tab
+        if (!isEmbedded())
+        {
+	        South s = new South();
+	        layout.appendChild(s);
+	        s.setCollapsible(false);
+	        statusBar.setParent(s);
+        }
+        else
+        {
+        	North n = new North();
+        	layout.appendChild(n);
+        	n.setCollapsible(false);
+        	statusBar.setParent(n);
+        }
+        
         LayoutUtils.addSclass("adwindow-status", statusBar);
 
         if (!isEmbedded() && adTab.isUseExternalSelection())
@@ -270,5 +283,5 @@ public class ADWindowPanel extends AbstractADWindowPanel
 					SessionManager.getAppDesktop().unregisterWindow(getWindowNo());
 			}
 		}
-	}
+	}	
 }

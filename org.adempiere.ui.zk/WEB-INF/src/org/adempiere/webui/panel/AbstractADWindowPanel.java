@@ -163,6 +163,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	private int embeddedTabindex = -1;
 
 	protected Map<Integer, ADTabpanel> includedMap = new HashMap<Integer, ADTabpanel>();
+	
+	protected Map<Integer, GridField> includedFieldMap = new HashMap<Integer, GridField>();
 
 	private IADTabpanel embeddedTabPanel;
 
@@ -577,12 +579,14 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		    	if (fields[i].getIncluded_Tab_ID() > 0)
 		    	{
 		    		includedMap.put(fields[i].getIncluded_Tab_ID(), fTabPanel);
+		    		includedFieldMap.put(fields[i].getIncluded_Tab_ID(), fields[i]);
 		    	}
 		    }
 
 		    if (includedMap.containsKey(gTab.getAD_Tab_ID()))
 		    {
-		    	includedMap.get(gTab.getAD_Tab_ID()).embed(ctx, curWindowNo, gridWindow, gTab.getAD_Tab_ID(), tabIndex, fTabPanel);
+		    	includedMap.get(gTab.getAD_Tab_ID()).embed(ctx, curWindowNo, gridWindow, gTab.getAD_Tab_ID(), tabIndex, fTabPanel,
+		    			includedFieldMap.get(gTab.getAD_Tab_ID()).getDisplayLength());
 		    }
 		    else
 		    {
