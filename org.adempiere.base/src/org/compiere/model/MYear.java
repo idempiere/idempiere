@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
@@ -232,6 +233,7 @@ public class MYear extends X_C_Year
 		cal.set(Calendar.MILLISECOND, 0);
 
 		//
+		IProcessMonitor processMonitor = Env.getProcessMonitor(getCtx());
 		for (int month = 0; month < 12; month++)
 		{
 			
@@ -254,6 +256,10 @@ public class MYear extends X_C_Year
 				period.setName(name);
 				period.setStartDate(start);
 				period.setEndDate(end);
+			}
+			if (processMonitor != null)
+			{
+				processMonitor.statusUpdate(period.toString());
 			}
 			period.saveEx(get_TrxName());	//	Creates Period Control
 			// get first day of next month

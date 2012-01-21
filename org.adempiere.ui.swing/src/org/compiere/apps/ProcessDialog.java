@@ -36,6 +36,7 @@ import javax.swing.JSeparator;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -43,7 +44,6 @@ import org.compiere.process.ProcessInfoUtil;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
 import org.compiere.swing.CPanel;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -67,7 +67,7 @@ import org.compiere.util.Msg;
  *  				<li>BF [ 1963128 ] Running a process w/o trl should display an error
  */
 public class ProcessDialog extends CFrame
-	implements ActionListener, ASyncProcess
+	implements ActionListener, IProcessMonitor
 {
 	/**
 	 * 
@@ -515,5 +515,10 @@ public class ProcessDialog extends CFrame
 	{
 		PrintScreenPainter.printScreen (this);
 	}	//	printScreen
+
+	@Override
+	public void statusUpdate(String status) {
+		message.setText(status);
+	}
 
 }	//	ProcessDialog

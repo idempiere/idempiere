@@ -35,6 +35,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * Generate shipment for Vendor RMA.
@@ -228,6 +229,7 @@ public class InOutGenerateRMA extends SvrProcess
     private void generateShipment(int M_RMA_ID)
     {
         MRMA rma = new MRMA(getCtx(), M_RMA_ID, get_TrxName());
+        statusUpdate(Msg.getMsg(getCtx(), "Processing") + " " + rma.getDocumentInfo());
         
         MInOut shipment = createShipment(rma);
         MInOutLine shipmentLines[] = createShipmentLines(rma, shipment);

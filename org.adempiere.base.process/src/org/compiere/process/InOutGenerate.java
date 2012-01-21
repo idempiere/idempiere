@@ -34,6 +34,7 @@ import org.compiere.model.MStorage;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Generate Shipments.
@@ -214,6 +215,8 @@ public class InOutGenerate extends SvrProcess
 			while (rs.next ())		//	Order
 			{
 				MOrder order = new MOrder (getCtx(), rs, get_TrxName());
+				statusUpdate(Msg.getMsg(getCtx(), "Processing") + " " + order.getDocumentInfo());
+				
 				//	New Header different Shipper, Shipment Location
 				if (!p_ConsolidateDocument 
 					|| (m_shipment != null 

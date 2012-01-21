@@ -59,6 +59,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.search.Find;
 import org.compiere.grid.APanelTab;
@@ -94,7 +95,6 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.swing.CPanel;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -141,7 +141,7 @@ import org.compiere.util.Util;
  *  @sponsor www.metas.de
  */
 public final class APanel extends CPanel
-	implements DataStatusListener, ChangeListener, ActionListener, ASyncProcess
+	implements DataStatusListener, ChangeListener, ActionListener, IProcessMonitor
 {
 	/**
 	 *
@@ -2893,5 +2893,14 @@ public final class APanel extends CPanel
 	 */
 	public JTabbedPane getCurrentTabbedPane() {
 		return m_curWinTab;
+	}
+
+	@Override
+	public void statusUpdate(String message) {
+		JFrame frame = AEnv.getFrame(this);
+		if (frame == null)  //  during init
+			return;
+		if (frame instanceof AWindow)
+			((AWindow)frame).setBusyMessage(message);		
 	}
 }	//	APanel

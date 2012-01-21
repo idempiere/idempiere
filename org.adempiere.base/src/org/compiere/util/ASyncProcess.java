@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.process.ProcessInfo;
 
 /**
@@ -35,29 +36,10 @@ import org.compiere.process.ProcessInfo;
  *
  *  @author     Jorg Janke
  *  @version    $Id: ASyncProcess.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
+ *  @deprecated
  */
-public interface ASyncProcess
+public interface ASyncProcess extends IProcessMonitor
 {
-	/**
-	 *  Lock User Interface.
-	 *  Called from the Worker before processing
-	 *  @param pi process info
-	 */
-	public void lockUI (ProcessInfo pi);
-
-	/**
-	 *  Unlock User Interface.
-	 *  Called from the Worker when processing is done
-	 *  @param pi result of execute ASync call
-	 */
-	public void unlockUI (ProcessInfo pi);
-
-	/**
-	 *  Is the UI locked (Internal method)
-	 *  @return true, if UI is locked
-	 */
-	boolean isUILocked();
-
 	/**
 	 *  Method to be executed async.
 	 *  Called from the Worker

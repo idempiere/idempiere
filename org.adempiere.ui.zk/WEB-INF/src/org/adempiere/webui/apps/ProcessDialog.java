@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.ServerContext;
+import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.apps.ProcessDialog.ProcessDialogRunnable;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
@@ -28,6 +32,9 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -73,7 +80,7 @@ import com.lowagie.text.pdf.PdfWriter;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessDialog extends Window implements EventListener//, ASyncProcess
+public class ProcessDialog extends Window implements EventListener, IProcessMonitor
 {
 	/**
 	 * generate serial version ID
@@ -192,6 +199,9 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 	private boolean isParameterPage = true;
 	private String initialMessage;
 	private BusyDialog progressWindow;
+	private Thread thread;
+	private String statusUpdate;
+	private ProcessDialogRunnable processDialogRunnable;
 
 	
 	/**
@@ -307,9 +317,48 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 	}
 
 	public void runProcess() {
+		//prepare context for background thread
+		Properties p = new Properties();
+		Properties env = Env.getCtx();
+		for(Object key : env.keySet()) {
+			if (key instanceof String) {
+				String sKey = (String) key;
+				Object value = env.get(sKey);
+				if (value instanceof String) {
+					String sValue = (String) value;
+					p.put(sKey, sValue);
+				}
+			}
+		}
+		Desktop desktop = this.getDesktop();
+		p.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, desktop);
+		
+		processDialogRunnable = new ProcessDialogRunnable(p);
+		thread = new Thread(processDialogRunnable);
+		thread.start();
+		
+		Clients.response(new AuEcho(this, "checkProgress", null));
+	}
+	
+	public void checkProgress() {
 		try {
-			WProcessCtl.process(null, m_WindowNo, parameterPanel, m_pi, null);
-		} finally {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			Thread.interrupted();
+		}
+		if (thread.isAlive()) {
+			synchronized(this) {
+				if (statusUpdate != null) {
+					if (progressWindow != null)
+						progressWindow.statusUpdate(statusUpdate);
+					statusUpdate = null;
+				}
+			}
+			Clients.response(new AuEcho(this, "checkProgress", null));
+		} else {
+			Env.getCtx().putAll(processDialogRunnable.getProperties());
+			thread = null;			
+			processDialogRunnable = null;
 			unlockUI(m_pi);
 		}
 	}
@@ -334,7 +383,7 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 	}
 
 	public void lockUI(ProcessInfo pi) {
-		if (m_isLocked) return;
+		if (m_isLocked || Executions.getCurrent() == null) return;
 		
 		m_isLocked = true;
 		
@@ -348,7 +397,7 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 	}
 
 	public void unlockUI(ProcessInfo pi) {
-		if (!m_isLocked) return;
+		if (!m_isLocked || Executions.getCurrent() == null) return;
 		
 		m_isLocked = false;
 		hideBusyDialog();
@@ -591,10 +640,34 @@ public class ProcessDialog extends Window implements EventListener//, ASyncProce
 		return valid;
 	}
 
-	public void executeASync(ProcessInfo pi) {
-	}
-
 	public boolean isUILocked() {
 		return m_isLocked;
+	}
+	
+	class ProcessDialogRunnable implements Runnable {
+		private Properties properties;
+		
+		ProcessDialogRunnable(Properties properties) {
+			this.properties = properties;
+		}
+		
+		public void run() {
+			try {
+				ServerContext.setCurrentInstance(properties);
+				log.log(Level.INFO, "Process Info="+m_pi+" AD_Client_ID="+Env.getAD_Client_ID(Env.getCtx()));
+				WProcessCtl.process(ProcessDialog.this, m_WindowNo, parameterPanel, m_pi, null);
+			} finally {
+				ServerContext.dispose();
+			}
+		}
+		
+		protected Properties getProperties() {
+			return properties;
+		}		
+	}
+
+	@Override
+	public void statusUpdate(String message) {
+		statusUpdate = message;
 	}
 }	//	ProcessDialog

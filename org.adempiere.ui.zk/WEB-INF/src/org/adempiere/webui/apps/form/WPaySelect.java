@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.util.IProcessMonitor;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -72,7 +73,7 @@ import org.zkoss.zul.Space;
  *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WPaySelect extends PaySelect
-	implements IFormController, EventListener, WTableModelListener, ASyncProcess
+	implements IFormController, EventListener, WTableModelListener, IProcessMonitor
 {
 	/** @todo withholding */
 	
@@ -443,5 +444,9 @@ public class WPaySelect extends PaySelect
 
 	public ADForm getForm() {
 		return form;
+	}
+
+	@Override
+	public void statusUpdate(String message) {
 	}
 }   //  VPaySelect

@@ -21,9 +21,9 @@ import java.awt.Container;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.model.MPInstance;
 import org.compiere.process.ProcessInfo;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -64,7 +64,7 @@ public class ProcessCtl extends AbstractProcessCtl
 	 *  @param trx Transaction
 	 *  @return worker started ProcessCtl instance or null for workflow
 	 */
-	public static ProcessCtl process (ASyncProcess parent, int WindowNo, ProcessInfo pi, Trx trx)
+	public static ProcessCtl process (IProcessMonitor parent, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 
@@ -142,7 +142,7 @@ public class ProcessCtl extends AbstractProcessCtl
 	 *  @param trx Transaction
 	 *  @return worker started ProcessCtl instance or null for workflow
 	 */
-	public static ProcessCtl process(ASyncProcess parent, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
+	public static ProcessCtl process(IProcessMonitor parent, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 
@@ -206,7 +206,7 @@ public class ProcessCtl extends AbstractProcessCtl
 	 *  @param trx Transaction
 	 *  Created in process(), VInvoiceGen.generateInvoices
 	 */
-	public ProcessCtl (ASyncProcess parent, int WindowNo, ProcessInfo pi, Trx trx)
+	public ProcessCtl (IProcessMonitor parent, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		super(parent, WindowNo, pi, trx);
 	}   //  ProcessCtl
@@ -223,12 +223,12 @@ public class ProcessCtl extends AbstractProcessCtl
 	{
 	//	log.info("...");
 		//m_parent is null for synchrous execution
-		if (getParent() != null)
+		if (getProcessMonitor() != null)
 		{
-			if (getParent() instanceof Container)
+			if (getProcessMonitor() instanceof Container)
 			{
 				//swing client
-				JFrame frame = AEnv.getFrame((Container)getParent());
+				JFrame frame = AEnv.getFrame((Container)getProcessMonitor());
 				if (frame instanceof AWindow)
 					((AWindow)frame).setBusyTimer(getProcessInfo().getEstSeconds());
 				else
@@ -247,7 +247,7 @@ public class ProcessCtl extends AbstractProcessCtl
 						parent.lockUI(pi);
 					}
 				};
-				runnable.setParent(getParent());
+				runnable.setParent(getProcessMonitor());
 				runnable.setProcessInfo(getProcessInfo());
 				SwingUtilities.invokeLater(runnable);
 			}
@@ -255,7 +255,7 @@ public class ProcessCtl extends AbstractProcessCtl
 			{
 				//other client
 				log.finer("lock");
-				getParent().lockUI(getProcessInfo());
+				getProcessMonitor().lockUI(getProcessInfo());
 			}
 		}
 	}   //  lock
@@ -317,14 +317,14 @@ public class ProcessCtl extends AbstractProcessCtl
 	abstract class ProcessUpdateRunnable implements Runnable
 	{
 		protected ProcessInfo pi = null;
-		protected ASyncProcess parent = null;
+		protected IProcessMonitor parent = null;
 		
 		public void setProcessInfo(ProcessInfo pi)
 		{
 			this.pi = pi;
 		}
 		
-		public void setParent(ASyncProcess parent) 
+		public void setParent(IProcessMonitor parent) 
 		{
 			this.parent = parent;
 		}

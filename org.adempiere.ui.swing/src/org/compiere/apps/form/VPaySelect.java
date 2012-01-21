@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
@@ -50,7 +51,6 @@ import org.compiere.plaf.CompiereColor;
 import org.compiere.process.ProcessInfo;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -65,7 +65,7 @@ import org.compiere.util.ValueNamePair;
  *  @author Jorg Janke
  *  @version $Id: VPaySelect.java,v 1.2 2008/07/11 08:20:12 cruiz Exp $
  */
-public class VPaySelect extends PaySelect implements FormPanel, ActionListener, TableModelListener, ASyncProcess
+public class VPaySelect extends PaySelect implements FormPanel, ActionListener, TableModelListener, IProcessMonitor
 {
 	/** @todo withholding */
 	private CPanel panel = new CPanel();
@@ -438,4 +438,9 @@ public class VPaySelect extends PaySelect implements FormPanel, ActionListener, 
 	{
 		log.config("-");
 	}   //  executeASync
+
+	@Override
+	public void statusUpdate(String message) {
+		dataStatus.setText(message);
+	}
 }   //  VPaySelect

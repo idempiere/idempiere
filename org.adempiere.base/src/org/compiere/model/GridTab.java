@@ -207,6 +207,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	private DataStatusEvent m_lastDataStatusEvent;
 
+	private String m_parsedWhere;
+
 	// Context property names:
 	public static final String CTX_KeyColumnName = "_TabInfo_KeyColumnName";
 	public static final String CTX_LinkColumnName = "_TabInfo_LinkColumnName";
@@ -694,6 +696,23 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}	//	isDetail
 
 		m_extendedWhere = where.toString();
+		
+		if (m_extendedWhere.indexOf("@") > 1)
+		{
+			String s = Env.parseContext(Env.getCtx(), getWindowNo(), m_extendedWhere, false);
+			if (s != null)
+			{
+				if (!(s.equals(m_parsedWhere)))
+				{
+					refresh = false;
+				}				
+			}
+			else
+			{
+				refresh = false;
+			}
+			m_parsedWhere = s;
+		}
 
 		//	Final Query
 		if (m_query.isActive())

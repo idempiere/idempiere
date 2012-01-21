@@ -29,6 +29,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.util.IProcessMonitor;
 import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
 import org.adempiere.webui.WZoomAcross;
@@ -70,7 +71,6 @@ import org.compiere.model.MRole;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -117,7 +117,7 @@ import org.zkoss.zul.Menupopup;
  *  		https://sourceforge.net/tracker/?func=detail&aid=2985892&group_id=176962&atid=955896
  */
 public abstract class AbstractADWindowPanel extends AbstractUIPart implements ToolbarListener,
-        EventListener, DataStatusListener, ActionListener, ASyncProcess
+        EventListener, DataStatusListener, ActionListener, IProcessMonitor
 {
     private static final CLogger logger;
 
@@ -2331,6 +2331,11 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		}
 	}
 
+	@Override
+	public void statusUpdate(String message) {
+		statusBar.setStatusLine(message);
+	}
+	
 	private void updateUI(ProcessInfo pi) {
 		//	Refresh data
 		curTab.dataRefresh(false);

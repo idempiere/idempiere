@@ -28,6 +28,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ADialogDialog;
 import org.compiere.apps.AEnv;
@@ -49,7 +50,6 @@ import org.compiere.process.ProcessInfoUtil;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CTabbedPane;
 import org.compiere.swing.CTextPane;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -58,7 +58,7 @@ import org.compiere.util.Msg;
  * Generate custom form panel
  * 
  */
-public class VGenPanel extends CPanel implements ActionListener, ChangeListener, TableModelListener, ASyncProcess
+public class VGenPanel extends CPanel implements ActionListener, ChangeListener, TableModelListener, IProcessMonitor
 {
 	/**
 	 * 
@@ -379,5 +379,10 @@ public class VGenPanel extends CPanel implements ActionListener, ChangeListener,
 	public StatusBar getStatusBar()
 	{
 		return statusBar;
+	}
+
+	@Override
+	public void statusUpdate(String message) {
+		statusBar.setStatusLine(message);
 	}
 }

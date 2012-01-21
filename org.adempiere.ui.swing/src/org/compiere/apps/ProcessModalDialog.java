@@ -32,11 +32,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.process.ProcessInfo;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CDialog;
 import org.compiere.swing.CPanel;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -76,13 +76,13 @@ public class ProcessModalDialog extends CDialog
 	 * @param autoStart
 	 */
 	public ProcessModalDialog (Properties ctx, Frame parent, String title, 
-			ASyncProcess aProcess, int WindowNo, int AD_Process_ID,
+			IProcessMonitor aProcess, int WindowNo, int AD_Process_ID,
 			int tableId, int recordId, boolean autoStart)
 	{
 		super(parent, title, true);
 		log.info("Process=" + AD_Process_ID );
 		m_ctx = ctx;
-		m_ASyncProcess = aProcess;
+		m_processMonitor = aProcess;
 		m_WindowNo = WindowNo;
 		m_AD_Process_ID = AD_Process_ID;
 		m_tableId = tableId;
@@ -99,7 +99,7 @@ public class ProcessModalDialog extends CDialog
 		}
 	}	//	ProcessDialog
 
-	private ASyncProcess m_ASyncProcess;
+	private IProcessMonitor m_processMonitor;
 	private int m_WindowNo;
 	private Properties m_ctx;
 	private int m_tableId;
@@ -332,7 +332,7 @@ public class ProcessModalDialog extends CDialog
 	{
 		if (e.getSource() == bOK)
 		{
-			ProcessCtl.process(m_ASyncProcess, m_WindowNo, parameterPanel, m_pi, null);
+			ProcessCtl.process(m_processMonitor, m_WindowNo, parameterPanel, m_pi, null);
 			dispose();
 		}
 

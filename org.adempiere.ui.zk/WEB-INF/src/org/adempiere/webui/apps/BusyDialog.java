@@ -28,13 +28,15 @@ import org.zkoss.zul.Image;
 public class BusyDialog extends Window {
 
 	private static final long serialVersionUID = -779475945298887887L;
+	private Label label;
 
 	public BusyDialog() {
 		super();
 		Hbox box = new Hbox();
 		box.setStyle("padding: 5px");
 		appendChild(box);
-		box.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Processing")));
+		label = new Label(Msg.getMsg(Env.getCtx(), "Processing"));
+		box.appendChild(label);
 		Image image = new Image();
 		box.appendChild(image);
 		image.setHeight("16px");
@@ -44,4 +46,10 @@ public class BusyDialog extends Window {
 		setShadow(true);		
 	}
 
+	public void statusUpdate(String message) {
+		if (label != null) {
+			label.setText(message);
+			this.invalidate();
+		}
+	}
 }

@@ -36,6 +36,7 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -55,6 +56,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 
@@ -738,5 +740,36 @@ public final class AEnv
 		if (header.length() == 0)
 			header = ThemeManager.getBrowserTitle();
 		return header;
+	}
+	
+	/**
+	 * Execute task that required access to the zk desktop
+	 * @param runnable
+	 */
+	public static void executeDesktopTask(Runnable runnable) {
+		boolean inUIThread = Executions.getCurrent() != null;
+		boolean desktopActivated = false;
+		
+		Desktop desktop = null;
+		try {
+	    	if (!inUIThread) {
+	    		desktop = (Desktop) Env.getCtx().get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY);
+	    		if (desktop == null)
+	    			return;
+	    		//1 second timeout
+	    		if (Executions.activate(desktop, 1000)) {
+	    			desktopActivated = true;
+	    		} else {
+	    			return;
+	    		}
+	    	}
+	    	runnable.run();
+    	} catch (Exception e) {
+    		throw new RuntimeException(e.getLocalizedMessage(), e);
+    	} finally {
+    		if (!inUIThread && desktopActivated) {
+    			Executions.deactivate(desktop);
+    		}
+    	}	
 	}
 }	//	AEnv

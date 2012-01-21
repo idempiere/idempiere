@@ -22,19 +22,23 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.ServerContext;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.compiere.process.ProcessInfo;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -54,7 +58,7 @@ import org.zkoss.zul.Html;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessModalDialog extends Window implements EventListener
+public class ProcessModalDialog extends Window implements EventListener, IProcessMonitor
 {
 	/**
 	 * generated serial version ID
@@ -69,10 +73,10 @@ public class ProcessModalDialog extends Window implements EventListener
 	 * @param pi
 	 * @param autoStart
 	 */
-	public ProcessModalDialog(ASyncProcess aProcess, int WindowNo, ProcessInfo pi, boolean autoStart)
+	public ProcessModalDialog(IProcessMonitor aProcess, int WindowNo, ProcessInfo pi, boolean autoStart)
 	{
 		m_ctx = Env.getCtx();
-		m_ASyncProcess = aProcess;
+		m_processMonitor = aProcess;
 		m_WindowNo = WindowNo;
 		m_pi = pi;
 		m_autoStart = autoStart;
@@ -99,7 +103,7 @@ public class ProcessModalDialog extends Window implements EventListener
 	 * @param recordId
 	 * @param autoStart
 	 */
-	public ProcessModalDialog (  ASyncProcess aProcess, int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
+	public ProcessModalDialog (  IProcessMonitor aProcess, int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
 	{
 		this(aProcess, WindowNo, new ProcessInfo("", AD_Process_ID, tableId, recordId), autoStart);
 	}
@@ -118,7 +122,7 @@ public class ProcessModalDialog extends Window implements EventListener
 	 * @deprecated
 	 */
 	public ProcessModalDialog (Window parent, String title,
-			ASyncProcess aProcess, int WindowNo, int AD_Process_ID,
+			IProcessMonitor aProcess, int WindowNo, int AD_Process_ID,
 			int tableId, int recordId, boolean autoStart)
 	{
 		this(aProcess, WindowNo, AD_Process_ID, tableId, recordId, autoStart);
@@ -155,7 +159,7 @@ public class ProcessModalDialog extends Window implements EventListener
 
 	}
 
-	private ASyncProcess m_ASyncProcess;
+	private IProcessMonitor m_processMonitor;
 	private int m_WindowNo;
 	private Properties m_ctx;
 	private String		    m_Name = null;
@@ -173,6 +177,10 @@ public class ProcessModalDialog extends Window implements EventListener
 
 	private ProcessInfo m_pi = null;
 	private BusyDialog progressWindow;
+	private boolean isLocked = false;
+	private org.adempiere.webui.apps.ProcessModalDialog.ProcessDialogRunnable processDialogRunnable;
+	private Thread thread;
+	private String statusUpdate;
 
 	/**
 	 * 	Set Visible
@@ -299,12 +307,12 @@ public class ProcessModalDialog extends Window implements EventListener
 	{
 		m_pi.setPrintPreview(true);
 
-		if (m_ASyncProcess != null) {
-			m_ASyncProcess.lockUI(m_pi);
+		if (m_processMonitor != null) {
+			m_processMonitor.lockUI(m_pi);
 			Clients.showBusy(null, false);
 		}
 
-		showBusyDialog();
+		lockUI(m_pi);
 
 		//use echo, otherwise lock ui wouldn't work
 		Clients.response(new AuEcho(this, "runProcess", null));
@@ -322,15 +330,54 @@ public class ProcessModalDialog extends Window implements EventListener
 	/**
 	 * internal use, don't call this directly
 	 */
-	public void runProcess() {
-		try {
-			WProcessCtl.process(null, m_WindowNo, parameterPanel, m_pi, null);
-		} finally {
-			dispose();
-			if (m_ASyncProcess != null) {
-				m_ASyncProcess.unlockUI(m_pi);
+	public void runProcess() {	
+		//prepare context for background thread
+		Properties p = new Properties();
+		Properties env = Env.getCtx();
+		for(Object key : env.keySet()) {
+			if (key instanceof String) {
+				String sKey = (String) key;
+				Object value = env.get(sKey);
+				if (value instanceof String) {
+					String sValue = (String) value;
+					p.put(sKey, sValue);
+				}
 			}
-			hideBusyDialog();
+		}
+		Desktop desktop = this.getDesktop();
+		p.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, desktop);
+		
+		processDialogRunnable = new ProcessDialogRunnable(p);
+		thread = new Thread(processDialogRunnable);
+		thread.start();
+		
+		Clients.response(new AuEcho(this, "checkProgress", null));
+	}
+	
+	public void checkProgress() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			Thread.interrupted();
+		}
+		if (thread.isAlive()) {
+			synchronized(this) {
+				if (statusUpdate != null) {
+					if (progressWindow != null)
+						progressWindow.statusUpdate(statusUpdate);
+					statusUpdate = null;
+				}
+			}
+			Clients.response(new AuEcho(this, "checkProgress", null));
+		} else {
+			Env.getCtx().putAll(processDialogRunnable.getProperties());
+			thread = null;			
+			processDialogRunnable = null;
+			dispose();
+			if (m_processMonitor != null) {
+				m_processMonitor.unlockUI(m_pi);
+			}
+			unlockUI(m_pi);
 		}
 	}
 
@@ -356,4 +403,53 @@ public class ProcessModalDialog extends Window implements EventListener
 		}
 	}
 
+	@Override
+	public void lockUI(ProcessInfo pi) {
+		if (isLocked || Executions.getCurrent() == null)
+			return;
+		
+		showBusyDialog();
+		isLocked  = true;
+	}
+
+	@Override
+	public void unlockUI(ProcessInfo pi) {
+		if (!isLocked || Executions.getCurrent() == null)
+			return;
+		
+		hideBusyDialog();
+		isLocked = false;
+	}
+
+	@Override
+	public boolean isUILocked() {
+		return isLocked;
+	}
+
+	@Override
+	public void statusUpdate(String message) {
+		statusUpdate = message;
+	}
+
+	class ProcessDialogRunnable implements Runnable {
+		private Properties properties;
+		
+		ProcessDialogRunnable(Properties properties) {
+			this.properties = properties;
+		}
+		
+		public void run() {
+			try {
+				ServerContext.setCurrentInstance(properties);
+				log.log(Level.INFO, "Process Info="+m_pi+" AD_Client_ID="+Env.getAD_Client_ID(Env.getCtx()));
+				WProcessCtl.process(ProcessModalDialog.this, m_WindowNo, parameterPanel, m_pi, null);
+			} finally {
+				ServerContext.dispose();
+			}
+		}
+		
+		protected Properties getProperties() {
+			return properties;
+		}		
+	}
 }	//	ProcessDialog

@@ -47,6 +47,7 @@ import javax.swing.JFrame;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
+import org.adempiere.util.IProcessMonitor;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.db.CConnection;
 import org.compiere.model.GridWindowVO;
@@ -55,6 +56,8 @@ import org.compiere.model.MLookupCache;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
+import org.compiere.process.ProcessInfo;
+import org.compiere.process.SvrProcess;
 
 /**
  *  System Environment and static variables.
@@ -1691,6 +1694,17 @@ public final class Env
 		return mWindowVO;
 	}   //  getWindow
 
+	//Current Process
+	public static IProcessMonitor getProcessMonitor(Properties ctx)
+	{
+		return (IProcessMonitor) ctx.get(SvrProcess.PROCESS_MONITOR_CTX_KEY);
+	}
+	
+	public static ProcessInfo getProcessInfo(Properties ctx)
+	{
+		return (ProcessInfo) ctx.get(SvrProcess.PROCESS_INFO_CTX_KEY);
+	}
+	
 	/**************************************************************************
 	 *  Static Variables
 	 */

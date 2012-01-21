@@ -38,6 +38,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ADialogDialog;
 import org.compiere.apps.AEnv;
@@ -66,7 +67,6 @@ import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CTabbedPane;
 import org.compiere.swing.CTextPane;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -83,7 +83,7 @@ import org.compiere.util.Trx;
  */
 public class VInOutInvoiceGen extends CPanel
 	implements FormPanel, ActionListener, VetoableChangeListener, 
-		ChangeListener, TableModelListener, ASyncProcess
+		ChangeListener, TableModelListener, IProcessMonitor
 {
 	/**
 	 * 
@@ -895,4 +895,9 @@ public class VInOutInvoiceGen extends CPanel
 	public void executeASync (ProcessInfo pi)
 	{
 	}   //  executeASync
+
+	@Override
+	public void statusUpdate(String message) {
+		statusBar.setStatusLine(message);
+	}
 }	//	VInOutGen

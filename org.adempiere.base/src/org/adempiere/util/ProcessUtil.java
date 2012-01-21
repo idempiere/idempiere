@@ -134,6 +134,17 @@ public final class ProcessUtil {
 	 * @return boolean
 	 */
 	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx) {
+		return startJavaProcess(ctx, pi, trx, managedTrx, null);
+	}
+	
+	/**
+	 * @param ctx
+	 * @param pi
+	 * @param trx
+	 * @param managedTrx false if trx is managed by caller
+	 * @return boolean
+	 */
+	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx, IProcessMonitor processMonitor) {
 		String className = pi.getClassName();
 		if (className == null) {
 			MProcess proc = new MProcess(ctx, pi.getAD_Process_ID(), trx.getTrxName());
@@ -196,7 +207,8 @@ public final class ProcessUtil {
 
 		boolean success = false;
 		try
-		{
+		{			
+			process.setProcessMonitor(processMonitor);
 			success = process.startProcess(ctx, pi, trx);
 			if (success && trx != null && managedTrx)
 			{

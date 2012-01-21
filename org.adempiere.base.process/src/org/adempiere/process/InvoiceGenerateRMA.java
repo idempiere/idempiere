@@ -32,6 +32,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * Generate invoice for Vendor RMA
@@ -189,6 +190,7 @@ public class InvoiceGenerateRMA extends SvrProcess
     private void generateInvoice(int M_RMA_ID)
     {
         MRMA rma = new MRMA(getCtx(), M_RMA_ID, get_TrxName());
+        statusUpdate(Msg.getMsg(getCtx(), "Processing") + " " + rma.getDocumentInfo());
         
         MInvoice invoice = createInvoice(rma);
         MInvoiceLine invoiceLines[] = createInvoiceLines(rma, invoice);

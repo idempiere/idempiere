@@ -34,6 +34,8 @@ import org.zkoss.zk.ui.event.EventThreadCleanup;
 import org.zkoss.zk.ui.event.EventThreadInit;
 import org.zkoss.zk.ui.event.EventThreadResume;
 import org.zkoss.zk.ui.event.EventThreadSuspend;
+import org.zkoss.zk.ui.sys.DesktopCtrl;
+import org.zkoss.zk.ui.sys.ServerPush;
 import org.zkoss.zk.ui.util.ExecutionCleanup;
 import org.zkoss.zk.ui.util.ExecutionInit;
 
@@ -96,13 +98,17 @@ public class SessionContextListener implements ExecutionInit,
      */
     public void init(Execution exec, Execution parent)
     {
+    	//in servlet thread
     	if (parent == null)
     	{
-	    	//in servlet thread
-	    	setupExecutionContextFromSession(Executions.getCurrent());
-	    	//set locale
-	        Locales.setThreadLocal(Env.getLanguage(ServerContext.getCurrentInstance()).getLocale());
-    	}
+    		ServerPush serverPush = ((DesktopCtrl)exec.getDesktop()).getServerPush();
+    		if (serverPush == null || !serverPush.isActive())
+    		{
+		    	setupExecutionContextFromSession(Executions.getCurrent());
+		    	//set locale
+		        Locales.setThreadLocal(Env.getLanguage(ServerContext.getCurrentInstance()).getLocale());
+	    	}
+	    }
     }
 
     /**
@@ -116,8 +122,12 @@ public class SessionContextListener implements ExecutionInit,
     	//in servlet thread
         if (parent == null)
         {
-            ServerContext.dispose();
-        }
+        	ServerPush serverPush = ((DesktopCtrl)exec.getDesktop()).getServerPush();
+    		if (serverPush == null || !serverPush.isActive())
+    		{
+	            ServerContext.dispose();
+	        }
+	    }
     }
 
     /**

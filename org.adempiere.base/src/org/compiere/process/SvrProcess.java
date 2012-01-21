@@ -25,9 +25,9 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.IProcessMonitor;
 import org.compiere.model.MPInstance;
 import org.compiere.model.PO;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -51,6 +51,9 @@ import org.compiere.util.Trx;
  */
 public abstract class SvrProcess implements ProcessCall
 {
+	public static final String PROCESS_INFO_CTX_KEY = "ProcessInfo";
+	public static final String PROCESS_MONITOR_CTX_KEY = "ProcessMonitor";
+	
 	/**
 	 *  Server Process.
 	 * 	Note that the class is initiated by startProcess.
@@ -72,6 +75,7 @@ public abstract class SvrProcess implements ProcessCall
 	private PO					m_lockedObject = null;
 	/** Process Main transaction 		*/
 	private Trx 				m_trx;
+	private IProcessMonitor 	processMonitor;
 
 	/**	Common Error Message			*/
 	protected static String 	MSG_SaveErrorRowNotFound = "@SaveErrorRowNotFound@";
@@ -102,32 +106,43 @@ public abstract class SvrProcess implements ProcessCall
 		//
 		lock();
 		
-		boolean success = process();
-		//
-		if (localTrx)
+		boolean success = false;
+		
+		try 
 		{
-			if (success)
-			{
-				try 
-				{
-					m_trx.commit(true);
-				} catch (Exception e)
-				{
-					log.log(Level.SEVERE, "Commit failed.", e);
-					m_pi.addSummary("Commit Failed.");
-					m_pi.setError(true);
-				}
-			}
-			else
-				m_trx.rollback();
-			m_trx.close();
-			m_trx = null;
+			m_ctx.put(PROCESS_INFO_CTX_KEY, m_pi);
+			m_ctx.put(PROCESS_MONITOR_CTX_KEY, processMonitor);
+			success = process();			
 		}
+		finally
+		{
+			m_ctx.remove(PROCESS_INFO_CTX_KEY);
+			m_ctx.remove(PROCESS_MONITOR_CTX_KEY);
+			if (localTrx)
+			{
+				if (success)
+				{
+					try 
+					{
+						m_trx.commit(true);
+					} catch (Exception e)
+					{
+						log.log(Level.SEVERE, "Commit failed.", e);
+						m_pi.addSummary("Commit Failed.");
+						m_pi.setError(true);
+					}
+				}
+				else
+					m_trx.rollback();
+				m_trx.close();
+				m_trx = null;
+			}
 		
-		unlock();
-		
-		// outside transaction processing [ teo_sarca, 1646891 ]
-		postProcess(!m_pi.isError());
+			unlock();
+			
+			// outside transaction processing [ teo_sarca, 1646891 ]
+			postProcess(!m_pi.isError());
+		}
 		
 		return !m_pi.isError();
 	}   //  startProcess
@@ -518,5 +533,22 @@ public abstract class SvrProcess implements ProcessCall
 			return m_trx.getTrxName();
 		return null;
 	}	//	get_TrxName
+
+	@Override
+	public void setProcessMonitor(IProcessMonitor monitor)
+	{
+		processMonitor = monitor;
+	}
 	
+	/**
+	 * publish status update message
+	 * @param message
+	 */
+	protected void statusUpdate(String message)
+	{
+		if (processMonitor != null)
+		{
+			processMonitor.statusUpdate(message);
+		}
+	}
 }   //  SvrProcess

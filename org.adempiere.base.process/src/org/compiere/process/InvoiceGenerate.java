@@ -41,6 +41,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 
 /**
  *	Generate Invoices
@@ -196,6 +197,7 @@ public class InvoiceGenerate extends SvrProcess
 			while (rs.next ())
 			{
 				MOrder order = new MOrder (getCtx(), rs, get_TrxName());
+				statusUpdate(Msg.getMsg(getCtx(), "Processing") + " " + order.getDocumentInfo());
 				
 				//	New Invoice Location
 				if (!p_ConsolidateDocument 

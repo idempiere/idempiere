@@ -16,12 +16,12 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
+import org.adempiere.util.IProcessMonitor;
 import org.adempiere.webui.component.Window;
 import org.compiere.apps.AbstractProcessCtl;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.MPInstance;
 import org.compiere.process.ProcessInfo;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -48,12 +48,12 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 *  lockUI and unlockUI if parent is a ASyncProcess
 	 *  <br>
 	 *
-	 *  @param aProcess ASyncProcess & Container
+	 *  @param aProcessMonitor ASyncProcess & Container
 	 *  @param WindowNo window no
 	 *  @param pi ProcessInfo process info
 	 *  @param trx Transaction
 	 */
-	public static void process (ASyncProcess aProcess, int WindowNo, ProcessInfo pi, Trx trx)
+	public static void process (IProcessMonitor aProcessMonitor, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 
@@ -82,7 +82,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 
 		//	Get Parameters (Dialog)
-		ProcessModalDialog para = new ProcessModalDialog(aProcess, WindowNo, pi, false);
+		ProcessModalDialog para = new ProcessModalDialog(aProcessMonitor, WindowNo, pi, false);
 		if (para.isValid())
 		{
 			para.setWidth("500px");
@@ -105,13 +105,13 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 *  <br>
 	 *	Called from ProcessDialog.actionPerformed
 	 *
-	 *  @param parent ASyncProcess & Container
+	 *  @param aProcessMonitor ASyncProcess & Container
 	 *  @param WindowNo window no
 	 *  @param paraPanel Process Parameter Panel
 	 *  @param pi ProcessInfo process info
 	 *  @param trx Transaction
 	 */
-	public static void process(ASyncProcess parent, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
+	public static void process(IProcessMonitor aProcessMonitor, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 
@@ -153,7 +153,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 		}
 
 		//	execute
-		WProcessCtl worker = new WProcessCtl(parent, WindowNo, pi, trx);
+		WProcessCtl worker = new WProcessCtl(aProcessMonitor, WindowNo, pi, trx);
 		worker.run();
 	}
 
@@ -163,9 +163,9 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 * @param pi
 	 * @param trx
 	 */
-	public WProcessCtl(ASyncProcess parent, int WindowNo, ProcessInfo pi,
+	public WProcessCtl(IProcessMonitor aProcessMonitor, int WindowNo, ProcessInfo pi,
 			Trx trx) {
-		super(parent, WindowNo, pi, trx);
+		super(aProcessMonitor, WindowNo, pi, trx);
 	}
 
 	@Override
@@ -178,15 +178,15 @@ public class WProcessCtl extends AbstractProcessCtl {
 
 	@Override
 	protected void lock() {
-		if (getParent() != null) {
-			getParent().lockUI(getProcessInfo());
+		if (getProcessMonitor() != null) {
+			getProcessMonitor().lockUI(getProcessInfo());
 		}
 	}
 
 	@Override
 	protected void unlock() {
-		if (getParent() != null) {
-			getParent().unlockUI(getProcessInfo());
+		if (getProcessMonitor() != null) {
+			getProcessMonitor().unlockUI(getProcessInfo());
 		}
 	}
 }

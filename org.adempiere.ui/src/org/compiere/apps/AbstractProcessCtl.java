@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.adempiere.util.IProcessMonitor;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.db.CConnection;
 import org.compiere.interfaces.Server;
@@ -30,7 +31,6 @@ import org.compiere.print.ReportCtl;
 import org.compiere.process.ClientProcess;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -62,10 +62,10 @@ public abstract class AbstractProcessCtl implements Runnable
 	 *  @param trx Transaction
 	 *  Created in process(), VInvoiceGen.generateInvoices
 	 */
-	public AbstractProcessCtl (ASyncProcess parent, int WindowNo, ProcessInfo pi, Trx trx)
+	public AbstractProcessCtl (IProcessMonitor aProcessMonitor, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		windowno = WindowNo;
-		m_parent = parent;
+		m_processMonitor = aProcessMonitor;
 		m_pi = pi;
 		m_trx = trx;	//	handeled correctly
 	}   //  ProcessCtl
@@ -73,7 +73,7 @@ public abstract class AbstractProcessCtl implements Runnable
 	/** Windowno */
 	private int windowno;
 	/** Parenr */
-	private ASyncProcess m_parent;
+	private IProcessMonitor m_processMonitor;
 	/** Process Info */
 	private ProcessInfo m_pi;
 	private Trx				m_trx;
@@ -276,7 +276,7 @@ public abstract class AbstractProcessCtl implements Runnable
 		{
 			m_pi.setReportingProcess(true);
 			//	Start Report	-----------------------------------------------
-			boolean ok = ReportCtl.start(m_parent, windowno, m_pi, IsDirectPrint);
+			boolean ok = ReportCtl.start(m_processMonitor, windowno, m_pi, IsDirectPrint);
 			m_pi.setSummary("Report", !ok);
 			unlock ();
 		}
@@ -322,9 +322,14 @@ public abstract class AbstractProcessCtl implements Runnable
 		return m_pi;
 	}
 	
-	protected ASyncProcess getParent()
+	protected IProcessMonitor getProcessMonitor()
 	{
-		return m_parent;
+		return m_processMonitor;
+	}
+	
+	protected IProcessMonitor getParent()
+	{
+		return getProcessMonitor();
 	}
 	
 	protected boolean isServerProcess()
@@ -440,7 +445,7 @@ public abstract class AbstractProcessCtl implements Runnable
 			if (m_pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
 				return ProcessUtil.startScriptProcess(Env.getCtx(), m_pi, m_trx);
 			} else {
-				return ProcessUtil.startJavaProcess(Env.getCtx(), m_pi, m_trx);
+				return ProcessUtil.startJavaProcess(Env.getCtx(), m_pi, m_trx, true, m_processMonitor);
 			}
 		}
 		return !m_pi.isError();
