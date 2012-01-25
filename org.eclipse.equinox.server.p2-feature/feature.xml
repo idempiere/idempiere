@@ -174,21 +174,21 @@
          id="org.apache.commons.codec"
          download-size="0"
          install-size="0"
-         version="1.3.0.v20100518-1140"
+         version="1.3.0.v201101211617"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.httpclient"
          download-size="0"
          install-size="0"
-         version="3.1.0.v201005080502"
+         version="3.1.0.v201012070820"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
-         version="1.1.1.v201101211721"
+         version="1.1.1.v201005080502"
          unpack="false"/>
 
    <plugin
