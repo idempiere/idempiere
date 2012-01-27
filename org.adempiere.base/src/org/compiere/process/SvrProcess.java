@@ -111,7 +111,8 @@ public abstract class SvrProcess implements ProcessCall
 		try 
 		{
 			m_ctx.put(PROCESS_INFO_CTX_KEY, m_pi);
-			m_ctx.put(PROCESS_MONITOR_CTX_KEY, processMonitor);
+			if (processMonitor != null)
+				m_ctx.put(PROCESS_MONITOR_CTX_KEY, processMonitor);
 			success = process();			
 		}
 		finally
