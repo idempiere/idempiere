@@ -25,6 +25,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -36,23 +37,26 @@ import org.zkoss.zul.Vbox;
  * Dashboard item: Workflow activities, notices and requests
  * @author Elaine
  * @date November 20, 2008
+ * 
+ * Contributors:
+ * CarlosRuiz - globalqss - Add unprocessed button to iDempiere
  */
 public class DPActivities extends DashboardPanel implements EventListener {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8123912981765687655L;
+	private static final long serialVersionUID = 3787249181565314148L;
 
 	private static final CLogger logger = CLogger.getCLogger(DPActivities.class);
 
-	private Button btnNotice, btnRequest, btnWorkflow;
+	private Button btnNotice, btnRequest, btnWorkflow, btnUnprocessed;
 
-	private int noOfNotice;
+	private String labelN, labelR, labelW, labelU;
+	
+	private int noOfNotice, noOfRequest, noOfWorkflow, noOfUnprocessed;
 
-	private int noOfRequest;
-
-	private int noOfWorkflow;
+	private boolean isShowUnprocessed;
 
 	public DPActivities()
 	{
@@ -62,12 +66,15 @@ public class DPActivities extends DashboardPanel implements EventListener {
 
 	private Box createActivitiesPanel()
 	{
+		isShowUnprocessed = (Env.getAD_Client_ID(Env.getCtx()) > 0);
+		
 		Vbox vbox = new Vbox();
 
         btnNotice = new Button();
         vbox.appendChild(btnNotice);
-        btnNotice.setLabel(Msg.translate(Env.getCtx(), "AD_Note_ID") + " : 0");
-        btnNotice.setTooltiptext(Msg.translate(Env.getCtx(), "AD_Note_ID"));
+        labelN = Util.cleanAmp(Msg.translate(Env.getCtx(), "AD_Note_ID"));
+        btnNotice.setLabel(labelN + " : 0");
+        btnNotice.setTooltiptext(labelN);
         btnNotice.setImage("/images/GetMail16.png");
         int AD_Menu_ID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE Name = 'Notice' AND IsSummary = 'N'");
         btnNotice.setName(String.valueOf(AD_Menu_ID));
@@ -75,8 +82,9 @@ public class DPActivities extends DashboardPanel implements EventListener {
 
         btnRequest = new Button();
         vbox.appendChild(btnRequest);
-        btnRequest.setLabel(Msg.translate(Env.getCtx(), "R_Request_ID") + " : 0");
-        btnRequest.setTooltiptext(Msg.translate(Env.getCtx(), "R_Request_ID"));
+        labelR = Util.cleanAmp(Msg.translate(Env.getCtx(), "R_Request_ID"));
+        btnRequest.setLabel(labelR + " : 0");
+        btnRequest.setTooltiptext(labelR);
         btnRequest.setImage("/images/Request16.png");
         AD_Menu_ID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE Name = 'Request' AND IsSummary = 'N'");
         btnRequest.setName(String.valueOf(AD_Menu_ID));
@@ -84,12 +92,25 @@ public class DPActivities extends DashboardPanel implements EventListener {
 
         btnWorkflow = new Button();
         vbox.appendChild(btnWorkflow);
-        btnWorkflow.setLabel(Msg.getMsg (Env.getCtx(), "WorkflowActivities") + " : 0");
-        btnWorkflow.setTooltiptext(Msg.getMsg (Env.getCtx(), "WorkflowActivities"));
+        labelW = Util.cleanAmp(Msg.translate(Env.getCtx(), "WorkflowActivities"));
+        btnWorkflow.setLabel(labelW + " : 0");
+        btnWorkflow.setTooltiptext(labelW);
         btnWorkflow.setImage("/images/Assignment16.png");
         AD_Menu_ID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE Name = 'Workflow Activities' AND IsSummary = 'N'");
         btnWorkflow.setName(String.valueOf(AD_Menu_ID));
         btnWorkflow.addEventListener(Events.ON_CLICK, this);
+
+        if (isShowUnprocessed) {
+            btnUnprocessed = new Button();
+            vbox.appendChild(btnUnprocessed);
+            labelU = Util.cleanAmp(Msg.translate(Env.getCtx(), "UnprocessedDocs"));
+            btnUnprocessed.setLabel(labelU + " : 0");
+            btnUnprocessed.setTooltiptext(labelU);
+            btnUnprocessed.setImage("/images/Open16.png");
+            AD_Menu_ID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE Name = 'My Unprocessed Documents' AND IsSummary = 'N'");
+            btnUnprocessed.setName(String.valueOf(AD_Menu_ID));
+            btnUnprocessed.addEventListener(Events.ON_CLICK, this);
+        }
 
         return vbox;
 	}
@@ -177,12 +198,26 @@ public class DPActivities extends DashboardPanel implements EventListener {
 		return count;
 	}
 
+	/**
+	 * Get unprocessed count
+	 * @return number of unprocessed
+	 */
+	public static int getUnprocessedCount()
+	{
+		String sql = "SELECT COUNT(1) FROM RV_Unprocessed "
+			+ "WHERE AD_Client_ID=? AND CreatedBy=?";
+
+		int retValue = DB.getSQLValue(null, sql, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()));
+		return retValue;
+	}
+
 	@Override
     public void refresh(ServerPushTemplate template)
 	{
     	noOfNotice = getNoticeCount();
     	noOfRequest = getRequestCount();
     	noOfWorkflow = getWorkflowCount();
+    	if (isShowUnprocessed) noOfUnprocessed = getUnprocessedCount();
 
     	template.execute(this);
 	}
@@ -196,9 +231,10 @@ public class DPActivities extends DashboardPanel implements EventListener {
     			return;
     		c = c.getParent();
     	}
-    	btnNotice.setLabel(Msg.translate(Env.getCtx(), "AD_Note_ID") + " : " + noOfNotice);
-		btnRequest.setLabel(Msg.translate(Env.getCtx(), "R_Request_ID") + " : " + noOfRequest);
-		btnWorkflow.setLabel(Msg.getMsg (Env.getCtx(), "WorkflowActivities") + " : " + noOfWorkflow);
+    	btnNotice.setLabel(labelN + " : " + noOfNotice);
+		btnRequest.setLabel(labelR + " : " + noOfRequest);
+		btnWorkflow.setLabel(labelW + " : " + noOfWorkflow);
+		if (isShowUnprocessed) btnUnprocessed.setLabel(labelU + " : " + noOfUnprocessed);
 	}
 
 	public void onEvent(Event event)
