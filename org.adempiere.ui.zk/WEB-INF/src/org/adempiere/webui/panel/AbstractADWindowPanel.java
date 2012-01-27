@@ -632,7 +632,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         boolean require = mTab.isHighVolume();
         if (!require && !m_onlyCurrentRows) // No Trx Window
         {
-            String wh1 = mTab.getWhereExtended();
+            String wh1 = Env.parseContext(ctx, curWindowNo, mTab.getWhereExtended(), false);
             if (wh1 == null || wh1.length() == 0)
                 wh1 = mTab.getWhereClause();
             if (wh1 != null && wh1.length() > 0)
