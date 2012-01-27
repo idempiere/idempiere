@@ -67,6 +67,7 @@ import org.compiere.model.GridWindowVO;
 import org.compiere.model.Lookup;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -1228,6 +1229,16 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
             readOnly = false;
         }
         toolbar.enableIgnore(changed && !readOnly);
+
+        if (changed && !readOnly && !toolbar.isSaveEnable() ) {
+        	if (curTabIndex == 0 && curTab.getRecord_ID() > 0) {
+        		MRecentItem.addModifiedField(ctx, curTab.getAD_Table_ID(),
+        				curTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+        				Env.getAD_Role_ID(ctx), curTab.getAD_Window_ID(),
+        				curTab.getAD_Tab_ID());
+        	}
+        }
+
         toolbar.enableSave(changed && !readOnly);
         toolbar.enableSaveAndCreate(changed && !readOnly);
         //
@@ -1508,6 +1519,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
      */
     private boolean onSave(boolean onSaveEvent)
     {
+    	boolean newRecord = (curTab.getRecord_ID() <= 0);
     	if (curTab.isSortTab())
     	{
     		((ADSortTab)curTabpanel).saveData();
@@ -1537,6 +1549,17 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	        }
 	        curTabpanel.dynamicDisplay(0);
 	        curTabpanel.afterSave(onSaveEvent);
+
+	        if (newRecord) {
+	        	MRecentItem.addModifiedField(ctx, curTab.getAD_Table_ID(),
+	        			curTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+	        			Env.getAD_Role_ID(ctx), curTab.getAD_Window_ID(),
+	        			curTab.getAD_Tab_ID());
+	        } else {
+	        	MRecentItem.touchUpdatedRecord(ctx, curTab.getAD_Table_ID(),
+	        			curTab.getRecord_ID(), Env.getAD_User_ID(ctx));
+	        }
+
 	        return true;
     	}
     }
