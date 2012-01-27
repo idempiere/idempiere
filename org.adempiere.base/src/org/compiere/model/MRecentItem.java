@@ -247,7 +247,13 @@ public class MRecentItem extends X_AD_RecentItem
 			recordIdentifier = recordIdentifier + "_" + po.get_ValueAsString("Value");
 		if (po.get_ColumnIndex("Name") > 0)
 			recordIdentifier = recordIdentifier + "_" + po.get_ValueAsString("Name");
-		
+		if (recordIdentifier.length() == 0)
+			recordIdentifier = "_" + po.toString();
+		if (recordIdentifier.length() == 0)
+			recordIdentifier = "_[" + po.get_ID() + "]";
+		if (recordIdentifier.length() == 0)
+			recordIdentifier = "_[no identifier]";
+
 		return windowName + ": " + recordIdentifier.substring(1);
 	}
 
