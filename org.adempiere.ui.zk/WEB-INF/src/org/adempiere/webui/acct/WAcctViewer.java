@@ -499,6 +499,7 @@ public class WAcctViewer extends Window implements EventListener
 		bExport.setImage("/images/Export16.png");
 		bExport.setTooltiptext(Msg.getMsg(Env.getCtx(), "Export"));
 		bExport.addEventListener(Events.ON_CLICK, this);
+		bExport.setVisible(false);
 
 		southPanel.setWidth("100%");
 		southPanel.setWidths("2%, 12%, 82%, 2%, 2%");
@@ -710,7 +711,7 @@ public class WAcctViewer extends Window implements EventListener
 		boolean visible = m_data.documentQuery && tabResult.isSelected();
 
 		bRePost.setVisible(visible);
-		bExport.setVisible(visible);
+		bExport.setVisible(tabResult.isSelected());
 
 		if (Ini.isPropertyBool(Ini.P_SHOW_ADVANCED))
 			forcePost.setVisible(visible);
@@ -763,7 +764,7 @@ public class WAcctViewer extends Window implements EventListener
 			RModelExcelExporter exporter = new RModelExcelExporter(m_rmodel);
 			File file;
 			try {
-				file = File.createTempFile(getTitle(), ".xsl");
+				file = File.createTempFile(getTitle(), ".xls");
 				exporter.export(file, Env.getLanguage(Env.getCtx()));
 				Filedownload.save(file, "application/vnd.ms-excel");
 			} catch (Exception e) {
