@@ -1231,11 +1231,22 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         toolbar.enableIgnore(changed && !readOnly);
 
         if (changed && !readOnly && !toolbar.isSaveEnable() ) {
-        	if (curTabIndex == 0 && curTab.getRecord_ID() > 0) {
-        		MRecentItem.addModifiedField(ctx, curTab.getAD_Table_ID(),
-        				curTab.getRecord_ID(), Env.getAD_User_ID(ctx),
-        				Env.getAD_Role_ID(ctx), curTab.getAD_Window_ID(),
-        				curTab.getAD_Tab_ID());
+        	if (curTab.getRecord_ID() > 0) {
+            	if (curTabIndex == 0) {
+            		MRecentItem.addModifiedField(ctx, curTab.getAD_Table_ID(),
+            				curTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+            				Env.getAD_Role_ID(ctx), curTab.getAD_Window_ID(),
+            				curTab.getAD_Tab_ID());
+            	} else {
+	        		/* when a detail record is modified add header to recent items */
+	        		GridTab mainTab = gridWindow.getTab(0);
+	        		if (mainTab != null) {
+			        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
+			        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+			        			Env.getAD_Role_ID(ctx), mainTab.getAD_Window_ID(),
+			        			mainTab.getAD_Tab_ID());
+	        		}
+            	}
         	}
         }
 
@@ -1520,6 +1531,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     private boolean onSave(boolean onSaveEvent)
     {
     	boolean newRecord = (curTab.getRecord_ID() <= 0);
+    	boolean wasChanged = toolbar.isSaveEnable();
     	if (curTab.isSortTab())
     	{
     		((ADSortTab)curTabpanel).saveData();
@@ -1550,14 +1562,35 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	        curTabpanel.dynamicDisplay(0);
 	        curTabpanel.afterSave(onSaveEvent);
 
-	        if (newRecord) {
-	        	MRecentItem.addModifiedField(ctx, curTab.getAD_Table_ID(),
-	        			curTab.getRecord_ID(), Env.getAD_User_ID(ctx),
-	        			Env.getAD_Role_ID(ctx), curTab.getAD_Window_ID(),
-	        			curTab.getAD_Tab_ID());
-	        } else {
-	        	MRecentItem.touchUpdatedRecord(ctx, curTab.getAD_Table_ID(),
-	        			curTab.getRecord_ID(), Env.getAD_User_ID(ctx));
+	        if (wasChanged) {
+		        if (newRecord) {
+		        	if (curTabIndex == 0) {
+			        	MRecentItem.addModifiedField(ctx, curTab.getAD_Table_ID(),
+			        			curTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+			        			Env.getAD_Role_ID(ctx), curTab.getAD_Window_ID(),
+			        			curTab.getAD_Tab_ID());
+		        	} else {
+		        		/* when a detail record is modified add header to recent items */
+		        		GridTab mainTab = gridWindow.getTab(0);
+		        		if (mainTab != null) {
+				        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
+				        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+				        			Env.getAD_Role_ID(ctx), mainTab.getAD_Window_ID(),
+				        			mainTab.getAD_Tab_ID());
+		        		}
+		        	}
+		        } else {
+		        	if (curTabIndex == 0) {
+			        	MRecentItem.touchUpdatedRecord(ctx, curTab.getAD_Table_ID(),
+			        			curTab.getRecord_ID(), Env.getAD_User_ID(ctx));
+		        	} else {
+		        		GridTab mainTab = gridWindow.getTab(0);
+		        		if (mainTab != null) {
+				        	MRecentItem.touchUpdatedRecord(ctx, mainTab.getAD_Table_ID(),
+				        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx));
+		        		}
+		        	}
+		        }
 	        }
 
 	        return true;
