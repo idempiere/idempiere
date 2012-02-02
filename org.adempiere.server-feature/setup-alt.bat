@@ -1,4 +1,4 @@
-@Title Setup Adempiere Server
+@Title ... Setup Adempiere Server
 @Rem  $Header: /cvsroot/adempiere/install/Adempiere/RUN_setup.bat,v 1.19 2005/09/08 21:54:12 jjanke Exp $
 @Echo off
 
@@ -30,9 +30,10 @@ goto START
 
 :NEXT
 @REM setup tomcat
+@Echo ... Setup Tomcat
 @"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.6.2.R36x_v20110210.jar -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
-@Echo .
+@Echo ...
 @Echo For problems, check log file in base directory
 @Rem Wait 10 second
 @PING 1.1.1.1 -n 1 -w 10000 > NUL

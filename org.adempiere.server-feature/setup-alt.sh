@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-echo Setup Adempiere Server
+echo ... Setup Adempiere Server
 # $Header: /cvsroot/adempiere/install/Adempiere/RUN_setup.sh,v 1.19 2005/09/08 21:54:12 jjanke Exp $
 
 if [ $JAVA_HOME ]; then
@@ -17,14 +17,13 @@ fi
 #setup Adempiere.properties and AdempiereEnv.propertiess
 $JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.6.2.R36x_v20110210.jar -application org.adempiere.install.application -consoleLog
 
+echo ... Setup Tomcat
 #setup tomcat
 $JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.6.2.R36x_v20110210.jar -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
-echo ===================================
-echo Make .sh executable & set Env
-echo ===================================
+echo ... Make .sh executable
 chmod -R a+x *.sh
 find . -name '*.sh' -exec chmod a+x '{}' \;
 
-echo .
+echo ...
 echo For problems, check log file in base directory
