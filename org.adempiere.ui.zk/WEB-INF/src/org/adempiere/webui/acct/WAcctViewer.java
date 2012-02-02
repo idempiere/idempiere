@@ -86,6 +86,8 @@ import org.zkoss.zul.Separator;
 
 public class WAcctViewer extends Window implements EventListener
 {
+	private static final String TITLE = "Posting";
+
 	/**
 	 *
 	 */
@@ -612,7 +614,7 @@ public class WAcctViewer extends Window implements EventListener
 		southPanel.setParent(south);
 
 		this.setAttribute("mode", "modal");
-		this.setTitle("Posting");
+		this.setTitle(TITLE);
 		this.setBorder("normal");
 		this.setClosable(true);
 		this.setStyle("position: absolute; width: 100%; height: 100%;");
@@ -797,7 +799,7 @@ public class WAcctViewer extends Window implements EventListener
 			RModelExcelExporter exporter = new RModelExcelExporter(m_rmodel);
 			File file;
 			try {
-				file = File.createTempFile(getTitle(), ".xls");
+				file = File.createTempFile(TITLE, ".xls");
 				exporter.export(file, Env.getLanguage(Env.getCtx()));
 				Filedownload.save(file, "application/vnd.ms-excel");
 			} catch (Exception e) {
