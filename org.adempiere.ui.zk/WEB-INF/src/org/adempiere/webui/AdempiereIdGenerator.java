@@ -26,6 +26,10 @@ public class AdempiereIdGenerator implements IdGenerator {
 
 	private static final String DEFAULT_ZK_COMP_PREFIX = "zk_comp_";
 	private static final String DESKTOP_ID_ATTRIBUTE = "org.adempiere.comp.id";
+	
+	/* use this to add a component prefix to identify zk component
+	 * if the prefix starts with unq then it will be used as is - if it doesn't then a sequence suffix will be added to guarantee uniqueness
+	 */
 	public static final String ZK_COMPONENT_PREFIX_ATTRIBUTE = "zk_component_prefix";
 
 	@Override
@@ -43,6 +47,15 @@ public class AdempiereIdGenerator implements IdGenerator {
 			matcher.appendTail(sb);
 			prefix = sb.toString();
 		}
+		if (prefix.startsWith("unq")) { // prefix already guaranteed unique
+			if (desktop.getComponentByUuidIfAny(prefix) == null) { // but don't trust and look to avoid dups
+				return prefix;
+			} else {
+				prefix = "not" + prefix;  // set notunq as the prefix to let dev know something is wrong
+			}
+		}
+
+		/* add sequence suffix to guarantee uniqueness */
 		int i = 0;
 		try {
 			String number = null;

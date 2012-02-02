@@ -74,7 +74,7 @@ public class ADButtonTabList extends Panel implements IADTabList, EventListener 
 			ADTabLabel tabLabel = (ADTabLabel) items[i];
 			Button button = new Button();
 			button.setDynamicProperty("Title", tabLabel.description);
-			button.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "ADButtonTab" + i);
+			button.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unqADButtonTab_" + tabLabel.windowNo + "_" + i);
 			Text text = new Text(tabLabel.label);
 			text.setAttribute("ad_tab_id", tabLabel.AD_Tab_ID);
 			button.appendChild(text);

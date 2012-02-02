@@ -225,7 +225,7 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
 			component = createReadonlyCheckbox(value);
 		} else if (gridField.getDisplayType() == DisplayType.Button) {
 			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-			WButtonEditor editor = new WButtonEditor(gridField);
+			WButtonEditor editor = new WButtonEditor(gridField, rowIndex);
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
 			editor.setReadWrite(gridField.isEditable(gridRowCtx, true));
 			editor.getComponent().setAttribute("grid.row.index", rowIndex);

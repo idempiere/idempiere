@@ -263,7 +263,7 @@ public class LoginPanel extends Window implements EventListener
 
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
-        txtUserId.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, txtUserId.getId());
+        txtUserId.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtUserId.getId());
         txtUserId.setCols(25);
         txtUserId.setMaxlength(40);
         txtUserId.setWidth("220px");
@@ -272,7 +272,7 @@ public class LoginPanel extends Window implements EventListener
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
-        txtPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, txtPassword.getId());
+        txtPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtPassword.getId());
         
         txtPassword.setCols(25);
 //        txtPassword.setMaxlength(40);
@@ -282,7 +282,7 @@ public class LoginPanel extends Window implements EventListener
         lstLanguage.setAutocomplete(true);
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
-        lstLanguage.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, lstLanguage.getId());
+        lstLanguage.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstLanguage.getId());
         lstLanguage.addEventListener(Events.ON_SELECT, this);
         lstLanguage.setWidth("220px");
 

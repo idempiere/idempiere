@@ -74,14 +74,18 @@ public class WButtonEditor extends WEditor
     
     public WButtonEditor(GridField gridField)
     {
-        super(new Button(), gridField);
+        this(gridField, -1);
+    }
+
+    public WButtonEditor(GridField gridField, int rowIndex) {
+        super(new Button(), gridField, rowIndex);
         m_text = gridField.getHeader();
         AD_Process_ID = gridField.getAD_Process_ID();
         gridfield = gridField;
         init();
-    }
+	}
 
-    /**
+	/**
 	 *	Get AD_Process_ID
 	 *  @return AD_Process_ID or 0
 	 */

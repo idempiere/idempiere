@@ -82,12 +82,16 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
 	
 	protected WEditorPopupMenu popupMenu;
 
+    public WEditor(Component comp, GridField gridField) {
+    	this(comp, gridField, -1);
+	}
+
     /**
      *
      * @param comp
      * @param gridField
      */
-    public WEditor(Component comp, GridField gridField)
+    public WEditor(Component comp, GridField gridField, int rowIndex)
     {
         if (comp == null)
         {
@@ -100,12 +104,13 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
         }
 
         this.setComponent(comp);
-        String gridTabName = gridField.getGridTab() != null
-        		? "_" + gridField.getGridTab().getName() : "";
-        if (gridField.getGridTab() != null)
-        {
-        	comp.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "Field_" + gridField.getColumnName() + gridTabName);
-        }
+        String gridTabName = gridField.getGridTab() != null ? gridField.getGridTab().getTabNo() + "_" + gridField.getGridTab().getTableName() : "";
+		comp.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE,
+				"unqField_" 
+						+ gridField.getWindowNo() 
+						+ "_" + gridTabName 
+						+ "_" + gridField.getColumnName()
+						+ (rowIndex >= 0 ? "_" + rowIndex : ""));
         this.gridField = gridField;
         this.setMandatory(gridField.isMandatory(false));
         this.readOnly = gridField.isReadOnly();

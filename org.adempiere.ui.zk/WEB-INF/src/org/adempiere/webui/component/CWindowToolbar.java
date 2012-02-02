@@ -51,10 +51,10 @@ import org.zkoss.zul.Space;
  */
 public class CWindowToolbar extends FToolbar implements EventListener
 {
-    /**
-	 *
+	/**
+	 * 
 	 */
-	private static final long serialVersionUID = -8259762910508209764L;
+	private static final long serialVersionUID = -762537218475834634L;
 
 	private static final String TOOLBAR_BUTTON_STYLE = "background-color: transparent; display:inline-block; margin-left: 1px; margin-right: 1px; width: 26px; height: 24px;";
 
@@ -124,7 +124,13 @@ public class CWindowToolbar extends FToolbar implements EventListener
         init();
     }
 
-    private void init()
+    public CWindowToolbar(boolean embedded, int windowNo) {
+    	this.embedded = embedded;
+    	setWindowNo(windowNo);
+        init();
+	}
+
+	private void init()
     {
     	LayoutUtils.addSclass("adwindow-toolbar", this);
 
@@ -203,8 +209,11 @@ public class CWindowToolbar extends FToolbar implements EventListener
     private ToolBarButton createButton(String name, String image, String tooltip)
     {
     	ToolBarButton btn = new ToolBarButton("");
-        btn.setName("btn"+name);
-        btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, btn.getName());
+        btn.setName("Btn"+name);
+        if (windowNo > 0)
+        	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + btn.getName() + "_" + windowNo + (embedded ? "E" : ""));
+        else
+        	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, btn.getName());
         btn.setImage("/images/"+image + (embedded ? "16.png" : "24.png"));
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
         if (embedded)
