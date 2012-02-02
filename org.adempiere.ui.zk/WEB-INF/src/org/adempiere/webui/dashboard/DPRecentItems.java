@@ -202,10 +202,15 @@ public class DPRecentItems extends DashboardPanel implements EventListener {
 
 	@Override
     public void refresh(ServerPushTemplate template)
-	{
-		refresh();
-		bxRecentItems.invalidate();
+	{			
     	template.execute(this);
 	}
 
+	@Override
+	public void updateUI() {
+		refresh();
+		bxRecentItems.invalidate();
+	}
+
+	
 }
