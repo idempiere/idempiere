@@ -543,10 +543,10 @@ public class WAcctViewerData
 			rm.addColumn(new RColumn(ctx, "Qty", DisplayType.Quantity));
 		}
 		
+		rm.addColumn(new RColumn(ctx, "AD_Table_ID", DisplayType.TableDir));
+		rm.addColumn(new RColumn(ctx, "Record_ID", DisplayType.ID));
 		if (displayDocumentInfo)
-		{
-			rm.addColumn(new RColumn(ctx, "AD_Table_ID", DisplayType.TableDir));
-			rm.addColumn(new RColumn(ctx, "Record_ID", DisplayType.ID));
+		{			
 			rm.addColumn(new RColumn(ctx, "Description", DisplayType.String));
 		}
 		

@@ -28,9 +28,13 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Datebox;
+import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
@@ -106,6 +110,7 @@ public class WAcctViewer extends Window implements EventListener
 	private Button bQuery = new Button();
 	private Button bRePost = new Button();
 	private Button bExport = new Button();
+	private Button bZoom = new Button(); // Elaine 2009/07/29
 	private Button sel1 = new Button();
 	private Button sel2 = new Button();
 	private Button sel3 = new Button();
@@ -207,6 +212,7 @@ public class WAcctViewer extends Window implements EventListener
 		{
 			init();
 			dynInit (AD_Table_ID, Record_ID);
+			setAttribute(MODE_KEY, MODE_EMBEDDED);
 			AEnv.showWindow(this);
 		}
 		catch(Exception e)
@@ -492,6 +498,13 @@ public class WAcctViewer extends Window implements EventListener
 		forcePost.setTooltiptext(Msg.getMsg(Env.getCtx(), "ForceInfo"));
 		forcePost.setVisible(false);
 
+		// Elaine 2009/07/29
+		bZoom.setImage("/images/Zoom16.png");
+		bZoom.setTooltiptext(Msg.getMsg(Env.getCtx(), "Zoom"));
+		bZoom.setVisible(tabbedPane.getSelectedIndex() == 1);
+		bZoom.addEventListener(Events.ON_CLICK, this);
+		//
+		
 		bQuery.setImage("/images/Refresh16.png");
 		bQuery.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
 		bQuery.addEventListener(Events.ON_CLICK, this);
@@ -502,12 +515,28 @@ public class WAcctViewer extends Window implements EventListener
 		bExport.setVisible(false);
 
 		southPanel.setWidth("100%");
-		southPanel.setWidths("2%, 12%, 82%, 2%, 2%");
-		southPanel.appendChild(bRePost);
-		southPanel.appendChild(forcePost);
-		southPanel.appendChild(statusLine);
-		southPanel.appendChild(bExport);
-		southPanel.appendChild(bQuery);
+		southPanel.setWidths("80%, 20%");
+		Grid southLeftGrid = new Grid();
+		southLeftGrid.setInnerWidth("");
+		southLeftGrid.setInnerHeight("");
+		southLeftGrid.makeNoStrip();
+		southLeftGrid.setStyle("border: none; margin: none");
+		southPanel.appendChild(southLeftGrid);
+		Rows rows = southLeftGrid.newRows();
+		Row southLeft = rows.newRow();
+		southLeft.appendChild(bRePost);
+		southLeft.appendChild(forcePost);
+		southLeft.appendChild(statusLine);
+		
+		Hbox southRight = new Hbox();
+		southRight.setWidth("100%");
+		southRight.setPack("end");
+		southPanel.appendChild(southRight);
+		Panel southRightPanel = new Panel();
+		southRightPanel.appendChild(bZoom); // Elaine 2009/07/29
+		southRightPanel.appendChild(bExport);
+		southRightPanel.appendChild(bQuery);
+		southRight.appendChild(southRightPanel);
 
 		// Result Tab
 
@@ -579,18 +608,16 @@ public class WAcctViewer extends Window implements EventListener
 		south.setParent(layout);
 		south.setFlex(true);
 		south.setStyle("background-color: transparent");
+		south.setHeight("26px");
 		southPanel.setParent(south);
 
 		this.setAttribute("mode", "modal");
 		this.setTitle("Posting");
 		this.setBorder("normal");
 		this.setClosable(true);
-		this.setWidth("800px");
-		this.setHeight("500px");
+		this.setStyle("position: absolute; width: 100%; height: 100%;");
 		this.setSizable(true);
 		this.setMaximizable(true);
-
-		//tabbedPane.addEventListener(Events.ON_SELECT, this);
 	}
 
 	/**
@@ -712,6 +739,7 @@ public class WAcctViewer extends Window implements EventListener
 
 		bRePost.setVisible(visible);
 		bExport.setVisible(tabResult.isSelected());
+		bZoom.setVisible(tabResult.isSelected());
 
 		if (Ini.isPropertyBool(Ini.P_SHOW_ADVANCED))
 			forcePost.setVisible(visible);
@@ -744,6 +772,11 @@ public class WAcctViewer extends Window implements EventListener
 			actionRePost();
 		else if  (source == bExport)
 			actionExport();
+		// Elaine 2009/07/29
+		else if (source == bZoom)
+			actionZoom();
+		//
+		//  InfoButtons
 		else if (source instanceof Button)
 			actionButton((Button)source);
 		else if (source == paging)
@@ -1046,6 +1079,16 @@ public class WAcctViewer extends Window implements EventListener
 			{
 				Listheader listheader = new Listheader(m_rmodel.getColumnName(i));
 				listheader.setTooltiptext(m_rmodel.getColumnName(i));
+				if (!m_data.displayDocumentInfo) {
+					if ("AD_Table_ID".equals(m_rmodel.getRColumn(i).getColumnName())) 
+					{
+						listheader.setVisible(false);
+					}
+					else if ("Record_ID".equals(m_rmodel.getRColumn(i).getColumnName()))
+					{
+						listheader.setVisible(false);
+					}
+				}
 				listhead.appendChild(listheader);
 			}
 
@@ -1063,6 +1106,16 @@ public class WAcctViewer extends Window implements EventListener
 			for (int i = 0; i < m_rmodel.getColumnCount(); i++)
 			{
 				Listheader listheader = new Listheader(m_rmodel.getColumnName(i));
+				if (!m_data.displayDocumentInfo) {
+					if ("AD_Table_ID".equals(m_rmodel.getRColumn(i).getColumnName())) 
+					{
+						listheader.setVisible(false);
+					}
+					else if ("Record_ID".equals(m_rmodel.getRColumn(i).getColumnName()))
+					{
+						listheader.setVisible(false);
+					}
+				}
 				listhead.appendChild(listheader);
 			}
 		}
@@ -1254,4 +1307,20 @@ public class WAcctViewer extends Window implements EventListener
 			actionQuery();
 		}
 	} // actionRePost
+
+	// Elaine 2009/07/29
+	private void actionZoom()
+	{
+		int selected = table.getSelectedIndex();
+		if(selected == -1) return;
+
+		int tableIdColumn = m_rmodel.getColumnIndex("AD_Table_ID");
+		int recordIdColumn = m_rmodel.getColumnIndex("Record_ID");
+		ListModelTable model = (ListModelTable) table.getListModel();
+		int AD_Table_ID = ((KeyNamePair) model.getDataAt(selected, tableIdColumn)).getKey();
+		int Record_ID = ((Integer) model.getDataAt(selected, recordIdColumn)).intValue();
+		
+		AEnv.zoom(AD_Table_ID, Record_ID);
+	}
+	//
 }
