@@ -1564,20 +1564,22 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 	        if (wasChanged) {
 		        if (newRecord) {
-		        	if (curTabIndex == 0) {
-			        	MRecentItem.addModifiedField(ctx, curTab.getAD_Table_ID(),
-			        			curTab.getRecord_ID(), Env.getAD_User_ID(ctx),
-			        			Env.getAD_Role_ID(ctx), curTab.getAD_Window_ID(),
-			        			curTab.getAD_Tab_ID());
-		        	} else {
-		        		/* when a detail record is modified add header to recent items */
-		        		GridTab mainTab = gridWindow.getTab(0);
-		        		if (mainTab != null) {
-				        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
-				        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
-				        			Env.getAD_Role_ID(ctx), mainTab.getAD_Window_ID(),
-				        			mainTab.getAD_Tab_ID());
-		        		}
+		        	if (curTab.getRecord_ID() > 0) {
+			        	if (curTabIndex == 0) {
+				        	MRecentItem.addModifiedField(ctx, curTab.getAD_Table_ID(),
+				        			curTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+				        			Env.getAD_Role_ID(ctx), curTab.getAD_Window_ID(),
+				        			curTab.getAD_Tab_ID());
+			        	} else {
+			        		/* when a detail record is modified add header to recent items */
+			        		GridTab mainTab = gridWindow.getTab(0);
+			        		if (mainTab != null) {
+					        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
+					        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
+					        			Env.getAD_Role_ID(ctx), mainTab.getAD_Window_ID(),
+					        			mainTab.getAD_Tab_ID());
+			        		}
+			        	}
 		        	}
 		        } else {
 		        	if (curTabIndex == 0) {
