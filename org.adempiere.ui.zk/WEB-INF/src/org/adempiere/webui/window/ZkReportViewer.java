@@ -200,8 +200,9 @@ public class ZkReportViewer extends Window implements EventListener, ITabOnClose
 		
 		//set default type
 		String type = m_reportEngine.getPrintFormat().isForm()
-				? MSysConfig.getValue("ZK_REPORT_FORM_OUTPUT_TYPE")
-				: MSysConfig.getValue("ZK_REPORT_TABLE_OUTPUT_TYPE");
+				// a42niem - provide explicit default and check on client/org specifics
+				? MSysConfig.getValue("ZK_REPORT_FORM_OUTPUT_TYPE","PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
+				: MSysConfig.getValue("ZK_REPORT_TABLE_OUTPUT_TYPE","HTML",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
 
 		if ("PDF".equals(type))
 			previewType.setSelectedIndex(0);
@@ -210,7 +211,8 @@ public class ZkReportViewer extends Window implements EventListener, ITabOnClose
 		else if ("XLS".equals(type))
 			previewType.setSelectedIndex(2);
 		else
-			previewType.setSelectedIndex(0); //fallback to PDF
+			// XXX - provide hint if unexpected value
+			previewType.setSelectedIndex(0); //fall back to PDF
 			
 		
 		labelDrill.setValue(Msg.getMsg(Env.getCtx(), "Drill") + ": ");
