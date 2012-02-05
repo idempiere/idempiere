@@ -202,7 +202,7 @@ public class ZkReportViewer extends Window implements EventListener, ITabOnClose
 		String type = m_reportEngine.getPrintFormat().isForm()
 				// a42niem - provide explicit default and check on client/org specifics
 				? MSysConfig.getValue("ZK_REPORT_FORM_OUTPUT_TYPE","PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
-				: MSysConfig.getValue("ZK_REPORT_TABLE_OUTPUT_TYPE","HTML",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
+				: MSysConfig.getValue("ZK_REPORT_TABLE_OUTPUT_TYPE","PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
 
 		if ("PDF".equals(type))
 			previewType.setSelectedIndex(0);
