@@ -23,6 +23,7 @@ import java.util.ListResourceBundle;
  *
  * 	@author 	Erwin Cortes
  *  @translator Jordi Luna
+ *  @maintainer Carlos Ruiz / globalqss
  * 	@version 	$Id: ALoginRes_es.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
 public final class ALoginRes_es extends ListResourceBundle
@@ -46,7 +47,7 @@ public final class ALoginRes_es extends ListResourceBundle
 	{ "Language", 			"Lenguaje" },
 	{ "SelectLanguage", 	"Seleccione su lenguaje" },
 	{ "Role", 				"Rol" },
-	{ "Client", 			"Compa\u00f1\u00eda" },
+	{ "Client", 			"Grupo Empresarial" },
 	{ "Organization", 		"Organizaci\u00f3n" },
 	{ "Date", 				"Fecha" },
 	{ "Warehouse", 			"Almac\u00e9n" },

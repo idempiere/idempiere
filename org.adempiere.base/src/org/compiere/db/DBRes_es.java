@@ -23,6 +23,7 @@ import java.util.ListResourceBundle;
  *
  *  @author     Erwin Cortes
  *  @author     Jordi Luna
+ *  @maintainer Carlos Ruiz / globalqss
  *  @version    $Id: DBRes_es.java,v 1.2 2006/07/30 00:55:13 jjanke Exp $
  */
 public class DBRes_es extends ListResourceBundle
@@ -38,7 +39,7 @@ public class DBRes_es extends ListResourceBundle
 	{ "DBPort",             "Puerto de Base de Datos" },
 	{ "DBName",             "Nombre de Base de datos" },
 	{ "DBUidPwd",           "Usuario / Contrase\u00f1a" },
-	{ "ViaFirewall",        "v\u00eda Firewall" },
+	{ "ViaFirewall",        "V\u00eda Firewall" },
 	{ "FWHost",             "Servidor de Firewall" },
 	{ "FWPort",             "Puerto de Firewall" },
 	{ "TestConnection",     "Prueba de Base de Datos" },
@@ -55,7 +56,7 @@ public class DBRes_es extends ListResourceBundle
 	};
 
 	/**
-	 * Get Contsnts
+	 * Get Contents
 	 * @return contents
 	 */
 	public Object[][] getContents()

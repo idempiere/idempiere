@@ -22,6 +22,7 @@ import java.util.ListResourceBundle;
  *	Setup Resources
  *
  * 	@author 	Jordi Luna
+ *  @maintainer Carlos Ruiz / globalqss
  * 	@version 	$Id: SetupRes_es.java,v 1.3 2006/07/30 00:57:42 jjanke Exp $
  */
 public class SetupRes_es extends ListResourceBundle
@@ -30,13 +31,13 @@ public class SetupRes_es extends ListResourceBundle
 	static final Object[][] contents = new String[][]{
 	{ "AdempiereServerSetup",	"Configuraci\u00f3n Servidor Adempiere" },
 	{ "Ok", 					"Aceptar" },
-	{ "File", 					"Fichero" },
+	{ "File", 					"Archivo" },
 	{ "Exit", 					"Salir" },
 	{ "Help", 					"Ayuda" },
-	{ "PleaseCheck", 			"Por favor Compruebe" },
+	{ "PleaseCheck", 			"Por favor compruebe" },
 	{ "UnableToConnect",		"No se ha podido obtener ayuda de la web de Adempiere" },
 	//
-	{ "AdempiereHomeInfo", 		"Adempiere Home es la Carpeta Principal" },
+	{ "AdempiereHomeInfo", 		"Adempiere Home es la carpeta principal" },
 	{ "AdempiereHome", 			"Adempiere Home" },
 	{ "WebPortInfo", 			"Puerto Web (HTML)" },
 	{ "WebPort", 				"Puerto Web" },
@@ -108,7 +109,7 @@ public class SetupRes_es extends ListResourceBundle
 	};
 
 	/**
-	 * 	Get Content
+	 * 	Get Contents
 	 * 	@return content array
 	 */
 	public Object[][] getContents()
