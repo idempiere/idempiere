@@ -46,12 +46,12 @@ public class AdempiereIdGenerator implements IdGenerator {
 			}
 			matcher.appendTail(sb);
 			prefix = sb.toString();
-		}
-		if (prefix.startsWith("unq")) { // prefix already guaranteed unique
-			if (desktop.getComponentByUuidIfAny(prefix) == null) { // but don't trust and look to avoid dups
-				return prefix;
-			} else {
-				prefix = "not" + prefix;  // set notunq as the prefix to let dev know something is wrong
+			if (prefix.startsWith("unq")) { // prefix already guaranteed unique
+				if (desktop.getComponentByUuidIfAny(prefix) == null) { // but don't trust and look to avoid dups
+					return prefix;
+				} else {
+					prefix = "not" + prefix;  // set notunq as the prefix to let dev know something is wrong
+				}
 			}
 		}
 

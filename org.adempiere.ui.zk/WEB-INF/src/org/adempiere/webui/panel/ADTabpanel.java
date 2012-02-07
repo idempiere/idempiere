@@ -204,7 +204,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 			layout.setParent(this);
 			layout.setStyle("width: 100%; height: 100%; position: absolute;");
 
-			treePanel = new ADTreePanel();
+			treePanel = new ADTreePanel(windowNo, gridTab.getTabNo());
 			West west = new West();
 			west.appendChild(treePanel);
 			west.setWidth("300px");

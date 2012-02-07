@@ -34,17 +34,26 @@ import org.zkoss.zul.Tree;
  */
 public class ADTreePanel extends Panel implements EventListener
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5473705529310157142L;
+	private static final long serialVersionUID = -3046550099597437942L;
 	private TreeSearchPanel pnlSearch;
     private Tree tree;
     
     private Checkbox chkExpand; // Elaine 2009/02/27 - expand tree
+	private int m_windowno = -1;
+	private int m_tabno = -1;
     
     public ADTreePanel()
     {
+        init();        
+    }
+    
+    public ADTreePanel(int windowno, int tabno)
+    {
+    	m_windowno = windowno;
+    	m_tabno = tabno;
         init();        
     }
     
@@ -71,7 +80,7 @@ public class ADTreePanel extends Panel implements EventListener
         
         tree.setStyle("border: none");
         
-        pnlSearch = new TreeSearchPanel(tree, Events.ON_SELECT);
+        pnlSearch = new TreeSearchPanel(tree, Events.ON_SELECT, m_windowno, m_tabno);
         
         Toolbar toolbar = new Toolbar();
         toolbar.appendChild(pnlSearch);

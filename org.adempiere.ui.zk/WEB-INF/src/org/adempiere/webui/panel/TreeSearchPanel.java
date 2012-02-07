@@ -50,10 +50,10 @@ import org.zkoss.zul.event.TreeDataListener;
  */
 public class TreeSearchPanel extends Panel implements EventListener, TreeDataListener
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1788127438140771622L;
+	private static final long serialVersionUID = 3478451169922775667L;
 	private TreeMap<String, Object> treeNodeItemMap = new TreeMap<String, Object>();
     private String[] treeValues;
     private String[] treeDescription;
@@ -64,6 +64,8 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
 	private Tree tree;
 
 	private String eventToFire;
+	private int m_windowno = 0;
+	private int m_tabno = 0;
 
 	private static final String PREFIX_DOCUMENT_SEARCH = "/";
 
@@ -87,6 +89,20 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
         init();
     }
 
+    /**
+     * @param tree
+     * @param event
+     */
+    public TreeSearchPanel(Tree tree, String event, int windowno, int tabno)
+    {
+        super();
+        this.tree = tree;
+        this.eventToFire = event;
+        m_windowno = windowno;
+        m_tabno = tabno;
+        init();
+    }
+
     private void init()
     {
     	Div div = new Div();
@@ -103,8 +119,7 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
 
         cmbSearch = new AutoComplete();
         cmbSearch.setAutodrop(true);
-        cmbSearch.setId("cmbSearch");
-        cmbSearch.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cmbSearch.getId());
+       	cmbSearch.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unqCmbSearch" + "_" + m_windowno + "_" + m_tabno);
       
         cmbSearch.addEventListener(Events.ON_CHANGE, this);
         if (AEnv.isInternetExplorer())
