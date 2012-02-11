@@ -23,6 +23,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -30,6 +31,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -40,6 +42,7 @@ import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.model.MCountry;
 import org.compiere.model.MLocation;
+import org.compiere.model.MOrgInfo;
 import org.compiere.model.MRegion;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBoxEditable;
@@ -66,6 +69,9 @@ import com.akunagroup.uk.postcode.Postcode;
  * 			<li>FR [ 1741222 ] - Webservice connector for address lookups
  * @author Cristina Ghita, www.arhipac.ro
  * 			<li>FR [ 2794312 ] Location AutoComplete
+ * @contributors - Ricardo Santana (KENOS), Fernandinho (FAIRE) - BRAZIL vs GERMANY 2-0
+ * 				 - Show GoogleMap on Location Dialog	
+ * 				 - http://jira.idempiere.com/browse/IDEMPIERE-147
  */
 public class VLocationDialog extends CDialog 
 	implements ActionListener
@@ -187,6 +193,21 @@ public class VLocationDialog extends CDialog
 
 	private boolean inCountryAction;
 	private boolean inOKAction;
+	
+	//BEGIN fernandinho/ricardo - http://jira.idempiere.com/browse/IDEMPIERE-147
+	public static String GOOGLE_MAPS_URL_PREFIX     = "http://local.google.com/maps?q=";
+	public static String GOOGLE_MAPS_ROUTE_PREFIX   = "http://maps.google.com/maps?f=d&geocode=";
+	public static String GOOGLE_SOURCE_ADDRESS      = "&saddr=";
+	public static String GOOGLE_DESTINATION_ADDRESS = "&daddr=";
+	
+	/** The "route" key  */
+	private static final String TO_ROUTE = "Route";
+	/** The "to link" key  */
+	private static final String TO_LINK = "Map";
+
+	private JButton toLink  	= new JButton();
+	private JButton toRoute 	= new JButton();
+	//END
 
 	/**
 	 *	Static component init
@@ -203,6 +224,19 @@ public class VLocationDialog extends CDialog
 		panel.add(mainPanel, BorderLayout.CENTER);
 		panel.add(southPanel, BorderLayout.SOUTH);
 		southPanel.add(confirmPanel, BorderLayout.NORTH);
+		
+		//BEGIN fernandinho/ricardo
+		toLink.setText(TO_LINK);
+		toLink.addActionListener(this);
+		toLink.setMargin(ConfirmPanel.s_insets);
+		confirmPanel.addComponent(toLink);
+
+		toRoute.setText(TO_ROUTE);
+		toRoute.addActionListener(this);
+		toRoute.setMargin(ConfirmPanel.s_insets);
+		confirmPanel.addComponent(toRoute);
+		//END
+		
 		//
 		confirmPanel.addActionListener(this);
 		//
@@ -448,6 +482,47 @@ public class VLocationDialog extends CDialog
 			initLocation();
 			fRegion.requestFocus();	//	allows to use Keyboard selection
 		}
+		//BEGIN fernandinho/ricardo
+		else if (e.getSource() == toLink)
+		{
+			String urlString = GOOGLE_MAPS_URL_PREFIX + getGoogleMapsLocation(m_location);
+			String message = null;
+
+			try
+			{
+				new URL(urlString);
+				Env.startBrowser(urlString);
+			}
+			catch (Exception ex)
+			{
+				message = ex.getMessage();
+				ADialog.warn(0, this, "URLnotValid", message);
+			}
+		}
+		else if (e.getSource() == toRoute)
+		{
+			int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
+			if (AD_Org_ID != 0){
+				MOrgInfo orgInfo = 	MOrgInfo.get(Env.getCtx(), AD_Org_ID,null);
+				MLocation orgLocation = new MLocation(Env.getCtx(),orgInfo.getC_Location_ID(),null);
+
+				String urlString = GOOGLE_MAPS_ROUTE_PREFIX +
+						         GOOGLE_SOURCE_ADDRESS + getGoogleMapsLocation(orgLocation) + //org
+						         GOOGLE_DESTINATION_ADDRESS + getGoogleMapsLocation(m_location); //partner
+				String message = null;
+				try
+				{
+					new URL(urlString);
+					Env.startBrowser(urlString);
+				}
+				catch (Exception ex)
+				{
+					message = ex.getMessage();
+					ADialog.warn(0, this, "URLnotValid", message);
+				}
+			}
+		}
+		//END
 		else if (e.getSource() == fOnline)
 		{
 			
@@ -690,6 +765,25 @@ public class VLocationDialog extends CDialog
  			}
  		}
 
+	}
+	
+	/**
+	 * 	Get edited Value (MLocation) for GoogleMaps
+	 *  @author Fernandinho/Ricardo
+	 *  @param MLocation location
+	 *	@return String address
+	 */
+	private String getGoogleMapsLocation(MLocation location) {
+
+		MRegion region = new MRegion(Env.getCtx(), location.getC_Region_ID(), null);
+		String address = "";
+		address = address + (location.getAddress1() != null ? location.getAddress1() + ", " : "");
+		address = address + (location.getAddress2() != null ? location.getAddress2() + ", " : "");
+		address = address + (location.getCity() != null ? location.getCity() + ", " : "");
+		address = address + (region.getName() != null ? region.getName() + ", " : "");
+		address = address + (location.getCountryName() != null ? location.getCountryName() : "");
+
+		return address.replace(" ", "+");
 	}
 
 }	//	VLocationDialog
