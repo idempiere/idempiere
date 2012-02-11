@@ -23,7 +23,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -483,12 +482,11 @@ public class VLocationDialog extends CDialog
 		//BEGIN fernandinho/ricardo
 		else if (e.getSource() == toLink)
 		{
-			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + getGoogleMapsLocation(m_location);
+			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + m_location.getGoogleMapsLocation();
 			String message = null;
 
 			try
 			{
-				new URL(urlString);
 				Env.startBrowser(urlString);
 			}
 			catch (Exception ex)
@@ -505,12 +503,11 @@ public class VLocationDialog extends CDialog
 				MLocation orgLocation = new MLocation(Env.getCtx(),orgInfo.getC_Location_ID(),null);
 
 				String urlString = MLocation.LOCATION_MAPS_ROUTE_PREFIX +
-						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + getGoogleMapsLocation(orgLocation) + //org
-						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + getGoogleMapsLocation(m_location); //partner
+						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + orgLocation.getGoogleMapsLocation() + //org
+						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + m_location.getGoogleMapsLocation(); //partner
 				String message = null;
 				try
 				{
-					new URL(urlString);
 					Env.startBrowser(urlString);
 				}
 				catch (Exception ex)
@@ -763,25 +760,6 @@ public class VLocationDialog extends CDialog
  			}
  		}
 
-	}
-	
-	/**
-	 * 	Get edited Value (MLocation) for GoogleMaps
-	 *  @author Fernandinho/Ricardo
-	 *  @param MLocation location
-	 *	@return String address
-	 */
-	private String getGoogleMapsLocation(MLocation location) {
-
-		MRegion region = new MRegion(Env.getCtx(), location.getC_Region_ID(), null);
-		String address = "";
-		address = address + (location.getAddress1() != null ? location.getAddress1() + ", " : "");
-		address = address + (location.getAddress2() != null ? location.getAddress2() + ", " : "");
-		address = address + (location.getCity() != null ? location.getCity() + ", " : "");
-		address = address + (region.getName() != null ? region.getName() + ", " : "");
-		address = address + (location.getCountryName() != null ? location.getCountryName() : "");
-
-		return address.replace(" ", "+");
 	}
 
 }	//	VLocationDialog

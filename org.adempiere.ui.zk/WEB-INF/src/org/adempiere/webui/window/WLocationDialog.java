@@ -21,6 +21,7 @@
 
 package org.adempiere.webui.window;
 
+import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -38,10 +39,13 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.compiere.model.MCountry;
 import org.compiere.model.MLocation;
+import org.compiere.model.MOrgInfo;
 import org.compiere.model.MRegion;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zhtml.A;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -58,14 +62,16 @@ import org.zkoss.zk.ui.event.Events;
  * 				https://sourceforge.net/tracker/?func=detail&aid=2995212&group_id=176962&atid=955896
  * 
  * @TODO: Implement fOnline button present in swing client
- * 
+ * @contributors - Carlos Ruiz / globalqss 
+ * 				 - Show GoogleMap on Location Dialog (integrate approach from Fernandinho)	
+ * 				 - http://jira.idempiere.com/browse/IDEMPIERE-147
  **/
 public class WLocationDialog extends Window implements EventListener
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6892969005447776082L;
+	private static final long serialVersionUID = -8511642461845783366L;
 	private static final String LABEL_STYLE = "white-space: nowrap;";
 	/** Logger          */
 	private static CLogger log = CLogger.getCLogger(WLocationDialog.class);
@@ -112,6 +118,15 @@ public class WLocationDialog extends Window implements EventListener
 
 	private boolean inCountryAction;
 	private boolean inOKAction;
+
+	/** The "route" key  */
+	private static final String TO_ROUTE = Msg.getMsg(Env.getCtx(), "Route");
+	/** The "to link" key  */
+	private static final String TO_LINK = Msg.getMsg(Env.getCtx(), "Map");
+
+	private Button toLink;
+	private Button toRoute;
+	//END
 
 	public WLocationDialog(String title, MLocation location)
 	{
@@ -224,6 +239,11 @@ public class WLocationDialog extends Window implements EventListener
 		btnCancel.setImage("/images/Cancel16.png");
 		btnCancel.addEventListener(Events.ON_CLICK,this);
 
+		toLink = new Button(TO_LINK);
+		toLink.addEventListener(Events.ON_CLICK,this);
+		toRoute = new Button(TO_ROUTE);
+		toRoute.addEventListener(Events.ON_CLICK,this);
+
 		mainPanel = GridFactory.newGridLayout();
 		mainPanel.setStyle("padding:5px");
 	}
@@ -266,6 +286,16 @@ public class WLocationDialog extends Window implements EventListener
 		pnlCountry.appendChild(lblCountry.rightAlign());
 		pnlCountry.appendChild(lstCountry);
 
+		Panel pnlLinks    = new Panel();
+		pnlLinks.appendChild(toLink);
+		if (MLocation.LOCATION_MAPS_URL_PREFIX == null)
+			toLink.setVisible(false);
+		pnlLinks.appendChild(toRoute);
+		if (MLocation.LOCATION_MAPS_ROUTE_PREFIX == null)
+			toRoute.setVisible(false);
+		pnlLinks.setWidth("100%");
+		pnlLinks.setStyle("text-align:left");
+
 		Panel pnlButton   = new Panel();
 		pnlButton.appendChild(btnOk);
 		pnlButton.appendChild(btnCancel);
@@ -273,6 +303,8 @@ public class WLocationDialog extends Window implements EventListener
 		pnlButton.setStyle("text-align:right");
 
 		this.appendChild(mainPanel);
+		if (MLocation.LOCATION_MAPS_URL_PREFIX != null || MLocation.LOCATION_MAPS_ROUTE_PREFIX != null)
+			this.appendChild(pnlLinks);
 		this.appendChild(pnlButton);
 	}
 	/**
@@ -496,6 +528,38 @@ public class WLocationDialog extends Window implements EventListener
 			m_change = false;
 			this.dispose();
 		}
+		else if (toLink.equals(event.getTarget()))
+		{
+			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + m_location.getGoogleMapsLocation();
+			String message = null;
+			try {
+				Executions.getCurrent().sendRedirect(urlString, "_blank");
+			}
+			catch (Exception e) {
+				message = e.getMessage();
+				FDialog.warn(0, this, "URLnotValid", message);
+			}
+		}
+		else if (toRoute.equals(event.getTarget()))
+		{
+			int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
+			if (AD_Org_ID != 0){
+				MOrgInfo orgInfo = 	MOrgInfo.get(Env.getCtx(), AD_Org_ID,null);
+				MLocation orgLocation = new MLocation(Env.getCtx(),orgInfo.getC_Location_ID(),null);
+
+				String urlString = MLocation.LOCATION_MAPS_ROUTE_PREFIX +
+						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + orgLocation.getGoogleMapsLocation() + //org
+						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + m_location.getGoogleMapsLocation(); //partner
+				String message = null;
+				try {
+					Executions.getCurrent().sendRedirect(urlString, "_blank");
+				}
+				catch (Exception e) {
+					message = e.getMessage();
+					FDialog.warn(0, this, "URLnotValid", message);
+				}
+			}
+		}
 		//  Country Changed - display in new Format
 		else if (lstCountry.equals(event.getTarget()))
 		{
@@ -601,4 +665,5 @@ public class WLocationDialog extends Window implements EventListener
 		}	
 		super.dispose();
 	}
+
 }
