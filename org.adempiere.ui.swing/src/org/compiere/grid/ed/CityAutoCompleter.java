@@ -228,7 +228,7 @@ public class CityAutoCompleter extends AutoCompleter
 
 	public void mouseClicked(MouseEvent e) 
 	{
-		if(e == null || listBox.getSelectedValue().equals(ITEM_More))
+		if (e == null || listBox == null || listBox.getSelectedValue() == null || listBox.getSelectedValue().equals(ITEM_More))
 		{
 			setCity(null);
 			return;

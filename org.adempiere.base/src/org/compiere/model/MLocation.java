@@ -49,9 +49,14 @@ public class MLocation extends X_C_Location implements Comparator
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1326655776792201217L;
+	private static final long serialVersionUID = 8556443338866862468L;
 
-
+	//BEGIN fernandinho/ricardo - http://jira.idempiere.com/browse/IDEMPIERE-147
+	public static String LOCATION_MAPS_URL_PREFIX     = MSysConfig.getValue("LOCATION_MAPS_URL_PREFIX");
+	public static String LOCATION_MAPS_ROUTE_PREFIX   = MSysConfig.getValue("LOCATION_MAPS_ROUTE_PREFIX");
+	public static String LOCATION_MAPS_SOURCE_ADDRESS      = MSysConfig.getValue("LOCATION_MAPS_SOURCE_ADDRESS");
+	public static String LOCATION_MAPS_DESTINATION_ADDRESS = MSysConfig.getValue("LOCATION_MAPS_DESTINATION_ADDRESS");
+	
 	/**
 	 * 	Get Location from Cache
 	 *	@param ctx context

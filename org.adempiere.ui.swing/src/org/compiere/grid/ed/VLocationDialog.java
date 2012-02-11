@@ -79,7 +79,7 @@ public class VLocationDialog extends CDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6952838437136830975L;
+	private static final long serialVersionUID = -5915071456635949972L;
 
 	/** Lookup result header */
 	private Object[] header = null;
@@ -194,16 +194,10 @@ public class VLocationDialog extends CDialog
 	private boolean inCountryAction;
 	private boolean inOKAction;
 	
-	//BEGIN fernandinho/ricardo - http://jira.idempiere.com/browse/IDEMPIERE-147
-	public static String GOOGLE_MAPS_URL_PREFIX     = "http://local.google.com/maps?q=";
-	public static String GOOGLE_MAPS_ROUTE_PREFIX   = "http://maps.google.com/maps?f=d&geocode=";
-	public static String GOOGLE_SOURCE_ADDRESS      = "&saddr=";
-	public static String GOOGLE_DESTINATION_ADDRESS = "&daddr=";
-	
 	/** The "route" key  */
-	private static final String TO_ROUTE = "Route";
+	private static final String TO_ROUTE = Msg.getMsg(Env.getCtx(), "Route");
 	/** The "to link" key  */
-	private static final String TO_LINK = "Map";
+	private static final String TO_LINK = Msg.getMsg(Env.getCtx(), "Map");
 
 	private JButton toLink  	= new JButton();
 	private JButton toRoute 	= new JButton();
@@ -230,11 +224,15 @@ public class VLocationDialog extends CDialog
 		toLink.addActionListener(this);
 		toLink.setMargin(ConfirmPanel.s_insets);
 		confirmPanel.addComponent(toLink);
+		if (MLocation.LOCATION_MAPS_URL_PREFIX == null)
+			toLink.setVisible(false);
 
 		toRoute.setText(TO_ROUTE);
 		toRoute.addActionListener(this);
 		toRoute.setMargin(ConfirmPanel.s_insets);
 		confirmPanel.addComponent(toRoute);
+		if (MLocation.LOCATION_MAPS_ROUTE_PREFIX == null)
+			toRoute.setVisible(false);
 		//END
 		
 		//
@@ -485,7 +483,7 @@ public class VLocationDialog extends CDialog
 		//BEGIN fernandinho/ricardo
 		else if (e.getSource() == toLink)
 		{
-			String urlString = GOOGLE_MAPS_URL_PREFIX + getGoogleMapsLocation(m_location);
+			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + getGoogleMapsLocation(m_location);
 			String message = null;
 
 			try
@@ -506,9 +504,9 @@ public class VLocationDialog extends CDialog
 				MOrgInfo orgInfo = 	MOrgInfo.get(Env.getCtx(), AD_Org_ID,null);
 				MLocation orgLocation = new MLocation(Env.getCtx(),orgInfo.getC_Location_ID(),null);
 
-				String urlString = GOOGLE_MAPS_ROUTE_PREFIX +
-						         GOOGLE_SOURCE_ADDRESS + getGoogleMapsLocation(orgLocation) + //org
-						         GOOGLE_DESTINATION_ADDRESS + getGoogleMapsLocation(m_location); //partner
+				String urlString = MLocation.LOCATION_MAPS_ROUTE_PREFIX +
+						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + getGoogleMapsLocation(orgLocation) + //org
+						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + getGoogleMapsLocation(m_location); //partner
 				String message = null;
 				try
 				{
