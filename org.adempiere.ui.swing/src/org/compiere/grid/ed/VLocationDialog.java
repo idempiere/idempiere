@@ -68,9 +68,14 @@ import com.akunagroup.uk.postcode.Postcode;
  * 			<li>FR [ 1741222 ] - Webservice connector for address lookups
  * @author Cristina Ghita, www.arhipac.ro
  * 			<li>FR [ 2794312 ] Location AutoComplete
- * @contributors - Ricardo Santana (KENOS), Fernandinho (FAIRE) - BRAZIL vs GERMANY 2-0
- * 				 - Show GoogleMap on Location Dialog	
- * 				 - http://jira.idempiere.com/browse/IDEMPIERE-147
+ *
+ * http://jira.idempiere.com/browse/IDEMPIERE-147 - Show GoogleMap on Location Dialog
+ *  @author Fernando Lucktemberg (Faire, www.faire.com.br)
+ *      <li> seeded the Map button
+ *  @author Mario Grigioni (Kenos, www.kenos.com.br)
+ *      <li> expanded to add Route button
+ *  @author Alvaro Montenegro (Kenos, www.kenos.com.br)
+ *      <li> BF: Check URL before open the Browser
  */
 public class VLocationDialog extends CDialog 
 	implements ActionListener
@@ -482,7 +487,7 @@ public class VLocationDialog extends CDialog
 		//BEGIN fernandinho/ricardo
 		else if (e.getSource() == toLink)
 		{
-			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + m_location.getGoogleMapsLocation();
+			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + m_location.getMapsLocation();
 			String message = null;
 
 			try
@@ -503,8 +508,8 @@ public class VLocationDialog extends CDialog
 				MLocation orgLocation = new MLocation(Env.getCtx(),orgInfo.getC_Location_ID(),null);
 
 				String urlString = MLocation.LOCATION_MAPS_ROUTE_PREFIX +
-						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + orgLocation.getGoogleMapsLocation() + //org
-						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + m_location.getGoogleMapsLocation(); //partner
+						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + orgLocation.getMapsLocation() + //org
+						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + m_location.getMapsLocation(); //partner
 				String message = null;
 				try
 				{

@@ -21,7 +21,6 @@
 
 package org.adempiere.webui.window;
 
-import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -44,7 +43,6 @@ import org.compiere.model.MRegion;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkoss.zhtml.A;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -62,8 +60,9 @@ import org.zkoss.zk.ui.event.Events;
  * 				https://sourceforge.net/tracker/?func=detail&aid=2995212&group_id=176962&atid=955896
  * 
  * @TODO: Implement fOnline button present in swing client
- * @contributors - Carlos Ruiz / globalqss 
- * 				 - Show GoogleMap on Location Dialog (integrate approach from Fernandinho)	
+ *
+ * @contributors - Carlos Ruiz / globalqss
+ * 				 - Show GoogleMap on Location Dialog (integrate approach from LBR)	
  * 				 - http://jira.idempiere.com/browse/IDEMPIERE-147
  **/
 public class WLocationDialog extends Window implements EventListener
@@ -530,7 +529,7 @@ public class WLocationDialog extends Window implements EventListener
 		}
 		else if (toLink.equals(event.getTarget()))
 		{
-			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + m_location.getGoogleMapsLocation();
+			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + m_location.getMapsLocation();
 			String message = null;
 			try {
 				Executions.getCurrent().sendRedirect(urlString, "_blank");
@@ -548,8 +547,8 @@ public class WLocationDialog extends Window implements EventListener
 				MLocation orgLocation = new MLocation(Env.getCtx(),orgInfo.getC_Location_ID(),null);
 
 				String urlString = MLocation.LOCATION_MAPS_ROUTE_PREFIX +
-						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + orgLocation.getGoogleMapsLocation() + //org
-						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + m_location.getGoogleMapsLocation(); //partner
+						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + orgLocation.getMapsLocation() + //org
+						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + m_location.getMapsLocation(); //partner
 				String message = null;
 				try {
 					Executions.getCurrent().sendRedirect(urlString, "_blank");

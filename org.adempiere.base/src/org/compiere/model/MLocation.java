@@ -49,9 +49,9 @@ public class MLocation extends X_C_Location implements Comparator
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7655032871533297438L;
+	private static final long serialVersionUID = 8332515185354248079L;
 
-	//BEGIN fernandinho/ricardo - http://jira.idempiere.com/browse/IDEMPIERE-147
+	// http://jira.idempiere.com/browse/IDEMPIERE-147
 	public static String LOCATION_MAPS_URL_PREFIX     = MSysConfig.getValue("LOCATION_MAPS_URL_PREFIX");
 	public static String LOCATION_MAPS_ROUTE_PREFIX   = MSysConfig.getValue("LOCATION_MAPS_ROUTE_PREFIX");
 	public static String LOCATION_MAPS_SOURCE_ADDRESS      = MSysConfig.getValue("LOCATION_MAPS_SOURCE_ADDRESS");
@@ -658,12 +658,11 @@ public class MLocation extends X_C_Location implements Comparator
 	}	//	afterSave
 
 	/**
-	 * 	Get edited Value (MLocation) for GoogleMaps
-	 *  @author Fernandinho/Ricardo
+	 * 	Get edited Value (MLocation) for GoogleMaps / IDEMPIERE-147
 	 *  @param MLocation location
 	 *	@return String address
 	 */
-	public String getGoogleMapsLocation() {
+	public String getMapsLocation() {
 
 		MRegion region = new MRegion(Env.getCtx(), getC_Region_ID(), get_TrxName());
 		String address = "";
