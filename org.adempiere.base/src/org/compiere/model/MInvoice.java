@@ -55,13 +55,14 @@ import org.eevolution.model.MPPProductBOMLine;
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org
  *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
  *  Modifications: Added RMA functionality (Ashley Ramdass)
+ *  Modifications: Generate DocNo^ instead of using a new number whan an invoice is reversed (Diego Ruiz-globalqss)
  */
 public class MInvoice extends X_C_Invoice implements DocAction
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 816227083897031327L;
+	private static final long serialVersionUID = 6821562060687417857L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -94,10 +95,32 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		int C_DocTypeTarget_ID, boolean isSOTrx, boolean counter,
 		String trxName, boolean setOrder)
 	{
+		return copyFrom (from, dateDoc, dateAcct,
+				C_DocTypeTarget_ID, isSOTrx, counter,
+				trxName, setOrder,null);
+	}
+
+	/**
+	 * 	Create new Invoice by copying
+	 * 	@param from invoice
+	 * 	@param dateDoc date of the document date
+	 *  @param acctDate original account date 
+	 * 	@param C_DocTypeTarget_ID target doc type
+	 * 	@param isSOTrx sales order
+	 * 	@param counter create counter links
+	 * 	@param trxName trx
+	 * 	@param setOrder set Order links
+	 *  @param Document Number for reversed invoices
+	 *	@return Invoice
+	 */
+	public static MInvoice copyFrom (MInvoice from, Timestamp dateDoc, Timestamp dateAcct,
+		int C_DocTypeTarget_ID, boolean isSOTrx, boolean counter,
+		String trxName, boolean setOrder, String documentNo)
+	{
 		MInvoice to = new MInvoice (from.getCtx(), 0, trxName);
 		PO.copyValues (from, to, from.getAD_Client_ID(), from.getAD_Org_ID());
 		to.set_ValueNoCheck ("C_Invoice_ID", I_ZERO);
-		to.set_ValueNoCheck ("DocumentNo", null);
+		to.set_ValueNoCheck ("DocumentNo", documentNo);
 		//
 		to.setDocStatus (DOCSTATUS_Drafted);		//	Draft
 		to.setDocAction(DOCACTION_Complete);
@@ -2148,8 +2171,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		load(get_TrxName());	//	reload allocation reversal info
 
 		//	Deep Copy
-		MInvoice reversal = copyFrom (this, getDateInvoiced(), getDateAcct(),
-			getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true);
+		MInvoice reversal = null;
+		if (MSysConfig.getBooleanValue("Invoice_ReverseUseNewNumber", true, getAD_Client_ID()))
+			reversal = copyFrom (this, getDateInvoiced(), getDateAcct(), getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true);
+		else 
+			reversal = copyFrom (this, getDateInvoiced(), getDateAcct(), getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true, getDocumentNo()+"^");
 		if (reversal == null)
 		{
 			m_processMsg = "Could not create Invoice Reversal";
