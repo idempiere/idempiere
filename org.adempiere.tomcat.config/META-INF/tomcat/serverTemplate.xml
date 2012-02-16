@@ -25,9 +25,6 @@
   <!--Initialize Jasper prior to webapps are loaded. Documentation at /docs/jasper-howto.html
 -->
   <Listener className="org.apache.catalina.core.JasperListener" />
-  <!-- JMX Support for the Tomcat server. Documentation at /docs/non-existent.html
--->
-  <Listener className="org.apache.catalina.mbeans.ServerLifecycleListener" />
 
   <!-- A "Service" is a collection of one or more "Connectors" that share
        a single "Container" Note:  A "Service" is not itself a "Container",

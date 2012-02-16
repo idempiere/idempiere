@@ -10,5 +10,5 @@ Import-Package: javax.mail;version="1.4.0",
  javax.mail.internet;version="1.4.0",
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
- org.apache.commons.collections.keyvalue;version="3.2.1"
+ org.apache.commons.collections.keyvalue;version="3.2.0"
 Eclipse-RegisterBuddy: org.adempiere.base

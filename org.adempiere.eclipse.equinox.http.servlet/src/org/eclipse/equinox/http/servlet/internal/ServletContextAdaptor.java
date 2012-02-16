@@ -16,7 +16,13 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.*;
 import java.util.*;
+
 import javax.servlet.*;
+import javax.servlet.FilterRegistration;
+import javax.servlet.FilterRegistration.Dynamic;
+import javax.servlet.ServletRegistration;
+import javax.servlet.descriptor.JspConfigDescriptor;
+
 import org.osgi.service.http.HttpContext;
 
 public class ServletContextAdaptor implements ServletContext {
@@ -182,5 +188,112 @@ public class ServletContextAdaptor implements ServletContext {
 			// ignore
 		}
 		return null;
+	}
+
+	public Dynamic addFilter(String arg0, String arg1) {
+		return servletContext.addFilter(arg0, arg1);
+	}
+
+	public Dynamic addFilter(String arg0, Filter arg1) {
+		return servletContext.addFilter(arg0, arg1);
+	}
+
+	public Dynamic addFilter(String arg0, Class arg1) {
+		return servletContext.addFilter(arg0, arg1);
+	}
+
+	public void addListener(String arg0) {
+		servletContext.addListener(arg0);
+	}
+
+	public void addListener(EventListener arg0) {
+		servletContext.addListener(arg0);
+	}
+
+	public void addListener(Class arg0) {
+		servletContext.addListener(arg0);
+	}
+
+	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
+			String arg1) {
+		return servletContext.addServlet(arg0, arg1);
+	}
+
+	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
+			Servlet arg1) {
+		return servletContext.addServlet(arg0, arg1);
+	}
+
+	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
+			Class arg1) {
+		return servletContext.addServlet(arg0, arg1);
+	}
+
+	public Filter createFilter(Class arg0) throws ServletException {
+		return servletContext.createFilter(arg0);
+	}
+
+	public EventListener createListener(Class arg0) throws ServletException {
+		return servletContext.createListener(arg0);
+	}
+
+	public Servlet createServlet(Class arg0) throws ServletException {
+		return servletContext.createServlet(arg0);
+	}
+
+	public void declareRoles(String[] arg0) {
+		servletContext.declareRoles(arg0);
+	}
+
+	public ClassLoader getClassLoader() {
+		return servletContext.getClassLoader();
+	}
+
+	public Set getDefaultSessionTrackingModes() {
+		return servletContext.getDefaultSessionTrackingModes();
+	}
+
+	public int getEffectiveMajorVersion() {
+		return servletContext.getEffectiveMajorVersion();
+	}
+
+	public int getEffectiveMinorVersion() {
+		return servletContext.getEffectiveMinorVersion();
+	}
+
+	public Set getEffectiveSessionTrackingModes() {
+		return servletContext.getEffectiveSessionTrackingModes();
+	}
+
+	public FilterRegistration getFilterRegistration(String arg0) {
+		return servletContext.getFilterRegistration(arg0);
+	}
+
+	public Map getFilterRegistrations() {
+		return servletContext.getFilterRegistrations();
+	}
+
+	public JspConfigDescriptor getJspConfigDescriptor() {
+		return servletContext.getJspConfigDescriptor();
+	}
+
+	public ServletRegistration getServletRegistration(String arg0) {
+		return servletContext.getServletRegistration(arg0);
+	}
+
+	public Map getServletRegistrations() {
+		return servletContext.getServletRegistrations();
+	}
+
+	public SessionCookieConfig getSessionCookieConfig() {
+		return servletContext.getSessionCookieConfig();
+	}
+
+	public boolean setInitParameter(String arg0, String arg1) {
+		return servletContext.setInitParameter(arg0, arg1);
+	}
+
+	public void setSessionTrackingModes(Set arg0) {
+		servletContext.setSessionTrackingModes(arg0);		
 	}
 }

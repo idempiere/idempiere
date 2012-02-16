@@ -19,8 +19,8 @@
    <requires>
       <import feature="org.adempiere.base" version="1.0.0.qualifier"/>
       <import plugin="org.adempiere.report.jasper.webapp" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.springsource.javax.servlet.jsp"/>
-      <import plugin="com.springsource.javax.servlet.jsp.jstl"/>
+      <import plugin="javax.servlet.jsp"/>
+      <import plugin="javax.servlet.jsp.jstl"/>
    </requires>
 
    <plugin
