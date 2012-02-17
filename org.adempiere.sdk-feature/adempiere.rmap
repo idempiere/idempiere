@@ -36,7 +36,7 @@
     <rm:provider componentTypes="osgi.bundle" readerType="url" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="file://{0}/lib/plugins/{1}_{2}.jar">
+      <rm:uri format="file:///{0}/lib/plugins/{1}_{2}.jar">
         <bc:propertyRef key="workspace.root"/>
         <bc:propertyRef key="buckminster.component"/>
         <bc:propertyRef key="jar.version"/>
