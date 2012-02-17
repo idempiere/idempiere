@@ -18,7 +18,7 @@ goto START
 
 :START
 @REM Setup Adempiere.properties and AdempiereEnv.properties
-@"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.6.2.R36x_v20110210.jar -clean -noRegistryCache -application org.adempiere.install.console-application
+@"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.1.R37x_v20110808-1106.jar -clean -noRegistryCache -application org.adempiere.install.console-application
 
 @Echo ErrorLevel = %ERRORLEVEL%
 @IF NOT ERRORLEVEL = 1 GOTO NEXT
@@ -30,7 +30,7 @@ goto START
 
 :NEXT
 @REM setup tomcat
-@"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.6.2.R36x_v20110210.jar -clean -noRegistryCache -application org.eclipse.ant.core.antRunner -buildfile build.xml
+@"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.1.R37x_v20110808-1106.jar -clean -noRegistryCache -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 @Echo .
 @Echo For problems, check log file in base directory
