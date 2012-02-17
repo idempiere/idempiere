@@ -33,11 +33,11 @@
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.geminiweb"
+         id="org.adempiere.bundles.external"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.bundles.external"
+         id="org.eclipse.gemini.web.feature"
          version="0.0.0"/>
 
    <plugin

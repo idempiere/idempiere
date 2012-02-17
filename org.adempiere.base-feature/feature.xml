@@ -122,14 +122,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.servlet"
+         id="javax.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.junit"
+         id="org.junit"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -150,14 +150,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.commons.collections"
+         id="org.apache.commons.collections"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.commons.net"
+         id="org.apache.commons.net"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -192,10 +192,10 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.logging"
+         id="com.springsource.org.apache.commons.logging"
          download-size="0"
          install-size="0"
-         version="1.1.1.v201101211721"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -234,22 +234,21 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.xml.resolver"
+         id="org.apache.xml.resolver"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.xerces"
+         id="org.apache.xerces"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.xml.serializer"
+         id="org.apache.xml.serializer"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -270,7 +269,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.el"
+         id="javax.el"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -322,6 +321,13 @@
          os="linux,macosx,win32"
          ws="cocoa,gtk,win32"
          arch="x86,x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.hamcrest.core"
          download-size="0"
          install-size="0"
          version="0.0.0"

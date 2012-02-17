@@ -28,33 +28,30 @@
          id="org.adempiere.webstore"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.gemini.web.feature"
+         version="0.0.0"/>
+
    <requires>
       <import feature="org.adempiere.base" version="1.0.0.qualifier"/>
    </requires>
 
    <plugin
-         id="com.springsource.javax.servlet.jsp"
+         id="javax.servlet.jsp"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.servlet.jsp.jstl"
+         id="javax.servlet.jsp.jstl"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="javax.xml.stream"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.springsource.javax.xml.ws"
+         id="com.springsource.javax.xml.stream"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -68,14 +65,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.catalina.springsource"
+         id="com.springsource.org.apache.catalina"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.coyote.springsource"
+         id="com.springsource.org.apache.coyote"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -83,7 +80,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.el.springsource"
+         id="com.springsource.org.apache.el"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -97,7 +94,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.jasper.springsource"
+         id="com.springsource.org.apache.jasper"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -105,14 +102,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.juli.extras.springsource"
+         id="com.springsource.org.apache.juli.extras"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.taglibs.standard"
+         id="org.apache.taglibs.standard.glassfish"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -259,14 +256,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.annotation"
+         id="javax.annotation"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="javax.persistence"
+         id="com.springsource.javax.persistence"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -281,7 +278,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.catalina.ha.springsource"
+         id="com.springsource.org.apache.catalina.ha"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -289,7 +286,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.catalina.tribes.springsource"
+         id="com.springsource.org.apache.catalina.tribes"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/asm.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bsh.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cglib.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-el.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/fckez.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/Filters.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gmapsz.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/groovy.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jruby.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/js.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json_simple.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jxl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jython.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/keylistener.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mvel.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ognl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/timelinez-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/timelinez.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/timeplotz.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zcommon-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zcommon.jar" sourcepath="lib/zcommon-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zcommons-el.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zhtml-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zhtml.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zk-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zk.jar" sourcepath="lib/zk-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zkex-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zkex.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zkmax-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zkmax.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zkplus-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zkplus.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zml-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zml.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zul-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zul.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zweb-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zweb.jar" sourcepath="lib/zweb-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

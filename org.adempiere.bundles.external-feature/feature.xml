@@ -25,21 +25,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.management.j2ee"
+         id="javax.servlet.jsp.jstl"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.servlet.jsp.jstl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.springsource.javax.xml.ws"
+         id="javax.xml.ws"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -60,7 +53,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.commons.net"
+         id="org.apache.commons.net"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -81,29 +74,28 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.taglibs.standard"
+         id="org.apache.taglibs.standard.glassfish"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.xerces"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.springsource.org.apache.xml.resolver"
+         id="org.apache.xerces"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.xml.serializer"
+         id="org.apache.xml.resolver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.xml.serializer"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -117,7 +109,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.junit"
+         id="org.junit"
          download-size="0"
          install-size="0"
          version="0.0.0"
