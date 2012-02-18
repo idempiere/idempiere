@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="adempiere.rmap">
     <cq:rootRequest name="org.adempiere.sdk" componentType="eclipse.feature"/>
+    <cq:property key="target.arch" value="*"/>
+    <cq:property key="target.os" value="*"/>
+    <cq:property key="target.ws" value="*"/>
     <cq:advisorNode namePattern="^org\.restlet(\..+)?" componentType="osgi.bundle" versionOverride="[2.0.7,2.1.0)"/>
     <cq:advisorNode namePattern="^com\.springsource\.slf4j\.jcl$" componentType="osgi.bundle" versionOverride="[1.6.1,1.7.0)"/>
     <cq:advisorNode namePattern="^org\.apache\.poi$" componentType="osgi.bundle" versionOverride="[3.7.0,4.0.0)">
