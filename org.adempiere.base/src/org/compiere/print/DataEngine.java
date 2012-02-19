@@ -62,6 +62,8 @@ import org.compiere.util.ValueNamePair;
  * @author Paul Bowden (phib)
  * 				<li> BF 2908435 Virtual columns with lookup reference types can't be printed
  *                   https://sourceforge.net/tracker/?func=detail&aid=2908435&group_id=176962&atid=879332
+ *  @contributor  Fernandinho (FAIRE)
+ *  				- http://jira.idempiere.com/browse/IDEMPIERE-153
  */
 public class DataEngine
 {
@@ -243,6 +245,9 @@ public class DataEngine
 			+ "pfi.isRunningTotal,pfi.RunningTotalLines, "				//	20..21
 			+ "pfi.IsVarianceCalc, pfi.IsDeviationCalc, "				//	22..23
 			+ "c.ColumnSQL, COALESCE(pfi.FormatPattern, c.FormatPattern) "		//	24, 25
+			//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
+			+ " , pfi.isDesc " //26
+			//END
 			+ "FROM AD_PrintFormat pf"
 			+ " INNER JOIN AD_PrintFormatItem pfi ON (pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID)"
 			+ " INNER JOIN AD_Column c ON (pfi.AD_Column_ID=c.AD_Column_ID)"
@@ -315,6 +320,10 @@ public class DataEngine
 				boolean isPageBreak = "Y".equals(rs.getString(17));
 				
 				String formatPattern = rs.getString(25);
+				
+				//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
+				boolean isDesc = "Y".equals(rs.getString(26));
+				//END
 
 				//	Fully qualified Table.Column for ordering
 				String orderName = tableName + "." + ColumnName;
@@ -574,6 +583,12 @@ public class DataEngine
 				{
 					if (AD_Column_ID == orderAD_Column_IDs[i])
 					{
+						
+						//BEGIN fernandinho - http://jira.idempiere.com/browse/IDEMPIERE-153
+						if (isDesc)
+							orderName += " DESC";
+						//END
+
 						orderColumns.set(i, orderName);
 						// We need to GROUP BY even is not printed, because is used in ORDER clause
 						if (!IsPrinted && !IsGroupFunction)
