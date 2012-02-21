@@ -264,12 +264,17 @@ public class MProcess extends X_AD_Process
 			}
 			else
 			{
-				String msg = "No Classname or ProcedureName for " + getName();
-				pi.setSummary(msg, ok);
-				log.warning(msg);
+				// BF IDEMPIERE-165
+				if (this.isReport()) {
+					ok = true;
+				}
+				else {
+					String msg = "No Classname or ProcedureName for " + getName();
+					pi.setSummary(msg, ok);
+					log.warning(msg);
+				}
 			}
 		}
-		
 		return ok;
 	}	//	process
 
