@@ -33,16 +33,6 @@ INSERT INTO AD_Element (AD_Client_ID,AD_Element_ID,AD_Org_ID,ColumnName,Created,
 INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Description,Help,Name,PO_Description,PO_Help,PO_Name,PO_PrintName,PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Element_ID, t.Description,t.Help,t.Name,t.PO_Description,t.PO_Help,t.PO_Name,t.PO_PrintName,t.PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=54238 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
 ;
 
--- Jun 20, 2010 7:40:22 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='10 Digit Identifier', EntityType='D', Help=NULL, IsActive='Y', Name='ID', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=13
-;
-
--- Jun 20, 2010 7:40:22 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=13
-;
-
 -- Jun 20, 2010 7:40:23 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,EntityType,FieldLength,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59540,54238,0,13,53278,'I_Movement_ID',TO_TIMESTAMP('2010-06-20 19:40:22','YYYY-MM-DD HH24:MI:SS'),0,'EE01',10,'Y','N','N','N','Y','Y','N','N','Y','N','N','I_Movement_ID',TO_TIMESTAMP('2010-06-20 19:40:22','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -56,26 +46,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:23 PM CDT
 -- Import Inventory Move
 CREATE TABLE I_Movement (I_Movement_ID NUMERIC(10) NOT NULL, CONSTRAINT I_Movement_Key PRIMARY KEY (I_Movement_ID))
-;
-
--- Jun 20, 2010 7:40:23 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='AD_Org_ID', Description='Organizational entity within client', EntityType='D', Help='An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.', IsActive='Y', Name='Organization', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Organization',Updated=TO_TIMESTAMP('2010-06-20 19:40:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=113
-;
-
--- Jun 20, 2010 7:40:23 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=113
-;
-
--- Jun 20, 2010 7:40:24 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Direct Table Access', EntityType='D', Help=NULL, IsActive='Y', Name='Table Direct', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=19
-;
-
--- Jun 20, 2010 7:40:24 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=19
 ;
 
 -- Jun 20, 2010 7:40:25 PM CDT
@@ -93,16 +63,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN AD_Org_ID NUMERIC(10) NOT NULL
 ;
 
--- Jun 20, 2010 7:40:25 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='AD_Client_ID', Description='Client/Tenant for this installation.', EntityType='D', Help='A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.', IsActive='Y', Name='Client', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Client',Updated=TO_TIMESTAMP('2010-06-20 19:40:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=102
-;
-
--- Jun 20, 2010 7:40:25 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=102
-;
-
 -- Jun 20, 2010 7:40:26 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,DefaultValue,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59542,102,0,19,53278,'AD_Client_ID',TO_TIMESTAMP('2010-06-20 19:40:25','YYYY-MM-DD HH24:MI:SS'),0,'@#AD_Client_ID@','Client/Tenant for this installation.','EE01',10,'A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Y','N','N','N','N','Y','N','N','Y','N','N','Client',TO_TIMESTAMP('2010-06-20 19:40:25','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -116,26 +76,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:26 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN AD_Client_ID NUMERIC(10) NOT NULL
-;
-
--- Jun 20, 2010 7:40:26 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='Updated', Description='Date this record was updated', EntityType='D', Help='The Updated field indicates the date that this record was updated.', IsActive='Y', Name='Updated', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Updated',Updated=TO_TIMESTAMP('2010-06-20 19:40:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=607
-;
-
--- Jun 20, 2010 7:40:26 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=607
-;
-
--- Jun 20, 2010 7:40:26 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Date with time', EntityType='D', Help=NULL, IsActive='Y', Name='Date+Time', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=16
-;
-
--- Jun 20, 2010 7:40:26 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=16
 ;
 
 -- Jun 20, 2010 7:40:27 PM CDT
@@ -153,41 +93,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN Updated TIMESTAMP NOT NULL
 ;
 
--- Jun 20, 2010 7:40:27 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='UpdatedBy', Description='User who updated this records', EntityType='D', Help='The Updated By field indicates the user who updated this record.', IsActive='Y', Name='Updated By', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Updated By',Updated=TO_TIMESTAMP('2010-06-20 19:40:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=608
-;
-
--- Jun 20, 2010 7:40:27 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=608
-;
-
--- Jun 20, 2010 7:40:28 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Table List', EntityType='D', Help=NULL, IsActive='Y', Name='Table', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=18
-;
-
--- Jun 20, 2010 7:40:28 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=18
-;
-
--- Jun 20, 2010 7:40:28 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='User selection', EntityType='D', Help=NULL, IsActive='Y', Name='AD_User', ValidationType='T',Updated=TO_TIMESTAMP('2010-06-20 19:40:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=110
-;
-
--- Jun 20, 2010 7:40:28 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=110
-;
-
--- Jun 20, 2010 7:40:28 PM CDT
--- Import Inventory Move
-UPDATE AD_Ref_Table SET AD_Table_ID = 114, AD_Display = 213, AD_Key = 212, isValueDisplayed = 'N', OrderByClause = 'AD_User.Name', EntityType ='D', WhereClause = '' WHERE AD_Reference_ID = 110
-;
-
 -- Jun 20, 2010 7:40:29 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Reference_Value_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59544,608,0,18,110,53278,'UpdatedBy',TO_TIMESTAMP('2010-06-20 19:40:28','YYYY-MM-DD HH24:MI:SS'),0,'User who updated this records','EE01',10,'The Updated By field indicates the user who updated this record.','Y','N','N','N','N','Y','N','N','Y','N','N','Updated By',TO_TIMESTAMP('2010-06-20 19:40:28','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -201,29 +106,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:29 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN UpdatedBy NUMERIC(10) NOT NULL
-;
-
--- Jun 20, 2010 7:40:29 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='IsActive', Description='The record is active in the system', EntityType='D', Help='There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
-There are two reasons for de-activating and not deleting records:
-(1) The system requires the record for audit purposes.
-(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.', IsActive='Y', Name='Active', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Active',Updated=TO_TIMESTAMP('2010-06-20 19:40:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=348
-;
-
--- Jun 20, 2010 7:40:29 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=348
-;
-
--- Jun 20, 2010 7:40:29 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='CheckBox', EntityType='D', Help=NULL, IsActive='Y', Name='Yes-No', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=20
-;
-
--- Jun 20, 2010 7:40:29 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=20
 ;
 
 -- Jun 20, 2010 7:40:30 PM CDT
@@ -244,16 +126,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN IsActive CHAR(1) CHECK (IsActive IN ('Y','N')) NOT NULL
 ;
 
--- Jun 20, 2010 7:40:30 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='Created', Description='Date this record was created', EntityType='D', Help='The Created field indicates the date that this record was created.', IsActive='Y', Name='Created', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Created',Updated=TO_TIMESTAMP('2010-06-20 19:40:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=245
-;
-
--- Jun 20, 2010 7:40:30 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=245
-;
-
 -- Jun 20, 2010 7:40:31 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59546,245,0,16,53278,'Created',TO_TIMESTAMP('2010-06-20 19:40:30','YYYY-MM-DD HH24:MI:SS'),0,'Date this record was created','EE01',7,'The Created field indicates the date that this record was created.','Y','N','N','N','N','Y','N','N','Y','N','N','Created',TO_TIMESTAMP('2010-06-20 19:40:30','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -267,16 +139,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:31 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN Created TIMESTAMP NOT NULL
-;
-
--- Jun 20, 2010 7:40:31 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='CreatedBy', Description='User who created this records', EntityType='D', Help='The Created By field indicates the user who created this record.', IsActive='Y', Name='Created By', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Created By',Updated=TO_TIMESTAMP('2010-06-20 19:40:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=246
-;
-
--- Jun 20, 2010 7:40:31 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=246
 ;
 
 -- Jun 20, 2010 7:40:32 PM CDT
@@ -294,16 +156,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN CreatedBy NUMERIC(10) NOT NULL
 ;
 
--- Jun 20, 2010 7:40:32 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='Processed', Description='The document has been processed', EntityType='D', Help='The Processed checkbox indicates that a document has been processed.', IsActive='Y', Name='Processed', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Processed',Updated=TO_TIMESTAMP('2010-06-20 19:40:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=1047
-;
-
--- Jun 20, 2010 7:40:32 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=1047
-;
-
 -- Jun 20, 2010 7:40:34 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59548,1047,0,20,53278,'Processed',TO_TIMESTAMP('2010-06-20 19:40:32','YYYY-MM-DD HH24:MI:SS'),0,'The document has been processed','EE01',1,'The Processed checkbox indicates that a document has been processed.','Y','N','N','N','N','Y','N','N','Y','N','Y','Processed',TO_TIMESTAMP('2010-06-20 19:40:32','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -319,16 +171,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN Processed CHAR(1) CHECK (Processed IN ('Y','N')) NOT NULL
 ;
 
--- Jun 20, 2010 7:40:34 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='I_IsImported', Description='Has this import been processed', EntityType='D', Help='The Imported check box indicates if this import has been processed.', IsActive='Y', Name='Imported', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Imported',Updated=TO_TIMESTAMP('2010-06-20 19:40:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=913
-;
-
--- Jun 20, 2010 7:40:34 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=913
-;
-
 -- Jun 20, 2010 7:40:35 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59549,913,0,20,53278,'I_IsImported',TO_TIMESTAMP('2010-06-20 19:40:34','YYYY-MM-DD HH24:MI:SS'),0,'Has this import been processed','EE01',1,'The Imported check box indicates if this import has been processed.','Y','N','N','N','N','Y','N','N','Y','N','Y','Imported',TO_TIMESTAMP('2010-06-20 19:40:34','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -342,26 +184,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:35 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN I_IsImported CHAR(1) CHECK (I_IsImported IN ('Y','N')) NOT NULL
-;
-
--- Jun 20, 2010 7:40:35 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='Processing', Description=NULL, EntityType='D', Help=NULL, IsActive='Y', Name='Process Now', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Process Now',Updated=TO_TIMESTAMP('2010-06-20 19:40:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=524
-;
-
--- Jun 20, 2010 7:40:35 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=524
-;
-
--- Jun 20, 2010 7:40:35 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Command Button - starts a process', EntityType='D', Help=NULL, IsActive='Y', Name='Button', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=28
-;
-
--- Jun 20, 2010 7:40:35 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=28
 ;
 
 -- Jun 20, 2010 7:40:36 PM CDT
@@ -394,31 +216,6 @@ INSERT INTO AD_Process_Para (AD_Client_ID,AD_Element_ID,AD_Org_ID,AD_Process_ID,
 INSERT INTO AD_Process_Para_Trl (AD_Language,AD_Process_Para_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_Para_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process_Para t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_Para_ID=53420 AND NOT EXISTS (SELECT * FROM AD_Process_Para_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_Para_ID=t.AD_Process_Para_ID)
 ;
 
--- Jun 20, 2010 7:40:38 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Reference List', EntityType='D', Help=NULL, IsActive='Y', Name='List', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=17
-;
-
--- Jun 20, 2010 7:40:38 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=17
-;
-
--- Jun 20, 2010 7:40:38 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Document action list', EntityType='D', Help=NULL, IsActive='Y', Name='_Document Action', ValidationType='L',Updated=TO_TIMESTAMP('2010-06-20 19:40:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=135
-;
-
--- Jun 20, 2010 7:40:38 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=135
-;
-
--- Jun 20, 2010 7:40:40 PM CDT
--- Import Inventory Move
-UPDATE AD_Val_Rule SET Code='AD_Ref_List.Value IN (''CO'',''PR'')', Description=NULL, EntityType='D', IsActive='Y', Name='List - DocAction - Complete or Prepare', Type='S',Updated=TO_TIMESTAMP('2010-06-20 19:40:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Val_Rule_ID=219
-;
-
 -- Jun 20, 2010 7:40:40 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Process_Para (AD_Client_ID,AD_Element_ID,AD_Org_ID,AD_Process_ID,AD_Process_Para_ID,AD_Reference_ID,AD_Reference_Value_ID,AD_Val_Rule_ID,ColumnName,Created,CreatedBy,DefaultValue,EntityType,FieldLength,IsActive,IsCentrallyMaintained,IsMandatory,IsRange,Name,SeqNo,Updated,UpdatedBy) VALUES (0,287,0,53216,53421,17,135,219,'DocAction',TO_TIMESTAMP('2010-06-20 19:40:40','YYYY-MM-DD HH24:MI:SS'),0,'PR','EE01',1,'Y','Y','N','N','Document Action',30,TO_TIMESTAMP('2010-06-20 19:40:40','YYYY-MM-DD HH24:MI:SS'),0)
@@ -444,26 +241,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN Processing CHAR(1) NOT NULL
 ;
 
--- Jun 20, 2010 7:40:42 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='I_ErrorMsg', Description='Messages generated from import process', EntityType='D', Help='The Import Error Message displays any error messages generated during the import process.', IsActive='Y', Name='Import Error Message', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Import Error Message',Updated=TO_TIMESTAMP('2010-06-20 19:40:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=912
-;
-
--- Jun 20, 2010 7:40:42 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=912
-;
-
--- Jun 20, 2010 7:40:42 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Character String up to 2000 characters', EntityType='D', Help=NULL, IsActive='Y', Name='Text', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=14
-;
-
--- Jun 20, 2010 7:40:42 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=14
-;
-
 -- Jun 20, 2010 7:40:43 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59551,912,0,14,53278,'I_ErrorMsg',TO_TIMESTAMP('2010-06-20 19:40:42','YYYY-MM-DD HH24:MI:SS'),0,'Messages generated from import process','EE01',2000,'The Import Error Message displays any error messages generated during the import process.','Y','N','N','N','N','N','N','N','Y','N','Y','Import Error Message',TO_TIMESTAMP('2010-06-20 19:40:42','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -477,26 +254,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:43 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN I_ErrorMsg VARCHAR(2000) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:40:43 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='ProductValue', Description='Key of the Product', EntityType='D', Help=NULL, IsActive='Y', Name='Product Key', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Product Key',Updated=TO_TIMESTAMP('2010-06-20 19:40:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=1675
-;
-
--- Jun 20, 2010 7:40:43 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=1675
-;
-
--- Jun 20, 2010 7:40:43 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Character String', EntityType='D', Help=NULL, IsActive='Y', Name='String', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=10
-;
-
--- Jun 20, 2010 7:40:43 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=10
 ;
 
 -- Jun 20, 2010 7:40:44 PM CDT
@@ -514,26 +271,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN ProductValue VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:40:44 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='M_Product_ID', Description='Product, Service, Item', EntityType='D', Help='Identifies an item which is either purchased or sold in this organization.', IsActive='Y', Name='Product', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Product',Updated=TO_TIMESTAMP('2010-06-20 19:40:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=454
-;
-
--- Jun 20, 2010 7:40:44 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=454
-;
-
--- Jun 20, 2010 7:40:44 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Search Field', EntityType='D', Help=NULL, IsActive='Y', Name='Search', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=30
-;
-
--- Jun 20, 2010 7:40:44 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=30
-;
-
 -- Jun 20, 2010 7:40:45 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59553,454,0,30,53278,'M_Product_ID',TO_TIMESTAMP('2010-06-20 19:40:44','YYYY-MM-DD HH24:MI:SS'),0,'Product, Service, Item','EE01',10,'Identifies an item which is either purchased or sold in this organization.','Y','N','N','N','N','N','N','N','Y','N','Y','Product',TO_TIMESTAMP('2010-06-20 19:40:44','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -547,26 +284,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:45 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN M_Product_ID NUMERIC(10) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:40:45 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='MovementDate', Description='Date a product was moved in or out of inventory', EntityType='D', Help='The Movement Date indicates the date that a product moved in or out of inventory.  This is the result of a shipment, receipt or inventory movement.', IsActive='Y', Name='Movement Date', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Movement Date',Updated=TO_TIMESTAMP('2010-06-20 19:40:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=1037
-;
-
--- Jun 20, 2010 7:40:45 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=1037
-;
-
--- Jun 20, 2010 7:40:46 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Date mm/dd/yyyy', EntityType='D', Help=NULL, IsActive='Y', Name='Date', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=15
-;
-
--- Jun 20, 2010 7:40:46 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=15
 ;
 
 -- Jun 20, 2010 7:40:46 PM CDT
@@ -584,26 +301,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN MovementDate TIMESTAMP DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:40:46 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='M_Locator_ID', Description='Warehouse Locator', EntityType='D', Help='The Locator indicates where in a Warehouse a product is located.', IsActive='Y', Name='Locator', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Locator',Updated=TO_TIMESTAMP('2010-06-20 19:40:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=448
-;
-
--- Jun 20, 2010 7:40:46 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=448
-;
-
--- Jun 20, 2010 7:40:46 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Warehouse Locator Data type', EntityType='D', Help=NULL, IsActive='Y', Name='Locator (WH)', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=31
-;
-
--- Jun 20, 2010 7:40:46 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=31
-;
-
 -- Jun 20, 2010 7:40:49 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59555,448,0,31,53278,'M_Locator_ID',TO_TIMESTAMP('2010-06-20 19:40:46','YYYY-MM-DD HH24:MI:SS'),0,'Warehouse Locator','EE01',10,'The Locator indicates where in a Warehouse a product is located.','Y','N','N','N','N','N','N','N','Y','N','Y','Locator',TO_TIMESTAMP('2010-06-20 19:40:46','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -619,16 +316,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN M_Locator_ID NUMERIC(10) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:40:49 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='LocatorValue', Description='Key of the Warehouse Locator', EntityType='D', Help=NULL, IsActive='Y', Name='Locator Key', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Locator Key',Updated=TO_TIMESTAMP('2010-06-20 19:40:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=2109
-;
-
--- Jun 20, 2010 7:40:49 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=2109
-;
-
 -- Jun 20, 2010 7:40:50 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59556,2109,0,10,53278,'LocatorValue',TO_TIMESTAMP('2010-06-20 19:40:49','YYYY-MM-DD HH24:MI:SS'),0,'Key of the Warehouse Locator','EE01',40,'Y','N','N','N','N','N','N','N','Y','N','Y','Locator Key',TO_TIMESTAMP('2010-06-20 19:40:49','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -642,16 +329,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:50 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN LocatorValue VARCHAR(40) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:40:50 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='M_LocatorTo_ID', Description='Location inventory is moved to', EntityType='D', Help='The Locator To indicates the location where the inventory is being moved to.', IsActive='Y', Name='Locator To', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Locator To',Updated=TO_TIMESTAMP('2010-06-20 19:40:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=1029
-;
-
--- Jun 20, 2010 7:40:50 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=1029
 ;
 
 -- Jun 20, 2010 7:40:50 PM CDT
@@ -694,16 +371,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN LocatorToValue VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:40:52 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='OrgValue', Description='Key of the Organization', EntityType='D', Help=NULL, IsActive='Y', Name='Org Key', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Org Key',Updated=TO_TIMESTAMP('2010-06-20 19:40:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=2115
-;
-
--- Jun 20, 2010 7:40:52 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=2115
-;
-
 -- Jun 20, 2010 7:40:53 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59559,2115,0,10,53278,'OrgValue',TO_TIMESTAMP('2010-06-20 19:40:52','YYYY-MM-DD HH24:MI:SS'),0,'Key of the Organization','EE01',40,'Y','N','N','N','N','N','N','N','Y','N','Y','Org Key',TO_TIMESTAMP('2010-06-20 19:40:52','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -719,26 +386,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN OrgValue VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:40:53 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='MovementQty', Description='Quantity of a product moved.', EntityType='D', Help='The Movement Quantity indicates the quantity of a product that has been moved.', IsActive='Y', Name='Movement Quantity', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Qty',Updated=TO_TIMESTAMP('2010-06-20 19:40:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=1038
-;
-
--- Jun 20, 2010 7:40:53 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=1038
-;
-
--- Jun 20, 2010 7:40:54 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference SET Description='Quantity data type', EntityType='D', Help=NULL, IsActive='Y', Name='Quantity', ValidationType='D',Updated=TO_TIMESTAMP('2010-06-20 19:40:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Reference_ID=29
-;
-
--- Jun 20, 2010 7:40:54 PM CDT
--- Import Inventory Move
-UPDATE AD_Reference_Trl SET IsTranslated='N' WHERE AD_Reference_ID=29
-;
-
 -- Jun 20, 2010 7:40:54 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59560,1038,0,29,53278,'MovementQty',TO_TIMESTAMP('2010-06-20 19:40:54','YYYY-MM-DD HH24:MI:SS'),0,'Quantity of a product moved.','EE01',10,'The Movement Quantity indicates the quantity of a product that has been moved.','Y','N','N','N','N','N','N','N','Y','N','Y','Movement Quantity',TO_TIMESTAMP('2010-06-20 19:40:54','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -752,18 +399,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:54 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN MovementQty NUMERIC DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:40:54 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='DocumentNo', Description='Document sequence number of the document', EntityType='D', Help='The document number is usually automatically generated by the system and determined by the document type of the document. If the document is not saved, the preliminary number is displayed in "<>".
-
-If the document type of your document has no automatic document sequence defined, the field is empty if you create a new document. This is for documents which usually have an external number (like vendor invoice).  If you leave the field empty, the system will generate a document number for you. The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).', IsActive='Y', Name='Document No', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Document No',Updated=TO_TIMESTAMP('2010-06-20 19:40:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=290
-;
-
--- Jun 20, 2010 7:40:55 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=290
 ;
 
 -- Jun 20, 2010 7:40:56 PM CDT
@@ -783,16 +418,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN DocumentNo VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:40:56 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='C_DocType_ID', Description='Document type or rules', EntityType='D', Help='The Document Type determines document sequence and processing rules', IsActive='Y', Name='Document Type', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Doc Type',Updated=TO_TIMESTAMP('2010-06-20 19:40:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=196
-;
-
--- Jun 20, 2010 7:40:56 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=196
-;
-
 -- Jun 20, 2010 7:40:57 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59562,196,0,19,53278,'C_DocType_ID',TO_TIMESTAMP('2010-06-20 19:40:56','YYYY-MM-DD HH24:MI:SS'),0,'Document type or rules','EE01',10,'The Document Type determines document sequence and processing rules','Y','N','N','N','N','N','N','N','Y','N','Y','Document Type',TO_TIMESTAMP('2010-06-20 19:40:56','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -806,16 +431,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:40:57 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN C_DocType_ID NUMERIC(10) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:40:57 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='DocTypeName', Description='Name of the Document Type', EntityType='D', Help=NULL, IsActive='Y', Name='Document Type Name', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='DocType Name',Updated=TO_TIMESTAMP('2010-06-20 19:40:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=2098
-;
-
--- Jun 20, 2010 7:40:57 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=2098
 ;
 
 -- Jun 20, 2010 7:40:58 PM CDT
@@ -833,16 +448,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN DocTypeName VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:40:58 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='C_BPartner_ID', Description='Identifies a Business Partner', EntityType='D', Help='A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson', IsActive='Y', Name='Business Partner ', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Business Partner ',Updated=TO_TIMESTAMP('2010-06-20 19:40:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=187
-;
-
--- Jun 20, 2010 7:40:58 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=187
-;
-
 -- Jun 20, 2010 7:40:59 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59564,187,0,19,53278,'C_BPartner_ID',TO_TIMESTAMP('2010-06-20 19:40:58','YYYY-MM-DD HH24:MI:SS'),0,'Identifies a Business Partner','EE01',10,'A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson','Y','N','N','N','N','N','N','N','Y','N','Y','Business Partner ',TO_TIMESTAMP('2010-06-20 19:40:58','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -858,16 +463,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN C_BPartner_ID NUMERIC(10) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:40:59 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='BPartnerValue', Description='Key of the Business Partner', EntityType='D', Help=NULL, IsActive='Y', Name='Business Partner Key', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Business Partner Key',Updated=TO_TIMESTAMP('2010-06-20 19:40:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=2094
-;
-
--- Jun 20, 2010 7:40:59 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=2094
-;
-
 -- Jun 20, 2010 7:41:00 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59565,2094,0,10,53278,'BPartnerValue',TO_TIMESTAMP('2010-06-20 19:40:59','YYYY-MM-DD HH24:MI:SS'),0,'Key of the Business Partner','EE01',40,'Y','N','N','N','N','N','N','N','Y','N','Y','Business Partner Key',TO_TIMESTAMP('2010-06-20 19:40:59','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -881,16 +476,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:41:00 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN BPartnerValue VARCHAR(40) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:41:00 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='M_Shipper_ID', Description='Method or manner of product delivery', EntityType='D', Help='The Shipper indicates the method of delivering product', IsActive='Y', Name='Shipper', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Shipper',Updated=TO_TIMESTAMP('2010-06-20 19:41:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=455
-;
-
--- Jun 20, 2010 7:41:00 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=455
 ;
 
 -- Jun 20, 2010 7:41:00 PM CDT
@@ -933,16 +518,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN ShipperName VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:41:02 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='AD_User_ID', Description='User within the system - Internal or Business Partner Contact', EntityType='D', Help='The User identifies a unique user in the system. This could be an internal user or a business partner contact', IsActive='Y', Name='Usuario', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Usuario',Updated=TO_TIMESTAMP('2010-06-20 19:41:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=138
-;
-
--- Jun 20, 2010 7:41:02 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=138
-;
-
 -- Jun 20, 2010 7:41:03 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59568,138,0,19,53278,'AD_User_ID',TO_TIMESTAMP('2010-06-20 19:41:02','YYYY-MM-DD HH24:MI:SS'),0,'User within the system - Internal or Business Partner Contact','EE01',10,'The User identifies a unique user in the system. This could be an internal user or a business partner contact','Y','N','N','N','N','N','N','N','Y','N','Y','Usuario',TO_TIMESTAMP('2010-06-20 19:41:02','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -956,16 +531,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:41:03 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN AD_User_ID NUMERIC(10) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:41:03 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='DeliveryViaRule', Description='How the order will be delivered', EntityType='D', Help='The Delivery Via indicates how the products should be delivered. For example, will the order be picked up or shipped.', IsActive='Y', Name='Delivery Via', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Delivery Via',Updated=TO_TIMESTAMP('2010-06-20 19:41:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=274
-;
-
--- Jun 20, 2010 7:41:03 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=274
 ;
 
 -- Jun 20, 2010 7:41:05 PM CDT
@@ -985,16 +550,6 @@ ALTER TABLE I_Movement ADD COLUMN DeliveryViaRule VARCHAR(40) DEFAULT NULL
 
 -- Jun 20, 2010 7:41:05 PM CDT
 -- Import Inventory Move
-UPDATE AD_Element SET ColumnName='DeliveryRule', Description='Defines the timing of Delivery', EntityType='D', Help='The Delivery Rule indicates when an order should be delivered. For example should the order be delivered when the entire order is complete, when a line is complete or as the products become available.', IsActive='Y', Name='Delivery Rule', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Delivery Rule',Updated=TO_TIMESTAMP('2010-06-20 19:41:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=555
-;
-
--- Jun 20, 2010 7:41:05 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=555
-;
-
--- Jun 20, 2010 7:41:05 PM CDT
--- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59570,555,0,10,53278,'DeliveryRule',TO_TIMESTAMP('2010-06-20 19:41:05','YYYY-MM-DD HH24:MI:SS'),0,'Defines the timing of Delivery','EE01',40,'The Delivery Rule indicates when an order should be delivered. For example should the order be delivered when the entire order is complete, when a line is complete or as the products become available.','Y','N','N','N','N','N','N','N','Y','N','Y','Delivery Rule',TO_TIMESTAMP('2010-06-20 19:41:05','YYYY-MM-DD HH24:MI:SS'),0,0)
 ;
 
@@ -1006,16 +561,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:41:05 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN DeliveryRule VARCHAR(40) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:41:06 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='PriorityRule', Description='Priority of a document', EntityType='D', Help='The Priority indicates the importance (high, medium, low) of this document', IsActive='Y', Name='Priority', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Priority',Updated=TO_TIMESTAMP('2010-06-20 19:41:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=522
-;
-
--- Jun 20, 2010 7:41:06 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=522
 ;
 
 -- Jun 20, 2010 7:41:06 PM CDT
@@ -1033,16 +578,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN PriorityRule VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:41:06 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='FreightCostRule', Description='Method for charging Freight', EntityType='D', Help='The Freight Cost Rule indicates the method used when charging for freight.', IsActive='Y', Name='Freight Cost Rule', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Freight Cost Rule',Updated=TO_TIMESTAMP('2010-06-20 19:41:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=1007
-;
-
--- Jun 20, 2010 7:41:06 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=1007
-;
-
 -- Jun 20, 2010 7:41:07 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59572,1007,0,10,53278,'FreightCostRule',TO_TIMESTAMP('2010-06-20 19:41:06','YYYY-MM-DD HH24:MI:SS'),0,'Method for charging Freight','EE01',40,'The Freight Cost Rule indicates the method used when charging for freight.','Y','N','N','N','N','N','N','N','Y','N','Y','Freight Cost Rule',TO_TIMESTAMP('2010-06-20 19:41:06','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -1056,16 +591,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:41:07 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN FreightCostRule VARCHAR(40) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:41:07 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='C_Project_ID', Description='Financial Project', EntityType='D', Help='A Project allows you to track and control internal or external activities.', IsActive='Y', Name='Project', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Project',Updated=TO_TIMESTAMP('2010-06-20 19:41:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=208
-;
-
--- Jun 20, 2010 7:41:07 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=208
 ;
 
 -- Jun 20, 2010 7:41:08 PM CDT
@@ -1083,16 +608,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN C_Project_ID NUMERIC(10) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:41:08 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='ProjectValue', Description='Key of the Project', EntityType='D', Help=NULL, IsActive='Y', Name='Project Key', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Project Key',Updated=TO_TIMESTAMP('2010-06-20 19:41:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=2118
-;
-
--- Jun 20, 2010 7:41:08 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=2118
-;
-
 -- Jun 20, 2010 7:41:09 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59574,2118,0,10,53278,'ProjectValue',TO_TIMESTAMP('2010-06-20 19:41:08','YYYY-MM-DD HH24:MI:SS'),0,'Key of the Project','EE01',40,'Y','N','N','N','N','N','N','N','Y','N','Y','Project Key',TO_TIMESTAMP('2010-06-20 19:41:08','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -1106,16 +621,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:41:09 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN ProjectValue VARCHAR(40) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:41:09 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='C_Campaign_ID', Description='Marketing Campaign', EntityType='D', Help='The Campaign defines a unique marketing program.  Projects can be associated with a pre defined Marketing Campaign.  You can then report based on a specific Campaign.', IsActive='Y', Name='Campaign', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Campaign',Updated=TO_TIMESTAMP('2010-06-20 19:41:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=550
-;
-
--- Jun 20, 2010 7:41:09 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=550
 ;
 
 -- Jun 20, 2010 7:41:10 PM CDT
@@ -1158,16 +663,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN CampaignValue VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:41:12 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='AD_OrgTrx_ID', Description='Performing or initiating organization', EntityType='D', Help='The organization which performs or initiates this transaction (for another organization).  The owning Organization may not be the transaction organization in a service bureau environment, with centralized services, and inter-organization transactions.', IsActive='Y', Name='Trx Organization', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Trx Organization',Updated=TO_TIMESTAMP('2010-06-20 19:41:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=112
-;
-
--- Jun 20, 2010 7:41:12 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=112
-;
-
 -- Jun 20, 2010 7:41:13 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59577,112,0,19,53278,'AD_OrgTrx_ID',TO_TIMESTAMP('2010-06-20 19:41:12','YYYY-MM-DD HH24:MI:SS'),0,'Performing or initiating organization','EE01',10,'The organization which performs or initiates this transaction (for another organization).  The owning Organization may not be the transaction organization in a service bureau environment, with centralized services, and inter-organization transactions.','Y','N','N','N','N','N','N','N','Y','N','Y','Trx Organization',TO_TIMESTAMP('2010-06-20 19:41:12','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -1181,16 +676,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:41:13 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN AD_OrgTrx_ID NUMERIC(10) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:41:13 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='OrgTrxValue', Description='Key of the Transaction Organization', EntityType='D', Help=NULL, IsActive='Y', Name='Trx Org Key', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Trx Org Key',Updated=TO_TIMESTAMP('2010-06-20 19:41:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=2114
-;
-
--- Jun 20, 2010 7:41:13 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=2114
 ;
 
 -- Jun 20, 2010 7:41:14 PM CDT
@@ -1208,16 +693,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN OrgTrxValue VARCHAR(40) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:41:14 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='User1_ID', Description='User defined list element #1', EntityType='D', Help='The user defined element displays the optional elements that have been defined for this account combination.', IsActive='Y', Name='User List 1', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='User 1',Updated=TO_TIMESTAMP('2010-06-20 19:41:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=613
-;
-
--- Jun 20, 2010 7:41:14 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=613
-;
-
 -- Jun 20, 2010 7:41:15 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59579,613,0,10,53278,'User1_ID',TO_TIMESTAMP('2010-06-20 19:41:14','YYYY-MM-DD HH24:MI:SS'),0,'User defined list element #1','EE01',10,'The user defined element displays the optional elements that have been defined for this account combination.','Y','N','N','N','N','N','N','N','Y','N','Y','User List 1',TO_TIMESTAMP('2010-06-20 19:41:14','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -1233,16 +708,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE I_Movement ADD COLUMN User1_ID VARCHAR(10) DEFAULT NULL 
 ;
 
--- Jun 20, 2010 7:41:15 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='User2_ID', Description='User defined list element #2', EntityType='D', Help='The user defined element displays the optional elements that have been defined for this account combination.', IsActive='Y', Name='User List 2', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='User 2',Updated=TO_TIMESTAMP('2010-06-20 19:41:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=614
-;
-
--- Jun 20, 2010 7:41:15 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=614
-;
-
 -- Jun 20, 2010 7:41:16 PM CDT
 -- Import Inventory Move
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,Description,EntityType,FieldLength,Help,IsActive,IsAlwaysUpdateable,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,Updated,UpdatedBy,Version) VALUES (0,59580,614,0,10,53278,'User2_ID',TO_TIMESTAMP('2010-06-20 19:41:15','YYYY-MM-DD HH24:MI:SS'),0,'User defined list element #2','EE01',10,'The user defined element displays the optional elements that have been defined for this account combination.','Y','N','N','N','N','N','N','N','Y','N','Y','User List 2',TO_TIMESTAMP('2010-06-20 19:41:15','YYYY-MM-DD HH24:MI:SS'),0,0)
@@ -1256,16 +721,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- Jun 20, 2010 7:41:16 PM CDT
 -- Import Inventory Move
 ALTER TABLE I_Movement ADD COLUMN User2_ID VARCHAR(10) DEFAULT NULL 
-;
-
--- Jun 20, 2010 7:41:16 PM CDT
--- Import Inventory Move
-UPDATE AD_Element SET ColumnName='M_Movement_ID', Description='Movement of Inventory', EntityType='D', Help='The Inventory Movement uniquely identifies a group of movement lines.', IsActive='Y', Name='Inventory Move', PO_Description=NULL, PO_Help=NULL, PO_Name=NULL, PO_PrintName=NULL, PrintName='Move',Updated=TO_TIMESTAMP('2010-06-20 19:41:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Element_ID=1030
-;
-
--- Jun 20, 2010 7:41:16 PM CDT
--- Import Inventory Move
-UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=1030
 ;
 
 -- Jun 20, 2010 7:41:16 PM CDT
