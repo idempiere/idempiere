@@ -13,11 +13,13 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import java.util.Map;
+
 import org.adempiere.webui.event.ZoomEvent;
 import org.compiere.model.MQuery;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.Command;
+import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
@@ -28,15 +30,17 @@ import org.zkoss.zk.ui.event.Events;
  * @author hengsin
  *
  */
-public class ZoomCommand extends Command {
+public class ZoomCommand implements AuService {
 
-	public ZoomCommand(String id, int flags) {
-		super(id, flags);
+	public ZoomCommand() {
 	}
 
-	@Override
-	protected void process(AuRequest request) {
-		final String[] data = request.getData();
+	public boolean service(AuRequest request, boolean everError) {
+		if (!ZoomEvent.EVENT_NAME.equals(request.getCommand()))
+			return false;
+
+		Map<?, ?> map = request.getData();
+		final String[] data = (String[]) map.get("");
 
 		final Component comp = request.getComponent();
 		if (comp == null)
@@ -67,6 +71,8 @@ public class ZoomCommand extends Command {
 		query.setRecordCount(1);
 
 		Events.postEvent(new ZoomEvent(comp, query));
+
+		return true;
 	}
 
 }

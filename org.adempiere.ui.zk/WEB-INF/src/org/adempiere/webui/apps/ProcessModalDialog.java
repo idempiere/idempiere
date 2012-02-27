@@ -309,7 +309,7 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 
 		if (m_processMonitor != null) {
 			m_processMonitor.lockUI(m_pi);
-			Clients.showBusy(null, false);
+			Clients.clearBusy();
 		}
 
 		lockUI(m_pi);

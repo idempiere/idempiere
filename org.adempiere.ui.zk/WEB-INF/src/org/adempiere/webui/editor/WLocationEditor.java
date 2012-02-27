@@ -87,7 +87,7 @@ public class WLocationEditor extends WEditor implements EventListener, PropertyC
     	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	popupMenu.addMenuListener(this);
     	addChangeLogMenu(popupMenu);
-    	getComponent().setContext(popupMenu.getId());
+    	getComponent().setContext(popupMenu.getUuid());
     }
     
 	@Override

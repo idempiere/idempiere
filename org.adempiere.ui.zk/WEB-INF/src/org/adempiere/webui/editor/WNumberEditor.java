@@ -122,7 +122,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 		
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	addChangeLogMenu(popupMenu);
-    	getComponent().setContext(popupMenu.getId());
+    	getComponent().setContext(popupMenu.getUuid());
     }
 	
 	/**

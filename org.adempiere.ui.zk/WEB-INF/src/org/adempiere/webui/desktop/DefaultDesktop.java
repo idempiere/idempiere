@@ -59,12 +59,12 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkex.zul.Borderlayout;
-import org.zkoss.zkex.zul.Center;
-import org.zkoss.zkex.zul.North;
-import org.zkoss.zkex.zul.West;
-import org.zkoss.zkmax.zul.Portalchildren;
-import org.zkoss.zkmax.zul.Portallayout;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.North;
+import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.West;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
@@ -203,14 +203,14 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	{
 		homeTab.getChildren().clear();
 
-        Portallayout portalLayout = new Portallayout();
+        Hlayout portalLayout = new Hlayout();
         portalLayout.setWidth("100%");
         portalLayout.setHeight("100%");
         portalLayout.setStyle("position: absolute; overflow: auto");
         homeTab.appendChild(portalLayout);
 
         // Dashboard content
-        Portalchildren portalchildren = null;
+        Vlayout portalchildren = null;
         int currentColumnNo = 0;
 
         int noOfCols = 0;
@@ -225,7 +225,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        	int columnNo = dp.getColumnNo();
 	        	if(portalchildren == null || currentColumnNo != columnNo)
 	        	{
-	        		portalchildren = new Portalchildren();
+	        		portalchildren = new Vlayout();
 	                portalLayout.appendChild(portalchildren);
 	                portalchildren.setWidth(width + "%");
 	                portalchildren.setStyle("padding: 5px");

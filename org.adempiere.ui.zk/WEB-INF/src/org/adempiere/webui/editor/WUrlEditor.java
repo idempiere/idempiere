@@ -42,7 +42,7 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
-		getComponent().setContext(popupMenu.getId());
+		getComponent().setContext(popupMenu.getUuid());
 	}
 
 

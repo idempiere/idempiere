@@ -7,7 +7,7 @@ Copyright (C) 2009 Idalica Corporation
 
 <div style="background-color: #E5E5E5; margin: 5px;"
 	if="${desktop.execution.localName == &quot;ip-10-8-0-1.ec2.internal&quot;}">
-	<hbox valign="middle">
+	<hbox align="center">
 		<toolbarbutton
 			href="http://www.idalica.com" image="http://www.testadempiere.com/images/Idalica_Logo-grey-sm.png" target="_blank"/>
 		<label value="ADempiere Online Demonstration - Built Nightly by Idalica"

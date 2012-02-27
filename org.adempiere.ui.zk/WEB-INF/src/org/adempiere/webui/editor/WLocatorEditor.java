@@ -114,7 +114,7 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
         {
         	popupMenu = new WEditorPopupMenu(true, true, isShowPreference());
         	addChangeLogMenu(popupMenu);
-        	getComponent().setContext(popupMenu.getId());
+        	getComponent().setContext(popupMenu.getUuid());
         }			
 	}
 

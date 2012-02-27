@@ -344,7 +344,8 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
 	 * @param data
 	 * @see RowRenderer#render(Row, Object)
 	 */
-	public void render(Row row, Object data) throws Exception {
+	@Override
+	public void render(Row row, Object data, int index) throws Exception {
 		//don't render if not visible
 		if (gridPanel != null && !gridPanel.isVisible()) {
 			return;

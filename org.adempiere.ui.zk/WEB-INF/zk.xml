@@ -51,7 +51,7 @@
 	-->
 	<device-config>
  		<device-type>ajax</device-type>
-		<server-push-class>org.zkoss.zkmax.ui.comet.CometServerPush</server-push-class>
+		<server-push-class>org.zkoss.zk.ui.impl.PollingServerPush</server-push-class>
 		<!-- Configure the progress message to show in the center -->
 	    <embed>
 	      <![CDATA[<script type="text/javascript">
@@ -59,6 +59,15 @@
 	      </script>]]>
 	    </embed>
 	</device-config>
+
+	<system-config>
+		<disable-event-thread>false</disable-event-thread>
+	</system-config>
+
+	<library-property>
+  		<name>org.zkoss.zul.Button.mold</name>
+  		<value>trendy</value>
+	</library-property>
 
 	<library-property>
 		<name>org.zkoss.zul.theme.fontSizeM
