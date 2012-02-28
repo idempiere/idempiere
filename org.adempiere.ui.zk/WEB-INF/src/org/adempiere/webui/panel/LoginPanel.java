@@ -23,6 +23,7 @@
 
 package org.adempiere.webui.panel;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -60,6 +61,7 @@ import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.zkoss.lang.Strings;
 import org.zkoss.util.Locales;
+import org.zkoss.web.Attributes;
 import org.zkoss.zhtml.Div;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
@@ -416,6 +418,8 @@ public class LoginPanel extends Window implements EventListener
         	}
         }
 
+        Session currSess = Executions.getCurrent().getDesktop().getSession();
+        
         KeyNamePair rolesKNPairs[] = login.getRoles(userId, userPassword);
         if(rolesKNPairs == null || rolesKNPairs.length == 0)
             throw new WrongValueException("User Id or Password invalid!!!");
@@ -432,20 +436,24 @@ public class LoginPanel extends Window implements EventListener
 
             Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName()); // Elaine 2009/02/06
 
-            Locales.setThreadLocal(language.getLocale());
+            Locale locale = language.getLocale();
+            currSess.setAttribute(Attributes.PREFERRED_LOCALE, locale);
+            try {
+				Clients.reloadMessages(locale);
+			} catch (IOException e) {
+				logger.log(Level.WARNING, e.getLocalizedMessage(), e);
+			}
+            Locales.setThreadLocal(locale);
 
-            //TODO: Replace with zk6 api
-//            Clients.response("zkLocaleJavaScript", new AuScript(null, ZkFns.outLocaleJavaScript()));
             String timeoutText = getUpdateTimeoutTextScript();
             if (!Strings.isEmpty(timeoutText))
-            	Clients.response("zkLocaleJavaScript2", new AuScript(null, timeoutText));
+            	Clients.response("browserTimeoutScript", new AuScript(null, timeoutText));
         }
 
 		// This temporary validation code is added to check the reported bug
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
 		// https://sourceforge.net/tracker/?func=detail&atid=955896&aid=2832968&group_id=176962
-		// it's harmless, if there is no bug then this must never fail
-        Session currSess = Executions.getCurrent().getDesktop().getSession();
+		// it's harmless, if there is no bug then this must never fail        
         currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
 		// End of temporary code for [ adempiere-ZK Web Client-2832968 ] User context lost?
 
