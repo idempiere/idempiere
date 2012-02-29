@@ -81,6 +81,11 @@ public class VFactReconcile extends CPanel
 	implements FormPanel, ActionListener, TableModelListener, ASyncProcess
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4319867865736797328L;
+
+	/**
 	 *	Initialize Panel
 	 *  @param WindowNo window
 	 *  @param frame frame

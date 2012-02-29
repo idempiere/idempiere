@@ -27,8 +27,6 @@ public class FactReconciliation extends SvrProcess
 	 */
 	protected void prepare()
 	{
-		StringBuffer sb = new StringBuffer ("AD_PInstance_ID=")
-			.append(getAD_PInstance_ID());
 		//	Parameter
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)

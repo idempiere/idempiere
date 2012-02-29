@@ -16,12 +16,14 @@
  *****************************************************************************/
 package org.compiere.process;
 
-import java.math.*;
-import java.sql.*;
-import java.util.logging.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
-import org.compiere.model.*;
-import org.compiere.util.*;
+import org.compiere.model.MElementValue;
+import org.compiere.model.MRule;
+import org.compiere.util.DB;
 
 /**
  *	Suspense account reconciliation report
@@ -30,7 +32,6 @@ import org.compiere.util.*;
 public class FactReconcile extends SvrProcess
 {
 	private MElementValue account;
-	private String type;
 	private int ruleID;
 	
 	/**
@@ -65,7 +66,6 @@ public class FactReconcile extends SvrProcess
 	protected String doIt() throws Exception
 	{
 
-		String result;
 		log.info("Reconcile Account: " + account.getName());
 		
 		String subselect = "null";
