@@ -9,9 +9,9 @@ public class MFactReconciliation extends X_Fact_Reconciliation {
 	 */
 	private static final long serialVersionUID = 7569838866747051210L;
 
-	public MFactReconciliation(Properties ctx, int Fact_Acct_ID,
+	public MFactReconciliation(Properties ctx, int Fact_Reconciliation_ID,
 			String trxName) {
-		super(ctx, Fact_Acct_ID, trxName);
+		super(ctx, Fact_Reconciliation_ID, trxName);
 	}
 
 	public MFactReconciliation(Properties ctx, ResultSet rs, String trxName) {
