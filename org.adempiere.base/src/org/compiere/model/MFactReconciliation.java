@@ -4,6 +4,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 public class MFactReconciliation extends X_Fact_Reconciliation {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7569838866747051210L;
 
 	public MFactReconciliation(Properties ctx, int Fact_Acct_ID,
 			String trxName) {
