@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Fact_Reconciliation
  *  @author Adempiere (generated) 
- *  @version 360LTS.013
+ *  @version 360LTS.015
  */
 public interface I_Fact_Reconciliation 
 {
@@ -142,6 +142,17 @@ public interface I_Fact_Reconciliation
 
 	/** Get Accounting Fact	  */
 	public int getFact_Acct_ID();
+
+	public I_Fact_Acct getFact_Acct() throws RuntimeException;
+
+    /** Column name Fact_Reconciliation_ID */
+    public static final String COLUMNNAME_Fact_Reconciliation_ID = "Fact_Reconciliation_ID";
+
+	/** Set Accounting Fact Reconciliation	  */
+	public void setFact_Reconciliation_ID (int Fact_Reconciliation_ID);
+
+	/** Get Accounting Fact Reconciliation	  */
+	public int getFact_Reconciliation_ID();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

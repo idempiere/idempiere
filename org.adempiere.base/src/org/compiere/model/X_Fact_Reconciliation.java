@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Fact_Reconciliation
  *  @author Adempiere (generated) 
- *  @version 360LTS.013 - $Id$ */
+ *  @version 360LTS.015 - $Id$ */
 public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20111102L;
+	private static final long serialVersionUID = 20120229L;
 
     /** Standard Constructor */
     public X_Fact_Reconciliation (Properties ctx, int Fact_Reconciliation_ID, String trxName)
@@ -42,6 +42,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
       /** if (Fact_Reconciliation_ID == 0)
         {
 			setFact_Acct_ID (0);
+			setFact_Reconciliation_ID (0);
         } */
     }
 
@@ -156,6 +157,11 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
+	public I_Fact_Acct getFact_Acct() throws RuntimeException
+    {
+		return (I_Fact_Acct)MTable.get(getCtx(), I_Fact_Acct.Table_Name)
+			.getPO(getFact_Acct_ID(), get_TrxName());	}
+
 	/** Set Accounting Fact.
 		@param Fact_Acct_ID Accounting Fact	  */
 	public void setFact_Acct_ID (int Fact_Acct_ID)
@@ -183,6 +189,26 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
     {
         return new KeyNamePair(get_ID(), String.valueOf(getFact_Acct_ID()));
     }
+
+	/** Set Accounting Fact Reconciliation.
+		@param Fact_Reconciliation_ID Accounting Fact Reconciliation	  */
+	public void setFact_Reconciliation_ID (int Fact_Reconciliation_ID)
+	{
+		if (Fact_Reconciliation_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_Fact_Reconciliation_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_Fact_Reconciliation_ID, Integer.valueOf(Fact_Reconciliation_ID));
+	}
+
+	/** Get Accounting Fact Reconciliation.
+		@return Accounting Fact Reconciliation	  */
+	public int getFact_Reconciliation_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Fact_Reconciliation_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Match Code.
 		@param MatchCode 

@@ -5,12 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Vector;
 import java.util.logging.Level;
-
-import javax.swing.table.DefaultTableModel;
 
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MFactReconciliation;
@@ -25,7 +21,7 @@ import org.compiere.util.Msg;
 public class FactReconcile {
 	
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(MFactReconciliation.class);
+	public static CLogger log = CLogger.getCLogger(FactReconcile.class);
 	
 	public int			m_AD_Client_ID = 0;
 	public int			m_AD_Org_ID = 0;
