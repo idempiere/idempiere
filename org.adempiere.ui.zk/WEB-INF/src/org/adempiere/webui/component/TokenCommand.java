@@ -39,7 +39,9 @@ public class TokenCommand implements AuService {
 				return false;
 
 		Map<?, ?> map = request.getData();
-		final String[] data = (String[]) map.get("");
+		String sid = (String) map.get("sid");
+		String hash = (String) map.get("hash");
+		final String[] data = new String[] {sid, hash};
 
 		final Component comp = request.getComponent();
 		if (comp == null)

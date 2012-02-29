@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -57,12 +59,15 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.MaximizeEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Anchorchildren;
+import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Style;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.West;
 import org.zkoss.zul.Html;
@@ -102,6 +107,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private int noOfWorkflow;
 
 	private Tabpanel homeTab;
+	
+	private List<Panel> panelList = new ArrayList<Panel>();
+	private List<Vlayout> vlayoutList = new ArrayList<Vlayout>();
+
+	private Anchorlayout portalLayout;
 
     public DefaultDesktop()
     {
@@ -201,12 +211,18 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private void renderHomeTab()
 	{
+		Style style = new Style();
+		//, .z-anchorchildren
+		style.setContent(".z-anchorlayout-body { overflow:auto } .z-anchorchildren { overflow:visible } ");
+		style.setPage(homeTab.getPage());
+		
 		homeTab.getChildren().clear();
 
-        Hlayout portalLayout = new Hlayout();
-        portalLayout.setWidth("100%");
-        portalLayout.setHeight("100%");
-        portalLayout.setStyle("position: absolute; overflow: auto");
+        portalLayout = new Anchorlayout();
+        portalLayout.setWidth("99%");
+        portalLayout.setHeight("99%");
+        portalLayout.setStyle("position: absolute;");
+        portalLayout.setVflex("true");
         homeTab.appendChild(portalLayout);
 
         // Dashboard content
@@ -226,17 +242,23 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        	if(portalchildren == null || currentColumnNo != columnNo)
 	        	{
 	        		portalchildren = new Vlayout();
-	                portalLayout.appendChild(portalchildren);
-	                portalchildren.setWidth(width + "%");
-	                portalchildren.setStyle("padding: 5px");
+	        		vlayoutList.add(portalchildren);
+	        		Anchorchildren anchorChildren = new Anchorchildren();
+	        		anchorChildren.setAnchor((width-2) + "%" + " 100%");
+	        		anchorChildren.appendChild(portalchildren);
+	                portalLayout.appendChild(anchorChildren);
+	                portalchildren.setWidth("100%");
 
 	                currentColumnNo = columnNo;
 	        	}
 
 	        	Panel panel = new Panel();
-	        	panel.setStyle("margin-bottom:10px");
+	        	panelList.add(panel);
+	        	panel.addEventListener(Events.ON_MAXIMIZE, this);
+	        	panel.setStyle("margin: 2px; position: relative;");
 	        	panel.setTitle(dp.get_Translation(MDashboardContent.COLUMNNAME_Name));
-
+	        	panel.setMaximizable(true);
+	        	
 	        	String description = dp.get_Translation(MDashboardContent.COLUMNNAME_Description);
             	if(description != null)
             		panel.setTooltiptext(description);
@@ -395,6 +417,51 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
             	}
             }
         }
+        else if(event instanceof MaximizeEvent) {
+        	MaximizeEvent me = (MaximizeEvent) event;
+        	Panel panel = (Panel) event.getTarget();
+        	if (((MaximizeEvent) event).isMaximized()) {
+        		for (Panel p : panelList) {
+        			if (p == panel) {
+        				continue;
+        			}
+        			p.setVisible(false);
+        			Anchorchildren layout = (Anchorchildren) p.getParent().getParent();
+        			if (layout == panel.getParent().getParent()) {
+        				if (!layout.getAnchor().equals("100% 100%")) {
+	        				layout.setAttribute("anchor.original", layout.getAnchor());
+	        				layout.setAnchor("100% 100%");
+        				}
+        				continue;
+        			}
+        			if (layout.isVisible()) {
+        				layout.setVisible(false);
+        			}
+        		}
+        		panel.getParent().getParent().getParent().invalidate();
+        	} else {
+        		for (Panel p : panelList) {
+        			if (!p.isVisible()) {
+        				p.setVisible(true);        				
+        			}
+        			Anchorchildren layout = (Anchorchildren) p.getParent().getParent();
+        			if (!layout.isVisible()) {
+        				layout.setVisible(true);
+        			}
+        			if (layout.getAnchor().equals("100% 100%")) {
+        				layout.setAnchor((String) layout.getAttribute("anchor.original"));
+        			}
+        		}
+        	}
+//        	String uid = portalLayout.getUuid();
+//        	String script = "zk.Widget.$('"+uid+"').rerender();";
+//        	AuScript auScript = new AuScript(portalLayout, script);
+//        	Clients.response("reRenderHomeTabLayout", auScript);
+        	for (Panel p : panelList) {
+        		Clients.resize(p);
+        	}
+//        	Clients.resize(portalLayout);
+        }
     }
 
     public void onServerPush(ServerPushTemplate template)
@@ -454,13 +521,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private void autoHideMenu() {
 		if (layout.getWest().isCollapsible() && !layout.getWest().isOpen())
 		{
-			//using undocumented js api, need to be retested after every version upgrade
-			String id = layout.getWest().getUuid() + "!real";
-			String btn = layout.getWest().getUuid() + "!btn";
-			String script = "zk.show('" + id + "', false);";
-			script += "$e('"+id+"')._isSlide = false;";
-			script += "$e('"+id+"')._lastSize = null;";
-			script += "$e('"+btn+"').style.display = '';";
+			String id = layout.getWest().getUuid();
+			//$n('colled') is not documented api so this might break in release after 6.0.0
+			String script = "jq(zk.Widget.$('"+id+"').$n('colled')).click();";
 			AuScript aus = new AuScript(layout.getWest(), script);
 			Clients.response("autoHideWest", aus);
 		}

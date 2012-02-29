@@ -159,8 +159,8 @@ public class WAttachment extends Window implements EventListener
 			AEnv.showWindow(this);
 			if (autoPreview(0, true))
 			{
-				String script = "setTimeout(\"$e('"+ preview.getUuid() + "').src = $e('" +
-				preview.getUuid() + "').src\", 1000)";
+				String script = "setTimeout(\"zk.Widget.$('"+ preview.getUuid() + "').$n().src = zk.Widget.$('" +
+				preview.getUuid() + "').$n().src\", 1000)";
 				Clients.response(new AuScript(null, script));
 			}
 
