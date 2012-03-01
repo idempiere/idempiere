@@ -21,8 +21,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MElementValue;
+import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MRule;
+import org.compiere.model.MSequence;
 import org.compiere.util.DB;
 
 /**
@@ -118,14 +121,18 @@ public class FactReconcile extends SvrProcess
 		ResultSet rs = null;
 		int count;
 		int unmatched;
+		
+		MSequence seq = MSequence.get(getCtx(), MFactReconciliation.Table_Name);
+		if (seq == null)
+			throw new AdempiereException("No sequence for Fact_Reconciliation table");
+		
 		try
 		{
-			
 			// add new facts into reconciliation table
 			 sql = "INSERT into Fact_Reconciliation " +
-				"(AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy, " +
+				"(Fact_Reconciliation_ID, AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy, " +
 				"IsActive, Fact_Acct_ID) " + 
-				"SELECT AD_Client_ID, AD_Org_ID, Created, CreatedBy, " +
+				"SELECT nextIDFunc(?, 'N'), AD_Client_ID, AD_Org_ID, Created, CreatedBy, " +
 				"Updated, UpdatedBy, IsActive, " +
 				"Fact_Acct_ID " +
 				"FROM Fact_Acct f " +
@@ -134,7 +141,8 @@ public class FactReconcile extends SvrProcess
 				"WHERE r.Fact_Acct_ID = f.Fact_Acct_ID) ";
 					
 			pstmt = DB.prepareStatement(sql, get_TrxName());
-			pstmt.setInt(1, account.get_ID());
+			pstmt.setInt(1, seq.getAD_Sequence_ID());
+			pstmt.setInt(2, account.get_ID());
 			count = pstmt.executeUpdate();
 			log.log(Level.FINE, "Inserted " + count + " new facts into Fact_Reconciliation");
 			
