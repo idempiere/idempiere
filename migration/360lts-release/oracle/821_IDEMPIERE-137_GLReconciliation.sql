@@ -2242,3 +2242,8 @@ THEN (SELECT MAX(CASE WHEN i.DocStatus IN (''VO'', ''RE'') AND i.Reversal_ID > 0
 FROM Fact_Acct fa WHERE fa.Fact_Acct_id=Fact_Reconciliation.Fact_Acct_ID',Updated=TO_DATE('2010-09-03 12:02:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Rule_ID=50004
 ;
 
+UPDATE AD_System
+  SET LastMigrationScriptApplied='821_IDEMPIERE-137_GLReconciliation.sql'
+WHERE LastMigrationScriptApplied<'821_IDEMPIERE-137_GLReconciliation.sql'
+   OR LastMigrationScriptApplied IS NULL
+;

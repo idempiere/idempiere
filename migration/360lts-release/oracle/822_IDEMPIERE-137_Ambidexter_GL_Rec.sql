@@ -37,3 +37,8 @@ ALTER TABLE Fact_Reconciliation ADD Fact_Reconciliation_ID NUMBER(10) NOT NULL
 ALTER TABLE Fact_Reconciliation ADD CONSTRAINT Fact_Reconciliation_Key PRIMARY KEY (Fact_Reconciliation_ID)
 ;
 
+UPDATE AD_System
+  SET LastMigrationScriptApplied='822_IDEMPIERE-137_Ambidexter_GL_Rec.sql'
+WHERE LastMigrationScriptApplied<'822_IDEMPIERE-137_Ambidexter_GL_Rec.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
