@@ -52,18 +52,17 @@
 	<device-config>
  		<device-type>ajax</device-type>
 		<server-push-class>org.zkoss.zk.ui.impl.PollingServerPush</server-push-class>
-		<!-- Configure the progress message to show in the center -->
-	    <embed>
-	      <![CDATA[<script type="text/javascript">
-	        AU_progressbar=function(id,msg){Boot_progressbox(id,msg,"45%","45%",true,false);};
-	      </script>]]>
-	    </embed>
 	</device-config>
 
 	<system-config>
 		<disable-event-thread>false</disable-event-thread>
 	</system-config>
 
+    <!-- Configure the progress message to show in the center -->
+	<library-property>
+		<name>org.zkoss.zul.progressbox.position</name>
+		<value>center</value>
+	</library-property>
 	<library-property>
   		<name>org.zkoss.zul.Button.mold</name>
   		<value>trendy</value>
@@ -89,4 +88,17 @@
 		</name>
 		<value>11px</value>
 	</library-property>
+	
+	<preference>
+	    <name>PollingServerPush.delay.min</name>
+	    <value>200</value>
+	</preference>
+	<preference>
+	    <name>PollingServerPush.delay.max</name>
+	    <value>10000</value>
+	</preference>
+	<preference>
+	    <name>PollingServerPush.delay.factor</name>
+	    <value>1</value>
+	</preference>
 </zk>
