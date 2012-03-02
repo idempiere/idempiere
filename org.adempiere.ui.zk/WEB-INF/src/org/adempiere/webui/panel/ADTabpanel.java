@@ -78,6 +78,7 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  *
@@ -471,7 +472,11 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
                     }
 
                     //streach component to fill grid cell
-                    editor.fillHorizontal();
+                    if (editor.getComponent() instanceof InputElement) {
+                    	((InputElement)editor.getComponent()).setHflex("1");
+                    } else {
+                    	editor.fillHorizontal();
+                    }
 
                     //setup editor context menu
                     WEditorPopupMenu popupMenu = editor.getPopupMenu();
