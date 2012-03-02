@@ -241,21 +241,5 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 			win.setPosition(position);
 		
    		win.doHighlighted();
-   	}
-
-   	protected String stripHtml(String htmlString, boolean all) {
-		htmlString = htmlString
-		.replace("<html>", "")
-		.replace("</html>", "")
-		.replace("<body>", "")
-		.replace("</body>", "")
-		.replace("<head>", "")
-		.replace("</head>", "");
-		
-		if (all)
-			htmlString = htmlString
-			.replace(">", "&gt;")
-			.replace("<", "&lt;");
-		return htmlString;
-	}
+   	}   	
 }
