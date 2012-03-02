@@ -40,7 +40,7 @@ import org.compiere.model.MQuery;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkforge.keylistener.Keylistener;
+//import org.zkforge.keylistener.Keylistener;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
@@ -78,7 +78,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
 
 	private East east;
 
-	private Keylistener keyListener;
+//	private Keylistener keyListener;
 
     public ADWindowPanel(Properties ctx, int windowNo)
     {
@@ -186,14 +186,19 @@ public class ADWindowPanel extends AbstractADWindowPanel
         }
 
         if (!isEmbedded()) {
-        	if (keyListener != null)
-        		keyListener.detach();
-        	keyListener = new Keylistener();
-        	statusBar.appendChild(keyListener);
-        	keyListener.setCtrlKeys("#f1#f2#f3#f4#f5#f6#f7#f8#f9#f10#f11#f12^f^i^n^s^d@#left@#right@#up@#down@#pgup@#pgdn@p^p@z@x#enter");
-        	keyListener.addEventListener(Events.ON_CTRL_KEY, toolbar);
-        	keyListener.addEventListener(Events.ON_CTRL_KEY, this);
-        	keyListener.setAutoBlur(false);
+//        	if (keyListener != null)
+//        		keyListener.detach();
+//        	keyListener = new Keylistener();
+//        	statusBar.appendChild(keyListener);
+//        	keyListener.setCtrlKeys("#f1#f2#f3#f4#f5#f6#f7#f8#f9#f10#f11#f12^f^i^n^s^d@#left@#right@#up@#down@#pgup@#pgdn@p^p@z@x#enter");
+//        	keyListener.addEventListener(Events.ON_CTRL_KEY, toolbar);
+//        	keyListener.addEventListener(Events.ON_OK, this);
+//        	keyListener.setAutoBlur(false);
+        	
+        	//FIXME: only work when focus is at input element
+        	contentArea.setCtrlKeys("#f1#f2#f3#f4#f5#f6#f7#f8#f9#f10#f11#f12^f^i^n^s^d@#left@#right@#up@#down@#pgup@#pgdn@p^p@z@x");
+        	contentArea.addEventListener(Events.ON_CTRL_KEY, toolbar);
+        	contentArea.addEventListener(Events.ON_OK, this);
         }
 
         layout.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, new ITabOnSelectHandler() {
@@ -244,6 +249,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
      * @see EventListener#onEvent(Event)
      */
     public void onEvent(Event event) {
+    	//FIXME: not working for zk6
     	if (Events.ON_CTRL_KEY.equals(event.getName())) {
     		KeyEvent keyEvent = (KeyEvent) event;
     		//enter == 13
@@ -255,6 +261,13 @@ public class ADWindowPanel extends AbstractADWindowPanel
     				}
     			}
     		}
+    	} else if (Events.ON_OK.equals(event.getName())) {
+			IADTabpanel panel = adTab.getSelectedTabpanel();
+			if (panel != null) {
+				if (panel.onEnterKey()) {
+					event.stopPropagation();
+				}
+			}
     	} else {
     		super.onEvent(event);
     	}
