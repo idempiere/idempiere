@@ -68,7 +68,7 @@ import org.zkoss.zhtml.Text;
  */
 public class GridTabRowRenderer implements RowRenderer, RowRendererExt, RendererCtrl {
 
-	private static final String CURRENT_ROW_STYLE = "border-top: 2px solid #6f97d2; border-bottom: 2px solid #6f97d2";
+	private static final String CURRENT_ROW_STYLE = "background-color: #BDEDFF";
 	private static final int MAX_TEXT_LENGTH = 60;
 	private GridTab gridTab;
 	private int windowNo;
@@ -478,6 +478,7 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
 				org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 				if (column.isVisible()) {
 					Div div = (Div) currentRow.getChildren().get(colIndex);
+					div.getFirstChild().setVisible(false);
 					WEditor editor = getEditorCell(gridField[i], currentValues[i], i);
 					div.appendChild(editor.getComponent());
 					WEditorPopupMenu popupMenu = editor.getPopupMenu();
@@ -487,7 +488,7 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
 		            	popupMenu.addMenuListener((ContextMenuListener)editor);
 		            	div.appendChild(popupMenu);
 		            }
-		            div.getFirstChild().setVisible(false);
+		            
 		            //check context
 					if (!gridField[i].isDisplayed(true)) 
 					{
