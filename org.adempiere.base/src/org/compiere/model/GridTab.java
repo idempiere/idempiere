@@ -667,6 +667,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				//	Same link value?
 				if (refresh)
 					refresh = m_linkValue.equals(value);
+				if (! m_linkValue.equals(value))
+					setQuery(null);
 				m_linkValue = value;
 				//	Check validity
 				if (value.length() == 0)
