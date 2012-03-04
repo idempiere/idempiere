@@ -644,18 +644,21 @@ public final class Fact
 			{
 				log.warning("No Element Value for " + account 
 					+ ": " + line);
+				m_doc.p_Error = account.toString();
 				return false;
 			}
 			if (ev.isSummary())
 			{
 				log.warning("Cannot post to Summary Account " + ev 
 					+ ": " + line);
+				m_doc.p_Error = ev.toString();
 				return false;
 			}
 			if (!ev.isActive())
 			{
 				log.warning("Cannot post to Inactive Account " + ev 
 					+ ": " + line);
+				m_doc.p_Error = ev.toString();
 				return false;
 			}
 
