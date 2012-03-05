@@ -451,13 +451,14 @@ public class GridPanel extends Borderlayout implements EventListener
 			if (!isRowRendered(row, pgIndex)) {
 				listbox.renderRow(row);
 			} else {
-				Row old = renderer.getCurrentRow();
-				int oldIndex = renderer.getCurrentRowIndex();
+//				Row old = renderer.getCurrentRow();
+//				int oldIndex = renderer.getCurrentRowIndex();
 				renderer.setCurrentRow(row);
-				if (old != null && old != row && oldIndex >= 0 && oldIndex != gridTab.getCurrentRow())
-				{
-					listModel.updateComponent(oldIndex % pageSize);
-				}
+				//remark: following 3 line cause the previously selected row being render twice
+//				if (old != null && old != row && oldIndex >= 0 && oldIndex != gridTab.getCurrentRow())
+//				{
+//					listModel.updateComponent(oldIndex % pageSize);
+//				}
 			}
 			if (modeless && !renderer.isEditing()) {
 				renderer.editCurrentRow();
@@ -475,13 +476,14 @@ public class GridPanel extends Borderlayout implements EventListener
 			if (!isRowRendered(row, rowIndex)) {
 				listbox.renderRow(row);
 			} else {
-				Row old = renderer.getCurrentRow();
-				int oldIndex = renderer.getCurrentRowIndex();
+//				Row old = renderer.getCurrentRow();
+//				int oldIndex = renderer.getCurrentRowIndex();
 				renderer.setCurrentRow(row);
-				if (old != null && old != row && oldIndex >= 0 && oldIndex != gridTab.getCurrentRow())
-				{
-					listModel.updateComponent(oldIndex);
-				}
+				//remark: following 3 line cause the previously selected row being render twice
+//				if (old != null && old != row && oldIndex >= 0 && oldIndex != gridTab.getCurrentRow())
+//				{
+//					listModel.updateComponent(oldIndex);
+//				}
 			}
 			if (modeless && !renderer.isEditing()) {
 				renderer.editCurrentRow();
@@ -536,7 +538,7 @@ public class GridPanel extends Borderlayout implements EventListener
 					if (element instanceof Div) {
 						Div div = (Div) element;
 						if (columnOnClick.equals(div.getAttribute("columnName"))) {
-							cmp = div.getFirstChild().getNextSibling();
+							cmp = div.getFirstChild();
 							Clients.response(new AuScript(null, "scrollToRow('" + cmp.getUuid() + "');"));
 							break;
 						}
