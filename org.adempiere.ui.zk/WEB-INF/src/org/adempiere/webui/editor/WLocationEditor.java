@@ -44,7 +44,7 @@ import org.zkoss.zk.ui.event.Events;
  * 
  * This class is based on VLocation written by Jorg Janke
  **/
-public class WLocationEditor extends WEditor implements EventListener, PropertyChangeListener, ContextMenuListener
+public class WLocationEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener
 {
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     

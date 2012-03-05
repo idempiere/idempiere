@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  *
@@ -50,7 +51,7 @@ import org.zkoss.zul.Menuitem;
  * @date    Mar 11, 2007
  * @version $Revision: 0.10 $
  */
-public abstract class WEditor implements EventListener, PropertyChangeListener
+public abstract class WEditor implements EventListener<Event>, PropertyChangeListener
 {
     private static final String[] lISTENER_EVENTS = {};
 
@@ -81,6 +82,8 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
 	protected boolean hasFocus;
 	
 	protected WEditorPopupMenu popupMenu;
+
+	private boolean tableEditor;
 
     public WEditor(Component comp, GridField gridField) {
     	this(comp, gridField, -1);
@@ -219,13 +222,13 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
         {
             component.addEventListener(event, this);
         }
-        component.addEventListener(Events.ON_FOCUS, new EventListener() {
+        component.addEventListener(Events.ON_FOCUS, new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				hasFocus = true;
 			}
 
         });
-        component.addEventListener(Events.ON_BLUR, new EventListener() {
+        component.addEventListener(Events.ON_BLUR, new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				hasFocus = false;
 			}
@@ -472,7 +475,7 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
         	//can't stretch bandbox & datebox
         	if (!(getComponent() instanceof Bandbox) &&
         		!(getComponent() instanceof Datebox)) {
-        		String width = "100%";
+        		String width = tableEditor ? "98%" : "100%";
         		if (getComponent() instanceof Button) {
         			Button btn = (Button) getComponent();
         			String zclass = btn.getZclass();
@@ -485,10 +488,14 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
         			}
         		} else if (getComponent() instanceof Image) {
         			Image image = (Image) getComponent();
-        			image.setWidth("48px");
-        			image.setHeight("48px");
+        			image.setWidth("24px");
+        			image.setHeight("24px");
         		} else {
-        			((HtmlBasedComponent)getComponent()).setWidth(width);
+        			if (getComponent() instanceof InputElement && !tableEditor) {
+        				((InputElement)getComponent()).setHflex("1");
+        			} else {
+        				((HtmlBasedComponent)getComponent()).setWidth(width);
+        			}
         		}
         	}
         }
@@ -521,6 +528,10 @@ public abstract class WEditor implements EventListener, PropertyChangeListener
 		} else {
 			return false;
 		}
+	}
+
+	public void setTableEditor(boolean b) {
+		tableEditor = b;
 	}
 
 	/**

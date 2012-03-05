@@ -93,7 +93,7 @@ import org.zkoss.zul.impl.InputElement;
  *
  * @author Low Heng Sin
  */
-public class ADTabpanel extends Div implements Evaluatee, EventListener,
+public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, VetoableChangeListener
 {
 	/**
@@ -472,12 +472,8 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
                     }
 
                     //streach component to fill grid cell
-                    if (editor.getComponent() instanceof InputElement) {
-                    	((InputElement)editor.getComponent()).setHflex("1");
-                    } else {
-                    	editor.fillHorizontal();
-                    }
-
+                    editor.fillHorizontal();
+                    
                     //setup editor context menu
                     WEditorPopupMenu popupMenu = editor.getPopupMenu();
                     if (popupMenu != null)

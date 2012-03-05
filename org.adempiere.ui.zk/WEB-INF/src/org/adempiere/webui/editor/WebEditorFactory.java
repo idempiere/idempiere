@@ -63,23 +63,6 @@ public class WebEditorFactory
         	if (editor != null)
         		break;
         }
-        if (tableEditor) 
-        {
-        	if (editor.getComponent() instanceof InputElement) 
-        	{
-        		((InputElement)editor.getComponent()).setInplace(true);
-        	}
-        	else if (editor.getComponent() instanceof EditorBox)
-        	{
-        		EditorBox box = (EditorBox) editor.getComponent();
-        		box.getTextbox().setInplace(true);
-        	}
-        	else if (editor.getComponent() instanceof NumberBox)
-        	{
-        		NumberBox box = (NumberBox) editor.getComponent();
-        		box.getDecimalbox().setInplace(true);
-        	}
-        }
         return editor;
     }
 }
