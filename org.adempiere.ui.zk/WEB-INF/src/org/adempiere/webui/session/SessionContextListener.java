@@ -54,8 +54,6 @@ public class SessionContextListener implements ExecutionInit,
 	public static final String SERVLET_SESSION_ID = "servlet.sessionId";
     public static final String SESSION_CTX = "WebUISessionContext";
 
-    private Properties _ctx = null;
-
     /**
      * get servlet thread local context from session
      * @param exec
@@ -140,11 +138,10 @@ public class SessionContextListener implements ExecutionInit,
     {
     	//in servlet thread
     	//check is thread local context have been setup
-    	if (ServerContext.getCurrentInstance().isEmpty())
+    	if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
     		setupExecutionContextFromSession(Executions.getCurrent());
     	}
-		_ctx = ServerContext.getCurrentInstance();
     }
 
     /**
@@ -157,10 +154,10 @@ public class SessionContextListener implements ExecutionInit,
 	public void afterSuspend(Component comp, Event evt) throws Exception
 	{
 		//in servlet thread
-		Properties ctx = new Properties();
-		ctx.putAll(_ctx);
-		ServerContext.setCurrentInstance(ctx);
-		Executions.getCurrent().getDesktop().getSession().setAttribute(SESSION_CTX, ctx);
+		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
 	}
 
     /**
@@ -173,11 +170,10 @@ public class SessionContextListener implements ExecutionInit,
     {
     	//in servlet thread
     	//check is thread local context have been setup
-    	if (ServerContext.getCurrentInstance().isEmpty())
+    	if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
     		setupExecutionContextFromSession(Executions.getCurrent());
     	}
-    	_ctx = ServerContext.getCurrentInstance();
     }
 
     /**
@@ -199,10 +195,10 @@ public class SessionContextListener implements ExecutionInit,
 	public void complete(Component comp, Event evt) throws Exception
 	{
 		//in servlet thread
-		Properties ctx = new Properties();
-		ctx.putAll(_ctx);
-		ServerContext.setCurrentInstance(ctx);
-		Executions.getCurrent().getDesktop().getSession().setAttribute(SESSION_CTX, ctx);
+		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
 	}
 
     /**
@@ -214,9 +210,10 @@ public class SessionContextListener implements ExecutionInit,
     public boolean init(Component comp, Event evt)
     {
     	//in event processing thread
-    	Properties ctx = new Properties();
-		ctx.putAll(_ctx);
-    	ServerContext.setCurrentInstance(ctx);
+    	if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
 
         //set locale
         Locales.setThreadLocal(Env.getLanguage(ServerContext.getCurrentInstance()).getLocale());
@@ -236,7 +233,6 @@ public class SessionContextListener implements ExecutionInit,
 			throws Exception
 	{
 		//in event processing thread
-		_ctx = ServerContext.getCurrentInstance();
 	}
 
     /**
@@ -248,9 +244,10 @@ public class SessionContextListener implements ExecutionInit,
     public void afterResume(Component comp, Event evt)
     {
     	//in event processing thread
-    	Properties ctx = new Properties();
-		ctx.putAll(_ctx);
-    	ServerContext.setCurrentInstance(ctx);
+    	if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
 
         //set locale
         Locales.setThreadLocal(Env.getLanguage(ServerContext.getCurrentInstance()).getLocale());
@@ -266,6 +263,21 @@ public class SessionContextListener implements ExecutionInit,
 	public void cleanup(Component comp, Event evt, List errs) throws Exception
 	{
 		//in event processing thread
-		_ctx = ServerContext.getCurrentInstance();
+	}
+	
+	private boolean isContextValid() {
+		Execution exec = Executions.getCurrent();
+		Properties ctx = ServerContext.getCurrentInstance();
+		if (ctx == null)
+			return false;
+		Session session = exec.getDesktop().getSession();
+		HttpSession httpSession = (HttpSession)session.getNativeSession();
+		//verify ctx
+		String cacheId = ctx.getProperty(SERVLET_SESSION_ID);
+		if (cacheId == null || !cacheId.equals(httpSession.getId()) )
+		{
+			return false;
+		}
+		return true;
 	}
 }
