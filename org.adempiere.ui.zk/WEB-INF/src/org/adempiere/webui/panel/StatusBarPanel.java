@@ -258,6 +258,7 @@ public class StatusBarPanel extends Panel implements EventListener, IStatusBar
 	private void showPopup() {
 		popup.setVisible(true);
 		popup.setStyle(popupStyle);
+		if (getRoot() == null || !getRoot().isVisible() ) return;
 
 		String script = "var d = zk.Widget.$('" + popup.getUuid() + "').$n();";
 		script += "d.style.display='block';d.style.visibility='hidden';";
