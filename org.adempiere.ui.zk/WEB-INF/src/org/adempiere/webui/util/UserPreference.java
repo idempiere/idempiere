@@ -58,7 +58,7 @@ public final class UserPreference implements Serializable {
 
 	/** window tab placement **/
 	public static final String P_WINDOW_TAB_PLACEMENT = "WindowTabPlacement";
-	public static final String DEFAULT_WINDOW_TAB_PLACEMENT = "Left";
+	public static final String DEFAULT_WINDOW_TAB_PLACEMENT = "Right";
 
 	/** window tab collapsible **/
 	public static final String P_WINDOW_TAB_COLLAPSIBLE = "WindowTabCollapsible";

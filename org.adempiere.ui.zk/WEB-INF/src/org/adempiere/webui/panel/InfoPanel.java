@@ -1290,4 +1290,10 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
     		}
     	}
     }
+    
+	@Override
+	public String getSortDirection(Comparator cmpr) {
+		return "natural";
+	}
+
 }	//	Info

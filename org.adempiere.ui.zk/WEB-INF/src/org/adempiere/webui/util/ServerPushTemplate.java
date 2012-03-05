@@ -17,6 +17,8 @@ import org.adempiere.exceptions.AdempiereException;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 /**
  * Zk UI update must be done in either UI thread or using server push. This class help to implement
@@ -40,30 +42,26 @@ public class ServerPushTemplate {
 	 * Execute callback in UI thread
 	 * @param callback
 	 */
-	public void execute(IServerPushCallback callback) {
+	public void execute(final IServerPushCallback callback) {
 		boolean inUIThread = Executions.getCurrent() != null;
-		boolean desktopActivated = false;
-
 		try {
 	    	if (!inUIThread) {
-	    		//10 minutes timeout
-	    		if (Executions.activate(desktop, 10 * 60 * 1000)) {
-	    			desktopActivated = true;
-	    		} else {
-	    			throw new DesktopUnavailableException("Timeout activating desktop.");
-	    		}
+	    		EventListener<Event> task = new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						callback.updateUI();
+					}
+				};
+	    		Executions.schedule(desktop, task, new Event("onExecute"));
+	    	} else {
+	    		callback.updateUI();
 	    	}
-			callback.updateUI();
 		} catch (DesktopUnavailableException de) {
 			throw de;
     	} catch (Exception e) {
     		throw new AdempiereException("Failed to update client in server push worker thread.", e);
-    	} finally {
-    		if (!inUIThread && desktopActivated) {
-    			Executions.deactivate(desktop);
     		}
     	}
-	}
 
 	/**
 	 *

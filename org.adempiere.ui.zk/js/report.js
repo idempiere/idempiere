@@ -1,13 +1,19 @@
 function zoom(cmpid, column, value){
-	zkau.send({uuid: cmpid, cmd: 'onZoom', data: [column, value], ctl: true});
+	var widget = zk.Widget.$(cmpid);
+	var event = new zk.Event({target: widget, name: 'onZoom', data: [column, value], opts: {ctl: true}});
+	zAu.send(event);
 }
 
 function drillAcross(cmpid, column, value){
-	zkau.send({uuid: cmpid, cmd: 'onDrillAcross', data: [column, value], ctl: true});
+	var widget = zk.Widget.$(cmpid);
+	var event = new zk.Event({target: widget, name: 'onDrillAcross', data: [column, value], opts: {ctl: true}});
+	zAu.send(event);
 }
 
 function drillDown(cmpid, column, value){
-	zkau.send({uuid: cmpid, cmd: 'onDrillDown', data: [column, value], ctl: true});
+	var widget = zk.Widget.$(cmpid);
+	var event = new zk.Event({target: widget, name: 'onDrillDown', data: [column, value], opts: {ctl: true}});
+	zAu.send(event);
 }
 
 function showColumnMenu(e, columnName, row) {

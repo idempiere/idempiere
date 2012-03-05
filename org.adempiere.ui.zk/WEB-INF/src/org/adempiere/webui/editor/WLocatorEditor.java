@@ -54,7 +54,7 @@ import org.zkoss.zk.ui.event.Events;
  * @date    Jul 23, 2007
  */
 
-public class WLocatorEditor extends WEditor implements EventListener, PropertyChangeListener, ContextMenuListener, IZoomableEditor
+public class WLocatorEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener, IZoomableEditor
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
@@ -114,7 +114,7 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
         {
         	popupMenu = new WEditorPopupMenu(true, true, isShowPreference());
         	addChangeLogMenu(popupMenu);
-        	getComponent().setContext(popupMenu.getId());
+        	getComponent().setContext(popupMenu.getUuid());
         }			
 	}
 

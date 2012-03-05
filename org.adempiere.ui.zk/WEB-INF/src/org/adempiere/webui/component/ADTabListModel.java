@@ -68,7 +68,8 @@ public class ADTabListModel extends AbstractListModel implements ListitemRendere
 		}
 	}
 
-	public void render(Listitem item, Object data) throws Exception {
+	@Override
+	public void render(Listitem item, Object data, int index) throws Exception {
 		ADTabLabel tabLabel = (ADTabLabel)data;
 		Listcell cell = new Listcell(tabLabel.label, null);
 		if (tabLabel.tabLevel > 0) {

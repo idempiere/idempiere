@@ -26,6 +26,7 @@ import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
@@ -78,13 +79,13 @@ public final class BrowserToken {
 	 * load stored client side token for auto login
 	 * @param cmpid
 	 */
-	public static void load(String cmpid) {
+	public static void load(Component component) {
 		//remember me
         try
         {
 	        String home = getHomeToken();
-			String script = "adempiere.findUserToken('" + cmpid + "', '" + home + "');";
-			AuScript aus = new AuScript(null, script);
+			String script = "adempiere.findUserToken('" + component.getUuid() + "', '" + home + "');";
+			AuScript aus = new AuScript(component, script);
 			Clients.response("findUserToken", aus);
         }
         catch (Exception e)

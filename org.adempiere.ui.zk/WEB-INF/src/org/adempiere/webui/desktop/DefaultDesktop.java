@@ -17,23 +17,14 @@
 
 package org.adempiere.webui.desktop;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.apps.BusyDialog;
-import org.adempiere.webui.apps.graph.WGraph;
-import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DPActivities;
-import org.adempiere.webui.dashboard.DashboardPanel;
-import org.adempiere.webui.dashboard.DashboardRunnable;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.panel.HeaderPanel;
 import org.adempiere.webui.panel.SidePanel;
@@ -42,33 +33,22 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
-import org.compiere.model.I_AD_Menu;
-import org.compiere.model.MDashboardContent;
-import org.compiere.model.MGoal;
-import org.compiere.model.X_PA_DashboardContent;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkex.zul.Borderlayout;
-import org.zkoss.zkex.zul.Center;
-import org.zkoss.zkex.zul.North;
-import org.zkoss.zkex.zul.West;
-import org.zkoss.zkmax.zul.Portalchildren;
-import org.zkoss.zkmax.zul.Portallayout;
-import org.zkoss.zul.Html;
-import org.zkoss.zul.Panel;
-import org.zkoss.zul.Panelchildren;
-import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.North;
+import org.zkoss.zul.West;
 
 /**
  *
@@ -78,22 +58,19 @@ import org.zkoss.zul.Toolbarbutton;
  * @date Mar 2, 2007
  * @version $Revision: 0.10 $
  */
-public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener, IServerPushCallback
+public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, IServerPushCallback
 {
 	/**
 	 * generated serial version ID
 	 */
 	private static final long serialVersionUID = -8203958978173990301L;
 
+	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DefaultDesktop.class);
 
     private Center windowArea;
 
 	private Borderlayout layout;
-
-	private Thread dashboardThread;
-
-	private DashboardRunnable dashboardRunnable;
 
 	private int noOfNotice;
 
@@ -103,9 +80,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private Tabpanel homeTab;
 
+	private DashboardController dashboardController;
+		
     public DefaultDesktop()
     {
     	super();
+    	dashboardController = new DashboardController();
     }
 
     protected Component doCreatePart(Component parent)
@@ -126,8 +106,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         else
         	layout.setPage(page);
 
-        dashboardRunnable = new DashboardRunnable(layout.getDesktop(), this);
-
         North n = new North();
         layout.appendChild(n);
         n.setCollapsible(false);
@@ -140,7 +118,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         w.setSplittable(true);
         w.setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Menu")));
         w.setFlex(true);
-        w.addEventListener(Events.ON_OPEN, new EventListener() {
+        w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
@@ -201,180 +179,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private void renderHomeTab()
 	{
+		
 		homeTab.getChildren().clear();
 
-        Portallayout portalLayout = new Portallayout();
-        portalLayout.setWidth("100%");
-        portalLayout.setHeight("100%");
-        portalLayout.setStyle("position: absolute; overflow: auto");
-        homeTab.appendChild(portalLayout);
-
-        // Dashboard content
-        Portalchildren portalchildren = null;
-        int currentColumnNo = 0;
-
-        int noOfCols = 0;
-        int width = 0;
-
-        try
-		{
-            noOfCols = MDashboardContent.getForSessionColumnCount();
-            width = noOfCols <= 0 ? 100 : 100 / noOfCols;
-            for (final MDashboardContent dp : MDashboardContent.getForSession())
-			{
-	        	int columnNo = dp.getColumnNo();
-	        	if(portalchildren == null || currentColumnNo != columnNo)
-	        	{
-	        		portalchildren = new Portalchildren();
-	                portalLayout.appendChild(portalchildren);
-	                portalchildren.setWidth(width + "%");
-	                portalchildren.setStyle("padding: 5px");
-
-	                currentColumnNo = columnNo;
-	        	}
-
-	        	Panel panel = new Panel();
-	        	panel.setStyle("margin-bottom:10px");
-	        	panel.setTitle(dp.get_Translation(MDashboardContent.COLUMNNAME_Name));
-
-	        	String description = dp.get_Translation(MDashboardContent.COLUMNNAME_Description);
-            	if(description != null)
-            		panel.setTooltiptext(description);
-
-            	panel.setCollapsible(dp.isCollapsible());
-
-	        	panel.setBorder("normal");
-	        	portalchildren.appendChild(panel);
-	            Panelchildren content = new Panelchildren();
-	            panel.appendChild(content);
-
-	            boolean panelEmpty = true;
-
-	            // HTML content
-	            String htmlContent = dp.getHTML();
-	            if(htmlContent != null)
-	            {
-		            StringBuffer result = new StringBuffer("<html><head>");
-
-		    		URL url = getClass().getClassLoader().getResource("org/compiere/images/PAPanel.css");
-					InputStreamReader ins;
-					try {
-						ins = new InputStreamReader(url.openStream());
-						BufferedReader bufferedReader = new BufferedReader( ins );
-						String cssLine;
-						while ((cssLine = bufferedReader.readLine()) != null)
-							result.append(cssLine + "\n");
-					} catch (IOException e1) {
-						logger.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
-					}
-
-					result.append("</head><body><div class=\"content\">\n");
-
-//	            	if(description != null)
-//	            		result.append("<h2>" + description + "</h2>\n");
-	            	result.append(stripHtml(htmlContent, false) + "<br>\n");
-	            	result.append("</div>\n</body>\n</html>\n</html>");
-
-		            Html html = new Html();
-		            html.setContent(result.toString());
-		            content.appendChild(html);
-		            panelEmpty = false;
-	            }
-
-	        	// Window
-	        	int AD_Window_ID = dp.getAD_Window_ID();
-	        	if(AD_Window_ID > 0)
-	        	{
-		        	int AD_Menu_ID = dp.getAD_Menu_ID();
-					ToolBarButton btn = new ToolBarButton(String.valueOf(AD_Menu_ID));
-					I_AD_Menu menu = dp.getAD_Menu();
-					btn.setLabel(menu.getName());
-					btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
-					btn.addEventListener(Events.ON_CLICK, this);
-					content.appendChild(btn);
-					panelEmpty = false;
-	        	}
-
-	        	// Goal
-	        	int PA_Goal_ID = dp.getPA_Goal_ID();
-	        	if(PA_Goal_ID > 0)
-	        	{
-	        		//link to open performance detail
-	        		Toolbarbutton link = new Toolbarbutton();
-		            link.setImage("/images/Zoom16.png");
-		            link.setAttribute("PA_Goal_ID", PA_Goal_ID);
-		            link.addEventListener(Events.ON_CLICK, new EventListener() {
-
-						public void onEvent(Event event) throws Exception {
-							int PA_Goal_ID = (Integer)event.getTarget().getAttribute("PA_Goal_ID");
-							MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-							new WPerformanceDetail(goal);
-						}
-
-		            });
-		            content.appendChild(link);
-
-		            String goalDisplay = dp.getGoalDisplay();
-		            MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-		            WGraph graph = new WGraph(goal, 55, false, true,
-		            		!(X_PA_DashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
-		            		X_PA_DashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
-		            content.appendChild(graph);
-		            panelEmpty = false;
-	        	}
-
-	            // ZUL file url
-	        	String url = dp.getZulFilePath();
-	        	if(url != null)
-	        	{
-		        	try {
-		                Component component = Executions.createComponents(url, content, null);
-		                if(component != null)
-		                {
-		                	if (component instanceof DashboardPanel)
-		                	{
-			                	DashboardPanel dashboardPanel = (DashboardPanel) component;
-			                	if (!dashboardPanel.getChildren().isEmpty()) {
-			                		content.appendChild(dashboardPanel);
-			                		dashboardRunnable.add(dashboardPanel);
-			                		panelEmpty = false;
-			                	}
-		                	}
-		                	else
-		                	{
-		                		content.appendChild(component);
-		                		panelEmpty = false;
-		                	}
-		                }
-					} catch (Exception e) {
-						logger.log(Level.WARNING, "Failed to create components. zul="+url, e);
-					}
-	        	}
-
-	        	if (panelEmpty)
-	        		panel.detach();
-	        }
-		}
-        catch (Exception e)
-        {
-			logger.log(Level.WARNING, "Failed to create dashboard content", e);
-		}
-        //
-
-        //register as 0
+		//register as 0
         registerWindow(homeTab);
-
-        if (!portalLayout.getDesktop().isServerPushEnabled())
-        	portalLayout.getDesktop().enableServerPush(true);
-
-        if (!dashboardRunnable.isEmpty())
-        {
-        	dashboardRunnable.refreshDashboard();
-
-	        dashboardThread = new Thread(dashboardRunnable, "UpdateInfo");
-        	dashboardThread.setDaemon(true);
-        	dashboardThread.start();
-		}
+        
+		dashboardController.render(homeTab, this);		                
 	}
 
     public void onEvent(Event event)
@@ -414,16 +225,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		if (this.page != page) {
 			layout.setPage(page);
 			this.page = page;
-			if (dashboardThread != null && dashboardThread.isAlive()) {
-				dashboardRunnable.stop();
-				dashboardThread.interrupt();
-
-				DashboardRunnable tmp = dashboardRunnable;
-				dashboardRunnable = new DashboardRunnable(tmp, layout.getDesktop(), this);
-				dashboardThread = new Thread(dashboardRunnable, "UpdateInfo");
-		        dashboardThread.setDaemon(true);
-		        dashboardThread.start();
-			}
+			
+			if (dashboardController != null) {
+				dashboardController.onSetPage(page, layout.getDesktop(), this);
+			}			
 		}
 	}
 
@@ -436,9 +241,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	public void logout() {
-		if (dashboardThread != null && dashboardThread.isAlive()) {
-			dashboardRunnable.stop();
-			dashboardThread.interrupt();
+		if (dashboardController != null) {
+			dashboardController.onLogOut();
 		}
 	}
 
@@ -454,13 +258,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private void autoHideMenu() {
 		if (layout.getWest().isCollapsible() && !layout.getWest().isOpen())
 		{
-			//using undocumented js api, need to be retested after every version upgrade
-			String id = layout.getWest().getUuid() + "!real";
-			String btn = layout.getWest().getUuid() + "!btn";
-			String script = "zk.show('" + id + "', false);";
-			script += "$e('"+id+"')._isSlide = false;";
-			script += "$e('"+id+"')._lastSize = null;";
-			script += "$e('"+btn+"').style.display = '';";
+			String id = layout.getWest().getUuid();
+			//$n('colled') is not documented api so this might break in release after 6.0.0
+			String script = "jq(zk.Widget.$('"+id+"').$n('colled')).click();";
 			AuScript aus = new AuScript(layout.getWest(), script);
 			Clients.response("autoHideWest", aus);
 		}

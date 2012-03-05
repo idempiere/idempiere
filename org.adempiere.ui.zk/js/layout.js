@@ -1,27 +1,29 @@
 function ad_deferRenderBorderLayout(uuid, timeout) {
-	var meta = zkau.getMeta($e(uuid));
+	var meta = zk.Widget.$(uuid);
 	if (meta) {
 		setTimeout("_ad_deferBDL('"+uuid+"')", timeout);				
 	}
 }		
 
 function _ad_deferBDL(uuid) {			
-	zk.beforeSizeAt();
-	zk.onSizeAt();
-	zkau.getMeta($e(uuid)).render();
+	var cmp = zk.Widget.$(uuid);
+	if (cmp) { cmp.resize(); }	
 }
 
 function ad_closeBuble(uuid) {
-	var cmp = $e(uuid); 
-	for(i=0;i<cmp.bandInfos.length;i++){
-		cmp.instance.getBand(i).closeBubble();
+	var cmp = zk.Widget.$(uuid); 
+	if (cmp) {
+		for(var i=0;i<cmp.bandInfos.length;i++){
+			cmp.instance.getBand(i).closeBubble();
+		}
 	}
 }
 
 function scrollToRow(uuid){  
-	 var cmp = $e(uuid);  
-	 cmp.style.display="inline";
-	 cmp.focus();
-	 cmp.style.display="none";
+	 var cmp = zk.Widget.$(uuid);  
+	 if (cmp) {
+	    cmp.scrollIntoView();
+	 	cmp.focus();
+	 }
 }
  

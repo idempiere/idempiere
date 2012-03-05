@@ -20,10 +20,13 @@ package org.adempiere.webui.editor;
 import java.util.List;
 
 import org.adempiere.base.Service;
+import org.adempiere.webui.component.EditorBox;
+import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.factory.IEditorFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.util.CLogger;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  *

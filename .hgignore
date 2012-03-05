@@ -98,3 +98,9 @@ syntax: regexp
 
 syntax: regexp
 swingclient.product .*
+syntax: regexp
+^org\.zkoss\.zk\.library/bin$
+syntax: regexp
+\.class$
+syntax: regexp
+\.class$

@@ -137,7 +137,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        addTextEditorMenu(popupMenu);
 	        addChangeLogMenu(popupMenu);
 
-	        getComponent().setContext(popupMenu.getId());
+	        getComponent().setContext(popupMenu.getUuid());
 
 	        if (gridField.isAutocomplete()) {
 	        	Combobox combo = (Combobox)getComponent();

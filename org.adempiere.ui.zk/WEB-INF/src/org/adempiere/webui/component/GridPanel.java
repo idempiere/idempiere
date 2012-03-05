@@ -37,9 +37,10 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkex.zul.Borderlayout;
-import org.zkoss.zkex.zul.Center;
-import org.zkoss.zkex.zul.South;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.Frozen;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Paging;
@@ -89,11 +90,13 @@ public class GridPanel extends Borderlayout implements EventListener
 
 	private South south;
 
-	private boolean modeless;
+	private boolean modeless = true;
 
 	private String columnOnClick;
 
 	private AbstractADWindowPanel windowPanel;
+
+	private boolean refreshing;
 
 	public static final String PAGE_SIZE_KEY = "ZK_PAGING_SIZE";
 
@@ -118,8 +121,8 @@ public class GridPanel extends Borderlayout implements EventListener
 		//default paging size
 		pageSize = MSysConfig.getIntValue(PAGE_SIZE_KEY, 100);
 
-		//default false for better performance
-		modeless = MSysConfig.getBooleanValue(MODE_LESS_KEY, false);
+		//default true for better UI experience
+		modeless = MSysConfig.getBooleanValue(MODE_LESS_KEY, true);
 	}
 
 	/**
@@ -175,9 +178,15 @@ public class GridPanel extends Borderlayout implements EventListener
 		}
 		else
 		{
+			refreshing = true;
 			listbox.setModel(listModel);
 			updateListIndex();
+			refreshing = false;
 		}
+	}
+
+	public boolean isRefreshing() {
+		return refreshing;
 	}
 
 	/**
@@ -253,6 +262,14 @@ public class GridPanel extends Borderlayout implements EventListener
 		if (init) return;
 
 		Columns columns = new Columns();
+		
+		Frozen frozen = new Frozen();
+		frozen.setColumns(1);
+		listbox.appendChild(frozen);
+		org.zkoss.zul.Column indicator = new Column();				
+		indicator.setWidth("30px");
+		
+		columns.appendChild(indicator);
 		listbox.appendChild(columns);
 		columns.setSizable(true);
 		columns.setMenupopup("auto");
@@ -307,8 +324,8 @@ public class GridPanel extends Borderlayout implements EventListener
 		LayoutUtils.addSclass("adtab-grid-panel", this);
 
 		listbox.setVflex(true);
-		//true is faster but render badly on some browser
-		listbox.setFixedLayout(false);
+		//true might looks better, false for better performance
+		listbox.setSizedByContent(false);
 		listbox.addEventListener(Events.ON_CLICK, this);
 
 		updateModel();
@@ -401,6 +418,7 @@ public class GridPanel extends Borderlayout implements EventListener
 					}
 				}
 			}
+			event.stopPropagation();
         }
 		else if (event.getTarget() == paging)
 		{

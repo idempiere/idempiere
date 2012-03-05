@@ -43,7 +43,6 @@ import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
-import org.zkoss.zk.au.Command;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -122,6 +121,10 @@ public class AdempiereWebUI extends Window implements EventListener, IWebClient
         {
             loginCompleted();
         }
+
+        Executions.getCurrent().getDesktop().addListener(new DrillCommand());
+        Executions.getCurrent().getDesktop().addListener(new TokenCommand());
+        Executions.getCurrent().getDesktop().addListener(new ZoomCommand());
     }
 
     public void onOk()
@@ -361,13 +364,5 @@ public class AdempiereWebUI extends Window implements EventListener, IWebClient
 	 */
 	public UserPreference getUserPreference() {
 		return userPreference;
-	}
-	
-	//global command
-	static {
-		new ZoomCommand("onZoom", Command.IGNORE_OLD_EQUIV);
-		new DrillCommand("onDrillAcross", Command.IGNORE_OLD_EQUIV);
-		new DrillCommand("onDrillDown", Command.IGNORE_OLD_EQUIV);
-		new TokenCommand(TokenEvent.ON_USER_TOKEN, Command.IGNORE_OLD_EQUIV);
-	}
+	}	
 }

@@ -32,7 +32,7 @@ Require-Bundle: org.adempiere.report.jasper;bundle-version="1.0.0",
  org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.report.jasper.library;bundle-version="1.0.0",
  org.adempiere.ui;bundle-version="1.0.0",
- org.zkoss.zk.library;bundle-version="3.6.3"
+ org.zkoss.zk.library;bundle-version="6.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
 Import-Package: javax.servlet,

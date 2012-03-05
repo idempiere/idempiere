@@ -13,28 +13,18 @@
  *****************************************************************************/
 package org.adempiere.webui.desktop;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.URL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.adempiere.util.ServerContext;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
-import org.adempiere.webui.apps.graph.WGraph;
 import org.adempiere.webui.component.Accordion;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DPActivities;
 import org.adempiere.webui.dashboard.DPFavourites;
 import org.adempiere.webui.dashboard.DashboardPanel;
-import org.adempiere.webui.dashboard.DashboardRunnable;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.HeaderPanel;
@@ -45,12 +35,7 @@ import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.window.ADWindow;
-import org.compiere.model.MGoal;
-import org.compiere.model.MMenu;
-import org.compiere.model.X_AD_Menu;
-import org.compiere.model.X_PA_DashboardContent;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.au.out.AuScript;
@@ -63,23 +48,18 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkex.zul.Borderlayout;
-import org.zkoss.zkex.zul.Center;
-import org.zkoss.zkex.zul.North;
-import org.zkoss.zkex.zul.West;
-import org.zkoss.zkmax.zul.Portalchildren;
-import org.zkoss.zkmax.zul.Portallayout;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.North;
+import org.zkoss.zul.West;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Html;
-import org.zkoss.zul.Panel;
-import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 /**
  * @author hengsin
  */
-public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener, IServerPushCallback
+public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, IServerPushCallback
 {
 
 	private static final long serialVersionUID = 4721048271543882164L;
@@ -90,15 +70,12 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 
 	private static final String VIEWS_PATH = "/zul/views.zul";
 
+	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DefaultDesktop.class);
 
     private Center windowArea;
 
 	private Borderlayout layout;
-
-	private Thread dashboardThread;
-
-	private DashboardRunnable dashboardRunnable;
 
 	private Accordion navigationPanel;
 
@@ -114,9 +91,12 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 
 	private Tabpanel homeTab;
 
+	private DashboardController dashboardController;
+
     public NavBarDesktop()
     {
     	super();
+    	dashboardController = new DashboardController();
     }
 
     protected Component doCreatePart(Component parent)
@@ -137,8 +117,6 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
         else
         	layout.setPage(page);
 
-        dashboardRunnable = new DashboardRunnable(layout.getDesktop(), this);
-
         North n = new North();
         layout.appendChild(n);
         n.setCollapsible(false);
@@ -151,7 +129,7 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
         leftRegion.setSplittable(true);
         leftRegion.setTitle("Navigation");
         leftRegion.setFlex(true);
-        leftRegion.addEventListener(Events.ON_OPEN, new EventListener() {			
+        leftRegion.addEventListener(Events.ON_OPEN, new EventListener<Event>() {			
 			@Override
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
@@ -184,7 +162,7 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
         if (component instanceof DashboardPanel)
     	{
         	DashboardPanel dashboardPanel = (DashboardPanel) component;
-        	dashboardRunnable.add(dashboardPanel);
+        	dashboardController.addDashboardPanel(dashboardPanel);
     	}
         navigationPanel.add(div, "Activities");
 
@@ -243,180 +221,10 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 	{
 		homeTab.getChildren().clear();
 
-        Portallayout portalLayout = new Portallayout();
-        portalLayout.setWidth("100%");
-        portalLayout.setHeight("100%");
-        portalLayout.setStyle("position: absolute; overflow: auto");
-        homeTab.appendChild(portalLayout);
-
-        // Dashboard content
-        Portalchildren portalchildren = null;
-        int currentColumnNo = 0;
-
-        String sql = "SELECT COUNT(DISTINCT COLUMNNO) "
-        	+ "FROM PA_DASHBOARDCONTENT "
-        	+ "WHERE (AD_CLIENT_ID=0 OR AD_CLIENT_ID=?) AND ISACTIVE='Y'";
-
-        int noOfCols = DB.getSQLValue(null, sql,
-        		Env.getAD_Client_ID(Env.getCtx()));
-
-        int width = noOfCols <= 0 ? 100 : 100/noOfCols;
-
-		sql =  "SELECT x.*, m.AD_MENU_ID "
-			+ "FROM PA_DASHBOARDCONTENT x "
-			+ "LEFT OUTER JOIN AD_MENU m ON x.AD_WINDOW_ID=m.AD_WINDOW_ID "
-			+ "WHERE (x.AD_CLIENT_ID=0 OR x.AD_CLIENT_ID=?) AND x.ISACTIVE='Y' "
-			+ "AND x.zulfilepath not in (?, ?, ?) "
-			+ "ORDER BY x.COLUMNNO, x.AD_CLIENT_ID, x.LINE ";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, Env.getAD_Client_ID(Env.getCtx()));
-			pstmt.setString(2, ACTIVITIES_PATH);
-			pstmt.setString(3, FAVOURITES_PATH);
-			pstmt.setString(4, VIEWS_PATH);
-			rs = pstmt.executeQuery();
-
-			while (rs.next())
-			{
-	        	int columnNo = rs.getInt(X_PA_DashboardContent.COLUMNNAME_ColumnNo);
-	        	if(portalchildren == null || currentColumnNo != columnNo)
-	        	{
-	        		portalchildren = new Portalchildren();
-	                portalLayout.appendChild(portalchildren);
-	                portalchildren.setWidth(width + "%");
-	                portalchildren.setStyle("padding: 5px");
-
-	                currentColumnNo = columnNo;
-	        	}
-
-	        	Panel panel = new Panel();
-	        	panel.setStyle("margin-bottom:10px");
-	        	panel.setTitle(rs.getString(X_PA_DashboardContent.COLUMNNAME_Name));
-
-	        	String description = rs.getString(X_PA_DashboardContent.COLUMNNAME_Description);
-            	if(description != null)
-            		panel.setTooltiptext(description);
-
-            	String collapsible = rs.getString(X_PA_DashboardContent.COLUMNNAME_IsCollapsible);
-            	panel.setCollapsible(collapsible.equals("Y"));
-
-	        	panel.setBorder("normal");
-	        	portalchildren.appendChild(panel);
-	            Panelchildren content = new Panelchildren();
-	            panel.appendChild(content);
-
-	            boolean panelEmpty = true;
-
-	            // HTML content
-	            String htmlContent = rs.getString(X_PA_DashboardContent.COLUMNNAME_HTML);
-	            if(htmlContent != null)
-	            {
-		            StringBuffer result = new StringBuffer("<html><head>");
-
-		    		URL url = getClass().getClassLoader().
-					getResource("org/compiere/images/PAPanel.css");
-					InputStreamReader ins;
-					try {
-						ins = new InputStreamReader(url.openStream());
-						BufferedReader bufferedReader = new BufferedReader( ins );
-						String cssLine;
-						while ((cssLine = bufferedReader.readLine()) != null)
-							result.append(cssLine + "\n");
-					} catch (IOException e1) {
-						logger.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
-					}
-
-					result.append("</head><body><div class=\"content\">\n");
-
-//	            	if(description != null)
-//	            		result.append("<h2>" + description + "</h2>\n");
-	            	result.append(stripHtml(htmlContent, false) + "<br>\n");
-	            	result.append("</div>\n</body>\n</html>\n</html>");
-
-		            Html html = new Html();
-		            html.setContent(result.toString());
-		            content.appendChild(html);
-		            panelEmpty = false;
-	            }
-
-	        	// Window
-	        	int AD_Window_ID = rs.getInt(X_PA_DashboardContent.COLUMNNAME_AD_Window_ID);
-	        	if(AD_Window_ID > 0)
-	        	{
-		        	int AD_Menu_ID = rs.getInt(X_AD_Menu.COLUMNNAME_AD_Menu_ID);
-					ToolBarButton btn = new ToolBarButton(String.valueOf(AD_Menu_ID));
-					MMenu menu = new MMenu(Env.getCtx(), AD_Menu_ID, null);
-					btn.setLabel(menu.getName());
-					btn.addEventListener(Events.ON_CLICK, this);
-					content.appendChild(btn);
-					panelEmpty = false;
-	        	}
-
-	        	// Goal
-	        	int PA_Goal_ID = rs.getInt(X_PA_DashboardContent.COLUMNNAME_PA_Goal_ID);
-	        	if(PA_Goal_ID > 0)
-	        	{
-	        		String goalDisplay = rs.getString(X_PA_DashboardContent.COLUMNNAME_GoalDisplay);
-		            MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-		            WGraph graph = new WGraph(goal, 55, false, true, 
-		            		!(X_PA_DashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
-		            		X_PA_DashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
-		            content.appendChild(graph);
-		            panelEmpty = false;
-	        	}
-
-	            // ZUL file url
-	        	String url = rs.getString(X_PA_DashboardContent.COLUMNNAME_ZulFilePath);
-	        	if(url != null)
-	        	{
-		        	try {
-		                Component component = Executions.createComponents(url, content, null);
-		                if(component != null)
-		                {
-		                	if (component instanceof DashboardPanel)
-		                	{
-			                	DashboardPanel dashboardPanel = (DashboardPanel) component;
-			                	if (!dashboardPanel.getChildren().isEmpty()) {
-			                		content.appendChild(dashboardPanel);
-			                		dashboardRunnable.add(dashboardPanel);
-			                		panelEmpty = false;
-			                	}
-		                	}
-		                	else
-		                	{
-		                		content.appendChild(component);
-		                		panelEmpty = false;
-		                	}
-		                }
-					} catch (Exception e) {
-						logger.log(Level.WARNING, "Failed to create components. zul="+url, e);
-					}
-	        	}
-
-	        	if (panelEmpty)
-	        		panel.detach();
-	        }
-		} catch(Exception e) {
-			logger.log(Level.WARNING, "Failed to create dashboard content", e);
-		} finally {
-			DB.close(rs, pstmt);
-		}
-        //
-
-        //register as 0
+		//register as 0
         registerWindow(homeTab);
-
-        if (!portalLayout.getDesktop().isServerPushEnabled())
-        	portalLayout.getDesktop().enableServerPush(true);
-
-        dashboardRunnable.refreshDashboard();
-
-        dashboardThread = new Thread(dashboardRunnable, "UpdateInfo");
-        dashboardThread.setDaemon(true);
-        dashboardThread.start();
+        
+		dashboardController.render(homeTab, this);		
 	}
 
     public void onEvent(Event event)
@@ -475,15 +283,9 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 			layout.setPage(page);
 			this.page = page;
 		}
-		if (dashboardThread != null && dashboardThread.isAlive()) {
-			dashboardRunnable.stop();
-			dashboardThread.interrupt();
-
-			DashboardRunnable tmp = dashboardRunnable;
-			dashboardRunnable = new DashboardRunnable(tmp, layout.getDesktop(), this);
-			dashboardThread = new Thread(dashboardRunnable, "UpdateInfo");
-	        dashboardThread.setDaemon(true);
-	        dashboardThread.start();
+		
+		if (dashboardController != null) {
+			dashboardController.onSetPage(page, layout.getDesktop(), this);
 		}
 	}
 
@@ -496,10 +298,9 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 	}
 
 	public void logout() {
-		if (dashboardThread != null && dashboardThread.isAlive()) {
-			dashboardRunnable.stop();
-			dashboardThread.interrupt();
-		}
+		if (dashboardController != null) {
+			dashboardController.onLogOut();
+		}	
 	}
 
 	public void updateUI() {

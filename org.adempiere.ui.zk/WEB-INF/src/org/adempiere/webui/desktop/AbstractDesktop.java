@@ -56,10 +56,6 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     public void onMenuSelected(int menuId)
     {
         MMenu menu = new MMenu(Env.getCtx(), menuId, null);
-        if(menu == null)
-        {
-            return;
-        }
 
         if(menu.getAction().equals(MMenu.ACTION_Window))
         {
@@ -193,14 +189,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    		//fall back to highlighted if can't execute doModal
    		if (Events.inEventListener())
    		{
-			try
-			{
-				win.doModal();
-			}
-			catch(InterruptedException e)
-			{
-				
-			}
+			win.doModal();
    		}
    		else
    		{
@@ -252,21 +241,5 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 			win.setPosition(position);
 		
    		win.doHighlighted();
-   	}
-
-   	protected String stripHtml(String htmlString, boolean all) {
-		htmlString = htmlString
-		.replace("<html>", "")
-		.replace("</html>", "")
-		.replace("<body>", "")
-		.replace("</body>", "")
-		.replace("<head>", "")
-		.replace("</head>", "");
-		
-		if (all)
-			htmlString = htmlString
-			.replace(">", "&gt;")
-			.replace("<", "&lt;");
-		return htmlString;
-	}
+   	}   	
 }
