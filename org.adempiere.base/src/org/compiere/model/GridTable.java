@@ -2845,11 +2845,7 @@ public class GridTable extends AbstractTableModel
 		if (retainedWhere != null)
 		{
 			String whereClause = m_whereClause;
-			if (m_whereClause == null || m_whereClause.trim().length() == 0)
-			{
-				m_whereClause = retainedWhere;
-			}
-			else
+			if (m_whereClause != null && m_whereClause.trim().length() > 0)
 			{
 				m_whereClause = "(" + m_whereClause + ") OR (" + retainedWhere + ") ";
 			}
