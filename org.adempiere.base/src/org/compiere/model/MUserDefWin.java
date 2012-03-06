@@ -133,16 +133,32 @@ public class MUserDefWin extends X_AD_UserDef_Win
 		// any user  + this role + any org  => weight = 2
 		// any user  + any role  + this org => weight = 1
 		// any user  + any role  + any org  => weight = 0
+		// other user or other role or other org => weight = -1 and thus ruled out
 		for (int i=0; i < size; i++)
 		{
 			weight[i] = 0;
-			if (candidates[i].getAD_User_ID() == AD_User_ID)
-				weight[i] = weight[i] + 4;
-			if (candidates[i].getAD_Role_ID() == AD_Role_ID)
-				weight[i] = weight[i] + 2;
-			if (candidates[i].getAD_Org_ID() == AD_Org_ID)
-				weight[i] = weight[i] + 1;
-		// others are implicit
+			if (candidates[i].getAD_User_ID() > 0) {
+				if (candidates[i].getAD_User_ID() == AD_User_ID) {
+					weight[i] = weight[i] + 4;
+				} else {
+					weight[i] = -1;
+				}
+			}
+			if (weight[i] > -1 && candidates[i].getAD_Role_ID() > 0) {
+				if (candidates[i].getAD_Role_ID() == AD_Role_ID) {
+					weight[i] = weight[i] + 2;
+				} else {
+					weight[i] = -1;
+				}
+			}
+			if (weight[i] > -1 && candidates[i].getAD_Org_ID() > 0) {
+				if (candidates[i].getAD_Org_ID() == AD_Org_ID) {
+					weight[i] = weight[i] + 1;
+				} else {
+					weight[i] = -1;
+				}
+			}
+			// others are implicit
 		}
 
 	    int maximum = weight[0];   // start with the first value
@@ -154,7 +170,11 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	        }
 	    }
 
+	    if (weight[maxindex] > -1) {
 		return candidates[maxindex];
+	    } else {
+	    	return null;
+	    }
 	}
 		
 }	//	MUserDefWin
