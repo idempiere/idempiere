@@ -49,7 +49,6 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 		popupMenu = new WEditorPopupMenu(true, false, false);
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
-		getComponent().setContext(popupMenu.getId());
 	}
 
 	

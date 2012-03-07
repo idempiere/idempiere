@@ -144,7 +144,6 @@ ContextMenuListener, IZoomableEditor
         {
         	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference());
         	addChangeLogMenu(popupMenu);
-        	getComponent().setContext(popupMenu.getUuid());
         }
     }
 

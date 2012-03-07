@@ -58,7 +58,6 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		popupMenu = new WEditorPopupMenu(false, false, true);
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
-		getComponent().setContext(popupMenu.getUuid());
 	}
 
 	@Override

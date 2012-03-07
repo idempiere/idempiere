@@ -106,7 +106,6 @@ public class WDateEditor extends WEditor implements ContextMenuListener
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
-		getComponent().setContext(popupMenu.getUuid());
 	}
 
 	
