@@ -31,7 +31,7 @@ public interface I_C_DocType
     public static final String Table_Name = "C_DocType";
 
     /** AD_Table_ID=217 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 217;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_DocType
 	  */
 	public int getAD_PrintFormat_ID();
 
-	public I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name C_DocTypeDifference_ID */
     public static final String COLUMNNAME_C_DocTypeDifference_ID = "C_DocTypeDifference_ID";
@@ -90,7 +90,7 @@ public interface I_C_DocType
 	  */
 	public int getC_DocTypeDifference_ID();
 
-	public I_C_DocType getC_DocTypeDifference() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocTypeDifference() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -118,7 +118,7 @@ public interface I_C_DocType
 	  */
 	public int getC_DocTypeInvoice_ID();
 
-	public I_C_DocType getC_DocTypeInvoice() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocTypeInvoice() throws RuntimeException;
 
     /** Column name C_DocTypeProforma_ID */
     public static final String COLUMNNAME_C_DocTypeProforma_ID = "C_DocTypeProforma_ID";
@@ -133,7 +133,7 @@ public interface I_C_DocType
 	  */
 	public int getC_DocTypeProforma_ID();
 
-	public I_C_DocType getC_DocTypeProforma() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocTypeProforma() throws RuntimeException;
 
     /** Column name C_DocTypeShipment_ID */
     public static final String COLUMNNAME_C_DocTypeShipment_ID = "C_DocTypeShipment_ID";
@@ -148,7 +148,16 @@ public interface I_C_DocType
 	  */
 	public int getC_DocTypeShipment_ID();
 
-	public I_C_DocType getC_DocTypeShipment() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocTypeShipment() throws RuntimeException;
+
+    /** Column name C_DocType_UU */
+    public static final String COLUMNNAME_C_DocType_UU = "C_DocType_UU";
+
+	/** Set C_DocType_UU	  */
+	public void setC_DocType_UU (String C_DocType_UU);
+
+	/** Get C_DocType_UU	  */
+	public String getC_DocType_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -175,7 +184,7 @@ public interface I_C_DocType
 	/** Get Definite Sequence	  */
 	public int getDefiniteSequence_ID();
 
-	public I_AD_Sequence getDefiniteSequence() throws RuntimeException;
+	public org.compiere.model.I_AD_Sequence getDefiniteSequence() throws RuntimeException;
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -216,7 +225,7 @@ public interface I_C_DocType
 	  */
 	public int getDocNoSequence_ID();
 
-	public I_AD_Sequence getDocNoSequence() throws RuntimeException;
+	public org.compiere.model.I_AD_Sequence getDocNoSequence() throws RuntimeException;
 
     /** Column name DocSubTypeSO */
     public static final String COLUMNNAME_DocSubTypeSO = "DocSubTypeSO";
@@ -270,7 +279,7 @@ public interface I_C_DocType
 	  */
 	public int getGL_Category_ID();
 
-	public I_GL_Category getGL_Category() throws RuntimeException;
+	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException;
 
     /** Column name HasCharges */
     public static final String COLUMNNAME_HasCharges = "HasCharges";
@@ -310,6 +319,15 @@ public interface I_C_DocType
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsChargeOrProductMandatory */
+    public static final String COLUMNNAME_IsChargeOrProductMandatory = "IsChargeOrProductMandatory";
+
+	/** Set Mandatory Charge or Product	  */
+	public void setIsChargeOrProductMandatory (boolean IsChargeOrProductMandatory);
+
+	/** Get Mandatory Charge or Product	  */
+	public boolean isChargeOrProductMandatory();
 
     /** Column name IsCreateCounter */
     public static final String COLUMNNAME_IsCreateCounter = "IsCreateCounter";
