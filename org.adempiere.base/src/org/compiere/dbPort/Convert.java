@@ -435,7 +435,13 @@ public abstract class Convert
 	public static void logMigrationScript(String oraStatement, String pgStatement) {
 		// Check AdempiereSys
 		// check property Log migration script
-		boolean logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		boolean logMigrationScript = false;
+		if (Ini.isClient()) {
+			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		} else {
+			String sysProperty = System.getProperty(Ini.P_LOGMIGRATIONSCRIPT);
+			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
 		if (logMigrationScript) {
 			if (dontLog(oraStatement))
 				return;
