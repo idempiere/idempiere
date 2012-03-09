@@ -1046,7 +1046,15 @@ public class MCostDetail extends X_M_CostDetail
 			if (ce.isAverageInvoice())
 			{
 				if (addition)
+				{
 					cost.setWeightedAverage(amt, qty);
+					//shouldn't accumulate reversal of customer shipment qty and amt
+					if (isShipment())
+					{
+						cost.setCumulatedQty(history.getOldCQty());
+						cost.setCumulatedAmt(history.getOldCAmt());
+					}
+				}
 				else
 					cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				log.finer("QtyAdjust - AverageInv - " + cost);
@@ -1054,7 +1062,15 @@ public class MCostDetail extends X_M_CostDetail
 			else if (ce.isAveragePO())
 			{
 				if (addition)
+				{
 					cost.setWeightedAverage(amt, qty);
+					//shouldn't accumulate reversal of customer shipment qty and amt
+					if (isShipment())
+					{
+						cost.setCumulatedQty(history.getOldCQty());
+						cost.setCumulatedAmt(history.getOldCAmt());
+					}
+				}
 				else
 					cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				log.finer("QtyAdjust - AveragePO - " + cost);
