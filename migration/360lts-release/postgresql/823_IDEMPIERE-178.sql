@@ -82,3 +82,8 @@ INSERT INTO AD_Message_Trl (AD_Language,AD_Message_ID, MsgText,MsgTip, IsTransla
 UPDATE AD_Message_Trl SET IsTranslated='Y',MsgText='En este documento se debe diligenciar el cargo o el producto',Updated=TO_TIMESTAMP('2012-03-07 15:18:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200003 AND AD_Language LIKE 'es_%'
 ;
 
+UPDATE AD_System
+  SET LastMigrationScriptApplied='823_IDEMPIERE-178.sql'
+WHERE LastMigrationScriptApplied<'823_IDEMPIERE-178.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
