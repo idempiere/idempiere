@@ -16,12 +16,15 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.SimpleTreeModel;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
@@ -38,13 +41,14 @@ public class ADTreePanel extends Panel implements EventListener
 	 * 
 	 */
 	private static final long serialVersionUID = -3046550099597437942L;
+	private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
 	private TreeSearchPanel pnlSearch;
     private Tree tree;
     
-    private Checkbox chkExpand; // Elaine 2009/02/27 - expand tree
+    private ToolBarButton expandToggle; // Elaine 2009/02/27 - expand tree
 	private int m_windowno = -1;
 	private int m_tabno = -1;
-    
+    	
     public ADTreePanel()
     {
         init();        
@@ -83,6 +87,7 @@ public class ADTreePanel extends Panel implements EventListener
         pnlSearch = new TreeSearchPanel(tree, Events.ON_SELECT, m_windowno, m_tabno);
         
         Toolbar toolbar = new Toolbar();
+        toolbar.setMold("panel");
         toolbar.appendChild(pnlSearch);
         this.appendChild(toolbar);
         
@@ -92,11 +97,15 @@ public class ADTreePanel extends Panel implements EventListener
         
         // Elaine 2009/02/27 - expand tree
         toolbar = new Toolbar();
-        chkExpand = new Checkbox();
-        chkExpand.setText(Msg.getMsg(Env.getCtx(), "ExpandTree"));
-        chkExpand.addEventListener(Events.ON_CHECK, this);
-        toolbar.appendChild(chkExpand);
+        toolbar.setMold("panel");
+        expandToggle = new ToolBarButton();
+        expandToggle.setMode("toggle");
+        expandToggle.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ExpandTree")));
+        expandToggle.addEventListener(Events.ON_CHECK, this);
+        toolbar.appendChild(expandToggle);
         this.appendChild(toolbar);
+        
+        this.addEventListener(ON_EXPAND_MENU_EVENT, this);
     }
     
     /**
@@ -108,9 +117,15 @@ public class ADTreePanel extends Panel implements EventListener
         String eventName = event.getName();
         
         // Elaine 2009/02/27 - expand tree
-        if (eventName.equals(Events.ON_CHECK) && event.getTarget() == chkExpand)
+        if (eventName.equals(Events.ON_CHECK) && event.getTarget() == expandToggle)
+        {
+        	Clients.showBusy(null);
+        	Events.echoEvent(ON_EXPAND_MENU_EVENT, this, null);
+        }
+        else if (eventName.equals(ON_EXPAND_MENU_EVENT)) 
         {
         	expandOnCheck();
+        	Clients.clearBusy();
         }
         //
     }
@@ -128,8 +143,8 @@ public class ADTreePanel extends Panel implements EventListener
 	*/
 	public void expandAll()
 	{
-		if (!chkExpand.isChecked())
-			chkExpand.setChecked(true);
+		if (!expandToggle.isChecked())
+			expandToggle.setChecked(true);
 	
 		TreeUtils.expandAll(tree);
 	}
@@ -139,8 +154,8 @@ public class ADTreePanel extends Panel implements EventListener
 	 */
 	public void collapseAll()
 	{
-		if (chkExpand.isChecked())
-			chkExpand.setChecked(false);
+		if (expandToggle.isChecked())
+			expandToggle.setChecked(false);
 	
 		TreeUtils.collapseAll(tree);
 	}
@@ -150,10 +165,10 @@ public class ADTreePanel extends Panel implements EventListener
 	 */
 	private void expandOnCheck()
 	{
-		if (chkExpand.isChecked())
+		if (expandToggle.isChecked())
 			expandAll();
 		else
 			collapseAll();
 	}
-	//
+	//	
 }
