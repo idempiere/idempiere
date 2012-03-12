@@ -37,6 +37,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.DefaultTreeNode;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.event.TreeDataEvent;
@@ -105,17 +106,11 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
 
     private void init()
     {
-    	Div div = new Div();
+    	Hlayout hLayout = new Hlayout();
+    	hLayout.setValign("middle");
         lblSearch = new Label();
         lblSearch.setValue(Msg.getMsg(Env.getCtx(),"TreeSearch").replaceAll("&", "") + ":");
         lblSearch.setTooltiptext(Msg.getMsg(Env.getCtx(),"TreeSearchText"));
-        div.appendChild(lblSearch);
-        String divStyle = "height: 20px; vertical-align: middle;";
-        if (!AEnv.isInternetExplorer())
-        {
-        	divStyle += "margin-bottom: 10px; display: inline-block;";
-        }
-        div.setStyle(divStyle);
 
         cmbSearch = new AutoComplete();
         cmbSearch.setAutodrop(true);
@@ -127,12 +122,10 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
         	cmbSearch.setWidth("200px");
         }
 
-        this.appendChild(div);
-        this.appendChild(cmbSearch);
-        if (!AEnv.isInternetExplorer())
-        {
-        	this.setStyle("height: 20px;");
-    	}
+        hLayout.appendChild(lblSearch);
+        hLayout.appendChild(cmbSearch);
+        this.appendChild(hLayout);
+        this.setStyle("padding: 2px");	
     }
 
     private void addTreeItem(Treeitem treeItem)

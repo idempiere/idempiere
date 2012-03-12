@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
@@ -31,10 +32,12 @@ import org.compiere.model.MTreeNode;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
@@ -53,7 +56,8 @@ import org.zkoss.zul.Treerow;
  */
 public class MenuPanel extends Panel implements EventListener
 {
-    /**
+    private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -593280866781665891L;
@@ -62,7 +66,7 @@ public class MenuPanel extends Panel implements EventListener
     private Tree menuTree;
     private ArrayList<MenuListener> menuListeners = new ArrayList<MenuListener>();
     
-    private Checkbox chkExpand; // Elaine 2009/02/27 - expand tree
+	private ToolBarButton expandToggle;
     
     public MenuPanel()
     {
@@ -92,7 +96,7 @@ public class MenuPanel extends Panel implements EventListener
         menuTree.setId("mnuMain");
         menuTree.setWidth("100%");
         menuTree.setVflex(true);
-        menuTree.setFixedLayout(false);
+        menuTree.setSizedByContent(true);
         menuTree.setPageSize(-1); // Due to bug in the new paging functionality
         
         menuTree.setStyle("border: none");
@@ -100,6 +104,7 @@ public class MenuPanel extends Panel implements EventListener
         pnlSearch = new TreeSearchPanel(menuTree);
         
         Toolbar toolbar = new Toolbar();
+        toolbar.setMold("panel");
         toolbar.appendChild(pnlSearch);
         this.appendChild(toolbar);
         
@@ -109,11 +114,16 @@ public class MenuPanel extends Panel implements EventListener
         
         // Elaine 2009/02/27 - expand tree
         toolbar = new Toolbar();
-        chkExpand = new Checkbox();
-        chkExpand.setText(Msg.getMsg(Env.getCtx(), "ExpandTree"));
-        chkExpand.addEventListener(Events.ON_CHECK, this);
-        toolbar.appendChild(chkExpand);
+        toolbar.setStyle("verticle-align: middle; padding: 2px");
+        expandToggle = new ToolBarButton();
+        expandToggle.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ExpandTree")));
+        expandToggle.setMode("toggle");
+        expandToggle.addEventListener(Events.ON_CHECK, this);
+        toolbar.appendChild(expandToggle);
+        toolbar.setMold("panel");
         this.appendChild(toolbar);
+        
+        this.addEventListener(ON_EXPAND_MENU_EVENT, this);
     }
     
     private void initMenu(MTreeNode rootNode)
@@ -214,9 +224,15 @@ public class MenuPanel extends Panel implements EventListener
         	}
         }
         // Elaine 2009/02/27 - expand tree
-        else if (eventName.equals(Events.ON_CHECK) && event.getTarget() == chkExpand)
+        else if (eventName.equals(Events.ON_CHECK) && event.getTarget() == expandToggle)
+        {
+        	Clients.showBusy(null);
+        	Events.echoEvent(ON_EXPAND_MENU_EVENT, this, null);        	
+        }
+        else if (eventName.equals(ON_EXPAND_MENU_EVENT)) 
         {
         	expandOnCheck();
+        	Clients.clearBusy();
         }
         //
     }
@@ -251,8 +267,8 @@ public class MenuPanel extends Panel implements EventListener
 	*/
 	public void expandAll()
 	{
-		if (!chkExpand.isChecked())
-			chkExpand.setChecked(true);
+		if (!expandToggle.isChecked())
+			expandToggle.setChecked(true);
 	
 		TreeUtils.expandAll(menuTree);
 	}
@@ -262,8 +278,8 @@ public class MenuPanel extends Panel implements EventListener
 	 */
 	public void collapseAll()
 	{
-		if (chkExpand.isChecked())
-			chkExpand.setChecked(false);
+		if (expandToggle.isChecked())
+			expandToggle.setChecked(false);
 	
 		TreeUtils.collapseAll(menuTree);
 	}
@@ -273,7 +289,7 @@ public class MenuPanel extends Panel implements EventListener
 	 */
 	private void expandOnCheck()
 	{
-		if (chkExpand.isChecked())
+		if (expandToggle.isChecked())
 			expandAll();
 		else
 			collapseAll();
