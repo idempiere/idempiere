@@ -12,6 +12,7 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
@@ -146,6 +147,10 @@ public class ADTreeOnDropListener implements EventListener {
 		treeModel.addNode(newParent, movingNode, index);
 		
 		int path[] = treeModel.getPath(movingNode);
+		if (TreeUtils.isOnInitRenderPosted(tree))
+		{
+			tree.onInitRender();
+		}
 		Treeitem movingItem = tree.renderItemByPath(path);		
 		tree.setSelectedItem(movingItem);
 		Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));

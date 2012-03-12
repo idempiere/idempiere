@@ -29,6 +29,12 @@ import org.zkoss.zul.Treeitem;
 public class TreeUtils {
 
 	/**
+	 * copy from Tree.java
+	 */
+	private static final String ATTR_ON_INIT_RENDER_POSTED =
+			"org.zkoss.zul.Tree.onInitLaterPosted";
+		
+	/**
 	 * Collapse all nodes
 	 * @param tree
 	 */
@@ -125,5 +131,12 @@ public class TreeUtils {
 			}
 			traverse(model, child, action);
 		}
+	}
+	
+	public static boolean isOnInitRenderPosted(Tree tree) {
+		if (tree.getAttribute(ATTR_ON_INIT_RENDER_POSTED) != null) {
+			return ((Boolean)tree.getAttribute(ATTR_ON_INIT_RENDER_POSTED)).booleanValue();
+		}
+		return false;
 	}
 }

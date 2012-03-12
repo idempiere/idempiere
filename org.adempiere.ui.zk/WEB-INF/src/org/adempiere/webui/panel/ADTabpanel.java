@@ -47,6 +47,7 @@ import org.adempiere.webui.editor.WEditorPopupMenu;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.util.GridTabDataBinder;
+import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -982,6 +983,11 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 
 	private void setSelectedNode(int recordId) {
 		if (recordId <= 0) return;
+		
+		//force on init render
+		if (TreeUtils.isOnInitRenderPosted(treePanel.getTree())) {
+			treePanel.getTree().onInitRender();
+		}
 
 		if (treePanel.getTree().getSelectedItem() != null) {
 			DefaultTreeNode treeNode = (DefaultTreeNode) treePanel.getTree().getSelectedItem().getValue();
@@ -994,7 +1000,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 		if (treeNode != null) {
 			int[] path = model.getPath(treeNode);
 			Treeitem ti = treePanel.getTree().renderItemByPath(path);
-			treePanel.getTree().setSelectedItem(ti);
+			treePanel.getTree().selectItem(ti);
 		} else {
 			addNewNode();
 		}

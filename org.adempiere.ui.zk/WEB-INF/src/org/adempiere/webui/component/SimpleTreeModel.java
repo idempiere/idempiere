@@ -88,7 +88,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 		treeCols.appendChild(treeCol);
 		tree.setPageSize(-1);
 		try {
-			tree.setTreeitemRenderer(treeModel);
+			tree.setItemRenderer(treeModel);
 			tree.setModel(treeModel);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Failed to setup tree");
@@ -106,10 +106,11 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 		SimpleTreeModel model = null;
 		Enumeration nodeEnum = root.children();
 	    
-		DefaultTreeNode stRoot = new DefaultTreeNode(root, new ArrayList());
+		DefaultTreeNode stRoot = new DefaultTreeNode(root, nodeEnum.hasMoreElements() ? new ArrayList() : null);
         while(nodeEnum.hasMoreElements()) {
         	MTreeNode childNode = (MTreeNode)nodeEnum.nextElement();
-        	DefaultTreeNode stNode = new DefaultTreeNode(childNode, new ArrayList());
+        	DefaultTreeNode stNode = childNode.getChildCount() > 0 ? new DefaultTreeNode(childNode,  new ArrayList()) 
+        		: new DefaultTreeNode(childNode); 
         	stRoot.getChildren().add(stNode);
         	if (childNode.getChildCount() > 0) {
         		populate(stNode, childNode);
@@ -123,7 +124,8 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 		Enumeration nodeEnum = root.children();
 		while(nodeEnum.hasMoreElements()) {
 			MTreeNode childNode = (MTreeNode)nodeEnum.nextElement();
-			DefaultTreeNode stChildNode = new DefaultTreeNode(childNode, new ArrayList());
+			DefaultTreeNode stChildNode = childNode.getChildCount() > 0 ? new DefaultTreeNode(childNode, new ArrayList())
+				: new DefaultTreeNode(childNode);
 			stNode.getChildren().add(stChildNode);
 			if (childNode.getChildCount() > 0) {
 				populate(stChildNode, childNode);
@@ -135,7 +137,8 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	 * @param ti
 	 * @param node
 	 */
-	public void render(Treeitem ti, Object node) {
+	@Override
+	public void render(Treeitem ti, Object node, int index) {
 		Treecell tc = new Treecell(Objects.toString(node));
 		Treerow tr = null;
 		if(ti.getTreerow()==null){
@@ -164,7 +167,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	public void addNode(DefaultTreeNode newNode) {
 		DefaultTreeNode root = (DefaultTreeNode) getRoot();
 		root.getChildren().add(newNode);
-		fireEvent(root, root.getChildCount() - 1, root.getChildCount() - 1, TreeDataEvent.INTERVAL_ADDED);
+		fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(root), root.getChildCount() - 1, root.getChildCount() - 1);
 	}
 
 	@Override
@@ -191,8 +194,8 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 			}
 			
 			
-			parentNode.getChildren().remove(path[index]);
-			fireEvent(parentNode, path[index], path[index], TreeDataEvent.INTERVAL_REMOVED);
+			parentNode.getChildren().remove(path[index]);			
+			fireEvent(TreeDataEvent.INTERVAL_REMOVED, getPath(parentNode), path[index], path[index]);
 		}
 	}
 	
@@ -256,8 +259,15 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	 */
 	public void addNode(DefaultTreeNode newParent, DefaultTreeNode newNode,
 			int index) {
-		newParent.getChildren().add(index, newNode);
-		fireEvent(newParent, index, index, TreeDataEvent.INTERVAL_ADDED);
+		DefaultTreeNode parent = newParent;
+		if (newParent.getChildren() == null) {
+			parent = new DefaultTreeNode(newParent.getData(), new ArrayList());
+			newParent.getParent().insert(parent, newParent.getParent().getIndex(newParent));
+			removeNode(newParent);
+		}
+		
+		parent.getChildren().add(index, newNode);
+		fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(parent), index, index);
 	}
 	
 	/**
@@ -290,13 +300,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 		DefaultTreeNode parent = getParent(node);
 		if (parent != null) {
 			int i = parent.getChildren().indexOf(node);
-			fireEvent(parent, i, i, TreeDataEvent.CONTENTS_CHANGED);
+			fireEvent(TreeDataEvent.CONTENTS_CHANGED, getPath(parent), i, i);
 		}
-	}
-
-	@Override
-	public void render(Treeitem arg0, Object arg1, int arg2) throws Exception {
-		// TODO Auto-generated method stub
-		
 	}
 }
