@@ -89,7 +89,7 @@ public final class WAccountDialog extends Window
 		super ();
 		this.setTitle(title);
 		this.setHeight("500px");
-		this.setWidth("700px");
+		this.setWidth("750px");
 
 		log.config("C_AcctSchema_ID=" + C_AcctSchema_ID
 			+ ", C_ValidCombination_ID=" + mAccount.C_ValidCombination_ID);
@@ -183,6 +183,7 @@ public final class WAccountDialog extends Window
 		//
 		Caption caption = new Caption(Msg.getMsg(Env.getCtx(),"Parameter"));
 		parameterPanel.appendChild(caption);
+		parameterPanel.setHflex("1");
 		parameterPanel.setStyle("background-color: transparent;");
 		toolBar.setOrient("vertical");
 		toolBar.setStyle("border: none; margin: 5px");
@@ -211,19 +212,9 @@ public final class WAccountDialog extends Window
 
 		Borderlayout layout = new Borderlayout();
 		layout.setParent(this);
-		if (AEnv.isFirefox2())
-		{
-			layout.setHeight("93%");
-			layout.setWidth("98%");
-			layout.setStyle("background-color: transparent; position: absolute;");
-			this.setStyle("position: relative;");
-		}
-		else
-		{
-			layout.setHeight("100%");
-			layout.setWidth("100%");
-			layout.setStyle("background-color: transparent;");
-		}
+		layout.setHeight("100%");
+		layout.setWidth("100%");
+		layout.setStyle("background-color: transparent;");
 
 		North nRegion = new North();
 		nRegion.setParent(layout);
@@ -305,7 +296,7 @@ public final class WAccountDialog extends Window
 		parameterLayout.makeNoStrip();
 		parameterLayout.setOddRowSclass("even");
 		parameterLayout.setParent(parameterPanel);
-		parameterLayout.setStyle("background-color: transparent;");
+		parameterLayout.setStyle("background-color: transparent; margin:none; border:none; padding:none;");
 
 		m_rows = new Rows();
 		m_rows.setParent(parameterLayout);
@@ -496,7 +487,8 @@ public final class WAccountDialog extends Window
 		m_row.appendChild(div);
 
 		m_row.appendChild(editor.getComponent());
-		editor.dynamicDisplay();
+		editor.fillHorizontal();
+		editor.dynamicDisplay();		
 		//
 		m_newRow = !m_newRow;
 	}	//	addLine
