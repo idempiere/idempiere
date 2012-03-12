@@ -60,6 +60,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	image  = new Image(ThemeManager.getSmallLogo());
     	image.addEventListener(Events.ON_CLICK, this);
     	image.setStyle("cursor: pointer;");
+    	image.setWidth("100px");
 
     	Borderlayout layout = new Borderlayout();
     	LayoutUtils.addSclass("desktop-header", layout);
