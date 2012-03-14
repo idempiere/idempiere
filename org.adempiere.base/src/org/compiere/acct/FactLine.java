@@ -112,6 +112,21 @@ public final class FactLine extends X_Fact_Acct
 		reversal.setQty(getQty().negate());
 		reversal.convert();
 		reversal.setDescription(description);
+		
+		reversal.setC_BPartner_ID(getC_BPartner_ID());
+		reversal.setM_Product_ID(getM_Product_ID());
+		reversal.setC_Project_ID(getC_Project_ID());
+		reversal.setC_Campaign_ID(getC_Campaign_ID());
+		reversal.setC_Activity_ID(getC_Activity_ID());
+		reversal.setAD_OrgTrx_ID(getAD_OrgTrx_ID());
+		reversal.setC_SalesRegion_ID(getC_SalesRegion_ID());
+		reversal.setC_LocTo_ID(getC_LocTo_ID());
+		reversal.setC_LocFrom_ID(getC_LocFrom_ID());
+		reversal.setUser1_ID(getUser1_ID());
+		reversal.setUser2_ID(getUser1_ID());
+		reversal.setUserElement1_ID(getUserElement1_ID());
+		reversal.setUserElement2_ID(getUserElement2_ID());
+		
 		return reversal;
 	}	//	reverse
 
