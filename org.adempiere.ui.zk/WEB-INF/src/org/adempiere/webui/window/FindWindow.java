@@ -282,11 +282,13 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
         Panel pnlButtonRight = new Panel();
         pnlButtonRight.appendChild(btnOk);
         pnlButtonRight.appendChild(btnCancel);
-        pnlButtonRight.setAlign("right");
+        pnlButtonRight.setStyle("text-align:right");
         pnlButtonRight.setWidth("100%");
+        pnlButtonRight.setHflex("1");
 
         Panel pnlButtonLeft = new Panel();
         pnlButtonLeft.appendChild(btnNew);
+        pnlButtonLeft.setHflex("1");
 
         Hbox hboxButton = new Hbox();
         hboxButton.appendChild(pnlButtonLeft);

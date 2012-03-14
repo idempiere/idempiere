@@ -229,20 +229,24 @@ public final class ConfirmPanel extends Hbox
     private void init()
     {
         pnlBtnLeft = new Panel();
-        pnlBtnLeft.setAlign("left");
+        pnlBtnLeft.setStyle("text-align:left");
 
         pnlBtnRight = new Panel();
-        pnlBtnRight.setAlign("right");
+        pnlBtnRight.setStyle("text-align:right");
 
         hboxBtnRight = new Hbox();
         hboxBtnRight.appendChild(pnlBtnRight);
         hboxBtnRight.setWidth("100%");
-        hboxBtnRight.setStyle("text-align:right");
+//        hboxBtnRight.setStyle("text-align:right");
+        hboxBtnRight.setPack("end");
+        hboxBtnRight.setHflex("1");
 
         hboxBtnLeft = new Hbox();
         hboxBtnLeft.appendChild(pnlBtnLeft);
         hboxBtnLeft.setWidth("100%");
-        hboxBtnLeft.setStyle("text-align:left");
+//        hboxBtnLeft.setStyle("text-align:left");
+        hboxBtnLeft.setPack("start");
+        hboxBtnLeft.setHflex("1");
 
         this.appendChild(hboxBtnLeft);
         this.appendChild(hboxBtnRight);

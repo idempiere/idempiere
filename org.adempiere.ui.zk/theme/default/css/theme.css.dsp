@@ -162,6 +162,11 @@ html,body {
 	width: 80px;
 }
 
+.action-image-text-button {
+	height: 32px;
+	width: 80px;
+}
+
 .editor-button {
 	width: 26px;
 	padding: 0px;
