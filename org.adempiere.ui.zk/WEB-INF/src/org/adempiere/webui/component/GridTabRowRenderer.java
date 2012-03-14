@@ -491,8 +491,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            {
 		            	popupMenu.addMenuListener((ContextMenuListener)editor);
 		            	div.appendChild(popupMenu);
-		            }
-		            popupMenu.addContextElement((XulElement) editor.getComponent());
+		            	popupMenu.addContextElement((XulElement) editor.getComponent());
+		            }		            
 		            
 		            //check context
 					if (!gridField[i].isDisplayed(true)) 
