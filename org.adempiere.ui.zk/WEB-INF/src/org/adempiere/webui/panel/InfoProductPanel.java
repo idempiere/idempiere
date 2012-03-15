@@ -203,6 +203,11 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		//	AutoQuery
 		if (value != null && value.length() > 0)
         {
+	        //	Set Value
+	        if (value.indexOf("_") > 0) {
+	        	String values[] = value.split("_");
+	        	value = values[0];
+	        }
 			//	Set Value or Name
 			fieldValue.setText(value);
 			testCount();
