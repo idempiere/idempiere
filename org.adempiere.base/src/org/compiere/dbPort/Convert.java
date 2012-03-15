@@ -485,6 +485,7 @@ public abstract class Convert
 				"AD_PINSTANCE",
 				"AD_PINSTANCE_LOG",
 				"AD_PINSTANCE_PARA",
+				"AD_RECENTITEM",
 				"AD_REPLICATION_LOG",
 				"AD_SCHEDULERLOG",
 				"AD_SESSION",
