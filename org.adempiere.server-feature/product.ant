@@ -39,6 +39,7 @@
 			<arg value="-p2.arch" />
 			<arg value="${target.arch}" />
 			<arg value="-consoleLog"/>
+			<arg value="-roaming"/>
 			<!-- jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/ -->
 		</java>
 	</target>

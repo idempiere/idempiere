@@ -202,7 +202,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	public void onEvent(Event e)
 	{
-		if (Events.ON_CHANGE.equals(e.getName()) || Events.ON_OK.equals(e.getName()))
+		if (Events.ON_CHANGE.equals(e.getName()))
 		{
 			if (infoPanel != null)
 		 	{
@@ -210,7 +210,19 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		 	 	infoPanel = null;
 		 	}
 			actionText(getComponent().getText());
-
+		}
+		else if ((Events.ON_OK.equals(e.getName()))) {
+			if (getComponent().getText() == null || getComponent().getText().length() == 0) {
+				// open Info window similar to swing client
+				if (infoPanel != null)
+			 	{
+					infoPanel.detach();
+			 	 	infoPanel = null;
+			 	}
+				actionText(getComponent().getText());
+			} else {
+				actionRefresh(getValue());
+			}
 		}
 		else if (Events.ON_CLICK.equals(e.getName()))
 		{

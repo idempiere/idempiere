@@ -88,7 +88,17 @@ public class MSequence extends X_AD_Sequence
 		int retValue = -1;
 
 		//	Check AdempiereSys
-		boolean adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
+		boolean adempiereSys = false;
+		if (Ini.isClient()) 
+		{
+			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
+		} 
+		else
+		{
+			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
+		
 		if (adempiereSys && AD_Client_ID > 11)
 			adempiereSys = false;
 		//
@@ -398,7 +408,16 @@ public class MSequence extends X_AD_Sequence
 			throw new IllegalArgumentException("TableName missing");
 
 		//	Check AdempiereSys
-		boolean adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
+		boolean adempiereSys = false;
+		if (Ini.isClient()) 
+		{
+			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
+		} 
+		else
+		{
+			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
 		if (adempiereSys && AD_Client_ID > 11)
 			adempiereSys = false;
 		//
@@ -704,7 +723,16 @@ public class MSequence extends X_AD_Sequence
 		}
 
 		//	Check AdempiereSys
-		boolean adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
+		boolean adempiereSys = false;
+		if (Ini.isClient()) 
+		{
+			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
+		} 
+		else
+		{
+			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
 		if (CLogMgt.isLevel(LOGLEVEL))
 			s_log.log(LOGLEVEL, "DocType_ID=" + C_DocType_ID + " [" + trxName + "]");
 
@@ -1580,6 +1608,7 @@ public class MSequence extends X_AD_Sequence
 				"AD_PINSTANCE",
 				"AD_PINSTANCE_LOG",
 				"AD_PINSTANCE_PARA",
+				"AD_RECENTITEM",
 				"AD_REPLICATION_LOG",
 				"AD_SCHEDULERLOG",
 				"AD_SESSION",
