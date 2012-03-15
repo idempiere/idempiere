@@ -37,11 +37,16 @@ import org.zkoss.zul.Space;
  *
  */
 public class WPreference extends Popup implements EventListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8223456746437563389L;
 
-	private static final long serialVersionUID = 7163067116469715021L;
 	private WYesNoEditor autoCommit;
 	private WYesNoEditor autoNew;
 	private WYesNoEditor tabCollapsible;
+	private WYesNoEditor adempiereSys;
+	private WYesNoEditor logMigrationScript;
 	private Listbox tabPlacement;
 
 	public WPreference() {
@@ -87,6 +92,26 @@ public class WPreference extends Popup implements EventListener {
 		tabPlacement.appendItem(Msg.getMsg(Env.getCtx(), "Right", true), "Right");
 		div.appendChild(tabPlacement);
 		this.appendChild(div);
+
+		if (Env.getAD_Client_ID(Env.getCtx()) <= 20 && Env.getAD_User_ID(Env.getCtx()) <= 102) {
+			adempiereSys = new WYesNoEditor("AdempiereSys", Msg.getMsg(Env.getCtx(), "AdempiereSys", true),
+					null, false, false, true);
+			adempiereSys.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), "AdempiereSys", false));
+			div = new Div();
+			div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
+			div.appendChild(adempiereSys.getComponent());
+			this.appendChild(div);
+			adempiereSys.setValue(Env.getCtx().getProperty("AdempiereSys"));
+
+			logMigrationScript = new WYesNoEditor("LogMigrationScript", Msg.getMsg(Env.getCtx(), "LogMigrationScript", true),
+					null, false, false, true);
+			logMigrationScript.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), "LogMigrationScript", false));
+			div = new Div();
+			div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
+			div.appendChild(logMigrationScript.getComponent());
+			this.appendChild(div);
+			logMigrationScript.setValue(Env.getCtx().getProperty("LogMigrationScript"));
+		}
 
 		Separator separator = new Separator();
 		separator.setSpacing("20px");
@@ -134,6 +159,12 @@ public class WPreference extends Popup implements EventListener {
 		//update context
 		Env.setAutoCommit(Env.getCtx(), "y".equalsIgnoreCase(preference.getProperty(UserPreference.P_AUTO_COMMIT)));
 		Env.setAutoNew(Env.getCtx(), "y".equalsIgnoreCase(preference.getProperty(UserPreference.P_AUTO_NEW)));
+		
+		// Log Migration Script and AdempiereSys are just in-memory preferences, must not be saved
+		if (logMigrationScript != null)
+			Env.getCtx().setProperty("LogMigrationScript", (Boolean)logMigrationScript.getValue() ? "Y" : "N");
+		if (adempiereSys != null)
+			Env.getCtx().setProperty("AdempiereSys", (Boolean)adempiereSys.getValue() ? "Y" : "N");
 
 		this.detach();
 	}
