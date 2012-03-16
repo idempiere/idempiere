@@ -459,3 +459,13 @@ div.z-vfiletree-body td.menu-tree-cell {
 .z-timebox-focus .z-timebox-inp {
 	background: #FFFFCC;
 }
+
+%-- Editor --%>
+.editor-box {
+	display: inline-block;
+	border: none; padding: 0px; margin: 0px; background-color: transparent;
+}
+
+.number-box {
+	display: inline-block; white-space:nowrap;
+}

@@ -111,9 +111,7 @@ public class NumberBox extends Div
         btn.setStyle("text-align: center;");
         appendChild(popup);
      
-        String style = AEnv.isFirefox2() ? "display: inline" : "display: inline-block"; 
-        style = style + ";white-space:nowrap";
-        this.setStyle(style);	     
+        LayoutUtils.addSclass(".number-box", this);	     
     }
     
     /**

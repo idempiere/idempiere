@@ -87,11 +87,7 @@ public class EditorBox extends Div {
 		LayoutUtils.addSclass("editor-button", btn);
 		btnColumn.appendChild(btn);
 
-		String style = AEnv.isFirefox2() ? "display: inline"
-				: "display: inline-block";
-		style = style
-				+ ";border: none; padding: 0px; margin: 0px; background-color: transparent;";
-		this.setStyle(style);
+		LayoutUtils.addSclass("editor-box", this);
 	}
 
 	/**
