@@ -88,16 +88,7 @@ public class MSequence extends X_AD_Sequence
 		int retValue = -1;
 
 		//	Check AdempiereSys
-		boolean adempiereSys = false;
-		if (Ini.isClient()) 
-		{
-			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
-		} 
-		else
-		{
-			String sysProperty = System.getProperty(Ini.P_ADEMPIERESYS);
-			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		}
+		boolean adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
 		if (adempiereSys && AD_Client_ID > 11)
 			adempiereSys = false;
 		//
