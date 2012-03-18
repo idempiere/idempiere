@@ -39,6 +39,7 @@ import org.compiere.db.Database;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.Ini;
 
 /**
@@ -435,7 +436,13 @@ public abstract class Convert
 	public static void logMigrationScript(String oraStatement, String pgStatement) {
 		// Check AdempiereSys
 		// check property Log migration script
-		boolean logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		boolean logMigrationScript = false;
+		if (Ini.isClient()) {
+			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		} else {
+			String sysProperty = Env.getCtx().getProperty("LogMigrationScript", "N");
+			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
 		if (logMigrationScript) {
 			if (dontLog(oraStatement))
 				return;
@@ -485,6 +492,7 @@ public abstract class Convert
 				"AD_PINSTANCE",
 				"AD_PINSTANCE_LOG",
 				"AD_PINSTANCE_PARA",
+				"AD_RECENTITEM",
 				"AD_REPLICATION_LOG",
 				"AD_SCHEDULERLOG",
 				"AD_SESSION",

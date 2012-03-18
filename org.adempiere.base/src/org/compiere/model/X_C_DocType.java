@@ -30,7 +30,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120307L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -92,9 +92,9 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
     {
-		return (I_AD_PrintFormat)MTable.get(getCtx(), I_AD_PrintFormat.Table_Name)
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
 			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
 
 	/** Set Print Format.
@@ -120,9 +120,9 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_DocType getC_DocTypeDifference() throws RuntimeException
+	public org.compiere.model.I_C_DocType getC_DocTypeDifference() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getC_DocTypeDifference_ID(), get_TrxName());	}
 
 	/** Set Difference Document.
@@ -171,9 +171,9 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_DocType getC_DocTypeInvoice() throws RuntimeException
+	public org.compiere.model.I_C_DocType getC_DocTypeInvoice() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getC_DocTypeInvoice_ID(), get_TrxName());	}
 
 	/** Set Document Type for Invoice.
@@ -199,9 +199,9 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_DocType getC_DocTypeProforma() throws RuntimeException
+	public org.compiere.model.I_C_DocType getC_DocTypeProforma() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getC_DocTypeProforma_ID(), get_TrxName());	}
 
 	/** Set Document Type for ProForma.
@@ -227,9 +227,9 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_DocType getC_DocTypeShipment() throws RuntimeException
+	public org.compiere.model.I_C_DocType getC_DocTypeShipment() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getC_DocTypeShipment_ID(), get_TrxName());	}
 
 	/** Set Document Type for Shipment.
@@ -255,9 +255,23 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_Sequence getDefiniteSequence() throws RuntimeException
+	/** Set C_DocType_UU.
+		@param C_DocType_UU C_DocType_UU	  */
+	public void setC_DocType_UU (String C_DocType_UU)
+	{
+		set_Value (COLUMNNAME_C_DocType_UU, C_DocType_UU);
+	}
+
+	/** Get C_DocType_UU.
+		@return C_DocType_UU	  */
+	public String getC_DocType_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_DocType_UU);
+	}
+
+	public org.compiere.model.I_AD_Sequence getDefiniteSequence() throws RuntimeException
     {
-		return (I_AD_Sequence)MTable.get(getCtx(), I_AD_Sequence.Table_Name)
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
 			.getPO(getDefiniteSequence_ID(), get_TrxName());	}
 
 	/** Set Definite Sequence.
@@ -375,9 +389,9 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocBaseType);
 	}
 
-	public I_AD_Sequence getDocNoSequence() throws RuntimeException
+	public org.compiere.model.I_AD_Sequence getDocNoSequence() throws RuntimeException
     {
-		return (I_AD_Sequence)MTable.get(getCtx(), I_AD_Sequence.Table_Name)
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
 			.getPO(getDocNoSequence_ID(), get_TrxName());	}
 
 	/** Set Document Sequence.
@@ -476,9 +490,9 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocumentNote);
 	}
 
-	public I_GL_Category getGL_Category() throws RuntimeException
+	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
     {
-		return (I_GL_Category)MTable.get(getCtx(), I_GL_Category.Table_Name)
+		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_Name)
 			.getPO(getGL_Category_ID(), get_TrxName());	}
 
 	/** Set GL Category.
@@ -543,6 +557,27 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public boolean isHasProforma () 
 	{
 		Object oo = get_Value(COLUMNNAME_HasProforma);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Mandatory Charge or Product.
+		@param IsChargeOrProductMandatory Mandatory Charge or Product	  */
+	public void setIsChargeOrProductMandatory (boolean IsChargeOrProductMandatory)
+	{
+		set_Value (COLUMNNAME_IsChargeOrProductMandatory, Boolean.valueOf(IsChargeOrProductMandatory));
+	}
+
+	/** Get Mandatory Charge or Product.
+		@return Mandatory Charge or Product	  */
+	public boolean isChargeOrProductMandatory () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsChargeOrProductMandatory);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

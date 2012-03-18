@@ -913,6 +913,16 @@ public class MOrderLine extends X_C_OrderLine
 		setLineNetAmt();	//	extended Amount with or without tax
 		setDiscount();
 
+		/* Carlos Ruiz - globalqss
+		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
+		 */
+		if (getParent().getC_DocTypeTarget().isChargeOrProductMandatory()) {
+			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && getPriceEntered().signum() != 0) {
+				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
+				return false;
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
