@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AverageCostingNegativeQtyException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
@@ -1458,6 +1459,12 @@ public class MCost extends X_M_Cost
 		{
 			amt = amt.multiply(new BigDecimal(-1.00d));
 		}
+		
+		if (getCurrentQty().add(qty).signum() < 0)
+		{
+			throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty);
+		}
+		
 		BigDecimal oldSum = getCurrentCostPrice().multiply(getCurrentQty());
 		BigDecimal newSum = amt;	//	is total already
 		BigDecimal sumAmt = oldSum.add(newSum);

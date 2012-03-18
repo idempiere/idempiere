@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AverageCostingNegativeQtyException;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionRate;
@@ -516,6 +517,12 @@ public abstract class Doc
 				p_Status = postLogic ();
 			}
 		}
+		catch (AverageCostingNegativeQtyException e)
+		{
+			log.log(Level.INFO, e.getLocalizedMessage(), e);
+			p_Status = STATUS_NotPosted;
+			p_Error = e.toString();
+		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
@@ -525,7 +532,7 @@ public abstract class Doc
 
 		String validatorMsg = null;
 		// Call validator on before post
-		if (!p_Status.equals(STATUS_Error)) {
+		if (p_Status.equals(STATUS_Posted)) {
 			validatorMsg = ModelValidationEngine.get().fireDocValidate(getPO(), ModelValidator.TIMING_BEFORE_POST);
 			if (validatorMsg != null) {
 				p_Status = STATUS_Error;
@@ -536,7 +543,7 @@ public abstract class Doc
 		//  commitFact
 		p_Status = postCommit (p_Status);
 
-		if (!p_Status.equals(STATUS_Error)) {
+		if (p_Status.equals(STATUS_Posted)) {
 			validatorMsg = ModelValidationEngine.get().fireDocValidate(getPO(), ModelValidator.TIMING_AFTER_POST);
 			if (validatorMsg != null) {
 				p_Status = STATUS_Error;
