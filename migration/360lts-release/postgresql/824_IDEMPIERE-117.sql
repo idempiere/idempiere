@@ -1286,3 +1286,8 @@ SELECT a.ad_client_id, a.ad_org_id, b.c_acctschema_id, a.m_costhistory_id, a.m_c
    ORDER BY a.m_costhistory_id
 ;
 
+UPDATE AD_System
+  SET LastMigrationScriptApplied='824_IDEMPIERE-117.sql'
+WHERE LastMigrationScriptApplied<'824_IDEMPIERE-117.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
