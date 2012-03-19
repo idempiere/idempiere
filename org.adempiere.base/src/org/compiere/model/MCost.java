@@ -1441,6 +1441,15 @@ public class MCost extends X_M_Cost
 	 */
 	public void add (BigDecimal amt, BigDecimal qty)
 	{
+		MCostElement costElement = (MCostElement) getM_CostElement();
+		if (costElement.isAveragePO() || costElement.isAverageInvoice()) 
+		{
+			if (getCurrentQty().add(qty).signum() < 0)
+			{
+				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
+						+ ", CostElement="+costElement.getName()+", Schema="+getC_AcctSchema().getName());
+			}
+		}
 		setCumulatedAmt(getCumulatedAmt().add(amt));
 		setCumulatedQty(getCumulatedQty().add(qty));
 		setCurrentQty(getCurrentQty().add(qty));
@@ -1462,7 +1471,8 @@ public class MCost extends X_M_Cost
 		
 		if (getCurrentQty().add(qty).signum() < 0)
 		{
-			throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty);
+			throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
+					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
 		}
 		
 		BigDecimal oldSum = getCurrentCostPrice().multiply(getCurrentQty());
@@ -1616,6 +1626,17 @@ public class MCost extends X_M_Cost
 			if (getCumulatedQty().signum() != 0)
 				setCumulatedQty(Env.ZERO);
 		}
+		
+		//-ve current qty will break moving average costing
+		if ((ce.isAveragePO() || ce.isAverageInvoice()) && is_ValueChanged(COLUMNNAME_CurrentQty)) 
+		{
+			if (getCurrentQty().signum() < 0)
+			{
+				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
+						+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
@@ -1629,6 +1650,20 @@ public class MCost extends X_M_Cost
 		return true;
 	}	//	beforeDelete
 
+
+	@Override
+	public void setCurrentQty(BigDecimal CurrentQty) {
+		MCostElement ce = (MCostElement)getM_CostElement();
+		if (ce.isAveragePO() || ce.isAverageInvoice()) 
+		{
+			if (CurrentQty.signum() < 0)
+			{
+				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
+						+", CostElement="+ce.getName()+", Schema="+getC_AcctSchema().getName());
+			}
+		}
+		super.setCurrentQty(CurrentQty);
+	}
 
 	/**
 	 * 	Test
