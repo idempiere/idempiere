@@ -132,12 +132,9 @@ html,body {
 }
 
 .depressed img {
-/*	border-style: inset;*/
 	border-width: 1px;
 	border-color: #9CBDFF;
 	background-color: #C4DCFB;
-/*	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;*/
 	padding: 0px 1px 0px 1px;
 }
 

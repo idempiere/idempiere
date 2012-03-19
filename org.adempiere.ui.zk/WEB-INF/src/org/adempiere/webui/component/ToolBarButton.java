@@ -35,7 +35,10 @@ public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
     public ToolBarButton() {}
     
     @Override
-	public void setDisabled(boolean disabled) {
+	public void setDisabled(boolean disabled) {    	
+    	if (disabled && isChecked())
+    		setChecked(false);	// uncheck when button is disabled
+    	
 		super.setDisabled(disabled);
 		if (disabled) {
 			LayoutUtils.addSclass("disableFilter", this);
@@ -51,15 +54,8 @@ public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
     	if (!getMode().equals("toggle"))
     		setMode("toggle");
 
-		if (!isDisabled()) {
-//			if (pressed) {
-//				LayoutUtils.addSclass("depressed", this);
-//			} else {
-//				if (this.getSclass() != null && this.getSclass().indexOf("depressed") >= 0)
-//					this.setSclass(this.getSclass().replace("depressed", ""));
-//			}
+		if (!isDisabled())
 			setChecked(pressed);
-		}
     }
     
     // Elaine 2008/12/09
