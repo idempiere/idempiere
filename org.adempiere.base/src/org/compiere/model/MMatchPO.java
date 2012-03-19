@@ -946,11 +946,14 @@ public class MMatchPO extends X_M_MatchPO
 				}
 				
 				// Set Total Amount and Total Quantity from Matched PO 
-				MCostDetail.createOrder(as, oLine.getAD_Org_ID(), 
+				if (!MCostDetail.createOrder(as, oLine.getAD_Org_ID(), 
 						getM_Product_ID(), getM_AttributeSetInstance_ID(),
 						oLine.getC_OrderLine_ID(), 0,		//	no cost element
 						tAmt, tQty,			//	Delivered
-						oLine.getDescription(), get_TrxName());
+						oLine.getDescription(), get_TrxName()))
+				{
+					return "SaveError";
+				}
 				// end MZ
 			}
 		}
@@ -987,9 +990,7 @@ public class MMatchPO extends X_M_MatchPO
 					cd.setQty(cd.getQty().subtract(getQty()));
 					if (!cd.isProcessed())
 					{
-						MClient client = MClient.get(getCtx(), getAD_Client_ID());
-						if (client.isCostImmediate())
-							cd.process();
+						cd.process();
 					}
 				}
 				//after process clean-up

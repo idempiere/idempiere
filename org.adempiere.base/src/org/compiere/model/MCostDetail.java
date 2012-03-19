@@ -111,9 +111,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -180,9 +178,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -250,9 +246,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -318,9 +312,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -390,9 +382,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -458,9 +448,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
