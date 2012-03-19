@@ -109,7 +109,11 @@ html,body {
 	padding: 0px;
 }
 
-.toolbar-button img {
+.z-toolbarbutton-cnt {
+	padding: 0px;
+}
+
+.toolbar-button .z-toolbarbutton-body .z-toolbarbutton-cnt img {
 	width: 22px;
 	height: 22px;
 	padding: 0px 1px 0px 1px;
@@ -118,7 +122,7 @@ html,body {
 	border-color: transparent;
 }
 
-.embedded-toolbar-button img {
+.embedded-toolbar-button .z-toolbarbutton-body .z-toolbarbutton-cnt img {
 	width: 16px;
 	height: 16px;
 	padding: 0px 1px 0px 1px;
@@ -128,12 +132,12 @@ html,body {
 }
 
 .depressed img {
-	border-style: inset;
+/*	border-style: inset;*/
 	border-width: 1px;
 	border-color: #9CBDFF;
 	background-color: #C4DCFB;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+/*	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;*/
 	padding: 0px 1px 0px 1px;
 }
 
