@@ -349,6 +349,11 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	border-right: 2px solid #9CBDFF;
 }
 
+.current-row-indicator {
+	background-color: #FA962F !important;
+	background-image: none !important; 
+}
+
 <%-- status bar --%>
 .status {
 	width: 100%;

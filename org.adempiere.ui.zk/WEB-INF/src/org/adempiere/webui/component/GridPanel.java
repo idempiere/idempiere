@@ -267,8 +267,10 @@ public class GridPanel extends Borderlayout implements EventListener
 		frozen.setColumns(1);
 		listbox.appendChild(frozen);
 		org.zkoss.zul.Column indicator = new Column();				
-		indicator.setWidth("30px");
-		
+		indicator.setWidth("10px");
+		try {
+			indicator.setSort("none");
+		} catch (Exception e) {} 
 		columns.appendChild(indicator);
 		listbox.appendChild(columns);
 		columns.setSizable(true);

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.adempiere.util.GridRowCtx;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
@@ -47,6 +48,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Paging;
@@ -368,12 +370,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			rowIndex = (paging.getActivePage() * paging.getPageSize()) + rowIndex;
 		}
 
-		Div indicatorDiv = new Div();
-		indicatorDiv.setStyle("text-align: center; border: none; width: 100%; height: 100%;");
-		indicatorDiv.appendChild(new Label());
+		Cell cell = new Cell();
+		cell.setWidth("10px");
 		//TODO: checkbox for selection and batch action ( delete, export, complete, etc )
-//		indicatorDiv.appendChild(new Checkbox());
-		row.appendChild(indicatorDiv);
+//		cell.appendChild(new Checkbox());
+		row.appendChild(cell);
 		
 		int colIndex = -1;
 		for (int i = 0; i < columnCount; i++) {
@@ -419,19 +420,16 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 */
 	public void setCurrentRow(Row row) {
 		if (currentRow != null && currentRow.getParent() != null && currentRow != row) {
-			Div div = (Div) currentRow.getFirstChild();
-			if (div != null) {
-				Label label = (Label) div.getFirstChild();
-				label.getChildren().clear();
+			Cell cell = (Cell) currentRow.getFirstChild();
+			if (cell != null) {
+				cell.setStyle("background-color: transparent");
+				cell.setSclass(null);
 			}
 		}
 		currentRow = row;
-		Div div = (Div) currentRow.getFirstChild();
-		if (div != null) {
-			Label label = (Label) div.getFirstChild();
-			label.getChildren().clear();
-			label.appendChild(new Text(">>"));
-			label.setStyle("color: darkblue; font-weight: bold; text-align: center");
+		Cell cell = (Cell) currentRow.getFirstChild();
+		if (cell != null) {
+			cell.setSclass("current-row-indicator");
 		}
 		currentRowIndex = gridTab.getCurrentRow();
 		
