@@ -89,8 +89,6 @@ public class WebUIServlet extends DHtmlLayoutServlet
 
         logger = CLogger.getCLogger(WebUIServlet.class);
 
-        // hengsin: temporary solution for problem with zk client
-        Ini.setProperty(Ini.P_ADEMPIERESYS, false);
         logger.log(Level.OFF, "ADempiere web ui service started successfully");
         /**
          * End ADempiere Start

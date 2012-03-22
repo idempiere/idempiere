@@ -411,7 +411,8 @@ ContextMenuListener, IZoomableEditor
 	@Override
 	public void dynamicDisplay()
     {    	
-		if ((lookup != null) && (!lookup.isValidated() || !lookup.isLoaded()))
+		if ((lookup != null) && (!lookup.isValidated() || !lookup.isLoaded()
+			|| (isReadWrite() && lookup.getSize() != getComponent().getItemCount())))
 			this.actionRefresh();
     }
 }

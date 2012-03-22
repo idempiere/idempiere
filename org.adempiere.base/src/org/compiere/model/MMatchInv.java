@@ -442,9 +442,7 @@ public class MMatchInv extends X_M_MatchInv
 				cd.setQty(cd.getQty().subtract(qty));
 				if (!cd.isProcessed())
 				{
-					MClient client = MClient.get(getCtx(), getAD_Client_ID());
-					if (client.isCostImmediate())
-						cd.process();
+					cd.process();
 				}
 				if (cd.getQty().compareTo(Env.ZERO) == 0)
 				{
