@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.model.X_M_CostHistory;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -110,9 +111,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -179,9 +178,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -249,9 +246,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -317,9 +312,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -389,9 +382,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -457,9 +448,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = cd.save();
 		if (ok && !cd.isProcessed())
 		{
-			MClient client = MClient.get(as.getCtx(), as.getAD_Client_ID());
-			if (client.isCostImmediate())
-				cd.process();
+			ok = cd.process();
 		}
 		s_log.config("(" + ok + ") " + cd);
 		return ok;
@@ -826,9 +815,24 @@ public class MCostDetail extends X_M_CostDetail
 	{
 		MCost cost = MCost.get(product, M_ASI_ID, as, 
 			Org_ID, ce.getM_CostElement_ID(), get_TrxName());
+		
+		DB.getDatabase().forUpdate(cost, 120);
+		
 	//	if (cost == null)
 	//		cost = new MCost(product, M_ASI_ID, 
 	//			as, Org_ID, ce.getM_CostElement_ID());
+		
+		//save history for m_cost
+		X_M_CostHistory history = new X_M_CostHistory(getCtx(), 0, get_TrxName());
+		history.setM_AttributeSetInstance_ID(cost.getM_AttributeSetInstance_ID());
+		history.setM_CostDetail_ID(this.getM_CostDetail_ID());
+		history.setM_CostElement_ID(ce.getM_CostElement_ID());
+		history.setM_CostType_ID(cost.getM_CostType_ID());
+		history.setClientOrg(cost.getAD_Client_ID(), cost.getAD_Org_ID());
+		history.setOldQty(cost.getCurrentQty());
+		history.setOldCostPrice(cost.getCurrentCostPrice());
+		history.setOldCAmt(cost.getCumulatedAmt());
+		history.setOldCQty(cost.getCumulatedQty());
 		
 		// MZ Goodwill
 		// used deltaQty and deltaAmt if exist 
@@ -1030,7 +1034,15 @@ public class MCostDetail extends X_M_CostDetail
 			if (ce.isAverageInvoice())
 			{
 				if (addition)
+				{
 					cost.setWeightedAverage(amt, qty);
+					//shouldn't accumulate reversal of customer shipment qty and amt
+					if (isShipment())
+					{
+						cost.setCumulatedQty(history.getOldCQty());
+						cost.setCumulatedAmt(history.getOldCAmt());
+					}
+				}
 				else
 					cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				log.finer("QtyAdjust - AverageInv - " + cost);
@@ -1038,7 +1050,15 @@ public class MCostDetail extends X_M_CostDetail
 			else if (ce.isAveragePO())
 			{
 				if (addition)
+				{
 					cost.setWeightedAverage(amt, qty);
+					//shouldn't accumulate reversal of customer shipment qty and amt
+					if (isShipment())
+					{
+						cost.setCumulatedQty(history.getOldCQty());
+						cost.setCumulatedAmt(history.getOldCAmt());
+					}
+				}
 				else
 					cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				log.finer("QtyAdjust - AveragePO - " + cost);
@@ -1169,6 +1189,15 @@ public class MCostDetail extends X_M_CostDetail
 		setCurrentQty(cost.getCurrentQty());
 		setCumulatedAmt(cost.getCumulatedAmt());
 		setCumulatedQty(cost.getCumulatedQty());
+		
+		//update history
+		history.setNewQty(cost.getCurrentQty());
+		history.setNewCostPrice(cost.getCurrentCostPrice());
+		history.setNewCAmt(cost.getCumulatedAmt());
+		history.setNewCQty(cost.getCumulatedQty());
+		if (!history.save())
+			return false;
+		
 		return cost.save();
 	}	//	process
 	
