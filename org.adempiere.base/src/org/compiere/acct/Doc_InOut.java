@@ -427,17 +427,19 @@ public class Doc_InOut extends Doc
 					{
 						costs = line.getProductCosts(as, line.getAD_Org_ID(), false);	//	current costs
 					}
+					
+					if (costs == null || costs.signum() == 0)
+					{
+						p_Error = "Resubmit - No Costs for " + product.getName();
+						log.log(Level.WARNING, p_Error);
+						return null;
+					}
 				} 
 				else
 				{
 					costs = BigDecimal.ZERO;
 				}
-				if (costs == null || costs.signum() == 0)
-				{
-					p_Error = "Resubmit - No Costs for " + product.getName();
-					log.log(Level.WARNING, p_Error);
-					return null;
-				}
+				
 				//  Inventory/Asset			DR
 				MAccount assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				if (product.isService())
