@@ -466,7 +466,7 @@ div.z-vfiletree-body td.menu-tree-cell {
 	background: #FFFFCC;
 }
 
-%-- Editor --%>
+<%-- Editor --%>
 .editor-box {
 	display: inline-block;
 	border: none; padding: 0px; margin: 0px; background-color: transparent;
@@ -474,4 +474,49 @@ div.z-vfiletree-body td.menu-tree-cell {
 
 .number-box {
 	display: inline-block; white-space:nowrap;
+}
+
+<%-- Group --%>
+tr.z-group {
+	background: #E9F2FB repeat-x 0 0;
+	background-image: url(../images/group_bg.gif);
+}
+
+tr.z-group td.z-row-inner {
+	overflow: hidden;
+	border-top: 2px solid #81BAF5;
+	border-bottom: 1px solid #BCD2EF;
+	color: #2C559C;
+	font-weight: bold;
+}
+
+div.z-group-cnt span.z-label {
+	color: #2C559C;
+	padding: 5px;
+	width: auto;
+	height: 100%;
+	font-weight: bold;
+}
+
+img.z-group-img-open, img.z-group-img-close {
+	width: 18px;
+	min-height: 18px;
+	height: 100%;
+	vertical-align: top;
+	cursor: pointer;
+	border: 0;
+}
+
+img.z-group-img-open {
+	background-image: url(../images/group-open.png);
+	background-position: center center;
+	background-color: transparent;
+	background-repeat: no-repeat;
+}
+
+img.z-group-img-close {
+	background-image: url(../images/group-close.png);
+	background-position: center center;
+	background-color: transparent;
+	background-repeat: no-repeat;
 }

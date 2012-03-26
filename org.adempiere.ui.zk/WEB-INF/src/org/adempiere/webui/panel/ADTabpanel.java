@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridPanel;
+import org.adempiere.webui.component.Group;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Row;
@@ -71,15 +72,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.West;
+import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Group;
 import org.zkoss.zul.Groupfoot;
 import org.zkoss.zul.Separator;
-import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.impl.InputElement;
+import org.zkoss.zul.West;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -122,8 +121,8 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
     private Grid              grid;
 
     private ArrayList<WEditor> editors = new ArrayList<WEditor>();
-
-    private ArrayList<String> editorIds = new ArrayList<String>();
+    
+    private ArrayList<Component> editorComps = new ArrayList<Component>();
 
     private boolean			  uiCreated = false;
 
@@ -388,6 +387,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
             			else
             			{
             				row = new Group(fieldGroup);
+            				row.setSpans("5");
             				if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())
             				{
             					((Group)row).setOpen(false);
@@ -438,7 +438,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
                     editor.setGridTab(this.getGridTab());
                 	field.addPropertyChangeListener(editor);
                     editors.add(editor);
-                    editorIds.add(editor.getComponent().getUuid());
+                    editorComps.add(editor.getComponent());
                     if (field.isFieldOnly())
                     {
                     	row.appendChild(createSpacer());
@@ -613,7 +613,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
         	for (int j = 0; j < components.size(); j++)
         	{
         		Component component = (Component) components.get(j);
-        		if (editorIds.contains(component.getUuid()))
+        		if (editorComps.contains(component))
         		{
         			editorRow = true;
         			if (component.isVisible())
@@ -624,7 +624,10 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
         		}
         	}
         	if (editorRow && (row.isVisible() != visible))
+        	{
+        		row.setAttribute(Group.GROUP_ROW_VISIBLE_KEY, visible ? "true" : "false");
         		row.setVisible(visible);
+        	}
         }
 
         //hide fieldgroup if all editor row within the fieldgroup is invisible
