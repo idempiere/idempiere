@@ -419,7 +419,9 @@ public class Doc_InOut extends Doc
 	                    }
 	                    else
 	                    {
-	                        costs = line.getProductCosts(as, line.getAD_Org_ID(), false);	//	current costs
+	                    	p_Error = "Resubmit - No Costs for " + product.getName();
+	                        log.log(Level.WARNING, p_Error);
+	                        return null;
 	                    }
 	                    //
 					}
