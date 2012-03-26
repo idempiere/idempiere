@@ -131,10 +131,19 @@ public class Doc_Movement extends Doc
 		for (int i = 0; i < p_lines.length; i++)
 		{
 			DocLine line = p_lines[i];
-			// MZ Goodwill
-			// if Inventory Move CostDetail exist then get Cost from Cost Detail
-			BigDecimal costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_MovementLine_ID=? AND IsSOTrx='N'");
-			// end MZ
+			BigDecimal costs = null;
+			
+			if (!isReversal(line))
+			{
+				// MZ Goodwill
+				// if Inventory Move CostDetail exist then get Cost from Cost Detail
+				costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_MovementLine_ID=? AND IsSOTrx='N'");
+				// end MZ
+			}
+			else
+			{
+				costs = BigDecimal.ZERO;
+			}
 
 			//  ** Inventory       DR      CR
 			dr = fact.createLine(line,
@@ -144,7 +153,7 @@ public class Doc_Movement extends Doc
 				continue;
 			dr.setM_Locator_ID(line.getM_Locator_ID());
 			dr.setQty(line.getQty().negate());	//	outgoing
-			if (m_DocStatus.equals(MMovement.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0)
+			if (isReversal(line))
 			{
 				//	Set AmtAcctDr from Original Movement
 				if (!dr.updateReverseLine (MMovement.Table_ID,
@@ -163,7 +172,7 @@ public class Doc_Movement extends Doc
 				continue;
 			cr.setM_Locator_ID(line.getM_LocatorTo_ID());
 			cr.setQty(line.getQty());
-			if (m_DocStatus.equals(MMovement.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0)
+			if (isReversal(line))
 			{
 				//	Set AmtAcctCr from Original Movement
 				if (!cr.updateReverseLine (MMovement.Table_ID,
@@ -186,17 +195,25 @@ public class Doc_Movement extends Doc
 				if (description == null)
 					description = "";
 				//	Cost Detail From
-				MCostDetail.createMovement(as, dr.getAD_Org_ID(), 	//	locator org
+				if (!MCostDetail.createMovement(as, dr.getAD_Org_ID(), 	//	locator org
 					line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 					line.get_ID(), 0,
 					costs.negate(), line.getQty().negate(), true,
-					description + "(|->)", getTrxName());
+					description + "(|->)", getTrxName()))
+				{
+					p_Error = "Failed to create cost detail record";
+					return null;
+				}
 				//	Cost Detail To
-				MCostDetail.createMovement(as, cr.getAD_Org_ID(),	//	locator org
+				if (!MCostDetail.createMovement(as, cr.getAD_Org_ID(),	//	locator org
 					line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 					line.get_ID(), 0,
 					costs, line.getQty(), false,
-					description + "(|<-)", getTrxName());
+					description + "(|<-)", getTrxName()))
+				{
+					p_Error = "Failed to create cost detail record";
+					return null;
+				}
 			}
 		}
 
@@ -205,5 +222,9 @@ public class Doc_Movement extends Doc
 		facts.add(fact);
 		return facts;
 	}   //  createFact
+
+	private boolean isReversal(DocLine line) {
+		return m_DocStatus.equals(MMovement.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
+	}
 
 }   //  Doc_Movement

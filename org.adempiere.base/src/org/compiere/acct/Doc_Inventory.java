@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MCostDetail;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.ProductCost;
@@ -147,14 +148,22 @@ public class Doc_Inventory extends Doc
 		for (int i = 0; i < p_lines.length; i++)
 		{
 			DocLine line = p_lines[i];
-			// MZ Goodwill
-			// if Physical Inventory CostDetail is exist then get Cost from Cost Detail
-			BigDecimal costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InventoryLine_ID=?");
-			// end MZ
-			if (costs == null || costs.signum() == 0)
+			BigDecimal costs = null;
+			if (!isReversal(line))
 			{
-				p_Error = "No Costs for " + line.getProduct().getName();
-				return null;
+				// MZ Goodwill
+				// if Physical Inventory CostDetail is exist then get Cost from Cost Detail
+				costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InventoryLine_ID=?");
+				// end MZ
+				if (costs == null || costs.signum() == 0)
+				{
+					p_Error = "No Costs for " + line.getProduct().getName();
+					return null;
+				}
+			}
+			else
+			{
+				costs = BigDecimal.ZERO;
 			}
 			//  Inventory       DR      CR
 			dr = fact.createLine(line,
@@ -164,7 +173,7 @@ public class Doc_Inventory extends Doc
 			if (dr == null)
 				continue;
 			dr.setM_Locator_ID(line.getM_Locator_ID());
-			if (m_DocStatus.equals(MInventory.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0)
+			if (isReversal(line))
 			{
 				//	Set AmtAcctDr from Original Phys.Inventory
 				if (!dr.updateReverseLine (MInventory.Table_ID,
@@ -178,9 +187,7 @@ public class Doc_Inventory extends Doc
 			//  InventoryDiff   DR      CR
 			//	or Charge
 			MAccount invDiff = null;
-			if (m_DocStatus.equals(MInventory.DOCSTATUS_Reversed)
-					&& m_Reversal_ID != 0
-					&& line.getReversalLine_ID() != 0
+			if (isReversal(line)
 					&& line.getC_Charge_ID() != 0) {
 				invDiff = line.getChargeAccount(as, costs);
 			} else {
@@ -198,7 +205,7 @@ public class Doc_Inventory extends Doc
 			if (line.getC_Charge_ID() != 0)	//	explicit overwrite for charge
 				cr.setAD_Org_ID(line.getAD_Org_ID());
 
-			if (m_DocStatus.equals(MInventory.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0)
+			if (isReversal(line))
 			{
 				//	Set AmtAcctCr from Original Phys.Inventory
 				if (!cr.updateReverseLine (MInventory.Table_ID,
@@ -211,17 +218,24 @@ public class Doc_Inventory extends Doc
 			}
 
 			//	Cost Detail
-			 /* Source move to MInventory.createCostDetail()
-			MCostDetail.createInventory(as, line.getAD_Org_ID(),
+			if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 				line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 				line.get_ID(), 0,
 				costs, line.getQty(),
-				line.getDescription(), getTrxName());*/
+				line.getDescription(), getTrxName()))
+			{
+				p_Error = "Failed to create cost detail record";
+				return null;
+			}
 		}
 		//
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		facts.add(fact);
 		return facts;
 	}   //  createFact
+
+	private boolean isReversal(DocLine line) {
+		return m_DocStatus.equals(MInventory.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
+	}
 
 }   //  Doc_Inventory

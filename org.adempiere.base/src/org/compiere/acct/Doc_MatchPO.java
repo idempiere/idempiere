@@ -26,12 +26,15 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MCostDetail;
+import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
+import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_InOut;
 import org.compiere.util.DB;
@@ -64,6 +67,7 @@ public class Doc_MatchPO extends Doc
 	//
 	private int         m_M_InOutLine_ID = 0;
 	private MInOutLine		m_ioLine = null;
+	@SuppressWarnings("unused")
 	private int         m_C_InvoiceLine_ID = 0;
 
 	private ProductCost m_pc;
@@ -167,6 +171,13 @@ public class Doc_MatchPO extends Doc
 				poCost = poCost.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 		}
 
+		String costingError = createMatchPOCostDetail(as);
+		if (costingError != null && costingError.trim().length() > 0) 
+		{
+			p_Error = costingError;
+			return null;
+		}
+		
 		//	Calculate PPV for standard costing
 		MProduct product = MProduct.get(getCtx(), getM_Product_ID());
 		String costingMethod = product.getCostingMethod(as);
@@ -305,5 +316,100 @@ public class Doc_MatchPO extends Doc
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		log.fine("M_Product_Costing - Updated=" + no);
 	}   //  updateProductInfo
+	
+	// Elaine 2008/6/20	
+	private String createMatchPOCostDetail(MAcctSchema as)
+	{
+		if (m_ioLine != null && m_ioLine.getM_InOutLine_ID() > 0 &&
+			m_oLine != null && m_oLine.getC_OrderLine_ID() > 0)
+		{
+			MMatchPO mMatchPO = (MMatchPO) getPO(); 
+			
+			// Purchase Order Line
+			BigDecimal poCost = m_oLine.getPriceCost();
+			if (poCost == null || poCost.signum() == 0)
+			{
+				poCost = m_oLine.getPriceActual();
+				//	Goodwill: Correct included Tax
+		    	int C_Tax_ID = m_oLine.getC_Tax_ID();
+				if (m_oLine.isTaxIncluded() && C_Tax_ID != 0)
+				{
+					MTax tax = MTax.get(getCtx(), C_Tax_ID);
+					if (!tax.isZeroTax())
+					{
+						int stdPrecision = MCurrency.getStdPrecision(getCtx(), m_oLine.getC_Currency_ID());
+						BigDecimal costTax = tax.calculateTax(poCost, true, stdPrecision);
+						log.fine("Costs=" + poCost + " - Tax=" + costTax);
+						poCost = poCost.subtract(costTax);
+					}
+				}	//	correct included Tax
+			}
+									
+			// Source from Doc_MatchPO.createFacts(MAcctSchema)
+			MInOut inOut = m_ioLine.getParent(); 
+			boolean isReturnTrx = inOut.getMovementType().equals(X_M_InOut.MOVEMENTTYPE_VendorReturns);
+
+			//	Create PO Cost Detail Record first
+			// MZ Goodwill
+			// Create Cost Detail Matched PO using Total Amount and Total Qty based on OrderLine
+			MMatchPO[] mPO = MMatchPO.getOrderLine(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
+			BigDecimal tQty = Env.ZERO;
+			BigDecimal tAmt = Env.ZERO;
+			for (int i = 0 ; i < mPO.length ; i++)
+			{
+				if (mPO[i].getM_AttributeSetInstance_ID() == mMatchPO.getM_AttributeSetInstance_ID()
+					&& mPO[i].getM_MatchPO_ID() != mMatchPO.getM_MatchPO_ID())
+				{
+					BigDecimal qty = (isReturnTrx ? mPO[i].getQty().negate() : mPO[i].getQty()); 
+					tQty = tQty.add(qty);
+					tAmt = tAmt.add(poCost.multiply(qty));
+				}
+			}
+			
+			poCost = poCost.multiply(getQty());			//	Delivered so far
+			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
+			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());
+					
+			//	Different currency
+			if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
+			{
+				MOrder order = m_oLine.getParent();
+				Timestamp dateAcct = order.getDateAcct();
+				//get costing method for product
+				MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+				String costingMethod = product.getCostingMethod(as);					
+				if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
+						MAcctSchema.COSTINGMETHOD_LastPOPrice.equals(costingMethod) )
+					dateAcct = inOut.getDateAcct(); 	//Movement Date
+				//
+				BigDecimal rate = MConversionRate.getRate(
+					order.getC_Currency_ID(), as.getC_Currency_ID(),
+					dateAcct, order.getC_ConversionType_ID(),
+					m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
+				if (rate == null)
+				{
+					return "Purchase Order not convertible - " + as.getName();
+				}
+				poCost = poCost.multiply(rate);
+				if (poCost.scale() > as.getCostingPrecision())
+					poCost = poCost.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+				tAmt = tAmt.multiply(rate);
+				if (tAmt.scale() > as.getCostingPrecision())
+					tAmt = tAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);			
+			}
+			
+			// Set Total Amount and Total Quantity from Matched PO 
+			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+					m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
+					tAmt, tQty,			//	Delivered
+					m_oLine.getDescription(), getTrxName()))
+			{
+				return "SaveError";
+			}
+			// end MZ
+		}
+		return "";
+	}
 
 }   //  Doc_MatchPO

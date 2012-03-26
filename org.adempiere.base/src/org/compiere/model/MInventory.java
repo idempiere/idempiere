@@ -473,14 +473,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 								m_processMsg = "Transaction not inserted(2)";
 								return DocAction.STATUS_Invalid;
 							}
-							if(QtyMA.signum() != 0)
-							{	
-								String err = createCostDetail(line, ma.getM_AttributeSetInstance_ID() , QtyMA.negate());
-								if (err != null && err.length() > 0) {
-									m_processMsg = err;
-									return DocAction.STATUS_Invalid;
-								}
-							}
 							
 							qtyDiff = QtyNew;						
 
@@ -530,16 +522,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					{
 						m_processMsg = "Transaction not inserted(2)";
 						return DocAction.STATUS_Invalid;
-					}
-					
-					if(qtyDiff.signum() != 0)
-					{	
-						String err = createCostDetail(line, line.getM_AttributeSetInstance_ID(), qtyDiff);
-						if (err != null && err.length() > 0) {
-							m_processMsg = err;
-							return DocAction.STATUS_Invalid;
-						}
-					}
+					}					
 				}	//	Fallback
 			}	//	stock movement
 
@@ -941,60 +924,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 		return m_reversal;
 	}	//	isReversal
 	
-	/**
-	 * Create Cost Detail
-	 * @param line
-	 * @param Qty
-	 * @return an EMPTY String on success otherwise an ERROR message
-	 */
-	private String createCostDetail(MInventoryLine line, int M_AttributeSetInstance_ID, BigDecimal qty)
-	{
-		// Get Account Schemas to create MCostDetail
-		MAcctSchema[] acctschemas = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
-		for(int asn = 0; asn < acctschemas.length; asn++)
-		{
-			MAcctSchema as = acctschemas[asn];
-			
-			if (as.isSkipOrg(getAD_Org_ID()) || as.isSkipOrg(line.getAD_Org_ID()))
-			{
-				continue;
-			}
-			
-			BigDecimal costs = Env.ZERO;
-			if (isReversal())
-			{				
-				String sql = "SELECT amt * -1 FROM M_CostDetail WHERE M_InventoryLine_ID=?"; // negate costs				
-				MProduct product = new MProduct(getCtx(), line.getM_Product_ID(), line.get_TrxName());
-				String CostingLevel = product.getCostingLevel(as);
-				if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-					sql = sql + " AND AD_Org_ID=" + getAD_Org_ID(); 
-				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel) && M_AttributeSetInstance_ID != 0)
-					sql = sql + " AND M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID;
-				costs = DB.getSQLValueBD(line.get_TrxName(), sql, line.getReversalLine_ID());
-			}
-			else 
-			{
-				ProductCost pc = new ProductCost (getCtx(), 
-						line.getM_Product_ID(), M_AttributeSetInstance_ID, line.get_TrxName());
-				pc.setQty(qty);
-				costs = pc.getProductCosts(as, line.getAD_Org_ID(), as.getCostingMethod(), 0,true);							
-			}
-			if (costs == null)
-			{
-				return "No Costs for " + line.getProduct().getName();
-			}
-			
-			// Set Total Amount and Total Quantity from Inventory
-			MCostDetail.createInventory(as, line.getAD_Org_ID(), 
-					line.getM_Product_ID(), M_AttributeSetInstance_ID,
-					line.getM_InventoryLine_ID(), 0,	//	no cost element
-					costs, qty,			
-					line.getDescription(), line.get_TrxName());
-		}
-		
-		return "";
-	}
-
 	/**
 	 * 	Document Status is Complete or Closed
 	 *	@return true if CO, CL or RE
