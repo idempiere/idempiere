@@ -341,11 +341,22 @@ public class FinStatement extends SvrProcess
 		log.finest(sb.toString());
 
 		//	Set Name,Description
-		String sql_select = "SELECT e.Name, fa.Description "
-			+ "FROM Fact_Acct fa"
-			+ " INNER JOIN AD_Table t ON (fa.AD_Table_ID=t.AD_Table_ID)"
-			+ " INNER JOIN AD_Element e ON (t.TableName||'_ID'=e.ColumnName) "
-			+ "WHERE r.Fact_Acct_ID=fa.Fact_Acct_ID";
+		String sql_select;
+		Language lang = Language.getLoginLanguage();
+		if (Env.isBaseLanguage(lang, "AD_Element")) {
+			sql_select = "SELECT e.Name, fa.Description "
+					+ "FROM Fact_Acct fa"
+					+ " INNER JOIN AD_Table t ON (fa.AD_Table_ID=t.AD_Table_ID)"
+					+ " INNER JOIN AD_Element e ON (t.TableName||'_ID'=e.ColumnName) "
+					+ "WHERE r.Fact_Acct_ID=fa.Fact_Acct_ID";
+		} else {
+			sql_select = "SELECT et.Name, fa.Description "
+					+ "FROM Fact_Acct fa"
+					+ " INNER JOIN AD_Table t ON (fa.AD_Table_ID=t.AD_Table_ID)"
+					+ " INNER JOIN AD_Element e ON (t.TableName||'_ID'=e.ColumnName) "
+					+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID AND et.AD_Language='"+lang.getAD_Language()+"') "
+					+ "WHERE r.Fact_Acct_ID=fa.Fact_Acct_ID";
+		}
 		//	Translated Version ...
 		sb = new StringBuffer ("UPDATE T_ReportStatement r SET (Name,Description)=(")
 			.append(sql_select).append(") "
