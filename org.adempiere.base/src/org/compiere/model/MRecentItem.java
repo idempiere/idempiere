@@ -240,6 +240,11 @@ public class MRecentItem extends X_AD_RecentItem
 		String windowName = win.get_Translation("Name");
 		MTable table = MTable.get(getCtx(), getAD_Table_ID());
 		PO po = table.getPO(getRecord_ID(), null);
+		if (po == null) {
+			/* Recent Item was deleted (probably with direct SQL DELETE) */
+			this.deleteEx(true, null);
+			return null;
+		}
 		String recordIdentifier = "";
 		if (po.get_ColumnIndex("DocumentNo") > 0)
 			recordIdentifier = recordIdentifier + "_" + po.get_ValueAsString("DocumentNo");
