@@ -166,7 +166,7 @@ public class MProductBOM extends X_M_Product_BOM
 			if (product.isVerified())
 			{
 				product.setIsVerified(false);
-				product.save(get_TrxName());
+				product.saveEx(get_TrxName());
 			}
 			//	Invalidate Products where BOM is used
 			

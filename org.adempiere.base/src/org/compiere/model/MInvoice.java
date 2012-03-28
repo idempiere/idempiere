@@ -761,7 +761,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (counter)
 			{
 				fromLine.setRef_InvoiceLine_ID(line.getC_InvoiceLine_ID());
-				fromLine.save(get_TrxName());
+				fromLine.saveEx(get_TrxName());
 			}
 
 			// MZ Goodwill
@@ -2004,7 +2004,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		counter.setBPartner(counterBP);
 		//	Refernces (Should not be required
 		counter.setSalesRep_ID(getSalesRep_ID());
-		counter.save(get_TrxName());
+		counter.saveEx(get_TrxName());
 
 		//	Update copied lines
 		MInvoiceLine[] counterLines = counter.getLines(true);
@@ -2016,7 +2016,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			counterLine.setPrice();
 			counterLine.setTax();
 			//
-			counterLine.save(get_TrxName());
+			counterLine.saveEx(get_TrxName());
 		}
 
 		log.fine(counter.toString());
@@ -2028,7 +2028,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			{
 				counter.setDocAction(counterDT.getDocAction());
 				counter.processIt(counterDT.getDocAction());
-				counter.save(get_TrxName());
+				counter.saveEx(get_TrxName());
 			}
 		}
 		return counter;
@@ -2080,10 +2080,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					{
 						MInOutLine ioLine = new MInOutLine(getCtx(), line.getM_InOutLine_ID(), get_TrxName());
 						ioLine.setIsInvoiced(false);
-						ioLine.save(get_TrxName());
+						ioLine.saveEx(get_TrxName());
 						line.setM_InOutLine_ID(0);
 					}
-					line.save(get_TrxName());
+					line.saveEx(get_TrxName());
 				}
 			}
 			addDescription(Msg.getMsg(getCtx(), "Voided"));
@@ -2147,7 +2147,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		{
 			allocations[i].setDocAction(DocAction.ACTION_Reverse_Correct);
 			allocations[i].reverseCorrectIt();
-			allocations[i].save(get_TrxName());
+			allocations[i].saveEx(get_TrxName());
 		}
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
@@ -2163,7 +2163,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				else
 				{
 					mPO[i].setC_InvoiceLine_ID(null);
-					mPO[i].save(get_TrxName());
+					mPO[i].saveEx(get_TrxName());
 				}
 			}
 		}
@@ -2232,10 +2232,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			{
 				MInOutLine ioLine = new MInOutLine(getCtx(), iLine.getM_InOutLine_ID(), get_TrxName());
 				ioLine.setIsInvoiced(false);
-				ioLine.save(get_TrxName());
+				ioLine.saveEx(get_TrxName());
 				//	Reconsiliation
 				iLine.setM_InOutLine_ID(0);
-				iLine.save(get_TrxName());
+				iLine.saveEx(get_TrxName());
 			}
         }
 		setProcessed(true);

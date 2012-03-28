@@ -388,7 +388,7 @@ public class MMeasure extends X_PA_Measure
 		{
 			MGoal goal = goals[i];
 			goal.setMeasureActual(getManualActual());
-			goal.save(get_TrxName());
+			goal.saveEx(get_TrxName());
 		}
 		return true;
 	}	//	updateManualGoals
@@ -431,7 +431,7 @@ public class MMeasure extends X_PA_Measure
 				}
 			}
 			goal.setMeasureActual(ManualActual);
-			goal.save(get_TrxName());
+			goal.saveEx(get_TrxName());
 		}
 		return true;
 	}	//	updateAchievementGoals
@@ -478,7 +478,7 @@ public class MMeasure extends X_PA_Measure
 				log.fine("No Value = " + sql);
 			}
 			goal.setMeasureActual(ManualActual);
-			goal.save(get_TrxName());
+			goal.saveEx(get_TrxName());
 		}
 		return true;
 	}	//	updateCalculatedGoals
@@ -532,7 +532,7 @@ public class MMeasure extends X_PA_Measure
 				log.fine("No Value = " + sql);
 			}
 			goal.setMeasureActual(ManualActual);
-			goal.save(get_TrxName());
+			goal.saveEx(get_TrxName());
 		}
 		return true;
 	}		//	updateRequests
@@ -575,7 +575,7 @@ public class MMeasure extends X_PA_Measure
 				log.fine("No Value = " + sql);
 			}
 			goal.setMeasureActual(ManualActual);
-			goal.save(get_TrxName());
+			goal.saveEx(get_TrxName());
 		}
 		return true;
 	}	//	updateProjects
@@ -659,7 +659,7 @@ public class MMeasure extends X_PA_Measure
 				}
 			}			
 			goal.setMeasureActual(amt);
-			goal.save(get_TrxName());
+			goal.saveEx(get_TrxName());
 		}
 		return true;
 	}	//	updateUserDefinedGoals

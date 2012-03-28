@@ -394,14 +394,14 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			if (confirm.isFullyConfirmed())
 			{
 				confirm.setProcessed(true);
-				confirm.save(get_TrxName());
+				confirm.saveEx(get_TrxName());
 			}
 			else
 			{
 				if (createDifferenceDoc (move, confirm))
 				{
 					confirm.setProcessed(true);
-					confirm.save(get_TrxName());
+					confirm.saveEx(get_TrxName());
 				}
 				else
 				{
