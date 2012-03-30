@@ -142,7 +142,7 @@ public class BPartnerOrgLink extends SvrProcess
 		{
 			mLoc = new MLocator (wh, "Standard");
 			mLoc.setIsDefault(true);
-			mLoc.save(get_TrxName());
+			mLoc.saveEx(get_TrxName());
 		}
 		
 		//	Update/Save Org Info
@@ -176,7 +176,7 @@ public class BPartnerOrgLink extends SvrProcess
 			if (!found)
 			{
 				MRoleOrgAccess orgAccess = new MRoleOrgAccess (org, p_AD_Role_ID);
-				orgAccess.save(get_TrxName());
+				orgAccess.saveEx(get_TrxName());
 			}
 		}
 		

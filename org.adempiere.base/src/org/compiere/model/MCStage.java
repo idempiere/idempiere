@@ -287,7 +287,7 @@ public class MCStage extends X_CM_CStage
 			thisElement.setCM_CStage_ID(this.get_ID());
 			thisElement.setContentHTML(" ");
 			thisElement.setName(elementName);
-			thisElement.save(get_TrxName());
+			thisElement.saveEx(get_TrxName());
 		}
 	}
 	

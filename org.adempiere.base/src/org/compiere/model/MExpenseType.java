@@ -106,7 +106,7 @@ public class MExpenseType extends X_S_ExpenseType
 				
 		MProduct prod = getProduct();
 		if (prod.setExpenseType(this))
-			prod.save(get_TrxName());
+			prod.saveEx(get_TrxName());
 		
 		return success;
 	}	//	afterSave

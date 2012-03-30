@@ -45,6 +45,9 @@ import org.compiere.util.Login;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.SecureInterface;
 import org.compiere.util.Util;
+import org.eclipse.core.runtime.IProduct;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 /**
  *  Adempiere Control Class
@@ -139,9 +142,21 @@ public final class Adempiere
 	 */
 	public static String getVersion()
 	{
-		return MAIN_VERSION + " @ " + DATE_VERSION;
+		IProduct product = Platform.getProduct();
+		if (product != null) {
+			Bundle bundle = product.getDefiningBundle();
+			if (bundle != null) {
+				return bundle.getVersion().toString();
+			}
+		}
+		return "Unknown";
 	}   //  getVersion
 
+	public static String getDatabaseVersion() 
+	{
+		return DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system");
+	}
+	
 	/**
 	 *	Short Summary (Windows)
 	 *  @return summary
@@ -183,8 +198,8 @@ public final class Adempiere
 		s_ImplementationVersion = adempierePackage.getImplementationVersion();
 		if (s_ImplementationVendor == null)
 		{
-			s_ImplementationVendor = "Supported by ADempiere community";
-			s_ImplementationVersion = "ADempiere";
+			s_ImplementationVendor = "Supported by iDempiere community";
+			s_ImplementationVersion = "iDempiere";
 		}
 	}	//	setPackageInfo
 
@@ -576,5 +591,4 @@ public final class Adempiere
 	public static URL getResource(String name) {
 		return Core.getResourceFinder().getResource(name);
 	}
-
 }	//	Adempiere
