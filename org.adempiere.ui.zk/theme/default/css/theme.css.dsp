@@ -490,7 +490,14 @@ tr.z-group td.z-row-inner {
 	font-weight: bold;
 }
 
+div.z-group-cnt {
+	display:table-cell;
+	vertical-align:middle;
+}
+
 div.z-group-cnt span.z-label {
+	display:inline-block; 
+	vertical-align:middle;
 	color: #2C559C;
 	padding: 5px;
 	width: auto;

@@ -56,9 +56,12 @@ public class Group extends org.zkoss.zul.Group {
 		throw new UiException("Unsupported child for setLabel: "+cell);
 	}
 	
-	public void setOpen(boolean open) {
+	public void setOpen(boolean open) {		
+		if(getParent() == null && !open)
+			open = true;	// force the group to open when the parent is null
+		
 		super.setOpen(open);
-		autoFirstCell().setOpen(open);
+		autoFirstCell().setOpen(isOpen());
 		
 		if(getParent() != null)
 		{
@@ -69,11 +72,11 @@ public class Group extends org.zkoss.zul.Group {
 				String value = (String) row.getAttribute(GROUP_ROW_VISIBLE_KEY);
 				if (value != null)
 					visible = value.equals("true");				
-				row.setVisible(open && visible);
+				row.setVisible(isOpen() && visible);	// hide the row of the children when group is not open
 			}
 		}
 	}
-	
+		
 	public class GroupHeader extends Div implements EventListener<Event>
 	{
 		/**
@@ -84,7 +87,7 @@ public class Group extends org.zkoss.zul.Group {
 		private Label lbl;
 		
 		private String title;
-		private boolean isOpen;
+		private boolean open;
 		
 		public GroupHeader()
 		{
@@ -116,12 +119,12 @@ public class Group extends org.zkoss.zul.Group {
 		}
 
 		public boolean isOpen() {
-			return isOpen;
+			return open;
 		}
 
-		public void setOpen(boolean isOpen) {
-			this.isOpen = isOpen;
-			img.setSclass(this.isOpen ? "z-group-img-open" : "z-group-img-close");
+		public void setOpen(boolean open) {
+			this.open = open;
+			img.setSclass(this.open ? "z-group-img-open" : "z-group-img-close");
 		}
 
 		@Override
