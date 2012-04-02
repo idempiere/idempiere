@@ -170,6 +170,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener {
 		int riShown = 0;
 		for (MRecentItem ri : ris) {
 			String label = ri.getLabel();
+			if (label == null)
+				continue;
 			ToolBarButton btnrecentItem = new ToolBarButton(String.valueOf(ri.getAD_RecentItem_ID()));
 			btnrecentItem.setLabel(label);
 			btnrecentItem.setImage(getIconFile());

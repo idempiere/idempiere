@@ -553,7 +553,7 @@ public class MOrder extends X_C_Order implements DocAction
 			if (counter)
 			{
 				fromLines[i].setRef_OrderLine_ID(line.getC_OrderLine_ID());
-				fromLines[i].save(get_TrxName());
+				fromLines[i].saveEx(get_TrxName());
 			}
 		}
 		if (fromLines.length != count)
@@ -704,7 +704,7 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			MOrderLine line = lines[i];
 			line.setLine(number);
-			line.save(get_TrxName());
+			line.saveEx(get_TrxName());
 			number += step;
 		}
 		m_lines = null;
@@ -892,7 +892,7 @@ public class MOrder extends X_C_Order implements DocAction
 			if (schedule[i].isValid() != valid)
 			{
 				schedule[i].setIsValid(valid);
-				schedule[i].save(get_TrxName());				
+				schedule[i].saveEx(get_TrxName());				
 			}
 		}
 		return valid;
@@ -2061,7 +2061,7 @@ public class MOrder extends X_C_Order implements DocAction
 		counter.setDatePromised(getDatePromised());		// default is date ordered 
 		//	Refernces (Should not be required
 		counter.setSalesRep_ID(getSalesRep_ID());
-		counter.save(get_TrxName());
+		counter.saveEx(get_TrxName());
 		
 		//	Update copied lines
 		MOrderLine[] counterLines = counter.getLines(true, null);
@@ -2071,7 +2071,7 @@ public class MOrder extends X_C_Order implements DocAction
 			counterLine.setOrder(counter);	//	copies header values (BP, etc.)
 			counterLine.setPrice();
 			counterLine.setTax();
-			counterLine.save(get_TrxName());
+			counterLine.saveEx(get_TrxName());
 		}
 		log.fine(counter.toString());
 		
@@ -2082,7 +2082,7 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				counter.setDocAction(counterDT.getDocAction());
 				counter.processIt(counterDT.getDocAction());
-				counter.save(get_TrxName());
+				counter.saveEx(get_TrxName());
 			}
 		}
 		return counter;
@@ -2111,7 +2111,7 @@ public class MOrder extends X_C_Order implements DocAction
 				line.addDescription(Msg.getMsg(getCtx(), "Voided") + " (" + old + ")");
 				line.setQty(Env.ZERO);
 				line.setLineNetAmt(Env.ZERO);
-				line.save(get_TrxName());
+				line.saveEx(get_TrxName());
 			}
 			//AZ Goodwill	
 			if (!isSOTrx())
@@ -2199,7 +2199,7 @@ public class MOrder extends X_C_Order implements DocAction
 				return false;
 			}
 			ship.setDocAction(MInOut.DOCACTION_None);
-			ship.save(get_TrxName());
+			ship.saveEx(get_TrxName());
 		}	//	for all shipments
 			
 		//	Reverse All *Invoices*
@@ -2232,7 +2232,7 @@ public class MOrder extends X_C_Order implements DocAction
 				return false;
 			}
 			invoice.setDocAction(MInvoice.DOCACTION_None);
-			invoice.save(get_TrxName());
+			invoice.saveEx(get_TrxName());
 		}	//	for all shipments
 		
 		m_processMsg = info.toString();
@@ -2265,7 +2265,7 @@ public class MOrder extends X_C_Order implements DocAction
 				line.setQtyOrdered(line.getQtyDelivered());
 				//	QtyEntered unchanged
 				line.addDescription("Close (" + old + ")");
-				line.save(get_TrxName());
+				line.saveEx(get_TrxName());
 			}
 		}
 		//	Clear Reservations

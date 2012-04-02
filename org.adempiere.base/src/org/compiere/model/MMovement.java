@@ -634,7 +634,7 @@ public class MMovement extends X_M_Movement implements DocAction
 				{
 					line.setMovementQty(Env.ZERO);
 					line.addDescription("Void (" + old + ")");
-					line.save(get_TrxName());
+					line.saveEx(get_TrxName());
 				}
 			}
 		}

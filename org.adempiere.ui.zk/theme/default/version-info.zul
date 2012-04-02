@@ -6,11 +6,9 @@ Copyright (C) 2009 Idalica Corporation
 <zk>
 <zscript>
 	import org.compiere.Adempiere;
-	var mainVersion = Adempiere.MAIN_VERSION;
-	var dateVersion = Adempiere.DATE_VERSION;
-	var dbVersion = Adempiere.DB_VERSION;
+	var mainVersion = Adempiere.getVersion();
+	var dbVersion = Adempiere.getDatabaseVersion();
 	var vendor = Adempiere.getImplementationVendor();
-	var vendorVersion = Adempiere.getImplementationVersion();
 	var jvm = Adempiere.getJavaInfo();
 	var os = Adempiere.getOSInfo();
 </zscript>
@@ -30,14 +28,9 @@ Copyright (C) 2009 Idalica Corporation
 <div class="versionInfoBox">
 	<table border="0">
 		<tr>
-			<td align="right">Main Version</td>
+			<td align="right">Version</td>
 			<td>:</td>
 			<td aligh="left">${mainVersion}</td>
-		</tr>
-		<tr>
-			<td align="right">Date Version</td>
-			<td>:</td>
-			<td aligh="left">${dateVersion}</td>
 		</tr>
 		<tr>
 			<td align="right">Database Version</td>
@@ -48,11 +41,6 @@ Copyright (C) 2009 Idalica Corporation
 			<td align="right">Vendor</td>
 			<td>:</td>
 			<td aligh="left">${vendor}</td>
-		</tr>
-		<tr>
-			<td align="right">Vendor Version</td>
-			<td>:</td>
-			<td aligh="left">${vendorVersion}</td>
 		</tr>
 		<tr>
 			<td align="right">JVM</td>

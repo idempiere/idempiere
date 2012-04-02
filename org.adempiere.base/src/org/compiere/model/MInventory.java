@@ -689,7 +689,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					line.setQtyInternalUse(Env.ZERO);
 					line.setQtyCount(line.getQtyBook());
 					line.addDescription("Void (" + oldCount + "/" + oldInternal + ")");
-					line.save(get_TrxName());
+					line.saveEx(get_TrxName());
 				}
 			}
 		}

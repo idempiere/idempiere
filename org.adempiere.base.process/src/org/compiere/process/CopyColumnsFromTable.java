@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
+import org.compiere.model.PO;
 import org.compiere.util.AdempiereSystemError;
 
 /**
@@ -84,6 +85,9 @@ public class CopyColumnsFromTable extends SvrProcess
 		for (int i = 0; i < sourceColumns.length; i++)
 		{
 			MColumn colTarget = new MColumn(targetTable);
+			PO.copyValues(sourceColumns[i], colTarget);
+			colTarget.setAD_Table_ID (targetTable.getAD_Table_ID());
+			colTarget.setEntityType(targetTable.getEntityType());
 			// special case the key -> sourceTable_ID
 			if (sourceColumns[i].getColumnName().equals(sourceTable.getTableName()+"_ID")) {
 				String targetColumnName = new String(targetTable.getTableName()+"_ID");
@@ -104,39 +108,9 @@ public class CopyColumnsFromTable extends SvrProcess
 				colTarget.setName(targetTable.getName());
 				colTarget.setDescription(targetTable.getDescription());
 				colTarget.setHelp(targetTable.getHelp());
-			} else {
-				colTarget.setColumnName(sourceColumns[i].getColumnName());
-				colTarget.setAD_Element_ID(sourceColumns[i].getAD_Element_ID());
-				colTarget.setName(sourceColumns[i].getName());
-				colTarget.setDescription(sourceColumns[i].getDescription());
-				colTarget.setHelp(sourceColumns[i].getHelp());
 			}
-			colTarget.setVersion(sourceColumns[i].getVersion());
-			colTarget.setAD_Val_Rule_ID(sourceColumns[i].getAD_Val_Rule_ID());
-			colTarget.setDefaultValue(sourceColumns[i].getDefaultValue());
-			colTarget.setFieldLength(sourceColumns[i].getFieldLength());
-			colTarget.setIsKey(sourceColumns[i].isKey());
-			colTarget.setIsParent(sourceColumns[i].isParent());
-			colTarget.setIsMandatory(sourceColumns[i].isMandatory());
-			colTarget.setIsTranslated(sourceColumns[i].isTranslated());
-			colTarget.setIsIdentifier(sourceColumns[i].isIdentifier());
-			colTarget.setSeqNo(sourceColumns[i].getSeqNo());
-			colTarget.setIsEncrypted(sourceColumns[i].getIsEncrypted());
-			colTarget.setAD_Reference_ID(sourceColumns[i].getAD_Reference_ID());
-			colTarget.setAD_Reference_Value_ID(sourceColumns[i].getAD_Reference_Value_ID());
 			colTarget.setIsActive(sourceColumns[i].isActive());
-			colTarget.setVFormat(sourceColumns[i].getVFormat());
-			colTarget.setCallout(sourceColumns[i].getCallout());
-			colTarget.setIsUpdateable(sourceColumns[i].isUpdateable());
-			colTarget.setAD_Process_ID(sourceColumns[i].getAD_Process_ID());
-			colTarget.setValueMin(sourceColumns[i].getValueMin());
-			colTarget.setValueMax(sourceColumns[i].getValueMax());
-			colTarget.setIsSelectionColumn(sourceColumns[i].isSelectionColumn());
-			colTarget.setReadOnlyLogic(sourceColumns[i].getReadOnlyLogic());
-			colTarget.setIsSyncDatabase(sourceColumns[i].getIsSyncDatabase());
-			colTarget.setIsAlwaysUpdateable(sourceColumns[i].isAlwaysUpdateable());
-			colTarget.setColumnSQL(sourceColumns[i].getColumnSQL());
-			colTarget.save(get_TrxName());
+			colTarget.saveEx(get_TrxName());
 			// TODO: Copy translations
 			m_count++;
 		}

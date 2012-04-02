@@ -486,7 +486,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		{
 			MDDOrderLine line = lines[i];
 			line.setLine(number);
-			line.save(get_TrxName());
+			line.saveEx(get_TrxName());
 			number += step;
 		}
 		m_lines = null;
@@ -1008,7 +1008,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 			if (old.signum() != 0)
 			{
 				line.addDescription(Msg.getMsg(getCtx(), "Voided") + " (" + old + ")");		
-				line.save(get_TrxName());
+				line.saveEx(get_TrxName());
 			}
 		}
 		addDescription(Msg.getMsg(getCtx(), "Voided"));
@@ -1133,7 +1133,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 				line.setQtyOrdered(line.getQtyDelivered());
 				//	QtyEntered unchanged
 				line.addDescription("Close (" + old + ")");
-				line.save(get_TrxName());
+				line.saveEx(get_TrxName());
 			}
 		}
 		//	Clear Reservations

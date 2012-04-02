@@ -387,7 +387,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			{
 				MPayment payment = new MPayment (getCtx(), line.getC_Payment_ID(), get_TrxName());
 				payment.setIsReconciled(true);
-				payment.save(get_TrxName());
+				payment.saveEx(get_TrxName());
 			}
 		}
 		//	Update Bank Account
@@ -395,7 +395,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		ba.load(get_TrxName());
 		//BF 1933645
 		ba.setCurrentBalance(ba.getCurrentBalance().add(getStatementDifference()));
-		ba.save(get_TrxName());
+		ba.saveEx(get_TrxName());
 		
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);

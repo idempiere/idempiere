@@ -85,7 +85,7 @@ public class M_Product_BOM_Check extends SvrProcess
 			log.info("NOT BOM Product");
 			// No BOM - should not happen, but no problem
 			xp.setIsVerified(true);
-			xp.save(get_TrxName());
+			xp.saveEx(get_TrxName());
 			return "OK";
 		}
 
@@ -170,7 +170,7 @@ public class M_Product_BOM_Check extends SvrProcess
 
         // Finish process
 		xp.setIsVerified(true);
-		xp.save(get_TrxName());
+		xp.saveEx(get_TrxName());
 		return "OK";
 	}	//	doIt
 	

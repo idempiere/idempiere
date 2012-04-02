@@ -126,7 +126,7 @@ public class MRecurring extends X_C_Recurring
 		}
 		else
 			return "Invalid @RecurringType@ = " + getRecurringType();
-		run.save(get_TrxName());
+		run.saveEx(get_TrxName());
 
 		//
 		setDateLastRun (run.getUpdated());
