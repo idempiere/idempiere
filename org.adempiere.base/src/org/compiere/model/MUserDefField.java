@@ -23,7 +23,7 @@ import org.compiere.util.DB;
 
 
 /**
- *	
+ *	User overrides for field model
  *  @author Dirk Niemeyer, action42 GmbH
  *  @version $Id$
  */
@@ -32,7 +32,7 @@ public class MUserDefField extends X_AD_UserDef_Field
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 20120403114400L;
 
 
 	/**
@@ -62,7 +62,14 @@ public class MUserDefField extends X_AD_UserDef_Field
 		super (ctx, rs, trxName);
 	}	//	MyModelExample
 
-
+	/**
+	 * Get matching MUserDefField related to current field and user definition for window and tab
+	 * @param ctx
+	 * @param AD_Field_ID
+	 * @param AD_Tab_ID
+	 * @param AD_Window_ID
+	 * @return
+	 */
 	public static MUserDefField get (Properties ctx, int AD_Field_ID, int AD_Tab_ID, int AD_Window_ID )
 	{
 

@@ -23,16 +23,17 @@ import org.compiere.util.DB;
 
 
 /**
- *	
+ *	User overrides for tab model
  *  @author Dirk Niemeyer, action 42 GmbH
  *  @version $Id$
+ *  
  */
 public class MUserDefTab extends X_AD_UserDef_Tab
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 20120403111900L;
 
 	/**
 	 * 	Standard constructor.
@@ -44,7 +45,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 	public MUserDefTab (Properties ctx, int ID, String trxName)
 	{
 		super (ctx, ID, trxName);
-	}	//	MyModelExample
+	}	//	MUserDefTab
 
 	/**
 	 * 	Optional Load Constructor.
@@ -59,9 +60,15 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 	public MUserDefTab (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
-	}	//	MyModelExample
+	}	//	MUserDefTab
 
-
+	/**
+	 * Get matching MUserDefTab related to current tab and user definition for window
+	 * @param ctx
+	 * @param AD_Tab_ID
+	 * @param AD_UserDefWin_ID
+	 * @return
+	 */
 	public static MUserDefTab getMatch (Properties ctx, int AD_Tab_ID, int AD_UserDefWin_ID )
 	{
 
@@ -102,6 +109,13 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 		return retValue;
 	}
 
+	/**
+	 * Get matching MUserDefTab related to current tab and window 
+	 * @param ctx
+	 * @param AD_Tab_ID
+	 * @param AD_Window_ID
+	 * @return
+	 */
 	public static MUserDefTab get (Properties ctx, int AD_Tab_ID, int AD_Window_ID) {
 		
 		MUserDefWin userdefWin = MUserDefWin.getBestMatch(ctx, AD_Window_ID);
@@ -112,4 +126,4 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 		
 	}
 		
-}	//	MyModelExample
+}	//	MUserDefTab

@@ -73,19 +73,9 @@ UPDATE AD_Column SET DefaultValue='''''',Updated=TO_DATE('2010-08-09 20:52:43','
 ALTER TABLE AD_UserDef_Field MODIFY DisplayLogic NVARCHAR2(2000) DEFAULT ''
 ;
 
--- Aug 9, 2010 8:52:50 PM CEST
--- Default comment for updating dictionary
-ALTER TABLE AD_UserDef_Field MODIFY DisplayLogic NULL
-;
-
 -- Aug 9, 2010 8:55:45 PM CEST
 -- Default comment for updating dictionary
 ALTER TABLE AD_UserDef_Field MODIFY DefaultValue NVARCHAR2(2000) DEFAULT ''
-;
-
--- Aug 9, 2010 8:55:45 PM CEST
--- Default comment for updating dictionary
-ALTER TABLE AD_UserDef_Field MODIFY DefaultValue NULL
 ;
 
 -- Mar 5, 2012 2:16:34 PM CET
@@ -173,5 +163,25 @@ INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Description,Help,Name, IsTran
 -- Mar 7, 2012 11:02:41 AM CET
 -- IDEMPIERE-177 Window Customization
 UPDATE AD_Field SET SeqNo=120,IsDisplayed='Y' WHERE AD_Field_ID=200003
+;
+
+-- Apr 3, 2012 3:11:59 PM CEST
+-- IDEMPIERE-177 Window Customization
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-04-03 15:11:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6396
+;
+
+-- Apr 3, 2012 3:13:25 PM CEST
+-- IDEMPIERE-177 Window Customization
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-04-03 15:13:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6399
+;
+
+-- Apr 3, 2012 3:15:11 PM CEST
+-- IDEMPIERE-177 Window Customization
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-04-03 15:15:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6381
+;
+
+-- Apr 3, 2012 3:16:32 PM CEST
+-- IDEMPIERE-177 Window Customization
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-04-03 15:16:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6346
 ;
 

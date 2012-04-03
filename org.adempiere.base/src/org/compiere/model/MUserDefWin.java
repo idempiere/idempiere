@@ -18,21 +18,23 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *	
+ *	User overrides for window model
  *  @author Dirk Niemeyer, action42 GmbH
  *  @version $Id$
+ *  
  */
 public class MUserDefWin extends X_AD_UserDef_Win
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 20120403122300L;
 
 	/**
 	 * 	Standard constructor.
@@ -44,7 +46,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	public MUserDefWin (Properties ctx, int ID, String trxName)
 	{
 		super (ctx, ID, trxName);
-	}	//	MyModelExample
+	}	//	MUserDefWin
 
 	/**
 	 * 	Optional Load Constructor.
@@ -59,9 +61,14 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	public MUserDefWin (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
-	}	//	MyModelExample
+	}	//	MUserDefWin
 
-
+	/**
+	 *  Get all MUserDefWin entries related to window
+	 * 	@param ctx context
+	 *  @param window_ID window
+	 *  @return Array of MUserDefWin for window
+	 */
 	private static MUserDefWin[] getAll (Properties ctx, int window_ID )
 	{
 
@@ -70,7 +77,8 @@ public class MUserDefWin extends X_AD_UserDef_Win
 		StringBuffer sql = new StringBuffer("SELECT * "
 				+ " FROM AD_UserDef_Win w "
 				+ " WHERE w.AD_Window_ID=? AND w.IsActive='Y' "
-				+ " AND w.AD_Language=? "
+				// limit to current login language or no specific language
+				+ " AND (w.AD_Language=? OR w.AD_Language IS NULL)"
 				+ " AND w.AD_Client_ID=? ");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -108,8 +116,21 @@ public class MUserDefWin extends X_AD_UserDef_Win
 
 	}
 	
+	/**
+	 * Get best matching MUserDefWin for current window
+	 * the best match is cached
+	 * @param ctx
+	 * @param window_ID
+	 * @return best matching MUserDefWin
+	 */
 	public static MUserDefWin getBestMatch (Properties ctx, int window_ID)
 	{
+		//  Check Cache
+		Integer key = new Integer(window_ID);
+		MUserDefWin retValue = (MUserDefWin)s_cache.get(key);
+		if (retValue != null)
+			return retValue;
+
 		// parameters
 		final int AD_Org_ID = Env.getAD_Org_ID(ctx);
 		//final int anyOrg = 0;
@@ -158,6 +179,10 @@ public class MUserDefWin extends X_AD_UserDef_Win
 					weight[i] = -1;
 				}
 			}
+			// prefer if related to current login language
+			if (weight[i] > -1 && candidates[i].getAD_Language().equalsIgnoreCase(Env.getAD_Language(ctx))) {
+				weight[i] = weight[i] + 8;
+			}
 			// others are implicit
 		}
 
@@ -171,10 +196,15 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	    }
 
 	    if (weight[maxindex] > -1) {
-		return candidates[maxindex];
+	    	retValue=candidates[maxindex];
+	    	s_cache.put(key, retValue);
+	    	return retValue;
 	    } else {
 	    	return null;
 	    }
 	}
+	
+	/**	Cache of selected MUserDefWin entries 					**/
+	private static CCache<Integer,MUserDefWin> s_cache = new CCache<Integer,MUserDefWin>("AD_UserDef_Win", 3);	//  3 weights
 		
 }	//	MUserDefWin
