@@ -73,19 +73,9 @@ UPDATE AD_Column SET DefaultValue='''''',Updated=TO_TIMESTAMP('2010-08-09 20:52:
 insert into t_alter_column values('ad_userdef_field','DisplayLogic','VARCHAR(2000)',null,'')
 ;
 
--- Aug 9, 2010 8:52:50 PM CEST
--- Default comment for updating dictionary
-insert into t_alter_column values('ad_userdef_field','DisplayLogic',null,'NULL',null)
-;
-
 -- Aug 9, 2010 8:55:45 PM CEST
 -- Default comment for updating dictionary
 insert into t_alter_column values('ad_userdef_field','DefaultValue','VARCHAR(2000)',null,'')
-;
-
--- Aug 9, 2010 8:55:45 PM CEST
--- Default comment for updating dictionary
-insert into t_alter_column values('ad_userdef_field','DefaultValue',null,'NULL',null)
 ;
 
 -- Mar 5, 2012 2:16:34 PM CET
