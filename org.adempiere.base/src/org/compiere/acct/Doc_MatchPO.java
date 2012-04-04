@@ -37,7 +37,6 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_InOut;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -289,34 +288,6 @@ public class Doc_MatchPO extends Doc
 		return false;
 	}
 
-	/**
-	 *  Update Product Info (old).
-	 *  - Costing (CostStandardPOQty, CostStandardPOAmt)
-	 *  @param C_AcctSchema_ID accounting schema
-	 *  @deprecated old costing
-	 */
-	private void updateProductInfo (int C_AcctSchema_ID)
-	{
-		log.fine("M_MatchPO_ID=" + get_ID());
-
-		//  update Product Costing
-		//  requires existence of currency conversion !!
-		StringBuffer sql = new StringBuffer (
-			"UPDATE M_Product_Costing pc "
-			+ "SET (CostStandardPOQty,CostStandardPOAmt) = "
-			+ "(SELECT CostStandardPOQty + m.Qty,"
-			+ " CostStandardPOAmt + currencyConvert(ol.PriceActual,ol.C_Currency_ID,a.C_Currency_ID,ol.DateOrdered,null,ol.AD_Client_ID,ol.AD_Org_ID)*m.Qty "
-			+ "FROM M_MatchPO m, C_OrderLine ol, C_AcctSchema a "
-			+ "WHERE m.C_OrderLine_ID=ol.C_OrderLine_ID"
-			+ " AND pc.M_Product_ID=ol.M_Product_ID"
-			+ " AND pc.C_AcctSchema_ID=a.C_AcctSchema_ID"
-			+ " AND m.M_MatchPO_ID=").append(get_ID()).append(") ")
-			.append("WHERE pc.C_AcctSchema_ID=").append(C_AcctSchema_ID)
-			.append(" AND pc.M_Product_ID=").append(getM_Product_ID());
-		int no = DB.executeUpdate(sql.toString(), getTrxName());
-		log.fine("M_Product_Costing - Updated=" + no);
-	}   //  updateProductInfo
-	
 	// Elaine 2008/6/20	
 	private String createMatchPOCostDetail(MAcctSchema as)
 	{

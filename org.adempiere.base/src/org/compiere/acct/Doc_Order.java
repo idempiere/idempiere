@@ -343,7 +343,6 @@ public class Doc_Order extends Doc
 		if (getDocumentType().equals(DOCTYPE_POrder))
 		{
 			updateProductPO(as);
-			updateProductInfo(as.getC_AcctSchema_ID());
 
 			BigDecimal grossAmt = getAmount(Doc.AMTTYPE_Gross);
 
@@ -774,51 +773,4 @@ public class Doc_Order extends Doc
 			C_Currency_ID, null, total);
 		return fact;
 	}	//	getCommitmentSalesRelease
-
-	/**************************************************************************
-	 *  Update Product Info (old)
-	 *  - Costing (PriceLastPO)
-	 *  - PO (PriceLastPO)
-	 *  @param C_AcctSchema_ID accounting schema
-	 *  @deprecated old costing
-	 */
-	private void updateProductInfo (int C_AcctSchema_ID)
-	{
-		log.fine("C_Order_ID=" + get_ID());
-
-		/** @todo Last.. would need to compare document/last updated date
-		 *  would need to maintain LastPriceUpdateDate on _PO and _Costing */
-
-		//  update Product Costing
-		//  requires existence of currency conversion !!
-		//  if there are multiple lines of the same product last price uses first
-		StringBuffer sql = new StringBuffer (
-			"UPDATE M_Product_Costing pc "
-			+ "SET PriceLastPO = "
-			+ "(SELECT currencyConvert(ol.PriceActual,ol.C_Currency_ID,a.C_Currency_ID,o.DateOrdered,o.C_ConversionType_ID,o.AD_Client_ID,o.AD_Org_ID) "
-			+ "FROM C_Order o, C_OrderLine ol, C_AcctSchema a "
-			+ "WHERE o.C_Order_ID=ol.C_Order_ID"
-			+ " AND pc.M_Product_ID=ol.M_Product_ID AND pc.C_AcctSchema_ID=a.C_AcctSchema_ID ");
-			if (DB.isOracle()) //jz
-			{
-				sql.append(" AND ROWNUM=1 ");
-			}
-			else
-				sql.append(" AND ol.C_OrderLine_ID = (SELECT MIN(ol1.C_OrderLine_ID) "
-						+ "FROM C_Order o1, C_OrderLine ol1 "
-						+ "WHERE o1.C_Order_ID=ol1.C_Order_ID"
-						+ " AND pc.M_Product_ID=ol1.M_Product_ID ")
-						.append("  AND o1.C_Order_ID=").append(get_ID()).append(") ");
-			sql.append(" AND pc.C_AcctSchema_ID=").append(C_AcctSchema_ID).append(" AND o.C_Order_ID=")
-			.append(get_ID()).append(") ")
-			.append("WHERE EXISTS (SELECT * "
-			+ "FROM C_Order o, C_OrderLine ol, C_AcctSchema a "
-			+ "WHERE o.C_Order_ID=ol.C_Order_ID"
-			+ " AND pc.M_Product_ID=ol.M_Product_ID AND pc.C_AcctSchema_ID=a.C_AcctSchema_ID"
-			+ " AND pc.C_AcctSchema_ID=").append(C_AcctSchema_ID).append(" AND o.C_Order_ID=")
-			.append(get_ID()).append(")");
-		int no = DB.executeUpdate(sql.toString(), getTrxName());
-		log.fine("M_Product_Costing - Updated=" + no);
-	}   //  updateProductInfo
-
 }   //  Doc_Order

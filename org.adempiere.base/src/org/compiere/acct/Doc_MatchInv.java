@@ -31,7 +31,6 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.ProductCost;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -312,10 +311,6 @@ public class Doc_MatchInv extends Doc
 			p_Error = error;
 			return null;
 		}
-		
-		//  Update Costing
-		updateProductInfo(as.getC_AcctSchema_ID(),
-			MAcctSchema.COSTINGMETHOD_StandardCosting.equals(as.getCostingMethod()));
 		//
 		facts.add(fact);
 
@@ -417,64 +412,4 @@ public class Doc_MatchInv extends Doc
 		return "";
 	}
 		
-	/**
-	 *  Update Product Info (old).
-	 *  - Costing (CostStandardCumQty, CostStandardCumAmt, CostAverageCumQty, CostAverageCumAmt)
-	 *  @param C_AcctSchema_ID accounting schema
-	 *  @param standardCosting true if std costing
-	 *  @return true if updated
-	 *  @deprecated old costing
-	 */
-	private boolean updateProductInfo (int C_AcctSchema_ID, boolean standardCosting)
-	{
-		log.fine("M_MatchInv_ID=" + get_ID());
-
-		//  update Product Costing Qty/Amt
-		//  requires existence of currency conversion !!
-		StringBuffer sql = new StringBuffer (
-			"UPDATE M_Product_Costing pc "
-			+ "SET (CostStandardCumQty,CostStandardCumAmt, CostAverageCumQty,CostAverageCumAmt) = "
-			+ "(SELECT pc.CostStandardCumQty + m.Qty,"
-			+ "pc.CostStandardCumAmt + currencyConvert(il.PriceActual,i.C_Currency_ID,a.C_Currency_ID,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID)*m.Qty, "
-			+ "pc.CostAverageCumQty + m.Qty,"
-			+ "pc.CostAverageCumAmt + currencyConvert(il.PriceActual,i.C_Currency_ID,a.C_Currency_ID,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID)*m.Qty "
-			+ "FROM M_MatchInv m"
-			+ " INNER JOIN C_InvoiceLine il ON (m.C_InvoiceLine_ID=il.C_InvoiceLine_ID)"
-			+ " INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID),"
-			+ " C_AcctSchema a "
-			+ "WHERE pc.C_AcctSchema_ID=a.C_AcctSchema_ID"
-			+ " AND pc.M_Product_ID=m.M_Product_ID"
-			+ " AND m.M_MatchInv_ID=").append(get_ID()).append(")"
-			//
-			+ "WHERE pc.C_AcctSchema_ID=").append(C_AcctSchema_ID).append(
-			  " AND EXISTS (SELECT * FROM M_MatchInv m "
-				+ "WHERE pc.M_Product_ID=m.M_Product_ID"
-				+ " AND m.M_MatchInv_ID=").append(get_ID()).append(")");
-		int no = DB.executeUpdate(sql.toString(), getTrxName());
-		log.fine("M_Product_Costing - Qty/Amt Updated #=" + no);
-
-		//  Update Average Cost
-		sql = new StringBuffer (
-			"UPDATE M_Product_Costing "
-			+ "SET CostAverage = CostAverageCumAmt/DECODE(CostAverageCumQty, 0,1, CostAverageCumQty) "
-			+ "WHERE C_AcctSchema_ID=").append(C_AcctSchema_ID)
-			.append(" AND M_Product_ID=").append(getM_Product_ID());
-		no = DB.executeUpdate(sql.toString(), getTrxName());
-		log.fine("M_Product_Costing - AvgCost Updated #=" + no);
-
-
-		//  Update Current Cost
-		if (!standardCosting)
-		{
-			sql = new StringBuffer (
-				"UPDATE M_Product_Costing "
-				+ "SET CurrentCostPrice = CostAverage "
-				+ "WHERE C_AcctSchema_ID=").append(C_AcctSchema_ID)
-				.append(" AND M_Product_ID=").append(getM_Product_ID());
-			no = DB.executeUpdate(sql.toString(), getTrxName());
-			log.fine("M_Product_Costing - CurrentCost Updated=" + no);
-		}
-		return true;
-	}   //  updateProductInfo
-
 }   //  Doc_MatchInv
