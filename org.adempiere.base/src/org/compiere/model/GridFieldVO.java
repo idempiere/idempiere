@@ -203,6 +203,36 @@ public class GridFieldVO implements Serializable
 			if (! client.isDisplayField(AD_Field_ID))
 				vo.IsDisplayed = false;
 		}
+		// FR IDEMPIERE-177
+		// Field Customization
+		if (vo.IsDisplayed) {
+			MUserDefField userDef = null;
+			userDef = MUserDefField.get(vo.ctx,AD_Field_ID, AD_Tab_ID, AD_Window_ID);
+			if (userDef != null)
+			{
+				vo.IsDisplayed = userDef.isDisplayed();
+				if (userDef.getName() != null)
+					vo.Header = userDef.getName();
+				if (userDef.getDescription() != null)
+					vo.Description = userDef.getDescription();
+				if (userDef.getHelp() != null)
+					vo.Help = userDef.getHelp();
+				vo.IsReadOnly = userDef.isReadOnly();
+				vo.IsSameLine = userDef.isSameLine();
+				vo.IsUpdateable = userDef.isUpdateable();
+				if (userDef.getDisplayLength() > 0)
+				vo.DisplayLength = userDef.getDisplayLength();
+				if (userDef.getDisplayLogic() != null)
+					vo.DisplayLogic = userDef.getDisplayLogic();
+				if (userDef.getDefaultValue() != null)
+					vo.DefaultValue = userDef.getDefaultValue();
+				if (userDef.getSortNo() > 0)
+					vo.SortNo = userDef.getSortNo();
+				// ToDo SeqNo
+				//if (userDef.getSeqNo() > 0)
+				//	vo.SeqNo = userDef.getSeqNo();
+			}
+		}
 		//
 		vo.initFinish();
 		return vo;
