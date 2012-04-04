@@ -221,7 +221,7 @@ public class GridFieldVO implements Serializable
 				vo.IsSameLine = userDef.isSameLine();
 				vo.IsUpdateable = userDef.isUpdateable();
 				if (userDef.getDisplayLength() > 0)
-				vo.DisplayLength = userDef.getDisplayLength();
+					vo.DisplayLength = userDef.getDisplayLength();
 				if (userDef.getDisplayLogic() != null)
 					vo.DisplayLogic = userDef.getDisplayLogic();
 				if (userDef.getDefaultValue() != null)

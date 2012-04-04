@@ -180,7 +180,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 				}
 			}
 			// prefer if related to current login language
-			if (weight[i] > -1 && candidates[i].getAD_Language().equalsIgnoreCase(Env.getAD_Language(ctx))) {
+			if (weight[i] > -1 && Env.getAD_Language(ctx).equalsIgnoreCase(candidates[i].getAD_Language())) {
 				weight[i] = weight[i] + 8;
 			}
 			// others are implicit
