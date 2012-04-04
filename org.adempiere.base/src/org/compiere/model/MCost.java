@@ -290,14 +290,6 @@ public class MCost extends X_M_Cost
 			if (retValue == null || retValue.signum() == 0)
 				retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
 		}
-		else if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
-		{
-			//	migrate old costs
-			MProductCosting pc = MProductCosting.get(product.getCtx(), product.getM_Product_ID(),
-				as.getC_AcctSchema_ID(), product.get_TrxName());
-			if (pc != null)
-				retValue = pc.getCurrentCostPrice();
-		}
 		else if (MCostElement.COSTINGMETHOD_UserDefined.equals(costingMethod))
 			;
 		else

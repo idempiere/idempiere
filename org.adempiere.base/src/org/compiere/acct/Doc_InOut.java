@@ -257,7 +257,6 @@ public class Doc_InOut extends Doc
 					}
 				}
 			}	//	for all lines
-			updateProductInfo(as.getC_AcctSchema_ID());     //  only for SO!
 
 			/** Commitment release										****/
 			if (as.isAccrual() && as.isCreateSOCommitment())
@@ -368,7 +367,6 @@ public class Doc_InOut extends Doc
 					}
 				}
 			}	//	for all lines
-			updateProductInfo(as.getC_AcctSchema_ID());     //  only for SO!
 		}	//	Sales Return
 
 		//  *** Purchasing - Receipt
@@ -613,36 +611,5 @@ public class Doc_InOut extends Doc
 		return m_DocStatus.equals(MInOut.DOCSTATUS_Reversed)
 				&& m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
 	}
-
-
-	/**
-	 *  Update Sales Order Costing Product Info (old).
-	 *  Purchase side handled in Invoice Matching.
-	 *  <br>
-	 *  decrease average cumulatives
-	 *  @param C_AcctSchema_ID accounting schema
-	 *  @deprecated old costing
-	 */
-	private void updateProductInfo (int C_AcctSchema_ID)
-	{
-		log.fine("M_InOut_ID=" + get_ID());
-		//	Old Model
-		StringBuffer sql = new StringBuffer(
-				//FYRACLE add pc. everywhere
-			"UPDATE M_Product_Costing pc "
-			+ "SET (CostAverageCumQty, CostAverageCumAmt)="
-			+ "(SELECT pc.CostAverageCumQty - SUM(il.MovementQty),"
-			+ " pc.CostAverageCumAmt - SUM(il.MovementQty*pc.CurrentCostPrice) "
-			+ "FROM M_InOutLine il "
-			+ "WHERE pc.M_Product_ID=il.M_Product_ID"
-			+ " AND il.M_InOut_ID=").append(get_ID()).append(") ")
-			.append("WHERE EXISTS (SELECT * "
-			+ "FROM M_InOutLine il "
-			+ "WHERE pc.M_Product_ID=il.M_Product_ID"
-			+ " AND il.M_InOut_ID=").append(get_ID()).append(")");
-		int no = DB.executeUpdate(sql.toString(), getTrxName());
-		log.fine("M_Product_Costing - Updated=" + no);
-		//
-	}   //  updateProductInfo
 
 }   //  Doc_InOut

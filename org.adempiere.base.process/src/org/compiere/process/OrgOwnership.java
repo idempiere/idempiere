@@ -284,12 +284,6 @@ public class OrgOwnership extends SvrProcess
 		if (no != 0)
 			log.fine("generalOwnership - C_BP_Withholding=" + no);
 
-		//	Costing
-		sql = "UPDATE M_Product_Costing " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
-		if (no != 0)
-			log.fine("generalOwnership - M_Product_Costing=" + no);
-
 		//	Replenish
 		sql = "UPDATE M_Replenish " + set;
 		no = DB.executeUpdate(sql, get_TrxName());
