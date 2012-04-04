@@ -80,37 +80,37 @@ insert into t_alter_column values('ad_userdef_field','DefaultValue','VARCHAR(200
 
 -- Mar 5, 2012 2:16:34 PM CET
 -- IDEMPIERE-177 Window Customization
-UPDATE AD_Column SET Callout='org.compiere.model.CalloutWindowCustomization.window',Updated=TO_DATE('2012-03-05 14:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6395
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutWindowCustomization.window',Updated=TO_TIMESTAMP('2012-03-05 14:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6395
 ;
 
 -- Mar 5, 2012 2:35:54 PM CET
 -- IDEMPIERE-177 Window Customization
-INSERT INTO AD_Val_Rule (AD_Client_ID,AD_Org_ID,AD_Val_Rule_ID,Code,Created,CreatedBy,EntityType,IsActive,Name,Type,Updated,UpdatedBy) VALUES (0,0,200000,'AD_Window.AD_Window_ID IN (SELECT AD_Window_Access.AD_Window_ID FROM AD_Window_Access WHERE AD_Window_Access.AD_Role_ID=@#AD_Role_ID@)',TO_DATE('2012-03-05 14:35:52','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Window of Role','S',TO_DATE('2012-03-05 14:35:52','YYYY-MM-DD HH24:MI:SS'),100)
+INSERT INTO AD_Val_Rule (AD_Client_ID,AD_Org_ID,AD_Val_Rule_ID,Code,Created,CreatedBy,EntityType,IsActive,Name,Type,Updated,UpdatedBy) VALUES (0,0,200000,'AD_Window.AD_Window_ID IN (SELECT AD_Window_Access.AD_Window_ID FROM AD_Window_Access WHERE AD_Window_Access.AD_Role_ID=@#AD_Role_ID@)',TO_TIMESTAMP('2012-03-05 14:35:52','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Window of Role','S',TO_TIMESTAMP('2012-03-05 14:35:52','YYYY-MM-DD HH24:MI:SS'),100)
 ;
 
 -- Mar 5, 2012 2:36:34 PM CET
 -- IDEMPIERE-177 Window Customization
-UPDATE AD_Column SET AD_Val_Rule_ID=200000,Updated=TO_DATE('2012-03-05 14:36:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6395
+UPDATE AD_Column SET AD_Val_Rule_ID=200000,Updated=TO_TIMESTAMP('2012-03-05 14:36:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6395
 ;
 
 -- Mar 5, 2012 2:48:07 PM CET
 -- IDEMPIERE-177 Window Customization
-UPDATE AD_Column SET AD_Val_Rule_ID=163,Updated=TO_DATE('2012-03-05 14:48:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6380
+UPDATE AD_Column SET AD_Val_Rule_ID=163,Updated=TO_TIMESTAMP('2012-03-05 14:48:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6380
 ;
 
 -- Mar 5, 2012 3:41:45 PM CET
 -- IDEMPIERE-177 Window Customization
-UPDATE AD_Column SET Callout='org.compiere.model.CalloutWindowCustomization.tab',Updated=TO_DATE('2012-03-05 15:41:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6380
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutWindowCustomization.tab',Updated=TO_TIMESTAMP('2012-03-05 15:41:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6380
 ;
 
 -- Mar 5, 2012 3:51:23 PM CET
 -- IDEMPIERE-177 Window Customization
-UPDATE AD_Column SET AD_Val_Rule_ID=52005,Updated=TO_DATE('2012-03-05 15:51:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6345
+UPDATE AD_Column SET AD_Val_Rule_ID=52005,Updated=TO_TIMESTAMP('2012-03-05 15:51:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6345
 ;
 
 -- Mar 5, 2012 3:53:30 PM CET
 -- IDEMPIERE-177 Window Customization
-UPDATE AD_Column SET Callout='org.compiere.model.CalloutWindowCustomization.field',Updated=TO_DATE('2012-03-05 15:53:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6345
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutWindowCustomization.field',Updated=TO_TIMESTAMP('2012-03-05 15:53:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6345
 ;
 
 -- Mar 7, 2012 11:02:11 AM CET
@@ -185,3 +185,8 @@ UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2012-04-03 15:15:11',
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2012-04-03 15:16:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6346
 ;
 
+UPDATE AD_System
+  SET LastMigrationScriptApplied='830_IDEMPIERE-177_Window_Customization.sql'
+WHERE LastMigrationScriptApplied<'830_IDEMPIERE-177_Window_Customization.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
