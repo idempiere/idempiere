@@ -111,7 +111,7 @@ public class MAdvertisement extends X_W_Advertisement
 		if (m_clickCount != null)
 		{
 			m_clickCount.setTargetURL(TargetURL);
-			m_clickCount.save(get_TrxName());
+			m_clickCount.saveEx(get_TrxName());
 		}
 	}	//	getClickTargetURL
 	

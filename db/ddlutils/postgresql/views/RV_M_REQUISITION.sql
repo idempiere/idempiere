@@ -4,7 +4,7 @@ CREATE OR REPLACE VIEW RV_M_REQUISITION
  HELP, AD_USER_ID, M_PRICELIST_ID, M_WAREHOUSE_ID, ISAPPROVED, 
  PRIORITYRULE, DATEREQUIRED, TOTALLINES, DOCACTION, DOCSTATUS, 
  PROCESSED, M_REQUISITIONLINE_ID, LINE, QTY, QTYORDERED,
- M_PRODUCT_ID, LINEDESCRIPTION, PRICEACTUAL, LINENETAMT)
+ M_PRODUCT_ID, LINEDESCRIPTION, PRICEACTUAL, LINENETAMT, C_CHARGE_ID)
 AS 
 SELECT r.M_Requisition_ID,
     r.AD_Client_ID, r.AD_Org_ID, r.IsActive, r.Created, r.CreatedBy, r.Updated, r.UpdatedBy,
@@ -16,7 +16,7 @@ SELECT r.M_Requisition_ID,
 	(CASE WHEN l.C_OrderLine_ID IS NOT NULL THEN l.Qty ELSE 0 END) AS QtyOrdered,
 	l.M_Product_ID,
     l.Description AS LineDescription,
-    l.PriceActual, l.LineNetAmt
+    l.PriceActual, l.LineNetAmt, l.C_Charge_ID
 FROM M_Requisition r
   INNER JOIN M_RequisitionLine l ON (r.M_Requisition_ID=l.M_Requisition_ID);
 
