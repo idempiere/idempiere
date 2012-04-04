@@ -1267,8 +1267,9 @@ public abstract class PO
 		log.finest("ID=" + ID);
 		if (ID > 0)
 		{
+			setKeyInfo();
 			m_IDs = new Object[] {new Integer(ID)};
-			m_KeyColumns = new String[] {p_info.getTableName() + "_ID"};
+			//m_KeyColumns = new String[] {p_info.getTableName() + "_ID"};
 			load(trxName);
 		}
 		else	//	new
