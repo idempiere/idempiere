@@ -31,7 +31,7 @@ public interface I_AD_UserDef_Win
     public static final String Table_Name = "AD_UserDef_Win";
 
     /** AD_Table_ID=467 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 467;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_AD_UserDef_Win
 	  */
 	public int getAD_Role_ID();
 
-	public I_AD_Role getAD_Role() throws RuntimeException;
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_UserDef_Win_ID */
     public static final String COLUMNNAME_AD_UserDef_Win_ID = "AD_UserDef_Win_ID";
@@ -98,6 +98,15 @@ public interface I_AD_UserDef_Win
 
 	/** Get User defined Window	  */
 	public int getAD_UserDef_Win_ID();
+
+    /** Column name AD_UserDef_Win_UU */
+    public static final String COLUMNNAME_AD_UserDef_Win_UU = "AD_UserDef_Win_UU";
+
+	/** Set AD_UserDef_Win_UU	  */
+	public void setAD_UserDef_Win_UU (String AD_UserDef_Win_UU);
+
+	/** Get AD_UserDef_Win_UU	  */
+	public String getAD_UserDef_Win_UU();
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -112,7 +121,7 @@ public interface I_AD_UserDef_Win
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -127,7 +136,7 @@ public interface I_AD_UserDef_Win
 	  */
 	public int getAD_Window_ID();
 
-	public I_AD_Window getAD_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
