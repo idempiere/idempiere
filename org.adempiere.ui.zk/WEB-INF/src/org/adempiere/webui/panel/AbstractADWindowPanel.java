@@ -1332,6 +1332,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         toolbar.enablePrint(curTab.isPrinted());
         toolbar.enableReport(true);
         toolbar.enableExport(!curTab.isSortTab());
+        
+        toolbar.updateToolBarAndMenuWithRestriction(gridWindow.getAD_Window_ID());
     }
 
     /**

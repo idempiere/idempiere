@@ -1238,6 +1238,41 @@ INSERT INTO t_alter_column values('ad_toolbarbuttonrestrict','"action"',null,'NU
 UPDATE AD_Column SET IsUpdateable='N',Updated=TO_TIMESTAMP('2012-03-29 13:45:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=200111
 ;
 
+-- 05-abr-2012 0:19:55 COT
+-- IDEMPIERE-129 Restrictions on Toolbar and Menu
+UPDATE AD_ToolBarButton SET ComponentName='Toggle',Updated=TO_TIMESTAMP('2012-04-05 00:19:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200041
+;
+
+-- 05-abr-2012 0:20:01 COT
+-- IDEMPIERE-129 Restrictions on Toolbar and Menu
+UPDATE AD_ToolBarButton SET ComponentName='HistoryRecords',Updated=TO_TIMESTAMP('2012-04-05 00:20:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200042
+;
+
+-- 05-abr-2012 0:20:10 COT
+-- IDEMPIERE-129 Restrictions on Toolbar and Menu
+UPDATE AD_ToolBarButton SET ComponentName='ParentRecord',Updated=TO_TIMESTAMP('2012-04-05 00:20:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200043
+;
+
+-- 05-abr-2012 0:20:12 COT
+-- IDEMPIERE-129 Restrictions on Toolbar and Menu
+UPDATE AD_ToolBarButton SET ComponentName='DetailRecord',Updated=TO_TIMESTAMP('2012-04-05 00:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200044
+;
+
+-- 05-abr-2012 0:20:32 COT
+-- IDEMPIERE-129 Restrictions on Toolbar and Menu
+UPDATE AD_ToolBarButton SET ComponentName='ActiveWorkflows',Updated=TO_TIMESTAMP('2012-04-05 00:20:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200054
+;
+
+-- 05-abr-2012 0:20:35 COT
+-- IDEMPIERE-129 Restrictions on Toolbar and Menu
+UPDATE AD_ToolBarButton SET ComponentName='Requests',Updated=TO_TIMESTAMP('2012-04-05 00:20:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200055
+;
+
+-- 05-abr-2012 0:20:39 COT
+-- IDEMPIERE-129 Restrictions on Toolbar and Menu
+UPDATE AD_ToolBarButton SET ComponentName='ProductInfo',Updated=TO_TIMESTAMP('2012-04-05 00:20:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200056
+;
+
 UPDATE AD_System
   SET LastMigrationScriptApplied='833_IDEMPIERE-129.sql'
 WHERE LastMigrationScriptApplied<'833_IDEMPIERE-129.sql'
