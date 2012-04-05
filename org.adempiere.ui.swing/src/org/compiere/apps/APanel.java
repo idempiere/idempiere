@@ -857,6 +857,8 @@ public final class APanel extends CPanel
 						}
 						if (gTab.isReadOnly())
 							tabName.append("</i>");
+						// Carlos Ruiz - globalqss - IDEMPIERE-38 Tabs from a same window can't be translated the same way
+						tabName.append("<!--").append(gTab.getAD_Tab_ID()).append("-->");
 						tabName.append ("</html>");
 						//	Add Tab - sets ALT-<number> and Shift-ALT-<x>
 						window.addTab (tabName.toString(), gTab, tabElement);
