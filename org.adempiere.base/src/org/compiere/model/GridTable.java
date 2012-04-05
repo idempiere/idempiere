@@ -351,7 +351,7 @@ public class GridTable extends AbstractTableModel
 		//	WHERE
 		if (m_whereClause.length() > 0)
 		{
-			where.append(" WHERE ");
+			where.append(" WHERE (");
 			if (m_whereClause.indexOf('@') == -1)
 				where.append(m_whereClause);
 			else    //  replace variables
@@ -367,6 +367,7 @@ public class GridTable extends AbstractTableModel
 					where.append(" 1 = 2 ");
 				}
 			}
+			where.append(")");
 		}
 		if (m_onlyCurrentRows && m_TabNo == 0)
 		{
@@ -2847,7 +2848,7 @@ public class GridTable extends AbstractTableModel
 			String whereClause = m_whereClause;
 			if (m_whereClause != null && m_whereClause.trim().length() > 0)
 			{
-				m_whereClause = "(" + m_whereClause + ") OR (" + retainedWhere + ") ";
+				m_whereClause = "((" + m_whereClause + ") OR (" + retainedWhere + ")) ";
 			}
 			open(m_maxRows);
 			m_whereClause = whereClause;
