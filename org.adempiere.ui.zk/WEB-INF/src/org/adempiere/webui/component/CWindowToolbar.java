@@ -660,7 +660,6 @@ public class CWindowToolbar extends FToolbar implements EventListener
 
 			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
 				if (p instanceof ToolBarButton) {
-					System.out.println(((ToolBarButton)p).getName());
 					if ( restrictName.equals(((ToolBarButton)p).getName()) ) {
 						this.removeChild(p);
 						break;
