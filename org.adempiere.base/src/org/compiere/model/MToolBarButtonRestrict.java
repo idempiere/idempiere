@@ -16,12 +16,8 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -34,7 +30,11 @@ import org.compiere.util.Env;
  */
 public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 {
-	private static final long serialVersionUID = -422120961441035731L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 751989571891306735L;
+
 	private static CLogger s_log = CLogger.getCLogger(MToolBarButtonRestrict.class);
 
 	/**
@@ -59,34 +59,20 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 		super(ctx, rs, trxName);
 	}	//	MToolBarButtonRestrict
 
-	/** Renvoie une liste des restrictions à appliquer en fonction du rôle, de la fenêtre, du formulaire, ...	**/
-	public static ArrayList<Integer> getOf (Properties ctx, int AD_Role_ID, String Action, int Action_ID, String trxName)
+	/** Returns a list of restrictions to be applied according to the role, the window of the form ... **/
+	public static int[] getOf (Properties ctx, int AD_Role_ID, String Action, int Action_ID, String className, String trxName)
 	{
 		// Action : R-Report, W-Window, X-form
-		ArrayList<Integer> list = new ArrayList<Integer>();
-
 		String sql = "SELECT AD_ToolBarButton_ID FROM AD_ToolBarButtonRestrict WHERE IsActive = 'Y'"
-				+ " AND AD_Client_ID IN (0, " + Env.getAD_Client_ID(ctx) + ")"
-				+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = " + AD_Role_ID + ")"		
-				+ " AND (Action IS NULL "
-				+ " OR Action='" + Action + "' AND (AD_Window_ID IS NULL OR AD_Window_ID = " + Action_ID + "))";
-		s_log.warning("sql="+sql);
+				+ " AND AD_Client_ID IN (0, ?)"
+				+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = ?)"		
+				+ " AND (Action IS NULL OR Action=? AND (AD_Window_ID IS NULL OR (Action='W' AND AD_Window_ID=?)))"
+				+ " AND AD_ToolBarButton_ID IN (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE IsActive='Y' AND Classname=?)";
+		s_log.info("sql="+sql);
+		
+		int[] ids = DB.getIDsEx(trxName, sql, Env.getAD_Client_ID(ctx), AD_Role_ID, Action, Action_ID, className);
 
-		PreparedStatement pstmt = DB.prepareStatement(sql, trxName);
-		ResultSet rs;
-		try {
-			rs = pstmt.executeQuery();
-
-			while (rs.next())
-			{
-				if (!list.contains(rs.getInt(1)))
-					list.add (rs.getInt(1));
-			}
-		} catch (SQLException e) { 
-			s_log.log(Level.SEVERE, sql, e);
-		}
-
-		return list;
+		return ids;
 	}	//	getOf
 	
 	/**

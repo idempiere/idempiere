@@ -146,9 +146,9 @@ public final class APanel extends CPanel
 	implements DataStatusListener, ChangeListener, ActionListener, IProcessMonitor
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 6066778919781303581L;
+	private static final long serialVersionUID = -253840959387736456L;
 
 	private boolean isNested = false;
 	private boolean ToolBarMenuRestictionLoaded = false;
@@ -2918,17 +2918,16 @@ public final class APanel extends CPanel
 	
 	private void updateToolBarAndMenuWithRestriction()
 	{
-		ArrayList<Integer> restrictionList = new ArrayList<Integer>();
 		int ToolBarButton_ID = 0;
 
-		restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "W", m_window.getAD_Window_ID(), null);
-		log.warning("restrictionList="+restrictionList.toString());
+		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "W", m_window.getAD_Window_ID(), this.getClass().getName(), null);
+		log.info("restrictionList="+restrictionList.toString());
 
-		for (int i = 0; i < restrictionList.size(); i++)
+		for (int i = 0; i < restrictionList.length; i++)
 		{
-			ToolBarButton_ID= restrictionList.get(i);
+			ToolBarButton_ID= restrictionList[i];
 
-			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(Env.getCtx(), ToolBarButton_ID, null);
+			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
 			String restrictName = tbt.getComponentName();
 			log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
 			boolean found=false;
