@@ -385,6 +385,7 @@ public class Doc_InOut extends Doc
 					//get costing method for product
 					String costingMethod = product.getCostingMethod(as);
 					if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
+						MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod) ||
 						MAcctSchema.COSTINGMETHOD_LastPOPrice.equals(costingMethod) )
 					{
 						int C_OrderLine_ID = line.getC_OrderLine_ID();
