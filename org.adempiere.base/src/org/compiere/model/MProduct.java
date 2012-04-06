@@ -263,6 +263,8 @@ public class MProduct extends X_M_Product
 		setProductType(impP.getProductType());
 		setImageURL(impP.getImageURL());
 		setDescriptionURL(impP.getDescriptionURL());
+		setVolume(impP.getVolume());
+		setWeight(impP.getWeight());
 	}	//	MProduct
 	
 	/** Additional Downloads				*/
