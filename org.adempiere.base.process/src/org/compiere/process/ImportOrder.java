@@ -666,7 +666,11 @@ public class ImportOrder extends SvrProcess
 						if (m_docAction != null && m_docAction.length() > 0)
 						{
 							order.setDocAction(m_docAction);
-							order.processIt (m_docAction);
+							if(!order.processIt (m_docAction)) {
+								log.warning("Order Process Failed: " + order + " - " + order.getProcessMsg());
+								throw new IllegalStateException("Order Process Failed: " + order + " - " + order.getProcessMsg());
+								
+							}
 						}
 						order.saveEx();
 					}
@@ -767,7 +771,11 @@ public class ImportOrder extends SvrProcess
 				if (m_docAction != null && m_docAction.length() > 0)
 				{
 					order.setDocAction(m_docAction);
-					order.processIt (m_docAction);
+					if(!order.processIt (m_docAction)) {
+						log.warning("Order Process Failed: " + order + " - " + order.getProcessMsg());
+						throw new IllegalStateException("Order Process Failed: " + order + " - " + order.getProcessMsg());
+						
+					}
 				}
 				order.saveEx();
 			}
