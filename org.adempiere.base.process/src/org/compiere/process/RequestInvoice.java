@@ -178,7 +178,11 @@ public class RequestInvoice extends SvrProcess
 				m_invoice.delete(false);
 			else
 			{
-				m_invoice.processIt(MInvoice.ACTION_Prepare);
+				if(!m_invoice.processIt(MInvoice.ACTION_Prepare)) {
+					log.warning("Invoice Process Failed: " + m_invoice + " - " + m_invoice.getProcessMsg());
+					throw new IllegalStateException("Invoice Process Failed: " + m_invoice + " - " + m_invoice.getProcessMsg());
+					
+				}
 				m_invoice.saveEx();
 				addLog(0, null, m_invoice.getGrandTotal(), m_invoice.getDocumentNo());
 			}
