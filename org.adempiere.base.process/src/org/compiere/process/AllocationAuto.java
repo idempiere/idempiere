@@ -828,8 +828,9 @@ public class AllocationAuto extends SvrProcess
 		if (m_allocation == null)
 			return true;
 		boolean success = m_allocation.processIt(MAllocationHdr.DOCACTION_Complete);
-		if (success)
-			success = m_allocation.save();
+		if (!success)
+			throw new IllegalStateException("Allocation Process Failed "+ m_allocation.getDocumentNo() +
+					" " + m_allocation.getProcessMsg());
 		else
 			m_allocation.saveEx();
 		addLog(0, m_allocation.getDateAcct(), null, m_allocation.getDescription());
