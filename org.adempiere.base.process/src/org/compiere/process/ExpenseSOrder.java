@@ -270,7 +270,10 @@ public class ExpenseSOrder extends SvrProcess
 		if (m_order == null)
 			return;
 		m_order.setDocAction(DocAction.ACTION_Prepare);
-		m_order.processIt(DocAction.ACTION_Prepare);
+		if (!m_order.processIt(DocAction.ACTION_Prepare)) {
+			log.warning("Order Process Failed: " + m_order + " - " + m_order.getProcessMsg());
+			throw new IllegalStateException("Order Process Failed: " + m_order + " - " + m_order.getProcessMsg());
+		}
 		if (!m_order.save())
 			throw new IllegalStateException("Cannot save Order");
 		m_noOrders++;
