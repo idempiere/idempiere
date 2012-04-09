@@ -644,7 +644,11 @@ public class ImportInvoice extends SvrProcess
 				{
 					if (invoice != null)
 					{
-						invoice.processIt(m_docAction);
+						if (!invoice.processIt(m_docAction)) {
+							log.warning("Invoice Process Failed: " + invoice + " - " + invoice.getProcessMsg());
+							throw new IllegalStateException("Invoice Process Failed: " + invoice + " - " + invoice.getProcessMsg());
+							
+						}
 						invoice.saveEx();
 					}
 					//	Group Change
@@ -740,7 +744,11 @@ public class ImportInvoice extends SvrProcess
 			}
 			if (invoice != null)
 			{
-				invoice.processIt (m_docAction);
+				if(!invoice.processIt (m_docAction)) {
+					log.warning("Invoice Process Failed: " + invoice + " - " + invoice.getProcessMsg());
+					throw new IllegalStateException("Invoice Process Failed: " + invoice + " - " + invoice.getProcessMsg());
+					
+				}
 				invoice.saveEx();
 			}
 			rs.close();
