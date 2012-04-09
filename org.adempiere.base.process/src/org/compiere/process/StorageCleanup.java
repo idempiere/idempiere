@@ -170,7 +170,11 @@ public class StorageCleanup extends SvrProcess
 		}	//	for all movements
 		
 		//	Process
-		mh.processIt(MMovement.ACTION_Complete);
+		if (!mh.processIt(MMovement.ACTION_Complete)) {
+			log.warning("Movement Process Failed: " + mh + " - " + mh.getProcessMsg());
+			throw new IllegalStateException("Movement Process Failed: " + mh + " - " + mh.getProcessMsg());
+			
+		}
 		mh.saveEx();
 		
 		addLog(0, null, new BigDecimal(lines), "@M_Movement_ID@ " + mh.getDocumentNo() + " (" 
