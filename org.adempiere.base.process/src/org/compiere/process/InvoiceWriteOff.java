@@ -304,8 +304,12 @@ public class InvoiceWriteOff extends SvrProcess
 			return true;
 		processPayment();
 		//	Process It
-		if (m_alloc.processIt(DocAction.ACTION_Complete) &&  m_alloc.save())
-		{
+		if (!m_alloc.processIt(DocAction.ACTION_Complete)) {
+			log.warning("Allocation Process Failed: " + m_alloc + " - " + m_alloc.getProcessMsg());
+			throw new IllegalStateException("Allocation Process Failed: " + m_alloc + " - " + m_alloc.getProcessMsg());
+				
+		}
+		if (m_alloc.save()) {
 			m_alloc = null;
 			return true;
 		}
@@ -323,8 +327,12 @@ public class InvoiceWriteOff extends SvrProcess
 		if (m_payment == null)
 			return true;
 		//	Process It
-		if (m_payment.processIt(DocAction.ACTION_Complete) &&  m_payment.save())
-		{
+		if (!m_payment.processIt(DocAction.ACTION_Complete)) {
+			log.warning("Payment Process Failed: " + m_payment + " - " + m_payment.getProcessMsg());
+			throw new IllegalStateException("Payment Process Failed: " + m_payment + " - " + m_payment.getProcessMsg());
+		}		
+			
+		if (m_payment.save()) {
 			m_payment = null;
 			return true;
 		}
