@@ -223,7 +223,11 @@ public class BankStatementPayment extends SvrProcess
 			return null;
 		payment.saveEx();
 		//
-		payment.processIt(MPayment.DOCACTION_Complete);
+		if (!payment.processIt(MPayment.DOCACTION_Complete)) {
+			log.warning("Payment Process Failed: " + payment.getDocumentNo() + " " + payment.getProcessMsg());
+			throw new IllegalStateException("Payment Process Failed: " + payment.getDocumentNo() + " " + payment.getProcessMsg());
+			
+		}
 		payment.saveEx();
 		return payment;		
 	}	//	createPayment
