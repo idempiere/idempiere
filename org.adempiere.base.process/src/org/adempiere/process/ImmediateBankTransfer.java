@@ -259,6 +259,7 @@ public class ImmediateBankTransfer extends SvrProcess
 					"Cash Processing failed: " + cash + " - "
 							+ cash.getProcessMsg()
 							+ " / please complete it manually");
+	        throw new  IllegalStateException("Cash Processing failed: " + cash + " - " + cash.getProcessMsg());
 	    }
 		if (!cash.save())
 		{
