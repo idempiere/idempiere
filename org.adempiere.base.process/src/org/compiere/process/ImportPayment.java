@@ -502,7 +502,11 @@ public class ImportPayment extends SvrProcess
 					if (payment != null && m_docAction != null && m_docAction.length() > 0)
 					{
 						payment.setDocAction(m_docAction);
-						payment.processIt (m_docAction);
+						if(!payment.processIt (m_docAction)) {
+							log.warning("Payment Process Failed: " + payment + " - " + payment.getProcessMsg());
+							throw new IllegalStateException("Payment Process Failed: " + payment + " - " + payment.getProcessMsg());
+							
+						}
 						payment.saveEx();
 					}
 				}
