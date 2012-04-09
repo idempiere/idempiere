@@ -578,8 +578,12 @@ public class InOutGenerate extends SvrProcess
 		if (m_shipment != null)
 		{
 			//	Fails if there is a confirmation
-			if (!m_shipment.processIt(p_docAction))
+			if (!m_shipment.processIt(p_docAction)) {
 				log.warning("Failed: " + m_shipment);
+				throw new IllegalStateException("Shipment Process Failed: " + m_shipment + " - " + m_shipment.getProcessMsg());
+				
+			}
+			}
 			m_shipment.saveEx();
 			//
 			addLog(m_shipment.getM_InOut_ID(), m_shipment.getMovementDate(), null, m_shipment.getDocumentNo());
