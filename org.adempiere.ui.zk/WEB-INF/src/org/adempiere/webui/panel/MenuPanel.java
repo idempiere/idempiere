@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.exception.ApplicationException;
@@ -42,6 +41,7 @@ import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treecol;
 import org.zkoss.zul.Treecols;
@@ -90,13 +90,14 @@ public class MenuPanel extends Panel implements EventListener
     {
     	this.setWidth("100%");
     	this.setHeight("100%");
+    	this.setStyle("position: relative");
     	
         menuTree = new Tree();
         menuTree.setMultiple(false);
         menuTree.setId("mnuMain");
         menuTree.setWidth("100%");
         menuTree.setVflex(true);
-        menuTree.setSizedByContent(true);
+        menuTree.setSizedByContent(false);
         menuTree.setPageSize(-1); // Due to bug in the new paging functionality
         
         menuTree.setStyle("border: none");
@@ -162,6 +163,8 @@ public class MenuPanel extends Panel implements EventListener
             treeChildren.appendChild(treeitem);
             treeitem.setLabel(mChildNode.getName());
             treeitem.setTooltiptext(mChildNode.getDescription());
+            Treecell cell = (Treecell)treeitem.getTreerow().getFirstChild();
+            cell.setSclass("menu-treecell-cnt");
            
             if(mChildNode.getChildCount() != 0)
             {

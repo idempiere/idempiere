@@ -113,11 +113,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
         West w = new West();
         layout.appendChild(w);
-        w.setWidth("300px");
+        w.setSclass("desktop-left-column");
         w.setCollapsible(true);
         w.setSplittable(true);
         w.setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Menu")));
-        w.setFlex(true);
+        w.setFlex(false);
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
