@@ -15,12 +15,11 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package org.adempiere.model;
+package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for M_CostHistory
@@ -32,7 +31,7 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120308L;
+	private static final long serialVersionUID = 20120402L;
 
     /** Standard Constructor */
     public X_M_CostHistory (Properties ctx, int M_CostHistory_ID, String trxName)

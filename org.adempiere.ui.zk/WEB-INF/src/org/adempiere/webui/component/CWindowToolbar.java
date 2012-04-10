@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereIdGenerator;
@@ -30,6 +31,8 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MRole;
+import org.compiere.model.MToolBarButtonRestrict;
+import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -51,10 +54,12 @@ import org.zkoss.zul.Space;
  */
 public class CWindowToolbar extends FToolbar implements EventListener
 {
+	private static final String BTNPREFIX = "Btn";
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -762537218475834634L;
+	private static final long serialVersionUID = 5233006056333191551L;
 
 	private static final String TOOLBAR_BUTTON_STYLE = "background-color: transparent; display:inline-block; margin-left: 1px; margin-right: 1px; width: 26px; height: 24px;";
 
@@ -209,7 +214,7 @@ public class CWindowToolbar extends FToolbar implements EventListener
     private ToolBarButton createButton(String name, String image, String tooltip)
     {
     	ToolBarButton btn = new ToolBarButton("");
-        btn.setName("Btn"+name);
+        btn.setName(BTNPREFIX+name);
         if (windowNo > 0)
         	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + btn.getName() + "_" + windowNo + (embedded ? "E" : ""));
         else
@@ -633,4 +638,38 @@ public class CWindowToolbar extends FToolbar implements EventListener
 		if (btnExport != null)
 			btnExport.setDisabled(!b);
 	}
+
+	private boolean ToolBarMenuRestictionLoaded = false;
+	public void updateToolBarAndMenuWithRestriction(int AD_Window_ID) {
+		if (ToolBarMenuRestictionLoaded)
+			return;
+		Properties m_ctx = Env.getCtx();
+
+		int ToolBarButton_ID = 0;
+
+		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "W", AD_Window_ID, this.getClass().getName(), null);
+		log.info("restrictionList="+restrictionList.toString());
+
+		for (int i = 0; i < restrictionList.length; i++)
+		{
+			ToolBarButton_ID= restrictionList[i];
+
+			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
+			String restrictName = BTNPREFIX + tbt.getComponentName();
+			log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
+
+			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
+				if (p instanceof ToolBarButton) {
+					if ( restrictName.equals(((ToolBarButton)p).getName()) ) {
+						this.removeChild(p);
+						break;
+					}
+				}
+			}
+
+		}	// All restrictions
+
+		ToolBarMenuRestictionLoaded = true;
+	}
+
 }

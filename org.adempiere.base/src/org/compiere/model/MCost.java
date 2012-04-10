@@ -214,11 +214,7 @@ public class MCost extends X_M_Cost
 		{
 			if (zeroCostsOK)
 				return Env.ZERO;
-			materialCostEach = getSeedCosts(product, M_ASI_ID,
-				as, Org_ID, costingMethod, C_OrderLine_ID);
 		}
-		if (materialCostEach == null)
-			return null;
 
 		//	Material Costs
 		BigDecimal materialCost = materialCostEach.multiply(qty);
@@ -278,13 +274,13 @@ public class MCost extends X_M_Cost
 		BigDecimal retValue = null;
 		//	Direct Data
 		if (MCostElement.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
-			retValue = calculateAverageInv(product, M_ASI_ID, as, Org_ID);
+			return null;
 		else if (MCostElement.COSTINGMETHOD_AveragePO.equals(costingMethod))
-			retValue = calculateAveragePO(product, M_ASI_ID, as, Org_ID);
+			return null;
 		else if (MCostElement.COSTINGMETHOD_Fifo.equals(costingMethod))
-			retValue = calculateFiFo(product, M_ASI_ID, as, Org_ID);
+			return null;
 		else if (MCostElement.COSTINGMETHOD_Lifo.equals(costingMethod))
-			retValue = calculateLiFo(product, M_ASI_ID, as, Org_ID);
+			return null;
 		else if (MCostElement.COSTINGMETHOD_LastInvoice.equals(costingMethod))
 			retValue = getLastInvoicePrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
 		else if (MCostElement.COSTINGMETHOD_LastPOPrice.equals(costingMethod))
@@ -294,19 +290,11 @@ public class MCost extends X_M_Cost
 			if (retValue == null || retValue.signum() == 0)
 				retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
 		}
-		else if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
-		{
-			//	migrate old costs
-			MProductCosting pc = MProductCosting.get(product.getCtx(), product.getM_Product_ID(),
-				as.getC_AcctSchema_ID(), null);
-			if (pc != null)
-				retValue = pc.getCurrentCostPrice();
-		}
 		else if (MCostElement.COSTINGMETHOD_UserDefined.equals(costingMethod))
 			;
 		else
 			throw new IllegalArgumentException("Unknown Costing Method = " + costingMethod);
-		if (retValue != null && retValue.signum() != 0)
+		if (retValue != null && retValue.signum() > 0)
 		{
 			s_log.fine(product.getName() + ", CostingMethod=" + costingMethod + " - " + retValue);
 			return retValue;
@@ -316,7 +304,7 @@ public class MCost extends X_M_Cost
 		if (C_OrderLine_ID != 0)
 		{
 			retValue = getPOPrice(product, C_OrderLine_ID, as.getC_Currency_ID());
-			if (retValue != null && retValue.signum() != 0)
+			if (retValue != null && retValue.signum() > 0)
 			{
 				s_log.fine(product.getName() + ", PO - " + retValue);
 				return retValue;
@@ -327,8 +315,8 @@ public class MCost extends X_M_Cost
 		if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
 			MCostElement ce = MCostElement.getMaterialCostElement(as, MCostElement.COSTINGMETHOD_StandardCosting);
-			MCost cost = get(product, M_ASI_ID, as, Org_ID, ce.getM_CostElement_ID());
-			if (cost != null && cost.getCurrentCostPrice().signum() != 0)
+			MCost cost = get(product, M_ASI_ID, as, Org_ID, ce.getM_CostElement_ID(), product.get_TrxName());
+			if (cost != null && cost.getCurrentCostPrice().signum() > 0)
 			{
 				s_log.fine(product.getName() + ", Standard - " + cost);
 				return cost.getCurrentCostPrice();
@@ -337,15 +325,14 @@ public class MCost extends X_M_Cost
 
 		//	We do not have a price
 		//	PO first
-		if (MCostElement.COSTINGMETHOD_AveragePO.equals(costingMethod)
-			|| MCostElement.COSTINGMETHOD_LastPOPrice.equals(costingMethod)
+		if (MCostElement.COSTINGMETHOD_LastPOPrice.equals(costingMethod)
 			|| MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
 			//	try Last PO
 			retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
 			if (Org_ID != 0 && (retValue == null || retValue.signum() == 0))
 				retValue = getLastPOPrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
-			if (retValue != null && retValue.signum() != 0)
+			if (retValue != null && retValue.signum() > 0)
 			{
 				s_log.fine(product.getName() + ", LastPO = " + retValue);
 				return retValue;
@@ -366,15 +353,14 @@ public class MCost extends X_M_Cost
 
 		//	Still Nothing
 		//	Inv second
-		if (MCostElement.COSTINGMETHOD_AveragePO.equals(costingMethod)
-			|| MCostElement.COSTINGMETHOD_LastPOPrice.equals(costingMethod)
+		if (MCostElement.COSTINGMETHOD_LastPOPrice.equals(costingMethod)
 			|| MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
 			//	try last Inv
 			retValue = getLastInvoicePrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
 			if (Org_ID != 0 && (retValue == null || retValue.signum() == 0))
 				retValue = getLastInvoicePrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
-			if (retValue != null && retValue.signum() != 0)
+			if (retValue != null && retValue.signum() > 0)
 			{
 				s_log.fine(product.getName() + ", LastInv = " + retValue);
 				return retValue;
@@ -386,7 +372,7 @@ public class MCost extends X_M_Cost
 			retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
 			if (Org_ID != 0 && (retValue == null || retValue.signum() == 0))
 				retValue = getLastPOPrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
-			if (retValue != null && retValue.signum() != 0)
+			if (retValue != null && retValue.signum() > 0)
 			{
 				s_log.fine(product.getName() + ", LastPO = " + retValue);
 				return retValue;
@@ -394,7 +380,7 @@ public class MCost extends X_M_Cost
 		}
 
 		//	Still nothing try ProductPO
-		MProductPO[] pos = MProductPO.getOfProduct(product.getCtx(), product.getM_Product_ID(), null);
+		MProductPO[] pos = MProductPO.getOfProduct(product.getCtx(), product.getM_Product_ID(), product.get_TrxName());
 		for (int i = 0; i < pos.length; i++)
 		{
 			BigDecimal price = pos[i].getPricePO();
@@ -423,12 +409,47 @@ public class MCost extends X_M_Cost
 		}
 
 		//	Still nothing try Purchase Price List
-		//	....
+		BigDecimal price = getSeedCostFromPriceList(product, as, Org_ID);
+		if (price != null && price.signum() > 0)
+		{
+			retValue = price;
+		}
 
 		s_log.fine(product.getName() + " = " + retValue);
 		return retValue;
 	}	//	getSeedCosts
 
+
+	private static BigDecimal getSeedCostFromPriceList(MProduct product,
+			MAcctSchema as, int orgID) {
+		String sql = "SELECT pp.PriceList, pp.PriceStd FROM M_ProductPrice pp" +
+				" INNER JOIN M_PriceList_Version plv ON (pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID AND plv.ValidFrom <= trunc(sysdate))" +
+				" INNER JOIN M_PriceList pl ON (plv.M_PriceList_ID = pl.M_PriceList_ID AND pl.IsSOPriceList = 'N')" +
+				" WHERE pp.AD_Client_ID = ? AND pp.AD_Org_ID IN (0, ?) AND pp.M_Product_ID = ? AND pp.PriceList > 0 AND pp.IsActive = 'Y' " +
+				" ORDER BY pp.AD_Org_ID Desc, plv.ValidFrom Desc";
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = DB.prepareStatement(sql, product.get_TrxName());
+			st.setInt(1, as.getAD_Client_ID());
+			st.setInt(2, orgID);
+			st.setInt(3, product.getM_Product_ID());
+			rs = st.executeQuery();
+			if (rs.next()) {
+				BigDecimal priceList = rs.getBigDecimal(1);
+				BigDecimal priceStd = rs.getBigDecimal(2);
+				if (priceStd != null && priceStd.signum() > 0)
+					return priceStd;
+				else
+					return priceList;
+			}
+		} catch (SQLException e) {
+			throw new DBException(e, sql);
+		} finally {
+			DB.close(rs, st);
+		}
+		return BigDecimal.ZERO;
+	}
 
 	/**
 	 * 	Get Last Invoice Price in currency

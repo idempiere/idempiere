@@ -189,9 +189,11 @@ public class T_InventoryValue_Create extends SvrProcess
 	           + "AND plv.M_PriceList_ID=pl.M_PriceList_ID), "
 	           + "CostStandard = " 
 	           + "(SELECT currencyConvert(pc.CurrentCostPrice,acs.C_Currency_ID,T_InventoryValue.C_Currency_ID,T_InventoryValue.DateValue, null, T_InventoryValue.AD_Client_ID, T_InventoryValue.AD_Org_ID) "
-	           + "FROM AD_ClientInfo ci, C_AcctSchema acs, M_Product_Costing pc "
+	           + "FROM AD_ClientInfo ci, C_AcctSchema acs, M_Cost pc, M_CostElement ce "
 	           + "WHERE T_InventoryValue.AD_Client_ID=ci.AD_Client_ID AND ci.C_AcctSchema1_ID=acs.C_AcctSchema_ID "
-	           + "AND acs.C_AcctSchema_ID=pc.C_AcctSchema_ID "
+	           + "AND acs.C_AcctSchema_ID=pc.C_AcctSchema_ID " 
+	           + "AND pc.M_CostElement_ID=ce.M_CostElement_ID " 
+	           + "AND ce.CostingMethod='S'"
 	           + "AND T_InventoryValue.M_Product_ID=pc.M_Product_ID) "
 	           + "WHERE	T_InventoryValue.M_Warehouse_ID = " + p_M_Warehouse_ID;		
 		cntu = DB.executeUpdate(sqlupd, get_TrxName());

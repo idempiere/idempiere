@@ -31,7 +31,7 @@ public interface I_AD_UserDef_Field
     public static final String Table_Name = "AD_UserDef_Field";
 
     /** AD_Table_ID=464 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 464;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_AD_UserDef_Field
 	  */
 	public int getAD_Field_ID();
 
-	public I_AD_Field getAD_Field() throws RuntimeException;
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -86,6 +86,15 @@ public interface I_AD_UserDef_Field
 	/** Get User defined Field	  */
 	public int getAD_UserDef_Field_ID();
 
+    /** Column name AD_UserDef_Field_UU */
+    public static final String COLUMNNAME_AD_UserDef_Field_UU = "AD_UserDef_Field_UU";
+
+	/** Set AD_UserDef_Field_UU	  */
+	public void setAD_UserDef_Field_UU (String AD_UserDef_Field_UU);
+
+	/** Get AD_UserDef_Field_UU	  */
+	public String getAD_UserDef_Field_UU();
+
     /** Column name AD_UserDef_Tab_ID */
     public static final String COLUMNNAME_AD_UserDef_Tab_ID = "AD_UserDef_Tab_ID";
 
@@ -95,7 +104,7 @@ public interface I_AD_UserDef_Field
 	/** Get User defined Tab	  */
 	public int getAD_UserDef_Tab_ID();
 
-	public I_AD_UserDef_Tab getAD_UserDef_Tab() throws RuntimeException;
+	public org.compiere.model.I_AD_UserDef_Tab getAD_UserDef_Tab() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

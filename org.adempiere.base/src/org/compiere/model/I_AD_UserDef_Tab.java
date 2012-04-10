@@ -31,7 +31,7 @@ public interface I_AD_UserDef_Tab
     public static final String Table_Name = "AD_UserDef_Tab";
 
     /** AD_Table_ID=466 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 466;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_AD_UserDef_Tab
 	  */
 	public int getAD_Tab_ID();
 
-	public I_AD_Tab getAD_Tab() throws RuntimeException;
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AD_UserDef_Tab_ID */
     public static final String COLUMNNAME_AD_UserDef_Tab_ID = "AD_UserDef_Tab_ID";
@@ -86,6 +86,15 @@ public interface I_AD_UserDef_Tab
 	/** Get User defined Tab	  */
 	public int getAD_UserDef_Tab_ID();
 
+    /** Column name AD_UserDef_Tab_UU */
+    public static final String COLUMNNAME_AD_UserDef_Tab_UU = "AD_UserDef_Tab_UU";
+
+	/** Set AD_UserDef_Tab_UU	  */
+	public void setAD_UserDef_Tab_UU (String AD_UserDef_Tab_UU);
+
+	/** Get AD_UserDef_Tab_UU	  */
+	public String getAD_UserDef_Tab_UU();
+
     /** Column name AD_UserDef_Win_ID */
     public static final String COLUMNNAME_AD_UserDef_Win_ID = "AD_UserDef_Win_ID";
 
@@ -95,7 +104,7 @@ public interface I_AD_UserDef_Tab
 	/** Get User defined Window	  */
 	public int getAD_UserDef_Win_ID();
 
-	public I_AD_UserDef_Win getAD_UserDef_Win() throws RuntimeException;
+	public org.compiere.model.I_AD_UserDef_Win getAD_UserDef_Win() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -203,6 +212,19 @@ public interface I_AD_UserDef_Tab
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name ReadOnlyLogic */
+    public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
+
+	/** Set Read Only Logic.
+	  * Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public void setReadOnlyLogic (String ReadOnlyLogic);
+
+	/** Get Read Only Logic.
+	  * Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public String getReadOnlyLogic();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

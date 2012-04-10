@@ -30,7 +30,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120404L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -41,12 +41,14 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 			setAD_Field_ID (0);
 			setAD_UserDef_Field_ID (0);
 			setAD_UserDef_Tab_ID (0);
-			setDefaultValue (null);
-			setIsDisplayed (false);
+			setIsDisplayed (true);
+// 'Y'
 			setIsReadOnly (false);
+// 'N'
 			setIsSameLine (false);
-			setName (null);
+// 'N'
 			setSeqNo (0);
+// 0
         } */
     }
 
@@ -78,9 +80,9 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
       return sb.toString();
     }
 
-	public I_AD_Field getAD_Field() throws RuntimeException
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
     {
-		return (I_AD_Field)MTable.get(getCtx(), I_AD_Field.Table_Name)
+		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
 			.getPO(getAD_Field_ID(), get_TrxName());	}
 
 	/** Set Field.
@@ -106,6 +108,14 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 		return ii.intValue();
 	}
 
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getAD_Field_ID()));
+    }
+
 	/** Set User defined Field.
 		@param AD_UserDef_Field_ID User defined Field	  */
 	public void setAD_UserDef_Field_ID (int AD_UserDef_Field_ID)
@@ -126,9 +136,23 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 		return ii.intValue();
 	}
 
-	public I_AD_UserDef_Tab getAD_UserDef_Tab() throws RuntimeException
+	/** Set AD_UserDef_Field_UU.
+		@param AD_UserDef_Field_UU AD_UserDef_Field_UU	  */
+	public void setAD_UserDef_Field_UU (String AD_UserDef_Field_UU)
+	{
+		set_Value (COLUMNNAME_AD_UserDef_Field_UU, AD_UserDef_Field_UU);
+	}
+
+	/** Get AD_UserDef_Field_UU.
+		@return AD_UserDef_Field_UU	  */
+	public String getAD_UserDef_Field_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_UserDef_Field_UU);
+	}
+
+	public org.compiere.model.I_AD_UserDef_Tab getAD_UserDef_Tab() throws RuntimeException
     {
-		return (I_AD_UserDef_Tab)MTable.get(getCtx(), I_AD_UserDef_Tab.Table_Name)
+		return (org.compiere.model.I_AD_UserDef_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Tab.Table_Name)
 			.getPO(getAD_UserDef_Tab_ID(), get_TrxName());	}
 
 	/** Set User defined Tab.
@@ -351,14 +375,6 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getName());
-    }
 
 	/** Set Sequence.
 		@param SeqNo 

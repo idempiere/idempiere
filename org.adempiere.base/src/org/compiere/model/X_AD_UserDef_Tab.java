@@ -30,7 +30,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120404L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)
@@ -44,7 +44,6 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 			setIsMultiRowOnly (false);
 			setIsReadOnly (false);
 			setIsSingleRow (false);
-			setName (null);
         } */
     }
 
@@ -76,9 +75,9 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
       return sb.toString();
     }
 
-	public I_AD_Tab getAD_Tab() throws RuntimeException
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
     {
-		return (I_AD_Tab)MTable.get(getCtx(), I_AD_Tab.Table_Name)
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
 			.getPO(getAD_Tab_ID(), get_TrxName());	}
 
 	/** Set Tab.
@@ -104,6 +103,14 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 		return ii.intValue();
 	}
 
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getAD_Tab_ID()));
+    }
+
 	/** Set User defined Tab.
 		@param AD_UserDef_Tab_ID User defined Tab	  */
 	public void setAD_UserDef_Tab_ID (int AD_UserDef_Tab_ID)
@@ -124,9 +131,23 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_AD_UserDef_Win getAD_UserDef_Win() throws RuntimeException
+	/** Set AD_UserDef_Tab_UU.
+		@param AD_UserDef_Tab_UU AD_UserDef_Tab_UU	  */
+	public void setAD_UserDef_Tab_UU (String AD_UserDef_Tab_UU)
+	{
+		set_Value (COLUMNNAME_AD_UserDef_Tab_UU, AD_UserDef_Tab_UU);
+	}
+
+	/** Get AD_UserDef_Tab_UU.
+		@return AD_UserDef_Tab_UU	  */
+	public String getAD_UserDef_Tab_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_UserDef_Tab_UU);
+	}
+
+	public org.compiere.model.I_AD_UserDef_Win getAD_UserDef_Win() throws RuntimeException
     {
-		return (I_AD_UserDef_Win)MTable.get(getCtx(), I_AD_UserDef_Win.Table_Name)
+		return (org.compiere.model.I_AD_UserDef_Win)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Win.Table_Name)
 			.getPO(getAD_UserDef_Win_ID(), get_TrxName());	}
 
 	/** Set User defined Window.
@@ -272,11 +293,20 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getName());
-    }
+	/** Set Read Only Logic.
+		@param ReadOnlyLogic 
+		Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public void setReadOnlyLogic (String ReadOnlyLogic)
+	{
+		set_Value (COLUMNNAME_ReadOnlyLogic, ReadOnlyLogic);
+	}
+
+	/** Get Read Only Logic.
+		@return Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public String getReadOnlyLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_ReadOnlyLogic);
+	}
 }

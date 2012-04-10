@@ -101,7 +101,11 @@ public class GridTabVO implements Evaluatee, Serializable
 		{
 			vo.AD_Tab_ID = rs.getInt("AD_Tab_ID");
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_ID, String.valueOf(vo.AD_Tab_ID));
+			// FR IDEMPIERE-177
+			MUserDefTab userDef = MUserDefTab.get(vo.ctx, vo.AD_Tab_ID, vo.AD_Window_ID);
 			vo.Name = rs.getString("Name");
+			if (userDef != null && userDef.getName() != null)
+				vo.Name = userDef.getName();
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_Name, vo.Name);
 
 			//	Translation Tab	**
@@ -159,7 +163,12 @@ public class GridTabVO implements Evaluatee, Serializable
 			}
 			if (rs.getString("IsReadOnly").equals("Y"))
 				vo.IsReadOnly = true;
+			if (userDef != null && userDef.get_ValueAsString("ReadOnlyLogic") != null)
+				vo.IsReadOnly = userDef.isReadOnly();
 			vo.ReadOnlyLogic = rs.getString("ReadOnlyLogic");
+			if (userDef != null)
+				vo.ReadOnlyLogic = userDef.get_ValueAsString("ReadOnlyLogic");
+			
 			if (rs.getString("IsInsertRecord").equals("N"))
 				vo.IsInsertRecord = false;
 			
@@ -167,12 +176,20 @@ public class GridTabVO implements Evaluatee, Serializable
 			vo.Description = rs.getString("Description");
 			if (vo.Description == null)
 				vo.Description = "";
+			if (userDef != null && userDef.getDescription() != null)
+				vo.Description = userDef.getDescription();
+
 			vo.Help = rs.getString("Help");
 			if (vo.Help == null)
 				vo.Help = "";
+			if (userDef != null && userDef.getHelp() != null)
+				vo.Help = userDef.getHelp();
 
 			if (rs.getString("IsSingleRow").equals("Y"))
 				vo.IsSingleRow = true;
+			if (userDef != null)
+				vo.IsSingleRow = userDef.isSingleRow();
+
 			if (rs.getString("HasTree").equals("Y"))
 				vo.HasTree = true;
 

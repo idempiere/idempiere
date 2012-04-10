@@ -228,11 +228,15 @@ public class Doc_Production extends Doc
 				description = "";
 			if (line.isProductionBOM())
 				description += "(*)";
-			MCostDetail.createProduction(as, line.getAD_Org_ID(),
+			if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
 				line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 				line.get_ID(), 0,
 				costs, line.getQty(),
-				description, getTrxName());
+				description, getTrxName()))
+			{
+				p_Error = "Failed to create cost detail record";
+				return null;
+			}
 		}
 		//
 		ArrayList<Fact> facts = new ArrayList<Fact>();

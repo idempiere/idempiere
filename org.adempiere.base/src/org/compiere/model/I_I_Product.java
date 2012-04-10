@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Product
  *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @version 360LTS.015
  */
 public interface I_I_Product 
 {
@@ -674,12 +674,12 @@ public interface I_I_Product
 	/** Set Volume.
 	  * Volume of a product
 	  */
-	public void setVolume (int Volume);
+	public void setVolume (BigDecimal Volume);
 
 	/** Get Volume.
 	  * Volume of a product
 	  */
-	public int getVolume();
+	public BigDecimal getVolume();
 
     /** Column name Weight */
     public static final String COLUMNNAME_Weight = "Weight";
@@ -687,12 +687,12 @@ public interface I_I_Product
 	/** Set Weight.
 	  * Weight of a product
 	  */
-	public void setWeight (int Weight);
+	public void setWeight (BigDecimal Weight);
 
 	/** Get Weight.
 	  * Weight of a product
 	  */
-	public int getWeight();
+	public BigDecimal getWeight();
 
     /** Column name X12DE355 */
     public static final String COLUMNNAME_X12DE355 = "X12DE355";

@@ -183,6 +183,20 @@ public class GridWindowVO implements Serializable
 			return null;
 		}
 
+		// FR IDEMPIERE-177
+		// User Customization
+		MUserDefWin userDef = MUserDefWin.getBestMatch(ctx, AD_Window_ID);
+		if (userDef != null)
+		{
+			if (userDef.getName() != null)
+				vo.Name = userDef.getName();
+			if (userDef.getDescription() != null)
+				vo.Description = userDef.getDescription();
+			if (userDef.getHelp() != null)
+				vo.Help = userDef.getHelp();
+			// ToDo userDef.isDefault, userDef.isReadOnly, userDef.isUserUpdateable
+		}
+
 		//  Create Tabs
 		createTabs (vo);
 		if (vo.Tabs == null || vo.Tabs.size() == 0)

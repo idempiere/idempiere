@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_Product
  *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @version 360LTS.015 - $Id$ */
 public class X_I_Product extends PO implements I_I_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120406L;
 
     /** Standard Constructor */
     public X_I_Product (Properties ctx, int I_Product_ID, String trxName)
@@ -952,40 +952,40 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 		@param Volume 
 		Volume of a product
 	  */
-	public void setVolume (int Volume)
+	public void setVolume (BigDecimal Volume)
 	{
-		set_Value (COLUMNNAME_Volume, Integer.valueOf(Volume));
+		set_Value (COLUMNNAME_Volume, Volume);
 	}
 
 	/** Get Volume.
 		@return Volume of a product
 	  */
-	public int getVolume () 
+	public BigDecimal getVolume () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Volume);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Volume);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Weight.
 		@param Weight 
 		Weight of a product
 	  */
-	public void setWeight (int Weight)
+	public void setWeight (BigDecimal Weight)
 	{
-		set_Value (COLUMNNAME_Weight, Integer.valueOf(Weight));
+		set_Value (COLUMNNAME_Weight, Weight);
 	}
 
 	/** Get Weight.
 		@return Weight of a product
 	  */
-	public int getWeight () 
+	public BigDecimal getWeight () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Weight);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Weight);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set UOM Code.

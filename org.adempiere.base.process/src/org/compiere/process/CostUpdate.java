@@ -60,7 +60,6 @@ public class CostUpdate extends SvrProcess
 	private static final String	TO_FutureStandardCost = "f";
 	private static final String	TO_LastInvoicePrice = "i";
 	private static final String	TO_LastPOPrice = "p";
-	private static final String	TO_OldStandardCost = "x";
 
 	/** Standard Cost Element		*/
 	private MCostElement 	m_ce = null;
@@ -464,10 +463,6 @@ public class CostUpdate extends SvrProcess
 				retValue = xCost.getCurrentCostPrice();
 		}
 		
-		//	Old Std Costs
-		else if (to.equals(TO_OldStandardCost))
-			retValue = getOldCurrentCostPrice(cost);
-		
 		//	Price List
 		else if (to.equals(TO_PriceListLimit))
 			retValue = getPrice(cost);
@@ -495,51 +490,6 @@ public class CostUpdate extends SvrProcess
 		}
 		return ce;
 	}	//	getCostElement
-
-	/**
-	 * 	Get Old Current Cost Price
-	 *	@param cost costs
-	 *	@return price if found
-	 */
-	private BigDecimal getOldCurrentCostPrice(MCost cost)
-	{
-		BigDecimal retValue = null;
-		String sql = "SELECT CostStandard, CurrentCostPrice "
-			+ "FROM M_Product_Costing "
-			+ "WHERE M_Product_ID=? AND C_AcctSchema_ID=?";
-		PreparedStatement pstmt = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, cost.getM_Product_ID());
-			pstmt.setInt (2, cost.getC_AcctSchema_ID());
-			ResultSet rs = pstmt.executeQuery ();
-			if (rs.next ())
-			{
-				retValue = rs.getBigDecimal(1);
-				if (retValue == null || retValue.signum() == 0)
-					retValue = rs.getBigDecimal(2);
-			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			log.log (Level.SEVERE, sql, e);
-		}
-		try
-		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
-		return retValue;
-	}	//	getOldCurrentCostPrice
 
 	/**
 	 * 	Get Price from Price List

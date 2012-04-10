@@ -509,7 +509,20 @@ public class MTree extends MTree_Base
 					MRole role = MRole.getDefault(getCtx(), false);
 					Boolean access = null;
 					if (X_AD_Menu.ACTION_Window.equals(actionColor))
-						access = role.getWindowAccess(AD_Window_ID);
+					{
+ 						access = role.getWindowAccess(AD_Window_ID);
+						// FR XXX
+						// Get Window Customization
+						MUserDefWin userDef = null; 
+						userDef = MUserDefWin.getBestMatch(getCtx(), AD_Window_ID);
+						if (userDef != null)
+						{
+							if (userDef.getName() != null)
+								name = userDef.getName();
+							if (userDef.getDescription() != null)
+								description = userDef.getDescription();
+						}
+					}
 					else if (X_AD_Menu.ACTION_Process.equals(actionColor) 
 						|| X_AD_Menu.ACTION_Report.equals(actionColor))
 						access = role.getProcessAccess(AD_Process_ID);

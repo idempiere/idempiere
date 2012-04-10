@@ -87,8 +87,10 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
 import org.compiere.model.MWindow;
+import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.print.AReport;
 import org.compiere.process.DocAction;
@@ -144,11 +146,12 @@ public final class APanel extends CPanel
 	implements DataStatusListener, ChangeListener, ActionListener, IProcessMonitor
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 6066778919781303581L;
+	private static final long serialVersionUID = -253840959387736456L;
 
 	private boolean isNested = false;
+	private boolean ToolBarMenuRestictionLoaded = false;
 
 	/**
 	 * Constructs a new instance.
@@ -857,6 +860,8 @@ public final class APanel extends CPanel
 						}
 						if (gTab.isReadOnly())
 							tabName.append("</i>");
+						// Carlos Ruiz - globalqss - IDEMPIERE-38 Tabs from a same window can't be translated the same way
+						tabName.append("<!--").append(gTab.getAD_Tab_ID()).append("-->");
 						tabName.append ("</html>");
 						//	Add Tab - sets ALT-<number> and Shift-ALT-<x>
 						window.addTab (tabName.toString(), gTab, tabElement);
@@ -1567,6 +1572,13 @@ public final class APanel extends CPanel
 		//
 		m_curWinTab.requestFocusInWindow();
 		setBusy(false, true);
+		
+		if (!ToolBarMenuRestictionLoaded)
+		{
+			updateToolBarAndMenuWithRestriction();
+			ToolBarMenuRestictionLoaded = true;
+		}
+		
 		log.config( "fini");
 	}	//	stateChanged
 
@@ -2903,4 +2915,56 @@ public final class APanel extends CPanel
 		if (frame instanceof AWindow)
 			((AWindow)frame).setBusyMessage(message);		
 	}
+	
+	private void updateToolBarAndMenuWithRestriction()
+	{
+		int ToolBarButton_ID = 0;
+
+		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "W", m_window.getAD_Window_ID(), this.getClass().getName(), null);
+		log.info("restrictionList="+restrictionList.toString());
+
+		for (int i = 0; i < restrictionList.length; i++)
+		{
+			ToolBarButton_ID= restrictionList[i];
+
+			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
+			String restrictName = tbt.getComponentName();
+			log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
+			boolean found=false;
+
+			// remove from ToolBar
+			for (int t = 0; t < toolBar.getComponentCount() && !found; t++)
+			{
+				if (toolBar.getComponent(t).getName()==null)	// separator
+					continue;
+
+				if (toolBar.getComponent(t).getName().equals(restrictName))
+				{
+					toolBar.remove(t);	
+					found=true;
+				}
+			}
+
+			// Remove from Menu
+			found=false;				
+			for (int m1 = 0; m1 < menuBar.getComponentCount() && !found; m1++)
+			{
+				JMenu menu = menuBar.getMenu(m1);	// File, Edit, View...
+
+				for (int m2 = 0; m2 < menu.getItemCount() && !found; m2++)	// New, Copy, Save...
+				{
+					if (menu.getItem(m2)==null)	// separator
+						continue;
+
+					if (menu.getItem(m2).getActionCommand().equals(restrictName))
+					{
+						menu.remove(m2);
+						found=true;
+					}
+				}	// menuItems
+			}	// Menu (File, Edit, View, ...)
+		}	// All restrictions
+
+	}	//	updateToolBarAndMenuWithRestriction
+
 }	//	APanel

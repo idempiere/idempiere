@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.model.X_M_CostHistory;
+import org.compiere.model.X_M_CostHistory;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -892,6 +892,23 @@ public class MCostDetail extends X_M_CostDetail
 				cost.add(amt, qty);
 				log.finer("PO - LastPO - " + cost);
 			}
+			else if (ce.isStandardCosting())
+			{								
+				// Update cost record only if it is zero
+				if (cost.getCurrentCostPrice().signum() == 0
+						&& cost.getCurrentCostPriceLL().signum() == 0)
+				{
+					cost.setCurrentCostPrice(price);
+					if (cost.getCurrentCostPrice().signum() == 0)
+					{
+						cost.setCurrentCostPrice(MCost.getSeedCosts(product, M_ASI_ID, 
+								as, Org_ID, ce.getCostingMethod(), getC_OrderLine_ID()));
+					}
+					log.finest("PO - Standard - CurrentCostPrice(seed)="+cost.getCurrentCostPrice()+", price="+price);
+				}
+				cost.add(amt, qty);
+				log.finer("PO - Standard - " + cost);
+			}
 			else if (ce.isUserDefined())
 			{
 				//	Interface
@@ -948,10 +965,8 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			else if (ce.isStandardCosting())
 			{
-				// Update cost record only if newly created.
-				// Elsewhere we risk to set the CurrentCostPrice to an undesired price. 
-				if (cost.is_new()
-						&& cost.getCurrentCostPrice().signum() == 0
+				// Update cost record only if it is zero
+				if (cost.getCurrentCostPrice().signum() == 0
 						&& cost.getCurrentCostPriceLL().signum() == 0)
 				{
 					cost.setCurrentCostPrice(price);
@@ -962,8 +977,8 @@ public class MCostDetail extends X_M_CostDetail
 								as, Org_ID, ce.getCostingMethod(), getC_OrderLine_ID()));
 						log.finest("Inv - Standard - CurrentCostPrice(seed)="+cost.getCurrentCostPrice()+", price="+price);
 					}
-				}
-				cost.add(amt, qty);
+					cost.add(amt, qty);
+				}				
 				log.finer("Inv - Standard - " + cost);
 			}
 			else if (ce.isUserDefined())
