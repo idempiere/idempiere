@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -326,8 +327,10 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 				{
 					check.setC_Payment_ID (C_Payment_ID);
 					check.saveEx();	//	Payment process needs it
-					//	Should start WF
-					payment.processIt(DocAction.ACTION_Complete);
+					// added AdempiereException by Amir Sehan
+					if (!payment.processIt(DocAction.ACTION_Complete))
+						throw new AdempiereException("FAiled Processing Document - " + payment);
+					// end added
 					if (!payment.save())
 						s_log.log(Level.SEVERE, "Payment not saved: " + payment);
 				}
