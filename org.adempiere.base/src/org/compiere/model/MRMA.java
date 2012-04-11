@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
@@ -497,7 +498,10 @@ public class MRMA extends X_M_RMA implements DocAction
 			if (counterDT.getDocAction() != null)
 			{
 				counter.setDocAction(counterDT.getDocAction());
-				counter.processIt(counterDT.getDocAction());
+				// added AdempiereException by Amir Sehan
+				if (!counter.processIt(counterDT.getDocAction()))
+					throw new AdempiereException("Failed Processing Document - " + counter);
+				// end added
 				counter.saveEx(get_TrxName());
 			}
 		}
