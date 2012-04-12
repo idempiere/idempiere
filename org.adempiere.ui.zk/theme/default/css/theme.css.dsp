@@ -431,6 +431,10 @@ span.z-tree-tee, span.z-tree-last {
 	width:0px;
 } 
 
+.z-west-colpsd {
+	cursor: pointer;
+}
+
 <%-- FOCUSED FIELD in different color --%>
 
 .z-textbox-focus, .z-textbox-focus input,
