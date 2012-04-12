@@ -84,7 +84,7 @@ public class MenuPanel extends Panel implements EventListener
         pnlSearch.initialise();
 
         // Auto Expand Tree - nmicoud IDEMPIERE 195
-     	if (MRole.getDefault().isMenuAutoExpand() || new MUser(ctx, Env.getAD_User_ID(ctx), null).isMenuAutoExpand())
+     	if (MRole.getDefault().isMenuAutoExpand() || MUser.get(ctx).isMenuAutoExpand())
      		expandAll();
      	// Auto Expand Tree - nmicoud IDEMPIERE 195
     }
