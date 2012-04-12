@@ -26,8 +26,10 @@ import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.TreeUtils;
+import org.compiere.model.MRole;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.MUser;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -80,6 +82,11 @@ public class MenuPanel extends Panel implements EventListener
         init();
         initMenu(rootNode);
         pnlSearch.initialise();
+
+        // Auto Expand Tree - nmicoud IDEMPIERE 195
+     	if (MRole.getDefault().isMenuAutoExpand() || new MUser(ctx, Env.getAD_User_ID(ctx), null).isMenuAutoExpand())
+     		expandAll();
+     	// Auto Expand Tree - nmicoud IDEMPIERE 195
     }
     
     private void init()

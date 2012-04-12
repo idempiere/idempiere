@@ -18,11 +18,12 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role
  *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @version 360LTS.015
  */
 public interface I_AD_Role 
 {
@@ -439,6 +440,19 @@ public interface I_AD_Role
 	  * This is a manual process
 	  */
 	public boolean isManual();
+
+    /** Column name IsMenuAutoExpand */
+    public static final String COLUMNNAME_IsMenuAutoExpand = "IsMenuAutoExpand";
+
+	/** Set Auto expand menu.
+	  * If ticked, the menu is automatically expanded
+	  */
+	public void setIsMenuAutoExpand (boolean IsMenuAutoExpand);
+
+	/** Get Auto expand menu.
+	  * If ticked, the menu is automatically expanded
+	  */
+	public boolean isMenuAutoExpand();
 
     /** Column name IsPersonalAccess */
     public static final String COLUMNNAME_IsPersonalAccess = "IsPersonalAccess";

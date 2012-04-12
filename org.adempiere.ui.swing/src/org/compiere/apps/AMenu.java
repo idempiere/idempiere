@@ -195,6 +195,12 @@ public final class AMenu extends CFrame
 		infoUpdater = new InfoUpdater();
 		infoUpdaterThread = new Thread(infoUpdater, "InfoUpdater");
 		infoUpdaterThread.start();
+
+        // Auto Expand Tree - nmicoud IDEMPIERE 195
+        if (MRole.getDefault().isMenuAutoExpand() || new MUser(m_ctx, m_AD_User_ID, null).isMenuAutoExpand())
+                treePanel.expandTree(true);
+        // Auto Expand Tree - nmicoud IDEMPIERE 195
+
 		//
 		Env.addEventListener(this);
 		//

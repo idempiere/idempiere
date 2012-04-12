@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User
  *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @version 360LTS.015 - $Id$ */
 public class X_AD_User extends PO implements I_AD_User, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120412L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -43,6 +43,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			setIsFullBPAccess (true);
 // Y
 			setIsInPayroll (false);
+// N
+			setIsMenuAutoExpand (false);
 // N
 			setName (null);
 			setNotificationType (null);
@@ -456,6 +458,30 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public boolean isInPayroll () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsInPayroll);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Auto expand menu.
+		@param IsMenuAutoExpand 
+		If ticked, the menu is automatically expanded
+	  */
+	public void setIsMenuAutoExpand (boolean IsMenuAutoExpand)
+	{
+		set_Value (COLUMNNAME_IsMenuAutoExpand, Boolean.valueOf(IsMenuAutoExpand));
+	}
+
+	/** Get Auto expand menu.
+		@return If ticked, the menu is automatically expanded
+	  */
+	public boolean isMenuAutoExpand () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsMenuAutoExpand);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
