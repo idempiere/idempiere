@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.adempiere.webui.event.ZoomEvent;
 import org.compiere.model.MQuery;
+import org.zkoss.json.JSONArray;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
@@ -40,30 +41,30 @@ public class ZoomCommand implements AuService {
 			return false;
 
 		Map<?, ?> map = request.getData();
-		final String[] data = (String[]) map.get("");
-
+		JSONArray data = (JSONArray) map.get("data");
+		
 		final Component comp = request.getComponent();
 		if (comp == null)
 			throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED, this);
 		
-		if (data == null || data.length < 2)
+		if (data == null || data.size() < 2)
 			throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] {
 					Objects.toString(data), this });
 		
-		String columnName = data[0];
+		String columnName = (String) data.get(0);
 		String tableName = MQuery.getZoomTableName(columnName);
 		Object code = null; 
 		if (columnName.endsWith("_ID"))
 		{
 			try {
-				code = Integer.parseInt(data[1]);
+				code = Integer.parseInt((String) data.get(1));
 			} catch (Exception e) {
-				code = data[1];
+				code = data.get(1);
 			}
 		}
 		else
 		{
-			code = data[1];
+			code = data.get(1);
 		}
 		//
 		MQuery query = new MQuery(tableName);

@@ -57,7 +57,7 @@ public class HTMLExtension implements IHTMLExtension {
 		window.addAttribute("onmouseover", "this.style.backgroundColor = 'lightgray'");
 		window.addAttribute("onmouseout", "this.style.backgroundColor = 'white'");									
 		href = new a("javascript:void(0)");
-		href.setStyle("text-decoration: none; font-size: 10px; vertical-align: middle;");
+		href.setStyle("text-decoration: none; font-size: 11px; vertical-align: middle;");
 		href.addAttribute("onclick", "parent.zoom('" 
 				+ componentId + "', '" 
 				+ dataElement.getColumnName() + "', '" 
@@ -75,7 +75,7 @@ public class HTMLExtension implements IHTMLExtension {
 		report.addAttribute("onmouseover", "this.style.backgroundColor = 'lightgray'");
 		report.addAttribute("onmouseout", "this.style.backgroundColor = 'white'");									
 		href = new a("javascript:void(0)");						
-		href.setStyle("text-decoration: none; font-size: 10px; vertical-align: middle;");
+		href.setStyle("text-decoration: none; font-size: 11px; vertical-align: middle;");
 		href.addAttribute("onclick", "parent.drillDown('" 
 				+ componentId + "', '" 
 				+ dataElement.getColumnName() + "', '"

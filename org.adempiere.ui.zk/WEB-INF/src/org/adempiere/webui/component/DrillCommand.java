@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.adempiere.webui.event.DrillEvent;
 import org.compiere.model.MQuery;
+import org.zkoss.json.JSONArray;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
@@ -41,19 +42,19 @@ public class DrillCommand implements AuService {
 			return false;
 
 		final Map<?, ?> map = request.getData();
-		String[] data = (String[]) map.get("");
+		JSONArray data = (JSONArray) map.get("data");
 
 		final Component comp = request.getComponent();
 		if (comp == null)
 			throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED, this);
 		
-		if (data == null || data.length < 2)
+		if (data == null || data.size() < 2)
 			throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] {
 					Objects.toString(data), this });
 		
-		String columnName = data[0];
+		String columnName = (String) data.get(0);
 		String tableName = MQuery.getZoomTableName(columnName);
-		String code = data[1];
+		String code = (String) data.get(1);
 		//
 		MQuery query = new MQuery(tableName);
 		query.addRestriction(columnName, MQuery.EQUAL, code);

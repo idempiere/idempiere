@@ -107,6 +107,7 @@ public class Messagebox extends Window implements EventListener
 	private void init()
 	{
 		Properties ctx = Env.getCtx();
+		lblMsg.setEncode(false);
 		lblMsg.setValue(msg);
 
 		btnOk.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "OK")));

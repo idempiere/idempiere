@@ -113,6 +113,21 @@ html,body {
 	font-size: 10px;
 }
 
+.menu-href {
+	font-size: 11px;
+	font-weight: normal;
+	color: black !important;
+	text-decoration: none !important;
+}
+
+.menu-href:hover, .menu-href:active {
+	text-decoration: underline !important;
+}
+
+.menu-href img {
+	padding: 2px;
+}
+
 .disableFilter img {
 	opacity: 0.2;
 	filter: progid : DXImageTransform . Microsoft . Alpha(opacity = 20);

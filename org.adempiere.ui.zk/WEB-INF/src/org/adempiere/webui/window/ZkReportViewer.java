@@ -153,7 +153,7 @@ public class ZkReportViewer extends Window implements EventListener, ITabOnClose
 	 */
 	public ZkReportViewer(ReportEngine re, String title) {		
 		super();
-		
+
 		log.info("");
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		Env.setContext(re.getCtx(), m_WindowNo, "_WinInfo_IsReportViewer", "Y");
@@ -184,9 +184,9 @@ public class ZkReportViewer extends Window implements EventListener, ITabOnClose
 
 	private void init() {
 		Borderlayout layout = new Borderlayout();
-		layout.setStyle("position: absolute; height: 99%; width: 99%");
+		layout.setStyle("position: absolute; height: 97%; width: 98%; border:none; padding:none; margin:none;");
 		this.appendChild(layout);
-		this.setStyle("width: 100%; height: 100%; position: absolute");
+		this.setStyle("width: 100%; height: 100%; position: absolute; border:none; padding:none; margin:none;");
 
 		toolBar.setHeight("26px");
 		
@@ -277,8 +277,6 @@ public class ZkReportViewer extends Window implements EventListener, ITabOnClose
 		layout.appendChild(center);
 		iframe = new Iframe();
 		iframe.setId("reportFrame");
-		iframe.setHeight("100%");
-		iframe.setWidth("100%");
 		iframe.addEventListener(Events.ON_CLICK, this);
 		iframe.addEventListener(Events.ON_RIGHT_CLICK, this);
 		center.appendChild(iframe);
@@ -374,7 +372,7 @@ public class ZkReportViewer extends Window implements EventListener, ITabOnClose
 			m_reportEngine.createXLS(file, AEnv.getLanguage(Env.getCtx()));
 			media = new AMedia(getTitle(), "xls", "application/vnd.ms-excel", file, true);
 		}
-		
+				
 		iframe.setContent(media);
 	}
 
