@@ -25,10 +25,9 @@
 	border-style: solid;
 	padding: 3px;
 }
-}
 .rp-number {
 	background-color: #EBF1EF;
-	text-align: right;
+	text-align: right !important;
 	padding: 3px;
 }
 .rp-text, .rp-date {
