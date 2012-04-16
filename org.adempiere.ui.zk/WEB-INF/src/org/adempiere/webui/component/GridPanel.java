@@ -334,6 +334,7 @@ public class GridPanel extends Borderlayout implements EventListener
 
 		Center center = new Center();
 		center.appendChild(listbox);
+		LayoutUtils.addSclass("mobile-scrolling", center);
 		this.appendChild(center);
 
 		if (pageSize > 0)

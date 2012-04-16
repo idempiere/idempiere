@@ -172,7 +172,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
         grid.setVflex(true);
         grid.setStyle("margin:0; padding:0; position: absolute");
         grid.makeNoStrip();
-
+        
         listPanel = new GridPanel();
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
     }
@@ -222,11 +222,19 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 
 			formComponent = layout;
 			treePanel.getTree().addEventListener(Events.ON_SELECT, this);
+			
+			LayoutUtils.addSclass("mobile-scrolling", west);
+			LayoutUtils.addSclass("mobile-scrolling", center);
 		}
 		else
 		{
-			this.appendChild(grid);
-			formComponent = grid;
+			Div div = new Div();
+			div.setStyle("width:100%;height:100%;border:none;margin:none;padding:none");
+			div.appendChild(grid);
+			this.appendChild(div);
+			formComponent = div;
+			
+			LayoutUtils.addSclass("mobile-scrolling", div);
 		}
         this.appendChild(listPanel);
         listPanel.setVisible(false);

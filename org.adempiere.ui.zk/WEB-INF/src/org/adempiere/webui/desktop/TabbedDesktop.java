@@ -23,6 +23,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.WindowContainer;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.ADWindow;
 import org.adempiere.webui.window.WTask;
 import org.compiere.model.MQuery;
@@ -110,6 +111,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		ADWindow adWindow = new ADWindow(Env.getCtx(), windowId);
 
 		DesktopTabpanel tabPanel = new DesktopTabpanel();
+		tabPanel.setPage(SessionManager.getAppDesktop().getComponent().getPage());
 		if (adWindow.createPart(tabPanel) != null) {
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
@@ -130,6 +132,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     	ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
 		DesktopTabpanel tabPanel = new DesktopTabpanel();
+		tabPanel.setPage(SessionManager.getAppDesktop().getComponent().getPage());
 		if (adWindow.createPart(tabPanel) != null) {
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);

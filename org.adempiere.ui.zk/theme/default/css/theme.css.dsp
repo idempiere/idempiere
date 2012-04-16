@@ -525,3 +525,18 @@ img.z-group-img-close {
 	background-color: transparent;
 	background-repeat: no-repeat;
 }
+
+<%-- Tablet --%>
+.mobile-scrolling {
+	-webkit-overflow-scrolling: touch;
+}
+
+<%-- Tab --%>
+.z-tab-close {
+	top:4px; 
+	margin-right:2px;
+}
+
+.z-tab-hm-close {
+	padding-right:18px;
+}
