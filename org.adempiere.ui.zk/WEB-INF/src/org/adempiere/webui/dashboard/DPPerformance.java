@@ -14,6 +14,11 @@
 package org.adempiere.webui.dashboard;
 
 import org.adempiere.webui.apps.graph.WPAPanel;
+import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Dashboard item: Performance Indicators
@@ -30,8 +35,29 @@ public class DPPerformance extends DashboardPanel {
 	public DPPerformance()
 	{
 		super();
-        
+		
         WPAPanel paPanel = WPAPanel.get();
-        if (paPanel != null) this.appendChild(paPanel);
+        if (paPanel != null) 
+        {
+        	this.appendChild(paPanel);        	
+        }
 	}	
+
+	
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			Events.echoEvent("onPostRender", this, null);
+		}
+	}
+
+	//adjust window height to match grid height
+	public void onPostRender() 
+	{
+		Component grid = this.getFirstChild().getFirstChild();
+		String script = "setTimeout(function() { var grid = jq('#" + grid.getUuid() + "');";
+		script = script + "grid.parent().height(grid.css('height'));}, 500);";
+		Clients.response(new AuScript(script));
+	}
 }
