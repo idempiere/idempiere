@@ -457,6 +457,8 @@ public abstract class Doc
 				+ get_ID() + ", Force=" + force + ",RePost=" + repost);
 			if (force)
 				return "Cannot Lock - ReSubmit";
+			if (DB.getSQLValueStringEx(trxName, "SELECT IsActive FROM " + get_TableName() + " WHERE " + get_TableName() + "_ID=" + get_ID()).equals("N"))
+				return "Impossible to post deactivated document";			
 			return "Cannot Lock - ReSubmit or RePost with Force";
 		}
 
