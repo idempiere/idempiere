@@ -173,7 +173,7 @@ class AcctViewerData
 	 */
 	protected void fillPostingType (JComboBox cb)
 	{
-		int AD_Reference_ID = HardCodedIDs.referencePostingType;
+		int AD_Reference_ID = HardCodedIDs.REFERENCE_POSTING_TYPE;
 		ValueNamePair[] pt = MRefList.getList(Env.getCtx(), AD_Reference_ID, true);
 		for (int i = 0; i < pt.length; i++)
 			cb.addItem(pt[i]);

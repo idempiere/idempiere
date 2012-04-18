@@ -688,7 +688,7 @@ public final class AMenu extends CFrame
 	//			+ " INNER JOIN AD_TABLE t ON (t.AD_Window_ID=m.AD_Window_ID) "
 	//			+ "WHERE t.AD_Table_ID=?", 417);
 		if (m_request_Menu_ID == 0)
-			m_request_Menu_ID = HardCodedIDs.windowMyRequests;	//	My Requests
+			m_request_Menu_ID = HardCodedIDs.WINDOW_MY_REQUESTS;	//	My Requests
 		(new AMenuStartItem (m_request_Menu_ID, true, Msg.translate(m_ctx, "R_Request_ID"), this)).start();		//	async load
 	}   //  gotoRequests
 

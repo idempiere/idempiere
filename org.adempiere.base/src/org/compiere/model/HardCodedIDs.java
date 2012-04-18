@@ -23,9 +23,8 @@ package org.compiere.model;
 
 public class HardCodedIDs {
 
-	public static int referencePostingType = 125;
-	
-	
-	public static int windowMyRequests = 237;
+	public final static int REFERENCE_POSTING_TYPE = 125;
+		
+	public final static int WINDOW_MY_REQUESTS = 237;
 	
 }
