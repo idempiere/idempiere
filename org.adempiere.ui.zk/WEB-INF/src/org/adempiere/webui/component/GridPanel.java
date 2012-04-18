@@ -52,7 +52,7 @@ import org.zkoss.zul.event.ZulEvents;
  * @author Low Heng Sin
  *
  */
-public class GridPanel extends Borderlayout implements EventListener
+public class GridPanel extends Borderlayout implements EventListener<Event>
 {
 	/**
 	 * generated serial version ID
@@ -114,15 +114,16 @@ public class GridPanel extends Borderlayout implements EventListener
 	{
 		this.windowNo = windowNo;
 		listbox = new Grid();
-		listbox.setOddRowSclass(null);
+		listbox.addEventListener(ZulEvents.ON_AFTER_RENDER, this);
 		south = new South();
 		this.appendChild(south);
 
 		//default paging size
 		pageSize = MSysConfig.getIntValue(PAGE_SIZE_KEY, 100);
-
+		
 		//default true for better UI experience
 		modeless = MSysConfig.getBooleanValue(MODE_LESS_KEY, true);
+		
 	}
 
 	/**
@@ -350,8 +351,7 @@ public class GridPanel extends Borderlayout implements EventListener
 		else
 		{
 			south.setVisible(false);
-		}
-
+		}		
 	}
 
 	private void updateModel() {
@@ -431,6 +431,11 @@ public class GridPanel extends Borderlayout implements EventListener
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 			}
+		}
+		else if (event.getName().equals(ZulEvents.ON_AFTER_RENDER))
+		{
+			//render all rows of active page to give smooth scrolling performance
+			listbox.renderAll();
 		}
 	}
 
