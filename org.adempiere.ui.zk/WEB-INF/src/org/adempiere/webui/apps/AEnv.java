@@ -772,4 +772,10 @@ public final class AEnv
     		}
     	}	
 	}
+	
+	public static Desktop getDesktop() {
+		boolean inUIThread = Executions.getCurrent() != null;
+		return inUIThread ? Executions.getCurrent().getDesktop() 
+					: (Desktop) Env.getCtx().get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY);
+	}
 }	//	AEnv

@@ -16,6 +16,7 @@ package org.adempiere.webui.dashboard;
 import java.util.Enumeration;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TouchEventHelper;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
@@ -25,6 +26,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -47,6 +49,8 @@ import org.zkoss.zul.Vbox;
  */
 public class DPFavourites extends DashboardPanel implements EventListener<Event> {
 
+	private static final String ON_ADD_TAP_EVENT_LISTENER = "onAddTapEventListener";
+
 	private static final String NODE_ID_ATTR = "Node_ID";
 
 	/**
@@ -67,8 +71,6 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 	public DPFavourites()
 	{
 		super();
-		
-		this.setPage(SessionManager.getAppDesktop().getComponent().getPage());
 		
 		Panel panel = new Panel();
 		this.appendChild(panel);
@@ -128,7 +130,15 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 					btnFavItem.addEventListener(Events.ON_CLICK, this);
 					btnFavItem.addEventListener(Events.ON_DROP, this);
 					btnFavItem.setSclass("menu-href");
-					TouchEventHelper.addOnTapEventListener(btnFavItem, this);
+										
+					if (getPage() != null)
+					{
+						TouchEventHelper.addOnTapEventListener(btnFavItem, this);
+					}
+					else
+					{
+						Executions.schedule(AEnv.getDesktop(), this, new Event(ON_ADD_TAP_EVENT_LISTENER, btnFavItem, null));
+					}
 				}
 			}
 		}
@@ -204,6 +214,10 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
         		}
         	}
         }
+        else if (eventName.equals(ON_ADD_TAP_EVENT_LISTENER))
+        {
+        	TouchEventHelper.addOnTapEventListener(event.getTarget(), this);
+        }
         //
 	}
 
@@ -276,7 +290,14 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 				btnFavItem.addEventListener(Events.ON_CLICK, this);
 				btnFavItem.addEventListener(Events.ON_DROP, this);				
 				btnFavItem.setSclass("menu-href");
-				TouchEventHelper.addOnTapEventListener(btnFavItem, this);
+				if (getPage() != null)
+				{
+					TouchEventHelper.addOnTapEventListener(btnFavItem, this);
+				}
+				else
+				{
+					Executions.schedule(AEnv.getDesktop(), this, new Event(ON_ADD_TAP_EVENT_LISTENER, btnFavItem, null));
+				}
 				bxFav.removeChild(lblMsg);        					
 				bxFav.invalidate();
 			} else {

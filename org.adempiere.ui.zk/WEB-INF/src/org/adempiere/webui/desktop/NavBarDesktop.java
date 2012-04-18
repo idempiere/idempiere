@@ -144,7 +144,7 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
         navigationPanel.setWidth("100%");
         navigationPanel.setHeight("100%");
         
-        SidePanel pnlSide = new SidePanel(parent.getPage());
+        SidePanel pnlSide = new SidePanel(null);
         pnlSide.getMenuPanel().addMenuListener(this);
         navigationPanel.add(pnlSide, "Application Menu");
 

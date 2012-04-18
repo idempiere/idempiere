@@ -167,8 +167,6 @@ private A reportLink;
 	public ZkReportViewer(ReportEngine re, String title) {		
 		super();
 
-		setPage(SessionManager.getAppDesktop().getComponent().getPage());
-		
 		log.info("");
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		Env.setContext(re.getCtx(), m_WindowNo, "_WinInfo_IsReportViewer", "Y");

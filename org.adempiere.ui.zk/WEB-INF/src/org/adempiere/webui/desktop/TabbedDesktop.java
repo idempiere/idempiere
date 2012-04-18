@@ -111,7 +111,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		ADWindow adWindow = new ADWindow(Env.getCtx(), windowId);
 
 		DesktopTabpanel tabPanel = new DesktopTabpanel();
-		tabPanel.setPage(SessionManager.getAppDesktop().getComponent().getPage());
 		if (adWindow.createPart(tabPanel) != null) {
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
@@ -132,7 +131,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     	ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
 		DesktopTabpanel tabPanel = new DesktopTabpanel();
-		tabPanel.setPage(SessionManager.getAppDesktop().getComponent().getPage());
 		if (adWindow.createPart(tabPanel) != null) {
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);

@@ -19,7 +19,6 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.component.Panel;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Page;
 
 /**
  *
@@ -34,12 +33,6 @@ public class SidePanel extends Panel
 	 */
 	private static final long serialVersionUID = -3039805384016666481L;
 	private MenuPanel pnlMenu;
-	
-	public SidePanel(Page page)
-	{
-		setPage(page);
-		init();
-	}
 	
     public SidePanel(Component parent)
     {
