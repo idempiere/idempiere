@@ -593,7 +593,8 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
 			}
 			else if (source instanceof Datebox)
 			{
-				value = ((Datebox)source).getValue();
+				if (((Datebox)source).getValue() != null)
+					value = new Timestamp(((Datebox)source).getValue().getTime());
 			}
 			else if (source instanceof Textbox)
 			{
