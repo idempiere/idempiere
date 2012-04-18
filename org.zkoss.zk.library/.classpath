@@ -15,7 +15,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jxl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jython.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/keylistener.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mvel.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ognl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/timelinez.jar"/>
