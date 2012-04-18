@@ -43,6 +43,8 @@ public class AutoComplete extends Combobox
 	
 	/** strDescription	Description of menu items	 */
 	private String[] strDescription;
+	
+	private String[] images;
 
 	/**
 	 * Set menu labels
@@ -69,6 +71,11 @@ public class AutoComplete extends Combobox
 	public void setDescription(String[] vals)
 	{
 		strDescription = vals;
+	}
+	
+	public void setImages(String[] images)
+	{
+		this.images = images;
 	}
 	
 	/**
@@ -143,7 +150,11 @@ public class AutoComplete extends Combobox
 			    }
 
 				comboitem.setLabel(comboItems[i]);
-				comboitem.setDescription(strDescription[i]);				
+				comboitem.setDescription(strDescription[i]);
+				if (images != null && i < images.length && images[i] != null && images[i].trim().length() > 0)
+				{
+					comboitem.setImage(images[i]);
+				}
 			}
 		}
 		while (it != null && it.hasNext()) {
