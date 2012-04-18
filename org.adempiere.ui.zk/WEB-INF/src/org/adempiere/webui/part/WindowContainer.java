@@ -18,13 +18,10 @@ import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
-import org.adempiere.webui.panel.ADTabpanel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 
 /**
  * 
@@ -80,9 +77,9 @@ public class WindowContainer extends AbstractUIPart
      * @param title
      * @param closeable
      */
-    public void addWindow(Component comp, String title, boolean closeable)
+    public Tab addWindow(Component comp, String title, boolean closeable)
     {
-        addWindow(comp, title, closeable, true);
+        return addWindow(comp, title, closeable, true);
     }
     
     /**
@@ -92,9 +89,9 @@ public class WindowContainer extends AbstractUIPart
      * @param closeable
      * @param enable
      */
-    public void addWindow(Component comp, String title, boolean closeable, boolean enable) 
+    public Tab addWindow(Component comp, String title, boolean closeable, boolean enable) 
     {
-    	insertBefore(null, comp, title, closeable, enable);
+    	return insertBefore(null, comp, title, closeable, enable);
     }
     
     /**
@@ -105,24 +102,17 @@ public class WindowContainer extends AbstractUIPart
      * @param closeable
      * @param enable
      */
-    public void insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable)
+    public Tab insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable)
     {
         Tab tab = new Tab();
-        title = title.replaceAll("[&]", "");
-        if (title.length() <= MAX_TITLE_LENGTH) 
+        if (title != null) 
         {
-        	tab.setLabel(title);
-        }
-        else
-        {
-        	tab.setTooltiptext(title);
-        	title = title.substring(0, 27) + "...";
-        	tab.setLabel(title);
+	        setTabTitle(title, tab);
         }
         tab.setClosable(closeable);
         
         // fix scroll position lost coming back into a grid view tab
-        tab.addEventListener(Events.ON_SELECT, new EventListener() {
+        tab.addEventListener(Events.ON_SELECT, new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				Tab tab = (Tab)event.getTarget();
 				org.zkoss.zul.Tabpanel panel = tab.getLinkedPanel();
@@ -162,7 +152,22 @@ public class WindowContainer extends AbstractUIPart
         if (enable)
         	setSelectedTab(tab);
         
+        return tab;
     }
+
+	public void setTabTitle(String title, org.zkoss.zul.Tab tab) {
+		title = title.replaceAll("[&]", "");
+		if (title.length() <= MAX_TITLE_LENGTH) 
+		{
+			tab.setLabel(title);
+		}
+		else
+		{
+			tab.setTooltiptext(title);
+			title = title.substring(0, 27) + "...";
+			tab.setLabel(title);
+		}
+	}
     
     /**
      * 
@@ -172,19 +177,19 @@ public class WindowContainer extends AbstractUIPart
      * @param closeable
      * @param enable
      */
-    public void insertAfter(Tab refTab, Component comp, String title, boolean closeable, boolean enable)
+    public Tab insertAfter(Tab refTab, Component comp, String title, boolean closeable, boolean enable)
     {
     	if (refTab == null)
-    		addWindow(comp, title, closeable, enable);
+    		return addWindow(comp, title, closeable, enable);
     	else
-    		insertBefore((Tab)refTab.getNextSibling(), comp, title, closeable, enable);
+    		return insertBefore((Tab)refTab.getNextSibling(), comp, title, closeable, enable);
     }
 
     /**
      * 
      * @param tab
      */
-    public void setSelectedTab(Tab tab)
+    public void setSelectedTab(org.zkoss.zul.Tab tab)
     {
     	tabbox.setSelectedTab(tab);
     }
@@ -221,8 +226,11 @@ public class WindowContainer extends AbstractUIPart
     {
     	org.zkoss.zul.Tabs tabs = tabbox.getTabs();
     	Tab tab = (Tab) tabs.getChildren().get(tabNo);
-    	tab.setLabel(title);
-    	tab.setTooltiptext(tooltip);
+    	setTabTitle(title, tab);
+    	if (tooltip != null && tooltip.trim().length() > 0)
+    	{
+    		tab.setTooltiptext(tooltip);
+    	}
     }
     //
 
