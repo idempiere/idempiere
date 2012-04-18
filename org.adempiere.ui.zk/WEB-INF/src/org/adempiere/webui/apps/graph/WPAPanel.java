@@ -11,7 +11,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
-public class WPAPanel extends Panel implements EventListener
+public class WPAPanel extends Panel implements EventListener<Event>
 {
 	/**
 	 * 
@@ -58,7 +58,6 @@ public class WPAPanel extends Panel implements EventListener
 		grid.setWidth("100%");
 		grid.setStyle("margin:0; padding:0; position: absolute;");
 		grid.makeNoStrip();
-		grid.setOddRowSclass("even");
 
 		Rows rows = new Rows();
 		grid.appendChild(rows);
