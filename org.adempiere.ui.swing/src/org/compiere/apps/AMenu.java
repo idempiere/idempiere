@@ -58,6 +58,7 @@ import org.compiere.apps.wf.WFActivity;
 import org.compiere.apps.wf.WFPanel;
 import org.compiere.db.CConnection;
 import org.compiere.grid.tree.VTreePanel;
+import org.compiere.model.HardCodedIDs;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
@@ -687,7 +688,7 @@ public final class AMenu extends CFrame
 	//			+ " INNER JOIN AD_TABLE t ON (t.AD_Window_ID=m.AD_Window_ID) "
 	//			+ "WHERE t.AD_Table_ID=?", 417);
 		if (m_request_Menu_ID == 0)
-			m_request_Menu_ID = 237;	//	My Requests
+			m_request_Menu_ID = HardCodedIDs.windowMyRequests;	//	My Requests
 		(new AMenuStartItem (m_request_Menu_ID, true, Msg.translate(m_ctx, "R_Request_ID"), this)).start();		//	async load
 	}   //  gotoRequests
 

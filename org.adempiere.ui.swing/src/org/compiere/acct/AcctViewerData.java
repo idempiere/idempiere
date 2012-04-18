@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import javax.swing.JComboBox;
 
+import org.compiere.model.HardCodedIDs;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MFactAcct;
@@ -172,7 +173,7 @@ class AcctViewerData
 	 */
 	protected void fillPostingType (JComboBox cb)
 	{
-		int AD_Reference_ID = 125;
+		int AD_Reference_ID = HardCodedIDs.referencePostingType;
 		ValueNamePair[] pt = MRefList.getList(Env.getCtx(), AD_Reference_ID, true);
 		for (int i = 0; i < pt.length; i++)
 			cb.addItem(pt[i]);
