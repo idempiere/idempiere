@@ -18,7 +18,6 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_User
@@ -340,12 +339,12 @@ public interface I_AD_User
 	/** Set Auto expand menu.
 	  * If ticked, the menu is automatically expanded
 	  */
-	public void setIsMenuAutoExpand (boolean IsMenuAutoExpand);
+	public void setIsMenuAutoExpand (String IsMenuAutoExpand);
 
 	/** Get Auto expand menu.
 	  * If ticked, the menu is automatically expanded
 	  */
-	public boolean isMenuAutoExpand();
+	public String getIsMenuAutoExpand();
 
     /** Column name LastContact */
     public static final String COLUMNNAME_LastContact = "LastContact";

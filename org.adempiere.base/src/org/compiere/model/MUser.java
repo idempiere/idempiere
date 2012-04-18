@@ -50,8 +50,7 @@ public class MUser extends X_AD_User
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1399447378628744412L;
-
+	private static final long serialVersionUID = -5845477151929518375L;
 
 	/**
 	 * Get active Users of BPartner
@@ -804,7 +803,20 @@ public class MUser extends X_AD_User
 			setValue(super.getValue());
 		return true;
 	}	//	beforeSave
-	
+
+	/**
+	 * 	Is Menu Auto Expand - user preference
+	 *  Check if the user has a preference, otherwise use the value from current role
+	 *	@return boolean
+	 */
+	public boolean isMenuAutoExpand() {
+		boolean isMenuAutoExpand = false;
+		if (getIsMenuAutoExpand() != null)
+			isMenuAutoExpand = ISMENUAUTOEXPAND_Yes.equals(getIsMenuAutoExpand());
+		else
+			isMenuAutoExpand = MRole.getDefault().isMenuAutoExpand();
+		return isMenuAutoExpand;
+	}
 	
 	/**
 	 * 	Test

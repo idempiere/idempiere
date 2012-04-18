@@ -31,7 +31,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120412L;
+	private static final long serialVersionUID = 20120418L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -43,8 +43,6 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			setIsFullBPAccess (true);
 // Y
 			setIsInPayroll (false);
-// N
-			setIsMenuAutoExpand (false);
 // N
 			setName (null);
 			setNotificationType (null);
@@ -467,28 +465,28 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return false;
 	}
 
+	/** IsMenuAutoExpand AD_Reference_ID=319 */
+	public static final int ISMENUAUTOEXPAND_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISMENUAUTOEXPAND_Yes = "Y";
+	/** No = N */
+	public static final String ISMENUAUTOEXPAND_No = "N";
 	/** Set Auto expand menu.
 		@param IsMenuAutoExpand 
 		If ticked, the menu is automatically expanded
 	  */
-	public void setIsMenuAutoExpand (boolean IsMenuAutoExpand)
+	public void setIsMenuAutoExpand (String IsMenuAutoExpand)
 	{
-		set_Value (COLUMNNAME_IsMenuAutoExpand, Boolean.valueOf(IsMenuAutoExpand));
+
+		set_Value (COLUMNNAME_IsMenuAutoExpand, IsMenuAutoExpand);
 	}
 
 	/** Get Auto expand menu.
 		@return If ticked, the menu is automatically expanded
 	  */
-	public boolean isMenuAutoExpand () 
+	public String getIsMenuAutoExpand () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsMenuAutoExpand);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsMenuAutoExpand);
 	}
 
 	/** Set Last Contact.
