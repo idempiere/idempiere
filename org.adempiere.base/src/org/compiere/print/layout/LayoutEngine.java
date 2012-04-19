@@ -1697,7 +1697,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 								else
 									value = o.toString();
 								
-								data[row][col] = ImageElement.get (value);
+								data[row][col] = ImageElement.get (pde, value);
 							}
 						}
 						else if (item.isImageIsAttached())
