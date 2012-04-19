@@ -42,6 +42,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Style;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
@@ -104,8 +105,11 @@ public class MenuPanel extends Panel implements EventListener<Event>
         menuTree.setPageSize(-1); // Due to bug in the new paging functionality
         
         menuTree.setStyle("border: none");
-        
+                
         pnlSearch = new TreeSearchPanel(menuTree);
+        Style style = new Style();
+        style.setContent(".z-comboitem-img{ vertical-align:top; padding-right:2px; padding-bottom:4px; }");
+        pnlSearch.insertBefore(style, pnlSearch.getFirstChild());
         
         Toolbar toolbar = new Toolbar();
         toolbar.setMold("panel");
