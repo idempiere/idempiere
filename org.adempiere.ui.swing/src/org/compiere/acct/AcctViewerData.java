@@ -29,7 +29,7 @@ import java.util.logging.Level;
 
 import javax.swing.JComboBox;
 
-import org.compiere.model.HardCodedIDs;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MFactAcct;
@@ -57,7 +57,7 @@ import org.compiere.util.ValueNamePair;
  *  			<li>BF [ 1748449 ] Info Account - Posting Type is not translated
  * 				<li>BF [ 1778373 ] AcctViewer: data is not sorted proper
  */
-class AcctViewerData
+class AcctViewerData implements SystemIDs
 {
 	/**
 	 *  Constructor
@@ -173,7 +173,7 @@ class AcctViewerData
 	 */
 	protected void fillPostingType (JComboBox cb)
 	{
-		int AD_Reference_ID = HardCodedIDs.REFERENCE_POSTING_TYPE;
+		int AD_Reference_ID = REFERENCE_POSTING_TYPE;
 		ValueNamePair[] pt = MRefList.getList(Env.getCtx(), AD_Reference_ID, true);
 		for (int i = 0; i < pt.length; i++)
 			cb.addItem(pt[i]);
