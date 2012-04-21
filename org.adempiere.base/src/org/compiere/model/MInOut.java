@@ -1684,9 +1684,9 @@ public class MInOut extends X_M_InOut implements DocAction
 		log.fine(dropShipment.toString());
 
 		dropShipment.setDocAction(DocAction.ACTION_Complete);
-		// added AdempiereException by Amir Sehan
+		// added AdempiereException by Zuhri
 		if (!dropShipment.processIt(DocAction.ACTION_Complete))
-			throw new AdempiereException("Failed Processing Document - " + dropShipment);
+			throw new AdempiereException("Failed when processing document - " + dropShipment.getProcessMsg());
 		// end added
 		dropShipment.saveEx();
 
@@ -1906,9 +1906,9 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (counterDT.getDocAction() != null)
 			{
 				counter.setDocAction(counterDT.getDocAction());
-				// added AdempiereException by Amir Sehan
+				// added AdempiereException by zuhri
 				if (!counter.processIt(counterDT.getDocAction()))
-					throw new AdempiereException("Failed Processing Document - " + counter);
+					throw new AdempiereException("Failed when processing document - " + counter.getProcessMsg());
 				// end added
 				counter.saveEx(get_TrxName());
 			}

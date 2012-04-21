@@ -498,9 +498,9 @@ public class MRMA extends X_M_RMA implements DocAction
 			if (counterDT.getDocAction() != null)
 			{
 				counter.setDocAction(counterDT.getDocAction());
-				// added AdempiereException by Amir Sehan
+				// added AdempiereException by zuhri
 				if (!counter.processIt(counterDT.getDocAction()))
-					throw new AdempiereException("Failed Processing Document - " + counter);
+					throw new AdempiereException("Failed when processing document - " + counter.getProcessMsg());
 				// end added
 				counter.saveEx(get_TrxName());
 			}

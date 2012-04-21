@@ -327,9 +327,9 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 				{
 					check.setC_Payment_ID (C_Payment_ID);
 					check.saveEx();	//	Payment process needs it
-					// added AdempiereException by Amir Sehan
+					// added AdempiereException by zuhri
 					if (!payment.processIt(DocAction.ACTION_Complete))
-						throw new AdempiereException("FAiled Processing Document - " + payment);
+						throw new AdempiereException("Failed when processing document - " + payment.getProcessMsg());
 					// end added
 					if (!payment.save())
 						s_log.log(Level.SEVERE, "Payment not saved: " + payment);
