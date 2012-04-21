@@ -583,7 +583,6 @@ public class InOutGenerate extends SvrProcess
 				throw new IllegalStateException("Shipment Process Failed: " + m_shipment + " - " + m_shipment.getProcessMsg());
 				
 			}
-			}
 			m_shipment.saveEx();
 			//
 			addLog(m_shipment.getM_InOut_ID(), m_shipment.getMovementDate(), null, m_shipment.getDocumentNo());
