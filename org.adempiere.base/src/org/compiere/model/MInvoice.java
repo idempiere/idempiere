@@ -2027,7 +2027,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (counterDT.getDocAction() != null)
 			{
 				counter.setDocAction(counterDT.getDocAction());
-				counter.processIt(counterDT.getDocAction());
+				// added AdempiereException by Amir Sehan
+				if (!counter.processIt(counterDT.getDocAction()))
+					throw new AdempiereException("Failed Processing Document - " + counter);
+				// end added
 				counter.saveEx(get_TrxName());
 			}
 		}
@@ -2268,8 +2271,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				Env.ZERO, Env.ZERO, Env.ZERO);
 			rLine.setC_Invoice_ID(reversal.getC_Invoice_ID());
 			rLine.saveEx();
-			//	Process It
-			if (alloc.processIt(DocAction.ACTION_Complete))
+			// added AdempiereException by Amir Sehan
+			if (!alloc.processIt(DocAction.ACTION_Complete))
+				throw new AdempiereException("Failed Processing Document - " + alloc);
+			// end added
 				alloc.saveEx();
 		}
 
