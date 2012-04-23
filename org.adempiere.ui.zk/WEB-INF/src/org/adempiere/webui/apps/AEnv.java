@@ -38,6 +38,7 @@ import javax.servlet.ServletRequest;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.acct.Doc;
@@ -777,5 +778,10 @@ public final class AEnv
 		boolean inUIThread = Executions.getCurrent() != null;
 		return inUIThread ? Executions.getCurrent().getDesktop() 
 					: (Desktop) Env.getCtx().get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY);
+	}
+	
+	public static boolean isTablet() {
+		IDesktop appDesktop = SessionManager.getAppDesktop();
+		return appDesktop != null ? appDesktop.getClientInfo().tablet : false;
 	}
 }	//	AEnv

@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
@@ -181,15 +182,18 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private void renderHomeTab()
 	{
 		
-		homeTab.getChildren().clear();
-		homeTab.addEventListener("onAddMobileScrolling", this);
+		homeTab.getChildren().clear();		
 
 		//register as 0
         registerWindow(homeTab);
         
 		dashboardController.render(homeTab, this);			
 		
-		Events.echoEvent("onAddMobileScrolling", homeTab, null);
+		if (AEnv.isTablet()) 
+		{
+			homeTab.addEventListener("onAddTabletScrolling", this);
+			Events.echoEvent("onAddTabletScrolling", homeTab, null);
+		}
 	}
 
 	public void onEvent(Event event)
@@ -210,9 +214,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
             	}
             }
         }
-        else if (eventName.equals("onAddMobileScrolling"))
+        else if (eventName.equals("onAddTabletScrolling"))
         {
-        	LayoutUtils.addSclass("mobile-scrolling", homeTab);
+        	LayoutUtils.addSclass("tablet-scrolling", homeTab);
         }
     }
 

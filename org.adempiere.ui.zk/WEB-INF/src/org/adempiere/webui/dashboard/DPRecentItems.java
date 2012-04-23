@@ -25,8 +25,9 @@ import org.compiere.model.MRecentItem;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -77,14 +78,16 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 
 		Image imgr = new Image("/images/Refresh24.png");
 		recentItemsToolbar.appendChild(imgr);
-		imgr.setAlign("left");
+		imgr.setStyle("text-align: right; cursor: pointer;");
+		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		imgr.addEventListener(Events.ON_CLICK, this);
 		//
 
 		Image img = new Image("/images/Delete24.png");
 		recentItemsToolbar.appendChild(img);
-		img.setAlign("right");
+		img.setStyle("text-align: right;");
 		img.setDroppable(DELETE_RECENTITEMS_DROPPABLE);
+		img.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Delete")));
 		img.addEventListener(Events.ON_DROP, this);
 		//
 
@@ -199,13 +202,17 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			btnrecentItem.addEventListener(Events.ON_CLICK, this);
 			btnrecentItem.addEventListener(Events.ON_DROP, this);
 			btnrecentItem.setSclass("menu-href");
-			if (getPage() != null)
+			if (AEnv.isTablet())
 			{
-				TouchEventHelper.addOnTapEventListener(btnrecentItem, this);
-			}
-			else
-			{
-				Executions.schedule(AEnv.getDesktop(), this, new Event(ON_ADD_TAP_EVENT_LISTENER, btnrecentItem, null));
+				if (getPage() != null)
+				{
+					TouchEventHelper.addOnTapEventListener(btnrecentItem, this);
+				}
+				else
+				{
+					btnrecentItem.addEventListener(ON_ADD_TAP_EVENT_LISTENER, this);
+					Events.echoEvent(new Event(ON_ADD_TAP_EVENT_LISTENER, btnrecentItem, null));
+				}
 			}
 			
 			riShown++;

@@ -38,4 +38,6 @@ public class ClientInfo implements Serializable {
 	public int screenHeight;
 	public int screenWidth;
 	public TimeZone timeZone;
+	public String userAgent;
+	public boolean tablet;
 }

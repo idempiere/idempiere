@@ -22,5 +22,6 @@ public interface TouchEvents {
 
 	public final static String ON_TOUCH_START = "onTouchstart";
 	public final static String ON_TOUCH_END = "onTouchend";
+	public final static String ON_TOUCH_MOVE = "onTouchmove";
 	public final static String ON_TAP = "onTap";
 }

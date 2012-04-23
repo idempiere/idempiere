@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
@@ -223,8 +224,11 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 			formComponent = layout;
 			treePanel.getTree().addEventListener(Events.ON_SELECT, this);
 			
-			LayoutUtils.addSclass("mobile-scrolling", west);
-			LayoutUtils.addSclass("mobile-scrolling", center);
+			if (AEnv.isTablet()) 
+			{
+				LayoutUtils.addSclass("tablet-scrolling", west);
+				LayoutUtils.addSclass("tablet-scrolling", center);
+			}
 		}
 		else
 		{
@@ -234,7 +238,10 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 			this.appendChild(div);
 			formComponent = div;
 			
-			LayoutUtils.addSclass("mobile-scrolling", div);
+			if (AEnv.isTablet()) 
+			{
+				LayoutUtils.addSclass("tablet-scrolling", div);
+			}
 		}
         this.appendChild(listPanel);
         listPanel.setVisible(false);

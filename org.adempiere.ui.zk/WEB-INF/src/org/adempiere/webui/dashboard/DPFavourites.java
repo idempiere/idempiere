@@ -25,8 +25,9 @@ import org.compiere.model.MTreeNode;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -87,9 +88,10 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		// Elaine 2008/07/24
 		Image img = new Image("/images/Delete24.png");
 		favToolbar.appendChild(img);
-		img.setAlign("right");
-		img.setDroppable(DELETE_FAV_DROPPABLE);
-		img.addEventListener(Events.ON_DROP, this);
+		img.setStyle("text-align: right");
+		img.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Delete")));
+		img.setDroppable(DELETE_FAV_DROPPABLE);		
+		img.addEventListener(Events.ON_DROP, this);		
 		//
         
         favContent.setDroppable(FAVOURITE_DROPPABLE); 
@@ -131,13 +133,17 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 					btnFavItem.addEventListener(Events.ON_DROP, this);
 					btnFavItem.setSclass("menu-href");
 										
-					if (getPage() != null)
+					if (AEnv.isTablet())
 					{
-						TouchEventHelper.addOnTapEventListener(btnFavItem, this);
-					}
-					else
-					{
-						Executions.schedule(AEnv.getDesktop(), this, new Event(ON_ADD_TAP_EVENT_LISTENER, btnFavItem, null));
+						if (getPage() != null)
+						{
+							TouchEventHelper.addOnTapEventListener(btnFavItem, this);
+						}
+						else
+						{
+							btnFavItem.addEventListener(ON_ADD_TAP_EVENT_LISTENER, this);
+							Events.echoEvent(new Event(ON_ADD_TAP_EVENT_LISTENER, btnFavItem, null));
+						}
 					}
 				}
 			}
@@ -290,13 +296,8 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 				btnFavItem.addEventListener(Events.ON_CLICK, this);
 				btnFavItem.addEventListener(Events.ON_DROP, this);				
 				btnFavItem.setSclass("menu-href");
-				if (getPage() != null)
-				{
+				if (AEnv.isTablet()) {
 					TouchEventHelper.addOnTapEventListener(btnFavItem, this);
-				}
-				else
-				{
-					Executions.schedule(AEnv.getDesktop(), this, new Event(ON_ADD_TAP_EVENT_LISTENER, btnFavItem, null));
 				}
 				bxFav.removeChild(lblMsg);        					
 				bxFav.invalidate();

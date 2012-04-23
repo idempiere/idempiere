@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.event.TouchEventHelper;
@@ -211,7 +212,9 @@ public class MenuPanel extends Panel implements EventListener<Event>
                 
                 link.addEventListener(Events.ON_CLICK, this);
                 link.setSclass("menu-href");
-                TouchEventHelper.addOnTapEventListener(link, this);
+                if (AEnv.isTablet()) {
+                	TouchEventHelper.addOnTapEventListener(link, this);
+                }
             }
         }
     }
