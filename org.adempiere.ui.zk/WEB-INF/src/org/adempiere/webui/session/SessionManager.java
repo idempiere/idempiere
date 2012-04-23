@@ -19,9 +19,12 @@ package org.adempiere.webui.session;
 
 import java.util.Properties;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.desktop.IDesktop;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 
@@ -48,24 +51,29 @@ public class SessionManager
     
     private static Session getSession()
     {
-        return  Executions.getCurrent().getDesktop().getSession();
+    	Execution execution = Executions.getCurrent();
+    	Desktop desktop = execution != null ? execution.getDesktop() 
+    			: (Desktop) Env.getCtx().get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY); 
+        return  desktop != null ? desktop.getSession() : null;
     }
     
     public static void setSessionApplication(IWebClient app)
     {
         Session session = getSession();
-        session.setAttribute(SESSION_APPLICATION, app);
+        if (session != null)
+        	session.setAttribute(SESSION_APPLICATION, app);
     }
     
     public static IDesktop getAppDesktop()
     {
-    	return getSessionApplication().getAppDeskop();
+    	IWebClient webClient = getSessionApplication();
+    	return webClient != null ? webClient.getAppDeskop() : null;
     }
     
     public static IWebClient getSessionApplication()
     {
         Session session = getSession();
-        IWebClient app = (IWebClient)session.getAttribute(SESSION_APPLICATION);
+        IWebClient app = session != null ? (IWebClient)session.getAttribute(SESSION_APPLICATION) : null;
         return app;
     }
     
@@ -73,12 +81,17 @@ public class SessionManager
     {
         Env.getCtx().clear();
         Session session = getSession();
-        session.removeAttribute(SessionContextListener.SESSION_CTX);
-        session.invalidate();
+        if (session != null)
+        {
+        	session.removeAttribute(SessionContextListener.SESSION_CTX);
+        	session.invalidate();
+        }
     }
     
     public static void logoutSession()
     {
-        getSessionApplication().logout();
+    	IWebClient app = getSessionApplication();
+    	if (app != null)
+    		app.logout();
     }
 }
