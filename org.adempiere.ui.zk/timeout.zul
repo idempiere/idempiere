@@ -1,4 +1,4 @@
-<?page title="Adempiere" contentType="text/html;charset=UTF-8"?>
+<?page title="Adempiere" contentType="text/html;charset=UTF-8" automaticTimeout="false" ?>
 <zk>
 <zscript>
 <![CDATA[
@@ -16,7 +16,7 @@
 	<toolbarbutton href="/index.zul" label="${continueText}"/>
 </div>
 </vbox>
-<script defer="true">
+<script>
 <![CDATA[
 	var callback = function(ok, val) {
 		if (ok && !!val)
