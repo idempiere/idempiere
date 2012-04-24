@@ -29,6 +29,7 @@ import org.compiere.model.MSequence;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Table;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.SvrProcess;
@@ -42,7 +43,7 @@ import org.compiere.util.Env;
  *  @author Victor Perez, e-Evolution, S.C.
  *  @author Teo Sarca, teo.sarca@gmail.com
  */
-public class EnableNativeSequence extends SvrProcess
+public class EnableNativeSequence extends SvrProcess implements SystemIDs
 {
 
 	/**
@@ -128,7 +129,7 @@ public class EnableNativeSequence extends SvrProcess
 		CLogMgt.setLevel(Level.INFO);
 
 		Properties ctx = Env.getCtx();
-		int AD_Process_ID = 53156; // HARDCODED
+		int AD_Process_ID = PROCESS_AD_NATIVE_SEQUENCE_ENABLE; // HARDCODED
 
 		MPInstance pinstance = new MPInstance(ctx, AD_Process_ID, -1);
 		pinstance.saveEx();

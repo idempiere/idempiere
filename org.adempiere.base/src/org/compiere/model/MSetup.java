@@ -46,7 +46,7 @@ import org.compiere.util.Trx;
  * @author Carlos Ruiz - globalqss
  * 			<li>Setup correctly IsSOTrx for return documents
  */
-public final class MSetup
+public final class MSetup implements SystemIDs
 {
 	/**
 	 *  Constructor
@@ -1058,7 +1058,7 @@ public final class MSetup
 		sqlCmd.append("(C_TaxCategory_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append(" Name,IsDefault) VALUES (");
 		sqlCmd.append(C_TaxCategory_ID).append(",").append(m_stdValues).append(", ");
-		if (C_Country_ID == 100)    // US
+		if (C_Country_ID == COUNTRY_US)    // US
 			sqlCmd.append("'Sales Tax','Y')");
 		else
 			sqlCmd.append(defaultEntry).append("'Y')");

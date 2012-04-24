@@ -51,6 +51,7 @@ import org.compiere.interfaces.Server;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.DocumentEngine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
@@ -74,7 +75,7 @@ import org.compiere.util.Splash;
  *  @see FR [ 1966328 ] New Window Info to MRP and CRP into View http://sourceforge.net/tracker/index.php?func=detail&aid=1966328&group_id=176962&atid=879335
  *  
  */
-public final class AEnv
+public final class AEnv implements SystemIDs
 {
 	// Array of active Windows
 	private static ArrayList<Container>	s_windows = new ArrayList<Container>(20);
@@ -795,12 +796,12 @@ public final class AEnv
 		if (s_workflow == null)
 		{
 			s_workflow = Boolean.FALSE;					
-			int AD_Table_ID = 645;	//	AD_WF_Process	
+			int AD_Table_ID = TABLE_AD_WF_PROCESS;	//	AD_WF_Process	
 			if (MRole.getDefault().isTableAccess (AD_Table_ID, true))	//	RO
 				s_workflow = Boolean.TRUE;
 			else
 			{
-				AD_Table_ID = 644;	//	AD_WF_Activity	
+				AD_Table_ID = TABLE_AD_WF_ACTIVITY;	//	AD_WF_Activity	
 				if (MRole.getDefault().isTableAccess (AD_Table_ID, true))	//	RO
 					s_workflow = Boolean.TRUE;
 				else

@@ -168,7 +168,7 @@ public final class AMenu extends CFrame
 			+ " INNER JOIN AD_Role r ON (ci.AD_Client_ID=r.AD_Client_ID) "
 			+ "WHERE AD_Role_ID=?", AD_Role_ID);
 		if (AD_Tree_ID <= 0)
-			AD_Tree_ID = 10;	//	Menu
+			AD_Tree_ID = TREE_MENUPRIMARY;	//	Menu
 		treePanel.initTree(AD_Tree_ID);
 
 		//	Translate
@@ -656,7 +656,7 @@ public final class AMenu extends CFrame
 				+ " INNER JOIN AD_TABLE t ON (t.AD_Window_ID=m.AD_Window_ID) "
 				+ "WHERE t.AD_Table_ID=?", 389);
 		if (m_note_Menu_ID == 0)
-			m_note_Menu_ID = 233;	//	fallback HARDCODED
+			m_note_Menu_ID = MENU_NOTICE;	//	fallback HARDCODED
 		(new AMenuStartItem (m_note_Menu_ID, true, Msg.translate(m_ctx, "AD_Note_ID"), this)).start();		//	async load
 	}   //  gotoMessage
 

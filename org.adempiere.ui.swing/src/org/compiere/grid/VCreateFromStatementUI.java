@@ -43,6 +43,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
+import org.compiere.model.SystemIDs;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
@@ -52,7 +53,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-public class VCreateFromStatementUI extends CreateFromStatement implements ActionListener
+public class VCreateFromStatementUI extends CreateFromStatement implements ActionListener, SystemIDs
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -145,7 +146,7 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 		
 		dialog.setTitle(getTitle());
 
-		int AD_Column_ID = 4917;        //  C_BankStatement.C_BankAccount_ID
+		int AD_Column_ID = COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID;        //  C_BankStatement.C_BankAccount_ID
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, AD_Column_ID, DisplayType.TableDir);
 		bankAccountField = new VLookup ("C_BankAccount_ID", true, true, true, lookup);
 		//  Set Default

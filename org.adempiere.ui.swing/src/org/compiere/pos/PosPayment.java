@@ -53,6 +53,7 @@ import org.compiere.model.MPOS;
 import org.compiere.model.MPOSKey;
 import org.compiere.model.MPayment;
 import org.compiere.model.MPaymentValidate;
+import org.compiere.model.SystemIDs;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CDialog;
@@ -64,7 +65,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
-public class PosPayment extends CDialog implements PosKeyListener, VetoableChangeListener, ActionListener {
+public class PosPayment extends CDialog implements PosKeyListener, VetoableChangeListener, ActionListener, SystemIDs {
 	/**
 	 * 
 	 */
@@ -247,7 +248,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		
 		mainPanel.add(new CLabel(Msg.translate(p_ctx, "TenderType"), "growx"));
 		// Payment type selection
-		int AD_Column_ID = 8416; //C_Payment_v.TenderType
+		int AD_Column_ID = COLUMN_C_PAYMENT_V_TENDERTYPE; //C_Payment_v.TenderType
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), 0, 0, AD_Column_ID, DisplayType.List);
 		ArrayList<Object> types = lookup.getData(true, false, true, true);
 		

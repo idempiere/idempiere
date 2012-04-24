@@ -40,7 +40,7 @@ import org.compiere.util.Env;
  *  @version 	$Id: MRegion.java,v 1.3 2006/07/30 00:58:36 jjanke Exp $
  */
 public final class MRegion extends X_C_Region
-	implements Comparator, Serializable
+	implements Comparator, Serializable, SystemIDs
 {
 	/**
 	 * 
@@ -236,7 +236,7 @@ public final class MRegion extends X_C_Region
 		 * 	Please make sure that the file is converted via the Java utility
 		 * 	native2ascii - i.e. all seven bit code with /u0000 unicode stuff 
 		 */
-		int C_Country_ID = 216;		//	Japan
+		int C_Country_ID = COUNTRY_JAPAN;		//	Japan
 		MCountry country = new MCountry(Env.getCtx(), C_Country_ID, null); 
 		// Hokkaido
 		MRegion temp = new MRegion (country, "\u5317\u6d77\u9053");

@@ -37,6 +37,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -48,7 +49,7 @@ import org.zkoss.zkex.zul.Borderlayout;
 import org.zkoss.zkex.zul.Center;
 import org.zkoss.zul.Space;
 
-public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventListener, ValueChangeListener
+public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventListener, ValueChangeListener, SystemIDs
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -246,7 +247,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	protected void initBPartner (boolean forInvoice) throws Exception
 	{
 		//  load BPartner
-		int AD_Column_ID = 3499;        //  C_Invoice.C_BPartner_ID
+		int AD_Column_ID = COLUMN_C_INVOICE_C_BPARTNER_ID;        //  C_Invoice.C_BPartner_ID
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		bPartnerField = new WSearchEditor ("C_BPartner_ID", true, false, true, lookup);
 		//

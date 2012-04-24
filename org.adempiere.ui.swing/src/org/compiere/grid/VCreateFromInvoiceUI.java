@@ -35,6 +35,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.SystemIDs;
 import org.compiere.swing.CPanel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -42,7 +43,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
-public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionListener, VetoableChangeListener
+public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionListener, VetoableChangeListener, SystemIDs
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -251,7 +252,7 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 	protected void initBPartner (boolean forInvoice) throws Exception
 	{
 		//  load BPartner
-		int AD_Column_ID = 3499;        //  C_Invoice.C_BPartner_ID
+		int AD_Column_ID = COLUMN_C_INVOICE_C_BPARTNER_ID;        //  C_Invoice.C_BPartner_ID
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		bPartnerField = new VLookup ("C_BPartner_ID", true, false, true, lookup);
 		//

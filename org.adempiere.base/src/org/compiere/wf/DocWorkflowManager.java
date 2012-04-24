@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.DocWorkflowMgr;
 import org.compiere.model.PO;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -35,7 +36,7 @@ import org.compiere.util.Evaluator;
  *  @author Jorg Janke
  *  @version $Id: DocWorkflowManager.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class DocWorkflowManager implements DocWorkflowMgr
+public class DocWorkflowManager implements DocWorkflowMgr, SystemIDs
 {
 	/**
 	 * 	Get Document Workflow Manager
@@ -119,7 +120,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 		
 			//	Start Workflow
 			log.fine(logic);
-			int AD_Process_ID = 305;		//	HARDCODED
+			int AD_Process_ID = PROCESS_AD_WORKFLOW_DOCVALUE;		//	HARDCODED
 			ProcessInfo pi = new ProcessInfo (wf.getName(), AD_Process_ID, 
 				AD_Table_ID, document.get_ID());
 			pi.setAD_User_ID (Env.getAD_User_ID(document.getCtx()));

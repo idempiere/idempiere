@@ -27,6 +27,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -40,7 +41,7 @@ import org.compiere.util.Env;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1866739 ] ReportCtl: use printformat from the transient/serializable
  */
-public class ReportCtl
+public class ReportCtl implements SystemIDs
 {
 	/**
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINTER_NAME}
@@ -115,21 +116,21 @@ public class ReportCtl
 		/**
 		 *	Order Print
 		 */
-		if (pi.getAD_Process_ID() == 110)			//	C_Order
+		if (pi.getAD_Process_ID() == PROCESS_RPT_C_ORDER)			//	C_Order
 			return startDocumentPrint(ReportEngine.ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
 		if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt PP_Order", null))			//	C_Order
 			return startDocumentPrint(ReportEngine.MANUFACTURING_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
 		if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt DD_Order", null))			//	C_Order
 			return startDocumentPrint(ReportEngine.DISTRIBUTION_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == 116)		//	C_Invoice
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_INVOICE)		//	C_Invoice
 			return startDocumentPrint(ReportEngine.INVOICE, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == 117)		//	M_InOut
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INOUT)		//	M_InOut
 			return startDocumentPrint(ReportEngine.SHIPMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == 217)		//	C_Project
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PROJECT)		//	C_Project
 			return startDocumentPrint(ReportEngine.PROJECT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == 276)		//	C_RfQResponse
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_RFQRESPONSE)		//	C_RfQResponse
 			return startDocumentPrint(ReportEngine.RFQ, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == 313)		//	C_Payment
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PAYMENT)		//	C_Payment
 			return startCheckPrint(pi.getRecord_ID(), !pi.isPrintPreview());
 		/**
         else if (pi.getAD_Process_ID() == 290)      // Movement Submission by VHARCQ
@@ -139,10 +140,10 @@ public class ReportCtl
 		else if (pi.AD_Process_ID == 9999999)	//	PaySelection
 			return startDocumentPrint(REMITTANCE, pi, IsDirectPrint);
 		**/
-		else if (pi.getAD_Process_ID() == 159)		//	Dunning
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_DUNNING)		//	Dunning
 			return startDocumentPrint(ReportEngine.DUNNING, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-	   else if (pi.getAD_Process_ID() == 202			//	Financial Report
-			|| pi.getAD_Process_ID() == 204)			//	Financial Statement
+	   else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
+			|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
 		   return startFinReport (pi);
 		/********************
 		 *	Standard Report

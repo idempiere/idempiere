@@ -52,6 +52,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.swing.CPanel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -59,11 +60,8 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
-public class VCreateFromShipmentUI extends CreateFromShipment implements ActionListener, VetoableChangeListener
+public class VCreateFromShipmentUI extends CreateFromShipment implements ActionListener, VetoableChangeListener, SystemIDs
 {
-	private static final int WINDOW_CUSTOMER_RETURN = 53097;
-
-	private static final int WINDOW_RETURN_TO_VENDOR = 53098;
 
 	private VCreateFromDialog dialog;
 
@@ -161,7 +159,7 @@ public class VCreateFromShipmentUI extends CreateFromShipment implements ActionL
 	 */
     private void jbInit() throws Exception
     {
-    	boolean isRMAWindow = ((getGridTab().getAD_Window_ID() == WINDOW_RETURN_TO_VENDOR) || (getGridTab().getAD_Window_ID() == WINDOW_CUSTOMER_RETURN)); 
+    	boolean isRMAWindow = ((getGridTab().getAD_Window_ID() == WINDOW_RETURNTOVENDOR) || (getGridTab().getAD_Window_ID() == WINDOW_CUSTOMERRETURN)); 
     	
     	bPartnerLabel.setText(Msg.getElement(Env.getCtx(), "C_BPartner_ID"));
     	orderLabel.setText(Msg.getElement(Env.getCtx(), "C_Order_ID", false));
@@ -304,7 +302,7 @@ public class VCreateFromShipmentUI extends CreateFromShipment implements ActionL
 	protected void initBPartner (boolean forInvoice) throws Exception
 	{
 		//  load BPartner
-		int AD_Column_ID = 3499;        //  C_Invoice.C_BPartner_ID
+		int AD_Column_ID = COLUMN_C_INVOICE_C_BPARTNER_ID;        //  C_Invoice.C_BPartner_ID
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		bPartnerField = new VLookup ("C_BPartner_ID", true, false, true, lookup);
 		//

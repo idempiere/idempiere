@@ -85,7 +85,7 @@ import org.compiere.util.ValueNamePair;
  *  			https://sourceforge.net/tracker/?func=detail&aid=2910368&group_id=176962&atid=879332
  */
 public class GridTable extends AbstractTableModel
-	implements Serializable
+	implements Serializable, SystemIDs
 {
 	/**
 	 * generated
@@ -1434,7 +1434,7 @@ public class GridTable extends AbstractTableModel
 		boolean specialZeroUpdate = false;
 		if (!m_inserting // not inserting, updating a record 
 			&& manualCmd   // in a manual way (pushing the save button)
-			&& (Env.getAD_User_ID(m_ctx) == 0 || Env.getAD_User_ID(m_ctx) == 100)  // user must know what is doing -> just allowed to System or SuperUser (Hardcoded)
+			&& (Env.getAD_User_ID(m_ctx) == USER_SYSTEM || Env.getAD_User_ID(m_ctx) == USER_SUPERUSER)  // user must know what is doing -> just allowed to System or SuperUser (Hardcoded)
 			&& getKeyID(m_rowChanged) == 0) { // the record being changed has ID = 0
 			String tablename = getTableName(); // just the allowed tables (HardCoded)
 			if (tablename.equals("AD_Org") ||

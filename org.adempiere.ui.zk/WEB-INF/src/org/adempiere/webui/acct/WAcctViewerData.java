@@ -38,6 +38,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefList;
+import org.compiere.model.SystemIDs;
 import org.compiere.report.core.RColumn;
 import org.compiere.report.core.RModel;
 import org.compiere.util.CLogger;
@@ -57,7 +58,7 @@ import org.compiere.util.ValueNamePair;
  *  		July 27, 2007
  */
 
-public class WAcctViewerData 
+public class WAcctViewerData implements SystemIDs
 {
 	/** Window              */
 	public int WindowNo;
@@ -199,7 +200,7 @@ public class WAcctViewerData
 	
 	protected void fillPostingType (Listbox cb)
 	{
-		int AD_Reference_ID = 125;
+		int AD_Reference_ID = REFERENCE_POSTING_TYPE;
 		ValueNamePair[] pt = MRefList.getList(Env.getCtx(), AD_Reference_ID, true);
 		
 		for (int i = 0; i < pt.length; i++)

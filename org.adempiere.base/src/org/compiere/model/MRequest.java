@@ -38,7 +38,7 @@ import org.compiere.util.TimeUtil;
  *  @author Jorg Janke
  *  @version $Id: MRequest.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MRequest extends X_R_Request
+public class MRequest extends X_R_Request implements SystemIDs
 {
 	/**
 	 * 
@@ -1212,7 +1212,7 @@ public class MRequest extends X_R_Request
 				if (X_AD_User.NOTIFICATIONTYPE_Notice.equals(NotificationType)
 					|| X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice.equals(NotificationType))
 				{
-					int AD_Message_ID = 834;
+					int AD_Message_ID = MESSAGE_REQUESTUPDATE;
 					MNote note = new MNote(getCtx(), AD_Message_ID, AD_User_ID,
 						X_R_Request.Table_ID, getR_Request_ID(), 
 						subject, message.toString(), get_TrxName());

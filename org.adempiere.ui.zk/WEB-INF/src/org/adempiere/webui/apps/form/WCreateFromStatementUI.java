@@ -44,6 +44,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -55,7 +56,7 @@ import org.zkoss.zkex.zul.Borderlayout;
 import org.zkoss.zkex.zul.Center;
 import org.zkoss.zul.Hbox;
 
-public class WCreateFromStatementUI extends CreateFromStatement implements EventListener
+public class WCreateFromStatementUI extends CreateFromStatement implements EventListener, SystemIDs
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -143,7 +144,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		
 		window.setTitle(getTitle());
 		
-		int AD_Column_ID = 4917;        //  C_BankStatement.C_BankAccount_ID
+		int AD_Column_ID = COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID;        //  C_BankStatement.C_BankAccount_ID
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, AD_Column_ID, DisplayType.TableDir);
 		bankAccountField = new WTableDirEditor ("C_BankAccount_ID", true, false, true, lookup);
 		//  Set Default

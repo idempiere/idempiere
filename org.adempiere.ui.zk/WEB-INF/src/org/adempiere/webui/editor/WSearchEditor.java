@@ -39,6 +39,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRole;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -54,7 +55,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Ashley G Ramdass
  *
  */
-public class WSearchEditor extends WEditor implements ContextMenuListener, ValueChangeListener, IZoomableEditor
+public class WSearchEditor extends WEditor implements ContextMenuListener, ValueChangeListener, IZoomableEditor, SystemIDs
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 	private Lookup 				lookup;
@@ -822,7 +823,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	 * @return WSearchEditor
 	 */
 	public static WSearchEditor createBPartner(int windowNo) {
-		int AD_Column_ID = 3499;    //  C_Invoice.C_BPartner_ID
+		int AD_Column_ID = COLUMN_C_INVOICE_C_BPARTNER_ID;    //  C_Invoice.C_BPartner_ID
 		try
 		{
 			Lookup lookup = MLookupFactory.get (Env.getCtx(), windowNo,
@@ -841,7 +842,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	 * @return WSearchEditor
 	 */
 	public static WSearchEditor createProduct(int windowNo) {
-		int AD_Column_ID = 3840;    //  C_InvoiceLine.M_Product_ID
+		int AD_Column_ID = COLUMN_C_INVOICELINE_M_PRODUCT_ID;    //  C_InvoiceLine.M_Product_ID
 		try
 		{
 			Lookup lookup = MLookupFactory.get (Env.getCtx(), windowNo, 0,

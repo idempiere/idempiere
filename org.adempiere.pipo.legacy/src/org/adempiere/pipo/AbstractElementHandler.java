@@ -28,6 +28,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -36,7 +37,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public abstract class AbstractElementHandler implements ElementHandler {
+public abstract class AbstractElementHandler implements ElementHandler, SystemIDs {
 
 	protected CLogger log = CLogger.getCLogger("PackIn");
 	
@@ -203,10 +204,10 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	    		sqlD = new StringBuffer("SELECT MAX(AD_PACKAGE_IMP_DETAIL_ID) FROM AD_PACKAGE_IMP_DETAIL");
 	    		int idDetail = DB.getSQLValue(getTrxName(ctx),sqlD.toString())+1;
 	    		
-	    		if (referenceID == 10 || referenceID == 14 || referenceID == 34 || referenceID == 17)
+	    		if (referenceID == REFERENCE_DATATYPE_STRING || referenceID == REFERENCE_DATATYPE_TEXT || referenceID == REFERENCE_DATATYPE_MEMO || referenceID == REFERENCE_DATATYPE_LIST)
 	    			if (from != null && from.get_Value(i)!= null)
 	    				colValue = from.get_Value(i).toString().replaceAll("'","''");	    		
-				else if (referenceID == 20|| referenceID == 28)
+				else if (referenceID == REFERENCE_DATATYPE_YES_NO|| referenceID == REFERENCE_DATATYPE_BUTTON)
 					if (from != null && from.get_Value(i)!= null)	    				    				
 	    				colValue = from.get_Value(i).toString().replaceAll("'","''");
 				else

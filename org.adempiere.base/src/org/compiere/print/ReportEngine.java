@@ -68,6 +68,7 @@ import org.compiere.model.MProject;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRfQResponse;
 import org.compiere.model.PrintInfo;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -78,7 +79,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
-import org.eevolution.model.X_PP_Order;  // to be changed by MPPOrder
+import org.eevolution.model.X_PP_Order;
 
 /**
  *	Report Engine.
@@ -104,7 +105,7 @@ import org.eevolution.model.X_PP_Order;  // to be changed by MPPOrder
  * 
  *  FR 2872010 - Dunning Run for a complete Dunning (not just level) - Developer: Carlos Ruiz - globalqss - Sponsor: Metas
  */
-public class ReportEngine implements PrintServiceAttributeListener
+public class ReportEngine implements PrintServiceAttributeListener, SystemIDs
 {
 	/**
 	 *	Constructor
@@ -1567,7 +1568,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	{
 		org.compiere.Adempiere.startupEnvironment(true);
 		//
-		int AD_Table_ID = 100;
+		int AD_Table_ID = TABLE_AD_TABLE;
 		MQuery q = new MQuery("AD_Table");
 		q.addRestriction("AD_Table_ID", "<", 108);
 		//

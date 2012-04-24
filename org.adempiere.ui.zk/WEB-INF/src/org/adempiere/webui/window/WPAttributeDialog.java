@@ -51,6 +51,7 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -78,7 +79,7 @@ import org.zkoss.zul.impl.InputElement;
  *  ZK Port
  *  @author Low Heng Sin
  */
-public class WPAttributeDialog extends Window implements EventListener
+public class WPAttributeDialog extends Window implements EventListener, SystemIDs
 {
 	/**
 	 * 
@@ -793,7 +794,7 @@ public class WPAttributeDialog extends Window implements EventListener
 		
 		// teo_sarca [ 1564520 ] Inventory Move: can't select existing attributes
 		int M_Locator_ID = 0;
-		if (m_AD_Column_ID == 8551) { // TODO: hardcoded: M_MovementLine[324].M_AttributeSetInstance_ID[8551]
+		if (m_AD_Column_ID == COLUMN_M_MOVEMENTLINE_M_ATTRIBUTESETINSTANCE_ID) { // TODO: hardcoded: M_MovementLine[324].M_AttributeSetInstance_ID[8551]
 			M_Locator_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNoParent, X_M_MovementLine.COLUMNNAME_M_Locator_ID, true); // only window
 		}
 		

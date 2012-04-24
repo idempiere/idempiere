@@ -41,7 +41,7 @@ import org.compiere.util.Language;
  * 				<li>BF [ 2695078 ] Country is not translated on invoice
  */
 public final class MCountry extends X_C_Country
-	implements Comparator, Serializable
+	implements Comparator, Serializable, SystemIDs
 {
 	/**
 	 * 
@@ -124,7 +124,7 @@ public final class MCountry extends X_C_Country
 				//	Country code of Client Language
 				if (lang != null && lang.getCountryCode().equals(c.getCountryCode()))
 					s_default = c;
-				if (c.getC_Country_ID() == 100)		//	USA
+				if (c.getC_Country_ID() == COUNTRY_US)		//	USA
 					usa = c;
 			}
 			rs.close();

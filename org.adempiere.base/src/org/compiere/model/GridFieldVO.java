@@ -39,7 +39,7 @@ import org.compiere.util.Env;
  *  @see  http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1877902&group_id=176962 to FR [1877902]
  *  @version  $Id: GridFieldVO.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  */
-public class GridFieldVO implements Serializable
+public class GridFieldVO implements Serializable, SystemIDs
 {
 	/**
 	 * 
@@ -351,7 +351,7 @@ public class GridFieldVO implements Serializable
 			vo.ColumnName += "By";
 		vo.displayType = isTimestamp ? DisplayType.DateTime : DisplayType.Table;
 		if (!isTimestamp)
-			vo.AD_Reference_Value_ID = 110;		//	AD_User Table Reference
+			vo.AD_Reference_Value_ID = REFERENCE_AD_USER;		//	AD_User Table Reference
 		vo.IsDisplayed = false;
 		vo.IsMandatory = false;
 		vo.IsReadOnly = false;

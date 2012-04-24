@@ -29,6 +29,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPrivateAccess;
 import org.compiere.model.MRMA;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -42,7 +43,7 @@ import org.compiere.util.Trx;
  * Generate Shipment (manual) controller class
  * 
  */
-public class InOutGen extends GenForm
+public class InOutGen extends GenForm implements SystemIDs
 {
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(InOutGen.class);
@@ -264,11 +265,11 @@ public class InOutGen extends GenForm
         
         if (docTypeKNPair.getKey() == MRMA.Table_ID)
         {
-            AD_Process_ID = 52001; // M_InOut_GenerateRMA - org.adempiere.process.InOutGenerateRMA
+            AD_Process_ID = PROCESS_M_INOUT_GENERATERMA_MANUAL; // M_InOut_GenerateRMA - org.adempiere.process.InOutGenerateRMA
         }
         else
         {
-            AD_Process_ID = 199;      // M_InOut_Generate - org.compiere.process.InOutGenerate
+            AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;      // M_InOut_Generate - org.compiere.process.InOutGenerate
         }
 		
 		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);

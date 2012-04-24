@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.adempiere.util.IProcessMonitor;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
-import org.adempiere.webui.apps.ProcessDialog.ProcessDialogRunnable;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
@@ -23,6 +22,7 @@ import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -33,7 +33,6 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
-import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -80,7 +79,7 @@ import com.lowagie.text.pdf.PdfWriter;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessDialog extends Window implements EventListener, IProcessMonitor
+public class ProcessDialog extends Window implements EventListener, IProcessMonitor, SystemIDs
 {
 	/**
 	 * generate serial version ID
@@ -483,9 +482,9 @@ public class ProcessDialog extends Window implements EventListener, IProcessMoni
 		{
 			log.config("");
 			//	Print invoices
-			if (m_AD_Process_ID == 119)
+			if (m_AD_Process_ID == PROCESS_C_INVOICE_GENERATE)
 				printInvoices();
-			else if (m_AD_Process_ID == 118)
+			else if (m_AD_Process_ID == PROCESS_M_INOUT_GENERATE)
 				printShipments();
 		}
 

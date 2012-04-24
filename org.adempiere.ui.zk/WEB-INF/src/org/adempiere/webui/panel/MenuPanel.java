@@ -30,6 +30,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -53,7 +54,7 @@ import org.zkoss.zul.Treerow;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class MenuPanel extends Panel implements EventListener
+public class MenuPanel extends Panel implements EventListener, SystemIDs
 {
     /**
 	 * 
@@ -144,7 +145,7 @@ public class MenuPanel extends Panel implements EventListener
                 + " INNER JOIN AD_Role r ON (ci.AD_Client_ID=r.AD_Client_ID) "
                 + "WHERE AD_Role_ID=?", adRoleId);
         if (AD_Tree_ID <= 0)
-            AD_Tree_ID = 10;    //  Menu
+            AD_Tree_ID = TREE_MENUPRIMARY;    //  Menu
         return AD_Tree_ID;
     }
     

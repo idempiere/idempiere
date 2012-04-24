@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.I_AD_ImpFormat;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_ImpFormat;
 import org.compiere.model.X_I_GLJournal;
 import org.compiere.util.CLogger;
@@ -39,7 +40,7 @@ import org.compiere.util.Env;
 
  *  @version $Id: ImpFormat.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public final class ImpFormat
+public final class ImpFormat implements SystemIDs
 {
 	/**
 	 *	Format
@@ -150,24 +151,24 @@ public final class ImpFormat
 			m_tableUniqueChild = "H_Commodity1";		//	Vendor No may not be unique !
 			m_tableUniqueParent = "H_PartnrID";			//			Makes it unique
 		}
-		else if (m_AD_Table_ID == 532)		//	I_Product
+		else if (m_AD_Table_ID == TABLE_I_PRODUCT)		//	I_Product
 		{
 			m_tableUnique1 = "UPC";						//	UPC = unique
 			m_tableUnique2 = "Value";
 			m_tableUniqueChild = "VendorProductNo";		//	Vendor No may not be unique !
 			m_tableUniqueParent = "BPartner_Value";		//			Makes it unique
 		}
-		else if (m_AD_Table_ID == 533)		//	I_BPartner
+		else if (m_AD_Table_ID == TABLE_I_BPARTNER)		//	I_BPartner
 		{
 			// gody: 20070113 to allow multiple contacts per BP			
 			// m_tableUnique1 = "Value";				//	the key
 		}
-		else if (m_AD_Table_ID == 534)		//	I_ElementValue
+		else if (m_AD_Table_ID == TABLE_I_ELEMENTVALUE)		//	I_ElementValue
 		{
 			m_tableUniqueParent = "ElementName";			//	the parent key
 			m_tableUniqueChild = "Value";					//	the key
 		}
-		else if (m_AD_Table_ID == 535)		//	I_ReportLine
+		else if (m_AD_Table_ID == TABLE_I_REPORTLINE)		//	I_ReportLine
 		{
 			m_tableUniqueParent = "ReportLineSetName";		//	the parent key
 			m_tableUniqueChild = "Name";					//	the key

@@ -39,6 +39,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MWarehouse;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -54,7 +55,7 @@ import org.zkoss.zk.ui.event.Events;
  * @date    Jul 23, 2007
  */
 
-public class WLocatorEditor extends WEditor implements EventListener, PropertyChangeListener, ContextMenuListener, IZoomableEditor
+public class WLocatorEditor extends WEditor implements EventListener, PropertyChangeListener, ContextMenuListener, IZoomableEditor, SystemIDs
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
@@ -269,7 +270,7 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
 	{
 		int AD_Window_ID = MTable.get(Env.getCtx(), MLocator.Table_ID).getAD_Window_ID();
 		if (AD_Window_ID <= 0)
-			AD_Window_ID = 139;	//	hardcoded window Warehouse & Locators
+			AD_Window_ID = WINDOW_WAREHOUSE_LOCATOR;	//	hardcoded window Warehouse & Locators
 		log.info("");
 		//
 		

@@ -69,6 +69,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -118,7 +119,7 @@ import org.zkoss.zul.Menupopup;
  *  		https://sourceforge.net/tracker/?func=detail&aid=2985892&group_id=176962&atid=955896
  */
 public abstract class AbstractADWindowPanel extends AbstractUIPart implements ToolbarListener,
-        EventListener, DataStatusListener, ActionListener, IProcessMonitor
+        EventListener, DataStatusListener, ActionListener, IProcessMonitor, SystemIDs
 {
     private static final CLogger logger;
 
@@ -2061,7 +2062,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		//	Record_ID - Change Log ID
 
 		if (record_ID == -1
-			&& (wButton.getProcess_ID() == 306 || wButton.getProcess_ID() == 307))
+			&& (wButton.getProcess_ID() == PROCESS_AD_CHANGELOG_UNDO || wButton.getProcess_ID() == PROCESS_AD_CHANGELOG_REDO))
 		{
 			Integer id = (Integer)curTab.getValue("AD_ChangeLog_ID");
 			record_ID = id.intValue();

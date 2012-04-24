@@ -45,6 +45,7 @@ import org.compiere.grid.ed.VLookup;
 import org.compiere.minigrid.MiniTable;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.SystemIDs;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CTextField;
@@ -55,7 +56,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
 
 public class VAllocation extends Allocation
-	implements FormPanel, ActionListener, TableModelListener, VetoableChangeListener
+	implements FormPanel, ActionListener, TableModelListener, VetoableChangeListener, SystemIDs
 {
 	private CPanel panel = new CPanel();
 
@@ -240,21 +241,21 @@ public class VAllocation extends Allocation
 	public void dynInit() throws Exception
 	{
 		//  Currency
-		int AD_Column_ID = 3505;    //  C_Invoice.C_Currency_ID
+		int AD_Column_ID = COLUMN_C_INVOICE_C_CURRENCY_ID;    //  C_Invoice.C_Currency_ID
 		MLookup lookupCur = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.TableDir);
 		currencyPick = new VLookup("C_Currency_ID", true, false, true, lookupCur);
 		currencyPick.setValue(new Integer(m_C_Currency_ID));
 		currencyPick.addVetoableChangeListener(this);
 
 		// Organization filter selection
-		AD_Column_ID = 839; //C_Period.AD_Org_ID (needed to allow org 0)
+		AD_Column_ID = COLUMN_C_PERIOD_AD_ORG_ID; //C_Period.AD_Org_ID (needed to allow org 0)
 		MLookup lookupOrg = MLookupFactory.get(Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.TableDir);
 		organizationPick = new VLookup("AD_Org_ID", true, false, true, lookupOrg);
 		organizationPick.setValue(Env.getAD_Org_ID(Env.getCtx()));
 		organizationPick.addVetoableChangeListener(this);
 
 		//  BPartner
-		AD_Column_ID = 3499;        //  C_Invoice.C_BPartner_ID
+		AD_Column_ID = COLUMN_C_INVOICE_C_BPARTNER_ID;        //  C_Invoice.C_BPartner_ID
 		MLookup lookupBP = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		bpartnerSearch = new VLookup("C_BPartner_ID", true, false, true, lookupBP);
 		bpartnerSearch.addVetoableChangeListener(this);

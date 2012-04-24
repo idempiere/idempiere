@@ -38,7 +38,7 @@ import org.compiere.util.CLogger;
  * 		<li>BF [ 2861194 ] EntityType is not using normal PO framework for getting IDs
  * 			https://sourceforge.net/tracker/?func=detail&aid=2861194&group_id=176962&atid=879332
  */
-public class MEntityType extends X_AD_EntityType
+public class MEntityType extends X_AD_EntityType implements SystemIDs
 {
 	/**
 	 * 
@@ -219,7 +219,7 @@ public class MEntityType extends X_AD_EntityType
 		if (!newRecord)
 		{
 			int id = getAD_EntityType_ID();
-			boolean systemMaintained = (id == 10 || id == 20);	//	C/D
+			boolean systemMaintained = (id == ENTITYTYPE_DICTIONARY || id == ENTITYTYPE_ADEMPIERE);	//	C/D
 			if (systemMaintained)
 			{
 				log.saveError("Error", "You cannot modify a System maintained entity");
