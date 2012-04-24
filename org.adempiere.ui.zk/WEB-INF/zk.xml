@@ -51,7 +51,8 @@
 	-->
 	<device-config>
  		<device-type>ajax</device-type>
-		<server-push-class>org.zkoss.zk.ui.impl.PollingServerPush</server-push-class>
+<!--		<server-push-class>org.zkoss.zk.ui.impl.PollingServerPush</server-push-class> -->
+      	<server-push-class>fi.jawsy.jawwa.zk.atmosphere.AtmosphereServerPush</server-push-class>
 	</device-config>
 
 	<system-config>

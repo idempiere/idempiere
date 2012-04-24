@@ -38,4 +38,6 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript src="/js/persist-min.js" charset="UTF-8"/>
 	<javascript src="/js/token.js" charset="UTF-8"/>
 	
+	<javascript package="jawwa.atmosphere" merge="true" />
+	
 </language>

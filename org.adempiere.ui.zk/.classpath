@@ -4,5 +4,10 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="WEB-INF/src"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/classes/" sourcepath="WEB-INF/src"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/atmosphere-compat-jbossweb-0.9.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/atmosphere-compat-tomcat-0.9.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/atmosphere-compat-tomcat7-0.9.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/atmosphere-runtime-0.9.jar" sourcepath="C:/idempiere-zk6/org.adempiere.ui.zk/WEB-INF/lib/src/atmosphere-runtime-0.9-sources.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

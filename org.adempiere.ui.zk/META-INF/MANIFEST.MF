@@ -3,7 +3,20 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Zk Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Web-ContextPath: webui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ metainfo.zk,
+ org.apache.commons.codec.binary,
+ org.apache.ecs,
+ org.apache.ecs.xhtml,
+ org.osgi.framework;version="1.5.0"
+Bundle-ClassPath: WEB-INF/classes/,
+ WEB-INF/lib/atmosphere-runtime-0.9.jar,
+ WEB-INF/lib/atmosphere-compat-jbossweb-0.9.jar,
+ WEB-INF/lib/atmosphere-compat-tomcat-0.9.jar,
+ WEB-INF/lib/atmosphere-compat-tomcat7-0.9.jar,
+ WEB-INF/lib/slf4j-api-1.6.1.jar
 Export-Package: metainfo.zk,
  org.adempiere.webui,
  org.adempiere.webui.acct,
@@ -27,22 +40,31 @@ Export-Package: metainfo.zk,
  org.adempiere.webui.session,
  org.adempiere.webui.theme,
  org.adempiere.webui.util,
- org.adempiere.webui.window
+ org.adempiere.webui.window,
+ org.atmosphere.cache,
+ org.atmosphere.client,
+ org.atmosphere.config,
+ org.atmosphere.container,
+ org.atmosphere.container.version,
+ org.atmosphere.cpr,
+ org.atmosphere.di,
+ org.atmosphere.handler,
+ org.atmosphere.util,
+ org.atmosphere.util.uri,
+ org.atmosphere.websocket,
+ org.atmosphere.websocket.protocol,
+ org.jboss.servlet.http,
+ org.apache.catalina,
+ org.apache.catalina.comet,
+ org.slf4j.helpers,
+ org.slf4j.spi
 Require-Bundle: org.adempiere.report.jasper;bundle-version="1.0.0",
  org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.report.jasper.library;bundle-version="1.0.0",
  org.adempiere.ui;bundle-version="1.0.0",
  org.zkoss.zk.library;bundle-version="6.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Eclipse-ExtensibleAPI: true
-Import-Package: javax.servlet,
- javax.servlet.http,
- metainfo.zk,
- org.apache.commons.codec.binary,
- org.apache.ecs,
- org.apache.ecs.xhtml,
- org.osgi.framework;version="1.5.0"
-Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.webui.WebUIActivator
-Bundle-ClassPath: WEB-INF/classes/
+Bundle-ActivationPolicy: lazy
+Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.zkoss.zk.library
+Web-ContextPath: webui
