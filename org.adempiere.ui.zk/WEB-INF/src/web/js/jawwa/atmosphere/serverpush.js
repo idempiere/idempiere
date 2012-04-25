@@ -47,9 +47,9 @@
         data: {
           dtid: this.desktop.id
         },
-        accepts: "text/plain",
-        dataType: "text/plain",
+        dataType: "",
         timeout: me.timeout,
+        transport : 'long-polling',
         error: function(jqxhr, textStatus, errorThrown) {
           me.failures += 1;
           me._schedule();
