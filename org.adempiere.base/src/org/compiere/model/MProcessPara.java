@@ -268,4 +268,16 @@ public class MProcessPara extends X_AD_Process_Para
 		
 	}
 
+	/**************************************************************************
+	 * 	Before Save
+	 *	@param newRecord
+	 *	@return save
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (isCentrallyMaintained() && getAD_Element_ID() == 0)
+			setIsCentrallyMaintained(false);	// IDEMPIERE 109 - param without element can't be centrally maintained
+		return true;
+	}	//	beforeSave
+
 }	//	MProcessPara
