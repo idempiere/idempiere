@@ -37,8 +37,7 @@ public class MProcessPara extends X_AD_Process_Para
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2387741816477468470L;
-
+	private static final long serialVersionUID = -6254678383726841920L;
 
 	/**
 	 * 	Get MProcessPara from Cache
@@ -277,6 +276,18 @@ public class MProcessPara extends X_AD_Process_Para
 	{
 		if (isCentrallyMaintained() && getAD_Element_ID() == 0)
 			setIsCentrallyMaintained(false);	// IDEMPIERE 109 - param without element can't be centrally maintained
+
+		//	Sync Terminology
+		if ((newRecord || is_ValueChanged ("AD_Element_ID")) 
+			&& getAD_Element_ID() != 0 && isCentrallyMaintained())
+		{
+			M_Element element = new M_Element (getCtx(), getAD_Element_ID (), get_TrxName());
+			setColumnName (element.getColumnName());
+			setName (element.getName());
+			setDescription (element.getDescription());
+			setHelp (element.getHelp());
+		}
+
 		return true;
 	}	//	beforeSave
 
