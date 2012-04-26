@@ -265,7 +265,7 @@ public class CreateFromStatement extends CreateFrom
 	protected void configureMiniTable (IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
-		miniTable.setColumnClass(1, Timestamp.class, true);     //  1-TrxDate
+		miniTable.setColumnClass(1, Timestamp.class, false);    //  1-TrxDate / nmicoud - idempiere 240 Let user choose the 'Statement Line Date'
 		miniTable.setColumnClass(2, String.class, true);        //  2-Payment
 		miniTable.setColumnClass(3, String.class, true);        //  3-Currency
 		miniTable.setColumnClass(4, BigDecimal.class, true);    //  4-Amount
