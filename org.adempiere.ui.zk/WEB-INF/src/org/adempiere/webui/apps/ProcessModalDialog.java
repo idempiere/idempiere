@@ -131,6 +131,7 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 	private void initComponents() {
 		this.setBorder("normal");
 		dialogBody = new VerticalBox();
+		dialogBody.setHflex("1");
 		Div div = new Div();
 		message = new Html();
 		div.appendChild(message);

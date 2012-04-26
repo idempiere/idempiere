@@ -107,10 +107,7 @@ public class ProcessParameterPanel extends Panel implements
 		col.setWidth("30%");
 		columns.appendChild(col);
 		col = new Column();
-		col.setWidth("65%");
-		columns.appendChild(col);
-		col = new Column();
-		col.setWidth("5%");
+		col.setWidth("70%");
 		columns.appendChild(col);
 	}
 
