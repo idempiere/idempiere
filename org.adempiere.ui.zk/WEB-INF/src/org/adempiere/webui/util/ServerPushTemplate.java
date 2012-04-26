@@ -39,30 +39,58 @@ public class ServerPushTemplate {
 	}
 
 	/**
-	 * Execute callback in UI thread
+	 * Execute asynchronous task in UI thread. This is implemented
+	 * using Executions.schedule and will return immediately
 	 * @param callback
 	 */
-	public void execute(final IServerPushCallback callback) {
-		boolean inUIThread = Executions.getCurrent() != null;
+	public void executeAsync(final IServerPushCallback callback) {
 		try {
-	    	if (!inUIThread) {
-	    		EventListener<Event> task = new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						callback.updateUI();
-					}
-				};
-	    		Executions.schedule(desktop, task, new Event("onExecute"));
-	    	} else {
-	    		callback.updateUI();
-	    	}
+    		EventListener<Event> task = new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					callback.updateUI();
+				}
+			};
+    		Executions.schedule(desktop, task, new Event("onExecute"));
 		} catch (DesktopUnavailableException de) {
 			throw de;
     	} catch (Exception e) {
     		throw new AdempiereException("Failed to update client in server push worker thread.", e);
+		}
+	}
+
+	/**
+	 * Execute synchronous task in UI thread. This is implemented
+	 * using Executions.activate/deactivate and will only return after the
+	 * invoked task have ended. For better scalability, if possible, you
+	 * should use executeAsync instead. 
+	 * @param callback
+	 */
+	public void execute(IServerPushCallback callback) {
+		boolean inUIThread = Executions.getCurrent() != null;
+		boolean desktopActivated = false;
+
+		try {
+	    	if (!inUIThread) {
+	    		//10 minutes timeout
+	    		if (Executions.activate(desktop, 10 * 60 * 1000)) {
+	    			desktopActivated = true;
+	    		} else {
+	    			throw new DesktopUnavailableException("Timeout activating desktop.");
+	    		}
+	    	}
+			callback.updateUI();
+		} catch (DesktopUnavailableException de) {
+			throw de;
+    	} catch (Exception e) {
+    		throw new AdempiereException("Failed to update client in server push worker thread.", e);
+    	} finally {
+    		if (!inUIThread && desktopActivated) {
+    			Executions.deactivate(desktop);
     		}
     	}
-
+	}
+	
 	/**
 	 *
 	 * @return desktop

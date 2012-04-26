@@ -1,3 +1,22 @@
+/**
+ 
+This software is licensed under the Apache 2 license, quoted below.
+
+Copyright 2012 Joonas Javanainen <joonas@jawsy.fi>
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+
+ */
 package fi.jawsy.jawwa.zk.atmosphere;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -21,13 +40,13 @@ import org.zkoss.zk.ui.util.Clients;
 
 /**
  * ZK server push implementation based on Atmosphere.
- * 
- * Only supports asynchronous updates (Executions.schedule) and will throw exceptions if synchronous updates
- * (Executions.activate/deactivate) is attempted.
+ * Adapted from https://github.com/Gekkio/jawwa/tree/develop/zk-atmosphere version 0.3.1-SNAPSHOT 
  */
 public class AtmosphereServerPush implements ServerPush {
 
-    public static final int DEFAULT_TIMEOUT = 1000 * 60 * 5;
+    private static final String ON_ACTIVATE_DESKTOP = "onActivateDesktop";
+
+	public static final int DEFAULT_TIMEOUT = 1000 * 60 * 5;
 
     private final AtomicReference<Desktop> desktop = new AtomicReference<Desktop>();
 
@@ -61,7 +80,7 @@ public class AtmosphereServerPush implements ServerPush {
 		EventListener<Event> task = new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				if (event.getName().equals("onNewData"))
+				if (event.getName().equals(ON_ACTIVATE_DESKTOP))
 				{
 					synchronized (_mutex) {
 						_carryOver = new ExecutionCarryOver(desktop.get());
@@ -82,7 +101,7 @@ public class AtmosphereServerPush implements ServerPush {
 		};
 		
 		synchronized (info) {
-			Executions.schedule(desktop.get(), task, new Event("onNewData"));
+			Executions.schedule(desktop.get(), task, new Event(ON_ACTIVATE_DESKTOP));
 			if (info.nActive == 0)
 				info.wait(timeout <= 0 ? 10*60*1000: timeout);
 		}
@@ -130,8 +149,7 @@ public class AtmosphereServerPush implements ServerPush {
 
     @Override
     public boolean isActive() {
-//        throw new UnsupportedOperationException("isActive is not supported by AtmosphereServerPush");
-    	return true;
+    	return _active != null && _active.nActive > 0;
     }
 
     @Override

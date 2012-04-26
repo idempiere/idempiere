@@ -205,7 +205,7 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 					}
 				};
 				ServerPushTemplate template = new ServerPushTemplate(layout.getDesktop());
-				template.execute(callback);
+				template.executeAsync(callback);
 			}
 		};
 		
@@ -256,7 +256,7 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
     	noOfRequest = DPActivities.getRequestCount();
     	noOfWorkflow = DPActivities.getWorkflowCount();
 
-    	template.execute(this);
+    	template.executeAsync(this);
 	}
 
 	/**

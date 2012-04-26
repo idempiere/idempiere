@@ -219,7 +219,7 @@ public class DPActivities extends DashboardPanel implements EventListener {
     	noOfWorkflow = getWorkflowCount();
     	if (isShowUnprocessed) noOfUnprocessed = getUnprocessedCount();
 
-    	template.execute(this);
+    	template.executeAsync(this);
 	}
 
     @Override

@@ -241,7 +241,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	@Override
     public void refresh(ServerPushTemplate template)
 	{			
-    	template.execute(this);
+    	template.executeAsync(this);
 	}
 
 	@Override
