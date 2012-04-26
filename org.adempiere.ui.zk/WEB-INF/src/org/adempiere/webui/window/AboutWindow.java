@@ -68,7 +68,7 @@ import org.zkoss.zul.Vbox;
  * @author Low Heng Sin
  *
  */
-public class AboutWindow extends Window implements EventListener {
+public class AboutWindow extends Window implements EventListener<Event> {
 
 	/**
 	 * generated serial version id
@@ -102,23 +102,22 @@ public class AboutWindow extends Window implements EventListener {
 		this.setMaximizable(true);
 		this.setSizable(true);
 
-		this.addEventListener(Events.ON_SIZE, this);
-		this.addEventListener(Events.ON_MAXIMIZE, this);
-
 		Vbox layout = new Vbox();
 		layout.setWidth("100%");
 		layout.setParent(this);
+		layout.setVflex("1");
+		layout.setHflex("1");
 
 		tabbox = new Tabbox();
 		tabbox.setParent(layout);
-		tabbox.setWidth("480px");
-		tabbox.setHeight("380px");
-//		tabbox.setSclass("lite");
+		tabbox.setVflex("1");
+		tabbox.setHflex("1");
 		Tabs tabs = new Tabs();
 		tabs.setParent(tabbox);
 		tabPanels = new Tabpanels();
 		tabPanels.setParent(tabbox);
-		tabPanels.setWidth("480px");
+		tabPanels.setHflex("1");
+		tabPanels.setVflex("1");
 
 		//about
 		Tab tab = new Tab();
@@ -153,6 +152,7 @@ public class AboutWindow extends Window implements EventListener {
 		hbox.setParent(layout);
 		hbox.setPack("end");
 		hbox.setWidth("100%");
+		hbox.setVflex("0");
 		Button btnOk = new Button();
 		btnOk.setImage("/images/Ok24.png");
 		btnOk.addEventListener(Events.ON_CLICK, this);
@@ -161,15 +161,14 @@ public class AboutWindow extends Window implements EventListener {
 		this.setBorder("normal");
 		this.setWidth("500px");
 		this.setHeight("450px");
-		doResize(500, 450);
 	}
 
 	private Tabpanel createTrace() {
 		Tabpanel tabPanel = new Tabpanel();
 		Vbox vbox = new Vbox();
 		vbox.setParent(tabPanel);
-		vbox.setWidth("100%");
-		vbox.setHeight("100%");
+		vbox.setHflex("1");
+		vbox.setVflex("1");
 
 		Hbox hbox = new Hbox();
 		bErrorsOnly = new Checkbox();
@@ -193,6 +192,8 @@ public class AboutWindow extends Window implements EventListener {
 		btnViewLog.setTooltiptext("View session log");
 		btnViewLog.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnViewLog);
+		hbox.setHflex("1");
+		hbox.setVflex("0");
 		vbox.appendChild(hbox);
 
 		hbox = new Hbox();
@@ -244,6 +245,8 @@ public class AboutWindow extends Window implements EventListener {
 			}
 		}
 
+		hbox.setHflex("1");
+		hbox.setVflex("0");
 		vbox.appendChild(hbox);
 
 		Vector<String> columnNames = CLogErrorBuffer.get(true).getColumnNames(Env.getCtx());
@@ -259,9 +262,8 @@ public class AboutWindow extends Window implements EventListener {
 		}
 
 		vbox.appendChild(logTable);
-		logTable.setWidth("480px");
-		logTable.setHeight("300px");
-		logTable.setVflex(false);
+		logTable.setVflex("1");
+		logTable.setHflex("1");
 
 		updateLogTable();
 
@@ -455,35 +457,8 @@ public class AboutWindow extends Window implements EventListener {
 			downloadServerLogFile();
 		else if (event.getTarget() == levelListBox)
 			setTraceLevel();
-		else if (event instanceof SizeEvent)
-			doResize((SizeEvent)event);
-		else if (event instanceof MaximizeEvent)
-		{
-			MaximizeEvent me = (MaximizeEvent) event;
-			if (me.isMaximized())
-				doResize(SessionManager.getAppDesktop().getClientInfo().desktopWidth, SessionManager.getAppDesktop().getClientInfo().desktopHeight);
-			else
-			{
-				int width = parseHtmlSizeString(me.getWidth());
-				int height = parseHtmlSizeString(me.getHeight());
-				doResize(width, height);
-			}
-		}
 		else if (Events.ON_CLICK.equals(event.getName()))
 			this.detach();
-	}
-
-	private int parseHtmlSizeString(String sizeStr)
-	{
-		StringBuffer buffer = new StringBuffer();
-		for(char ch : sizeStr.toCharArray())
-		{
-			if (Character.isDigit(ch))
-				buffer.append(ch);
-			else
-				break;
-		}
-		return Integer.parseInt(buffer.toString());
 	}
 
 	private void setTraceLevel() {
@@ -527,23 +502,6 @@ public class AboutWindow extends Window implements EventListener {
 				}
 			}
 		}
-	}
-
-	private void doResize(SizeEvent event) {
-		int width = Integer.parseInt(event.getWidth().substring(0, event.getWidth().length() - 2));
-		int height = Integer.parseInt(event.getHeight().substring(0, event.getHeight().length() - 2));
-
-		doResize(width, height);
-	}
-
-	private void doResize(int width, int height) {
-		tabbox.setWidth((width - 20) + "px");
-		tabbox.setHeight((height - 70) + "px");
-
-		tabPanels.setWidth((width - 20) + "px");
-
-		logTable.setHeight((height - 160) + "px");
-		logTable.setWidth((width - 30) + "px");
 	}
 
 	private void downloadLog() {
