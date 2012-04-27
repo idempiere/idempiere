@@ -16,10 +16,10 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JExcelApiExporter;
+import net.sf.jasperreports.engine.export.JExcelApiExporterParameter;
 import net.sf.jasperreports.view.JRViewer;
 
 import org.compiere.apps.EMailDialog;
@@ -29,9 +29,11 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 public class JasperReportViewer extends JRViewer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8622715538000831737L;
 
-	private static final long serialVersionUID = -7988455595896562947L;
-	
 	/**	Logger */
 	private static CLogger log = CLogger.getCLogger(JasperReportViewer.class);
 	
@@ -103,9 +105,20 @@ class ExportListener implements ActionListener {
                 } else if (viewer.getFormat().equals("HTML")) {
                     JasperExportManager.exportReportToHtmlFile( viewer.getJasperPrint(), file.getAbsolutePath());
                 } else if (viewer.getFormat().equals("XLS")) {
-                    JRXlsExporter exporter = new  net.sf.jasperreports.engine.export.JRXlsExporter();
-                    exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
-                    exporter.setParameter(JRExporterParameter.JASPER_PRINT, viewer.getJasperPrint());
+                    //JRXlsExporter exporter = new  net.sf.jasperreports.engine.export.JRXlsExporter();
+                    //exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
+                    //exporter.setParameter(JRExporterParameter.JASPER_PRINT, viewer.getJasperPrint());
+                	JExcelApiExporter exporter = new JExcelApiExporter();
+                	exporter.setParameter(JExcelApiExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
+                	exporter.setParameter(JExcelApiExporterParameter.JASPER_PRINT, viewer.getJasperPrint());
+                	exporter.setParameter(JExcelApiExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+                	exporter.setParameter(JExcelApiExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+                	exporter.setParameter(JExcelApiExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
+                	exporter.setParameter(JExcelApiExporterParameter.IS_DETECT_CELL_TYPE , Boolean.TRUE);
+                	exporter.setParameter(JExcelApiExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.TRUE);
+                	exporter.setParameter(JExcelApiExporterParameter.IS_IGNORE_GRAPHICS, Boolean.TRUE);
+                	exporter.setParameter(JExcelApiExporterParameter.IS_COLLAPSE_ROW_SPAN, Boolean.TRUE);
+                	exporter.setParameter(JExcelApiExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
                     exporter.exportReport();
                 }
             } catch (JRException e) {
