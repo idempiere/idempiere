@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JExcelApiExporter;
+import net.sf.jasperreports.engine.export.JExcelApiExporterParameter;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Listbox;
@@ -44,7 +44,6 @@ public class ZkJRViewer extends Window implements EventListener, ITabOnCloseHand
 	 * 
 	 */
 	private static final long serialVersionUID = 2776405512345445561L;
-
 	private JasperPrint jasperPrint;
 	private Listbox previewType = new Listbox();
 	private Iframe iframe;
@@ -183,10 +182,21 @@ public class ZkJRViewer extends Window implements EventListener, ITabOnCloseHand
 	        FileOutputStream fos = new FileOutputStream(file);
 
 			// coding For Excel:
-			JRXlsExporter exporterXLS = new JRXlsExporter();
-			exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
-			exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, fos);
-			exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+			// JRXlsExporter exporterXLS = new JRXlsExporter();
+			// exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, );
+			// exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, fos);
+			// exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+        	JExcelApiExporter exporterXLS = new JExcelApiExporter();
+        	exporterXLS.setParameter(JExcelApiExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
+        	exporterXLS.setParameter(JExcelApiExporterParameter.JASPER_PRINT, jasperPrint);
+        	exporterXLS.setParameter(JExcelApiExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+        	exporterXLS.setParameter(JExcelApiExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+        	exporterXLS.setParameter(JExcelApiExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
+        	exporterXLS.setParameter(JExcelApiExporterParameter.IS_DETECT_CELL_TYPE , Boolean.TRUE);
+        	exporterXLS.setParameter(JExcelApiExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.TRUE);
+        	exporterXLS.setParameter(JExcelApiExporterParameter.IS_IGNORE_GRAPHICS, Boolean.TRUE);
+        	exporterXLS.setParameter(JExcelApiExporterParameter.IS_COLLAPSE_ROW_SPAN, Boolean.TRUE);
+        	exporterXLS.setParameter(JExcelApiExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
 			exporterXLS.exportReport();			
 			media = new AMedia(getTitle(), "xls", "application/vnd.ms-excel", file, true);						
 			
