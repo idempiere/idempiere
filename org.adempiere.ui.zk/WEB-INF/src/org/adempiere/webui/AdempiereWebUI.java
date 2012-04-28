@@ -24,6 +24,7 @@ import java.util.Properties;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.util.ServerContext;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.DrillCommand;
 import org.adempiere.webui.component.TokenCommand;
@@ -127,6 +128,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
             loginCompleted();
         }
 
+        Executions.getCurrent().getDesktop().enableServerPush(true);
+        
         Executions.getCurrent().getDesktop().addListener(new DrillCommand());
         Executions.getCurrent().getDesktop().addListener(new TokenCommand());
         Executions.getCurrent().getDesktop().addListener(new ZoomCommand());
@@ -282,6 +285,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			currSess.setAttribute(ZK_DESKTOP_SESSION_KEY, this.getPage().getDesktop());
 			ctx.put(ZK_DESKTOP_SESSION_KEY, this.getPage().getDesktop());
 		}
+		
+		//update session context
+		currSess.setAttribute(SessionContextListener.SESSION_CTX, ServerContext.getCurrentInstance());
 		
 		if ("Y".equalsIgnoreCase(Env.getContext(ctx, BrowserToken.REMEMBER_ME)) && MSystem.isZKRememberUserAllowed())
 		{

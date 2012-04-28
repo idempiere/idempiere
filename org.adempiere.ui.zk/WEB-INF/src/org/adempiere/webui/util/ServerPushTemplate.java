@@ -14,6 +14,7 @@
 package org.adempiere.webui.util;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.session.SessionContextListener;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
 import org.zkoss.zk.ui.Executions;
@@ -48,6 +49,9 @@ public class ServerPushTemplate {
     		EventListener<Event> task = new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
+					if (!SessionContextListener.isContextValid()) {
+						SessionContextListener.setupExecutionContextFromSession(desktop.getExecution());
+					}
 					callback.updateUI();
 				}
 			};

@@ -18,6 +18,7 @@
     timeout: 300000,
     delay: 1000,
     failures: 0,
+    count: 0,
 
     $init: function(desktop, timeout) {
       this.desktop = desktop;
@@ -34,33 +35,43 @@
     _send: function() {
       if (!this.active)
         return;
-
+      
       var me = this;
-      var jqxhr = $.ajax({
-        url: zk.ajaxURI("/comet", {
-          au: true
-        }),
-        type: "GET",
-        cache: false,
-        async: true,
-        global: false,
-        data: {
-          dtid: this.desktop.id
-        },
-        dataType: "",
-        timeout: me.timeout,
-        transport : 'long-polling',
-        error: function(jqxhr, textStatus, errorThrown) {
-          me.failures += 1;
-          me._schedule();
-        },
-        success: function(data) {
-          zAu.cmd0.echo(me.desktop);
-          me.failures = 0;
-          me._schedule();
-        }
-      });
-      this._req = jqxhr;
+      
+      var socket = $.atmosphere;
+      var request = { 
+    		url: zk.ajaxURI("/comet", {
+    	          au: true
+    	        }),    	        
+		  	logLevel : 'debug',
+		  	transport :  'streaming',
+		  	fallbackTransport: 'long-polling',
+			method: "GET",
+			cache: false,
+			async: true,
+		    timeout: me.timeout,
+		    onError: function(response) {
+		    	me.failures += 1;
+		    	me.count--;
+		    	if (response.transport == 'long-polling' && me.count == 0) {
+		    		me._schedule();
+		    	} else if (me.failures >= 10) {
+		    		me.stop();
+		    	}
+            },
+            onMessage: function(response) {
+            	zAu.cmd0.echo(me.desktop);
+            	me.failures = 0;
+            	me.count--;
+                if (response.transport == 'long-polling' && me.count == 0) {
+                	me._schedule();
+                }
+            }
+      };
+      
+      request.url = request.url+'?dtid='+me.desktop.id;
+      this.count++;
+      socket.subscribe(request);      
     },
     start: function() {
       this.desktop._serverpush = this;

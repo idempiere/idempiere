@@ -118,11 +118,12 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
         if (error != null && serverPushEither.getRightValue() == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write(error);
+            response.getWriter().flush();
             return;
         }
 
         AtmosphereServerPush serverPush = serverPushEither.getRightValue();
-        serverPush.updateResource(resource);
+        serverPush.onRequest(resource);        
     }
 
     @Override

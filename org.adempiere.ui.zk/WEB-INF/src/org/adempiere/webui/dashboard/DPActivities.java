@@ -41,7 +41,7 @@ import org.zkoss.zul.Vbox;
  * Contributors:
  * CarlosRuiz - globalqss - Add unprocessed button to iDempiere
  */
-public class DPActivities extends DashboardPanel implements EventListener {
+public class DPActivities extends DashboardPanel implements EventListener<Event> {
 
 	/**
 	 * 
