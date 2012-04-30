@@ -40,6 +40,6 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 		    	SessionManager.getAppDesktop().showWindow(viewer);				
 			}
 		};
-		AEnv.executeDesktopTask(runnable);
+		AEnv.executeAsyncDesktopTask(runnable);
 	}
 }

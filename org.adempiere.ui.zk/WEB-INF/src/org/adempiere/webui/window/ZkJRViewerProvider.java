@@ -23,7 +23,7 @@ public class ZkJRViewerProvider implements JRViewerProvider {
 				SessionManager.getAppDesktop().showWindow(viewer);
 			}
 		};
-		AEnv.executeDesktopTask(runnable);
+		AEnv.executeAsyncDesktopTask(runnable);
 	}
 
 }

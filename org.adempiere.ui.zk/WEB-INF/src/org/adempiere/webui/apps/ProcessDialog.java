@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.adempiere.util.IProcessMonitor;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
-import org.adempiere.webui.apps.ProcessDialog.ProcessDialogRunnable;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
@@ -33,7 +32,6 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
-import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -80,7 +78,7 @@ import com.lowagie.text.pdf.PdfWriter;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessDialog extends Window implements EventListener, IProcessMonitor
+public class ProcessDialog extends Window implements EventListener<Event>, IProcessMonitor
 {
 	/**
 	 * generate serial version ID
@@ -148,7 +146,7 @@ public class ProcessDialog extends Window implements EventListener, IProcessMoni
 		center.setStyle("border: none");
 		
 		Div div = new Div();
-		div.setAlign("center");
+		div.setStyle("text-align: center");
 		Hbox hbox = new Hbox();
 		String label = Msg.getMsg(Env.getCtx(), "Start");
 		bOK = new Button(label.replaceAll("&", ""));
@@ -200,9 +198,10 @@ public class ProcessDialog extends Window implements EventListener, IProcessMoni
 	private String initialMessage;
 	private BusyDialog progressWindow;
 	private Thread thread;
-	private String statusUpdate;
 	private ProcessDialogRunnable processDialogRunnable;
 
+	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
+	private static final String ON_COMPLETE = "onComplete";
 	
 	/**
 	 * 	Set Visible 
@@ -335,32 +334,20 @@ public class ProcessDialog extends Window implements EventListener, IProcessMoni
 		
 		processDialogRunnable = new ProcessDialogRunnable(p);
 		thread = new Thread(processDialogRunnable);
-		thread.start();
-		
-		Clients.response(new AuEcho(this, "checkProgress", null));
+		thread.start();		
 	}
 	
-	public void checkProgress() {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			Thread.interrupted();
-		}
-		if (thread.isAlive()) {
-			synchronized(this) {
-				if (statusUpdate != null) {
-					if (progressWindow != null)
-						progressWindow.statusUpdate(statusUpdate);
-					statusUpdate = null;
-				}
-			}
-			Clients.response(new AuEcho(this, "checkProgress", null));
-		} else {
-			Env.getCtx().putAll(processDialogRunnable.getProperties());
-			thread = null;			
-			processDialogRunnable = null;
-			unlockUI(m_pi);
-		}
+	private void onComplete() {
+		Env.getCtx().putAll(processDialogRunnable.getProperties());
+		thread = null;			
+		processDialogRunnable = null;
+		unlockUI(m_pi);
+	}
+	
+	private void onStatusUpdate(Event event) {
+		String message = (String) event.getData();
+		if (progressWindow != null)
+			progressWindow.statusUpdate(message);
 	}
 	
 	public void onEvent(Event event) {
@@ -378,6 +365,10 @@ public class ProcessDialog extends Window implements EventListener, IProcessMoni
 			} else if ("Cancel".equalsIgnoreCase(element.getId())) {
 				this.dispose();
 			}
+		} else if (event.getName().equals(ON_STATUS_UPDATE)) {
+			onStatusUpdate(event);
+		} else if (event.getName().equals(ON_COMPLETE)) {
+			onComplete();			
 		}
 		
 	}
@@ -658,6 +649,7 @@ public class ProcessDialog extends Window implements EventListener, IProcessMoni
 				WProcessCtl.process(ProcessDialog.this, m_WindowNo, parameterPanel, m_pi, null);
 			} finally {
 				ServerContext.dispose();
+				Executions.schedule(getDesktop(), ProcessDialog.this, new Event(ON_COMPLETE, ProcessDialog.this, null));
 			}
 		}
 		
@@ -668,6 +660,6 @@ public class ProcessDialog extends Window implements EventListener, IProcessMoni
 
 	@Override
 	public void statusUpdate(String message) {
-		statusUpdate = message;
+		Executions.schedule(getDesktop(), this, new Event(ON_STATUS_UPDATE, this, message));
 	}
 }	//	ProcessDialog
