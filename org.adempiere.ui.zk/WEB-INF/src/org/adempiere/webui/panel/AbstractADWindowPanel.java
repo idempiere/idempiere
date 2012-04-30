@@ -118,7 +118,7 @@ import org.zkoss.zul.Menupopup;
  *  		https://sourceforge.net/tracker/?func=detail&aid=2985892&group_id=176962&atid=955896
  */
 public abstract class AbstractADWindowPanel extends AbstractUIPart implements ToolbarListener,
-        EventListener, DataStatusListener, ActionListener, IProcessMonitor
+        EventListener<Event>, DataStatusListener, ActionListener, IProcessMonitor
 {
     private static final CLogger logger;
 
@@ -777,7 +777,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 			m_lock = new Menuitem(Msg.translate(Env.getCtx(), "Lock"));
 			m_popup.appendChild(m_lock);
-			m_lock.addEventListener(Events.ON_CLICK, new EventListener()
+			m_lock.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 			{
 				public void onEvent(Event event) throws Exception
 				{
@@ -790,7 +790,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 			m_access = new Menuitem(Msg.translate(Env.getCtx(), "RecordAccessDialog"));
 			m_popup.appendChild(m_access);
-			m_access.addEventListener(Events.ON_CLICK, new EventListener()
+			m_access.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 			{
 				public void onEvent(Event event) throws Exception
 				{
@@ -1760,7 +1760,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		messagePanel.appendChild(listbox);
 
 		Div div = new Div();
-		div.setAlign("center");
+		div.setStyle("text-align: center");
 		messagePanel.appendChild(div);
 
 		Hbox hbox = new Hbox();
@@ -1769,9 +1769,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		Button btnOk = new Button();
 		btnOk.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "OK")));
 		btnOk.setImage("/images/Ok16.png");
-		btnOk.addEventListener(Events.ON_CLICK, new EventListener()
+		btnOk.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 		{
-			@SuppressWarnings("unchecked")
 			public void onEvent(Event event) throws Exception
 			{
 				if (FDialog.ask(curWindowNo, messagePanel, "DeleteSelection"))
@@ -1812,7 +1811,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		Button btnCancel = new Button();
 		btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Cancel")));
 		btnCancel.setImage("/images/Cancel16.png");
-		btnCancel.addEventListener(Events.ON_CLICK, new EventListener()
+		btnCancel.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception
 			{
@@ -2247,9 +2246,19 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 				dialog.setWidth("500px");
 				dialog.setVisible(true);
 				dialog.setPosition("center");
+				dialog.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+				dialog.addEventListener(ProcessModalDialog.ON_MODAL_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						onRefresh(false);
+					}
+				});
 				AEnv.showWindow(dialog);
 			}
-			onRefresh(false);
+			else
+			{
+				onRefresh(false);
+			}			
 		}
 	} // actionButton
 

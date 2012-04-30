@@ -58,8 +58,16 @@ import org.zkoss.zul.Html;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessModalDialog extends Window implements EventListener, IProcessMonitor
+public class ProcessModalDialog extends Window implements EventListener<Event>, IProcessMonitor
 {
+	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
+	private static final String ON_COMPLETE = "onComplete";
+	
+	/**
+	 * on modal close event, use this for highlight mode modal dialog to perform action after the modal dialog closed.
+	 */
+	public final static String ON_MODAL_CLOSE = "onModalClose";
+	
 	/**
 	 * generated serial version ID
 	 */
@@ -140,7 +148,7 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 		centerPanel = new Panel();
 		dialogBody.appendChild(centerPanel);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right");
 		Hbox hbox = new Hbox();
 		Button btn = new Button("Ok");
 		LayoutUtils.addSclass("action-text-button", btn);
@@ -167,6 +175,7 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 	private StringBuffer	m_messageText = new StringBuffer();
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
 	private boolean m_valid = true;
+	private boolean m_cancel = false;
 
 	private Panel centerPanel = null;
 	private Html message = null;
@@ -181,7 +190,6 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 	private boolean isLocked = false;
 	private org.adempiere.webui.apps.ProcessModalDialog.ProcessDialogRunnable processDialogRunnable;
 	private Thread thread;
-	private String statusUpdate;
 
 	/**
 	 * 	Set Visible
@@ -212,6 +220,14 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 		return m_valid;
 	}
 
+	/**
+	 * @return true if user have press the cancel button to close the dialog
+	 */
+	public boolean isCancel()
+	{
+		return m_cancel;
+	}
+	
 	/**
 	 *	Dynamic Init
 	 *  @return true, if there is something to process (start from menu)
@@ -351,37 +367,8 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 		processDialogRunnable = new ProcessDialogRunnable(p);
 		thread = new Thread(processDialogRunnable);
 		thread.start();
-		
-		Clients.response(new AuEcho(this, "checkProgress", null));
 	}
 	
-	public void checkProgress() {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			Thread.interrupted();
-		}
-		if (thread.isAlive()) {
-			synchronized(this) {
-				if (statusUpdate != null) {
-					if (progressWindow != null)
-						progressWindow.statusUpdate(statusUpdate);
-					statusUpdate = null;
-				}
-			}
-			Clients.response(new AuEcho(this, "checkProgress", null));
-		} else {
-			Env.getCtx().putAll(processDialogRunnable.getProperties());
-			thread = null;			
-			processDialogRunnable = null;
-			dispose();
-			if (m_processMonitor != null) {
-				m_processMonitor.unlockUI(m_pi);
-			}
-			unlockUI(m_pi);
-		}
-	}
-
 	private void hideBusyDialog() {
 		if (progressWindow != null) {
 			progressWindow.dispose();
@@ -392,16 +379,48 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 	/**
 	 * handle events
 	 */
-	public void onEvent(Event event) {
+	public void onEvent(Event event) {		
 		Component component = event.getTarget();
 		if (component instanceof Button) {
 			Button element = (Button)component;
 			if ("Ok".equalsIgnoreCase(element.getId())) {
-				this.startProcess();
+				onOK();
 			} else if ("Cancel".equalsIgnoreCase(element.getId())) {
-				this.dispose();
+				onCancel();
 			}
+		} else if (event.getName().equals(ON_STATUS_UPDATE)) {
+			onStatusUpdate(event);
+		} else if (event.getName().equals(ON_COMPLETE)) {
+			onComplete();
 		}
+	}
+
+	private void onOK() {
+		this.startProcess();
+	}
+
+	private void onCancel() {
+		m_cancel = true;
+		this.dispose();
+		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
+	}
+
+	private void onStatusUpdate(Event event) {
+		String message = (String) event.getData();
+		if (progressWindow != null)
+			progressWindow.statusUpdate(message);
+	}
+
+	private void onComplete() {
+		Env.getCtx().putAll(processDialogRunnable.getProperties());
+		thread = null;			
+		processDialogRunnable = null;
+		dispose();
+		if (m_processMonitor != null) {
+			m_processMonitor.unlockUI(m_pi);
+		}
+		unlockUI(m_pi);
+		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 	}
 
 	@Override
@@ -429,10 +448,18 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 
 	@Override
 	public void statusUpdate(String message) {
-		statusUpdate = message;
+		Executions.schedule(getDesktop(), this, new Event(ON_STATUS_UPDATE, this, message));
 	}
 
-	class ProcessDialogRunnable implements Runnable {
+	/**
+	 * 
+	 * @return ProcessInfo
+	 */
+	public ProcessInfo getProcessInfo() {
+		return m_pi;
+	}
+	
+	class ProcessDialogRunnable implements Runnable {		
 		private Properties properties;
 		
 		ProcessDialogRunnable(Properties properties) {
@@ -446,6 +473,7 @@ public class ProcessModalDialog extends Window implements EventListener, IProces
 				WProcessCtl.process(ProcessModalDialog.this, m_WindowNo, parameterPanel, m_pi, null);
 			} finally {
 				ServerContext.dispose();
+				Executions.schedule(getDesktop(), ProcessModalDialog.this, new Event(ON_COMPLETE, ProcessModalDialog.this, null));
 			}
 		}
 		
