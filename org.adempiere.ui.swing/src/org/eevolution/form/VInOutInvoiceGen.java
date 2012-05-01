@@ -58,6 +58,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPrivateAccess;
 import org.compiere.model.MRMA;
+import org.compiere.model.SystemIDs;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
@@ -83,7 +84,7 @@ import org.compiere.util.Trx;
  */
 public class VInOutInvoiceGen extends CPanel
 	implements FormPanel, ActionListener, VetoableChangeListener, 
-		ChangeListener, TableModelListener, IProcessMonitor
+		ChangeListener, TableModelListener, IProcessMonitor, SystemIDs
 {
 	/**
 	 * 
@@ -534,11 +535,11 @@ public class VInOutInvoiceGen extends CPanel
         
         if (docTypeKNPair.getKey() == MRMA.Table_ID)
         {
-            AD_Process_ID = 52001; // M_InOut_GenerateRMA - org.adempiere.process.InOutGenerateRMA
+            AD_Process_ID = PROCESS_M_INOUT_GENERATERMA_MANUAL; // M_InOut_GenerateRMA - org.adempiere.process.InOutGenerateRMA
         }
         else
         {
-            AD_Process_ID = 199;      // M_InOut_Generate - org.compiere.process.InOutGenerate
+            AD_Process_ID = PROCESS_M_INOUT_GENERATE_MANUAL;      // M_InOut_Generate - org.compiere.process.InOutGenerate
         }
 		
 		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
@@ -702,11 +703,11 @@ public class VInOutInvoiceGen extends CPanel
         
         if (docTypeKNPair.getKey() == MRMA.Table_ID)
         {
-            AD_Process_ID = 52002; // C_Invoice_GenerateRMA - org.adempiere.process.InvoiceGenerateRMA
+            AD_Process_ID = PROCESS_C_INVOICE_GENERATERMA_MANUAL; // C_Invoice_GenerateRMA - org.adempiere.process.InvoiceGenerateRMA
         }
         else
         {
-            AD_Process_ID = 134;  // HARDCODED    C_InvoiceCreate
+            AD_Process_ID = PROCESS_C_INVOICE_GENERATE_MANUAL;  // HARDCODED    C_InvoiceCreate
         }
 		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
 		if (!instance.save())
@@ -864,12 +865,12 @@ public class VInOutInvoiceGen extends CPanel
 	public void unlockUI (ProcessInfo pi)
 	{
 		//
-		if(pi.getAD_Process_ID() == 199)
+		if(pi.getAD_Process_ID() == PROCESS_M_INOUT_GENERATE_MANUAL)
 		{
 			generateShipments_complete(pi);
 			generateInvoices ();
 		}
-		if(pi.getAD_Process_ID() == 134)
+		if(pi.getAD_Process_ID() == PROCESS_C_INVOICE_GENERATE_MANUAL)
 		{
 			generateInvoice_complete(pi);
 			this.setEnabled(true);

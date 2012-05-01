@@ -474,7 +474,10 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 				;
 			else
 			{
-				journal.processIt(DocAction.ACTION_Complete);
+				// added AdempiereException by zuhri
+				if (!journal.processIt(DocAction.ACTION_Complete))
+					throw new AdempiereException("Failed when processing document - " + journal.getProcessMsg());
+				// end added
 				journal.saveEx();
 				if (!DocAction.STATUS_Completed.equals(journal.getDocStatus()))
 				{

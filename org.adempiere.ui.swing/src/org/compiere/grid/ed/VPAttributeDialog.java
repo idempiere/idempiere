@@ -54,6 +54,7 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CCheckBox;
@@ -79,7 +80,7 @@ import org.compiere.util.Msg;
  *  @version $Id: VPAttributeDialog.java,v 1.4 2006/07/30 00:51:27 jjanke Exp $
  */
 public class VPAttributeDialog extends CDialog
-	implements ActionListener
+	implements ActionListener, SystemIDs
 {
 	/**
 	 * 
@@ -600,7 +601,7 @@ public class VPAttributeDialog extends CDialog
 		
 		// teo_sarca [ 1564520 ] Inventory Move: can't select existing attributes
 		int M_Locator_ID = 0;
-		if (m_AD_Column_ID == 8551) { // TODO: hardcoded: M_MovementLine[324].M_AttributeSetInstance_ID[8551]
+		if (m_AD_Column_ID == COLUMN_M_MOVEMENTLINE_M_ATTRIBUTESETINSTANCE_ID) { // TODO: hardcoded: M_MovementLine[324].M_AttributeSetInstance_ID[8551]
 			M_Locator_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNoParent, X_M_MovementLine.COLUMNNAME_M_Locator_ID, true); // only window
 		}
 		
@@ -683,7 +684,7 @@ public class VPAttributeDialog extends CDialog
 		//
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		//
-		int AD_Window_ID = 257;		//	Lot
+		int AD_Window_ID = WINDOW_LOT;		//	Lot
 		AWindow frame = new AWindow();
 		if (frame.initWindow(AD_Window_ID, zoomQuery))
 		{

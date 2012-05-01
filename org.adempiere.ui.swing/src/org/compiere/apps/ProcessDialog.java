@@ -37,6 +37,7 @@ import javax.swing.JSeparator;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.IProcessMonitor;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -67,7 +68,7 @@ import org.compiere.util.Msg;
  *  				<li>BF [ 1963128 ] Running a process w/o trl should display an error
  */
 public class ProcessDialog extends CFrame
-	implements ActionListener, IProcessMonitor
+	implements ActionListener, IProcessMonitor, SystemIDs
 {
 	/**
 	 * 
@@ -441,9 +442,9 @@ public class ProcessDialog extends CFrame
 		{
 			log.config("");
 			//	Print invoices
-			if (m_AD_Process_ID == 119)
+			if (m_AD_Process_ID == PROCESS_C_INVOICE_GENERATE)
 				printInvoices();
-			else if (m_AD_Process_ID == 118)
+			else if (m_AD_Process_ID == PROCESS_M_INOUT_GENERATE)
 				printShipments();
 		}
 

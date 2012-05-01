@@ -24,12 +24,13 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MQuery;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-public class TrxMaterial {
+public class TrxMaterial implements SystemIDs {
 
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;
@@ -50,7 +51,7 @@ public class TrxMaterial {
 	{
 		m_staticQuery = new MQuery();
 		m_staticQuery.addRestriction("AD_Client_ID", MQuery.EQUAL, Env.getAD_Client_ID(Env.getCtx()));
-		int AD_Window_ID = 223;		//	Hardcoded
+		int AD_Window_ID = WINDOW_MATERIALTRANSACTIONS_INDIRECTUSER;		//	Hardcoded
 		GridWindowVO wVO = Env.getMWindowVO (m_WindowNo, AD_Window_ID, 0);
 		if (wVO == null)
 			return;
@@ -126,9 +127,9 @@ public class TrxMaterial {
 		{
 			log.fine("M_InOutLine_ID=" + lineID);
 			if (Env.getContext(Env.getCtx(), m_WindowNo, "MovementType").startsWith("C"))
-				AD_Window_ID = 169;     //  Customer
+				AD_Window_ID = WINDOW_SHIPMENT_CUSTOMER;     //  Customer
 			else
-				AD_Window_ID = 184;     //  Vendor
+				AD_Window_ID = WINDOW_MATERIALRECEIPT;     //  Vendor
 			ColumnName = "M_InOut_ID";
 			SQL = "SELECT M_InOut_ID FROM M_InOutLine WHERE M_InOutLine_ID=?";
 		}
@@ -138,7 +139,7 @@ public class TrxMaterial {
 			if (lineID != 0)
 			{
 				log.fine("M_InventoryLine_ID=" + lineID);
-				AD_Window_ID = 168;
+				AD_Window_ID = WINDOW_PHYSICALINVENTORY;
 				ColumnName = "M_Inventory_ID";
 				SQL = "SELECT M_Inventory_ID FROM M_InventoryLine WHERE M_InventoryLine_ID=?";
 			}
@@ -148,7 +149,7 @@ public class TrxMaterial {
 				if (lineID != 0)
 				{
 					log.fine("M_MovementLine_ID=" + lineID);
-					AD_Window_ID = 170;
+					AD_Window_ID = WINDOW_INVENTORYMOVE;
 					ColumnName = "M_Movement_ID";
 					SQL = "SELECT M_Movement_ID FROM M_MovementLine WHERE M_MovementLine_ID=?";
 				}
@@ -158,7 +159,7 @@ public class TrxMaterial {
 					if (lineID != 0)
 					{
 						log.fine("M_ProductionLine_ID=" + lineID);
-						AD_Window_ID = 191;
+						AD_Window_ID = WINDOW_PRODUCTION;
 						ColumnName = "M_Production_ID";
 						SQL = "SELECT M_Production_ID FROM M_ProductionLine WHERE M_ProductionLine_ID=?";
 					}
@@ -191,4 +192,6 @@ public class TrxMaterial {
 		if (parentID == 0)
 			log.log(Level.SEVERE, "No ParentValue - " + SQL + " - " + lineID);
 	}   //  zoom
+
+
 }

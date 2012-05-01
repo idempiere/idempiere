@@ -31,6 +31,7 @@ import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MRole;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_Order;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -44,7 +45,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 
 
-public class PaySelect
+public class PaySelect implements SystemIDs
 {
 	/** @todo withholding */
 
@@ -247,7 +248,7 @@ public class PaySelect
 		
 		ArrayList<ValueNamePair> data = new ArrayList<ValueNamePair>();
 		
-		int AD_Reference_ID = 195;  //  MLookupInfo.getAD_Reference_ID("All_Payment Rule");
+		int AD_Reference_ID = REFERENCE_PAYMENTRULE;  //  MLookupInfo.getAD_Reference_ID("All_Payment Rule");
 		Language language = Env.getLanguage(Env.getCtx());
 		MLookupInfo info = MLookupFactory.getLookup_List(language, AD_Reference_ID);
 		String sql = info.Query.substring(0, info.Query.indexOf(" ORDER BY"))

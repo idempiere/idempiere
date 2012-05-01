@@ -27,6 +27,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MProduct;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
@@ -37,7 +38,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Low Heng Sin
  *
  */
-public class WPAttributeEditor extends WEditor implements ContextMenuListener
+public class WPAttributeEditor extends WEditor implements ContextMenuListener, SystemIDs
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 
@@ -166,7 +167,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 			+ ", AD_Column_ID=" + gridField.getAD_Column_ID());
 
 		//	M_Product.M_AttributeSetInstance_ID = 8418
-		boolean productWindow = (gridField.getAD_Column_ID() == 8418);		//	HARDCODED
+		boolean productWindow = (gridField.getAD_Column_ID() == COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID);		//	HARDCODED
 
 		//	Exclude ability to enter ASI
 		boolean exclude = true;

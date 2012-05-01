@@ -212,7 +212,11 @@ public class ExpenseAPInvoice extends SvrProcess
 		if (invoice == null)
 			return;
 		invoice.setDocAction(DocAction.ACTION_Prepare);
-		invoice.processIt(DocAction.ACTION_Prepare);
+		if (!invoice.processIt(DocAction.ACTION_Prepare)) {
+			log.warning("Invoice Process Failed: " + invoice + " - " + invoice.getProcessMsg());
+			throw new IllegalStateException("Invoice Process Failed: " + invoice + " - " + invoice.getProcessMsg());
+			
+		}
 		if (!invoice.save())
 			new IllegalStateException("Cannot save Invoice");
 		//

@@ -50,6 +50,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MWarehouse;
+import org.compiere.model.SystemIDs;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CMenuItem;
 import org.compiere.util.CLogger;
@@ -64,7 +65,7 @@ import org.compiere.util.Msg;
  *  @version 	$Id: VLocator.java,v 1.5 2006/07/30 00:51:27 jjanke Exp $
  */
 public class VLocator extends JComponent
-	implements VEditor, ActionListener
+	implements VEditor, ActionListener, SystemIDs
 {
 	/**
 	 * 
@@ -521,7 +522,7 @@ public class VLocator extends JComponent
 	{
 		int AD_Window_ID = MTable.get(Env.getCtx(), MLocator.Table_ID).getAD_Window_ID();
 		if (AD_Window_ID <= 0)
-			AD_Window_ID = 139;	//	hardcoded window Warehouse & Locators
+			AD_Window_ID = WINDOW_WAREHOUSE_LOCATOR;	//	hardcoded window Warehouse & Locators
 		log.info("");
 		//
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

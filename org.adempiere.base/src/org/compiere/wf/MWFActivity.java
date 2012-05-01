@@ -51,6 +51,7 @@ import org.compiere.model.MUser;
 import org.compiere.model.MUserRoles;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_WF_Activity;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -72,7 +73,7 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: MWFActivity.java,v 1.4 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MWFActivity extends X_AD_WF_Activity implements Runnable
+public class MWFActivity extends X_AD_WF_Activity implements Runnable, SystemIDs
 {
 	/**
 	 *
@@ -1048,7 +1049,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + m_node.getAD_Process_ID());
 			File report = re.getPDF();
 			//	Notice
-			int AD_Message_ID = 753;		//	HARDCODED WorkflowResult
+			int AD_Message_ID = MESSAGE_WORKFLOWRESULT;		//	HARDCODED WorkflowResult
 			MNote note = new MNote(getCtx(), AD_Message_ID, getAD_User_ID(), trx.getTrxName());
 			note.setTextMsg(m_node.getName(true));
 			note.setDescription(m_node.getDescription(true));

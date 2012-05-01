@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailMsg;
 import org.compiere.model.MPayment;
@@ -276,7 +277,10 @@ public class PaymentServlet  extends HttpServlet
 				else
 					log.warning("No Order");
 				//	
-				payment.processIt(DocAction.ACTION_Complete);
+				// Added adempiereException by zuhri
+				if(!payment.processIt(DocAction.ACTION_Complete))
+					throw new AdempiereException("Failed when processing document - " + payment.getProcessMsg());
+				// end added by zuhri
 				payment.saveEx();
 				sendThanksEMail (request, ctx, payment, wu, wo);
 			}

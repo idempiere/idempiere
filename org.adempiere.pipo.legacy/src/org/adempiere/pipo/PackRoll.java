@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -36,7 +37,7 @@ import org.compiere.util.Env;
  * @author Robert Klein
  * 
  */
-public class PackRoll extends SvrProcess {
+public class PackRoll extends SvrProcess implements SystemIDs {
 	/** Package from Record */
 	private int m_AD_Package_Imp_ID = 0;
 	private String m_Processing = null;
@@ -258,14 +259,14 @@ public class PackRoll extends SvrProcess {
 									// Update columns that are Strings adjusting
 									// for single quotes
 									if (v_AD_Reference_ID == 10
-											|| v_AD_Reference_ID == 14
-											|| v_AD_Reference_ID == 34
-											|| v_AD_Reference_ID == 17
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_TEXT
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_MEMO
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_LIST
 											// Carlos Ruiz globalqss, special
 											// treatment for EntityType
 											// it's a Table reference but must
 											// be treated as String
-											|| (v_AD_Reference_ID == 18 && columnName
+											|| (v_AD_Reference_ID == REFERENCE_DATATYPE_TABLE && columnName
 													.equalsIgnoreCase("EntityType")))
 										if (rs2.getObject("ColValue")
 												.toString().equals("null")) {
@@ -285,8 +286,8 @@ public class PackRoll extends SvrProcess {
 													+ " = " + recordID);
 										}
 									// Update true/false columns
-									else if (v_AD_Reference_ID == 20
-											|| v_AD_Reference_ID == 28) {
+									else if (v_AD_Reference_ID == REFERENCE_DATATYPE_YES_NO
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_BUTTON) {
 										sqlC = new StringBuffer("UPDATE "
 												+ tableName
 												+ " SET "
@@ -301,15 +302,15 @@ public class PackRoll extends SvrProcess {
 									}
 									// Update columns that are Strings adjusting
 									// for single quotes
-									else if (v_AD_Reference_ID == 13
-											|| v_AD_Reference_ID == 18
-											|| v_AD_Reference_ID == 19
-											|| v_AD_Reference_ID == 21
-											|| v_AD_Reference_ID == 25
-											|| v_AD_Reference_ID == 27
-											|| v_AD_Reference_ID == 30
-											|| v_AD_Reference_ID == 31
-											|| v_AD_Reference_ID == 35)
+									else if (v_AD_Reference_ID == REFERENCE_DATATYPE_ID
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_TABLE
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_TABLEDIR
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_LOCATION
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_ACCOUNT
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_COLOR
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_SEARCH
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_LOCATOR
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_PRODUCTATTRIBUTE)
 										sqlC = new StringBuffer("UPDATE "
 												+ tableName
 												+ " SET "
@@ -321,10 +322,10 @@ public class PackRoll extends SvrProcess {
 												+ " WHERE " + columnIDName
 												+ " = " + recordID);
 									// Update columns that are numbers
-									else if (v_AD_Reference_ID == 11
-											|| v_AD_Reference_ID == 12
-											|| v_AD_Reference_ID == 22
-											|| v_AD_Reference_ID == 29)
+									else if (v_AD_Reference_ID == REFERENCE_DATATYPE_INTEGER
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_AMOUNT
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_NUMBER
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_QUANTITY)
 										sqlC = new StringBuffer("UPDATE "
 												+ tableName
 												+ " SET "
@@ -336,8 +337,8 @@ public class PackRoll extends SvrProcess {
 												+ " WHERE " + columnIDName
 												+ " = " + recordID);
 									// Update columns that are dates
-									else if (v_AD_Reference_ID == 15
-											|| v_AD_Reference_ID == 16)
+									else if (v_AD_Reference_ID == REFERENCE_DATATYPE_DATE
+											|| v_AD_Reference_ID == REFERENCE_DATATYPE_DATETIME)
 										// TODO Develop portable code to update
 										// date columns
 										;// ignore

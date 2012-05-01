@@ -68,6 +68,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MUserQuery;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Column;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
@@ -97,7 +98,7 @@ import org.zkoss.zul.Hbox;
  *  @author     Sendy Yagambrum
  *  @date       June 27, 2007
  */
-public class FindWindow extends Window implements EventListener<Event>,ValueChangeListener
+public class FindWindow extends Window implements EventListener<Event>,ValueChangeListener, SystemIDs
 {
 	/**
 	 * 
@@ -144,7 +145,7 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
     /** Length of Fields on first tab   */
     public static final int     FIELDLENGTH = 20;
 	/** Reference ID for Yes/No	*/
-	public static final int		AD_REFERENCE_ID_YESNO = 319;
+	public static final int		AD_REFERENCE_ID_YESNO = REFERENCE_YESNO;
 
     private int m_AD_Tab_ID = 0;
 	private MUserQuery[] userQueries;

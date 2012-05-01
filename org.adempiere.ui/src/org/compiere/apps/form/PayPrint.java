@@ -28,6 +28,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -35,7 +36,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.ValueNamePair;
 
-public class PayPrint {
+public class PayPrint implements SystemIDs {
 
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;
@@ -143,7 +144,7 @@ public class PayPrint {
 		ArrayList<ValueNamePair> data = new ArrayList<ValueNamePair>();
 
 		// load PaymentRule for Bank
-		int AD_Reference_ID = 195;  //  MLookupInfo.getAD_Reference_ID("All_Payment Rule");
+		int AD_Reference_ID = REFERENCE_PAYMENTRULE;  //  MLookupInfo.getAD_Reference_ID("All_Payment Rule");
 		Language language = Language.getLanguage(Env.getAD_Language(Env.getCtx()));
 		MLookupInfo info = MLookupFactory.getLookup_List(language, AD_Reference_ID);
 		String sql = info.Query.substring(0, info.Query.indexOf(" ORDER BY"))

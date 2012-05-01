@@ -492,6 +492,8 @@ public class InvoiceGenerate extends SvrProcess
 			{
 				log.warning("completeInvoice - failed: " + m_invoice);
 				addLog("completeInvoice - failed: " + m_invoice); // Elaine 2008/11/25
+				throw new IllegalStateException("Invoice Process Failed: " + m_invoice + " - " + m_invoice.getProcessMsg());
+				
 			}
 			m_invoice.saveEx();
 

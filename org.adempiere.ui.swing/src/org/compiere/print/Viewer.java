@@ -80,6 +80,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MUser;
 import org.compiere.model.PrintInfo;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_Invoice;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CCheckBox;
@@ -124,7 +125,7 @@ import org.compiere.util.ValueNamePair;
  * 
  */
 public class Viewer extends CFrame
-	implements ActionListener, ChangeListener, WindowStateListener, IReportEngineEventListener
+	implements ActionListener, ChangeListener, WindowStateListener, IReportEngineEventListener, SystemIDs
 {
 	/**
 	 * 
@@ -1188,7 +1189,7 @@ public class Viewer extends CFrame
 	{
 		AWindow win = new AWindow (getGraphicsConfiguration());
 		new AWindowListener (win, this);	//	forwards Window Events
-		int AD_Window_ID = 240;		//	hardcoded
+		int AD_Window_ID = WINDOW_PRINTFORMAT;		//	hardcoded
 		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
 		boolean loadedOK = win.initWindow(AD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
 		if (loadedOK)

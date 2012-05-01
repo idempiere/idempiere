@@ -45,6 +45,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -57,11 +58,8 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Space;
 
-public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener, ValueChangeListener
+public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener, ValueChangeListener, SystemIDs
 {
-	private static final int WINDOW_CUSTOMER_RETURN = 53097;
-
-	private static final int WINDOW_RETURN_TO_VENDOR = 53098;
 
 	private WCreateFromWindow window;
 	
@@ -149,7 +147,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	
 	protected void zkInit() throws Exception
 	{
-    	boolean isRMAWindow = ((getGridTab().getAD_Window_ID() == WINDOW_RETURN_TO_VENDOR) || (getGridTab().getAD_Window_ID() == WINDOW_CUSTOMER_RETURN)); 
+    	boolean isRMAWindow = ((getGridTab().getAD_Window_ID() == WINDOW_RETURNTOVENDOR) || (getGridTab().getAD_Window_ID() == WINDOW_CUSTOMERRETURN)); 
 
     	bPartnerLabel.setText(Msg.getElement(Env.getCtx(), "C_BPartner_ID"));
 		orderLabel.setText(Msg.getElement(Env.getCtx(), "C_Order_ID", false));

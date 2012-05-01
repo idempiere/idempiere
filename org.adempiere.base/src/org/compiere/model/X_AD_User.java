@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User
  *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @version 360LTS.015 - $Id$ */
 public class X_AD_User extends PO implements I_AD_User, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120418L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -463,6 +463,30 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** IsMenuAutoExpand AD_Reference_ID=319 */
+	public static final int ISMENUAUTOEXPAND_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISMENUAUTOEXPAND_Yes = "Y";
+	/** No = N */
+	public static final String ISMENUAUTOEXPAND_No = "N";
+	/** Set Auto expand menu.
+		@param IsMenuAutoExpand 
+		If ticked, the menu is automatically expanded
+	  */
+	public void setIsMenuAutoExpand (String IsMenuAutoExpand)
+	{
+
+		set_Value (COLUMNNAME_IsMenuAutoExpand, IsMenuAutoExpand);
+	}
+
+	/** Get Auto expand menu.
+		@return If ticked, the menu is automatically expanded
+	  */
+	public String getIsMenuAutoExpand () 
+	{
+		return (String)get_Value(COLUMNNAME_IsMenuAutoExpand);
 	}
 
 	/** Set Last Contact.

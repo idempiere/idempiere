@@ -173,7 +173,7 @@ public final class VTreePanel extends CPanel
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -6798614427038652192L;
+	private static final long serialVersionUID = -7188402231414573844L;
 
 	private static final String PREFIX_DOCUMENT_SEARCH = "/";
 
@@ -962,6 +962,16 @@ public final class VTreePanel extends CPanel
 		return no == 1;
 	}	//	barDBupdate
 
+    // Auto Expand Tree - nmicoud IDEMPIERE 195
+    /**
+    * Expand/Collapse tree
+    * @param expand true if tree should be expanded
+    */
+    public void expandTree(boolean expand)
+    {       
+            treeExpand.setSelected(expand);
+            expandTree();
+    }
 
 	/**
 	 *  Clicked on Expand All

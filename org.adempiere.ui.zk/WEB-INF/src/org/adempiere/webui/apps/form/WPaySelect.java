@@ -45,9 +45,9 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.PaySelect;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_PaySelection;
 import org.compiere.process.ProcessInfo;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -73,7 +73,7 @@ import org.zkoss.zul.Space;
  *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WPaySelect extends PaySelect
-	implements IFormController, EventListener, WTableModelListener, IProcessMonitor
+	implements IFormController, EventListener, WTableModelListener, IProcessMonitor, SystemIDs
 {
 	/** @todo withholding */
 	
@@ -375,7 +375,7 @@ public class WPaySelect extends PaySelect
 			return;
 		
 		//  Prepare Process 
-		int AD_Proces_ID = 155;	//	C_PaySelection_CreatePayment
+		int AD_Proces_ID = PROCESS_C_PAYSELECTION_CREATEPAYMENT;	//	C_PaySelection_CreatePayment
 
 		//	Execute Process
 		ProcessModalDialog dialog = new ProcessModalDialog(this, m_WindowNo, 
@@ -424,7 +424,7 @@ public class WPaySelect extends PaySelect
 		this.dispose();
 		
 		//  Start PayPrint
-		int AD_Form_ID = 106;	//	Payment Print/Export
+		int AD_Form_ID = FORM_PAYMENT_PRINT_EXPORT;	//	Payment Print/Export
 		ADForm form = SessionManager.getAppDesktop().openForm(AD_Form_ID);
 		if (m_ps != null)
 		{

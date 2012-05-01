@@ -159,7 +159,10 @@ public class BankTransfer extends SvrProcess
 		paymentBankFrom.setC_DocType_ID(false);
 		paymentBankFrom.setC_Charge_ID(p_C_Charge_ID);
 		paymentBankFrom.saveEx();
-		paymentBankFrom.processIt(MPayment.DOCACTION_Complete);
+		if(!paymentBankFrom.processIt(MPayment.DOCACTION_Complete)) {
+			log.warning("Payment Process Failed: " + paymentBankFrom + " - " + paymentBankFrom.getProcessMsg());
+			throw new IllegalStateException("Payment Process Failed: " + paymentBankFrom + " - " + paymentBankFrom.getProcessMsg());
+		}
 		paymentBankFrom.saveEx();
 		
 		MPayment paymentBankTo = new MPayment(getCtx(), 0 ,  get_TrxName());
@@ -178,7 +181,10 @@ public class BankTransfer extends SvrProcess
 		paymentBankTo.setC_DocType_ID(true);
 		paymentBankTo.setC_Charge_ID(p_C_Charge_ID);
 		paymentBankTo.saveEx();
-		paymentBankTo.processIt(MPayment.DOCACTION_Complete);
+		if (!paymentBankTo.processIt(MPayment.DOCACTION_Complete)) {
+			log.warning("Payment Process Failed: " + paymentBankTo + " - " + paymentBankTo.getProcessMsg());
+			throw new IllegalStateException("Payment Process Failed: " + paymentBankTo + " - " + paymentBankTo.getProcessMsg());
+		}
 		paymentBankTo.saveEx();
 		m_created++;
 		return;

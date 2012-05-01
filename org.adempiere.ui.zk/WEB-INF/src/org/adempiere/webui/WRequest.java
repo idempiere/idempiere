@@ -35,6 +35,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRequest;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -56,7 +57,7 @@ import org.zkoss.zul.Menupopup;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1904928 ] Request: Related Request field not filled
  */
-public class WRequest implements EventListener
+public class WRequest implements EventListener, SystemIDs
 {
 	/**
 	 * 	Constructor
@@ -204,7 +205,7 @@ public class WRequest implements EventListener
 				query.setRecordCount(0);
 			}
 			
-			int AD_Window_ID = 232;		//	232=all - 201=my
+			int AD_Window_ID = WINDOW_REQUESTS_ALL;		//	232=all - 201=my
 			ADWindow frame = SessionManager.getAppDesktop().openWindow(AD_Window_ID, query);
 			if(frame == null)
 				return;

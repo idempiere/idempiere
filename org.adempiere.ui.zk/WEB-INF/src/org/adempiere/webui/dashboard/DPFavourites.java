@@ -22,6 +22,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -48,7 +49,7 @@ import org.zkoss.zul.Vbox;
  * @author Elaine
  * @date November 20, 2008
  */
-public class DPFavourites extends DashboardPanel implements EventListener<Event> {
+public class DPFavourites extends DashboardPanel implements EventListener<Event>, SystemIDs {
 
 	private static final String ON_ADD_TAP_EVENT_LISTENER = "onAddTapEventListener";
 
@@ -107,7 +108,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			+ " INNER JOIN AD_Role r ON (ci.AD_Client_ID=r.AD_Client_ID) "
 			+ "WHERE AD_Role_ID=?", AD_Role_ID);
 		if (AD_Tree_ID <= 0)
-			AD_Tree_ID = 10;	//	Menu
+			AD_Tree_ID = TREE_MENUPRIMARY;	//	Menu
 		
 		m_AD_Tree_ID = AD_Tree_ID;
 		

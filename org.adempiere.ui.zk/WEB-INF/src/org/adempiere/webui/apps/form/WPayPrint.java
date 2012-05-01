@@ -49,6 +49,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.ReportEngine;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -72,7 +73,7 @@ import org.zkoss.zul.Filedownload;
  *  Contributors:
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank 
 */
-public class WPayPrint extends PayPrint implements IFormController, EventListener, ValueChangeListener
+public class WPayPrint extends PayPrint implements IFormController, EventListener, ValueChangeListener, SystemIDs
 {
 	private CustomForm form = new CustomForm();
 
@@ -194,7 +195,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	private void dynInit()
 	{
 		//  C_PaySelection_ID
-		int AD_Column_ID = 7670;        //  C_PaySelectionCheck.C_PaySelection_ID
+		int AD_Column_ID = COLUMN_C_PAYSELECTIONCHECK_C_PAYSELECTION_ID;        //  C_PaySelectionCheck.C_PaySelection_ID
 		MLookup lookupPS = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		paySelectSearch = new WSearchEditor("C_PaySelection_ID", true, false, true, lookupPS);
 		paySelectSearch.addValueChangeListener(this);

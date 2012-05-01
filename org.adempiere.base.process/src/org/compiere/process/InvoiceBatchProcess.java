@@ -155,7 +155,11 @@ public class InvoiceBatchProcess extends SvrProcess
 			return;
 		
 		m_invoice.setDocAction(p_DocAction);
-		m_invoice.processIt(p_DocAction);
+		if(!m_invoice.processIt(p_DocAction)) {
+			log.warning("Invoice Process Failed: " + m_invoice + " - " + m_invoice.getProcessMsg());
+			throw new IllegalStateException("Invoice Process Failed: " + m_invoice + " - " + m_invoice.getProcessMsg());
+			
+		}
 		m_invoice.saveEx();
 		
 		addLog(0, m_invoice.getDateInvoiced(), m_invoice.getGrandTotal(), m_invoice.getDocumentNo());

@@ -455,6 +455,8 @@ public abstract class Doc
 		{
 			log.log(Level.SEVERE, "Resubmit - Cannot lock " + get_TableName() + "_ID="
 				+ get_ID() + ", Force=" + force + ",RePost=" + repost);
+			if (!p_po.isActive())
+				return "Cannot post inactive document";
 			if (force)
 				return "Cannot Lock - ReSubmit";
 			return "Cannot Lock - ReSubmit or RePost with Force";

@@ -31,6 +31,8 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -59,7 +61,7 @@ import org.zkoss.zul.Treerow;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class MenuPanel extends Panel implements EventListener<Event>
+public class MenuPanel extends Panel implements EventListener<Event>, SystemIDs
 {
     private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
 	/**
@@ -89,6 +91,11 @@ public class MenuPanel extends Panel implements EventListener<Event>
         initComponents();
         initMenu(rootNode);
         pnlSearch.initialise();
+
+        // Auto Expand Tree - nmicoud IDEMPIERE 195
+     	if (MUser.get(ctx).isMenuAutoExpand())
+     		expandAll();
+     	// Auto Expand Tree - nmicoud IDEMPIERE 195
 	}
     
     private void initComponents()
@@ -157,7 +164,7 @@ public class MenuPanel extends Panel implements EventListener<Event>
                 + " INNER JOIN AD_Role r ON (ci.AD_Client_ID=r.AD_Client_ID) "
                 + "WHERE AD_Role_ID=?", adRoleId);
         if (AD_Tree_ID <= 0)
-            AD_Tree_ID = 10;    //  Menu
+            AD_Tree_ID = TREE_MENUPRIMARY;    //  Menu
         return AD_Tree_ID;
     }
     

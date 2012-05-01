@@ -246,6 +246,7 @@ public class InOutGenerateRMA extends SvrProcess
         {
             processMsg.append(" (NOT Processed)");
             log.warning("Shipment Processing failed: " + shipment + " - " + shipment.getProcessMsg());
+            throw new IllegalStateException("Shipment Processing failed: " + shipment + " - " + shipment.getProcessMsg());
         }
         
         if (!shipment.save())

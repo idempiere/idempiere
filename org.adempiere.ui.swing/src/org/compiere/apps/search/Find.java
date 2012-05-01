@@ -82,6 +82,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MUserQuery;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Column;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
@@ -112,7 +113,7 @@ import org.compiere.util.ValueNamePair;
  * 			<li>BF [ 2564070 ] Saving user queries can produce unnecessary db errors
  */
 public final class Find extends CDialog
-		implements ActionListener, ChangeListener, DataStatusListener
+		implements ActionListener, ChangeListener, DataStatusListener, SystemIDs
 {
 	/**
 	 * 
@@ -209,7 +210,7 @@ public final class Find extends CDialog
 	/** Length of Fields on first tab	*/
 	public static final int		FIELDLENGTH = 20;
 	/** Reference ID for Yes/No	*/
-	public static final int		AD_REFERENCE_ID_YESNO = 319;
+	public static final int		AD_REFERENCE_ID_YESNO = REFERENCE_YESNO;
 	
 	
 	//

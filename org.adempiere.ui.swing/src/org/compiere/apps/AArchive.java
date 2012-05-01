@@ -29,6 +29,7 @@ import javax.swing.JPopupMenu;
 import org.compiere.apps.form.ArchiveViewer;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.model.MBPartner;
+import org.compiere.model.SystemIDs;
 import org.compiere.swing.CMenuItem;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -43,7 +44,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: AArchive.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
-public class AArchive implements ActionListener
+public class AArchive implements ActionListener, SystemIDs
 {
 	/**
 	 * 	Constructor
@@ -165,7 +166,7 @@ public class AArchive implements ActionListener
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		int AD_Form_ID = 118;	//	ArchiveViewer
+		int AD_Form_ID = FORM_ARCHIVEVIEWER;	//	ArchiveViewer
 		FormFrame ff = new FormFrame(m_graphicsconfig);
 		ff.openForm(AD_Form_ID);
 		ArchiveViewer av = (ArchiveViewer)ff.getFormPanel();

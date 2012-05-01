@@ -32,6 +32,7 @@ import org.compiere.grid.CreateFromRMA;
 import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -39,7 +40,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 
-public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListener
+public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListener, SystemIDs
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -148,7 +149,7 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	protected void initBPartner (boolean forInvoice) throws Exception
 	{
 		//  load BPartner
-		int AD_Column_ID = 3499;        //  C_Invoice.C_BPartner_ID
+		int AD_Column_ID = COLUMN_C_INVOICE_C_BPARTNER_ID;        //  C_Invoice.C_BPartner_ID
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		bPartnerField = new WSearchEditor ("C_BPartner_ID", true, false, true, lookup);
 		//

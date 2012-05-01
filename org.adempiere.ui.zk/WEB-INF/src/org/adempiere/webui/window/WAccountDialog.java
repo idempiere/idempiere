@@ -48,6 +48,7 @@ import org.compiere.model.MAccountLookup;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MQuery;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -72,7 +73,7 @@ import org.zkoss.zul.Vbox;
  * 	@author Low Heng Sin
  */
 public final class WAccountDialog extends Window
-	implements EventListener, DataStatusListener, ValueChangeListener
+	implements EventListener, DataStatusListener, ValueChangeListener, SystemIDs
 {
 
 	private static final long serialVersionUID = 7999516267209766287L;
@@ -263,7 +264,7 @@ public final class WAccountDialog extends Window
 		Env.setContext(Env.getCtx(), m_WindowNo, "C_AcctSchema_ID", m_C_AcctSchema_ID);
 
 		//  Model
-		int AD_Window_ID = 153;		//	Maintain Account Combinations
+		int AD_Window_ID = WINDOW_ACCOUNTCOMBINATION;		//	Maintain Account Combinations
 		GridWindowVO wVO = AEnv.getMWindowVO (m_WindowNo, AD_Window_ID, 0);
 		if (wVO == null)
 			return false;

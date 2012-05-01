@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Role
  *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @version 360LTS.015 - $Id$ */
 public class X_AD_Role extends PO implements I_AD_Role, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20110325L;
+	private static final long serialVersionUID = 20120412L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -81,6 +81,8 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 			setIsDiscountAllowedOnTotal (false);
 			setIsDiscountUptoLimitPrice (false);
 			setIsManual (false);
+			setIsMenuAutoExpand (false);
+// N
 			setIsPersonalAccess (false);
 // N
 			setIsPersonalLock (false);
@@ -811,6 +813,30 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public boolean isManual () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Auto expand menu.
+		@param IsMenuAutoExpand 
+		If ticked, the menu is automatically expanded
+	  */
+	public void setIsMenuAutoExpand (boolean IsMenuAutoExpand)
+	{
+		set_Value (COLUMNNAME_IsMenuAutoExpand, Boolean.valueOf(IsMenuAutoExpand));
+	}
+
+	/** Get Auto expand menu.
+		@return If ticked, the menu is automatically expanded
+	  */
+	public boolean isMenuAutoExpand () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsMenuAutoExpand);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

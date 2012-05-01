@@ -27,6 +27,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.pipo.AbstractElementHandler;
 import org.adempiere.pipo.Element;
 import org.adempiere.pipo.PackOut;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Menu;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -34,7 +35,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class MenuElementHandler extends AbstractElementHandler {
+public class MenuElementHandler extends AbstractElementHandler implements SystemIDs {
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
@@ -197,7 +198,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 						int idBackup = DB.getNextID(Env
 								.getAD_Client_ID(ctx), "AD_Package_Imp_Backup",
 								getTrxName(ctx));
-						if (referenceID == 20 || referenceID == 28)
+						if (referenceID == REFERENCE_DATATYPE_YES_NO || referenceID == REFERENCE_DATATYPE_BUTTON)
 							if (rs1.getObject(q).equals("Y"))
 								colValue = "true";
 							else

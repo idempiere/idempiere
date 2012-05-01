@@ -30,6 +30,9 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.AddressException;
+
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
 import org.adempiere.exceptions.FillMandatoryException;
@@ -1895,8 +1898,10 @@ public class MOrder extends X_C_Order implements DocAction
 				return null;
 			}
 		}
-		//	Manually Process Shipment
-		shipment.processIt(DocAction.ACTION_Complete);
+		// added AdempiereException by zuhri
+		if (!shipment.processIt(DocAction.ACTION_Complete))
+			throw new AdempiereException("Failed when processing document - " + shipment.getProcessMsg());
+		// end added
 		shipment.saveEx(get_TrxName());
 		if (!DOCSTATUS_Completed.equals(shipment.getDocStatus()))
 		{
@@ -1996,8 +2001,10 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 		
-		//	Manually Process Invoice
-		invoice.processIt(DocAction.ACTION_Complete);
+		// added AdempiereException by zuhri
+		if (!invoice.processIt(DocAction.ACTION_Complete))
+			throw new AdempiereException("Failed when processing document - " + invoice.getProcessMsg());
+		// end added
 		invoice.saveEx(get_TrxName());
 		setC_CashLine_ID(invoice.getC_CashLine_ID());
 		if (!DOCSTATUS_Completed.equals(invoice.getDocStatus()))
@@ -2081,7 +2088,10 @@ public class MOrder extends X_C_Order implements DocAction
 			if (counterDT.getDocAction() != null)
 			{
 				counter.setDocAction(counterDT.getDocAction());
-				counter.processIt(counterDT.getDocAction());
+				// added AdempiereException by zuhri
+				if (!counter.processIt(counterDT.getDocAction()))
+					throw new AdempiereException("Failed when processing document - " + counter.getProcessMsg());
+				// end added
 				counter.saveEx(get_TrxName());
 			}
 		}

@@ -12,13 +12,14 @@ import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
-public class FactReconcile {
+public class FactReconcile implements SystemIDs {
 	
 	/**	Logger			*/
 	public static CLogger log = CLogger.getCLogger(FactReconcile.class);
@@ -37,10 +38,10 @@ public class FactReconcile {
 	public int 			idColIndex = 8;
 	public int 			amtColIndex = 0;
 	
-	static protected int 			col_C_AcctSchema_ID = 2513;     //  Fact_Acct.C_AcctSchema_ID
-	static protected int 			col_AD_Org_ID = 839; 			//	C_Period.AD_Org_ID (needed to allow org 0)
-	static protected int 			col_C_BPartner_ID = 3499;       //  C_Invoice.C_BPartner_ID
-	static protected int 			col_M_Product_ID = 2527;        //  Fact_Acct.M_Product_ID
+	static protected int 			col_C_AcctSchema_ID = COLUMN_FACT_ACCT_C_ACCTSCHEMA_ID;     //  Fact_Acct.C_AcctSchema_ID
+	static protected int 			col_AD_Org_ID = COLUMN_C_PERIOD_AD_ORG_ID; 			//	C_Period.AD_Org_ID (needed to allow org 0)
+	static protected int 			col_C_BPartner_ID = COLUMN_C_INVOICE_C_BPARTNER_ID;       //  C_Invoice.C_BPartner_ID
+	static protected int 			col_M_Product_ID = COLUMN_FACT_ACCT_M_PRODUCT_ID;        //  Fact_Acct.M_Product_ID
 	
 	
 	public void dynInit() throws Exception

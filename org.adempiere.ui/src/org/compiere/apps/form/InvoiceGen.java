@@ -29,6 +29,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPrivateAccess;
 import org.compiere.model.MRMA;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -42,7 +43,7 @@ import org.compiere.util.Trx;
  * Generate Invoice (manual) controller class
  * 
  */
-public class InvoiceGen extends GenForm
+public class InvoiceGen extends GenForm implements SystemIDs
 {
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(InvoiceGen.class);
@@ -263,11 +264,11 @@ public class InvoiceGen extends GenForm
         
         if (docTypeKNPair.getKey() == MRMA.Table_ID)
         {
-            AD_Process_ID = 52002; // C_Invoice_GenerateRMA - org.adempiere.process.InvoiceGenerateRMA
+            AD_Process_ID = PROCESS_C_INVOICE_GENERATERMA_MANUAL; // C_Invoice_GenerateRMA - org.adempiere.process.InvoiceGenerateRMA
         }
         else
         {
-            AD_Process_ID = 134;  // HARDCODED    C_InvoiceCreate
+            AD_Process_ID = PROCESS_C_INVOICE_GENERATE_MANUAL;  // HARDCODED    C_InvoiceCreate
         }
 		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
 		if (!instance.save())

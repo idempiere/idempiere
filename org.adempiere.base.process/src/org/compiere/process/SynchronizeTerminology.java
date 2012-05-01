@@ -78,6 +78,7 @@ public class SynchronizeTerminology extends SvrProcess
 			rs.close();
 			trx.commit(true);
 			// Create Elements for Process Parameters which are centrally maintained
+			/* IDEMPIERE 109 - this create unwanted Element
 			sql="SELECT DISTINCT ColumnName, Name, Description, Help, EntityType "
 				+" FROM	AD_PROCESS_PARA p "
 				+" WHERE NOT EXISTS "
@@ -102,7 +103,7 @@ public class SynchronizeTerminology extends SvrProcess
 			}
 			pstmt.close();
 			rs.close();
-			trx.commit(true);
+			trx.commit(true);*/
 			log.info("Adding missing Element Translations");
 			sql="INSERT INTO AD_ELEMENT_TRL (AD_Element_ID, AD_LANGUAGE, AD_Client_ID, AD_Org_ID,"
 				+" IsActive, Created, CreatedBy, Updated, UpdatedBy,"

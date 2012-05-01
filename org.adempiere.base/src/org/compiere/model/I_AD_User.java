@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_User
  *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @version 360LTS.015
  */
 public interface I_AD_User 
 {
@@ -332,6 +332,19 @@ public interface I_AD_User
 	  * Defined if any User Contact will be used for Calculate Payroll
 	  */
 	public boolean isInPayroll();
+
+    /** Column name IsMenuAutoExpand */
+    public static final String COLUMNNAME_IsMenuAutoExpand = "IsMenuAutoExpand";
+
+	/** Set Auto expand menu.
+	  * If ticked, the menu is automatically expanded
+	  */
+	public void setIsMenuAutoExpand (String IsMenuAutoExpand);
+
+	/** Get Auto expand menu.
+	  * If ticked, the menu is automatically expanded
+	  */
+	public String getIsMenuAutoExpand();
 
     /** Column name LastContact */
     public static final String COLUMNNAME_LastContact = "LastContact";

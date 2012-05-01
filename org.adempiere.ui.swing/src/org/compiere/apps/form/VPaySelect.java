@@ -46,6 +46,7 @@ import org.compiere.grid.ed.VCheckBox;
 import org.compiere.grid.ed.VComboBox;
 import org.compiere.grid.ed.VDate;
 import org.compiere.minigrid.MiniTable;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_PaySelection;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.process.ProcessInfo;
@@ -65,7 +66,7 @@ import org.compiere.util.ValueNamePair;
  *  @author Jorg Janke
  *  @version $Id: VPaySelect.java,v 1.2 2008/07/11 08:20:12 cruiz Exp $
  */
-public class VPaySelect extends PaySelect implements FormPanel, ActionListener, TableModelListener, IProcessMonitor
+public class VPaySelect extends PaySelect implements FormPanel, ActionListener, TableModelListener, IProcessMonitor, SystemIDs
 {
 	/** @todo withholding */
 	private CPanel panel = new CPanel();
@@ -365,7 +366,7 @@ public class VPaySelect extends PaySelect implements FormPanel, ActionListener, 
 			return;
 		
 		//  Prepare Process
-		int AD_Proces_ID = 155;	//	C_PaySelection_CreatePayment
+		int AD_Proces_ID = PROCESS_C_PAYSELECTION_CREATEPAYMENT;	//	C_PaySelection_CreatePayment
 		ProcessInfo pi = new ProcessInfo (m_frame.getTitle(), AD_Proces_ID,
 			X_C_PaySelection.Table_ID, m_ps.getC_PaySelection_ID());
 		pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
@@ -403,7 +404,7 @@ public class VPaySelect extends PaySelect implements FormPanel, ActionListener, 
 			return;
 
 		//  Start PayPrint
-		int AD_Form_ID = 106;	//	Payment Print/Export
+		int AD_Form_ID = FORM_PAYMENT_PRINT_EXPORT;	//	Payment Print/Export
 		FormFrame ff = new FormFrame();
 		ff.openForm (AD_Form_ID);
 		//	Set Parameter

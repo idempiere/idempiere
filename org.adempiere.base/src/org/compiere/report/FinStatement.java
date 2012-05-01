@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MPeriod;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -52,7 +53,7 @@ import org.compiere.util.Msg;
  *			<li>FR [2857076] User Element 1 and 2 completion - https://sourceforge.net/tracker/?func=detail&aid=2857076&group_id=176962&atid=879335
  *   
  */
-public class FinStatement extends SvrProcess
+public class FinStatement extends SvrProcess implements SystemIDs
 {
 	/** AcctSchame Parameter			*/
 	private int					p_C_AcctSchema_ID = 0;
@@ -273,7 +274,7 @@ public class FinStatement extends SvrProcess
 		createBalanceLine();
 		createDetailLines();
 
-		int AD_PrintFormat_ID = 134;
+		int AD_PrintFormat_ID = PRINTFORMAT_STATEMENTOFACCOUNT;
 		if (Ini.isClient())
 			getProcessInfo().setTransientObject (MPrintFormat.get (getCtx(), AD_PrintFormat_ID, false));
 		else

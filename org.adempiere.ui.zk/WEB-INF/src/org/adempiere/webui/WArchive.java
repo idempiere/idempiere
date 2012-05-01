@@ -9,6 +9,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MBPartner;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -27,7 +28,7 @@ import org.zkoss.zul.Menupopup;
  *  @author Jorg Janke
  *  @version $Id: AArchive.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
-public class WArchive implements EventListener
+public class WArchive implements EventListener, SystemIDs
 {
 	/**
 	 * 	Constructor
@@ -153,7 +154,7 @@ public class WArchive implements EventListener
 	{
 		if (e.getTarget() instanceof Menuitem) 
 		{
-			int AD_Form_ID = 118;	//	ArchiveViewer
+			int AD_Form_ID = FORM_ARCHIVEVIEWER;	//	ArchiveViewer
 			ADForm form = ADForm.openForm(AD_Form_ID);
 			
 			WArchiveViewer av = (WArchiveViewer) form.getICustomForm();

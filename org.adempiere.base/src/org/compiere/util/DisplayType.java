@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.logging.Level;
 
+import org.compiere.model.SystemIDs;
+
 /**
  *	System Display Types.
  *  <pre>
@@ -34,72 +36,72 @@ import java.util.logging.Level;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1810632 ] PricePrecision error in InfoProduct (and similar)
  */
-public final class DisplayType
+public final class DisplayType implements SystemIDs
 {
 	/** Display Type 10	String	*/
-	public static final int String     = 10;
+	public static final int String     = REFERENCE_DATATYPE_STRING;
 	/** Display Type 11	Integer	*/
-	public static final int Integer    = 11;
+	public static final int Integer    = REFERENCE_DATATYPE_INTEGER;
 	/** Display Type 12	Amount	*/
-	public static final int Amount     = 12;
+	public static final int Amount     = REFERENCE_DATATYPE_AMOUNT;
 	/** Display Type 13	ID	*/
-	public static final int ID         = 13;
+	public static final int ID         = REFERENCE_DATATYPE_ID;
 	/** Display Type 14	Text	*/
-	public static final int Text       = 14;
+	public static final int Text       = REFERENCE_DATATYPE_TEXT;
 	/** Display Type 15	Date	*/
-	public static final int Date       = 15;
+	public static final int Date       = REFERENCE_DATATYPE_DATE;
 	/** Display Type 16	DateTime	*/
-	public static final int DateTime   = 16;
+	public static final int DateTime   = REFERENCE_DATATYPE_DATETIME;
 	/** Display Type 17	List	*/
-	public static final int List       = 17;
+	public static final int List       = REFERENCE_DATATYPE_LIST;
 	/** Display Type 18	Table	*/
-	public static final int Table      = 18;
+	public static final int Table      = REFERENCE_DATATYPE_TABLE;
 	/** Display Type 19	TableDir	*/
-	public static final int TableDir   = 19;
+	public static final int TableDir   = REFERENCE_DATATYPE_TABLEDIR;
 	/** Display Type 20	YN	*/
-	public static final int YesNo      = 20;
+	public static final int YesNo      = REFERENCE_DATATYPE_YES_NO;
 	/** Display Type 21	Location	*/
-	public static final int Location   = 21;
+	public static final int Location   = REFERENCE_DATATYPE_LOCATION;
 	/** Display Type 22	Number	*/
-	public static final int Number     = 22;
+	public static final int Number     = REFERENCE_DATATYPE_NUMBER;
 	/** Display Type 23	BLOB	*/
-	public static final int Binary     = 23;
+	public static final int Binary     = REFERENCE_DATATYPE_BINARY;
 	/** Display Type 24	Time	*/
-	public static final int Time       = 24;
+	public static final int Time       = REFERENCE_DATATYPE_TIME;
 	/** Display Type 25	Account	*/
-	public static final int Account    = 25;
+	public static final int Account    = REFERENCE_DATATYPE_ACCOUNT;
 	/** Display Type 26	RowID	*/
-	public static final int RowID      = 26;
+	public static final int RowID      = REFERENCE_DATATYPE_ROWID;
 	/** Display Type 27	Color   */
-	public static final int Color      = 27;
+	public static final int Color      = REFERENCE_DATATYPE_COLOR;
 	/** Display Type 28	Button	*/
-	public static final int Button	   = 28;
+	public static final int Button	   = REFERENCE_DATATYPE_BUTTON;
 	/** Display Type 29	Quantity	*/
-	public static final int Quantity   = 29;
+	public static final int Quantity   = REFERENCE_DATATYPE_QUANTITY;
 	/** Display Type 30	Search	*/
-	public static final int Search     = 30;
+	public static final int Search     = REFERENCE_DATATYPE_SEARCH;
 	/** Display Type 31	Locator	*/
-	public static final int Locator    = 31;
+	public static final int Locator    = REFERENCE_DATATYPE_LOCATOR;
 	/** Display Type 32 Image	*/
-	public static final int Image      = 32;
+	public static final int Image      = REFERENCE_DATATYPE_IMAGE;
 	/** Display Type 33 Assignment	*/
-	public static final int Assignment = 33;
+	public static final int Assignment = REFERENCE_DATATYPE_ASSIGNMENT;
 	/** Display Type 34	Memo	*/
-	public static final int Memo       = 34;
+	public static final int Memo       = REFERENCE_DATATYPE_MEMO;
 	/** Display Type 35	PAttribute	*/
-	public static final int PAttribute = 35;
+	public static final int PAttribute = REFERENCE_DATATYPE_PRODUCTATTRIBUTE;
 	/** Display Type 36	CLOB	*/
-	public static final int TextLong   = 36;
+	public static final int TextLong   = REFERENCE_DATATYPE_TEXTLONG;
 	/** Display Type 37	CostPrice	*/
-	public static final int CostPrice  = 37;
+	public static final int CostPrice  = REFERENCE_DATATYPE_COSTPRICE;
 	/** Display Type 38	File Path	*/
-	public static final int FilePath  = 38;
+	public static final int FilePath  = REFERENCE_DATATYPE_FILEPATH;
 	/** Display Type 39 File Name	*/
-	public static final int FileName  = 39;
+	public static final int FileName  = REFERENCE_DATATYPE_FILENAME;
 	/** Display Type 40	URL	*/
-	public static final int URL  = 40;
+	public static final int URL  = REFERENCE_DATATYPE_URL;
 	/** Display Type 42	PrinterName	*/
-	public static final int PrinterName  = 42;
+	public static final int PrinterName  = REFERENCE_DATATYPE_PRINTNAME;
 	//	Candidates:
 
 	/**

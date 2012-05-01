@@ -42,6 +42,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
+import org.compiere.model.SystemIDs;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
@@ -65,7 +66,7 @@ import org.compiere.util.ValueNamePair;
  *  Contributors:
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank
  */
-public class VPayPrint extends PayPrint implements FormPanel, ActionListener, VetoableChangeListener
+public class VPayPrint extends PayPrint implements FormPanel, ActionListener, VetoableChangeListener, SystemIDs
 {
 	private CPanel panel = new CPanel();
 
@@ -198,7 +199,7 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 	{
 		
 		//  C_PaySelection_ID
-		int AD_Column_ID = 7670;        //  C_PaySelectionCheck.C_PaySelection_ID
+		int AD_Column_ID = COLUMN_C_PAYSELECTIONCHECK_C_PAYSELECTION_ID;        //  C_PaySelectionCheck.C_PaySelection_ID
 		MLookup lookupPS = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		paySelectSearch = new VLookup("C_PaySelection_ID", true, false, true, lookupPS);
 		paySelectSearch.addVetoableChangeListener(this);

@@ -64,6 +64,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
 import org.compiere.swing.CPanel;
@@ -92,7 +93,7 @@ import org.compiere.util.Splash;
  * 
  */
 public final class AMenu extends CFrame
-	implements ActionListener, PropertyChangeListener, ChangeListener, IEnvEventListener
+	implements ActionListener, PropertyChangeListener, ChangeListener, IEnvEventListener, SystemIDs
 {
 	/**
 	 * generated serialVersionUID
@@ -167,7 +168,7 @@ public final class AMenu extends CFrame
 			+ " INNER JOIN AD_Role r ON (ci.AD_Client_ID=r.AD_Client_ID) "
 			+ "WHERE AD_Role_ID=?", AD_Role_ID);
 		if (AD_Tree_ID <= 0)
-			AD_Tree_ID = 10;	//	Menu
+			AD_Tree_ID = TREE_MENUPRIMARY;	//	Menu
 		treePanel.initTree(AD_Tree_ID);
 
 		//	Translate
@@ -195,6 +196,12 @@ public final class AMenu extends CFrame
 		infoUpdater = new InfoUpdater();
 		infoUpdaterThread = new Thread(infoUpdater, "InfoUpdater");
 		infoUpdaterThread.start();
+
+        // Auto Expand Tree - nmicoud IDEMPIERE 195
+        if (MUser.get(m_ctx).isMenuAutoExpand())
+                treePanel.expandTree(true);
+        // Auto Expand Tree - nmicoud IDEMPIERE 195
+
 		//
 		Env.addEventListener(this);
 		//
@@ -649,7 +656,7 @@ public final class AMenu extends CFrame
 				+ " INNER JOIN AD_TABLE t ON (t.AD_Window_ID=m.AD_Window_ID) "
 				+ "WHERE t.AD_Table_ID=?", 389);
 		if (m_note_Menu_ID == 0)
-			m_note_Menu_ID = 233;	//	fallback HARDCODED
+			m_note_Menu_ID = MENU_NOTICE;	//	fallback HARDCODED
 		(new AMenuStartItem (m_note_Menu_ID, true, Msg.translate(m_ctx, "AD_Note_ID"), this)).start();		//	async load
 	}   //  gotoMessage
 
@@ -681,7 +688,7 @@ public final class AMenu extends CFrame
 	//			+ " INNER JOIN AD_TABLE t ON (t.AD_Window_ID=m.AD_Window_ID) "
 	//			+ "WHERE t.AD_Table_ID=?", 417);
 		if (m_request_Menu_ID == 0)
-			m_request_Menu_ID = 237;	//	My Requests
+			m_request_Menu_ID = WINDOW_MY_REQUESTS;	//	My Requests
 		(new AMenuStartItem (m_request_Menu_ID, true, Msg.translate(m_ctx, "R_Request_ID"), this)).start();		//	async load
 	}   //  gotoRequests
 

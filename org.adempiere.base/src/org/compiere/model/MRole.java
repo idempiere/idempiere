@@ -54,7 +54,7 @@ import org.compiere.util.Trace;
  *  @contributor KittiU - FR [ 3062553 ] - Duplicated action in DocAction list for Multiple Role Users
  *  @version $Id: MRole.java,v 1.5 2006/08/09 16:38:47 jjanke Exp $
  */
-public final class MRole extends X_AD_Role
+public final class MRole extends X_AD_Role implements SystemIDs
 {
 	/**
 	 * 
@@ -246,9 +246,9 @@ public final class MRole extends X_AD_Role
 	public static final boolean		SQL_NOTQUALIFIED = false;
 
 	/**	The AD_User_ID of the SuperUser				*/
-	public static final int			SUPERUSER_USER_ID = 100;
+	public static final int			SUPERUSER_USER_ID = USER_SUPERUSER;
 	/**	The AD_User_ID of the System Administrator	*/
-	public static final int			SYSTEM_USER_ID = 0;
+	public static final int			SYSTEM_USER_ID = USER_SYSTEM;
 	
 	private static final String ROLE_KEY = "org.compiere.model.DefaultRole";
 	
