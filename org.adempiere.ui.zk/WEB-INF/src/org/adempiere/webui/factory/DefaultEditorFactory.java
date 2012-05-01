@@ -175,6 +175,8 @@ public class DefaultEditorFactory implements IEditorFactory {
             editor = new WUnknownEditor(gridField);
         }
 
+        editor.setTableEditor(tableEditor);
+        
         return editor;
 	}
 

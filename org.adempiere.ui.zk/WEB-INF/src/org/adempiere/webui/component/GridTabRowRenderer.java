@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.adempiere.util.GridRowCtx;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
