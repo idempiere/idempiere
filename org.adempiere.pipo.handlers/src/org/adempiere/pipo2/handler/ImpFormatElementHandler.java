@@ -20,12 +20,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -48,7 +48,7 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 
 	private List<Integer> formats = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		
 		List<String> excludes = defaultExcludeList(X_AD_ImpFormat.Table_Name);
@@ -57,7 +57,7 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 		X_AD_ImpFormat mImpFormat = findPO(ctx, element);
 		if (mImpFormat == null) {
 			int id = findIdByName(ctx, "AD_ImpFormat", name);
-			mImpFormat = new X_AD_ImpFormat(ctx, id > 0 ? id : 0,
+			mImpFormat = new X_AD_ImpFormat(ctx.ctx, id > 0 ? id : 0,
 					getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mImpFormat, element, this);
@@ -70,6 +70,7 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
+			element.unresolved = notfounds.toString();
 			return;
 		}
 		
@@ -89,27 +90,37 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 			} else {
 				logImportDetail(ctx, impDetail, 0, mImpFormat.getName(), mImpFormat
 						.get_ID(), action);
-				throw new POSaveFailedException("Failed to save Import Format.");
+				throw new POSaveFailedException("Failed to save Import Format " + mImpFormat.getName());
 			}
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(Properties ctx, TransformerHandler document)
+	protected void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int import_id = Env.getContextAsInt(ctx,
+		int import_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_ImpFormat_ID);
 
 		if (formats.contains(import_id))
 			return;
 		formats.add(import_id);
 		AttributesImpl atts = new AttributesImpl();
-		X_AD_ImpFormat m_ImpFormat = new X_AD_ImpFormat(ctx, import_id, null);
-		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_ImpFormat.Table_Name, atts);
-		createImpFormatBinding(ctx, document, m_ImpFormat);
+		X_AD_ImpFormat m_ImpFormat = new X_AD_ImpFormat(ctx.ctx, import_id, null);
+
+		boolean createElement = true;
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_ImpFormat.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				createElement = false;
+			}
+		}
+
+		if (createElement) {
+			addTypeName(atts, "table");
+			document.startElement("", "", I_AD_ImpFormat.Table_Name, atts);
+			createImpFormatBinding(ctx, document, m_ImpFormat);
+		}
 
 		String sql = "SELECT * FROM AD_ImpFormat_Row WHERE AD_ImpFormat_ID= "
 				+ import_id;
@@ -130,20 +141,23 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		document.endElement("", "", I_AD_ImpFormat.Table_Name);
+		
+		if (createElement) {
+			document.endElement("", "", I_AD_ImpFormat.Table_Name);
+		}
 
 	}
 
-	private void createImpFormatRow(Properties ctx,
+	private void createImpFormatRow(PIPOContext ctx,
 			TransformerHandler document, int AD_ImpFormat_Row_ID)
 			throws SAXException {
-		Env.setContext(ctx, X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID,
+		Env.setContext(ctx.ctx, X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID,
 				AD_ImpFormat_Row_ID);
 		rowHandler.create(ctx, document);
-		ctx.remove(X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID);
+		ctx.ctx.remove(X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID);
 	}
 
-	private void createImpFormatBinding(Properties ctx, TransformerHandler document,
+	private void createImpFormatBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_ImpFormat m_ImpFormat) {
 		PoExporter filler = new PoExporter(ctx, document, m_ImpFormat);
 		List<String> excludes = defaultExcludeList(X_AD_ImpFormat.Table_Name);
@@ -156,8 +170,8 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_ImpFormat_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_ImpFormat_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_ImpFormat_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_ImpFormat_ID);
 	}
 }

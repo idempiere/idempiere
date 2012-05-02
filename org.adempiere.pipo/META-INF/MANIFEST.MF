@@ -4,7 +4,9 @@ Bundle-Name: PiPo
 Bundle-SymbolicName: org.adempiere.pipo;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.tools.ant,
+Import-Package: org.apache.commons.codec;version="1.3.0",
+ org.apache.commons.codec.binary;version="1.3.0",
+ org.apache.tools.ant,
  org.apache.tools.ant.taskdefs,
  org.apache.xerces.jaxp;version="2.9.0",
  org.osgi.framework

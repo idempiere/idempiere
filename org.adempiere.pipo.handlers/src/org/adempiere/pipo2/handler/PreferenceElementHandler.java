@@ -17,11 +17,11 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -38,21 +38,22 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class PreferenceElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 
 		List<String> excludes = defaultExcludeList(X_AD_Preference.Table_Name);
 		MPreference mPreference = findPO(ctx, element);
 		if (mPreference == null) {
-			mPreference = new MPreference(ctx, 0, getTrxName(ctx));			
+			mPreference = new MPreference(ctx.ctx, 0, getTrxName(ctx));			
 			PoFiller filler = new PoFiller(ctx, mPreference, element, this);
 			List<String> notFounds = filler.autoFill(excludes);
 			if (notFounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notFounds.toString();
 				return;
 			}
 
-			Query query = new Query(ctx, "AD_Preference", "Attribute = ? AND coalesce(AD_User_ID,0) = ? AND coalesce(AD_Window_ID,0) = ?", getTrxName(ctx));
+			Query query = new Query(ctx.ctx, "AD_Preference", "Attribute = ? AND coalesce(AD_User_ID,0) = ? AND coalesce(AD_Window_ID,0) = ?", getTrxName(ctx));
 			MPreference tmp = query
 								.setParameters(new Object[]{mPreference.getAttribute(), mPreference.getAD_User_ID(), mPreference.getAD_Window_ID()})
 								.first();
@@ -61,6 +62,7 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 				List<String> notfounds = filler.autoFill(excludes);
 				if (notfounds.size() > 0) {
 					element.defer = true;
+					element.unresolved = notfounds.toString();
 					return;
 				}
 				mPreference = tmp;
@@ -70,6 +72,7 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 			List<String> notFounds = filler.autoFill(excludes);
 			if (notFounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notFounds.toString();
 				return;
 			}
 		}
@@ -94,28 +97,35 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 			} else {
 				logImportDetail(ctx, impDetail, 0, mPreference.getAttribute(),
 						mPreference.get_ID(), action);
-				throw new POSaveFailedException("Failed to save Preference");
+				throw new POSaveFailedException("Failed to save Preference " + mPreference.getAttribute());
 			}
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Preference_ID = Env.getContextAsInt(ctx,
+		int AD_Preference_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Preference.COLUMNNAME_AD_Preference_ID);
-		X_AD_Preference m_Preference = new X_AD_Preference(ctx,
+		X_AD_Preference m_Preference = new X_AD_Preference(ctx.ctx,
 				AD_Preference_ID, getTrxName(ctx));
+		
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Preference.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Preference.Table_Name, atts);
+		document.startElement("", "", X_AD_Preference.Table_Name, atts);
 		createPreferenceBinding(ctx, document, m_Preference);
 		document.endElement("", "", I_AD_Preference.Table_Name);
 	}
 
-	private void createPreferenceBinding(Properties ctx, TransformerHandler document,
+	private void createPreferenceBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Preference m_Preference) {
 		PoExporter filler  = new PoExporter(ctx, document, m_Preference);
 		List<String> excludes = defaultExcludeList(X_AD_Preference.Table_Name);
@@ -130,9 +140,9 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_Preference.COLUMNNAME_AD_Preference_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_Preference.COLUMNNAME_AD_Preference_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_Preference.COLUMNNAME_AD_Preference_ID);
+		packout.getCtx().ctx.remove(I_AD_Preference.COLUMNNAME_AD_Preference_ID);
 		
 	}
 }

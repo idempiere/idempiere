@@ -20,13 +20,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.ElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackIn;
@@ -49,12 +49,12 @@ public class TableElementHandler extends AbstractElementHandler {
 
 	private List<Integer>tables = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
-		PackIn packIn = getPackIn(ctx);
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
+		PackIn packIn = ctx.packIn;
 		List<String> excludes = defaultExcludeList(X_AD_Table.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			MTable mTable = findPO(ctx, element);
 			if (mTable == null) {
@@ -70,7 +70,7 @@ public class TableElementHandler extends AbstractElementHandler {
 					return;
 				}
 
-				mTable = new MTable(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mTable = new MTable(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mTable.setTableName(tableName);
 			}
 						
@@ -83,6 +83,7 @@ public class TableElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 			
@@ -105,7 +106,7 @@ public class TableElementHandler extends AbstractElementHandler {
 				}
 				else{
 					logImportDetail (ctx, impDetail, 0, mTable.getName(), mTable.get_ID(),action);
-					throw new POSaveFailedException("Table");
+					throw new POSaveFailedException("Failed to save Table " + mTable.getName());
 				}
 			}
 		} else {
@@ -113,22 +114,30 @@ public class TableElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 
-		int AD_Table_ID = Env.getContextAsInt(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
-		PackOut packOut = getPackOut(ctx);
+		int AD_Table_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
+		PackOut packOut = ctx.packOut;
 		boolean exported = isTableProcess(ctx, AD_Table_ID);
 		AttributesImpl atts = new AttributesImpl();
 		//Export table if not already done so
 		if (!exported){
-			X_AD_Table m_Table = new X_AD_Table (ctx, AD_Table_ID, null);
-			addTypeName(atts, "table");
-			document.startElement("","",I_AD_Table.Table_Name,atts);
-			createTableBinding(ctx,document,m_Table);
+			boolean createElement = true;
+			X_AD_Table m_Table = new X_AD_Table (ctx.ctx, AD_Table_ID, null);
+			if (ctx.packOut.getFromDate() != null) {
+				if (m_Table.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+					createElement = false;
+				}
+			}
+			if (createElement) {
+				addTypeName(atts, "table");
+				document.startElement("","",I_AD_Table.Table_Name,atts);
+				createTableBinding(ctx,document,m_Table);
+			}
 
 			String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID = ? "
 				+ " ORDER BY IsKey DESC, AD_Column_ID";  // Export key column as the first one
@@ -176,18 +185,21 @@ public class TableElementHandler extends AbstractElementHandler {
 			} finally	{
 				DB.close(rs, pstmt);
 			}
-			document.endElement("","",I_AD_Table.Table_Name);
+			
+			if (createElement) {
+				document.endElement("","",X_AD_Table.Table_Name);
+			}
 		}
 
 	}
 
-	private void createColumn(Properties ctx, TransformerHandler document, int AD_Column_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_Column.COLUMNNAME_AD_Column_ID, AD_Column_ID);
+	private void createColumn(PIPOContext ctx, TransformerHandler document, int AD_Column_ID) throws SAXException {
+		Env.setContext(ctx.ctx, X_AD_Column.COLUMNNAME_AD_Column_ID, AD_Column_ID);
 		columnHandler.create(ctx, document);
-		ctx.remove(X_AD_Column.COLUMNNAME_AD_Column_ID);
+		ctx.ctx.remove(X_AD_Column.COLUMNNAME_AD_Column_ID);
 	}
 
-	private boolean isTableProcess(Properties ctx, int AD_Table_ID) {
+	private boolean isTableProcess(PIPOContext ctx, int AD_Table_ID) {
 		if (tables.contains(AD_Table_ID))
 			return true;
 		else {
@@ -196,7 +208,7 @@ public class TableElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	private void createTableBinding(Properties ctx, TransformerHandler document, X_AD_Table m_Table)
+	private void createTableBinding(PIPOContext ctx, TransformerHandler document, X_AD_Table m_Table)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_Table);
 		if (m_Table.getAD_Table_ID() <= PackOut.MAX_OFFICIAL_ID)
@@ -210,8 +222,8 @@ public class TableElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
 	}
 }

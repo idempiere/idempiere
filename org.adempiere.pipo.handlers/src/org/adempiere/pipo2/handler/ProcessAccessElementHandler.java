@@ -17,11 +17,11 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
@@ -39,7 +39,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class ProcessAccessElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		int roleid =0;
 		int processid =0;
 		List<String> excludes = defaultExcludeList(X_AD_Process_Access.Table_Name);
@@ -49,18 +49,29 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
 				roleid = getParentId(element, I_AD_Role.Table_Name);
 			} else {
-				Element roleElement = element.properties.get(I_AD_Process_Access.COLUMNNAME_AD_Role_ID);
-				roleid = ReferenceUtils.resolveReference(ctx, roleElement, getTrxName(ctx));
+				Element roleElement = element.properties.get("AD_Role_ID");
+				roleid = ReferenceUtils.resolveReference(ctx.ctx, roleElement, getTrxName(ctx));
+			}
+			
+			if (roleid <= 0) {
+				element.defer = true;
+				element.unresolved = "AD_Role_ID";
+				return;
 			}
 
 			Element processElement = element.properties.get(I_AD_Process_Access.COLUMNNAME_AD_Process_ID);
-			processid = ReferenceUtils.resolveReference(ctx, processElement, getTrxName(ctx));
+			processid = ReferenceUtils.resolveReference(ctx.ctx, processElement, getTrxName(ctx));
+			if (processid <= 0) {
+				element.defer = true;
+				element.unresolved = "AD_Process_ID " + (processElement.contents != null ? processElement.contents.toString() : "");
+				return;
+			}
 
-			Query query = new Query(ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
+			Query query = new Query(ctx.ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{roleid, processid}).first();
 			if (po == null)
 			{
-				po = new X_AD_Process_Access(ctx, 0, getTrxName(ctx));
+				po = new X_AD_Process_Access(ctx.ctx, 0, getTrxName(ctx));
 				po.setAD_Process_ID(processid);
 				po.setAD_Role_ID(roleid);
 			}
@@ -71,37 +82,45 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
+			element.unresolved = notfounds.toString();
 			return;
 		}
 		po.saveEx();
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Process_ID = Env.getContextAsInt(ctx, X_AD_Process.COLUMNNAME_AD_Process_ID);
-		int AD_Role_ID = Env.getContextAsInt(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
-		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Process_Access.Table_Name, atts);
-		createProcessAccessBinding(ctx, document, AD_Process_ID, AD_Role_ID);
-		document.endElement("", "", I_AD_Process_Access.Table_Name);
+		int AD_Process_ID = Env.getContextAsInt(ctx.ctx, X_AD_Process.COLUMNNAME_AD_Process_ID);
+		int AD_Role_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
+		
+		X_AD_Process_Access po = null;
+		Query query = new Query(ctx.ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
+		po = query.setParameters(new Object[]{AD_Role_ID, AD_Process_ID}).first();
+
+		if (po != null) {
+
+			if (ctx.packOut.getFromDate() != null) {
+				if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+					return;
+				}
+			}
+			
+			AttributesImpl atts = new AttributesImpl();
+			addTypeName(atts, "table");
+			document.startElement("", "", I_AD_Process_Access.Table_Name, atts);
+			createProcessAccessBinding(ctx, document, po);
+			document.endElement("", "", I_AD_Process_Access.Table_Name);
+		}
 	}
 
-	private void createProcessAccessBinding(Properties ctx, TransformerHandler document,
-			int process_id, int role_id) {
-
-		X_AD_Process_Access po = null;
-		Query query = new Query(ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
-		po = query.setParameters(new Object[]{role_id, process_id}).first();
-		if (po != null)
-		{
-			PoExporter filler = new PoExporter(ctx, document, po);
-			List<String> excludes = defaultExcludeList(X_AD_Process_Access.Table_Name);
-			filler.export(excludes);
-		}
+	private void createProcessAccessBinding(PIPOContext ctx, TransformerHandler document,
+			X_AD_Process_Access po) {
+		PoExporter filler = new PoExporter(ctx, document, po);
+		List<String> excludes = defaultExcludeList(X_AD_Process_Access.Table_Name);
+		filler.export(excludes);
 	}
 
 	@Override

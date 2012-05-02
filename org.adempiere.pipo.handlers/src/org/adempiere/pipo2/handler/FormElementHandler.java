@@ -19,11 +19,11 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -42,16 +42,16 @@ public class FormElementHandler extends AbstractElementHandler {
 
 	private List<Integer> forms = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Form.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {			
+		if (isProcessElement(ctx.ctx, entitytype)) {			
 			MForm mForm = findPO(ctx, element);
 			if (mForm == null) {
 				String name = getStringValue(element, "Name");
 				int id = findIdByName(ctx, "AD_Form", name);
-				mForm = new MForm(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mForm = new MForm(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			PoFiller filler = new PoFiller(ctx, mForm, element, this);
 			
@@ -63,6 +63,7 @@ public class FormElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -83,7 +84,7 @@ public class FormElementHandler extends AbstractElementHandler {
 				}
 				else{
 					logImportDetail (ctx, impDetail, 0, mForm.getName(), mForm.get_ID(), action);
-					throw new POSaveFailedException("Failed to save form definition");
+					throw new POSaveFailedException("Failed to save form definition " + mForm.getName());
 				}
 			}
 		} else {
@@ -91,16 +92,23 @@ public class FormElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(Properties ctx, TransformerHandler document)
+	protected void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Form_ID = Env.getContextAsInt(ctx, "AD_Form_ID");
+		int AD_Form_ID = Env.getContextAsInt(ctx.ctx, "AD_Form_ID");
 		if (forms.contains(AD_Form_ID)) return;
 
 		forms.add(AD_Form_ID);
-		X_AD_Form m_Form = new X_AD_Form (ctx, AD_Form_ID, null);
+		X_AD_Form m_Form = new X_AD_Form (ctx.ctx, AD_Form_ID, null);
+
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Form.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
+
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Form.Table_Name,atts);
@@ -108,7 +116,7 @@ public class FormElementHandler extends AbstractElementHandler {
 		document.endElement("","",I_AD_Form.Table_Name);
 	}
 
-	private void createFormBinding(Properties ctx, TransformerHandler document, X_AD_Form m_Form)
+	private void createFormBinding(PIPOContext ctx, TransformerHandler document, X_AD_Form m_Form)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_Form);
 		List<String> excludes = defaultExcludeList(X_AD_Form.Table_Name);
@@ -121,8 +129,8 @@ public class FormElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Form_ID);
 	}
 }

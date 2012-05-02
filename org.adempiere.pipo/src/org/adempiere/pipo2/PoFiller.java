@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.PO;
@@ -16,8 +15,9 @@ import org.compiere.util.Env;
 public class PoFiller{
 
 	PO po = null;
+	@SuppressWarnings("unused")
 	private AbstractElementHandler handler;
-	private Properties ctx;
+	private PIPOContext ctx;
 	private Element element;
 
 	/**
@@ -26,7 +26,7 @@ public class PoFiller{
 	 * @param atts
 	 * @param handler
 	 */
-	public PoFiller(Properties ctx, PO po, Element element, AbstractElementHandler handler){
+	public PoFiller(PIPOContext ctx, PO po, Element element, AbstractElementHandler handler){
 
 		this.ctx = ctx;
 		this.po = po;
@@ -51,7 +51,7 @@ public class PoFiller{
 		else if (oldValue != null && oldValue.toString().equals(value))
 			return;
 		else
-			po.set_ValueOfColumn(columnName, value);
+			po.set_ValueNoCheck(columnName, value);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class PoFiller{
 		if (po.get_Value(columnName) != null && po.get_ValueAsBoolean(columnName) == bool)
 			return;
 		else
-			po.set_ValueOfColumn(columnName, bool);
+			po.set_ValueNoCheck(columnName, bool);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class PoFiller{
 		else if (oldValue != null && oldValue.equals(ts))
 			return;
 		else
-			po.set_ValueOfColumn(qName, ts);
+			po.set_ValueNoCheck(qName, ts);
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class PoFiller{
 		else if (oldValue != null && oldValue.equals(i))
 			return;
 		else
-			po.set_ValueOfColumn(qName, i);
+			po.set_ValueNoCheck(qName, i);
 	}
 
 	/**
@@ -131,10 +131,10 @@ public class PoFiller{
 		else if (oldValue != null && oldValue.equals(bd))
 			return;
 		else
-			po.set_ValueOfColumn(qName, bd);
+			po.set_ValueNoCheck(qName, bd);
 	}
 
-	public static int findTableReference(Properties ctx, AbstractElementHandler handler, Element element, String qName) {
+	public static int findTableReference(PIPOContext ctx, AbstractElementHandler handler, Element element, String qName) {
 		Element propertyElement = element.properties.get(qName);
 		if (propertyElement == null)
 			return 0;
@@ -169,16 +169,16 @@ public class PoFiller{
 		String value = e.contents.toString();
 		String columnName = qName;
 		if (value != null && value.trim().length() > 0) {
-			int id = ReferenceUtils.resolveReference(ctx, e, po.get_TrxName());
+			int id = ReferenceUtils.resolveReference(ctx.ctx, e, po.get_TrxName());
 			if (columnName.equals("AD_Client_ID") && id > 0) {
-				if (id != Env.getAD_Client_ID(ctx)) {
+				if (id != Env.getAD_Client_ID(ctx.ctx)) {
 					return -1;
 				}
 			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
 				if (id > 0) {
 					if (po.get_ValueAsInt(columnName) != id) {
-						po.set_ValueOfColumn(columnName, id);
+						po.set_ValueNoCheck(columnName, id);
 					}
 					return id;
 				}
@@ -199,16 +199,26 @@ public class PoFiller{
 		POInfo info = POInfo.getPOInfo(po.getCtx(), po.get_Table_ID());
 		List<String>notFounds = new ArrayList<String>();
 
-		//special treatment for ad_org_id
-		Element orgElement = element.properties.get("AD_Org_ID");
-		String sAD_Org_ID = orgElement != null ? orgElement.contents.toString() : null;
-		if (sAD_Org_ID != null && sAD_Org_ID.equals("0"))
+		//special treatment for ad_client_id and ad_org_id
+		Element clientElement = element.properties.get("AD_Client_ID");
+		String sAD_Client_ID = clientElement != null ? clientElement.contents.toString() : null;
+		if (sAD_Client_ID != null && sAD_Client_ID.equals("0"))
+		{
+			po.set_ValueNoCheck("AD_Client_ID", 0);
 			po.setAD_Org_ID(0);
-		else if (sAD_Org_ID != null && sAD_Org_ID.equals("@AD_Org_ID@"))
-			po.setAD_Org_ID(Env.getAD_Org_ID(ctx));
-		else {
-			if (setTableReference("AD_Client_ID") >= 0)
-				setTableReference("AD_Org_ID");
+		}
+		else
+		{
+			Element orgElement = element.properties.get("AD_Org_ID");
+			String sAD_Org_ID = orgElement != null ? orgElement.contents.toString() : null;
+			if (sAD_Org_ID != null && sAD_Org_ID.equals("0"))
+				po.setAD_Org_ID(0);
+			else if (sAD_Org_ID != null && sAD_Org_ID.equals("@AD_Org_ID@"))
+				po.setAD_Org_ID(Env.getAD_Org_ID(ctx.ctx));
+			else {
+				if (setTableReference("AD_Client_ID") >= 0)
+					setTableReference("AD_Org_ID");
+			}
 		}
 
 		for(String qName : element.properties.keySet()) {
@@ -262,7 +272,7 @@ public class PoFiller{
 			if (component.length == 2) {
 				String fileName = component[0];
 				String dataType = component[1];
-				PackIn packIn = handler.getPackIn(ctx);
+				PackIn packIn = ctx.packIn;
 				try {
 					byte[] bytes = packIn.readBlob(fileName);
 					if ("byte[]".equals(dataType)) {
@@ -275,6 +285,6 @@ public class PoFiller{
 				}
 			}
 		}
-		po.set_ValueOfColumn(qName, data);
+		po.set_ValueNoCheck(qName, data);
 	}
 }

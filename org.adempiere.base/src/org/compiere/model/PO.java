@@ -863,7 +863,7 @@ public abstract class PO
 	 *  @param value value
 	 *  @return true if value set
 	 */
-	protected final boolean set_ValueNoCheck (String ColumnName, Object value)
+	public final boolean set_ValueNoCheck (String ColumnName, Object value)
 	{
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)

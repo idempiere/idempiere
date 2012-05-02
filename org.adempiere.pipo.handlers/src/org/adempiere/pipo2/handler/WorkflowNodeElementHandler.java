@@ -18,11 +18,11 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -35,35 +35,37 @@ import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.wf.MWFNode;
+import org.compiere.wf.MWorkflow;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class WorkflowNodeElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_WF_Node.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
-			if (isParentSkip(element, null)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
+			/*if (isParentSkip(element, null)) {
 				element.skip = true;
 				return;
-			}
-			if (isParentDefer(element, I_AD_Workflow.Table_Name)) {
+			}*/
+			if (isParentDefer(element, MWorkflow.Table_Name)) {
 				element.unresolved = "Parent element mark as defer: " + getStringValue(element, "AD_Workflow.Value");
 				element.defer = true;
 				return;
 			}
 
-			X_AD_WF_Node mWFNode = findPO(ctx, element);
+			MWFNode mWFNode = findPO(ctx, element);
 			if (mWFNode == null) {
 				int workflowId = 0;
 				Element wfElement = element.properties.get(I_AD_WF_Node.COLUMNNAME_AD_Workflow_ID);
 				if (getParentId(element, I_AD_Workflow.Table_Name) > 0) {
 					workflowId = getParentId(element, I_AD_Workflow.Table_Name);
 				} else {
-					workflowId = ReferenceUtils.resolveReference(ctx, wfElement, getTrxName(ctx));
+					workflowId = ReferenceUtils.resolveReference(ctx.ctx, wfElement, getTrxName(ctx));
 				}
 				if (workflowId <= 0) {
 					element.defer = true;
@@ -76,7 +78,7 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 						"SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID=? and Value =?");
 
 				int id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), workflowId, workflowNodeValue);
-				mWFNode = new X_AD_WF_Node(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mWFNode = new MWFNode(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mWFNode.setValue(workflowNodeValue);
 				mWFNode.setAD_Workflow_ID(workflowId);
 				excludes.add(I_AD_WF_Node.COLUMNNAME_AD_Workflow_ID);
@@ -87,6 +89,7 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -110,7 +113,7 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 					log.info("m_WFNode save failure");
 					logImportDetail(ctx, impDetail, 0, mWFNode.getName(), mWFNode
 							.get_ID(), action);
-					throw new POSaveFailedException("WorkflowNode");
+					throw new POSaveFailedException("Failed to save WorkflowNode " + mWFNode.getName());
 				}
 			}
 		} else {
@@ -118,25 +121,29 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_WF_Node_ID = Env.getContextAsInt(ctx,
+		int AD_WF_Node_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
 		AttributesImpl atts = new AttributesImpl();
-		X_AD_WF_Node m_WF_Node = new X_AD_WF_Node(ctx, AD_WF_Node_ID,
+		MWFNode m_WF_Node = new MWFNode(ctx.ctx, AD_WF_Node_ID,
 				getTrxName(ctx));
-
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_WF_Node.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_WF_Node.Table_Name, atts);
 		createWorkflowNodeBinding(ctx, document, m_WF_Node);
 		document.endElement("", "", I_AD_WF_Node.Table_Name);
 	}
 
-	private void createWorkflowNodeBinding(Properties ctx, TransformerHandler document,
-			X_AD_WF_Node m_WF_Node) {
+	private void createWorkflowNodeBinding(PIPOContext ctx, TransformerHandler document,
+			MWFNode m_WF_Node) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_WF_Node);
 		List<String> excludes = defaultExcludeList(X_AD_WF_Node.Table_Name);
@@ -150,8 +157,8 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
+		packout.getCtx().ctx.remove(I_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
 	}
 }

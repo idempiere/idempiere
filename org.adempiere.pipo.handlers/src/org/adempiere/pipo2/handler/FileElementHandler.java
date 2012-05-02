@@ -1,7 +1,6 @@
 package org.adempiere.pipo2.handler;
 
 import java.io.File;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -10,6 +9,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.FileElementParameters;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutDocument;
 import org.adempiere.pipo2.PackoutItem;
@@ -88,11 +88,11 @@ public class FileElementHandler implements ElementHandler {
 	}
 
 	@Override
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 	}
 
 	@Override
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 }

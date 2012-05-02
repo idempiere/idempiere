@@ -1,7 +1,13 @@
 package org.adempiere.pipo2;
 
+import java.io.UnsupportedEncodingException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
+import org.adempiere.exceptions.DBException;
+import org.apache.commons.codec.binary.Hex;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.DB;
@@ -79,25 +85,29 @@ public class ReferenceUtils {
 	public static String getTableReference(String tableName, String searchColumn, int id, AttributesImpl atts)
 	{
 		String keyColumn = tableName + "_ID";
-		String sql = "SELECT " + searchColumn + " FROM "
-			+ tableName + " WHERE " + keyColumn + " = ?";
 		if (id > 0 && id <= PackOut.MAX_OFFICIAL_ID)
 		{
+			//official id
 			atts.addAttribute("", "", "reference", "CDATA", "id");
 			String value = Integer.toString(id);
 			return value;
 		}
 		else if (id == 0)
 		{
+			//no id, should never happen
 			atts.addAttribute("", "", "reference", "CDATA", "id");
 			return "";
 		}
 		else
 		{
 			MTable table = MTable.get(Env.getCtx(), tableName);
-			if (table.getColumn(PO.getUUIDColumnName(tableName)) != null)
+			if (table == null)
+				throw new RuntimeException("Table Not Found. TableName="+tableName);
+			String uuidColumnName = PO.getUUIDColumnName(tableName);
+			if (table.getColumn(uuidColumnName) != null)
 			{
-				sql = "SELECT " + PO.getUUIDColumnName(tableName) + " FROM "
+				//uuid
+				String sql = "SELECT " + uuidColumnName + " FROM "
 						+ tableName + " WHERE " + keyColumn + " = ?";
 				String value = DB.getSQLValueString(null, sql, id);
 				if (value != null && value.trim().length() > 0)
@@ -108,12 +118,53 @@ public class ReferenceUtils {
 				}
 			}
 
-			String value = DB.getSQLValueString(null, sql, id);
-			StringBuffer buffer = new StringBuffer();
-			buffer.append(tableName).append(".").append(searchColumn);
-			atts.addAttribute("", "", "reference", "CDATA", "table");
-			atts.addAttribute("", "", "reference-key", "CDATA", buffer.toString());
-			return value;
+			//search column
+			if (searchColumn.indexOf(",") > 0) {
+				//composite search column
+				String value = "";
+				String[] columns = searchColumn.split("[,]");
+				PreparedStatement stmt = null;
+				ResultSet rs = null;
+				try {
+					stmt = DB.prepareStatement("SELECT " + searchColumn + " FROM " + tableName, null);
+					rs = stmt.executeQuery();
+					if (rs.next()) {
+						for(int i = 0; i < columns.length; i++) {
+							Object o = rs.getObject(i+1);
+							String s = o != null ? o.toString() : "";
+							if (s.length() > 0) {
+								char[] chars = Hex.encodeHex(s.getBytes("UTF-8"));
+								s = new String(chars);
+							}
+							if (i == 0) {
+								value = s;
+							} else {
+								value = value+","+s;
+							}
+						}
+					}
+				} catch (SQLException e) {
+					throw new DBException(e);
+				} catch (UnsupportedEncodingException e) {
+					throw new RuntimeException(e);
+				} finally {
+					DB.close(rs, stmt);
+				}
+				StringBuffer buffer = new StringBuffer();
+				buffer.append(tableName).append(".").append(searchColumn);
+				atts.addAttribute("", "", "reference", "CDATA", "table");
+				atts.addAttribute("", "", "reference-key", "CDATA", buffer.toString());
+				return value;
+			} else {
+				String sql = "SELECT " + searchColumn + " FROM "
+					+ tableName + " WHERE " + keyColumn + " = ?";
+				String value = DB.getSQLValueString(null, sql, id);
+				StringBuffer buffer = new StringBuffer();
+				buffer.append(tableName).append(".").append(searchColumn);
+				atts.addAttribute("", "", "reference", "CDATA", "table");
+				atts.addAttribute("", "", "reference-key", "CDATA", buffer.toString());
+				return value;
+			}
 		}
 	}
 }

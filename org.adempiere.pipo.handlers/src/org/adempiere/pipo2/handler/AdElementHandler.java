@@ -19,11 +19,11 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -44,19 +44,19 @@ public class AdElementHandler extends AbstractElementHandler {
 	private final String AD_ELEMENT = "AD_Element";
 
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		String action = null;
 
 		String entitytype = getStringValue(element, "EntityType");
 		String ColumnName = getStringValue(element, "ColumnName");
 
-		if (isProcessElement(ctx, entitytype)) {
-			
+		if (isProcessElement(ctx.ctx, entitytype)) {
+
 			M_Element mElement = findPO(ctx, element);
 			if (mElement == null) {
-				int id = findIdByColumn(ctx, X_AD_Element.Table_Name, X_AD_Element.COLUMNNAME_ColumnName, ColumnName);
-				mElement = new M_Element(ctx, id, getTrxName(ctx));
+				int id = findIdByColumn(ctx, X_AD_Element.Table_Name, X_AD_Element.COLUMNNAME_ColumnName, ColumnName, /*ignorecase=*/true);
+				mElement = new M_Element(ctx.ctx, id, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_Element.Table_Name);
 			if (mElement.getAD_Element_ID() == 0 && isOfficialId(element, "AD_Element_ID"))
@@ -71,6 +71,7 @@ public class AdElementHandler extends AbstractElementHandler {
 			List<String> notfounds = pf.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 			
@@ -94,7 +95,7 @@ public class AdElementHandler extends AbstractElementHandler {
 				} else {
 					logImportDetail(ctx, impDetail, 0, mElement.getName(),
 							mElement.get_ID(), action);
-					throw new POSaveFailedException("Reference");
+					throw new POSaveFailedException("Failed to save Element " + mElement.getName());
 				}
 			}
 		} else {
@@ -102,14 +103,14 @@ public class AdElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(Properties ctx, TransformerHandler document)
+	protected void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 
 
-		int adElement_id = Env.getContextAsInt(ctx,
+		int adElement_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Element.COLUMNNAME_AD_Element_ID);
 
 		if (processedElements.contains(adElement_id))
@@ -117,18 +118,22 @@ public class AdElementHandler extends AbstractElementHandler {
 
 		processedElements.add(adElement_id);
 
-		X_AD_Element m_AdElement = new X_AD_Element(ctx, adElement_id, null);
+		X_AD_Element mAdElement = new X_AD_Element(ctx.ctx, adElement_id, null);
+
+		if (ctx.packOut.getFromDate() != null) {
+			if (mAdElement.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
 
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", "AD_Element", atts);
-		createAdElementBinding(ctx, document, m_AdElement);
+		createAdElementBinding(ctx, document, mAdElement);
 
-		PackOut packOut = (PackOut)ctx.get("PackOutProcess");
-
-
+		PackOut packOut = ctx.packOut;
 		try{
-			new CommonTranslationHandler().packOut(packOut,document,null,m_AdElement.get_ID());
+			new CommonTranslationHandler().packOut(packOut,document,null,mAdElement.get_ID());
 		}
 		catch(Exception e)
 		{
@@ -139,7 +144,7 @@ public class AdElementHandler extends AbstractElementHandler {
 	}
 
 
-	private void createAdElementBinding(Properties ctx, TransformerHandler document,
+	private void createAdElementBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Element m_AdElement) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_AdElement);
@@ -152,8 +157,8 @@ public class AdElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Element.COLUMNNAME_AD_Element_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Element.COLUMNNAME_AD_Element_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Element.COLUMNNAME_AD_Element_ID);
+		packout.getCtx().ctx.remove(X_AD_Element.COLUMNNAME_AD_Element_ID);
 	}
 }

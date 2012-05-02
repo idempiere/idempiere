@@ -19,12 +19,14 @@
 package org.adempiere.pipo2;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Form;
 import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.I_AD_Menu;
@@ -95,9 +97,27 @@ public class PackOutProcess extends SvrProcess
 
 			if (packageExp.getAD_Package_Exp_ID() == p_PackOut_ID){
 				//Create the package documentation
-				packoutDirectory = packageExp.getFile_Directory().trim();
-				if (!packoutDirectory.endsWith("/") && !packoutDirectory.endsWith("\\"))
-					packoutDirectory+= File.separator;
+				packoutDirectory = packageExp.getFile_Directory();
+				if (packoutDirectory == null || packoutDirectory.trim().length() == 0) {
+					packoutDirectory = Adempiere.getAdempiereHome().trim();
+					if (!packoutDirectory.endsWith("/") && !packoutDirectory.endsWith("\\"))
+						packoutDirectory+= File.separator;
+					packoutDirectory = packoutDirectory + "packout" + File.separator;
+				} else {
+					packoutDirectory = packoutDirectory.trim();
+					if (!packoutDirectory.endsWith("/") && !packoutDirectory.endsWith("\\"))
+						packoutDirectory+= File.separator;
+				}
+
+				//create packout folder if needed
+				File packoutDirectoryFile = new File(packoutDirectory);
+				if (!packoutDirectoryFile.exists()) {
+					boolean success = packoutDirectoryFile.mkdirs();
+					if (!success) {
+						log.warning("Failed to create target directory. " + packoutDirectory);
+					}
+				}
+
 				PackoutDocument packoutDocument = new PackoutDocument(packageExp.getName(), packageExp.getPK_Version(), packageExp.getReleaseNo(), packageExp.getVersion(),
 						packageExp.getDescription(), packageExp.getInstructions(), packageExp.getUserName(),
 						packageExp.getEMail(), packageExp.getCreated(), packageExp.getUpdated());
@@ -115,6 +135,12 @@ public class PackOutProcess extends SvrProcess
 				}
 
 				PackOut packOut = new PackOut();
+				packOut.setCtx(getCtx());
+				Object dateFromValue = packageExp.get_Value("DateFrom");
+				if (dateFromValue != null && dateFromValue instanceof Timestamp) {
+					packOut.setFromDate((Timestamp) dateFromValue);
+				}
+				
 				packOut.export(packoutDirectory, null, packoutDocument, packoutItems, get_TrxName());
 				processedCount = packOut.getExportCount();
 				exportFile = packOut.getExportFile();
