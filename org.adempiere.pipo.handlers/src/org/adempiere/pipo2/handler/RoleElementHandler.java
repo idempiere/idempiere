@@ -20,12 +20,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -61,7 +61,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 	private TaskAccessElementHandler taskHandler = new TaskAccessElementHandler();
 	private WorkflowAccessElementHandler workflowHandler = new WorkflowAccessElementHandler();
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 
 		List<String> excludes = defaultExcludeList(X_AD_Role.Table_Name);
@@ -70,7 +70,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		if (mRole == null) {
 			String name = getStringValue(element, "Name", excludes);
 			int id = findIdByName(ctx, "AD_Role", name);
-			mRole = new MRole(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			mRole = new MRole(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			mRole.setName(name);
 		}
 		
@@ -81,6 +81,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
+			element.unresolved = notfounds.toString();
 			return;
 		}
 
@@ -101,26 +102,36 @@ public class RoleElementHandler extends AbstractElementHandler {
 	
 				logImportDetail(ctx, impDetail, 0, mRole.getName(), mRole.get_ID(),
 						action);
-				throw new POSaveFailedException("Role");
+				throw new POSaveFailedException("Failed to save Role " + mRole.getName());
 			}
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int Role_id = Env.getContextAsInt(ctx,
+		int Role_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID);
 		if (roles.contains(Role_id))
 			return;
 		roles.add(Role_id);
-		X_AD_Role m_Role = new X_AD_Role(ctx, Role_id, null);
-		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Role.Table_Name, atts);
-		createRoleBinding(ctx, document, m_Role);
+
+		boolean createElement = true;
+		X_AD_Role m_Role = new X_AD_Role(ctx.ctx, Role_id, null);
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Role.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				createElement = false;
+			}
+		}
+
+		if (createElement) {
+			AttributesImpl atts = new AttributesImpl();
+			addTypeName(atts, "table");
+			document.startElement("", "", I_AD_Role.Table_Name, atts);
+			createRoleBinding(ctx, document, m_Role);
+		}
 
 		// Process org access
 		String sql = "SELECT AD_Org_ID, AD_Role_ID FROM AD_Role_OrgAccess WHERE AD_Role_ID= "
@@ -141,7 +152,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 		}
 
 		// Process user assignment access
-		sql = "SELECT AD_User_ID, AD_Role_ID, AD_Org_ID FROM AD_User_Roles WHERE AD_Role_ID= " + Role_id;
+		sql = "SELECT AD_User_ID, AD_Role_ID, AD_Org_ID FROM AD_User_Roles WHERE AD_Role_ID= " + Role_id
+			+ " AND AD_User_ID > 0 ";
 		pstmt = null;
 		rs = null;
 		try {
@@ -241,75 +253,78 @@ public class RoleElementHandler extends AbstractElementHandler {
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		document.endElement("", "", I_AD_Role.Table_Name);
+		
+		if (createElement) {
+			document.endElement("", "", X_AD_Role.Table_Name);
+		}
 	}
 
-	private void createTaskAccess(Properties ctx, TransformerHandler document,
+	private void createTaskAccess(PIPOContext ctx, TransformerHandler document,
 			int AD_Task_ID, int AD_Role_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_Task.COLUMNNAME_AD_Task_ID, AD_Task_ID);
-		Env.setContext(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
+		Env.setContext(ctx.ctx, X_AD_Task.COLUMNNAME_AD_Task_ID, AD_Task_ID);
+		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		taskHandler.create(ctx, document);
-		ctx.remove(X_AD_Task.COLUMNNAME_AD_Task_ID);
-		ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		ctx.ctx.remove(X_AD_Task.COLUMNNAME_AD_Task_ID);
+		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
-	private void createWorkflowAccess(Properties ctx,
+	private void createWorkflowAccess(PIPOContext ctx,
 			TransformerHandler document, int AD_Workflow_ID, int AD_Role_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_Workflow.COLUMNNAME_AD_Workflow_ID, AD_Workflow_ID);
-		Env.setContext(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
+		Env.setContext(ctx.ctx, X_AD_Workflow.COLUMNNAME_AD_Workflow_ID, AD_Workflow_ID);
+		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		workflowHandler.create(ctx, document);
-		ctx.remove(X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
-		ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		ctx.ctx.remove(X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
+		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
-	private void createFormAccess(Properties ctx, TransformerHandler document,
+	private void createFormAccess(PIPOContext ctx, TransformerHandler document,
 			int AD_Form_ID, int AD_Role_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_Form.COLUMNNAME_AD_Form_ID, AD_Form_ID);
-		Env.setContext(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
+		Env.setContext(ctx.ctx, X_AD_Form.COLUMNNAME_AD_Form_ID, AD_Form_ID);
+		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		formHandler.create(ctx, document);
-		ctx.remove(X_AD_Form.COLUMNNAME_AD_Form_ID);
-		ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		ctx.ctx.remove(X_AD_Form.COLUMNNAME_AD_Form_ID);
+		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
-	private void createProcessAccess(Properties ctx,
+	private void createProcessAccess(PIPOContext ctx,
 			TransformerHandler document, int AD_Process_ID, int AD_Role_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_Process.COLUMNNAME_AD_Process_ID, AD_Process_ID);
-		Env.setContext(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
+		Env.setContext(ctx.ctx, X_AD_Process.COLUMNNAME_AD_Process_ID, AD_Process_ID);
+		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		processHandler.create(ctx, document);
-		ctx.remove(X_AD_Process.COLUMNNAME_AD_Process_ID);
-		ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		ctx.ctx.remove(X_AD_Process.COLUMNNAME_AD_Process_ID);
+		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
-	private void createWindowAccess(Properties ctx,
+	private void createWindowAccess(PIPOContext ctx,
 			TransformerHandler document, int AD_Window_ID, int AD_Role_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_Window.COLUMNNAME_AD_Window_ID, AD_Window_ID);
-		Env.setContext(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
+		Env.setContext(ctx.ctx, X_AD_Window.COLUMNNAME_AD_Window_ID, AD_Window_ID);
+		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		windowHandler.create(ctx, document);
-		ctx.remove(X_AD_Window.COLUMNNAME_AD_Window_ID);
-		ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		ctx.ctx.remove(X_AD_Window.COLUMNNAME_AD_Window_ID);
+		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
-	private void createUserRole(Properties ctx, TransformerHandler document,
+	private void createUserRole(PIPOContext ctx, TransformerHandler document,
 			int AD_User_ID, int AD_Role_ID, int AD_Org_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_User.COLUMNNAME_AD_User_ID, AD_User_ID);
-		Env.setContext(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
-		Env.setContext(ctx, "AD_Org_ID", AD_Org_ID);
+		Env.setContext(ctx.ctx, X_AD_User.COLUMNNAME_AD_User_ID, AD_User_ID);
+		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
+		Env.setContext(ctx.ctx, "AD_Org_ID", AD_Org_ID);
 		userHandler.create(ctx, document);
-		ctx.remove(X_AD_User.COLUMNNAME_AD_User_ID);
-		ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
-		ctx.remove("AD_Org_ID");
+		ctx.ctx.remove(X_AD_User.COLUMNNAME_AD_User_ID);
+		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		ctx.ctx.remove("AD_Org_ID");
 	}
 
-	private void createOrgAccess(Properties ctx, TransformerHandler document,
+	private void createOrgAccess(PIPOContext ctx, TransformerHandler document,
 			int AD_Org_ID, int AD_Role_ID) throws SAXException {
-		Env.setContext(ctx, "AD_Org_ID", AD_Org_ID);
-		Env.setContext(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
+		Env.setContext(ctx.ctx, "AD_Org_ID", AD_Org_ID);
+		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		orgHandler.create(ctx, document);
-		ctx.remove("AD_Org_ID");
-		ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		ctx.ctx.remove("AD_Org_ID");
+		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
-	private void createRoleBinding(Properties ctx, TransformerHandler document,
+	private void createRoleBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Role m_Role) {
 		PoExporter filler = new PoExporter(ctx, document, m_Role);
 		List<String> excludes = defaultExcludeList(X_AD_Role.Table_Name);
@@ -329,8 +344,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID);
 	}
 }

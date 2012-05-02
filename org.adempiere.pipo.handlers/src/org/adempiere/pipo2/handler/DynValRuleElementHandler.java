@@ -18,11 +18,11 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -40,16 +40,16 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 
 	private List<Integer> rules = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 			String name = getStringValue(element, "Name");
 			
 			X_AD_Val_Rule mValRule = findPO(ctx, element);
 			if (mValRule == null)
 			{
 				int id = findIdByColumn(ctx, "AD_Val_Rule", "Name", name);
-				mValRule = new X_AD_Val_Rule(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mValRule = new X_AD_Val_Rule(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			if (mValRule.getAD_Val_Rule_ID() == 0 && isOfficialId(element, "AD_Val_Rule_ID"))
 				mValRule.setAD_Val_Rule_ID(getIntValue(element, "AD_Val_Rule_ID"));
@@ -60,6 +60,7 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 			
@@ -80,7 +81,7 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 				}
 				else{
 					logImportDetail (ctx, impDetail, 0, mValRule.getName(), mValRule.get_ID(),action);
-					throw new POSaveFailedException("Failed to save dynamic validation rule.");
+					throw new POSaveFailedException("Failed to save dynamic validation rule " + mValRule.getName());
 				}
 			}
 		} else {
@@ -89,16 +90,23 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(Properties ctx, TransformerHandler document)
+	protected void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Val_Rule_ID = Env.getContextAsInt(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID);
+		int AD_Val_Rule_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID);
 		if (rules.contains(AD_Val_Rule_ID))
 			return;
 		rules.add(AD_Val_Rule_ID);
-		X_AD_Val_Rule m_ValRule = new X_AD_Val_Rule (ctx, AD_Val_Rule_ID, null);
+		X_AD_Val_Rule m_ValRule = new X_AD_Val_Rule (ctx.ctx, AD_Val_Rule_ID, null);
+
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_ValRule.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
+
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Val_Rule.Table_Name, atts);
@@ -107,7 +115,7 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 
 	}
 
-	private void createDynamicValidationRuleBinding(Properties ctx, TransformerHandler document, X_AD_Val_Rule m_ValRule)
+	private void createDynamicValidationRuleBinding(PIPOContext ctx, TransformerHandler document, X_AD_Val_Rule m_ValRule)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_ValRule);
 		List<String>excludes = defaultExcludeList(X_AD_Val_Rule.Table_Name);
@@ -122,9 +130,9 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
 
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID, recordId);
 
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID);
 	}
 }

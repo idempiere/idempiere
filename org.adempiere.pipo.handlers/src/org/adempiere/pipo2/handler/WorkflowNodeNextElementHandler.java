@@ -17,11 +17,11 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -41,15 +41,15 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
-		List<String> excludes = defaultExcludeList(X_AD_WF_NodeNext.Table_Name);
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
+		List<String> excludes = defaultExcludeList(MWFNodeNext.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
-			if (isParentSkip(element, null)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
+			/*if (isParentSkip(element, null)) {
 				element.skip = true;
 				return;
-			}
+			}*/
 
 			MWFNodeNext mWFNodeNext = findPO(ctx, element);
 			if (mWFNodeNext == null) {
@@ -58,7 +58,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				if (getParentId(element, I_AD_Workflow.Table_Name) > 0) {
 					workflowId = getParentId(element, I_AD_Workflow.Table_Name);
 				} else {
-					workflowId = ReferenceUtils.resolveReference(ctx, wfElement, getTrxName(ctx));
+					workflowId = ReferenceUtils.resolveReference(ctx.ctx, wfElement, getTrxName(ctx));
 				}
 				if (workflowId <= 0) {
 					element.defer = true;
@@ -69,10 +69,10 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				int wfNodeId = 0;
 				Element wfnElement = element.properties.get(I_AD_WF_NodeNext.COLUMNNAME_AD_WF_Node_ID);
 				if (ReferenceUtils.isIDLookup(wfnElement) || ReferenceUtils.isUUIDLookup(wfnElement)) {
-					wfNodeId = ReferenceUtils.resolveReference(ctx, wfnElement, getTrxName(ctx));
+					wfNodeId = ReferenceUtils.resolveReference(ctx.ctx, wfnElement, getTrxName(ctx));
 				} else {
 					wfNodeId = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_Node_Id FROM AD_WF_Node WHERE AD_Workflow_ID=? AND Value=? AND AD_Client_ID=?",
-							workflowId, wfnElement.contents.toString(), Env.getAD_Client_ID(ctx));
+							workflowId, wfnElement.contents.toString(), Env.getAD_Client_ID(ctx.ctx));
 				}
 				if (wfNodeId <= 0) {
 					element.defer = true;
@@ -83,10 +83,10 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				int AD_WF_Next_ID = 0;
 				Element nextElement = element.properties.get(I_AD_WF_NodeNext.COLUMNNAME_AD_WF_Next_ID);
 				if (ReferenceUtils.isIDLookup(nextElement) || ReferenceUtils.isUUIDLookup(nextElement)) {
-					AD_WF_Next_ID = ReferenceUtils.resolveReference(ctx, nextElement, getTrxName(ctx));
+					AD_WF_Next_ID = ReferenceUtils.resolveReference(ctx.ctx, nextElement, getTrxName(ctx));
 				} else {
 					AD_WF_Next_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_Node_Id FROM AD_WF_Node WHERE AD_Workflow_ID=? AND Value=? AND AD_Client_ID=?",
-							workflowId, nextElement.contents.toString(), Env.getAD_Client_ID(ctx));
+							workflowId, nextElement.contents.toString(), Env.getAD_Client_ID(ctx.ctx));
 				}
 				if (AD_WF_Next_ID <= 0) {
 					element.defer = true;
@@ -96,7 +96,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 
 				int AD_WF_NodeNext_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_NodeNext_ID FROM AD_WF_NodeNext WHERE AD_WF_Node_ID=? and AD_WF_NEXT_ID =?", wfNodeId, AD_WF_Next_ID);
 
-				mWFNodeNext = new MWFNodeNext(ctx, AD_WF_NodeNext_ID, getTrxName(ctx));
+				mWFNodeNext = new MWFNodeNext(ctx.ctx, AD_WF_NodeNext_ID, getTrxName(ctx));
 				mWFNodeNext.setAD_WF_Node_ID(wfNodeId);
 				mWFNodeNext.setAD_WF_Next_ID(AD_WF_Next_ID);
 			}
@@ -108,6 +108,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -127,7 +128,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				} else{
 					log.info("m_WFNodeNext save failure");
 					logImportDetail (ctx, impDetail, 0, String.valueOf(mWFNodeNext.get_ID()), mWFNodeNext.get_ID(), action);
-					throw new POSaveFailedException("WorkflowNodeNext");
+					throw new POSaveFailedException("Failed to save WorkflowNodeNext");
 				}
 			}
 		} else {
@@ -135,14 +136,19 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int ad_wf_nodenext_id = Env.getContextAsInt(ctx, X_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID);
-		X_AD_WF_NodeNext m_WF_NodeNext = new X_AD_WF_NodeNext(
-				ctx, ad_wf_nodenext_id, null);
+		int ad_wf_nodenext_id = Env.getContextAsInt(ctx.ctx, "AD_WF_NodeNext_ID");
+		MWFNodeNext m_WF_NodeNext = new MWFNodeNext(
+				ctx.ctx, ad_wf_nodenext_id, null);
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_WF_NodeNext.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_WF_NodeNext.Table_Name, atts);
@@ -151,8 +157,8 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 
 	}
 
-	private void createWorkflowNodeNextBinding(Properties ctx, TransformerHandler document,
-			X_AD_WF_NodeNext m_WF_NodeNext)
+	private void createWorkflowNodeNextBinding(PIPOContext ctx, TransformerHandler document,
+			MWFNodeNext m_WF_NodeNext)
 	{
 
 		PoExporter filler = new PoExporter(ctx, document, m_WF_NodeNext);
@@ -161,6 +167,9 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 		if (m_WF_NodeNext.getAD_WF_NodeNext_ID() <= PackOut.MAX_OFFICIAL_ID)
 	        filler.add("AD_WF_NodeNext_ID", new AttributesImpl());
 
+		int AD_Workflow_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Workflow_ID FROM AD_WF_Node WHERE AD_WF_Node_ID=?", m_WF_NodeNext.getAD_WF_Node_ID());
+		filler.addTableReference("AD_Workflow_ID", "AD_Workflow", "Value", AD_Workflow_ID, new AttributesImpl());
+		
 		filler.export(excludes);
 	}
 
@@ -168,8 +177,8 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID);
+		packout.getCtx().ctx.remove(I_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID);
 	}
 }

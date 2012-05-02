@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.adempiere.pipo2;
 
-import java.util.Properties;
-
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.xml.sax.SAXException;
@@ -35,7 +33,7 @@ public interface ElementHandler {
 	 * @param element
 	 * @throws org.xml.sax.SAXException
 	 */
-	public void startElement (Properties ctx, Element element)
+	public void startElement (PIPOContext ctx, Element element)
 	throws org.xml.sax.SAXException;
 
 	/**
@@ -44,8 +42,8 @@ public interface ElementHandler {
 	 * @param element
 	 * @throws SAXException
 	 */
-	public void endElement (Properties ctx, Element element) throws SAXException;
-	
+	public void endElement (PIPOContext ctx, Element element) throws SAXException;
+
 	/**
 	 * @param packout
 	 * @param packoutHandler

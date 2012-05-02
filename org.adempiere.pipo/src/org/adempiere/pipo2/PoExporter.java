@@ -2,18 +2,17 @@ package org.adempiere.pipo2;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.I_AD_Client;
-import org.compiere.model.I_AD_Org;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.model.X_AD_Client;
+import org.compiere.model.X_AD_Org;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -24,7 +23,7 @@ public class PoExporter {
 
 	@SuppressWarnings("unused")
 	private CLogger log = CLogger.getCLogger(getClass());
-	private Properties ctx;
+	private PIPOContext ctx;
 
 	private TransformerHandler transformerHandler;
 
@@ -48,7 +47,7 @@ public class PoExporter {
 	 * @param ctx
 	 * @param po
 	 */
-	public PoExporter(Properties ctx, TransformerHandler handler, PO po){
+	public PoExporter(PIPOContext ctx, TransformerHandler handler, PO po){
 		this.ctx = ctx;
 		this.po = po;
 		transformerHandler = handler;
@@ -180,22 +179,27 @@ public class PoExporter {
 		int AD_Client_ID = po.getAD_Client_ID();
 		if (AD_Client_ID == 0)
 		{
-			addString("AD_Org_ID", "0", new AttributesImpl());
+			addString("AD_Client_ID", "0", new AttributesImpl());
+			if (excludes == null || !excludes.contains("AD_Org_ID"))
+				addString("AD_Org_ID", "0", new AttributesImpl());
 		}
 		else
 		{
-			int AD_Org_ID = po.getAD_Org_ID();
-			if (AD_Org_ID == 0)
+			if (excludes == null || !excludes.contains("AD_Org_ID"))
 			{
-				addString("AD_Org_ID", "0", new AttributesImpl());
-			}
-			else
-			{
-				if (!preservedOrg)
-					addString("AD_Org_ID", "@AD_Org_ID@", new AttributesImpl());
-				else {
-					addTableReference(I_AD_Client.Table_Name, I_AD_Client.COLUMNNAME_Value, new AttributesImpl());
-					addTableReference(I_AD_Org.Table_Name, I_AD_Org.COLUMNNAME_Value, new AttributesImpl());
+				int AD_Org_ID = po.getAD_Org_ID();
+				if (AD_Org_ID == 0)
+				{
+					addString("AD_Org_ID", "0", new AttributesImpl());
+				}
+				else
+				{
+					if (!preservedOrg)
+						addString("AD_Org_ID", "@AD_Org_ID@", new AttributesImpl());
+					else {
+						addTableReference(X_AD_Client.Table_Name, "Value", new AttributesImpl());
+						addTableReference(X_AD_Org.Table_Name, "Value", new AttributesImpl());
+					}
 				}
 			}
 		}
@@ -225,8 +229,18 @@ public class PoExporter {
 				if ("Record_ID".equalsIgnoreCase(columnName) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
 					int AD_Table_ID = po.get_Value(po.get_ColumnIndex("AD_Table_ID")) != null
 							? (Integer)po.get_Value(po.get_ColumnIndex("AD_Table_ID")) : 0;
-					tableName = MTable.getTableName(ctx, AD_Table_ID);
+					tableName = MTable.getTableName(ctx.ctx, AD_Table_ID);
 					searchColumn = tableName + "_ID";
+				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Parent_ID")) {
+					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
+					int AD_Table_ID = DB.getSQLValue(po.get_TrxName(), "SELECT AD_Table_ID From AD_Tree WHERE AD_Tree_ID="+AD_Tree_ID);
+					tableName = MTable.getTableName(po.getCtx(), AD_Table_ID);
+					searchColumn = tableName+"_ID";
+				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Node_ID")) {
+					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
+					int AD_Table_ID = DB.getSQLValue(po.get_TrxName(), "SELECT AD_Table_ID From AD_Tree WHERE AD_Tree_ID="+AD_Tree_ID);
+					tableName = MTable.getTableName(po.getCtx(), AD_Table_ID);
+					searchColumn = tableName+"_ID";
 				} else {
 					//remove _ID
 					searchColumn = columnName;
@@ -257,7 +271,7 @@ public class PoExporter {
 				if ("Record_ID".equalsIgnoreCase(columnName) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
 					int AD_Table_ID = po.get_Value(po.get_ColumnIndex("AD_Table_ID")) != null
 						? (Integer)po.get_Value(po.get_ColumnIndex("AD_Table_ID")) : 0;
-					tableName = MTable.getTableName(ctx, AD_Table_ID);
+					tableName = MTable.getTableName(ctx.ctx, AD_Table_ID);
 					searchColumn = tableName + "_ID";
 				} else if (info.getColumnLookup(i) != null){
 					searchColumn = info.getColumnLookup(i).getColumnName();
@@ -286,6 +300,8 @@ public class PoExporter {
 				addTableReference(columnName, tableName, searchColumn, new AttributesImpl());
 			} else if (DisplayType.isLOB(displayType)) {
 				addBlob(columnName);
+			} else if (columnName.equals(po.getUUIDColumnName()) && po.get_Value(columnName) == null) {
+				continue;
 			} else {
 				add(columnName, "", new AttributesImpl());
 			}
@@ -299,7 +315,7 @@ public class PoExporter {
 			return;
 		}
 
-		PackOut packOut = (PackOut) ctx.get(PackOut.PACK_OUT_PROCESS_CTX_KEY);
+		PackOut packOut = ctx.packOut;
 		byte[] data = null;
 		String dataType = null;
 		String fileName = null;

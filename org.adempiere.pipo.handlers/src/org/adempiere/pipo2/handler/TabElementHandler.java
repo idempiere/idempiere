@@ -19,7 +19,6 @@ package org.adempiere.pipo2.handler;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -27,6 +26,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.ElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -50,11 +50,11 @@ public class TabElementHandler extends AbstractElementHandler {
 
 	private FieldElementHandler fieldHandler = new FieldElementHandler();
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Tab.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 			if (isParentDefer(element, I_AD_Window.Table_Name)) {
 				element.defer = true;
 				return;
@@ -69,17 +69,19 @@ public class TabElementHandler extends AbstractElementHandler {
 					windowId = getParentId(element, I_AD_Window.Table_Name);
 				} else {
 					Element windowElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Window_ID);
-					windowId = ReferenceUtils.resolveReference(ctx, windowElement, getTrxName(ctx));
+					windowId = ReferenceUtils.resolveReference(ctx.ctx, windowElement, getTrxName(ctx));
 				}
 				if (windowId <= 0) {
 					element.defer = true;
+					element.unresolved = "AD_Window_ID";
 					return;
 				}
 
 				Element tableElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Table_ID);
-				int tableId = ReferenceUtils.resolveReference(ctx, tableElement, getTrxName(ctx));
+				int tableId = ReferenceUtils.resolveReference(ctx.ctx, tableElement, getTrxName(ctx));
 				if (tableId <= 0) {
 					element.defer = true;
+					element.unresolved = "AD_Table_ID";
 					return;
 				}
 
@@ -88,7 +90,7 @@ public class TabElementHandler extends AbstractElementHandler {
 						+ " AND AD_Table_ID = ?";
 
 				int id = DB.getSQLValue(getTrxName(ctx), sql, windowId, name, tableId);
-				mTab = new MTab(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mTab = new MTab(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mTab.setAD_Table_ID(tableId);
 				mTab.setName(name);
 				mTab.setAD_Window_ID(windowId);
@@ -101,7 +103,7 @@ public class TabElementHandler extends AbstractElementHandler {
 			Element columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_Column_ID);
 			int AD_Column_ID = 0;
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx.ctx, columnElement, getTrxName(ctx));
 			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
 				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(),
 						"AD_Table", mTab.getAD_Table_ID());
@@ -111,7 +113,7 @@ public class TabElementHandler extends AbstractElementHandler {
 			columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_ColumnSortOrder_ID);
 			AD_Column_ID = 0;
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx.ctx, columnElement, getTrxName(ctx));
 			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
 				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(),
 						"AD_Table", mTab.getAD_Table_ID());
@@ -121,7 +123,7 @@ public class TabElementHandler extends AbstractElementHandler {
 			columnElement = element.properties.get(I_AD_Tab.COLUMNNAME_AD_ColumnSortYesNo_ID);
 			AD_Column_ID = 0;
 			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
+				AD_Column_ID = ReferenceUtils.resolveReference(ctx.ctx, columnElement, getTrxName(ctx));
 			} else if (columnElement.contents != null && columnElement.contents.length() > 0){
 				AD_Column_ID = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnElement.contents.toString(),
 						"AD_Table", mTab.getAD_Table_ID());
@@ -131,6 +133,7 @@ public class TabElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -150,7 +153,7 @@ public class TabElementHandler extends AbstractElementHandler {
 					element.recordId = mTab.getAD_Tab_ID();
 				} else {
 					logImportDetail (ctx, impDetail, 0, mTab.getName(), mTab.get_ID(),action);
-					throw new POSaveFailedException("Tab");
+					throw new POSaveFailedException("Failed to save Tab " + mTab.getName());
 				}
 			}
 		} else {
@@ -159,18 +162,28 @@ public class TabElementHandler extends AbstractElementHandler {
 
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		PackOut packOut = getPackOut(ctx);
-		int AD_Tab_ID = Env.getContextAsInt(ctx, X_AD_Tab.COLUMNNAME_AD_Tab_ID);
-		X_AD_Tab m_Tab = new X_AD_Tab (ctx, AD_Tab_ID, getTrxName(ctx));
-		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "table");
-		document.startElement("","",I_AD_Tab.Table_Name,atts);
-		createTabBinding(ctx,document,m_Tab);
+		PackOut packOut = ctx.packOut;
+		int AD_Tab_ID = Env.getContextAsInt(ctx.ctx, "AD_Tab_ID");
+
+		boolean createElement = true;
+		X_AD_Tab m_Tab = new X_AD_Tab (ctx.ctx, AD_Tab_ID, getTrxName(ctx));
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Tab.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				createElement = false;
+			}
+		}
+		if (createElement) {
+			AttributesImpl atts = new AttributesImpl();
+			addTypeName(atts, "table");
+			document.startElement("","",I_AD_Tab.Table_Name,atts);
+			createTabBinding(ctx,document,m_Tab);
+		}
+
 		//Fields tags.
 		String sql = "SELECT AD_Field_ID FROM AD_FIELD WHERE AD_TAB_ID = " + AD_Tab_ID
 			+ "ORDER BY SEQNO asc";
@@ -193,7 +206,10 @@ public class TabElementHandler extends AbstractElementHandler {
 		{
 			DB.close(rs, pstmt);
 		}
-		document.endElement("","",I_AD_Tab.Table_Name);
+
+		if (createElement) {
+			document.endElement("","",X_AD_Tab.Table_Name);
+		}
 
 		if(m_Tab.getAD_Process_ID() > 0 )
 		{
@@ -210,14 +226,14 @@ public class TabElementHandler extends AbstractElementHandler {
 
 	}
 
-	private void createField(Properties ctx, TransformerHandler document,
+	private void createField(PIPOContext ctx, TransformerHandler document,
 			int AD_Field_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_Field.COLUMNNAME_AD_Field_ID, AD_Field_ID);
+		Env.setContext(ctx.ctx, X_AD_Field.COLUMNNAME_AD_Field_ID, AD_Field_ID);
 		fieldHandler.create(ctx, document);
-		ctx.remove(X_AD_Field.COLUMNNAME_AD_Field_ID);
+		ctx.ctx.remove(X_AD_Field.COLUMNNAME_AD_Field_ID);
 	}
 
-	private void createTabBinding(Properties ctx, TransformerHandler document, X_AD_Tab m_Tab)
+	private void createTabBinding(PIPOContext ctx, TransformerHandler document, X_AD_Tab m_Tab)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_Tab);
 		List<String> excludes = defaultExcludeList(X_AD_Tab.Table_Name);
@@ -232,8 +248,8 @@ public class TabElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_Tab.COLUMNNAME_AD_Tab_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_Tab.COLUMNNAME_AD_Tab_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_Tab.COLUMNNAME_AD_Tab_ID);
+		packout.getCtx().ctx.remove(I_AD_Tab.COLUMNNAME_AD_Tab_ID);
 	}
 }

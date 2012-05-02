@@ -18,11 +18,11 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -41,15 +41,15 @@ public class MessageElementHandler extends AbstractElementHandler {
 
 	private List<Integer> messages = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {			
+		if (isProcessElement(ctx.ctx, entitytype)) {			
 			MMessage mMessage = findPO(ctx, element);
 			if (mMessage == null) {				
 				String value = getStringValue(element, "Value");
 				int id = findIdByColumn(ctx, "AD_Message", "value", value);
 
-				mMessage = new MMessage(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mMessage = new MMessage(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			PoFiller filler = new PoFiller(ctx, mMessage, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_Message.Table_Name);
@@ -57,6 +57,7 @@ public class MessageElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -79,7 +80,7 @@ public class MessageElementHandler extends AbstractElementHandler {
 				}
 				else{
 					logImportDetail (ctx, impDetail, 0, mMessage.getValue(), mMessage.get_ID(),action);
-					throw new POSaveFailedException("Failed to save message.");
+					throw new POSaveFailedException("Failed to save message " + mMessage.getValue());
 				}
 			}
 		} else {
@@ -88,24 +89,31 @@ public class MessageElementHandler extends AbstractElementHandler {
 
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Message_ID = Env.getContextAsInt(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID);
+		int AD_Message_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID);
 		if (messages.contains(AD_Message_ID))
 			return;
 		messages.add(AD_Message_ID);
 		AttributesImpl atts = new AttributesImpl();
-		X_AD_Message m_Message = new X_AD_Message (ctx, AD_Message_ID, null);
+		X_AD_Message m_Message = new X_AD_Message (ctx.ctx, AD_Message_ID, null);
+
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Message.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
+
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Message.Table_Name,atts);
 		createMessageBinding(ctx,document,m_Message);
 		document.endElement("","",I_AD_Message.Table_Name);
 	}
 
-	private void createMessageBinding(Properties ctx, TransformerHandler document, X_AD_Message m_Message)
+	private void createMessageBinding(PIPOContext ctx, TransformerHandler document, X_AD_Message m_Message)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_Message);
 		if (m_Message.getAD_Message_ID() <= PackOut.MAX_OFFICIAL_ID)
@@ -117,8 +125,8 @@ public class MessageElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID);
 	}
 }

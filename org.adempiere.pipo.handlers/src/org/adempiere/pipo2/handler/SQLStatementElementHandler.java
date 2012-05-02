@@ -19,16 +19,17 @@ package org.adempiere.pipo2.handler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutItem;
 import org.adempiere.pipo2.SQLElementParameters;
+import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -36,13 +37,13 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class SQLStatementElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		String elementValue = element.getElementValue();
 
 		log.info(elementValue);
 		String DBType = getStringValue(element, "DBType");
 		String sql = getStringValue(element, "statement");
-		if (sql.endsWith(";"))
+		if (sql.endsWith(";") && !(sql.toLowerCase().endsWith("end;")))
 			sql = sql.substring(0, sql.length() - 1);
 		PreparedStatement pstmt = null;
 		try {
@@ -52,8 +53,8 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 				log.info("Executed SQL Statement: "+ getStringValue(element, "statement") + " ReturnValue="+n);
 			}
 			else if(DB.isOracle() == true && DBType.equals("Oracle")) {
-				pstmt.executeUpdate();
-				log.info("Executed SQL Statement for Oracle: "+ getStringValue(element, "statement"));
+				int n = pstmt.executeUpdate();
+				log.info("Executed SQL Statement for Oracle: "+ getStringValue(element, "statement") + " ReturnValue="+n);
 			}
 			else if (   DB.isPostgreSQL()
 					 && (   DBType.equals("Postgres")
@@ -78,20 +79,27 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 					m_con.close();
 				}
 			}
+			
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, "",
+					0);
+			logImportDetail (ctx, impDetail, 1, "SQLStatement",1,"Execute");
 		} catch (Exception e)	{
 			log.log(Level.SEVERE,"SQLSatement", e);
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, "",
+					0);
+			logImportDetail (ctx, impDetail, 0, "SQLStatement",1,"Execute");
 		} finally {
 			DB.close(pstmt);
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		String SQLStatement = Env.getContext(ctx, SQLElementParameters.SQL_STATEMENT);
-		String DBType = Env.getContext(ctx, SQLElementParameters.DB_TYPE);
+		String SQLStatement = Env.getContext(ctx.ctx, SQLElementParameters.SQL_STATEMENT);
+		String DBType = Env.getContext(ctx.ctx, SQLElementParameters.DB_TYPE);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "custom");
 		document.startElement("","","SQLStatement",atts);
@@ -108,7 +116,9 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 
 		document.startElement("","","statement", new AttributesImpl());
 		contents = sqlStatement.toCharArray();
+		document.startCDATA();
 		document.characters(contents,0,contents.length);
+		document.endCDATA();
 		document.endElement("","","statement");
 
 	}
@@ -116,10 +126,10 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int field) throws Exception
 	{
 		PackoutItem detail = packout.getCurrentPackoutItem();
-		Env.setContext(packout.getCtx(), SQLElementParameters.SQL_STATEMENT, (String)detail.getProperty(SQLElementParameters.SQL_STATEMENT));
-		Env.setContext(packout.getCtx(), SQLElementParameters.DB_TYPE, (String)detail.getProperty(SQLElementParameters.DB_TYPE));
+		Env.setContext(packout.getCtx().ctx, SQLElementParameters.SQL_STATEMENT, (String)detail.getProperty(SQLElementParameters.SQL_STATEMENT));
+		Env.setContext(packout.getCtx().ctx, SQLElementParameters.DB_TYPE, (String)detail.getProperty(SQLElementParameters.DB_TYPE));
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(SQLElementParameters.SQL_STATEMENT);
-		packout.getCtx().remove(SQLElementParameters.DB_TYPE);
+		packout.getCtx().ctx.remove(SQLElementParameters.SQL_STATEMENT);
+		packout.getCtx().ctx.remove(SQLElementParameters.DB_TYPE);
 	}
 }

@@ -19,11 +19,11 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -41,18 +41,18 @@ public class TaskElementHandler extends AbstractElementHandler {
 
 	private List<Integer> tasks = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Task.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			MTask mTask = findPO(ctx, element);
 			if (mTask == null) {
 				String name = getStringValue(element, "Name");
 				int id = findIdByName(ctx, "AD_Task", name);
-				mTask = new MTask(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mTask = new MTask(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			
 			if (mTask.getAD_Task_ID() == 0 && isOfficialId(element, "AD_Task_ID"))
@@ -62,6 +62,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 			
@@ -81,7 +82,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 				} else {
 					logImportDetail(ctx, impDetail, 0, mTask.getName(), mTask.get_ID(),
 							action);
-					throw new POSaveFailedException("Task");
+					throw new POSaveFailedException("Failed to save Task " + mTask.getName());
 				}
 			}
 		} else {
@@ -89,16 +90,21 @@ public class TaskElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Task_ID = Env.getContextAsInt(ctx, "AD_Task_ID");
+		int AD_Task_ID = Env.getContextAsInt(ctx.ctx, "AD_Task_ID");
 		if (tasks.contains(AD_Task_ID))
 			return;
 		tasks.add(AD_Task_ID);
-		X_AD_Task m_Task = new X_AD_Task(ctx, AD_Task_ID, null);
+		X_AD_Task m_Task = new X_AD_Task(ctx.ctx, AD_Task_ID, null);
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Task.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Task.Table_Name, atts);
@@ -107,7 +113,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 
 	}
 
-	private void createTaskBinding(Properties ctx, TransformerHandler document,
+	private void createTaskBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Task m_Task) {
 		PoExporter filler = new PoExporter(ctx, document, m_Task);
 		List<String> excludes = defaultExcludeList(X_AD_Task.Table_Name);
@@ -118,9 +124,9 @@ public class TaskElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Task.COLUMNNAME_AD_Task_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Task.COLUMNNAME_AD_Task_ID, recordId);
 
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Task.COLUMNNAME_AD_Task_ID);
+		packout.getCtx().ctx.remove(X_AD_Task.COLUMNNAME_AD_Task_ID);
 	}
 }

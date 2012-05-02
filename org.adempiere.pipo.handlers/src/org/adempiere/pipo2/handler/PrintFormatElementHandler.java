@@ -21,24 +21,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
-import org.compiere.model.I_AD_PrintFormatItem;
 import org.compiere.model.I_AD_PrintPaper;
+import org.compiere.model.I_AD_Table;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_PrintFormat;
 import org.compiere.model.X_AD_PrintFormatItem;
+import org.compiere.print.MPrintFormat;
+import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -48,14 +50,14 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 
 	private List<Integer> formats = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		
 		X_AD_PrintFormat mPrintFormat = findPO(ctx, element);
 		if (mPrintFormat == null) {
 			String name = getStringValue(element, "Name");
 			int id = findIdByColumn(ctx, "AD_PrintFormat", "Name", name);
-			mPrintFormat = new X_AD_PrintFormat(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			mPrintFormat = new X_AD_PrintFormat(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mPrintFormat, element, this);
 		List<String> excludes = defaultExcludeList(X_AD_PrintFormat.Table_Name);
@@ -65,6 +67,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
+			element.unresolved = notfounds.toString();
 			return;
 		}
 
@@ -85,17 +88,17 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 			} else {
 				logImportDetail(ctx, impDetail, 0, mPrintFormat.getName(),
 						mPrintFormat.get_ID(), action);
-				throw new POSaveFailedException("Failed to save Print Format");
+				throw new POSaveFailedException("Failed to save Print Format " + mPrintFormat.getName());
 			}
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_PrintFormat_ID = Env.getContextAsInt(ctx,
+		int AD_PrintFormat_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID);
 
 		if (formats.contains(AD_PrintFormat_ID))
@@ -103,17 +106,48 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		formats.add(AD_PrintFormat_ID);
 		AttributesImpl atts = new AttributesImpl();
 
-		X_AD_PrintFormat m_Printformat = new X_AD_PrintFormat(ctx, AD_PrintFormat_ID, null);
+		MPrintFormat m_Printformat = new MPrintFormat(ctx.ctx, AD_PrintFormat_ID, null);
 		if (m_Printformat.getAD_PrintPaper_ID() > 0) {
 			try {
-				getPackOut(ctx).getHandler(I_AD_PrintPaper.Table_Name).packOut(getPackOut(ctx), document, getLogDocument(ctx), m_Printformat.getAD_PrintPaper_ID());
+				ctx.packOut.getHandler(I_AD_PrintPaper.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, m_Printformat.getAD_PrintPaper_ID());
 			} catch (Exception e) {
 				throw new SAXException(e);
 			}
 		}
-		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_PrintFormat.Table_Name, atts);
-		createPrintFormatBinding(ctx, document, m_Printformat);
+
+		if (m_Printformat.getAD_Client_ID() == 0 && m_Printformat.getAD_Table_ID() > 0) {
+			try {
+				ctx.packOut.getHandler(I_AD_Table.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, m_Printformat.getAD_Table_ID());
+			} catch (Exception e) {
+				throw new SAXException(e);
+			}
+		}
+		
+		boolean createElement = true;
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Printformat.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				createElement = false;
+			}
+		}
+
+		int size = m_Printformat.getItemCount();
+		for(int i = 0; i < size; i++) {
+			MPrintFormatItem item = m_Printformat.getItem(i);
+			if (item.getAD_PrintFormatChild_ID() > 0)
+			{
+				try {
+					this.packOut(ctx.packOut, document, null, item.getAD_PrintFormatChild_ID());
+				} catch (Exception e) {
+					throw new SAXException(e);
+				}
+			}
+		}
+		
+		if (createElement) {
+			addTypeName(atts, "table");
+			document.startElement("", "", I_AD_PrintFormat.Table_Name, atts);
+			createPrintFormatBinding(ctx, document, m_Printformat);
+		}
 
 		String sql = "SELECT AD_PrintFormatItem_ID FROM AD_PrintFormatItem WHERE AD_PrintFormat_ID= "
 				+ m_Printformat.getAD_PrintFormat_ID()
@@ -131,21 +165,23 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		} finally {
 			DB.close(rs, pstmt);
 		}
-		document.endElement("", "", I_AD_PrintFormat.Table_Name);
 
+		if (createElement) {
+			document.endElement("", "", X_AD_PrintFormat.Table_Name);
+		}
 	}
 
-	private void createItem(Properties ctx, TransformerHandler document,
+	private void createItem(PIPOContext ctx, TransformerHandler document,
 			int AD_PrintFormatItem_ID) throws SAXException {
 		try {
-			getPackOut(ctx).getHandler(I_AD_PrintFormatItem.Table_Name).packOut(getPackOut(ctx), document, getLogDocument(ctx), AD_PrintFormatItem_ID);
+			ctx.packOut.getHandler(X_AD_PrintFormatItem.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, AD_PrintFormatItem_ID);
 		} catch (Exception e) {
 			throw new SAXException(e);
 		}
 	}
 
-	private void createPrintFormatBinding(Properties ctx, TransformerHandler document,
-			X_AD_PrintFormat m_Printformat) {
+	private void createPrintFormatBinding(PIPOContext ctx, TransformerHandler document,
+			MPrintFormat m_Printformat) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Printformat);
 		List<String> excludes = defaultExcludeList(X_AD_PrintFormat.Table_Name);
@@ -158,9 +194,9 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID);
 	}
 }
 

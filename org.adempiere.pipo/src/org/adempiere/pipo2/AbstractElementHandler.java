@@ -61,8 +61,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 * @param name
 	 *
 	 */
-	public int findIdByName (Properties ctx, String tableName, String name) {
-		return IDFinder.findIdByName(tableName, name, getClientId(ctx), getTrxName(ctx));
+	public int findIdByName (PIPOContext ctx, String tableName, String name) {
+		return IDFinder.findIdByName(tableName, name, getClientId(ctx.ctx), ctx.trx.getTrxName());
 	}
 
 	/**
@@ -72,22 +72,25 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 * @param columName
 	 * @param name
 	 */
-	public int findIdByColumn (Properties ctx, String tableName, String columnName, Object value) {
+	public int findIdByColumn (PIPOContext ctx, String tableName, String columnName, Object value, boolean ignorecase) {
 		int id = 0;
 		if ("AD_Table".equals(tableName) && "TableName".equals(columnName) && value != null) {
-			id = getPackIn(ctx).getTableId(value.toString());
+			id = ctx.packIn.getTableId(value.toString());
 			if (id <= 0) {
-				id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx), getTrxName(ctx));
+				id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx.ctx), ignorecase, ctx.trx.getTrxName());
 				if (id > 0) {
-					getPackIn(ctx).addTable(value.toString(), id);
+					ctx.packIn.addTable(value.toString(), id);
 				}
 			}
 		} else {
-			id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx), getTrxName(ctx));
+			id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx.ctx), ignorecase, ctx.trx.getTrxName());
 		}
 		return id;
 	}
 
+	public int findIdByColumn (PIPOContext ctx, String tableName, String columnName, Object value) {
+		return findIdByColumn (ctx, tableName, columnName, value, false);
+	}
 	/**
 	 * @param ctx
 	 * @param type
@@ -95,17 +98,17 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 * @param tableId
 	 * @return X_AD_Package_Imp_Detail
 	 */
-	public X_AD_Package_Imp_Detail createImportDetail(Properties ctx, String type, String tableName, int tableId) {
-		X_AD_Package_Imp_Detail impDetail = new X_AD_Package_Imp_Detail(ctx, 0, getTrxName(ctx));
-		impDetail.setAD_Package_Imp_ID(getPackageImpId(ctx));
-		impDetail.setAD_Org_ID(Env.getAD_Org_ID(ctx) );
+	public X_AD_Package_Imp_Detail createImportDetail(PIPOContext ctx, String type, String tableName, int tableId) {
+		X_AD_Package_Imp_Detail impDetail = new X_AD_Package_Imp_Detail(ctx.ctx, 0, ctx.trx.getTrxName());
+		impDetail.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));
+		impDetail.setAD_Org_ID(Env.getAD_Org_ID(ctx.ctx) );
 		impDetail.setType(type);
 		impDetail.setName("");
 		impDetail.setAction("");
 		impDetail.setAD_Original_ID(1);
 		impDetail.setTableName(tableName);
 		impDetail.setAD_Table_ID(tableId);
-		impDetail.saveEx(getTrxName(ctx));
+		impDetail.saveEx(ctx.trx.getTrxName());
 
 		return impDetail;
 	}
@@ -122,33 +125,15 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * 		@throws SAXException
      *
      */
-    public void logImportDetail (Properties ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID,
+    public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID,
     		String action) throws SAXException{
-    	StringBuffer recordLayout = new StringBuffer();
-    	TransformerHandler hd_document = getLogDocument(ctx);
-		AttributesImpl attsOut = new AttributesImpl();
 		String result = success == 1 ? "Success" : "Failure";
-
-		//hd_documemt.startElement("","","Successful",attsOut);
-		recordLayout.append("Type:")
-			.append(detail.getType())
-			.append("  -   Name:")
-			.append(objectName)
-			.append("  -  ID:")
-			.append(objectID)
-			.append("  -  Action:")
-			.append(action)
-			.append("  -  " + result);
-
-		hd_document.startElement("","",result,attsOut);
-		hd_document.characters(recordLayout.toString().toCharArray(),0,recordLayout.length());
-		hd_document.endElement("","",result);
 
 		detail.setName(objectName);
 		detail.setAction(action);
 		detail.setSuccess(result);
 		detail.setAD_Original_ID(objectID);
-		detail.saveEx(getTrxName(ctx));
+		ctx.packIn.addImportDetail(detail);
     }
 
     /**
@@ -159,8 +144,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 * @param tableNameMaster
 	 * @param nameMaster
 	 */
-	public int findIdByNameAndParentName (Properties ctx, String tableName, String name, String tableNameMaster, String nameMaster) {
-		return IDFinder.findIdByNameAndParentName(tableName, name, tableNameMaster, nameMaster, getTrxName(ctx));
+	public int findIdByNameAndParentName (PIPOContext ctx, String tableName, String name, String tableNameMaster, String nameMaster) {
+		return IDFinder.findIdByNameAndParentName(tableName, name, tableNameMaster, nameMaster, getClientId(ctx.ctx), ctx.trx.getTrxName());
 	}
 
     /**
@@ -172,11 +157,25 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * @param nameMaster
      */
 
-	public int findIdByColumnAndParentId (Properties ctx, String tableName, String columnName, String name, String tableNameMaster, int masterID) {
-		return IDFinder.findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID,
-				getTrxName(ctx));
+	public int findIdByColumnAndParentId (PIPOContext ctx, String tableName, String columnName, String name, String tableNameMaster, int masterID) {
+		return IDFinder.findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, getClientId(ctx.ctx), 
+				ctx.trx.getTrxName());
 	}
 
+	/**
+     * Get ID from column value for a table with a parent id reference.
+     *
+     * @param tableName
+     * @param name
+     * @param tableNameMaster
+     * @param nameMaster
+     * @param ignoreCase
+     */
+	public int findIdByColumnAndParentId (PIPOContext ctx, String tableName, String columnName, String name, String tableNameMaster, int masterID, boolean ignoreCase) {
+		return IDFinder.findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, getClientId(ctx.ctx), 
+				ignoreCase, ctx.trx.getTrxName());
+	}
+	
 	/**
 	 * Get ID from Name for a table with a parent reference ID.
 	 *
@@ -185,8 +184,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 * @param tableNameMaster
 	 * @param masterID
 	 */
-	public int findIdByNameAndParentId (Properties ctx, String tableName, String name, String tableNameMaster, int masterID) {
-		return IDFinder.findIdByNameAndParentId(tableName, name, tableNameMaster, masterID, getTrxName(ctx));
+	public int findIdByNameAndParentId (PIPOContext ctx, String tableName, String name, String tableNameMaster, int masterID) {
+		return IDFinder.findIdByNameAndParentId(tableName, name, tableNameMaster, masterID, getClientId(ctx.ctx), ctx.trx.getTrxName());
 	}
 
     /**
@@ -198,40 +197,42 @@ public abstract class AbstractElementHandler implements ElementHandler {
      *
      */
 
-	public void backupRecord(Properties ctx, int AD_Package_Imp_Detail_ID, String tableName,PO from){
+	public void backupRecord(PIPOContext ctx, int AD_Package_Imp_Detail_ID, String tableName,PO from){
 
     	// Create new record
     	int tableID = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
-		POInfo poInfo = POInfo.getPOInfo(ctx, tableID, getTrxName(ctx));
+		POInfo poInfo = POInfo.getPOInfo(ctx.ctx, tableID);
 
-		PreparedStatement pstmtReferenceId = DB.prepareStatement("SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?", getTrxName(ctx));
+		PreparedStatement pstmtReferenceId = DB.prepareStatement("SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?", ctx.trx.getTrxName());
 		ResultSet rs=null;
 
 	    try{
 			for (int i = 0; i < poInfo.getColumnCount(); i++){
 
-				int columnID =findIdByColumnAndParentId (ctx, "AD_Column", "ColumnName", poInfo.getColumnName(i), "AD_Table", tableID);
-
-				int referenceID=0;
-
-				pstmtReferenceId.setInt(1,columnID);
-				rs = pstmtReferenceId.executeQuery();
-
-				if (rs.next())
-					referenceID = rs.getInt(1);
-
-	    		X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx, 0, getTrxName(ctx));
-	    		backup.setAD_Org_ID(Env.getAD_Org_ID(ctx));
-	    		backup.setAD_Package_Imp_ID(getPackageImpId(ctx));
-	    		backup.setAD_Package_Imp_Detail_ID(AD_Package_Imp_Detail_ID);
-	    		backup.setAD_Table_ID(tableID);
-
-	    		backup.setAD_Column_ID(columnID);
-	    		backup.setAD_Reference_ID(referenceID);
-	    		Object value = from.get_ValueOld(i);
-				backup.setColValue(value != null ? value.toString() : null);
-
-				backup.saveEx(getTrxName(ctx));
+				if (from.is_ValueChanged(i)) {
+					int columnID =findIdByColumnAndParentId (ctx, "AD_Column", "ColumnName", poInfo.getColumnName(i), "AD_Table", tableID);
+	
+					int referenceID=0;
+	
+					pstmtReferenceId.setInt(1,columnID);
+					rs = pstmtReferenceId.executeQuery();
+	
+					if (rs.next())
+						referenceID = rs.getInt(1);
+	
+		    		X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, ctx.trx.getTrxName());
+		    		backup.setAD_Org_ID(Env.getAD_Org_ID(ctx.ctx));
+		    		backup.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));
+		    		backup.setAD_Package_Imp_Detail_ID(AD_Package_Imp_Detail_ID);
+		    		backup.setAD_Table_ID(tableID);
+	
+		    		backup.setAD_Column_ID(columnID);
+		    		backup.setAD_Reference_ID(referenceID);
+		    		Object value = from.get_ValueOld(i);
+					backup.setColValue(value != null ? value.toString() : null);
+	
+					backup.saveEx();
+				}
 		    }
 		}
 	    catch(Exception e)
@@ -306,7 +307,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	           }
 	           source.close();
 	           target.close();
-	           //System.out.println("Successfully copied " + byteCount + " bytes.");
+	           log.finer("Successfully copied " + byteCount + " bytes.");
 	        }
 	        catch (Exception e) {
 	           log.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -347,21 +348,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * @param ctx
      * @return transaction name
      */
-    protected String getTrxName(Properties ctx) {
-    	String trxName = Env.getContext(ctx, "TrxName");
-    	if (trxName != null && trxName.trim().length() > 0)
-    		return trxName;
-    	else
-    		return null;
-    }
-
-    /**
-     * Get share document
-     * @param ctx
-     * @return TransformerHandler
-     */
-    protected TransformerHandler getLogDocument(Properties ctx) {
-    	return (TransformerHandler)ctx.get("LogDocument");
+    protected String getTrxName(PIPOContext ctx) {
+    	return ctx.trx != null ? ctx.trx.getTrxName() : null;
     }
 
     /**
@@ -474,24 +462,6 @@ public abstract class AbstractElementHandler implements ElementHandler {
 
     /**
      *
-     * @param ctx
-     * @return PackIn instance
-     */
-    protected PackIn getPackIn(Properties ctx) {
-    	return (PackIn)ctx.get(PackInHandler.PACK_IN_PROCESS_CTX_KEY);
-    }
-
-    /**
-     *
-     * @param ctx
-     * @return PackOut instance
-     */
-    protected PackOut getPackOut(Properties ctx) {
-    	return (PackOut) ctx.get(PackOut.PACK_OUT_PROCESS_CTX_KEY);
-    }
-
-    /**
-     *
      * @param element
      * @param expectedName
      * @return Parent element record id
@@ -582,7 +552,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * @param element
      * @return T
      */
-    protected <T extends PO> T findPO(Properties ctx, Element element) {
+    protected <T extends PO> T findPO(PIPOContext ctx, Element element) {
     	T po = null;
     	String tableName = element.getElementValue();
     	String uuidColumn = PO.getUUIDColumnName(tableName);
@@ -590,13 +560,15 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	if (element.properties.containsKey(uuidColumn)) {
     		String uuid = element.properties.get(uuidColumn).contents.toString();
     		if (uuid != null && uuid.trim().length() == 36) {
-    			Query query = new Query(ctx, tableName, uuidColumn+"=?", getTrxName(ctx));
+    			Query query = new Query(ctx.ctx, tableName, uuidColumn+"=?", ctx.trx.getTrxName());
     			po = query.setParameters(uuid.trim()).firstOnly();
     		}
-    	} else if (element.properties.containsKey(idColumn)) {
+    	} 
+    	
+    	if (po == null && element.properties.containsKey(idColumn)) {
     		String id = element.properties.get(idColumn).contents.toString();
     		if (id != null && id.trim().length() > 0) {
-    			Query query = new Query(ctx, tableName, idColumn+"=?", getTrxName(ctx));
+    			Query query = new Query(ctx.ctx, tableName, idColumn+"=?", ctx.trx.getTrxName());
     			po = query.setParameters(id.trim()).firstOnly();
     		}
     	}

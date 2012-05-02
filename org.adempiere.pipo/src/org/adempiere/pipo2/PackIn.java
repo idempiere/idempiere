@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -31,7 +33,10 @@ import java.util.logging.Level;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.compiere.model.PO;
+import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
+import org.compiere.util.Trx;
 
 /**
  * IntPackIn Tool.
@@ -50,6 +55,8 @@ public class PackIn {
 	private Map<String,Integer> columnCache = new HashMap<String,Integer>();
 	private String packageName = null;
 	private String packageVersion = null;
+	
+	private List<X_AD_Package_Imp_Detail> importDetails;
 
 	public PackIn() {
 		super();
@@ -123,6 +130,10 @@ public class PackIn {
 		}
 	}
 
+	public void addImportDetail(X_AD_Package_Imp_Detail importDetail) {
+		importDetails.add(importDetail);
+	}
+	
 	/**
 	 *
 	 * @param input
@@ -135,20 +146,29 @@ public class PackIn {
 			log.info("starting");
 			// clear cache of previous runs
 			IDFinder.clearIDCache();
+			importDetails = new ArrayList<X_AD_Package_Imp_Detail>();
 
 			System.setProperty("javax.xml.parsers.SAXParserFactory",
 					"org.apache.xerces.jaxp.SAXParserFactoryImpl");
 			PackInHandler handler = new PackInHandler();
-			handler.set_TrxName(trxName);
-			handler.setCtx(ctx);
+			PIPOContext context = new PIPOContext();
+			context.trx = Trx.get(trxName, true);
+			context.packIn = this;
+			context.ctx = ctx;
+			handler.setCtx(context);
 			handler.setProcess(this);
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser parser = factory.newSAXParser();
 			String msg = "Start Parser";
 			log.info(msg);
 			parser.parse(input, handler);
+			for (PO importDetail : importDetails) {
+				importDetail.saveEx();
+			}
 			msg = "End Parser";
 			log.info(msg);
+			if (handler.getUnresolvedCount() > 0)
+				handler.dumpUnresolvedElements();
 			return "Processed="+handler.getElementsProcessed()+" Un-Resolved="+handler.getUnresolvedCount();
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "importXML:", e);
@@ -188,6 +208,7 @@ public class PackIn {
 				else
 					baos.write(b);
 			}
+			data = baos.toByteArray();
 		} finally {
 			if (fis != null) {
 				try {

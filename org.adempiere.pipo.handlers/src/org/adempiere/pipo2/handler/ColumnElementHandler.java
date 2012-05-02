@@ -21,12 +21,12 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -49,11 +49,11 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class ColumnElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		int success = 0;
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 			if (isParentDefer(element, I_AD_Table.Table_Name)) {
 				element.defer = true;
 				return;
@@ -68,13 +68,13 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				if (getParentId(element, I_AD_Table.Table_Name) > 0) {
 					tableid = getParentId(element, I_AD_Table.Table_Name);
 				} else {
-					mColumn = new MColumn(ctx, 0, getTrxName(ctx));
+					mColumn = new MColumn(ctx.ctx, 0, getTrxName(ctx));
 					PoFiller filler = new PoFiller(ctx, mColumn, element, this);
 					filler.setTableReference("AD_Table_ID");
 					tableid = mColumn.getAD_Table_ID();
 				}
-				int AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnName, "AD_Table", tableid);
-				mColumn = new MColumn(ctx, AD_Column_ID > 0 ? AD_Column_ID : 0, getTrxName(ctx));
+				int AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnName, "AD_Table", tableid, /*ignorecase=*/true);
+				mColumn = new MColumn(ctx.ctx, AD_Column_ID > 0 ? AD_Column_ID : 0, getTrxName(ctx));
 				if (mColumn.getAD_Column_ID() == 0 && isOfficialId(element, "AD_Column_ID")) {
 					mColumn.setAD_Column_ID(getIntValue(element, "AD_Column_ID"));
 				}
@@ -87,6 +87,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -104,7 +105,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 
 			// Setup Element.
 			if (mColumn.getAD_Element_ID() == 0) {
-				X_AD_Element adElement = new X_AD_Element(ctx, 0, getTrxName(ctx));
+				X_AD_Element adElement = new X_AD_Element(ctx.ctx, 0, getTrxName(ctx));
 				adElement.setColumnName(mColumn.getColumnName());
 				adElement.setEntityType(mColumn.getEntityType());
 				adElement.setPrintName(mColumn.getColumnName());
@@ -164,11 +165,11 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			} else {
 				logImportDetail(ctx, impDetail, 0, mColumn.getName(), mColumn
 						.get_ID(), action);
-				throw new POSaveFailedException("Failed to import column.");
+				throw new POSaveFailedException("Failed to save column " + mColumn.getName());
 			}
 
 			if (recreateColumn || syncDatabase) {
-				MTable table = new MTable(ctx, mColumn.getAD_Table_ID(), getTrxName(ctx));
+				MTable table = new MTable(ctx.ctx, mColumn.getAD_Table_ID(), getTrxName(ctx));
 				if (!table.isView() && !mColumn.isVirtualColumn()) {
 					success = createColumn(ctx, table, mColumn, recreateColumn);
 
@@ -199,7 +200,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 	 * @param v_IsMandatory
 	 *
 	 */
-	private int createColumn(Properties ctx, MTable table, MColumn column, boolean doAlter) {
+	private int createColumn(PIPOContext ctx, MTable table, MColumn column, boolean doAlter) {
 
 		int no = 0;
 
@@ -297,23 +298,30 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		return 1;
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Column_ID = Env.getContextAsInt(ctx,
+		int AD_Column_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Column.COLUMNNAME_AD_Column_ID);
 		AttributesImpl atts = new AttributesImpl();
-		X_AD_Column m_Column = new X_AD_Column(ctx, AD_Column_ID,
+		X_AD_Column m_Column = new X_AD_Column(ctx.ctx, AD_Column_ID,
 				getTrxName(ctx));
+
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Column.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
+
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Column.Table_Name, atts);
 		createColumnBinding(ctx, document, m_Column);
 		document.endElement("", "", I_AD_Column.Table_Name);
 	}
 
-	private void createColumnBinding(Properties ctx, TransformerHandler document,
+	private void createColumnBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Column m_Column) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Column);
@@ -337,8 +345,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_Column.COLUMNNAME_AD_Column_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_Column.COLUMNNAME_AD_Column_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_Column.COLUMNNAME_AD_Column_ID);
+		packout.getCtx().ctx.remove(I_AD_Column.COLUMNNAME_AD_Column_ID);
 	}
 }
