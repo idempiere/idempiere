@@ -511,19 +511,7 @@ public class VDate extends JComponent
 		if (m_text == null || m_text.getText() == null)
 			return;
 		Object value = getValue();
-		if (value == null && isMandatory() ) {
-			// teo_sarca [ 1660595 ] Date field: incorrect functionality on paste
-			// setValue(startCalendar(this, getTimestamp(), m_format, m_displayType, m_title));
-			Timestamp ts = startCalendar(this, getTimestamp(), m_format, m_displayType, m_title);
-			if (ts != null) {
-				setValue(ts);
-			}
-			else {
-				setValue(m_oldText);
-			}
-		}
-		else
-			setValue(value);
+		setValue(value);
 	}	//	focusLost
 
 	/**

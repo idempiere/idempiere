@@ -1236,8 +1236,10 @@ public class GridController extends CPanel
 		int col = mTable.findColumn(e.getPropertyName());
 		//
 		if (e.getNewValue() == null && e.getOldValue() != null
-			&& e.getOldValue().toString().length() > 0)		//	some editors return "" instead of null
+			&& e.getOldValue().toString().length() > 0) {		//	some editors return "" instead of null
 			mTable.setChanged (true);
+			mTable.setValueAt (e.getNewValue(), row, col, true);
+		}
 		else
 		{
 		//	mTable.setValueAt (e.getNewValue(), row, col, true);
