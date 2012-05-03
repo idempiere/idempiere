@@ -147,7 +147,6 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		center.setStyle("border: none");
 		
 		Div div = new Div();
-		div.setStyle("text-align: center");
 		Hbox hbox = new Hbox();
 		String label = Msg.getMsg(Env.getCtx(), "Start");
 		bOK = new Button(label.replaceAll("&", ""));
@@ -165,7 +164,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		btn.setSclass("action-image-text-button");
 		hbox.appendChild(btn);		
 		div.appendChild(hbox);
-		div.setStyle("padding: 10px");
+		div.setStyle("padding: 10px; text-align: center; text-align: -webkit-center; text-align: -moz-center; ");
 		
 		South south = new South();
 		layout.appendChild(south);

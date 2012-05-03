@@ -168,7 +168,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 
         grid = new Grid();
         //have problem moving the following out as css class
-        grid.setWidth("100%");
+        grid.setHflex("1");
         grid.setHeight("100%");
         grid.setVflex(true);
         grid.setStyle("margin:0; padding:0; position: absolute");
@@ -1042,6 +1042,7 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 	        {
 	        	activateChild(true, ep);
 	        }
+	        formComponent.getParent().invalidate();
 		}
 		listPanel.setVisible(!formComponent.isVisible());
 		if (listPanel.isVisible()) {
