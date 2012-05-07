@@ -307,7 +307,6 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		//
 		if (str != null) {
-			str = str.trim();
 			s_cache.put(key, str);
 			return str;
 		}
