@@ -83,7 +83,7 @@ public class Evaluator
 	 *  </code>
 	 *  @param source class implementing get_ValueAsString(variable)
 	 *  @param logic logic string
-	 *  @return locic result
+	 *  @return logic result
 	 */
 	public static boolean evaluateLogic (Evaluatee source, String logic)
 	{
@@ -97,11 +97,29 @@ public class Evaluator
 			return false;
 		}
 
-		boolean retValue = evaluateLogicTuple(source, st.nextToken());
+		String exprStrand = st.nextToken().trim();		
+		if (exprStrand.matches("^@\\d+$"))
+		{
+			exprStrand = exprStrand.concat(st.nextToken());
+			exprStrand = exprStrand.concat(st.nextToken());			
+		}		
+
+		//boolean retValue = evaluateLogicTuple(source, st.nextToken());
+		boolean retValue = evaluateLogicTuple(source, exprStrand);
 		while (st.hasMoreTokens())
 		{
 			String logOp = st.nextToken().trim();
-			boolean temp = evaluateLogicTuple(source, st.nextToken());
+			//boolean temp = evaluateLogicTuple(source, st.nextToken());			
+
+			exprStrand = st.nextToken().trim();		
+			if (exprStrand.matches("^@\\d+$"))
+			{
+				exprStrand = exprStrand.concat(st.nextToken());
+				exprStrand = exprStrand.concat(st.nextToken());				
+			}
+
+			boolean temp = evaluateLogicTuple(source, exprStrand);
+
 			if (logOp.equals("&"))
 				retValue = retValue & temp;
 			else if (logOp.equals("|"))
