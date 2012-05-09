@@ -225,6 +225,51 @@ public class MPrintFormat extends X_AD_PrintFormat
 	}	//	getItems
 
 	/**
+	 * 	Get active Items
+	 * 	@return items
+	 */
+	private MPrintFormatItem[] getItemsNotIn(int AD_PrintFormat_ID)
+	{
+		ArrayList<MPrintFormatItem> list = new ArrayList<MPrintFormatItem>();
+		String sql = "SELECT * FROM AD_PrintFormatItem pfi "
+			+ "WHERE pfi.AD_PrintFormat_ID=? AND pfi.IsActive='Y'"
+			//	Display restrictions - Passwords, etc.
+			+ " AND NOT EXISTS (SELECT * FROM AD_Field f "
+				+ "WHERE pfi.AD_Column_ID=f.AD_Column_ID"
+				+ " AND (f.IsEncrypted='Y' OR f.ObscureType IS NOT NULL))" 
+				+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
+			+ "ORDER BY SeqNo";
+		MRole role = MRole.getDefault(getCtx(), false);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt.setInt(1, get_ID());
+			pstmt.setInt(2, AD_PrintFormat_ID);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				MPrintFormatItem pfi = new MPrintFormatItem(p_ctx, rs, get_TrxName());
+				if (role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true))
+					list.add (pfi);
+			}
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, sql, e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		//
+		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	getItems
+
+	/**
 	 * 	Get Item Count
 	 * 	@return number of items or -1 if items not defined
 	 */
@@ -680,7 +725,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		s_log.info("From=" + fromFormat);
 		ArrayList<MPrintFormatItem> list = new ArrayList<MPrintFormatItem>();
 
-		MPrintFormatItem[] items = fromFormat.getItems();
+		MPrintFormatItem[] items = fromFormat.getItemsNotIn(toFormat.get_ID());
 		for (int i = 0; i < items.length; i++)
 		{
 			MPrintFormatItem pfi = items[i].copyToClient (toFormat.getAD_Client_ID(), toFormat.get_ID());
