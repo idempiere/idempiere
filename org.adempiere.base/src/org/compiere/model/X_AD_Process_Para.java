@@ -30,7 +30,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120515L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -47,6 +47,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setFieldLength (0);
 			setIsCentrallyMaintained (true);
 // Y
+			setIsEncrypted (false);
+// N
 			setIsMandatory (false);
 			setIsRange (false);
 			setName (null);
@@ -83,9 +85,9 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
       return sb.toString();
     }
 
-	public I_AD_Element getAD_Element() throws RuntimeException
+	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
     {
-		return (I_AD_Element)MTable.get(getCtx(), I_AD_Element.Table_Name)
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_Name)
 			.getPO(getAD_Element_ID(), get_TrxName());	}
 
 	/** Set System Element.
@@ -111,9 +113,9 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return ii.intValue();
 	}
 
-	public I_AD_Process getAD_Process() throws RuntimeException
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
     {
-		return (I_AD_Process)MTable.get(getCtx(), I_AD_Process.Table_Name)
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
 			.getPO(getAD_Process_ID(), get_TrxName());	}
 
 	/** Set Process.
@@ -159,9 +161,23 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return ii.intValue();
 	}
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException
+	/** Set AD_Process_Para_UU.
+		@param AD_Process_Para_UU AD_Process_Para_UU	  */
+	public void setAD_Process_Para_UU (String AD_Process_Para_UU)
+	{
+		set_Value (COLUMNNAME_AD_Process_Para_UU, AD_Process_Para_UU);
+	}
+
+	/** Get AD_Process_Para_UU.
+		@return AD_Process_Para_UU	  */
+	public String getAD_Process_Para_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Process_Para_UU);
+	}
+
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
     {
-		return (I_AD_Reference)MTable.get(getCtx(), I_AD_Reference.Table_Name)
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
 			.getPO(getAD_Reference_ID(), get_TrxName());	}
 
 	/** Set Reference.
@@ -187,9 +203,9 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return ii.intValue();
 	}
 
-	public I_AD_Reference getAD_Reference_Value() throws RuntimeException
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
     {
-		return (I_AD_Reference)MTable.get(getCtx(), I_AD_Reference.Table_Name)
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
 			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
 
 	/** Set Reference Key.
@@ -215,9 +231,9 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return ii.intValue();
 	}
 
-	public I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
     {
-		return (I_AD_Val_Rule)MTable.get(getCtx(), I_AD_Val_Rule.Table_Name)
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
 			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
 
 	/** Set Dynamic Validation.
@@ -400,6 +416,30 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isCentrallyMaintained () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Encrypted.
+		@param IsEncrypted 
+		Display or Storage is encrypted
+	  */
+	public void setIsEncrypted (boolean IsEncrypted)
+	{
+		set_Value (COLUMNNAME_IsEncrypted, Boolean.valueOf(IsEncrypted));
+	}
+
+	/** Get Encrypted.
+		@return Display or Storage is encrypted
+	  */
+	public boolean isEncrypted () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsEncrypted);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

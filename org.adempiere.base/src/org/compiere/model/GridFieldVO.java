@@ -276,6 +276,7 @@ public class GridFieldVO implements Serializable, SystemIDs
 			vo.ValidationCode = rs.getString("ValidationCode");
 			vo.ReadOnlyLogic = rs.getString("ReadOnlyLogic");
 			vo.DisplayLogic= rs.getString("DisplayLogic");
+			vo.IsEncryptedField=rs.getString("IsEncrypted").equals("Y");
 			
 		}
 		catch (SQLException e)
