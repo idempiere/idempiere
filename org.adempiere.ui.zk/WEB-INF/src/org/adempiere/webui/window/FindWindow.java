@@ -32,6 +32,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -519,9 +520,12 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
     private void createFields()
     {
         ListItem listItem = new ListItem();
+        listItem.setId("Row"+advancedPanel.getItemCount());
+        listItem.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listItem.getId());
 
         Listbox listColumn = new Listbox();
         listColumn.setId("listColumn"+listItem.getId());
+        listColumn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listColumn.getId());
         listColumn.setName("listColumn");
         listColumn.setMold("select");
         listColumn.setRows(0);
@@ -529,6 +533,7 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
 
         Listbox listOperator = new Listbox();
         listOperator.setId("listOperator"+listItem.getId());
+        listOperator.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listOperator.getId());
         listOperator.setName("listOperator");
         listOperator.setMold("select");
         listOperator.setRows(0);
@@ -539,16 +544,20 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
         ListCell cellColumn = new ListCell();
         cellColumn.appendChild(listColumn);
         cellColumn.setId("cellColumn"+listItem.getId());
+        cellColumn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellColumn.getId());
 
         ListCell cellOperator = new ListCell();
         cellOperator.appendChild(listOperator);
         cellOperator.setId("cellOperator"+listItem.getId());
+        cellOperator.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellOperator.getId());
 
         ListCell cellQueryFrom = new ListCell();
         cellQueryFrom.setId("cellQueryFrom"+listItem.getId());
+        cellQueryFrom.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellQueryFrom.getId());
 
         ListCell cellQueryTo = new ListCell();
         cellQueryTo.setId("cellQueryTo"+listItem.getId());
+        cellQueryTo.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellQueryTo.getId());
 
         listItem.appendChild(cellColumn);
         listItem.appendChild(cellOperator);
@@ -699,7 +708,11 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
                     }
                 }
                 Component componentFrom = getEditorCompQueryFrom(row);
+                componentFrom.setId("searchFieldFrom"+row.getId());
+                componentFrom.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, componentFrom.getId());
                 Component componentTo = getEditorCompQueryTo(row);
+                componentTo.setId("searchFieldTo"+row.getId());
+                componentTo.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, componentTo.getId());
 
                 addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
                 addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
@@ -803,10 +816,13 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
 			String[] fields = segments[i].split(Pattern.quote(FIELD_SEPARATOR));
 
 	        ListItem listItem = new ListItem();
+	        listItem.setId("Row"+advancedPanel.getItemCount());
+	        listItem.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listItem.getId());
 	        advancedPanel.appendChild(listItem);
 
 	        Listbox listColumn = new Listbox();
 	        listColumn.setId("listColumn"+listItem.getId());
+	        listColumn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listColumn.getId());
 	        listColumn.setName("listColumn");
 	        listColumn.setMold("select");
 	        listColumn.setRows(0);
@@ -814,6 +830,7 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
 
 	        Listbox listOperator = new Listbox();
 	        listOperator.setId("listOperator"+listItem.getId());
+	        listOperator.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listOperator.getId());
 	        listOperator.setName("listOperator");
 	        listOperator.setMold("select");
 	        listOperator.setRows(0);
@@ -824,16 +841,20 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
 	        ListCell cellColumn = new ListCell();
 	        cellColumn.appendChild(listColumn);
 	        cellColumn.setId("cellColumn"+listItem.getId());
+	        cellColumn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellColumn.getId());
 
 	        ListCell cellOperator = new ListCell();
 	        cellOperator.appendChild(listOperator);
 	        cellOperator.setId("cellOperator"+listItem.getId());
+	        cellOperator.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellOperator.getId());
 
 	        ListCell cellQueryFrom = new ListCell();
 	        cellQueryFrom.setId("cellQueryFrom"+listItem.getId());
+	        cellQueryFrom.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellQueryFrom.getId());
 
 	        ListCell cellQueryTo = new ListCell();
 	        cellQueryTo.setId("cellQueryTo"+listItem.getId());
+	        cellQueryTo.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellQueryTo.getId());
 
 	        listItem.appendChild(cellColumn);
 	        listItem.appendChild(cellOperator);
