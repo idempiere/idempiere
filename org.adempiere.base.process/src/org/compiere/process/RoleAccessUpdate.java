@@ -46,6 +46,8 @@ public class RoleAccessUpdate extends SvrProcess
 	private int	p_AD_Role_ID = -1;
 	/**	Update Roles of Client	*/
 	private int	p_AD_Client_ID = -1;
+	/** Reset Existing Access */
+	private boolean p_IsReset = true;
 	
 	
 	/**
@@ -63,6 +65,8 @@ public class RoleAccessUpdate extends SvrProcess
 				p_AD_Role_ID = para[i].getParameterAsInt();
 			else if (name.equals("AD_Client_ID"))
 				p_AD_Client_ID = para[i].getParameterAsInt();
+			else if (name.equals("ResetAccess"))
+				p_IsReset = "Y".equals(para[i].getParameter());
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -117,7 +121,7 @@ public class RoleAccessUpdate extends SvrProcess
 	private void updateRole (MRole role)
 	{
 		addLog(0, null, null, role.getName() + ": " 
-			+ role.updateAccessRecords());
+			+ role.updateAccessRecords(p_IsReset));
 	}	//	updateRole
 	
 	//add main method, preparing for nightly build

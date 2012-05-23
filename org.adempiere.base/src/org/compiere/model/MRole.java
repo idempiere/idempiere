@@ -398,12 +398,22 @@ public final class MRole extends X_AD_Role implements SystemIDs
 		return success;
 	} 	//	afterDelete
 
-
 	/**
 	 * 	Create Access Records
 	 *	@return info
 	 */
 	public String updateAccessRecords ()
+	{
+		return updateAccessRecords(true);
+	}
+	
+	
+	/**
+	 * 	Create Access Records
+	 *	@param reset true will reset existing access
+	 *	@return info
+	 */
+	public String updateAccessRecords (boolean reset)
 	{
 		if (isManual())
 			return "-";
@@ -420,30 +430,39 @@ public final class MRole extends X_AD_Role implements SystemIDs
 			+ "FROM AD_Window w"
 			+ " INNER JOIN AD_Tab t ON (w.AD_Window_ID=t.AD_Window_ID)"
 			+ " INNER JOIN AD_Table tt ON (t.AD_Table_ID=tt.AD_Table_ID) "
-			+ "WHERE t.SeqNo=(SELECT MIN(SeqNo) FROM AD_Tab xt "	// only check first tab
+			+ " LEFT JOIN AD_Window_Access wa ON "
+			+ "(wa.AD_Role_ID=" + getAD_Role_ID()
+			+ " AND w.AD_Window_ID = wa.AD_Window_ID) "
+			+ "WHERE wa.AD_Window_ID IS NULL AND t.SeqNo=(SELECT MIN(SeqNo) FROM AD_Tab xt "	// only check first tab
 				+ "WHERE xt.AD_Window_ID=w.AD_Window_ID)"
 			+ "AND tt.AccessLevel IN ";
 		
 		String sqlProcess = "INSERT INTO AD_Process_Access "
 			+ "(AD_Process_ID, AD_Role_ID,"
-			+ " AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadWrite) "
+			+ " AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy, IsReadWrite) "
 			+ "SELECT DISTINCT p.AD_Process_ID, " + roleClientOrgUser
-			+ "FROM AD_Process p "
-			+ "WHERE AccessLevel IN ";
+			+ "FROM AD_Process p LEFT JOIN AD_Process_Access pa ON "
+			+ "(pa.AD_Role_ID=" + getAD_Role_ID()
+			+ " AND p.AD_Process_ID = pa.AD_Process_ID) "
+			+ "WHERE pa.AD_Process_ID IS NULL AND AccessLevel IN ";
 
 		String sqlForm = "INSERT INTO AD_Form_Access "
 			+ "(AD_Form_ID, AD_Role_ID," 
 			+ " AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadWrite) "
 			+ "SELECT f.AD_Form_ID, " + roleClientOrgUser
-			+ "FROM AD_Form f "
-			+ "WHERE AccessLevel IN ";
+			+ "FROM AD_Form f LEFT JOIN AD_Form_Access fa ON "
+			+ "(fa.AD_Role_ID=" + getAD_Role_ID()
+			+ " AND f.AD_Form_ID = fa.AD_Form_ID) "
+			+ "WHERE fa.AD_Form_ID IS NULL AND AccessLevel IN ";
 
 		String sqlWorkflow = "INSERT INTO AD_WorkFlow_Access "
 			+ "(AD_WorkFlow_ID, AD_Role_ID,"
 			+ " AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadWrite) "
 			+ "SELECT w.AD_WorkFlow_ID, " + roleClientOrgUser
-			+ "FROM AD_WorkFlow w "
-			+ "WHERE AccessLevel IN ";
+			+ "FROM AD_WorkFlow w LEFT JOIN AD_WorkFlow_Access wa ON "
+			+ "(wa.AD_Role_ID=" + getAD_Role_ID()
+			+ " AND w.AD_WorkFlow_ID = wa.AD_WorkFlow_ID) "
+			+ "WHERE wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN ";
 
 		String sqlDocAction = "INSERT INTO AD_Document_Action_Access "
 			+ "(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"
@@ -457,7 +476,10 @@ public final class MRole extends X_AD_Role implements SystemIDs
 			+ "INNER JOIN AD_Ref_List action ON (action.AD_Reference_ID=135) "
 			+ "INNER JOIN AD_Role rol ON (rol.AD_Client_ID=client.AD_Client_ID "
 			+ "AND rol.AD_Role_ID=" + getAD_Role_ID() 
-			+ ") )";
+			+ ") LEFT JOIN AD_Document_Action_Access da ON "
+			+ "(da.AD_Role_ID=" + getAD_Role_ID()
+			+ " AND da.C_DocType_ID=doctype.C_DocType_ID AND da.AD_Ref_List_ID=action.AD_Ref_List_ID) "
+			+ "WHERE (da.C_DocType_ID IS NULL AND da.AD_Ref_List_ID IS NULL)) ";
 
 
 		/**
@@ -490,25 +512,15 @@ public final class MRole extends X_AD_Role implements SystemIDs
 		}
 		if (roleAccessLevelWin == null)
 			roleAccessLevelWin = roleAccessLevel;
-		//
-		String whereDel = " WHERE AD_Role_ID=" + getAD_Role_ID();
-		//
-		int winDel = DB.executeUpdate("DELETE FROM AD_Window_Access" + whereDel, get_TrxName());
-		int win = DB.executeUpdate(sqlWindow + roleAccessLevelWin, get_TrxName());
-		int procDel = DB.executeUpdate("DELETE FROM AD_Process_Access" + whereDel, get_TrxName());
-		int proc = DB.executeUpdate(sqlProcess + roleAccessLevel, get_TrxName());
-		int formDel = DB.executeUpdate("DELETE FROM AD_Form_Access" + whereDel, get_TrxName());
-		int form = DB.executeUpdate(sqlForm + roleAccessLevel, get_TrxName());
-		int wfDel = DB.executeUpdate("DELETE FROM AD_WorkFlow_Access" + whereDel, get_TrxName());
-		int wf = DB.executeUpdate(sqlWorkflow + roleAccessLevel, get_TrxName());
-		int docactDel = DB.executeUpdate("DELETE FROM AD_Document_Action_Access" + whereDel, get_TrxName());
-		int docact = DB.executeUpdate(sqlDocAction, get_TrxName());
+		
+		if (reset)
+			deleteAccessRecords();
 
-		log.fine("AD_Window_ID=" + winDel + "+" + win 
-			+ ", AD_Process_ID=" + procDel + "+" + proc
-			+ ", AD_Form_ID=" + formDel + "+" + form
-			+ ", AD_Workflow_ID=" + wfDel + "+" + wf
-			+ ", AD_Document_Action_Access=" + docactDel + "+" + docact);
+		int win = DB.executeUpdate(sqlWindow + roleAccessLevelWin, get_TrxName());
+		int proc = DB.executeUpdate(sqlProcess + roleAccessLevel, get_TrxName());
+		int form = DB.executeUpdate(sqlForm + roleAccessLevel, get_TrxName());
+		int wf = DB.executeUpdate(sqlWorkflow + roleAccessLevel, get_TrxName());
+		int docact = DB.executeUpdate(sqlDocAction, get_TrxName());
 		
 		loadAccess(true);
 		return "@AD_Window_ID@ #" + win 
