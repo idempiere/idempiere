@@ -33,3 +33,8 @@ UPDATE AD_Process_Para SET IsEncrypted='Y',Updated=TO_TIMESTAMP('2012-05-10 16:4
 UPDATE AD_Process_Para SET IsEncrypted='Y',Updated=TO_TIMESTAMP('2012-05-10 16:47:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=517
 ;
 
+UPDATE AD_System
+  SET LastMigrationScriptApplied='838_IDEMPIERE-249.sql'
+WHERE LastMigrationScriptApplied<'838_IDEMPIERE-249.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
