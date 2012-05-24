@@ -29,6 +29,8 @@ import org.compiere.util.CLogger;
  * <li> https://sourceforge.net/tracker/?func=detail&aid=2875989&group_id=176962&atid=879332
  * <li> BF2947615 The document recplicacion not working
  * <li> https://sourceforge.net/tracker/?func=detail&aid=2947615&group_id=176962&atid=879332
+ * <li> IDEMPIERE-218 Replication not working in ZK
+ * <li> http://jira.idempiere.com/browse/IDEMPIERE-218
  */
 public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 
@@ -60,7 +62,6 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	public List <X_AD_ReplicationTable> getReplicationTables() {
 		final String whereClause = I_AD_ReplicationTable.COLUMNNAME_AD_ReplicationStrategy_ID+"=?"; // #1
 		return new Query(getCtx(), I_AD_ReplicationTable.Table_Name, whereClause, get_TrxName())
-			.setClient_ID()
 			.setParameters(getAD_ReplicationStrategy_ID())
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
@@ -74,7 +75,6 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	public List<X_AD_ReplicationDocument> getReplicationDocuments() {
 	    	final String whereClause = I_AD_ReplicationDocument.COLUMNNAME_AD_ReplicationStrategy_ID+"=?"; // #1
 		return new Query(getCtx(),I_AD_ReplicationDocument.Table_Name,whereClause,get_TrxName())
-			.setClient_ID()
 			.setParameters(getAD_ReplicationStrategy_ID())
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
@@ -92,7 +92,6 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	    	final String whereClause = I_AD_ReplicationTable.COLUMNNAME_AD_ReplicationStrategy_ID + "=? AND "
 	    				 			 + I_AD_ReplicationTable.COLUMNNAME_AD_Table_ID + "=?";
 		return new Query(ctx, I_AD_ReplicationTable.Table_Name, whereClause, null)
-			.setClient_ID()
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
 			.setParameters(AD_ReplicationStrategy_ID, AD_Table_ID)
@@ -110,7 +109,6 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	    	final String whereClause = I_AD_ReplicationDocument.COLUMNNAME_AD_ReplicationStrategy_ID + "=? AND "
 			 		 				 + I_AD_ReplicationDocument.COLUMNNAME_AD_Table_ID + "=?";
 		return new Query(ctx, I_AD_ReplicationDocument.Table_Name, whereClause, null)
-			.setClient_ID()
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
 			.setParameters(AD_ReplicationStrategy_ID, AD_Table_ID)
@@ -129,7 +127,6 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	    						 + I_AD_ReplicationDocument.COLUMNNAME_AD_Table_ID + "=? AND "
 	    						 + I_AD_ReplicationDocument.COLUMNNAME_C_DocType_ID + "=?";
 		return new Query(ctx, X_AD_ReplicationDocument.Table_Name, whereClause, null)
-			.setClient_ID()
 			.setOnlyActiveRecords(true)
 			.setApplyAccessFilter(false)
 			.setParameters(AD_ReplicationStrategy_ID, AD_Table_ID, C_DocType_ID)
