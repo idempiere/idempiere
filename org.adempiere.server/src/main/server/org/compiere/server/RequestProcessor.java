@@ -383,7 +383,7 @@ public class RequestProcessor extends AdempiereServer
 		int supervisor_ID = request.getSalesRep().getSupervisor_ID();
 		if (supervisor_ID == 0 && m_model.getSupervisor_ID() != 0)
 			supervisor_ID = m_model.getSupervisor_ID();
-		if (supervisor_ID != 0 && supervisor_ID != request.getAD_User_ID())
+		if (supervisor_ID != 0 && supervisor_ID != request.getSalesRep_ID()) // IDEMPIERE-273
 			supervisor = MUser.get(getCtx(), supervisor_ID);
 		
 		//  Escalated: Request {0} to {1}
