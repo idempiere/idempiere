@@ -18,7 +18,10 @@ fi
 
 echo Re-Create Adempiere User and import $ADEMPIERE_HOME/data/Adempiere${SUFFIX}.dmp - \($ADEMPIERE_DB_NAME\)
 echo == The import will show warnings. This is OK ==
-ls -lsa $ADEMPIERE_HOME/data/Adempiere${SUFFIX}.dmp
+cd $ADEMPIERE_HOME/data/seed
+jar xvf Adempiere${SUFFIX}.jar
+cd $ADEMPIERE_HOME/utils
+ls -lsa $ADEMPIERE_HOME/data/seed/Adempiere${SUFFIX}.dmp
 echo Press enter to continue ...
 read in
 

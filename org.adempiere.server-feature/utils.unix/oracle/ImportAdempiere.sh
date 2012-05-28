@@ -3,7 +3,7 @@
 # $Id: ImportAdempiere.sh,v 1.10 2005/12/20 07:12:17 jjanke Exp $
 echo	Adempiere Database Import		$Revision: 1.10 $
 
-echo	Importing Adempiere DB from $ADEMPIERE_HOME/data/Adempiere.dmp
+echo	Importing Adempiere DB from $ADEMPIERE_HOME/data/seed/Adempiere.dmp
 
 if [ $# -le 2 ]
   then
@@ -29,8 +29,8 @@ sqlplus $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME @$ADEMPIER
 echo -------------------------------------
 echo Import Adempiere.dmp
 echo -------------------------------------
-echo "imp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME FILE=$ADEMPIERE_HOME/data/Adempiere.dmp FROMUSER=\(reference\) TOUSER=$2"
-imp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME FILE=$ADEMPIERE_HOME/data/Adempiere.dmp FROMUSER=\(reference\) TOUSER=$2
+echo "imp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME FILE=$ADEMPIERE_HOME/data/seed/Adempiere.dmp FROMUSER=\(reference\) TOUSER=$2"
+imp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME FILE=$ADEMPIERE_HOME/data/seed/Adempiere.dmp FROMUSER=\(reference\) TOUSER=$2
 
 echo -------------------------------------
 echo Check System
