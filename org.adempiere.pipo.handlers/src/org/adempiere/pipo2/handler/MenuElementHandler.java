@@ -20,7 +20,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -28,6 +27,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.ElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -52,7 +52,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class MenuElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 
 		List<String> excludes = defaultExcludeList(X_AD_Menu.Table_Name);
@@ -61,7 +61,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		if (mMenu == null) {
 			String menuName = getStringValue(element, "Name");
 			int menuId = findIdByColumn(ctx, "AD_Menu", "Name", menuName);
-			mMenu = new X_AD_Menu(ctx, menuId > 0 ? menuId : 0, getTrxName(ctx));
+			mMenu = new X_AD_Menu(ctx.ctx, menuId > 0 ? menuId : 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mMenu, element, this);
 
@@ -73,6 +73,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		List<String> notFounds = filler.autoFill(excludes);
 		if (notFounds.size() > 0) {
 			element.defer = true;
+			element.unresolved = notFounds.toString();
 			return;
 		}
 
@@ -108,7 +109,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		int parentId = 0;
 		if (parentElement != null) {
 			if (ReferenceUtils.isIDLookup(parentElement) || ReferenceUtils.isUUIDLookup(parentElement)) {
-				parentId = ReferenceUtils.resolveReference(ctx, parentElement, getTrxName(ctx));
+				parentId = ReferenceUtils.resolveReference(ctx.ctx, parentElement, getTrxName(ctx));
 			} else {
 				String parent = getStringValue(element, "Parent_ID");
 				parentId = findIdByName(ctx, "AD_Menu", parent);
@@ -116,11 +117,12 @@ public class MenuElementHandler extends AbstractElementHandler {
 		}
 
 		StringBuffer updateSQL = null;
-		String sql = "SELECT count(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID = 10"
+		int AD_Tree_ID = getDefaultMenuTreeId();
+		String sql = "SELECT count(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID = "+AD_Tree_ID
 				+ " AND Node_ID = " + mMenu.getAD_Menu_ID();
 		int countRecords = DB.getSQLValue(getTrxName(ctx), sql);
 		if (countRecords > 0) {
-			sql = "select * from AD_TREENODEMM where AD_Tree_ID = 10 and "
+			sql = "select * from AD_TREENODEMM where AD_Tree_ID = "+AD_Tree_ID+" and "
 							+ " Node_ID =?";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -154,9 +156,9 @@ public class MenuElementHandler extends AbstractElementHandler {
 							colValue = obj == null ? "" : obj.toString();
 						}
 
-						X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx, 0, getTrxName(ctx));
+						X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, getTrxName(ctx));
 						backup.setAD_Package_Imp_Detail_ID(impDetail.getAD_Package_Imp_Detail_ID());
-						backup.setAD_Package_Imp_ID(getPackageImpId(ctx));
+						backup.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));
 						backup.setAD_Table_ID(tableID);
 						backup.setAD_Column_ID(columnID);
 						backup.setAD_Reference_ID(referenceID);
@@ -175,26 +177,30 @@ public class MenuElementHandler extends AbstractElementHandler {
 			updateSQL = new StringBuffer("UPDATE AD_TREENODEMM ").append(
 					"SET Parent_ID = " + parentId).append(
 					" , SeqNo = " + getStringValue(element, "SeqNo")).append(
-					" WHERE AD_Tree_ID = 10").append(
+					" WHERE AD_Tree_ID = "+AD_Tree_ID).append(
 					" AND Node_ID = " + mMenu.getAD_Menu_ID());
 		} else {
 			updateSQL = new StringBuffer("Insert INTO AD_TREENODEMM").append(
 					"(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, ").append(
 					"Parent_ID, SeqNo, AD_Tree_ID, Node_ID)").append(
 					"VALUES(0, 0, 0, 0, ").append(
-					parentId + "," + getStringValue(element, "SeqNo") + ", 10, "
+					parentId + "," + getStringValue(element, "SeqNo") + ", "+AD_Tree_ID+", "
 							+ mMenu.getAD_Menu_ID() + ")");
 		}
-		DB.executeUpdateEx(updateSQL.toString(), getTrxName(ctx));
+		DB.executeUpdate(updateSQL.toString(), getTrxName(ctx));
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	private int getDefaultMenuTreeId() {
+		return DB.getSQLValue(null, "SELECT MIN(AD_Tree_ID) FROM AD_Tree WHERE IsDefault='Y' AND TreeType='MM' AND AD_Client_ID=0");
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
+	}
+
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Menu_ID = Env.getContextAsInt(ctx, "AD_Menu_ID");
-		X_AD_Menu m_Menu = new X_AD_Menu(ctx, AD_Menu_ID, null);
+		int AD_Menu_ID = Env.getContextAsInt(ctx.ctx, "AD_Menu_ID");
+		X_AD_Menu m_Menu = new X_AD_Menu(ctx.ctx, AD_Menu_ID, null);
 		if (m_Menu.isSummary() == false) {
 			createApplication(ctx, document, AD_Menu_ID);
 		} else {
@@ -207,17 +213,18 @@ public class MenuElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	private void createMenuBinding(Properties ctx, TransformerHandler document,
+	private void createMenuBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Menu m_Menu) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Menu);
 		List<String> excludes = defaultExcludeList(X_AD_Menu.Table_Name);
-		String sql = "SELECT Parent_ID FROM AD_TreeNoDemm WHERE AD_Tree_ID = 10 and Node_ID=?";
+		int AD_Tree_ID = getDefaultMenuTreeId();
+		String sql = "SELECT Parent_ID FROM AD_TreeNoDemm WHERE AD_Tree_ID = "+AD_Tree_ID+" and Node_ID=?";
 		int id = DB.getSQLValue(null, sql, m_Menu.getAD_Menu_ID());
 		if (id > 0) {
 			filler.addTableReference("Parent_ID", "AD_Menu", "Name", id, new AttributesImpl());
 		}
-		sql = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID = 10 and Node_ID=?";
+		sql = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID = "+AD_Tree_ID+" and Node_ID=?";
 		int seqNo = DB.getSQLValue(null, sql, m_Menu.getAD_Menu_ID());
 		filler.addString("SeqNo", Integer.toString(seqNo), new AttributesImpl());
 		if (m_Menu.getAD_Menu_ID() <= PackOut.MAX_OFFICIAL_ID)
@@ -226,16 +233,16 @@ public class MenuElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	private void createApplication(Properties ctx, TransformerHandler document,
+	private void createApplication(PIPOContext ctx, TransformerHandler document,
 			int AD_Menu_ID) throws SAXException {
-		PackOut packOut = (PackOut)ctx.get("PackOutProcess");
+		PackOut packOut = ctx.packOut;
 		String sql = null;
-		// int x = 0;
+		int AD_Tree_ID = getDefaultMenuTreeId();
 		sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
 				+ "B.AD_PROCESS_ID, B.AD_FORM_ID, B.AD_WORKBENCH_ID "
-				+ "FROM AD_TreeNoDemm A, AD_Menu B "
+				+ "FROM AD_TreeNodeMM A, AD_Menu B "
 				+ "WHERE A.Node_ID = "
-				+ AD_Menu_ID + " AND A.Node_ID = B.AD_Menu_ID";
+				+ AD_Menu_ID + " AND A.Node_ID = B.AD_Menu_ID" + " AND A.AD_Tree_ID="+AD_Tree_ID;
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -244,7 +251,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 
-				X_AD_Menu m_Menu = new X_AD_Menu(ctx, rs.getInt("AD_Menu_ID"),
+				X_AD_Menu m_Menu = new X_AD_Menu(ctx.ctx, rs.getInt("AD_Menu_ID"),
 						null);
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "table");
@@ -294,15 +301,16 @@ public class MenuElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void createModule(Properties ctx, TransformerHandler document,
+	public void createModule(PIPOContext ctx, TransformerHandler document,
 			int menu_id) throws SAXException {
-		PackOut packOut = (PackOut)ctx.get("PackOutProcess");
+		PackOut packOut = ctx.packOut;
 		String sql = null;
+		int AD_Tree_ID = getDefaultMenuTreeId();
 		sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
 				+ "B.AD_PROCESS_ID, B.AD_FORM_ID, B.AD_WORKBENCH_ID "
-				+ "FROM AD_TreeNoDemm A, AD_Menu B "
+				+ "FROM AD_TreeNodeMM A, AD_Menu B "
 				+ "WHERE A.Parent_ID = "
-				+ menu_id + " AND A.Node_ID = B.AD_Menu_ID";
+				+ menu_id + " AND A.Node_ID = B.AD_Menu_ID" + " AND A.AD_Tree_ID="+AD_Tree_ID;
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -311,7 +319,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				// Menu tag Start.
-				X_AD_Menu m_Menu = new X_AD_Menu(ctx, rs.getInt("AD_Menu_ID"),
+				X_AD_Menu m_Menu = new X_AD_Menu(ctx.ctx, rs.getInt("AD_Menu_ID"),
 						null);
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "table");
@@ -364,9 +372,9 @@ public class MenuElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Menu_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Menu_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Menu_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Menu_ID);
 	}
 }
 

@@ -17,13 +17,12 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.ElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -41,12 +40,12 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class ProcessParaElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Process_Para.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 			if (isParentDefer(element, I_AD_Process.Table_Name)) {
 				element.defer = true;
 				return;
@@ -54,15 +53,15 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 
 			X_AD_Process_Para mProcessPara = findPO(ctx, element);
 			if (mProcessPara == null) {
-				String name = getStringValue(element, "Name");
+				String name = getStringValue(element, "ColumnName");
 
 				int id = 0;
 				int masterId = 0;
 				if (getParentId(element, I_AD_Process.Table_Name) > 0) {
-					masterId = getParentId(element, "process");
+					masterId = getParentId(element, I_AD_Process.Table_Name);
 				} else {
 					Element processElement = element.properties.get(I_AD_Process_Para.COLUMNNAME_AD_Process_ID);
-					masterId = ReferenceUtils.resolveReference(ctx, processElement, getTrxName(ctx));
+					masterId = ReferenceUtils.resolveReference(ctx.ctx, processElement, getTrxName(ctx));
 				}
 				if (masterId <= 0) {
 					element.defer = true;
@@ -70,8 +69,8 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 					return;
 				}
 
-				id = findIdByColumnAndParentId(ctx, "AD_Process_Para", "Name", name, "AD_Process", masterId);
-				mProcessPara = new X_AD_Process_Para(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				id = findIdByColumnAndParentId(ctx, "AD_Process_Para", "ColumnName", name, "AD_Process", masterId);
+				mProcessPara = new X_AD_Process_Para(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mProcessPara.setAD_Process_ID(masterId);
 				excludes.add(I_AD_Process_Para.COLUMNNAME_AD_Process_ID);
 			}
@@ -84,6 +83,7 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -99,12 +99,12 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 					action = "New";
 				}
 				if (mProcessPara.save(getTrxName(ctx)) == true) {
-					logImportDetail(ctx, impDetail, 1, mProcessPara.getName(),
+					logImportDetail(ctx, impDetail, 1, mProcessPara.getColumnName(),
 							mProcessPara.get_ID(), action);
 				} else {
-					logImportDetail(ctx, impDetail, 0, mProcessPara.getName(),
+					logImportDetail(ctx, impDetail, 0, mProcessPara.getColumnName(),
 							mProcessPara.get_ID(), action);
-					throw new POSaveFailedException("ProcessPara");
+					throw new POSaveFailedException("Failed to save ProcessPara " + mProcessPara.getColumnName());
 				}
 			}
 		} else {
@@ -112,23 +112,29 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Process_Para_ID = Env.getContextAsInt(ctx,
+		int AD_Process_Para_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID);
-		X_AD_Process_Para m_Processpara = new X_AD_Process_Para(ctx,
+		X_AD_Process_Para m_Processpara = new X_AD_Process_Para(ctx.ctx,
 				AD_Process_Para_ID, getTrxName(ctx));
 
 		if (m_Processpara.getAD_Element_ID() > 0) {
-			PackOut packOut = getPackOut(ctx);
+			PackOut packOut = ctx.packOut;
 			ElementHandler handler = packOut.getHandler(I_AD_Element.Table_Name);
 			try {
 				handler.packOut(packOut,document,null,m_Processpara.getAD_Element_ID());
 			} catch (Exception e) {
-				throw new AdempiereException(e);
+				throw new RuntimeException(e);
+			}
+		}
+
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Processpara.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
 			}
 		}
 		AttributesImpl atts = new AttributesImpl();
@@ -138,7 +144,7 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 		document.endElement("", "", I_AD_Process_Para.Table_Name);
 	}
 
-	private void createProcessParaBinding(Properties ctx, TransformerHandler document,
+	private void createProcessParaBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Process_Para m_Processpara) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Processpara);
@@ -153,8 +159,8 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID);
+		packout.getCtx().ctx.remove(I_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID);
 	}
 }

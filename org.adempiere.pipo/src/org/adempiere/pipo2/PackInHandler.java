@@ -19,26 +19,13 @@
 
 package org.adempiere.pipo2;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Properties;
+import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
 
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.X_AD_Package_Imp;
@@ -77,17 +64,9 @@ public class PackInHandler extends DefaultHandler {
     private int AD_Package_Imp_ID=0;
 	private int AD_Package_Imp_Inst_ID=0;
     private CLogger log = CLogger.getCLogger(PackInHandler.class);
-    private OutputStream  logOutputStream = null;
-    private TransformerHandler logDocument = null;
-    private StreamResult loStreamResult = null;
-	private SAXTransformerFactory transformerFactory = null;
-	private Transformer logTransformer = null;
 	private boolean isInit = false;
-	private String logDate = null;
 	private String packageStatus = "Installing";
-	// transaction name
-	private	String 		m_trxName = null;
-	private Properties  m_ctx = null;
+	private PIPOContext m_ctx = null;
 
 	private IHandlerRegistry handlerRegistry = null;
 	private List<DeferEntry> defer = new ArrayList<DeferEntry>();
@@ -99,41 +78,11 @@ public class PackInHandler extends DefaultHandler {
 
 		packageDirectory = packIn.getPackageDirectory();
 		m_updateDictionary = packIn.isUpdateDictionary();
-		SimpleDateFormat formatter_file = new SimpleDateFormat("yyMMddHHmmssZ");
-		SimpleDateFormat formatter_log = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
-		Date today = new Date();
-		String fileDate = formatter_file.format(today);
-		logDate = formatter_log.format(today);
 
-		String logFileName = packageDirectory+File.separator+"doc"+File.separator+"Importlog_"+fileDate+".xml";
-		log.info("packin log file="+logFileName);
-		try {
-			logOutputStream = new FileOutputStream (logFileName, false);
-		} catch (FileNotFoundException e1) {
-			log.warning ("Failed to create log file. error="+e1+" file="+logFileName);
-		}
-		loStreamResult = new StreamResult(logOutputStream);
-		transformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-
-		try {
-			logDocument = transformerFactory.newTransformerHandler();
-		} catch (TransformerConfigurationException e2) {
-			log.info ("startElement:"+e2);
-		}
-		logTransformer = logDocument.getTransformer();
-		logTransformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
-		logTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
-		logDocument.setResult(loStreamResult);
-		logDocument.startDocument();
-		logDocument.processingInstruction("xml-stylesheet","type=\"text/css\" href=\"adempiereDocument.css\"");
-		Properties tmp = new Properties();
-		if (m_ctx != null)
-			tmp.putAll(m_ctx);
-		else
-			tmp.putAll(Env.getCtx());
-		m_ctx = tmp;
-		if (m_trxName == null)
-			m_trxName = Trx.createTrxName("PackIn");
+		if (m_ctx == null)
+			m_ctx = new PIPOContext();
+		if (m_ctx.trx == null)
+			m_ctx.trx = Trx.get("PackIn", true);
 
 		isInit=true;
 	}
@@ -164,10 +113,17 @@ public class PackInHandler extends DefaultHandler {
 		{
 			log.info("adempiereAD updateMode="+m_updateDictionary);
 
-			createLogHeader(atts);
+			//check client
+			String clientAttribute = atts.getValue("Client");
+			String[] clientComponent = clientAttribute.split("[-]");
+			int clientId = Integer.parseInt(clientComponent[0]);
+			if (clientId == 0 && Env.getAD_Client_ID(m_ctx.ctx) > 0) {
+				throw new RuntimeException("Package is created for System, not Tenant");
+			} else if (clientId > 0 && Env.getAD_Client_ID(m_ctx.ctx) == 0) {
+				throw new RuntimeException("Package is created for Tenant, not System");
+			}
 
 			// Update Summary Package History Table
-
 			int PK_preInstalled=0;
 
 			String packageName = packIn.getPackageName();
@@ -199,8 +155,8 @@ public class PackInHandler extends DefaultHandler {
 				DB.close(rs, pstmt);
 			}
 
-			X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx, 0, null);
-			packageImp.setAD_Org_ID(Env.getAD_Org_ID(m_ctx));
+			X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, 0, null);
+			packageImp.setAD_Org_ID(Env.getAD_Org_ID(m_ctx.ctx));
 			packageImp.setReleaseNo(atts.getValue("CompVer"));
 			packageImp.setPK_Version(packageVersion);
 			packageImp.setVersion(atts.getValue("DataBase"));
@@ -216,8 +172,8 @@ public class PackInHandler extends DefaultHandler {
 			if ( PK_preInstalled <= 0){
 				//Insert Package into package install log
 
-				X_AD_Package_Imp_Inst packageInst = new X_AD_Package_Imp_Inst(m_ctx, 0, null);
-				packageInst.setAD_Org_ID(Env.getAD_Org_ID(m_ctx));
+				X_AD_Package_Imp_Inst packageInst = new X_AD_Package_Imp_Inst(m_ctx.ctx, 0, null);
+				packageInst.setAD_Org_ID(Env.getAD_Org_ID(m_ctx.ctx));
 				packageInst.setReleaseNo(atts.getValue("CompVer"));
 				packageInst.setPK_Version(atts.getValue("Version"));
 				packageInst.setVersion(atts.getValue("DataBase"));
@@ -232,17 +188,15 @@ public class PackInHandler extends DefaultHandler {
 				//Update package list with package status
 				AD_Package_Imp_Inst_ID = PK_preInstalled;
 
-				X_AD_Package_Imp_Inst packageInst = new X_AD_Package_Imp_Inst(m_ctx, AD_Package_Imp_Inst_ID, null);
+				X_AD_Package_Imp_Inst packageInst = new X_AD_Package_Imp_Inst(m_ctx.ctx, AD_Package_Imp_Inst_ID, null);
 				packageInst.setPK_Status(packageStatus);
 				packageInst.saveEx();
 			}
 
-			Env.setContext(m_ctx, "AD_Package_Imp_ID", AD_Package_Imp_ID);
-			Env.setContext(m_ctx, "UpdateMode", m_updateDictionary);
-			Env.setContext(m_ctx, "TrxName", m_trxName);
-			Env.setContext(m_ctx, "PackageDirectory", packageDirectory);
-			m_ctx.put("LogDocument", logDocument);
-			m_ctx.put(PACK_IN_PROCESS_CTX_KEY, packIn);
+			m_ctx.ctx.put("AD_Package_Imp_ID", AD_Package_Imp_ID);
+			m_ctx.ctx.put("UpdateMode", m_updateDictionary);
+			m_ctx.ctx.put("PackageDirectory", packageDirectory);
+			m_ctx.packIn = packIn;
 		} else {
 			Element e = new Element(uri, localName, qName, new AttributesImpl(atts));
 			if (stack.size() > 0)
@@ -292,22 +246,6 @@ public class PackInHandler extends DefaultHandler {
 		}
 	}
 
-	private void createLogHeader(Attributes atts) throws SAXException {
-		AttributesImpl attsOut = new AttributesImpl();
-		logDocument.startElement("","","adempiereDocument",attsOut);
-		PackOut.addTextElement(logDocument, "header", atts.getValue("Name")+" Install Log", attsOut);
-		PackOut.addTextElement(logDocument, "H3", "Package Name:", attsOut);
-		PackOut.addTextElement(logDocument, "packagename4log", atts.getValue("Name"), attsOut);
-		PackOut.addTextElement(logDocument, "H3", "Version:", attsOut);
-		PackOut.addTextElement(logDocument, "Version", atts.getValue("Version"), attsOut);
-		PackOut.addTextElement(logDocument, "H3", "Package Install Date:", attsOut);
-		PackOut.addTextElement(logDocument, "installDate", logDate, attsOut);
-		PackOut.addTextElement(logDocument, "H3", "Min. Version:", attsOut);
-		PackOut.addTextElement(logDocument, "AdempiereVersion", atts.getValue("AdempiereVersion"), attsOut);
-		PackOut.addTextElement(logDocument, "H3", "Min. Database Date:", attsOut);
-		PackOut.addTextElement(logDocument, "Database", atts.getValue("Database"), attsOut);
-	}
-
 	/**
 	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
 	 */
@@ -343,22 +281,14 @@ public class PackInHandler extends DefaultHandler {
     			packageStatus = "Completed successfully";
 
     		//Update package history log with package status
-    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx, AD_Package_Imp_ID, null);
+    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     		packageImp.setPK_Status(packageStatus);
     		packageImp.saveEx();
 
     		//Update package list with package status
-    		X_AD_Package_Imp_Inst packageInst = new X_AD_Package_Imp_Inst(m_ctx, AD_Package_Imp_Inst_ID, null);
+    		X_AD_Package_Imp_Inst packageInst = new X_AD_Package_Imp_Inst(m_ctx.ctx, AD_Package_Imp_Inst_ID, null);
     		packageInst.setPK_Status(packageStatus);
     		packageInst.saveEx();
-
-    		logDocument.endElement("","","adempiereDocument");
-    		logDocument.endDocument();
-    		try {
-    			logOutputStream.close();
-    		}
-    		catch (Exception e)
-    		{}
 
     		//reset
     		setupHandlers();
@@ -366,7 +296,23 @@ public class PackInHandler extends DefaultHandler {
     		Element e = stack.pop();
     		if (stack.isEmpty())
     		{
-    			processElement(e);
+    			try {
+    				processElement(e);
+    			} catch (RuntimeException re) {
+    				packageStatus = "Import Failed";
+    				//Update package history log with package status
+    	    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
+    	    		packageImp.setPK_Status(packageStatus);
+    	    		packageImp.save();
+    	    		throw re;
+    			} catch (SAXException se) {
+    				packageStatus = "Import Failed";
+    				//Update package history log with package status
+    	    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
+    	    		packageImp.setPK_Status(packageStatus);
+    	    		packageImp.save();
+    	    		throw se;
+    			}
     		}
     	}
     }   // endElement
@@ -391,7 +337,7 @@ public class PackInHandler extends DefaultHandler {
     				}
     			}
     			if (log.isLoggable(Level.INFO)) {
-    				log.info("Processeing Element: " + d.element.getElementValue() + " - "
+    				log.info("Processing Element: " + d.element.getElementValue() + " - "
 						+ d.element.attributes.getValue(0));
     			}
     			ElementHandler handler = handlerRegistry.getHandler(d.element);
@@ -419,13 +365,7 @@ public class PackInHandler extends DefaultHandler {
     	} while (defer.size() > 0);
     }
 
-	// globalqss - add support for trx in 3.1.2
-	public void set_TrxName(String trxName) {
-		m_trxName = trxName;
-	}
-
-    // globalqss - add support for trx in 3.1.2
-	public void setCtx(Properties ctx) {
+	public void setCtx(PIPOContext ctx) {
 		m_ctx = ctx;
 	}
 
@@ -455,6 +395,35 @@ public class PackInHandler extends DefaultHandler {
 			}
 		}
 		return count;
+	}
+	
+	public void dumpUnresolvedElements() {
+		if (defer != null && !defer.isEmpty()) {
+			for(DeferEntry entry : defer) {
+				if (!entry.startElement)
+				{
+					Element e = entry.element;
+					StringBuffer s = new StringBuffer(e.qName);
+					s.append(" [");
+					Set<String> keys = e.properties.keySet();
+					int i = 0;
+					for(String key : keys) 
+					{
+						Element value = e.properties.get(key);
+						if (i > 0)
+							s.append(", ");
+						s.append(key).append("=");
+						if (value.contents != null)
+							s.append(value.contents);
+						i++;
+					}
+					s.append("]");
+					if (e.unresolved != null && e.unresolved.length() > 0)
+						s.append(" unresolved ").append(e.unresolved);
+					log.warning(s.toString());
+				}
+			}
+		}
 	}
 
 	class DeferEntry {

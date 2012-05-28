@@ -18,11 +18,11 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -37,7 +37,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class PrintPaperElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		
 		List<String> excludes = defaultExcludeList(X_AD_PrintPaper.Table_Name);
@@ -48,7 +48,7 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 			String printPaperName = getStringValue(element, "Name", excludes);
 			int id = findIdByName(ctx, "AD_PrintPaper", printPaperName);
 	
-			printPaper = new X_AD_PrintPaper(ctx, id > 0 ? id : 0, getTrxName(ctx));
+			printPaper = new X_AD_PrintPaper(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, printPaper, element, this);
 
@@ -58,6 +58,7 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
+			element.unresolved = notfounds.toString();
 			return;
 		}
 
@@ -76,20 +77,27 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 			} else {
 				logImportDetail(ctx, impDetail, 0, printPaper.getName(),
 						printPaper.get_ID(), action);
-				throw new POSaveFailedException("PrintPaper");
+				throw new POSaveFailedException("Failed to save PrintPaper " + printPaper.getName());
 			}
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_PrintPaper_ID = Env.getContextAsInt(ctx,
+		int AD_PrintPaper_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_PrintPaper.COLUMNNAME_AD_PrintPaper_ID);
-		X_AD_PrintPaper printPaper = new X_AD_PrintPaper(ctx,
+		X_AD_PrintPaper printPaper = new X_AD_PrintPaper(ctx.ctx,
 				AD_PrintPaper_ID, null);
+
+		if (ctx.packOut.getFromDate() != null) {
+			if (printPaper.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
+
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_PrintPaper.Table_Name, atts);
@@ -97,7 +105,7 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 		document.endElement("", "", I_AD_PrintPaper.Table_Name);
 	}
 
-	private void createPrintPaperBinding(Properties ctx, TransformerHandler document,
+	private void createPrintPaperBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_PrintPaper printPaper) {
 
 		PoExporter filler = new PoExporter(ctx, document, printPaper);
@@ -112,9 +120,9 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), X_AD_PrintPaper.COLUMNNAME_AD_PrintPaper_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_PrintPaper.COLUMNNAME_AD_PrintPaper_ID, recordId);
 
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_PrintPaper.COLUMNNAME_AD_PrintPaper_ID);
+		packout.getCtx().ctx.remove(X_AD_PrintPaper.COLUMNNAME_AD_PrintPaper_ID);
 	}
 }

@@ -19,11 +19,11 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -42,7 +42,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 	private List<Integer> processedFieldGroups = new ArrayList<Integer>();
 
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		String elementValue = element.getElementValue();
 		String action = null;
@@ -52,13 +52,13 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		String entitytype = getStringValue(element, "EntityType");
 		String name = getStringValue(element, "Name");
 
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			X_AD_FieldGroup fieldGroup = findPO(ctx, element);
 			if (fieldGroup == null)
 			{
 				int id = findIdByColumn(ctx, X_AD_FieldGroup.Table_Name, X_AD_FieldGroup.COLUMNNAME_Name, name);
-				fieldGroup = new X_AD_FieldGroup(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				fieldGroup = new X_AD_FieldGroup(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			PoFiller pf = new PoFiller(ctx, fieldGroup, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_FieldGroup.Table_Name);
@@ -75,6 +75,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 			List<String> notfounds = pf.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -99,7 +100,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 				} else {
 					logImportDetail(ctx, impDetail, 0, fieldGroup.getName(),
 							fieldGroup.get_ID(), action);
-					throw new POSaveFailedException("Reference");
+					throw new POSaveFailedException("Failed to save Field Group " + fieldGroup.getName());
 				}
 			}
 		} else {
@@ -107,14 +108,14 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(Properties ctx, TransformerHandler document)
+	protected void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 
 
-		int fieldGroup_id = Env.getContextAsInt(ctx,
+		int fieldGroup_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID);
 
 		if (processedFieldGroups.contains(fieldGroup_id))
@@ -122,7 +123,13 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 
 		processedFieldGroups.add(fieldGroup_id);
 
-		X_AD_FieldGroup fieldGroup = new X_AD_FieldGroup(ctx, fieldGroup_id, null);
+		X_AD_FieldGroup fieldGroup = new X_AD_FieldGroup(ctx.ctx, fieldGroup_id, null);
+
+		if (ctx.packOut.getFromDate() != null) {
+			if (fieldGroup.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
 
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
@@ -130,7 +137,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 
 		createAdElementBinding(ctx, document, fieldGroup);
 
-		PackOut packOut = (PackOut)ctx.get("PackOutProcess");
+		PackOut packOut = ctx.packOut;
 
 		try{
 			new CommonTranslationHandler().packOut(packOut,document,null,fieldGroup.get_ID());
@@ -143,7 +150,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 	}
 
 
-	private void createAdElementBinding(Properties ctx, TransformerHandler document,
+	private void createAdElementBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_FieldGroup fieldGroup) {
 
 		PoExporter filler = new PoExporter(ctx, document, fieldGroup);
@@ -157,9 +164,9 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID, recordId);
 
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID);
+		packout.getCtx().ctx.remove(X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID);
 	}
 }

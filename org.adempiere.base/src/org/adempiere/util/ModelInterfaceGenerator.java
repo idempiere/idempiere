@@ -778,7 +778,7 @@ public class ModelInterfaceGenerator
 		if (entityType != null && entityType.trim().length() > 0)
 		{
 			entityTypeFilter = "EntityType IN (";
-			StringTokenizer tokenizer = new StringTokenizer(entityType);
+			StringTokenizer tokenizer = new StringTokenizer(entityType, ",");
 			int i = 0;
 			while(tokenizer.hasMoreTokens()) {
 				String token = tokenizer.nextToken().trim();

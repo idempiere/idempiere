@@ -31,13 +31,13 @@ public interface I_AD_Package_Imp_Backup
     public static final String Table_Name = "AD_Package_Imp_Backup";
 
     /** AD_Table_ID=50002 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 50002;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -62,7 +62,7 @@ public interface I_AD_Package_Imp_Backup
 	  */
 	public int getAD_Column_ID();
 
-	public I_AD_Column getAD_Column() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -85,6 +85,15 @@ public interface I_AD_Package_Imp_Backup
 
 	/** Get Imp. Package Backup	  */
 	public int getAD_Package_Imp_Backup_ID();
+
+    /** Column name AD_Package_Imp_Backup_UU */
+    public static final String COLUMNNAME_AD_Package_Imp_Backup_UU = "AD_Package_Imp_Backup_UU";
+
+	/** Set AD_Package_Imp_Backup_UU	  */
+	public void setAD_Package_Imp_Backup_UU (String AD_Package_Imp_Backup_UU);
+
+	/** Get AD_Package_Imp_Backup_UU	  */
+	public String getAD_Package_Imp_Backup_UU();
 
     /** Column name AD_Package_Imp_Bck_Dir */
     public static final String COLUMNNAME_AD_Package_Imp_Bck_Dir = "AD_Package_Imp_Bck_Dir";
@@ -135,7 +144,7 @@ public interface I_AD_Package_Imp_Backup
 	  */
 	public int getAD_Reference_ID();
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";

@@ -31,13 +31,13 @@ public interface I_AD_Package_Imp
     public static final String Table_Name = "AD_Package_Imp";
 
     /** AD_Table_ID=50003 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 50003;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -70,6 +70,15 @@ public interface I_AD_Package_Imp
 
 	/** Get Package Imp.	  */
 	public int getAD_Package_Imp_ID();
+
+    /** Column name AD_Package_Imp_UU */
+    public static final String COLUMNNAME_AD_Package_Imp_UU = "AD_Package_Imp_UU";
+
+	/** Set AD_Package_Imp_UU	  */
+	public void setAD_Package_Imp_UU (String AD_Package_Imp_UU);
+
+	/** Get AD_Package_Imp_UU	  */
+	public String getAD_Package_Imp_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -169,10 +178,10 @@ public interface I_AD_Package_Imp
     /** Column name PK_Status */
     public static final String COLUMNNAME_PK_Status = "PK_Status";
 
-	/** Set PK_Status	  */
+	/** Set Package Status	  */
 	public void setPK_Status (String PK_Status);
 
-	/** Get PK_Status	  */
+	/** Get Package Status	  */
 	public String getPK_Status();
 
     /** Column name PK_Version */

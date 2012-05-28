@@ -29,7 +29,7 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120528L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Detail (Properties ctx, int AD_Package_Imp_Detail_ID, String trxName)
@@ -50,7 +50,7 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -146,6 +146,20 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Package_Imp_Detail_UU.
+		@param AD_Package_Imp_Detail_UU AD_Package_Imp_Detail_UU	  */
+	public void setAD_Package_Imp_Detail_UU (String AD_Package_Imp_Detail_UU)
+	{
+		set_Value (COLUMNNAME_AD_Package_Imp_Detail_UU, AD_Package_Imp_Detail_UU);
+	}
+
+	/** Get AD_Package_Imp_Detail_UU.
+		@return AD_Package_Imp_Detail_UU	  */
+	public String getAD_Package_Imp_Detail_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Detail_UU);
 	}
 
 	/** Set Package Imp..

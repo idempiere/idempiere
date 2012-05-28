@@ -19,12 +19,12 @@ package org.adempiere.pipo2.handler;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -35,6 +35,7 @@ import org.compiere.model.I_AD_Ref_Table;
 import org.compiere.model.I_AD_Reference;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Ref_Table;
+import org.compiere.model.X_AD_Reference;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -42,13 +43,13 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class ReferenceTableElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 
 		List<String > excludes = defaultExcludeList(X_AD_Ref_Table.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 			if (isParentSkip(element, null)) {
 				element.skip = true;
 				return;
@@ -61,7 +62,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 					AD_Reference_ID = getParentId(element, I_AD_Reference.Table_Name);
 				} else {
 					Element referenceElement = element.properties.get(I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
-					AD_Reference_ID = ReferenceUtils.resolveReference(ctx, referenceElement, getTrxName(ctx));
+					AD_Reference_ID = ReferenceUtils.resolveReference(ctx.ctx, referenceElement, getTrxName(ctx));
 				}
 				if (AD_Reference_ID <= 0 && isOfficialId(element, "AD_Reference_ID"))
 					AD_Reference_ID = getIntValue(element, "AD_Reference_ID");
@@ -74,9 +75,9 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 					pstmt.setInt(1, AD_Reference_ID);
 					rs = pstmt.executeQuery();
 					if (rs.next()) {
-						refTable = new X_AD_Ref_Table(ctx, rs, getTrxName(ctx));
+						refTable = new X_AD_Ref_Table(ctx.ctx, rs, getTrxName(ctx));
 					} else {
-						refTable = new X_AD_Ref_Table(ctx, 0, getTrxName(ctx));
+						refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
 					}
 				} catch (Exception e) {
 					throw new DatabaseAccessException(e.getLocalizedMessage(), e);
@@ -89,13 +90,14 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 			int tableId = refTable.getAD_Table_ID();
 			Element displayElement = element.properties.get("AD_Display");
 			int displayColumnId = 0;
 			if (ReferenceUtils.isIDLookup(displayElement) || ReferenceUtils.isUUIDLookup(displayElement)) {
-				displayColumnId = ReferenceUtils.resolveReference(ctx, displayElement, getTrxName(ctx));
+				displayColumnId = ReferenceUtils.resolveReference(ctx.ctx, displayElement, getTrxName(ctx));
 			} else {
 				displayColumnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", displayElement.contents.toString(), "AD_Table", tableId);
 			}
@@ -105,7 +107,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			Element keyElement = element.properties.get("AD_Key");
 			int keyColumnId = 0;
 			if (ReferenceUtils.isIDLookup(keyElement) || ReferenceUtils.isUUIDLookup(keyElement)) {
-				keyColumnId = ReferenceUtils.resolveReference(ctx, keyElement, getTrxName(ctx));
+				keyColumnId = ReferenceUtils.resolveReference(ctx.ctx, keyElement, getTrxName(ctx));
 			} else {
 				keyColumnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", keyElement.contents.toString(), "AD_Table", tableId);
 			}
@@ -117,35 +119,27 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Ref_Table.Table_Name,
 						X_AD_Ref_Table.Table_ID);
 
-				logImportDetail(ctx, impDetail, 1, refTable.getAD_Reference().getName(), refTable.getAD_Reference_ID(), action);
+				int AD_Reference_ID = refTable.getAD_Reference_ID();
+				X_AD_Reference adReference = new X_AD_Reference(ctx.ctx, AD_Reference_ID, getTrxName(ctx));
+				logImportDetail(ctx, impDetail, 1, adReference.getName(), refTable.getAD_Reference_ID(), action);
 			}
 		} else {
 			element.skip = true;
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int Reference_id = Env.getContextAsInt(ctx,
-				X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
-		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Ref_Table.Table_Name, atts);
+		int Reference_id = Env.getContextAsInt(ctx.ctx, "AD_Reference_ID");
 		createReferenceTableBinding(ctx, document, Reference_id);
-		document.endElement("", "", I_AD_Ref_Table.Table_Name);
 	}
 
-	private void createReferenceTableBinding(Properties ctx,
+	private void createReferenceTableBinding(PIPOContext ctx,
 			TransformerHandler document, int reference_ID) {
 
-		if (reference_ID <= PackOut.MAX_OFFICIAL_ID)
-		{
-			PoExporter filler = new PoExporter(ctx,document,null);
-			filler.addString("AD_Reference_ID", Integer.toString(reference_ID), new AttributesImpl());
-		}
 		String sql = "SELECT * FROM AD_Ref_Table WHERE AD_Reference_ID= "
 				+ reference_ID;
 
@@ -155,7 +149,23 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				X_AD_Ref_Table refTable = new X_AD_Ref_Table(ctx, rs, getTrxName(ctx));
+				X_AD_Ref_Table refTable = new X_AD_Ref_Table(ctx.ctx, rs, getTrxName(ctx));
+				if (ctx.packOut.getFromDate() != null) {
+					if (refTable.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+						return;
+					}
+				}
+
+				AttributesImpl atts = new AttributesImpl();
+				addTypeName(atts, "table");
+				document.startElement("", "", X_AD_Ref_Table.Table_Name, atts);
+
+				if (reference_ID <= PackOut.MAX_OFFICIAL_ID)
+				{
+					PoExporter filler = new PoExporter(ctx,document,null);
+					filler.addString("AD_Reference_ID", Integer.toString(reference_ID), new AttributesImpl());
+				}
+
 				PoExporter filler = new PoExporter(ctx,document,refTable);
 				List<String > excludes = defaultExcludeList(X_AD_Ref_Table.Table_Name);
 				excludes.add("ad_display");
@@ -163,6 +173,8 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 				filler.export(excludes);
 				filler.addTableReference("AD_Display", "AD_Column", "ColumnName", new AttributesImpl());
 				filler.addTableReference("AD_Key", "AD_Column", "ColumnName", new AttributesImpl());
+				
+				document.endElement("", "", X_AD_Ref_Table.Table_Name);
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -176,8 +188,8 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
+		packout.getCtx().ctx.remove(I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
 	}
 }

@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -31,7 +32,6 @@ import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp_Backup;
 import org.compiere.model.X_AD_Package_Imp_Detail;
-import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -45,7 +45,6 @@ import org.compiere.util.Env;
 public class PackRollProcess extends SvrProcess {
 	/** Package from Record */
 	private int m_AD_Package_Imp_ID = 0;
-	private String m_Processing = null;
 	StringBuffer sql = null;
 	StringBuffer sqlB = null;
 	String columnIDName = null;
@@ -56,16 +55,6 @@ public class PackRollProcess extends SvrProcess {
 	 * Prepare - e.g., get Parameters.
 	 */
 	protected void prepare() {
-		ProcessInfoParameter[] para = getParameter();
-		for (int i = 0; i < para.length; i++) {
-			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
-				;
-			else if (name.equals("Processing"))
-				m_Processing = (String) para[i].getParameter();
-			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
-		}
 		m_AD_Package_Imp_ID = getRecord_ID();
 	} // prepare
 
@@ -280,9 +269,23 @@ public class PackRollProcess extends SvrProcess {
 									// Update columns that are dates
 									else if (v_AD_Reference_ID == 15
 											|| v_AD_Reference_ID == 16)
-										// TODO Develop portable code to update
-										// date columns
-										;// ignore
+									{
+										Timestamp ts = null;
+										try {
+											ts = Timestamp.valueOf(backup.getColValue());
+										} catch (Exception e) {}
+										if (ts != null) 
+										{
+											sqlC = new StringBuffer("UPDATE "
+													+ tableName
+													+ " SET "
+													+ columnName
+													+ " = ?"
+													+ " WHERE " + columnIDName
+													+ " = " + recordID);
+											parameters = new Object[]{ts};
+										}
+									}
 									else
 										// 23-Binary, 24-Radio, 26-RowID,
 										// 32-Image not supported

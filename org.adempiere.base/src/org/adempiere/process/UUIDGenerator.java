@@ -19,6 +19,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.adempiere.exceptions.DBException;
@@ -132,16 +135,31 @@ public class UUIDGenerator extends SvrProcess {
 		int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column WHERE AD_Table_ID=? AND ColumnName=?", table.getAD_Table_ID(), table.getTableName()+"_ID");
 		StringBuffer sql = new StringBuffer("SELECT ");
 		String keyColumn = null;
+		List<String> compositeKeys = null;
 		if (AD_Column_ID > 0) {
 			keyColumn = table.getTableName()+"_ID";
-		} else if (DB.isOracle()) {
-			keyColumn = "rowid";
-		} else if (DB.isPostgreSQL()) {
-			keyColumn = "ctid";
+		} else {
+			compositeKeys = Arrays.asList(table.getKeyColumns());
 		}
-		sql.append(keyColumn).append(" FROM ").append(table.getTableName());
+		if (compositeKeys == null) {
+			sql.append(keyColumn);
+		} else {
+			for(String s : compositeKeys) {
+				sql.append(s).append(",");
+			}
+			sql.deleteCharAt(sql.length()-1);
+		}
+		sql.append(" FROM ").append(table.getTableName());
 		sql.append(" WHERE ").append(column.getColumnName()).append(" IS NULL ");
-		String updateSQL = "UPDATE "+table.getTableName()+" SET "+column.getColumnName()+"=? WHERE "+keyColumn+"=";
+		String updateSQL = "UPDATE "+table.getTableName()+" SET "+column.getColumnName()+"=? WHERE ";
+		if (AD_Column_ID > 0) {
+			updateSQL = updateSQL + keyColumn + "=?";
+		} else {
+			for(String s : compositeKeys) {
+				updateSQL = updateSQL + s + "=? AND "; 
+			}
+			updateSQL = updateSQL.substring(0, updateSQL.length() - " AND ".length());
+		}
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Trx trx = null;
@@ -156,12 +174,16 @@ public class UUIDGenerator extends SvrProcess {
 					int recordId = rs.getInt(1);
 					if (recordId > MTable.MAX_OFFICIAL_ID) {
 						UUID uuid = UUID.randomUUID();
-						DB.executeUpdateEx(updateSQL+recordId,new Object[]{uuid.toString()},null);
+						DB.executeUpdateEx(updateSQL,new Object[]{uuid.toString(), recordId},null);
 					}
 				} else {
 					UUID uuid = UUID.randomUUID();
-					String rowId = rs.getString(1);
-					DB.executeUpdateEx(updateSQL+"'"+rowId+"'",new Object[]{uuid.toString()},null);
+					List<Object> params = new ArrayList<Object>();
+					params.add(uuid.toString());
+					for (String s : compositeKeys) {
+						params.add(rs.getObject(s));
+					}
+					DB.executeUpdateEx(updateSQL,params.toArray(),null);
 				}
 			}
 		} catch (SQLException e) {

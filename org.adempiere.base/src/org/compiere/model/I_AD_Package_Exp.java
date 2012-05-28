@@ -31,13 +31,13 @@ public interface I_AD_Package_Exp
     public static final String Table_Name = "AD_Package_Exp";
 
     /** AD_Table_ID=50005 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 50005;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -65,11 +65,20 @@ public interface I_AD_Package_Exp
     /** Column name AD_Package_Exp_ID */
     public static final String COLUMNNAME_AD_Package_Exp_ID = "AD_Package_Exp_ID";
 
-	/** Set Package Exp.	  */
+	/** Set Pack Out	  */
 	public void setAD_Package_Exp_ID (int AD_Package_Exp_ID);
 
-	/** Get Package Exp.	  */
+	/** Get Pack Out	  */
 	public int getAD_Package_Exp_ID();
+
+    /** Column name AD_Package_Exp_UU */
+    public static final String COLUMNNAME_AD_Package_Exp_UU = "AD_Package_Exp_UU";
+
+	/** Set Pack Out UUID	  */
+	public void setAD_Package_Exp_UU (String AD_Package_Exp_UU);
+
+	/** Get Pack Out UUID	  */
+	public String getAD_Package_Exp_UU();
 
     /** Column name AD_Package_Type */
     public static final String COLUMNNAME_AD_Package_Type = "AD_Package_Type";
@@ -95,6 +104,19 @@ public interface I_AD_Package_Exp
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DateFrom */
+    public static final String COLUMNNAME_DateFrom = "DateFrom";
+
+	/** Set Date From.
+	  * Starting date for a range
+	  */
+	public void setDateFrom (Timestamp DateFrom);
+
+	/** Get Date From.
+	  * Starting date for a range
+	  */
+	public Timestamp getDateFrom();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

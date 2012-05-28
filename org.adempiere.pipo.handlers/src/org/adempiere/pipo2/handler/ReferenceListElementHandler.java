@@ -17,11 +17,11 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -38,15 +38,15 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class ReferenceListElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
-			if (isParentSkip(element, null)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
+			/*if (isParentSkip(element, null)) {
 				element.skip = true;
 				return;
-			}
+			}*/
 
 			X_AD_Ref_List mRefList = findPO(ctx, element);
 			if (mRefList == null) {
@@ -56,11 +56,11 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 					AD_Reference_ID = getParentId(element, I_AD_Reference.Table_Name);
 				} else {
 					Element referenceElement = element.properties.get(I_AD_Ref_List.COLUMNNAME_AD_Reference_ID);
-					AD_Reference_ID = ReferenceUtils.resolveReference(ctx, referenceElement, getTrxName(ctx));
+					AD_Reference_ID = ReferenceUtils.resolveReference(ctx.ctx, referenceElement, getTrxName(ctx));
 				}
 
 				int AD_Ref_List_ID = findIdByColumnAndParentId(ctx, "AD_Ref_List", "Value", value, "AD_Reference", AD_Reference_ID);
-				mRefList = new X_AD_Ref_List(ctx, AD_Ref_List_ID, getTrxName(ctx));
+				mRefList = new X_AD_Ref_List(ctx.ctx, AD_Ref_List_ID, getTrxName(ctx));
 			}
 
 			if (mRefList.getAD_Ref_List_ID() == 0 && isOfficialId(element, "AD_Ref_List_ID"))
@@ -71,6 +71,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -90,7 +91,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 				} else {
 					logImportDetail(ctx, impDetail, 0, mRefList.getName(),
 							mRefList.get_ID(), action);
-					throw new POSaveFailedException("ReferenceList");
+					throw new POSaveFailedException("Failed to save ReferenceList " + mRefList.getName());
 				}
 			}
 		} else {
@@ -98,15 +99,20 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Ref_List_ID = Env.getContextAsInt(ctx,
+		int AD_Ref_List_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
-		X_AD_Ref_List m_Ref_List = new X_AD_Ref_List(ctx, AD_Ref_List_ID,
+		X_AD_Ref_List m_Ref_List = new X_AD_Ref_List(ctx.ctx, AD_Ref_List_ID,
 				getTrxName(ctx));
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Ref_List.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Ref_List.Table_Name, atts);
@@ -114,7 +120,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 		document.endElement("", "", I_AD_Ref_List.Table_Name);
 	}
 
-	private void createRefListBinding(Properties ctx, TransformerHandler document,
+	private void createRefListBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Ref_List m_Ref_List) {
 		List<String> excludes = defaultExcludeList(X_AD_Ref_List.Table_Name);
 		PoExporter filler = new PoExporter(ctx, document, m_Ref_List);
@@ -128,8 +134,8 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
+		packout.getCtx().ctx.remove(I_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
 	}
 }

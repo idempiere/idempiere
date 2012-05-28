@@ -20,12 +20,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -52,12 +52,12 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 
 	private List<Integer> workflows = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Workflow.Table_Name);
 
 		String entitytype = getStringValue(element, "EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			MWorkflow mWorkflow = findPO(ctx, element);
 			if (mWorkflow == null) {
@@ -68,7 +68,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 					return;
 				}
 	
-				mWorkflow = new MWorkflow(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mWorkflow = new MWorkflow(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mWorkflow.setValue(workflowValue);
 			}
 						
@@ -78,6 +78,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 			
@@ -102,7 +103,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 					log.info("m_Workflow save failure");
 					logImportDetail(ctx, impDetail, 0, mWorkflow.getName(), mWorkflow
 							.get_ID(), action);
-					throw new POSaveFailedException("MWorkflow");
+					throw new POSaveFailedException("Failed to save MWorkflow " + mWorkflow.getName());
 				}
 			}
 		} else {
@@ -114,12 +115,12 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 	 * @param ctx
 	 * @param element
 	 */
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 		if (!element.defer && !element.skip && element.recordId > 0) {
 			//set start node
 			String value = getStringValue(element, "AD_WF_Node.Value");
 			if (value != null && value.trim().length() > 0) {
-				MWorkflow m_Workflow = new MWorkflow(ctx, element.recordId, getTrxName(ctx));
+				MWorkflow m_Workflow = new MWorkflow(ctx.ctx, element.recordId, getTrxName(ctx));
 				int id = findIdByColumnAndParentId(ctx, "AD_WF_Node", "Value", value, "AD_Workflow", m_Workflow.getAD_Workflow_ID());
 				if (id <= 0) {
 					log.warning("Failed to resolve start node reference for workflow element. Workflow="
@@ -141,15 +142,15 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 					log.info("m_Workflow update fail");
 					logImportDetail(ctx, impDetail, 0, m_Workflow.getName(), m_Workflow
 							.get_ID(), "Update");
-					throw new POSaveFailedException("MWorkflow");
+					throw new POSaveFailedException("Failed to save MWorkflow " + m_Workflow.getName());
 				}
 			}
 		}
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Workflow_ID = Env.getContextAsInt(ctx,
+		int AD_Workflow_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID);
 		if (workflows.contains(AD_Workflow_ID))
 			return;
@@ -159,18 +160,30 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		int ad_wf_nodenextcondition_id = 0;
 		AttributesImpl atts = new AttributesImpl();
 
-		X_AD_Workflow m_Workflow = new X_AD_Workflow(ctx,
+		boolean creatElement = true;
+		MWorkflow m_Workflow = new MWorkflow(ctx.ctx,
 						AD_Workflow_ID, null);
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Workflow.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				creatElement = false;
+			}
+		}
+		if (creatElement) {
+			atts.addAttribute("", "", "type", "CDATA", "object");
+			atts.addAttribute("", "", "type-name", "CDATA", "ad.workflow");
+			document.startElement("", "", I_AD_Workflow.Table_Name, atts);
+			createWorkflowBinding(ctx, document, m_Workflow);
+		}
 
-		atts.addAttribute("", "", "type", "CDATA", "object");
-		atts.addAttribute("", "", "type-name", "CDATA", "ad.workflow");
-		document.startElement("", "", I_AD_Workflow.Table_Name, atts);
-		createWorkflowBinding(ctx, document, m_Workflow);
 		String sql = "SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID = "
 						+ AD_Workflow_ID;
 
 		PreparedStatement pstmt = null;
+		PreparedStatement psNodeNext = null;
+		PreparedStatement psNCondition = null;
 		ResultSet rs = null;
+		ResultSet nodeNextrs = null;
+		ResultSet nodeNConditionrs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			// Generated workflowNodeNext(s) and
@@ -179,20 +192,18 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				int nodeId = rs.getInt("AD_WF_Node_ID");
 				createNode(ctx, document, nodeId);
-
-				ad_wf_nodenext_id = 0;
-
-				sql = "SELECT ad_wf_nodenext_id from ad_wf_nodenext WHERE ad_wf_node_id = ?";
-				ad_wf_nodenext_id = DB.getSQLValue(null, sql, nodeId);
-				if (ad_wf_nodenext_id > 0) {
+				sql = "SELECT ad_wf_nodenext_id from ad_wf_nodenext WHERE ad_wf_node_id =" +nodeId;
+				psNodeNext = DB.prepareStatement(sql, getTrxName(ctx));
+				nodeNextrs  = psNodeNext.executeQuery();
+				while (nodeNextrs.next()){  	
+					ad_wf_nodenext_id = nodeNextrs.getInt("AD_WF_NodeNext_ID");
 					createNodeNext(ctx, document, ad_wf_nodenext_id);
-
-					ad_wf_nodenextcondition_id = 0;
-					sql = "SELECT ad_wf_nextcondition_id from ad_wf_nextcondition WHERE ad_wf_nodenext_id = ?";
-					ad_wf_nodenextcondition_id = DB.getSQLValue(null, sql, nodeId);
-					log.info("ad_wf_nodenextcondition_id: "
-							+ String.valueOf(ad_wf_nodenextcondition_id));
-					if (ad_wf_nodenextcondition_id > 0) {
+					sql = "SELECT ad_wf_nextcondition_id from ad_wf_nextcondition WHERE ad_wf_nodenext_id =" + ad_wf_nodenext_id;
+					psNCondition = DB.prepareStatement(sql, getTrxName(ctx));
+					nodeNConditionrs = psNCondition.executeQuery();
+					while (nodeNConditionrs.next()) {
+					   ad_wf_nodenextcondition_id= nodeNConditionrs.getInt("AD_WF_NextCondition_ID");
+					   log.info("ad_wf_nodenextcondition_id: "+ String.valueOf(ad_wf_nodenextcondition_id));
 						createNodeNextCondition(ctx, document, ad_wf_nodenextcondition_id);
 					}
 				}
@@ -201,37 +212,41 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			throw new DBException(e);
 		} finally {
 			DB.close(rs, pstmt);
-			document.endElement("", "", I_AD_Workflow.Table_Name);
+			DB.close(nodeNextrs, psNodeNext);
+			DB.close(nodeNConditionrs,psNCondition);
+			if (creatElement) {
+				document.endElement("", "", MWorkflow.Table_Name);
+			}
 		}
 	}
 
-	private void createNodeNextCondition(Properties ctx,
+	private void createNodeNextCondition(PIPOContext ctx,
 			TransformerHandler document, int ad_wf_nodenextcondition_id)
 			throws SAXException {
-		Env.setContext(ctx,
+		Env.setContext(ctx.ctx,
 				X_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID,
 				ad_wf_nodenextcondition_id);
 		nextConditionHandler.create(ctx, document);
-		ctx.remove(X_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID);
+		ctx.ctx.remove(X_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID);
 	}
 
-	private void createNodeNext(Properties ctx, TransformerHandler document,
+	private void createNodeNext(PIPOContext ctx, TransformerHandler document,
 			int ad_wf_nodenext_id) throws SAXException {
-		Env.setContext(ctx, X_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID,
+		Env.setContext(ctx.ctx, X_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID,
 				ad_wf_nodenext_id);
 		nodeNextHandler.create(ctx, document);
-		ctx.remove(X_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID);
+		ctx.ctx.remove(X_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID);
 	}
 
-	private void createNode(Properties ctx, TransformerHandler document,
+	private void createNode(PIPOContext ctx, TransformerHandler document,
 			int AD_WF_Node_ID) throws SAXException {
-		Env.setContext(ctx, X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID,
+		Env.setContext(ctx.ctx, X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID,
 				AD_WF_Node_ID);
 		nodeHandler.create(ctx, document);
-		ctx.remove(X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
+		ctx.ctx.remove(X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
 	}
 
-	private void createWorkflowBinding(Properties ctx, TransformerHandler document, X_AD_Workflow m_Workflow) {
+	private void createWorkflowBinding(PIPOContext ctx, TransformerHandler document, MWorkflow m_Workflow) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Workflow);
 		List<String> excludes = defaultExcludeList(X_AD_Workflow.Table_Name);
@@ -244,8 +259,8 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID);
 	}
 }

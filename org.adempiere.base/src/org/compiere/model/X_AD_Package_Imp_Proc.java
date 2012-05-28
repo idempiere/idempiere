@@ -18,6 +18,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_Package_Imp_Proc
@@ -29,7 +30,7 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120528L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Proc (Properties ctx, int AD_Package_Imp_Proc_ID, String trxName)
@@ -37,10 +38,10 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
       super (ctx, AD_Package_Imp_Proc_ID, trxName);
       /** if (AD_Package_Imp_Proc_ID == 0)
         {
-			setAD_Package_Dir (null);
 			setAD_Package_Imp_Proc_ID (0);
-			setAD_Package_Source (null);
 			setAD_Package_Source_Type (null);
+// 'File'
+			setName (null);
         } */
     }
 
@@ -51,7 +52,7 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -130,6 +131,20 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 		return ii.intValue();
 	}
 
+	/** Set AD_Package_Imp_Proc_UU.
+		@param AD_Package_Imp_Proc_UU AD_Package_Imp_Proc_UU	  */
+	public void setAD_Package_Imp_Proc_UU (String AD_Package_Imp_Proc_UU)
+	{
+		set_Value (COLUMNNAME_AD_Package_Imp_Proc_UU, AD_Package_Imp_Proc_UU);
+	}
+
+	/** Get AD_Package_Imp_Proc_UU.
+		@return AD_Package_Imp_Proc_UU	  */
+	public String getAD_Package_Imp_Proc_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Proc_UU);
+	}
+
 	/** Set Package Source.
 		@param AD_Package_Source 
 		Fully qualified package source file name
@@ -169,6 +184,51 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	public String getAD_Package_Source_Type () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Source_Type);
+	}
+
+	/** Set Date Processed.
+		@param DateProcessed Date Processed	  */
+	public void setDateProcessed (Timestamp DateProcessed)
+	{
+		set_Value (COLUMNNAME_DateProcessed, DateProcessed);
+	}
+
+	/** Get Date Processed.
+		@return Date Processed	  */
+	public Timestamp getDateProcessed () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateProcessed);
+	}
+
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name)
+	{
+		set_Value (COLUMNNAME_Name, Name);
+	}
+
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
+	  */
+	public String getName () 
+	{
+		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Process Message.
+		@param P_Msg Process Message	  */
+	public void setP_Msg (String P_Msg)
+	{
+		set_Value (COLUMNNAME_P_Msg, P_Msg);
+	}
+
+	/** Get Process Message.
+		@return Process Message	  */
+	public String getP_Msg () 
+	{
+		return (String)get_Value(COLUMNNAME_P_Msg);
 	}
 
 	/** Set Process Now.

@@ -165,6 +165,10 @@
             id="AD_Ref_Table">
       </handler>
       <handler
+            class="org.adempiere.pipo2.handler.AttachmentElementHandler"
+            id="AD_Attachment">
+      </handler>
+      <handler
             class="org.adempiere.pipo2.handler.CommonTranslationHandler"
             id="table.translationHandler">
       </handler>

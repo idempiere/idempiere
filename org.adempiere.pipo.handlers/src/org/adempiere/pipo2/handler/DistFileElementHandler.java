@@ -22,12 +22,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutItem;
 import org.compiere.Adempiere;
@@ -53,7 +53,7 @@ public class DistFileElementHandler extends AbstractElementHandler {
 		this.fileDest=fileDest;
 	}
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		String action = null;
 
 		String releaseNumber = getStringValue(element,"ReleaseNo");
@@ -72,7 +72,7 @@ public class DistFileElementHandler extends AbstractElementHandler {
 
 			//get adempiere-all directory
 			try {
-				packagePath = getPackageDirectory(ctx);
+				packagePath = getPackageDirectory(ctx.ctx);
 				File parentDirectory = new File(packagePath);
 				while (!parentDirectory.getName().equals("packages")){
 					parentDirectory = parentDirectory.getParentFile();
@@ -165,25 +165,25 @@ public class DistFileElementHandler extends AbstractElementHandler {
 				}
 			}
 			//Record in transaction file
-			X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx, 0, getTrxName(ctx));
-			backup.setAD_Org_ID(Env.getAD_Org_ID(ctx));
+			X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, getTrxName(ctx));
+			backup.setAD_Org_ID(Env.getAD_Org_ID(ctx.ctx));
 			backup.setAD_Package_Imp_Org_Dir(fullTargetPath+fileName);
 			backup.setAD_Package_Imp_Bck_Dir(packagePath+File.separator+"backup"+File.separator+fileDate+"_"+fileName);
-			backup.setAD_Package_Imp_ID(getPackageImpId(ctx));
+			backup.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));
 			backup.saveEx();
 
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		String FileName = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_FileName);
-		String Source_Directory = Env.getContext(ctx, "Source_Directory");
-		String Target_Directory = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory);
-		String ReleaseNo = Env.getContext(ctx, X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
+		String FileName = Env.getContext(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_FileName);
+		String Source_Directory = Env.getContext(ctx.ctx, "Source_Directory");
+		String Target_Directory = Env.getContext(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory);
+		String ReleaseNo = Env.getContext(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "custom");
 		document.startElement("","","Dist_File",atts);
@@ -197,22 +197,20 @@ public class DistFileElementHandler extends AbstractElementHandler {
 
 	public void doPackout(PackOut packout, MPackageExp header, PackoutItem detail,TransformerHandler packOutDocument,TransformerHandler packageDocument,AttributesImpl atts,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_FileName, (String)detail.getProperty("FileName"));
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo, (String)detail.getProperty("ReleaseNo"));
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory, (String)detail.getProperty("TargetDirectory"));
-		Env.setContext(packout.getCtx(), "Source_Directory", fileDest);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_FileName, (String)detail.getProperty("FileName"));
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo, (String)detail.getProperty("ReleaseNo"));
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory, (String)detail.getProperty("TargetDirectory"));
+		Env.setContext(packout.getCtx().ctx, "Source_Directory", fileDest);
 		this.create(packout.getCtx(), packOutDocument);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_FileName);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory);
-		packout.getCtx().remove("Source_Directory");
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_FileName);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_ReleaseNo);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_Target_Directory);
+		packout.getCtx().ctx.remove("Source_Directory");
 	}
 
 	@Override
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 }

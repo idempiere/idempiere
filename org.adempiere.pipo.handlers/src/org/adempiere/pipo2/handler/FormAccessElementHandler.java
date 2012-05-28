@@ -17,11 +17,11 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
@@ -40,7 +40,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class FormAccessElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Form_Access.Table_Name);
 
 		MFormAccess po = findPO(ctx, element);
@@ -49,28 +49,30 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
 				AD_Role_ID = getParentId(element, I_AD_Role.Table_Name);
 			} else {
-				AD_Role_ID = ReferenceUtils.resolveReference(ctx, element.properties.get("AD_Role_ID"), getTrxName(ctx));
+				AD_Role_ID = ReferenceUtils.resolveReference(ctx.ctx, element.properties.get("AD_Role_ID"), getTrxName(ctx));
 			}
 			if (AD_Role_ID <= 0)
 			{
 				element.defer = true;
+				element.unresolved = "AD_Role_ID";
 				return;
 			}
 
-			int AD_Form_ID = ReferenceUtils.resolveReference(ctx, element.properties.get("AD_Form_ID"), getTrxName(ctx));
+			int AD_Form_ID = ReferenceUtils.resolveReference(ctx.ctx, element.properties.get("AD_Form_ID"), getTrxName(ctx));
 			if (AD_Form_ID <= 0)
 			{
 				element.defer = true;
+				element.unresolved = "AD_Form_ID";
 				return;
 			}
 
-			Query query = new Query(ctx, "AD_Form_Access", "AD_Form_ID = ? AND AD_Role_ID = ?", getTrxName(ctx));
+			Query query = new Query(ctx.ctx, "AD_Form_Access", "AD_Form_ID = ? AND AD_Role_ID = ?", getTrxName(ctx));
 			po = query.setParameters(new Object[]{AD_Form_ID, AD_Role_ID})
 					.setClient_ID()
 					.<MFormAccess>first();
 			if (po == null)
 			{
-				po = new MFormAccess(ctx, 0, null);
+				po = new MFormAccess(ctx.ctx, 0, getTrxName(ctx));
 				po.setAD_Form_ID(AD_Form_ID);
 				po.setAD_Role_ID(AD_Role_ID);
 			}
@@ -83,43 +85,51 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
+			element.unresolved = notfounds.toString();
 			return;
 		}
 		po.saveEx();
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Form_ID = Env.getContextAsInt(ctx, X_AD_Form.COLUMNNAME_AD_Form_ID);
-		int AD_Role_ID = Env.getContextAsInt(ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
-		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Form_Access.Table_Name, atts);
-		createFormAccessBinding(ctx, document, AD_Form_ID, AD_Role_ID);
-		document.endElement("", "", I_AD_Form_Access.Table_Name);
+		int AD_Form_ID = Env.getContextAsInt(ctx.ctx, X_AD_Form.COLUMNNAME_AD_Form_ID);
+		int AD_Role_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
+		
+		MFormAccess po = null;
+		Query query = new Query(ctx.ctx, "AD_Form_Access", "AD_Form_ID = ? AND AD_Role_ID = ?", getTrxName(ctx));
+		po = query.setParameters(new Object[]{AD_Form_ID, AD_Role_ID}).<MFormAccess>first();
+
+		if (po != null) {
+
+			if (ctx.packOut.getFromDate() != null) {
+				if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+					return;
+				}
+			}
+			
+			AttributesImpl atts = new AttributesImpl();
+			addTypeName(atts, "table");
+			document.startElement("", "", I_AD_Form_Access.Table_Name, atts);
+			createFormAccessBinding(ctx, document, po);
+			document.endElement("", "", I_AD_Form_Access.Table_Name);
+		}
 	}
 
-	private void createFormAccessBinding(Properties ctx, TransformerHandler document,
-			int formId, int roleId) {
-		MFormAccess po = null;
-		Query query = new Query(ctx, "AD_Form_Access", "AD_Form_ID = ? AND AD_Role_ID = ?", getTrxName(ctx));
-		po = query.setParameters(new Object[]{formId, roleId}).<MFormAccess>first();
-		if (po != null) {
-			PoExporter filler = new PoExporter(ctx, document, po);
-			List<String> excludes = defaultExcludeList(X_AD_Form_Access.Table_Name);
-			filler.export(excludes);
-		}
+	private void createFormAccessBinding(PIPOContext ctx, TransformerHandler document,
+			MFormAccess po) {
+		PoExporter filler = new PoExporter(ctx, document, po);
+		List<String> excludes = defaultExcludeList(X_AD_Form_Access.Table_Name);
+		filler.export(excludes);
 	}
 
 	@Override
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 
 }

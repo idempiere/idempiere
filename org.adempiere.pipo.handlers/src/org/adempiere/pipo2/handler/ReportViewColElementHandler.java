@@ -17,11 +17,11 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -30,6 +30,7 @@ import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_ReportView;
 import org.compiere.model.I_AD_ReportView_Col;
+import org.compiere.model.MColumn;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_ReportView_Col;
 import org.compiere.util.DB;
@@ -39,12 +40,12 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class ReportViewColElementHandler extends AbstractElementHandler {
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_ReportView_Col.Table_Name);
 
 		String entitytype = getStringValue(element,"EntityType");
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 			excludes.add("AD_Table_ID");
 			X_AD_ReportView_Col mReportviewCol = findPO(ctx, element);
 			if (mReportviewCol == null) {
@@ -53,25 +54,27 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 					AD_ReportView_ID = getParentId(element, I_AD_ReportView.Table_Name);
 				} else {
 					Element rvElement = element.properties.get(I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_ID);
-					AD_ReportView_ID = ReferenceUtils.resolveReference(ctx, rvElement, getTrxName(ctx));
+					AD_ReportView_ID = ReferenceUtils.resolveReference(ctx.ctx, rvElement, getTrxName(ctx));
 				}
 				if (AD_ReportView_ID <= 0) {
 					element.defer = true;
+					element.unresolved = "AD_ReportView_ID";
 					return;
 				}
 
 				int AD_Column_ID = 0;
 				Element columnElement = element.properties.get(I_AD_ReportView_Col.COLUMNNAME_AD_Column_ID);
 				if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-					AD_Column_ID = ReferenceUtils.resolveReference(ctx, columnElement, getTrxName(ctx));
+					AD_Column_ID = ReferenceUtils.resolveReference(ctx.ctx, columnElement, getTrxName(ctx));
 				} else {
 					if (columnElement.contents != null && columnElement.contents.length() > 0) {
 						Element tableElement = element.properties.get("AD_Table_ID");
-						int AD_Table_ID = ReferenceUtils.resolveReference(ctx, tableElement, getTrxName(ctx));
+						int AD_Table_ID = ReferenceUtils.resolveReference(ctx.ctx, tableElement, getTrxName(ctx));
 						AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnElement.contents.toString(),
 								"AD_Table", AD_Table_ID);
 						if (AD_Column_ID <= 0) {
 							element.defer = true;
+							element.unresolved = "AD_Column_ID";
 							return;
 						}
 					}
@@ -88,10 +91,10 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 				sql.append(" AND AD_ReportView_ID = ?");
 
 				int id = DB.getSQLValue(getTrxName(ctx), sql.toString(), functionColumn, AD_ReportView_ID);
-				mReportviewCol = new X_AD_ReportView_Col(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mReportviewCol = new X_AD_ReportView_Col(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mReportviewCol.setAD_ReportView_ID(AD_ReportView_ID);
 				if (AD_Column_ID > 0) {
-					mReportviewCol.setAD_Column_ID(id);
+					mReportviewCol.setAD_Column_ID(AD_Column_ID);
 				}
 				mReportviewCol.setFunctionColumn(functionColumn);
 				excludes.add("FunctionColumn");
@@ -106,6 +109,7 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 
@@ -126,7 +130,7 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 				} else {
 					logImportDetail(ctx, impDetail, 0, "" + mReportviewCol.getAD_ReportView_ID(),
 							mReportviewCol.get_ID(),action);
-					throw new POSaveFailedException("ReportViewCol");
+					throw new POSaveFailedException("Failed to save ReportViewCol");
 				}
 			}
 		} else {
@@ -134,23 +138,30 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_ReportView_Col_ID = Env.getContextAsInt(ctx,
+		int AD_ReportView_Col_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
-		X_AD_ReportView_Col m_Reportview_Col = new X_AD_ReportView_Col(ctx,
+		X_AD_ReportView_Col m_Reportview_Col = new X_AD_ReportView_Col(ctx.ctx,
 				AD_ReportView_Col_ID, getTrxName(ctx));
+		
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Reportview_Col.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return;
+			}
+		}
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_ReportView_Col.Table_Name, atts);
+		document.startElement("", "", X_AD_ReportView_Col.Table_Name, atts);
 		createReportViewColBinding(ctx, document, m_Reportview_Col);
-		document.endElement("", "", I_AD_ReportView_Col.Table_Name);
+		document.endElement("", "", X_AD_ReportView_Col.Table_Name);
 	}
 
-	private void createReportViewColBinding(Properties ctx, TransformerHandler document,
+	private void createReportViewColBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_ReportView_Col m_Reportview_Col) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Reportview_Col);
@@ -159,7 +170,9 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 			filler.add("AD_ReportView_Col_ID", new AttributesImpl());
 
 		if (m_Reportview_Col.getAD_Column_ID() > 0) {
-			int AD_Table_ID = m_Reportview_Col.getAD_Column().getAD_Table_ID();
+			int AD_Column_ID = m_Reportview_Col.getAD_Column_ID();
+			MColumn mColumn = new MColumn(ctx.ctx, AD_Column_ID, getTrxName(ctx));
+			int AD_Table_ID = mColumn.getAD_Table_ID();
 			AttributesImpl tableAtts = new AttributesImpl();
 			String value = ReferenceUtils.getTableReference("AD_Table", "TableName", AD_Table_ID, tableAtts);
 			filler.addString("AD_Table_ID", value, tableAtts);
@@ -172,8 +185,8 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
-		Env.setContext(packout.getCtx(), I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID, recordId);
 		create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
+		packout.getCtx().ctx.remove(I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
 	}
 }

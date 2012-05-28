@@ -5,12 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
@@ -30,9 +30,9 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	private HashMap<String, ArrayList<String>> cacheColumns = new HashMap<String, ArrayList<String>>();//Key: table name. Value: set of PIPO columns
 
 
-	public void startElement(Properties ctx, Element element) throws SAXException {
+	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 
-		if(! isHandleTranslations(ctx)){
+		if(! isHandleTranslations(ctx.ctx)){
 			return;//translation import option is disabled
 		}
 
@@ -64,7 +64,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 
 	private boolean isRecordExists(String tableName, int parentID,
-			String language, Properties ctx) {
+			String language, PIPOContext ctx) {
 
 		String sql =
 			"SELECT AD_Client_ID FROM " + tableName +" WHERE " +
@@ -79,7 +79,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 
 	private void insertTranslation(String tableName, int parentID,
-			Properties ctx, Element element) throws SAXException{
+			PIPOContext ctx, Element element) throws SAXException{
 
 		String parentTable = tableName.substring(0, tableName.length()-4);
 		ArrayList<String> columns = getTranslatedColumns(parentTable);
@@ -133,7 +133,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 
 	private void updateTranslation(String tableName, int parentID,
-			Properties ctx, Element element) throws SAXException{
+			PIPOContext ctx, Element element) throws SAXException{
 		String parentTable = tableName.substring(0, tableName.length()-4);
 		ArrayList<String> columns = getTranslatedColumns(parentTable);
 		StringBuffer buffer = new StringBuffer("UPDATE "+tableName+" SET ");
@@ -173,22 +173,22 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	}
 
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 
 	}
 
 
-	public void create(Properties ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
 
-		String parenTableName = Env.getContext(ctx, CONTEXT_KEY_PARENT_TABLE);
+		String parenTableName = Env.getContext(ctx.ctx, CONTEXT_KEY_PARENT_TABLE);
 
-		int parentRecordID = Env.getContextAsInt(ctx, CONTEXT_KEY_PARENT_RECORD_ID);
+		int parentRecordID = Env.getContextAsInt(ctx.ctx, CONTEXT_KEY_PARENT_RECORD_ID);
 
 		createTranslationTags(ctx, parenTableName, parentRecordID, document);
 	}
 
 
-	private void createTranslationTags(Properties ctx, String parentTable,
+	private void createTranslationTags(PIPOContext ctx, String parentTable,
 			int parentRecordID, TransformerHandler document) throws SAXException {
 
 		ArrayList<String> translatedColumns = getTranslatedColumns(parentTable);
@@ -221,7 +221,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		}
 	}
 
-	private void exportRow(Properties ctx, TransformerHandler document, ArrayList<String> columns,
+	private void exportRow(PIPOContext ctx, TransformerHandler document, ArrayList<String> columns,
 			ResultSet rs) throws Exception {
 
 		PoExporter af = new PoExporter(ctx, document, null);
@@ -289,12 +289,12 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if("true".equals(packout.getCtx().getProperty("isHandleTranslations"))){
-			Env.setContext(packout.getCtx(), CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE,X_AD_Element.Table_Name);
-			Env.setContext(packout.getCtx(), CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID,recordId);
+		if("true".equals(packout.getCtx().ctx.getProperty("isHandleTranslations"))){
+			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE,X_AD_Element.Table_Name);
+			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID,recordId);
 			this.create(packout.getCtx(), packoutHandler);
-			packout.getCtx().remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE);
-			packout.getCtx().remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID);
+			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE);
+			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID);
 
 		}
 	}

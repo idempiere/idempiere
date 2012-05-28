@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -41,7 +42,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.compiere.model.MClient;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
-import org.compiere.util.Env;
+import org.compiere.util.Trx;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -66,10 +67,6 @@ public class PackOut
 	public final static String PackOutVersion = "100";
 	private final static CLogger log = CLogger.getCLogger(PackOut.class);
 
-	private static final String TRX_NAME_CTX_KEY = "TrxName";
-	public static final String PACK_OUT_PROCESS_CTX_KEY = "PackOutProcess";
-
-    private Properties localContext = null;
 	private String packageDirectory;
 	private int blobCount = 0;
 
@@ -80,6 +77,8 @@ public class PackOut
 	private int processedCount;
 	private String exportFile;
 	private String packoutDirectory;
+	private PIPOContext pipoContext = new PIPOContext();
+	private Timestamp fromDate;
 
 	public static final int MAX_OFFICIAL_ID = MTable.MAX_OFFICIAL_ID;
 
@@ -192,26 +191,33 @@ public class PackOut
 			OutputStream packoutStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
 		StreamResult packoutStreamResult = new StreamResult(new OutputStreamWriter(packoutStream,"UTF-8"));
 		SAXTransformerFactory packoutFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-		packoutFactory.setAttribute("indent-number", new Integer(4));
+		//indent-number attribute support is not guarantee
+		try {
+			packoutFactory.setAttribute("indent-number", new Integer(4));
+		} catch (Exception e) {}
 		TransformerHandler packoutHandler = packoutFactory.newTransformerHandler();
 		Transformer packoutTransformer = packoutHandler.getTransformer();
 		packoutTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		packoutTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
+		//indent-amount property support is not guarantee
+		try {
+			packoutTransformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount","4");
+		} catch (Exception e) {}
 		packoutHandler.setResult(packoutStreamResult);
 		packoutHandler.startDocument();
 		AttributesImpl atts = new AttributesImpl();
 		atts.addAttribute("","","Name","CDATA",packoutDocument.getPackageName());
 		atts.addAttribute("","","Version","CDATA",packoutDocument.getPackageVersion());
-		atts.addAttribute("","","AdempiereVersion","CDATA",packoutDocument.getAdempiereVersion());
-		atts.addAttribute("","","DataBaseVersion","CDATA",packoutDocument.getDatabaseVersion());
+		atts.addAttribute("","","AdempiereVersion","CDATA",emptyIfNull(packoutDocument.getAdempiereVersion()));
+		atts.addAttribute("","","DataBaseVersion","CDATA",emptyIfNull(packoutDocument.getDatabaseVersion()));
 		atts.addAttribute("","","Description","CDATA",emptyIfNull(packoutDocument.getDescription()));
-		atts.addAttribute("","","Author","CDATA",packoutDocument.getAuthor());
+		atts.addAttribute("","","Author","CDATA",emptyIfNull(packoutDocument.getAuthor()));
 		atts.addAttribute("","","AuthorEmail","CDATA",emptyIfNull(packoutDocument.getAuthorEmail()));
 		atts.addAttribute("","","CreatedDate","CDATA",packoutDocument.getCreated().toString());
 		atts.addAttribute("","","UpdatedDate","CDATA",packoutDocument.getUpdated().toString());
 		atts.addAttribute("","","PackOutVersion","CDATA",PackOutVersion);
 
-		MClient client = MClient.get(localContext);
+		MClient client = MClient.get(pipoContext.ctx);
 		StringBuffer sb = new StringBuffer ()
 			.append(client.get_ID())
 			.append("-")
@@ -231,11 +237,18 @@ public class PackOut
 	private TransformerHandler createDocHandler(OutputStream docStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
 		StreamResult docStreamResult = new StreamResult(new OutputStreamWriter(docStream,"UTF-8"));
 		SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-		transformerFactory.setAttribute("indent-number", new Integer(4));
+		//indent-number attribute support is not guarantee
+		try {
+			transformerFactory.setAttribute("indent-number", new Integer(4));
+		} catch (Exception e) {}
 		TransformerHandler docHandler = transformerFactory.newTransformerHandler();
 		Transformer transformer = docHandler.getTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
 		transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+		//indent-amount property support is not guarantee
+		try {
+			transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount","4");
+		} catch (Exception e) {}
 		docHandler.setResult(docStreamResult);
 		docHandler.startDocument();
 		docHandler.processingInstruction("xml-stylesheet","type=\"text/css\" href=\"adempiereDocument.css\"");
@@ -261,7 +274,7 @@ public class PackOut
 		addTextElement(docHandler, "filedirectory", "Directory: \\dict\\", atts);
 		addTextElement(docHandler, "filenotes", "Notes: Contains all application/object settings for package", atts);
 
-		MClient client = MClient.get(localContext);
+		MClient client = MClient.get(pipoContext.ctx);
 		StringBuffer sb = new StringBuffer ()
 			.append(client.get_ID())
 			.append("-")
@@ -281,13 +294,8 @@ public class PackOut
 	}
 
 	private void initContext() {
-		Properties tmp = new Properties();
-		if (getCtx() != null)
-			tmp.putAll(getCtx());
-		if (trxName != null)
-			tmp.put(TRX_NAME_CTX_KEY, trxName);
-		tmp.put(PACK_OUT_PROCESS_CTX_KEY, this);
-		localContext = tmp;
+		pipoContext.trx = Trx.get(trxName, true);
+		pipoContext.packOut = this;
 	}
 
 	/**
@@ -352,8 +360,8 @@ public class PackOut
 		}
 	}
 
-	public Properties getCtx() {
-		return localContext != null ? localContext : Env.getCtx();
+	public PIPOContext getCtx() {
+		return pipoContext;
 	}
 
 	/**
@@ -421,5 +429,26 @@ public class PackOut
 	 */
 	public String getExportFile() {
 		return exportFile;
+	}
+
+	/**
+	 * @param fromDate
+	 */
+	public void setFromDate(Timestamp fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	/**
+	 * @return from date
+	 */
+	public Timestamp getFromDate() {
+		return fromDate;
+	}
+
+	/**
+	 * @param ctx
+	 */
+	public void setCtx(Properties ctx) {
+		pipoContext.ctx = ctx;
 	}
 }	//	PackOut

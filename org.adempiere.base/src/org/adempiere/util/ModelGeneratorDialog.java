@@ -127,12 +127,12 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 				return;
 			}
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			if (fGenerateClass.isSelected()) {
-				ModelClassGenerator.generateSource(folder, packageName, entityType, tableName);
-			}
 			if (fGenerateInterface.isSelected()) {
 				ModelInterfaceGenerator.generateSource(folder, packageName, entityType, tableName);
 			}
+			if (fGenerateClass.isSelected()) {
+				ModelClassGenerator.generateSource(folder, packageName, entityType, tableName);
+			}			
 			this.dispose();
 		} else if (e.getSource() == bCancel) {
 			this.dispose();

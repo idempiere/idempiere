@@ -30,7 +30,7 @@ public class X_AD_Package_Imp_Inst extends PO implements I_AD_Package_Imp_Inst, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120528L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Inst (Properties ctx, int AD_Package_Imp_Inst_ID, String trxName)
@@ -49,7 +49,7 @@ public class X_AD_Package_Imp_Inst extends PO implements I_AD_Package_Imp_Inst, 
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -88,6 +88,20 @@ public class X_AD_Package_Imp_Inst extends PO implements I_AD_Package_Imp_Inst, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Package_Imp_Inst_UU.
+		@param AD_Package_Imp_Inst_UU AD_Package_Imp_Inst_UU	  */
+	public void setAD_Package_Imp_Inst_UU (String AD_Package_Imp_Inst_UU)
+	{
+		set_Value (COLUMNNAME_AD_Package_Imp_Inst_UU, AD_Package_Imp_Inst_UU);
+	}
+
+	/** Get AD_Package_Imp_Inst_UU.
+		@return AD_Package_Imp_Inst_UU	  */
+	public String getAD_Package_Imp_Inst_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Inst_UU);
 	}
 
 	/** Set CreatedDate.
@@ -191,15 +205,15 @@ public class X_AD_Package_Imp_Inst extends PO implements I_AD_Package_Imp_Inst, 
         return new KeyNamePair(get_ID(), getName());
     }
 
-	/** Set PK_Status.
-		@param PK_Status PK_Status	  */
+	/** Set Package Status.
+		@param PK_Status Package Status	  */
 	public void setPK_Status (String PK_Status)
 	{
 		set_Value (COLUMNNAME_PK_Status, PK_Status);
 	}
 
-	/** Get PK_Status.
-		@return PK_Status	  */
+	/** Get Package Status.
+		@return Package Status	  */
 	public String getPK_Status () 
 	{
 		return (String)get_Value(COLUMNNAME_PK_Status);

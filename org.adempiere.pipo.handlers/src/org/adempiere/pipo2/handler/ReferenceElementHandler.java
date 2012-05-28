@@ -21,12 +21,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
@@ -51,17 +51,17 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 
 	private List<Integer> references = new ArrayList<Integer>();
 
-	public void startElement(Properties ctx, Element element)
+	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		String entitytype = getStringValue(element, "EntityType");
 		String name = getStringValue(element, "Name");
 
-		if (isProcessElement(ctx, entitytype)) {
+		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			X_AD_Reference mReference = findPO(ctx, element);
 			if (mReference == null) {
 				int id = findIdByName(ctx, "AD_Reference", name);
-				mReference = new X_AD_Reference(ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mReference = new X_AD_Reference(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_Reference.Table_Name);
 			if (mReference.getAD_Reference_ID() == 0 && isOfficialId(element, "AD_Reference_ID"))
@@ -71,6 +71,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
+				element.unresolved = notfounds.toString();
 				return;
 			}
 			
@@ -96,7 +97,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 				} else {
 					logImportDetail(ctx, impDetail, 0, mReference.getName(),
 							mReference.get_ID(), action);
-					throw new POSaveFailedException("Reference");
+					throw new POSaveFailedException("Failed to save Reference " + mReference.getName());
 				}
 			}
 		} else {
@@ -104,12 +105,12 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void endElement(Properties ctx, Element element) throws SAXException {
+	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(Properties ctx, TransformerHandler document)
+	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int Reference_id = Env.getContextAsInt(ctx,
+		int Reference_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Reference.COLUMNNAME_AD_Reference_ID);
 
 		if (references.contains(Reference_id))
@@ -118,11 +119,20 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		references.add(Reference_id);
 		AttributesImpl atts = new AttributesImpl();
 
-		X_AD_Reference m_Reference = new X_AD_Reference(ctx, Reference_id, getTrxName(ctx));
+		X_AD_Reference m_Reference = new X_AD_Reference(ctx.ctx, Reference_id, getTrxName(ctx));
 
-		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Reference.Table_Name, atts);
-		createReferenceBinding(ctx, document, m_Reference);
+		boolean createElement = true;
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Reference.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				createElement = false;
+			}
+		}
+
+		if (createElement) {
+			addTypeName(atts, "table");
+			document.startElement("", "", I_AD_Reference.Table_Name, atts);
+			createReferenceBinding(ctx, document, m_Reference);
+		}
 
 		if (m_Reference.getValidationType().compareTo("L") == 0) {
 			String sql1 = "SELECT AD_REF_LIST_ID FROM AD_Ref_List WHERE AD_Reference_ID= "
@@ -156,27 +166,29 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		} else if (m_Reference.getValidationType().compareTo("T") == 0) {
 			createReferenceTable(ctx, document, Reference_id);
 		}
-		document.endElement("", "", I_AD_Reference.Table_Name);
 
+		if (createElement) {
+			document.endElement("", "", X_AD_Reference.Table_Name);
+		}
 	}
 
-	private void createReferenceTable(Properties ctx, TransformerHandler document,
+	private void createReferenceTable(PIPOContext ctx, TransformerHandler document,
 			int reference_id) throws SAXException {
-		Env.setContext(ctx, X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID, reference_id);
+		Env.setContext(ctx.ctx, X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID, reference_id);
 		tableHandler.create(ctx, document);
-		ctx.remove(X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
+		ctx.ctx.remove(X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
 	}
 
-	private void createReferenceList(Properties ctx,
+	private void createReferenceList(PIPOContext ctx,
 			TransformerHandler document, int AD_Ref_List_ID)
 			throws SAXException {
-		Env.setContext(ctx, X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID,
+		Env.setContext(ctx.ctx, X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID,
 				AD_Ref_List_ID);
 		listHandler.create(ctx, document);
-		ctx.remove(X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
+		ctx.ctx.remove(X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
 	}
 
-	private void createReferenceBinding(Properties ctx, TransformerHandler document,
+	private void createReferenceBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Reference m_Reference) {
 		List<String> excludes = defaultExcludeList(X_AD_Reference.Table_Name);
 		PoExporter filler = new PoExporter(ctx, document, m_Reference);
@@ -188,8 +200,8 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		Env.setContext(packout.getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID, recordId);
+		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID, recordId);
 		this.create(packout.getCtx(), packoutHandler);
-		packout.getCtx().remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID);
+		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID);
 	}
 }
