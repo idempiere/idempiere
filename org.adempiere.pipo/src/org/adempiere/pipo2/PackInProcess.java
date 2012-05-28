@@ -129,12 +129,8 @@ public class PackInProcess extends SvrProcess {
 		
 		// call XML Handler
 		String msg = packIn.importXML(dict_file, getCtx(), get_TrxName());
-		if (adPackageImp.get_ColumnIndex("DateProcessed") > 0) {
-			adPackageImp.set_ValueOfColumn("DateProcessed", new Timestamp(System.currentTimeMillis()));
-		}
-		if (adPackageImp.get_ColumnIndex("P_Msg") > 0)  {
-			adPackageImp.set_ValueOfColumn("P_Msg", msg);
-		}
+		adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));
+		adPackageImp.setP_Msg(msg);
 		adPackageImp.saveEx();
 		
 		return msg;

@@ -30,7 +30,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120528L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Backup (Properties ctx, int AD_Package_Imp_Backup_ID, String trxName)
@@ -51,7 +51,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -72,9 +72,9 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
       return sb.toString();
     }
 
-	public I_AD_Column getAD_Column() throws RuntimeException
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
     {
-		return (I_AD_Column)MTable.get(getCtx(), I_AD_Column.Table_Name)
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
 			.getPO(getAD_Column_ID(), get_TrxName());	}
 
 	/** Set Column.
@@ -127,6 +127,20 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Package_Imp_Backup_ID()));
     }
+
+	/** Set AD_Package_Imp_Backup_UU.
+		@param AD_Package_Imp_Backup_UU AD_Package_Imp_Backup_UU	  */
+	public void setAD_Package_Imp_Backup_UU (String AD_Package_Imp_Backup_UU)
+	{
+		set_Value (COLUMNNAME_AD_Package_Imp_Backup_UU, AD_Package_Imp_Backup_UU);
+	}
+
+	/** Get AD_Package_Imp_Backup_UU.
+		@return AD_Package_Imp_Backup_UU	  */
+	public String getAD_Package_Imp_Backup_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Backup_UU);
+	}
 
 	/** Set Package Imp. Bck. Directory.
 		@param AD_Package_Imp_Bck_Dir Package Imp. Bck. Directory	  */
@@ -196,9 +210,9 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Org_Dir);
 	}
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
     {
-		return (I_AD_Reference)MTable.get(getCtx(), I_AD_Reference.Table_Name)
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
 			.getPO(getAD_Reference_ID(), get_TrxName());	}
 
 	/** Set Reference.

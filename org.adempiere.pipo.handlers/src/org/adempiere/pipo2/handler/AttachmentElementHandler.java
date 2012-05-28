@@ -171,7 +171,7 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		packout.getCtx().ctx.put("AD_Attachment_ID", recordId);
+		packout.getCtx().ctx.put("AD_Attachment_ID", Integer.toString(recordId));
 		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().ctx.remove("AD_Attachment_ID");
 	}

@@ -31,13 +31,13 @@ public interface I_AD_Package_Imp_Proc
     public static final String Table_Name = "AD_Package_Imp_Proc";
 
     /** AD_Table_ID=50008 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 50008;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -93,6 +93,15 @@ public interface I_AD_Package_Imp_Proc
 	/** Get Package Imp. Proc.	  */
 	public int getAD_Package_Imp_Proc_ID();
 
+    /** Column name AD_Package_Imp_Proc_UU */
+    public static final String COLUMNNAME_AD_Package_Imp_Proc_UU = "AD_Package_Imp_Proc_UU";
+
+	/** Set AD_Package_Imp_Proc_UU	  */
+	public void setAD_Package_Imp_Proc_UU (String AD_Package_Imp_Proc_UU);
+
+	/** Get AD_Package_Imp_Proc_UU	  */
+	public String getAD_Package_Imp_Proc_UU();
+
     /** Column name AD_Package_Source */
     public static final String COLUMNNAME_AD_Package_Source = "AD_Package_Source";
 
@@ -135,6 +144,15 @@ public interface I_AD_Package_Imp_Proc
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateProcessed */
+    public static final String COLUMNNAME_DateProcessed = "DateProcessed";
+
+	/** Set Date Processed	  */
+	public void setDateProcessed (Timestamp DateProcessed);
+
+	/** Get Date Processed	  */
+	public Timestamp getDateProcessed();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -147,6 +165,28 @@ public interface I_AD_Package_Imp_Proc
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
+
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
+
+    /** Column name P_Msg */
+    public static final String COLUMNNAME_P_Msg = "P_Msg";
+
+	/** Set Process Message	  */
+	public void setP_Msg (String P_Msg);
+
+	/** Get Process Message	  */
+	public String getP_Msg();
 
     /** Column name Processing */
     public static final String COLUMNNAME_Processing = "Processing";

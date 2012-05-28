@@ -28,6 +28,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.DataElementParameters;
+import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackoutItem;
 import org.adempiere.pipo2.PoExporter;
@@ -57,6 +58,9 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 	private String tableName;
 
+	public GenericPOElementHandler() {
+	}
+	
 	public GenericPOElementHandler(String tableName) {
 		this.tableName = tableName;
 	}
@@ -226,7 +230,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				int AD_Client_ID = po.getAD_Client_ID();
 				if (AD_Client_ID != Env.getAD_Client_ID(ctx.ctx))
 					continue;
-
+				
 				boolean createElement = true;
 				if (ctx.packOut.getFromDate() != null) {
 					if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
@@ -235,12 +239,21 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				}
 
 				if (createElement) {
-					addTypeName(atts, "table");
-					document.startElement("","", tableName, atts);
-					PoExporter filler = new PoExporter(ctx, document, po);
-					filler.export(excludes, true);
-					if (po.get_ID() > 0 && po.get_ID() < 1000000) {
-						filler.add(tableName+"_ID", new AttributesImpl());
+					if (po.get_ID() > 0) {
+						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
+						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
+							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID());
+							createElement = false;
+						}
+					}
+					if (createElement) {
+						addTypeName(atts, "table");
+						document.startElement("","", tableName, atts);
+						PoExporter filler = new PoExporter(ctx, document, po);
+						filler.export(excludes, true);
+						if (po.get_ID() > 0 && po.get_ID() < 1000000) {
+							filler.add(tableName+"_ID", new AttributesImpl());
+						}
 					}
 				}
 
@@ -283,11 +296,20 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 					}
 				}
 				if (createElement) {
-					List<String> excludes = defaultExcludeList(tables[index]);
-					addTypeName(atts, "table");
-					document.startElement("", "", tables[index], atts);
-					PoExporter filler = new PoExporter(ctx, document, po);
-					filler.export(excludes, true);
+					if (po.get_ID() > 0) {
+						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
+						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
+							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID());
+							createElement = false;
+						}
+					}
+					if (createElement) {
+						List<String> excludes = defaultExcludeList(tables[index]);
+						addTypeName(atts, "table");
+						document.startElement("", "", tables[index], atts);
+						PoExporter filler = new PoExporter(ctx, document, po);
+						filler.export(excludes, true);
+					}
 				}
 				if (index + 1 < tables.length) {
 					exportDetail(ctx, document, po, index+1, tables);
@@ -319,7 +341,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 			tableId = MTable.get(packout.getCtx().ctx, tableName).getAD_Table_ID();
 			sql = "SELECT * FROM " + tableName + " WHERE " + tableName + "_ID=" + recordId;
 		}
-		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, tableId);
+		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
 		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().ctx.remove(DataElementParameters.AD_TABLE_ID);

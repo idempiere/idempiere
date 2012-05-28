@@ -77,7 +77,7 @@ public class PackOut
 	private int processedCount;
 	private String exportFile;
 	private String packoutDirectory;
-	private PIPOContext pipoContext;
+	private PIPOContext pipoContext = new PIPOContext();
 	private Timestamp fromDate;
 
 	public static final int MAX_OFFICIAL_ID = MTable.MAX_OFFICIAL_ID;
@@ -295,6 +295,7 @@ public class PackOut
 
 	private void initContext() {
 		pipoContext.trx = Trx.get(trxName, true);
+		pipoContext.packOut = this;
 	}
 
 	/**

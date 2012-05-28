@@ -136,8 +136,8 @@ public class PackOutProcess extends SvrProcess
 
 				PackOut packOut = new PackOut();
 				packOut.setCtx(getCtx());
-				Object dateFromValue = packageExp.get_Value("DateFrom");
-				if (dateFromValue != null && dateFromValue instanceof Timestamp) {
+				Timestamp dateFromValue = packageExp.getDateFrom();
+				if (dateFromValue != null) {
 					packOut.setFromDate((Timestamp) dateFromValue);
 				}
 				

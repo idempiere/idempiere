@@ -30,7 +30,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120528L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp (Properties ctx, int AD_Package_Imp_ID, String trxName)
@@ -39,7 +39,6 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
       /** if (AD_Package_Imp_ID == 0)
         {
 			setAD_Package_Imp_ID (0);
-			setDescription (null);
 			setName (null);
 			setProcessing (false);
         } */
@@ -52,7 +51,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -100,6 +99,20 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Package_Imp_ID()));
     }
+
+	/** Set AD_Package_Imp_UU.
+		@param AD_Package_Imp_UU AD_Package_Imp_UU	  */
+	public void setAD_Package_Imp_UU (String AD_Package_Imp_UU)
+	{
+		set_Value (COLUMNNAME_AD_Package_Imp_UU, AD_Package_Imp_UU);
+	}
+
+	/** Get AD_Package_Imp_UU.
+		@return AD_Package_Imp_UU	  */
+	public String getAD_Package_Imp_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Package_Imp_UU);
+	}
 
 	/** Set CreatedDate.
 		@param CreatedDate CreatedDate	  */
@@ -194,15 +207,15 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set PK_Status.
-		@param PK_Status PK_Status	  */
+	/** Set Package Status.
+		@param PK_Status Package Status	  */
 	public void setPK_Status (String PK_Status)
 	{
 		set_Value (COLUMNNAME_PK_Status, PK_Status);
 	}
 
-	/** Get PK_Status.
-		@return PK_Status	  */
+	/** Get Package Status.
+		@return Package Status	  */
 	public String getPK_Status () 
 	{
 		return (String)get_Value(COLUMNNAME_PK_Status);
