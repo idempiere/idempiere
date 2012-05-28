@@ -7,7 +7,7 @@
 CREATE OR REPLACE FUNCTION generate_uuid()
 RETURNS char(36) AS $$
 BEGIN
-	return uuid_generate_v4()::char(36);
+	return public.uuid_generate_v4()::char(36);
 END;
 $$ LANGUAGE plpgsql IMMUTABLE STRICT;
 
