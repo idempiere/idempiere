@@ -112,8 +112,11 @@ public class WFPanel extends Borderlayout implements EventListener
 		
 		South south = new South();
 		this.appendChild(south);
-		south.appendChild(infoTextPane);
-		south.setHeight("15%");
+		Div div = new Div();
+		div.setStyle("width:100%; height: 100%");
+		div.appendChild(infoTextPane);
+		south.appendChild(div);
+		south.setHeight("25%");
 		south.setSplittable(true);
 		south.setCollapsible(true);
 		south.setAutoscroll(true);
