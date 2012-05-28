@@ -8,6 +8,7 @@ begin
 	uuid := substr(guid, 1, 8) || '-' || substr(guid, 9, 4) || '-' || substr(guid, 13, 4) || '-' || substr(guid, 17, 4) || '-' || substr(guid, 21, 12);
 	return uuid;
 end;
+/
 
 UPDATE AD_System
   SET LastMigrationScriptApplied='840_IDEMPIERE-274.sql'

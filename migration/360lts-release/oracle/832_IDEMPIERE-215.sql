@@ -18,11 +18,6 @@ DELETE  FROM  AD_Table_Trl WHERE AD_Table_ID=327
 DELETE FROM AD_Table WHERE AD_Table_ID=327
 ;
 
--- Apr 4, 2012 11:00:31 AM MYT
--- IDEMPIERE-215 Costing: Remove M_Product_Costing
-DELETE FROM AD_ReportView WHERE AD_ReportView_ID=125
-;
-
 -- Apr 4, 2012 11:04:34 AM MYT
 -- IDEMPIERE-215 Costing: Remove M_Product_Costing
 DELETE  FROM  AD_Menu_Trl WHERE AD_Menu_ID=314
@@ -78,5 +73,4 @@ UPDATE AD_System
 WHERE LastMigrationScriptApplied<'832_IDEMPIERE-215.sql'
    OR LastMigrationScriptApplied IS NULL
 ;
-
 

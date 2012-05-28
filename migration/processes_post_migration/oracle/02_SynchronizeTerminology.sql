@@ -907,3 +907,4 @@ UPDATE AD_TABLE_TRL tt
              AND tt.NAME <> e.NAME);
 
 COMMIT ;
+

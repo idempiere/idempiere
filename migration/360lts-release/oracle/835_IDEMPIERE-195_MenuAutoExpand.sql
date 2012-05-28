@@ -343,3 +343,4 @@ UPDATE AD_System
 WHERE LastMigrationScriptApplied<'835_IDEMPIERE-195_MenuAutoExpand.sql'
    OR LastMigrationScriptApplied IS NULL
 ;
+
