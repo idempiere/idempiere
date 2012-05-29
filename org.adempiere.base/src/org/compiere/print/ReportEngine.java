@@ -1117,7 +1117,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			+ " INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)"
 			+ " INNER JOIN AD_ReportView rv ON (p.AD_ReportView_ID=rv.AD_ReportView_ID)"
 			+ " INNER JOIN AD_Table t ON (rv.AD_Table_ID=t.AD_Table_ID)"
-			+ " LEFT OUTER JOIN AD_PrintFormat pf ON (p.AD_ReportView_ID=pf.AD_ReportView_ID AND pf.AD_Client_ID IN (0,?)) "
+			+ " LEFT OUTER JOIN AD_PrintFormat pf ON (p.AD_ReportView_ID=pf.AD_ReportView_ID AND pf.AD_Client_ID IN (0,?) AND pf.IsActive='Y') "
 			+ "WHERE pi.AD_PInstance_ID=? "		//	#2
 			+ "ORDER BY pf.AD_Client_ID DESC, pf.IsDefault DESC";	//	own first
 		PreparedStatement pstmt = null;
