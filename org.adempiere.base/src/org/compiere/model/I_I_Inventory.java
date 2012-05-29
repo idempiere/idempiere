@@ -31,7 +31,7 @@ public interface I_I_Inventory
     public static final String Table_Name = "I_Inventory";
 
     /** AD_Table_ID=572 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 572;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,6 +61,49 @@ public interface I_I_Inventory
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name C_Charge_ID */
+    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
+
+	/** Set Charge.
+	  * Additional document charges
+	  */
+	public void setC_Charge_ID (int C_Charge_ID);
+
+	/** Get Charge.
+	  * Additional document charges
+	  */
+	public int getC_Charge_ID();
+
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
+
+    /** Column name C_DocType_ID */
+    public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
+
+	/** Set Document Type.
+	  * Document type or rules
+	  */
+	public void setC_DocType_ID (int C_DocType_ID);
+
+	/** Get Document Type.
+	  * Document type or rules
+	  */
+	public int getC_DocType_ID();
+
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
+
+    /** Column name ChargeName */
+    public static final String COLUMNNAME_ChargeName = "ChargeName";
+
+	/** Set Charge Name.
+	  * Name of the Charge
+	  */
+	public void setChargeName (String ChargeName);
+
+	/** Get Charge Name.
+	  * Name of the Charge
+	  */
+	public String getChargeName();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -104,6 +147,19 @@ public interface I_I_Inventory
 	  */
 	public String getDescription();
 
+    /** Column name DocTypeName */
+    public static final String COLUMNNAME_DocTypeName = "DocTypeName";
+
+	/** Set Document Type Name.
+	  * Name of the Document Type
+	  */
+	public void setDocTypeName (String DocTypeName);
+
+	/** Get Document Type Name.
+	  * Name of the Document Type
+	  */
+	public String getDocTypeName();
+
     /** Column name I_ErrorMsg */
     public static final String COLUMNNAME_I_ErrorMsg = "I_ErrorMsg";
 
@@ -129,6 +185,15 @@ public interface I_I_Inventory
 	  * Import Inventory Transactions
 	  */
 	public int getI_Inventory_ID();
+
+    /** Column name I_Inventory_UU */
+    public static final String COLUMNNAME_I_Inventory_UU = "I_Inventory_UU";
+
+	/** Set I_Inventory_UU	  */
+	public void setI_Inventory_UU (String I_Inventory_UU);
+
+	/** Get I_Inventory_UU	  */
+	public String getI_Inventory_UU();
 
     /** Column name I_IsImported */
     public static final String COLUMNNAME_I_IsImported = "I_IsImported";
@@ -195,7 +260,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_Inventory_ID();
 
-	public I_M_Inventory getM_Inventory() throws RuntimeException;
+	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException;
 
     /** Column name M_InventoryLine_ID */
     public static final String COLUMNNAME_M_InventoryLine_ID = "M_InventoryLine_ID";
@@ -210,7 +275,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_InventoryLine_ID();
 
-	public I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
+	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
 
     /** Column name M_Locator_ID */
     public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
@@ -225,7 +290,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_Locator_ID();
 
-	public I_M_Locator getM_Locator() throws RuntimeException;
+	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name MovementDate */
     public static final String COLUMNNAME_MovementDate = "MovementDate";
@@ -253,7 +318,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -268,7 +333,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
@@ -317,6 +382,19 @@ public interface I_I_Inventory
 	  * Counted Quantity
 	  */
 	public BigDecimal getQtyCount();
+
+    /** Column name QtyInternalUse */
+    public static final String COLUMNNAME_QtyInternalUse = "QtyInternalUse";
+
+	/** Set Internal Use Qty.
+	  * Internal Use Quantity removed from Inventory
+	  */
+	public void setQtyInternalUse (BigDecimal QtyInternalUse);
+
+	/** Get Internal Use Qty.
+	  * Internal Use Quantity removed from Inventory
+	  */
+	public BigDecimal getQtyInternalUse();
 
     /** Column name SerNo */
     public static final String COLUMNNAME_SerNo = "SerNo";

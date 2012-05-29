@@ -33,7 +33,7 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120529L;
 
     /** Standard Constructor */
     public X_I_Inventory (Properties ctx, int I_Inventory_ID, String trxName)
@@ -74,6 +74,79 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
       return sb.toString();
     }
 
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
+			.getPO(getC_Charge_ID(), get_TrxName());	}
+
+	/** Set Charge.
+		@param C_Charge_ID 
+		Additional document charges
+	  */
+	public void setC_Charge_ID (int C_Charge_ID)
+	{
+		if (C_Charge_ID < 1) 
+			set_Value (COLUMNNAME_C_Charge_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
+	}
+
+	/** Get Charge.
+		@return Additional document charges
+	  */
+	public int getC_Charge_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
+			.getPO(getC_DocType_ID(), get_TrxName());	}
+
+	/** Set Document Type.
+		@param C_DocType_ID 
+		Document type or rules
+	  */
+	public void setC_DocType_ID (int C_DocType_ID)
+	{
+		if (C_DocType_ID < 0) 
+			set_Value (COLUMNNAME_C_DocType_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
+	}
+
+	/** Get Document Type.
+		@return Document type or rules
+	  */
+	public int getC_DocType_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Charge Name.
+		@param ChargeName 
+		Name of the Charge
+	  */
+	public void setChargeName (String ChargeName)
+	{
+		set_Value (COLUMNNAME_ChargeName, ChargeName);
+	}
+
+	/** Get Charge Name.
+		@return Name of the Charge
+	  */
+	public String getChargeName () 
+	{
+		return (String)get_Value(COLUMNNAME_ChargeName);
+	}
+
 	/** Set Current Cost Price.
 		@param CurrentCostPrice 
 		The currently used cost price
@@ -109,6 +182,23 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Document Type Name.
+		@param DocTypeName 
+		Name of the Document Type
+	  */
+	public void setDocTypeName (String DocTypeName)
+	{
+		set_Value (COLUMNNAME_DocTypeName, DocTypeName);
+	}
+
+	/** Get Document Type Name.
+		@return Name of the Document Type
+	  */
+	public String getDocTypeName () 
+	{
+		return (String)get_Value(COLUMNNAME_DocTypeName);
 	}
 
 	/** Set Import Error Message.
@@ -158,6 +248,20 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
     {
         return new KeyNamePair(get_ID(), String.valueOf(getI_Inventory_ID()));
     }
+
+	/** Set I_Inventory_UU.
+		@param I_Inventory_UU I_Inventory_UU	  */
+	public void setI_Inventory_UU (String I_Inventory_UU)
+	{
+		set_Value (COLUMNNAME_I_Inventory_UU, I_Inventory_UU);
+	}
+
+	/** Get I_Inventory_UU.
+		@return I_Inventory_UU	  */
+	public String getI_Inventory_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_I_Inventory_UU);
+	}
 
 	/** Set Imported.
 		@param I_IsImported 
@@ -217,9 +321,9 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 		return (String)get_Value(COLUMNNAME_Lot);
 	}
 
-	public I_M_Inventory getM_Inventory() throws RuntimeException
+	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
     {
-		return (I_M_Inventory)MTable.get(getCtx(), I_M_Inventory.Table_Name)
+		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_Name)
 			.getPO(getM_Inventory_ID(), get_TrxName());	}
 
 	/** Set Phys.Inventory.
@@ -245,9 +349,9 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_InventoryLine getM_InventoryLine() throws RuntimeException
+	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
     {
-		return (I_M_InventoryLine)MTable.get(getCtx(), I_M_InventoryLine.Table_Name)
+		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_Name)
 			.getPO(getM_InventoryLine_ID(), get_TrxName());	}
 
 	/** Set Phys.Inventory Line.
@@ -273,9 +377,9 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Locator getM_Locator() throws RuntimeException
+	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException
     {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
+		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_Name)
 			.getPO(getM_Locator_ID(), get_TrxName());	}
 
 	/** Set Locator.
@@ -318,9 +422,9 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -346,9 +450,9 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_Warehouse_ID(), get_TrxName());	}
 
 	/** Set Warehouse.
@@ -454,6 +558,26 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 	public BigDecimal getQtyCount () 
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyCount);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Internal Use Qty.
+		@param QtyInternalUse 
+		Internal Use Quantity removed from Inventory
+	  */
+	public void setQtyInternalUse (BigDecimal QtyInternalUse)
+	{
+		set_Value (COLUMNNAME_QtyInternalUse, QtyInternalUse);
+	}
+
+	/** Get Internal Use Qty.
+		@return Internal Use Quantity removed from Inventory
+	  */
+	public BigDecimal getQtyInternalUse () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyInternalUse);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

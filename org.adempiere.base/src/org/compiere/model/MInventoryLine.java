@@ -39,7 +39,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5649152656460089476L;
+	private static final long serialVersionUID = -3513145563716006099L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -103,10 +103,11 @@ public class MInventoryLine extends X_M_InventoryLine
 	 *	@param M_AttributeSetInstance_ID instance
 	 *	@param QtyBook book value
 	 *	@param QtyCount count value
+	 *  @param QtyInternalUse internal use value 
 	 */
 	public MInventoryLine (MInventory inventory, 
 		int M_Locator_ID, int M_Product_ID, int M_AttributeSetInstance_ID,
-		BigDecimal QtyBook, BigDecimal QtyCount)
+		BigDecimal QtyBook, BigDecimal QtyCount, BigDecimal QtyInternalUse)
 	{
 		this (inventory.getCtx(), 0, inventory.get_TrxName());
 		if (inventory.get_ID() == 0)
@@ -122,9 +123,18 @@ public class MInventoryLine extends X_M_InventoryLine
 			setQtyBook (QtyBook);
 		if (QtyCount != null && QtyCount.signum() != 0)
 			setQtyCount (QtyCount);
+		if (QtyInternalUse != null && QtyInternalUse.signum() != 0)
+			setQtyInternalUse (QtyInternalUse);
 		m_isManualEntry = false;
 	}	//	MInventoryLine
 
+	public MInventoryLine (MInventory inventory, 
+			int M_Locator_ID, int M_Product_ID, int M_AttributeSetInstance_ID,
+			BigDecimal QtyBook, BigDecimal QtyCount)
+	{
+		this(inventory, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, QtyBook, QtyCount, null);
+	}
+	
 	/** Manually created				*/
 	private boolean 	m_isManualEntry = true;
 	/** Parent							*/

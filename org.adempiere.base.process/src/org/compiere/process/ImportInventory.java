@@ -38,6 +38,9 @@ import org.compiere.util.TimeUtil;
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ImportInventory.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
+ * 
+ *  Contributor:
+ *  Carlos Ruiz - globalqss - IDEMPIERE-281 Extend Import Inventory to support also internal use
  */
 public class ImportInventory extends SvrProcess
 {
@@ -145,7 +148,7 @@ public class ImportInventory extends SvrProcess
 		//	Set Client, Org, Location, IsActive, Created/Updated
 		sql = new StringBuffer ("UPDATE I_Inventory "
 			  + "SET AD_Client_ID = COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append ("),"
-			  + " AD_Org_ID = COALESCE (AD_Org_ID,").append (p_AD_Org_ID).append ("),");
+			  + " AD_Org_ID = DECODE (NVL(AD_Org_ID),0,").append (p_AD_Org_ID).append (",AD_Org_ID),");
 		if (p_MovementDate != null)
 			sql.append(" MovementDate = COALESCE (MovementDate,").append (DB.TO_DATE(p_MovementDate)).append ("),");
 		sql.append(" IsActive = COALESCE (IsActive, 'Y'),"
@@ -169,8 +172,23 @@ public class ImportInventory extends SvrProcess
 		if (no != 0)
 			log.warning ("Invalid Org=" + no);
 
+		//	Document Type
+		sql = new StringBuffer ("UPDATE I_Inventory i "
+			+ "SET C_DocType_ID=(SELECT d.C_DocType_ID FROM C_DocType d"
+			+ " WHERE d.Name=i.DocTypeName AND d.DocBaseType='MMI' AND i.AD_Client_ID=d.AD_Client_ID) "
+			+ "WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL"
+			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		log.fine("Set DocType=" + no);
+		sql = new StringBuffer ("UPDATE I_Inventory i "
+				+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocType, ' "
+			    + "WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL"
+				+ " AND I_IsImported<>'Y'").append (clientCheck);
+			no = DB.executeUpdate(sql.toString(), get_TrxName());
+			if (no != 0)
+				log.warning ("Invalid DocType=" + no);
 
-		//	Location
+		//	Locator
 		sql = new StringBuffer ("UPDATE I_Inventory i "
 			+ "SET M_Locator_ID=(SELECT MAX(M_Locator_ID) FROM M_Locator l"
 			+ " WHERE i.LocatorValue=l.Value AND i.AD_Client_ID=l.AD_Client_ID) "
@@ -233,7 +251,7 @@ public class ImportInventory extends SvrProcess
 				  + "WHERE M_Product_ID IS NULL AND UPC IS NOT NULL"
 				  + " AND I_IsImported<>'Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
-			log.fine("Set Product from UPC=" + no);
+		log.fine("Set Product from UPC=" + no);
 		sql = new StringBuffer ("UPDATE I_Inventory "
 			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Product, ' "
 			+ "WHERE M_Product_ID IS NULL"
@@ -242,14 +260,47 @@ public class ImportInventory extends SvrProcess
 		if (no != 0)
 			log.warning ("No Product=" + no);
 
-		//	No QtyCount
+		//	Charge
+		sql = new StringBuffer ("UPDATE I_Inventory o "
+			  + "SET C_Charge_ID=(SELECT C_Charge_ID FROM C_Charge p"
+			  + " WHERE o.ChargeName=p.Name AND o.AD_Client_ID=p.AD_Client_ID) "
+			  + "WHERE C_Charge_ID IS NULL AND ChargeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		log.fine("Set Charge=" + no);
 		sql = new StringBuffer ("UPDATE I_Inventory "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Qty Count, ' "
-			+ "WHERE QtyCount IS NULL"
+				  + "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Charge, ' "
+				  + "WHERE C_Charge_ID IS NULL AND (ChargeName IS NOT NULL)"
+				  + " AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning ("Invalid Charge=" + no);
+
+		//	No QtyCount or QtyInternalUse
+		sql = new StringBuffer ("UPDATE I_Inventory "
+			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Qty Count or Internal Use, ' "
+			+ "WHERE QtyCount IS NULL AND QtyInternalUse IS NULL"
 			+ " AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
-			log.warning ("No QtyCount=" + no);
+			log.warning ("No QtyCount or QtyInternalUse=" + no);
+
+		//	Excluding quantities
+		sql = new StringBuffer ("UPDATE I_Inventory "
+			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Excluding quantities, ' "
+			+ "WHERE NVL(QtyInternalUse,0)<>0 AND (NVL(QtyCount,0)<>0 OR NVL(QtyBook,0)<>0) "
+			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate (sql.toString (), get_TrxName());
+		if (no != 0)
+			log.warning ("Excluding quantities=" + no);
+
+		//	Required charge for internal use
+		sql = new StringBuffer ("UPDATE I_Inventory "
+			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Required charge, ' "
+			+ "WHERE NVL(QtyInternalUse,0)<>0 AND NVL(C_Charge_ID,0)=0 "
+			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate (sql.toString (), get_TrxName());
+		if (no != 0)
+			log.warning ("Required charge=" + no);
 
 		commitEx();
 		
@@ -270,17 +321,24 @@ public class ImportInventory extends SvrProcess
 			ResultSet rs = pstmt.executeQuery ();
 			//
 			int x_M_Warehouse_ID = -1;
+			int x_C_DocType_ID = -1;
 			Timestamp x_MovementDate = null;
+			int x_isInternalUse = -1;
 			while (rs.next())
 			{
 				X_I_Inventory imp = new X_I_Inventory (getCtx (), rs, get_TrxName());
 				Timestamp MovementDate = TimeUtil.getDay(imp.getMovementDate());
+				int isInternalUse = (imp.getQtyInternalUse().signum() != 0) ? 1 : 0;
 
 				if (inventory == null
 					|| imp.getM_Warehouse_ID() != x_M_Warehouse_ID
-					|| !MovementDate.equals(x_MovementDate))
+					|| imp.getC_DocType_ID() != x_C_DocType_ID
+					|| !MovementDate.equals(x_MovementDate)
+					|| isInternalUse != x_isInternalUse)
 				{
 					inventory = new MInventory (getCtx(), 0, get_TrxName());
+					if (imp.getC_DocType_ID() > 0)
+						inventory.setC_DocType_ID(imp.getC_DocType_ID());
 					inventory.setClientOrg(imp.getAD_Client_ID(), imp.getAD_Org_ID());
 					inventory.setDescription("I " + imp.getM_Warehouse_ID() + " " + MovementDate);
 					inventory.setM_Warehouse_ID(imp.getM_Warehouse_ID());
@@ -292,7 +350,9 @@ public class ImportInventory extends SvrProcess
 						break;
 					}
 					x_M_Warehouse_ID = imp.getM_Warehouse_ID();
+					x_C_DocType_ID = imp.getC_DocType_ID();
 					x_MovementDate = MovementDate;
+					x_isInternalUse = isInternalUse;
 					noInsert++;
 				}
 
@@ -316,7 +376,13 @@ public class ImportInventory extends SvrProcess
 				}
 				MInventoryLine line = new MInventoryLine (inventory, 
 					imp.getM_Locator_ID(), imp.getM_Product_ID(), M_AttributeSetInstance_ID,
-					imp.getQtyBook(), imp.getQtyCount());
+					imp.getQtyBook(), imp.getQtyCount(), imp.getQtyInternalUse());
+				line.setDescription(imp.getDescription());
+				if (imp.getC_Charge_ID() > 0)
+					line.setInventoryType(MInventoryLine.INVENTORYTYPE_ChargeAccount);
+				else
+					line.setInventoryType(MInventoryLine.INVENTORYTYPE_InventoryDifference);
+				line.setC_Charge_ID(imp.getC_Charge_ID());
 				if (line.save())
 				{
 					imp.setI_IsImported(true);
