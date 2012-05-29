@@ -73,7 +73,7 @@ public class ProcessDialog extends CFrame
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 790447068287846414L;
+	private static final long serialVersionUID = 7486479305726277406L;
 
 	/**
 	 * 	@deprecated
@@ -318,6 +318,7 @@ public class ProcessDialog extends CFrame
 		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_pi);
+		parameterPanel.setWindow(this);
 		centerPanel.removeAll();
 		if (parameterPanel.init()) {
 			// hasfields

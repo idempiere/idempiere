@@ -57,11 +57,11 @@ import org.compiere.util.Msg;
 public class ProcessModalDialog extends CDialog
 	implements ActionListener
 {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6613814452809135635L;
+	private static final long serialVersionUID = -1573751323319156081L;
 
 	/**
 	 * Dialog to start a process/report
@@ -303,6 +303,7 @@ public class ProcessModalDialog extends CDialog
 		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_pi);
+		parameterPanel.setWindow(this);
 		centerPanel.removeAll();
 		if (parameterPanel.init()) {
 			// hasfields

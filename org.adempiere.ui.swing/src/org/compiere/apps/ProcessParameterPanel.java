@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
@@ -63,7 +64,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4042260793108029845L;
+	private static final long serialVersionUID = 3871379020889713432L;
 
 		/**
 		 *	Dynamic generated Parameter panel.
@@ -103,10 +104,12 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 		private ArrayList<GridField>	m_mFields = new ArrayList<GridField>();
 		private ArrayList<GridField>	m_mFields2 = new ArrayList<GridField>();
 		private ArrayList<JLabel> m_separators = new ArrayList<JLabel>();
+		private ArrayList<JLabel> m_labels = new ArrayList<JLabel>();
 		//
 		private BorderLayout mainLayout = new BorderLayout();
 		private CPanel centerPanel = new CPanel();
 		private GridBagLayout centerLayout = new GridBagLayout();
+		private Window m_win = null;
 
 		/**
 		 *	Static Layout
@@ -129,6 +132,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 			m_mFields.clear();
 			m_mFields2.clear();
 			m_separators.clear();
+			m_labels.clear();
 			this.removeAll();
 		}   //  dispose
 
@@ -298,6 +302,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 				gbc.insets = labelInset;
 				centerPanel.add(label, gbc);
 			}
+			m_labels.add(label);
 
 			//	Field Preparation
 			gbc.insets = fieldInset;
@@ -438,6 +443,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 		 **/
 		public void dynamicDisplay() {
 			Component[] comps = centerPanel.getComponents();
+			boolean changedSize = false;
 			for (int i = 0; i < comps.length; i++) {
 				Component comp = comps[i];
 				if (comp instanceof CLabel)
@@ -450,7 +456,9 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 						if (m_mFields.get(index).isDisplayed(true)) { // check
 							// context
 							if (!comp.isVisible()) {
+								changedSize = true;
 								comp.setVisible(true); // visibility
+								m_labels.get(index).setVisible(true);
 								if (m_mFields.get(index).getVO().isRange)
 									m_separators.get(index).setText(" - ");
 							}
@@ -460,13 +468,19 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 								m_vEditors2.get(index).setReadWrite(rw);
 						} else {
 							if (comp.isVisible()) {
+								changedSize = true;
 								comp.setVisible(false);
+								m_labels.get(index).setVisible(false);
 								if (m_mFields.get(index).getVO().isRange)
 									m_separators.get(index).setText("");
 							}
 						}
 					}
 				}
+			}
+			if (m_win != null && changedSize) {
+				m_win.pack();
+				m_win.setLocationRelativeTo(null);
 			}
 		} // Dynamic Display.
 
@@ -632,5 +646,9 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 				if (f != null)
 					f.restoreValue();
 			}
+		}
+
+		public void setWindow(Window win) {
+			m_win  = win;
 		}
 	}	//	ProcessParameterPanel
