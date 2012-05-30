@@ -1077,7 +1077,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				}
 				else if (item.isBarcode())
 				{
-					element = createBarcodeElement(item);
+					element = createBarcodeElement(item, m_data);
 					if (element != null)
 					{
 						element.layout(maxWidth, item.getMaxHeight(), false, alignment);
@@ -1086,7 +1086,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				else if (item.isTypeImage())		//**	Image
 				{
 					if (item.isImageField())
-						element = createImageElement (item);
+						element = createImageElement (item, m_data);
 					else if (item.isImageIsAttached())
 						element = ImageElement.get (item.get_ID());
 					else
@@ -1440,9 +1440,9 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	 *	@param item item
 	 *	@return image element
 	 */
-	private PrintElement createImageElement (MPrintFormatItem item)
+	private PrintElement createImageElement (MPrintFormatItem item, PrintData printData)
 	{
-		Object obj = m_data.getNode(new Integer(item.getAD_Column_ID())); 
+		Object obj = printData.getNode(new Integer(item.getAD_Column_ID())); 
 		if (obj == null)
 			return null;
 		else if (obj instanceof PrintDataElement)
@@ -1478,10 +1478,10 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	 *	@param item item
 	 *	@return barcode element
 	 */
-	private PrintElement createBarcodeElement (MPrintFormatItem item)
+	private PrintElement createBarcodeElement (MPrintFormatItem item, PrintData printData)
 	{
 		//	Get Data
-		Object obj = m_data.getNode(new Integer(item.getAD_Column_ID()));
+		Object obj = printData.getNode(new Integer(item.getAD_Column_ID()));
 		if (obj == null)
 			return null;
 		else if (obj instanceof PrintDataElement)
@@ -1678,64 +1678,19 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					if (item.isTypeImage())
 					{
 						if (item.isImageField())
-						{
-							Object obj = null;
-							if (item.getAD_Column_ID() > 0) // teo_sarca, [ 1673542 ]
-								obj = printData.getNode(new Integer(item.getAD_Column_ID()));
-							if (obj == null)
-								;
-							else if (obj instanceof PrintDataElement)
-							{
-								PrintDataElement pde = (PrintDataElement)obj;
-								// Get the PrintDataElement string value - teo_sarca [ 1673505 ]
-								Object o = pde.getValue();
-								String value = null;
-								if (o == null)
-									value = "";
-								else if (o instanceof KeyNamePair)
-									value = ((KeyNamePair)o).getName();
-								else
-									value = o.toString();
-								
-								data[row][col] = ImageElement.get (pde, value);
-							}
-						}
+							data[row][col] = createImageElement (item, printData);
 						else if (item.isImageIsAttached())
 							data[row][col] = ImageElement.get (item.get_ID());
 						else
 							data[row][col] = ImageElement.get (item.getImageURL());
-						// Image layout - teo_sarca, [ 1673548 ]
 						if (data[row][col] != null)
-							((ImageElement)data[row][col]).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
+							((PrintElement)data[row][col]).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
 					}
 					else if (item.isBarcode())
 					{
-						Object obj = null;
-						if (item.getAD_Column_ID() > 0) // teo_sarca, [ 1673542 ]
-							obj = printData.getNode(new Integer(item.getAD_Column_ID()));
-						if (obj == null)
-							;
-						else if (obj instanceof PrintDataElement)
-						{
-							PrintDataElement pde = (PrintDataElement)obj;
-							// Get the PrintDataElement string value - teo_sarca [ 1673505 ]
-							String value = null;
-							Object o = pde.getValue();
-							if (o == null)
-								value = "";
-							if (o instanceof KeyNamePair)
-								value = ((KeyNamePair)o).getID();
-							else
-								value = o.toString();
-							BarcodeElement element = new BarcodeElement (value, item);
-
-							if (element.isValid())
-								data[row][col] = element;
-						}
-						
+						data[row][col] = createBarcodeElement(item, printData);
 						if (data[row][col] != null)
-							((BarcodeElement)data[row][col]).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
-					
+							((PrintElement)data[row][col]).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
 					}
 					else if (item.isTypeText() )
 					{

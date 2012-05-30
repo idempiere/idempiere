@@ -102,16 +102,19 @@ public class ImageElement extends PrintElement
 	 */
 	public static ImageElement get(PrintDataElement data, String imageURLString)
 	{
-		Object key = (BigDecimal) data.getValue();
-		ImageElement image = (ImageElement)s_cache.get(key);
+		BigDecimal imkeybd = null;
+		if (data.getValue() instanceof Integer)
+			imkeybd = BigDecimal.valueOf((Integer) data.getValue());
+		else
+			imkeybd = (BigDecimal) data.getValue();
+		ImageElement image = (ImageElement)s_cache.get(imkeybd);
 		if (image == null)
 		{
-			BigDecimal imkeybd = (BigDecimal) data.getValue();
 			int imkeyint = 0;
 			if (imkeybd != null)
 				imkeyint = imkeybd.intValue();
 			image = new ImageElement(imkeyint, false);
-			s_cache.put(key, image);
+			s_cache.put(imkeybd, image);
 		}
 		return new ImageElement(image.getImage());
 	}	//	get
