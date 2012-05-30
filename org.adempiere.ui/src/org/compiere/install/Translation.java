@@ -68,10 +68,11 @@ public class Translation
 	}	//	Translation
 	
 	/**	DTD						*/
-	public static final String DTD = "<!DOCTYPE adempiereTrl PUBLIC \"-//ComPiere, Inc.//DTD Adempiere Translation 1.0//EN\" \"http://www.adempiere.com/dtd/adempiereTrl.dtd\">";
+	public static final String DTD = "<!DOCTYPE idempiereTrl PUBLIC \"-//ComPiere, Inc.//DTD iDempiere Translation 1.0//EN\" \"http://www.idempiere.com/dtd/idempiereTrl.dtd\">";
 	/**	XML Element Tag			*/
-	public static final String	XML_TAG = "adempiereTrl";
-	public static final String	XML_TAG2 = "compiereTrl";
+	public static final String	XML_TAG = "idempiereTrl";
+	public static final String	XML_TAG2 = "adempiereTrl";
+	public static final String	XML_TAG3 = "compiereTrl";
 	/**	XML Attribute Table			*/
 	public static final String	XML_ATTRIBUTE_TABLE = "table";
 	/** XML Attribute Language		*/
@@ -167,8 +168,8 @@ public class Translation
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			//	System.out.println(factory.getClass().getName());
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			//	<!DOCTYPE adempiereTrl SYSTEM "http://www.adempiere.org/dtd/adempiereTrl.dtd">
-			//	<!DOCTYPE adempiereTrl PUBLIC "-//ComPiere, Inc.//DTD Adempiere Translation 1.0//EN" "http://www.adempiere.org/dtd/adempiereTrl.dtd">
+			//	<!DOCTYPE idempiereTrl SYSTEM "http://www.idempiere.org/dtd/idempiereTrl.dtd">
+			//	<!DOCTYPE idempiereTrl PUBLIC "-//ComPiere, Inc.//DTD iDempiere Translation 1.0//EN" "http://www.idempiere.org/dtd/idempiereTrl.dtd">
 			Document document = builder.newDocument();
 			document.appendChild(document.createComment(Adempiere.getSummaryAscii()));
 			document.appendChild(document.createComment(DTD));
