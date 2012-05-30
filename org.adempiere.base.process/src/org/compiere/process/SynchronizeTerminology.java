@@ -131,7 +131,7 @@ public class SynchronizeTerminology extends SvrProcess
 
 			log.info("Deleting unused Elements");
 			sql="DELETE	AD_ELEMENT_TRL"
-				+" 	WHERE	AD_Element_ID IN"
+				+" 	WHERE AD_Element_ID >= 1000000 AND AD_Element_ID IN"
 				+" 	(SELECT AD_Element_ID FROM AD_ELEMENT e "
 				+" 	WHERE NOT EXISTS"
 				+" 	(SELECT 1 FROM AD_COLUMN c WHERE UPPER(e.ColumnName)=UPPER(c.ColumnName))"
