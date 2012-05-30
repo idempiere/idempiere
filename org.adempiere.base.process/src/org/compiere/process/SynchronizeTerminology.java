@@ -511,7 +511,7 @@ public class SynchronizeTerminology extends SvrProcess
 
 			log.info("Synchronize PrintFormatItem Trl from Element Trl (Multi-Lingual)");
 			sql="UPDATE AD_PRINTFORMATITEM_TRL trl"
-				+" SET PrintName = (SELECT e.PrintName" 
+				+" SET (PrintName, Name) = (SELECT e.PrintName, e.Name" // idempiere 255
 				+" FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM pfi"
 				+" WHERE e.AD_LANGUAGE=trl.AD_LANGUAGE"
 				+" AND e.AD_Element_ID=c.AD_Element_ID"
@@ -536,7 +536,7 @@ public class SynchronizeTerminology extends SvrProcess
 
 			log.info("Synchronize PrintFormatItem Trl (Not Multi-Lingual)");
 			sql="UPDATE AD_PRINTFORMATITEM_TRL trl"
-				+" SET PrintName = (SELECT pfi.PrintName" 
+				+" SET (PrintName, Name) = (SELECT pfi.PrintName, pfi.Name"	// idempiere 255 
 				+" FROM AD_PRINTFORMATITEM pfi"
 				+" WHERE pfi.AD_PrintFormatItem_ID=trl.AD_PrintFormatItem_ID)"
 				+" WHERE EXISTS (SELECT 1 "
