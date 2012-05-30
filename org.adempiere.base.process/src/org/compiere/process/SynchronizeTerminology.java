@@ -509,9 +509,26 @@ public class SynchronizeTerminology extends SvrProcess
 			log.info("  rows updated: "+no);
 			trx.commit(true);
 
+			log.info("Synchronize PrintFormatItem Trl Name from Element");
+			sql="UPDATE AD_PRINTFORMATITEM_TRL trl"
+				+" SET Name = (SELECT e.Name FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM p"
+				+"			WHERE e.AD_LANGUAGE=trl.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID "
+				+"			  AND c.AD_Column_ID=p.AD_Column_ID AND p.AD_PrintFormatItem_ID=trl.AD_PrintFormatItem_ID),"
+				+"	Updated = SYSDATE"
+				+" WHERE EXISTS (SELECT 1 FROM AD_PRINTFORMATITEM p, AD_ELEMENT_TRL e, AD_COLUMN c"
+				+"		WHERE trl.AD_PrintFormatItem_ID=p.AD_PrintFormatItem_ID"
+				+"		  AND p.AD_Column_ID=c.AD_Column_ID"
+				+"		  AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL"
+				+"		  AND trl.AD_LANGUAGE=e.AD_LANGUAGE"
+				+"		  AND p.IsCentrallyMaintained='Y' AND p.IsActive='Y'"
+				+"		  AND (trl.Name <> e.Name))";
+			no = DB.executeUpdate(sql, false, get_TrxName());	  	
+			log.info("  rows updated: "+no);
+			trx.commit(true);
+
 			log.info("Synchronize PrintFormatItem Trl from Element Trl (Multi-Lingual)");
 			sql="UPDATE AD_PRINTFORMATITEM_TRL trl"
-				+" SET (PrintName, Name) = (SELECT e.PrintName, e.Name" // idempiere 255
+				+" SET PrintName = (SELECT e.PrintName"
 				+" FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM pfi"
 				+" WHERE e.AD_LANGUAGE=trl.AD_LANGUAGE"
 				+" AND e.AD_Element_ID=c.AD_Element_ID"
@@ -536,7 +553,7 @@ public class SynchronizeTerminology extends SvrProcess
 
 			log.info("Synchronize PrintFormatItem Trl (Not Multi-Lingual)");
 			sql="UPDATE AD_PRINTFORMATITEM_TRL trl"
-				+" SET (PrintName, Name) = (SELECT pfi.PrintName, pfi.Name"	// idempiere 255 
+				+" SET PrintName = (SELECT pfi.PrintName" 
 				+" FROM AD_PRINTFORMATITEM pfi"
 				+" WHERE pfi.AD_PrintFormatItem_ID=trl.AD_PrintFormatItem_ID)"
 				+" WHERE EXISTS (SELECT 1 "

@@ -43,9 +43,28 @@ UPDATE AD_Field SET SeqNo=80,IsDisplayed='Y' WHERE AD_Field_ID=5769
 UPDATE AD_Field SET SeqNo=90,IsDisplayed='Y' WHERE AD_Field_ID=6274
 ;
 
+UPDATE ad_printformatitem_trl 
+SET	 NAME = (	SELECT COALESCE(et.name, pf.name) 
+				FROM ad_printformatitem pf 
+					LEFT JOIN ad_column c ON pf.ad_column_id=c.ad_column_id
+                    LEFT JOIN ad_element_trl et ON et.ad_element_id=c.ad_element_id AND et.ad_language=ad_printformatitem_trl.ad_language 
+				WHERE pf.ad_printformatitem_id=ad_printformatitem_trl.ad_printformatitem_id);
+
+-- May 30, 2012 12:15:59 PM COT
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-05-30 12:15:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200192
+;
+
+-- May 30, 2012 12:16:02 PM COT
+ALTER TABLE AD_PrintFormatItem_Trl MODIFY Name NVARCHAR2(60)
+;
+
+-- May 30, 2012 12:16:02 PM COT
+ALTER TABLE AD_PrintFormatItem_Trl MODIFY Name NOT NULL
+;
 
 UPDATE AD_System
-  SET LastMigrationScriptApplied='840_IDEMPIERE-255.sql'
-WHERE LastMigrationScriptApplied<'840_IDEMPIERE-255.sql'
+  SET LastMigrationScriptApplied='845_IDEMPIERE-255.sql'
+WHERE LastMigrationScriptApplied<'845_IDEMPIERE-255.sql'
    OR LastMigrationScriptApplied IS NULL
 ;
+
