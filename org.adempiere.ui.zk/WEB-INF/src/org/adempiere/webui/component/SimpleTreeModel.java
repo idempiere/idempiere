@@ -167,7 +167,6 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	public void addNode(DefaultTreeNode newNode) {
 		DefaultTreeNode root = (DefaultTreeNode) getRoot();
 		root.getChildren().add(newNode);
-		fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(root), root.getChildCount() - 1, root.getChildCount() - 1);
 	}
 
 	@Override
@@ -195,7 +194,6 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 			
 			
 			parentNode.getChildren().remove(path[index]);			
-			fireEvent(TreeDataEvent.INTERVAL_REMOVED, getPath(parentNode), path[index], path[index]);
 		}
 	}
 	
@@ -267,7 +265,6 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 		}
 		
 		parent.getChildren().add(index, newNode);
-		fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(parent), index, index);
 	}
 	
 	/**
