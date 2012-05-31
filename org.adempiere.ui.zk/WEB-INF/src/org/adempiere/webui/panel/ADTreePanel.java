@@ -14,7 +14,6 @@
 package org.adempiere.webui.panel;
 
 
-import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.SimpleTreeModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.util.TreeUtils;
@@ -35,7 +34,7 @@ import org.zkoss.zul.Tree;
  * @author hengsin
  *
  */
-public class ADTreePanel extends Panel implements EventListener
+public class ADTreePanel extends Panel implements EventListener<Event>
 {
 	/**
 	 * 
