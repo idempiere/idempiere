@@ -147,7 +147,7 @@ public class ADTreeOnDropListener implements EventListener {
 		treeModel.addNode(newParent, movingNode, index);
 		
 		int path[] = treeModel.getPath(movingNode);
-		if (TreeUtils.isOnInitRenderPosted(tree))
+		if (TreeUtils.isOnInitRenderPosted(tree) || tree.getTreechildren() == null)
 		{
 			tree.onInitRender();
 		}
