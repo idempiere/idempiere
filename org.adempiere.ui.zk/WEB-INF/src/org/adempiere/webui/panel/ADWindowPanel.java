@@ -208,6 +208,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
 						}
 					}
 				}
+				getComponent().getParent().invalidate();
 			}
 		});
         
@@ -276,6 +277,8 @@ public class ADWindowPanel extends AbstractADWindowPanel
 							break;
 						}
 					}
+				} else {
+					tabbox.getSelectedPanel().invalidate();
 				}
 				tabPanel.detach();
 				tab.detach();
