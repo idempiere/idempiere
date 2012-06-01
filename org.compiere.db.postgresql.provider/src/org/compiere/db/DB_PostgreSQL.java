@@ -959,7 +959,6 @@ public class DB_PostgreSQL implements AdempiereDatabase
 						}
 					}
 				}
-				currentTimeout = rs.getInt(1) / 1000;
 			}
 		}
 		finally
