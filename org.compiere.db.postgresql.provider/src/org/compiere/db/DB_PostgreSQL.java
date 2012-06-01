@@ -938,27 +938,9 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		ResultSet rs = null;
 		try
 		{
-			rs = conn.createStatement().executeQuery("select current_setting('statement_timeout')");
+			rs = conn.createStatement().executeQuery("select extract(epoch from current_setting('statement_timeout')::interval)*1000");
 			if (rs.next()) {
-				String setting = rs.getString(1);
-				if (setting != null) {
-					if (setting.endsWith("min")) {
-						setting = setting.substring(0, setting.length() - "min".length());
-						try {
-							currentTimeout = Integer.parseInt(setting);
-							currentTimeout = currentTimeout * 60;
-						} catch (Exception e) {
-							log.log(Level.INFO, e.getLocalizedMessage(), e);
-						}
-					} else if (setting.endsWith("s")) {
-						setting = setting.substring(0, setting.length() - "s".length());
-						try {
-							currentTimeout = Integer.parseInt(setting);
-						} catch (Exception e) {
-							log.log(Level.INFO, e.getLocalizedMessage(), e);
-						}
-					}
-				}
+				currentTimeout = rs.getInt(1) / 1000;
 			}
 		}
 		finally
