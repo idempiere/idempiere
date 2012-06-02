@@ -35,7 +35,6 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.Adempiere;
 import org.compiere.model.MUser;
@@ -52,8 +51,6 @@ import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.MaximizeEvent;
-import org.zkoss.zk.ui.event.SizeEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
@@ -69,11 +66,11 @@ import org.zkoss.zul.Vbox;
  *
  */
 public class AboutWindow extends Window implements EventListener<Event> {
-
 	/**
-	 * generated serial version id
+	 *
 	 */
-	private static final long serialVersionUID = -257313771447940626L;
+	private static final long serialVersionUID = -2600883713422452076L;
+
 	private Checkbox bErrorsOnly;
 	private Listbox logTable;
 	private Tabbox tabbox;
@@ -82,7 +79,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	private Button btnErrorEmail;
 	private Button btnViewLog;
 	private Tab tabLog;
-	
+
 	private Button btnAdempiereLog;
 
 	private Button btnServerLog;
@@ -304,11 +301,11 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		Hbox hbox = new Hbox();
 		hbox.setParent(vbox);
 		ToolBarButton link = new ToolBarButton();
-		link.setImage("images/Posterita.jpg");
+		link.setImage("images/TrekGlobal.jpg");
 		link.setParent(hbox);
-		link.setHref("http://www.posterita.org");
+		link.setHref("http://www.trekglobal.com");
 		link.setTarget("_blank");
-		Label label= new Label("Contributed the initial Zk Web Client code.");
+		Label label= new Label("Top iDempiere sponsor");
 		label.setParent(hbox);
 
 		Separator separator = new Separator();
@@ -326,14 +323,28 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		Vbox content = new Vbox();
 		content.setWidth("100%");
 		content.setParent(div);
+
+		link = new ToolBarButton();
+		link.setLabel("GlobalQSS");
+		link.setHref("http://www.globalqss.com/");
+		link.setTarget("_blank");
+		link.setParent(content);
+
+		link = new ToolBarButton();
+		link.setLabel("Adaxa");
+		link.setHref("http://www.adaxa.com/");
+		link.setTarget("_blank");
+		link.setParent(content);
+
+		link = new ToolBarButton();
+		link.setLabel("Posterita");
+		link.setHref("http://www.posterita.com/");
+		link.setTarget("_blank");
+		link.setParent(content);
+
 		link = new ToolBarButton();
 		link.setLabel("Sysnova");
 		link.setHref("http://www.sysnova.com/");
-		link.setTarget("_blank");
-		link.setParent(content);
-		link = new ToolBarButton();
-		link.setLabel("Idalica");
-		link.setHref("http://www.idalica.com/");
 		link.setTarget("_blank");
 		link.setParent(content);
 
@@ -352,33 +363,34 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		content = new Vbox();
 		content.setWidth("100%");
 		content.setParent(div);
+
 		link = new ToolBarButton();
-		link.setLabel("Ashley G Ramdass");
-		link.setHref("http://www.adempiere.com/wiki/index.php/User:Agramdass");
+		link.setLabel("Low Heng Sin");
+		link.setHref("http://www.adempiere.com/User:Hengsin");
 		link.setTarget("_blank");
 		link.setParent(content);
 
 		link = new ToolBarButton();
-		link.setLabel("Low Heng Sin");
-		link.setHref("http://www.adempiere.com/wiki/index.php/User:Hengsin");
+		link.setLabel("Ashley G Ramdass");
+		link.setHref("http://www.adempiere.com/User:Agramdass");
 		link.setTarget("_blank");
 		link.setParent(content);
 
 		link = new ToolBarButton();
 		link.setLabel("Carlos Ruiz");
-		link.setHref("http://www.adempiere.com/wiki/index.php/User:CarlosRuiz");
+		link.setHref("http://www.adempiere.com/User:CarlosRuiz");
 		link.setTarget("_blank");
 		link.setParent(content);
 
 		link = new ToolBarButton();
 		link.setLabel("Teo Sarca");
-		link.setHref("http://www.adempiere.com/wiki/index.php/User:Teo_sarca");
+		link.setHref("http://www.adempiere.com/User:Teo_sarca");
 		link.setTarget("_blank");
 		link.setParent(content);
 
 		link = new ToolBarButton();
 		link.setLabel("Trifon Trifonov");
-		link.setHref("http://www.adempiere.com/wiki/index.php/User:Trifonnt");
+		link.setHref("http://www.adempiere.com/User:Trifonnt");
 		link.setTarget("_blank");
 		link.setParent(content);
 
@@ -409,32 +421,32 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		separator = new Separator();
 		separator.setParent(vbox);
 		ToolBarButton link = new ToolBarButton();
-		link.setLabel("Sourceforge.net Project Site");
-		link.setHref("http://www.sourceforge.net/projects/adempiere");
+		link.setLabel("Project Site");
+		link.setHref("http://www.idempiere.com");
 		link.setTarget("_blank");
 		link.setParent(vbox);
 
 		separator = new Separator();
 		separator.setParent(vbox);
 		link = new ToolBarButton();
-		link.setLabel("ADempiere Wiki");
-		link.setHref("http://www.adempiere.com/wiki/index.php");
+		link.setLabel("Community Site");
+		link.setHref("http://www.idempiere.org");
 		link.setTarget("_blank");
 		link.setParent(vbox);
 
 		separator = new Separator();
 		separator.setParent(vbox);
 		link = new ToolBarButton();
-		link.setLabel("ADempiere.org");
-		link.setHref("http://www.adempiere.org");
+		link.setLabel("Community Wiki");
+		link.setHref("http://wiki.idempiere.org");
 		link.setTarget("_blank");
 		link.setParent(vbox);
 
 		separator = new Separator();
 		separator.setParent(vbox);
 		link = new ToolBarButton();
-		link.setLabel("ADempiere.com");
-		link.setHref("http://www.adempiere.com");
+		link.setLabel("Functional Forums");
+		link.setHref("http://groups.google.com/group/idempiere");
 		link.setTarget("_blank");
 		link.setParent(vbox);
 
