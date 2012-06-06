@@ -23,6 +23,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
@@ -66,7 +68,7 @@ import org.zkoss.zul.Separator;
  *  globalqss - Carlos Ruiz - implement CC - FR [ 1754879 ] Enhancements on sending e-mail
  *
  */
-public class WEMailDialog extends Window implements EventListener, ValueChangeListener
+public class WEMailDialog extends Window implements EventListener<Event>, ValueChangeListener
 {
 	/**
 	 * 
@@ -89,7 +91,7 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		super();
         this.setTitle(title);
 		this.setWidth("500px");
-		this.setHeight("500px");
+		this.setHeight("600px");
 		this.setClosable(true);
 		this.setBorder("normal");
         this.setStyle("position:absolute");
@@ -152,10 +154,6 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WEMailDialog.class);
 
-//	private CPanel mainPanel = new CPanel();
-//	private BorderLayout mainLayout = new BorderLayout();
-//	private CPanel headerPanel = new CPanel();
-//	private GridBagLayout headerLayout = new GridBagLayout();
 	private Textbox fFrom = new Textbox();//20);
 	private Textbox fTo = new Textbox();//20);
 	private Textbox fCc = new Textbox();//20);
@@ -187,10 +185,19 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		//
 				
 		Grid grid = new Grid();
-		grid.setWidth("480px");
-        grid.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center;");
+		grid.setWidth("100%");
+		grid.setHeight("100%");
+        grid.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center; border:0");
         grid.makeNoStrip();
-        grid.setOddRowSclass("even");
+        
+        Columns columns = new Columns();
+        Column column = new Column();
+        column.setWidth("30%");
+        columns.appendChild(column);
+        column = new Column();
+        column.setWidth("70%");
+        columns.appendChild(column);
+        grid.appendChild(columns);
         
 		Rows rows = new Rows();
 		grid.appendChild(rows);
@@ -202,7 +209,7 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		div.appendChild(lFrom);
 		row.appendChild(div);
 		row.appendChild(fFrom);
-		fFrom.setWidth("100%");
+		fFrom.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -211,13 +218,13 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		div.appendChild(lTo);
 		row.appendChild(div);
 		row.appendChild(fUser.getComponent());
-		fUser.getComponent().setWidth("100%");
+		fUser.getComponent().setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(new Label(""));
 		row.appendChild(fTo);
-		fTo.setWidth("100%");
+		fTo.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -226,13 +233,13 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		div.appendChild(lCc);
 		row.appendChild(div);
 		row.appendChild(fCcUser.getComponent());
-		fCcUser.getComponent().setWidth("100%");
+		fCcUser.getComponent().setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(new Label(""));
 		row.appendChild(fCc);
-		fCc.setWidth("100%");
+		fCc.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -246,7 +253,7 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		div.appendChild(lSubject);
 		row.appendChild(div);
 		row.appendChild(fSubject);
-		fSubject.setWidth("100%");
+		fSubject.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -260,35 +267,36 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		div.appendChild(lAttachment);
 		row.appendChild(div);
 		row.appendChild(fAttachment);
-		fAttachment.setWidth("100%");
+		fAttachment.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.setSpans("2");
 		row.appendChild(fMessage);
-		fMessage.setWidth("100%");
+		fMessage.setHflex("1");
 		fMessage.setRows(10);
 		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(confirmPanel);
 		confirmPanel.addActionListener(this);
 		
 		Borderlayout layout = new Borderlayout();
-		layout.setWidth("490px");
-		layout.setHeight("470px");
-		layout.setStyle("background-color: white; position: absolute;");
+		layout.setWidth("95%");
+		layout.setHeight("92%");
+		layout.setStyle("background-color: white; position: absolute; margin:0; border:0; padding:0");
 		
 		Center center = new Center();
 		center.appendChild(grid);
 		layout.appendChild(center);
-		center.setStyle("background-color: white");
+		center.setStyle("background-color: white; border: 0");
+		center.setFlex(true);
 		
 		South south = new South();
-		south.appendChild(statusBar);
+		Div southDiv = new Div();
+		south.appendChild(southDiv);
 		layout.appendChild(south);
-		south.setStyle("background-color: white");
+		south.setStyle("background-color: white; border: 0");
+		
+		southDiv.appendChild(confirmPanel);
+		southDiv.appendChild(statusBar);
 		
 		this.appendChild(layout);		
 	}	//	jbInit
