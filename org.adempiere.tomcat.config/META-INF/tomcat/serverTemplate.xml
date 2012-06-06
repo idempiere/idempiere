@@ -84,7 +84,7 @@
                clientAuth="false"
 	           keystoreFile="@ADEMPIERE_KEYSTORE@"
     	       keystorePass="@ADEMPIERE_KEYSTOREPASS@"
-    	       keyAlias="adempiere"
+    	       keyAlias="idempiere"
                sslProtocol="TLS" />
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
