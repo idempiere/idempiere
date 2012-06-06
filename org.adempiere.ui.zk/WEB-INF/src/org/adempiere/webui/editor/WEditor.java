@@ -572,6 +572,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	}
 
 	private static final String STYLE_ZOOMABLE_LABEL = "cursor: pointer; text-decoration: underline;";
-	private static final String STYLE_NORMAL_LABEL = "color: black;";
+	private static final String STYLE_NORMAL_LABEL = "color: #333;";
 	private static final String STYLE_EMPTY_MANDATORY_LABEL = "color: red;";
 }

@@ -7,6 +7,7 @@ html,body {
 	height: 100%;
 	width: 100%;
 	background-color: #D4E3F4;
+	color: #333;
 	overflow: hidden;
 }
 
@@ -116,7 +117,7 @@ html,body {
 .menu-href {
 	font-size: 11px;
 	font-weight: normal;
-	color: black !important;
+	color: #333 !important;
 	text-decoration: none !important;
 }
 
@@ -539,4 +540,10 @@ img.z-group-img-close {
 
 .z-tab-hm-close {
 	padding-right:18px;
+}
+
+<%-- set color for text and label --%>
+.z-tab-seld .z-tab-text, .z-tab .z-tab-text, div.z-treefooter-cnt, div.z-treecell-cnt, div.z-treecol-cnt, 
+.z-label, .z-toolbarbutton-cnt, tr.z-treerow, tr.z-treerow a, tr.z-treerow a:visited {
+	color: #333;
 }
