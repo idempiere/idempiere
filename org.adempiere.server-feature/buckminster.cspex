@@ -23,10 +23,10 @@
                 <property key="iu" value="org.adempiere.server.product" />
             </properties>
             <prerequisites alias="repository">
-                <attribute name="site.p2" />
+            	<attribute name="site.p2" />
             </prerequisites>
             <products alias="destination" base="${buckminster.output}">
-                <path path="adempiere.${target.ws}.${target.os}.${target.arch}/" ></path>
+                <path path="idempiere.${target.ws}.${target.os}.${target.arch}/" ></path>
             </products>
         </public>
         <public name="create.product.zip" actor="ant">

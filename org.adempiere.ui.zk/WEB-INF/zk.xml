@@ -5,9 +5,9 @@
 	-->
 
 <zk>
-	<!-- Adempiere thread session context handler -->
+	<!-- idempiere thread session context handler -->
 	<listener>
-		<description>ADempiere WebUI Context management</description>
+		<description>iDempiere WebUI Context management</description>
 		<listener-class>org.adempiere.webui.session.SessionContextListener
 		</listener-class>
 	</listener>
@@ -88,18 +88,5 @@
 		<name>org.zkoss.zul.theme.fontSizeMS
 		</name>
 		<value>11px</value>
-	</library-property>
-	
-	<preference>
-	    <name>PollingServerPush.delay.min</name>
-	    <value>200</value>
-	</preference>
-	<preference>
-	    <name>PollingServerPush.delay.max</name>
-	    <value>10000</value>
-	</preference>
-	<preference>
-	    <name>PollingServerPush.delay.factor</name>
-	    <value>1</value>
-	</preference>
+	</library-property>	
 </zk>

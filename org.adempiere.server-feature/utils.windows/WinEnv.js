@@ -1,4 +1,4 @@
-// Usage:   WinEnv ADEMPIERE_HOME JAVA_HOME
+// Usage:   WinEnv IDEMPIERE_HOME JAVA_HOME
 // Example: WinEnv C:\Adempiere C:\Program Files\Java\jdk1.5.0_05
 // Example: cscript WinEnv.js C:\Adempiere C:\Program Files\Java\jdk1.5.0_05
 //
@@ -15,7 +15,7 @@ var SysEnv = Shell.Environment("SYSTEM");
 
 if (Args.length != 2)
 {
-  WScript.Echo("Usage: cscript WinEnv.js ADEMPIERE_HOME JAVA_HOME"
+  WScript.Echo("Usage: cscript WinEnv.js IDEMPIERE_HOME JAVA_HOME"
 	+ "\nExample:\ncscript WinEnv.js C:\\Adempiere \"C:\\Program Files\\Java\\jdk1.5.0_05\"");
   WScript.Quit (1);
 }
@@ -23,8 +23,8 @@ if (Args.length != 2)
 
 // Set Environment Variables
 var home = Args(0).replace("\"","");
-SysEnv("ADEMPIERE_HOME") = home;
-WScript.Echo ("SET ADEMPIERE_HOME="+ home);
+SysEnv("IDEMPIERE_HOME") = home;
+WScript.Echo ("SET IDEMPIERE_HOME="+ home);
 
 home = Args(1).replace("\"","");
 SysEnv("JAVA_HOME") = home;

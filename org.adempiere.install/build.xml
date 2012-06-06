@@ -9,7 +9,7 @@
 	</description>
 
 	<property environment="env" />
-	<property name="envFile" value="../AdempiereEnv.properties" />
+	<property name="envFile" value="../idempiereEnv.properties" />
 
 	<!-- ==================================================== -->
 	<!-- Init                                                 -->
@@ -18,7 +18,7 @@
 		description="setup tomcat">
 
 		<echo message="Setup Tomcat ===================" />
-		<echo message="ADEMPIERE_HOME = ${env.ADEMPIERE_HOME}" />
+		<echo message="IDEMPIERE_HOME = ${env.IDEMPIERE_HOME}" />
 
 		<!-- create the time stamp and environment -->
 		<tstamp />

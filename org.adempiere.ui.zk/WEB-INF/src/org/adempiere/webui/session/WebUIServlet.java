@@ -71,7 +71,7 @@ public class WebUIServlet extends DHtmlLayoutServlet
         File file = new File(propertyFile);
         if (!file.exists())
         {
-        	throw new IllegalStateException("Adempiere.properties is not setup. PropertyFile="+propertyFile);
+        	throw new IllegalStateException("idempiere.properties is not setup. PropertyFile="+propertyFile);
         }
         if (!Adempiere.isStarted())
         {

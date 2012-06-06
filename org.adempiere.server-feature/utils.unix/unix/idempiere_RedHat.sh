@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# FileName:	adempiere.init
+# FileName:	idempiere.init
 # Description:	adempiere erp software startup and shutdown
 # Vendor:	K.K. Alice
 # Created:	05. April 2004
@@ -8,7 +8,7 @@
 # Updated:	Carlos Ruiz - globalqss - tested in Redhat FC4
 #               Carlos Ruiz - globalqss - added timeout review of the log file
 #
-# FileTarget:	/etc/init.d/adempiere
+# FileTarget:	/etc/init.d/idempiere
 # FileOwner:	root.root
 # FilePerms:	0755
 #
@@ -17,35 +17,35 @@
 
 # initialization
 # adjust these variables to your environment
-EXECDIR=/home/adempiere/Adempiere
-ENVFILE=/home/adempiere/.bash_profile
-ADEMPIEREUSER=adempiere
+EXECDIR=/home/idempiere/iDempiere
+ENVFILE=/home/idempiere/.bash_profile
+IDEMPIEREUSER=idempiere
 # STOPMESSAGE="Halting VM" # Message when using java 5
 STOPMESSAGE="INFO.*Server\].*Shutdown complete" # Message when using java 6
 
 . /etc/rc.d/init.d/functions
  
 RETVAL=0
-ADEMPIERESTATUS=
+IDEMPIERESTATUS=
 MAXITERATIONS=60 # 2 seconds every iteration, max wait 2 minutes)
 
-getadempierestatus() {
-    ADEMPIERESTATUSSTRING=$(ps ax | grep -v grep | grep $EXECDIR)
-    echo $ADEMPIERESTATUSSTRING | grep -q $EXECDIR
-    ADEMPIERESTATUS=$?
+getidempierestatus() {
+    IDEMPIERESTATUSSTRING=$(ps ax | grep -v grep | grep $EXECDIR)
+    echo $IDEMPIERESTATUSSTRING | grep -q $EXECDIR
+    IDEMPIERESTATUS=$?
 }
 
 start () {
-    getadempierestatus
-    if [ $ADEMPIERESTATUS -eq 0 ] ; then
-	echo "adempiere is already running"
+    getidempierestatus
+    if [ $IDEMPIERESTATUS -eq 0 ] ; then
+	echo "idempiere is already running"
 	return 1
     fi
     echo -n "Starting ADempiere ERP: "
     source $ENVFILE 
-    export LOGFILE=$ADEMPIERE_HOME/jboss/server/adempiere/log/adempiere_`date +%Y%m%d%H%M%S`.log
-    su $ADEMPIEREUSER -c "mkdir -p $ADEMPIERE_HOME/jboss/server/adempiere/log"
-    su $ADEMPIEREUSER -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2.sh &> $LOGFILE &"
+    export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
+    su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
+    su $IDEMPIEREUSER -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2.sh &> $LOGFILE &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
 	# wait for server to be confirmed as started in logfile
@@ -77,16 +77,16 @@ start () {
 }
 
 stop () {
-    getadempierestatus
-    if [ $ADEMPIERESTATUS -ne 0 ] ; then
-	echo "adempiere is already stopped"
+    getidempierestatus
+    if [ $IDEMPIERESTATUS -ne 0 ] ; then
+	echo "idempiere is already stopped"
 	return 1
     fi
     echo -n "Stopping ADempiere ERP: "
     source $ENVFILE 
-    # export LASTLOG=`ls -t $ADEMPIERE_HOME/jboss/server/adempiere/log/adempiere_??????????????.log | head -1`
-    export LASTLOG=$ADEMPIERE_HOME/jboss/server/adempiere/log/server.log
-    su $ADEMPIEREUSER -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2Stop.sh &> /dev/null &"
+    # export LASTLOG=`ls -t $IDEMPIERE_HOME/log/idempiere_??????????????.log | head -1`
+    export LASTLOG=$IDEMPIERE_HOME/log/server.log
+    su $IDEMPIEREUSER -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2Stop.sh &> /dev/null &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
 	# wait for server to be confirmed as halted in logfile
@@ -109,15 +109,15 @@ stop () {
 	    # Adempiere didn't finish - try direct kill with signal 15, then signal 9
 	    kill -15 `ps ax | grep -v grep | grep $EXECDIR | sed -e 's/^ *//g' | cut -f 1 -d " "`
 	    sleep 5
-	    getadempierestatus
-	    if [ $ADEMPIERESTATUS -ne 0 ] ; then
+	    getidempierestatus
+	    if [ $IDEMPIERESTATUS -ne 0 ] ; then
 		echo_success
 	    else
 		echo "Trying direct kill with signal -9"
 		kill -9 `ps ax | grep -v grep | grep $EXECDIR | sed -e 's/^ *//g' | cut -f 1 -d " "`
 		sleep 5
-		getadempierestatus
-		if [ $ADEMPIERESTATUS -ne 0 ] ; then
+		getidempierestatus
+		if [ $IDEMPIERESTATUS -ne 0 ] ; then
 		    echo_success
 		else
 		    echo_warning
@@ -141,21 +141,21 @@ restart () {
 }
 
 condrestart () {
-    getadempierestatus
-    if [ $ADEMPIERESTATUS -eq 0 ] ; then
+    getidempierestatus
+    if [ $IDEMPIERESTATUS -eq 0 ] ; then
 	restart
     fi
 }
 
 rhstatus () {
-    getadempierestatus
-    if [ $ADEMPIERESTATUS -eq 0 ] ; then
+    getidempierestatus
+    if [ $IDEMPIERESTATUS -eq 0 ] ; then
 	echo
-	echo "adempiere is running:"
+	echo "idempiere is running:"
 	ps ax | grep -v grep | grep $EXECDIR | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
 	echo
     else
-	echo "adempiere is stopped"
+	echo "idempiere is stopped"
     fi
 }
 

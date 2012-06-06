@@ -2,15 +2,15 @@
 
 . /etc/rc.common
 
-# Adempiere Service script for OS/X
+# idempiere Service script for OS/X
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
 export POSTGRES_HOME=/Library/PostgreSQL/8.3
-export ADEMPIERE_HOME=/Applications/Adempiere
+export IDEMPIERE_HOME=/Applications/idempiere
 export PATH=$PATH:$JAVA_HOME/bin/:$POSTGRES_HOME/bin/
-EXECDIR=/Applications/Adempiere
+EXECDIR=/Applications/iDempiere
 ENVFILE=/etc/profile
 RETVAL=0
-ADEMPIERESTATUS=
+IDEMPIERESTATUS=
 MAXITERATIONS=60 # 2 seconds every iteration, max wait 2 minutes)
 
 RunService ()
@@ -27,21 +27,21 @@ RunService ()
 
 StatusService ()
 {
-    ADEMPIERESTATUSSTRING=$(ps ax | grep -v grep | grep server| grep $EXECDIR)
-    echo $ADEMPIERESTATUSSTRING | grep $EXECDIR 
-    #ADEMPIERESTATUS=$?
+    IDEMPIERESTATUSSTRING=$(ps ax | grep -v grep | grep server| grep $EXECDIR)
+    echo $IDEMPIERESTATUSSTRING | grep $EXECDIR 
+    #IDEMPIERESTATUS=$?
 }
 
 StartService ()
 {
-    ADEMPIERESTATUS=$(ps ax | grep -v grep | grep server| grep $EXECDIR|wc -l)
-   if [ $ADEMPIERESTATUS != 0 ] ; then
-        ConsoleMessage "adempiere is already running"
+    IDEMPIERESTATUS=$(ps ax | grep -v grep | grep server| grep $EXECDIR|wc -l)
+   if [ $IDEMPIERESTATUS != 0 ] ; then
+        ConsoleMessage "idempiere is already running"
         return 1
     fi
-    ConsoleMessage "Starting ADempiere ERP: "
-    export LOGFILE=$ADEMPIERE_HOME/jboss/server/adempiere/log/adempiere_`date +%Y%m%d%H%M%S`.log
-    export LOOKFILE=$ADEMPIERE_HOME/jboss/server/adempiere/log/server.log
+    ConsoleMessage "Starting iDempiere ERP: "
+    export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
+    export LOOKFILE=$IDEMPIERE_HOME/server.log
     su root -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2.sh &> $LOGFILE &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
@@ -62,11 +62,11 @@ if [ $STATUSTEST -eq 0 ]
         then
             ConsoleMessage "Service hasn't started within the timeout allowed, please review file $LOGFILE to see the status of the service"
         else
-            ConsoleMessage "Adempiere Started"
+            ConsoleMessage "idempiere Started"
         fi
         echo
     else
-        ConsoleMessage "Admpiere Failed"
+        ConsoleMessage "idmpiere Failed"
         echo
     fi
     return $RETVAL
@@ -74,14 +74,14 @@ if [ $STATUSTEST -eq 0 ]
 
 StopService()
 {
-    ADEMPIERESTATUS=$(ps ax | grep -v grep | grep server| grep $EXECDIR|wc -l)
-    if [ $ADEMPIERESTATUS = 0 ] ; then
-        echo "adempiere is already stopped"
+    IDEMPIERESTATUS=$(ps ax | grep -v grep | grep server| grep $EXECDIR|wc -l)
+    if [ $IDEMPIERESTATUS = 0 ] ; then
+        echo "idempiere is already stopped"
         return 1
     fi
-    ConsoleMessage "Stopping ADempiere ERP: "
-    export LASTLOG=`ls -t $ADEMPIERE_HOME/jboss/server/adempiere/log/adempiere_??????????????.log | head -1`
-    export LOOKFILE=$ADEMPIERE_HOME/jboss/server/adempiere/log/server.log
+    ConsoleMessage "Stopping iDempiere ERP: "
+    export LASTLOG=`ls -t $IDEMPIERE_HOME/log/idempiere_??????????????.log | head -1`
+    export LOOKFILE=$IDEMPIERE_HOME/log/server.log
     su root -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2Stop.sh &> /dev/null &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
@@ -101,11 +101,11 @@ StopService()
         then
             ConsoleMessage "Service hasn't stopped within the timeout allowed, please review file $LASTLOG to see the status of the service"
         else
-            ConsoleMessage "Adempiere Stopped"
+            ConsoleMessage "idempiere Stopped"
   fi
         echo
     else
-        ConsoleMessage "Adempiere Failed to Stop"
+        ConsoleMessage "idempiere Failed to Stop"
         echo
     fi
     return $RETVAL

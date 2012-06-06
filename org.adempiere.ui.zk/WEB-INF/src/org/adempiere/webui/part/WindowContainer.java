@@ -62,6 +62,7 @@ public class WindowContainer extends AbstractUIPart
         tabbox.appendChild(tabpanels);
         tabbox.setWidth("100%");
         tabbox.setHeight("100%");
+        tabbox.setStyle("margin-top: 2px;");
         
         if (parent != null)
         	tabbox.setParent(parent);

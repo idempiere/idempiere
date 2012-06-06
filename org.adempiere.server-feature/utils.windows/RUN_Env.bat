@@ -2,7 +2,7 @@
 
 @Rem $Id: RUN_Env.bat,v 1.16 2005/01/22 21:59:15 jjanke Exp $
 
-@if (%ADEMPIERE_HOME%) == () (CALL myEnvironment.bat) else (CALL %ADEMPIERE_HOME%\utils\myEnvironment.bat)
+@if (%IDEMPIERE_HOME%) == () (CALL myEnvironment.bat) else (CALL %IDEMPIERE_HOME%\utils\myEnvironment.bat)
 
 @Echo General ...
 @Echo PATH      = %PATH%
@@ -10,7 +10,7 @@
 
 @Echo .
 @Echo Homes ...
-@Echo ADEMPIERE_HOME        = %ADEMPIERE_HOME%
+@Echo IDEMPIERE_HOME        = %IDEMPIERE_HOME%
 @Echo JAVA_HOME            = %JAVA_HOME%
 @Echo ADEMPIERE_DB_URL      = %ADEMPIERE_DB_URL%
 

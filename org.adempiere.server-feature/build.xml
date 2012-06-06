@@ -6,11 +6,11 @@
 <project name="setup" default="setup" basedir=".">
 
 	<description>
-	This buildfile is used to setup the Adempiere Environment.
+	This buildfile is used to setup the idempiere Environment.
 	</description>
 
 	<property environment="env" />
-	<property name="envFile" value="AdempiereEnv.properties" />
+	<property name="envFile" value="idempiereEnv.properties" />
 
 	<!-- ==================================================== -->
 	<!-- Init                                                 -->
@@ -18,8 +18,8 @@
 	<target name="setupInit"
 		description="initialization target">
 
-		<echo message="Adempiere Server Setup ===================" />
-		<echo message="ADEMPIERE_HOME = ${env.ADEMPIERE_HOME}" />
+		<echo message="iDempiere Server Setup ===================" />
+		<echo message="IDEMPIERE_HOME = ${env.IDEMPIERE_HOME}" />
 
 		<!-- create the time stamp and environment -->
 		<tstamp />

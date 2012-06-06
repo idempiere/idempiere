@@ -44,7 +44,7 @@ public class AdempiereTestCase extends TestCase
 
 	// Filename
 	public final String fileName_Key = "AdempiereProperties";
-	private String fileName_DefaultValue = "Adempiere.properties";
+	private String fileName_DefaultValue = "idempiere.properties";
 	private String fileName_Value = "";
 
 	// IsClient
@@ -152,7 +152,7 @@ public class AdempiereTestCase extends TestCase
 		m_Ctx.setProperty("#AD_Client_ID", new Integer(AD_Client_ID_Value).toString());
 
 		if (fileName_Value.length() < 1) {
-			assertEquals("Please specify path to Adempiere.properties file!", true, false);
+			assertEquals("Please specify path to idempiere.properties file!", true, false);
 		}
 
 		System.setProperty("PropertyFile", fileName_Value);

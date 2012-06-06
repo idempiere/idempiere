@@ -1,9 +1,9 @@
-@Title Install Adempiere Server
+@Title Install idempiere Server
 @Echo off
 
 
-@REM Setup Adempiere.properties and AdempiereEnv.properties
-adempiere --launcher.ini setup.ini -application org.adempiere.install.console-application
+@REM Setup idempiere.properties and idempiereEnv.properties
+idempiere --launcher.ini setup.ini -application org.adempiere.install.console-application
 
 @Echo ErrorLevel = %ERRORLEVEL%
 @IF NOT ERRORLEVEL = 1 GOTO NEXT
@@ -15,7 +15,7 @@ adempiere --launcher.ini setup.ini -application org.adempiere.install.console-ap
 
 :NEXT
 @REM Setup Tomcat
-adempiere --launcher.ini setup.ini -application org.eclipse.ant.core.antRunner -buildfile build.xml
+idempiere --launcher.ini setup.ini -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 @Echo .
 @Echo For problems, check log file in base directory

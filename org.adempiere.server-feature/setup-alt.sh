@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-echo ... Setup Adempiere Server
+echo ... Setup idempiere Server
 # $Header: /cvsroot/adempiere/install/Adempiere/RUN_setup.sh,v 1.19 2005/09/08 21:54:12 jjanke Exp $
 
 if [ $JAVA_HOME ]; then
@@ -14,7 +14,7 @@ else
   echo Set JAVA_HOME to the directory of your local JDK.
 fi
 
-#setup Adempiere.properties and AdempiereEnv.propertiess
+#setup idempiere.properties and idempiereEnv.propertiess
 $JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.2.v20120110-1415.jar -application org.adempiere.install.application -consoleLog
 
 echo ... Setup Tomcat

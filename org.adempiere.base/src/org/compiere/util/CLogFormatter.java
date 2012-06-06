@@ -27,7 +27,7 @@ import java.util.logging.LogRecord;
 
 
 /**
- *	Adempiere Log Formatter
+ *	idempiere Log Formatter
  *	
  *  @author Jorg Janke
  *  @version $Id: CLogFormatter.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $
@@ -158,7 +158,7 @@ public class CLogFormatter extends Formatter
     	StringBuffer sb = new StringBuffer()
 			.append("*** ")
 			.append(new Timestamp(System.currentTimeMillis()))
-			.append(" Adempiere Log (").append(className)
+			.append(" idempiere Log (").append(className)
 			.append(") ***").append(NL);
     	return sb.toString(); 
     }	//	getHead
@@ -178,7 +178,7 @@ public class CLogFormatter extends Formatter
 			.append(NL)
 			.append("*** ")
 			.append(new Timestamp(System.currentTimeMillis()))
-			.append(" Adempiere Log (").append(className)
+			.append(" idempiere Log (").append(className)
 			.append(") ***").append(NL);
     	return sb.toString(); 
     }	//	getTail

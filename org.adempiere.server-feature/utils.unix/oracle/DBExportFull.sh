@@ -4,7 +4,7 @@ echo	Adempiere Full Database Export 	$Revision: 1.3 $
 
 # $Id: DBExportFull.sh,v 1.3 2005/01/22 21:59:15 jjanke Exp $
 
-echo Saving database $1@$ADEMPIERE_DB_NAME to $ADEMPIERE_HOME/data/ExpDatFull.dmp
+echo Saving database $1@$ADEMPIERE_DB_NAME to $IDEMPIERE_HOME/data/ExpDatFull.dmp
 
 if [ $# -eq 0 ] 
   then
@@ -12,16 +12,16 @@ if [ $# -eq 0 ]
     echo "Example:	$0 system/manager"
     exit 1
 fi
-if [ "$ADEMPIERE_HOME" = "" -o  "$ADEMPIERE_DB_NAME" = "" ]
+if [ "$IDEMPIERE_HOME" = "" -o  "$ADEMPIERE_DB_NAME" = "" ]
   then
     echo "Please make sure that the environment variables are set correctly:"
-    echo "	ADEMPIERE_HOME	e.g. /Adempiere"
+    echo "	IDEMPIERE_HOME	e.g. /idempiere"
     echo "	ADEMPIERE_DB_NAME	e.g. adempiere.adempiere.org"
     exit 1
 fi
 
-exp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME FILE=$ADEMPIERE_HOME/data/ExpDatFull.dmp Log=$ADEMPIERE_HOME/data/ExpDatFull.log CONSISTENT=Y STATISTICS=NONE FULL=Y
+exp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME FILE=$IDEMPIERE_HOME/data/ExpDatFull.dmp Log=$IDEMPIERE_HOME/data/ExpDatFull.log CONSISTENT=Y STATISTICS=NONE FULL=Y
 
-cd $ADEMPIERE_HOME/data
+cd $IDEMPIERE_HOME/data
 jar cvfM ExpDatFull.jar ExpDatFull.dmp  ExpDatFull.log
 

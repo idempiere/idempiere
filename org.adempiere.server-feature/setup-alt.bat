@@ -1,4 +1,4 @@
-@Title ... Setup Adempiere Server
+@Title ... Setup idempiere Server
 @Rem  $Header: /cvsroot/adempiere/install/Adempiere/RUN_setup.bat,v 1.19 2005/09/08 21:54:12 jjanke Exp $
 @Echo off
 
@@ -17,7 +17,7 @@ goto START
 
 
 :START
-@REM Setup Adempiere.properties and AdempiereEnv.properties
+@REM Setup idempiere.properties and idempiereEnv.properties
 @"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.2.v20120110-1415.jar -application org.adempiere.install.application -consoleLog
 
 @Echo ErrorLevel = %ERRORLEVEL%

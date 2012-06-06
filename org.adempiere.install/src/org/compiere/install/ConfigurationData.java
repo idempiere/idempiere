@@ -102,14 +102,14 @@ public class ConfigurationData
 
 
 	/** Properties File	name			*/
-	public static final String	ADEMPIERE_ENV_FILE		= "AdempiereEnv.properties";
+	public static final String	IDEMPIERE_ENV_FILE		= "idempiereEnv.properties";
 
 	/** Adempiere Home					*/
-	public static final String	ADEMPIERE_HOME 			= "ADEMPIERE_HOME";
+	public static final String	IDEMPIERE_HOME 			= "IDEMPIERE_HOME";
 	/** 				*/
 	public static final String	JAVA_HOME 				= "JAVA_HOME";
 	/** 				*/
-	public static final String	ADEMPIERE_JAVA_OPTIONS 	= "ADEMPIERE_JAVA_OPTIONS";
+	public static final String	IDEMPIERE_JAVA_OPTIONS 	= "IDEMPIERE_JAVA_OPTIONS";
 	/** Default Keysore Password		*/
 	public static final String	KEYSTORE_PASSWORD		= "myPassword";
 
@@ -214,13 +214,13 @@ public class ConfigurationData
 	 */
 	public boolean load()
 	{
-		//	Load C:\Adempiere\AdempiereEnv.properties
-		String adempiereHome = System.getProperty(ADEMPIERE_HOME);
+		//	Load C:\idempiere\idempiereEnv.properties
+		String adempiereHome = System.getProperty(IDEMPIERE_HOME);
 		if (adempiereHome == null || adempiereHome.length() == 0)
 			adempiereHome = System.getProperty("user.dir");
 
 		boolean envLoaded = false;
-		String fileName = adempiereHome + File.separator + ADEMPIERE_ENV_FILE;
+		String fileName = adempiereHome + File.separator + IDEMPIERE_ENV_FILE;
 		File env = new File (fileName);
 		if (env.exists())
 		{
@@ -245,7 +245,7 @@ public class ConfigurationData
 			if (loaded.containsKey(JAVA_HOME))
 				setJavaHome((String)loaded.get(JAVA_HOME));
 			//
-			setAdempiereHome((String)p_properties.get(ADEMPIERE_HOME));
+			setAdempiereHome((String)p_properties.get(IDEMPIERE_HOME));
 			String s = (String)p_properties.get(ADEMPIERE_KEYSTOREPASS);
 			if (s == null || s.length() == 0)
 			{
@@ -341,8 +341,8 @@ public class ConfigurationData
 			p_properties.setProperty(ADEMPIERE_FTP_PREFIX, "my");
 		}
 		//	Default Java Options
-		if (!p_properties.containsKey(ADEMPIERE_JAVA_OPTIONS))
-			p_properties.setProperty(ADEMPIERE_JAVA_OPTIONS, "-Xms64M -Xmx512M");
+		if (!p_properties.containsKey(IDEMPIERE_JAVA_OPTIONS))
+			p_properties.setProperty(IDEMPIERE_JAVA_OPTIONS, "-Xms64M -Xmx512M");
 		//	Web Alias
 		if (!p_properties.containsKey(ADEMPIERE_WEB_ALIAS) && localhost != null)
 			p_properties.setProperty(ADEMPIERE_WEB_ALIAS, localhost.getCanonicalHostName());
@@ -437,8 +437,8 @@ public class ConfigurationData
 		if (!pass)
 			return error;
 		log.info("OK: AdempiereHome = " + m_adempiereHome);
-		p_properties.setProperty(ADEMPIERE_HOME, m_adempiereHome.getAbsolutePath());
-		System.setProperty(ADEMPIERE_HOME, m_adempiereHome.getAbsolutePath());
+		p_properties.setProperty(IDEMPIERE_HOME, m_adempiereHome.getAbsolutePath());
+		System.setProperty(IDEMPIERE_HOME, m_adempiereHome.getAbsolutePath());
 
 		//	KeyStore
 		String fileName = KeyStoreMgt.getKeystoreFileName(m_adempiereHome.getAbsolutePath());
@@ -808,15 +808,15 @@ public class ConfigurationData
 
 		//	Before we save, load Ini
 		Ini.setClient(false);
-		String fileName = m_adempiereHome.getAbsolutePath() + File.separator + Ini.ADEMPIERE_PROPERTY_FILE;
+		String fileName = m_adempiereHome.getAbsolutePath() + File.separator + Ini.IDEMPIERE_PROPERTY_FILE;
 		Ini.loadProperties(fileName);
 
 		//	Save Environment
-		fileName = m_adempiereHome.getAbsolutePath() + File.separator + ADEMPIERE_ENV_FILE;
+		fileName = m_adempiereHome.getAbsolutePath() + File.separator + IDEMPIERE_ENV_FILE;
 		try
 		{
 			FileOutputStream fos = new FileOutputStream(new File(fileName));
-			p_properties.store(fos, ADEMPIERE_ENV_FILE);
+			p_properties.store(fos, IDEMPIERE_ENV_FILE);
 			fos.flush();
 			fos.close();
 		}
@@ -898,7 +898,7 @@ public class ConfigurationData
 	{
 		return p_panel != null
 			? p_panel.fAdempiereHome.getText()
-			: (String)p_properties.get(ADEMPIERE_HOME);
+			: (String)p_properties.get(IDEMPIERE_HOME);
 	}	//	getAdempiereHome
 
 	/**
@@ -910,7 +910,7 @@ public class ConfigurationData
 		if (p_panel != null)
 			p_panel.fAdempiereHome.setText(adempiereHome);
 		else
-			updateProperty(ADEMPIERE_HOME, adempiereHome);
+			updateProperty(IDEMPIERE_HOME, adempiereHome);
 	}	//	setAdempiereHome
 
 	/**

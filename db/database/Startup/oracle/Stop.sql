@@ -10,7 +10,7 @@
  * Title:	Stop Database and save configuration in trace
  * Description:	
  *	Start the script via 
- *	sqlplus "system/$ADEMPIERE_DB_SYSTEM AS SYSDBA" @$ADEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH/Stop.sql
+ *	sqlplus "system/$ADEMPIERE_DB_SYSTEM AS SYSDBA" @$IDEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH/Stop.sql
  ************************************************************************/
 set pause off
 set echo on

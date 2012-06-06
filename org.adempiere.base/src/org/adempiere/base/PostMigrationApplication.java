@@ -11,15 +11,15 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.server;
+package org.adempiere.base;
 
-import java.io.File;
-import java.util.Properties;
+import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.util.ServerContext;
+import org.adempiere.util.ProcessUtil;
 import org.compiere.Adempiere;
-import org.compiere.util.Ini;
+import org.compiere.process.ProcessInfo;
+import org.compiere.util.CLogMgt;
+import org.compiere.util.Env;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -27,32 +27,44 @@ import org.eclipse.equinox.app.IApplicationContext;
  * @author hengsin
  *
  */
-public class Application implements IApplication {
+public class PostMigrationApplication implements IApplication {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
-		/** Initialise context for the current thread*/
-        Properties serverContext = new Properties();
-        ServerContext.setCurrentInstance(serverContext);
-
-        String propertyFile = Ini.getFileName(false);
-        File file = new File(propertyFile);
-        if (!file.exists()) {
-        	throw new IllegalStateException("idempiere.properties file missing. Path="+file.getAbsolutePath());
-        }
-        if (!Adempiere.isStarted())
-        {
-	        boolean started = Adempiere.startup(false);
-	        if(!started)
-	        {
-	            throw new AdempiereException("Could not start ADempiere");
-	        }
-        }
-
+		Adempiere.startup(false);
+		CLogMgt.setLevel(Level.FINE);
+		addMissingTranslation();
+		roleAccessUpdate();
+		checkSequence();
+		
 		return IApplication.EXIT_OK;
+	}
+
+	private void checkSequence() {
+		ProcessInfo pi = new ProcessInfo("Sequence Check", 258);
+		pi.setAD_Client_ID(0);
+		pi.setAD_User_ID(100);
+		pi.setClassName("org.compiere.process.SequenceCheck");
+		ProcessUtil.startJavaProcess(Env.getCtx(), pi, null);
+	}
+
+	private void roleAccessUpdate() {
+		ProcessInfo pi = new ProcessInfo("Role Access Update", 295);
+		pi.setAD_Client_ID(0);
+		pi.setAD_User_ID(100);
+		pi.setClassName("org.compiere.process.RoleAccessUpdate");
+		ProcessUtil.startJavaProcess(Env.getCtx(), pi, null);
+	}
+
+	private void addMissingTranslation() {
+		ProcessInfo pi = new ProcessInfo("Synchronize Terminology", 172);
+		pi.setAD_Client_ID(0);
+		pi.setAD_User_ID(100);
+		pi.setClassName("org.compiere.process.SynchronizeTerminology");
+		ProcessUtil.startJavaProcess(Env.getCtx(), pi, null);
 	}
 
 	/* (non-Javadoc)

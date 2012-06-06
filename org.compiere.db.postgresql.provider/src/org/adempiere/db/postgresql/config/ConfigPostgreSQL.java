@@ -55,6 +55,7 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 	public void init(ConfigurationData configurationData)
 	{
 		configurationData.setDatabasePort(String.valueOf(Database.DB_POSTGRESQL_DEFAULT_PORT));
+		configurationData.setDatabaseName("idempiere");
 	}	//	init
 
 	/**

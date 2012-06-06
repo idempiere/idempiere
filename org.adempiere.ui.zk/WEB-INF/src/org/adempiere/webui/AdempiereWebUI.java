@@ -80,9 +80,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */
 	private static final long serialVersionUID = 3744725245132180915L;
 
-	public static final String APP_NAME = "Adempiere";
+	public static final String APP_NAME = "iDempiere";
 
-    public static final String UID          = "3.5";
+    public static final String UID          = "1.0.0";
 
     private WLogin             loginDesktop;
 

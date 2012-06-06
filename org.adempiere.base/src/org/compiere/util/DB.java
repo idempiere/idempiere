@@ -186,7 +186,7 @@ public final class DB
 		String envName = Ini.getAdempiereHome();
 		if (envName == null)
 			return;
-		envName += File.separator + "AdempiereEnv.properties";
+		envName += File.separator + "idempiereEnv.properties";
 		File envFile = new File(envName);
 		if (!envFile.exists())
 			return;
