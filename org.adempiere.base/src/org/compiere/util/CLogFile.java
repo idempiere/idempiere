@@ -26,7 +26,7 @@ import java.util.logging.LogRecord;
 
 
 /**
- *	Adempiere Log File Handler
+ *	idempiere Log File Handler
  *
  *  @author Jorg Janke
  *  @version $Id: CLogFile.java,v 1.3 2006/07/30 00:54:35 jjanke Exp $
@@ -35,22 +35,22 @@ public class CLogFile extends Handler
 {
 	/**************************************************************************
 	 *	Constructor
-	 *	@param adempiereHome adempiere home
+	 *	@param idempiereHome idempiere home
 	 *	@param createLogDir create log directory if missing
 	 *	@param isClient client
 	 */
-	public CLogFile (String adempiereHome, boolean createLogDir, boolean isClient)
+	public CLogFile (String idempiereHome, boolean createLogDir, boolean isClient)
 	{
 		//
-		if (adempiereHome != null && adempiereHome.length() > 0)
-			m_adempiereHome = adempiereHome;
+		if (idempiereHome != null && idempiereHome.length() > 0)
+			m_idempiereHome = idempiereHome;
 		else
-			m_adempiereHome = Ini.findAdempiereHome();
-		initialize(m_adempiereHome, createLogDir, isClient);
+			m_idempiereHome = Ini.findAdempiereHome();
+		initialize(m_idempiereHome, createLogDir, isClient);
 	}	//	CLogFile
 
-	/**	Adempiere Home			*/
-	private String		m_adempiereHome = null;
+	/**	idempiere Home			*/
+	private String		m_idempiereHome = null;
 	/**	Printed header			*/
     private boolean 	m_doneHeader = false;
     /**	Output file				*/
@@ -64,11 +64,11 @@ public class CLogFile extends Handler
 
 	/**
 	 * 	Initialize
-	 * 	@param adempiereHome log file base directory name
+	 * 	@param idempiereHome log file base directory name
 	 * 	@param createLogDir create log directory
 	 * 	@param isClient client
 	 */
-	private void initialize(String adempiereHome, boolean createLogDir, boolean isClient)
+	private void initialize(String idempiereHome, boolean createLogDir, boolean isClient)
 	{
 	//	System.out.println("CLogFile.initialize");
 		//	Close Old File
@@ -76,7 +76,7 @@ public class CLogFile extends Handler
 			close();
 		m_doneHeader = false;
 		//	New File Name
-		if (!createFile(adempiereHome, createLogDir, isClient))
+		if (!createFile(idempiereHome, createLogDir, isClient))
 			return;
 		//	New Writer
 		try
@@ -111,7 +111,7 @@ public class CLogFile extends Handler
 		String fileName = baseDirName;
 		try
 		{
-			//	Test AdempiereHome
+			//	Test idempiereHome
 			if (fileName != null)
 			{
 				File dir = new File(fileName);
@@ -121,7 +121,7 @@ public class CLogFile extends Handler
 					fileName = null;
 				}
 			}
-			//	Test/Create AdempiereHome/log
+			//	Test/Create idempiereHome/log
 			if (fileName != null && createLogDir)
 			{
 				fileName += File.separator + "log";
@@ -134,7 +134,7 @@ public class CLogFile extends Handler
 					fileName = null;
 				}
 			}
-			//	Test/Create AdempiereHome/log/file
+			//	Test/Create idempiereHome/log/file
 			if (fileName != null)
 			{
 				fileName += File.separator;
@@ -157,7 +157,7 @@ public class CLogFile extends Handler
 			}
 			if (m_file == null)	{	//	Fallback create temp file
 				m_fileNameDate = getFileNameDate(System.currentTimeMillis());
-				m_file = File.createTempFile("adempiere"+m_fileNameDate + "_", ".log");
+				m_file = File.createTempFile("idempiere"+m_fileNameDate + "_", ".log");
 			}
 		}
 		catch (Exception ex)
@@ -199,7 +199,7 @@ public class CLogFile extends Handler
 	 */
 	public void rotateLog ()
 	{
-		initialize(m_adempiereHome, true, Ini.isClient());
+		initialize(m_idempiereHome, true, Ini.isClient());
 	}	//	rotateLog
 
 	/**
@@ -352,7 +352,7 @@ public class CLogFile extends Handler
 		return sb.toString ();
 	}	//	toString
 
-	public static CLogFile get(boolean create, String adempiereHome, boolean isClient) {
+	public static CLogFile get(boolean create, String idempiereHome, boolean isClient) {
 		Handler[] handlers = CLogMgt.getHandlers();
 		for (Handler handler : handlers)
 		{
@@ -361,7 +361,7 @@ public class CLogFile extends Handler
 		}
 		if (create)
 		{
-			CLogFile handler = new CLogFile(adempiereHome, true, isClient);
+			CLogFile handler = new CLogFile(idempiereHome, true, isClient);
 			CLogMgt.addHandler(handler);
 			return handler;
 		}

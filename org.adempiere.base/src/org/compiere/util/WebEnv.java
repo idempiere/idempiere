@@ -163,7 +163,7 @@ public class WebEnv
 		File file = new File(propertyFile);
 		if (!file.exists())
 		{
-			throw new java.lang.IllegalStateException("Adempiere.properties is not setup. PropertyFile="+propertyFile);
+			throw new java.lang.IllegalStateException("idempiere.properties is not setup. PropertyFile="+propertyFile);
 		}
 		try
 		{

@@ -397,7 +397,7 @@ public final class Adempiere
 		//  Try Environment
 		String retValue = Ini.getAdempiereHome();
 		if (retValue == null)
-			retValue = File.separator + "Adempiere";
+			retValue = File.separator + "idempiere";
 		return retValue;
 	}   //  getHome
 

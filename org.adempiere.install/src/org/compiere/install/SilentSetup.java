@@ -14,17 +14,17 @@ public class SilentSetup {
 
 	public SilentSetup()
 	{
-		//Load C:\Adempiere\AdempiereEnv.properties
-		String adempiereHome = System.getProperty(ConfigurationData.ADEMPIERE_HOME);
+		//Load C:\idempiere\idempiereEnv.properties
+		String adempiereHome = System.getProperty(ConfigurationData.IDEMPIERE_HOME);
 		if (adempiereHome == null || adempiereHome.length() == 0)
 			adempiereHome = System.getProperty("user.dir");
 
 //		boolean envLoaded = false;
-		String fileName = adempiereHome + File.separator + ConfigurationData.ADEMPIERE_ENV_FILE;
+		String fileName = adempiereHome + File.separator + ConfigurationData.IDEMPIERE_ENV_FILE;
 		File env = new File(fileName);
 		if (!env.exists())
 		{
-			System.err.println("Usage: Please edit AdempiereEnvTemplate.properties and save as AdempiereEnv.properties");
+			System.err.println("Usage: Please edit idempiereEnvTemplate.properties and save as idempiereEnv.properties");
 			return;
 		}
 

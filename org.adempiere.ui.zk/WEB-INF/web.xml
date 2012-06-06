@@ -195,7 +195,7 @@
 <!-- 	</security-constraint> -->
 			
 	<!--env-entry>
-		<env-entry-name>ADEMPIERE_HOME</env-entry-name>
+		<env-entry-name>IDEMPIERE_HOME</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
 		<env-entry-value>/opt/adempiere/</env-entry-value>
 	</env-entry-->

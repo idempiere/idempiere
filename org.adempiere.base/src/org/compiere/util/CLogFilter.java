@@ -22,7 +22,7 @@ import java.util.logging.LogRecord;
 
 
 /**
- *	Adempiere Log Filter
+ *	idempiere Log Filter
  *	
  *  @author Jorg Janke
  *  @version $Id: CLogFilter.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $

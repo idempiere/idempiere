@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-echo ... Setup Adempiere Server
+echo ... Setup iDempiere Server
 
-# Setup Adempiere.properties and AdempiereEnv.properties
-./adempiere --launcher.ini setup.ini -application org.adempiere.install.application
+# Setup idempiere.properties and iDempiereEnv.properties
+./idempiere --launcher.ini setup.ini -application org.adempiere.install.application
 
 echo ... Setup Tomcat
 # Setup Tomcat
-./adempiere --launcher.ini setup.ini -application org.eclipse.ant.core.antRunner -buildfile build.xml
+./idempiere --launcher.ini setup.ini -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 echo ... Make .sh executable
 chmod -R a+x *.sh

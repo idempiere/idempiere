@@ -1,24 +1,24 @@
 #!/bin/sh
 #
-# myEnvironment defines the variables used for Adempiere
+# myEnvironment defines the variables used for idempiere
 # Do not edit directly - use RUN_setup
 #
 # $Id: myEnvironmentTemplate.sh,v 1.12 2005/02/21 03:17:21 jjanke Exp $
 
 echo Setting myEnvironment ....
 #	Clients only needs
-#		ADEMPIERE_HOME
+#		IDEMPIERE_HOME
 #		JAVA_HOME 
 #	Server install needs to change
 #		ADEMPIERE_DB_NAME	(for Oracle)
 #		passwords
 #
-#	For a HTML browser, Adempiere will call "netscape <targetURL>"
+#	For a HTML browser, idempiere will call "netscape <targetURL>"
 #	If not in the path, provide a link called netscape to your browser
 
 # 	Homes ...
-ADEMPIERE_HOME=@ADEMPIERE_HOME@
-export ADEMPIERE_HOME
+IDEMPIERE_HOME=@IDEMPIERE_HOME@
+export IDEMPIERE_HOME
 JAVA_HOME=@JAVA_HOME@
 export JAVA_HOME
 
@@ -43,10 +43,8 @@ ADEMPIERE_DB_SYSTEM=@ADEMPIERE_DB_SYSTEM@
 export ADEMPIERE_DB_SYSTEM
 
 #	Homes(2)
-ADEMPIERE_DB_HOME=$ADEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH
+ADEMPIERE_DB_HOME=$IDEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH
 export ADEMPIERE_DB_HOME
-JBOSS_HOME=$ADEMPIERE_HOME/jboss
-export JBOSS_HOME
 
 #	Apps Server
 ADEMPIERE_APPS_SERVER=@ADEMPIERE_APPS_SERVER@
@@ -63,17 +61,11 @@ export ADEMPIERE_KEYSTORE
 ADEMPIERE_KEYSTOREPASS=@ADEMPIERE_KEYSTOREPASS@
 export ADEMPIERE_KEYSTOREPASS
 
-#	etc.
-ADEMPIERE_FTP_SERVER=@ADEMPIERE_FTP_SERVER@
-export ADEMPIERE_FTP_SERVER
-
 #	Java
 ADEMPIERE_JAVA=$JAVA_HOME/bin/java
 export ADEMPIERE_JAVA
-ADEMPIERE_JAVA_OPTIONS="@ADEMPIERE_JAVA_OPTIONS@ -DADEMPIERE_HOME=$ADEMPIERE_HOME"
+ADEMPIERE_JAVA_OPTIONS="@ADEMPIERE_JAVA_OPTIONS@ -DIDEMPIERE_HOME=$IDEMPIERE_HOME"
 export ADEMPIERE_JAVA_OPTIONS
-CLASSPATH="$ADEMPIERE_HOME/lib/Adempiere.jar:$ADEMPIERE_HOME/lib/AdempiereCLib.jar"
-export CLASSPATH
 
 if [ $DOLLAR$# -eq 0 ] 
   then

@@ -1,5 +1,5 @@
-@if (%ADEMPIERE_HOME%) == () (CALL myEnvironment.bat Server) else (CALL %ADEMPIERE_HOME%\utils\myEnvironment.bat Server)
-@Title Adempiere Server Stop - %ADEMPIERE_HOME%
+@if (%IDEMPIERE_HOME%) == () (CALL myEnvironment.bat Server) else (CALL %IDEMPIERE_HOME%\utils\myEnvironment.bat Server)
+@Title Adempiere Server Stop - %IDEMPIERE_HOME%
 
 @Rem $Id: RUN_Server2Stop.bat,v 1.12 2005/09/06 02:46:16 jjanke Exp $
 
@@ -10,12 +10,12 @@
 @Set NOPAUSE=Yes
 @Set JBOSS_LIB=%JBOSS_HOME%\lib
 @Set JBOSS_SERVERLIB=%JBOSS_HOME%\server\adempiere\lib
-@Set JBOSS_CLASSPATH=%ADEMPIERE_HOME%\lib\jboss.jar;%JBOSS_LIB%\jboss-system.jar
+@Set JBOSS_CLASSPATH=%IDEMPIERE_HOME%\lib\jboss.jar;%JBOSS_LIB%\jboss-system.jar
 
 @CD %JBOSS_HOME%\bin
 Call shutdown --server=jnp://%ADEMPIERE_APPS_SERVER%:%ADEMPIERE_JNP_PORT% --shutdown
 
-@Echo Done Stopping Adempiere Apps Server %ADEMPIERE_HOME% (%ADEMPIERE_DB_NAME%)
+@Echo Done Stopping Adempiere Apps Server %IDEMPIERE_HOME% (%ADEMPIERE_DB_NAME%)
 @GOTO END
 
 :UNSUPPORTED

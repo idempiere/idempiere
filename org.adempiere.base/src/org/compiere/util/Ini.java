@@ -40,8 +40,6 @@ import javax.jnlp.FileContents;
 import javax.jnlp.PersistenceService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.compiere.model.ModelValidationEngine;
 
@@ -65,7 +63,7 @@ public final class Ini implements Serializable
 	private static final long serialVersionUID = 3666529972922769528L;
 
 	/** Property file name				*/
-	public static final String	ADEMPIERE_PROPERTY_FILE = "Adempiere.properties";
+	public static final String	IDEMPIERE_PROPERTY_FILE = "idempiere.properties";
 
 	/** Apps User ID		*/
 	public static final String	P_UID = 			"ApplicationUserID";
@@ -524,9 +522,9 @@ public final class Ini implements Serializable
 	 *	Return File Name of INI file
 	 *  <pre>
 	 *  Examples:
-	 *	    C:\WinNT\Profiles\jjanke\Adempiere.properties
-	 *      D:\Adempiere\Adempiere.properties
-	 *      Adempiere.properties
+	 *	    C:\WinNT\Profiles\jjanke\idempiere.properties
+	 *      D:\idempiere\idempiere.properties
+	 *      idempiere.properties
 	 *  </pre>
 	 *  Can be overwritten by -DPropertyFile=myFile allowing multiple
 	 *  configurations / property files.
@@ -553,7 +551,7 @@ public final class Ini implements Serializable
 		if (base == null)
 			base = "";
 		//
-		return base + ADEMPIERE_PROPERTY_FILE;
+		return base + IDEMPIERE_PROPERTY_FILE;
 	}	//	getFileName
 
 
@@ -678,8 +676,8 @@ public final class Ini implements Serializable
 
 	/** System environment prefix                                       */
 	public static final String  ENV_PREFIX = "env.";
-	/** System Property Value of ADEMPIERE_HOME                          */
-	public static final String  ADEMPIERE_HOME = "ADEMPIERE_HOME";
+	/** System Property Value of IDEMPIERE_HOME                          */
+	public static final String  IDEMPIERE_HOME = "IDEMPIERE_HOME";
 
 	/** IsClient Internal marker            */
 	private static boolean      s_client = false;
@@ -734,14 +732,14 @@ public final class Ini implements Serializable
 	}   //  isLoaded
 
 	/**
-	 *  Get Adempiere Home from Environment
-	 *  @return AdempiereHome or null
+	 *  Get Idempiere Home from Environment
+	 *  @return idempiereHome or null
 	 */
 	public static String getAdempiereHome()
 	{
-		String env = System.getProperty (ENV_PREFIX + ADEMPIERE_HOME);
+		String env = System.getProperty (ENV_PREFIX + IDEMPIERE_HOME);
 		if (env == null || env.trim().length() == 0)
-			env = System.getProperty (ADEMPIERE_HOME);
+			env = System.getProperty (IDEMPIERE_HOME);
 		if (env == null || env.trim().length() == 0)
 		{
 			//client - user home, server - current working directory
@@ -758,23 +756,23 @@ public final class Ini implements Serializable
 			}
 		}
 		if (env == null || env.trim().length() == 0 )	//	Fallback
-			env = File.separator + "Adempiere";
+			env = File.separator + "idempiere";
 		return env;
 	}   //  getAdempiereHome
 
 	/**
-	 *  Set Adempiere Home
-	 *  @param AdempiereHome ADEMPIERE_HOME
+	 *  Set Idempiere Home
+	 *  @param idempiereHome IDEMPIERE_HOME
 	 */
-	public static void setAdempiereHome (String AdempiereHome)
+	public static void setAdempiereHome (String idempiereHome)
 	{
-		if (AdempiereHome != null && AdempiereHome.length() > 0)
-			System.setProperty (ADEMPIERE_HOME, AdempiereHome);
+		if (idempiereHome != null && idempiereHome.length() > 0)
+			System.setProperty (IDEMPIERE_HOME, idempiereHome);
 	}   //  setAdempiereHome
 
 	/**
-	 * 	Find Adempiere Home
-	 *	@return adempiere home or null
+	 * 	Find Idempiere Home
+	 *	@return idempiere home or null
 	 */
 	public static String findAdempiereHome()
 	{

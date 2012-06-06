@@ -145,9 +145,9 @@ public class PackOut
 				processedCount++;
 			}
 
-			packoutHandler.endElement("","","adempiereAD");
+			packoutHandler.endElement("","","idempiere");
 			packoutHandler.endDocument();
-			docHandler.endElement("","","adempiereDocument");
+			docHandler.endElement("","","idempiereDocument");
 			docHandler.endDocument();
 		}
 		catch (Exception e)
@@ -208,7 +208,7 @@ public class PackOut
 		AttributesImpl atts = new AttributesImpl();
 		atts.addAttribute("","","Name","CDATA",packoutDocument.getPackageName());
 		atts.addAttribute("","","Version","CDATA",packoutDocument.getPackageVersion());
-		atts.addAttribute("","","AdempiereVersion","CDATA",emptyIfNull(packoutDocument.getAdempiereVersion()));
+		atts.addAttribute("","","idempiereVersion","CDATA",emptyIfNull(packoutDocument.getAdempiereVersion()));
 		atts.addAttribute("","","DataBaseVersion","CDATA",emptyIfNull(packoutDocument.getDatabaseVersion()));
 		atts.addAttribute("","","Description","CDATA",emptyIfNull(packoutDocument.getDescription()));
 		atts.addAttribute("","","Author","CDATA",emptyIfNull(packoutDocument.getAuthor()));
@@ -226,7 +226,7 @@ public class PackOut
 			.append(client.getName());
 		atts.addAttribute("", "", "Client", "CDATA", sb.toString());
 
-		packoutHandler.startElement("","","adempiereAD",atts);
+		packoutHandler.startElement("","","idempiere",atts);
 		return packoutHandler;
 	}
 
@@ -251,9 +251,9 @@ public class PackOut
 		} catch (Exception e) {}
 		docHandler.setResult(docStreamResult);
 		docHandler.startDocument();
-		docHandler.processingInstruction("xml-stylesheet","type=\"text/css\" href=\"adempiereDocument.css\"");
+		docHandler.processingInstruction("xml-stylesheet","type=\"text/css\" href=\"idempiereDocument.css\"");
 		AttributesImpl atts = new AttributesImpl();
-		docHandler.startElement("","","adempiereDocument",atts);
+		docHandler.startElement("","","idempiereDocument",atts);
 		addTextElement(docHandler, "header", packoutDocument.getPackageName()+" Package Description", atts);
 		addTextElement(docHandler, "H1", "Package Name:", atts);
 		addTextElement(docHandler, "packagename", packoutDocument.getPackageName(), atts);

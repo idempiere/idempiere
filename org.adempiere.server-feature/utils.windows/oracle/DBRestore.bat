@@ -2,9 +2,9 @@
 
 @Rem $Id: DBRestore.bat,v 1.6 2005/08/27 02:27:10 jjanke Exp $
 
-@Echo	Restoring Adempiere DB from %ADEMPIERE_HOME%\data\ExpDat.dmp
+@Echo	Restoring Adempiere DB from %IDEMPIERE_HOME%\data\ExpDat.dmp
 
-@if (%ADEMPIERE_HOME%) == () goto environment
+@if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
 @if (%ADEMPIERE_DB_SERVER%) == () goto environment
 @if (%ADEMPIERE_DB_PORT%) == () goto environment
@@ -16,29 +16,29 @@
 @echo -------------------------------------
 @echo Re-Create DB user
 @echo -------------------------------------
-@sqlplus %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%ADEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateUser.sql %2 %3
+@sqlplus %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateUser.sql %2 %3
 
 @echo -------------------------------------
 @echo Import ExpDat
 @echo -------------------------------------
-@imp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% FILE=%ADEMPIERE_HOME%\data\ExpDat.dmp FROMUSER=(%2) TOUSER=%2 STATISTICS=RECALCULATE
+@imp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% FILE=%IDEMPIERE_HOME%\data\ExpDat.dmp FROMUSER=(%2) TOUSER=%2 STATISTICS=RECALCULATE
 
 @echo -------------------------------------
 @echo Create SQLJ 
 @echo -------------------------------------
-@call %ADEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\create %ADEMPIERE_DB_USER%/%ADEMPIERE_DB_PASSWORD%
+@call %IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\create %ADEMPIERE_DB_USER%/%ADEMPIERE_DB_PASSWORD%
 
 @echo -------------------------------------
 @echo Check System
 @echo Import may show some warnings. This is OK as long as the following does not show errors
 @echo -------------------------------------
-@sqlplus %2/%3@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%ADEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\AfterImport.sql
+@sqlplus %2/%3@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\AfterImport.sql
 
 @goto end
 
 :environment
 @Echo Please make sure that the enviroment variables are set correctly:
-@Echo		ADEMPIERE_HOME	e.g. D:\Adempiere
+@Echo		IDEMPIERE_HOME	e.g. D:\Adempiere
 @Echo		ADEMPIERE_DB_NAME e.g. dev1.adempiere.org
 
 :usage

@@ -10,7 +10,7 @@
  * Title:	Start Database
  * Description:	
  *	Start the script via 
- *	sqlplus "system/$ADEMPIERE_DB_SYSTEM AS SYSDBA" @$ADEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH/Start.sql
+ *	sqlplus "system/$ADEMPIERE_DB_SYSTEM AS SYSDBA" @$IDEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH/Start.sql
  ************************************************************************/
 set pause off
 set echo on

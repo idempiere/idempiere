@@ -28,7 +28,7 @@ public class SetupRes_da extends ListResourceBundle
 {
 	/**	Translation Info	*/
 	static final Object[][] contents = new String[][]{
-	{ "AdempiereServerSetup", "Adempiere: Opsætning af server" },
+	{ "AdempiereServerSetup", "iDempiere: Opsætning af server" },
 	{ "Ok", 				"OK" },
 	{ "File", 				"Fil" },
 	{ "Exit", 				"Afslut" },
@@ -36,8 +36,8 @@ public class SetupRes_da extends ListResourceBundle
 	{ "PleaseCheck", 		"Kontrollér" },
 	{ "UnableToConnect",	"Kan ikke hente hjælp fra Adempieres web-sted" },
 
-	{ "AdempiereHomeInfo", 	"Adempiere Home er hovedmappen" },
-	{ "AdempiereHome", 		"Adempiere Home" },
+	{ "AdempiereHomeInfo", 	"iDempiere Home er hovedmappen" },
+	{ "AdempiereHome", 		"iDempiere Home" },
 	{ "WebPortInfo", 		"Web (HTML)-port" },
 	{ "WebPort", 			"Web-port" },
 	{ "AppsServerInfo", 	"Programserverens navn" },
@@ -89,7 +89,7 @@ public class SetupRes_da extends ListResourceBundle
 
 	{ "ServerError", 		"Fejl: Serverops�tning" },
 	{ "ErrorJavaHome", 		"Fejl: Java Home" },
-	{ "ErrorAdempiereHome", 	"Fejl: Adempiere Home" },
+	{ "ErrorAdempiereHome", 	"Fejl: iDempiere Home" },
 	{ "ErrorAppsServer", 	"Fejl: Prog.-server" },
 	{ "ErrorWebPort", 		"Fejl: Web-port" },
 	{ "ErrorJNPPort", 		"Fejl: JNP-port" },

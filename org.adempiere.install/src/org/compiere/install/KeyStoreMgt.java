@@ -72,12 +72,12 @@ public class KeyStoreMgt
 	private String organization;
 	
 	
-	/**	Directory below ADEMPIERE_HOME	*/
+	/**	Directory below IDEMPIERE_HOME	*/
 	public static String		KEYSTORE_DIRECTORY = "keystore";
 	/** Name of KeyStore				*/
 	public static String		KEYSTORE_NAME = "myKeystore";
 	/** Certificate Alias				*/
-	public static String		CERTIFICATE_ALIAS = "adempiere";
+	public static String		CERTIFICATE_ALIAS = "idempiere";
 	
 
 	/**
@@ -465,7 +465,7 @@ public class KeyStoreMgt
 	
 	/**
 	 * 	Get Keystore File Name
-	 *	@param baseDir ADEMPIERE_HOME
+	 *	@param baseDir IDEMPIERE_HOME
 	 *	@return file name
 	 */
 	public static String getKeystoreFileName (String baseDir)

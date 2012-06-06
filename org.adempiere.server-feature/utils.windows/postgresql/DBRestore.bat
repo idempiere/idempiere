@@ -1,8 +1,8 @@
 @Echo	ADempiere Database Import
 
-@Echo	Importing ADempiere DB from %ADEMPIERE_HOME%\data\ExpDat.dmp (%ADEMPIERE_DB_NAME%)
+@Echo	Importing ADempiere DB from %IDEMPIERE_HOME%\data\ExpDat.dmp (%ADEMPIERE_DB_NAME%)
 
-@if (%ADEMPIERE_HOME%) == () goto environment
+@if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
 @if (%ADEMPIERE_DB_SERVER%) == () goto environment
 @if (%ADEMPIERE_DB_PORT%) == () goto environment
@@ -31,7 +31,7 @@
 @psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -c "drop schema sqlj cascade"
 @set ADEMPIERE_ALTER_ROLE_SQL="ALTER ROLE %2 SET search_path TO adempiere, pg_catalog"
 @psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -c "%ADEMPIERE_ALTER_ROLE_SQL%"
-@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -f %ADEMPIERE_HOME%/data/ExpDat.dmp
+@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -f %IDEMPIERE_HOME%/data/ExpDat.dmp
 @set ADEMPIERE_ALTER_ROLE_SQL=
 
 @set PGPASSWORD=
@@ -39,7 +39,7 @@
 
 :environment
 @Echo Please make sure that the environment variables are set correctly:
-@Echo		ADEMPIERE_HOME	e.g. D:\ADEMPIERE2
+@Echo		IDEMPIERE_HOME	e.g. D:\ADEMPIERE2
 @Echo		ADEMPIERE_DB_NAME 	e.g. adempiere or xe
 @Echo		ADEMPIERE_DB_SERVER 	e.g. dbserver.adempiere.org
 @Echo		ADEMPIERE_DB_PORT 	e.g. 5432 or 1521

@@ -1,5 +1,5 @@
-@if (%ADEMPIERE_HOME%) == () (CALL myEnvironment.bat Server) else (CALL %ADEMPIERE_HOME%\utils\myEnvironment.bat Server)
-@Title Adempiere Server Start - %ADEMPIERE_HOME% (%ADEMPIERE_APPS_TYPE%)
+@if (%IDEMPIERE_HOME%) == () (CALL myEnvironment.bat Server) else (CALL %IDEMPIERE_HOME%\utils\myEnvironment.bat Server)
+@Title Adempiere Server Start - %IDEMPIERE_HOME% (%ADEMPIERE_APPS_TYPE%)
 
 @Rem $Id: RUN_Server2.bat,v 1.24 2005/10/26 00:38:18 jjanke Exp $
 
@@ -20,6 +20,6 @@
 @Rem  SET SECURE=-DADEMPIERE_SECURE=org.compiere.util.Secure
 @SET SECURE=
 
-VMARGS="-Dosgi.compatibility.bootdelegation=true -Djava.awt.headless=true -Declipse.ignoreApp=true -Dosgi.noShutdown=true -DADEMPIERE_HOME=%ADEMPIERE_HOME%"
+VMARGS="-Dosgi.compatibility.bootdelegation=true -Djava.awt.headless=true -Declipse.ignoreApp=true -Dosgi.noShutdown=true -DIDEMPIERE_HOME=%IDEMPIERE_HOME%"
 # headless option if you don't have X installed on the server
-@"%JAVA%" -server %VMARGS% -jar %ADEMPIERE_HOME%/osgi/org.eclipse.osgi_3.6.0.v20100517.jar -install %ADEMPIERE_HOME%/osgi -configuration %ADEMPIERE_HOME%/osgi/server -clean -console
+@"%JAVA%" -server %VMARGS% -jar %IDEMPIERE_HOME%/osgi/org.eclipse.osgi_3.6.0.v20100517.jar -install %IDEMPIERE_HOME%/osgi -configuration %IDEMPIERE_HOME%/osgi/server -clean -console

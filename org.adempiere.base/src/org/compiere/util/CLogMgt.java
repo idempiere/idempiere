@@ -41,7 +41,7 @@ import org.compiere.model.MClient;
 
 
 /**
- *	Adempiere Log Management.
+ *	idempiere Log Management.
  *
  *  @author Jorg Janke
  *  @version $Id: CLogMgt.java,v 1.4 2006/07/30 00:54:36 jjanke Exp $

@@ -49,8 +49,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class PackInHandler extends DefaultHandler {
 
-	public static final String PACK_IN_PROCESS_CTX_KEY = "PackInProcess";
-
 	/**
      * 	PackInHandler Handler
      */
@@ -108,10 +106,10 @@ public class PackInHandler extends DefaultHandler {
 			init();
 		}
 
-		// adempiereAD.
-		if (qName.equals("adempiereAD"))
+		// idempiere
+		if (qName.equals("idempiere"))
 		{
-			log.info("adempiereAD updateMode="+m_updateDictionary);
+			log.info("idempiere updateMode="+m_updateDictionary);
 
 			//check client
 			String clientAttribute = atts.getValue("Client");
@@ -275,7 +273,7 @@ public class PackInHandler extends DefaultHandler {
     	else
     		elementValue = uri + localName;
 
-    	if (elementValue.equals("adempiereAD")){
+    	if (elementValue.equals("idempiere")){
     		processDeferElements();
     		if (!packageStatus.equals("Completed with errors"))
     			packageStatus = "Completed successfully";

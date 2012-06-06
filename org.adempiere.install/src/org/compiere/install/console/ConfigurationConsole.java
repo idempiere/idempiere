@@ -386,7 +386,7 @@ public class ConfigurationConsole {
 			String error = data.testAdempiere();
 			if (error != null && error.trim().length() > 0)
 			{
-				writer.println("Adempiere home and keystore validation error: " + error);
+				writer.println("iDempiere home and keystore validation error: " + error);
 				adempiereHome(reader, writer);
 				continue;
 			}
@@ -395,7 +395,7 @@ public class ConfigurationConsole {
 	}
 
 	private void adempiereHome(BufferedReader reader, PrintWriter writer) throws IOException {
-		writer.println("Adempiere Home ["+data.getAdempiereHome()+"]:");
+		writer.println("iDempiere Home ["+data.getAdempiereHome()+"]:");
 		String input = reader.readLine();
 		if (input != null && input.trim().length() > 0)
 		{

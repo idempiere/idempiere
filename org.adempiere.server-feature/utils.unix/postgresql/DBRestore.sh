@@ -2,7 +2,7 @@
 
 echo	ADempiere Database Import
 
-echo	Importing ADempiere DB from $ADEMPIERE_HOME/data/ExpDat.dmp 
+echo	Importing ADempiere DB from $IDEMPIERE_HOME/data/ExpDat.dmp 
 
 if [ $# -le 2 ] 
   then
@@ -10,10 +10,10 @@ if [ $# -le 2 ]
     echo "Example:	$0 postgres adempiere adempiere postgrespwd"
     exit 1
 fi
-if [ "$ADEMPIERE_HOME" = "" -o  "$ADEMPIERE_DB_NAME" = "" -o "$ADEMPIERE_DB_SERVER" = "" -o "$ADEMPIERE_DB_PORT" = "" ]
+if [ "$IDEMPIERE_HOME" = "" -o  "$ADEMPIERE_DB_NAME" = "" -o "$ADEMPIERE_DB_SERVER" = "" -o "$ADEMPIERE_DB_PORT" = "" ]
   then
     echo "Please make sure that the environment variables are set correctly:"
-    echo "	ADEMPIERE_HOME	e.g. /Adempiere"
+    echo "	IDEMPIERE_HOME	e.g. /idempiere"
     echo "	ADEMPIERE_DB_NAME	e.g. adempiere or xe"
     echo "  ADEMPIERE_DB_SERVER e.g. dbserver.adempiere.org"
     echo "  ADEMPIERE_DB_PORT e.g. 5432 or 1521"
@@ -44,7 +44,7 @@ echo -------------------------------------
 psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -c "drop schema sqlj cascade"
 ADEMPIERE_ALTER_ROLE_SQL="ALTER ROLE $2 SET search_path TO adempiere, pg_catalog"
 psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -c "$ADEMPIERE_ALTER_ROLE_SQL"
-psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -f $ADEMPIERE_HOME/data/ExpDat.dmp
+psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -f $IDEMPIERE_HOME/data/ExpDat.dmp
 
 PGPASSWORD=
 export PGPASSWORD

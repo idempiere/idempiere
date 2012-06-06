@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 
 /**
- *	Adempiere Logger
+ *	idempiere Logger
  *
  *  @author Jorg Janke
  *  @version $Id: CLogger.java,v 1.3 2006/08/09 16:38:47 jjanke Exp $
@@ -75,7 +75,7 @@ public class CLogger extends Logger implements Serializable
     }	//	getLogger
 
     /**
-     * 	Get default Adempiere Logger.
+     * 	Get default idempiere Logger.
      * 	Need to be used in serialized objects
      *	@return logger
      */

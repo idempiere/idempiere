@@ -2,9 +2,9 @@
 
 @Rem $Id: DBExport.bat,v 1.8 2005/04/27 17:45:01 jjanke Exp $
 @Rem 
-@Echo Saving database %1@%ADEMPIERE_DB_NAME% to %ADEMPIERE_HOME%\data\ExpDat.dmp
+@Echo Saving database %1@%ADEMPIERE_DB_NAME% to %IDEMPIERE_HOME%\data\ExpDat.dmp
 
-@if (%ADEMPIERE_HOME%) == () goto environment
+@if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
 @if (%ADEMPIERE_DB_SERVER%) == () goto environment
 @if (%ADEMPIERE_DB_PORT%) == () goto environment
@@ -12,17 +12,17 @@
 @if (%1) == () goto usage
 
 @Rem Cleanup
-@sqlplus %1/%2@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%ADEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\Daily.sql
+@sqlplus %1/%2@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\Daily.sql
 
 @echo -------------------------------------
 @echo Re-Create DataPump Directory
 @echo -------------------------------------
-@sqlplus %3@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%ADEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %ADEMPIERE_HOME%\data
+@sqlplus %3@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %IDEMPIERE_HOME%\data
 
 @Rem The Export
 @expdp %1/%2@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp LOGFILE=ExpDat.log EXCLUDE=STATISTICS SCHEMAS=%1
 
-@cd %ADEMPIERE_HOME%\Data
+@cd %IDEMPIERE_HOME%\Data
 @copy ExpDat.jar ExpDatOld.jar
 @jar cvfM ExpDat.jar ExpDat.dmp ExpDat.log
 
@@ -30,7 +30,7 @@
 
 :environment
 @Echo Please make sure that the enviroment variables are set correctly:
-@Echo		ADEMPIERE_HOME	e.g. D:\Adempiere
+@Echo		IDEMPIERE_HOME	e.g. D:\Adempiere
 @Echo		ADEMPIERE_DB_NAME 	e.g. adempiere.adempiere.org
 
 :usage

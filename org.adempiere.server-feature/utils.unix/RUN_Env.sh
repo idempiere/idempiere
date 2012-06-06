@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # $Id: RUN_Env.sh,v 1.16 2005/01/22 21:59:15 jjanke Exp $
-echo Adempiere Environment Check
+echo idempiere Environment Check
 
-if [ $ADEMPIERE_HOME ]; then
-  cd $ADEMPIERE_HOME/utils
+if [ $IDEMPIERE_HOME ]; then
+  cd $IDEMPIERE_HOME/utils
 fi
 # Environment is read from the following script myEnvironment.sh
 . ./myEnvironment.sh
@@ -15,7 +15,7 @@ echo CLASSPTH  = $CLASSPATH
 
 echo .
 echo Homes ...
-echo ADEMPIERE_HOME        = $ADEMPIERE_HOME
+echo IDEMPIERE_HOME        = $IDEMPIERE_HOME
 echo JAVA_HOME            = $JAVA_HOME
 echo ADEMPIERE_DB_URL      = $ADEMPIERE_DB_URL
 
@@ -30,7 +30,7 @@ echo ADEMPIERE_DB_NAME      = $ADEMPIERE_DB_NAME
 echo ADEMPIERE_DB_SYSTEM   = $ADEMPIERE_DB_SYSTEM
 
 echo .
-echo Java Test ... should be 1.4.1
+echo Java Test ... should be 1.6+
 $JAVA_HOME/bin/java -version
 
 echo .

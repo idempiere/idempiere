@@ -1234,7 +1234,7 @@ public class CConnection implements Serializable, Cloneable
 			}
 			catch (NoClassDefFoundError ee)
 			{
-				System.err.println("Environment Error - Check Adempiere.properties - " + ee);
+				System.err.println("Environment Error - Check idempiere.properties - " + ee);
 				if (Ini.isClient())
 				{
 					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog

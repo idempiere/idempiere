@@ -55,5 +55,18 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="org.adempiere.base.PostMigration"
+         name="Post Migration"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.adempiere.base.PostMigrationApplication">
+         </run>
+      </application>
+   </extension>
 
 </plugin>
