@@ -51,7 +51,7 @@ import org.zkoss.zul.Vbox;
  * @author hengsin
  *
  */
-public class ExportAction implements EventListener
+public class ExportAction implements EventListener<Event>
 {
 	private AbstractADWindowPanel panel;
 
@@ -109,7 +109,7 @@ public class ExportAction implements EventListener
 			cboType.setSelectedIndex(0);
 
 			Vbox vb = new Vbox();
-			vb.setWidth("390px");
+			vb.setWidth("100%");
 			winExportFile.appendChild(vb);
 
 			Hbox hb = new Hbox();
@@ -131,7 +131,8 @@ public class ExportAction implements EventListener
 			confirmPanel.addActionListener(this);
 		}
 
-		AEnv.showCenterScreen(winExportFile);
+		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		AEnv.showWindow(winExportFile);
 	}
 
 	@Override

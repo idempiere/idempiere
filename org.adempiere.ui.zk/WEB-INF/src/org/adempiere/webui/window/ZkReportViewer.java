@@ -41,6 +41,7 @@ import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
@@ -786,19 +787,20 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			hb.appendChild(cboType);
 			cboType.setWidth("100%");
 			hb.setVflex("1");
+			hb.setStyle("margin-top: 10px");
 
 			Vbox vb = new Vbox();
 			vb.setVflex("1");
 			vb.setWidth("100%");
 			winExportFile.appendChild(vb);
 			vb.appendChild(hb);
-			vb.appendChild(confirmPanel);	
+			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
 			confirmPanel.setVflex("0");
 		}
 		
-		AEnv.showCenterScreen(winExportFile);
-		
+		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		AEnv.showWindow(winExportFile);
 	}	//	cmd_export
 		
 	private void exportFile()
@@ -1023,18 +1025,23 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			bFind.setVisible(false);
 		else
 		{
-            FindWindow find = new FindWindow(m_WindowNo, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
-            if (!find.isCancel())
-            {
-            	m_reportEngine.setQuery(find.getQuery());
-            	try {
-            		renderReport();
-            	} catch (Exception e) {
-        			throw new AdempiereException("Failed to render report", e);
-        		}
-            	revalidate();
-            }
-            find = null;
+            final FindWindow find = new FindWindow(m_WindowNo, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
+            find.addEventListener(DialogEvents.ON_MODAL_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					if (!find.isCancel())
+		            {
+		            	m_reportEngine.setQuery(find.getQuery());
+		            	try {
+		            		renderReport();
+		            	} catch (Exception e) {
+		        			throw new AdempiereException("Failed to render report", e);
+		        		}
+		            	revalidate();
+		            }
+				}
+			});
+            AEnv.showWindow(find);
 		}
 	}	//	cmd_find
 

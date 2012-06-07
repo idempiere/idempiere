@@ -20,4 +20,6 @@ public interface ICreateFrom
 	public void showWindow();
 	
 	public void closeWindow();
+	
+	public Object getWindow();
 }

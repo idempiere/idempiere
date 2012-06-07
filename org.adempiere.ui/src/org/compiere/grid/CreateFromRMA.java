@@ -35,7 +35,7 @@ import org.compiere.util.Msg;
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2007837 ] VCreateFrom.save() should run in trx
  */
-public class CreateFromRMA extends CreateFrom {
+public abstract class CreateFromRMA extends CreateFrom {
 
 	public CreateFromRMA(GridTab mTab)
 	{

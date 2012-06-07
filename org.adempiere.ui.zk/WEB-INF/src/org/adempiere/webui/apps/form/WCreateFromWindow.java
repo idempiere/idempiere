@@ -21,6 +21,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.WAppsAction;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.StatusBarPanel;
@@ -30,13 +31,14 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
 
-public class WCreateFromWindow extends Window implements EventListener, WTableModelListener
+public class WCreateFromWindow extends Window implements EventListener<Event>, WTableModelListener, DialogEvents
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -47,6 +49,8 @@ public class WCreateFromWindow extends Window implements EventListener, WTableMo
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private StatusBarPanel statusBar = new StatusBarPanel();
 	private WListbox dataTable = ListboxFactory.newDataTable();
+
+	private boolean isCancel;
 	
 	public static final String SELECT_ALL = "SelectAll";
 
@@ -115,6 +119,7 @@ public class WCreateFromWindow extends Window implements EventListener, WTableMo
 		//  OK - Save
 		if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
+			isCancel = false;
 			try
 			{
 				Trx.run(new TrxRunnable()
@@ -132,11 +137,14 @@ public class WCreateFromWindow extends Window implements EventListener, WTableMo
 			{
 				FDialog.error(windowNo, this, "Error", ex.getLocalizedMessage());
 			}
+			Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 		}
 		//  Cancel
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 		{
+			isCancel = true;
 			dispose();
+			Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 		}
 		// Select All
 		// Trifon
@@ -214,5 +222,10 @@ public class WCreateFromWindow extends Window implements EventListener, WTableMo
 	public ConfirmPanel getConfirmPanel()
 	{
 		return confirmPanel;
+	}
+	
+	public boolean isCancel() 
+	{
+		return isCancel;
 	}
 }

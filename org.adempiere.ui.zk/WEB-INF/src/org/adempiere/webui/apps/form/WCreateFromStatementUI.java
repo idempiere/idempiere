@@ -56,10 +56,8 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Hbox;
 
-public class WCreateFromStatementUI extends CreateFromStatement implements EventListener, SystemIDs
+public class WCreateFromStatementUI extends CreateFromStatement implements EventListener<Event>, SystemIDs
 {
-	private static final long serialVersionUID = 1L;
-	
 	private WCreateFromWindow window;
 	
 	public WCreateFromStatementUI(GridTab tab) 
@@ -305,5 +303,10 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	public void closeWindow()
 	{
 		window.dispose();
+	}
+
+	@Override
+	public Object getWindow() {
+		return window;
 	}
 }

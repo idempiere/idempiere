@@ -547,4 +547,9 @@ public class VCreateFromShipmentUI extends CreateFromShipment implements ActionL
 
 	}
 
+	@Override
+	public Object getWindow() {
+		return dialog;
+	}
+
 }

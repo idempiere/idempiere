@@ -19,9 +19,9 @@ package org.adempiere.webui.panel;
 
 import java.util.logging.Level;
 
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -39,7 +39,7 @@ import org.zkoss.zul.Separator;
  * 	@date		September 24, 2007
  */
 
-public class WOnlyCurrentDays extends Window implements EventListener
+public class WOnlyCurrentDays extends Window implements EventListener<Event>, DialogEvents
 {
 	/**
 	 * 
@@ -65,8 +65,7 @@ public class WOnlyCurrentDays extends Window implements EventListener
 			log.log(Level.SEVERE, "VOnlyCurrentDays", e);
 		}
 
-		this.setVisible(true);
-		AEnv.showWindow(this);
+		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);		
 	}	//	WOnlyCurrentDays
 
 	private Hbox mainPanel = new Hbox();
@@ -116,7 +115,6 @@ public class WOnlyCurrentDays extends Window implements EventListener
 		this.setBorder("normal");
 		this.setTitle(Msg.getMsg(Env.getCtx(), "VOnlyCurrentDays"));
 		this.setClosable(true);
-		this.setAttribute("mode", "modal");
 		
 		this.appendChild(new Separator());
 		this.appendChild(mainPanel);
@@ -149,4 +147,9 @@ public class WOnlyCurrentDays extends Window implements EventListener
 		this.detach();
 	}
 
+	@Override
+	public void detach() {
+		super.detach();
+		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
+	}
 }

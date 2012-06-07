@@ -30,6 +30,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -58,15 +59,10 @@ import org.zkoss.zul.Html;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessModalDialog extends Window implements EventListener<Event>, IProcessMonitor
+public class ProcessModalDialog extends Window implements EventListener<Event>, IProcessMonitor, DialogEvents
 {
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	private static final String ON_COMPLETE = "onComplete";
-	
-	/**
-	 * on modal close event, use this for highlight mode modal dialog to perform action after the modal dialog closed.
-	 */
-	public final static String ON_MODAL_CLOSE = "onModalClose";
 	
 	/**
 	 * generated serial version ID

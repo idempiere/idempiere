@@ -46,6 +46,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WNumberEditor;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MCash;
@@ -71,6 +72,7 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -110,7 +112,7 @@ import org.zkoss.zul.Space;
  * 				<li>BF [ 1789949 ] VPayment: is displaying just "CashNotCreated"
  */
 public class WPayment extends Window
-	implements EventListener
+	implements EventListener<Event>, DialogEvents
 {
 	/**
 	 * 
@@ -129,7 +131,6 @@ public class WPayment extends Window
 	{
 		super();
 		this.setTitle(Msg.getMsg(Env.getCtx(), "Payment"));
-		this.setAttribute("mode", "modal");
 		m_WindowNo = WindowNo;
 		m_isSOTrx = "Y".equals(Env.getContext(Env.getCtx(), WindowNo, "IsSOTrx"));
 		m_mTab = mTab;
@@ -772,7 +773,7 @@ public class WPayment extends Window
 		 *  Load Bank Accounts
 		 */
 		SQL = MRole.getDefault().addAccessSQL(
-			"SELECT C_BankAccount_ID, Name || ' ' || AccountNo, IsDefault "
+			"SELECT C_BankAccount_ID, ba.Name || ' ' || AccountNo, IsDefault "
 			+ "FROM C_BankAccount ba"
 			+ " INNER JOIN C_Bank b ON (ba.C_Bank_ID=b.C_Bank_ID) "
 			+ "WHERE b.IsActive='Y'",
@@ -938,6 +939,13 @@ public class WPayment extends Window
 			Clients.response(new AuEcho(this, "runProcessOnline", null));
 		}
 	}	//	actionPerformed
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
+	}
+
 
 	public void lockUI() {
 		if (m_isLocked) return;

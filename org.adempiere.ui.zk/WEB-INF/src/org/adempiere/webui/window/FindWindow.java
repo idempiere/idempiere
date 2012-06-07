@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -57,6 +56,7 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.part.MultiTabPart;
@@ -81,6 +81,7 @@ import org.compiere.util.SecureEngine;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -99,7 +100,7 @@ import org.zkoss.zul.Hbox;
  *  @author     Sendy Yagambrum
  *  @date       June 27, 2007
  */
-public class FindWindow extends Window implements EventListener<Event>,ValueChangeListener, SystemIDs
+public class FindWindow extends Window implements EventListener<Event>, ValueChangeListener, SystemIDs, DialogEvents
 {
 	/**
 	 * 
@@ -207,12 +208,10 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
         this.setWidth("750px");
         this.setHeight("350px");
         this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
-        this.setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
+        this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
         this.setClosable(false);
-        this.setSizable(true);
-        
-        this.setVisible(true);
-        AEnv.showWindow(this);
+        this.setSizable(true);  
+        this.setMaximizable(true);
     }
     /**
      * initialise lookup record tab
@@ -360,6 +359,7 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
         Hbox confirmPanel = new Hbox();
         confirmPanel.appendChild(pnlButtonRight);
         confirmPanel.setWidth("100%");
+        confirmPanel.setPack("end");
 
         advancedPanel = new Listbox();
         advancedPanel.setSizedByContent(true);
@@ -1141,6 +1141,8 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
         listcell.setLabel("");
         listcell.getChildren().clear();
         listcell.appendChild(component);
+        ((HtmlBasedComponent)component).setHflex("1");
+        listcell.invalidate();
      }   //  addComponent
 
     /**
@@ -1325,6 +1327,8 @@ public class FindWindow extends Window implements EventListener<Event>,ValueChan
         m_targetFields = null;
         //
         super.dispose();
+        
+        Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
     }   //  dispose
 
     /**

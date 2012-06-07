@@ -27,6 +27,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MTable;
@@ -48,7 +49,7 @@ import org.zkoss.zul.Space;
 
 
 
-public class WDocActionPanel extends Window implements EventListener
+public class WDocActionPanel extends Window implements EventListener<Event>, DialogEvents
 {
 	/**
 	 * 
@@ -299,12 +300,14 @@ public class WDocActionPanel extends Window implements EventListener
 				m_OKpressed = true;
 				setValue();
 				this.detach();
+				Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 			}
 			else if (confirmPanel.getButton("Cancel").equals(event.getTarget()))
 			{
 				m_OKpressed = false;
 				this.detach();
-			}
+				Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
+			}			
 		}
 		else if (Events.ON_SELECT.equals(event.getName()))
 		{

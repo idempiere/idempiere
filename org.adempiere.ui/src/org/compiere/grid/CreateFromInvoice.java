@@ -53,7 +53,7 @@ import org.compiere.util.Msg;
  * 			<li>BF [ 1896947 ] Generate invoice from Order error
  * 			<li>BF [ 2007837 ] VCreateFrom.save() should run in trx
  */
-public class CreateFromInvoice extends CreateFrom
+public abstract class CreateFromInvoice extends CreateFrom
 {
 	/**
 	 *  Protected Constructor

@@ -195,4 +195,9 @@ public class VCreateFromRMAUI extends CreateFromRMA implements VetoableChangeLis
 	{
 		dialog.dispose();
 	}
+
+	@Override
+	public Object getWindow() {
+		return dialog;
+	}
 }

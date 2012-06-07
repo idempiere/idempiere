@@ -132,7 +132,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		}
 		set(from, to, subject, message);
 		setAttachment(attachment);
-		AEnv.showCenterScreen(this);
+		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		AEnv.showWindow(this);
 	}	//	commonInit
 
 

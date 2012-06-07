@@ -39,12 +39,10 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.compiere.grid.CreateFromShipment;
 import org.compiere.model.GridTab;
-import org.compiere.model.MInvoice;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
-import org.compiere.model.MRMA;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -58,7 +56,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Space;
 
-public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener, ValueChangeListener, SystemIDs
+public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener<Event>, ValueChangeListener, SystemIDs
 {
 
 	private WCreateFromWindow window;
@@ -111,10 +109,6 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	protected WLocatorEditor locatorField = new WLocatorEditor();
 	protected Label upcLabel = new Label();
 	protected WStringEditor upcField = new WStringEditor();
-	/**  Loaded Invoice             */
-	private MInvoice		m_invoice = null;
-    /**  Loaded RMA             */
-    private MRMA            m_rma = null;
     
 	/**
 	 *  Dynamic Init
@@ -270,7 +264,6 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 				invoiceField.setSelectedIndex(-1);
                 rmaField.setSelectedIndex(-1);
 				loadOrder(C_Order_ID, false, locatorField.getValue()!=null?((Integer)locatorField.getValue()).intValue():0);
-				m_invoice = null;
 			}
 		}
 		//  Invoice
@@ -553,5 +546,10 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	public void closeWindow()
 	{
 		window.dispose();
+	}
+
+	@Override
+	public Object getWindow() {
+		return window;
 	}
 }

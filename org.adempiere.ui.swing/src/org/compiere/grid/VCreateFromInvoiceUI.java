@@ -383,4 +383,9 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 	{
 		dialog.dispose();
 	}
+
+	@Override
+	public Object getWindow() {
+		return dialog;
+	}
 }

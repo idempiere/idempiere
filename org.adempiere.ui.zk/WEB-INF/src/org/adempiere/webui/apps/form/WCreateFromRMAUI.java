@@ -42,8 +42,6 @@ import org.zkoss.zul.Center;
 
 public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListener, SystemIDs
 {
-	private static final long serialVersionUID = 1L;
-	
 	private WCreateFromWindow window;
 	
 	public WCreateFromRMAUI(GridTab tab) 
@@ -189,5 +187,10 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	public void closeWindow()
 	{
 		window.dispose();
+	}
+
+	@Override
+	public Object getWindow() {
+		return window;
 	}
 }
