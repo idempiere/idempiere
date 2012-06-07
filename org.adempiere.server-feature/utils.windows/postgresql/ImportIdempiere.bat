@@ -2,7 +2,7 @@
 
 @Rem $Id: ImportIdempiere.bat,v 1.3 2005/01/22 21:59:15 jjanke Exp $
 
-@Echo	Importing idempiere DB from %IDEMPIERE_HOME%\data\Adempiere_pg.dmp (%ADEMPIERE_DB_NAME%)
+@Echo	Importing idempiere DB from %IDEMPIERE_HOME%\data\seed\Adempiere_pg.dmp (%ADEMPIERE_DB_NAME%)
 
 @if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
@@ -29,9 +29,11 @@
 @echo -------------------------------------
 @echo Import Adempiere_pg.dmp
 @echo -------------------------------------
-@set ADEMPIERE_ALTER_ROLE_SQL=ALTER ROLE %2 SET search_path TO idempiere, pg_catalog
+@set ADEMPIERE_ALTER_ROLE_SQL=ALTER ROLE %2 SET search_path TO adempiere, pg_catalog
+
 @psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -c "%ADEMPIERE_ALTER_ROLE_SQL%"
-@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -f %IDEMPIERE_HOME%/data/Adempiere_pg.dmp
+
+@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -f %IDEMPIERE_HOME%/data/seed/Adempiere_pg.dmp
 @set ADEMPIERE_ALTER_ROLE_SQL=
 
 

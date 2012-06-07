@@ -2,7 +2,7 @@
 
 @Rem $Id: ImportIdempiere.bat,v 1.9 2005/09/24 01:50:41 jjanke Exp $
 
-@Echo	Importing idempiere DB from %IDEMPIERE_HOME%\data\Adempiere.dmp (%ADEMPIERE_DB_NAME%)
+@Echo	Importing idempiere DB from %IDEMPIERE_HOME%\data\seed\Adempiere.dmp (%ADEMPIERE_DB_NAME%)
 
 @if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
@@ -21,7 +21,7 @@
 @echo -------------------------------------
 @echo Import Adempiere.dmp
 @echo -------------------------------------
-@imp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% FILE=%IDEMPIERE_HOME%\data\Adempiere.dmp FROMUSER=(reference) TOUSER=%2 STATISTICS=RECALCULATE
+@imp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% FILE=%IDEMPIERE_HOME%\data\seed\Adempiere.dmp FROMUSER=(reference) TOUSER=%2 STATISTICS=RECALCULATE
 
 @echo --------========--------========--------========--------
 @echo System Check - The Import phase showed warnings.
