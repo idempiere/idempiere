@@ -547,3 +547,7 @@ img.z-group-img-close {
 .z-label, .z-toolbarbutton-cnt, tr.z-treerow, tr.z-treerow a, tr.z-treerow a:visited {
 	color: #333;
 }
+
+.z-textbox-readonly, .z-intbox-readonly, .z-longbox-readonly, .z-doublebox-readonly, .z-decimalbox-readonly {
+	background-color: #F0F0F0;
+}
