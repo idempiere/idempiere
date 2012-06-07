@@ -576,7 +576,7 @@ UPDATE AD_PRINTFORMATITEM_TRL trl
 				 SET Name = (SELECT e.Name FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM p
 							WHERE e.AD_LANGUAGE=trl.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID 
 							  AND c.AD_Column_ID=p.AD_Column_ID AND p.AD_PrintFormatItem_ID=trl.AD_PrintFormatItem_ID),
-					Updated = now()
+					Updated = SYSDATE
 				 WHERE EXISTS (SELECT 1 FROM AD_PRINTFORMATITEM p, AD_ELEMENT_TRL e, AD_COLUMN c
 						WHERE trl.AD_PrintFormatItem_ID=p.AD_PrintFormatItem_ID
 						  AND p.AD_Column_ID=c.AD_Column_ID
