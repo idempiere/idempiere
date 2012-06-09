@@ -51,11 +51,15 @@ public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
     public void setPressed(boolean pressed) {
     	this.pressed = pressed; // Elaine 2008/12/09
     	
-    	if (!getMode().equals("toggle"))
-    		setMode("toggle");
-
-		if (!isDisabled())
-			setChecked(pressed);
+		if (!isDisabled()) {
+			if (pressed) {
+				setMode("toggle");
+				setChecked(true);
+			} else {
+				setMode("default");
+				setChecked(false);
+			}			
+		}
     }
     
     // Elaine 2008/12/09

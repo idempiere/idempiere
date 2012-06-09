@@ -153,6 +153,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private MUserQuery[] userQueries;
 	private Rows contentSimpleRows;
 	private boolean m_createNew = false;
+	private boolean isvalid = true;
 
 	/** Index ColumnName = 0		*/
 	public static final int		INDEX_COLUMNNAME = 0;
@@ -1328,6 +1329,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //
         super.dispose();
         
+        isvalid = false;
         Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
     }   //  dispose
 
@@ -1726,4 +1728,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		&& MColumn.isSuggestSelectionColumn(field.getColumnName(), true);
 	}
 
+	public boolean isValid()
+	{
+		return isvalid;
+	}
 }   //  FindPanel

@@ -1026,6 +1026,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else
 		{
             final FindWindow find = new FindWindow(m_WindowNo, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
+            if (!find.isValid())
+            	return;
+            
             find.addEventListener(DialogEvents.ON_MODAL_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {

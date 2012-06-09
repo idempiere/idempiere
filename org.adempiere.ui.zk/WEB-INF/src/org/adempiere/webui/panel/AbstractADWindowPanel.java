@@ -705,23 +705,30 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
             final FindWindow find = new FindWindow(curWindowNo,
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
                     where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
-        	find.addEventListener(DialogEvents.ON_MODAL_CLOSE, new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					if (!find.isCancel())
-		            {
-		            	m_findCreateNew = find.isCreateNew();
-		            	MQuery result = m_findCreateNew ? query : find.getQuery();
-		            	callback.onCallback(result);
-		            }
-		            else
-		            {
-		            	m_findCancelled = true;
-		            	callback.onCallback(null);
-		            }
-				}
-			});
-            AEnv.showWindow(find);
+            if (find.isValid()) 
+            {
+	        	find.addEventListener(DialogEvents.ON_MODAL_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						if (!find.isCancel())
+			            {
+			            	m_findCreateNew = find.isCreateNew();
+			            	MQuery result = m_findCreateNew ? query : find.getQuery();
+			            	callback.onCallback(result);
+			            }
+			            else
+			            {
+			            	m_findCancelled = true;
+			            	callback.onCallback(null);
+			            }
+					}
+				});
+	            AEnv.showWindow(find);
+            }
+            else
+            {
+            	callback.onCallback(query);
+            }
         }
         else
         {
@@ -1530,6 +1537,13 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
             curTab.getAD_Table_ID(), curTab.getTableName(),
             curTab.getWhereExtended(), findFields, 1, curTab.getAD_Tab_ID());
 
+        if (!find.isValid()) {
+        	if (find.getTotalRecords() == 0) {
+        		FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
+        	}
+        	return;
+        }
+        
         find.addEventListener(DialogEvents.ON_MODAL_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -1547,6 +1561,10 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 			        curTab.dataRefresh(false); // Elaine 2008/07/25
 		        }
+				else
+				{
+					toolbar.getButton("Find").setPressed(curTab.isQueryActive());
+				}
 		        focusToActivePanel();
 			}
 		});        
