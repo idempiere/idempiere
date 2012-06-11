@@ -16,7 +16,7 @@ import org.osgi.framework.BundleContext;
 
 public class AdempiereActivator implements BundleActivator {
 
-	private final static Logger logger = Logger
+	protected final static Logger logger = Logger
 			.getLogger(AdempiereActivator.class.getName());
 	private BundleContext context;
 
@@ -76,6 +76,10 @@ public class AdempiereActivator implements BundleActivator {
 		return context;
 	}
 
+	protected void setContext(BundleContext context) {
+		this.context = context;
+	}
+	
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		stop();
