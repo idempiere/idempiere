@@ -75,7 +75,7 @@ public class PrintData implements Serializable
 	 * 	@param name data element name
 	 *  @param nodes ArrayList with nodes (content not checked)
 	 */
-	public PrintData (Properties ctx, String name, ArrayList<Object> nodes)
+	public PrintData (Properties ctx, String name, ArrayList<Serializable> nodes)
 	{
 		if (name == null)
 			throw new IllegalArgumentException("Name cannot be null");
@@ -90,9 +90,9 @@ public class PrintData implements Serializable
 	/**	Data Structure Name			*/
 	private String 		m_name;
 	/** Data Structure rows			*/
-	private ArrayList<ArrayList<Object>>	m_rows = new ArrayList<ArrayList<Object>>();
+	private ArrayList<ArrayList<Serializable>>	m_rows = new ArrayList<ArrayList<Serializable>>();
 	/** Current Row Data Structure elements		*/
-	private ArrayList<Object>				m_nodes = null;
+	private ArrayList<Serializable>				m_nodes = null;
 	/**	Current Row					*/
 	private int			m_row = -1;
 	/**	List of Function Rows		*/
@@ -246,7 +246,7 @@ public class PrintData implements Serializable
 	 */
 	public void addRow (boolean functionRow, int levelNo)
 	{
-		m_nodes = new ArrayList<Object>();
+		m_nodes = new ArrayList<Serializable>();
 		m_row = m_rows.size();
 		m_rows.add (m_nodes);
 		if (functionRow)
@@ -265,7 +265,7 @@ public class PrintData implements Serializable
 		if (row < 0 || row >= m_rows.size())
 			return false;
 		m_row = row;
-		m_nodes = (ArrayList<Object>)m_rows.get(m_row);
+		m_nodes = m_rows.get(m_row);
 		return true;
 	}
 

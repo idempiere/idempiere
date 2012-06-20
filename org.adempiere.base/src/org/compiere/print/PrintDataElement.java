@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.print;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -32,8 +33,14 @@ import org.compiere.util.NamePair;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: PrintDataElement.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
  */
-public class PrintDataElement
+public class PrintDataElement implements Serializable
 {
+	/**
+	 * generated serialize id
+	 */
+	private static final long serialVersionUID = -4823568539698752659L;
+
+
 	/**
 	 *	Print Data Element Constructor
 	 *  @param columnName name
@@ -42,7 +49,7 @@ public class PrintDataElement
 	 *  @param isPKey is primary key
 	 *  @param isPageBreak if true force page break
 	 */
-	public PrintDataElement (String columnName, Object value, int displayType, boolean isPKey, boolean isPageBreak, String format)
+	public PrintDataElement (String columnName, Serializable value, int displayType, boolean isPKey, boolean isPageBreak, String format)
 	{
 		if (columnName == null)
 			throw new IllegalArgumentException("PrintDataElement - Name cannot be null");
@@ -61,7 +68,7 @@ public class PrintDataElement
 	 *  @param pattern Number/date format pattern
 	 *  @param displayType optional displayType
 	 */
-	public PrintDataElement(String columnName, Object value, int displayType, String pattern)
+	public PrintDataElement(String columnName, Serializable value, int displayType, String pattern)
 	{
 		this (columnName, value, displayType, false, false, pattern);
 	}	//	PrintDataElement
@@ -69,7 +76,7 @@ public class PrintDataElement
 	/**	Data Name			*/
 	private String 		m_columnName;
 	/** Data Value			*/
-	private Object 		m_value;
+	private Serializable 	m_value;
 	/** Display Type		*/
 	private int 		m_displayType;
 	/** Is Primary Key		*/
