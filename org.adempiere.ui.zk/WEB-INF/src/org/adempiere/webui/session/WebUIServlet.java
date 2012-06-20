@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.compiere.Adempiere;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
@@ -46,8 +45,6 @@ import org.adempiere.util.ServerContextURLHandler;
  */
 public class WebUIServlet extends DHtmlLayoutServlet
 {
-    public static final String WEBUI_ROOT_LOGGER_NAME = "webui";
-
 	private static final long    serialVersionUID = 1L;
 
     /** Logger for the class * */
@@ -64,7 +61,6 @@ public class WebUIServlet extends DHtmlLayoutServlet
 				SessionManager.getAppDesktop().showURL(url, true);
 			}
 		});
-        serverContext.put(CLogMgt.ROOT_LOGGER_NAME_PROPERTY, WEBUI_ROOT_LOGGER_NAME);
         ServerContext.setCurrentInstance(serverContext);
 
         String propertyFile = Ini.getFileName(false);
@@ -78,20 +74,15 @@ public class WebUIServlet extends DHtmlLayoutServlet
 	        boolean started = Adempiere.startup(false);
 	        if(!started)
 	        {
-	            throw new ServletException("Could not start ADempiere");
+	            throw new ServletException("Could not start iDempiere");
 	        }
-        }
-        else
-        {
-        	CLogMgt.initialize(false);
-        	CLogMgt.setLevel(Ini.getProperty(Ini.P_TRACELEVEL));
         }
 
         logger = CLogger.getCLogger(WebUIServlet.class);
 
-        logger.log(Level.OFF, "ADempiere web ui service started successfully");
+        logger.log(Level.OFF, "iDempiere web ui service started successfully");
         /**
-         * End ADempiere Start
+         * End iDempiere Start
          */
     }
 

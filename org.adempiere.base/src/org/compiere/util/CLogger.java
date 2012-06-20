@@ -46,18 +46,47 @@ public class CLogger extends Logger implements Serializable
 	 */
     public static synchronized CLogger getCLogger (String className)
     {
+    	return getCLogger(className, true);
+    }
+    
+	/**
+	 * 	Get Logger
+	 *	@param className class name
+	 *  @param usePackageLevel
+	 *	@return Logger
+	 */
+    public static synchronized CLogger getCLogger (String className, boolean usePackageLevel)
+    {
    	//	CLogMgt.initialize();
     	LogManager manager = LogManager.getLogManager();
     	if (className == null || className.trim().length() == 0)
-    		className = CLogMgt.getRootLoggerName();
-    	else
-    		className = CLogMgt.getRootLoggerName() + "." + className;
+    		className = "";
+    	
     	Logger result = manager.getLogger(className);
     	if (result != null && result instanceof CLogger)
     		return (CLogger)result;
+    	
+    	Logger packageLogger = null;
+    	if (className.indexOf(".") > 0 && usePackageLevel)
+    	{
+    		String s = className.substring(0, className.lastIndexOf("."));
+    		while(s.indexOf(".") > 0)
+    		{
+    			result = manager.getLogger(s);
+    			if (result != null && result instanceof CLogger)
+    			{
+    	    		packageLogger = result;
+    	    		break;
+    			}
+    			s = s.substring(0, s.lastIndexOf("."));
+    		}
+    	}
     	//
    	    CLogger newLogger = new CLogger(className, null);
-   	    newLogger.setLevel(CLogMgt.getLevel());
+   	    if (packageLogger != null && packageLogger.getLevel() != null)
+   	    	newLogger.setLevel(packageLogger.getLevel());
+   	    else
+   	    	newLogger.setLevel(CLogMgt.getLevel());
    	    manager.addLogger(newLogger);
     	return newLogger;
     }	//	getLogger

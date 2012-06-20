@@ -141,7 +141,7 @@ public class CLogFile extends Handler
 				if (isClient)
 					fileName += "client.";
 				else
-					fileName += (CLogMgt.getRootLoggerName() +".");
+					fileName += "idempiere.";
 				m_fileNameDate = getFileNameDate(System.currentTimeMillis());
 				fileName	+= m_fileNameDate + "_";
 				for (int i = 0; i < 100; i++)

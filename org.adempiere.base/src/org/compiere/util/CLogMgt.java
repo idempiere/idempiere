@@ -48,9 +48,6 @@ import org.compiere.model.MClient;
  */
 public class CLogMgt
 {
-	public static final String DEFAULT_ROOT_LOGGER_NAME = "adempiere";
-	public static final String ROOT_LOGGER_NAME_PROPERTY = "org.adempiere.log.root";
-
 	/**
 	 * 	Initialize Logging
 	 * 	@param isClient client
@@ -147,7 +144,7 @@ public class CLogMgt
 		//	Check Loggers
 		if (!handlerNames.contains(CLogErrorBuffer.class.getName()))
 			addHandler(new CLogErrorBuffer());
-		if (!handlerNames.contains(CLogConsole.class.getName()))
+		if (isClient && !handlerNames.contains(CLogConsole.class.getName()))
 			addHandler(new CLogConsole());
 		if (!handlerNames.contains(CLogFile.class.getName()))
 		{
@@ -162,14 +159,6 @@ public class CLogMgt
 		//
 	//	System.out.println("Handlers=" + s_handlers.size() + ", Level=" + s_currentLevel);
 	}	//	initialize
-
-
-	public static String getRootLoggerName() {
-		String root = Env.getCtx().getProperty(ROOT_LOGGER_NAME_PROPERTY);
-		if (root == null || root.trim().length() == 0)
-			root = DEFAULT_ROOT_LOGGER_NAME;
-		return root;
-	}
 
 
 	/** Logger				*/
@@ -267,25 +256,39 @@ public class CLogMgt
 	 */
 	public static void setLevel (Level level)
 	{
+		setLevel(null, level);
+	}
+	
+	/**
+	 * 	Set Level for all handlers
+	 *	@param level log level
+	 */
+	public static void setLevel (String loggerName, Level level)
+	{
 		if (level == null)
 			return;
-		Logger rootLogger = getRootLogger();
-		rootLogger.setLevel(level);
-		Handler[] handlers = rootLogger.getHandlers();
-		if (handlers == null || handlers.length == 0)
+		Logger logger = loggerName == null || loggerName.trim().length() == 0 ? getRootLogger() : CLogger.getCLogger(loggerName, false);
+		logger.setLevel(level);
+		
+		if (loggerName == null || loggerName.trim().length() == 0)
 		{
-			initialize(true);
-			handlers = rootLogger.getHandlers();
+			Handler[] handlers = logger.getHandlers();
+			if (handlers == null || handlers.length == 0)
+			{
+				initialize(true);
+			}
+					
+			//	JDBC if ALL
+			setJDBCDebug(level.intValue() == Level.ALL.intValue());
+			//
 		}
-		//
-		for (int i = 0; i < handlers.length; i++)
+		else
 		{
-			handlers[i].setLevel(level);
+			if (!logger.getUseParentHandlers()) 
+			{
+				logger.setUseParentHandlers(true);
+			}
 		}
-				
-		//	JDBC if ALL
-		setJDBCDebug(level.intValue() == Level.ALL.intValue());
-		//
 	}	//	setHandlerLevel
 
 	/**
@@ -303,6 +306,11 @@ public class CLogMgt
 	 */
 	public static void setLevel (String levelString)
 	{
+		setLevel(null, levelString);
+	}	//	setLevel
+	
+	public static void setLevel(String loggerName, String levelString)
+	{
 		if (levelString == null)
 			return;
 		//
@@ -310,12 +318,12 @@ public class CLogMgt
 		{
 		    if (LEVELS[i].getName().equals(levelString))
 		    {
-		    	setLevel(LEVELS[i]);
+		    	setLevel(loggerName, LEVELS[i]);
 		    	return;
 		    }
 		}
 		log.log(Level.CONFIG, "Ignored: " + levelString);
-	}	//	setLevel
+	}
 
 	/**
 	 * 	Set JDBC Debug
@@ -670,7 +678,7 @@ public class CLogMgt
 
 	private static Logger getRootLogger()
 	{
-		Logger rootLogger = Logger.getLogger(getRootLoggerName());
+		Logger rootLogger = Logger.getLogger("");
 		if (rootLogger.getUseParentHandlers())
 		{
 			rootLogger.setUseParentHandlers(false);
