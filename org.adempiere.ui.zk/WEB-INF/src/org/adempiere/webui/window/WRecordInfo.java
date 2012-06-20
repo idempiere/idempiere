@@ -86,7 +86,6 @@ public class WRecordInfo extends Window implements EventListener
 	{
 		super ();
 		this.setTitle(title);
-		this.setAttribute("modal", Boolean.TRUE);
 		this.setWidth("500px");
 		this.setHeight("400px");
 		this.setBorder("normal");
@@ -101,6 +100,7 @@ public class WRecordInfo extends Window implements EventListener
 		{
 			log.log(Level.SEVERE, "", e);
 		}
+		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		AEnv.showCenterScreen(this);
 	}	//	RecordInfo
 
