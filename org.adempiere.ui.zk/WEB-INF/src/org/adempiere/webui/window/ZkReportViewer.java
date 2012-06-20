@@ -245,8 +245,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		comboReport.setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 		toolBar.appendChild(comboReport);
 		
+		toolBar.appendChild(new Separator("vertical"));
+		
 		summary.setText(Msg.getMsg(Env.getCtx(), "Summary"));
 		toolBar.appendChild(summary);
+		
+		toolBar.appendChild(new Separator("vertical"));
 		
 		bCustomize.setImage("/images/Preference24.png");
 		bCustomize.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintCustomize")));
@@ -440,6 +444,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private void dynInit()
 	{
 		summary.addActionListener(this);
+		summary.setStyle("font-size: 14px");
 		
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
 
