@@ -135,7 +135,7 @@ public class AtmosphereServerPush implements ServerPush {
 	    		break;
 	    	case WEBSOCKET :
 	    	case STREAMING:
-	    		resource.getResponse().getWriter().write("@");
+	    		resource.getResponse().getWriter().write("<!-- dummy -->");
 	    		resource.getResponse().getWriter().flush();
 	    		break;
 	    	}
