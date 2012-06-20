@@ -74,7 +74,7 @@
       </handler>
       <handler
             class="org.adempiere.pipo2.handler.MessageElementHandler"
-            id="AD_Messsage">
+            id="AD_Message">
       </handler>
       <handler
             class="org.adempiere.pipo2.handler.DynValRuleElementHandler"
