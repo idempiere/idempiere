@@ -16,10 +16,10 @@ fi
 
 
 # Setup idempiere.properties and idempiereEnv.properties
-$JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.2.v20120110-1415.jar -application org.adempiere.install.console-application
+$JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.*.jar -application org.adempiere.install.console-application
 
 # Setup Tomcat
-$JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.2.v20120110-1415.jar -application org.eclipse.ant.core.antRunner -buildfile build.xml
+$JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.*.jar -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 echo ===================================
 echo Make .sh executable & set Env

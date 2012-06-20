@@ -17,11 +17,9 @@
 
 # initialization
 # adjust these variables to your environment
-EXECDIR=/home/idempiere/iDempiere
-ENVFILE=/home/idempiere/.bash_profile
+IDEMPIERE_HOME=/home/idempiere/idempiere-server
+ENVFILE=$IDEMPIERE_HOME/utils/myEnvironment.sh
 IDEMPIEREUSER=idempiere
-# STOPMESSAGE="Halting VM" # Message when using java 5
-STOPMESSAGE="INFO.*Server\].*Shutdown complete" # Message when using java 6
 
 . /etc/rc.d/init.d/functions
  
@@ -30,22 +28,22 @@ IDEMPIERESTATUS=
 MAXITERATIONS=60 # 2 seconds every iteration, max wait 2 minutes)
 
 getidempierestatus() {
-    IDEMPIERESTATUSSTRING=$(ps ax | grep -v grep | grep $EXECDIR)
-    echo $IDEMPIERESTATUSSTRING | grep -q $EXECDIR
+    IDEMPIERESTATUSSTRING=$(ps ax | grep -v grep | grep $IDEMPIERE_HOME)
+    echo $IDEMPIERESTATUSSTRING | grep -q $IDEMPIERE_HOME
     IDEMPIERESTATUS=$?
 }
 
 start () {
     getidempierestatus
     if [ $IDEMPIERESTATUS -eq 0 ] ; then
-	echo "idempiere is already running"
-	return 1
+	  echo "iDempiere is already running"
+	  return 1
     fi
     echo -n "Starting ADempiere ERP: "
     source $ENVFILE 
     export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
     su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
-    su $IDEMPIEREUSER -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2.sh &> $LOGFILE &"
+    su $IDEMPIEREUSER -c "cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
 	# wait for server to be confirmed as started in logfile
@@ -53,12 +51,12 @@ start () {
 	ITERATIONS=0
 	while [ $STATUSTEST -eq 0 ] ; do
 	    sleep 2
-	    tail -n 9 $LOGFILE | grep -q 'INFO.*\[Server\].*Started in' && STATUSTEST=1
+	    tail -n 9 $LOGFILE | grep -q '.*WebUIServlet.*started successfully.*' && STATUSTEST=1
 	    echo -n "."
 	    ITERATIONS=`expr $ITERATIONS + 1`
 	    if [ $ITERATIONS -gt $MAXITERATIONS ]
 		then
-		break
+		   break
 	    fi
 	done
 	if [ $STATUSTEST -eq 0 ]
@@ -79,58 +77,30 @@ start () {
 stop () {
     getidempierestatus
     if [ $IDEMPIERESTATUS -ne 0 ] ; then
-	echo "idempiere is already stopped"
-	return 1
+	  echo "idempiere is already stopped"
+	  return 1
     fi
-    echo -n "Stopping ADempiere ERP: "
+    echo -n "Stopping iDempiere ERP: "
     source $ENVFILE 
-    # export LASTLOG=`ls -t $IDEMPIERE_HOME/log/idempiere_??????????????.log | head -1`
-    export LASTLOG=$IDEMPIERE_HOME/log/server.log
-    su $IDEMPIEREUSER -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2Stop.sh &> /dev/null &"
-    RETVAL=$?
-    if [ $RETVAL -eq 0 ] ; then
-	# wait for server to be confirmed as halted in logfile
-	STATUSTEST=0
-	ITERATIONS=0
-	while [ $STATUSTEST -eq 0 ] ; do
-	    sleep 2
-	    tail -n 9 $LASTLOG | grep -q "$STOPMESSAGE" && STATUSTEST=1
-	    echo -n "."
-	    ITERATIONS=`expr $ITERATIONS + 1`
-	    if [ $ITERATIONS -gt $MAXITERATIONS ]
-	    then
-		break
-	    fi
-	done
-	if [ $STATUSTEST -eq 0 ]
-	then
-	    echo "Service hasn't stopped within the timeout allowed, please review file $LASTLOG to see the status of the service"
-	    echo "Trying direct kill with signal -15"
-	    # Adempiere didn't finish - try direct kill with signal 15, then signal 9
-	    kill -15 `ps ax | grep -v grep | grep $EXECDIR | sed -e 's/^ *//g' | cut -f 1 -d " "`
-	    sleep 5
-	    getidempierestatus
-	    if [ $IDEMPIERESTATUS -ne 0 ] ; then
-		echo_success
-	    else
-		echo "Trying direct kill with signal -9"
-		kill -9 `ps ax | grep -v grep | grep $EXECDIR | sed -e 's/^ *//g' | cut -f 1 -d " "`
-		sleep 5
-		getidempierestatus
-		if [ $IDEMPIERESTATUS -ne 0 ] ; then
-		    echo_success
-		else
-		    echo_warning
-		fi
-	    fi
-	else
-	    echo_success
-	fi
-	echo
+    echo "Trying direct kill with signal -15"
+    # Adempiere didn't finish - try direct kill with signal 15, then signal 9
+    kill -15 `ps ax | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " "`
+    sleep 5
+    getidempierestatus
+    if [ $IDEMPIERESTATUS -ne 0 ] ; then
+	  echo_success
     else
-	echo_failure
-	echo
+	  echo "Trying direct kill with signal -9"
+	  kill -9 `ps ax | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " "`
+	  sleep 5
+	  getidempierestatus
+	  if [ $IDEMPIERESTATUS -ne 0 ] ; then
+	    echo_success
+	  else
+	    echo_warning
+	  fi
     fi
+	RETVAL=$?
     return $RETVAL
 }
 
@@ -147,12 +117,12 @@ condrestart () {
     fi
 }
 
-rhstatus () {
+status () {
     getidempierestatus
     if [ $IDEMPIERESTATUS -eq 0 ] ; then
 	echo
 	echo "idempiere is running:"
-	ps ax | grep -v grep | grep $EXECDIR | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
+	ps ax | grep -v grep | grep $IDEMPIERE_HOME | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
 	echo
     else
 	echo "idempiere is stopped"
@@ -176,7 +146,7 @@ case "$1" in
 	condrestart
 	;;
     status)
-	rhstatus
+	status
 	;;
     *)
 	echo $"Usage: $0 {start|stop|reload|restart|condrestart|status}"

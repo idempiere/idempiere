@@ -58,10 +58,6 @@
 		<copy file="utils/myEnvironmentTemplate.bat"
 			tofile="utils/myEnvironment.bat" filtering="yes" overwrite="yes" />
 
-		<copy file="utils/RUN_GetAdempiereTemplate.bat"
-			tofile="utils/RUN_GetAdempiere.bat" filtering="yes" overwrite="yes" />
-		<copy file="utils/RUN_PutExportTemplate.bat"
-			tofile="utils/RUN_PutExport.bat" filtering="yes" overwrite="yes" />
 		<copy file="utils/RUN_WinEnvTemplate.bat"
 			tofile="utils/RUN_WinEnv.bat" filtering="yes" overwrite="yes" />
 
@@ -86,10 +82,6 @@
 		<copy file="utils/myEnvironmentTemplate.sh"
 			tofile="utils/myEnvironment.sh" filtering="yes" overwrite="yes" />
 
-		<copy file="utils/RUN_GetAdempiereTemplate.sh"
-			tofile="utils/RUN_GetAdempiere.sh" filtering="yes" overwrite="yes" />
-		<copy file="utils/RUN_PutExportTemplate.sh"
-			tofile="utils/RUN_PutExport.sh" filtering="yes" overwrite="yes" />
 		<copy file="utils/RUN_UnixEnvTemplate.sh"
 			tofile="utils/RUN_UnixEnv.sh" filtering="yes" overwrite="yes" />
 

@@ -35,14 +35,14 @@ StatusService ()
 StartService ()
 {
     IDEMPIERESTATUS=$(ps ax | grep -v grep | grep server| grep $EXECDIR|wc -l)
-   if [ $IDEMPIERESTATUS != 0 ] ; then
+    if [ $IDEMPIERESTATUS != 0 ] ; then
         ConsoleMessage "idempiere is already running"
         return 1
     fi
     ConsoleMessage "Starting iDempiere ERP: "
     export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
     export LOOKFILE=$IDEMPIERE_HOME/server.log
-    su root -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2.sh &> $LOGFILE &"
+    su root -c "cd $EXECDIR;$EXECDIR/idempiere-server.sh &> $LOGFILE &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
         # wait for server to be confirmed as started in logfile
@@ -58,7 +58,7 @@ StartService ()
             fi
         done
 
-if [ $STATUSTEST -eq 0 ]
+    if [ $STATUSTEST -eq 0 ]
         then
             ConsoleMessage "Service hasn't started within the timeout allowed, please review file $LOGFILE to see the status of the service"
         else
@@ -80,36 +80,25 @@ StopService()
         return 1
     fi
     ConsoleMessage "Stopping iDempiere ERP: "
-    export LASTLOG=`ls -t $IDEMPIERE_HOME/log/idempiere_??????????????.log | head -1`
-    export LOOKFILE=$IDEMPIERE_HOME/log/server.log
-    su root -c "cd $EXECDIR/utils;$EXECDIR/utils/RUN_Server2Stop.sh &> /dev/null &"
     RETVAL=$?
-    if [ $RETVAL -eq 0 ] ; then
-        # wait for server to be confirmed as halted in logfile
-        STATUSTEST=0
-        ITERATIONS=0
-        while [ $STATUSTEST -eq 0 ] ; do
-            sleep 2
-            tail -n 5 $LOOKFILE | grep 'Shutdown complete' &> /dev/null && STATUSTEST=1
-            ITERATIONS=`expr $ITERATIONS + 1`
-            if [ $ITERATIONS -gt $MAXITERATIONS ]
-            then
-                break
-            fi
-        done
-        if [ $STATUSTEST -eq 0 ]
-        then
-            ConsoleMessage "Service hasn't stopped within the timeout allowed, please review file $LASTLOG to see the status of the service"
-        else
-            ConsoleMessage "idempiere Stopped"
-  fi
-        echo
+    # try direct kill with signal 15, then signal 9
+    kill -15 `ps ax | grep -v grep | grep $EXECDIR | sed -e 's/^ *//g' | cut -f 1 -d " "`
+    sleep 5
+    IDEMPIERESTATUS=$(ps ax | grep -v grep | grep server| grep $EXECDIR|wc -l)
+    if [ $IDEMPIERESTATUS -ne 0 ] ; then
+	  ConsoleMessage "Service stopped with kill -15"
     else
-        ConsoleMessage "idempiere Failed to Stop"
-        echo
+	  echo "Trying direct kill with signal -9"
+	  kill -9 `ps ax | grep -v grep | grep $EXECDIR | sed -e 's/^ *//g' | cut -f 1 -d " "`
+	  sleep 5
+	  IDEMPIERESTATUS=$(ps ax | grep -v grep | grep server| grep $EXECDIR|wc -l)
+	  if [ $IDEMPIERESTATUS -ne 0 ] ; then
+	    ConsoleMessage "Service stopped with kill -9"
+	  else
+	    ConsoleMessage "Service hasn't stopped"
+	  fi
     fi
     return $RETVAL
-
 }
 
 
