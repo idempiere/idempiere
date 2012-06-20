@@ -62,7 +62,9 @@ Export-Package: de.schaeffer.compiere.tools,
  org.jdesktop.swingx.treetable,
  org.jdesktop.swingx.util
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
- org.adempiere.ui;bundle-version="1.0.0"
+ org.adempiere.ui;bundle-version="1.0.0",
+ org.adempiere.report.jasper;bundle-version="1.0.0",
+ org.adempiere.report.jasper.library;bundle-version="1.0.0"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
