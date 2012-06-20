@@ -20,6 +20,7 @@
 package org.adempiere.base;
 
 import org.adempiere.base.equinox.StackTraceCommand;
+import org.compiere.Adempiere;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -53,6 +54,7 @@ public class BaseActivator implements BundleActivator {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		bundleContext = null;
+		Adempiere.stop();
 	}
 
 	public static BundleContext getBundleContext() {

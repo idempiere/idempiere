@@ -23,8 +23,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -67,8 +69,11 @@ public final class MLookup extends Lookup implements Serializable
 		log.fine(m_info.KeyColumn);
 
 		//  load into local lookup, if already cached
-		if (MLookupCache.loadFromCache (m_info, m_lookup))
-			return;
+		if (Ini.isClient()) 
+		{
+			if (MLookupCache.loadFromCache (m_info, m_lookup))
+				return;
+		}
 
 		//  Don't load Search or CreatedBy/UpdatedBy
 		if (m_info.DisplayType == DisplayType.Search 
@@ -124,9 +129,10 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		if (m_info != null)
 			log.fine(m_info.KeyColumn + ": dispose");
-		if (m_loader != null && m_loader.isAlive())
-			m_loader.interrupt();
+		if (m_loaderFuture != null && !m_loaderFuture.isDone())
+			m_loaderFuture.cancel(true);
 		m_loader = null;
+		m_loaderFuture = null;
 		//
 		if (m_lookup != null)
 			m_lookup.clear();
@@ -145,17 +151,18 @@ public final class MLookup extends Lookup implements Serializable
 	 */
 	public void loadComplete()
 	{
-		if (m_loader != null && m_loader.isAlive())
+		if (m_loaderFuture != null && !m_loaderFuture.isDone())
 		{
-			try
+			try 
 			{
-				m_loader.join();
-				m_loader = null;
+				m_loaderFuture.get();
 			}
-			catch (InterruptedException ie)
+			catch (Exception ie)
 			{
 				log.log(Level.SEVERE, m_info.KeyColumn + ": Interrupted", ie);
-			}
+			}				
+		    m_loader = null;
+		    m_loaderFuture = null;
 		}
 	}   //  loadComplete
 
@@ -188,7 +195,7 @@ public final class MLookup extends Lookup implements Serializable
 			return retValue;
 
 		//	Not found and waiting for loader
-		if (m_loader != null && m_loader.isAlive())
+		if (m_loaderFuture != null && !m_loaderFuture.isDone())
 		{
 			log.finer((m_info.KeyColumn==null ? "ID="+m_info.Column_ID : m_info.KeyColumn) + ": waiting for Loader");
 			loadComplete();
@@ -332,7 +339,7 @@ public final class MLookup extends Lookup implements Serializable
 	 */
 	private ArrayList<Object> getData (boolean onlyValidated, boolean loadParent)
 	{
-		if (m_loader != null && m_loader.isAlive())
+		if (m_loaderFuture != null && !m_loaderFuture.isDone())
 		{
 			log.fine((m_info.KeyColumn==null ? "ID="+m_info.Column_ID : m_info.KeyColumn) 
 				+ ": waiting for Loader");
@@ -407,6 +414,7 @@ public final class MLookup extends Lookup implements Serializable
 	private HashMap<Object,Object>	m_lookupDirect = null;
 	/**	Save last unsuccessful				*/
 	private Object					m_directNullKey = null;
+	private Future<?> m_loaderFuture;
 
 	/**
 	 *	Get Data Direct from Table.
@@ -592,7 +600,7 @@ public final class MLookup extends Lookup implements Serializable
 		log.fine(m_info.KeyColumn + ": start");
 		
 		m_loader = new MLoader();
-		m_loader.start();
+		m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
 		loadComplete();
 		log.fine(m_info.KeyColumn + ": #" + m_lookup.size());
 		
@@ -631,7 +639,7 @@ public final class MLookup extends Lookup implements Serializable
 	/**************************************************************************
 	 *	MLookup Loader
 	 */
-	class MLoader extends Thread implements Serializable
+	class MLoader implements Serializable, Runnable
 	{
 		/**
 		 * 
@@ -643,9 +651,6 @@ public final class MLookup extends Lookup implements Serializable
 		 */
 		public MLoader()
 		{
-			super("MLoader-" + m_info.KeyColumn);
-		//	if (m_info.KeyColumn.indexOf("C_InvoiceLine_ID") != -1)
-		//		log.info(m_info.KeyColumn);
 		}	//	Loader
 		
 		private long m_startTime = System.currentTimeMillis();
@@ -656,7 +661,8 @@ public final class MLookup extends Lookup implements Serializable
 		public void run()
 		{
 			long startTime = System.currentTimeMillis();
-			MLookupCache.loadStart (m_info);
+			if (Ini.isClient())
+				MLookupCache.loadStart (m_info);
 			String sql = m_info.Query;
 
 			//	not validated
@@ -697,7 +703,7 @@ public final class MLookup extends Lookup implements Serializable
 				}
 			}
 			//	check
-			if (isInterrupted())
+			if (Thread.interrupted())
 			{
 				log.log(Level.WARNING, m_info.KeyColumn + ": Loader interrupted");
 				return;
@@ -727,11 +733,20 @@ public final class MLookup extends Lookup implements Serializable
 				{
 					if (rows++ > MAX_ROWS)
 					{
-						log.warning(m_info.KeyColumn + ": Loader - Too many records");
+						String s = m_info.KeyColumn + ": Loader - Too many records";
+						if (m_info.Column_ID > 0) 
+						{
+							MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
+							String column = mColumn.getColumnName();
+							s = s + ", Column="+column;
+							String tableName = MTable.getTableName(m_info.ctx, mColumn.getAD_Table_ID());
+							s = s + ", Table="+tableName;
+						}
+						log.warning(s);
 						break;
 					}
 					//  check for interrupted every 10 rows
-					if (rows % 20 == 0 && isInterrupted())
+					if (rows % 20 == 0 && Thread.interrupted())
 						break;
 
 					//  load data
@@ -773,7 +788,8 @@ public final class MLookup extends Lookup implements Serializable
 					+ " - ms=" + String.valueOf(System.currentTimeMillis()-m_startTime)
 					+ " (" + String.valueOf(System.currentTimeMillis()-startTime) + ")");
 		//	if (m_allLoaded)
-			MLookupCache.loadEnd (m_info, m_lookup);
+			if (Ini.isClient()) 
+				MLookupCache.loadEnd (m_info, m_lookup);
 		}	//	run
 	}	//	Loader
 

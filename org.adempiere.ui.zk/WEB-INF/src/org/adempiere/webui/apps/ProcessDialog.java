@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import org.adempiere.util.IProcessMonitor;
@@ -22,6 +23,7 @@ import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.Adempiere;
 import org.compiere.model.SystemIDs;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -90,7 +92,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	private Center center;
 	private North north;
 
-
+	
 	/**
 	 * Dialog to start a process/report
 	 * @param ctx
@@ -197,7 +199,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	private boolean isParameterPage = true;
 	private String initialMessage;
 	private BusyDialog progressWindow;
-	private Thread thread;
+	@SuppressWarnings("unused")
+	private Future<?> future;
 	private ProcessDialogRunnable processDialogRunnable;
 
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
@@ -333,13 +336,12 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		p.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, desktop);
 		
 		processDialogRunnable = new ProcessDialogRunnable(p);
-		thread = new Thread(processDialogRunnable);
-		thread.start();		
+		future = Adempiere.getThreadPoolExecutor().submit(processDialogRunnable);
 	}
 	
 	private void onComplete() {
 		Env.getCtx().putAll(processDialogRunnable.getProperties());
-		thread = null;			
+		future = null;			
 		processDialogRunnable = null;
 		unlockUI(m_pi);
 	}

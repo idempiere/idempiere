@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import org.adempiere.util.IProcessMonitor;
@@ -31,6 +32,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.compiere.Adempiere;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -70,7 +72,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	private static final long serialVersionUID = -7109707014309321369L;
 	private boolean m_autoStart;
 	private VerticalBox dialogBody;
-
+	
 	/**
 	 * @param aProcess
 	 * @param WindowNo
@@ -84,7 +86,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		m_WindowNo = WindowNo;
 		m_pi = pi;
 		m_autoStart = autoStart;
-
+		
 		log.info("Process=" + pi.getAD_Process_ID());
 		try
 		{
@@ -143,9 +145,11 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		dialogBody.appendChild(div);
 		centerPanel = new Panel();
 		dialogBody.appendChild(centerPanel);
-		div = new Div();
-		div.setStyle("text-align: right");
+//		div = new Div();
+//		div.setStyle("text-align: right");
 		Hbox hbox = new Hbox();
+		hbox.setWidth("100%");
+		hbox.setStyle("margin-top: 10px");
 		Button btn = new Button("Ok");
 		LayoutUtils.addSclass("action-text-button", btn);
 		btn.setId("Ok");
@@ -158,8 +162,9 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		btn.addEventListener(Events.ON_CLICK, this);
 
 		hbox.appendChild(btn);
-		div.appendChild(hbox);
-		dialogBody.appendChild(div);
+		hbox.setPack("end");
+//		div.appendChild(hbox);
+		dialogBody.appendChild(hbox);
 		this.appendChild(dialogBody);
 
 	}
@@ -185,7 +190,8 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	private BusyDialog progressWindow;
 	private boolean isLocked = false;
 	private org.adempiere.webui.apps.ProcessModalDialog.ProcessDialogRunnable processDialogRunnable;
-	private Thread thread;
+	@SuppressWarnings("unused")
+	private Future<?> future;
 
 	/**
 	 * 	Set Visible
@@ -317,14 +323,14 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	 * launch process
 	 */
 	private void startProcess()
-	{
+	{		
 		m_pi.setPrintPreview(true);
 
 		if (m_processMonitor != null) {
 			m_processMonitor.lockUI(m_pi);
 			Clients.clearBusy();
 		}
-
+		
 		lockUI(m_pi);
 
 		//use echo, otherwise lock ui wouldn't work
@@ -361,8 +367,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		p.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, desktop);
 		
 		processDialogRunnable = new ProcessDialogRunnable(p);
-		thread = new Thread(processDialogRunnable);
-		thread.start();
+		future = Adempiere.getThreadPoolExecutor().submit(processDialogRunnable);
 	}
 	
 	private void hideBusyDialog() {
@@ -409,14 +414,14 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 
 	private void onComplete() {
 		Env.getCtx().putAll(processDialogRunnable.getProperties());
-		thread = null;			
+		future = null;			
 		processDialogRunnable = null;
-		dispose();
+		dispose();		
 		if (m_processMonitor != null) {
 			m_processMonitor.unlockUI(m_pi);
 		}
 		unlockUI(m_pi);
-		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
+		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));				
 	}
 
 	@Override

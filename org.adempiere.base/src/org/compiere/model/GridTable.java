@@ -35,12 +35,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -214,7 +216,7 @@ public class GridTable extends AbstractTableModel
 
 	/** Vetoable Change Bean support    */
 	private VetoableChangeSupport   m_vetoableChangeSupport = new VetoableChangeSupport(this);
-	private Thread m_loaderThread;
+	private Future<?> m_loaderFuture;
 	/** Property of Vetoable Bean support "RowChange" */
 	public static final String  PROPERTY = "MTable-RowSave";
 
@@ -618,8 +620,7 @@ public class GridTable extends AbstractTableModel
 				m_loader.run();
 			else
 			{
-				m_loaderThread = new Thread(m_loader, "TLoader");
-				m_loaderThread.start();
+				m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
 			}
 		}
 		else
@@ -656,17 +657,17 @@ public class GridTable extends AbstractTableModel
 	public void loadComplete()
 	{
 		//  Wait for loader
-		if (m_loaderThread != null)
+		if (m_loaderFuture != null)
 		{
-			if (m_loaderThread.isAlive())
+			if (!m_loaderFuture.isDone())
 			{
 				try
 				{
-					m_loaderThread.join();
+					m_loaderFuture.get();
 				}
-				catch (InterruptedException ie)
+				catch (Exception ie)
 				{
-					log.log(Level.SEVERE, "Join interrupted", ie);
+					log.log(Level.SEVERE, "Interrupted", ie);
 				}
 			}
 		}
@@ -684,7 +685,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	public boolean isLoading()
 	{
-		if (m_loaderThread != null && m_loaderThread.isAlive())
+		if (m_loaderFuture != null && !m_loaderFuture.isDone())
 			return true;
 		return false;
 	}   //  isLoading
@@ -723,16 +724,17 @@ public class GridTable extends AbstractTableModel
 		}
 
 		//	Stop loader
-		while (m_loaderThread != null && m_loaderThread.isAlive())
+		while (m_loaderFuture != null && !m_loaderFuture.isDone())
 		{
 			log.fine("Interrupting Loader ...");
-			m_loaderThread.interrupt();
+			m_loaderFuture.cancel(true);
 			try
 			{
 				Thread.sleep(200);		//	.2 second
 			}
 			catch (InterruptedException ie)
 			{}
+			m_loaderFuture = null;
 		}
 
 		if (!m_inserting)
@@ -787,7 +789,7 @@ public class GridTable extends AbstractTableModel
 		m_rowData = null;
 		m_oldValue = null;
 		m_loader = null;
-		m_loaderThread = null;
+		m_loaderFuture = null;
 	}   //  dispose
 
 	/**
@@ -985,7 +987,7 @@ public class GridTable extends AbstractTableModel
 
 		//	need to wait for data read into buffer
 		int loops = 0;
-		while (row >= m_sort.size() && m_loaderThread != null && m_loaderThread.isAlive() && loops < 15)
+		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < 15)
 		{
 			log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
 			try

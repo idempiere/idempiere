@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.jnlp.BasicService;
@@ -103,6 +106,9 @@ public final class Adempiere
 
 	/**	Logging								*/
 	private static CLogger		log = null;
+	
+	/** Thread pool **/
+	private static ThreadPoolExecutor threadPoolExecutor = null;
 
 	static {
 		ClassLoader loader = Adempiere.class.getClassLoader();
@@ -504,6 +510,22 @@ public final class Adempiere
 		if (isClient && Ini.isPropertyBool(Ini.P_TRACEFILE))
 			CLogMgt.addHandler(new CLogFile(Ini.findAdempiereHome(), true, isClient));
 
+		//setup specific log level
+		Properties properties = Ini.getProperties();
+		for(Object key : properties.keySet())
+		{
+			if (key instanceof String)
+			{
+				String s = (String)key;
+				if (s.endsWith("."+Ini.P_TRACELEVEL))
+				{
+					String level = properties.getProperty(s);
+					s = s.substring(0, s.length() - ("."+Ini.P_TRACELEVEL).length());
+					CLogMgt.setLevel(s, level);
+				}
+			}
+		}
+		
 		//	Set UI
 		if (isClient)
 		{
@@ -514,11 +536,42 @@ public final class Adempiere
 		//  Set Default Database Connection from Ini
 		DB.setDBTarget(CConnection.get(getCodeBaseHost()));
 
+		createThreadPool();
+		
 		if (isClient)		//	don't test connection
 			return false;	//	need to call
 
 		return startupEnvironment(isClient);
 	}   //  startup
+
+	private static void createThreadPool() {
+		int min = 20;
+		int max = 200;
+		Properties properties = Ini.getProperties();
+		String maxSize = properties.getProperty("MaxThreadPoolSize");
+		String minSize = properties.getProperty("MinThreadPoolSize");
+		if (maxSize != null) {
+			try {
+				max = Integer.parseInt(maxSize);
+			} catch (Exception e) {}
+		}
+		if (minSize != null) {
+			try {
+				min = Integer.parseInt(minSize);
+			} catch (Exception e) {}
+		}
+		if (max < min) {
+			max = min;
+		}
+		if (max <= 0) {
+			max = 200;
+		}
+		if (min < 0) {
+			min = 20;
+		}
+		// start thread pool
+		threadPoolExecutor = new ThreadPoolExecutor(min, max, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+	}
 
 	/**
 	 * 	Startup Adempiere Environment.
@@ -590,5 +643,15 @@ public final class Adempiere
 
 	public static URL getResource(String name) {
 		return Core.getResourceFinder().getResource(name);
+	}
+	
+	public static synchronized void stop() {
+		if (threadPoolExecutor != null) {
+			threadPoolExecutor.shutdown();
+		}
+	}
+	
+	public static ThreadPoolExecutor getThreadPoolExecutor() {
+		return threadPoolExecutor;
 	}
 }	//	Adempiere
