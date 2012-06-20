@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -55,6 +56,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
+import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Trace;
@@ -95,7 +97,7 @@ import org.w3c.dom.Element;
  *			<li>https://sourceforge.net/tracker/?func=detail&aid=2947622&group_id=176962&atid=879332
  */
 public abstract class PO
-	implements Serializable, Comparator, Evaluatee, Cloneable
+	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
 {
 	/**
 	 *
@@ -283,7 +285,7 @@ public abstract class PO
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("PO[")
+		StringBuilder sb = new StringBuilder("PO[")
 			.append(get_WhereClause(true)).append("]");
 		return sb.toString();
 	}	//  toString
@@ -814,7 +816,7 @@ public abstract class PO
 						(String) value, get_TrxName()) != null)
 					;
 				else {
-					StringBuffer validValues = new StringBuffer();
+					StringBuilder validValues = new StringBuilder();
 					for (ValueNamePair vp : MRefList.getList(getCtx(), p_info.getColumn(index).AD_Reference_Value_ID, false))
 						validValues.append(" - ").append(vp.getValue());
 					throw new IllegalArgumentException(ColumnName + " Invalid value - "
@@ -1288,7 +1290,7 @@ public abstract class PO
 	{
 		m_trxName = trxName;
 		boolean success = true;
-		StringBuffer sql = new StringBuffer("SELECT ");
+		StringBuilder sql = new StringBuilder("SELECT ");
 		int size = get_ColumnCount();
 		for (int i = 0; i < size; i++)
 		{
@@ -1877,7 +1879,7 @@ public abstract class PO
 		{
 			// Load translation from database
 			int ID = ((Integer)m_IDs[0]).intValue();
-			StringBuffer sql = new StringBuffer ("SELECT ").append(columnName)
+			StringBuilder sql = new StringBuilder("SELECT ").append(columnName)
 									.append(" FROM ").append(p_info.getTableName()).append("_Trl WHERE ")
 									.append(m_KeyColumns[0]).append("=?")
 									.append(" AND AD_Language=?");
@@ -2320,10 +2322,30 @@ public abstract class PO
 	 */
 	protected boolean saveUpdate()
 	{
+		boolean ok = doUpdate(isLogSQLScript());
+		
+		return saveFinish (false, ok);
+	}   //  saveUpdate
+
+	private boolean isLogSQLScript() {
+		boolean logMigrationScript = false;
+		if (Ini.isClient()) {
+			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		} else {
+			String sysProperty = Env.getCtx().getProperty("LogMigrationScript", "N");
+			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
+		return logMigrationScript;
+	}
+
+	private boolean doUpdate(boolean withValues) {
+		//params for insert statement
+		List<Object> params = new ArrayList<Object>();
+				
 		String where = get_WhereClause(true);
 		//
 		boolean changes = false;
-		StringBuffer sql = new StringBuffer ("UPDATE ");
+		StringBuilder sql = new StringBuilder ("UPDATE ");
 		sql.append(p_info.getTableName()).append( " SET ");
 		boolean updated = false;
 		boolean updatedBy = false;
@@ -2399,30 +2421,68 @@ public abstract class PO
 			changes = true;
 			sql.append(columnName).append("=");
 
-			//  values
-			if (value == Null.NULL)
-				sql.append("NULL");
-			else if (value instanceof Integer || value instanceof BigDecimal)
-				sql.append(encrypt(i,value));
-			else if (c == Boolean.class)
+			if (withValues)
 			{
-				boolean bValue = false;
-				if (value instanceof Boolean)
-					bValue = ((Boolean)value).booleanValue();
-				else
-					bValue = "Y".equals(value);
-				sql.append(encrypt(i,bValue ? "'Y'" : "'N'"));
-			}
-			else if (value instanceof Timestamp)
-				sql.append(DB.TO_DATE((Timestamp)encrypt(i,value),p_info.getColumnDisplayType(i) == DisplayType.Date));
-			else {
-				if (value.toString().length() == 0) {
-					// [ 1722057 ] Encrypted columns throw error if saved as null
-					// don't encrypt NULL
-					sql.append(DB.TO_STRING(value.toString()));
-				} else {
-				sql.append(encrypt(i,DB.TO_STRING(value.toString())));
+				//  values
+				if (value == Null.NULL)
+					sql.append("NULL");
+				else if (value instanceof Integer || value instanceof BigDecimal)
+					sql.append(value);
+				else if (c == Boolean.class)
+				{
+					boolean bValue = false;
+					if (value instanceof Boolean)
+						bValue = ((Boolean)value).booleanValue();
+					else
+						bValue = "Y".equals(value);
+					sql.append(encrypt(i,bValue ? "'Y'" : "'N'"));
 				}
+				else if (value instanceof Timestamp)
+					sql.append(DB.TO_DATE((Timestamp)encrypt(i,value),p_info.getColumnDisplayType(i) == DisplayType.Date));
+				else {
+					if (value.toString().length() == 0) {
+						// [ 1722057 ] Encrypted columns throw error if saved as null
+						// don't encrypt NULL
+						sql.append(DB.TO_STRING(value.toString()));
+					} else {
+						sql.append(encrypt(i,DB.TO_STRING(value.toString())));
+					}
+				}
+			} 
+			else
+			{
+				if (value instanceof Timestamp && dt == DisplayType.Date)
+					sql.append("trunc(cast(? as date))");
+				else
+					sql.append("?");
+				
+				if (value == Null.NULL)
+				{
+					params.add(null);
+				}
+				else if (c == Boolean.class)
+				{
+					boolean bValue = false;
+					if (value instanceof Boolean)
+						bValue = ((Boolean)value).booleanValue();
+					else
+						bValue = "Y".equals(value);
+					params.add(encrypt(i,bValue ? "Y" : "N"));
+				}
+				else if (c == String.class)
+				{
+					if (value.toString().length() == 0) {
+						// [ 1722057 ] Encrypted columns throw error if saved as null
+						// don't encrypt NULL
+						params.add(null);
+					} else {
+						params.add(encrypt(i,value));
+					}
+				}
+				else
+				{
+					params.add(value);
+				}					
 			}
 
 			//	Change Log	- Only
@@ -2463,7 +2523,22 @@ public abstract class PO
 				String column = (String)it.next();
 				String value = (String)m_custom.get(column);
 				int index = p_info.getColumnIndex(column);
-				sql.append(column).append("=").append(encrypt(index,value));
+				if (withValues)
+				{
+					sql.append(column).append("=").append(encrypt(index,value));
+				}
+				else
+				{
+					sql.append(column).append("=?");
+					if (value == null || value.toString().length() == 0)
+					{
+						params.add(null);
+					} 
+					else
+					{
+						params.add(encrypt(index,value));
+					}
+				}
 			}
 			m_custom = null;
 		}
@@ -2479,13 +2554,29 @@ public abstract class PO
 			{
 				Timestamp now = new Timestamp(System.currentTimeMillis());
 				set_ValueNoCheck("Updated", now);
-				sql.append(",Updated=").append(DB.TO_DATE(now, false));
+				if (withValues)
+				{
+					sql.append(",Updated=").append(DB.TO_DATE(now, false));
+				}
+				else
+				{
+					sql.append(",Updated=?");
+					params.add(now);
+				}
 			}
 			if (!updatedBy)	//	UpdatedBy not explicitly set
 			{
 				int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
 				set_ValueNoCheck("UpdatedBy", new Integer(AD_User_ID));
-				sql.append(",UpdatedBy=").append(AD_User_ID);
+				if (withValues)
+				{
+					sql.append(",UpdatedBy=").append(AD_User_ID);
+				}
+				else
+				{
+					sql.append(",UpdatedBy=?");
+					params.add(AD_User_ID);
+				}
 			}
 			sql.append(" WHERE ").append(where);
 			/** @todo status locking goes here */
@@ -2493,9 +2584,11 @@ public abstract class PO
 			log.finest(sql.toString());
 			int no = 0;
 			if (isUseTimeoutForUpdate())
-				no = DB.executeUpdateEx(sql.toString(), m_trxName, QUERY_TIME_OUT);
+				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, QUERY_TIME_OUT)
+								: DB.executeUpdateEx(sql.toString(), params.toArray(), m_trxName, QUERY_TIME_OUT);
 			else
-				no = DB.executeUpdate(sql.toString(), m_trxName);
+				no = withValues ? DB.executeUpdate(sql.toString(), m_trxName)
+						 		: DB.executeUpdate(sql.toString(), params.toArray(), false, m_trxName);
 			boolean ok = no == 1;
 			if (ok)
 				ok = lobSave();
@@ -2508,12 +2601,14 @@ public abstract class PO
 					log.log(Level.WARNING, "#" + no
 						+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + where);
 			}
-			return saveFinish (false, ok);
+			return ok;
 		}
-
-		//  nothing changed, so OK
-		return saveFinish (false, true);
-	}   //  saveUpdate
+		else
+		{
+			// nothing changed, so OK
+			return true;
+		}
+	}
 
 	private boolean isUseTimeoutForUpdate() {
 		return "true".equalsIgnoreCase(System.getProperty(USE_TIMEOUT_FOR_UPDATE, "false"))
@@ -2598,6 +2693,12 @@ public abstract class PO
 			}
 		}
 
+		boolean ok = doInsert(isLogSQLScript());
+		return saveFinish (true, ok);
+	}   //  saveNew
+
+	private boolean doInsert(boolean withValues) {
+		int index;
 		lobReset();
 
 		//	Change Log
@@ -2606,10 +2707,13 @@ public abstract class PO
 			log.fine("No Session found");
 		int AD_ChangeLog_ID = 0;
 
+		//params for insert statement
+		List<Object> params = new ArrayList<Object>();
+		
 		//	SQL
-		StringBuffer sqlInsert = new StringBuffer("INSERT INTO ");
+		StringBuilder sqlInsert = new StringBuilder("INSERT INTO ");
 		sqlInsert.append(p_info.getTableName()).append(" (");
-		StringBuffer sqlValues = new StringBuffer(") VALUES (");
+		StringBuilder sqlValues = new StringBuilder(") VALUES (");
 		int size = get_ColumnCount();
 		boolean doComma = false;
 		for (int i = 0; i < size; i++)
@@ -2640,14 +2744,61 @@ public abstract class PO
 			//
 			//  Based on class of definition, not class of value
 			Class<?> c = p_info.getColumnClass(i);
-			try
-			{
-				if (c == Object.class) //  may have need to deal with null values differently
-					sqlValues.append (saveNewSpecial (value, i));
+			if (withValues) 
+			{				
+				try
+				{
+					if (c == Object.class) //  may have need to deal with null values differently
+						sqlValues.append (saveNewSpecial (value, i));
+					else if (value == null || value.equals (Null.NULL))
+						sqlValues.append ("NULL");
+					else if (value instanceof Integer || value instanceof BigDecimal)
+						sqlValues.append (value);
+					else if (c == Boolean.class)
+					{
+						boolean bValue = false;
+						if (value instanceof Boolean)
+							bValue = ((Boolean)value).booleanValue();
+						else
+							bValue = "Y".equals(value);
+						sqlValues.append (encrypt(i,bValue ? "'Y'" : "'N'"));
+					}
+					else if (value instanceof Timestamp)
+						sqlValues.append (DB.TO_DATE ((Timestamp)encrypt(i,value), p_info.getColumnDisplayType (i) == DisplayType.Date));
+					else if (c == String.class)
+						sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
+					else if (DisplayType.isLOB(dt))
+						sqlValues.append("null");		//	no db dependent stuff here
+					else
+						sqlValues.append (saveNewSpecial (value, i));
+				}
+				catch (Exception e)
+				{
+					String msg = "";
+					if (m_trxName != null)
+						msg = "[" + m_trxName + "] - ";
+					msg += p_info.toString(i)
+						+ " - Value=" + value
+						+ "(" + (value==null ? "null" : value.getClass().getName()) + ")";
+					log.log(Level.SEVERE, msg, e);
+					throw new DBException(e);	//	fini
+				}
+			}
+			else
+			{				
+				if (value instanceof Timestamp && dt == DisplayType.Date)
+					sqlValues.append("trunc(cast(? as date))");
+				else
+					sqlValues.append("?");
+							
+				if (DisplayType.isLOB(dt))
+				{
+					params.add(null);
+				}
 				else if (value == null || value.equals (Null.NULL))
-					sqlValues.append ("NULL");
-				else if (value instanceof Integer || value instanceof BigDecimal)
-					sqlValues.append (encrypt(i,value));
+				{
+					params.add(null);
+				}
 				else if (c == Boolean.class)
 				{
 					boolean bValue = false;
@@ -2655,27 +2806,23 @@ public abstract class PO
 						bValue = ((Boolean)value).booleanValue();
 					else
 						bValue = "Y".equals(value);
-					sqlValues.append (encrypt(i,bValue ? "'Y'" : "'N'"));
+					params.add(encrypt(i,bValue ? "Y" : "N"));
 				}
-				else if (value instanceof Timestamp)
-					sqlValues.append (DB.TO_DATE ((Timestamp)encrypt(i,value), p_info.getColumnDisplayType (i) == DisplayType.Date));
 				else if (c == String.class)
-					sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
-				else if (DisplayType.isLOB(dt))
-					sqlValues.append("null");		//	no db dependent stuff here
+				{
+					if (value.toString().length() == 0)
+					{
+						params.add(null);
+					}
+					else
+					{
+						params.add(encrypt(i,value));
+					}
+				}
 				else
-					sqlValues.append (saveNewSpecial (value, i));
-			}
-			catch (Exception e)
-			{
-				String msg = "";
-				if (m_trxName != null)
-					msg = "[" + m_trxName + "] - ";
-				msg += p_info.toString(i)
-					+ " - Value=" + value
-					+ "(" + (value==null ? "null" : value.getClass().getName()) + ")";
-				log.log(Level.SEVERE, msg, e);
-				throw new DBException(e);	//	fini
+				{
+					params.add(value);
+				}
 			}
 
 			//	Change Log	- Only
@@ -2685,7 +2832,7 @@ public abstract class PO
 				&& p_info.isAllowLogging(i)		//	logging allowed
 				&& !p_info.isEncrypted(i)		//	not encrypted
 				&& !p_info.isVirtualColumn(i)	//	no virtual column
-				&& !"Password".equals(columnName)
+				&& !"Password".equals(p_info.getColumnName(i))
 				&& (insertLog.equalsIgnoreCase("Y")
 						|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(i).IsKey))
 				)
@@ -2709,6 +2856,8 @@ public abstract class PO
 				String column = (String)it.next();
 				index = p_info.getColumnIndex(column);
 				String value = (String)m_custom.get(column);
+				if (value == null)
+					continue;
 				if (doComma)
 				{
 					sqlInsert.append(",");
@@ -2717,15 +2866,30 @@ public abstract class PO
 				else
 					doComma = true;
 				sqlInsert.append(column);
-				//jz for ad_issue, some value may include ' in a string???
-				sqlValues.append(encrypt(index, value));
+				if (withValues)
+				{
+					sqlValues.append(encrypt(index, value));
+				}
+				else
+				{
+					sqlValues.append("?");
+					if (value == null || value.toString().length() == 0)
+					{
+						params.add(null);
+					}
+					else
+					{
+						params.add(encrypt(index, value));
+					}
+				}
 			}
 			m_custom = null;
 		}
 		sqlInsert.append(sqlValues)
 			.append(")");
 		//
-		int no = DB.executeUpdate(sqlInsert.toString(), m_trxName);
+		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
+							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
 		boolean ok = no == 1;
 		if (ok)
 		{
@@ -2751,8 +2915,8 @@ public abstract class PO
 			else
 				log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
 		}
-		return saveFinish (true, ok);
-	}   //  saveNew
+		return ok;
+	}
 
 	/**
 	 * 	Get ID for new record during save.
@@ -2774,7 +2938,7 @@ public abstract class PO
 	 */
 	public String get_WhereClause (boolean withValues)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < m_IDs.length; i++)
 		{
 			if (i != 0)
@@ -2936,7 +3100,7 @@ public abstract class PO
 		PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
 
 		//	The Delete Statement
-		StringBuffer sql = new StringBuffer ("DELETE FROM ") //jz why no FROM??
+		StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
 			.append(p_info.getTableName())
 			.append(" WHERE ")
 			.append(get_WhereClause(true));
@@ -3149,8 +3313,8 @@ public abstract class PO
 			|| !(m_IDs[0] instanceof Integer))
 			return true;
 		//
-		StringBuffer iColumns = new StringBuffer();
-		StringBuffer sColumns = new StringBuffer();
+		StringBuilder iColumns = new StringBuilder();
+		StringBuilder sColumns = new StringBuilder();
 		for (int i = 0; i < p_info.getColumnCount(); i++)
 		{
 			if (p_info.isColumnTranslated(i))
@@ -3175,7 +3339,7 @@ public abstract class PO
 		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column col INNER JOIN AD_Table tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
 					tableName+"_Trl", PO.getUUIDColumnName(tableName+"_Trl"));
 
-		StringBuffer sql = new StringBuffer ("INSERT INTO ")
+		StringBuilder sql = new StringBuilder ("INSERT INTO ")
 			.append(tableName).append("_Trl (AD_Language,")
 			.append(keyColumn).append(", ")
 			.append(iColumns)
@@ -3237,7 +3401,7 @@ public abstract class PO
 		//
 		String tableName = p_info.getTableName();
 		String keyColumn = m_KeyColumns[0];
-		StringBuffer sql = new StringBuffer ("UPDATE ")
+		StringBuilder sql = new StringBuilder ("UPDATE ")
 			.append(tableName).append("_Trl SET ");
 		//
 		if (client.isAutoUpdateTrl(tableName))
@@ -3290,7 +3454,7 @@ public abstract class PO
 		//
 		String tableName = p_info.getTableName();
 		String keyColumn = m_KeyColumns[0];
-		StringBuffer sql = new StringBuffer ("DELETE  FROM  ")
+		StringBuilder sql = new StringBuilder ("DELETE  FROM  ")
 			.append(tableName).append("_Trl WHERE ")
 			.append(keyColumn).append("=").append(get_ID());
 		int no = DB.executeUpdate(sql.toString(), trxName);
@@ -3341,7 +3505,7 @@ public abstract class PO
 		}
 
 		//	Create SQL Statement - INSERT
-		StringBuffer sb = new StringBuffer("INSERT INTO ")
+		StringBuilder sb = new StringBuilder("INSERT INTO ")
 			.append(acctTable)
 			.append(" (").append(get_TableName())
 			.append("_ID, C_AcctSchema_ID, AD_Client_ID,AD_Org_ID,IsActive, Created,CreatedBy,Updated,UpdatedBy ");
@@ -3428,7 +3592,7 @@ public abstract class PO
 		int uuidColumnId = DB.getSQLValue(get_TrxName(), "SELECT col.AD_Column_ID FROM AD_Column col INNER JOIN AD_Table tbl ON col.AD_Table_ID = tbl.AD_Table_ID WHERE tbl.TableName=? AND col.ColumnName=?",
 				tableName, PO.getUUIDColumnName(tableName));
 
-		StringBuffer sb = new StringBuffer ("INSERT INTO ")
+		StringBuilder sb = new StringBuilder ("INSERT INTO ")
 			.append(tableName)
 			.append(" (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, "
 				+ "AD_Tree_ID, Node_ID, Parent_ID, SeqNo");
@@ -3477,7 +3641,7 @@ public abstract class PO
 		int id = get_ID();
 		if (id == 0)
 			id = get_IDOld();
-		StringBuffer sb = new StringBuffer ("DELETE FROM ")
+		StringBuilder sb = new StringBuilder ("DELETE FROM ")
 			.append(MTree_Base.getNodeTableName(treeType))
 			.append(" n WHERE Node_ID=").append(id)
 			.append(" AND EXISTS (SELECT * FROM AD_Tree t "
@@ -3693,7 +3857,7 @@ public abstract class PO
 	 */
 	public void dump (int index)
 	{
-		StringBuffer sb = new StringBuffer(" ").append(index);
+		StringBuilder sb = new StringBuilder(" ").append(index);
 		if (index < 0 || index >= get_ColumnCount())
 		{
 			log.finest(sb.append(": invalid").toString());
@@ -3725,7 +3889,7 @@ public abstract class PO
 	public static int[] getAllIDs (String TableName, String WhereClause, String trxName)
 	{
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		StringBuffer sql = new StringBuffer("SELECT ");
+		StringBuilder sql = new StringBuilder("SELECT ");
 		sql.append(TableName).append("_ID FROM ").append(TableName);
 		if (WhereClause != null && WhereClause.length() > 0)
 			sql.append(" WHERE ").append(WhereClause);
