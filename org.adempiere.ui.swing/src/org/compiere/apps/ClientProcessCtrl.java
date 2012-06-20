@@ -2,7 +2,7 @@ package org.compiere.apps;
 
 import java.awt.Container;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -34,7 +34,7 @@ public class ClientProcessCtrl {
 	 *  @param trx Transaction
 	 *  @return worker started ProcessCtl instance or null for workflow
 	 */
-	public static ProcessCtl process (IProcessMonitor parent, int WindowNo, ProcessInfo pi, Trx trx)
+	public static ProcessCtl process (IProcessUI parent, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 

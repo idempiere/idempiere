@@ -16,7 +16,7 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.process.ProcessInfo;
 
 /**
@@ -38,7 +38,7 @@ import org.compiere.process.ProcessInfo;
  *  @version    $Id: ASyncProcess.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  *  @deprecated
  */
-public interface ASyncProcess extends IProcessMonitor
+public interface ASyncProcess extends IProcessUI
 {
 	/**
 	 *  Method to be executed async.

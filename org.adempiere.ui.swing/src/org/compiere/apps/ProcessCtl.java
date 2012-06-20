@@ -21,7 +21,7 @@ import java.awt.Container;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -64,7 +64,7 @@ public class ProcessCtl extends AbstractProcessCtl
 	 *  @param trx Transaction
 	 *  @return worker started ProcessCtl instance or null for workflow
 	 */
-	public static ProcessCtl process (IProcessMonitor parent, int WindowNo, ProcessInfo pi, Trx trx)
+	public static ProcessCtl process (IProcessUI parent, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 
@@ -142,7 +142,7 @@ public class ProcessCtl extends AbstractProcessCtl
 	 *  @param trx Transaction
 	 *  @return worker started ProcessCtl instance or null for workflow
 	 */
-	public static ProcessCtl process(IProcessMonitor parent, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
+	public static ProcessCtl process(IProcessUI parent, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 
@@ -206,7 +206,7 @@ public class ProcessCtl extends AbstractProcessCtl
 	 *  @param trx Transaction
 	 *  Created in process(), VInvoiceGen.generateInvoices
 	 */
-	public ProcessCtl (IProcessMonitor parent, int WindowNo, ProcessInfo pi, Trx trx)
+	public ProcessCtl (IProcessUI parent, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		super(parent, WindowNo, pi, trx);
 	}   //  ProcessCtl
@@ -317,14 +317,14 @@ public class ProcessCtl extends AbstractProcessCtl
 	abstract class ProcessUpdateRunnable implements Runnable
 	{
 		protected ProcessInfo pi = null;
-		protected IProcessMonitor parent = null;
+		protected IProcessUI parent = null;
 		
 		public void setProcessInfo(ProcessInfo pi)
 		{
 			this.pi = pi;
 		}
 		
-		public void setParent(IProcessMonitor parent) 
+		public void setParent(IProcessUI parent) 
 		{
 			this.parent = parent;
 		}

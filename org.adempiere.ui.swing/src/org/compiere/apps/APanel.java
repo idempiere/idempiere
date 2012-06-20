@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,7 +60,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
+import org.adempiere.util.IProcessUI;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.search.Find;
 import org.compiere.grid.APanelTab;
@@ -144,7 +146,7 @@ import org.compiere.util.Util;
  *  @sponsor www.metas.de
  */
 public final class APanel extends CPanel
-	implements DataStatusListener, ChangeListener, ActionListener, IProcessMonitor, SystemIDs
+	implements DataStatusListener, ChangeListener, ActionListener, IProcessUI, SystemIDs
 {
 	/**
 	 * 
@@ -2967,5 +2969,17 @@ public final class APanel extends CPanel
 		}	// All restrictions
 
 	}	//	updateToolBarAndMenuWithRestriction
+
+	@Override
+	public void ask(String message, Callback<String> callback) {
+		boolean  b = ADialog.ask(m_curWindowNo, this, message);
+		if (callback != null) {
+			callback.onCallback(b ? "OK" : "CANCEL");
+		}
+	}
+
+	@Override
+	public void download(File file) {
+	}
 
 }	//	APanel

@@ -16,14 +16,18 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
+import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
@@ -32,6 +36,8 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.compiere.Adempiere;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -61,7 +67,7 @@ import org.zkoss.zul.Html;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessModalDialog extends Window implements EventListener<Event>, IProcessMonitor, DialogEvents
+public class ProcessModalDialog extends Window implements EventListener<Event>, IProcessUI, DialogEvents
 {
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	private static final String ON_COMPLETE = "onComplete";
@@ -73,20 +79,37 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	private boolean m_autoStart;
 	private VerticalBox dialogBody;
 	
+	private List<File> downloadFiles;
+
 	/**
 	 * @param aProcess
 	 * @param WindowNo
 	 * @param pi
 	 * @param autoStart
 	 */
-	public ProcessModalDialog(IProcessMonitor aProcess, int WindowNo, ProcessInfo pi, boolean autoStart)
+	public ProcessModalDialog(int WindowNo, ProcessInfo pi, boolean autoStart)
+	{
+		this(null, WindowNo, pi, autoStart);
+	}
+	
+	/**
+	 * @param aProcess
+	 * @param WindowNo
+	 * @param pi
+	 * @param autoStart
+	 */
+	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, ProcessInfo pi, boolean autoStart)
 	{
 		m_ctx = Env.getCtx();
-		m_processMonitor = aProcess;
 		m_WindowNo = WindowNo;
 		m_pi = pi;
 		m_autoStart = autoStart;
 		
+		if (listener != null) 
+		{
+			addEventListener(ON_MODAL_CLOSE, listener);
+		}
+
 		log.info("Process=" + pi.getAD_Process_ID());
 		try
 		{
@@ -99,19 +122,22 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		}
 	}
 
+	public ProcessModalDialog (int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
+	{
+		this(null, WindowNo, AD_Process_ID, tableId, recordId, autoStart);
+	}
+	
 	/**
 	 * Dialog to start a process/report
-	 * @param ctx
-	 * @param aProcess
 	 * @param WindowNo
 	 * @param AD_Process_ID
 	 * @param tableId
 	 * @param recordId
 	 * @param autoStart
 	 */
-	public ProcessModalDialog (  IProcessMonitor aProcess, int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
+	public ProcessModalDialog (EventListener<Event> listener, int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
 	{
-		this(aProcess, WindowNo, new ProcessInfo("", AD_Process_ID, tableId, recordId), autoStart);
+		this(listener, WindowNo, new ProcessInfo("", AD_Process_ID, tableId, recordId), autoStart);
 	}
 
 	/**
@@ -119,7 +145,6 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	 * @param ctx
 	 * @param parent not used
 	 * @param title not used
-	 * @param aProcess
 	 * @param WindowNo
 	 * @param AD_Process_ID
 	 * @param tableId
@@ -128,10 +153,10 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	 * @deprecated
 	 */
 	public ProcessModalDialog (Window parent, String title,
-			IProcessMonitor aProcess, int WindowNo, int AD_Process_ID,
+			int WindowNo, int AD_Process_ID,
 			int tableId, int recordId, boolean autoStart)
 	{
-		this(aProcess, WindowNo, AD_Process_ID, tableId, recordId, autoStart);
+		this(WindowNo, AD_Process_ID, tableId, recordId, autoStart);
 	}	//	ProcessDialog
 
 	private void initComponents() {
@@ -145,8 +170,6 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		dialogBody.appendChild(div);
 		centerPanel = new Panel();
 		dialogBody.appendChild(centerPanel);
-//		div = new Div();
-//		div.setStyle("text-align: right");
 		Hbox hbox = new Hbox();
 		hbox.setWidth("100%");
 		hbox.setStyle("margin-top: 10px");
@@ -163,13 +186,11 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 
 		hbox.appendChild(btn);
 		hbox.setPack("end");
-//		div.appendChild(hbox);
 		dialogBody.appendChild(hbox);
 		this.appendChild(dialogBody);
 
 	}
 
-	private IProcessMonitor m_processMonitor;
 	private int m_WindowNo;
 	private Properties m_ctx;
 	private String		    m_Name = null;
@@ -326,12 +347,9 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	{		
 		m_pi.setPrintPreview(true);
 
-		if (m_processMonitor != null) {
-			m_processMonitor.lockUI(m_pi);
-			Clients.clearBusy();
-		}
-		
 		lockUI(m_pi);
+		
+		downloadFiles = new ArrayList<File>();
 
 		//use echo, otherwise lock ui wouldn't work
 		Clients.response(new AuEcho(this, "runProcess", null));
@@ -416,11 +434,14 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		Env.getCtx().putAll(processDialogRunnable.getProperties());
 		future = null;			
 		processDialogRunnable = null;
-		dispose();		
-		if (m_processMonitor != null) {
-			m_processMonitor.unlockUI(m_pi);
-		}
 		unlockUI(m_pi);
+		if (downloadFiles.size() > 0) {
+			MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(downloadFiles.toArray(new File[0]));
+			downloadDialog.setPage(this.getPage());
+			downloadDialog.setTitle(m_pi.getTitle());
+			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
+		}
+		dispose();		
 		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));				
 	}
 
@@ -481,5 +502,20 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		protected Properties getProperties() {
 			return properties;
 		}		
+	}
+
+	@Override
+	public void ask(final String message, final Callback<String> callback) {
+		Executions.schedule(getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				FDialog.ask(m_WindowNo, null, message, callback);
+			}
+		}, new Event("onAsk"));		
+	}
+
+	@Override
+	public void download(File file) {
+		downloadFiles.add(file);
 	}
 }	//	ProcessDialog

@@ -21,7 +21,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
@@ -92,7 +92,7 @@ public class ReportCtl implements SystemIDs
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if created
 	 */
-	static public boolean start (IProcessMonitor parent, int WindowNo, ProcessInfo pi, boolean IsDirectPrint)
+	static public boolean start (IProcessUI parent, int WindowNo, ProcessInfo pi, boolean IsDirectPrint)
 	{
 		pi.setPrintPreview(!IsDirectPrint);
 		return start(parent, WindowNo, pi);
@@ -109,7 +109,7 @@ public class ReportCtl implements SystemIDs
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if created
 	 */
-	static public boolean start (IProcessMonitor parent, int WindowNo, ProcessInfo pi)
+	static public boolean start (IProcessUI parent, int WindowNo, ProcessInfo pi)
 	{
 		s_log.info("start - " + pi);
 
@@ -261,7 +261,7 @@ public class ReportCtl implements SystemIDs
 	 * 	@param printerName 	Specified printer name
 	 * 	@return true if success
 	 */
-	public static boolean startDocumentPrint(int type, MPrintFormat customPrintFormat, int Record_ID, IProcessMonitor parent, int WindowNo, String printerName)
+	public static boolean startDocumentPrint(int type, MPrintFormat customPrintFormat, int Record_ID, IProcessUI parent, int WindowNo, String printerName)
 	{
 		return(startDocumentPrint(type, customPrintFormat, Record_ID, parent, WindowNo, true, printerName));
 	}
@@ -276,7 +276,7 @@ public class ReportCtl implements SystemIDs
 	 * 	@param IsDirectPrint if true, prints directly - otherwise View
 	 * 	@return true if success
 	 */
-	public static boolean startDocumentPrint(int type, int Record_ID, IProcessMonitor parent, int WindowNo,
+	public static boolean startDocumentPrint(int type, int Record_ID, IProcessUI parent, int WindowNo,
 			boolean IsDirectPrint)
 	{
 		return(startDocumentPrint(type, null, Record_ID, parent, WindowNo, IsDirectPrint, null ));
@@ -291,7 +291,7 @@ public class ReportCtl implements SystemIDs
 	 * 	@param printerName 	Specified printer name
 	 * 	@return true if success
 	 */
-	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, IProcessMonitor parent, int WindowNo,
+	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, IProcessUI parent, int WindowNo,
 			boolean IsDirectPrint, String printerName)
 	{
 		ReportEngine re = ReportEngine.get (Env.getCtx(), type, Record_ID);

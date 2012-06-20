@@ -19,6 +19,7 @@ package org.adempiere.webui.component;
 
 import java.util.Properties;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.compiere.util.Env;
@@ -39,7 +40,7 @@ import org.zkoss.zul.Separator;
 * @date    Jul 31, 2007
 */
 
-public class Messagebox extends Window implements EventListener
+public class Messagebox extends Window implements EventListener<Event>
 {	
 	/**
 	 * generated serial version ID
@@ -62,6 +63,8 @@ public class Messagebox extends Window implements EventListener
 	private Image img = new Image();
 
 	private int returnValue;
+	private Callback<String> callback;
+	private String callbackValue;
 
 	/** A OK button. */
 	public static final int OK = 0x0001;
@@ -193,8 +196,14 @@ public class Messagebox extends Window implements EventListener
 
 	public int show(String message, String title, int buttons, String icon)
 	{
+		return show(message, title, buttons, icon, null);
+	}
+	
+	public int show(String message, String title, int buttons, String icon, Callback<String> callback)
+	{
 		this.msg = message;
 		this.imgSrc = icon;
+		this.callback = callback;
 
 		btnOk.setVisible(false);
 		btnCancel.setVisible(false);
@@ -244,9 +253,14 @@ public class Messagebox extends Window implements EventListener
 
 	public static int showDialog(String message, String title, int buttons, String icon) throws InterruptedException
 	{
+		return showDialog(message, title, buttons, icon, null);
+	}
+	
+	public static int showDialog(String message, String title, int buttons, String icon, Callback<String> callback) throws InterruptedException
+	{
 		Messagebox msg = new Messagebox();
 
-		return msg.show(message, title, buttons, icon);
+		return msg.show(message, title, buttons, icon, callback);
 	}
 
 	public void onEvent(Event event) throws Exception
@@ -254,35 +268,53 @@ public class Messagebox extends Window implements EventListener
 		if (event == null)
 			return;
 
+		callbackValue = null;
+		
 		if (event.getTarget() == btnOk)
 		{
 			returnValue = OK;
+			callbackValue = "OK";
 		}
 		else if (event.getTarget() == btnCancel)
 		{
 			returnValue = CANCEL;
+			callbackValue = "CANCEL";
 		}
 		else if (event.getTarget() == btnYes)
 		{
 			returnValue = YES;
+			callbackValue = "YES";
 		}
 		else if (event.getTarget() == btnNo)
 		{
 			returnValue = NO;
+			callbackValue = "NO";
 		}
 		else if (event.getTarget() == btnAbort)
 		{
 			returnValue = ABORT;
+			callbackValue = "ABORT";
 		}
 		else if (event.getTarget() == btnRetry)
 		{
 			returnValue = RETRY;
+			callbackValue = "RETRY";
 		}
 		else if (event.getTarget() == btnIgnore)
 		{
 			returnValue = IGNORE;
+			callbackValue = "IGNORE";
 		}
 
 		this.detach();
+	}
+
+	@Override
+	public void detach() {
+		super.detach();
+		if (callback != null)
+		{
+			callback.onCallback(callbackValue);
+		}
 	}
 }

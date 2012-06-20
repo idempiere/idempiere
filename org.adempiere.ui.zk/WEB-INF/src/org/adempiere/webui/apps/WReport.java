@@ -46,7 +46,7 @@ import org.zkoss.zul.Menupopup;
  * @author Low Heng Sin
  *
  */
-public class WReport implements EventListener {
+public class WReport implements EventListener<Event> {
 
 	/**
 	 *	Constructor
@@ -227,7 +227,7 @@ public class WReport implements EventListener {
 			ProcessInfo pi = new ProcessInfo ("", pf.getJasperProcess_ID(), pf.getAD_Table_ID(), Record_ID);
 			
 			//	Execute Process
-			WProcessCtl.process(null, WindowNo, pi, null);
+			WProcessCtl.process(WindowNo, pi, null);
 		}
 		else
 		{

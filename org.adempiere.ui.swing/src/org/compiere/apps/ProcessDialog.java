@@ -24,6 +24,7 @@ import java.awt.FlowLayout;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,7 +37,8 @@ import javax.swing.JSeparator;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
+import org.adempiere.util.IProcessUI;
 import org.compiere.model.SystemIDs;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
@@ -68,7 +70,7 @@ import org.compiere.util.Msg;
  *  				<li>BF [ 1963128 ] Running a process w/o trl should display an error
  */
 public class ProcessDialog extends CFrame
-	implements ActionListener, IProcessMonitor, SystemIDs
+	implements ActionListener, IProcessUI, SystemIDs
 {
 	/**
 	 * 
@@ -521,6 +523,20 @@ public class ProcessDialog extends CFrame
 	@Override
 	public void statusUpdate(String status) {
 		message.setText(status);
+	}
+
+	@Override
+	public void ask(String message, Callback<String> callback) {
+		boolean  b = ADialog.ask(m_WindowNo, this, message);
+		if (callback != null) {
+			callback.onCallback(b ? "OK" : "CANCEL");
+		}
+	}
+
+	@Override
+	public void download(File file) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }	//	ProcessDialog

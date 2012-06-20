@@ -26,6 +26,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trace;
 
 import org.zkoss.zk.ui.Component;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Messagebox;
 
@@ -267,7 +268,7 @@ public class FDialog
 		return ask(windowNo, comp, s);
     }
     
-	/**************************************************************************
+    /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
 	 *	@param	WindowNo	Number of Window
@@ -279,10 +280,26 @@ public class FDialog
     
     public static boolean ask(int windowNo, Component comp, String adMessage)
     {
+    	return ask(windowNo, comp, adMessage, (Callback<String>)null);
+    }
+    
+	/**************************************************************************
+	 *	Ask Question with question icon and (OK) (Cancel) buttons
+	 *
+	 *	@param	WindowNo	Number of Window
+	 *  @param  c           Container (owner)
+	 *	@param	AD_Message	Message to be translated
+	 *
+	 *	@return true, if OK
+	 */
+    
+    public static boolean ask(int windowNo, Component comp, String adMessage, Callback<String> callback)
+    {
         try
         {
         	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-            int response = Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            int response = Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo), 
+            		Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, callback);
 
             return (response == Messagebox.OK);
         }

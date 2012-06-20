@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
@@ -52,7 +52,7 @@ import org.compiere.util.Trx;
 public abstract class SvrProcess implements ProcessCall
 {
 	public static final String PROCESS_INFO_CTX_KEY = "ProcessInfo";
-	public static final String PROCESS_MONITOR_CTX_KEY = "ProcessMonitor";
+	public static final String PROCESS_UI_CTX_KEY = "ProcessUI";
 	
 	/**
 	 *  Server Process.
@@ -75,7 +75,7 @@ public abstract class SvrProcess implements ProcessCall
 	private PO					m_lockedObject = null;
 	/** Process Main transaction 		*/
 	private Trx 				m_trx;
-	private IProcessMonitor 	processMonitor;
+	protected IProcessUI 	processUI;
 
 	/**	Common Error Message			*/
 	protected static String 	MSG_SaveErrorRowNotFound = "@SaveErrorRowNotFound@";
@@ -111,14 +111,14 @@ public abstract class SvrProcess implements ProcessCall
 		try 
 		{
 			m_ctx.put(PROCESS_INFO_CTX_KEY, m_pi);
-			if (processMonitor != null)
-				m_ctx.put(PROCESS_MONITOR_CTX_KEY, processMonitor);
+			if (processUI != null)
+				m_ctx.put(PROCESS_UI_CTX_KEY, processUI);
 			success = process();			
 		}
 		finally
 		{
 			m_ctx.remove(PROCESS_INFO_CTX_KEY);
-			m_ctx.remove(PROCESS_MONITOR_CTX_KEY);
+			m_ctx.remove(PROCESS_UI_CTX_KEY);
 			if (localTrx)
 			{
 				if (success)
@@ -536,9 +536,9 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	get_TrxName
 
 	@Override
-	public void setProcessMonitor(IProcessMonitor monitor)
+	public void setProcessUI(IProcessUI monitor)
 	{
-		processMonitor = monitor;
+		processUI = monitor;
 	}
 	
 	/**
@@ -547,9 +547,9 @@ public abstract class SvrProcess implements ProcessCall
 	 */
 	protected void statusUpdate(String message)
 	{
-		if (processMonitor != null)
+		if (processUI != null)
 		{
-			processMonitor.statusUpdate(message);
+			processUI.statusUpdate(message);
 		}
 	}
 }   //  SvrProcess

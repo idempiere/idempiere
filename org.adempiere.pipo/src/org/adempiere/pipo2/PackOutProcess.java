@@ -97,17 +97,10 @@ public class PackOutProcess extends SvrProcess
 
 			if (packageExp.getAD_Package_Exp_ID() == p_PackOut_ID){
 				//Create the package documentation
-				packoutDirectory = packageExp.getFile_Directory();
-				if (packoutDirectory == null || packoutDirectory.trim().length() == 0) {
-					packoutDirectory = Adempiere.getAdempiereHome().trim();
-					if (!packoutDirectory.endsWith("/") && !packoutDirectory.endsWith("\\"))
-						packoutDirectory+= File.separator;
-					packoutDirectory = packoutDirectory + "packout" + File.separator;
-				} else {
-					packoutDirectory = packoutDirectory.trim();
-					if (!packoutDirectory.endsWith("/") && !packoutDirectory.endsWith("\\"))
-						packoutDirectory+= File.separator;
-				}
+				packoutDirectory = Adempiere.getAdempiereHome().trim();
+				if (!packoutDirectory.endsWith("/") && !packoutDirectory.endsWith("\\"))
+					packoutDirectory+= File.separator;
+				packoutDirectory = packoutDirectory + "packout" + File.separator;
 
 				//create packout folder if needed
 				File packoutDirectoryFile = new File(packoutDirectory);
@@ -152,6 +145,9 @@ public class PackOutProcess extends SvrProcess
 			throw e;
 		}
 
+		if (processUI != null)
+			processUI.download(new File(exportFile));
+		
 		return "Exported="+processedCount + " File=" + exportFile;
 	}	//	doIt
 

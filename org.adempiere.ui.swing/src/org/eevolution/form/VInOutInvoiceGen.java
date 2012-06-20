@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,7 +39,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.adempiere.plaf.AdempierePLAF;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
+import org.adempiere.util.IProcessUI;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ADialogDialog;
 import org.compiere.apps.AEnv;
@@ -84,7 +86,7 @@ import org.compiere.util.Trx;
  */
 public class VInOutInvoiceGen extends CPanel
 	implements FormPanel, ActionListener, VetoableChangeListener, 
-		ChangeListener, TableModelListener, IProcessMonitor, SystemIDs
+		ChangeListener, TableModelListener, IProcessUI, SystemIDs
 {
 	/**
 	 * 
@@ -900,5 +902,19 @@ public class VInOutInvoiceGen extends CPanel
 	@Override
 	public void statusUpdate(String message) {
 		statusBar.setStatusLine(message);
+	}
+
+	@Override
+	public void ask(String message, Callback<String> callback) {
+		boolean  b = ADialog.ask(m_WindowNo, this, message);
+		if (callback != null) {
+			callback.onCallback(b ? "OK" : "CANCEL");
+		}
+	}
+
+	@Override
+	public void download(File file) {
+		// TODO Auto-generated method stub
+		
 	}
 }	//	VInOutGen

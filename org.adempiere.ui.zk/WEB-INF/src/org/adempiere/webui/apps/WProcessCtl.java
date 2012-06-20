@@ -16,7 +16,7 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.adempiere.webui.component.Window;
 import org.compiere.apps.AbstractProcessCtl;
 import org.compiere.apps.IProcessParameter;
@@ -48,12 +48,11 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 *  lockUI and unlockUI if parent is a ASyncProcess
 	 *  <br>
 	 *
-	 *  @param aProcessMonitor ASyncProcess & Container
 	 *  @param WindowNo window no
 	 *  @param pi ProcessInfo process info
 	 *  @param trx Transaction
 	 */
-	public static void process (IProcessMonitor aProcessMonitor, int WindowNo, ProcessInfo pi, Trx trx)
+	public static void process (int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 
@@ -82,7 +81,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 
 		//	Get Parameters (Dialog)
-		ProcessModalDialog para = new ProcessModalDialog(aProcessMonitor, WindowNo, pi, false);
+		ProcessModalDialog para = new ProcessModalDialog(WindowNo, pi, false);
 		if (para.isValid())
 		{
 			para.setWidth("500px");
@@ -105,13 +104,13 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 *  <br>
 	 *	Called from ProcessDialog.actionPerformed
 	 *
-	 *  @param aProcessMonitor ASyncProcess & Container
+	 *  @param aProcessUI ASyncProcess & Container
 	 *  @param WindowNo window no
 	 *  @param paraPanel Process Parameter Panel
 	 *  @param pi ProcessInfo process info
 	 *  @param trx Transaction
 	 */
-	public static void process(IProcessMonitor aProcessMonitor, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
+	public static void process(IProcessUI aProcessUI, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
 	{
 		log.fine("WindowNo=" + WindowNo + " - " + pi);
 
@@ -153,7 +152,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 		}
 
 		//	execute
-		WProcessCtl worker = new WProcessCtl(aProcessMonitor, WindowNo, pi, trx);
+		WProcessCtl worker = new WProcessCtl(aProcessUI, WindowNo, pi, trx);
 		worker.run();
 	}
 
@@ -163,9 +162,9 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 * @param pi
 	 * @param trx
 	 */
-	public WProcessCtl(IProcessMonitor aProcessMonitor, int WindowNo, ProcessInfo pi,
+	public WProcessCtl(IProcessUI aProcessUI, int WindowNo, ProcessInfo pi,
 			Trx trx) {
-		super(aProcessMonitor, WindowNo, pi, trx);
+		super(aProcessUI, WindowNo, pi, trx);
 	}
 
 	@Override

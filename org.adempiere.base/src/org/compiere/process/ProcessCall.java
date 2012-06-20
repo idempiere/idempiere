@@ -18,7 +18,7 @@ package org.compiere.process;
 
 import java.util.Properties;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.util.Trx;
 
 /**
@@ -49,6 +49,6 @@ public interface ProcessCall
 	/**
 	 * @param processMonitor
 	 */
-	public void setProcessMonitor(IProcessMonitor processMonitor);
+	public void setProcessUI(IProcessUI processUI);
 
 }   //  ProcessCall

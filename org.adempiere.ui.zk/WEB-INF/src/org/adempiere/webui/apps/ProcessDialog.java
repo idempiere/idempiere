@@ -12,7 +12,8 @@ import java.util.Properties;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
+import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Button;
@@ -22,6 +23,7 @@ import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
 import org.compiere.model.SystemIDs;
@@ -81,7 +83,7 @@ import com.lowagie.text.pdf.PdfWriter;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessDialog extends Window implements EventListener<Event>, IProcessMonitor, SystemIDs
+public class ProcessDialog extends Window implements EventListener<Event>, IProcessUI, SystemIDs
 {
 	/**
 	 * generate serial version ID
@@ -92,6 +94,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	private Center center;
 	private North north;
 
+	private List<File> downloadFiles;
 	
 	/**
 	 * Dialog to start a process/report
@@ -315,6 +318,9 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		m_pi.setPrintPreview(true);
 
 		this.lockUI(m_pi);
+		
+		downloadFiles = new ArrayList<File>();
+		
 		Clients.response(new AuEcho(this, "runProcess", null));
 	}
 
@@ -344,6 +350,12 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		future = null;			
 		processDialogRunnable = null;
 		unlockUI(m_pi);
+		if (downloadFiles.size() > 0) {
+			MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(downloadFiles.toArray(new File[0]));
+			downloadDialog.setPage(this.getPage());
+			downloadDialog.setTitle(m_pi.getTitle());
+			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
+		}
 	}
 	
 	private void onStatusUpdate(Event event) {
@@ -663,5 +675,20 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	@Override
 	public void statusUpdate(String message) {
 		Executions.schedule(getDesktop(), this, new Event(ON_STATUS_UPDATE, this, message));
+	}
+
+	@Override
+	public void ask(final String message, final Callback<String> callback) {
+		Executions.schedule(getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				FDialog.ask(m_WindowNo, null, message, callback);
+			}
+		}, new Event("onAsk"));
+	}
+
+	@Override
+	public void download(File file) {
+		downloadFiles.add(file);
 	}
 }	//	ProcessDialog

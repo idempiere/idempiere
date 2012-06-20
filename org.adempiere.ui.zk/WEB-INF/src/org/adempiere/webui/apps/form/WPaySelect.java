@@ -18,11 +18,13 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
+import org.adempiere.util.IProcessUI;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -52,6 +54,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -73,14 +76,9 @@ import org.zkoss.zul.Space;
  *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WPaySelect extends PaySelect
-	implements IFormController, EventListener, WTableModelListener, IProcessMonitor, SystemIDs
+	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI, SystemIDs
 {
 	/** @todo withholding */
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6031404894392912610L;
 	
 	private CustomForm form = new CustomForm();
 
@@ -446,5 +444,21 @@ public class WPaySelect extends PaySelect
 
 	@Override
 	public void statusUpdate(String message) {
+	}
+
+	@Override
+	public void ask(final String message, final Callback<String> callback) {
+		Executions.schedule(form.getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				FDialog.ask(m_WindowNo, null, message, callback);
+			}
+		}, new Event("onAsk"));		
+	}
+
+	@Override
+	public void download(File file) {
+		// TODO Auto-generated method stub
+		
 	}
 }   //  VPaySelect

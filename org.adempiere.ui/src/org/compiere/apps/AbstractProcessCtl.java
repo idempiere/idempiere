@@ -22,7 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.db.CConnection;
 import org.compiere.interfaces.Server;
@@ -62,10 +62,10 @@ public abstract class AbstractProcessCtl implements Runnable
 	 *  @param trx Transaction
 	 *  Created in process(), VInvoiceGen.generateInvoices
 	 */
-	public AbstractProcessCtl (IProcessMonitor aProcessMonitor, int WindowNo, ProcessInfo pi, Trx trx)
+	public AbstractProcessCtl (IProcessUI aProcessUI, int WindowNo, ProcessInfo pi, Trx trx)
 	{
 		windowno = WindowNo;
-		m_processMonitor = aProcessMonitor;
+		m_processUI = aProcessUI;
 		m_pi = pi;
 		m_trx = trx;	//	handeled correctly
 	}   //  ProcessCtl
@@ -73,7 +73,7 @@ public abstract class AbstractProcessCtl implements Runnable
 	/** Windowno */
 	private int windowno;
 	/** Parenr */
-	private IProcessMonitor m_processMonitor;
+	private IProcessUI m_processUI;
 	/** Process Info */
 	private ProcessInfo m_pi;
 	private Trx				m_trx;
@@ -276,7 +276,7 @@ public abstract class AbstractProcessCtl implements Runnable
 		{
 			m_pi.setReportingProcess(true);
 			//	Start Report	-----------------------------------------------
-			boolean ok = ReportCtl.start(m_processMonitor, windowno, m_pi, IsDirectPrint);
+			boolean ok = ReportCtl.start(m_processUI, windowno, m_pi, IsDirectPrint);
 			m_pi.setSummary("Report", !ok);
 			unlock ();
 		}
@@ -322,12 +322,12 @@ public abstract class AbstractProcessCtl implements Runnable
 		return m_pi;
 	}
 	
-	protected IProcessMonitor getProcessMonitor()
+	protected IProcessUI getProcessMonitor()
 	{
-		return m_processMonitor;
+		return m_processUI;
 	}
 	
-	protected IProcessMonitor getParent()
+	protected IProcessUI getParent()
 	{
 		return getProcessMonitor();
 	}
@@ -445,7 +445,7 @@ public abstract class AbstractProcessCtl implements Runnable
 			if (m_pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
 				return ProcessUtil.startScriptProcess(Env.getCtx(), m_pi, m_trx);
 			} else {
-				return ProcessUtil.startJavaProcess(Env.getCtx(), m_pi, m_trx, true, m_processMonitor);
+				return ProcessUtil.startJavaProcess(Env.getCtx(), m_pi, m_trx, true, m_processUI);
 			}
 		}
 		return !m_pi.isError();

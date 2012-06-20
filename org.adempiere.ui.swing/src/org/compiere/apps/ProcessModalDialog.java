@@ -32,7 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import org.adempiere.exceptions.DBException;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.process.ProcessInfo;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CDialog;
@@ -76,13 +76,13 @@ public class ProcessModalDialog extends CDialog
 	 * @param autoStart
 	 */
 	public ProcessModalDialog (Properties ctx, Frame parent, String title, 
-			IProcessMonitor aProcess, int WindowNo, int AD_Process_ID,
+			IProcessUI aProcess, int WindowNo, int AD_Process_ID,
 			int tableId, int recordId, boolean autoStart)
 	{
 		super(parent, title, true);
 		log.info("Process=" + AD_Process_ID );
 		m_ctx = ctx;
-		m_processMonitor = aProcess;
+		m_processUI = aProcess;
 		m_WindowNo = WindowNo;
 		m_AD_Process_ID = AD_Process_ID;
 		m_tableId = tableId;
@@ -99,7 +99,7 @@ public class ProcessModalDialog extends CDialog
 		}
 	}	//	ProcessDialog
 
-	private IProcessMonitor m_processMonitor;
+	private IProcessUI m_processUI;
 	private int m_WindowNo;
 	private Properties m_ctx;
 	private int m_tableId;
@@ -333,7 +333,7 @@ public class ProcessModalDialog extends CDialog
 	{
 		if (e.getSource() == bOK)
 		{
-			ProcessCtl.process(m_processMonitor, m_WindowNo, parameterPanel, m_pi, null);
+			ProcessCtl.process(m_processUI, m_WindowNo, parameterPanel, m_pi, null);
 			dispose();
 		}
 

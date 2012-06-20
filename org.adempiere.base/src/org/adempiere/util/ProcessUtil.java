@@ -144,7 +144,7 @@ public final class ProcessUtil {
 	 * @param managedTrx false if trx is managed by caller
 	 * @return boolean
 	 */
-	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx, IProcessMonitor processMonitor) {
+	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx, IProcessUI processMonitor) {
 		String className = pi.getClassName();
 		if (className == null) {
 			MProcess proc = new MProcess(ctx, pi.getAD_Process_ID(), trx.getTrxName());
@@ -208,14 +208,14 @@ public final class ProcessUtil {
 		boolean success = false;
 		try
 		{			
-			process.setProcessMonitor(processMonitor);
+			process.setProcessUI(processMonitor);
 			success = process.startProcess(ctx, pi, trx);
 			if (success && trx != null && managedTrx)
 			{
 				trx.commit(true);
 			}
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessError") + " " + e.getLocalizedMessage(), true);
 			log.log(Level.SEVERE, pi.getClassName(), e);

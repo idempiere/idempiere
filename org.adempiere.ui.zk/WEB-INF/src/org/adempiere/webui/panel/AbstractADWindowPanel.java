@@ -29,7 +29,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
 import org.adempiere.webui.WZoomAcross;
@@ -54,7 +54,6 @@ import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.panel.action.ExportAction;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.util.Callback;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WChat;
@@ -90,7 +89,6 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -122,7 +120,7 @@ import org.zkoss.zul.Menupopup;
  *  		https://sourceforge.net/tracker/?func=detail&aid=2985892&group_id=176962&atid=955896
  */
 public abstract class AbstractADWindowPanel extends AbstractUIPart implements ToolbarListener,
-        EventListener<Event>, DataStatusListener, ActionListener, IProcessMonitor, SystemIDs
+        EventListener<Event>, DataStatusListener, ActionListener, SystemIDs
 {
     private static final CLogger logger;
 
@@ -160,8 +158,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	private int m_onlyCurrentDays = 0;
 
 	private Component parent;
-
-	private boolean m_uiLocked;
 
 	private boolean m_findCancelled;
 
@@ -996,44 +992,50 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
      */
     public void onEvent(Event event)
     {
-    	if (!Events.ON_SELECT.equals(event.getName()))
-    		return;
-
-    	IADTabList tabList = null;
-    	Component target = event.getTarget();
-    	if (target instanceof IADTabList)
+    	if (Events.ON_SELECT.equals(event.getName()))
     	{
-    		tabList = (IADTabList) target;
+	    	IADTabList tabList = null;
+	    	Component target = event.getTarget();
+	    	if (target instanceof IADTabList)
+	    	{
+	    		tabList = (IADTabList) target;
+	    	}
+	    	else
+	    	{
+	    		target = target.getParent();
+	    		while(target != null)
+	    		{
+	    			if (target instanceof IADTabList)
+	    	    	{
+	    	    		tabList = (IADTabList) target;
+	    	    		break;
+	    	    	}
+	    			target = target.getParent();
+	    		}
+	    	}
+	
+	        if (tabList != null)
+	        {
+	        	int newTabIndex = tabList.getSelectedIndex();
+	
+	            if (setActiveTab(newTabIndex))
+	            {
+	            	//force sync model
+	            	tabList.refresh();
+	            }
+	            else
+	            {
+	            	//reset to original
+	            	tabList.setSelectedIndex(curTabIndex);
+	            }
+	        }
     	}
-    	else
+    	else if (event.getTarget() instanceof ProcessModalDialog)
     	{
-    		target = target.getParent();
-    		while(target != null)
-    		{
-    			if (target instanceof IADTabList)
-    	    	{
-    	    		tabList = (IADTabList) target;
-    	    		break;
-    	    	}
-    			target = target.getParent();
-    		}
+    		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
+    		onModalClose(dialog.getProcessInfo());
+    		onRefresh(false);
     	}
-
-        if (tabList != null)
-        {
-        	int newTabIndex = tabList.getSelectedIndex();
-
-            if (setActiveTab(newTabIndex))
-            {
-            	//force sync model
-            	tabList.refresh();
-            }
-            else
-            {
-            	//reset to original
-            	tabList.setSelectedIndex(curTabIndex);
-            }
-        }
     }
 
 	private boolean setActiveTab(int newTabIndex) {
@@ -1935,12 +1937,11 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		int table_ID = curTab.getAD_Table_ID();
 		int record_ID = curTab.getRecord_ID();
 
-		ProcessModalDialog dialog = new ProcessModalDialog(this,getWindowNo(),
-				AD_Process_ID,table_ID, record_ID, true);
+		ProcessModalDialog dialog = new ProcessModalDialog(this, getWindowNo(), AD_Process_ID,table_ID, record_ID, true);
 		if (dialog.isValid()) {
 			dialog.setPosition("center");
-				dialog.setPage(this.getComponent().getPage());
-				dialog.doModal();
+			dialog.setPage(this.getComponent().getPage());
+			dialog.doHighlighted();
 		}
 	}
 
@@ -2349,8 +2350,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		}
 		else
 		{
-			ProcessModalDialog dialog = new ProcessModalDialog(this, curWindowNo,
-					wButton.getProcess_ID(), table_ID, record_ID, startWOasking);
+			ProcessModalDialog dialog = new ProcessModalDialog(this, curWindowNo, wButton.getProcess_ID(), table_ID, record_ID, startWOasking);
 
 			if (dialog.isValid())
 			{
@@ -2358,12 +2358,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 				dialog.setVisible(true);
 				dialog.setPosition("center");
 				dialog.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				dialog.addEventListener(DialogEvents.ON_MODAL_CLOSE, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						onRefresh(false);
-					}
-				});
 				AEnv.showWindow(dialog);
 			}
 			else
@@ -2428,48 +2422,9 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	}
 
 	/**
-	 * @return boolean
-	 */
-	public boolean isUILocked() {
-		return m_uiLocked;
-	}
-
-	/**
 	 * @param pi
 	 */
-	public void lockUI(ProcessInfo pi) {
-		if (m_uiLocked) return;
-
-		m_uiLocked = true;
-
-		if (Executions.getCurrent() != null)
-			Clients.showBusy(null);
-		else
-		{
-			try {
-				//acquire desktop, 2 second timeout
-				Executions.activate(getComponent().getDesktop(), 2000);
-				try {
-					Clients.showBusy(null);
-                } catch(Error ex){
-                	throw ex;
-                } finally{
-                	//release full control of desktop
-                	Executions.deactivate(getComponent().getDesktop());
-                }
-			} catch (Exception e) {
-				logger.log(Level.WARNING, "Failed to lock UI.", e);
-			}
-		}
-	}
-
-	/**
-	 * @param pi
-	 */
-	public void unlockUI(ProcessInfo pi) {
-		if (!m_uiLocked) return;
-
-		m_uiLocked = false;
+	private void onModalClose(ProcessInfo pi) {
 		boolean notPrint = pi != null
 		&& pi.getAD_Process_ID() != curTab.getAD_Process_ID()
 		&& pi.isReportingProcess() == false;
@@ -2482,7 +2437,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			{
 				updateUI(pi);
 			}
-			Clients.clearBusy(null);
 		}
 		else
 		{
@@ -2494,7 +2448,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 					{
 						updateUI(pi);
 					}
-                	Clients.clearBusy(null);
                 } catch(Error ex){
                 	throw ex;
                 } finally{
@@ -2502,23 +2455,15 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
                 	Executions.deactivate(getComponent().getDesktop());
                 }
 			} catch (Exception e) {
-				logger.log(Level.WARNING, "Failed to update UI upon unloc.", e);
+				logger.log(Level.WARNING, "Failed to update UI upon unlock.", e);
 			}
 		}
 	}
 
-	@Override
-	public void statusUpdate(String message) {
-		statusBar.setStatusLine(message);
-	}
-	
 	private void updateUI(ProcessInfo pi) {
-		//	Refresh data
-		curTab.dataRefresh(false);
 		//	Timeout
 		if (pi.isTimeout())		//	set temporarily to R/O
 			Env.setContext(ctx, curWindowNo, "Processed", "Y");
-		curTabpanel.dynamicDisplay(0);
 		//	Update Status Line
 		String summary = pi.getSummary();
 		if (summary != null && summary.indexOf('@') != -1)
@@ -2553,5 +2498,4 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	public int getWindowNo() {
 		return curWindowNo;
 	}
-
 }

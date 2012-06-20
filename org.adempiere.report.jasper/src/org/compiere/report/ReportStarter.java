@@ -65,7 +65,7 @@ import net.sf.jasperreports.engine.util.JRSwapFile;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MProcess;
@@ -120,7 +120,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
 	private ProcessInfo processInfo;
 	private MAttachment attachment;
-	private IProcessMonitor m_processMonitor;
+	@SuppressWarnings("unused")
+	private IProcessUI m_processUI;
 
     /**
      * @author rlemeill
@@ -1164,8 +1165,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
     }
 
 	@Override
-	public void setProcessMonitor(IProcessMonitor processMonitor) {
-		m_processMonitor = processMonitor;
+	public void setProcessUI(IProcessUI processUI) {
+		m_processUI = processUI;
 	}
 
 }

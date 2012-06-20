@@ -25,6 +25,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -35,7 +36,8 @@ import javax.swing.JScrollPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
+import org.adempiere.util.IProcessUI;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
@@ -66,7 +68,7 @@ import org.compiere.util.ValueNamePair;
  *  @author Jorg Janke
  *  @version $Id: VPaySelect.java,v 1.2 2008/07/11 08:20:12 cruiz Exp $
  */
-public class VPaySelect extends PaySelect implements FormPanel, ActionListener, TableModelListener, IProcessMonitor, SystemIDs
+public class VPaySelect extends PaySelect implements FormPanel, ActionListener, TableModelListener, IProcessUI, SystemIDs
 {
 	/** @todo withholding */
 	private CPanel panel = new CPanel();
@@ -443,5 +445,19 @@ public class VPaySelect extends PaySelect implements FormPanel, ActionListener, 
 	@Override
 	public void statusUpdate(String message) {
 		dataStatus.setText(message);
+	}
+
+	@Override
+	public void ask(String message, Callback<String> callback) {
+		boolean  b = ADialog.ask(m_WindowNo, null, message);
+		if (callback != null) {
+			callback.onCallback(b ? "OK" : "CANCEL");
+		}
+	}
+
+	@Override
+	public void download(File file) {
+		// TODO Auto-generated method stub
+		
 	}
 }   //  VPaySelect

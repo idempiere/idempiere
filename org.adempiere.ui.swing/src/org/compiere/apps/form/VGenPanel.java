@@ -18,6 +18,7 @@ import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
@@ -28,7 +29,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.adempiere.plaf.AdempierePLAF;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.Callback;
+import org.adempiere.util.IProcessUI;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ADialogDialog;
 import org.compiere.apps.AEnv;
@@ -58,7 +60,7 @@ import org.compiere.util.Msg;
  * Generate custom form panel
  * 
  */
-public class VGenPanel extends CPanel implements ActionListener, ChangeListener, TableModelListener, IProcessMonitor
+public class VGenPanel extends CPanel implements ActionListener, ChangeListener, TableModelListener, IProcessUI
 {
 	/**
 	 * 
@@ -384,5 +386,19 @@ public class VGenPanel extends CPanel implements ActionListener, ChangeListener,
 	@Override
 	public void statusUpdate(String message) {
 		statusBar.setStatusLine(message);
+	}
+
+	@Override
+	public void ask(String message, Callback<String> callback) {
+		boolean  b = ADialog.ask(m_WindowNo, this, message);
+		if (callback != null) {
+			callback.onCallback(b ? "OK" : "CANCEL");
+		}
+	}
+
+	@Override
+	public void download(File file) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -27,7 +27,7 @@ import javax.sql.RowSet;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ClientProcessCtrl;
 import org.compiere.apps.ProcessCtl;
@@ -73,7 +73,7 @@ public class AReport implements ActionListener
 	 *  @param parent The invoking parent window
 	 *  @param WindowNo The invoking parent window number
 	 */
-	public AReport (int AD_Table_ID, JComponent invoker, MQuery	query, IProcessMonitor parent, int WindowNo)
+	public AReport (int AD_Table_ID, JComponent invoker, MQuery	query, IProcessUI parent, int WindowNo)
 	{
 		log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
@@ -100,7 +100,7 @@ public class AReport implements ActionListener
 	 *  @param whereExtended The filtering where clause
 	 *  @param WindowNo The invoking parent window number
 	 */
-	public AReport (int AD_Table_ID, JComponent invoker, MQuery	query, IProcessMonitor parent, int WindowNo, String whereExtended)
+	public AReport (int AD_Table_ID, JComponent invoker, MQuery	query, IProcessUI parent, int WindowNo, String whereExtended)
 	{
 		log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
@@ -129,7 +129,7 @@ public class AReport implements ActionListener
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(AReport.class);
 	/** The parent window for locking/unlocking during process execution */
-	IProcessMonitor parent;
+	IProcessUI parent;
 	/** The filter to apply to this report */
 	String m_whereExtended;
 	/** The parent window number */
