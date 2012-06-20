@@ -28,7 +28,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessCall;
@@ -1591,7 +1591,8 @@ public final class MPayment extends X_C_Payment
 	private String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
-	private IProcessMonitor m_processMonitor;
+	@SuppressWarnings("unused")
+	private IProcessUI m_processUI;
 
 	/**
 	 * 	Unlock Document.
@@ -2619,8 +2620,8 @@ public final class MPayment extends X_C_Payment
 
 
 	@Override
-	public void setProcessMonitor(IProcessMonitor processMonitor) {
-		m_processMonitor = processMonitor;
+	public void setProcessUI(IProcessUI processMonitor) {
+		m_processUI = processMonitor;
 	}
 	
 }   //  MPayment
