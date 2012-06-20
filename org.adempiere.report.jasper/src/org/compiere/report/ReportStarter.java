@@ -51,14 +51,15 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.util.JRProperties;
 import net.sf.jasperreports.engine.util.JRSwapFile;
 
 import org.adempiere.base.Service;
@@ -316,6 +317,22 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	 */
     public boolean startProcess(Properties ctx, ProcessInfo pi, Trx trx)
     {
+    	ClassLoader cl1 = Thread.currentThread().getContextClassLoader();
+    	ClassLoader cl2 = getClass().getClassLoader();
+    	try {
+    		if (!cl1.equals(cl2)) {
+    			Thread.currentThread().setContextClassLoader(cl2);
+    		}
+    		return startProcess0(ctx, pi, trx);
+    	} finally {
+    		if (!cl1.equals(cl2)) {
+    			Thread.currentThread().setContextClassLoader(cl1);
+    		}
+    	}
+    }
+        
+    private boolean startProcess0(Properties ctx, ProcessInfo pi, Trx trx)
+    {
     	processInfo = pi;
 		String Name=pi.getTitle();
         int AD_PInstance_ID=pi.getAD_PInstance_ID();
@@ -378,7 +395,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         File reportDir = data.getReportDir();
 
        	// Add reportDir to class path
-		ClassLoader scl = ClassLoader.getSystemClassLoader();
+		ClassLoader scl = getClass().getClassLoader();
 		try {
 			java.net.URLClassLoader ucl = new java.net.URLClassLoader(new java.net.URL[]{reportDir.toURI().toURL()}, scl);
 			net.sf.jasperreports.engine.util.JRResourcesUtil.setThreadClassLoader(ucl);
@@ -504,7 +521,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				JRSwapFile swapFile = new JRSwapFile(swapPath, 1024, 1024);
 				JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(2, swapFile, true);
 				params.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
-
+				JRProperties.setProperty("net.sf.jasperreports.awt.ignore.missing.font", true);
+				
                 JasperPrint jasperPrint = JasperFillManager.fillReport( jasperReport, params, conn);
                 if (reportData.isDirectPrint())
                 {
@@ -550,8 +568,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
                     	// Used For the PH
                     	try
                     	{
-                    		File PDF = File.createTempFile("mail", ".pdf");
-                    		JasperExportManager.exportReportToPdfFile(jasperPrint, PDF.getAbsolutePath());
+                    		File PDF = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
+                    		JRPdfExporter exporter = new JRPdfExporter();                    		
+                    		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+                    		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, PDF.getAbsolutePath());
+                    		exporter.setParameter(JRExporterParameter.CLASS_LOADER, this.getClass().getClassLoader());
+                    		exporter.exportReport();
                     		processInfo.setPDFReport(PDF);
                     	}
                     	catch (IOException e)
@@ -587,6 +609,18 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		return jasperPrint;
 	}
 
+	private String makePrefix(String name) {
+		StringBuffer prefix = new StringBuffer();
+		char[] nameArray = name.toCharArray();
+		for (char ch : nameArray) {
+			if (Character.isLetterOrDigit(ch)) {
+				prefix.append(ch);
+			} else {
+				prefix.append("_");
+			}
+		}
+		return prefix.toString();
+	}
 
 	/**
      * Get .property resource file from process attachment
@@ -988,80 +1022,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
     /**
      * @author rlemeill
-     * Correct the class path if loaded from java web start
-     */
-    private void JWScorrectClassPath()
-    {
-		URL jasperreportsAbsoluteURL = Thread.currentThread().getContextClassLoader().getResource("net/sf/jasperreports/engine");
-		String jasperreportsAbsolutePath = "";
-
-		if(jasperreportsAbsoluteURL.toString().startsWith("jar:http:") || jasperreportsAbsoluteURL.toString().startsWith("jar:https:"))
-		{
-			// Jasper classes are deployed to a webserver (Java Webstart)
-			jasperreportsAbsolutePath = jasperreportsAbsoluteURL.toString().split("!")[0].split("jar:")[1];
-
-			// Download the required jasper libraries if they are not already existing
-			File reqLib = new File(System.getProperty("java.io.tmpdir"), "CompiereJasperReqs.jar");
-			if(!reqLib.exists() && !(reqLib.length() > 0))
-			{
-				try{
-					URL reqLibURL = new URL(jasperreportsAbsolutePath);
-					InputStream in = reqLibURL.openStream();
-
-					FileOutputStream fout = new FileOutputStream(reqLib);
-
-					byte buf[] = new byte[1024];
-					int s = 0;
-
-					while((s = in.read(buf, 0, 1024)) > 0)
-						fout.write(buf, 0, s);
-
-					in.close();
-					fout.flush();
-					fout.close();
-				} catch (FileNotFoundException e) {
-					log.warning("Required library not found "+ e.getMessage());
-					reqLib.delete();
-					reqLib = null;
-				} catch (IOException e) {
-					log.severe("I/O error downloading required library from server "+ e.getMessage());
-					reqLib.delete();
-					reqLib = null;
-				}
-			}
-
-			jasperreportsAbsolutePath = reqLib.getAbsolutePath();
-		}
-		else
-		{
-			// Jasper classes are locally available (Local client)
-			jasperreportsAbsolutePath = jasperreportsAbsoluteURL.toString().split("!")[0].split("file:")[1];
-		}
-
-		if(jasperreportsAbsolutePath != null && !jasperreportsAbsolutePath.trim().equals(""))
-		{
-			// Check whether the current CLASSPATH already contains our
-			// jasper libraries and dependencies or not.
-			if(System.getProperty("java.class.path").indexOf(jasperreportsAbsolutePath) < 0)
-			{
-			System.setProperty("java.class.path",
-					System.getProperty("java.class.path") +
-					System.getProperty("path.separator") +
-					jasperreportsAbsolutePath);
-			log.info("Classpath has been corrected to " + System.getProperty("java.class.path"));
-			}
-		}
-    }
-
-    /**
-     * @author rlemeill
      * @param reportFile
      * @param jasperFile
      * @return compiled JasperReport
      */
     private JasperReport compileReport( File reportFile, File jasperFile)
     {
-    	JWScorrectClassPath();
         JasperReport compiledJasperReport = null;
         try {
           	JasperCompileManager.compileReportToFile ( reportFile.getAbsolutePath(), jasperFile.getAbsolutePath() );
@@ -1070,7 +1036,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         } catch (JRException e) {
             log.log(Level.SEVERE, "Error", e);
         }
-        return compiledJasperReport;
+        return compiledJasperReport;                
     }
 
     /**

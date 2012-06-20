@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="groovy.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<accessrules>
 			<accessrule kind="accessible" pattern="com/sun/rowset/*"/>
@@ -9,7 +10,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="bsh-2.0b5.jar"/>
 	<classpathentry exported="true" kind="lib" path="bsh-engine.jar"/>
-	<classpathentry exported="true" kind="lib" path="groovy-all-1.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="groovy-engine.jar"/>
 	<classpathentry exported="true" kind="lib" path="jython-engine.jar"/>
 	<classpathentry exported="true" kind="lib" path="jython.jar"/>

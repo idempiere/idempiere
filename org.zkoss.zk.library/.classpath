@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="lib/asm.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/bsh.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cglib.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/Filters.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gmapsz.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/groovy.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jruby.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/js.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json_simple.jar"/>

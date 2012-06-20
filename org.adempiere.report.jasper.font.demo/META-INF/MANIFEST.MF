@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JasperReport Font Demo
+Bundle-SymbolicName: org.adempiere.report.jasper.font.demo
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Fragment-Host: org.adempiere.report.jasper.library;bundle-version="1.0.0"
