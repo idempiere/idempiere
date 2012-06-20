@@ -37,7 +37,7 @@ html,body {
 }
 
 .login-box-header-txt {
-	color: white;
+	color: white !important;
 	font-weight: bold;
 	position: relative;
 	top: 30px;
