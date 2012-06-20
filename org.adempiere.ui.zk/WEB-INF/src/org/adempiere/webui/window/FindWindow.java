@@ -1695,7 +1695,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     }
 
 	public void OnPostVisible() {
-		Clients.response(new AuFocus(m_sEditors.get(0).getComponent()));
+		if (m_sEditors.size() > 0)
+			Clients.response(new AuFocus(m_sEditors.get(0).getComponent()));
 	}
 
 	/**
