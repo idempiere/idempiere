@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
@@ -233,7 +233,7 @@ public class MYear extends X_C_Year
 		cal.set(Calendar.MILLISECOND, 0);
 
 		//
-		IProcessMonitor processMonitor = Env.getProcessMonitor(getCtx());
+		IProcessUI processMonitor = Env.getProcessUI(getCtx());
 		for (int month = 0; month < 12; month++)
 		{
 			

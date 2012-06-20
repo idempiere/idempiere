@@ -47,7 +47,7 @@ import javax.swing.JFrame;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
-import org.adempiere.util.IProcessMonitor;
+import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.db.CConnection;
 import org.compiere.model.GridWindowVO;
@@ -1695,9 +1695,9 @@ public final class Env
 	}   //  getWindow
 
 	//Current Process
-	public static IProcessMonitor getProcessMonitor(Properties ctx)
+	public static IProcessUI getProcessUI(Properties ctx)
 	{
-		return (IProcessMonitor) ctx.get(SvrProcess.PROCESS_MONITOR_CTX_KEY);
+		return (IProcessUI) ctx.get(SvrProcess.PROCESS_UI_CTX_KEY);
 	}
 	
 	public static ProcessInfo getProcessInfo(Properties ctx)
