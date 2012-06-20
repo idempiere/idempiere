@@ -431,7 +431,8 @@ PrintEvent on Win32 Printer : \\MAIN\HP LaserJet 5L
 PrintServiceAttributeSet - length=1
 queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		**/
-		log.fine("attributeUpdate - " + psae);
+		if (log.isLoggable(Level.FINE))
+			log.fine("attributeUpdate - " + psae);
 	//	PrintUtil.dump (psae.getAttributes());
 	}	//	attributeUpdate
 
@@ -978,7 +979,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			return false;
 		}
 			
-		log.fine(uri.toString());
+		if (log.isLoggable(Level.FINE))
+			log.fine(uri.toString());
 
 		try
 		{
@@ -1111,20 +1113,20 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		int Client_ID = -1;
 
 		//	Get AD_Table_ID and TableName
-		String sql = "SELECT rv.AD_ReportView_ID,rv.WhereClause,"
-			+ " t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm, pf.AD_Client_ID "
-			+ "FROM AD_PInstance pi"
-			+ " INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)"
-			+ " INNER JOIN AD_ReportView rv ON (p.AD_ReportView_ID=rv.AD_ReportView_ID)"
-			+ " INNER JOIN AD_Table t ON (rv.AD_Table_ID=t.AD_Table_ID)"
-			+ " LEFT OUTER JOIN AD_PrintFormat pf ON (p.AD_ReportView_ID=pf.AD_ReportView_ID AND pf.AD_Client_ID IN (0,?) AND pf.IsActive='Y') "
-			+ "WHERE pi.AD_PInstance_ID=? "		//	#2
-			+ "ORDER BY pf.AD_Client_ID DESC, pf.IsDefault DESC";	//	own first
+		StringBuilder sql = new StringBuilder("SELECT rv.AD_ReportView_ID,rv.WhereClause,")
+			.append(" t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm, pf.AD_Client_ID ")
+			.append("FROM AD_PInstance pi")
+			.append(" INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)")
+			.append(" INNER JOIN AD_ReportView rv ON (p.AD_ReportView_ID=rv.AD_ReportView_ID)")
+			.append(" INNER JOIN AD_Table t ON (rv.AD_Table_ID=t.AD_Table_ID)")
+			.append(" LEFT OUTER JOIN AD_PrintFormat pf ON (p.AD_ReportView_ID=pf.AD_ReportView_ID AND pf.AD_Client_ID IN (0,?) AND pf.IsActive='Y') ")
+			.append("WHERE pi.AD_PInstance_ID=? ")		//	#2
+			.append("ORDER BY pf.AD_Client_ID DESC, pf.IsDefault DESC");	//	own first
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, AD_Client_ID);
 			pstmt.setInt(2, pi.getAD_PInstance_ID());
 			rs = pstmt.executeQuery();
@@ -1155,15 +1157,15 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		if (AD_ReportView_ID == 0)
 		{
 			//	Check Print format in Report Directly
-			sql = "SELECT t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm "
-				+ "FROM AD_PInstance pi"
-				+ " INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)"
-				+ " INNER JOIN AD_PrintFormat pf ON (p.AD_PrintFormat_ID=pf.AD_PrintFormat_ID)"
-				+ " INNER JOIN AD_Table t ON (pf.AD_Table_ID=t.AD_Table_ID) "
-				+ "WHERE pi.AD_PInstance_ID=?";
+			sql = new StringBuilder("SELECT t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm ")
+				.append("FROM AD_PInstance pi")
+				.append(" INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)")
+				.append(" INNER JOIN AD_PrintFormat pf ON (p.AD_PrintFormat_ID=pf.AD_PrintFormat_ID)")
+				.append(" INNER JOIN AD_Table t ON (pf.AD_Table_ID=t.AD_Table_ID) ")
+				.append("WHERE pi.AD_PInstance_ID=?");
 			try
 			{
-				pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setInt(1, pi.getAD_PInstance_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())
@@ -1332,115 +1334,115 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		MClient client = MClient.get(ctx);
 		Language language = client.getLanguage();	
 		//	Get Document Info
-		String sql = null;
+		StringBuilder sql = null;
 		if (type == CHECK)
-			sql = "SELECT bad.Check_PrintFormat_ID,"								//	1
-				+ "	c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,d.DocumentNo "		//	2..5
-				+ "FROM C_PaySelectionCheck d"
-				+ " INNER JOIN C_PaySelection ps ON (d.C_PaySelection_ID=ps.C_PaySelection_ID)"
-				+ " INNER JOIN C_BankAccountDoc bad ON (ps.C_BankAccount_ID=bad.C_BankAccount_ID AND d.PaymentRule=bad.PaymentRule)"
-				+ " INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)"
-				+ " INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID) "
-				+ "WHERE d.C_PaySelectionCheck_ID=?";		//	info from BankAccount
+			sql = new StringBuilder("SELECT bad.Check_PrintFormat_ID,")								//	1
+				.append("	c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,d.DocumentNo ")		//	2..5
+				.append("FROM C_PaySelectionCheck d")
+				.append(" INNER JOIN C_PaySelection ps ON (d.C_PaySelection_ID=ps.C_PaySelection_ID)")
+				.append(" INNER JOIN C_BankAccountDoc bad ON (ps.C_BankAccount_ID=bad.C_BankAccount_ID AND d.PaymentRule=bad.PaymentRule)")
+				.append(" INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)")
+				.append(" INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID) ")
+				.append("WHERE d.C_PaySelectionCheck_ID=?");		//	info from BankAccount
 		else if (type == DUNNING)
-			sql = "SELECT dl.Dunning_PrintFormat_ID,"
-				+ " c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,dr.DunningDate "
-				+ "FROM C_DunningRunEntry d"
-				+ " INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)"
-				+ " INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID)"
-				+ " INNER JOIN C_DunningRun dr ON (d.C_DunningRun_ID=dr.C_DunningRun_ID)"
-				+ " INNER JOIN C_DunningLevel dl ON (dl.C_DunningLevel_ID=d.C_DunningLevel_ID) "
-				+ "WHERE d.C_DunningRunEntry_ID=?";			//	info from Dunning
+			sql = new StringBuilder("SELECT dl.Dunning_PrintFormat_ID,")
+				.append(" c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,dr.DunningDate ")
+				.append("FROM C_DunningRunEntry d")
+				.append(" INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)")
+				.append(" INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID)")
+				.append(" INNER JOIN C_DunningRun dr ON (d.C_DunningRun_ID=dr.C_DunningRun_ID)")
+				.append(" INNER JOIN C_DunningLevel dl ON (dl.C_DunningLevel_ID=d.C_DunningLevel_ID) ")
+				.append("WHERE d.C_DunningRunEntry_ID=?");			//	info from Dunning
 		else if (type == REMITTANCE)
-			sql = "SELECT pf.Remittance_PrintFormat_ID,"
-				+ " c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,d.DocumentNo "
-				+ "FROM C_PaySelectionCheck d"
-				+ " INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)"
-				+ " INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)"
-				+ " INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID) "
-				+ "WHERE d.C_PaySelectionCheck_ID=?"		//	info from PrintForm
-				+ " AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ORDER BY pf.AD_Org_ID DESC";
+			sql = new StringBuilder("SELECT pf.Remittance_PrintFormat_ID,")
+				.append(" c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,d.DocumentNo ")
+				.append("FROM C_PaySelectionCheck d")
+				.append(" INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)")
+				.append(" INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)")
+				.append(" INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID) ")
+				.append("WHERE d.C_PaySelectionCheck_ID=?")		//	info from PrintForm
+				.append(" AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ORDER BY pf.AD_Org_ID DESC");
 		else if (type == PROJECT)
-			sql = "SELECT pf.Project_PrintFormat_ID,"
-				+ " c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,d.Value "
-				+ "FROM C_Project d"
-				+ " INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)"
-				+ " INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)"
-				+ " LEFT OUTER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID) "
-				+ "WHERE d.C_Project_ID=?"					//	info from PrintForm
-				+ " AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ORDER BY pf.AD_Org_ID DESC";
+			sql = new StringBuilder("SELECT pf.Project_PrintFormat_ID,")
+				.append(" c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,d.Value ")
+				.append("FROM C_Project d")
+				.append(" INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)")
+				.append(" INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)")
+				.append(" LEFT OUTER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID) ")
+				.append("WHERE d.C_Project_ID=?")					//	info from PrintForm
+				.append(" AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ORDER BY pf.AD_Org_ID DESC");
 		else if (type == MANUFACTURING_ORDER)
-			sql = "SELECT pf.Manuf_Order_PrintFormat_ID,"
-				+ " c.IsMultiLingualDocument,bp.AD_Language, 0 , d.DocumentNo "
-				+ "FROM PP_Order d"
-				+ " INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)"
-				+ " LEFT OUTER JOIN AD_User u ON (u.AD_User_ID=d.Planner_ID)"
-				+ " LEFT OUTER JOIN C_BPartner bp ON (u.C_BPartner_ID=bp.C_BPartner_ID) "
-				+ " INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)"
-				+ "WHERE d.PP_Order_ID=?"					//	info from PrintForm
-				+ " AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ORDER BY pf.AD_Org_ID DESC";
+			sql = new StringBuilder("SELECT pf.Manuf_Order_PrintFormat_ID,")
+				.append(" c.IsMultiLingualDocument,bp.AD_Language, 0 , d.DocumentNo ")
+				.append("FROM PP_Order d")
+				.append(" INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)")
+				.append(" LEFT OUTER JOIN AD_User u ON (u.AD_User_ID=d.Planner_ID)")
+				.append(" LEFT OUTER JOIN C_BPartner bp ON (u.C_BPartner_ID=bp.C_BPartner_ID) ")
+				.append(" INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)")
+				.append("WHERE d.PP_Order_ID=?")					//	info from PrintForm
+				.append(" AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ORDER BY pf.AD_Org_ID DESC");
 		else if (type == DISTRIBUTION_ORDER)
-			sql = "SELECT pf.Distrib_Order_PrintFormat_ID,"
-				+ " c.IsMultiLingualDocument,bp.AD_Language, bp.C_BPartner_ID , d.DocumentNo "
-				+ "FROM DD_Order d"
-				+ " INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)"
-				+ " INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)"
-				+ " LEFT OUTER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID) "
-				+ "WHERE d.DD_Order_ID=?"					//	info from PrintForm
-				+ " AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ORDER BY pf.AD_Org_ID DESC";
+			sql = new StringBuilder("SELECT pf.Distrib_Order_PrintFormat_ID,")
+				.append(" c.IsMultiLingualDocument,bp.AD_Language, bp.C_BPartner_ID , d.DocumentNo ")
+				.append("FROM DD_Order d")
+				.append(" INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)")
+				.append(" INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)")
+				.append(" LEFT OUTER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID) ")
+				.append("WHERE d.DD_Order_ID=?")					//	info from PrintForm
+				.append(" AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ORDER BY pf.AD_Org_ID DESC");
 		else if (type == RFQ)
-			sql = "SELECT COALESCE(t.AD_PrintFormat_ID, pf.AD_PrintFormat_ID),"
-				+ " c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,rr.Name "
-				+ "FROM C_RfQResponse rr"
-				+ " INNER JOIN C_RfQ r ON (rr.C_RfQ_ID=r.C_RfQ_ID)"
-				+ " INNER JOIN C_RfQ_Topic t ON (r.C_RfQ_Topic_ID=t.C_RfQ_Topic_ID)"
-				+ " INNER JOIN AD_Client c ON (rr.AD_Client_ID=c.AD_Client_ID)"
-				+ " INNER JOIN C_BPartner bp ON (rr.C_BPartner_ID=bp.C_BPartner_ID),"
-				+ " AD_PrintFormat pf "
-				+ "WHERE pf.AD_Client_ID IN (0,rr.AD_Client_ID)"
-				+ " AND pf.AD_Table_ID=725 AND pf.IsTableBased='N'"	//	from RfQ PrintFormat
-				+ " AND rr.C_RfQResponse_ID=? "				//	Info from RfQTopic
-				+ "ORDER BY t.AD_PrintFormat_ID, pf.AD_Client_ID DESC, pf.AD_Org_ID DESC";
+			sql = new StringBuilder("SELECT COALESCE(t.AD_PrintFormat_ID, pf.AD_PrintFormat_ID),")
+				.append(" c.IsMultiLingualDocument,bp.AD_Language,bp.C_BPartner_ID,rr.Name ")
+				.append("FROM C_RfQResponse rr")
+				.append(" INNER JOIN C_RfQ r ON (rr.C_RfQ_ID=r.C_RfQ_ID)")
+				.append(" INNER JOIN C_RfQ_Topic t ON (r.C_RfQ_Topic_ID=t.C_RfQ_Topic_ID)")
+				.append(" INNER JOIN AD_Client c ON (rr.AD_Client_ID=c.AD_Client_ID)")
+				.append(" INNER JOIN C_BPartner bp ON (rr.C_BPartner_ID=bp.C_BPartner_ID),")
+				.append(" AD_PrintFormat pf ")
+				.append("WHERE pf.AD_Client_ID IN (0,rr.AD_Client_ID)")
+				.append(" AND pf.AD_Table_ID=725 AND pf.IsTableBased='N'")	//	from RfQ PrintFormat
+				.append(" AND rr.C_RfQResponse_ID=? ")				//	Info from RfQTopic
+				.append("ORDER BY t.AD_PrintFormat_ID, pf.AD_Client_ID DESC, pf.AD_Org_ID DESC");
 		// Fix [2574162] Priority to choose invoice print format not working
 		else if (type == ORDER || type == INVOICE)
-			sql = "SELECT pf.Order_PrintFormat_ID,pf.Shipment_PrintFormat_ID,"		//	1..2
+			sql = new StringBuilder("SELECT pf.Order_PrintFormat_ID,pf.Shipment_PrintFormat_ID,")		//	1..2
 				//	Prio: 1. BPartner 2. DocType, 3. PrintFormat (Org)	//	see InvoicePrint
-				+ " COALESCE (bp.Invoice_PrintFormat_ID,dt.AD_PrintFormat_ID,pf.Invoice_PrintFormat_ID)," // 3
-				+ " pf.Project_PrintFormat_ID, pf.Remittance_PrintFormat_ID,"		//	4..5
-				+ " c.IsMultiLingualDocument, bp.AD_Language,"						//	6..7
-				+ " COALESCE(dt.DocumentCopies,0)+COALESCE(bp.DocumentCopies,1), " 	// 	8
-				+ " dt.AD_PrintFormat_ID,bp.C_BPartner_ID,d.DocumentNo "			//	9..11
-				+ "FROM " + DOC_BASETABLES[type] + " d"
-				+ " INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)"
-				+ " INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)"
-				+ " INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID)"
-				+ " LEFT OUTER JOIN C_DocType dt ON ((d.C_DocType_ID>0 AND d.C_DocType_ID=dt.C_DocType_ID) OR (d.C_DocType_ID=0 AND d.C_DocTypeTarget_ID=dt.C_DocType_ID)) "
-				+ "WHERE d." + DOC_IDS[type] + "=?"			//	info from PrintForm
-				+ " AND pf.AD_Org_ID IN (0,d.AD_Org_ID) "
-				+ "ORDER BY pf.AD_Org_ID DESC";
+				.append(" COALESCE (bp.Invoice_PrintFormat_ID,dt.AD_PrintFormat_ID,pf.Invoice_PrintFormat_ID),") // 3
+				.append(" pf.Project_PrintFormat_ID, pf.Remittance_PrintFormat_ID,")		//	4..5
+				.append(" c.IsMultiLingualDocument, bp.AD_Language,")						//	6..7
+				.append(" COALESCE(dt.DocumentCopies,0)+COALESCE(bp.DocumentCopies,1), ") 	// 	8
+				.append(" dt.AD_PrintFormat_ID,bp.C_BPartner_ID,d.DocumentNo ")			//	9..11
+				.append("FROM " + DOC_BASETABLES[type] + " d")
+				.append(" INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)")
+				.append(" INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)")
+				.append(" INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID)")
+				.append(" LEFT OUTER JOIN C_DocType dt ON ((d.C_DocType_ID>0 AND d.C_DocType_ID=dt.C_DocType_ID) OR (d.C_DocType_ID=0 AND d.C_DocTypeTarget_ID=dt.C_DocType_ID)) ")
+				.append("WHERE d." + DOC_IDS[type] + "=?")			//	info from PrintForm
+				.append(" AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ")
+				.append("ORDER BY pf.AD_Org_ID DESC");
 		else	//	Get PrintFormat from Org or 0 of document client
-			sql = "SELECT pf.Order_PrintFormat_ID,pf.Shipment_PrintFormat_ID,"		//	1..2
+			sql = new StringBuilder("SELECT pf.Order_PrintFormat_ID,pf.Shipment_PrintFormat_ID,")		//	1..2
 				//	Prio: 1. BPartner 2. DocType, 3. PrintFormat (Org)	//	see InvoicePrint
-				+ " COALESCE (bp.Invoice_PrintFormat_ID,dt.AD_PrintFormat_ID,pf.Invoice_PrintFormat_ID)," // 3
-				+ " pf.Project_PrintFormat_ID, pf.Remittance_PrintFormat_ID,"		//	4..5
-				+ " c.IsMultiLingualDocument, bp.AD_Language,"						//	6..7
-				+ " COALESCE(dt.DocumentCopies,0)+COALESCE(bp.DocumentCopies,1), " 	// 	8
-				+ " dt.AD_PrintFormat_ID,bp.C_BPartner_ID,d.DocumentNo, "			//  9..11 
-				+ " pf.Manuf_Order_PrintFormat_ID, pf.Distrib_Order_PrintFormat_ID "	//	12..13
-				+ "FROM " + DOC_BASETABLES[type] + " d"
-				+ " INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)"
-				+ " INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)"
-				+ " INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID)"
-				+ " LEFT OUTER JOIN C_DocType dt ON (d.C_DocType_ID=dt.C_DocType_ID) "
-				+ "WHERE d." + DOC_IDS[type] + "=?"			//	info from PrintForm
-				+ " AND pf.AD_Org_ID IN (0,d.AD_Org_ID) "
-				+ "ORDER BY pf.AD_Org_ID DESC";
+				.append(" COALESCE (bp.Invoice_PrintFormat_ID,dt.AD_PrintFormat_ID,pf.Invoice_PrintFormat_ID),") // 3
+				.append(" pf.Project_PrintFormat_ID, pf.Remittance_PrintFormat_ID,")		//	4..5
+				.append(" c.IsMultiLingualDocument, bp.AD_Language,")						//	6..7
+				.append(" COALESCE(dt.DocumentCopies,0)+COALESCE(bp.DocumentCopies,1), ") 	// 	8
+				.append(" dt.AD_PrintFormat_ID,bp.C_BPartner_ID,d.DocumentNo, ")			//  9..11 
+				.append(" pf.Manuf_Order_PrintFormat_ID, pf.Distrib_Order_PrintFormat_ID ")	//	12..13
+				.append("FROM " + DOC_BASETABLES[type] + " d")
+				.append(" INNER JOIN AD_Client c ON (d.AD_Client_ID=c.AD_Client_ID)")
+				.append(" INNER JOIN AD_PrintForm pf ON (c.AD_Client_ID=pf.AD_Client_ID)")
+				.append(" INNER JOIN C_BPartner bp ON (d.C_BPartner_ID=bp.C_BPartner_ID)")
+				.append(" LEFT OUTER JOIN C_DocType dt ON (d.C_DocType_ID=dt.C_DocType_ID) ")
+				.append("WHERE d." + DOC_IDS[type] + "=?")			//	info from PrintForm
+				.append(" AND pf.AD_Org_ID IN (0,d.AD_Org_ID) ")
+				.append("ORDER BY pf.AD_Org_ID DESC");
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, trxName);
+			pstmt = DB.prepareStatement(sql.toString(), trxName);
 			pstmt.setInt(1, Record_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())	//	first record only
@@ -1530,16 +1532,16 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		what[0] = ORDER;
 		what[1] = C_Order_ID;
 		//
-		String sql = "SELECT dt.DocSubTypeSO "
-			+ "FROM C_DocType dt, C_Order o "
-			+ "WHERE o.C_DocType_ID=dt.C_DocType_ID"
-			+ " AND o.C_Order_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT dt.DocSubTypeSO ")
+			.append("FROM C_DocType dt, C_Order o ")
+			.append("WHERE o.C_DocType_ID=dt.C_DocType_ID")
+			.append(" AND o.C_Order_ID=?");
 		String DocSubTypeSO = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, C_Order_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -1548,11 +1550,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			// @Trifon - Order is not completed(C_DoctType_ID=0) then try with C_DocTypeTarget_ID
 			// [ 2819637 ] Wrong print format on non completed order - https://sourceforge.net/tracker/?func=detail&aid=2819637&group_id=176962&atid=879332
 			if (DocSubTypeSO == null || "".equals(DocSubTypeSO)) {
-				sql = "SELECT dt.DocSubTypeSO "
-					+ "FROM C_DocType dt, C_Order o "
-					+ "WHERE o.C_DocTypeTarget_ID=dt.C_DocType_ID"
-					+ " AND o.C_Order_ID=?";
-				pstmt = DB.prepareStatement(sql, null);
+				sql = new StringBuilder("SELECT dt.DocSubTypeSO ")
+					.append("FROM C_DocType dt, C_Order o ")
+					.append("WHERE o.C_DocTypeTarget_ID=dt.C_DocType_ID")
+					.append(" AND o.C_Order_ID=?");
+				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setInt(1, C_Order_ID);
 				rs = pstmt.executeQuery();
 				if (rs.next()) {
@@ -1583,14 +1585,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		//	Get Record_ID of Invoice/Receipt
 		if (what[0] == INVOICE)
-			sql = "SELECT C_Invoice_ID REC FROM C_Invoice WHERE C_Order_ID=?"	//	1
-				+ " ORDER BY C_Invoice_ID DESC";
+			sql = new StringBuilder("SELECT C_Invoice_ID REC FROM C_Invoice WHERE C_Order_ID=?")	//	1
+				.append(" ORDER BY C_Invoice_ID DESC");
 		else
-			sql = "SELECT M_InOut_ID REC FROM M_InOut WHERE C_Order_ID=?" 	//	1
-				+ " ORDER BY M_InOut_ID DESC";
+			sql = new StringBuilder("SELECT M_InOut_ID REC FROM M_InOut WHERE C_Order_ID=?") 	//	1
+				.append(" ORDER BY M_InOut_ID DESC");
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, C_Order_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -1610,7 +1612,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("Order => " + what[0] + " ID=" + what[1]);
+		if (log.isLoggable(Level.FINE))
+			log.fine("Order => " + what[0] + " ID=" + what[1]);
 		return what;
 	}	//	getDocumentWhat
 

@@ -44,7 +44,7 @@ import org.compiere.util.Util;
  * 		<li>BF [ 3002736 ] MLocation.get cache all MLocations
  * 			https://sourceforge.net/tracker/?func=detail&aid=3002736&group_id=176962&atid=879332
  */
-public class MLocation extends X_C_Location implements Comparator
+public class MLocation extends X_C_Location implements Comparator<Object>
 {
 	/**
 	 * 

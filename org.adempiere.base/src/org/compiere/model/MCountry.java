@@ -41,7 +41,7 @@ import org.compiere.util.Language;
  * 				<li>BF [ 2695078 ] Country is not translated on invoice
  */
 public final class MCountry extends X_C_Country
-	implements Comparator, Serializable, SystemIDs
+	implements Comparator<Object>, Serializable, SystemIDs
 {
 	/**
 	 * 

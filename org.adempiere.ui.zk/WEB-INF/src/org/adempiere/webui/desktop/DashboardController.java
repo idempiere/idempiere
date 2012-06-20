@@ -141,7 +141,7 @@ public class DashboardController implements EventListener<MaximizeEvent> {
 	            String htmlContent = dp.getHTML();
 	            if(htmlContent != null)
 	            {
-		            StringBuffer result = new StringBuffer("<html><head>");
+		            StringBuilder result = new StringBuilder("<html><head>");
 
 		    		URL url = getClass().getClassLoader().getResource("org/compiere/images/PAPanel.css");
 					InputStreamReader ins;

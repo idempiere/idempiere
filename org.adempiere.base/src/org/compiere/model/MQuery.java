@@ -621,7 +621,7 @@ public class MQuery implements Serializable
 		if (qualified && (m_TableName == null || m_TableName.length() == 0))
 			qualified = false;
 		//
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (! isActive())
 			return sb.toString();
 		
@@ -661,7 +661,7 @@ public class MQuery implements Serializable
 	 */
 	public String getInfo ()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int currentDepth = 0;
 		if (m_TableName != null)
 			sb.append(m_TableName).append(": ");
@@ -701,7 +701,7 @@ public class MQuery implements Serializable
 	 */
 	public String getWhereClause (int index)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (index >= 0 && index < m_list.size())
 		{
 			Restriction r = (Restriction)m_list.get(index);
@@ -1090,7 +1090,7 @@ class Restriction  implements Serializable
 		if (DirectWhereClause != null)
 			return DirectWhereClause;
 		//
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (tableName != null && tableName.length() > 0)
 		{
 			//	Assumes - REPLACE(INITCAP(variable),'s','X') or UPPER(variable)
@@ -1184,7 +1184,7 @@ class Restriction  implements Serializable
 	{
 		if (InfoDisplay_to == null)
 			return InfoDisplay;
-		StringBuffer sb = new StringBuffer(InfoDisplay);
+		StringBuilder sb = new StringBuilder(InfoDisplay);
 		sb.append(" - ").append(InfoDisplay_to);
 		return sb.toString();
 	}	//	getInfoDisplay

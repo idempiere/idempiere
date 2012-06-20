@@ -318,7 +318,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (!paperChange)
 			paperChange = !paper.equals(m_paper);
 		//
-		log.fine(paper + " - Header=" + headerHeight + ", Footer=" + footerHeight);
+		if (log.isLoggable(Level.FINE))
+			log.fine(paper + " - Header=" + headerHeight + ", Footer=" + footerHeight);
 		m_paper = paper;
 		m_headerHeight = headerHeight;
 		m_footerHeight = footerHeight;
@@ -405,8 +406,11 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		height = m_footerHeight;
 		m_footer.setBounds (x, y, w, height);
 
-		log.fine("Paper=" + m_paper + ",HeaderHeight=" + m_headerHeight + ",FooterHeight=" + m_footerHeight
-			+ " => Header=" + m_header + ",Contents=" + m_content + ",Footer=" + m_footer);
+		if (log.isLoggable(Level.FINE))
+		{
+			log.fine("Paper=" + m_paper + ",HeaderHeight=" + m_headerHeight + ",FooterHeight=" + m_footerHeight
+					+ " => Header=" + m_header + ",Contents=" + m_content + ",Footer=" + m_footer);
+		}
 	}	//	calculatePageSize
 
 	/**
@@ -582,7 +586,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 			&& m_position[AREA_CONTENT].getX() == m_content.x
 			&& m_position[AREA_CONTENT].getY() == m_content.y)
 		{
-			log.fine("skipped");
+			if (log.isLoggable(Level.FINE))
+				log.fine("skipped");
 			return m_pageNo;
 		}
 		
@@ -597,7 +602,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 			m_position[AREA_CONTENT].setLocation(m_content.x, m_content.y);
 		m_position[AREA_FOOTER].setLocation(m_footer.x, m_footer.y);
 		m_maxHeightSinceNewLine = new float[] {0f, 0f, 0f};
-		log.finer("Page=" + m_pageNo);
+		if (log.isLoggable(Level.FINE))
+			log.finer("Page=" + m_pageNo);
 		return m_pageNo;
 	}	//	newPage
 
@@ -620,14 +626,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (isYspaceFor(m_maxHeightSinceNewLine[m_area]))
 		{
 			m_position[m_area].setLocation(xPos, m_position[m_area].y + m_maxHeightSinceNewLine[m_area]);
-			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 		}
 		else if (m_area == AREA_CONTENT)
 		{
 			log.finest("Not enough Y space "
 				+ m_lastHeight[m_area] + " - remaining " + getYspace() + " - Area=" + m_area);
 			newPage(true, false);
-			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 		}
 		else	//	footer/header
 		{
@@ -766,7 +774,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		else if (m_area == AREA_FOOTER)
 			part = m_footer;
 		m_position[m_area].setLocation(part.x + p.getX(), part.y + p.getY());
-		log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+		if (log.isLoggable(Level.FINEST))
+			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 	}	//	setPosition
 
 	/**
@@ -795,7 +804,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	protected void setX (float x)
 	{
 		m_position[m_area].x = x;
-		log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+		if (log.isLoggable(Level.FINEST))
+			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 	}	//	setX
 
 	/**
@@ -807,7 +817,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (xOffset == 0f)
 			return;
 		m_position[m_area].x += xOffset;
-		log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+		if (log.isLoggable(Level.FINEST))
+			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 	}	//	addX
 
 	/**
@@ -826,7 +837,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	protected void setY (int y)
 	{
 		m_position[m_area].y = y;
-		log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+		if (log.isLoggable(Level.FINEST))
+			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 	}	//	setY
 
 	/**
@@ -840,14 +852,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (isYspaceFor(yOffset))
 		{
 			m_position[m_area].y += yOffset;
-			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 		}
 		else if (m_area == AREA_CONTENT)
 		{
 			log.finest("Not enough Y space "
 				+ m_lastHeight[m_area] + " - remaining " + getYspace() + " - Area=" + m_area);
 			newPage(true, true);
-			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 		}
 		else
 		{
@@ -1147,13 +1161,15 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				{
 					if (!isXspaceFor(m_lastWidth[m_area]))
 					{
-						log.finest("Not enough X space for "
+						if (log.isLoggable(Level.FINEST))
+							log.finest("Not enough X space for "
 								+ m_lastWidth[m_area] + " - remaining " + getXspace() + " - Area=" + m_area);
 						newLine ();
 					}
 					if (m_area == AREA_CONTENT && !isYspaceFor(m_lastHeight[m_area]))
 					{
-						log.finest("Not enough Y space "
+						if (log.isLoggable(Level.FINEST))
+							log.finest("Not enough Y space "
 								+ m_lastHeight[m_area] + " - remaining " + getYspace() + " - Area=" + m_area);
 						newPage (true, true);
 					}
@@ -1235,13 +1251,15 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		MQuery query = new MQuery (format.getAD_Table_ID());
 		query.addRestriction(item.getColumnName(), MQuery.EQUAL, new Integer(Record_ID));
 		format.setTranslationViewQuery(query);
-		log.fine(query.toString());
+		if (log.isLoggable(Level.FINE))
+			log.fine(query.toString());
 		//
 		DataEngine de = new DataEngine(format.getLanguage(),m_TrxName);
 		PrintData includedData = de.getPrintData(data.getCtx(), format, query);
 		if (includedData == null)
 			return null;
-		log.fine(includedData.toString());
+		if (log.isLoggable(Level.FINE))
+			log.fine(includedData.toString());
 		//
 		element = layoutTable (format, includedData, item.getXSpace());
 		//	handle multi page tables
@@ -1263,13 +1281,15 @@ public class LayoutEngine implements Pageable, Printable, Doc
 
 		if (!isXspaceFor(m_lastWidth[m_area]))
 		{
-			log.finest("Not enough X space for "
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Not enough X space for "
 					+ m_lastWidth[m_area] + " - remaining " + getXspace() + " - Area=" + m_area);
 			newLine ();
 		}
 		if (m_area == AREA_CONTENT && !isYspaceFor(m_lastHeight[m_area]))
 		{
-			log.finest("Not enough Y space "
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Not enough Y space "
 					+ m_lastHeight[m_area] + " - remaining " + getYspace() + " - Area=" + m_area);
 			newPage (true, false);
 		}
@@ -1353,7 +1373,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//	Convert AmtInWords Content to alpha
 		if (item.getColumnName().equals("AmtInWords"))
 		{
-			log.fine("AmtInWords: " + stringContent);
+			if (log.isLoggable(Level.FINE))
+				log.fine("AmtInWords: " + stringContent);
 			stringContent = Msg.getAmtInWords (m_format.getLanguage(), stringContent);
 			content = stringContent;
 		}
@@ -1647,7 +1668,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				if (printData.isPageBreak())
 				{
 					pageBreak.add(new Integer(row));
-					log.finer("PageBreak row=" + row);
+					if (log.isLoggable(Level.FINER))
+						log.finer("PageBreak row=" + row);
 				}
 			}
 			//	Summary/Line Levels for Finanial Reports

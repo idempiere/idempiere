@@ -352,7 +352,7 @@ public class Query
 			throw new DBException("Table "+table+" has 0 or more than 1 key columns");
 		}
 
-		StringBuffer selectClause = new StringBuffer("SELECT ");
+		StringBuilder selectClause = new StringBuilder("SELECT ");
 		selectClause.append(keys[0]);
 		selectClause.append(" FROM ").append(table.getTableName());
 		String sql = buildSQL(selectClause, true);
@@ -437,7 +437,7 @@ public class Query
 			}
 		}
 		
-		StringBuffer sqlSelect = new StringBuffer("SELECT ").append(sqlFunction).append("(")
+		StringBuilder sqlSelect = new StringBuilder("SELECT ").append(sqlFunction).append("(")
 					.append(sqlExpression).append(")")
 					.append(" FROM ").append(table.getTableName());
 		
@@ -530,7 +530,7 @@ public class Query
 	 */
 	public boolean match() throws DBException
 	{
-		String sql = buildSQL(new StringBuffer("SELECT 1 FROM ").append(table.getTableName()), false);
+		String sql = buildSQL(new StringBuilder("SELECT 1 FROM ").append(table.getTableName()), false);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -558,7 +558,7 @@ public class Query
 	public <T extends PO> Iterator<T> iterate() throws DBException
 	{
 		String[] keys = table.getKeyColumns();
-		StringBuffer sqlBuffer = new StringBuffer(" SELECT ");
+		StringBuilder sqlBuffer = new StringBuilder(" SELECT ");
 		for (int i = 0; i < keys.length; i++) {
 			if (i > 0)
 				sqlBuffer.append(", ");
@@ -634,7 +634,7 @@ public class Query
 	 * @param selectClause optional; if null the select clause will be build according to POInfo
 	 * @return final SQL
 	 */
-	private final String buildSQL(StringBuffer selectClause, boolean useOrderByClause)
+	private final String buildSQL(StringBuilder selectClause, boolean useOrderByClause)
 	{
 		if (selectClause == null)
 		{
@@ -646,7 +646,7 @@ public class Query
 			selectClause = info.buildSelect();
 		}
 		
-		StringBuffer whereBuffer = new StringBuffer(); 
+		StringBuilder whereBuffer = new StringBuilder(); 
 		if (!Util.isEmpty(this.whereClause, true))
 		{
 			if (whereBuffer.length() > 0)
@@ -679,7 +679,7 @@ public class Query
 					+" AND s.T_Selection_ID="+table.getTableName()+"."+keys[0]+")");
 		}
 		
-		StringBuffer sqlBuffer = new StringBuffer(selectClause);
+		StringBuilder sqlBuffer = new StringBuilder(selectClause);
 		if (whereBuffer.length() > 0)
 		{
 			sqlBuffer.append(" WHERE ").append(whereBuffer);
@@ -706,18 +706,21 @@ public class Query
 		if (this.onlyActiveRecords)
 		{
 			DB.setParameter(pstmt, i++, true);
-			log.finest("Parameter IsActive = Y");
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Parameter IsActive = Y");
 		}
 		if (this.onlyClient_ID)
 		{
 			int AD_Client_ID = Env.getAD_Client_ID(ctx);
 			DB.setParameter(pstmt, i++, AD_Client_ID);
-			log.finest("Parameter AD_Client_ID = "+AD_Client_ID);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Parameter AD_Client_ID = "+AD_Client_ID);
 		}
 		if (this.onlySelection_ID > 0)
 		{
 			DB.setParameter(pstmt, i++, this.onlySelection_ID);
-			log.finest("Parameter Selection AD_PInstance_ID = "+this.onlySelection_ID);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Parameter Selection AD_PInstance_ID = "+this.onlySelection_ID);
 		}
 		return pstmt.executeQuery();
 	}
@@ -734,7 +737,7 @@ public class Query
 			throw new DBException("Table "+table+" has 0 or more than 1 key columns");
 		}
 
-		StringBuffer selectClause = new StringBuffer("SELECT ");
+		StringBuilder selectClause = new StringBuilder("SELECT ");
 		selectClause.append(keys[0]);
 		selectClause.append(" FROM ").append(table.getTableName());
 		String sql = buildSQL(selectClause, true);

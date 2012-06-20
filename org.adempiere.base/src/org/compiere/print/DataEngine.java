@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.print;
 
+import java.io.Serializable;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -146,15 +147,15 @@ public class DataEngine
 		//
 		if (format.getAD_ReportView_ID() != 0)
 		{
-			String sql = "SELECT t.AD_Table_ID, t.TableName, rv.Name, rv.WhereClause "
-				+ "FROM AD_Table t"
-				+ " INNER JOIN AD_ReportView rv ON (t.AD_Table_ID=rv.AD_Table_ID) "
-				+ "WHERE rv.AD_ReportView_ID=?";	//	1
+			StringBuilder sql = new StringBuilder("SELECT t.AD_Table_ID, t.TableName, rv.Name, rv.WhereClause ")
+				.append("FROM AD_Table t")
+				.append(" INNER JOIN AD_ReportView rv ON (t.AD_Table_ID=rv.AD_Table_ID) ")
+				.append("WHERE rv.AD_ReportView_ID=?");	//	1
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
 			{				
-				pstmt = DB.prepareStatement(sql, m_trxName);
+				pstmt = DB.prepareStatement(sql.toString(), m_trxName);
 				pstmt.setInt(1, format.getAD_ReportView_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())
@@ -169,7 +170,7 @@ public class DataEngine
 			}
 			catch (SQLException e)
 			{
-				log.log(Level.SEVERE, sql, e);
+				log.log(Level.SEVERE, sql.toString(), e);
 				return null;
 			}
 			finally
@@ -214,8 +215,11 @@ public class DataEngine
 	{
 		m_startTime = System.currentTimeMillis();
 		log.info(reportName + " - " + m_language.getAD_Language());
-		log.fine("TableName=" + tableName + ", Query=" + query);
-		log.fine("Format=" + format);
+		if (log.isLoggable(Level.FINE))
+		{
+			log.fine("TableName=" + tableName + ", Query=" + query);
+			log.fine("Format=" + format);
+		}
 		ArrayList<PrintDataColumn> columns = new ArrayList<PrintDataColumn>();
 		m_group = new PrintDataGroup();
 
@@ -224,49 +228,50 @@ public class DataEngine
 		ArrayList<String> orderColumns = new ArrayList<String>(orderAD_Column_IDs.length);
 		for (int i = 0; i < orderAD_Column_IDs.length; i++)
 		{
-			log.finest("Order AD_Column_ID=" + orderAD_Column_IDs[i]);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Order AD_Column_ID=" + orderAD_Column_IDs[i]);
 			orderColumns.add("");		//	initial value overwritten with fully qualified name
 		}
 
 		//	Direct SQL w/o Reference Info
-		StringBuffer sqlSELECT = new StringBuffer("SELECT ");
-		StringBuffer sqlFROM = new StringBuffer(" FROM ").append(tableName);
+		StringBuilder sqlSELECT = new StringBuilder("SELECT ");
+		StringBuilder sqlFROM = new StringBuilder(" FROM ").append(tableName);
 		ArrayList<String> groupByColumns = new ArrayList<String>();
 		//
 		boolean IsGroupedBy = false;
 		//
-		String sql = "SELECT c.AD_Column_ID,c.ColumnName,"				//	1..2
-			+ "c.AD_Reference_ID,c.AD_Reference_Value_ID,"				//	3..4
-			+ "c.FieldLength,c.IsMandatory,c.IsKey,c.IsParent,"			//	5..8
-			+ "COALESCE(rvc.IsGroupFunction,'N'),rvc.FunctionColumn,"	//	9..10
-			+ "pfi.IsGroupBy,pfi.IsSummarized,pfi.IsAveraged,pfi.IsCounted, "	//	11..14
-			+ "pfi.IsPrinted,pfi.SortNo,pfi.IsPageBreak, "				//	15..17
-			+ "pfi.IsMinCalc,pfi.IsMaxCalc, "							//	18..19
-			+ "pfi.isRunningTotal,pfi.RunningTotalLines, "				//	20..21
-			+ "pfi.IsVarianceCalc, pfi.IsDeviationCalc, "				//	22..23
-			+ "c.ColumnSQL, COALESCE(pfi.FormatPattern, c.FormatPattern) "		//	24, 25
+		StringBuilder sql = new StringBuilder("SELECT c.AD_Column_ID,c.ColumnName,")				//	1..2
+			.append("c.AD_Reference_ID,c.AD_Reference_Value_ID,")				//	3..4
+			.append("c.FieldLength,c.IsMandatory,c.IsKey,c.IsParent,")			//	5..8
+			.append("COALESCE(rvc.IsGroupFunction,'N'),rvc.FunctionColumn,")	//	9..10
+			.append("pfi.IsGroupBy,pfi.IsSummarized,pfi.IsAveraged,pfi.IsCounted, ")	//	11..14
+			.append("pfi.IsPrinted,pfi.SortNo,pfi.IsPageBreak, ")				//	15..17
+			.append("pfi.IsMinCalc,pfi.IsMaxCalc, ")							//	18..19
+			.append("pfi.isRunningTotal,pfi.RunningTotalLines, ")				//	20..21
+			.append("pfi.IsVarianceCalc, pfi.IsDeviationCalc, ")				//	22..23
+			.append("c.ColumnSQL, COALESCE(pfi.FormatPattern, c.FormatPattern) ")		//	24, 25
 			//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
-			+ " , pfi.isDesc " //26
+			.append(" , pfi.isDesc ") //26
 			//END
-			+ "FROM AD_PrintFormat pf"
-			+ " INNER JOIN AD_PrintFormatItem pfi ON (pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID)"
-			+ " INNER JOIN AD_Column c ON (pfi.AD_Column_ID=c.AD_Column_ID)"
-			+ " LEFT OUTER JOIN AD_ReportView_Col rvc ON (pf.AD_ReportView_ID=rvc.AD_ReportView_ID AND c.AD_Column_ID=rvc.AD_Column_ID) "
-			+ "WHERE pf.AD_PrintFormat_ID=?"					//	#1
-			+ " AND pfi.IsActive='Y' AND (pfi.IsPrinted='Y' OR c.IsKey='Y' OR pfi.SortNo > 0) "
-			+ " AND pfi.PrintFormatType IN ('"
+			.append("FROM AD_PrintFormat pf")
+			.append(" INNER JOIN AD_PrintFormatItem pfi ON (pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID)")
+			.append(" INNER JOIN AD_Column c ON (pfi.AD_Column_ID=c.AD_Column_ID)")
+			.append(" LEFT OUTER JOIN AD_ReportView_Col rvc ON (pf.AD_ReportView_ID=rvc.AD_ReportView_ID AND c.AD_Column_ID=rvc.AD_Column_ID) ")
+			.append("WHERE pf.AD_PrintFormat_ID=?")					//	#1
+			.append(" AND pfi.IsActive='Y' AND (pfi.IsPrinted='Y' OR c.IsKey='Y' OR pfi.SortNo > 0) ")
+			.append(" AND pfi.PrintFormatType IN ('"
 				+ MPrintFormatItem.PRINTFORMATTYPE_Field
 				+ "','"
 				+ MPrintFormatItem.PRINTFORMATTYPE_Image
 				+ "','"
 				+ MPrintFormatItem.PRINTFORMATTYPE_PrintFormat
-				+ "') "
-			+ "ORDER BY pfi.IsPrinted DESC, pfi.SeqNo";			//	Functions are put in first column
+				+ "') ")
+			.append("ORDER BY pfi.IsPrinted DESC, pfi.SeqNo");			//	Functions are put in first column
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, m_trxName);
+			pstmt = DB.prepareStatement(sql.toString(), m_trxName);
 			pstmt.setInt(1, format.get_ID());
 			rs = pstmt.executeQuery();
 
@@ -556,7 +561,7 @@ public class DataEngine
 					else if (index == -1)
 					{
 					//	=> Table.Column,
-						StringBuffer sb = new StringBuffer();
+						StringBuilder sb = new StringBuilder();
 						sb.append(tableName).append(".").append(ColumnName);
 						sqlSELECT.append(sb).append(",");
 						if (!IsGroupFunction)
@@ -565,7 +570,7 @@ public class DataEngine
 					else
 					{
 					//  => Function(Table.Column) AS Column   -- function has @ where column name goes
-						StringBuffer sb = new StringBuffer();
+						StringBuilder sb = new StringBuilder();
 						sb.append(FunctionColumn.substring(0, index))
 							.append(tableName).append(".").append(ColumnName)
 							.append(FunctionColumn.substring(index+1));
@@ -621,7 +626,8 @@ public class DataEngine
 		if (columns.size() == 0)
 		{
 			log.log(Level.SEVERE, "No Colums - Delete Report Format " + reportName + " and start again");
-			log.finest("No Colums - SQL=" + sql + " - ID=" + format.get_ID());
+			if (log.isLoggable(Level.FINEST))
+				log.finest("No Colums - SQL=" + sql + " - ID=" + format.get_ID());
 			return null;
 		}
 
@@ -636,7 +642,7 @@ public class DataEngine
 		/**
 		 *	Assemble final SQL - delete last SELECT ','
 		 */
-		StringBuffer finalSQL = new StringBuffer();
+		StringBuilder finalSQL = new StringBuilder();
 		finalSQL.append(sqlSELECT.substring(0, sqlSELECT.length()-1))
 			.append(sqlFROM);
 
@@ -666,7 +672,7 @@ public class DataEngine
 			if (role.getAD_Role_ID() == 0 && !Ini.isClient())
 				;	//	System Access
 			else
-				finalSQL = new StringBuffer (role.addAccessSQL (finalSQL.toString (), 
+				finalSQL = new StringBuilder (role.addAccessSQL (finalSQL.toString (), 
 					tableName, MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO));
 		}
 
@@ -709,8 +715,11 @@ public class DataEngine
 		pd.setSQL(finalSQL.toString());
 		pd.setHasLevelNo(hasLevelNo);
 
-		log.finest (finalSQL.toString ());
-		log.finest ("Group=" + m_group);
+		if (log.isLoggable(Level.FINEST))
+		{
+			log.finest (finalSQL.toString ());
+			log.finest ("Group=" + m_group);
+		}
 		return pd;
 	}	//	getPrintDataInfo
 
@@ -751,19 +760,19 @@ public class DataEngine
 		//
 		TableReference tr = new TableReference();
 		//
-		String SQL = "SELECT t.TableName, ck.ColumnName AS KeyColumn,"	//	1..2
-			+ " cd.ColumnName AS DisplayColumn, rt.IsValueDisplayed, cd.IsTranslated "
-			+ "FROM AD_Ref_Table rt"
-			+ " INNER JOIN AD_Table t ON (rt.AD_Table_ID = t.AD_Table_ID)"
-			+ " INNER JOIN AD_Column ck ON (rt.AD_Key = ck.AD_Column_ID)"
-			+ " INNER JOIN AD_Column cd ON (rt.AD_Display = cd.AD_Column_ID) "
-			+ "WHERE rt.AD_Reference_ID=?"			//	1
-			+ " AND rt.IsActive = 'Y' AND t.IsActive = 'Y'";
+		StringBuilder SQL = new StringBuilder("SELECT t.TableName, ck.ColumnName AS KeyColumn,")	//	1..2
+			.append(" cd.ColumnName AS DisplayColumn, rt.IsValueDisplayed, cd.IsTranslated ")
+			.append("FROM AD_Ref_Table rt")
+			.append(" INNER JOIN AD_Table t ON (rt.AD_Table_ID = t.AD_Table_ID)")
+			.append(" INNER JOIN AD_Column ck ON (rt.AD_Key = ck.AD_Column_ID)")
+			.append(" INNER JOIN AD_Column cd ON (rt.AD_Display = cd.AD_Column_ID) ")
+			.append("WHERE rt.AD_Reference_ID=?")			//	1
+			.append(" AND rt.IsActive = 'Y' AND t.IsActive = 'Y'");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL.toString(), null);
 			pstmt.setInt (1, AD_Reference_Value_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -777,7 +786,7 @@ public class DataEngine
 		}
 		catch (SQLException ex)
 		{
-			log.log(Level.SEVERE, SQL, ex);
+			log.log(Level.SEVERE, SQL.toString(), ex);
 		}
 		finally
 		{
@@ -993,7 +1002,7 @@ public class DataEngine
 										pde = new PrintDataElement(pdc.getColumnName(), s, pdc.getDisplayType(), pdc.getFormatPattern());
 									}
 									else
-										pde = new PrintDataElement(pdc.getColumnName(), obj, pdc.getDisplayType(), pdc.getFormatPattern());
+										pde = new PrintDataElement(pdc.getColumnName(), (Serializable)obj, pdc.getDisplayType(), pdc.getFormatPattern());
 								}
 							}
 						}	//	Value only
@@ -1120,12 +1129,14 @@ public class DataEngine
 	{
 		if (m_runningTotalLines < 1)	//	-1 = none
 			return;
-		log.fine("(" + m_runningTotalLines + ") - Row=" + rowNo 
-			+ ", mod=" + rowNo % m_runningTotalLines);
+		if (log.isLoggable(Level.FINE))
+			log.fine("(" + m_runningTotalLines + ") - Row=" + rowNo 
+					+ ", mod=" + rowNo % m_runningTotalLines);
 		if (rowNo % m_runningTotalLines != 0)
 			return;
 			
-		log.fine("Row=" + rowNo);
+		if (log.isLoggable(Level.FINE))
+			log.fine("Row=" + rowNo);
 		PrintDataColumn pdc = null;
 		int start = 0;
 		if (rowNo == 0)	//	no page break on page 1

@@ -97,7 +97,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 	public String getSqlPI (MGoalRestriction[] restrictions, 
 		String MeasureScope, String MeasureDataType, Timestamp reportDate, MRole role)
 	{
-		StringBuffer sb = new StringBuffer(getSelectClause())
+		StringBuilder sb = new StringBuilder(getSelectClause())
 			.append(" ")
 			.append(getWhereClause());
 		//	Date Restriction
@@ -141,7 +141,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 	public String getSqlBarChart (MGoalRestriction[] restrictions, 
 		String MeasureDisplay, Timestamp startDate, MRole role)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String dateCol = null;
 		String groupBy = null;
 		if (getDateColumn() != null 
@@ -208,7 +208,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 	{
 		MQuery query = new MQuery(getAD_Table_ID());
 		//
-		StringBuffer sql = new StringBuffer("SELECT ").append(getKeyColumn()).append(" ");
+		StringBuilder sql = new StringBuilder("SELECT ").append(getKeyColumn()).append(" ");
 		String from = getSelectClause();
 		int index = from.indexOf("FROM ");
 		if (index == -1)
@@ -235,7 +235,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		}
 		String finalSQL = addRestrictions(sql.toString(), restrictions, role);
 		//	Execute
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		PreparedStatement pstmt = null;
 		try
 		{
@@ -269,7 +269,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		if (where.length() == 0)
 			return MQuery.getNoRecordQuery(query.getTableName(), false);
 		//
-		StringBuffer whereClause = new StringBuffer (getKeyColumn())
+		StringBuilder whereClause = new StringBuilder (getKeyColumn())
 			.append(" IN (").append(where).append(")");
 		query.addRestriction(whereClause.toString());
 		query.setRecordCount(1);
@@ -307,7 +307,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		MGoalRestriction[] restrictions, MRole role, 
 		String tableName, String orgColumn, String bpColumn, String pColumn)
 	{
-		StringBuffer sb = new StringBuffer(sql);
+		StringBuilder sb = new StringBuilder(sql);
 		//	Org Restrictions
 		if (orgColumn != null)
 		{
@@ -459,7 +459,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MMeasureCalc[");
+		StringBuilder sb = new StringBuilder ("MMeasureCalc[");
 		sb.append (get_ID()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString
