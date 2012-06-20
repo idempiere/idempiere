@@ -8,11 +8,11 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 
@@ -149,7 +149,11 @@ public class ZkJRViewer extends Window implements EventListener, ITabOnCloseHand
 				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 			}
 			File file = File.createTempFile(prefix, ".pdf", new File(path));
-			JasperExportManager.exportReportToPdfFile(jasperPrint, file.getAbsolutePath());
+			JRPdfExporter exporter = new JRPdfExporter();                    		
+    		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+    		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
+    		exporter.setParameter(JRExporterParameter.CLASS_LOADER, exporter.getClass().getClassLoader());
+    		exporter.exportReport();    		
 			media = new AMedia(getTitle(), "pdf", "application/pdf", file, true);
 						
 			
