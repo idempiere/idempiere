@@ -93,6 +93,9 @@ public class AboutWindow extends Window implements EventListener<Event> {
 
 	private void init() {
 
+		System.runFinalization();
+		System.gc();
+		
 		this.setPosition("center");
 		this.setTitle(ThemeManager.getBrowserTitle());
 		this.setClosable(true);
