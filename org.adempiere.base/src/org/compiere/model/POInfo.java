@@ -22,6 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -126,7 +128,10 @@ public class POInfo implements Serializable
 	private boolean		m_hasKeyColumn = false;
 	/**	Table needs keep log*/
 	private boolean 	m_IsChangeLog = false;
-	
+	/** column name to index map **/
+	private Map<String, Integer> m_columnNameMap;
+	/** ad_column_id to index map **/
+	private Map<Integer, Integer> m_columnIdMap;
 
 	/**
 	 *  Load Table/Column Info
@@ -135,6 +140,8 @@ public class POInfo implements Serializable
 	 */
 	private void loadInfo (boolean baseLanguage, String trxName)
 	{
+		m_columnNameMap = new HashMap<String, Integer>();
+		m_columnIdMap = new HashMap<Integer, Integer>();
 		ArrayList<POInfoColumn> list = new ArrayList<POInfoColumn>(15);
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT t.TableName, c.ColumnName,c.AD_Reference_ID,"    //  1..3
@@ -205,6 +212,9 @@ public class POInfo implements Serializable
 					IsTranslated, IsEncrypted,
 					IsAllowLogging, IsAllowCopy);
 				list.add(col);
+				
+				m_columnNameMap.put(ColumnName.toUpperCase(), list.size() - 1);
+				m_columnIdMap.put(AD_Column_ID, list.size() - 1);
 			}
 		}
 		catch (SQLException e)
@@ -293,11 +303,10 @@ public class POInfo implements Serializable
 	 */
 	public int getColumnIndex (String ColumnName)
 	{
-		for (int i = 0; i < m_columns.length; i++)
-		{
-			if (ColumnName.equalsIgnoreCase(m_columns[i].ColumnName)) // teo_sarca : modified to compare ignoring case [ 1619179 ]
-				return i;
-		}
+		Integer i = m_columnNameMap.get(ColumnName.toUpperCase());
+		if (i != null)
+			return i.intValue();
+		
 		return -1;
 	}   //  getColumnIndex
 
@@ -308,11 +317,10 @@ public class POInfo implements Serializable
 	 */
 	public int getColumnIndex (int AD_Column_ID)
 	{
-		for (int i = 0; i < m_columns.length; i++)
-		{
-			if (AD_Column_ID == m_columns[i].AD_Column_ID)
-				return i;
-		}
+		Integer i = m_columnIdMap.get(AD_Column_ID);
+		if (i != null)
+			return i.intValue();
+		
 		return -1;
 	}   //  getColumnIndex
 	
@@ -731,11 +739,11 @@ public class POInfo implements Serializable
 	
 	/**
 	 * Build select clause
-	 * @return stringbuffer
+	 * @return stringbuilder
 	 */
-	public StringBuffer buildSelect()
+	public StringBuilder buildSelect()
 	{
-		StringBuffer sql = new StringBuffer("SELECT ");
+		StringBuilder sql = new StringBuilder("SELECT ");
 		int size = getColumnCount();
 		for (int i = 0; i < size; i++)
 		{
