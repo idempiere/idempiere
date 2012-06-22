@@ -121,7 +121,7 @@ public class UUIDGenerator extends SvrProcess {
 					syncColumn(mColumn);
 
 					//update db
-					updateUUID(mColumn);
+					updateUUID(mColumn, null);
 				}
 			}
 		} finally {
@@ -130,7 +130,7 @@ public class UUIDGenerator extends SvrProcess {
 		return count + " table altered";
 	}
 
-	public static void updateUUID(MColumn column) {
+	public static void updateUUID(MColumn column, String trxName) {
 		MTable table = (MTable) column.getAD_Table();
 		int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column WHERE AD_Table_ID=? AND ColumnName=?", table.getAD_Table_ID(), table.getTableName()+"_ID");
 		StringBuffer sql = new StringBuffer("SELECT ");
@@ -160,12 +160,18 @@ public class UUIDGenerator extends SvrProcess {
 			}
 			updateSQL = updateSQL.substring(0, updateSQL.length() - " AND ".length());
 		}
+		
+		boolean localTrx = false;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		Trx trx = null;
-		try {
+		Trx trx = trxName != null ? Trx.get(trxName, false) : null;
+		if (trx == null) {
 			trx = Trx.get(Trx.createTrxName(), true);
-			trx.start();
+			localTrx = true;
+		}
+		try {				
+			if (localTrx)
+				trx.start();
 			stmt = DB.prepareStatement(sql.toString(), trx.getTrxName());
 			stmt.setFetchSize(100);
 			rs = stmt.executeQuery();
@@ -174,7 +180,7 @@ public class UUIDGenerator extends SvrProcess {
 					int recordId = rs.getInt(1);
 					if (recordId > MTable.MAX_OFFICIAL_ID) {
 						UUID uuid = UUID.randomUUID();
-						DB.executeUpdateEx(updateSQL,new Object[]{uuid.toString(), recordId},null);
+						DB.executeUpdateEx(updateSQL,new Object[]{uuid.toString(), recordId}, trx.getTrxName());
 					}
 				} else {
 					UUID uuid = UUID.randomUUID();
@@ -183,15 +189,22 @@ public class UUIDGenerator extends SvrProcess {
 					for (String s : compositeKeys) {
 						params.add(rs.getObject(s));
 					}
-					DB.executeUpdateEx(updateSQL,params.toArray(),null);
+					DB.executeUpdateEx(updateSQL,params.toArray(),trx.getTrxName());
 				}
 			}
+			if (localTrx) {
+				trx.commit(true);
+			}
 		} catch (SQLException e) {
+			if (localTrx) {
+				trx.rollback();
+			}
 			throw new DBException(e);
 		} finally {
 			DB.close(rs, stmt);
-			if (trx != null)
+			if (localTrx) {
 				trx.close();
+			}
 		}
 	}
 

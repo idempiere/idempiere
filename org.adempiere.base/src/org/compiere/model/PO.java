@@ -3365,7 +3365,7 @@ public abstract class PO
 		int no = DB.executeUpdate(sql.toString(), m_trxName);
 		if (uuidColumnId > 0 && !uuidFunction) {
 			MColumn column = new MColumn(getCtx(), uuidColumnId, get_TrxName());
-			UUIDGenerator.updateUUID(column);
+			UUIDGenerator.updateUUID(column, get_TrxName());
 		}
 		log.fine("#" + no);
 		return no > 0;
@@ -3548,7 +3548,7 @@ public abstract class PO
 		//fall back to the slow java client update code
 		if (uuidColumnId > 0 && !uuidFunction) {
 			MColumn column = new MColumn(getCtx(), uuidColumnId, get_TrxName());
-			UUIDGenerator.updateUUID(column);
+			UUIDGenerator.updateUUID(column, get_TrxName());
 		}
 		return no > 0;
 	}	//	insert_Accounting
@@ -3626,7 +3626,7 @@ public abstract class PO
 		if (uuidColumnId > 0 && !uuidFunction )
 		{
 			MColumn column = new MColumn(getCtx(), uuidColumnId, get_TrxName());
-			UUIDGenerator.updateUUID(column);
+			UUIDGenerator.updateUUID(column, get_TrxName());
 		}
 		return no > 0;
 	}	//	insert_Tree
