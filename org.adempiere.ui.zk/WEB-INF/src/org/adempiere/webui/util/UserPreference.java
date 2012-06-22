@@ -148,7 +148,7 @@ public final class UserPreference implements Serializable {
 				String value = VALUES[i];
 
 				MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute}).firstOnly();
-				if (preference != null) {
+				if (preference != null && preference.getValue() != null) {
 					value = preference.getValue();
 				}
 
