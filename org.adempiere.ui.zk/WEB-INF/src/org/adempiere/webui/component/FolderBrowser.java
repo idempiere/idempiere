@@ -159,7 +159,7 @@ public class FolderBrowser extends Window implements EventListener
 	
 	public void onEvent(Event e) throws Exception 
 	{	
-		if(e.getName() == Events.ON_DOUBLE_CLICK && e.getTarget() instanceof ListItem)
+		if(e.getName().equals(Events.ON_DOUBLE_CLICK) && e.getTarget() instanceof ListItem)
 		{
 			int index = listDir.getSelectedIndex();
 			if (index >= 0)
@@ -168,7 +168,7 @@ public class FolderBrowser extends Window implements EventListener
 				getFileListing(vnp.getValue());
 			}
 		}
-		else if(e.getName() == Events.ON_SELECT && e.getTarget() == listDir)
+		else if(e.getName().equals(Events.ON_SELECT) && e.getTarget() == listDir)
 		{
 			int index = listDir.getSelectedIndex();
 			if (index >= 0)
