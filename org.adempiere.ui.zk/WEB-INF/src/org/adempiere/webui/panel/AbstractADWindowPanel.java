@@ -709,7 +709,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 						if (!find.isCancel())
 			            {
 			            	m_findCreateNew = find.isCreateNew();
-			            	MQuery result = m_findCreateNew ? query : find.getQuery();
+			            	MQuery result = find.getQuery();
 			            	callback.onCallback(result);
 			            }
 			            else
@@ -1561,7 +1561,10 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			            curTabpanel.query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
 			        }
 
-			        curTab.dataRefresh(false); // Elaine 2008/07/25
+			        if (find.isCreateNew())
+			        	onNew();
+			        else
+			        	curTab.dataRefresh(false); // Elaine 2008/07/25
 		        }
 				else
 				{
