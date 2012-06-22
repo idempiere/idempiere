@@ -686,8 +686,11 @@ public class MLookupFactory
 		//  Do we have columns ?
 		if (list.size() == 0)
 		{
-			s_log.log(Level.SEVERE, "No Identifier records found: " + ColumnName);
-			return null;
+			if (s_log.isLoggable(Level.INFO))
+			{
+				s_log.log(Level.INFO, "No Identifier records found: " + ColumnName);
+			}
+			list.add(new LookupDisplayColumn(KeyColumn, null, false, DisplayType.ID, 0));
 		}
 
 		StringBuffer realSQL = new StringBuffer("SELECT ");
