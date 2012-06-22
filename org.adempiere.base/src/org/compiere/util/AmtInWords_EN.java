@@ -36,50 +36,50 @@ public class AmtInWords_EN implements AmtInWords
 	/** Thousands plus				*/
 	private static final String[]	majorNames	= {
 		"", 
-		"Thousand-", 
-		"Million-",
-		"Billion-", 
-		"Trillion-", 
-		"Quadrillion-",
-		"Quintillion-"
+		"Thousand ", 
+		"Million ",
+		"Billion ", 
+		"Trillion ", 
+		"Quadrillion ",
+		"Quintillion "
 	};
 
 	/** Ten to Ninety				*/
 	private static final String[]	tensNames	= { 
 		"", 
-		"Ten", 
-		"Twenty",
-		"Thirty", 
-		"Forty", 
-		"Fifty", 
-		"Sixty", 
-		"Seventy",
-		"Eighty", 
-		"Ninety"
+		"Ten ", 
+		"Twenty ",
+		"Thirty ", 
+		"Forty ", 
+		"Fifty ", 
+		"Sixty ", 
+		"Seventy ",
+		"Eighty ", 
+		"Ninety "
 	};
 
 	/** numbers to 19				*/
 	private static final String[]	numNames	= { 
 		"", 
-		"One", 
-		"Two",
-		"Three", 
-		"Four", 
-		"Five", 
-		"Six", 
-		"Seven", 
-		"Eight", 
-		"Nine",
-		"Ten", 
-		"Eleven", 
-		"Twelve", 
-		"Thirteen", 
-		"Fourteen", 
-		"Fifteen",
-		"Sixteen", 
-		"Seventeen", 
-		"Eighteen", 
-		"Nineteen"
+		"One ", 
+		"Two ",
+		"Three ", 
+		"Four ", 
+		"Five ", 
+		"Six ", 
+		"Seven ", 
+		"Eight ", 
+		"Nine ",
+		"Ten ", 
+		"Eleven ", 
+		"Twelve ", 
+		"Thirteen ", 
+		"Fourteen ", 
+		"Fifteen ",
+		"Sixteen ", 
+		"Seventeen ", 
+		"Eighteen ", 
+		"Nineteen "
 	};
 
 	/**
@@ -105,7 +105,7 @@ public class AmtInWords_EN implements AmtInWords
 		}
 		if (number == 0)
 			return soFar;
-		return numNames[number] + "Hundred-" + soFar;
+		return numNames[number] + "Hundred " + soFar;
 	}	//	convertLessThanOneThousand
 
 	/**
