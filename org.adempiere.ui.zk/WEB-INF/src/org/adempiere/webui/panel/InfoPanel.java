@@ -309,6 +309,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
         this.addEventListener(Events.ON_OK, this);
 
         contentPanel.setOddRowSclass(null);
+        contentPanel.setSizedByContent(true);
 	}  //  init
 	protected ConfirmPanel confirmPanel;
 	/** Master (owning) Window  */

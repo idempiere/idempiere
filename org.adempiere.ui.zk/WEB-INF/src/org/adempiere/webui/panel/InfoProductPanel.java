@@ -39,7 +39,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -269,7 +268,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		pickPriceList.setRows(0);
 		pickPriceList.setMultiple(false);
 		pickPriceList.setMold("select");
-		pickPriceList.setWidth("150px");
+		pickPriceList.setHflex("1");
 		pickPriceList.addEventListener(Events.ON_SELECT, this);
 
 		// Elaine 2008/11/21
@@ -277,24 +276,24 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		pickProductCategory.setRows(0);
 		pickProductCategory.setMultiple(false);
 		pickProductCategory.setMold("select");
-		pickProductCategory.setWidth("150px");
+		pickProductCategory.setHflex("1");
 		pickProductCategory.addEventListener(Events.ON_SELECT, this);
 		//
 		pickAS = new Listbox();
 		pickAS.setRows(0);
 		pickAS.setMultiple(false);
 		pickAS.setMold("select");
-		pickAS.setWidth("150px");
+		pickAS.setHflex("1");
 		pickAS.addEventListener(Events.ON_SELECT, this);
 
 		pickWarehouse = new Listbox();
 		pickWarehouse.setRows(0);
 		pickWarehouse.setMultiple(false);
 		pickWarehouse.setMold("select");
-		pickWarehouse.setWidth("150px");
+		pickWarehouse.setHflex("1");
 		pickWarehouse.addEventListener(Events.ON_SELECT, this);
 
-		fieldVendor = new Textbox();
+		fieldVendor = new Textbox();		
 
         contentPanel.setVflex(true);
 	}	//	initComponents
@@ -310,8 +309,10 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		rows.appendChild(row);
 		row.appendChild(lblValue.rightAlign());
 		row.appendChild(fieldValue);
+		fieldValue.setHflex("1");
 		row.appendChild(lblUPC.rightAlign());
 		row.appendChild(fieldUPC);
+		fieldUPC.setHflex("1");
 		row.appendChild(lblWarehouse.rightAlign());
 		row.appendChild(pickWarehouse);
 		row.appendChild(m_InfoPAttributeButton);
@@ -321,10 +322,13 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		rows.appendChild(row);
 		row.appendChild(lblName.rightAlign());
 		row.appendChild(fieldName);
+		fieldName.setHflex("1");
 		row.appendChild(lblSKU.rightAlign());
 		row.appendChild(fieldSKU);
+		fieldSKU.setHflex("1");
 		row.appendChild(lblVendor.rightAlign());
 		row.appendChild(fieldVendor);
+		fieldVendor.setHflex("1");
 		//
 
 		row = new Row();
@@ -341,6 +345,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		row.appendChild(statusBar);
 		row.setSpans("6");
 		statusBar.setEastVisibility(false);
+		statusBar.setWidth("100%");
 
 		// Product Attribute Instance
 		m_PAttributeButton = confirmPanel.createButton(ConfirmPanel.A_PATTRIBUTE);
@@ -351,6 +356,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
         // Elaine 2008/11/25
         fieldDescription.setMultiline(true);
 		fieldDescription.setReadonly(true);
+		fieldDescription.setHflex("1");
 
 		//
         ColumnInfo[] s_layoutWarehouse = new ColumnInfo[]{
@@ -636,11 +642,6 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 			where.toString(),
 			"QtyAvailable DESC");
 
-		//
-		pickWarehouse.addEventListener(Events.ON_SELECT,this);
-		pickPriceList.addEventListener(Events.ON_SELECT,this);
-		pickProductCategory.addEventListener(Events.ON_SELECT, this); // Elaine 2008/11/21
-		pickAS.addEventListener(Events.ON_SELECT, this);
 	}	//	initInfo
 
 	/**
