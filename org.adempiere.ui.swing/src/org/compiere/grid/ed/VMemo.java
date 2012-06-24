@@ -57,7 +57,7 @@ public class VMemo extends CTextArea
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1589654941310687511L;
+	private static final long serialVersionUID = -7168406072766858933L;
 
 	/**
 	 *	Mouse Listener
@@ -156,7 +156,7 @@ public class VMemo extends CTextArea
 
 	private String		m_columnName;
 	private String		m_oldText = "";
-	private boolean		m_firstChange;
+	private volatile boolean	m_setting = false;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(VMemo.class);
 
@@ -167,7 +167,8 @@ public class VMemo extends CTextArea
 	public void setValue(Object value)
 	{
 		super.setValue(value);
-		m_firstChange = true;
+		if (m_setting)
+			return;
 		//	Always position Top 
 		setCaretPosition(0);
 	}	//	setValue
@@ -266,14 +267,13 @@ public class VMemo extends CTextArea
 	 */
 	public void focusLost (FocusEvent e)
 	{
-		//  Indicate Change
-		log.fine( "focusLost");
+		m_setting = true;
 		try
 		{
-			String text = getText();
-			fireVetoableChange(m_columnName, text, null);   //  No data committed - done when focus lost !!!
+			fireVetoableChange(m_columnName, m_oldText, getText());
 		}
 		catch (PropertyVetoException pve)	{}
+		m_setting = false;
 	}	//	focusLost
 
 	/*************************************************************************/
