@@ -77,13 +77,13 @@ import org.zkoss.zk.ui.ext.render.DynamicMedia;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Tab;
@@ -115,7 +115,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7554542090648903080L;
+	private static final long serialVersionUID = 2079827289589862794L;
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
@@ -547,9 +547,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
-		KeyNamePair pp = new KeyNamePair(-1, sb.toString());
-		comboReport.appendItem(pp.getName(), pp.getKey());
+		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report
+		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
+			&& MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT))
+		{
+			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
+			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
+			comboReport.appendItem(pp.getName(), pp.getKey());
+		}
 		comboReport.addEventListener(Events.ON_SELECT, this);
 	}	//	fillComboReport
 

@@ -130,7 +130,7 @@ public class Viewer extends CFrame
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7306392362119021781L;
+	private static final long serialVersionUID = 3453340777183200393L;
 
 	/**
 	 * 	@deprecated
@@ -451,9 +451,14 @@ public class Viewer extends CFrame
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(m_ctx, "NewReport")).append(" **");
-		KeyNamePair pp = new KeyNamePair(-1, sb.toString());
-		comboReport.addItem(pp);
+		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report
+		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
+			&& MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT))
+		{
+			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(m_ctx, "NewReport")).append(" **");
+			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
+			comboReport.addItem(pp);
+		}
 		if (selectValue != null)
 			comboReport.setSelectedItem(selectValue);
 		comboReport.addActionListener(this);
