@@ -110,8 +110,8 @@ public final class UserPreference implements Serializable {
 	 * save user preference
 	 */
 	public void savePreference() {
-		if (m_AD_User_ID > 0) {
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "AD_User_ID = ? AND Attribute = ? AND AD_Window_ID Is NULL", null);
+		if (m_AD_User_ID >= 0) {
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL", null);
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
 				String value = props.getProperty(attribute);
@@ -137,11 +137,11 @@ public final class UserPreference implements Serializable {
 	 * @param AD_User_ID
 	 */
 	public void loadPreference(int AD_User_ID) {
-		if (AD_User_ID > 0) {
+		if (AD_User_ID >= 0) {
 			m_AD_User_ID = AD_User_ID;
 			props = new Properties();
 
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "AD_User_ID = ? AND Attribute = ? AND AD_Window_ID Is NULL", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL", null);
 
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
