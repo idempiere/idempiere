@@ -105,9 +105,9 @@ import org.compiere.util.ValueNamePair;
 public class GridTab implements DataStatusListener, Evaluatee, Serializable
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -3825605601192688998L;
+	private static final long serialVersionUID = 6841849146086698231L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -2342,10 +2342,19 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		e.Record_ID = getValue(m_keyColumnName);
 		//  Info
 		StringBuffer info = new StringBuffer(getTableName());
+		
+		/* get UUID */
+		PO po = m_mTable.getPO(m_currentRow);
+		if (po != null) {
+			String uuidcol = po.getUUIDColumnName();
+			String uuid = po.get_ValueAsString(uuidcol);
+			info.append("\n ").append(uuidcol).append("=").append(uuid);
+		}
+		
 		//  We have a key column
 		if (m_keyColumnName != null && m_keyColumnName.length() > 0)
 		{
-			info.append(" - ")
+			info.append("\n ")
 				.append(m_keyColumnName).append("=").append(e.Record_ID);
 		}
 		else    //  we have multiple parents
@@ -2353,7 +2362,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			for (int i = 0; i < m_parents.size(); i++)
 			{
 				String keyCol = (String)m_parents.get(i);
-				info.append(" - ")
+				info.append(i == 0 ? "\n " : " - ")
 					.append(keyCol).append("=").append(getValue(keyCol));
 			}
 		}
