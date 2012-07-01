@@ -1302,10 +1302,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }   //  editors
 
         m_isCancel = false; // teo_sarca [ 1708717 ]
-        //  Test for no records
-        if (getNoOfRecords(m_query, true) != 0)
-          dispose();
-
     }   //  cmd_ok_Simple
 
     public void dispose()
@@ -1341,8 +1337,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_isCancel = false; // teo_sarca [ 1708717 ]
         //  save pending
         cmd_save();
-        if (getNoOfRecords(m_query, true) != 0)
-          dispose();
     }   //  cmd_ok_Advanced
 
     /**
