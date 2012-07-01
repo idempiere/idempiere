@@ -985,9 +985,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			if (m_layout == null)
-				layout ();
-			ArchiveEngine.get().archive(m_layout, m_info);
+				layout ();			
 			Document.getPDFAsFile(fileName, m_layout.getPageable(false));
+			ArchiveEngine.get().archive(new File(fileName), m_info);
 		}
 		catch (Exception e)
 		{

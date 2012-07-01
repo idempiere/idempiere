@@ -17,6 +17,13 @@
 package org.compiere.print;
 
 import java.awt.print.Pageable;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
 
 import org.adempiere.pdf.Document;
 import org.compiere.model.MArchive;
@@ -24,6 +31,8 @@ import org.compiere.model.MClient;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.jfree.io.IOUtils;
 
 
 /**
@@ -89,6 +98,69 @@ public class ArchiveEngine
 		archive.saveEx();
 		
 		return data;
+	}	//	archive
+	
+	/**
+	 * 	Create Archive.
+	 * 	@param pdfFile
+	 * 	@param info print info
+	 */ 
+	public void archive (File pdfFile, PrintInfo info)
+	{
+		//	Do we need to Archive ?
+		MClient client = MClient.get(Env.getCtx());
+		String aaClient = client.getAutoArchive();
+		String aaRole = null; 	//	role.getAutoArchive();	//	TODO
+		String aa = aaClient;
+		if (aa == null)
+			aa = MClient.AUTOARCHIVE_None;
+		if (aaRole != null)
+		{
+			if (aaRole.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
+				aa = aaRole;
+			else if (aaRole.equals(MClient.AUTOARCHIVE_Documents) && !aaClient.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
+				aa = aaRole;
+		}
+		//	Mothing to Archive
+		if (aa.equals(MClient.AUTOARCHIVE_None))
+			return;
+		//	Archive External only
+		if (aa.equals(MClient.AUTOARCHIVE_ExternalDocuments))
+		{
+			if (info.isReport())
+				return;
+		}
+		//	Archive Documents only
+		if (aa.equals(MClient.AUTOARCHIVE_Documents))
+		{
+			if (info.isReport())
+				return;
+		}
+		
+		ByteArrayOutputStream bas = new ByteArrayOutputStream();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(pdfFile);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			IOUtils.getInstance().copyStreams(bis, bas);
+		} catch (FileNotFoundException e) {
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		} catch (IOException e) {
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (IOException e) {}
+			}
+		}
+		
+		byte[] data = bas.toByteArray();  
+				
+		//	TODO to be done async
+		MArchive archive = new MArchive (Env.getCtx(),info, null);
+		archive.setBinaryData(data);
+		archive.saveEx();
 	}	//	archive
 	
 	/**
