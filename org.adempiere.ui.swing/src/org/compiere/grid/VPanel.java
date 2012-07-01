@@ -444,7 +444,7 @@ public final class VPanel extends CTabbedPane
 		{
 			CLabel label = new CLabel(fieldGroup, CLabel.LEADING);
 			label.setFont(AdempierePLAF.getFont_Label().deriveFont(Font.BOLDITALIC, AdempierePLAF.getFont_Label().getSize2D()));
-			m_main.add(label, "newline, alignx leading");
+			m_main.add(label, "newline, spanx, growx");
 			m_main.add(new JSeparator(), "newline, spanx, growx");
 			//	reset
 		}

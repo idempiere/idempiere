@@ -2112,6 +2112,8 @@ public class MInOut extends X_M_InOut implements DocAction
 		// Void Confirmations
 		setDocStatus(DOCSTATUS_Reversed); // need to set & save docstatus to be able to check it in MInOutConfirm.voidIt()
 		saveEx();
+		//FR1948157
+		this.setReversal_ID(reversal.getM_InOut_ID());
 		voidConfirmations();
 
 		// After reverseCorrect
@@ -2120,8 +2122,6 @@ public class MInOut extends X_M_InOut implements DocAction
 			return false;
 
 		m_processMsg = reversal.getDocumentNo();
-		//FR1948157
-		this.setReversal_ID(reversal.getM_InOut_ID());
 		setProcessed(true);
 		setDocStatus(DOCSTATUS_Reversed);		//	 may come from void
 		setDocAction(DOCACTION_None);

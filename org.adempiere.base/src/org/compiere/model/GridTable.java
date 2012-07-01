@@ -90,10 +90,10 @@ public class GridTable extends AbstractTableModel
 	implements Serializable, SystemIDs
 {
 	/**
-	 * generated
+	 * 
 	 */
-	private static final long serialVersionUID = 7799823493936826600L;
-	
+	private static final long serialVersionUID = 4648364477309024202L;
+
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 
 	/**
@@ -2568,13 +2568,7 @@ public class GridTable extends AbstractTableModel
 		MSort sort = (MSort)m_sort.get(row);
 		Object[] rowData = getDataAtRow(row);
 		//
-		MTable table = MTable.get (m_ctx, m_AD_Table_ID);
-		PO po = null;
-		int Record_ID = getKeyID(row);
-		if (Record_ID != -1)
-			po = table.getPO(Record_ID, null);
-		else	//	Multi - Key
-			po = table.getPO(getWhereClause(rowData), null);
+		PO po = getPO(row);
 		
 		//	Delete via PO 
 		if (po != null)
@@ -3697,6 +3691,17 @@ public class GridTable extends AbstractTableModel
 			}
 		}
 		return bChanged;	
+	}
+
+	public PO getPO(int row) {
+		MTable table = MTable.get (m_ctx, m_AD_Table_ID);
+		PO po = null;
+		int Record_ID = getKeyID(row);
+		if (Record_ID != -1)
+			po = table.getPO(Record_ID, null);
+		else	//	Multi - Key
+			po = table.getPO(getWhereClause(getDataAtRow(row)), null);
+		return po;
 	}
 	
 }

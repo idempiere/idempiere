@@ -116,7 +116,7 @@ public class MRecentItem extends X_AD_RecentItem
 		}
 		//
 		MRecentItem retValue = null;
-		String sql = "SELECT * FROM AD_RecentItem WHERE AD_Table_ID=? AND Record_ID=? AND AD_User_ID=?";
+		String sql = "SELECT * FROM AD_RecentItem WHERE AD_Table_ID=? AND Record_ID=? AND NVL(AD_User_ID,0)=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -185,10 +185,10 @@ public class MRecentItem extends X_AD_RecentItem
 		int maxri = MSysConfig.getIntValue("RecentItems_MaxSaved", 50, AD_Client_ID);
 		if (maxri < 0)
 			maxri = 0;
-		int cntri = DB.getSQLValue(null, "SELECT COUNT(*) FROM AD_RecentItem WHERE AD_User_ID=? AND AD_Client_ID=?", AD_User_ID, AD_Client_ID);
+		int cntri = DB.getSQLValue(null, "SELECT COUNT(*) FROM AD_RecentItem WHERE NVL(AD_User_ID,0)=? AND AD_Client_ID=?", AD_User_ID, AD_Client_ID);
 		if (cntri > maxri) {
 			int cntdel = cntri - maxri;
-			String sql = "SELECT AD_Table_ID, Record_ID FROM AD_RecentItem WHERE AD_User_ID=? AND AD_Client_ID=? ORDER BY Updated";
+			String sql = "SELECT AD_Table_ID, Record_ID FROM AD_RecentItem WHERE NVL(AD_User_ID,0)=? AND AD_Client_ID=? ORDER BY Updated";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
@@ -226,7 +226,7 @@ public class MRecentItem extends X_AD_RecentItem
 	}
 
 	public static List<MRecentItem> getFromUser(Properties ctx, int AD_User_ID) {
-		List<MRecentItem> ris = new Query(ctx, MRecentItem.Table_Name, "AD_User_ID=?", null)
+		List<MRecentItem> ris = new Query(ctx, MRecentItem.Table_Name, "NVL(AD_User_ID,0)=?", null)
 			.setOnlyActiveRecords(true)
 			.setClient_ID()
 			.setParameters(AD_User_ID)
