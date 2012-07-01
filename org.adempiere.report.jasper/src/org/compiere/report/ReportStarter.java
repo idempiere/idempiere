@@ -69,6 +69,7 @@ import org.adempiere.util.IProcessUI;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MProcess;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_PInstance_Para;
 import org.compiere.print.MPrintFormat;
@@ -103,6 +104,8 @@ import org.compiere.utils.DigestOfFile;
  */
 public class ReportStarter implements ProcessCall, ClientProcess
 {
+	private static final int DEFAULT_SWAP_MAX_PAGES = 100;
+	private static final String JASPER_SWAP_MAX_PAGES = "JASPER_REPORT_SWAP_MAX_PAGES";
 	/** Logger */
 	private static CLogger log = CLogger.getCLogger(ReportStarter.class);
 	private static File REPORT_HOME = null;
@@ -515,12 +518,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
             }
 
             Connection conn = null;
+            JRSwapFileVirtualizer virtualizer = null;
+            int maxPages = MSysConfig.getIntValue(JASPER_SWAP_MAX_PAGES, DEFAULT_SWAP_MAX_PAGES);
             try {
             	conn = getConnection();
 
             	String swapPath = System.getProperty("java.io.tmpdir");
 				JRSwapFile swapFile = new JRSwapFile(swapPath, 1024, 1024);
-				JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(2, swapFile, true);
+				virtualizer = new JRSwapFileVirtualizer(maxPages, swapFile, true);
 				params.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
 				JRProperties.setProperty("net.sf.jasperreports.awt.ignore.missing.font", true);
 				
@@ -593,11 +598,15 @@ public class ReportStarter implements ProcessCall, ClientProcess
             } catch (JRException e) {
                 log.severe("ReportStarter.startProcess: Can not run report - "+ e.getMessage());
             } finally {
-            	if (conn != null)
+            	if (conn != null) {
 					try {
 						conn.close();
 					} catch (SQLException e) {
 					}
+            	}
+            	if (virtualizer != null) {
+            		virtualizer.cleanup();
+            	}
             }
         }
 

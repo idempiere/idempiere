@@ -34,6 +34,7 @@ import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Serializable;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ import org.compiere.print.MPrintPaper;
 import org.compiere.print.MPrintTableFormat;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
+import org.compiere.print.util.SerializableMatrix;
+import org.compiere.print.util.SerializableMatrixImpl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -1647,8 +1650,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 
 		//	The Data
 		int rows = printData.getRowCount();
-	//	System.out.println("Rows=" + rows);
-		Object[][] data = new Object [rows][columnCount];
+		SerializableMatrix<Serializable> elements = new SerializableMatrixImpl<Serializable>(m_PrintInfo.getName());
 		KeyNamePair[] pk = new KeyNamePair[rows];
 		String pkColumnName = null;
 		ArrayList<Integer> functionRows = new ArrayList<Integer>();
@@ -1657,7 +1659,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//	for all rows
 		for (int row = 0; row < rows; row++)
 		{
-		//	System.out.println("row=" + row);
+			ArrayList<Serializable> columns = new ArrayList<Serializable>();
 			printData.setRowIndex(row);
 			if (printData.isFunctionRow())
 			{
@@ -1690,33 +1692,33 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				}
 			}
 			//	for all columns
-			col = 0;
 			for (int c = 0; c < format.getItemCount(); c++)
 			{
+				Serializable columnElement = null;
 				MPrintFormatItem item = format.getItem(c);
-				Object dataElement = null;
+				Serializable dataElement = null;
 				if (item.isPrinted())	//	Text Columns
 				{
 					if (item.isTypeImage())
 					{
 						if (item.isImageField())
-							data[row][col] = createImageElement (item, printData);
+							columnElement = createImageElement (item, printData);
 						else if (item.isImageIsAttached())
-							data[row][col] = ImageElement.get (item.get_ID());
+							columnElement = ImageElement.get (item.get_ID());
 						else
-							data[row][col] = ImageElement.get (item.getImageURL());
-						if (data[row][col] != null)
-							((PrintElement)data[row][col]).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
+							columnElement = ImageElement.get (item.getImageURL());
+						if (columnElement != null)
+							((PrintElement)columnElement).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
 					}
 					else if (item.isBarcode())
 					{
-						data[row][col] = createBarcodeElement(item, printData);
-						if (data[row][col] != null)
-							((PrintElement)data[row][col]).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
+						columnElement = createBarcodeElement(item, printData);
+						if (columnElement != null)
+							((PrintElement)columnElement).layout(item.getMaxWidth(), item.getMaxHeight(), false, item.getFieldAlignmentType());
 					}
 					else if (item.isTypeText() )
 					{
-						data[row][col] = item.getPrintName(format.getLanguage());	
+						columnElement = item.getPrintName(format.getLanguage());	
 					}
 					else if (item.isTypeField())
 					{
@@ -1729,22 +1731,22 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						{
 							PrintDataElement pde = (PrintDataElement)obj;
 							if (pde.isID() || pde.isYesNo())
-								dataElement = pde.getValue();
+								dataElement = (Serializable) pde.getValue();
 							else
 								dataElement = pde.getValueDisplay(format.getLanguage());
-							}
+						}
 						else
 							log.log(Level.SEVERE, "Element not PrintDataElement " + obj.getClass());
-					//	System.out.println("  row=" + row + ",col=" + col + " - " + item.getAD_Column_ID() + " => " + dataElement);
-						data[row][col] = dataElement;
+						columnElement = dataElement;
 					}
 					else  // item.isTypeBox() or isTypePrintFormat()
 					{
 						log.warning("Unsupported: " + (item.isTypeBox() ? "Box" : "PrintFormat") + " in Table: " + item);
 					}
-					col++;
+					columns.add(columnElement);
 				}	//	printed
 			}	//	for all columns
+			elements.addRow(columns);
 
 			PrintDataElement pde = printData.getPKey();
 			if (pde != null)	//	for FunctionRows
@@ -1761,7 +1763,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		TableElement table = new TableElement(columnHeader,
 			columnMaxWidth, columnMaxHeight, columnJustification,
 			fixedWidth, functionRows, multiLineHeader,
-			data, pk, pkColumnName,
+			elements, pk, pkColumnName,
 			pageNoStart, firstPage, nextPages, repeatedColumns, additionalLines,
 			rowColFont, rowColColor, rowColBackground,
 			tf, pageBreak, colSuppressRepeats);
