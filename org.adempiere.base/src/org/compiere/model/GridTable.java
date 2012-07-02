@@ -42,6 +42,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.util.ContextRunnable;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -3299,7 +3300,7 @@ public class GridTable extends AbstractTableModel
 	/**************************************************************************
 	 *	ASync Loader
 	 */
-	class Loader implements Serializable, Runnable
+	class Loader extends ContextRunnable implements Serializable
 	{
 		/**
 		 * 
@@ -3311,6 +3312,7 @@ public class GridTable extends AbstractTableModel
 		 */
 		public Loader()
 		{
+			super();
 		}	//	Loader
 
 		private PreparedStatement   m_pstmt = null;
@@ -3399,7 +3401,7 @@ public class GridTable extends AbstractTableModel
 		/**
 		 *	Fill Buffer to include Row
 		 */
-		public void run()
+		protected void doRun()
 		{
 			log.info("");
 			if (m_rs == null)

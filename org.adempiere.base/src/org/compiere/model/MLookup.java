@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
+import org.adempiere.util.ContextRunnable;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
@@ -639,7 +640,7 @@ public final class MLookup extends Lookup implements Serializable
 	/**************************************************************************
 	 *	MLookup Loader
 	 */
-	class MLoader implements Serializable, Runnable
+	class MLoader extends ContextRunnable implements Serializable
 	{
 		/**
 		 * 
@@ -651,6 +652,7 @@ public final class MLookup extends Lookup implements Serializable
 		 */
 		public MLoader()
 		{
+			super();
 		}	//	Loader
 		
 		private long m_startTime = System.currentTimeMillis();
@@ -658,7 +660,7 @@ public final class MLookup extends Lookup implements Serializable
 		/**
 		 *	Load Lookup
 		 */
-		public void run()
+		protected void doRun()
 		{
 			long startTime = System.currentTimeMillis();
 			if (Ini.isClient())
