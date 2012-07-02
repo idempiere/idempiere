@@ -43,6 +43,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ContextRunnable;
+import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -604,6 +605,7 @@ public class GridTable extends AbstractTableModel
 
 		//	Start Loading
 		m_loader = new Loader();
+		m_loaderFuture = null;
 		m_rowCount = m_loader.open(maxRows);
 		if (m_virtual)
 		{
@@ -621,6 +623,7 @@ public class GridTable extends AbstractTableModel
 				m_loader.run();
 			else
 			{
+				m_loader.setContext(ServerContext.getCurrentInstance());
 				m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
 			}
 		}
@@ -3300,7 +3303,7 @@ public class GridTable extends AbstractTableModel
 	/**************************************************************************
 	 *	ASync Loader
 	 */
-	class Loader extends ContextRunnable implements Serializable
+	class Loader implements Serializable, Runnable
 	{
 		/**
 		 * 
@@ -3318,6 +3321,12 @@ public class GridTable extends AbstractTableModel
 		private PreparedStatement   m_pstmt = null;
 		private ResultSet 		    m_rs = null;
 		private Trx trx = null;
+		private Properties m_context = null;
+		
+		public void setContext(Properties context)
+		{
+			m_context = context;
+		}
 
 		/**
 		 *	Open ResultSet
@@ -3401,8 +3410,19 @@ public class GridTable extends AbstractTableModel
 		/**
 		 *	Fill Buffer to include Row
 		 */
-		protected void doRun()
+		public void run()
 		{
+			try {
+				if (m_context != null)
+					ServerContext.setCurrentInstance(m_context);
+				doRun();
+			} finally {
+				if (m_context != null)
+					ServerContext.dispose();
+			}
+		}	//	run
+
+		private void doRun() {
 			log.info("");
 			if (m_rs == null)
 				return;
@@ -3464,7 +3484,7 @@ public class GridTable extends AbstractTableModel
 				close();
 			}
 			fireDataStatusIEvent("", "");
-		}	//	run
+		}
 
 		/**
 		 *	Set Parameter for Query.
