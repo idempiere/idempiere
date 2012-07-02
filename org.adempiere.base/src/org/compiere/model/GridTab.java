@@ -1116,6 +1116,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void dataIgnore()
 	{
 		log.fine("#" + m_vo.TabNo);
+		if (m_mTable.isInserting()) 
+		{
+			m_currentRow--;
+		}
 		m_mTable.dataIgnore();
 		setCurrentRow(m_currentRow, false);    //  re-load data
 
@@ -2344,11 +2348,14 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		StringBuffer info = new StringBuffer(getTableName());
 		
 		/* get UUID */
-		PO po = m_mTable.getPO(m_currentRow);
-		if (po != null) {
-			String uuidcol = po.getUUIDColumnName();
-			String uuid = po.get_ValueAsString(uuidcol);
-			info.append("\n ").append(uuidcol).append("=").append(uuid);
+		if (!e.isInserting() && e.getCurrentRow() >= 0)
+		{
+			PO po = m_mTable.getPO(e.getCurrentRow());
+			if (po != null) {
+				String uuidcol = po.getUUIDColumnName();
+				String uuid = po.get_ValueAsString(uuidcol);
+				info.append("\n ").append(uuidcol).append("=").append(uuid);
+			}
 		}
 		
 		//  We have a key column

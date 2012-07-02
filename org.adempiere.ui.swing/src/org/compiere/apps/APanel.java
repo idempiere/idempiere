@@ -2098,6 +2098,7 @@ public final class APanel extends CPanel
 			m_curAPanelTab.loadData();
 		}
 		m_curTab.dataIgnore();
+		m_curTab.dataRefresh(true);
 		m_curGC.dynamicDisplay(0);
 
 	}   //  cmd_ignore
