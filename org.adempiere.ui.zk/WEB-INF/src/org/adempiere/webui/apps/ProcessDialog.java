@@ -13,6 +13,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
@@ -326,27 +327,17 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 
 	public void runProcess() {
 		//prepare context for background thread
-		Properties p = new Properties();
-		Properties env = Env.getCtx();
-		for(Object key : env.keySet()) {
-			if (key instanceof String) {
-				String sKey = (String) key;
-				Object value = env.get(sKey);
-				if (value instanceof String) {
-					String sValue = (String) value;
-					p.put(sKey, sValue);
-				}
-			}
-		}
-		Desktop desktop = this.getDesktop();
-		p.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, desktop);
+		Properties context = ServerContext.getCurrentInstance();
+		if (context.get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY) == null) {
+			Desktop desktop = this.getDesktop();
+			context.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, desktop);
+		}		
 		
-		processDialogRunnable = new ProcessDialogRunnable(p);
+		processDialogRunnable = new ProcessDialogRunnable();
 		future = Adempiere.getThreadPoolExecutor().submit(processDialogRunnable);
 	}
 	
 	private void onComplete() {
-		Env.getCtx().putAll(processDialogRunnable.getProperties());
 		future = null;			
 		processDialogRunnable = null;
 		unlockUI(m_pi);
@@ -649,26 +640,18 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		return m_isLocked;
 	}
 	
-	class ProcessDialogRunnable implements Runnable {
-		private Properties properties;
-		
-		ProcessDialogRunnable(Properties properties) {
-			this.properties = properties;
+	class ProcessDialogRunnable extends ContextRunnable {
+		ProcessDialogRunnable() {
+			super();
 		}
 		
-		public void run() {
+		protected void doRun() {
 			try {
-				ServerContext.setCurrentInstance(properties);
 				log.log(Level.INFO, "Process Info="+m_pi+" AD_Client_ID="+Env.getAD_Client_ID(Env.getCtx()));
 				WProcessCtl.process(ProcessDialog.this, m_WindowNo, parameterPanel, m_pi, null);
 			} finally {
-				ServerContext.dispose();
 				Executions.schedule(getDesktop(), ProcessDialog.this, new Event(ON_COMPLETE, ProcessDialog.this, null));
 			}
-		}
-		
-		protected Properties getProperties() {
-			return properties;
 		}		
 	}
 
