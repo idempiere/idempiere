@@ -478,10 +478,13 @@ public abstract class Convert
 	}
 
 	private static boolean dontLog(String statement) {
+		// Do not log *Access records - teo_Sarca BF [ 2782095 ]
+		// IDEMPIERE-323 Migration script log AD_Document_Action_Access (nmicoud / CarlosRuiz_globalqss)
 		String [] exceptionTables = new String[] {
 				"AD_ACCESSLOG",
 				"AD_ALERTPROCESSORLOG",
 				"AD_CHANGELOG",
+				"AD_DOCUMENT_ACTION_ACCESS",
 				"AD_ISSUE",
 				"AD_LDAPPROCESSORLOG",
 				"AD_PACKAGE_IMP",
@@ -492,10 +495,13 @@ public abstract class Convert
 				"AD_PINSTANCE",
 				"AD_PINSTANCE_LOG",
 				"AD_PINSTANCE_PARA",
+				"AD_PROCESS_ACCESS",
 				"AD_RECENTITEM",
 				"AD_REPLICATION_LOG",
 				"AD_SCHEDULERLOG",
 				"AD_SESSION",
+				"AD_WINDOW_ACCESS",
+				"AD_WORKFLOW_ACCESS",
 				"AD_WORKFLOWPROCESSORLOG",
 				"CM_WEBACCESSLOG",
 				"C_ACCTPROCESSORLOG",
@@ -513,13 +519,7 @@ public abstract class Convert
 				"T_SELECTION2",
 				"T_SPOOL",
 				"T_TRANSACTION",
-				"T_TRIALBALANCE",
-				// Do not log *Access records - teo_Sarca BF [ 2782095 ]
-				"AD_PROCESS_ACCESS",
-				"AD_WINDOW_ACCESS",
-				"AD_WORKFLOW_ACCESS",
-				"AD_FORM_ACCESS",
-				//
+				"T_TRIALBALANCE"
 			};
 		String uppStmt = statement.toUpperCase().trim();
 		// don't log selects
