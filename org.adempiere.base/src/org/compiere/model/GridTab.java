@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
@@ -40,6 +42,8 @@ import javax.swing.event.EventListenerList;
 import org.adempiere.base.Core;
 import org.adempiere.base.IColumnCallout;
 import org.adempiere.base.Service;
+import org.adempiere.util.ContextRunnable;
+import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -192,6 +196,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	/** Async Loader            */
 	private Loader              m_loader = null;
+	private Future<?>			 m_loaderFuture = null;
 	/** Async Loading complete  */
 	private volatile boolean    m_loadComplete = false;
 	/** Is Tab Included in other Tab  */
@@ -225,12 +230,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**************************************************************************
 	 *  Tab loader for Tabs > 0
 	 */
-	class Loader extends Thread
+	class Loader extends ContextRunnable
 	{
 		/**
 		 *  Async Loading of Tab > 0
 		 */
-		public void run()
+		protected void doRun()
 		{
 			loadTab();
 		}   //  run
@@ -241,21 +246,18 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	private void waitLoadCompete()
 	{
-		if (m_loadComplete)
+		if (m_loaderFuture == null || m_loadComplete)
 			return;
 		//
-		m_loader.setPriority(Thread.NORM_PRIORITY);
 		log.config ("");
-		while (m_loader.isAlive())
-		{
-			try
-			{
-				Thread.sleep(100);     //  1/10 sec
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, "", e);
-			}
+		try {
+			m_loaderFuture.get();
+		} catch (InterruptedException e) {
+			m_loaderFuture = null;
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		} catch (ExecutionException e) {
+			m_loaderFuture = null;
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		}
 		log.config ("fini");
 	}   //  waitLoadComplete
@@ -275,7 +277,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		log.fine("#" + m_vo.TabNo + " - Async=" + async + " - Where=" + m_vo.WhereClause);
 		if (isLoadComplete()) return true;
 
-		if (m_loader != null && m_loader.isAlive())
+		if (m_loaderFuture != null && m_loaderFuture.isDone())
 		{
 			waitLoadCompete();
 			if (isLoadComplete())
@@ -285,11 +287,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (async)
 		{
 			m_loader = new Loader();
-			m_loader.start();
+			m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
 			return false;
 		}
 		else
 		{
+			m_loaderFuture = null;
 			return loadTab();
 		}
 	}	//	initTab
@@ -341,8 +344,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		m_vo = null;
 		if (m_loader != null)
 		{
-			if (m_loader.isAlive()) m_loader.interrupt();
+			if (m_loaderFuture != null && !m_loaderFuture.isDone()) 
+				m_loaderFuture.cancel(true);
+			
 			m_loader = null;
+			m_loaderFuture = null;
 		}
 	}	//	dispose
 
