@@ -34,6 +34,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.compiere.apps.ADialog;
 import org.compiere.grid.tree.VTreePanel;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
@@ -297,14 +298,16 @@ public class VTreeMaintenance extends TreeMaintenance
 	 */
 	private void action_treeAddAll()
 	{
-		log.info("");
-		ListModel model = centerList.getModel();
-		int size = model.getSize();
-		int index = -1;
-		for (index = 0; index < size; index++)
-		{
-			ListItem item = (ListItem)model.getElementAt(index);
-			action_treeAdd(item);
+		if (ADialog.ask(m_WindowNo, null, "Add all item(s) on tree?")) {	// idempiere-85
+			log.info("");
+			ListModel model = centerList.getModel();
+			int size = model.getSize();
+			int index = -1;
+			for (index = 0; index < size; index++)
+			{
+				ListItem item = (ListItem)model.getElementAt(index);
+				action_treeAdd(item);
+			}
 		}
 	}	//	action_treeAddAll
 	
@@ -313,14 +316,16 @@ public class VTreeMaintenance extends TreeMaintenance
 	 */
 	private void action_treeDeleteAll()
 	{
-		log.info("");
-		ListModel model = centerList.getModel();
-		int size = model.getSize();
-		int index = -1;
-		for (index = 0; index < size; index++)
-		{
-			ListItem item = (ListItem)model.getElementAt(index);
-			action_treeDelete(item);
+		if (ADialog.ask(m_WindowNo, null, "Remove all item(s) from tree?")) {	// idempiere-85
+			log.info("");
+			ListModel model = centerList.getModel();
+			int size = model.getSize();
+			int index = -1;
+			for (index = 0; index < size; index++)
+			{
+				ListItem item = (ListItem)model.getElementAt(index);
+				action_treeDelete(item);
+			}
 		}
 	}	//	action_treeDeleteAll	
 

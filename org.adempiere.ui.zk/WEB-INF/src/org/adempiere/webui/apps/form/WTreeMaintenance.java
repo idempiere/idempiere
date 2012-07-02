@@ -388,14 +388,16 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void action_treeAddAll()
 	{
-		log.info("");
-		ListModel model = centerList.getModel();
-		int size = model.getSize();
-		int index = -1;
-		for (index = 0; index < size; index++)
-		{
-			ListItem item = (ListItem)model.getElementAt(index);
-			action_treeAdd(item);
+		if (FDialog.ask(m_WindowNo, null, "Add all item(s) on tree?")) {
+			log.info("");
+			ListModel model = centerList.getModel();
+			int size = model.getSize();
+			int index = -1;
+			for (index = 0; index < size; index++)
+			{
+				ListItem item = (ListItem)model.getElementAt(index);
+				action_treeAdd(item);
+			}
 		}
 	}	//	action_treeAddAll
 	
