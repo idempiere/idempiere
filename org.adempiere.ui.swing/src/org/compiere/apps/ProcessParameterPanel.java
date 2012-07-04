@@ -458,7 +458,8 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 							if (!comp.isVisible()) {
 								changedSize = true;
 								comp.setVisible(true); // visibility
-								m_labels.get(index).setVisible(true);
+								if (m_labels.get(index) != null)
+									m_labels.get(index).setVisible(true);
 								if (m_mFields.get(index).getVO().isRange)
 									m_separators.get(index).setText(" - ");
 							}
@@ -470,7 +471,8 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 							if (comp.isVisible()) {
 								changedSize = true;
 								comp.setVisible(false);
-								m_labels.get(index).setVisible(false);
+								if (m_labels.get(index) != null)
+									m_labels.get(index).setVisible(false);
 								if (m_mFields.get(index).getVO().isRange)
 									m_separators.get(index).setText("");
 							}
