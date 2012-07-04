@@ -1,0 +1,10 @@
+-- Jul 4, 2012 11:26:24 AM CEST
+-- TGI
+ALTER TABLE AD_UserDef_Field MODIFY DefaultValue NVARCHAR2(2000) DEFAULT NULL 
+;
+
+-- Jul 4, 2012 11:26:26 AM CEST
+-- TGI
+ALTER TABLE AD_UserDef_Field MODIFY DefaultValue NULL
+;
+
