@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -47,9 +46,11 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.JobName;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -59,8 +60,8 @@ import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.util.JRProperties;
 import net.sf.jasperreports.engine.util.JRSwapFile;
+import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
@@ -329,7 +330,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     		}
     		return startProcess0(ctx, pi, trx);
     	} finally {
-    		if (!cl1.equals(cl2)) {
+    		if (!cl1.equals(Thread.currentThread().getContextClassLoader())) {
     			Thread.currentThread().setContextClassLoader(cl1);
     		}
     	}
@@ -397,15 +398,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
         String jasperName = data.getJasperName();
         String name =  jasperReport.getName();
         File reportDir = data.getReportDir();
-
-       	// Add reportDir to class path
-		ClassLoader scl = getClass().getClassLoader();
-		try {
-			java.net.URLClassLoader ucl = new java.net.URLClassLoader(new java.net.URL[]{reportDir.toURI().toURL()}, scl);
-			net.sf.jasperreports.engine.util.JRResourcesUtil.setThreadClassLoader(ucl);
-		} catch (MalformedURLException me) {
-			log.warning("Could not add report directory to classpath: "+ me.getMessage());
-		}
+        
+        String resourcePath = reportDir.getAbsolutePath();
+        if (!resourcePath.endsWith("/") && !resourcePath.endsWith("\\"));
+        {
+        	resourcePath = resourcePath + "/";
+        }
+        params.put("SUBREPORT_DIR", resourcePath);
+        params.put("RESOURCE_DIR", resourcePath);
 
         if (jasperReport != null) {
 			File[] subreports;
@@ -527,8 +527,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				JRSwapFile swapFile = new JRSwapFile(swapPath, 1024, 1024);
 				virtualizer = new JRSwapFileVirtualizer(maxPages, swapFile, true);
 				params.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
-				JRProperties.setProperty("net.sf.jasperreports.awt.ignore.missing.font", true);
-				
+				DefaultJasperReportsContext jasperContext = DefaultJasperReportsContext.getInstance();
+				JRPropertiesUtil.getInstance(jasperContext).setProperty("net.sf.jasperreports.awt.ignore.missing.font", "true");
                 JasperPrint jasperPrint = JasperFillManager.fillReport( jasperReport, params, conn);
                 if (reportData.isDirectPrint())
                 {
@@ -575,10 +575,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
                     	try
                     	{
                     		File PDF = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
-                    		JRPdfExporter exporter = new JRPdfExporter();                    		
+                    		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
+                    		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
+                    		ljrContext.setClassLoader(this.getClass().getClassLoader());
+                    		JRPdfExporter exporter = new JRPdfExporter(ljrContext);                    		
                     		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
                     		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, PDF.getAbsolutePath());
-                    		exporter.setParameter(JRExporterParameter.CLASS_LOADER, this.getClass().getClassLoader());
                     		exporter.exportReport();
                     		processInfo.setPDFReport(PDF);
                     	}
@@ -922,7 +924,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
             if (reportFile.lastModified() == jasperFile.lastModified()) {
             	log.info(" no need to compile use "+jasperFile.getAbsolutePath());
                 try {
-                    jasperReport = (JasperReport)JRLoader.loadObject(jasperFile.getAbsolutePath());
+                    jasperReport = (JasperReport)JRLoader.loadObjectFromFile(jasperFile.getAbsolutePath());
                 } catch (JRException e) {
                     jasperReport = null;
                     log.severe("Can not load report - "+ e.getMessage());

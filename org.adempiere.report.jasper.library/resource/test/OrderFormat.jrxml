@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OrderFormat" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="519" leftMargin="38" rightMargin="38" topMargin="38" bottomMargin="38" uuid="385b8f49-623c-4260-b1fd-9943131f1fef">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="BoxedHeader" mode="Opaque" backcolor="#F0F0F0" hAlign="Center" vAlign="Middle" fontName="Arial" fontSize="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box leftPadding="1" rightPadding="1">
+			<pen lineWidth="1.0"/>
+			<topPen lineWidth="1.0"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="1.0"/>
+			<rightPen lineWidth="1.0"/>
+		</box>
+	</style>
+	<style name="BoxedDetail" hAlign="Center" vAlign="Middle" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+	</style>
+	<style name="DottedBox" hAlign="Center" vAlign="Middle" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box rightPadding="3">
+			<pen lineWidth="0.5" lineStyle="Dashed"/>
+			<topPen lineWidth="0.5" lineStyle="Dashed"/>
+			<leftPen lineWidth="0.5" lineStyle="Dashed"/>
+			<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+			<rightPen lineWidth="0.5" lineStyle="Dashed"/>
+		</box>
+	</style>
+	<style name="NormalText" isDefault="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<parameter name="AD_CLIENT_ID" class="java.lang.Integer" isForPrompting="false"/>
+	<parameter name="AD_ROLE_ID" class="java.lang.Integer" isForPrompting="false"/>
+	<parameter name="AD_USER_ID" class="java.lang.Integer" isForPrompting="false"/>
+	<parameter name="RECORD_ID" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="RESOURCE_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT  IsSOTrx
+FROM C_Order
+WHERE C_Order_ID = $P{RECORD_ID}]]>
+	</queryString>
+	<field name="issotrx" class="java.lang.String"/>
+	<background>
+		<band height="766" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7b7e36cb-b4c4-467b-a117-dff02366cd18" x="310" y="6" width="208" height="22"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="837fbfef-be58-4ad2-a53a-4f2eae058cd4" x="0" y="6" width="258" height="22"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPANY NAME]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="0355a655-9fb5-44ac-90c5-fabbcd35f2e1" x="0" y="37" width="519" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="8a5c234e-868b-4e6b-9918-8ee9756b57a7" x="0" y="748" width="519" height="17"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vitae consequat nunc. Curabitur convallis est at erat mattis tincidunt. Donec consequat,
+odio sed cursus sodales, quam magna placerat dui, at molestie leo nisi id leo. Pellentesque ante lectus, ultricies id laoreet ac, tempus vel felis.]]></text>
+			</staticText>
+			<image onErrorType="Blank" evaluationTime="Report">
+				<reportElement uuid="8773235e-76ad-4cda-8eeb-15173cff21b6" x="397" y="707" width="75" height="35"/>
+				<imageExpression><![CDATA[$P{RESOURCE_DIR} + "9001.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="7199355e-5611-4b4a-9cd2-5a32d8b2cdca" x="487" y="721" width="32" height="9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+				</textElement>
+				<text><![CDATA[E&OE]]></text>
+			</staticText>
+			<image onErrorType="Blank" evaluationTime="Report">
+				<reportElement uuid="f50898e9-fd85-4c3a-93e5-d3e2873a9a07" x="277" y="707" width="75" height="35"/>
+				<imageExpression><![CDATA[$P{RESOURCE_DIR} + "2200.jpg"]]></imageExpression>
+			</image>
+			<image onErrorType="Blank" evaluationTime="Report">
+				<reportElement uuid="d78dff55-6d72-4d13-a5a7-69fa969b56b0" x="157" y="707" width="75" height="35"/>
+				<imageExpression><![CDATA[$P{RESOURCE_DIR} + "18001.jpg"]]></imageExpression>
+			</image>
+			<textField pattern="h.mm a">
+				<reportElement uuid="107fe3b6-3e59-44b5-87a3-283019ef58e3" x="487" y="707" width="32" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image onErrorType="Blank" evaluationTime="Report">
+				<reportElement uuid="6548fbcf-523f-4be9-a7be-1f9c7efcb987" x="37" y="707" width="75" height="35"/>
+				<imageExpression><![CDATA[$P{RESOURCE_DIR} + "14001.jpg"]]></imageExpression>
+			</image>
+			<line>
+				<reportElement uuid="b8baff98-5837-470d-ac97-5068f4c8883f" x="0" y="702" width="519" height="1"/>
+			</line>
+		</band>
+	</background>
+	<detail>
+		<band height="60">
+			<printWhenExpression><![CDATA[$F{issotrx}.equals( 'N' )]]></printWhenExpression>
+			<subreport>
+				<reportElement uuid="15a217b1-99e7-438e-a5a5-5a938d6ca3c8" x="0" y="0" width="518" height="60"/>
+				<subreportParameter name="AD_ROLE_ID"/>
+				<subreportParameter name="RECORD_ID">
+					<subreportParameterExpression><![CDATA[$P{RECORD_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="AD_USER_ID"/>
+				<subreportParameter name="AD_CLIENT_ID"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "PurchaseOrder.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="61">
+			<printWhenExpression><![CDATA[$F{issotrx}.equals( 'Y' )]]></printWhenExpression>
+		</band>
+	</detail>
+</jasperReport>

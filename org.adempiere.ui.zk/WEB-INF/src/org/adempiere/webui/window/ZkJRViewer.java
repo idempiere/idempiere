@@ -39,7 +39,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
 
-public class ZkJRViewer extends Window implements EventListener, ITabOnCloseHandler {
+public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCloseHandler {
 	/**
 	 * 
 	 */

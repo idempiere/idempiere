@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VoidedDN" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="766" leftMargin="38" rightMargin="38" topMargin="38" bottomMargin="38" isSummaryWithPageHeaderAndFooter="true" uuid="5b68a071-d552-43a8-8a9c-4842a004cb32">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="BoxedHeader" mode="Opaque" backcolor="#F0F0F0" hAlign="Center" vAlign="Middle" fontName="Arial" fontSize="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box leftPadding="1" rightPadding="1">
+			<pen lineWidth="1.0"/>
+			<topPen lineWidth="1.0"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="1.0"/>
+			<rightPen lineWidth="1.0"/>
+		</box>
+	</style>
+	<style name="BoxedDetail" hAlign="Center" vAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box leftPadding="1" rightPadding="1">
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{invoicenum}!=null]]></conditionExpression>
+			<style mode="Opaque" backcolor="#FF9090" isBlankWhenNull="true"/>
+		</conditionalStyle>
+	</style>
+	<style name="DottedBox" hAlign="Center" vAlign="Middle" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box rightPadding="3">
+			<pen lineWidth="0.5" lineStyle="Dashed"/>
+			<topPen lineWidth="0.5" lineStyle="Dashed"/>
+			<leftPen lineWidth="0.5" lineStyle="Dashed"/>
+			<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+			<rightPen lineWidth="0.5" lineStyle="Dashed"/>
+		</box>
+	</style>
+	<style name="NormalText" isDefault="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<parameter name="AD_CLIENT_ID" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[1000000]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DATE_FROM" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DATE_TO" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT io.documentno, io.movementdate, io.updated, bp.name, bp.name2, p.value productvalue, iol.qtyentered, io.description, io.docstatus dnstatus,
+	i.documentno invoicenum, i.docstatus invoicestatus
+FROM  m_inout io
+INNER JOIN m_inoutline iol ON io.m_inout_id = iol.m_inout_id
+LEFT JOIN c_invoiceline il ON iol.m_inoutline_id = il.m_inoutline_id
+LEFT JOIN c_invoice i ON il.c_invoice_id = i.c_invoice_id
+LEFT JOIN c_bpartner bp ON io.c_Bpartner_Id = bp.C_BPartner_ID
+LEFT JOIN m_product p ON iol.m_product_id = p.m_product_id
+WHERE io.docstatus IN ('VO', 'RE')
+AND io.AD_CLIENT_ID = $P{AD_CLIENT_ID}
+AND io.movementdate BETWEEN $P{DATE_FROM} AND $P{DATE_TO}]]>
+	</queryString>
+	<field name="documentno" class="java.lang.String"/>
+	<field name="movementdate" class="java.sql.Timestamp"/>
+	<field name="updated" class="java.sql.Timestamp"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="name2" class="java.lang.String"/>
+	<field name="productvalue" class="java.lang.String"/>
+	<field name="qtyentered" class="java.math.BigDecimal"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="dnstatus" class="java.lang.String"/>
+	<field name="invoicenum" class="java.lang.String"/>
+	<field name="invoicestatus" class="java.lang.String"/>
+	<title>
+		<band height="97" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="e9cb2c71-efff-43fe-9b1d-9e938fb0dd38" x="266" y="69" width="55" height="16"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[From Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2e207f4a-b02f-48df-8f92-17bfe0866968" x="124" y="49" width="519" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Voided/Reversed Delivery Notes]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="6b1a0b3e-aa22-4494-a44d-db4c33c807f9" x="324" y="69" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{DATE_FROM}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1ad5649b-bf29-4aed-9079-f128721b3f75" x="396" y="69" width="50" height="16"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[To Date:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="61eeb302-80bd-448a-9b1c-f7a16efe6722" x="448" y="69" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{DATE_TO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="64" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} != 1]]></printWhenExpression>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="fa0a9fdc-a297-4d12-bc72-21716ecfc40d" style="BoxedHeader" x="0" y="0" width="70" height="40"/>
+				<textElement/>
+				<text><![CDATA[DN No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="138a341d-3fca-4395-bb43-d6e242491fde" style="BoxedHeader" x="70" y="0" width="70" height="40"/>
+				<textElement/>
+				<text><![CDATA[DN Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="781d8435-88e1-4f64-9e51-247d1fe5179b" style="BoxedHeader" x="140" y="0" width="70" height="40"/>
+				<textElement/>
+				<text><![CDATA[Void Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="497dc179-abca-42e2-b7c1-c7136cd20af3" style="BoxedHeader" x="210" y="0" width="100" height="40"/>
+				<textElement/>
+				<text><![CDATA[Customer Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b8e9e4c1-7549-46d3-a9c0-d940ca66a8b4" style="BoxedHeader" x="360" y="0" width="50" height="40"/>
+				<textElement/>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1110dc44-b88c-4e17-86d8-4c7002a0d1df" style="BoxedHeader" x="310" y="0" width="50" height="40"/>
+				<textElement/>
+				<text><![CDATA[Product Value]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d7444f2a-78f8-4681-830f-075ce2bfee3c" style="BoxedHeader" x="410" y="0" width="70" height="40"/>
+				<textElement/>
+				<text><![CDATA[Invoice Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="51cdef60-c5de-4295-bdc5-cf80fd0941d9" style="BoxedHeader" x="480" y="0" width="286" height="40"/>
+				<textElement/>
+				<text><![CDATA[Void Reason]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="28e5f108-f94a-4f8f-9263-303801158761" style="BoxedDetail" stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{documentno}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="0c20f539-8068-4e8a-8496-f86b5e9945ba" style="BoxedDetail" stretchType="RelativeToTallestObject" x="70" y="0" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{movementdate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="2cb4c364-026d-478b-9d29-9c6aeeecc004" style="BoxedDetail" stretchType="RelativeToTallestObject" x="140" y="0" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{updated}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="4de7a8fe-7760-49a6-87f7-09301c828828" style="BoxedDetail" stretchType="RelativeToTallestObject" x="210" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[($F{name2} == null ? $F{name} : $F{name2})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d718ef32-7bcc-463f-90f4-65fd8a27d5ba" style="BoxedDetail" stretchType="RelativeToTallestObject" x="310" y="0" width="50" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{productvalue}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8a37a753-e308-48b8-a97a-dfac32771c86" style="BoxedDetail" stretchType="RelativeToTallestObject" x="360" y="0" width="50" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{qtyentered}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="db59a7ba-604f-4119-a3fb-1d908ec73cfe" style="BoxedDetail" stretchType="RelativeToTallestObject" x="410" y="0" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{invoicenum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="80b32326-cc7d-4e2f-b4f1-e81040b739eb" style="BoxedDetail" stretchType="RelativeToTallestObject" x="480" y="0" width="286" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="31" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="77" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="0087af29-67de-403a-aa54-f7b3dbc5518e" x="0" y="0" width="100" height="14"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0b03ab04-0716-4f8b-b757-2af195a2c26c" x="651" y="0" width="80" height="14"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="db258e74-b94c-40cc-8ed1-7a83013fa968" x="731" y="0" width="35" height="14"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="105" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d5f2b64c-754f-48cc-b12c-09983ac4ee02" x="47" y="60" width="202" height="28"/>
+				<box>
+					<pen lineStyle="Dashed"/>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineStyle="Dashed"/>
+					<bottomPen lineStyle="Dashed"/>
+					<rightPen lineStyle="Dashed"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Reviewed By]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f89d2a93-cccb-4852-8aef-ef419fb64e01" x="510" y="60" width="202" height="28"/>
+				<box>
+					<pen lineStyle="Dashed"/>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineStyle="Dashed"/>
+					<bottomPen lineStyle="Dashed"/>
+					<rightPen lineStyle="Dashed"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Approved By]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
