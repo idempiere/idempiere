@@ -388,7 +388,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void action_treeAddAll()
 	{
-		if (FDialog.ask(m_WindowNo, null, "Add all item(s) on tree?")) {
+		if (FDialog.ask(m_WindowNo, null, "TreeAddAllItems")) {	// idempiere-85
 			log.info("");
 			ListModel model = centerList.getModel();
 			int size = model.getSize();
@@ -407,8 +407,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private void action_treeDeleteAll()
 	{
 		log.info("");
-		//TODO: translation
-		if (FDialog.ask(m_WindowNo, null, "Remove all item(s) from tree?")) {
+		if (FDialog.ask(m_WindowNo, null, "TreeRemoveAllItems")) {	// idempiere-85
 			ListModel model = centerList.getModel();
 			int size = model.getSize();
 			int index = -1;

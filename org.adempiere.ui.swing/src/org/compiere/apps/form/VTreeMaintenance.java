@@ -298,7 +298,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	 */
 	private void action_treeAddAll()
 	{
-		if (ADialog.ask(m_WindowNo, null, "Add all item(s) on tree?")) {	// idempiere-85
+		if (ADialog.ask(m_WindowNo, null, "TreeAddAllItems")) {	// idempiere-85
 			log.info("");
 			ListModel model = centerList.getModel();
 			int size = model.getSize();
@@ -316,7 +316,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	 */
 	private void action_treeDeleteAll()
 	{
-		if (ADialog.ask(m_WindowNo, null, "Remove all item(s) from tree?")) {	// idempiere-85
+		if (ADialog.ask(m_WindowNo, null, "TreeRemoveAllItems")) {	// idempiere-85
 			log.info("");
 			ListModel model = centerList.getModel();
 			int size = model.getSize();
