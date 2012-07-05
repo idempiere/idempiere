@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 2010 Heng Sin Low                							  *
+ * Copyright (C) 2012 Heng Sin Low                                            *
+ * Copyright (C) 2012 Trek Global                 							  *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -11,28 +11,21 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.util;
+package org.zkoss.util.resource;
 
 import java.net.URL;
 
-import org.adempiere.base.IResourceFinder;
-import org.adempiere.webui.WebUIActivator;
-import org.zkoss.util.resource.IResourceLocator;
-
 /**
- *
+ * 
  * @author hengsin
  *
  */
-public class WebUIResourceFinder implements IResourceFinder, IResourceLocator {
+public interface IResourceLocator {
 
-	@Override
-	public URL getResource(String name) {
-		URL url = WebUIActivator.getBundleContext().getBundle().getEntry(name);
-		if (url == null && name.startsWith("org/compiere/images")) {
-			String t = name.substring("org/compiere/".length());
-			url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
-		}
-		return url;
-	}
+	/**
+	 * @param name
+	 * @return resource url
+	 */
+	public URL getResource(String name);
+	
 }

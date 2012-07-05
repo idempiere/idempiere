@@ -49,7 +49,7 @@ Require-Bundle: org.adempiere.report.jasper;bundle-version="1.0.0",
  org.adempiere.ui;bundle-version="1.0.0",
  org.zkoss.zk.library;bundle-version="6.0.0"
 Bundle-Activator: org.adempiere.webui.WebUIActivator
-Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.zkoss.zk.library
 Web-ContextPath: webui
+Service-Component: OSGI-INF/resourceLocator.xml

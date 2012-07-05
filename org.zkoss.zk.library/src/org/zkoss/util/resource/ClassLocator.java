@@ -57,22 +57,43 @@ public class ClassLocator implements XMLResourcesLocator {
 
 	//XMLResourcesLocator//
 	public Enumeration<URL> getResources(String name) throws IOException {
+		List<URL> list = null;
 		name = resolveName(name);
 		if (Activator.getContext() != null) {
 			final Enumeration<URL> en = Activator.getContext().getBundle().getResources(name);
-			if (en != null && en.hasMoreElements()) return en;
+			if (en != null && en.hasMoreElements()) 
+				list = Collections.list(en);
 		}
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		if (cl != null) {
-			final Enumeration<URL> en = cl.getResources(name);
-			if (en.hasMoreElements()) return en;
+		if (list == null) {
+			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			if (cl != null) {
+				final Enumeration<URL> en = cl.getResources(name);
+				if (en.hasMoreElements()) 
+					list = Collections.list(en);
+			}
 		}
-		cl = ClassLocator.class.getClassLoader();
-		if (cl != null) {
-			final Enumeration<URL> en = cl.getResources(name);
-			if (en.hasMoreElements()) return en;
+		if (list == null) {
+			ClassLoader cl = ClassLocator.class.getClassLoader();
+			if (cl != null) {
+				final Enumeration<URL> en = cl.getResources(name);
+				if (en.hasMoreElements()) 
+					list = Collections.list(en);
+			}
 		}
-		return ClassLoader.getSystemResources(name);
+		if (list == null) {
+			final Enumeration<URL> en = ClassLoader.getSystemResources(name);
+			list = Collections.list(en);
+		}
+		List<IResourceLocator> locators = ResourceLocatorRegistry.getLocators();
+		if (locators != null) {
+			for (IResourceLocator locator : locators) {
+				URL url = locator.getResource(name);
+				if (url != null) {
+					list.add(url);
+				}
+			}
+		}
+		return Collections.enumeration(list);
 	}
 	public List<Resource> getDependentXMLResources(String name, String elName,
 	String elDepends) throws IOException {
@@ -84,6 +105,11 @@ public class ClassLocator implements XMLResourcesLocator {
 			if (old != null)
 				log.warning("Replicate resource: "+xr.name
 					+"\nOverwrite "+old.url+"\nwith "+xr.url);
+			else {
+				if (log.infoable()) {
+					log.info(xr);
+				}
+			}
 			//it is possible if zcommon.jar is placed in both
 			//WEB-INF/lib and shared/lib, i.e., appear twice in the class path
 			//We overwrite because the order is the parent class loader first
