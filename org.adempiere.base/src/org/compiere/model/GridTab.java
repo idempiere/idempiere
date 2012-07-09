@@ -734,6 +734,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 		}
 
+		m_currentRow = -1;
 		/**
 		 *	Query
 		 */
