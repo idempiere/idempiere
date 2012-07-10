@@ -56,7 +56,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
@@ -111,7 +111,7 @@ import org.zkoss.zul.impl.XulElement;
  * 
  * @author Low Heng Sin
  */
-public class ZkReportViewer extends Window implements EventListener<Event>, ITabOnCloseHandler, SystemIDs {
+public class ZkReportViewer extends Window implements EventListener<Event>, ITabOnCloseHandler {
 	/**
 	 * 
 	 */

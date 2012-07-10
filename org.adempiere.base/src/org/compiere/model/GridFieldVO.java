@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import static org.compiere.model.SystemIDs.*;
 
 
 /**
@@ -39,7 +40,7 @@ import org.compiere.util.Env;
  *  @see  http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1877902&group_id=176962 to FR [1877902]
  *  @version  $Id: GridFieldVO.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  */
-public class GridFieldVO implements Serializable, SystemIDs
+public class GridFieldVO implements Serializable
 {
 	/**
 	 * 

@@ -30,6 +30,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import static org.compiere.model.SystemIDs.*;
 
 /**
  *	Location Country Model (Value Object)
@@ -41,7 +42,7 @@ import org.compiere.util.Language;
  * 				<li>BF [ 2695078 ] Country is not translated on invoice
  */
 public final class MCountry extends X_C_Country
-	implements Comparator<Object>, Serializable, SystemIDs
+	implements Comparator<Object>, Serializable
 {
 	/**
 	 * 

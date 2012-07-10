@@ -22,7 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.DocWorkflowMgr;
 import org.compiere.model.PO;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -36,7 +36,7 @@ import org.compiere.util.Evaluator;
  *  @author Jorg Janke
  *  @version $Id: DocWorkflowManager.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class DocWorkflowManager implements DocWorkflowMgr, SystemIDs
+public class DocWorkflowManager implements DocWorkflowMgr
 {
 	/**
 	 * 	Get Document Workflow Manager

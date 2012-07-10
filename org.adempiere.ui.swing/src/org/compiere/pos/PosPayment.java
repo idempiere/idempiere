@@ -53,7 +53,7 @@ import org.compiere.model.MPOS;
 import org.compiere.model.MPOSKey;
 import org.compiere.model.MPayment;
 import org.compiere.model.MPaymentValidate;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CDialog;
@@ -65,7 +65,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
-public class PosPayment extends CDialog implements PosKeyListener, VetoableChangeListener, ActionListener, SystemIDs {
+public class PosPayment extends CDialog implements PosKeyListener, VetoableChangeListener, ActionListener {
 	/**
 	 * 
 	 */

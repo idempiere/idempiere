@@ -25,7 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MReportCube;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.process.ProcessInfoParameter;
@@ -46,7 +46,7 @@ import org.compiere.util.TimeUtil;
  *
  *  @version $Id: FinReport.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class FinReport extends SvrProcess implements SystemIDs
+public class FinReport extends SvrProcess
 {
 	/**	Period Parameter				*/
 	private int					p_C_Period_ID = 0;

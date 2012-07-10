@@ -29,7 +29,7 @@ import javax.swing.JPopupMenu;
 import org.compiere.apps.form.ArchiveViewer;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.model.MBPartner;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CMenuItem;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -44,7 +44,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: AArchive.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
-public class AArchive implements ActionListener, SystemIDs
+public class AArchive implements ActionListener
 {
 	/**
 	 * 	Constructor

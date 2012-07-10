@@ -24,13 +24,13 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MQuery;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-public class TrxMaterial implements SystemIDs {
+public class TrxMaterial {
 
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;

@@ -31,6 +31,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import static org.compiere.model.SystemIDs.*;
 
 /**
  * 	Request Model
@@ -38,7 +39,7 @@ import org.compiere.util.TimeUtil;
  *  @author Jorg Janke
  *  @version $Id: MRequest.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MRequest extends X_R_Request implements SystemIDs
+public class MRequest extends X_R_Request
 {
 	/**
 	 * 

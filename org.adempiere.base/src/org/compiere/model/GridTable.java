@@ -55,6 +55,7 @@ import org.compiere.util.MSort;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
+import static org.compiere.model.SystemIDs.*;
 
 /**
  *	Grid Table Model for JDBC access including buffering.
@@ -89,7 +90,7 @@ import org.compiere.util.ValueNamePair;
  *  			https://sourceforge.net/tracker/?func=detail&aid=2910368&group_id=176962&atid=879332
  */
 public class GridTable extends AbstractTableModel
-	implements Serializable, SystemIDs
+	implements Serializable
 {
 	/**
 	 * 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import static org.compiere.model.SystemIDs.*;
 
 import org.compiere.util.CLogger;
 
@@ -38,7 +39,7 @@ import org.compiere.util.CLogger;
  * 		<li>BF [ 2861194 ] EntityType is not using normal PO framework for getting IDs
  * 			https://sourceforge.net/tracker/?func=detail&aid=2861194&group_id=176962&atid=879332
  */
-public class MEntityType extends X_AD_EntityType implements SystemIDs
+public class MEntityType extends X_AD_EntityType
 {
 	/**
 	 * 

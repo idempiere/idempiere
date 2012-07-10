@@ -27,7 +27,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MProduct;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
@@ -38,7 +38,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Low Heng Sin
  *
  */
-public class WPAttributeEditor extends WEditor implements ContextMenuListener, SystemIDs
+public class WPAttributeEditor extends WEditor implements ContextMenuListener
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 

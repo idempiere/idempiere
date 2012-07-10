@@ -48,7 +48,7 @@ import org.compiere.grid.ed.VCheckBox;
 import org.compiere.grid.ed.VComboBox;
 import org.compiere.grid.ed.VDate;
 import org.compiere.minigrid.MiniTable;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_C_PaySelection;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.process.ProcessInfo;
@@ -68,7 +68,7 @@ import org.compiere.util.ValueNamePair;
  *  @author Jorg Janke
  *  @version $Id: VPaySelect.java,v 1.2 2008/07/11 08:20:12 cruiz Exp $
  */
-public class VPaySelect extends PaySelect implements FormPanel, ActionListener, TableModelListener, IProcessUI, SystemIDs
+public class VPaySelect extends PaySelect implements FormPanel, ActionListener, TableModelListener, IProcessUI
 {
 	/** @todo withholding */
 	private CPanel panel = new CPanel();

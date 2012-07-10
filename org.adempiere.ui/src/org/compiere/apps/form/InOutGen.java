@@ -29,7 +29,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPrivateAccess;
 import org.compiere.model.MRMA;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -43,7 +43,7 @@ import org.compiere.util.Trx;
  * Generate Shipment (manual) controller class
  * 
  */
-public class InOutGen extends GenForm implements SystemIDs
+public class InOutGen extends GenForm
 {
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(InOutGen.class);

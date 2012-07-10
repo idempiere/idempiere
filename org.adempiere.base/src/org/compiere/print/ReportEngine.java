@@ -71,7 +71,7 @@ import org.compiere.model.MProject;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRfQResponse;
 import org.compiere.model.PrintInfo;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -108,7 +108,7 @@ import org.eevolution.model.X_PP_Order;
  * 
  *  FR 2872010 - Dunning Run for a complete Dunning (not just level) - Developer: Carlos Ruiz - globalqss - Sponsor: Metas
  */
-public class ReportEngine implements PrintServiceAttributeListener, SystemIDs
+public class ReportEngine implements PrintServiceAttributeListener
 {
 	/**
 	 *	Constructor

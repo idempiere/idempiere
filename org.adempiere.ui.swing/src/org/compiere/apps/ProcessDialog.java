@@ -39,7 +39,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -70,7 +70,7 @@ import org.compiere.util.Msg;
  *  				<li>BF [ 1963128 ] Running a process w/o trl should display an error
  */
 public class ProcessDialog extends CFrame
-	implements ActionListener, IProcessUI, SystemIDs
+	implements ActionListener, IProcessUI
 {
 	/**
 	 * 

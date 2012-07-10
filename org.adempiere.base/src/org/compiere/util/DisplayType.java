@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 
 /**
  *	System Display Types.
@@ -36,7 +36,7 @@ import org.compiere.model.SystemIDs;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>BF [ 1810632 ] PricePrecision error in InfoProduct (and similar)
  */
-public final class DisplayType implements SystemIDs
+public final class DisplayType
 {
 	/** Display Type 10	String	*/
 	public static final int String     = REFERENCE_DATATYPE_STRING;

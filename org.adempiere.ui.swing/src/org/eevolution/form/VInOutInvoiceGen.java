@@ -60,7 +60,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPrivateAccess;
 import org.compiere.model.MRMA;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
@@ -86,7 +86,7 @@ import org.compiere.util.Trx;
  */
 public class VInOutInvoiceGen extends CPanel
 	implements FormPanel, ActionListener, VetoableChangeListener, 
-		ChangeListener, TableModelListener, IProcessUI, SystemIDs
+		ChangeListener, TableModelListener, IProcessUI
 {
 	/**
 	 * 

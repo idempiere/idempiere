@@ -47,7 +47,7 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Allocation;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -70,7 +70,7 @@ import org.zkoss.zul.Space;
  * Contributor : Fabian Aguilar - OFBConsulting - Multiallocation
  */
 public class WAllocation extends Allocation
-	implements IFormController, EventListener, WTableModelListener, ValueChangeListener, SystemIDs
+	implements IFormController, EventListener, WTableModelListener, ValueChangeListener
 {
 	
 	/**

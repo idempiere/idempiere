@@ -24,7 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.I_AD_ImpFormat;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_ImpFormat;
 import org.compiere.model.X_I_GLJournal;
 import org.compiere.util.CLogger;
@@ -40,7 +40,7 @@ import org.compiere.util.Env;
 
  *  @version $Id: ImpFormat.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public final class ImpFormat implements SystemIDs
+public final class ImpFormat
 {
 	/**
 	 *	Format

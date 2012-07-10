@@ -34,6 +34,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import static org.compiere.model.SystemIDs.*;
 
 /**
  * Initial Setup Model
@@ -46,7 +47,7 @@ import org.compiere.util.Trx;
  * @author Carlos Ruiz - globalqss
  * 			<li>Setup correctly IsSOTrx for return documents
  */
-public final class MSetup implements SystemIDs
+public final class MSetup
 {
 	/**
 	 *  Constructor

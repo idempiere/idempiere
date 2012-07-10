@@ -31,7 +31,7 @@ import org.compiere.grid.ed.VLookup;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookupFactory;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CLabel;
 import org.compiere.util.DB;
@@ -46,7 +46,7 @@ import org.compiere.util.Msg;
  *  @author     Jorg Janke
  *  @version    $Id: InfoAssignment.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
-public class InfoAssignment extends Info implements SystemIDs
+public class InfoAssignment extends Info
 {
 	/**
 	 *

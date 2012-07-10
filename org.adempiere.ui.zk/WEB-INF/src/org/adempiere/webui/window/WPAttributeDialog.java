@@ -51,7 +51,7 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -79,7 +79,7 @@ import org.zkoss.zul.impl.InputElement;
  *  ZK Port
  *  @author Low Heng Sin
  */
-public class WPAttributeDialog extends Window implements EventListener, SystemIDs
+public class WPAttributeDialog extends Window implements EventListener
 {
 	/**
 	 * 

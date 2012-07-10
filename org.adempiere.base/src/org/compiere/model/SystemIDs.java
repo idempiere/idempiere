@@ -16,14 +16,12 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import org.compiere.util.DisplayType;
-
 /**
  *  List all hardcoded ID used in the code
  *  @author Carlos Ruiz, Nicolas Micoud, ...
  */
 
-public interface SystemIDs 
+public class SystemIDs 
 {
 	public final static int COLUMN_AD_WF_ACTIVITY_AD_USER_ID = 10443;	
 	public final static int COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID = 4917;

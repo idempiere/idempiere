@@ -92,7 +92,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
 import org.compiere.model.MWindow;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.print.AReport;
@@ -146,7 +146,7 @@ import org.compiere.util.Util;
  *  @sponsor www.metas.de
  */
 public final class APanel extends CPanel
-	implements DataStatusListener, ChangeListener, ActionListener, IProcessUI, SystemIDs
+	implements DataStatusListener, ChangeListener, ActionListener, IProcessUI
 {
 	/**
 	 * 

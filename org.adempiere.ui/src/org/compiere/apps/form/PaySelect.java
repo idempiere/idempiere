@@ -31,7 +31,7 @@ import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MRole;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_C_Order;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -45,7 +45,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 
 
-public class PaySelect implements SystemIDs
+public class PaySelect
 {
 	/** @todo withholding */
 
