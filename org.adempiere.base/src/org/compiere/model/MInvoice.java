@@ -984,11 +984,33 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		if (getC_Order_ID() != 0)
 		{
-			log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
-			return false;
+			//Load invoice lines for afterDelete()
+			getLines();	
 		}
 		return true;
 	}	//	beforeDelete
+	
+	/**
+	 * After Delete
+	 * @param success success
+	 * @return deleted
+	 */
+	protected boolean afterDelete(boolean success) {
+		// If delete invoice failed then do nothing
+		if (!success)
+			return success;
+		
+		if (getC_Order_ID() != 0) {
+			// reset shipment line invoiced flag
+			MInvoiceLine[] lines = getLines(false);
+			for (int i = 0; i < lines.length; i++) {
+				MInOutLine sLine = new MInOutLine(getCtx(), lines[i].getM_InOutLine_ID(), get_TrxName());
+				sLine.setIsInvoiced(false);
+				sLine.saveEx();
+			}	
+		}			
+		return true;
+	} //afterDelete
 
 	/**
 	 * 	String Representation
