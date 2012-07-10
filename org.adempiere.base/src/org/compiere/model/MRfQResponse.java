@@ -25,7 +25,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
@@ -286,6 +289,21 @@ public class MRfQResponse extends X_C_RfQResponse
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.RFQ, getC_RfQResponse_ID());
 		if (re == null)
 			return null;
+		MPrintFormat format = re.getPrintFormat();
+		// We have a Jasper Print Format
+		// ==============================
+		if(format.getJasperProcess_ID() > 0)	
+		{
+			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
+			pi.setRecord_ID ( getC_Order_ID() );
+			pi.setIsBatch(true);
+			
+			ServerProcessCtl.process(null, pi, null);
+			
+			return pi.getPDFReport();
+		}
+		// Standard Print Format (Non-Jasper)
+		// ==================================
 		return re.getPDF(file);
 	}	//	getPDF
 
