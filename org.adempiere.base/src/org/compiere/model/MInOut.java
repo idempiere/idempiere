@@ -625,7 +625,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		if(format.getJasperProcess_ID() > 0)	
 		{
 			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
-			pi.setRecord_ID ( getC_Order_ID() );
+			pi.setRecord_ID ( getM_InOut_ID() );
 			pi.setIsBatch(true);
 			
 			ServerProcessCtl.process(null, pi, null);

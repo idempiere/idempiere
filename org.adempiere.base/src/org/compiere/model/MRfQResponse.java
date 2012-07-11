@@ -295,7 +295,7 @@ public class MRfQResponse extends X_C_RfQResponse
 		if(format.getJasperProcess_ID() > 0)	
 		{
 			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
-			pi.setRecord_ID ( getC_Order_ID() );
+			pi.setRecord_ID ( getC_RfQResponse_ID() );
 			pi.setIsBatch(true);
 			
 			ServerProcessCtl.process(null, pi, null);
