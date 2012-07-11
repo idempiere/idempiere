@@ -8,3 +8,9 @@ INSERT INTO t_alter_column values('ad_userdef_field','DefaultValue','VARCHAR(200
 INSERT INTO t_alter_column values('ad_userdef_field','DefaultValue',null,'NULL',null)
 ;
 
+UPDATE AD_System
+  SET LastMigrationScriptApplied='850_IDEMPIERE-328.sql'
+WHERE LastMigrationScriptApplied<'850_IDEMPIERE-328.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
+
