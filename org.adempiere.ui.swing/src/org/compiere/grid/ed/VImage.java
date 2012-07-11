@@ -94,6 +94,7 @@ public class VImage extends JButton
 			m_mImage = null;
 			super.setText("-");
 			super.setIcon(null);
+			super.setDisabledIcon(null);
 			super.setToolTipText(null);
 			return;
 		}
@@ -111,12 +112,15 @@ public class VImage extends JButton
 		if (image.getIconHeight() > COLUMNSIZE || image.getIconWidth() > COLUMNSIZE) {
 			if (image.getIconHeight() > image.getIconWidth()) {
 				super.setIcon(new ImageIcon(m_mImage.getImage().getScaledInstance(-1, COLUMNSIZE, Image.SCALE_DEFAULT)));
+				super.setDisabledIcon(new ImageIcon(m_mImage.getImage().getScaledInstance(-1, COLUMNSIZE, Image.SCALE_DEFAULT)));
 			} else {
 				super.setIcon(new ImageIcon(m_mImage.getImage().getScaledInstance(COLUMNSIZE, -1, Image.SCALE_DEFAULT)));
+				super.setDisabledIcon(new ImageIcon(m_mImage.getImage().getScaledInstance(COLUMNSIZE, -1, Image.SCALE_DEFAULT)));
 			}
 		} else {
 			// the image is smaller than the COLUMNSIZE
 			super.setIcon(m_mImage.getIcon());
+			super.setDisabledIcon(m_mImage.getIcon());
 		}
 		super.setToolTipText(m_mImage.getName());
 		invalidate();
