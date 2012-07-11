@@ -219,20 +219,22 @@ public class Scheduler extends AdempiereServer
 					File report = null;
 					if (isReport) {
 						//	Report
-						if(process.getJasperReport() != null)
+						ReportEngine re = ReportEngine.get(m_schedulerctx, pi);
+						
+						if(process.getJasperReport() != null 
+								|| (re != null && re.getPrintFormat().getJasperProcess_ID() > 0))
 						{
+							// We have a Jasper Print Format
+							// ==============================
 							ProcessInfo jasperpi = new ProcessInfo ("", process.getAD_Process_ID());
 							jasperpi.setIsBatch(true);
 							ServerProcessCtl.process(null, jasperpi, null);
 							report = jasperpi.getPDFReport();
 						}
-						// Standard Print Format (Non-Jasper)
-						// ==================================
 						else
 						{
-							// We have a Jasper Print Format
-							// ==============================
-							ReportEngine re = ReportEngine.get(m_schedulerctx, pi);
+							// Standard Print Format (Non-Jasper)
+							// ==================================
 							if (re == null)
 								return "Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
 								+ " - " + process.getName();
