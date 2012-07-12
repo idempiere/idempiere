@@ -456,10 +456,10 @@ public abstract class Doc
 			log.log(Level.SEVERE, "Resubmit - Cannot lock " + get_TableName() + "_ID="
 				+ get_ID() + ", Force=" + force + ",RePost=" + repost);
 			if (!p_po.isActive())
-				return "Cannot post inactive document";
+				return Msg.translate(getCtx(), "CannotPostInactiveDocument");
 			if (force)
-				return "Cannot Lock - ReSubmit";
-			return "Cannot Lock - ReSubmit or RePost with Force";
+				return Msg.translate(getCtx(), "CannotLockReSubmit");
+			return  Msg.translate(getCtx(), "CannotLockReSubmitOrRePostWithForce");
 		}
 
 		p_Error = loadDocumentDetails();
