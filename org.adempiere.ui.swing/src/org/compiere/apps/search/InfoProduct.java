@@ -192,6 +192,10 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 	private int 				m_M_Product_ID = 0;
     int mWindowNo = 0;
 	//End - fer_luck @ centuryon
+    
+    //IDEMPIERE-339
+    MiniTable productpriceTbl = new MiniTable();
+    String m_sqlProductprice;
 
 	/**	Search Button				*/
 	private CButton		m_InfoPAttributeButton = new CButton(Env.getImageIcon("PAttribute16.gif"));
@@ -351,13 +355,37 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
         m_tableAtp.setRowSelectionAllowed(false);
         m_tableAtp.setMultiSelection(false);
 
+        //IDEMPIERE-339
+        ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
+        list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceListVersion"), "plv.Name", String.class));
+        list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "ValidFrom"), "plv.ValidFrom", Timestamp.class));
+        if (MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3027/*PriceList*/, false))
+        		list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceList"), "bomPriceList(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceList", Double.class));
+        if (MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3028/*PriceStd*/, false))
+        		list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceStd"), "bomPriceStd(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceStd", Double.class));
+        if (MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3028/*PriceStd*/, false) && MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3029/*PriceLimit*/, false))
+        	list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "Margin"), "bomPriceStd(pp.M_Product_ID, pp.M_PriceList_Version_ID)-bomPriceLimit(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS Margin", Double.class));
+        if (MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3029/*PriceLimit*/, false))
+        	list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceLimit"), "bomPriceLimit(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceLimit", Double.class));
+        ColumnInfo[] s_layoutProductPrice = new ColumnInfo[list.size()];
+        list.toArray(s_layoutProductPrice);
+        s_sqlFrom = "M_ProductPrice pp INNER JOIN M_PriceList_Version plv ON pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID";
+        s_sqlWhere = "pp.M_Product_ID = ? AND plv.IsActive = 'Y' AND pp.IsActive = 'Y'";
+        m_sqlProductprice = productpriceTbl.prepareTable(s_layoutProductPrice, s_sqlFrom, s_sqlWhere, false, "pp") + " ORDER BY plv.ValidFrom DESC";
+        productpriceTbl.setRowSelectionAllowed(false);
+        productpriceTbl.setMultiSelection(false);
+        productpriceTbl.addMouseListener(this);
+        productpriceTbl.getSelectionModel().addListSelectionListener(this);
+        productpriceTbl.autoSize();
+        
         CTabbedPane jTab  = new CTabbedPane();
         jTab.addTab(Msg.translate(Env.getCtx(), "Warehouse"), new JScrollPane(warehouseTbl));
         jTab.setPreferredSize(new Dimension(INFO_WIDTH, SCREEN_HEIGHT > 600 ? 250 : 105));
         jTab.addTab(Msg.translate(Env.getCtx(), "Description"), new JScrollPane(fieldDescription));
         jTab.addTab(Msg.translate(Env.getCtx(), "Substitute_ID"), new JScrollPane(substituteTbl));
         jTab.addTab(Msg.translate(Env.getCtx(), "RelatedProduct_ID"), new JScrollPane(relatedTbl));
-		jTab.addTab (Msg.getMsg(Env.getCtx(), "ATP"), new JScrollPane(m_tableAtp));
+		jTab.addTab(Msg.getMsg(Env.getCtx(), "ATP"), new JScrollPane(m_tableAtp));
+		jTab.addTab(Msg.getMsg(Env.getCtx(), "Price"), new JScrollPane(productpriceTbl));
 		jTab.addChangeListener(this);
         tablePanel.setPreferredSize(new Dimension(INFO_WIDTH, SCREEN_HEIGHT > 600 ? 255 : 110));
         tablePanel.add(jTab);
@@ -465,6 +493,24 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			rs = null; pstmt = null;
 		}
 		initAtpTab(M_Warehouse_ID);
+		
+		// IDEMPIERE-339
+		sql = m_sqlProductprice;
+		log.finest(sql);
+		try {
+			pstmt = DB.prepareStatement(sql, null);
+			pstmt.setInt(1, m_M_Product_ID);
+			rs = pstmt.executeQuery();
+			productpriceTbl.loadTable(rs);
+			rs.close();
+		} catch (Exception e) {
+			log.log(Level.WARNING, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
 	}	//	refresh
 	//End - fer_luck @ centuryon
 
