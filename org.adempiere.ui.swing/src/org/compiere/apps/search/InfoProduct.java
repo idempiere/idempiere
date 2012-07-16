@@ -543,10 +543,15 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			setPriceListVersion (M_PriceList_Version_ID);
 
 		//	Create Grid
+		String orderBy = null;
 		StringBuffer where = new StringBuffer();
 		where.append("p.IsActive='Y'");
 		if (M_Warehouse_ID != 0)
+		{
 			where.append(" AND p.IsSummary='N'");
+			orderBy = "QtyAvailable DESC";
+		}
+			
 		//  dynamic Where Clause
 		if (p_whereClause != null && p_whereClause.length() > 0)
 			where.append(" AND ")   //  replace fully qualified name with alias
@@ -555,7 +560,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 		prepareTable(getProductLayout(),
 			s_productFrom,
 			where.toString(),
-			"QtyAvailable DESC");
+			orderBy);
 		p_table.setShowTotals(false);
 		//
 		pickWarehouse.addActionListener(this);
