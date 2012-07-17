@@ -385,7 +385,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
         jTab.addTab(Msg.translate(Env.getCtx(), "Substitute_ID"), new JScrollPane(substituteTbl));
         jTab.addTab(Msg.translate(Env.getCtx(), "RelatedProduct_ID"), new JScrollPane(relatedTbl));
 		jTab.addTab(Msg.getMsg(Env.getCtx(), "ATP"), new JScrollPane(m_tableAtp));
-		jTab.addTab(Msg.getMsg(Env.getCtx(), "Price"), new JScrollPane(productpriceTbl));
+		jTab.addTab(Msg.translate(Env.getCtx(), "Price"), new JScrollPane(productpriceTbl));
 		jTab.addChangeListener(this);
         tablePanel.setPreferredSize(new Dimension(INFO_WIDTH, SCREEN_HEIGHT > 600 ? 255 : 110));
         tablePanel.add(jTab);
