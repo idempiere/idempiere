@@ -80,9 +80,9 @@ import org.jdesktop.swingx.JXTaskPane;
 public class InfoProduct extends Info implements ActionListener, ChangeListener
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 2076229793041196087L;
+	private static final long serialVersionUID = -2119729271332154941L;
 
 	/**
 	 *	Standard Constructor
@@ -152,7 +152,6 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 
 	/**  Array of Column Info    */
 	private static Info_Column[] s_productLayout = null;
-	private static int s_productLayoutRole = -1;
 	private static int INDEX_NAME = 0;
 	private static int INDEX_PATTRIBUTE = 0;
 
@@ -1134,7 +1133,6 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 		//	return s_productLayout;
 		//
 		s_productLayout = null;
-		s_productLayoutRole = MRole.getDefault().getAD_Role_ID();
 		// IDEMPIERE_337
 		int M_Warehouse_ID = 0;
 		KeyNamePair warehouse = (KeyNamePair)pickWarehouse.getSelectedItem();

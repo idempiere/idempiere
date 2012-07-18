@@ -94,9 +94,10 @@ import org.zkoss.zul.South;
 public class InfoProductPanel extends InfoPanel implements EventListener
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 6804975825156657866L;
+	private static final long serialVersionUID = 3728242035878883637L;
+
 	private Label lblValue = new Label();
 	private Textbox fieldValue = new Textbox();
 	private Label lblName = new Label();
@@ -152,7 +153,6 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 
 	/**  Array of Column Info    */
 	private static ColumnInfo[] s_productLayout = null;
-	private static int s_productLayoutRole = -1;
 	private static int INDEX_NAME = 0;
 	private static int INDEX_PATTRIBUTE = 0;
 
@@ -537,7 +537,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 			this.setHeight(height + "px");
 		}
 
-		contentPanel.addActionListener(new EventListener() {
+		contentPanel.addActionListener(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				int row = contentPanel.getSelectedRow();
 				if (row >= 0) {
@@ -579,7 +579,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 			where.append(" AND p.IsSummary='N'");
 		//  dynamic Where Clause
 		if (p_whereClause != null && p_whereClause.length() > 0)
-			where.append(" AND ")   //  replace fully qalified name with alias
+			where.append(" AND ")   //  replace fully qualified name with alias
 				.append(Util.replace(p_whereClause, "M_Product.", "p."));	
 		
 		StringBuffer sqlMain = new StringBuffer("SELECT ");
@@ -1251,7 +1251,6 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		//	return s_productLayout;
 		//
 		s_productLayout = null;
-		s_productLayoutRole = MRole.getDefault().getAD_Role_ID();
 		int M_Warehouse_ID = 0;
 		ListItem listitem = pickWarehouse.getSelectedItem();
 		if (listitem != null)
