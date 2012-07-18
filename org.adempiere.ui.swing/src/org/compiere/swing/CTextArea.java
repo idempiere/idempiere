@@ -160,8 +160,8 @@ public class CTextArea extends JScrollPane
 		m_textArea.firePropertyChange("editable", !isEditable(), isEditable());
 		
 		// IDEMPIERE-320
-		String taBehaviour = MSysConfig.getValue("SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR", Env.getAD_Client_ID(Env.getCtx()));
-		if (taBehaviour != null && taBehaviour.equals("Y"))
+		boolean taBehaviour = MSysConfig.getBooleanValue("SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR", false, Env.getAD_Client_ID(Env.getCtx()));
+		if (taBehaviour)
 		{
 			InputMap im = m_textArea.getInputMap();
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), INSERT_BREAK);
