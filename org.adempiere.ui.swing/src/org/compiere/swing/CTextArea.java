@@ -17,19 +17,31 @@
 package org.compiere.swing;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.InputMethodListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.im.InputMethodRequests;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.FocusManager;
+import javax.swing.InputMap;
 import javax.swing.InputVerifier;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.text.Document;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.compiere.model.MSysConfig;
+import org.compiere.util.Env;
 
 /**
  *  Adempiere TextArea - A ScrollPane with a JTextArea.
@@ -45,6 +57,12 @@ public class CTextArea extends JScrollPane
 	 * 
 	 */
 	private static final long serialVersionUID = 6208738910767859872L;
+	
+	// IDEMPIERE-320
+	private static final String FIRE_CHANGE = "fire-change";
+	private static final String INSERT_BREAK = "insert-break";
+	private static final String TAB_PRESS = "tab-press";
+	private static final String SHIFT_TAB_PRESS = "shift-tab-press";
 
 	/**
 	 * Constructs a new TextArea.  A default model is set, the initial string
@@ -140,6 +158,60 @@ public class CTextArea extends JScrollPane
 		m_textArea.setWrapStyleWord(true);
 		//	Overwrite default Tab
 		m_textArea.firePropertyChange("editable", !isEditable(), isEditable());
+		
+		// IDEMPIERE-320
+		boolean taBehaviour = MSysConfig.getBooleanValue("SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR", false, Env.getAD_Client_ID(Env.getCtx()));
+		if (taBehaviour)
+		{
+			InputMap im = m_textArea.getInputMap();
+			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), INSERT_BREAK);
+			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), FIRE_CHANGE);
+			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), TAB_PRESS);
+			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK), SHIFT_TAB_PRESS);
+			
+			ActionMap am = m_textArea.getActionMap();
+			am.put(FIRE_CHANGE, new AbstractAction() {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -4599908611347627047L;
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					m_textArea.dispatchEvent(new FocusEvent(m_textArea, FocusEvent.FOCUS_LOST));
+					m_textArea.requestFocus();
+				}
+			});
+			
+			am.put(TAB_PRESS, new AbstractAction() {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -410878209760495750L;
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					FocusManager.getCurrentKeyboardFocusManager()
+						.focusNextComponent();
+				}
+			});
+			
+			am.put(SHIFT_TAB_PRESS, new AbstractAction() {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 8279987397360805855L;
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					FocusManager.getCurrentKeyboardFocusManager()
+						.focusPreviousComponent();
+				}
+			});			
+		}
 	}   //  CTextArea
 
 	/**	Text Area					*/
