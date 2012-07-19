@@ -11,45 +11,35 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.zkoss.util.resource;
+package org.adempiere.webui.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+
+import org.adempiere.webui.WebUIActivator;
+import org.zkoss.util.resource.IResourceLocator;
 
 /**
  * @author hengsin
  *
  */
-public class ResourceLocatorRegistry {
+public class ZkResourceLocator implements IResourceLocator {
 
-	private List<IResourceLocator> locators = new ArrayList<IResourceLocator>();
+	private static ZkResourceLocator INSTANCE;
 	
-	private static ResourceLocatorRegistry INSTANCE = null;
-	
-	/**
-	 * 
-	 * @param locator
-	 */
-	public synchronized void addLocator(IResourceLocator locator) {
-		System.err.println("addLocator " + locator);
-		locators.add(locator);
-		if (INSTANCE == null) {
-			INSTANCE = this;
-		}
+	public ZkResourceLocator() {
+		INSTANCE = this;
 	}
 	
-	/**
-	 * 
-	 * @param locator
+	/* (non-Javadoc)
+	 * @see org.zkoss.util.resource.IResourceLocator#getResource(java.lang.String)
 	 */
-	public synchronized void removeLocator(IResourceLocator locator) {
-		locators.remove(locator);
+	@Override
+	public URL getResource(String name) {
+		return WebUIActivator.getBundleContext().getBundle().getEntry(name);
 	}
 	
-	/**
-	 * @return list of resource locator
-	 */
-	public synchronized static List<IResourceLocator> getLocators() {
-		return INSTANCE != null ? INSTANCE.locators : null;
+	public static boolean isStarted() {
+		return INSTANCE != null;
 	}
+
 }

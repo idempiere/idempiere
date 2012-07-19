@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.zkoss.zk.library.ResourceLocatorRegistry">
-   <implementation class="org.zkoss.util.resource.ResourceLocatorRegistry"/>
-  <reference bind="addLocator" cardinality="0..n" interface="org.zkoss.util.resource.IResourceLocator" name="IResourceLocator" policy="dynamic" unbind="removeLocator"/>
-</scr:component>

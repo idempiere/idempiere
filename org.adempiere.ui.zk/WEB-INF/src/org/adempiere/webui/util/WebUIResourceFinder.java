@@ -17,14 +17,13 @@ import java.net.URL;
 
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.webui.WebUIActivator;
-import org.zkoss.util.resource.IResourceLocator;
 
 /**
  *
  * @author hengsin
  *
  */
-public class WebUIResourceFinder implements IResourceFinder, IResourceLocator {
+public class WebUIResourceFinder implements IResourceFinder {
 
 	@Override
 	public URL getResource(String name) {

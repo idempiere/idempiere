@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.adempiere.ui.zk.ResourceLocator">
-   <implementation class="org.adempiere.webui.util.WebUIResourceFinder"/>
-   <service>
-      <provide interface="org.zkoss.util.resource.IResourceLocator"/>
-   </service>
-</scr:component>

@@ -32,10 +32,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
+import org.zkoss.util.resource.ClassLocator;
 import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
 
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
+import org.adempiere.webui.util.ZkResourceLocator;
 
 /**
  *
@@ -52,6 +54,8 @@ public class WebUIServlet extends DHtmlLayoutServlet
 
     public void init(ServletConfig servletConfig) throws ServletException
     {
+    	ClassLocator.addResourceLocator(new ZkResourceLocator());
+    	
         super.init(servletConfig);
 
         /** Initialise context for the current thread*/

@@ -16,6 +16,7 @@ Copyright (C) 2005 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.util.resource;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,8 +52,18 @@ import org.zkoss.idom.input.SAXBuilder;
  */
 public class ClassLocator implements XMLResourcesLocator {
 	private static final Log log = Log.lookup(ClassLocator.class);
+	
+	private static List<IResourceLocator> resourceLocators = new ArrayList<IResourceLocator>();
 
 	public ClassLocator() {
+	}
+	
+	public static synchronized void addResourceLocator(IResourceLocator locator) {
+		resourceLocators.add(locator);
+	}
+	
+	private static synchronized IResourceLocator[] getResourceLocators() {
+		return resourceLocators.toArray(new IResourceLocator[0]);
 	}
 
 	//XMLResourcesLocator//
@@ -84,8 +95,8 @@ public class ClassLocator implements XMLResourcesLocator {
 			final Enumeration<URL> en = ClassLoader.getSystemResources(name);
 			list = Collections.list(en);
 		}
-		List<IResourceLocator> locators = ResourceLocatorRegistry.getLocators();
-		if (locators != null) {
+		IResourceLocator[] locators = ClassLocator.getResourceLocators();
+		if (locators != null && locators.length > 0) {
 			for (IResourceLocator locator : locators) {
 				URL url = locator.getResource(name);
 				if (url != null) {
