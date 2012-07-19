@@ -36,14 +36,6 @@
          id="org.adempiere.report.jasper"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.equinox.server.core"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.equinox.server.p2"
-         version="0.0.0"/>
-
    <plugin
          id="org.adempiere.base"
          download-size="0"
@@ -82,13 +74,6 @@
 
    <plugin
          id="org.apache.ecs"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -199,13 +184,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.contenttype"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.springsource.javax.ejb"
          download-size="0"
          install-size="0"
@@ -282,45 +260,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.ant.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.event"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.ds"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osgi.services"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.variables"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.launcher"
-         os="linux,macosx,win32"
-         ws="cocoa,gtk,win32"
-         arch="x86,x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"

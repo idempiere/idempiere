@@ -5,6 +5,7 @@
 	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<dependencies>
 		<!-- Place your Dependencies here -->
+		<dependency name="org.idempiere.eclipse.platform" componentType="eclipse.feature"/>
 	</dependencies>
 	<generators>
 		<!-- Place your Generators here -->
@@ -18,12 +19,13 @@
                 <property key="buildFile" value="product.ant" />
                 <property key="targets" value="create.product" />
             </actorProperties>
-            <properties>
-                <property key="profile" value="ServerProfile" />
-                <property key="iu" value="org.adempiere.server.product" />
-            </properties>
+            <properties>  
+                <property key="profile" value="${product.profile}" />  
+                <property key="iu" value="${product.id}" />  
+                <property key="features" value="${product.features}" />  
+            </properties>  
             <prerequisites alias="repository">
-            	<attribute name="site.p2" />
+            	<attribute name="site.p2"/>
             </prerequisites>
             <products alias="destination" base="${buckminster.output}">
                 <path path="idempiere.${target.ws}.${target.os}.${target.arch}/" ></path>
@@ -55,6 +57,11 @@
 		<!-- Place your Action alterations here -->
 	</alterActions>
 	<alterGroups>
-		<!-- Place your Group alterations here -->
+		<public name="bundle.jars">
+			<attribute name="bundle.jars" component="org.idempiere.eclipse.platform"/>
+		</public>
+		<public name="feature.references">
+			<attribute name="feature.jars" component="org.idempiere.eclipse.platform"/>
+        </public>
 	</alterGroups>
 </cspecExtension>

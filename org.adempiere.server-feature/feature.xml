@@ -18,7 +18,8 @@
 
    <includes
          id="org.adempiere.replication.server"
-         version="0.0.0"/>
+         version="0.0.0"
+         optional="true"/>
 
    <includes
          id="org.adempiere.ui.zk"
@@ -26,14 +27,15 @@
 
    <includes
          id="org.adempiere.webstore"
-         version="0.0.0"/>
+         version="0.0.0"
+         optional="true"/>
 
    <includes
          id="org.eclipse.gemini.web.feature"
          version="0.0.0"/>
 
    <requires>
-      <import feature="org.adempiere.base" version="1.0.0.qualifier"/>
+      <import feature="org.adempiere.base" version="1.0.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -142,27 +144,6 @@
          install-size="0"
          version="0.0.0"
          fragment="true"/>
-
-   <plugin
-         id="org.eclipse.gemini.web.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.gemini.web.extender"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.gemini.web.tomcat"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.virgo.util.common"
@@ -298,20 +279,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.ant.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.variables"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.adempiere.eclipse.equinox.http.servlet"
