@@ -131,6 +131,7 @@ public class StatusBarPanel extends Panel implements EventListener, IStatusBar
         if (!embedded)
         	LayoutUtils.addSclass("status-info", infoLine);
         vbox = new Vbox();
+        vbox.setAlign("stretch");
         vbox.setPack("center");
         LayoutUtils.addSclass("status", vbox);
         vbox.appendChild(east);
