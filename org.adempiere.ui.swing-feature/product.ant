@@ -11,6 +11,7 @@
 	 </pathconvert>
 
 	<target name="create.product">
+		<property name="installableIUs" value="${iu},${features}" />
 		<property name="destination" location="${sp:destination}"/>
 		<delete dir="${destination}"/>
 		<makeurl property="repository" file="${sp:repository}"/>
@@ -31,7 +32,7 @@
 			<arg value="-profileProperties" />
 			<arg value="org.eclipse.update.install.features=true" />
 			<arg value="-installIU"/>
-			<arg value="${iu}"/>
+			<arg value="${installableIUs}"/>
 			<arg value="-p2.os" />
 			<arg value="${target.os}" />
 			<arg value="-p2.ws" />
