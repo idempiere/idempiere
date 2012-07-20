@@ -16,12 +16,12 @@
 	<toolbarbutton href="/index.zul" label="${continueText}"/>
 </div>
 </vbox>
-<script>
+<script defer="true">
 <![CDATA[
 	var callback = function(ok, val) {
 		if (ok && !!val)
 		{
-			$e("${timeoutText.uuid}").innerHTML = val;
+			document.getElementById("${timeoutText.uuid}").innerHTML = val;
 		}
 	};
     
