@@ -91,6 +91,7 @@ syntax: regexp
 ^log/.*$
 ^.*\.log$
 ^Adempiere.properties$
+^idempiere.properties$
 ^AdempiereEnv.properties$
 ^event\.test/bin.*\.class$
 ^packages/.*$
