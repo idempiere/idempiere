@@ -37,7 +37,10 @@
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="file:///{0}/lib/plugins/{1}_{2}.jar">
-        <bc:propertyRef key="workspace.root"/>
+	    <bc:replace>
+      	   <bc:propertyRef key="workspace.root"/>
+           <bc:match pattern="\s" replacement="%20" />
+    	</bc:replace>
         <bc:propertyRef key="buckminster.component"/>
         <bc:propertyRef key="jar.version"/>
       </rm:uri>
