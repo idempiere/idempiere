@@ -199,7 +199,6 @@ public class CalloutGLJournal extends CalloutEngine
 	 */
 	public String amt (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		String colName = mField.getColumnName();
 		if (value == null || isCalloutActive())
 			return "";
 
@@ -239,15 +238,26 @@ public class CalloutGLJournal extends CalloutEngine
 		if (value == null || isCalloutActive())
 			return "";
 
-		if (colName.equals("Account_ID") || colName.equals("C_SubAcct_ID") || colName.equals("M_Product_ID")
-				|| colName.equals("C_BPartner_ID") || colName.equals("AD_OrgTrx_ID") || colName.equals("C_LocFrom_ID")
-				|| colName.equals("C_LocTo_ID") || colName.equals("C_SalesRegion_ID") || colName.equals("C_Project_ID")
-				|| colName.equals("C_Campaign_ID") || colName.equals("C_Activity_ID") || colName.equals("User1_ID")
-				|| colName.equals("User2_ID") || colName.equals("UserElement1_ID") || colName.equals("UserElement2_ID")	
-		)
+		if (colName.equals("Account_ID")
+				|| colName.equals("C_SubAcct_ID")
+				|| colName.equals("M_Product_ID")
+				|| colName.equals("C_BPartner_ID")
+				|| colName.equals("AD_OrgTrx_ID")
+				|| colName.equals("AD_Org_ID")
+				|| colName.equals("C_LocFrom_ID")
+				|| colName.equals("C_LocTo_ID")
+				|| colName.equals("C_SalesRegion_ID")
+				|| colName.equals("C_Project_ID")
+				|| colName.equals("C_Campaign_ID")
+				|| colName.equals("C_Activity_ID")
+				|| colName.equals("User1_ID")
+				|| colName.equals("User2_ID")
+				|| colName.equals("UserElement1_ID")
+				|| colName.equals("UserElement2_ID")
+			)
 		{
 			mTab.setValue("C_ValidCombination_ID", null);
-			mTab.setValue("Alias", null);
+			mTab.setValue("Alias_ValidCombination_ID", null);
 		}
 		return "";
 	}
@@ -260,13 +270,13 @@ public class CalloutGLJournal extends CalloutEngine
 
 		Integer Combi_ID = ((Integer)value).intValue();
 		
-		if (colName.equals("Alias")) 
+		if (colName.equals("Alias_ValidCombination_ID")) 
 			mTab.setValue("C_ValidCombination_ID", Combi_ID);
 	
 		if (colName.equals("C_ValidCombination_ID"))
-			mTab.setValue("Alias", Combi_ID);
+			mTab.setValue("Alias_ValidCombination_ID", Combi_ID);
 		
-		if (colName.equals("C_ValidCombination_ID") || colName.equals("Alias"))
+		if (colName.equals("C_ValidCombination_ID") || colName.equals("Alias_ValidCombination_ID"))
 		{
 			MAccount combi = new MAccount(ctx, Combi_ID, null);
 			mTab.setValue("Account_ID", combi.getAccount_ID() != 0 ? combi.getAccount_ID() : null);
@@ -274,6 +284,7 @@ public class CalloutGLJournal extends CalloutEngine
 			mTab.setValue("M_Product_ID", combi.getM_Product_ID() != 0 ? combi.getM_Product_ID() : null);
 			mTab.setValue("C_BPartner_ID", combi.getC_BPartner_ID() != 0 ? combi.getC_BPartner_ID() : null);
 			mTab.setValue("AD_OrgTrx_ID", combi.getAD_OrgTrx_ID() != 0 ? combi.getAD_OrgTrx_ID() : null);
+			mTab.setValue("AD_Org_ID", combi.getAD_Org_ID() != 0 ? combi.getAD_Org_ID() : null);
 			mTab.setValue("C_LocFrom_ID", combi.getC_LocFrom_ID() != 0 ? combi.getC_LocFrom_ID() : null);
 			mTab.setValue("C_LocTo_ID", combi.getC_LocTo_ID() != 0 ? combi.getC_LocTo_ID() : null);
 			mTab.setValue("C_SalesRegion_ID", combi.getC_SalesRegion_ID() != 0 ? combi.getC_SalesRegion_ID() : null);

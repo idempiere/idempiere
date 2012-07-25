@@ -39,7 +39,7 @@ public class MJournalLine extends X_GL_JournalLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7008806797777773843L;
+	private static final long serialVersionUID = 7584093911055786835L;
 
 	/**
 	 * 	Standard Constructor
@@ -314,21 +314,11 @@ public class MJournalLine extends X_GL_JournalLine
 		if (amt.scale() > getPrecision())
 			amt = amt.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP);
 		setAmtAcctCr(amt);
-		//	Set Line Org to Acct Org
-		if (newRecord 
-			|| is_ValueChanged("C_ValidCombination_ID")
-			|| is_ValueChanged("AD_Org_ID"))
-		{
-			int AD_Org_ID = getAccount_Combi().getAD_Org_ID(); 
-			if(AD_Org_ID > 0) 
-			{	 
-				setAD_Org_ID(AD_Org_ID); 
-			} 
-			else  
-			{ 
-				setAD_Org_ID(getParent().getAD_Org_ID()); 
-			} 
-		}
+		//	Set Line Org to Doc Org if still not set
+		if(getAD_Org_ID() <= 0) 
+		{ 
+			setAD_Org_ID(getParent().getAD_Org_ID()); 
+		} 
 		return true;
 	}	//	beforeSave
 	
@@ -391,17 +381,28 @@ public class MJournalLine extends X_GL_JournalLine
 		return no == 1;
 	}	//	updateJournalTotal
 
-	/** Update combination and optionnaly **/
-	void getOrCreateCombination()
+	/** Update combination and optionally **/
+	private void getOrCreateCombination()
 	{
-		if (getC_ValidCombination_ID() == 0 
-				|| (is_ValueChanged("Account_ID") || is_ValueChanged("C_SubAcct_ID") || is_ValueChanged("M_Product_ID")
-						|| is_ValueChanged("C_BPartner_ID") || is_ValueChanged("AD_OrgTrx_ID") || is_ValueChanged("C_LocFrom_ID")
-						|| is_ValueChanged("C_LocTo_ID") || is_ValueChanged("C_SalesRegion_ID") || is_ValueChanged("C_Project_ID")
-						|| is_ValueChanged("C_Campaign_ID") || is_ValueChanged("C_Activity_ID") || is_ValueChanged("User1_ID")
-						|| is_ValueChanged("User2_ID") || is_ValueChanged("UserElement1_ID") || is_ValueChanged("UserElement2_ID"))
-				)
-
+		if (getAccount_ID() <= 0) // mandatory to get or create a combination
+			return;
+		if (getC_ValidCombination_ID() == 0
+				|| (!is_new() && (is_ValueChanged("Account_ID")
+						|| is_ValueChanged("C_SubAcct_ID")
+						|| is_ValueChanged("M_Product_ID")
+						|| is_ValueChanged("C_BPartner_ID")
+						|| is_ValueChanged("AD_OrgTrx_ID")
+						|| is_ValueChanged("AD_Org_ID")
+						|| is_ValueChanged("C_LocFrom_ID")
+						|| is_ValueChanged("C_LocTo_ID")
+						|| is_ValueChanged("C_SalesRegion_ID")
+						|| is_ValueChanged("C_Project_ID")
+						|| is_ValueChanged("C_Campaign_ID")
+						|| is_ValueChanged("C_Activity_ID")
+						|| is_ValueChanged("User1_ID")
+						|| is_ValueChanged("User2_ID")
+						|| is_ValueChanged("UserElement1_ID")
+						|| is_ValueChanged("UserElement2_ID"))))
 		{
 			MJournal gl = new MJournal(getCtx(), getGL_Journal_ID(), get_TrxName());
 
@@ -415,19 +416,17 @@ public class MJournalLine extends X_GL_JournalLine
 				acct.saveEx(get_TrxName());	// get ID from transaction
 				setC_ValidCombination_ID(acct.get_ID());
 				if (acct.getAlias() != null && acct.getAlias().length() > 0)
-					setAlias(acct.get_ID());
+					setAlias_ValidCombination_ID(acct.get_ID());
+				else
+					setAlias_ValidCombination_ID(0);
 			}
 		}
 	}	//	getOrCreateCombination
 
 	/** Fill Accounting Dimensions from line combination **/
-	void fillDimensionsFromCombination()
+	private void fillDimensionsFromCombination()
 	{
-		if (getC_ValidCombination_ID() > 0 
-				&& getAccount_ID() == 0 && getC_SubAcct_ID() == 0 && getM_Product_ID() == 0
-				&& getC_BPartner_ID() == 0 && getAD_OrgTrx_ID() == 0 && getC_LocFrom_ID() == 0 && getC_LocTo_ID() == 0
-				&& getC_SalesRegion_ID() == 0 && getC_Project_ID() == 0 && getC_Campaign_ID() == 0 && getC_Activity_ID() == 0 
-				&& getUser1_ID() == 0 && getUser2_ID() == 0 && getUserElement1_ID() == 0 && getUserElement2_ID() == 0)
+		if (getC_ValidCombination_ID() > 0)
 		{
 			MAccount combi = new MAccount(getCtx(), getC_ValidCombination_ID(), get_TrxName());
 			setAccount_ID(combi.getAccount_ID() > 0 ? combi.getAccount_ID() : 0);
@@ -435,6 +434,7 @@ public class MJournalLine extends X_GL_JournalLine
 			setM_Product_ID(combi.getM_Product_ID() > 0 ? combi.getM_Product_ID() : 0);
 			setC_BPartner_ID(combi.getC_BPartner_ID() > 0 ? combi.getC_BPartner_ID() : 0);
 			setAD_OrgTrx_ID(combi.getAD_OrgTrx_ID() > 0 ? combi.getAD_OrgTrx_ID() : 0);
+			setAD_Org_ID(combi.getAD_Org_ID() > 0 ? combi.getAD_Org_ID() : 0);
 			setC_LocFrom_ID(combi.getC_LocFrom_ID() > 0 ? combi.getC_LocFrom_ID() : 0);
 			setC_LocTo_ID(combi.getC_LocTo_ID() > 0 ? combi.getC_LocTo_ID() : 0);
 			setC_SalesRegion_ID(combi.getC_SalesRegion_ID() > 0 ? combi.getC_SalesRegion_ID() : 0);

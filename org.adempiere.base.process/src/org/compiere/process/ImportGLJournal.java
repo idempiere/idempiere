@@ -603,6 +603,7 @@ public class ImportGLJournal extends SvrProcess
 		MJournal journal = null;
 		String JournalDocumentNo = "";
 		Timestamp DateAcct = null;
+		boolean wasCreateNewBatch = false;
 
 		//	Go through Journal Records
 		sql = new StringBuffer ("SELECT * FROM I_GLJournal "
@@ -618,15 +619,25 @@ public class ImportGLJournal extends SvrProcess
 			while (rs.next())
 			{
 				X_I_GLJournal imp = new X_I_GLJournal (getCtx (), rs, get_TrxName());
-
 				//	New Batch if Batch Document No changes
 				String impBatchDocumentNo = imp.getBatchDocumentNo();
 				if (impBatchDocumentNo == null)
 					impBatchDocumentNo = "";
-				if (batch == null
-					|| imp.isCreateNewBatch()
-					|| journal.getC_AcctSchema_ID() != imp.getC_AcctSchema_ID()
-					|| !BatchDocumentNo.equals(impBatchDocumentNo))
+				if (imp.isCreateNewBatch() // line states to create a new batch
+					|| (journal != null && journal.getC_AcctSchema_ID() != imp.getC_AcctSchema_ID()) // new line changed schema
+					|| (imp.getBatchDocumentNo() == null && !wasCreateNewBatch) // new line doesn't have batch info
+					|| !BatchDocumentNo.equals(impBatchDocumentNo)) // batch number changed 
+				{
+					// reset batch
+					batch = null;
+				}
+
+				if (imp.isCreateNewBatch())
+					wasCreateNewBatch = true;
+
+				if (imp.isCreateNewBatch()
+					|| (batch == null && imp.getBatchDocumentNo() != null)
+					)
 				{
 					BatchDocumentNo = impBatchDocumentNo;	//	cannot compare real DocumentNo
 					batch = new MJournalBatch (getCtx(), 0, get_TrxName());
@@ -675,7 +686,8 @@ public class ImportGLJournal extends SvrProcess
 					JournalDocumentNo = impJournalDocumentNo;	//	cannot compare real DocumentNo
 					DateAcct = impDateAcct;
 					journal = new MJournal (getCtx(), 0, get_TrxName());
-					journal.setGL_JournalBatch_ID(batch.getGL_JournalBatch_ID());
+					if (batch != null)
+						journal.setGL_JournalBatch_ID(batch.getGL_JournalBatch_ID());
 					journal.setClientOrg(imp.getAD_Client_ID(), imp.getAD_OrgDoc_ID());
 					//
 					String description = imp.getBatchDescription();
@@ -754,7 +766,8 @@ public class ImportGLJournal extends SvrProcess
 				//
 				if (line.save())
 				{
-					imp.setGL_JournalBatch_ID(batch.getGL_JournalBatch_ID());
+					if (batch != null)
+						imp.setGL_JournalBatch_ID(batch.getGL_JournalBatch_ID());
 					imp.setGL_Journal_ID(journal.getGL_Journal_ID());
 					imp.setGL_JournalLine_ID(line.getGL_JournalLine_ID());
 					imp.setI_IsImported(true);
