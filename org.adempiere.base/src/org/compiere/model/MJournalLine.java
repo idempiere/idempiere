@@ -244,7 +244,7 @@ public class MJournalLine extends X_GL_JournalLine
 	 * 	Get Account (Valid Combination)
 	 *	@return combination or null
 	 */
-	public MAccount getAccount()
+	public MAccount getAccount_Combi()
 	{
 		if (m_account == null && getC_ValidCombination_ID() != 0)
 			m_account = new MAccount (getCtx(), getC_ValidCombination_ID(), get_TrxName());
@@ -259,7 +259,7 @@ public class MJournalLine extends X_GL_JournalLine
 	{
 		if (m_accountElement == null)
 		{
-			MAccount vc = getAccount();
+			MAccount vc = getAccount_Combi();
 			if (vc != null && vc.getAccount_ID() != 0)
 				m_accountElement = new MElementValue (getCtx(), vc.getAccount_ID(), get_TrxName()); 
 		}
@@ -293,6 +293,17 @@ public class MJournalLine extends X_GL_JournalLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_JournalLine"));
 			return false;
 		}
+		// idempiere 344 - nmicoud
+		getOrCreateCombination();
+		if (getC_ValidCombination_ID() <= 0)
+		{
+			log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@FillMandatory@" + "@C_ValidCombination_ID@"));
+			return false;
+			
+		}
+		fillDimensionsFromCombination();
+		// end idempiere 344 - nmicoud
+
 		//	Acct Amts
 		BigDecimal rate = getCurrencyRate();
 		BigDecimal amt = rate.multiply(getAmtSourceDr());
@@ -308,7 +319,7 @@ public class MJournalLine extends X_GL_JournalLine
 			|| is_ValueChanged("C_ValidCombination_ID")
 			|| is_ValueChanged("AD_Org_ID"))
 		{
-			int AD_Org_ID = getAccount().getAD_Org_ID(); 
+			int AD_Org_ID = getAccount_Combi().getAD_Org_ID(); 
 			if(AD_Org_ID > 0) 
 			{	 
 				setAD_Org_ID(AD_Org_ID); 
@@ -365,16 +376,76 @@ public class MJournalLine extends X_GL_JournalLine
 			log.warning("afterSave - Update Journal #" + no);
 		
 		//	Update Batch Total
-		sql = "UPDATE GL_JournalBatch jb"
-			+ " SET (TotalDr, TotalCr) = (SELECT COALESCE(SUM(TotalDr),0), COALESCE(SUM(TotalCr),0)"
-				+ " FROM GL_Journal j WHERE jb.GL_JournalBatch_ID=j.GL_JournalBatch_ID) "
-			+ "WHERE GL_JournalBatch_ID="
-				+ "(SELECT DISTINCT GL_JournalBatch_ID FROM GL_Journal WHERE GL_Journal_ID=" 
-				+ getGL_Journal_ID() + ")";
-		no = DB.executeUpdate(sql, get_TrxName());
-		if (no != 1)
-			log.warning("Update Batch #" + no);
+		int GL_JournalBatch_ID=DB.getSQLValue(get_TrxName(), "SELECT GL_JournalBatch_ID FROM GL_Journal WHERE GL_Journal_ID=?", getGL_Journal_ID());
+		if (GL_JournalBatch_ID!=0) {	// idempiere 344 - nmicoud
+			sql = "UPDATE GL_JournalBatch jb"
+					+ " SET (TotalDr, TotalCr) = (SELECT COALESCE(SUM(TotalDr),0), COALESCE(SUM(TotalCr),0)"
+					+ " FROM GL_Journal j WHERE jb.GL_JournalBatch_ID=j.GL_JournalBatch_ID) "
+					+ "WHERE GL_JournalBatch_ID="
+					+ "(SELECT DISTINCT GL_JournalBatch_ID FROM GL_Journal WHERE GL_Journal_ID=" 
+					+ getGL_Journal_ID() + ")";
+			no = DB.executeUpdate(sql, get_TrxName());
+			if (no != 1)
+				log.warning("Update Batch #" + no);
+		}
 		return no == 1;
 	}	//	updateJournalTotal
+
+	/** Update combination and optionnaly **/
+	void getOrCreateCombination()
+	{
+		if (getC_ValidCombination_ID() == 0 
+				|| (is_ValueChanged("Account_ID") || is_ValueChanged("C_SubAcct_ID") || is_ValueChanged("M_Product_ID")
+						|| is_ValueChanged("C_BPartner_ID") || is_ValueChanged("AD_OrgTrx_ID") || is_ValueChanged("C_LocFrom_ID")
+						|| is_ValueChanged("C_LocTo_ID") || is_ValueChanged("C_SalesRegion_ID") || is_ValueChanged("C_Project_ID")
+						|| is_ValueChanged("C_Campaign_ID") || is_ValueChanged("C_Activity_ID") || is_ValueChanged("User1_ID")
+						|| is_ValueChanged("User2_ID") || is_ValueChanged("UserElement1_ID") || is_ValueChanged("UserElement2_ID"))
+				)
+
+		{
+			MJournal gl = new MJournal(getCtx(), getGL_Journal_ID(), get_TrxName());
+
+			MAccount acct = MAccount.get(getCtx(), getAD_Client_ID(), getAD_Org_ID(), gl.getC_AcctSchema_ID(), getAccount_ID(),
+					getC_SubAcct_ID(), getM_Product_ID(), getC_BPartner_ID(), getAD_OrgTrx_ID(), getC_LocFrom_ID(),
+					getC_LocTo_ID(), getC_SalesRegion_ID(), getC_Project_ID(), getC_Campaign_ID(), 
+					getC_Activity_ID(), getUser1_ID(), getUser2_ID(), getUserElement1_ID(), getUserElement2_ID());
+
+			if (acct != null)
+			{
+				acct.saveEx(get_TrxName());	// get ID from transaction
+				setC_ValidCombination_ID(acct.get_ID());
+				if (acct.getAlias() != null && acct.getAlias().length() > 0)
+					setAlias(acct.get_ID());
+			}
+		}
+	}	//	getOrCreateCombination
+
+	/** Fill Accounting Dimensions from line combination **/
+	void fillDimensionsFromCombination()
+	{
+		if (getC_ValidCombination_ID() > 0 
+				&& getAccount_ID() == 0 && getC_SubAcct_ID() == 0 && getM_Product_ID() == 0
+				&& getC_BPartner_ID() == 0 && getAD_OrgTrx_ID() == 0 && getC_LocFrom_ID() == 0 && getC_LocTo_ID() == 0
+				&& getC_SalesRegion_ID() == 0 && getC_Project_ID() == 0 && getC_Campaign_ID() == 0 && getC_Activity_ID() == 0 
+				&& getUser1_ID() == 0 && getUser2_ID() == 0 && getUserElement1_ID() == 0 && getUserElement2_ID() == 0)
+		{
+			MAccount combi = new MAccount(getCtx(), getC_ValidCombination_ID(), get_TrxName());
+			setAccount_ID(combi.getAccount_ID() > 0 ? combi.getAccount_ID() : 0);
+			setC_SubAcct_ID(combi.getC_SubAcct_ID() > 0 ? combi.getC_SubAcct_ID() : 0);
+			setM_Product_ID(combi.getM_Product_ID() > 0 ? combi.getM_Product_ID() : 0);
+			setC_BPartner_ID(combi.getC_BPartner_ID() > 0 ? combi.getC_BPartner_ID() : 0);
+			setAD_OrgTrx_ID(combi.getAD_OrgTrx_ID() > 0 ? combi.getAD_OrgTrx_ID() : 0);
+			setC_LocFrom_ID(combi.getC_LocFrom_ID() > 0 ? combi.getC_LocFrom_ID() : 0);
+			setC_LocTo_ID(combi.getC_LocTo_ID() > 0 ? combi.getC_LocTo_ID() : 0);
+			setC_SalesRegion_ID(combi.getC_SalesRegion_ID() > 0 ? combi.getC_SalesRegion_ID() : 0);
+			setC_Project_ID(combi.getC_Project_ID() > 0 ? combi.getC_Project_ID() : 0);
+			setC_Campaign_ID(combi.getC_Campaign_ID() > 0 ? combi.getC_Campaign_ID() : 0);
+			setC_Activity_ID(combi.getC_Activity_ID() > 0 ? combi.getC_Activity_ID() : 0);
+			setUser1_ID(combi.getUser1_ID() > 0 ? combi.getUser1_ID() : 0);
+			setUser2_ID(combi.getUser2_ID() > 0 ? combi.getUser2_ID() : 0);
+			setUserElement1_ID(combi.getUserElement1_ID() > 0 ? combi.getUserElement1_ID() : 0);
+			setUserElement2_ID(combi.getUserElement2_ID() > 0 ? combi.getUserElement2_ID() : 0);
+		}		
+	}	// fillDimensionsFromCombination
 	
 }	//	MJournalLine

@@ -88,7 +88,7 @@ public class Doc_GLJournal extends Doc
 			//  --  Converted Amounts
 			docLine.setConvertedAmt (m_C_AcctSchema_ID, line.getAmtAcctDr(), line.getAmtAcctCr());
 			//  --  Account
-			MAccount account = line.getAccount();
+			MAccount account = line.getAccount_Combi();
 			docLine.setAccount (account);
 			//	--	Organization of Line was set to Org of Account
 			list.add(docLine);
