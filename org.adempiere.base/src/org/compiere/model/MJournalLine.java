@@ -294,12 +294,12 @@ public class MJournalLine extends X_GL_JournalLine
 			return false;
 		}
 		// idempiere 344 - nmicoud
-		getOrCreateCombination();
+		if (!getOrCreateCombination())
+			return false;
 		if (getC_ValidCombination_ID() <= 0)
 		{
 			log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@FillMandatory@" + "@C_ValidCombination_ID@"));
 			return false;
-			
 		}
 		fillDimensionsFromCombination();
 		// end idempiere 344 - nmicoud
@@ -382,10 +382,8 @@ public class MJournalLine extends X_GL_JournalLine
 	}	//	updateJournalTotal
 
 	/** Update combination and optionally **/
-	private void getOrCreateCombination()
+	private boolean getOrCreateCombination()
 	{
-		if (getAccount_ID() <= 0) // mandatory to get or create a combination
-			return;
 		if (getC_ValidCombination_ID() == 0
 				|| (!is_new() && (is_ValueChanged("Account_ID")
 						|| is_ValueChanged("C_SubAcct_ID")
@@ -406,6 +404,38 @@ public class MJournalLine extends X_GL_JournalLine
 		{
 			MJournal gl = new MJournal(getCtx(), getGL_Journal_ID(), get_TrxName());
 
+			// Validate all mandatory combinations are set
+			MAcctSchema as = (MAcctSchema) getParent().getC_AcctSchema();
+			String errorFields = "";
+			for (MAcctSchemaElement elem : MAcctSchemaElement.getAcctSchemaElements(as)) {
+				if (! elem.isMandatory())
+					continue;
+				String et = elem.getElementType();
+				if (MAcctSchemaElement.ELEMENTTYPE_Account.equals(et) && getAccount_ID() == 0)
+					errorFields += "@" + COLUMNNAME_Account_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Activity.equals(et) && getC_Activity_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_Activity_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_BPartner.equals(et) && getC_BPartner_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_BPartner_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Campaign.equals(et) && getC_Campaign_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_Campaign_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Organization.equals(et) && getAD_Org_ID() == 0)
+					errorFields += "@" + COLUMNNAME_AD_Org_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_OrgTrx.equals(et) && getAD_OrgTrx_ID() == 0)
+					errorFields += "@" + COLUMNNAME_AD_OrgTrx_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Product.equals(et) && getM_Product_ID() == 0)
+					errorFields += "@" + COLUMNNAME_M_Product_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Project.equals(et) && getC_Project_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_Project_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_SalesRegion.equals(et) && getC_SalesRegion_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_SalesRegion_ID + "@, ";
+			}
+			if (errorFields.length() > 0)
+			{
+				log.saveError("Error", Msg.parseTranslation(getCtx(), "@IsMandatory@: " + errorFields.substring(0, errorFields.length() - 2)));
+				return false;
+			}
+			
 			MAccount acct = MAccount.get(getCtx(), getAD_Client_ID(), getAD_Org_ID(), gl.getC_AcctSchema_ID(), getAccount_ID(),
 					getC_SubAcct_ID(), getM_Product_ID(), getC_BPartner_ID(), getAD_OrgTrx_ID(), getC_LocFrom_ID(),
 					getC_LocTo_ID(), getC_SalesRegion_ID(), getC_Project_ID(), getC_Campaign_ID(), 
@@ -421,6 +451,7 @@ public class MJournalLine extends X_GL_JournalLine
 					setAlias_ValidCombination_ID(0);
 			}
 		}
+		return true;
 	}	//	getOrCreateCombination
 
 	/** Fill Accounting Dimensions from line combination **/
