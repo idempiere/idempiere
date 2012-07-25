@@ -1468,6 +1468,22 @@ INSERT INTO t_alter_column values('i_gljournal','IsCreateNewJournal','CHAR(1)',n
 UPDATE AD_Field SET DisplayLogic='@GL_JournalBatch_ID@=0',Updated=TO_TIMESTAMP('2012-07-25 13:01:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200208
 ;
 
+-- Jul 25, 2012 2:32:04 PM COT
+INSERT INTO AD_Reference (AD_Reference_ID,ValidationType,EntityType,IsOrderByValue,Name,Description,AD_Client_ID,AD_Org_ID,CreatedBy,Updated,IsActive,Created,UpdatedBy) VALUES (200002,'T','D','N','C_ElementValue (trx) Not Doc Controlled','Element Values',0,0,100,TO_TIMESTAMP('2012-07-25 14:32:03','YYYY-MM-DD HH24:MI:SS'),'Y',TO_TIMESTAMP('2012-07-25 14:32:03','YYYY-MM-DD HH24:MI:SS'),100)
+;
+
+-- Jul 25, 2012 2:32:04 PM COT
+INSERT INTO AD_Reference_Trl (AD_Language,AD_Reference_ID, Help,Name,Description, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Reference_ID, t.Help,t.Name,t.Description, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Reference t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Reference_ID=200002 AND NOT EXISTS (SELECT * FROM AD_Reference_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Reference_ID=t.AD_Reference_ID)
+;
+
+-- Jul 25, 2012 2:32:47 PM COT
+INSERT INTO AD_Ref_Table (IsValueDisplayed,WhereClause,OrderByClause,AD_Table_ID,AD_Reference_ID,AD_Key,AD_Display,EntityType,CreatedBy,Updated,Created,UpdatedBy,AD_Client_ID,AD_Org_ID,IsActive) VALUES ('Y','C_ElementValue.IsSummary<>''Y'' AND C_ElementValue.IsDocControlled<>''Y''','C_ElementValue.Value',188,200002,1125,1135,'D',100,TO_TIMESTAMP('2012-07-25 14:32:47','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2012-07-25 14:32:47','YYYY-MM-DD HH24:MI:SS'),100,0,0,'Y')
+;
+
+-- Jul 25, 2012 2:33:10 PM COT
+UPDATE AD_Column SET AD_Reference_Value_ID=200002,Updated=TO_TIMESTAMP('2012-07-25 14:33:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200217
+;
+
 UPDATE AD_System
   SET LastMigrationScriptApplied='855_IDEMPIERE-344_GLJournalImprovement.sql'
 WHERE LastMigrationScriptApplied<'855_IDEMPIERE-344_GLJournalImprovement.sql'
