@@ -787,23 +787,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		//	OK - Query is valid
 
-		//	Zooms to the same Window (Parents, ..)
-		String refColName = null;
-		if (colName.equals("R_RequestRelated_ID"))
-			refColName = "R_Request_ID";
-		else if (colName.startsWith("C_DocType"))
-			refColName = "C_DocType_ID";
-		if (refColName != null)
-		{
-			query.setColumnName(0, refColName);
-			if (getField(refColName) != null)
-			{
-				log.fine("Column " + colName + " replaced with synonym " + refColName);
-				return query.getWhereClause();
-			}
-			refColName = null;
-		}
-
 		//	Simple Query.
 		if (getField(colName) != null)
 		{
@@ -811,6 +794,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return query.getWhereClause();
 		}
 
+		String refColName = null;
 		//	Find Reference Column e.g. BillTo_ID -> C_BPartner_Location_ID
 		String sql = "SELECT cc.ColumnName "
 			+ "FROM AD_Column c"
