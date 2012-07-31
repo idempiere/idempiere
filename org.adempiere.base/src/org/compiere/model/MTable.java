@@ -50,11 +50,10 @@ import org.compiere.util.DB;
  */
 public class MTable extends X_AD_Table
 {
-
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -2367316254623142732L;
+	private static final long serialVersionUID = 8264472455498363565L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -586,5 +585,21 @@ public class MTable extends X_AD_Table
 		sb.append (get_ID()).append ("-").append (getTableName()).append ("]");
 		return sb.toString ();
 	}	//	toString
+
+	/**
+	 * 	Verify if the table contains ID=0
+	 *	@return true if table has zero ID
+	 */
+	public static boolean isZeroIDTable(String tablename) {
+		return (tablename.equals("AD_Org") ||
+				tablename.equals("AD_ReportView") ||
+				tablename.equals("AD_Role") ||
+				tablename.equals("AD_System") ||
+				tablename.equals("AD_User") ||
+				tablename.equals("C_DocType") ||
+				tablename.equals("GL_Category") ||
+				tablename.equals("M_AttributeSet") ||
+				tablename.equals("M_AttributeSetInstance"));
+	}
 
 }	//	MTable

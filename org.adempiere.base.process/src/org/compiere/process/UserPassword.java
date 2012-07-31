@@ -18,8 +18,8 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
-import org.compiere.util.DB;
 import org.compiere.util.Util;
 
 /**
@@ -77,57 +77,39 @@ public class UserPassword extends SvrProcess
 		MUser user = MUser.get(getCtx(), p_AD_User_ID);
 		MUser operator = MUser.get(getCtx(), getAD_User_ID());
 		log.fine("User=" + user + ", Operator=" + operator);
-		
-		
+
+		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
 		
 		//	Do we need a password ?
 		if (Util.isEmpty(p_OldPassword))		//	Password required
 		{
 			if (p_AD_User_ID == 0			//	change of System
-				|| p_AD_User_ID == 100		//	change of SuperUser
-				|| !operator.isAdministrator())
+					|| p_AD_User_ID == 100		//	change of SuperUser
+					|| !operator.isAdministrator())
 				throw new IllegalArgumentException("@OldPasswordMandatory@");
 		}
-
 		//	is entered Password correct ?
-		else if (!p_OldPassword.equals(user.getPassword()))
-			throw new IllegalArgumentException("@OldPasswordNoMatch@");
+		else {
+			if (hash_password){
+				if (!user.authenticateHash(p_OldPassword) )
+					throw new IllegalArgumentException("@OldPasswordNoMatch@");
+			} else{
+				if (!p_OldPassword.equals(user.getPassword()))
+					throw new IllegalArgumentException("@OldPasswordNoMatch@");
+			}
+		}
 		
-		//	Change Super User
-		if (p_AD_User_ID == 0)
-		{
-			String sql = "UPDATE AD_User SET Updated=SysDate, UpdatedBy=" + getAD_User_ID();
-			if (!Util.isEmpty(p_NewPassword))
-				sql += ", Password=" + DB.TO_STRING(p_NewPassword);
-			if (!Util.isEmpty(p_NewEMail))
-				sql += ", Email=" + DB.TO_STRING(p_NewEMail);
-			if (!Util.isEmpty(p_NewEMailUser))
-				sql += ", EmailUser=" + DB.TO_STRING(p_NewEMailUser);
-			if (!Util.isEmpty(p_NewEMailUserPW))
-				sql += ", EmailUserPW=" + DB.TO_STRING(p_NewEMailUserPW);
-			sql += " WHERE AD_User_ID=0";
-			if (DB.executeUpdate(sql, get_TrxName()) == 1)
-				return "OK";
-			else 
-				return "@Error@";
-		}
-		else
-		{
-			if (!Util.isEmpty(p_NewPassword))
-				user.setPassword(p_NewPassword);
-			if (!Util.isEmpty(p_NewEMail))
-				user.setEMail(p_NewEMail);
-			if (!Util.isEmpty(p_NewEMailUser))
-				user.setEMailUser(p_NewEMailUser);
-			if (!Util.isEmpty(p_NewEMailUserPW))
-				user.setEMailUserPW(p_NewEMailUserPW);
-			//
-			if (user.save())
-				return "OK";
-			else 
-				return "@Error@";
-		}
+		if (!Util.isEmpty(p_NewPassword))
+			user.setPassword(p_NewPassword);
+		if (!Util.isEmpty(p_NewEMail))
+			user.setEMail(p_NewEMail);
+		if (!Util.isEmpty(p_NewEMailUser))
+			user.setEMailUser(p_NewEMailUser);
+		if (!Util.isEmpty(p_NewEMailUserPW))
+			user.setEMailUserPW(p_NewEMailUserPW);
+		user.saveEx();
+
+		return "OK";
 	}	//	doIt
 
 }	//	UserPassword
-

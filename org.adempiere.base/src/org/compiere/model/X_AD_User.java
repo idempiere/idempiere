@@ -664,6 +664,25 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		}
 		return false;
 	}
+	
+	/**
+	 * Set Salt.
+	 * 
+	 * @param Salt
+	 * Random data added to improve password hash effectiveness
+	 */
+	public void setSalt(String Salt) {
+		set_ValueNoCheck(COLUMNNAME_Salt, Salt);
+	}
+
+	/**
+	 * Get Salt.
+	 * 
+	 * @return Random data added to improve password hash effectiveness
+	 */
+	public String getSalt() {
+		return (String) get_Value(COLUMNNAME_Salt);
+	}
 
 	public I_AD_User getSupervisor() throws RuntimeException
     {
