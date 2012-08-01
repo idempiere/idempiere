@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,8 +37,11 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MCountry;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
+import org.compiere.model.MTable;
 import org.compiere.model.MTree_Base;
+import org.compiere.model.MUser;
 import org.compiere.model.ModelValidationEngine;
 
 
@@ -233,6 +238,7 @@ public class Login
 	private KeyNamePair[] getRoles (String app_user, String app_pwd, boolean force)
 	{
 		log.info("User=" + app_user);
+		
 		long start = System.currentTimeMillis();
 		if (app_user == null)
 		{
@@ -240,7 +246,7 @@ public class Login
 			return null;
 		}
 
-		//	Authentification
+		//	Authentication
 		boolean authenticated = false;
 		MSystem system = MSystem.get(m_ctx);
 		if (system == null)
@@ -251,40 +257,130 @@ public class Login
 			log.warning("No Apps Password");
 			return null;
 		}
+		
 		if (system.isLDAP())
 		{
 			authenticated = system.isLDAP(app_user, app_pwd);
-			if (authenticated)
+			if (authenticated){
 				app_pwd = null;
+				authenticated=true;
+			}
+				
 			// if not authenticated, use AD_User as backup
 		}
 		
+		boolean hash_password=MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
-		//
+		
+		if(hash_password){
+		// adaxa-pb: try to authenticate using hashed password -- falls back to plain text/encrypted
+		  String where = " COALESCE(LDAPUser,Name) = ? AND" +
+				" EXISTS (SELECT * FROM AD_User_Roles ur" +
+				"         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)" +
+				"         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND " +
+				" EXISTS (SELECT * FROM AD_Client c" +
+				"         WHERE c.AD_Client_ID=AD_User.AD_Client_ID" +
+				"         AND c.IsActive='Y') AND " +
+				" AD_User.IsActive='Y'";
+		
+		 MUser user = MTable.get(m_ctx, MUser.Table_ID).createQuery( where, null).setParameters(app_user).firstOnly();   // throws error if username collision occurs
+		
+		 String hash = null;
+		 String salt = null;
+		 int  AD_User_ID = -1;
+		
+		 if (user != null )
+		 {
+	 		hash = user.getPassword();
+	 		salt = user.getSalt();
+	     }
+		
+		 // always do calculation to confuse timing based attacks
+		 if ( user == null )
+			 user = MUser.get(m_ctx, 0);
+		 if ( hash == null )
+		     hash = "0000000000000000";
+		 if ( salt == null )
+			 salt = "0000000000000000";
+		 
+		  if ( user.authenticateHash(app_pwd) )
+		  {
+			  authenticated = true;
+			  AD_User_ID = user.getAD_User_ID();
+			  app_pwd = null;
+		   }
+		 } 
+		 else{
+			 StringBuffer sql = new StringBuffer("SELECT u.AD_User_ID,")
+				.append(" u.ConnectionProfile ")
+				.append(" FROM AD_User u");
+				sql.append(" WHERE COALESCE(u.LDAPUser,u.Name)=?");
+				sql.append(" AND u.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
+				
+				  if (app_pwd != null)
+					 sql.append(" AND ((u.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " 
+					    	+     "OR (u.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))");	//  #2/3
+				  
+				  PreparedStatement pstmt1=null;
+				  ResultSet rs1=null;
+				  
+				  try{
+					  pstmt1 = DB.prepareStatement(sql.toString(), null);
+					  pstmt1.setString(1, app_user);
+					  if (app_pwd != null)
+					  {
+							pstmt1.setString(2, app_pwd);
+							pstmt1.setString(3, SecureEngine.encrypt(app_pwd));
+					 }
+					  rs1 = pstmt1.executeQuery(); 
+					  
+					while(rs1.next()){
+						authenticated=true;
+					}
+			
+				  }catch (Exception ex) {
+					// TODO: handle exception
+					  log.log(Level.SEVERE, sql.toString(), ex);
+						log.saveError("DBLogin", ex);
+						retValue = null;
+				 }
+				 finally
+				 {
+						DB.close(rs1, pstmt1);
+						rs1 = null; pstmt1 = null;
+				}
+		 }
+		 
+	if(authenticated){	
 		StringBuffer sql = new StringBuffer("SELECT u.AD_User_ID, r.AD_Role_ID,r.Name,")
-			.append(" u.ConnectionProfile ")
-			.append("FROM AD_User u")
-			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
-			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ")
-			.append("WHERE COALESCE(u.LDAPUser,u.Name)=?")		//	#1
-			.append(" AND u.IsActive='Y'")
-			.append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
-		if (app_pwd != null)
-			sql.append(" AND ((u.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " 
-					+     "OR (u.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))");	//  #2/3
-		sql.append(" ORDER BY r.Name");
+						.append(" u.ConnectionProfile ")
+						.append("FROM AD_User u")
+						.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
+						.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
+		
+					sql.append("WHERE COALESCE(u.LDAPUser,u.Name)=?");		//	#1
+				
+			      sql.append(" AND u.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
+		
+			 /* if (app_pwd != null && !hash_password)
+				 sql.append(" AND ((u.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " 
+				    	+     "OR (u.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))");	//  #2/3*/
+			
+			  sql.append(" ORDER BY r.Name");
+		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setString(1, app_user);
-			if (app_pwd != null)
+			
+			/*if (app_pwd != null && !hash_password)
 			{
 				pstmt.setString(2, app_pwd);
 				pstmt.setString(3, SecureEngine.encrypt(app_pwd));
-			}
+			}*/
 			//	execute a query
 			rs = pstmt.executeQuery();
 
@@ -313,7 +409,7 @@ public class Login
 			Env.setContext(m_ctx, "#AD_User_Name", app_user);
 			Env.setContext(m_ctx, "#AD_User_ID", rs.getInt(1));
 			Env.setContext(m_ctx, "#SalesRep_ID", rs.getInt(1));
-			//
+
 			if (Ini.isClient())
 			{
 				if (MSystem.isSwingRememberUserAllowed())
@@ -335,7 +431,7 @@ public class Login
 					}
 				}
 			}
-
+           	
 			do	//	read all roles
 			{
 				int AD_Role_ID = rs.getInt(2);
@@ -350,7 +446,9 @@ public class Login
 			retValue = new KeyNamePair[list.size()];
 			list.toArray(retValue);
 			log.fine("User=" + app_user + " - roles #" + retValue.length);
-		}
+          
+            }
+           
 		catch (Exception ex)
 		{
 			log.log(Level.SEVERE, sql.toString(), ex);
@@ -363,6 +461,7 @@ public class Login
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
+	 }
 		long ms = System.currentTimeMillis () - start;
 		return retValue;
 	}	//	getRoles

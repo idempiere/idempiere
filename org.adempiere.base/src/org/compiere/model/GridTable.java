@@ -1443,17 +1443,8 @@ public class GridTable extends AbstractTableModel
 			&& (Env.getAD_User_ID(m_ctx) == USER_SYSTEM || Env.getAD_User_ID(m_ctx) == USER_SUPERUSER)  // user must know what is doing -> just allowed to System or SuperUser (Hardcoded)
 			&& getKeyID(m_rowChanged) == 0) { // the record being changed has ID = 0
 			String tablename = getTableName(); // just the allowed tables (HardCoded)
-			if (tablename.equals("AD_Org") ||
-				tablename.equals("AD_ReportView") ||
-				tablename.equals("AD_Role") ||
-				tablename.equals("AD_System") ||
-				tablename.equals("AD_User") ||
-				tablename.equals("C_DocType") ||
-				tablename.equals("GL_Category") ||
-				tablename.equals("M_AttributeSet") ||
-				tablename.equals("M_AttributeSetInstance")) {
+			if (MTable.isZeroIDTable(tablename))
 				specialZeroUpdate = true;
-			}
 		}
 
 		//	Check Mandatory

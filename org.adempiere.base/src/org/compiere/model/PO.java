@@ -1921,6 +1921,8 @@ public abstract class PO
 				continue;
 			return false;	//	one value is non-zero
 		}
+		if (MTable.isZeroIDTable(get_TableName()))
+			return false;
 		return true;
 	}	//	is_new
 

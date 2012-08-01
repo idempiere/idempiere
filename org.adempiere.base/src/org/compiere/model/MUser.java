@@ -16,6 +16,9 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,6 +36,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Secure;
 import org.compiere.util.SecureEngine;
 
 /**
@@ -50,7 +54,7 @@ public class MUser extends X_AD_User
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5845477151929518375L;
+	private static final long serialVersionUID = -5343496366428193731L;
 
 	/**
 	 * Get active Users of BPartner
@@ -167,44 +171,82 @@ public class MUser extends X_AD_User
 			s_log.warning ("Invalid Name/Password = " + name + "/" + password);
 			return null;
 		}
-		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		
+		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
 		MUser retValue = null;
-		String sql = "SELECT * FROM AD_User "
-			+ "WHERE COALESCE(LDAPUser, Name)=? "  // #1
-			+ " AND ((Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " // #2 
-			+    "OR (Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))" // #3
-			+ " AND IsActive='Y' AND AD_Client_ID=?" // #4
-		;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		if (!hash_password)
 		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setString (1, name);
-			pstmt.setString (2, password);
-			pstmt.setString (3, SecureEngine.encrypt(password));
-			pstmt.setInt(4, AD_Client_ID);
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
+			int AD_Client_ID = Env.getAD_Client_ID(ctx);
+
+
+			String sql = "SELECT * FROM AD_User "
+					+ "WHERE COALESCE(LDAPUser, Name)=? "  // #1
+					+ " AND ((Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " // #2 
+					+    "OR (Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))" // #3
+					+ " AND IsActive='Y' AND AD_Client_ID=?" // #4
+					;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
 			{
-				retValue = new MUser (ctx, rs, null);
-				if (rs.next())
-					s_log.warning ("More then one user with Name/Password = " + name);
+				pstmt = DB.prepareStatement (sql, null);
+				pstmt.setString (1, name);
+				pstmt.setString (2, password);
+				pstmt.setString (3, SecureEngine.encrypt(password));
+				pstmt.setInt(4, AD_Client_ID);
+				rs = pstmt.executeQuery ();
+				if (rs.next ())
+				{
+					retValue = new MUser (ctx, rs, null);
+					if (rs.next())
+						s_log.warning ("More then one user with Name/Password = " + name);
+				}
+				else
+					s_log.fine("No record");
 			}
-			else
-				s_log.fine("No record");
- 		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
+			catch (Exception e)
+			{
+				s_log.log(Level.SEVERE, sql, e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}
+		} else {
+			String where = " COALESCE(LDAPUser,Name) = ? AND" +
+					" EXISTS (SELECT * FROM AD_User_Roles ur" +
+					"         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)" +
+					"         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND " +
+					" EXISTS (SELECT * FROM AD_Client c" +
+					"         WHERE c.AD_Client_ID=AD_User.AD_Client_ID" +
+					"         AND c.IsActive='Y') AND " +
+					" AD_User.IsActive='Y'";
+
+			MUser user = MTable.get(ctx, MUser.Table_ID).createQuery( where, null).setParameters(name).firstOnly();   // throws error if username collision occurs
+
+			String hash = null;
+			String salt = null;
+
+			if (user != null )
+			{
+				hash = user.getPassword();
+				salt = user.getSalt();
+			}
+
+			// always do calculation to confuse timing based attacks
+			if ( user == null )
+				user = MUser.get(ctx, 0);
+			if ( hash == null )
+				hash = "0000000000000000";
+			if ( salt == null )
+				salt = "0000000000000000";
+
+			if ( user.authenticateHash(password) )
+			{
+				retValue=user;
+			}
 		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		return retValue;
+		 return retValue;
 	}	//	get
 	
 	/**
@@ -308,6 +350,8 @@ public class MUser extends X_AD_User
 	private Boolean				m_isAdministrator = null;
 	/** User Access Rights				*/
 	private X_AD_UserBPAccess[]	m_bpAccess = null;
+	/** Password Hashed **/
+	private boolean hashed = false;
 	
 		
 	/**
@@ -375,6 +419,77 @@ public class MUser extends X_AD_User
 		}
 		return sb.toString ();
 	}	//	cleanValue
+	
+	/**
+	 * Convert Password to SHA-512 hash with salt * 1000 iterations https://www.owasp.org/index.php/Hashing_Java
+	 * @param password -- plain text password
+	 */
+	@Override
+	public void setPassword(String password) {		
+		if ( password == null )
+		{
+			super.setPassword(password);
+			return;
+		}
+		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+		
+		if(!hash_password){
+			super.setPassword(password);
+			return;
+		}
+		
+		if ( hashed  )
+			return;
+		
+		hashed = true;   // prevents double call from beforeSave
+		
+		// Uses a secure Random not a simple Random
+		SecureRandom random;
+		try {
+			random = SecureRandom.getInstance("SHA1PRNG");
+			// Salt generation 64 bits long
+			byte[] bSalt = new byte[8];
+			random.nextBytes(bSalt);
+			// Digest computation
+			String hash;
+			hash = SecureEngine.getSHA512Hash(1000,password,bSalt);
+
+	        String sSalt = Secure.convertToHexString(bSalt);
+			super.setPassword(hash);
+			setSalt(sSalt);
+		} catch (NoSuchAlgorithmException e) {
+			super.setPassword(password);
+		} catch (UnsupportedEncodingException e) {
+			super.setPassword(password);
+		}
+	}
+	
+	/**
+	 * check if hashed password matches
+	 */
+	public boolean authenticateHash (String password)  {
+
+		String hash = null;
+		String salt = null;
+
+		hash = getPassword();
+		salt = getSalt();
+
+		// always do calculation to prevent timing based attacks
+		if ( hash == null )
+			hash = "0000000000000000";
+		if ( salt == null )
+			salt = "0000000000000000";
+
+		try {
+			return SecureEngine.getSHA512Hash(1000, password, Secure.convertHexString(salt)).equals(hash);
+		} catch (NoSuchAlgorithmException ignored) {
+			log.log(Level.WARNING, "Password hashing not supported by JVM");
+		} catch (UnsupportedEncodingException ignored) {
+			log.log(Level.WARNING, "Password hashing not supported by JVM");
+		}
+		return false;		
+	}	
 	
 	/**
 	 * 	Get First Name
@@ -801,6 +916,13 @@ public class MUser extends X_AD_User
 			setEMailVerifyDate(null);
 		if (newRecord || super.getValue() == null || is_ValueChanged("Value"))
 			setValue(super.getValue());
+
+		if (newRecord || is_ValueChanged("Password")) {
+			boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+			if (hash_password)
+				setPassword(getPassword());
+		}
+		
 		return true;
 	}	//	beforeSave
 

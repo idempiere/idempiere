@@ -145,4 +145,6 @@ public interface SystemIDs
 	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
+
+	public final static int SYSCONFIG_USER_HASH_PASSWORD = 200013;	
 }

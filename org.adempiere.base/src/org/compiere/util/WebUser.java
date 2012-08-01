@@ -30,6 +30,8 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
 import org.compiere.model.MRefList;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 
 /**
@@ -367,6 +369,7 @@ public class WebUser
 			m_loc = new MLocation (m_ctx, 0, null);
 		//
 		log.info("= " + m_bp + " - " + m_bpc);
+		
 	}	//	load
 
 	/**
@@ -669,8 +672,84 @@ public class WebUser
 	public boolean login (String password)
 	{
 		m_loggedIn = isValid () 			//	we have a contact
-			 && WebUtil.exists (password) 	//	we have a password
-			 && password.equals (getPassword ());
+			 && WebUtil.exists (password); 	//	we have a password
+			 //&& password.equals (getPassword ());
+		boolean retValue = false;
+		if(m_loggedIn)
+		{
+			boolean hash_password=MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);		    
+	    	if(!hash_password)
+		    {
+		      String sql = "SELECT * FROM AD_User "
+			   + "WHERE COALESCE(LDAPUser, Name)=? "  // #1
+			   + " AND ((Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " // #2 
+			   +    "OR (Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))" // #3
+			   + " AND IsActive='Y' " // #4
+		     ;
+		     PreparedStatement pstmt = null;
+		     ResultSet rs = null;
+		     try
+		     {
+		    	 pstmt = DB.prepareStatement (sql, null);
+		    	 pstmt.setString (1, m_bpc.getName());
+			     pstmt.setString (2, password);
+			     pstmt.setString (3, SecureEngine.encrypt(password));
+			     rs = pstmt.executeQuery ();
+			     if (rs.next ())
+			     {
+				    retValue = true;
+				    if (rs.next())
+				       log.warning ("More then one user with Name/Password = " + m_bpc.getName());
+			     }
+			    else
+				     log.fine("No record");
+ 		         }
+		     catch (Exception e)
+		     {
+			    log.log(Level.SEVERE, sql, e);
+		      }
+		     finally
+		     {
+			     DB.close(rs, pstmt);
+			     rs = null; pstmt = null;
+		      }
+		   }
+		   else{
+			  String where = " COALESCE(LDAPUser,Name) = ? AND" +
+					" EXISTS (SELECT * FROM AD_User_Roles ur" +
+					"         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)" +
+					"         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND " +
+					" EXISTS (SELECT * FROM AD_Client c" +
+					"         WHERE c.AD_Client_ID=AD_User.AD_Client_ID" +
+					"         AND c.IsActive='Y') AND " +
+					" AD_User.IsActive='Y'";
+			
+			   MUser user = MTable.get(m_ctx, MUser.Table_ID).createQuery( where, null).setParameters(m_bpc.getName()).firstOnly();   // throws error if username collision occurs
+			
+			   String hash = null;
+			   String salt = null;
+			
+		       if (user != null )
+			   {
+		 		  hash = user.getPassword();
+		 		  salt = user.getSalt();
+		       }
+			
+		    	 // always do calculation to confuse timing based attacks
+			    if ( user == null )
+				    user = MUser.get(null, 0);
+			    if ( hash == null )
+			        hash = "0000000000000000";
+			    if ( salt == null )
+				   salt = "0000000000000000";
+			 
+			   if ( user.authenticateHash(password) )
+			   {
+				   retValue=true;
+			   }
+		 }
+		}
+		m_loggedIn=m_loggedIn && retValue;
 		setPasswordOK (m_loggedIn, password);
 		log.fine("success=" + m_loggedIn);
 		if (m_loggedIn)
