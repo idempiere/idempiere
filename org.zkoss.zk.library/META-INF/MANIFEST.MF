@@ -953,4 +953,3 @@ Export-Package: Lib,
 Bundle-Activator: org.zkoss.zk.library.Activator
 Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: registered
-Service-Component: OSGI-INF/locatorRegistry.xml
