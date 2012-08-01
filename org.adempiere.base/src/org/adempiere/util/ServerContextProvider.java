@@ -17,7 +17,6 @@
 package org.adempiere.util;
 
 import java.util.Properties;
-import net.sf.cglib.proxy.Enhancer;
 
 import org.compiere.util.ContextProvider;
 
@@ -28,8 +27,7 @@ import org.compiere.util.ContextProvider;
  */
 public class ServerContextProvider implements ContextProvider {
 
-	private final static ServerContextCallback callback = new ServerContextCallback();
-	private final static Properties context = (Properties) Enhancer.create(Properties.class, callback);
+	private final static Properties context = new ServerContextPropertiesWrapper();
 
 	public final static ServerContextProvider INSTANCE = new ServerContextProvider();
 
