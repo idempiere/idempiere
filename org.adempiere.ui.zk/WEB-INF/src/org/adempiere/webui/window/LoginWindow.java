@@ -74,9 +74,9 @@ public class LoginWindow extends FWindow implements EventListener
         pnlLogin = new LoginPanel(ctx, this);
     }
 
-    public void loginOk(String userName, String password)
+    public void loginOk(String userName, String password, boolean show)
     {
-        pnlRole = new RolePanel(ctx, this, userName, password);
+        pnlRole = new RolePanel(ctx, this, userName, password, show);
         this.getChildren().clear();
         this.appendChild(pnlRole);
     }

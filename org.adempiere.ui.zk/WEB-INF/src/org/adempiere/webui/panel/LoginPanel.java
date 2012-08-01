@@ -68,7 +68,6 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.fn.ZkFns;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -109,6 +108,7 @@ public class LoginPanel extends Window implements EventListener
     private Combobox lstLanguage;
     private LoginWindow wndLogin;
     private Checkbox chkRememberMe;
+    private Checkbox chkSelectRole;
 
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {
@@ -200,6 +200,17 @@ public class LoginPanel extends Window implements EventListener
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
         	td.appendChild(chkRememberMe);
+        	tr = new Tr();
+            tr.setId("rowSelectRole");
+            table.appendChild(tr);
+            td = new Td();
+        	tr.appendChild(td);
+        	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+        	td.appendChild(new Label(""));
+        	td = new Td();
+        	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+        	tr.appendChild(td);
+        	td.appendChild(chkSelectRole);
     	}
 
     	div = new Div();
@@ -240,6 +251,7 @@ public class LoginPanel extends Window implements EventListener
 							    	txtPassword.setAttribute("user.token.hash", token);
 							    	txtPassword.setAttribute("user.token.sid", AD_Session_ID);
 						    	}
+						    	chkSelectRole.setChecked(false);
 						    }
 						}
 					}
@@ -304,6 +316,8 @@ public class LoginPanel extends Window implements EventListener
 		}
 
         chkRememberMe = new Checkbox(Msg.getMsg(Language.getBaseAD_Language(), "RememberMe"));
+
+        chkSelectRole = new Checkbox(Msg.getMsg(Language.getBaseAD_Language(), "SelectRole"));
 
         // Make the default language the language of client System
         String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
@@ -393,6 +407,8 @@ public class LoginPanel extends Window implements EventListener
     	lblPassword.setValue(res.getString("Password"));
     	lblLanguage.setValue(res.getString("Language"));
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
+    	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
+
     }
 
 	private Language findLanguage(String langName) {
@@ -431,6 +447,8 @@ public class LoginPanel extends Window implements EventListener
         	}
         }
 
+        Env.setContext(ctx, BrowserToken.REMEMBER_ME, chkRememberMe.isChecked());
+
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         
         KeyNamePair rolesKNPairs[] = login.getRoles(userId, userPassword);
@@ -445,9 +463,9 @@ public class LoginPanel extends Window implements EventListener
         	else
         		langName = Language.getBaseLanguage().getName();
         	Language language = findLanguage(langName);
-            wndLogin.loginOk(userId, userPassword);
-
             Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName()); // Elaine 2009/02/06
+
+            wndLogin.loginOk(userId, userPassword, chkSelectRole.isChecked());
 
             Locale locale = language.getLocale();
             currSess.setAttribute(Attributes.PREFERRED_LOCALE, locale);
@@ -469,8 +487,6 @@ public class LoginPanel extends Window implements EventListener
 		// it's harmless, if there is no bug then this must never fail        
         currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
 		// End of temporary code for [ adempiere-ZK Web Client-2832968 ] User context lost?
-
-        Env.setContext(ctx, BrowserToken.REMEMBER_ME, chkRememberMe.isChecked());
 
         /* Check DB version */
         String version = DB.getSQLValueString(null, "SELECT Version FROM AD_System");
