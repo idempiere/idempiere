@@ -18,10 +18,11 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.compiere.model.MClient;
+import org.compiere.model.MPasswordRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.Util;
-
 /**
  *	Reset Password
  *	
@@ -30,10 +31,12 @@ import org.compiere.util.Util;
  */
 public class UserPassword extends SvrProcess
 {
-	private int			p_AD_User_ID = -1;
+	private int		p_AD_User_ID = -1;
 	private String 		p_OldPassword = null;
 	private String 		p_NewPassword = null;
+	private String 		p_NewPasswordConfirm = null;
 	private String		p_NewEMail = null;
+	private String		p_NewEMailConfirm = null;
 	private String		p_NewEMailUser = null;
 	private String		p_NewEMailUserPW = null;
 
@@ -60,6 +63,10 @@ public class UserPassword extends SvrProcess
 				p_NewEMailUser = (String)para[i].getParameter();
 			else if (name.equals("NewEMailUserPW"))
 				p_NewEMailUserPW = (String)para[i].getParameter();
+			else if (name.equals("NewPasswordConfirm"))
+				p_NewPasswordConfirm=(String)para[i].getParameter();
+			else if (name.equals("NewEMailConfirm"))
+				p_NewEMailConfirm = (String)para[i].getParameter();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -77,7 +84,7 @@ public class UserPassword extends SvrProcess
 		MUser user = MUser.get(getCtx(), p_AD_User_ID);
 		MUser operator = MUser.get(getCtx(), getAD_User_ID());
 		log.fine("User=" + user + ", Operator=" + operator);
-
+		
 		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
 		
 		//	Do we need a password ?
@@ -87,15 +94,40 @@ public class UserPassword extends SvrProcess
 					|| p_AD_User_ID == 100		//	change of SuperUser
 					|| !operator.isAdministrator())
 				throw new IllegalArgumentException("@OldPasswordMandatory@");
-		}
-		//	is entered Password correct ?
-		else {
-			if (hash_password){
-				if (!user.authenticateHash(p_OldPassword) )
+		} else {
+			//	is entered Password correct ?
+			if (hash_password) {
+				if (!user.authenticateHash(p_OldPassword))
 					throw new IllegalArgumentException("@OldPasswordNoMatch@");
-			} else{
+			} else {
 				if (!p_OldPassword.equals(user.getPassword()))
 					throw new IllegalArgumentException("@OldPasswordNoMatch@");
+			}
+		}
+		
+		// new password confirm
+		if (!Util.isEmpty(p_NewPassword)) {
+			if (Util.isEmpty(p_NewPasswordConfirm)) {
+				throw new IllegalArgumentException("@NewPasswordConfirmMandatory@");
+			} else {
+				if (!p_NewPassword.equals(p_NewPasswordConfirm)) {
+					throw new IllegalArgumentException("@PasswordNotMatch@");
+				} else {
+					String msg = validate();
+					if (msg != null) {
+						throw new IllegalArgumentException(msg);
+					}
+				}
+			}
+		}
+		
+		if (!Util.isEmpty(p_NewEMailUserPW)) {
+			if (Util.isEmpty(p_NewEMailConfirm)) {
+				throw new IllegalArgumentException("@NewEmailConfirmMandatory@");
+			} else {
+				if (!p_NewEMailUserPW.equals(p_NewEMailConfirm)) {
+					throw new IllegalArgumentException("@NewEmailNotMatch@");
+				}
 			}
 		}
 		
@@ -112,4 +144,21 @@ public class UserPassword extends SvrProcess
 		return "OK";
 	}	//	doIt
 
+	
+	private String validate()
+	{	
+		MClient client=new MClient(getCtx(), getAD_Client_ID(), get_TrxName());
+		int ad_passwordrule_id = client.getAD_PasswordRule_ID();
+
+		String error = null;
+		if (ad_passwordrule_id > 0)
+		{
+			MPasswordRule rule =new MPasswordRule(getCtx(), ad_passwordrule_id, get_TrxName());
+			error = rule.validate(p_NewPassword);
+		}
+
+		return error;		
+	}
+	
 }	//	UserPassword
+

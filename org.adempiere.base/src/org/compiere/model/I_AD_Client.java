@@ -31,7 +31,7 @@ public interface I_AD_Client
     public static final String Table_Name = "AD_Client";
 
     /** AD_Table_ID=112 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 112;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -48,6 +48,15 @@ public interface I_AD_Client
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_Client_UU */
+    public static final String COLUMNNAME_AD_Client_UU = "AD_Client_UU";
+
+	/** Set AD_Client_UU	  */
+	public void setAD_Client_UU (String AD_Client_UU);
+
+	/** Get AD_Client_UU	  */
+	public String getAD_Client_UU();
 
     /** Column name AD_Language */
     public static final String COLUMNNAME_AD_Language = "AD_Language";
@@ -75,6 +84,17 @@ public interface I_AD_Client
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_PasswordRule_ID */
+    public static final String COLUMNNAME_AD_PasswordRule_ID = "AD_PasswordRule_ID";
+
+	/** Set AD_PasswordRule	  */
+	public void setAD_PasswordRule_ID (int AD_PasswordRule_ID);
+
+	/** Get AD_PasswordRule	  */
+	public int getAD_PasswordRule_ID();
+
+	public org.compiere.model.I_AD_PasswordRule getAD_PasswordRule() throws RuntimeException;
+
     /** Column name AD_ReplicationStrategy_ID */
     public static final String COLUMNNAME_AD_ReplicationStrategy_ID = "AD_ReplicationStrategy_ID";
 
@@ -88,7 +108,7 @@ public interface I_AD_Client
 	  */
 	public int getAD_ReplicationStrategy_ID();
 
-	public I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException;
+	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException;
 
     /** Column name AutoArchive */
     public static final String COLUMNNAME_AutoArchive = "AutoArchive";
@@ -170,19 +190,6 @@ public interface I_AD_Client
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name IsCostImmediate */
-    public static final String COLUMNNAME_IsCostImmediate = "IsCostImmediate";
-
-	/** Set Cost Immediately.
-	  * Update Costs immediately for testing
-	  */
-	public void setIsCostImmediate (boolean IsCostImmediate);
-
-	/** Get Cost Immediately.
-	  * Update Costs immediately for testing
-	  */
-	public boolean isCostImmediate();
 
     /** Column name IsMultiLingualDocument */
     public static final String COLUMNNAME_IsMultiLingualDocument = "IsMultiLingualDocument";

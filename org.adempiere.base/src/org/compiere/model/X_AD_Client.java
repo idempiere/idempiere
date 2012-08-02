@@ -30,7 +30,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120802L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -39,8 +39,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
       /** if (AD_Client_ID == 0)
         {
 			setAutoArchive (null);
-// N
-			setIsCostImmediate (false);
 // N
 			setIsMultiLingualDocument (false);
 			setIsPostImmediate (false);
@@ -89,6 +87,20 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
       return sb.toString();
     }
 
+	/** Set AD_Client_UU.
+		@param AD_Client_UU AD_Client_UU	  */
+	public void setAD_Client_UU (String AD_Client_UU)
+	{
+		set_Value (COLUMNNAME_AD_Client_UU, AD_Client_UU);
+	}
+
+	/** Get AD_Client_UU.
+		@return AD_Client_UU	  */
+	public String getAD_Client_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Client_UU);
+	}
+
 	/** AD_Language AD_Reference_ID=327 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=327;
 	/** Set Language.
@@ -109,9 +121,34 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
-	public I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
+	public org.compiere.model.I_AD_PasswordRule getAD_PasswordRule() throws RuntimeException
     {
-		return (I_AD_ReplicationStrategy)MTable.get(getCtx(), I_AD_ReplicationStrategy.Table_Name)
+		return (org.compiere.model.I_AD_PasswordRule)MTable.get(getCtx(), org.compiere.model.I_AD_PasswordRule.Table_Name)
+			.getPO(getAD_PasswordRule_ID(), get_TrxName());	}
+
+	/** Set AD_PasswordRule.
+		@param AD_PasswordRule_ID AD_PasswordRule	  */
+	public void setAD_PasswordRule_ID (int AD_PasswordRule_ID)
+	{
+		if (AD_PasswordRule_ID < 1) 
+			set_Value (COLUMNNAME_AD_PasswordRule_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_PasswordRule_ID, Integer.valueOf(AD_PasswordRule_ID));
+	}
+
+	/** Get AD_PasswordRule.
+		@return AD_PasswordRule	  */
+	public int getAD_PasswordRule_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PasswordRule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_Name)
 			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());	}
 
 	/** Set Replication Strategy.
@@ -214,30 +251,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public String getEMailTest () 
 	{
 		return (String)get_Value(COLUMNNAME_EMailTest);
-	}
-
-	/** Set Cost Immediately.
-		@param IsCostImmediate 
-		Update Costs immediately for testing
-	  */
-	public void setIsCostImmediate (boolean IsCostImmediate)
-	{
-		set_Value (COLUMNNAME_IsCostImmediate, Boolean.valueOf(IsCostImmediate));
-	}
-
-	/** Get Cost Immediately.
-		@return Update Costs immediately for testing
-	  */
-	public boolean isCostImmediate () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsCostImmediate);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	/** Set Multi Lingual Documents.
