@@ -25,6 +25,10 @@
          id="org.eclipse.equinox.server.p2"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.equinox.executable"
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.core.runtime"
          download-size="0"
