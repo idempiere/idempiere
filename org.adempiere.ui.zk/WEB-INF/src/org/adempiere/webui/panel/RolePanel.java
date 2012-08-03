@@ -97,11 +97,14 @@ public class RolePanel extends Window implements EventListener, Deferrable
     /** Password					*/
     private String			m_password;
 
-    public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, String password)    {
+	private boolean m_show = true;
+
+    public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, String password, boolean show)    {
     	this.wndLogin = loginWindow;
     	m_ctx = ctx;
     	m_userName = userName;
     	m_password = password;    	login = new Login(ctx);
+    	m_show = show;
         rolesKNPairs = login.getRoles(userName, password);
         if(rolesKNPairs == null)
             throw new ApplicationException("Login is invalid, UserName: " + userName + " and Password:" + password);
@@ -110,8 +113,12 @@ public class RolePanel extends Window implements EventListener, Deferrable
         init();
         this.setId("rolePanel");
 
-        AuFocus auf = new AuFocus(lstRole);
-        Clients.response(auf);
+        if (m_show) {
+            AuFocus auf = new AuFocus(lstRole);
+            Clients.response(auf);
+        } else {
+        	validateRoles();
+        }
     }
 
     private void init()
@@ -298,8 +305,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
         	if(rolesKNPairs[i].getID().equals(initDefault))
         		lstRole.setSelectedItem(ci);
         }
-        if (lstRole.getSelectedIndex() == -1 && lstRole.getItemCount() > 0)
+        if (lstRole.getSelectedIndex() == -1 && lstRole.getItemCount() > 0) {
+        	m_show = true; // didn't find default role
         	lstRole.setSelectedIndex(0);
+        }
         //
 
 		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
@@ -338,8 +347,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
                     if(clientKNPairs[i].getID().equals(initDefault))
                     	lstClient.setSelectedItem(ci);
                 }
-                if (lstClient.getSelectedIndex() == -1 && lstClient.getItemCount() > 0)
+                if (lstClient.getSelectedIndex() == -1 && lstClient.getItemCount() > 0) {
+                	m_show = true; // didn't find default client
                 	lstClient.setSelectedIndex(0);
+                }
             }
             //
 
@@ -372,8 +383,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
                     	lstOrganisation.setSelectedItem(ci);
 
                 }
-                if (lstOrganisation.getSelectedIndex() == -1 && lstOrganisation.getItemCount() > 0)
+                if (lstOrganisation.getSelectedIndex() == -1 && lstOrganisation.getItemCount() > 0) {
+                	m_show = true; // didn't find default organisation
                 	lstOrganisation.setSelectedIndex(0);
+                }
             }
             //
         }
@@ -401,8 +414,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
                     if(warehouseKNPairs[i].getID().equals(initDefault))
                     	lstWarehouse.setSelectedItem(ci);
                 }
-                if (lstWarehouse.getSelectedIndex() == -1 && lstWarehouse.getItemCount() > 0)
+                if (lstWarehouse.getSelectedIndex() == -1 && lstWarehouse.getItemCount() > 0) {
+                	m_show = true; // didn't find default warehouse
                 	lstWarehouse.setSelectedIndex(0);
+                }
             }
             //
         }

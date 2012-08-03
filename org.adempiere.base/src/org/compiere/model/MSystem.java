@@ -480,7 +480,7 @@ public class MSystem extends X_AD_System
 
 	public static boolean isZKRememberPasswordAllowed() {
 		String ca = MSysConfig.getValue("ZK_LOGIN_ALLOW_REMEMBER_ME", SYSTEM_ALLOW_REMEMBER_USER);
-		return (ca.equalsIgnoreCase(SYSTEM_ALLOW_REMEMBER_PASSWORD));
+		return (ca.equalsIgnoreCase(SYSTEM_ALLOW_REMEMBER_PASSWORD) && !MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false));
 	}
 
 	public static boolean isSwingRememberUserAllowed() {
@@ -490,7 +490,7 @@ public class MSystem extends X_AD_System
 
 	public static boolean isSwingRememberPasswordAllowed() {
 		String ca = MSysConfig.getValue("SWING_LOGIN_ALLOW_REMEMBER_ME", SYSTEM_ALLOW_REMEMBER_PASSWORD);
-		return (ca.equalsIgnoreCase(SYSTEM_ALLOW_REMEMBER_PASSWORD));
+		return (ca.equalsIgnoreCase(SYSTEM_ALLOW_REMEMBER_PASSWORD) && !MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false));
 	}
 
 	/**

@@ -1581,6 +1581,13 @@ public abstract class Doc
 	 */
 	public int getGL_Category_ID()
 	{
+		int index = p_po.get_ColumnIndex("GL_Category_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
 		return m_GL_Category_ID;
 	}	//	getGL_Category_ID
 
