@@ -13,27 +13,35 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
-import org.zkoss.zul.Iframe;
+import org.zkoss.calendar.impl.SimpleCalendarEvent;
 
 /**
- * Dashboard item: Google calendar
+ * 
  * @author Elaine
- * @date November 20, 2008
+ *
  */
-public class DPCalendar extends DashboardPanel {
-
+public class ADCalendarEvent extends SimpleCalendarEvent {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6420016898259232438L;
+	private static final long serialVersionUID = 2289841014956779967L;
+	
+	private int R_Request_ID;
+	private int R_RequestType_ID;
 
-	public DPCalendar()
-	{
-		super();
-		
-		Iframe iframe = new Iframe("http://www.google.com/calendar/embed?showTitle=0&amp;showTabs=0&amp;height=300&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;color=%232952A3");
-		iframe.setWidth("300px");
-		iframe.setHeight("310px");
-        this.appendChild(iframe);
-	}	
+	public int getR_Request_ID() {
+		return R_Request_ID;
+	}
+
+	public void setR_Request_ID(int request_ID) {
+		R_Request_ID = request_ID;
+	}
+	
+	public int getR_RequestType_ID() {
+		return R_RequestType_ID;
+	}
+
+	public void setR_RequestType_ID(int requestType_ID) {
+		R_RequestType_ID = requestType_ID;
+	}
 }

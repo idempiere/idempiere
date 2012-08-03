@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/atmosphere-compat-tomcat-0.9.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/atmosphere-compat-tomcat7-0.9.jar" sourcepath="WEB-INF/lib/src/atmosphere-compat-tomcat7-0.9-sources.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/atmosphere-runtime-0.9.jar" sourcepath="WEB-INF/lib/src/atmosphere-runtime-0.9-sources.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/calendar.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

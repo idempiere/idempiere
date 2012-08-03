@@ -313,7 +313,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     	Events.postEvent(event);
     }
 
-	private void select(Treeitem selectedItem) {
+	public static void select(Treeitem selectedItem) {
 		Treeitem parent = selectedItem.getParentItem();
 		while (parent != null) {
 			if (!parent.isOpen())

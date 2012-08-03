@@ -18,7 +18,8 @@ Bundle-ClassPath: WEB-INF/classes/,
  WEB-INF/lib/atmosphere-runtime-0.9.jar,
  WEB-INF/lib/atmosphere-compat-jbossweb-0.9.jar,
  WEB-INF/lib/atmosphere-compat-tomcat-0.9.jar,
- WEB-INF/lib/atmosphere-compat-tomcat7-0.9.jar
+ WEB-INF/lib/atmosphere-compat-tomcat7-0.9.jar,
+ WEB-INF/lib/calendar.jar
 Export-Package: metainfo.zk,
  org.adempiere.webui,
  org.adempiere.webui.acct,

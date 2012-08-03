@@ -88,6 +88,19 @@ public interface I_R_RequestType
 	  */
 	public String getConfidentialType();
 
+    /** Column name ContentColor */
+    public static final String COLUMNNAME_ContentColor = "ContentColor";
+
+	/** Set Content Color.
+	  * Content color of calendar dashlet
+	  */
+	public void setContentColor (String ContentColor);
+
+	/** Get Content Color.
+	  * Content color of calendar dashlet
+	  */
+	public String getContentColor();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -129,6 +142,19 @@ public interface I_R_RequestType
 	  * Tolerance in days between the Date Next Action and the date the request is regarded as overdue
 	  */
 	public int getDueDateTolerance();
+
+    /** Column name HeaderColor */
+    public static final String COLUMNNAME_HeaderColor = "HeaderColor";
+
+	/** Set Header Color.
+	  * Header color of calendar dashlet
+	  */
+	public void setHeaderColor (String HeaderColor);
+
+	/** Get Header Color.
+	  * Header color of calendar dashlet
+	  */
+	public String getHeaderColor();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -273,6 +299,15 @@ public interface I_R_RequestType
 	  */
 	public int getR_RequestType_ID();
 
+    /** Column name R_RequestType_UU */
+    public static final String COLUMNNAME_R_RequestType_UU = "R_RequestType_UU";
+
+	/** Set R_RequestType_UU	  */
+	public void setR_RequestType_UU (String R_RequestType_UU);
+
+	/** Get R_RequestType_UU	  */
+	public String getR_RequestType_UU();
+
     /** Column name R_StatusCategory_ID */
     public static final String COLUMNNAME_R_StatusCategory_ID = "R_StatusCategory_ID";
 
@@ -286,7 +321,7 @@ public interface I_R_RequestType
 	  */
 	public int getR_StatusCategory_ID();
 
-	public I_R_StatusCategory getR_StatusCategory() throws RuntimeException;
+	public org.compiere.model.I_R_StatusCategory getR_StatusCategory() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

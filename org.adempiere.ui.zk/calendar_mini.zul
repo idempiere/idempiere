@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?component name="divarrow" macro-uri="divarrow.zul"?>
+<zk>
+<style src="calendar.css"/>
+<calendars firstDayOfWeek="Monday" model="${cm}" mold="month" id="cal">
+	<toolbar sclass="calendar-toolbar">
+		<div class="float-left">
+			<hbox>
+				<divarrow id="divArrowLeft" type="arrow-left"/>
+				<divarrow id="divArrowRight" type="arrow-right"/>
+				<div>
+					<button id="btnCurrentDate" mold="os" label="today"/>
+				    <separator orient="vertical" spacing="2px"/>
+					<label id="lblDate"/>
+					<toolbarbutton id="btnRefresh" label="Refresh" class="refresh"/>
+					<toolbarbutton id="btnCal" image="/images/Calendar16.png"/>
+				</div>
+			</hbox>
+		</div>
+	</toolbar>
+</calendars>
+</zk>

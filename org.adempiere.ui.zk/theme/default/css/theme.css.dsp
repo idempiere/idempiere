@@ -551,3 +551,44 @@ img.z-group-img-close {
 .z-textbox-readonly, .z-intbox-readonly, .z-longbox-readonly, .z-doublebox-readonly, .z-decimalbox-readonly {
 	background-color: #F0F0F0;
 }
+
+<%-- menu tree cell --%>
+div.z-tree-body td.menu-tree-cell {
+	cursor: pointer;
+	padding: 0 2px;
+   	font-size: ${fontSizeM};
+   	font-weight: normal;
+   	overflow: visible;
+}
+
+div.menu-tree-cell-cnt {
+	border: 0; margin: 0; padding: 0;
+	font-family: ${fontFamilyC};
+	font-size: ${fontSizeM}; font-weight: normal;
+    white-space:nowrap
+}
+
+td.menu-tree-cell-disd * {
+	color: #C5CACB !important; cursor: default!important;
+}
+
+td.menu-tree-cell-disd a:visited, td.menu-tree-cell-disd a:hover {
+	text-decoration: none !important;
+	cursor: default !important;;
+	border-color: #D0DEF0 !important;
+}
+
+div.z-dottree-body td.menu-tree-cell {
+	cursor: pointer; padding: 0 2px;
+	font-size: ${fontSizeM}; font-weight: normal; overflow: visible;
+}
+
+div.z-filetree-body td.menu-tree-cell {
+	cursor: pointer; padding: 0 2px;
+	font-size: ${fontSizeM}; font-weight: normal; overflow: visible;
+}
+
+div.z-vfiletree-body td.menu-tree-cell {
+	cursor: pointer; padding: 0 2px;
+	font-size: ${fontSizeM}; font-weight: normal; overflow: visible;
+}

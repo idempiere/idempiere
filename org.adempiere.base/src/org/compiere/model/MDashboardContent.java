@@ -20,22 +20,23 @@ public class MDashboardContent extends X_PA_DashboardContent
 	 */
 	private static final long serialVersionUID = 5425307033413466516L;
 
-	public static int getForSessionColumnCount()
+	public static int getForSessionColumnCount(boolean isShowInDashboard)
 	{
-        int noOfCols = getForSessionQuery().aggregate("DISTINCT "+COLUMNNAME_ColumnNo, Query.AGGREGATE_COUNT, Integer.class);
+        int noOfCols = getForSessionQuery(isShowInDashboard).aggregate("DISTINCT "+COLUMNNAME_ColumnNo, Query.AGGREGATE_COUNT, Integer.class);
         return noOfCols;
 	}
 	
-	public static MDashboardContent[] getForSession()
+	public static MDashboardContent[] getForSession(boolean isShowInDashboard)
 	{
-		List<MDashboardContent> list = getForSessionQuery().list();
+		List<MDashboardContent> list = getForSessionQuery(isShowInDashboard).list();
 		return list.toArray(new MDashboardContent[list.size()]);
 	}
 	
-	public static Query getForSessionQuery()
+	public static Query getForSessionQuery(boolean isShowInDashboard)
 	{
 		Properties ctx = Env.getCtx();
-		return new Query(ctx, Table_Name, null, null)
+		return new Query(ctx, Table_Name, COLUMNNAME_IsShowInDashboard+"=?", null)
+		.setParameters(isShowInDashboard)
 		.setOnlyActiveRecords(true)
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);

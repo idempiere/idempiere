@@ -143,7 +143,7 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 				String appendToHome = null;
 				try
 				{
-					for (final MDashboardContent dp : MDashboardContent.getForSession())
+					for (final MDashboardContent dp : MDashboardContent.getForSession(true))
 					{
 						if (!Util.isEmpty(dp.getZulFilePath(), true))
 							continue;

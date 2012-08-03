@@ -28,7 +28,7 @@ import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.HeaderPanel;
-import org.adempiere.webui.panel.SidePanel;
+import org.adempiere.webui.panel.MenuTreePanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
@@ -50,11 +50,11 @@ import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.West;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.West;
 
 /**
  * @author hengsin
@@ -144,9 +144,7 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
         navigationPanel.setWidth("100%");
         navigationPanel.setHeight("100%");
         
-        SidePanel pnlSide = new SidePanel(null);
-        pnlSide.getMenuPanel().addMenuListener(this);
-        navigationPanel.add(pnlSide, "Application Menu");
+        navigationPanel.add(new MenuTreePanel(null), "Application Menu");
 
         Div div = new Div();
         favPanel = (DPFavourites) Executions.createComponents(FAVOURITES_PATH, div, null);
@@ -224,7 +222,7 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 		//register as 0
         registerWindow(homeTab);
         
-		dashboardController.render(homeTab, this);		
+		dashboardController.render(homeTab, this, true);		
 	}
 
     public void onEvent(Event event)
@@ -300,7 +298,7 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 	public void logout() {
 		if (dashboardController != null) {
 			dashboardController.onLogOut();
-		}	
+		}
 	}
 
 	public void updateUI() {

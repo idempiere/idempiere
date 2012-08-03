@@ -13,8 +13,6 @@
  *****************************************************************************/
 package org.adempiere.webui.util;
 
-import java.util.List;
-
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
@@ -77,10 +75,10 @@ public class TreeUtils {
 	 */
 	public static void traverse(Treechildren treechildren, TreeItemAction action)
 	{
-		List<?> list = treechildren.getChildren();
-		for(int index = 0; index < list.size(); index++)
+		Object[] list = treechildren.getChildren().toArray();
+		for(int index = 0; index < list.length; index++)
 		{
-			Object o = list.get(index);
+			Object o = list[index];
 			if(o instanceof Treechildren)
 			{
 				Treechildren treechild = (Treechildren) o;
@@ -91,10 +89,10 @@ public class TreeUtils {
 				Treeitem treeitem = (Treeitem) o;
 				action.run(treeitem);
 	
-				List<?> treeitemChildren = treeitem.getChildren();
-				for(int childIndex = 0; childIndex < treeitemChildren.size(); childIndex++)
+				Object[] treeitemChildren = treeitem.getChildren().toArray();
+				for(int childIndex = 0; childIndex < treeitemChildren.length; childIndex++)
 				{
-					Object child = treeitemChildren.get(childIndex);
+					Object child = treeitemChildren[childIndex];
 					if(child instanceof Treechildren)
 					{
 						Treechildren treechild = (Treechildren) child;

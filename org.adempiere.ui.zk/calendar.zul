@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?component name="divtab" macro-uri="divtab.zul"?>
+<?component name="divarrow" macro-uri="divarrow.zul"?>
+<zk>
+<style src="calendar.css"/>
+<borderlayout id="main">
+<center border="none">
+<calendars firstDayOfWeek="Monday" model="${cm}" mold="month" id="cal">
+	<toolbar sclass="calendar-toolbar">
+		<div class="float-left">
+			<hbox>
+				<divarrow id="divArrowLeft" type="arrow-left"/>
+				<divarrow id="divArrowRight" type="arrow-right"/>
+				<div>
+					<button id="btnCurrentDate" mold="os" label="today"/>
+					<button id="btnSwitchTimeZone" mold="os" label="Switch TimeZone"/>
+					<span id="FDOW">
+						First Day of Week:
+						<listbox id="lbxFDOW" mold="select">
+							<listitem forEach="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday" label="${each}" />
+					    </listbox>
+				    </span>
+					<span>
+						Request Type:
+						<listbox id="lbxRequestTypes" mold="select"/>
+					</span>
+				    <separator orient="vertical"/>
+					<label id="lblDate"/>
+					<toolbarbutton id="btnRefresh" label="Refresh" class="refresh"/>
+				</div>
+			</hbox>
+		</div>
+		<div class="float-right">
+			<hbox>
+				<divtab id="divTabDay" text="Day"/>
+				<divtab id="divTabWeek" text="Week"/>
+				<divtab id="divTabWeekdays" text="5 Days"/>
+				<divtab id="divTabMonth" text="Month"/>
+			</hbox>
+		</div>
+	</toolbar>
+</calendars>
+</center>
+<south open="false" size="300px" flex="true" title="Events Analysis" collapsible="true">
+	<image id="mychart" width="600" height="250"/>
+</south>
+</borderlayout>
+
+<popup id="updateMsg" width="320px">
+	<image src="~./zk/img/progress2.gif"/>
+	<label id="popupLabel"/>
+	<timer id="timer" delay="1000" running="false">
+		<attribute name="onTimer">
+			updateMsg.close();
+		</attribute>
+	</timer>
+</popup>
+</zk>

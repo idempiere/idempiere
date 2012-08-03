@@ -62,6 +62,21 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
 
@@ -75,7 +90,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_Window_ID();
 
-	public I_AD_Window getAD_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name ColumnNo */
     public static final String COLUMNNAME_ColumnNo = "ColumnNo";
@@ -154,6 +169,19 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isActive();
 
+    /** Column name IsCollapsedByDefault */
+    public static final String COLUMNNAME_IsCollapsedByDefault = "IsCollapsedByDefault";
+
+	/** Set Collapsed By Default.
+	  * Flag to set the initial state of collapsible field group.
+	  */
+	public void setIsCollapsedByDefault (boolean IsCollapsedByDefault);
+
+	/** Get Collapsed By Default.
+	  * Flag to set the initial state of collapsible field group.
+	  */
+	public boolean isCollapsedByDefault();
+
     /** Column name IsCollapsible */
     public static final String COLUMNNAME_IsCollapsible = "IsCollapsible";
 
@@ -166,6 +194,32 @@ public interface I_PA_DashboardContent
 	  * Flag to indicate the state of the dashboard panel
 	  */
 	public boolean isCollapsible();
+
+    /** Column name IsEmbedReportContent */
+    public static final String COLUMNNAME_IsEmbedReportContent = "IsEmbedReportContent";
+
+	/** Set Embed Report Content.
+	  * Embed report content into dashboard
+	  */
+	public void setIsEmbedReportContent (boolean IsEmbedReportContent);
+
+	/** Get Embed Report Content.
+	  * Embed report content into dashboard
+	  */
+	public boolean isEmbedReportContent();
+
+    /** Column name IsShowInDashboard */
+    public static final String COLUMNNAME_IsShowInDashboard = "IsShowInDashboard";
+
+	/** Set Show in Dashboard.
+	  * Show the dashlet in the dashboard
+	  */
+	public void setIsShowInDashboard (boolean IsShowInDashboard);
+
+	/** Get Show in Dashboard.
+	  * Show the dashlet in the dashboard
+	  */
+	public boolean isShowInDashboard();
 
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";
@@ -196,11 +250,20 @@ public interface I_PA_DashboardContent
     /** Column name PA_DashboardContent_ID */
     public static final String COLUMNNAME_PA_DashboardContent_ID = "PA_DashboardContent_ID";
 
-	/** Set PA_DashboardContent_ID	  */
+	/** Set Dashboard Content	  */
 	public void setPA_DashboardContent_ID (int PA_DashboardContent_ID);
 
-	/** Get PA_DashboardContent_ID	  */
+	/** Get Dashboard Content	  */
 	public int getPA_DashboardContent_ID();
+
+    /** Column name PA_DashboardContent_UU */
+    public static final String COLUMNNAME_PA_DashboardContent_UU = "PA_DashboardContent_UU";
+
+	/** Set PA_DashboardContent_UU	  */
+	public void setPA_DashboardContent_UU (String PA_DashboardContent_UU);
+
+	/** Get PA_DashboardContent_UU	  */
+	public String getPA_DashboardContent_UU();
 
     /** Column name PA_Goal_ID */
     public static final String COLUMNNAME_PA_Goal_ID = "PA_Goal_ID";
@@ -215,7 +278,20 @@ public interface I_PA_DashboardContent
 	  */
 	public int getPA_Goal_ID();
 
-	public I_PA_Goal getPA_Goal() throws RuntimeException;
+	public org.compiere.model.I_PA_Goal getPA_Goal() throws RuntimeException;
+
+    /** Column name ProcessParameters */
+    public static final String COLUMNNAME_ProcessParameters = "ProcessParameters";
+
+	/** Set Process Parameters.
+	  * Comma separated process parameter list
+	  */
+	public void setProcessParameters (String ProcessParameters);
+
+	/** Get Process Parameters.
+	  * Comma separated process parameter list
+	  */
+	public String getProcessParameters();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

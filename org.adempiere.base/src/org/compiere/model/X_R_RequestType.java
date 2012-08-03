@@ -30,7 +30,7 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120802L;
 
     /** Standard Constructor */
     public X_R_RequestType (Properties ctx, int R_RequestType_ID, String trxName)
@@ -134,6 +134,23 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 		return (String)get_Value(COLUMNNAME_ConfidentialType);
 	}
 
+	/** Set Content Color.
+		@param ContentColor 
+		Content color of calendar dashlet
+	  */
+	public void setContentColor (String ContentColor)
+	{
+		set_Value (COLUMNNAME_ContentColor, ContentColor);
+	}
+
+	/** Get Content Color.
+		@return Content color of calendar dashlet
+	  */
+	public String getContentColor () 
+	{
+		return (String)get_Value(COLUMNNAME_ContentColor);
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -169,6 +186,23 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Header Color.
+		@param HeaderColor 
+		Header color of calendar dashlet
+	  */
+	public void setHeaderColor (String HeaderColor)
+	{
+		set_Value (COLUMNNAME_HeaderColor, HeaderColor);
+	}
+
+	/** Get Header Color.
+		@return Header color of calendar dashlet
+	  */
+	public String getHeaderColor () 
+	{
+		return (String)get_Value(COLUMNNAME_HeaderColor);
 	}
 
 	/** Set Create Change Request.
@@ -411,9 +445,23 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_R_StatusCategory getR_StatusCategory() throws RuntimeException
+	/** Set R_RequestType_UU.
+		@param R_RequestType_UU R_RequestType_UU	  */
+	public void setR_RequestType_UU (String R_RequestType_UU)
+	{
+		set_Value (COLUMNNAME_R_RequestType_UU, R_RequestType_UU);
+	}
+
+	/** Get R_RequestType_UU.
+		@return R_RequestType_UU	  */
+	public String getR_RequestType_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_R_RequestType_UU);
+	}
+
+	public org.compiere.model.I_R_StatusCategory getR_StatusCategory() throws RuntimeException
     {
-		return (I_R_StatusCategory)MTable.get(getCtx(), I_R_StatusCategory.Table_Name)
+		return (org.compiere.model.I_R_StatusCategory)MTable.get(getCtx(), org.compiere.model.I_R_StatusCategory.Table_Name)
 			.getPO(getR_StatusCategory_ID(), get_TrxName());	}
 
 	/** Set Status Category.

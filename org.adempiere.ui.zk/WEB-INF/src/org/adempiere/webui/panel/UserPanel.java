@@ -44,7 +44,7 @@ import org.zkoss.zul.Vbox;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class UserPanel extends Vbox  implements EventListener
+public class UserPanel extends Vbox implements EventListener<Event>
 {
 
 	private static final long serialVersionUID = -45350536628290540L;
@@ -72,13 +72,22 @@ public class UserPanel extends Vbox  implements EventListener
     	this.setWidth("100%");
     	this.setAlign("right");
     	//
+    	
+    	Hbox hbox = new Hbox();
+    	this.appendChild(hbox);
+    	
+    	hbox.appendChild(new MenuSearchPanel(this));
+    	
+    	Vbox vbox = new Vbox();
+    	hbox.appendChild(vbox);
 
     	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName());
     	lblUserNameValue.setStyle("text-align:right");
     	LayoutUtils.addSclass("desktop-header-font", lblUserNameValue);
-    	this.appendChild(lblUserNameValue);
+    	vbox.appendChild(lblUserNameValue);
 
-    	Hbox hbox = new Hbox();
+    	hbox = new Hbox();
+    	vbox.appendChild(hbox);
 
     	preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));
     	preference.addEventListener(Events.ON_CLICK, this);
@@ -105,8 +114,6 @@ public class UserPanel extends Vbox  implements EventListener
     	logout.setStyle("text-align:right");
     	LayoutUtils.addSclass("desktop-header-font", logout);
     	logout.setParent(hbox);
-
-    	this.appendChild(hbox);
     }
 
     private String getUserName()

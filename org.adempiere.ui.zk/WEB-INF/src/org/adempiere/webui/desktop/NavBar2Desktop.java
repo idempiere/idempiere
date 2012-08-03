@@ -27,7 +27,6 @@ import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.HeaderPanel;
-import org.adempiere.webui.panel.SidePanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
@@ -49,9 +48,9 @@ import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.North;
 import org.zkoss.zul.West;
-import org.zkoss.zul.Div;
 
 /**
  * @author hengsin
@@ -82,12 +81,13 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 
 	private Tabpanel homeTab;
 
-	private DashboardController dashboardController;
+	private DashboardController dashboardController, sideController;
 
     public NavBar2Desktop()
     {
     	super();
     	dashboardController = new DashboardController();
+    	sideController = new DashboardController();
     }
 
     protected Component doCreatePart(Component parent)
@@ -115,7 +115,6 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
         w.setWidth("300px");
         w.setCollapsible(true);
         w.setSplittable(true);
-        w.setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Menu")));
         w.setFlex(true);
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {			
 			@Override
@@ -130,8 +129,7 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
         boolean menuCollapsed= pref.isPropertyBool(UserPreference.P_MENU_COLLAPSED);
         w.setOpen(!menuCollapsed);
         
-        SidePanel pnlSide = new SidePanel(w);
-        pnlSide.getMenuPanel().addMenuListener(this);
+        sideController.render(w, this, false);
 
         Center center = new Center();
         center.setParent(layout);
@@ -222,7 +220,7 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 		//register as 0
         registerWindow(homeTab);
         
-		dashboardController.render(homeTab, this);	
+		dashboardController.render(homeTab, this, true);	
 	}
 
     public void onEvent(Event event)
@@ -271,6 +269,9 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 		if (dashboardController != null) {
 			dashboardController.onSetPage(page, layout.getDesktop(), this);
 		}
+		if (sideController != null) {
+			sideController.onSetPage(page, layout.getDesktop(), this);
+		}
 	}
 
 	/**
@@ -284,6 +285,9 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 	public void logout() {
 		if (dashboardController != null) {
 			dashboardController.onLogOut();
+		}
+		if (sideController != null) {
+			sideController.onLogOut();
 		}
 	}
 

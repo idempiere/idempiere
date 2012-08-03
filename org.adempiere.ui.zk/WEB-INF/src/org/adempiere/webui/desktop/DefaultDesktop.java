@@ -29,7 +29,6 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DPActivities;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.panel.HeaderPanel;
-import org.adempiere.webui.panel.SidePanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
@@ -82,17 +81,17 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private Tabpanel homeTab;
 
-	private DashboardController dashboardController;
+	private DashboardController dashboardController, sideController;
 		
     public DefaultDesktop()
     {
     	super();
     	dashboardController = new DashboardController();
+    	sideController = new DashboardController();
     }
 
     protected Component doCreatePart(Component parent)
     {
-    	
     	HeaderPanel pnlHead = new HeaderPanel();
 
         layout = new Borderlayout();
@@ -116,7 +115,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         w.setSclass("desktop-left-column");
         w.setCollapsible(true);
         w.setSplittable(true);
-        w.setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Menu")));
         w.setFlex(false);
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
@@ -131,8 +129,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         boolean menuCollapsed= pref.isPropertyBool(UserPreference.P_MENU_COLLAPSED);
         w.setOpen(!menuCollapsed);
         
-        SidePanel pnlSide = new SidePanel(w);
-        pnlSide.getMenuPanel().addMenuListener(this);
+        sideController.render(w, this, false);
 
         windowArea = new Center();
         windowArea.setParent(layout);
@@ -187,7 +184,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		//register as 0
         registerWindow(homeTab);
         
-		dashboardController.render(homeTab, this);			
+		dashboardController.render(homeTab, this, true);
 		
 		if (AEnv.isTablet()) 
 		{
@@ -240,7 +237,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			
 			if (dashboardController != null) {
 				dashboardController.onSetPage(page, layout.getDesktop(), this);
-			}			
+			}
+			
+			if (sideController != null) {
+				sideController.onSetPage(page, layout.getDesktop(), this);
+			}
 		}
 	}
 
@@ -255,6 +256,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	public void logout() {
 		if (dashboardController != null) {
 			dashboardController.onLogOut();
+		}
+		
+		if (sideController != null) {
+			sideController.onLogOut();
 		}
 	}
 
