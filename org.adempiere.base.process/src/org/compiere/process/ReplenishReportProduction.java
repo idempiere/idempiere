@@ -287,7 +287,7 @@ public class ReplenishReportProduction extends SvrProcess
 		
 		// add production lines
 		sql = "UPDATE T_Replenish t SET "
-			+ "QtyReserved = QtyReserved + COALESCE((SELECT COALESCE(SUM(MovementQty),0) FROM M_ProductionLine p, M_Locator l WHERE t.M_Product_ID=p.M_Product_ID"
+			+ "QtyReserved = QtyReserved - COALESCE((SELECT COALESCE(SUM(MovementQty),0) FROM M_ProductionLine p, M_Locator l WHERE t.M_Product_ID=p.M_Product_ID"
 				+ " AND l.M_Locator_ID=p.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND MovementQty < 0 AND p.Processed = 'N'),0),"
 			+ "QtyOrdered = QtyOrdered + COALESCE((SELECT COALESCE(SUM(MovementQty),0) FROM M_ProductionLine p, M_Locator l WHERE t.M_Product_ID=p.M_Product_ID"
 				+ " AND l.M_Locator_ID=p.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND MovementQty > 0 AND p.Processed = 'N'),0)";
