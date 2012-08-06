@@ -325,6 +325,4 @@ public class MProductionLine extends X_M_ProductionLine {
 		return true;
 	}
 	
-	
-	
 }

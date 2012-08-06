@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
@@ -52,11 +53,12 @@ public class MProduction extends X_M_Production {
 			+ "WHERE pl.M_Production_ID = ?";
 		
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, get_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add( new MProductionLine( getCtx(), rs.getInt(1), get_TrxName() ) );	
 			rs.close();
@@ -65,17 +67,12 @@ public class MProduction extends X_M_Production {
 		}
 		catch (SQLException ex)
 		{
-			m_log.log(Level.SEVERE, sql, ex);
+			throw new AdempiereException("Unable to load production lines", ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		
 		MProductionLine[] retValue = new MProductionLine[list.size()];
 		list.toArray(retValue);
@@ -120,11 +117,12 @@ public class MProduction extends X_M_Production {
 				+ " WHERE M_Product_ID=" + getM_Product_ID() + " ORDER BY Line";
 
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				
 				lineno = lineno + 10;
@@ -244,16 +242,31 @@ public class MProduction extends X_M_Production {
 					if (BOMMovementQty.signum() != 0 ) {
 						if (!mustBeStocked)
 						{
-							BOMLine = new MProductionLine( this );
-							BOMLine.setLine( lineno );
-							BOMLine.setM_Product_ID( BOMProduct_ID );
-							BOMLine.setM_Locator_ID( defaultLocator );  
-							BOMLine.setQtyUsed( BOMMovementQty);
-							BOMLine.setPlannedQty( BOMMovementQty);
-							BOMLine.save(get_TrxName());
-		
-							lineno = lineno + 10;
-							count++;
+							
+							// roll up costing attributes if in the same locator
+							if ( previousAttribSet == 0
+									&& prevLoc == defaultLocator) {
+								BOMLine.setQtyUsed(BOMLine.getQtyUsed()
+										.add(BOMMovementQty));
+								BOMLine.setPlannedQty(BOMLine.getQtyUsed());
+								BOMLine.save(get_TrxName());
+								
+							}
+							// otherwise create new line
+							else {
+								
+								BOMLine = new MProductionLine( this );
+								BOMLine.setLine( lineno );
+								BOMLine.setM_Product_ID( BOMProduct_ID );
+								BOMLine.setM_Locator_ID( defaultLocator );  
+								BOMLine.setQtyUsed( BOMMovementQty);
+								BOMLine.setPlannedQty( BOMMovementQty);
+								BOMLine.save(get_TrxName());
+			
+								lineno = lineno + 10;
+								count++;
+							}
+							
 						}
 						else
 						{
@@ -263,7 +276,10 @@ public class MProduction extends X_M_Production {
 				}
 			} // for all bom products
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "createLines", e);
+			throw new AdempiereException("Failed to create production lines", e);
+		}
+		finally {
+			DB.close(rs, pstmt);
 		}
 
 		return count;
