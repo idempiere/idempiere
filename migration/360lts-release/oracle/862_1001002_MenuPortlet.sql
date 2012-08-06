@@ -357,3 +357,10 @@ INSERT INTO PA_DashboardContent (Line,PA_DashboardContent_ID,ZulFilePath,ColumnN
 -- Move the Menu to be a Portlet
 INSERT INTO PA_DashboardContent_Trl (AD_Language,PA_DashboardContent_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy ) SELECT l.AD_Language,t.PA_DashboardContent_ID, t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, PA_DashboardContent t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.PA_DashboardContent_ID=1000006 AND NOT EXISTS (SELECT * FROM PA_DashboardContent_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.PA_DashboardContent_ID=t.PA_DashboardContent_ID)
 ;
+
+UPDATE AD_System
+  SET LastMigrationScriptApplied='862_1001002_MenuPortlet.sql'
+WHERE LastMigrationScriptApplied<'862_1001002_MenuPortlet.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
+
