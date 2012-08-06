@@ -1,3 +1,19 @@
+/******************************************************************************
+ * Product: Adempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ * For the text or an alternative of this public license, you may reach us    *
+ * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
+ * or via info@compiere.org or http://www.compiere.org/license.html           *
+ *****************************************************************************/
 package org.compiere.apps.form;
 
 import java.awt.BorderLayout;
@@ -5,22 +21,14 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-//import java.awt.PopupMenu;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.VetoableChangeListener;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -32,15 +40,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 
 import org.adempiere.plaf.AdempierePLAF;
@@ -50,14 +53,12 @@ import org.compiere.apps.StatusBar;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
 import org.compiere.grid.ed.VLookup;
-//import org.compiere.grid.ed.VLookup.VLookup_mouseAdapter;
 import org.compiere.minigrid.MiniTable;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductBOM;
-import org.compiere.model.MTreeNode;
 import org.compiere.model.MUOM;
 import org.compiere.model.Query;
 import org.compiere.swing.CCheckBox;
@@ -71,7 +72,6 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
-import org.compiere.util.ValueNamePair;
 
 /**
  * BOM Tree Maintenance
@@ -85,11 +85,16 @@ import org.compiere.util.ValueNamePair;
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * @author Paul Bowden, adaxa modified for manufacturing light
+ * @author Tony Snook, enhancements search, right-click bom, where-used
+ *
  */
-public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
-		ListSelectionListener, PropertyChangeListener, VetoableChangeListener,
-		TreeSelectionListener, TableModelListener
+public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeSelectionListener
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4045195906352692040L;
 
 	/*****************************************************************************
 	 *	Mouse Listener for Popup Menu
@@ -103,7 +108,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		VTreeBOM_mouseAdapter(VTreeBOM adaptee)
 		{
 			m_adaptee = adaptee;
-		}	//	VLookup_mouseAdapter
+		}
 
 		private VTreeBOM m_adaptee;
 
@@ -113,7 +118,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		 */
 		public void mouseClicked(MouseEvent e)
 		{
-		//	System.out.println("mouseClicked " + e.getID() + " " + e.getSource().getClass().toString());
 			//	popup menu
 			if (SwingUtilities.isRightMouseButton(e))
 				m_adaptee.popupMenu.show((Component)e.getSource(), e.getX(), e.getY());
@@ -123,7 +127,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		}	//	mouse Clicked
 
 	}	//	VTreeBOM_mouseAdapter
-	
 
 	/**
 	 *  Key Pressed
@@ -150,18 +153,12 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 			if (e.getKeyCode() == KeyEvent.VK_ENTER)
 				m_adaptee.keyPressed(e);
 		}
-	}   //  VTreePanel_keyAdapter
-
+	}   //  VTreeBOM_keyAdapter
 	
-	
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 *	Tree Maintenance 
 	 */
-	//public VTreeBOM ()
-//	{
-//	}	//	VTreeMaintenance
 
 	/**	Window No				*/
 	private int         	m_WindowNo = 0;
@@ -175,15 +172,13 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 	private BorderLayout	mainLayout	= new BorderLayout ();
 	private CPanel 			northPanel	= new CPanel ();
 
-	private FlowLayout		northLayout	= new FlowLayout ();
-	//private BorderLayout		northLayout	= new BorderLayout ();
+	private FlowLayout		northLayout	= new FlowLayout (FlowLayout.RIGHT,20,5);
 	private CPanel			southPanel = new CPanel();
 	private CPanel			southPanel2 = new CPanel ();
 	private BorderLayout 	southLayout = new BorderLayout();
 	private FlowLayout	southLayout2 = new FlowLayout ();
 	
 	private CLabel			labelProduct	= new CLabel ();
-//	private PopupMenu popMenuTree = new PopupMenu();
 	private VLookup fieldProduct;
 	private CCheckBox		implosion	= new CCheckBox ();
 	private CLabel			treeInfo	= new CLabel ();
@@ -192,21 +187,15 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 	private JSplitPane		splitPane	= new JSplitPane ();
 	private JScrollPane dataPane = new JScrollPane();
 	private JScrollPane treePane = new JScrollPane();
-//	private CPanel southPanel = new CPanel();
-//	private BorderLayout southLayout = new BorderLayout();
-	private DefaultTreeSelectionModel treeSelect = new DefaultTreeSelectionModel();
 	private CCheckBox treeExpand = new CCheckBox();
 	private CTextField treeSearch = new CTextField(10);
 	private CLabel treeSearchLabel = new CLabel();
 	private String      m_search = "";
 	private Enumeration<?> m_nodeEn;
-	private Enumeration<?> m_childEn;
 	private DefaultMutableTreeNode   m_selectedNode;	//	the selected model node
 	private int   m_selected_id = 0;
 	private MouseListener mouseListener = new VTreeBOM_mouseAdapter(this);
 	private KeyListener keyListener = new VTreeBOM_keyAdapter(this);
-	/**	Property Listener NodeSelected	by Left Click		*/
-	public static final String NODE_SELECTION = "NodeSelected";
 	private DefaultMutableTreeNode  	m_root = null;
 	
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
@@ -239,7 +228,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 	{
 		m_WindowNo = WindowNo;
 		m_frame = frame;
-		log.info( "VMerge.init - WinNo=" + m_WindowNo);
+		log.info( "VTreeBOM.init - WinNo=" + m_WindowNo);
 		try
 		{
 			preInit();
@@ -254,7 +243,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 	}	//	init
 
 	/**
-	 * 	Fill Tree Combo
+	 * 	preInit() - Fill Tree Combo
 	 */
 	private void preInit() throws Exception
 	{
@@ -266,7 +255,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 			private static final long serialVersionUID = 1L;
 			public void setValue(Object value) {
 				super.setValue(value);
-				action_loadBOM();
 			}
 		};
 		
@@ -276,56 +264,39 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 	}	//	preInit
 
 	/**
-	 *  Static Init.
-	 *  <pre>
-	 *  mainPanel
-	 *      northPanel
-	 *      centerPanel
-	 *          xMatched
-	 *          xPanel
-	 *          xMathedTo
-	 *      southPanel
-	 *  </pre>
-	 *  @throws Exception
+	 *  loadTableBOM
+	 * 
+	 * 
 	 */
 	private void loadTableBOM()
 	{
 		//  Header Info
-		columnNames = new Vector<String>(18);
+		columnNames = new Vector<String>(10);
 
-		columnNames.add(Msg.translate(getCtx(), "Select"));	        // 0		
-		columnNames.add(Msg.translate(getCtx(), "IsActive"));       // 1
-		columnNames.add(Msg.translate(getCtx(), "Line"));           // 2
-		columnNames.add(Msg.translate(getCtx(), "M_Product_ID"));   // 3
-		columnNames.add(Msg.translate(getCtx(), "C_UOM_ID"));       // 4
-		columnNames.add(Msg.translate(getCtx(), "QtyBOM"));   		// 5
+		columnNames.add(Msg.getElement(getCtx(), "IsActive"));       // 0
+		columnNames.add(Msg.getElement(getCtx(), "Line"));           // 1
+		columnNames.add(Msg.getElement(getCtx(), "M_Product_ID"));   // 2
+		columnNames.add(Msg.getElement(getCtx(), "C_UOM_ID"));       // 3
+		columnNames.add(Msg.getElement(getCtx(), "QtyBOM"));   		 // 4
 
-		//  Remove previous listeners
-		tableBOM.getModel().removeTableModelListener(this);
-		//  Remove previous listeners
-		tableBOM.getModel().removeTableModelListener(this);
-		//  Set Model
 		DefaultTableModel model = new DefaultTableModel(dataBOM, columnNames);
-		model.addTableModelListener(this);
 		tableBOM.setModel(model);
 
-		tableBOM.setColumnClass( 0, Boolean.class, false);     //  0 Select
-		tableBOM.setColumnClass( 1, Boolean.class, false);     //  1 IsActive
-		tableBOM.setColumnClass( 2, Integer.class,false);      //  2 Line
-		tableBOM.setColumnClass( 3, KeyNamePair.class,false);  //  3 M_Product_ID
-		tableBOM.setColumnClass( 4, KeyNamePair.class,false);  //  4 C_UOM_ID
-		tableBOM.setColumnClass( 5, BigDecimal.class,false);   //  5 QtyBOM
+		tableBOM.setColumnClass( 0, Boolean.class, true);    //  0 IsActive
+		tableBOM.setColumnClass( 1, String.class,true);      //  1 Line (as string)
+		tableBOM.setColumnClass( 2, KeyNamePair.class,true); //  2 M_Product_ID
+		tableBOM.setColumnClass( 3, KeyNamePair.class,true); //  3 C_UOM_ID
+		tableBOM.setColumnClass( 4, BigDecimal.class,true);  //  4 QtyBOM
 
 		tableBOM.setMultiSelection(false);
-		tableBOM.setColumnVisibility(tableBOM.getColumn(0),false);
 		tableBOM.autoSize();
 
-	}   //  dynInit
+	}   //  loadTableBOM
 
 
 	/**
-	 * 	Static init
-	 *	@throws Exception
+	 * 	jbInit
+	 *	
 	 */
 	private void jbInit () 
 	{
@@ -336,8 +307,8 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 
 		labelProduct.setText (Msg.getElement(getCtx(), "M_Product_ID"));
 		implosion.setText (Msg.getElement(getCtx(), "Implosion"));
-		treeInfo.setText ("    ");
-		spacer.setText ("    ");
+		treeInfo.setText ("Selected Product: ");
+		spacer.setText("     ");
 		northPanel.setLayout (northLayout);
 		northLayout.setAlignment (FlowLayout.LEFT);
 
@@ -375,8 +346,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		southPanel2.add(spacer, null);
 		southPanel2.add(treeSearchLabel, null);//BorderLayout.WEST);
 		southPanel2.add(treeSearch, null);//BorderLayout.CENTER);
-
-
 				
 		this.add (splitPane, BorderLayout.CENTER);
 
@@ -391,8 +360,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		mImplosion.addActionListener(this);
 		popupMenu.add(mImplosion);
 
-
-
 	}	//	jbInit
 
 	/**
@@ -401,23 +368,8 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 	 */
 	protected void keyPressed(KeyEvent e)
 	{
-
-		//  *** Tree ***
-		if (e.getSource() instanceof myJTree
-			|| (e.getSource() == treeSearch && e.getModifiers() != 0))	//	InputEvent.CTRL_MASK
-		{
-			TreePath tp = m_tree.getSelectionPath();
-			if (tp == null)
-				ADialog.beep();
-			else
-			{
-				DefaultMutableTreeNode tn = (DefaultMutableTreeNode)m_tree.getLastSelectedPathComponent();
-				setSelectedNode(tn);
-			}
-		}
-
 		//  *** treeSearch ***
-		else if (e.getSource() == treeSearch)
+		if (e.getSource() == treeSearch)
 		{
 			String search = treeSearch.getText();
 			boolean found = false;
@@ -439,7 +391,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 			{
 				DefaultMutableTreeNode nd = (DefaultMutableTreeNode)m_nodeEn.nextElement();
 				Vector <?> nodeInfo = (Vector <?>)(nd.getUserObject());
-				String uoName = ((KeyNamePair)nodeInfo.elementAt(3)).getName() ;
+				String uoName = ((KeyNamePair)nodeInfo.elementAt(2)).getName() ;
 				//	compare in upper case
 				if (uoName.toUpperCase().indexOf(search.toUpperCase()) != -1)
 				{
@@ -456,21 +408,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 
 	}   //  keyPressed
 
-
-	/**
-	 *  Set the selected node & initiate all listeners
-	 *  @param nd node
-	 */
-	private void setSelectedNode (DefaultMutableTreeNode nd)
-	{
-		log.config("Node = " + nd);
-		m_selectedNode = nd;
-		//
-		firePropertyChange(NODE_SELECTION, null, nd);
-	}   //  setSelectedNode
-
-	
-
 	/**
 	 * 	Dispose
 	 */
@@ -480,22 +417,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 			m_frame.dispose();
 		m_frame = null;
 	}	//	dispose
-
-	public void vetoableChange (PropertyChangeEvent e)
-	{
-		String name = e.getPropertyName();
-		Object value = e.getNewValue();
-		log.info( "VAllocation.vetoableChange - " + name + "=" + value);
-		if (value == null)
-			return;
-
-		//  BPartner
-		if (name.equals("M_Product_ID"))
-		{
-			if (fieldProduct != null)
-				action_loadBOM();	
-		}		
-	}   //  vetoableChange
 
 	/**
 	 * 	Action Listener
@@ -508,23 +429,21 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 			fieldProduct.setValue(m_selected_id);
 			if (implosion.isSelected())
 				implosion.doClick();
+			action_loadBOM();
 		} 
 		if (e.getSource() == mImplosion)
 		{
 			fieldProduct.setValue(m_selected_id);
 			if (!implosion.isSelected())
 				implosion.doClick();
+			action_loadBOM();
 		}
 
-		if (e.getSource() == implosion) 
-		{
-			action_loadBOM();
-		}
 		if (e.getActionCommand().equals(ConfirmPanel.A_OK))
 		{
-			action_loadBOM();
+			if(m_selected_id > 0 || getM_Product_ID() > 0) action_loadBOM();
 		}
-		// 4Layers - Close window when cancel is pressed
+
 		if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL)) 
 		{
 			dispose();
@@ -534,7 +453,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 			if (e.getActionCommand().equals("Expand"))
 				expandTree();
 		}
-		// 4Layers - End
+
 	}	//	actionPerformed
 
 	/**
@@ -542,7 +461,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 	 */
 	private void action_loadBOM()
 	{
-		//m_frame.setBusy(true);
 		m_frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		
 		reload = false;
@@ -551,24 +469,20 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		if (M_Product_ID == 0)
 			return;
 		MProduct M_Product = MProduct.get(getCtx(), M_Product_ID);
-		treeInfo.setText ("    Current Selection: "+M_Product.getValue());
-
+		treeInfo.setText ("Selected Product: "+M_Product.getValue());
 		
-		Vector<Object> line = new Vector<Object>(17);
-		line.add( new Boolean(false));  //  0 Select
-		line.add( new Boolean(M_Product.isActive()));   //  1 IsActive
-		line.add( new Integer(0)); // 2 Line
+		Vector<Object> line = new Vector<Object>(10);
+		line.add( new Boolean(M_Product.isActive()));   //  0 IsActive
+		line.add( new Integer(0).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
-		line.add(pp); //  3 M_Product_ID
+		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
-		KeyNamePair uom = new KeyNamePair(M_Product.getC_UOM_ID(),u.getUOMSymbol());
-		line.add(uom); //  4 C_UOM_ID
-		line.add(Env.ONE);  //  5 QtyBOM
-		
+		KeyNamePair uom = new KeyNamePair(u.get_ID(), u.getUOMSymbol());
+		line.add(uom); //  3 C_UOM_ID
+		line.add(Env.ONE);  //  4 QtyBOM
 		
 		DefaultMutableTreeNode parent = new DefaultMutableTreeNode(line);
 		m_root = (DefaultMutableTreeNode)parent.getRoot();
-
 		dataBOM.clear();
 
 		if (isImplosion())
@@ -578,7 +492,6 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 				addParent(bomline, parent);
 			}     
 			m_tree = new myJTree(parent);
-
 			m_tree.addMouseListener(mouseListener);
 		}
 		else
@@ -591,78 +504,28 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 			m_tree.addMouseListener(mouseListener);
 		}
 
-/*		MouseListener ml = new MouseAdapter() {
-		     public void mousePressed(MouseEvent e) {
-		         int selRow = m_tree.getRowForLocation(e.getX(), e.getY());
-		         TreePath selPath = m_tree.getPathForLocation(e.getX(), e.getY());
-		         if(selRow != -1) {
-		             if(e.getClickCount() == 1) {
-		                 mySingleClick(selRow, selPath);
-		             }
-//		             else if(e.getClickCount() == 2) {
-//		                 myDoubleClick(selRow, selPath);
-//		             }
-		         }
-		     }
-
-			private void mySingleClick(int selRow, TreePath selPath) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-		m_tree.addMouseListener(ml);
-*/
-
 		m_tree.addTreeSelectionListener(this);
-		
 		treePane.getViewport().add (m_tree, null);
-
 		loadTableBOM();
+
 		dataPane.getViewport().add(tableBOM, null);
-		// 4Layers - Set divider location
 		splitPane.setDividerLocation(DIVIDER_LOCATION);
-		// 4Layers - end
-		
-		//	Popup
-//		if (m_selected_id != 0)
-//		{
-//		}
 
-
-		//m_frame.setBusy(false);
 		m_frame.setCursor(Cursor.getDefaultCursor());
-	}	//	action_fillTree
+	}	//	action_loadBOM
 
 	private void action_reloadBOM()
 	{
-		//m_frame.setBusy(true);
 		m_frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		
 		reload = true;
-
-		//int M_Product_ID = getM_Product_ID();
 		int M_Product_ID = m_selected_id;
 
 		if (M_Product_ID == 0)
 			return;
 		MProduct M_Product = MProduct.get(getCtx(), M_Product_ID);
-		treeInfo.setText ("    Current Selection: "+M_Product.getValue());
+		treeInfo.setText ("Selected Product: "+M_Product.getValue());
 
-		
-		Vector<Object> line = new Vector<Object>(17);
-		line.add( new Boolean(false));  //  0 Select
-		line.add( new Boolean(M_Product.isActive()));   //  1 IsActive
-		line.add( new Integer(0)); // 2 Line
-		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
-		line.add(pp); //  3 M_Product_ID
-		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
-		KeyNamePair uom = new KeyNamePair(M_Product.getC_UOM_ID(),u.getUOMSymbol());
-		line.add(uom); //  4 C_UOM_ID
-		line.add(Env.ONE);  //  5 QtyBOM
-
-		
-		DefaultMutableTreeNode parent = new DefaultMutableTreeNode(line);
-
+		DefaultMutableTreeNode parent = new DefaultMutableTreeNode(productSummary(M_Product, false));
 		dataBOM.clear();
 
 		if (isImplosion())
@@ -671,53 +534,35 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 			{
 				addParent(bomline, parent);
 			}     
-			//m_tree = new myJTree(parent);
+
 		}
 		else
 		{
-/*			m_childEn = m_selectedNode.children();
-			Vector<Object> line = new Vector<Object>(17);
-			while (m_childEn != null && m_childEn.hasMoreElements())
-			{
-				DefaultMutableTreeNode nd = (DefaultMutableTreeNode)m_childEn.nextElement();
-				//String[] uo = (String[])nd.getUserObject();
-				line.add(nd.getUserObject());
-				dataBOM.add( line);
-			}
-*/			
 			for (MProductBOM bom : getChildBOMs(M_Product_ID, true))
 			{
 				addChild(bom, parent);                    
 			}      
-			//m_tree = new myJTree(parent);
 		}
-
-		//m_tree.addTreeSelectionListener(this);
-
-		//treePane.getViewport().add (m_tree, null);
 
 		loadTableBOM();
 
-		//m_frame.setBusy(false);
 		m_frame.setCursor(Cursor.getDefaultCursor());
-	}	//	action_fillTree
+	}	//	action_reloadBOM
 
 	public void addChild(MProductBOM bomline, DefaultMutableTreeNode parent) 
 	{
 
-		//System.out.println("-------------------------Parent:" + bom.getName());
 		MProduct M_Product = MProduct.get(getCtx(), bomline.getM_ProductBOM_ID());
 
-		Vector<Object> line = new Vector<Object>(17);
-		line.add( new Boolean(false));  //  0 Select
-		line.add( new Boolean(bomline.isActive()));   //  1 IsActive
-		line.add( new Integer(bomline.getLine())); // 2 Line
+		Vector<Object> line = new Vector<Object>(10);
+		line.add( new Boolean(bomline.isActive()));   //  0 IsActive
+		line.add( new Integer(bomline.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
-		line.add(pp); //  3 M_Product_ID
+		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
-		KeyNamePair uom = new KeyNamePair(M_Product.getC_UOM_ID(),u.getUOMSymbol());
-		line.add(uom); //  4 C_UOM_ID
-		line.add((BigDecimal) ((bomline.getBOMQty()!=null) ? bomline.getBOMQty() : new BigDecimal(0)));  //  5 QtyBOM
+		KeyNamePair uom = new KeyNamePair(u.get_ID(), u.getUOMSymbol());
+		line.add(uom); //  3 C_UOM_ID
+		line.add((BigDecimal) ((bomline.getBOMQty()!=null) ? bomline.getBOMQty() : new BigDecimal(0)));  //  4 QtyBOM
 
 		DefaultMutableTreeNode child = new DefaultMutableTreeNode(line);
 		parent.add(child);
@@ -737,18 +582,18 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 	{
 		MProduct M_Product = MProduct.get(getCtx(), bom.getM_Product_ID());
 
-		Vector<Object> line = new Vector<Object>(17);
-		line.add( new Boolean(false));  //  0 Select
-		line.add( new Boolean(M_Product.isActive()));   //  1 IsActive
-		line.add( new Integer(bom.getLine())); // 2 Line
+		Vector<Object> line = new Vector<Object>(10);
+		line.add( new Boolean(M_Product.isActive()));   //  0 IsActive
+		line.add( new Integer(bom.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
-		line.add(pp); //  3 M_Product_ID
+		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
-		KeyNamePair uom = new KeyNamePair(M_Product.getC_UOM_ID(),u.getUOMSymbol());
-		line.add(uom); //  6 C_UOM_ID
-		line.add((BigDecimal) ((bom.getBOMQty()!=null) ? bom.getBOMQty() : new BigDecimal(0)));  //  9 QtyBOM
+		KeyNamePair uom = new KeyNamePair(u.get_ID(),u.getUOMSymbol());
+		line.add(uom); //  3 C_UOM_ID
+		line.add((BigDecimal) ((bom.getBOMQty()!=null) ? bom.getBOMQty() : new BigDecimal(0)));  //  4 QtyBOM
 		
-		dataBOM.add(line);
+		if(m_selected_id == bom.getM_ProductBOM_ID() || getM_Product_ID() == bom.getM_ProductBOM_ID())
+			dataBOM.add(line);
 
 		DefaultMutableTreeNode child = new DefaultMutableTreeNode(line); 
 		parent.add(child);
@@ -759,10 +604,8 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		{
 			addParent(bomline, child);
 		}
-		//dataBOM.add(line);
+
 	}
-
-
 
 	public void valueChanged(TreeSelectionEvent event) 
 	{
@@ -773,21 +616,11 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
         
        	Vector <?> nodeInfo = (Vector <?>)(m_selectedNode.getUserObject());
         
-        m_selected_id =  ((KeyNamePair)nodeInfo.elementAt(3)).getKey() ;
+        m_selected_id =  ((KeyNamePair)nodeInfo.elementAt(2)).getKey() ;
     
 		action_reloadBOM();
 		 
 	}
-
-	/**
-	 * 	List Selection Listener
-	 *	@param e event
-	 */
-	public void valueChanged (ListSelectionEvent e)
-	{
-		if (e.getValueIsAdjusting())
-			return;
-	}	//	valueChanged
 
 	/**
 	 *  Clicked on Expand All
@@ -807,69 +640,19 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		}
 	}   //  expandTree
 
-	
-	/**
-	 * 	VTreePanel Changed
-	 *	@param e event
-	 */
-	public void propertyChange (PropertyChangeEvent e)
-	{
-	}	//	propertyChange
-
-	public void tableChanged(TableModelEvent e) {
-	}        
-
-
-	//	action_treeDeleteAll
-
-	/**************************************************************************
-	 * 	Tree Maintenance List Item
-	 */
-	class ListItem
-	{
-		public ListItem (int id, String name, String description, boolean isSummary, String imageIndicator)
-		{
-			this.id = id;
-			this.name = name;
-			this.description = description;
-			this.isSummary = isSummary;
-			this.imageIndicator = imageIndicator;
-		}	//	ListItem
-
-		public int id;
-		public String name;
-		public String description;
-		public boolean isSummary;
-		public String imageIndicator;  //  Menu - Action
-
-		/**
-		 * 	To String
-		 *	@return	String Representation
-		 */
-		public String toString ()
-		{
-			String retValue = name;
-			if (description != null && description.length() > 0)
-				retValue += " (" + description + ")";
-			return retValue;
-		}	//	toString
-
-	}	//	ListItem
-	
-/*	private String[] productSummary(MProduct product, boolean isLeaf) {
-		MUOM muom = MUOM.get(getCtx(), product.getC_UOM_ID());
+	public String productSummary(MProduct product, boolean isLeaf) {
+		MUOM uom = MUOM.get(getCtx(), product.getC_UOM_ID());
 		String value = product.getValue();
 		String name = product.get_Translation(MProduct.COLUMNNAME_Name);
-		String uom = new StringBuffer(" [")
-					.append(muom.get_Translation(MUOM.COLUMNNAME_UOMSymbol)).append("]").toString();
 		//
-		if (value != null && value.equals(name))
-			name = null;
-		String[] treeObject = {value,name,uom};
+		StringBuffer sb = new StringBuffer(value);
+		if (name != null && !value.equals(name))
+			sb.append("_").append(product.getName());
+		sb.append(" [").append(uom.get_Translation(MUOM.COLUMNNAME_UOMSymbol)).append("]");
 		//
-		return treeObject;
+		return sb.toString();
 	}
-*/	
+
 	private boolean isImplosion() {
 		return implosion.isSelected();
 	}
@@ -887,6 +670,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 						+(onlyActiveRecords ? " AND IsActive='Y'" : "");
 		return new Query(getCtx(), MProductBOM.Table_Name, filter, null)
 					.setParameters(new Object[]{M_Product_ID})
+					.setOrderBy(MProductBOM.COLUMNNAME_Line)
 					.list();
 	}
 	
@@ -895,13 +679,14 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener,
 		String filter = MProductBOM.COLUMNNAME_M_ProductBOM_ID+"=?";
 		return new Query(getCtx(), MProductBOM.Table_Name, filter, null)
 						.setParameters(new Object[]{M_Product_ID})
+						.setOrderBy(MProductBOM.COLUMNNAME_M_Product_ID+","+MProductBOM.COLUMNNAME_Line)
 						.list();
 	}
-}	//	VTreeMaintenance
+}	//	VTreeBOM
 
 
 /**************************************************************************
- * 	Tree convertValueToText
+ * 	myJTree - extends convertValueToText method of JTree
  */
 class myJTree extends JTree
 {
@@ -909,14 +694,12 @@ class myJTree extends JTree
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6313465838547930491L;
+	private static final long serialVersionUID = -5831338565562378100L;
 
 	public myJTree(DefaultMutableTreeNode parent) {
 		
 		super(parent);
 	}
-
-	//mouseAdapter = new VLookup_mouseAdapter(this);    //  popup
 
 	@Override
 	public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -924,8 +707,13 @@ class myJTree extends JTree
 		DefaultMutableTreeNode nd = (DefaultMutableTreeNode)value; 
 		
 		Vector <?> userObject = (Vector <?>)nd.getUserObject();
-		
-		StringBuffer sb = new StringBuffer(((KeyNamePair)userObject.elementAt(3)).getName());
+		//Product
+		StringBuffer sb = new StringBuffer(((KeyNamePair)userObject.elementAt(2)).getName());
+		//UOM
+		sb.append(" ["+((KeyNamePair) userObject.elementAt(3)).getName().trim()+"]");
+		//BOMQty
+		BigDecimal BOMQty = (BigDecimal)(userObject.elementAt(4));
+		sb.append("x"+BOMQty.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());		
 		
 		return sb.toString();
 	}
