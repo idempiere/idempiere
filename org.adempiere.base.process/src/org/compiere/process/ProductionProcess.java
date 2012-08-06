@@ -31,7 +31,6 @@ public class ProductionProcess extends SvrProcess {
 	
 	protected void prepare() {
 		
-		log.severe("In prepare method");
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
@@ -72,7 +71,6 @@ public class ProductionProcess extends SvrProcess {
 		
 		int processed = 0;
 		m_production.setMovementDate(p_MovementDate);
-		System.err.println(m_production.getMovementDate());
 		MProductionLine[] lines = m_production.getLines();
 		StringBuffer errors = new StringBuffer();
 		for ( int i = 0; i<lines.length; i++) {
@@ -83,7 +81,6 @@ public class ProductionProcess extends SvrProcess {
 			processed++;
 		}
 		
-
 		if ( errors.toString().compareTo("") != 0 ) {
 			log.log(Level.WARNING, errors.toString() );
 			throw new AdempiereSystemError(errors.toString());

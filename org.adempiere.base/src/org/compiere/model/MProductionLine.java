@@ -95,7 +95,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		if ( asiString == null )
 			asiString = "";
 		
-		log.log(Level.WARNING, "asi Description is: " + asiString);
+		log.log(Level.FINEST, "asi Description is: " + asiString);
 		// create transactions for finished goods
 		if ( getMovementQty().compareTo(Env.ZERO) > 0 ) {
 			MProductionLineMA lineMA = new MProductionLineMA( this,
@@ -129,8 +129,6 @@ public class MProductionLine extends X_M_ProductionLine {
 		MStorage[] storages = MStorage.getAll( getCtx(), getM_Product_ID(),
 				getM_Locator_ID(), get_TrxName());
 		
-		
-		
 		MProductionLineMA lineMA = null;
 		MTransaction matTrx = null;
 		BigDecimal qtyToMove = getMovementQty().negate();
@@ -152,16 +150,15 @@ public class MProductionLine extends X_M_ProductionLine {
 				if (slASIString == null)
 					slASIString = "";
 				
-				log.log(Level.WARNING,"slASI-Description =" + slASIString);
+				log.log(Level.FINEST,"slASI-Description =" + slASIString);
 					
 				if ( slASIString.compareTo(asiString) == 0
 						|| asi.getM_AttributeSet_ID() == 0  )  
 				//storage matches specified ASI or is a costing asi (inc. 0)
 			    // This process will move negative stock on hand quantities
 				{
-					lineMA = new MProductionLineMA( this,
-							storages[sl].getM_AttributeSetInstance_ID(),
-							lineQty.negate());
+					lineMA = MProductionLineMA.get(this,storages[sl].getM_AttributeSetInstance_ID());
+					lineMA.setMovementQty(lineMA.getMovementQty().add(lineQty.negate()));
 					if ( !lineMA.save(get_TrxName()) ) {
 						log.log(Level.SEVERE, "Could not save MA for " + toString());
 						errorString.append("Could not save MA for " + toString() + "\n" );
@@ -185,9 +182,7 @@ public class MProductionLine extends X_M_ProductionLine {
 						errorString.append("Could not update storage for " + toString() + "\n");
 					}
 					qtyToMove = qtyToMove.subtract(lineQty);
-					System.err.println("Qty Moved = " + lineQty);
-					log.log(Level.WARNING, "Qty moved = " + lineQty );
-					log.log(Level.WARNING, getLine() +  " Qty to move: " + qtyToMove );
+					log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
 				}
 			}
 			
@@ -206,13 +201,11 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 			else
 			{
-				MProduct product = new MProduct(Env.getCtx(), getM_Product_ID(), get_TrxName());
-				int defaultLocator = product.getM_Locator_ID();
-				MStorage storage = MStorage.get(Env.getCtx(), defaultLocator, getM_Product_ID(), 0, get_TrxName());
+				MStorage storage = MStorage.get(Env.getCtx(), getM_Locator_ID(), getM_Product_ID(), 0, get_TrxName());
 				if (storage == null)
 				{
 					storage = new MStorage(Env.getCtx(), 0, get_TrxName());
-					storage.setM_Locator_ID(defaultLocator);
+					storage.setM_Locator_ID(getM_Locator_ID());
 					storage.setM_Product_ID(getM_Product_ID());
 					storage.setM_AttributeSetInstance_ID(0);
 					storage.save();
@@ -226,16 +219,19 @@ public class MProductionLine extends X_M_ProductionLine {
 				if (slASIString == null)
 					slASIString = "";
 				
-				log.log(Level.WARNING,"slASI-Description =" + slASIString);
+				log.log(Level.FINEST,"slASI-Description =" + slASIString);
 					
 				if ( slASIString.compareTo(asiString) == 0
 						|| asi.getM_AttributeSet_ID() == 0  )  
 				//storage matches specified ASI or is a costing asi (inc. 0)
 			    // This process will move negative stock on hand quantities
 				{
-					lineMA = new MProductionLineMA( this,
-							storage.getM_AttributeSetInstance_ID(),
-							lineQty.negate());
+					//lineMA = new MProductionLineMA( this,
+					//		storage.getM_AttributeSetInstance_ID(),
+					//		lineQty.negate());
+					lineMA = MProductionLineMA.get(this,storage.getM_AttributeSetInstance_ID());
+					lineMA.setMovementQty(lineMA.getMovementQty().add(lineQty.negate()));
+					
 					if ( !lineMA.save(get_TrxName()) ) {
 						log.log(Level.SEVERE, "Could not save MA for " + toString());
 						errorString.append("Could not save MA for " + toString() + "\n" );
@@ -259,9 +255,7 @@ public class MProductionLine extends X_M_ProductionLine {
 						errorString.append("Could not update storage for " + toString() + "\n");
 					}
 					qtyToMove = qtyToMove.subtract(lineQty);
-					System.err.println("Qty Moved = " + lineQty);
-					log.log(Level.WARNING, "Qty moved = " + lineQty );
-					log.log(Level.WARNING, getLine() +  " Qty to move: " + qtyToMove );
+					log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
 				}
 				
 			}
