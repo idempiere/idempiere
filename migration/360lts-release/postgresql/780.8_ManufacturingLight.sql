@@ -1849,7 +1849,7 @@ INSERT INTO AD_Field (AD_Client_ID,AD_Column_ID,AD_Field_ID,AD_Org_ID,AD_Tab_ID,
 INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Field_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Field t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Field_ID=62014 AND NOT EXISTS (SELECT * FROM AD_Field_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Field_ID=t.AD_Field_ID)
 ;
 
-INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53229,'au.com.adaxa.BOMVerify',TO_TIMESTAMP('2011-07-27 15:21:51','YYYY-MM-DD HH24:MI:SS'),100,'Verify BOM for correctness','D','The Verify BOM process checks for circular BOMs (unsupported).','Y','N','N','N','Verify BOM Structure','Y',0,0,TO_TIMESTAMP('2011-07-27 15:21:51','YYYY-MM-DD HH24:MI:SS'),100,'M_Product_BOM_Verify',NULL)
+INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53229,'org.compiere.process.BOMVerify',TO_TIMESTAMP('2011-07-27 15:21:51','YYYY-MM-DD HH24:MI:SS'),100,'Verify BOM for correctness','D','The Verify BOM process checks for circular BOMs (unsupported).','Y','N','N','N','Verify BOM Structure','Y',0,0,TO_TIMESTAMP('2011-07-27 15:21:51','YYYY-MM-DD HH24:MI:SS'),100,'M_Product_BOM_Verify',NULL)
 ;
 
 INSERT INTO AD_Process_Trl (AD_Language,AD_Process_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_ID=53229 AND NOT EXISTS (SELECT * FROM AD_Process_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_ID=t.AD_Process_ID)
@@ -1873,7 +1873,7 @@ INSERT INTO AD_Process_Para (AD_Client_ID,AD_Element_ID,AD_Org_ID,AD_Process_ID,
 INSERT INTO AD_Process_Para_Trl (AD_Language,AD_Process_Para_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_Para_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process_Para t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_Para_ID=53463 AND NOT EXISTS (SELECT * FROM AD_Process_Para_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_Para_ID=t.AD_Process_Para_ID)
 ;
 
-INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53230,'au.com.adaxa.RollUpCosts',TO_TIMESTAMP('2011-07-27 15:21:53','YYYY-MM-DD HH24:MI:SS'),100,'Rollup BOM cost','D','Rollup BOM costs from the lowest level recursively.','Y','N','N','N','Rollup BOM Cost','Y',0,0,TO_TIMESTAMP('2011-07-27 15:21:53','YYYY-MM-DD HH24:MI:SS'),100,'M_Product_BOM_Rollup',NULL)
+INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53230,'org.compiere.process.RollUpCosts',TO_TIMESTAMP('2011-07-27 15:21:53','YYYY-MM-DD HH24:MI:SS'),100,'Rollup BOM cost','D','Rollup BOM costs from the lowest level recursively.','Y','N','N','N','Rollup BOM Cost','Y',0,0,TO_TIMESTAMP('2011-07-27 15:21:53','YYYY-MM-DD HH24:MI:SS'),100,'M_Product_BOM_Rollup',NULL)
 ;
 
 INSERT INTO AD_Process_Trl (AD_Language,AD_Process_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_ID=53230 AND NOT EXISTS (SELECT * FROM AD_Process_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_ID=t.AD_Process_ID)
@@ -1897,7 +1897,7 @@ INSERT INTO AD_Process_Para (AD_Client_ID,AD_Element_ID,AD_Org_ID,AD_Process_ID,
 INSERT INTO AD_Process_Para_Trl (AD_Language,AD_Process_Para_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_Para_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process_Para t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_Para_ID=53466 AND NOT EXISTS (SELECT * FROM AD_Process_Para_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_Para_ID=t.AD_Process_Para_ID)
 ;
 
-INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,Classname,Created,CreatedBy,Description,EntityType,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53265,'au.com.adaxa.UniversalSubstitution',TO_TIMESTAMP('2011-07-27 15:21:55','YYYY-MM-DD HH24:MI:SS'),100,'Substitute one product for another in all BOMs','U','Y','N','N','N','Universal substitution','Y',0,0,TO_TIMESTAMP('2011-07-27 15:21:55','YYYY-MM-DD HH24:MI:SS'),100,'M_Product_BOM Substitute',NULL)
+INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,Classname,Created,CreatedBy,Description,EntityType,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53265,'org.compiere.process.UniversalSubstitution',TO_TIMESTAMP('2011-07-27 15:21:55','YYYY-MM-DD HH24:MI:SS'),100,'Substitute one product for another in all BOMs','U','Y','N','N','N','Universal substitution','Y',0,0,TO_TIMESTAMP('2011-07-27 15:21:55','YYYY-MM-DD HH24:MI:SS'),100,'M_Product_BOM Substitute',NULL)
 ;
 
 INSERT INTO AD_Process_Trl (AD_Language,AD_Process_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_ID=53265 AND NOT EXISTS (SELECT * FROM AD_Process_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_ID=t.AD_Process_ID)
@@ -2322,7 +2322,7 @@ INSERT INTO AD_PrintFormatItem (Updated,AD_Org_ID,SortNo,XPosition,IsOrderBy,IsP
 INSERT INTO AD_PrintFormatItem_Trl (AD_Language,AD_PrintFormatItem_ID, PrintName,PrintNameSuffix, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_PrintFormatItem_ID, t.PrintName,t.PrintNameSuffix, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_PrintFormatItem t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_PrintFormatItem_ID=51730 AND NOT EXISTS (SELECT * FROM AD_PrintFormatItem_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_PrintFormatItem_ID=t.AD_PrintFormatItem_ID)
 ;
 
-INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,AD_ReportView_ID,Classname,Created,CreatedBy,Description,EntityType,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53266,53039,'au.com.adaxa.IndentedBOM',TO_TIMESTAMP('2011-07-27 16:24:11','YYYY-MM-DD HH24:MI:SS'),100,'Indented BOM report','U','Y','N','N','Y','Indented Bill of Material','Y',0,0,TO_TIMESTAMP('2011-07-27 16:24:11','YYYY-MM-DD HH24:MI:SS'),100,'M_ProductBOM_Indented',NULL)
+INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,AD_ReportView_ID,Classname,Created,CreatedBy,Description,EntityType,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53266,53039,'org.compiere.process.IndentedBOM',TO_TIMESTAMP('2011-07-27 16:24:11','YYYY-MM-DD HH24:MI:SS'),100,'Indented BOM report','U','Y','N','N','Y','Indented Bill of Material','Y',0,0,TO_TIMESTAMP('2011-07-27 16:24:11','YYYY-MM-DD HH24:MI:SS'),100,'M_ProductBOM_Indented',NULL)
 ;
 
 INSERT INTO AD_Process_Trl (AD_Language,AD_Process_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_ID=53266 AND NOT EXISTS (SELECT * FROM AD_Process_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_ID=t.AD_Process_ID)
@@ -2349,7 +2349,7 @@ INSERT INTO AD_Process_Para_Trl (AD_Language,AD_Process_Para_ID, Description,Hel
 UPDATE AD_ReportView SET AD_Table_ID=364, Description=NULL, EntityType='D', IsActive='Y', Name='T_Replenish', OrderByClause=NULL, WhereClause=NULL,Updated=TO_TIMESTAMP('2011-07-27 16:24:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ReportView_ID=106
 ;
 
-INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,AD_ReportView_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53267,106,'au.com.adaxa.ReplenishReport',TO_TIMESTAMP('2011-07-27 16:24:17','YYYY-MM-DD HH24:MI:SS'),100,'Inventory Replenish Report','U','Report lists products to be replenished. Note that a product can have only one current vendor. If there are more then vendor per product, both records are reset.  You need to select a current vendor manually.<br>
+INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,AD_ReportView_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53267,106,'org.compiere.process.ReplenishReportProduction',TO_TIMESTAMP('2011-07-27 16:24:17','YYYY-MM-DD HH24:MI:SS'),100,'Inventory Replenish Report','U','Report lists products to be replenished. Note that a product can have only one current vendor. If there are more then vendor per product, both records are reset.  You need to select a current vendor manually.<br>
 Movements are only created, if a sourcing warehouse is defined for the warehouse to be replenished.','Y','N','N','Y','Replenish Report incl. Production','Y',0,0,TO_TIMESTAMP('2011-07-27 16:24:17','YYYY-MM-DD HH24:MI:SS'),100,'RV_T_Replenish_Production',NULL)
 ;
 
@@ -2438,7 +2438,7 @@ INSERT INTO AD_Process_Para (AD_Client_ID,AD_Element_ID,AD_Org_ID,AD_Process_ID,
 INSERT INTO AD_Process_Para_Trl (AD_Language,AD_Process_Para_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_Para_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process_Para t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_Para_ID=53528 AND NOT EXISTS (SELECT * FROM AD_Process_Para_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_Para_ID=t.AD_Process_Para_ID)
 ;
 
-INSERT INTO AD_Form (AccessLevel,AD_Client_ID,AD_Form_ID,AD_Org_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,Name,Updated,UpdatedBy) VALUES ('3',0,53017,0,'au.com.adaxa.form.VTreeBOM',TO_TIMESTAMP('2011-07-27 16:24:35','YYYY-MM-DD HH24:MI:SS'),100,'Shows the parent-component relationship for the product entered in the Product field.','D','Selecting a product will display a hierarchy of components and sub-BOMs for that product.
+INSERT INTO AD_Form (AccessLevel,AD_Client_ID,AD_Form_ID,AD_Org_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,Name,Updated,UpdatedBy) VALUES ('3',0,53017,0,'org.compiere.apps.form.VTreeBOM',TO_TIMESTAMP('2011-07-27 16:24:35','YYYY-MM-DD HH24:MI:SS'),100,'Shows the parent-component relationship for the product entered in the Product field.','D','Selecting a product will display a hierarchy of components and sub-BOMs for that product.
 
 Selecting the "Where Used" check box will display the BOMs that this product is used in.','Y','N','BOM Viewer',TO_TIMESTAMP('2011-07-27 16:24:35','YYYY-MM-DD HH24:MI:SS'),100)
 ;
@@ -2446,7 +2446,7 @@ Selecting the "Where Used" check box will display the BOMs that this product is 
 INSERT INTO AD_Form_Trl (AD_Language,AD_Form_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Form_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Form t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Form_ID=53017 AND NOT EXISTS (SELECT * FROM AD_Form_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Form_ID=t.AD_Form_ID)
 ;
 
-INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53228,'au.com.adaxa.BOMFlagValidate',TO_TIMESTAMP('2011-07-27 16:24:36','YYYY-MM-DD HH24:MI:SS'),100,'Validate BOM Flags','D','The Validate BOM Flags process checks that all Products with bills of materials are correctly flagged.','Y','N','N','N','Validate BOM Flags','Y',0,0,TO_TIMESTAMP('2011-07-27 16:24:36','YYYY-MM-DD HH24:MI:SS'),100,'M_Product_BOM_Flag',NULL)
+INSERT INTO AD_Process (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Process_ID,Classname,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDirectPrint,IsReport,Name,ShowHelp,Statistic_Count,Statistic_Seconds,Updated,UpdatedBy,Value,WorkflowValue) VALUES ('3',0,0,53228,'org.compiere.process.BOMFlagValidate',TO_TIMESTAMP('2011-07-27 16:24:36','YYYY-MM-DD HH24:MI:SS'),100,'Validate BOM Flags','D','The Validate BOM Flags process checks that all Products with bills of materials are correctly flagged.','Y','N','N','N','Validate BOM Flags','Y',0,0,TO_TIMESTAMP('2011-07-27 16:24:36','YYYY-MM-DD HH24:MI:SS'),100,'M_Product_BOM_Flag',NULL)
 ;
 
 INSERT INTO AD_Process_Trl (AD_Language,AD_Process_ID, Description,Help,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Process_ID, t.Description,t.Help,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Process t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_ID=53228 AND NOT EXISTS (SELECT * FROM AD_Process_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_ID=t.AD_Process_ID)
@@ -2564,39 +2564,4 @@ INSERT INTO AD_Menu_Trl (AD_Language,AD_Menu_ID, Description,Name, IsTranslated,
 ;
 
 INSERT INTO AD_TREENODEMM(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, Parent_ID, SeqNo, AD_Tree_ID, Node_ID)VALUES(0, 0, 0, 0, 53296,4, 10, 53299)
-;
-
--- 27/07/2011 11:57:05 AM
--- --
-UPDATE AD_Process SET Classname='org.compiere.process.BOMFlagValidate',Updated=TO_TIMESTAMP('2011-07-27 11:57:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=53228
-;
-
--- 27/07/2011 11:57:12 AM
--- --
-UPDATE AD_Process SET Classname='org.compiere.process.IndentedBOM',Updated=TO_TIMESTAMP('2011-07-27 11:57:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=1000002
-;
-
--- 27/07/2011 11:57:17 AM
--- --
-UPDATE AD_Process SET Classname='org.compiere.process.RollUpCosts',Updated=TO_TIMESTAMP('2011-07-27 11:57:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=53230
-;
-
--- 27/07/2011 11:57:24 AM
--- --
-UPDATE AD_Process SET Classname='org.compiere.process.UniversalSubstitution',Updated=TO_TIMESTAMP('2011-07-27 11:57:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=1000001
-;
-
--- 27/07/2011 11:57:30 AM
--- --
-UPDATE AD_Process SET Classname='org.compiere.process.BOMVerify',Updated=TO_TIMESTAMP('2011-07-27 11:57:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=53229
-;
-
--- 27/07/2011 11:57:39 AM
--- --
-UPDATE AD_Process SET Classname='org.compiere.process.ReplenishReportProduction',Updated=TO_TIMESTAMP('2011-07-27 11:57:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=1000003
-;
-
--- 27/07/2011 11:58:11 AM
--- --
-UPDATE AD_Form SET Classname='org.compiere.apps.form.VTreeBOM',Updated=TO_TIMESTAMP('2011-07-27 11:58:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Form_ID=53017
 ;
