@@ -76,7 +76,7 @@ public class ReplenishReportProduction extends SvrProcess
 	/** Return Info				*/
 	private String	m_info = "";
 	private int p_M_Product_Category_ID = 0;
-	private boolean excludeKanban = false;
+	private String isKanban = null;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -95,8 +95,8 @@ public class ReplenishReportProduction extends SvrProcess
 				p_C_BPartner_ID = para[i].getParameterAsInt();
 			else if (name.equals("M_Product_Category_ID"))
 				p_M_Product_Category_ID = para[i].getParameterAsInt();
-			else if (name.equals("IsExcludeKanban"))
-				excludeKanban = para[i].getParameterAsBoolean();
+			else if (name.equals("IsKanban"))
+				isKanban = (String) para[i].getParameter();
 			else if (name.equals("ReplenishmentCreate"))
 				p_ReplenishmentCreate = (String)para[i].getParameter();
 			else if (name.equals("C_DocType_ID"))
@@ -236,8 +236,8 @@ public class ReplenishReportProduction extends SvrProcess
 			sql += " AND po.C_BPartner_ID=" + p_C_BPartner_ID;
 		if ( p_M_Product_Category_ID != 0 )
 			sql += " AND p.M_Product_Category_ID=" + p_M_Product_Category_ID;
-		if ( excludeKanban )
-			sql += " AND p.IsKanban = 'N' ";
+		if ( isKanban != null )
+			sql += " AND p.IsKanban = '" + isKanban + "' ";
 		int no = DB.executeUpdate(sql, get_TrxName());
 		log.finest(sql);
 		log.fine("Insert (1) #" + no);
@@ -265,8 +265,8 @@ public class ReplenishReportProduction extends SvrProcess
 					+ " AND AD_PInstance_ID=" + getAD_PInstance_ID() + ")";
 			if ( p_M_Product_Category_ID != 0 )
 				sql += " AND p.M_Product_Category_ID=" + p_M_Product_Category_ID;
-			if ( excludeKanban )
-				sql += " AND p.IsKanban = 'N' ";
+			if ( isKanban != null )
+				sql += " AND p.IsKanban = '" + isKanban + "' ";
 			no = DB.executeUpdate(sql, get_TrxName());
 			log.fine("Insert (BP) #" + no);
 		}
