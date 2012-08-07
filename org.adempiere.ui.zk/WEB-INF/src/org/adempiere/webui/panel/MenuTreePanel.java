@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
+import org.zkoss.zul.Toolbarbutton;
 
 /**
  * Menu Tree Panel
@@ -42,7 +43,10 @@ public class MenuTreePanel extends AbstractMenuPanel
 	 */
 	private static final long serialVersionUID = -911113870835089567L;
 	private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
+	
 	private ToolBarButton expandToggle;
+	private MenuTreeFilterPanel filterPanel;
+	private Toolbarbutton filterBtn;
     
     public MenuTreePanel(Component parent)
     {
@@ -87,15 +91,23 @@ public class MenuTreePanel extends AbstractMenuPanel
         // Elaine 2009/02/27 - expand tree
         Toolbar toolbar = new Toolbar();
         toolbar.setStyle("verticle-align: middle; padding: 2px");
+        this.appendChild(toolbar);
+        
         expandToggle = new ToolBarButton();
         expandToggle.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ExpandTree")));
         expandToggle.setMode("toggle");
         expandToggle.addEventListener(Events.ON_CHECK, this);
         toolbar.appendChild(expandToggle);
         toolbar.setMold("panel");
-        this.appendChild(toolbar);
-        
         this.addEventListener(ON_EXPAND_MENU_EVENT, this);
+        
+        filterPanel = new MenuTreeFilterPanel(getMenuTree(), null);
+        pc.appendChild(filterPanel);
+
+        filterBtn = new Toolbarbutton();
+        filterBtn.setImage("/images/Preference16.png");
+        filterBtn.addEventListener(Events.ON_CLICK, this);
+        toolbar.appendChild(filterBtn);        
     }
     
     public void onEvent(Event event)
@@ -115,6 +127,8 @@ public class MenuTreePanel extends AbstractMenuPanel
         	Clients.clearBusy();
         }
         //
+        else if (event.getName().equals(Events.ON_CLICK) && event.getTarget() == filterBtn)
+        	filterPanel.open(filterBtn);
     }
 	
 	/**

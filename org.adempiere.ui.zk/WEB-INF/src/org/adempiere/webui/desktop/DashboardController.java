@@ -15,7 +15,6 @@ package org.adempiere.webui.desktop;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -127,9 +126,19 @@ public class DashboardController implements EventListener<Event> {
 
         try
 		{
-            noOfCols = MDashboardContent.getForSessionColumnCount(isShowInDashboard);
+        	int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
+        	MDashboardContent[] dps = MDashboardContent.getForSession(isShowInDashboard, AD_User_ID); // based on user
+        	
+        	if (dps.length == 0)
+        	{
+        		AD_User_ID = 0;
+        		dps = MDashboardContent.getForSession(isShowInDashboard, AD_User_ID); // based on client
+        	}
+        	
+        	noOfCols = MDashboardContent.getForSessionColumnCount(isShowInDashboard, AD_User_ID);
+            
             width = noOfCols <= 0 ? 100 : 100 / noOfCols;
-            for (final MDashboardContent dp : MDashboardContent.getForSession(isShowInDashboard))
+            for (final MDashboardContent dp : dps)
 			{
 	        	int columnNo = dp.getColumnNo();
 	        	if(dashboardColumnLayout == null || currentColumnNo != columnNo)
@@ -178,9 +187,11 @@ public class DashboardController implements EventListener<Event> {
 						ins = new InputStreamReader(url.openStream());
 						BufferedReader bufferedReader = new BufferedReader( ins );
 						String cssLine;
+						result.append("<style type=\"text/css\">");
 						while ((cssLine = bufferedReader.readLine()) != null)
 							result.append(cssLine + "\n");
-					} catch (IOException e1) {
+						result.append("</style>");
+					} catch (Exception e1) {
 						logger.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
 					}
 
@@ -189,7 +200,7 @@ public class DashboardController implements EventListener<Event> {
 //	            	if(description != null)
 //	            		result.append("<h2>" + description + "</h2>\n");
 	            	result.append(stripHtml(htmlContent, false) + "<br>\n");
-	            	result.append("</div>\n</body>\n</html>\n</html>");
+	            	result.append("</div>\n</body>\n</html>");
 
 		            Html html = new Html();
 		            html.setContent(result.toString());

@@ -73,20 +73,15 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	this.setAlign("right");
     	//
     	
-    	Hbox hbox = new Hbox();
-    	this.appendChild(hbox);
-    	
-    	hbox.appendChild(new MenuSearchPanel(this));
-    	
     	Vbox vbox = new Vbox();
-    	hbox.appendChild(vbox);
+    	this.appendChild(vbox);
 
     	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName());
     	lblUserNameValue.setStyle("text-align:right");
     	LayoutUtils.addSclass("desktop-header-font", lblUserNameValue);
     	vbox.appendChild(lblUserNameValue);
 
-    	hbox = new Hbox();
+    	Hbox hbox = new Hbox();
     	vbox.appendChild(hbox);
 
     	preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));

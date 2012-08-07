@@ -16,11 +16,12 @@ package org.adempiere.webui.panel;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Style;
 import org.zkoss.zul.Toolbar;
-import org.zkoss.zul.Toolbarbutton;
 
 /**
  * Menu Search Panel
@@ -34,11 +35,7 @@ public class MenuSearchPanel extends AbstractMenuPanel
 	 */
 	private static final long serialVersionUID = 5308522340852904168L;
 	
-	
-	
 	private TreeSearchPanel pnlSearch;
-	private MenuTreeFilterPanel filterPanel;
-	private Toolbarbutton filterBtn;
     
     public MenuSearchPanel(Component parent)
     {
@@ -49,6 +46,25 @@ public class MenuSearchPanel extends AbstractMenuPanel
 	{
 		super.init();
         pnlSearch.initialise();
+        
+        EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.APPLICATION, true).subscribe(new EventListener<Event>() {
+			public void onEvent(Event event) throws Exception {
+				if (event.getName() == Events.ON_CHECK)
+				{
+					Checkbox chk = (Checkbox) event.getData();
+					if (chk != null)
+					{
+						if ("flatView".equals(chk.getId()))
+							MenuTreeFilterPanel.toggleFlatView(getMenuTree(), chk);
+						else
+							MenuTreeFilterPanel.toggle(getMenuTree(), chk);
+						if (pnlSearch != null)
+							pnlSearch.refreshSearchList();
+						getMenuTree().invalidate();
+					}
+				}
+			}
+		});
 	}
     
     protected void initComponents()
@@ -64,22 +80,5 @@ public class MenuSearchPanel extends AbstractMenuPanel
         style.setContent(".z-comboitem-img{ vertical-align:top; padding-right:2px; padding-bottom:4px; }");
         pnlSearch.insertBefore(style, pnlSearch.getFirstChild());        
         toolbar.appendChild(pnlSearch);
-        filterBtn = new Toolbarbutton();
-        filterBtn.setImage("/images/Preference16.png");
-        filterBtn.addEventListener(Events.ON_CLICK, this);
-        toolbar.appendChild(filterBtn);
-        
-        Panelchildren pc = new Panelchildren();
-        this.appendChild(pc);
-        filterPanel = new MenuTreeFilterPanel(getMenuTree(), pnlSearch);
-        pc.appendChild(filterPanel);
-    }
-    
-    public void onEvent(Event event)
-    {
-    	super.onEvent(event);
-    	
-    	if (event.getName().equals(Events.ON_CLICK) && event.getTarget() == filterBtn)
-    		filterPanel.open(filterBtn);
     }
 }

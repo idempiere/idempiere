@@ -77,6 +77,36 @@ public interface I_PA_DashboardContent
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
+    /** Column name AD_Role_ID */
+    public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
+
+	/** Set Role.
+	  * Responsibility Role
+	  */
+	public void setAD_Role_ID (int AD_Role_ID);
+
+	/** Get Role.
+	  * Responsibility Role
+	  */
+	public int getAD_Role_ID();
+
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
 

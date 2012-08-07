@@ -18,8 +18,13 @@ import java.util.Enumeration;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TouchEventHelper;
+import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.window.ADWindow;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.model.GridTab;
+import org.compiere.model.MMenu;
+import org.compiere.model.MQuery;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.SystemIDs;
@@ -35,11 +40,13 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Box;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
+import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vbox;
@@ -123,10 +130,15 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			{
 				MTreeNode nd = (MTreeNode)en.nextElement();
 				if (nd.isOnBar()) {
+					
+					Hbox hbox = new Hbox();
+					hbox.setSpacing("0px");
+					bxFav.appendChild(hbox);
+					
 					String label = nd.toString().trim();
 					A btnFavItem = new A();
 					btnFavItem.setAttribute(NODE_ID_ATTR, String.valueOf(nd.getNode_ID()));
-					bxFav.appendChild(btnFavItem);
+					hbox.appendChild(btnFavItem);
 					btnFavItem.setLabel(label);
 					btnFavItem.setImage(getIconFile(nd));
 					btnFavItem.setDraggable(DELETE_FAV_DROPPABLE);
@@ -146,6 +158,15 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 							Events.echoEvent(new Event(ON_ADD_TAP_EVENT_LISTENER, btnFavItem, null));
 						}
 					}
+					
+					if (nd.isWindow())
+	                {
+	                	Toolbarbutton newBtn = new Toolbarbutton(null, "/images/New10.png");
+	                	newBtn.setAttribute(NODE_ID_ATTR, String.valueOf(nd.getNode_ID()));
+	                	newBtn.setStyle("margin-bottom:5px");
+	                	hbox.appendChild(newBtn);
+	                	newBtn.addEventListener(Events.ON_CLICK, this);                	
+	                }
 				}
 			}
 		}
@@ -244,6 +265,41 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			
 			if(menuId > 0) SessionManager.getAppDesktop().onMenuSelected(menuId);
 		}
+		else if (comp instanceof Toolbarbutton) {
+			Toolbarbutton btn = (Toolbarbutton) comp;
+			
+			int menuId = 0;
+			try
+			{
+				menuId = Integer.valueOf((String)btn.getAttribute(NODE_ID_ATTR));            		
+			}
+			catch (Exception e) {
+				
+			}
+			
+			if(menuId > 0)
+			{
+				try
+	            {
+					MMenu menu = new MMenu(Env.getCtx(), menuId, null);
+					
+		    		MQuery query = new MQuery("");
+	        		query.addRestriction("1=2");
+					query.setRecordCount(0);
+
+					ADWindow frame = SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query);
+					if(frame == null)
+	    				return;
+	        		
+					GridTab tab = frame.getADWindowPanel().getActiveGridTab();
+					tab.dataNew(false);
+	            }
+	            catch (Exception e)
+	            {
+	                throw new ApplicationException(e.getMessage(), e);
+	            }
+			}
+		}
 	}
 
 	private void removeLink(A btn) {
@@ -254,7 +310,9 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			int Node_ID = Integer.valueOf(value.toString());
 			if(barDBupdate(false, Node_ID))
 			{
-				bxFav.removeChild(btn);
+				if (btn.getParent() instanceof Hbox)
+					bxFav.removeChild(btn.getParent());
+//				bxFav.removeChild(btn);
 				
 				if(bxFav.getChildren().isEmpty())
 					bxFav.appendChild(lblMsg);
@@ -275,6 +333,13 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			int Node_ID = Integer.valueOf(value.toString());
 			if(barDBupdate(true, Node_ID))
 			{
+				String menuType = (String) treeitem.getAttribute("menu.type");
+				boolean isWindow = menuType != null && menuType.equals("window");
+				
+				Hbox hbox = new Hbox();
+				hbox.setSpacing("0px");
+				bxFav.appendChild(hbox);
+				
 				String label = null;
 				String image = null;
 				if (treeitem.getLabel() != null && treeitem.getLabel().trim().length() > 0)
@@ -289,7 +354,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 					image = link.getImage();
 				}
 				A btnFavItem = new A();
-				bxFav.appendChild(btnFavItem);
+				hbox.appendChild(btnFavItem);
 				btnFavItem.setAttribute(NODE_ID_ATTR, String.valueOf(Node_ID));
 				btnFavItem.setLabel(label);
 				btnFavItem.setImage(image);
@@ -300,6 +365,16 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 				if (AEnv.isTablet()) {
 					TouchEventHelper.addOnTapEventListener(btnFavItem, this);
 				}
+				
+				if (isWindow)
+                {
+                	Toolbarbutton newBtn = new Toolbarbutton(null, "/images/New10.png");
+                	newBtn.setAttribute(NODE_ID_ATTR, String.valueOf(Node_ID));
+                	newBtn.setStyle("margin-bottom:5px");
+                	hbox.appendChild(newBtn);
+                	newBtn.addEventListener(Events.ON_CLICK, this);                	
+                }
+				
 				bxFav.removeChild(lblMsg);        					
 				bxFav.invalidate();
 			} else {

@@ -111,6 +111,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         pnlHead.setParent(n);
 
         West w = new West();
+        w.setTitle(" ");
         layout.appendChild(w);
         w.setSclass("desktop-left-column");
         w.setCollapsible(true);
