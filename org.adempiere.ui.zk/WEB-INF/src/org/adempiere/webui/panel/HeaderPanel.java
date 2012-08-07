@@ -26,9 +26,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.West;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.West;
 
 /**
  *
@@ -68,13 +68,14 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	West west = new West();
     	west.setParent(layout);
 
-    	Vbox vb = new Vbox();
-        vb.setParent(west);
-        vb.setHeight("100%");
-        vb.setPack("center");
-        vb.setAlign("left");
+    	Hbox hbox = new Hbox();
+    	hbox.setParent(west);
+    	hbox.setHeight("100%");
+    	hbox.setPack("center");
+        hbox.setAlign("left");
 
-    	image.setParent(vb);
+    	image.setParent(hbox);
+    	new MenuSearchPanel(this).setParent(hbox);
 
     	LayoutUtils.addSclass("desktop-header-left", west);
     	//the following doesn't work when declare as part of the header-left style

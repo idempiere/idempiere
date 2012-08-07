@@ -592,3 +592,8 @@ div.z-vfiletree-body td.menu-tree-cell {
 	cursor: pointer; padding: 0 2px;
 	font-size: ${fontSizeM}; font-weight: normal; overflow: visible;
 }
+
+<%-- dashlet --%>
+.z-panel-hl .z-panel-header {
+	padding: 0 0 2px 0;
+}

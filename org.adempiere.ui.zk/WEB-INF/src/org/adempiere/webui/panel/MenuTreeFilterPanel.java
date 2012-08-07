@@ -2,6 +2,8 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeUtils;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -58,7 +60,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		box.appendChild(window);
 
 		Checkbox single = new Checkbox();
-		single.setLabel("Flat View");
+		single.setLabel(Msg.getMsg(Env.getCtx(), "FlatView"));
 		single.setId("flatView");
 		single.setChecked(false);
 		single.addEventListener(Events.ON_CHECK, this);
@@ -69,14 +71,14 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 
 	public void onEvent(Event event) throws Exception {
 		final Checkbox chk = (Checkbox) event.getTarget();
-		if ("flatView".equals(chk.getId()))
+/*		if ("flatView".equals(chk.getId()))
 			toggleFlatView(tree, chk);
 		else
 			toggle(tree, chk);
 		if (searchPanel != null)
 			searchPanel.refreshSearchList();
 		tree.invalidate();
-		
+*/		
 		EventQueues.lookup(MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.APPLICATION, true).publish(new Event(Events.ON_CHECK, null, chk));
 	}
 

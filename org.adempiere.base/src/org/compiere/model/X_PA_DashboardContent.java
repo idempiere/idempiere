@@ -32,7 +32,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120803L;
+	private static final long serialVersionUID = 20120807L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -104,6 +104,62 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public int getAD_Process_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
+			.getPO(getAD_Role_ID(), get_TrxName());	}
+
+	/** Set Role.
+		@param AD_Role_ID 
+		Responsibility Role
+	  */
+	public void setAD_Role_ID (int AD_Role_ID)
+	{
+		if (AD_Role_ID < 0) 
+			set_Value (COLUMNNAME_AD_Role_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
+	}
+
+	/** Get Role.
+		@return Responsibility Role
+	  */
+	public int getAD_Role_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getAD_User_ID(), get_TrxName());	}
+
+	/** Set User/Contact.
+		@param AD_User_ID 
+		User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID < 1) 
+			set_Value (COLUMNNAME_AD_User_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+	}
+
+	/** Get User/Contact.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

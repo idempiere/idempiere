@@ -203,6 +203,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 Treerow treeRow = new Treerow();
                 treeitem.appendChild(treeRow);
                 Treecell treeCell = new Treecell();
+                treeCell.setSclass("menu-treecell-cnt");
                 treeRow.appendChild(treeCell);
                 A link = new A();
                 treeCell.appendChild(link);
@@ -228,7 +229,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 	treeitem.setAttribute("menu.type", "window");
                 	
                 	Toolbarbutton newBtn = new Toolbarbutton(null, "/images/New10.png");
-                	newBtn.setStyle("margin-bottom:5px");
+                	newBtn.setStyle("padding-left:3px; margin-bottom:5px");
                 	treeCell.appendChild(newBtn);
                 	newBtn.addEventListener(Events.ON_CLICK, this);
                 }
