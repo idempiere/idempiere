@@ -18,8 +18,6 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
-import org.compiere.model.MClient;
-import org.compiere.model.MPasswordRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.Util;
@@ -82,6 +80,7 @@ public class UserPassword extends SvrProcess
 		log.info ("AD_User_ID=" + p_AD_User_ID + " from " + getAD_User_ID());
 		
 		MUser user = MUser.get(getCtx(), p_AD_User_ID);
+		user.load(get_TrxName());
 		MUser operator = MUser.get(getCtx(), getAD_User_ID());
 		log.fine("User=" + user + ", Operator=" + operator);
 		
@@ -112,12 +111,7 @@ public class UserPassword extends SvrProcess
 			} else {
 				if (!p_NewPassword.equals(p_NewPasswordConfirm)) {
 					throw new IllegalArgumentException("@PasswordNotMatch@");
-				} else {
-					String msg = validate();
-					if (msg != null) {
-						throw new IllegalArgumentException(msg);
-					}
-				}
+				} 
 			}
 		}
 		
@@ -132,9 +126,9 @@ public class UserPassword extends SvrProcess
 		}
 		
 		if (!Util.isEmpty(p_NewPassword))
-			user.setPassword(p_NewPassword);
-		if (!Util.isEmpty(p_NewEMail))
-			user.setEMail(p_NewEMail);
+			  user.set_ValueOfColumn("Password", p_NewPassword); // will be hashed and validate on saveEx
+	 	if (!Util.isEmpty(p_NewEMail))
+			  user.setEMail(p_NewEMail);
 		if (!Util.isEmpty(p_NewEMailUser))
 			user.setEMailUser(p_NewEMailUser);
 		if (!Util.isEmpty(p_NewEMailUserPW))
@@ -144,21 +138,5 @@ public class UserPassword extends SvrProcess
 		return "OK";
 	}	//	doIt
 
-	
-	private String validate()
-	{	
-		MClient client=new MClient(getCtx(), getAD_Client_ID(), get_TrxName());
-		int ad_passwordrule_id = client.getAD_PasswordRule_ID();
-
-		String error = null;
-		if (ad_passwordrule_id > 0)
-		{
-			MPasswordRule rule =new MPasswordRule(getCtx(), ad_passwordrule_id, get_TrxName());
-			error = rule.validate(p_NewPassword);
-		}
-
-		return error;		
-	}
-	
 }	//	UserPassword
 
