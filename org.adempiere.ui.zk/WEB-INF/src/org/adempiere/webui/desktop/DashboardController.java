@@ -181,7 +181,7 @@ public class DashboardController implements EventListener<Event> {
 	            {
 		            StringBuilder result = new StringBuilder("<html><head>");
 
-		    		URL url = getClass().getClassLoader().getResource("org/compiere/images/PAPanel.css");
+		    		URL url = getClass().getClassLoader().getResource("org/compiere/css/PAPanel.css");
 					InputStreamReader ins;
 					try {
 						ins = new InputStreamReader(url.openStream());
