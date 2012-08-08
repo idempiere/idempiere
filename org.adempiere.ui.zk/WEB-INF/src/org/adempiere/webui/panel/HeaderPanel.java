@@ -19,8 +19,12 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.AboutWindow;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -28,6 +32,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.West;
 
 /**
@@ -44,6 +49,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 	private static final long serialVersionUID = -2351317624519209484L;
 
 	private Image image;
+	private ToolBarButton btnMenu;
+	private Popup popMenu;
 
     public HeaderPanel()
     {
@@ -75,7 +82,22 @@ public class HeaderPanel extends Panel implements EventListener<Event>
         hbox.setAlign("left");
 
     	image.setParent(hbox);
+    	
     	new MenuSearchPanel(this).setParent(hbox);
+
+    	popMenu = new Popup();
+    	popMenu.setId("menuTreePopup");
+		popMenu.appendChild(new MenuTreePanel(popMenu));
+		popMenu.setWidth("600px");
+    	popMenu.setHeight("500px");
+    	popMenu.setParent(hbox);
+
+    	btnMenu = new ToolBarButton();
+    	btnMenu.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
+    	LayoutUtils.addSclass("desktop-header-font", btnMenu);
+    	btnMenu.setParent(hbox);
+    	btnMenu.setPopup("menuTreePopup");
+    	btnMenu.addEventListener(Events.ON_CLICK, this);    	
 
     	LayoutUtils.addSclass("desktop-header-left", west);
     	//the following doesn't work when declare as part of the header-left style
@@ -102,7 +124,10 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 				w.setPage(this.getPage());
 				w.doHighlighted();
 			}
+			else if(event.getTarget() == btnMenu)
+			{
+				popMenu.open(btnMenu, "end_before");
+			}
 		}
-
 	}
 }
