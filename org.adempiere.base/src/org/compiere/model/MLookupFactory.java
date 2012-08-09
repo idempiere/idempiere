@@ -718,6 +718,17 @@ public class MLookupFactory
 			{
 				displayColumn.append(DB.TO_CHAR(columnSQL, ldc.DisplayType, language.getAD_Language()));
 			}
+			//	Table
+			else if ((ldc.DisplayType == DisplayType.Table || ldc.DisplayType == DisplayType.Search) && ldc.AD_Reference_ID != 0)
+			{
+				String embeddedSQL;
+				if (ldc.IsVirtual)
+					embeddedSQL = getLookup_TableEmbed (language, ldc.ColumnSQL, TableName, ldc.AD_Reference_ID);
+				else
+					embeddedSQL = getLookup_TableEmbed (language, ldc.ColumnName, TableName, ldc.AD_Reference_ID);
+				if (embeddedSQL != null)
+					displayColumn.append("(").append(embeddedSQL).append(")");
+			}
 			//  TableDir
 			else if ((ldc.DisplayType == DisplayType.TableDir || ldc.DisplayType == DisplayType.Search)
 				&& ldc.ColumnName.endsWith("_ID"))
@@ -727,17 +738,6 @@ public class MLookupFactory
 					embeddedSQL = getLookup_TableDirEmbed(language, ldc.ColumnName, TableName, ldc.ColumnSQL);
 				else
 					embeddedSQL = getLookup_TableDirEmbed(language, ldc.ColumnName, TableName);
-				if (embeddedSQL != null)
-					displayColumn.append("(").append(embeddedSQL).append(")");
-			}
-			//	Table
-			else if (ldc.DisplayType == DisplayType.Table && ldc.AD_Reference_ID != 0)
-			{
-				String embeddedSQL;
-				if (ldc.IsVirtual)
-					embeddedSQL = getLookup_TableEmbed (language, ldc.ColumnSQL, TableName, ldc.AD_Reference_ID);
-				else
-					embeddedSQL = getLookup_TableEmbed (language, ldc.ColumnName, TableName, ldc.AD_Reference_ID);
 				if (embeddedSQL != null)
 					displayColumn.append("(").append(embeddedSQL).append(")");
 			}
