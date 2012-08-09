@@ -187,6 +187,18 @@ public class LoginPanel extends Window implements EventListener
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(lstLanguage);
+    	
+    	tr = new Tr();
+        tr.setId("rowSelectRole");
+        table.appendChild(tr);
+        td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(new Label(""));
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(chkSelectRole);
 
     	if (MSystem.isZKRememberUserAllowed()) {
         	tr = new Tr();
@@ -200,17 +212,7 @@ public class LoginPanel extends Window implements EventListener
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
         	td.appendChild(chkRememberMe);
-        	tr = new Tr();
-            tr.setId("rowSelectRole");
-            table.appendChild(tr);
-            td = new Td();
-        	tr.appendChild(td);
-        	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-        	td.appendChild(new Label(""));
-        	td = new Td();
-        	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
-        	tr.appendChild(td);
-        	td.appendChild(chkSelectRole);
+        	
     	}
 
     	div = new Div();
