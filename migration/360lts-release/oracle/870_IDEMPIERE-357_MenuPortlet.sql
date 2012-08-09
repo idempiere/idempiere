@@ -1,6 +1,6 @@
 -- Aug 8, 2012 6:41:15 PM SGT
 -- Move the Menu to be a Portlet
-UPDATE PA_DashboardContent SET IsActive='N',Updated=TO_DATE('2012-08-08 18:41:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardContent_ID=1000006
+UPDATE PA_DashboardContent SET IsActive='N',Updated=TO_DATE('2012-08-08 18:41:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardContent_ID=200001
 ;
 
 -- Aug 8, 2012 6:41:47 PM SGT

@@ -111,7 +111,7 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 		
 		// READ CSS
 		URL url = getClass().getClassLoader().
-			getResource("org/compiere/images/PAPanel.css");
+			getResource("org/compiere/css/PAPanel.css");
 		InputStreamReader ins;
 		try {
 			ins = new InputStreamReader(url.openStream());
