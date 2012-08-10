@@ -13,12 +13,15 @@
 package org.adempiere.webui.component;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.adempiere.model.MTabCustomization;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.editor.WEditor;
@@ -100,6 +103,8 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 
 	private boolean refreshing;
 
+	private Map<Integer, String> columnWidthMap;
+
 	public static final String PAGE_SIZE_KEY = "ZK_PAGING_SIZE";
 
 	public static final String MODE_LESS_KEY = "ZK_GRID_EDIT_MODELESS";
@@ -144,12 +149,7 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 	{
 		if (init) return;
 
-		this.gridTab = gridTab;
-		tableModel = gridTab.getTableModel();
-
-		numColumns = tableModel.getColumnCount();
-
-		gridField = ((GridTable)tableModel).getFields();
+		setupFields(gridTab);
 
 		setupColumns();
 		render();
@@ -157,6 +157,58 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 		updateListIndex();
 
 		this.init = true;
+	}
+
+	private void setupFields(GridTab gridTab) {		
+		this.gridTab = gridTab;		
+		tableModel = gridTab.getTableModel();
+		columnWidthMap = new HashMap<Integer, String>();
+		GridField[] tmpFields = ((GridTable)tableModel).getFields();
+		MTabCustomization tabCustomization = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
+		if (tabCustomization != null && tabCustomization.getAD_Tab_Customization_ID() > 0 
+			&& tabCustomization.getCustom() != null && tabCustomization.getCustom().trim().length() > 0) {
+			String custom = tabCustomization.getCustom().trim();
+			String[] customComponent = custom.split(";");
+			String[] fieldIds = customComponent[0].split("[,]");
+			List<GridField> fieldList = new ArrayList<GridField>();
+			for(String fieldIdStr : fieldIds) {
+				fieldIdStr = fieldIdStr.trim();
+				if (fieldIdStr.length() == 0) continue;
+				int AD_Field_ID = Integer.parseInt(fieldIdStr);
+				for(GridField gridField : tmpFields) {
+					if (gridField.getAD_Field_ID() == AD_Field_ID) {
+						fieldList.add(gridField);
+						break;
+					}
+				}
+			}
+			gridField = fieldList.toArray(new GridField[0]);			
+			if (customComponent.length == 2) {
+				String[] widths = customComponent[1].split("[,]");
+				for(int i = 0; i< gridField.length; i++) {
+					columnWidthMap.put(gridField[i].getAD_Field_ID(), widths[i]);
+				}
+			}
+		} else {
+			ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
+			
+			for(GridField field:tmpFields){
+				if(field.isDisplayedGrid()){
+					gridFieldList.add(field);
+				}
+			}
+			
+			Collections.sort(gridFieldList, new Comparator<GridField>() {
+				@Override
+				public int compare(GridField o1, GridField o2) {
+					return o1.getSeqNoGrid()-o2.getSeqNoGrid();
+				}
+			});
+			
+			gridField = new GridField[gridFieldList.size()];
+			gridFieldList.toArray(gridField);
+		}
+		numColumns = gridField.length;
 	}
 
 	/**
@@ -292,41 +344,46 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 		int index = 0;
 		for (int i = 0; i < numColumns; i++)
 		{
-			if (gridField[i].isDisplayed())
+			if (gridField[i].isDisplayedGrid())
 			{
 				colnames.put(index, gridField[i].getHeader());
 				index++;
 				org.zkoss.zul.Column column = new Column();
-				column.setSortAscending(new SortComparator(i, true, Env.getLanguage(Env.getCtx())));
-				column.setSortDescending(new SortComparator(i, false, Env.getLanguage(Env.getCtx())));
+				int colindex =tableModel.findColumn(gridField[i].getColumnName()); 
+				column.setSortAscending(new SortComparator(colindex, true, Env.getLanguage(Env.getCtx())));
+				column.setSortDescending(new SortComparator(colindex, false, Env.getLanguage(Env.getCtx())));
 				column.setLabel(gridField[i].getHeader());
-				int l = DisplayType.isNumeric(gridField[i].getDisplayType())
-					? 120 : gridField[i].getDisplayLength() * 9;
-				//special treatment for line
-				if (DisplayType.isNumeric(gridField[i].getDisplayType()) && "Line".equals(gridField[i].getColumnName()))
-				{
-					l = 60;
-				}
-				else
-				{
-					if (gridField[i].getHeader().length() * 9 > l)
-						l = gridField[i].getHeader().length() * 9;
-					if (l > MAX_COLUMN_WIDTH)
-						l = MAX_COLUMN_WIDTH;
-					else if ( l < MIN_COLUMN_WIDTH)
-						l = MIN_COLUMN_WIDTH;
-					if (gridField[i].getDisplayType() == DisplayType.Table || gridField[i].getDisplayType() == DisplayType.TableDir)
+				if (columnWidthMap != null && columnWidthMap.get(gridField[i].getAD_Field_ID()) != null) {
+					column.setWidth(columnWidthMap.get(gridField[i].getAD_Field_ID()));
+				} else {
+					int l = DisplayType.isNumeric(gridField[i].getDisplayType())
+						? 120 : gridField[i].getDisplayLength() * 9;
+					//special treatment for line
+					if (DisplayType.isNumeric(gridField[i].getDisplayType()) && "Line".equals(gridField[i].getColumnName()))
 					{
-						if (l < MIN_COMBOBOX_WIDTH)
-							l = MIN_COMBOBOX_WIDTH;
+						l = 60;
 					}
-					else if (DisplayType.isNumeric(gridField[i].getDisplayType()))
+					else
 					{
-						if (l < MIN_NUMERIC_COL_WIDTH)
-							l = MIN_NUMERIC_COL_WIDTH;
+						if (gridField[i].getHeader().length() * 9 > l)
+							l = gridField[i].getHeader().length() * 9;
+						if (l > MAX_COLUMN_WIDTH)
+							l = MAX_COLUMN_WIDTH;
+						else if ( l < MIN_COLUMN_WIDTH)
+							l = MIN_COLUMN_WIDTH;
+						if (gridField[i].getDisplayType() == DisplayType.Table || gridField[i].getDisplayType() == DisplayType.TableDir)
+						{
+							if (l < MIN_COMBOBOX_WIDTH)
+								l = MIN_COMBOBOX_WIDTH;
+						}
+						else if (DisplayType.isNumeric(gridField[i].getDisplayType()))
+						{
+							if (l < MIN_NUMERIC_COL_WIDTH)
+								l = MIN_NUMERIC_COL_WIDTH;
+						}
 					}
+					column.setWidth(Integer.toString(l) + "px");
 				}
-				column.setWidth(Integer.toString(l) + "px");
 				columns.appendChild(column);
 			}
 		}
@@ -706,5 +763,20 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 		windowPanel = winPanel;
 		if (renderer != null)
 			renderer.setADWindowPanel(windowPanel);
+	}
+
+	public void reInit() {
+		this.setupFields(gridTab);
+		if (listbox.getColumns() != null) {
+			listbox.removeChild(listbox.getColumns());
+		}
+		init = false;
+		setupColumns();
+		init = true;
+		updateModel();
+	}
+
+	public GridField[] getFields() {
+		return gridField;
 	}
 }

@@ -169,4 +169,9 @@ public interface ToolbarListener
      * Export grid data
      */
     public void onExport();
+    
+    /**
+     * Customize grid view.
+     */
+    public void onCustomize();
 }

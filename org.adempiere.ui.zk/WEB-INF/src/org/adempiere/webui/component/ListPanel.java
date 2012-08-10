@@ -13,12 +13,14 @@
 package org.adempiere.webui.component;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.adempiere.model.MTabCustomization;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.editor.WEditor;
 import org.compiere.model.GridField;
@@ -26,6 +28,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -74,6 +77,8 @@ public class ListPanel extends Borderlayout implements EventListener
 
 	private South south;
 	
+	private Map<Integer, String> columnWidthMap;
+	
 	public static final String PAGE_SIZE_KEY = "ZK_PAGING_SIZE";
 	
 	public ListPanel()
@@ -102,13 +107,8 @@ public class ListPanel extends Borderlayout implements EventListener
 	public void init(GridTab gridTab)
 	{
 		if (init) return;
-				
-		this.gridTab = gridTab;
-		tableModel = gridTab.getTableModel();
-		
-		numColumns = tableModel.getColumnCount();
-		
-		gridField = ((GridTable)tableModel).getFields();
+						
+		setupFields(gridTab);
 				
 		setupColumns();
 		render();
@@ -116,6 +116,41 @@ public class ListPanel extends Borderlayout implements EventListener
 		updateListIndex(true);
 		
 		this.init = true;
+	}
+
+	private void setupFields(GridTab gridTab) {
+		this.gridTab = gridTab;
+		tableModel = gridTab.getTableModel();						
+		GridField[] tmpFields = ((GridTable)tableModel).getFields();
+		MTabCustomization tabCustomization = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
+		if (tabCustomization != null && tabCustomization.getAD_Tab_Customization_ID() > 0 
+			&& tabCustomization.getCustom() != null && tabCustomization.getCustom().trim().length() > 0) {
+			String custom = tabCustomization.getCustom().trim();
+			String[] customComponent = custom.split(";");
+			String[] fieldIds = customComponent[0].split("[,]");
+			List<GridField> fieldList = new ArrayList<GridField>();
+			for(String fieldIdStr : fieldIds) {
+				fieldIdStr = fieldIdStr.trim();
+				if (fieldIdStr.length() == 0) continue;
+				int AD_Field_ID = Integer.parseInt(fieldIdStr);
+				for(GridField gridField : tmpFields) {
+					if (gridField.getAD_Field_ID() == AD_Field_ID) {
+						fieldList.add(gridField);
+						break;
+					}
+				}
+			}
+			gridField = fieldList.toArray(new GridField[0]);
+			if (customComponent.length == 2) {
+				String[] widths = customComponent[1].split("[,]");
+				for(int i = 0; i< gridField.length; i++) {
+					columnWidthMap.put(gridField[i].getAD_Field_ID(), widths[i]);
+				}
+			}
+		} else {
+			gridField = tmpFields;
+		}
+		numColumns = gridField.length;
 	}
 	
 	/**
@@ -264,15 +299,19 @@ public class ListPanel extends Borderlayout implements EventListener
 				ListHeader colHeader = new ListHeader();
 				colHeader.setSort("auto");
 				colHeader.setLabel(gridField[i].getHeader());
-				int l = DisplayType.isNumeric(gridField[i].getDisplayType()) 
-					? 100 : gridField[i].getDisplayLength() * 9;
-				if (gridField[i].getHeader().length() * 9 > l)
-					l = gridField[i].getHeader().length() * 9;
-				if (l > MAX_COLUMN_WIDTH) 
-					l = MAX_COLUMN_WIDTH;
-				else if ( l < MIN_COLUMN_WIDTH)
-					l = MIN_COLUMN_WIDTH;
-				colHeader.setWidth(Integer.toString(l) + "px");
+				if (columnWidthMap != null && columnWidthMap.get(gridField[i].getAD_Field_ID()) != null) {
+					colHeader.setWidth(columnWidthMap.get(gridField[i].getAD_Field_ID()));
+				} else {
+					int l = DisplayType.isNumeric(gridField[i].getDisplayType()) 
+						? 100 : gridField[i].getDisplayLength() * 9;
+					if (gridField[i].getHeader().length() * 9 > l)
+						l = gridField[i].getHeader().length() * 9;
+					if (l > MAX_COLUMN_WIDTH) 
+						l = MAX_COLUMN_WIDTH;
+					else if ( l < MIN_COLUMN_WIDTH)
+						l = MIN_COLUMN_WIDTH;
+					colHeader.setWidth(Integer.toString(l) + "px");
+				}
 				header.appendChild(colHeader);
 			}
 		}		
@@ -428,5 +467,20 @@ public class ListPanel extends Borderlayout implements EventListener
 	 */
 	public void setWindowNo(int windowNo) {
 		this.windowNo = windowNo;
+	}
+	
+	public void reInit() {
+		this.setupFields(gridTab);
+		if (listbox.getListHead() != null) {
+			listbox.removeChild(listbox.getListHead());
+		}
+		init = false;
+		setupColumns();
+		init = true;
+		updateModel();
+	}
+
+	public GridField[] getFields() {
+		return gridField;
 	}
 }

@@ -104,8 +104,10 @@ public class TabCreateFields extends SvrProcess
 				
 				// end F3P
 				
-				if (column.isKey())
+				if (column.isKey()){
 					field.setIsDisplayed(false);
+					field.setIsDisplayedGrid(false);
+				}
 				if (field.save())
 				{
 					addLog(0, null, null, column.getName());

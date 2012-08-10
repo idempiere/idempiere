@@ -87,6 +87,8 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 
     private ToolBarButton btnChat;
 
+    private ToolBarButton btnCustomize;
+    
     private ToolBarButton btnExport;
 
     private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
@@ -174,6 +176,11 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
         btnRequests = createButton("Requests", "Request", "Request");
         btnProductInfo = createButton("ProductInfo", "Product", "InfoProduct");
         btnProductInfo.setVisible(isAllowProductInfo);
+        
+        addSeparator();
+        btnCustomize= createButton("Customize", "Customize", "Customize");
+        btnCustomize.setDisabled(false);
+        
 
         // Help and Exit should always be enabled
         btnHelp.setDisabled(false);
@@ -536,7 +543,12 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     {
     	btnGridToggle.setDisabled(!enabled);
     }
-
+    
+    public void enableCustomize(boolean enabled)
+    {
+    	btnCustomize.setDisabled(!enabled);
+    }
+    
     public void lock(boolean locked)
     {
     	this.btnLock.setPressed(locked);

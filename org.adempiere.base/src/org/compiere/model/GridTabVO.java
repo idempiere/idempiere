@@ -278,7 +278,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		//local only or remote fail for vpn profile
 		mTabVO.Fields = new ArrayList<GridFieldVO>();
 
-		String sql = GridFieldVO.getSQL(mTabVO.ctx);
+		String sql = GridFieldVO.getSQL(mTabVO.ctx," ORDER BY IsDisplayed DESC, SeqNo");
 		try
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql, null);
@@ -301,6 +301,8 @@ public class GridTabVO implements Evaluatee, Serializable
 			CLogger.get().log(Level.SEVERE, "", e);
 			return false;
 		}
+		
+		
 		
 		mTabVO.initFields = true;
 		
