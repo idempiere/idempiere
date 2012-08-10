@@ -56,6 +56,33 @@ public class MDashboardContent extends X_PA_DashboardContent
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
 	}
 	
+	public static MDashboardContent[] getForSession(int AD_User_ID)
+	{
+		List<MDashboardContent> list = getForSessionQuery(AD_User_ID).list();
+		return list.toArray(new MDashboardContent[list.size()]);
+	}
+	
+	public static Query getForSessionQuery(int AD_User_ID)
+	{
+		Properties ctx = Env.getCtx();
+		
+		String whereClause = "("+COLUMNNAME_AD_Role_ID+" IS NULL OR "+COLUMNNAME_AD_Role_ID+" IN (0,?))";
+		if (AD_User_ID == 0)
+			whereClause += " AND ("+COLUMNNAME_AD_User_ID+" IS NULL OR "+COLUMNNAME_AD_User_ID+"=?)";
+		else
+			whereClause += " AND "+COLUMNNAME_AD_User_ID+"=?";
+		
+		List<Object> parameters = new ArrayList<Object>();
+		parameters.add(Env.getAD_Role_ID(ctx));
+		parameters.add(AD_User_ID);
+		
+		return new Query(ctx, Table_Name, whereClause, null)
+		.setParameters(parameters)
+		.setOnlyActiveRecords(true)
+		.setApplyAccessFilter(true, false)
+		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
+	}
+	
     public MDashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
     {
       super (ctx, PA_DashboardContent_ID, trxName);

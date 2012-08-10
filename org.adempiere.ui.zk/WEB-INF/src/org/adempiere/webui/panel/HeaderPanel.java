@@ -89,7 +89,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	popMenu.setId("menuTreePopup");
 		popMenu.appendChild(new MenuTreePanel(popMenu));
 		popMenu.setWidth("600px");
-    	popMenu.setHeight("500px");
+    	popMenu.setHeight("90%");
     	popMenu.setParent(hbox);
 
     	btnMenu = new ToolBarButton();
@@ -126,7 +126,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			}
 			else if(event.getTarget() == btnMenu)
 			{
-				popMenu.open(btnMenu, "end_before");
+				popMenu.open(btnMenu, "after_start");
 			}
 		}
 	}
