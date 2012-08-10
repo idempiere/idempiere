@@ -14,13 +14,12 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.*;
-import java.util.*;
-import java.util.logging.Level;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import org.compiere.util.CCache;
-import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -34,7 +33,9 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 20120403122300L;
+	private static final long serialVersionUID = -5775251886672840324L;
+
+	private static List<MUserDefWin> m_fullList = null;
 
 	/**
 	 * 	Standard constructor.
@@ -71,49 +72,29 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	 */
 	private static MUserDefWin[] getAll (Properties ctx, int window_ID )
 	{
-
-		List<MUserDefWin> list = new ArrayList<MUserDefWin>();
-
-		StringBuffer sql = new StringBuffer("SELECT * "
-				+ " FROM AD_UserDef_Win w "
-				+ " WHERE w.AD_Window_ID=? AND w.IsActive='Y' "
-				// limit to current login language or no specific language
-				+ " AND (w.AD_Language=? OR w.AD_Language IS NULL)"
-				+ " AND w.AD_Client_ID=? ");
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			//      create statement
-			pstmt = DB.prepareStatement(sql.toString(), null);
-			pstmt.setInt(1, window_ID);
-			pstmt.setString(2, Env.getAD_Language(ctx));
-			pstmt.setInt(3, Env.getAD_Client_ID(ctx));
-			//      get data
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				MUserDefWin userDef = new MUserDefWin(Env.getCtx(),rs,null);
-				list.add(userDef);
-			}
-		}
-		catch (SQLException ex)
-		{
-			CLogger.get().log(Level.SEVERE, sql.toString(), ex);
-			return null;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; 
-			pstmt = null;
+		if (m_fullList == null) {
+			m_fullList = new Query(ctx, MUserDefWin.Table_Name, "IsActive='Y'", null).list();
 		}
 		
+		if (m_fullList.size() == 0) {
+			return null;
+		}
+
+		List<MUserDefWin> list = new ArrayList<MUserDefWin>();
+		
+		for (MUserDefWin udw : m_fullList) {
+			if (udw.getAD_Window_ID() == window_ID
+				&& udw.getAD_Client_ID() == Env.getAD_Client_ID(ctx)
+				&& (udw.getAD_Language() == null || udw.getAD_Language().equals(Env.getAD_Language(ctx)))
+				) {
+				list.add(udw);
+			}
+		}
+
 		if (list.size() == 0)
 			return null;
 
 		return list.toArray(new MUserDefWin[list.size()]);
-
 	}
 	
 	/**
@@ -206,5 +187,17 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	
 	/**	Cache of selected MUserDefWin entries 					**/
 	private static CCache<Integer,MUserDefWin> s_cache = new CCache<Integer,MUserDefWin>("AD_UserDef_Win", 3);	//  3 weights
-		
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		m_fullList = null;
+		return true;
+	}
+	
+	@Override
+	protected boolean beforeDelete() {
+		m_fullList = null;
+		return true;
+	}
+	
 }	//	MUserDefWin
