@@ -58,6 +58,7 @@ syntax: regexp
 ^plugins/.*\.class$
 ^adempiere-local\.properties$
 ^org\.adempiere\.ui/.*\.class$
+^org\.adempiere\.ui/bin/.*\.css$
 ^org\.adempiere\.pipo.handlers/.*\.class$
 ^org\.adempiere\.pipo/.*\.class$
 ^org\.adempiere\.report\.jasper\.swing/.*\.class$
@@ -99,6 +100,7 @@ syntax: regexp
 
 syntax: regexp
 swingclient.product .*
+server.product .*
 syntax: regexp
 ^org\.zkoss\.zk\.library/bin$
 syntax: regexp

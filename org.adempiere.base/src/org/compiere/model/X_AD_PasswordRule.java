@@ -30,7 +30,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120802L;
+	private static final long serialVersionUID = 20120806L;
 
     /** Standard Constructor */
     public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName)
@@ -39,6 +39,15 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
       /** if (AD_PasswordRule_ID == 0)
         {
 			setAD_PasswordRule_ID (0);
+			setIsDictMatchBackwards (false);
+// N
+			setIsUserNameRule (false);
+// N
+			setIsUsingDictionary (false);
+// N
+			setIsWhitespace (false);
+// N
+			setName (null);
         } */
     }
 
@@ -70,8 +79,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
       return sb.toString();
     }
 
-	/** Set AD_PasswordRule.
-		@param AD_PasswordRule_ID AD_PasswordRule	  */
+	/** Set Password Policies.
+		@param AD_PasswordRule_ID Password Policies	  */
 	public void setAD_PasswordRule_ID (int AD_PasswordRule_ID)
 	{
 		if (AD_PasswordRule_ID < 1) 
@@ -80,8 +89,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 			set_ValueNoCheck (COLUMNNAME_AD_PasswordRule_ID, Integer.valueOf(AD_PasswordRule_ID));
 	}
 
-	/** Get AD_PasswordRule.
-		@return AD_PasswordRule	  */
+	/** Get Password Policies.
+		@return Password Policies	  */
 	public int getAD_PasswordRule_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PasswordRule_ID);
@@ -105,14 +114,17 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Alphabetical Character.
-		@param AlphabeticalCharacter Alphabetical Character	  */
+		@param AlphabeticalCharacter 
+		Require at least # alphabetical in passwords
+	  */
 	public void setAlphabeticalCharacter (int AlphabeticalCharacter)
 	{
 		set_Value (COLUMNNAME_AlphabeticalCharacter, Integer.valueOf(AlphabeticalCharacter));
 	}
 
 	/** Get Alphabetical Character.
-		@return Alphabetical Character	  */
+		@return Require at least # alphabetical in passwords
+	  */
 	public int getAlphabeticalCharacter () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AlphabeticalCharacter);
@@ -123,50 +135,22 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 
 	/** Set Alphabetical Sequence.
 		@param AlphabeticalSequence 
-		Allow alphabetical sequences
+		Lenght of alphabetical sequence to validate
 	  */
-	public void setAlphabeticalSequence (boolean AlphabeticalSequence)
+	public void setAlphabeticalSequence (int AlphabeticalSequence)
 	{
-		set_Value (COLUMNNAME_AlphabeticalSequence, Boolean.valueOf(AlphabeticalSequence));
+		set_Value (COLUMNNAME_AlphabeticalSequence, Integer.valueOf(AlphabeticalSequence));
 	}
 
 	/** Get Alphabetical Sequence.
-		@return Allow alphabetical sequences
+		@return Lenght of alphabetical sequence to validate
 	  */
-	public boolean isAlphabeticalSequence () 
+	public int getAlphabeticalSequence () 
 	{
-		Object oo = get_Value(COLUMNNAME_AlphabeticalSequence);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Match Backwards of Dictionary.
-		@param DictMatchBackwards 
-		Match dictionary words backwards
-	  */
-	public void setDictMatchBackwards (boolean DictMatchBackwards)
-	{
-		set_Value (COLUMNNAME_DictMatchBackwards, Boolean.valueOf(DictMatchBackwards));
-	}
-
-	/** Get Match Backwards of Dictionary.
-		@return Match dictionary words backwards
-	  */
-	public boolean isDictMatchBackwards () 
-	{
-		Object oo = get_Value(COLUMNNAME_DictMatchBackwards);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		Integer ii = (Integer)get_Value(COLUMNNAME_AlphabeticalSequence);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Word Length Dictionary.
@@ -204,6 +188,96 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Match Backwards of Dictionary.
+		@param IsDictMatchBackwards 
+		Match dictionary words backwards
+	  */
+	public void setIsDictMatchBackwards (boolean IsDictMatchBackwards)
+	{
+		set_Value (COLUMNNAME_IsDictMatchBackwards, Boolean.valueOf(IsDictMatchBackwards));
+	}
+
+	/** Get Match Backwards of Dictionary.
+		@return Match dictionary words backwards
+	  */
+	public boolean isDictMatchBackwards () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDictMatchBackwards);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set User Name Rule.
+		@param IsUserNameRule 
+		Validate the password doesn't contain user name (ignore case and match backwards)
+	  */
+	public void setIsUserNameRule (boolean IsUserNameRule)
+	{
+		set_Value (COLUMNNAME_IsUserNameRule, Boolean.valueOf(IsUserNameRule));
+	}
+
+	/** Get User Name Rule.
+		@return Validate the password doesn't contain user name (ignore case and match backwards)
+	  */
+	public boolean isUserNameRule () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsUserNameRule);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Using Dictionary.
+		@param IsUsingDictionary Using Dictionary	  */
+	public void setIsUsingDictionary (boolean IsUsingDictionary)
+	{
+		set_Value (COLUMNNAME_IsUsingDictionary, Boolean.valueOf(IsUsingDictionary));
+	}
+
+	/** Get Using Dictionary.
+		@return Using Dictionary	  */
+	public boolean isUsingDictionary () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsUsingDictionary);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Whitespace.
+		@param IsWhitespace Whitespace	  */
+	public void setIsWhitespace (boolean IsWhitespace)
+	{
+		set_Value (COLUMNNAME_IsWhitespace, Boolean.valueOf(IsWhitespace));
+	}
+
+	/** Get Whitespace.
+		@return Whitespace	  */
+	public boolean isWhitespace () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsWhitespace);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Lowercase Character.
@@ -246,15 +320,15 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set Min Length.
-		@param MinLength Min Length	  */
+	/** Set Minimum Length.
+		@param MinLength Minimum Length	  */
 	public void setMinLength (int MinLength)
 	{
 		set_Value (COLUMNNAME_MinLength, Integer.valueOf(MinLength));
 	}
 
-	/** Get Min Length.
-		@return Min Length	  */
+	/** Get Minimum Length.
+		@return Minimum Length	  */
 	public int getMinLength () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MinLength);
@@ -310,7 +384,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 
 	/** Set Numerical Sequence.
 		@param NumericalSequence 
-		Allow numerical sequences of length #
+		Length of numerical sequence to validate
 	  */
 	public void setNumericalSequence (int NumericalSequence)
 	{
@@ -318,7 +392,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Get Numerical Sequence.
-		@return Allow numerical sequences of length #
+		@return Length of numerical sequence to validate
 	  */
 	public int getNumericalSequence () 
 	{
@@ -344,37 +418,36 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 
 	/** Set QWERTY Sequence.
 		@param QWERTYSequence 
-		Allow QWERTY sequences
+		Lenght of QWERTY sequences to validate
 	  */
-	public void setQWERTYSequence (boolean QWERTYSequence)
+	public void setQWERTYSequence (int QWERTYSequence)
 	{
-		set_Value (COLUMNNAME_QWERTYSequence, Boolean.valueOf(QWERTYSequence));
+		set_Value (COLUMNNAME_QWERTYSequence, Integer.valueOf(QWERTYSequence));
 	}
 
 	/** Get QWERTY Sequence.
-		@return Allow QWERTY sequences
+		@return Lenght of QWERTY sequences to validate
 	  */
-	public boolean isQWERTYSequence () 
+	public int getQWERTYSequence () 
 	{
-		Object oo = get_Value(COLUMNNAME_QWERTYSequence);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		Integer ii = (Integer)get_Value(COLUMNNAME_QWERTYSequence);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Repeat Character Regex.
-		@param RepeatCharacterRegex Repeat Character Regex	  */
+		@param RepeatCharacterRegex 
+		Length of repeated characters to validate
+	  */
 	public void setRepeatCharacterRegex (int RepeatCharacterRegex)
 	{
 		set_Value (COLUMNNAME_RepeatCharacterRegex, Integer.valueOf(RepeatCharacterRegex));
 	}
 
 	/** Get Repeat Character Regex.
-		@return Repeat Character Regex	  */
+		@return Length of repeated characters to validate
+	  */
 	public int getRepeatCharacterRegex () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RepeatCharacterRegex);
@@ -401,71 +474,5 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Registered EMail.
-		@param UserName 
-		Email of the responsible for the System
-	  */
-	public void setUserName (boolean UserName)
-	{
-		set_Value (COLUMNNAME_UserName, Boolean.valueOf(UserName));
-	}
-
-	/** Get Registered EMail.
-		@return Email of the responsible for the System
-	  */
-	public boolean isUserName () 
-	{
-		Object oo = get_Value(COLUMNNAME_UserName);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Using Dictionary.
-		@param UsingDictionary Using Dictionary	  */
-	public void setUsingDictionary (boolean UsingDictionary)
-	{
-		set_Value (COLUMNNAME_UsingDictionary, Boolean.valueOf(UsingDictionary));
-	}
-
-	/** Get Using Dictionary.
-		@return Using Dictionary	  */
-	public boolean isUsingDictionary () 
-	{
-		Object oo = get_Value(COLUMNNAME_UsingDictionary);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set whitespace.
-		@param whitespace whitespace	  */
-	public void setwhitespace (boolean whitespace)
-	{
-		set_Value (COLUMNNAME_whitespace, Boolean.valueOf(whitespace));
-	}
-
-	/** Get whitespace.
-		@return whitespace	  */
-	public boolean iswhitespace () 
-	{
-		Object oo = get_Value(COLUMNNAME_whitespace);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 }

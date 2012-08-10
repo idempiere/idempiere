@@ -65,10 +65,10 @@ public interface I_AD_PasswordRule
     /** Column name AD_PasswordRule_ID */
     public static final String COLUMNNAME_AD_PasswordRule_ID = "AD_PasswordRule_ID";
 
-	/** Set AD_PasswordRule	  */
+	/** Set Password Policies	  */
 	public void setAD_PasswordRule_ID (int AD_PasswordRule_ID);
 
-	/** Get AD_PasswordRule	  */
+	/** Get Password Policies	  */
 	public int getAD_PasswordRule_ID();
 
     /** Column name AD_PasswordRule_UU */
@@ -83,24 +83,28 @@ public interface I_AD_PasswordRule
     /** Column name AlphabeticalCharacter */
     public static final String COLUMNNAME_AlphabeticalCharacter = "AlphabeticalCharacter";
 
-	/** Set Alphabetical Character	  */
+	/** Set Alphabetical Character.
+	  * Require at least # alphabetical in passwords
+	  */
 	public void setAlphabeticalCharacter (int AlphabeticalCharacter);
 
-	/** Get Alphabetical Character	  */
+	/** Get Alphabetical Character.
+	  * Require at least # alphabetical in passwords
+	  */
 	public int getAlphabeticalCharacter();
 
     /** Column name AlphabeticalSequence */
     public static final String COLUMNNAME_AlphabeticalSequence = "AlphabeticalSequence";
 
 	/** Set Alphabetical Sequence.
-	  * Allow alphabetical sequences
+	  * Lenght of alphabetical sequence to validate
 	  */
-	public void setAlphabeticalSequence (boolean AlphabeticalSequence);
+	public void setAlphabeticalSequence (int AlphabeticalSequence);
 
 	/** Get Alphabetical Sequence.
-	  * Allow alphabetical sequences
+	  * Lenght of alphabetical sequence to validate
 	  */
-	public boolean isAlphabeticalSequence();
+	public int getAlphabeticalSequence();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -117,19 +121,6 @@ public interface I_AD_PasswordRule
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name DictMatchBackwards */
-    public static final String COLUMNNAME_DictMatchBackwards = "DictMatchBackwards";
-
-	/** Set Match Backwards of Dictionary.
-	  * Match dictionary words backwards
-	  */
-	public void setDictMatchBackwards (boolean DictMatchBackwards);
-
-	/** Get Match Backwards of Dictionary.
-	  * Match dictionary words backwards
-	  */
-	public boolean isDictMatchBackwards();
 
     /** Column name DictWordLength */
     public static final String COLUMNNAME_DictWordLength = "DictWordLength";
@@ -166,6 +157,50 @@ public interface I_AD_PasswordRule
 	  */
 	public boolean isActive();
 
+    /** Column name IsDictMatchBackwards */
+    public static final String COLUMNNAME_IsDictMatchBackwards = "IsDictMatchBackwards";
+
+	/** Set Match Backwards of Dictionary.
+	  * Match dictionary words backwards
+	  */
+	public void setIsDictMatchBackwards (boolean IsDictMatchBackwards);
+
+	/** Get Match Backwards of Dictionary.
+	  * Match dictionary words backwards
+	  */
+	public boolean isDictMatchBackwards();
+
+    /** Column name IsUserNameRule */
+    public static final String COLUMNNAME_IsUserNameRule = "IsUserNameRule";
+
+	/** Set User Name Rule.
+	  * Validate the password doesn't contain user name (ignore case and match backwards)
+	  */
+	public void setIsUserNameRule (boolean IsUserNameRule);
+
+	/** Get User Name Rule.
+	  * Validate the password doesn't contain user name (ignore case and match backwards)
+	  */
+	public boolean isUserNameRule();
+
+    /** Column name IsUsingDictionary */
+    public static final String COLUMNNAME_IsUsingDictionary = "IsUsingDictionary";
+
+	/** Set Using Dictionary	  */
+	public void setIsUsingDictionary (boolean IsUsingDictionary);
+
+	/** Get Using Dictionary	  */
+	public boolean isUsingDictionary();
+
+    /** Column name IsWhitespace */
+    public static final String COLUMNNAME_IsWhitespace = "IsWhitespace";
+
+	/** Set Whitespace	  */
+	public void setIsWhitespace (boolean IsWhitespace);
+
+	/** Get Whitespace	  */
+	public boolean isWhitespace();
+
     /** Column name LowercaseCharacter */
     public static final String COLUMNNAME_LowercaseCharacter = "LowercaseCharacter";
 
@@ -195,10 +230,10 @@ public interface I_AD_PasswordRule
     /** Column name MinLength */
     public static final String COLUMNNAME_MinLength = "MinLength";
 
-	/** Set Min Length	  */
+	/** Set Minimum Length	  */
 	public void setMinLength (int MinLength);
 
-	/** Get Min Length	  */
+	/** Get Minimum Length	  */
 	public int getMinLength();
 
     /** Column name Name */
@@ -231,12 +266,12 @@ public interface I_AD_PasswordRule
     public static final String COLUMNNAME_NumericalSequence = "NumericalSequence";
 
 	/** Set Numerical Sequence.
-	  * Allow numerical sequences of length #
+	  * Length of numerical sequence to validate
 	  */
 	public void setNumericalSequence (int NumericalSequence);
 
 	/** Get Numerical Sequence.
-	  * Allow numerical sequences of length #
+	  * Length of numerical sequence to validate
 	  */
 	public int getNumericalSequence();
 
@@ -253,22 +288,26 @@ public interface I_AD_PasswordRule
     public static final String COLUMNNAME_QWERTYSequence = "QWERTYSequence";
 
 	/** Set QWERTY Sequence.
-	  * Allow QWERTY sequences
+	  * Lenght of QWERTY sequences to validate
 	  */
-	public void setQWERTYSequence (boolean QWERTYSequence);
+	public void setQWERTYSequence (int QWERTYSequence);
 
 	/** Get QWERTY Sequence.
-	  * Allow QWERTY sequences
+	  * Lenght of QWERTY sequences to validate
 	  */
-	public boolean isQWERTYSequence();
+	public int getQWERTYSequence();
 
     /** Column name RepeatCharacterRegex */
     public static final String COLUMNNAME_RepeatCharacterRegex = "RepeatCharacterRegex";
 
-	/** Set Repeat Character Regex	  */
+	/** Set Repeat Character Regex.
+	  * Length of repeated characters to validate
+	  */
 	public void setRepeatCharacterRegex (int RepeatCharacterRegex);
 
-	/** Get Repeat Character Regex	  */
+	/** Get Repeat Character Regex.
+	  * Length of repeated characters to validate
+	  */
 	public int getRepeatCharacterRegex();
 
     /** Column name Updated */
@@ -299,35 +338,4 @@ public interface I_AD_PasswordRule
 	  * Require at least # upper case char
 	  */
 	public int getUppercaseCharacter();
-
-    /** Column name UserName */
-    public static final String COLUMNNAME_UserName = "UserName";
-
-	/** Set Registered EMail.
-	  * Email of the responsible for the System
-	  */
-	public void setUserName (boolean UserName);
-
-	/** Get Registered EMail.
-	  * Email of the responsible for the System
-	  */
-	public boolean isUserName();
-
-    /** Column name UsingDictionary */
-    public static final String COLUMNNAME_UsingDictionary = "UsingDictionary";
-
-	/** Set Using Dictionary	  */
-	public void setUsingDictionary (boolean UsingDictionary);
-
-	/** Get Using Dictionary	  */
-	public boolean isUsingDictionary();
-
-    /** Column name whitespace */
-    public static final String COLUMNNAME_whitespace = "whitespace";
-
-	/** Set whitespace	  */
-	public void setwhitespace (boolean whitespace);
-
-	/** Get whitespace	  */
-	public boolean iswhitespace();
 }

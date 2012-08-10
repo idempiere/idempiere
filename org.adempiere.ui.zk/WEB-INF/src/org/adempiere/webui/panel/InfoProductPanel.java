@@ -431,7 +431,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
         	list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceLimit"), "bomPriceLimit(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceLimit", Double.class));
         ColumnInfo[] s_layoutProductPrice = new ColumnInfo[list.size()];
         list.toArray(s_layoutProductPrice);
-        s_sqlFrom = "M_ProductPrice pp INNER JOIN M_PriceList_Version plv ON pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID";
+        s_sqlFrom = "M_ProductPrice pp INNER JOIN M_PriceList_Version plv ON (pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID)";
         s_sqlWhere = "pp.M_Product_ID = ? AND plv.IsActive = 'Y' AND pp.IsActive = 'Y'";
         m_sqlProductprice = productpriceTbl.prepareTable(s_layoutProductPrice, s_sqlFrom, s_sqlWhere, false, "pp") + " ORDER BY plv.ValidFrom DESC";
         productpriceTbl.setMultiSelection(false);
@@ -1328,7 +1328,8 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 			if (fieldValue.getText().length() == 0 && fieldName.getText().length() == 0 && contentPanel.getRowCount() == 0)
 				execute = false;
 			// Remove existing headers
-			contentPanel.getListhead().detach();
+			if (contentPanel.getListhead() != null)
+				contentPanel.getListhead().detach();
 			//	Create Grid
 			int M_Warehouse_ID = 0;
 			ListItem listitem = pickWarehouse.getSelectedItem();

@@ -16,7 +16,6 @@ Bundle-ClassPath: base.jar,
  jfreechart-1.0.13.jar,
  jnlp.jar,
  groovy-all-1.7.5.jar,
- vt-crypt-2.1.4.jar,
  vt-dictionary-3.0.jar,
  vt-password-3.1.1.jar
 Export-Package: bsh,

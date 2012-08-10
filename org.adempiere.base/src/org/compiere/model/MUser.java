@@ -351,7 +351,7 @@ public class MUser extends X_AD_User
 	/** User Access Rights				*/
 	private X_AD_UserBPAccess[]	m_bpAccess = null;
 	/** Password Hashed **/
-	private boolean hashed = false;
+	private boolean being_hashed = false;
 	
 		
 	/**
@@ -438,10 +438,10 @@ public class MUser extends X_AD_User
 			return;
 		}
 		
-		if ( hashed  )
+		if ( being_hashed  )
 			return;
 		
-		hashed = true;   // prevents double call from beforeSave
+		being_hashed = true;   // prevents double call from beforeSave
 		
 		// Uses a secure Random not a simple Random
 		SecureRandom random;
@@ -918,6 +918,18 @@ public class MUser extends X_AD_User
 			setValue(super.getValue());
 
 		if (newRecord || is_ValueChanged("Password")) {
+			// Validate password policies / IDEMPIERE-221
+			if (get_ValueOld("Salt") == null && get_Value("Salt") != null) { // being hashed
+				;
+			} else {
+				int pwdruleid = MClient.get(getCtx(), getAD_Client_ID()).getAD_PasswordRule_ID();
+				if (pwdruleid > 0) {
+					MPasswordRule pwdrule = new MPasswordRule(getCtx(), MClient.get(getCtx()).getAD_PasswordRule_ID(), get_TrxName());
+					pwdrule.validate((getLDAPUser() != null ? getLDAPUser() : getName()), getPassword());
+				}
+			}
+				
+			// Hash password - IDEMPIERE-347
 			boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
 			if (hash_password)
 				setPassword(getPassword());

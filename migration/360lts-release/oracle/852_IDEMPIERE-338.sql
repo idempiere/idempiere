@@ -33,3 +33,4 @@ UPDATE AD_System
 WHERE LastMigrationScriptApplied<'852_IDEMPIERE-338.sql'
    OR LastMigrationScriptApplied IS NULL
 ;
+

@@ -6,3 +6,10 @@ UPDATE AD_Column SET AD_Reference_ID=12,Updated=TO_DATE('2012-04-06 16:08:25','Y
 -- Apr 6, 2012 4:10:02 PM CEST
 UPDATE AD_Column SET AD_Reference_ID=12,Updated=TO_DATE('2012-04-06 16:10:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=7832
 ;
+
+UPDATE AD_System
+  SET LastMigrationScriptApplied='834_IDEMPIERE-113.sql'
+WHERE LastMigrationScriptApplied<'834_IDEMPIERE-113.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
+

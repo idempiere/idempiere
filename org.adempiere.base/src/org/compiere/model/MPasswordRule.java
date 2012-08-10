@@ -21,20 +21,27 @@ package org.compiere.model;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 import edu.vt.middleware.dictionary.ArrayWordList;
 import edu.vt.middleware.dictionary.WordListDictionary;
 import edu.vt.middleware.dictionary.WordLists;
 import edu.vt.middleware.dictionary.sort.ArraysSort;
+import edu.vt.middleware.password.AlphabeticalCharacterRule;
 import edu.vt.middleware.password.AlphabeticalSequenceRule;
 import edu.vt.middleware.password.CharacterCharacteristicsRule;
 import edu.vt.middleware.password.DictionarySubstringRule;
 import edu.vt.middleware.password.DigitCharacterRule;
 import edu.vt.middleware.password.LengthRule;
 import edu.vt.middleware.password.LowercaseCharacterRule;
+import edu.vt.middleware.password.MessageResolver;
 import edu.vt.middleware.password.NonAlphanumericCharacterRule;
 import edu.vt.middleware.password.NumericalSequenceRule;
 import edu.vt.middleware.password.Password;
@@ -45,6 +52,7 @@ import edu.vt.middleware.password.RepeatCharacterRegexRule;
 import edu.vt.middleware.password.Rule;
 import edu.vt.middleware.password.RuleResult;
 import edu.vt.middleware.password.UppercaseCharacterRule;
+import edu.vt.middleware.password.UsernameRule;
 import edu.vt.middleware.password.WhitespaceRule;
 
 /**
@@ -55,7 +63,7 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6369065572886752718L;
+	private static final long serialVersionUID = -3557291675139843726L;
 
 	/**
 	 * @param ctx
@@ -75,69 +83,74 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		super(ctx, rs, trxName);
 	}
 
-	public String validate(String newPassword) {
-		WhitespaceRule whitespaceRule;
-		AlphabeticalSequenceRule alphaSeqRule;
-		NumericalSequenceRule numSeqRule;
-		QwertySequenceRule qwertySeqRule;
-		RepeatCharacterRegexRule repeatRule;
+	public void validate(String username, String newPassword) throws AdempiereException {
 
 		ArrayList<Rule> ruleList =  new ArrayList<Rule>();
 
-		if (getMinLength()>0 || getMaxLength()>0) {
+		if (getMinLength() > 0 || getMaxLength() > 0) {
 			LengthRule lengthRule = new LengthRule();
-			if (getMinLength()>0)
+			if (getMinLength() > 0)
 				lengthRule.setMinimumLength(getMinLength());
-			if (getMaxLength()>0)
+			if (getMaxLength() > 0)
 				lengthRule.setMaximumLength(getMaxLength());
 			ruleList.add(lengthRule);
-		}  
-
-		if (iswhitespace()) {
-			whitespaceRule = new WhitespaceRule();	
-			ruleList.add(whitespaceRule);
 		}
+
+		if (isWhitespace()) {
+			ruleList.add(new WhitespaceRule());
+		}
+
 		// control allowed characters
 		CharacterCharacteristicsRule charRule = new CharacterCharacteristicsRule();
-
-		if (getDigitCharacter()>0) {
-			// require at least 1 digit in passwords
+		int numValidations = 0;
+		if (getDigitCharacter() > 0) {
+			// require at least n digit in passwords
+			numValidations++;
 			charRule.getRules().add(new DigitCharacterRule(getDigitCharacter()));
 		}
-		if (getNonAlphaNumericCharacter()>0) {
-			// require at least 1 non-alphanumeric char
+		if (getNonAlphaNumericCharacter() > 0) {
+			// require at least n non-alphanumeric char
+			numValidations++;
 			charRule.getRules().add(new NonAlphanumericCharacterRule(getNonAlphaNumericCharacter()));
 		}
-		if (getUppercaseCharacter()>0) {
+		if (getUppercaseCharacter() > 0) {
+			numValidations++;
 			charRule.getRules().add(new UppercaseCharacterRule(getUppercaseCharacter()));	
 		}
-
-		if (getLowercaseCharacter()>0) {
+		if (getLowercaseCharacter() > 0) {
+			numValidations++;
 			charRule.getRules().add(new LowercaseCharacterRule(getLowercaseCharacter()));
 		}
-		ruleList.add(charRule);
-
-		if (isAlphabeticalSequence()) {
-			alphaSeqRule=new AlphabeticalSequenceRule();
-			ruleList.add(alphaSeqRule);
+		if (getAlphabeticalCharacter() > 0){
+			numValidations++;
+			charRule.getRules().add(new AlphabeticalCharacterRule(getAlphabeticalCharacter()));
+		}
+		if (! charRule.getRules().isEmpty()) {
+			charRule.setNumberOfCharacteristics(numValidations);
+			ruleList.add(charRule);
 		}
 
-		if (getNumericalSequence()>0) {
-			numSeqRule = new NumericalSequenceRule(getNumericalSequence(),true);
-			ruleList.add(numSeqRule);
-		}
-		if (isQWERTYSequence()) {
-			qwertySeqRule = new QwertySequenceRule();
-			ruleList.add(qwertySeqRule);
+		if (getAlphabeticalSequence() > 0) {
+			ruleList.add(new AlphabeticalSequenceRule(getAlphabeticalSequence(), true));
 		}
 
-		if (getRepeatCharacterRegex()>0) {
-			repeatRule = new RepeatCharacterRegexRule(getRepeatCharacterRegex());
-			ruleList.add(repeatRule);
+		if (getNumericalSequence() > 0) {
+			ruleList.add(new NumericalSequenceRule(getNumericalSequence(), true));
+		}
+		if (getQWERTYSequence() > 0) {
+			ruleList.add(new QwertySequenceRule(getQWERTYSequence(), true));
+		}
+
+		if (getRepeatCharacterRegex() > 0) {
+			ruleList.add(new RepeatCharacterRegexRule(getRepeatCharacterRegex()));
+		}
+
+		if (isUserNameRule()) {
+			ruleList.add(new UsernameRule(true, true));
 		}
 
 		if (isUsingDictionary()) {
-			if (getPathDictionary().length()>0) {
+			if (getPathDictionary().length() > 0) {
 				try {
 					ArrayWordList awl = WordLists.createFromReader(
 							new FileReader[] {new FileReader(getPathDictionary())},
@@ -147,10 +160,9 @@ public class MPasswordRule extends X_AD_PasswordRule {
 					WordListDictionary dict = new WordListDictionary(awl);
 					DictionarySubstringRule dictRule = new DictionarySubstringRule(dict);
 
-					if (getDictWordLength()>0) {
+					if (getDictWordLength() > 0) {
 						dictRule.setWordLength(getDictWordLength()); // size of words to check in the password						
-					}
-					else{
+					} else{
 						dictRule.setWordLength(DictionarySubstringRule.DEFAULT_WORD_LENGTH);
 					}
 
@@ -160,27 +172,47 @@ public class MPasswordRule extends X_AD_PasswordRule {
 					ruleList.add(dictRule);
 
 				} catch (FileNotFoundException e) {
-					return "Could not find dictionary file: " + e.getMessage();
+					throw new AdempiereException("Could not find dictionary file: " + e.getMessage());
 				} catch (IOException e) {
-					return "Could not read dictionary file: " + e.getMessage();
+					throw new AdempiereException("Could not find dictionary file: " + e.getMessage());
 				}
 
 			}
 		}
 
 		if (!ruleList.isEmpty()) {
-			PasswordValidator validator = new PasswordValidator(ruleList);
+			PasswordValidator validator = new PasswordValidator(getCustomResolver(), ruleList);
 			PasswordData passwordData = new PasswordData(new Password(newPassword));
+			passwordData.setUsername(username);
 			RuleResult result = validator.validate(passwordData);
 			if (!result.isValid()) {
-				String error = null;
+				String error = Msg.getMsg(getCtx(), "PasswordErrors") + ": [";
 				for (String msg : validator.getMessages(result)) {
-					error = (error == null ? "" : error) + " " + msg;
+					error = error + " " + msg;
 				}
-				return error;
+				error = error + " ]";
+				throw new AdempiereException(error);
 			}
 		}
-		return null;
+	}
+
+	private MessageResolver getCustomResolver() {
+		Properties props = null;
+		InputStream in = null;
+		try {
+			String file = "vtpassword_messages_" + Env.getLoginLanguage(getCtx()).getLocale().getLanguage() + ".properties";
+			in = this.getClass().getResourceAsStream(file);
+			if (in != null) {
+				props = new Properties();
+				props.load(in);
+			}
+		} catch (Exception e) {
+			props = null;
+		}
+		if (props == null)
+			return new MessageResolver();
+		else
+			return new MessageResolver(props);
 	}
 
 }
