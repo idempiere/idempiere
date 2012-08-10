@@ -1,6 +1,6 @@
 /*
-*This file is part of Adempiere ERP Bazaar
-*http://www.adempiere.org
+*This file is part of iDempiere ERP
+*http://www.idempiere.org
 *
 *This program is free software; you can redistribute it and/or
 *modify it under the terms of the GNU General Public License
@@ -22,5 +22,5 @@ RETURNS char(36) AS $$
 BEGIN
 	return uuid_generate_v4()::char(36);
 END;
-$$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$$ LANGUAGE plpgsql;
 

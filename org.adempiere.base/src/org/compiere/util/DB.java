@@ -2358,16 +2358,22 @@ public final class DB
 		}
 	}
 
+	private static boolean m_isUUIDVerified = false;
+	private static boolean m_isUUIDSupported = false;
 	/***
 	 * @return true if current db have working generate_uuid function. generate_uuid doesn't work on 64 bit postgresql
 	 * on windows yet.
 	 */
 	public static boolean isGenerateUUIDSupported() {
-		String uuidTest = null;
-		try {
-			uuidTest = getSQLValueStringEx(null, "SELECT Generate_UUID() FROM Dual");
-		} catch (Exception e) {}
-		return uuidTest != null && uuidTest.trim().length() == 36;
+		if (! m_isUUIDVerified) {
+			String uuidTest = null;
+			try {
+				uuidTest = getSQLValueStringEx(null, "SELECT Generate_UUID() FROM Dual");
+			} catch (Exception e) {}
+			m_isUUIDSupported = uuidTest != null && uuidTest.trim().length() == 36;
+			m_isUUIDVerified = true;
+		}
+		return m_isUUIDSupported;
 	}
 
 	private static void verifyTrx(String trxName, String sql) {
