@@ -90,7 +90,7 @@ public class MenuTreePanel extends AbstractMenuPanel
         
         // Elaine 2009/02/27 - expand tree
         Toolbar toolbar = new Toolbar();
-        toolbar.setStyle("verticle-align: middle; padding: 2px");
+        toolbar.setStyle("background-color: #ffffff; verticle-align: middle; padding: 2px");
         this.appendChild(toolbar);
         
         expandToggle = new ToolBarButton();
