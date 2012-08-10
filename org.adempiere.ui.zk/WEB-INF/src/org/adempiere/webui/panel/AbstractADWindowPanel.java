@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -54,6 +55,7 @@ import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.panel.action.ExportAction;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WChat;
@@ -90,6 +92,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listitem;
@@ -966,6 +970,9 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     public void onToggle()
     {
     	curTabpanel.switchRowPresentation();
+    	//Deepak-Enabling customize button IDEMPIERE-364
+        if(!(curTabpanel instanceof ADSortTab))
+        	toolbar.enableCustomize(((ADTabpanel)curTabpanel).isGridView());
     	focusToActivePanel();
     }
 
@@ -1194,7 +1201,9 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         {
         	toolbar.enableHistoryRecords(false);
         }
-
+        //Deepak-Enabling customize button IDEMPIERE-364
+        if(!(curTabpanel instanceof ADSortTab))
+        	toolbar.enableCustomize(((ADTabpanel)curTabpanel).isGridView());
 	}
 
 	/**
@@ -1396,6 +1405,9 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         toolbar.enableReport(true);
         toolbar.enableExport(!curTab.isSortTab());
         
+        //Deepak-Enabling customize button IDEMPIERE-364
+        if(!(curTabpanel instanceof ADSortTab))
+        	toolbar.enableCustomize(((ADTabpanel)curTabpanel).isGridView());
         toolbar.updateToolBarAndMenuWithRestriction(gridWindow.getAD_Window_ID());
     }
 
@@ -2500,5 +2512,30 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	 */
 	public int getWindowNo() {
 		return curWindowNo;
+	}
+	
+	/**
+     * @see ToolbarListener#onCustomize()
+     */
+	public void onCustomize() {
+		ADTabpanel tabPanel = (ADTabpanel) getADTab().getSelectedTabpanel();
+		Columns columns = tabPanel.getGridView().getListbox().getColumns();
+		List columnList = columns.getChildren();
+		GridField[] fields = tabPanel.getGridView().getFields();
+		Map<Integer, String> columnsWidth = new HashMap<Integer, String>();
+		ArrayList<Integer> gridFieldIds = new ArrayList<Integer>();
+		for (int i = 0; i < columnList.size()-1; i++) {
+			Column column = (Column) columnList.get(i);
+			String width = column.getWidth(); 			
+			columnsWidth.put(fields[i].getAD_Field_ID(), width);
+			gridFieldIds.add(fields[i].getAD_Field_ID());
+			
+		}
+		if (CustomizeGridViewDialog.showCustomize(0, curTab.getAD_Tab_ID(), columnsWidth,gridFieldIds)) {			
+
+			if (tabPanel.getGridView() != null) {
+				tabPanel.getGridView().reInit();
+			}
+		}
 	}
 }

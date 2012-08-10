@@ -862,7 +862,7 @@ public class ModelClassGenerator
 		}
 
 		String directory = sourceFolder.trim();
-		String packagePath = packageName.replaceAll("[.]", File.separator);
+		String packagePath = packageName.replace(".", File.separator);
 		if (!(directory.endsWith("/") || directory.endsWith("\\")))
 		{
 			directory = directory + File.separator;

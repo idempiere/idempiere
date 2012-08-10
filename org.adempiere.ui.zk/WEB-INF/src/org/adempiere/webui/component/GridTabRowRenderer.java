@@ -134,8 +134,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 	}
 
-	private int getColumnIndex(GridField field) {
-		GridField[] fields = gridTab.getFields();
+	public int getColumnIndex(GridField field) {
+		GridField[] fields = gridPanel.getFields();
 		for(int i = 0; i < fields.length; i++) {
 			if (fields[i] == field)
 				return i;
@@ -195,7 +195,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			else
 				return "";
     	}
-    	else if (gridTab.getTableModel().getColumnClass(getColumnIndex(gridField)).equals(Timestamp.class))
+		else if (DisplayType.getClass(gridField.getDisplayType(), false).equals(Timestamp.class))
     	{
     		SimpleDateFormat dateFormat = DisplayType.getDateFormat(gridField.getDisplayType(), AEnv.getLanguage(Env.getCtx()));
     		return dateFormat.format((Timestamp)value);
@@ -358,9 +358,35 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (rowListener == null)
 			rowListener = new RowListener((Grid)row.getParent().getParent());
 
-		currentValues = data;
-		int columnCount = gridTab.getTableModel().getColumnCount();
-		GridField[] gridField = gridTab.getFields();
+		GridField[] gridPanelFields = gridPanel.getFields();
+		int columnCount = gridPanelFields.length;
+		
+		GridField[] gridTabFields = gridTab.getFields();
+		boolean isGridViewCustomized = gridTabFields.length != gridPanelFields.length;
+		if (!isGridViewCustomized) {
+			for(int i = 0; i < gridTabFields.length; i++) {
+				if (gridPanelFields[i].getAD_Field_ID() != gridTabFields[i].getAD_Field_ID()) {
+					isGridViewCustomized = true;
+					break;
+				}
+			}
+		}
+		if (!isGridViewCustomized) {
+			currentValues = data;
+		} else {
+			List<Object> dataList = new ArrayList<Object>();
+			for(GridField gridField : gridPanelFields) {
+				for(int i = 0; i < gridTabFields.length; i++) {
+					if (gridField.getAD_Field_ID() == gridTabFields[i].getAD_Field_ID()) {
+						dataList.add(data[i]);
+						break;
+					}
+				}
+			}
+			currentValues = dataList.toArray(new Object[0]);
+		}
+		
+		
 		Grid grid = (Grid) row.getParent().getParent();
 		org.zkoss.zul.Columns columns = grid.getColumns();
 
@@ -377,10 +403,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		
 		int colIndex = -1;
 		for (int i = 0; i < columnCount; i++) {
-			if (editors.get(gridField[i]) == null)
-				editors.put(gridField[i], WebEditorFactory.getEditor(gridField[i], true));
+			if (editors.get(gridPanelFields[i]) == null)
+				editors.put(gridPanelFields[i], WebEditorFactory.getEditor(gridPanelFields[i], true));
 			
-			if (!gridField[i].isDisplayed()) {
+			if (!gridPanelFields[i].isDisplayed()) {
 				continue;
 			}
 			colIndex ++;
@@ -389,19 +415,19 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			String divStyle = "border: none; width: 100%; height: 100%; cursor: pointer;";
 			org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 			if (column.isVisible()) {
-				Component component = getDisplayComponent(rowIndex, currentValues[i], gridField[i]);
+				Component component = getDisplayComponent(rowIndex, currentValues[i], gridPanelFields[i]);
 				div.appendChild(component);
 				div.setAttribute("display.component", component);
 
-				if (DisplayType.YesNo == gridField[i].getDisplayType() || DisplayType.Image == gridField[i].getDisplayType()) {
+				if (DisplayType.YesNo == gridPanelFields[i].getDisplayType() || DisplayType.Image == gridPanelFields[i].getDisplayType()) {
 					divStyle += "text-align:center; ";
 				}
-				else if (DisplayType.isNumeric(gridField[i].getDisplayType())) {
+				else if (DisplayType.isNumeric(gridPanelFields[i].getDisplayType())) {
 					divStyle += "text-align:right; ";
 				}
 			}
 			div.setStyle(divStyle);
-			div.setAttribute("columnName", gridField[i].getColumnName());
+			div.setAttribute("columnName", gridPanelFields[i].getColumnName());
 			div.addEventListener(Events.ON_CLICK, rowListener);
 			div.addEventListener(Events.ON_DOUBLE_CLICK, rowListener);
 			row.addEventListener(Events.ON_CLICK, rowListener);
@@ -466,22 +492,25 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	public void editCurrentRow() {
 		if (currentRow != null && currentRow.getParent() != null && currentRow.isVisible()
 			&& grid != null && grid.isVisible() && grid.getParent() != null && grid.getParent().isVisible()) {
-			int columnCount = gridTab.getTableModel().getColumnCount();
-			GridField[] gridField = gridTab.getFields();
+			GridField[] gridPanelFields = gridPanel.getFields();
+			int columnCount = gridPanelFields.length;
 			org.zkoss.zul.Columns columns = grid.getColumns();
 			//skip indicator column
 			int colIndex = 0;
 			for (int i = 0; i < columnCount; i++) {
-				if (!gridField[i].isDisplayed()) {
+				if (!gridPanelFields[i].isDisplayed()) {
 					continue;
 				}
 				colIndex ++;
 				
+				if (editors.get(gridPanelFields[i]) == null)
+					editors.put(gridPanelFields[i], WebEditorFactory.getEditor(gridPanelFields[i], true));
+
 				org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 				if (column.isVisible()) {
 					Div div = (Div) currentRow.getChildren().get(colIndex);
 					div.getChildren().clear();
-					WEditor editor = getEditorCell(gridField[i]);
+					WEditor editor = getEditorCell(gridPanelFields[i]);
 					div.appendChild(editor.getComponent());
 					WEditorPopupMenu popupMenu = editor.getPopupMenu();
 
@@ -493,11 +522,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            }		            
 		            
 		            //check context
-					if (!gridField[i].isDisplayed(true)) 
+					if (!gridPanelFields[i].isDisplayed(true)) 
 					{
 						editor.setVisible(false);
 					}
-					editor.setReadWrite(gridField[i].isEditable(true));
+					editor.setReadWrite(gridPanelFields[i].isEditable(true));
 				}
 			}
 			editing = true;

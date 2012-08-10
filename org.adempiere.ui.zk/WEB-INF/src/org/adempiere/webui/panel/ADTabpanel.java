@@ -840,8 +840,12 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
     public void onEvent(Event event)
     {
     	if (event.getTarget() == listPanel.getListbox())
-    	{
-    		this.switchRowPresentation();
+    	{    		
+    		if (windowPanel != null) {
+    			windowPanel.onToggle();
+    		} else {
+    			this.switchRowPresentation();
+    		}
     	}
     	else if (event.getTarget() == treePanel.getTree()) {
     		Treeitem item =  treePanel.getTree().getSelectedItem();

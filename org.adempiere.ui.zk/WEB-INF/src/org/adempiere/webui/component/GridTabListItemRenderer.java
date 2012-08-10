@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.adempiere.webui.component.ListPanel;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -59,6 +60,7 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 	private GridTabDataBinder dataBinder;
 	private Map<GridField, WEditor> editors = new HashMap<GridField, WEditor>();
 	private Paging paging;
+	private ListPanel listPanel;
 
 	/**
 	 * 
@@ -79,30 +81,61 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 	@Override
 	public void render(Listitem listitem, Object data, int index) throws Exception {
 		//don't render if not visible
+		if (listPanel != null && !listPanel.isVisible()) {
+			return;
+		}
+		
+		GridField[] listPanelFields = listPanel.getFields();
+		int columnCount = listPanelFields.length;
+		
+		GridField[] gridTabFields = gridTab.getFields();
+		boolean isGridViewCustomized = gridTabFields.length != listPanelFields.length;
+		if (!isGridViewCustomized) {
+			for(int i = 0; i < gridTabFields.length; i++) {
+				if (listPanelFields[i].getAD_Field_ID() != gridTabFields[i].getAD_Field_ID()) {
+					isGridViewCustomized = true;
+					break;
+				}
+			}
+		}
+
 		for(Component c = listitem.getParent(); c != null; c = c.getParent()) {
 			if (!c.isVisible())
 				return;
 		}
-		Object[] values = (Object[])data;
-		int columnCount = gridTab.getTableModel().getColumnCount();
-		GridField[] gridField = gridTab.getFields();
+		Object[] values = null;
+		if (!isGridViewCustomized) {
+			values = (Object[])data;
+		} else {
+			List<Object> dataList = new ArrayList<Object>();
+			for(GridField gridField : listPanelFields) {
+				for(int i = 0; i < gridTabFields.length; i++) {
+					if (gridField.getAD_Field_ID() == gridTabFields[i].getAD_Field_ID()) {
+						dataList.add(((Object[])data)[i]);
+						break;
+					}
+				}
+			}
+			values = dataList.toArray(new Object[0]);
+		}
+		
 		for (int i = 0; i < columnCount; i++) {
-			if (!gridField[i].isDisplayed()) {
+			if (!listPanelFields[i].isDisplayed()) {
 				continue;
 			}
-			if (editors.get(gridField[i]) == null)
-				editors.put(gridField[i], WebEditorFactory.getEditor(gridField[i], true));
+			if (editors.get(listPanelFields[i]) == null)
+				editors.put(listPanelFields[i], WebEditorFactory.getEditor(listPanelFields[i], true));
 			
 			int rowIndex = listitem.getIndex();			
 			if (paging != null && paging.getPageSize() > 0) {
 				rowIndex = (paging.getActivePage() * paging.getPageSize()) + rowIndex;
 			}
 			Listcell cell = null;
-			if (rowIndex == gridTab.getCurrentRow() && gridField[i].isEditable(true)) {
-				cell = getEditorCell(gridField[i], values[i], i);
+			if (rowIndex == gridTab.getCurrentRow() && listPanelFields[i].isEditable(true)) {
+				cell = getEditorCell(listPanelFields[i], values[i], i);
 				cell.setParent(listitem);
 			} else {
-				if (gridField[i].getDisplayType() == DisplayType.YesNo) {
+				if (listPanelFields[i].getDisplayType() == DisplayType.YesNo) {
 					cell = new Listcell("", null);
 					cell.setParent(listitem);
 					cell.setStyle("text-align:center");
@@ -116,9 +149,9 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 					cell.setParent(listitem);
 					if (text != null && text.length() > MAX_TEXT_LENGTH)
 						cell.setTooltiptext(text);
-					if (DisplayType.isNumeric(gridField[i].getDisplayType())) {
+					if (DisplayType.isNumeric(listPanelFields[i].getDisplayType())) {
 						cell.setStyle("text-align:right");
-					} else if (gridField[i].getDisplayType() == DisplayType.Image) {
+					} else if (listPanelFields[i].getDisplayType() == DisplayType.Image) {
 						cell.setStyle("text-align:center");
 					}
 				}
@@ -203,7 +236,7 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 	}
 
 	private int getColumnIndex(GridField field) {
-		GridField[] fields = gridTab.getFields();
+		GridField[] fields = listPanel.getFields();
 		for(int i = 0; i < fields.length; i++) {
 			if (fields[i] == field)
 				return i;
@@ -246,7 +279,7 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 		if (value == null)
 			return "";
 		
-		GridField[] gridField = gridTab.getFields();
+		GridField[] gridField = listPanel.getFields();
 		if (gridField[columnIndex].isEncryptedField())
 		{
 			return "********";
@@ -286,7 +319,7 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 			else
 				return "";
     	}
-    	else if (gridTab.getTableModel().getColumnClass(columnIndex).equals(Timestamp.class))
+    	else if (DisplayType.getClass(gridField[columnIndex].getDisplayType(), false).equals(Timestamp.class))
     	{
     		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
     		return dateFormat.format((Timestamp)value);
@@ -373,5 +406,13 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 	 */
 	public void doTry() {
 		lookupCache = new HashMap<Integer, Map<Object,String>>();
+	}
+
+	public void setListPanel(ListPanel listPanel) {
+		this.listPanel = listPanel;
+	}
+
+	public ListPanel getListPanel() {
+		return listPanel;
 	}
 }

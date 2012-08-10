@@ -566,7 +566,6 @@ public class GridTable extends AbstractTableModel
 		m_fields.toArray(retValue);
 		return retValue;
 	}   //  getField
-
 	
 	/**************************************************************************
 	 *	Open Database.

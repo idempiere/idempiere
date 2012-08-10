@@ -985,6 +985,22 @@ public class GridField
 		return m_vo.IsDisplayed;
 	}
 	/**
+	 * 	Is Displayed
+	 *	@return true if displayed
+	 */
+	public boolean isDisplayedGrid()
+	{
+		return m_vo.IsDisplayedGrid;
+	}
+	/**
+	 * 	Grid sequence number
+	 *	@return sequence number
+	 */
+	public int getSeqNoGrid()
+	{
+		return m_vo.SeqNoGrid;
+	}
+	/**
 	 * 	Get DisplayLogic
 	 *	@return display logic
 	 */
@@ -1268,7 +1284,16 @@ public class GridField
 		return (m_vo.DisplayLength >= MAXDISPLAY_LENGTH/2);
 	//	return false;
 	}   //  isLongField
-
+	
+	/**
+	 * 	Get AD_Field_ID
+	 *	@return field
+	 */
+	public int getAD_Field_ID()
+	{
+		return m_vo.AD_Field_ID;
+	}
+	
 	/**
 	 *  Set Value to null.
 	 *  <p>
@@ -1652,7 +1677,7 @@ public class GridField
 		int AD_Window_ID = 0;
 		boolean readOnly = false;
 		
-		String sql = GridFieldVO.getSQL(ctx);
+		String sql = GridFieldVO.getSQL(ctx," ORDER BY IsDisplayed DESC, SeqNo");
 		PreparedStatement pstmt = null;
 		try
 		{
@@ -1898,4 +1923,5 @@ public class GridField
 	{
 		return isParentTabField(m_vo.ColumnName);
 	}
+	
 }   //  MField
