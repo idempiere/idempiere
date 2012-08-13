@@ -1,38 +1,35 @@
 /******************************************************************************
  * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
- * This program is free software; you can redistribute it and/or modify it    *
+ * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * that it will be useful, but WITHOUT ANY WARRANTY, without even the implied *
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
  * See the GNU General Public License for more details.                       *
  * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * with this program, if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  * For the text or an alternative of this public license, you may reach us    *
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package org.adempiere.model;
+package org.compiere.model;
 
-import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
 import java.util.Properties;
-import java.util.logging.Level;
-import org.compiere.model.*;
 
 /** Generated Model for AD_Tab_Customization
  *  @author Adempiere (generated) 
- *  @version Release 3.5.2a - $Id$ */
+ *  @version Release 3.6.0LTS - $Id$ */
 public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 20120813L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -52,7 +49,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 4 - System 
       */
     protected int get_AccessLevel()
     {
@@ -73,21 +70,30 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
       return sb.toString();
     }
 
-	public I_AD_Tab getAD_Tab() throws Exception 
+	/** Set Tab Customization.
+		@param AD_Tab_Customization_ID Tab Customization	  */
+	public void setAD_Tab_Customization_ID (int AD_Tab_Customization_ID)
+	{
+		if (AD_Tab_Customization_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_Tab_Customization_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_Tab_Customization_ID, Integer.valueOf(AD_Tab_Customization_ID));
+	}
+
+	/** Get Tab Customization.
+		@return Tab Customization	  */
+	public int getAD_Tab_Customization_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_Customization_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
     {
-        Class<?> clazz = MTable.getClass(I_AD_Tab.Table_Name);
-        I_AD_Tab result = null;
-        try	{
-	        Constructor<?> constructor = null;
-	    	constructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, int.class, String.class});
-    	    result = (I_AD_Tab)constructor.newInstance(new Object[] {getCtx(), new Integer(getAD_Tab_ID()), get_TrxName()});
-        } catch (Exception e) {
-	        log.log(Level.SEVERE, "(id) - Table=" + Table_Name + ",Class=" + clazz, e);
-	        log.saveError("Error", "Table=" + Table_Name + ",Class=" + clazz);
-           throw e;
-        }
-        return result;
-    }
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
+			.getPO(getAD_Tab_ID(), get_TrxName());	}
 
 	/** Set Tab.
 		@param AD_Tab_ID 
@@ -112,41 +118,10 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 		return ii.intValue();
 	}
 
-	/** Set AD_Tab_Customization_ID.
-		@param AD_Tab_Customization_ID AD_Tab_Customization_ID	  */
-	public void setAD_Tab_Customization_ID (int AD_Tab_Customization_ID)
-	{
-		if (AD_Tab_Customization_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_Tab_Customization_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_AD_Tab_Customization_ID, Integer.valueOf(AD_Tab_Customization_ID));
-	}
-
-	/** Get AD_Tab_Customization_ID.
-		@return AD_Tab_Customization_ID	  */
-	public int getAD_Tab_Customization_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_Customization_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_AD_User getAD_User() throws Exception 
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-        Class<?> clazz = MTable.getClass(I_AD_User.Table_Name);
-        I_AD_User result = null;
-        try	{
-	        Constructor<?> constructor = null;
-	    	constructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, int.class, String.class});
-    	    result = (I_AD_User)constructor.newInstance(new Object[] {getCtx(), new Integer(getAD_User_ID()), get_TrxName()});
-        } catch (Exception e) {
-	        log.log(Level.SEVERE, "(id) - Table=" + Table_Name + ",Class=" + clazz, e);
-	        log.saveError("Error", "Table=" + Table_Name + ",Class=" + clazz);
-           throw e;
-        }
-        return result;
-    }
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -154,9 +129,10 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	  */
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1)
-			 throw new IllegalArgumentException ("AD_User_ID is mandatory.");
-		set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+		if (AD_User_ID < 1) 
+			set_Value (COLUMNNAME_AD_User_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
@@ -174,8 +150,6 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 		@param Custom Custom	  */
 	public void setCustom (String Custom)
 	{
-		if (Custom == null)
-			throw new IllegalArgumentException ("Custom is mandatory.");
 		set_Value (COLUMNNAME_Custom, Custom);
 	}
 

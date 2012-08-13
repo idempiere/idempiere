@@ -69,7 +69,7 @@ CREATE OR REPLACE VIEW AD_FIELD_VT AS
 
 
 UPDATE AD_System
-  SET LastMigrationScriptApplied='873_IDEMPIERE-364_AD_Field_oracle.sql'
-WHERE LastMigrationScriptApplied<'873_IDEMPIERE-364_AD_Field_oracle.sql'
+  SET LastMigrationScriptApplied='873_IDEMPIERE-364_AD_Field.sql'
+WHERE LastMigrationScriptApplied<'873_IDEMPIERE-364_AD_Field.sql'
    OR LastMigrationScriptApplied IS NULL
 ;

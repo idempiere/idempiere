@@ -371,7 +371,9 @@ Update ad_field set isDisplayedGrid = isDisplayed;
 Update ad_field set seqNoGrid = seqNo;
 
 
- UPDATE AD_System
-  SET LastMigrationScriptApplied='872_IDEMPIERE-364_Customizable_Grid_postgresql.sql'
-WHERE LastMigrationScriptApplied<'872_IDEMPIERE-364_Customizable_Grid_postgresql.sql'
-   OR LastMigrationScriptApplied IS NULL;
+UPDATE AD_System
+  SET LastMigrationScriptApplied='872_IDEMPIERE-364_Customizable_Grid.sql'
+WHERE LastMigrationScriptApplied<'872_IDEMPIERE-364_Customizable_Grid.sql'
+   OR LastMigrationScriptApplied IS NULL
+;
+

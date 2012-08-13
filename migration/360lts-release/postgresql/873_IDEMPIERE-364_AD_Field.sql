@@ -26,8 +26,8 @@ CREATE OR REPLACE VIEW ad_field_vt AS
   
   
   
-  UPDATE AD_System
-  SET LastMigrationScriptApplied='873_IDEMPIERE-364_AD_Field_postgresql.sql'
-WHERE LastMigrationScriptApplied<'873_IDEMPIERE-364_AD_Field_postgresql.sql'
-   OR LastMigrationScriptApplied IS NULL;
+UPDATE AD_System
+  SET LastMigrationScriptApplied='873_IDEMPIERE-364_AD_Field.sql'
+WHERE LastMigrationScriptApplied<'873_IDEMPIERE-364_AD_Field.sql'
+   OR LastMigrationScriptApplied IS NULL
 ;

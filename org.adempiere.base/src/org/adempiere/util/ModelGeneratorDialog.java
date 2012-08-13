@@ -20,6 +20,7 @@ import java.awt.Insets;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -28,6 +29,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
+import org.compiere.Adempiere;
 
 /**
  *
@@ -63,7 +66,8 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 
 		Panel filePanel = new Panel();
 		filePanel.setLayout(new BorderLayout());
-		fFolderName = new JTextField();
+		String defaultPath = Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base" + File.separator + "src";
+		fFolderName = new JTextField(defaultPath);
 		filePanel.add(fFolderName, BorderLayout.CENTER);
 		bFolder = new JButton("...");
 		bFolder.setMargin(new Insets(0, 0, 0, 0));
@@ -73,22 +77,22 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 		bFolder.addActionListener(this);
 
 		mainPanel.add(new JLabel("Package Name"));
-		fPackageName = new JTextField("org.adempiere.model");
+		fPackageName = new JTextField("org.compiere.model");
 		mainPanel.add(fPackageName);
 
 		mainPanel.add(new JLabel("Table Name"));
-		fTableName = new JTextField("%");
+		fTableName = new JTextField("AD_ReplaceThis%");
 		mainPanel.add(fTableName);
 
 		mainPanel.add(new JLabel("Entity Type"));
-		fEntityType = new JTextField("U,A");
+		fEntityType = new JTextField("D");
 		mainPanel.add(fEntityType);
 
 		fGenerateInterface = new JCheckBox("Generate Interface");
 		fGenerateInterface.setSelected(true);
 		mainPanel.add(fGenerateInterface);
 		fGenerateClass = new JCheckBox("Generate Class");
-		fGenerateClass.setSelected(false);
+		fGenerateClass.setSelected(true);
 		mainPanel.add(fGenerateClass);
 
 		bGenerate = new JButton("Generate Source");
