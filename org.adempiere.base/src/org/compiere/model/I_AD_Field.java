@@ -352,6 +352,15 @@ public interface I_AD_Field
 	  */
 	public boolean isDisplayed();
 
+    /** Column name IsDisplayedGrid */
+    public static final String COLUMNNAME_IsDisplayedGrid = "IsDisplayedGrid";
+
+	/** Set Display in Grid	  */
+	public void setIsDisplayedGrid (boolean IsDisplayedGrid);
+
+	/** Get Display in Grid	  */
+	public boolean isDisplayedGrid();
+
     /** Column name IsEncrypted */
     public static final String COLUMNNAME_IsEncrypted = "IsEncrypted";
 
@@ -470,6 +479,15 @@ public interface I_AD_Field
  lowest number comes first
 	  */
 	public int getSeqNo();
+
+    /** Column name SeqNoGrid */
+    public static final String COLUMNNAME_SeqNoGrid = "SeqNoGrid";
+
+	/** Set Grid Sequence No	  */
+	public void setSeqNoGrid (int SeqNoGrid);
+
+	/** Get Grid Sequence No	  */
+	public int getSeqNoGrid();
 
     /** Column name SortNo */
     public static final String COLUMNNAME_SortNo = "SortNo";

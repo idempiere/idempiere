@@ -109,6 +109,10 @@ public class GridFieldVO implements Serializable, SystemIDs
 					vo.IsSameLine = "Y".equals(rs.getString (i));
 				else if (columnName.equalsIgnoreCase("IsDisplayed"))
 					vo.IsDisplayed = "Y".equals(rs.getString (i));
+				else if (columnName.equalsIgnoreCase("IsDisplayedGrid"))
+					vo.IsDisplayedGrid = "Y".equals(rs.getString (i));
+				else if (columnName.equalsIgnoreCase("SeqNoGrid"))
+					vo.SeqNoGrid = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("DisplayLogic"))
 					vo.DisplayLogic = rs.getString (i);
 				else if (columnName.equalsIgnoreCase("DefaultValue"))
@@ -184,6 +188,8 @@ public class GridFieldVO implements Serializable, SystemIDs
 					vo.IsAutocomplete  = "Y".equals(rs.getString(i));
 				else if (columnName.equalsIgnoreCase("IsAllowCopy"))
 					vo.IsAllowCopy  = "Y".equals(rs.getString(i));
+				else if (columnName.equalsIgnoreCase("AD_Field_ID"))
+					vo.AD_Field_ID = rs.getInt(i);
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -416,6 +422,10 @@ public class GridFieldVO implements Serializable, SystemIDs
 	public boolean      IsSameLine = false;
 	/**	Displayed		*/
 	public boolean      IsDisplayed = false;
+	/**	Displayed Grid		*/
+	public boolean      IsDisplayedGrid = false;
+	/** Grid Display sequence	*/
+	public int	SeqNoGrid = 0;
 	/**	Dislay Logic	*/
 	public String       DisplayLogic = "";
 	/**	Default Value	*/
@@ -485,6 +495,8 @@ public class GridFieldVO implements Serializable, SystemIDs
 	/** Lookup Value Object     */
 	public MLookupInfo  lookupInfo = null;
 	
+	/** Field ID 				*/
+	public int AD_Field_ID = 0;
 	
 	//*  Feature Request FR [ 1757088 ]
 	public int          Included_Tab_ID = 0;
@@ -582,6 +594,9 @@ public class GridFieldVO implements Serializable, SystemIDs
 		clone.DisplayLength = DisplayLength;
 		clone.IsSameLine = IsSameLine;
 		clone.IsDisplayed = IsDisplayed;
+		clone.IsDisplayedGrid = IsDisplayedGrid;
+		clone.AD_Field_ID = AD_Field_ID;
+		clone.SeqNoGrid = SeqNoGrid;
 		clone.DisplayLogic = DisplayLogic;
 		clone.DefaultValue = DefaultValue;
 		clone.IsMandatory = IsMandatory;

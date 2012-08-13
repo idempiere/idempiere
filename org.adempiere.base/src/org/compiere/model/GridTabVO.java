@@ -302,6 +302,8 @@ public class GridTabVO implements Evaluatee, Serializable
 			return false;
 		}
 		
+		
+		
 		mTabVO.initFields = true;
 		
 		return mTabVO.Fields.size() != 0;

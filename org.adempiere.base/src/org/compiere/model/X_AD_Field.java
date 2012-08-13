@@ -516,6 +516,27 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return false;
 	}
 
+	/** Set Display in Grid.
+		@param IsDisplayedGrid Display in Grid	  */
+	public void setIsDisplayedGrid (boolean IsDisplayedGrid)
+	{
+		set_Value (COLUMNNAME_IsDisplayedGrid, Boolean.valueOf(IsDisplayedGrid));
+	}
+
+	/** Get Display in Grid.
+		@return Display in Grid	  */
+	public boolean isDisplayedGrid () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDisplayedGrid);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Encrypted.
 		@param IsEncrypted 
 		Display or Storage is encrypted
@@ -728,6 +749,23 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public int getSeqNo () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Grid Sequence No.
+		@param SeqNoGrid Grid Sequence No	  */
+	public void setSeqNoGrid (int SeqNoGrid)
+	{
+		set_Value (COLUMNNAME_SeqNoGrid, Integer.valueOf(SeqNoGrid));
+	}
+
+	/** Get Grid Sequence No.
+		@return Grid Sequence No	  */
+	public int getSeqNoGrid () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNoGrid);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

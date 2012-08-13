@@ -368,7 +368,17 @@ public class GridField
 	 */
 	public boolean isEditable (boolean checkContext)
 	{
-		return isEditable(m_vo.ctx, checkContext);
+		return isEditable(m_vo.ctx, checkContext,false);
+	}
+	
+	/**
+	 *	Is it Editable in Grid- checks IsActive, IsUpdateable, and isDisplayedGrid
+	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
+	 *  @return true, if editable
+	 */
+	public boolean isEditableGrid (boolean checkContext)
+	{
+		return isEditable(m_vo.ctx, checkContext,true);
 	}
 	
 	/**
@@ -376,7 +386,7 @@ public class GridField
 	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
 	 *  @return true, if editable
 	 */
-	public boolean isEditable (Properties ctx, boolean checkContext)
+	public boolean isEditable (Properties ctx, boolean checkContext,boolean isGrid)
 	{
 		if (isVirtualColumn())
 			return false;
@@ -461,6 +471,9 @@ public class GridField
 			return false;
 
 		//  ultimately visibility decides
+		if(isGrid)
+			return isDisplayedGrid();
+		
 		return isDisplayed (ctx, checkContext);
 	}	//	isEditable
 
@@ -985,6 +998,22 @@ public class GridField
 		return m_vo.IsDisplayed;
 	}
 	/**
+	 * 	Is Displayed
+	 *	@return true if displayed
+	 */
+	public boolean isDisplayedGrid()
+	{
+		return m_vo.IsDisplayedGrid;
+	}
+	/**
+	 * 	Grid sequence number
+	 *	@return sequence number
+	 */
+	public int getSeqNoGrid()
+	{
+		return m_vo.SeqNoGrid;
+	}
+	/**
 	 * 	Get DisplayLogic
 	 *	@return display logic
 	 */
@@ -1268,7 +1297,16 @@ public class GridField
 		return (m_vo.DisplayLength >= MAXDISPLAY_LENGTH/2);
 	//	return false;
 	}   //  isLongField
-
+	
+	/**
+	 * 	Get AD_Field_ID
+	 *	@return field
+	 */
+	public int getAD_Field_ID()
+	{
+		return m_vo.AD_Field_ID;
+	}
+	
 	/**
 	 *  Set Value to null.
 	 *  <p>
@@ -1898,4 +1936,5 @@ public class GridField
 	{
 		return isParentTabField(m_vo.ColumnName);
 	}
+	
 }   //  MField

@@ -584,7 +584,7 @@ public class GridController extends CPanel
 				else
 				{
 					//  need to set CellEditor explicitly as default editor based on class causes problem (YesNo-> Boolean)
-					if (mField.isDisplayed ())
+					if (mField.isDisplayedGrid())
 					{
 						tc.setCellRenderer (new VCellRenderer (mField));
 						VCellEditor ce = new VCellEditor (mField);
