@@ -30,6 +30,7 @@ import org.adempiere.webui.component.FWindow;
 import org.adempiere.webui.panel.LoginPanel;
 import org.adempiere.webui.panel.RolePanel;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -44,10 +45,10 @@ import org.zkoss.zk.ui.event.Events;
  */
 public class LoginWindow extends FWindow implements EventListener
 {
-    /**
-	 *
+	/**
+	 * 
 	 */
-	private static final long serialVersionUID = -365979563919913804L;
+	private static final long serialVersionUID = -6312322926432586415L;
 	private IWebClient app;
     private Properties ctx;
     private LoginPanel pnlLogin;
@@ -74,9 +75,9 @@ public class LoginWindow extends FWindow implements EventListener
         pnlLogin = new LoginPanel(ctx, this);
     }
 
-    public void loginOk(String userName, String password, boolean show)
+    public void loginOk(String userName, String password, boolean show, KeyNamePair[] clientsKNPairs)
     {
-        pnlRole = new RolePanel(ctx, this, userName, password, show);
+        pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs);
         this.getChildren().clear();
         this.appendChild(pnlRole);
     }

@@ -21,7 +21,7 @@ import java.util.ListResourceBundle;
 /**
  *  Base Resource Bundle
  *
- * 	@author 	Marko Bubalo, Mislav Kašner
+ * 	@author 	Marko Bubalo, Mislav Ka\u0161ner
  * 	@version 	$Id: ALoginRes_hr.java,v 1.3 2008/01/11 00:51:27 jjanke Exp $
  */
 public final class ALoginRes_hr extends ListResourceBundle
@@ -41,6 +41,7 @@ public final class ALoginRes_hr extends ListResourceBundle
 		{ "Host",               "Host" },
 		{ "Database",           "Baza podataka" },
 		{ "User",               "Korisnik" },
+		{ "EMail", 				"e-po\u0161ta" },
 		{ "EnterUser",          "Unos korisnika" },
 		{ "Password",           "Lozinka" },
 		{ "EnterPassword",      "Unos lozinke" },

@@ -39,6 +39,7 @@ public final class ALoginRes_ro extends ListResourceBundle
 	{ "Host",               "Server" },
 	{ "Database",           "Baz\u0103 de date" },
 	{ "User",               "Utilizator" },
+	{ "EMail",              "Po\u015fta" },
 	{ "EnterUser",          "Introduce\u0163i identificatorul utilizatorului" },
 	{ "Password",           "Parol\u0103" },
 	{ "EnterPassword",      "Introduce\u0163i parola" },

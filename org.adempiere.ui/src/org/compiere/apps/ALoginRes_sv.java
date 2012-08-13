@@ -41,6 +41,7 @@ public final class ALoginRes_sv extends ListResourceBundle
 	{ "Host",               "V\u00e4rddator" },
 	{ "Database",           "Databas" },
 	{ "User",               "Anv\u00e4ndarnamn" },
+	{ "EMail",              "E-post" },
 	{ "EnterUser",          "Ange anv\u00e4ndarnamn" },
 	{ "Password",           "L\u00f6senord" },
 	{ "EnterPassword",      "Ange l\u00f6senord" },

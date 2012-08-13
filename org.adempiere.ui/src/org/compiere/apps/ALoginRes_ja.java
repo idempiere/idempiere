@@ -39,6 +39,7 @@ public final class ALoginRes_ja extends ListResourceBundle
 	{ "Host",               "\u30b5\u30fc\u30d0\u30fc" },
 	{ "Database",           "\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9" },
 	{ "User",               "\u30e6\u30fc\u30b6\u30fc" },
+	{ "EMail",              "\u96fb\u5b50\u30e1\u30fc\u30eb" },
 	{ "EnterUser",          "\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u306e\u30e6\u30fc\u30b6\u30fc\u540d\u3092\u5165\u529b\u3057\u3066\u4e0b\u3055\u3044" },
 	{ "Password",           "\u30d1\u30b9\u30ef\u30fc\u30c9" },
 	{ "EnterPassword",      "\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u306e\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u4e0b\u3055\u3044" },

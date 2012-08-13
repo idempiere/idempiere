@@ -39,6 +39,7 @@ public final class ALoginRes_ru extends ListResourceBundle
 	{ "Host",               "\u0425\u043e\u0441\u0442" },
 	{ "Database",           "\u0411\u0430\u0437\u0430 \u0434\u0430\u043d\u043d\u044b\u0445" },
 	{ "User",               "\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c" },
+	{ "EMail",              "\u043f\u043e\u0447\u0442\u0435" },
 	{ "EnterUser",          "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f" },
 	{ "Password",           "\u041f\u0430\u0440\u043e\u043b\u044c" },
 	{ "EnterPassword",      "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043f\u0430\u0440\u043e\u043b\u044c" },

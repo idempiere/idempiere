@@ -41,6 +41,7 @@ public final class ALoginRes_es extends ListResourceBundle
 	{ "Host", 				"&Servidor" },
 	{ "Database", 			"Base de datos" },
 	{ "User", 				"&Usuario" },
+	{ "EMail", 				"Correo" },
 	{ "EnterUser", 			"Introduzca Usuario Aplicaci\u00f3n" },
 	{ "Password", 			"&Contrase\u00f1a" },
 	{ "EnterPassword", 		"Introduzca Contrase\u00f1a Aplicaci\u00f3n" },

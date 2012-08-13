@@ -41,6 +41,7 @@ public final class ALoginRes_de extends ListResourceBundle
 	{ "Host",           "Server" },
 	{ "Database",       "Datenbank" },
 	{ "User",           "Nutzer" },
+	{ "EMail", 			"EMail" },
 	{ "EnterUser",      "Nutzer eingeben" },
 	{ "Password",       "Passwort" },
 	{ "EnterPassword",  "Passwort eingeben" },

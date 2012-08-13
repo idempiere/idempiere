@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -41,6 +42,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.MUser;
 import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.Query;
 
 
 /**
@@ -556,14 +558,14 @@ public class Login
 	 *  @param  client    client information
 	 *  @return list of valid Org KeyNodePairs or null if in error
 	 */
-	public KeyNamePair[] getOrgs (KeyNamePair client)
+	public KeyNamePair[] getOrgs (KeyNamePair rol)
 	{
-		if (client == null)
-			throw new IllegalArgumentException("Client missing");
-		if (Env.getContext(m_ctx,"#AD_Role_ID").length() == 0)	//	could be number 0
-			throw new UnsupportedOperationException("Missing Context #AD_Role_ID");
+		if (rol == null)
+			throw new IllegalArgumentException("Rol missing");
+		if (Env.getContext(m_ctx,"#AD_Client_ID").length() == 0)	//	could be number 0
+			throw new UnsupportedOperationException("Missing Context #AD_Client_ID");
 		
-		int AD_Role_ID = Env.getContextAsInt(m_ctx,"#AD_Role_ID");
+		int AD_Client_ID = Env.getContextAsInt(m_ctx,"#AD_Client_ID");
 		int AD_User_ID = Env.getContextAsInt(m_ctx, "#AD_User_ID");
 	//	s_log.fine("Client: " + client.toStringX() + ", AD_Role_ID=" + AD_Role_ID);
 
@@ -571,19 +573,22 @@ public class Login
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		KeyNamePair[] retValue = null;
 		//
-		String sql = "SELECT o.AD_Org_ID,o.Name,o.IsSummary "	//	1..3
-			+ "FROM AD_Role r, AD_Client c"
-			+ " INNER JOIN AD_Org o ON (c.AD_Client_ID=o.AD_Client_ID OR o.AD_Org_ID=0) "
-			+ "WHERE r.AD_Role_ID=?" 	//	#1
-			+ " AND c.AD_Client_ID=?"	//	#2
-			+ " AND o.IsActive='Y' AND o.IsSummary='N'"
-			+ " AND (r.IsAccessAllOrgs='Y' "
-				+ "OR (r.IsUseUserOrgAccess='N' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_Role_OrgAccess ra "
-					+ "WHERE ra.AD_Role_ID=r.AD_Role_ID AND ra.IsActive='Y')) "
-				+ "OR (r.IsUseUserOrgAccess='Y' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_User_OrgAccess ua "
-					+ "WHERE ua.AD_User_ID=? AND ua.IsActive='Y'))"		//	#3
-				+ ") "
-			+ "ORDER BY o.Name";
+		String sql = " SELECT DISTINCT r.UserLevel, r.ConnectionProfile,o.AD_Org_ID,o.Name,o.IsSummary "
+				+" FROM AD_Org o"
+				+" INNER JOIN AD_Role_OrgAccess ra ON (ra.AD_Org_ID=o.AD_Org_ID)" 
+				+" INNER JOIN AD_Role r on (ra.AD_Role_ID=r.AD_Role_ID) "
+				+" INNER JOIN AD_Client c on (ra.AD_Client_ID=c.AD_Client_ID)"
+				+" WHERE r.AD_Role_ID=?"
+				+" AND c.AD_Client_ID=?"
+				+" AND o.IsActive='Y' "
+				+" AND o.IsSummary='N'"
+				+" AND (r.IsAccessAllOrgs='Y'" 
+				+" OR (r.IsUseUserOrgAccess='N' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_Role_OrgAccess ra" 
+				+" WHERE ra.AD_Role_ID=r.AD_Role_ID AND ra.IsActive='Y')) "
+				+" OR (r.IsUseUserOrgAccess='Y' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_User_OrgAccess ua" 
+				+" WHERE ua.AD_User_ID=?"
+				+" AND ua.IsActive='Y')))" 
+				+ "ORDER BY o.Name";
 		//
 		PreparedStatement pstmt = null;
 		MRole role = null;
@@ -591,37 +596,61 @@ public class Login
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_Role_ID);
-			pstmt.setInt(2, client.getKey());
+			pstmt.setInt(1, rol.getKey());
+			pstmt.setInt(2, AD_Client_ID);
 			pstmt.setInt(3, AD_User_ID);
 			rs = pstmt.executeQuery();
 			//  load Orgs
-			while (rs.next())
+			if (!rs.next())
 			{
-				int AD_Org_ID = rs.getInt(1);
-				String Name = rs.getString(2);
-				boolean summary = "Y".equals(rs.getString(3));
+			   rs.close();
+			   pstmt.close();
+			   log.log(Level.SEVERE, "No org for Role: " + rol.toStringX());
+				return null;
+			}
+			//  Role Info
+			Env.setContext(m_ctx, "#AD_Role_ID", rol.getKey());
+			Env.setContext(m_ctx, "#AD_Role_Name", rol.getName());
+			Ini.setProperty(Ini.P_ROLE, rol.getName());
+			//	User Level
+			Env.setContext(m_ctx, "#User_Level", rs.getString(1));  	//	Format 'SCO'
+			//	ConnectionProfile
+			 CConnection cc = CConnection.get();
+			 if (m_connectionProfile == null)			//	No User Based
+			 {
+			    m_connectionProfile = rs.getString(2);	//	Role Based
+				if (m_connectionProfile != null && !cc.getConnectionProfile().equals(m_connectionProfile))
+				{
+				   cc.setConnectionProfile(m_connectionProfile);
+				   Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
+				   Ini.saveProperties(false);
+				}
+			 }
+			//  load Orgs
+			
+			do{
+				int AD_Org_ID = rs.getInt(3);
+				String Name = rs.getString(4);
+				boolean summary = "Y".equals(rs.getString(5));
 				if (summary)
 				{
 					if (role == null)
-						role = MRole.get(m_ctx, AD_Role_ID);
-					getOrgsAddSummary (list, AD_Org_ID, Name, role);
-				}
-				else
-				{
-					KeyNamePair p = new KeyNamePair(AD_Org_ID, Name);
-					if (!list.contains(p))
-						list.add(p);
-				}
-			}
-			//
+						role = MRole.get(m_ctx, rol.getKey());
+						getOrgsAddSummary (list, AD_Org_ID, Name, role);
+					}
+					else
+					{
+						KeyNamePair p = new KeyNamePair(AD_Org_ID, Name);
+						if (!list.contains(p))
+							list.add(p);
+					}
+				}while (rs.next());
+
 			retValue = new KeyNamePair[list.size()];
 			list.toArray(retValue);
-			log.fine("Client: " + client.toStringX() 
-				+ ", AD_Role_ID=" + AD_Role_ID
-				+ ", AD_User_ID=" + AD_User_ID
-				+ " - orgs #" + retValue.length);
-		}
+			
+			log.fine("Client: " + AD_Client_ID +", AD_Role_ID=" + rol.getName()+", AD_User_ID=" + AD_User_ID+" - orgs #" + retValue.length);
+		 }
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, sql, ex);
@@ -632,19 +661,14 @@ public class Login
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		//	No Orgs
+			
 		if (retValue == null || retValue.length == 0)
 		{
-			log.log(Level.WARNING, "No Org for Client: " + client.toStringX()
-				+ ", AD_Role_ID=" + AD_Role_ID
-				+ ", AD_User_ID=" + AD_User_ID);
+			log.log(Level.WARNING, "No Org for Client: " +  AD_Client_ID
+			+ ", AD_Role_ID=" + rol.getKey()
+			+ ", AD_User_ID=" + AD_User_ID);
 			return null;
-		}
-
-		//  Client Info
-		Env.setContext(m_ctx, "#AD_Client_ID", client.getKey());
-		Env.setContext(m_ctx, "#AD_Client_Name", client.getName());
-		Ini.setProperty(Ini.P_CLIENT, client.getName());
+		}	
 		return retValue;
 	}   //  getOrgs
 
@@ -1234,5 +1258,222 @@ public class Login
 	{
 		return null;
 	}	//	getPrincipal
+
+	/**
+	 *  Validate Client Login.
+	 *  Sets Context with login info
+	 *  @param app_user user id
+	 *  @param app_pwd password
+	 *  @return client array or null if in error.
+	 */
+	public KeyNamePair[] getClients(String app_user, String app_pwd) {
+		log.info("User=" + app_user);
+
+		if (app_user == null)
+		{
+			log.warning("No Apps User");
+			return null;
+		}
+
+		//	Authentication
+		boolean authenticated = false;
+		MSystem system = MSystem.get(m_ctx);
+		if (system == null)
+			throw new IllegalStateException("No System Info");
+
+		if (app_pwd == null || app_pwd.length() == 0)
+		{
+			log.warning("No Apps Password");
+			return null;
+		}
+
+		if (system.isLDAP())
+		{
+			authenticated = system.isLDAP(app_user, app_pwd);
+			if (authenticated){
+				app_pwd = null;
+				authenticated=true;
+			}
+			// if not authenticated, use AD_User as backup
+		}
+
+		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+		boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+		KeyNamePair[] retValue = null;
+		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
+		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
+
+		StringBuffer where = new StringBuffer("Password IS NOT NULL AND ");
+		if (email_login)
+			where.append("EMail=?");
+		else
+			where.append("COALESCE(LDAPUser,Name)=?");
+		where.append(" AND")
+				.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
+				.append("         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)")
+				.append("         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND ")
+				.append(" EXISTS (SELECT * FROM AD_Client c")
+				.append("         WHERE c.AD_Client_ID=AD_User.AD_Client_ID")
+				.append("         AND c.IsActive='Y') AND ")
+				.append(" AD_User.IsActive='Y'");
+		
+		List<MUser> users = new Query(m_ctx, MUser.Table_Name, where.toString(), null)
+			.setParameters(app_user)
+			.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+			.list();
+		
+		if (users.size() == 0) {
+			log.saveError("UserPwdError", app_user, false);
+			return null;
+		}
+		
+		for (MUser user : users) {
+			if (clientsValidated.contains(user.getAD_Client_ID())) {
+				log.severe("Two users with password with the same name/email combination on same tenant: " + app_user);
+				return null;
+			}
+			clientsValidated.add(user.getAD_Client_ID());
+			boolean valid = false;
+			if (hash_password) {
+				String hash = user.getPassword();
+				String salt = user.getSalt();
+				// always do calculation to confuse timing based attacks
+				if ( hash == null )
+					hash = "0000000000000000";
+				if ( salt == null )
+					salt = "0000000000000000";				
+				valid = user.authenticateHash(app_pwd);
+			} else {
+				// password not hashed
+				valid = user.getPassword().equals(app_pwd);
+			}
+			if (valid ) {
+				StringBuffer sql= new StringBuffer("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
+			      sql.append(" FROM AD_User_Roles ur")
+                   .append(" INNER JOIN AD_User u on (ur.AD_User_ID=u.AD_User_ID)")
+                   .append(" INNER JOIN AD_Client cli on (ur.AD_Client_ID=cli.AD_Client_ID)")
+                   .append(" WHERE ur.IsActive='Y'")
+                   .append(" AND u.IsActive='Y'")
+                   .append(" AND ur.AD_User_ID=?");
+			      PreparedStatement pstmt=null;
+			      ResultSet rs=null;
+			      try{
+			    	  pstmt=DB.prepareStatement(sql.toString(),null);
+			    	  pstmt.setInt(1, user.getAD_User_ID());
+			    	  rs=pstmt.executeQuery();
+		
+			    	  while (rs.next() && rs!=null){
+			    		  int AD_Client_ID=rs.getInt(1);
+			    		  String Name=rs.getString(2);
+			    		  KeyNamePair p = new KeyNamePair(AD_Client_ID,Name);
+				          clientList.add(p);
+			    	  }
+			        }catch (SQLException ex)
+					{
+						log.log(Level.SEVERE, sql.toString(), ex);
+						retValue = null;
+					}
+					finally
+					{
+						DB.close(rs, pstmt);
+						rs = null; pstmt = null;
+					}			  
+			}
+		}
+		if (clientList.size() > 0)
+			authenticated=true;
+
+		if (authenticated) {
+			if (Ini.isClient())
+			{
+				if (MSystem.isSwingRememberUserAllowed())
+					Ini.setProperty(Ini.P_UID, app_user);
+				else
+					Ini.setProperty(Ini.P_UID, "");
+				if (Ini.isPropertyBool(Ini.P_STORE_PWD) && MSystem.isSwingRememberPasswordAllowed())
+					Ini.setProperty(Ini.P_PWD, app_pwd);
+
+			}
+			retValue = new KeyNamePair[clientList.size()];
+			clientList.toArray(retValue);
+			log.fine("User=" + app_user + " - roles #" + retValue.length);
+
+		}
+		return retValue;
+	}
+	/**************************************************************************
+	 *  Load Roles.
+	 *  <p>
+	 *  Sets Client info in context and loads its roles
+	 *  @param  client    client information
+	 *  @return list of valid roles KeyNodePairs or null if in error
+	 */
+	public KeyNamePair[] getRoles(String app_user, KeyNamePair client) {
+		if (client == null)
+			throw new IllegalArgumentException("Client missing");
+
+		ArrayList<KeyNamePair> rolesList = new ArrayList<KeyNamePair>();
+		KeyNamePair[] retValue = null;
+		StringBuffer sql = new StringBuffer("SELECT u.AD_User_ID, r.AD_Role_ID,r.Name ")
+			.append("FROM AD_User u")
+			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
+			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
+		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		
+		boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+		if (email_login)
+			sql.append("u.EMail=?");
+		else
+			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
+		sql.append(" AND u.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
+		sql.append(" ORDER BY r.Name");
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		//	get Role details
+		try
+		{
+			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt.setInt(1, client.getKey());
+			pstmt.setString(2, app_user);
+			rs = pstmt.executeQuery();
+
+			if (!rs.next())
+			{
+				rs.close();
+				pstmt.close();
+				log.log(Level.SEVERE, "No Roles for Client: " + client.toStringX());
+				return null;
+			}
+
+			//  load Roles
+			do
+			{
+				int AD_Role_ID = rs.getInt(2);
+				String Name = rs.getString(3);
+				KeyNamePair p = new KeyNamePair(AD_Role_ID, Name);
+				rolesList.add(p);
+			}
+			while (rs.next());
+			//
+			retValue = new KeyNamePair[rolesList.size()];
+			rolesList.toArray(retValue);
+			log.fine("Role: " + client.toStringX() + " - clients #" + retValue.length);
+		}
+		catch (SQLException ex)
+		{
+			log.log(Level.SEVERE, sql.toString(), ex);
+			retValue = null;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		 //Client Info
+		Env.setContext(m_ctx, "#AD_Client_ID", client.getKey());
+		Env.setContext(m_ctx, "#AD_Client_Name", client.getName());
+		Ini.setProperty(Ini.P_CLIENT, client.getName());
+		return retValue;
+	}   //  getRoles
 	
 }	//	Login

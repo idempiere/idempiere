@@ -50,6 +50,7 @@ import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
 import org.compiere.model.MSession;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -90,11 +91,11 @@ import org.zkoss.zul.Image;
  */
 public class LoginPanel extends Window implements EventListener
 {
-	private static final String ON_LOAD_TOKEN = "onLoadToken";
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 3992171368813030624L;
+	private static final long serialVersionUID = -6308022048294680475L;
+	private static final String ON_LOAD_TOKEN = "onLoadToken";
 	private static final String RESOURCE = "org.compiere.apps.ALoginRes";
     private ResourceBundle res = ResourceBundle.getBundle(RESOURCE);
     private static CLogger logger = CLogger.getCLogger(LoginPanel.class);
@@ -109,6 +110,7 @@ public class LoginPanel extends Window implements EventListener
     private LoginWindow wndLogin;
     private Checkbox chkRememberMe;
     private Checkbox chkSelectRole;
+    boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
 
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {
@@ -244,7 +246,15 @@ public class LoginPanel extends Window implements EventListener
 						    if (BrowserToken.validateToken(session, user, token))
 						    {
 						    	if (MSystem.isZKRememberUserAllowed()) {
-						    		txtUserId.setValue(user.getName());
+						    		if (email_login) {
+						    			txtUserId.setValue(user.getEMail());
+						    		} else {
+						    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
+						    				txtUserId.setValue(user.getLDAPUser());
+						    			} else {
+						    				txtUserId.setValue(user.getName());
+						    			}
+						    		}
 							    	onUserIdChange();
 							    	chkRememberMe.setChecked(true);
 						    	}
@@ -405,7 +415,10 @@ public class LoginPanel extends Window implements EventListener
 		Locale.setDefault(loc);
 		res = ResourceBundle.getBundle(RESOURCE, loc);
 
-    	lblUserId.setValue(res.getString("User"));
+		if (email_login)
+			lblUserId.setValue(res.getString("EMail"));
+		else
+			lblUserId.setValue(res.getString("User"));
     	lblPassword.setValue(res.getString("Password"));
     	lblLanguage.setValue(res.getString("Language"));
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
@@ -453,8 +466,8 @@ public class LoginPanel extends Window implements EventListener
 
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         
-        KeyNamePair rolesKNPairs[] = login.getRoles(userId, userPassword);
-        if(rolesKNPairs == null || rolesKNPairs.length == 0)
+        KeyNamePair clientsKNPairs[] = login.getClients(userId, userPassword);
+        if (clientsKNPairs == null || clientsKNPairs.length == 0)
             throw new WrongValueException("User Id or Password invalid!!!");
 
         else
@@ -467,7 +480,7 @@ public class LoginPanel extends Window implements EventListener
         	Language language = findLanguage(langName);
             Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName()); // Elaine 2009/02/06
 
-            wndLogin.loginOk(userId, userPassword, chkSelectRole.isChecked());
+            wndLogin.loginOk(userId, userPassword, chkSelectRole.isChecked(), clientsKNPairs);
 
             Locale locale = language.getLocale();
             currSess.setAttribute(Attributes.PREFERRED_LOCALE, locale);

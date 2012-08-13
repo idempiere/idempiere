@@ -42,6 +42,7 @@ public final class ALoginRes_ca extends ListResourceBundle
 	{ "Host",               "Servidor" },
 	{ "Database",           "Base de Dades" },
 	{ "User",               "Usuari" },
+	{ "EMail", 				"Correu" },
 	{ "EnterUser",          "Introdu\u00efr Usuari Aplicaci\u00f3" },
 	{ "Password",           "Contrasenya" },
 	{ "EnterPassword",      "Entrar Contrasenya Usuari Aplicaci\u00f3" },

@@ -39,6 +39,7 @@ public final class ALoginRes_ml extends ListResourceBundle
 	{ "Host",               "Host" },
 	{ "Database",           "Pengkalan Data" },
 	{ "User",               "Pengguna" },
+	{ "EMail",              "E-mel" },
 	{ "EnterUser",          "Masuk Pengguna" },
 	{ "Password",           "Kata Laluan" },
 	{ "EnterPassword",      "Masuk Kata Laluan" },

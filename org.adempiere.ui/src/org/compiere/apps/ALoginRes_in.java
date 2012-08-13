@@ -41,6 +41,7 @@ public final class ALoginRes_in extends ListResourceBundle
 	{ "Host",               "Pusat" },
 	{ "Database",           "Database" },
 	{ "User",               "ID Pengguna" },
+	{ "EMail",              "EMail" },
 	{ "EnterUser",          "Masukkan ID pengguna" },
 	{ "Password",           "Kata Sandi" },
 	{ "EnterPassword",      "Masukkan kata sandi applikasi" },

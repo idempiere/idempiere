@@ -41,6 +41,7 @@ public final class ALoginRes_sl extends ListResourceBundle
 	{ "Host",               "Stre\u017enik" },
 	{ "Database",           "Baza podatkov" },
 	{ "User",               "Uporabnik" },
+	{ "EMail",              "E-po\u0161ta" },
 	{ "EnterUser",          "Vpi\u0161i uporabnika" },
 	{ "Password",           "Geslo" },
 	{ "EnterPassword",      "Vpi\u0161i geslo" },

@@ -39,6 +39,7 @@ public final class ALoginRes_nl extends ListResourceBundle
 	{ "Host",               "Server" },
 	{ "Database",           "Database" },
 	{ "User",               "Gebruikersnaam" },
+	{ "EMail",              "EMail" },
 	{ "EnterUser",          "Voer uw gebruikersnaam in" },
 	{ "Password",           "Wachtwoord" },
 	{ "EnterPassword",      "Voer uw wachtwoord in" },

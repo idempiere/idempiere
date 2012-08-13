@@ -41,6 +41,7 @@ public class ALoginRes_fr extends ListResourceBundle
 	{ "Host",                   "Serveur" },
 	{ "Database",               "Base de donn\u00E9es" },
 	{ "User",                   "Utilisateur" },
+	{ "EMail", 				    "Courriel" },
 	{ "EnterUser",              "Entrer votre code utilisateur" },
 	{ "Password",               "Mot de passe" },
 	{ "EnterPassword",          "Entrer le mot de passe" },

@@ -21,7 +21,7 @@ import java.util.ListResourceBundle;
 /**
  *  Norwegian Base Resource Bundle Translation
  *
- * 	@author 	Olaf Slazak L�ken
+ * 	@author 	Olaf Slazak L\ufffdken
  * 	@version 	$Id: ALoginRes_no.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
 public final class ALoginRes_no extends ListResourceBundle
@@ -41,11 +41,12 @@ public final class ALoginRes_no extends ListResourceBundle
 	{ "Host",               "Maskin" },
 	{ "Database",           "Database" },
 	{ "User",               "Bruker ID" },
+	{ "EMail",              "E-post" },
 	{ "EnterUser",          "Skriv  Applikasjon Bruker ID" },
 	{ "Password",           "Passord" },
 	{ "EnterPassword",      "Skriv Applikasjon Passordet" },
-	{ "Language",           "Spr�k" },
-	{ "SelectLanguage",     "Velg �nsket Spr�k" },
+	{ "Language",           "Spr\u00e5k" },
+	{ "SelectLanguage",     "Velg spr\u00e5k" },
 	{ "Role",               "Rolle" },
 	{ "Client",             "Klient" },
 	{ "Organization",       "Organisasjon" },
@@ -62,7 +63,7 @@ public final class ALoginRes_no extends ListResourceBundle
 	{ "Cancel",             "Avbryt" },
 	{ "VersionConflict",    "Versions Konflikt:" },
 	{ "VersionInfo",        "Server <> Klient" },
-	{ "PleaseUpgrade",      "Vennligst kj�r oppdaterings programet" }
+	{ "PleaseUpgrade",      "Vennligst kj\u00f8r oppdaterings programet" }
 	};
 
 	/**

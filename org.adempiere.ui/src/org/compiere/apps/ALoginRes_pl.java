@@ -39,6 +39,7 @@ public final class ALoginRes_pl extends ListResourceBundle
 	{ "Host",               "Host" },
 	{ "Database",           "Baza danych" },
 	{ "User",               "U\u017cytkownik" },
+	{ "EMail",              "EMail" },
 	{ "EnterUser",          "Wprowad\u017a Identyfikator U\u017cytkownika Aplikacji" },
 	{ "Password",           "Has\u0142o" },
 	{ "EnterPassword",      "Wprowad\u017a Has\u0142o Aplikacji" },

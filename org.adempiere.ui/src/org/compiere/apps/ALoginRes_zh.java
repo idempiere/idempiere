@@ -39,6 +39,7 @@ public final class ALoginRes_zh extends ListResourceBundle
 	{ "Host",               "\u4e3b\u6a5f" },
 	{ "Database",           "\u8cc7\u6599\u5eab" },
 	{ "User",               "\u5e33\u865f" },
+	{ "EMail",              "\u7535\u5b50\u90ae\u4ef6" },
 	{ "EnterUser",          "\u8acb\u9375\u5165\u5e33\u865f" },
 	{ "Password",           "\u5bc6\u78bc" },
 	{ "EnterPassword",      "\u8acb\u9375\u5165\u5bc6\u78bc" },

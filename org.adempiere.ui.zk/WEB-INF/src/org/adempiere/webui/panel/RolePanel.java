@@ -34,13 +34,12 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.window.LoginWindow;
-import org.adempiere.webui.editor.WDateEditor;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
@@ -75,15 +74,14 @@ import org.zkoss.zul.Image;
 public class RolePanel extends Window implements EventListener, Deferrable
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 4485820129703005679L;
+	private static final long serialVersionUID = 153231955030136145L;
 
 	private static final String RESOURCE = "org.compiere.apps.ALoginRes";
 
     private LoginWindow wndLogin;
     private Login login;
-    private KeyNamePair rolesKNPairs[];
 
     private Combobox lstRole, lstClient, lstOrganisation, lstWarehouse;
     private Label lblRole, lblClient, lblOrganisation, lblWarehouse, lblDate;
@@ -95,26 +93,34 @@ public class RolePanel extends Window implements EventListener, Deferrable
     /** Username					*/
     private String			m_userName;
     /** Password					*/
-    private String			m_password;
+    private KeyNamePair[]	m_clientKNPairs;
 
 	private boolean m_show = true;
 
-    public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, String password, boolean show)    {
+    public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
     	this.wndLogin = loginWindow;
     	m_ctx = ctx;
-    	m_userName = userName;
-    	m_password = password;    	login = new Login(ctx);
+    	m_userName = userName;    	
+    	login = new Login(ctx);
     	m_show = show;
-        rolesKNPairs = login.getRoles(userName, password);
-        if(rolesKNPairs == null)
-            throw new ApplicationException("Login is invalid, UserName: " + userName + " and Password:" + password);
+        m_clientKNPairs = clientsKNPairs;
+    	
 
         initComponents();
         init();
         this.setId("rolePanel");
 
         if (m_show) {
-            AuFocus auf = new AuFocus(lstRole);
+        	AuFocus auf = null;
+            if (lstClient.getItemCount() > 1) {
+            	auf = new AuFocus(lstClient);
+            } else {
+            	if (MSysConfig.getBooleanValue("ALogin_ShowOneRole", true) || lstRole.getItemCount() > 1) {
+            		auf = new AuFocus(lstRole);
+            	} else {
+            		auf = new AuFocus(lstOrganisation);
+            	}
+            }
             Clients.response(auf);
         } else {
         	validateRoles();
@@ -148,18 +154,6 @@ public class RolePanel extends Window implements EventListener, Deferrable
         image.setSrc(ThemeManager.getLargeLogo());
         td.appendChild(image);
 
-        tr = new Tr();
-        tr.setId("rowRole");
-        table.appendChild(tr);
-    	td = new Td();
-    	tr.appendChild(td);
-    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.appendChild(lblRole.rightAlign());
-    	td = new Td();
-    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
-    	tr.appendChild(td);
-    	td.appendChild(lstRole);
-
     	tr = new Tr();
         tr.setId("rowclient");
         table.appendChild(tr);
@@ -171,6 +165,18 @@ public class RolePanel extends Window implements EventListener, Deferrable
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(lstClient);
+
+        tr = new Tr();
+        tr.setId("rowRole");
+        table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(lblRole.rightAlign());
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(lstRole);
 
     	tr = new Tr();
         tr.setId("rowOrganisation");
@@ -226,13 +232,13 @@ public class RolePanel extends Window implements EventListener, Deferrable
 
     	ResourceBundle res = ResourceBundle.getBundle(RESOURCE, language.getLocale());
 
-        lblRole = new Label();
-        lblRole.setId("lblRole");
-        lblRole.setValue(res.getString("Role"));
-
         lblClient = new Label();
         lblClient.setId("lblClient");
         lblClient.setValue(res.getString("Client"));
+
+        lblRole = new Label();
+        lblRole.setId("lblRole");
+        lblRole.setValue(res.getString("Role"));
 
         lblOrganisation = new Label();
         lblOrganisation.setId("lblOrganisation");
@@ -294,68 +300,82 @@ public class RolePanel extends Window implements EventListener, Deferrable
         btnCancel.setId("btnCancel");
         btnCancel.setLabel("Cancel");
         btnCancel.addEventListener("onClick", this);
-
-        // initial role - Elaine 2009/02/06
-        UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
-        String initDefault = userPreference.getProperty(UserPreference.P_ROLE);
-        for(int i = 0; i < rolesKNPairs.length; i++)
+        
+    	//  initial client - Elaine 2009/02/06
+    	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
+		String initDefault = userPreference.getProperty(UserPreference.P_CLIENT);
+        if (m_clientKNPairs != null && m_clientKNPairs.length > 0)
         {
-        	ComboItem ci = new ComboItem(rolesKNPairs[i].getName(), rolesKNPairs[i].getID());
-        	lstRole.appendChild(ci);
-        	if(rolesKNPairs[i].getID().equals(initDefault))
-        		lstRole.setSelectedItem(ci);
-        }
-        if (lstRole.getSelectedIndex() == -1 && lstRole.getItemCount() > 0) {
-        	m_show = true; // didn't find default role
-        	lstRole.setSelectedIndex(0);
+            for(int i = 0; i < m_clientKNPairs.length; i++)
+            {
+            	ComboItem ci = new ComboItem(m_clientKNPairs[i].getName(), m_clientKNPairs[i].getID());
+            	lstClient.appendChild(ci);
+                if (m_clientKNPairs[i].getID().equals(initDefault))
+                	lstClient.setSelectedItem(ci);
+            }
+            if (lstClient.getSelectedIndex() == -1 && lstClient.getItemCount() > 0) {
+            	m_show = true; // didn't find default client
+            	lstClient.setSelectedIndex(0);
+            }
         }
         //
 
-		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
-		if (lstRole.getItemCount() == 1 && ! MSysConfig.getBooleanValue("ALogin_ShowOneRole", true))
-		{
-			lstRole.setSelectedIndex(0);
-			lblRole.setVisible(false);
-			lstRole.setVisible(false);
-		}
-		else
-		{
-			lblRole.setVisible(true);
-			lstRole.setVisible(true);
-		}
-
-        updateClientList();
+        if (m_clientKNPairs.length == 1) {
+        	// don't show client if is just one
+			lstClient.setSelectedIndex(0);
+			lblClient.setVisible(false);
+			lstClient.setVisible(false);
+        } else {
+			lblClient.setVisible(true);
+			lstClient.setVisible(true);
+        }
+        setUserID();
+        updateRoleList();
     }
 
-    private void updateClientList()
+    private void updateRoleList()
     {
-        lstClient.getItems().clear();
-        Comboitem lstItemRole = lstRole.getSelectedItem();
-        if(lstItemRole != null)
+		lstRole.getItems().clear();
+        Comboitem lstItemClient = lstClient.getSelectedItem();
+        if (lstItemClient != null)
         {
-        	//  initial client - Elaine 2009/02/06
+        	//  initial role
         	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
-			String initDefault = userPreference.getProperty(UserPreference.P_CLIENT);
-            KeyNamePair roleKNPair = new KeyNamePair(new Integer((String)lstItemRole.getValue()), lstItemRole.getLabel());
-            KeyNamePair clientKNPairs[] = login.getClients(roleKNPair);
-            if(clientKNPairs != null && clientKNPairs.length > 0)
+			String initDefault = userPreference.getProperty(UserPreference.P_ROLE);
+            KeyNamePair clientKNPair = new KeyNamePair(new Integer((String)lstItemClient.getValue()), lstItemClient.getLabel());
+            KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair);
+            if (roleKNPairs != null && roleKNPairs.length > 0)
             {
-                for(int i = 0; i < clientKNPairs.length; i++)
+                for (int i = 0; i < roleKNPairs.length; i++)
                 {
-                	ComboItem ci = new ComboItem(clientKNPairs[i].getName(), clientKNPairs[i].getID());
-                	lstClient.appendChild(ci);
-                    if(clientKNPairs[i].getID().equals(initDefault))
-                    	lstClient.setSelectedItem(ci);
+                	ComboItem ci = new ComboItem(roleKNPairs[i].getName(), roleKNPairs[i].getID());
+                	lstRole.appendChild(ci);
+                    if (roleKNPairs[i].getID().equals(initDefault))
+                    	lstRole.setSelectedItem(ci);
                 }
-                if (lstClient.getSelectedIndex() == -1 && lstClient.getItemCount() > 0) {
-                	m_show = true; // didn't find default client
-                	lstClient.setSelectedIndex(0);
+                if (lstRole.getSelectedIndex() == -1 && lstRole.getItemCount() > 0) {
+                	m_show = true; // didn't find default role
+                	lstRole.setSelectedIndex(0);
                 }
             }
             //
 
             //force reload of default role
             MRole.getDefault(m_ctx, true);
+            
+    		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
+    		if (m_clientKNPairs.length == 1 && lstRole.getItemCount() == 1 && ! MSysConfig.getBooleanValue("ALogin_ShowOneRole", true))
+    		{
+    			lstRole.setSelectedIndex(0);
+    			lblRole.setVisible(false);
+    			lstRole.setVisible(false);
+    		}
+    		else
+    		{
+    			lblRole.setVisible(true);
+    			lstRole.setVisible(true);
+    		}
+            
         }
         setUserID();
         updateOrganisationList();
@@ -365,14 +385,14 @@ public class RolePanel extends Window implements EventListener, Deferrable
     {
         lstOrganisation.getItems().clear();
         lstOrganisation.setText("");
-        Comboitem lstItemClient = lstClient.getSelectedItem();
-        if(lstItemClient != null)
+        Comboitem lstItemRole = lstRole.getSelectedItem();
+        if(lstItemRole != null)
         {
 			//  initial organisation - Elaine 2009/02/06
         	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 			String initDefault = userPreference.getProperty(UserPreference.P_ORG);
-            KeyNamePair clientKNPair = new KeyNamePair(new Integer((String)lstItemClient.getValue()), lstItemClient.getLabel());
-            KeyNamePair orgKNPairs[] = login.getOrgs(clientKNPair);
+            KeyNamePair RoleKNPair = new KeyNamePair(new Integer((String)lstItemRole.getValue()), lstItemRole.getLabel());
+            KeyNamePair orgKNPairs[] = login.getOrgs(RoleKNPair);
             if(orgKNPairs != null && orgKNPairs.length > 0)
             {
                 for(int i = 0; i < orgKNPairs.length; i++)
@@ -429,9 +449,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
         String eventName = event.getName();
         if(eventName.equals("onSelect"))
         {
-            if(eventCompId.equals(lstRole.getId()))
-                updateClientList();
-            else if(eventCompId.equals(lstClient.getId())) {
+            if(eventCompId.equals(lstClient.getId())){            	
+            	updateRoleList();	
+            }                
+            else if(eventCompId.equals(lstRole.getId())) {
             	setUserID();
                 updateOrganisationList();
             }
@@ -449,10 +470,8 @@ public class RolePanel extends Window implements EventListener, Deferrable
     }
     
     private void setUserID() {
-    	// Carlos Ruiz - globalqss - Wrong #AD_User_ID when user with the same name from two Ten.  
-    	// https://sourceforge.net/tracker/index.php?func=detail&aid=2984836&group_id=176962&atid=955896
     	Env.setContext(m_ctx, "#AD_Client_ID", (String) lstClient.getSelectedItem().getValue());
-    	MUser user = MUser.get (m_ctx, m_userName, m_password);
+    	MUser user = MUser.get (m_ctx, m_userName);
     	if (user != null) {
     		Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
     		Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );

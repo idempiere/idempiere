@@ -44,6 +44,7 @@ public final class ALoginRes extends ListResourceBundle
 	{ "Host",               "&Server" },
 	{ "Database",           "Database" },
 	{ "User",               "&User ID" },
+	{ "EMail",              "EMail" },
 	{ "EnterUser",          "Enter Application User ID" },
 	{ "Password",           "&Password" },
 	{ "EnterPassword",      "Enter Application Password" },

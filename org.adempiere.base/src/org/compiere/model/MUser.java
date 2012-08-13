@@ -36,6 +36,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Secure;
 import org.compiere.util.SecureEngine;
 
@@ -54,7 +55,7 @@ public class MUser extends X_AD_User
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5343496366428193731L;
+	private static final long serialVersionUID = 239972951892250043L;
 
 	/**
 	 * Get active Users of BPartner
@@ -471,6 +472,8 @@ public class MUser extends X_AD_User
 
 		String hash = null;
 		String salt = null;
+		
+		boolean valid=false;
 
 		hash = getPassword();
 		salt = getSalt();
@@ -482,13 +485,15 @@ public class MUser extends X_AD_User
 			salt = "0000000000000000";
 
 		try {
-			return SecureEngine.getSHA512Hash(1000, password, Secure.convertHexString(salt)).equals(hash);
+			valid= SecureEngine.getSHA512Hash(1000, password, Secure.convertHexString(salt)).equals(hash);
 		} catch (NoSuchAlgorithmException ignored) {
 			log.log(Level.WARNING, "Password hashing not supported by JVM");
 		} catch (UnsupportedEncodingException ignored) {
 			log.log(Level.WARNING, "Password hashing not supported by JVM");
 		}
-		return false;		
+				
+	 	  return valid;
+		
 	}	
 	
 	/**
@@ -917,6 +922,23 @@ public class MUser extends X_AD_User
 		if (newRecord || super.getValue() == null || is_ValueChanged("Value"))
 			setValue(super.getValue());
 
+		boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+		if (email_login && getPassword() != null && getPassword().length() > 0) {
+			// email is mandatory for users with password
+			if (getEMail() == null || getEMail().length() == 0) {
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_EMail));
+				return false;
+			}
+			// email with password must be unique on the same tenant
+			int cnt = DB.getSQLValue(get_TrxName(),
+					"SELECT COUNT(*) FROM AD_User WHERE Password IS NOT NULL AND EMail=? AND AD_Client_ID=? AND AD_User_ID!=?",
+					getEMail(), getAD_Client_ID(), getAD_User_ID());
+			if (cnt > 0) {
+				log.saveError("SaveErrorNotUnique", Msg.getElement(getCtx(), COLUMNNAME_EMail));
+				return false;
+			}
+		}
+			
 		if (newRecord || is_ValueChanged("Password")) {
 			// Validate password policies / IDEMPIERE-221
 			if (get_ValueOld("Salt") == null && get_Value("Salt") != null) { // being hashed
@@ -928,7 +950,7 @@ public class MUser extends X_AD_User
 					pwdrule.validate((getLDAPUser() != null ? getLDAPUser() : getName()), getPassword());
 				}
 			}
-				
+
 			// Hash password - IDEMPIERE-347
 			boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
 			if (hash_password)
@@ -937,6 +959,8 @@ public class MUser extends X_AD_User
 		
 		return true;
 	}	//	beforeSave
+
+
 
 	/**
 	 * 	Is Menu Auto Expand - user preference
@@ -950,6 +974,62 @@ public class MUser extends X_AD_User
 		else
 			isMenuAutoExpand = MRole.getDefault().isMenuAutoExpand();
 		return isMenuAutoExpand;
+	}
+
+	/**
+	 * 	Get User that has roles (already authenticated)
+	 *	@param ctx context
+	 *	@param name name
+	 *	@return user or null
+	 */
+	public static MUser get(Properties ctx, String name) {
+		if (name == null || name.length() == 0)
+		{
+			s_log.warning ("Invalid Name = " + name);
+			return null;
+		}
+		MUser retValue = null;
+		int AD_Client_ID = Env.getAD_Client_ID(ctx);
+
+		StringBuffer sql = new StringBuffer("SELECT DISTINCT u.AD_User_ID ")
+			.append("FROM AD_User u")
+			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
+			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
+		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		//	#1/2
+		boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+		if (email_login)
+			sql.append("u.EMail=?");
+		else
+			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
+		sql.append(" AND u.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql.toString(), null);
+			pstmt.setInt(1, AD_Client_ID);
+			pstmt.setString (2, name);
+			rs = pstmt.executeQuery ();
+			if (rs.next())
+			{
+				retValue = new MUser (ctx, rs.getInt(1), null);
+				if (rs.next())
+					s_log.warning ("More then one user with Name/Password = " + name);
+			}
+			else
+				s_log.fine("No record");
+		}
+		catch (Exception e)
+		{
+			s_log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		return retValue;
 	}
 	
 	/**

@@ -9,7 +9,7 @@
  * See the GNU General Public License for more details.                       *
  * You should have received a copy of the GNU General Public License along    *
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ * 59 Temple Place, Suite 3OROOOOOOOO graciassssssss @marianapajon GRACIAS!!!!!!30, Boston, MA 02111-1307 USA.                     *
  * For the text or an alternative of this public license, you may reach us    *
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
@@ -41,6 +41,7 @@ public final class ALoginRes_sr extends ListResourceBundle
 		{ "Host",               "Host" },
 		{ "Database",           "\u0411\u0430\u0437\u0430 \u043F\u043E\u0434\u0430\u0442\u0430\u043A\u0430" },
 		{ "User",               "\u041A\u043E\u0440\u0438\u0441\u043D\u0438\u043A" },
+		{ "EMail",              "\u0415-\u043c\u0430\u0438\u043b" },
 		{ "EnterUser",          "\u0423\u043D\u043E\u0441 \u043A\u043E\u0440\u0438\u0441\u043D\u0438\u043A\u0430" },
 		{ "Password",           "\u041B\u043E\u0437\u0438\u043D\u043A\u0430" },
 		{ "EnterPassword",      "\u0423\u043D\u043E\u0441 \u043B\u043E\u0437\u0438\u043D\u043A\u0435" },

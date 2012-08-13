@@ -33,19 +33,20 @@ public final class ALoginRes_da extends ListResourceBundle
 	{
 	{ "Connection",         "Forbindelse" },
 	{ "Defaults",           "Basis" },
-	{ "Login",              "ADempiere: Log på" },
+	{ "Login",              "ADempiere: Log p\u00e5" },
 	{ "File",               "Fil" },
 	{ "Exit",               "Afslut" },
-	{ "Help",               "Hjælp" },
+	{ "Help",               "Hj\u00e6lp" },
 	{ "About",              "Om" },
-	{ "Host",               "Vært" },
+	{ "Host",               "V\u00e6rt" },
 	{ "Database",           "Database" },
 	{ "User",               "Bruger-ID" },
+	{ "EMail", 				"EMail" },
 	{ "EnterUser",          "Angiv bruger-ID til program" },
 	{ "Password",           "Adgangskode" },
 	{ "EnterPassword",      "Angiv adgangskode til program" },
 	{ "Language",           "Sprog" },
-	{ "SelectLanguage",     "Vælg sprog" },
+	{ "SelectLanguage",     "V\u00e6lg sprog" },
 	{ "Role",               "Rolle" },
 	{ "Client",             "Firma" },
 	{ "Organization",       "Organisation" },
@@ -59,10 +60,10 @@ public final class ALoginRes_da extends ListResourceBundle
 	{ "RoleNotFound",       "Rolle blev ikke fundet/afsluttet" },
 	{ "Authorized",         "Tilladelse OK" },
 	{ "Ok",                 "OK" },
-	{ "Cancel",             "Annullér" },
+	{ "Cancel",             "Annull\u00e9r" },
 	{ "VersionConflict",    "Konflikt:" },
 	{ "VersionInfo",        "Server <> Klient" },
-	{ "PleaseUpgrade",      "Kør opdateringsprogram" }
+	{ "PleaseUpgrade",      "K\u00f8r opdateringsprogram" }
 	};
 
 	/**
