@@ -51,7 +51,7 @@ public class GridFieldVO implements Serializable, SystemIDs
 	 *  @param ctx context
 	 *  @return SQL with or w/o translation and 1 parameter
 	 */
-	public static String getSQL (Properties ctx, String orderedBy)
+	public static String getSQL (Properties ctx)
 	{
 		//	IsActive is part of View
 		String sql = "SELECT * FROM AD_Field_v WHERE AD_Tab_ID=?"
@@ -59,7 +59,7 @@ public class GridFieldVO implements Serializable, SystemIDs
 		if (!Env.isBaseLanguage(ctx, "AD_Tab"))
 			sql = "SELECT * FROM AD_Field_vt WHERE AD_Tab_ID=?"
 				+ " AND AD_Language='" + Env.getAD_Language(ctx) + "'"
-				+ orderedBy;
+				+ " ORDER BY IsDisplayed DESC, SeqNo";
 		return sql;
 	}   //  getSQL
 

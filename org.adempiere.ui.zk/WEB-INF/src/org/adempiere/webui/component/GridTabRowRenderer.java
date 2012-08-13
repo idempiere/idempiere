@@ -227,7 +227,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 			WButtonEditor editor = new WButtonEditor(gridField, rowIndex);
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
-			editor.setReadWrite(gridField.isEditable(gridRowCtx, true));
+			editor.setReadWrite(gridField.isEditable(gridRowCtx, true,true));
 			editor.getComponent().setAttribute("grid.row.index", rowIndex);
 			editor.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
@@ -406,7 +406,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			if (editors.get(gridPanelFields[i]) == null)
 				editors.put(gridPanelFields[i], WebEditorFactory.getEditor(gridPanelFields[i], true));
 			
-			if (!gridPanelFields[i].isDisplayed()) {
+			if (!gridPanelFields[i].isDisplayedGrid()) {
 				continue;
 			}
 			colIndex ++;
@@ -498,7 +498,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			//skip indicator column
 			int colIndex = 0;
 			for (int i = 0; i < columnCount; i++) {
-				if (!gridPanelFields[i].isDisplayed()) {
+				if (!gridPanelFields[i].isDisplayedGrid()) {
 					continue;
 				}
 				colIndex ++;
@@ -522,11 +522,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            }		            
 		            
 		            //check context
-					if (!gridPanelFields[i].isDisplayed(true)) 
+					if (!gridPanelFields[i].isDisplayedGrid()) 
 					{
 						editor.setVisible(false);
 					}
-					editor.setReadWrite(gridPanelFields[i].isEditable(true));
+					editor.setReadWrite(gridPanelFields[i].isEditableGrid(true));
 				}
 			}
 			editing = true;

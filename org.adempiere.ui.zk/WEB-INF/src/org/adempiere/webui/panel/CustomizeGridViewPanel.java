@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -330,6 +331,7 @@ public class CustomizeGridViewPanel extends Panel
 			pstmt.setInt(1, m_AD_Tab_ID);
 			rs = pstmt.executeQuery();
 
+			HashMap<Integer, ListElement> curTabSel = new HashMap<Integer, CustomizeGridViewPanel.ListElement>();
 			while (rs.next())
 			{
 				int key = rs.getInt(1);
@@ -339,12 +341,19 @@ public class CustomizeGridViewPanel extends Panel
 				ListElement pp = new ListElement(key, name, AD_Client_ID, AD_Org_ID);
 				if (tableSeqs != null && tableSeqs.size() > 0 ) {
 					if (tableSeqs.contains(key)) {
-						yesModel.addElement(pp);	
+						curTabSel.put(key, pp);
 					} else {
 						noModel.addElement(pp);
 					}
 				} else {
 					noModel.addElement(pp);
+				}
+			}
+			if(tableSeqs!=null){
+				for(int key:tableSeqs){
+					if(curTabSel.get(key)!=null){
+						yesModel.addElement(curTabSel.get(key));
+					}
 				}
 			}
 		}
@@ -358,6 +367,7 @@ public class CustomizeGridViewPanel extends Panel
 			rs = null; pstmt = null;
 		}
 
+		
 		bAdd.setEnabled(true);
 		bRemove.setEnabled(true);
 		bUp.setEnabled(true);

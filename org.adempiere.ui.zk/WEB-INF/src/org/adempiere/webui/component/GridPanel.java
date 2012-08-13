@@ -698,11 +698,11 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
                 else
                 {
                 	comp.dynamicDisplay();
-                    boolean rw = mField.isEditable(true);   //  r/w - check Context
+                    boolean rw = mField.isEditableGrid(true);   //  r/w - check Context
                     comp.setReadWrite(rw);
                 }
                 
-                comp.setVisible(mField.isDisplayed(true));
+                comp.setVisible(mField.isDisplayedGrid());
             }
         }   //  all components
 	}
@@ -767,6 +767,10 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 
 	public void reInit() {
 		this.setupFields(gridTab);
+		if(listbox.getFrozen()!=null)
+		{
+			listbox.removeChild(listbox.getFrozen());
+		}
 		if (listbox.getColumns() != null) {
 			listbox.removeChild(listbox.getColumns());
 		}

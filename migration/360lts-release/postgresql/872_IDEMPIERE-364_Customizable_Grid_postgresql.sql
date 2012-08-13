@@ -15,7 +15,7 @@ INSERT INTO AD_Sequence (StartNewYear,CurrentNextSys,IsTableID,StartNo,CurrentNe
 
 -- Aug 10, 2012 9:11:43 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200254,'U','Y','N','N',0,'N',10,'N',19,'N','N',102,'N','Y','acccad07-6b1b-4a90-b49a-f2e6b2dc0b8e','N','N','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',100,TO_TIMESTAMP('2012-08-10 21:11:42','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:11:42','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200254,'D','Y','N','N',0,'N',10,'N',19,'N','N',102,'N','Y','acccad07-6b1b-4a90-b49a-f2e6b2dc0b8e','N','N','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',100,TO_TIMESTAMP('2012-08-10 21:11:42','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:11:42','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:11:43 PM IST
@@ -25,7 +25,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 10, 2012 9:14:34 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200255,'U','Y','N','N',0,'N',10,'N',19,'N','N',113,'N','Y','09102aa5-35f2-4f01-88d6-f13349ddf85f','N','N','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',100,TO_TIMESTAMP('2012-08-10 21:14:33','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:14:33','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200255,'D','Y','N','N',0,'N',10,'N',19,'N','N',113,'N','Y','09102aa5-35f2-4f01-88d6-f13349ddf85f','N','N','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',100,TO_TIMESTAMP('2012-08-10 21:14:33','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:14:33','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:14:34 PM IST
@@ -45,7 +45,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Aug 10, 2012 9:28:52 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200256,'U','N','N','N',0,'N',10,'N',13,'N','Y',200081,'N','Y','3b84e2e6-fe63-40a6-bb7d-d4bcc5691e94','N','N','N','AD_Tab_Customization_ID','Tab Customization','N',100,TO_TIMESTAMP('2012-08-10 21:28:51','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:28:51','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200256,'D','N','N','N',0,'N',10,'N',13,'N','Y',200081,'N','Y','3b84e2e6-fe63-40a6-bb7d-d4bcc5691e94','N','N','N','AD_Tab_Customization_ID','Tab Customization','N',100,TO_TIMESTAMP('2012-08-10 21:28:51','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:28:51','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:28:52 PM IST
@@ -55,7 +55,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 10, 2012 9:29:53 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200257,'U','N','N','N',0,'N',22,'N',19,'N','N',125,'N','Y','58805cb1-51c3-47a0-ac10-338e64ff53d6','N','Y','N','AD_Tab_ID','Tab within a Window','The Tab indicates a tab that displays within a window.','Tab','Y',100,TO_TIMESTAMP('2012-08-10 21:29:52','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:29:52','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200257,'D','N','N','N',0,'N',22,'N',19,'N','N',125,'N','Y','58805cb1-51c3-47a0-ac10-338e64ff53d6','N','Y','N','AD_Tab_ID','Tab within a Window','The Tab indicates a tab that displays within a window.','Tab','Y',100,TO_TIMESTAMP('2012-08-10 21:29:52','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:29:52','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:29:53 PM IST
@@ -65,7 +65,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 10, 2012 9:30:33 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200258,'U','Y','N','N',0,'N',22,'N',19,'N','N',138,'N','Y','84795887-a568-4ef3-9a02-1b5e3e7a5d0c','N','Y','N','AD_User_ID','User within the system - Internal or Business Partner Contact','The User identifies a unique user in the system. This could be an internal user or a business partner contact','User/Contact','Y',100,TO_TIMESTAMP('2012-08-10 21:30:32','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:30:32','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200258,'D','Y','N','N',0,'N',22,'N',19,'N','N',138,'N','Y','84795887-a568-4ef3-9a02-1b5e3e7a5d0c','N','Y','N','AD_User_ID','User within the system - Internal or Business Partner Contact','The User identifies a unique user in the system. This could be an internal user or a business partner contact','User/Contact','Y',100,TO_TIMESTAMP('2012-08-10 21:30:32','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:30:32','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:30:33 PM IST
@@ -75,7 +75,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 10, 2012 9:31:20 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200259,'U','Y','N','N',0,'N',7,'N',16,'N','N',245,'N','Y','e2e511e1-7f19-4368-9043-2b62e42023e5','N','Y','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',100,TO_TIMESTAMP('2012-08-10 21:31:19','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:31:19','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200259,'D','Y','N','N',0,'N',7,'N',16,'N','N',245,'N','Y','e2e511e1-7f19-4368-9043-2b62e42023e5','N','Y','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',100,TO_TIMESTAMP('2012-08-10 21:31:19','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:31:19','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:31:20 PM IST
@@ -85,7 +85,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 10, 2012 9:32:10 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200260,'U',110,'Y','N','N',0,'N',10,'N',18,'N','N',246,'N','Y','161e2f80-1cce-4f35-b16d-f19804b684d3','N','Y','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',100,TO_TIMESTAMP('2012-08-10 21:32:10','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:32:10','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200260,'D',110,'Y','N','N',0,'N',10,'N',18,'N','N',246,'N','Y','161e2f80-1cce-4f35-b16d-f19804b684d3','N','Y','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',100,TO_TIMESTAMP('2012-08-10 21:32:10','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:32:10','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:32:10 PM IST
@@ -105,7 +105,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Aug 10, 2012 9:33:41 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200261,'U','Y','N','N',0,'N',2000,'N',10,'N','N',200082,'N','Y','3be04407-eba4-4afe-8e37-c151944231f8','N','Y','N','Custom','Custom','Y',100,TO_TIMESTAMP('2012-08-10 21:33:40','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:33:40','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200261,'D','Y','N','N',0,'N',2000,'N',10,'N','N',200082,'N','Y','3be04407-eba4-4afe-8e37-c151944231f8','N','Y','N','Custom','Custom','Y',100,TO_TIMESTAMP('2012-08-10 21:33:40','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:33:40','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:33:41 PM IST
@@ -115,7 +115,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 10, 2012 9:34:13 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200262,'U','Y','N','N',0,'N',1,'N',20,'N','N',348,'N','Y','20d47288-2df0-4720-9b30-4fd92748044e','N','Y','N','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200262,'D','Y','N','N',0,'N',1,'N',20,'N','N',348,'N','Y','20d47288-2df0-4720-9b30-4fd92748044e','N','Y','N','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
 (2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',100,TO_TIMESTAMP('2012-08-10 21:34:12','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:34:12','YYYY-MM-DD HH24:MI:SS'),100,0)
@@ -128,7 +128,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 10, 2012 9:34:45 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200263,'U','Y','N','N',0,'N',7,'N',16,'N','N',607,'N','Y','446e4633-c822-46e1-9971-dfb5d61c1d3d','N','Y','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',100,TO_TIMESTAMP('2012-08-10 21:34:41','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:34:41','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200263,'D','Y','N','N',0,'N',7,'N',16,'N','N',607,'N','Y','446e4633-c822-46e1-9971-dfb5d61c1d3d','N','Y','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',100,TO_TIMESTAMP('2012-08-10 21:34:41','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:34:41','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:34:45 PM IST
@@ -138,7 +138,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 10, 2012 9:37:17 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200264,'U',110,'Y','N','N',0,'N',10,'N',18,'N','N',608,'N','Y','37526f39-0004-42aa-9943-44a376298a0c','N','Y','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',100,TO_TIMESTAMP('2012-08-10 21:37:14','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:37:14','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200008,200264,'D',110,'Y','N','N',0,'N',10,'N',18,'N','N',608,'N','Y','37526f39-0004-42aa-9943-44a376298a0c','N','Y','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',100,TO_TIMESTAMP('2012-08-10 21:37:14','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:37:14','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:37:17 PM IST
@@ -163,7 +163,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Aug 10, 2012 9:47:13 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,107,200265,'U','N','N','N',0,'N',1,'N',20,'N','N',200083,'N','Y','0eacadc5-a92e-4ca2-a1f7-ca9e463bc34f','N','Y','N','IsDisplayedGrid','Y','Show in Grid','Y',100,TO_TIMESTAMP('2012-08-10 21:47:13','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:47:13','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,107,200265,'D','N','N','N',0,'N',1,'N',20,'N','N',200083,'N','Y','0eacadc5-a92e-4ca2-a1f7-ca9e463bc34f','N','Y','N','IsDisplayedGrid','Y','Show in Grid','Y',100,TO_TIMESTAMP('2012-08-10 21:47:13','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:47:13','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:47:13 PM IST
@@ -183,7 +183,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Aug 10, 2012 9:50:05 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,107,200266,'U','N','N','N',0,'N',22,'N',11,'N','N',200084,'N','Y','363b94b4-d830-4fdc-83db-bc3de77f02ab','N','Y','N','SeqNoGrid','@SQL=SELECT NVL(MAX(GridSeqNo),0)+10 AS DefaultValue FROM AD_Field WHERE AD_Tab_ID=@AD_Tab_ID@','Grid Sequence No','Y',100,TO_TIMESTAMP('2012-08-10 21:50:04','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:50:04','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,107,200266,'D','N','N','N',0,'N',22,'N',11,'N','N',200084,'N','Y','363b94b4-d830-4fdc-83db-bc3de77f02ab','N','Y','N','SeqNoGrid','@SQL=SELECT NVL(MAX(GridSeqNo),0)+10 AS DefaultValue FROM AD_Field WHERE AD_Tab_ID=@AD_Tab_ID@','Grid Sequence No','Y',100,TO_TIMESTAMP('2012-08-10 21:50:04','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-08-10 21:50:04','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Aug 10, 2012 9:50:05 PM IST
@@ -218,7 +218,7 @@ INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTran
 
 -- Aug 10, 2012 9:52:08 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Name,IsFieldOnly,IsDisplayed,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive) VALUES ('N',107,22,'N','N',200266,'Y',200274,'N','U','Grid Sequence No','N','Y','ae7dc496-8beb-430b-88d3-d684612f8240',100,0,TO_TIMESTAMP('2012-08-10 21:52:07','YYYY-MM-DD HH24:MI:SS'),0,100,TO_TIMESTAMP('2012-08-10 21:52:07','YYYY-MM-DD HH24:MI:SS'),'Y')
+INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Name,IsFieldOnly,IsDisplayed,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive) VALUES ('N',107,22,'N','N',200266,'Y',200274,'N','D','Grid Sequence No','N','Y','ae7dc496-8beb-430b-88d3-d684612f8240',100,0,TO_TIMESTAMP('2012-08-10 21:52:07','YYYY-MM-DD HH24:MI:SS'),0,100,TO_TIMESTAMP('2012-08-10 21:52:07','YYYY-MM-DD HH24:MI:SS'),'Y')
 ;
 
 -- Aug 10, 2012 9:52:08 PM IST
@@ -238,7 +238,7 @@ INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTran
 
 -- Aug 10, 2012 9:52:09 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Name,IsFieldOnly,IsDisplayed,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive) VALUES ('N',107,1,'N','N',200265,'Y',200276,'N','U','Show in Grid','N','Y','26931797-3bde-42ae-acfc-e61ab4948abd',100,0,TO_TIMESTAMP('2012-08-10 21:52:09','YYYY-MM-DD HH24:MI:SS'),0,100,TO_TIMESTAMP('2012-08-10 21:52:09','YYYY-MM-DD HH24:MI:SS'),'Y')
+INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Name,IsFieldOnly,IsDisplayed,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive) VALUES ('N',107,1,'N','N',200265,'Y',200276,'N','D','Show in Grid','N','Y','26931797-3bde-42ae-acfc-e61ab4948abd',100,0,TO_TIMESTAMP('2012-08-10 21:52:09','YYYY-MM-DD HH24:MI:SS'),0,100,TO_TIMESTAMP('2012-08-10 21:52:09','YYYY-MM-DD HH24:MI:SS'),'Y')
 ;
 
 -- Aug 10, 2012 9:52:09 PM IST
@@ -358,10 +358,20 @@ UPDATE AD_Field SET IsSameLine='Y',Updated=TO_TIMESTAMP('2012-08-10 21:53:58','Y
 
 -- Aug 10, 2012 9:57:04 PM IST
 -- Customizable Grid View IDEMPIERE-364
-INSERT INTO AD_Tab (IsSingleRow,AD_Window_ID,SeqNo,IsTranslationTab,IsSortTab,AD_Table_ID,ImportFields,HasTree,IsReadOnly,IsInfoTab,AD_ColumnSortYesNo_ID,IsInsertRecord,IsAdvancedTab,TabLevel,AD_Tab_UU,EntityType,Name,Description,AD_Tab_ID,AD_ColumnSortOrder_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,Processing,IsActive) VALUES ('N',102,65,'N','Y',107,'N','N','N','N',200265,'Y','N',2,'27d1dcc7-2696-45e2-bbf8-6c1f51c3e48f','U','Grid Sequence','Defined field order for grid layout',200009,200266,0,0,TO_TIMESTAMP('2012-08-10 21:57:03','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2012-08-10 21:57:03','YYYY-MM-DD HH24:MI:SS'),100,'N','Y')
+INSERT INTO AD_Tab (IsSingleRow,AD_Window_ID,SeqNo,IsTranslationTab,IsSortTab,AD_Table_ID,ImportFields,HasTree,IsReadOnly,IsInfoTab,AD_ColumnSortYesNo_ID,IsInsertRecord,IsAdvancedTab,TabLevel,AD_Tab_UU,EntityType,Name,Description,AD_Tab_ID,AD_ColumnSortOrder_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,Processing,IsActive) VALUES ('N',102,65,'N','Y',107,'N','N','N','N',200265,'Y','N',2,'27d1dcc7-2696-45e2-bbf8-6c1f51c3e48f','D','Grid Sequence','Defined field order for grid layout',200009,200266,0,0,TO_TIMESTAMP('2012-08-10 21:57:03','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2012-08-10 21:57:03','YYYY-MM-DD HH24:MI:SS'),100,'N','Y')
 ;
 
 -- Aug 10, 2012 9:57:04 PM IST
 -- Customizable Grid View IDEMPIERE-364
 INSERT INTO AD_Tab_Trl (AD_Language,AD_Tab_ID, Help,CommitWarning,Name,Description, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Tab_Trl_UU ) SELECT l.AD_Language,t.AD_Tab_ID, t.Help,t.CommitWarning,t.Name,t.Description, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Tab t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Tab_ID=200009 AND NOT EXISTS (SELECT * FROM AD_Tab_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Tab_ID=t.AD_Tab_ID)
 ;
+
+Update ad_field set isDisplayedGrid = isDisplayed;
+
+Update ad_field set seqNoGrid = seqNo;
+
+
+ UPDATE AD_System
+  SET LastMigrationScriptApplied='872_IDEMPIERE-364_Customizable_Grid_postgresql.sql'
+WHERE LastMigrationScriptApplied<'872_IDEMPIERE-364_Customizable_Grid_postgresql.sql'
+   OR LastMigrationScriptApplied IS NULL;

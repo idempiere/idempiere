@@ -368,7 +368,17 @@ public class GridField
 	 */
 	public boolean isEditable (boolean checkContext)
 	{
-		return isEditable(m_vo.ctx, checkContext);
+		return isEditable(m_vo.ctx, checkContext,false);
+	}
+	
+	/**
+	 *	Is it Editable in Grid- checks IsActive, IsUpdateable, and isDisplayedGrid
+	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
+	 *  @return true, if editable
+	 */
+	public boolean isEditableGrid (boolean checkContext)
+	{
+		return isEditable(m_vo.ctx, checkContext,true);
 	}
 	
 	/**
@@ -376,7 +386,7 @@ public class GridField
 	 *  @param checkContext if true checks Context for Active, IsProcessed, LinkColumn
 	 *  @return true, if editable
 	 */
-	public boolean isEditable (Properties ctx, boolean checkContext)
+	public boolean isEditable (Properties ctx, boolean checkContext,boolean isGrid)
 	{
 		if (isVirtualColumn())
 			return false;
@@ -461,6 +471,9 @@ public class GridField
 			return false;
 
 		//  ultimately visibility decides
+		if(isGrid)
+			return isDisplayedGrid();
+		
 		return isDisplayed (ctx, checkContext);
 	}	//	isEditable
 
@@ -1677,7 +1690,7 @@ public class GridField
 		int AD_Window_ID = 0;
 		boolean readOnly = false;
 		
-		String sql = GridFieldVO.getSQL(ctx," ORDER BY IsDisplayed DESC, SeqNo");
+		String sql = GridFieldVO.getSQL(ctx);
 		PreparedStatement pstmt = null;
 		try
 		{

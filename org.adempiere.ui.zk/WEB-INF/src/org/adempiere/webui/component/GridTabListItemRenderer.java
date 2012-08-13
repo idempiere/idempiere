@@ -120,7 +120,7 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 		}
 		
 		for (int i = 0; i < columnCount; i++) {
-			if (!listPanelFields[i].isDisplayed()) {
+			if (!listPanelFields[i].isDisplayedGrid()) {
 				continue;
 			}
 			if (editors.get(listPanelFields[i]) == null)
