@@ -52,6 +52,8 @@ syntax: regexp
 ^org\.adempiere\.ui\.zk/dist$
 ^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.class$
 ^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.xml$
+^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.js$
+^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.wpd$
 
 syntax: regexp
 ^lib/plugins$

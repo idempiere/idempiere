@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -106,32 +104,25 @@ public class Login
 	{
 		//	Java System version check
 		String jVersion = System.getProperty("java.version");
-		if (jVersion.startsWith("1.5.0"))
+		//vpj-cd e-evolution support to java 6
+		if (jVersion.startsWith("1.6.0"))
 			return true;
-                //vpj-cd e-evolution support to java 6
-                if (jVersion.startsWith("1.6.0"))
+		//end
+		if (jVersion.startsWith("1.7.0"))
 			return true;
-                //end
-		//  Warning
-		boolean ok = false;
-	//	if (jVersion.startsWith("1.4")
-	//		|| jVersion.startsWith("1.5.1"))	//  later/earlier release
-	//		ok = true;
 
 		//  Error Message
 		StringBuffer msg = new StringBuffer();
 		msg.append(System.getProperty("java.vm.name")).append(" - ").append(jVersion);
-		if (ok)
-			msg.append("(untested)");
-		msg.append("  <>  1.5.0");
+		msg.append("  <>  1.6.0 | 1.7.0");
 		//
 		if (isClient)
 			JOptionPane.showMessageDialog(null, msg.toString(),
 				org.compiere.Adempiere.getName() + " - Java Version Check",
-				ok ? JOptionPane.WARNING_MESSAGE : JOptionPane.ERROR_MESSAGE);
+				JOptionPane.ERROR_MESSAGE);
 		else
 			log.severe(msg.toString());
-		return ok;
+		return false;
 	}   //  isJavaOK
 
 	

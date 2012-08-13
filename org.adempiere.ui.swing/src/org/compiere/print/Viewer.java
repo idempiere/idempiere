@@ -130,7 +130,7 @@ public class Viewer extends CFrame
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3453340777183200393L;
+	private static final long serialVersionUID = 3766771249690413641L;
 
 	/**
 	 * 	@deprecated
@@ -467,7 +467,7 @@ public class Viewer extends CFrame
 	/**
 	 * 	Revalidate settings after change of environment
 	 */
-	private void revalidate()
+	public void revalidate()
 	{
 		m_pageMax = m_viewPanel.getPageCount();
 		spinnerModel.setMaximum(new Integer(m_pageMax));
