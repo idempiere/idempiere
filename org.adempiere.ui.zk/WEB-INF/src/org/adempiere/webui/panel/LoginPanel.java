@@ -26,6 +26,7 @@ package org.adempiere.webui.panel;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -53,6 +54,7 @@ import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -255,7 +257,7 @@ public class LoginPanel extends Window implements EventListener
 						    				txtUserId.setValue(user.getName());
 						    			}
 						    		}
-							    	onUserIdChange();
+							    	onUserIdChange(AD_User_ID);
 							    	chkRememberMe.setChecked(true);
 						    	}
 						    	if (MSystem.isZKRememberPasswordAllowed()) {
@@ -365,7 +367,7 @@ public class LoginPanel extends Window implements EventListener
         {
         	if(eventComp.getId().equals(txtUserId.getId()))
         	{
-        		onUserIdChange();
+        		onUserIdChange(-1);
         	}
         }        
         else if (event.getName().equals(ON_LOAD_TOKEN)) 
@@ -382,26 +384,36 @@ public class LoginPanel extends Window implements EventListener
         //
     }
 
-	private void onUserIdChange() {
-		String userId = txtUserId.getValue();
-		if(userId != null && userId.length() > 0)
+	private void onUserIdChange(int AD_User_ID) {
+		String userName = txtUserId.getValue();
+		if (userName != null && userName.length() > 0 && AD_User_ID < 0)
 		{
-			int AD_User_ID = DB.getSQLValue(null, "SELECT AD_User_ID FROM AD_User WHERE Name = ?", userId);
-			if(AD_User_ID > 0)
+			String column;
+			if (email_login)
+				column = "EMail";
+			else
+				column = "COALESCE(LDAPUser,Name)";
+			List<MUser> users = new Query(Env.getCtx(), MUser.Table_Name, "Password IS NOT NULL AND IsActive='Y' AND " + column + "=?", null)
+				.setParameters(userName)
+				.list();
+			if (users.size() == 1) {
+				AD_User_ID = users.get(0).getAD_User_ID();
+			}
+		}
+		if (AD_User_ID >= 0)
+		{
+			// Elaine 2009/02/06 Load preference from AD_Preference
+			UserPreference userPreference = SessionManager.getSessionApplication().loadUserPreference(AD_User_ID);
+			String initDefault = userPreference.getProperty(UserPreference.P_LANGUAGE);
+			for(int i = 0; i < lstLanguage.getItemCount(); i++)
 			{
-				// Elaine 2009/02/06 Load preference from AD_Preference
-				UserPreference userPreference = SessionManager.getSessionApplication().loadUserPreference(AD_User_ID);
-				String initDefault = userPreference.getProperty(UserPreference.P_LANGUAGE);
-				for(int i = 0; i < lstLanguage.getItemCount(); i++)
-		        {
-		        	Comboitem li = lstLanguage.getItemAtIndex(i);
-		        	if(li.getLabel().equals(initDefault))
-		        	{
-		        		lstLanguage.setSelectedIndex(i);
-		        		languageChanged(li.getLabel()); // Elaine 2009/04/17 language changed
-		        		break;
-		        	}
-		        }
+				Comboitem li = lstLanguage.getItemAtIndex(i);
+				if(li.getLabel().equals(initDefault))
+				{
+					lstLanguage.setSelectedIndex(i);
+					languageChanged(li.getLabel()); // Elaine 2009/04/17 language changed
+					break;
+				}
 			}
 		}
 	}
