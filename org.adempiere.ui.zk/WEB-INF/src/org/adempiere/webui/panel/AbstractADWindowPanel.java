@@ -1202,6 +1202,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(curTabpanel instanceof ADSortTab))
         	toolbar.enableCustomize(((ADTabpanel)curTabpanel).isGridView());
+        else
+        	toolbar.enableCustomize(false);
 	}
 
 	/**
@@ -2522,8 +2524,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		GridField[] fields = tabPanel.getGridView().getFields();
 		Map<Integer, String> columnsWidth = new HashMap<Integer, String>();
 		ArrayList<Integer> gridFieldIds = new ArrayList<Integer>();
-		for (int i = 0; i < columnList.size()-1; i++) {
-			Column column = (Column) columnList.get(i);
+		for (int i = 0; i < fields.length; i++) {
+			Column column = (Column) columnList.get(i+1);
 			String width = column.getWidth(); 			
 			columnsWidth.put(fields[i].getAD_Field_ID(), width);
 			gridFieldIds.add(fields[i].getAD_Field_ID());
