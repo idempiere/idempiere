@@ -12,7 +12,9 @@ CREATE OR REPLACE VIEW ad_field_v AS
  c.isencrypted AS isencryptedcolumn, c.isselectioncolumn, tbl.tablename, c.valuemin, c.valuemax, 
  fg.name AS fieldgroup, vr.code AS validationcode, f.included_tab_id, fg.fieldgrouptype, fg.iscollapsedbydefault, 
  COALESCE(f.infofactoryclass, c.infofactoryclass) AS infofactoryclass, c.isautocomplete,
- COALESCE(f.IsAllowCopy, c.IsAllowCopy) AS IsAllowCopy
+ COALESCE(f.IsAllowCopy, c.IsAllowCopy) AS IsAllowCopy,
+	f.isdisplayedgrid, 
+	f.seqnogrid
    FROM ad_field f
    JOIN ad_tab t ON f.ad_tab_id = t.ad_tab_id
    LEFT JOIN ad_fieldgroup fg ON f.ad_fieldgroup_id = fg.ad_fieldgroup_id
