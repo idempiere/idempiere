@@ -1422,16 +1422,23 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		}
 
 		//	Credit Status
-		if (isSOTrx() && !isReversal())
+		if (isSOTrx())
 		{
-			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), null);
-			if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
-			{
-				m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@="
-					+ bp.getTotalOpenBalance()
-					+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-				return DocAction.STATUS_Invalid;
-			}
+			MDocType doc = (MDocType) getC_DocTypeTarget();
+			// IDEMPIERE-365 - just check credit if is going to increase the debt
+			if ( (doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARCreditMemo) && getGrandTotal().signum() < 0 ) ||
+				(doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARInvoice) && getGrandTotal().signum() > 0 )
+			   )
+			{	
+				MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), null);
+				if ( MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()) )
+				{
+					m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@="
+							+ bp.getTotalOpenBalance()
+							+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
+					return DocAction.STATUS_Invalid;
+				}
+			}  
 		}
 
 		//	Landed Costs

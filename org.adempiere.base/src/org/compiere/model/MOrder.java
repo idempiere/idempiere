@@ -1333,31 +1333,35 @@ public class MOrder extends X_C_Order implements DocAction
 			} else {
 				MBPartner bp = new MBPartner (getCtx(), getBill_BPartner_ID(), get_TrxName()); // bill bp is guaranteed on beforeSave
 
-				if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
-				{
-					m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@=" 
-						+ bp.getTotalOpenBalance()
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
+				if (getGrandTotal().signum() > 0)  // IDEMPIERE-365 - just check credit if is going to increase the debt
+				{		 
+
+					if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
+					{
+						m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@=" 
+								+ bp.getTotalOpenBalance()
+								+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
+						return DocAction.STATUS_Invalid;
+					}
+					if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus()))
+					{
+						m_processMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@=" 
+								+ bp.getTotalOpenBalance() 
+								+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
+						return DocAction.STATUS_Invalid;
+					}
+					BigDecimal grandTotal = MConversionRate.convertBase(getCtx(), 
+							getGrandTotal(), getC_Currency_ID(), getDateOrdered(), 
+							getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
+					if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(grandTotal)))
+					{
+						m_processMsg = "@BPartnerOverOCreditHold@ - @TotalOpenBalance@=" 
+								+ bp.getTotalOpenBalance() + ", @GrandTotal@=" + grandTotal
+								+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
+						return DocAction.STATUS_Invalid;
+					}
 				}
-				if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus()))
-				{
-					m_processMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@=" 
-						+ bp.getTotalOpenBalance() 
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
-				}
-				BigDecimal grandTotal = MConversionRate.convertBase(getCtx(), 
-						getGrandTotal(), getC_Currency_ID(), getDateOrdered(), 
-						getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
-				if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(grandTotal)))
-				{
-					m_processMsg = "@BPartnerOverOCreditHold@ - @TotalOpenBalance@=" 
-						+ bp.getTotalOpenBalance() + ", @GrandTotal@=" + grandTotal
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
-				}
-			}
+			}  
 		}
 		
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
