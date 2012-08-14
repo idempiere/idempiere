@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -53,6 +54,7 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
@@ -116,6 +118,7 @@ public class WFileImport extends ADForm implements EventListener
 
 	public WFileImport()
 	{
+		this.addEventListener(Events.ON_UPLOAD, this);
 	}
 	
 	/**
@@ -305,6 +308,11 @@ public class WFileImport extends ADForm implements EventListener
 			SessionManager.getAppDesktop().closeActiveWindow();
 			return;			
 		}
+		else if (e instanceof UploadEvent) 
+		{
+			UploadEvent ue = (UploadEvent) e;
+			processUploadMedia(ue.getMedia());
+		}
 		
 		if (m_data != null && m_data.size()	> 0					//	file loaded
 			&& m_format != null && m_format.getRowCount() > 0)	//	format loaded
@@ -319,10 +327,12 @@ public class WFileImport extends ADForm implements EventListener
 	
 	private void cmd_loadFile()
 	{
-		Media media = null;
-		
-		media = Fileupload.get();
-	
+		Media media = Fileupload.get();
+		if (AdempiereWebUI.isEventThreadEnabled())
+			processUploadMedia(media);
+	}
+
+	private void processUploadMedia(Media media) {
 		if (media == null)
 			return;
 		

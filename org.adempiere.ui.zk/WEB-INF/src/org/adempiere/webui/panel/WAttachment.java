@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Label;
@@ -32,6 +34,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
@@ -42,9 +45,11 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -61,7 +66,7 @@ import org.zkoss.zul.Iframe;
  * @author Low Heng Sin
  *
  */
-public class WAttachment extends Window implements EventListener
+public class WAttachment extends Window implements EventListener<Event>
 {
 	/**
 	 * generated serial version Id
@@ -129,12 +134,32 @@ public class WAttachment extends Window implements EventListener
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 						int AD_Table_ID, int Record_ID, String trxName)
 	{
+		this(WindowNo, AD_Attachment_ID, AD_Table_ID, Record_ID, trxName, (EventListener<Event>)null);
+	}
+	
+	/**
+	 *	Constructor.
+	 *	loads Attachment, if ID <> 0
+	 *  @param WindowNo window no
+	 *  @param AD_Attachment_ID attachment
+	 *  @param AD_Table_ID table
+	 *  @param Record_ID record key
+	 *  @param trxName transaction
+	 */
+
+	public WAttachment(	int WindowNo, int AD_Attachment_ID,
+						int AD_Table_ID, int Record_ID, String trxName, EventListener<Event> eventListener)
+	{
 		super();
 
 		log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 
 		m_WindowNo = WindowNo;
-
+		if (eventListener != null) 
+		{
+			this.addEventListener(DialogEvents.ON_WINDOW_CLOSE, eventListener);
+		}
+		
 		try
 		{
 			staticInit();
@@ -165,7 +190,7 @@ public class WAttachment extends Window implements EventListener
 			}
 
 			//enter modal
-			doModal();
+			doHighlighted();
 		}
 		catch (Exception e)
 		{
@@ -268,6 +293,8 @@ public class WAttachment extends Window implements EventListener
 		confirmPanel.appendChild(bOk);
 
 		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));
+		
+		this.addEventListener(Events.ON_UPLOAD, this);
 	}
 
 	/**
@@ -498,6 +525,11 @@ public class WAttachment extends Window implements EventListener
 
 		else if (e.getTarget() == bRefresh)
 			displayData(cbContent.getSelectedIndex(), true);
+		else if (e instanceof UploadEvent) 
+		{
+			UploadEvent ue = (UploadEvent) e;
+			processUploadMedia(ue.getMedia());
+		}
 
 	}	//	onEvent
 
@@ -511,10 +543,12 @@ public class WAttachment extends Window implements EventListener
 
 		preview.setVisible(false);
 
-		Media media = null;
+		Media media = Fileupload.get(true);
+		if (AdempiereWebUI.isEventThreadEnabled())
+			processUploadMedia(media);
+	}
 
-		media = Fileupload.get(true);
-
+	private void processUploadMedia(Media media) {
 		if (media != null)
 		{
 //				pdfViewer.setContent(media);
@@ -554,7 +588,7 @@ public class WAttachment extends Window implements EventListener
 			clearPreview();
 			m_change = true;
 		}
-	}	//	getFileName
+	}
 
 	private byte[] getMediaData(Media media) {
 		byte[] bytes = null;
@@ -586,8 +620,17 @@ public class WAttachment extends Window implements EventListener
 	{
 		log.info("");
 
-		if (FDialog.ask(m_WindowNo, this, "AttachmentDelete?"))
-			m_attachment.delete(true);
+		FDialog.ask(m_WindowNo, this, "AttachmentDelete?", new Callback<Boolean>() {
+			
+			@Override
+			public void onCallback(Boolean result) 
+			{
+				if (result)
+				{
+					m_attachment.delete(true);
+				}					
+			}
+		});			
 	}	//	deleteAttachment
 
 	/**
@@ -598,19 +641,26 @@ public class WAttachment extends Window implements EventListener
 	{
 		log.info("");
 
-		int index = cbContent.getSelectedIndex();
+		final int index = cbContent.getSelectedIndex();
 		String fileName = getFileName(index);
 
 		if (fileName == null)
 			return;
 
-		if (FDialog.ask(m_WindowNo, this, "AttachmentDeleteEntry?"))
-		{
-			if (m_attachment.deleteEntry(index))
-				cbContent.removeItemAt(index);
+		FDialog.ask(m_WindowNo, this, "AttachmentDeleteEntry?", new Callback<Boolean>() {
 
-			m_change = true;
-		}
+			@Override
+			public void onCallback(Boolean result) 
+			{
+				if (result)
+				{
+					if (m_attachment.deleteEntry(index))
+						cbContent.removeItemAt(index);
+
+					m_change = true;
+				}				
+			}
+		});		
 	}	//	deleteAttachment
 
 	/**
@@ -639,5 +689,4 @@ public class WAttachment extends Window implements EventListener
 			}
 		}
 	}	//	saveAttachmentToFile
-
 }

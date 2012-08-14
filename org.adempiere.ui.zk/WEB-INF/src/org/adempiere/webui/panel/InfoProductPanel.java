@@ -61,6 +61,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.WListbox;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
@@ -1119,13 +1120,20 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 	 */
 	private void cmd_InfoPAttribute()
 	{
-		InfoPAttributePanel ia = new InfoPAttributePanel(this);
-		m_pAttributeWhere = ia.getWhereClause();
-		if (m_pAttributeWhere != null)
-		{
-			executeQuery();
-			renderItems();
-		}
+		final InfoPAttributePanel ia = new InfoPAttributePanel(this);
+		ia.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event event) throws Exception {
+				m_pAttributeWhere = ia.getWhereClause();
+				if (m_pAttributeWhere != null)
+				{
+					executeQuery();
+					renderItems();
+				}
+			}
+		});
+		
 	}	//	cmdInfoAttribute
 
 	/**
@@ -1375,12 +1383,19 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 				M_Warehouse_ID = ((Integer)warehouse.getValue()).intValue();
 
 			String title = warehouse.getLabel() + " - " + productName;
-			InfoPAttributeInstancePanel pai = new InfoPAttributeInstancePanel(this, title,
+			final InfoPAttributeInstancePanel pai = new InfoPAttributeInstancePanel(this, title,
 				M_Warehouse_ID, 0, productInteger.intValue(), m_C_BPartner_ID);
-			m_M_AttributeSetInstance_ID = pai.getM_AttributeSetInstance_ID();
-			m_M_Locator_ID = pai.getM_Locator_ID();
-			if (m_M_AttributeSetInstance_ID != -1)
-				dispose(true);
+			pai.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event event) throws Exception {
+					m_M_AttributeSetInstance_ID = pai.getM_AttributeSetInstance_ID();
+					m_M_Locator_ID = pai.getM_Locator_ID();
+					if (m_M_AttributeSetInstance_ID != -1)
+						dispose(true);
+				}
+			});
+			
 			return;
 		}
 		//

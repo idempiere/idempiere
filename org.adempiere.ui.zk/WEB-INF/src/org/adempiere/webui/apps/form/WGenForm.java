@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -339,11 +340,19 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 	public void onAfterProcess()
 	{
 		//	OK to print
-		if (FDialog.ask(getWindowNo(), this, genForm.getAskPrintMsg()))
-		{
-			Clients.showBusy("Processing...");
-			Clients.response(new AuEcho(this, "onPrint", null));			
-		}	//	OK to print
+		FDialog.ask(getWindowNo(), this, genForm.getAskPrintMsg(), new Callback<Boolean>() {
+			
+			@Override
+			public void onCallback(Boolean result) 
+			{
+				if (result) 
+				{
+					Clients.showBusy("Processing...");
+					Clients.response(new AuEcho(WGenForm.this, "onPrint", null));
+				}
+				
+			}
+		});
 	}
 	
 	public void onPrint() 

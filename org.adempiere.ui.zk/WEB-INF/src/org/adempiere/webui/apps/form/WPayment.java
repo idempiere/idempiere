@@ -940,13 +940,6 @@ public class WPayment extends Window
 		}
 	}	//	actionPerformed
 
-	@Override
-	public void dispose() {
-		super.dispose();
-		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
-	}
-
-
 	public void lockUI() {
 		if (m_isLocked) return;
 		

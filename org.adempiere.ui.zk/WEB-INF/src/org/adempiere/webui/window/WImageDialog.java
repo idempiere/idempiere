@@ -19,6 +19,7 @@ package org.adempiere.webui.window;
 import java.io.InputStream;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -34,6 +35,7 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
@@ -50,7 +52,7 @@ import org.zkoss.zul.Separator;
  *  @author Low Heng Sin 
  *  
  */
-public class WImageDialog extends Window implements EventListener
+public class WImageDialog extends Window implements EventListener<Event>
 {
 	/**
 	 * 
@@ -148,12 +150,20 @@ public class WImageDialog extends Window implements EventListener
 		//
 		fileButton.addEventListener(Events.ON_CLICK, this);
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
+		
+		addEventListener(Events.ON_UPLOAD, this);
 	}   //  init
 
 	public void onEvent(Event e) throws Exception {
-		if (e.getTarget() == fileButton)
+		if (e instanceof UploadEvent) 
+		{
+			UploadEvent ue = (UploadEvent) e;
+			processUploadMedia(ue.getMedia());
+		}
+		else if (e.getTarget() == fileButton)
+		{
 			cmd_file();
-
+		}
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
 			if (image.getContent() != null)
@@ -192,10 +202,12 @@ public class WImageDialog extends Window implements EventListener
 	private void cmd_file()
 	{
 		//  Show File Open Dialog
-		Media imageFile = null;
-		
-		imageFile = Fileupload.get(); 
-		
+		Media media = Fileupload.get();
+		if (AdempiereWebUI.isEventThreadEnabled())
+			processUploadMedia(media);
+	}   //  cmd_file
+
+	private void processUploadMedia(Media imageFile) {
 		if (imageFile == null)
 			return;
 
@@ -230,7 +242,7 @@ public class WImageDialog extends Window implements EventListener
 			m_mImage.setBinaryData(image.getContent().getByteData());
 		else
 			m_mImage.setBinaryData(null);
-	}   //  cmd_file
+	}
 
 	/**
 	 * 	Get Image ID

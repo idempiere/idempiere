@@ -76,7 +76,7 @@ public interface IProcessUI {
 	 * @param message
 	 * @param callback
 	 */
-	public void ask(String message, Callback<String> callback);
+	public void ask(String message, Callback<Boolean> callback);
 	
 	/**
 	 * add to list of file available for download after process end 

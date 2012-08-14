@@ -19,6 +19,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.PAttributebox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WPAttributeDialog;
@@ -31,6 +32,7 @@ import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
@@ -150,7 +152,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener, S
 	{
 		//
 		Integer oldValue = (Integer)getValue ();
-		int oldValueInt = oldValue == null ? 0 : oldValue.intValue ();
+		final int oldValueInt = oldValue == null ? 0 : oldValue.intValue ();
 		int M_AttributeSetInstance_ID = oldValueInt;
 		int M_Product_ID = 0;
 		int M_ProductBOM_ID = 0;
@@ -167,7 +169,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener, S
 			+ ", AD_Column_ID=" + gridField.getAD_Column_ID());
 
 		//	M_Product.M_AttributeSetInstance_ID = 8418
-		boolean productWindow = (gridField.getAD_Column_ID() == COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID);		//	HARDCODED
+		final boolean productWindow = (gridField.getAD_Column_ID() == COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID);		//	HARDCODED
 
 		//	Exclude ability to enter ASI
 		boolean exclude = true;
@@ -183,29 +185,44 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener, S
 			}
 		}
 
-		boolean changed = false;
 		if (M_ProductBOM_ID != 0)	//	Use BOM Component
 			M_Product_ID = M_ProductBOM_ID;
 		//
 		if (!productWindow && (M_Product_ID == 0 || exclude))
 		{
-			changed = true;
 			getComponent().setText(null);
 			M_AttributeSetInstance_ID = 0;
+			
+			processChanges(oldValueInt, M_AttributeSetInstance_ID);
 		}
 		else
 		{
-			WPAttributeDialog vad = new WPAttributeDialog (
+			final WPAttributeDialog vad = new WPAttributeDialog (
 				M_AttributeSetInstance_ID, M_Product_ID, m_C_BPartner_ID,
 				productWindow, gridField.getAD_Column_ID(), m_WindowNo);
-			if (vad.isChanged())
-			{
-				getComponent().setText(vad.getM_AttributeSetInstanceName());
-				M_AttributeSetInstance_ID = vad.getM_AttributeSetInstance_ID();
-				if (m_GridTab != null && !productWindow && vad.getM_Locator_ID() > 0)
-					m_GridTab.setValue("M_Locator_ID", vad.getM_Locator_ID());
-				changed = true;
-			}
+			vad.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event event) throws Exception {
+					boolean changed = false;
+					int M_AttributeSetInstance_ID = 0;
+					if (vad.isChanged())
+					{
+						getComponent().setText(vad.getM_AttributeSetInstanceName());
+						M_AttributeSetInstance_ID = vad.getM_AttributeSetInstance_ID();
+						if (m_GridTab != null && !productWindow && vad.getM_Locator_ID() > 0)
+							m_GridTab.setValue("M_Locator_ID", vad.getM_Locator_ID());
+						changed = true;
+					}
+					
+					//	Set Value
+					if (changed)
+					{
+						processChanges(oldValueInt, M_AttributeSetInstance_ID);
+					}	//	change
+				}
+			});
+			
 		}
 		/** Selection
 		{
@@ -243,27 +260,25 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener, S
 				}
 			}
 		}
-		**/
-
-		//	Set Value
-		if (changed)
-		{
-			log.finest("Changed M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
-			m_value = new Object();				//	force re-query display
-			if (M_AttributeSetInstance_ID == 0)
-				setValue(null);
-			else
-				setValue(new Integer(M_AttributeSetInstance_ID));
-
-			ValueChangeEvent vce = new ValueChangeEvent(this, gridField.getColumnName(), new Object(), getValue());
-			fireValueChange(vce);
-			if (M_AttributeSetInstance_ID == oldValueInt && m_GridTab != null && gridField != null)
-			{
-				//  force Change - user does not realize that embedded object is already saved.
-				m_GridTab.processFieldChange(gridField);
-			}
-		}	//	change
+		**/		
 	}   //  cmd_file
+
+	private void processChanges(int oldValueInt, int M_AttributeSetInstance_ID) {
+		log.finest("Changed M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+		m_value = new Object();				//	force re-query display
+		if (M_AttributeSetInstance_ID == 0)
+			setValue(null);
+		else
+			setValue(new Integer(M_AttributeSetInstance_ID));
+
+		ValueChangeEvent vce = new ValueChangeEvent(this, gridField.getColumnName(), new Object(), getValue());
+		fireValueChange(vce);
+		if (M_AttributeSetInstance_ID == oldValueInt && m_GridTab != null && gridField != null)
+		{
+			//  force Change - user does not realize that embedded object is already saved.
+			m_GridTab.processFieldChange(gridField);
+		}
+	}
 
 	public String[] getEvents()
     {

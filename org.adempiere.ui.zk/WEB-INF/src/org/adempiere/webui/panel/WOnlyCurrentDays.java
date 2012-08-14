@@ -146,10 +146,4 @@ public class WOnlyCurrentDays extends Window implements EventListener<Event>, Di
 		
 		this.detach();
 	}
-
-	@Override
-	public void detach() {
-		super.detach();
-		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
-	}
 }

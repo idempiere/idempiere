@@ -26,6 +26,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -63,8 +64,7 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Image img = new Image();
 
 	private int returnValue;
-	private Callback<String> callback;
-	private String callbackValue;
+	private Callback<Integer> callback;
 
 	/** A OK button. */
 	public static final int OK = 0x0001;
@@ -199,7 +199,12 @@ public class Messagebox extends Window implements EventListener<Event>
 		return show(message, title, buttons, icon, null);
 	}
 	
-	public int show(String message, String title, int buttons, String icon, Callback<String> callback)
+	public int show(String message, String title, int buttons, String icon, Callback<Integer> callback)
+	{
+		return show(message, title, buttons, icon, callback, false);
+	}
+	
+	public int show(String message, String title, int buttons, String icon, Callback<Integer> callback, boolean modal)
 	{
 		this.msg = message;
 		this.imgSrc = icon;
@@ -239,10 +244,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setTitle(title);
 		this.setPosition("center");
 		this.setClosable(true);
-		if (Events.inEventListener())
-			this.setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
-		else
-			this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		this.setAttribute(Window.MODE_KEY, modal ? Window.MODE_MODAL : Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
 
 		this.setVisible(true);
@@ -251,16 +253,21 @@ public class Messagebox extends Window implements EventListener<Event>
 		return returnValue;
 	}
 
-	public static int showDialog(String message, String title, int buttons, String icon) throws InterruptedException
+	public static int showDialog(String message, String title, int buttons, String icon) 
 	{
 		return showDialog(message, title, buttons, icon, null);
 	}
 	
-	public static int showDialog(String message, String title, int buttons, String icon, Callback<String> callback) throws InterruptedException
+	public static int showDialog(String message, String title, int buttons, String icon, Callback<Integer> callback)
+	{
+		return showDialog(message, title, buttons, icon, callback, false);
+	}
+	
+	public static int showDialog(String message, String title, int buttons, String icon, Callback<Integer> callback, boolean modal) 
 	{
 		Messagebox msg = new Messagebox();
 
-		return msg.show(message, title, buttons, icon, callback);
+		return msg.show(message, title, buttons, icon, callback, modal);
 	}
 
 	public void onEvent(Event event) throws Exception
@@ -268,53 +275,44 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (event == null)
 			return;
 
-		callbackValue = null;
-		
 		if (event.getTarget() == btnOk)
 		{
 			returnValue = OK;
-			callbackValue = "OK";
 		}
 		else if (event.getTarget() == btnCancel)
 		{
 			returnValue = CANCEL;
-			callbackValue = "CANCEL";
 		}
 		else if (event.getTarget() == btnYes)
 		{
 			returnValue = YES;
-			callbackValue = "YES";
 		}
 		else if (event.getTarget() == btnNo)
 		{
 			returnValue = NO;
-			callbackValue = "NO";
 		}
 		else if (event.getTarget() == btnAbort)
 		{
 			returnValue = ABORT;
-			callbackValue = "ABORT";
 		}
 		else if (event.getTarget() == btnRetry)
 		{
 			returnValue = RETRY;
-			callbackValue = "RETRY";
 		}
 		else if (event.getTarget() == btnIgnore)
 		{
 			returnValue = IGNORE;
-			callbackValue = "IGNORE";
 		}
 
 		this.detach();
 	}
 
 	@Override
-	public void detach() {
-		super.detach();
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
 		if (callback != null)
 		{
-			callback.onCallback(callbackValue);
+			callback.onCallback(returnValue);
 		}
 	}
 }

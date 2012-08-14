@@ -1039,7 +1039,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
             if (!find.isValid())
             	return;
             
-            find.addEventListener(DialogEvents.ON_MODAL_CLOSE, new EventListener<Event>() {
+            find.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
 					if (!find.isCancel())

@@ -462,17 +462,17 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	public void onAfterProcess() 
 	{
 		//
-		afterProcessTask();
-
-		// If the process is a silent one and no errors occured, close the dialog
-		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
-			this.dispose();	
+		if (!afterProcessTask()) {
+			// If the process is a silent one and no errors occured, close the dialog
+			if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+				this.dispose();	
+		}
 	}
 	
 	/**************************************************************************
 	 *	Optional Processing Task
 	 */
-	private void afterProcessTask()
+	private boolean afterProcessTask()
 	{
 		//  something to do?
 		if (m_ids != null && m_ids.length > 0)
@@ -480,11 +480,21 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 			log.config("");
 			//	Print invoices
 			if (m_AD_Process_ID == PROCESS_C_INVOICE_GENERATE)
+			{
 				printInvoices();
+				return true;
+			}
 			else if (m_AD_Process_ID == PROCESS_M_INOUT_GENERATE)
+			{
 				printShipments();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
-
+		return false;
 	}	//	afterProcessTask
 	
 	/**************************************************************************
@@ -494,13 +504,17 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	{		
 		if (m_ids == null)
 			return;
-		if (!FDialog.ask(m_WindowNo, this, "PrintShipments"))
-			return;
-				
-		m_messageText.append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintShipments")).append("</p>");
-		message.setContent(m_messageText.toString());
-		showBusyDialog();
-		Clients.response(new AuEcho(this, "onPrintShipments", null));
+		FDialog.ask(m_WindowNo, this, "PrintShipments", new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					m_messageText.append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintShipments")).append("</p>");
+					message.setContent(m_messageText.toString());
+					showBusyDialog();
+					Clients.response(new AuEcho(ProcessDialog.this, "onPrintShipments", null));
+				}
+			}
+		});						
 	}	//	printInvoices
 	
 	public void onPrintShipments() 
@@ -559,6 +573,10 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		}
+		
+		// If the process is a silent one and no errors occured, close the dialog
+		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+			this.dispose();	
 	}
 
 	/**
@@ -568,12 +586,19 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	{
 		if (m_ids == null)
 			return;
-		if (!FDialog.ask(m_WindowNo, this, "PrintInvoices"))
-			return;
-		m_messageText.append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintInvoices")).append("</p>");
-		message.setContent(m_messageText.toString());
-		showBusyDialog();
-		Clients.response(new AuEcho(this, "onPrintInvoices", null));				
+		FDialog.ask(m_WindowNo, this, "PrintInvoices", new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) 
+			{
+				if (result)
+				{
+					m_messageText.append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintInvoices")).append("</p>");
+					message.setContent(m_messageText.toString());
+					showBusyDialog();
+					Clients.response(new AuEcho(ProcessDialog.this, "onPrintInvoices", null));
+				}
+			}
+		});						
 	}	//	printInvoices
 	
 	public void onPrintInvoices()
@@ -630,6 +655,10 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		}
+		
+		// If the process is a silent one and no errors occured, close the dialog
+		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+			this.dispose();	
 	}
 
 	public boolean isValid() {
@@ -661,7 +690,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	}
 
 	@Override
-	public void ask(final String message, final Callback<String> callback) {
+	public void ask(final String message, final Callback<Boolean> callback) {
 		Executions.schedule(getDesktop(), new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {

@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -54,6 +55,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -77,6 +79,7 @@ public final class WAccountDialog extends Window
 {
 
 	private static final long serialVersionUID = 7999516267209766287L;
+	private Callback<Integer> m_callback;
 
 	/**
 	 * 	Constructor
@@ -85,7 +88,7 @@ public final class WAccountDialog extends Window
 	 *  @param C_AcctSchema_ID as
 	 */
 	public WAccountDialog (String title,
-		MAccountLookup mAccount, int C_AcctSchema_ID)
+		MAccountLookup mAccount, int C_AcctSchema_ID, Callback<Integer> callback)
 	{
 		super ();
 		this.setTitle(title);
@@ -96,6 +99,7 @@ public final class WAccountDialog extends Window
 			+ ", C_ValidCombination_ID=" + mAccount.C_ValidCombination_ID);
 		m_mAccount = mAccount;
 		m_C_AcctSchema_ID = C_AcctSchema_ID;
+		m_callback = callback;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		try
 		{
@@ -242,7 +246,6 @@ public final class WAccountDialog extends Window
 
 		this.setBorder("normal");
 		this.setClosable(false);
-		this.setAttribute("modal", Boolean.TRUE);
 
 		this.setSizable(true);
 	}	//	jbInit
@@ -580,6 +583,18 @@ public final class WAccountDialog extends Window
 		Env.clearWinContext(m_WindowNo);
 		this.onClose();
 	}	//	dispose
+
+	
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.component.Window#onPageDetached(org.zkoss.zk.ui.Page)
+	 */
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		if (m_callback != null) {
+			m_callback.onCallback(getValue());
+		}
+	}
 
 	/**
 	 *	Save Selection

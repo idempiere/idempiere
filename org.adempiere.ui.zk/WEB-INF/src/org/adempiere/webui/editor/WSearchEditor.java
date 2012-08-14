@@ -28,6 +28,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Searchbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.InfoManager;
@@ -46,6 +47,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
@@ -476,9 +478,6 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		 *  - Window closed                 -> ignore       => result == null && !cancalled
 		 */
 
-		Object result[] = null;
-		boolean cancelled = false;
-
 		//  Zoom / Validation
 		String whereClause = getWhereClause();
 
@@ -493,37 +492,41 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (m_tableName == null)	//	sets table name & key column
 			getDirectAccessSQL("*");
 
-		InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, false, whereClause);
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, false, whereClause);
 		ip.setVisible(true);
 		ip.setStyle("border: 2px");
 		ip.setClosable(true);
-		ip.setAttribute("mode", "modal");
 		ip.addValueChangeListener(this);
 		infoPanel = ip;
+		ip.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event event) throws Exception {
+				boolean cancelled = ip.isCancelled();
+				Object[] result = ip.getSelectedKeys();
+
+				infoPanel = null;
+				//  Result
+				if (result != null && result.length > 0)
+				{
+					//ensure data binding happen
+					if (result.length > 1)
+						actionCombo (result);
+					else
+						actionCombo (result[0]);
+				}
+				else if (cancelled)
+				{
+					log.config(getColumnName() + " - Result = null (cancelled)");
+					actionCombo(null);
+				}
+				else
+				{
+					log.config(getColumnName() + " - Result = null (not cancelled)");
+				}
+			}
+		});
 		AEnv.showWindow(ip);
-		cancelled = ip.isCancelled();
-		result = ip.getSelectedKeys();
-
-		infoPanel = null;
-		//  Result
-		if (result != null && result.length > 0)
-		{
-			//ensure data binding happen
-			if (result.length > 1)
-				actionCombo (result);
-			else
-				actionCombo (result[0]);
-		}
-		else if (cancelled)
-		{
-			log.config(getColumnName() + " - Result = null (cancelled)");
-			actionCombo(null);
-		}
-		else
-		{
-			log.config(getColumnName() + " - Result = null (not cancelled)");
-		}
-
 	}
 
 	/**

@@ -137,14 +137,12 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 			{
 				FDialog.error(windowNo, this, "Error", ex.getLocalizedMessage());
 			}
-			Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 		}
 		//  Cancel
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 		{
 			isCancel = true;
 			dispose();
-			Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 		}
 		// Select All
 		// Trifon

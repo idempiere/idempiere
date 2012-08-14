@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.component.Combinationbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
@@ -96,18 +97,24 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		{
 			C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID");
 		}
-		WAccountDialog ad = new WAccountDialog (gridField.getHeader(), m_mAccount, C_AcctSchema_ID);
-		//
-		Integer newValue = ad.getValue();
-		if (newValue == null)
-			return;
+		new WAccountDialog (gridField.getHeader(), m_mAccount, C_AcctSchema_ID, new Callback<Integer>() {
+			
+			@Override
+			public void onCallback(Integer result) {
+				Integer newValue = result;
+				
+				if (newValue == null)
+					return;
 
-		Object oldValue = m_value;
+				Object oldValue = m_value;
 
-		//	set & redisplay
-		setValue(newValue);
-		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
-		fireValueChange(changeEvent);
+				//	set & redisplay
+				setValue(newValue);
+				ValueChangeEvent changeEvent = new ValueChangeEvent(WAccountEditor.this, getColumnName(), oldValue, newValue);
+				fireValueChange(changeEvent);
+			}
+		});
+		//				
 	}	//	cmd_button
 
 	/**

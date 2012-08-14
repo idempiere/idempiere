@@ -18,6 +18,7 @@ package org.adempiere.webui.apps.form;
 
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -238,17 +239,29 @@ public class WMerge extends Merge implements IFormController, EventListener
 
 		m_msg = Msg.getMsg(Env.getCtx(), "MergeFrom") + " = " + from_Info
 			+ "\n" + Msg.getMsg(Env.getCtx(), "MergeTo") + " = " + to_Info;				
-		if (!FDialog.ask(m_WindowNo, form, "MergeQuestion", m_msg))
-			return;
 		
-		updateDeleteTable(columnName);
+		final String columnNameRef = columnName;
+		final int fromIdRef = from_ID;
+		final int toIdRef = to_ID;
+		FDialog.ask(m_WindowNo, form, "MergeQuestion", m_msg, new Callback<Boolean>() {
 
-		progressWindow = new BusyDialog();
-		progressWindow.setPage(form.getPage());
-		progressWindow.doHighlighted();
-		
-		runnable = new MergeRunnable(columnName, from_ID, to_ID);
-		Clients.response(new AuEcho(form, "runProcess", null));
+			@Override
+			public void onCallback(Boolean result) 
+			{
+				if (result)
+				{
+					updateDeleteTable(columnNameRef);
+
+					progressWindow = new BusyDialog();
+					progressWindow.setPage(form.getPage());
+					progressWindow.doHighlighted();
+					
+					runnable = new MergeRunnable(columnNameRef, fromIdRef, toIdRef);
+					Clients.response(new AuEcho(form, "runProcess", null));
+				}
+				
+			}
+		});				
 	}   //  actionPerformed
 	
 	class MergeRunnable implements Runnable {

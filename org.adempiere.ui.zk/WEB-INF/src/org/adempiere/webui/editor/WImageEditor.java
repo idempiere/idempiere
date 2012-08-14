@@ -16,6 +16,7 @@ package org.adempiere.webui.editor;
 
 import java.util.logging.Level;
 
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WImageDialog;
 import org.compiere.model.GridField;
@@ -24,6 +25,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Image;
 
@@ -153,20 +155,27 @@ public class WImageEditor extends WEditor
 	{
 		if (Events.ON_CLICK.equals(event.getName()) && readwrite)
 		{
-			WImageDialog vid = new WImageDialog(m_mImage);
-			if (!vid.isCancel()) {
-				int AD_Image_ID = vid.getAD_Image_ID();
-				Object oldValue = getValue();
-				Integer newValue = null;
-				if (AD_Image_ID != 0)
-					newValue = new Integer (AD_Image_ID);
-				//
-				m_mImage = null;	//	force reload
-				setValue(newValue);	//	set explicitly
-				//
-				ValueChangeEvent vce = new ValueChangeEvent(this, gridField.getColumnName(), oldValue, newValue);
-				fireValueChange(vce);
-			}
+			final WImageDialog vid = new WImageDialog(m_mImage);
+			vid.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event event) throws Exception {
+					if (!vid.isCancel()) {
+						int AD_Image_ID = vid.getAD_Image_ID();
+						Object oldValue = getValue();
+						Integer newValue = null;
+						if (AD_Image_ID != 0)
+							newValue = new Integer (AD_Image_ID);
+						//
+						m_mImage = null;	//	force reload
+						setValue(newValue);	//	set explicitly
+						//
+						ValueChangeEvent vce = new ValueChangeEvent(WImageEditor.this, gridField.getColumnName(), oldValue, newValue);
+						fireValueChange(vce);
+					}
+					
+				}
+			});			
 		}
 	}
 }

@@ -21,13 +21,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Fileupload;
 
 /**
@@ -107,6 +110,12 @@ public class WFilenameEditor extends WEditor
 			cmd_file();
 			newValue = getComponent().getText();
 		}
+		else if (event instanceof UploadEvent)
+		{
+			UploadEvent ue = (UploadEvent) event;
+			processUploadMedia(ue.getMedia());
+			return;
+		}
 		else
 		{
 			return;
@@ -122,16 +131,30 @@ public class WFilenameEditor extends WEditor
 		fireValueChange(changeEvent);
 	}
 
+	private Component parent = null;
+	
 	/**
 	 *  Load file
 	 */
 	private void cmd_file()
 	{
+		if (parent == null || getComponent().getParent() != parent)
+		{
+			if (parent != null)
+			{
+				parent.removeEventListener(Events.ON_UPLOAD, this);
+			}
+			parent = getComponent().getParent();
+			parent.addEventListener(Events.ON_UPLOAD, this);
+		}
+		
 		//  Show File Open Dialog
-		Media file = null;
+		Media media = Fileupload.get(true);
+		if (AdempiereWebUI.isEventThreadEnabled())
+			processUploadMedia(media);
+	}   //  cmd_file
 
-		file = Fileupload.get(true);
-
+	private void processUploadMedia(Media file) {
 		if (file == null)
 			return;
 
@@ -173,7 +196,7 @@ public class WFilenameEditor extends WEditor
 		}
 
 		getComponent().setText(fileName);
-	}   //  cmd_file
+	}
 
 	public String[] getEvents()
     {

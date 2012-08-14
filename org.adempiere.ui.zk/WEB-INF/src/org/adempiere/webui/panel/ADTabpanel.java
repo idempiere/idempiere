@@ -17,9 +17,6 @@
 
 package org.adempiere.webui.panel;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,7 +52,6 @@ import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
-import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MLookup;
 import org.compiere.model.MTree;
@@ -96,7 +92,7 @@ import org.zkoss.zul.impl.XulElement;
  * @author Low Heng Sin
  */
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
-DataStatusListener, IADTabpanel, VetoableChangeListener
+DataStatusListener, IADTabpanel
 {
 	private static final String ON_DEFER_SET_SELECTED_NODE = "onDeferSetSelectedNode";
 
@@ -151,8 +147,6 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 	private boolean active = false;
 
 	private Group currentGroup;
-
-	private boolean m_vetoActive = false;
 
 	public ADTabpanel()
 	{
@@ -251,7 +245,6 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
         listPanel.setWindowNo(windowNo);
         listPanel.setADWindowPanel(winPanel);
 
-        gridTab.getTableModel().addVetoableChangeListener(this);
     }
 
     /**
@@ -1211,34 +1204,6 @@ DataStatusListener, IADTabpanel, VetoableChangeListener
 			return listPanel.onEnterKey();
 		}
 		return false;
-	}
-
-	/**
-	 * @param e
-	 * @see VetoableChangeListener#vetoableChange(PropertyChangeEvent)
-	 */
-	public void vetoableChange(PropertyChangeEvent e)
-			throws PropertyVetoException {
-		//  Save Confirmation dialog    MTable-RowSave
-		if (e.getPropertyName().equals(GridTable.PROPERTY))
-		{
-			//  throw new PropertyVetoException will call this listener again to revert to old value
-			if (m_vetoActive)
-			{
-				//ignore
-				m_vetoActive = false;
-				return;
-			}
-			if (!Env.isAutoCommit(Env.getCtx(), getWindowNo()) || gridTab.getCommitWarning().length() > 0)
-			{
-				if (!FDialog.ask(getWindowNo(), this, "SaveChanges?", gridTab.getCommitWarning()))
-				{
-					m_vetoActive = true;
-					throw new PropertyVetoException ("UserDeniedSave", e);
-				}
-			}
-			return;
-		}   //  saveConfirmation
 	}
 
 	/**

@@ -108,7 +108,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		
 		if (listener != null) 
 		{
-			addEventListener(ON_MODAL_CLOSE, listener);
+			addEventListener(ON_WINDOW_CLOSE, listener);
 		}
 
 		log.info("Process=" + pi.getAD_Process_ID());
@@ -413,7 +413,6 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	private void onCancel() {
 		m_cancel = true;
 		this.dispose();
-		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 	}
 
 	private void onStatusUpdate(Event event) {
@@ -433,7 +432,6 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
 		}
 		dispose();		
-		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));				
 	}
 
 	@Override
@@ -488,7 +486,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	}
 
 	@Override
-	public void ask(final String message, final Callback<String> callback) {
+	public void ask(final String message, final Callback<Boolean> callback) {
 		Executions.schedule(getDesktop(), new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {

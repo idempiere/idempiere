@@ -21,8 +21,8 @@ package org.adempiere.webui.event;
 public interface DialogEvents {
 
 	/**
-	 * on modal close event, use this for highlight mode modal dialog to perform action after the modal dialog closed.
+	 * on window close event, use this for highlight mode window to simulate modal window
 	 */
-	public final static String ON_MODAL_CLOSE = "onModalClose";
+	public final static String ON_WINDOW_CLOSE = "onWindowClose";
 	
 }

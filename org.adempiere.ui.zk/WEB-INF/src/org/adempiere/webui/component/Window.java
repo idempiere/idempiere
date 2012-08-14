@@ -17,6 +17,11 @@
 
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.event.DialogEvents;
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+
 /**
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
@@ -62,4 +67,15 @@ public class Window extends org.zkoss.zul.Window
     {
     	detach();
     }
+
+	/* (non-Javadoc)
+	 * @see org.zkoss.zul.Window#onPageDetached(org.zkoss.zk.ui.Page)
+	 */
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
+	}
+    
+    
 }

@@ -101,6 +101,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	public static final String ZK_DESKTOP_SESSION_KEY = "zk.desktop";
 	
 	private static final String CLIENT_INFO = "client.info";
+	
+	private static boolean eventThreadEnabled = false;
 
     public AdempiereWebUI()
     {
@@ -133,6 +135,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         Executions.getCurrent().getDesktop().addListener(new DrillCommand());
         Executions.getCurrent().getDesktop().addListener(new TokenCommand());
         Executions.getCurrent().getDesktop().addListener(new ZoomCommand());
+        
+        eventThreadEnabled = Executions.getCurrent().getDesktop().getWebApp().getConfiguration().isEventThreadEnabled();
     }
 
     public void onOk()
@@ -392,5 +396,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */
 	public UserPreference getUserPreference() {
 		return userPreference;
-	}	
+	}
+	
+	public static boolean isEventThreadEnabled() {
+		return eventThreadEnabled;
+	}
 }

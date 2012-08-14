@@ -271,7 +271,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	{
 		if (isLookup())
 		{
-			setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
+			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 			setBorder("normal");
 			setClosable(true);
 			int height = SessionManager.getAppDesktop().getClientInfo().desktopHeight * 85 / 100;

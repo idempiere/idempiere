@@ -93,15 +93,6 @@ public final class AEnv
 	}   //  showCenterScreen
 
 	/**
-	 *	Position window in center of the screen
-	 * 	@param window Window to position
-	 */
-	public static void positionCenterScreen(Window window)
-	{
-		showCenterScreen(window);
-	}	//	positionCenterScreen
-
-	/**
 	 *  Show in the center of the screen.
 	 *  (pack, set location and set visibility)
 	 * 	@param window Window to position

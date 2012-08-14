@@ -90,9 +90,6 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		dynInit();
 
 		init();
-		this.setAttribute("mode","modal");
-
-
 	}
 
 	/**
@@ -300,13 +297,11 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				m_OKpressed = true;
 				setValue();
 				this.detach();
-				Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 			}
 			else if (confirmPanel.getButton("Cancel").equals(event.getTarget()))
 			{
 				m_OKpressed = false;
 				this.detach();
-				Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
 			}			
 		}
 		else if (Events.ON_SELECT.equals(event.getName()))

@@ -27,6 +27,8 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBar;
+import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.ADForm;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
@@ -62,7 +64,6 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vbox;
-import org.zkoss.zul.Window;
 
 /**
  *
@@ -208,24 +209,26 @@ public class WFEditor extends ADForm {
 				w.onClose();
 			}
 		});
-		try {
-			w.setWidth("250px");
-			w.setBorder("normal");
-			w.setPage(this.getPage());
-			w.doModal();
-		} catch (SuspendNotAllowedException e) {
-			e.printStackTrace();
-		}
+		
+		w.setWidth("250px");
+		w.setBorder("normal");
+		w.setPage(this.getPage());
+		w.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 
-		String name = text.getText();
-		if (name != null && name.length() > 0)
-		{
-			int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-			MWFNode node = new MWFNode(m_wf, name, name);
-			node.setClientOrg(AD_Client_ID, 0);
-			node.saveEx();
-			reload(m_wf.getAD_Workflow_ID());
-		}
+			@Override
+			public void onEvent(Event event) throws Exception {
+				String name = text.getText();
+				if (name != null && name.length() > 0)
+				{
+					int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
+					MWFNode node = new MWFNode(m_wf, name, name);
+					node.setClientOrg(AD_Client_ID, 0);
+					node.saveEx();
+					reload(m_wf.getAD_Workflow_ID());
+				}				
+			}
+		});
+		w.doHighlighted();				
 	}
 
 	void reload(int workflowId) {

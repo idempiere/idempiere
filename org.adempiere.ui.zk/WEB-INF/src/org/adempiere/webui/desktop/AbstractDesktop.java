@@ -16,14 +16,18 @@ package org.adempiere.webui.desktop;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.compiere.model.MMenu;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 /**
  * Base class for desktop implementation
@@ -142,17 +146,11 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      * @param win
      * @param pos
      */
-   	public void showWindow(Window win, String pos)
+   	public void showWindow(final Window win, final String pos)
 	{
-   		win.setPage(page);		
 		Object objMode = win.getAttribute(Window.MODE_KEY);
 
-		String mode = Window.MODE_MODAL;
-		
-		if (objMode != null)
-		{
-			mode = objMode.toString();
-		}
+		final String mode = objMode != null ? objMode.toString() : Window.MODE_HIGHLIGHTED;
 		
 		if (Window.MODE_MODAL.equals(mode))
 		{
@@ -160,7 +158,27 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 				win.setPosition(pos);
 			showModal(win);
 		}
-		else if (Window.MODE_POPUP.equals(mode))
+		else 
+		{
+			if (Executions.getCurrent() != null) 
+			{
+				showNonModalWindow(win, pos, mode);
+			}
+			else
+			{
+				Executions.schedule(getComponent().getDesktop(), new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						showNonModalWindow(win, pos, mode);
+					}
+				}, new Event("onExecute"));
+			}
+		}
+	}
+
+	private void showNonModalWindow(final Window win, final String pos,
+			final String mode) {		
+		if (Window.MODE_POPUP.equals(mode))
 		{
 			showPopup(win, pos);
 		}
@@ -175,7 +193,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		else if (Window.MODE_HIGHLIGHTED.equals(mode))
 		{
 			showHighlighted(win, pos);
-		}		
+		}
 	}
    	
    	protected abstract void showEmbedded(Window win);
@@ -184,18 +202,47 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    	 * 
    	 * @param win
    	 */
-   	protected void showModal(Window win)
+   	protected void showModal(final Window win)
    	{
-   		//fall back to highlighted if can't execute doModal
-   		if (Events.inEventListener())
+   		if (AdempiereWebUI.isEventThreadEnabled()) 
    		{
-			win.doModal();
+   			win.setPage(page);
+   			win.doModal();
    		}
-   		else
+   		else 
    		{
-   			showHighlighted(win, null);
+	   		if (Executions.getCurrent() != null)
+	   		{
+	   			throw new RuntimeException("When event thread is disabled, you can only show modal window in background thread that doesn't update Desktop.");
+	   		}
+	   		
+	   		final StringBuffer buffer = new StringBuffer();
+	   		win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					buffer.append("*");
+				}
+			});
+	   		
+	   		Executions.schedule(this.getComponent().getDesktop(), new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					showHighlighted(win, null);
+					if (win.getPage() == null) {
+						buffer.append("*");
+					}
+				}
+			}, new Event("onExecute"));
+	   		
+			while(buffer.length() == 0)
+			{
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					Thread.interrupted();
+				}
+			}
    		}
-			
 	}
    	
    	/**
@@ -210,6 +257,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    		else
    			win.setPosition(position);
    		
+   		win.setPage(page);
    		win.doPopup();
    	}
    	
@@ -225,6 +273,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		else
 			win.setPosition(position);
 		
+		win.setPage(page);
    		win.doOverlapped();
    	}
 	
@@ -240,6 +289,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		else
 			win.setPosition(position);
 		
+		win.setPage(page);
    		win.doHighlighted();
    	}   	
 }

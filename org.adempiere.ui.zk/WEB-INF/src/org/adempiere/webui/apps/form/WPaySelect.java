@@ -369,25 +369,33 @@ public class WPaySelect extends PaySelect
 		}
 
 		//  Ask to Post it
-		if (!FDialog.ask(m_WindowNo, form, "VPaySelectGenerate?", "(" + m_ps.getName() + ")"))
-			return;
-		
-		//  Prepare Process 
-		int AD_Proces_ID = PROCESS_C_PAYSELECTION_CREATEPAYMENT;	//	C_PaySelection_CreatePayment
+		FDialog.ask(m_WindowNo, form, "VPaySelectGenerate?", "(" + m_ps.getName() + ")", new Callback<Boolean>() {
 
-		//	Execute Process
-		ProcessModalDialog dialog = new ProcessModalDialog(this, m_WindowNo, 
-				AD_Proces_ID, X_C_PaySelection.Table_ID, m_ps.getC_PaySelection_ID(), false);
-		if (dialog.isValid()) {
-			try {
-				dialog.setWidth("500px");
-				dialog.setVisible(true);
-				dialog.setPage(form.getPage());
-				dialog.doModal();
-			} catch (SuspendNotAllowedException e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			@Override
+			public void onCallback(Boolean result) 
+			{
+				if (result)
+				{
+				//  Prepare Process 
+					int AD_Proces_ID = PROCESS_C_PAYSELECTION_CREATEPAYMENT;	//	C_PaySelection_CreatePayment
+
+					//	Execute Process
+					ProcessModalDialog dialog = new ProcessModalDialog(WPaySelect.this, m_WindowNo, 
+							AD_Proces_ID, X_C_PaySelection.Table_ID, m_ps.getC_PaySelection_ID(), false);
+					if (dialog.isValid()) {
+						try {
+							dialog.setWidth("500px");
+							dialog.setVisible(true);
+							dialog.setPage(form.getPage());
+							dialog.doHighlighted();
+						} catch (SuspendNotAllowedException e) {
+							log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+						}
+					}
+				}
+				
 			}
-		}
+		});				
 	}   //  generatePaySelect
 	
 	/**
@@ -447,7 +455,7 @@ public class WPaySelect extends PaySelect
 	}
 
 	@Override
-	public void ask(final String message, final Callback<String> callback) {
+	public void ask(final String message, final Callback<Boolean> callback) {
 		Executions.schedule(form.getDesktop(), new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {

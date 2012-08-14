@@ -1326,7 +1326,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         super.dispose();
         
         isvalid = false;
-        Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
     }   //  dispose
 
     /**

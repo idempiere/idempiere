@@ -346,12 +346,7 @@ public final class ProcessUtil {
 
 	public static MWFProcess startWorkFlow(Properties ctx, ProcessInfo pi, int AD_Workflow_ID) {
 		MWorkflow wf = MWorkflow.get (ctx, AD_Workflow_ID);
-		MWFProcess wfProcess = null;
-		if (pi.isBatch())
-			wfProcess = wf.start(pi, pi.getTransactionName());		//	may return null
-		else {
-			wfProcess = wf.startWait(pi);	//	may return null
-		}
+		MWFProcess wfProcess = wf.start(pi, pi.getTransactionName());
 		log.fine(pi.toString());
 		return wfProcess;
 	}

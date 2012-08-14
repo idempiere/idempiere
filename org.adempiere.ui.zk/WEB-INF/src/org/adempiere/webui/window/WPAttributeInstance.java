@@ -70,7 +70,6 @@ public class WPAttributeInstance extends Window implements EventListener
 	{
 		super ();
 		this.setTitle(Msg.getMsg(Env.getCtx(), "PAttributeInstance") + title);
-		this.setAttribute("modal", Boolean.TRUE);
 		this.setBorder("normal");
 		this.setWidth("500px");
 		this.setHeight("550px");

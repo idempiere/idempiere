@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -57,6 +58,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ValueNamePair;
+import org.python.antlr.ast.Call;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
@@ -365,12 +367,20 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 				FDialog.info(m_WindowNo, form, "Saved",
 						Msg.getMsg(Env.getCtx(), "NoOfLines") + "=" + no);
 
-				if (FDialog.ask(m_WindowNo, form, "VPayPrintSuccess?"))
-				{
-			//	int lastDocumentNo =
-				MPaySelectionCheck.confirmPrint (m_checks, m_batch);
-				//	document No not updated
-			}
+				FDialog.ask(m_WindowNo, form, "VPayPrintSuccess?", new Callback<Boolean>() {
+					
+					@Override
+					public void onCallback(Boolean result) 
+					{
+						if (result)
+						{
+//							int lastDocumentNo =
+							MPaySelectionCheck.confirmPrint (m_checks, m_batch);
+							//	document No not updated
+						}
+						
+					}
+				});
 			} else {
 				FDialog.error(m_WindowNo, form, "Error", err.toString());
 			}
@@ -441,6 +451,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			return;
 		}
+		final SimplePDFViewer chequeViewerRef = chequeViewer;
 
 		if (lastDocumentNo != 0)
 		{
@@ -451,48 +462,55 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			DB.executeUpdate(sb.toString(), null);
 		}
 
-		SimplePDFViewer remitViewer = null;
-		if (FDialog.ask(m_WindowNo, form, "VPayPrintPrintRemittance"))
-		{
-			pdfList = new ArrayList<File>();
-			for (int i = 0; i < m_checks.length; i++)
-			{
-				MPaySelectionCheck check = m_checks[i];
-				ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID());
-				try
+		FDialog.ask(m_WindowNo, form, "VPayPrintPrintRemittance", new Callback<Boolean>() {
+
+			@Override
+			public void onCallback(Boolean result) 
+			{		
+				SimplePDFViewer remitViewer = null;
+				if (result)
 				{
-					File file = File.createTempFile("WPayPrint", null);
-					re.getPDF(file);
-					pdfList.add(file);
+					List<File> pdfList = new ArrayList<File>();
+					for (int i = 0; i < m_checks.length; i++)
+					{
+						MPaySelectionCheck check = m_checks[i];
+						ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID());
+						try
+						{
+							File file = File.createTempFile("WPayPrint", null);
+							re.getPDF(file);
+							pdfList.add(file);
+						}
+						catch (Exception e)
+						{
+							log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+						}
+					}
+	
+					try
+					{
+						File outFile = File.createTempFile("WPayPrint", null);
+						AEnv.mergePdf(pdfList, outFile);
+						String name = Msg.translate(Env.getCtx(), "Remittance");
+						remitViewer = new SimplePDFViewer(form.getFormName() + " - " + name, new FileInputStream(outFile));
+						remitViewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+						remitViewer.setWidth("100%");
+					}
+					catch (Exception e)
+					{
+						log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+					}
 				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				}
+				
+				dispose();
+
+				if (chequeViewerRef != null)
+					SessionManager.getAppDesktop().showWindow(chequeViewerRef);
+
+				if (remitViewer != null)
+					SessionManager.getAppDesktop().showWindow(remitViewer);
 			}
-
-			try
-			{
-				File outFile = File.createTempFile("WPayPrint", null);
-				AEnv.mergePdf(pdfList, outFile);
-				String name = Msg.translate(Env.getCtx(), "Remittance");
-				remitViewer = new SimplePDFViewer(form.getFormName() + " - " + name, new FileInputStream(outFile));
-				remitViewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
-				remitViewer.setWidth("100%");
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-		}	//	remittance
-
-		dispose();
-
-		if (chequeViewer != null)
-			SessionManager.getAppDesktop().showWindow(chequeViewer);
-
-		if (remitViewer != null)
-			SessionManager.getAppDesktop().showWindow(remitViewer);
+		});
 	}   //  cmd_print
 
 

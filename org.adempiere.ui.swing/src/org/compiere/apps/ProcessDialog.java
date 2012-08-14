@@ -526,10 +526,10 @@ public class ProcessDialog extends CFrame
 	}
 
 	@Override
-	public void ask(String message, Callback<String> callback) {
+	public void ask(String message, Callback<Boolean> callback) {
 		boolean  b = ADialog.ask(m_WindowNo, this, message);
 		if (callback != null) {
-			callback.onCallback(b ? "OK" : "CANCEL");
+			callback.onCallback(b);
 		}
 	}
 

@@ -19,6 +19,7 @@ package org.adempiere.webui.apps.form;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -388,17 +389,26 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void action_treeAddAll()
 	{
-		if (FDialog.ask(m_WindowNo, null, "TreeAddAllItems")) {	// idempiere-85
-			log.info("");
-			ListModel model = centerList.getModel();
-			int size = model.getSize();
-			int index = -1;
-			for (index = 0; index < size; index++)
+		// idempiere-85
+		FDialog.ask(m_WindowNo, null, "TreeAddAllItems", new Callback<Boolean>() {
+			
+			@Override
+			public void onCallback(Boolean result) 
 			{
-				ListItem item = (ListItem)model.getElementAt(index);
-				action_treeAdd(item);
+				if (result)
+				{
+					log.info("");
+					ListModel model = centerList.getModel();
+					int size = model.getSize();
+					int index = -1;
+					for (index = 0; index < size; index++)
+					{
+						ListItem item = (ListItem)model.getElementAt(index);
+						action_treeAdd(item);
+					}
+				}
 			}
-		}
+		});
 	}	//	action_treeAddAll
 	
 	/**
@@ -407,16 +417,26 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private void action_treeDeleteAll()
 	{
 		log.info("");
-		if (FDialog.ask(m_WindowNo, null, "TreeRemoveAllItems")) {	// idempiere-85
-			ListModel model = centerList.getModel();
-			int size = model.getSize();
-			int index = -1;
-			for (index = 0; index < size; index++)
+		// idempiere-85
+		FDialog.ask(m_WindowNo, null, "TreeRemoveAllItems", new Callback<Boolean>() {
+
+			@Override
+			public void onCallback(Boolean result) 
 			{
-				ListItem item = (ListItem)model.getElementAt(index);
-				action_treeDelete(item);
+				if (result)
+				{
+					ListModel model = centerList.getModel();
+					int size = model.getSize();
+					int index = -1;
+					for (index = 0; index < size; index++)
+					{
+						ListItem item = (ListItem)model.getElementAt(index);
+						action_treeDelete(item);
+					}
+				}
+				
 			}
-		}
+		});
 	}	//	action_treeDeleteAll
 	
 	public ADForm getForm() 

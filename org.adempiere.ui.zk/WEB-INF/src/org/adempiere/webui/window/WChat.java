@@ -351,9 +351,4 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		actionPerformed(event);
 	}
 
-	@Override
-	public void detach() {
-		super.detach();
-		Events.sendEvent(this, new Event(ON_MODAL_CLOSE, this, null));
-	}
 }	//	AChat

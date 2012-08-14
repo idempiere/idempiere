@@ -693,7 +693,7 @@ public class MWorkflow extends X_AD_Workflow
 			retValue = new MWFProcess (this, pi, trxName != null ? trxName : localTrx.getTrxName());
 			retValue.saveEx();
 			pi.setSummary(Msg.getMsg(getCtx(), "Processing"));
-			retValue.startWork();
+			retValue.startWork();			
 			if (localTrx != null)
 				localTrx.commit(true);
 		}
@@ -710,6 +710,16 @@ public class MWorkflow extends X_AD_Workflow
 			if (localTrx != null)
 				localTrx.close();
 		}
+		
+		if (retValue != null)
+		{
+			String summary = retValue.getProcessMsg();
+			StateEngine state = retValue.getState();
+			if (summary == null || summary.trim().length() == 0)
+				summary = state.toString();
+			pi.setSummary(summary, state.isTerminated() || state.isAborted());
+		}
+		
 		return retValue;
 	}	//	MWFProcess
 
