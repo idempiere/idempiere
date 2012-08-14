@@ -16,6 +16,26 @@
  *****************************************************************************/
 package org.adempiere.pipo;
 
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ACCOUNT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_AMOUNT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_COLOR;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATETIME;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_INTEGER;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATION;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATOR;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_MEMO;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_NUMBER;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PRODUCTATTRIBUTE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_QUANTITY;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SEARCH;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -37,7 +57,7 @@ import org.compiere.util.Env;
  * @author Robert Klein
  * 
  */
-public class PackRoll extends SvrProcess implements SystemIDs {
+public class PackRoll extends SvrProcess {
 	/** Package from Record */
 	private int m_AD_Package_Imp_ID = 0;
 	private String m_Processing = null;
@@ -266,7 +286,7 @@ public class PackRoll extends SvrProcess implements SystemIDs {
 											// treatment for EntityType
 											// it's a Table reference but must
 											// be treated as String
-											|| (v_AD_Reference_ID == REFERENCE_DATATYPE_TABLE && columnName
+											|| (v_AD_Reference_ID == SystemIDs.REFERENCE_DATATYPE_TABLE && columnName
 													.equalsIgnoreCase("EntityType")))
 										if (rs2.getObject("ColValue")
 												.toString().equals("null")) {
@@ -302,7 +322,7 @@ public class PackRoll extends SvrProcess implements SystemIDs {
 									}
 									// Update columns that are Strings adjusting
 									// for single quotes
-									else if (v_AD_Reference_ID == REFERENCE_DATATYPE_ID
+									else if (v_AD_Reference_ID == SystemIDs.REFERENCE_DATATYPE_ID
 											|| v_AD_Reference_ID == REFERENCE_DATATYPE_TABLE
 											|| v_AD_Reference_ID == REFERENCE_DATATYPE_TABLEDIR
 											|| v_AD_Reference_ID == REFERENCE_DATATYPE_LOCATION

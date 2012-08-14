@@ -33,7 +33,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		
-		if(! MSysConfig.getBooleanValue("2PACK_HANDLE_TRANSLATIONS", false)){
+		if(! MSysConfig.getBooleanValue(MSysConfig.TWOPACK_HANDLE_TRANSLATIONS, false)){
 			return;//translation import option is disabled
 		}
 		
