@@ -49,6 +49,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MLookup;
 import org.compiere.model.MQuery;
+import org.compiere.model.MSession;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
@@ -189,9 +190,13 @@ public final class AEnv
 
 	public static void logout()
 	{
-		Env.logout();
-
-
+		String sessionID = Env.getContext(Env.getCtx(), "#AD_Session_ID");
+		windowCache.remove(sessionID);
+		//	End Session
+		MSession session = MSession.get(Env.getCtx(), false);	//	finish
+		if (session != null)
+			session.logout();
+		//
 	}
 
 	/**
@@ -240,12 +245,12 @@ public final class AEnv
 
 		log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
 		GridWindowVO mWindowVO = null;
-		String locale = Env.getLanguage(Env.getCtx()).getLocale().toString();
+		String sessionID = Env.getContext(Env.getCtx(), "#AD_Session_ID");
 		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
 		{
 			synchronized (windowCache)
 			{
-				CCache<Integer,GridWindowVO> cache = windowCache.get(locale);
+				CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
 				if (cache != null)
 				{
 					mWindowVO = cache.get(AD_Window_ID);
@@ -267,11 +272,11 @@ public final class AEnv
 			{
 				synchronized (windowCache)
 				{
-					CCache<Integer,GridWindowVO> cache = windowCache.get(locale);
+					CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
 					if (cache == null)
 					{
 						cache = new CCache<Integer, GridWindowVO>("AD_Window", 10);
-						windowCache.put(locale, cache);
+						windowCache.put(sessionID, cache);
 					}
 					cache.put(AD_Window_ID, mWindowVO);
 				}
