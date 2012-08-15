@@ -80,7 +80,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MUser;
 import org.compiere.model.PrintInfo;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_C_Invoice;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CCheckBox;
@@ -125,7 +125,7 @@ import org.compiere.util.ValueNamePair;
  * 
  */
 public class Viewer extends CFrame
-	implements ActionListener, ChangeListener, WindowStateListener, IReportEngineEventListener, SystemIDs
+	implements ActionListener, ChangeListener, WindowStateListener, IReportEngineEventListener
 {
 	/**
 	 * 

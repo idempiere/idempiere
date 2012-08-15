@@ -151,7 +151,7 @@ public class MRecentItem extends X_AD_RecentItem
 	 * it adds a record in recent item, or touches the record if it was added before
 	 */
 	public static void addModifiedField(Properties ctx, int AD_Table_ID, int Record_ID, int AD_User_ID, int AD_Role_ID, int AD_Window_ID, int AD_Tab_ID) {
-		int maxri = MSysConfig.getIntValue("RecentItems_MaxSaved", 50, Env.getAD_Client_ID(ctx));
+		int maxri = MSysConfig.getIntValue(MSysConfig.RecentItems_MaxSaved, 50, Env.getAD_Client_ID(ctx));
 		if (maxri <= 0)
 			return;
 		MRecentItem ri = get(ctx, AD_Table_ID, Record_ID, AD_User_ID);
@@ -182,7 +182,7 @@ public class MRecentItem extends X_AD_RecentItem
 
 	private static void deleteExtraRecentItems(Properties ctx, int AD_User_ID) {
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		int maxri = MSysConfig.getIntValue("RecentItems_MaxSaved", 50, AD_Client_ID);
+		int maxri = MSysConfig.getIntValue(MSysConfig.RecentItems_MaxSaved, 50, AD_Client_ID);
 		if (maxri < 0)
 			maxri = 0;
 		int cntri = DB.getSQLValue(null, "SELECT COUNT(*) FROM AD_RecentItem WHERE NVL(AD_User_ID,0)=? AND AD_Client_ID=?", AD_User_ID, AD_Client_ID);

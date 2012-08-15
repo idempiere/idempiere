@@ -27,7 +27,7 @@ import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -84,7 +84,7 @@ import com.lowagie.text.pdf.PdfWriter;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessDialog extends Window implements EventListener<Event>, IProcessUI, SystemIDs
+public class ProcessDialog extends Window implements EventListener<Event>, IProcessUI
 {
 	/**
 	 * generate serial version ID

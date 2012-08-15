@@ -133,7 +133,7 @@ public final class EMail implements Serializable
 	{
 		setSmtpHost(smtpHost);
 		setFrom(from);
-		String bccAddressForAllMails = MSysConfig.getValue("MAIL_SEND_BCC_TO_ADDRESS", Env.getAD_Client_ID(Env.getCtx()));
+		String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
 		if (bccAddressForAllMails != null && bccAddressForAllMails.length() > 0)
 			addBcc(bccAddressForAllMails);
 		addTo(to);
@@ -498,7 +498,7 @@ public final class EMail implements Serializable
 		try
 		{
 			m_from = new InternetAddress (newFrom, true);
-			if (MSysConfig.getBooleanValue("MAIL_SEND_BCC_TO_FROM", false, Env.getAD_Client_ID(Env.getCtx())));
+			if (MSysConfig.getBooleanValue(MSysConfig.MAIL_SEND_BCC_TO_FROM, false, Env.getAD_Client_ID(Env.getCtx())));
 				addBcc(newFrom);
 		}
 		catch (Exception e)

@@ -27,7 +27,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -41,7 +41,7 @@ import org.compiere.util.Env;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1866739 ] ReportCtl: use printformat from the transient/serializable
  */
-public class ReportCtl implements SystemIDs
+public class ReportCtl
 {
 	/**
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINTER_NAME}

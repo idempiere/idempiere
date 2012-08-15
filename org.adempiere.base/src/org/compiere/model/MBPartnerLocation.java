@@ -158,7 +158,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location
 			return true;
 		MLocation address = getLocation(true);
 		m_uniqueName = getName();
-		m_unique = MSysConfig.getIntValue("START_VALUE_BPLOCATION_NAME", 0, getAD_Client_ID(), getAD_Org_ID());
+		m_unique = MSysConfig.getIntValue(MSysConfig.START_VALUE_BPLOCATION_NAME, 0, getAD_Client_ID(), getAD_Org_ID());
 		if (m_unique < 0 || m_unique > 4)
 			m_unique = 0;
 		if (m_uniqueName != null && m_uniqueName.equals(".")) {

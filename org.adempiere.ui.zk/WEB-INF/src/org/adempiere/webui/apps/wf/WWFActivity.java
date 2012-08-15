@@ -339,7 +339,7 @@ public class WWFActivity extends ADForm implements EventListener
 	{
 		long start = System.currentTimeMillis();
 
-		int MAX_ACTIVITIES_IN_LIST = MSysConfig.getIntValue("MAX_ACTIVITIES_IN_LIST", 200, Env.getAD_Client_ID(Env.getCtx()));
+		int MAX_ACTIVITIES_IN_LIST = MSysConfig.getIntValue(MSysConfig.MAX_ACTIVITIES_IN_LIST, 200, Env.getAD_Client_ID(Env.getCtx()));
 
 		model = new ListModelTable();
 

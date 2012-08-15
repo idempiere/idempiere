@@ -32,7 +32,7 @@ import org.adempiere.webui.util.TreeUtils;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MUser;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -61,7 +61,7 @@ import org.zkoss.zul.Treerow;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class MenuPanel extends Panel implements EventListener<Event>, SystemIDs
+public class MenuPanel extends Panel implements EventListener<Event>
 {
     private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
 	/**

@@ -40,7 +40,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRole;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -57,7 +57,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Ashley G Ramdass
  *
  */
-public class WSearchEditor extends WEditor implements ContextMenuListener, ValueChangeListener, IZoomableEditor, SystemIDs
+public class WSearchEditor extends WEditor implements ContextMenuListener, ValueChangeListener, IZoomableEditor
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 	private Lookup 				lookup;

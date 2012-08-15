@@ -45,7 +45,7 @@ import org.compiere.grid.ed.VLookup;
 import org.compiere.minigrid.MiniTable;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CTextField;
@@ -56,7 +56,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
 
 public class VAllocation extends Allocation
-	implements FormPanel, ActionListener, TableModelListener, VetoableChangeListener, SystemIDs
+	implements FormPanel, ActionListener, TableModelListener, VetoableChangeListener
 {
 	private CPanel panel = new CPanel();
 

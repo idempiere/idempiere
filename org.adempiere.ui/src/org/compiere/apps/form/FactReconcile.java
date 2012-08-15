@@ -12,14 +12,14 @@ import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
-public class FactReconcile implements SystemIDs {
+public class FactReconcile {
 	
 	/**	Logger			*/
 	public static CLogger log = CLogger.getCLogger(FactReconcile.class);

@@ -14,6 +14,8 @@
 
 package org.adempiere.webui.panel;
 
+import static org.compiere.model.SystemIDs.TREE_MENUPRIMARY;
+
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -29,7 +31,6 @@ import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
-import org.compiere.model.SystemIDs;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
@@ -53,7 +54,7 @@ import org.zkoss.zul.Treerow;
  * @author Elaine
  * @date July 31, 2012
  */
-public abstract class AbstractMenuPanel extends Panel implements EventListener<Event>, SystemIDs {
+public abstract class AbstractMenuPanel extends Panel implements EventListener<Event> {
 
 	/**
 	 * 

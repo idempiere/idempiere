@@ -38,7 +38,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefList;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.report.core.RColumn;
 import org.compiere.report.core.RModel;
 import org.compiere.util.CLogger;
@@ -58,7 +58,7 @@ import org.compiere.util.ValueNamePair;
  *  		July 27, 2007
  */
 
-public class WAcctViewerData implements SystemIDs
+public class WAcctViewerData
 {
 	/** Window              */
 	public int WindowNo;

@@ -51,7 +51,7 @@ import org.compiere.model.MUser;
 import org.compiere.model.MUserRoles;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_WF_Activity;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -73,7 +73,7 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: MWFActivity.java,v 1.4 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MWFActivity extends X_AD_WF_Activity implements Runnable, SystemIDs
+public class MWFActivity extends X_AD_WF_Activity implements Runnable
 {
 	/**
 	 *

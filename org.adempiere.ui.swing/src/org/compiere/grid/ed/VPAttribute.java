@@ -43,7 +43,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MPAttributeLookup;
 import org.compiere.model.MProduct;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CMenuItem;
 import org.compiere.util.CLogger;
@@ -62,7 +62,7 @@ import org.compiere.util.Msg;
  * 			<li>BF [ 2011222 ] ASI Dialog is reseting locator
  */
 public class VPAttribute extends JComponent
-	implements VEditor, ActionListener, SystemIDs
+	implements VEditor, ActionListener
 {
 	/**
 	 * 

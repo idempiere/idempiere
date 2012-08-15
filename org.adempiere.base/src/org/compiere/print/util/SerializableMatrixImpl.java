@@ -38,9 +38,6 @@ public class SerializableMatrixImpl<T extends Serializable> implements Serializa
 	/** Default to start swapping after 2k row **/
 	private static final int DEFAULT_SWAP_MAX_ROWS = 2000;
 	
-	/** set to 0 or smaller to disable swap file usage **/
-	private static final String REPORT_SWAP_MAX_ROWS = "REPORT_SWAP_MAX_ROWS";
-
 	private static final CLogger log = CLogger.getCLogger(SerializableMatrixImpl.class);
 	
 	/** Data Structure rows			*/
@@ -63,7 +60,7 @@ public class SerializableMatrixImpl<T extends Serializable> implements Serializa
 	
 	public SerializableMatrixImpl(String name) {
 		this.prefix = name;
-		int pageSize = MSysConfig.getIntValue(REPORT_SWAP_MAX_ROWS, DEFAULT_SWAP_MAX_ROWS);
+		int pageSize = MSysConfig.getIntValue(MSysConfig.REPORT_SWAP_MAX_ROWS, DEFAULT_SWAP_MAX_ROWS);
 		if (pageSize <= 0) {
 			m_pageSize = Integer.MAX_VALUE;
 		} else {

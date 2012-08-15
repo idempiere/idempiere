@@ -29,7 +29,7 @@ public final class ThemeManager {
 	public static String getLargeLogo() {
 		String theme = getTheme();
 		String def = ITheme.THEME_PATH_PREFIX+theme+ITheme.LOGIN_LOGO_IMAGE;
-		return MSysConfig.getValue("ZK_LOGO_LARGE", def);
+		return MSysConfig.getValue(MSysConfig.ZK_LOGO_LARGE, def);
 	}
 
 	/**
@@ -38,9 +38,9 @@ public final class ThemeManager {
 	public static String getSmallLogo() {
 		String theme = getTheme();
 		String def = ITheme.THEME_PATH_PREFIX+theme+ITheme.HEADER_LOGO_IMAGE;
-		String url = MSysConfig.getValue("ZK_LOGO_SMALL", null);
+		String url = MSysConfig.getValue(MSysConfig.ZK_LOGO_SMALL, null);
 		if (url == null)
-			url = MSysConfig.getValue("WEBUI_LOGOURL", def);
+			url = MSysConfig.getValue(MSysConfig.WEBUI_LOGOURL, def);
 		return url;
 	}
 
@@ -69,7 +69,7 @@ public final class ThemeManager {
 	 * @return title text for the browser window
 	 */
 	public static String getBrowserTitle() {
-		return MSysConfig.getValue("ZK_BROWSER_TITLE", AdempiereWebUI.APP_NAME);
+		return MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE, AdempiereWebUI.APP_NAME);
 	}
 
 	/**
@@ -110,6 +110,6 @@ public final class ThemeManager {
 	public static String getBrowserIcon() {
 		String theme = getTheme();
 		String def = ITheme.THEME_PATH_PREFIX + theme + ITheme.BROWSER_ICON_IMAGE;
-		return MSysConfig.getValue("ZK_BROWSER_ICON", def);
+		return MSysConfig.getValue(MSysConfig.ZK_BROWSER_ICON, def);
 	}
 }

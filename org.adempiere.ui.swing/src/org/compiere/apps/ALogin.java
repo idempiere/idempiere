@@ -697,7 +697,7 @@ public final class ALogin extends CDialog
 			roleCombo.setSelectedItem(iniValue);
 		
 		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
-		if (roleCombo.getItemCount() == 1 && ! MSysConfig.getBooleanValue("ALogin_ShowOneRole", true))
+		if (roleCombo.getItemCount() == 1 && ! MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowOneRole, true))
 		{
 			roleCombo.setSelectedIndex(0);
 			roleLabel.setVisible(false);

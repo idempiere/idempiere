@@ -40,7 +40,7 @@ import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -67,7 +67,7 @@ import org.zkoss.zul.Vbox;
 * @version	InfoAssignment.java Adempiere Swing UI 3.4.1
 */
 
-public class InfoAssignmentPanel extends InfoPanel implements EventListener, ValueChangeListener, SystemIDs
+public class InfoAssignmentPanel extends InfoPanel implements EventListener, ValueChangeListener
 {
 	/**
 	 * 

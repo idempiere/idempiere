@@ -47,7 +47,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.PaySelect;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_C_PaySelection;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
@@ -76,7 +76,7 @@ import org.zkoss.zul.Space;
  *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WPaySelect extends PaySelect
-	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI, SystemIDs
+	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI
 {
 	/** @todo withholding */
 	

@@ -172,7 +172,7 @@ public class MUser extends X_AD_User
 			s_log.warning ("Invalid Name/Password = " + name + "/" + password);
 			return null;
 		}
-		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		MUser retValue = null;
 		if (!hash_password)
 		{
@@ -432,7 +432,7 @@ public class MUser extends X_AD_User
 			super.setPassword(password);
 			return;
 		}
-		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		
 		if(!hash_password){
 			super.setPassword(password);
@@ -922,7 +922,7 @@ public class MUser extends X_AD_User
 		if (newRecord || super.getValue() == null || is_ValueChanged("Value"))
 			setValue(super.getValue());
 
-		boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login && getPassword() != null && getPassword().length() > 0) {
 			// email is mandatory for users with password
 			if (getEMail() == null || getEMail().length() == 0) {
@@ -952,7 +952,7 @@ public class MUser extends X_AD_User
 			}
 
 			// Hash password - IDEMPIERE-347
-			boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+			boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 			if (hash_password)
 				setPassword(getPassword());
 		}
@@ -996,7 +996,7 @@ public class MUser extends X_AD_User
 			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
 		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		//	#1/2
-		boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
 			sql.append("u.EMail=?");
 		else

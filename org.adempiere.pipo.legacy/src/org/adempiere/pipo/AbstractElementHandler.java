@@ -16,6 +16,13 @@
  *****************************************************************************/
 package org.adempiere.pipo;
 
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_MEMO;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_STRING;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,7 +35,6 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -37,7 +43,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public abstract class AbstractElementHandler implements ElementHandler, SystemIDs {
+public abstract class AbstractElementHandler implements ElementHandler {
 
 	protected CLogger log = CLogger.getCLogger("PackIn");
 	

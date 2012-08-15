@@ -61,7 +61,7 @@ import org.compiere.model.MAccountLookup;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MQuery;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CDialog;
 import org.compiere.swing.CPanel;
@@ -77,7 +77,7 @@ import org.compiere.util.Msg;
  * 	@version 	$Id: VAccountDialog.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public final class VAccountDialog extends CDialog
-	implements ActionListener, DataStatusListener, VetoableChangeListener, SystemIDs
+	implements ActionListener, DataStatusListener, VetoableChangeListener
 {
 	/**
 	 * 

@@ -64,7 +64,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MUser;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
 import org.compiere.swing.CPanel;
@@ -93,7 +93,7 @@ import org.compiere.util.Splash;
  * 
  */
 public final class AMenu extends CFrame
-	implements ActionListener, PropertyChangeListener, ChangeListener, IEnvEventListener, SystemIDs
+	implements ActionListener, PropertyChangeListener, ChangeListener, IEnvEventListener
 {
 	/**
 	 * generated serialVersionUID
@@ -817,7 +817,7 @@ public final class AMenu extends CFrame
 		
 		public void run()
 		{
-			int sleep = MSysConfig.getIntValue("MENU_INFOUPDATER_SLEEP_MS", 60000, Env.getAD_Client_ID(Env.getCtx()));
+			int sleep = MSysConfig.getIntValue(MSysConfig.MENU_INFOUPDATER_SLEEP_MS, 60000, Env.getAD_Client_ID(Env.getCtx()));
 			while(stop == false)
 			{
 				updateInfo();

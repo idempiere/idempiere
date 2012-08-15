@@ -69,7 +69,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MUserQuery;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_Column;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
@@ -100,7 +100,7 @@ import org.zkoss.zul.Hbox;
  *  @author     Sendy Yagambrum
  *  @date       June 27, 2007
  */
-public class FindWindow extends Window implements EventListener<Event>, ValueChangeListener, SystemIDs, DialogEvents
+public class FindWindow extends Window implements EventListener<Event>, ValueChangeListener, DialogEvents
 {
 	/**
 	 * 

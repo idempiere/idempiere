@@ -28,7 +28,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -36,7 +36,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.ValueNamePair;
 
-public class PayPrint implements SystemIDs {
+public class PayPrint {
 
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;

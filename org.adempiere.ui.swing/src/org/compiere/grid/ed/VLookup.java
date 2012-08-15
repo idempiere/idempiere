@@ -58,7 +58,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CMenuItem;
 import org.compiere.swing.CTextField;
@@ -96,7 +96,7 @@ import org.compiere.util.ValueNamePair;
  *  @sponsor www.metas.de
  */
 public class VLookup extends JComponent
-	implements VEditor, ActionListener, FocusListener, SystemIDs
+	implements VEditor, ActionListener, FocusListener
 {
 	/**
 	 * 

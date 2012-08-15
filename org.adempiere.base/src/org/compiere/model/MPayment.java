@@ -543,7 +543,7 @@ public final class MPayment extends X_C_Payment
 	{
 		// @Trifon - CashPayments
 		//if ( getTenderType().equals("X") ) {
-		if ( isCashTrx() && !MSysConfig.getBooleanValue("CASH_AS_PAYMENT", true , getAD_Client_ID())) {
+		if ( isCashTrx() && !MSysConfig.getBooleanValue(MSysConfig.CASH_AS_PAYMENT, true , getAD_Client_ID())) {
 			// Cash Book Is mandatory
 			if ( getC_CashBook_ID() <= 0 ) {
 				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Mandatory@: @C_CashBook_ID@"));
@@ -1070,7 +1070,7 @@ public final class MPayment extends X_C_Payment
 		//	Credit Card
 		if (TENDERTYPE_CreditCard.equals(getTenderType()))
 		{
-			if (MSysConfig.getBooleanValue("PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD", true, getAD_Client_ID())) {
+			if (MSysConfig.getBooleanValue(MSysConfig.PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD, true, getAD_Client_ID())) {
 				documentNo = getCreditCardType()
 					+ " " + Obscure.obscure(getCreditCardNumber())
 					+ " " + getCreditCardExpMM() 
@@ -1082,7 +1082,7 @@ public final class MPayment extends X_C_Payment
 			&& !isReceipt()
 			&& getCheckNo() != null && getCheckNo().length() > 0)
 		{
-			if (MSysConfig.getBooleanValue("PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT", true, getAD_Client_ID())) {
+			if (MSysConfig.getBooleanValue(MSysConfig.PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT, true, getAD_Client_ID())) {
 				documentNo = getCheckNo();
 			}
 		}
@@ -1090,7 +1090,7 @@ public final class MPayment extends X_C_Payment
 		else if (TENDERTYPE_Check.equals(getTenderType())
 			&& isReceipt())
 		{
-			if (MSysConfig.getBooleanValue("PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT", true, getAD_Client_ID())) {
+			if (MSysConfig.getBooleanValue(MSysConfig.PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT, true, getAD_Client_ID())) {
 				if (getRoutingNo() != null)
 					documentNo = getRoutingNo() + ": ";
 				if (getAccountNo() != null)
@@ -1829,7 +1829,7 @@ public final class MPayment extends X_C_Payment
 
 		// @Trifon - CashPayments
 		//if ( getTenderType().equals("X") ) {
-		if ( isCashTrx() && !MSysConfig.getBooleanValue("CASH_AS_PAYMENT", true , getAD_Client_ID())) {
+		if ( isCashTrx() && !MSysConfig.getBooleanValue(MSysConfig.CASH_AS_PAYMENT, true , getAD_Client_ID())) {
 			// Create Cash Book entry
 			if ( getC_CashBook_ID() <= 0 ) {
 				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Mandatory@: @C_CashBook_ID@"));

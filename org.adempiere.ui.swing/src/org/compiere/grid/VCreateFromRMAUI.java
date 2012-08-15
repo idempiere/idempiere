@@ -30,14 +30,14 @@ import org.compiere.grid.ed.VLookup;
 import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CPanel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-public class VCreateFromRMAUI extends CreateFromRMA implements VetoableChangeListener, SystemIDs
+public class VCreateFromRMAUI extends CreateFromRMA implements VetoableChangeListener
 {
 	private static final long serialVersionUID = 1L;
 	

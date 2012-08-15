@@ -27,7 +27,7 @@ import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -56,7 +56,7 @@ import org.zkoss.zul.Vbox;
  * @author Elaine
  * @date November 20, 2008
  */
-public class DPFavourites extends DashboardPanel implements EventListener<Event>, SystemIDs {
+public class DPFavourites extends DashboardPanel implements EventListener<Event> {
 
 	private static final String ON_ADD_TAP_EVENT_LISTENER = "onAddTapEventListener";
 

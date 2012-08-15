@@ -32,6 +32,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import static org.compiere.model.SystemIDs.*;
 
 /**
  *	Localtion Region Model (Value Object)
@@ -40,7 +41,7 @@ import org.compiere.util.Env;
  *  @version 	$Id: MRegion.java,v 1.3 2006/07/30 00:58:36 jjanke Exp $
  */
 public final class MRegion extends X_C_Region
-	implements Comparator<Object>, Serializable, SystemIDs
+	implements Comparator<Object>, Serializable
 {
 	/**
 	 * 

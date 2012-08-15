@@ -50,7 +50,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MWarehouse;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CMenuItem;
 import org.compiere.util.CLogger;
@@ -65,7 +65,7 @@ import org.compiere.util.Msg;
  *  @version 	$Id: VLocator.java,v 1.5 2006/07/30 00:51:27 jjanke Exp $
  */
 public class VLocator extends JComponent
-	implements VEditor, ActionListener, SystemIDs
+	implements VEditor, ActionListener
 {
 	/**
 	 * 

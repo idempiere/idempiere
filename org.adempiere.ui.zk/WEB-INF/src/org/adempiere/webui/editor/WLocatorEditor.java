@@ -39,7 +39,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MWarehouse;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -55,7 +55,7 @@ import org.zkoss.zk.ui.event.Events;
  * @date    Jul 23, 2007
  */
 
-public class WLocatorEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener, IZoomableEditor, SystemIDs
+public class WLocatorEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener, IZoomableEditor
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     

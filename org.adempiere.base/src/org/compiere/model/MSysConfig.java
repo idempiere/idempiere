@@ -37,7 +37,69 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5271070197457739666L;
+	private static final long serialVersionUID = -9111154530183645884L;
+
+	public final static String PDF_FONT_DIR = "PDF_FONT_DIR";
+	public final static String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
+	public static final String ZK_DESKTOP_CLASS = "ZK_DESKTOP_CLASS";
+	public static final String CASH_AS_PAYMENT = "CASH_AS_PAYMENT";
+	public static final String MAX_ACTIVITIES_IN_LIST = "MAX_ACTIVITIES_IN_LIST";
+	public static final String ZK_ROOT_FOLDER_BROWSER = "ZK_ROOT_FOLDER_BROWSER";
+	public static final String ZK_PAGING_SIZE = "ZK_PAGING_SIZE";
+	public static final String ZK_GRID_EDIT_MODELESS = "ZK_GRID_EDIT_MODELESS";
+	public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
+	public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
+	public static final String USE_EMAIL_FOR_LOGIN = "USE_EMAIL_FOR_LOGIN";
+	public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";
+	public static final String ZK_BROWSER_ICON = "ZK_BROWSER_ICON";
+	public static final String ZK_BROWSER_TITLE = "ZK_BROWSER_TITLE";
+	public static final String ZK_LOGO_LARGE = "ZK_LOGO_LARGE";
+	public static final String ZK_LOGO_SMALL = "ZK_LOGO_SMALL";
+	public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
+	public static final String LOCATION_MAX_CITY_ROWS = "LOCATION_MAX_CITY_ROWS";
+	public static final String ZK_REPORT_FORM_OUTPUT_TYPE = "ZK_REPORT_FORM_OUTPUT_TYPE";
+	public static final String ZK_REPORT_TABLE_OUTPUT_TYPE = "ZK_REPORT_TABLE_OUTPUT_TYPE";
+	public static final String MENU_INFOUPDATER_SLEEP_MS = "MENU_INFOUPDATER_SLEEP_MS";
+	public static final String SYSCONFIG_INFO_DOUBLECLICKTOGGLESSELECTION = "SYSCONFIG_INFO_DOUBLECLICKTOGGLESSELECTION";
+	public static final String SYSCONFIG_INFO_DEFAULTSELECTED = "SYSCONFIG_INFO_DEFAULTSELECTED";
+	public static final String DICTIONARY_ID_USE_CENTRALIZED_ID = "DICTIONARY_ID_USE_CENTRALIZED_ID";
+	public static final String PROJECT_ID_USE_CENTRALIZED_ID = "PROJECT_ID_USE_CENTRALIZED_ID";
+	public static final String SYSTEM_NATIVE_SEQUENCE = "SYSTEM_NATIVE_SEQUENCE";
+	public static final String START_VALUE_BPLOCATION_NAME = "START_VALUE_BPLOCATION_NAME";
+	public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
+	public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
+	public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
+	public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
+	public static final String PROJECT_ID_COMMENTS = "PROJECT_ID_COMMENTS";
+	public static final String DICTIONARY_ID_COMMENTS = "DICTIONARY_ID_COMMENTS";
+	public static final String LOCATION_MAPS_URL_PREFIX = "LOCATION_MAPS_URL_PREFIX";
+	public static final String LOCATION_MAPS_ROUTE_PREFIX = "LOCATION_MAPS_ROUTE_PREFIX";
+	public static final String LOCATION_MAPS_SOURCE_ADDRESS = "LOCATION_MAPS_SOURCE_ADDRESS";
+	public static final String LOCATION_MAPS_DESTINATION_ADDRESS = "LOCATION_MAPS_DESTINATION_ADDRESS";
+	public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD";
+	public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT";
+	public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT";
+	public static final String RecentItems_MaxSaved = "RecentItems_MaxSaved";
+	public static final String DICTIONARY_ID_WEBSITE = "DICTIONARY_ID_WEBSITE";
+	public static final String DICTIONARY_ID_USER = "DICTIONARY_ID_USER";
+	public static final String DICTIONARY_ID_PASSWORD = "DICTIONARY_ID_PASSWORD";
+	public static final String PROJECT_ID_WEBSITE = "PROJECT_ID_WEBSITE";
+	public static final String PROJECT_ID_USER = "PROJECT_ID_USER";
+	public static final String PROJECT_ID_PASSWORD = "PROJECT_ID_PASSWORD";
+	public static final String PROJECT_ID_PROJECT = "PROJECT_ID_PROJECT";
+	public static final String ZK_LOGIN_ALLOW_REMEMBER_ME = "ZK_LOGIN_ALLOW_REMEMBER_ME";
+	public static final String SWING_LOGIN_ALLOW_REMEMBER_ME = "SWING_LOGIN_ALLOW_REMEMBER_ME";
+	public static final String USER_PASSWORD_HASH = "USER_PASSWORD_HASH";
+	public static final String ProductUOMConversionUOMValidate = "ProductUOMConversionUOMValidate";
+	public static final String ProductUOMConversionRateValidate = "ProductUOMConversionRateValidate";
+	public static final String SYSTEM_INSERT_CHANGELOG = "SYSTEM_INSERT_CHANGELOG";
+	public static final String REPORT_SWAP_MAX_ROWS = "REPORT_SWAP_MAX_ROWS";
+	public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
+	public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
+	public static final String SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR = "SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR";
+	public static final String MAIL_SEND_BCC_TO_ADDRESS = "MAIL_SEND_BCC_TO_ADDRESS";
+	public static final String MAIL_SEND_BCC_TO_FROM = "MAIL_SEND_BCC_TO_FROM";
+	public static final String REAL_TIME_POS = "REAL_TIME_POS";
 
 	/**
 	 * 	Standard Constructor
@@ -508,4 +570,5 @@ public class MSysConfig extends X_AD_SysConfig
 			+", EntityType="+getEntityType()
 			+"]";
 	}
+
 }	//	MSysConfig

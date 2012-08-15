@@ -79,8 +79,6 @@ public class ListPanel extends Borderlayout implements EventListener
 	
 	private Map<Integer, String> columnWidthMap;
 	
-	public static final String PAGE_SIZE_KEY = "ZK_PAGING_SIZE";
-	
 	public ListPanel()
 	{
 		this(0);
@@ -97,7 +95,7 @@ public class ListPanel extends Borderlayout implements EventListener
 		this.appendChild(south);
 		
 		//default paging size
-		pageSize = MSysConfig.getIntValue(PAGE_SIZE_KEY, 100);
+		pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 100);
 	}
 
 	/**

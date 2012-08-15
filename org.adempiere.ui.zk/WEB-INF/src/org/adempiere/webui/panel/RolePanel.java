@@ -115,7 +115,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
             if (lstClient.getItemCount() > 1) {
             	auf = new AuFocus(lstClient);
             } else {
-            	if (MSysConfig.getBooleanValue("ALogin_ShowOneRole", true) || lstRole.getItemCount() > 1) {
+            	if (MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowOneRole, true) || lstRole.getItemCount() > 1) {
             		auf = new AuFocus(lstRole);
             	} else {
             		auf = new AuFocus(lstOrganisation);
@@ -364,7 +364,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
             MRole.getDefault(m_ctx, true);
             
     		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
-    		if (m_clientKNPairs.length == 1 && lstRole.getItemCount() == 1 && ! MSysConfig.getBooleanValue("ALogin_ShowOneRole", true))
+    		if (m_clientKNPairs.length == 1 && lstRole.getItemCount() == 1 && ! MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowOneRole, true))
     		{
     			lstRole.setSelectedIndex(0);
     			lblRole.setVisible(false);

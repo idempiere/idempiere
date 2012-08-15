@@ -165,7 +165,7 @@ public class AlertProcessor extends AdempiereServer
 			try
 			{
 				String text = null;
-				if (MSysConfig.getBooleanValue("ALERT_SEND_ATTACHMENT_AS_XLS", true, Env.getAD_Client_ID(getCtx())))
+				if (MSysConfig.getBooleanValue(MSysConfig.ALERT_SEND_ATTACHMENT_AS_XLS, true, Env.getAD_Client_ID(getCtx())))
 					text = getExcelReport(rule, sql, trxName, attachments);
 				else
 					text = getPlainTextReport(rule, sql, trxName, attachments);

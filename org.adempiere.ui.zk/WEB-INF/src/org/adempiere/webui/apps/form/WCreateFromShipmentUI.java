@@ -43,7 +43,7 @@ import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -56,7 +56,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Space;
 
-public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener<Event>, ValueChangeListener, SystemIDs
+public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener<Event>, ValueChangeListener
 {
 
 	private WCreateFromWindow window;

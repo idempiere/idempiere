@@ -56,7 +56,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
@@ -111,7 +111,7 @@ import org.zkoss.zul.impl.XulElement;
  * 
  * @author Low Heng Sin
  */
-public class ZkReportViewer extends Window implements EventListener<Event>, ITabOnCloseHandler, SystemIDs {
+public class ZkReportViewer extends Window implements EventListener<Event>, ITabOnCloseHandler {
 	/**
 	 * 
 	 */
@@ -218,8 +218,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		//set default type
 		String type = m_reportEngine.getPrintFormat().isForm()
 				// a42niem - provide explicit default and check on client/org specifics
-				? MSysConfig.getValue("ZK_REPORT_FORM_OUTPUT_TYPE","PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
-				: MSysConfig.getValue("ZK_REPORT_TABLE_OUTPUT_TYPE","PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
+				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
+				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
 
 		if ("PDF".equals(type))
 			previewType.setSelectedIndex(0);

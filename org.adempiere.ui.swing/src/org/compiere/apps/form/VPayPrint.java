@@ -42,7 +42,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
@@ -66,7 +66,7 @@ import org.compiere.util.ValueNamePair;
  *  Contributors:
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank
  */
-public class VPayPrint extends PayPrint implements FormPanel, ActionListener, VetoableChangeListener, SystemIDs
+public class VPayPrint extends PayPrint implements FormPanel, ActionListener, VetoableChangeListener
 {
 	private CPanel panel = new CPanel();
 

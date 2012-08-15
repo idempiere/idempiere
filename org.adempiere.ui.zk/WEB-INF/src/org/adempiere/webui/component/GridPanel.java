@@ -105,10 +105,6 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 
 	private Map<Integer, String> columnWidthMap;
 
-	public static final String PAGE_SIZE_KEY = "ZK_PAGING_SIZE";
-
-	public static final String MODE_LESS_KEY = "ZK_GRID_EDIT_MODELESS";
-
 	public GridPanel()
 	{
 		this(0);
@@ -133,11 +129,11 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 		}
 		else
 		{
-			pageSize = MSysConfig.getIntValue(PAGE_SIZE_KEY, 100);
+			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 100);
 		}
 		
 		//default true for better UI experience
-		modeless = MSysConfig.getBooleanValue(MODE_LESS_KEY, true);
+		modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
 		
 	}
 

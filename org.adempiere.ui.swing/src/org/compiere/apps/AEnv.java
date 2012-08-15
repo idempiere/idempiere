@@ -51,7 +51,7 @@ import org.compiere.interfaces.Server;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.process.DocumentEngine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
@@ -75,7 +75,7 @@ import org.compiere.util.Splash;
  *  @see FR [ 1966328 ] New Window Info to MRP and CRP into View http://sourceforge.net/tracker/index.php?func=detail&aid=1966328&group_id=176962&atid=879335
  *  
  */
-public final class AEnv implements SystemIDs
+public final class AEnv
 {
 	// Array of active Windows
 	private static ArrayList<Container>	s_windows = new ArrayList<Container>(20);

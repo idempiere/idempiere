@@ -786,7 +786,7 @@ public class PackOut extends SvrProcess
 	 */
 	public void createTranslations (String parentTableName, int parentID, TransformerHandler packOutDocument) throws SAXException
 	{
-		if (MSysConfig.getBooleanValue("2PACK_HANDLE_TRANSLATIONS", false)) {
+		if (MSysConfig.getBooleanValue(MSysConfig.TWOPACK_HANDLE_TRANSLATIONS, false)) {
 
 			Env.setContext(getCtx(), CommonTranslationHandler.CONTEXT_KEY__PARENT_TABLE,
 					parentTableName);

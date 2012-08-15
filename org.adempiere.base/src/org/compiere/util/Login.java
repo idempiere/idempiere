@@ -262,7 +262,7 @@ public class Login
 			// if not authenticated, use AD_User as backup
 		}
 		
-		boolean hash_password=MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+		boolean hash_password=MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		
@@ -1297,8 +1297,8 @@ public class Login
 			// if not authenticated, use AD_User as backup
 		}
 
-		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
-		boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
 		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
@@ -1419,7 +1419,7 @@ public class Login
 			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
 		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		
-		boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
 			sql.append("u.EMail=?");
 		else

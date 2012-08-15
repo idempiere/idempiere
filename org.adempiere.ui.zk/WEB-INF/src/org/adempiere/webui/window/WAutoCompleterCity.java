@@ -54,7 +54,7 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener
 
 	private ArrayList<CityVO> m_citiesShow = new ArrayList<CityVO>();
 
-	private final int m_maxRows = MSysConfig.getIntValue("LOCATION_MAX_CITY_ROWS", 7);
+	private final int m_maxRows = MSysConfig.getIntValue(MSysConfig.LOCATION_MAX_CITY_ROWS, 7);
 
 	public static final CityVO ITEM_More = new CityVO(-1, "...", -1, "");
 

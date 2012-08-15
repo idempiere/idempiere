@@ -44,7 +44,7 @@ public class HashPasswords extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		if (hash_password)
 			throw new AdempiereException("Passwords already hashed");
 		

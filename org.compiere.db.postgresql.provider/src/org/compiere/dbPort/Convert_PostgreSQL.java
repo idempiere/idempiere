@@ -86,7 +86,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			found_next_fuction = sqlStatement.toUpperCase().indexOf("NEXTID(");
 		if(found_next_fuction > 0)
 		{
-			boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue("SYSTEM_NATIVE_SEQUENCE",false);
+			boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
 			boolean adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
 			
 			if(SYSTEM_NATIVE_SEQUENCE && !adempiereSys)

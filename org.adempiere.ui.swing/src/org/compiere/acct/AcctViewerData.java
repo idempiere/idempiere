@@ -29,7 +29,7 @@ import java.util.logging.Level;
 
 import javax.swing.JComboBox;
 
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MFactAcct;
@@ -57,7 +57,7 @@ import org.compiere.util.ValueNamePair;
  *  			<li>BF [ 1748449 ] Info Account - Posting Type is not translated
  * 				<li>BF [ 1778373 ] AcctViewer: data is not sorted proper
  */
-class AcctViewerData implements SystemIDs
+class AcctViewerData
 {
 	/**
 	 *  Constructor

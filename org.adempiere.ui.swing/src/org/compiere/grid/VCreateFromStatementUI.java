@@ -43,7 +43,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
@@ -53,7 +53,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-public class VCreateFromStatementUI extends CreateFromStatement implements ActionListener, SystemIDs
+public class VCreateFromStatementUI extends CreateFromStatement implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 	

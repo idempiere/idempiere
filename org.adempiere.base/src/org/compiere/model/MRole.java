@@ -42,6 +42,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trace;
+import static org.compiere.model.SystemIDs.*;
 
 /**
  *	Role Model.
@@ -54,7 +55,7 @@ import org.compiere.util.Trace;
  *  @contributor KittiU - FR [ 3062553 ] - Duplicated action in DocAction list for Multiple Role Users
  *  @version $Id: MRole.java,v 1.5 2006/08/09 16:38:47 jjanke Exp $
  */
-public final class MRole extends X_AD_Role implements SystemIDs
+public final class MRole extends X_AD_Role
 {
 	/**
 	 * 

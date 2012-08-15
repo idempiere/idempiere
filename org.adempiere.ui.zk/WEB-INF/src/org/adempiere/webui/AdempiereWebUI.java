@@ -307,7 +307,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     private void createDesktop()
     {
     	appDesktop = null;
-		String className = MSysConfig.getValue(IDesktop.CLASS_NAME_KEY);
+		String className = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_CLASS);
 		if ( className != null && className.trim().length() > 0)
 		{
 			try

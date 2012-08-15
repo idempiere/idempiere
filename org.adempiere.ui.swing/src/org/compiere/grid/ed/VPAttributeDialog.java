@@ -54,7 +54,7 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CCheckBox;
@@ -80,7 +80,7 @@ import org.compiere.util.Msg;
  *  @version $Id: VPAttributeDialog.java,v 1.4 2006/07/30 00:51:27 jjanke Exp $
  */
 public class VPAttributeDialog extends CDialog
-	implements ActionListener, SystemIDs
+	implements ActionListener
 {
 	/**
 	 * 

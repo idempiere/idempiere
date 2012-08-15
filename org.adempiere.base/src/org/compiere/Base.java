@@ -23,7 +23,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MUOMConversion;
-import org.compiere.model.SystemIDs;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.Env;
 import org.compiere.util.Login;
 
@@ -33,7 +33,7 @@ import org.compiere.util.Login;
  *  @author Jorg Janke
  *  @version $Id: Base.java,v 1.5 2006/09/21 20:44:54 jjanke Exp $
  */
-class Base implements SystemIDs
+class Base 
 {
 	/**
 	 *  Base Test

@@ -16,6 +16,9 @@
  *****************************************************************************/
 package org.adempiere.pipo.handler;
 
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -27,7 +30,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.adempiere.pipo.AbstractElementHandler;
 import org.adempiere.pipo.Element;
 import org.adempiere.pipo.PackOut;
-import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Menu;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -35,7 +37,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class MenuElementHandler extends AbstractElementHandler implements SystemIDs {
+public class MenuElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
