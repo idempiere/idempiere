@@ -750,10 +750,14 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         int curInd = adTab.getSelectedIndex();
         if (curInd < maxInd)
         {
-            setActiveTab(curInd + 1, null);
-        }
-
-        focusToActivePanel();
+            setActiveTab(curInd + 1, new Callback<Boolean>() {
+				
+				@Override
+				public void onCallback(Boolean result) {
+					focusToActivePanel();
+				}
+			});
+        }        
     }
 
 	/**
@@ -764,10 +768,13 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         int curInd = adTab.getSelectedIndex();
         if (curInd > 0)
         {
-            setActiveTab(curInd - 1, null);
-        }
-
-        focusToActivePanel();
+            setActiveTab(curInd - 1, new Callback<Boolean>() {
+				@Override
+				public void onCallback(Boolean result) {
+					focusToActivePanel();
+				}
+			});
+        }        
     }
 
     /**
@@ -775,8 +782,16 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
      */
     public void onFirst()
     {
-        curTab.navigate(0);
-        focusToActivePanel();
+    	Callback<Boolean> callback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					curTab.navigate(0);
+			        focusToActivePanel();
+				}				
+			}
+		};
+		saveAndNavigate(callback);
     }
 
     /**
@@ -784,8 +799,16 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
      */
     public void onLast()
     {
-        curTab.navigate(curTab.getRowCount() - 1);
-        focusToActivePanel();
+        Callback<Boolean> callback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					curTab.navigate(curTab.getRowCount() - 1);
+			        focusToActivePanel();
+				}
+			}
+		};
+		onSave(false, true, callback);
     }
 
     /**
@@ -793,8 +816,16 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
      */
     public void onNext()
     {
-        curTab.navigateRelative(+1);
-        focusToActivePanel();
+        Callback<Boolean> callback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					curTab.navigateRelative(+1);
+					focusToActivePanel();
+				}
+			}
+		};
+		saveAndNavigate(callback);
     }
 
     /**
@@ -802,8 +833,16 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
      */
     public void onPrevious()
     {
-        curTab.navigateRelative(-1);
-        focusToActivePanel();
+        Callback<Boolean> callback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					curTab.navigateRelative(-1);
+			        focusToActivePanel();
+				}				
+			}
+		};
+		saveAndNavigate(callback);
     }
 
     // Elaine 2008/12/04
@@ -865,39 +904,24 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 		if (gridWindow.isTransaction())
 		{
-			final Runnable runnable = new Runnable() {				
+			Callback<Boolean> callback = new Callback<Boolean>() {
 				@Override
-				public void run() {
-					final WOnlyCurrentDays ocd = new WOnlyCurrentDays();
-					ocd.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-						@Override
-						public void onEvent(Event event) throws Exception {
-							m_onlyCurrentDays = ocd.getCurrentDays();
-							history(m_onlyCurrentDays);
-							focusToActivePanel();
-						}
-					});						
-					AEnv.showWindow(ocd);					
+				public void onCallback(Boolean result) {
+					if (result) {
+						final WOnlyCurrentDays ocd = new WOnlyCurrentDays();
+						ocd.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+							@Override
+							public void onEvent(Event event) throws Exception {
+								m_onlyCurrentDays = ocd.getCurrentDays();
+								history(m_onlyCurrentDays);
+								focusToActivePanel();
+							}
+						});						
+						AEnv.showWindow(ocd);					
+					}
 				}
 			};
-			if (curTab.needSave(true, true))
-			{
-				onSave(false, new Callback<Boolean>() {
-
-					@Override
-					public void onCallback(Boolean result) 
-					{
-						if (result)
-						{
-							runnable.run();
-						}						
-					}
-				});
-			}
-			else
-			{
-				runnable.run();
-			}
+			saveAndNavigate(callback);
 		}		
     }
 
@@ -1086,87 +1110,49 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			if (callback != null)
 				callback.onCallback(true);
 		}
+		else
+		{
+			Callback<Boolean> command = new Callback<Boolean>() {
 
+				@Override
+				public void onCallback(Boolean result) {
+					if (result) {
+						setActiveTab0(oldTabIndex, newTabIndex, callback);
+					} else if (callback != null) {
+						callback.onCallback(false);
+					}
+				}
+			};
+			saveAndNavigate(command);
+		}
+		
+	}
+
+	protected void saveAndNavigate(final Callback<Boolean> callback) {
 		if (curTab != null)
 		{
 			if (curTab.isSortTab())
 			{
-				if (curTabpanel instanceof ADSortTab)
-				{
-					((ADSortTab)curTabpanel).saveData();
-					((ADSortTab)curTabpanel).unregisterPanel();
-				}
-				setActiveTab0(oldTabIndex, newTabIndex, callback);
+				onSave(false, true, callback);
 			}
 			else if (curTab.needSave(true, false))
 		    {
 		    	if (curTab.needSave(true, true))
 				{
-					//	Automatic Save
-					if (Env.isAutoCommit(ctx, curWindowNo)
-						&& (curTab.getCommitWarning() == null || curTab.getCommitWarning().trim().length() == 0))
-					{
-						if (!curTab.dataSave(true))
-						{
-							showLastError();
-							//  there is a problem, stop here
-							if (callback != null)
-								callback.onCallback(false);
-							return;
-						}
-						setActiveTab0(oldTabIndex, newTabIndex, callback);
-					}
-					//  explicitly ask when changing tabs
-					else 
-					{
-						FDialog.ask(curWindowNo, this.getComponent(), "SaveChanges?", curTab.getCommitWarning(), new Callback<Boolean>() {
-
-							@Override
-							public void onCallback(Boolean result) {
-								if (result)
-								{   //  yes we want to save
-									if (!curTab.dataSave(true))
-									{
-										showLastError();
-										//  there is a problem, stop here
-										if (callback != null)
-											callback.onCallback(false);
-										return;
-									}
-									setActiveTab0(oldTabIndex, newTabIndex, callback);
-								}
-								else    //  Don't save
-								{
-									int newRecord= curTab.getTableModel().getNewRow();     //VOSS COM
-
-									if( newRecord == -1)
-										curTab.dataIgnore();
-									else
-									{
-										if (callback != null)
-											callback.onCallback(false);
-										return;
-									}
-									setActiveTab0(oldTabIndex, newTabIndex, callback);
-								}
-								
-							}
-						});
-					
-					}
+		    		onSave(false, true, callback);
 				}
 				else 
 				{
 					//  new record, but nothing changed
 					curTab.dataIgnore();
-					setActiveTab0(oldTabIndex, newTabIndex, callback);
+					callback.onCallback(true);
 				}
 			}   //  there is a change
 			else
-				setActiveTab0(oldTabIndex, newTabIndex, callback);
+				callback.onCallback(true);
 		}
 		else
-			setActiveTab0(oldTabIndex, newTabIndex, callback);
+			callback.onCallback(true);
 	}
 
 	private void setActiveTab0(int oldTabIndex, int newTabIndex,
@@ -1507,7 +1493,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     {
     	if (saveCurrentRow)
     	{
-	    	onSave(false, new Callback<Boolean>() {
+	    	onSave(false, true, new Callback<Boolean>() {
 	
 				@Override
 				public void onCallback(Boolean result) {
@@ -1553,7 +1539,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
             return;
         }
 
-        autoSave(new Callback<Boolean>() {
+        saveAndNavigate(new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) 
@@ -1580,21 +1566,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			}
 		});        
     }
-
-    private void autoSave(Callback<Boolean> callback) {
-    	//  has anything changed?
-		if (curTab.needSave(true, false))
-		{   //  do we have real change
-			if (curTab.needSave(true, true))
-			{
-				onSave(false, callback);
-			}
-			else    //  new record, but nothing changed
-				curTab.dataIgnore();
-		}   //  there is a change
-		if (callback != null)
-			callback.onCallback(true);
-	}
 
 	// Elaine 2008/11/19
     /**
@@ -1637,7 +1608,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         if (curTab == null)
             return;
 
-        onSave(false, new Callback<Boolean>() {
+        onSave(false, false, new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) {
@@ -1717,7 +1688,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
      */
     public void onSave()
     {
-    	onSave(true, new Callback<Boolean>() {
+    	onSave(true, false, new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) 
 			{
@@ -1735,22 +1706,29 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     /**
      * @param onSaveEvent
      */
-    private void onSave(final boolean onSaveEvent, final Callback<Boolean> callback)
+    private void onSave(final boolean onSaveEvent, final boolean onNavigationEvent, final Callback<Boolean> callback)
     {
     	final boolean newRecord = (curTab.getRecord_ID() <= 0);
     	final boolean wasChanged = toolbar.isSaveEnable();
     	if (curTab.isSortTab())
     	{
-    		((ADSortTab)curTabpanel).saveData();
-    		toolbar.enableSave(false);	//	set explicitly
-    		toolbar.enableSaveAndCreate(false);
-    		toolbar.enableIgnore(false);
+    		if (onNavigationEvent)
+    			((ADSortTab)curTabpanel).unregisterPanel();
+    		else
+    			((ADSortTab)curTabpanel).saveData();
+    		if (!onNavigationEvent)
+    		{
+	    		toolbar.enableSave(false);	//	set explicitly
+	    		toolbar.enableSaveAndCreate(false);
+	    		toolbar.enableIgnore(false);
+    		}
     		if (callback != null)
     			callback.onCallback(true);
     	}
     	else
     	{
-    		if (onSaveEvent && curTab.getCommitWarning() != null && curTab.getCommitWarning().trim().length() > 0)
+    		if ((curTab.getCommitWarning() != null && curTab.getCommitWarning().trim().length() > 0) ||
+    			(!Env.isAutoCommit(ctx, curWindowNo) && onNavigationEvent))
     		{
     			FDialog.ask(curWindowNo, this.getComponent(), "SaveChanges?", curTab.getCommitWarning(), new Callback<Boolean>() {
 
@@ -1759,20 +1737,25 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 					{
 						if (result)
 						{
-							doSave(onSaveEvent, newRecord, wasChanged, callback);
+							onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
+						}
+						else 
+						{
+							if (callback != null)
+				    			callback.onCallback(false);
 						}
 					}
 				});
     		}
     		else
     		{
-    			doSave(onSaveEvent, newRecord, wasChanged, callback);
+    			onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
     		}
     	}
     }
 
-	private void doSave(boolean onSaveEvent, boolean newRecord,
-			boolean wasChanged, Callback<Boolean> callback) {
+	private void onSave0(boolean onSaveEvent, boolean navigationEvent,
+			boolean newRecord, boolean wasChanged, Callback<Boolean> callback) {
 		boolean retValue = curTab.dataSave(onSaveEvent);
 
 		if (!retValue)
@@ -1780,12 +1763,15 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			showLastError();
 			if (callback != null)
 				callback.onCallback(false);
-		} else if (!onSaveEvent) //need manual refresh
+		} else if (!onSaveEvent && !navigationEvent) //need manual refresh
 		{
 			curTab.setCurrentRow(curTab.getCurrentRow());
 		}
-		curTabpanel.dynamicDisplay(0);
-		curTabpanel.afterSave(onSaveEvent);
+		
+		if (!navigationEvent) {
+			curTabpanel.dynamicDisplay(0);
+			curTabpanel.afterSave(onSaveEvent);
+		}
 
 		if (wasChanged) {
 		    if (newRecord) {
@@ -1838,7 +1824,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	 */
 	public void onSaveCreate()
     {
-    	onSave(true, new Callback<Boolean>() {
+    	onSave(true, true, new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -2096,11 +2082,10 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			return;
 		}
 
-		onSave(false, new Callback<Boolean>() {
+		Callback<Boolean> callback = new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
-					//
 					int table_ID = curTab.getAD_Table_ID();
 					int record_ID = curTab.getRecord_ID();
 
@@ -2112,7 +2097,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 					}
 				}				
 			}
-		});	
+		};
+		onSave(false, false, callback);	
 	}
 
 	/**
@@ -2125,18 +2111,19 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			return;
 		}
 
-		onSave(false, new Callback<Boolean>() {
+		Callback<Boolean> callback = new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
-					doOnReport();
+					onReport0();	
 				}				
 			}
-		});
+		};
+		onSave(false, false, callback);
 	}
 
-	private void doOnReport() {
+	private void onReport0() {
 		//	Query
 		MQuery query = new MQuery(curTab.getTableName());
 		//	Link for detail records
@@ -2304,7 +2291,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 		if (curTab.needSave(true, false))
 		{
-			onSave(false, new Callback<Boolean>() {
+			onSave(false, false, new Callback<Boolean>() {
 				@Override
 				public void onCallback(Boolean result) {
 					if (result) {
@@ -2369,7 +2356,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 					public void onEvent(Event event) throws Exception {
 						if (vp.needSave())
 						{
-							onSave(false, new Callback<Boolean>() {
+							onSave(false, false, new Callback<Boolean>() {
 
 								@Override
 								public void onCallback(Boolean result) {
@@ -2537,7 +2524,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 		if (curTab.needSave(true, false))
 		{
-			onSave(false, new Callback<Boolean>() {
+			onSave(false, false, new Callback<Boolean>() {
 
 				@Override
 				public void onCallback(Boolean result) {
