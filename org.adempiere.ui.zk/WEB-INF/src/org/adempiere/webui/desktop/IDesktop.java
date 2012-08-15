@@ -33,7 +33,6 @@ import org.zkoss.zk.ui.Page;
 public interface IDesktop extends UIPart {
 
 	public static final String WINDOWNO_ATTRIBUTE = "desktop.windowno";
-	public static final String CLASS_NAME_KEY = "ZK_DESKTOP_CLASS";
 
 	/**
 	 *

@@ -1127,7 +1127,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		{
 			I_C_Order order = getC_Order();
 			if (order != null && MDocType.DOCSUBTYPESO_PrepayOrder.equals(order.getC_DocType().getDocSubTypeSO())
-					&& !MSysConfig.getBooleanValue("CHECK_CREDIT_ON_PREPAY_ORDER", true, getAD_Client_ID(), getAD_Org_ID())) {
+					&& !MSysConfig.getBooleanValue(MSysConfig.CHECK_CREDIT_ON_PREPAY_ORDER, true, getAD_Client_ID(), getAD_Org_ID())) {
 				// ignore -- don't validate Prepay Orders depending on sysconfig parameter
 			} else {
 				MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());

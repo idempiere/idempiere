@@ -35,7 +35,7 @@ import org.compiere.util.Env;
 public class CityAutoCompleter extends AutoCompleter 
 {
 	public static final CityVO ITEM_More = new CityVO(-1, "...", -1, "");
-	private final int m_maxRows = MSysConfig.getIntValue("LOCATION_MAX_CITY_ROWS", 7);
+	private final int m_maxRows = MSysConfig.getIntValue(MSysConfig.LOCATION_MAX_CITY_ROWS, 7);
 	private CityVO m_city = null;
 	private final int m_windowNo;
 	private ArrayList<CityVO> list = new ArrayList<CityVO>();

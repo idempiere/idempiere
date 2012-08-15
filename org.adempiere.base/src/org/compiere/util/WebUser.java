@@ -677,7 +677,7 @@ public class WebUser
 		boolean retValue = false;
 		if(m_loggedIn)
 		{
-			boolean hash_password=MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);		    
+			boolean hash_password=MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);		    
 	    	if(!hash_password)
 		    {
 		      String sql = "SELECT * FROM AD_User "

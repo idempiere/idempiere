@@ -51,8 +51,6 @@ public class DashboardRunnable implements Runnable, Serializable
 
 	private static final CLogger logger = CLogger.getCLogger(DashboardRunnable.class);
 
-	private final static String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
-
 	/**
 	 *
 	 * @param desktop zk desktop interface
@@ -75,7 +73,7 @@ public class DashboardRunnable implements Runnable, Serializable
 	public void run()
 	{
 		// default Update every one minutes
-		int interval = MSysConfig.getIntValue(ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
+		int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
 		int cumulativeFailure = 0;
 		while(!stop) {
 			try {

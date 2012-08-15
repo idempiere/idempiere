@@ -84,7 +84,7 @@ public class UserPassword extends SvrProcess
 		MUser operator = MUser.get(getCtx(), getAD_User_ID());
 		log.fine("User=" + user + ", Operator=" + operator);
 		
-		boolean hash_password = MSysConfig.getBooleanValue("USER_PASSWORD_HASH", false);
+		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		
 		//	Do we need a password ?
 		if (Util.isEmpty(p_OldPassword))		//	Password required

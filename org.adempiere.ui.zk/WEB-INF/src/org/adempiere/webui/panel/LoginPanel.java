@@ -112,7 +112,7 @@ public class LoginPanel extends Window implements EventListener
     private LoginWindow wndLogin;
     private Checkbox chkRememberMe;
     private Checkbox chkSelectRole;
-    boolean email_login = MSysConfig.getBooleanValue("USE_EMAIL_FOR_LOGIN", false);
+    boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {

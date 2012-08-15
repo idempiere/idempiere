@@ -94,7 +94,7 @@ public class WFActivity extends CPanel
 	 */
 	private static final long serialVersionUID = 3900449055030897013L;
 
-	private static final int MAX_ACTIVITIES_IN_LIST = MSysConfig.getIntValue("MAX_ACTIVITIES_IN_LIST", 200, Env.getAD_Client_ID(Env.getCtx()));
+	private static final int MAX_ACTIVITIES_IN_LIST = MSysConfig.getIntValue(MSysConfig.MAX_ACTIVITIES_IN_LIST, 200, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * 	WF Activity

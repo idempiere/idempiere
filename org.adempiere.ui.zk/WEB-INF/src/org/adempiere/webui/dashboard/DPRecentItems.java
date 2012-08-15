@@ -182,7 +182,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			bxRecentItems.removeChild(comp);
 		}
 
-		int maxri = MSysConfig.getIntValue("RecentItems_MaxShown", 10, Env.getAD_Client_ID(Env.getCtx()));
+		int maxri = MSysConfig.getIntValue(MSysConfig.RecentItems_MaxShown, 10, Env.getAD_Client_ID(Env.getCtx()));
 		if (maxri <= 0)
 			return;
 

@@ -885,21 +885,21 @@ public class MClient extends X_AD_Client
 	private static final String CLIENT_ACCOUNTING_IMMEDIATE = "I";
 
 	public static boolean isClientAccounting() {
-		String ca = MSysConfig.getValue("CLIENT_ACCOUNTING",
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE) || ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE));
 	}
 
 	public static boolean isClientAccountingQueue() {
-		String ca = MSysConfig.getValue("CLIENT_ACCOUNTING",
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE);
 	}
 
 	public static boolean isClientAccountingImmediate() {
-		String ca = MSysConfig.getValue("CLIENT_ACCOUNTING",
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE);

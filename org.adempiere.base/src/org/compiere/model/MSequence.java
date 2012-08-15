@@ -175,7 +175,7 @@ public class MSequence extends X_AD_Sequence
 					// If maintaining official dictionary try to get the ID from http official server
 					if (adempiereSys) {
 
-						String isUseCentralizedID = MSysConfig.getValue("DICTIONARY_ID_USE_CENTRALIZED_ID", "Y"); // defaults to Y
+						String isUseCentralizedID = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, "Y"); // defaults to Y
 						if ( ( ! isUseCentralizedID.equals("N") ) && ( ! isExceptionCentralized(TableName) ) ) {
 							// get ID from http site
 							retValue = getNextOfficialID_HTTP(TableName);
@@ -204,7 +204,7 @@ public class MSequence extends X_AD_Sequence
 					// If not official dictionary try to get the ID from http custom server - if configured
 					if (queryProjectServer && ( ! adempiereSys ) && ( ! isExceptionCentralized(TableName) ) ) {
 
-						String isUseProjectCentralizedID = MSysConfig.getValue("PROJECT_ID_USE_CENTRALIZED_ID", "N"); // defaults to N
+						String isUseProjectCentralizedID = MSysConfig.getValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, "N"); // defaults to N
 						if (isUseProjectCentralizedID.equals("Y")) {
 							// get ID from http site
 							retValue = getNextProjectID_HTTP(TableName);
@@ -1037,7 +1037,7 @@ public class MSequence extends X_AD_Sequence
 	 */
 	public static boolean createTableSequence (Properties ctx, String TableName, String trxName)
 	{
-		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue("SYSTEM_NATIVE_SEQUENCE",false);
+		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
 
 		if(SYSTEM_NATIVE_SEQUENCE)
 		{
@@ -1511,12 +1511,12 @@ public class MSequence extends X_AD_Sequence
 	 */
 	public static synchronized int getNextOfficialID_HTTP (String TableName)
 	{
-		String website = MSysConfig.getValue("DICTIONARY_ID_WEBSITE"); // "http://developer.adempiere.com/cgi-bin/get_ID";
-		String prm_USER = MSysConfig.getValue("DICTIONARY_ID_USER");  // "globalqss";
-		String prm_PASSWORD = MSysConfig.getValue("DICTIONARY_ID_PASSWORD");  // "password_inseguro";
+		String website = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_WEBSITE); // "http://developer.adempiere.com/cgi-bin/get_ID";
+		String prm_USER = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USER);  // "globalqss";
+		String prm_PASSWORD = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_PASSWORD);  // "password_inseguro";
 		String prm_TABLE = TableName;
 		String prm_ALTKEY = "";  // TODO: generate alt-key based on key of table
-		String prm_COMMENT = MSysConfig.getValue("DICTIONARY_ID_COMMENTS");
+		String prm_COMMENT = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_COMMENTS);
 		String prm_PROJECT = new String("Adempiere");
 
 		return getNextID_HTTP(TableName, website, prm_USER,
@@ -1532,13 +1532,13 @@ public class MSequence extends X_AD_Sequence
 	 */
 	public static synchronized int getNextProjectID_HTTP (String TableName)
 	{
-		String website = MSysConfig.getValue("PROJECT_ID_WEBSITE"); // "http://developer.adempiere.com/cgi-bin/get_ID";
-		String prm_USER = MSysConfig.getValue("PROJECT_ID_USER");  // "globalqss";
-		String prm_PASSWORD = MSysConfig.getValue("PROJECT_ID_PASSWORD");  // "password_inseguro";
+		String website = MSysConfig.getValue(MSysConfig.PROJECT_ID_WEBSITE); // "http://developer.adempiere.com/cgi-bin/get_ID";
+		String prm_USER = MSysConfig.getValue(MSysConfig.PROJECT_ID_USER);  // "globalqss";
+		String prm_PASSWORD = MSysConfig.getValue(MSysConfig.PROJECT_ID_PASSWORD);  // "password_inseguro";
 		String prm_TABLE = TableName;
 		String prm_ALTKEY = "";  // TODO: generate alt-key based on key of table
-		String prm_COMMENT = MSysConfig.getValue("PROJECT_ID_COMMENTS");
-		String prm_PROJECT = MSysConfig.getValue("PROJECT_ID_PROJECT");
+		String prm_COMMENT = MSysConfig.getValue(MSysConfig.PROJECT_ID_COMMENTS);
+		String prm_PROJECT = MSysConfig.getValue(MSysConfig.PROJECT_ID_PROJECT);
 
 		return getNextID_HTTP(TableName, website, prm_USER,
 				prm_PASSWORD, prm_TABLE, prm_ALTKEY, prm_COMMENT, prm_PROJECT);

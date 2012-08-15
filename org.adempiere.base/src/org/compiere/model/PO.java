@@ -2828,7 +2828,7 @@ public abstract class PO
 			}
 
 			//	Change Log	- Only
-			String insertLog = MSysConfig.getValue("SYSTEM_INSERT_CHANGELOG", "Y", getAD_Client_ID());
+			String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
 			if (   session != null
 				&& m_IDs.length == 1
 				&& p_info.isAllowLogging(i)		//	logging allowed

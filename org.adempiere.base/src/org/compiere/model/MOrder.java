@@ -1325,10 +1325,10 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			if (   MDocType.DOCSUBTYPESO_POSOrder.equals(dt.getDocSubTypeSO())
 					&& PAYMENTRULE_Cash.equals(getPaymentRule())
-					&& !MSysConfig.getBooleanValue("CHECK_CREDIT_ON_CASH_POS_ORDER", true, getAD_Client_ID(), getAD_Org_ID())) {
+					&& !MSysConfig.getBooleanValue(MSysConfig.CHECK_CREDIT_ON_CASH_POS_ORDER, true, getAD_Client_ID(), getAD_Org_ID())) {
 				// ignore -- don't validate for Cash POS Orders depending on sysconfig parameter
 			} else if (MDocType.DOCSUBTYPESO_PrepayOrder.equals(dt.getDocSubTypeSO())
-					&& !MSysConfig.getBooleanValue("CHECK_CREDIT_ON_PREPAY_ORDER", true, getAD_Client_ID(), getAD_Org_ID())) {
+					&& !MSysConfig.getBooleanValue(MSysConfig.CHECK_CREDIT_ON_PREPAY_ORDER, true, getAD_Client_ID(), getAD_Org_ID())) {
 				// ignore -- don't validate Prepay Orders depending on sysconfig parameter
 			} else {
 				MBPartner bp = new MBPartner (getCtx(), getBill_BPartner_ID(), get_TrxName()); // bill bp is guaranteed on beforeSave
@@ -1785,7 +1785,7 @@ public class MOrder extends X_C_Order implements DocAction
 		log.info(toString());
 		StringBuffer info = new StringBuffer();
 		
-		boolean realTimePOS = MSysConfig.getBooleanValue("REAL_TIME_POS", false , getAD_Client_ID());
+		boolean realTimePOS = MSysConfig.getBooleanValue(MSysConfig.REAL_TIME_POS, false , getAD_Client_ID());
 		
 		//	Create SO Shipment - Force Shipment
 		MInOut shipment = null;

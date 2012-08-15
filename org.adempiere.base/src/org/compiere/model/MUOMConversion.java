@@ -702,7 +702,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 			return false;
 		}
 		//	Enforce Product UOM
-		if (MSysConfig.getBooleanValue("ProductUOMConversionUOMValidate", true))
+		if (MSysConfig.getBooleanValue(MSysConfig.ProductUOMConversionUOMValidate, true))
 		{
 			if (getM_Product_ID() != 0 
 				&& (newRecord || is_ValueChanged("M_Product_ID")))
@@ -718,7 +718,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		}
 
 		//	The Product UoM needs to be the smallest UoM - Multiplier must be < 0; Divider must be > 0
-		if (MSysConfig.getBooleanValue("ProductUOMConversionRateValidate", true))
+		if (MSysConfig.getBooleanValue(MSysConfig.ProductUOMConversionRateValidate, true))
 		{
 			if (getM_Product_ID() != 0 && getDivideRate().compareTo(Env.ONE) < 0)
 			{

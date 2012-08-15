@@ -817,7 +817,7 @@ public final class AMenu extends CFrame
 		
 		public void run()
 		{
-			int sleep = MSysConfig.getIntValue("MENU_INFOUPDATER_SLEEP_MS", 60000, Env.getAD_Client_ID(Env.getCtx()));
+			int sleep = MSysConfig.getIntValue(MSysConfig.MENU_INFOUPDATER_SLEEP_MS, 60000, Env.getAD_Client_ID(Env.getCtx()));
 			while(stop == false)
 			{
 				updateInfo();

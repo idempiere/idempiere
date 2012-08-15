@@ -564,7 +564,7 @@ public class WPayment extends Window
 		 *	Get Data from Grid
 		 */
 		m_AD_Client_ID = ((Integer)m_mTab.getValue("AD_Client_ID")).intValue();
-		m_Cash_As_Payment = MSysConfig.getBooleanValue("CASH_AS_PAYMENT",true, m_AD_Client_ID);
+		m_Cash_As_Payment = MSysConfig.getBooleanValue(MSysConfig.CASH_AS_PAYMENT,true, m_AD_Client_ID);
 		m_AD_Org_ID = ((Integer)m_mTab.getValue("AD_Org_ID")).intValue();
 		m_C_BPartner_ID = ((Integer)m_mTab.getValue("C_BPartner_ID")).intValue();
 		m_PaymentRule = (String)m_mTab.getValue("PaymentRule");

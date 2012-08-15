@@ -41,8 +41,6 @@ public class Document {
 		FontFactory.registerDirectories();
 	}
 	
-	private final static String PDF_FONT_DIR = "PDF_FONT_DIR";
-	
 	private static void writePDF(Pageable pageable, OutputStream output)
 	{
 		try {
@@ -58,7 +56,7 @@ public class Document {
             final DefaultFontMapper mapper = new DefaultFontMapper();     
             
             //Elaine 2009/02/17 - load additional font from directory set in PDF_FONT_DIR of System Configurator 
-            String pdfFontDir = MSysConfig.getValue(PDF_FONT_DIR, ""); 
+            String pdfFontDir = MSysConfig.getValue(MSysConfig.PDF_FONT_DIR, ""); 
             if(pdfFontDir != null && pdfFontDir.trim().length() > 0)
             {
             	pdfFontDir = pdfFontDir.trim();

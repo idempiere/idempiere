@@ -551,13 +551,13 @@ public abstract class Convert
 
 	private static void writeLogMigrationScript(Writer w, String statement) throws IOException
 	{
-		boolean isUseCentralizedID = "Y".equals(MSysConfig.getValue("DICTIONARY_ID_USE_CENTRALIZED_ID", "Y")); // defaults to Y
-		boolean isUseProjectCentralizedID = "Y".equals(MSysConfig.getValue("PROJECT_ID_USE_CENTRALIZED_ID", "N")); // defaults to N
+		boolean isUseCentralizedID = "Y".equals(MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, "Y")); // defaults to Y
+		boolean isUseProjectCentralizedID = "Y".equals(MSysConfig.getValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, "N")); // defaults to N
 		String prm_COMMENT;
 		if (!isUseCentralizedID && isUseProjectCentralizedID)
-			prm_COMMENT = MSysConfig.getValue("PROJECT_ID_COMMENTS");
+			prm_COMMENT = MSysConfig.getValue(MSysConfig.PROJECT_ID_COMMENTS);
 		else
-			prm_COMMENT = MSysConfig.getValue("DICTIONARY_ID_COMMENTS");
+			prm_COMMENT = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_COMMENTS);
 		// log time and date
 		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.DateTime);
 		String dateTimeText = format.format(new Timestamp(System.currentTimeMillis()));

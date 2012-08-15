@@ -71,7 +71,7 @@ public class FolderBrowser extends Window implements EventListener
 	public FolderBrowser(String rootPath, boolean browseForFolder)
 	{
 		if (Util.isEmpty(rootPath)) {
-			rootPath = MSysConfig.getValue("ZK_ROOT_FOLDER_BROWSER", Ini.getAdempiereHome());
+			rootPath = MSysConfig.getValue(MSysConfig.ZK_ROOT_FOLDER_BROWSER, Ini.getAdempiereHome());
 		}
 		root = new File(rootPath);
 

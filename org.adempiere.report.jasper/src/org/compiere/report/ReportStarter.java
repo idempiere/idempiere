@@ -106,7 +106,6 @@ import org.compiere.utils.DigestOfFile;
 public class ReportStarter implements ProcessCall, ClientProcess
 {
 	private static final int DEFAULT_SWAP_MAX_PAGES = 100;
-	private static final String JASPER_SWAP_MAX_PAGES = "JASPER_REPORT_SWAP_MAX_PAGES";
 	/** Logger */
 	private static CLogger log = CLogger.getCLogger(ReportStarter.class);
 	private static File REPORT_HOME = null;
@@ -519,7 +518,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
             Connection conn = null;
             JRSwapFileVirtualizer virtualizer = null;
-            int maxPages = MSysConfig.getIntValue(JASPER_SWAP_MAX_PAGES, DEFAULT_SWAP_MAX_PAGES);
+            int maxPages = MSysConfig.getIntValue(MSysConfig.JASPER_SWAP_MAX_PAGES, DEFAULT_SWAP_MAX_PAGES);
             try {
             	conn = getConnection();
 

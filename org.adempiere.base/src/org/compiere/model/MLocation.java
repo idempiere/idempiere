@@ -52,10 +52,10 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	private static final long serialVersionUID = 8332515185354248079L;
 
 	// http://jira.idempiere.com/browse/IDEMPIERE-147
-	public static String LOCATION_MAPS_URL_PREFIX     = MSysConfig.getValue("LOCATION_MAPS_URL_PREFIX");
-	public static String LOCATION_MAPS_ROUTE_PREFIX   = MSysConfig.getValue("LOCATION_MAPS_ROUTE_PREFIX");
-	public static String LOCATION_MAPS_SOURCE_ADDRESS      = MSysConfig.getValue("LOCATION_MAPS_SOURCE_ADDRESS");
-	public static String LOCATION_MAPS_DESTINATION_ADDRESS = MSysConfig.getValue("LOCATION_MAPS_DESTINATION_ADDRESS");
+	public static String LOCATION_MAPS_URL_PREFIX     = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_URL_PREFIX);
+	public static String LOCATION_MAPS_ROUTE_PREFIX   = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_ROUTE_PREFIX);
+	public static String LOCATION_MAPS_SOURCE_ADDRESS      = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_SOURCE_ADDRESS);
+	public static String LOCATION_MAPS_DESTINATION_ADDRESS = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_DESTINATION_ADDRESS);
 	
 	/**
 	 * 	Get Location from Cache

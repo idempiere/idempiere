@@ -109,7 +109,7 @@ public class Doc_Payment extends Doc
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 		//	Cash Transfer
-		if ("X".equals(m_TenderType) && !MSysConfig.getBooleanValue("CASH_AS_PAYMENT", true , getAD_Client_ID()))
+		if ("X".equals(m_TenderType) && !MSysConfig.getBooleanValue(MSysConfig.CASH_AS_PAYMENT, true , getAD_Client_ID()))
 		{
 			ArrayList<Fact> facts = new ArrayList<Fact>();
 			facts.add(fact);

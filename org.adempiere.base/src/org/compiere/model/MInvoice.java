@@ -2222,7 +2222,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 		//	Deep Copy
 		MInvoice reversal = null;
-		if (MSysConfig.getBooleanValue("Invoice_ReverseUseNewNumber", true, getAD_Client_ID()))
+		if (MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID()))
 			reversal = copyFrom (this, getDateInvoiced(), getDateAcct(), getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true);
 		else 
 			reversal = copyFrom (this, getDateInvoiced(), getDateAcct(), getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true, getDocumentNo()+"^");
