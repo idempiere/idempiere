@@ -1224,10 +1224,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 	private void updateToolbar()
 	{
-		toolbar.enableChanges(curTab.isReadOnly());
-		toolbar.enabledNew(curTab.isInsertRecord());
-		toolbar.enableCopy(curTab.isInsertRecord());
-
 		toolbar.enableTabNavigation(curTabIndex > 0,
 		        curTabIndex < (adTab.getTabCount() - 1));
 
@@ -1345,11 +1341,9 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         {
             insertRecord = curTab.isInsertRecord();
         }
-        toolbar.enabledNew(!changed && insertRecord && !curTab.isSortTab());
-        toolbar.enableCopy(!changed && insertRecord && !curTab.isSortTab());
+        toolbar.enableNew(!changed && insertRecord && !curTab.isSortTab());
         toolbar.enableRefresh(!changed);
         toolbar.enableDelete(!changed && !readOnly && !curTab.isSortTab());
-        toolbar.enableDeleteSelection(!changed && !readOnly && !curTab.isSortTab());
         //
         if (readOnly && curTab.isAlwaysUpdateField())
         {
@@ -1378,14 +1372,12 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         }
 
         toolbar.enableSave(changed && !readOnly);
-        toolbar.enableSaveAndCreate(changed && !readOnly);
         //
         //  No Rows
         if (e.getTotalRows() == 0 && insertRecord)
         {
-            toolbar.enabledNew(true);
+            toolbar.enableNew(true);
             toolbar.enableDelete(false);
-            toolbar.enableDeleteSelection(false);
         }
 
         //  History (on first Tab only)
@@ -1548,9 +1540,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			        if (newRecord)
 			        {
 			            curTabpanel.dynamicDisplay(0);
-			            toolbar.enableChanges(false);
+			            toolbar.enableNew(false);
 			            toolbar.enableDelete(false);
-			    		toolbar.enableDeleteSelection(false);
 			            toolbar.enableNavigation(false);
 			            toolbar.enableTabNavigation(false);
 			            toolbar.enableIgnore(true);
@@ -1583,9 +1574,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         if (newRecord)
         {
             curTabpanel.dynamicDisplay(0);
-            toolbar.enableChanges(false);
+            toolbar.enableNew(false);
             toolbar.enableDelete(false);
-            toolbar.enableDeleteSelection(false); // Elaine 2008/12/02
             toolbar.enableNavigation(false);
             toolbar.enableTabNavigation(false);
             toolbar.enableIgnore(true);
@@ -1719,7 +1709,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     		if (!onNavigationEvent)
     		{
 	    		toolbar.enableSave(false);	//	set explicitly
-	    		toolbar.enableSaveAndCreate(false);
 	    		toolbar.enableIgnore(false);
     		}
     		if (callback != null)

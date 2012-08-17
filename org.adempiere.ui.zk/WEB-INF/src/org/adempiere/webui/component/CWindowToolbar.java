@@ -54,12 +54,12 @@ import org.zkoss.zul.Space;
  */
 public class CWindowToolbar extends FToolbar implements EventListener<Event>
 {
-	private static final String BTNPREFIX = "Btn";
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5233006056333191551L;
+	private static final long serialVersionUID = -8640626174604214333L;
+
+	private static final String BTNPREFIX = "Btn";
 
 	private static final String TOOLBAR_BUTTON_STYLE = "background-color: transparent; display:inline-block; margin-left: 1px; margin-right: 1px; width: 26px; height: 24px;";
 
@@ -440,16 +440,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
         this.btnNext.setDisabled(!enabled);
     }
 
-    public void enabledNew(boolean enabled)
-    {
-        this.btnNew.setDisabled(!enabled);
-    }
-
-   /* public void enableEdit(boolean enabled)
-    {
-        this.btnEdit.setEnabled(enabled);
-    }*/
-
     public void enableRefresh(boolean enabled)
     {
         this.btnRefresh.setDisabled(!enabled);
@@ -458,23 +448,12 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableSave(boolean enabled)
     {
         this.btnSave.setDisabled(!enabled);
+    	this.btnSaveAndCreate.setDisabled(!enabled);
     }
 
     public boolean isSaveEnable() {
     	return !btnSave.isDisabled();
     }
-
-    // Elaine 2009/03/02 - Save & Create
-    public void enableSaveAndCreate(boolean enabled)
-    {
-    	this.btnSaveAndCreate.setDisabled(!enabled);
-    }
-
-    public boolean isSaveAndCreateEnable()
-    {
-    	return !btnSaveAndCreate.isDisabled();
-    }
-    //
 
 //    public void enableExit(boolean enabled)
 //    {
@@ -484,19 +463,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableDelete(boolean enabled)
     {
         this.btnDelete.setDisabled(!enabled);
-    }
-
-    // Elaine 2008/12/01
-    public void enableDeleteSelection(boolean enabled)
-    {
         this.btnDeleteSelection.setDisabled(!enabled);
-    }
-    //
-
-    public void enableChanges(boolean enabled)
-    {
-        this.btnNew.setDisabled(!enabled);
-        this.btnCopy.setDisabled(!enabled);
     }
 
     public void enableIgnore(boolean enabled)
@@ -507,6 +474,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableNew(boolean enabled)
     {
         this.btnNew.setDisabled(!enabled);
+        this.btnCopy.setDisabled(!enabled);
     }
 
     public void enableAttachment(boolean enabled)
@@ -527,11 +495,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableReport(boolean enabled)
     {
     	this.btnReport.setDisabled(!enabled);
-    }
-
-    public void enableCopy(boolean enabled)
-    {
-    	this.btnCopy.setDisabled(!enabled);
     }
 
     public void enableFind(boolean enabled)
