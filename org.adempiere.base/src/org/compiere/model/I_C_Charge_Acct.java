@@ -31,7 +31,7 @@ public interface I_C_Charge_Acct
     public static final String Table_Name = "C_Charge_Acct";
 
     /** AD_Table_ID=396 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 396;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,16 @@ public interface I_C_Charge_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+
+    /** Column name C_Charge_Acct_UU */
+    public static final String COLUMNNAME_C_Charge_Acct_UU = "C_Charge_Acct_UU";
+
+	/** Set C_Charge_Acct_UU	  */
+	public void setC_Charge_Acct_UU (String C_Charge_Acct_UU);
+
+	/** Get C_Charge_Acct_UU	  */
+	public String getC_Charge_Acct_UU();
 
     /** Column name C_Charge_ID */
     public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
@@ -90,37 +99,22 @@ public interface I_C_Charge_Acct
 	  */
 	public int getC_Charge_ID();
 
-	public I_C_Charge getC_Charge() throws RuntimeException;
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name Ch_Expense_Acct */
     public static final String COLUMNNAME_Ch_Expense_Acct = "Ch_Expense_Acct";
 
-	/** Set Charge Expense.
-	  * Charge Expense Account
+	/** Set Charge Account.
+	  * Charge Account
 	  */
 	public void setCh_Expense_Acct (int Ch_Expense_Acct);
 
-	/** Get Charge Expense.
-	  * Charge Expense Account
+	/** Get Charge Account.
+	  * Charge Account
 	  */
 	public int getCh_Expense_Acct();
 
 	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException;
-
-    /** Column name Ch_Revenue_Acct */
-    public static final String COLUMNNAME_Ch_Revenue_Acct = "Ch_Revenue_Acct";
-
-	/** Set Charge Revenue.
-	  * Charge Revenue Account
-	  */
-	public void setCh_Revenue_Acct (int Ch_Revenue_Acct);
-
-	/** Get Charge Revenue.
-	  * Charge Revenue Account
-	  */
-	public int getCh_Revenue_Acct();
-
-	public I_C_ValidCombination getCh_Revenue_A() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

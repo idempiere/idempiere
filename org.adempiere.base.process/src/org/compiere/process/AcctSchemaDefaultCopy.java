@@ -484,7 +484,6 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		{
 			sql = "UPDATE C_Charge_Acct a "
 				+ "SET Ch_Expense_Acct=" + acct.getCh_Expense_Acct()
-				+ ", Ch_Revenue_Acct=" + acct.getCh_Revenue_Acct()
 				+ ", Updated=SysDate, UpdatedBy=0 "
 				+ "WHERE a.C_AcctSchema_ID=" + p_C_AcctSchema_ID
 				+ " AND EXISTS (SELECT * FROM C_Charge_Acct x "
@@ -497,10 +496,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		sql = "INSERT INTO C_Charge_Acct "
 			+ "(C_Charge_ID, C_AcctSchema_ID,"
 			+ " AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,"
-			+ " Ch_Expense_Acct, Ch_Revenue_Acct) "
+			+ " Ch_Expense_Acct) "
 			+ "SELECT x.C_Charge_ID, acct.C_AcctSchema_ID,"
 			+ " x.AD_Client_ID, x.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,"
-			+ " acct.Ch_Expense_Acct, acct.Ch_Revenue_Acct "
+			+ " acct.Ch_Expense_Acct "
 			+ "FROM C_Charge x"
 			+ " INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) "
 			+ "WHERE acct.C_AcctSchema_ID=" + p_C_AcctSchema_ID

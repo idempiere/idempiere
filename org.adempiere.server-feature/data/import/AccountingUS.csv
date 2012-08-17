@@ -333,7 +333,7 @@
 79400,"Cash book expense","Default other expense for petty cash transactions","Expense",,"Yes","No","CB_EXPENSE_ACCT",79,,,,,,,,,,
 79500,"Cash book receipts","Default other revenue for petty cash transactions","Revenue",,"Yes","No","CB_RECEIPT_ACCT",79,,,,,,,,,,
 79600,"Charge expense","Default other expense","Expense",,"Yes","No","CH_EXPENSE_ACCT",79,,,,,,,,,,
-79700,"Charge revenue","Default other revenue","Revenue",,"Yes","No","CH_REVENUE_ACCT",79,,,,,,,,,,
+79700,"Charge revenue","Default other revenue","Revenue",,"Yes","No",,79,,,,,,,,,,
 ,,,,,,,,,,,,,"79_","Total Operating Expenses",,,,
 ,,,,,,,,,,,,,"79__","Operating Income",,,,
 80,"Other Income",,"Revenue",,,"Yes",,,,,,,80,"Other Income",,,,

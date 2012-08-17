@@ -553,7 +553,7 @@ public final class MSetup
 						sqlCmd.append(getAD_Org_ID()).append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
 						no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
 						if (no != 1)
-							log.log(Level.SEVERE, "Default Org in AcctSchamaElement NOT updated");
+							log.log(Level.SEVERE, "Default Org in AcctSchemaElement NOT updated");
 					}
 					if (ElementType.equals("AC"))
 					{
@@ -562,7 +562,7 @@ public final class MSetup
 						sqlCmd.append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
 						no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
 						if (no != 1)
-							log.log(Level.SEVERE, "Default Account in AcctSchamaElement NOT updated");
+							log.log(Level.SEVERE, "Default Account in AcctSchemaElement NOT updated");
 					}
 				}
 			}
@@ -777,6 +777,8 @@ public final class MSetup
 		
 		MColumn[] cols = table.getColumns(false);
 		for (MColumn c : cols) {
+			if (!c.isActive())
+				continue;
 			String columnName = c.getColumnName();
 			if (c.isStandardColumn()) {
 			}

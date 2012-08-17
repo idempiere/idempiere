@@ -39,25 +39,33 @@ public class MCharge extends X_C_Charge
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 630271473830196435L;
-
+	private static final long serialVersionUID = 8246481667219415012L;
 
 	/**
 	 *  Get Charge Account
 	 *  @param C_Charge_ID charge
 	 *  @param as account schema
-	 *  @param amount amount for expense(+)/revenue(-)
+	 *  @param amount amount NOT USED
 	 *  @return Charge Account or null
+	 *  @deprecated use getAccount(Charge, as) instead
 	 */
 	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as, BigDecimal amount)
+	{
+		return getAccount (C_Charge_ID, as);
+	}   //  getAccount
+
+	/**
+	 *  Get Charge Account
+	 *  @param C_Charge_ID charge
+	 *  @param as account schema
+	 *  @return Charge Account or null
+	 */
+	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as)
 	{
 		if (C_Charge_ID == 0 || as == null)
 			return null;
 
-		String acctName = X_C_Charge_Acct.COLUMNNAME_Ch_Expense_Acct;		//  Expense (positive amt)
-		if (amount != null && amount.signum() < 0)
-			acctName = X_C_Charge_Acct.COLUMNNAME_Ch_Revenue_Acct;			//  Revenue (negative amt)
-		String sql = "SELECT "+acctName+" FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?";
+		String sql = "SELECT Ch_Expense_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?";
 		int Account_ID = DB.getSQLValueEx(null, sql, C_Charge_ID, as.get_ID());
 		//	No account
 		if (Account_ID <= 0)

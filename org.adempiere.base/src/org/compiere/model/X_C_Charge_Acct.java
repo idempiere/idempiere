@@ -29,7 +29,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120817L;
 
     /** Standard Constructor */
     public X_C_Charge_Acct (Properties ctx, int C_Charge_Acct_ID, String trxName)
@@ -40,7 +40,6 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 			setC_AcctSchema_ID (0);
 			setC_Charge_ID (0);
 			setCh_Expense_Acct (0);
-			setCh_Revenue_Acct (0);
         } */
     }
 
@@ -72,9 +71,9 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
       return sb.toString();
     }
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
     {
-		return (I_C_AcctSchema)MTable.get(getCtx(), I_C_AcctSchema.Table_Name)
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
 			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
 
 	/** Set Accounting Schema.
@@ -100,9 +99,23 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_Charge getC_Charge() throws RuntimeException
+	/** Set C_Charge_Acct_UU.
+		@param C_Charge_Acct_UU C_Charge_Acct_UU	  */
+	public void setC_Charge_Acct_UU (String C_Charge_Acct_UU)
+	{
+		set_Value (COLUMNNAME_C_Charge_Acct_UU, C_Charge_Acct_UU);
+	}
+
+	/** Get C_Charge_Acct_UU.
+		@return C_Charge_Acct_UU	  */
+	public String getC_Charge_Acct_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Charge_Acct_UU);
+	}
+
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
     {
-		return (I_C_Charge)MTable.get(getCtx(), I_C_Charge.Table_Name)
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
 			.getPO(getC_Charge_ID(), get_TrxName());	}
 
 	/** Set Charge.
@@ -133,46 +146,21 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
 			.getPO(getCh_Expense_Acct(), get_TrxName());	}
 
-	/** Set Charge Expense.
+	/** Set Charge Account.
 		@param Ch_Expense_Acct 
-		Charge Expense Account
+		Charge Account
 	  */
 	public void setCh_Expense_Acct (int Ch_Expense_Acct)
 	{
 		set_Value (COLUMNNAME_Ch_Expense_Acct, Integer.valueOf(Ch_Expense_Acct));
 	}
 
-	/** Get Charge Expense.
-		@return Charge Expense Account
+	/** Get Charge Account.
+		@return Charge Account
 	  */
 	public int getCh_Expense_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Ch_Expense_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCh_Revenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCh_Revenue_Acct(), get_TrxName());	}
-
-	/** Set Charge Revenue.
-		@param Ch_Revenue_Acct 
-		Charge Revenue Account
-	  */
-	public void setCh_Revenue_Acct (int Ch_Revenue_Acct)
-	{
-		set_Value (COLUMNNAME_Ch_Revenue_Acct, Integer.valueOf(Ch_Revenue_Acct));
-	}
-
-	/** Get Charge Revenue.
-		@return Charge Revenue Account
-	  */
-	public int getCh_Revenue_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Ch_Revenue_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

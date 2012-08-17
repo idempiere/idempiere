@@ -297,7 +297,6 @@ public class Charge
     {
         StringBuffer sql = new StringBuffer("UPDATE C_Charge_Acct ");
         sql.append("SET CH_Expense_Acct=").append(account.getC_ValidCombination_ID());
-        sql.append(", CH_Revenue_Acct=").append(account.getC_ValidCombination_ID());
         sql.append(" WHERE C_Charge_ID=").append(charge.getC_Charge_ID());
         sql.append(" AND C_AcctSchema_ID=").append(m_C_AcctSchema_ID);
 

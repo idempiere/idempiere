@@ -594,14 +594,8 @@ public class CreateInvoicedAsset extends SvrProcess
 		int invoiceAcct =0;
 		if (M_Product_ID == 0 && C_Charge_ID != 0)
 		{	
-			if(lineAmt.signum() > 0){
-				String sqlb = "SELECT CH_Expense_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? and C_AcctSchema_ID=?";
-				invoiceAcct = DB.getSQLValue(get_TrxName(),sqlb,C_Charge_ID,C_AcctSchema_ID);
-			}
-			else{
-				String sqlb = "SELECT CH_Revenue_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? and C_AcctSchema_ID=?";
-				invoiceAcct = DB.getSQLValue(get_TrxName(),sqlb,C_Charge_ID,C_AcctSchema_ID);
-			}									
+			String sqlb = "SELECT CH_Expense_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? and C_AcctSchema_ID=?";
+			invoiceAcct = DB.getSQLValue(get_TrxName(),sqlb,C_Charge_ID,C_AcctSchema_ID);
 		}
 		
 		else if(M_Product_ID != 0){

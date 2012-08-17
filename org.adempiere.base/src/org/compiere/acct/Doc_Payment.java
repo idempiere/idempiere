@@ -127,7 +127,7 @@ public class Doc_Payment extends Doc
 			//
 			MAccount acct = null;
 			if (getC_Charge_ID() != 0)
-				acct = MCharge.getAccount(getC_Charge_ID(), as, getAmount());
+				acct = MCharge.getAccount(getC_Charge_ID(), as);
 			else if (m_Prepayment)
 				acct = getAccount(Doc.ACCTTYPE_C_Prepayment, as);
 			else
@@ -143,7 +143,7 @@ public class Doc_Payment extends Doc
 		{
 			MAccount acct = null;
 			if (getC_Charge_ID() != 0)
-				acct = MCharge.getAccount(getC_Charge_ID(), as, getAmount());
+				acct = MCharge.getAccount(getC_Charge_ID(), as);
 			else if (m_Prepayment)
 				acct = getAccount(Doc.ACCTTYPE_V_Prepayment, as);
 			else
