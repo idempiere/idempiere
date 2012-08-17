@@ -41,6 +41,7 @@ public class WFileDirectoryEditor extends WEditor
 		super(new FilenameBox(), gridField);
 		getComponent().setButtonImage("/images/Open16.png");
 		getComponent().addEventListener(Events.ON_CLICK, this);
+		getComponent().getButton().setUpload("false");
 	}
 
 	@Override

@@ -1877,19 +1877,10 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         }
 
 		//show table with deletion rows -> value, name...
-		final Window messagePanel = new Window() {
-			private static final long serialVersionUID = 3954976581821972619L;
-
-			@Override
-			public void detach() {
-				super.detach();
-				focusToActivePanel();
-			}
-		};
+		final Window messagePanel = new Window();
 		messagePanel.setBorder("normal");
 		messagePanel.setWidth("600px");
 		messagePanel.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
-        messagePanel.setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
         messagePanel.setClosable(true);
         messagePanel.setSizable(true);
 
@@ -2062,6 +2053,12 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		hbox.setHflex("1");
 
 		messagePanel.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		messagePanel.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				focusToActivePanel();
+			}
+		});
 		AEnv.showWindow(messagePanel);		
 	}
 	//

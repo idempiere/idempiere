@@ -87,7 +87,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 			para.setWidth("500px");
 			para.setVisible(true);
 			para.setPosition("center");
-			para.setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
+			para.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 			AEnv.showWindow(para);
 		}
 	}	//	execute

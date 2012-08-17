@@ -254,7 +254,8 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		bLoad.setImage("/images/Import24.png");
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
-		bLoad.addEventListener(Events.ON_CLICK, this);
+		bLoad.setUpload("true");
+		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
 		bDelete.setImage("/images/Delete24.png");
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
@@ -455,7 +456,13 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		//	Save and Close
 
-		if (e.getTarget() == bOk)
+		if (e instanceof UploadEvent)
+		{
+			preview.setVisible(false);
+			UploadEvent ue = (UploadEvent) e;
+			processUploadMedia(ue.getMedia());
+		}
+		else if (e.getTarget() == bOk)
 		{
 			String newText = text.getText();
 
@@ -513,11 +520,6 @@ public class WAttachment extends Window implements EventListener<Event>
 			autoPreview (cbContent.getSelectedIndex(), false);
 		}
 
-		//	Load Attachment
-
-		else if (e.getTarget() == bLoad)
-			loadFile();
-
 		//	Open Attachment
 
 		else if (e.getTarget() == bSave)
@@ -532,21 +534,6 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 
 	}	//	onEvent
-
-	/**************************************************************************
-	 *	Load file for attachment
-	 */
-
-	private void loadFile()
-	{
-		log.info("");
-
-		preview.setVisible(false);
-
-		Media media = Fileupload.get(true);
-		if (AdempiereWebUI.isEventThreadEnabled())
-			processUploadMedia(media);
-	}
 
 	private void processUploadMedia(Media media) {
 		if (media != null)

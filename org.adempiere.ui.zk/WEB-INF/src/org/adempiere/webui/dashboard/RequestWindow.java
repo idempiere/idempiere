@@ -76,7 +76,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		this.parent = parent;
 		
 		setTitle("Event");
-		setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
+		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		setWidth("400px");
 		setHeight("500px");
 		this.setBorder("normal");

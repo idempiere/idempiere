@@ -12,6 +12,9 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+
 /**
  * 
  * @author Low Heng Sin
@@ -27,6 +30,7 @@ public class FilenameBox extends EditorBox
 	public FilenameBox()
     {
         super();
+        btn.setUpload("true");
     }
 
 	/**
@@ -36,5 +40,18 @@ public class FilenameBox extends EditorBox
     {
         super();
         setText(fileName);
+        btn.setUpload("true");
     }
+
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.component.EditorBox#addEventListener(java.lang.String, org.zkoss.zk.ui.event.EventListener)
+	 */
+	@Override
+	public boolean addEventListener(String evtnm, EventListener listener) {
+		if (Events.ON_UPLOAD.equals(evtnm)) {
+			return btn.addEventListener(evtnm, listener);
+		} else {
+			return super.addEventListener(evtnm, listener);
+		}
+	}
 }

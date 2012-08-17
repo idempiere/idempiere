@@ -21,17 +21,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zul.Fileupload;
 
 /**
  *
@@ -50,7 +47,8 @@ public class WFilenameEditor extends WEditor
 	{
 		super(new FilenameBox(), gridField);
 		getComponent().setButtonImage("/images/Open16.png");
-		getComponent().addEventListener(Events.ON_CLICK, this);
+		getComponent().addEventListener(Events.ON_UPLOAD, this);
+		getComponent().getButton().setUpload("true,native");
 	}
 
 	@Override
@@ -105,11 +103,6 @@ public class WFilenameEditor extends WEditor
 			newValue = getComponent().getText();
 
 		}
-		else if (Events.ON_CLICK.equals(event.getName()))
-		{
-			cmd_file();
-			newValue = getComponent().getText();
-		}
 		else if (event instanceof UploadEvent)
 		{
 			UploadEvent ue = (UploadEvent) event;
@@ -121,6 +114,10 @@ public class WFilenameEditor extends WEditor
 			return;
 		}
 
+		processNewValue(newValue);
+	}
+
+	protected void processNewValue(String newValue) {
 		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
     	    return;
     	}
@@ -130,29 +127,6 @@ public class WFilenameEditor extends WEditor
 		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 		fireValueChange(changeEvent);
 	}
-
-	private Component parent = null;
-	
-	/**
-	 *  Load file
-	 */
-	private void cmd_file()
-	{
-		if (parent == null || getComponent().getParent() != parent)
-		{
-			if (parent != null)
-			{
-				parent.removeEventListener(Events.ON_UPLOAD, this);
-			}
-			parent = getComponent().getParent();
-			parent.addEventListener(Events.ON_UPLOAD, this);
-		}
-		
-		//  Show File Open Dialog
-		Media media = Fileupload.get(true);
-		if (AdempiereWebUI.isEventThreadEnabled())
-			processUploadMedia(media);
-	}   //  cmd_file
 
 	private void processUploadMedia(Media file) {
 		if (file == null)
@@ -196,6 +170,8 @@ public class WFilenameEditor extends WEditor
 		}
 
 		getComponent().setText(fileName);
+		
+		processNewValue(getComponent().getText());
 	}
 
 	public String[] getEvents()

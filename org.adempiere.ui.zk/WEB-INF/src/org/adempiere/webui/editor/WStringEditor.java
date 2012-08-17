@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
@@ -32,6 +33,7 @@ import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
 import org.compiere.util.DisplayType;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
@@ -221,17 +223,23 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		}
 		else if (WEditorPopupMenu.EDITOR_EVENT.equals(evt.getContextEvent()))
 		{
-			WTextEditorDialog dialog = new WTextEditorDialog(this.getColumnName(), getDisplay(),
+			final WTextEditorDialog dialog = new WTextEditorDialog(this.getColumnName(), getDisplay(),
 					isReadWrite(), gridField.getFieldLength());
-			dialog.setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
+			dialog.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					if (!dialog.isCancelled()) {
+						getComponent().setText(dialog.getText());
+						String newText = getComponent().getValue();
+				        ValueChangeEvent changeEvent = new ValueChangeEvent(WStringEditor.this, WStringEditor.this.getColumnName(), oldValue, newText);
+				        WStringEditor.super.fireValueChange(changeEvent);
+				        oldValue = newText;
+					}
+				}
+			});
 			SessionManager.getAppDesktop().showWindow(dialog);
-			if (!dialog.isCancelled()) {
-				getComponent().setText(dialog.getText());
-				String newText = getComponent().getValue();
-		        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newText);
-		        super.fireValueChange(changeEvent);
-		        oldValue = newText;
-			}
+			
 		}
 		else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{
