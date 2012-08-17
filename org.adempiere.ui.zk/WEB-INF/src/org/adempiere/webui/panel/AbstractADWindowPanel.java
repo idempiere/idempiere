@@ -1763,6 +1763,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			showLastError();
 			if (callback != null)
 				callback.onCallback(false);
+			return;
 		} else if (!onSaveEvent && !navigationEvent) //need manual refresh
 		{
 			curTab.setCurrentRow(curTab.getCurrentRow());
