@@ -36,6 +36,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Secure;
 import org.compiere.util.SecureEngine;
@@ -173,80 +174,62 @@ public class MUser extends X_AD_User
 			return null;
 		}
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
+		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
 		MUser retValue = null;
-		if (!hash_password)
-		{
-			int AD_Client_ID = Env.getAD_Client_ID(ctx);
-
-
-			String sql = "SELECT * FROM AD_User "
-					+ "WHERE COALESCE(LDAPUser, Name)=? "  // #1
-					+ " AND ((Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " // #2 
-					+    "OR (Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))" // #3
-					+ " AND IsActive='Y' AND AD_Client_ID=?" // #4
-					;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement (sql, null);
-				pstmt.setString (1, name);
-				pstmt.setString (2, password);
-				pstmt.setString (3, SecureEngine.encrypt(password));
-				pstmt.setInt(4, AD_Client_ID);
-				rs = pstmt.executeQuery ();
-				if (rs.next ())
-				{
-					retValue = new MUser (ctx, rs, null);
-					if (rs.next())
-						s_log.warning ("More then one user with Name/Password = " + name);
-				}
-				else
-					s_log.fine("No record");
+		
+		StringBuffer where = new StringBuffer("Password IS NOT NULL AND ");
+		if (email_login)
+			where.append("EMail=?");
+		else
+			where.append("COALESCE(LDAPUser,Name)=?");
+		where.append(" AND")
+				.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
+				.append("         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)")
+				.append("         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND ")
+				.append(" EXISTS (SELECT * FROM AD_Client c")
+				.append("         WHERE c.AD_Client_ID=AD_User.AD_Client_ID")
+				.append("         AND c.IsActive='Y') AND ")
+				.append(" AD_User.IsActive='Y'");
+		
+		List<MUser> users = new Query(ctx, MUser.Table_Name, where.toString(), null)
+			.setParameters(name)
+			.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+			.list();
+		
+		if (users.size() == 0) {
+			s_log.saveError("UserPwdError", name, false);
+			return null;
+		}
+		
+		for (MUser user : users) {
+			if (clientsValidated.contains(user.getAD_Client_ID())) {
+				s_log.severe("Two users with password with the same name/email combination on same tenant: " + name);
+				return null;
 			}
-			catch (Exception e)
-			{
-				s_log.log(Level.SEVERE, sql, e);
+			
+			clientsValidated.add(user.getAD_Client_ID());
+			boolean valid = false;
+			if (hash_password) {
+				String hash = user.getPassword();
+				String salt = user.getSalt();
+				// always do calculation to confuse timing based attacks
+				if ( hash == null )
+					hash = "0000000000000000";
+				if ( salt == null )
+					salt = "0000000000000000";				
+				valid = user.authenticateHash(password);
+			} else {
+				// password not hashed
+				valid = user.getPassword().equals(password);
 			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-		} else {
-			String where = " COALESCE(LDAPUser,Name) = ? AND" +
-					" EXISTS (SELECT * FROM AD_User_Roles ur" +
-					"         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)" +
-					"         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND " +
-					" EXISTS (SELECT * FROM AD_Client c" +
-					"         WHERE c.AD_Client_ID=AD_User.AD_Client_ID" +
-					"         AND c.IsActive='Y') AND " +
-					" AD_User.IsActive='Y'";
-
-			MUser user = MTable.get(ctx, MUser.Table_ID).createQuery( where, null).setParameters(name).firstOnly();   // throws error if username collision occurs
-
-			String hash = null;
-			String salt = null;
-
-			if (user != null )
-			{
-				hash = user.getPassword();
-				salt = user.getSalt();
-			}
-
-			// always do calculation to confuse timing based attacks
-			if ( user == null )
-				user = MUser.get(ctx, 0);
-			if ( hash == null )
-				hash = "0000000000000000";
-			if ( salt == null )
-				salt = "0000000000000000";
-
-			if ( user.authenticateHash(password) )
-			{
+			
+			if (valid){
 				retValue=user;
 			}
-		}
+		}	
+	
 		 return retValue;
 	}	//	get
 	

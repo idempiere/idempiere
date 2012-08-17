@@ -275,22 +275,22 @@ public final class ALogin extends CDialog
 		//	DefaultTab
 		defaultPanel.setLayout(defaultPanelLayout);
 		//
+		clientLabel.setText("Client");
+		clientLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		clientLabel.setLabelFor(clientCombo);
+		clientCombo.addActionListener(this);
+		defaultPanel.add(clientLabel,       new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
+			defaultPanel.add(clientCombo,        new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
+				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
 		roleLabel.setText("Role");
 		roleLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		roleLabel.setLabelFor(roleCombo);
 		roleCombo.addActionListener(this);
-		defaultPanel.add(roleLabel,        new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
-			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));
-		defaultPanel.add(roleCombo,        new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
-		clientLabel.setText("Client");
-		clientLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		clientLabel.setLabelFor(clientCombo);
-		defaultPanel.add(clientLabel,       new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
-			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 12, 5, 5), 0, 0));
-		clientCombo.addActionListener(this);
-		defaultPanel.add(clientCombo,        new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 12), 0, 0));
+		defaultPanel.add(roleLabel,        new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 12, 5, 5), 0, 0));
+			defaultPanel.add(roleCombo,        new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0
+				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 12), 0, 0));	
 		orgLabel.setText("Organization");
 		orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		orgLabel.setLabelFor(orgCombo);
@@ -500,10 +500,10 @@ public final class ALogin extends CDialog
 		else if (e.getSource() == languageCombo)
 			languageComboChanged();
 		//
-		else if (e.getSource() == roleCombo)
-			roleComboChanged();
 		else if (e.getSource() == clientCombo)
 			clientComboChanged();
+		else if (e.getSource() == roleCombo)
+			roleComboChanged();
 		else if (e.getSource() == orgCombo)
 			orgComboChanged();
 		else if ("onlineLoginHelp".equals(e.getActionCommand()))
@@ -645,13 +645,13 @@ public final class ALogin extends CDialog
 		//	Reference check
 		Ini.setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Reference".equalsIgnoreCase(CConnection.get().getDbUid()));
 
-		//  Get Roles
+		//  Get Clients
 		m_login = new Login(m_ctx);
-		KeyNamePair[] roles = null;
+		KeyNamePair[] clients = null;
 		try 
 		{
-			roles = m_login.getRoles(m_user, new String(m_pwd));
-			if (roles == null || roles.length == 0)
+			clients = m_login.getClients(m_user, new String(m_pwd));
+			if (clients == null || clients.length == 0)
 			{
 				statusBar.setStatusLine(txt_UserPwdError, true);
 				userTextField.setBackground(AdempierePLAF.getFieldBackground_Error());
@@ -679,10 +679,84 @@ public final class ALogin extends CDialog
 		
 		//	Delete existing role items
 		m_comboActive = true;
-		if (roleCombo.getItemCount() > 0)
-			roleCombo.removeAllItems();
+		if (clientCombo.getItemCount() > 0)
+			clientCombo.removeAllItems();
 
 		//  Initial role
+		KeyNamePair iniValue = null;
+		String iniDefault = Ini.getProperty(Ini.P_CLIENT);
+
+		//  fill roles
+		for (int i = 0; i < clients.length; i++)
+		{
+			clientCombo.addItem(clients[i]);
+			if (clients[i].getName().equals(iniDefault))
+				iniValue = clients[i];
+		}
+		if (iniValue != null){
+			clientCombo.setSelectedItem(iniValue);
+		} else {
+			clientCombo.setSelectedItem(clients[0]);
+		}
+		
+		
+		if (clientCombo.getItemCount() == 1)
+		{
+			clientCombo.setSelectedIndex(0);
+			clientCombo.setVisible(false);
+			clientCombo.setVisible(false);
+			clientLabel.setVisible(false);
+		}
+		else
+		{
+			clientCombo.setVisible(true);
+			clientCombo.setVisible(true);
+		}
+
+		userTextField.setBackground(AdempierePLAF.getFieldBackground_Normal());
+		passwordField.setBackground(AdempierePLAF.getFieldBackground_Normal());
+		//
+		this.setTitle(hostField.getDisplay());
+		statusBar.setStatusLine(txt_LoggedIn);
+		m_comboActive = false;
+		clientComboChanged();
+		return true;
+	}	//	tryConnection
+
+
+	/**
+	 *	Client changed - fill Role List
+	 */
+	private void clientComboChanged ()
+	{
+		KeyNamePair client = (KeyNamePair)clientCombo.getSelectedItem();
+		if (client == null || m_comboActive)
+			return;
+		log.config(": " + client);
+		m_comboActive = true;
+		// @Trifon - Set Proper "#AD_Client_ID", #AD_User_ID and "#SalesRep_ID"  
+		// https://sourceforge.net/tracker/?func=detail&aid=2957215&group_id=176962&atid=879332
+		Env.setContext(m_ctx, "#AD_Client_ID", client.getKey());
+		MUser user = MUser.get (m_ctx, userTextField.getText());
+		if (user != null) {
+			 Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
+			  Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
+		}
+		//
+		KeyNamePair[] roles = m_login.getRoles(userTextField.getText(), client);
+		//  delete existing rol/org items
+		if (roleCombo.getItemCount() > 0)
+			roleCombo.removeAllItems();
+		if (orgCombo.getItemCount() > 0)
+			orgCombo.removeAllItems();
+		//  No Clients
+		if (roles == null || roles.length == 0)
+		{
+			statusBar.setStatusLine(txt_RoleError, true);
+			m_comboActive = false;
+			return;
+		}
+		//  initial rol
 		KeyNamePair iniValue = null;
 		String iniDefault = Ini.getProperty(Ini.P_ROLE);
 
@@ -693,97 +767,47 @@ public final class ALogin extends CDialog
 			if (roles[i].getName().equals(iniDefault))
 				iniValue = roles[i];
 		}
-		if (iniValue != null)
-			roleCombo.setSelectedItem(iniValue);
-		
-		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
-		if (roleCombo.getItemCount() == 1 && ! MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowOneRole, true))
-		{
-			roleCombo.setSelectedIndex(0);
-			roleLabel.setVisible(false);
-			roleCombo.setVisible(false);
-		}
-		else
-		{
-			roleLabel.setVisible(true);
-			roleCombo.setVisible(true);
-		}
-
-		userTextField.setBackground(AdempierePLAF.getFieldBackground_Normal());
-		passwordField.setBackground(AdempierePLAF.getFieldBackground_Normal());
-		//
-		this.setTitle(hostField.getDisplay());
-		statusBar.setStatusLine(txt_LoggedIn);
-		m_comboActive = false;
-		roleComboChanged();
-		return true;
-	}	//	tryConnection
-
-
-	/**
-	 *	Role changed - fill Client List
-	 */
-	private void roleComboChanged ()
-	{
-		KeyNamePair role = (KeyNamePair)roleCombo.getSelectedItem();
-		if (role == null || m_comboActive)
-			return;
-		log.config(": " + role);
-		m_comboActive = true;
-		//
-		KeyNamePair[] clients = m_login.getClients(role);
-		//  delete existing client/org items
-		if (clientCombo.getItemCount() > 0)
-			clientCombo.removeAllItems();
-		if (orgCombo.getItemCount() > 0)
-			orgCombo.removeAllItems();
-		//  No Clients
-		if (clients == null || clients.length == 0)
-		{
-			statusBar.setStatusLine(txt_RoleError, true);
-			m_comboActive = false;
-			return;
-		}
-		//  initial client
-		KeyNamePair iniValue = null;
-		String iniDefault = Ini.getProperty(Ini.P_CLIENT);
-
-		//  fill clients
-		for (int i = 0; i < clients.length; i++)
-		{
-			clientCombo.addItem(clients[i]);
-			if (clients[i].getName().equals(iniDefault))
-				iniValue = clients[i];
-		}
 		//	fini
 		if (iniValue != null)
-			clientCombo.setSelectedItem(iniValue);
+			roleCombo.setSelectedItem(iniValue);
 		//
+		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
+		if(roleCombo.getItemCount()==1 && ! MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowOneRole, true))
+		{
+			roleCombo.setSelectedIndex(0);
+			roleCombo.setVisible(false);
+			roleCombo.setVisible(false);
+			roleLabel.setVisible(false);
+			
+		}
+		
 		m_comboActive = false;
-		clientComboChanged();
+		roleComboChanged();
 	}	//	roleComboChanged
 
 
 	/**
-	 *	Client changed - fill Org & Warehouse List
+	 *	role changed - fill Org & Warehouse List
 	 */
-	private void clientComboChanged()
+	private void roleComboChanged()
 	{
-		KeyNamePair client = (KeyNamePair)clientCombo.getSelectedItem();
-		if (client == null || m_comboActive)
+		KeyNamePair rol = (KeyNamePair)roleCombo.getSelectedItem();
+		if (rol == null || m_comboActive)
 			return;
-		log.config(": " + client);
+		log.config(": " + rol);
 		m_comboActive = true;
-		// @Trifon - Set Proper "#AD_Client_ID", #AD_User_ID and "#SalesRep_ID"  
-		// https://sourceforge.net/tracker/?func=detail&aid=2957215&group_id=176962&atid=879332
-		Env.setContext(m_ctx, "#AD_Client_ID", client.getKey());
-		MUser user = MUser.get (m_ctx, userTextField.getText(), new String (passwordField.getPassword()) );
-		if (user != null) {
-			Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
-			Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
+		
+		if( Env.getContextAsInt(m_ctx, "#AD_Client_ID") > 0 ) 
+		{
+		  MUser user = MUser.get (m_ctx, userTextField.getText());
+		   if (user != null) {
+			  Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
+			  Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
+		   }
 		}
+		
 		//
-		KeyNamePair[] orgs = m_login.getOrgs(client);
+		KeyNamePair[] orgs = m_login.getOrgs(rol);
 		//  delete existing cleint items
 		if (orgCombo.getItemCount() > 0)
 			orgCombo.removeAllItems();
