@@ -2339,7 +2339,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		StringBuffer info = new StringBuffer(getTableName());
 		
 		/* get UUID */
-		if (!e.isInserting() && e.getCurrentRow() >= 0)
+		if (!e.isInserting() && e.getCurrentRow() >= 0 && e.getCurrentRow() < e.getTotalRows())
 		{
 			PO po = m_mTable.getPO(e.getCurrentRow());
 			if (po != null) {
