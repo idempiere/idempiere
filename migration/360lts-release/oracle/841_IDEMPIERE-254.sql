@@ -395,7 +395,24 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- May 25, 2012 4:25:56 PM MYT
 -- IDEMPIERE-254 2Pack Stabilization and Enhancement
-ALTER TABLE AD_Package_Imp_Proc ADD Name NVARCHAR2(60) NOT NULL
+-- ALTER TABLE AD_Package_Imp_Proc ADD Name NVARCHAR2(60) NOT NULL
+-- Changed to cover the case where the AD_Package_Imp_Proc table has rows as noted by Daniel Tamn
+
+-- Aug 19, 2012 10:42:12 AM COT
+-- IDEMPIERE-254 2Pack Stabilization and Enhancement
+ALTER TABLE AD_Package_Imp_Proc ADD Name NVARCHAR2(60) DEFAULT NULL 
+;
+
+UPDATE AD_Package_Imp_Proc SET Name='Default';
+
+-- Aug 19, 2012 10:42:29 AM COT
+-- IDEMPIERE-254 2Pack Stabilization and Enhancement
+ALTER TABLE AD_Package_Imp_Proc MODIFY Name NVARCHAR2(60)
+;
+
+-- Aug 19, 2012 10:42:29 AM COT
+-- IDEMPIERE-254 2Pack Stabilization and Enhancement
+ALTER TABLE AD_Package_Imp_Proc MODIFY Name NOT NULL
 ;
 
 -- May 25, 2012 4:26:38 PM MYT
