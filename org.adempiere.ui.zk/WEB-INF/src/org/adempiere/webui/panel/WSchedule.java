@@ -21,8 +21,10 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.InfoSchedule;
 import org.adempiere.webui.window.WAssignmentDialog;
 import org.compiere.model.MResourceAssignment;
@@ -182,11 +184,17 @@ public class WSchedule extends Panel implements EventListener
 			MouseEvent me = (MouseEvent) event;
 			if (me.getX() > 0) {
 				MResourceAssignment assignment = new MResourceAssignment(Env.getCtx(), me.getX(), null);
-				WAssignmentDialog wad = new WAssignmentDialog(assignment, false, infoSchedule.isCreateNew());
-				if (!wad.isCancelled()) {
-					_assignmentDialogResult =  wad.getMResourceAssignment();
-					Events.echoEvent("onAssignmentCallback", this, null);				
-				}
+				final WAssignmentDialog wad = new WAssignmentDialog(assignment, false, infoSchedule.isCreateNew());
+				wad.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						if (!wad.isCancelled()) {
+							_assignmentDialogResult =  wad.getMResourceAssignment();
+							Events.echoEvent("onAssignmentCallback", WSchedule.this, null);				
+						}						
+					}
+				});	
+				AEnv.showWindow(wad);
 			}
 		} else if (event instanceof BandScrollEvent){
 			BandScrollEvent e = (BandScrollEvent) event;

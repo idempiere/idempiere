@@ -883,9 +883,16 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			{
 				public void onEvent(Event event) throws Exception
 				{
-					new WRecordAccessDialog(null, curTab.getAD_Table_ID(), curTab.getRecord_ID());
+					WRecordAccessDialog recordAccessDialog = new WRecordAccessDialog(null, curTab.getAD_Table_ID(), curTab.getRecord_ID());
+					recordAccessDialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 
-					toolbar.lock(curTab.isLocked());
+						@Override
+						public void onEvent(Event event) throws Exception {
+							toolbar.lock(curTab.isLocked());
+						}
+					});
+
+					AEnv.showWindow(recordAccessDialog);					
 				}
 			});
 
@@ -1753,7 +1760,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			if (callback != null)
 				callback.onCallback(false);
 			return;
-		} else if (!onSaveEvent && !navigationEvent) //need manual refresh
+		} else if (!onSaveEvent) //need manual refresh
 		{
 			curTab.setCurrentRow(curTab.getCurrentRow());
 		}

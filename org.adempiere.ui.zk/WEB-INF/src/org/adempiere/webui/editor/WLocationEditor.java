@@ -21,10 +21,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.adempiere.webui.ValuePreference;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Locationbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
@@ -163,28 +163,36 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
         if ("onClick".equals(event.getName()))
         {
             log.config( "actionPerformed - " + m_value);
-            WLocationDialog ld = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), m_value);
-            ld.setVisible(true);
-            AEnv.showWindow(ld);
-            m_value = ld.getValue();
-            //
-           if (!ld.isChanged())
-                return;
-    
-            //  Data Binding
-            int C_Location_ID = 0;
-            if (m_value != null)
-                C_Location_ID = m_value.getC_Location_ID();
-            Integer ii = new Integer(C_Location_ID);
-            //  force Change - user does not realize that embedded object is already saved.
-            ValueChangeEvent valuechange = new ValueChangeEvent(this,getColumnName(),null,null);
-            fireValueChange(valuechange);   //  resets m_mLocation
-            if (C_Location_ID != 0)
-            {
-                ValueChangeEvent vc = new ValueChangeEvent(this,getColumnName(),null,ii);
-                fireValueChange(vc);
-            }
-            setValue(ii); 
+            final WLocationDialog ld = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), m_value);
+            ld.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event event) throws Exception {
+					m_value = ld.getValue();
+		            //
+					if (!ld.isChanged())
+		                return;
+		    
+		            //  Data Binding
+		            int C_Location_ID = 0;
+		            if (m_value != null)
+		                C_Location_ID = m_value.getC_Location_ID();
+		            Integer ii = new Integer(C_Location_ID);
+		            //  force Change - user does not realize that embedded object is already saved.
+		            ValueChangeEvent valuechange = new ValueChangeEvent(WLocationEditor.this,getColumnName(),null,null);
+		            fireValueChange(valuechange);   //  resets m_mLocation
+		            if (C_Location_ID != 0)
+		            {
+		                ValueChangeEvent vc = new ValueChangeEvent(WLocationEditor.this,getColumnName(),null,ii);
+		                fireValueChange(vc);
+		            }
+		            setValue(ii);					
+				}
+			});
+            getComponent().appendChild(ld);
+            ld.setPosition("parent");
+            ld.setTitle(null);
+            ld.doPopup();
         }
     }
     

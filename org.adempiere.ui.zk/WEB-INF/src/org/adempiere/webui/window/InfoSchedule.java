@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -38,6 +39,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.panel.WSchedule;
 import org.compiere.model.MAssignmentSlot;
@@ -74,9 +76,11 @@ import org.zkoss.zul.Vbox;
 public class InfoSchedule extends Window implements EventListener
 {
 	/**
-	 * 
+	 *  @param mAssignment optional assignment
+	 *  @param createNew if true, allows to create new assignments
 	 */
 	private static final long serialVersionUID = -5948901371276429661L;
+	private Callback<MResourceAssignment> m_callback;
 
 	/**
 	 *  Constructor
@@ -85,12 +89,23 @@ public class InfoSchedule extends Window implements EventListener
 	 */
 	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew)
 	{
+		this(mAssignment, createNew, (Callback<MResourceAssignment>)null);
+	}
+	
+	/**
+	 *  Constructor
+	 *  @param mAssignment optional assignment
+	 *  @param createNew if true, allows to create new assignments
+	 *  @param listener
+	 */
+	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew, Callback<MResourceAssignment> callback)
+	{
 		super();
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoSchedule"));
 		if (createNew)
-			setAttribute("mode", "modal");
+			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		else
-			setAttribute("mode", "overlapped");
+			setAttribute(Window.MODE_KEY, Window.MODE_OVERLAPPED);
 		this.setWidth("600px");
 //		this.setHeight("600px");
 		this.setClosable(true);
@@ -106,6 +121,15 @@ public class InfoSchedule extends Window implements EventListener
 		if (m_dateFrom == null)
 			m_dateFrom = new Timestamp(System.currentTimeMillis());
 		m_createNew = createNew;
+		m_callback = callback;
+		if (callback != null) {
+			this.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					m_callback.onCallback(getMResourceAssignment());
+				}
+			});
+		}
 		try
 		{
 			init();
@@ -114,8 +138,7 @@ public class InfoSchedule extends Window implements EventListener
 		catch(Exception ex)
 		{
 			log.log(Level.SEVERE, "InfoSchedule", ex);
-		}
-		AEnv.showWindow(this);
+		}		
 	}	//	InfoSchedule
 
 	/**
@@ -539,8 +562,14 @@ public class InfoSchedule extends Window implements EventListener
 			
 			ma.setAssignDateFrom(TimeUtil.getDayTime(start, slot.getStartTime()));
 			ma.setQty(new BigDecimal(1));
-			WAssignmentDialog vad =  new WAssignmentDialog (ma, false, m_createNew);
-			mAssignmentCallback(vad.getMResourceAssignment());		
+			final WAssignmentDialog vad =  new WAssignmentDialog (ma, false, m_createNew);
+			vad.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					mAssignmentCallback(vad.getMResourceAssignment());
+				}
+			});					
+			AEnv.showWindow(vad);
 		} else {
 			FDialog.error(0, this, "No available time slot for the selected day.");
 		}

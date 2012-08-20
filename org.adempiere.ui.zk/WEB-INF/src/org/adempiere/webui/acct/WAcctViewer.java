@@ -614,7 +614,6 @@ public class WAcctViewer extends Window implements EventListener
 		south.setHeight("26px");
 		southPanel.setParent(south);
 
-		this.setAttribute("mode", "modal");
 		this.setTitle(TITLE);
 		this.setBorder("normal");
 		this.setClosable(true);
