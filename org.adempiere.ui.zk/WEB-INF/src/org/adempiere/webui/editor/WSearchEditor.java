@@ -433,7 +433,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	private void actionBPartner (boolean newRecord)
 	{
-		WBPartner vbp = new WBPartner (lookup.getWindowNo());
+		final WBPartner vbp = new WBPartner (lookup.getWindowNo());
 		int BPartner_ID = 0;
 
 		//  if update, get current value
@@ -447,23 +447,28 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		vbp.loadBPartner (BPartner_ID);
 
+		final int finalBPartner_ID = BPartner_ID;
+		vbp.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				// get result
+				int result = vbp.getC_BPartner_ID();
+
+				if (result == 0					//	0 = not saved
+					&& result == finalBPartner_ID)	//	the same
+					return;
+
+				//  Maybe new BPartner - put in cache
+				lookup.getDirect(new Integer(result), false, true);
+				setValue(new Integer(result));
+				actionCombo (new Integer(result));      //  data binding
+
+				//setValue(getValue());				
+			}
+		});
 
 		vbp.setVisible(true);
-		AEnv.showWindow(vbp);
-
-		//  get result
-		int result = vbp.getC_BPartner_ID();
-
-		if (result == 0					//	0 = not saved
-			&& result == BPartner_ID)	//	the same
-			return;
-
-		//  Maybe new BPartner - put in cache
-		lookup.getDirect(new Integer(result), false, true);
-		setValue(new Integer(result));
-		actionCombo (new Integer(result));      //  data binding
-
-		//setValue(getValue());
+		AEnv.showWindow(vbp);		
 	}	//	actionBPartner
 
 	private void actionButton(String queryValue)

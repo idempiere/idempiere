@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -97,9 +98,8 @@ public class WAssignmentDialog extends Window implements EventListener
 	{
 		super ();
 		this.setTitle(Msg.getMsg(Env.getCtx(), "VAssignmentDialog"));
-		this.setAttribute("mode", "modal");
 		this.setBorder("normal");
-		
+		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		log.config(mAssignment.toString());
 		m_mAssignment = mAssignment;
 		try
@@ -114,8 +114,7 @@ public class WAssignmentDialog extends Window implements EventListener
 			log.log(Level.SEVERE, "", e);
 		}
 		setDisplay();	//	from mAssignment
-		//
-		AEnv.showWindow(this);
+		//		
 	}	//	VAssignmentDialog
 
 	/**	Assignment						*/
@@ -378,14 +377,17 @@ public class WAssignmentDialog extends Window implements EventListener
 		//	Zoom - InfoResource
 		else if (e.getTarget().getId().equals("Zoom"))
 		{
-			InfoSchedule is = new InfoSchedule (m_mAssignment, true);
-			if (is.getMResourceAssignment() != null)
-			{
-				m_mAssignment = is.getMResourceAssignment();
-			//	setDisplay();
-				detach();
-			}
-			is = null;
+			InfoSchedule is = new InfoSchedule (m_mAssignment, true, new Callback<MResourceAssignment>() {			
+				@Override
+				public void onCallback(MResourceAssignment result) {
+					if (result != null)
+					{
+						m_mAssignment = result;
+					//	setDisplay();
+						detach();
+					}					
+				}
+			});
 		}
 
 		//	cancel - return

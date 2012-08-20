@@ -29,6 +29,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocatorDialog;
@@ -233,20 +234,25 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 			m_mLocator.setOnly_Warehouse_ID(only_Warehouse_ID);
 			m_mLocator.setOnly_Product_ID(getOnly_Product_ID());
 			
-			WLocatorDialog ld = new WLocatorDialog(Msg.translate(Env.getCtx(), getColumnName()),
+			final WLocatorDialog ld = new WLocatorDialog(Msg.translate(Env.getCtx(), getColumnName()),
 				m_mLocator, M_Locator_ID, isMandatory(), only_Warehouse_ID, this.m_WindowNo);
 			
+			ld.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					m_mLocator.setOnly_Warehouse_ID(0);
+					// redisplay
+					
+					if (!ld.isChanged())
+						return;
+					setValue (ld.getValue(), true);
+				}
+			});
 			//	display
-			ld.setVisible(true);
-			AEnv.showWindow(ld);
-			
-			m_mLocator.setOnly_Warehouse_ID(0);
-	
-			//	redisplay
-			
-			if (!ld.isChanged())
-				return;
-			setValue (ld.getValue(), true);
+			getComponent().appendChild(ld);
+			ld.setPosition("parent");
+			ld.setTitle(null);
+			ld.doPopup();
 		}
 	}
 	

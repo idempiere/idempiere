@@ -58,7 +58,6 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 	public WCreateFromWindow(CreateFrom createFrom, int windowNo)
 	{
 		super();
-		setAttribute("mode", "modal");
 		
 		this.createFrom = createFrom;
 		this.windowNo = windowNo;

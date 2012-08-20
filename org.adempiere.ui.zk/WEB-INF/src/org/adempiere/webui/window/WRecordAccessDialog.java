@@ -63,7 +63,7 @@ public class WRecordAccessDialog extends Window implements EventListener
 	{
 		super();
 		setTitle(Msg.translate(Env.getCtx(), "RecordAccessDialog"));
-		setAttribute("modal", Boolean.TRUE);
+		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		setBorder("normal");		
 		setWidth("600px");
 		setSizable(true);
@@ -79,8 +79,7 @@ public class WRecordAccessDialog extends Window implements EventListener
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-		}
-		AEnv.showWindow(this);
+		}		
 	}	//	RecordAccessDialog
 
 	private int				m_AD_Table_ID;
