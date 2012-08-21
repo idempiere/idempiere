@@ -146,7 +146,7 @@ public class MProduction extends X_M_Production {
 				MProduct bomproduct = new MProduct(Env.getCtx(), BOMProduct_ID, get_TrxName());
 				
 
-				if ( bomproduct.isPhantom() )
+				if ( bomproduct.isBOM() && bomproduct.isPhantom() )
 				{
 					createLines(mustBeStocked, bomproduct, BOMMovementQty);
 				}
