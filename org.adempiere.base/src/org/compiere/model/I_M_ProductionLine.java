@@ -31,7 +31,7 @@ public interface I_M_ProductionLine
     public static final String Table_Name = "M_ProductionLine";
 
     /** AD_Table_ID=326 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 326;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -104,6 +104,19 @@ public interface I_M_ProductionLine
 	  */
 	public boolean isActive();
 
+    /** Column name IsEndProduct */
+    public static final String COLUMNNAME_IsEndProduct = "IsEndProduct";
+
+	/** Set End Product.
+	  * End Product of production
+	  */
+	public void setIsEndProduct (boolean IsEndProduct);
+
+	/** Get End Product.
+	  * End Product of production
+	  */
+	public boolean isEndProduct();
+
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";
 
@@ -173,7 +186,22 @@ public interface I_M_ProductionLine
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_Production_ID */
+    public static final String COLUMNNAME_M_Production_ID = "M_Production_ID";
+
+	/** Set Production.
+	  * Plan for producing a product
+	  */
+	public void setM_Production_ID (int M_Production_ID);
+
+	/** Get Production.
+	  * Plan for producing a product
+	  */
+	public int getM_Production_ID();
+
+	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException;
 
     /** Column name M_ProductionLine_ID */
     public static final String COLUMNNAME_M_ProductionLine_ID = "M_ProductionLine_ID";
@@ -188,6 +216,15 @@ public interface I_M_ProductionLine
 	  */
 	public int getM_ProductionLine_ID();
 
+    /** Column name M_ProductionLine_UU */
+    public static final String COLUMNNAME_M_ProductionLine_UU = "M_ProductionLine_UU";
+
+	/** Set M_ProductionLine_UU	  */
+	public void setM_ProductionLine_UU (String M_ProductionLine_UU);
+
+	/** Get M_ProductionLine_UU	  */
+	public String getM_ProductionLine_UU();
+
     /** Column name M_ProductionPlan_ID */
     public static final String COLUMNNAME_M_ProductionPlan_ID = "M_ProductionPlan_ID";
 
@@ -201,7 +238,20 @@ public interface I_M_ProductionLine
 	  */
 	public int getM_ProductionPlan_ID();
 
-	public I_M_ProductionPlan getM_ProductionPlan() throws RuntimeException;
+	public org.compiere.model.I_M_ProductionPlan getM_ProductionPlan() throws RuntimeException;
+
+    /** Column name PlannedQty */
+    public static final String COLUMNNAME_PlannedQty = "PlannedQty";
+
+	/** Set Planned Quantity.
+	  * Planned quantity for this project
+	  */
+	public void setPlannedQty (BigDecimal PlannedQty);
+
+	/** Get Planned Quantity.
+	  * Planned quantity for this project
+	  */
+	public BigDecimal getPlannedQty();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
@@ -215,6 +265,41 @@ public interface I_M_ProductionLine
 	  * The document has been processed
 	  */
 	public boolean isProcessed();
+
+    /** Column name ProductType */
+    public static final String COLUMNNAME_ProductType = "ProductType";
+
+	/** Set Product Type.
+	  * Type of product
+	  */
+	public void setProductType (String ProductType);
+
+	/** Get Product Type.
+	  * Type of product
+	  */
+	public String getProductType();
+
+    /** Column name QtyAvailable */
+    public static final String COLUMNNAME_QtyAvailable = "QtyAvailable";
+
+	/** Set Available Quantity.
+	  * Available Quantity (On Hand - Reserved)
+	  */
+	public void setQtyAvailable (BigDecimal QtyAvailable);
+
+	/** Get Available Quantity.
+	  * Available Quantity (On Hand - Reserved)
+	  */
+	public BigDecimal getQtyAvailable();
+
+    /** Column name QtyUsed */
+    public static final String COLUMNNAME_QtyUsed = "QtyUsed";
+
+	/** Set Quantity Used	  */
+	public void setQtyUsed (BigDecimal QtyUsed);
+
+	/** Get Quantity Used	  */
+	public BigDecimal getQtyUsed();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

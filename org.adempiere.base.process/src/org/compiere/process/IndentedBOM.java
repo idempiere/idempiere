@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
-import org.apache.commons.lang.StringUtils;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostElement;
@@ -121,7 +120,10 @@ public class IndentedBOM extends SvrProcess
 		//
 		tboml.setSeqNo(m_SeqNo);
 		tboml.setLevelNo(m_LevelNo);
-		tboml.setLevels( (m_LevelNo > 0 ? ":" : "") +  StringUtils.repeat("    ", m_LevelNo) +" " + product.getValue());
+		String pad = "";
+		if (m_LevelNo > 0)
+			pad = String.format("%1$" + 4*1 + "s", "");
+		tboml.setLevels( (m_LevelNo > 0 ? ":" : "") +  pad +" " + product.getValue());
 		//
 		// Set Costs:
 		MCost cost = MCost.get(product, 0, m_as, p_AD_Org_ID, p_M_CostElement_ID, get_TrxName());

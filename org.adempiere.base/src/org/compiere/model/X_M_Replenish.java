@@ -31,7 +31,7 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120821L;
 
     /** Standard Constructor */
     public X_M_Replenish (Properties ctx, int M_Replenish_ID, String trxName)
@@ -115,9 +115,9 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 		return bd;
 	}
 
-	public I_M_Locator getM_Locator() throws RuntimeException
+	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException
     {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
+		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_Name)
 			.getPO(getM_Locator_ID(), get_TrxName());	}
 
 	/** Set Locator.
@@ -143,9 +143,9 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -171,9 +171,23 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException
+	/** Set M_Replenish_UU.
+		@param M_Replenish_UU M_Replenish_UU	  */
+	public void setM_Replenish_UU (String M_Replenish_UU)
+	{
+		set_Value (COLUMNNAME_M_Replenish_UU, M_Replenish_UU);
+	}
+
+	/** Get M_Replenish_UU.
+		@return M_Replenish_UU	  */
+	public String getM_Replenish_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_Replenish_UU);
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_Warehouse_ID(), get_TrxName());	}
 
 	/** Set Warehouse.
@@ -199,9 +213,9 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Warehouse getM_WarehouseSource() throws RuntimeException
+	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_WarehouseSource_ID(), get_TrxName());	}
 
 	/** Set Source Warehouse.
@@ -225,6 +239,23 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Qty Batch Size.
+		@param QtyBatchSize Qty Batch Size	  */
+	public void setQtyBatchSize (BigDecimal QtyBatchSize)
+	{
+		set_Value (COLUMNNAME_QtyBatchSize, QtyBatchSize);
+	}
+
+	/** Get Qty Batch Size.
+		@return Qty Batch Size	  */
+	public BigDecimal getQtyBatchSize () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatchSize);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** ReplenishType AD_Reference_ID=164 */

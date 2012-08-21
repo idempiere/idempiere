@@ -32,7 +32,7 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120821L;
 
     /** Standard Constructor */
     public X_M_ProductionLineMA (Properties ctx, int M_ProductionLineMA_ID, String trxName)
@@ -122,9 +122,9 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
 		return bd;
 	}
 
-	public I_M_ProductionLine getM_ProductionLine() throws RuntimeException
+	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException
     {
-		return (I_M_ProductionLine)MTable.get(getCtx(), I_M_ProductionLine.Table_Name)
+		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_Name)
 			.getPO(getM_ProductionLine_ID(), get_TrxName());	}
 
 	/** Set Production Line.
@@ -157,4 +157,18 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_ProductionLine_ID()));
     }
+
+	/** Set M_ProductionLineMA_UU.
+		@param M_ProductionLineMA_UU M_ProductionLineMA_UU	  */
+	public void setM_ProductionLineMA_UU (String M_ProductionLineMA_UU)
+	{
+		set_Value (COLUMNNAME_M_ProductionLineMA_UU, M_ProductionLineMA_UU);
+	}
+
+	/** Get M_ProductionLineMA_UU.
+		@return M_ProductionLineMA_UU	  */
+	public String getM_ProductionLineMA_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ProductionLineMA_UU);
+	}
 }
