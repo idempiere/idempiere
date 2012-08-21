@@ -457,16 +457,21 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,V
 INSERT INTO AD_Message_Trl (AD_Language,AD_Message_ID, MsgText,MsgTip, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Message_Trl_UU ) SELECT l.AD_Language,t.AD_Message_ID, t.MsgText,t.MsgTip, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Message t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Message_ID=200014 AND NOT EXISTS (SELECT * FROM AD_Message_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Message_ID=t.AD_Message_ID)
 ;
 
+-- Set initial workflows on the wizard
+UPDATE AD_Workflow SET WorkflowType='W', Priority=1 WHERE AD_Workflow_ID=104; -- Initial Client Setup Review
+
+UPDATE AD_Workflow SET WorkflowType='W', Priority=2 WHERE AD_Workflow_ID=106; -- Business Partner Setup
+
+UPDATE AD_Workflow SET WorkflowType='W', Priority=3 WHERE AD_Workflow_ID=107; -- Product Setup
+
+UPDATE AD_Workflow SET WorkflowType='W', Priority=4 WHERE AD_Workflow_ID=111; -- Sales Setup
+
+UPDATE AD_Workflow SET WorkflowType='W', Priority=5 WHERE AD_Workflow_ID=108; -- Price List Setup
+
+UPDATE AD_Workflow SET WorkflowType='W', Priority=6 WHERE AD_Workflow_ID=110; -- Tax Setup
+
 UPDATE AD_System
   SET LastMigrationScriptApplied='878_IDEMPIERE-393.sql'
 WHERE LastMigrationScriptApplied<'878_IDEMPIERE-393.sql'
    OR LastMigrationScriptApplied IS NULL
 ;
-
--- NOTE: For testing purposes:
--- UPDATE AD_Workflow SET WorkflowType='W', Priority=1 WHERE AD_Workflow_ID=104; -- Initial Client Setup Review
--- UPDATE AD_Workflow SET WorkflowType='W', Priority=2 WHERE AD_Workflow_ID=106; -- Business Partner Setup
--- UPDATE AD_Workflow SET WorkflowType='W', Priority=3 WHERE AD_Workflow_ID=107; -- Product Setup
--- UPDATE AD_Workflow SET WorkflowType='W', Priority=4 WHERE AD_Workflow_ID=111; -- Sales Setup
--- UPDATE AD_Workflow SET WorkflowType='W', Priority=5 WHERE AD_Workflow_ID=108; -- Price List Setup
--- UPDATE AD_Workflow SET WorkflowType='W', Priority=6 WHERE AD_Workflow_ID=110; -- Tax Setup
