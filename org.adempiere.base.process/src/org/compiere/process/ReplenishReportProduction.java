@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
@@ -35,6 +36,7 @@ import org.compiere.model.MOrg;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
+import org.compiere.model.MReplenish;
 import org.compiere.model.MRequisition;
 import org.compiere.model.MRequisitionLine;
 import org.compiere.model.MStorage;
@@ -758,7 +760,7 @@ public class ReplenishReportProduction extends SvrProcess
 		}
 	}	//	create Distribution Order
 	/**
-	 * 	Create Requisition
+	 * 	Create Production
 	 */
 	private void createProduction()
 	{
@@ -775,24 +777,47 @@ public class ReplenishReportProduction extends SvrProcess
 			X_T_Replenish replenish = replenishs[i];
 			if (wh == null || wh.getM_Warehouse_ID() != replenish.getM_Warehouse_ID())
 				wh = MWarehouse.get(getCtx(), replenish.getM_Warehouse_ID());
-			production = new MProduction (getCtx(), 0, get_TrxName());
-			production.setDescription(Msg.getMsg(getCtx(), "Replenishment"));
-			//	Set Org/WH
-			production.setAD_Org_ID(wh.getAD_Org_ID());
-			production.setM_Locator_ID(wh.getDefaultLocator().get_ID());
-			production.setM_Product_ID(replenish.getM_Product_ID());
-			production.setProductionQty(replenish.getQtyToOrder());
-			production.setMovementDate(Env.getContextAsDate(getCtx(), "#Date"));
-			production.saveEx();
 			
-			production.createLines(false);
-			
+			BigDecimal batchQty = null;
 
-			production.setIsCreated("Y");
-			production.save(get_TrxName());
-			log.fine(production.toString());
-			noProds++;
-			info += " - " + production.getDocumentNo();
+			for (MReplenish rep : MReplenish.getForProduct(getCtx(), replenish.getM_Product_ID(), get_TrxName()))
+			{
+				if ( rep.getM_Warehouse_ID() == replenish.getM_Warehouse_ID())
+					batchQty = rep.getQtyBatchSize();
+			}
+			
+			BigDecimal qtyToProduce = replenish.getQtyToOrder();
+			
+			while ( qtyToProduce.compareTo(Env.ZERO) > 0)
+			{
+				BigDecimal qty = qtyToProduce;
+				if ( batchQty != null && batchQty.compareTo(Env.ZERO) > 0 && qtyToProduce.compareTo(batchQty) > 0)
+				{
+					qty = batchQty;
+					qtyToProduce = qtyToProduce.subtract(batchQty);
+				}
+				else
+				{
+					qtyToProduce = Env.ZERO;
+				}
+				production = new MProduction (getCtx(), 0, get_TrxName());
+				production.setDescription(Msg.getMsg(getCtx(), "Replenishment"));
+				//	Set Org/WH
+				production.setAD_Org_ID(wh.getAD_Org_ID());
+				production.setM_Locator_ID(wh.getDefaultLocator().get_ID());
+				production.setM_Product_ID(replenish.getM_Product_ID());
+				production.setProductionQty(qty);
+				production.setMovementDate(Env.getContextAsDate(getCtx(), "#Date"));
+				production.saveEx();
+
+				production.createLines(false);
+
+				production.setIsCreated("Y");
+				production.save(get_TrxName());
+				log.fine(production.toString());
+				noProds++;
+				info += " - " + production.getDocumentNo();
+			}
 
 		}
 		m_info = "#" + noProds + info;
