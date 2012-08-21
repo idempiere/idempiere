@@ -1,3 +1,8 @@
+-- Aug 6, 2012 11:54:27 AM CEST
+-- IDEMPIERE-246 Manufacturing Light
+UPDATE AD_ModelValidator SET IsActive='N',Updated=TO_TIMESTAMP('2012-08-06 11:54:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ModelValidator_ID=50000
+;
+
 -- Aug 6, 2012 12:16:06 PM CEST
 -- IDEMPIERE-246 Manufacturing Light
 UPDATE AD_Process_Para SET AD_Reference_ID=17, AD_Reference_Value_ID=319, ColumnName='IsKanban', EntityType='D', IsCentrallyMaintained='N', Name='Is Kanban',Updated=TO_TIMESTAMP('2012-08-06 12:16:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=53526

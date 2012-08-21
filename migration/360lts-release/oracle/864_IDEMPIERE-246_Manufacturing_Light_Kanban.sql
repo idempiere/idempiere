@@ -44,7 +44,7 @@ UPDATE AD_Process_Para SET EntityType='D',Updated=TO_DATE('2012-08-06 12:20:29',
 ;
 
 UPDATE AD_System
-  SET LastMigrationScriptApplied='864_IDEMPIERE-246_Manufacturing_Light_kanban.sql'
-WHERE LastMigrationScriptApplied<'864_IDEMPIERE-246_Manufacturing_Light_kanban.sql'
+  SET LastMigrationScriptApplied='864_IDEMPIERE-246_Manufacturing_Light_Kanban.sql'
+WHERE LastMigrationScriptApplied<'864_IDEMPIERE-246_Manufacturing_Light_Kanban.sql'
    OR LastMigrationScriptApplied IS NULL
 ;
