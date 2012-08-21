@@ -602,8 +602,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ValueNamePair[] cols = new ValueNamePair[items.size()];
         items.toArray(cols);
         Arrays.sort(cols);      //  sort alpha
+        // =====================================================================
+        // For ticket 1001193 -  START
+        // =====================================================================
+        ValueNamePair[] op = MQuery.OPERATORS_ALL;
+        // =====================================================================
+        // For ticket 1001193 -  START
+        // =====================================================================
 
-        ValueNamePair[] op = MQuery.OPERATORS;
 
         if(fields == null)
         {
@@ -714,9 +720,26 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 Component componentTo = getEditorCompQueryTo(row);
                 componentTo.setId("searchFieldTo"+row.getId());
                 componentTo.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, componentTo.getId());
-
-                addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
-                addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
+                // =====================================================================
+                // Added/modified for ticket 1001193 -  START
+                // =====================================================================
+                Listbox listOp = (Listbox) row.getFellow("listOperator"+row.getId());
+                String betweenValue = listOp.getSelectedItem().getValue().toString();
+                
+                if(betweenValue.equals(MQuery.NULL) || betweenValue.equals(MQuery.NOT_NULL))
+                {
+                	// to not display any editor
+                	row.getFellow("cellQueryFrom"+row.getId()).getChildren().clear();
+                	row.getFellow("cellQueryTo"+row.getId()).getChildren().clear();
+                }
+                else
+                {
+                	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
+                	addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
+                }
+                // =====================================================================
+                // Added/modified for ticket 1001193 -  END
+                // =====================================================================
             }
     		else if (event.getTarget() == fQueryName)
     		{
@@ -997,7 +1020,29 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             ListCell cellQueryFrom = (ListCell)row.getFellow("cellQueryFrom"+row.getId());
             Object value = cellQueryFrom.getAttribute("value");
             if (value == null)
-                continue;
+            {
+                // =====================================================================
+                // For ticket 1001193 -  START
+                // =====================================================================
+            	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
+            	{
+            		m_query.addRestriction(ColumnSQL, Operator, null,
+            				infoName, null);
+            		if (code.length() > 0)
+        				code.append(SEGMENT_SEPARATOR);
+        			code.append(ColumnName)
+        				.append(FIELD_SEPARATOR)
+        				.append(Operator)
+        				.append(FIELD_SEPARATOR)
+        				.append("")
+        				.append(FIELD_SEPARATOR)
+        				.append("");
+            	}
+                // =====================================================================
+                // For ticket 1001193 -  END
+                // =====================================================================
+            	continue;
+            }
             Object parsedValue = parseValue(field, value);
             if (parsedValue == null)
                 continue;
@@ -1154,20 +1199,82 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void addOperators(ListItem column, Listbox listOperator)
     {
         String columnName = column.getValue().toString();
+        // =====================================================================
+        // For ticket 1001193 -  START
+        // =====================================================================
+        int columnID = MColumn.getColumn_ID(this.m_tableName, columnName);
+        String SQL = "SELECT name FROM ad_reference WHERE ad_reference_id=(SELECT ad_reference_id FROM ad_column WHERE ad_column_id = ?)";
+        PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String referenceType = null;
+		try
+		{
+			pstmt = DB.prepareStatement(SQL, null);
+			pstmt.setInt(1, columnID);
+			rs = pstmt.executeQuery();
+			if( rs.next() )
+			{
+				referenceType = rs.getString(1);
+			}
+		}
+		catch (SQLException e2)
+		{
+			log.log(Level.SEVERE, SQL, e2);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
         log.config("Column: " + columnName);
-
-        if (columnName.endsWith("_ID") || columnName.endsWith("_Acct"))
+        log.log(Level.INFO, "referenceType : " + referenceType);
+        
+        List<String> numbersList = new ArrayList<String>();
+        numbersList.add("Number");
+        numbersList.add("Date");
+        numbersList.add("Amount");
+        numbersList.add("Costs+Prices");
+        numbersList.add("Quantity");
+        numbersList.add("ID");
+        numbersList.add("Integer");
+        
+        List<String> equalNotEqualList = new ArrayList<String>();
+        equalNotEqualList.add("Table Direct");
+        equalNotEqualList.add("Table");
+        equalNotEqualList.add("Search");
+        equalNotEqualList.add("List");
+        
+        List<String> equalAndLikeList = new ArrayList<String>();
+        equalAndLikeList.add("URL");
+        equalAndLikeList.add("Memo");
+        equalAndLikeList.add("Text Long");
+        
+        if(numbersList.contains(referenceType))
         {
-             addOperators(MQuery.OPERATORS_ID, listOperator);
+        	addOperators(MQuery.OPERATORS_NUMBERS, listOperator);
         }
-        else if (columnName.startsWith("Is"))
+        else if (equalNotEqualList.contains(referenceType))
         {
-            addOperators(MQuery.OPERATORS_YN, listOperator);
+        	addOperators(MQuery.OPERATORS_ID, listOperator);
+        }
+        else if ("Yes-No".equals(referenceType))
+        {
+        	addOperators(MQuery.OPERATORS_YN, listOperator);
+        }
+        else if (equalAndLikeList.contains(referenceType))
+        {
+        	addOperators(MQuery.OPERATORS_EQUAL_LIKE, listOperator);
         }
         else
         {
-            addOperators(MQuery.OPERATORS, listOperator);
+        	addOperators(MQuery.OPERATORS_ALL, listOperator);
         }
+        
+        // =====================================================================
+        // For ticket 1001193 -  END
+        // =====================================================================
+
     } //    addOperators
 
     /**
@@ -1371,8 +1478,22 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             //  Value   ******
             ListCell cellQueryFrom = (ListCell)row.getFellow("cellQueryFrom"+row.getId());
             Object value = cellQueryFrom.getAttribute("value");
-            if (value == null)
-                continue;
+
+            // =====================================================================
+            // Added/modified for ticket 1001193 -  START
+            // =====================================================================
+            if (value == null) 
+            {
+            	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
+            	{
+            		m_query.addRestriction(ColumnSQL, Operator, null,
+            				infoName, null);
+            	}
+            	continue;
+            }
+            // =====================================================================
+            // Added/modified for ticket 1001193 -  End
+            // =====================================================================
             Object parsedValue = parseValue(field, value);
             if (parsedValue == null)
                 continue;
