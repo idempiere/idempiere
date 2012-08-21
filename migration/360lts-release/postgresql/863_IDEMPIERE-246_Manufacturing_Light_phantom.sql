@@ -3,6 +3,10 @@
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,EntityType,FieldLength,IsActive,IsAllowCopy,IsAllowLogging,IsAlwaysUpdateable,IsAutocomplete,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,SeqNo,Updated,UpdatedBy,Version) VALUES (0,200241,53243,0,29,249,'QtyBatchSize',TO_TIMESTAMP('2012-08-07 12:09:20','YYYY-MM-DD HH24:MI:SS'),100,'D',10,'Y','Y','Y','N','N','N','N','N','N','N','N','N','N','Y','Qty Batch Size',0,TO_TIMESTAMP('2012-08-07 12:09:20','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
+-- Aug 7, 2012 12:24:48 PM CEST
+-- Manufacturing Light phantom
+ALTER TABLE M_Replenish ADD QtyBatchSize NUMBER DEFAULT NULL
+;
 
 -- Aug 7, 2012 12:10:25 PM CEST
 -- Manufacturing Light phantom
@@ -22,6 +26,11 @@ INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Description,Help,Name, IsTran
 -- Aug 7, 2012 12:24:48 PM CEST
 -- Manufacturing Light phantom
 INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,DefaultValue,EntityType,FieldLength,IsActive,IsAllowCopy,IsAllowLogging,IsAlwaysUpdateable,IsAutocomplete,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSelectionColumn,IsSyncDatabase,IsTranslated,IsUpdateable,Name,SeqNo,Updated,UpdatedBy,Version) VALUES (0,200242,2788,0,20,208,'QtyBatchSize',TO_TIMESTAMP('2012-08-07 12:24:48','YYYY-MM-DD HH24:MI:SS'),100,'N','D',1,'Y','Y','Y','N','N','N','N','N','Y','N','N','N','N','Y','Qty Batch Size',0,TO_TIMESTAMP('2012-08-07 12:24:48','YYYY-MM-DD HH24:MI:SS'),100,0)
+;
+
+-- Aug 7, 2012 12:24:48 PM CEST
+-- Manufacturing Light phantom
+ALTER TABLE M_Product ADD IsPhantom CHAR(1) DEFAULT 'N'
 ;
 
 -- Aug 7, 2012 12:24:48 PM CEST

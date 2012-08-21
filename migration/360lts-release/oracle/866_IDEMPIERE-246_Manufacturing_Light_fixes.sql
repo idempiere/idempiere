@@ -2221,6 +2221,47 @@ INSERT INTO AD_PrintFormatItem (AD_Client_ID,AD_Column_ID,AD_Org_ID,AD_PrintForm
 INSERT INTO AD_PrintFormatItem_Trl (AD_Language,AD_PrintFormatItem_ID, PrintName,PrintNameSuffix, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_PrintFormatItem_ID, t.PrintName,t.PrintNameSuffix, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_PrintFormatItem t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_PrintFormatItem_ID=200084 AND NOT EXISTS (SELECT * FROM AD_PrintFormatItem_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_PrintFormatItem_ID=t.AD_PrintFormatItem_ID)
 ;
 
+-- Aug 7, 2012 4:20:10 PM CEST
+-- Manufacturing Light fixes
+UPDATE AD_PrintFormatItem SET AD_PrintFormatChild_ID=200000, PrintFormatType='P', XPosition=0, YPosition=0,Updated=TO_DATE('2012-08-07 16:20:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_PrintFormatItem_ID=200084
+;
+
+-- Aug 7, 2012 4:20:36 PM CEST
+-- Manufacturing Light fixes
+UPDATE AD_PrintFormatItem SET IsGroupBy='N', IsPageBreak='N', PrintName='Kanban Controlled', SortNo=0, XPosition=0, YPosition=0,Updated=TO_DATE('2012-08-07 16:20:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_PrintFormatItem_ID=200081
+;
+
+-- Aug 7, 2012 4:20:36 PM CEST
+-- Manufacturing Light fixes
+UPDATE AD_PrintFormatItem_Trl SET IsTranslated='N' WHERE AD_PrintFormatItem_ID=200081
+;
+
+-- Aug 7, 2012 4:24:02 PM CEST
+-- Manufacturing Light fixes
+INSERT INTO AD_PrintFormatItem (AD_Client_ID,AD_Column_ID,AD_Org_ID,AD_PrintColor_ID,AD_PrintFont_ID,AD_PrintFormatItem_ID,AD_PrintFormat_ID,ArcDiameter,BelowColumn,Created,CreatedBy,FieldAlignmentType,ImageIsAttached,IsActive,IsAveraged,IsCentrallyMaintained,IsCounted,IsDesc,IsDeviationCalc,IsFilledRectangle,IsFixedWidth,IsGroupBy,IsHeightOneLine,IsImageField,IsMaxCalc,IsMinCalc,IsNextLine,IsNextPage,IsOrderBy,IsPageBreak,IsPrinted,IsRelativePosition,IsRunningTotal,IsSetNLPosition,IsSummarized,IsSuppressNull,IsSuppressRepeats,IsVarianceCalc,LineAlignmentType,LineWidth,MaxHeight,MaxWidth,Name,PrintAreaType,PrintFormatType,PrintName,RunningTotalLines,SeqNo,ShapeType,SortNo,Updated,UpdatedBy,XPosition,XSpace,YPosition,YSpace) VALUES (0,61998,0,100,161,200085,200001,0,0,TO_DATE('2012-08-07 16:24:00','YYYY-MM-DD HH24:MI:SS'),100,'D','N','Y','N','N','N','N','N','N','N','N','N','N','N','N','Y','N','N','N','Y','Y','N','N','N','N','N','N','X',1,0,0,'Label BOM Verified','C','T','BOM Verified',20,53,'N',0,TO_DATE('2012-08-07 16:24:00','YYYY-MM-DD HH24:MI:SS'),100,0,0,0,0)
+;
+
+-- Aug 7, 2012 4:24:02 PM CEST
+-- Manufacturing Light fixes
+INSERT INTO AD_PrintFormatItem_Trl (AD_Language,AD_PrintFormatItem_ID, PrintName,PrintNameSuffix, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_PrintFormatItem_ID, t.PrintName,t.PrintNameSuffix, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_PrintFormatItem t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_PrintFormatItem_ID=200085 AND NOT EXISTS (SELECT * FROM AD_PrintFormatItem_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_PrintFormatItem_ID=t.AD_PrintFormatItem_ID)
+;
+
+-- Aug 7, 2012 4:24:02 PM CEST
+-- Manufacturing Light fixes
+UPDATE AD_PrintFormatItem_Trl trl SET PrintName = (SELECT e.PrintName FROM AD_Element_Trl e, AD_Column c WHERE e.AD_Language=trl.AD_Language AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=61998) WHERE AD_PrintFormatItem_ID = 200085 AND EXISTS (SELECT * FROM AD_Element_Trl e, AD_Column c WHERE e.AD_Language=trl.AD_Language AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=61998 AND trl.AD_PrintFormatItem_ID = 200085) AND EXISTS (SELECT * FROM AD_Client WHERE AD_Client_ID=trl.AD_Client_ID AND IsMultiLingualDocument='Y')
+;
+
+-- Aug 7, 2012 4:25:21 PM CEST
+-- Manufacturing Light fixes
+UPDATE AD_PrintFormatItem SET IsGroupBy='N', IsPageBreak='N', SeqNo=57, SortNo=0, XPosition=0, YPosition=0,Updated=TO_DATE('2012-08-07 16:25:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_PrintFormatItem_ID=200081
+;
+
+-- Aug 7, 2012 4:26:05 PM CEST
+-- Manufacturing Light fixes
+UPDATE AD_PrintFormatItem SET FieldAlignmentType='C', IsGroupBy='N', IsPageBreak='N', SortNo=0, XSpace=0, YSpace=0,Updated=TO_DATE('2012-08-07 16:26:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_PrintFormatItem_ID=200067
+;
+
+
 UPDATE AD_System
   SET LastMigrationScriptApplied='866_IDEMPIERE-246_Manufacturing_Light_fixes.sql'
 WHERE LastMigrationScriptApplied<'866_IDEMPIERE-246_Manufacturing_Light_fixes.sql'
