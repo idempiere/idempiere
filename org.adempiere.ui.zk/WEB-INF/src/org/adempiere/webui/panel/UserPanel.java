@@ -46,13 +46,15 @@ import org.zkoss.zul.Vbox;
  */
 public class UserPanel extends Vbox implements EventListener<Event>
 {
-
-	private static final long serialVersionUID = -45350536628290540L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6605639697034780065L;
 
 	private Properties ctx;
 
     private ToolBarButton logout = new ToolBarButton();
-    private ToolBarButton role = new ToolBarButton();
+    private ToolBarButton changeRole = new ToolBarButton();
     private ToolBarButton preference = new ToolBarButton();
 
     private Label lblUserNameValue = new Label();
@@ -76,7 +78,8 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	Vbox vbox = new Vbox();
     	this.appendChild(vbox);
 
-    	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName());
+    	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());
+    	lblUserNameValue.addEventListener(Events.ON_CLICK, this);
     	lblUserNameValue.setStyle("text-align:right");
     	LayoutUtils.addSclass("desktop-header-font", lblUserNameValue);
     	vbox.appendChild(lblUserNameValue);
@@ -94,11 +97,11 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	sep.setBar(true);
     	sep.setParent(hbox);
 
-    	role.setLabel(this.getRoleName());
-    	role.addEventListener(Events.ON_CLICK, this);
-    	role.setStyle("text-align:right");
-    	LayoutUtils.addSclass("desktop-header-font", role);
-    	role.setParent(hbox);
+    	changeRole.setLabel(Msg.getMsg(Env.getCtx(), "changeRole"));
+    	changeRole.addEventListener(Events.ON_CLICK, this);
+    	changeRole.setStyle("text-align:right");
+    	LayoutUtils.addSclass("desktop-header-font", changeRole);
+    	changeRole.setParent(hbox);
 
     	sep = new Separator("vertical");
     	sep.setBar(true);
@@ -151,11 +154,16 @@ public class UserPanel extends Vbox implements EventListener<Event>
         {
             SessionManager.logoutSession();
         }
-		else if (role == event.getTarget())
+		else if (lblUserNameValue == event.getTarget())
 		{
 			String roleInfo = MRole.getDefault().toStringX(Env.getCtx());
 			roleInfo = roleInfo.replace(Env.NL, "<br>");
 			Messagebox.showDialog(roleInfo, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
+		}
+		else if (changeRole == event.getTarget())
+		{
+			MUser user = MUser.get(ctx);
+			SessionManager.changeRole(user);
 		}
 		else if (preference == event.getTarget())
 		{

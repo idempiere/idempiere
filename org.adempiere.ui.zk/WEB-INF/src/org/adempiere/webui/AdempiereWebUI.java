@@ -19,9 +19,13 @@ package org.adempiere.webui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.util.ServerContext;
@@ -44,6 +48,7 @@ import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -73,12 +78,14 @@ import org.zkoss.zul.Window;
  */
 public class AdempiereWebUI extends Window implements EventListener<Event>, IWebClient
 {
-	public static final String APPLICATION_DESKTOP_KEY = "application.desktop";
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3744725245132180915L;
+	private static final long serialVersionUID = 5616730124927184116L;
+
+	private static final String SAVED_CONTEXT = "saved.context";
+	
+	public static final String APPLICATION_DESKTOP_KEY = "application.desktop";
 
 	public static final String APP_NAME = "iDempiere";
 
@@ -115,11 +122,18 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     public void onCreate()
     {
         this.getPage().setTitle(ThemeManager.getBrowserTitle());
-
-        Properties ctx = Env.getCtx();
-        langSession = Env.getContext(ctx, Env.LANGUAGE);
+        
         SessionManager.setSessionApplication(this);
         Session session = Executions.getCurrent().getDesktop().getSession();
+        Map<String, Object>map = (Map<String, Object>) session.removeAttribute(SAVED_CONTEXT);
+        if (map != null && !map.isEmpty())
+        {
+        	onChangeRole(map);
+        	return;
+        }
+        
+        Properties ctx = Env.getCtx();
+        langSession = Env.getContext(ctx, Env.LANGUAGE);
         if (session.getAttribute(SessionContextListener.SESSION_CTX) == null || !SessionManager.isUserLoggedIn(ctx))
         {
             loginDesktop = new WLogin(this);
@@ -379,6 +393,17 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	}
 
+	private void onChangeRole(Map<String, Object> map) {
+		Locale locale = (Locale) map.get("locale");
+		Properties properties = (Properties) map.get("context");
+        
+		SessionManager.setSessionApplication(this);
+		loginDesktop = new WLogin(this);
+        loginDesktop.createPart(this.getPage());
+        loginDesktop.changeRole(locale, properties);
+		
+	}
+
 	/**
 	 * @param userId
 	 * @return UserPreference
@@ -397,5 +422,41 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	
 	public static boolean isEventThreadEnabled() {
 		return eventThreadEnabled;
+	}
+
+	@Override
+	public void changeRole(MUser user) {
+		Properties properties = new Properties();
+		Env.setContext(properties, Env.AD_CLIENT_ID, Env.getAD_Client_ID(Env.getCtx()));
+		Env.setContext(properties, Env.AD_ORG_ID, Env.getAD_Org_ID(Env.getCtx()));
+		Env.setContext(properties, Env.AD_USER_ID, user.getAD_User_ID());
+		Env.setContext(properties, Env.AD_ROLE_ID, Env.getAD_Role_ID(Env.getCtx()));
+		Env.setContext(properties, Env.AD_ORG_NAME, Env.getContext(Env.getCtx(), Env.AD_ORG_NAME));
+		Env.setContext(properties, Env.M_WAREHOUSE_ID, Env.getContext(Env.getCtx(), Env.M_WAREHOUSE_ID));
+		Env.setContext(properties, BrowserToken.REMEMBER_ME, Env.getContext(Env.getCtx(), BrowserToken.REMEMBER_ME));
+		Env.setContext(properties, UserPreference.LANGUAGE_NAME, Env.getContext(Env.getCtx(), UserPreference.LANGUAGE_NAME));
+		Env.setContext(properties, Env.LANGUAGE, Env.getContext(Env.getCtx(), Env.LANGUAGE));
+		Env.setContext(properties, AEnv.LOCALE, Env.getContext(Env.getCtx(), AEnv.LOCALE));
+		
+		Locale locale = (Locale) Executions.getCurrent().getSession().getAttribute(Attributes.PREFERRED_LOCALE);
+		
+		appDesktop.logout();
+		HttpServletRequest httpRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+		Session session = Executions.getCurrent().getDesktop().getSession();
+		session.getAttributes().clear();
+
+    	AEnv.logout();
+    	((SessionCtrl)session).invalidateNow();
+    	Env.getCtx().clear();
+    	
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("context", properties);
+		map.put("locale", locale);
+		
+		HttpSession newSession = httpRequest.getSession(true);
+		newSession.setAttribute(SAVED_CONTEXT, map);
+		properties.setProperty(SessionContextListener.SERVLET_SESSION_ID, newSession.getId());
+		
+		Executions.sendRedirect("index.zul");
 	}
 }

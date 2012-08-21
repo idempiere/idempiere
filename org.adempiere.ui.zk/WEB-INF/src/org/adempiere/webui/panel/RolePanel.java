@@ -477,6 +477,20 @@ public class RolePanel extends Window implements EventListener, Deferrable
     		Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
     	}
     }
+    
+    public void changeRole(Properties ctx) {
+    	int AD_Client_ID = Env.getAD_Client_ID(ctx);
+    	lstClient.setValue(AD_Client_ID);
+    	updateRoleList();
+    	int AD_Role_ID = Env.getAD_Role_ID(ctx);
+    	lstRole.setValue(AD_Role_ID);
+    	updateOrganisationList();
+    	int AD_Org_ID = Env.getAD_Org_ID(ctx);
+    	lstOrganisation.setValue(AD_Org_ID);
+    	updateWarehouseList();
+    	int M_Warehouse_ID = Env.getContextAsInt(ctx, Env.M_WAREHOUSE_ID);
+    	lstWarehouse.setValue(M_Warehouse_ID);
+    }
 
     /**
      *  validate Roles

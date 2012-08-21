@@ -23,14 +23,19 @@
 
 package org.adempiere.webui.window;
 
+import java.util.Locale;
 import java.util.Properties;
 
 import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.FWindow;
 import org.adempiere.webui.panel.LoginPanel;
 import org.adempiere.webui.panel.RolePanel;
+import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Login;
+import org.zkoss.util.Locales;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -75,7 +80,7 @@ public class LoginWindow extends FWindow implements EventListener
         pnlLogin = new LoginPanel(ctx, this);
     }
 
-    public void loginOk(String userName, String password, boolean show, KeyNamePair[] clientsKNPairs)
+    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
     {
         pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs);
         this.getChildren().clear();
@@ -117,5 +122,17 @@ public class LoginWindow extends FWindow implements EventListener
                loginPanel.validateLogin();
            }
        }
+    }
+    
+    public void changeRole(Locale locale, Properties ctx)
+    {
+    	Env.setCtx(ctx);
+    	getDesktop().getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
+    	Locales.setThreadLocal(locale);    	
+    	Login login = new Login(Env.getCtx());
+    	loginOk(MUser.getNameOfUser(Env.getAD_User_ID(ctx)), true, login.getClients());
+    	getDesktop().getSession().setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
+    	
+    	pnlRole.changeRole(ctx);
     }
 }

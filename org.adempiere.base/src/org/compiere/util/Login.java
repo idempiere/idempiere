@@ -848,22 +848,22 @@ public class Login
 
 		if (m_ctx == null || org == null)
 			throw new IllegalArgumentException("Required parameter missing");
-		if (Env.getContext(m_ctx,"#AD_Client_ID").length() == 0)
+		if (Env.getContext(m_ctx,Env.AD_CLIENT_ID).length() == 0)
 			throw new UnsupportedOperationException("Missing Context #AD_Client_ID");
-		if (Env.getContext(m_ctx,"#AD_User_ID").length() == 0)
+		if (Env.getContext(m_ctx,Env.AD_USER_ID).length() == 0)
 			throw new UnsupportedOperationException("Missing Context #AD_User_ID");
-		if (Env.getContext(m_ctx,"#AD_Role_ID").length() == 0)
+		if (Env.getContext(m_ctx,Env.AD_ROLE_ID).length() == 0)
 			throw new UnsupportedOperationException("Missing Context #AD_Role_ID");
 
 		//  Org Info - assumes that it is valid
-		Env.setContext(m_ctx, "#AD_Org_ID", org.getKey());
-		Env.setContext(m_ctx, "#AD_Org_Name", org.getName());
+		Env.setContext(m_ctx, Env.AD_ORG_ID, org.getKey());
+		Env.setContext(m_ctx, Env.AD_ORG_NAME, org.getName());
 		Ini.setProperty(Ini.P_ORG, org.getName());
 
 		//  Warehouse Info
 		if (warehouse != null)
 		{
-			Env.setContext(m_ctx, "#M_Warehouse_ID", warehouse.getKey());
+			Env.setContext(m_ctx, Env.M_WAREHOUSE_ID, warehouse.getKey());
 			Ini.setProperty(Ini.P_WAREHOUSE, warehouse.getName());
 		}
 
@@ -1475,5 +1475,47 @@ public class Login
 		Ini.setProperty(Ini.P_CLIENT, client.getName());
 		return retValue;
 	}   //  getRoles
+	
+    public KeyNamePair[] getClients() {
+		
+		if (Env.getContext(m_ctx,"#AD_User_ID").length() == 0){
+			throw new UnsupportedOperationException("Missing Context #AD_User_ID");
+		}
+		
+		int AD_User_ID = Env.getContextAsInt(m_ctx, "#AD_User_ID");
+		KeyNamePair[] retValue = null;
+		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
+		StringBuffer sql= new StringBuffer("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
+				      sql.append(" FROM AD_User_Roles ur")
+                         .append(" INNER JOIN AD_User u on (ur.AD_User_ID=u.AD_User_ID)")
+                         .append(" INNER JOIN AD_Client cli on (ur.AD_Client_ID=cli.AD_Client_ID)")
+                         .append(" WHERE ur.IsActive='Y'")
+                         .append(" AND u.IsActive='Y'")
+                         .append(" AND u.AD_User_ID=?");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement(sql.toString(),null);
+			pstmt.setInt(1, AD_User_ID);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next() && rs != null) {
+				int AD_Client_ID = rs.getInt(1);
+				String Name = rs.getString(2);
+				KeyNamePair p = new KeyNamePair(AD_Client_ID, Name);
+				clientList.add(p);				
+			}
+			retValue = new KeyNamePair[clientList.size()];
+			clientList.toArray(retValue);
+			
+		} catch (SQLException ex) {
+			log.log(Level.SEVERE, sql.toString(), ex);
+			retValue = null;
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		return retValue;		
+	}
 	
 }	//	Login

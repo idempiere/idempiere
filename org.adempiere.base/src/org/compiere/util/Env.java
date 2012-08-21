@@ -72,6 +72,18 @@ import org.compiere.process.SvrProcess;
  */
 public final class Env
 {
+	public static final String AD_ROLE_ID = "#AD_Role_ID";
+
+	public static final String AD_USER_ID = "#AD_User_ID";
+
+	public static final String AD_ORG_ID = "#AD_Org_ID";
+
+	public static final String AD_CLIENT_ID = "#AD_Client_ID";
+	
+	public static final String AD_ORG_NAME = "#AD_Org_Name";
+	
+	public static final String M_WAREHOUSE_ID = "#M_Warehouse_ID";
+
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
@@ -863,7 +875,7 @@ public final class Env
 	 */
 	public static int getAD_Client_ID (Properties ctx)
 	{
-		return Env.getContextAsInt(ctx, "#AD_Client_ID");
+		return Env.getContextAsInt(ctx, AD_CLIENT_ID);
 	}	//	getAD_Client_ID
 
 	/**
@@ -873,7 +885,7 @@ public final class Env
 	 */
 	public static int getAD_Org_ID (Properties ctx)
 	{
-		return Env.getContextAsInt(ctx, "#AD_Org_ID");
+		return Env.getContextAsInt(ctx, AD_ORG_ID);
 	}	//	getAD_Org_ID
 
 	/**
@@ -883,7 +895,7 @@ public final class Env
 	 */
 	public static int getAD_User_ID (Properties ctx)
 	{
-		return Env.getContextAsInt(ctx, "#AD_User_ID");
+		return Env.getContextAsInt(ctx, AD_USER_ID);
 	}	//	getAD_User_ID
 
 	/**
@@ -893,7 +905,7 @@ public final class Env
 	 */
 	public static int getAD_Role_ID (Properties ctx)
 	{
-		return Env.getContextAsInt(ctx, "#AD_Role_ID");
+		return Env.getContextAsInt(ctx, AD_ROLE_ID);
 	}	//	getAD_Role_ID
 
 	/**************************************************************************

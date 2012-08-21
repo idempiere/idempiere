@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.desktop.IDesktop;
+import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Execution;
@@ -94,4 +95,11 @@ public class SessionManager
     	if (app != null)
     		app.logout();
     }
+    
+    public static void changeRole(MUser user){
+    	IWebClient app = getSessionApplication();
+    	if (app != null)
+    		app.changeRole(user);
+    }
+
 }

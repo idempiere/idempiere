@@ -14,6 +14,7 @@ package org.adempiere.webui;
 
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.util.UserPreference;
+import org.compiere.model.MUser;
 
 /**
  * 
@@ -50,5 +51,10 @@ public interface IWebClient {
 	 * @return UserPreference
 	 */
 	public UserPreference getUserPreference();
+	
+	/**
+	 * change Role
+	 */
+	public void changeRole(MUser user);
 
 }

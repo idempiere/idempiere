@@ -194,10 +194,14 @@ public class SessionContextListener implements ExecutionInit,
 	public void complete(Component comp, Event evt) throws Exception
 	{
 		//in servlet thread
-		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
-    	{
-    		setupExecutionContextFromSession(Executions.getCurrent());
-    	}
+		try {
+			if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
+	    	{
+	    		setupExecutionContextFromSession(Executions.getCurrent());
+	    	}
+		} catch (IllegalStateException e) {
+			//safe to ignore session already invalidated
+		}
 	}
 
     /**

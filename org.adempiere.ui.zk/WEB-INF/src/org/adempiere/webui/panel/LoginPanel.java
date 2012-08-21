@@ -492,7 +492,7 @@ public class LoginPanel extends Window implements EventListener
         	Language language = findLanguage(langName);
             Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName()); // Elaine 2009/02/06
 
-            wndLogin.loginOk(userId, userPassword, chkSelectRole.isChecked(), clientsKNPairs);
+            wndLogin.loginOk(userId, chkSelectRole.isChecked(), clientsKNPairs);
 
             Locale locale = language.getLocale();
             currSess.setAttribute(Attributes.PREFERRED_LOCALE, locale);
