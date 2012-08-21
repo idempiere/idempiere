@@ -86,9 +86,9 @@ public class SetupWizard
 			note = null;
 		if (wizardStatus != null && wizardStatus.length() == 0)
 			wizardStatus = null;
-		if ((wp.getNote() == null && note != null) || (note != null && note.equals(wp.getNote())))
+		if ((wp.getNote() == null && note != null) || (note != null && !note.equals(wp.getNote())))
 			wp.setNote(note);
-		if ((wp.getWizardStatus() == null && wizardStatus != null) || (wizardStatus != null && wizardStatus.equals(wp.getWizardStatus())))
+		if ((wp.getWizardStatus() == null && wizardStatus != null) || (wizardStatus != null && !wizardStatus.equals(wp.getWizardStatus())))
 			wp.setWizardStatus(wizardStatus);
 		if (wp.is_Changed())
 			wp.saveEx();
