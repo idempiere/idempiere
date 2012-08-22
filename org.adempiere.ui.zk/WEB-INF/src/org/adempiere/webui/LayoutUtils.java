@@ -19,6 +19,7 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Window;
 
 /**
  * 
@@ -71,5 +72,35 @@ public final class LayoutUtils {
 		div.appendChild(label);
 		
 		return div;
+	}
+
+	/**
+	 * open popup window overlapping the ref component
+	 * @param ref
+	 * @param window
+	 */
+	public static void openPopupWindow(Component ref, Window window) {
+		openPopupWindow(ref, window, "overlap");
+	}
+	
+	/**
+	 * open popup window relative to the ref component
+	 * @param ref
+	 * @param window
+	 * @param position
+	 */
+	public static void openPopupWindow(Component ref, Window window, String position) {
+		if (window.getPage() == null)
+			window.setPage(ref.getPage());
+		StringBuilder script = new StringBuilder();
+		script.append("_idempiere_popup_window('#")
+			.append(ref.getUuid())
+			.append("','#")
+			.append(window.getUuid())
+			.append("','")
+			.append(position)
+			.append("');");
+		window.doPopup();
+		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
 	}
 }

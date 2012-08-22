@@ -10,13 +10,10 @@ function _ad_deferBDL(uuid) {
 	if (cmp) { cmp.resize(); }	
 }
 
-function ad_closeBuble(uuid) {
-	var cmp = zk.Widget.$(uuid); 
-	if (cmp) {
-		for(var i=0;i<cmp.bandInfos.length;i++){
-			cmp.instance.getBand(i).closeBubble();
-		}
-	}
+function _ad_closeBuble(link) {
+	var parent = link.parentsUntil("simileAjax-bubble-contentContainer");
+	var btn = parent.next();
+	btn.click();
 }
 
 function scrollToRow(uuid){  
@@ -26,4 +23,3 @@ function scrollToRow(uuid){
 	 	cmp.focus();
 	 }
 }
- 

@@ -7,6 +7,7 @@ import java.text.NumberFormat;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -162,7 +163,8 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 						processNewValue(oldValue, ma);	
 					}
 				});
-				AEnv.showWindow(vad);				
+				vad.setTitle(null);
+				LayoutUtils.openPopupWindow(this.getComponent().getTextbox(), vad);
 			}
 			//	Start InfoSchedule directly
 			else

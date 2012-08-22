@@ -597,3 +597,7 @@ div.z-vfiletree-body td.menu-tree-cell {
 .z-panel-hl .z-panel-header {
 	padding: 0 0 2px 0;
 }
+
+div.simileAjax-bubble-container {
+	z-index: 2800 !important;
+}

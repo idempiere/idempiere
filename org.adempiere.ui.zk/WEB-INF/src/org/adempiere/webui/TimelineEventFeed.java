@@ -123,11 +123,13 @@ public class TimelineEventFeed extends HttpServlet {
 			}
 			if (slot.getMAssignment() != null) {
 				//encode assignment id as coordinate x
-				String link = "<a href=\"javascript:void(0)\" onclick=\"" 
-					+ "ad_closeBuble('" + timeLineId + "');"
-				    + "zkau.send({uuid: '" + uuid + "', cmd: 'onClick', data: " 
-				    + "[" + slot.getMAssignment().getS_ResourceAssignment_ID() + ", 0]" 
-				    + ", ctl: true})\">Edit</a>";
+				String link = "<a href=\"javascript:void(0)\" onclick=\""
+					+ "_ad_closeBuble(jq(this));"
+					+ "var widget = zk.Widget.$('" + uuid+"');"
+					+ "var event = new zk.Event(widget, 'onClick', {x:" 
+					+ slot.getMAssignment().getS_ResourceAssignment_ID() + ",y: 0}, {toServer: true});"
+					+ "zAu.send(event);"
+				    + "\">Edit</a>";
 				xml.append("\r\n").append(XMLs.encodeText(link));
 			}
 			xml.append("\r\n").append("</event>").append("\r\n");

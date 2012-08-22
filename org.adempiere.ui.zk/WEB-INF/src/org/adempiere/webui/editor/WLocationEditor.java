@@ -20,6 +20,7 @@ package org.adempiere.webui.editor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Locationbox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -189,10 +190,8 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		            setValue(ii);					
 				}
 			});
-            getComponent().appendChild(ld);
-            ld.setPosition("parent");
             ld.setTitle(null);
-            ld.doPopup();
+            LayoutUtils.openPopupWindow(getComponent(), ld);
         }
     }
     

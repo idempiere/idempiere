@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.EditorBox;
@@ -249,10 +250,8 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 				}
 			});
 			//	display
-			getComponent().appendChild(ld);
-			ld.setPosition("parent");
 			ld.setTitle(null);
-			ld.doPopup();
+			LayoutUtils.openPopupWindow(getComponent(), ld);
 		}
 	}
 	
