@@ -37,6 +37,7 @@ public class SystemIDs
 	public final static int COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID = 8418;
 	public final static int COLUMN_S_RESOURCE_S_RESOURCETYPE_ID = 6851;
 	public final static int COLUMN_S_RESOURCEASSIGNMENT_S_RESOURCE_ID = 6826;
+	public final static int COLUMN_WIZARDSTATUS = 200310;
 
 	public final static int COUNTRY_US = 100;
 	public final static int COUNTRY_JAPAN = 216;
@@ -113,6 +114,7 @@ public class SystemIDs
 	public final static int REFERENCE_PAYMENTRULE = 195;
 	public final static int REFERENCE_POSTING_TYPE = 125;
 	public final static int REFERENCE_YESNO = 319;
+	public final static int REFERENCE_WIZARDSTATUS = 200003;
 
 	public final static int TABLE_AD_TABLE = 100;
 	public final static int TABLE_AD_WF_PROCESS = 645;

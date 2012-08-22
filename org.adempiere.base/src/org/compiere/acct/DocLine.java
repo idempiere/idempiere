@@ -620,12 +620,12 @@ public class DocLine
 	}	//	isProductionBOM
 	
 	/**
-	 *  Get Production Plan
-	 *  @return M_ProductionPlan_ID
+	 *  Get Production Header
+	 *  @return M_Production_ID
 	 */
-	public int getM_ProductionPlan_ID()
+	public int getM_Production_ID()
 	{
-		int index = p_po.get_ColumnIndex("M_ProductionPlan_ID");
+		int index = p_po.get_ColumnIndex("M_Production_ID");
 		if (index != -1)
 		{
 			Integer ii = (Integer)p_po.get_Value(index);
@@ -633,7 +633,7 @@ public class DocLine
 				return ii.intValue();
 		}
 		return 0;
-	}   //  getM_ProductionPlan_ID
+	}   //  getM_Production_ID
 
 	/**
 	 *  Get Order Line Reference

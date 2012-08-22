@@ -33,7 +33,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120821L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -49,6 +49,12 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 			setIsExcludeAutoDelivery (false);
 // N
 			setIsInvoicePrintDetails (false);
+			setIsKanban (false);
+// N
+			setIsManufactured (false);
+// N
+			setIsPhantom (false);
+// N
 			setIsPickListPrintDetails (false);
 			setIsPurchased (true);
 // Y
@@ -119,9 +125,45 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return (String)get_Value(COLUMNNAME_Classification);
 	}
 
-	public I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
+	/** Set Copy From.
+		@param CopyFrom 
+		Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom)
+	{
+		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
+	}
+
+	/** Get Copy From.
+		@return Copy From Record
+	  */
+	public String getCopyFrom () 
+	{
+		return (String)get_Value(COLUMNNAME_CopyFrom);
+	}
+
+	/** Set Standard Cost.
+		@param CostStandard 
+		Standard Costs
+	  */
+	public void setCostStandard (BigDecimal CostStandard)
+	{
+		throw new IllegalArgumentException ("CostStandard is virtual column");	}
+
+	/** Get Standard Cost.
+		@return Standard Costs
+	  */
+	public BigDecimal getCostStandard () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostStandard);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
     {
-		return (I_C_RevenueRecognition)MTable.get(getCtx(), I_C_RevenueRecognition.Table_Name)
+		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_Name)
 			.getPO(getC_RevenueRecognition_ID(), get_TrxName());	}
 
 	/** Set Revenue Recognition.
@@ -147,9 +189,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_SubscriptionType getC_SubscriptionType() throws RuntimeException
+	public org.compiere.model.I_C_SubscriptionType getC_SubscriptionType() throws RuntimeException
     {
-		return (I_C_SubscriptionType)MTable.get(getCtx(), I_C_SubscriptionType.Table_Name)
+		return (org.compiere.model.I_C_SubscriptionType)MTable.get(getCtx(), org.compiere.model.I_C_SubscriptionType.Table_Name)
 			.getPO(getC_SubscriptionType_ID(), get_TrxName());	}
 
 	/** Set Subscription Type.
@@ -175,9 +217,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_TaxCategory getC_TaxCategory() throws RuntimeException
+	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
     {
-		return (I_C_TaxCategory)MTable.get(getCtx(), I_C_TaxCategory.Table_Name)
+		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_Name)
 			.getPO(getC_TaxCategory_ID(), get_TrxName());	}
 
 	/** Set Tax Category.
@@ -203,9 +245,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_UOM getC_UOM() throws RuntimeException
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
     {
-		return (I_C_UOM)MTable.get(getCtx(), I_C_UOM.Table_Name)
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
 			.getPO(getC_UOM_ID(), get_TrxName());	}
 
 	/** Set UOM.
@@ -521,6 +563,78 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return false;
 	}
 
+	/** Set Kanban controlled.
+		@param IsKanban 
+		This part is Kanban controlled
+	  */
+	public void setIsKanban (boolean IsKanban)
+	{
+		set_Value (COLUMNNAME_IsKanban, Boolean.valueOf(IsKanban));
+	}
+
+	/** Get Kanban controlled.
+		@return This part is Kanban controlled
+	  */
+	public boolean isKanban () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsKanban);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Manufactured.
+		@param IsManufactured 
+		This product is manufactured
+	  */
+	public void setIsManufactured (boolean IsManufactured)
+	{
+		set_Value (COLUMNNAME_IsManufactured, Boolean.valueOf(IsManufactured));
+	}
+
+	/** Get Manufactured.
+		@return This product is manufactured
+	  */
+	public boolean isManufactured () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsManufactured);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Phantom.
+		@param IsPhantom 
+		Phantom Component
+	  */
+	public void setIsPhantom (boolean IsPhantom)
+	{
+		set_Value (COLUMNNAME_IsPhantom, Boolean.valueOf(IsPhantom));
+	}
+
+	/** Get Phantom.
+		@return Phantom Component
+	  */
+	public boolean isPhantom () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsPhantom);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Print detail records on pick list.
 		@param IsPickListPrintDetails 
 		Print detail BOM elements on the pick list
@@ -733,9 +847,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_AttributeSet getM_AttributeSet() throws RuntimeException
+	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
     {
-		return (I_M_AttributeSet)MTable.get(getCtx(), I_M_AttributeSet.Table_Name)
+		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_Name)
 			.getPO(getM_AttributeSet_ID(), get_TrxName());	}
 
 	/** Set Attribute Set.
@@ -789,9 +903,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_FreightCategory getM_FreightCategory() throws RuntimeException
+	public org.compiere.model.I_M_FreightCategory getM_FreightCategory() throws RuntimeException
     {
-		return (I_M_FreightCategory)MTable.get(getCtx(), I_M_FreightCategory.Table_Name)
+		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_Name)
 			.getPO(getM_FreightCategory_ID(), get_TrxName());	}
 
 	/** Set Freight Category.
@@ -845,9 +959,34 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Product_Category getM_Product_Category() throws RuntimeException
+	public I_M_PartType getM_PartType() throws RuntimeException
     {
-		return (I_M_Product_Category)MTable.get(getCtx(), I_M_Product_Category.Table_Name)
+		return (I_M_PartType)MTable.get(getCtx(), I_M_PartType.Table_Name)
+			.getPO(getM_PartType_ID(), get_TrxName());	}
+
+	/** Set Part Type.
+		@param M_PartType_ID Part Type	  */
+	public void setM_PartType_ID (int M_PartType_ID)
+	{
+		if (M_PartType_ID < 1) 
+			set_Value (COLUMNNAME_M_PartType_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_PartType_ID, Integer.valueOf(M_PartType_ID));
+	}
+
+	/** Get Part Type.
+		@return Part Type	  */
+	public int getM_PartType_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_PartType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
 			.getPO(getM_Product_Category_ID(), get_TrxName());	}
 
 	/** Set Product Category.
@@ -894,6 +1033,20 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_Product_UU.
+		@param M_Product_UU M_Product_UU	  */
+	public void setM_Product_UU (String M_Product_UU)
+	{
+		set_Value (COLUMNNAME_M_Product_UU, M_Product_UU);
+	}
+
+	/** Get M_Product_UU.
+		@return M_Product_UU	  */
+	public String getM_Product_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_Product_UU);
 	}
 
 	/** Set Name.
@@ -964,9 +1117,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return (String)get_Value(COLUMNNAME_ProductType);
 	}
 
-	public I_R_MailText getR_MailText() throws RuntimeException
+	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
     {
-		return (I_R_MailText)MTable.get(getCtx(), I_R_MailText.Table_Name)
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
 			.getPO(getR_MailText_ID(), get_TrxName());	}
 
 	/** Set Mail Template.
@@ -992,9 +1145,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_User getSalesRep() throws RuntimeException
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSalesRep_ID(), get_TrxName());	}
 
 	/** Set Sales Representative.
@@ -1020,9 +1173,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_S_ExpenseType getS_ExpenseType() throws RuntimeException
+	public org.compiere.model.I_S_ExpenseType getS_ExpenseType() throws RuntimeException
     {
-		return (I_S_ExpenseType)MTable.get(getCtx(), I_S_ExpenseType.Table_Name)
+		return (org.compiere.model.I_S_ExpenseType)MTable.get(getCtx(), org.compiere.model.I_S_ExpenseType.Table_Name)
 			.getPO(getS_ExpenseType_ID(), get_TrxName());	}
 
 	/** Set Expense Type.
@@ -1125,9 +1278,9 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return (String)get_Value(COLUMNNAME_SKU);
 	}
 
-	public I_S_Resource getS_Resource() throws RuntimeException
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
     {
-		return (I_S_Resource)MTable.get(getCtx(), I_S_Resource.Table_Name)
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
 			.getPO(getS_Resource_ID(), get_TrxName());	}
 
 	/** Set Resource.

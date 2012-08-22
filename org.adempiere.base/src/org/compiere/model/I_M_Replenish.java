@@ -31,7 +31,7 @@ public interface I_M_Replenish
     public static final String Table_Name = "M_Replenish";
 
     /** AD_Table_ID=249 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 249;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -130,7 +130,7 @@ public interface I_M_Replenish
 	  */
 	public int getM_Locator_ID();
 
-	public I_M_Locator getM_Locator() throws RuntimeException;
+	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -145,7 +145,16 @@ public interface I_M_Replenish
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_Replenish_UU */
+    public static final String COLUMNNAME_M_Replenish_UU = "M_Replenish_UU";
+
+	/** Set M_Replenish_UU	  */
+	public void setM_Replenish_UU (String M_Replenish_UU);
+
+	/** Get M_Replenish_UU	  */
+	public String getM_Replenish_UU();
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -160,7 +169,7 @@ public interface I_M_Replenish
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name M_WarehouseSource_ID */
     public static final String COLUMNNAME_M_WarehouseSource_ID = "M_WarehouseSource_ID";
@@ -175,7 +184,16 @@ public interface I_M_Replenish
 	  */
 	public int getM_WarehouseSource_ID();
 
-	public I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
+
+    /** Column name QtyBatchSize */
+    public static final String COLUMNNAME_QtyBatchSize = "QtyBatchSize";
+
+	/** Set Qty Batch Size	  */
+	public void setQtyBatchSize (BigDecimal QtyBatchSize);
+
+	/** Get Qty Batch Size	  */
+	public BigDecimal getQtyBatchSize();
 
     /** Column name ReplenishType */
     public static final String COLUMNNAME_ReplenishType = "ReplenishType";

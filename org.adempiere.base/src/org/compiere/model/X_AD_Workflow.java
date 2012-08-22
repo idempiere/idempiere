@@ -33,7 +33,7 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120817L;
 
     /** Standard Constructor */
     public X_AD_Workflow (Properties ctx, int AD_Workflow_ID, String trxName)
@@ -124,9 +124,9 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		return (String)get_Value(COLUMNNAME_AccessLevel);
 	}
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -152,9 +152,9 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_WF_Node getAD_WF_Node() throws RuntimeException
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
     {
-		return (I_AD_WF_Node)MTable.get(getCtx(), I_AD_WF_Node.Table_Name)
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
 			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
 
 	/** Set Node.
@@ -180,9 +180,9 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
+	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
     {
-		return (I_AD_WF_Responsible)MTable.get(getCtx(), I_AD_WF_Responsible.Table_Name)
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_Name)
 			.getPO(getAD_WF_Responsible_ID(), get_TrxName());	}
 
 	/** Set Workflow Responsible.
@@ -231,9 +231,9 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException
+	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException
     {
-		return (I_AD_WorkflowProcessor)MTable.get(getCtx(), I_AD_WorkflowProcessor.Table_Name)
+		return (org.compiere.model.I_AD_WorkflowProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_WorkflowProcessor.Table_Name)
 			.getPO(getAD_WorkflowProcessor_ID(), get_TrxName());	}
 
 	/** Set Workflow Processor.
@@ -257,6 +257,20 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Workflow_UU.
+		@param AD_Workflow_UU AD_Workflow_UU	  */
+	public void setAD_Workflow_UU (String AD_Workflow_UU)
+	{
+		set_Value (COLUMNNAME_AD_Workflow_UU, AD_Workflow_UU);
+	}
+
+	/** Get AD_Workflow_UU.
+		@return AD_Workflow_UU	  */
+	public String getAD_Workflow_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Workflow_UU);
 	}
 
 	/** Set Author.
@@ -724,9 +738,9 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_S_Resource getS_Resource() throws RuntimeException
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
     {
-		return (I_S_Resource)MTable.get(getCtx(), I_S_Resource.Table_Name)
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
 			.getPO(getS_Resource_ID(), get_TrxName());	}
 
 	/** Set Resource.
@@ -889,6 +903,8 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	public static final String WORKFLOWTYPE_Manufacturing = "M";
 	/** Quality = Q */
 	public static final String WORKFLOWTYPE_Quality = "Q";
+	/** Wizard = W */
+	public static final String WORKFLOWTYPE_Wizard = "W";
 	/** Set Workflow Type.
 		@param WorkflowType 
 		Type of Workflow

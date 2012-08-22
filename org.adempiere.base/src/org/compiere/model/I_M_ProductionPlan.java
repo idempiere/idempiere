@@ -31,7 +31,7 @@ public interface I_M_ProductionPlan
     public static final String Table_Name = "M_ProductionPlan";
 
     /** AD_Table_ID=385 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 385;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -145,7 +145,7 @@ public interface I_M_ProductionPlan
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Production_ID */
     public static final String COLUMNNAME_M_Production_ID = "M_Production_ID";
@@ -160,7 +160,7 @@ public interface I_M_ProductionPlan
 	  */
 	public int getM_Production_ID();
 
-	public I_M_Production getM_Production() throws RuntimeException;
+	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException;
 
     /** Column name M_ProductionPlan_ID */
     public static final String COLUMNNAME_M_ProductionPlan_ID = "M_ProductionPlan_ID";
@@ -174,6 +174,15 @@ public interface I_M_ProductionPlan
 	  * Plan for how a product is produced
 	  */
 	public int getM_ProductionPlan_ID();
+
+    /** Column name M_ProductionPlan_UU */
+    public static final String COLUMNNAME_M_ProductionPlan_UU = "M_ProductionPlan_UU";
+
+	/** Set M_ProductionPlan_UU	  */
+	public void setM_ProductionPlan_UU (String M_ProductionPlan_UU);
+
+	/** Get M_ProductionPlan_UU	  */
+	public String getM_ProductionPlan_UU();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

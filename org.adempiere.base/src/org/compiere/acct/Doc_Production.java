@@ -23,7 +23,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MAcctSchemaDefault;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_Production;
@@ -79,30 +81,16 @@ public class Doc_Production extends Doc
 	{
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
 		//	Production
-		//	-- ProductionPlan
-		//	-- -- ProductionLine	- the real level
-		String sqlPP = "SELECT * FROM M_ProductionPlan pp "
-			+ "WHERE pp.M_Production_ID=? "
-			+ "ORDER BY pp.Line";
+		//	-- ProductionLine	- the real level
 		String sqlPL = "SELECT * FROM M_ProductionLine pl "
-			+ "WHERE pl.M_ProductionPlan_ID=? "
+			+ "WHERE pl.M_Production_ID=? "
 			+ "ORDER BY pl.Line";
 
 		try
 		{
-			PreparedStatement pstmtPP = DB.prepareStatement(sqlPP, getTrxName());
-			pstmtPP.setInt(1, get_ID());
-			ResultSet rsPP = pstmtPP.executeQuery();
-			//
-			while (rsPP.next())
-			{
-				int M_Product_ID = rsPP.getInt("M_Product_ID");
-				int M_ProductionPlan_ID = rsPP.getInt("M_ProductionPlan_ID");
-				//
-				try
-				{
+			
 					PreparedStatement pstmtPL = DB.prepareStatement(sqlPL, getTrxName());
-					pstmtPL.setInt(1, M_ProductionPlan_ID);
+					pstmtPL.setInt(1,get_ID());
 					ResultSet rsPL = pstmtPL.executeQuery();
 					while (rsPL.next())
 					{
@@ -115,7 +103,7 @@ public class Doc_Production extends Doc
 						DocLine docLine = new DocLine (line, this);
 						docLine.setQty (line.getMovementQty(), false);
 						//	Identify finished BOM Product
-						docLine.setProductionBOM(line.getM_Product_ID() == M_Product_ID);
+						docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
 						//
 						log.fine(docLine.toString());
 						list.add (docLine);
@@ -127,15 +115,7 @@ public class Doc_Production extends Doc
 				{
 					log.log(Level.SEVERE, sqlPL, ee);
 				}
-			}
-			rsPP.close();
-			pstmtPP.close();
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sqlPP, e);
-		}
-		//	Return Array
+			
 		DocLine[] dl = new DocLine[list.size()];
 		list.toArray(dl);
 		return dl;
@@ -175,6 +155,7 @@ public class Doc_Production extends Doc
 			//	Calculate Costs
 			BigDecimal costs = null;
 
+			/* adaxa-pb don't use cost details
 			// MZ Goodwill
 			// if Production CostDetail exist then get Cost from Cost Detail
 			MCostDetail cd = MCostDetail.get (as.getCtx(), "M_ProductionLine_ID=?",
@@ -182,28 +163,48 @@ public class Doc_Production extends Doc
 			if (cd != null)
 				costs = cd.getAmt();
 			else
+			*/
 			{
-				if (line.isProductionBOM())
+				int variedHeader = 0;
+				BigDecimal variance = null;
+				costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
+				if (line.isProductionBOM() && line.getM_Production_ID() != variedHeader ) 
 				{
 					//	Get BOM Cost - Sum of individual lines
 					BigDecimal bomCost = Env.ZERO;
 					for (int ii = 0; ii < p_lines.length; ii++)
 					{
 						DocLine line0 = p_lines[ii];
-						if (line0.getM_ProductionPlan_ID() != line.getM_ProductionPlan_ID())
+						if (line0.getM_Production_ID() != line.getM_Production_ID())
 							continue;
+						//pb changed this 20/10/06 
 						if (!line0.isProductionBOM())
-							bomCost = bomCost.add(line0.getProductCosts(as, line.getAD_Org_ID(), false));
+						bomCost = bomCost.add(line0.getProductCosts(as, line.getAD_Org_ID(), false).setScale(2,BigDecimal.ROUND_HALF_UP));
 					}
-					costs = bomCost.negate();
-					// [ 1965015 ] Posting not balanced when is producing more than 1 product - Globalqss 2008/06/26
-					X_M_ProductionPlan mpp = new X_M_ProductionPlan(getCtx(), line.getM_ProductionPlan_ID(), getTrxName());
-				    if (line.getQty() != mpp.getProductionQty()) {
-				    	// if the line doesn't correspond with the whole qty produced then apply prorate
-				    	// costs = costs * line_qty / production_qty
-				    	costs = costs.multiply(line.getQty());
-				    	costs = costs.divide(mpp.getProductionQty(), as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
-				    }
+					variance = (costs.setScale(2,BigDecimal.ROUND_HALF_UP)).subtract(bomCost.negate());
+					//TODO use currency precision instead of hardcoded 2 
+					// get variance account
+					int validCombination = MAcctSchemaDefault.get(getCtx(),
+							as.get_ID()).getP_RateVariance_Acct();
+					MAccount base = MAccount.get(getCtx(), validCombination);
+					MAccount account = MAccount.get(getCtx(),as.getAD_Client_ID(),as.getAD_Org_ID(),
+							as.get_ID(), base.getAccount_ID(), 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+					// 
+					// only post variance if it's not zero 
+					if (variance.compareTo(new BigDecimal("0.00")) != 0) 
+					{
+						//post variance 
+						fl = fact.createLine(line, 
+								account, 
+								as.getC_Currency_ID(), variance.negate()); 
+						fl.setQty(Env.ZERO);
+						if (fl == null) 
+						{ 
+							p_Error = "Couldn't post variance " + line.getLine() + " - " + line; 
+							return null; 
+						}
+					}
+					// costs = bomCost.negate();
 				}
 				else
 					costs = line.getProductCosts(as, line.getAD_Org_ID(), false);

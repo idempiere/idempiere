@@ -31,7 +31,7 @@ public interface I_M_Production
     public static final String Table_Name = "M_Production";
 
     /** AD_Table_ID=325 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 325;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,22 @@ public interface I_M_Production
 	  */
 	public int getC_Activity_ID();
 
-	public I_C_Activity getC_Activity() throws RuntimeException;
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
+
+    /** Column name C_BPartner_ID */
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
+
+	/** Set Business Partner .
+	  * Identifies a Business Partner
+	  */
+	public void setC_BPartner_ID (int C_BPartner_ID);
+
+	/** Get Business Partner .
+	  * Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID();
+
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
     public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
@@ -103,7 +118,22 @@ public interface I_M_Production
 	  */
 	public int getC_Campaign_ID();
 
-	public I_C_Campaign getC_Campaign() throws RuntimeException;
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
+
+    /** Column name C_OrderLine_ID */
+    public static final String COLUMNNAME_C_OrderLine_ID = "C_OrderLine_ID";
+
+	/** Set Sales Order Line.
+	  * Sales Order Line
+	  */
+	public void setC_OrderLine_ID (int C_OrderLine_ID);
+
+	/** Get Sales Order Line.
+	  * Sales Order Line
+	  */
+	public int getC_OrderLine_ID();
+
+	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -118,7 +148,7 @@ public interface I_M_Production
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -136,6 +166,32 @@ public interface I_M_Production
 	  */
 	public int getCreatedBy();
 
+    /** Column name CreateFrom */
+    public static final String COLUMNNAME_CreateFrom = "CreateFrom";
+
+	/** Set Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public void setCreateFrom (String CreateFrom);
+
+	/** Get Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateFrom();
+
+    /** Column name DatePromised */
+    public static final String COLUMNNAME_DatePromised = "DatePromised";
+
+	/** Set Date Promised.
+	  * Date Order was promised
+	  */
+	public void setDatePromised (Timestamp DatePromised);
+
+	/** Get Date Promised.
+	  * Date Order was promised
+	  */
+	public Timestamp getDatePromised();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -148,6 +204,19 @@ public interface I_M_Production
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name DocumentNo */
+    public static final String COLUMNNAME_DocumentNo = "DocumentNo";
+
+	/** Set Document No.
+	  * Document sequence number of the document
+	  */
+	public void setDocumentNo (String DocumentNo);
+
+	/** Get Document No.
+	  * Document sequence number of the document
+	  */
+	public String getDocumentNo();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -162,14 +231,42 @@ public interface I_M_Production
 	  */
 	public boolean isActive();
 
+    /** Column name IsComplete */
+    public static final String COLUMNNAME_IsComplete = "IsComplete";
+
+	/** Set Complete.
+	  * It is complete
+	  */
+	public void setIsComplete (String IsComplete);
+
+	/** Get Complete.
+	  * It is complete
+	  */
+	public String getIsComplete();
+
     /** Column name IsCreated */
     public static final String COLUMNNAME_IsCreated = "IsCreated";
 
 	/** Set Records created	  */
-	public void setIsCreated (boolean IsCreated);
+	public void setIsCreated (String IsCreated);
 
 	/** Get Records created	  */
-	public boolean isCreated();
+	public String getIsCreated();
+
+    /** Column name M_Locator_ID */
+    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
+
+	/** Set Locator.
+	  * Warehouse Locator
+	  */
+	public void setM_Locator_ID (int M_Locator_ID);
+
+	/** Get Locator.
+	  * Warehouse Locator
+	  */
+	public int getM_Locator_ID();
+
+	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name MovementDate */
     public static final String COLUMNNAME_MovementDate = "MovementDate";
@@ -184,6 +281,21 @@ public interface I_M_Production
 	  */
 	public Timestamp getMovementDate();
 
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
     /** Column name M_Production_ID */
     public static final String COLUMNNAME_M_Production_ID = "M_Production_ID";
 
@@ -196,6 +308,15 @@ public interface I_M_Production
 	  * Plan for producing a product
 	  */
 	public int getM_Production_ID();
+
+    /** Column name M_Production_UU */
+    public static final String COLUMNNAME_M_Production_UU = "M_Production_UU";
+
+	/** Set M_Production_UU	  */
+	public void setM_Production_UU (String M_Production_UU);
+
+	/** Get M_Production_UU	  */
+	public String getM_Production_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -258,6 +379,19 @@ public interface I_M_Production
 	/** Get Process Now	  */
 	public boolean isProcessing();
 
+    /** Column name ProductionQty */
+    public static final String COLUMNNAME_ProductionQty = "ProductionQty";
+
+	/** Set Production Quantity.
+	  * Quantity of products to produce
+	  */
+	public void setProductionQty (BigDecimal ProductionQty);
+
+	/** Get Production Quantity.
+	  * Quantity of products to produce
+	  */
+	public BigDecimal getProductionQty();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -287,7 +421,7 @@ public interface I_M_Production
 	  */
 	public int getUser1_ID();
 
-	public I_C_ElementValue getUser1() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
     public static final String COLUMNNAME_User2_ID = "User2_ID";
@@ -302,5 +436,5 @@ public interface I_M_Production
 	  */
 	public int getUser2_ID();
 
-	public I_C_ElementValue getUser2() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 }

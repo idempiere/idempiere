@@ -497,7 +497,7 @@ public class MWFNode extends X_AD_WF_Node
 	/**
 	 * Get Workflow
 	 * @return workflow
-	 * @deprecated please use {@link #getAD_Window()}
+	 * @deprecated please use {@link #getAD_Workflow()}
 	 */
 	public MWorkflow getWorkflow()
 	{
