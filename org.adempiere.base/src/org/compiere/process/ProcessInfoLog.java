@@ -33,7 +33,29 @@ public class ProcessInfoLog implements Serializable
 	 */
 	private static final long serialVersionUID = -4064380205358897097L;
 
+	/**
+	 * 	Create Process Info Log.
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Messagre
+	 */
+	public ProcessInfoLog (int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID)
+	{
+		setLog_ID (Log_ID);
+		setP_ID (P_ID);
+		setP_Date (P_Date);
+		setP_Number (P_Number);
+		setP_Msg (P_Msg);
+		setAd_Table_Id(AD_Table_ID);
+		setRecord_Id(Record_ID);
+		
+	}	//	ProcessInfoLog
 
+	public ProcessInfoLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg , int AD_Table_ID ,int Record_ID)
+	{
+		this (s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID,Record_ID);
+	}
 
 	/**
 	 * 	Create Process Info Log.
@@ -44,7 +66,7 @@ public class ProcessInfoLog implements Serializable
 	 */
 	public ProcessInfoLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
-		this (s_Log_ID++, P_ID, P_Date, P_Number, P_Msg);
+		this (s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, 0,0);
 	}	//	ProcessInfoLog
 
 	/**
@@ -57,11 +79,7 @@ public class ProcessInfoLog implements Serializable
 	 */
 	public ProcessInfoLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
-		setLog_ID (Log_ID);
-		setP_ID (P_ID);
-		setP_Date (P_Date);
-		setP_Number (P_Number);
-		setP_Msg (P_Msg);
+		this (Log_ID, P_ID, P_Date, P_Number, P_Msg, 0,0);
 	}	//	ProcessInfoLog
 
 	private static int	s_Log_ID = 0;
@@ -71,9 +89,24 @@ public class ProcessInfoLog implements Serializable
 	private Timestamp 	m_P_Date;
 	private BigDecimal	m_P_Number;
 	private String 		m_P_Msg;
+	private int 		m_AD_Table_ID;
+	private int 		m_Record_ID;
 
+	public int getAd_Table_Id() {
+		return m_AD_Table_ID;
+	}
 
+	public void setAd_Table_Id(int tableId) {
+		this.m_AD_Table_ID = tableId;
+	}
 
+	public int getRecord_Id() {
+		return m_Record_ID;
+	}
+
+	public void setRecord_Id(int recordId) {
+		this.m_Record_ID = recordId;
+	}
 	/**
 	 * Get Log_ID
 	 * @return id

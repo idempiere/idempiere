@@ -287,6 +287,12 @@ public class MWorkflow extends X_AD_Workflow
 		return retValue;
 	}	//	getNodes
 
+
+	public void reloadNodes() {
+		m_nodes = null;
+		loadNodes();
+	}
+
 	/**
 	 * 	Get the first node
 	 * 	@return array of next nodes
@@ -965,4 +971,5 @@ public class MWorkflow extends X_AD_Workflow
 			return false;
 		return true;
 	}
+
 }	//	MWorkflow_ID

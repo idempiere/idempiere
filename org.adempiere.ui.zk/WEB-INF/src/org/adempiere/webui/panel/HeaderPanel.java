@@ -25,6 +25,7 @@ import org.adempiere.webui.window.AboutWindow;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -88,16 +89,14 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 
     	popMenu = new Popup();
     	popMenu.setId("menuTreePopup");
-		popMenu.appendChild(new MenuTreePanel(popMenu));
+		new MenuTreePanel(popMenu);
 		popMenu.setWidth("600px");
-    	popMenu.setHeight("90%");
-    	popMenu.setParent(hbox);
+    	popMenu.setHeight("90%");    	
 
     	btnMenu = new ToolBarButton();
     	btnMenu.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
     	LayoutUtils.addSclass("desktop-header-font", btnMenu);
     	btnMenu.setParent(hbox);
-    	btnMenu.setPopup("menuTreePopup");
     	btnMenu.addEventListener(Events.ON_CLICK, this);    	
 
     	LayoutUtils.addSclass("desktop-header-left", west);
@@ -131,4 +130,25 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			}
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see org.zkoss.zk.ui.AbstractComponent#onPageAttached(org.zkoss.zk.ui.Page, org.zkoss.zk.ui.Page)
+	 */
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null)
+			popMenu.setPage(newpage);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.zkoss.zk.ui.AbstractComponent#onPageDetached(org.zkoss.zk.ui.Page)
+	 */
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		popMenu.setPage(null);
+	}
+	
+	
 }

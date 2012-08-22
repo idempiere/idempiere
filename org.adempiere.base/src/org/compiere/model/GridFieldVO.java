@@ -136,6 +136,8 @@ public class GridFieldVO implements Serializable
 					vo.IsEncryptedColumn = "Y".equals(rs.getString (i));
 				else if (columnName.equalsIgnoreCase("IsSelectionColumn"))
 					vo.IsSelectionColumn = "Y".equals(rs.getString (i));
+				else if (columnName.equalsIgnoreCase("SeqNoSelection"))
+					vo.SeqNoSelection = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("SortNo"))
 					vo.SortNo = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("FieldLength"))
@@ -449,6 +451,8 @@ public class GridFieldVO implements Serializable
 	public boolean      IsEncryptedColumn = false;
 	/**	Find Selection		*/
 	public boolean		IsSelectionColumn = false;
+	/**	Selection column sequence		*/
+	public int			SeqNoSelection = 0;
 	/**	Order By		*/
 	public int          SortNo = 0;
 	/**	Field Length		*/
@@ -609,6 +613,7 @@ public class GridFieldVO implements Serializable
 		clone.IsEncryptedField = IsEncryptedField;
 		clone.IsEncryptedColumn = IsEncryptedColumn;
 		clone.IsSelectionColumn = IsSelectionColumn;
+		clone.SeqNoSelection = SeqNoSelection;
 		clone.IsAutocomplete = IsAutocomplete;
 		clone.IsAllowCopy = IsAllowCopy;
 		clone.SortNo = SortNo;

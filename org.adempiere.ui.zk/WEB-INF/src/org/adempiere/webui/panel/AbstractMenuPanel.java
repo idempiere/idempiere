@@ -40,6 +40,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Panel;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
@@ -277,26 +278,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 		    {
 		    	if (newRecord)
 		    	{
-		    		try
-		            {
-		    			int menuId = Integer.parseInt((String)selectedItem.getValue());
-						MMenu menu = new MMenu(Env.getCtx(), menuId, null);
-						
-			    		MQuery query = new MQuery("");
-		        		query.addRestriction("1=2");
-						query.setRecordCount(0);
-
-						ADWindow frame = SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query);
-						if(frame == null)
-		    				return;
-		        		
-						GridTab tab = frame.getADWindowPanel().getActiveGridTab();
-						tab.dataNew(false);
-		            }
-		            catch (Exception e)
-		            {
-		                throw new ApplicationException(e.getMessage(), e);
-		            }
+		    		onNewRecord(selectedItem);
 		    	}
 		    	else
 		    	{
@@ -310,11 +292,42 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 		}
 	}
     
-    protected void fireMenuSelectedEvent(Treeitem selectedItem) {
+    private void onNewRecord(Treeitem selectedItem) {
+    	try
+        {
+			int menuId = Integer.parseInt((String)selectedItem.getValue());
+			MMenu menu = new MMenu(Env.getCtx(), menuId, null);
+			
+    		MQuery query = new MQuery("");
+    		query.addRestriction("1=2");
+			query.setRecordCount(0);
+
+			if (getParent() instanceof Popup) {
+				((Popup)getParent()).close();
+			}
+			
+			ADWindow frame = SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query);
+			if(frame == null)
+				return;
+    					
+			GridTab tab = frame.getADWindowPanel().getActiveGridTab();
+			tab.dataNew(false);
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException(e.getMessage(), e);
+        }
+		
+	}
+
+	protected void fireMenuSelectedEvent(Treeitem selectedItem) {
     	int nodeId = Integer.parseInt((String)selectedItem.getValue());
        
     	try
         {
+    		if (getParent() instanceof Popup) {
+				((Popup)getParent()).close();
+			}
     		SessionManager.getAppDesktop().onMenuSelected(nodeId);
         }
         catch (Exception e)

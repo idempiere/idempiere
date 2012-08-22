@@ -31,7 +31,7 @@ public interface I_M_ProductionLineMA
     public static final String Table_Name = "M_ProductionLineMA";
 
     /** AD_Table_ID=765 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 765;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -132,7 +132,16 @@ public interface I_M_ProductionLineMA
 	  */
 	public int getM_ProductionLine_ID();
 
-	public I_M_ProductionLine getM_ProductionLine() throws RuntimeException;
+	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException;
+
+    /** Column name M_ProductionLineMA_UU */
+    public static final String COLUMNNAME_M_ProductionLineMA_UU = "M_ProductionLineMA_UU";
+
+	/** Set M_ProductionLineMA_UU	  */
+	public void setM_ProductionLineMA_UU (String M_ProductionLineMA_UU);
+
+	/** Get M_ProductionLineMA_UU	  */
+	public String getM_ProductionLineMA_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

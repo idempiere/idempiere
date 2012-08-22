@@ -420,9 +420,9 @@ public class MQuery implements Serializable
 	public static final String	BETWEEN = " BETWEEN ";
 	/** Between - 8		*/
 	public static final int		BETWEEN_INDEX = 8;
-	/** For ticket 1001193	*/
-	public static final String 	NOT_NULL = "IS NOT NNULL";
-	/** For ticket 1001193	*/
+	/** For IDEMPIERE-377	*/
+	public static final String 	NOT_NULL = "IS NOT NULL";
+	/** For IDEMPIERE-377	*/
 	public static final String 	NULL = "IS NULL";
 
 	/**	Operators for Strings				*/
@@ -446,9 +446,6 @@ public class MQuery implements Serializable
 	public static final ValueNamePair[]	OPERATORS_YN = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			" = ")
 	};
-    // =====================================================================
-    // Added/modified for ticket 1001193 -  START
-    // =====================================================================
 
 	/**	Operators for Number, Amount, Date, Costs+Prices, Quantity, Integer, ID			*/
 	public static final ValueNamePair[]	OPERATORS_NUMBERS = new ValueNamePair[] {
@@ -488,10 +485,6 @@ public class MQuery implements Serializable
 		new ValueNamePair (NULL,			" NULL "),
 		new ValueNamePair (NOT_NULL,		" !NULL ")
 	};
-    // =====================================================================
-    // Added/modified for ticket 1001193 -  END
-    // =====================================================================
-
 
 	/*************************************************************************
 	 * 	Add Restriction
@@ -1167,9 +1160,6 @@ class Restriction  implements Serializable
 			else
 				sb.append(" IS NOT NULL ");
 		}
-        // =====================================================================
-        // Added/modified for ticket 1001193 -  START
-        // =====================================================================
 		
 		else if ((Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)) 
 				&& (Code == null 
@@ -1180,9 +1170,6 @@ class Restriction  implements Serializable
 			else
 				sb.append(" IS NOT NULL ");
 		}
-        // =====================================================================
-        // Added/modified for ticket 1001193 -  END
-        // =====================================================================
 		
 		else
 		{

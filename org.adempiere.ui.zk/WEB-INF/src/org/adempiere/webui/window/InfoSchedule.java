@@ -27,6 +27,7 @@ import java.util.GregorianCalendar;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -52,6 +53,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -103,10 +105,17 @@ public class InfoSchedule extends Window implements EventListener
 		super();
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoSchedule"));
 		if (createNew)
-			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		{
+			setAttribute(Window.MODE_KEY, Window.MODE_POPUP);
+			this.setWidth("600px");
+		}
 		else
-			setAttribute(Window.MODE_KEY, Window.MODE_OVERLAPPED);
-		this.setWidth("600px");
+		{
+			setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+			this.setWidth("100%");
+			this.setHeight("100%");
+		}
+		
 //		this.setHeight("600px");
 		this.setClosable(true);
 		this.setBorder("normal");
@@ -138,7 +147,9 @@ public class InfoSchedule extends Window implements EventListener
 		catch(Exception ex)
 		{
 			log.log(Level.SEVERE, "InfoSchedule", ex);
-		}		
+		}
+		AEnv.showWindow(this);
+		displayCalendar();
 	}	//	InfoSchedule
 
 	/**
@@ -174,7 +185,8 @@ public class InfoSchedule extends Window implements EventListener
 	//
 	private WSchedule schedulePane = new WSchedule(this);
 	private StatusBarPanel statusBar = new StatusBarPanel();
-	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
+	private ConfirmPanel confirmPanel = null;
+	private Button btnNew;
 
 	/**
 	 * 	Static Layout
@@ -226,7 +238,11 @@ public class InfoSchedule extends Window implements EventListener
 		schedulePane.setWidth("100%");
 		schedulePane.setHeight("400px");
 		Div div = new Div();
-		div.appendChild(confirmPanel);
+		if (m_createNew) 
+		{
+			confirmPanel = new ConfirmPanel(true);
+			div.appendChild(confirmPanel);
+		}
 		div.appendChild(statusBar);
 		mainLayout.appendChild(div);
 		
@@ -255,18 +271,17 @@ public class InfoSchedule extends Window implements EventListener
 		bNext.addEventListener(Events.ON_CLICK, this);
 		//
 		
-		//
-		confirmPanel.addActionListener(Events.ON_CLICK, this);
+		//		
 		if (createNew) {
-			Button btnNew = new Button();
+			confirmPanel.addActionListener(Events.ON_CLICK, this);
+			btnNew = new Button();
 	        btnNew.setName("btnNew");
 	        btnNew.setId("New");
 	        btnNew.setSrc("/images/New24.png");
 	        
 			confirmPanel.addComponentsLeft(btnNew);			
 			btnNew.addEventListener(Events.ON_CLICK, this);
-		}
-		displayCalendar();
+		}		
 	}	//	dynInit
 
 	/**
@@ -569,7 +584,8 @@ public class InfoSchedule extends Window implements EventListener
 					mAssignmentCallback(vad.getMResourceAssignment());
 				}
 			});					
-			AEnv.showWindow(vad);
+			vad.setTitle(null);
+			LayoutUtils.openPopupWindow(btnNew, vad, "before_start");
 		} else {
 			FDialog.error(0, this, "No available time slot for the selected day.");
 		}
@@ -586,6 +602,17 @@ public class InfoSchedule extends Window implements EventListener
 	public void dateCallback(Date date) {
 		m_dateFrom = new Timestamp(date.getTime());
 		fieldDate.setValue(m_dateFrom); // Elaine 2008/12/15
+	}
+
+	/* (non-Javadoc)
+	 * @see org.zkoss.zk.ui.AbstractComponent#onPageAttached(org.zkoss.zk.ui.Page, org.zkoss.zk.ui.Page)
+	 */
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			displayCalendar();
+		}
 	}
 	
 

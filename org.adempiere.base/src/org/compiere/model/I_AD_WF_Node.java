@@ -31,7 +31,7 @@ public interface I_AD_WF_Node
     public static final String Table_Name = "AD_WF_Node";
 
     /** AD_Table_ID=129 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 129;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_Column_ID();
 
-	public I_AD_Column getAD_Column() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Form_ID */
     public static final String COLUMNNAME_AD_Form_ID = "AD_Form_ID";
@@ -90,7 +90,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_Form_ID();
 
-	public I_AD_Form getAD_Form() throws RuntimeException;
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_Image_ID */
     public static final String COLUMNNAME_AD_Image_ID = "AD_Image_ID";
@@ -105,7 +105,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_Image_ID();
 
-	public I_AD_Image getAD_Image() throws RuntimeException;
+	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -133,7 +133,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_Process_ID();
 
-	public I_AD_Process getAD_Process() throws RuntimeException;
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Task_ID */
     public static final String COLUMNNAME_AD_Task_ID = "AD_Task_ID";
@@ -148,7 +148,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_Task_ID();
 
-	public I_AD_Task getAD_Task() throws RuntimeException;
+	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException;
 
     /** Column name AD_WF_Block_ID */
     public static final String COLUMNNAME_AD_WF_Block_ID = "AD_WF_Block_ID";
@@ -163,7 +163,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_WF_Block_ID();
 
-	public I_AD_WF_Block getAD_WF_Block() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Block getAD_WF_Block() throws RuntimeException;
 
     /** Column name AD_WF_Node_ID */
     public static final String COLUMNNAME_AD_WF_Node_ID = "AD_WF_Node_ID";
@@ -178,6 +178,15 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_WF_Node_ID();
 
+    /** Column name AD_WF_Node_UU */
+    public static final String COLUMNNAME_AD_WF_Node_UU = "AD_WF_Node_UU";
+
+	/** Set AD_WF_Node_UU	  */
+	public void setAD_WF_Node_UU (String AD_WF_Node_UU);
+
+	/** Get AD_WF_Node_UU	  */
+	public String getAD_WF_Node_UU();
+
     /** Column name AD_WF_Responsible_ID */
     public static final String COLUMNNAME_AD_WF_Responsible_ID = "AD_WF_Responsible_ID";
 
@@ -191,7 +200,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_WF_Responsible_ID();
 
-	public I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException;
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -206,7 +215,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_Window_ID();
 
-	public I_AD_Window getAD_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
     public static final String COLUMNNAME_AD_Workflow_ID = "AD_Workflow_ID";
@@ -221,7 +230,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getAD_Workflow_ID();
 
-	public I_AD_Workflow getAD_Workflow() throws RuntimeException;
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name AttributeName */
     public static final String COLUMNNAME_AttributeName = "AttributeName";
@@ -262,7 +271,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Cost */
     public static final String COLUMNNAME_Cost = "Cost";
@@ -569,7 +578,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getR_MailText_ID();
 
-	public I_R_MailText getR_MailText() throws RuntimeException;
+	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException;
 
     /** Column name SetupTime */
     public static final String COLUMNNAME_SetupTime = "SetupTime";
@@ -610,7 +619,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getS_Resource_ID();
 
-	public I_S_Resource getS_Resource() throws RuntimeException;
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name StartMode */
     public static final String COLUMNNAME_StartMode = "StartMode";
@@ -745,7 +754,7 @@ public interface I_AD_WF_Node
 	  */
 	public int getWorkflow_ID();
 
-	public I_AD_Workflow getWorkflow() throws RuntimeException;
+	public org.compiere.model.I_AD_Workflow getWorkflow() throws RuntimeException;
 
     /** Column name WorkingTime */
     public static final String COLUMNNAME_WorkingTime = "WorkingTime";

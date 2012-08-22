@@ -216,7 +216,7 @@ public class InvoiceGenerateRMA extends SvrProcess
         }
         
         // Add processing information to process log
-        addLog(invoice.getC_Invoice_ID(), invoice.getDateInvoiced(), null, processMsg.toString());
+        addLog(invoice.getC_Invoice_ID(), invoice.getDateInvoiced(), null, processMsg.toString(),invoice.get_Table_ID(),invoice.getC_Invoice_ID());
         m_created++;
     }
 }

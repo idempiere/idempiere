@@ -32,7 +32,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120821L;
 
     /** Standard Constructor */
     public X_M_ProductionPlan (Properties ctx, int M_ProductionPlan_ID, String trxName)
@@ -154,9 +154,9 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -182,9 +182,9 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 		return ii.intValue();
 	}
 
-	public I_M_Production getM_Production() throws RuntimeException
+	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException
     {
-		return (I_M_Production)MTable.get(getCtx(), I_M_Production.Table_Name)
+		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_Name)
 			.getPO(getM_Production_ID(), get_TrxName());	}
 
 	/** Set Production.
@@ -231,6 +231,20 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_ProductionPlan_UU.
+		@param M_ProductionPlan_UU M_ProductionPlan_UU	  */
+	public void setM_ProductionPlan_UU (String M_ProductionPlan_UU)
+	{
+		set_Value (COLUMNNAME_M_ProductionPlan_UU, M_ProductionPlan_UU);
+	}
+
+	/** Get M_ProductionPlan_UU.
+		@return M_ProductionPlan_UU	  */
+	public String getM_ProductionPlan_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ProductionPlan_UU);
 	}
 
 	/** Set Processed.

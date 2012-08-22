@@ -47,20 +47,19 @@ import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vbox;
@@ -72,12 +71,14 @@ import org.zkoss.zul.Vbox;
  */
 public class WFEditor extends ADForm {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 6874950519612113345L;
+	private static final long serialVersionUID = 4293422396394778274L;
+
 	private Listbox workflowList;
 	private int m_workflowId = 0;
 	private Toolbarbutton zoomButton;
+	private Toolbarbutton refreshButton;
 	private Toolbarbutton newButton;
 	private Table table;
 	private Center center;
@@ -108,14 +109,24 @@ public class WFEditor extends ADForm {
 		north.appendChild(toolbar);
 		toolbar.appendChild(workflowList);
 		workflowList.setStyle("margin-left: 10px; margin-top: 5px; margin-right:5px;");
+		// Zoom
 		zoomButton = new Toolbarbutton();
 		zoomButton.setImage("/images/Zoom16.png");
 		toolbar.appendChild(zoomButton);
 		zoomButton.addEventListener(Events.ON_CLICK, this);
+		zoomButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
+		// New Node
 		newButton = new Toolbarbutton();
 		newButton.setImage("/images/New16.png");
 		toolbar.appendChild(newButton);
 		newButton.addEventListener(Events.ON_CLICK, this);
+		newButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "CreateNewNode"));
+		// Refresh
+		refreshButton = new Toolbarbutton();
+		refreshButton.setImage("/images/Refresh16.png");
+		toolbar.appendChild(refreshButton);
+		refreshButton.addEventListener(Events.ON_CLICK, this);
+		refreshButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		north.setHeight("30px");
 
 		createTable();
@@ -153,14 +164,20 @@ public class WFEditor extends ADForm {
 			ListItem item = workflowList.getSelectedItem();
 			KeyNamePair knp = item != null ? item.toKeyNamePair() : null;
 			if (knp != null && knp.getKey() > 0) {
-				load(knp.getKey());
+				load(knp.getKey(), true);
 			}
 		}
 		else if (event.getTarget() == zoomButton) {
-			zoom();
+			if (workflowList.getSelectedIndex() > 0)
+				zoom();
+		}
+		else if (event.getTarget() == refreshButton) {
+			if (workflowList.getSelectedIndex() > 0)
+				reload(m_workflowId, true);
 		}
 		else if (event.getTarget() == newButton) {
-			createNewNode();
+			if (workflowList.getSelectedIndex() > 0)
+				createNewNode();
 		}
 		else if (event.getTarget() instanceof WFPopupItem) {
 			WFPopupItem item = (WFPopupItem) event.getTarget();
@@ -177,14 +194,14 @@ public class WFEditor extends ADForm {
 					widget.getModel().setXPosition(xPosition);
 					widget.getModel().setYPosition(yPosition);
 					widget.getModel().saveEx();
-					reload(m_workflowId);
+					reload(m_workflowId, true);
 				}
 			}
 		}
 	}
 
 	private void createNewNode() {
-		String nameLabel = Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Name"));
+		String nameLabel = Msg.getElement(Env.getCtx(), MWFNode.COLUMNNAME_Name);
 		String title = Msg.getMsg(Env.getCtx(), "CreateNewNode");
 		final Window w = new Window();
 		w.setTitle(title);
@@ -224,26 +241,30 @@ public class WFEditor extends ADForm {
 					MWFNode node = new MWFNode(m_wf, name, name);
 					node.setClientOrg(AD_Client_ID, 0);
 					node.saveEx();
-					reload(m_wf.getAD_Workflow_ID());
-				}				
+					reload(m_wf.getAD_Workflow_ID(), true);
+				}
 			}
 		});
 		w.doHighlighted();				
 	}
 
-	void reload(int workflowId) {
+	void reload(int workflowId, boolean reread) {
 		center.removeChild(table);
 		createTable();
 		center.appendChild(table);
-		load(workflowId);
+		load(workflowId, reread);
 	}
 
-	private void load(int workflowId) {
+	private void load(int workflowId, boolean reread) {
 		//	Get Workflow
-		m_wf = new MWorkflow (Env.getCtx(), workflowId, null);
+		m_wf = MWorkflow.get(Env.getCtx(), workflowId);
 		m_workflowId = workflowId;
 		nodeContainer = new WFNodeContainer();
 		nodeContainer.setWorkflow(m_wf);
+		
+		if (reread) {
+			m_wf.reloadNodes();
+		}
 
 		//	Add Nodes for Paint
 		MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
@@ -301,16 +322,14 @@ public class WFEditor extends ADForm {
 								image.setTooltiptext(node.getHelp(true));
 							}
 							image.setAttribute("AD_WF_Node_ID", node.getAD_WF_Node_ID());
-							if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
-								image.addEventListener(Events.ON_CLICK, new EventListener() {
-		
-									public void onEvent(Event event) throws Exception {
-										showNodeMenu(event.getTarget());
-									}
-								});
-								image.setDraggable("WFNode");
-								imgStyle = imgStyle + ";cursor:pointer";
-							}							
+							image.addEventListener(Events.ON_CLICK, new EventListener() {
+
+								public void onEvent(Event event) throws Exception {
+									showNodeMenu(event.getTarget());
+								}
+							});
+							image.setDraggable("WFNode");
+							imgStyle = imgStyle + ";cursor:pointer";
 						}
 						else
 						{
@@ -352,26 +371,41 @@ public class WFEditor extends ADForm {
 				Menupopup popupMenu = new Menupopup();
 				if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx()))
 				{
+					// Zoom
+					addMenuItem(popupMenu, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")), node, WFPopupItem.WFPOPUPITEM_ZOOM);
+					// Properties
+					addMenuItem(popupMenu, Msg.getMsg(Env.getCtx(), "Properties"), node, WFPopupItem.WFPOPUPITEM_PROPERTIES);
+					// Delete node
 					String title = Msg.getMsg(Env.getCtx(), "DeleteNode") +
 						": " + node.getName();
-					addMenuItem(popupMenu, title, node, -1);
+					addMenuItem(popupMenu, title, node, WFPopupItem.WFPOPUPITEM_DELETENODE);
 				}
 				MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
 				MWFNodeNext[] lines = node.getTransitions(Env.getAD_Client_ID(Env.getCtx()));
 				//	Add New Line
-				for (int n = 0; n < nodes.length; n++)
+				for (MWFNode nn : nodes)
 				{
-					MWFNode nn = nodes[n];
 					if (nn.getAD_WF_Node_ID() == node.getAD_WF_Node_ID())
 						continue;	//	same
+					if (nn.getAD_WF_Node_ID() == node.getAD_Workflow().getAD_WF_Node_ID())
+						continue;	//	don't add line to starting node
 					boolean found = false;
-					for (int i = 0; i < lines.length; i++)
+					for (MWFNodeNext line : lines)
 					{
-						MWFNodeNext line = lines[i];
 						if (nn.getAD_WF_Node_ID() == line.getAD_WF_Next_ID())
 						{
-							found = true;
+							found = true; // line already exists
 							break;
+						}
+					}
+					if (!found) {
+						// Check that inverse line doesn't exist
+						for (MWFNodeNext revline : nn.getTransitions(Env.getAD_Client_ID(Env.getCtx()))) {
+							if (node.getAD_WF_Node_ID() == revline.getAD_WF_Next_ID())
+							{
+								found = true; // inverse line already exists
+								break;
+							}
 						}
 					}
 					if (!found)
@@ -382,9 +416,8 @@ public class WFEditor extends ADForm {
 					}
 				}
 				//	Delete Lines
-				for (int i = 0; i < lines.length; i++)
+				for (MWFNodeNext line : lines)
 				{
-					MWFNodeNext line = lines[i];
 					if (line.getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx()))
 						continue;
 					MWFNode next = MWFNode.get(Env.getCtx(), line.getAD_WF_Next_ID());
