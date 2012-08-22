@@ -31,6 +31,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
 import org.adempiere.webui.WZoomAcross;
@@ -547,6 +548,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		if (tabIndex == 0)
 		{
 			m_queryInitiating = true;
+			getComponent().setVisible(false);
 		    initialQuery(query, gTab, new Callback<MQuery>() {
 				@Override
 				public void onCallback(MQuery result) {
@@ -556,6 +558,9 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 						SessionManager.getAppDesktop().closeWindow(curWindowNo);
 				    	return;
 					}
+					
+					if (!getComponent().isVisible())
+						getComponent().setVisible(true);
 					
 					// Set initial Query on first tab
 				    if (result != null)
@@ -702,19 +707,21 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         	m_findCancelled = false;
         	m_findCreateNew = false;
             GridField[] findFields = mTab.getFields();            
-            final FindWindow find = new FindWindow(curWindowNo,
+            findWindow = new FindWindow(curWindowNo,
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
                     where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
-            if (find.isValid()) 
+            if (findWindow.initialize()) 
             {
-	        	find.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+	        	findWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
-						if (!find.isCancel())
+						if (!findWindow.isCancel())
 			            {
-			            	m_findCreateNew = find.isCreateNew();
-			            	MQuery result = find.getQuery();
+			            	m_findCreateNew = findWindow.isCreateNew();
+			            	MQuery result = findWindow.getQuery();
 			            	callback.onCallback(result);
+			            	EventListener<? extends Event> listener = findWindow.getEventListeners(DialogEvents.ON_WINDOW_CLOSE).iterator().next();
+			            	findWindow.removeEventListener(DialogEvents.ON_WINDOW_CLOSE, listener);
 			            }
 			            else
 			            {
@@ -723,7 +730,14 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			            }
 					}
 				});
-	            AEnv.showWindow(find);
+	        	findWindow.setTitle(null);
+	        	getComponent().addEventListener("onInitialQuery", new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						LayoutUtils.openPopupWindow(getComponent(), findWindow, "overlap");
+					}
+				});
+	        	Events.echoEvent("onInitialQuery", getComponent(), null);	        	
             }
             else
             {
@@ -849,6 +863,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	private Menupopup 	m_popup = null;
 	private Menuitem 	m_lock = null;
 	private Menuitem 	m_access = null;
+
+	private FindWindow findWindow;
 
 	/**
 	 *	@see ToolbarListener#onLock()
@@ -1618,46 +1634,53 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 	private void doOnFind() {
 		//  Gets Fields from AD_Field_v
-        GridField[] findFields = GridField.createFields(ctx, curTab.getWindowNo(), 0,curTab.getAD_Tab_ID());
-        final FindWindow find = new FindWindow (curTab.getWindowNo(), curTab.getName(),
+        GridField[] findFields = curTab.getFields();
+        if (findWindow == null || !findWindow.validate(curTab.getWindowNo(), curTab.getName(),
             curTab.getAD_Table_ID(), curTab.getTableName(),
-            curTab.getWhereExtended(), findFields, 1, curTab.getAD_Tab_ID());
-
-        if (!find.isValid()) {
-        	if (find.getTotalRecords() == 0) {
-        		FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
-        	}
-        	return;
+            curTab.getWhereExtended(), findFields, 1, curTab.getAD_Tab_ID())) {
+	        findWindow = new FindWindow (curTab.getWindowNo(), curTab.getName(),
+	            curTab.getAD_Table_ID(), curTab.getTableName(),
+	            curTab.getWhereExtended(), findFields, 1, curTab.getAD_Tab_ID());
+	        
+	        if (!findWindow.initialize()) {
+	        	if (findWindow.getTotalRecords() == 0) {
+	        		FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
+	        	}
+	        	return;
+	        }        	                
         }
         
-        find.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				if (!find.isCancel())
-		        {
-			        MQuery query = find.getQuery();
-
-			        //  Confirmed query
-			        if (query != null)
+        if (!findWindow.getEventListeners(DialogEvents.ON_WINDOW_CLOSE).iterator().hasNext()) {
+        	findWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					if (!findWindow.isCancel())
 			        {
-			            m_onlyCurrentRows = false;          //  search history too
-			            curTab.setQuery(query);
-			            curTabpanel.query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+				        MQuery query = findWindow.getQuery();
+	
+				        //  Confirmed query
+				        if (query != null)
+				        {
+				            m_onlyCurrentRows = false;          //  search history too
+				            curTab.setQuery(query);
+				            curTabpanel.query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+				        }
+	
+				        if (findWindow.isCreateNew())
+				        	onNew();
+				        else
+				        	curTab.dataRefresh(false); // Elaine 2008/07/25
 			        }
-
-			        if (find.isCreateNew())
-			        	onNew();
-			        else
-			        	curTab.dataRefresh(false); // Elaine 2008/07/25
-		        }
-				else
-				{
-					toolbar.getButton("Find").setPressed(curTab.isQueryActive());
+					else
+					{
+						toolbar.getButton("Find").setPressed(curTab.isQueryActive());
+					}
+			        focusToActivePanel();
 				}
-		        focusToActivePanel();
-			}
-		});        
-        AEnv.showWindow(find);
+			});
+        }
+        findWindow.setTitle(null);
+        LayoutUtils.openPopupWindow(toolbar, findWindow, "after_start");
 	}
 
     /**

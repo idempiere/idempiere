@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pdf.Document;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.component.Checkbox;
@@ -1036,7 +1037,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else
 		{
             final FindWindow find = new FindWindow(m_WindowNo, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
-            if (!find.isValid())
+            if (!find.initialize())
             	return;
             
             find.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -1054,7 +1055,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		            }
 				}
 			});
-            AEnv.showWindow(find);
+            find.setTitle(null);
+            LayoutUtils.openPopupWindow(toolBar, find, "after_start");
 		}
 	}	//	cmd_find
 

@@ -88,10 +88,12 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Vlayout;
 
 /**
  *  This class is based on org.compiere.apps.search.Find written by Jorg Janke.
@@ -154,6 +156,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private Rows contentSimpleRows;
 	private boolean m_createNew = false;
 	private boolean isvalid = true;
+	private int m_minRecords;
+	private String m_title;
+	private ToolBarButton btnSave;
+	private Label msgLabel;
 
 	/** Index ColumnName = 0		*/
 	public static final int		INDEX_COLUMNNAME = 0;
@@ -183,13 +189,30 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             GridField[] findFields, int minRecords, int adTabId)
     {
         m_targetWindowNo = targetWindowNo;
+        m_title = title;
         m_AD_Table_ID = AD_Table_ID;
         m_tableName = tableName;
         m_whereExtended = whereExtended;
         m_findFields = findFields;
         m_AD_Tab_ID = adTabId;
+        m_minRecords = minRecords;
+        m_isCancel = true;
         //
-        m_query = new MQuery (m_tableName);
+        
+        this.setBorder("normal");
+        this.setShadow(false);
+        this.setWidth("750px");
+        this.setHeight("350px");
+        this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
+        this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+        this.setClosable(false);
+        this.setSizable(true);  
+        this.setMaximizable(true);
+    }
+    
+    public boolean initialize() 
+    {
+    	m_query = new MQuery (m_tableName);
         m_query.addRestriction(m_whereExtended);
         //  Required for Column Validation
         Env.setContext(Env.getCtx(), m_targetWindowNo, "Find_Table_ID", m_AD_Table_ID);
@@ -200,20 +223,45 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         initFind();
         initFindAdvanced();
 
-        if (m_total < minRecords)
+        if (m_total < m_minRecords)
         {
-        	dispose();
-            return;
+            return false;
         }
-        this.setBorder("normal");
-        this.setWidth("750px");
-        this.setHeight("350px");
-        this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
-        this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-        this.setClosable(false);
-        this.setSizable(true);  
-        this.setMaximizable(true);
+        return true;
     }
+    
+    public boolean validate(int targetWindowNo, String title,
+            int AD_Table_ID, String tableName, String whereExtended,
+            GridField[] findFields, int minRecords, int adTabId)
+    {
+    	if (m_targetWindowNo != targetWindowNo) return false;
+    	if ((title == null && m_title != null) || (title != null && m_title == null) || !(title.equals(m_title))) return false;
+    	if (AD_Table_ID != m_AD_Table_ID) return false;
+    	if ((tableName == null && m_tableName != null) || (tableName != null && m_tableName == null) || !(tableName.equals(m_tableName))) return false;
+    	if ((whereExtended == null && m_whereExtended != null) || (whereExtended != null && m_whereExtended == null) || !(whereExtended.equals(m_whereExtended))) return false;
+    	if (adTabId != m_AD_Tab_ID) return false;
+    	if ((findFields == null && m_findFields != null) || (findFields != null && m_findFields == null) || (findFields.length != m_findFields.length)) return false;
+    	if (findFields != null && findFields.length > 0) 
+    	{
+    		for(int i = 0; i < findFields.length; i++)
+    		{
+    			if (findFields[i].getAD_Field_ID() != m_findFields[i].getAD_Field_ID()) return false;
+    		}
+    	}
+    	
+    	m_minRecords = minRecords;
+    	m_total = getNoOfRecords(null, false);
+    	if (m_total < m_minRecords)
+        {
+            return false;
+        }
+    	
+    	m_query = new MQuery (m_tableName);
+        m_query.addRestriction(m_whereExtended);
+        
+    	return true;
+    }
+    
     /**
      * initialise lookup record tab
      *
@@ -313,23 +361,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         btnDelete.setImage("/images/Delete24.png");
         btnDelete.addEventListener(Events.ON_CLICK, this);
 
-        ToolBarButton btnSave = new ToolBarButton();
-        btnSave.setAttribute("name","btnSaveAdv");
-        btnSave.setImage("/images/Save24.png");
-        btnSave.addEventListener(Events.ON_CLICK, this);
-
-        fQueryName = new Combobox();
-        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
-		fQueryName.setReadonly(false);
-
-		//user query
-		userQueries = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID);
-		for (int i = 0; i < userQueries.length; i++)
-			fQueryName.appendItem(userQueries[i].getName());
-		fQueryName.setValue("");
-
-		fQueryName.addEventListener(Events.ON_SELECT, this);
-
         Button btnOk = new Button();
         btnOk.setName("btnOkAdv");
         btnOk.setImage("/images/Ok24.png");
@@ -349,14 +380,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         ToolBar toolBar = new ToolBar();
         toolBar.appendChild(btnNew);
-        toolBar.appendChild(btnDelete);
-        toolBar.appendChild(fQueryName);
-        toolBar.appendChild(btnSave);
+        toolBar.appendChild(btnDelete);        
         toolBar.setWidth("100%");
-        fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative; top: 5px;");
-
-        btnSave.setDisabled(m_AD_Tab_ID <= 0);
-
+        
         Hbox confirmPanel = new Hbox();
         confirmPanel.appendChild(pnlButtonRight);
         confirmPanel.setWidth("100%");
@@ -389,25 +415,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         advancedPanel.appendChild(listhead);
         advancedPanel.setVflex(true);
 
-        Borderlayout layout = new Borderlayout();
-        layout.setStyle("height: 100%; width: 99%; position: relative;");
-        winAdvanced.appendChild(layout);
-
-        North north = new North();
-        layout.appendChild(north);
-        north.appendChild(toolBar);
-
-        Center center = new Center();
-        layout.appendChild(center);
-        center.appendChild(advancedPanel);
-        center.setFlex(true);
-
-        South south = new South();
-        layout.appendChild(south);
-        south.appendChild(confirmPanel);
+        Vlayout vlayout = new Vlayout();
+        vlayout.setStyle("width: 100%; height: 100%; position: relative");
+        vlayout.setVflex("1");
+        winAdvanced.appendChild(vlayout);
+        toolBar.setVflex("0");
+        vlayout.appendChild(toolBar);
+        vlayout.appendChild(advancedPanel);
+        confirmPanel.setVflex("0");
+        vlayout.appendChild(confirmPanel);
 
         winAdvanced.setHeight("100%");
-        winAdvanced.setWidth("100%");
+        winAdvanced.setWidth("99%");
         winAdvanced.addEventListener(Events.ON_OK,this);
 
     } // initAdvanced
@@ -418,9 +437,48 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     **/
     private void initPanel()
     {
+    	Vlayout layout = new Vlayout();
+    	layout.setStyle("height: 100%; width: 100%; position: relative;");
+    	layout.setVflex("1");
+    	this.appendChild(layout);
+    	
+    	Div div = new Div();
+    	div.setVflex("0");
+    	layout.appendChild(div);
+    	
+    	btnSave = new ToolBarButton();
+        btnSave.setAttribute("name","btnSaveAdv");
+        btnSave.setImage("/images/Save24.png");
+        btnSave.addEventListener(Events.ON_CLICK, this);
+        btnSave.setDisabled(true);
+//        LayoutUtils.addSclass("disableFilter", btnSave);
+
+        fQueryName = new Combobox();
+        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
+		fQueryName.setReadonly(true);
+
+		//user query
+		userQueries = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID);
+		for (int i = 0; i < userQueries.length; i++)
+			fQueryName.appendItem(userQueries[i].getName());
+		fQueryName.setValue("");
+		fQueryName.addEventListener(Events.ON_SELECT, this);
+		
+		Label label = new Label(Msg.getMsg(Env.getCtx(), "SavedQuery"));
+		div.appendChild(label);
+		div.appendChild(fQueryName);
+        div.appendChild(btnSave);
+//        div.appendChild(new Separator());
+        msgLabel = new Label("");
+        msgLabel.setStyle("margin-left: 10px");
+        div.appendChild(msgLabel);
+        fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");        
+		
         winMain = new MultiTabPart();
-        winMain.createPart(this);
-        winMain.getComponent().setStyle("height: 100%; width: 100%; position: relative;");
+        winMain.createPart(layout);
+        winMain.getComponent().setStyle("width: 100%; position: relative;");
+        winMain.getComponent().setVflex("1");
+        winMain.getComponent().addEventListener(Events.ON_SELECT, this);
         winAdvanced = new Window();
         winLookupRecord = new Window();
         Tabpanel tabPanel = new Tabpanel();
@@ -722,7 +780,22 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		{
     			int index = fQueryName.getSelectedIndex();
     			if(index < 0) return;
+    			if (winMain.getComponent().getSelectedIndex() != 1) {
+    				winMain.getComponent().setSelectedIndex(1);
+    				btnSave.setDisabled(m_AD_Tab_ID <= 0);
+    				fQueryName.setReadonly(false);    				    				
+    			}
+    			msgLabel.setText("");
     			parseUserQuery(userQueries[index]);
+    		}
+    		else if (event.getTarget() instanceof Tab) {
+    			if (winMain.getComponent().getSelectedIndex() == 1) {
+    				fQueryName.setReadonly(false);
+    				btnSave.setDisabled(m_AD_Tab_ID <= 0);
+    			} else {
+    				fQueryName.setReadonly(true);
+    				btnSave.setDisabled(true);
+    			}
     		}
         }   //
         else if (Events.ON_CLICK.equals(event.getName()))
@@ -740,8 +813,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 else if ("btnDeleteAdv".equals(button.getAttribute("name").toString()))
                 {
                     int index = advancedPanel.getSelectedIndex();
-                    advancedPanel.getSelectedItem().detach();
-                    advancedPanel.setSelectedIndex(--index);
+                    if (advancedPanel.getSelectedItem() != null) 
+                    {
+                    	advancedPanel.getSelectedItem().detach();
+                    	advancedPanel.setSelectedIndex(--index);
+                    }
                 }
 
                 else if ("btnSaveAdv".equals(button.getAttribute("name").toString()))
@@ -757,6 +833,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 if ("btnOkSimple".equals(btn.getName()))
                 {
                     cmd_ok_Simple();
+                    fQueryName.setValue("");
+                    if (advancedPanel != null) {
+                    	advancedPanel.getItems().clear();
+                    }
                     dispose();
                 }
                 else if ("btnOkAdv".equals(btn.getName()))
@@ -774,6 +854,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     m_query = MQuery.getNoRecordQuery(m_tableName, true);
                     m_total = 0;
                     m_createNew  = true;
+                    m_isCancel = false;
                     dispose();
                 }
             }
@@ -1072,11 +1153,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			//
 			if (uq.save())
 			{
-				FDialog.info (m_targetWindowNo, this, "Saved", name);
+				msgLabel.setText(Msg.getMsg(Env.getCtx(), "Saved"));
 				refreshUserQueries();
 			}
 			else
-				FDialog.warn (m_targetWindowNo, this, "SaveError", name);
+				msgLabel.setText(Msg.getMsg(Env.getCtx(), "SaveError"));
 		}
 	}	//	cmd_save
 
@@ -1710,8 +1791,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	@Override
 	public boolean setVisible(boolean visible) {
 		boolean ret = super.setVisible(visible);
-		if (ret && visible) {
+		if (visible) {
 			Events.echoEvent("OnPostVisible", this, null);
+		} else {
+			//auto detach
+			detach();
 		}
 		return ret;
 	}
@@ -1726,4 +1810,5 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	{
 		return isvalid;
 	}
+	
 }   //  FindPanel
