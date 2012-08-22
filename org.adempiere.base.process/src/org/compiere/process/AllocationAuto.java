@@ -396,7 +396,7 @@ public class AllocationAuto extends SvrProcess
 							{
 								if (payment.allocateIt())
 								{
-									addLog(0, payment.getDateAcct(), openAmt, payment.getDocumentNo() + " [1]");
+									addLog(0, payment.getDateAcct(), openAmt, payment.getDocumentNo() + " [1]",payment.get_Table_ID(),payment.getC_Payment_ID());
 									count++;
 								}
 								break;

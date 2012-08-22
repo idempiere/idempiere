@@ -208,7 +208,7 @@ public class OrderPOCreate extends SvrProcess
 				if (po == null || po.getBill_BPartner_ID() != C_BPartner_ID)
 				{
 					po = createPOForVendor(rs.getInt(1), so);
-					addLog(0, null, null, po.getDocumentNo());
+					addLog(0, null, null, po.getDocumentNo(),po.get_Table_ID(),po.getC_Order_ID());
 					counter++;
 				}
 

@@ -23,6 +23,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import org.compiere.model.MQuery;
+import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -298,6 +300,8 @@ public class ProcessInfo implements Serializable
 		return sb.toString();
 	 }	//	getLogInfo
 
+	
+
 	/**
 	 * 	Get ASCII Log Info
 	 *	@return Log Info
@@ -518,6 +522,16 @@ public class ProcessInfo implements Serializable
 		m_parameter = parameter;
 	}	//	setParameter
 
+	
+	public void addLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg,int tableId,int recordId)
+	{
+		addLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg,tableId,recordId));
+	}
+	
+	public void addLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg ,int tableId,int recordId)
+	{
+		addLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg,tableId, recordId));
+	}
 	
 	/**************************************************************************
 	 * 	Add to Log

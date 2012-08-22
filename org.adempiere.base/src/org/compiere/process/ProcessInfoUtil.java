@@ -115,7 +115,7 @@ public class ProcessInfoUtil
 	public static void setLogFromDB (ProcessInfo pi)
 	{
 	//	s_log.fine("setLogFromDB - AD_PInstance_ID=" + pi.getAD_PInstance_ID());
-		String sql = "SELECT Log_ID, P_ID, P_Date, P_Number, P_Msg "
+		String sql = "SELECT Log_ID, P_ID, P_Date, P_Number, P_Msg, AD_Table_Id,Record_Id "				             
 			+ "FROM AD_PInstance_Log "
 			+ "WHERE AD_PInstance_ID=? "
 			+ "ORDER BY Log_ID";
@@ -125,10 +125,10 @@ public class ProcessInfoUtil
 			PreparedStatement pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, pi.getAD_PInstance_ID());
 			ResultSet rs = pstmt.executeQuery();
-			while (rs.next())
-			//	int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg
-				pi.addLog (rs.getInt(1), rs.getInt(2), rs.getTimestamp(3), rs.getBigDecimal(4), rs.getString(5));
-			rs.close();
+			while (rs.next()){
+				pi.addLog (rs.getInt(1), rs.getInt(2), rs.getTimestamp(3), rs.getBigDecimal(4), rs.getString(5),rs.getInt(6),rs.getInt(7));
+			}
+				rs.close();
 			pstmt.close();
 		}
 		catch (SQLException e)
@@ -157,7 +157,7 @@ public class ProcessInfoUtil
 		for (int i = 0; i < logs.length; i++)
 		{
 			StringBuffer sql = new StringBuffer ("INSERT INTO AD_PInstance_Log "
-				+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg)"
+				+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_Id,Record_ID)"
 				+ " VALUES (");
 			sql.append(pi.getAD_PInstance_ID()).append(",")
 				.append(logs[i].getLog_ID()).append(",");
@@ -174,10 +174,18 @@ public class ProcessInfoUtil
 			else
 				sql.append(logs[i].getP_Number()).append(",");
 			if (logs[i].getP_Msg() == null)
+				sql.append("NULL,");
+			else
+				sql.append(DB.TO_STRING(logs[i].getP_Msg(),2000)).append(",");
+			if (logs[i].getAd_Table_Id() == 0)
+				sql.append("NULL,");
+			else
+				sql.append(logs[i].getAd_Table_Id()).append(",");
+			if (logs[i].getRecord_Id() == 0)
 				sql.append("NULL)");
 			else
-				sql.append(DB.TO_STRING(logs[i].getP_Msg(),2000)).append(")");
-			//
+				sql.append(logs[i].getRecord_Id()).append(")");
+//
 			DB.executeUpdate(sql.toString(), null);
 		}
 		pi.setLogList(null);	//	otherwise log entries are twice

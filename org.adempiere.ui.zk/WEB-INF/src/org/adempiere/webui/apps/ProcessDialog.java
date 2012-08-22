@@ -1,11 +1,15 @@
 package org.adempiere.webui.apps;
 
+import static org.compiere.model.SystemIDs.PROCESS_C_INVOICE_GENERATE;
+import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATE;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,14 +31,20 @@ import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
-import static org.compiere.model.SystemIDs.*;
+import org.compiere.model.MQuery;
+import org.compiere.model.MTable;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zhtml.Table;
+import org.zkoss.zhtml.Td;
+import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -43,13 +53,15 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.North;
+import org.zkoss.zul.South;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -93,6 +105,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto";	
 	private Div messageDiv;
 	private Center center;
+	private Table logMessageTable;
 	private North north;
 
 	private List<File> downloadFiles;
@@ -357,6 +370,10 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	
 	public void onEvent(Event event) {
 		Component component = event.getTarget(); 
+		if(event.getName().equals((Events.ON_CLICK))){
+			doOnClick(component);
+		}
+	
 		if (component instanceof Button) {
 			Button element = (Button)component;
 			if ("Ok".equalsIgnoreCase(element.getId())) {
@@ -377,6 +394,30 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		}
 		
 	}
+
+	private void doOnClick(Component comp) {
+		if (comp instanceof A)
+		{
+			A btn = (A) comp;
+			int Record_ID = 0;
+			int AD_Table_ID =0;
+			try
+			{
+				Record_ID = Integer.valueOf((String)btn.getAttribute("Record_ID"));            		
+				AD_Table_ID= Integer.valueOf((String)btn.getAttribute("AD_Table_ID"));            		
+			}
+			catch (Exception e) {
+			}
+
+			if (Record_ID > 0 && AD_Table_ID > 0) {
+				
+				AEnv.zoom(AD_Table_ID, Record_ID);
+			}
+			
+		}
+	
+	}
+
 
 	public void lockUI(ProcessInfo pi) {
 		if (m_isLocked || Executions.getCurrent() == null) return;
@@ -412,8 +453,9 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		m_messageText.append("<p><font color=\"").append(pi.isError() ? "#FF0000" : "#0000FF").append("\">** ")
 			.append(pi.getSummary())
 			.append("</font></p>");
-		m_messageText.append(pi.getLogInfo(true));
 		message.setContent(m_messageText.toString());
+		// Add Log info with zoom on record id
+		appendRecordLogInfo(pi.getLogs());
 		
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Parameter"));
 		bOK.setImage("/images/Reset16.png");
@@ -432,12 +474,82 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		Clients.response(new AuEcho(this, "onAfterProcess", null));
 	}
 	
+	private void appendRecordLogInfo(ProcessInfoLog[] m_logs) {
+		// TODO Auto-generated method stub
+		System.out.println("********************************");
+		if (m_logs == null)
+			return ;
+		
+		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
+
+		logMessageTable = new Table();
+		logMessageTable.setId("logrecords");
+		logMessageTable.setDynamicProperty("border", "1");
+		logMessageTable.setDynamicProperty("cellpadding", "0");
+		logMessageTable.setDynamicProperty("cellspacing", "0");
+		logMessageTable.setDynamicProperty("width", "100%");
+    	
+    	this.appendChild(logMessageTable);
+
+    	for (int i = 0; i < m_logs.length; i++)
+		{
+		
+    		Tr tr = new Tr();
+    		logMessageTable.appendChild(tr);
+        	
+    		ProcessInfoLog log = m_logs[i];
+			
+			if (log.getP_Date() != null){
+				Label label = new Label(dateFormat.format(log.getP_Date()));
+				//label.setStyle("padding-right:100px");
+				Td td = new Td();
+				td = new Td();
+		    	td.appendChild(label);
+		    	tr.appendChild(td);				
+				
+			}
+			
+			if (log.getP_Number() != null){
+				Label labelPno= new Label(""+log.getP_Number());
+				Td td = new Td();
+		    	td.appendChild(labelPno);
+		    	tr.appendChild(td);				
+			}
+			
+			A btnrecentItem = null;
+			if (log.getP_Msg() != null){
+					btnrecentItem = new A();
+					btnrecentItem.setLabel(log.getP_Msg());
+
+					if (log.getAd_Table_Id() > 0 && log.getRecord_Id()> 0) {
+						btnrecentItem.setAttribute("Record_ID", String.valueOf(log.getRecord_Id()));
+						btnrecentItem.setAttribute("AD_Table_ID", String.valueOf(log.getAd_Table_Id()));
+						btnrecentItem.addEventListener(Events.ON_CLICK, this);
+						
+					}
+					Td td = new Td();
+					td.appendChild(btnrecentItem);
+					tr.appendChild(td);
+				
+			}
+
+    		
+		}
+    	messageDiv.appendChild(logMessageTable);
+
+		
+
+	}
+
 	private void restart() {
 		m_messageText = new StringBuffer(initialMessage);
 		message.setContent(initialMessage);
 
 		north.setVisible(true);
 		messageDiv.detach();
+		if(logMessageTable!=null){
+			messageDiv.removeChild(logMessageTable);
+		}
 		messageDiv.setStyle(MESSAGE_DIV_STYLE);
 		north.appendChild(messageDiv);
 

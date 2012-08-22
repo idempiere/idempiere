@@ -584,8 +584,7 @@ public class InOutGenerate extends SvrProcess
 				
 			}
 			m_shipment.saveEx();
-			//
-			addLog(m_shipment.getM_InOut_ID(), m_shipment.getMovementDate(), null, m_shipment.getDocumentNo());
+			addLog(m_shipment.getM_InOut_ID(), m_shipment.getMovementDate(), null, m_shipment.getDocumentNo(),m_shipment.get_Table_ID(),m_shipment.getM_InOut_ID());
 			m_created++;
 			
 			//reset storage cache as MInOut.completeIt will update m_storage
