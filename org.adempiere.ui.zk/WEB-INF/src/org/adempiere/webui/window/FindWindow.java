@@ -25,6 +25,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -501,7 +503,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void initFind()
     {
         log.config("");
-
+        
+        ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
         //  Get Info from target Tab
         for (int i = 0; i < m_findFields.length; i++)
         {
@@ -552,12 +555,27 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			}
 
             if (mField.isSelectionColumn())
-                addSelectionColumn (mField);
+            	gridFieldList.add(mField); 
 
             //  TargetFields
             m_targetFields.put (new Integer(mField.getAD_Column_ID()), mField);
         }   //  for all target tab fields
 
+       
+       // added comparator on sequence of selection column for IDEMPIERE-377
+        Collections.sort(gridFieldList, new Comparator<GridField>() {
+			@Override
+			public int compare(GridField o1, GridField o2) {
+				return o1.getSeqNoSelection()-o2.getSeqNoSelection();
+			}
+		});
+        
+        // adding sorted columns
+        for(GridField field:gridFieldList){
+        	addSelectionColumn (field);
+		}
+        
+        gridFieldList = null;
         m_total = getNoOfRecords(null, false);
 
     }   //  initFind
@@ -660,8 +678,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ValueNamePair[] cols = new ValueNamePair[items.size()];
         items.toArray(cols);
         Arrays.sort(cols);      //  sort alpha
+        ValueNamePair[] op = MQuery.OPERATORS_ALL;
 
-        ValueNamePair[] op = MQuery.OPERATORS;
 
         if(fields == null)
         {
@@ -772,9 +790,20 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 Component componentTo = getEditorCompQueryTo(row);
                 componentTo.setId("searchFieldTo"+row.getId());
                 componentTo.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, componentTo.getId());
-
-                addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
-                addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
+                Listbox listOp = (Listbox) row.getFellow("listOperator"+row.getId());
+                String betweenValue = listOp.getSelectedItem().getValue().toString();
+                
+                if(betweenValue.equals(MQuery.NULL) || betweenValue.equals(MQuery.NOT_NULL))
+                {
+                	// to not display any editor
+                	row.getFellow("cellQueryFrom"+row.getId()).getChildren().clear();
+                	row.getFellow("cellQueryTo"+row.getId()).getChildren().clear();
+                }
+                else
+                {
+                	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
+                	addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
+                }
             }
     		else if (event.getTarget() == fQueryName)
     		{
@@ -1078,7 +1107,23 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             ListCell cellQueryFrom = (ListCell)row.getFellow("cellQueryFrom"+row.getId());
             Object value = cellQueryFrom.getAttribute("value");
             if (value == null)
-                continue;
+            {
+            	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
+            	{
+            		m_query.addRestriction(ColumnSQL, Operator, null,
+            				infoName, null);
+            		if (code.length() > 0)
+        				code.append(SEGMENT_SEPARATOR);
+        			code.append(ColumnName)
+        				.append(FIELD_SEPARATOR)
+        				.append(Operator)
+        				.append(FIELD_SEPARATOR)
+        				.append("")
+        				.append(FIELD_SEPARATOR)
+        				.append("");
+            	}
+            	continue;
+            }
             Object parsedValue = parseValue(field, value);
             if (parsedValue == null)
                 continue;
@@ -1235,19 +1280,74 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void addOperators(ListItem column, Listbox listOperator)
     {
         String columnName = column.getValue().toString();
+        int columnID = MColumn.getColumn_ID(this.m_tableName, columnName);
+        String SQL = "SELECT ad_reference_id FROM ad_column WHERE ad_column_id = ?";
+        PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int referenceType = -1;
+		try
+		{
+			pstmt = DB.prepareStatement(SQL, null);
+			pstmt.setInt(1, columnID);
+			rs = pstmt.executeQuery();
+			if( rs.next() )
+			{
+				referenceType = rs.getInt(1);
+			}
+		}
+		catch (SQLException e2)
+		{
+			log.log(Level.SEVERE, SQL, e2);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
         log.config("Column: " + columnName);
-
-        if (columnName.endsWith("_ID") || columnName.endsWith("_Acct"))
+        log.log(Level.INFO, "referenceType : " + referenceType);
+        
+        List<Integer> numbersList = new ArrayList<Integer>();
+        numbersList.add(DisplayType.Number);
+        numbersList.add(DisplayType.Date);
+        numbersList.add(DisplayType.Amount);
+        numbersList.add(DisplayType.CostPrice);
+        numbersList.add(DisplayType.Quantity);
+        numbersList.add(DisplayType.ID);
+        numbersList.add(DisplayType.Integer);
+        
+        List<Integer> equalNotEqualList = new ArrayList<Integer>();
+        equalNotEqualList.add(DisplayType.TableDir);
+        equalNotEqualList.add(DisplayType.Table);
+        equalNotEqualList.add(DisplayType.Search);
+        equalNotEqualList.add(DisplayType.List);
+        
+        List<Integer> equalAndLikeList = new ArrayList<Integer>();
+        equalAndLikeList.add(DisplayType.URL);
+        equalAndLikeList.add(DisplayType.Memo);
+        equalAndLikeList.add(DisplayType.TextLong);
+        equalAndLikeList.add(DisplayType.Text);
+        
+        if(numbersList.contains(referenceType))
         {
-             addOperators(MQuery.OPERATORS_ID, listOperator);
+        	addOperators(MQuery.OPERATORS_NUMBERS, listOperator);
         }
-        else if (columnName.startsWith("Is"))
+        else if (equalNotEqualList.contains(referenceType))
         {
-            addOperators(MQuery.OPERATORS_YN, listOperator);
+        	addOperators(MQuery.OPERATORS_ID, listOperator);
+        }
+        else if (DisplayType.YesNo == referenceType)
+        {
+        	addOperators(MQuery.OPERATORS_YN, listOperator);
+        }
+        else if (equalAndLikeList.contains(referenceType))
+        {
+        	addOperators(MQuery.OPERATORS_EQUAL_LIKE, listOperator);
         }
         else
         {
-            addOperators(MQuery.OPERATORS, listOperator);
+        	addOperators(MQuery.OPERATORS_ALL, listOperator);
         }
     } //    addOperators
 
@@ -1452,8 +1552,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             //  Value   ******
             ListCell cellQueryFrom = (ListCell)row.getFellow("cellQueryFrom"+row.getId());
             Object value = cellQueryFrom.getAttribute("value");
-            if (value == null)
-                continue;
+
+            if (value == null) 
+            {
+            	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
+            	{
+            		m_query.addRestriction(ColumnSQL, Operator, null,
+            				infoName, null);
+            	}
+            	continue;
+            }
             Object parsedValue = parseValue(field, value);
             if (parsedValue == null)
                 continue;

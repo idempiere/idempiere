@@ -420,6 +420,10 @@ public class MQuery implements Serializable
 	public static final String	BETWEEN = " BETWEEN ";
 	/** Between - 8		*/
 	public static final int		BETWEEN_INDEX = 8;
+	/** For IDEMPIERE-377	*/
+	public static final String 	NOT_NULL = "IS NOT NULL";
+	/** For IDEMPIERE-377	*/
+	public static final String 	NULL = "IS NULL";
 
 	/**	Operators for Strings				*/
 	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
@@ -441,6 +445,45 @@ public class MQuery implements Serializable
 	/**	Operators for Boolean					*/
 	public static final ValueNamePair[]	OPERATORS_YN = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			" = ")
+	};
+
+	/**	Operators for Number, Amount, Date, Costs+Prices, Quantity, Integer, ID			*/
+	public static final ValueNamePair[]	OPERATORS_NUMBERS = new ValueNamePair[] {
+		new ValueNamePair (EQUAL,			" = "),		//	0
+		new ValueNamePair (NOT_EQUAL,		" != "),
+		new ValueNamePair (GREATER,			" > "),
+		new ValueNamePair (GREATER_EQUAL,	" >= "),	//	5
+		new ValueNamePair (LESS,			" < "),
+		new ValueNamePair (LESS_EQUAL,		" <= "),
+		new ValueNamePair (BETWEEN,			" >-< "),	//	8
+		new ValueNamePair (NULL,			" NULL "),
+		new ValueNamePair (NOT_NULL,		" !NULL ")
+
+	};
+	/**	Operators for URL			*/
+	public static final ValueNamePair[]	OPERATORS_EQUAL_LIKE = new ValueNamePair[] {
+		new ValueNamePair (EQUAL,			" = "),		//	0
+		new ValueNamePair (NOT_EQUAL,		" != "),
+		new ValueNamePair (NOT_EQUAL,		" ~ "),
+		new ValueNamePair (LIKE,			" !~ "),
+		new ValueNamePair (NULL,			" NULL "),
+		new ValueNamePair (NOT_NULL,		" !NULL ")
+
+	};
+	
+	/**	Operators for all				*/
+	public static final ValueNamePair[]	OPERATORS_ALL = new ValueNamePair[] {
+		new ValueNamePair (EQUAL,			" = "),		//	0
+		new ValueNamePair (NOT_EQUAL,		" != "),
+		new ValueNamePair (LIKE,			" ~ "),
+		new ValueNamePair (NOT_LIKE,		" !~ "),
+		new ValueNamePair (GREATER,			" > "),
+		new ValueNamePair (GREATER_EQUAL,	" >= "),	//	5
+		new ValueNamePair (LESS,			" < "),
+		new ValueNamePair (LESS_EQUAL,		" <= "),
+		new ValueNamePair (BETWEEN,			" >-< "),	//	8
+		new ValueNamePair (NULL,			" NULL "),
+		new ValueNamePair (NOT_NULL,		" !NULL ")
 	};
 
 	/*************************************************************************
@@ -1116,7 +1159,18 @@ class Restriction  implements Serializable
 				sb.append(" IS NULL ");
 			else
 				sb.append(" IS NOT NULL ");
-		}				
+		}
+		
+		else if ((Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)) 
+				&& (Code == null 
+					|| "NULL".equals (Code.toString().toUpperCase())))
+		{
+			if (Operator.equals(MQuery.NULL))
+				sb.append(" IS NULL ");
+			else
+				sb.append(" IS NOT NULL ");
+		}
+		
 		else
 		{
 		sb.append(Operator);

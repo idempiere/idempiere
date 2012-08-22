@@ -184,7 +184,7 @@ public class RequestInvoice extends SvrProcess
 					
 				}
 				m_invoice.saveEx();
-				addLog(0, null, m_invoice.getGrandTotal(), m_invoice.getDocumentNo());
+				addLog(0, null, m_invoice.getGrandTotal(), m_invoice.getDocumentNo(),m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID());
 			}
 		}
 		m_invoice = null;

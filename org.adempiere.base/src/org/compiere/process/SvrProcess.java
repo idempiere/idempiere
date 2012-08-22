@@ -428,6 +428,18 @@ public abstract class SvrProcess implements ProcessCall
 
 
 	/**************************************************************************
+	 *  Add Log Entry with table name
+	 *  
+	 */
+	public void addLog (int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
+	{
+		if (m_pi != null)
+			m_pi.addLog(id, date, number, msg,tableId,recordId);
+		
+		log.info(id + " - " + date + " - " + number + " - " + msg +" - "+tableId);
+	}	//	addLog
+
+	/**************************************************************************
 	 *  Add Log Entry
 	 *  @param date date or null
 	 *  @param id record id or 0

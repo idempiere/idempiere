@@ -1127,6 +1127,14 @@ public class GridField
 		return m_vo.IsSelectionColumn;
 	}
 	/**
+	 * 	Selection column sequence
+	 *	@return SeqNoSelection
+	 */
+	public int getSeqNoSelection() 
+	{
+		return m_vo.SeqNoSelection;
+	}
+	/**
 	 * 	Get Obscure Type
 	 *	@return obscure
 	 */

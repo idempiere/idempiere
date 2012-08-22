@@ -9,7 +9,8 @@ CREATE OR REPLACE VIEW ad_field_vt AS
  f.included_tab_id, fg.fieldgrouptype, fg.iscollapsedbydefault, COALESCE(f.infofactoryclass, c.infofactoryclass) AS infofactoryclass, c.isautocomplete,
  COALESCE(f.IsAllowCopy, c.IsAllowCopy) AS IsAllowCopy,
 	f.isdisplayedgrid, 
-	f.seqnogrid
+	f.seqnogrid,
+	c.seqnoselection
    FROM ad_field f
    JOIN ad_field_trl trl ON f.ad_field_id = trl.ad_field_id
    JOIN ad_tab t ON f.ad_tab_id = t.ad_tab_id

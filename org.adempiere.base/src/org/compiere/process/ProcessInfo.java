@@ -519,6 +519,16 @@ public class ProcessInfo implements Serializable
 	}	//	setParameter
 
 	
+	public void addLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg,int tableId,int recordId)
+	{
+		addLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg,tableId,recordId));
+	}
+	
+	public void addLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg ,int tableId,int recordId)
+	{
+		addLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg,tableId, recordId));
+	}
+	
 	/**************************************************************************
 	 * 	Add to Log
 	 *	@param Log_ID Log ID
