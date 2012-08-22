@@ -421,7 +421,7 @@ public class MQuery implements Serializable
 	/** Between - 8		*/
 	public static final int		BETWEEN_INDEX = 8;
 	/** For ticket 1001193	*/
-	public static final String 	NOT_NULL = "IS NOT NNULL";
+	public static final String 	NOT_NULL = "IS NOT NULL";
 	/** For ticket 1001193	*/
 	public static final String 	NULL = "IS NULL";
 

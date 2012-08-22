@@ -25,6 +25,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -443,7 +445,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void initFind()
     {
         log.config("");
-
+        
+        ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
         //  Get Info from target Tab
         for (int i = 0; i < m_findFields.length; i++)
         {
@@ -494,12 +497,27 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			}
 
             if (mField.isSelectionColumn())
-                addSelectionColumn (mField);
+            	gridFieldList.add(mField); 
 
             //  TargetFields
             m_targetFields.put (new Integer(mField.getAD_Column_ID()), mField);
         }   //  for all target tab fields
 
+       
+       // added comparator on sequence of selection column for IDEMPIERE-377
+        Collections.sort(gridFieldList, new Comparator<GridField>() {
+			@Override
+			public int compare(GridField o1, GridField o2) {
+				return o1.getSeqNoSelection()-o2.getSeqNoSelection();
+			}
+		});
+        
+        // adding sorted columns
+        for(GridField field:gridFieldList){
+        	addSelectionColumn (field);
+		}
+        
+        gridFieldList = null;
         m_total = getNoOfRecords(null, false);
 
     }   //  initFind
