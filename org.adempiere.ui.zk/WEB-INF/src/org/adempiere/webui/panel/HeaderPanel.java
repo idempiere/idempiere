@@ -64,7 +64,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 
     	UserPanel userPanel = new UserPanel();
 
-    	image  = new Image(ThemeManager.getSmallLogo());
+    	image = new Image(ThemeManager.getSmallLogo());
     	image.addEventListener(Events.ON_CLICK, this);
     	image.setStyle("cursor: pointer;");
     	image.setWidth("100px");
@@ -73,6 +73,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	LayoutUtils.addSclass("desktop-header", layout);
     	layout.setParent(this);
     	West west = new West();
+    	west.setWidth("50%");
     	west.setParent(layout);
 
     	Hbox hbox = new Hbox();
@@ -107,9 +108,9 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	Center center = new Center();
     	center.setParent(layout);
     	userPanel.setParent(center);
-    	userPanel.setWidth("100%");
     	userPanel.setHeight("100%");
-    	userPanel.setStyle("position: absolute");
+    	userPanel.setAlign("right");
+    	userPanel.setStyle("position: absolute; text-align:right;");
     	center.setFlex(true);
     	LayoutUtils.addSclass("desktop-header-right", center);
     	//the following doesn't work when declare as part of the header-right style

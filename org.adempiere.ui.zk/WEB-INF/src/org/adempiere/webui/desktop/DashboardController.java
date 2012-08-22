@@ -40,6 +40,7 @@ import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MDashboardContent;
+import org.compiere.model.MDashboardPreference;
 import org.compiere.model.MGoal;
 import org.compiere.model.MMenu;
 import org.compiere.model.MPInstance;
@@ -48,7 +49,6 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
-import org.compiere.model.X_PA_DashboardContent;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -128,22 +128,27 @@ public class DashboardController implements EventListener<Event> {
         try
 		{
         	int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
-        	MDashboardContent[] dps = MDashboardContent.getForSession(AD_User_ID);
-        	if (dps.length == 0)
-        		createUserPreference();
+        	int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
         	
-        	dps = MDashboardContent.getForSession(isShowInDashboard, AD_User_ID); // based on user        	
-        	noOfCols = MDashboardContent.getForSessionColumnCount(isShowInDashboard, AD_User_ID);
+        	MDashboardPreference[] dps = MDashboardPreference.getForSession(AD_User_ID, AD_Role_ID);
+        	if (dps.length == 0)
+        		createDashboardPreference();
+        	
+        	dps = MDashboardPreference.getForSession(isShowInDashboard, AD_User_ID, AD_Role_ID); // based on user and role       	
+        	noOfCols = MDashboardPreference.getForSessionColumnCount(isShowInDashboard, AD_User_ID, AD_Role_ID);
             
-            width = noOfCols <= 0 ? 100 : 100 / noOfCols;
-            for (final MDashboardContent dp : dps)
+            width = noOfCols <= 0 ? 100 : (100-1) / noOfCols;
+            for (final MDashboardPreference dp : dps)
 			{
+            	MDashboardContent dc = new MDashboardContent(dp.getCtx(), dp.getPA_DashboardContent_ID(), dp.get_TrxName());
+            	
 	        	int columnNo = dp.getColumnNo();
 	        	if(dashboardColumnLayout == null || currentColumnNo != columnNo)
 	        	{
 	        		dashboardColumnLayout = new Vlayout();
 	        		dashboardColumnLayout.setAttribute("ColumnNo", columnNo);
 	        		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
+	        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", false);
 	        		Anchorchildren dashboardColumn = new Anchorchildren();
 	        		dashboardColumn.setAnchor((width-2) + "%" + " 100%");
 	        		dashboardColumn.setDroppable("true");
@@ -158,17 +163,18 @@ public class DashboardController implements EventListener<Event> {
 
 	        	Panel panel = new Panel();
 	        	panel.setAttribute("PA_DashboardContent_ID", dp.getPA_DashboardContent_ID());
+	        	panel.setAttribute("PA_DashboardPreference_ID", dp.getPA_DashboardPreference_ID());
 	        	panelList.add(panel);
 	        	panel.addEventListener(Events.ON_MAXIMIZE, this);
 	        	panel.setStyle("margin: 2px; position: relative;");
-	        	panel.setTitle(dp.get_Translation(MDashboardContent.COLUMNNAME_Name));
+	        	panel.setTitle(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
 	        	panel.setMaximizable(true);
 	        	
-	        	String description = dp.get_Translation(MDashboardContent.COLUMNNAME_Description);
+	        	String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
             	if(description != null)
             		panel.setTooltiptext(description);
 
-            	panel.setCollapsible(dp.isCollapsible());
+            	panel.setCollapsible(dc.isCollapsible());
             	panel.setOpen(!dp.isCollapsedByDefault());
             	panel.addEventListener(Events.ON_OPEN, this);
             	
@@ -184,7 +190,7 @@ public class DashboardController implements EventListener<Event> {
 	            boolean panelEmpty = true;
 
 	            // HTML content
-	            String htmlContent = dp.getHTML();
+	            String htmlContent = dc.getHTML();
 	            if(htmlContent != null)
 	            {
 		            StringBuilder result = new StringBuilder("<html><head>");
@@ -217,12 +223,12 @@ public class DashboardController implements EventListener<Event> {
 	            }
 
 	        	// Window
-	        	int AD_Window_ID = dp.getAD_Window_ID();
+	        	int AD_Window_ID = dc.getAD_Window_ID();
 	        	if(AD_Window_ID > 0)
 	        	{
-		        	int AD_Menu_ID = dp.getAD_Menu_ID();
+		        	int AD_Menu_ID = dc.getAD_Menu_ID();
 					ToolBarButton btn = new ToolBarButton(String.valueOf(AD_Menu_ID));
-					I_AD_Menu menu = dp.getAD_Menu();
+					I_AD_Menu menu = dc.getAD_Menu();
 					btn.setLabel(menu.getName());
 					btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
 					btn.addEventListener(Events.ON_CLICK, this);
@@ -231,7 +237,7 @@ public class DashboardController implements EventListener<Event> {
 	        	}
 	        	
 	        	//Report & Process
-	        	int AD_Process_ID = dp.getAD_Process_ID();
+	        	int AD_Process_ID = dc.getAD_Process_ID();
 	        	if(AD_Process_ID > 0)
 	        	{
 		        	String sql = "SELECT AD_MENU_ID FROM AD_MENU WHERE AD_Process_ID=?";
@@ -242,9 +248,9 @@ public class DashboardController implements EventListener<Event> {
 					btn.addEventListener(Events.ON_CLICK, this);					
 					panelEmpty = false;
 					
-					if (dp.isEmbedReportContent()) 
+					if (dc.isEmbedReportContent()) 
 					{
-						String processParameters = dp.getProcessParameters();
+						String processParameters = dc.getProcessParameters();
 						embedReport(content, AD_Process_ID, processParameters);
 						content.addEventListener("onZoom", new EventListener<Event>() {
 							public void onEvent(Event event) throws Exception {
@@ -292,7 +298,7 @@ public class DashboardController implements EventListener<Event> {
 	        	}
 
 	        	// Goal
-	        	int PA_Goal_ID = dp.getPA_Goal_ID();
+	        	int PA_Goal_ID = dc.getPA_Goal_ID();
 	        	if(PA_Goal_ID > 0)
 	        	{
 	        		//link to open performance detail
@@ -308,17 +314,17 @@ public class DashboardController implements EventListener<Event> {
 		            });
 		            content.appendChild(link);
 
-		            String goalDisplay = dp.getGoalDisplay();
+		            String goalDisplay = dc.getGoalDisplay();
 		            MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
 		            WGraph graph = new WGraph(goal, 55, false, true,
-		            		!(X_PA_DashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
-		            		X_PA_DashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
+		            		!(MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
+		            		MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
 		            content.appendChild(graph);
 		            panelEmpty = false;
 	        	}
 
 	            // ZUL file url
-	        	String url = dp.getZulFilePath();
+	        	String url = dc.getZulFilePath();
 	        	if(url != null)
 	        	{
 		        	try {
@@ -354,8 +360,25 @@ public class DashboardController implements EventListener<Event> {
             	dashboardColumnLayout = new Vlayout();
         		dashboardColumnLayout.setAttribute("ColumnNo", "0");
         		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
+        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", false);
         		Anchorchildren dashboardColumn = new Anchorchildren();
         		dashboardColumn.setAnchor((width-2) + "%" + " 100%");
+        		dashboardColumn.setDroppable("true");
+        		dashboardColumn.addEventListener(Events.ON_DROP, this);
+        		dashboardColumn.appendChild(dashboardColumnLayout);
+        		columnList.add(dashboardColumn);
+                dashboardLayout.appendChild(dashboardColumn);
+                dashboardColumnLayout.setWidth("100%");
+            }
+            else if (isShowInDashboard)
+            {
+            	// additional column
+            	dashboardColumnLayout = new Vlayout();
+        		dashboardColumnLayout.setAttribute("ColumnNo", currentColumnNo + 1);
+        		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
+        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
+        		Anchorchildren dashboardColumn = new Anchorchildren();
+        		dashboardColumn.setAnchor("1% 100%");
         		dashboardColumn.setDroppable("true");
         		dashboardColumn.addEventListener(Events.ON_DROP, this);
         		dashboardColumn.appendChild(dashboardColumnLayout);
@@ -446,7 +469,7 @@ public class DashboardController implements EventListener<Event> {
         			{
         				Vlayout dashboardColumnLayout = (Vlayout) target.getParent();
         				dashboardColumnLayout.insertBefore(panel, target);        				
-        				saveUserPreference(dashboardColumnLayout);
+        				saveDashboardPreference(dashboardColumnLayout);
         			}        			
 	        	}
 	        	else if (comp instanceof Anchorchildren)
@@ -457,7 +480,7 @@ public class DashboardController implements EventListener<Event> {
         			{
         				Vlayout dashboardColumnLayout = (Vlayout) target.getFirstChild();
         				dashboardColumnLayout.appendChild(panel);
-        				saveUserPreference(dashboardColumnLayout);
+        				saveDashboardPreference(dashboardColumnLayout);
         			}
 	        	}
     		}
@@ -467,53 +490,43 @@ public class DashboardController implements EventListener<Event> {
 			if(comp instanceof Panel)
     		{
     			Panel panel = (Panel) comp;
-    			Object value = panel.getAttribute("PA_DashboardContent_ID");
+    			Object value = panel.getAttribute("PA_DashboardPreference_ID");
     			if (value != null)
     			{
-    				int PA_DashboardContent_ID = Integer.parseInt(value.toString());
-    				MDashboardContent dashboardContent = new MDashboardContent(Env.getCtx(), PA_DashboardContent_ID, null);
-    				dashboardContent.setIsCollapsedByDefault(!panel.isOpen());
-    				if (!dashboardContent.save())
-    					logger.log(Level.SEVERE, "Failed to save dashboard content edit " + dashboardContent.toString());
+    				int PA_DashboardPreference_ID = Integer.parseInt(value.toString());
+    				MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), PA_DashboardPreference_ID, null);
+    				preference.setIsCollapsedByDefault(!panel.isOpen());
+    				if (!preference.save())
+    					logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
     			}
     		}
 		}
 	}
 	
-	private void createUserPreference()
+	private void createDashboardPreference()
 	{
-		if (Env.getAD_User_ID(Env.getCtx()) == 0)
+		if (Env.getAD_User_ID(Env.getCtx()) == 0 && Env.getAD_Role_ID(Env.getCtx()) == 0)
 			return;
 		
-		MDashboardContent[] dps = MDashboardContent.getForSession(0);
-		for (MDashboardContent dp : dps)
+		MDashboardContent[] dcs = MDashboardContent.getForSession(0, 0);
+		for (MDashboardContent dc : dcs)
 		{
-			MDashboardContent dashboardContent = new MDashboardContent(Env.getCtx(), 0, null);
-			dashboardContent.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
-			dashboardContent.setAD_Role_ID(Env.getAD_Role_ID(Env.getCtx()));
-			dashboardContent.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
-
-			dashboardContent.setAD_Process_ID(dp.getAD_Process_ID());
-			dashboardContent.setAD_Window_ID(dp.getAD_Window_ID());
-			dashboardContent.setColumnNo(dp.getColumnNo());
-			dashboardContent.setDescription(dp.getDescription());
-			dashboardContent.setGoalDisplay(dp.getGoalDisplay());
-			dashboardContent.setHTML(dp.getHTML());
-			dashboardContent.setIsCollapsedByDefault(dp.isCollapsedByDefault());
-			dashboardContent.setIsCollapsible(dp.isCollapsible());
-			dashboardContent.setIsEmbedReportContent(dp.isEmbedReportContent());
-			dashboardContent.setIsShowInDashboard(dp.isShowInDashboard());
-			dashboardContent.setLine(dp.getLine());
-			dashboardContent.setName(dp.getName());
-			dashboardContent.setPA_Goal_ID(dp.getPA_Goal_ID());
-			dashboardContent.setZulFilePath(dp.getZulFilePath());
+			MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), 0, null);
+			preference.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+			preference.setAD_Role_ID(Env.getAD_Role_ID(Env.getCtx()));
+			preference.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			preference.setColumnNo(dc.getColumnNo());
+			preference.setIsCollapsedByDefault(dc.isCollapsedByDefault());
+			preference.setIsShowInDashboard(dc.isShowInDashboard());
+			preference.setLine(dc.getLine());
+			preference.setPA_DashboardContent_ID(dc.getPA_DashboardContent_ID());
 			
-			if (!dashboardContent.save())
-				logger.log(Level.SEVERE, "Failed to create dashboard content edit " + dashboardContent.toString());
+			if (!preference.save())
+				logger.log(Level.SEVERE, "Failed to create dashboard preference " + preference.toString());
 		}
 	}
 	
-	private void saveUserPreference(Vlayout layout)
+	private void saveDashboardPreference(Vlayout layout)
 	{
 		Object value = layout.getAttribute("ColumnNo");
 		if (value != null)
@@ -532,21 +545,59 @@ public class DashboardController implements EventListener<Event> {
 					if (child instanceof Panel)
 					{
 						Panel panel = (Panel) child;
-		    			value = panel.getAttribute("PA_DashboardContent_ID");
+		    			value = panel.getAttribute("PA_DashboardPreference_ID");
 		    			if (value != null)
 		    			{
 		    				++counter;
 		    				
-		    				int PA_DashboardContent_ID = Integer.parseInt(value.toString());
-		    				MDashboardContent dashboardContent = new MDashboardContent(Env.getCtx(), PA_DashboardContent_ID, null);
-		    				dashboardContent.setColumnNo(columnNo);
-		    				dashboardContent.setLine(new BigDecimal(counter * 10));
-		    				dashboardContent.setIsShowInDashboard(isShowInDashboard);
-		    				if (!dashboardContent.save())
-		    					logger.log(Level.SEVERE, "Failed to save dashboard content edit " + dashboardContent.toString());
+		    				int PA_DashboardPreference_ID = Integer.parseInt(value.toString());
+		    				MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), PA_DashboardPreference_ID, null);
+		    				preference.setColumnNo(columnNo);
+		    				preference.setLine(new BigDecimal(counter * 10));
+		    				preference.setIsShowInDashboard(isShowInDashboard);
+		    				if (!preference.save())
+		    					logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
 		    			}
 					}
 				}
+				
+				if (isShowInDashboard)
+				{
+					value = layout.getAttribute("IsAdditionalColumn");
+					if (value != null)
+					{
+						boolean isAdditionalColumn = Boolean.parseBoolean(value.toString());
+						if (isAdditionalColumn)
+						{
+							layout.setAttribute("IsAdditionalColumn", false);
+							
+							int noOfCols = columnList.size(); 
+							int width = noOfCols <= 0 ? 100 : (100-1) / noOfCols;
+							
+							for (Anchorchildren column : columnList)
+								column.setAnchor((width-2) + "%" + " 100%");
+
+							// additional column
+							Vlayout dashboardColumnLayout = new Vlayout();
+			        		dashboardColumnLayout.setAttribute("ColumnNo", columnNo + 1);
+			        		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
+			        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
+			        		Anchorchildren dashboardColumn = new Anchorchildren();
+			        		dashboardColumn.setAnchor("1% 100%");
+			        		dashboardColumn.setDroppable("true");
+			        		dashboardColumn.addEventListener(Events.ON_DROP, this);
+			        		dashboardColumn.appendChild(dashboardColumnLayout);
+			        		columnList.add(dashboardColumn);
+			                dashboardLayout.appendChild(dashboardColumn);
+			                dashboardColumnLayout.setWidth("100%");
+			                
+			                dashboardLayout.invalidate();			                
+						}
+					}
+				}
+				
+                if (!dashboardRunnable.isEmpty())
+                	dashboardRunnable.refreshDashboard();
 			}
 		}
 	}

@@ -14,6 +14,7 @@
 package org.adempiere.webui.dashboard;
 
 import org.adempiere.webui.apps.graph.WPAPanel;
+import org.adempiere.webui.util.ServerPushTemplate;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
@@ -41,8 +42,12 @@ public class DPPerformance extends DashboardPanel {
         {
         	this.appendChild(paPanel);        	
         }
-	}	
-
+	}
+	
+	public void refresh(ServerPushTemplate template) {
+		super.refresh(template);
+		Events.echoEvent("onPostRender", this, null);
+	}
 	
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
