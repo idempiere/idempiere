@@ -78,17 +78,6 @@ public class SessionManager
         return app;
     }
     
-    public static void clearSession()
-    {
-        Env.getCtx().clear();
-        Session session = getSession();
-        if (session != null)
-        {
-        	session.removeAttribute(SessionContextListener.SESSION_CTX);
-        	session.invalidate();
-        }
-    }
-    
     public static void logoutSession()
     {
     	IWebClient app = getSessionApplication();

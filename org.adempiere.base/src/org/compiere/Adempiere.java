@@ -567,10 +567,11 @@ public final class Adempiere
 			max = 200;
 		}
 		if (min < 0) {
-			min = 20;
+			min = 10;
 		}
 		// start thread pool
-		threadPoolExecutor = new ThreadPoolExecutor(min, max, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		threadPoolExecutor = new ThreadPoolExecutor(min, max, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		threadPoolExecutor.allowCoreThreadTimeOut(true);
 	}
 
 	/**
