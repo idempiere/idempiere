@@ -474,6 +474,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
     	MUser user = MUser.get (m_ctx, m_userName);
     	if (user != null) {
     		Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
+    		Env.setContext(m_ctx, "#AD_User_Name", user.getName() );
     		Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
     	}
     }
