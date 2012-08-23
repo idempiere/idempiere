@@ -1,6 +1,17 @@
-/**
- * 
- */
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
+
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -11,15 +22,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /**
- * @author teo_sarca
- *
+ * Dashboard preference
+ * @author Elaine
+ * @date August 22, 2012
  */
-public class MDashboardContent extends X_PA_DashboardContent
+public class MDashboardPreference extends X_PA_DashboardPreference
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5425307033413466516L;
+	private static final long serialVersionUID = 7568476952229922042L;
 
 	public static int getForSessionColumnCount(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
@@ -27,10 +39,10 @@ public class MDashboardContent extends X_PA_DashboardContent
         return noOfCols;
 	}
 	
-	public static MDashboardContent[] getForSession(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
+	public static MDashboardPreference[] getForSession(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
-		List<MDashboardContent> list = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID).list();
-		return list.toArray(new MDashboardContent[list.size()]);
+		List<MDashboardPreference> list = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID).list();
+		return list.toArray(new MDashboardPreference[list.size()]);
 	}
 	
 	public static Query getForSessionQuery(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
@@ -61,10 +73,10 @@ public class MDashboardContent extends X_PA_DashboardContent
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
 	}
 	
-	public static MDashboardContent[] getForSession(int AD_User_ID, int AD_Role_ID)
+	public static MDashboardPreference[] getForSession(int AD_User_ID, int AD_Role_ID)
 	{
-		List<MDashboardContent> list = getForSessionQuery(AD_User_ID, AD_Role_ID).list();
-		return list.toArray(new MDashboardContent[list.size()]);
+		List<MDashboardPreference> list = getForSessionQuery(AD_User_ID, AD_Role_ID).list();
+		return list.toArray(new MDashboardPreference[list.size()]);
 	}
 	
 	public static Query getForSessionQuery(int AD_User_ID, int AD_Role_ID)
@@ -94,36 +106,13 @@ public class MDashboardContent extends X_PA_DashboardContent
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
 	}
 	
-    public MDashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
+    public MDashboardPreference (Properties ctx, int PA_DashboardPreference_ID, String trxName)
     {
-      super (ctx, PA_DashboardContent_ID, trxName);
+      super (ctx, PA_DashboardPreference_ID, trxName);
     }
-    public MDashboardContent (Properties ctx, ResultSet rs, String trxName)
+    
+    public MDashboardPreference (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
-    }
-    
-    public int getAD_Menu_ID()
-    {
-    	if (m_AD_Menu_ID != null)
-    		return m_AD_Menu_ID;
-    	if (getAD_Window_ID() <= 0)
-    	{
-    		m_AD_Menu_ID = -1;
-    		return m_AD_Menu_ID;
-    	}
-    	m_AD_Menu_ID = new Query(getCtx(), MMenu.Table_Name, MMenu.COLUMNNAME_AD_Window_ID+"=?", null)
-    	.setParameters(getAD_Window_ID())
-    	.setOnlyActiveRecords(true)
-    	.setOrderBy(MMenu.COLUMNNAME_AD_Menu_ID+" DESC")
-    	.firstId();
-    	return m_AD_Menu_ID;
-    }
-    private Integer m_AD_Menu_ID = null;
-    
-    public I_AD_Menu getAD_Menu()
-    {
-    	return (I_AD_Menu)MTable.get(getCtx(), I_AD_Menu.Table_Name)
-    		.getPO(getAD_Menu_ID(), get_TrxName());
     }
 }

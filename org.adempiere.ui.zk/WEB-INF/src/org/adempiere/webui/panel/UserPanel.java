@@ -62,19 +62,13 @@ public class UserPanel extends Vbox implements EventListener<Event>
 
     public UserPanel()
     {
+    	super();
         this.ctx = Env.getCtx();
         init();
     }
 
     private void init()
-    {
-    	this.setStyle("text-align:right");
-
-    	// Elaine 2008/11/07 - fix the layout problem in IE7
-    	this.setWidth("100%");
-    	this.setAlign("right");
-    	//
-    	
+    {	
     	Vbox vbox = new Vbox();
     	this.appendChild(vbox);
 

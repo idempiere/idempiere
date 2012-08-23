@@ -33,6 +33,7 @@ import org.compiere.apps.AEnv;
 import org.compiere.apps.AWindow;
 import org.compiere.model.MAchievement;
 import org.compiere.model.MDashboardContent;
+import org.compiere.model.MDashboardPreference;
 import org.compiere.model.MGoal;
 import org.compiere.model.MMeasureCalc;
 import org.compiere.model.MProjectType;
@@ -144,20 +145,22 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 				try
 				{
 					int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
-		        	MDashboardContent[] dps = MDashboardContent.getForSession(true, AD_User_ID); // based on user
+		        	int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
 		        	
+		        	MDashboardPreference[] dps = MDashboardPreference.getForSession(AD_User_ID, AD_Role_ID);
 		        	if (dps.length == 0)
-		        	{
-		        		AD_User_ID = 0;
-		        		dps = MDashboardContent.getForSession(true, AD_User_ID); // based on client
-		        	}
+		        		createDashboardPreference();
 		        	
-					for (final MDashboardContent dp : dps)
+		        	dps = MDashboardPreference.getForSession(true, AD_User_ID, AD_Role_ID); // based on user and role
+		        	
+					for (final MDashboardPreference dp : dps)
 					{
-						if (!Util.isEmpty(dp.getZulFilePath(), true))
+						MDashboardContent dc = new MDashboardContent(dp.getCtx(), dp.getPA_DashboardContent_ID(), dp.get_TrxName());
+						
+						if (!Util.isEmpty(dc.getZulFilePath(), true))
 							continue;
 						//
-						appendToHome = dp.getHTML();
+						appendToHome = dc.getHTML();
 						String descriptionTrl = dp.get_Translation(MDashboardContent.COLUMNNAME_Description);
 						if (appendToHome != null) {
 							if (descriptionTrl != null)
@@ -165,17 +168,17 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 							result += stripHtml(appendToHome, false) + "<br>\n";
 						}
 						
-						if (dp.getAD_Menu_ID() > 0) {
+						if (dc.getAD_Menu_ID() > 0) {
 							result += "<a class=\"hrefNode\" href=\"http:///window/node#" 
-								   + String.valueOf( dp.getAD_Window_ID() // "AD_MENU_ID") fcsku 3.7.07
+								   + String.valueOf( dc.getAD_Window_ID() // "AD_MENU_ID") fcsku 3.7.07
 								   + "\">" 	
 								   + descriptionTrl
 								   + "</a><br>\n");
 						}
 						result += "<br>\n";
 						//result += "table id: " + rs.getInt("AD_TABLE_ID");
-						if (dp.getPA_Goal_ID() > 0)
-							result += goalsDetail(dp.getPA_Goal_ID());
+						if (dc.getPA_Goal_ID() > 0)
+							result += goalsDetail(dc.getPA_Goal_ID());
 					}
 				}
 				catch (Exception e)
@@ -193,7 +196,29 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 		}
 		return result;
 	}
-
+	
+	private void createDashboardPreference()
+	{
+		if (Env.getAD_User_ID(Env.getCtx()) == 0 && Env.getAD_Role_ID(Env.getCtx()) == 0)
+			return;
+		
+		MDashboardContent[] dcs = MDashboardContent.getForSession(0, 0);
+		for (MDashboardContent dc : dcs)
+		{
+			MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), 0, null);
+			preference.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+			preference.setAD_Role_ID(Env.getAD_Role_ID(Env.getCtx()));
+			preference.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			preference.setColumnNo(dc.getColumnNo());
+			preference.setIsCollapsedByDefault(dc.isCollapsedByDefault());
+			preference.setIsShowInDashboard(dc.isShowInDashboard());
+			preference.setLine(dc.getLine());
+			preference.setPA_DashboardContent_ID(dc.getPA_DashboardContent_ID());
+			
+			if (!preference.save())
+				log.log(Level.SEVERE, "Failed to create dashboard preference " + preference.toString());
+		}
+	}
 	 
 	ArrayList<MQuery> queryZoom = null; //new ArrayList<MQuery>();
 	

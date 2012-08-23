@@ -344,17 +344,33 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */
     public void logout()
     {
-    	appDesktop.logout();
-    	Executions.getCurrent().getDesktop().getSession().getAttributes().clear();
-
-    	AEnv.logout();
-
-        SessionManager.clearSession();
-        super.getChildren().clear();
-        Page page = this.getPage();
-        page.removeComponents();
+    	Session session = logout0();
+    	
+    	//clear context, invalidate session
+    	Env.getCtx().clear();
+    	session.invalidate();
+        
+        //redirect to login page
         Executions.sendRedirect("index.zul");
     }
+
+	protected Session logout0() {
+		Session session = Executions.getCurrent().getDesktop().getSession();
+		
+		//stop background thread
+    	appDesktop.logout();
+
+    	//clear remove all children and root component
+    	getChildren().clear();
+    	getPage().removeComponents();
+        
+    	//clear session attributes
+		session.getAttributes().clear();
+
+    	//logout ad_session
+    	AEnv.logout();
+		return session;
+	}
 
     /**
      * @return IDesktop
@@ -426,6 +442,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	@Override
 	public void changeRole(MUser user) {
+		//save context for re-login
 		Properties properties = new Properties();
 		Env.setContext(properties, Env.AD_CLIENT_ID, Env.getAD_Client_ID(Env.getCtx()));
 		Env.setContext(properties, Env.AD_ORG_ID, Env.getAD_Org_ID(Env.getCtx()));
@@ -438,17 +455,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.LANGUAGE, Env.getContext(Env.getCtx(), Env.LANGUAGE));
 		Env.setContext(properties, AEnv.LOCALE, Env.getContext(Env.getCtx(), AEnv.LOCALE));
 		
-		Locale locale = (Locale) Executions.getCurrent().getSession().getAttribute(Attributes.PREFERRED_LOCALE);
+		Locale locale = (Locale) Executions.getCurrent().getDesktop().getSession().getAttribute(Attributes.PREFERRED_LOCALE);
+		HttpServletRequest httpRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();		
 		
-		appDesktop.logout();
-		HttpServletRequest httpRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
-		Session session = Executions.getCurrent().getDesktop().getSession();
-		session.getAttributes().clear();
-
-    	AEnv.logout();
-    	((SessionCtrl)session).invalidateNow();
-    	Env.getCtx().clear();
+		Session session = logout0();
     	
+    	//clear context and invalidate session
+		Env.getCtx().clear();
+    	((SessionCtrl)session).invalidateNow();    	
+    	
+    	//put saved context into new session
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("context", properties);
 		map.put("locale", locale);

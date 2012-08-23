@@ -56,6 +56,7 @@ public class WPAPanel extends Panel implements EventListener<Event>
 		Grid grid = new Grid();
 		appendChild(grid);
 		grid.setWidth("100%");
+		grid.setHeight((m_goals.length * 132) + "px");
 		grid.setStyle("margin:0; padding:0; position: absolute;");
 		grid.makeNoStrip();
 
@@ -66,12 +67,11 @@ public class WPAPanel extends Panel implements EventListener<Event>
 		{
 			Row row = new Row();
 			rows.appendChild(row);
-			row.setWidth("100%");
 			
 			WPerformanceIndicator pi = new WPerformanceIndicator(m_goals[i]);
 			row.appendChild(pi);
 			pi.addEventListener(Events.ON_CLICK, this);			
-		}	
+		}
 	}	//	init
 
 	/**
