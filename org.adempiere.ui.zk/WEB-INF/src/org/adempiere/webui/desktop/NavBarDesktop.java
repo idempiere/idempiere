@@ -89,6 +89,8 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 
 	private int noOfWorkflow;
 
+	private int noOfUnprocessed;
+
 	private Tabpanel homeTab;
 
 	private DashboardController dashboardController;
@@ -268,6 +270,7 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
     	noOfNotice = DPActivities.getNoticeCount();
     	noOfRequest = DPActivities.getRequestCount();
     	noOfWorkflow = DPActivities.getWorkflowCount();
+    	noOfUnprocessed = DPActivities.getUnprocessedCount();
 
     	template.executeAsync(this);
 	}
@@ -302,11 +305,13 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 	}
 
 	public void updateUI() {
-		int total = noOfNotice + noOfRequest + noOfWorkflow;
+		int total = noOfNotice + noOfRequest + noOfWorkflow + noOfUnprocessed;
     	navigationPanel.setLabel(2, "Activities (" + total + ")");
     	navigationPanel.setTooltiptext(2, Msg.translate(Env.getCtx(), "AD_Note_ID") + " : " + noOfNotice
     			+ ", " + Msg.translate(Env.getCtx(), "R_Request_ID") + " : " + noOfRequest
-    			+ ", " + Msg.getMsg (Env.getCtx(), "WorkflowActivities") + " : " + noOfWorkflow);
+    			+ ", " + Msg.getMsg (Env.getCtx(), "WorkflowActivities") + " : " + noOfWorkflow
+				+ (noOfUnprocessed>0 ? ", " + Msg.getMsg (Env.getCtx(), "UnprocessedDocs") + " : " + noOfUnprocessed : "")
+    			);
 	}
 	
 	private void autoHideMenu() {

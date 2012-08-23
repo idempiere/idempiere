@@ -42,7 +42,6 @@ import org.zkoss.zul.Vbox;
  * CarlosRuiz - globalqss - Add unprocessed button to iDempiere
  */
 public class DPActivities extends DashboardPanel implements EventListener<Event> {
-
 	/**
 	 * 
 	 */
@@ -56,8 +55,6 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
 	
 	private int noOfNotice, noOfRequest, noOfWorkflow, noOfUnprocessed;
 
-	private boolean isShowUnprocessed;
-
 	public DPActivities()
 	{
 		super();
@@ -66,8 +63,6 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
 
 	private Box createActivitiesPanel()
 	{
-		isShowUnprocessed = (Env.getAD_Client_ID(Env.getCtx()) > 0);
-		
 		Vbox vbox = new Vbox();
 
         btnNotice = new Button();
@@ -100,7 +95,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
         btnWorkflow.setName(String.valueOf(AD_Menu_ID));
         btnWorkflow.addEventListener(Events.ON_CLICK, this);
 
-        if (isShowUnprocessed) {
+        if (isShowUnprocessed()) {
             btnUnprocessed = new Button();
             vbox.appendChild(btnUnprocessed);
             labelU = Util.cleanAmp(Msg.translate(Env.getCtx(), "UnprocessedDocs"));
@@ -113,6 +108,10 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
         }
 
         return vbox;
+	}
+
+	private static boolean isShowUnprocessed() {
+		return 	(Env.getAD_Client_ID(Env.getCtx()) > 0);
 	}
 
 	/**
@@ -204,6 +203,9 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
 	 */
 	public static int getUnprocessedCount()
 	{
+		if (! isShowUnprocessed())
+			return 0;
+		
 		String sql = "SELECT COUNT(1) FROM RV_Unprocessed "
 			+ "WHERE AD_Client_ID=? AND CreatedBy=?";
 
@@ -217,7 +219,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
     	noOfNotice = getNoticeCount();
     	noOfRequest = getRequestCount();
     	noOfWorkflow = getWorkflowCount();
-    	if (isShowUnprocessed) noOfUnprocessed = getUnprocessedCount();
+    	noOfUnprocessed = getUnprocessedCount();
 
     	template.executeAsync(this);
 	}
@@ -234,7 +236,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
     	btnNotice.setLabel(labelN + " : " + noOfNotice);
 		btnRequest.setLabel(labelR + " : " + noOfRequest);
 		btnWorkflow.setLabel(labelW + " : " + noOfWorkflow);
-		if (isShowUnprocessed) btnUnprocessed.setLabel(labelU + " : " + noOfUnprocessed);
+		if (isShowUnprocessed()) btnUnprocessed.setLabel(labelU + " : " + noOfUnprocessed);
 	}
 
 	public void onEvent(Event event)

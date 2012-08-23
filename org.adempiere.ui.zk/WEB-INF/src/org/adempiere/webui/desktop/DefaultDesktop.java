@@ -79,6 +79,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private int noOfWorkflow;
 
+	private int noOfUnprocessed;
+
 	private Tabpanel homeTab;
 
 	private DashboardController dashboardController, sideController;
@@ -223,6 +225,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
     	noOfNotice = DPActivities.getNoticeCount();
     	noOfRequest = DPActivities.getRequestCount();
     	noOfWorkflow = DPActivities.getWorkflowCount();
+    	noOfUnprocessed = DPActivities.getUnprocessedCount();
 
     	template.executeAsync(this);
 	}
@@ -265,12 +268,14 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	public void updateUI() {
-		int total = noOfNotice + noOfRequest + noOfWorkflow;
+		int total = noOfNotice + noOfRequest + noOfWorkflow + noOfUnprocessed;
 		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home"))
 				+ " (" + total + ")",
 				Msg.translate(Env.getCtx(), "AD_Note_ID") + " : " + noOfNotice
 				+ ", " + Msg.translate(Env.getCtx(), "R_Request_ID") + " : " + noOfRequest
-				+ ", " + Msg.getMsg (Env.getCtx(), "WorkflowActivities") + " : " + noOfWorkflow);
+				+ ", " + Util.cleanAmp(Msg.getMsg (Env.getCtx(), "WorkflowActivities")) + " : " + noOfWorkflow
+				+ (noOfUnprocessed>0 ? ", " + Msg.getMsg (Env.getCtx(), "UnprocessedDocs") + " : " + noOfUnprocessed : "")
+				);
 	}
 
 	private void autoHideMenu() {
