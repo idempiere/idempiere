@@ -400,8 +400,14 @@ public class WWFActivity extends ADForm implements EventListener
 
 		WListItemRenderer renderer = new WListItemRenderer(Arrays.asList(columns));
 		ListHeader header = new ListHeader();
-		header.setWidth("30px");
+		header.setWidth("60px");
 		renderer.setListHeader(0, header);
+		header = new ListHeader();
+		header.setWidth(null);
+		renderer.setListHeader(1, header);
+		header = new ListHeader();
+		header.setWidth(null);
+		renderer.setListHeader(2, header);
 		renderer.addTableValueChangeListener(listbox);
 		model.setNoColumns(columns.length);
 		listbox.setModel(model);
