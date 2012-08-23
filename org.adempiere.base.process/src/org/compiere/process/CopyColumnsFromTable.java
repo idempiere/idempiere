@@ -92,7 +92,7 @@ public class CopyColumnsFromTable extends SvrProcess
 			if (sourceColumns[i].getColumnName().equals(sourceTable.getTableName()+"_ID")) {
 				String targetColumnName = new String(targetTable.getTableName()+"_ID");
 				colTarget.setColumnName(targetColumnName);
-				// if the element don't exist, create it 
+				// if the element doesn't exist, create it 
 				M_Element element = M_Element.get (getCtx (), targetColumnName);
 				if (element == null)
 				{
@@ -102,7 +102,28 @@ public class CopyColumnsFromTable extends SvrProcess
 						element.setName(targetTable.getName());
 						element.setPrintName(targetTable.getName());
 					}
-					element.save (get_TrxName());
+					element.saveEx(get_TrxName());
+				}
+				colTarget.setAD_Element_ID(element.getAD_Element_ID());
+				colTarget.setName(targetTable.getName());
+				colTarget.setDescription(targetTable.getDescription());
+				colTarget.setHelp(targetTable.getHelp());
+			}
+			// special case the UUID column -> sourceTable_UU
+			if (sourceColumns[i].getColumnName().equals(sourceTable.getTableName()+"_UU")) {
+				String targetColumnName = new String(targetTable.getTableName()+"_UU");
+				colTarget.setColumnName(targetColumnName);
+				// if the element doesn't exist, create it 
+				M_Element element = M_Element.get (getCtx (), targetColumnName);
+				if (element == null)
+				{
+					element = new M_Element (getCtx (), targetColumnName, targetTable.getEntityType(), get_TrxName ());
+					if (targetColumnName.equalsIgnoreCase (targetTable.getTableName() + "_UU")) {
+						element.setColumnName(targetTable.getTableName() + "_UU");
+						element.setName(targetTable.getTableName() + "_UU");
+						element.setPrintName(targetTable.getTableName() + "_UU");
+					}
+					element.saveEx(get_TrxName());
 				}
 				colTarget.setAD_Element_ID(element.getAD_Element_ID());
 				colTarget.setName(targetTable.getName());
