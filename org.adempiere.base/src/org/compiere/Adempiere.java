@@ -545,7 +545,7 @@ public final class Adempiere
 	}   //  startup
 
 	private static void createThreadPool() {
-		int min = 20;
+		int min = 10;
 		int max = 200;
 		Properties properties = Ini.getProperties();
 		String maxSize = properties.getProperty("MaxThreadPoolSize");
