@@ -72,12 +72,7 @@ import org.zkoss.zul.Space;
 public class WAllocation extends Allocation
 	implements IFormController, EventListener, WTableModelListener, ValueChangeListener
 {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7806119329546820204L;
-	
+
 	private CustomForm form = new CustomForm();
 
 	/**
@@ -128,6 +123,8 @@ public class WAllocation extends Allocation
 	private Label currencyLabel = new Label();
 	private WTableDirEditor currencyPick = null;
 	private Checkbox multiCurrency = new Checkbox();
+	private Label chargeLabel = new Label();
+	private WTableDirEditor chargePick = null;
 	private Label allocCurrencyLabel = new Label();
 	private StatusBarPanel statusBar = new StatusBarPanel();
 	private Label dateLabel = new Label();
@@ -162,6 +159,7 @@ public class WAllocation extends Allocation
 		invoicePanel.appendChild(invoiceLayout);
 		invoiceInfo.setText(".");
 		paymentInfo.setText(".");
+		chargeLabel.setText(" " + Msg.translate(Env.getCtx(), "C_Charge_ID"));
 		differenceLabel.setText(Msg.getMsg(Env.getCtx(), "Difference"));
 		differenceField.setText("0");
 		allocateButton.setLabel(Msg.getMsg(Env.getCtx(), "Process"));
@@ -213,12 +211,15 @@ public class WAllocation extends Allocation
 		south.appendChild(southPanel);
 		southPanel.appendChild(allocationPanel);
 		allocationPanel.appendChild(allocationLayout);
-		allocationLayout.setWidth("400px");
+		allocationLayout.setWidth("600px");
 		rows = allocationLayout.newRows();
 		row = rows.newRow();
 		row.appendChild(differenceLabel.rightAlign());
 		row.appendChild(allocCurrencyLabel.rightAlign());
 		row.appendChild(differenceField);
+		row.appendChild(new Space());
+		row.appendChild(chargeLabel.rightAlign());
+		row.appendChild(chargePick.getComponent());
 		row.appendChild(new Space());
 		row.appendChild(allocateButton);
 		
@@ -321,6 +322,14 @@ public class WAllocation extends Allocation
 		//  Date set to Login Date
 		dateField.setValue(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		dateField.addValueChangeListener(this);
+
+		
+		//  Charge
+		AD_Column_ID = 61804;    //  C_AllocationLine.C_Charge_ID
+		MLookup lookupCharge = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
+		chargePick = new WTableDirEditor("C_Charge_ID", true, false, true, lookupCharge);
+		chargePick.setValue(new Integer(m_C_Charge_ID));
+		chargePick.addValueChangeListener(this);
 	}   //  dynInit
 	
 	/**************************************************************************
@@ -361,10 +370,19 @@ public class WAllocation extends Allocation
 		
 		int row = e.getFirstRow();
 		int col = e.getColumn();
+	
+		if (row < 0)
+			return;
+		
 		boolean isInvoice = (e.getModel().equals(invoiceTable.getModel()));
 		boolean isAutoWriteOff = autoWriteOff.isSelected();
 		
 		String msg = writeOff(row, col, isInvoice, paymentTable, invoiceTable, isAutoWriteOff);
+		
+		//render row
+		ListModelTable model = isInvoice ? invoiceTable.getModel() : paymentTable.getModel(); 
+		model.updateComponent(row);
+	    
 		if(msg != null && msg.length() > 0)
 			FDialog.warn(form.getWindowNo(), "AllocationWriteOffWarn");
 		
@@ -396,6 +414,16 @@ public class WAllocation extends Allocation
 			
 			loadBPartner();
 		}
+		//		Charge
+		else if (name.equals("C_Charge_ID") )
+		{
+			if ( value == null )
+				m_C_Charge_ID = 0;
+			else
+				m_C_Charge_ID = ((Integer) value).intValue();
+			
+			setAllocateButton();
+		}
 
 		//  BPartner
 		if (name.equals("C_BPartner_ID"))
@@ -415,6 +443,23 @@ public class WAllocation extends Allocation
 			loadBPartner();
 	}   //  vetoableChange
 	
+	private void setAllocateButton() {
+			if (totalDiff.compareTo(new BigDecimal(0.0)) == 0 ^ m_C_Charge_ID > 0 )
+			{
+				allocateButton.setEnabled(true);
+			// chargePick.setValue(m_C_Charge_ID);
+			}
+			else
+			{
+				allocateButton.setEnabled(false);
+			}
+
+			if ( totalDiff.compareTo(new BigDecimal(0.0)) == 0 )
+			{
+					chargePick.setValue(null);
+					m_C_Charge_ID = 0;
+	   		}
+	}
 	/**
 	 *  Load Business Partner Info
 	 *  - Payments
@@ -474,12 +519,9 @@ public class WAllocation extends Allocation
 		allocCurrencyLabel.setText(currencyPick.getDisplay());
 		//  Difference
 		totalDiff = totalPay.subtract(totalInv);
-		differenceField.setText(format.format(totalDiff));
-		
-		if (totalDiff.compareTo(new BigDecimal(0.0)) == 0)
-			allocateButton.setEnabled(true);
-		else
-			allocateButton.setEnabled(false);
+		differenceField.setText(format.format(totalDiff));		
+
+		setAllocateButton();
 	}
 	
 	/**************************************************************************

@@ -28,6 +28,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MCashLine;
+import org.compiere.model.MCharge;   // adaxa-pb
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
@@ -215,8 +216,15 @@ public class Doc_AllocationHdr extends Doc
 			//	No Invoice
 			if (invoice == null)
 			{
+					//	adaxa-pb: allocate to charges
+			    	// Charge Only 
+				if (line.getC_Invoice_ID() == 0 && line.getC_Payment_ID() == 0 && line.getC_Charge_ID() != 0 )
+				{
+					fl = fact.createLine (line, line.getChargeAccount(as, line.getAmtSource()),
+						getC_Currency_ID(), line.getAmtSource());
+				}
 				//	Payment Only
-				if (line.getC_Invoice_ID() == 0 && line.getC_Payment_ID() != 0)
+				else if (line.getC_Invoice_ID() == 0 && line.getC_Payment_ID() != 0)
 				{
 					fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 						getC_Currency_ID(), line.getAmtSource(), null);

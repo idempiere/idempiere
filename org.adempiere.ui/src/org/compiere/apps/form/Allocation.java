@@ -49,6 +49,7 @@ public class Allocation
 
 	private boolean     m_calculating = false;
 	public int         	m_C_Currency_ID = 0;
+	public int         m_C_Charge_ID = 0;
 	public int         	m_C_BPartner_ID = 0;
 	private int         m_noInvoices = 0;
 	private int         m_noPayments = 0;
@@ -523,8 +524,6 @@ public class Allocation
 			invoice.setValueAt(applied, row, i_applied);
 			invoice.setValueAt(writeOff, row, i_writeOff);
 			invoice.setValueAt(overUnder, row, i_overUnder);
-			
-			invoice.repaint(); //  update r/o
 		}
 
 		m_calculating = false;
@@ -731,6 +730,22 @@ public class Allocation
 			aLine.saveEx();
 			unmatchedApplied = unmatchedApplied.subtract(payAmt);
 		}		
+		
+		// check for charge amount
+		if ( m_C_Charge_ID > 0 && unmatchedApplied.compareTo(Env.ZERO) != 0 )
+		{
+			BigDecimal chargeAmt = totalDiff;
+	
+		//	Allocation Line
+			MAllocationLine aLine = new MAllocationLine (alloc, chargeAmt.negate(), 
+				Env.ZERO, Env.ZERO, Env.ZERO);
+			aLine.set_CustomColumn("C_Charge_ID", m_C_Charge_ID);
+			//aLine.set_CustomColumn("ChargeAmt", chargeAmt);
+			aLine.setC_BPartner_ID(m_C_BPartner_ID);
+			if (!aLine.save(trxName))
+				log.log(Level.SEVERE, "Allocation Line not saved - Charge=" + m_C_Charge_ID);
+			unmatchedApplied = unmatchedApplied.add(chargeAmt);
+		}	
 		
 		if ( unmatchedApplied.signum() != 0 )
 			log.log(Level.SEVERE, "Allocation not balanced -- out by " + unmatchedApplied );

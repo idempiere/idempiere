@@ -41,7 +41,12 @@ public class DocLine_Allocation extends DocLine
 		m_C_CashLine_ID = line.getC_CashLine_ID();
 		m_C_Invoice_ID = line.getC_Invoice_ID();
 		m_C_Order_ID = line.getC_Order_ID();
-		//
+		// adaxa-pb
+		Object obj = line.get_Value("C_Charge_ID");
+		if  ( obj != null )
+			m_C_Charge_ID = (Integer) line.get_Value("C_Charge_ID");
+		else m_C_Charge_ID = 0;
+		// end adaxa-pb
 		setAmount(line.getAmount());
 		m_DiscountAmt = line.getDiscountAmt();
 		m_WriteOffAmt = line.getWriteOffAmt();
@@ -52,6 +57,7 @@ public class DocLine_Allocation extends DocLine
 	private int 		m_C_Payment_ID;
 	private int 		m_C_CashLine_ID;
 	private int 		m_C_Order_ID;
+	private int 		m_C_Charge_ID; // adaxa-pb
 	private BigDecimal	m_DiscountAmt; 
 	private BigDecimal	m_WriteOffAmt; 
 	private BigDecimal	m_OverUnderAmt; 
@@ -139,5 +145,12 @@ public class DocLine_Allocation extends DocLine
 	public int getC_Payment_ID ()
 	{
 		return m_C_Payment_ID;
+	}
+	/** adaxa-pb
+	 * @return Returns the C_Charge_ID.
+	 */
+	public int getC_Charge_ID ()
+	{
+		return m_C_Charge_ID;
 	}
 }	//	DocLine_Allocation
