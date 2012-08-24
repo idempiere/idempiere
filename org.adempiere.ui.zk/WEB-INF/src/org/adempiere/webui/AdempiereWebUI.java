@@ -81,7 +81,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5616730124927184116L;
+	private static final long serialVersionUID = -208259686238044047L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -358,7 +358,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Session session = Executions.getCurrent().getDesktop().getSession();
 		
 		//stop background thread
-    	appDesktop.logout();
+		if (appDesktop != null)
+			appDesktop.logout();
 
     	//clear remove all children and root component
     	getChildren().clear();

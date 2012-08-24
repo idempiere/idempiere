@@ -76,7 +76,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 153231955030136145L;
+	private static final long serialVersionUID = 4403663665119775251L;
 
 	private static final String RESOURCE = "org.compiere.apps.ALoginRes";
 
@@ -465,6 +465,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
         }
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
+            SessionManager.logoutSession();
             wndLogin.loginCancelled();
         }
     }

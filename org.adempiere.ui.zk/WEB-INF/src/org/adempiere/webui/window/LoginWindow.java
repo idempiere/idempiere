@@ -30,6 +30,7 @@ import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.FWindow;
 import org.adempiere.webui.panel.LoginPanel;
 import org.adempiere.webui.panel.RolePanel;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -53,7 +54,8 @@ public class LoginWindow extends FWindow implements EventListener
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6312322926432586415L;
+	private static final long serialVersionUID = -5169830531440825871L;
+
 	private IWebClient app;
     private Properties ctx;
     private LoginPanel pnlLogin;
@@ -130,7 +132,14 @@ public class LoginWindow extends FWindow implements EventListener
     	getDesktop().getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
     	Locales.setThreadLocal(locale);    	
     	Login login = new Login(Env.getCtx());
-    	loginOk(MUser.getNameOfUser(Env.getAD_User_ID(ctx)), true, login.getClients());
+    	MUser user = MUser.get(ctx, Env.getAD_User_ID(ctx));
+    	String loginName;
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		if (email_login)
+			loginName = user.getEMail();
+		else
+			loginName = user.getLDAPUser() != null ? user.getLDAPUser() : user.getName();
+    	loginOk(loginName, true, login.getClients());
     	getDesktop().getSession().setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
     	
     	pnlRole.changeRole(ctx);
