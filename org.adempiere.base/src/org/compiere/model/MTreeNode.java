@@ -118,14 +118,14 @@ public final class MTreeNode extends DefaultMutableTreeNode
 	public static Icon[] 	IMAGES = new Icon[]
 	{
 		null,
-		Env.getImageIcon("mWindow.gif"),
-		Env.getImageIcon("mReport.gif"),
-		Env.getImageIcon("mProcess.gif"),
-		Env.getImageIcon("mWorkFlow.gif"),
-		Env.getImageIcon("mWorkbench.gif"),
-		Env.getImageIcon("mSetVariable.gif"),
-		Env.getImageIcon("mUserChoice.gif"),
-		Env.getImageIcon("mDocAction.gif")
+		Env.getImageIcon("mWindow.png"),
+		Env.getImageIcon("mReport.png"),
+		Env.getImageIcon("mProcess.png"),
+		Env.getImageIcon("mWorkFlow.png"),
+		Env.getImageIcon("mWorkbench.png"),
+		Env.getImageIcon("mSetVariable.png"),
+		Env.getImageIcon("mUserChoice.png"),
+		Env.getImageIcon("mDocAction.png")
 	};
 
 
