@@ -36,7 +36,7 @@ import org.zkoss.zul.Space;
  * @author hengsin
  *
  */
-public class WPreference extends Popup implements EventListener {
+public class WPreference extends Popup implements EventListener<Event> {
 	/**
 	 * 
 	 */
@@ -55,7 +55,6 @@ public class WPreference extends Popup implements EventListener {
 	}
 
 	private void init() {
-		this.setStyle("padding: 5px");
 
 		Div div = new Div();
 		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
@@ -129,6 +128,7 @@ public class WPreference extends Popup implements EventListener {
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));
         btn.addEventListener(Events.ON_CLICK, this);
         toolbar.appendChild(btn);
+        toolbar.setStyle("border: none");
 
 		UserPreference preference = SessionManager.getSessionApplication().getUserPreference();
 		autoCommit.setValue(preference.getProperty(UserPreference.P_AUTO_COMMIT));

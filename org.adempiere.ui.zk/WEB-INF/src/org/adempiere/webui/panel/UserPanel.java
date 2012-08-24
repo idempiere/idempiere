@@ -167,7 +167,7 @@ public class UserPanel extends Vbox implements EventListener<Event>
 			}
 			preferencePopup = new WPreference();
 			preferencePopup.setPage(this.getPage());
-			preferencePopup.open(preference);
+			preferencePopup.open(preference, "after_start");
 		}
 
 	}
