@@ -259,8 +259,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		String display = text;
 		if (text != null && text.length() > MAX_TEXT_LENGTH)
 			display = text.substring(0, MAX_TEXT_LENGTH - 3) + "...";
-		if (display != null)
-			display = XMLs.encodeText(display);
+		// since 5.0.8, the org.zkoss.zhtml.Text is encoded by default
+//		if (display != null)
+//			display = XMLs.encodeText(display);
 		label.appendChild(new Text(display));
 		if (text != null && text.length() > MAX_TEXT_LENGTH)
 			label.setDynamicProperty("title", text);
