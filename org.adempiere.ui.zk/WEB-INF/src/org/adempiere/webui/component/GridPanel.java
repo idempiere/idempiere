@@ -173,7 +173,9 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 				int AD_Field_ID = Integer.parseInt(fieldIdStr);
 				for(GridField gridField : tmpFields) {
 					if (gridField.getAD_Field_ID() == AD_Field_ID) {
-						fieldList.add(gridField);
+						if(gridField.isDisplayedGrid())
+							fieldList.add(gridField);
+						
 						break;
 					}
 				}
