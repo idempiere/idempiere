@@ -70,6 +70,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
 import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_Column;
@@ -678,8 +679,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ValueNamePair[] cols = new ValueNamePair[items.size()];
         items.toArray(cols);
         Arrays.sort(cols);      //  sort alpha
-        ValueNamePair[] op = MQuery.OPERATORS_ALL;
-
+        ValueNamePair[] op = MQuery.OPERATORS;
 
         if(fields == null)
         {
@@ -1279,75 +1279,28 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     **/
     private void addOperators(ListItem column, Listbox listOperator)
     {
-        String columnName = column.getValue().toString();
-        int columnID = MColumn.getColumn_ID(this.m_tableName, columnName);
-        String SQL = "SELECT ad_reference_id FROM ad_column WHERE ad_column_id = ?";
-        PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		int referenceType = -1;
-		try
-		{
-			pstmt = DB.prepareStatement(SQL, null);
-			pstmt.setInt(1, columnID);
-			rs = pstmt.executeQuery();
-			if( rs.next() )
-			{
-				referenceType = rs.getInt(1);
-			}
-		}
-		catch (SQLException e2)
-		{
-			log.log(Level.SEVERE, SQL, e2);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		
-        log.config("Column: " + columnName);
-        log.log(Level.INFO, "referenceType : " + referenceType);
-        
-        List<Integer> numbersList = new ArrayList<Integer>();
-        numbersList.add(DisplayType.Number);
-        numbersList.add(DisplayType.Date);
-        numbersList.add(DisplayType.Amount);
-        numbersList.add(DisplayType.CostPrice);
-        numbersList.add(DisplayType.Quantity);
-        numbersList.add(DisplayType.ID);
-        numbersList.add(DisplayType.Integer);
-        
-        List<Integer> equalNotEqualList = new ArrayList<Integer>();
-        equalNotEqualList.add(DisplayType.TableDir);
-        equalNotEqualList.add(DisplayType.Table);
-        equalNotEqualList.add(DisplayType.Search);
-        equalNotEqualList.add(DisplayType.List);
-        
-        List<Integer> equalAndLikeList = new ArrayList<Integer>();
-        equalAndLikeList.add(DisplayType.URL);
-        equalAndLikeList.add(DisplayType.Memo);
-        equalAndLikeList.add(DisplayType.TextLong);
-        equalAndLikeList.add(DisplayType.Text);
-        
-        if(numbersList.contains(referenceType))
+    	String columnName = column.getValue().toString();
+    	int referenceType = -1;
+    	if (columnName != null) {
+    		MTable table = MTable.get(Env.getCtx(), m_tableName);
+    		MColumn col = table.getColumn(columnName);
+    		referenceType = col.getAD_Reference_ID();
+    	}
+        if (DisplayType.isLookup(referenceType)
+        		|| DisplayType.YesNo == referenceType
+        		|| DisplayType.Button == referenceType)
+        {
+        	addOperators(MQuery.OPERATORS_LOOKUP, listOperator);
+        }
+        else if (DisplayType.isNumeric(referenceType)
+        		|| DisplayType.isDate(referenceType)
+        		|| DisplayType.isID(referenceType)) // Note that lookups were filtered above
         {
         	addOperators(MQuery.OPERATORS_NUMBERS, listOperator);
         }
-        else if (equalNotEqualList.contains(referenceType))
+        else // DisplayType.isText
         {
-        	addOperators(MQuery.OPERATORS_ID, listOperator);
-        }
-        else if (DisplayType.YesNo == referenceType)
-        {
-        	addOperators(MQuery.OPERATORS_YN, listOperator);
-        }
-        else if (equalAndLikeList.contains(referenceType))
-        {
-        	addOperators(MQuery.OPERATORS_EQUAL_LIKE, listOperator);
-        }
-        else
-        {
-        	addOperators(MQuery.OPERATORS_ALL, listOperator);
+        	addOperators(MQuery.OPERATORS, listOperator);
         }
     } //    addOperators
 
@@ -1389,10 +1342,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         if(field == null) return new Label("");
 
         WEditor editor = null;
-        if (field.isKey())
+        if (field.isKey() 
+        		|| (!DisplayType.isLookup(field.getDisplayType()) && DisplayType.isID(field.getDisplayType())))
+        {
             editor = new WNumberEditor(field);
+		}
+        else if (field.getDisplayType() == DisplayType.Button)
+        {
+        	if (columnName.endsWith("_ID"))
+        	{
+                editor = new WNumberEditor(field);
+        	} else {
+                editor = new WStringEditor(field);
+        	}
+        }
         else
+        {
             editor = WebEditorFactory.getEditor(field, true);
+        }
         if (editor == null)
             editor = new WStringEditor(field);
 
