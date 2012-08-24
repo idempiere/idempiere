@@ -509,9 +509,9 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 				recordLink = new A();
 				recordLink.setLabel(log.getP_Msg());
 
-				if (log.getAd_Table_Id() > 0 && log.getRecord_Id()> 0) {
-					recordLink.setAttribute("Record_ID", String.valueOf(log.getRecord_Id()));
-					recordLink.setAttribute("AD_Table_ID", String.valueOf(log.getAd_Table_Id()));
+				if (log.getAD_Table_ID() > 0 && log.getRecord_ID()> 0) {
+					recordLink.setAttribute("Record_ID", String.valueOf(log.getRecord_ID()));
+					recordLink.setAttribute("AD_Table_ID", String.valueOf(log.getAD_Table_ID()));
 					recordLink.addEventListener(Events.ON_CLICK, this);
 					
 				}

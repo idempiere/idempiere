@@ -115,7 +115,7 @@ public class ProcessInfoUtil
 	public static void setLogFromDB (ProcessInfo pi)
 	{
 	//	s_log.fine("setLogFromDB - AD_PInstance_ID=" + pi.getAD_PInstance_ID());
-		String sql = "SELECT Log_ID, P_ID, P_Date, P_Number, P_Msg, AD_Table_Id,Record_Id "				             
+		String sql = "SELECT Log_ID, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID,Record_ID "				             
 			+ "FROM AD_PInstance_Log "
 			+ "WHERE AD_PInstance_ID=? "
 			+ "ORDER BY Log_ID";
@@ -158,7 +158,7 @@ public class ProcessInfoUtil
 		for (int i = 0; i < logs.length; i++)
 		{
 			StringBuffer sql = new StringBuffer ("INSERT INTO AD_PInstance_Log "
-				+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_Id,Record_ID)"
+				+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID,Record_ID)"
 				+ " VALUES (");
 			sql.append(pi.getAD_PInstance_ID()).append(",")
 				.append(logs[i].getLog_ID()).append(",");
@@ -178,14 +178,14 @@ public class ProcessInfoUtil
 				sql.append("NULL,");
 			else
 				sql.append(DB.TO_STRING(logs[i].getP_Msg(),2000)).append(",");
-			if (logs[i].getAd_Table_Id() == 0)
+			if (logs[i].getAD_Table_ID() == 0)
 				sql.append("NULL,");
 			else
-				sql.append(logs[i].getAd_Table_Id()).append(",");
-			if (logs[i].getRecord_Id() == 0)
+				sql.append(logs[i].getAD_Table_ID()).append(",");
+			if (logs[i].getRecord_ID() == 0)
 				sql.append("NULL)");
 			else
-				sql.append(logs[i].getRecord_Id()).append(")");
+				sql.append(logs[i].getRecord_ID()).append(")");
 //
 			DB.executeUpdate(sql.toString(), null);
 		}
