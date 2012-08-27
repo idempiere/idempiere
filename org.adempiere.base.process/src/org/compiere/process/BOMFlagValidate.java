@@ -2,8 +2,10 @@ package org.compiere.process;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.compiere.model.MProduct;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -35,50 +37,61 @@ public class BOMFlagValidate extends SvrProcess {
 		
 		flagNonBOMs();
 		flagBOMs();
-		return "BOM Flags set correctly";
+		return "@OK@";
 	}
 	
-	private void flagNonBOMs() throws Exception
+	private void flagNonBOMs() throws SQLException
 	{
 		
 		//Select Products where there's a BOM, and there are no lines
-		String sql = "SELECT NAME FROM M_PRODUCT WHERE ISBOM = 'Y' AND " + 
-		"M_PRODUCT_ID NOT IN (SELECT M_PRODUCT_ID FROM M_PRODUCT_BOM ) AND "; 
+		String sql = "SELECT Name, M_Product_ID FROM M_Product WHERE IsBOM = 'Y' AND " + 
+		"M_Product_ID NOT IN (SELECT M_Product_ID FROM M_Product_BOM ) AND "; 
 		if (p_M_Product_Category_ID == 0)
 			sql += "AD_Client_ID= ?";
 	        
 		else
 			sql += "M_Product_Category_ID= ?";
 		PreparedStatement pstmt = null;
-		pstmt = DB.prepareStatement (sql, null);
-		if (p_M_Product_Category_ID == 0)
-			pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
-		else
-			pstmt.setInt(1, p_M_Product_Category_ID);
-		ResultSet rs = pstmt.executeQuery ();
-		
-		while (rs.next())
-		{
-			addLog(0, null, null, rs.getString(1) + "Has Been Flagged as NonBOM as it has no lines");
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement (sql, get_TrxName());
+			if (p_M_Product_Category_ID == 0)
+				pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
+			else
+				pstmt.setInt(1, p_M_Product_Category_ID);
+			rs = pstmt.executeQuery ();
+
+			while (rs.next())
+			{
+				addLog(0, null, null, rs.getString(1) + " BOM without BOM lines", MProduct.Table_ID, rs.getInt(2));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
-		
-		rs.close();
-		pstmt.close();
-		
-		String update = "UPDATE M_Product SET ISBOM = 'N' WHERE ISBOM = 'Y' AND M_PRODUCT_ID NOT IN " +
-		"(SELECT M_PRODUCT_ID FROM M_PRODUCT_BOM ) AND "; 
-		if (p_M_Product_Category_ID == 0)
-			update += "AD_Client_ID= ?";
-		else
-			update += "M_Product_Category_ID= ?";
-		pstmt = null;
-		pstmt = DB.prepareStatement (update, null);
-		if (p_M_Product_Category_ID == 0)
-			pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
-		else
-			pstmt.setInt(1, p_M_Product_Category_ID);
-		pstmt.executeUpdate();
-		pstmt.close();
+
+		PreparedStatement upstmt = null;
+		try {
+			String update = "UPDATE M_Product SET IsBOM = 'N' WHERE IsBOM = 'Y' AND M_Product_ID NOT IN " +
+					"(SELECT M_Product_ID FROM M_Product_BOM ) AND "; 
+			if (p_M_Product_Category_ID == 0)
+				update += "AD_Client_ID= ?";
+			else
+				update += "M_Product_Category_ID= ?";
+			upstmt = DB.prepareStatement (update, get_TrxName());
+			if (p_M_Product_Category_ID == 0)
+				upstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
+			else
+				upstmt.setInt(1, p_M_Product_Category_ID);
+			upstmt.executeUpdate();
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DB.close(upstmt);
+			upstmt = null;
+		}
 		
 	}
 	
@@ -86,42 +99,54 @@ public class BOMFlagValidate extends SvrProcess {
 	{
 		
 		//Select Products where there's a BOM, and there are no lines
-		String sql = "SELECT NAME FROM M_PRODUCT WHERE ISBOM = 'N' AND " + 
-		"M_PRODUCT_ID IN (SELECT M_PRODUCT_ID FROM M_PRODUCT_BOM ) AND "; 
+		String sql = "SELECT Name, M_Product_ID FROM M_Product WHERE IsBOM = 'N' AND " + 
+		"M_Product_ID IN (SELECT M_Product_ID FROM M_Product_BOM ) AND "; 
 		if (p_M_Product_Category_ID == 0)
 			sql += "AD_Client_ID= ?";
 	        
 		else
 			sql += "M_Product_Category_ID= ?";
 		PreparedStatement pstmt = null;
-		pstmt = DB.prepareStatement (sql, null);
-		if (p_M_Product_Category_ID == 0)
-			pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
-		else
-			pstmt.setInt(1, p_M_Product_Category_ID);
-		ResultSet rs = pstmt.executeQuery ();
-		
-		while (rs.next())
-		{
-			addLog(0, null, null, rs.getString(1) + "Has Been Flagged as BOM as it has BOM lines");
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement (sql, get_TrxName());
+			if (p_M_Product_Category_ID == 0)
+				pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
+			else
+				pstmt.setInt(1, p_M_Product_Category_ID);
+			rs = pstmt.executeQuery ();
+
+			while (rs.next())
+			{
+				addLog(0, null, null, rs.getString(1) + " not BOM with BOM lines", MProduct.Table_ID, rs.getInt(2));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
-		rs.close();
-		pstmt.close();
 		
-		String update = "UPDATE M_Product SET ISBOM = 'Y' WHERE ISBOM = 'N' AND M_PRODUCT_ID IN " +
-		"(SELECT M_PRODUCT_ID FROM M_PRODUCT_BOM ) AND "; 
+		String update = "UPDATE M_Product SET ISBOM = 'Y' WHERE IsBOM = 'N' AND M_Product_ID IN " +
+				"(SELECT M_Product_ID FROM M_Product_BOM ) AND "; 
 		if (p_M_Product_Category_ID == 0)
 			update += "AD_Client_ID= ?";
 		else
 			update += "M_Product_Category_ID= ?";
-		pstmt = null;
-		pstmt = DB.prepareStatement (update, null);
-		if (p_M_Product_Category_ID == 0)
-			pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
-		else
-			pstmt.setInt(1, p_M_Product_Category_ID);
-		pstmt.executeUpdate();
-		pstmt.close();
+		PreparedStatement upstmt = null;
+		try {
+			upstmt = DB.prepareStatement (update, get_TrxName());
+			if (p_M_Product_Category_ID == 0)
+				upstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
+			else
+				upstmt.setInt(1, p_M_Product_Category_ID);
+			upstmt.executeUpdate();
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DB.close(upstmt);
+			upstmt = null;
+		}
 		
 	}
 

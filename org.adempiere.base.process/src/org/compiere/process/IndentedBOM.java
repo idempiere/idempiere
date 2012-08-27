@@ -24,13 +24,10 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCost;
-import org.compiere.model.MCostElement;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductBOM;
 import org.compiere.model.Query;
 import org.compiere.model.X_T_BOM_Indented;
-import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 
 /**
@@ -49,13 +46,10 @@ public class IndentedBOM extends SvrProcess
 	private int p_C_AcctSchema_ID = 0;
 	private int p_M_Product_ID = 0;
 	private int p_M_CostElement_ID = 0;
-	private String p_CostingMethod = MCostElement.COSTINGMETHOD_StandardCosting;
 	//
 	private int m_LevelNo = 0;
 	private int m_SeqNo = 0;
 	private MAcctSchema m_as = null;
-	private BigDecimal m_currentCost = Env.ZERO;
-	private BigDecimal m_futureCost = Env.ZERO;
 
 	protected void prepare()
 	{
@@ -122,7 +116,7 @@ public class IndentedBOM extends SvrProcess
 		tboml.setLevelNo(m_LevelNo);
 		String pad = "";
 		if (m_LevelNo > 0)
-			pad = String.format("%1$" + 4*1 + "s", "");
+			pad = String.format("%1$" + 4*m_LevelNo + "s", "");
 		tboml.setLevels( (m_LevelNo > 0 ? ":" : "") +  pad +" " + product.getValue());
 		//
 		// Set Costs:
@@ -183,7 +177,7 @@ public class IndentedBOM extends SvrProcess
 		whereClause.append(MProductBOM.COLUMNNAME_M_Product_ID).append("=?");
 		params.add(product.get_ID());
 		
-		List<MProductBOM> list = new Query(getCtx(), MProductBOM.Table_Name, whereClause.toString(), null)
+		List<MProductBOM> list = new Query(getCtx(), MProductBOM.Table_Name, whereClause.toString(), get_TrxName())
 									.setParameters(params)
 									.setOnlyActiveRecords(true)
 									.setOrderBy(MProductBOM.COLUMNNAME_Line)

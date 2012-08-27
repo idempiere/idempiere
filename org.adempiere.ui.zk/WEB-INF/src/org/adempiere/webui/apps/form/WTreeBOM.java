@@ -60,7 +60,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.DefaultTreeModel;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
@@ -251,22 +250,13 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener 
 		}
 		if (event.getTarget().equals(treeExpand)) 
 		{
-			if (treeExpand.isChecked())
-			{
-				TreeUtils.expandAll(m_tree);
-			}
-			else
-			{
-				TreeUtils.collapseAll(m_tree);				
-			}
+			expandOrCollapse();
 		}
 		//  *** Tree ***
 		if (event.getTarget() instanceof Tree )	
 		{
 			Treeitem ti = m_tree.getSelectedItem(); 
 			if (ti == null) {
-				// ADialog.beep();
-				// TODO: review what is this beep for - no zk6 equivalent
 				log.log(Level.WARNING, "WTreeBOM.onEvent treeItem=null");
 			}
 			else
@@ -276,6 +266,19 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener 
 			}
 		}
 
+	}
+
+	private void expandOrCollapse() {
+		if (treeExpand.isChecked())
+		{
+			if (m_tree.getTreechildren() != null)
+				TreeUtils.expandAll(m_tree);
+		}
+		else
+		{
+			if (m_tree.getTreechildren() != null)
+				TreeUtils.collapseAll(m_tree);				
+		}
 	}
 	
 	/**
@@ -385,15 +388,10 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener 
 			m_tree.setModel(model);
 		}
 		
-		// TODO: check zk6 - was:
-		// int[] path = m_tree.getModel().getPath(parent, m_root);
-		int[] path = m_tree.getModel().getPath(m_root);
-		Treeitem ti = m_tree.renderItemByPath(path);
-		m_tree.setSelectedItem(ti);
-		ti.setOpen(true);
-
 		m_tree.addEventListener(Events.ON_SELECT, this);
 		loadTableBOM();
+
+		treeExpand.setChecked(false);
 	}
 
 	private void action_reloadBOM() throws Exception
