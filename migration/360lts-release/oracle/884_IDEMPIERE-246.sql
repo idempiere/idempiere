@@ -371,15 +371,6 @@ UPDATE AD_Field SET SeqNo=570,IsDisplayed='Y' WHERE AD_Field_ID=52016
 
 -- GardenWorld seed BOMs
 INSERT INTO m_product_bom(m_product_bom_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, line, m_product_id, m_productbom_id, bomqty, description, bomtype)
-  VALUES(200001, 11, 0, 'Y', TO_DATE('2003-01-21 20:05:55','YYYY-MM-DD HH24:MI:SS'), 100, TO_DATE('2009-02-17 17:20:59','YYYY-MM-DD HH24:MI:SS'), 100, 30, 145, 135, 1, '1 table, 4 Chairs and 1 Sun Screen', 'P');
-
-INSERT INTO m_product_bom(m_product_bom_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, line, m_product_id, m_productbom_id, bomqty, description, bomtype)
-  VALUES(200002, 11, 0, 'Y', TO_DATE('2003-01-21 20:05:20','YYYY-MM-DD HH24:MI:SS'), 100, TO_DATE('2003-12-30 18:18:34','YYYY-MM-DD HH24:MI:SS'), 100, 10, 145, 134, 1, '1 table, 4 Chairs and 1 Sun Screen', 'P');
-
-INSERT INTO m_product_bom(m_product_bom_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, line, m_product_id, m_productbom_id, bomqty, description, bomtype)
-  VALUES(200003, 11, 0, 'Y', TO_DATE('2003-01-21 20:05:46','YYYY-MM-DD HH24:MI:SS'), 100, TO_DATE('2003-12-30 18:19:08','YYYY-MM-DD HH24:MI:SS'), 100, 20, 145, 133, 4, '1 table, 4 Chairs and 1 Sun Screen', 'P');
-
-INSERT INTO m_product_bom(m_product_bom_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, line, m_product_id, m_productbom_id, bomqty, description, bomtype)
   VALUES(200004, 11, 0, 'Y', TO_DATE('2008-09-22 14:45:22','YYYY-MM-DD HH24:MI:SS'), 100, TO_DATE('2008-09-22 14:45:22','YYYY-MM-DD HH24:MI:SS'), 100, 10, 133, 50004, 1, 'Nice Chair for outdoors', 'P');
 
 INSERT INTO m_product_bom(m_product_bom_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, line, m_product_id, m_productbom_id, bomqty, description, bomtype)

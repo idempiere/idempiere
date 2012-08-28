@@ -427,7 +427,7 @@ UPDATE AD_WF_NODE n
            WHERE w.ad_window_id = n.ad_window_id
              AND (   w.NAME <> n.NAME
                   OR NVL (w.description, ' ') <> NVL (n.description, ' ')
-                  OR NVL (w.HELP, ' ') <> NVL (n.HELP, ' ')
+                  OR NVL (w.HELP, ' ') <> NVL (CAST(n.HELP AS VARCHAR2(4000)), ' ')
                  ));
 
 UPDATE AD_WF_NODE_TRL trl
@@ -459,7 +459,7 @@ UPDATE AD_WF_NODE_TRL trl
              AND n.isactive = 'Y'
              AND (   trl.NAME <> t.NAME
                   OR NVL (trl.description, ' ') <> NVL (t.description, ' ')
-                  OR NVL (trl.HELP, ' ') <> NVL (t.HELP, ' ')
+                  OR NVL (CAST(trl.HELP AS VARCHAR2(4000)), ' ') <> NVL (t.HELP, ' ')
                  ));
 
 UPDATE AD_WF_NODE n
@@ -473,7 +473,7 @@ UPDATE AD_WF_NODE n
            WHERE f.ad_form_id = n.ad_form_id
              AND (   f.NAME <> n.NAME
                   OR NVL (f.description, ' ') <> NVL (n.description, ' ')
-                  OR NVL (f.HELP, ' ') <> NVL (n.HELP, ' ')
+                  OR NVL (f.HELP, ' ') <> NVL (CAST(n.HELP AS VARCHAR2(4000)), ' ')
                  ));
 
 UPDATE AD_WF_NODE_TRL trl
@@ -493,7 +493,7 @@ UPDATE AD_WF_NODE_TRL trl
              AND n.isactive = 'Y'
              AND (   trl.NAME <> t.NAME
                   OR NVL (trl.description, ' ') <> NVL (t.description, ' ')
-                  OR NVL (trl.HELP, ' ') <> NVL (t.HELP, ' ')
+                  OR NVL (CAST(trl.HELP AS VARCHAR2(4000)), ' ') <> NVL (t.HELP, ' ')
                  ));
 
 UPDATE AD_WF_NODE n
@@ -507,7 +507,7 @@ UPDATE AD_WF_NODE n
            WHERE f.ad_process_id = n.ad_process_id
              AND (   f.NAME <> n.NAME
                   OR NVL (f.description, ' ') <> NVL (n.description, ' ')
-                  OR NVL (f.HELP, ' ') <> NVL (n.HELP, ' ')
+                  OR NVL (f.HELP, ' ') <> NVL (CAST(n.HELP AS VARCHAR2(4000)), ' ')
                  ));
 
 UPDATE AD_WF_NODE_TRL trl
@@ -527,7 +527,7 @@ UPDATE AD_WF_NODE_TRL trl
              AND n.isactive = 'Y'
              AND (   trl.NAME <> t.NAME
                   OR NVL (trl.description, ' ') <> NVL (t.description, ' ')
-                  OR NVL (trl.HELP, ' ') <> NVL (t.HELP, ' ')
+                  OR NVL (CAST(trl.HELP AS VARCHAR2(4000)), ' ') <> NVL (t.HELP, ' ')
                  ));
 
 UPDATE AD_PRINTFORMATITEM pfi

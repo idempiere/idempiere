@@ -291,14 +291,30 @@ public class MLookupFactory
 	{
 		String byValue = DB.getSQLValueString(null, "SELECT IsOrderByValue FROM AD_Reference WHERE AD_Reference_ID = ? ", AD_Reference_Value_ID);
 		StringBuffer realSQL = new StringBuffer ("SELECT NULL, AD_Ref_List.Value,");
+		MClient client = MClient.get(Env.getCtx());
+		String AspFilter="";
+        if ( client.isUseASP() ) {
+        	AspFilter=" AND AD_Ref_List.AD_Ref_List_ID NOT IN ( " 
+        			 +" SELECT li.AD_Ref_List_ID"
+        			 +" FROM ASP_Ref_List li"
+        			 +" INNER JOIN ASP_Level l ON ( li.ASP_Level_ID = l.ASP_Level_ID)"
+        			 +" INNER JOIN ASP_ClientLevel cl on (l.ASP_Level_ID = cl.ASP_Level_ID)"
+        			 +" INNER JOIN AD_Client c on (cl.AD_Client_ID = c.AD_Client_ID)"
+        			 +" WHERE li.AD_Reference_ID="+AD_Reference_Value_ID
+        			 +" AND li.IsActive='Y'"
+        			 +" AND c.AD_Client_ID="+client.getAD_Client_ID()
+        			 +" AND li.ASP_Status='H')";
+			
+		}
 		if (Env.isBaseLanguage(language, "AD_Ref_List"))
-			realSQL.append("AD_Ref_List.Name,AD_Ref_List.IsActive FROM AD_Ref_List");
+			realSQL.append("AD_Ref_List.Name,AD_Ref_List.IsActive FROM AD_Ref_List ");
 		else
 			realSQL.append("trl.Name, AD_Ref_List.IsActive "
-				+ "FROM AD_Ref_List INNER JOIN AD_Ref_List_Trl trl "
+				+ "FROM AD_Ref_List  INNER JOIN AD_Ref_List_Trl trl "
 				+ " ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 					.append(language.getAD_Language()).append("')");
 		realSQL.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_Value_ID);
+		realSQL.append(AspFilter);
 		if ("Y".equals(byValue))
 			realSQL.append(" ORDER BY 2");
 		else
@@ -320,10 +336,10 @@ public class MLookupFactory
 	{
 		StringBuffer realSQL = new StringBuffer ("SELECT ");
 		if (Env.isBaseLanguage(language, "AD_Ref_List"))
-			realSQL.append("AD_Ref_List.Name FROM AD_Ref_List");
+			realSQL.append("AD_Ref_List.Name FROM AD_Ref_List ");
 		else
 			realSQL.append("trl.Name "
-				+ "FROM AD_Ref_List INNER JOIN AD_Ref_List_Trl trl "
+				+ "FROM AD_Ref_List  INNER JOIN AD_Ref_List_Trl trl "
 				+ " ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 					.append(language.getAD_Language()).append("')");
 		realSQL.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_Value_ID)

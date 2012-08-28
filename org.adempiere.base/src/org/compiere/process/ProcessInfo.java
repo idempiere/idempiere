@@ -40,6 +40,11 @@ import org.compiere.util.Util;
 public class ProcessInfo implements Serializable
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1426147857271483561L;
+
+	/**
 	 *  Constructor
 	 *  @param Title Title
 	 *  @param AD_Process_ID AD_Process_ID
@@ -67,10 +72,6 @@ public class ProcessInfo implements Serializable
 	{
 		this (Title, AD_Process_ID, 0, 0);
 	}   //  ProcessInfo
-
-	/**	Serialization Info	**/
-	static final long serialVersionUID = -1993220053515488725L;
-	
 
 	/** Title of the Process/Report */
 	private String				m_Title;

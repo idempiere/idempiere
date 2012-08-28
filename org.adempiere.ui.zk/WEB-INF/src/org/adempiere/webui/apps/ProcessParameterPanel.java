@@ -150,7 +150,7 @@ public class ProcessParameterPanel extends Panel implements
 		MClient client = MClient.get(Env.getCtx());
 		String ASPFilter = "";
 		if (client.isUseASP())
-			ASPFilter = "   AND (   p.AD_Process_Para_ID IN ( "
+			ASPFilter = "   AND (   p.AD_Process_Para_ID not IN ( "
 					// Just ASP subscribed process parameters for client "
 					+ "              SELECT pp.AD_Process_Para_ID "
 					+ "                FROM ASP_Process_Para pp, ASP_Process p, ASP_Level l, ASP_ClientLevel cl "
@@ -163,20 +163,18 @@ public class ProcessParameterPanel extends Panel implements
 					+ "                 AND p.IsActive = 'Y' "
 					+ "                 AND l.IsActive = 'Y' "
 					+ "                 AND cl.IsActive = 'Y' "
-					+ "                 AND pp.ASP_Status = 'S') " // Show
-					+ "        OR p.AD_Process_Para_ID IN ( "
-					// + show ASP exceptions for client
-					+ "              SELECT AD_Process_Para_ID "
-					+ "                FROM ASP_ClientException ce "
-					+ "               WHERE ce.AD_Client_ID = "
-					+ client.getAD_Client_ID()
-					+ "                 AND ce.IsActive = 'Y' "
-					+ "                 AND ce.AD_Process_Para_ID IS NOT NULL "
-					+ "                 AND ce.AD_Tab_ID IS NULL "
-					+ "                 AND ce.AD_Field_ID IS NULL "
-					+ "                 AND ce.ASP_Status = 'S') " // Show
-					+ "       ) "
-					+ "   AND p.AD_Process_Para_ID NOT IN ( "
+					+ "					AND p.ad_process_ID="+m_processInfo.getAD_Process_ID()
+					+ "                 AND pp.ASP_Status = 'H' " // Show
+					+"					AND pp.AD_Process_Para_ID not in ("
+					+" 					SELECT AD_Process_Para_ID"             
+					+" 					FROM ASP_ClientException ce"            
+					+" 					WHERE ce.AD_Client_ID ="+ client.getAD_Client_ID()    
+					+" 					AND ce.IsActive = 'Y'"              
+					+" 					AND ce.AD_Process_Para_ID IS NOT NULL"
+					+" 					AND ce.AD_Tab_ID IS NULL"              
+					+" 					AND ce.AD_Field_ID IS NULL"              
+					+" 					AND ce.ASP_Status in('S','U') )  "
+					+ "  UNION ALL "
 					// minus hide ASP exceptions for client
 					+ "          SELECT AD_Process_Para_ID "
 					+ "            FROM ASP_ClientException ce "
@@ -185,8 +183,9 @@ public class ProcessParameterPanel extends Panel implements
 					+ "             AND ce.IsActive = 'Y' "
 					+ "             AND ce.AD_Process_Para_ID IS NOT NULL "
 					+ "             AND ce.AD_Tab_ID IS NULL "
+					+ "				AND ce.AD_Process_Para_ID="+m_processInfo.getAD_Process_ID()
 					+ "             AND ce.AD_Field_ID IS NULL "
-					+ "             AND ce.ASP_Status = 'H')"; // Hide
+					+ "             AND ce.ASP_Status = 'H'))"; // Hide
 		//
 		String sql = null;
 		if (Env.isBaseLanguage(Env.getCtx(), "AD_Process_Para"))

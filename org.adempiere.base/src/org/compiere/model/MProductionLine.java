@@ -1,22 +1,12 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.MAttributeSet;
-import org.compiere.model.MAttributeSetInstance;
-import org.compiere.model.MInventoryLineMA;
-import org.compiere.model.MLocator;
-import org.compiere.model.MProduct;
-import org.compiere.model.MStorage;
-import org.compiere.model.MTransaction;
-import org.compiere.model.X_M_ProductionLine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -25,7 +15,8 @@ public class MProductionLine extends X_M_ProductionLine {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5939914729719167512L;
+
 	private MProduction parent;
 
 
@@ -208,7 +199,7 @@ public class MProductionLine extends X_M_ProductionLine {
 					storage.setM_Locator_ID(getM_Locator_ID());
 					storage.setM_Product_ID(getM_Product_ID());
 					storage.setM_AttributeSetInstance_ID(0);
-					storage.save();
+					storage.saveEx();
 					
 				}
 				

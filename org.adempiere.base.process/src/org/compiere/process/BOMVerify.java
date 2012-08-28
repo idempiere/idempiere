@@ -39,12 +39,10 @@ public class BOMVerify extends SvrProcess
 	/** Re-Validate			*/
 	private boolean	p_IsReValidate = false;
 	
-	/**	Product				*/
-	private MProduct			m_product = null;
 	/**	List of Products	*/
-	private ArrayList<MProduct>	foundproducts = new ArrayList<MProduct>();
+	private ArrayList<MProduct>	 foundproducts = new ArrayList<MProduct>();
 	private ArrayList<MProduct> validproducts = new ArrayList<MProduct>();
-	private ArrayList<MProduct>	invalidproducts = new ArrayList<MProduct>();
+	private ArrayList<MProduct>	 invalidproducts = new ArrayList<MProduct>();
 	private ArrayList<MProduct> containinvalidproducts = new ArrayList<MProduct>();
 	private ArrayList<MProduct> checkedproducts = new ArrayList<MProduct>();
 	
@@ -90,6 +88,7 @@ public class BOMVerify extends SvrProcess
 		//
 		int counter = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql = "SELECT M_Product_ID FROM M_Product "
 			+ "WHERE IsBOM='Y' AND ";
 		if (p_M_Product_Category_ID == 0)
@@ -102,12 +101,12 @@ public class BOMVerify extends SvrProcess
 		int AD_Client_ID = Env.getAD_Client_ID(getCtx());
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql, get_TrxName());
 			if (p_M_Product_Category_ID == 0)
 				pstmt.setInt (1, AD_Client_ID);
 			else
 				pstmt.setInt(1, p_M_Product_Category_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				p_M_Product_ID = rs.getInt(1); //ADAXA - validate the product retrieved from database
@@ -115,23 +114,15 @@ public class BOMVerify extends SvrProcess
 				
 				counter++;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
-			log.log (Level.SEVERE, sql, e);
+			throw e;
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 		return "#" + counter;
 	}	//	doIt
@@ -183,7 +174,7 @@ public class BOMVerify extends SvrProcess
 				else if (foundproducts.contains(pp))
 				{
 					invalid = true;
-					addLog(0, null, null, product.getValue() + " recursively contains " + pp.getValue());
+					addLog(0, null, null, product.getValue() + " recursively contains " + pp.getValue(), MProduct.Table_ID, product.getM_Product_ID());
 				}
 				else
 				{
@@ -223,11 +214,6 @@ public class BOMVerify extends SvrProcess
 			return true;
 		}
 		
-		
-		
 	}	//	validateProduct
-
-
 	
 }	//	BOMValidate
-

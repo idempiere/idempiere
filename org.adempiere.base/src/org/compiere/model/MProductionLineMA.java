@@ -8,11 +8,10 @@ import org.compiere.model.X_M_ProductionLineMA;
 import org.compiere.util.Env;
 
 public class MProductionLineMA extends X_M_ProductionLineMA {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -3935841562652510880L;
 
 	public MProductionLineMA(Properties ctx, int M_ProductionLineMA_ID,
 			String trxName) {
@@ -39,6 +38,7 @@ public class MProductionLineMA extends X_M_ProductionLineMA {
 		setM_AttributeSetInstance_ID(asi);
 		setM_ProductionLine_ID(parent.get_ID());
 		setMovementQty(qty);
+		setAD_Org_ID(parent.getAD_Org_ID());
 		
 	}
 	

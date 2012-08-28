@@ -1,12 +1,12 @@
 package org.compiere.process;
 
-import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
-import org.compiere.util.DB;
+import org.compiere.model.MProductBOM;
+import org.compiere.model.Query;
 
 public class UniversalSubstitution extends SvrProcess {
 
@@ -29,21 +29,22 @@ public class UniversalSubstitution extends SvrProcess {
 	}
 
 	@Override
-	protected String doIt() throws Exception {
+	protected String doIt() throws SQLException {
 
 		if ( productId == 0 || replacementId == 0 )
 			throw new AdempiereException("Product and replacement product required");
 		
+		List<MProductBOM> boms = new Query(getCtx(), MProductBOM.Table_Name, "M_ProductBOM_ID=?", get_TrxName())
+			.setParameters(productId)
+			.list();
 		
-	String update = "UPDATE M_Product_BOM bb " +
-		"SET M_PRODUCTBOM_ID = ? " +
-		"WHERE bb.M_PRODUCTBOM_ID = ?";
-		
-		PreparedStatement pstmt = DB.prepareStatement(update, get_TrxName());
-		pstmt.setInt(1, replacementId);
-		pstmt.setInt(2, productId);
-		
-		int count = pstmt.executeUpdate();
+		int count = 0;
+		// Use model class to invalidate the product
+		for (MProductBOM bom : boms) {
+			bom.setM_ProductBOM_ID(replacementId);
+			bom.saveEx();
+			count++;
+		}
 
 		return count + " BOM products updated";
 	}

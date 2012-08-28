@@ -241,7 +241,7 @@ public class Viewer extends CFrame
 	 */
 	private void jbInit() throws Exception
 	{
-		this.setIconImage(Env.getImage("mReport.gif"));
+		this.setIconImage(Env.getImage("mReport.png"));
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		//
 		northPanel.setLayout(northLayout);
@@ -814,7 +814,7 @@ public class Viewer extends CFrame
 				return;
 			//	Create Menu
 			JPopupMenu pop = new JPopupMenu();
-			Icon wi = Env.getImageIcon("mWindow.gif");
+			Icon wi = Env.getImageIcon("mWindow.png");
 			if (m_ddQ != null)
 			{
 				m_ddM = new CMenuItem(m_ddQ.getDisplayName(Env.getCtx()), wi);

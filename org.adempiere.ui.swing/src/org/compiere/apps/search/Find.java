@@ -81,6 +81,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
 import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_Column;
@@ -856,12 +857,26 @@ public final class Find extends CDialog
 			if (columnName != null)
 			{
 				log.config("Column: " + columnName);
-				if (columnName.endsWith("_ID") || columnName.endsWith("_Acct"))
-					operators.setModel(new DefaultComboBoxModel(MQuery.OPERATORS_ID));
-				else if (columnName.startsWith("Is"))
-					operators.setModel(new DefaultComboBoxModel(MQuery.OPERATORS_YN));
-				else
+		    	int referenceType = -1;
+	    		MTable table = MTable.get(Env.getCtx(), m_tableName);
+	    		MColumn col = table.getColumn(columnName);
+	    		referenceType = col.getAD_Reference_ID();
+		        if (DisplayType.isLookup(referenceType)
+		        		|| DisplayType.YesNo == referenceType
+		        		|| DisplayType.Button == referenceType)
+		        {
+					operators.setModel(new DefaultComboBoxModel(MQuery.OPERATORS_LOOKUP));
+		        }
+		        else if (DisplayType.isNumeric(referenceType)
+		        		|| DisplayType.isDate(referenceType)
+		        		|| DisplayType.isID(referenceType)) // Note that lookups were filtered above
+		        {
+					operators.setModel(new DefaultComboBoxModel(MQuery.OPERATORS_NUMBERS));
+		        }
+		        else // DisplayType.isText
+		        {
 					operators.setModel(new DefaultComboBoxModel(MQuery.OPERATORS));
+		        }
 			}
 		}
 		else if (e.getSource() == fQueryName) 

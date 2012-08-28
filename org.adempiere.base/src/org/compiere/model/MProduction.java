@@ -6,27 +6,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.MAttributeSetInstance;
-import org.compiere.model.MOrderLine;
-import org.compiere.model.MProduct;
-import org.compiere.model.MStorage;
-import org.compiere.model.X_M_Production;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 public class MProduction extends X_M_Production {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9055468125493188165L;
 
 	/**
 	 * 
 	 */
 	/** Log								*/
 	private static CLogger		m_log = CLogger.getCLogger (MProduction.class);
-	private static final long serialVersionUID = 1L;
 	private int lineno;
 	private int count;
 
@@ -107,7 +104,7 @@ public class MProduction extends X_M_Production {
 		line.setMovementQty( getProductionQty());
 		line.setPlannedQty(getProductionQty());
 		
-		line.save();
+		line.saveEx();
 		count++;
 		
 		createLines(mustBeStocked, finishedProduct, getProductionQty());
@@ -166,7 +163,7 @@ public class MProduction extends X_M_Production {
 						BOMLine.setM_Locator_ID( defaultLocator );  
 						BOMLine.setQtyUsed(BOMMovementQty );
 						BOMLine.setPlannedQty( BOMMovementQty );
-						BOMLine.save(get_TrxName());
+						BOMLine.saveEx(get_TrxName());
 
 						lineno = lineno + 10;
 						count++;					
@@ -180,7 +177,7 @@ public class MProduction extends X_M_Production {
 						BOMLine.setM_Locator_ID( defaultLocator );  
 						BOMLine.setQtyUsed( BOMMovementQty );
 						BOMLine.setPlannedQty( BOMMovementQty );
-						BOMLine.save(get_TrxName());
+						BOMLine.saveEx(get_TrxName());
 
 						lineno = lineno + 10;
 						count++;
@@ -232,7 +229,7 @@ public class MProduction extends X_M_Production {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(lineQty));
 									BOMLine.setPlannedQty(BOMLine.getQtyUsed());
-									BOMLine.save(get_TrxName());
+									BOMLine.saveEx(get_TrxName());
 
 								}
 								// otherwise create new line
@@ -245,7 +242,7 @@ public class MProduction extends X_M_Production {
 									BOMLine.setPlannedQty( lineQty);
 									if ( slASI != 0 && locAttribSet != 0 )  // ie non costing attribute
 										BOMLine.setM_AttributeSetInstance_ID(slASI);
-									BOMLine.save(get_TrxName());
+									BOMLine.saveEx(get_TrxName());
 
 									lineno = lineno + 10;
 									count++;
@@ -270,7 +267,7 @@ public class MProduction extends X_M_Production {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(BOMMovementQty));
 									BOMLine.setPlannedQty(BOMLine.getQtyUsed());
-									BOMLine.save(get_TrxName());
+									BOMLine.saveEx(get_TrxName());
 
 								}
 								// otherwise create new line
@@ -282,7 +279,7 @@ public class MProduction extends X_M_Production {
 									BOMLine.setM_Locator_ID( defaultLocator );  
 									BOMLine.setQtyUsed( BOMMovementQty);
 									BOMLine.setPlannedQty( BOMMovementQty);
-									BOMLine.save(get_TrxName());
+									BOMLine.saveEx(get_TrxName());
 
 									lineno = lineno + 10;
 									count++;

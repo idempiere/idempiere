@@ -31,7 +31,7 @@ public class ProcessInfoLog implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4064380205358897097L;
+	private static final long serialVersionUID = 2790364724540395200L;
 
 	/**
 	 * 	Create Process Info Log.
@@ -47,8 +47,8 @@ public class ProcessInfoLog implements Serializable
 		setP_Date (P_Date);
 		setP_Number (P_Number);
 		setP_Msg (P_Msg);
-		setAd_Table_Id(AD_Table_ID);
-		setRecord_Id(Record_ID);
+		setAD_Table_ID(AD_Table_ID);
+		setRecord_ID(Record_ID);
 		
 	}	//	ProcessInfoLog
 
@@ -92,19 +92,19 @@ public class ProcessInfoLog implements Serializable
 	private int 		m_AD_Table_ID;
 	private int 		m_Record_ID;
 
-	public int getAd_Table_Id() {
+	public int getAD_Table_ID() {
 		return m_AD_Table_ID;
 	}
 
-	public void setAd_Table_Id(int tableId) {
+	public void setAD_Table_ID(int tableId) {
 		this.m_AD_Table_ID = tableId;
 	}
 
-	public int getRecord_Id() {
+	public int getRecord_ID() {
 		return m_Record_ID;
 	}
 
-	public void setRecord_Id(int recordId) {
+	public void setRecord_ID(int recordId) {
 		this.m_Record_ID = recordId;
 	}
 	/**

@@ -923,7 +923,7 @@ public class MClient extends X_AD_Client
 			String sqlvalidate =
 				"SELECT AD_Field_ID "
 				 + "  FROM AD_Field "
-				 + " WHERE (   AD_Field_ID IN ( "
+				 + " WHERE (   AD_Field_ID NOT IN ( "
 				 // ASP subscribed fields for client
 				 + "              SELECT f.AD_Field_ID "
 				 + "                FROM ASP_Field f, ASP_Tab t, ASP_Window w, ASP_Level l, ASP_ClientLevel cl "
@@ -937,38 +937,22 @@ public class MClient extends X_AD_Client
 				 + "                 AND w.IsActive = 'Y' "
 				 + "                 AND l.IsActive = 'Y' "
 				 + "                 AND cl.IsActive = 'Y' "
-				 + "                 AND f.ASP_Status = 'S') "
-				 + "        OR AD_Tab_ID IN ( "
-				 // ASP subscribed fields for client
-				 + "              SELECT t.AD_Tab_ID "
-				 + "                FROM ASP_Tab t, ASP_Window w, ASP_Level l, ASP_ClientLevel cl "
-				 + "               WHERE w.ASP_Level_ID = l.ASP_Level_ID "
-				 + "                 AND cl.AD_Client_ID = " + getAD_Client_ID()
-				 + "                 AND cl.ASP_Level_ID = l.ASP_Level_ID "
-				 + "                 AND t.ASP_Window_ID = w.ASP_Window_ID "
-				 + "                 AND t.IsActive = 'Y' "
-				 + "                 AND w.IsActive = 'Y' "
-				 + "                 AND l.IsActive = 'Y' "
-				 + "                 AND cl.IsActive = 'Y' "
-				 + "                 AND t.AllFields = 'Y' "
-				 + "                 AND t.ASP_Status = 'S') "
-				 + "        OR AD_Field_ID IN ( "
-				 // ASP show exceptions for client
-				 + "              SELECT AD_Field_ID "
-				 + "                FROM ASP_ClientException ce "
-				 + "               WHERE ce.AD_Client_ID = " + getAD_Client_ID()
-				 + "                 AND ce.IsActive = 'Y' "
-				 + "                 AND ce.AD_Field_ID IS NOT NULL "
-				 + "                 AND ce.ASP_Status = 'S') "
-				 + "       ) "
-				 + "   AND AD_Field_ID NOT IN ( "
+				 + "                 AND f.ASP_Status = 'H' "
+				 +"                  AND f.AD_Field_ID NOT IN ("
+				 +" 				 SELECT AD_Field_ID"             
+				 +" 				 FROM ASP_ClientException ce"            
+				 +" 				 WHERE ce.AD_Client_ID ="+getAD_Client_ID()             
+				 +" 				 AND ce.IsActive = 'Y'"              
+				 +"                  AND ce.AD_Field_ID IS NOT NULL"              
+				 +" 				 AND ce.ASP_Status <> 'H')"
+				 + "   UNION ALL "
 				 // minus ASP hide exceptions for client
 				 + "          SELECT AD_Field_ID "
 				 + "            FROM ASP_ClientException ce "
 				 + "           WHERE ce.AD_Client_ID = " + getAD_Client_ID()
 				 + "             AND ce.IsActive = 'Y' "
 				 + "             AND ce.AD_Field_ID IS NOT NULL "
-				 + "             AND ce.ASP_Status = 'H')"
+				 + "             AND ce.ASP_Status = 'H'))"
 				 + " ORDER BY AD_Field_ID";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;

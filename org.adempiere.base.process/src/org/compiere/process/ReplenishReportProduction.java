@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
@@ -35,22 +34,18 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
-import org.compiere.model.MProductionLine;
 import org.compiere.model.MReplenish;
 import org.compiere.model.MRequisition;
 import org.compiere.model.MRequisitionLine;
 import org.compiere.model.MStorage;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.X_T_Replenish;
-import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ReplenishInterface;
-import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
 import org.eevolution.model.MDDOrderLine;
 
@@ -415,7 +410,7 @@ public class ReplenishReportProduction extends SvrProcess
 					if (qto == null)
 						qto = Env.ZERO;
 					replenish.setQtyToOrder(qto);
-					replenish.save();
+					replenish.saveEx();
 				}
 			}
 		}
@@ -470,7 +465,7 @@ public class ReplenishReportProduction extends SvrProcess
 			line.setM_Product_ID(replenish.getM_Product_ID());
 			line.setQty(replenish.getQtyToOrder());
 			line.setPrice();
-			line.save();
+			line.saveEx();
 		}
 		m_info = "#" + noOrders + info;
 		log.info(m_info);
@@ -515,7 +510,7 @@ public class ReplenishReportProduction extends SvrProcess
 			line.setC_BPartner_ID(replenish.getC_BPartner_ID());
 			line.setQty(replenish.getQtyToOrder());
 			line.setPrice();
-			line.save();
+			line.saveEx();
 		}
 		m_info = "#" + noReqs + info;
 		log.info(m_info);
@@ -594,7 +589,7 @@ public class ReplenishReportProduction extends SvrProcess
 				line.setM_AttributeSetInstance_ID(storage.getM_AttributeSetInstance_ID());
 				line.setM_LocatorTo_ID(M_LocatorTo_ID);					//	to
 				line.setM_AttributeSetInstanceTo_ID(storage.getM_AttributeSetInstance_ID());
-				line.save();
+				line.saveEx();
 				//
 				target = target.subtract(moveQty);
 				if (target.signum() == 0)
@@ -728,7 +723,7 @@ public class ReplenishReportProduction extends SvrProcess
 				line.setM_LocatorTo_ID(M_LocatorTo_ID);					//	to
 				line.setM_AttributeSetInstanceTo_ID(storage.getM_AttributeSetInstance_ID());
 				line.setIsInvoiced(false);
-				line.save();
+				line.saveEx();
 				//
 				target = target.subtract(moveQty);
 				if (target.signum() == 0)
@@ -745,7 +740,7 @@ public class ReplenishReportProduction extends SvrProcess
 			line.setM_LocatorTo_ID(M_LocatorTo_ID);					//	to
 			line.setM_AttributeSetInstanceTo_ID(0);
 			line.setIsInvoiced(false);
-			line.save();
+			line.saveEx();
 			
 		}
 		if (replenishs.length == 0)
@@ -813,7 +808,7 @@ public class ReplenishReportProduction extends SvrProcess
 				production.createLines(false);
 
 				production.setIsCreated("Y");
-				production.save(get_TrxName());
+				production.saveEx(get_TrxName());
 				log.fine(production.toString());
 				noProds++;
 				info += " - " + production.getDocumentNo();
