@@ -168,8 +168,7 @@ DataStatusListener, IADTabpanel
         grid.setHflex("1");
         grid.setHeight("100%");
         grid.setVflex(true);
-        grid.setStyle("margin:0; padding:0; position: absolute");
-        grid.makeNoStrip();
+        grid.setSclass("grid-layout");
         
         listPanel = new GridPanel();
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
@@ -202,8 +201,8 @@ DataStatusListener, IADTabpanel
 		{
 			Borderlayout layout = new Borderlayout();
 			layout.setParent(this);
-			layout.setStyle("width: 100%; height: 100%; position: absolute;");
-
+			layout.setSclass("adtab-tree-layout");
+			
 			treePanel = new ADTreePanel(windowNo, gridTab.getTabNo());
 			West west = new West();
 			west.appendChild(treePanel);
@@ -216,6 +215,7 @@ DataStatusListener, IADTabpanel
 			Center center = new Center();
 			center.setFlex(true);
 			center.appendChild(grid);
+			center.setSclass("adtab-form");
 			layout.appendChild(center);
 
 			formComponent = layout;
@@ -230,7 +230,7 @@ DataStatusListener, IADTabpanel
 		else
 		{
 			Div div = new Div();
-			div.setStyle("width:100%;height:100%;border:none;margin:none;padding:none");
+			div.setSclass("adtab-form");
 			div.appendChild(grid);
 			this.appendChild(div);
 			formComponent = div;

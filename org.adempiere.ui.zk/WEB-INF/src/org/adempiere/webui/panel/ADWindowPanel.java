@@ -97,9 +97,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
         layout = new Borderlayout();
         if (parent != null) {
 	        layout.setParent(parent);
-	        layout.setStyle("position:absolute");
-	        layout.setHeight("100%");
-	        layout.setWidth("100%");
+	        layout.setSclass("adwindow-layout");
         } else {
         	layout.setPage(page);
         }
@@ -110,8 +108,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
 	        North n = new North();
 	        n.setParent(layout);
 	        n.setCollapsible(false);
-	        n.setHeight("30px");
-	        toolbar.setHeight("30px");
+	        n.setSclass("adwindow-north");
 	        toolbar.setParent(n);
 	        toolbar.setWindowNo(getWindowNo());
         }
@@ -122,6 +119,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
 	        South s = new South();
 	        layout.appendChild(s);
 	        s.setCollapsible(false);
+	        s.setSclass("adwindow-south");
 	        statusBar.setParent(s);
         }
         else

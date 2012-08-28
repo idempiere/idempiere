@@ -28,6 +28,8 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
@@ -44,6 +46,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
@@ -58,17 +61,18 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Groupbox;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
@@ -169,7 +173,7 @@ public class WAcctViewer extends Window implements EventListener
 	private Tabpanel query = new Tabpanel();
 	private Tabpanels tabpanels = new Tabpanels();
 
-	private Hbox southPanel = new Hbox();
+	private Hlayout southPanel = new Hlayout();
 
 	private int m_windowNo;
 
@@ -240,156 +244,119 @@ public class WAcctViewer extends Window implements EventListener
 	private void init() throws Exception
 	{
 		// Selection Panel
-
+		selectionPanel.setHflex("1");
 			// Accounting Schema
-
-		Hbox boxAcctSchema = new Hbox();
-		boxAcctSchema.setWidth("100%");
-		boxAcctSchema.setWidths("30%, 70%");
+		
+		Grid grid = new Grid();
+		grid.setHflex("1");
+		grid.setSclass("grid-layout");
+		
+		selectionPanel.appendChild(grid);
+		
+		Columns columns = new Columns();
+		grid.appendChild(columns);
+		Column column = new Column();
+		column.setWidth("30%");
+		columns.appendChild(column);
+		column = new Column();
+		columns.appendChild(column);
+		
+		Rows rows = grid.newRows();
 
 		lacctSchema.setValue(Msg.translate(Env.getCtx(), "C_AcctSchema_ID"));
 		selAcctSchema.setMold("select");
 		selAcctSchema.setRows(1);
 
-		boxAcctSchema.appendChild(lacctSchema);
-		boxAcctSchema.appendChild(selAcctSchema);
-
-		Hbox boxSelDoc = new Hbox();
-		boxSelDoc.setWidth("100%");
-		boxSelDoc.setWidths("30%, 50%, 20%");
+		Row row = rows.newRow();
+		row.appendChild(lacctSchema);
+		row.appendChild(selAcctSchema);
 
 		selDocument.setLabel(Msg.getMsg(Env.getCtx(), "SelectDocument"));
 		selDocument.addEventListener(Events.ON_CHECK, this);
 		selTable.setMold("select");
 		selTable.setRows(1);
 
-		boxSelDoc.appendChild(selDocument);
-		boxSelDoc.appendChild(selTable);
-		boxSelDoc.appendChild(selRecord);
+		row = rows.newRow();
+		row.appendChild(selDocument);
+		Hlayout hlayout = new Hlayout();
+		hlayout.appendChild(selTable);
+		hlayout.appendChild(selRecord);
+		row.appendChild(hlayout);		
 
 			// Posting Type
-
-		Hbox boxPostingType = new Hbox();
-		boxPostingType.setWidth("100%");
-		boxPostingType.setWidths("30%, 70%");
 
 		lpostingType.setValue(Msg.translate(Env.getCtx(), "PostingType"));
 		selPostingType.setMold("select");
 		selPostingType.setRows(1);
 		selPostingType.addEventListener(Events.ON_CLICK, this);
 
-		boxPostingType.appendChild(lpostingType);
-		boxPostingType.appendChild(selPostingType);
+		row = rows.newRow();
+		row.appendChild(lpostingType);
+		row.appendChild(selPostingType);
 
 			// Date
 
-		Hbox boxDate = new Hbox();
-		boxDate.setWidth("100%");
-		boxDate.setWidths("30%, 35%, 35%");
-
 		lDate.setValue(Msg.translate(Env.getCtx(), "DateAcct"));
 
-		boxDate.appendChild(lDate);
-		boxDate.appendChild(selDateFrom);
-		boxDate.appendChild(selDateTo);
+		row = rows.newRow();
+		row.appendChild(lDate);
+		hlayout = new Hlayout();
+		hlayout.appendChild(selDateFrom);		
+		hlayout.appendChild(new Label(" - "));
+		hlayout.appendChild(selDateTo);
+		row.appendChild(hlayout);
 
 			// Organization
-
-		Hbox boxOrg = new Hbox();
-		boxOrg.setWidth("100%");
-		boxOrg.setWidths("30%, 70%");
 
 		lOrg.setValue(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		selOrg.setMold("select");
 		selOrg.setRows(1);
 		selOrg.addEventListener(Events.ON_SELECT, this);
 
-		boxOrg.appendChild(lOrg);
-		boxOrg.appendChild(selOrg);
+		row = rows.newRow();
+		row.appendChild(lOrg);
+		row.appendChild(selOrg);
 
 			// Account
 
-		Hbox boxAcct = new Hbox();
-		boxAcct.setWidth("100%");
-		boxAcct.setWidths("30%, 70%");
-
 		lAcct.setValue(Msg.translate(Env.getCtx(), "Account_ID"));
 
-		boxAcct.appendChild(lAcct);
-		boxAcct.appendChild(selAcct);
+		row = rows.newRow();
+		row.appendChild(lAcct);
+		row.appendChild(selAcct);
 
-		Hbox boxSel1 = new Hbox();
-		boxSel1.setWidth("100%");
-		boxSel1.setWidths("30%, 70%");
+		row = rows.newRow();
+		row.appendChild(lsel1);
+		row.appendChild(sel1);
 
-		boxSel1.appendChild(lsel1);
-		boxSel1.appendChild(sel1);
+		row = rows.newRow();
+		row.appendChild(lsel2);
+		row.appendChild(sel2);
 
-		Hbox boxSel2 = new Hbox();
-		boxSel2.setWidth("100%");
-		boxSel2.setWidths("30%, 70%");
+		row = rows.newRow();
+		row.appendChild(lsel3);
+		row.appendChild(sel3);
 
-		boxSel2.appendChild(lsel2);
-		boxSel2.appendChild(sel2);
+		row = rows.newRow();
+		row.appendChild(lsel4);
+		row.appendChild(sel4);
 
-		Hbox boxSel3 = new Hbox();
-		boxSel3.setWidth("100%");
-		boxSel3.setWidths("30%, 70%");
+		row = rows.newRow();
+		row.appendChild(lsel5);
+		row.appendChild(sel5);
 
-		boxSel3.appendChild(lsel3);
-		boxSel3.appendChild(sel3);
+		row = rows.newRow();
+		row.appendChild(lsel6);
+		row.appendChild(sel6);
 
-		Hbox boxSel4 = new Hbox();
-		boxSel4.setWidth("100%");
-		boxSel4.setWidths("30%, 70%");
+		row = rows.newRow();
+		row.appendChild(lsel7);
+		row.appendChild(sel7);
 
-		boxSel4.appendChild(lsel4);
-		boxSel4.appendChild(sel4);
-
-		Hbox boxSel5 = new Hbox();
-		boxSel5.setWidth("100%");
-		boxSel5.setWidths("30%, 70%");
-
-		boxSel5.appendChild(lsel5);
-		boxSel5.appendChild(sel5);
-
-		Hbox boxSel6 = new Hbox();
-		boxSel6.setWidth("100%");
-		boxSel6.setWidths("30%, 70%");
-
-		boxSel6.appendChild(lsel6);
-		boxSel6.appendChild(sel6);
-
-		Hbox boxSel7 = new Hbox();
-		boxSel7.setWidth("100%");
-		boxSel7.setWidths("30%, 70%");
-
-		boxSel7.appendChild(lsel7);
-		boxSel7.appendChild(sel7);
-
-		Hbox boxSel8 = new Hbox();
-		boxSel8.setWidth("100%");
-		boxSel8.setWidths("30%, 70%");
-
-		boxSel8.appendChild(lsel8);
-		boxSel8.appendChild(sel8);
-
-		selectionPanel.setWidth("100%");
-		selectionPanel.appendChild(boxAcctSchema);
-		selectionPanel.appendChild(boxSelDoc);
-		selectionPanel.appendChild(boxPostingType);
-		selectionPanel.appendChild(boxDate);
-		selectionPanel.appendChild(boxOrg);
-		selectionPanel.appendChild(boxAcct);
-		selectionPanel.appendChild(boxSel1);
-		selectionPanel.appendChild(boxSel2);
-		selectionPanel.appendChild(boxSel3);
-		selectionPanel.appendChild(boxSel4);
-		selectionPanel.appendChild(boxSel5);
-		selectionPanel.appendChild(boxSel6);
-		selectionPanel.appendChild(boxSel7);
-		selectionPanel.appendChild(boxSel8);
-
+		row = rows.newRow();
+		row.appendChild(lsel8);
+		row.appendChild(sel8);
+		
 		//Display Panel
 
 			// Display Document Info
@@ -407,65 +374,54 @@ public class WAcctViewer extends Window implements EventListener
 		displayQty.setLabel(Msg.getMsg(Env.getCtx(), "DisplayQty"));
 		displayQty.addEventListener(Events.ON_CHECK, this);
 
-		Hbox boxSortDisplay = new Hbox();
-		boxSortDisplay.setWidth("100%");
-		boxSortDisplay.setWidths("70%, 30%");
-
-		lSort.setValue(Msg.getMsg(Env.getCtx(), "SortBy"));
-		lGroup.setValue(Msg.getMsg(Env.getCtx(), "GroupBy"));
-
-		boxSortDisplay.appendChild(lSort);
-		boxSortDisplay.appendChild(lGroup);
-
-		Hbox boxSort1 = new Hbox();
-		boxSort1.setWidth("100%");
-		boxSort1.setWidths("70%, 30%");
-
-		sortBy1.setMold("select");
-		sortBy1.setRows(1);
-
-		boxSort1.appendChild(sortBy1);
-		boxSort1.appendChild(group1);
-
-		Hbox boxSort2 = new Hbox();
-		boxSort2.setWidth("100%");
-		boxSort2.setWidths("70%, 30%");
-
-		sortBy2.setMold("select");
-		sortBy2.setRows(1);
-
-		boxSort2.appendChild(sortBy2);
-		boxSort2.appendChild(group2);
-
-		Hbox boxSort3 = new Hbox();
-		boxSort3.setWidth("100%");
-		boxSort3.setWidths("70%, 30%");
-
-		sortBy3.setMold("select");
-		sortBy3.setRows(1);
-
-		boxSort3.appendChild(sortBy3);
-		boxSort3.appendChild(group3);
-
-		Hbox boxSort4 = new Hbox();
-		boxSort4.setWidth("100%");
-		boxSort4.setWidths("70%, 30%");
-
-		sortBy4.setMold("select");
-		sortBy4.setRows(1);
-
-		boxSort4.appendChild(sortBy4);
-		boxSort4.appendChild(group4);
-
 		displayPanel.setWidth("100%");
 		displayPanel.appendChild(displayDocumentInfo);
 		displayPanel.appendChild(displaySourceAmt);
 		displayPanel.appendChild(displayQty);
-		displayPanel.appendChild(boxSortDisplay);
-		displayPanel.appendChild(boxSort1);
-		displayPanel.appendChild(boxSort2);
-		displayPanel.appendChild(boxSort3);
-		displayPanel.appendChild(boxSort4);
+		
+		grid = new Grid();
+		grid.setSclass("grid-layout");
+		grid.setHflex("1");
+		displayPanel.appendChild(grid);
+		columns = new Columns();
+		grid.appendChild(columns);
+		column = new Column();
+		column.setWidth("70%");
+		columns.appendChild(column);
+		column = new Column();
+		column.setWidth("30%");
+		columns.appendChild(column);
+
+		rows = grid.newRows();
+		row = rows.newRow();
+		lSort.setValue(Msg.getMsg(Env.getCtx(), "SortBy"));
+		lGroup.setValue(Msg.getMsg(Env.getCtx(), "GroupBy"));
+		row.appendChild(lSort);
+		row.appendChild(lGroup);
+
+		row = rows.newRow();		
+		sortBy1.setMold("select");
+		sortBy1.setRows(1);
+		row.appendChild(sortBy1);
+		row.appendChild(group1);
+
+		row = rows.newRow();
+		sortBy2.setMold("select");
+		sortBy2.setRows(1);
+		row.appendChild(sortBy2);
+		row.appendChild(group2);
+
+		row = rows.newRow();
+		sortBy3.setMold("select");
+		sortBy3.setRows(1);
+		row.appendChild(sortBy3);
+		row.appendChild(group3);
+
+		row = rows.newRow();
+		sortBy4.setMold("select");
+		sortBy4.setRows(1);
+		row.appendChild(sortBy4);
+		row.appendChild(group4);
 
 		//"images/InfoAccount16.png"
 
@@ -479,80 +435,84 @@ public class WAcctViewer extends Window implements EventListener
 		groupSelection.appendChild(capSelection);
 		groupSelection.appendChild(selectionPanel);
 
-		Hbox boxQueryPanel = new Hbox();
-
-		boxQueryPanel.setWidth("98%");
-		boxQueryPanel.setWidths("63%,1%,36%");
+		Hlayout boxQueryPanel = new Hlayout();
+		boxQueryPanel.setHflex("3");
 
 		boxQueryPanel.appendChild(groupSelection);
+		groupSelection.setHflex("2");
 		Separator separator = new Separator();
 		separator.setOrient("vertical");
 		boxQueryPanel.appendChild(separator);
 		boxQueryPanel.appendChild(groupDisplay);
+		groupDisplay.setHflex("1");
 
 		//  South Panel
 
-		bRePost.setLabel(Msg.getMsg(Env.getCtx(), "RePost"));
-		bRePost.setTooltiptext(Msg.getMsg(Env.getCtx(), "RePostInfo"));
+		bRePost.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "RePost")));
+		bRePost.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "RePostInfo")));
 		bRePost.addEventListener(Events.ON_CLICK, this);
 		bRePost.setVisible(false);
 
-		forcePost.setLabel(Msg.getMsg(Env.getCtx(), "Force"));
-		forcePost.setTooltiptext(Msg.getMsg(Env.getCtx(), "ForceInfo"));
+		forcePost.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Force")));
+		forcePost.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ForceInfo")));
 		forcePost.setVisible(false);
 
 		// Elaine 2009/07/29
 		bZoom.setImage("/images/Zoom16.png");
-		bZoom.setTooltiptext(Msg.getMsg(Env.getCtx(), "Zoom"));
+		bZoom.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
 		bZoom.setVisible(tabbedPane.getSelectedIndex() == 1);
 		bZoom.addEventListener(Events.ON_CLICK, this);
 		//
 		
 		bQuery.setImage("/images/Refresh16.png");
-		bQuery.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
+		bQuery.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		bQuery.addEventListener(Events.ON_CLICK, this);
 
 		bExport.setImage("/images/Export16.png");
-		bExport.setTooltiptext(Msg.getMsg(Env.getCtx(), "Export"));
+		bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
 		bExport.addEventListener(Events.ON_CLICK, this);
 		bExport.setVisible(false);
 
-		southPanel.setWidth("100%");
-		southPanel.setWidths("80%, 20%");
+		southPanel.setHflex("5");
 		Grid southLeftGrid = new Grid();
-		southLeftGrid.setInnerWidth("");
-		southLeftGrid.setHeight("");
-		southLeftGrid.makeNoStrip();
-		southLeftGrid.setStyle("border: none; margin: none");
+		southLeftGrid.setSclass("grid-layout");
 		southPanel.appendChild(southLeftGrid);
-		Rows rows = southLeftGrid.newRows();
+		southLeftGrid.setHflex("4");
+		rows = southLeftGrid.newRows();
 		Row southLeft = rows.newRow();
-		southLeft.appendChild(bRePost);
-		southLeft.appendChild(forcePost);
+		Hlayout repostLayout = new Hlayout();
+		southLeft.appendChild(repostLayout);
+		repostLayout.appendChild(bRePost);
+		repostLayout.appendChild(new Separator());
+		repostLayout.appendChild(forcePost);
+		repostLayout.setHeight("24px");
 		southLeft.appendChild(statusLine);
 		
-		Hbox southRight = new Hbox();
-		southRight.setWidth("100%");
-		southRight.setPack("end");
+		Grid southRight = new Grid();
+		southRight.setSclass("grid-layout");
+		southRight.setHflex("1");
 		southPanel.appendChild(southRight);
 		Panel southRightPanel = new Panel();
 		southRightPanel.appendChild(bZoom); // Elaine 2009/07/29
 		southRightPanel.appendChild(bExport);
 		southRightPanel.appendChild(bQuery);
-		southRight.appendChild(southRightPanel);
+		rows = southRight.newRows();
+		row = rows.newRow();
+		row.setAlign("right");
+		row.appendChild(southRightPanel);
 
 		// Result Tab
 
 		resultPanel = new Borderlayout();
 		resultPanel.setStyle("position: absolute");
-		resultPanel.setWidth("97%");
-		resultPanel.setHeight("96%");
+		resultPanel.setWidth("99%");
+		resultPanel.setHeight("99%");
 		result.appendChild(resultPanel);
 
 		Center resultCenter = new Center();
 		resultCenter.setFlex(true);
 		resultPanel.appendChild(resultCenter);
-		table.setWidth("99%;");
+		table.setHflex("1");
 		table.setVflex(true);
 		table.setHeight("99%");
 		table.setStyle("position: absolute;");
@@ -562,7 +522,7 @@ public class WAcctViewer extends Window implements EventListener
 		resultPanel.appendChild(pagingPanel);
 		pagingPanel.appendChild(paging);
 
-		result.setWidth("100%");
+		result.setHflex("1");
 		result.setHeight("100%");
 		result.setStyle("position: relative");
 
@@ -572,7 +532,7 @@ public class WAcctViewer extends Window implements EventListener
 
 		// Query Tab
 
-		query.setWidth("100%");
+		query.setHflex("1");
 		query.appendChild(boxQueryPanel);
 
 		// Tabbox
@@ -586,12 +546,12 @@ public class WAcctViewer extends Window implements EventListener
 		tabs.appendChild(tabQuery);
 		tabs.appendChild(tabResult);
 
-		tabpanels.setWidth("100%");
+		tabpanels.setHflex("1");
 		tabpanels.appendChild(query);
 		tabpanels.appendChild(result);
 
-		tabbedPane.setWidth("100%");
-		tabbedPane.setHeight("100%");
+		tabbedPane.setHflex("1");
+		tabbedPane.setVflex("1");
 		tabbedPane.appendChild(tabs);
 		tabbedPane.appendChild(tabpanels);
 
@@ -599,23 +559,23 @@ public class WAcctViewer extends Window implements EventListener
 		layout.setParent(this);
 		layout.setHeight("100%");
 		layout.setWidth("100%");
-		layout.setStyle("background-color: transparent");
+		layout.setStyle("background-color: transparent; margin: 0; position: absolute; padding: 0;");
 
 		Center center = new Center();
 		center.setParent(layout);
 		center.setFlex(true);
-		center.setStyle("background-color: transparent");
+		center.setStyle("background-color: transparent; padding: 2px;");
 		tabbedPane.setParent(center);
 
 		South south = new South();
 		south.setParent(layout);
 		south.setFlex(true);
 		south.setStyle("background-color: transparent");
-		south.setHeight("26px");
+		south.setHeight("36px");
 		southPanel.setParent(south);
+		southPanel.setVflex("1");
 
 		this.setTitle(TITLE);
-		this.setBorder("normal");
 		this.setClosable(true);
 		this.setStyle("position: absolute; width: 100%; height: 100%;");
 		this.setSizable(true);
@@ -1190,9 +1150,9 @@ public class WAcctViewer extends Window implements EventListener
 	 * @throws Exception
 	 */
 
-	private int actionButton(Button button) throws Exception
+	private void actionButton(final Button button) throws Exception
 	{
-		String keyColumn = button.getName();
+		final String keyColumn = button.getName();
 		log.info(keyColumn);
 		String whereClause = "(IsSummary='N' OR IsSummary IS NULL)";
 		String lookupColumn = keyColumn;
@@ -1247,45 +1207,48 @@ public class WAcctViewer extends Window implements EventListener
 		else if (selDocument.isChecked())
 			whereClause = "";
 
-		String tableName = lookupColumn.substring(0, lookupColumn.length()-3);
+		final String tableName = lookupColumn.substring(0, lookupColumn.length()-3);
 
-		InfoPanel info = InfoPanel.create(m_data.WindowNo, tableName, lookupColumn, "", false, whereClause);
+		final InfoPanel info = InfoPanel.create(m_data.WindowNo, tableName, lookupColumn, "", false, whereClause);
 
 		if (!info.loadedOK())
 		{
-			//info.dispose();
-			info = null;
 			button.setLabel("");
 			m_data.whereInfo.put(keyColumn, "");
-			return 0;
+			return;
 		}
 
 		info.setVisible(true);
+		final String lookupColumnRef = lookupColumn;
+		info.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				String selectSQL = info.getSelectedSQL();       //  C_Project_ID=100 or ""
+				Integer key = (Integer)info.getSelectedKey();
+
+				if (selectSQL == null || selectSQL.length() == 0 || key == null)
+				{
+					button.setLabel("");
+					m_data.whereInfo.put(keyColumn, "");    //  no query
+					return;
+				}
+
+				//  Save for query
+
+				log.config(keyColumn + " - " + key);
+				if (button == selRecord)                            //  Record_ID
+					m_data.Record_ID = key.intValue();
+				else
+					m_data.whereInfo.put(keyColumn, keyColumn + "=" + key.intValue());
+
+				//  Display Selection and resize
+				button.setLabel(m_data.getButtonText(tableName, lookupColumnRef, selectSQL));
+				//pack();
+				
+			}
+		});
 		AEnv.showWindow(info);
-
-		String selectSQL = info.getSelectedSQL();       //  C_Project_ID=100 or ""
-		Integer key = (Integer)info.getSelectedKey();
-		info = null;
-
-		if (selectSQL == null || selectSQL.length() == 0 || key == null)
-		{
-			button.setLabel("");
-			m_data.whereInfo.put(keyColumn, "");    //  no query
-			return 0;
-		}
-
-		//  Save for query
-
-		log.config(keyColumn + " - " + key);
-		if (button == selRecord)                            //  Record_ID
-			m_data.Record_ID = key.intValue();
-		else
-			m_data.whereInfo.put(keyColumn, keyColumn + "=" + key.intValue());
-
-		//  Display Selection and resize
-		button.setLabel(m_data.getButtonText(tableName, lookupColumn, selectSQL));
-		//pack();
-		return key.intValue();
+		
 	} // actionButton
 
 	/**

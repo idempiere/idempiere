@@ -109,6 +109,10 @@ public class ADButtonTabList extends Panel implements IADTabList, EventListener 
 
 			button.setParent(this);
 			button.addEventListener(Events.ON_CLICK, this);
+			
+			if (i == 0) {
+				button.setSclass(button.getSclass() +  " " + "adwindow-navbtn-first");
+			}
 		}
 
 		//set width

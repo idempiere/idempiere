@@ -177,9 +177,9 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 
     public void init()
     {
-    	txtDocumentNo.setWidth("100%");
-    	txtDescription.setWidth("100%");
-    	txtOrderRef.setWidth("100%");
+    	txtDocumentNo.setHflex("1");
+    	txtDescription.setHflex("1");
+    	txtOrderRef.setHflex("1");
     	dateFrom.setWidth("165px");
 		dateTo.setWidth("165px");
 		amountFrom.getDecimalbox().setWidth("155px");
@@ -253,8 +253,8 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		southBody = new Vbox();
 		southBody.setWidth("100%");
 		south.appendChild(southBody);
-		southBody.appendChild(confirmPanel);
 		southBody.appendChild(new Separator());
+		southBody.appendChild(confirmPanel);		
 		southBody.appendChild(statusBar);
     }
 

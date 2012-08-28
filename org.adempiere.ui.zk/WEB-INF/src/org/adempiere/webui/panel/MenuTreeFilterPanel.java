@@ -117,9 +117,12 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 									parent.getTreechildren().appendChild(treeItem);
 									break;
 								}
+								//not working with search
+								/*
 								String t = parent.getLabel();
 								label.insert(0, " > ");
 								label.insert(0, t);
+								*/
 								parent = parent.getParentItem();
 							}
 							treeItem.setLabel(label.toString());

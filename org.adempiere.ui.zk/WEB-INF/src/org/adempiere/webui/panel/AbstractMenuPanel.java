@@ -131,19 +131,15 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     
     protected void initComponents()
     {
-    	this.setWidth("100%");
-    	this.setHeight("100%");
-    	this.setStyle("position: relative");
+    	this.setSclass("menu-panel");
+    	this.setVflex("1");
     	
         menuTree = new Tree();
         menuTree.setMultiple(false);
         menuTree.setId("mnuMain");
-        menuTree.setWidth("100%");
-        menuTree.setVflex(true);
+        menuTree.setVflex("1");
         menuTree.setSizedByContent(false);
-        menuTree.setPageSize(-1); // Due to bug in the new paging functionality
-        
-        menuTree.setStyle("border: none");
+        menuTree.setPageSize(-1); // Due to bug in the new paging functionality        
     }
     
     private void initMenu(MTreeNode rootNode)

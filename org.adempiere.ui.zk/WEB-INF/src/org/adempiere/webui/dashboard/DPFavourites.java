@@ -140,6 +140,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 					btnFavItem.setAttribute(NODE_ID_ATTR, String.valueOf(nd.getNode_ID()));
 					hbox.appendChild(btnFavItem);
 					btnFavItem.setLabel(label);
+					btnFavItem.setTooltiptext(nd.getDescription());
 					btnFavItem.setImage(getIconFile(nd));
 					btnFavItem.setDraggable(DELETE_FAV_DROPPABLE);
 					btnFavItem.addEventListener(Events.ON_CLICK, this);
@@ -163,9 +164,10 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 	                {
 	                	Toolbarbutton newBtn = new Toolbarbutton(null, "/images/New10.png");
 	                	newBtn.setAttribute(NODE_ID_ATTR, String.valueOf(nd.getNode_ID()));
-	                	newBtn.setStyle("margin-bottom:5px");
 	                	hbox.appendChild(newBtn);
-	                	newBtn.addEventListener(Events.ON_CLICK, this);                	
+	                	newBtn.addEventListener(Events.ON_CLICK, this);
+	                	newBtn.setSclass("fav-new-btn");
+	                	newBtn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
 	                }
 				}
 			}

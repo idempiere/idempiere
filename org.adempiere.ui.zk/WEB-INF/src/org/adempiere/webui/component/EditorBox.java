@@ -16,13 +16,10 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.apps.AEnv;
-import org.zkoss.zhtml.Table;
-import org.zkoss.zhtml.Td;
-import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
 
 /**
  * @author Low Heng Sin
@@ -36,7 +33,6 @@ public class EditorBox extends Div {
 			this);
 	protected Textbox txt;
 	protected Button btn;
-	protected Td btnColumn;
 
 	public EditorBox() {
 		initComponents();
@@ -58,34 +54,18 @@ public class EditorBox extends Div {
 	}
 
 	private void initComponents() {
-		Table grid = new Table();
-		appendChild(grid);
-		this.setWidth("100%");
-		grid.setStyle("border: none; padding: 0px; margin: 0px;");
-		grid.setDynamicProperty("width", "100%");
-		grid.setDynamicProperty("border", "0");
-		grid.setDynamicProperty("cellpadding", "0");
-		grid.setDynamicProperty("cellspacing", "0");
-
-		Tr tr = new Tr();
-		grid.appendChild(tr);
-		tr.setStyle("width: 100%; border: none; padding: 0px; margin: 0px; white-space:nowrap; ");
-
-		Td td = new Td();
-		tr.appendChild(td);
-		td.setStyle("border: none; padding: 0px; margin: 0px;");
+		Hlayout hlayout = new Hlayout();
+		this.appendChild(hlayout);
+		hlayout.setHflex("1");
 		txt = new Textbox();
-		txt.setStyle("display: inline; width: 99%;");
-		td.appendChild(txt);
+		hlayout.appendChild(txt);
+		txt.setHflex("1");
 
-		btnColumn = new Td();
-		tr.appendChild(btnColumn);
-		btnColumn.setStyle("border: none; padding: 0px; margin: 0px;");
-		btnColumn.setSclass("editor-button");
 		btn = new Button();
 		btn.setTabindex(-1);
-		LayoutUtils.addSclass("editor-button", btn);
-		btnColumn.appendChild(btn);
+		btn.setSclass("editor-button");
+		btn.setHflex("0");
+		hlayout.appendChild(btn);
 
 		LayoutUtils.addSclass("editor-box", this);
 	}
@@ -118,11 +98,12 @@ public class EditorBox extends Div {
 		txt.setReadonly(!enabled);
 		btn.setEnabled(enabled);
 		btn.setVisible(enabled);
-		btnColumn.setVisible(enabled);
-		if (enabled)
-			btnColumn.setSclass("editor-button");
-		else
-			btnColumn.setSclass("");
+		if (enabled) {
+			btn.setSclass("editor-button");
+			btn.setParent(this.getFirstChild());
+		} else {
+			btn.detach();
+		}
 	}
 
 	/**

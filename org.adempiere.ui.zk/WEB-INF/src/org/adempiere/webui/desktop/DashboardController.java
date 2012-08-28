@@ -96,13 +96,12 @@ public class DashboardController implements EventListener<Event> {
 
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
-        dashboardLayout.setWidth("99%");
-        dashboardLayout.setHeight("99%");
-        dashboardLayout.setStyle("position: absolute;");
-        dashboardLayout.setVflex("true");
+        dashboardLayout.setSclass("dashboard-layout");
+        dashboardLayout.setVflex("1");
         
         maximizedHolder = new Anchorchildren();                
-        maximizedHolder.setAnchor("99% 99%");
+        maximizedHolder.setAnchor("100% 100%");
+        maximizedHolder.setStyle("overflow: hidden; border: none; margin: 0; padding: 0;");
 	}
 	
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
@@ -166,7 +165,7 @@ public class DashboardController implements EventListener<Event> {
 	        	panel.setAttribute("PA_DashboardPreference_ID", dp.getPA_DashboardPreference_ID());
 	        	panelList.add(panel);
 	        	panel.addEventListener(Events.ON_MAXIMIZE, this);
-	        	panel.setStyle("margin: 2px; position: relative;");
+	        	panel.setSclass("dashboard-widget");
 	        	panel.setTitle(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
 	        	panel.setMaximizable(true);
 	        	
@@ -420,6 +419,7 @@ public class DashboardController implements EventListener<Event> {
 	    		}
 	    		dashboardLayout.appendChild(maximizedHolder);
 	    		maximizedHolder.appendChild(panel);
+	    		panel.setSclass("");
 	    	} else {
 	    		maximizedHolder.detach();
 	    		panel.detach();
@@ -427,6 +427,7 @@ public class DashboardController implements EventListener<Event> {
 	    		for (Anchorchildren anchorChildren : columnList) {
 	    			dashboardLayout.appendChild(anchorChildren);
 	    		}
+	    		panel.setSclass("dashboard-widget");
 	    		//following 2 line needed for restore to size the panel correctly
 	    		panel.setWidth(null);
 	    		panel.setHeight(null);
@@ -686,9 +687,7 @@ public class DashboardController implements EventListener<Event> {
 		ReportEngine re = runReport(AD_Process_ID, parameters);
 		
 		Iframe iframe = new Iframe();
-		iframe.setWidth("99%");
-		iframe.setHeight("90%");
-		iframe.setStyle("min-height:300px; border: 1px solid lightgray; margin:auto");
+		iframe.setSclass("dashboard-report-iframe");
 		File file = File.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", parent.getUuid()));
 		AMedia media = new AMedia(re.getName(), "html", "text/html", file, false);

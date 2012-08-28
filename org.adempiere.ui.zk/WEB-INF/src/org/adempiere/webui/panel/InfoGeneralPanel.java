@@ -88,7 +88,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 
 	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean isSOTrx, String whereClause, boolean lookup)
 	{
-		super(windowNo, tableName, keyColumn, false,whereClause);
+		super(windowNo, tableName, keyColumn, false,whereClause, lookup);
 
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
 
@@ -134,12 +134,16 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 		rows.appendChild(row);
 		row.appendChild(lbl1.rightAlign());
 		row.appendChild(txt1);
+		txt1.setHflex("1");
 		row.appendChild(lbl2.rightAlign());
 		row.appendChild(txt2);
+		txt2.setHflex("1");
 		row.appendChild(lbl3.rightAlign());
 		row.appendChild(txt3);
+		txt3.setHflex("1");
 		row.appendChild(lbl4.rightAlign());
 		row.appendChild(txt4);
+		txt4.setHflex("1");
 
 		layout = new Borderlayout();
         layout.setWidth("100%");
@@ -172,8 +176,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener
 		southBody = new Vbox();
 		southBody.setWidth("100%");
 		south.appendChild(southBody);
-		southBody.appendChild(confirmPanel);
 		southBody.appendChild(new Separator());
+		southBody.appendChild(confirmPanel);		
 		southBody.appendChild(statusBar);
 	}
 

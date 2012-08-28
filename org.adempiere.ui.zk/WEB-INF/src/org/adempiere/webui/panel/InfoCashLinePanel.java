@@ -279,8 +279,8 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		southBody = new Vbox();
 		southBody.setWidth("100%");
 		south.appendChild(southBody);
-		southBody.appendChild(confirmPanel);
-		southBody.appendChild(new Separator());
+		southBody.appendChild(new Separator());	
+		southBody.appendChild(confirmPanel);		
 		southBody.appendChild(statusBar);
 	}
 

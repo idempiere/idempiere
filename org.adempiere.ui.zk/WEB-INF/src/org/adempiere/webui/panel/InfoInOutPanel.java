@@ -164,9 +164,9 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 
 	private void statInit() throws Exception
 	{
-		fDocumentNo.setWidth("100%");
-		fDescription.setWidth("100%");
-		fPOReference.setWidth("100%");
+		fDocumentNo.setHflex("1");
+		fDescription.setHflex("1");
+		fPOReference.setHflex("1");
 		fDateFrom.setWidth("165px");
 		fDateTo.setWidth("165px");
 
@@ -246,8 +246,8 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		southBody = new Vbox();
 		southBody.setWidth("100%");
 		south.appendChild(southBody);
-		southBody.appendChild(confirmPanel);
 		southBody.appendChild(new Separator());
+		southBody.appendChild(confirmPanel);		
 		southBody.appendChild(statusBar);
 	}
 

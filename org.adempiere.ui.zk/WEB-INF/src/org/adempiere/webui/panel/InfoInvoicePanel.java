@@ -188,18 +188,20 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
         editorBPartner = new WSearchEditor(lookupBP, Msg.translate(
                 Env.getCtx(), "C_BPartner_ID"), "", false, false, true);
         editorBPartner.addValueChangeListener(this);
+        editorBPartner.getComponent().setHflex("1");
 
         MLookup lookupOrder = MLookupFactory.get(Env.getCtx(), p_WindowNo,
                 0, 4247, DisplayType.Search);
         editorOrder = new WSearchEditor(lookupOrder, Msg.translate(
                 Env.getCtx(), "C_Order_ID"), "", false, false, true);
         editorOrder.addValueChangeListener(this);
+        editorOrder.getComponent().setHflex("1");
     }
 
     private void init()
     {
-    	txtDocumentNo.setWidth("100%");
-    	txtDescription.setWidth("100%");
+    	txtDocumentNo.setHflex("1");
+    	txtDescription.setHflex("1");
     	dateFrom.setWidth("165px");
 		dateTo.setWidth("165px");
 		amountFrom.getDecimalbox().setWidth("155px");
@@ -274,8 +276,8 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 		southBody = new Vbox();
 		southBody.setWidth("100%");
 		south.appendChild(southBody);
-		southBody.appendChild(confirmPanel);
 		southBody.appendChild(new Separator());
+		southBody.appendChild(confirmPanel);		
 		southBody.appendChild(statusBar);
     }
 

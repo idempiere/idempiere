@@ -25,7 +25,7 @@ public class GridFactory {
 	 */
 	public static Grid newGridLayout() {
 		Grid grid = new Grid();
-		grid.makeNoStrip();
+		grid.setSclass("grid-layout");
 		return grid;
 	}
 }

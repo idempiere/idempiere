@@ -131,7 +131,6 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         hLayout.appendChild(lblSearch);
         hLayout.appendChild(cmbSearch);
         this.appendChild(hLayout);
-        this.setStyle("padding: 2px");	
     }
 
     private void addTreeItem(Treeitem treeItem)

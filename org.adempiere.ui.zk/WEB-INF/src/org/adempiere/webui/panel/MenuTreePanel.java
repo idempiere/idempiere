@@ -90,7 +90,7 @@ public class MenuTreePanel extends AbstractMenuPanel
         
         // Elaine 2009/02/27 - expand tree
         Toolbar toolbar = new Toolbar();
-        toolbar.setStyle("background-color: #ffffff; verticle-align: middle; padding: 2px");
+        toolbar.setSclass("desktop-menu-toolbar");
         this.appendChild(toolbar);
         
         expandToggle = new ToolBarButton();
@@ -128,7 +128,7 @@ public class MenuTreePanel extends AbstractMenuPanel
         }
         //
         else if (event.getName().equals(Events.ON_CLICK) && event.getTarget() == filterBtn)
-        	filterPanel.open(filterBtn);
+        	filterPanel.open(filterBtn, "before_start");
     }
 	
 	/**

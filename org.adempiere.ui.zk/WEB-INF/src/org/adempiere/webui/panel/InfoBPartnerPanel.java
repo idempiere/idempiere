@@ -200,13 +200,13 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener, WTabl
 	
 	private void init()
 	{
-		fieldValue.setWidth("100%");
-		fieldContact.setWidth("100%");
-		fieldPhone.setWidth("100%");
+		fieldValue.setHflex("1");
+		fieldContact.setHflex("1");
+		fieldPhone.setHflex("1");
 		
-		fieldName.setWidth("100%");
-		fieldEMail.setWidth("100%");
-		fieldPostal.setWidth("100%");
+		fieldName.setHflex("1");
+		fieldEMail.setHflex("1");
+		fieldPostal.setHflex("1");
 		
 		Grid grid = GridFactory.newGridLayout();
 		
@@ -264,8 +264,8 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener, WTabl
 		southBody = new Vbox();
 		southBody.setWidth("100%");
 		south.appendChild(southBody);
-		southBody.appendChild(confirmPanel);
 		southBody.appendChild(new Separator());
+		southBody.appendChild(confirmPanel);
 		southBody.appendChild(statusBar);
         		
 	}	

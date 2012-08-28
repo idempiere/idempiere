@@ -102,7 +102,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	layout.setParent(parent);
         	layout.setWidth("100%");
         	layout.setHeight("100%");
-        	layout.setStyle("position: absolute");
+        	layout.setSclass("desktop-layout");
         }
         else
         	layout.setPage(page);
@@ -110,15 +110,18 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         North n = new North();
         layout.appendChild(n);
         n.setCollapsible(false);
+        n.setSclass("desktop-north");
         pnlHead.setParent(n);
 
         West w = new West();
         w.setTitle(" ");
+        w.setId("desktop-left-column");
         layout.appendChild(w);
         w.setSclass("desktop-left-column");
         w.setCollapsible(true);
         w.setSplittable(true);
         w.setFlex(false);
+        w.setHflex("min");
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -137,11 +140,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         windowArea = new Center();
         windowArea.setParent(layout);
         windowArea.setFlex(true);
+        windowArea.setSclass("desktop-center");
 
         windowContainer.createPart(windowArea);
 
         homeTab = new Tabpanel();
         windowContainer.addWindow(homeTab, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")), false);
+        homeTab.getLinkedTab().setSclass("desktop-hometab");
         BusyDialog busyDialog = new BusyDialog();
         busyDialog.setShadow(false);
         homeTab.appendChild(busyDialog);

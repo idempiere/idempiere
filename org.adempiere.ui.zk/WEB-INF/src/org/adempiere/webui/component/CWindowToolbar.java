@@ -61,8 +61,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 
 	private static final String BTNPREFIX = "Btn";
 
-	private static final String TOOLBAR_BUTTON_STYLE = "background-color: transparent; display:inline-block; margin-left: 1px; margin-right: 1px; width: 26px; height: 24px;";
-
 	private static final String EMBEDDED_TOOLBAR_BUTTON_STYLE = "background-color: transparent; display:inline-block; margin-left: 1px; margin-right: 1px; width: 20px; height: 18px;";
 
     private static CLogger log = CLogger.getCLogger(CWindowToolbar.class);
@@ -235,7 +233,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
         }
         else
         {
-        	btn.setStyle(TOOLBAR_BUTTON_STYLE);
         	btn.setSclass("toolbar-button");
         }
         buttons.put(name, btn);

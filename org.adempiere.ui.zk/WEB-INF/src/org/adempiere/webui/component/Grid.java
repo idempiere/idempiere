@@ -32,7 +32,7 @@ public class Grid extends org.zkoss.zul.Grid
 	}
 
 	public void makeNoStrip() {
-    	setOddRowSclass("dummy");
+    	setOddRowSclass("z-dummy");
     }
 
 	public Rows newRows() {

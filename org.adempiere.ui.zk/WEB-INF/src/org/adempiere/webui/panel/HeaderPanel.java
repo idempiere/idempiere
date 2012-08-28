@@ -30,6 +30,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
@@ -50,7 +51,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 	private static final long serialVersionUID = -2351317624519209484L;
 
 	private Image image;
-	private ToolBarButton btnMenu;
+	private Button btnMenu;
 	private Popup popMenu;
 
     public HeaderPanel()
@@ -90,18 +91,16 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	popMenu = new Popup();
     	popMenu.setId("menuTreePopup");
 		new MenuTreePanel(popMenu);
-		popMenu.setWidth("600px");
-    	popMenu.setHeight("90%");    	
+    	popMenu.setSclass("desktop-menu-popup");
+    	popMenu.setHeight("90%");
+    	popMenu.setWidth("600px");
 
-    	btnMenu = new ToolBarButton();
+    	btnMenu = new Button();
     	btnMenu.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
-    	LayoutUtils.addSclass("desktop-header-font", btnMenu);
     	btnMenu.setParent(hbox);
-    	btnMenu.addEventListener(Events.ON_CLICK, this);    	
+    	btnMenu.addEventListener(Events.ON_CLICK, this);
 
     	LayoutUtils.addSclass("desktop-header-left", west);
-    	//the following doesn't work when declare as part of the header-left style
-    	west.setStyle("background-color: transparent; border: none;");
 
     	// Elaine 2009/03/02
     	Center center = new Center();
@@ -112,8 +111,6 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	userPanel.setStyle("position: absolute; text-align:right;");
     	center.setFlex(true);
     	LayoutUtils.addSclass("desktop-header-right", center);
-    	//the following doesn't work when declare as part of the header-right style
-    	center.setStyle("background-color: transparent; border: none;");
     }
 
 	public void onEvent(Event event) throws Exception {
@@ -124,7 +121,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 				w.setPage(this.getPage());
 				w.doHighlighted();
 			}
-			else if(event.getTarget() == btnMenu)
+			else if(event.getTarget() == btnMenu )
 			{
 				popMenu.open(btnMenu, "after_start");
 			}

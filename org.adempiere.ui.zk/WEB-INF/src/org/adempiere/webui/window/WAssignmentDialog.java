@@ -173,8 +173,11 @@ public class WAssignmentDialog extends Window implements EventListener
 		row.setSpans("1, 2");
 		row.appendChild(LayoutUtils.makeRightAlign(lDate));
 		Div div = new Div();
+		div.setHflex("1");
 		div.appendChild(fDateFrom);
+		fDateFrom.setCols(10);
 		div.appendChild(fTimeFrom);
+		fTimeFrom.setCols(10);
 		fTimeFrom.setStyle("margin-left: 1px");
 		row.appendChild(div);
 		rows.appendChild(row);

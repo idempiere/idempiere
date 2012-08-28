@@ -151,8 +151,8 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 	
 	private void statInit()
 	{
-		fieldValue.setWidth("100%");
-		fieldName.setWidth("100%");
+		fieldValue.setHflex("1");
+		fieldName.setHflex("1");
 		
 		labelValue.setValue(Msg.getMsg(Env.getCtx(), "Value"));
 		fieldValue.addEventListener(Events.ON_CHANGE, this);
@@ -220,8 +220,8 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 		southBody = new Vbox();
 		southBody.setWidth("100%");
 		south.appendChild(southBody);
-		southBody.appendChild(confirmPanel);
 		southBody.appendChild(new Separator());
+		southBody.appendChild(confirmPanel);		
 		southBody.appendChild(statusBar);
 	}
 	

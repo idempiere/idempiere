@@ -439,6 +439,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     **/
     private void initPanel()
     {
+    	setShadow(true);
+    	
     	Vlayout layout = new Vlayout();
     	layout.setStyle("height: 100%; width: 100%; position: relative;");
     	layout.setVflex("1");

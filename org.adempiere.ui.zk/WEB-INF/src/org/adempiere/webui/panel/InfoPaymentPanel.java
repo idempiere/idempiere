@@ -180,7 +180,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 	private void statInit() throws Exception
 	{
-		fDocumentNo.setWidth("100%");
+		fDocumentNo.setHflex("1");
 		fDateFrom.setWidth("165px");
 		fDateTo.setWidth("165px");
 		fAmtFrom.setWidth("180px");
@@ -261,8 +261,8 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		southBody = new Vbox();
 		southBody.setWidth("100%");
 		south.appendChild(southBody);
-		southBody.appendChild(confirmPanel);
 		southBody.appendChild(new Separator());
+		southBody.appendChild(confirmPanel);		
 		southBody.appendChild(statusBar);
 	}
 

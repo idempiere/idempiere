@@ -210,6 +210,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	{
 		InfoPanel info = InfoManager.create(WindowNo,
 				I_S_ResourceAssignment.Table_Name, I_S_ResourceAssignment.COLUMNNAME_S_ResourceAssignment_ID, "", false, "", false);
+		info.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		AEnv.showWindow(info);
 	}   //  showAssignment
 
@@ -291,7 +292,6 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 
         confirmPanel = new ConfirmPanel(true, true, false, true, true, true);  // Elaine 2008/12/16
         confirmPanel.addActionListener(Events.ON_CLICK, this);
-        confirmPanel.setStyle("border-top: 2px groove #444; padding-top: 4px");
 
         // Elaine 2008/12/16
 		confirmPanel.getButton(ConfirmPanel.A_CUSTOMIZE).setVisible(hasCustomize());
@@ -310,6 +310,8 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 
         contentPanel.setOddRowSclass(null);
         contentPanel.setSizedByContent(true);
+        
+        this.setSclass("info-panel");
 	}  //  init
 	protected ConfirmPanel confirmPanel;
 	/** Master (owning) Window  */

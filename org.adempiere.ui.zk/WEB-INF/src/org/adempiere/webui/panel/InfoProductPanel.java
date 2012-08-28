@@ -495,11 +495,12 @@ public class InfoProductPanel extends InfoPanel implements EventListener
         borderlayout.setWidth("100%");
         borderlayout.setHeight("100%");
         if (isLookup())
-        	borderlayout.setStyle("border: none; position: relative");
+        	borderlayout.setStyle("border: none; position: relative; ");
         else
-        	borderlayout.setStyle("border: none; position: absolute");
+        	borderlayout.setStyle("border: none; position: absolute; ");
         Center center = new Center();
-        center.setAutoscroll(true);
+        //true will conflict with listbox scrolling
+        center.setAutoscroll(false);
         center.setFlex(true);
 		borderlayout.appendChild(center);
 		center.appendChild(contentPanel);
@@ -512,6 +513,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener
 		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
 		south.setTooltiptext(Msg.translate(Env.getCtx(), "WarehouseStock"));
 		borderlayout.appendChild(south);
+		tabbedPane.setSclass("info-product-tabbedpane");
 		south.appendChild(tabbedPane);
 
         Borderlayout mainPanel = new Borderlayout();

@@ -54,6 +54,7 @@ public class WindowContainer extends AbstractUIPart
     protected Component doCreatePart(Component parent)
     {
         tabbox = new Tabbox();
+        tabbox.setSclass("desktop-tabbox");
         
         Tabpanels tabpanels = new Tabpanels();
         Tabs tabs = new Tabs();
@@ -62,7 +63,6 @@ public class WindowContainer extends AbstractUIPart
         tabbox.appendChild(tabpanels);
         tabbox.setWidth("100%");
         tabbox.setHeight("100%");
-        tabbox.setStyle("margin-top: 2px;");
         
         if (parent != null)
         	tabbox.setParent(parent);
@@ -136,7 +136,6 @@ public class WindowContainer extends AbstractUIPart
         tabpanel.setHeight("100%");
         tabpanel.setWidth("100%");
         tabpanel.setZclass("desktop-tabpanel");
-        tabpanel.setStyle("position: absolute;");
         
         if (refTab == null)  
         {

@@ -76,9 +76,7 @@ public class MenuSearchPanel extends AbstractMenuPanel
         this.appendChild(toolbar);
         
         pnlSearch = new TreeSearchPanel(getMenuTree());
-        Style style = new Style();
-        style.setContent(".z-comboitem-img{ vertical-align:top; padding-right:2px; padding-bottom:4px; }");
-        pnlSearch.insertBefore(style, pnlSearch.getFirstChild());        
+        pnlSearch.setSclass("menu-search-panel");
         toolbar.appendChild(pnlSearch);
     }
 }
