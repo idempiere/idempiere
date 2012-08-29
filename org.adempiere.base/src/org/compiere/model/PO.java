@@ -3044,7 +3044,8 @@ public abstract class PO
 
 		// Carlos Ruiz - globalqss - IDEMPIERE-111
 		// Check if the role has access to this client
-		if (!MRole.getDefault().isClientAccess(getAD_Client_ID(), true))
+		// Don't check role System as webstore works with this role - see IDEMPIERE-401
+		if ((Env.getAD_Role_ID(getCtx()) != 0) && !MRole.getDefault().isClientAccess(getAD_Client_ID(), true))
 		{
 			log.warning("You cannot delete this record, role doesn't have access");
 			log.saveError("AccessCannotDelete", "", false);
