@@ -876,6 +876,10 @@ div.simileAjax-bubble-container {
 	background-image: none;
 }
 
+.z-window-highlighted {
+	z-index: 1900 !important;
+} 
+
 .grid-layout {
 	border: none !important; 
 	margin: 0 !important; 
