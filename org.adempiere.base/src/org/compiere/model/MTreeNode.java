@@ -38,8 +38,7 @@ public final class MTreeNode extends DefaultMutableTreeNode
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6046137020835035816L;
-
+	private static final long serialVersionUID = 4663753548813509716L;
 
 	/**
 	 *  Construct Model TreeNode
@@ -113,6 +112,19 @@ public final class MTreeNode extends DefaultMutableTreeNode
 	public static int		TYPE_USERCHOICE = 7;
 	/**	Action - 8			*/
 	public static int		TYPE_DOCACTION = 8;
+
+	public static String[] 	PATHS = new String[]
+	{
+		null,
+		"mWindow.png",
+		"mReport.png",
+		"mProcess.png",
+		"mWorkFlow.png",
+		"mWorkbench.png",
+		"mSetVariable.png",
+		"mUserChoice.png",
+		"mDocAction.png"
+	};
 
 	/** 16* 16 Icons		*/
 	public static Icon[] 	IMAGES = new Icon[]
@@ -287,6 +299,17 @@ public final class MTreeNode extends DefaultMutableTreeNode
 	public String getImageIndiactor()
 	{
 		return m_imageIndicator;
+	}   //  getImageIndiactor
+
+	/**
+	 *  Get Image Path
+	 *  @return image path
+	 */
+	public String getImagePath()
+	{
+		if (m_imageIndex == 0 || PATHS == null || m_imageIndex > PATHS.length)
+			return "/images/Folder16.png";
+		return "/images/" + PATHS[m_imageIndex];
 	}   //  getImageIndiactor
 
 	/**

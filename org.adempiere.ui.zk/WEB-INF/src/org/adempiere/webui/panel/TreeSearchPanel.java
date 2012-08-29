@@ -203,7 +203,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		MTreeNode mNode = (MTreeNode) sNode.getData();
         		treeValues[i] = mNode.getName();
         		treeDescription[i] = mNode.getDescription();
-        		treeImages[i] = mNode.getImageIndiactor();
+       			treeImages[i] = mNode.getImagePath();
         	}
         }
 
