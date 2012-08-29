@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.window;
 
+import static org.compiere.model.SystemIDs.REFERENCE_YESNO;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,8 +35,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
-import jxl.biff.drawing.ComboBox;
 
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
@@ -74,7 +74,6 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_Column;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
@@ -93,10 +92,11 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.South;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
 
@@ -482,13 +482,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		fQueryName.setValue("");
 		fQueryName.addEventListener(Events.ON_SELECT, this);
 		
-        // adding history combo
-        prepareHistoryCombo();
-        Label labelHistory = new Label(Msg.getMsg(Env.getCtx(), HISTORY_LABEL));
-        div.appendChild(labelHistory);
-        div.appendChild(historyCombo);
-        historyCombo.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");
-		
 		Label label = new Label(Msg.getMsg(Env.getCtx(), "SavedQuery"));
 		div.appendChild(label);
 		div.appendChild(fQueryName);
@@ -497,9 +490,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");
         
         msgLabel = new Label("");
-        msgLabel.setStyle("margin-left: 10px");
+        msgLabel.setStyle("margin-left: 10px; margin-right: 20px;");
         div.appendChild(msgLabel);
-        
+
+        // adding history combo
+        prepareHistoryCombo();
+        Label labelHistory = new Label(Msg.getMsg(Env.getCtx(), HISTORY_LABEL));
+        div.appendChild(labelHistory);
+        div.appendChild(historyCombo);
+        historyCombo.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");
+
         winMain = new MultiTabPart();
         winMain.createPart(layout);
         winMain.getComponent().setStyle("width: 100%; position: relative;");
@@ -530,6 +530,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	historyCombo.setAutocomplete(false);
     	historyCombo.setButtonVisible(true);
     	historyCombo.setReadonly(true);
+    	historyCombo.appendItem(" ", "");
     	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_ALL)),HISTORY_DAY_ALL);
     	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_YEAR)), HISTORY_DAY_YEAR);
     	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_MONTH)), HISTORY_DAY_MONTH);
@@ -853,6 +854,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     			if (winMain.getComponent().getSelectedIndex() != 1) {
     				winMain.getComponent().setSelectedIndex(1);
     				btnSave.setDisabled(m_AD_Tab_ID <= 0);
+    				historyCombo.setDisabled(true);
+    				historyCombo.setSelectedItem(null);
     				fQueryName.setReadonly(false);    				    				
     			}
     			msgLabel.setText("");
@@ -862,9 +865,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     			if (winMain.getComponent().getSelectedIndex() == 1) {
     				fQueryName.setReadonly(false);
     				btnSave.setDisabled(m_AD_Tab_ID <= 0);
+    				historyCombo.setDisabled(true);
+    				historyCombo.setSelectedItem(null);
     			} else {
     				fQueryName.setReadonly(true);
     				btnSave.setDisabled(true);
+    				historyCombo.setDisabled(false);
     			}
     		}
         }   //
@@ -1232,8 +1238,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					FDialog.warn (m_targetWindowNo, this, "DeleteError", name);
 				return;
 			}
-			else
-				return;
 			uq.setCode (code.toString());
 			uq.setAD_Table_ID (m_AD_Table_ID);
 			//

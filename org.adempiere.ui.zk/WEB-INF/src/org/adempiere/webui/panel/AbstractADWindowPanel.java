@@ -160,6 +160,8 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
     private boolean 			 boolChanges = false;
 
+	private int m_onlyCurrentDays = 0;
+
 	private Component parent;
 
 	private boolean m_findCancelled;
@@ -639,7 +641,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	}
 
 	private void initFirstTabpanel() {
-		curTabpanel.query(m_onlyCurrentRows, 0, MRole.getDefault().getMaxQueryRecords());
+		curTabpanel.query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());
 		curTabpanel.activate(true);
 	}
 
@@ -1586,7 +1588,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 				        {
 				            m_onlyCurrentRows = false;          //  search history too
 				            curTab.setQuery(query);
-				            curTabpanel.query(m_onlyCurrentRows, 0, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+				            curTabpanel.query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
 				        }
 	
 				        if (findWindow.isCreateNew())
