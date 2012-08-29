@@ -14,13 +14,10 @@
 package org.compiere.grid;
 
 import java.awt.BorderLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -31,9 +28,11 @@ import org.compiere.apps.AppsAction;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.StatusBar;
 import org.compiere.minigrid.MiniTable;
-import org.compiere.swing.CButton;
 import org.compiere.swing.CDialog;
 import org.compiere.swing.CPanel;
+import org.compiere.swing.CToggleButton;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
 
@@ -49,7 +48,8 @@ public class VCreateFromDialog extends CDialog implements ActionListener, TableM
 	private StatusBar statusBar = new StatusBar();
 	private MiniTable dataTable = new MiniTable();
 	
-	private static final String SELECT_ALL = "SelectAll";
+	private static final String SELECT_DESELECT_ALL = "SelectAll";
+	protected AppsAction selectDeselectAllAction = new AppsAction (SELECT_DESELECT_ALL, null, Msg.getMsg(Env.getCtx(), SELECT_DESELECT_ALL), true);
 	
 	public VCreateFromDialog(CreateFrom createFrom, int windowNo, boolean modal)
 	{
@@ -80,13 +80,11 @@ public class VCreateFromDialog extends CDialog implements ActionListener, TableM
 		JScrollPane dataPane = new JScrollPane();
 		getContentPane().add(dataPane, BorderLayout.CENTER);
     	dataPane.getViewport().add(dataTable, null);
-    	
-    	AppsAction selectAllAction = new AppsAction (SELECT_ALL, KeyStroke.getKeyStroke(KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK), null);
-    	CButton selectAllButton = (CButton)selectAllAction.getButton();
-    	selectAllButton.setMargin(new Insets (0, 10, 0, 10));
-    	selectAllButton.setDefaultCapable(true);
-    	selectAllButton.addActionListener(this);
-    	confirmPanel.addButton(selectAllButton);
+
+    	CToggleButton selectAllButton = (CToggleButton)selectDeselectAllAction.getButton();
+		selectAllButton.setMargin(ConfirmPanel.s_insets);
+		selectAllButton.addActionListener(this);
+		confirmPanel.addComponent(selectAllButton);
 
     	CPanel southPanel = new CPanel();
     	getContentPane().add(southPanel, BorderLayout.SOUTH);
@@ -125,14 +123,19 @@ public class VCreateFromDialog extends CDialog implements ActionListener, TableM
 		}
 		// Select All
 		// Trifon
-		else if (e.getActionCommand().equals(SELECT_ALL))
+		else if (e.getActionCommand().equals(SELECT_DESELECT_ALL))
 		{
 			TableModel model = dataTable.getModel();
+			model.removeTableModelListener(this);
+			
+			// select or deselect all as required
 			int rows = model.getRowCount();
+			Boolean selectAll = selectDeselectAllAction.isPressed() ? Boolean.FALSE : Boolean.TRUE;
 			for (int i = 0; i < rows; i++)
-			{
-				model.setValueAt(new Boolean(true), i, 0);
-			}
+				model.setValueAt(selectAll, i, 0);
+			
+			model.addTableModelListener(this);
+			
 			info();
 		}
 	}
@@ -157,6 +160,22 @@ public class VCreateFromDialog extends CDialog implements ActionListener, TableM
 			type = e.getType();
 			if (type != TableModelEvent.UPDATE)
 				return;
+
+			if (e.getColumn() == 0)
+			{
+				TableModel model = dataTable.getModel();
+				Boolean isPressed = (Boolean)model.getValueAt(0, 0);
+				int rows = model.getRowCount();
+				boolean equals = true;
+				for (int i = 1; equals && i < rows; i++)
+				{
+					equals = isPressed.equals(model.getValueAt(i, 0));
+				}
+				
+				if (equals) {
+					selectDeselectAllAction.setPressed(isPressed);
+				}
+			}
 		}
 		info();
 		dataTable.repaint();
