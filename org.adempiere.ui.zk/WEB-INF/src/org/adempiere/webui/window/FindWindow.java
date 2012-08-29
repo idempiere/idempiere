@@ -34,6 +34,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import jxl.biff.drawing.ComboBox;
+
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
@@ -110,7 +112,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4937678675702382252L;
+	private static final long serialVersionUID = -5352467965724233821L;
+	
+	// values and label for history combo
+	private static final String HISTORY_DAY_ALL = "All";
+	private static final String HISTORY_DAY_YEAR = "Year";
+	private static final String HISTORY_DAY_MONTH = "Month";
+	private static final String HISTORY_DAY_WEEK = "Week";
+	private static final String HISTORY_DAY_DAY = "Day";
+	private static final String HISTORY_LABEL= "History";
 	/** Main Window for the Lookup Panel   */
     private MultiTabPart winMain;
     /**  Simple Window Tab  */
@@ -175,6 +185,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	private static final String FIELD_SEPARATOR = "<^>";
 	private static final String SEGMENT_SEPARATOR = "<~>";
+	
+	Combobox historyCombo = new Combobox();
+	
 
     /**
      * FindPanel Constructor
@@ -469,16 +482,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		fQueryName.setValue("");
 		fQueryName.addEventListener(Events.ON_SELECT, this);
 		
+        // adding history combo
+        prepareHistoryCombo();
+        Label labelHistory = new Label(Msg.getMsg(Env.getCtx(), HISTORY_LABEL));
+        div.appendChild(labelHistory);
+        div.appendChild(historyCombo);
+        historyCombo.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");
+		
 		Label label = new Label(Msg.getMsg(Env.getCtx(), "SavedQuery"));
 		div.appendChild(label);
 		div.appendChild(fQueryName);
         div.appendChild(btnSave);
-//        div.appendChild(new Separator());
+        
+        fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");
+        
         msgLabel = new Label("");
         msgLabel.setStyle("margin-left: 10px");
         div.appendChild(msgLabel);
-        fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");        
-		
+        
         winMain = new MultiTabPart();
         winMain.createPart(layout);
         winMain.getComponent().setStyle("width: 100%; position: relative;");
@@ -498,6 +519,23 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         initAdvanced();
 
     } // initPanel
+    
+    
+    /**
+     * preparing combo of history
+     */
+    private void prepareHistoryCombo()
+    {
+    	historyCombo.setAutodrop(true);
+    	historyCombo.setAutocomplete(false);
+    	historyCombo.setButtonVisible(true);
+    	historyCombo.setReadonly(true);
+    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_ALL)),HISTORY_DAY_ALL);
+    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_YEAR)), HISTORY_DAY_YEAR);
+    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_MONTH)), HISTORY_DAY_MONTH);
+    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_WEEK)), HISTORY_DAY_WEEK);
+    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_DAY)), HISTORY_DAY_DAY);
+    }
 
     /**
      *  Dynamic Init.6
@@ -576,7 +614,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         // adding sorted columns
         for(GridField field:gridFieldList){
         	addSelectionColumn (field);
-		}
+		} 
         
         gridFieldList = null;
         m_total = getNoOfRecords(null, false);
@@ -664,6 +702,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         for (int c = 0; c < m_findFields.length; c++)
         {
             GridField field = m_findFields[c];
+            
             String columnName = field.getColumnName();
             String header = field.getHeader();
             if (header == null || header.length() == 0)
@@ -1441,6 +1480,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     m_query.addRestriction(getSubCategoryWhereClause(((Integer) value).intValue()));
                 else
                     m_query.addRestriction(ColumnSQL, MQuery.EQUAL, value, ColumnName, wed.getDisplay());
+                
                 /*
                 if (value.toString().indexOf('%') != -1)
                     m_query.addRestriction(ColumnName, MQuery.LIKE, value, ColumnName, ved.getDisplay());
@@ -1450,9 +1490,55 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 // end globalqss patch
             }
         }   //  editors
-
+        
+        if(historyCombo.getSelectedItem()!=null)
+        {
+        	addHistoryRestriction(historyCombo.getSelectedItem());
+        }
+        
         m_isCancel = false; // teo_sarca [ 1708717 ]
     }   //  cmd_ok_Simple
+    
+    /**
+     * Get days from selected values of history combo
+     * @param selectedItem
+     * @return
+     */
+    private int getHistoryDays(String selectedItem) 
+	{
+    	int retDays = 0;
+		if (selectedItem.equals(HISTORY_DAY_DAY))
+			retDays = 1;
+		else if (selectedItem.equals(HISTORY_DAY_WEEK))
+			retDays = 7;
+		else if (selectedItem.equals(HISTORY_DAY_MONTH))
+			retDays = 31;
+		else if (selectedItem.equals(HISTORY_DAY_YEAR))
+			retDays = 365;
+		return retDays;
+		
+	}
+    
+
+    /**
+     * Adding where clause from history data
+     * @param selectedHistoryItem
+     */
+    private void addHistoryRestriction(Comboitem selectedHistoryItem)
+    {
+    	String selectedHistoryValue = historyCombo.getSelectedItem().getValue();
+    	log.info("History combo selected value  =" +selectedHistoryValue);
+
+    	if (null!=selectedHistoryItem && selectedHistoryItem.toString().length() > 0 && getHistoryDays(selectedHistoryValue) > 0)
+    	{
+    		StringBuffer where = new StringBuffer();
+    		where.append("Created >= ");
+    		where.append("SysDate-").append(getHistoryDays(selectedHistoryValue));
+    		m_query.addRestriction(where.toString());
+    	}
+    }
+    
+
 
     public void dispose()
     {
@@ -1569,8 +1655,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 m_query.addRestriction(ColumnSQL, Operator, parsedValue,
                     infoName, infoDisplay);
         }
+        
+        if(historyCombo.getSelectedItem()!=null)
+        {
+        	addHistoryRestriction(historyCombo.getSelectedItem());
+        }
     }   //  cmd_save
 
+    
     /**
      *  Get the number of records of target tab
      *  @param query where clause for target tab

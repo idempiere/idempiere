@@ -116,11 +116,6 @@ public interface ToolbarListener
     public void onAttachment();
 
     /**
-     * Open the history dialog
-     */
-    public void onHistoryRecords();
-
-    /**
      * Open the archive dialog
      */
     public void onArchive();

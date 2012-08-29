@@ -160,8 +160,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
     private boolean 			 boolChanges = false;
 
-	private int m_onlyCurrentDays = 0;
-
 	private Component parent;
 
 	private boolean m_findCancelled;
@@ -363,11 +361,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	        toolbar.enableFind(true);
 	        adTab.evaluate(null);
 
-	        if (gridWindow.isTransaction())
-	        {
-	        	toolbar.enableHistoryRecords(true);
-	        }
-
 	        if (detailQuery != null && zoomToDetailTab(detailQuery))
 	        {
 	        	return true;
@@ -378,7 +371,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         	curTabIndex = embeddedTabindex;
         	toolbar.enableTabNavigation(false);
 	        toolbar.enableFind(true);
-	        toolbar.enableHistoryRecords(false);
         }
 
         updateToolbar();
@@ -647,7 +639,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	}
 
 	private void initFirstTabpanel() {
-		curTabpanel.query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());
+		curTabpanel.query(m_onlyCurrentRows, 0, MRole.getDefault().getMaxQueryRecords());
 		curTabpanel.activate(true);
 	}
 
@@ -918,57 +910,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	}	//	lock
 	//
 
-    /**
-     * @see ToolbarListener#onHistoryRecords()
-     */
-    public void onHistoryRecords()
-    {
-		logger.info("");
-
-		if (gridWindow.isTransaction())
-		{
-			Callback<Boolean> callback = new Callback<Boolean>() {
-				@Override
-				public void onCallback(Boolean result) {
-					if (result) {
-						final WOnlyCurrentDays ocd = new WOnlyCurrentDays();
-						ocd.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-							@Override
-							public void onEvent(Event event) throws Exception {
-								m_onlyCurrentDays = ocd.getCurrentDays();
-								history(m_onlyCurrentDays);
-								focusToActivePanel();
-							}
-						});						
-						AEnv.showWindow(ocd);					
-					}
-				}
-			};
-			saveAndNavigate(callback);
-		}		
-    }
-
-    private void history(int onlyCurrentDays)
-    {
-		if (onlyCurrentDays == 1)	//	Day
-		{
-			m_onlyCurrentRows = true;
-			onlyCurrentDays = 0; 	//	no Created restriction
-		}
-		else
-			m_onlyCurrentRows = false;
-
-		curTab.setQuery(null);	//	reset previous queries
-		MRole role = MRole.getDefault();
-		int maxRows = role.getMaxQueryRecords();
-
-		logger.config("OnlyCurrent=" + m_onlyCurrentRows
-			+ ", Days=" + m_onlyCurrentDays
-			+ ", MaxRows=" + maxRows);
-
-		curTab.query(m_onlyCurrentRows, onlyCurrentDays, maxRows);
-
-    }
 
     /**
      * @see ToolbarListener#onAttachment()
@@ -1252,10 +1193,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 		toolbar.getButton("Attachment").setPressed(curTab.hasAttachment());
 		toolbar.getButton("Chat").setPressed(curTab.hasChat());
-		if (isFirstTab())
-        {
-            toolbar.getButton("HistoryRecords").setPressed(!curTab.isOnlyCurrentRows());
-        }
 		toolbar.getButton("Find").setPressed(curTab.isQueryActive());
 
 		if (toolbar.isPersonalLock)
@@ -1265,14 +1202,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 		toolbar.enablePrint(curTab.isPrinted());
 
-        if (gridWindow.isTransaction() && isFirstTab())
-        {
-        	toolbar.enableHistoryRecords(true);
-        }
-        else
-        {
-        	toolbar.enableHistoryRecords(false);
-        }
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(curTabpanel instanceof ADSortTab))
         	toolbar.enableCustomize(((ADTabpanel)curTabpanel).isGridView());
@@ -1401,12 +1330,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         {
             toolbar.enableNew(true);
             toolbar.enableDelete(false);
-        }
-
-        //  History (on first Tab only)
-        if (isFirstTab())
-        {
-            toolbar.getButton("HistoryRecords").setPressed(!curTab.isOnlyCurrentRows());
         }
 
         //  Transaction info
@@ -1663,7 +1586,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 				        {
 				            m_onlyCurrentRows = false;          //  search history too
 				            curTab.setQuery(query);
-				            curTabpanel.query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+				            curTabpanel.query(m_onlyCurrentRows, 0, MRole.getDefault().getMaxQueryRecords());   //  autoSize
 				        }
 	
 				        if (findWindow.isCreateNew())
