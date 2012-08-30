@@ -382,12 +382,17 @@ public class ConfigOracle implements IDatabaseConfig
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_USER, databaseUser);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PASSWORD, databasePassword);
 
+		String ospath;
+		if (System.getProperty("os.name").startsWith("Windows"))
+			ospath = "windows";
+		else
+			ospath = "unix";
 		//	TNS Name Info via sqlplus
 		String sqlplus = "sqlplus system/" + systemPassword + "@"
 			+ "//" + databaseServer.getHostName()
 			+ ":" + databasePort
 			+ "/" + databaseName
-			+ " @utils/oracle/Test.sql";
+			+ " @utils." + ospath + "/oracle/Test.sql";
 		log.config(sqlplus);
 		pass = testSQL(sqlplus);
 		error = "Error connecting via: " + sqlplus;
