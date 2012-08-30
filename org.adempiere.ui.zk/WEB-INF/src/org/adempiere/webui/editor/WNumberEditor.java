@@ -115,7 +115,9 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 			getComponent().getDecimalbox().setCols(displayLength);
 		}
 
-		if (!DisplayType.isNumeric(displayType))
+		if (DisplayType.isID(displayType)) 
+			displayType = DisplayType.Integer;
+		else if (!DisplayType.isNumeric(displayType))
 			displayType = DisplayType.Number;
 		DecimalFormat format = DisplayType.getNumberFormat(displayType, AEnv.getLanguage(Env.getCtx()));
 		getComponent().getDecimalbox().setFormat(format.toPattern());

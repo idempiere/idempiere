@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import static org.compiere.model.SystemIDs.WINDOW_PRINTFORMAT;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
@@ -57,10 +59,10 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -723,7 +725,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		try
 		{
-			attachment = File.createTempFile("mail", ".pdf");
+			attachment = new File(FileUtil.getTempMailName(subject, ".pdf"));
 			m_reportEngine.getPDF(attachment);
 		}
 		catch (Exception e)

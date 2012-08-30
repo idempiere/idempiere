@@ -195,19 +195,35 @@ public class MTree extends MTree_Base
 	private void loadNodes (int AD_User_ID)
 	{
 		//  SQL for TreeNodes
-		StringBuffer sql = new StringBuffer("SELECT "
-			+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,tb.IsActive "
-			+ "FROM ").append(getNodeTableName()).append(" tn"
-			+ " LEFT OUTER JOIN AD_TreeBar tb ON (tn.AD_Tree_ID=tb.AD_Tree_ID"
-			+ " AND tn.Node_ID=tb.Node_ID "
-			+ (AD_User_ID != -1 ? " AND tb.AD_User_ID=? ": "") 	//	#1 (conditional)
-			+ ") "
-			+ "WHERE tn.AD_Tree_ID=?");								//	#2
-		if (!m_editable)
-			sql.append(" AND tn.IsActive='Y'");
-		sql.append(" ORDER BY COALESCE(tn.Parent_ID, -1), tn.SeqNo");
+		StringBuffer sql = new StringBuffer();
+		if (getTreeType().equals(TREETYPE_Menu))	// specific sql, need to load TreeBar IDEMPIERE 329 - nmicoud
+		{
+			sql = new StringBuffer("SELECT "
+					+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,tb.IsActive "
+					+ "FROM ").append(getNodeTableName()).append(" tn"
+							+ " LEFT OUTER JOIN AD_TreeBar tb ON (tn.AD_Tree_ID=tb.AD_Tree_ID"
+							+ " AND tn.Node_ID=tb.Node_ID "
+							+ (AD_User_ID != -1 ? " AND tb.AD_User_ID=? ": "") 	//	#1 (conditional)
+							+ ") "
+							+ "WHERE tn.AD_Tree_ID=?");								//	#2
+			if (!m_editable)
+				sql.append(" AND tn.IsActive='Y'");
+			sql.append(" ORDER BY COALESCE(tn.Parent_ID, -1), tn.SeqNo");
+		}
+		else	// IDEMPIERE 329 - nmicoud
+		{
+			String sourceTableName = getSourceTableName(getTreeType());
+			sql = new StringBuffer("SELECT "
+					+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,st.IsActive "
+					+ "FROM ").append(sourceTableName).append(" st "
+							+ "LEFT OUTER JOIN ").append(getNodeTableName()).append(" tn ON (tn.Node_ID=st."+sourceTableName+"_ID) "
+									+ "WHERE tn.AD_Tree_ID=?");								//	#2
+			if (!m_editable)
+				sql.append(" AND tn.IsActive='Y'");
+			sql.append(" ORDER BY COALESCE(tn.Parent_ID, -1), tn.SeqNo");
+			sql = new StringBuffer(MRole.getDefault().addAccessSQL(sql.toString(), "st", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO));	// SQL_RO for Org_ID = 0
+		}
 		log.finest(sql.toString());
-
 		//  The Node Loop
 		try
 		{
@@ -216,7 +232,7 @@ public class MTree extends MTree_Base
 			//
 			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			int idx = 1;
-			if (AD_User_ID != -1)
+			if (AD_User_ID != -1 && getTreeType().equals(TREETYPE_Menu))	// IDEMPIERE 329 - nmicoud
 				pstmt.setInt(idx++, AD_User_ID);
 			pstmt.setInt(idx++, getAD_Tree_ID());
 			//	Get Tree & Bar

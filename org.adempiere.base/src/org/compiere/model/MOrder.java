@@ -1043,6 +1043,28 @@ public class MOrder extends X_C_Order implements DocAction
 					setC_PaymentTerm_ID (ii);
 			}
 		}
+
+		// IDEMPIERE-63
+		// for documents that can be reactivated we cannot allow changing 
+		// C_DocTypeTarget_ID or C_DocType_ID if they were already processed and isOverwriteSeqOnComplete
+		// neither change the Date if isOverwriteDateOnComplete
+		BigDecimal previousProcessedOn = (BigDecimal) get_ValueOld(COLUMNNAME_ProcessedOn);
+		if (! newRecord && previousProcessedOn != null && previousProcessedOn.signum() > 0) {
+			int previousDocTypeID = (Integer) get_ValueOld(COLUMNNAME_C_DocTypeTarget_ID);
+			MDocType previousdt = MDocType.get(getCtx(), previousDocTypeID);
+			if (is_ValueChanged(COLUMNNAME_C_DocType_ID) || is_ValueChanged(COLUMNNAME_C_DocTypeTarget_ID)) {
+				if (previousdt.isOverwriteSeqOnComplete()) {
+					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeProcessedDocType"));
+					return false; 
+				}
+			}
+			if (is_ValueChanged(COLUMNNAME_DateOrdered)) {
+				if (previousdt.isOverwriteDateOnComplete()) {
+					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeProcessedDate"));
+					return false; 
+				}
+			}
+		}
 		
 		return true;
 	}	//	beforeSave
@@ -1857,13 +1879,13 @@ public class MOrder extends X_C_Order implements DocAction
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			/* a42niem - BF IDEMPIERE-63 - check if document has been completed before */ 
-			if (this.getProcessedOn().compareTo(Env.ZERO) == 0) {
+			if (this.getProcessedOn().signum() == 0) {
 				setDateOrdered(new Timestamp (System.currentTimeMillis()));
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			/* a42niem - BF IDEMPIERE-63 - check if document has been completed before */ 
-			if (this.getProcessedOn().compareTo(Env.ZERO) == 0) {
+			if (this.getProcessedOn().signum() == 0) {
 				String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
 				if (value != null)
 					setDocumentNo(value);

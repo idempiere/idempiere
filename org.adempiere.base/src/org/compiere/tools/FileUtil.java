@@ -23,6 +23,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.compiere.util.Util;
 
@@ -417,5 +419,16 @@ public class FileUtil
 		//
 		new FileUtil(directory, filter, action, from, to); 
 	}	//	main
+
+	public static String getTempMailName(String subject, String extension) {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String dt = sdf.format(cal.getTime());
+		String cleanName = subject.replaceAll("[ &/]", "");
+		String localFile = System.getProperty("java.io.tmpdir")
+				+ System.getProperty("file.separator") + cleanName + "_" + dt
+				+ extension;
+		return localFile;
+	}
 
 }	//	FileUtil

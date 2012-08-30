@@ -313,6 +313,9 @@ public class ReportCtl
 			if(format.getJasperProcess_ID() > 0)
 			{
 				ServerReportCtl.runJasperProcess(Record_ID, re, IsDirectPrint, printerName);
+				if (IsDirectPrint) {
+					ReportEngine.printConfirm(type, Record_ID);
+				}
 			}
 			else
 			// Standard Print Format (Non-Jasper)

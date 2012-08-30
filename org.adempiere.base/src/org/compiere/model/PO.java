@@ -1267,8 +1267,9 @@ public abstract class PO
 		log.finest("ID=" + ID);
 		if (ID > 0)
 		{
+			setKeyInfo();
 			m_IDs = new Object[] {new Integer(ID)};
-			m_KeyColumns = new String[] {p_info.getTableName() + "_ID"};
+			//m_KeyColumns = new String[] {p_info.getTableName() + "_ID"};
 			load(trxName);
 		}
 		else	//	new
@@ -3044,7 +3045,8 @@ public abstract class PO
 
 		// Carlos Ruiz - globalqss - IDEMPIERE-111
 		// Check if the role has access to this client
-		if (!MRole.getDefault().isClientAccess(getAD_Client_ID(), true))
+		// Don't check role System as webstore works with this role - see IDEMPIERE-401
+		if ((Env.getAD_Role_ID(getCtx()) != 0) && !MRole.getDefault().isClientAccess(getAD_Client_ID(), true))
 		{
 			log.warning("You cannot delete this record, role doesn't have access");
 			log.saveError("AccessCannotDelete", "", false);

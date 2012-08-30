@@ -24,6 +24,7 @@ import net.sf.jasperreports.view.JRViewer;
 
 import org.compiere.apps.EMailDialog;
 import org.compiere.model.MUser;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -136,7 +137,7 @@ class SendByEmailListener implements ActionListener {
 		
 		try
 		{
-			attachment = File.createTempFile("mail", ".pdf");
+			attachment = new File(FileUtil.getTempMailName(subject, ".pdf"));
 			JasperExportManager.exportReportToPdfFile(viewer.getJasperPrint(), attachment.getAbsolutePath());
 		}
 		catch (Exception e)

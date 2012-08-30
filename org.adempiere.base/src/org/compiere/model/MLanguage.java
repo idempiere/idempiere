@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -433,6 +434,12 @@ public class MLanguage extends X_AD_Language
 		//	+ " WHERE (" + keyColumn + ",'" + getAD_Language()+ "') NOT IN (SELECT " 
 		//		+ keyColumn + ",AD_Language FROM " + tableName + ")";
 		int no = DB.executeUpdateEx(insert, null, get_TrxName());
+		// IDEMPIERE-99 Language Maintenance does not create UUIDs
+		MTable table = MTable.get(getCtx(), tableName);
+		MColumn column = table.getColumn(PO.getUUIDColumnName(tableName));
+		if (column != null)
+			UUIDGenerator.updateUUID(column, get_TrxName());
+		//
 		log.fine(tableName + " #" + no);
 		return no;
 	}	//	addTable

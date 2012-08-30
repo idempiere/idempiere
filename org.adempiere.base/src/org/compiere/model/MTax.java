@@ -71,7 +71,7 @@ public class MTax extends X_C_Tax
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
 		List<MTax> list = new Query(ctx, I_C_Tax.Table_Name, null, null)
 								.setClient_ID()
-								.setOrderBy("C_Country_ID, C_Region_ID, To_Country_ID, To_Region_ID")
+								.setOrderBy("C_Country_ID, C_Region_ID, To_Country_ID, To_Region_ID, ValidFrom DESC")
 								.setOnlyActiveRecords(true)
 								.list();
 		for (MTax tax : list)

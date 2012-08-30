@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.report;
 
+import static org.compiere.model.SystemIDs.TABLE_T_REPORT;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +27,6 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MReportCube;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.process.ProcessInfoParameter;
@@ -1093,6 +1094,7 @@ public class FinReport extends SvrProcess
 		String s = m_report.getWhereClause();
 		if (s != null && s.length() > 0)
 			insert.append(" AND ").append(s);
+		insert.append(m_parameterWhere); // IDEMPIERE-130
 		//	Period restriction
 		FinReportPeriod frp = getPeriod (0);
 		insert.append(" AND TRUNC(DateAcct) ")

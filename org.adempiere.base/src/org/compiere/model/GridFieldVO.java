@@ -332,6 +332,11 @@ public class GridFieldVO implements Serializable
 		// Genied: For a range parameter the second field 
 		// lookup behaviour should match the first one.
 		voT.AD_Reference_Value_ID = voF.AD_Reference_Value_ID;
+		// IDEMPIERE-229 Bug with Process parameter range
+		voT.ValidationCode = voF.ValidationCode;
+		voT.IsEncryptedField = voF.IsEncryptedField;
+		voT.ReadOnlyLogic = voF.ReadOnlyLogic;
+		voT.DisplayLogic = voF.DisplayLogic;
 		voT.initFinish();
 		
 		return voT;
