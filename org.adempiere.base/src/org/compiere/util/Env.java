@@ -1328,9 +1328,22 @@ public final class Env
 
 			token = inStr.substring(0, j);
 
+			// IDEMPIERE-194 Handling null context variable
+			String defaultV = null;
+			int idx = token.indexOf(":");	//	or clause
+			if (idx  >=  0) 
+			{
+				defaultV = token.substring(idx+1, token.length());
+				token = token.substring(0, idx);
+			}
+
 			String ctxInfo = getContext(ctx, WindowNo, token, onlyWindow);	// get context
 			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
 				ctxInfo = getContext(ctx, token);	// get global context
+
+			if (ctxInfo.length() == 0 && defaultV != null)
+				ctxInfo = defaultV;
+
 			if (ctxInfo.length() == 0)
 			{
 				getLogger().config("No Context Win=" + WindowNo + " for: " + token);
