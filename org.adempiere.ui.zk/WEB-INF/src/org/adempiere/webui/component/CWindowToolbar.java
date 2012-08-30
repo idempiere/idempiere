@@ -57,7 +57,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8640626174604214333L;
+	private static final long serialVersionUID = 904447827065380369L;
 
 	private static final String BTNPREFIX = "Btn";
 
@@ -75,7 +75,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 
     private ToolBarButton btnGridToggle;
 
-    private ToolBarButton btnHistoryRecords, btnParentRecord, btnDetailRecord;
+    private ToolBarButton btnParentRecord, btnDetailRecord;
 
     private ToolBarButton btnFirst, btnPrevious, btnNext, btnLast;
 
@@ -154,7 +154,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
         btnAttachment = createButton("Attachment", "Attachment", "Attachment");
         btnChat = createButton("Chat", "Chat", "Chat");
         btnGridToggle = createButton("Toggle", "Multi", "Multi");
-        btnHistoryRecords = createButton("HistoryRecords", "HistoryX", "History");
         addSeparator();
         btnParentRecord = createButton("ParentRecord", "Parent", "Parent");
         btnDetailRecord = createButton("DetailRecord", "Detail", "Detail");
@@ -203,7 +202,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
         	btnParentRecord.setVisible(false);
     		btnDetailRecord.setVisible(false);
     		btnActiveWorkflows.setVisible(false);
-    		btnHistoryRecords.setVisible(false);
     		btnProductInfo.setVisible(false);
     		setAlign("end");
     		setWidth("100%");
@@ -288,7 +286,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 		keyMap.put(KeyEvent.F6, btnFind);
 		keyMap.put(KeyEvent.F7, btnAttachment);
 		keyMap.put(KeyEvent.F8, btnGridToggle);
-		keyMap.put(KeyEvent.F9, btnHistoryRecords);
 		keyMap.put(KeyEvent.F11, btnReport);
 		keyMap.put(KeyEvent.F12, btnPrint);
 
@@ -400,11 +397,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 		this.event = null;
 	}
-
-    public void enableHistoryRecords(boolean enabled)
-    {
-    	this.btnHistoryRecords.setDisabled(!enabled);
-    }
 
     public void enableNavigation(boolean enabled)
     {

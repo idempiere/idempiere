@@ -16,6 +16,10 @@
  *****************************************************************************/
 package org.compiere.grid.ed;
 
+import static org.compiere.model.SystemIDs.COLUMN_AD_WF_ACTIVITY_AD_USER_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICELINE_M_PRODUCT_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -54,11 +58,12 @@ import org.compiere.apps.FieldRecordInfo;
 import org.compiere.apps.search.Info;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.model.MBPartnerLocation;
+import org.compiere.model.MLocation;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CMenuItem;
 import org.compiere.swing.CTextField;
@@ -101,7 +106,7 @@ public class VLookup extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1307112072890929329L;
+	private static final long serialVersionUID = -8609913311212365705L;
 
 	/*****************************************************************************
 	 *	Mouse Listener for Popup Menu
@@ -315,6 +320,14 @@ public class VLookup extends JComponent
 			mBPartnerUpd.addActionListener(this);
 			popupMenu.add(mBPartnerUpd);
 		}
+		if ((columnName.toUpperCase().equals("C_BPARTNER_LOCATION_ID"))
+				|| (columnName.toUpperCase().equals("BILL_LOCATION_ID"))
+				|| (columnName.toUpperCase().equals("DROPSHIP_LOCATION_ID")))
+		{
+			m_location = new CMenuItem (Msg.getMsg(Env.getCtx(), "ShowLocation"), Env.getImageIcon("InfoBPartner16.gif"));
+			m_location.addActionListener(this);
+			popupMenu.add(m_location);
+		}
 		//
 		if (m_lookup != null && m_lookup.getZoom() == 0)
 			mZoom.setEnabled(false);
@@ -377,6 +390,7 @@ public class VLookup extends JComponent
 	private CMenuItem 			mRefresh;
 	private CMenuItem			mBPartnerNew;
 	private CMenuItem			mBPartnerUpd;
+	private CMenuItem			m_location;
 	// Mouse Listener
 	private VLookup_mouseAdapter mouseAdapter;
 
@@ -745,6 +759,8 @@ public class VLookup extends JComponent
 			actionBPartner(true);
 		else if (e.getSource() == mBPartnerUpd)
 			actionBPartner(false);
+		else if (e.getSource() == m_location)
+			actionLocation();
 	}	//	actionPerformed
 
 	/**
@@ -1277,6 +1293,24 @@ public class VLookup extends JComponent
 		m_lookup.getDirect(new Integer(result), false, true);
 
 		actionCombo (new Integer(result));      //  data binding
+	}	//	actionBPartner
+
+	private void actionLocation ()
+	{
+		int BPLocation_ID = 0;
+		if (m_value instanceof Integer)
+			BPLocation_ID = ((Integer)m_value).intValue();
+		else if (m_value != null)
+			BPLocation_ID = Integer.parseInt(m_value.toString());
+
+		if (BPLocation_ID>0)
+		{
+			MBPartnerLocation bpl = new MBPartnerLocation(Env.getCtx(), BPLocation_ID, null);
+			MLocation location= new MLocation(Env.getCtx(), bpl.getC_Location_ID(), null);
+
+			VLocationDialog ld = new VLocationDialog(AEnv.getFrame(this), Msg.getMsg(Env.getCtx(), "C_Location_ID"), location);
+			ld.setVisible(true);
+		}
 	}	//	actionBPartner
 
 	/**

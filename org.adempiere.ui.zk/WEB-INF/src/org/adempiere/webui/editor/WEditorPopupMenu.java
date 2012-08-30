@@ -38,16 +38,17 @@ import org.zkoss.zul.Menuitem;
  */
 public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8172397145177408454L;
+	private static final long serialVersionUID = 5813878069049398656L;
 	public static final String EVENT_ATTRIBUTE = "EVENT";
     public static final String ZOOM_EVENT = "ZOOM";
     public static final String REQUERY_EVENT = "REQUERY";
     public static final String PREFERENCE_EVENT = "VALUE_PREFERENCE";
     public static final String NEW_EVENT = "NEW_RECORD";
     public static final String UPDATE_EVENT = "UPDATE_RECORD"; // Elaine 2009/02/16 - update record
+    public static final String SHOWLOCATION_EVENT = "SHOW_LOCATION";
     public static final String CHANGE_LOG_EVENT = "CHANGE_LOG";
     public static final String EDITOR_EVENT = "EDITOR";
    
@@ -56,37 +57,45 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     private boolean zoomEnabled  = true;
     private boolean requeryEnabled = true;
     private boolean preferencesEnabled = true;
+	private boolean showLocation = true;
     
     private Menuitem zoomItem;
     private Menuitem requeryItem;
     private Menuitem prefItem;
     private Menuitem newItem;
     private Menuitem updateItem; // Elaine 2009/02/16 - update record   
+	private Menuitem showLocationItem;
     
     private ArrayList<ContextMenuListener> menuListeners = new ArrayList<ContextMenuListener>();
     
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences)
     {
-        this(zoom, requery, preferences, false, false);
+        this(zoom, requery, preferences, false, false, false);
     }
     
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord)
     {
-    	this(zoom, requery, preferences, newRecord, false);
+    	this(zoom, requery, preferences, newRecord, false, false);
     }
     
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord)
     {
-        super();
-        this.zoomEnabled = zoom;
-        this.requeryEnabled = requery;
-        this.preferencesEnabled = preferences;
-        this.newEnabled = newRecord;
-        this.updateEnabled = updateRecord; // Elaine 2009/02/16 - update record
-        init();
+    	this(zoom, requery, preferences, newRecord, updateRecord, false);
     }
 
-    public boolean isZoomEnabled() {
+    public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation)
+    {
+    	super();
+    	this.zoomEnabled = zoom;
+    	this.requeryEnabled = requery;
+    	this.preferencesEnabled = preferences;
+    	this.newEnabled = newRecord;
+    	this.updateEnabled = updateRecord; // Elaine 2009/02/16 - update record
+    	this.showLocation = showLocation;
+    	init();
+    }
+
+	public boolean isZoomEnabled() {
     	return zoomEnabled;
     }
     
@@ -144,6 +153,15 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	this.appendChild(updateItem);
         }
         //
+        if (showLocation)
+        {
+        	showLocationItem = new Menuitem();
+        	showLocationItem.setAttribute(EVENT_ATTRIBUTE, SHOWLOCATION_EVENT);
+        	showLocationItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ShowLocation")));
+        	showLocationItem.setImage("/images/InfoBPartner16.png");
+        	showLocationItem.addEventListener(Events.ON_CLICK, this);
+        	this.appendChild(showLocationItem);
+        }
         
     }
     

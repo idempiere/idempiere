@@ -29,12 +29,16 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
+import org.adempiere.webui.window.WLocationDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.model.MBPartnerLocation;
+import org.compiere.model.MLocation;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.event.Event;
@@ -142,7 +146,15 @@ ContextMenuListener, IZoomableEditor
         
         if (gridField != null) 
         {
-        	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference());
+        	String columnName = getColumnName();
+    		if ((columnName.toUpperCase().equals("C_BPARTNER_LOCATION_ID"))
+    				|| (columnName.toUpperCase().equals("BILL_LOCATION_ID"))
+    				|| (columnName.toUpperCase().equals("DROPSHIP_LOCATION_ID")))
+    		{
+    			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true);
+    		} else {
+            	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference());
+    		}
         	addChangeLogMenu(popupMenu);
         }
     }
@@ -377,6 +389,26 @@ ContextMenuListener, IZoomableEditor
     	AEnv.actionZoom(lookup, getValue());
 	}	
     
+	private void actionLocation() {
+		int BPLocation_ID = 0;
+		Object value = getValue();
+		if (value instanceof Integer)
+			BPLocation_ID = ((Integer)value).intValue();
+		else if (value != null)
+			BPLocation_ID = Integer.parseInt(value.toString());
+
+		if (BPLocation_ID>0)
+		{
+			MBPartnerLocation bpl = new MBPartnerLocation(Env.getCtx(), BPLocation_ID, null);
+			MLocation location= new MLocation(Env.getCtx(), bpl.getC_Location_ID(), null);
+
+			final WLocationDialog vbp = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), location);
+			vbp.setVisible(true);
+			AEnv.showWindow(vbp);		
+		}
+
+	} // actionLocation
+
 	public void onMenu(ContextMenuEvent evt) 
 	{
 		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
@@ -396,6 +428,10 @@ ContextMenuListener, IZoomableEditor
 		else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{
 			WFieldRecordInfo.start(gridField);
+		}
+		else if (WEditorPopupMenu.SHOWLOCATION_EVENT.equals(evt.getContextEvent()))
+		{
+			actionLocation();
 		}
 	}
 	
