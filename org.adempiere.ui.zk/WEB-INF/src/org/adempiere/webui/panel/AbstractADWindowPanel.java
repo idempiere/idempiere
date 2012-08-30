@@ -308,8 +308,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	        gridWindow = new GridWindow(gWindowVO, true);
 	        title = gridWindow.getName();
 
-	        // Set SO/AutoNew for Window
-	        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
+	        // Set AutoNew for Window
 	        if (!autoNew && gridWindow.isTransaction())
 	        {
 	            Env.setAutoNew(ctx, curWindowNo, true);
@@ -358,7 +357,9 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
         {
 	        curTabIndex = 0;
 
-	        adTab.setSelectedIndex(0);
+	        adTab.setSelectedIndex(0);	        
+	        // all fields context for window is clear at AbstractADTab.prepareContext, set IsSOTrx for window
+	        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());	        
 	        toolbar.enableTabNavigation(adTab.getTabCount() > 1);
 	        toolbar.enableFind(true);
 	        adTab.evaluate(null);
