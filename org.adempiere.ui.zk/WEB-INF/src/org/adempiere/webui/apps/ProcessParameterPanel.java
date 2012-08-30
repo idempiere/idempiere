@@ -46,6 +46,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -359,21 +360,24 @@ public class ProcessParameterPanel extends Panel implements
 					if (sb.length() > 0)
 						sb.append(", ");
 					sb.append(field.getHeader());
+					if (m_wEditors2.get(i) != null) // is a range
+						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "From")).append(")");
 				} else
 					field.setError(false);
 				// Check for Range
 				WEditor wEditor2 = (WEditor) m_wEditors2.get(i);
 				if (wEditor2 != null) {
-					Object data2 = wEditor.getValue();
+					Object data2 = wEditor2.getValue();
 					GridField field2 = (GridField) m_mFields2.get(i);
 					if (data2 == null || data2.toString().length() == 0) {
-						field.setInserting(true); // set editable (i.e.
+						field2.setInserting(true); // set editable (i.e.
 													// updateable) otherwise
 													// deadlock
 						field2.setError(true);
 						if (sb.length() > 0)
 							sb.append(", ");
-						sb.append(field.getHeader());
+						sb.append(field2.getHeader());
+						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "To")).append(")");
 					} else
 						field2.setError(false);
 				} // range field
