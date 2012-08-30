@@ -304,6 +304,28 @@ public class MJournal extends X_GL_Journal implements DocAction
 		}
 		if (getDateAcct() == null)
 			setDateAcct(getDateDoc());
+
+		// IDEMPIERE-63
+		// for documents that can be reactivated we cannot allow changing 
+		// C_DocTypeTarget_ID or C_DocType_ID if they were already processed and isOverwriteSeqOnComplete
+		// neither change the Date if isOverwriteDateOnComplete
+		BigDecimal previousProcessedOn = (BigDecimal) get_ValueOld(COLUMNNAME_ProcessedOn);
+		if (! newRecord && previousProcessedOn != null && previousProcessedOn.signum() > 0) {
+			int previousDocTypeID = (Integer) get_ValueOld(COLUMNNAME_C_DocType_ID);
+			MDocType previousdt = MDocType.get(getCtx(), previousDocTypeID);
+			if (is_ValueChanged(COLUMNNAME_C_DocType_ID)) {
+				if (previousdt.isOverwriteSeqOnComplete()) {
+					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeProcessedDocType"));
+					return false; 
+				}
+			}
+			if (is_ValueChanged(COLUMNNAME_DateDoc)) {
+				if (previousdt.isOverwriteDateOnComplete()) {
+					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeProcessedDate"));
+					return false; 
+				}
+			}
+		}
 		
 		// Update DateAcct on lines - teo_sarca BF [ 1775358 ]
 		if (is_ValueChanged(COLUMNNAME_DateAcct)) {
@@ -601,12 +623,16 @@ public class MJournal extends X_GL_Journal implements DocAction
 	private void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setDateDoc(new Timestamp (System.currentTimeMillis()));
+			if (this.getProcessedOn().signum() == 0) {
+				setDateDoc(new Timestamp (System.currentTimeMillis()));
+			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
-			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
-			if (value != null)
-				setDocumentNo(value);
+			if (this.getProcessedOn().signum() == 0) {
+				String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
+				if (value != null)
+					setDocumentNo(value);
+			}
 		}
 	}
 
