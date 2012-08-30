@@ -18,6 +18,8 @@
  *****************************************************************************/
 package org.compiere.print;
 
+import static org.compiere.model.SystemIDs.WINDOW_PRINTFORMAT;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -39,6 +41,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -80,7 +83,6 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MUser;
 import org.compiere.model.PrintInfo;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_C_Invoice;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CCheckBox;
@@ -89,6 +91,7 @@ import org.compiere.swing.CFrame;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CMenuItem;
 import org.compiere.swing.CPanel;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -99,6 +102,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -911,7 +915,7 @@ public class Viewer extends CFrame
 		
 		try
 		{
-			attachment = File.createTempFile("mail", ".pdf");
+			attachment = new File(FileUtil.getTempMailName(subject, ".pdf"));
 			m_reportEngine.getPDF(attachment);
 		}
 		catch (Exception e)
