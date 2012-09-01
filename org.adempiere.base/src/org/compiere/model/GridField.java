@@ -74,10 +74,12 @@ import org.compiere.util.Evaluator;
 public class GridField 
 	implements Serializable, Evaluatee
 {
+
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2943313231011246615L;
+	private static final long serialVersionUID = -2384947306143518488L;
 
 	/**
 	 *  Field Constructor.
@@ -1943,6 +1945,23 @@ public class GridField
 	private boolean isParentTabField()
 	{
 		return isParentTabField(m_vo.ColumnName);
+	}
+	
+	/*IDEMPIERE-358*/
+	
+	public int getXPosition()
+	{
+		return m_vo.XPosition;
+	}
+	
+	public int getColumnSpan()
+	{
+		return m_vo.ColumnSpan;
+	}
+	
+	public int getNumLines()
+	{
+		return m_vo.NumLines;
 	}
 	
 }   //  MField

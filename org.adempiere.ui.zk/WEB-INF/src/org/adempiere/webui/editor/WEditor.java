@@ -471,7 +471,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      * Stretch editor component to fill container
      */
     public void fillHorizontal() {
-    	//streach component to fill grid cell
+    	//stretch component to fill grid cell
         if (getComponent() instanceof HtmlBasedComponent) {
         	//can't stretch bandbox & datebox
         	if (!(getComponent() instanceof Bandbox) &&

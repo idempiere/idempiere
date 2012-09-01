@@ -17,6 +17,9 @@
 
 package org.adempiere.webui.component;
 
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Cell;
+
 /**
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
@@ -28,5 +31,18 @@ public class Row extends org.zkoss.zul.Row
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3096460956090507074L;
+	private static final long serialVersionUID = 3587841381101659893L;
+
+	public boolean appendCellChild(Component child) {
+		return this.appendCellChild(child, 1);
+	}
+	
+	public boolean appendCellChild(Component child, int colspan) {
+		Cell cell = new Cell();
+		cell.setColspan(colspan);
+		cell.setRowspan(1);
+		cell.appendChild(child);
+		return super.appendChild(cell);
+	}
+	
 }

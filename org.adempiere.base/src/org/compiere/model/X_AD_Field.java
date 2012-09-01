@@ -32,7 +32,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20110918L;
+	private static final long serialVersionUID = 20120831L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -291,6 +291,26 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Column Span.
+		@param ColumnSpan 
+		Number of column for a box of field
+	  */
+	public void setColumnSpan (int ColumnSpan)
+	{
+		set_Value (COLUMNNAME_ColumnSpan, Integer.valueOf(ColumnSpan));
+	}
+
+	/** Get Column Span.
+		@return Number of column for a box of field
+	  */
+	public int getColumnSpan () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ColumnSpan);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Default Logic.
 		@param DefaultValue 
 		Default value hierarchy, separated by ;
@@ -516,15 +536,15 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return false;
 	}
 
-	/** Set Display in Grid.
-		@param IsDisplayedGrid Display in Grid	  */
+	/** Set Show in Grid.
+		@param IsDisplayedGrid Show in Grid	  */
 	public void setIsDisplayedGrid (boolean IsDisplayedGrid)
 	{
 		set_Value (COLUMNNAME_IsDisplayedGrid, Boolean.valueOf(IsDisplayedGrid));
 	}
 
-	/** Get Display in Grid.
-		@return Display in Grid	  */
+	/** Get Show in Grid.
+		@return Show in Grid	  */
 	public boolean isDisplayedGrid () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisplayedGrid);
@@ -734,6 +754,26 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return (String)get_Value(COLUMNNAME_ObscureType);
 	}
 
+	/** Set Row Span.
+		@param NumLines 
+		Number of rows for a field
+	  */
+	public void setNumLines (int NumLines)
+	{
+		set_Value (COLUMNNAME_NumLines, Integer.valueOf(NumLines));
+	}
+
+	/** Get Row Span.
+		@return Number of rows for a field
+	  */
+	public int getNumLines () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_NumLines);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Sequence.
 		@param SeqNo 
 		Method of ordering records; lowest number comes first
@@ -789,5 +829,25 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set X Position.
+		@param XPosition 
+		Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public void setXPosition (int XPosition)
+	{
+		set_Value (COLUMNNAME_XPosition, Integer.valueOf(XPosition));
+	}
+
+	/** Get X Position.
+		@return Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public int getXPosition () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_XPosition);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }
