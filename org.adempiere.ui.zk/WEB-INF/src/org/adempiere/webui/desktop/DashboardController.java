@@ -98,6 +98,7 @@ public class DashboardController implements EventListener<Event> {
 		dashboardLayout = new Anchorlayout();
         dashboardLayout.setSclass("dashboard-layout");
         dashboardLayout.setVflex("1");
+        dashboardLayout.setHflex("1");
         
         maximizedHolder = new Anchorchildren();                
         maximizedHolder.setAnchor("100% 100%");
@@ -136,26 +137,34 @@ public class DashboardController implements EventListener<Event> {
         	dps = MDashboardPreference.getForSession(isShowInDashboard, AD_User_ID, AD_Role_ID); // based on user and role       	
         	noOfCols = MDashboardPreference.getForSessionColumnCount(isShowInDashboard, AD_User_ID, AD_Role_ID);
             
-            width = noOfCols <= 0 ? 100 : (100-1) / noOfCols;
+            width = noOfCols <= 0 ? 100 : 100 / noOfCols;
+            int useWidth = 0; 
             for (final MDashboardPreference dp : dps)
-			{
+			{            	            	
             	MDashboardContent dc = new MDashboardContent(dp.getCtx(), dp.getPA_DashboardContent_ID(), dp.get_TrxName());
             	
 	        	int columnNo = dp.getColumnNo();
 	        	if(dashboardColumnLayout == null || currentColumnNo != columnNo)
 	        	{
+	        		int anchorWidth = width;
+	            	if (columnNo == noOfCols) {
+	            		anchorWidth = 100 - useWidth;
+	            	} else {
+	            		useWidth = useWidth + width;
+	            	}
+	            	
 	        		dashboardColumnLayout = new Vlayout();
 	        		dashboardColumnLayout.setAttribute("ColumnNo", columnNo);
 	        		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
 	        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", false);
 	        		Anchorchildren dashboardColumn = new Anchorchildren();
-	        		dashboardColumn.setAnchor((width-2) + "%" + " 100%");
+	        		dashboardColumn.setAnchor(anchorWidth + "%" + " 100%");
 	        		dashboardColumn.setDroppable("true");
 	        		dashboardColumn.addEventListener(Events.ON_DROP, this);
 	        		dashboardColumn.appendChild(dashboardColumnLayout);
 	        		columnList.add(dashboardColumn);
 	                dashboardLayout.appendChild(dashboardColumn);
-	                dashboardColumnLayout.setWidth("100%");
+	                dashboardColumnLayout.setHflex("1");
 
 	                currentColumnNo = columnNo;
 	        	}

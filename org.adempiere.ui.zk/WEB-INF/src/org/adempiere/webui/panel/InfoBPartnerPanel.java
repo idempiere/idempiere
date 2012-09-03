@@ -262,7 +262,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener, WTabl
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
-		southBody.setWidth("100%");
+		southBody.setHflex("1");
 		south.appendChild(southBody);
 		southBody.appendChild(new Separator());
 		southBody.appendChild(confirmPanel);

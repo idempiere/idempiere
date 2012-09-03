@@ -269,6 +269,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	border-top: 1px solid #c5c5c5;
 }
 
+.desktop-left-column .z-anchorlayout-body {
+	overflow-x: hidden;
+}
+
 .desktop-hometab {
 	margin-left: 2px !important;
 }
@@ -297,15 +301,17 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .dashboard-layout {
-	width: 99%;
-	height: 99%;
+	width: 100%;
+	height: 100%;
 	position: absolute;
 }
 
 .dashboard-widget {
 	margin-top: 4px; 
-	margin-left: 8px; 
+	margin-left: auto; 
+	margin-right: auto;
 	position: relative;
+	width: 92%;
 }
 
 .dashboard-report-iframe {
@@ -844,12 +850,12 @@ div.simileAjax-bubble-container {
 }
 
 .info-panel .z-center {
-	text-align: -webkit-center;
-	text-align: -moz-center;
 }
 
 .info-panel .z-listbox {
 	width: 99% !important;
+	position: relative;
+	margin: auto;
 }
 
 .info-panel .z-south {
@@ -899,6 +905,7 @@ div.simileAjax-bubble-container {
 .confirm-panel {
 	width: 100%;
 	height: 36px;
+	position: relative;
 }
 
 .confirm-panel .z-hbox {

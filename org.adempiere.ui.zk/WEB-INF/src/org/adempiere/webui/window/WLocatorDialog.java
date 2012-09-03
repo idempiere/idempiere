@@ -283,6 +283,7 @@ public class WLocatorDialog extends Window implements EventListener
 		this.setClosable(true);
 		this.setBorder("normal");
 		this.setWidth("260Px");
+		this.setShadow(true);
 		this.setSizable(true); // Elaine 2009/02/02 - window set to resizable
 	}
 	

@@ -292,6 +292,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 
         confirmPanel = new ConfirmPanel(true, true, false, true, true, true);  // Elaine 2008/12/16
         confirmPanel.addActionListener(Events.ON_CLICK, this);
+        confirmPanel.setHflex("1");
 
         // Elaine 2008/12/16
 		confirmPanel.getButton(ConfirmPanel.A_CUSTOMIZE).setVisible(hasCustomize());

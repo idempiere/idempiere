@@ -121,7 +121,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         w.setCollapsible(true);
         w.setSplittable(true);
         w.setFlex(false);
-        w.setHflex("min");
+        w.setHflex("1");
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
