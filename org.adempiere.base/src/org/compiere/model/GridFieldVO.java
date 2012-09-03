@@ -42,10 +42,12 @@ import static org.compiere.model.SystemIDs.*;
  */
 public class GridFieldVO implements Serializable
 {
+
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3576685994073893942L;
+	private static final long serialVersionUID = -6196878184196075974L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -193,6 +195,13 @@ public class GridFieldVO implements Serializable
 					vo.IsAllowCopy  = "Y".equals(rs.getString(i));
 				else if (columnName.equalsIgnoreCase("AD_Field_ID"))
 					vo.AD_Field_ID = rs.getInt(i);
+				/*IDEMPIERE-358*/
+				else if (columnName.equalsIgnoreCase("XPosition"))
+					vo.XPosition=rs.getInt(i);
+				else if (columnName.equalsIgnoreCase("ColumnSpan"))
+					vo.ColumnSpan=rs.getInt(i);
+				else if (columnName.equalsIgnoreCase("NumLines"))
+					vo.NumLines=rs.getInt(i);
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -507,6 +516,15 @@ public class GridFieldVO implements Serializable
 	
 	/** Field ID 				*/
 	public int AD_Field_ID = 0;
+	
+	/***** XPosition IDEMPIERE368***/
+	public int XPosition=0;
+	
+	/***** ColumnSpan IDEMPIERE368***/
+	public int ColumnSpan=0;
+	
+	/***** NumLines IDEMPIERE368***/
+    public int NumLines=0; 
 	
 	//*  Feature Request FR [ 1757088 ]
 	public int          Included_Tab_ID = 0;

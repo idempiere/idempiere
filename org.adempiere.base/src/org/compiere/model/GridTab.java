@@ -108,10 +108,12 @@ import org.compiere.util.ValueNamePair;
  */
 public class GridTab implements DataStatusListener, Evaluatee, Serializable
 {
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6841849146086698231L;
+	private static final long serialVersionUID = -6259178346327832664L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -3236,5 +3238,16 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (parentTabNo < 0 || parentTabNo == m_vo.TabNo)
 			return null;
 		return m_window.getTab(parentTabNo);
+	}
+	
+	public int getColumns(){
+		int col=0;
+
+		String sql="SELECT MAX(f.XPosition+f.ColumnSpan-case when f.isfieldonly='Y' OR c.ad_reference_id in (20/*yesno*/,28/*button*/) then 1 else 0 end)"
+				   +" FROM AD_Field f JOIN AD_Column c ON (f.AD_Column_ID=c.AD_Column_ID)"
+				   +" WHERE f.isdisplayed='Y' AND f.isactive='Y' AND c.isactive='Y' AND f.AD_Tab_ID=?";
+		col=DB.getSQLValue(null, sql, getAD_Tab_ID());
+		
+		return col;
 	}
 }	//	GridTab

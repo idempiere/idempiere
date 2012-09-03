@@ -58,8 +58,10 @@ import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -127,11 +129,11 @@ DataStatusListener, IADTabpanel
 
     private GridPanel		  listPanel;
 
-    private Map<String, List<org.zkoss.zul.Row>> fieldGroupContents = new HashMap<String, List<org.zkoss.zul.Row>>();
+    private Map<String, List<Row>> fieldGroupContents = new HashMap<String, List<Row>>();
 
     private Map<String, List<org.zkoss.zul.Row>> fieldGroupHeaders = new HashMap<String, List<org.zkoss.zul.Row>>();
 
-	private ArrayList<org.zkoss.zul.Row> rowList;
+	private ArrayList<Row> rowList;
 
 	private Component formComponent = null;
 
@@ -255,286 +257,252 @@ DataStatusListener, IADTabpanel
     	if (uiCreated) return;
 
     	uiCreated = true;
+    	
+    	int numCols=gridTab.getColumns();
+    	if (numCols <= 0) {
+    		numCols=4;
+    	}
 
-    	//setup columns
+    	// set size in percentage per column leaving a MARGIN on right
     	Columns columns = new Columns();
     	grid.appendChild(columns);
-    	Column col = new Column();
-    	col.setWidth("14%");
-    	columns.appendChild(col);
-    	col = new Column();
-    	col.setWidth("35%");
-    	columns.appendChild(col);
-    	col = new Column();
-    	col.setWidth("14%");
-    	columns.appendChild(col);
-    	col = new Column();
-    	col.setWidth("35%");
-    	columns.appendChild(col);
-    	col = new Column();
-    	col.setWidth("2%");
-    	columns.appendChild(col);
+		String numColsS=String.valueOf(numCols);
+    	int equalWidth = 98 / numCols;
+
+    	for (int h=0;h<numCols;h++){
+    		Column col = new Column();
+    		col.setWidth(equalWidth + "%");
+    		columns.appendChild(col);
+    	}
 
     	Rows rows = grid.newRows();
         GridField fields[] = gridTab.getFields();
-        org.zkoss.zul.Row row = new Row();
+        Row row = new Row();
+        int actualxpos = 0;
 
         String currentFieldGroup = null;
         for (int i = 0; i < fields.length; i++)
         {
-            GridField field = fields[i];
-            if (field.isDisplayed())
-            {
-            	//included tab
-            	if (field.getIncluded_Tab_ID() > 0)
-            	{
-            		if (row.getChildren().size() == 2)
+        	GridField field = fields[i];
+        	if (!field.isDisplayed())
+        		continue;
+
+        	//included tab
+        	if (field.getIncluded_Tab_ID() > 0)
+        	{
+        		// NOT CHANGING INCLUDED TAB AS THIS IS BEING REDESIGNED WITH
+        		// IDEMPIERE-369 Master Detail layout improvements
+        		if (row.getChildren().size() == 2)
+        		{
+        			row.appendChild(createSpacer());
+        			row.appendChild(createSpacer());
+        			row.appendChild(createSpacer());
+        			rows.appendChild(row);
+        			if (rowList != null)
+        				rowList.add(row);
+        		} else if (row.getChildren().size() > 0)
+        		{
+        			rows.appendChild(row);
+        			if (rowList != null)
+        				rowList.add(row);
+        		}
+
+        		//end current field group
+        		if (currentGroup != null) {
+        			Groupfoot rowg = new Groupfoot();
+        			rows.appendChild(rowg);
+        			currentGroup = null;
+        			currentFieldGroup = null;
+        		}
+
+        		row = new Row();
+        		row.setSpans("5");
+        		row.appendChild(new Separator());
+        		rows.appendChild(row);
+
+        		Group rowg = new Group();
+        		rowg.setSpans("2,3");
+        		rows.appendChild(rowg);
+        		includedTab.put(field.getIncluded_Tab_ID(), (Group)rowg);
+        		Groupfoot rowgf = new Groupfoot();
+        		rows.appendChild(rowgf);
+        		includedTabFooter.put(field.getIncluded_Tab_ID(), (Groupfoot)rowgf);
+
+        		row = new Row();
+        		row.setSpans("5");
+        		row.appendChild(new Separator());
+        		rows.appendChild(row);
+
+        		for (EmbeddedPanel ep : includedPanel) {
+        			if (ep.adTabId == field.getIncluded_Tab_ID()) {
+        				ep.group = includedTab.get(ep.adTabId);
+        				createEmbeddedPanelUI(ep, field.getDisplayLength());
+        				break;
+        			}
+        		}
+
+        		row = new Row();
+        		continue;
+        	}
+        	// field group
+        	String fieldGroup = field.getFieldGroup();
+        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
+        	{
+        		currentFieldGroup = fieldGroup;
+        		
+        		if (numCols - actualxpos > 0)
+        			row.appendCellChild(createSpacer(), numCols - actualxpos);
+        		rows.appendChild(row);
+                if (rowList != null)
+        			rowList.add(row);
+
+       			row = new Row();
+       			actualxpos = 0;
+
+        		List<org.zkoss.zul.Row> headerRows = new ArrayList<org.zkoss.zul.Row>();
+        		fieldGroupHeaders.put(fieldGroup, headerRows);
+
+        		row.appendCellChild(new Separator(), numCols);
+        		rows.appendChild(row);
+        		headerRows.add(row);
+
+        		rowList = new ArrayList<Row>();
+        		fieldGroupContents.put(fieldGroup, rowList);
+
+        		if (X_AD_FieldGroup.FIELDGROUPTYPE_Label.equals(field.getFieldGroupType()))
+        		{
+        			row = new Row();
+        			Label groupLabel = new Label(fieldGroup);
+        			row.appendCellChild(groupLabel, numCols);
+        			rows.appendChild(row);
+        			headerRows.add(row);
+
+        			row = new Row();
+        			Separator separator = new Separator();
+        			separator.setBar(true);
+        			row.appendCellChild(separator, numCols);
+        			rows.appendChild(row);
+        			headerRows.add(row);
+        		}
+        		else
+        		{
+        			Group rowg = new Group(fieldGroup);
+        			rowg.setSpans(numColsS);
+        			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())
         			{
-        				row.appendChild(createSpacer());
-                        row.appendChild(createSpacer());
-                        row.appendChild(createSpacer());
-                        rows.appendChild(row);
-                        if (rowList != null)
-            				rowList.add(row);
-        			} else if (row.getChildren().size() > 0)
-        			{
+        				rowg.setOpen(false);
+        			}
+        			currentGroup = rowg;
+        			rows.appendChild(rowg);
+        			headerRows.add(rowg);
+        		}
+
+        		row = new Row();
+        		actualxpos = 0;
+        	}
+
+			//normal field
+        	if (field.getXPosition() <= actualxpos) {
+        		// Fill right part of the row with spacers until number of columns
+        		if (numCols - actualxpos + 1 > 0)
+        			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
+        		rows.appendChild(row);
+        		row=new Row();
+        		actualxpos = 0;
+        	}
+    		// Fill left part of the field
+        	if (field.getXPosition()-1 - actualxpos > 0)
+        		row.appendCellChild(createSpacer(), field.getXPosition()-1 - actualxpos);
+        	boolean paintLabel = ! (field.getDisplayType() == DisplayType.Button || field.getDisplayType() == DisplayType.YesNo || field.isFieldOnly()); 
+        	if (field.isHeading())
+        		actualxpos = field.getXPosition();
+        	else
+        		actualxpos = field.getXPosition() + field.getColumnSpan()-1 + (paintLabel ? 1 : 0);
+
+        	if (! field.isHeading()) {
+
+        		WEditor editor = WebEditorFactory.getEditor(gridTab, field, false);
+
+        		if (editor != null) // Not heading
+        		{
+        			editor.setGridTab(this.getGridTab());
+        			field.addPropertyChangeListener(editor);
+        			editors.add(editor);
+        			editorComps.add(editor.getComponent());
+        			if (paintLabel) {
+        				Div div = new Div();
+        				div.setAlign("right");
+        				Label label = editor.getLabel();
+        				div.appendChild(label);
+        				if (label.getDecorator() != null)
+        					div.appendChild(label.getDecorator());
+        				row.appendCellChild(div,1);
+        			}
+        			row.appendCellChild(editor.getComponent(), field.getColumnSpan());
+        			
+        			/*
+        			if (field.isLongField()) {
+        				row.setSpans("1,3,1");
+        				row.appendCellChild(createSpacer());
         				rows.appendChild(row);
         				if (rowList != null)
-            				rowList.add(row);
+        					rowList.add(row);
+        				//row = new Row();
+        			}
+        			*/
+
+        			if (editor instanceof WButtonEditor)
+        			{
+        				if (windowPanel != null)
+        					((WButtonEditor)editor).addActionListener(windowPanel);
+        			}
+        			else
+        			{
+        				editor.addValueChangeListener(dataBinder);
         			}
 
-            		//end current field group
-            		if (currentGroup != null) {
-            			row = new Groupfoot();
-            			rows.appendChild(row);
-            			currentGroup = null;
-            			currentFieldGroup = null;
-            		}
+        			//stretch component to fill grid cell
+        			editor.fillHorizontal();
 
-            		row = new Row();
-            		row.setSpans("5");
-        			row.appendChild(new Separator());
-        			rows.appendChild(row);
+        			//setup editor context menu
+        			WEditorPopupMenu popupMenu = editor.getPopupMenu();
+        			if (popupMenu != null)
+        			{
+        				popupMenu.addMenuListener((ContextMenuListener)editor);
+        				this.appendChild(popupMenu);
+        				if (!field.isFieldOnly())
+        				{
+        					Label label = editor.getLabel();
+        					if (popupMenu.isZoomEnabled() && editor instanceof IZoomableEditor)
+        					{
+        						label.addEventListener(Events.ON_CLICK, new ZoomListener((IZoomableEditor) editor));
+        					}
 
-            		row = new Group();
-            		row.setSpans("2,3");
-            		rows.appendChild(row);
-            		includedTab.put(field.getIncluded_Tab_ID(), (Group)row);
-            		row = new Groupfoot();
-            		rows.appendChild(row);
-            		includedTabFooter.put(field.getIncluded_Tab_ID(), (Groupfoot)row);
-
-            		row = new Row();
-            		row.setSpans("5");
-        			row.appendChild(new Separator());
-        			rows.appendChild(row);
-        			
-            		for (EmbeddedPanel ep : includedPanel) {
-            			if (ep.adTabId == field.getIncluded_Tab_ID()) {
-            				ep.group = includedTab.get(ep.adTabId);
-            				createEmbeddedPanelUI(ep, field.getDisplayLength());
-            				break;
-            			}
-            		}
-
-            		row = new Row();
-            		continue;
-            	}
-
-            	//normal field
-            	String fieldGroup = field.getFieldGroup();
-            	if (fieldGroup != null && fieldGroup.trim().length() > 0)
-            	{
-            		if (!fieldGroup.equals(currentFieldGroup))
-            		{
-            			currentFieldGroup = fieldGroup;
-            			if (row.getChildren().size() == 2)
-            			{
-            				row.appendChild(createSpacer());
-                            row.appendChild(createSpacer());
-                            row.appendChild(createSpacer());
-                            rows.appendChild(row);
-                            if (rowList != null)
-                				rowList.add(row);
-                            row = new Row();
-            			} else if (row.getChildren().size() > 0)
-            			{
-            				rows.appendChild(row);
-            				if (rowList != null)
-                				rowList.add(row);
-            				row = new Row();
-            			}
-
-            			List<org.zkoss.zul.Row> headerRows = new ArrayList<org.zkoss.zul.Row>();
-            			fieldGroupHeaders.put(fieldGroup, headerRows);
-
-            			row.setSpans("5");
-            			row.appendChild(new Separator());
-            			rows.appendChild(row);
-            			headerRows.add(row);
-
-        				rowList = new ArrayList<org.zkoss.zul.Row>();
-        				fieldGroupContents.put(fieldGroup, rowList);
-
-            			if (X_AD_FieldGroup.FIELDGROUPTYPE_Label.equals(field.getFieldGroupType()))
-            			{
-            				row = new Row();
-                			row.setSpans("4");
-            				Label groupLabel = new Label(fieldGroup);
-            				row.appendChild(groupLabel);
-            				row.appendChild(createSpacer());
-            				rows.appendChild(row);
-            				headerRows.add(row);
-
-            				row = new Row();
-	                        row.setSpans("4");
-	                        Separator separator = new Separator();
-	                        separator.setBar(true);
-	            			row.appendChild(separator);
-	            			row.appendChild(createSpacer());
-	            			rows.appendChild(row);
-	            			headerRows.add(row);
-            			}
-            			else
-            			{
-            				row = new Group(fieldGroup);
-            				row.setSpans("5");
-            				if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())
-            				{
-            					((Group)row).setOpen(false);
-            				}
-            				currentGroup = (Group)row;
-            				rows.appendChild(row);
-            				headerRows.add(row);
-            			}
-
-            			row = new Row();
-            		}
-            	}
-
-                if (!field.isSameLine() || field.isLongField())
-                {
-                	//next line
-                	if(row.getChildren().size() > 0)
-                	{
-	                    if (row.getChildren().size() == 2)
-	                    {
-	                        row.appendChild(createSpacer());
-	                        row.appendChild(createSpacer());
-	                        row.appendChild(createSpacer());
-	                    }
-	                    {
-	                    	row.appendChild(createSpacer());
-	                    }
-	                    rows.appendChild(row);
-	                    if (rowList != null)
-	        				rowList.add(row);
-	                    row = new Row();
-                	}
-                }
-                else if (row.getChildren().size() == 4)
-                {
-                	//next line if reach max column ( 4 )
-                	row.appendChild(createSpacer());
-                	rows.appendChild(row);
-                    if (rowList != null)
-        				rowList.add(row);
-                    row = new Row();
-                }
-
-                WEditor editor = WebEditorFactory.getEditor(gridTab, field, false);
-
-                if (editor != null) // Not heading
-                {
-                    editor.setGridTab(this.getGridTab());
-                	field.addPropertyChangeListener(editor);
-                    editors.add(editor);
-                    editorComps.add(editor.getComponent());
-                    if (field.isFieldOnly())
-                    {
-                    	row.appendChild(createSpacer());
-                    }
-                    else
-                    {
-                    	Div div = new Div();
-                        div.setAlign("right");
-                        Label label = editor.getLabel();
-	                    div.appendChild(label);
-	                    if (label.getDecorator() != null)
-	                    	div.appendChild(label.getDecorator());
-	                    row.appendChild(div);
-                    }
-                    row.appendChild(editor.getComponent());
-                    if (field.isLongField()) {
-                    	row.setSpans("1,3,1");
-                    	row.appendChild(createSpacer());
-                    	rows.appendChild(row);
-                    	if (rowList != null)
-            				rowList.add(row);
-                    	row = new Row();
-                    }
-
-                    if (editor instanceof WButtonEditor)
-                    {
-                    	if (windowPanel != null)
-                    		((WButtonEditor)editor).addActionListener(windowPanel);
-                    }
-                    else
-                    {
-                    	editor.addValueChangeListener(dataBinder);
-                    }
-
-                    //streach component to fill grid cell
-                    editor.fillHorizontal();
-                    
-                    //setup editor context menu
-                    WEditorPopupMenu popupMenu = editor.getPopupMenu();
-                    if (popupMenu != null)
-                    {
-                    	popupMenu.addMenuListener((ContextMenuListener)editor);
-                        this.appendChild(popupMenu);
-                        if (!field.isFieldOnly())
-                        {
-                        	Label label = editor.getLabel();
-	                        if (popupMenu.isZoomEnabled() && editor instanceof IZoomableEditor)
-	                        {
-	                        	label.addEventListener(Events.ON_CLICK, new ZoomListener((IZoomableEditor) editor));
-	                        }
-
-	                        popupMenu.addContextElement(label);
-	                        if (editor.getComponent() instanceof XulElement) 
-	                        {
-	                        	popupMenu.addContextElement((XulElement) editor.getComponent());
-	                        }
-                        }
-                    }
-                }
-                else if (field.isHeading())
-                {
-    				//display just a label if we are "heading only"
-    				Label label = new Label(field.getHeader());
-    				Div div = new Div();
-    				div.setAlign("center");
-    				row.appendChild(createSpacer());
-    				div.appendChild(label);
-    				row.appendChild(div);
-    			}
-            }
+        					popupMenu.addContextElement(label);
+        					if (editor.getComponent() instanceof XulElement) 
+        					{
+        						popupMenu.addContextElement((XulElement) editor.getComponent());
+        					}
+        				}
+        			}
+        		}
+        	}
+        	else // just heading
+        	{
+        		//display just a label if we are "heading only"
+        		Label label = new Label(field.getHeader());
+        		Div div = new Div();
+        		div.setAlign("center");
+        		row.appendCellChild(createSpacer());
+        		div.appendChild(label);
+        		row.appendCellChild(div);
+        	}
         }
-
-        //last row
-        if (row.getChildren().size() > 0)
-        {
-            if (row.getChildren().size() == 2)
-            {
-                row.appendChild(createSpacer());
-                row.appendChild(createSpacer());
-                row.appendChild(createSpacer());
-            }
-            rows.appendChild(row);
-            if (rowList != null)
-				rowList.add(row);
-        }
+		if (numCols - actualxpos + 1 > 0)
+			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
+		rows.appendChild(row);
+        if (rowList != null)
+			rowList.add(row);
 
         //create tree
         if (gridTab.isTreeTab() && treePanel != null) {
@@ -623,7 +591,8 @@ DataStatusListener, IADTabpanel
         	boolean editorRow = false;
         	for (int j = 0; j < components.size(); j++)
         	{
-        		Component component = (Component) components.get(j);
+        		Component cellComponent = (Component) components.get(j);
+        		Component component = cellComponent.getFirstChild();
         		if (editorComps.contains(component))
         		{
         			editorRow = true;
@@ -645,9 +614,9 @@ DataStatusListener, IADTabpanel
         for(Iterator<Entry<String, List<org.zkoss.zul.Row>>> i = fieldGroupHeaders.entrySet().iterator(); i.hasNext();)
         {
         	Map.Entry<String, List<org.zkoss.zul.Row>> entry = i.next();
-        	List<org.zkoss.zul.Row> contents = fieldGroupContents.get(entry.getKey());
+        	List<Row> contents = fieldGroupContents.get(entry.getKey());
         	boolean visible = false;
-        	for (org.zkoss.zul.Row row : contents)
+        	for (Row row : contents)
         	{
         		if (row.isVisible())
         		{
@@ -1153,7 +1122,7 @@ DataStatusListener, IADTabpanel
 	}
 
 	private void createEmbeddedPanelUI(EmbeddedPanel ep, int height) {
-		org.zkoss.zul.Row row = new Row();
+		Row row = new Row();
 		row.setSpans("5");
 		grid.getRows().insertBefore(row, includedTabFooter.get(ep.adTabId));
 		ep.windowPanel.createPart(row);

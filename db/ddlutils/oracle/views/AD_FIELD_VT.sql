@@ -18,7 +18,7 @@ CREATE OR REPLACE VIEW AD_FIELD_VT AS
    c.IsAutocomplete, COALESCE(f.IsAllowCopy, c.IsAllowCopy) AS IsAllowCopy,
 	f.isdisplayedgrid, 
 	f.seqnogrid,
-	c.seqnoselection
+	c.seqnoselection, f.xposition, f.columnspan, f.numlines
   FROM AD_FIELD f 
    INNER JOIN AD_FIELD_TRL trl ON (f.AD_Field_ID = trl.AD_Field_ID)
     INNER JOIN AD_TAB t ON (f.AD_Tab_ID = t.AD_Tab_ID)

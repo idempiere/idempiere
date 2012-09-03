@@ -174,6 +174,19 @@ public interface I_AD_Field
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
+    /** Column name ColumnSpan */
+    public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";
+
+	/** Set Column Span.
+	  * Number of column for a box of field
+	  */
+	public void setColumnSpan (int ColumnSpan);
+
+	/** Get Column Span.
+	  * Number of column for a box of field
+	  */
+	public int getColumnSpan();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -355,10 +368,10 @@ public interface I_AD_Field
     /** Column name IsDisplayedGrid */
     public static final String COLUMNNAME_IsDisplayedGrid = "IsDisplayedGrid";
 
-	/** Set Display in Grid	  */
+	/** Set Show in Grid	  */
 	public void setIsDisplayedGrid (boolean IsDisplayedGrid);
 
-	/** Get Display in Grid	  */
+	/** Get Show in Grid	  */
 	public boolean isDisplayedGrid();
 
     /** Column name IsEncrypted */
@@ -465,6 +478,19 @@ public interface I_AD_Field
 	  */
 	public String getObscureType();
 
+    /** Column name NumLines */
+    public static final String COLUMNNAME_NumLines = "NumLines";
+
+	/** Set Row Span.
+	  * Number of rows for a field
+	  */
+	public void setNumLines (int NumLines);
+
+	/** Get Row Span.
+	  * Number of rows for a field
+	  */
+	public int getNumLines();
+
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
 
@@ -517,4 +543,17 @@ public interface I_AD_Field
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name XPosition */
+    public static final String COLUMNNAME_XPosition = "XPosition";
+
+	/** Set X Position.
+	  * Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public void setXPosition (int XPosition);
+
+	/** Get X Position.
+	  * Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public int getXPosition();
 }
