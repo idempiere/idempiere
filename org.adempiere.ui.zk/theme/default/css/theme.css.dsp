@@ -912,3 +912,8 @@ div.simileAjax-bubble-container {
 .info-product-tabbedpane {
 	background-color: #FFFFFF;
 }
+
+.field-label {
+	position: relative; 
+	float: right;
+}

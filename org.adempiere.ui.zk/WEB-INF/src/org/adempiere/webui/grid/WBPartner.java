@@ -24,7 +24,6 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Textbox;
-import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -42,12 +41,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.Span;
+import org.zkoss.zul.Vlayout;
 
 /**
  * Business Partner : Based on VBPartner
@@ -96,7 +98,7 @@ public class WBPartner extends Window implements EventListener, ValueChangeListe
 	
 	private WLocationEditor fAddress;/* = new WLocationDialog();*/
 	
-	private VerticalBox centerPanel = new VerticalBox();
+	private Vlayout centerPanel = new Vlayout();	
 	
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, false, false, false, false);
 	
@@ -140,9 +142,12 @@ public class WBPartner extends Window implements EventListener, ValueChangeListe
 		this.setWidth("350px");
 		this.setBorder("normal");
 		this.setClosable(true);
-		this.setTitle("Business Partner");
+		this.setSizable(true);
+		this.setTitle("Business Partner");		
 		this.appendChild(centerPanel);
 		this.appendChild(confirmPanel);
+		centerPanel.setWidth("100%");
+		
 		
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 	}
@@ -231,17 +236,21 @@ public class WBPartner extends Window implements EventListener, ValueChangeListe
 	
 	private Label createLine (Component field, String title, boolean addSpace)
 	{
-		Hbox hbox = new Hbox(); 
+		Hlayout layout = new Hlayout(); 
 		
-		hbox.setWidth("100%");
-		hbox.setWidths("30%, 70%");
+		layout.setHflex("10");
 		
 		Label label = new Label(Msg.translate(Env.getCtx(), title));
-		hbox.appendChild(label);
+		Span span = new Span();
+		span.setHflex("3");
+		layout.appendChild(span);
+		span.appendChild(label);
+		label.setSclass("field-label");
 
-		hbox.appendChild(field);
+		layout.appendChild(field);
+		((HtmlBasedComponent)field).setHflex("7");
 		
-		centerPanel.appendChild(hbox);
+		centerPanel.appendChild(layout);
 		centerPanel.appendChild(new Separator());
 		
 		return label;
@@ -428,8 +437,11 @@ public class WBPartner extends Window implements EventListener, ValueChangeListe
 		
 		if (m_partner.save())
 			log.fine("C_BPartner_ID=" + m_partner.getC_BPartner_ID());
-		else
+		else {
 			FDialog.error(m_WindowNo, this, "BPartnerNotSaved");
+			m_partner = null;
+			return false;
+		}
 		
 		//	***** Business Partner - Location *****
 		
