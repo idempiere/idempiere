@@ -878,6 +878,10 @@ div.simileAjax-bubble-container {
 
 .z-window-highlighted {
 	z-index: 1900 !important;
+}
+
+.z-window-popup {
+	z-index: 1900 !important;
 } 
 
 .grid-layout {
