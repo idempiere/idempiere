@@ -129,7 +129,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 	        else
 	            getComponent().setMultiline(false);
-	        getComponent().setRows(gridField.getNumLines());
+	        getComponent().setRows(gridField.getNumLines() <= 0 ? 1 : gridField.getNumLines());
 
 	        if (getComponent() instanceof Textbox)
 	        	((Textbox)getComponent()).setObscureType(obscureType);
