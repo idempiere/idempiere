@@ -59,7 +59,8 @@ function Calc()
 	{
 		try
 		{
-			var calcText = document.getElementById(calcTextId);
+			var id = "$".concat(calcTextId);
+			var calcText = jq(id)[0];
 			calcText.value = "";
 		}
 		catch (err)
@@ -71,7 +72,8 @@ function Calc()
 	{
 		try
 		{
-			var calcText = document.getElementById(calcTextId);
+			var id = "$".concat(calcTextId);
+			var calcText = jq(id)[0];
 			var val = calcText.value;
 			if (val != "")
 			{
@@ -89,7 +91,8 @@ function Calc()
 	{
 		try
 		{
-			var calcText = document.getElementById(calcTextId);
+			var id = "$".concat(calcTextId);
+			var calcText = jq(id)[0];
 			var value = calcText.value;
 			if (separator != '.')
 			{
@@ -103,12 +106,13 @@ function Calc()
 			}
 			calcText.value = result;
 
-			var displayText = document.getElementById(displayTextId);
+			id = "$".concat(displayTextId);
+			var displayText = jq(id)[0];
 
 			if (!displayText.readOnly && calcText.value != 'undefined')
 			{
 				displayText.value = calcText.value;
-				setTimeout("document.getElementById('" + displayTextId + "').focus()", 100);
+				setTimeout("jq('$" + displayTextId + "')[0].focus()", 100);
 			}
 		}
 	   	catch (err)
@@ -118,7 +122,8 @@ function Calc()
 
 	function append(calcTextId, val)
 	{
-		var calcText = document.getElementById(calcTextId);
+		var id = "$".concat(calcTextId);
+		var calcText = jq(id)[0];
 		calcText.value += val;
 	}
 }

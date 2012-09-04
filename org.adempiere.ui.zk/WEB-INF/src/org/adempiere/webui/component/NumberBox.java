@@ -22,12 +22,12 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.apps.AEnv;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
@@ -106,10 +106,10 @@ public class NumberBox extends Div
 		btnColumn.appendChild(btn);
         
         popup = getCalculatorPopup();
+        appendChild(popup);
         LayoutUtils.addSclass("editor-button", btn);
         btn.setPopup(popup);
-        btn.setStyle("text-align: center;");
-        appendChild(popup);
+        btn.setStyle("text-align: center;");        
      
         LayoutUtils.addSclass(".number-box", this);	     
     }
@@ -190,13 +190,27 @@ public class NumberBox extends Div
     
     private Popup getCalculatorPopup()
     {
-        Popup popup = new Popup(); 
+        Popup popup = new Popup() {
+        	@Override
+        	public void onPageAttached(Page newpage, Page oldpage) {
+        		super.onPageAttached(newpage, oldpage);
+        		if (newpage != null) {
+        			if (btn.getPopup() != null) {
+        				btn.setPopup(this);
+        			}
+        		}
+        	}
+        };
 
         Vbox vbox = new Vbox();
 
         char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
         
         txtCalc = new Textbox();
+        
+        decimalBox.setId(decimalBox.getUuid());
+        txtCalc.setId(txtCalc.getUuid());
+        
         txtCalc.setWidgetListener("onKeyPress", "return calc.validate('" + 
         		decimalBox.getId() + "','" + txtCalc.getId() 
                 + "'," + integral + "," + (int)separatorChar + ", event);");
