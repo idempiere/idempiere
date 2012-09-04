@@ -1501,7 +1501,7 @@ public class Login
 				}
 				else if (MAX_LOGIN_ATTEMPT > 0)
 				{
-					loginErrMsg = "Invaid User ID or Password (Login Attempts: " + count + " / " + MAX_LOGIN_ATTEMPT + ")";
+					loginErrMsg = "Invalid User ID or Password (Login Attempts: " + count + " / " + MAX_LOGIN_ATTEMPT + ")";
 					reachMaxAttempt = false;					
 				}
 				else
