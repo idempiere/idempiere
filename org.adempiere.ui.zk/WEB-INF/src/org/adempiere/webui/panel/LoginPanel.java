@@ -91,7 +91,7 @@ import org.zkoss.zul.Image;
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
-public class LoginPanel extends Window implements EventListener
+public class LoginPanel extends Window implements EventListener<Event>
 {
 	/**
 	 * 
@@ -229,7 +229,7 @@ public class LoginPanel extends Window implements EventListener
         div.appendChild(pnlButtons);
         this.appendChild(div);
 
-        txtUserId.addEventListener(TokenEvent.ON_USER_TOKEN, new EventListener() {
+        txtUserId.addEventListener(TokenEvent.ON_USER_TOKEN, new EventListener<Event>() {
 
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -480,8 +480,13 @@ public class LoginPanel extends Window implements EventListener
         
         KeyNamePair clientsKNPairs[] = login.getClients(userId, userPassword);
         if (clientsKNPairs == null || clientsKNPairs.length == 0)
-            throw new WrongValueException("User Id or Password invalid!!!");
-
+        {
+        	String loginErrMsg = login.getLoginErrMsg();
+        	if (loginErrMsg != null && loginErrMsg.length() > 0)
+        		throw new WrongValueException(loginErrMsg);
+        	else
+        		throw new WrongValueException("User Id or Password invalid!!!");
+        }
         else
         {
         	String langName = null;
@@ -492,7 +497,10 @@ public class LoginPanel extends Window implements EventListener
         	Language language = findLanguage(langName);
             Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName()); // Elaine 2009/02/06
 
-            wndLogin.loginOk(userId, chkSelectRole.isChecked(), clientsKNPairs);
+            if (login.isPasswordExpired())
+            	wndLogin.changePassword(userId, userPassword, chkSelectRole.isChecked(), clientsKNPairs);
+            else
+            	wndLogin.loginOk(userId, chkSelectRole.isChecked(), clientsKNPairs);
 
             Locale locale = language.getLocale();
             currSess.setAttribute(Attributes.PREFERRED_LOCALE, locale);

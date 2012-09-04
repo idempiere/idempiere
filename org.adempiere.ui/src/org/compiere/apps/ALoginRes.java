@@ -66,7 +66,9 @@ public final class ALoginRes extends ListResourceBundle
 	{ "Cancel",             "&Cancel" },
 	{ "VersionConflict",    "Version Conflict:" },
 	{ "VersionInfo",        "Server <> Client" },
-	{ "PleaseUpgrade",      "Please download new Version from Server" }
+	{ "PleaseUpgrade",      "Please download new Version from Server" },
+	{ "ChangePassword",     "Change Password" },
+	{ "PasswordExpired",	"Password Expired" }
 	};
 
 	/**

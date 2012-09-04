@@ -63,6 +63,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Application Login Window
@@ -110,6 +111,14 @@ public final class ALogin extends CDialog
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ALogin.class);
 
+	private static final int TAB_CONNECTION = 0;
+	private static final int TAB_DEFAULTS = 1;
+	private static final int TAB_CHANGE_PASSWORD = 2;
+
+	private static final int NOT_CONNECTED = -1;
+	private static final int CONNECTED_OK = 0;
+	private static final int CONNECTED_OK_WITH_PASSWORD_EXPIRED = 1;
+
 	private CPanel mainPanel = new CPanel(new BorderLayout());
 	private CTabbedPane loginTabPane = new CTabbedPane();
 	private CPanel connectionPanel = new CPanel();
@@ -145,6 +154,17 @@ public final class ALogin extends CDialog
 	private BorderLayout southLayout = new BorderLayout();
 	private StatusBar statusBar = new StatusBar();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, false, false, false, false, false);
+	
+	// IDEMPIERE-373 Implement User Locking
+	private CPanel changePasswordPanel = new CPanel();
+	private GridBagLayout changePasswordPanelLayout = new GridBagLayout();
+	private CLabel lblOldPassword = new CLabel();
+    private CLabel lblNewPassword = new CLabel();
+    private CLabel lblRetypeNewPassword = new CLabel();
+    private JPasswordField txtOldPassword = new JPasswordField();
+    private JPasswordField txtNewPassword = new JPasswordField();
+    private JPasswordField txtRetypeNewPassword = new JPasswordField();	
+    //
 
 	/** Server Connection       */
 	private CConnection 	m_cc;
@@ -158,7 +178,7 @@ public final class ALogin extends CDialog
 	/**	Combo Active			*/
 	private boolean			m_okPressed = false;
 	/**	Connection OK			*/
-	private boolean		    m_connectionOK = false;
+	private int		    	m_connectionOK = -1;
 	/**	Window No				*/
 	private int			    m_WindowNo;
 	/** Context					*/
@@ -334,6 +354,43 @@ public final class ALogin extends CDialog
 		// @Trifon - end
 		//
 		loginTabPane.add(defaultPanel, res.getString("Defaults"));
+		
+		// IDEMPIERE-373 Implement User Locking		
+		txtOldPassword.setName("txtOldPassword");
+		lblOldPassword.setRequestFocusEnabled(false);
+		lblOldPassword.setLabelFor(txtOldPassword);
+		lblOldPassword.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblOldPassword.setText(Msg.getMsg(m_ctx, "Old Password"));
+
+		txtNewPassword.setName("txtNewPassword");
+		lblNewPassword.setRequestFocusEnabled(false);
+		lblNewPassword.setLabelFor(txtNewPassword);
+		lblNewPassword.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewPassword.setText(Msg.getMsg(m_ctx, "New Password"));
+		
+		txtRetypeNewPassword.setName("txtRetypeNewPassword");
+		lblRetypeNewPassword.setRequestFocusEnabled(false);
+		lblRetypeNewPassword.setLabelFor(txtRetypeNewPassword);
+		lblRetypeNewPassword.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblRetypeNewPassword.setText(Msg.getMsg(m_ctx, "New Password Confirm"));
+
+		changePasswordPanel.setLayout(changePasswordPanelLayout);
+		
+		changePasswordPanel.add(lblOldPassword,       new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
+			changePasswordPanel.add(txtOldPassword,        new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
+					,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
+		changePasswordPanel.add(lblNewPassword,       new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
+			changePasswordPanel.add(txtNewPassword,        new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0
+					,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));		
+		changePasswordPanel.add(lblRetypeNewPassword,       new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
+				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
+			changePasswordPanel.add(txtRetypeNewPassword,        new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0
+				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
+		loginTabPane.add(changePasswordPanel, res.getString("ChangePassword"));
+		loginTabPane.setEnabledAt(TAB_CHANGE_PASSWORD, false);
+		//
 
 		//  Help
 		/*
@@ -389,9 +446,9 @@ public final class ALogin extends CDialog
 		{
 			connectionOK ();
 			defaultsOK ();
-			if (m_connectionOK)		//	simulate
+			if (m_connectionOK >= 0)		//	simulate
 				m_okPressed = true;
-			return m_connectionOK;
+			return m_connectionOK >= 0;
 		}
 		return false;
 	}	//	initLogin
@@ -431,7 +488,7 @@ public final class ALogin extends CDialog
 	 */
 	private void validateConnection()
 	{
-		m_connectionOK = false;
+		m_connectionOK = -1;
 		validateAppServer();
 		
 		//make sure connecting to new database
@@ -447,7 +504,7 @@ public final class ALogin extends CDialog
 	 */
 	private void appExit()
 	{
-		m_connectionOK = false;
+		m_connectionOK = -1;
 		dispose();
 	}	//	appExit_actionPerformed
 
@@ -458,7 +515,7 @@ public final class ALogin extends CDialog
 	 */
 	public boolean isConnected()
 	{
-		return m_connectionOK;
+		return m_connectionOK >= -1;
 	}	//	isConnected
 
 	/**
@@ -478,11 +535,17 @@ public final class ALogin extends CDialog
 	{
 		if (e.getActionCommand().equals(ConfirmPanel.A_OK))
 		{
-			if (loginTabPane.getSelectedIndex() == 0) {
+			confirmPanel.getOKButton().setEnabled(false);
+
+			if (loginTabPane.getSelectedIndex() == TAB_CONNECTION) {
 				connectionOK();		//	first ok
 				printerField.refresh();
 			}
-			else
+			else if (loginTabPane.getSelectedIndex() == TAB_CHANGE_PASSWORD) 
+			{				
+				validateChangePassword();
+			}
+			else 
 			{
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				m_okPressed = true; 
@@ -491,6 +554,8 @@ public final class ALogin extends CDialog
 					m_okPressed = false;
 				setCursor(Cursor.getDefaultCursor());
 			}
+			
+			confirmPanel.getOKButton().setEnabled(true);
 		}
 		else if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL))
 			appExit();
@@ -523,7 +588,7 @@ public final class ALogin extends CDialog
 
 		m_connectionOK = tryConnection();
 
-		if (m_connectionOK)			
+		if (m_connectionOK >= 0)			
 		{
 			//  Verify Language & Load Msg
 			Language l = Language.getLoginLanguage();
@@ -542,14 +607,70 @@ public final class ALogin extends CDialog
 			}
 			//	Set Defaults
 			printerField.setValue(Ini.getProperty(Ini.P_PRINTER));
-			//	Change Tab to Default
-			loginTabPane.setSelectedIndex(1);
+			
+			if (m_connectionOK == CONNECTED_OK_WITH_PASSWORD_EXPIRED)
+				loginTabPane.setSelectedIndex(TAB_CHANGE_PASSWORD);
+			else //	Change Tab to Default
+				loginTabPane.setSelectedIndex(TAB_DEFAULTS);
 		}
-
+		
 		confirmPanel.getOKButton().setEnabled(true);
 		setCursor(Cursor.getDefaultCursor());
 	}	//	connectionOK
+	
+	private void validateChangePassword()
+    {
+    	String oldPassword = new String(txtOldPassword.getPassword());
+    	String newPassword = new String(txtNewPassword.getPassword());
+    	String retypeNewPassword = new String(txtRetypeNewPassword.getPassword());
+    	
+    	if (Util.isEmpty(oldPassword))
+    	{
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "@OldPasswordMandatory@"), true);
+    		return;
+    	}
+    	
+    	if (Util.isEmpty(retypeNewPassword))
+    	{
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "@NewPasswordConfirmMandatory@"), true);
+    		return;
+    	}
+    	
+    	if (!newPassword.equals(retypeNewPassword))
+    	{
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "@PasswordNotMatch@"), true);
+    		return;
+    	}
+    	
+    	String m_userPassword = new String(m_pwd);
+    	if (!oldPassword.equals(m_userPassword))
+    	{
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "@OldPasswordNoMatch@"), true);
+    		return;
+    	}
 
+    	for (int index = 0; index < clientCombo.getItemCount(); index++)
+    	{
+    		KeyNamePair clientKNPair = (KeyNamePair) clientCombo.getItemAt(index);
+    		int clientId = clientKNPair.getKey();
+    		Env.setContext(m_ctx, "#AD_Client_ID", clientId);
+    		MUser user = MUser.get(m_ctx, m_user);
+    		if (user == null)
+    		{
+    			log.severe("Could not find user '" + m_user + "'");
+    			statusBar.setStatusLine("Could not find user '" + m_user + "'", true);
+    			return;
+    		}
+    		
+    		user.setPassword(newPassword);
+    		user.saveEx();
+    	}
+    	
+    	passwordField.setText(newPassword);
+    	m_pwd = newPassword.toCharArray();
+    	m_connectionOK = CONNECTED_OK;
+    	loginTabPane.setSelectedIndex(TAB_DEFAULTS);
+    }
 
 	/**
 	 *	Change of tab					<->
@@ -557,19 +678,24 @@ public final class ALogin extends CDialog
 	 */
 	public void stateChanged(ChangeEvent e)
 	{
-		if (loginTabPane.getSelectedIndex() == 2)   //  allow access to help
-			return;
+//		if (loginTabPane.getSelectedIndex() == 3)   //  allow access to help
+//			return;
 
 		if (!(String.valueOf(passwordField.getPassword()).equals(String.valueOf(m_pwd))
 			&& userTextField.getText().equals(m_user)))
-			m_connectionOK = false;
+			m_connectionOK = -1;
 		//
-		if (m_connectionOK)
+		if (m_connectionOK == CONNECTED_OK_WITH_PASSWORD_EXPIRED)
+		{
+			statusBar.setStatusLine(txt_PasswordExpired);
+			loginTabPane.setSelectedIndex(TAB_CHANGE_PASSWORD);
+		}
+		else if (m_connectionOK == CONNECTED_OK)
 			statusBar.setStatusLine(txt_LoggedIn);
 		else
 		{
 			statusBar.setStatusLine(txt_NotConnected, true);
-			loginTabPane.setSelectedIndex(0);
+			loginTabPane.setSelectedIndex(TAB_CONNECTION);
 		}
 		confirmPanel.getOKButton().requestFocus();
 	}	//	loginTabPane
@@ -611,9 +737,9 @@ public final class ALogin extends CDialog
 		checkVersion();			//	exits if conflict
 
 		//  Close - we are done
-		if (m_connectionOK)
+		if (m_connectionOK >= 0)
 			this.dispose();
-		return m_connectionOK;
+		return m_connectionOK >= 0;
 	}	//	defaultsOK
 
 
@@ -622,8 +748,8 @@ public final class ALogin extends CDialog
 	 *  - Get Connection
 	 *  - Compare User info
 	 *  @return true if connected
-	 */
-	private boolean tryConnection()
+	 */	
+	private int tryConnection()
 	{
 		m_user = userTextField.getText();
 		m_pwd = passwordField.getPassword();
@@ -636,7 +762,7 @@ public final class ALogin extends CDialog
 		{
 			statusBar.setStatusLine(txt_NoDatabase, true);
 			hostField.setBackground(AdempierePLAF.getFieldBackground_Error());
-			return false;
+			return NOT_CONNECTED;
 		}
 		
 		//	Reference check
@@ -653,10 +779,15 @@ public final class ALogin extends CDialog
 			clients = m_login.getClients(m_user, new String(m_pwd));
 			if (clients == null || clients.length == 0)
 			{
-				statusBar.setStatusLine(txt_UserPwdError, true);
+				String loginErrMsg = m_login.getLoginErrMsg();
+	        	if (loginErrMsg != null && loginErrMsg.length() > 0)
+	        		statusBar.setStatusLine(loginErrMsg, true);
+	        	else
+	        		statusBar.setStatusLine(txt_UserPwdError, true);
+	        		
 				userTextField.setBackground(AdempierePLAF.getFieldBackground_Error());
 				passwordField.setBackground(AdempierePLAF.getFieldBackground_Error());
-				return false;
+				return NOT_CONNECTED;
 			}
 		}
 		catch (Throwable e)
@@ -666,16 +797,15 @@ public final class ALogin extends CDialog
 				statusBar.setStatusLine(txt_UserPwdError, true);
 				userTextField.setBackground(AdempierePLAF.getFieldBackground_Error());
 				passwordField.setBackground(AdempierePLAF.getFieldBackground_Error());
-				return false;
+				return NOT_CONNECTED;
 			}
 			else
 			{
 				log.severe(CLogger.getRootCause(e).getLocalizedMessage());
 				statusBar.setStatusLine(CLogger.getRootCause(e).getLocalizedMessage(), true);
-				return false;
+				return NOT_CONNECTED;
 			}
 		}
-		
 		
 		//	Delete existing role items
 		m_comboActive = true;
@@ -717,13 +847,21 @@ public final class ALogin extends CDialog
 		passwordField.setBackground(AdempierePLAF.getFieldBackground_Normal());
 		//
 		this.setTitle(hostField.getDisplay());
-		statusBar.setStatusLine(txt_LoggedIn);
 		m_comboActive = false;
 		clientComboChanged();
-		return true;
+		
+		if (m_login.isPasswordExpired())
+		{
+			statusBar.setStatusLine(txt_PasswordExpired);
+			return CONNECTED_OK_WITH_PASSWORD_EXPIRED;
+		}
+		else
+		{
+			statusBar.setStatusLine(txt_LoggedIn);
+			return CONNECTED_OK;
+		}
 	}	//	tryConnection
-
-
+	
 	/**
 	 *	Client changed - fill Role List
 	 */
@@ -927,7 +1065,8 @@ public final class ALogin extends CDialog
 	 */
 	private String	//	txt_Connected, 
 					txt_NotConnected, txt_NoDatabase,
-					txt_UserPwdError, txt_RoleError, txt_LoggedIn;
+					txt_UserPwdError, txt_RoleError, txt_LoggedIn,
+					txt_PasswordExpired;
 
 	/**
 	 *	Change Language
@@ -970,6 +1109,7 @@ public final class ALogin extends CDialog
 		txt_UserPwdError = res.getString("UserPwdError");
 		txt_RoleError = res.getString("RoleNotFound");
 		txt_LoggedIn = res.getString("Authorized");
+		txt_PasswordExpired = res.getString("PasswordExpired");
 		//
 		loginTabPane.setTitleAt(0, res.getString("Connection"));
 		if (loginTabPane.getTabCount() > 1)
@@ -981,10 +1121,15 @@ public final class ALogin extends CDialog
 		dateField.setFormat();
 		dateField.setValue(new Timestamp(System.currentTimeMillis()));
 		//
-		if (m_connectionOK)
+		if (m_connectionOK == CONNECTED_OK)
 		{
 			this.setTitle(hostField.getDisplay());
 			statusBar.setStatusLine(txt_LoggedIn);
+		}
+		else if (m_connectionOK == CONNECTED_OK_WITH_PASSWORD_EXPIRED)
+		{
+			this.setTitle(hostField.getDisplay());
+			statusBar.setStatusLine(txt_PasswordExpired);
 		}
 		else
 		{

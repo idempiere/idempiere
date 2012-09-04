@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -36,7 +37,6 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Secure;
 import org.compiere.util.SecureEngine;
@@ -175,7 +175,7 @@ public class MUser extends X_AD_User
 		}
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
-		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
+//		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
 		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
 		MUser retValue = null;
 		
@@ -938,6 +938,8 @@ public class MUser extends X_AD_User
 			boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 			if (hash_password)
 				setPassword(getPassword());
+			
+			setDatePasswordChanged(new Timestamp(new Date().getTime()));
 		}
 		
 		return true;

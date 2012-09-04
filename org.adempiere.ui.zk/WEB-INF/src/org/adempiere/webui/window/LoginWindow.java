@@ -28,6 +28,7 @@ import java.util.Properties;
 
 import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.FWindow;
+import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
 import org.adempiere.webui.panel.RolePanel;
 import org.compiere.model.MSysConfig;
@@ -59,6 +60,7 @@ public class LoginWindow extends FWindow implements EventListener
 	private IWebClient app;
     private Properties ctx;
     private LoginPanel pnlLogin;
+    private ChangePasswordPanel pnlChangePassword;
     private RolePanel pnlRole;
 
     public LoginWindow(IWebClient app)
@@ -87,6 +89,13 @@ public class LoginWindow extends FWindow implements EventListener
         pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs);
         this.getChildren().clear();
         this.appendChild(pnlRole);
+    }
+    
+    public void changePassword(String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs)
+    {
+		pnlChangePassword = new ChangePasswordPanel(ctx, this, userName, userPassword, show, clientsKNPairs);
+        this.getChildren().clear();
+        this.appendChild(pnlChangePassword);
     }
 
     public void loginCompleted()

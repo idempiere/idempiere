@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_User
  *  @author Adempiere (generated) 
- *  @version 360LTS.015
+ *  @version Release 3.6.0LTS
  */
 public interface I_AD_User 
 {
@@ -31,7 +31,7 @@ public interface I_AD_User
     public static final String Table_Name = "AD_User";
 
     /** AD_Table_ID=114 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 114;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,6 +88,15 @@ public interface I_AD_User
 	  */
 	public int getAD_User_ID();
 
+    /** Column name AD_User_UU */
+    public static final String COLUMNNAME_AD_User_UU = "AD_User_UU";
+
+	/** Set AD_User_UU	  */
+	public void setAD_User_UU (String AD_User_UU);
+
+	/** Get AD_User_UU	  */
+	public String getAD_User_UU();
+
     /** Column name Birthday */
     public static final String COLUMNNAME_Birthday = "Birthday";
 
@@ -114,7 +123,7 @@ public interface I_AD_User
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
     public static final String COLUMNNAME_C_BPartner_Location_ID = "C_BPartner_Location_ID";
@@ -129,7 +138,7 @@ public interface I_AD_User
 	  */
 	public int getC_BPartner_Location_ID();
 
-	public I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Greeting_ID */
     public static final String COLUMNNAME_C_Greeting_ID = "C_Greeting_ID";
@@ -144,7 +153,7 @@ public interface I_AD_User
 	  */
 	public int getC_Greeting_ID();
 
-	public I_C_Greeting getC_Greeting() throws RuntimeException;
+	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException;
 
     /** Column name C_Job_ID */
     public static final String COLUMNNAME_C_Job_ID = "C_Job_ID";
@@ -159,7 +168,7 @@ public interface I_AD_User
 	  */
 	public int getC_Job_ID();
 
-	public I_C_Job getC_Job() throws RuntimeException;
+	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException;
 
     /** Column name Comments */
     public static final String COLUMNNAME_Comments = "Comments";
@@ -202,6 +211,33 @@ public interface I_AD_User
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DateAccountLocked */
+    public static final String COLUMNNAME_DateAccountLocked = "DateAccountLocked";
+
+	/** Set Date Account Locked	  */
+	public void setDateAccountLocked (Timestamp DateAccountLocked);
+
+	/** Get Date Account Locked	  */
+	public Timestamp getDateAccountLocked();
+
+    /** Column name DateLastLogin */
+    public static final String COLUMNNAME_DateLastLogin = "DateLastLogin";
+
+	/** Set Date Last Login	  */
+	public void setDateLastLogin (Timestamp DateLastLogin);
+
+	/** Get Date Last Login	  */
+	public Timestamp getDateLastLogin();
+
+    /** Column name DatePasswordChanged */
+    public static final String COLUMNNAME_DatePasswordChanged = "DatePasswordChanged";
+
+	/** Set Date Password Changed	  */
+	public void setDatePasswordChanged (Timestamp DatePasswordChanged);
+
+	/** Get Date Password Changed	  */
+	public Timestamp getDatePasswordChanged();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -281,6 +317,15 @@ public interface I_AD_User
 	  */
 	public Timestamp getEMailVerifyDate();
 
+    /** Column name FailedLoginCount */
+    public static final String COLUMNNAME_FailedLoginCount = "FailedLoginCount";
+
+	/** Set Failed Login Count	  */
+	public void setFailedLoginCount (int FailedLoginCount);
+
+	/** Get Failed Login Count	  */
+	public int getFailedLoginCount();
+
     /** Column name Fax */
     public static final String COLUMNNAME_Fax = "Fax";
 
@@ -333,6 +378,15 @@ public interface I_AD_User
 	  */
 	public boolean isInPayroll();
 
+    /** Column name IsLocked */
+    public static final String COLUMNNAME_IsLocked = "IsLocked";
+
+	/** Set Locked	  */
+	public void setIsLocked (boolean IsLocked);
+
+	/** Get Locked	  */
+	public boolean isLocked();
+
     /** Column name IsMenuAutoExpand */
     public static final String COLUMNNAME_IsMenuAutoExpand = "IsMenuAutoExpand";
 
@@ -345,6 +399,15 @@ public interface I_AD_User
 	  * If ticked, the menu is automatically expanded
 	  */
 	public String getIsMenuAutoExpand();
+
+    /** Column name IsNoPasswordReset */
+    public static final String COLUMNNAME_IsNoPasswordReset = "IsNoPasswordReset";
+
+	/** Set No Password Reset	  */
+	public void setIsNoPasswordReset (boolean IsNoPasswordReset);
+
+	/** Get No Password Reset	  */
+	public boolean isNoPasswordReset();
 
     /** Column name LastContact */
     public static final String COLUMNNAME_LastContact = "LastContact";
@@ -458,7 +521,7 @@ public interface I_AD_User
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
-	
+
     /** Column name Salt */
     public static final String COLUMNNAME_Salt = "Salt";
 
@@ -470,7 +533,7 @@ public interface I_AD_User
 	/** Get Salt.
 	  * Random data added to improve password hash effectiveness
 	  */
-	public String getSalt();	
+	public String getSalt();
 
     /** Column name Supervisor_ID */
     public static final String COLUMNNAME_Supervisor_ID = "Supervisor_ID";
@@ -485,7 +548,7 @@ public interface I_AD_User
 	  */
 	public int getSupervisor_ID();
 
-	public I_AD_User getSupervisor() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Title */
     public static final String COLUMNNAME_Title = "Title";

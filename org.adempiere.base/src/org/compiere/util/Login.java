@@ -21,7 +21,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -59,6 +61,17 @@ import org.compiere.model.Query;
  */
 public class Login
 {
+	private String loginErrMsg;
+	private boolean isPasswordExpired;
+
+	public String getLoginErrMsg() {
+		return loginErrMsg;
+	}
+	
+	public boolean isPasswordExpired() {
+		return isPasswordExpired;
+	}
+
 	/**
 	 *  Test Init - Set Environment for tests
 	 *	@param isClient client session
@@ -471,6 +484,9 @@ public class Login
 	{
 		if (role == null)
 			throw new IllegalArgumentException("Role missing");
+		
+		loginErrMsg = null;
+		isPasswordExpired = false;
 
 	//	s_log.fine("loadClients - Role: " + role.toStringX());
 
@@ -1286,6 +1302,9 @@ public class Login
 			log.warning("No Apps Password");
 			return null;
 		}
+		
+		loginErrMsg = null;
+		isPasswordExpired = false;
 
 		if (system.isLDAP())
 		{
@@ -1326,6 +1345,48 @@ public class Login
 			log.saveError("UserPwdError", app_user, false);
 			return null;
 		}
+
+		int MAX_ACCOUNT_LOCK_MINUTES = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES, 0);
+		int MAX_INACTIVE_PERIOD_DAY = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0);
+		int MAX_PASSWORD_AGE = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
+		long now = new Date().getTime();
+		for (MUser user : users) {
+			if (MAX_ACCOUNT_LOCK_MINUTES > 0 && user.isLocked() && user.getDateAccountLocked() != null)
+			{
+				long minutes = (now - user.getDateAccountLocked().getTime()) / (1000 * 60);
+				if (minutes > MAX_ACCOUNT_LOCK_MINUTES)
+				{
+					boolean inactive = false;
+					if (MAX_INACTIVE_PERIOD_DAY > 0 && user.getDateLastLogin() != null)
+					{
+						long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
+						if (days > MAX_INACTIVE_PERIOD_DAY)
+							inactive = true;
+					}
+					
+					if (!inactive)
+					{
+						user.setIsLocked(false);
+						user.setDateAccountLocked(null);
+						user.setFailedLoginCount(0);
+						if (!user.save())
+							log.severe("Failed to unlock user account");
+					}
+				}					
+			}
+			
+			if (MAX_INACTIVE_PERIOD_DAY > 0 && !user.isLocked() && user.getDateLastLogin() != null)
+			{
+				long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
+				if (days > MAX_INACTIVE_PERIOD_DAY)
+				{
+					user.setIsLocked(true);
+					user.setDateAccountLocked(new Timestamp(new Date().getTime()));
+					if (!user.save())
+						log.severe("Failed to lock user account");
+				}
+			}
+		}
 		
 		for (MUser user : users) {
 			if (clientsValidated.contains(user.getAD_Client_ID())) {
@@ -1347,7 +1408,20 @@ public class Login
 				// password not hashed
 				valid = user.getPassword().equals(app_pwd);
 			}
-			if (valid ) {
+			if (valid ) {			
+				if (user.isLocked())
+					continue;
+				
+				if (MAX_PASSWORD_AGE > 0 && !user.isNoPasswordReset())
+				{
+					if (user.getDatePasswordChanged() == null)
+						user.setDatePasswordChanged(user.getUpdated());
+					
+					long days = (now - user.getDatePasswordChanged().getTime()) / (1000 * 60 * 60 * 24);
+					if (days > MAX_PASSWORD_AGE)
+						isPasswordExpired = true;
+				}
+												
 				StringBuffer sql= new StringBuffer("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
 			      sql.append(" FROM AD_User_Roles ur")
                    .append(" INNER JOIN AD_User u on (ur.AD_User_ID=u.AD_User_ID)")
@@ -1397,7 +1471,50 @@ public class Login
 			retValue = new KeyNamePair[clientList.size()];
 			clientList.toArray(retValue);
 			log.fine("User=" + app_user + " - roles #" + retValue.length);
-
+			
+			for (MUser user : users) 
+			{
+				user.setFailedLoginCount(0);
+				user.setDateLastLogin(new Timestamp(new Date().getTime()));
+				if (!user.save())
+					log.severe("Failed to update user record with date last login");
+			}
+		}
+		else
+		{
+			for (MUser user : users) 
+			{
+				if (user.isLocked())
+				{
+					loginErrMsg = "User account '" + app_user + "' is locked, please contact the system administrator";
+					break;
+				}
+				
+				int count = user.getFailedLoginCount() + 1;
+				
+				boolean reachMaxAttempt = false;
+				int MAX_LOGIN_ATTEMPT = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_LOGIN_ATTEMPT, 0);
+				if (MAX_LOGIN_ATTEMPT > 0 && count >= MAX_LOGIN_ATTEMPT)
+				{
+					loginErrMsg = "Reached the maximum number of login attempts, user account '" + app_user + "' is locked";
+					reachMaxAttempt = true;
+				}
+				else if (MAX_LOGIN_ATTEMPT > 0)
+				{
+					loginErrMsg = "Invaid User ID or Password (Login Attempts: " + count + " / " + MAX_LOGIN_ATTEMPT + ")";
+					reachMaxAttempt = false;					
+				}
+				else
+				{
+					reachMaxAttempt = false;
+				}
+				
+				user.setFailedLoginCount(count);
+				user.setIsLocked(reachMaxAttempt);
+				user.setDateAccountLocked(user.isLocked() ? new Timestamp(new Date().getTime()) : null);
+				if (!user.save())
+					log.severe("Failed to update user record with increase failed login count");
+			}
 		}
 		return retValue;
 	}
@@ -1481,6 +1598,9 @@ public class Login
 		if (Env.getContext(m_ctx,"#AD_User_ID").length() == 0){
 			throw new UnsupportedOperationException("Missing Context #AD_User_ID");
 		}
+		
+		loginErrMsg = null;
+		isPasswordExpired = false;
 		
 		int AD_User_ID = Env.getContextAsInt(m_ctx, "#AD_User_ID");
 		KeyNamePair[] retValue = null;

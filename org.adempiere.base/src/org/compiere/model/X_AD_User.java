@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User
  *  @author Adempiere (generated) 
- *  @version 360LTS.015 - $Id$ */
+ *  @version Release 3.6.0LTS - $Id$ */
 public class X_AD_User extends PO implements I_AD_User, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120418L;
+	private static final long serialVersionUID = 20120830L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -40,10 +40,16 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
       /** if (AD_User_ID == 0)
         {
 			setAD_User_ID (0);
+			setFailedLoginCount (0);
+// 0
 			setIsFullBPAccess (true);
 // Y
 			setIsInPayroll (false);
 // N
+			setIsLocked (false);
+// 'N'
+			setIsNoPasswordReset (false);
+// 'N'
 			setName (null);
 			setNotificationType (null);
 // E
@@ -124,6 +130,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set AD_User_UU.
+		@param AD_User_UU AD_User_UU	  */
+	public void setAD_User_UU (String AD_User_UU)
+	{
+		set_Value (COLUMNNAME_AD_User_UU, AD_User_UU);
+	}
+
+	/** Get AD_User_UU.
+		@return AD_User_UU	  */
+	public String getAD_User_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_User_UU);
+	}
+
 	/** Set Birthday.
 		@param Birthday 
 		Birthday or Anniversary day
@@ -141,9 +161,9 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_Birthday);
 	}
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_BPartner_ID(), get_TrxName());	}
 
 	/** Set Business Partner .
@@ -169,9 +189,9 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
     {
-		return (I_C_BPartner_Location)MTable.get(getCtx(), I_C_BPartner_Location.Table_Name)
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
 			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
 
 	/** Set Partner Location.
@@ -197,9 +217,9 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_Greeting getC_Greeting() throws RuntimeException
+	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException
     {
-		return (I_C_Greeting)MTable.get(getCtx(), I_C_Greeting.Table_Name)
+		return (org.compiere.model.I_C_Greeting)MTable.get(getCtx(), org.compiere.model.I_C_Greeting.Table_Name)
 			.getPO(getC_Greeting_ID(), get_TrxName());	}
 
 	/** Set Greeting.
@@ -225,9 +245,9 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_Job getC_Job() throws RuntimeException
+	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
     {
-		return (I_C_Job)MTable.get(getCtx(), I_C_Job.Table_Name)
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_Name)
 			.getPO(getC_Job_ID(), get_TrxName());	}
 
 	/** Set Position.
@@ -296,6 +316,48 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getConnectionProfile () 
 	{
 		return (String)get_Value(COLUMNNAME_ConnectionProfile);
+	}
+
+	/** Set Date Account Locked.
+		@param DateAccountLocked Date Account Locked	  */
+	public void setDateAccountLocked (Timestamp DateAccountLocked)
+	{
+		set_Value (COLUMNNAME_DateAccountLocked, DateAccountLocked);
+	}
+
+	/** Get Date Account Locked.
+		@return Date Account Locked	  */
+	public Timestamp getDateAccountLocked () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateAccountLocked);
+	}
+
+	/** Set Date Last Login.
+		@param DateLastLogin Date Last Login	  */
+	public void setDateLastLogin (Timestamp DateLastLogin)
+	{
+		set_Value (COLUMNNAME_DateLastLogin, DateLastLogin);
+	}
+
+	/** Get Date Last Login.
+		@return Date Last Login	  */
+	public Timestamp getDateLastLogin () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateLastLogin);
+	}
+
+	/** Set Date Password Changed.
+		@param DatePasswordChanged Date Password Changed	  */
+	public void setDatePasswordChanged (Timestamp DatePasswordChanged)
+	{
+		set_Value (COLUMNNAME_DatePasswordChanged, DatePasswordChanged);
+	}
+
+	/** Get Date Password Changed.
+		@return Date Password Changed	  */
+	public Timestamp getDatePasswordChanged () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DatePasswordChanged);
 	}
 
 	/** Set Description.
@@ -400,6 +462,23 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_EMailVerifyDate);
 	}
 
+	/** Set Failed Login Count.
+		@param FailedLoginCount Failed Login Count	  */
+	public void setFailedLoginCount (int FailedLoginCount)
+	{
+		set_Value (COLUMNNAME_FailedLoginCount, Integer.valueOf(FailedLoginCount));
+	}
+
+	/** Get Failed Login Count.
+		@return Failed Login Count	  */
+	public int getFailedLoginCount () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_FailedLoginCount);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Fax.
 		@param Fax 
 		Facsimile number
@@ -465,6 +544,27 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return false;
 	}
 
+	/** Set Locked.
+		@param IsLocked Locked	  */
+	public void setIsLocked (boolean IsLocked)
+	{
+		set_Value (COLUMNNAME_IsLocked, Boolean.valueOf(IsLocked));
+	}
+
+	/** Get Locked.
+		@return Locked	  */
+	public boolean isLocked () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsLocked);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** IsMenuAutoExpand AD_Reference_ID=319 */
 	public static final int ISMENUAUTOEXPAND_AD_Reference_ID=319;
 	/** Yes = Y */
@@ -487,6 +587,27 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getIsMenuAutoExpand () 
 	{
 		return (String)get_Value(COLUMNNAME_IsMenuAutoExpand);
+	}
+
+	/** Set No Password Reset.
+		@param IsNoPasswordReset No Password Reset	  */
+	public void setIsNoPasswordReset (boolean IsNoPasswordReset)
+	{
+		set_Value (COLUMNNAME_IsNoPasswordReset, Boolean.valueOf(IsNoPasswordReset));
+	}
+
+	/** Get No Password Reset.
+		@return No Password Reset	  */
+	public boolean isNoPasswordReset () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsNoPasswordReset);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Last Contact.
@@ -664,29 +785,27 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		}
 		return false;
 	}
-	
-	/**
-	 * Set Salt.
-	 * 
-	 * @param Salt
-	 * Random data added to improve password hash effectiveness
-	 */
-	public void setSalt(String Salt) {
-		set_ValueNoCheck(COLUMNNAME_Salt, Salt);
+
+	/** Set Salt.
+		@param Salt 
+		Random data added to improve password hash effectiveness
+	  */
+	public void setSalt (String Salt)
+	{
+		set_ValueNoCheck (COLUMNNAME_Salt, Salt);
 	}
 
-	/**
-	 * Get Salt.
-	 * 
-	 * @return Random data added to improve password hash effectiveness
-	 */
-	public String getSalt() {
-		return (String) get_Value(COLUMNNAME_Salt);
+	/** Get Salt.
+		@return Random data added to improve password hash effectiveness
+	  */
+	public String getSalt () 
+	{
+		return (String)get_Value(COLUMNNAME_Salt);
 	}
 
-	public I_AD_User getSupervisor() throws RuntimeException
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSupervisor_ID(), get_TrxName());	}
 
 	/** Set Supervisor.
