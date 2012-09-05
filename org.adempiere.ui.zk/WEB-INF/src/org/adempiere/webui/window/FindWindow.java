@@ -111,8 +111,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5352467965724233821L;
-	
+	private static final long serialVersionUID = 2452116093966974927L;
+
 	// values and label for history combo
 	private static final String HISTORY_DAY_ALL = "All";
 	private static final String HISTORY_DAY_YEAR = "Year";
@@ -1341,7 +1341,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
             	{
             		m_query.addRestriction(ColumnSQL, Operator, null,
-            				infoName, null);
+            				infoName, null, and, openBrackets);
             		if (code.length() > 0)
         				code.append(SEGMENT_SEPARATOR);
         			code.append(ColumnName)
@@ -1381,19 +1381,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 if (parsedValue2 == null)
                     continue;
                 m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
-                    infoName, infoDisplay, infoDisplay_to);
+                    infoName, infoDisplay, infoDisplay_to, and, openBrackets);
             }
             else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].equals(op)) {
                 if (!(parsedValue instanceof Integer)) {
                     continue;
                 }
-                m_query
-
-                .addRestriction(getSubCategoryWhereClause(((Integer) parsedValue).intValue()));
+                m_query.addRestriction(getSubCategoryWhereClause(((Integer) parsedValue).intValue()), and, openBrackets);
             }
             else
             	m_query.addRestriction(ColumnSQL, Operator, parsedValue,
-            			infoName, infoDisplay);
+            			infoName, infoDisplay, and, openBrackets);
 
             if (code.length() > 0)
             	code.append(SEGMENT_SEPARATOR);
