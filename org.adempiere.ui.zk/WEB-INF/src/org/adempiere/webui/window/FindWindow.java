@@ -96,7 +96,6 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Space;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
 
@@ -182,11 +181,25 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	public static final int		INDEX_VALUE = 2;
 	/** Index Value2 = 3			*/
 	public static final int		INDEX_VALUE2 = 3;
+	
+	/** Index AndOr = 4		*/
+	public static final int		INDEX_ANDOR = 4;
+	/** Index LeftBracket = 5		*/
+	public static final int		INDEX_LEFTBRACKET = 5;
+	/** Index RightBracket = 6		*/
+	public static final int		INDEX_RIGHTBRACKET = 6;
+	/** Index History		*/
+	public static final int		INDEX_HISTORY = 1;
+	
+	/** Search messages using translation */
+	private String				m_sNew;	
+
 
 	private static final String FIELD_SEPARATOR = "<^>";
 	private static final String SEGMENT_SEPARATOR = "<~>";
+	private static final String HISTORY_SEPARATOR = "<#>";
 	
-	Combobox historyCombo = new Combobox();
+	private Combobox historyCombo = new Combobox();
 	
 
     /**
@@ -210,6 +223,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_tableName = tableName;
         m_whereExtended = whereExtended;
         m_findFields = findFields;
+        m_sNew = "** ".concat(Msg.getMsg(Env.getCtx(), "New Query")).concat(" **");		
         m_AD_Tab_ID = adTabId;
         m_minRecords = minRecords;
         m_isCancel = true;
@@ -217,7 +231,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         this.setBorder("normal");
         this.setShadow(false);
-        this.setWidth("750px");
+        this.setWidth("900px");
         this.setHeight("350px");
         this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
         this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
@@ -396,9 +410,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         ToolBar toolBar = new ToolBar();
         toolBar.appendChild(btnNew);
-        toolBar.appendChild(btnDelete);        
+        toolBar.appendChild(btnDelete);
         toolBar.setWidth("100%");
-        
+
+        fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative; top: 5px;");
+        fQueryName.addEventListener(Events.ON_SELECT, this);
+
         Hbox confirmPanel = new Hbox();
         confirmPanel.appendChild(pnlButtonRight);
         confirmPanel.setWidth("100%");
@@ -409,9 +426,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ListHead listhead = new ListHead();
         listhead.setSizable(true);
 
+        ListHeader lstHAndOr = new ListHeader();
+        lstHAndOr.setLabel(Msg.getMsg(Env.getCtx(), "And/Or"));
+        lstHAndOr.setWidth("70px");
+
+        ListHeader lstHLeftBracket = new ListHeader();
+        lstHLeftBracket.setLabel("(");
+        lstHLeftBracket.setWidth("55px");
+
         ListHeader lstHColumn = new ListHeader();
         lstHColumn.setLabel(Msg.translate(Env.getCtx(), "AD_Column_ID"));
-        lstHColumn.setWidth("250px");
+        lstHColumn.setWidth("210px");
 
         ListHeader lstHOperator = new ListHeader();
         lstHOperator.setLabel(Msg.getMsg(Env.getCtx(), "Operator"));
@@ -424,10 +449,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         lstHQueryTo.setLabel(Msg.getMsg(Env.getCtx(), "QueryValue2"));
         lstHQueryTo.setWidth("200px");
 
+        ListHeader lstHRightBracket = new ListHeader();
+        lstHRightBracket.setLabel(")");
+        lstHRightBracket.setWidth("55px");
+
+        listhead.appendChild(lstHAndOr);
+        listhead.appendChild(lstHLeftBracket);
+
         listhead.appendChild(lstHColumn);
         listhead.appendChild(lstHOperator);
         listhead.appendChild(lstHQueryValue);
         listhead.appendChild(lstHQueryTo);
+        listhead.appendChild(lstHRightBracket);
         advancedPanel.appendChild(listhead);
         advancedPanel.setVflex(true);
 
@@ -629,7 +662,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
         log.config("");
         createFields();
-
+		refreshUserQueries(); //Initializes and sets fQueryName		
     }   //  initFindAdvanced
 
     /**
@@ -638,6 +671,19 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     **/
     private void createFields()
     {
+        List<?> rowList = advancedPanel.getChildren();
+        int row = rowList.size()-1;
+    	createFields(null,row);
+    }
+    
+    /**
+     * create respective fields in the advanced window tab
+     *
+    **/
+    private void createFields(String[] fields, int row)
+    {
+    	if (null!=fields && fields.length>=1 && fields[0].contains(HISTORY_SEPARATOR))
+    			return;
         ListItem listItem = new ListItem();
         listItem.setId("Row"+advancedPanel.getItemCount());
         listItem.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listItem.getId());
@@ -657,9 +703,74 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listOperator.setMold("select");
         listOperator.setRows(0);
         listOperator.addEventListener(Events.ON_SELECT,this);
+        
+        Listbox listAndOr = new Listbox();
+        listAndOr.setId("listAndOr"+listItem.getId());
+        listAndOr.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listAndOr.getId());
+        listAndOr.setName("listAndOr");
+        listAndOr.setMold("select");
+        listAndOr.setRows(0);
+        listAndOr.addEventListener(Events.ON_SELECT,this);
 
-        setValues(listColumn, listOperator);
+        Listbox listLeftBracket = new Listbox();
+        listLeftBracket.setId("listLeftBracket"+listItem.getId());
+        listLeftBracket.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listLeftBracket.getId());
+        listLeftBracket.setName("listLeftBracket");
+        listLeftBracket.setMold("select");
+        listLeftBracket.setRows(0);
+        listLeftBracket.addEventListener(Events.ON_SELECT,this);
 
+        Listbox listRightBracket = new Listbox();
+        listRightBracket.setId("listRightBracket"+listItem.getId());
+        listRightBracket.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listRightBracket.getId());
+        listRightBracket.setName("listRightBracket");
+        listRightBracket.setMold("select");
+        listRightBracket.setRows(0);
+        listRightBracket.addEventListener(Events.ON_SELECT,this);
+
+        setValues(listColumn, listOperator, fields);
+
+        // And Or
+    	ValueNamePair[]	andOr = new ValueNamePair[] {
+    		new ValueNamePair ("",			""),	
+    		new ValueNamePair ("AND",		Msg.getMsg(Env.getCtx(),"AND")),
+    		new ValueNamePair ("OR",		Msg.getMsg(Env.getCtx(),"OR"))	
+    	};
+        
+    	for (ValueNamePair item: andOr)
+            listAndOr.appendItem(item.getName(), item.getValue());
+    	if (row<=0){ // don't show item on the first row.
+        	listAndOr.setSelectedIndex(0);
+    		listAndOr.setVisible(false);
+    	} else {
+    		listAndOr.setSelectedIndex(1); //And - default
+    		listAndOr.setVisible(true);
+    	}
+
+        // Left Bracket
+    	ValueNamePair[]	leftBracket = new ValueNamePair[] {
+    		new ValueNamePair ("",			""),	
+    		new ValueNamePair ("(",			"("),
+    		new ValueNamePair ("((",		"(("),	
+    		new ValueNamePair ("(((",		"(((")	
+    	};
+        
+    	for (ValueNamePair item: leftBracket)
+            listLeftBracket.appendItem(item.getName(), item.getValue());
+    	listLeftBracket.setSelectedIndex(0);
+        
+        // Right Bracket
+    	ValueNamePair[]	rightBracket = new ValueNamePair[] {
+    		new ValueNamePair ("",			""),	
+    		new ValueNamePair (")",			")"),
+    		new ValueNamePair ("))",		"))"),	
+    		new ValueNamePair (")))",		")))")	
+    	};
+        
+    	for (ValueNamePair item: rightBracket)
+            listRightBracket.appendItem(item.getName(), item.getValue());
+    	listRightBracket.setSelectedIndex(0);
+        
         ListCell cellColumn = new ListCell();
         cellColumn.appendChild(listColumn);
         cellColumn.setId("cellColumn"+listItem.getId());
@@ -678,13 +789,89 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         cellQueryTo.setId("cellQueryTo"+listItem.getId());
         cellQueryTo.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellQueryTo.getId());
 
+        ListCell cellAndOr = new ListCell();
+        cellAndOr.appendChild(listAndOr);
+        cellAndOr.setId("cellAndOr"+listItem.getId());
+        cellAndOr.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellAndOr.getId());
+
+        ListCell cellLeftBracket = new ListCell();
+        cellLeftBracket.appendChild(listLeftBracket);
+        cellLeftBracket.setId("cellLeftBracket"+listItem.getId());
+        cellLeftBracket.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellLeftBracket.getId());
+
+        ListCell cellRightBracket = new ListCell();
+        cellRightBracket.appendChild(listRightBracket);
+        cellRightBracket.setId("cellRightBracket"+listItem.getId());
+        cellRightBracket.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellRightBracket.getId());
+
+        listItem.appendChild(cellAndOr);
+        listItem.appendChild(cellLeftBracket);
         listItem.appendChild(cellColumn);
         listItem.appendChild(cellOperator);
         listItem.appendChild(cellQueryFrom);
         listItem.appendChild(cellQueryTo);
+        listItem.appendChild(cellRightBracket);
 
         advancedPanel.appendChild(listItem);
         advancedPanel.setSelectedItem(listItem);
+
+        if (fields != null){
+        	// QueryFrom
+	        String columnName = listColumn.getSelectedItem().getValue().toString();
+	        if (columnName == null || columnName == "")
+	        	return;
+	    	String value = fields.length > INDEX_VALUE ? fields[INDEX_VALUE] : "";
+	    	if(value.length() > 0)
+	    	{
+	    		cellQueryFrom.setAttribute("value", value); // Elaine 2009/03/16 - set attribute value
+		        cellQueryFrom.appendChild(parseString(getTargetMField(columnName), value, listItem, false));
+	    	}
+	    	// QueryTo
+	    	String value2 = fields.length > INDEX_VALUE2 ? fields[INDEX_VALUE2] : "";
+	    	if(value2.length() > 0)
+	    	{
+	    		cellQueryTo.setAttribute("value", value); // Elaine 2009/03/16 - set attribute value
+	    		cellQueryTo.appendChild(parseString(getTargetMField(columnName), value2, listItem, true));
+	    	}
+	    	
+	    	// AndOr
+	    	String sandOr = fields.length > INDEX_ANDOR ? fields[INDEX_ANDOR] : "";
+	    	if(sandOr.length() > 0)
+	    	{
+	        	for (int i=0; i< listAndOr.getItems().size(); i++) {
+	        		if (listAndOr.getItemAtIndex(i).getValue().equals(sandOr)){
+	                	listAndOr.setSelectedIndex(i);
+	                	break;
+	        		}
+	        	}
+	    	}
+
+	    	// Left Bracket
+	    	String sLeftBracket = fields.length > INDEX_LEFTBRACKET ? fields[INDEX_LEFTBRACKET] : "";
+	    	if(sLeftBracket.length() > 0)
+	    	{
+	        	for (int i=0; i < listLeftBracket.getItems().size(); i++) {
+	        		if (listLeftBracket.getItemAtIndex(i).getValue().equals(sLeftBracket)){
+	        			listLeftBracket.setSelectedIndex(i);
+	                	break;
+	        		}
+	        	}
+	    	}
+
+	    	// Right Bracket
+	    	String sRightBracket = fields.length > INDEX_RIGHTBRACKET ? fields[INDEX_RIGHTBRACKET] : "";
+	    	if(sRightBracket.length() > 0)
+	    	{
+	        	for (int i=0; i < listRightBracket.getItems().size(); i++) {
+	        		if (listRightBracket.getItemAtIndex(i).getValue().equals(sRightBracket)){
+	        			listRightBracket.setSelectedIndex(i);
+	                	break;
+	        		}
+	        	}
+	    	}
+	    	
+        }
+        
    }    // createFields
     /**
      * sets the list of values of column and operator listboxes
@@ -818,13 +1005,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 Listbox listColumn = (Listbox)row.getFellow("listColumn"+row.getId());
                 Listbox listOperator = (Listbox)row.getFellow("listOperator"+row.getId());
 
-                if (listbox.getId().equals(listColumn.getId()))
+                if (listbox.getId().equals(listColumn.getId()) || listbox.getId().equals(listOperator.getId()))
                 {
-                    ListItem column = listColumn.getSelectedItem();
-                    if (column != null)
-                    {
-                        addOperators(column, listOperator);
-                    }
+                	if (listbox.getId().equals(listColumn.getId()))
+                	{
+                		ListItem column = listColumn.getSelectedItem();
+                		if (column != null)
+                		{
+                			addOperators(column, listOperator);
+                		}
+                	}
                 }
                 Component componentFrom = getEditorCompQueryFrom(row);
                 componentFrom.setId("searchFieldFrom"+row.getId());
@@ -841,31 +1031,39 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 	row.getFellow("cellQueryFrom"+row.getId()).getChildren().clear();
                 	row.getFellow("cellQueryTo"+row.getId()).getChildren().clear();
                 }
-                else
+                else if (listbox.getId().equals(listColumn.getId()) || listbox.getId().equals(listOperator.getId())) 
                 {
                 	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
                 	addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
                 }
             }
-    		else if (event.getTarget() == fQueryName)
-    		{
-    			int index = fQueryName.getSelectedIndex();
-    			if(index < 0) return;
-    			if (winMain.getComponent().getSelectedIndex() != 1) {
-    				winMain.getComponent().setSelectedIndex(1);
-    				btnSave.setDisabled(m_AD_Tab_ID <= 0);
-    				historyCombo.setDisabled(true);
-    				historyCombo.setSelectedItem(null);
-    				fQueryName.setReadonly(false);    				    				
-    			}
-    			msgLabel.setText("");
-    			parseUserQuery(userQueries[index]);
+            else if (event.getTarget() == fQueryName)
+            {
+            	int index = fQueryName.getSelectedIndex();
+            	if(index < 0) return;
+            	if (winMain.getComponent().getSelectedIndex() != 1) 
+            	{
+            		winMain.getComponent().setSelectedIndex(1);
+            		btnSave.setDisabled(m_AD_Tab_ID <= 0);
+            		historyCombo.setSelectedItem(null);
+            		fQueryName.setReadonly(false); 
+            	}
+            	msgLabel.setText("");
+
+            	if(index == 0) 
+            	{ // no query - wipe and start over.
+            		List<?> rowList = advancedPanel.getChildren();
+            		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
+            			rowList.remove(rowIndex);
+            		createFields();  
+            	}
+    			else
+    				parseUserQuery(userQueries[index-1]);
     		}
     		else if (event.getTarget() instanceof Tab) {
     			if (winMain.getComponent().getSelectedIndex() == 1) {
     				fQueryName.setReadonly(false);
     				btnSave.setDisabled(m_AD_Tab_ID <= 0);
-    				historyCombo.setDisabled(true);
     				historyCombo.setSelectedItem(null);
     			} else {
     				fQueryName.setReadonly(true);
@@ -883,7 +1081,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
                 if ("btnNewAdv".equals(button.getAttribute("name").toString()))
                 {
-                    initFindAdvanced();
+                	createFields();
                 }
 
                 else if ("btnDeleteAdv".equals(button.getAttribute("name").toString()))
@@ -962,8 +1160,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
     private void parseUserQuery(MUserQuery userQuery)
     {
-		String code = userQuery.getCode();
-		String[] segments = code.split(Pattern.quote(SEGMENT_SEPARATOR));
+    	String code = userQuery.getCode();
+    	String[] segments = code.split(Pattern.quote(SEGMENT_SEPARATOR));
 
         List<?> rowList = advancedPanel.getChildren();
         for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
@@ -973,70 +1171,36 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		{
 			String[] fields = segments[i].split(Pattern.quote(FIELD_SEPARATOR));
 
-	        ListItem listItem = new ListItem();
-	        listItem.setId("Row"+advancedPanel.getItemCount());
-	        listItem.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listItem.getId());
-	        advancedPanel.appendChild(listItem);
-
-	        Listbox listColumn = new Listbox();
-	        listColumn.setId("listColumn"+listItem.getId());
-	        listColumn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listColumn.getId());
-	        listColumn.setName("listColumn");
-	        listColumn.setMold("select");
-	        listColumn.setRows(0);
-	        listColumn.addEventListener(Events.ON_SELECT,this);
-
-	        Listbox listOperator = new Listbox();
-	        listOperator.setId("listOperator"+listItem.getId());
-	        listOperator.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, listOperator.getId());
-	        listOperator.setName("listOperator");
-	        listOperator.setMold("select");
-	        listOperator.setRows(0);
-	        listOperator.addEventListener(Events.ON_SELECT,this);
-
-	        setValues(listColumn, listOperator, fields);
-
-	        ListCell cellColumn = new ListCell();
-	        cellColumn.appendChild(listColumn);
-	        cellColumn.setId("cellColumn"+listItem.getId());
-	        cellColumn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellColumn.getId());
-
-	        ListCell cellOperator = new ListCell();
-	        cellOperator.appendChild(listOperator);
-	        cellOperator.setId("cellOperator"+listItem.getId());
-	        cellOperator.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellOperator.getId());
-
-	        ListCell cellQueryFrom = new ListCell();
-	        cellQueryFrom.setId("cellQueryFrom"+listItem.getId());
-	        cellQueryFrom.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellQueryFrom.getId());
-
-	        ListCell cellQueryTo = new ListCell();
-	        cellQueryTo.setId("cellQueryTo"+listItem.getId());
-	        cellQueryTo.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, cellQueryTo.getId());
-
-	        listItem.appendChild(cellColumn);
-	        listItem.appendChild(cellOperator);
-	        listItem.appendChild(cellQueryFrom);
-	        listItem.appendChild(cellQueryTo);
-
-	        String columnName = listColumn.getSelectedItem().getValue().toString();
-        	String value = fields.length > INDEX_VALUE ? fields[INDEX_VALUE] : "";
-        	if(value.length() > 0)
-        	{
-        		cellQueryFrom.setAttribute("value", value); // Elaine 2009/03/16 - set attribute value
-    	        cellQueryFrom.appendChild(parseString(getTargetMField(columnName), value, listItem, false));
-        	}
-
-        	String value2 = fields.length > INDEX_VALUE2 ? fields[INDEX_VALUE2] : "";
-        	if(value2.length() > 0)
-        	{
-        		cellQueryTo.setAttribute("value", value); // Elaine 2009/03/16 - set attribute value
-        		cellQueryTo.appendChild(parseString(getTargetMField(columnName), value2, listItem, true));
-        	}
+			createFields(fields, i);
 		}
+		
+		String[] historysegments = code.split(Pattern.quote(HISTORY_SEPARATOR));
+    	
+		String history = historysegments.length > INDEX_HISTORY? historysegments[INDEX_HISTORY] : "";
+    	if(history.length() > 0)
+    	{
+    		historyCombo.setAttribute("history", history);
+    		//historyCombo.setSelectedItem(new Comboitem(history));
+    		//historyCombo.setSelectedItem(new Comboitem(history, history));
+    		historyCombo.setSelectedIndex(getHistoryIndex(history)+1);
+    	}
 
 		advancedPanel.invalidate();
 	}
+    
+    private int getHistoryIndex(String value)
+    {
+    	int myIndex = 0;
+    	if(value.equals(HISTORY_DAY_YEAR))
+    		myIndex = 1;
+    	else if(value.equals(HISTORY_DAY_MONTH))
+    		myIndex = 2;
+    	else if(value.equals(HISTORY_DAY_WEEK))
+    		myIndex = 3;
+    	else if(value.equals(HISTORY_DAY_DAY))
+    		myIndex = 4;
+    	return myIndex;
+    }
 
 	/**
 	 * 	Parse String
@@ -1127,6 +1291,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		m_query = new MQuery(m_tableName);
 		m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, m_whereExtended, false));
 		StringBuffer code = new StringBuffer();
+		
+		int openBrackets = 0;
 
         List<?> rowList = advancedPanel.getChildren();
 
@@ -1144,6 +1310,23 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             if(field == null) continue; // Elaine 2008/07/29
             boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
             String ColumnSQL = field.getColumnSQL(false);
+            // Left brackets
+            Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
+            String lBrackets = listLeftBracket.getSelectedItem().getValue().toString();
+			if ( lBrackets != null )
+				openBrackets += lBrackets.length();
+			// Right brackets
+            Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
+            String rBrackets = listRightBracket.getSelectedItem().getValue().toString();
+			if ( rBrackets != null )
+				openBrackets -= rBrackets.length();
+			// And Or
+            Listbox listAndOr = (Listbox)row.getFellow("listAndOr"+row.getId());
+            String andOr = listAndOr.getSelectedItem().getValue().toString();
+			boolean and = true;
+			if ( rowIndex > 1 ) {
+				and = !"OR".equals(andOr);
+			}         
             //  Op
             Listbox op = (Listbox)row.getFellow("listOperator"+row.getId());
             if (op == null)
@@ -1167,7 +1350,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         				.append(FIELD_SEPARATOR)
         				.append("")
         				.append(FIELD_SEPARATOR)
-        				.append("");
+        				.append("")
+        				.append(FIELD_SEPARATOR)
+        				.append(andOr)
+        				.append(FIELD_SEPARATOR)
+        				.append(lBrackets != null ? lBrackets : "")
+        				.append(FIELD_SEPARATOR)
+        				.append(rBrackets != null ? rBrackets : "");
             	}
             	continue;
             }
@@ -1181,7 +1370,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 infoDisplay = Msg.getMsg(Env.getCtx(), infoDisplay);
             //  Value2  ******
             Object value2 = null;
-            if (MQuery.OPERATORS[MQuery.BETWEEN_INDEX].equals(op))
+            if (MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue().equals(Operator))
             {
                 ListCell cellQueryTo = (ListCell)row.getFellow("cellQueryTo"+row.getId());
                 value2 = cellQueryTo.getAttribute("value");
@@ -1203,72 +1392,106 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 .addRestriction(getSubCategoryWhereClause(((Integer) parsedValue).intValue()));
             }
             else
-                m_query.addRestriction(ColumnSQL, Operator, parsedValue,
-                    infoName, infoDisplay);
+            	m_query.addRestriction(ColumnSQL, Operator, parsedValue,
+            			infoName, infoDisplay);
 
-			if (code.length() > 0)
-				code.append(SEGMENT_SEPARATOR);
-			code.append(ColumnName)
-				.append(FIELD_SEPARATOR)
-				.append(Operator)
-				.append(FIELD_SEPARATOR)
-				.append(value.toString())
-				.append(FIELD_SEPARATOR)
-				.append(value2 != null ? value2.toString() : "");
-		}
-		String selected = fQueryName.getValue();
-		if (selected != null && saveQuery) {
+            if (code.length() > 0)
+            	code.append(SEGMENT_SEPARATOR);
+            code.append(ColumnName)
+            .append(FIELD_SEPARATOR)
+            .append(Operator)
+            .append(FIELD_SEPARATOR)
+            .append(value.toString())
+            .append(FIELD_SEPARATOR)
+            .append(value2 != null ? value2.toString() : "")
+            .append(FIELD_SEPARATOR)
+            .append(andOr)
+            .append(FIELD_SEPARATOR)
+            .append(lBrackets != null ? lBrackets : "")
+            .append(FIELD_SEPARATOR)
+            .append(rBrackets != null ? rBrackets : "");
+        }
+        String selected = fQueryName.getValue();
+		if (selected != null) {
 			String name = selected;
-			MUserQuery uq = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID, name);
-			if (uq == null && code.length() > 0)
-			{
-				uq = new MUserQuery (Env.getCtx(), 0, null);
-				uq.setName (name);
-				uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
-				uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx())); //red1 - [ 1798539 ] missing in Compiere delayed source :-)
+			if ((fQueryName.getSelectedIndex() == 0 || name.equals(m_sNew)) && saveQuery){ // New query - needs a name
+
+				FDialog.warn (m_targetWindowNo, this, "NeedsName", name);
+				return;
 			}
-			else if (uq != null && code.length() == 0)
-			{
-				if (uq.delete(true))
+			if (saveQuery){
+			
+				if(historyCombo.getSelectedItem()!=null)
+		        {
+					code.append(SEGMENT_SEPARATOR);
+					code.append(HISTORY_SEPARATOR);
+					code.append(historyCombo.getSelectedItem().getValue());
+		        }
+				
+				MUserQuery uq = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID, name);
+				if (code.length() > 0) { // New or updated
+					if (uq == null) // Create a new record
+					{
+						uq = new MUserQuery (Env.getCtx(), 0, null);
+						uq.setName (name);
+						uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
+						uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx())); //red1 - [ 1798539 ] missing in Compiere delayed source :-)
+					}
+					
+				} else	if (code.length() <= 0){ // Delete the query
+					if (uq == null) 
+					{
+						FDialog.warn (m_targetWindowNo, this, "NeedsQuery", name);
+						return;
+					}
+					if (uq.delete(true))
+					{
+						FDialog.info (m_targetWindowNo, this, "Deleted", name);
+						refreshUserQueries();
+					}
+					else
+						FDialog.warn (m_targetWindowNo, this, "DeleteError", name);
+					return;
+				}
+				uq.setCode (code.toString());
+				uq.setAD_Table_ID (m_AD_Table_ID);
+				//
+				if (uq.save())
 				{
-					FDialog.info (m_targetWindowNo, this, "Deleted", name);
+					msgLabel.setText(Msg.getMsg(Env.getCtx(), "Saved"));
 					refreshUserQueries();
 				}
 				else
-					FDialog.warn (m_targetWindowNo, this, "DeleteError", name);
-				return;
+					msgLabel.setText(Msg.getMsg(Env.getCtx(), "SaveError"));
 			}
-			uq.setCode (code.toString());
-			uq.setAD_Table_ID (m_AD_Table_ID);
 			//
-			if (uq.save())
-			{
-				msgLabel.setText(Msg.getMsg(Env.getCtx(), "Saved"));
-				refreshUserQueries();
-			}
-			else
-				msgLabel.setText(Msg.getMsg(Env.getCtx(), "SaveError"));
+
 		}
+
 	}	//	cmd_save
 
 	private void refreshUserQueries()
 	{
-		String value = fQueryName.getValue();
+		String value = m_sNew;
+		if (fQueryName.getItemCount()>0){ // The list is initialized
+			value = fQueryName.getValue();
+		}
 		userQueries = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID);
 		fQueryName.getItems().clear();
 		boolean selected = false;
+		fQueryName.appendItem(m_sNew);  
 		for (int i = 0; i < userQueries.length; i++)
 		{
 			Comboitem ci = fQueryName.appendItem(userQueries[i].getName());
 			if(value.equals(userQueries[i].getName()))
 			{
 				fQueryName.setSelectedItem(ci);
+				parseUserQuery(userQueries[i]);
 				selected = true;
 			}
 		}
 
-		if(!selected) fQueryName.setValue("");
-	}
+		if(!selected) fQueryName.setSelectedIndex(0);	}
 
     /**
      * retrieve the columnName of the Column item selected
@@ -1501,6 +1724,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         
         m_isCancel = false; // teo_sarca [ 1708717 ]
+        //  Test for no records
+        if (getNoOfRecords(m_query, true) != 0)
+          dispose();
+
     }   //  cmd_ok_Simple
     
     /**
@@ -1575,96 +1802,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
         m_isCancel = false; // teo_sarca [ 1708717 ]
         //  save pending
-        cmd_save();
-    }   //  cmd_ok_Advanced
-
-    /**
-     *  Save (Advanced)
-     */
-    private void cmd_save()
-    {
-        log.info("");
-        //
-        m_query = new MQuery(m_tableName);
-        List<?> rowList = advancedPanel.getChildren();
-
-        for (int rowIndex = 1; rowIndex < rowList.size() ; rowIndex++)
-        {
-            //  Column
-            ListItem row = (ListItem)rowList.get(rowIndex);
-            Listbox column = (Listbox)row.getFellow("listColumn"+row.getId());
-            if (column == null)
-                continue;
-            String ColumnName = column.getSelectedItem().getValue().toString();
-            String infoName = column.toString();
-            //
-            GridField field = getTargetMField(ColumnName);
-            if(field == null) continue; // Elaine 2008/07/29
-            boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
-            String ColumnSQL = field.getColumnSQL(false);
-            //  Op
-            Listbox op = (Listbox)row.getFellow("listOperator"+row.getId());
-            if (op == null)
-                continue;
-            String Operator = op.getSelectedItem().getValue().toString();
-
-            //  Value   ******
-            ListCell cellQueryFrom = (ListCell)row.getFellow("cellQueryFrom"+row.getId());
-            Object value = cellQueryFrom.getAttribute("value");
-
-            if (value == null) 
-            {
-            	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
-            	{
-            		m_query.addRestriction(ColumnSQL, Operator, null,
-            				infoName, null);
-            	}
-            	continue;
-            }
-            Object parsedValue = parseValue(field, value);
-            if (parsedValue == null)
-                continue;
-            //encrypt the value if we are searching an encrypted column.
-            if (field.isEncryptedColumn()) {
-            	value = SecureEngine.encrypt(value);
-            }
-            String infoDisplay = value.toString();
-            if (field.isLookup())
-                infoDisplay = field.getLookup().getDisplay(value);
-            else if (field.getDisplayType() == DisplayType.YesNo)
-                infoDisplay = Msg.getMsg(Env.getCtx(), infoDisplay);
-            //  Value2  ******
-            if (MQuery.OPERATORS[MQuery.BETWEEN_INDEX].equals(op.getSelectedItem().toValueNamePair()))
-            {
-                ListCell cellQueryTo = (ListCell)row.getFellow("cellQueryTo"+row.getId());
-                Object value2 = cellQueryTo.getAttribute("value");
-                if (value2 == null)
-                    continue;
-                Object parsedValue2 = parseValue(field, value2);
-                String infoDisplay_to = value2.toString();
-                if (parsedValue2 == null)
-                    continue;
-                m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
-                    infoName, infoDisplay, infoDisplay_to);
-            }
-            else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].equals(op)) {
-                if (!(parsedValue instanceof Integer)) {
-                    continue;
-                }
-                m_query
-
-                .addRestriction(getSubCategoryWhereClause(((Integer) parsedValue).intValue()));
-            }
-            else
-                m_query.addRestriction(ColumnSQL, Operator, parsedValue,
-                    infoName, infoDisplay);
-        }
+        cmd_save(false);
         
         if(historyCombo.getSelectedItem()!=null)
         {
         	addHistoryRestriction(historyCombo.getSelectedItem());
         }
-    }   //  cmd_save
+        
+        if (getNoOfRecords(m_query, true) != 0)
+          dispose();
+    }   //  cmd_ok_Advanced
 
     
     /**
