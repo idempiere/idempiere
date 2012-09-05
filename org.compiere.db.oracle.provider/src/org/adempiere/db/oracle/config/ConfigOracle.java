@@ -31,6 +31,7 @@ import org.adempiere.install.IDBConfigMonitor;
 import org.adempiere.install.IDatabaseConfig;
 import org.compiere.db.Database;
 import org.compiere.install.ConfigurationData;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 
 /**
@@ -387,15 +388,28 @@ public class ConfigOracle implements IDatabaseConfig
 			ospath = "windows";
 		else
 			ospath = "unix";
-		//	TNS Name Info via sqlplus
-		String sqlplus = "sqlplus system/" + systemPassword + "@"
-			+ "//" + databaseServer.getHostName()
-			+ ":" + databasePort
-			+ "/" + databaseName
-			+ " @utils." + ospath + "/oracle/Test.sql";
-		log.config(sqlplus);
-		pass = testSQL(sqlplus);
-		error = "Error connecting via: " + sqlplus;
+		String testFile = "utils." + ospath + "/oracle/Test.sql";
+		if (! new File(testFile).isFile()) {
+			testFile = "org.adempiere.server-feature/" + testFile;
+			if (! new File(testFile).isFile()) {
+				testFile = null;
+			}
+		}
+		if (testFile != null) {
+			//	TNS Name Info via sqlplus
+			String sqlplus = "sqlplus system/" + systemPassword + "@"
+				+ "//" + databaseServer.getHostName()
+				+ ":" + databasePort
+				+ "/" + databaseName
+				+ " @" + testFile;
+			log.config(sqlplus);
+			pass = testSQL(sqlplus);
+			error = "Error connecting via: " + sqlplus;
+		} else {
+			pass = false;
+			error = "Test file does not exist";
+			log.warning(error);
+		}
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SQL_TEST, "ErrorTNS",
 				pass, true, error));
@@ -411,7 +425,7 @@ public class ConfigOracle implements IDatabaseConfig
 				log.info("OK: Connection = " + url);
 			else
 				log.warning("Cannot connect via Net8: " + url);
-		}
+		} else
 			log.info("OCI Test Skipped");
 
 		//

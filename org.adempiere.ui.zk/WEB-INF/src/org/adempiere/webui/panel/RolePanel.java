@@ -94,6 +94,8 @@ public class RolePanel extends Window implements EventListener, Deferrable
     private String			m_userName;
     /** Password					*/
     private KeyNamePair[]	m_clientKNPairs;
+    
+    private UserPreference m_userpreference=null;
 
 	private boolean m_show = true;
 
@@ -104,6 +106,13 @@ public class RolePanel extends Window implements EventListener, Deferrable
     	login = new Login(ctx);
     	m_show = show;
         m_clientKNPairs = clientsKNPairs;
+        
+        if( m_clientKNPairs.length == 1  &&  !m_show ){
+        	Env.setContext(m_ctx, "#AD_Client_ID", (String) m_clientKNPairs[0].getID());
+        	MUser user = MUser.get (m_ctx, m_userName);
+        	m_userpreference=new UserPreference();
+        	m_userpreference.loadPreference(user.get_ID());        	
+        }
     	
 
         initComponents();
@@ -304,6 +313,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
     	//  initial client - Elaine 2009/02/06
     	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 		String initDefault = userPreference.getProperty(UserPreference.P_CLIENT);
+		if( initDefault.length() == 0 &&  !m_show  &&  m_userpreference != null )
+		{
+			initDefault=m_userpreference.getProperty( UserPreference.P_CLIENT );
+		}
         if (m_clientKNPairs != null && m_clientKNPairs.length > 0)
         {
             for(int i = 0; i < m_clientKNPairs.length; i++)
@@ -342,6 +355,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
         	//  initial role
         	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 			String initDefault = userPreference.getProperty(UserPreference.P_ROLE);
+			if( initDefault.length() == 0 &&  !m_show  &&  m_userpreference != null )
+			{
+				initDefault=m_userpreference.getProperty( UserPreference.P_ROLE );
+			}
             KeyNamePair clientKNPair = new KeyNamePair(new Integer((String)lstItemClient.getValue()), lstItemClient.getLabel());
             KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair);
             if (roleKNPairs != null && roleKNPairs.length > 0)
@@ -391,6 +408,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
 			//  initial organisation - Elaine 2009/02/06
         	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 			String initDefault = userPreference.getProperty(UserPreference.P_ORG);
+			if( initDefault.length() == 0  &&  !m_show  &&  m_userpreference != null )
+			{
+				initDefault=m_userpreference.getProperty( UserPreference.P_ORG );
+			}
             KeyNamePair RoleKNPair = new KeyNamePair(new Integer((String)lstItemRole.getValue()), lstItemRole.getLabel());
             KeyNamePair orgKNPairs[] = login.getOrgs(RoleKNPair);
             if(orgKNPairs != null && orgKNPairs.length > 0)
@@ -423,6 +444,10 @@ public class RolePanel extends Window implements EventListener, Deferrable
 			//  initial warehouse - Elaine 2009/02/06
         	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 			String initDefault = userPreference.getProperty(UserPreference.P_WAREHOUSE);
+			if( initDefault.length() == 0 &&  !m_show  &&  m_userpreference != null )
+			{
+				initDefault=m_userpreference.getProperty( UserPreference.P_WAREHOUSE );
+			}
             KeyNamePair organisationKNPair = new KeyNamePair(new Integer((String)lstItemOrganisation.getValue()), lstItemOrganisation.getLabel());
             KeyNamePair warehouseKNPairs[] = login.getWarehouses(organisationKNPair);
             if(warehouseKNPairs != null && warehouseKNPairs.length > 0)
