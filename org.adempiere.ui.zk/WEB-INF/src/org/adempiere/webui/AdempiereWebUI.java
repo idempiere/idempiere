@@ -204,7 +204,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
 
 		MSession mSession = MSession.get (ctx, currSess.getRemoteAddr(),
-			currSess.getRemoteHost(), httpSess.getId() );
+		currSess.getRemoteHost(), httpSess.getId() );
+		
+		 currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
 
 		//enable full interface, relook into this when doing preference
 		Env.setContext(ctx, "#ShowTrl", true);
