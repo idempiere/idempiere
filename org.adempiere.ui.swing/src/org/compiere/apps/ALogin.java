@@ -626,26 +626,26 @@ public final class ALogin extends CDialog
     	
     	if (Util.isEmpty(oldPassword))
     	{
-    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "@OldPasswordMandatory@"), true);
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "OldPasswordMandatory"), true);
     		return;
     	}
     	
     	if (Util.isEmpty(retypeNewPassword))
     	{
-    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "@NewPasswordConfirmMandatory@"), true);
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "NewPasswordConfirmMandatory"), true);
     		return;
     	}
     	
     	if (!newPassword.equals(retypeNewPassword))
     	{
-    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "@PasswordNotMatch@"), true);
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "PasswordNotMatch"), true);
     		return;
     	}
     	
     	String m_userPassword = new String(m_pwd);
     	if (!oldPassword.equals(m_userPassword))
     	{
-    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "@OldPasswordNoMatch@"), true);
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "OldPasswordNoMatch"), true);
     		return;
     	}
 

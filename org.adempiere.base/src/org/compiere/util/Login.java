@@ -1381,7 +1381,7 @@ public class Login
 				if (days > MAX_INACTIVE_PERIOD_DAY)
 				{
 					user.setIsLocked(true);
-					user.setDateAccountLocked(new Timestamp(new Date().getTime()));
+					user.setDateAccountLocked(new Timestamp(now));
 					if (!user.save())
 						log.severe("Failed to lock user account");
 				}
@@ -1415,7 +1415,7 @@ public class Login
 				if (MAX_PASSWORD_AGE > 0 && !user.isNoPasswordReset())
 				{
 					if (user.getDatePasswordChanged() == null)
-						user.setDatePasswordChanged(user.getUpdated());
+						user.setDatePasswordChanged(new Timestamp(now));
 					
 					long days = (now - user.getDatePasswordChanged().getTime()) / (1000 * 60 * 60 * 24);
 					if (days > MAX_PASSWORD_AGE)
@@ -1475,7 +1475,7 @@ public class Login
 			for (MUser user : users) 
 			{
 				user.setFailedLoginCount(0);
-				user.setDateLastLogin(new Timestamp(new Date().getTime()));
+				user.setDateLastLogin(new Timestamp(now));
 				if (!user.save())
 					log.severe("Failed to update user record with date last login");
 			}
@@ -1486,7 +1486,8 @@ public class Login
 			{
 				if (user.isLocked())
 				{
-					loginErrMsg = "User account '" + app_user + "' is locked, please contact the system administrator";
+					// User account '{0}' is locked, please contact the system administrator
+					loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});
 					break;
 				}
 				
@@ -1496,12 +1497,14 @@ public class Login
 				int MAX_LOGIN_ATTEMPT = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_LOGIN_ATTEMPT, 0);
 				if (MAX_LOGIN_ATTEMPT > 0 && count >= MAX_LOGIN_ATTEMPT)
 				{
-					loginErrMsg = "Reached the maximum number of login attempts, user account '" + app_user + "' is locked";
+					// Reached the maximum number of login attempts, user account '{0}' is locked
+					loginErrMsg = Msg.getMsg(m_ctx, "ReachedMaxLoginAttempts", new Object[] {app_user});
 					reachMaxAttempt = true;
 				}
 				else if (MAX_LOGIN_ATTEMPT > 0)
 				{
-					loginErrMsg = "Invalid User ID or Password (Login Attempts: " + count + " / " + MAX_LOGIN_ATTEMPT + ")";
+					// Invalid User ID or Password (Login Attempts: {0} / {1})
+					loginErrMsg = Msg.getMsg(m_ctx, "FailedLoginAttempt", new Object[] {count, MAX_LOGIN_ATTEMPT});
 					reachMaxAttempt = false;					
 				}
 				else
@@ -1511,7 +1514,7 @@ public class Login
 				
 				user.setFailedLoginCount(count);
 				user.setIsLocked(reachMaxAttempt);
-				user.setDateAccountLocked(user.isLocked() ? new Timestamp(new Date().getTime()) : null);
+				user.setDateAccountLocked(user.isLocked() ? new Timestamp(now) : null);
 				if (!user.save())
 					log.severe("Failed to update user record with increase failed login count");
 			}

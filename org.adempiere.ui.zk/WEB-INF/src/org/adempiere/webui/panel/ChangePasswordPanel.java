@@ -200,16 +200,16 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	String retypeNewPassword = txtRetypeNewPassword.getValue();
     	
     	if (Util.isEmpty(oldPassword))
-    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "@OldPasswordMandatory@"));
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "OldPasswordMandatory"));
     	
     	if (Util.isEmpty(retypeNewPassword))
-    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "@NewPasswordConfirmMandatory@"));
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "NewPasswordConfirmMandatory"));
     	
     	if (!newPassword.equals(retypeNewPassword))
-    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "@PasswordNotMatch@"));
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "PasswordNotMatch"));
     	
     	if (!oldPassword.equals(m_userPassword))
-    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "@OldPasswordNoMatch@"));
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "OldPasswordNoMatch"));
 
     	for (KeyNamePair clientKNPair : m_clientKNPairs)
     	{
