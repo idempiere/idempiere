@@ -927,11 +927,9 @@ public class MUser extends X_AD_User
 			if (get_ValueOld("Salt") == null && get_Value("Salt") != null) { // being hashed
 				;
 			} else {
-				int pwdruleid = MClient.get(getCtx(), getAD_Client_ID()).getAD_PasswordRule_ID();
-				if (pwdruleid > 0) {
-					MPasswordRule pwdrule = new MPasswordRule(getCtx(), MClient.get(getCtx()).getAD_PasswordRule_ID(), get_TrxName());
+				MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
+				if (pwdrule != null)
 					pwdrule.validate((getLDAPUser() != null ? getLDAPUser() : getName()), getPassword());
-				}
 			}
 
 			// Hash password - IDEMPIERE-347

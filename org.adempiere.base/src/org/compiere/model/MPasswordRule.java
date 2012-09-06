@@ -63,7 +63,7 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3557291675139843726L;
+	private static final long serialVersionUID = -4262842010340413022L;
 
 	/**
 	 * @param ctx
@@ -81,6 +81,16 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	 */
 	public MPasswordRule(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
+	}
+	
+	public static MPasswordRule getRules(Properties ctx, String trxName) {
+		 MClient system = MClient.get(ctx, 0);
+		 int pwdruleID = system.getAD_PasswordRule_ID();
+		 MPasswordRule pass = null;
+		 if (pwdruleID > 0)
+			 pass = new MPasswordRule(ctx, pwdruleID, trxName);
+
+		return pass;
 	}
 
 	public void validate(String username, String newPassword) throws AdempiereException {
