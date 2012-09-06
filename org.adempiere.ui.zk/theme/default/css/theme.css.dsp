@@ -882,13 +882,9 @@ div.simileAjax-bubble-container {
 	background-image: none;
 }
 
-.z-window-highlighted {
-	z-index: 1900 !important;
+.z-modal-mask {
+	z-index: 1800 !important;
 }
-
-.z-window-popup {
-	z-index: 1900 !important;
-} 
 
 .grid-layout {
 	border: none !important; 
