@@ -1087,7 +1087,11 @@ public final class ALogin extends CDialog
 		//
 		this.setTitle(res.getString("Login"));
 		hostLabel.setText(res.getString("Host"));
-		userLabel.setText(res.getString("User"));
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		if (email_login)
+			userLabel.setText(res.getString("EMail"));
+		else
+			userLabel.setText(res.getString("User"));
 		userLabel.setToolTipText(res.getString("EnterUser"));
 		passwordLabel.setText(res.getString("Password"));
 		passwordLabel.setToolTipText(res.getString("EnterPassword"));
