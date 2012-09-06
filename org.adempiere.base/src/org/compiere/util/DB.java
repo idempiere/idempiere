@@ -1866,7 +1866,7 @@ public final class DB
 
 		if(SYSTEM_NATIVE_SEQUENCE && !adempiereSys)
 		{
-			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SEQ");
+			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ");
 			return m_sequence_id;
 		}
 
