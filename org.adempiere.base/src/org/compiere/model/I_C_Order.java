@@ -78,12 +78,12 @@ public interface I_C_Order
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
-	/** Set Usuario.
+	/** Set User/Contact.
 	  * User within the system - Internal or Business Partner Contact
 	  */
 	public void setAD_User_ID (int AD_User_ID);
 
-	/** Get Usuario.
+	/** Get User/Contact.
 	  * User within the system - Internal or Business Partner Contact
 	  */
 	public int getAD_User_ID();
@@ -363,6 +363,15 @@ public interface I_C_Order
 	public int getC_OrderSource_ID();
 
 	public org.compiere.model.I_C_OrderSource getC_OrderSource() throws RuntimeException;
+
+    /** Column name C_Order_UU */
+    public static final String COLUMNNAME_C_Order_UU = "C_Order_UU";
+
+	/** Set C_Order_UU	  */
+	public void setC_Order_UU (String C_Order_UU);
+
+	/** Get C_Order_UU	  */
+	public String getC_Order_UU();
 
     /** Column name C_Payment_ID */
     public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";

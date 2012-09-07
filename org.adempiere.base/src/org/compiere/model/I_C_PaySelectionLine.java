@@ -31,7 +31,7 @@ public interface I_C_PaySelectionLine
     public static final String Table_Name = "C_PaySelectionLine";
 
     /** AD_Table_ID=427 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 427;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_PaySelectionLine
 	  */
 	public int getC_Invoice_ID();
 
-	public I_C_Invoice getC_Invoice() throws RuntimeException;
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_PaySelectionCheck_ID */
     public static final String COLUMNNAME_C_PaySelectionCheck_ID = "C_PaySelectionCheck_ID";
@@ -90,7 +90,7 @@ public interface I_C_PaySelectionLine
 	  */
 	public int getC_PaySelectionCheck_ID();
 
-	public I_C_PaySelectionCheck getC_PaySelectionCheck() throws RuntimeException;
+	public org.compiere.model.I_C_PaySelectionCheck getC_PaySelectionCheck() throws RuntimeException;
 
     /** Column name C_PaySelection_ID */
     public static final String COLUMNNAME_C_PaySelection_ID = "C_PaySelection_ID";
@@ -105,7 +105,7 @@ public interface I_C_PaySelectionLine
 	  */
 	public int getC_PaySelection_ID();
 
-	public I_C_PaySelection getC_PaySelection() throws RuntimeException;
+	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException;
 
     /** Column name C_PaySelectionLine_ID */
     public static final String COLUMNNAME_C_PaySelectionLine_ID = "C_PaySelectionLine_ID";
@@ -119,6 +119,15 @@ public interface I_C_PaySelectionLine
 	  * Payment Selection Line
 	  */
 	public int getC_PaySelectionLine_ID();
+
+    /** Column name C_PaySelectionLine_UU */
+    public static final String COLUMNNAME_C_PaySelectionLine_UU = "C_PaySelectionLine_UU";
+
+	/** Set C_PaySelectionLine_UU	  */
+	public void setC_PaySelectionLine_UU (String C_PaySelectionLine_UU);
+
+	/** Get C_PaySelectionLine_UU	  */
+	public String getC_PaySelectionLine_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

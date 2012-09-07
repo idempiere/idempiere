@@ -31,7 +31,7 @@ public interface I_C_PaySelectionCheck
     public static final String Table_Name = "C_PaySelectionCheck";
 
     /** AD_Table_ID=525 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 525;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BP_BankAccount_ID */
     public static final String COLUMNNAME_C_BP_BankAccount_ID = "C_BP_BankAccount_ID";
@@ -90,7 +90,7 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_BP_BankAccount_ID();
 
-	public I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException;
+	public org.compiere.model.I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException;
 
     /** Column name C_Payment_ID */
     public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
@@ -105,7 +105,7 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_Payment_ID();
 
-	public I_C_Payment getC_Payment() throws RuntimeException;
+	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name C_PaySelectionCheck_ID */
     public static final String COLUMNNAME_C_PaySelectionCheck_ID = "C_PaySelectionCheck_ID";
@@ -120,6 +120,15 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_PaySelectionCheck_ID();
 
+    /** Column name C_PaySelectionCheck_UU */
+    public static final String COLUMNNAME_C_PaySelectionCheck_UU = "C_PaySelectionCheck_UU";
+
+	/** Set C_PaySelectionCheck_UU	  */
+	public void setC_PaySelectionCheck_UU (String C_PaySelectionCheck_UU);
+
+	/** Get C_PaySelectionCheck_UU	  */
+	public String getC_PaySelectionCheck_UU();
+
     /** Column name C_PaySelection_ID */
     public static final String COLUMNNAME_C_PaySelection_ID = "C_PaySelection_ID";
 
@@ -133,7 +142,7 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_PaySelection_ID();
 
-	public I_C_PaySelection getC_PaySelection() throws RuntimeException;
+	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

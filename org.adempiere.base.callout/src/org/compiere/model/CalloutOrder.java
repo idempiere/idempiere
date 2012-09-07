@@ -1343,6 +1343,26 @@ public class CalloutOrder extends CalloutEngine
 		//
 		return "";
 	}	//	qty
+	
+	public String SalesOrderTenderType (Properties ctx, int WindowNo,
+			GridTab mTab, GridField mField, Object value, Object oldValue)
+	{
+		log.info("");
+		// Called from tender type in Sales Order - POS Payments
+		// to fill IsPostDated and TenderType
+		
+		if (value == null)
+			return "";
+		
+		int tendertype_id = ((Integer) value).intValue();
+		
+		X_C_POSTenderType tendertype = new X_C_POSTenderType(ctx, tendertype_id, null);
+		mTab.setValue("IsPostDated", tendertype.isPostDated());
+		mTab.setValue("TenderType", tendertype.getTenderType());
+		
+		return "";
+	}	//	SalesOrderTenderType
+
 
 }	//	CalloutOrder
 

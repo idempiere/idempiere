@@ -33,7 +33,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20110325L;
+	private static final long serialVersionUID = 20120906L;
 
     /** Standard Constructor */
     public X_C_Invoice (Properties ctx, int C_Invoice_ID, String trxName)
@@ -140,7 +140,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
-	/** Set Usuario.
+	/** Set User/Contact.
 		@param AD_User_ID 
 		User within the system - Internal or Business Partner Contact
 	  */
@@ -152,7 +152,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
-	/** Get Usuario.
+	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
 	public int getAD_User_ID () 
@@ -534,6 +534,20 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_Invoice_UU.
+		@param C_Invoice_UU C_Invoice_UU	  */
+	public void setC_Invoice_UU (String C_Invoice_UU)
+	{
+		set_Value (COLUMNNAME_C_Invoice_UU, C_Invoice_UU);
+	}
+
+	/** Get C_Invoice_UU.
+		@return C_Invoice_UU	  */
+	public String getC_Invoice_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Invoice_UU);
 	}
 
 	/** Set Copy From.
@@ -1273,8 +1287,8 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	public static final String PAYMENTRULE_OnCredit = "P";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
-	/** Mixed = M */
-	public static final String PAYMENTRULE_Mixed = "M";
+	/** Mixed POS Payment = M */
+	public static final String PAYMENTRULE_MixedPOSPayment = "M";
 	/** Set Payment Rule.
 		@param PaymentRule 
 		How you pay the invoice

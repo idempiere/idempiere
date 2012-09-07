@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for C_BankAccount
+/** Generated Interface for C_POSTenderType
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS
  */
-public interface I_C_BankAccount 
+public interface I_C_POSTenderType 
 {
 
-    /** TableName=C_BankAccount */
-    public static final String Table_Name = "C_BankAccount";
+    /** TableName=C_POSTenderType */
+    public static final String Table_Name = "C_POSTenderType";
 
-    /** AD_Table_ID=297 */
-    public static final int Table_ID = 297;
+    /** AD_Table_ID=200017 */
+    public static final int Table_ID = 200017;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -40,19 +40,6 @@ public interface I_C_BankAccount
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
-
-    /** Column name AccountNo */
-    public static final String COLUMNNAME_AccountNo = "AccountNo";
-
-	/** Set Account No.
-	  * Account Number
-	  */
-	public void setAccountNo (String AccountNo);
-
-	/** Get Account No.
-	  * Account Number
-	  */
-	public String getAccountNo();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -75,83 +62,23 @@ public interface I_C_BankAccount
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name BankAccountType */
-    public static final String COLUMNNAME_BankAccountType = "BankAccountType";
+    /** Column name C_POSTenderType_ID */
+    public static final String COLUMNNAME_C_POSTenderType_ID = "C_POSTenderType_ID";
 
-	/** Set Bank Account Type.
-	  * Bank Account Type
-	  */
-	public void setBankAccountType (String BankAccountType);
+	/** Set POS Tender Type	  */
+	public void setC_POSTenderType_ID (int C_POSTenderType_ID);
 
-	/** Get Bank Account Type.
-	  * Bank Account Type
-	  */
-	public String getBankAccountType();
+	/** Get POS Tender Type	  */
+	public int getC_POSTenderType_ID();
 
-    /** Column name BBAN */
-    public static final String COLUMNNAME_BBAN = "BBAN";
+    /** Column name C_POSTenderType_UU */
+    public static final String COLUMNNAME_C_POSTenderType_UU = "C_POSTenderType_UU";
 
-	/** Set BBAN.
-	  * Basic Bank Account Number
-	  */
-	public void setBBAN (String BBAN);
+	/** Set C_POSTenderType_UU	  */
+	public void setC_POSTenderType_UU (String C_POSTenderType_UU);
 
-	/** Get BBAN.
-	  * Basic Bank Account Number
-	  */
-	public String getBBAN();
-
-    /** Column name C_BankAccount_ID */
-    public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
-
-	/** Set Bank Account.
-	  * Account at the Bank
-	  */
-	public void setC_BankAccount_ID (int C_BankAccount_ID);
-
-	/** Get Bank Account.
-	  * Account at the Bank
-	  */
-	public int getC_BankAccount_ID();
-
-    /** Column name C_BankAccount_UU */
-    public static final String COLUMNNAME_C_BankAccount_UU = "C_BankAccount_UU";
-
-	/** Set C_BankAccount_UU	  */
-	public void setC_BankAccount_UU (String C_BankAccount_UU);
-
-	/** Get C_BankAccount_UU	  */
-	public String getC_BankAccount_UU();
-
-    /** Column name C_Bank_ID */
-    public static final String COLUMNNAME_C_Bank_ID = "C_Bank_ID";
-
-	/** Set Bank.
-	  * Bank
-	  */
-	public void setC_Bank_ID (int C_Bank_ID);
-
-	/** Get Bank.
-	  * Bank
-	  */
-	public int getC_Bank_ID();
-
-	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException;
-
-    /** Column name C_Currency_ID */
-    public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
-
-	/** Set Currency.
-	  * The Currency for this record
-	  */
-	public void setC_Currency_ID (int C_Currency_ID);
-
-	/** Get Currency.
-	  * The Currency for this record
-	  */
-	public int getC_Currency_ID();
-
-	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+	/** Get C_POSTenderType_UU	  */
+	public String getC_POSTenderType_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -169,32 +96,6 @@ public interface I_C_BankAccount
 	  */
 	public int getCreatedBy();
 
-    /** Column name CreditLimit */
-    public static final String COLUMNNAME_CreditLimit = "CreditLimit";
-
-	/** Set Credit limit.
-	  * Amount of Credit allowed
-	  */
-	public void setCreditLimit (BigDecimal CreditLimit);
-
-	/** Get Credit limit.
-	  * Amount of Credit allowed
-	  */
-	public BigDecimal getCreditLimit();
-
-    /** Column name CurrentBalance */
-    public static final String COLUMNNAME_CurrentBalance = "CurrentBalance";
-
-	/** Set Current balance.
-	  * Current Balance
-	  */
-	public void setCurrentBalance (BigDecimal CurrentBalance);
-
-	/** Get Current balance.
-	  * Current Balance
-	  */
-	public BigDecimal getCurrentBalance();
-
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -208,18 +109,18 @@ public interface I_C_BankAccount
 	  */
 	public String getDescription();
 
-    /** Column name IBAN */
-    public static final String COLUMNNAME_IBAN = "IBAN";
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
 
-	/** Set IBAN.
-	  * International Bank Account Number
+	/** Set Comment/Help.
+	  * Comment or Hint
 	  */
-	public void setIBAN (String IBAN);
+	public void setHelp (String Help);
 
-	/** Get IBAN.
-	  * International Bank Account Number
+	/** Get Comment/Help.
+	  * Comment or Hint
 	  */
-	public String getIBAN();
+	public String getHelp();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -234,18 +135,27 @@ public interface I_C_BankAccount
 	  */
 	public boolean isActive();
 
-    /** Column name IsDefault */
-    public static final String COLUMNNAME_IsDefault = "IsDefault";
+    /** Column name IsGuarantee */
+    public static final String COLUMNNAME_IsGuarantee = "IsGuarantee";
 
-	/** Set Default.
-	  * Default value
+	/** Set Guarantee.
+	  * Guarantee for a Credit
 	  */
-	public void setIsDefault (boolean IsDefault);
+	public void setIsGuarantee (boolean IsGuarantee);
 
-	/** Get Default.
-	  * Default value
+	/** Get Guarantee.
+	  * Guarantee for a Credit
 	  */
-	public boolean isDefault();
+	public boolean isGuarantee();
+
+    /** Column name IsPostDated */
+    public static final String COLUMNNAME_IsPostDated = "IsPostDated";
+
+	/** Set Post Dated	  */
+	public void setIsPostDated (boolean IsPostDated);
+
+	/** Get Post Dated	  */
+	public boolean isPostDated();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -260,14 +170,18 @@ public interface I_C_BankAccount
 	  */
 	public String getName();
 
-    /** Column name PaymentExportClass */
-    public static final String COLUMNNAME_PaymentExportClass = "PaymentExportClass";
+    /** Column name TenderType */
+    public static final String COLUMNNAME_TenderType = "TenderType";
 
-	/** Set Payment Export Class	  */
-	public void setPaymentExportClass (String PaymentExportClass);
+	/** Set Tender type.
+	  * Method of Payment
+	  */
+	public void setTenderType (String TenderType);
 
-	/** Get Payment Export Class	  */
-	public String getPaymentExportClass();
+	/** Get Tender type.
+	  * Method of Payment
+	  */
+	public String getTenderType();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

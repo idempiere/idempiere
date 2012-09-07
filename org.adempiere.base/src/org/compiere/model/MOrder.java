@@ -73,7 +73,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -846451837699702120L;
+	private static final long serialVersionUID = -3958412751269036933L;
 
 	/**
 	 * 	Create new Order by copying
@@ -1847,6 +1847,12 @@ public class MOrder extends X_C_Order implements DocAction
 				info.append(" (").append(msg).append(")");
 		}	//	Invoice
 		
+		String msg = createPOSPayments();
+		if (msg != null) {
+			m_processMsg = msg;
+			return DocAction.STATUS_Invalid;
+		}
+
 		//	Counter Documents
 		MOrder counter = createCounterDoc();
 		if (counter != null)
@@ -1871,6 +1877,117 @@ public class MOrder extends X_C_Order implements DocAction
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
+	
+	
+	
+	private String createPOSPayments() {
+
+		// Just for POS order with payment rule mixed
+		if (! this.isSOTrx())
+			return null;
+		if (! MOrder.DocSubTypeSO_POS.equals(this.getC_DocType().getDocSubTypeSO()))
+			return null;
+		if (! MOrder.PAYMENTRULE_MixedPOSPayment.equals(this.getPaymentRule()))
+			return null;
+
+		// Verify sum of all payments pos must be equal to the grandtotal of POS invoice (minus withholdings)
+		MInvoice[] invoices = this.getInvoices();
+		if (invoices == null || invoices.length == 0)
+			return "@NoPOSInvoices@";
+		MInvoice lastInvoice = invoices[0];
+		BigDecimal grandTotal = lastInvoice.getGrandTotal();
+		
+		List<X_C_POSPayment> pps = new Query(this.getCtx(), X_C_POSPayment.Table_Name, "C_Order_ID=?", this.get_TrxName())
+			.setParameters(this.getC_Order_ID())
+			.setOnlyActiveRecords(true)
+			.list();
+		BigDecimal totalPOSPayments = Env.ZERO; 
+		for (X_C_POSPayment pp : pps) {
+			totalPOSPayments = totalPOSPayments.add(pp.getPayAmt());
+		}
+		if (totalPOSPayments.compareTo(grandTotal) != 0)
+			return "@POSPaymentDiffers@ - @C_POSPayment_ID@=" + totalPOSPayments + ", @GrandTotal@=" + grandTotal;
+
+		String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
+		MBankAccount ba = new Query(this.getCtx(),MBankAccount.Table_Name,whereClause,this.get_TrxName())
+			.setParameters(this.getAD_Org_ID(), this.getC_Currency_ID())
+			.setOrderBy("IsDefault DESC")
+			.first();
+		if (ba == null)
+			return "@NoAccountOrgCurrency@";
+		
+		MDocType[] doctypes = MDocType.getOfDocBaseType(this.getCtx(), MDocType.DOCBASETYPE_ARReceipt);
+		if (doctypes == null || doctypes.length == 0)
+			return "No document type for AR Receipt";
+		MDocType doctype = null;
+		for (MDocType doc : doctypes) {
+			if (doc.getAD_Org_ID() == this.getAD_Org_ID()) {
+				doctype = doc;
+				break;
+			}
+		}
+		if (doctype == null)
+			doctype = doctypes[0];
+
+		// Create a payment for each non-guarantee record
+		// associate the payment id and mark the record as processed
+		for (X_C_POSPayment pp : pps) {
+			X_C_POSTenderType  tt = new X_C_POSTenderType (getCtx(),pp.getC_POSTenderType_ID(), get_TrxName());
+			if (tt.isGuarantee())
+				continue;
+			if (pp.isPostDated())
+				continue;
+
+			MPayment payment = new MPayment(this.getCtx(), 0, this.get_TrxName());
+			payment.setAD_Org_ID(this.getAD_Org_ID());
+
+			payment.setTenderType(pp.getTenderType());
+			if (MPayment.TENDERTYPE_CreditCard.equals(pp.getTenderType())) {
+				payment.setTrxType(MPayment.TRXTYPE_Sales);
+				payment.setCreditCardType(pp.getCreditCardType());
+				payment.setCreditCardNumber(pp.getCreditCardNumber());
+				payment.setVoiceAuthCode(pp.getVoiceAuthCode());
+			}
+
+			payment.setC_BankAccount_ID(ba.getC_BankAccount_ID());
+			payment.setRoutingNo(pp.getRoutingNo());
+			payment.setAccountNo(pp.getAccountNo());
+			payment.setCheckNo(pp.getCheckNo());
+			payment.setMicr(pp.getMicr());
+			payment.setIsPrepayment(false);
+			
+			payment.setDateAcct(this.getDateAcct());
+			payment.setDateTrx(this.getDateOrdered());
+			//
+			payment.setC_BPartner_ID(this.getC_BPartner_ID());
+			payment.setC_Invoice_ID(lastInvoice.getC_Invoice_ID());
+			// payment.setC_Order_ID(this.getC_Order_ID()); / do not set order to avoid the prepayment flag
+			payment.setC_DocType_ID(doctype.getC_DocType_ID());
+			payment.setC_Currency_ID(this.getC_Currency_ID());
+
+			payment.setPayAmt(pp.getPayAmt());
+
+			//	Copy statement line reference data
+			payment.setA_Name(pp.getA_Name());
+			
+			payment.setC_POSTenderType_ID(pp.getC_POSTenderType_ID());
+			
+			//	Save payment
+			payment.saveEx();
+
+			pp.setC_Payment_ID(payment.getC_Payment_ID());
+			pp.setProcessed(true);
+			pp.saveEx();
+
+			payment.setDocAction(MPayment.DOCACTION_Complete);
+			if (!payment.processIt (MPayment.DOCACTION_Complete))
+				return "Cannot Complete the Payment :" + payment;
+
+			payment.saveEx();
+		}
+
+		return null;
+	}
 	
 	/**
 	 * 	Set the definite document number after completed

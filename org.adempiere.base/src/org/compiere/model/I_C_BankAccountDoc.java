@@ -31,7 +31,7 @@ public interface I_C_BankAccountDoc
     public static final String Table_Name = "C_BankAccountDoc";
 
     /** AD_Table_ID=455 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 455;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,6 +75,15 @@ public interface I_C_BankAccountDoc
 	  */
 	public int getC_BankAccountDoc_ID();
 
+    /** Column name C_BankAccountDoc_UU */
+    public static final String COLUMNNAME_C_BankAccountDoc_UU = "C_BankAccountDoc_UU";
+
+	/** Set C_BankAccountDoc_UU	  */
+	public void setC_BankAccountDoc_UU (String C_BankAccountDoc_UU);
+
+	/** Get C_BankAccountDoc_UU	  */
+	public String getC_BankAccountDoc_UU();
+
     /** Column name C_BankAccount_ID */
     public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
 
@@ -88,7 +97,7 @@ public interface I_C_BankAccountDoc
 	  */
 	public int getC_BankAccount_ID();
 
-	public I_C_BankAccount getC_BankAccount() throws RuntimeException;
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name Check_PrintFormat_ID */
     public static final String COLUMNNAME_Check_PrintFormat_ID = "Check_PrintFormat_ID";
@@ -103,7 +112,7 @@ public interface I_C_BankAccountDoc
 	  */
 	public int getCheck_PrintFormat_ID();
 
-	public I_AD_PrintFormat getCheck_PrintFormat() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormat getCheck_PrintFormat() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

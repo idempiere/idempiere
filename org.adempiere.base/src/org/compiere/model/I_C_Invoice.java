@@ -78,12 +78,12 @@ public interface I_C_Invoice
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
-	/** Set Usuario.
+	/** Set User/Contact.
 	  * User within the system - Internal or Business Partner Contact
 	  */
 	public void setAD_User_ID (int AD_User_ID);
 
-	/** Get Usuario.
+	/** Get User/Contact.
 	  * User within the system - Internal or Business Partner Contact
 	  */
 	public int getAD_User_ID();
@@ -287,6 +287,15 @@ public interface I_C_Invoice
 	  * Invoice Identifier
 	  */
 	public int getC_Invoice_ID();
+
+    /** Column name C_Invoice_UU */
+    public static final String COLUMNNAME_C_Invoice_UU = "C_Invoice_UU";
+
+	/** Set C_Invoice_UU	  */
+	public void setC_Invoice_UU (String C_Invoice_UU);
+
+	/** Get C_Invoice_UU	  */
+	public String getC_Invoice_UU();
 
     /** Column name CopyFrom */
     public static final String COLUMNNAME_CopyFrom = "CopyFrom";

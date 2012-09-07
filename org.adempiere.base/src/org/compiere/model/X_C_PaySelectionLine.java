@@ -32,7 +32,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120906L;
 
     /** Standard Constructor */
     public X_C_PaySelectionLine (Properties ctx, int C_PaySelectionLine_ID, String trxName)
@@ -86,9 +86,9 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
       return sb.toString();
     }
 
-	public I_C_Invoice getC_Invoice() throws RuntimeException
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
     {
-		return (I_C_Invoice)MTable.get(getCtx(), I_C_Invoice.Table_Name)
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
 			.getPO(getC_Invoice_ID(), get_TrxName());	}
 
 	/** Set Invoice.
@@ -114,9 +114,9 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 		return ii.intValue();
 	}
 
-	public I_C_PaySelectionCheck getC_PaySelectionCheck() throws RuntimeException
+	public org.compiere.model.I_C_PaySelectionCheck getC_PaySelectionCheck() throws RuntimeException
     {
-		return (I_C_PaySelectionCheck)MTable.get(getCtx(), I_C_PaySelectionCheck.Table_Name)
+		return (org.compiere.model.I_C_PaySelectionCheck)MTable.get(getCtx(), org.compiere.model.I_C_PaySelectionCheck.Table_Name)
 			.getPO(getC_PaySelectionCheck_ID(), get_TrxName());	}
 
 	/** Set Pay Selection Check.
@@ -142,9 +142,9 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 		return ii.intValue();
 	}
 
-	public I_C_PaySelection getC_PaySelection() throws RuntimeException
+	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException
     {
-		return (I_C_PaySelection)MTable.get(getCtx(), I_C_PaySelection.Table_Name)
+		return (org.compiere.model.I_C_PaySelection)MTable.get(getCtx(), org.compiere.model.I_C_PaySelection.Table_Name)
 			.getPO(getC_PaySelection_ID(), get_TrxName());	}
 
 	/** Set Payment Selection.
@@ -200,6 +200,20 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_PaySelectionLine_ID()));
     }
+
+	/** Set C_PaySelectionLine_UU.
+		@param C_PaySelectionLine_UU C_PaySelectionLine_UU	  */
+	public void setC_PaySelectionLine_UU (String C_PaySelectionLine_UU)
+	{
+		set_Value (COLUMNNAME_C_PaySelectionLine_UU, C_PaySelectionLine_UU);
+	}
+
+	/** Get C_PaySelectionLine_UU.
+		@return C_PaySelectionLine_UU	  */
+	public String getC_PaySelectionLine_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_PaySelectionLine_UU);
+	}
 
 	/** Set Description.
 		@param Description 
@@ -380,8 +394,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	public static final String PAYMENTRULE_OnCredit = "P";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
-	/** Mixed = M */
-	public static final String PAYMENTRULE_Mixed = "M";
+	/** Mixed POS Payment = M */
+	public static final String PAYMENTRULE_MixedPOSPayment = "M";
 	/** Set Payment Rule.
 		@param PaymentRule 
 		How you pay the invoice
