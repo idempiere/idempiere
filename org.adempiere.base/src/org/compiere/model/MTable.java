@@ -459,24 +459,15 @@ public class MTable extends X_AD_Table
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		//	Sync Table ID
-		if (newRecord)
+		MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
+		if (seq == null || seq.get_ID() == 0)
+			MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
+		else if (seq != null && !seq.getName().equals(getTableName()))
 		{
-			MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
-			if (seq == null || seq.get_ID() == 0)
-				MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
+			seq.setName(getTableName());
+			seq.saveEx();
 		}
-		else
-		{
-			MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
-			if (seq == null || seq.get_ID() == 0)
-				MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
-			else if (!seq.getName().equals(getTableName()))
-			{
-				seq.setName(getTableName());
-				seq.saveEx();
-			}
-		}
-
+		
 		return success;
 	}	//	afterSave
 

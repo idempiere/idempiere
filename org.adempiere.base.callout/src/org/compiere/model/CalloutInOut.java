@@ -174,8 +174,8 @@ public class CalloutInOut extends CalloutEngine
 		if (C_DocType_ID == null || C_DocType_ID.intValue() == 0)
 			return "";
 
-		String sql = "SELECT d.DocBaseType, d.IsDocNoControlled, s.CurrentNext, " //1..3
-			+ "s.AD_Sequence_ID, s.StartNewYear, s.DateColumn, d.IsSOTrx " //4..7
+		String sql = "SELECT d.DocBaseType, d.IsDocNoControlled, " //1..2
+			+ "s.AD_Sequence_ID, d.IsSOTrx " //3..4
 			+ "FROM C_DocType d "
 			+ "LEFT OUTER JOIN AD_Sequence s ON (d.DocNoSequence_ID=s.AD_Sequence_ID) "
 			+ "WHERE C_DocType_ID=?";		//	1
@@ -192,7 +192,7 @@ public class CalloutInOut extends CalloutEngine
 				//	Set Movement Type
 				String DocBaseType = rs.getString("DocBaseType");
 				// BF [2708789] Read IsSOTrx from C_DocType
-				String trxFlag = rs.getString(7);
+				String trxFlag = rs.getString("IsSOTrx");
 				if (!(trxFlag.equals(mTab.getValue("IsSOTrx"))))
 					mTab.setValue("IsSOTrx", trxFlag);
 				if (DocBaseType.equals("MMS"))					//	Material Shipments
@@ -220,17 +220,8 @@ public class CalloutInOut extends CalloutEngine
 				//	DocumentNo
 				if (rs.getString("IsDocNoControlled").equals("Y"))
 				{
-					if ("Y".equals(rs.getString(5)))
-					{
-						String dateColumn = rs.getString(6);
-						int AD_Sequence_ID = rs.getInt(4);
-						mTab.setValue("DocumentNo",
-								"<"
-								+ MSequence.getPreliminaryNoByYear(mTab, AD_Sequence_ID, dateColumn, null)
-								+ ">");
-					}
-					else
-						mTab.setValue("DocumentNo", "<" + rs.getString("CurrentNext") + ">");
+					int AD_Sequence_ID = rs.getInt("AD_Sequence_ID");
+					mTab.setValue("DocumentNo", MSequence.getPreliminaryNo(mTab, AD_Sequence_ID));
 				}
 			}
 		}

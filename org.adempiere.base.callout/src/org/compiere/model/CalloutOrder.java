@@ -72,18 +72,17 @@ public class CalloutOrder extends CalloutEngine
 			newDocNo = true;
 		Integer oldC_DocType_ID = (Integer)mTab.getValue("C_DocType_ID");
 
-		String sql = "SELECT d.DocSubTypeSO,d.HasCharges,'N',"			//	1..3
-			+ "d.IsDocNoControlled,s.CurrentNext,s.CurrentNextSys,"     //  4..6
-			+ "s.AD_Sequence_ID,d.IsSOTrx, "                             //	7..8
-			+ "s.StartNewYear, s.DateColumn "							//  9..10
-			+ "FROM C_DocType d, AD_Sequence s "
-			+ "WHERE C_DocType_ID=?"	//	#1
-			+ " AND d.DocNoSequence_ID=s.AD_Sequence_ID(+)";
+		String sql = "SELECT d.DocSubTypeSO,d.HasCharges,"			//	1..2
+			+ "d.IsDocNoControlled,"     //  3
+			+ "s.AD_Sequence_ID,d.IsSOTrx "                             //	4..5
+			+ "FROM C_DocType d "
+			+ "LEFT OUTER JOIN AD_Sequence s ON (d.DocNoSequence_ID=s.AD_Sequence_ID) "
+			+ "WHERE C_DocType_ID=?";	//	#1
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			int AD_Sequence_ID = 0;
+			int oldAD_Sequence_ID = 0;
 
 			//	Get old AD_SeqNo for comparison
 			if (!newDocNo && oldC_DocType_ID.intValue() != 0)
@@ -92,12 +91,12 @@ public class CalloutOrder extends CalloutEngine
 				pstmt.setInt(1, oldC_DocType_ID.intValue());
 				rs = pstmt.executeQuery();
 				if (rs.next())
-					AD_Sequence_ID = rs.getInt(7);
+					oldAD_Sequence_ID = rs.getInt("AD_Sequence_ID");
 				DB.close(rs, pstmt);
 				rs = null;
 				pstmt = null;
 			}
-
+			
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_DocType_ID.intValue());
 			rs = pstmt.executeQuery();
@@ -106,14 +105,14 @@ public class CalloutOrder extends CalloutEngine
 			if (rs.next())		//	we found document type
 			{
 				//	Set Context:	Document Sub Type for Sales Orders
-				DocSubTypeSO = rs.getString(1);
+				DocSubTypeSO = rs.getString("DocSubTypeSO");
 				if (DocSubTypeSO == null)
 					DocSubTypeSO = "--";
 				Env.setContext(ctx, WindowNo, "OrderType", DocSubTypeSO);
 				//	No Drop Ship other than Standard
 				if (!DocSubTypeSO.equals(MOrder.DocSubTypeSO_Standard))
 					mTab.setValue ("IsDropShip", "N");
-
+				
 				//	Delivery Rule
 				if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_POS))
 					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_Force);
@@ -121,7 +120,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_AfterReceipt);
 				else
 					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_Availability);
-
+				
 				//	Invoice Rule
 				if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_POS)
 					|| DocSubTypeSO.equals(MOrder.DocSubTypeSO_Prepay)
@@ -129,7 +128,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue ("InvoiceRule", X_C_Order.INVOICERULE_Immediate);
 				else
 					mTab.setValue ("InvoiceRule", X_C_Order.INVOICERULE_AfterDelivery);
-
+				
 				//	Payment Rule - POS Order
 				if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_POS))
 					mTab.setValue("PaymentRule", X_C_Order.PAYMENTRULE_Cash);
@@ -137,46 +136,32 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue("PaymentRule", X_C_Order.PAYMENTRULE_OnCredit);
 
 				//	IsSOTrx
-				if ("N".equals(rs.getString(8)))
+				if ("N".equals(rs.getString("IsSOTrx")))
 					IsSOTrx = false;
 
 				//	Set Context:
-				Env.setContext(ctx, WindowNo, "HasCharges", rs.getString(2));
+				Env.setContext(ctx, WindowNo, "HasCharges", rs.getString("HasCharges"));
 
 				//	DocumentNo
-				if (rs.getString(4).equals("Y"))			//	IsDocNoControlled
+				if (rs.getString("IsDocNoControlled").equals("Y"))			//	IsDocNoControlled
 				{
-					if (!newDocNo && AD_Sequence_ID != rs.getInt(7))
+					if (!newDocNo && oldAD_Sequence_ID != rs.getInt("AD_Sequence_ID"))
 						newDocNo = true;
-					if (newDocNo)
-						if (Ini.isPropertyBool(Ini.P_ADEMPIERESYS) && Env.getAD_Client_ID(Env.getCtx()) < 1000000)
-							mTab.setValue("DocumentNo", "<" + rs.getString(6) + ">");
-						else
-						{
-							if ("Y".equals(rs.getString(9)))
-							{
-								String dateColumn = rs.getString(10);
-								mTab.setValue("DocumentNo",
-										"<"
-										+ MSequence.getPreliminaryNoByYear(mTab, rs.getInt(7), dateColumn, null)
-										+ ">");
-							}
-							else
-							{
-								mTab.setValue("DocumentNo", "<" + rs.getString(5) + ">");
-							}
-						}
+					if (newDocNo) {
+						int AD_Sequence_ID = rs.getInt("AD_Sequence_ID");
+						mTab.setValue("DocumentNo", MSequence.getPreliminaryNo(mTab, AD_Sequence_ID));
+					}
 				}
 			}
-
+			
 			DB.close(rs, pstmt);
 			rs = null;
 			pstmt = null;
-
+			
 			//  When BPartner is changed, the Rules are not set if
 			//  it is a POS or Credit Order (i.e. defaults from Standard BPartner)
 			//  This re-reads the Rules and applies them.
-			if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_POS)
+			if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_POS) 
 				|| DocSubTypeSO.equals(MOrder.DocSubTypeSO_Prepay))    //  not for POS/PrePay
 				;
 			else
@@ -225,7 +210,7 @@ public class CalloutOrder extends CalloutEngine
 					if (s != null && s.length() != 0)
 						mTab.setValue("DeliveryViaRule", s);
 				}
-			}
+			} 
 			//  re-read customer rules
 		}
 		catch (SQLException e)

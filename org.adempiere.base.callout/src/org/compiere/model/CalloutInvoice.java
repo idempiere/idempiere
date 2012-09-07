@@ -59,12 +59,12 @@ public class CalloutInvoice extends CalloutEngine
 		if (C_DocType_ID == null || C_DocType_ID.intValue() == 0)
 			return "";
 
-		String sql = "SELECT d.HasCharges,'N',d.IsDocNoControlled," // 1..3
-			+ "s.CurrentNext, d.DocBaseType, " // 4..5
-			+ "s.StartNewYear, s.DateColumn, s.AD_Sequence_ID " //6..8
-			+ "FROM C_DocType d, AD_Sequence s "
-			+ "WHERE C_DocType_ID=?"		//	1
-			+ " AND d.DocNoSequence_ID=s.AD_Sequence_ID(+)";
+		String sql = "SELECT d.HasCharges,d.IsDocNoControlled," // 1..2
+			+ "d.DocBaseType, " // 3
+			+ "s.AD_Sequence_ID " //4
+			+ "FROM C_DocType d "
+			+ "LEFT OUTER JOIN AD_Sequence s ON (d.DocNoSequence_ID=s.AD_Sequence_ID) "
+			+ "WHERE C_DocType_ID=?";		//	1
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -75,23 +75,15 @@ public class CalloutInvoice extends CalloutEngine
 			if (rs.next())
 			{
 				//	Charges - Set Context
-				Env.setContext(ctx, WindowNo, "HasCharges", rs.getString(1));
+				Env.setContext(ctx, WindowNo, "HasCharges", rs.getString("HasCharges"));
 				//	DocumentNo
-				if (rs.getString(3).equals("Y"))
+				if (rs.getString("IsDocNoControlled").equals("Y"))
 				{
-					if ("Y".equals(rs.getString(6)))
-					{
-						String dateColumn = rs.getString(7);
-						mTab.setValue("DocumentNo", 
-								"<" 
-								+ MSequence.getPreliminaryNoByYear(mTab, rs.getInt(8), dateColumn, null) 
-								+ ">");
-					}
-					else
-						mTab.setValue("DocumentNo", "<" + rs.getString(4) + ">");
+					int AD_Sequence_ID = rs.getInt("AD_Sequence_ID");
+					mTab.setValue("DocumentNo", MSequence.getPreliminaryNo(mTab, AD_Sequence_ID));
 				}
 				//  DocBaseType - Set Context
-				String s = rs.getString(5);
+				String s = rs.getString("DocBaseType");
 				Env.setContext(ctx, WindowNo, "DocBaseType", s);
 				//  AP Check & AR Credit Memo
 				if (s.startsWith("AP"))
@@ -108,6 +100,7 @@ public class CalloutInvoice extends CalloutEngine
 		finally
 		{
 			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 		return "";
 	}	//	docType

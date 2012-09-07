@@ -31,7 +31,7 @@ public interface I_AD_Sequence
     public static final String Table_Name = "AD_Sequence";
 
     /** AD_Table_ID=115 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 115;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -74,6 +74,15 @@ public interface I_AD_Sequence
 	  * Document Sequence
 	  */
 	public int getAD_Sequence_ID();
+
+    /** Column name AD_Sequence_UU */
+    public static final String COLUMNNAME_AD_Sequence_UU = "AD_Sequence_UU";
+
+	/** Set AD_Sequence_UU	  */
+	public void setAD_Sequence_UU (String AD_Sequence_UU);
+
+	/** Get AD_Sequence_UU	  */
+	public String getAD_Sequence_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -208,6 +217,19 @@ public interface I_AD_Sequence
 	  */
 	public boolean isAutoSequence();
 
+    /** Column name IsOrgLevelSequence */
+    public static final String COLUMNNAME_IsOrgLevelSequence = "IsOrgLevelSequence";
+
+	/** Set Organization level.
+	  * This sequence can be defined for each organization
+	  */
+	public void setIsOrgLevelSequence (boolean IsOrgLevelSequence);
+
+	/** Get Organization level.
+	  * This sequence can be defined for each organization
+	  */
+	public boolean isOrgLevelSequence();
+
     /** Column name IsTableID */
     public static final String COLUMNNAME_IsTableID = "IsTableID";
 
@@ -234,6 +256,19 @@ public interface I_AD_Sequence
 	  */
 	public String getName();
 
+    /** Column name OrgColumn */
+    public static final String COLUMNNAME_OrgColumn = "OrgColumn";
+
+	/** Set Org Column.
+	  * Fully qualified Organization column (AD_Org_ID)
+	  */
+	public void setOrgColumn (String OrgColumn);
+
+	/** Get Org Column.
+	  * Fully qualified Organization column (AD_Org_ID)
+	  */
+	public String getOrgColumn();
+
     /** Column name Prefix */
     public static final String COLUMNNAME_Prefix = "Prefix";
 
@@ -246,6 +281,15 @@ public interface I_AD_Sequence
 	  * Prefix before the sequence number
 	  */
 	public String getPrefix();
+
+    /** Column name StartNewMonth */
+    public static final String COLUMNNAME_StartNewMonth = "StartNewMonth";
+
+	/** Set Restart sequence every month	  */
+	public void setStartNewMonth (boolean StartNewMonth);
+
+	/** Get Restart sequence every month	  */
+	public boolean isStartNewMonth();
 
     /** Column name StartNewYear */
     public static final String COLUMNNAME_StartNewYear = "StartNewYear";

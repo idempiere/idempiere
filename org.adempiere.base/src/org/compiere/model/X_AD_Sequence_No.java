@@ -29,7 +29,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120907L;
 
     /** Standard Constructor */
     public X_AD_Sequence_No (Properties ctx, int AD_Sequence_No_ID, String trxName)
@@ -38,7 +38,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
       /** if (AD_Sequence_No_ID == 0)
         {
 			setAD_Sequence_ID (0);
-			setCalendarYear (null);
+			setCalendarYearMonth (null);
 			setCurrentNext (0);
         } */
     }
@@ -71,9 +71,9 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
       return sb.toString();
     }
 
-	public I_AD_Sequence getAD_Sequence() throws RuntimeException
+	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException
     {
-		return (I_AD_Sequence)MTable.get(getCtx(), I_AD_Sequence.Table_Name)
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
 			.getPO(getAD_Sequence_ID(), get_TrxName());	}
 
 	/** Set Sequence.
@@ -99,21 +99,35 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Set Year.
-		@param CalendarYear 
-		Calendar Year
-	  */
-	public void setCalendarYear (String CalendarYear)
+	/** Set AD_Sequence_No_UU.
+		@param AD_Sequence_No_UU AD_Sequence_No_UU	  */
+	public void setAD_Sequence_No_UU (String AD_Sequence_No_UU)
 	{
-		set_ValueNoCheck (COLUMNNAME_CalendarYear, CalendarYear);
+		set_Value (COLUMNNAME_AD_Sequence_No_UU, AD_Sequence_No_UU);
 	}
 
-	/** Get Year.
-		@return Calendar Year
-	  */
-	public String getCalendarYear () 
+	/** Get AD_Sequence_No_UU.
+		@return AD_Sequence_No_UU	  */
+	public String getAD_Sequence_No_UU () 
 	{
-		return (String)get_Value(COLUMNNAME_CalendarYear);
+		return (String)get_Value(COLUMNNAME_AD_Sequence_No_UU);
+	}
+
+	/** Set YearMonth.
+		@param CalendarYearMonth 
+		YYYYMM
+	  */
+	public void setCalendarYearMonth (String CalendarYearMonth)
+	{
+		set_ValueNoCheck (COLUMNNAME_CalendarYearMonth, CalendarYearMonth);
+	}
+
+	/** Get YearMonth.
+		@return YYYYMM
+	  */
+	public String getCalendarYearMonth () 
+	{
+		return (String)get_Value(COLUMNNAME_CalendarYearMonth);
 	}
 
 	/** Set Current Next.

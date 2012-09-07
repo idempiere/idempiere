@@ -31,7 +31,7 @@ public interface I_AD_Sequence_No
     public static final String Table_Name = "AD_Sequence_No";
 
     /** AD_Table_ID=122 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 122;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,20 +75,29 @@ public interface I_AD_Sequence_No
 	  */
 	public int getAD_Sequence_ID();
 
-	public I_AD_Sequence getAD_Sequence() throws RuntimeException;
+	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException;
 
-    /** Column name CalendarYear */
-    public static final String COLUMNNAME_CalendarYear = "CalendarYear";
+    /** Column name AD_Sequence_No_UU */
+    public static final String COLUMNNAME_AD_Sequence_No_UU = "AD_Sequence_No_UU";
 
-	/** Set Year.
-	  * Calendar Year
+	/** Set AD_Sequence_No_UU	  */
+	public void setAD_Sequence_No_UU (String AD_Sequence_No_UU);
+
+	/** Get AD_Sequence_No_UU	  */
+	public String getAD_Sequence_No_UU();
+
+    /** Column name CalendarYearMonth */
+    public static final String COLUMNNAME_CalendarYearMonth = "CalendarYearMonth";
+
+	/** Set YearMonth.
+	  * YYYYMM
 	  */
-	public void setCalendarYear (String CalendarYear);
+	public void setCalendarYearMonth (String CalendarYearMonth);
 
-	/** Get Year.
-	  * Calendar Year
+	/** Get YearMonth.
+	  * YYYYMM
 	  */
-	public String getCalendarYear();
+	public String getCalendarYearMonth();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -1432,7 +1432,7 @@ public final class Env
 							String table = tblIndex > 0 ? format.substring(0, tblIndex) : token.substring(0, token.length() - 3);
 							String column = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
 							outStr.append(DB.getSQLValueString(trxName,
-									"select " + column + " from  " + table + " where " + table + "_id = ?", (Integer)v));
+									"SELECT " + column + " FROM " + table + " WHERE " + table + "_ID = ?", (Integer)v));
 						} else if (v instanceof Date) {
 							SimpleDateFormat df = new SimpleDateFormat(format);
 							outStr.append(df.format((Date)v));
