@@ -528,7 +528,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		GridTable tableModel = gridTab.getTableModel();
 		GridField[] tmpFields = tableModel.getFields();
 		MTabCustomization tabCustomization = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
-		if (tabCustomization != null && tabCustomization.getAD_Tab_Customization_ID() > 0 
+		if (!allColumns && tabCustomization != null && tabCustomization.getAD_Tab_Customization_ID() > 0 
 			&& tabCustomization.getCustom() != null && tabCustomization.getCustom().trim().length() > 0) 
 		{
 			String custom = tabCustomization.getCustom().trim();
@@ -544,7 +544,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 				{
 					if (gridField.getAD_Field_ID() == AD_Field_ID) 
 					{
-						if(allColumns || gridField.isDisplayedGrid())
+						if(gridField.isDisplayedGrid())
 							fieldList.add(gridField);
 						
 						break;
@@ -559,7 +559,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			
 			for(GridField field:tmpFields)
 			{
-				if(allColumns || field.isDisplayedGrid())
+				if(field.isDisplayedGrid())
 					gridFieldList.add(field);
 			}
 			
@@ -578,6 +578,9 @@ public class MPrintFormat extends X_AD_PrintFormat
 		int seqNo = 1;
 		for (GridField gridField : gridFields)
 		{
+			if (gridField.getAD_Column_ID() <= 0)
+				continue;
+			
 			MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (pf, gridField.getAD_Column_ID(), seqNo++);
 			if (pfi != null)
 			{
