@@ -124,6 +124,18 @@ public class ProcessInfo implements Serializable
 	private boolean				m_reportingProcess = false;
 	//FR 1906632
 	private File 			    m_pdf_report = null;
+	
+	/**	Record IDs				*/
+	private int[]				m_Record_IDs;
+
+	/** Export					*/
+	private boolean				m_export = false;
+	
+	/** Export File Extension	*/
+	private String				m_exportFileExtension = null;
+	
+	/**	Export File				*/
+	private File				m_exportFile = null;
 
 	/**
 	 *  String representation
@@ -684,7 +696,69 @@ public class ProcessInfo implements Serializable
 	public File getPDFReport()
 	{
 		return m_pdf_report;
-	}	
-		
+	}
 	
+	/**
+	 * Is this a export or print process?
+	 * @return
+	 */
+	public boolean isExport() 
+	{
+		return m_export;
+	}
+	
+	/**
+	 * Set Export
+	 * @param export
+	 */
+	public void setExport(boolean export) 
+	{
+		this.m_export = export;
+	}
+	
+	/**
+	 * Get Export File Extension
+	 * @param 
+	 */
+	public String getExportFileExtension()
+	{
+		return m_exportFileExtension;
+	}
+	
+	/**
+	 * Set Export File Extension
+	 * @param exportFileOfType
+	 */
+	public void setExportFileExtension(String exportFileExtension)
+	{
+		m_exportFileExtension = exportFileExtension;
+	}
+	
+	/**
+	 * Get Export File
+	 * @return
+	 */
+	public File getExportFile()
+	{
+		return m_exportFile;
+	}
+	
+	/**
+	 * Set Export File
+	 * @param exportFile
+	 */
+	public void setExportFile(File exportFile)
+	{
+		m_exportFile = exportFile;
+	}
+	
+	public int[] getRecord_IDs()
+	{
+		return m_Record_IDs;
+	}
+	
+	public void setRecord_IDs(int[] Record_IDs)
+	{
+		m_Record_IDs = Record_IDs;
+	}
 }   //  ProcessInfo
