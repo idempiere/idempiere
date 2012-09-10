@@ -48,20 +48,31 @@ import javax.print.attribute.standard.JobName;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
+import net.sf.jasperreports.engine.JRQuery;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
+import net.sf.jasperreports.engine.export.JRTextExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXmlExporter;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.util.JRSwapFile;
 import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.engine.xml.JRXmlWriter;
 
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
@@ -70,7 +81,9 @@ import org.adempiere.util.IProcessUI;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MProcess;
+import org.compiere.model.MQuery;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_PInstance_Para;
 import org.compiere.print.MPrintFormat;
@@ -405,6 +418,68 @@ public class ReportStarter implements ProcessCall, ClientProcess
         }
         params.put("SUBREPORT_DIR", resourcePath);
         params.put("RESOURCE_DIR", resourcePath);
+        
+        if (jasperReport != null && pi.getTable_ID() > 0 && Record_ID <= 0 && pi.getRecord_IDs() != null && pi.getRecord_IDs().length > 0)
+        {
+        	try
+            {        		
+        		JRQuery originalQuery = jasperReport.getQuery();
+        		if (originalQuery != null)
+        		{
+        			String originalQueryText = originalQuery.getText();
+        			if (originalQueryText != null)
+        			{
+        				MTable table = new MTable(ctx, pi.getTable_ID(), trxName);
+        				String tableName = table.getTableName();
+                		String originalQueryTemp = originalQueryText.toUpperCase();
+                		int index1 = originalQueryTemp.indexOf(" " + tableName.toUpperCase());
+                		if (index1 != -1)
+                		{
+                			int index2 = originalQueryTemp.substring(index1).indexOf(",");
+                			if (index2 != -1)
+                			{
+                				String tableVariable = originalQueryTemp.substring(index1 + tableName.length() + 1, index1 + index2);
+                				tableVariable = tableVariable.trim();
+                				
+                				if (tableVariable.length() == 0)
+                					tableVariable = tableName;
+                				
+                				MQuery query = new MQuery(tableName);
+                				for (int recordId : pi.getRecord_IDs())
+                					query.addRestriction(tableVariable + "." + query.getTableName() + "_ID" + MQuery.EQUAL + recordId, false, 0);
+                				
+                				String newQueryText = null;
+                				int index3 = originalQueryTemp.indexOf("WHERE");
+                				if (index3 != -1)
+                					newQueryText = originalQueryText + " AND " + query.toString();
+                				else
+                					newQueryText = originalQueryText + " WHERE " + query.toString();
+                				
+                			    File jrxmlFile = File.createTempFile(makePrefix(jasperReport.getName()), ".jrxml");
+                        		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
+                        		
+                        		JasperDesign jasperDesign = JRXmlLoader.load(jrxmlFile);
+                        		
+                				JRDesignQuery newQuery = new JRDesignQuery();
+                			    newQuery.setText(newQueryText);
+                			    jasperDesign.setQuery(newQuery);
+                			    
+                			    JasperReport newJasperReport = JasperCompileManager.compileReport(jasperDesign);
+                			    if (newJasperReport != null)
+                			    {
+                			    	data.jasperReport = newJasperReport;
+                			    	jasperReport = newJasperReport;
+                			    }
+                			}
+                		}
+        			}
+        		}
+            }
+            catch(Exception e)
+            {
+            	log.severe("Failed to modify the report query");
+            }
+        }
 
         if (jasperReport != null) {
 			File[] subreports;
@@ -529,72 +604,120 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				DefaultJasperReportsContext jasperContext = DefaultJasperReportsContext.getInstance();
 				JRPropertiesUtil.getInstance(jasperContext).setProperty("net.sf.jasperreports.awt.ignore.missing.font", "true");
                 JasperPrint jasperPrint = JasperFillManager.fillReport( jasperReport, params, conn);
-                if (reportData.isDirectPrint())
+                
+                if (!processInfo.isExport())
                 {
-                    log.info( "ReportStarter.startProcess print report -" + jasperPrint.getName());
-                    //RF 1906632
-                    if (!processInfo.isBatch()) {
-
-                    	// Get printer job
-                    	PrinterJob printerJob = PrintUtil.getPrinterJob(printerName);
-                    	// Set print request attributes
-
-                		//	Paper Attributes:
-                		PrintRequestAttributeSet prats = new HashPrintRequestAttributeSet();
-
-                		//	add:				copies, job-name, priority
-                		if (printInfo == null || printInfo.isDocumentCopy() || printInfo.getCopies() < 1) // @Trifon
-                			prats.add (new Copies(1));
-                		else
-                			prats.add (new Copies(printInfo.getCopies()));
-                		Locale locale = Language.getLoginLanguage().getLocale();
-                		// @Trifon
-                		String printFormat_name = printFormat == null ? "" : printFormat.getName();
-                		int numCopies = printInfo == null ? 0 : printInfo.getCopies();
-                		prats.add(new JobName(printFormat_name + "_" + pi.getRecord_ID(), locale));
-                		prats.add(PrintUtil.getJobPriority(jasperPrint.getPages().size(), numCopies, true));
-
-                		// Create print service exporter
-                    	JRPrintServiceExporter exporter = new JRPrintServiceExporter();;
-                    	// Set parameters
-                    	exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE, printerJob.getPrintService());
-                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, printerJob.getPrintService().getAttributes());
-                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, prats);
-                    	exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
-                    	exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
-                    	// Print report / document
-                    	exporter.exportReport();
-
-                    }
-                    else
-                    {
-                    	// You can use JasperPrint to create PDF
-                    	// Used For the PH
-                    	try
-                    	{
-                    		File PDF = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
-                    		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
-                    		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
-                    		ljrContext.setClassLoader(this.getClass().getClassLoader());
-                    		JRPdfExporter exporter = new JRPdfExporter(ljrContext);                    		
-                    		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-                    		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, PDF.getAbsolutePath());
-                    		exporter.exportReport();
-                    		processInfo.setPDFReport(PDF);
-                    	}
-                    	catch (IOException e)
-                    	{
-                    		log.severe("ReportStarter.startProcess: Can not make PDF File - "+ e.getMessage());
-                    	}
+	                if (reportData.isDirectPrint())
+	                {
+	                    log.info( "ReportStarter.startProcess print report -" + jasperPrint.getName());
+	                    //RF 1906632
+	                    if (!processInfo.isBatch()) {
+	
+	                    	// Get printer job
+	                    	PrinterJob printerJob = PrintUtil.getPrinterJob(printerName);
+	                    	// Set print request attributes
+	
+	                		//	Paper Attributes:
+	                		PrintRequestAttributeSet prats = new HashPrintRequestAttributeSet();
+	
+	                		//	add:				copies, job-name, priority
+	                		if (printInfo == null || printInfo.isDocumentCopy() || printInfo.getCopies() < 1) // @Trifon
+	                			prats.add (new Copies(1));
+	                		else
+	                			prats.add (new Copies(printInfo.getCopies()));
+	                		Locale locale = Language.getLoginLanguage().getLocale();
+	                		// @Trifon
+	                		String printFormat_name = printFormat == null ? "" : printFormat.getName();
+	                		int numCopies = printInfo == null ? 0 : printInfo.getCopies();
+	                		prats.add(new JobName(printFormat_name + "_" + pi.getRecord_ID(), locale));
+	                		prats.add(PrintUtil.getJobPriority(jasperPrint.getPages().size(), numCopies, true));
+	
+	                		// Create print service exporter
+	                    	JRPrintServiceExporter exporter = new JRPrintServiceExporter();;
+	                    	// Set parameters
+	                    	exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+	                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE, printerJob.getPrintService());
+	                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, printerJob.getPrintService().getAttributes());
+	                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, prats);
+	                    	exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
+	                    	exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
+	                    	// Print report / document
+	                    	exporter.exportReport();
+	
+	                    }
+	                    else
+	                    {
+	                    	// You can use JasperPrint to create PDF
+	                    	// Used For the PH
+	                    	try
+	                    	{
+	                    		File PDF = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
+	                    		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
+	                    		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
+	                    		ljrContext.setClassLoader(this.getClass().getClassLoader());
+	                    		JRPdfExporter exporter = new JRPdfExporter(ljrContext);                    		
+	                    		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+	                    		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, PDF.getAbsolutePath());
+	                    		exporter.exportReport();
+	                    		processInfo.setPDFReport(PDF);
+	                    	}
+	                    	catch (IOException e)
+	                    	{
+	                    		log.severe("ReportStarter.startProcess: Can not make PDF File - "+ e.getMessage());
+	                    	}
+	                    }
+	
+	                    // You can use JasperPrint to create PDF
+	//                        JasperExportManager.exportReportToPdfFile(jasperPrint, "BasicReport.pdf");
+	                } else {
+	                    log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
+	                    JRViewerProvider viewerLauncher = Service.locate(JRViewerProvider.class);
+	                    viewerLauncher.openViewer(jasperPrint, pi.getTitle()+" - " + reportPath);
+	                }
                 }
+                else
+                {
+                	try
+                	{
+                		String ext = pi.getExportFileExtension();
+                		if (ext == null)
+                			ext = "pdf";
+                		
+                		File file = File.createTempFile(makePrefix(jasperPrint.getName()), "." + ext);
+                		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
+                		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
+                		ljrContext.setClassLoader(this.getClass().getClassLoader());
 
-                    // You can use JasperPrint to create PDF
-//                        JasperExportManager.exportReportToPdfFile(jasperPrint, "BasicReport.pdf");
-                } else {
-                    log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
-                    JRViewerProvider viewerLauncher = Service.locate(JRViewerProvider.class);
-                    viewerLauncher.openViewer(jasperPrint, pi.getTitle()+" - " + reportPath);
+            			JRExporter exporter = null;
+                		if (ext.equals("pdf"))
+                			exporter = new JRPdfExporter(ljrContext);
+            			else if (ext.equals("ps"))
+            				exporter = new JRPrintServiceExporter(ljrContext);
+            			else if (ext.equals("xml"))
+            				exporter = new JRXmlExporter(ljrContext);
+            			else if (ext.equals("csv") || ext.equals("ssv"))
+            				exporter = new JRCsvExporter(ljrContext);
+            			else if (ext.equals("txt"))
+            				exporter = new JRTextExporter(ljrContext);            				
+            			else if (ext.equals("html") || ext.equals("htm"))
+            				exporter = new JRHtmlExporter(ljrContext);
+            			else if (ext.equals("xls"))
+            				exporter = new JRXlsExporter(ljrContext);
+            			else
+            				log.severe("FileInvalidExtension="+ext);
+                		
+                		if (exporter == null)
+            				exporter = new JRPdfExporter(ljrContext);
+                		
+        				exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+        				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, new FileOutputStream(file));
+        				exporter.exportReport();
+        				processInfo.setExportFile(file);
+                	}
+                	catch (IOException e)
+                	{
+                		log.severe("ReportStarter.startProcess: Can not export PDF File - "+ e.getMessage());
+                	}
                 }
             } catch (JRException e) {
                 log.severe("ReportStarter.startProcess: Can not run report - "+ e.getMessage());

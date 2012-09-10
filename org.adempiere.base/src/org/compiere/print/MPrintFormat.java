@@ -21,15 +21,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.sql.RowSet;
 
+import org.adempiere.model.MTabCustomization;
+import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
+import org.compiere.model.GridTable;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintFormat;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -447,7 +453,148 @@ public class MPrintFormat extends X_AD_PrintFormat
 			return "NULL";
 		return value.toString();
 	}   //  saveNewSpecial
+	
+	static public MPrintFormat createFromGridLayout(Properties ctx, GridTab gridTab, boolean allColumns)
+	{
+		int AD_Client_ID = Env.getAD_Client_ID(ctx);
+		MPrintFormat pf = new MPrintFormat(ctx, 0, null);
+		pf.setAD_Table_ID(gridTab.getAD_Table_ID());
 
+		//	Get Info
+		String sql = "SELECT TableName,"		//	1
+			+ " (SELECT COUNT(*) FROM AD_PrintFormat x WHERE x.AD_Table_ID=t.AD_Table_ID AND x.AD_Client_ID=c.AD_Client_ID) AS Count,"
+			+ " COALESCE (cpc.AD_PrintColor_ID, pc.AD_PrintColor_ID) AS AD_PrintColor_ID,"	//	3
+			+ " COALESCE (cpf.AD_PrintFont_ID, pf.AD_PrintFont_ID) AS AD_PrintFont_ID,"
+			+ " COALESCE (cpp.AD_PrintPaper_ID, pp.AD_PrintPaper_ID) AS AD_PrintPaper_ID "
+			+ "FROM AD_Table t, AD_Client c"
+			+ " LEFT OUTER JOIN AD_PrintColor cpc ON (cpc.AD_Client_ID=c.AD_Client_ID AND cpc.IsDefault='Y')"
+			+ " LEFT OUTER JOIN AD_PrintFont cpf ON (cpf.AD_Client_ID=c.AD_Client_ID AND cpf.IsDefault='Y')"
+			+ " LEFT OUTER JOIN AD_PrintPaper cpp ON (cpp.AD_Client_ID=c.AD_Client_ID AND cpp.IsDefault='Y'),"
+			+ " AD_PrintColor pc, AD_PrintFont pf, AD_PrintPaper pp "
+			+ "WHERE t.AD_Table_ID=? AND c.AD_Client_ID=?"		//	#1/2
+			+ " AND pc.IsDefault='Y' AND pf.IsDefault='Y' AND pp.IsDefault='Y'";
+		boolean error = true;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			pstmt.setInt(1, gridTab.getAD_Table_ID());
+			pstmt.setInt(2, AD_Client_ID);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				//	Name
+				String TableName = rs.getString(1);
+				String ColumnName = TableName + "_ID";
+				String s = ColumnName;
+				if (!ColumnName.equals("T_Report_ID"))
+				{
+					s = Msg.translate (ctx, ColumnName);
+					if (ColumnName.equals (s)) //	not found
+						s = Msg.translate (ctx, TableName);
+				}
+				int count = rs.getInt(2);
+				if (count > 0)
+					s += "_" + (count+1);
+				pf.setName(s);
+				//
+				pf.setAD_PrintColor_ID(rs.getInt(3));
+				pf.setAD_PrintFont_ID(rs.getInt(4));
+				pf.setAD_PrintPaper_ID(rs.getInt(5));
+				//
+				error = false;
+			}
+			else
+				s_log.log(Level.SEVERE, "No info found " + gridTab.getAD_Table_ID());
+		}
+		catch (SQLException e)
+		{
+			s_log.log(Level.SEVERE, sql, e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		if (error)
+			return null;
+
+		//	Save & complete
+		if (!pf.save())
+			return null;
+		
+		GridField[] gridFields = null;
+		
+		GridTable tableModel = gridTab.getTableModel();
+		GridField[] tmpFields = tableModel.getFields();
+		MTabCustomization tabCustomization = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
+		if (!allColumns && tabCustomization != null && tabCustomization.getAD_Tab_Customization_ID() > 0 
+			&& tabCustomization.getCustom() != null && tabCustomization.getCustom().trim().length() > 0) 
+		{
+			String custom = tabCustomization.getCustom().trim();
+			String[] customComponent = custom.split(";");
+			String[] fieldIds = customComponent[0].split("[,]");
+			List<GridField> fieldList = new ArrayList<GridField>();
+			for(String fieldIdStr : fieldIds) 
+			{
+				fieldIdStr = fieldIdStr.trim();
+				if (fieldIdStr.length() == 0) continue;
+				int AD_Field_ID = Integer.parseInt(fieldIdStr);
+				for(GridField gridField : tmpFields) 
+				{
+					if (gridField.getAD_Field_ID() == AD_Field_ID) 
+					{
+						if(gridField.isDisplayedGrid())
+							fieldList.add(gridField);
+						
+						break;
+					}
+				}
+			}
+			gridFields = fieldList.toArray(new GridField[0]);
+		} 
+		else 
+		{
+			ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
+			
+			for(GridField field:tmpFields)
+			{
+				if(field.isDisplayedGrid())
+					gridFieldList.add(field);
+			}
+			
+			Collections.sort(gridFieldList, new Comparator<GridField>() {
+				@Override
+				public int compare(GridField o1, GridField o2) {
+					return o1.getSeqNoGrid()-o2.getSeqNoGrid();
+				}
+			});
+			
+			gridFields = new GridField[gridFieldList.size()];
+			gridFieldList.toArray(gridFields);
+		}
+		
+		ArrayList<MPrintFormatItem> printFormatItemList = new ArrayList<MPrintFormatItem>();
+		int seqNo = 1;
+		for (GridField gridField : gridFields)
+		{
+			if (gridField.getAD_Column_ID() <= 0)
+				continue;
+			
+			MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (pf, gridField.getAD_Column_ID(), seqNo++);
+			if (pfi != null)
+			{
+				printFormatItemList.add (pfi);
+				s_log.finest("Tab: " + pfi);
+			}
+		}
+		
+		MPrintFormatItem[] printFormatItems = new MPrintFormatItem[printFormatItemList.size()];
+		printFormatItemList.toArray(printFormatItems);
+		pf.setItems(printFormatItems);
+		
+		return pf;
+	}
 
 	/**************************************************************************
 	 * 	Create MPrintFormat for Table

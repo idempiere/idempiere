@@ -54,6 +54,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.panel.action.ExportAction;
+import org.adempiere.webui.panel.action.ReportAction;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
@@ -2067,7 +2068,9 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	}
 
 	private void onReport0() {
-		//	Query
+		ReportAction reportAction = new ReportAction(this);
+		reportAction.show();
+/*		//	Query
 		MQuery query = new MQuery(curTab.getTableName());
 		//	Link for detail records
 		String queryColumn = curTab.getLinkColumnName();
@@ -2101,6 +2104,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		}
 
 		new WReport (curTab.getAD_Table_ID(), query, toolbar.getEvent().getTarget(), curWindowNo, curTab.getWhereExtended());
+*/		
 	}
 
 	/**
