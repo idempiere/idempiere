@@ -104,7 +104,12 @@ public class ReportAction implements EventListener<Event>
 
 			chkAllColumns.setLabel(Msg.getMsg(Env.getCtx(), "AllColumns"));
 			chkAllColumns.setSelected(false);
-			chkAllColumns.setVisible(false);
+			li = cboPrintFormat.getSelectedItem();
+			if (li != null && li.getValue() != null)
+			{
+				int AD_PrintFormat_ID = Integer.valueOf(li.getValue().toString());
+				chkAllColumns.setVisible(AD_PrintFormat_ID == -1);
+			}
 
 			Vbox vb = new Vbox();
 			vb.setWidth("100%");
