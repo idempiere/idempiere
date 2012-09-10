@@ -468,7 +468,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		if (m_logs == null)
 			return ;
 		
-		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
+		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
 
 		logMessageTable = new Table();
 		logMessageTable.setId("logrecords");

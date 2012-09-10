@@ -258,7 +258,7 @@ public class ProcessInfo implements Serializable
 			return "";
 		//
 		StringBuffer sb = new StringBuffer ();
-		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
+		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
 		if (html)
 			sb.append("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"2\">");
 		//
