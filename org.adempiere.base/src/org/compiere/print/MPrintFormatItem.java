@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.GridField;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -513,6 +514,92 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	//	pfi.dump();
 		return pfi;
 	}	//	createFromColumn
+	
+	public static MPrintFormatItem createFromGridField (MPrintFormat format, GridField gridField, int seqNo)
+	{
+		if (gridField.getAD_Column_ID() <= 0)
+			return null;
+		
+		MPrintFormatItem pfi = new MPrintFormatItem (format.getCtx(), 0, format.get_TrxName());
+		pfi.setAD_PrintFormat_ID (format.getAD_PrintFormat_ID());
+		pfi.setClientOrg(format);
+		pfi.setAD_Column_ID(gridField.getAD_Column_ID());
+		pfi.setPrintFormatType(PRINTFORMATTYPE_Field);
+
+		//	translation is dome by trigger
+		String sql = "SELECT c.ColumnName,e.Name,e.PrintName, "		//	1..3
+			+ "c.AD_Reference_ID,c.IsKey,c.SeqNo "					//	4..6
+			+ "FROM AD_Column c, AD_Element e "
+			+ "WHERE c.AD_Column_ID=?"
+			+ " AND c.AD_Element_ID=e.AD_Element_ID";
+		//	translate base entry if single language - trigger copies to trl tables
+		Language language = format.getLanguage();
+		boolean trl = !Env.isMultiLingualDocument(format.getCtx()) && !language.isBaseLanguage();
+		if (trl)
+			sql = "SELECT c.ColumnName,e.Name,e.PrintName, "		//	1..3
+				+ "c.AD_Reference_ID,c.IsKey,c.SeqNo "				//	4..6
+				+ "FROM AD_Column c, AD_Element_Trl e "
+				+ "WHERE c.AD_Column_ID=?"
+				+ " AND c.AD_Element_ID=e.AD_Element_ID"
+				+ " AND e.AD_Language=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, format.get_TrxName());
+			pstmt.setInt(1, gridField.getAD_Column_ID());
+			if (trl)
+				pstmt.setString(2, language.getAD_Language());
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				pfi.setName(rs.getString(2));
+				pfi.setPrintName(rs.getString(3));
+				int displayType = rs.getInt(4);
+				if (DisplayType.isNumeric(displayType))
+					pfi.setFieldAlignmentType(FIELDALIGNMENTTYPE_TrailingRight);
+				else if (displayType == DisplayType.Text || displayType == DisplayType.Memo )
+					pfi.setFieldAlignmentType(FIELDALIGNMENTTYPE_Block);
+				else
+					pfi.setFieldAlignmentType(FIELDALIGNMENTTYPE_LeadingLeft);
+				//
+				if (displayType == DisplayType.Button || displayType == DisplayType.Binary
+					|| displayType == DisplayType.ID || displayType == DisplayType.Image
+					|| displayType == DisplayType.RowID
+					|| seqNo == 0)
+				{
+					pfi.setIsPrinted(false);
+					pfi.setSeqNo(0);
+				}
+				else
+				{
+					pfi.setIsPrinted(true);
+					pfi.setSeqNo(seqNo);
+				}
+				int idSeqNo = rs.getInt(6);	//	IsIdentifier SortNo
+				if (idSeqNo > 0)
+				{
+					pfi.setIsOrderBy(true);
+					pfi.setSortNo(idSeqNo);
+				}
+			}
+			else
+				s_log.log(Level.SEVERE, "Not Found AD_Column_ID=" + gridField.getAD_Column_ID()
+					+ " Trl=" + trl + " " + language.getAD_Language());
+		}
+		catch (SQLException e)
+		{
+			s_log.log(Level.SEVERE, sql, e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		if (!pfi.save())
+			return null;
+	//	pfi.dump();
+		return pfi;
+	}
 
 	/**
 	 * 	Copy existing Definition To Client

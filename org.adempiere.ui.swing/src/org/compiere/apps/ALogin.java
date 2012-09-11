@@ -63,6 +63,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
@@ -118,7 +119,10 @@ public final class ALogin extends CDialog
 	private static final int NOT_CONNECTED = -1;
 	private static final int CONNECTED_OK = 0;
 	private static final int CONNECTED_OK_WITH_PASSWORD_EXPIRED = 1;
-
+	
+/*	private static final int NO_OF_SECURITY_QUESTION = 5;
+	private static final String SECURITY_QUESTION_PREFIX = "SecurityQuestion_";
+*/
 	private CPanel mainPanel = new CPanel(new BorderLayout());
 	private CTabbedPane loginTabPane = new CTabbedPane();
 	private CPanel connectionPanel = new CPanel();
@@ -163,9 +167,13 @@ public final class ALogin extends CDialog
     private CLabel lblRetypeNewPassword = new CLabel();
     private JPasswordField txtOldPassword = new JPasswordField();
     private JPasswordField txtNewPassword = new JPasswordField();
-    private JPasswordField txtRetypeNewPassword = new JPasswordField();	
+    private JPasswordField txtRetypeNewPassword = new JPasswordField();
     //
-
+/*    private CLabel lblSecurityQuestion = new CLabel();
+    private CLabel lblAnswer = new CLabel();
+    private VComboBox lstSecurityQuestion = new VComboBox();
+    private CTextField txtAnswer = new CTextField();
+*/
 	/** Server Connection       */
 	private CConnection 	m_cc;
 	/** Application User        */
@@ -373,7 +381,23 @@ public final class ALogin extends CDialog
 		lblRetypeNewPassword.setLabelFor(txtRetypeNewPassword);
 		lblRetypeNewPassword.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblRetypeNewPassword.setText(Msg.getMsg(m_ctx, "New Password Confirm"));
-
+		
+/*		lstSecurityQuestion.setName("lstSecurityQuestion");
+		lblSecurityQuestion.setRequestFocusEnabled(false);
+		lblSecurityQuestion.setLabelFor(lstSecurityQuestion);
+		lblSecurityQuestion.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSecurityQuestion.setText(Msg.getMsg(m_ctx, "SecurityQuestion"));
+		
+		lstSecurityQuestion.removeAllItems();
+    	for (int i = 1; i <= NO_OF_SECURITY_QUESTION; i++)
+    		lstSecurityQuestion.addItem(new ValueNamePair(SECURITY_QUESTION_PREFIX + i, Msg.getMsg(m_ctx, SECURITY_QUESTION_PREFIX + i)));
+		
+		txtAnswer.setName("txtAnswer");
+		lblAnswer.setRequestFocusEnabled(false);
+		lblAnswer.setLabelFor(txtAnswer);
+		lblAnswer.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblAnswer.setText(Msg.getMsg(m_ctx, "Answer"));
+*/
 		changePasswordPanel.setLayout(changePasswordPanelLayout);
 		
 		changePasswordPanel.add(lblOldPassword,       new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
@@ -388,7 +412,15 @@ public final class ALogin extends CDialog
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
 			changePasswordPanel.add(txtRetypeNewPassword,        new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
-		loginTabPane.add(changePasswordPanel, res.getString("ChangePassword"));
+/*		changePasswordPanel.add(lblSecurityQuestion,       new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
+				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
+			changePasswordPanel.add(lstSecurityQuestion,        new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0
+				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
+		changePasswordPanel.add(lblAnswer,       new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
+				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
+			changePasswordPanel.add(txtAnswer,        new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
+				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
+*/		loginTabPane.add(changePasswordPanel, res.getString("ChangePassword"));
 		loginTabPane.setEnabledAt(TAB_CHANGE_PASSWORD, false);
 		//
 
@@ -624,6 +656,12 @@ public final class ALogin extends CDialog
     	String newPassword = new String(txtNewPassword.getPassword());
     	String retypeNewPassword = new String(txtRetypeNewPassword.getPassword());
     	
+/*    	String securityQuestion = null;
+    	if (lstSecurityQuestion.getSelectedItem() != null)
+    		securityQuestion = ((ValueNamePair) lstSecurityQuestion.getSelectedItem()).getValue();
+    	
+    	String answer = txtAnswer.getText();
+*/    	
     	if (Util.isEmpty(oldPassword))
     	{
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "OldPasswordMandatory"), true);
@@ -642,6 +680,18 @@ public final class ALogin extends CDialog
     		return;
     	}
     	
+/*    	if (Util.isEmpty(securityQuestion))
+    	{
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "SecurityQuestionMandatory"), true);
+    		return;
+    	}
+
+    	if (Util.isEmpty(answer))
+    	{
+    		statusBar.setStatusLine(Msg.getMsg(m_ctx, "AnswerMandatory"), true);
+    		return;
+    	}
+*/    	
     	String m_userPassword = new String(m_pwd);
     	if (!oldPassword.equals(m_userPassword))
     	{
@@ -649,21 +699,49 @@ public final class ALogin extends CDialog
     		return;
     	}
 
-    	for (int index = 0; index < clientCombo.getItemCount(); index++)
+    	Trx trx = null;
+    	try
     	{
-    		KeyNamePair clientKNPair = (KeyNamePair) clientCombo.getItemAt(index);
-    		int clientId = clientKNPair.getKey();
-    		Env.setContext(m_ctx, "#AD_Client_ID", clientId);
-    		MUser user = MUser.get(m_ctx, m_user);
-    		if (user == null)
-    		{
-    			log.severe("Could not find user '" + m_user + "'");
-    			statusBar.setStatusLine("Could not find user '" + m_user + "'", true);
-    			return;
-    		}
+        	String trxName = Trx.createTrxName("ChangePasswordTrx");
+    		trx = Trx.get(trxName, true);
     		
-    		user.setPassword(newPassword);
-    		user.saveEx();
+    		for (int index = 0; index < clientCombo.getItemCount(); index++)
+        	{
+        		KeyNamePair clientKNPair = (KeyNamePair) clientCombo.getItemAt(index);
+        		int clientId = clientKNPair.getKey();
+        		Env.setContext(m_ctx, "#AD_Client_ID", clientId);
+        		MUser user = MUser.get(m_ctx, m_user);
+	    		if (user == null)
+	    		{
+	    			trx.rollback();
+	    			log.severe("Could not find user '" + m_user + "'");
+	    			statusBar.setStatusLine("Could not find user '" + m_user + "'", true);
+	    			return;
+	    		}
+	    		
+	    		user.setPassword(newPassword);
+	    		user.setIsExpired(false);
+/*	    		user.setSecurityQuestion(securityQuestion);
+	    		user.setAnswer(answer);    		
+*/	    		if (!user.save(trx.getTrxName()))
+	    		{
+	    			trx.rollback();
+	    			statusBar.setStatusLine("Could not update user", true);
+	    			return;
+	    		}
+	    	}
+	    	
+	    	trx.commit();
+    	}
+    	catch (Exception e)
+    	{
+    		if (trx != null)
+    			trx.rollback();
+    	}
+    	finally
+    	{
+    		if (trx != null)
+    			trx.close();
     	}
     	
     	passwordField.setText(newPassword);

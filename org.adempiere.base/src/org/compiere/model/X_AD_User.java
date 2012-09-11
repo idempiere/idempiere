@@ -31,7 +31,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120830L;
+	private static final long serialVersionUID = 20120910L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			setAD_User_ID (0);
 			setFailedLoginCount (0);
 // 0
+			setIsExpired (false);
+// N
 			setIsFullBPAccess (true);
 // Y
 			setIsInPayroll (false);
@@ -142,6 +144,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getAD_User_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_User_UU);
+	}
+
+	/** Set Answer.
+		@param Answer Answer	  */
+	public void setAnswer (String Answer)
+	{
+		set_Value (COLUMNNAME_Answer, Answer);
+	}
+
+	/** Get Answer.
+		@return Answer	  */
+	public String getAnswer () 
+	{
+		return (String)get_Value(COLUMNNAME_Answer);
 	}
 
 	/** Set Birthday.
@@ -496,6 +512,27 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (String)get_Value(COLUMNNAME_Fax);
 	}
 
+	/** Set Expired.
+		@param IsExpired Expired	  */
+	public void setIsExpired (boolean IsExpired)
+	{
+		set_Value (COLUMNNAME_IsExpired, Boolean.valueOf(IsExpired));
+	}
+
+	/** Get Expired.
+		@return Expired	  */
+	public boolean isExpired () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsExpired);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Full BP Access.
 		@param IsFullBPAccess 
 		The user/contact has full access to Business Partner information and resources
@@ -801,6 +838,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getSalt () 
 	{
 		return (String)get_Value(COLUMNNAME_Salt);
+	}
+
+	/** Set Security Question.
+		@param SecurityQuestion Security Question	  */
+	public void setSecurityQuestion (String SecurityQuestion)
+	{
+		set_Value (COLUMNNAME_SecurityQuestion, SecurityQuestion);
+	}
+
+	/** Get Security Question.
+		@return Security Question	  */
+	public String getSecurityQuestion () 
+	{
+		return (String)get_Value(COLUMNNAME_SecurityQuestion);
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException

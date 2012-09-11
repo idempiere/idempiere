@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
@@ -33,6 +34,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.zkoss.zhtml.Div;
 import org.zkoss.zhtml.Table;
@@ -71,9 +73,13 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     private Label lblOldPassword;
     private Label lblNewPassword;
     private Label lblRetypeNewPassword;
+    private Label lblSecurityQuestion;
+    private Label lblAnswer;
+    private Combobox lstSecurityQuestion;
     private Textbox txtOldPassword;
     private Textbox txtNewPassword;
     private Textbox txtRetypeNewPassword;
+    private Textbox txtAnswer;
 
     public ChangePasswordPanel(Properties ctx, LoginWindow loginWindow, String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs) 
     {
@@ -93,7 +99,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     {
     	Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
-    	Label label = new Label("Login");
+    	Label label = new Label(Msg.getMsg(m_ctx, "ChangePassword"));
     	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
     	div.appendChild(label);
     	this.appendChild(div);
@@ -117,7 +123,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         td.appendChild(image);
 
         tr = new Tr();
-        tr.setId("rowUser");
+        tr.setId("rowOldPassword");
         table.appendChild(tr);
     	td = new Td();
     	tr.appendChild(td);
@@ -151,6 +157,30 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(txtRetypeNewPassword);
+    	
+    	tr = new Tr();
+        tr.setId("rowSecurityQuestion");
+        table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(lblSecurityQuestion);
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(lstSecurityQuestion);
+
+    	tr = new Tr();
+        tr.setId("rowAnswer");
+        table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(lblAnswer);
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(txtAnswer);
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
@@ -177,6 +207,25 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         lblRetypeNewPassword = new Label();
         lblRetypeNewPassword.setId("lblRetypeNewPassword");
         lblRetypeNewPassword.setValue(Msg.getMsg(m_ctx, "New Password Confirm"));
+        
+        lblSecurityQuestion = new Label();
+    	lblSecurityQuestion.setId("lblSecurityQuestion");
+    	lblSecurityQuestion.setValue(Msg.getMsg(m_ctx, "SecurityQuestion"));
+
+    	lblAnswer = new Label();
+    	lblAnswer.setId("lblAnswer");
+    	lblAnswer.setValue(Msg.getMsg(m_ctx, "Answer"));
+
+    	lstSecurityQuestion = new Combobox();
+    	lstSecurityQuestion.setAutocomplete(true);
+    	lstSecurityQuestion.setAutodrop(true);
+    	lstSecurityQuestion.setId("lstSecurityQuestion");
+    	lstSecurityQuestion.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstSecurityQuestion.getId());
+    	lstSecurityQuestion.setWidth("220px");
+    	
+    	lstSecurityQuestion.getItems().clear();
+    	for (int i = 1; i <= ResetPasswordPanel.NO_OF_SECURITY_QUESTION; i++)
+    		lstSecurityQuestion.appendItem(Msg.getMsg(m_ctx, ResetPasswordPanel.SECURITY_QUESTION_PREFIX + i), ResetPasswordPanel.SECURITY_QUESTION_PREFIX + i);
 
         txtOldPassword = new Textbox();
         txtOldPassword.setId("txtOldPassword");
@@ -198,6 +247,13 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         txtRetypeNewPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewPassword.getId());        
         txtRetypeNewPassword.setCols(25);
         txtRetypeNewPassword.setWidth("220px");
+        
+    	txtAnswer = new Textbox();
+    	txtAnswer.setId("txtAnswer");
+//        txtAnswer.setType("password");
+        txtAnswer.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtAnswer.getId());
+        txtAnswer.setCols(25);
+        txtAnswer.setWidth("220px");
    }
 
     public void onEvent(Event event)
@@ -219,31 +275,70 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	String newPassword = txtNewPassword.getValue();
     	String retypeNewPassword = txtRetypeNewPassword.getValue();
     	
+    	String securityQuestion = null;
+    	if (lstSecurityQuestion.getSelectedItem() != null)
+    		securityQuestion = (String) lstSecurityQuestion.getSelectedItem().getValue();
+    	
+    	String answer = txtAnswer.getValue();
+    	
     	if (Util.isEmpty(oldPassword))
     		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "OldPasswordMandatory"));
     	
     	if (Util.isEmpty(retypeNewPassword))
     		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "NewPasswordConfirmMandatory"));
-    	
+
     	if (!newPassword.equals(retypeNewPassword))
     		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "PasswordNotMatch"));
-    	
+
+    	if (Util.isEmpty(securityQuestion))
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "SecurityQuestionMandatory"));
+
+    	if (Util.isEmpty(answer))
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "AnswerMandatory"));
+
     	if (!oldPassword.equals(m_userPassword))
     		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "OldPasswordNoMatch"));
 
-    	for (KeyNamePair clientKNPair : m_clientKNPairs)
+    	Trx trx = null;
+    	try
     	{
-    		int clientId = clientKNPair.getKey();
-    		Env.setContext(m_ctx, "#AD_Client_ID", clientId);
-    		MUser user = MUser.get(m_ctx, m_userName);
-    		if (user == null)
-    		{
-    			logger.severe("Could not find user '" + m_userName + "'");
-    			throw new AdempiereException("Could not find user");
-    		}
+        	String trxName = Trx.createTrxName("ChangePasswordTrx");
+    		trx = Trx.get(trxName, true);
     		
-    		user.setPassword(newPassword);
-    		user.saveEx();
+	    	for (KeyNamePair clientKNPair : m_clientKNPairs)
+	    	{	    		
+	    		int clientId = clientKNPair.getKey();
+	    		Env.setContext(m_ctx, "#AD_Client_ID", clientId);
+	    		MUser user = MUser.get(m_ctx, m_userName);
+	    		if (user == null)
+	    		{
+	    			trx.rollback();
+	    			logger.severe("Could not find user '" + m_userName + "'");
+	    			throw new AdempiereException("Could not find user");
+	    		}
+	    		
+	    		user.setPassword(newPassword);
+	    		user.setIsExpired(false);
+	    		user.setSecurityQuestion(securityQuestion);
+	    		user.setAnswer(answer);    		
+	    		if (!user.save(trx.getTrxName()))
+	    		{
+	    			trx.rollback();
+	    			throw new AdempiereException("Could not update user");
+	    		}
+	    	}
+	    	
+	    	trx.commit();
+    	}
+    	catch (Exception e)
+    	{
+    		if (trx != null)
+    			trx.rollback();
+    	}
+    	finally
+    	{
+    		if (trx != null)
+    			trx.close();
     	}
     	
     	wndLogin.loginOk(m_userName, m_show, m_clientKNPairs);

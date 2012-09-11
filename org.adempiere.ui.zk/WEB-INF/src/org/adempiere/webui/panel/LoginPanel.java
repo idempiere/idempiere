@@ -39,6 +39,7 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.TokenEvent;
 import org.adempiere.webui.exception.ApplicationException;
@@ -62,6 +63,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.lang.Strings;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
@@ -112,6 +114,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     private LoginWindow wndLogin;
     private Checkbox chkRememberMe;
     private Checkbox chkSelectRole;
+    private ToolBarButton btnResetPassword;
     boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
@@ -216,8 +219,20 @@ public class LoginPanel extends Window implements EventListener<Event>
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
         	td.appendChild(chkRememberMe);
-        	
     	}
+    	
+    	tr = new Tr();
+        tr.setId("rowResetPassword");
+        table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(new Label(""));
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(btnResetPassword);
+    	btnResetPassword.addEventListener(Events.ON_CLICK, this);
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
@@ -332,6 +347,8 @@ public class LoginPanel extends Window implements EventListener<Event>
         chkRememberMe = new Checkbox(Msg.getMsg(Language.getBaseAD_Language(), "RememberMe"));
 
         chkSelectRole = new Checkbox(Msg.getMsg(Language.getBaseAD_Language(), "SelectRole"));
+        
+        btnResetPassword = new ToolBarButton(Msg.getMsg(Language.getBaseAD_Language(), "ResetPassword"));
 
         // Make the default language the language of client System
         String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
@@ -361,6 +378,10 @@ public class LoginPanel extends Window implements EventListener<Event>
             	String langName = (String) lstLanguage.getSelectedItem().getLabel();
             	languageChanged(langName);
             }
+        }
+        else if (event.getTarget() == btnResetPassword)
+        {
+        	btnResetPasswordClicked();
         }
         // Elaine 2009/02/06 - initial language
         else if (event.getName().equals(Events.ON_CHANGE))
@@ -435,7 +456,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     	lblLanguage.setValue(res.getString("Language"));
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
-
+    	btnResetPassword.setLabel(Msg.getMsg(language, "ResetPassword"));
     }
 
 	private Language findLanguage(String langName) {
@@ -545,5 +566,35 @@ public class LoginPanel extends Window implements EventListener<Event>
 		String s = "adempiere.store.set(\"zkTimeoutText\", \"" + msg + "\")";
 		return s;
 	}
-
+	
+	private void btnResetPasswordClicked()
+	{
+		String userId = txtUserId.getValue();
+		if (Util.isEmpty(userId))
+    		throw new IllegalArgumentException(Msg.getMsg(ctx, "FillMandatory") + " " + lblUserId.getValue());
+		
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+    	StringBuilder whereClause = new StringBuilder("Password IS NOT NULL AND ");
+		if (email_login)
+			whereClause.append("EMail=?");
+		else
+			whereClause.append("COALESCE(LDAPUser,Name)=?");
+		whereClause.append(" AND")
+				.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
+				.append("         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)")
+				.append("         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND ")
+				.append(" EXISTS (SELECT * FROM AD_Client c")
+				.append("         WHERE c.AD_Client_ID=AD_User.AD_Client_ID")
+				.append("         AND c.IsActive='Y') AND ")
+				.append(" AD_User.IsActive='Y'")
+				.append(" AND AD_User.SecurityQuestion IS NOT NULL")
+				.append(" AND AD_User.Answer IS NOT NULL");
+		
+		List<MUser> users = new Query(ctx, MUser.Table_Name, whereClause.toString(), null)
+			.setParameters(userId)
+			.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+			.list();
+		
+		wndLogin.resetPassword(userId, users.size() == 0);
+	}
 }

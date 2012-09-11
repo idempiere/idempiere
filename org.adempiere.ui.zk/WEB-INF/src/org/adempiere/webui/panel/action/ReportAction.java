@@ -26,7 +26,7 @@ import java.util.logging.Level;
 
 import javax.sql.RowSet;
 
-import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.WProcessCtl;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -89,7 +89,6 @@ public class ReportAction implements EventListener<Event>
 		if(winReport == null)
 		{
 			winReport = new Window();
-			winReport.setTitle(Msg.getMsg(Env.getCtx(), "Export") + ": " + panel.getActiveGridTab().getName());
 			winReport.setWidth("450px");
 			winReport.setClosable(true);
 			winReport.setBorder("normal");
@@ -161,7 +160,7 @@ public class ReportAction implements EventListener<Event>
 		}
 
 		winReport.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		AEnv.showWindow(winReport);
+		LayoutUtils.openPopupWindow(panel.getToolbar().getButton("Report"), winReport, "after_start");
 	}
 	
 	@Override
