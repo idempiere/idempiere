@@ -46,6 +46,7 @@ import edu.vt.middleware.password.NonAlphanumericCharacterRule;
 import edu.vt.middleware.password.NumericalSequenceRule;
 import edu.vt.middleware.password.Password;
 import edu.vt.middleware.password.PasswordData;
+import edu.vt.middleware.password.PasswordGenerator;
 import edu.vt.middleware.password.PasswordValidator;
 import edu.vt.middleware.password.QwertySequenceRule;
 import edu.vt.middleware.password.RepeatCharacterRegexRule;
@@ -63,7 +64,7 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4262842010340413022L;
+	private static final long serialVersionUID = 7376091524332484101L;
 
 	/**
 	 * @param ctx
@@ -223,6 +224,46 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			return new MessageResolver();
 		else
 			return new MessageResolver(props);
+	}
+
+	public String generate() {
+		CharacterCharacteristicsRule charRule = new CharacterCharacteristicsRule();
+		int numValidations = 0;
+		if (getDigitCharacter() > 0) {
+			// require at least n digit in passwords
+			numValidations++;
+			charRule.getRules().add(new DigitCharacterRule(getDigitCharacter()));
+		}
+		if (getNonAlphaNumericCharacter() > 0) {
+			// require at least n non-alphanumeric char
+			numValidations++;
+			charRule.getRules().add(new NonAlphanumericCharacterRule(getNonAlphaNumericCharacter()));
+		}
+		if (getUppercaseCharacter() > 0) {
+			numValidations++;
+			charRule.getRules().add(new UppercaseCharacterRule(getUppercaseCharacter()));	
+		}
+		if (getLowercaseCharacter() > 0) {
+			numValidations++;
+			charRule.getRules().add(new LowercaseCharacterRule(getLowercaseCharacter()));
+		}
+		if (getAlphabeticalCharacter() > 0){
+			numValidations++;
+			charRule.getRules().add(new AlphabeticalCharacterRule(getAlphabeticalCharacter()));
+		}
+		if (! charRule.getRules().isEmpty()) {
+			charRule.setNumberOfCharacteristics(numValidations);
+		}
+
+		int len = 10; // suggested length to generate
+		if (len < getMinLength()) {
+			len = getMinLength();
+		}
+		if (len > getMaxLength()) {
+			len = getMaxLength();
+		}
+
+		return new PasswordGenerator().generatePassword(len, charRule.getRules());
 	}
 
 }

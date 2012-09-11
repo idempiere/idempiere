@@ -37,7 +37,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9111154530183645884L;
+	private static final long serialVersionUID = 5434521728516112616L;
 
 	public final static String PDF_FONT_DIR = "PDF_FONT_DIR";
 	public final static String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
@@ -50,6 +50,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
 	public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
 	public static final String USE_EMAIL_FOR_LOGIN = "USE_EMAIL_FOR_LOGIN";
+	public static final String LOGIN_SHOW_RESETPASSWORD = "LOGIN_SHOW_RESETPASSWORD";
 	public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";
 	public static final String ZK_BROWSER_ICON = "ZK_BROWSER_ICON";
 	public static final String ZK_BROWSER_TITLE = "ZK_BROWSER_TITLE";

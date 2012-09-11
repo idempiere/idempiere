@@ -51,12 +51,12 @@ import org.zkoss.zul.Image;
  */
 public class ChangePasswordPanel extends Window implements EventListener<Event>
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 5323925843783103350L;
+	private static final long serialVersionUID = 6055606520280550335L;
 
-    private static CLogger logger = CLogger.getCLogger(ChangePasswordPanel.class);
+	private static CLogger logger = CLogger.getCLogger(ChangePasswordPanel.class);
 
     private LoginWindow wndLogin;
 
@@ -260,7 +260,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     {
         if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
         {
-            validateChangePassword();
+			validateChangePassword();
         }
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
@@ -316,24 +316,21 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 	    			logger.severe("Could not find user '" + m_userName + "'");
 	    			throw new AdempiereException("Could not find user");
 	    		}
-	    		
-	    		user.setPassword(newPassword);
+
+				user.set_ValueOfColumn("Password", newPassword); // will be hashed and validate on saveEx
 	    		user.setIsExpired(false);
 	    		user.setSecurityQuestion(securityQuestion);
 	    		user.setAnswer(answer);    		
-	    		if (!user.save(trx.getTrxName()))
-	    		{
-	    			trx.rollback();
-	    			throw new AdempiereException("Could not update user");
-	    		}
+	    		user.saveEx(trx.getTrxName());
 	    	}
 	    	
 	    	trx.commit();
     	}
-    	catch (Exception e)
+    	catch (AdempiereException e)
     	{
     		if (trx != null)
     			trx.rollback();
+    		throw e;
     	}
     	finally
     	{

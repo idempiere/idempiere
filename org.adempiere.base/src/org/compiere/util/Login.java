@@ -292,28 +292,12 @@ public class Login
 		
 		 MUser user = MTable.get(m_ctx, MUser.Table_ID).createQuery( where, null).setParameters(app_user).firstOnly();   // throws error if username collision occurs
 		
-		 String hash = null;
-		 String salt = null;
-		 int  AD_User_ID = -1;
-		
-		 if (user != null )
-		 {
-	 		hash = user.getPassword();
-	 		salt = user.getSalt();
-	     }
-		
 		 // always do calculation to confuse timing based attacks
 		 if ( user == null )
 			 user = MUser.get(m_ctx, 0);
-		 if ( hash == null )
-		     hash = "0000000000000000";
-		 if ( salt == null )
-			 salt = "0000000000000000";
-		 
 		  if ( user.authenticateHash(app_pwd) )
 		  {
 			  authenticated = true;
-			  AD_User_ID = user.getAD_User_ID();
 			  app_pwd = null;
 		   }
 		 } 
@@ -1396,13 +1380,6 @@ public class Login
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
 			if (hash_password) {
-				String hash = user.getPassword();
-				String salt = user.getSalt();
-				// always do calculation to confuse timing based attacks
-				if ( hash == null )
-					hash = "0000000000000000";
-				if ( salt == null )
-					salt = "0000000000000000";				
 				valid = user.authenticateHash(app_pwd);
 			} else {
 				// password not hashed

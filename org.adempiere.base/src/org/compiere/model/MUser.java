@@ -212,13 +212,6 @@ public class MUser extends X_AD_User
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
 			if (hash_password) {
-				String hash = user.getPassword();
-				String salt = user.getSalt();
-				// always do calculation to confuse timing based attacks
-				if ( hash == null )
-					hash = "0000000000000000";
-				if ( salt == null )
-					salt = "0000000000000000";				
 				valid = user.authenticateHash(password);
 			} else {
 				// password not hashed

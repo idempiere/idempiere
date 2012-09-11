@@ -220,19 +220,21 @@ public class LoginPanel extends Window implements EventListener<Event>
         	tr.appendChild(td);
         	td.appendChild(chkRememberMe);
     	}
-    	
-    	tr = new Tr();
-        tr.setId("rowResetPassword");
-        table.appendChild(tr);
-    	td = new Td();
-    	tr.appendChild(td);
-    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.appendChild(new Label(""));
-    	td = new Td();
-    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
-    	tr.appendChild(td);
-    	td.appendChild(btnResetPassword);
-    	btnResetPassword.addEventListener(Events.ON_CLICK, this);
+
+    	if (MSysConfig.getBooleanValue(MSysConfig.LOGIN_SHOW_RESETPASSWORD, true)) {
+        	tr = new Tr();
+            tr.setId("rowResetPassword");
+            table.appendChild(tr);
+        	td = new Td();
+        	tr.appendChild(td);
+        	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+        	td.appendChild(new Label(""));
+        	td = new Td();
+        	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+        	tr.appendChild(td);
+        	td.appendChild(btnResetPassword);
+        	btnResetPassword.addEventListener(Events.ON_CLICK, this);
+    	}
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);

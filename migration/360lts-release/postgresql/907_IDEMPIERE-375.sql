@@ -103,16 +103,6 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,V
 INSERT INTO AD_Message_Trl (AD_Language,AD_Message_ID, MsgText,MsgTip, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Message_Trl_UU ) SELECT l.AD_Language,t.AD_Message_ID, t.MsgText,t.MsgTip, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Message t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Message_ID=200045 AND NOT EXISTS (SELECT * FROM AD_Message_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Message_ID=t.AD_Message_ID)
 ;
 
--- Sep 10, 2012 5:20:40 PM SGT
--- IDEMPIERE-375 Implement Forgot my Password
-INSERT INTO AD_Message (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,Value,IsActive,Updated,CreatedBy,UpdatedBy,AD_Client_ID,AD_Org_ID,Created) VALUES ('I','Answer',200046,'D','494db2ce-7749-4f52-82a1-d7e9448ab864','Answer','Y',TO_TIMESTAMP('2012-09-10 17:20:40','YYYY-MM-DD HH24:MI:SS'),100,100,0,0,TO_TIMESTAMP('2012-09-10 17:20:40','YYYY-MM-DD HH24:MI:SS'))
-;
-
--- Sep 10, 2012 5:20:46 PM SGT
--- IDEMPIERE-375 Implement Forgot my Password
-INSERT INTO AD_Message (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,Value,IsActive,Updated,CreatedBy,UpdatedBy,AD_Client_ID,AD_Org_ID,Created) VALUES ('I','Answer',200047,'D','397a2656-2199-4451-87fe-5850b54957c0','Answer','Y',TO_TIMESTAMP('2012-09-10 17:20:45','YYYY-MM-DD HH24:MI:SS'),100,100,0,0,TO_TIMESTAMP('2012-09-10 17:20:45','YYYY-MM-DD HH24:MI:SS'))
-;
-
 -- Sep 10, 2012 5:21:23 PM SGT
 -- IDEMPIERE-375 Implement Forgot my Password
 INSERT INTO AD_Message (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,Value,IsActive,Updated,CreatedBy,UpdatedBy,AD_Client_ID,AD_Org_ID,Created) VALUES ('E','Security Question is Mandatory',200048,'D','5c73ed0f-6ca9-45bc-8df7-e85f8bc3471d','SecurityQuestionMandatory','Y',TO_TIMESTAMP('2012-09-10 17:21:22','YYYY-MM-DD HH24:MI:SS'),100,100,0,0,TO_TIMESTAMP('2012-09-10 17:21:22','YYYY-MM-DD HH24:MI:SS'))

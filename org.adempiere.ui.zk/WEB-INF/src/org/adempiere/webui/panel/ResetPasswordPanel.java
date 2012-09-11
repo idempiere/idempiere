@@ -34,6 +34,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
+import org.compiere.model.MPasswordRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
@@ -62,8 +63,8 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 190270426336225224L;
-	
+	private static final long serialVersionUID = -657724758165769510L;
+
 	private static CLogger logger = CLogger.getCLogger(ResetPasswordPanel.class);
 	
     private static final int MAX_RESET_PASSWORD_TRIES = 3; 
@@ -325,15 +326,15 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 			}			
 			throw new AdempiereException(errMsg);
 		}
-			
-		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		
-		StringBuilder sqlUpdate = new StringBuilder("UPDATE AD_User ");
-		sqlUpdate.append("SET IsExpired='Y', Password=? ");
-		sqlUpdate.append("WHERE AD_User_ID=? ");
-		
-		SecureRandom random = new SecureRandom();
-		String newPassword = BigInteger.probablePrime(50, random).toString(Character.MAX_RADIX);
+		String newPassword;
+		MPasswordRule pwdrule = MPasswordRule.getRules(Env.getCtx(), null);
+		if (pwdrule != null) {
+			newPassword = pwdrule.generate();
+		} else {
+			SecureRandom random = new SecureRandom();
+			newPassword = BigInteger.probablePrime(50, random).toString(Character.MAX_RADIX);
+		}
 		
 		String errorMsg = "";
 		Trx trx = null;
@@ -346,18 +347,10 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 			{
 				user.set_TrxName(trx.getTrxName());
 				
-	    		user.setPassword(newPassword);
-				if (hash_password)
-					user.setPassword(user.getPassword());
-				// use SQL to update the password to skip password rule validation
-				int no = DB.executeUpdate(sqlUpdate.toString(), new Object[] {user.getPassword(), user.getAD_User_ID()}, false, trx.getTrxName());
-				if (no <= 0)
-				{
-					trx.rollback();
-					logger.severe("Failed to update user '" + m_userName + "'");
-					throw new AdempiereException("Failed to update user");
-				}
-				
+				user.set_ValueOfColumn("Password", newPassword); // will be hashed and validate on saveEx
+				user.setIsExpired(true);
+				user.saveEx();
+
 				if (sendEmail(user, newPassword))
 		    		logger.fine(user.getEMail());
 				else
@@ -365,8 +358,8 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 					if (errorMsg.length() > 0)
 						errorMsg += ", ";
 					errorMsg += user.getEMail();
-					logger.warning("Failed to send email to user - " + user.getEMail());		
-				}	
+					throw new AdempiereException("Failed to send email to user - " + user.getEMail());
+				}
 			}
 
 	    	trx.commit();
@@ -381,7 +374,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     		if (trx != null)
     			trx.close();
     	}
-    	
+
     	if (errorMsg.length() > 0)
 			throw new AdempiereException(Msg.getMsg(m_ctx, "RequestActionEMailError") + ": " + errorMsg);
     	else
@@ -408,10 +401,10 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     		return false;
 
         MMailText mailText = new MMailText(m_ctx, R_MailText_ID, null);    	
-    	to.setPassword(newPassword);
+		to.set_ValueOfColumn("Password", newPassword); // will be hashed and validate on saveEx
     	mailText.setUser(to);
 		String message = mailText.getMailText(true);
-		message = Env.parseVariable(message, to, to.get_TrxName(), true);	
+		message = Env.parseVariable(message, to, to.get_TrxName(), true);
 		EMail email = client.createEMail(to.getEMail(), mailText.getMailHeader(), message, mailText.isHtml());
 		if (mailText.isHtml())
 			email.setMessageHTML(mailText.getMailHeader(), message);
