@@ -521,11 +521,14 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	
 	public void updateLabelStyle() {				
 		if (getLabel() != null) {
-			boolean mandatoryStyle = mandatory && !readOnly && getGridField().isEditable(true) && isNullOrEmpty();
-			getLabel().setStyle( (isZoomable() ? STYLE_ZOOMABLE_LABEL : "") + (mandatoryStyle ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL));			
+			getLabel().setStyle( (isZoomable() ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL));			
 		}
 	}
 	
+	public boolean isMandatoryStyle() {
+		return mandatory && !readOnly && getGridField().isEditable(true) && isNullOrEmpty();
+	}
+
 	public boolean isNullOrEmpty() {
 		Object value = getValue();
 		return value == null || value.toString().trim().length() == 0;

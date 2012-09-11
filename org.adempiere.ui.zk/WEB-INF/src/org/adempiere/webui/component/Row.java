@@ -31,7 +31,7 @@ public class Row extends org.zkoss.zul.Row
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3587841381101659893L;
+	private static final long serialVersionUID = -5813452501151101553L;
 
 	public boolean appendCellChild(Component child) {
 		return this.appendCellChild(child, 1);
@@ -43,6 +43,18 @@ public class Row extends org.zkoss.zul.Row
 		cell.setRowspan(1);
 		cell.appendChild(child);
 		return super.appendChild(cell);
+	}
+
+	private Group m_group;
+
+	public Group getGroup() {
+		return m_group;
+	}
+
+	public void setGroup(Group group) {
+		this.m_group = group;
+		if (m_group != null)
+			m_group.add(this);
 	}
 	
 }

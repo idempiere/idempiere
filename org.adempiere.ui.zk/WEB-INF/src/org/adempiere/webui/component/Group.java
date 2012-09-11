@@ -1,5 +1,6 @@
 package org.adempiere.webui.component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -13,13 +14,14 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
 public class Group extends org.zkoss.zul.Group {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -357795690637457751L;
-	
+	private static final long serialVersionUID = -6735090880559291438L;
+
 	public static final String GROUP_ROW_VISIBLE_KEY = "groupRowVisible";
+
+	private List<org.adempiere.webui.component.Row> m_rows = new ArrayList<org.adempiere.webui.component.Row>();
 
 	public Group() {
 		super();
@@ -56,17 +58,13 @@ public class Group extends org.zkoss.zul.Group {
 		throw new UiException("Unsupported child for setLabel: "+cell);
 	}
 	
-	public void setOpen(boolean open) {		
-		if(getParent() == null && !open)
-			open = true;	// force the group to open when the parent is null
-		
+	public void setOpen(boolean open) {
 		super.setOpen(open);
 		autoFirstCell().setOpen(isOpen());
 		
-		if(getParent() != null)
+		if (getParent() != null)
 		{
-			List<Row> rows = getItems();
-			for (Row row : rows)
+			for (Row row : m_rows)
 			{
 				boolean visible = true;
 				String value = (String) row.getAttribute(GROUP_ROW_VISIBLE_KEY);
@@ -76,7 +74,11 @@ public class Group extends org.zkoss.zul.Group {
 			}
 		}
 	}
-		
+	
+	public void add(org.adempiere.webui.component.Row row) {
+		m_rows.add(row);
+	}
+
 	public class GroupHeader extends Div implements EventListener<Event>
 	{
 		/**
@@ -139,4 +141,5 @@ public class Group extends org.zkoss.zul.Group {
 			}
 		}
 	}
+
 }

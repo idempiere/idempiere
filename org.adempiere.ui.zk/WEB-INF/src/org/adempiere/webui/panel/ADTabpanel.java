@@ -96,12 +96,12 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel
 {
-	private static final String ON_DEFER_SET_SELECTED_NODE = "onDeferSetSelectedNode";
-
 	/**
-	 * generated serial version ID
+	 * 
 	 */
-	private static final long serialVersionUID = 6945934489328360251L;
+	private static final long serialVersionUID = -975129028953555569L;
+
+	private static final String ON_DEFER_SET_SELECTED_NODE = "onDeferSetSelectedNode";
 
 	private static final CLogger logger;
 
@@ -134,6 +134,8 @@ DataStatusListener, IADTabpanel
     private Map<String, List<org.zkoss.zul.Row>> fieldGroupHeaders = new HashMap<String, List<org.zkoss.zul.Row>>();
 
 	private ArrayList<Row> rowList;
+
+	List<Group> allCollapsibleGroups = new ArrayList<Group>();
 
 	private Component formComponent = null;
 
@@ -350,21 +352,15 @@ DataStatusListener, IADTabpanel
         	{
         		currentFieldGroup = fieldGroup;
         		
-        		if (numCols - actualxpos > 0)
-        			row.appendCellChild(createSpacer(), numCols - actualxpos);
+        		if (numCols - actualxpos + 1 > 0)
+        			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
+        		row.setGroup(currentGroup);
         		rows.appendChild(row);
                 if (rowList != null)
         			rowList.add(row);
 
-       			row = new Row();
-       			actualxpos = 0;
-
         		List<org.zkoss.zul.Row> headerRows = new ArrayList<org.zkoss.zul.Row>();
         		fieldGroupHeaders.put(fieldGroup, headerRows);
-
-        		row.appendCellChild(new Separator(), numCols);
-        		rows.appendChild(row);
-        		headerRows.add(row);
 
         		rowList = new ArrayList<Row>();
         		fieldGroupContents.put(fieldGroup, rowList);
@@ -383,11 +379,13 @@ DataStatusListener, IADTabpanel
         			row.appendCellChild(separator, numCols);
         			rows.appendChild(row);
         			headerRows.add(row);
+        			currentGroup = null;
         		}
         		else
         		{
         			Group rowg = new Group(fieldGroup);
         			rowg.setSpans(numColsS);
+    				allCollapsibleGroups.add(rowg);
         			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())
         			{
         				rowg.setOpen(false);
@@ -406,7 +404,10 @@ DataStatusListener, IADTabpanel
         		// Fill right part of the row with spacers until number of columns
         		if (numCols - actualxpos + 1 > 0)
         			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
+        		row.setGroup(currentGroup);
         		rows.appendChild(row);
+                if (rowList != null)
+        			rowList.add(row);
         		row=new Row();
         		actualxpos = 0;
         	}
@@ -439,17 +440,6 @@ DataStatusListener, IADTabpanel
         				row.appendCellChild(div,1);
         			}
         			row.appendCellChild(editor.getComponent(), field.getColumnSpan());
-        			
-        			/*
-        			if (field.isLongField()) {
-        				row.setSpans("1,3,1");
-        				row.appendCellChild(createSpacer());
-        				rows.appendChild(row);
-        				if (rowList != null)
-        					rowList.add(row);
-        				//row = new Row();
-        			}
-        			*/
 
         			if (editor instanceof WButtonEditor)
         			{
@@ -498,8 +488,10 @@ DataStatusListener, IADTabpanel
         		row.appendCellChild(div);
         	}
         }
+        
 		if (numCols - actualxpos + 1 > 0)
 			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
+		row.setGroup(currentGroup);
 		rows.appendChild(row);
         if (rowList != null)
 			rowList.add(row);
@@ -529,6 +521,12 @@ DataStatusListener, IADTabpanel
         {
             return;
         }
+
+    	List<Group> collapsedGroups = new ArrayList<Group>();
+    	for (Group group : allCollapsibleGroups) {
+    		if (! group.isOpen())
+    			collapsedGroups.add(group);
+    	}
 
         for (WEditor comp : editors)
         {
@@ -582,31 +580,42 @@ DataStatusListener, IADTabpanel
         }   //  all components
 
         //hide row if all editor within the row is invisible
-        List<?> rows = grid.getRows().getChildren();
-        for(int i = 0; i < rows.size(); i++)
+        List<Component> rows = grid.getRows().getChildren();
+        for (Component comp : rows)
         {
-        	org.zkoss.zul.Row row = (org.zkoss.zul.Row) rows.get(i);
-        	List<?> components = row.getChildren();
-        	boolean visible = false;
-        	boolean editorRow = false;
-        	for (int j = 0; j < components.size(); j++)
-        	{
-        		Component cellComponent = (Component) components.get(j);
-        		Component component = cellComponent.getFirstChild();
-        		if (editorComps.contains(component))
-        		{
-        			editorRow = true;
-        			if (component.isVisible())
-        			{
-        				visible = true;
-        				break;
-        			}
-        		}
-        	}
-        	if (editorRow && (row.isVisible() != visible))
-        	{
-        		row.setAttribute(Group.GROUP_ROW_VISIBLE_KEY, visible ? "true" : "false");
-        		row.setVisible(visible);
+        	if (comp instanceof Row) {
+            	Row row = (Row) comp;
+            	boolean visible = false;
+            	boolean editorRow = false;
+            	for (Component cellComponent : row.getChildren())
+            	{
+            		Component component = cellComponent.getFirstChild();
+            		if (editorComps.contains(component))
+            		{
+            			editorRow = true;
+            			// open the group if there is a mandatory unfilled field
+            			WEditor editor = editors.get(editorComps.indexOf(component));
+            			if (editor != null
+            					&& row.getGroup() != null 
+            					&& ! row.getGroup().isOpen()
+            					&& editor.isMandatoryStyle()) {
+            				row.getGroup().setOpen(true);
+            				if (collapsedGroups.contains(row.getGroup())) {
+            					collapsedGroups.remove(row.getGroup());
+            				}
+            			}
+            			if (component.isVisible())
+            			{
+            				visible = true;
+            				break;
+            			}
+            		}
+            	}
+            	if (editorRow && (row.isVisible() != visible))
+            	{
+            		row.setAttribute(Group.GROUP_ROW_VISIBLE_KEY, visible ? "true" : "false");
+            		row.setVisible(visible);
+            	}
         	}
         }
 
@@ -630,6 +639,11 @@ DataStatusListener, IADTabpanel
         		if (row.isVisible() != visible)
         			row.setVisible(visible);
         	}
+        }
+
+        // collapse the groups closed
+        for (Group group : collapsedGroups) {
+        	group.setOpen(false);
         }
 
         logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
