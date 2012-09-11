@@ -1412,14 +1412,19 @@ public class Login
 				if (user.isLocked())
 					continue;
 				
-				if (MAX_PASSWORD_AGE > 0 && !user.isNoPasswordReset())
+				if (user.isExpired())
+					isPasswordExpired = true;
+				else if (MAX_PASSWORD_AGE > 0 && !user.isNoPasswordReset())
 				{
 					if (user.getDatePasswordChanged() == null)
 						user.setDatePasswordChanged(new Timestamp(now));
 					
 					long days = (now - user.getDatePasswordChanged().getTime()) / (1000 * 60 * 60 * 24);
 					if (days > MAX_PASSWORD_AGE)
+					{
+						user.setIsExpired(true);
 						isPasswordExpired = true;
+					}
 				}
 												
 				StringBuffer sql= new StringBuffer("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");

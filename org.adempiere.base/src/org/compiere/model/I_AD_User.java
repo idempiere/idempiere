@@ -97,6 +97,15 @@ public interface I_AD_User
 	/** Get AD_User_UU	  */
 	public String getAD_User_UU();
 
+    /** Column name Answer */
+    public static final String COLUMNNAME_Answer = "Answer";
+
+	/** Set Answer	  */
+	public void setAnswer (String Answer);
+
+	/** Get Answer	  */
+	public String getAnswer();
+
     /** Column name Birthday */
     public static final String COLUMNNAME_Birthday = "Birthday";
 
@@ -352,6 +361,15 @@ public interface I_AD_User
 	  */
 	public boolean isActive();
 
+    /** Column name IsExpired */
+    public static final String COLUMNNAME_IsExpired = "IsExpired";
+
+	/** Set Expired	  */
+	public void setIsExpired (boolean IsExpired);
+
+	/** Get Expired	  */
+	public boolean isExpired();
+
     /** Column name IsFullBPAccess */
     public static final String COLUMNNAME_IsFullBPAccess = "IsFullBPAccess";
 
@@ -534,6 +552,15 @@ public interface I_AD_User
 	  * Random data added to improve password hash effectiveness
 	  */
 	public String getSalt();
+
+    /** Column name SecurityQuestion */
+    public static final String COLUMNNAME_SecurityQuestion = "SecurityQuestion";
+
+	/** Set Security Question	  */
+	public void setSecurityQuestion (String SecurityQuestion);
+
+	/** Get Security Question	  */
+	public String getSecurityQuestion();
 
     /** Column name Supervisor_ID */
     public static final String COLUMNNAME_Supervisor_ID = "Supervisor_ID";

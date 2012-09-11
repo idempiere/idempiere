@@ -90,7 +90,19 @@ public final class AEnv
 	 */
 	public static void showCenterScreen(Window window)
 	{
-		SessionManager.getAppDesktop().showWindow(window, "center");
+		if (SessionManager.getAppDesktop() != null)
+			SessionManager.getAppDesktop().showWindow(window, "center");
+		else 
+		{
+			window.setPosition("center");
+			window.setPage(getDesktop().getFirstPage());
+			Object objMode = window.getAttribute(Window.MODE_KEY);
+			final String mode = objMode != null ? objMode.toString() : Window.MODE_HIGHLIGHTED;
+			if (Window.MODE_MODAL.equals(mode))
+				window.doModal();
+			else
+				window.doHighlighted();
+		}
 	}   //  showCenterScreen
 
 	/**

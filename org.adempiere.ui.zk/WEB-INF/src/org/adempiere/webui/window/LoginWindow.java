@@ -30,6 +30,7 @@ import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.FWindow;
 import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
+import org.adempiere.webui.panel.ResetPasswordPanel;
 import org.adempiere.webui.panel.RolePanel;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
@@ -50,7 +51,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
-public class LoginWindow extends FWindow implements EventListener
+public class LoginWindow extends FWindow implements EventListener<Event>
 {
 	/**
 	 * 
@@ -60,6 +61,7 @@ public class LoginWindow extends FWindow implements EventListener
 	private IWebClient app;
     private Properties ctx;
     private LoginPanel pnlLogin;
+    private ResetPasswordPanel pnlResetPassword;
     private ChangePasswordPanel pnlChangePassword;
     private RolePanel pnlRole;
 
@@ -96,6 +98,13 @@ public class LoginWindow extends FWindow implements EventListener
 		pnlChangePassword = new ChangePasswordPanel(ctx, this, userName, userPassword, show, clientsKNPairs);
         this.getChildren().clear();
         this.appendChild(pnlChangePassword);
+    }
+    
+    public void resetPassword(String userName, boolean noSecurityQuestion)
+    {
+    	pnlResetPassword = new ResetPasswordPanel(ctx, this, userName, noSecurityQuestion);
+        this.getChildren().clear();
+        this.appendChild(pnlResetPassword);
     }
 
     public void loginCompleted()
