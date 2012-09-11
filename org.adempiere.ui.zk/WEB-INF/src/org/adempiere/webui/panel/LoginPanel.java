@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereIdGenerator;
@@ -98,10 +97,9 @@ public class LoginPanel extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6308022048294680475L;
+	private static final long serialVersionUID = -3181808670168474967L;
+
 	private static final String ON_LOAD_TOKEN = "onLoadToken";
-	private static final String RESOURCE = "org.compiere.apps.ALoginRes";
-    private ResourceBundle res = ResourceBundle.getBundle(RESOURCE);
     private static CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
     private Properties ctx;
@@ -448,14 +446,13 @@ public class LoginPanel extends Window implements EventListener<Event>
     	//	Locales
 		Locale loc = language.getLocale();
 		Locale.setDefault(loc);
-		res = ResourceBundle.getBundle(RESOURCE, loc);
-
+		
 		if (email_login)
-			lblUserId.setValue(res.getString("EMail"));
+			lblUserId.setValue(Msg.getMsg(language, "EMail"));
 		else
-			lblUserId.setValue(res.getString("User"));
-    	lblPassword.setValue(res.getString("Password"));
-    	lblLanguage.setValue(res.getString("Language"));
+			lblUserId.setValue(Msg.getMsg(language, "User"));
+    	lblPassword.setValue(Msg.getMsg(language, "Password"));
+    	lblLanguage.setValue(Msg.getMsg(language, "Language"));
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
     	btnResetPassword.setLabel(Msg.getMsg(language, "ResetPassword"));

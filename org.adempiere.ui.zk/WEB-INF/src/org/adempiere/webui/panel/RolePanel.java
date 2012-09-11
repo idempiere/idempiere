@@ -25,7 +25,6 @@ package org.adempiere.webui.panel;
 
 import java.sql.Timestamp;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
@@ -76,11 +75,9 @@ public class RolePanel extends Window implements EventListener, Deferrable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4403663665119775251L;
+	private static final long serialVersionUID = 1071903027424763936L;
 
-	private static final String RESOURCE = "org.compiere.apps.ALoginRes";
-
-    private LoginWindow wndLogin;
+	private LoginWindow wndLogin;
     private Login login;
 
     private Combobox lstRole, lstClient, lstOrganisation, lstWarehouse;
@@ -239,27 +236,25 @@ public class RolePanel extends Window implements EventListener, Deferrable
     {
     	Language language = Env.getLanguage(m_ctx);
 
-    	ResourceBundle res = ResourceBundle.getBundle(RESOURCE, language.getLocale());
-
-        lblClient = new Label();
+    	lblClient = new Label();
         lblClient.setId("lblClient");
-        lblClient.setValue(res.getString("Client"));
+        lblClient.setValue(Msg.getMsg(language,"Client"));
 
         lblRole = new Label();
         lblRole.setId("lblRole");
-        lblRole.setValue(res.getString("Role"));
+        lblRole.setValue(Msg.getMsg(language,"Role"));
 
         lblOrganisation = new Label();
         lblOrganisation.setId("lblOrganisation");
-        lblOrganisation.setValue(res.getString("Organization"));
+        lblOrganisation.setValue(Msg.getMsg(language,"Organization"));
 
         lblWarehouse = new Label();
         lblWarehouse.setId("lblWarehouse");
-        lblWarehouse.setValue(res.getString("Warehouse"));
+        lblWarehouse.setValue(Msg.getMsg(language,"Warehouse"));
 
         lblDate = new Label();
         lblDate.setId("lblDate");
-        lblDate.setValue(res.getString("Date"));
+        lblDate.setValue(Msg.getMsg(language,"Date"));
 
         lstRole = new Combobox();
         lstRole.setAutocomplete(true);
