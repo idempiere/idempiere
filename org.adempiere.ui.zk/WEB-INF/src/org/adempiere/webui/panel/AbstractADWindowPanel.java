@@ -17,6 +17,9 @@
 
 package org.adempiere.webui.panel;
 
+import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_REDO;
+import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_UNDO;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,7 +41,6 @@ import org.adempiere.webui.WZoomAcross;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialogTemplate;
 import org.adempiere.webui.apps.ProcessModalDialog;
-import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WCreateFromFactory;
 import org.adempiere.webui.apps.form.WCreateFromWindow;
 import org.adempiere.webui.apps.form.WPayment;
@@ -75,7 +77,6 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -2070,41 +2071,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 	private void onReport0() {
 		ReportAction reportAction = new ReportAction(this);
 		reportAction.show();
-/*		//	Query
-		MQuery query = new MQuery(curTab.getTableName());
-		//	Link for detail records
-		String queryColumn = curTab.getLinkColumnName();
-		//	Current row otherwise
-		if (queryColumn.length() == 0)
-			queryColumn = curTab.getKeyColumnName();
-		//	Find display
-		String infoName = null;
-		String infoDisplay = null;
-		for (int i = 0; i < curTab.getFieldCount(); i++)
-		{
-			GridField field = curTab.getField(i);
-			if (field.isKey())
-				infoName = field.getHeader();
-			if ((field.getColumnName().equals("Name") || field.getColumnName().equals("DocumentNo") )
-				&& field.getValue() != null)
-				infoDisplay = field.getValue().toString();
-			if (infoName != null && infoDisplay != null)
-				break;
-		}
-		if (queryColumn.length() != 0)
-		{
-			if (queryColumn.endsWith("_ID"))
-				query.addRestriction(queryColumn, MQuery.EQUAL,
-					new Integer(Env.getContextAsInt(ctx, curWindowNo, queryColumn)),
-					infoName, infoDisplay);
-			else
-				query.addRestriction(queryColumn, MQuery.EQUAL,
-					Env.getContext(ctx, curWindowNo, queryColumn),
-					infoName, infoDisplay);
-		}
-
-		new WReport (curTab.getAD_Table_ID(), query, toolbar.getEvent().getTarget(), curWindowNo, curTab.getWhereExtended());
-*/		
 	}
 
 	/**

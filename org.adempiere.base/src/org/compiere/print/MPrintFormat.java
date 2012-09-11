@@ -578,10 +578,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		int seqNo = 1;
 		for (GridField gridField : gridFields)
 		{
-			if (gridField.getAD_Column_ID() <= 0)
-				continue;
-			
-			MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (pf, gridField.getAD_Column_ID(), seqNo++);
+			MPrintFormatItem pfi = MPrintFormatItem.createFromGridField(pf, gridField, seqNo++);
 			if (pfi != null)
 			{
 				printFormatItemList.add (pfi);
