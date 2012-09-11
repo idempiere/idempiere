@@ -99,6 +99,8 @@ import org.w3c.dom.Element;
 public abstract class PO
 	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
 {
+	public static final String LOCAL_TRX_PREFIX = "POSave";
+
 	/**
 	 *
 	 */
@@ -1981,7 +1983,7 @@ public abstract class PO
 		Savepoint savepoint = null;
 		if (m_trxName == null)
 		{
-			m_trxName = Trx.createTrxName("POSave");
+			m_trxName = Trx.createTrxName(LOCAL_TRX_PREFIX + get_TableName());
 			localTrx = Trx.get(m_trxName, true);
 		}
 		else

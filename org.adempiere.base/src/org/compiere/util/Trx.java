@@ -28,6 +28,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.PO;
 
 /**
  *	Transaction Management.
@@ -640,7 +641,7 @@ public class Trx implements VetoableChangeListener
 	private boolean isLocalTrx(String trxName)
 	{
 		return trxName == null
-			|| trxName.startsWith("POSave") // TODO: hardcoded
+			|| trxName.startsWith(PO.LOCAL_TRX_PREFIX) // TODO: hardcoded
 			;
 	}
 
