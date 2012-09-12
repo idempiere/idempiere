@@ -364,11 +364,21 @@ public class VLocation extends JComponent
 			return;
 
 		//	Data Binding
-		int C_Location_ID = 0;
-		if (m_value != null)
-			C_Location_ID = m_value.getC_Location_ID();
-		Integer ii = new Integer(C_Location_ID);
-		setValue(ii);
+		try
+		{
+			int C_Location_ID = 0;
+			if (m_value != null)
+				C_Location_ID = m_value.getC_Location_ID();
+			Integer ii = new Integer(C_Location_ID);
+			
+			if (C_Location_ID != 0)
+				fireVetoableChange(m_columnName, oldValue, ii);
+			setValue(ii);
+		}
+		catch (PropertyVetoException pve)
+		{
+			log.log(Level.SEVERE, "VLocation.actionPerformed", pve);
+		}
 	}	//	actionPerformed
 
 	/**

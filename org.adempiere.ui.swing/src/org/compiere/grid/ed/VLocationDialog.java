@@ -624,6 +624,8 @@ public class VLocationDialog extends CDialog
     				bpl.setName(bpl.getBPLocName(m_location));
     				if (bpl.save())
     					success = true;
+    			} else {
+					success = true;
     			}
     		}
 		}

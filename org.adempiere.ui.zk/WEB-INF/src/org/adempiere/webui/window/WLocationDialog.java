@@ -676,6 +676,8 @@ public class WLocationDialog extends Window implements EventListener
     				bpl.setName(bpl.getBPLocName(m_location));
     				if (bpl.save())
     					success = true;
+    			} else {
+					success = true;
     			}
     		}
 		}
