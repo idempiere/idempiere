@@ -35,7 +35,6 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.UserPreference;
-import org.compiere.model.GridWindow;
 import org.compiere.model.MQuery;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -86,12 +85,6 @@ public class ADWindowPanel extends AbstractADWindowPanel
     }
 
 
-	public ADWindowPanel(Properties ctx, int windowNo, GridWindow gridWindow,
-			int tabIndex, IADTabpanel tabPanel) {
-		super(ctx, windowNo, gridWindow, tabIndex, tabPanel);
-	}
-
-
 	protected Component doCreatePart(Component parent)
     {
         layout = new Borderlayout();
@@ -102,37 +95,24 @@ public class ADWindowPanel extends AbstractADWindowPanel
         	layout.setPage(page);
         }
 
-        //toolbar would be added to group for embedded tab
-        if (!isEmbedded())
-        {
-	        North n = new North();
-	        n.setParent(layout);
-	        n.setCollapsible(false);
-	        n.setSclass("adwindow-north");
-	        toolbar.setParent(n);
-	        toolbar.setWindowNo(getWindowNo());
-        }
+        //toolbar
+        North n = new North();
+        n.setParent(layout);
+        n.setCollapsible(false);
+        n.setSclass("adwindow-north");
+        toolbar.setParent(n);
+        toolbar.setWindowNo(getWindowNo());
 
-        //status bar on top for embedded tab
-        if (!isEmbedded())
-        {
-	        South s = new South();
-	        layout.appendChild(s);
-	        s.setCollapsible(false);
-	        s.setSclass("adwindow-south");
-	        statusBar.setParent(s);
-        }
-        else
-        {
-        	North n = new North();
-        	layout.appendChild(n);
-        	n.setCollapsible(false);
-        	statusBar.setParent(n);
-        }
+        //status bar
+        South s = new South();
+        layout.appendChild(s);
+        s.setCollapsible(false);
+        s.setSclass("adwindow-south");
+        statusBar.setParent(s);
         
         LayoutUtils.addSclass("adwindow-status", statusBar);
 
-        if (!isEmbedded() && adTab.isUseExternalSelection())
+        if (adTab.isUseExternalSelection())
         {
         	String tabPlacement = SessionManager.getSessionApplication().getUserPreference().getProperty(UserPreference.P_WINDOW_TAB_PLACEMENT);
         	if (tabPlacement == null || "left".equalsIgnoreCase(tabPlacement))
@@ -183,16 +163,14 @@ public class ADWindowPanel extends AbstractADWindowPanel
         	((Tabpanel)parent).setOnCloseHandler(handler);
         }
 
-        if (!isEmbedded()) {
-        	if (keyListener != null)
-        		keyListener.detach();
-        	keyListener = new Keylistener();
-        	statusBar.appendChild(keyListener);
-        	keyListener.setCtrlKeys("#f1#f2#f3#f4#f5#f6#f7#f8#f9#f10#f11#f12^f^i^n^s^d@#left@#right@#up@#down@#pgup@#pgdn@p^p@z@x#enter");
-        	keyListener.addEventListener(Events.ON_CTRL_KEY, toolbar);
-        	keyListener.addEventListener(Events.ON_CTRL_KEY, this);
-        	keyListener.setAutoBlur(false);
-        }
+    	if (keyListener != null)
+    		keyListener.detach();
+    	keyListener = new Keylistener();
+    	statusBar.appendChild(keyListener);
+    	keyListener.setCtrlKeys("#f1#f2#f3#f4#f5#f6#f7#f8#f9#f10#f11#f12^f^i^n^s^d@#left@#right@#up@#down@#pgup@#pgdn@p^p@z@x#enter");
+    	keyListener.addEventListener(Events.ON_CTRL_KEY, toolbar);
+    	keyListener.addEventListener(Events.ON_CTRL_KEY, this);
+    	keyListener.setAutoBlur(false);
 
         layout.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, new ITabOnSelectHandler() {
 			public void onSelect() {

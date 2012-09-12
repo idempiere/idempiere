@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
@@ -145,8 +144,6 @@ DataStatusListener, IADTabpanel
 
 	private Map<Integer, Group> includedTab = new HashMap<Integer, Group>();
 	private Map<Integer, Groupfoot> includedTabFooter = new HashMap<Integer, Groupfoot>();
-
-	private List<EmbeddedPanel> includedPanel = new ArrayList<EmbeddedPanel>();
 
 	private boolean active = false;
 
@@ -334,14 +331,6 @@ DataStatusListener, IADTabpanel
         		row.setSpans("5");
         		row.appendChild(new Separator());
         		rows.appendChild(row);
-
-        		for (EmbeddedPanel ep : includedPanel) {
-        			if (ep.adTabId == field.getIncluded_Tab_ID()) {
-        				ep.group = includedTab.get(ep.adTabId);
-        				createEmbeddedPanelUI(ep, field.getDisplayLength());
-        				break;
-        			}
-        		}
 
         		row = new Row();
         		continue;
@@ -759,26 +748,10 @@ DataStatusListener, IADTabpanel
         	}
         }
 
-        //activate embedded panel
-        for(EmbeddedPanel ep : includedPanel)
-        {
-        	activateChild(activate, ep);
-        }
-        
         if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
         	setSelectedNode(gridTab.getRecord_ID());
         }
     }
-
-	private void activateChild(boolean activate, EmbeddedPanel panel) {
-		if (activate)
-		{
-			panel.windowPanel.getADTab().evaluate(null);
-			panel.windowPanel.getADTab().setSelectedIndex(0);
-			panel.tabPanel.query(false, 0, 0);
-		}
-		panel.tabPanel.activate(activate);
-	}
 
 	/**
 	 * set focus to first active editor
@@ -928,27 +901,6 @@ DataStatusListener, IADTabpanel
         	listPanel.updateListIndex();
         	listPanel.dynamicDisplay(col);
         }
-
-        if (!includedPanel.isEmpty() && e.getChangedColumn() == -1) {
-        	ArrayList<String> parentColumnNames = new ArrayList<String>();
-        	GridField[] parentFields = gridTab.getFields();
-        	for (GridField parentField : parentFields)
-        		parentColumnNames.add(parentField.getColumnName());        	
-        	
-        	for (EmbeddedPanel panel : includedPanel)
-        	{
-        		GridTab tab = panel.tabPanel.getGridTab();
-        		GridField[] fields = tab.getFields();
-        		for (GridField field : fields)
-        		{
-        			if (!parentColumnNames.contains(field.getColumnName()))
-        				Env.setContext(Env.getCtx(), field.getWindowNo(), field.getColumnName(), "");
-        		}
-        		panel.tabPanel.query(false, 0, 0);
-        	}
-
-        	parentColumnNames = null;
-        }
     }
 
     private void deleteNode(int recordId) {
@@ -1029,18 +981,8 @@ DataStatusListener, IADTabpanel
 	public void switchRowPresentation() {
 		if (formComponent.isVisible()) {
 			formComponent.setVisible(false);
-			//de-activate embedded panel
-	        for(EmbeddedPanel ep : includedPanel)
-	        {
-	        	activateChild(false, ep);
-	        }
 		} else {
 			formComponent.setVisible(true);
-			//activate embedded panel
-	        for(EmbeddedPanel ep : includedPanel)
-	        {
-	        	activateChild(true, ep);
-	        }
 	        formComponent.getParent().invalidate();
 		}
 		listPanel.setVisible(!formComponent.isVisible());
@@ -1070,88 +1012,9 @@ DataStatusListener, IADTabpanel
 	}
 
 	/**
-	 * Embed detail tab
-	 * @param ctx
-	 * @param windowNo
-	 * @param gridWindow
-	 * @param adTabId
-	 * @param tabIndex
-	 * @param tabPanel
-	 */
-	public void embed(Properties ctx, int windowNo, GridWindow gridWindow,
-			int adTabId, int tabIndex, IADTabpanel tabPanel) {
-		embed(ctx, windowNo, gridWindow, adTabId, tabIndex, tabPanel, 0);
-	}
-	
-	/**
-	 * Embed detail tab
-	 * @param ctx
-	 * @param windowNo
-	 * @param gridWindow
-	 * @param adTabId
-	 * @param tabIndex
-	 * @param tabPanel
-	 */
-	public void embed(Properties ctx, int windowNo, GridWindow gridWindow,
-			int adTabId, int tabIndex, IADTabpanel tabPanel, int height) {
-		EmbeddedPanel ep = new EmbeddedPanel();
-		ep.tabPanel = tabPanel;
-		ep.adTabId = adTabId;
-		ep.tabIndex = tabIndex;
-		ep.gridWindow = gridWindow;
-		includedPanel.add(ep);
-		Group group = includedTab.get(adTabId);
-		ep.group = group;
-		if (tabPanel instanceof ADTabpanel) {
-			ADTabpanel atp = (ADTabpanel) tabPanel;
-			atp.listPanel.setPageSize(-1);
-		}
-		ADWindowPanel panel = new ADWindowPanel(ctx, windowNo, gridWindow, tabIndex, tabPanel);
-		ep.windowPanel = panel;
-
-		if (group != null) {
-			createEmbeddedPanelUI(ep, height);
-			if (active)
-				activateChild(true, ep);
-		}
-	}
-
-	class EmbeddedPanel {
-		Group group;
-		GridWindow gridWindow;
-		int tabIndex;
-		ADWindowPanel windowPanel;
-		IADTabpanel tabPanel;
-		int adTabId;
-	}
-
-	/**
 	 * @see IADTabpanel#afterSave(boolean)
 	 */
 	public void afterSave(boolean onSaveEvent) {
-		if (!includedPanel.isEmpty()) {
-        	for (EmbeddedPanel panel : includedPanel)
-        		panel.tabPanel.query(false, 0, 0);
-        }
-	}
-
-	private void createEmbeddedPanelUI(EmbeddedPanel ep, int height) {
-		Row row = new Row();
-		row.setSpans("5");
-		grid.getRows().insertBefore(row, includedTabFooter.get(ep.adTabId));
-		ep.windowPanel.createPart(row);
-		ep.windowPanel.getComponent().setWidth("100%");
-		ep.windowPanel.getComponent().setStyle("position: relative;");
-		//for backward compatibility, only treat display length > 50 as height for the embedded panel
-		if (height > 50)
-			ep.windowPanel.getComponent().setHeight(height + "px");
-		else
-			ep.windowPanel.getComponent().setHeight("400px");
-
-		Label title = new Label(ep.gridWindow.getTab(ep.tabIndex).getName());
-		ep.group.appendChild(title);
-		ep.group.appendChild(ep.windowPanel.getToolbar());
-		ep.windowPanel.initPanel(-1, null);
 	}
 
 	@Override
@@ -1194,20 +1057,6 @@ DataStatusListener, IADTabpanel
 	 */
 	public boolean isGridView() {
 		return listPanel.isVisible();
-	}
-
-	/**
-	 * @param gTab
-	 * @return embedded panel or null if not found
-	 */
-	public IADTabpanel findEmbeddedPanel(GridTab gTab) {
-		IADTabpanel panel = null;
-		for(EmbeddedPanel ep : includedPanel) {
-			if (ep.tabPanel.getGridTab().equals(gTab)) {
-				return ep.tabPanel;
-			}
-		}
-		return panel;
 	}
 
 	/**

@@ -49,7 +49,7 @@ import org.zkoss.zul.Vbox;
  * @date    Mar 12, 2007
  * @version $Revision: 0.10 $
  */
-public class StatusBarPanel extends Panel implements EventListener, IStatusBar
+public class StatusBarPanel extends Panel implements EventListener<Event>, IStatusBar
 {
 	/**
 	 *
@@ -79,20 +79,10 @@ public class StatusBarPanel extends Panel implements EventListener, IStatusBar
 
 	private Div popupContent;
 	private String popupStyle;
-	private boolean embedded;
 
 	public StatusBarPanel()
 	{
-		this(false);
-	}
-
-	/**
-	 * @param embedded
-	 */
-    public StatusBarPanel(boolean embedded)
-    {
         super();
-        this.embedded = embedded;
         init();
     }
 
@@ -109,16 +99,10 @@ public class StatusBarPanel extends Panel implements EventListener, IStatusBar
         hbox.appendChild(leftCell);
         Cell rightCell = new Cell();
         hbox.appendChild(rightCell);
-        if (embedded)
-        {
-        	leftCell.setWidth("90%");
-        	rightCell.setWidth("10%");
-        }
-        else
-        {
-        	leftCell.setWidth("50%");
-        	rightCell.setWidth("50%");
-        }
+        
+        leftCell.setWidth("50%");
+        rightCell.setWidth("50%");
+        
         west = new Div();
         west.setStyle("text-align: left; ");
         west.appendChild(statusLine);
@@ -131,17 +115,13 @@ public class StatusBarPanel extends Panel implements EventListener, IStatusBar
         east = new Div();
         east.setWidth("100%");
         east.setStyle("text-align: right; ");
-        if (!embedded)
-        {
-        	infoLine = new Label();
-        	east.appendChild(infoLine);
-        	infoLine.setVisible(false);
-        }
+    	infoLine = new Label();
+    	east.appendChild(infoLine);
+    	infoLine.setVisible(false);
         east.appendChild(statusDB);
 
         LayoutUtils.addSclass("status-db", statusDB);
-        if (!embedded)
-        	LayoutUtils.addSclass("status-info", infoLine);
+        LayoutUtils.addSclass("status-info", infoLine);
         vbox = new Vbox();
         vbox.setAlign("stretch");
         vbox.setPack("center");
@@ -306,15 +286,12 @@ public class StatusBarPanel extends Panel implements EventListener, IStatusBar
 	 */
 	public void setInfo (String text)
 	{
-		if (!embedded)
-		{
-			infoLine.setValue(text != null ? text : "");
-			infoLine.setTooltiptext(text);
-			if (text == null || text.trim().length() == 0)
-				infoLine.setVisible(false);
-			else
-				infoLine.setVisible(true);
-		}
+		infoLine.setValue(text != null ? text : "");
+		infoLine.setTooltiptext(text);
+		if (text == null || text.trim().length() == 0)
+			infoLine.setVisible(false);
+		else
+			infoLine.setVisible(true);
 	}	//	setInfo
 
 	public void onEvent(Event event) throws Exception {
