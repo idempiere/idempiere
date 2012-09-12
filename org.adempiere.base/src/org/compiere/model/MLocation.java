@@ -654,6 +654,15 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			MAccount.updateValueDescription(getCtx(), 
 				"(C_LocFrom_ID=" + getC_Location_ID() 
 				+ " OR C_LocTo_ID=" + getC_Location_ID() + ")", get_TrxName());
+		
+		//Update BP_Location name IDEMPIERE 417
+		int bplID = DB.getSQLValueEx(get_TrxName(), "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = " + getC_Location_ID());
+		if (bplID>0)
+		{
+			MBPartnerLocation bpl = new MBPartnerLocation(getCtx(), bplID, get_TrxName());
+			bpl.setName(bpl.getBPLocName(this));
+			bpl.saveEx();
+		}
 		return success;
 	}	//	afterSave
 
