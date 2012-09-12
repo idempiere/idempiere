@@ -39,6 +39,8 @@ import javax.swing.SwingConstants;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
+import org.compiere.model.GridField;
+import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MCountry;
 import org.compiere.model.MLocation;
 import org.compiere.model.MOrgInfo;
@@ -50,8 +52,10 @@ import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CTextField;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 
 import com.akunagroup.uk.postcode.AddressLookupInterface;
 import com.akunagroup.uk.postcode.Postcode;
@@ -90,6 +94,8 @@ public class VLocationDialog extends CDialog
 
 	private int m_WindowNo = 0;
 
+	private GridField m_GridField = null;
+
 	/**
 	 *	Constructor
 	 *
@@ -99,7 +105,12 @@ public class VLocationDialog extends CDialog
 	 */
 	public VLocationDialog (Frame frame, String title, MLocation location)
 	{
+		this(frame, title, location, null);
+	}	//	VLocationDialog
+
+	public VLocationDialog(Frame frame, String title, MLocation location, GridField gridField) {
 		super(frame, title, true);
+		m_GridField = gridField;
 		//m_WindowNo = WindowNo;
 		try
 		{
@@ -143,7 +154,7 @@ public class VLocationDialog extends CDialog
 		fOnline.addActionListener(this);
 		fRegion.addActionListener(this);
 		AEnv.positionCenterWindow(frame, this);
-	}	//	VLocationDialog
+	}
 
 	private boolean 	m_change = false;
 	private MLocation	m_location;
@@ -574,6 +585,8 @@ public class VLocationDialog extends CDialog
 	 */
 	private boolean action_OK()
 	{
+		Trx trx = Trx.get(Trx.createTrxName("VLocationDialog"), true);
+		m_location.set_TrxName(trx.getTrxName());
 		m_location.setAddress1(fAddress1.getText());
 		m_location.setAddress2(fAddress2.getText());
 		m_location.setAddress3(fAddress3.getText());
@@ -593,14 +606,35 @@ public class VLocationDialog extends CDialog
 		else
 			m_location.setC_Region_ID(0);
 		//	Save changes
-		if(m_location.save())
+		boolean success = false;
+		if (m_location.save())
 		{
-			return true;
+            // IDEMPIERE-417 Force Update BPLocation.Name
+        	if (m_GridField != null && m_GridField.getGridTab() != null
+        			&& "C_BPartner_Location".equals(m_GridField.getGridTab().getTableName()))
+    		{
+        		m_GridField.getGridTab().setValue("Name", ".");
+				success = true;
+    		} else {
+    			//Update BP_Location name IDEMPIERE 417
+    			int bplID = DB.getSQLValueEx(trx.getTrxName(), "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = " + m_location.getC_Location_ID());
+    			if (bplID>0)
+    			{
+    				MBPartnerLocation bpl = new MBPartnerLocation(Env.getCtx(), bplID, trx.getTrxName());
+    				bpl.setName(bpl.getBPLocName(m_location));
+    				if (bpl.save())
+    					success = true;
+    			}
+    		}
 		}
-		else
-		{
-			return false;
+		if (success) {
+			trx.commit();
+		} else {
+			trx.rollback();
 		}
+		trx.close();
+
+		return success;
 	}	//	actionOK
 
 	/**

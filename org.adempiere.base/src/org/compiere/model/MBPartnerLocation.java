@@ -167,10 +167,10 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 			return false;
 
 		// Set New Name
-		if (!newRecord)
-			return true;
-		MLocation address = getLocation(true);
-		setName(getBPLocName(address));
+		if (".".equals(getName())) {
+			MLocation address = getLocation(true);
+			setName(getBPLocName(address));
+		}
 		return true;
 	} // beforeSave
 
