@@ -66,7 +66,9 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 
 	private static CLogger logger = CLogger.getCLogger(ResetPasswordPanel.class);
 	
-    private static final int MAX_RESET_PASSWORD_TRIES = 3;
+    private static final int MAX_RESET_PASSWORD_TRIES = 3; 
+    protected static final int NO_OF_SECURITY_QUESTION = 5; 
+    protected static final String SECURITY_QUESTION_PREFIX = "SecurityQuestion_";
     private static final String RESET_PASSWORD_MAIL_TEXT_NAME = "Reset Password";
 
     private LoginWindow wndLogin;
@@ -488,6 +490,13 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	mailText.setUser(to);
 		String message = mailText.getMailText(true);
 		message = Env.parseVariable(message, to, to.get_TrxName(), true);
+		
+		/* ?? DEBUG ?? */
+		System.out.println(message);
+		if (true)
+			return true;
+		
+		
 		EMail email = client.createEMail(to.getEMail(), mailText.getMailHeader(), message, mailText.isHtml());
 		if (mailText.isHtml())
 			email.setMessageHTML(mailText.getMailHeader(), message);

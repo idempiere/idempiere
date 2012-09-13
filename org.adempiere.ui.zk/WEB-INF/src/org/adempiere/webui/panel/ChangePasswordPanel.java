@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
@@ -75,10 +76,10 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     private Label lblRetypeNewPassword;
     private Label lblSecurityQuestion;
     private Label lblAnswer;
+    private Combobox lstSecurityQuestion;
     private Textbox txtOldPassword;
     private Textbox txtNewPassword;
     private Textbox txtRetypeNewPassword;
-    private Textbox txtSecurityQuestion;
     private Textbox txtAnswer;
 
     public ChangePasswordPanel(Properties ctx, LoginWindow loginWindow, String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs) 
@@ -168,7 +169,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
-    	td.appendChild(txtSecurityQuestion);
+    	td.appendChild(lstSecurityQuestion);
 
     	tr = new Tr();
         tr.setId("rowAnswer");
@@ -215,7 +216,18 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	lblAnswer = new Label();
     	lblAnswer.setId("lblAnswer");
     	lblAnswer.setValue(Msg.getMsg(m_ctx, "Answer"));
+
+    	lstSecurityQuestion = new Combobox();
+    	lstSecurityQuestion.setAutocomplete(true);
+    	lstSecurityQuestion.setAutodrop(true);
+    	lstSecurityQuestion.setId("lstSecurityQuestion");
+    	lstSecurityQuestion.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstSecurityQuestion.getId());
+    	lstSecurityQuestion.setWidth("220px");
     	
+    	lstSecurityQuestion.getItems().clear();
+    	for (int i = 1; i <= ResetPasswordPanel.NO_OF_SECURITY_QUESTION; i++)
+    		lstSecurityQuestion.appendItem(Msg.getMsg(m_ctx, ResetPasswordPanel.SECURITY_QUESTION_PREFIX + i), ResetPasswordPanel.SECURITY_QUESTION_PREFIX + i);
+
         txtOldPassword = new Textbox();
         txtOldPassword.setId("txtOldPassword");
         txtOldPassword.setType("password");
@@ -236,12 +248,6 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         txtRetypeNewPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewPassword.getId());        
         txtRetypeNewPassword.setCols(25);
         txtRetypeNewPassword.setWidth("220px");
-        
-        txtSecurityQuestion = new Textbox();
-    	txtSecurityQuestion.setId("txtSecurityQuestion");
-    	txtSecurityQuestion.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtSecurityQuestion.getId());
-    	txtSecurityQuestion.setCols(25);
-    	txtSecurityQuestion.setWidth("220px");
         
     	txtAnswer = new Textbox();
     	txtAnswer.setId("txtAnswer");
@@ -268,8 +274,12 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     {
     	String oldPassword = txtOldPassword.getValue();
     	String newPassword = txtNewPassword.getValue();
-    	String retypeNewPassword = txtRetypeNewPassword.getValue();    	
-    	String securityQuestion = txtSecurityQuestion.getValue();    	
+    	String retypeNewPassword = txtRetypeNewPassword.getValue();
+    	
+    	String securityQuestion = null;
+    	if (lstSecurityQuestion.getSelectedItem() != null)
+    		securityQuestion = (String) lstSecurityQuestion.getSelectedItem().getLabel();
+    	
     	String answer = txtAnswer.getValue();
     	
     	if (Util.isEmpty(oldPassword))
