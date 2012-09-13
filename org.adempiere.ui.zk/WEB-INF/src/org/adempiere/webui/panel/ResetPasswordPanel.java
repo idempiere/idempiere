@@ -284,7 +284,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     {
         if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
         {
-        	if (txtAnswer.isReadonly())
+        	if (txtAnswer != null && txtAnswer.isReadonly())
         		validateEmail();
         	else
         		validateResetPassword();
