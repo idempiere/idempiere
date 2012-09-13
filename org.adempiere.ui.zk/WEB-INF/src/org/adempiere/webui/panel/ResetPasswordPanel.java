@@ -483,11 +483,6 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	mailText.setUser(to);
 		String message = mailText.getMailText(true);
 		message = Env.parseVariable(message, to, to.get_TrxName(), true);
-		
-		/* BORRAR DEBUG ?? */
-		System.out.println(message);
-		if (true) return true;
-		
 		EMail email = client.createEMail(to.getEMail(), mailText.getMailHeader(), message, mailText.isHtml());
 		if (mailText.isHtml())
 			email.setMessageHTML(mailText.getMailHeader(), message);
