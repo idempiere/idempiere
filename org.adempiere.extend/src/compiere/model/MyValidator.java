@@ -218,15 +218,15 @@ public class MyValidator implements ModelValidator
 	}	//	toString
 
 	/**
-	 * Sample Validator Before Save Properties - to set mandatory properties on users
+	 * Sample Validator BefoMRolere Save Properties - to set mandatory properties on users
 	 * avoid users changing properties
 	 */
 	public void beforeSaveProperties() {
 		// not for SuperUser or role SysAdmin
 		if (   m_AD_User_ID == 0  // System
 			|| m_AD_User_ID == 100   // SuperUser
-			|| m_AD_Role_ID == 0  // System Administrator
-			|| m_AD_Role_ID == 1000000)  // ECO Admin
+			|| m_AD_Role_ID == 0)  // System Administrator
+			 
 			return;
 
 		log.info("Setting default Properties");

@@ -16,6 +16,9 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.USER_SUPERUSER;
+import static org.compiere.model.SystemIDs.USER_SYSTEM;
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
@@ -27,10 +30,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -42,7 +45,6 @@ import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trace;
-import static org.compiere.model.SystemIDs.*;
 
 /**
  *	Role Model.
@@ -60,7 +62,7 @@ public final class MRole extends X_AD_Role
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3684323160980498188L;
+	private static final long serialVersionUID = 2716871587637082891L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -1467,7 +1469,9 @@ public final class MRole extends X_AD_Role
 		if (m_windowAccess == null)
 		{
 			m_windowAccess = new HashMap<Integer,Boolean>(100);
-
+			// first get the window access from the included and substitute roles
+			mergeIncludedAccess("m_windowAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			// and now get the window access directly from this role
 			MClient client = MClient.get(getCtx(), getAD_Client_ID());
 			String ASPFilter = "";
 			if (client.isUseASP())
@@ -1504,16 +1508,26 @@ public final class MRole extends X_AD_Role
 					+ "             AND ce.AD_Tab_ID IS NULL "
 					+ "             AND ce.AD_Field_ID IS NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
-			String sql = "SELECT AD_Window_ID, IsReadWrite FROM AD_Window_Access WHERE AD_Role_ID=? AND IsActive='Y'" + ASPFilter;
+			String sql = "SELECT AD_Window_ID, IsReadWrite, IsActive FROM AD_Window_Access WHERE AD_Role_ID=?" + ASPFilter;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
+			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
 			try
 			{
 				pstmt = DB.prepareStatement(sql, get_TrxName());
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
-				while (rs.next())
-					m_windowAccess.put(new Integer(rs.getInt(1)), new Boolean("Y".equals(rs.getString(2))));
+				while (rs.next()) {
+					Integer winId = new Integer(rs.getInt(1));
+					if ("N".equals(rs.getString(3))) {
+						// inactive window on direct access
+						if (m_windowAccess.containsKey(winId)) {
+							m_windowAccess.remove(winId);
+						}
+					} else {
+						directAccess.put(winId, new Boolean("Y".equals(rs.getString(2))));
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -1524,23 +1538,11 @@ public final class MRole extends X_AD_Role
 				DB.close(rs, pstmt);
 			}
 			//
+			setAccessMap("m_windowAccess", mergeAccess(getAccessMap("m_windowAccess"), directAccess, true));
 			log.fine("#" + m_windowAccess.size());
-			mergeIncludedAccess("m_windowAccess"); // Load included accesses - metas-2009_0021_AP1_G94
 		}	//	reload
 		Boolean retValue = m_windowAccess.get(AD_Window_ID);
-		//
-		// Check included roles - metas-2009_0021_AP1_G94
-		if (retValue == null)
-		{
-			for (MRole includedRole : getIncludedRoles(false))
-			{
-				retValue = includedRole.getWindowAccess(AD_Window_ID);
-				if (retValue != null)
-					break;
-			}
-		}
-		//
-	//	log.fine("getWindowAccess - AD_Window_ID=" + AD_Window_ID + " - " + retValue);
+		log.fine("getWindowAccess - AD_Window_ID=" + AD_Window_ID + " - " + retValue);
 		return retValue;
 	}	//	getWindowAccess
 
@@ -1554,7 +1556,9 @@ public final class MRole extends X_AD_Role
 		if (m_processAccess == null)
 		{
 			m_processAccess = new HashMap<Integer,Boolean>(50);
-			
+			// first get the process access from the included and substitute roles
+			mergeIncludedAccess("m_processAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			// and now get the process access directly from this role
 			MClient client = MClient.get(getCtx(), getAD_Client_ID());
 			String ASPFilter = "";
 			if (client.isUseASP())
@@ -1589,16 +1593,26 @@ public final class MRole extends X_AD_Role
 					+ "             AND ce.AD_Process_ID IS NOT NULL "
 					+ "             AND ce.AD_Process_Para_ID IS NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
-			String sql = "SELECT AD_Process_ID, IsReadWrite FROM AD_Process_Access WHERE AD_Role_ID=? AND IsActive='Y'" + ASPFilter;
+			String sql = "SELECT AD_Process_ID, IsReadWrite, IsActive FROM AD_Process_Access WHERE AD_Role_ID=?" + ASPFilter;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
+			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
 			try
 			{
 				pstmt = DB.prepareStatement(sql, get_TrxName());
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
-				while (rs.next())
-					m_processAccess.put(new Integer(rs.getInt(1)), new Boolean("Y".equals(rs.getString(2))));
+				while (rs.next()) {
+					Integer procId = new Integer(rs.getInt(1));
+					if ("N".equals(rs.getString(3))) {
+						// inactive process on direct access
+						if (m_processAccess.containsKey(procId)) {
+							m_processAccess.remove(procId);
+						}
+					} else {
+						directAccess.put(procId, new Boolean("Y".equals(rs.getString(2))));
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -1608,7 +1622,7 @@ public final class MRole extends X_AD_Role
 			{
 				DB.close(rs, pstmt);
 			}
-			mergeIncludedAccess("m_processAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			setAccessMap("m_processAccess", mergeAccess(getAccessMap("m_processAccess"), directAccess, true));
 		}	//	reload
 		Boolean retValue = m_processAccess.get(AD_Process_ID);
 		return retValue;
@@ -1624,6 +1638,9 @@ public final class MRole extends X_AD_Role
 		if (m_taskAccess == null)
 		{
 			m_taskAccess = new HashMap<Integer,Boolean>(10);
+			// first get the task access from the included and substitute roles
+			mergeIncludedAccess("m_taskAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			// and now get the task access directly from this role
 			MClient client = MClient.get(getCtx(), getAD_Client_ID());
 			String ASPFilter = "";
 			if (client.isUseASP())
@@ -1656,16 +1673,26 @@ public final class MRole extends X_AD_Role
 					+ "             AND ce.IsActive = 'Y' "
 					+ "             AND ce.AD_Task_ID IS NOT NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
-			String sql = "SELECT AD_Task_ID, IsReadWrite FROM AD_Task_Access WHERE AD_Role_ID=? AND IsActive='Y'" + ASPFilter;
+			String sql = "SELECT AD_Task_ID, IsReadWrite, IsActive FROM AD_Task_Access WHERE AD_Role_ID=?" + ASPFilter;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
+			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
 			try
 			{
 				pstmt = DB.prepareStatement(sql, get_TrxName());
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
-				while (rs.next())
-					m_taskAccess.put(new Integer(rs.getInt(1)), new Boolean("Y".equals(rs.getString(2))));
+				while (rs.next()) {
+					Integer taskId = new Integer(rs.getInt(1));
+					if ("N".equals(rs.getString(3))) {
+						// inactive task on direct access
+						if (m_taskAccess.containsKey(taskId)) {
+							m_taskAccess.remove(taskId);
+						}
+					} else {
+						directAccess.put(taskId, new Boolean("Y".equals(rs.getString(2))));
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -1675,7 +1702,7 @@ public final class MRole extends X_AD_Role
 			{
 				DB.close(rs, pstmt);
 			}
-			mergeIncludedAccess("m_taskAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			setAccessMap("m_taskAccess", mergeAccess(getAccessMap("m_taskAccess"), directAccess, true));
 		}	//	reload
 		Boolean retValue = m_taskAccess.get(AD_Task_ID);
 		return retValue;
@@ -1691,7 +1718,9 @@ public final class MRole extends X_AD_Role
 		if (m_formAccess == null)
 		{
 			m_formAccess = new HashMap<Integer,Boolean>(20);
-
+			// first get the form access from the included and substitute roles
+			mergeIncludedAccess("m_formAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			// and now get the form access directly from this role
 			MClient client = MClient.get(getCtx(), getAD_Client_ID());
 			String ASPFilter = "";
 			if (client.isUseASP())
@@ -1724,16 +1753,26 @@ public final class MRole extends X_AD_Role
 					+ "             AND ce.IsActive = 'Y' "
 					+ "             AND ce.AD_Form_ID IS NOT NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
-			String sql = "SELECT AD_Form_ID, IsReadWrite FROM AD_Form_Access WHERE AD_Role_ID=? AND IsActive='Y'" + ASPFilter;
+			String sql = "SELECT AD_Form_ID, IsReadWrite, IsActive FROM AD_Form_Access WHERE AD_Role_ID=?" + ASPFilter;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
+			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
 			try
 			{
 				pstmt = DB.prepareStatement(sql, get_TrxName());
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
-				while (rs.next())
-					m_formAccess.put(new Integer(rs.getInt(1)), new Boolean("Y".equals(rs.getString(2))));
+				while (rs.next()) {
+					Integer formId = new Integer(rs.getInt(1));
+					if ("N".equals(rs.getString(3))) {
+						// inactive form on direct access
+						if (m_formAccess.containsKey(formId)) {
+							m_formAccess.remove(formId);
+						}
+					} else {
+						directAccess.put(formId, new Boolean("Y".equals(rs.getString(2))));
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -1743,23 +1782,11 @@ public final class MRole extends X_AD_Role
 			{
 				DB.close(rs, pstmt);
 			}
-			mergeIncludedAccess("m_formAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			setAccessMap("m_formAccess", mergeAccess(getAccessMap("m_formAccess"), directAccess, true));
 		}	//	reload
 		Boolean retValue = m_formAccess.get(AD_Form_ID);
-		//
-		// Check included roles - metas-2009_0021_AP1_G94
-		if (retValue == null)
-		{
-			for (MRole includedRole : getIncludedRoles(false))
-			{
-				retValue = includedRole.getFormAccess(AD_Form_ID);
-				if (retValue != null)
-					break;
-			}
-		}
-		//
 		return retValue;
-	}	//	getTaskAccess
+	}	//	getFormAccess
 
 	/**
 	 * 	Get Workflow Access
@@ -1771,6 +1798,9 @@ public final class MRole extends X_AD_Role
 		if (m_workflowAccess == null)
 		{
 			m_workflowAccess = new HashMap<Integer,Boolean>(20);
+			// first get the workflow access from the included and substitute roles
+			mergeIncludedAccess("m_workflowAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			// and now get the workflow access directly from this role
 			MClient client = MClient.get(getCtx(), getAD_Client_ID());
 			String ASPFilter = "";
 			if (client.isUseASP())
@@ -1803,16 +1833,26 @@ public final class MRole extends X_AD_Role
 					+ "             AND ce.IsActive = 'Y' "
 					+ "             AND ce.AD_Workflow_ID IS NOT NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
-			String sql = "SELECT AD_Workflow_ID, IsReadWrite FROM AD_Workflow_Access WHERE AD_Role_ID=? AND IsActive='Y'" + ASPFilter;
+			String sql = "SELECT AD_Workflow_ID, IsReadWrite, IsActive FROM AD_Workflow_Access WHERE AD_Role_ID=?" + ASPFilter;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
+			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
 			try
 			{
 				pstmt = DB.prepareStatement(sql, get_TrxName());
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
-				while (rs.next())
-					m_workflowAccess.put(new Integer(rs.getInt(1)), new Boolean("Y".equals(rs.getString(2))));
+				while (rs.next()) {
+					Integer formId = new Integer(rs.getInt(1));
+					if ("N".equals(rs.getString(3))) {
+						// inactive workflow on direct access
+						if (m_workflowAccess.containsKey(formId)) {
+							m_workflowAccess.remove(formId);
+						}
+					} else {
+						directAccess.put(formId, new Boolean("Y".equals(rs.getString(2))));
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -1822,7 +1862,7 @@ public final class MRole extends X_AD_Role
 			{
 				DB.close(rs, pstmt);
 			}
-			mergeIncludedAccess("m_workflowAccess"); // Load included accesses - metas-2009_0021_AP1_G94
+			setAccessMap("m_workflowAccess", mergeAccess(getAccessMap("m_workflowAccess"), directAccess, true));
 		}	//	reload
 		Boolean retValue = m_workflowAccess.get(AD_Workflow_ID);
 		return retValue;
@@ -2449,8 +2489,8 @@ public final class MRole extends X_AD_Role
 	 * @return number of valid actions in the String[] options
 	 * @see metas-2009_0021_AP1_G94
 	 */
-	public int checkActionAccess(int clientId, int docTypeId, String[] options, int maxIndex)
-	{
+	public int checkActionAccess(int clientId, int docTypeId, String[] options,
+			int maxIndex) {
 		if (maxIndex <= 0)
 			return maxIndex;
 		//
@@ -2460,45 +2500,96 @@ public final class MRole extends X_AD_Role
 		params.add(docTypeId);
 		//
 		final StringBuffer sql_values = new StringBuffer();
-		for (int i = 0; i < maxIndex; i++)
-		{
+		for (int i = 0; i < maxIndex; i++) {
 			if (sql_values.length() > 0)
 				sql_values.append(",");
 			sql_values.append("?");
 			params.add(options[i]);
 		}
 		//
-		final String sql = "SELECT DISTINCT rl.Value FROM AD_Document_Action_Access a"
-				+ " INNER JOIN AD_Ref_List rl ON (rl.AD_Reference_ID=135 and rl.AD_Ref_List_ID=a.AD_Ref_List_ID)"
-				+ " WHERE a.IsActive='Y' AND a.AD_Client_ID=? AND a.C_DocType_ID=?" // #1,2
-					+ " AND rl.Value IN ("+sql_values+")"
-					+ " AND "+getIncludedRolesWhereClause("a.AD_Role_ID", params)
-		;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		try
-		{
+		PreparedStatement pstmt1 = null;
+		ResultSet rs1 = null;
+		String sql=null;
+
+		List<MRole> roles = getIncludedRoles(true);
+		try {
+
+			if (roles.size() > 0) {
+
+				MDocType doc = new MDocType(getCtx(), docTypeId, get_TrxName());
+				Vector<String> option = new Vector<String>();
+				for (int j = 0; j < options.length; j++) {
+					if (options[j] != null)
+						option.add(options[j]);
+				}
+
+				String sql1 = "SELECT rl.Value"
+						+ " FROM AD_Document_Action_Access da1"
+						+ " INNER JOIN AD_Ref_List rl ON (rl.AD_Reference_ID=135 and rl.AD_Ref_List_ID=da1.AD_Ref_List_ID)"
+						+ " INNER JOIN AD_Role_Included ri ON (da1.AD_Role_ID=ri.Included_Role_ID)"
+						+ " INNER JOIN AD_Role ro ON (ri.AD_Role_ID=ro.AD_Role_ID)"
+						+ " INNER JOIN C_Doctype ty ON (da1.C_Doctype_ID=ty.C_Doctype_ID)"
+						+ " WHERE ro.AD_Role_ID=?"
+						+ " AND ty.DocBaseType IN (?)"
+						+ " AND da1.IsActive='Y'";
+
+				pstmt1 = DB.prepareStatement(sql1, get_TrxName());
+				pstmt1.setInt(1, getAD_Role_ID());
+				pstmt1.setString(2, doc.getDocBaseType());
+
+				s_log.info(sql1 + " : " + getAD_Role_ID() + " "
+						+ doc.getDocBaseType());
+				rs1 = pstmt1.executeQuery();
+
+				while (rs1.next() && rs1 != null) {
+					String op = rs1.getString(1);
+					if (option.contains(op)) {
+						validOptions.add(op);
+					}
+
+				}
+
+			}
+
+		    sql = "SELECT DISTINCT rl.Value, a.IsActive FROM AD_Document_Action_Access a"
+					+ " INNER JOIN AD_Ref_List rl ON (rl.AD_Reference_ID=135 and rl.AD_Ref_List_ID=a.AD_Ref_List_ID)"
+					+ " WHERE a.AD_Client_ID=? AND a.C_DocType_ID=?" // #1,2
+					+ " AND rl.Value IN ("
+					+ sql_values
+					+ ")"
+					+ " AND "
+					+ getIncludedRolesWhereClause("a.AD_Role_ID", params);
+
 			pstmt = DB.prepareStatement(sql, null);
 			DB.setParameters(pstmt, params);
+			s_log.info(sql + " : " );
 			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
+			while (rs.next()) {
 				String op = rs.getString(1);
-				validOptions.add(op);
+				String active=rs.getString(2);
+				if(active.equals("N") && validOptions.contains(op) ){
+					validOptions.remove(op);
+				}else{
+				  if(!validOptions.contains(op))
+					  validOptions.add(op);
+				} 				
 			}
+
 			validOptions.toArray(options);
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
+		} finally {
 			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
+			DB.close(rs1, pstmt1);
+			rs = null;
+			pstmt = null;
+			rs1 = null;
+			pstmt1 = null;
 		}
 		//
-		int newMaxIndex = validOptions.size(); 
+		int newMaxIndex = validOptions.size();
 		return newMaxIndex;
 	}
 
@@ -2529,7 +2620,7 @@ public final class MRole extends X_AD_Role
 			}
 		}
 		
-		System.out.println("Include "+role);
+		s_log.info("Include "+role);
 		this.m_includedRoles.add(role);
 		role.setParentRole(this);
 		role.m_includedSeqNo = seqNo;
@@ -2717,7 +2808,7 @@ public final class MRole extends X_AD_Role
 	{
 		if (array1 == null)
 		{
-			System.out.println("null !!!");
+			s_log.info("array1 null !!!");
 		}
 		List<T> list = new ArrayList<T>();
 		for (T po : array1)
@@ -2803,7 +2894,7 @@ public final class MRole extends X_AD_Role
 			} // end for array1
 			if (!found)
 			{
-				//System.out.println("add "+o2);
+				//s_log.info("add "+o2);
 				list.add(o2);
 			}
 		}
@@ -2964,4 +3055,5 @@ public final class MRole extends X_AD_Role
 		whereClause.insert(0, roleColumnSQL+" IN (").append(")");
 		return whereClause.toString();
 	}
+
 }	//	MRole

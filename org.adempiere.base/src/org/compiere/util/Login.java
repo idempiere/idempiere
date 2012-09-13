@@ -1526,6 +1526,7 @@ public class Login
 			sql.append("u.EMail=?");
 		else
 			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
+		sql.append(" AND r.IsMasterRole='N'");
 		sql.append(" AND u.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
 		sql.append(" ORDER BY r.Name");
 
