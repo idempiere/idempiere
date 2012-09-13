@@ -265,15 +265,20 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 		if (Util.isEmpty(email))
     		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "FillMandatory") + " " + lblEmail.getValue());
 		
-		// Assume user with same email uses the same password and security question
+		// TODO: Validation for user with same email uses the same password and security question
     	StringBuilder sql = new StringBuilder("SELECT SecurityQuestion ");
     	sql.append("FROM AD_User ");
     	sql.append("WHERE IsActive='Y' ");
+    	boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+    	if (email_login)
+    		sql.append("AND EMail=? ");
+    	else
+    		sql.append("AND COALESCE(LDAPUser,Name)=? ");
     	sql.append("AND EMail=? ");
-    	sql.append("AND SecurityQuestion IS NOT NULL ");
+    	sql.append("AND SecurityQuestion IS NOT NULL ");    	
     	sql.append("ORDER BY AD_Client_ID DESC");
     	
-    	String securityQuestion = DB.getSQLValueString(null, sql.toString(), email);
+    	String securityQuestion = DB.getSQLValueString(null, sql.toString(), m_userName, email);
     	txtSecurityQuestion.setValue(securityQuestion);
     	
     	txtEmail.setReadonly(true);
