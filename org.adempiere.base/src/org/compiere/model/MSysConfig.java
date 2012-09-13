@@ -95,6 +95,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String USER_LOCKING_MAX_LOGIN_ATTEMPT = "USER_LOCKING_MAX_LOGIN_ATTEMPT";
 	public static final String USER_LOCKING_MAX_INACTIVE_PERIOD_DAY = "USER_LOCKING_MAX_INACTIVE_PERIOD_DAY";
 	public static final String USER_LOCKING_MAX_PASSWORD_AGE_DAY = "USER_LOCKING_MAX_PASSWORD_AGE_DAY";
+	public static final String CHANGE_PASSWORD_MUST_DIFFER = "CHANGE_PASSWORD_MUST_DIFFER";
 	public static final String ProductUOMConversionUOMValidate = "ProductUOMConversionUOMValidate";
 	public static final String ProductUOMConversionRateValidate = "ProductUOMConversionRateValidate";
 	public static final String SYSTEM_INSERT_CHANGELOG = "SYSTEM_INSERT_CHANGELOG";

@@ -120,9 +120,6 @@ public final class ALogin extends CDialog
 	private static final int CONNECTED_OK = 0;
 	private static final int CONNECTED_OK_WITH_PASSWORD_EXPIRED = 1;
 	
-/*	private static final int NO_OF_SECURITY_QUESTION = 5;
-	private static final String SECURITY_QUESTION_PREFIX = "SecurityQuestion_";
-*/
 	private CPanel mainPanel = new CPanel(new BorderLayout());
 	private CTabbedPane loginTabPane = new CTabbedPane();
 	private CPanel connectionPanel = new CPanel();
@@ -169,11 +166,11 @@ public final class ALogin extends CDialog
     private JPasswordField txtNewPassword = new JPasswordField();
     private JPasswordField txtRetypeNewPassword = new JPasswordField();
     //
-/*    private CLabel lblSecurityQuestion = new CLabel();
+    private CLabel lblSecurityQuestion = new CLabel();
     private CLabel lblAnswer = new CLabel();
-    private VComboBox lstSecurityQuestion = new VComboBox();
+    private CTextField txtSecurityQuestion = new CTextField();
     private CTextField txtAnswer = new CTextField();
-*/
+
 	/** Server Connection       */
 	private CConnection 	m_cc;
 	/** Application User        */
@@ -382,22 +379,18 @@ public final class ALogin extends CDialog
 		lblRetypeNewPassword.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblRetypeNewPassword.setText(Msg.getMsg(m_ctx, "New Password Confirm"));
 		
-/*		lstSecurityQuestion.setName("lstSecurityQuestion");
+		txtSecurityQuestion.setName("txtSecurityQuestion");
 		lblSecurityQuestion.setRequestFocusEnabled(false);
-		lblSecurityQuestion.setLabelFor(lstSecurityQuestion);
+		lblSecurityQuestion.setLabelFor(txtSecurityQuestion);
 		lblSecurityQuestion.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSecurityQuestion.setText(Msg.getMsg(m_ctx, "SecurityQuestion"));
-		
-		lstSecurityQuestion.removeAllItems();
-    	for (int i = 1; i <= NO_OF_SECURITY_QUESTION; i++)
-    		lstSecurityQuestion.addItem(new ValueNamePair(SECURITY_QUESTION_PREFIX + i, Msg.getMsg(m_ctx, SECURITY_QUESTION_PREFIX + i)));
 		
 		txtAnswer.setName("txtAnswer");
 		lblAnswer.setRequestFocusEnabled(false);
 		lblAnswer.setLabelFor(txtAnswer);
 		lblAnswer.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblAnswer.setText(Msg.getMsg(m_ctx, "Answer"));
-*/
+
 		changePasswordPanel.setLayout(changePasswordPanelLayout);
 		
 		changePasswordPanel.add(lblOldPassword,       new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
@@ -412,15 +405,15 @@ public final class ALogin extends CDialog
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
 			changePasswordPanel.add(txtRetypeNewPassword,        new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
-/*		changePasswordPanel.add(lblSecurityQuestion,       new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
+		changePasswordPanel.add(lblSecurityQuestion,       new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
-			changePasswordPanel.add(lstSecurityQuestion,        new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0
+			changePasswordPanel.add(txtSecurityQuestion,        new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
 		changePasswordPanel.add(lblAnswer,       new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
 			changePasswordPanel.add(txtAnswer,        new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
-*/		loginTabPane.add(changePasswordPanel, res.getString("ChangePassword"));
+		loginTabPane.add(changePasswordPanel, res.getString("ChangePassword"));
 		loginTabPane.setEnabledAt(TAB_CHANGE_PASSWORD, false);
 		//
 
@@ -656,12 +649,9 @@ public final class ALogin extends CDialog
     	String newPassword = new String(txtNewPassword.getPassword());
     	String retypeNewPassword = new String(txtRetypeNewPassword.getPassword());
     	
-/*    	String securityQuestion = null;
-    	if (lstSecurityQuestion.getSelectedItem() != null)
-    		securityQuestion = ((ValueNamePair) lstSecurityQuestion.getSelectedItem()).getValue();
-    	
+    	String securityQuestion = txtSecurityQuestion.getText();
     	String answer = txtAnswer.getText();
-*/    	
+    	
     	if (Util.isEmpty(oldPassword))
     	{
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "OldPasswordMandatory"), true);
@@ -680,7 +670,7 @@ public final class ALogin extends CDialog
     		return;
     	}
     	
-/*    	if (Util.isEmpty(securityQuestion))
+    	if (Util.isEmpty(securityQuestion))
     	{
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "SecurityQuestionMandatory"), true);
     		return;
@@ -691,12 +681,21 @@ public final class ALogin extends CDialog
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "AnswerMandatory"), true);
     		return;
     	}
-*/    	
+    	
     	String m_userPassword = new String(m_pwd);
     	if (!oldPassword.equals(m_userPassword))
     	{
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "OldPasswordNoMatch"), true);
     		return;
+    	}
+    	
+    	if (MSysConfig.getBooleanValue(MSysConfig.CHANGE_PASSWORD_MUST_DIFFER, true))
+    	{
+    		if (oldPassword.equals(newPassword))
+    		{
+    			statusBar.setStatusLine(Msg.getMsg(m_ctx, "NewPasswordMustDiffer"), true);
+        		return;
+    		}
     	}
 
     	Trx trx = null;
@@ -721,9 +720,9 @@ public final class ALogin extends CDialog
 	    		
 	    		user.setPassword(newPassword);
 	    		user.setIsExpired(false);
-/*	    		user.setSecurityQuestion(securityQuestion);
+	    		user.setSecurityQuestion(securityQuestion);
 	    		user.setAnswer(answer);    		
-*/	    		if (!user.save(trx.getTrxName()))
+	    		if (!user.save(trx.getTrxName()))
 	    		{
 	    			trx.rollback();
 	    			statusBar.setStatusLine("Could not update user", true);

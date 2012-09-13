@@ -135,7 +135,7 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
     
     private void prepareContext(int newIndex, IADTabpanel newTab) {
 		//update context
-		if (newTab != null && (adWindowPanel == null || !adWindowPanel.isEmbedded()))
+		if (newTab != null)
 		{
 			List<Integer> parents = new ArrayList<Integer>();
 			//get parent list, always include first tab (0)

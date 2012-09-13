@@ -61,8 +61,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 
 	private static final String BTNPREFIX = "Btn";
 
-	private static final String EMBEDDED_TOOLBAR_BUTTON_STYLE = "background-color: transparent; display:inline-block; margin-left: 1px; margin-right: 1px; width: 20px; height: 18px;";
-
     private static CLogger log = CLogger.getCLogger(CWindowToolbar.class);
 
     private ToolBarButton btnIgnore;
@@ -101,8 +99,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     private Map<Integer, ToolBarButton> altKeyMap = new HashMap<Integer, ToolBarButton>();
     private Map<Integer, ToolBarButton> ctrlKeyMap = new HashMap<Integer, ToolBarButton>();
 
-	private boolean embedded;
-
 	// Elaine 2008/12/04
 	/** Show Personal Lock								*/
 	public boolean isPersonalLock = MRole.getDefault().isPersonalLock();
@@ -120,17 +116,10 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 
     public CWindowToolbar()
     {
-    	this(false);
+    	this(0);
     }
 
-    public CWindowToolbar(boolean embedded)
-    {
-    	this.embedded = embedded;
-        init();
-    }
-
-    public CWindowToolbar(boolean embedded, int windowNo) {
-    	this.embedded = embedded;
+    public CWindowToolbar(int windowNo) {
     	setWindowNo(windowNo);
         init();
 	}
@@ -197,20 +186,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 
         configureKeyMap();
 
-        if (embedded)
-        {
-        	btnParentRecord.setVisible(false);
-    		btnDetailRecord.setVisible(false);
-    		btnActiveWorkflows.setVisible(false);
-    		btnProductInfo.setVisible(false);
-    		setAlign("end");
-    		setWidth("100%");
-    		setStyle("background: transparent none; ");
-        }
-        else
-        {
-        	setWidth("100%");
-        }
+        setWidth("100%");
     }
 
 
@@ -219,20 +195,13 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     	ToolBarButton btn = new ToolBarButton("");
         btn.setName(BTNPREFIX+name);
         if (windowNo > 0)
-        	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + btn.getName() + "_" + windowNo + (embedded ? "E" : ""));
+        	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + btn.getName() + "_" + windowNo);
         else
         	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, btn.getName());
-        btn.setImage("/images/"+image + (embedded ? "16.png" : "24.png"));
+        btn.setImage("/images/"+image + "24.png");
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
-        if (embedded)
-        {
-        	btn.setStyle(EMBEDDED_TOOLBAR_BUTTON_STYLE);
-        	btn.setSclass("embedded-toolbar-button");
-        }
-        else
-        {
-        	btn.setSclass("toolbar-button");
-        }
+        btn.setSclass("toolbar-button");
+        
         buttons.put(name, btn);
         this.appendChild(btn);
         //make toolbar button last to receive focus
@@ -310,10 +279,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 	protected void addSeparator()
     {
 		Space s = new Space();
-		if (embedded)
-			s.setSpacing("3px");
-		else
-			s.setSpacing("6px");
+		s.setSpacing("6px");
 		s.setOrient("vertical");
 		this.appendChild(s);
     }
@@ -505,7 +471,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     {
     	this.btnLock.setPressed(locked);
 
-    	String imgURL = "/images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + (embedded ? "16.png" : "24.png");
+    	String imgURL = "/images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + "24.png";
 		this.btnLock.setImage(imgURL);
     }
 

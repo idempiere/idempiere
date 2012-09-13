@@ -168,46 +168,19 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 
 	private boolean m_findCancelled;
 
-	private int embeddedTabindex = -1;
-
-	protected Map<Integer, ADTabpanel> includedMap = new HashMap<Integer, ADTabpanel>();
-	
-	protected Map<Integer, GridField> includedFieldMap = new HashMap<Integer, GridField>();
-
-	private IADTabpanel embeddedTabPanel;
-
 	private boolean m_findCreateNew;
 
 	private boolean m_queryInitiating;
 
 	/**
-	 * Constructor for non-embedded mode
+	 * Constructor
 	 * @param ctx
 	 * @param windowNo
 	 */
     public AbstractADWindowPanel(Properties ctx, int windowNo)
     {
-        this(ctx, windowNo, null, -1, null);
-    }
-
-    /**
-     * Constructor for embedded mode
-     * @param ctx
-     * @param windowNo
-     * @param gridWindow
-     * @param tabIndex
-     * @param tabPanel
-     */
-    public AbstractADWindowPanel(Properties ctx, int windowNo, GridWindow gridWindow, int tabIndex, IADTabpanel tabPanel)
-    {
         this.ctx = ctx;
         this.curWindowNo = windowNo;
-        this.gridWindow = gridWindow;
-        this.embeddedTabindex = tabIndex;
-        this.embeddedTabPanel = tabPanel;
-        curTabpanel = tabPanel;
-        if (gridWindow != null && tabIndex >= 0)
-        	curTab = gridWindow.getTab(tabIndex);
 
         initComponents();
     }
@@ -236,20 +209,13 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     	return statusBar;
     }
 
-	/**
-	 * @return boolean
-	 */
-	public boolean isEmbedded() {
-		return embeddedTabindex >= 0;
-	}
-
     private void initComponents()
     {
         /** Initalise toolbar */
-        toolbar = new CWindowToolbar(isEmbedded(), getWindowNo());
+        toolbar = new CWindowToolbar(getWindowNo());
         toolbar.addListener(this);
 
-        statusBar = new StatusBarPanel(isEmbedded());
+        statusBar = new StatusBarPanel();
     }
 
     /**
@@ -294,89 +260,70 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		// End of temporary code for [ adempiere-ZK Web Client-2832968 ] User context lost?
 
 		// Set AutoCommit for this Window
-		if (embeddedTabindex < 0)
-		{
-			Env.setAutoCommit(ctx, curWindowNo, Env.isAutoCommit(ctx));
-			boolean autoNew = Env.isAutoNew(ctx);
-			Env.setAutoNew(ctx, curWindowNo, autoNew);
+		Env.setAutoCommit(ctx, curWindowNo, Env.isAutoCommit(ctx));
+		boolean autoNew = Env.isAutoNew(ctx);
+		Env.setAutoNew(ctx, curWindowNo, autoNew);
 
-	        GridWindowVO gWindowVO = AEnv.getMWindowVO(curWindowNo, adWindowId, 0);
-	        if (gWindowVO == null)
-	        {
-	            throw new ApplicationException(Msg.getMsg(ctx,
-	                    "AccessTableNoView")
-	                    + "(No Window Model Info)");
-	        }
-	        gridWindow = new GridWindow(gWindowVO, true);
-	        title = gridWindow.getName();
+        GridWindowVO gWindowVO = AEnv.getMWindowVO(curWindowNo, adWindowId, 0);
+        if (gWindowVO == null)
+        {
+            throw new ApplicationException(Msg.getMsg(ctx,
+                    "AccessTableNoView")
+                    + "(No Window Model Info)");
+        }
+        gridWindow = new GridWindow(gWindowVO, true);
+        title = gridWindow.getName();
 
-	        // Set SO/AutoNew for Window
-	        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
-	        if (!autoNew && gridWindow.isTransaction())
-	        {
-	            Env.setAutoNew(ctx, curWindowNo, true);
-	        }
-		}
+        // Set SO/AutoNew for Window
+        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
+        if (!autoNew && gridWindow.isTransaction())
+        {
+            Env.setAutoNew(ctx, curWindowNo, true);
+        }
 
-        m_onlyCurrentRows =  embeddedTabindex < 0 && gridWindow.isTransaction();
+        m_onlyCurrentRows =  gridWindow.isTransaction();
 
         MQuery detailQuery = null;
         /**
          * Window Tabs
          */
-        if (embeddedTabindex < 0)
+    	if (query != null && query.getZoomTableName() != null && query.getZoomColumnName() != null
+				&& query.getZoomValue() instanceof Integer && (Integer)query.getZoomValue() > 0)
+    	{
+    		if (!query.getZoomTableName().equalsIgnoreCase(gridWindow.getTab(0).getTableName()))
+    		{
+    			detailQuery = query;
+    			query = new MQuery();
+    			query.addRestriction("1=2");
+    			query.setRecordCount(0);
+    		}
+    	}
+
+        int tabSize = gridWindow.getTabCount();
+
+        for (int tab = 0; tab < tabSize; tab++)
         {
-        	if (query != null && query.getZoomTableName() != null && query.getZoomColumnName() != null
-					&& query.getZoomValue() instanceof Integer && (Integer)query.getZoomValue() > 0)
-	    	{
-	    		if (!query.getZoomTableName().equalsIgnoreCase(gridWindow.getTab(0).getTableName()))
-	    		{
-	    			detailQuery = query;
-	    			query = new MQuery();
-	    			query.addRestriction("1=2");
-	    			query.setRecordCount(0);
-	    		}
-	    	}
-
-	        int tabSize = gridWindow.getTabCount();
-
-	        for (int tab = 0; tab < tabSize; tab++)
-	        {
-	            initTab(query, tab);
-	            if (tab == 0 && curTab == null && m_findCancelled)
-	            	return false;
-	        }
-	        Env.setContext(ctx, curWindowNo, "WindowName", gridWindow.getName());
+            initTab(query, tab);
+            if (tab == 0 && curTab == null && m_findCancelled)
+            	return false;
         }
-        else
-        {
-        	initEmbeddedTab(query, embeddedTabindex);
-        }
-
+        Env.setContext(ctx, curWindowNo, "WindowName", gridWindow.getName());
+        
         if (curTab != null)
         	curTab.getTableModel().setChanged(false);
 
-        if (embeddedTabindex < 0)
-        {
-	        curTabIndex = 0;
+        curTabIndex = 0;
 
-	        adTab.setSelectedIndex(0);	        
-	        // all fields context for window is clear at AbstractADTab.prepareContext, set again IsSOTrx for window
-	        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
-	        toolbar.enableTabNavigation(adTab.getTabCount() > 1);
-	        toolbar.enableFind(true);
-	        adTab.evaluate(null);
+        adTab.setSelectedIndex(0);	        
+        // all fields context for window is clear at AbstractADTab.prepareContext, set again IsSOTrx for window
+        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
+        toolbar.enableTabNavigation(adTab.getTabCount() > 1);
+        toolbar.enableFind(true);
+        adTab.evaluate(null);
 
-	        if (detailQuery != null && zoomToDetailTab(detailQuery))
-	        {
-	        	return true;
-	        }
-        }
-        else
+        if (detailQuery != null && zoomToDetailTab(detailQuery))
         {
-        	curTabIndex = embeddedTabindex;
-        	toolbar.enableTabNavigation(false);
-	        toolbar.enableFind(true);
+        	return true;
         }
 
         updateToolbar();
@@ -472,15 +419,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 					targetQuery.addRestriction(gTab.getLinkColumnName(), "=", parentId);
 					gTab.setQuery(targetQuery);
 					IADTabpanel gc = null;
-					if (!includedMap.containsKey(gTab.getAD_Tab_ID()))
-					{
-						gc = adTab.findADTabpanel(gTab);
-					}
-					else
-					{
-						ADTabpanel parent = (ADTabpanel)includedMap.get(gTab.getAD_Tab_ID());
-						gc = parent.findEmbeddedPanel(gTab);
-					}
+					gc = adTab.findADTabpanel(gTab);
 					gc.createUI();
 					gc.query(false, 0, 0);
 
@@ -491,17 +430,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     					int id = table.getKeyID(i);
     					if (id == ((Integer)query.getZoomValue()).intValue())
     					{
-    						if (!includedMap.containsKey(gTab.getAD_Tab_ID()))
-    						{
-    							setActiveTab(gridWindow.getTabIndex(gTab), null);
-    						}
-    						else
-    						{
-    							IADTabpanel parent = includedMap.get(gTab.getAD_Tab_ID());
-    							int pindex = gridWindow.getTabIndex(parent.getGridTab());
-    							if (pindex >= 0)
-    								setActiveTab(pindex, null);
-    						}
+    						setActiveTab(gridWindow.getTabIndex(gTab), null);
     						gTab.navigate(i);
     						return true;
     					}
@@ -510,17 +439,6 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			}
 		}
 		return false;
-	}
-
-	private void initEmbeddedTab(MQuery query, int tabIndex) {
-		GridTab gTab = gridWindow.getTab(tabIndex);
-		gTab.addDataStatusListener(this);
-		adTab.addTab(gTab, embeddedTabPanel);
-		if (gTab.isSortTab()) {
-			((ADSortTab)embeddedTabPanel).registerAPanel(this);
-		} else {
-			((ADTabpanel)embeddedTabPanel).init(this, curWindowNo, gTab, gridWindow);
-		}
 	}
 
 	private void initQueryOnNew(MQuery result) {
@@ -584,57 +502,31 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		if (gTab.isSortTab())
 		{
 			ADSortTab sortTab = new ADSortTab(curWindowNo, gTab);
-			if (includedMap.containsKey(gTab.getAD_Tab_ID()))
-		    {
-		    	includedMap.get(gTab.getAD_Tab_ID()).embed(ctx, curWindowNo, gridWindow, gTab.getAD_Tab_ID(), tabIndex, sortTab);
-		    }
-			else
-			{
-				adTab.addTab(gTab, sortTab);
-				sortTab.registerAPanel(this);
-				if (tabIndex == 0) {
-					curTabpanel = sortTab;
-					curTabpanel.createUI();
-					if (!m_queryInitiating) 
-					{
-						initFirstTabpanel();
-					}
+			adTab.addTab(gTab, sortTab);
+			sortTab.registerAPanel(this);
+			if (tabIndex == 0) {
+				curTabpanel = sortTab;
+				curTabpanel.createUI();
+				if (!m_queryInitiating) 
+				{
+					initFirstTabpanel();
 				}
-				gTab.addDataStatusListener(this);
 			}
+			gTab.addDataStatusListener(this);
 		}
 		else
 		{
-			//build embedded tab map
 			ADTabpanel fTabPanel = new ADTabpanel();
-			GridField[] fields = gTab.getTableModel().getFields();
-		    for(int i = 0; i < fields.length; i++)
-		    {
-		    	if (fields[i].getIncluded_Tab_ID() > 0)
-		    	{
-		    		includedMap.put(fields[i].getIncluded_Tab_ID(), fTabPanel);
-		    		includedFieldMap.put(fields[i].getIncluded_Tab_ID(), fields[i]);
-		    	}
-		    }
-
-		    if (includedMap.containsKey(gTab.getAD_Tab_ID()))
-		    {
-		    	includedMap.get(gTab.getAD_Tab_ID()).embed(ctx, curWindowNo, gridWindow, gTab.getAD_Tab_ID(), tabIndex, fTabPanel,
-		    			includedFieldMap.get(gTab.getAD_Tab_ID()).getDisplayLength());
-		    }
-		    else
-		    {
-		    	gTab.addDataStatusListener(this);
-		    	fTabPanel.init(this, curWindowNo, gTab, gridWindow);
-		    	adTab.addTab(gTab, fTabPanel);
-			    if (tabIndex == 0) {
-			    	fTabPanel.createUI();
-			    	curTabpanel = fTabPanel;
-			    	if (!m_queryInitiating) 
-					{
-						initFirstTabpanel();
-					}
-			    }
+	    	gTab.addDataStatusListener(this);
+	    	fTabPanel.init(this, curWindowNo, gTab, gridWindow);
+	    	adTab.addTab(gTab, fTabPanel);
+		    if (tabIndex == 0) {
+		    	fTabPanel.createUI();
+		    	curTabpanel = fTabPanel;
+		    	if (!m_queryInitiating) 
+				{
+					initFirstTabpanel();
+				}
 		    }
 		    
 		    if (!m_queryInitiating && tabIndex == 0) 
