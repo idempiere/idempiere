@@ -65,6 +65,7 @@ import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 
 /**
  *	Application Login Window
@@ -120,6 +121,9 @@ public final class ALogin extends CDialog
 	private static final int CONNECTED_OK = 0;
 	private static final int CONNECTED_OK_WITH_PASSWORD_EXPIRED = 1;
 	
+	private static final int NO_OF_SECURITY_QUESTION = 5;
+	private static final String SECURITY_QUESTION_PREFIX = "SecurityQuestion_";
+	
 	private CPanel mainPanel = new CPanel(new BorderLayout());
 	private CTabbedPane loginTabPane = new CTabbedPane();
 	private CPanel connectionPanel = new CPanel();
@@ -168,7 +172,7 @@ public final class ALogin extends CDialog
     //
     private CLabel lblSecurityQuestion = new CLabel();
     private CLabel lblAnswer = new CLabel();
-    private CTextField txtSecurityQuestion = new CTextField();
+    private VComboBox lstSecurityQuestion = new VComboBox();
     private CTextField txtAnswer = new CTextField();
 
 	/** Server Connection       */
@@ -379,11 +383,15 @@ public final class ALogin extends CDialog
 		lblRetypeNewPassword.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblRetypeNewPassword.setText(Msg.getMsg(m_ctx, "New Password Confirm"));
 		
-		txtSecurityQuestion.setName("txtSecurityQuestion");
+		lstSecurityQuestion.setName("lstSecurityQuestion");
 		lblSecurityQuestion.setRequestFocusEnabled(false);
-		lblSecurityQuestion.setLabelFor(txtSecurityQuestion);
+		lblSecurityQuestion.setLabelFor(lstSecurityQuestion);
 		lblSecurityQuestion.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSecurityQuestion.setText(Msg.getMsg(m_ctx, "SecurityQuestion"));
+		
+		lstSecurityQuestion.removeAllItems();
+    	for (int i = 1; i <= NO_OF_SECURITY_QUESTION; i++)
+    		lstSecurityQuestion.addItem(new ValueNamePair(SECURITY_QUESTION_PREFIX + i, Msg.getMsg(m_ctx, SECURITY_QUESTION_PREFIX + i)));
 		
 		txtAnswer.setName("txtAnswer");
 		lblAnswer.setRequestFocusEnabled(false);
@@ -407,7 +415,7 @@ public final class ALogin extends CDialog
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
 		changePasswordPanel.add(lblSecurityQuestion,       new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
-			changePasswordPanel.add(txtSecurityQuestion,        new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0
+			changePasswordPanel.add(lstSecurityQuestion,        new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
 		changePasswordPanel.add(lblAnswer,       new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
@@ -649,7 +657,9 @@ public final class ALogin extends CDialog
     	String newPassword = new String(txtNewPassword.getPassword());
     	String retypeNewPassword = new String(txtRetypeNewPassword.getPassword());
     	
-    	String securityQuestion = txtSecurityQuestion.getText();
+    	String securityQuestion = null;
+    	if (lstSecurityQuestion.getSelectedItem() != null)
+    		securityQuestion = ((ValueNamePair) lstSecurityQuestion.getSelectedItem()).getName();
     	String answer = txtAnswer.getText();
     	
     	if (Util.isEmpty(oldPassword))
