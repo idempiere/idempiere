@@ -593,8 +593,10 @@ public final class ALogin extends CDialog
 		else if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL))
 			appExit();
 		//
-		else if (e.getSource() == hostField) 
+		else if (e.getSource() == hostField) {
 			validateConnection();
+			languageComboChanged();
+		}
 		else if (e.getSource() == languageCombo)
 			languageComboChanged();
 		//
@@ -1174,7 +1176,7 @@ public final class ALogin extends CDialog
 		//
 		this.setTitle(res.getString("Login"));
 		hostLabel.setText(res.getString("Host"));
-		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		boolean email_login = (DB.isConnected() && MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false));
 		if (email_login)
 			userLabel.setText(res.getString("EMail"));
 		else
