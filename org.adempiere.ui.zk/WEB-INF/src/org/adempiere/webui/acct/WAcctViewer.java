@@ -56,6 +56,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
 import org.compiere.report.core.RModelExcelExporter;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -759,7 +760,7 @@ public class WAcctViewer extends Window implements EventListener
 			RModelExcelExporter exporter = new RModelExcelExporter(m_rmodel);
 			File file;
 			try {
-				file = File.createTempFile(TITLE, ".xls");
+				file = new File(FileUtil.getTempMailName(TITLE, ".xls"));
 				exporter.export(file, Env.getLanguage(Env.getCtx()));
 				Filedownload.save(file, "application/vnd.ms-excel");
 			} catch (Exception e) {
@@ -1009,6 +1010,7 @@ public class WAcctViewer extends Window implements EventListener
 		//  Switch to Result pane
 
 		tabbedPane.setSelectedIndex(1);
+		stateChanged();
 
 		//  Set TableModel with Query
 
