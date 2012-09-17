@@ -497,13 +497,13 @@ public final class FactLine extends X_Fact_Acct
 		if (M_Locator_ID == 0)
 			return;
 		int C_Location_ID = 0;
-		String sql = "SELECT w.C_Location_ID FROM M_Warehouse w, M_Locator l "
-			+ "WHERE w.M_Warehouse_ID=l.M_Warehouse_ID AND l.M_Locator_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT w.C_Location_ID FROM M_Warehouse w, M_Locator l ")
+			.append("WHERE w.M_Warehouse_ID=l.M_Warehouse_ID AND l.M_Locator_ID=?");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			pstmt.setInt(1, M_Locator_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -511,7 +511,7 @@ public final class FactLine extends X_Fact_Acct
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 			return;
 		}
 		finally {
@@ -994,16 +994,16 @@ public final class FactLine extends X_Fact_Acct
 		//  get Unearned Revenue Acct from BPartner Group
 		int UnearnedRevenue_Acct = 0;
 		int new_Account_ID = 0;
-		String sql = "SELECT ga.UnearnedRevenue_Acct, vc.Account_ID "
-			+ "FROM C_BP_Group_Acct ga, C_BPartner p, C_ValidCombination vc "
-			+ "WHERE ga.C_BP_Group_ID=p.C_BP_Group_ID"
-			+ " AND ga.UnearnedRevenue_Acct=vc.C_ValidCombination_ID"
-			+ " AND ga.C_AcctSchema_ID=? AND p.C_BPartner_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT ga.UnearnedRevenue_Acct, vc.Account_ID ")
+			.append("FROM C_BP_Group_Acct ga, C_BPartner p, C_ValidCombination vc ")
+			.append("WHERE ga.C_BP_Group_ID=p.C_BP_Group_ID")
+			.append(" AND ga.UnearnedRevenue_Acct=vc.C_ValidCombination_ID")
+			.append(" AND ga.C_AcctSchema_ID=? AND p.C_BPartner_ID=?");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			pstmt.setInt(1, getC_AcctSchema_ID());
 			pstmt.setInt(2, C_BPartner_ID);
 			rs = pstmt.executeQuery();
@@ -1015,7 +1015,7 @@ public final class FactLine extends X_Fact_Acct
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		finally {
 			DB.close(rs, pstmt);
@@ -1061,20 +1061,20 @@ public final class FactLine extends X_Fact_Acct
 	{
 		boolean success = false;
 
-		String sql = "SELECT * "
-			+ "FROM Fact_Acct "
-			+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=?"
-			+ " AND Line_ID=? AND Account_ID=?";
+		StringBuffer sql = new StringBuffer("SELECT * ")
+			.append("FROM Fact_Acct ")
+			.append("WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=?")
+			.append(" AND Line_ID=? AND Account_ID=?");
 		// MZ Goodwill
 		// for Inventory Move
 		if (MMovement.Table_ID == AD_Table_ID)
-			sql += " AND M_Locator_ID=?";
+			sql.append(" AND M_Locator_ID=?");
 		// end MZ
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			pstmt.setInt(1, getC_AcctSchema_ID());
 			pstmt.setInt(2, AD_Table_ID);
 			pstmt.setInt(3, Record_ID);
@@ -1141,7 +1141,7 @@ public final class FactLine extends X_Fact_Acct
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		finally {
 			DB.close(rs, pstmt);

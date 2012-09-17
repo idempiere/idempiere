@@ -69,13 +69,13 @@ public class MImpFormat extends X_AD_ImpFormat
 	public MImpFormatRow[] getRows()
 	{
 		ArrayList<MImpFormatRow> list = new ArrayList<MImpFormatRow>();
-		String sql = "SELECT * FROM AD_ImpFormat_Row "
-			+ "WHERE AD_ImpFormat_ID=? "
-			+ "ORDER BY SeqNo";
+		StringBuilder sql = new StringBuilder("SELECT * FROM AD_ImpFormat_Row ")
+			.append("WHERE AD_ImpFormat_ID=? ")
+			.append("ORDER BY SeqNo");
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			pstmt.setInt (1, getAD_ImpFormat_ID());
 			ResultSet rs = pstmt.executeQuery ();
 			while (rs.next ())

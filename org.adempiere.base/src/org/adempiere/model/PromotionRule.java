@@ -326,8 +326,8 @@ public class PromotionRule {
 	 * @throws Exception
 	 */
 	private static Map<Integer, List<Integer>> findM_Promotion_ID(MOrder order) throws Exception {
-		String select = "SELECT M_Promotion.M_Promotion_ID From M_Promotion Inner Join M_PromotionPreCondition "
-			+ " ON (M_Promotion.M_Promotion_ID = M_PromotionPreCondition.M_Promotion_ID)";
+		StringBuffer select = new StringBuffer("SELECT M_Promotion.M_Promotion_ID From M_Promotion Inner Join M_PromotionPreCondition ")
+			.append(" ON (M_Promotion.M_Promotion_ID = M_PromotionPreCondition.M_Promotion_ID)");
 
 		String bpFilter = "M_PromotionPreCondition.C_BPartner_ID = ? OR M_PromotionPreCondition.C_BP_Group_ID = ? OR (M_PromotionPreCondition.C_BPartner_ID IS NULL AND M_PromotionPreCondition.C_BP_Group_ID IS NULL)";
 		String priceListFilter = "M_PromotionPreCondition.M_PriceList_ID IS NULL OR M_PromotionPreCondition.M_PriceList_ID = ?";
@@ -414,12 +414,12 @@ public class PromotionRule {
 	private static DistributionSet calculateDistributionQty(MPromotionDistribution distribution,
 			DistributionSet prevSet, List<Integer> validPromotionLineIDs, Map<Integer, BigDecimal> orderLineQty, List<Integer> orderLineIdList, String trxName) throws Exception {
 
-		String sql = "SELECT C_OrderLine.C_OrderLine_ID FROM M_PromotionLine"
-			+ " INNER JOIN M_PromotionGroup ON (M_PromotionLine.M_PromotionGroup_ID = M_PromotionGroup.M_PromotionGroup_ID AND M_PromotionGroup.IsActive = 'Y')"
-			+ " INNER JOIN M_PromotionGroupLine ON (M_PromotionGroup.M_PromotionGroup_ID = M_PromotionGroupLine.M_PromotionGroup_ID AND M_PromotionGroupLine.IsActive = 'Y')"
-			+ " INNER JOIN C_OrderLine ON (M_PromotionGroupLine.M_Product_ID = C_OrderLine.M_Product_ID)"
-			+ " WHERE M_PromotionLine.M_PromotionLine_ID = ? AND C_OrderLine.C_OrderLine_ID = ?"
-			+ " AND M_PromotionLine.IsActive = 'Y'";
+		StringBuilder sql = new StringBuilder("SELECT C_OrderLine.C_OrderLine_ID FROM M_PromotionLine")
+			.append(" INNER JOIN M_PromotionGroup ON (M_PromotionLine.M_PromotionGroup_ID = M_PromotionGroup.M_PromotionGroup_ID AND M_PromotionGroup.IsActive = 'Y')")
+			.append(" INNER JOIN M_PromotionGroupLine ON (M_PromotionGroup.M_PromotionGroup_ID = M_PromotionGroupLine.M_PromotionGroup_ID AND M_PromotionGroupLine.IsActive = 'Y')")
+			.append(" INNER JOIN C_OrderLine ON (M_PromotionGroupLine.M_Product_ID = C_OrderLine.M_Product_ID)")
+			.append(" WHERE M_PromotionLine.M_PromotionLine_ID = ? AND C_OrderLine.C_OrderLine_ID = ?")
+			.append(" AND M_PromotionLine.IsActive = 'Y'");
 
 		DistributionSet distributionSet = new DistributionSet();
 		List<Integer>eligibleOrderLineIDs = new ArrayList<Integer>();
@@ -434,7 +434,7 @@ public class PromotionRule {
 				PreparedStatement stmt = null;
 				ResultSet rs = null;
 				try {
-					stmt = DB.prepareStatement(sql, trxName);
+					stmt = DB.prepareStatement(sql.toString(), trxName);
 					stmt.setInt(1, distribution.getM_PromotionLine_ID());
 					stmt.setInt(2, C_OrderLine_ID);
 					rs = stmt.executeQuery();
@@ -547,17 +547,17 @@ public class PromotionRule {
 		for (MPromotionLine pl : plist) {
 			boolean match = false;
 			if (pl.getM_PromotionGroup_ID() > 0) {
-				String sql = "SELECT DISTINCT C_OrderLine.C_OrderLine_ID FROM M_PromotionGroup INNER JOIN M_PromotionGroupLine"
-					+ " ON (M_PromotionGroup.M_PromotionGroup_ID = M_PromotionGroupLine.M_PromotionGroup_ID AND M_PromotionGroupLine.IsActive = 'Y')"
-					+ " INNER JOIN C_OrderLine ON (M_PromotionGroupLine.M_Product_ID = C_OrderLine.M_Product_ID)"
-					+ " INNER JOIN M_PromotionLine ON (M_PromotionLine.M_PromotionGroup_ID = M_PromotionGroup.M_PromotionGroup_ID)"
-					+ " WHERE M_PromotionLine.M_PromotionLine_ID = ? AND C_OrderLine.C_Order_ID = ?"
-					+ " AND M_PromotionLine.IsActive = 'Y'"
-					+ " AND M_PromotionGroup.IsActive = 'Y'";
+				StringBuilder sql = new StringBuilder("SELECT DISTINCT C_OrderLine.C_OrderLine_ID FROM M_PromotionGroup INNER JOIN M_PromotionGroupLine")
+					.append(" ON (M_PromotionGroup.M_PromotionGroup_ID = M_PromotionGroupLine.M_PromotionGroup_ID AND M_PromotionGroupLine.IsActive = 'Y')")
+					.append(" INNER JOIN C_OrderLine ON (M_PromotionGroupLine.M_Product_ID = C_OrderLine.M_Product_ID)")
+					.append(" INNER JOIN M_PromotionLine ON (M_PromotionLine.M_PromotionGroup_ID = M_PromotionGroup.M_PromotionGroup_ID)")
+					.append(" WHERE M_PromotionLine.M_PromotionLine_ID = ? AND C_OrderLine.C_Order_ID = ?")
+					.append(" AND M_PromotionLine.IsActive = 'Y'")
+					.append(" AND M_PromotionGroup.IsActive = 'Y'");
 				PreparedStatement stmt = null;
 				ResultSet rs = null;
 				try {
-					stmt = DB.prepareStatement(sql, order.get_TrxName());
+					stmt = DB.prepareStatement(sql.toString(), order.get_TrxName());
 					stmt.setInt(1, pl.getM_PromotionLine_ID());
 					stmt.setInt(2, order.getC_Order_ID());
 					rs = stmt.executeQuery();

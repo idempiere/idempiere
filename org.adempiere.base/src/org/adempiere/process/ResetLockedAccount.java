@@ -47,11 +47,11 @@ public class ResetLockedAccount extends SvrProcess {
 			if (!user.isLocked())
 				throw new AdempiereException("User " + user.getName() + " is not locked");
 
-			String sql = "UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate "
-					+ " WHERE IsLocked='Y' AND AD_Client_ID = ? "
-					+ " AND DateAccountLocked IS NOT NULL "
-					+ " AND AD_User_ID = " + user.getAD_User_ID();
-			int no = DB.executeUpdate(sql, new Object[] { p_AD_Client_ID }, false, get_TrxName());
+			StringBuffer sql = new StringBuffer ("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate ")
+					.append(" WHERE IsLocked='Y' AND AD_Client_ID = ? ")
+					.append(" AND DateAccountLocked IS NOT NULL ")
+					.append(" AND AD_User_ID = " + user.getAD_User_ID());
+			int no = DB.executeUpdate(sql.toString(), new Object[] { p_AD_Client_ID }, false, get_TrxName());
 			if (no < 0)
 				throw new AdempiereException("Could not unlock user account" + user.toString());
 
@@ -62,26 +62,26 @@ public class ResetLockedAccount extends SvrProcess {
 			int MAX_ACCOUNT_LOCK_MINUTES = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES, 0);
 			int MAX_INACTIVE_PERIOD = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0);
 			
-			String sql = "UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate "
-					+ " WHERE IsLocked='Y' AND AD_Client_ID IN (0, ?) "
-					+ " AND DateAccountLocked IS NOT NULL";
+			StringBuffer sql = new StringBuffer("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate ")
+					.append(" WHERE IsLocked='Y' AND AD_Client_ID IN (0, ?) ")
+					.append(" AND DateAccountLocked IS NOT NULL");
 			
 			if (DB.isPostgreSQL())
 			{
 				if (MAX_ACCOUNT_LOCK_MINUTES > 0)
-					sql += " AND EXTRACT(MINUTE FROM (now()-DateAccountLocked)) * 24 * 60 > " + MAX_ACCOUNT_LOCK_MINUTES;
+					sql.append( " AND EXTRACT(MINUTE FROM (now()-DateAccountLocked)) * 24 * 60 > ").append(MAX_ACCOUNT_LOCK_MINUTES);
 				if (MAX_INACTIVE_PERIOD > 0)
-					sql += " AND EXTRACT(DAY FROM (now()-DateLastLogin)) * 24 <= " + MAX_INACTIVE_PERIOD;
+					sql.append(" AND EXTRACT(DAY FROM (now()-DateLastLogin)) * 24 <= ").append(MAX_INACTIVE_PERIOD);
 			}
 			else
 			{
 				if (MAX_ACCOUNT_LOCK_MINUTES > 0)
-					sql += " AND (SysDate-DateAccountLocked) * 24 * 60 > " + MAX_ACCOUNT_LOCK_MINUTES;
+					sql.append(" AND (SysDate-DateAccountLocked) * 24 * 60 > ").append(MAX_ACCOUNT_LOCK_MINUTES);
 				if (MAX_INACTIVE_PERIOD > 0)
-					sql += " AND (SysDate-DateLastLogin) * 24 <= " + MAX_INACTIVE_PERIOD;
+					sql.append(" AND (SysDate-DateLastLogin) * 24 <= ").append(MAX_INACTIVE_PERIOD);
 			}
 			
-			int no = DB.executeUpdate(sql, p_AD_Client_ID, get_TrxName());
+			int no = DB.executeUpdate(sql.toString(), p_AD_Client_ID, get_TrxName());
 			if (no < 0)
 				throw new AdempiereException("Could not unlock user account");
 			return no + " locked account has been reset";

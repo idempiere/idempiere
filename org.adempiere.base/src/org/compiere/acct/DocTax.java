@@ -96,14 +96,14 @@ public final class DocTax
 		if (AcctType < 0 || AcctType > 4)
 			return null;
 		//
-		String sql = "SELECT T_Due_Acct, T_Liability_Acct, T_Credit_Acct, T_Receivables_Acct, T_Expense_Acct "
-			+ "FROM C_Tax_Acct WHERE C_Tax_ID=? AND C_AcctSchema_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT T_Due_Acct, T_Liability_Acct, T_Credit_Acct, T_Receivables_Acct, T_Expense_Acct ")
+			.append("FROM C_Tax_Acct WHERE C_Tax_ID=? AND C_AcctSchema_ID=?");
 		int validCombination_ID = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, m_C_Tax_ID);
 			pstmt.setInt(2, as.getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
@@ -112,7 +112,7 @@ public final class DocTax
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		finally {
 			DB.close(rs, pstmt);

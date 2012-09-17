@@ -233,23 +233,23 @@ public class ModelInterfaceGenerator
 	 */
 	private StringBuffer createColumns(int AD_Table_ID, StringBuffer mandatory) {
 		StringBuffer sb = new StringBuffer();
-		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory," // 1..3
-				+ " c.AD_Reference_ID, c.AD_Reference_Value_ID, DefaultValue, SeqNo, " // 4..7
-				+ " c.FieldLength, c.ValueMin, c.ValueMax, c.VFormat, c.Callout, " // 8..12
-				+ " c.Name, c.Description, c.ColumnSQL, c.IsEncrypted, c.IsKey "   // 13..17
-				+ "FROM AD_Column c "
-				+ "WHERE c.AD_Table_ID=?"
+		StringBuffer sql = new StringBuffer("SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory,") // 1..3
+				.append(" c.AD_Reference_ID, c.AD_Reference_Value_ID, DefaultValue, SeqNo, ") // 4..7
+				.append(" c.FieldLength, c.ValueMin, c.ValueMax, c.VFormat, c.Callout, ") // 8..12
+				.append(" c.Name, c.Description, c.ColumnSQL, c.IsEncrypted, c.IsKey ")   // 13..17
+				.append("FROM AD_Column c ")
+				.append("WHERE c.AD_Table_ID=?")
 //				+ " AND c.ColumnName <> 'AD_Client_ID'"
 //				+ " AND c.ColumnName <> 'AD_Org_ID'"
 //				+ " AND c.ColumnName <> 'IsActive'"
 //				+ " AND c.ColumnName NOT LIKE 'Created%'"
 //				+ " AND c.ColumnName NOT LIKE 'Updated%' "
-				+ " AND c.IsActive='Y'"
-				+ " ORDER BY c.ColumnName";
+				.append(" AND c.IsActive='Y'")
+				.append(" ORDER BY c.ColumnName");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, AD_Table_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -289,7 +289,7 @@ public class ModelInterfaceGenerator
 		}
 		catch (SQLException e)
 		{
-			throw new DBException(e, sql);
+			throw new DBException(e, sql.toString());
 		}
 		finally
 		{
@@ -495,15 +495,15 @@ public class ModelInterfaceGenerator
 		else if ((DisplayType.Table == displayType || DisplayType.Search == displayType)
 				&& AD_Reference_ID > 0)
 		{
-			String sql = "SELECT c.AD_Reference_ID, c.AD_Reference_Value_ID"
-						+" FROM AD_Ref_Table rt"
-						+" INNER JOIN AD_Column c ON (c.AD_Column_ID=rt.AD_Key)"
-						+" WHERE rt.AD_Reference_ID=?";
+			StringBuffer sql = new StringBuffer("SELECT c.AD_Reference_ID, c.AD_Reference_Value_ID")
+						.append(" FROM AD_Ref_Table rt")
+						.append(" INNER JOIN AD_Column c ON (c.AD_Column_ID=rt.AD_Key)")
+						.append(" WHERE rt.AD_Reference_ID=?");
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
 			{
-				pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setInt(1, AD_Reference_ID);
 				rs = pstmt.executeQuery();
 				if (rs.next())
@@ -518,7 +518,7 @@ public class ModelInterfaceGenerator
 			}
 			catch (SQLException e)
 			{
-				throw new DBException(e, sql);
+				throw new DBException(e, sql.toString());
 			}
 			finally
 			{
@@ -670,17 +670,17 @@ public class ModelInterfaceGenerator
 			if (AD_Table_ID == 707 && columnName.equals("Account_ID"))
 				return null;
 			//
-			final String sql = "SELECT t.TableName, t.EntityType, ck.AD_Reference_ID"
-				+" FROM AD_Ref_Table rt"
-				+" INNER JOIN AD_Table t ON (t.AD_Table_ID=rt.AD_Table_ID)"
-				+" INNER JOIN AD_Column ck ON (ck.AD_Table_ID=rt.AD_Table_ID AND ck.AD_Column_ID=rt.AD_Key)"
-				+" WHERE rt.AD_Reference_ID=?"
+			final StringBuffer sql = new StringBuffer("SELECT t.TableName, t.EntityType, ck.AD_Reference_ID")
+				.append(" FROM AD_Ref_Table rt")
+				.append(" INNER JOIN AD_Table t ON (t.AD_Table_ID=rt.AD_Table_ID)")
+				.append(" INNER JOIN AD_Column ck ON (ck.AD_Table_ID=rt.AD_Table_ID AND ck.AD_Column_ID=rt.AD_Key)")
+				.append(" WHERE rt.AD_Reference_ID=?")
 			;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
 			{
-				pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setInt(1, AD_Reference_ID);
 				rs = pstmt.executeQuery();
 				if (rs.next())
@@ -705,7 +705,7 @@ public class ModelInterfaceGenerator
 			}
 			catch (SQLException e)
 			{
-				throw new DBException(e, sql);
+				throw new DBException(e, sql.toString());
 			}
 			finally
 			{

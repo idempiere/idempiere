@@ -164,17 +164,17 @@ public class Doc_Order extends Doc
 		}
 		//
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		String sql = "SELECT * FROM M_RequisitionLine rl "
-			+ "WHERE EXISTS (SELECT * FROM C_Order o "
-				+ " INNER JOIN C_OrderLine ol ON (o.C_Order_ID=ol.C_Order_ID) "
-				+ "WHERE ol.C_OrderLine_ID=rl.C_OrderLine_ID"
-				+ " AND o.C_Order_ID=?) "
-			+ "ORDER BY rl.C_OrderLine_ID";
+		StringBuilder sql = new StringBuilder("SELECT * FROM M_RequisitionLine rl ")
+			.append("WHERE EXISTS (SELECT * FROM C_Order o ")
+				.append(" INNER JOIN C_OrderLine ol ON (o.C_Order_ID=ol.C_Order_ID) ")
+				.append("WHERE ol.C_OrderLine_ID=rl.C_OrderLine_ID")
+				.append(" AND o.C_Order_ID=?) ")
+			.append("ORDER BY rl.C_OrderLine_ID");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql.toString(), null);
 			pstmt.setInt (1, order.getC_Order_ID());
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
@@ -201,7 +201,7 @@ public class Doc_Order extends Doc
 		}
 		catch (Exception e)
 		{
-			log.log (Level.SEVERE, sql, e);
+			log.log (Level.SEVERE, sql.toString(), e);
 		}
 		finally
 		{
@@ -234,14 +234,14 @@ public class Doc_Order extends Doc
 	private DocTax[] loadTaxes()
 	{
 		ArrayList<DocTax> list = new ArrayList<DocTax>();
-		String sql = "SELECT it.C_Tax_ID, t.Name, t.Rate, it.TaxBaseAmt, it.TaxAmt, t.IsSalesTax "
-			+ "FROM C_Tax t, C_OrderTax it "
-			+ "WHERE t.C_Tax_ID=it.C_Tax_ID AND it.C_Order_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT it.C_Tax_ID, t.Name, t.Rate, it.TaxBaseAmt, it.TaxAmt, t.IsSalesTax ")
+			.append("FROM C_Tax t, C_OrderTax it ")
+			.append("WHERE t.C_Tax_ID=it.C_Tax_ID AND it.C_Order_ID=?");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, getTrxName());
+			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
 			pstmt.setInt(1, get_ID());
 			rs = pstmt.executeQuery();
 			//
@@ -261,7 +261,7 @@ public class Doc_Order extends Doc
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		finally {
 			DB.close(rs, pstmt);
@@ -462,21 +462,21 @@ public class Doc_Order extends Doc
 			return;
 
 		StringBuffer sql = new StringBuffer (
-			"UPDATE M_Product_PO po "
-			+ "SET PriceLastPO = (SELECT currencyConvert(ol.PriceActual,ol.C_Currency_ID,po.C_Currency_ID,o.DateOrdered,o.C_ConversionType_ID,o.AD_Client_ID,o.AD_Org_ID) "
-			+ "FROM C_Order o, C_OrderLine ol "
-			+ "WHERE o.C_Order_ID=ol.C_Order_ID"
-			+ " AND po.M_Product_ID=ol.M_Product_ID AND po.C_BPartner_ID=o.C_BPartner_ID ");
+			"UPDATE M_Product_PO po ")
+			.append("SET PriceLastPO = (SELECT currencyConvert(ol.PriceActual,ol.C_Currency_ID,po.C_Currency_ID,o.DateOrdered,o.C_ConversionType_ID,o.AD_Client_ID,o.AD_Org_ID) ")
+			.append("FROM C_Order o, C_OrderLine ol ")
+			.append("WHERE o.C_Order_ID=ol.C_Order_ID")
+			.append(" AND po.M_Product_ID=ol.M_Product_ID AND po.C_BPartner_ID=o.C_BPartner_ID ");
 			//jz + " AND ROWNUM=1 AND o.C_Order_ID=").append(get_ID()).append(") ")
 			if (DB.isOracle()) //jz
 			{
 				sql.append(" AND ROWNUM=1 ");
 			}
 			else
-				sql.append(" AND ol.C_OrderLine_ID = (SELECT MIN(ol1.C_OrderLine_ID) "
-						+ "FROM C_Order o1, C_OrderLine ol1 "
-						+ "WHERE o1.C_Order_ID=ol1.C_Order_ID"
-						+ " AND po.M_Product_ID=ol1.M_Product_ID AND po.C_BPartner_ID=o1.C_BPartner_ID")
+				sql.append(" AND ol.C_OrderLine_ID = (SELECT MIN(ol1.C_OrderLine_ID) ")
+						.append("FROM C_Order o1, C_OrderLine ol1 ")
+						.append("WHERE o1.C_Order_ID=ol1.C_Order_ID")
+						.append(" AND po.M_Product_ID=ol1.M_Product_ID AND po.C_BPartner_ID=o1.C_BPartner_ID")
 						.append("  AND o1.C_Order_ID=").append(get_ID()).append(") ");
 			sql.append("  AND o.C_Order_ID=").append(get_ID()).append(") ")
 			.append("WHERE EXISTS (SELECT * "
@@ -501,20 +501,20 @@ public class Doc_Order extends Doc
 		int precision = -1;
 		//
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		String sql = "SELECT * FROM C_OrderLine ol "
-			+ "WHERE EXISTS "
-				+ "(SELECT * FROM C_InvoiceLine il "
-				+ "WHERE il.C_OrderLine_ID=ol.C_OrderLine_ID"
-				+ " AND il.C_InvoiceLine_ID=?)"
-			+ " OR EXISTS "
-				+ "(SELECT * FROM M_MatchPO po "
-				+ "WHERE po.C_OrderLine_ID=ol.C_OrderLine_ID"
-				+ " AND po.C_InvoiceLine_ID=?)";
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_OrderLine ol ")
+			.append("WHERE EXISTS ")
+				.append("(SELECT * FROM C_InvoiceLine il ")
+				.append("WHERE il.C_OrderLine_ID=ol.C_OrderLine_ID")
+				.append(" AND il.C_InvoiceLine_ID=?)")
+			.append(" OR EXISTS ")
+				.append("(SELECT * FROM M_MatchPO po ")
+				.append("WHERE po.C_OrderLine_ID=ol.C_OrderLine_ID")
+				.append(" AND po.C_InvoiceLine_ID=?)");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql.toString(), null);
 			pstmt.setInt (1, C_InvoiceLine_ID);
 			pstmt.setInt (2, C_InvoiceLine_ID);
 			rs = pstmt.executeQuery ();
@@ -568,7 +568,7 @@ public class Doc_Order extends Doc
 		}
 		catch (Exception e)
 		{
-			s_log.log (Level.SEVERE, sql, e);
+			s_log.log (Level.SEVERE, sql.toString(), e);
 		}
 		finally
 		{
@@ -646,16 +646,16 @@ public class Doc_Order extends Doc
 		int precision = -1;
 		//
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		String sql = "SELECT * FROM C_OrderLine ol "
-			+ "WHERE EXISTS "
-				+ "(SELECT * FROM M_InOutLine il "
-				+ "WHERE il.C_OrderLine_ID=ol.C_OrderLine_ID"
-				+ " AND il.M_InOutLine_ID=?)";
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_OrderLine ol ")
+			.append("WHERE EXISTS ")
+				.append("(SELECT * FROM M_InOutLine il ")
+				.append("WHERE il.C_OrderLine_ID=ol.C_OrderLine_ID")
+				.append(" AND il.M_InOutLine_ID=?)");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql.toString(), null);
 			pstmt.setInt (1, M_InOutLine_ID);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
@@ -708,7 +708,7 @@ public class Doc_Order extends Doc
 		}
 		catch (Exception e)
 		{
-			s_log.log (Level.SEVERE, sql, e);
+			s_log.log (Level.SEVERE, sql.toString(), e);
 		}
 		finally
 		{

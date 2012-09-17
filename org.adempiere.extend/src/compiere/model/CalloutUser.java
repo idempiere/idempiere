@@ -77,21 +77,21 @@ public class CalloutUser extends CalloutEngine
 		if (C_BPartner_ID == null || C_BPartner_ID.intValue() == 0)
 			return "";
 
-		String sql = "SELECT p.AD_Language,p.C_PaymentTerm_ID,"
-			+ " COALESCE(p.M_PriceList_ID,g.M_PriceList_ID) AS M_PriceList_ID, p.PaymentRule,p.POReference,"
-			+ " p.SO_Description,p.IsDiscountPrinted,"
-			+ " p.SO_CreditLimit, p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
-			+ " l.C_BPartner_Location_ID,c.AD_User_ID,"
-			+ " COALESCE(p.PO_PriceList_ID,g.PO_PriceList_ID) AS PO_PriceList_ID, p.PaymentRulePO,p.PO_PaymentTerm_ID " 
-			+ "FROM C_BPartner p"
-			+ " INNER JOIN C_BP_Group g ON (p.C_BP_Group_ID=g.C_BP_Group_ID)"			
-			+ " LEFT OUTER JOIN C_BPartner_Location l ON (p.C_BPartner_ID=l.C_BPartner_ID AND l.IsBillTo='Y' AND l.IsActive='Y')"
-			+ " LEFT OUTER JOIN AD_User c ON (p.C_BPartner_ID=c.C_BPartner_ID) "
-			+ "WHERE p.C_BPartner_ID=? AND p.IsActive='Y'";		//	#1
+		StringBuilder sql = new StringBuilder("SELECT p.AD_Language,p.C_PaymentTerm_ID,")
+			.append (" COALESCE(p.M_PriceList_ID,g.M_PriceList_ID) AS M_PriceList_ID, p.PaymentRule,p.POReference,")
+			.append (" p.SO_Description,p.IsDiscountPrinted,")
+			.append (" p.SO_CreditLimit, p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,")
+			.append (" l.C_BPartner_Location_ID,c.AD_User_ID,")
+			.append (" COALESCE(p.PO_PriceList_ID,g.PO_PriceList_ID) AS PO_PriceList_ID, p.PaymentRulePO,p.PO_PaymentTerm_ID ") 
+			.append ("FROM C_BPartner p")
+			.append (" INNER JOIN C_BP_Group g ON (p.C_BP_Group_ID=g.C_BP_Group_ID)")			
+			.append (" LEFT OUTER JOIN C_BPartner_Location l ON (p.C_BPartner_ID=l.C_BPartner_ID AND l.IsBillTo='Y' AND l.IsActive='Y')")
+			.append (" LEFT OUTER JOIN AD_User c ON (p.C_BPartner_ID=c.C_BPartner_ID) ")
+			.append ("WHERE p.C_BPartner_ID=? AND p.IsActive='Y'");		//	#1
 
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, C_BPartner_ID.intValue());
 			ResultSet rs = pstmt.executeQuery();
 			//
@@ -130,7 +130,7 @@ public class CalloutUser extends CalloutEngine
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 			return e.getLocalizedMessage();
 		}
 

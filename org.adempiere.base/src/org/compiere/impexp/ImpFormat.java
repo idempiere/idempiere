@@ -115,12 +115,12 @@ public final class ImpFormat
 		m_AD_Table_ID = AD_Table_ID;
 		m_tableName = null;
 		m_tablePK = null;
-		String sql = "SELECT t.TableName,c.ColumnName "
-			+ "FROM AD_Table t INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID AND c.IsKey='Y') "
-			+ "WHERE t.AD_Table_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT t.TableName,c.ColumnName ")
+			.append("FROM AD_Table t INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID AND c.IsKey='Y') ")
+			.append("WHERE t.AD_Table_ID=?");
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, AD_Table_ID);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next())
@@ -301,14 +301,14 @@ public final class ImpFormat
 	 */
 	private static void loadRows (ImpFormat format, int ID)
 	{
-		String sql = "SELECT f.SeqNo,c.ColumnName,f.StartNo,f.EndNo,f.DataType,c.FieldLength,"		//	1..6
-			+ "f.DataFormat,f.DecimalPoint,f.DivideBy100,f.ConstantValue,f.Callout "				//	7..11
-			+ "FROM AD_ImpFormat_Row f,AD_Column c "
-			+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y'"
-			+ "ORDER BY f.SeqNo";
+		StringBuilder sql = new StringBuilder("SELECT f.SeqNo,c.ColumnName,f.StartNo,f.EndNo,f.DataType,c.FieldLength,")		//	1..6
+			.append("f.DataFormat,f.DecimalPoint,f.DivideBy100,f.ConstantValue,f.Callout ")				//	7..11
+			.append("FROM AD_ImpFormat_Row f,AD_Column c ")
+			.append("WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y'")
+			.append("ORDER BY f.SeqNo");
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt (1, ID);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
@@ -327,7 +327,7 @@ public final class ImpFormat
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 	}	//	loadLines
 

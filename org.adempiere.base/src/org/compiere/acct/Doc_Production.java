@@ -82,14 +82,14 @@ public class Doc_Production extends Doc
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
 		//	Production
 		//	-- ProductionLine	- the real level
-		String sqlPL = "SELECT * FROM M_ProductionLine pl "
-			+ "WHERE pl.M_Production_ID=? "
-			+ "ORDER BY pl.Line";
+		StringBuilder sqlPL = new StringBuilder("SELECT * FROM M_ProductionLine pl ")
+			.append("WHERE pl.M_Production_ID=? ")
+			.append("ORDER BY pl.Line");
 
 		try
 		{
 			
-					PreparedStatement pstmtPL = DB.prepareStatement(sqlPL, getTrxName());
+					PreparedStatement pstmtPL = DB.prepareStatement(sqlPL.toString(), getTrxName());
 					pstmtPL.setInt(1,get_ID());
 					ResultSet rsPL = pstmtPL.executeQuery();
 					while (rsPL.next())
@@ -113,7 +113,7 @@ public class Doc_Production extends Doc
 				}
 				catch (Exception ee)
 				{
-					log.log(Level.SEVERE, sqlPL, ee);
+					log.log(Level.SEVERE, sqlPL.toString(), ee);
 				}
 			
 		DocLine[] dl = new DocLine[list.size()];
