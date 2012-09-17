@@ -127,8 +127,8 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			while (en.hasMoreElements())
 			{
 				MTreeNode nd = (MTreeNode)en.nextElement();
-				if (nd.isOnBar()) {					
-					addNode(nd.getNode_ID(), nd.toString().trim(), nd.getDescription(), getIconFile(nd), nd.isWindow());
+				if (nd.isOnBar()) {
+					addNode(nd.getNode_ID(), nd.toString().trim(), nd.getDescription(), getIconFile(nd), (nd.isWindow() && !nd.isForm()));
 				}
 			}
 		}
