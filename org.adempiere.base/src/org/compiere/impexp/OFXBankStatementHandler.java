@@ -217,10 +217,10 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 			reader.mark(HEADER_SIZE + 100);
-			String header = "";
+			StringBuffer header = new StringBuffer("");
 			for (int i = 0; i < HEADER_SIZE; i++)
 			{
-				header = header + reader.readLine();
+				header.append(reader.readLine());
 			}
 			if ((header.indexOf("<?OFX") != -1) || (header.indexOf("<?ofx") != -1))
 			{

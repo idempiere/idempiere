@@ -839,10 +839,10 @@ public class ModelClassGenerator
 		if (!tableLike.startsWith("'") || !tableLike.endsWith("'"))
 			tableLike = "'" + tableLike + "'";
 
-		String entityTypeFilter = null;
+		StringBuffer entityTypeFilter = new StringBuffer();
 		if (entityType != null && entityType.trim().length() > 0)
 		{
-			entityTypeFilter = "EntityType IN (";
+			entityTypeFilter.append("EntityType IN (");
 			StringTokenizer tokenizer = new StringTokenizer(entityType, ",");
 			int i = 0;
 			while(tokenizer.hasMoreTokens()) {
@@ -850,15 +850,15 @@ public class ModelClassGenerator
 				if (!token.startsWith("'") || !token.endsWith("'"))
 					token = "'" + token + "'";
 				if (i > 0)
-					entityTypeFilter = entityTypeFilter + ",";
-				entityTypeFilter = entityTypeFilter + token;
+					entityTypeFilter.append(",");
+				entityTypeFilter.append(token);
 				i++;
 			}
-			entityTypeFilter = entityTypeFilter+")";
+			entityTypeFilter.append(")");
 		}
 		else
 		{
-			entityTypeFilter = "EntityType IN ('U','A')";
+			entityTypeFilter.append("EntityType IN ('U','A')");
 		}
 
 		String directory = sourceFolder.trim();
@@ -884,7 +884,7 @@ public class ModelClassGenerator
 			.append(" OR IsView='N')")
 			.append(" AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' ");
 		sql.append(" AND TableName LIKE ").append(tableLike);
-		sql.append(" AND ").append(entityTypeFilter);
+		sql.append(" AND ").append(entityTypeFilter.toString());
 		sql.append(" ORDER BY TableName");
 
 		//

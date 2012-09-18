@@ -45,6 +45,7 @@ import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * Executes search and opens windows for defined transaction codes
@@ -67,12 +68,12 @@ public abstract class AbstractDocumentSearch {
 		log.fine("Search started with String: " + searchString);
 
 		// Check if / how many transaction-codes are used
-		if (searchString != null && !"".equals(searchString)) {
+		if (! Util.isEmpty(searchString)) {
 			String[] codes = searchString.trim().replaceAll("  ", " ").split(" ");
 
 			List<String> codeList = new ArrayList<String>();
 			boolean codeSearch = true;
-			searchString = "";
+			StringBuffer search = new StringBuffer();
 
 			// Analyze String to separate transactionCodes from searchString
 			for (int i = 0; i < codes.length; i++) {
@@ -84,9 +85,9 @@ public abstract class AbstractDocumentSearch {
 						// Build the searchString with eventually appearing
 						// whitespaces
 						codeSearch = false;
-						searchString += s;
+						search.append(s);
 						if (i != (codes.length - 1)) {
-							searchString += " ";
+							search.append(" ");
 						}
 					}
 				} catch (SQLException e) {
@@ -99,12 +100,12 @@ public abstract class AbstractDocumentSearch {
 			if (codeList.size() > 0) {
 				for (int i = 0; i < codeList.size(); i++) {
 					log.fine("Search with Transaction: '" + codeList.get(i) + "' for: '"
-							+ searchString + "'");
-					getID(codeList.get(i), searchString);
+							+ search.toString() + "'");
+					getID(codeList.get(i), search.toString());
 				}
 			} else {
-				log.fine("Search without Transaction: " + searchString);
-				getID(null, searchString);
+				log.fine("Search without Transaction: " + search.toString());
+				getID(null, search.toString());
 			}
 		} else {
 			log.fine("Search String is invalid");
@@ -252,32 +253,35 @@ public abstract class AbstractDocumentSearch {
 		if (ids == null || ids.size() == 0) {
 			return;
 		}
-		String whereString = " " + tableName + "_ID";
+		StringBuffer whereString = new StringBuffer();
+		whereString.append(" "); 
+		whereString.append(tableName);
+		whereString.append("_ID");
 		// create query string
 		if (ids.size() == 1) {
 			if (ids.get(0).intValue() == 0) {
 				whereString = null;
 			} else {
-				whereString += "=" + ids.get(0).intValue();
+				whereString.append("="); 
+				whereString.append(ids.get(0).intValue());
 			}
 		} else {
-			whereString += " IN (";
+			whereString.append(" IN (");
 			for (int i = 0; i < ids.size(); i++) {
-				whereString += ids.get(i).intValue();
+				whereString.append(ids.get(i).intValue());
 				if (i < ids.size() - 1) {
-					whereString += ",";
+					whereString.append(",");
 				} else {
-					whereString += ") ";
+					whereString.append(") ");
 				}
 			}
 		}
-		log.fine(whereString);
-
+		
 		final MQuery query = new MQuery(tableName);
-		query.addRestriction(whereString);
+		query.addRestriction(whereString.toString());
 		final boolean ok = openWindow(windowId, query);
 		if (!ok) {
-			log.severe("Unable to open window: " + whereString);
+			log.severe("Unable to open window: " + whereString.toString());
 		}
 		if (!windowOpened && ok)
 			windowOpened = true;

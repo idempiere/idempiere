@@ -197,12 +197,14 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			passwordData.setUsername(username);
 			RuleResult result = validator.validate(passwordData);
 			if (!result.isValid()) {
-				String error = Msg.getMsg(getCtx(), "PasswordErrors") + ": [";
+				StringBuffer error = new StringBuffer(Msg.getMsg(getCtx(), "PasswordErrors"));
+				error.append(": [");
 				for (String msg : validator.getMessages(result)) {
-					error = error + " " + msg;
+					error.append(" ");
+					error.append(msg);
 				}
-				error = error + " ]";
-				throw new AdempiereException(error);
+				error.append(" ]");
+				throw new AdempiereException(error.toString());
 			}
 		}
 	}

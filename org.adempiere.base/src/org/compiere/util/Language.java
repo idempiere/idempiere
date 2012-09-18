@@ -626,15 +626,15 @@ public class Language implements Serializable
 			if (m_dateFormat.toPattern().indexOf("yyyy") == -1)
 			{
 				sFormat = m_dateFormat.toPattern();
-				String nFormat = "";
+				StringBuffer nFormat = new StringBuffer("");
 				for (int i = 0; i < sFormat.length(); i++)
 				{
 					if (sFormat.charAt(i) == 'y')
-						nFormat += "yy";
+						nFormat.append("yy");
 					else
-						nFormat += sFormat.charAt(i);
+						nFormat.append(sFormat.charAt(i));
 				}
-				m_dateFormat.applyPattern(nFormat);
+				m_dateFormat.applyPattern(nFormat.toString());
 			}
 			m_dateFormat.setLenient(true);
 		}

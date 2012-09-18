@@ -151,14 +151,22 @@ public class UUIDGenerator extends SvrProcess {
 		}
 		sql.append(" FROM ").append(table.getTableName());
 		sql.append(" WHERE ").append(column.getColumnName()).append(" IS NULL ");
-		String updateSQL = "UPDATE "+table.getTableName()+" SET "+column.getColumnName()+"=? WHERE ";
+		StringBuffer updateSQL = new StringBuffer();
+		updateSQL.append("UPDATE ");
+		updateSQL.append(table.getTableName());
+		updateSQL.append(" SET ");
+		updateSQL.append(column.getColumnName());
+		updateSQL.append("=? WHERE ");
 		if (AD_Column_ID > 0) {
-			updateSQL = updateSQL + keyColumn + "=?";
+			updateSQL.append(keyColumn);
+			updateSQL.append("=?");
 		} else {
 			for(String s : compositeKeys) {
-				updateSQL = updateSQL + s + "=? AND "; 
+				updateSQL.append(s);
+				updateSQL.append("=? AND "); 
 			}
-			updateSQL = updateSQL.substring(0, updateSQL.length() - " AND ".length());
+			int length = updateSQL.length();
+			updateSQL.delete(length-5, length); // delete last AND
 		}
 		
 		boolean localTrx = false;
@@ -180,7 +188,7 @@ public class UUIDGenerator extends SvrProcess {
 					int recordId = rs.getInt(1);
 					if (recordId > MTable.MAX_OFFICIAL_ID) {
 						UUID uuid = UUID.randomUUID();
-						DB.executeUpdateEx(updateSQL,new Object[]{uuid.toString(), recordId}, trx.getTrxName());
+						DB.executeUpdateEx(updateSQL.toString(),new Object[]{uuid.toString(), recordId}, trx.getTrxName());
 					}
 				} else {
 					UUID uuid = UUID.randomUUID();
@@ -189,7 +197,7 @@ public class UUIDGenerator extends SvrProcess {
 					for (String s : compositeKeys) {
 						params.add(rs.getObject(s));
 					}
-					DB.executeUpdateEx(updateSQL,params.toArray(),trx.getTrxName());
+					DB.executeUpdateEx(updateSQL.toString(),params.toArray(),trx.getTrxName());
 				}
 			}
 			if (localTrx) {
