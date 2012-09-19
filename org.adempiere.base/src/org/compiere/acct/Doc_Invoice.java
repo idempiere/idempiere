@@ -99,14 +99,14 @@ public class Doc_Invoice extends Doc
 	private DocTax[] loadTaxes()
 	{
 		ArrayList<DocTax> list = new ArrayList<DocTax>();
-		StringBuilder sql = new StringBuilder("SELECT it.C_Tax_ID, t.Name, t.Rate, it.TaxBaseAmt, it.TaxAmt, t.IsSalesTax ")
-			.append("FROM C_Tax t, C_InvoiceTax it ")
-			.append("WHERE t.C_Tax_ID=it.C_Tax_ID AND it.C_Invoice_ID=?");
+		String sql = "SELECT it.C_Tax_ID, t.Name, t.Rate, it.TaxBaseAmt, it.TaxAmt, t.IsSalesTax "
+				+ "FROM C_Tax t, C_InvoiceTax it "
+				+ "WHERE t.C_Tax_ID=it.C_Tax_ID AND it.C_Invoice_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
+			pstmt = DB.prepareStatement(sql, getTrxName());
 			pstmt.setInt(1, get_ID());
 			rs = pstmt.executeQuery();
 			//
@@ -127,7 +127,7 @@ public class Doc_Invoice extends Doc
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			log.log(Level.SEVERE, sql, e);
 			return null;
 		}
 		finally {
@@ -885,7 +885,7 @@ public class Doc_Invoice extends Doc
 		if (ci.getC_AcctSchema1_ID() != as.getC_AcctSchema_ID())
 			return;
 
-		StringBuffer sql = new StringBuffer (
+		StringBuilder sql = new StringBuilder (
 			"UPDATE M_Product_PO po ")
 			 .append("SET PriceLastInv = ")
 			//	select

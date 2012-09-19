@@ -80,23 +80,23 @@ public class Matcher
 	{
 		int counter = 0;
 		//	(a) Direct Matches
-		StringBuilder sql = new StringBuilder("SELECT m1.AD_Client_ID,m2.AD_Org_ID, ")			//	1..2
-			.append("m1.C_InvoiceLine_ID,m2.M_InOutLine_ID,m1.M_Product_ID, ")	// 	3..5
-			.append("m1.DateTrx,m2.DateTrx, m1.Qty, m2.Qty ")					//	6..9
-			.append("FROM M_MatchPO m1, M_MatchPO m2 ")
-			.append("WHERE m1.C_OrderLine_ID=m2.C_OrderLine_ID")
-			.append(" AND m1.M_InOutLine_ID IS NULL")
-			.append(" AND m2.C_InvoiceLine_ID IS NULL")
-			.append(" AND m1.M_Product_ID=m2.M_Product_ID")
-			.append(" AND m1.AD_Client_ID=?")						//	#1
+		String sql = "SELECT m1.AD_Client_ID,m2.AD_Org_ID, "			//	1..2
+					+ "m1.C_InvoiceLine_ID,m2.M_InOutLine_ID,m1.M_Product_ID, "	// 	3..5
+					+ "m1.DateTrx,m2.DateTrx, m1.Qty, m2.Qty "					//	6..9
+					+ "FROM M_MatchPO m1, M_MatchPO m2 "
+					+ "WHERE m1.C_OrderLine_ID=m2.C_OrderLine_ID"
+					+ " AND m1.M_InOutLine_ID IS NULL"
+					+ " AND m2.C_InvoiceLine_ID IS NULL"
+					+ " AND m1.M_Product_ID=m2.M_Product_ID"
+					+ " AND m1.AD_Client_ID=?"						//	#1
 		//	Not existing Inv Matches
-			.append("	AND NOT EXISTS (SELECT * FROM M_MatchInv mi ")
-			.append("WHERE mi.C_InvoiceLine_ID=m1.C_InvoiceLine_ID AND mi.M_InOutLine_ID=m2.M_InOutLine_ID)");
+					+ "	AND NOT EXISTS (SELECT * FROM M_MatchInv mi "
+					+ "WHERE mi.C_InvoiceLine_ID=m1.C_InvoiceLine_ID AND mi.M_InOutLine_ID=m2.M_InOutLine_ID)";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_AD_Client_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())

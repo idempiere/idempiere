@@ -68,19 +68,19 @@ public class DocManager {
 
 	private static void fillDocumentsTableArrays() {
 		if (documentsTableID == null) {
-			StringBuilder sql = new StringBuilder("SELECT t.AD_Table_ID, t.TableName ")
-					.append("FROM AD_Table t, AD_Column c ")
-					.append("WHERE t.AD_Table_ID=c.AD_Table_ID AND ")
-					.append("c.ColumnName='Posted' AND ")
-					.append("IsView='N' ")
-					.append("ORDER BY t.AD_Table_ID");
+			String sql = "SELECT t.AD_Table_ID, t.TableName " +
+							"FROM AD_Table t, AD_Column c " +
+							"WHERE t.AD_Table_ID=c.AD_Table_ID AND " +
+							"c.ColumnName='Posted' AND " +
+							"IsView='N' " +
+							"ORDER BY t.AD_Table_ID";
 			ArrayList<Integer> tableIDs = new ArrayList<Integer>();
 			ArrayList<String> tableNames = new ArrayList<String>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
 			{
-				pstmt = DB.prepareStatement(sql.toString(), null);
+				pstmt = DB.prepareStatement(sql, null);
 				rs = pstmt.executeQuery();
 				while (rs.next())
 				{
@@ -90,7 +90,7 @@ public class DocManager {
 			}
 			catch (SQLException e)
 			{
-				throw new DBException(e, sql.toString());
+				throw new DBException(e, sql);
 			}
 			finally
 			{

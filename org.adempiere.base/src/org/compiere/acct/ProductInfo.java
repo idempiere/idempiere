@@ -83,18 +83,18 @@ public class ProductInfo
 		if (m_M_Product_ID == 0)
 			return;
 
-		StringBuilder sql = new StringBuilder("SELECT p.ProductType, pc.Value, ")     //  1..2
-			.append("p.C_RevenueRecognition_ID,p.C_UOM_ID, ")	 	//  3..4
-			.append("p.AD_Client_ID,p.AD_Org_ID, ")             	//  5..6
-			.append("p.IsBOM, p.IsStocked ")						//	7..8
-			.append("FROM M_Product_Category pc")
-			.append(" INNER JOIN M_Product p ON (pc.M_Product_Category_ID=p.M_Product_Category_ID) ")
-			.append("WHERE p.M_Product_ID=?");						//  #1
+		String sql = "SELECT p.ProductType, pc.Value, "     //  1..2
+					+ "p.C_RevenueRecognition_ID,p.C_UOM_ID, "	 	//  3..4
+					+ "p.AD_Client_ID,p.AD_Org_ID, "             	//  5..6
+					+ "p.IsBOM, p.IsStocked "						//	7..8
+					+ "FROM M_Product_Category pc"
+					+ " INNER JOIN M_Product p ON (pc.M_Product_Category_ID=p.M_Product_Category_ID) "
+					+ "WHERE p.M_Product_ID=?";						//  #1
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_M_Product_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -113,7 +113,7 @@ public class ProductInfo
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			log.log(Level.SEVERE, sql, e);
 		}
 		finally {
 			DB.close(rs, pstmt);
@@ -296,9 +296,9 @@ public class ProductInfo
 	 */
 	private BigDecimal getPOCost (MAcctSchema as)
 	{
-		StringBuilder sql = new StringBuilder("SELECT C_Currency_ID, PriceList,PricePO,PriceLastPO ")
-			.append("FROM M_Product_PO WHERE M_Product_ID=? ")
-			.append("ORDER BY IsCurrentVendor DESC");
+		String sql = "SELECT C_Currency_ID, PriceList,PricePO,PriceLastPO "
+				+ "FROM M_Product_PO WHERE M_Product_ID=? "
+				+ "ORDER BY IsCurrentVendor DESC";
 
 		int C_Currency_ID = 0;
 		BigDecimal PriceList = null;
@@ -308,7 +308,7 @@ public class ProductInfo
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_M_Product_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -321,7 +321,7 @@ public class ProductInfo
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			log.log(Level.SEVERE, sql, e);
 		}
 		finally {
 			DB.close(rs, pstmt);

@@ -57,13 +57,13 @@ public class GridFieldVO implements Serializable
 	public static String getSQL (Properties ctx)
 	{
 		//	IsActive is part of View
-		StringBuffer sql;
+		StringBuilder sql;
 		if (!Env.isBaseLanguage(ctx, "AD_Tab"))
-			sql = new StringBuffer("SELECT * FROM AD_Field_vt WHERE AD_Tab_ID=?")
+			sql = new StringBuilder("SELECT * FROM AD_Field_vt WHERE AD_Tab_ID=?")
 				.append(" AND AD_Language='" + Env.getAD_Language(ctx) + "'")
 				.append(" ORDER BY IsDisplayed DESC, SeqNo");
 		else
-			sql = new StringBuffer("SELECT * FROM AD_Field_v WHERE AD_Tab_ID=?")
+			sql = new StringBuilder("SELECT * FROM AD_Field_v WHERE AD_Tab_ID=?")
 				.append(" ORDER BY IsDisplayed DESC, SeqNo");
 		return sql.toString();
 	}   //  getSQL

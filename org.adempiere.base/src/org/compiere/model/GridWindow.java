@@ -559,18 +559,18 @@ public class GridWindow implements Serializable
 	{
 		if (recalc || m_modelUpdated == null)
 		{
-			StringBuilder sql = new StringBuilder("SELECT MAX(w.Updated), MAX(t.Updated), MAX(tt.Updated), MAX(f.Updated), MAX(c.Updated) ")
-				.append("FROM AD_Window w")
-				.append(" INNER JOIN AD_Tab t ON (w.AD_Window_ID=t.AD_Window_ID)")
-				.append(" INNER JOIN AD_Table tt ON (t.AD_Table_ID=tt.AD_Table_ID)")
-				.append(" INNER JOIN AD_Field f ON (t.AD_Tab_ID=f.AD_Tab_ID)")
-				.append(" INNER JOIN AD_Column c ON (f.AD_Column_ID=c.AD_Column_ID) ")
-				.append("WHERE w.AD_Window_ID=?");
+			String sql = "SELECT MAX(w.Updated), MAX(t.Updated), MAX(tt.Updated), MAX(f.Updated), MAX(c.Updated) "
+					+ "FROM AD_Window w"
+					+ " INNER JOIN AD_Tab t ON (w.AD_Window_ID=t.AD_Window_ID)"
+					+ " INNER JOIN AD_Table tt ON (t.AD_Table_ID=tt.AD_Table_ID)"
+					+ " INNER JOIN AD_Field f ON (t.AD_Tab_ID=f.AD_Tab_ID)"
+					+ " INNER JOIN AD_Column c ON (f.AD_Column_ID=c.AD_Column_ID) "
+					+ "WHERE w.AD_Window_ID=?";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
 			{
-				pstmt = DB.prepareStatement (sql.toString(), null);
+				pstmt = DB.prepareStatement (sql, null);
 				pstmt.setInt (1, getAD_Window_ID());
 				rs = pstmt.executeQuery ();
 				if (rs.next ())
@@ -592,7 +592,7 @@ public class GridWindow implements Serializable
 			}
 			catch (Exception e)
 			{
-				log.log (Level.SEVERE, sql.toString(), e);
+				log.log (Level.SEVERE, sql, e);
 			}
 			finally
 			{

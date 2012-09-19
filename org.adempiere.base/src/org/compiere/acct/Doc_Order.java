@@ -164,17 +164,17 @@ public class Doc_Order extends Doc
 		}
 		//
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		StringBuilder sql = new StringBuilder("SELECT * FROM M_RequisitionLine rl ")
-			.append("WHERE EXISTS (SELECT * FROM C_Order o ")
-				.append(" INNER JOIN C_OrderLine ol ON (o.C_Order_ID=ol.C_Order_ID) ")
-				.append("WHERE ol.C_OrderLine_ID=rl.C_OrderLine_ID")
-				.append(" AND o.C_Order_ID=?) ")
-			.append("ORDER BY rl.C_OrderLine_ID");
+		String sql = "SELECT * FROM M_RequisitionLine rl "
+				+ "WHERE EXISTS (SELECT * FROM C_Order o "
+					+ " INNER JOIN C_OrderLine ol ON (o.C_Order_ID=ol.C_Order_ID) "
+					+ "WHERE ol.C_OrderLine_ID=rl.C_OrderLine_ID"
+					+ " AND o.C_Order_ID=?) "
+					+ "ORDER BY rl.C_OrderLine_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql.toString(), null);
+			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, order.getC_Order_ID());
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
@@ -201,7 +201,7 @@ public class Doc_Order extends Doc
 		}
 		catch (Exception e)
 		{
-			log.log (Level.SEVERE, sql.toString(), e);
+			log.log (Level.SEVERE, sql, e);
 		}
 		finally
 		{

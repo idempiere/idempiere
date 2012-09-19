@@ -841,8 +841,8 @@ public abstract class Doc
 		//  We have a document Type, but no GL info - search for DocType
 		if (m_GL_Category_ID == 0)
 		{
-			StringBuilder sql = new StringBuilder("SELECT GL_Category_ID FROM C_DocType ")
-				.append("WHERE AD_Client_ID=? AND DocBaseType=?");
+			String sql = "SELECT GL_Category_ID FROM C_DocType "
+					+ "WHERE AD_Client_ID=? AND DocBaseType=?";
 			try
 			{
 				PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
@@ -856,19 +856,19 @@ public abstract class Doc
 			}
 			catch (SQLException e)
 			{
-				log.log(Level.SEVERE, sql.toString(), e);
+				log.log(Level.SEVERE, sql, e);
 			}
 		}
 
 		//  Still no GL_Category - get Default GL Category
 		if (m_GL_Category_ID == 0)
 		{
-			StringBuilder sql = new StringBuilder("SELECT GL_Category_ID FROM GL_Category ")
-				.append("WHERE AD_Client_ID=? ")
-				.append("ORDER BY IsDefault DESC");
+			String sql = "SELECT GL_Category_ID FROM GL_Category "
+				+ "WHERE AD_Client_ID=? "
+				+ "ORDER BY IsDefault DESC";
 			try
 			{
-				PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+				PreparedStatement pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, getAD_Client_ID());
 				ResultSet rsDT = pstmt.executeQuery();
 				if (rsDT.next())
@@ -878,7 +878,7 @@ public abstract class Doc
 			}
 			catch (SQLException e)
 			{
-				log.log(Level.SEVERE, sql.toString(), e);
+				log.log(Level.SEVERE, sql, e);
 			}
 		}
 		//

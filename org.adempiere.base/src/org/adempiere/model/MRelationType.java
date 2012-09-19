@@ -63,7 +63,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * <b>Warning:</b> Doesn't support POs with more or less than one key
 	 * column.
 	 */
-	final static StringBuffer SQL = //
+	static StringBuffer SQL = //
 	new StringBuffer("  SELECT " )//
 			.append("    rt.AD_RelationType_ID AS ").append(COLUMNNAME_AD_RelationType_ID) //
 			.append(",   rt.Name AS ").append(COLUMNNAME_Name )//

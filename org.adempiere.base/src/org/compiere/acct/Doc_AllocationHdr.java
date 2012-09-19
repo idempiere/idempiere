@@ -628,14 +628,14 @@ public class Doc_AllocationHdr extends Doc
 		//	or Doc.ACCTTYPE_PaymentSelect (AP) or V_Prepayment
 		int accountType = Doc.ACCTTYPE_UnallocatedCash;
 		//
-		StringBuilder sql = new StringBuilder("SELECT p.C_BankAccount_ID, d.DocBaseType, p.IsReceipt, p.IsPrepayment ")
-			.append("FROM C_Payment p INNER JOIN C_DocType d ON (p.C_DocType_ID=d.C_DocType_ID) ")
-			.append("WHERE C_Payment_ID=?");
+		String sql = "SELECT p.C_BankAccount_ID, d.DocBaseType, p.IsReceipt, p.IsPrepayment "
+				+ "FROM C_Payment p INNER JOIN C_DocType d ON (p.C_DocType_ID=d.C_DocType_ID) "
+				+ "WHERE C_Payment_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql.toString(), getTrxName());
+			pstmt = DB.prepareStatement (sql, getTrxName());
 			pstmt.setInt (1, C_Payment_ID);
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
@@ -655,7 +655,7 @@ public class Doc_AllocationHdr extends Doc
  		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			log.log(Level.SEVERE, sql, e);
 		}
 		finally
 		{
@@ -680,10 +680,11 @@ public class Doc_AllocationHdr extends Doc
 	 */
 	private MAccount getCashAcct (MAcctSchema as, int C_CashLine_ID)
 	{
-		StringBuilder sql = new StringBuilder("SELECT c.C_CashBook_ID ")
-			.append("FROM C_Cash c, C_CashLine cl ")
-			.append("WHERE c.C_Cash_ID=cl.C_Cash_ID AND cl.C_CashLine_ID=?");
-		setC_CashBook_ID(DB.getSQLValue(null, sql.toString(), C_CashLine_ID));
+		String sql = "SELECT c.C_CashBook_ID "
+				+ "FROM C_Cash c, C_CashLine cl "
+				+ "WHERE c.C_Cash_ID=cl.C_Cash_ID AND cl.C_CashLine_ID=?";
+		setC_CashBook_ID(DB.getSQLValue(null, sql, C_CashLine_ID));
+
 		if (getC_CashBook_ID() <= 0)
 		{
 			log.log(Level.SEVERE, "NONE for C_CashLine_ID=" + C_CashLine_ID);
@@ -711,10 +712,10 @@ public class Doc_AllocationHdr extends Doc
 		BigDecimal invoiceSource = null;
 		BigDecimal invoiceAccounted = null;
 		//
-		StringBuffer sql = new StringBuffer("SELECT ")
-			.append((invoice.isSOTrx()
+		StringBuilder sql = new StringBuilder("SELECT ")
+			.append(invoice.isSOTrx()
 				? "SUM(AmtSourceDr), SUM(AmtAcctDr)"	//	so
-				: "SUM(AmtSourceCr), SUM(AmtAcctCr)"))	//	po
+				: "SUM(AmtSourceCr), SUM(AmtAcctCr)")	//	po
 			.append(" FROM Fact_Acct ")
 			.append("WHERE AD_Table_ID=318 AND Record_ID=?")	//	Invoice
 			.append(" AND C_AcctSchema_ID=?")
@@ -856,16 +857,16 @@ public class Doc_AllocationHdr extends Doc
 			DiscountAccount, discount, 	WriteOffAccoint, writeOff, isSOTrx);
 
 		//	Get Source Amounts with account
-		StringBuilder sql = new StringBuilder("SELECT * ")
-			.append("FROM Fact_Acct ")
-			.append("WHERE AD_Table_ID=318 AND Record_ID=?")	//	Invoice
-			.append(" AND C_AcctSchema_ID=?")
-			.append(" AND Line_ID IS NULL");	//	header lines like tax or total
+		String sql = "SELECT * "
+				+ "FROM Fact_Acct "
+				+ "WHERE AD_Table_ID=318 AND Record_ID=?"	//	Invoice
+				+ " AND C_AcctSchema_ID=?"
+				+ " AND Line_ID IS NULL";	//	header lines like tax or total
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
+			pstmt = DB.prepareStatement(sql, getTrxName());
 			pstmt.setInt(1, line.getC_Invoice_ID());
 			pstmt.setInt(2, as.getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
@@ -874,7 +875,7 @@ public class Doc_AllocationHdr extends Doc
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			log.log(Level.SEVERE, sql, e);
 		}
 		finally {
 			DB.close(rs, pstmt);

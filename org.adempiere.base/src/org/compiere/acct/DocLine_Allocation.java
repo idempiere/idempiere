@@ -71,10 +71,11 @@ public class DocLine_Allocation extends DocLine
 	{
 		if (m_C_Invoice_ID == 0)
 			return 0;
-		StringBuilder sql = new StringBuilder("SELECT C_Currency_ID ")
-			.append("FROM C_Invoice ")
-			.append("WHERE C_Invoice_ID=?");
-		return  DB.getSQLValue(null, sql.toString(), m_C_Invoice_ID);
+		String sql = "SELECT C_Currency_ID "
+			+ "FROM C_Invoice "
+			+ "WHERE C_Invoice_ID=?";
+		return  DB.getSQLValue(null, sql, m_C_Invoice_ID);
+
 	}	//	getInvoiceC_Currency_ID
 
 	/**
