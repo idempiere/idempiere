@@ -191,7 +191,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 	}
 
 	private int getDefaultMenuTreeId() {
-		return DB.getSQLValue(null, "SELECT MIN(AD_Tree_ID) FROM AD_Tree WHERE IsDefault='Y' AND TreeType='MM' AND AD_Client_ID=0");
+		return DB.getSQLValue(null, "SELECT AD_Tree_ID FROM AD_Tree WHERE TreeType='MM' AND AD_Client_ID=0 ORDER BY IsDefault DESC, AD_Tree_ID");
 	}
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
