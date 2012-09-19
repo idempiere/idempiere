@@ -265,6 +265,13 @@ public class VResetPassword implements FormPanel, ActionListener, VetoableChange
 					return;
 				}
 			}
+	    	if (MSysConfig.getBooleanValue(MSysConfig.CHANGE_PASSWORD_MUST_DIFFER, true))
+	    	{
+	    		if (p_OldPassword.equals(p_NewPassword)) {
+					ADialog.error(windowNo, frame, "NewPasswordMustDiffer");
+					return;
+	    		}
+	    	}
 		}
 		
 		// new password confirm
@@ -301,7 +308,15 @@ public class VResetPassword implements FormPanel, ActionListener, VetoableChange
 		if (!Util.isEmpty(p_NewEMailUserPW))
 			user.setEMailUserPW(p_NewEMailUserPW);
 		
-		user.saveEx();
+		try {
+			user.saveEx();
+		}
+		catch(Exception e)
+		{
+			ADialog.error(windowNo, frame, e.getLocalizedMessage());
+			user.load(user.get_TrxName());
+			return;
+		}
 		clearForm();
 		ADialog.info(windowNo, frame, "RecordSaved");
 		return;

@@ -16,6 +16,7 @@ package org.adempiere.webui.apps.form;
 
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -294,6 +295,12 @@ public class WResetPassword implements IFormController, EventListener, ValueChan
 				if (!p_OldPassword.equals(user.getPassword()))
 					throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "OldPasswordNoMatch"));
 			}
+	    	if (MSysConfig.getBooleanValue(MSysConfig.CHANGE_PASSWORD_MUST_DIFFER, true))
+	    	{
+	    		if (p_OldPassword.equals(p_NewPassword)) {
+	        		throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "NewPasswordMustDiffer"));
+	    		}
+	    	}
 		}
 		
 		// new password confirm
@@ -326,7 +333,14 @@ public class WResetPassword implements IFormController, EventListener, ValueChan
 		if (!Util.isEmpty(p_NewEMailUserPW))
 			user.setEMailUserPW(p_NewEMailUserPW);
 		
-		user.saveEx();		
+		try {
+			user.saveEx();
+		}
+		catch(AdempiereException e)
+		{
+			user.load(user.get_TrxName());
+			throw e;
+		}
 		clearForm();
 		FDialog.info(form.getWindowNo(), form, "RecordSaved");
 		return;
