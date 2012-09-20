@@ -682,6 +682,25 @@ public class MSequence extends X_AD_Sequence
 	{
 		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
 
+		if (tableID && SYSTEM_NATIVE_SEQUENCE)
+		{
+			int next_id = MSequence.getNextID(Env.getAD_Client_ID(ctx), TableName, trxName);
+			if (next_id == -1)
+			{
+				MSequence seq = new MSequence (ctx, 0, trxName);
+				seq.setClientOrg(0, 0);
+				seq.setName(TableName);
+				seq.setDescription("Table " + TableName);
+				seq.setIsTableID(tableID);
+				seq.saveEx();
+				next_id = seq.getCurrentNext();
+			}
+			if (! CConnection.get().getDatabase().createSequence(TableName+"_SQ", 1, 0 , 99999999,  next_id, trxName))
+				return false;
+
+			return true;
+		}
+
 		MSequence seq = new MSequence (ctx, 0, trxName);
 		if (tableID)
 			seq.setClientOrg(0, 0);
@@ -697,13 +716,6 @@ public class MSequence extends X_AD_Sequence
 		}
 		seq.setIsTableID(tableID);
 		seq.saveEx();
-		
-		if (tableID && SYSTEM_NATIVE_SEQUENCE)
-		{
-			int next_id = seq.getCurrentNext();
-			if (! CConnection.get().getDatabase().createSequence(TableName+"_SQ", 1, 0 , 99999999,  next_id, trxName))
-				return false;
-		}
 
 		return true;
 	}	//	createTableSequence
