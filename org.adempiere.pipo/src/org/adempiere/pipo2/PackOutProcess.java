@@ -179,7 +179,7 @@ public class PackOutProcess extends SvrProcess
 		else if (X_AD_Package_Exp_Detail.TYPE_Role.equals(type))
 			return I_AD_Role.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_SQLStatement.equals(type))
-			return "SQL_Statement";
+			return "SQLStatement";
 		else if (X_AD_Package_Exp_Detail.TYPE_Table.equals(type))
 			return I_AD_Table.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_Window.equals(type))
