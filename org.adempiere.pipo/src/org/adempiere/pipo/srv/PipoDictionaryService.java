@@ -1,12 +1,15 @@
 package org.adempiere.pipo.srv;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.adempiere.base.IDictionaryService;
 import org.adempiere.pipo2.PackIn;
+import org.adempiere.pipo2.Zipper;
 import org.compiere.Adempiere;
+import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleContext;
@@ -28,7 +31,28 @@ public class PipoDictionaryService implements IDictionaryService {
 			packIn.setPackageVersion((String) context.getBundle().getHeaders().get("Bundle-Version"));
 			packIn.setUpdateDictionary(false);
 			packIn.setPackageDirectory(getPackageDir());
-			packIn.importXML(packageFile.getAbsolutePath(), Env.getCtx(), trxName);
+
+			X_AD_Package_Imp_Proc adPackageImp = new X_AD_Package_Imp_Proc(Env.getCtx(),
+					0, trxName);
+			File zipFilepath = packageFile;
+			logger.info("zipFilepath->" + zipFilepath);
+			String parentDir = Zipper.getParentDir(zipFilepath);
+			File targetDir = new File(System.getProperty("java.io.tmpdir"));
+			Zipper.unpackFile(zipFilepath, targetDir);
+
+			String dict_file = targetDir + File.separator + parentDir + File.separator
+					+ "dict" + File.separator + "PackOut.xml";
+
+			logger.info("dict file->" + dict_file);
+
+			// call XML Handler
+			String msg = packIn.importXML(dict_file, Env.getCtx(), trxName);
+			adPackageImp.setName(packIn.getPackageName());
+			adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));
+			adPackageImp.setP_Msg(msg);
+			adPackageImp.setAD_Package_Source_Type("File");
+			adPackageImp.saveEx();
+			
 			Trx.get(trxName, false).commit();
 			logger.info("commit " + trxName);
 		} catch (Exception e) {

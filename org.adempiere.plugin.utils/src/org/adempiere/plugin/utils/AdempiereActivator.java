@@ -1,6 +1,8 @@
 package org.adempiere.plugin.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,12 +62,21 @@ public class AdempiereActivator implements BundleActivator {
 	}
 
 	protected void packIn(String trxName) {
-		URL packout = this.getClass().getResource(
-				"/META-INF/2Pack.zip");
+		URL packout = this.getClass().getClassLoader().getResource("/META-INF/2Pack.zip");
 		if (packout != null) {
 			IDictionaryService service = Service.locate(IDictionaryService.class);
 			try {
-				service.merge(context, new File(packout.getFile()));
+				// copy the resource to a temporary file to process it with 2pack
+				InputStream stream = this.getClass().getResourceAsStream("/META-INF/2Pack.zip");
+				File zipfile = File.createTempFile(getName(), ".zip");
+				FileOutputStream zipstream = new FileOutputStream(zipfile);
+			    byte[] buffer = new byte[1024];
+			    int read;
+			    while((read = stream.read(buffer)) != -1){
+			    	zipstream.write(buffer, 0, read);
+			    }
+			    // call 2pack
+				service.merge(context, zipfile);
 			} catch (Exception e) {
 				logger.log(Level.WARNING, "Error on Dictionary service", e);
 			}
