@@ -98,7 +98,7 @@ DataStatusListener, IADTabpanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -975129028953555569L;
+	private static final long serialVersionUID = -6082680802978974909L;
 
 	private static final String ON_DEFER_SET_SELECTED_NODE = "onDeferSetSelectedNode";
 
@@ -668,6 +668,14 @@ DataStatusListener, IADTabpanel
     public int getTabLevel()
     {
         return gridTab.getTabLevel();
+    }
+
+    /**
+     * @return The record ID of this Tabpanel
+     */
+    public int getRecord_ID()
+    {
+        return gridTab.getRecord_ID();
     }
 
     /**

@@ -68,9 +68,10 @@ import org.zkoss.zul.event.ListDataEvent;
  */
 public class ADSortTab extends Panel implements IADTabpanel
 {
-
-	private static final long serialVersionUID = 4289328613547509587L;
-	private int m_AD_ColumnSortOrder_ID;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4461514427222034848L;
 
 	/**
 	 *	Sort Tab Constructor
@@ -867,6 +868,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 	public int getTabLevel() {
 		return gridTab.getTabLevel();
+	}
+
+	public int getRecord_ID() {
+		return gridTab.getRecord_ID();
 	}
 
 	public String getTitle() {

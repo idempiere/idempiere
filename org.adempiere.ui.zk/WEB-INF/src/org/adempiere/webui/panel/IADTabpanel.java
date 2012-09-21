@@ -34,6 +34,11 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public int getTabLevel();
 
 	/**
+	 * @return record ID
+	 */
+	public int getRecord_ID();
+
+	/**
 	 * @return true if refresh is not needed
 	 */
 	public boolean isCurrent();
