@@ -205,43 +205,43 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		statusBar.setStatusLine(directory);
 		
 		Translation t = new Translation(Env.getCtx());
-		String msg = t.validateLanguage(AD_Language.getValue());
+		StringBuilder msg = new StringBuilder(t.validateLanguage(AD_Language.getValue()));
 		if (msg.length() > 0)
 		{
-			FDialog.error(m_WindowNo, form, "LanguageSetupError", msg);
+			FDialog.error(m_WindowNo, form, "LanguageSetupError", msg.toString());
 			return;
 		}
 
 		//	All Tables
 		if (AD_Table.getValue().equals(""))
 		{
-			msg = "";
+			msg = new StringBuilder();
 			
 			for (int i = 1; i < cbTable.getItemCount(); i++)
 			{
 				AD_Table = (ValueNamePair)cbTable.getItemAtIndex(i).toValueNamePair();
 				// Carlos Ruiz - globalqss - improve output message from translation import process
-				msg += AD_Table.getValue() + " " + (imp
-					? t.importTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue())
-					: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue())) + " ";
+				msg.append(AD_Table.getValue()).append(" ").append((imp
+						? t.importTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue())
+						: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue()))).append(" ");
 			}
 			
 			if(msg == null || msg.length() == 0)
-				msg = (imp ? "Import" : "Export") + " Successful. [" + directory + "]";
+				msg = new StringBuilder((imp ? "Import" : "Export")).append(" Successful. [").append(directory).append("]");
 
-			statusBar.setStatusLine(msg);
+			statusBar.setStatusLine(msg.toString());
 		}
 		else	//	single table
 		{
 			msg = null;
-			msg = imp
+			msg = new StringBuilder(imp
 				? t.importTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue())
-				: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue());
+				: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue()));
 				
 			if(msg == null || msg.length() == 0)
-				msg = (imp ? "Import" : "Export") + " Successful. [" + directory + "]";
+				msg = new StringBuilder(imp ? "Import" : "Export").append(" Successful. [").append(directory).append("]");
 			
-			statusBar.setStatusLine(msg);
+			statusBar.setStatusLine(msg.toString());
 		}
 	}   //  actionPerformed
 	

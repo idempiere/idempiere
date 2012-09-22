@@ -282,7 +282,9 @@ public class Language implements Serializable
 			String language = lang.substring(0,2);
 			String country = lang.substring(3);
 			Locale locale = new Locale(language, country);
-			log.info ("Adding Language=" + language + ", Country=" + country + ", Locale=" + locale);
+			StringBuilder msglog = new StringBuilder()
+					.append("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
+			log.info (msglog.toString());
 			Language ll = new Language (lang, lang, locale);
 			//	Add to Languages
 			ArrayList<Language> list = new ArrayList<Language>(Arrays.asList(s_languages));
@@ -626,7 +628,7 @@ public class Language implements Serializable
 			if (m_dateFormat.toPattern().indexOf("yyyy") == -1)
 			{
 				sFormat = m_dateFormat.toPattern();
-				StringBuffer nFormat = new StringBuffer("");
+				StringBuilder nFormat = new StringBuilder();
 				for (int i = 0; i < sFormat.length(); i++)
 				{
 					if (sFormat.charAt(i) == 'y')
@@ -701,7 +703,7 @@ public class Language implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("Language=[");
+		StringBuilder sb = new StringBuilder("Language=[");
 		sb.append(m_name).append(",Locale=").append(m_locale.toString())
 			.append(",AD_Language=").append(m_AD_Language)
 			.append(",DatePattern=").append(getDBdatePattern())

@@ -162,14 +162,18 @@ public class ColumnEncryption extends SvrProcess {
 
 		// Length Test
 		if (p_MaxLength != 0) {
-			String testClear = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			StringBuilder testClear = new StringBuilder(); 
+			testClear.append("1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 			while (testClear.length() < p_MaxLength)
-				testClear += testClear;
-			testClear = testClear.substring(0, p_MaxLength);
-			log.config("Test=" + testClear + " (" + p_MaxLength + ")");
+				testClear.append(testClear);
+			testClear.delete(p_MaxLength,testClear.length());
+			StringBuilder msglog = new StringBuilder()
+				.append("Test=").append(testClear.toString()).append(" (").append(p_MaxLength).append(")");
+			log.config(msglog.toString());
 			//
-			String encString = SecureEngine.encrypt(testClear);
+			String encString = SecureEngine.encrypt(testClear.toString());
 			int encLength = encString.length();
+			
 			addLog(0, null, null, "Test Max Length=" + testClear.length()
 					+ " -> " + encLength);
 			if (encLength <= column.getFieldLength())
@@ -272,12 +276,12 @@ public class ColumnEncryption extends SvrProcess {
 		int recordsEncrypted = 0;
 		String idColumnName = tableName + "_ID";
 
-		StringBuffer selectSql = new StringBuffer();
+		StringBuilder selectSql = new StringBuilder();
 		selectSql.append("SELECT " + idColumnName + "," + columnName);
 		selectSql.append(" FROM " + tableName);
 		selectSql.append(" ORDER BY " + idColumnName);
 
-		StringBuffer updateSql = new StringBuffer();
+		StringBuilder updateSql = new StringBuilder();
 		updateSql.append("UPDATE " + tableName);
 		updateSql.append(" SET " + columnName + "=?");
 		updateSql.append(" WHERE " + idColumnName + "=?");
@@ -321,13 +325,12 @@ public class ColumnEncryption extends SvrProcess {
 	 * @return The length of the encrypted column.
 	 */
 	private int encryptedColumnLength(int colLength) {
-		String str = "";
+		StringBuilder str = new StringBuilder();
 
 		for (int i = 0; i < colLength; i++) {
-			str += "1";
-		}
-		str = SecureEngine.encrypt(str);
-
+			str.append("1");
+		}		
+		str = new StringBuilder(SecureEngine.encrypt(str.toString()));
 		return str.length();
 	} // encryptedColumnLength
 
@@ -347,7 +350,7 @@ public class ColumnEncryption extends SvrProcess {
 		int rowsEffected = -1;
 
 		// Select SQL
-		StringBuffer selectSql = new StringBuffer();
+		StringBuilder selectSql = new StringBuilder();
 		selectSql.append("SELECT FieldLength");
 		selectSql.append(" FROM AD_Column");
 		selectSql.append(" WHERE AD_Column_ID=?");

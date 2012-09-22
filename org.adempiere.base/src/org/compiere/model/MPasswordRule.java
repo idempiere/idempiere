@@ -197,11 +197,10 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			passwordData.setUsername(username);
 			RuleResult result = validator.validate(passwordData);
 			if (!result.isValid()) {
-				StringBuffer error = new StringBuffer(Msg.getMsg(getCtx(), "PasswordErrors"));
+				StringBuilder error = new StringBuilder(Msg.getMsg(getCtx(), "PasswordErrors"));
 				error.append(": [");
 				for (String msg : validator.getMessages(result)) {
-					error.append(" ");
-					error.append(msg);
+					error.append(" ").append(msg);
 				}
 				error.append(" ]");
 				throw new AdempiereException(error.toString());
@@ -213,8 +212,9 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		Properties props = null;
 		InputStream in = null;
 		try {
-			String file = "vtpassword_messages_" + Env.getLoginLanguage(getCtx()).getLocale().getLanguage() + ".properties";
-			in = this.getClass().getResourceAsStream(file);
+			StringBuilder file = new StringBuilder("vtpassword_messages_").append(Env.getLoginLanguage(getCtx()).getLocale().getLanguage())
+					.append(".properties");
+			in = this.getClass().getResourceAsStream(file.toString());
 			if (in != null) {
 				props = new Properties();
 				props.load(in);

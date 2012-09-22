@@ -69,8 +69,8 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 			}
 		catch(Exception e)
 		{
-			m_errorMessage = "ErrorReadingData";
-			m_errorDescription = "";
+			m_errorMessage = new StringBuffer("ErrorReadingData");
+			m_errorDescription = new StringBuffer();
 		}
 
 		return result;

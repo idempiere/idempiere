@@ -135,36 +135,37 @@ public class InventoryCountCreate extends SvrProcess
 		//	Create Null Storage records
 		if (p_QtyRange != null && p_QtyRange.equals("="))
 		{
-			String sql = "INSERT INTO M_Storage "
-				+ "(AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,"
-				+ " M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,"
-				+ " QtyOnHand, QtyReserved, QtyOrdered, DateLastInventory) "
-				+ "SELECT l.AD_CLIENT_ID, l.AD_ORG_ID, 'Y', SysDate, 0,SysDate, 0,"
-				+ " l.M_Locator_ID, p.M_Product_ID, 0,"
-				+ " 0,0,0,null "
-				+ "FROM M_Locator l"
-				+ " INNER JOIN M_Product p ON (l.AD_Client_ID=p.AD_Client_ID) "
-				+ "WHERE l.M_Warehouse_ID=" + m_inventory.getM_Warehouse_ID();
+			StringBuilder sql = new StringBuilder("INSERT INTO M_Storage ");
+								sql.append("(AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,");
+								sql.append(" M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,");
+								sql.append(" QtyOnHand, QtyReserved, QtyOrdered, DateLastInventory) ");
+								sql.append("SELECT l.AD_CLIENT_ID, l.AD_ORG_ID, 'Y', SysDate, 0,SysDate, 0,");
+								sql.append(" l.M_Locator_ID, p.M_Product_ID, 0,");
+								sql.append(" 0,0,0,null ");
+								sql.append("FROM M_Locator l");
+								sql.append(" INNER JOIN M_Product p ON (l.AD_Client_ID=p.AD_Client_ID) ");
+								sql.append("WHERE l.M_Warehouse_ID=");
+								sql.append(m_inventory.getM_Warehouse_ID());
+								
 			if (p_M_Locator_ID != 0)
-				sql += " AND l.M_Locator_ID=" + p_M_Locator_ID;
-			sql += " AND l.IsDefault='Y'"
-				+ " AND p.IsActive='Y' AND p.IsStocked='Y' and p.ProductType='I'"
-				+ " AND NOT EXISTS (SELECT * FROM M_Storage s"
-					+ " INNER JOIN M_Locator sl ON (s.M_Locator_ID=sl.M_Locator_ID) "
-					+ "WHERE sl.M_Warehouse_ID=l.M_Warehouse_ID"
-					+ " AND s.M_Product_ID=p.M_Product_ID)";
-			int no = DB.executeUpdate(sql, get_TrxName());
+				sql.append(" AND l.M_Locator_ID=").append(p_M_Locator_ID);
+			sql.append(" AND l.IsDefault='Y'")
+				.append(" AND p.IsActive='Y' AND p.IsStocked='Y' and p.ProductType='I'")
+				.append(" AND NOT EXISTS (SELECT * FROM M_Storage s")
+					.append(" INNER JOIN M_Locator sl ON (s.M_Locator_ID=sl.M_Locator_ID) ")
+					.append("WHERE sl.M_Warehouse_ID=l.M_Warehouse_ID")
+						.append(" AND s.M_Product_ID=p.M_Product_ID)");
+			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("'0' Inserted #" + no);
 		}
-
-		StringBuffer sql = new StringBuffer(
-			"SELECT s.M_Product_ID, s.M_Locator_ID, s.M_AttributeSetInstance_ID,"
-			+ " s.QtyOnHand, p.M_AttributeSet_ID "
-			+ "FROM M_Product p"
-			+ " INNER JOIN M_Storage s ON (s.M_Product_ID=p.M_Product_ID)"
-			+ " INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID) "
-			+ "WHERE l.M_Warehouse_ID=?"
-			+ " AND p.IsActive='Y' AND p.IsStocked='Y' and p.ProductType='I'");
+		
+		StringBuilder sql = new StringBuilder("SELECT s.M_Product_ID, s.M_Locator_ID, s.M_AttributeSetInstance_ID,");
+							   sql.append(" s.QtyOnHand, p.M_AttributeSet_ID ");
+							   sql.append("FROM M_Product p");
+							   sql.append(" INNER JOIN M_Storage s ON (s.M_Product_ID=p.M_Product_ID)");
+							   sql.append(" INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID) ");
+							   sql.append("WHERE l.M_Warehouse_ID=?");
+							   sql.append(" AND p.IsActive='Y' AND p.IsStocked='Y' and p.ProductType='I'");
 		//
 		if (p_M_Locator_ID != 0)
 			sql.append(" AND s.M_Locator_ID=?");
@@ -182,15 +183,17 @@ public class InventoryCountCreate extends SvrProcess
 			sql.append(" AND UPPER(p.Value) LIKE ?");
 		//
 		if (p_M_Product_Category_ID != 0)
-			sql.append(" AND p.M_Product_Category_ID IN (" + getSubCategoryWhereClause(p_M_Product_Category_ID) + ")");
+			sql.append(" AND p.M_Product_Category_ID IN (")
+			   .append(getSubCategoryWhereClause(p_M_Product_Category_ID))
+			   .append(")");
 		
 		//	Do not overwrite existing records
 		if (!p_DeleteOld)
-			sql.append(" AND NOT EXISTS (SELECT * FROM M_InventoryLine il "
-			+ "WHERE il.M_Inventory_ID=?"
-			+ " AND il.M_Product_ID=s.M_Product_ID"
-			+ " AND il.M_Locator_ID=s.M_Locator_ID"
-			+ " AND COALESCE(il.M_AttributeSetInstance_ID,0)=COALESCE(s.M_AttributeSetInstance_ID,0))");
+			sql.append(" AND NOT EXISTS (SELECT * FROM M_InventoryLine il ")
+			   .append("WHERE il.M_Inventory_ID=?")
+			   .append(" AND il.M_Product_ID=s.M_Product_ID")
+			   .append(" AND il.M_Locator_ID=s.M_Locator_ID")
+			   .append(" AND COALESCE(il.M_AttributeSetInstance_ID,0)=COALESCE(s.M_AttributeSetInstance_ID,0))");
 		//	+ " AND il.M_AttributeSetInstance_ID=s.M_AttributeSetInstance_ID)");
 		//
 		sql.append(" ORDER BY l.Value, p.Value, s.QtyOnHand DESC");	//	Locator/Product
@@ -373,7 +376,7 @@ public class InventoryCountCreate extends SvrProcess
 	 * @throws AdempiereSystemError if a loop is detected
 	 */
 	private String getSubCategoriesString(int productCategoryId, Vector<SimpleTreeNode> categories, int loopIndicatorId) throws AdempiereSystemError {
-		String ret = "";
+		StringBuilder ret = new StringBuilder();
 		final Iterator iter = categories.iterator();
 		while (iter.hasNext()) {
 			SimpleTreeNode node = (SimpleTreeNode) iter.next();
@@ -381,11 +384,12 @@ public class InventoryCountCreate extends SvrProcess
 				if (node.getNodeId() == loopIndicatorId) {
 					throw new AdempiereSystemError("The product category tree contains a loop on categoryId: " + loopIndicatorId);
 				}
-				ret = ret + getSubCategoriesString(node.getNodeId(), categories, loopIndicatorId) + ",";
+				ret.append(getSubCategoriesString(node.getNodeId(), categories, loopIndicatorId)); 
+				ret.append(",");
 			}
 		}
-		log.fine(ret);
-		return ret + productCategoryId;
+		log.fine(ret.toString());
+		return ret.toString() + productCategoryId;
 	}
 
 	/**
