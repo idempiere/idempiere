@@ -649,7 +649,7 @@ public class ModelInterfaceGenerator
 				String modelpackage = getModelPackage(entityType) ;
 				if (modelpackage != null)
 				{
-					referenceClassName = new StringBuilder(".").append(referenceClassName);
+					referenceClassName = new StringBuilder(modelpackage).append(".").append(referenceClassName);
 				}
 				if (!isGenerateModelGetterForEntity(AD_Table_ID, entityType))
 				{
