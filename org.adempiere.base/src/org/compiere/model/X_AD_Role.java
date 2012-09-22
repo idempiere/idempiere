@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Role
  *  @author Adempiere (generated) 
- *  @version 360LTS.015 - $Id$ */
+ *  @version Release 3.6.0LTS - $Id$ */
 public class X_AD_Role extends PO implements I_AD_Role, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120412L;
+	private static final long serialVersionUID = 20120921L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -47,15 +47,9 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 // Y
 			setAllow_Info_BPartner (true);
 // Y
-			setAllow_Info_CashJournal (true);
-// Y
-			setAllow_Info_CRP (true);
-// Y
 			setAllow_Info_InOut (true);
 // Y
 			setAllow_Info_Invoice (true);
-// Y
-			setAllow_Info_MRP (true);
 // Y
 			setAllow_Info_Order (true);
 // Y
@@ -80,7 +74,10 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 // N
 			setIsDiscountAllowedOnTotal (false);
 			setIsDiscountUptoLimitPrice (false);
-			setIsManual (false);
+			setIsManual (true);
+// Y
+			setIsMasterRole (false);
+// N
 			setIsMenuAutoExpand (false);
 // N
 			setIsPersonalAccess (false);
@@ -152,6 +149,20 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Role_UU.
+		@param AD_Role_UU AD_Role_UU	  */
+	public void setAD_Role_UU (String AD_Role_UU)
+	{
+		set_Value (COLUMNNAME_AD_Role_UU, AD_Role_UU);
+	}
+
+	/** Get AD_Role_UU.
+		@return AD_Role_UU	  */
+	public String getAD_Role_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Role_UU);
 	}
 
 	public org.compiere.model.I_AD_Tree getAD_Tree_Menu() throws RuntimeException
@@ -273,48 +284,6 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return false;
 	}
 
-	/** Set Allow Info CashJournal.
-		@param Allow_Info_CashJournal Allow Info CashJournal	  */
-	public void setAllow_Info_CashJournal (boolean Allow_Info_CashJournal)
-	{
-		set_Value (COLUMNNAME_Allow_Info_CashJournal, Boolean.valueOf(Allow_Info_CashJournal));
-	}
-
-	/** Get Allow Info CashJournal.
-		@return Allow Info CashJournal	  */
-	public boolean isAllow_Info_CashJournal () 
-	{
-		Object oo = get_Value(COLUMNNAME_Allow_Info_CashJournal);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Allow Info CRP.
-		@param Allow_Info_CRP Allow Info CRP	  */
-	public void setAllow_Info_CRP (boolean Allow_Info_CRP)
-	{
-		set_Value (COLUMNNAME_Allow_Info_CRP, Boolean.valueOf(Allow_Info_CRP));
-	}
-
-	/** Get Allow Info CRP.
-		@return Allow Info CRP	  */
-	public boolean isAllow_Info_CRP () 
-	{
-		Object oo = get_Value(COLUMNNAME_Allow_Info_CRP);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Allow Info InOut.
 		@param Allow_Info_InOut Allow Info InOut	  */
 	public void setAllow_Info_InOut (boolean Allow_Info_InOut)
@@ -348,27 +317,6 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public boolean isAllow_Info_Invoice () 
 	{
 		Object oo = get_Value(COLUMNNAME_Allow_Info_Invoice);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Allow Info MRP.
-		@param Allow_Info_MRP Allow Info MRP	  */
-	public void setAllow_Info_MRP (boolean Allow_Info_MRP)
-	{
-		set_Value (COLUMNNAME_Allow_Info_MRP, Boolean.valueOf(Allow_Info_MRP));
-	}
-
-	/** Get Allow Info MRP.
-		@return Allow Info MRP	  */
-	public boolean isAllow_Info_MRP () 
-	{
-		Object oo = get_Value(COLUMNNAME_Allow_Info_MRP);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
@@ -813,6 +761,30 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public boolean isManual () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Master Role.
+		@param IsMasterRole 
+		A master role cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
+	  */
+	public void setIsMasterRole (boolean IsMasterRole)
+	{
+		set_Value (COLUMNNAME_IsMasterRole, Boolean.valueOf(IsMasterRole));
+	}
+
+	/** Get Master Role.
+		@return A master role cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
+	  */
+	public boolean isMasterRole () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsMasterRole);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

@@ -116,14 +116,14 @@ public class DPViews extends DashboardPanel implements EventListener {
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
-		if (MRole.getDefault().isAllow_Info_CashJournal())
-		{
-			ToolBarButton btnViewItem = new ToolBarButton("InfoCashLine");
-			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoCashLine")));
-			btnViewItem.setImage("/images/Info16.png");
-			btnViewItem.addEventListener(Events.ON_CLICK, this);
-			vbox.appendChild(btnViewItem);
-		}
+//		if (MRole.getDefault().isAllow_Info_CashJournal())
+//		{
+//			ToolBarButton btnViewItem = new ToolBarButton("InfoCashLine");
+//			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoCashLine")));
+//			btnViewItem.setImage("/images/Info16.png");
+//			btnViewItem.addEventListener(Events.ON_CLICK, this);
+//			vbox.appendChild(btnViewItem);
+//		}
 		if (MRole.getDefault().isAllow_Info_Resource())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAssignment");
