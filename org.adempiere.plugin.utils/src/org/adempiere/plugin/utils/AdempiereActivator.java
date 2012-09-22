@@ -62,12 +62,12 @@ public class AdempiereActivator implements BundleActivator {
 	}
 
 	protected void packIn(String trxName) {
-		URL packout = this.getClass().getClassLoader().getResource("/META-INF/2Pack.zip");
+		URL packout = context.getBundle().getEntry("/META-INF/2Pack.zip");
 		if (packout != null) {
 			IDictionaryService service = Service.locate(IDictionaryService.class);
 			try {
 				// copy the resource to a temporary file to process it with 2pack
-				InputStream stream = this.getClass().getResourceAsStream("/META-INF/2Pack.zip");
+				InputStream stream = context.getBundle().getEntry("/META-INF/2Pack.zip").openStream();
 				File zipfile = File.createTempFile(getName(), ".zip");
 				FileOutputStream zipstream = new FileOutputStream(zipfile);
 			    byte[] buffer = new byte[1024];
