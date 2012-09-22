@@ -96,7 +96,8 @@ public class ClientAcctProcessor extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_AcctSchema_ID=" + p_C_AcctSchema_ID + ", AD_Table_ID=" + p_AD_Table_ID);
+		StringBuilder msglog = new StringBuilder("C_AcctSchema_ID=").append(p_C_AcctSchema_ID).append(", AD_Table_ID=").append(p_AD_Table_ID);
+		log.info(msglog.toString());
 
 		if (! MClient.isClientAccounting())
 			throw new AdempiereUserError(Msg.getMsg(getCtx(), "ClientAccountingNotEnabled"));
@@ -145,7 +146,7 @@ public class ClientAcctProcessor extends SvrProcess
 				&& p_AD_Table_ID != AD_Table_ID)
 				continue;
 
-			StringBuffer sql = new StringBuffer ("SELECT DISTINCT ProcessedOn FROM ").append(TableName)
+			StringBuilder sql = new StringBuilder("SELECT DISTINCT ProcessedOn FROM ").append(TableName)
 				.append(" WHERE AD_Client_ID=? AND ProcessedOn<?")
 				.append(" AND Processed='Y' AND Posted='N' AND IsActive='Y'");
 			PreparedStatement pstmt = null;
@@ -195,7 +196,7 @@ public class ClientAcctProcessor extends SvrProcess
 				&& p_AD_Table_ID != AD_Table_ID)
 				continue;
 			//  SELECT * FROM table
-			StringBuffer sql = new StringBuffer ("SELECT * FROM ").append(TableName)
+			StringBuilder sql = new StringBuilder("SELECT * FROM ").append(TableName)
 				.append(" WHERE AD_Client_ID=? AND (ProcessedOn");
 			if (processedOn.compareTo(Env.ZERO) != 0)
 				sql.append("=?");
@@ -263,10 +264,14 @@ public class ClientAcctProcessor extends SvrProcess
 				if (countError[i] > 0)
 					m_summary.append("(Errors=").append(countError[i]).append(")");
 				m_summary.append(" - ");
-				log.finer(getName() + ": " + m_summary.toString());
+				StringBuilder msglog = new StringBuilder(getName()).append(": ").append(m_summary.toString());
+				log.finer(msglog.toString());
 			}
 			else
-				log.finer(getName() + ": " + TableName + " - no work");
+			{
+				StringBuilder msglog = new StringBuilder(getName()).append(": ").append(TableName).append(" - no work");
+				log.finer(msglog.toString());
+			}
 		}
 
 	}	//	postSession

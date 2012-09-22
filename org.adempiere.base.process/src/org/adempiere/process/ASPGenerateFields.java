@@ -89,9 +89,9 @@ public class ASPGenerateFields extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("ASP_Status=" + p_ASP_Status 
-				+ ", ASP_Tab_ID=" + p_ASP_Tab_ID
-		);
+		StringBuilder msglog = new StringBuilder("ASP_Status=").append(p_ASP_Status) 
+				.append(", ASP_Tab_ID=").append(p_ASP_Tab_ID);
+		log.info(msglog.toString());
 		
 		X_ASP_Tab asptab = new X_ASP_Tab(getCtx(), p_ASP_Tab_ID, get_TrxName());
 		p_ASP_Level_ID = asptab.getASP_Window().getASP_Level_ID();

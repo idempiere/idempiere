@@ -165,8 +165,9 @@ public class InvoiceGenerateRMA extends SvrProcess
         {
             if (rmaLine.getM_InOutLine_ID() == 0)
             {
-                throw new IllegalStateException("No customer return line - RMA = " 
-                        + rma.getDocumentNo() + ", Line = " + rmaLine.getLine());
+                StringBuilder msgiste = new StringBuilder("No customer return line - RMA = ") 
+                        .append(rma.getDocumentNo()).append(", Line = ").append(rmaLine.getLine());
+            	throw new IllegalStateException(msgiste.toString());
             }
             
             MInvoiceLine invLine = new MInvoiceLine(invoice);
@@ -197,17 +198,19 @@ public class InvoiceGenerateRMA extends SvrProcess
         
         if (invoiceLines.length == 0)
         {
-            log.log(Level.WARNING, "No invoice lines created: M_RMA_ID="
-                    + M_RMA_ID + ", M_Invoice_ID=" + invoice.get_ID());
+            StringBuilder msglog = new StringBuilder("No invoice lines created: M_RMA_ID=")
+                    .append(M_RMA_ID).append(", M_Invoice_ID=").append(invoice.get_ID());
+        	log.log(Level.WARNING, msglog.toString());
         }
         
-        StringBuffer processMsg = new StringBuffer(invoice.getDocumentNo());
+        StringBuilder processMsg = new StringBuilder(invoice.getDocumentNo());
         
         if (!invoice.processIt(p_docAction))
         {
             processMsg.append(" (NOT Processed)");
-            log.warning("Invoice Processing failed: " + invoice + " - " + invoice.getProcessMsg());
-            throw new IllegalStateException("Invoice Processing failed: " + invoice + " - " + invoice.getProcessMsg());
+            StringBuilder msg = new StringBuilder("Invoice Processing failed: ").append(invoice).append(" - ").append(invoice.getProcessMsg());
+            log.warning(msg.toString());
+            throw new IllegalStateException(msg.toString());
         }
         
         if (!invoice.save())

@@ -114,10 +114,11 @@ public class ImmediateBankTransfer extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("From Bank="+p_From_C_BankAccount_ID+" - To Bank="+p_To_C_BankAccount_ID
-				+ " - C_CashBook_ID="+p_C_CashBook_ID+" - Amount="+p_Amount+" - Name="+p_Name
-				+ " - Description="+p_Description+ " - Statement Date="+p_StatementDate+
-				" - Date Account="+p_DateAcct);
+		StringBuilder msglog = new StringBuilder("From Bank=").append(p_From_C_BankAccount_ID).append(" - To Bank=").append(p_To_C_BankAccount_ID)
+					.append(" - C_CashBook_ID=").append(p_C_CashBook_ID).append(" - Amount=").append(p_Amount).append(" - Name=").append(p_Name)
+					.append(" - Description=").append(p_Description).append(" - Statement Date=").append(p_StatementDate)
+					.append(" - Date Account=").append(p_DateAcct);		
+		log.info(msglog.toString());
 
 		if (p_To_C_BankAccount_ID == 0 || p_From_C_BankAccount_ID == 0)
 			throw new IllegalArgumentException("Banks required");
@@ -248,17 +249,18 @@ public class ImmediateBankTransfer extends SvrProcess
 		MCash cash = createCash();
 		MCashLine cashLines[]= createCashLines(cash);
 		
-		StringBuffer processMsg = new StringBuffer(cash.getDocumentNo());
+		StringBuilder processMsg = new StringBuilder(cash.getDocumentNo());
 	
 		cash.setDocAction(p_docAction);
 		if (!cash.processIt(p_docAction))
 	    {
 	        processMsg.append(" (NOT Processed)");
-	        log.warning("Cash Processing failed: " + cash + " - " + cash.getProcessMsg());
-	        addLog(cash.getC_Cash_ID(), cash.getStatementDate(), null,
-					"Cash Processing failed: " + cash + " - "
-							+ cash.getProcessMsg()
-							+ " / please complete it manually");
+	        StringBuilder msglog = new StringBuilder("Cash Processing failed: ").append(cash).append(" - ").append(cash.getProcessMsg());
+	        log.warning(msglog.toString());
+	        msglog = new StringBuilder("Cash Processing failed: ").append(cash).append(" - ")
+					.append(cash.getProcessMsg())
+					.append(" / please complete it manually");
+	        addLog(cash.getC_Cash_ID(), cash.getStatementDate(), null,msglog.toString());
 	        throw new  IllegalStateException("Cash Processing failed: " + cash + " - " + cash.getProcessMsg());
 	    }
 		if (!cash.save())

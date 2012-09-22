@@ -51,16 +51,16 @@ public class ApplyMigrationScripts extends SvrProcess {
 	protected String doIt() throws Exception {
 		// TODO Auto-generated method stub
 		log.info("Applying migrations scripts");
-		String sql = "select ad_migrationscript_id, script, name from ad_migrationscript where isApply = 'Y' and status = 'IP' order by name, created";
-		PreparedStatement pstmt = DB.prepareStatement(sql, this.get_TrxName());
+		StringBuilder sql = new StringBuilder()
+			.append("select ad_migrationscript_id, script, name from ad_migrationscript where isApply = 'Y' and status = 'IP' order by name, created");
+		PreparedStatement pstmt = DB.prepareStatement(sql.toString(), this.get_TrxName());
 		ResultSet rs = pstmt.executeQuery();
 		while (rs.next()) {
 			byte[] scriptArray = rs.getBytes(2);
 			int seqID = rs.getInt(1);
 			boolean execOk = true;
 			try {
-				StringBuffer tmpSql = new StringBuffer();
-				tmpSql = new StringBuffer(new String(scriptArray));
+				StringBuilder tmpSql = new StringBuilder(new String(scriptArray));
 
 				if (tmpSql.length() > 0) {
 					log.info("Executing script " + rs.getString(3));
@@ -70,12 +70,12 @@ public class ApplyMigrationScripts extends SvrProcess {
 			} catch (SQLException e) {
 				execOk = false;
 				e.printStackTrace();
-				log.saveError("Error", "Script: " + rs.getString(3) + " - "
-						+ e.getMessage());
+				StringBuilder msglog = new StringBuilder("Script: ").append(rs.getString(3)).append(" - ").append(e.getMessage());
+				log.saveError("Error", msglog.toString());
 				log.severe(e.getMessage());
 			} finally {
-				sql = "UPDATE ad_migrationscript SET status = ? , isApply = 'N' WHERE ad_migrationscript_id = ? ";
-				pstmt = DB.prepareStatement(sql, this.get_TrxName());
+				sql = new StringBuilder("UPDATE ad_migrationscript SET status = ? , isApply = 'N' WHERE ad_migrationscript_id = ? ");
+				pstmt = DB.prepareStatement(sql.toString(), this.get_TrxName());
 				if (execOk) {
 					pstmt.setString(1, "CO");
 					pstmt.setInt(2, seqID);
@@ -91,8 +91,8 @@ public class ApplyMigrationScripts extends SvrProcess {
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
-					log.saveError("Error", "Script: " + rs.getString(3) + " - "
-							+ e.getMessage());
+					StringBuilder msglog = new StringBuilder("Script: ").append(rs.getString(3)).append(" - ").append(e.getMessage());
+					log.saveError("Error", msglog.toString());
 					log.severe(e.getMessage());
 				}
 			}
@@ -110,7 +110,7 @@ public class ApplyMigrationScripts extends SvrProcess {
 
 	public boolean executeScript(String sql, String fileName) {
 		BufferedReader reader = new BufferedReader(new StringReader(sql));
-		StringBuffer sqlBuf = new StringBuffer();
+		StringBuilder sqlBuf = new StringBuilder();
 		String line;
 		boolean statementReady = false;
 		boolean execOk = true;
@@ -151,8 +151,9 @@ public class ApplyMigrationScripts extends SvrProcess {
 					} catch (SQLException e) {
 						e.printStackTrace();
 						execOk = false;
-						log.saveError("Error", "Script: " + fileName + " - "
-								+ e.getMessage() + ". The line that caused the error is the following ==> " + sqlBuf);
+						StringBuilder msglog = new StringBuilder("Script: ").append(fileName).append(" - ")
+								.append(e.getMessage()).append(". The line that caused the error is the following ==> ").append(sqlBuf);
+						log.saveError("Error", msglog.toString());
 						log.severe(e.getMessage());
 					} finally {
 						stmt.close();

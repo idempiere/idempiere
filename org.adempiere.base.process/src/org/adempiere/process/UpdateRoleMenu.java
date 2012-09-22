@@ -38,9 +38,9 @@ public class UpdateRoleMenu extends SvrProcess
 	
 	private MRoleMenu addUpdateRole(Properties ctx, int roleId, int menuId, boolean active, String trxName)
 	{
-		String whereClause = "AD_Role_ID=" + roleId + " AND U_WebMenu_ID=" + menuId;
+		StringBuilder whereClause = new StringBuilder("AD_Role_ID=").append(roleId).append(" AND U_WebMenu_ID=").append(menuId);
 		
-		int roleMenuIds[] = MRoleMenu.getAllIDs(MRoleMenu.Table_Name, whereClause, trxName);
+		int roleMenuIds[] = MRoleMenu.getAllIDs(MRoleMenu.Table_Name, whereClause.toString(), trxName);
 		
 		
 		MRoleMenu roleMenu;
