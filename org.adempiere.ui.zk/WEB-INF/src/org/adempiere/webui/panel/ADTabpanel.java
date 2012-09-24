@@ -671,6 +671,14 @@ DataStatusListener, IADTabpanel
     }
 
     /**
+     * @return The tablename of this Tabpanel
+     */
+    public String getTableName()
+    {
+        return gridTab.getTableName();
+    }
+
+    /**
      * @return The record ID of this Tabpanel
      */
     public int getRecord_ID()

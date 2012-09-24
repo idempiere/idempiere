@@ -29,6 +29,7 @@ import org.adempiere.webui.part.AbstractUIPart;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
@@ -242,8 +243,11 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
                             currentLevel = tabPanel.getTabLevel();
                         }
                     }
-                    if (canJump && checkRecordID && oldTabpanel.getRecord_ID() <= 0)
-                    	canJump = false;
+                    if (canJump && checkRecordID ) {
+                    	int zeroValid = (MTable.isZeroIDTable(oldTabpanel.getTableName()) ? 1 : 0);
+                        if (oldTabpanel.getRecord_ID() + zeroValid <= 0)
+                           	canJump = false;
+                    }
                 }
             }
         }        

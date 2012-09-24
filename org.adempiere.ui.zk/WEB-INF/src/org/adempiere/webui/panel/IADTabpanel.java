@@ -34,6 +34,11 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public int getTabLevel();
 
 	/**
+	 * @return tablename
+	 */
+	public String getTableName();
+
+	/**
 	 * @return record ID
 	 */
 	public int getRecord_ID();
