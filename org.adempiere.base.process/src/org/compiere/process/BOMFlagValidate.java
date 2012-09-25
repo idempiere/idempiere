@@ -44,17 +44,17 @@ public class BOMFlagValidate extends SvrProcess {
 	{
 		
 		//Select Products where there's a BOM, and there are no lines
-		String sql = "SELECT Name, M_Product_ID FROM M_Product WHERE IsBOM = 'Y' AND " + 
-		"M_Product_ID NOT IN (SELECT M_Product_ID FROM M_Product_BOM ) AND "; 
+		StringBuilder sql = new StringBuilder("SELECT Name, M_Product_ID FROM M_Product WHERE IsBOM = 'Y' AND ") 
+			.append("M_Product_ID NOT IN (SELECT M_Product_ID FROM M_Product_BOM ) AND "); 
 		if (p_M_Product_Category_ID == 0)
-			sql += "AD_Client_ID= ?";
+			sql.append("AD_Client_ID= ?");
 	        
 		else
-			sql += "M_Product_Category_ID= ?";
+			sql.append("M_Product_Category_ID= ?");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			if (p_M_Product_Category_ID == 0)
 				pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
 			else
@@ -63,7 +63,8 @@ public class BOMFlagValidate extends SvrProcess {
 
 			while (rs.next())
 			{
-				addLog(0, null, null, rs.getString(1) + " BOM without BOM lines", MProduct.Table_ID, rs.getInt(2));
+				StringBuilder msglog=new StringBuilder(rs.getString(1)).append(" BOM without BOM lines");
+				addLog(0, null, null, msglog.toString(), MProduct.Table_ID, rs.getInt(2));
 			}
 		} catch (SQLException e) {
 			throw e;
@@ -74,13 +75,13 @@ public class BOMFlagValidate extends SvrProcess {
 
 		PreparedStatement upstmt = null;
 		try {
-			String update = "UPDATE M_Product SET IsBOM = 'N' WHERE IsBOM = 'Y' AND M_Product_ID NOT IN " +
-					"(SELECT M_Product_ID FROM M_Product_BOM ) AND "; 
+			StringBuilder update = new StringBuilder("UPDATE M_Product SET IsBOM = 'N' WHERE IsBOM = 'Y' AND M_Product_ID NOT IN ")
+					.append("(SELECT M_Product_ID FROM M_Product_BOM ) AND "); 
 			if (p_M_Product_Category_ID == 0)
-				update += "AD_Client_ID= ?";
+				update.append("AD_Client_ID= ?");
 			else
-				update += "M_Product_Category_ID= ?";
-			upstmt = DB.prepareStatement (update, get_TrxName());
+				update.append("M_Product_Category_ID= ?");
+			upstmt = DB.prepareStatement (update.toString(), get_TrxName());
 			if (p_M_Product_Category_ID == 0)
 				upstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
 			else
@@ -99,17 +100,17 @@ public class BOMFlagValidate extends SvrProcess {
 	{
 		
 		//Select Products where there's a BOM, and there are no lines
-		String sql = "SELECT Name, M_Product_ID FROM M_Product WHERE IsBOM = 'N' AND " + 
-		"M_Product_ID IN (SELECT M_Product_ID FROM M_Product_BOM ) AND "; 
+		StringBuilder sql = new StringBuilder("SELECT Name, M_Product_ID FROM M_Product WHERE IsBOM = 'N' AND ") 
+			.append("M_Product_ID IN (SELECT M_Product_ID FROM M_Product_BOM ) AND "); 
 		if (p_M_Product_Category_ID == 0)
-			sql += "AD_Client_ID= ?";
+			sql.append("AD_Client_ID= ?");
 	        
 		else
-			sql += "M_Product_Category_ID= ?";
+			sql.append("M_Product_Category_ID= ?");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			if (p_M_Product_Category_ID == 0)
 				pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
 			else
@@ -118,7 +119,8 @@ public class BOMFlagValidate extends SvrProcess {
 
 			while (rs.next())
 			{
-				addLog(0, null, null, rs.getString(1) + " not BOM with BOM lines", MProduct.Table_ID, rs.getInt(2));
+				StringBuilder msglog = new StringBuilder(rs.getString(1)).append(" not BOM with BOM lines");
+				addLog(0, null, null, msglog.toString(), MProduct.Table_ID, rs.getInt(2));
 			}
 		} catch (SQLException e) {
 			throw e;
@@ -127,15 +129,15 @@ public class BOMFlagValidate extends SvrProcess {
 			rs = null; pstmt = null;
 		}
 		
-		String update = "UPDATE M_Product SET ISBOM = 'Y' WHERE IsBOM = 'N' AND M_Product_ID IN " +
-				"(SELECT M_Product_ID FROM M_Product_BOM ) AND "; 
+		StringBuilder update = new StringBuilder("UPDATE M_Product SET ISBOM = 'Y' WHERE IsBOM = 'N' AND M_Product_ID IN ")
+				.append("(SELECT M_Product_ID FROM M_Product_BOM ) AND "); 
 		if (p_M_Product_Category_ID == 0)
-			update += "AD_Client_ID= ?";
+			update.append("AD_Client_ID= ?");
 		else
-			update += "M_Product_Category_ID= ?";
+			update.append("M_Product_Category_ID= ?");
 		PreparedStatement upstmt = null;
 		try {
-			upstmt = DB.prepareStatement (update, get_TrxName());
+			upstmt = DB.prepareStatement (update.toString(), get_TrxName());
 			if (p_M_Product_Category_ID == 0)
 				upstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
 			else

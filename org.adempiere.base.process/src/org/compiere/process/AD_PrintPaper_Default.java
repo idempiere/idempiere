@@ -61,21 +61,21 @@ public class AD_PrintPaper_Default extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		StringBuffer sql = new StringBuffer("");
+		StringBuilder sql = new StringBuilder();
 		int cnt = 0;
 
 		log.info("Set Print Format");
 
 		try
 		{
-			sql.append("UPDATE AD_PrintFormat pf "
-	                + "SET AD_PrintPaper_ID = " + p_Record_ID + " "
-	                + "WHERE EXISTS (SELECT * FROM AD_PrintPaper pp "
-	                + "WHERE pf.AD_PrintPaper_ID=pp.AD_PrintPaper_ID "
-	                + "AND IsLandscape = (SELECT IsLandscape FROM AD_PrintPaper " 
-	                + "WHERE AD_PrintPaper_ID=" + p_Record_ID + "))");
+			sql.append("UPDATE AD_PrintFormat pf ")
+	                .append("SET AD_PrintPaper_ID = ").append(p_Record_ID).append(" ")
+	                .append("WHERE EXISTS (SELECT * FROM AD_PrintPaper pp ")
+	                .append("WHERE pf.AD_PrintPaper_ID=pp.AD_PrintPaper_ID ")
+	                .append("AND IsLandscape = (SELECT IsLandscape FROM AD_PrintPaper ") 
+	                .append("WHERE AD_PrintPaper_ID=").append(p_Record_ID).append("))");
 			if (p_AD_Client_ID != -1) {
-				sql.append(" AND AD_Client_ID = " + p_AD_Client_ID);
+				sql.append(" AND AD_Client_ID = ").append(p_AD_Client_ID);
 			}
 			cnt = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.info("Updated " + cnt + " columns");

@@ -108,8 +108,8 @@ public class LanguageMaintenance extends SvrProcess
 				m_language.saveEx();
 			}
 		}
-		
-		return "@Deleted@=" + deleteNo + " - @Inserted@=" + insertNo;
+		StringBuilder msgreturn = new StringBuilder("@Deleted@=").append(deleteNo).append(" - @Inserted@=").append(insertNo);
+		return msgreturn.toString();
 	}	//	doIt
 
 	

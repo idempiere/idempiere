@@ -115,14 +115,14 @@ public class AllocationReset extends SvrProcess
 		}
 		
 		//	Selection
-		StringBuffer sql = new StringBuffer("SELECT * FROM C_AllocationHdr ah "
-			+ "WHERE EXISTS (SELECT * FROM C_AllocationLine al "
-				+ "WHERE ah.C_AllocationHdr_ID=al.C_AllocationHdr_ID");
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_AllocationHdr ah ")
+			.append("WHERE EXISTS (SELECT * FROM C_AllocationLine al ")
+				.append("WHERE ah.C_AllocationHdr_ID=al.C_AllocationHdr_ID");
 		if (p_C_BPartner_ID != 0)
 			sql.append(" AND al.C_BPartner_ID=?");
 		else if (p_C_BP_Group_ID != 0)
-			sql.append(" AND EXISTS (SELECT * FROM C_BPartner bp "
-					+ "WHERE bp.C_BPartner_ID=al.C_BPartner_ID AND bp.C_BP_Group_ID=?)");
+			sql.append(" AND EXISTS (SELECT * FROM C_BPartner bp ")
+					.append("WHERE bp.C_BPartner_ID=al.C_BPartner_ID AND bp.C_BP_Group_ID=?)");
 		else
 			sql.append(" AND AD_Client_ID=?");
 		if (p_DateAcct_From != null)
@@ -132,9 +132,9 @@ public class AllocationReset extends SvrProcess
 		//	Do not delete Cash Trx
 		sql.append(" AND al.C_CashLine_ID IS NULL)");
 		//	Open Period
-		sql.append(" AND EXISTS (SELECT * FROM C_Period p"
-			+ " INNER JOIN C_PeriodControl pc ON (p.C_Period_ID=pc.C_Period_ID AND pc.DocBaseType='CMA') "
-			+ "WHERE ah.DateAcct BETWEEN p.StartDate AND p.EndDate)");
+		sql.append(" AND EXISTS (SELECT * FROM C_Period p")
+			.append(" INNER JOIN C_PeriodControl pc ON (p.C_Period_ID=pc.C_Period_ID AND pc.DocBaseType='CMA') ")
+			.append("WHERE ah.DateAcct BETWEEN p.StartDate AND p.EndDate)");
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

@@ -101,10 +101,10 @@ public class BankStatementPayment extends SvrProcess
 		ibs.setTrxAmt(payment.getPayAmt(true));
 		ibs.saveEx();
 		//
-		String retString = "@C_Payment_ID@ = " + payment.getDocumentNo();
+		StringBuilder retString = new StringBuilder("@C_Payment_ID@ = ").append(payment.getDocumentNo());
 		if (payment.getOverUnderAmt().signum() != 0)
-			retString += " - @OverUnderAmt@=" + payment.getOverUnderAmt();
-		return retString;
+			retString.append(" - @OverUnderAmt@=").append(payment.getOverUnderAmt());
+		return retString.toString();
 	}	//	createPayment - Import
 	
 	/**
@@ -133,10 +133,10 @@ public class BankStatementPayment extends SvrProcess
 		bsl.setPayment(payment);
 		bsl.saveEx();
 		//
-		String retString = "@C_Payment_ID@ = " + payment.getDocumentNo();
+		StringBuilder retString = new StringBuilder("@C_Payment_ID@ = ").append(payment.getDocumentNo());
 		if (payment.getOverUnderAmt().signum() != 0)
-			retString += " - @OverUnderAmt@=" + payment.getOverUnderAmt();
-		return retString;
+			retString.append(" - @OverUnderAmt@=").append(payment.getOverUnderAmt());
+		return retString.toString();
 	}	//	createPayment
 
 
