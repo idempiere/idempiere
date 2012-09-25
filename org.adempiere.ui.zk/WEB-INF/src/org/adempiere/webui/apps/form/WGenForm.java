@@ -15,6 +15,7 @@ package org.adempiere.webui.apps.form;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,17 +50,24 @@ import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zhtml.Table;
+import org.zkoss.zhtml.Td;
+import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
@@ -91,6 +99,8 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 	private Html info = new Html();
 	private WListbox miniTable = ListboxFactory.newDataTable();
 	private BusyDialog progressWindow;
+	private Div messageDiv;
+	private Table logMessageTable;
 	
 	private int[] m_ids;
 	
@@ -181,9 +191,9 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 		genPanel.setStyle("border: none; position: absolute");
 		center = new Center();
 		genPanel.appendChild(center);
-		Div div = new Div();
-		div.appendChild(info);
-		center.appendChild(div);
+		messageDiv = new Div();
+		messageDiv.appendChild(info);
+		center.appendChild(messageDiv);
 		south = new South();
 		genPanel.appendChild(south);
 		south.appendChild(confirmPanelGen);
@@ -234,7 +244,11 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 	{
 		log.info("Cmd=" + e.getTarget().getId());
 		//
-		if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
+		if(e.getTarget() instanceof A &&  e.getName().equals(Events.ON_CLICK)){
+			doOnClick((A)e.getTarget());
+			return;
+		}
+		else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 		{
 			dispose();
 			return;
@@ -321,10 +335,15 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 			.append("</b><br>(")
 			.append(Msg.getMsg(Env.getCtx(), genForm.getTitle()))
 			//  Shipments are generated depending on the Delivery Rule selection in the Order
-			.append(")<br>")
-			.append(genForm.getProcessInfo().getLogInfo(true));
+			.append(")<br><br>");
 		info.setContent(iText.toString());
-
+		
+		//If log Message Table presents, remove it
+		if(logMessageTable!=null){
+			messageDiv.removeChild(logMessageTable);
+		}
+		appendRecordLogInfo(genForm.getProcessInfo().getLogs());
+		
 		//	Get results
 		int[] ids = genForm.getProcessInfo().getIDs();
 		if (ids == null || ids.length == 0)
@@ -444,5 +463,89 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 	public StatusBarPanel getStatusBar()
 	{
 		return statusBar;
+	}
+	
+	/**
+	 *append process log info to response panel
+	 * @param m_logs
+	 */
+	private void appendRecordLogInfo(ProcessInfoLog[] m_logs) {
+		if (m_logs == null)
+			return ;
+		
+		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
+
+		logMessageTable = new Table();
+		logMessageTable.setId("logrecords");
+		logMessageTable.setDynamicProperty("border", "1");
+		logMessageTable.setDynamicProperty("cellpadding", "0");
+		logMessageTable.setDynamicProperty("cellspacing", "0");
+		logMessageTable.setDynamicProperty("width", "100%");
+    	
+    	this.appendChild(logMessageTable);
+
+    	for (int i = 0; i < m_logs.length; i++)
+		{
+		
+    		Tr tr = new Tr();
+    		logMessageTable.appendChild(tr);
+        	
+    		ProcessInfoLog log = m_logs[i];
+			
+			if (log.getP_Date() != null){
+				Label label = new Label(dateFormat.format(log.getP_Date()));
+				//label.setStyle("padding-right:100px");
+				Td td = new Td();
+				td = new Td();
+		    	td.appendChild(label);
+		    	tr.appendChild(td);				
+				
+			}
+			
+			if (log.getP_Number() != null){
+				Label labelPno= new Label(""+log.getP_Number());
+				Td td = new Td();
+		    	td.appendChild(labelPno);
+		    	tr.appendChild(td);				
+			}
+			
+			A recordLink = null;
+			if (log.getP_Msg() != null){
+				recordLink = new A();
+				recordLink.setLabel(log.getP_Msg());
+
+				if (log.getAD_Table_ID() > 0 && log.getRecord_ID()> 0) {
+					recordLink.setAttribute("Record_ID", String.valueOf(log.getRecord_ID()));
+					recordLink.setAttribute("AD_Table_ID", String.valueOf(log.getAD_Table_ID()));
+					recordLink.addEventListener(Events.ON_CLICK, this);
+					
+				}
+				Td td = new Td();
+				td.appendChild(recordLink);
+				tr.appendChild(td);				
+			}
+		}
+    	messageDiv.appendChild(logMessageTable);
+	}
+	/**
+	 * Handling Anchor link on end of process
+	 * Open document window
+	 * @param btn
+	 */
+	private void doOnClick(A btn) {
+		int Record_ID = 0;
+		int AD_Table_ID =0;
+		try
+		{
+			Record_ID = Integer.valueOf((String)btn.getAttribute("Record_ID"));            		
+			AD_Table_ID= Integer.valueOf((String)btn.getAttribute("AD_Table_ID"));            		
+		}
+		catch (Exception e) {
+		}
+
+		if (Record_ID > 0 && AD_Table_ID > 0) {
+			
+			AEnv.zoom(AD_Table_ID, Record_ID);
+		}		
 	}
 }
