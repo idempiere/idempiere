@@ -169,7 +169,7 @@ public class DunningRunCreate extends SvrProcess
 			sql.append(" AND i.AD_Org_ID=").append(p_AD_Org_ID);
 	//	log.info(sql);
 		
-		StringBuilder sql2= new StringBuilder();
+		String sql2= "";
 		
 		// if sequentially we must check for other levels with smaller days for
 		// which this invoice is not yet included!
@@ -190,11 +190,11 @@ public class DunningRunCreate extends SvrProcess
 			}
 		}
 		// ensure that we do only dunn what's not yet dunned, so we lookup the max of last Dunn Date which was processed
-		sql2.append("SELECT COUNT(*), COALESCE(DAYSBETWEEN(MAX(dr2.DunningDate), MAX(dr.DunningDate)),0)");
-		sql2.append("FROM C_DunningRun dr2, C_DunningRun dr");
-		sql2.append(" INNER JOIN C_DunningRunEntry dre ON (dr.C_DunningRun_ID=dre.C_DunningRun_ID)");
-		sql2.append(" INNER JOIN C_DunningRunLine drl ON (dre.C_DunningRunEntry_ID=drl.C_DunningRunEntry_ID) ");
-		sql2.append("WHERE dr2.C_DunningRun_ID=? AND drl.C_Invoice_ID=?"); // ##1 ##2
+		sql2 = "SELECT COUNT(*), COALESCE(DAYSBETWEEN(MAX(dr2.DunningDate), MAX(dr.DunningDate)),0)"
+			+ "FROM C_DunningRun dr2, C_DunningRun dr"
+			+ " INNER JOIN C_DunningRunEntry dre ON (dr.C_DunningRun_ID=dre.C_DunningRun_ID)"
+			+ " INNER JOIN C_DunningRunLine drl ON (dre.C_DunningRunEntry_ID=drl.C_DunningRunEntry_ID) "
+			+ "WHERE dr2.C_DunningRun_ID=? AND drl.C_Invoice_ID=?"; // ##1 ##2
 		
 		BigDecimal DaysAfterDue = level.getDaysAfterDue();
 		int DaysBetweenDunning = level.getDaysBetweenDunning();

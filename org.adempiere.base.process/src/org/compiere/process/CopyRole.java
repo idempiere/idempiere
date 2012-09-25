@@ -88,8 +88,8 @@ public class CopyRole extends SvrProcess
 			String table = tables[i];
 			String keycolumn = keycolumns[i];
 			
-			String sql = "DELETE FROM " + table + " WHERE AD_Role_ID = " + m_AD_Role_ID_To;
-			int no = DB.executeUpdateEx(sql, get_TrxName());
+			StringBuilder sql = new StringBuilder("DELETE FROM ").append(table).append(" WHERE AD_Role_ID = ").append(m_AD_Role_ID_To);
+			int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			addLog(action++, null, BigDecimal.valueOf(no), "Old records deleted from " + table );
 			
 			final boolean column_IsReadWrite =
@@ -97,29 +97,29 @@ public class CopyRole extends SvrProcess
 				&& !table.equals(I_AD_Role_Included.Table_Name);
 			final boolean column_SeqNo = table.equals(I_AD_Role_Included.Table_Name); 
 			
-			sql = "INSERT INTO " + table
-			+   " (AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy, " 
-			+   "AD_Role_ID, " + keycolumn +", isActive";
+			sql = new StringBuilder("INSERT INTO ").append(table)
+				.append(" (AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy, ") 
+				.append(   "AD_Role_ID, ").append(keycolumn).append(", isActive");
 			if (column_SeqNo)
-				sql += ", SeqNo ";
+				sql.append(", SeqNo ");
 			if (column_IsReadWrite)
-				sql += ", isReadWrite) ";
+				sql.append(", isReadWrite) ");
 			else
-				sql +=  ") ";
-			sql	+= "SELECT " + m_AD_Client_ID
-			+	", "+ m_AD_Org_ID
-			+	", getdate(), "+ Env.getAD_User_ID(Env.getCtx())
-			+	", getdate(), "+ Env.getAD_User_ID(Env.getCtx())
-			+	", " + m_AD_Role_ID_To
-			+	", " + keycolumn
-			+	", IsActive ";
+				sql.append(") ");
+			sql.append("SELECT ").append(m_AD_Client_ID)
+				.append(", ").append(m_AD_Org_ID)
+				.append(", getdate(), ").append(Env.getAD_User_ID(Env.getCtx()))
+				.append(", getdate(), ").append(Env.getAD_User_ID(Env.getCtx()))
+				.append(", ").append(m_AD_Role_ID_To)
+				.append(", ").append(keycolumn)
+				.append(", IsActive ");
 			if (column_SeqNo)
-				sql += ", SeqNo ";
+				sql.append(", SeqNo ");
 			if (column_IsReadWrite)
-				sql += ", isReadWrite ";
-			sql += "FROM " + table + " WHERE AD_Role_ID = " + m_AD_Role_ID_From;
+				sql.append(", isReadWrite ");
+			sql.append("FROM ").append(table).append(" WHERE AD_Role_ID = ").append(m_AD_Role_ID_From);
 
-			no = DB.executeUpdateEx (sql, get_TrxName());
+			no = DB.executeUpdateEx (sql.toString(), get_TrxName());
 
 			addLog(action++, null, new BigDecimal(no), "New records inserted into " + table );
 		}

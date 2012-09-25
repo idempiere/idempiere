@@ -132,7 +132,8 @@ public class DunningPrint extends SvrProcess
 			MBPartner bp = new MBPartner (getCtx(), entry.getC_BPartner_ID(), get_TrxName());
 			if (bp.get_ID() == 0)
 			{
-				addLog (entry.get_ID(), null, null, "@NotFound@: @C_BPartner_ID@ " + entry.getC_BPartner_ID());
+				StringBuilder msglog = new StringBuilder("@NotFound@: @C_BPartner_ID@ ").append(entry.getC_BPartner_ID());
+				addLog (entry.get_ID(), null, null,msglog.toString() );
 				errors++;
 				continue;
 			}
@@ -142,13 +143,15 @@ public class DunningPrint extends SvrProcess
 			{
 				if (to.get_ID() == 0)
 				{
-					addLog (entry.get_ID(), null, null, "@NotFound@: @AD_User_ID@ - " + bp.getName());
+					StringBuilder msglog = new StringBuilder("@NotFound@: @AD_User_ID@ - ").append(bp.getName());
+					addLog (entry.get_ID(), null, null,msglog.toString());
 					errors++;
 					continue;
 				}
 				else if (to.getEMail() == null || to.getEMail().length() == 0)
 				{
-					addLog (entry.get_ID(), null, null, "@NotFound@: @EMail@ - " + to.getName());
+					StringBuilder msglog = new StringBuilder("@NotFound@: @EMail@ - ").append(to.getName());
+					addLog (entry.get_ID(), null, null, msglog.toString());
 					errors++;
 					continue;
 				}
@@ -164,7 +167,8 @@ public class DunningPrint extends SvrProcess
 				MDunningRunEntry.Table_ID,
 				entry.getC_DunningRunEntry_ID(),
 				entry.getC_BPartner_ID());
-			info.setDescription(bp.getName() + ", Amt=" + entry.getAmt());
+			StringBuilder msginfo = new StringBuilder(bp.getName()).append(", Amt=").append(entry.getAmt());
+			info.setDescription(msginfo.toString());
 			ReportEngine re = null;
 			if (format != null)
 				re = new ReportEngine(getCtx(), format, query, info);
@@ -174,8 +178,9 @@ public class DunningPrint extends SvrProcess
 				EMail email = client.createEMail(to.getEMail(), null, null);
 				if (!email.isValid())
 				{
-					addLog (entry.get_ID(), null, null, 
-						"@RequestActionEMailError@ Invalid EMail: " + to);
+					StringBuilder msglog = new StringBuilder(
+							"@RequestActionEMailError@ Invalid EMail: ").append(to);
+					addLog (entry.get_ID(), null, null,msglog.toString() );
 					errors++;
 					continue;
 				}
@@ -193,7 +198,8 @@ public class DunningPrint extends SvrProcess
 				//
 				if (re != null) {
 					File attachment = re.getPDF(File.createTempFile("Dunning", ".pdf"));
-					log.fine(to + " - " + attachment);
+					StringBuilder msglog = new StringBuilder(to.toString()).append(" - ").append(attachment);
+					log.fine(msglog.toString());
 					email.addAttachment(attachment);
 				}
 				//
@@ -202,15 +208,16 @@ public class DunningPrint extends SvrProcess
 				um.saveEx();
 				if (msg.equals(EMail.SENT_OK))
 				{
-					addLog (entry.get_ID(), null, null,
-						bp.getName() + " @RequestActionEMailOK@");
+					StringBuilder msglog = new StringBuilder(
+							bp.getName()).append(" @RequestActionEMailOK@");
+					addLog (entry.get_ID(), null, null,msglog.toString());
 					count++;
 					printed = true;
 				}
 				else
 				{
-					addLog (entry.get_ID(), null, null,
-						bp.getName() + " @RequestActionEMailError@ " + msg);
+					StringBuilder msglog = new StringBuilder(bp.getName()).append(" @RequestActionEMailError@ ").append(msg);
+					addLog (entry.get_ID(), null, null,msglog.toString()	);
 					errors++;
 				}
 			}
@@ -233,8 +240,10 @@ public class DunningPrint extends SvrProcess
 			run.setProcessed(true);
 			run.saveEx();
 		}
-		if (p_EMailPDF)
-			return "@Sent@=" + count + " - @Errors@=" + errors;
+		if (p_EMailPDF){
+			StringBuilder msgreturn = new StringBuilder("@Sent@=").append(count).append(" - @Errors@=").append(errors);
+			return msgreturn.toString();
+		}
 		return "@Printed@=" + count;
 	}	//	doIt
 	
