@@ -29,6 +29,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 import edu.vt.middleware.dictionary.ArrayWordList;
 import edu.vt.middleware.dictionary.WordListDictionary;
@@ -64,7 +65,7 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7376091524332484101L;
+	private static final long serialVersionUID = 5454698615095632059L;
 
 	/**
 	 * @param ctx
@@ -92,6 +93,27 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			 pass = new MPasswordRule(ctx, pwdruleID, trxName);
 
 		return pass;
+	}
+	
+	@Override
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (isUsingDictionary()) {
+			StringBuilder msg = new StringBuilder();
+			if (Util.isEmpty(getPathDictionary())) {
+				msg.append(Msg.getElement(getCtx(), COLUMNNAME_PathDictionary));
+			}
+			if (getDictWordLength() <= 0) {
+				if (msg.length() > 0)
+					msg.append(", ");
+				msg.append(Msg.getElement(getCtx(), COLUMNNAME_DictWordLength));
+			}
+			if (msg.length() > 0) {
+				log.saveError("FillMandatory", msg.toString());
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void validate(String username, String newPassword) throws AdempiereException {
