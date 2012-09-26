@@ -51,14 +51,18 @@ public class IssueReport extends SvrProcess
 			return "NOT reported - Enable Error Reporting in Window System";
 		//
 		MIssue issue = new MIssue(getCtx(), m_AD_Issue_ID, get_TrxName());
-		if (issue.get_ID() == 0)
-			return "No Issue to report - ID=" + m_AD_Issue_ID;
+		if (issue.get_ID() == 0){
+			StringBuilder msgreturn = new StringBuilder("No Issue to report - ID=").append(m_AD_Issue_ID);
+			return msgreturn.toString();
+		}	
 		//
 		String error = issue.report();
 		if (error != null)
 			throw new AdempiereSystemError(error);
-		if (issue.save())
-			return "Issue Reported: " + issue.getRequestDocumentNo();
+		if (issue.save()){
+			StringBuilder msgreturn = new StringBuilder("Issue Reported: ").append(issue.getRequestDocumentNo());
+			return msgreturn.toString();
+		}	
 		throw new AdempiereSystemError("Issue Not Saved");
 	}	//	doIt
 	

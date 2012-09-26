@@ -91,7 +91,7 @@ public class M_PriceList_Create extends SvrProcess {
 		int totd = 0;
 		int V_temp;
 		int v_NextNo = 0;
-		String Message = " ";
+		StringBuilder Message = new StringBuilder();
 		//
 		//Checking Prerequisites
 		//PO Prices must exists
@@ -225,7 +225,7 @@ public class M_PriceList_Create extends SvrProcess {
 			if (cntd == -1)
 				raiseError(" DELETE	M_ProductPrice ", sqldel.toString());
 			totd += cntd;
-			Message = "@Deleted@=" + cntd + " - ";
+			Message = new StringBuilder("@Deleted@=").append(cntd).append(" - ");
 			log.fine("Deleted " + cntd);
 		}
 		//
@@ -375,7 +375,7 @@ public class M_PriceList_Create extends SvrProcess {
 
 				}
 
-				Message = Message + "@Selected@=" + cnti;
+				Message.append("@Selected@=").append(cnti);
 
 				//
 				//Delete Prices in Selection, so that we can insert
@@ -393,7 +393,7 @@ public class M_PriceList_Create extends SvrProcess {
 					if (cntd == -1)
 						raiseError(" DELETE	M_ProductPrice ", sqldel.toString());
 					totd += cntd;
-					Message = Message + ", @Deleted@=" + cntd;
+					Message.append(", @Deleted@=").append(cntd);
 					log.fine("Deleted " + cntd);
 				}
 
@@ -564,7 +564,7 @@ public class M_PriceList_Create extends SvrProcess {
 					log.fine("Inserted " + cnti);
 
 				}
-				Message = Message + ", @Inserted@=" + cnti;
+				Message.append(", @Inserted@=").append(cnti);
 				//
 				// Calculation
 				//
@@ -656,7 +656,7 @@ public class M_PriceList_Create extends SvrProcess {
 				totu += cntu;
 				log.fine("Updated " + cntu);
 
-				Message = Message + ", @Updated@=" + cntu;
+				Message.append(", @Updated@=").append(cntu);
 				//
 				//Fixed Price overwrite
 				//
@@ -683,8 +683,8 @@ public class M_PriceList_Create extends SvrProcess {
 				log.fine("Updated " + cntu);
 
 				v_NextNo = v_NextNo + 1;
-				addLog(0, null, null, Message);
-				Message = "";
+				addLog(0, null, null, Message.toString());
+				Message = new StringBuilder();
 			}
 			dl.close();
 			Cur_DiscountLine.close();
@@ -718,12 +718,12 @@ public class M_PriceList_Create extends SvrProcess {
 	private void raiseError(String string, String sql) throws Exception {
 		
 		// DB.rollback(false, get_TrxName());
-		String msg = string;
+		StringBuilder msg = new StringBuilder(string);
 		ValueNamePair pp = CLogger.retrieveError();
 		if (pp != null)
-			msg = pp.getName() + " - ";
-		msg += sql;
-		throw new AdempiereUserError(msg);
+			msg = new StringBuilder(pp.getName()).append(" - ");
+		msg.append(sql);
+		throw new AdempiereUserError(msg.toString());
 	}
 	
 	/**
@@ -735,7 +735,7 @@ public class M_PriceList_Create extends SvrProcess {
 	private String getSubCategoryWhereClause(int productCategoryId) throws SQLException, AdempiereSystemError{
 		//if a node with this id is found later in the search we have a loop in the tree
 		int subTreeRootParentId = 0;
-		String retString = " ";
+		StringBuilder retString = new StringBuilder();
 		String sql = " SELECT M_Product_Category_ID, M_Product_Category_Parent_ID FROM M_Product_Category";
 		final Vector<SimpleTreeNode> categories = new Vector<SimpleTreeNode>(100);
 		Statement stmt = DB.createStatement();
@@ -746,10 +746,10 @@ public class M_PriceList_Create extends SvrProcess {
 			}
 			categories.add(new SimpleTreeNode(rs.getInt(1), rs.getInt(2)));
 		}
-		retString += getSubCategoriesString(productCategoryId, categories, subTreeRootParentId);
+		retString.append(getSubCategoriesString(productCategoryId, categories, subTreeRootParentId));
 		rs.close();
 		stmt.close();
-		return retString;
+		return retString.toString();
 	}
 
 	/**

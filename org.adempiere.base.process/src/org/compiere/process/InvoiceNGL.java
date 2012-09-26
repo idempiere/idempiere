@@ -117,47 +117,47 @@ public class InvoiceNGL extends SvrProcess
 			p_DateReval = new Timestamp(System.currentTimeMillis());
 		
 		//	Delete - just to be sure
-		String sql = "DELETE T_InvoiceGL WHERE AD_PInstance_ID=" + getAD_PInstance_ID();
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("DELETE T_InvoiceGL WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.info("Deleted #" + no);
 		
 		//	Insert Trx
 		String dateStr = DB.TO_DATE(p_DateReval, true);
-		sql = "INSERT INTO T_InvoiceGL (AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy, Updated,UpdatedBy,"
-			+ " AD_PInstance_ID, C_Invoice_ID, GrandTotal, OpenAmt, "
-			+ " Fact_Acct_ID, AmtSourceBalance, AmtAcctBalance, "
-			+ " AmtRevalDr, AmtRevalCr, C_DocTypeReval_ID, IsAllCurrencies, "
-			+ " DateReval, C_ConversionTypeReval_ID, AmtRevalDrDiff, AmtRevalCrDiff, APAR) "
+		sql = new StringBuilder("INSERT INTO T_InvoiceGL (AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy, Updated,UpdatedBy,")
+			.append(" AD_PInstance_ID, C_Invoice_ID, GrandTotal, OpenAmt, ")
+			.append(" Fact_Acct_ID, AmtSourceBalance, AmtAcctBalance, ")
+			.append(" AmtRevalDr, AmtRevalCr, C_DocTypeReval_ID, IsAllCurrencies, ")
+			.append(" DateReval, C_ConversionTypeReval_ID, AmtRevalDrDiff, AmtRevalCrDiff, APAR) ")
 			//	--
-			+ "SELECT i.AD_Client_ID, i.AD_Org_ID, i.IsActive, i.Created,i.CreatedBy, i.Updated,i.UpdatedBy,"
-			+  getAD_PInstance_ID() + ", i.C_Invoice_ID, i.GrandTotal, invoiceOpen(i.C_Invoice_ID, 0), "
-			+ " fa.Fact_Acct_ID, fa.AmtSourceDr-fa.AmtSourceCr, fa.AmtAcctDr-fa.AmtAcctCr, " 
+			.append("SELECT i.AD_Client_ID, i.AD_Org_ID, i.IsActive, i.Created,i.CreatedBy, i.Updated,i.UpdatedBy,")
+			.append( getAD_PInstance_ID()).append(", i.C_Invoice_ID, i.GrandTotal, invoiceOpen(i.C_Invoice_ID, 0), ")
+			.append(" fa.Fact_Acct_ID, fa.AmtSourceDr-fa.AmtSourceCr, fa.AmtAcctDr-fa.AmtAcctCr, ") 
 			//	AmtRevalDr, AmtRevalCr,
-			+ " currencyConvert(fa.AmtSourceDr, i.C_Currency_ID, a.C_Currency_ID, " + dateStr + ", " + p_C_ConversionTypeReval_ID + ", i.AD_Client_ID, i.AD_Org_ID),"
-		    + " currencyConvert(fa.AmtSourceCr, i.C_Currency_ID, a.C_Currency_ID, " + dateStr + ", " + p_C_ConversionTypeReval_ID + ", i.AD_Client_ID, i.AD_Org_ID),"
-		    + (p_C_DocTypeReval_ID==0 ? "NULL" : String.valueOf(p_C_DocTypeReval_ID)) + ", "
-		    + (p_IsAllCurrencies ? "'Y'," : "'N',")
-		    + dateStr + ", " + p_C_ConversionTypeReval_ID + ", 0, 0, '" + p_APAR + "' "
+			.append(" currencyConvert(fa.AmtSourceDr, i.C_Currency_ID, a.C_Currency_ID, ").append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", i.AD_Client_ID, i.AD_Org_ID),")
+		    .append(" currencyConvert(fa.AmtSourceCr, i.C_Currency_ID, a.C_Currency_ID, ").append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", i.AD_Client_ID, i.AD_Org_ID),")
+		    .append((p_C_DocTypeReval_ID==0 ? "NULL" : String.valueOf(p_C_DocTypeReval_ID))).append(", ")
+		    .append((p_IsAllCurrencies ? "'Y'," : "'N',"))
+		    .append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", 0, 0, '").append(p_APAR).append("' ")
 		    //
-		    + "FROM C_Invoice_v i"
-		    + " INNER JOIN Fact_Acct fa ON (fa.AD_Table_ID=318 AND fa.Record_ID=i.C_Invoice_ID"
-		    	+ " AND (i.GrandTotal=fa.AmtSourceDr OR i.GrandTotal=fa.AmtSourceCr))"
-		    + " INNER JOIN C_AcctSchema a ON (fa.C_AcctSchema_ID=a.C_AcctSchema_ID) "
-		    + "WHERE i.IsPaid='N'"
-		    + " AND EXISTS (SELECT * FROM C_ElementValue ev "
-		    	+ "WHERE ev.C_ElementValue_ID=fa.Account_ID AND (ev.AccountType='A' OR ev.AccountType='L'))"
-		    + " AND fa.C_AcctSchema_ID=" + p_C_AcctSchema_ID;
+		    .append("FROM C_Invoice_v i")
+		    .append(" INNER JOIN Fact_Acct fa ON (fa.AD_Table_ID=318 AND fa.Record_ID=i.C_Invoice_ID")
+		    	.append(" AND (i.GrandTotal=fa.AmtSourceDr OR i.GrandTotal=fa.AmtSourceCr))")
+		    .append(" INNER JOIN C_AcctSchema a ON (fa.C_AcctSchema_ID=a.C_AcctSchema_ID) ")
+		    .append("WHERE i.IsPaid='N'")
+		    .append(" AND EXISTS (SELECT * FROM C_ElementValue ev ")
+		    	.append("WHERE ev.C_ElementValue_ID=fa.Account_ID AND (ev.AccountType='A' OR ev.AccountType='L'))")
+		    .append(" AND fa.C_AcctSchema_ID=").append(p_C_AcctSchema_ID);
 		if (!p_IsAllCurrencies)
-			sql += " AND i.C_Currency_ID<>a.C_Currency_ID";
+			sql.append(" AND i.C_Currency_ID<>a.C_Currency_ID");
 		if (ONLY_AR.equals(p_APAR))
-			sql += " AND i.IsSOTrx='Y'";
+			sql.append(" AND i.IsSOTrx='Y'");
 		else if (ONLY_AP.equals(p_APAR))
-			sql += " AND i.IsSOTrx='N'";
+			sql.append(" AND i.IsSOTrx='N'");
 		if (!p_IsAllCurrencies && p_C_Currency_ID != 0)
-			sql += " AND i.C_Currency_ID=" + p_C_Currency_ID;
+			sql.append(" AND i.C_Currency_ID=").append(p_C_Currency_ID);
 		
-		no = DB.executeUpdate(sql, get_TrxName());
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Inserted #" + no);
 		else if (CLogMgt.isLevelFiner())
@@ -166,35 +166,35 @@ public class InvoiceNGL extends SvrProcess
 			log.warning("Inserted #" + no);
 
 		//	Calculate Difference
-		sql = "UPDATE T_InvoiceGL gl "
-			+ "SET (AmtRevalDrDiff,AmtRevalCrDiff)="
-				+ "(SELECT gl.AmtRevalDr-fa.AmtAcctDr, gl.AmtRevalCr-fa.AmtAcctCr "
-				+ "FROM Fact_Acct fa "
-				+ "WHERE gl.Fact_Acct_ID=fa.Fact_Acct_ID) "
-			+ "WHERE AD_PInstance_ID=" + getAD_PInstance_ID();
-		int noT = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE T_InvoiceGL gl ")
+			.append("SET (AmtRevalDrDiff,AmtRevalCrDiff)=")
+				.append("(SELECT gl.AmtRevalDr-fa.AmtAcctDr, gl.AmtRevalCr-fa.AmtAcctCr ")
+				.append("FROM Fact_Acct fa ")
+				.append("WHERE gl.Fact_Acct_ID=fa.Fact_Acct_ID) ")
+			.append("WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
+		int noT = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (noT > 0)
 			log.config("Difference #" + noT);
 		
 		//	Percentage
-		sql = "UPDATE T_InvoiceGL SET Percent = 100 "
-			+ "WHERE GrandTotal=OpenAmt AND AD_PInstance_ID=" + getAD_PInstance_ID();
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE T_InvoiceGL SET Percent = 100 ")
+			.append("WHERE GrandTotal=OpenAmt AND AD_PInstance_ID=").append(getAD_PInstance_ID());
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.info("Not Paid #" + no);
 
-		sql = "UPDATE T_InvoiceGL SET Percent = ROUND(OpenAmt*100/GrandTotal,6) "
-			+ "WHERE GrandTotal<>OpenAmt AND GrandTotal <> 0 AND AD_PInstance_ID=" + getAD_PInstance_ID();
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE T_InvoiceGL SET Percent = ROUND(OpenAmt*100/GrandTotal,6) ")
+			.append("WHERE GrandTotal<>OpenAmt AND GrandTotal <> 0 AND AD_PInstance_ID=").append(getAD_PInstance_ID());
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.info("Partial Paid #" + no);
 
-		sql = "UPDATE T_InvoiceGL SET AmtRevalDr = AmtRevalDr * Percent/100,"
-			+ " AmtRevalCr = AmtRevalCr * Percent/100,"
-			+ " AmtRevalDrDiff = AmtRevalDrDiff * Percent/100,"
-			+ " AmtRevalCrDiff = AmtRevalCrDiff * Percent/100 "
-			+ "WHERE Percent <> 100 AND AD_PInstance_ID=" + getAD_PInstance_ID();
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE T_InvoiceGL SET AmtRevalDr = AmtRevalDr * Percent/100,")
+			.append(" AmtRevalCr = AmtRevalCr * Percent/100,")
+			.append(" AmtRevalDrDiff = AmtRevalDrDiff * Percent/100,")
+			.append(" AmtRevalCrDiff = AmtRevalCrDiff * Percent/100 ")
+			.append("WHERE Percent <> 100 AND AD_PInstance_ID=").append(getAD_PInstance_ID());
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.config("Partial Calc #" + no);
 		
@@ -207,7 +207,8 @@ public class InvoiceNGL extends SvrProcess
 			else
 				info = createGLJournal();
 		}
-		return "#" + noT + info;
+		StringBuilder msgreturn = new StringBuilder("#").append(noT).append(info);
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**
@@ -303,7 +304,8 @@ public class InvoiceNGL extends SvrProcess
 		}
 		createBalancing (asDefaultAccts, journal, drTotal, crTotal, AD_Org_ID, (list.size()+1) * 10);
 		
-		return " - " + batch.getDocumentNo() + " #" + list.size();
+		StringBuilder msgreturn = new StringBuilder(" - ").append(batch.getDocumentNo()).append(" #").append(list.size());
+		return msgreturn.toString();
 	}	//	createGLJournal
 
 	/**
