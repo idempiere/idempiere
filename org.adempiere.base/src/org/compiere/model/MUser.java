@@ -902,7 +902,7 @@ public class MUser extends X_AD_User
 		if (email_login && getPassword() != null && getPassword().length() > 0) {
 			// email is mandatory for users with password
 			if (getEMail() == null || getEMail().length() == 0) {
-				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_EMail));
+				log.saveError("SaveError", Msg.getMsg(getCtx(), "FillMandatory") + Msg.getElement(getCtx(), COLUMNNAME_EMail));
 				return false;
 			}
 			// email with password must be unique on the same tenant
@@ -910,7 +910,7 @@ public class MUser extends X_AD_User
 					"SELECT COUNT(*) FROM AD_User WHERE Password IS NOT NULL AND EMail=? AND AD_Client_ID=? AND AD_User_ID!=?",
 					getEMail(), getAD_Client_ID(), getAD_User_ID());
 			if (cnt > 0) {
-				log.saveError("SaveErrorNotUnique", Msg.getElement(getCtx(), COLUMNNAME_EMail));
+				log.saveError("SaveError", Msg.getMsg(getCtx(), "SaveErrorNotUnique", true) + Msg.getElement(getCtx(), COLUMNNAME_EMail));
 				return false;
 			}
 		}
