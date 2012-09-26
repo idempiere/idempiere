@@ -86,7 +86,7 @@ public class RegisterSystem extends SvrProcess
 		//	Create Query String
 		String enc = WebEnv.ENCODING;
 		//	Send GET Request
-		StringBuffer urlString = new StringBuffer ("http://www.adempiere.com")
+		StringBuilder urlString = new StringBuilder ("http://www.adempiere.com")
 			.append("/wstore/registrationServlet?");
 		//	System Info
 		urlString.append("Name=").append(URLEncoder.encode(sys.getName(), enc))

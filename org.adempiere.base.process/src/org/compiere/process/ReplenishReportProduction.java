@@ -70,7 +70,7 @@ public class ReplenishReportProduction extends SvrProcess
 	/** Document Type			*/
 	private int		p_C_DocType_ID = 0;
 	/** Return Info				*/
-	private String	m_info = "";
+	private StringBuffer	m_info = new StringBuffer();
 	private int p_M_Product_Category_ID = 0;
 	private String isKanban = null;
 	
@@ -108,12 +108,12 @@ public class ReplenishReportProduction extends SvrProcess
 	 *  @throws Exception if not successful
 	 */
 	protected String doIt() throws Exception
-	{
-		StringBuilder msglog = new StringBuilder("M_Warehouse_ID=").append(p_M_Warehouse_ID) 
-				.append(", C_BPartner_ID=").append(p_C_BPartner_ID) 
-				.append(" - ReplenishmentCreate=").append(p_ReplenishmentCreate)
-				.append(", C_DocType_ID=").append(p_C_DocType_ID);
-		log.info(msglog.toString());
+	{				
+		log.info("M_Warehouse_ID=" + p_M_Warehouse_ID 
+				+ ", C_BPartner_ID=" + p_C_BPartner_ID 
+				+" - ReplenishmentCreate=" + p_ReplenishmentCreate
+				+ ", C_DocType_ID=" + p_C_DocType_ID);
+		
 		if (p_ReplenishmentCreate != null && p_C_DocType_ID == 0 && !p_ReplenishmentCreate.equals("PRD"))
 			throw new AdempiereUserError("@FillMandatory@ @C_DocType_ID@");
 		
@@ -141,7 +141,7 @@ public class ReplenishReportProduction extends SvrProcess
 			createDO();
 		else if (p_ReplenishmentCreate.equals("PRD"))
 			createProduction();
-		return m_info;
+		return m_info.toString();
 	}	//	doIt
 
 	/**
@@ -470,8 +470,8 @@ public class ReplenishReportProduction extends SvrProcess
 			line.setPrice();
 			line.saveEx();
 		}
-		m_info = "#" + noOrders + info.toString();
-		log.info(m_info);
+		m_info = new StringBuffer("#").append(noOrders).append(info.toString());
+		log.info(m_info.toString());
 	}	//	createPO
 	
 	/**
@@ -516,8 +516,8 @@ public class ReplenishReportProduction extends SvrProcess
 			line.setPrice();
 			line.saveEx();
 		}
-		m_info = "#" + noReqs + info.toString();
-		log.info(m_info);
+		m_info = new StringBuffer("#").append(noReqs).append(info.toString());
+		log.info(m_info.toString());
 	}	//	createRequisition
 
 	/**
@@ -554,8 +554,9 @@ public class ReplenishReportProduction extends SvrProcess
 				
 				move = new MMovement (getCtx(), 0, get_TrxName());
 				move.setC_DocType_ID(p_C_DocType_ID);
-				move.setDescription(Msg.getMsg(getCtx(), "Replenishment")
-					+ ": " + whSource.getName() + "->" + wh.getName());
+				StringBuilder msgsd = new StringBuilder(Msg.getMsg(getCtx(), "Replenishment"))
+						.append(": ").append(whSource.getName()).append("->").append(wh.getName());
+				move.setDescription(msgsd.toString());
 				//	Set Org
 				move.setAD_Org_ID(whSource.getAD_Org_ID());
 				if (!move.save())
@@ -602,13 +603,13 @@ public class ReplenishReportProduction extends SvrProcess
 		}
 		if (replenishs.length == 0)
 		{
-			m_info = "No Source Warehouse";
-			log.warning(m_info);
+			m_info = new StringBuffer("No Source Warehouse");
+			log.warning(m_info.toString());
 		}
 		else
 		{
-			m_info = "#" + noMoves + info.toString();
-			log.info(m_info);
+			m_info = new StringBuffer("#").append(noMoves).append(info.toString());
+			log.info(m_info.toString());
 		}
 	}	//	Create Inventory Movements
 	
@@ -645,8 +646,9 @@ public class ReplenishReportProduction extends SvrProcess
 				
 				order = new MDDOrder (getCtx(), 0, get_TrxName());
 				order.setC_DocType_ID(p_C_DocType_ID);
-				order.setDescription(Msg.getMsg(getCtx(), "Replenishment")
-					+ ": " + whSource.getName() + "->" + wh.getName());
+				StringBuilder msgsd = new StringBuilder(Msg.getMsg(getCtx(), "Replenishment"))
+						.append(": ").append(whSource.getName()).append("->").append(wh.getName());
+				order.setDescription(msgsd.toString());
 				//	Set Org
 				order.setAD_Org_ID(whSource.getAD_Org_ID());
 				// Set Org Trx
@@ -749,13 +751,13 @@ public class ReplenishReportProduction extends SvrProcess
 		}
 		if (replenishs.length == 0)
 		{
-			m_info = "No Source Warehouse";
-			log.warning(m_info);
+			m_info = new StringBuffer("No Source Warehouse");
+			log.warning(m_info.toString());
 		}
 		else
 		{
-			m_info = "#" + noMoves + info.toString();
-			log.info(m_info);
+			m_info = new StringBuffer("#").append(noMoves).append(info.toString());
+			log.info(m_info.toString());
 		}
 	}	//	create Distribution Order
 	/**
@@ -820,8 +822,8 @@ public class ReplenishReportProduction extends SvrProcess
 			}
 
 		}
-		m_info = "#" + noProds + info.toString();
-		log.info(m_info);
+		m_info = new StringBuffer("#").append(noProds).append(info.toString());
+		log.info(m_info.toString());
 	}	//	createRequisition
 
 	/**

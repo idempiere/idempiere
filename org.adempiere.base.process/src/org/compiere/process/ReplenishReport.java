@@ -67,7 +67,7 @@ public class ReplenishReport extends SvrProcess
 	/** Document Type			*/
 	private int		p_C_DocType_ID = 0;
 	/** Return Info				*/
-	private String	m_info = "";
+	private StringBuffer	m_info = new StringBuffer();
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -130,7 +130,7 @@ public class ReplenishReport extends SvrProcess
 			createMovements();
 		else if (p_ReplenishmentCreate.equals("DOO"))
 			createDO();
-		return m_info;
+		return m_info.toString();
 	}	//	doIt
 
 	/**
@@ -435,8 +435,8 @@ public class ReplenishReport extends SvrProcess
 			line.setPrice();
 			line.saveEx();
 		}
-		m_info = "#" + noOrders + info.toString();
-		log.info(m_info);
+		m_info = new StringBuffer("#").append(noOrders).append(info.toString());
+		log.info(m_info.toString());
 	}	//	createPO
 	
 	/**
@@ -481,8 +481,8 @@ public class ReplenishReport extends SvrProcess
 			line.setPrice();
 			line.saveEx();
 		}
-		m_info = "#" + noReqs + info.toString();
-		log.info(m_info);
+		m_info = new StringBuffer("#").append(noReqs).append(info.toString());
+		log.info(m_info.toString());
 	}	//	createRequisition
 
 	/**
@@ -567,13 +567,13 @@ public class ReplenishReport extends SvrProcess
 		}
 		if (replenishs.length == 0)
 		{
-			m_info = "No Source Warehouse";
-			log.warning(m_info);
+			m_info = new StringBuffer("No Source Warehouse");
+			log.warning(m_info.toString());
 		}
 		else
 		{
-			m_info = "#" + noMoves + info;
-			log.info(m_info);
+			m_info = new StringBuffer("#") .append(noMoves).append(info);
+			log.info(m_info.toString());
 		}
 	}	//	Create Inventory Movements
 	
@@ -608,10 +608,11 @@ public class ReplenishReport extends SvrProcess
 				M_WarehouseSource_ID = replenish.getM_WarehouseSource_ID();
 				M_Warehouse_ID = replenish.getM_Warehouse_ID();
 				
-				order = new MDDOrder (getCtx(), 0, get_TrxName());
+				order = new MDDOrder (getCtx(), 0, get_TrxName());				
 				order.setC_DocType_ID(p_C_DocType_ID);
-				order.setDescription(Msg.getMsg(getCtx(), "Replenishment")
-					+ ": " + whSource.getName() + "->" + wh.getName());
+				StringBuffer msgsd = new StringBuffer(Msg.getMsg(getCtx(), "Replenishment"))
+						.append(": ").append(whSource.getName()).append("->").append(wh.getName());
+				order.setDescription(msgsd.toString());
 				//	Set Org
 				order.setAD_Org_ID(whSource.getAD_Org_ID());
 				// Set Org Trx
@@ -714,13 +715,13 @@ public class ReplenishReport extends SvrProcess
 		}
 		if (replenishs.length == 0)
 		{
-			m_info = "No Source Warehouse";
-			log.warning(m_info);
+			m_info = new StringBuffer("No Source Warehouse");
+			log.warning(m_info.toString());
 		}
 		else
 		{
-			m_info = "#" + noMoves + info;
-			log.info(m_info);
+			m_info = new StringBuffer("#").append(noMoves).append(info);
+			log.info(m_info.toString());
 		}
 	}	//	create Distribution Order
 

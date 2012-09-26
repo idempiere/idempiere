@@ -196,8 +196,8 @@ public class ProjectIssue extends SvrProcess
 			addLog(pi.getLine(), pi.getMovementDate(), pi.getMovementQty(), null);
 			counter++;
 		}	//	all InOutLines
-
-		return "@Created@ " + counter;
+		StringBuilder msgreturn = new StringBuilder("@Created@ ").append(counter);
+		return msgreturn.toString();
 	}	//	issueReceipt
 
 
@@ -258,8 +258,9 @@ public class ProjectIssue extends SvrProcess
 			addLog(pi.getLine(), pi.getMovementDate(), pi.getMovementQty(), null);
 			counter++;
 		}	//	allExpenseLines
-		
-		return "@Created@ " + counter;
+
+		StringBuilder msgreturn = new StringBuilder("@Created@ ").append(counter);
+		return msgreturn.toString();
 	}	//	issueExpense
 
 

@@ -67,7 +67,7 @@ public class ProductionProcess extends SvrProcess {
 		int processed = 0;
 		m_production.setMovementDate(p_MovementDate);
 		MProductionLine[] lines = m_production.getLines();
-		StringBuffer errors = new StringBuffer();
+		StringBuilder errors = new StringBuilder();
 		for ( int i = 0; i<lines.length; i++) {
 			errors.append( lines[i].createTransactions(m_production.getMovementDate(), mustBeStocked) );
 			//TODO error handling 
@@ -84,7 +84,8 @@ public class ProductionProcess extends SvrProcess {
 		m_production.setProcessed(true);
 		
 		m_production.saveEx(get_TrxName());
-		return processed + " production lines were processed";
+		StringBuilder msgreturn = new StringBuilder(processed).append(" production lines were processed");
+		return msgreturn.toString();
 	}
 
 

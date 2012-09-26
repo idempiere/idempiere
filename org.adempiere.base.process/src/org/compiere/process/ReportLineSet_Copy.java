@@ -90,7 +90,8 @@ public class ReportLineSet_Copy extends SvrProcess
 			}
 			//	Oper 1/2 were set to Null ! 
 		}
-		return "@Copied@=" + rls.length;
+		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(rls.length);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	ReportLineSet_Copy

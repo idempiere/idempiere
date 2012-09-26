@@ -69,7 +69,7 @@ public class PeriodStatus extends SvrProcess
 		if (period.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@  @C_Period_ID@=" + p_C_Period_ID);
 
-		StringBuffer sql = new StringBuffer ("UPDATE C_PeriodControl ");
+		StringBuilder sql = new StringBuilder ("UPDATE C_PeriodControl ");
 		sql.append("SET PeriodStatus='");
 		//	Open
 		if (MPeriodControl.PERIODACTION_OpenPeriod.equals(p_PeriodAction))
@@ -93,7 +93,8 @@ public class PeriodStatus extends SvrProcess
 		
 		CacheMgt.get().reset("C_PeriodControl", 0);
 		CacheMgt.get().reset("C_Period", p_C_Period_ID);
-		return "@Updated@ #" + no;
+		StringBuilder msgreturn = new StringBuilder("@Updated@ #").append(no);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	PeriodStatus
