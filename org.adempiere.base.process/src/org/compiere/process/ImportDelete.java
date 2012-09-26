@@ -58,20 +58,25 @@ public class ImportDelete extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("AD_Table_ID=" + p_AD_Table_ID);
+		StringBuilder msglog = new StringBuilder("AD_Table_ID=").append(p_AD_Table_ID);
+		log.info(msglog.toString());
 		//	get Table Info
 		MTable table = new MTable (getCtx(), p_AD_Table_ID, get_TrxName());
-		if (table.get_ID() == 0)
-			throw new IllegalArgumentException ("No AD_Table_ID=" + p_AD_Table_ID);
+		if (table.get_ID() == 0){
+			StringBuilder msgexc = new StringBuilder("No AD_Table_ID=").append(p_AD_Table_ID);
+			throw new IllegalArgumentException (msgexc.toString());
+		}	
 		String tableName = table.getTableName();
-		if (!tableName.startsWith("I"))
-			throw new IllegalArgumentException ("Not an import table = " + tableName);
+		if (!tableName.startsWith("I")){
+			StringBuilder msgexc = new StringBuilder("Not an import table = ").append(tableName);
+			throw new IllegalArgumentException (msgexc.toString());
+		}	
 		
 		//	Delete
-		String sql = "DELETE FROM " + tableName + " WHERE AD_Client_ID=" + getAD_Client_ID();
-		int no = DB.executeUpdate(sql, get_TrxName());
-		String msg = Msg.translate(getCtx(), tableName + "_ID") + " #" + no;
-		return msg;
+		StringBuilder sql = new StringBuilder("DELETE FROM ").append(tableName).append(" WHERE AD_Client_ID=").append(getAD_Client_ID());
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
+		StringBuilder msg = new StringBuilder(Msg.translate(getCtx(), tableName + "_ID")).append(" #").append(no);
+		return msg.toString();
 	}	//	ImportDelete
 
 }	//	ImportDelete

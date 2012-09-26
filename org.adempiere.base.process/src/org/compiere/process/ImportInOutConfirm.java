@@ -68,67 +68,68 @@ public class ImportInOutConfirm extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("I_InOutLineConfirm_ID=" + p_I_InOutLineConfirm_ID);
-		StringBuffer sql = null;
+		StringBuilder msglog = new StringBuilder("I_InOutLineConfirm_ID=").append(p_I_InOutLineConfirm_ID);
+		log.info(msglog.toString());
+		StringBuilder sql = null;
 		int no = 0;
-		String clientCheck = " AND AD_Client_ID=" + p_AD_Client_ID;
+		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(p_AD_Client_ID);
 		
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuffer ("DELETE I_InOutLineConfirm "
-				  + "WHERE I_IsImported='Y'").append (clientCheck);
+			sql = new StringBuilder ("DELETE I_InOutLineConfirm ")
+				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set IsActive, Created/Updated
-		sql = new StringBuffer ("UPDATE I_InOutLineConfirm "
-			+ "SET IsActive = COALESCE (IsActive, 'Y'),"
-			+ " Created = COALESCE (Created, SysDate),"
-			+ " CreatedBy = COALESCE (CreatedBy, 0),"
-			+ " Updated = COALESCE (Updated, SysDate),"
-			+ " UpdatedBy = COALESCE (UpdatedBy, 0),"
-			+ " I_ErrorMsg = ' ',"
-			+ " I_IsImported = 'N' "
-			+ "WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
+		sql = new StringBuilder ("UPDATE I_InOutLineConfirm ")
+			.append("SET IsActive = COALESCE (IsActive, 'Y'),")
+			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
+			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
+			.append(" I_ErrorMsg = ' ',")
+			.append(" I_IsImported = 'N' ")
+			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info ("Reset=" + no);
 
 		//	Set Client from Name
-		sql = new StringBuffer ("UPDATE I_InOutLineConfirm i "
-			+ "SET AD_Client_ID=COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append (") "
-			+ "WHERE (AD_Client_ID IS NULL OR AD_Client_ID=0)"
-			+ " AND I_IsImported<>'Y'");
+		sql = new StringBuilder ("UPDATE I_InOutLineConfirm i ")
+			.append("SET AD_Client_ID=COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append (") ")
+			.append("WHERE (AD_Client_ID IS NULL OR AD_Client_ID=0)")
+			.append(" AND I_IsImported<>'Y'");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set Client from Value=" + no);
 
 		//	Error Confirmation Line
-		sql = new StringBuffer ("UPDATE I_InOutLineConfirm i "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Confirmation Line, '"
-			+ "WHERE (M_InOutLineConfirm_ID IS NULL OR M_InOutLineConfirm_ID=0"
-			+ " OR NOT EXISTS (SELECT * FROM M_InOutLineConfirm c WHERE i.M_InOutLineConfirm_ID=c.M_InOutLineConfirm_ID))"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_InOutLineConfirm i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Confirmation Line, '")
+			.append("WHERE (M_InOutLineConfirm_ID IS NULL OR M_InOutLineConfirm_ID=0")
+			.append(" OR NOT EXISTS (SELECT * FROM M_InOutLineConfirm c WHERE i.M_InOutLineConfirm_ID=c.M_InOutLineConfirm_ID))")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid InOutLineConfirm=" + no);
 
 		//	Error Confirmation No
-		sql = new StringBuffer ("UPDATE I_InOutLineConfirm i "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Missing Confirmation No, '"
-			+ "WHERE (ConfirmationNo IS NULL OR ConfirmationNo='')"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_InOutLineConfirm i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Missing Confirmation No, '")
+			.append("WHERE (ConfirmationNo IS NULL OR ConfirmationNo='')")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid ConfirmationNo=" + no);
 		
 		//	Qty
-		sql = new StringBuffer ("UPDATE I_InOutLineConfirm i "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Target<>(Confirmed+Difference+Scrapped), ' "
-			+ "WHERE EXISTS (SELECT * FROM M_InOutLineConfirm c "
-				+ "WHERE i.M_InOutLineConfirm_ID=c.M_InOutLineConfirm_ID"
-				+ " AND c.TargetQty<>(i.ConfirmedQty+i.ScrappedQty+i.DifferenceQty))"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_InOutLineConfirm i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Target<>(Confirmed+Difference+Scrapped), ' ")
+			.append("WHERE EXISTS (SELECT * FROM M_InOutLineConfirm c ")
+				.append("WHERE i.M_InOutLineConfirm_ID=c.M_InOutLineConfirm_ID")
+				.append(" AND c.TargetQty<>(i.ConfirmedQty+i.ScrappedQty+i.DifferenceQty))")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Qty=" + no);
@@ -138,8 +139,8 @@ public class ImportInOutConfirm extends SvrProcess
 		/*********************************************************************/
 		
 		PreparedStatement pstmt = null;
-		sql = new StringBuffer ("SELECT * FROM I_InOutLineConfirm "
-			+ "WHERE I_IsImported='N'").append (clientCheck)
+		sql = new StringBuilder ("SELECT * FROM I_InOutLineConfirm ")
+			.append("WHERE I_IsImported='N'").append (clientCheck)
 			.append(" ORDER BY I_InOutLineConfirm_ID");
 		no = 0;
 		try
@@ -193,8 +194,8 @@ public class ImportInOutConfirm extends SvrProcess
 		{
 			pstmt = null;
 		}
-		
-		return "@Updated@ #" + no;
+		StringBuilder msgreturn = new StringBuilder("@Updated@ #").append(no);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	ImportInOutConfirm

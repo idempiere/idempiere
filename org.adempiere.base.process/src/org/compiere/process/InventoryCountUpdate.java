@@ -75,34 +75,34 @@ public class InventoryCountUpdate extends SvrProcess
 			throw new AdempiereSystemError ("Not found: M_Inventory_ID=" + p_M_Inventory_ID);
 
 		//	Multiple Lines for one item
-		String sql = "UPDATE M_InventoryLine SET IsActive='N' "
-			+ "WHERE M_Inventory_ID=" + p_M_Inventory_ID
-			+ " AND (M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID) IN "
-				+ "(SELECT M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID "
-				+ "FROM M_InventoryLine "
-				+ "WHERE M_Inventory_ID=" + p_M_Inventory_ID
-				+ " GROUP BY M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID "
-				+ "HAVING COUNT(*) > 1)";
-		int multiple = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE M_InventoryLine SET IsActive='N' ")
+			.append("WHERE M_Inventory_ID=").append(p_M_Inventory_ID)
+			.append(" AND (M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID) IN ")
+				.append("(SELECT M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID ")
+				.append("FROM M_InventoryLine ")
+				.append("WHERE M_Inventory_ID=").append(p_M_Inventory_ID)
+				.append(" GROUP BY M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID ")
+				.append("HAVING COUNT(*) > 1)");
+		int multiple = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info("Multiple=" + multiple);
 
 		int delMA = MInventoryLineMA.deleteInventoryMA(p_M_Inventory_ID, get_TrxName());
 		log.info("DeletedMA=" + delMA);
 
 		//	ASI
-		sql = "UPDATE M_InventoryLine l "
-			+ "SET (QtyBook,QtyCount) = "
-				+ "(SELECT QtyOnHand,QtyOnHand FROM M_Storage s "
-				+ "WHERE s.M_Product_ID=l.M_Product_ID AND s.M_Locator_ID=l.M_Locator_ID"
-				+ " AND s.M_AttributeSetInstance_ID=l.M_AttributeSetInstance_ID),"
-			+ " Updated=SysDate,"
-			+ " UpdatedBy=" + getAD_User_ID()
+		sql = new StringBuilder("UPDATE M_InventoryLine l ")
+			.append("SET (QtyBook,QtyCount) = ")
+				.append("(SELECT QtyOnHand,QtyOnHand FROM M_Storage s ")
+				.append("WHERE s.M_Product_ID=l.M_Product_ID AND s.M_Locator_ID=l.M_Locator_ID")
+				.append(" AND s.M_AttributeSetInstance_ID=l.M_AttributeSetInstance_ID),")
+			.append(" Updated=SysDate,")
+			.append(" UpdatedBy=").append(getAD_User_ID())
 			//
-			+ " WHERE M_Inventory_ID=" + p_M_Inventory_ID
-			+ " AND EXISTS (SELECT * FROM M_Storage s "
-				+ "WHERE s.M_Product_ID=l.M_Product_ID AND s.M_Locator_ID=l.M_Locator_ID"
-				+ " AND s.M_AttributeSetInstance_ID=l.M_AttributeSetInstance_ID)";
-		int no = DB.executeUpdate(sql, get_TrxName());
+			.append(" WHERE M_Inventory_ID=").append(p_M_Inventory_ID)
+			.append(" AND EXISTS (SELECT * FROM M_Storage s ")
+				.append("WHERE s.M_Product_ID=l.M_Product_ID AND s.M_Locator_ID=l.M_Locator_ID")
+				.append(" AND s.M_AttributeSetInstance_ID=l.M_AttributeSetInstance_ID)");
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info("Update with ASI=" + no);
 
 		//	No ASI
@@ -111,17 +111,19 @@ public class InventoryCountUpdate extends SvrProcess
 		//	Set Count to Zero
 		if (p_InventoryCountSetZero)
 		{
-			sql = "UPDATE M_InventoryLine l "
-				+ "SET QtyCount=0 "
-				+ "WHERE M_Inventory_ID=" + p_M_Inventory_ID;
-			no = DB.executeUpdate(sql, get_TrxName());
+			sql = new StringBuilder("UPDATE M_InventoryLine l ")
+				.append("SET QtyCount=0 ")
+				.append("WHERE M_Inventory_ID=").append(p_M_Inventory_ID);
+			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.info("Set Count to Zero=" + no);
 		}
 		
-		if (multiple > 0)
-			return "@M_InventoryLine_ID@ - #" + (no + noMA) + " --> @InventoryProductMultiple@";
-		
-		return "@M_InventoryLine_ID@ - #" + no;
+		if (multiple > 0){
+			StringBuilder msgreturn = new StringBuilder("@M_InventoryLine_ID@ - #").append((no + noMA)).append(" --> @InventoryProductMultiple@");
+			return msgreturn.toString();
+		}	
+		StringBuilder msgreturn = new StringBuilder("@M_InventoryLine_ID@ - #").append(no);
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**

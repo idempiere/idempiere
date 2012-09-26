@@ -119,16 +119,16 @@ public class InventoryCountCreate extends SvrProcess
 		if (p_DeleteOld)
 		{
 			//Added Line by armen
-			String sql1 = "DELETE FROM M_InventoryLineMA ma WHERE EXISTS "
-				+ "(SELECT * FROM M_InventoryLine l WHERE l.M_InventoryLine_ID=ma.M_InventoryLine_ID"
-				+ " AND Processed='N' AND M_Inventory_ID=" + p_M_Inventory_ID + ")";
-			int no1 = DB.executeUpdate(sql1, get_TrxName());
+			StringBuilder sql1 = new StringBuilder("DELETE FROM M_InventoryLineMA ma WHERE EXISTS ")
+				.append("(SELECT * FROM M_InventoryLine l WHERE l.M_InventoryLine_ID=ma.M_InventoryLine_ID")
+				.append(" AND Processed='N' AND M_Inventory_ID=").append(p_M_Inventory_ID).append(")");
+			int no1 = DB.executeUpdate(sql1.toString(), get_TrxName());
 			log.fine("doIt - Deleted MA #" + no1);
 			//End of Added Line
 			
-			String sql = "DELETE M_InventoryLine WHERE Processed='N' "
-				+ "AND M_Inventory_ID=" + p_M_Inventory_ID;
-			int no = DB.executeUpdate(sql, get_TrxName());
+			StringBuilder sql = new StringBuilder("DELETE M_InventoryLine WHERE Processed='N' ")
+				.append("AND M_Inventory_ID=").append(p_M_Inventory_ID);
+			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("doIt - Deleted #" + no);
 		}
 		
@@ -257,15 +257,16 @@ public class InventoryCountCreate extends SvrProcess
 		//	Set Count to Zero
 		if (p_InventoryCountSetZero)
 		{
-			String sql1 = "UPDATE M_InventoryLine l "
-				+ "SET QtyCount=0 "
-				+ "WHERE M_Inventory_ID=" + p_M_Inventory_ID;
-			int no = DB.executeUpdate(sql1, get_TrxName());
+			StringBuilder sql1 = new StringBuilder("UPDATE M_InventoryLine l ")
+				.append("SET QtyCount=0 ")
+				.append("WHERE M_Inventory_ID=").append(p_M_Inventory_ID);
+			int no = DB.executeUpdate(sql1.toString(), get_TrxName());
 			log.info("Set Cont to Zero=" + no);
 		}
 		
 		//
-		return "@M_InventoryLine_ID@ - #" + count;
+		StringBuilder msgreturn = new StringBuilder("@M_InventoryLine_ID@ - #").append(count);
+		return msgreturn.toString();
 	}	//	doIt
 	
 	/**
@@ -350,7 +351,7 @@ public class InventoryCountCreate extends SvrProcess
 	private String getSubCategoryWhereClause(int productCategoryId) throws SQLException, AdempiereSystemError{
 		//if a node with this id is found later in the search we have a loop in the tree
 		int subTreeRootParentId = 0;
-		String retString = " ";
+		StringBuilder retString = new StringBuilder();
 		String sql = " SELECT M_Product_Category_ID, M_Product_Category_Parent_ID FROM M_Product_Category";
 		final Vector<SimpleTreeNode> categories = new Vector<SimpleTreeNode>(100);
 		Statement stmt = DB.createStatement();
@@ -361,10 +362,10 @@ public class InventoryCountCreate extends SvrProcess
 			}
 			categories.add(new SimpleTreeNode(rs.getInt(1), rs.getInt(2)));
 		}
-		retString += getSubCategoriesString(productCategoryId, categories, subTreeRootParentId);
+		retString.append(getSubCategoriesString(productCategoryId, categories, subTreeRootParentId));
 		rs.close();
 		stmt.close();
-		return retString;
+		return retString.toString();
 	}
 
 	/**
@@ -389,7 +390,8 @@ public class InventoryCountCreate extends SvrProcess
 			}
 		}
 		log.fine(ret.toString());
-		return ret.toString() + productCategoryId;
+		StringBuilder msgreturn = new StringBuilder(ret).append(productCategoryId);
+		return msgreturn.toString();
 	}
 
 	/**
