@@ -349,7 +349,7 @@ public final class MRole extends X_AD_Role
 				setUserLevel(USERLEVEL_System);
 			else if (getUserLevel().equals(USERLEVEL_System))
 			{
-				log.saveWarning("AccessTableNoUpdate", Msg.getElement(getCtx(), "UserLevel"));
+				log.saveError("AccessTableNoUpdate", Msg.getElement(getCtx(), "UserLevel"));
 				return false;
 			}
 	//	}
