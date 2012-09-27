@@ -861,7 +861,7 @@ public class SynchronizeTerminology extends SvrProcess
 		
 		SynchronizeTerminology sc = new SynchronizeTerminology();
 		sc.startProcess(Env.getCtx(), pi, null);
-		
-		System.out.println("Process=" + pi.getTitle() + " Error="+pi.isError() + " Summary=" + pi.getSummary());
+		StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle()).append(" Error=").append(pi.isError()).append(" Summary=").append(pi.getSummary());
+		System.out.println(msgout.toString());
 	}
 }

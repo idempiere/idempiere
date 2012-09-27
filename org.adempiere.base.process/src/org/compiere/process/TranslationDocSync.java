@@ -99,7 +99,7 @@ public class TranslationDocSync extends SvrProcess
 	 */
 	private void processTable (MTable table, int AD_Client_ID)
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		MColumn[] columns = table.getColumns(false);
 		for (int i = 0; i < columns.length; i++)
 		{
@@ -119,7 +119,7 @@ public class TranslationDocSync extends SvrProcess
 		log.config(baseTable + ": " + sql);
 		String columnNames = sql.toString();
 		
-		sql = new StringBuffer();
+		sql = new StringBuilder();
 		sql.append("UPDATE ").append(table.getTableName()).append(" t SET (")
 			.append(columnNames).append(") = (SELECT ").append(columnNames)
 			.append(" FROM ").append(baseTable).append(" b WHERE t.")

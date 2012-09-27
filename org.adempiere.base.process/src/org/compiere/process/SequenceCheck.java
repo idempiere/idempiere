@@ -143,8 +143,10 @@ public class SequenceCheck extends SvrProcess
 		int no = DB.executeUpdate(sql, trxName);
 		if (no > 0)
 		{
-			if (sp != null)
-				sp.addLog(0, null, null, "SyncName #" + no);
+			if (sp != null){
+				StringBuilder msglog = new StringBuilder("SyncName #").append(no);
+				sp.addLog(0, null, null,msglog.toString());
+			}	
 			else
 				s_log.fine("Sync #" + no);
 		}
@@ -165,7 +167,8 @@ public class SequenceCheck extends SvrProcess
 			{
 				String TableName = rs.getString(1);
 				String SeqName = rs.getString(2);
-				sp.addLog(0, null, null, "ERROR: TableName=" + TableName + " - Sequence=" + SeqName);
+				StringBuilder msglog = new StringBuilder("ERROR: TableName=").append(TableName).append(" - Sequence=").append(SeqName);
+				sp.addLog(0, null, null, msglog.toString());
 			}
 		}
 		catch (Exception e)
@@ -215,21 +218,21 @@ public class SequenceCheck extends SvrProcess
 				{
 					if (seq.getCurrentNext() != old)
 					{
-						String msg = seq.getName() + " ID  " 
-							+ old + " -> " + seq.getCurrentNext();
+						StringBuilder msg = new StringBuilder(seq.getName()).append(" ID  ") 
+							.append(old).append(" -> ").append(seq.getCurrentNext());
 						if (sp != null)
-							sp.addLog(0, null, null, msg);
+							sp.addLog(0, null, null, msg.toString());
 						else
-							s_log.fine(msg);
+							s_log.fine(msg.toString());
 					}
 					if (seq.getCurrentNextSys() != oldSys)
 					{
-						String msg = seq.getName() + " Sys " 
-							+ oldSys + " -> " + seq.getCurrentNextSys();
+						StringBuilder msg = new StringBuilder(seq.getName()).append(" Sys ") 
+							.append(oldSys).append(" -> ").append(seq.getCurrentNextSys());
 						if (sp != null)
-							sp.addLog(0, null, null, msg);
+							sp.addLog(0, null, null, msg.toString());
 						else
-							s_log.fine(msg);
+							s_log.fine(msg.toString());
 					}
 					if (seq.save())
 						counter++;
@@ -305,6 +308,7 @@ public class SequenceCheck extends SvrProcess
 		SequenceCheck sc = new SequenceCheck();
 		sc.startProcess(Env.getCtx(), pi, null);
 		
-		System.out.println("Process=" + pi.getTitle() + " Error="+pi.isError() + " Summary=" + pi.getSummary());
+		StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle()).append(" Error=").append(pi.isError()).append(" Summary=").append(pi.getSummary());
+		System.out.println(msgout.toString());
 	}
 }	//	SequenceCheck

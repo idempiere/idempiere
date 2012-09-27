@@ -95,9 +95,9 @@ public class RollUpCosts extends SvrProcess {
 	
 	protected void rollUpCosts(int p_id) throws Exception 
 	{
-		String sql = "SELECT M_ProductBOM_ID FROM M_Product_BOM WHERE M_Product_ID = ? " + 
-		    " AND AD_Client_ID = " + client_id;
-		int[] prodbomids = DB.getIDsEx(get_TrxName(), sql, client_id);
+		StringBuilder sql = new StringBuilder("SELECT M_ProductBOM_ID FROM M_Product_BOM WHERE M_Product_ID = ? ") 
+		    .append(" AND AD_Client_ID = ").append(client_id);
+		int[] prodbomids = DB.getIDsEx(get_TrxName(), sql.toString(), client_id);
 		
 		for (int prodbomid : prodbomids) {
 			if ( !processed.contains(p_id)) {
@@ -106,17 +106,17 @@ public class RollUpCosts extends SvrProcess {
 		}
 
 		//once the subproducts costs are accurate, calculate the costs for this product
-		String update = "UPDATE M_Cost set CurrentCostPrice = COALESCE((select Sum (b.BOMQty * c.currentcostprice)" + 
-           " FROM M_Product_BOM b INNER JOIN M_Cost c ON (b.M_PRODUCTBOM_ID = c.M_Product_ID) " + 
-           " WHERE b.M_Product_ID = " + p_id + " AND M_CostElement_ID = " + costelement_id + "),0)," + 
-           " FutureCostPrice = COALESCE((select Sum (b.BOMQty * c.futurecostprice) FROM M_Product_BOM b " + 
-           " INNER JOIN M_Cost c ON (b.M_PRODUCTBOM_ID = c.M_Product_ID) " + 
-           " WHERE b.M_Product_ID = " + p_id + " AND M_CostElement_ID = " + costelement_id + "),0)" +
-           " WHERE M_Product_ID = " + p_id + " AND AD_Client_ID = " + client_id +
-           " AND M_CostElement_ID = " + costelement_id +
-           " AND M_PRODUCT_ID IN (SELECT M_PRODUCT_ID FROM M_PRODUCT_BOM)";;
+		StringBuilder update = new StringBuilder("UPDATE M_Cost set CurrentCostPrice = COALESCE((select Sum (b.BOMQty * c.currentcostprice)") 
+           .append(" FROM M_Product_BOM b INNER JOIN M_Cost c ON (b.M_PRODUCTBOM_ID = c.M_Product_ID) ") 
+           .append(" WHERE b.M_Product_ID = ").append(p_id).append(" AND M_CostElement_ID = ").append(costelement_id).append("),0),") 
+           .append(" FutureCostPrice = COALESCE((select Sum (b.BOMQty * c.futurecostprice) FROM M_Product_BOM b ") 
+           .append(" INNER JOIN M_Cost c ON (b.M_PRODUCTBOM_ID = c.M_Product_ID) ") 
+           .append(" WHERE b.M_Product_ID = ").append(p_id).append(" AND M_CostElement_ID = ").append(costelement_id).append("),0)")
+           .append(" WHERE M_Product_ID = ").append(p_id).append(" AND AD_Client_ID = ").append(client_id)
+           .append(" AND M_CostElement_ID = ").append(costelement_id)
+           .append(" AND M_PRODUCT_ID IN (SELECT M_PRODUCT_ID FROM M_PRODUCT_BOM)");
         
-		DB.executeUpdate(update, get_TrxName());
+		DB.executeUpdate(update.toString(), get_TrxName());
 
 		processed.add(p_id);
 		

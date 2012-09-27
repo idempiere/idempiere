@@ -117,8 +117,8 @@ public class StorageCleanup extends SvrProcess
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		
-		return "#" + lines;
+		StringBuilder msgreturn = new StringBuilder("#").append(lines);
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**
@@ -176,10 +176,10 @@ public class StorageCleanup extends SvrProcess
 			
 		}
 		mh.saveEx();
-		
-		addLog(0, null, new BigDecimal(lines), "@M_Movement_ID@ " + mh.getDocumentNo() + " (" 
-			+ MRefList.get(getCtx(), MMovement.DOCSTATUS_AD_Reference_ID, 
-				mh.getDocStatus(), get_TrxName()) + ")");
+		StringBuilder msglog= new StringBuilder("@M_Movement_ID@ ").append(mh.getDocumentNo()).append(" (") 
+				.append(MRefList.get(getCtx(), MMovement.DOCSTATUS_AD_Reference_ID, 
+						mh.getDocStatus(), get_TrxName())).append(")");
+		addLog(0, null, new BigDecimal(lines), msglog.toString());
 
 		eliminateReservation(target);
 		return lines;

@@ -124,8 +124,9 @@ public class SendMailText extends SvrProcess
 		if (m_C_BP_Group_ID > 0)
 			sendBPGroup();
 
-		return "@Created@=" + m_counter + ", @Errors@=" + m_errors + " - "
-			+ (System.currentTimeMillis()-start) + "ms";
+		StringBuilder msgreturn = new StringBuilder("@Created@=").append(m_counter).append(", @Errors@=").append(m_errors).append(" - ")
+				.append((System.currentTimeMillis()-start)).append("ms");
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**
@@ -135,14 +136,14 @@ public class SendMailText extends SvrProcess
 	{
 		log.info("R_InterestArea_ID=" + m_R_InterestArea_ID);
 		m_ia = MInterestArea.get(getCtx(), m_R_InterestArea_ID);
-		String unsubscribe = null;
+		StringBuilder unsubscribe = null;
 		if (m_ia.isSelfService())
 		{
-			unsubscribe = "\n\n---------.----------.----------.----------.----------.----------\n"
-				+ Msg.getElement(getCtx(), "R_InterestArea_ID")
-				+ ": " + m_ia.getName()
-				+ "\n" + Msg.getMsg(getCtx(), "UnsubscribeInfo")
-				+ "\n";
+			unsubscribe = new  StringBuilder("\n\n---------.----------.----------.----------.----------.----------\n")
+				.append(Msg.getElement(getCtx(), "R_InterestArea_ID"))
+				.append(": ").append(m_ia.getName())
+				.append("\n").append(Msg.getMsg(getCtx(), "UnsubscribeInfo"))
+				.append("\n");
 			MStore[] wstores = MStore.getOfClient(m_client);
 			int index = 0;
 			for (int i = 0; i < wstores.length; i++)
@@ -154,7 +155,7 @@ public class SendMailText extends SvrProcess
 				}
 			}
 			if (wstores.length > 0)
-				unsubscribe += wstores[index].getWebContext(true);
+				unsubscribe.append(wstores[index].getWebContext(true));
 		}
 
 		//
@@ -258,7 +259,7 @@ public class SendMailText extends SvrProcess
 	 *	@param unsubscribe unsubscribe message
 	 *	@return true if mail has been sent
 	 */
-	private Boolean sendIndividualMail (String Name, int AD_User_ID, String unsubscribe)
+	private Boolean sendIndividualMail (String Name, int AD_User_ID, StringBuilder unsubscribe)
 	{
 		//	Prevent two email
 		Integer ii = new Integer (AD_User_ID);
@@ -268,18 +269,18 @@ public class SendMailText extends SvrProcess
 		//
 		MUser to = new MUser (getCtx(), AD_User_ID, null);
 		m_MailText.setUser(AD_User_ID);		//	parse context
-		String message = m_MailText.getMailText(true);
+		StringBuilder message = new StringBuilder(m_MailText.getMailText(true));
 		//	Unsubscribe
 		if (unsubscribe != null)
-			message += unsubscribe;
+			message.append(unsubscribe);
 		//
-		EMail email = m_client.createEMail(m_from, to, m_MailText.getMailHeader(), message);
+		EMail email = m_client.createEMail(m_from, to, m_MailText.getMailHeader(), message.toString());
 		if (m_MailText.isHtml())
-			email.setMessageHTML(m_MailText.getMailHeader(), message);
+			email.setMessageHTML(m_MailText.getMailHeader(), message.toString());
 		else
 		{
 			email.setSubject (m_MailText.getMailHeader());
-			email.setMessageText (message);
+			email.setMessageText (message.toString());
 		}
 		if (!email.isValid() && !email.isValid(true))
 		{
@@ -296,7 +297,8 @@ public class SendMailText extends SvrProcess
 			log.fine(to.getEMail());
 		else
 			log.warning("FAILURE - " + to.getEMail());
-		addLog(0, null, null, (OK ? "@OK@" : "@ERROR@") + " - " + to.getEMail());
+		StringBuilder msglog = new StringBuilder((OK ? "@OK@" : "@ERROR@")).append(" - ").append(to.getEMail());
+		addLog(0, null, null, msglog.toString());
 		return new Boolean(OK);
 	}	//	sendIndividualMail
 

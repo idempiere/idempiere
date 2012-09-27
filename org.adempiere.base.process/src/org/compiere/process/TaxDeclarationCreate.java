@@ -125,9 +125,9 @@ public class TaxDeclarationCreate extends SvrProcess
 			rs = null; pstmt = null;
 		}
 		
-		
-		return "@C_Invoice_ID@ #" + noInvoices 
-			+ " (" + m_noLines + ", " + m_noAccts + ")";
+		StringBuilder msgreturn = new StringBuilder("@C_Invoice_ID@ #").append(noInvoices) 
+				.append(" (").append(m_noLines).append(", ").append(m_noAccts).append(")");
+		return msgreturn.toString();
 	}	//	doIt
 	
 	/**

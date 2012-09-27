@@ -110,10 +110,10 @@ public class RfQCreate extends SvrProcess
 			}
 		}	//	for all subscribers
 
-		String retValue = "@Created@ " + counter;
+		StringBuilder retValue = new StringBuilder("@Created@ ").append(counter);
 		if (p_IsSendRfQ)
-			retValue += " - @IsSendRfQ@=" + sent + " - @Error@=" + notSent;
-		return retValue;
+			retValue.append(" - @IsSendRfQ@=").append(sent).append(" - @Error@=").append(notSent);
+		return retValue.toString();
 	}	//	doIt
 	
 }	//	RfQCreate
