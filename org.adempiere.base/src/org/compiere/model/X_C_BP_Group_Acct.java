@@ -30,7 +30,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120928L;
 
     /** Standard Constructor */
     public X_C_BP_Group_Acct (Properties ctx, int C_BP_Group_Acct_ID, String trxName)
@@ -44,8 +44,6 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 			setC_Receivable_Acct (0);
 			setC_Receivable_Services_Acct (0);
 			setNotInvoicedReceipts_Acct (0);
-			setNotInvoicedReceivables_Acct (0);
-			setNotInvoicedRevenue_Acct (0);
 			setPayDiscount_Exp_Acct (0);
 			setPayDiscount_Rev_Acct (0);
 			setUnEarnedRevenue_Acct (0);
@@ -84,9 +82,9 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
       return sb.toString();
     }
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
     {
-		return (I_C_AcctSchema)MTable.get(getCtx(), I_C_AcctSchema.Table_Name)
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
 			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
 
 	/** Set Accounting Schema.
@@ -112,9 +110,23 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 		return ii.intValue();
 	}
 
-	public I_C_BP_Group getC_BP_Group() throws RuntimeException
+	/** Set C_BP_Group_Acct_UU.
+		@param C_BP_Group_Acct_UU C_BP_Group_Acct_UU	  */
+	public void setC_BP_Group_Acct_UU (String C_BP_Group_Acct_UU)
+	{
+		set_Value (COLUMNNAME_C_BP_Group_Acct_UU, C_BP_Group_Acct_UU);
+	}
+
+	/** Get C_BP_Group_Acct_UU.
+		@return C_BP_Group_Acct_UU	  */
+	public String getC_BP_Group_Acct_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_BP_Group_Acct_UU);
+	}
+
+	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
     {
-		return (I_C_BP_Group)MTable.get(getCtx(), I_C_BP_Group.Table_Name)
+		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_Name)
 			.getPO(getC_BP_Group_ID(), get_TrxName());	}
 
 	/** Set Business Partner Group.
@@ -243,56 +255,6 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	public int getNotInvoicedReceipts_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_NotInvoicedReceipts_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getNotInvoicedReceivables_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getNotInvoicedReceivables_Acct(), get_TrxName());	}
-
-	/** Set Not-invoiced Receivables.
-		@param NotInvoicedReceivables_Acct 
-		Account for not invoiced Receivables
-	  */
-	public void setNotInvoicedReceivables_Acct (int NotInvoicedReceivables_Acct)
-	{
-		set_Value (COLUMNNAME_NotInvoicedReceivables_Acct, Integer.valueOf(NotInvoicedReceivables_Acct));
-	}
-
-	/** Get Not-invoiced Receivables.
-		@return Account for not invoiced Receivables
-	  */
-	public int getNotInvoicedReceivables_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_NotInvoicedReceivables_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getNotInvoicedRevenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getNotInvoicedRevenue_Acct(), get_TrxName());	}
-
-	/** Set Not-invoiced Revenue.
-		@param NotInvoicedRevenue_Acct 
-		Account for not invoiced Revenue
-	  */
-	public void setNotInvoicedRevenue_Acct (int NotInvoicedRevenue_Acct)
-	{
-		set_Value (COLUMNNAME_NotInvoicedRevenue_Acct, Integer.valueOf(NotInvoicedRevenue_Acct));
-	}
-
-	/** Get Not-invoiced Revenue.
-		@return Account for not invoiced Revenue
-	  */
-	public int getNotInvoicedRevenue_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_NotInvoicedRevenue_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

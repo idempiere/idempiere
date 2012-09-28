@@ -29,7 +29,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120928L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Acct (Properties ctx, int C_BankAccount_Acct_ID, String trxName)
@@ -38,17 +38,11 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
       /** if (C_BankAccount_Acct_ID == 0)
         {
 			setB_Asset_Acct (0);
-			setB_Expense_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
 			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
-			setB_RevaluationGain_Acct (0);
-			setB_RevaluationLoss_Acct (0);
-			setB_SettlementGain_Acct (0);
-			setB_SettlementLoss_Acct (0);
 			setB_UnallocatedCash_Acct (0);
-			setB_Unidentified_Acct (0);
 			setC_AcctSchema_ID (0);
 			setC_BankAccount_ID (0);
         } */
@@ -102,31 +96,6 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	public int getB_Asset_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_Asset_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getB_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_Expense_Acct(), get_TrxName());	}
-
-	/** Set Bank Expense.
-		@param B_Expense_Acct 
-		Bank Expense Account
-	  */
-	public void setB_Expense_Acct (int B_Expense_Acct)
-	{
-		set_Value (COLUMNNAME_B_Expense_Acct, Integer.valueOf(B_Expense_Acct));
-	}
-
-	/** Get Bank Expense.
-		@return Bank Expense Account
-	  */
-	public int getB_Expense_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_Expense_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -232,106 +201,6 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getB_RevaluationGain_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_RevaluationGain_Acct(), get_TrxName());	}
-
-	/** Set Bank Revaluation Gain.
-		@param B_RevaluationGain_Acct 
-		Bank Revaluation Gain Account
-	  */
-	public void setB_RevaluationGain_Acct (int B_RevaluationGain_Acct)
-	{
-		set_Value (COLUMNNAME_B_RevaluationGain_Acct, Integer.valueOf(B_RevaluationGain_Acct));
-	}
-
-	/** Get Bank Revaluation Gain.
-		@return Bank Revaluation Gain Account
-	  */
-	public int getB_RevaluationGain_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_RevaluationGain_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getB_RevaluationLoss_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_RevaluationLoss_Acct(), get_TrxName());	}
-
-	/** Set Bank Revaluation Loss.
-		@param B_RevaluationLoss_Acct 
-		Bank Revaluation Loss Account
-	  */
-	public void setB_RevaluationLoss_Acct (int B_RevaluationLoss_Acct)
-	{
-		set_Value (COLUMNNAME_B_RevaluationLoss_Acct, Integer.valueOf(B_RevaluationLoss_Acct));
-	}
-
-	/** Get Bank Revaluation Loss.
-		@return Bank Revaluation Loss Account
-	  */
-	public int getB_RevaluationLoss_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_RevaluationLoss_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getB_SettlementGain_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_SettlementGain_Acct(), get_TrxName());	}
-
-	/** Set Bank Settlement Gain.
-		@param B_SettlementGain_Acct 
-		Bank Settlement Gain Account
-	  */
-	public void setB_SettlementGain_Acct (int B_SettlementGain_Acct)
-	{
-		set_Value (COLUMNNAME_B_SettlementGain_Acct, Integer.valueOf(B_SettlementGain_Acct));
-	}
-
-	/** Get Bank Settlement Gain.
-		@return Bank Settlement Gain Account
-	  */
-	public int getB_SettlementGain_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_SettlementGain_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getB_SettlementLoss_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_SettlementLoss_Acct(), get_TrxName());	}
-
-	/** Set Bank Settlement Loss.
-		@param B_SettlementLoss_Acct 
-		Bank Settlement Loss Account
-	  */
-	public void setB_SettlementLoss_Acct (int B_SettlementLoss_Acct)
-	{
-		set_Value (COLUMNNAME_B_SettlementLoss_Acct, Integer.valueOf(B_SettlementLoss_Acct));
-	}
-
-	/** Get Bank Settlement Loss.
-		@return Bank Settlement Loss Account
-	  */
-	public int getB_SettlementLoss_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_SettlementLoss_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -357,34 +226,9 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getB_Unidentified_A() throws RuntimeException
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
     {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_Unidentified_Acct(), get_TrxName());	}
-
-	/** Set Bank Unidentified Receipts.
-		@param B_Unidentified_Acct 
-		Bank Unidentified Receipts Account
-	  */
-	public void setB_Unidentified_Acct (int B_Unidentified_Acct)
-	{
-		set_Value (COLUMNNAME_B_Unidentified_Acct, Integer.valueOf(B_Unidentified_Acct));
-	}
-
-	/** Get Bank Unidentified Receipts.
-		@return Bank Unidentified Receipts Account
-	  */
-	public int getB_Unidentified_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_Unidentified_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (I_C_AcctSchema)MTable.get(getCtx(), I_C_AcctSchema.Table_Name)
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
 			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
 
 	/** Set Accounting Schema.
@@ -410,9 +254,23 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 		return ii.intValue();
 	}
 
-	public I_C_BankAccount getC_BankAccount() throws RuntimeException
+	/** Set C_BankAccount_Acct_UU.
+		@param C_BankAccount_Acct_UU C_BankAccount_Acct_UU	  */
+	public void setC_BankAccount_Acct_UU (String C_BankAccount_Acct_UU)
+	{
+		set_Value (COLUMNNAME_C_BankAccount_Acct_UU, C_BankAccount_Acct_UU);
+	}
+
+	/** Get C_BankAccount_Acct_UU.
+		@return C_BankAccount_Acct_UU	  */
+	public String getC_BankAccount_Acct_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_BankAccount_Acct_UU);
+	}
+
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
     {
-		return (I_C_BankAccount)MTable.get(getCtx(), I_C_BankAccount.Table_Name)
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
 			.getPO(getC_BankAccount_ID(), get_TrxName());	}
 
 	/** Set Bank Account.

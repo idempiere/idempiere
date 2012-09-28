@@ -31,11 +31,11 @@ public interface I_C_Currency_Acct
     public static final String Table_Name = "C_Currency_Acct";
 
     /** AD_Table_ID=638 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 638;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel =  - Client - Org 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
@@ -75,7 +75,16 @@ public interface I_C_Currency_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+
+    /** Column name C_Currency_Acct_UU */
+    public static final String COLUMNNAME_C_Currency_Acct_UU = "C_Currency_Acct_UU";
+
+	/** Set C_Currency_Acct_UU	  */
+	public void setC_Currency_Acct_UU (String C_Currency_Acct_UU);
+
+	/** Get C_Currency_Acct_UU	  */
+	public String getC_Currency_Acct_UU();
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -90,7 +99,7 @@ public interface I_C_Currency_Acct
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -120,66 +129,6 @@ public interface I_C_Currency_Acct
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name RealizedGain_Acct */
-    public static final String COLUMNNAME_RealizedGain_Acct = "RealizedGain_Acct";
-
-	/** Set Realized Gain Acct.
-	  * Realized Gain Account
-	  */
-	public void setRealizedGain_Acct (int RealizedGain_Acct);
-
-	/** Get Realized Gain Acct.
-	  * Realized Gain Account
-	  */
-	public int getRealizedGain_Acct();
-
-	public I_C_ValidCombination getRealizedGain_A() throws RuntimeException;
-
-    /** Column name RealizedLoss_Acct */
-    public static final String COLUMNNAME_RealizedLoss_Acct = "RealizedLoss_Acct";
-
-	/** Set Realized Loss Acct.
-	  * Realized Loss Account
-	  */
-	public void setRealizedLoss_Acct (int RealizedLoss_Acct);
-
-	/** Get Realized Loss Acct.
-	  * Realized Loss Account
-	  */
-	public int getRealizedLoss_Acct();
-
-	public I_C_ValidCombination getRealizedLoss_A() throws RuntimeException;
-
-    /** Column name UnrealizedGain_Acct */
-    public static final String COLUMNNAME_UnrealizedGain_Acct = "UnrealizedGain_Acct";
-
-	/** Set Unrealized Gain Acct.
-	  * Unrealized Gain Account for currency revaluation
-	  */
-	public void setUnrealizedGain_Acct (int UnrealizedGain_Acct);
-
-	/** Get Unrealized Gain Acct.
-	  * Unrealized Gain Account for currency revaluation
-	  */
-	public int getUnrealizedGain_Acct();
-
-	public I_C_ValidCombination getUnrealizedGain_A() throws RuntimeException;
-
-    /** Column name UnrealizedLoss_Acct */
-    public static final String COLUMNNAME_UnrealizedLoss_Acct = "UnrealizedLoss_Acct";
-
-	/** Set Unrealized Loss Acct.
-	  * Unrealized Loss Account for currency revaluation
-	  */
-	public void setUnrealizedLoss_Acct (int UnrealizedLoss_Acct);
-
-	/** Get Unrealized Loss Acct.
-	  * Unrealized Loss Account for currency revaluation
-	  */
-	public int getUnrealizedLoss_Acct();
-
-	public I_C_ValidCombination getUnrealizedLoss_A() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

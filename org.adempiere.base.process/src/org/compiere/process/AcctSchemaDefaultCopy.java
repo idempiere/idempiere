@@ -97,18 +97,7 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append(", P_AverageCostVariance_Acct=").append(acct.getP_AverageCostVariance_Acct())
 				.append(", P_TradeDiscountRec_Acct=").append(acct.getP_TradeDiscountRec_Acct())
 				.append(", P_TradeDiscountGrant_Acct=").append(acct.getP_TradeDiscountGrant_Acct())
-				.append(", P_WIP_Acct=").append(acct.getP_WIP_Acct())
-				.append(", P_FloorStock_Acct=").append(acct.getP_FloorStock_Acct())
-				.append(", P_MethodChangeVariance_Acct=").append(acct.getP_MethodChangeVariance_Acct())
-				.append(", P_UsageVariance_Acct=").append(acct.getP_UsageVariance_Acct())
 				.append(", P_RateVariance_Acct=").append(acct.getP_RateVariance_Acct())
-				.append(", P_MixVariance_Acct=").append(acct.getP_MixVariance_Acct())
-				.append(", P_Labor_Acct=").append(acct.getP_Labor_Acct())
-				.append(", P_Burden_Acct=").append(acct.getP_Burden_Acct())
-				.append(", P_CostOfProduction_Acct=").append(acct.getP_CostOfProduction_Acct())
-				.append(", P_OutsideProcessing_Acct=").append(acct.getP_OutsideProcessing_Acct())			
-				.append(", P_Overhead_Acct=").append(acct.getP_Overhead_Acct())	
-				.append(", P_Scrap_Acct=").append(acct.getP_Scrap_Acct())	
 				.append(", Updated=SysDate, UpdatedBy=0 ")
 				.append("WHERE pa.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM M_Product_Category p ")
@@ -124,15 +113,13 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 			.append(" P_Revenue_Acct, P_Expense_Acct, P_CostAdjustment_Acct, P_InventoryClearing_Acct, P_Asset_Acct, P_CoGs_Acct,")
 			.append(" P_PurchasePriceVariance_Acct, P_InvoicePriceVariance_Acct, P_AverageCostVariance_Acct,")
 			.append(" P_TradeDiscountRec_Acct, P_TradeDiscountGrant_Acct," )
-			.append(" P_WIP_Acct,P_FloorStock_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,P_RateVariance_Acct,") 
-			.append(" P_MixVariance_Acct,P_Labor_Acct,P_Burden_Acct,P_CostOfProduction_Acct,P_OutsideProcessing_Acct,P_Overhead_Acct,P_Scrap_Acct) ")
+			.append(" P_RateVariance_Acct) ")
 			.append(" SELECT p.M_Product_Category_ID, acct.C_AcctSchema_ID,")
 			.append(" p.AD_Client_ID, p.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,")
 			.append(" acct.P_Revenue_Acct, acct.P_Expense_Acct, acct.P_CostAdjustment_Acct, acct.P_InventoryClearing_Acct, acct.P_Asset_Acct, acct.P_CoGs_Acct,")
 			.append(" acct.P_PurchasePriceVariance_Acct, acct.P_InvoicePriceVariance_Acct, acct.P_AverageCostVariance_Acct,")
 			.append(" acct.P_TradeDiscountRec_Acct, acct.P_TradeDiscountGrant_Acct,")
-			.append(" acct.P_WIP_Acct,acct.P_FloorStock_Acct,acct.P_MethodChangeVariance_Acct,acct.P_UsageVariance_Acct,acct.P_RateVariance_Acct,") 
-			.append(" acct.P_MixVariance_Acct,acct.P_Labor_Acct,acct.P_Burden_Acct,acct.P_CostOfProduction_Acct,acct.P_OutsideProcessing_Acct,P_Overhead_Acct,P_Scrap_Acct ")
+			.append(" acct.P_RateVariance_Acct ") 
 			.append("FROM M_Product_Category p")
 			.append(" INNER JOIN C_AcctSchema_Default acct ON (p.AD_Client_ID=acct.AD_Client_ID) ")
 			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
@@ -150,15 +137,13 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append(" P_Revenue_Acct, P_Expense_Acct, P_CostAdjustment_Acct, P_InventoryClearing_Acct, P_Asset_Acct, P_CoGs_Acct,")
 				.append(" P_PurchasePriceVariance_Acct, P_InvoicePriceVariance_Acct, P_AverageCostVariance_Acct,")
 				.append(" P_TradeDiscountRec_Acct, P_TradeDiscountGrant_Acct, ")
-				.append(" P_WIP_Acct,P_FloorStock_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,P_RateVariance_Acct,") 
-				.append(" P_MixVariance_Acct,P_Labor_Acct,P_Burden_Acct,P_CostOfProduction_Acct,P_OutsideProcessing_Acct,P_Overhead_Acct,P_Scrap_Acct) ")
+				.append(" P_RateVariance_Acct) ") 
 				.append("SELECT p.M_Product_ID, acct.C_AcctSchema_ID,")
 				.append(" p.AD_Client_ID, p.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,")
 				.append(" acct.P_Revenue_Acct, acct.P_Expense_Acct, acct.P_CostAdjustment_Acct, acct.P_InventoryClearing_Acct, acct.P_Asset_Acct, acct.P_CoGs_Acct,")
 				.append(" acct.P_PurchasePriceVariance_Acct, acct.P_InvoicePriceVariance_Acct, acct.P_AverageCostVariance_Acct,")
 				.append(" acct.P_TradeDiscountRec_Acct, acct.P_TradeDiscountGrant_Acct,")
-				.append(" acct.P_WIP_Acct,acct.P_FloorStock_Acct,acct.P_MethodChangeVariance_Acct,acct.P_UsageVariance_Acct,acct.P_RateVariance_Acct,") 
-				.append(" acct.P_MixVariance_Acct,acct.P_Labor_Acct,acct.P_Burden_Acct,acct.P_CostOfProduction_Acct,acct.P_OutsideProcessing_Acct,acct.P_Overhead_Acct,acct.P_Scrap_Acct ")
+				.append(" acct.P_RateVariance_Acct ") 
 				.append("FROM M_Product p")
 				.append(" INNER JOIN M_Product_Category_Acct acct ON (acct.M_Product_Category_ID=p.M_Product_Category_ID)")
 				.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
@@ -187,8 +172,6 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append(", WriteOff_Acct=").append(acct.getWriteOff_Acct())
 				.append(", NotInvoicedReceipts_Acct=").append(acct.getNotInvoicedReceipts_Acct())
 				.append(", UnEarnedRevenue_Acct=").append(acct.getUnEarnedRevenue_Acct())
-				.append(", NotInvoicedRevenue_Acct=").append(acct.getNotInvoicedRevenue_Acct())
-				.append(", NotInvoicedReceivables_Acct=").append(acct.getNotInvoicedReceivables_Acct())
 				.append(", Updated=SysDate, UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM C_BP_Group_Acct x ")
@@ -204,15 +187,13 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 			.append(" C_Receivable_Acct, C_Receivable_Services_Acct, C_PrePayment_Acct,")
 			.append(" V_Liability_Acct, V_Liability_Services_Acct, V_PrePayment_Acct,")
 			.append(" PayDiscount_Exp_Acct, PayDiscount_Rev_Acct, WriteOff_Acct,")
-			.append(" NotInvoicedReceipts_Acct, UnEarnedRevenue_Acct,")
-			.append(" NotInvoicedRevenue_Acct, NotInvoicedReceivables_Acct) ")
+			.append(" NotInvoicedReceipts_Acct, UnEarnedRevenue_Acct) ")
 			.append("SELECT x.C_BP_Group_ID, acct.C_AcctSchema_ID,")
 			.append(" x.AD_Client_ID, x.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,")
 			.append(" acct.C_Receivable_Acct, acct.C_Receivable_Services_Acct, acct.C_PrePayment_Acct,")
 			.append(" acct.V_Liability_Acct, acct.V_Liability_Services_Acct, acct.V_PrePayment_Acct,")
 			.append(" acct.PayDiscount_Exp_Acct, acct.PayDiscount_Rev_Acct, acct.WriteOff_Acct,")
-			.append(" acct.NotInvoicedReceipts_Acct, acct.UnEarnedRevenue_Acct,")
-			.append(" acct.NotInvoicedRevenue_Acct, acct.NotInvoicedReceivables_Acct ")
+			.append(" acct.NotInvoicedReceipts_Acct, acct.UnEarnedRevenue_Acct ")
 			.append("FROM C_BP_Group x")
 			.append(" INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) ")
 			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
@@ -223,8 +204,9 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_BP_Group_ID@");
 		createdTotal += created;
 
-		
+//IDEMPIERE-362 Hide things that don't work on iDempiere		
 		//	Update Business Partner - Employee
+		/*
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_BP_Employee_Acct a ")
@@ -255,6 +237,7 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_BPartner_ID@ @IsEmployee@");
 		createdTotal += created;
+		*/
 		//
 		if (!p_CopyOverwriteAcct)
 		{
@@ -293,15 +276,12 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 			addLog(0, null, new BigDecimal(created), "@Created@ @C_BPartner_ID@ @IsVendor@");
 			createdTotal += created;
 		}
-
+//IDEMPIERE-362 Hide things that don't work on iDempiere
 		//	Update Warehouse
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE M_Warehouse_Acct a ")
-				.append("SET W_Inventory_Acct=").append(acct.getW_Inventory_Acct())
-				.append(", W_Differences_Acct=").append(acct.getW_Differences_Acct())
-				.append(", W_Revaluation_Acct=").append(acct.getW_Revaluation_Acct())
-				.append(", W_InvActualAdjust_Acct=").append(acct.getW_InvActualAdjust_Acct())
+				.append("SET W_Differences_Acct=").append(acct.getW_Differences_Acct())
 				.append(", Updated=SysDate, UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM M_Warehouse_Acct x ")
@@ -314,10 +294,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		sql = new StringBuilder("INSERT INTO M_Warehouse_Acct ")
 			.append("(M_Warehouse_ID, C_AcctSchema_ID,")
 			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,")
-			.append(" W_Inventory_Acct, W_Differences_Acct, W_Revaluation_Acct, W_InvActualAdjust_Acct) ")
+			.append(" W_Differences_Acct) ")
 			.append("SELECT x.M_Warehouse_ID, acct.C_AcctSchema_ID,")
 			.append(" x.AD_Client_ID, x.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,")
-			.append(" acct.W_Inventory_Acct, acct.W_Differences_Acct, acct.W_Revaluation_Acct, acct.W_InvActualAdjust_Acct ")
+			.append(" acct.W_Differences_Acct ")
 			.append("FROM M_Warehouse x")
 			.append(" INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) ")
 			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
@@ -361,15 +341,13 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_Project_ID@");
 		createdTotal += created;
 
-
+//IDEMPIERE-362 Hide things that don't work on iDempiere
 		//	Update Tax
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_Tax_Acct a ")
 				.append("SET T_Due_Acct=").append(acct.getT_Due_Acct())
-				.append(", T_Liability_Acct=").append(acct.getT_Liability_Acct())
 				.append(", T_Credit_Acct=").append(acct.getT_Credit_Acct())
-				.append(", T_Receivables_Acct=").append(acct.getT_Receivables_Acct())
 				.append(", T_Expense_Acct=").append(acct.getT_Expense_Acct())
 				.append(", Updated=SysDate, UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
@@ -383,10 +361,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		sql = new StringBuilder("INSERT INTO C_Tax_Acct ")
 			.append("(C_Tax_ID, C_AcctSchema_ID,")
 			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,")
-			.append(" T_Due_Acct, T_Liability_Acct, T_Credit_Acct, T_Receivables_Acct, T_Expense_Acct) ")
+			.append(" T_Due_Acct, T_Credit_Acct, T_Expense_Acct) ")
 			.append("SELECT x.C_Tax_ID, acct.C_AcctSchema_ID,")
 			.append(" x.AD_Client_ID, x.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,")
-			.append(" acct.T_Due_Acct, acct.T_Liability_Acct, acct.T_Credit_Acct, acct.T_Receivables_Acct, acct.T_Expense_Acct ")
+			.append(" acct.T_Due_Acct, acct.T_Credit_Acct, acct.T_Expense_Acct ")
 			.append("FROM C_Tax x")
 			.append(" INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) ")
 			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
@@ -404,16 +382,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 			sql = new StringBuilder("UPDATE C_BankAccount_Acct a ")
 				.append("SET B_InTransit_Acct=").append(acct.getB_InTransit_Acct())
 				.append(", B_Asset_Acct=").append(acct.getB_Asset_Acct())
-				.append(", B_Expense_Acct=").append(acct.getB_Expense_Acct())
 				.append(", B_InterestRev_Acct=").append(acct.getB_InterestRev_Acct())
 				.append(", B_InterestExp_Acct=").append(acct.getB_InterestExp_Acct())
-				.append(", B_Unidentified_Acct=").append(acct.getB_Unidentified_Acct())
 				.append(", B_UnallocatedCash_Acct=").append(acct.getB_UnallocatedCash_Acct())
 				.append(", B_PaymentSelect_Acct=").append(acct.getB_PaymentSelect_Acct())
-				.append(", B_SettlementGain_Acct=").append(acct.getB_SettlementGain_Acct())
-				.append(", B_SettlementLoss_Acct=").append(acct.getB_SettlementLoss_Acct())
-				.append(", B_RevaluationGain_Acct=").append(acct.getB_RevaluationGain_Acct())
-				.append(", B_RevaluationLoss_Acct=").append(acct.getB_RevaluationLoss_Acct())
 				.append(", Updated=SysDate, UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM C_BankAccount_Acct x ")
@@ -426,16 +398,12 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		sql = new StringBuilder("INSERT INTO C_BankAccount_Acct ")
 			.append("(C_BankAccount_ID, C_AcctSchema_ID,")
 			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,")
-			.append(" B_InTransit_Acct, B_Asset_Acct, B_Expense_Acct, B_InterestRev_Acct, B_InterestExp_Acct,")
-			.append(" B_Unidentified_Acct, B_UnallocatedCash_Acct, B_PaymentSelect_Acct,")
-			.append(" B_SettlementGain_Acct, B_SettlementLoss_Acct,")
-			.append(" B_RevaluationGain_Acct, B_RevaluationLoss_Acct) ")
+			.append(" B_InTransit_Acct, B_Asset_Acct, B_InterestRev_Acct, B_InterestExp_Acct,")
+			.append(" B_UnallocatedCash_Acct, B_PaymentSelect_Acct) ")
 			.append("SELECT x.C_BankAccount_ID, acct.C_AcctSchema_ID,")
 			.append(" x.AD_Client_ID, x.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,")
-			.append(" acct.B_InTransit_Acct, acct.B_Asset_Acct, acct.B_Expense_Acct, acct.B_InterestRev_Acct, acct.B_InterestExp_Acct,")
-			.append(" acct.B_Unidentified_Acct, acct.B_UnallocatedCash_Acct, acct.B_PaymentSelect_Acct,")
-			.append(" acct.B_SettlementGain_Acct, acct.B_SettlementLoss_Acct,")
-			.append(" acct.B_RevaluationGain_Acct, acct.B_RevaluationLoss_Acct ")
+			.append(" acct.B_InTransit_Acct, acct.B_Asset_Acct, acct.B_InterestRev_Acct, acct.B_InterestExp_Acct,")
+			.append(" acct.B_UnallocatedCash_Acct, acct.B_PaymentSelect_Acct ")
 			.append("FROM C_BankAccount x")
 			.append(" INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) ")
 			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
@@ -446,8 +414,9 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_BankAccount_ID@");
 		createdTotal += created;
 
-
+//IDEMPIERE-362 Hide things that don't work on iDempiere
 		//	Update Withholding
+		/*
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_Withholding_Acct a ")
@@ -477,7 +446,7 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_Withholding_ID@");
 		createdTotal += created;
-
+		*/
 		
 		//	Update Charge
 		if (p_CopyOverwriteAcct)

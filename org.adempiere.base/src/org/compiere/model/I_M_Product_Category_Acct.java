@@ -31,11 +31,11 @@ public interface I_M_Product_Category_Acct
     public static final String Table_Name = "M_Product_Category_Acct";
 
     /** AD_Table_ID=401 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 401;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel =  - Client - Org 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
@@ -75,7 +75,7 @@ public interface I_M_Product_Category_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name CostingLevel */
     public static final String COLUMNNAME_CostingLevel = "CostingLevel";
@@ -132,6 +132,15 @@ public interface I_M_Product_Category_Acct
 	  */
 	public boolean isActive();
 
+    /** Column name M_Product_Category_Acct_UU */
+    public static final String COLUMNNAME_M_Product_Category_Acct_UU = "M_Product_Category_Acct_UU";
+
+	/** Set M_Product_Category_Acct_UU	  */
+	public void setM_Product_Category_Acct_UU (String M_Product_Category_Acct_UU);
+
+	/** Get M_Product_Category_Acct_UU	  */
+	public String getM_Product_Category_Acct_UU();
+
     /** Column name M_Product_Category_ID */
     public static final String COLUMNNAME_M_Product_Category_ID = "M_Product_Category_ID";
 
@@ -145,7 +154,7 @@ public interface I_M_Product_Category_Acct
 	  */
 	public int getM_Product_Category_ID();
 
-	public I_M_Product_Category getM_Product_Category() throws RuntimeException;
+	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name P_Asset_Acct */
     public static final String COLUMNNAME_P_Asset_Acct = "P_Asset_Acct";
@@ -177,21 +186,6 @@ public interface I_M_Product_Category_Acct
 
 	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException;
 
-    /** Column name P_Burden_Acct */
-    public static final String COLUMNNAME_P_Burden_Acct = "P_Burden_Acct";
-
-	/** Set Burden.
-	  * The Burden account is the account used Manufacturing Order
-	  */
-	public void setP_Burden_Acct (int P_Burden_Acct);
-
-	/** Get Burden.
-	  * The Burden account is the account used Manufacturing Order
-	  */
-	public int getP_Burden_Acct();
-
-	public I_C_ValidCombination getP_Burden_A() throws RuntimeException;
-
     /** Column name P_COGS_Acct */
     public static final String COLUMNNAME_P_COGS_Acct = "P_COGS_Acct";
 
@@ -222,21 +216,6 @@ public interface I_M_Product_Category_Acct
 
 	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException;
 
-    /** Column name P_CostOfProduction_Acct */
-    public static final String COLUMNNAME_P_CostOfProduction_Acct = "P_CostOfProduction_Acct";
-
-	/** Set Cost Of Production.
-	  * The Cost Of Production account is the account used Manufacturing Order
-	  */
-	public void setP_CostOfProduction_Acct (int P_CostOfProduction_Acct);
-
-	/** Get Cost Of Production.
-	  * The Cost Of Production account is the account used Manufacturing Order
-	  */
-	public int getP_CostOfProduction_Acct();
-
-	public I_C_ValidCombination getP_CostOfProduction_A() throws RuntimeException;
-
     /** Column name P_Expense_Acct */
     public static final String COLUMNNAME_P_Expense_Acct = "P_Expense_Acct";
 
@@ -251,21 +230,6 @@ public interface I_M_Product_Category_Acct
 	public int getP_Expense_Acct();
 
 	public I_C_ValidCombination getP_Expense_A() throws RuntimeException;
-
-    /** Column name P_FloorStock_Acct */
-    public static final String COLUMNNAME_P_FloorStock_Acct = "P_FloorStock_Acct";
-
-	/** Set Floor Stock.
-	  * The Floor Stock account is the account used Manufacturing Order
-	  */
-	public void setP_FloorStock_Acct (int P_FloorStock_Acct);
-
-	/** Get Floor Stock.
-	  * The Floor Stock account is the account used Manufacturing Order
-	  */
-	public int getP_FloorStock_Acct();
-
-	public I_C_ValidCombination getP_FloorStock_A() throws RuntimeException;
 
     /** Column name P_InventoryClearing_Acct */
     public static final String COLUMNNAME_P_InventoryClearing_Acct = "P_InventoryClearing_Acct";
@@ -296,81 +260,6 @@ public interface I_M_Product_Category_Acct
 	public int getP_InvoicePriceVariance_Acct();
 
 	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException;
-
-    /** Column name P_Labor_Acct */
-    public static final String COLUMNNAME_P_Labor_Acct = "P_Labor_Acct";
-
-	/** Set Labor.
-	  * The Labor account is the account used Manufacturing Order
-	  */
-	public void setP_Labor_Acct (int P_Labor_Acct);
-
-	/** Get Labor.
-	  * The Labor account is the account used Manufacturing Order
-	  */
-	public int getP_Labor_Acct();
-
-	public I_C_ValidCombination getP_Labor_A() throws RuntimeException;
-
-    /** Column name P_MethodChangeVariance_Acct */
-    public static final String COLUMNNAME_P_MethodChangeVariance_Acct = "P_MethodChangeVariance_Acct";
-
-	/** Set Method Change Variance.
-	  * The Method Change Variance account is the account used Manufacturing Order
-	  */
-	public void setP_MethodChangeVariance_Acct (int P_MethodChangeVariance_Acct);
-
-	/** Get Method Change Variance.
-	  * The Method Change Variance account is the account used Manufacturing Order
-	  */
-	public int getP_MethodChangeVariance_Acct();
-
-	public I_C_ValidCombination getP_MethodChangeVariance_A() throws RuntimeException;
-
-    /** Column name P_MixVariance_Acct */
-    public static final String COLUMNNAME_P_MixVariance_Acct = "P_MixVariance_Acct";
-
-	/** Set Mix Variance.
-	  * The Mix Variance account is the account used Manufacturing Order
-	  */
-	public void setP_MixVariance_Acct (int P_MixVariance_Acct);
-
-	/** Get Mix Variance.
-	  * The Mix Variance account is the account used Manufacturing Order
-	  */
-	public int getP_MixVariance_Acct();
-
-	public I_C_ValidCombination getP_MixVariance_A() throws RuntimeException;
-
-    /** Column name P_OutsideProcessing_Acct */
-    public static final String COLUMNNAME_P_OutsideProcessing_Acct = "P_OutsideProcessing_Acct";
-
-	/** Set Outside Processing.
-	  * The Outside Processing Account is the account used in Manufacturing Order
-	  */
-	public void setP_OutsideProcessing_Acct (int P_OutsideProcessing_Acct);
-
-	/** Get Outside Processing.
-	  * The Outside Processing Account is the account used in Manufacturing Order
-	  */
-	public int getP_OutsideProcessing_Acct();
-
-	public I_C_ValidCombination getP_OutsideProcessing_A() throws RuntimeException;
-
-    /** Column name P_Overhead_Acct */
-    public static final String COLUMNNAME_P_Overhead_Acct = "P_Overhead_Acct";
-
-	/** Set Overhead.
-	  * The Overhead account is the account used  in Manufacturing Order 
-	  */
-	public void setP_Overhead_Acct (int P_Overhead_Acct);
-
-	/** Get Overhead.
-	  * The Overhead account is the account used  in Manufacturing Order 
-	  */
-	public int getP_Overhead_Acct();
-
-	public I_C_ValidCombination getP_Overhead_A() throws RuntimeException;
 
     /** Column name P_PurchasePriceVariance_Acct */
     public static final String COLUMNNAME_P_PurchasePriceVariance_Acct = "P_PurchasePriceVariance_Acct";
@@ -426,21 +315,6 @@ public interface I_M_Product_Category_Acct
 	/** Get Process Now	  */
 	public boolean isProcessing();
 
-    /** Column name P_Scrap_Acct */
-    public static final String COLUMNNAME_P_Scrap_Acct = "P_Scrap_Acct";
-
-	/** Set Scrap.
-	  * The Scrap account is the account used  in Manufacturing Order 
-	  */
-	public void setP_Scrap_Acct (int P_Scrap_Acct);
-
-	/** Get Scrap.
-	  * The Scrap account is the account used  in Manufacturing Order 
-	  */
-	public int getP_Scrap_Acct();
-
-	public I_C_ValidCombination getP_Scrap_A() throws RuntimeException;
-
     /** Column name P_TradeDiscountGrant_Acct */
     public static final String COLUMNNAME_P_TradeDiscountGrant_Acct = "P_TradeDiscountGrant_Acct";
 
@@ -470,36 +344,6 @@ public interface I_M_Product_Category_Acct
 	public int getP_TradeDiscountRec_Acct();
 
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException;
-
-    /** Column name P_UsageVariance_Acct */
-    public static final String COLUMNNAME_P_UsageVariance_Acct = "P_UsageVariance_Acct";
-
-	/** Set Usage Variance.
-	  * The Usage Variance account is the account used Manufacturing Order
-	  */
-	public void setP_UsageVariance_Acct (int P_UsageVariance_Acct);
-
-	/** Get Usage Variance.
-	  * The Usage Variance account is the account used Manufacturing Order
-	  */
-	public int getP_UsageVariance_Acct();
-
-	public I_C_ValidCombination getP_UsageVariance_A() throws RuntimeException;
-
-    /** Column name P_WIP_Acct */
-    public static final String COLUMNNAME_P_WIP_Acct = "P_WIP_Acct";
-
-	/** Set Work In Process.
-	  * The Work in Process account is the account used Manufacturing Order
-	  */
-	public void setP_WIP_Acct (int P_WIP_Acct);
-
-	/** Get Work In Process.
-	  * The Work in Process account is the account used Manufacturing Order
-	  */
-	public int getP_WIP_Acct();
-
-	public I_C_ValidCombination getP_WIP_A() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

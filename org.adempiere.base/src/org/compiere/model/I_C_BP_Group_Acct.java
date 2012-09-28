@@ -31,11 +31,11 @@ public interface I_C_BP_Group_Acct
     public static final String Table_Name = "C_BP_Group_Acct";
 
     /** AD_Table_ID=395 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 395;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel =  - Client - Org 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
@@ -75,7 +75,16 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+
+    /** Column name C_BP_Group_Acct_UU */
+    public static final String COLUMNNAME_C_BP_Group_Acct_UU = "C_BP_Group_Acct_UU";
+
+	/** Set C_BP_Group_Acct_UU	  */
+	public void setC_BP_Group_Acct_UU (String C_BP_Group_Acct_UU);
+
+	/** Get C_BP_Group_Acct_UU	  */
+	public String getC_BP_Group_Acct_UU();
 
     /** Column name C_BP_Group_ID */
     public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
@@ -90,7 +99,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getC_BP_Group_ID();
 
-	public I_C_BP_Group getC_BP_Group() throws RuntimeException;
+	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_Prepayment_Acct */
     public static final String COLUMNNAME_C_Prepayment_Acct = "C_Prepayment_Acct";
@@ -180,36 +189,6 @@ public interface I_C_BP_Group_Acct
 	public int getNotInvoicedReceipts_Acct();
 
 	public I_C_ValidCombination getNotInvoicedReceipts_A() throws RuntimeException;
-
-    /** Column name NotInvoicedReceivables_Acct */
-    public static final String COLUMNNAME_NotInvoicedReceivables_Acct = "NotInvoicedReceivables_Acct";
-
-	/** Set Not-invoiced Receivables.
-	  * Account for not invoiced Receivables
-	  */
-	public void setNotInvoicedReceivables_Acct (int NotInvoicedReceivables_Acct);
-
-	/** Get Not-invoiced Receivables.
-	  * Account for not invoiced Receivables
-	  */
-	public int getNotInvoicedReceivables_Acct();
-
-	public I_C_ValidCombination getNotInvoicedReceivables_A() throws RuntimeException;
-
-    /** Column name NotInvoicedRevenue_Acct */
-    public static final String COLUMNNAME_NotInvoicedRevenue_Acct = "NotInvoicedRevenue_Acct";
-
-	/** Set Not-invoiced Revenue.
-	  * Account for not invoiced Revenue
-	  */
-	public void setNotInvoicedRevenue_Acct (int NotInvoicedRevenue_Acct);
-
-	/** Get Not-invoiced Revenue.
-	  * Account for not invoiced Revenue
-	  */
-	public int getNotInvoicedRevenue_Acct();
-
-	public I_C_ValidCombination getNotInvoicedRevenue_A() throws RuntimeException;
 
     /** Column name PayDiscount_Exp_Acct */
     public static final String COLUMNNAME_PayDiscount_Exp_Acct = "PayDiscount_Exp_Acct";
