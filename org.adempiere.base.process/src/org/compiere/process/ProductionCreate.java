@@ -105,7 +105,7 @@ public class ProductionCreate extends SvrProcess {
 		
 		m_production.setIsCreated("Y");
 		m_production.save(get_TrxName());
-		StringBuilder msgreturn = new StringBuilder(created).append(" production lines were created");
+		StringBuilder msgreturn = new StringBuilder().append(created).append(" production lines were created");
 		return msgreturn.toString();
 	}
 	

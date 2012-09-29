@@ -45,7 +45,7 @@ public class UniversalSubstitution extends SvrProcess {
 			bom.saveEx();
 			count++;
 		}
-		StringBuilder msgreturn = new StringBuilder(count).append(" BOM products updated");
+		StringBuilder msgreturn = new StringBuilder().append(count).append(" BOM products updated");
 		return msgreturn.toString();
 	}
 

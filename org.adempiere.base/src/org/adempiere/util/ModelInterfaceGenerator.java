@@ -162,7 +162,7 @@ public class ModelInterfaceGenerator
 		if (tableName == null)
 			throw new RuntimeException("TableName not found for ID=" + AD_Table_ID);
 		//
-		StringBuilder accessLevelInfo = new StringBuilder(accessLevel).append(" ");
+		StringBuilder accessLevelInfo = new StringBuilder().append(accessLevel).append(" ");
 		if (accessLevel >= 4 )
 			accessLevelInfo.append("- System ");
 		if (accessLevel == 2 || accessLevel == 3 || accessLevel == 6 || accessLevel == 7)

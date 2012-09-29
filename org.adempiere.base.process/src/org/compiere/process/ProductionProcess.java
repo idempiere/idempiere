@@ -84,7 +84,7 @@ public class ProductionProcess extends SvrProcess {
 		m_production.setProcessed(true);
 		
 		m_production.saveEx(get_TrxName());
-		StringBuilder msgreturn = new StringBuilder(processed).append(" production lines were processed");
+		StringBuilder msgreturn = new StringBuilder().append(processed).append(" production lines were processed");
 		return msgreturn.toString();
 	}
 

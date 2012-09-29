@@ -224,7 +224,7 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
             }
         }
 
-        StringBuilder returnStr = new StringBuilder(addCount).append(" products added.");
+        StringBuilder returnStr = new StringBuilder().append(addCount).append(" products added.");
         if (skipCount>0) returnStr.append(" ").append(skipCount).append(" products skipped.");
         return(returnStr.toString());
 
