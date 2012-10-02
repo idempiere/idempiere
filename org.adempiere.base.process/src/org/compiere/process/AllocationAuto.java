@@ -33,6 +33,7 @@ import org.compiere.model.MPayment;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Automatic Allocation Process
@@ -397,7 +398,8 @@ public class AllocationAuto extends SvrProcess
 							{
 								if (payment.allocateIt())
 								{
-									addLog(0, payment.getDateAcct(), openAmt, payment.getDocumentNo() + " [1]",payment.get_Table_ID(),payment.getC_Payment_ID());
+									String message = Msg.parseTranslation(getCtx(), "@PaymentAllocated@ " + payment.getDocumentNo() + " [1]");
+									addLog(0, payment.getDateAcct(), openAmt, message, payment.get_Table_ID(), payment.getC_Payment_ID());
 									count++;
 								}
 								break;
@@ -441,7 +443,8 @@ public class AllocationAuto extends SvrProcess
 				{
 					if (payment.allocateIt())
 					{
-						addLog(0, payment.getDateAcct(), availableAmt, payment.getDocumentNo() + " [n]");
+						String message = Msg.parseTranslation(getCtx(), "@PaymentAllocated@ " + payment.getDocumentNo() + " [n]");
+						addLog(0, payment.getDateAcct(), availableAmt, message);
 						count++;
 					}
 				}
@@ -837,7 +840,8 @@ public class AllocationAuto extends SvrProcess
 		}	
 		else
 			m_allocation.saveEx();
-		addLog(0, m_allocation.getDateAcct(), null, m_allocation.getDescription());
+		String message = Msg.parseTranslation(getCtx(), "@AllocationProcessed@ " + m_allocation.getDescription());
+		addLog(0, m_allocation.getDateAcct(), null, message);
 		m_allocation = null;
 		return success;
 	}	//	processAllocation

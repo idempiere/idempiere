@@ -499,7 +499,8 @@ public class InvoiceGenerate extends SvrProcess
 			}
 			m_invoice.saveEx();
 
-			addLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, m_invoice.getDocumentNo(),m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID());
+			String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
+			addLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
 			m_created++;
 		}
 		m_invoice = null;

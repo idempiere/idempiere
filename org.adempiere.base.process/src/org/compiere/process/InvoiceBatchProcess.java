@@ -21,6 +21,7 @@ import org.compiere.model.MInvoiceBatch;
 import org.compiere.model.MInvoiceBatchLine;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.Msg;
 
 
 /**
@@ -163,7 +164,8 @@ public class InvoiceBatchProcess extends SvrProcess
 		}
 		m_invoice.saveEx();
 		
-		addLog(0, m_invoice.getDateInvoiced(), m_invoice.getGrandTotal(), m_invoice.getDocumentNo(),m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID());
+		String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
+		addLog(0, m_invoice.getDateInvoiced(), m_invoice.getGrandTotal(), message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
 		m_count++;
 		
 		m_invoice = null;

@@ -28,6 +28,7 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrgInfo;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 /**
  *	Generate PO from Sales Order
@@ -208,7 +209,8 @@ public class OrderPOCreate extends SvrProcess
 				if (po == null || po.getBill_BPartner_ID() != C_BPartner_ID)
 				{
 					po = createPOForVendor(rs.getInt(1), so);
-					addLog(0, null, null, po.getDocumentNo(),po.get_Table_ID(),po.getC_Order_ID());
+					String message = Msg.parseTranslation(getCtx(), "@OrderCreated@ " + po.getDocumentNo());
+					addLog(0, null, null, message, po.get_Table_ID(), po.getC_Order_ID());
 					counter++;
 				}
 

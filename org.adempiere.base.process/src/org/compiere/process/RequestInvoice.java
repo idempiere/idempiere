@@ -29,6 +29,7 @@ import org.compiere.model.MRequestType;
 import org.compiere.model.MRequestUpdate;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 /**
  * 	Create Invoices for Requests
@@ -184,7 +185,8 @@ public class RequestInvoice extends SvrProcess
 					
 				}
 				m_invoice.saveEx();
-				addLog(0, null, m_invoice.getGrandTotal(), m_invoice.getDocumentNo(),m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID());
+				String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
+				addLog(0, null, m_invoice.getGrandTotal(), message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
 			}
 		}
 		m_invoice = null;
