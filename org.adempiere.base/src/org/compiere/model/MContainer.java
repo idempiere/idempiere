@@ -274,18 +274,20 @@ public class MContainer extends X_CM_Container
 				.getProperty ("java.naming.provider.url")), log, getCtx (),
 			get_TrxName ());
 		// First update the new ones...
+		StringBuilder msgx = new StringBuilder("CM_CStage_ID=").append(stage.get_ID ());
 		int[] tableKeys = X_CM_CStage_Element.getAllIDs ("CM_CStage_Element",
-			"CM_CStage_ID=" + stage.get_ID (), trxName);
+			msgx.toString(), trxName);
 		if (tableKeys != null && tableKeys.length > 0)
 		{
 			for (int i = 0; i < tableKeys.length; i++)
 			{
 				X_CM_CStage_Element thisStageElement = new X_CM_CStage_Element (
 					project.getCtx (), tableKeys[i], trxName);
+				msgx = new StringBuilder("CM_Container_ID=")
+						.append(stage.get_ID ()).append(" AND Name LIKE '")
+						.append(thisStageElement.getName ()).append("'");
 				int[] thisContainerElementKeys = X_CM_Container_Element
-					.getAllIDs ("CM_Container_Element", "CM_Container_ID="
-						+ stage.get_ID () + " AND Name LIKE '"
-						+ thisStageElement.getName () + "'", trxName);
+					.getAllIDs ("CM_Container_Element", msgx.toString(), trxName);
 				X_CM_Container_Element thisContainerElement;
 				if (thisContainerElementKeys != null
 					&& thisContainerElementKeys.length > 0)
@@ -318,18 +320,20 @@ public class MContainer extends X_CM_Container
 			}
 		}
 		// Now we are checking the existing ones to delete the unneeded ones...
+		msgx = new StringBuilder("CM_Container_ID=").append(stage.get_ID ());
 		tableKeys = X_CM_Container_Element.getAllIDs ("CM_Container_Element",
-			"CM_Container_ID=" + stage.get_ID (), trxName);
+			msgx.toString(), trxName);
 		if (tableKeys != null && tableKeys.length > 0)
 		{
 			for (int i = 0; i < tableKeys.length; i++)
 			{
 				X_CM_Container_Element thisContainerElement = new X_CM_Container_Element (
 					project.getCtx (), tableKeys[i], trxName);
+				msgx = new StringBuilder("CM_CStage_ID=")
+						.append(stage.get_ID ()).append(" AND Name LIKE '")
+						.append(thisContainerElement.getName ()).append("'");
 				int[] thisCStageElementKeys = X_CM_CStage_Element
-					.getAllIDs ("CM_CStage_Element", "CM_CStage_ID="
-						+ stage.get_ID () + " AND Name LIKE '"
-						+ thisContainerElement.getName () + "'", trxName);
+					.getAllIDs ("CM_CStage_Element", msgx.toString(), trxName);
 				// If we cannot find a representative in the Stage we will delete from production
 				if (thisCStageElementKeys == null
 					|| thisCStageElementKeys.length < 1)
@@ -356,18 +360,20 @@ public class MContainer extends X_CM_Container
 	protected void updateTTables (MWebProject project, MCStage stage,
 		String trxName)
 	{
+		StringBuilder msgx = new StringBuilder("CM_CStage_ID=").append(stage.get_ID ());
 		int[] tableKeys = X_CM_CStageTTable.getAllIDs (I_CM_CStageTTable.Table_Name,
-			"CM_CStage_ID=" + stage.get_ID (), trxName);
+			msgx.toString(), trxName);
 		if (tableKeys != null && tableKeys.length > 0)
 		{
 			for (int i = 0; i < tableKeys.length; i++)
 			{
 				X_CM_CStageTTable thisStageTTable = new X_CM_CStageTTable (
 					project.getCtx (), tableKeys[i], trxName);
+				msgx = new StringBuilder("CM_Container_ID=").append(stage.get_ID ())
+						.append(" AND CM_TemplateTable_ID=")
+						.append(thisStageTTable.getCM_TemplateTable_ID ());
 				int[] thisContainerTTableKeys = X_CM_ContainerTTable.getAllIDs (
-					I_CM_ContainerTTable.Table_Name, "CM_Container_ID=" + stage.get_ID ()
-						+ " AND CM_TemplateTable_ID="
-						+ thisStageTTable.getCM_TemplateTable_ID (), trxName);
+					I_CM_ContainerTTable.Table_Name, msgx.toString(), trxName);
 				X_CM_ContainerTTable thisContainerTTable;
 				if (thisContainerTTableKeys != null
 					&& thisContainerTTableKeys.length > 0)
@@ -407,7 +413,7 @@ public class MContainer extends X_CM_Container
      */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MContainer[").append (get_ID ())
+		StringBuilder sb = new StringBuilder ("MContainer[").append (get_ID ())
 			.append ("-").append (getName ()).append ("]");
 		return sb.toString ();
 	} // toString
@@ -427,10 +433,10 @@ public class MContainer extends X_CM_Container
 			return success;
 		if (newRecord)
 		{
-			StringBuffer sb = new StringBuffer (
-				"INSERT INTO AD_TreeNodeCMC "
-					+ "(AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, "
-					+ "AD_Tree_ID, Node_ID, Parent_ID, SeqNo) " + "VALUES (")
+			StringBuilder sb = new StringBuilder (
+				"INSERT INTO AD_TreeNodeCMC ")
+					.append("(AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, ")
+					.append("AD_Tree_ID, Node_ID, Parent_ID, SeqNo) ").append("VALUES (")
 				.append (getAD_Client_ID ()).append (
 					",0, 'Y', SysDate, 0, SysDate, 0,").append (
 					getAD_Tree_ID ()).append (",").append (get_ID ()).append (
@@ -447,7 +453,8 @@ public class MContainer extends X_CM_Container
 	
 	protected MContainerElement[] getAllElements()
 	{
-		int elements[] = MContainerElement.getAllIDs("CM_Container_Element", "CM_Container_ID=" + get_ID(), get_TrxName());
+		StringBuilder msgmc = new StringBuilder("CM_Container_ID=").append(get_ID());
+		int elements[] = MContainerElement.getAllIDs("CM_Container_Element", msgmc.toString(), get_TrxName());
 		if (elements.length>0)
 		{
 			MContainerElement[] containerElements = new MContainerElement[elements.length];
@@ -475,7 +482,7 @@ public class MContainer extends X_CM_Container
 			}
 		}
 		//
-		StringBuffer sb = new StringBuffer ("DELETE FROM AD_TreeNodeCMC ")
+		StringBuilder sb = new StringBuilder ("DELETE FROM AD_TreeNodeCMC ")
 			.append (" WHERE Node_ID=").append (get_ID ()).append (
 				" AND AD_Tree_ID=").append (getAD_Tree_ID ());
 		int no = DB.executeUpdate (sb.toString (), get_TrxName ());
@@ -497,7 +504,7 @@ public class MContainer extends X_CM_Container
 		if (!success)
 			return success;
 		//
-		StringBuffer sb = new StringBuffer ("DELETE FROM AD_TreeNodeCMC ")
+		StringBuilder sb = new StringBuilder ("DELETE FROM AD_TreeNodeCMC ")
 			.append (" WHERE Node_ID=").append (get_IDOld ()).append (
 				" AND AD_Tree_ID=").append (getAD_Tree_ID ());
 		int no = DB.executeUpdate (sb.toString (), get_TrxName ());

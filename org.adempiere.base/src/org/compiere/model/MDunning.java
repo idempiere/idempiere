@@ -63,7 +63,7 @@ public class MDunning extends X_C_Dunning
     @Override
 	public String toString()
     {
-	    StringBuffer sb = new StringBuffer("MDunning[").append(get_ID())
+	    StringBuilder sb = new StringBuilder("MDunning[").append(get_ID())
 	        .append("-").append(getName());
 	    sb.append("]");
 	    return sb.toString();

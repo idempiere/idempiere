@@ -441,7 +441,7 @@ public class MCostElement extends X_M_CostElement
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MCostElement[");
+		StringBuilder sb = new StringBuilder ("MCostElement[");
 		sb.append (get_ID ())
 			.append ("-").append (getName())
 			.append(",Type=").append(getCostElementType())

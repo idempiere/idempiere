@@ -188,7 +188,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MBP_BankAccount[")
+		StringBuilder sb = new StringBuilder ("MBP_BankAccount[")
 			.append (get_ID ())
 			.append(", Name=").append(getA_Name())
 			.append ("]");

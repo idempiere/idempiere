@@ -191,8 +191,10 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			return "";
 		//
 		NamePair display = get (value);
-		if (display == null)
-			return "<" + value.toString() + ">";
+		if (display == null){
+			StringBuilder msgreturn = new StringBuilder("<").append(value.toString()).append(">");
+			return msgreturn.toString();
+		}
 		return display.toString();
 	}	//	getDisplay
 
@@ -256,7 +258,8 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 */
 	public String toString()
 	{
-		return "MLocatorLookup[Size=" + m_lookup.size() + "]";
+		StringBuilder msgreturn = new StringBuilder("MLocatorLookup[Size=").append(m_lookup.size()).append("]");
+		return msgreturn.toString();
 	}	//	toString
 
 
@@ -320,7 +323,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			int local_only_warehouse_id = getOnly_Warehouse_ID(); // [ 1674891 ] MLocatorLookup - weird error 
 			int local_only_product_id = getOnly_Product_ID();
 			
-			StringBuffer sql = new StringBuffer("SELECT * FROM M_Locator ")
+			StringBuilder sql = new StringBuilder("SELECT * FROM M_Locator ")
 				.append(" WHERE IsActive='Y'");
 			
 			if (local_only_warehouse_id != 0)

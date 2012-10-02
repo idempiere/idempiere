@@ -222,7 +222,7 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MAttachment[");
+		StringBuilder sb = new StringBuilder("MAttachment[");
 		sb.append(getAD_Attachment_ID()).append(",Title=").append(getTitle())
 			.append(",Entries=").append(getEntryCount());
 		for (int i = 0; i < getEntryCount(); i++)
@@ -435,9 +435,12 @@ public class MAttachment extends X_AD_Attachment
 			System.out.println("- no entries -");
 			return;
 		}
-		System.out.println("- entries: " + m_items.size());
-		for (int i = 0; i < m_items.size(); i++)
-			System.out.println("  - " + getEntryName(i));		  
+		StringBuilder msgout = new StringBuilder("- entries: ").append(m_items.size());
+		System.out.println(msgout.toString());
+		for (int i = 0; i < m_items.size(); i++){
+			msgout = new StringBuilder("  - ").append(getEntryName(i));
+			System.out.println(msgout.toString());
+		}	
 	}	//	dumpEntryNames
 
 	/**
@@ -576,14 +579,16 @@ public class MAttachment extends X_AD_Attachment
 					FileChannel out = null;
 					try {
 						//create destination folder
-						final File destFolder = new File(m_attachmentPathRoot + File.separator + getAttachmentPathSnippet());
+						StringBuilder msgfile = new StringBuilder(m_attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet());
+						final File destFolder = new File(msgfile.toString());
 						if(!destFolder.exists()){
 							if(!destFolder.mkdirs()){
 								log.warning("unable to create folder: " + destFolder.getPath());
 							}
 						}
-						final File destFile = new File(m_attachmentPathRoot + File.separator
-								+ getAttachmentPathSnippet() + File.separator + entryFile.getName());
+						msgfile = new StringBuilder(m_attachmentPathRoot).append(File.separator)
+								.append(getAttachmentPathSnippet()).append(File.separator).append(entryFile.getName());
+						final File destFile = new File(msgfile.toString());
 						in = new FileInputStream(entryFile).getChannel();
 						out = new FileOutputStream(destFile).getChannel();
 						in.transferTo(0, in.size(), out);
@@ -808,9 +813,11 @@ public class MAttachment extends X_AD_Attachment
 	 * @return String
 	 */
 	private String getAttachmentPathSnippet(){
-		return this.getAD_Client_ID() + File.separator + 
-		this.getAD_Org_ID() + File.separator + 
-		this.getAD_Table_ID() + File.separator + this.getRecord_ID();
+		
+		StringBuilder msgreturn = new StringBuilder(this.getAD_Client_ID()).append(File.separator)
+				.append(this.getAD_Org_ID()).append(File.separator)
+				.append(this.getAD_Table_ID()).append(File.separator).append(this.getRecord_ID());
+		return msgreturn.toString();
 	}
 	
 	/**

@@ -453,7 +453,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 
 		boolean local = getC_Country_ID() == MCountry.getDefault(getCtx()).getC_Country_ID();
 		String inStr = local ? c.getDisplaySequenceLocal() : c.getDisplaySequence();
-		StringBuffer outStr = new StringBuffer();
+		StringBuilder outStr = new StringBuilder();
 
 		String token;
 		int i = inStr.indexOf('@');
@@ -519,7 +519,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	 */
 	public String toString()
 	{
-		StringBuffer retStr = new StringBuffer();
+		StringBuilder retStr = new StringBuilder();
 		if (isAddressLinesReverse())
 		{
 			//	City, Region, Postal
@@ -556,7 +556,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	 */
 	public String toStringCR()
 	{
-		StringBuffer retStr = new StringBuffer();
+		StringBuilder retStr = new StringBuilder();
 		if (isAddressLinesReverse())
 		{
 			//	City, Region, Postal
@@ -593,7 +593,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	 */
 	public String toStringX()
 	{
-		StringBuffer sb = new StringBuffer("MLocation=[");
+		StringBuilder sb = new StringBuilder("MLocation=[");
 		sb.append(get_ID())
 			.append(",C_Country_ID=").append(getC_Country_ID())
 			.append(",C_Region_ID=").append(getC_Region_ID())
@@ -650,10 +650,12 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			&& ("Y".equals(Env.getContext(getCtx(), "$Element_LF")) 
 				|| "Y".equals(Env.getContext(getCtx(), "$Element_LT")))
 			&& (is_ValueChanged("Postal") || is_ValueChanged("City"))
-			)
-			MAccount.updateValueDescription(getCtx(), 
-				"(C_LocFrom_ID=" + getC_Location_ID() 
-				+ " OR C_LocTo_ID=" + getC_Location_ID() + ")", get_TrxName());
+			){
+			StringBuilder msgup = new StringBuilder(
+					"(C_LocFrom_ID=").append(getC_Location_ID()) 
+					.append(" OR C_LocTo_ID=").append(getC_Location_ID()).append(")");
+			MAccount.updateValueDescription(getCtx(), msgup.toString(), get_TrxName());
+		}	
 		
 		//Update BP_Location name IDEMPIERE 417
 		if (get_TrxName().startsWith(PO.LOCAL_TRX_PREFIX)) { // saved without trx
@@ -676,14 +678,14 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	public String getMapsLocation() {
 
 		MRegion region = new MRegion(Env.getCtx(), getC_Region_ID(), get_TrxName());
-		String address = "";
-		address = address + (getAddress1() != null ? getAddress1() + ", " : "");
-		address = address + (getAddress2() != null ? getAddress2() + ", " : "");
-		address = address + (getCity() != null ? getCity() + ", " : "");
-		address = address + (region.getName() != null ? region.getName() + ", " : "");
-		address = address + (getCountryName() != null ? getCountryName() : "");
+		StringBuilder address = new StringBuilder();
+		address.append((getAddress1() != null ? getAddress1() + ", " : ""));
+		address.append((getAddress2() != null ? getAddress2() + ", " : ""));
+		address.append((getCity() != null ? getCity() + ", " : ""));
+		address.append((region.getName() != null ? region.getName() + ", " : ""));
+		address.append((getCountryName() != null ? getCountryName() : ""));
 
-		return address.replace(" ", "+");
+		return address.toString().replace(" ", "+");
 	}
 
 }	//	MLocation

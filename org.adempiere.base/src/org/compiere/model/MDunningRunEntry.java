@@ -145,13 +145,13 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 				}
 				else if (firstActive != null)
 				{
-					String msg = "@C_BPartner_ID@ " + bp.getName();
+					StringBuilder msg = new StringBuilder("@C_BPartner_ID@ ").append(bp.getName());
 					if (isSOTrx)
-						msg += " @No@ @IsPayFrom@";
+						msg.append(" @No@ @IsPayFrom@");
 					else
-						msg += " @No@ @IsRemitTo@";
-					msg += " & @IsBillTo@";
-					log.info(msg);
+						msg.append(" @No@ @IsRemitTo@");
+					msg.append(" & @IsBillTo@");
+					log.info(msg.toString());
 					setC_BPartner_Location_ID (firstActive.getC_BPartner_Location_ID());
 				}
 			}
@@ -199,13 +199,13 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	public MDunningRunLine[] getLines (boolean onlyInvoices) 
 	{
 		ArrayList<MDunningRunLine> list = new ArrayList<MDunningRunLine>();
-		String sql = "SELECT * FROM C_DunningRunLine WHERE C_DunningRunEntry_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_DunningRunLine WHERE C_DunningRunEntry_ID=?");
 		if (onlyInvoices)
-			sql += " AND C_Invoice_ID IS NOT NULL";
+			sql.append(" AND C_Invoice_ID IS NOT NULL");
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			pstmt.setInt(1, get_ID ());
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
@@ -216,7 +216,7 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 		}
 		catch (Exception e)
 		{
-			s_log.log(Level.SEVERE, sql, e);
+			s_log.log(Level.SEVERE, sql.toString(), e);
 		}
 		try
 		{

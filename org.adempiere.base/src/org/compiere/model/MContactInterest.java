@@ -204,7 +204,7 @@ public class MContactInterest extends X_R_ContactInterest
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MContactInterest[")
+		StringBuilder sb = new StringBuilder ("MContactInterest[")
 			.append("R_InterestArea_ID=").append(getR_InterestArea_ID())
 			.append(",AD_User_ID=").append(getAD_User_ID())
 			.append(",Subscribed=").append(isSubscribed())

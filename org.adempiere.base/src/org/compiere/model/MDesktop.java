@@ -72,22 +72,22 @@ public class MDesktop
 	{
 		AD_Desktop_ID = ad_Desktop_ID;
 		//  Get WB info
-		String sql = null;
+		StringBuilder sql = null;
 		if (Env.isBaseLanguage(m_ctx, "AD_Desktop"))
-			sql = "SELECT Name,Description,Help,"                       //  1..3
-				+ " AD_Column_ID,AD_Image_ID,AD_Color_ID,PA_Goal_ID "  //   4..7
-				+ "FROM AD_Desktop "
-				+ "WHERE AD_Desktop_ID=? AND IsActive='Y'";
+			sql = new StringBuilder("SELECT Name,Description,Help,")                       //  1..3
+				.append(" AD_Column_ID,AD_Image_ID,AD_Color_ID,PA_Goal_ID ")  //   4..7
+				.append("FROM AD_Desktop ")
+				.append("WHERE AD_Desktop_ID=? AND IsActive='Y'");
 		else
-			sql = "SELECT t.Name,t.Description,t.Help,"
-				+ " w.AD_Column_ID,w.AD_Image_ID,w.AD_Color_ID,w.PA_Goal_ID "
-				+ "FROM AD_Desktop w, AD_Desktop_Trl t "
-				+ "WHERE w.AD_Desktop_ID=? AND w.IsActive='Y'"
-				+ " AND w.AD_Desktop_ID=t.AD_Desktop_ID"
-				+ " AND t.AD_Language='" + Env.getAD_Language(m_ctx) + "'";
+			sql = new StringBuilder("SELECT t.Name,t.Description,t.Help,")
+				.append(" w.AD_Column_ID,w.AD_Image_ID,w.AD_Color_ID,w.PA_Goal_ID ")
+				.append("FROM AD_Desktop w, AD_Desktop_Trl t ")
+				.append("WHERE w.AD_Desktop_ID=? AND w.IsActive='Y'")
+				.append(" AND w.AD_Desktop_ID=t.AD_Desktop_ID")
+				.append(" AND t.AD_Language='").append(Env.getAD_Language(m_ctx)).append("'");
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, AD_Desktop_ID);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next())
@@ -112,7 +112,7 @@ public class MDesktop
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 
 		if (AD_Desktop_ID == 0)
@@ -126,7 +126,8 @@ public class MDesktop
 	 */
 	public String toString()
 	{
-		return "MDesktop ID=" + AD_Desktop_ID + " " + Name;
+		StringBuilder msgreturn = new StringBuilder("MDesktop ID=").append(AD_Desktop_ID).append(" ").append(Name);
+		return msgreturn.toString();
 	}
 
 	/**************************************************************************

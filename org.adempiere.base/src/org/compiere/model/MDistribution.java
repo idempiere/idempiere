@@ -270,12 +270,12 @@ public class MDistribution extends X_GL_Distribution
 	 */
 	public String validate()
 	{
-		String retValue = null;
+		StringBuilder retValue = null;
 		getLines(true);
 		if (m_lines.length == 0)
-			retValue = "@NoLines@";
+			retValue = new StringBuilder("@NoLines@");
 		else if (getPercentTotal().compareTo(Env.ONEHUNDRED) != 0)
-			retValue = "@PercentTotal@ <> 100";
+			retValue = new StringBuilder("@PercentTotal@ <> 100");
 		else
 		{
 			//	More then one line with 0
@@ -286,8 +286,8 @@ public class MDistribution extends X_GL_Distribution
 				{
 					if (lineFound >= 0 && m_lines[i].getPercent().compareTo(Env.ZERO) == 0)
 					{
-						retValue = "@Line@ " + lineFound 
-							+ " + " + m_lines[i].getLine() + ": == 0";
+						retValue = new StringBuilder("@Line@ ").append(lineFound) 
+							.append(" + ").append(m_lines[i].getLine()).append(": == 0");
 						break;
 					}
 					lineFound = m_lines[i].getLine();
@@ -296,7 +296,7 @@ public class MDistribution extends X_GL_Distribution
 		}
 		
 		setIsValid (retValue == null);
-		return retValue;
+		return retValue.toString();
 	}	//	validate
 	
 	

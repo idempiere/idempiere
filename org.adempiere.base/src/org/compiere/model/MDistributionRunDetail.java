@@ -52,15 +52,15 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 		boolean orderBP, String trxName)
 	{
 		ArrayList<MDistributionRunDetail> list = new ArrayList<MDistributionRunDetail>();
-		String sql = "SELECT * FROM T_DistributionRunDetail WHERE M_DistributionRun_ID=? ";
+		StringBuilder sql = new StringBuilder("SELECT * FROM T_DistributionRunDetail WHERE M_DistributionRun_ID=? ");
 		if (orderBP)
-			sql += "ORDER BY C_BPartner_ID, C_BPartner_Location_ID";
+			sql.append("ORDER BY C_BPartner_ID, C_BPartner_Location_ID");
 		else
-			sql += "ORDER BY M_DistributionRunLine_ID";
+			sql.append("ORDER BY M_DistributionRunLine_ID");
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, trxName);
+			pstmt = DB.prepareStatement (sql.toString(), trxName);
 			pstmt.setInt (1, M_DistributionRun_ID);
 			ResultSet rs = pstmt.executeQuery ();
 			while (rs.next ())
@@ -71,7 +71,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 		}
 		catch (Exception e)
 		{
-			s_log.log(Level.SEVERE, sql, e);
+			s_log.log(Level.SEVERE, sql.toString(), e);
 		}
 		try
 		{
@@ -191,7 +191,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MDistributionRunDetail[")
+		StringBuilder sb = new StringBuilder ("MDistributionRunDetail[")
 			.append (get_ID ())
 			.append (";M_DistributionListLine_ID=").append (getM_DistributionListLine_ID())
 			.append(";Qty=").append(getQty())

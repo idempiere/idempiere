@@ -155,7 +155,7 @@ public class MIssue extends X_AD_Issue
 	public MIssue (LogRecord record)
 	{
 		this (Env.getCtx(), 0, null);
-		String summary = record.getMessage();
+		StringBuilder summary = new StringBuilder(record.getMessage());
 		setSourceClassName(record.getSourceClassName());
 		setSourceMethodName(record.getSourceMethodName());
 		setLoggerName(record.getLoggerName());
@@ -163,11 +163,11 @@ public class MIssue extends X_AD_Issue
 		if (t != null)
 		{
 			if (summary != null && summary.length() > 0)
-				summary = t.toString() + " " + summary;
+				summary = new StringBuilder(t.toString()).append(" ").append(summary);
 			if (summary == null || summary.length() == 0)
-				summary = t.toString();
+				summary = new StringBuilder(t.toString());
 			//
-			StringBuffer error = new StringBuffer();
+			StringBuilder error = new StringBuilder();
 			StackTraceElement[] tes = t.getStackTrace();
 			int count = 0;
 			for (int i = 0; i < tes.length; i++)
@@ -179,9 +179,9 @@ public class MIssue extends X_AD_Issue
 					error.append(s).append("\n");
 					if (count == 0)
 					{
-						String source = element.getClassName()
-							+ "." + element.getMethodName();
-						setSourceClassName(source);
+						StringBuilder source = new StringBuilder(element.getClassName())
+							.append(".").append(element.getMethodName());
+						setSourceClassName(source.toString());
 						setLineNo(element.getLineNumber());
 					}
 					count++;
@@ -197,8 +197,8 @@ public class MIssue extends X_AD_Issue
 			setStackTrace(cWriter.toString());
 		}
 		if (summary == null || summary.length() == 0)
-			summary = "??";
-		setIssueSummary(summary);
+			summary = new StringBuilder("??");
+		setIssueSummary(summary.toString());
 		setRecord_ID(1);
 	}	//	MIssue
 
@@ -304,8 +304,10 @@ public class MIssue extends X_AD_Issue
 		if (old == null || old.length() == 0)
 			setComments (Comments);
 		else if (!old.equals(Comments) 
-			&& old.indexOf(Comments) == -1)		//	 something new
-			setComments (Comments + " | " + old);
+			&& old.indexOf(Comments) == -1){	//	 something new
+			StringBuilder msgc = new StringBuilder(Comments).append(" | ").append(old);
+			setComments (msgc.toString());
+		}	
 	}	//	addComments
 	
 	/**
@@ -357,7 +359,7 @@ public class MIssue extends X_AD_Issue
 	 */
 	public String createAnswer()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (getA_Asset_ID() != 0)
 			sb.append("Sign up for support at http://www.adempiere.org to receive answers.");
 		else
@@ -416,7 +418,7 @@ public class MIssue extends X_AD_Issue
 	{
 		if (true)
 			return "-";
-		StringBuffer parameter = new StringBuffer("?");
+		StringBuilder parameter = new StringBuilder("?");
 		if (getRecord_ID() == 0)	//	don't report
 			return "ID=0";
 		if (getRecord_ID() == 1)	//	new
@@ -435,7 +437,8 @@ public class MIssue extends X_AD_Issue
 			catch (Exception e) 
 			{
 				log.severe(e.getLocalizedMessage());
-				return "New-" + e.getLocalizedMessage();
+				StringBuilder msgreturn = new StringBuilder("New-").append(e.getLocalizedMessage());
+				return msgreturn.toString();
 			}
 		}
 		else	//	existing
@@ -449,7 +452,8 @@ public class MIssue extends X_AD_Issue
 			catch (Exception e) 
 			{
 				log.severe(e.getLocalizedMessage());
-				return "Update-" + e.getLocalizedMessage();
+				StringBuilder msgreturn = new StringBuilder("Update-").append(e.getLocalizedMessage());
+				return msgreturn.toString();
 			}
 		}
 		
@@ -457,7 +461,7 @@ public class MIssue extends X_AD_Issue
 		String target = "http://dev1/wstore/issueReportServlet";
 		try		//	Send GET Request
 		{
-			StringBuffer urlString = new StringBuffer(target)
+			StringBuilder urlString = new StringBuilder(target)
 				.append(parameter);
 			URL url = new URL (urlString.toString());
 			URLConnection uc = url.openConnection();
@@ -465,15 +469,15 @@ public class MIssue extends X_AD_Issue
 		}
 		catch (Exception e)
 		{
-			String msg = "Cannot connect to http://" + target; 
+			StringBuilder msg = new StringBuilder("Cannot connect to http://").append(target); 
 			if (e instanceof FileNotFoundException || e instanceof ConnectException)
-				msg += "\nServer temporarily down - Please try again later";
+				msg.append("\nServer temporarily down - Please try again later");
 			else
 			{
-				msg += "\nCheck connection - " + e.getLocalizedMessage();
-				log.log(Level.FINE, msg);
+				msg.append("\nCheck connection - ").append(e.getLocalizedMessage());
+				log.log(Level.FINE, msg.toString());
 			}
-			return msg;
+			return msg.toString();
 		}
 		return readResponse(in);
 	}	//	report
@@ -485,7 +489,7 @@ public class MIssue extends X_AD_Issue
 	 */
 	private String readResponse(InputStreamReader in)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int Record_ID = 0;
 		String ResponseText = null;
 		String RequestDocumentNo = null;
@@ -543,7 +547,7 @@ public class MIssue extends X_AD_Issue
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MIssue[");
+		StringBuilder sb = new StringBuilder ("MIssue[");
 		sb.append (get_ID())
 			.append ("-").append (getIssueSummary())
 			.append (",Record=").append (getRecord_ID())

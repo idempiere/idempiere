@@ -166,7 +166,7 @@ public class MMeasure extends X_PA_Measure
 				//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
 				//		trunc = "D";
 				trunc = "TRUNC(DateDoc,'" + trunc + "')";
-				StringBuffer sql = new StringBuffer ("SELECT SUM(ManualActual), ")
+				StringBuilder sql = new StringBuilder ("SELECT SUM(ManualActual), ")
 				.append(trunc).append(" FROM PA_Achievement WHERE PA_Measure_ID=? AND IsAchieved='Y' ")
 				.append("GROUP BY ").append(trunc)
 				.append(" ORDER BY ").append(trunc);
@@ -283,7 +283,7 @@ public class MMeasure extends X_PA_Measure
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MMeasure[");
+		StringBuilder sb = new StringBuilder ("MMeasure[");
 		sb.append (get_ID()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString
@@ -594,20 +594,20 @@ public class MMeasure extends X_PA_Measure
 			while (st.hasMoreTokens())      //  for each class
 			{
 				String cmd = st.nextToken().trim();	
-				String retValue = "";
+				StringBuilder retValue = new StringBuilder();
 				if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
 					
 					MRule rule = MRule.get(getCtx(), cmd.substring(MRule.SCRIPT_PREFIX.length()));
 					if (rule == null) {
-						retValue = "Script " + cmd + " not found"; 
-						log.log(Level.SEVERE, retValue);
+						retValue = new StringBuilder("Script ").append(cmd).append(" not found"); 
+						log.log(Level.SEVERE, retValue.toString());
 						break;
 					}
 					if ( !  (rule.getEventType().equals(MRule.EVENTTYPE_MeasureForPerformanceAnalysis) 
 						  && rule.getRuleType().equals(MRule.RULETYPE_JSR223ScriptingAPIs))) {
-						retValue = "Script " + cmd
-							+ " must be of type JSR 223 and event measure"; 
-						log.log(Level.SEVERE, retValue);
+						retValue = new StringBuilder("Script ").append(cmd)
+							.append(" must be of type JSR 223 and event measure"); 
+						log.log(Level.SEVERE, retValue.toString());
 						break;
 					}
 					ScriptEngine engine = rule.getScriptEngine();
@@ -622,7 +622,7 @@ public class MMeasure extends X_PA_Measure
 					catch (Exception e)
 					{
 						log.log(Level.SEVERE, "", e);
-						retValue = 	"Script Invalid: " + e.toString();
+						retValue = 	new StringBuilder("Script Invalid: ").append(e.toString());
 						return false;
 					}	
 				} 
@@ -652,9 +652,9 @@ public class MMeasure extends X_PA_Measure
 					}					
 				}			
 				
-				if (!Util.isEmpty(retValue))		//	interrupt on first error
+				if (!Util.isEmpty(retValue.toString()))		//	interrupt on first error
 				{
-					log.severe (retValue);
+					log.severe (retValue.toString());
 					return false;
 				}
 			}			

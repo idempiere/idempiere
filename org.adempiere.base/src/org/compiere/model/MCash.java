@@ -159,9 +159,9 @@ public class MCash extends X_C_Cash implements DocAction
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 			setStatementDate (today);	// @#Date@
 			setDateAcct (today);	// @#Date@
-			String name = DisplayType.getDateFormat(DisplayType.Date).format(today)
-				+ " " + MOrg.get(ctx, getAD_Org_ID()).getValue();
-			setName (name);	
+			StringBuilder name = new StringBuilder(DisplayType.getDateFormat(DisplayType.Date).format(today))
+				.append(" ").append(MOrg.get(ctx, getAD_Org_ID()).getValue());
+			setName (name.toString());	
 			setIsApproved(false);
 			setPosted (false);	// N
 			setProcessed (false);
@@ -193,9 +193,9 @@ public class MCash extends X_C_Cash implements DocAction
 		{
 			setStatementDate (today);	
 			setDateAcct (today);
-			String name = DisplayType.getDateFormat(DisplayType.Date).format(today)
-				+ " " + cb.getName();
-			setName (name);	
+			StringBuilder name = new StringBuilder(DisplayType.getDateFormat(DisplayType.Date).format(today))
+				.append(" ").append(cb.getName());
+			setName (name.toString());	
 		}
 		m_book = cb;
 	}	//	MCash
@@ -254,7 +254,8 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		return Msg.getElement(getCtx(), "C_Cash_ID") + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder(Msg.getElement(getCtx(), "C_Cash_ID")).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -265,7 +266,8 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -320,7 +322,7 @@ public class MCash extends X_C_Cash implements DocAction
 	}	//	process
 	
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	private StringBuffer	m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
@@ -353,20 +355,20 @@ public class MCash extends X_C_Cash implements DocAction
 	public String prepareIt()
 	{
 		log.info(toString());
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE));
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
 		//	Std Period open?
 		if (!MPeriod.isOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_CashJournal, getAD_Org_ID()))
 		{
-			m_processMsg = "@PeriodClosed@";
+			m_processMsg = new StringBuffer("@PeriodClosed@");
 			return DocAction.STATUS_Invalid;
 		}
 		MCashLine[] lines = getLines(false);
 		if (lines.length == 0)
 		{
-			m_processMsg = "@NoLines@";
+			m_processMsg = new StringBuffer("@NoLines@");
 			return DocAction.STATUS_Invalid;
 		}
 		//	Add up Amounts
@@ -386,7 +388,7 @@ public class MCash extends X_C_Cash implements DocAction
 					getAD_Client_ID(), getAD_Org_ID());
 				if (amt == null)
 				{
-					m_processMsg = "No Conversion Rate found - @C_CashLine_ID@= " + line.getLine();
+					m_processMsg = new StringBuffer("No Conversion Rate found - @C_CashLine_ID@= ").append(line.getLine());
 					return DocAction.STATUS_Invalid;
 				}
 				difference = difference.add(amt);
@@ -395,7 +397,7 @@ public class MCash extends X_C_Cash implements DocAction
 		setStatementDifference(difference);
 	//	setEndingBalance(getBeginningBalance().add(getStatementDifference()));
 
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE));
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -441,7 +443,7 @@ public class MCash extends X_C_Cash implements DocAction
 				return status;
 		}
 		
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE));
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -466,19 +468,19 @@ public class MCash extends X_C_Cash implements DocAction
 					&& !MInvoice.DOCSTATUS_Voided.equals(invoice.getDocStatus())
 					)
 				{
-					m_processMsg = "@Line@ "+line.getLine()+": @InvoiceCreateDocNotCompleted@";
+					m_processMsg = new StringBuffer("@Line@ ").append(line.getLine()).append(": @InvoiceCreateDocNotCompleted@");
 					return DocAction.STATUS_Invalid;
 				}
 				//
-				String name = Msg.translate(getCtx(), "C_Cash_ID") + ": " + getName()
-								+ " - " + Msg.translate(getCtx(), "Line") + " " + line.getLine();
+				StringBuilder name = new StringBuilder(Msg.translate(getCtx(), "C_Cash_ID")).append(": ").append(getName())
+								.append(" - ").append(Msg.translate(getCtx(), "Line")).append(" ").append(line.getLine());
 				MAllocationHdr hdr = new MAllocationHdr(getCtx(), false, 
 						getDateAcct(), line.getC_Currency_ID(),
-						name, get_TrxName());
+						name.toString(), get_TrxName());
 				hdr.setAD_Org_ID(getAD_Org_ID());
 				if (!hdr.save())
 				{
-					m_processMsg = CLogger.retrieveErrorString("Could not create Allocation Hdr");
+					m_processMsg = new StringBuffer(CLogger.retrieveErrorString("Could not create Allocation Hdr"));
 					return DocAction.STATUS_Invalid;
 				}
 				//	Allocation Line
@@ -488,16 +490,16 @@ public class MCash extends X_C_Cash implements DocAction
 				aLine.setC_CashLine_ID(line.getC_CashLine_ID());
 				if (!aLine.save())
 				{
-					m_processMsg = CLogger.retrieveErrorString("Could not create Allocation Line");
+					m_processMsg = new StringBuffer(CLogger.retrieveErrorString("Could not create Allocation Line"));
 					return DocAction.STATUS_Invalid;
 				}
 				//	Should start WF
 				if(!hdr.processIt(DocAction.ACTION_Complete)) {
-					m_processMsg = CLogger.retrieveErrorString("Could not process Allocation");
+					m_processMsg = new StringBuffer(CLogger.retrieveErrorString("Could not process Allocation"));
 					return DocAction.STATUS_Invalid;
 				}
 				if (!hdr.save()) {
-					m_processMsg = CLogger.retrieveErrorString("Could not save Allocation");
+					m_processMsg = new StringBuffer(CLogger.retrieveErrorString("Could not save Allocation"));
 					return DocAction.STATUS_Invalid;
 				}
 			}
@@ -529,14 +531,14 @@ public class MCash extends X_C_Cash implements DocAction
 				pay.setProcessed(true);		
 				if (!pay.save())
 				{
-					m_processMsg = CLogger.retrieveErrorString("Could not create Payment");
+					m_processMsg = new StringBuffer(CLogger.retrieveErrorString("Could not create Payment"));
 					return DocAction.STATUS_Invalid;
 				}
 				
 				line.setC_Payment_ID(pay.getC_Payment_ID());
 				if (!line.save())
 				{
-					m_processMsg = "Could not update Cash Line";
+					m_processMsg = new StringBuffer("Could not update Cash Line");
 					return DocAction.STATUS_Invalid;
 				}
 			}
@@ -546,7 +548,7 @@ public class MCash extends X_C_Cash implements DocAction
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = valid;
+			m_processMsg = new StringBuffer(valid);
 			return DocAction.STATUS_Invalid;
 		}
 		//
@@ -564,7 +566,7 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		log.info(toString());
 		// Before Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID));
 		if (m_processMsg != null)
 			return false;
 
@@ -573,7 +575,7 @@ public class MCash extends X_C_Cash implements DocAction
 		
 		if (retValue) {
 			// After Void
-			m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
+			m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID));
 			if (m_processMsg != null)
 				return false;		
 			setDocAction(DOCACTION_None);
@@ -594,7 +596,7 @@ public class MCash extends X_C_Cash implements DocAction
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
 			|| DOCSTATUS_Voided.equals(getDocStatus()))
 		{
-			m_processMsg = "Document Closed: " + getDocStatus();
+			m_processMsg = new StringBuffer("Document Closed: ").append(getDocStatus());
 			setDocAction(DOCACTION_None);
 			return false;
 		}
@@ -621,9 +623,10 @@ public class MCash extends X_C_Cash implements DocAction
 			cashline.setAmount(Env.ZERO);
 			cashline.setDiscountAmt(Env.ZERO);
 			cashline.setWriteOffAmt(Env.ZERO);
-			cashline.addDescription(Msg.getMsg(getCtx(), "Voided")
-					+ " (Amount=" + oldAmount + ", Discount=" + oldDiscount
-					+ ", WriteOff=" + oldWriteOff + ", )");
+			StringBuilder msgadd = new StringBuilder(Msg.getMsg(getCtx(), "Voided"))
+					.append(" (Amount=").append(oldAmount).append(", Discount=").append(oldDiscount)
+					.append(", WriteOff=").append(oldWriteOff).append(", )");
+			cashline.addDescription(msgadd.toString());
 			if (MCashLine.CASHTYPE_BankAccountTransfer.equals(cashline.getCashType()))
 			{
 				if (cashline.getC_Payment_ID() == 0)
@@ -659,8 +662,10 @@ public class MCash extends X_C_Cash implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgsd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgsd.toString());
+		}	
 	}	//	addDescription
 
 	/**
@@ -672,14 +677,14 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		log.info(toString());
 		// Before Close
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE));
 		if (m_processMsg != null)
 			return false;
 		
 		setDocAction(DOCACTION_None);
 
 		// After Close
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE));
 		if (m_processMsg != null)
 			return false;
 		return true;
@@ -693,7 +698,7 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		log.info(toString());
 		// Before reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT));
 		if (m_processMsg != null)
 			return false;
 		
@@ -702,7 +707,7 @@ public class MCash extends X_C_Cash implements DocAction
 		
 		if (retValue) {
 			// After reverseCorrect
-			m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
+			m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT));
 			if (m_processMsg != null)
 				return false;		
 		}
@@ -718,12 +723,12 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		log.info(toString());
 		// Before reverseAccrual
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL));
 		if (m_processMsg != null)
 			return false;
 		
 		// After reverseAccrual
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL));
 		if (m_processMsg != null)
 			return false;
 				
@@ -738,7 +743,7 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		log.info(toString());
 		// Before reActivate
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE));
 		if (m_processMsg != null)
 			return false;	
 				
@@ -747,7 +752,7 @@ public class MCash extends X_C_Cash implements DocAction
 			return true;
 
 		// After reActivate
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE));
 		if (m_processMsg != null)
 			return false;		
 		return false;
@@ -760,10 +765,10 @@ public class MCash extends X_C_Cash implements DocAction
 	public void setProcessed (boolean processed)
 	{
 		super.setProcessed (processed);
-		String sql = "UPDATE C_CashLine SET Processed='"
-			+ (processed ? "Y" : "N")
-			+ "' WHERE C_Cash_ID=" + getC_Cash_ID();
-		int noLine = DB.executeUpdate (sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE C_CashLine SET Processed='")
+			.append((processed ? "Y" : "N"))
+			.append("' WHERE C_Cash_ID=").append(getC_Cash_ID());
+		int noLine = DB.executeUpdate (sql.toString(), get_TrxName());
 		m_lines = null;
 		log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
@@ -774,7 +779,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MCash[");
+		StringBuilder sb = new StringBuilder ("MCash[");
 		sb.append (get_ID ())
 			.append ("-").append (getName())
 			.append(", Balance=").append(getBeginningBalance())
@@ -789,7 +794,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getName());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")
@@ -809,7 +814,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public String getProcessMsg()
 	{
-		return m_processMsg;
+		return m_processMsg.toString();
 	}	//	getProcessMsg
 	
 	/**

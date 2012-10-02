@@ -66,8 +66,10 @@ public final class MAccountLookup extends Lookup implements Serializable
 	 */
 	public String getDisplay (Object value)
 	{
-		if (!containsKey (value))
-			return "<" + value.toString() + ">";
+		if (!containsKey (value)){
+			StringBuilder msgreturn = new StringBuilder("<").append(value.toString()).append(">");
+			return msgreturn.toString();
+		}
 		return toString();
 	}	//	getDisplay
 
@@ -189,9 +191,9 @@ public final class MAccountLookup extends Lookup implements Serializable
 		
 		for(MAccount account :accounts)
 		{
-			list.add (new KeyNamePair(account.getC_ValidCombination_ID(), 
-					account.getCombination() + " - " + 
-					account.getDescription()));
+			StringBuilder msglist = new StringBuilder(account.getCombination()).append(" - ") 
+												.append(account.getDescription());
+			list.add (new KeyNamePair(account.getC_ValidCombination_ID(), msglist.toString()));
 		}
 		//  Sort & return
 		return list;

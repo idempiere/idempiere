@@ -62,10 +62,10 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	 */
 	public static int deleteInOutMA (int M_InOut_ID, String trxName)
 	{
-		String sql = "DELETE FROM M_InOutLineMA ma WHERE EXISTS "
-			+ "(SELECT * FROM M_InOutLine l WHERE l.M_InOutLine_ID=ma.M_InOutLine_ID"
-			+ " AND M_InOut_ID=" + M_InOut_ID + ")";
-		return DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE FROM M_InOutLineMA ma WHERE EXISTS ")
+			.append("(SELECT * FROM M_InOutLine l WHERE l.M_InOutLine_ID=ma.M_InOutLine_ID")
+			.append(" AND M_InOut_ID=").append(M_InOut_ID).append(")");
+		return DB.executeUpdate(sql.toString(), trxName);
 	}	//	deleteInOutMA
 	
 	/**
@@ -130,7 +130,7 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInOutLineMA[");
+		StringBuilder sb = new StringBuilder ("MInOutLineMA[");
 		sb.append("M_InOutLine_ID=").append(getM_InOutLine_ID())
 			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
 			.append(", Qty=").append(getMovementQty())

@@ -204,7 +204,7 @@ public class MColorSchema extends X_PA_ColorSchema
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MColorSchema[");
+		StringBuilder sb = new StringBuilder ("MColorSchema[");
 		sb.append (get_ID()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString

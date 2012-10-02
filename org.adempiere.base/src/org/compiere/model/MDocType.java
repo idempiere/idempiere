@@ -192,7 +192,7 @@ public class MDocType extends X_C_DocType
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MDocType[");
+		StringBuilder sb = new StringBuilder("MDocType[");
 		sb.append(get_ID()).append("-").append(getName())
 			.append(",DocNoSequence_ID=").append(getDocNoSequence_ID())
 			.append("]");
@@ -266,23 +266,23 @@ public class MDocType extends X_C_DocType
 		if (newRecord && success)
 		{
 			//	Add doctype/docaction access to all roles of client
-			String sqlDocAction = "INSERT INTO AD_Document_Action_Access "
-				+ "(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"
-				+ "C_DocType_ID , AD_Ref_List_ID, AD_Role_ID) " 
-				+ "(SELECT "
-				+ getAD_Client_ID() + ",0,'Y', SysDate," 
-				+ getUpdatedBy() + ", SysDate," + getUpdatedBy() 
-				+ ", doctype.C_DocType_ID, action.AD_Ref_List_ID, rol.AD_Role_ID " 
-				+ "FROM AD_Client client " 
-				+ "INNER JOIN C_DocType doctype ON (doctype.AD_Client_ID=client.AD_Client_ID) "
-				+ "INNER JOIN AD_Ref_List action ON (action.AD_Reference_ID=135) "
-				+ "INNER JOIN AD_Role rol ON (rol.AD_Client_ID=client.AD_Client_ID) "
-				+ "WHERE client.AD_Client_ID=" + getAD_Client_ID() 
-				+ " AND doctype.C_DocType_ID=" + get_ID()
-				+ " AND rol.IsManual='N'"
-				+ ")";
+			StringBuilder sqlDocAction = new StringBuilder("INSERT INTO AD_Document_Action_Access ")
+				.append("(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,")
+				.append("C_DocType_ID , AD_Ref_List_ID, AD_Role_ID) ")
+				.append("(SELECT ")
+				.append(getAD_Client_ID()).append(",0,'Y', SysDate,") 
+				.append(getUpdatedBy()).append(", SysDate,").append(getUpdatedBy()) 
+				.append(", doctype.C_DocType_ID, action.AD_Ref_List_ID, rol.AD_Role_ID ")
+				.append("FROM AD_Client client ")
+				.append("INNER JOIN C_DocType doctype ON (doctype.AD_Client_ID=client.AD_Client_ID) ")
+				.append("INNER JOIN AD_Ref_List action ON (action.AD_Reference_ID=135) ")
+				.append("INNER JOIN AD_Role rol ON (rol.AD_Client_ID=client.AD_Client_ID) ")
+				.append("WHERE client.AD_Client_ID=").append(getAD_Client_ID()) 
+				.append(" AND doctype.C_DocType_ID=").append(get_ID())
+				.append(" AND rol.IsManual='N'")
+				.append(")");
 			
-			int docact = DB.executeUpdate(sqlDocAction, get_TrxName());
+			int docact = DB.executeUpdate(sqlDocAction.toString(), get_TrxName());
 			log.fine("AD_Document_Action_Access=" + docact);
 		}
 		return success;
@@ -296,7 +296,8 @@ public class MDocType extends X_C_DocType
 	protected boolean beforeDelete ()
 	{
 		// delete access records
-		int docactDel = DB.executeUpdate("DELETE FROM AD_Document_Action_Access WHERE C_DocType_ID=" + get_ID(), get_TrxName());
+		StringBuilder msgdb = new StringBuilder("DELETE FROM AD_Document_Action_Access WHERE C_DocType_ID=").append(get_ID());
+		int docactDel = DB.executeUpdate(msgdb.toString(), get_TrxName());
 		log.fine("Delete AD_Document_Action_Access=" + docactDel + " for C_DocType_ID: " + get_ID());
 		return docactDel >= 0;
 	}   //  beforeDelete
@@ -334,7 +335,7 @@ public class MDocType extends X_C_DocType
 
                 if (relatedDocTypeName != null)
                 {
-                    StringBuffer whereClause = new StringBuffer(30);
+                    StringBuilder whereClause = new StringBuilder(30);
                     whereClause.append("Name='").append(relatedDocTypeName).append("' ");
                     whereClause.append("and AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
                     whereClause.append(" AND IsActive='Y'");

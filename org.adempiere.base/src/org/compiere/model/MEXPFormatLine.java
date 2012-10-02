@@ -61,7 +61,7 @@ public class MEXPFormatLine extends X_EXP_FormatLine {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer ("X_EXP_FormatLine[ID=").append(get_ID()).append("; Value="+getValue()+"; Type="+getType()+"]");
+		StringBuilder sb = new StringBuilder ("X_EXP_FormatLine[ID=").append(get_ID()).append("; Value=").append(getValue()).append("; Type=").append(getType()).append("]");
 		return sb.toString();
 	}
 	
@@ -70,7 +70,7 @@ public class MEXPFormatLine extends X_EXP_FormatLine {
 	{
 	MEXPFormatLine result = null;
 	                   
-	StringBuffer sql = new StringBuffer("SELECT * ")
+	StringBuilder sql = new StringBuilder("SELECT * ")
 		.append(" FROM ").append(X_EXP_FormatLine.Table_Name)
 		.append(" WHERE ").append(X_EXP_Format.COLUMNNAME_Value).append("=?")
 		//.append(" AND IsActive = ?")

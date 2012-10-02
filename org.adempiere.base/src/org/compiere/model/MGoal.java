@@ -511,7 +511,7 @@ public class MGoal extends X_PA_Goal
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MGoal[");
+		StringBuilder sb = new StringBuilder ("MGoal[");
 		sb.append (get_ID ())
 			.append ("-").append (getName())
 			.append(",").append(getGoalPerformance())

@@ -290,7 +290,8 @@ public class MImage extends X_AD_Image
 	 */
 	public String toString()
 	{
-		return "MImage[ID=" + get_ID() + ",Name=" + getName() + "]";
+		StringBuilder msgreturn = new StringBuilder("MImage[ID=").append(get_ID()).append(",Name=").append(getName()).append("]");
+		return msgreturn.toString();
 	}   //  toString
 
 	

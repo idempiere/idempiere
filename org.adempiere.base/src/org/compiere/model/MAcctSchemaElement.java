@@ -388,10 +388,11 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 	 */
 	public String toString()
 	{
-		return "AcctSchemaElement[" + get_ID() 
-			+ "-" + getName() 
-			+ "(" + getElementType() + ")=" + getDefaultValue()  
-			+ ",Pos=" + getSeqNo() + "]";
+		StringBuilder msgreturn = new StringBuilder("AcctSchemaElement[").append(get_ID()) 
+				.append("-").append(getName()) 
+				.append("(").append(getElementType()).append(")=").append(getDefaultValue())  
+				.append(",Pos=").append(getSeqNo()).append("]");
+		return msgreturn.toString();
 	}   //  toString
 
 	
@@ -486,10 +487,10 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 		s_cache.clear();
 		
 		//	Resequence
-		if (newRecord || is_ValueChanged(COLUMNNAME_SeqNo))
-			MAccount.updateValueDescription(getCtx(), 
-				"AD_Client_ID=" + getAD_Client_ID(), get_TrxName());
-
+		if (newRecord || is_ValueChanged(COLUMNNAME_SeqNo)){
+			StringBuilder msguvd = new StringBuilder("AD_Client_ID=").append(getAD_Client_ID());
+			MAccount.updateValueDescription(getCtx(), msguvd.toString(), get_TrxName());
+		}
 		return success;
 	}	//	afterSave
 	
@@ -500,16 +501,16 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 	 */
 	private void updateData (String element, int id)
 	{
-		MAccount.updateValueDescription(getCtx(), 
-			element + "=" + id, get_TrxName());
+		StringBuilder msguvd = new StringBuilder(element).append("=").append(id);
+		MAccount.updateValueDescription(getCtx(),msguvd.toString(), get_TrxName());
 		//
-		String sql = "UPDATE C_ValidCombination SET " + element + "=" + id
-			+ " WHERE " + element + " IS NULL AND AD_Client_ID=" + getAD_Client_ID();
-		int noC = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE C_ValidCombination SET ").append(element).append("=").append(id)
+			.append(" WHERE ").append(element).append(" IS NULL AND AD_Client_ID=").append(getAD_Client_ID());
+		int noC = DB.executeUpdate(sql.toString(), get_TrxName());
 		//
-		sql = "UPDATE Fact_Acct SET " + element + "=" + id
-			+ " WHERE " + element + " IS NULL AND C_AcctSchema_ID=" + getC_AcctSchema_ID();
-		int noF = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE Fact_Acct SET ").append(element).append("=").append(id)
+			.append(" WHERE ").append(element).append(" IS NULL AND C_AcctSchema_ID=").append(getC_AcctSchema_ID());
+		int noF = DB.executeUpdate(sql.toString(), get_TrxName());
 		//
 		log.fine("ValidCombination=" + noC + ", Fact=" + noF);
 	}	//	updateData
@@ -535,8 +536,8 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 	protected boolean afterDelete (boolean success)
 	{
 		//	Update Account Info
-		MAccount.updateValueDescription(getCtx(), 
-			"AD_Client_ID=" + getAD_Client_ID(), get_TrxName());
+		StringBuilder msguvd = new StringBuilder("AD_Client_ID=").append(getAD_Client_ID());
+		MAccount.updateValueDescription(getCtx(),msguvd.toString(), get_TrxName());
 		//
 		s_cache.clear();
 		return success;

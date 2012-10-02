@@ -65,7 +65,9 @@ public class MLookupInfo implements Serializable, Cloneable
 				refName = rs.getString(2);
 				validationType = rs.getString(3);
 				isActive = rs.getString(4).equals("Y");
-				CLogger.get().config("AD_Reference Name=" + refName + ", ID=" + id + ", Type=" + validationType + ", Active=" + isActive);
+				StringBuilder msgconf = new StringBuilder(
+						"AD_Reference Name=").append(refName).append(", ID=").append(id).append(", Type=").append(validationType).append(", Active=").append(isActive);
+				CLogger.get().config(msgconf.toString());
 			}
 			rs.close();
 			pstmt.close();
@@ -107,7 +109,8 @@ public class MLookupInfo implements Serializable, Cloneable
 					retValue = id;
 				colName = rs.getString(2);
 				tabName = rs.getString(3);
-				CLogger.get().config("Name=" + colName + ", ID=" + id + ", Table=" + tabName);
+				StringBuilder msgconf = new StringBuilder("Name=").append(colName).append(", ID=").append(id).append(", Table=").append(tabName);
+				CLogger.get().config(msgconf.toString());
 			}
 			rs.close();
 			pstmt.close();
@@ -195,7 +198,7 @@ public class MLookupInfo implements Serializable, Cloneable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MLookupInfo[")
+		StringBuilder sb = new StringBuilder ("MLookupInfo[")
 			.append(KeyColumn)
 			.append("-Direct=").append(QueryDirect)
 			.append("]");

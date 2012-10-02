@@ -148,8 +148,10 @@ import org.compiere.util.Msg;
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgsd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgsd.toString());
+		}
 	}	//	addDescription
 
 	
@@ -252,19 +254,19 @@ import org.compiere.util.Msg;
 	 */
 	private boolean updateHeader()
 	{
-		String sql = "UPDATE C_BankStatement bs"
-			+ " SET StatementDifference=(SELECT COALESCE(SUM(StmtAmt),0) FROM C_BankStatementLine bsl "
-				+ "WHERE bsl.C_BankStatement_ID=bs.C_BankStatement_ID AND bsl.IsActive='Y') "
-			+ "WHERE C_BankStatement_ID=" + getC_BankStatement_ID();
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE C_BankStatement bs")
+			.append(" SET StatementDifference=(SELECT COALESCE(SUM(StmtAmt),0) FROM C_BankStatementLine bsl ")
+				.append("WHERE bsl.C_BankStatement_ID=bs.C_BankStatement_ID AND bsl.IsActive='Y') ")
+			.append("WHERE C_BankStatement_ID=").append(getC_BankStatement_ID());
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 1) {
 			log.warning("StatementDifference #" + no);
 			return false;
 		}
-		sql = "UPDATE C_BankStatement bs"
-			+ " SET EndingBalance=BeginningBalance+StatementDifference "
-			+ "WHERE C_BankStatement_ID=" + getC_BankStatement_ID();
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE C_BankStatement bs")
+			.append(" SET EndingBalance=BeginningBalance+StatementDifference ")
+			.append("WHERE C_BankStatement_ID=").append(getC_BankStatement_ID());
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 1) {
 			log.warning("Balance #" + no);
 			return false;

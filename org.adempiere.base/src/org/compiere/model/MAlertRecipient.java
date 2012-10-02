@@ -88,7 +88,7 @@ public class MAlertRecipient extends X_AD_AlertRecipient
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAlertRecipient[");
+		StringBuilder sb = new StringBuilder ("MAlertRecipient[");
 		sb.append(get_ID())
 			.append(",AD_User_ID=").append(getAD_User_ID())
 			.append(",AD_Role_ID=").append(getAD_Role_ID())

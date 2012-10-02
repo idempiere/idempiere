@@ -54,7 +54,8 @@ public class MColor extends X_AD_Color
 	 */
 	public String toString()
 	{
-		return "MColor[ID=" + get_ID() + " - " + getName() + "]";
+		StringBuilder msgreturn = new StringBuilder("MColor[ID=").append(get_ID()).append(" - ").append(getName()).append("]");
+		return msgreturn.toString();
 	}   //  toString
 
 	/**

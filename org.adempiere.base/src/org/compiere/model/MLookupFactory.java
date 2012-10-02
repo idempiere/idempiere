@@ -290,31 +290,31 @@ public class MLookupFactory
 	static public MLookupInfo getLookup_List(Language language, int AD_Reference_Value_ID)
 	{
 		String byValue = DB.getSQLValueString(null, "SELECT IsOrderByValue FROM AD_Reference WHERE AD_Reference_ID = ? ", AD_Reference_Value_ID);
-		StringBuffer realSQL = new StringBuffer ("SELECT NULL, AD_Ref_List.Value,");
+		StringBuilder realSQL = new StringBuilder ("SELECT NULL, AD_Ref_List.Value,");
 		MClient client = MClient.get(Env.getCtx());
-		String AspFilter="";
+		StringBuilder AspFilter = new StringBuilder();
         if ( client.isUseASP() ) {
-        	AspFilter=" AND AD_Ref_List.AD_Ref_List_ID NOT IN ( " 
-        			 +" SELECT li.AD_Ref_List_ID"
-        			 +" FROM ASP_Ref_List li"
-        			 +" INNER JOIN ASP_Level l ON ( li.ASP_Level_ID = l.ASP_Level_ID)"
-        			 +" INNER JOIN ASP_ClientLevel cl on (l.ASP_Level_ID = cl.ASP_Level_ID)"
-        			 +" INNER JOIN AD_Client c on (cl.AD_Client_ID = c.AD_Client_ID)"
-        			 +" WHERE li.AD_Reference_ID="+AD_Reference_Value_ID
-        			 +" AND li.IsActive='Y'"
-        			 +" AND c.AD_Client_ID="+client.getAD_Client_ID()
-        			 +" AND li.ASP_Status='H')";
+        	AspFilter.append(" AND AD_Ref_List.AD_Ref_List_ID NOT IN ( ")
+        			 .append(" SELECT li.AD_Ref_List_ID")
+        			 .append(" FROM ASP_Ref_List li")
+        			 .append(" INNER JOIN ASP_Level l ON ( li.ASP_Level_ID = l.ASP_Level_ID)")
+        			 .append(" INNER JOIN ASP_ClientLevel cl on (l.ASP_Level_ID = cl.ASP_Level_ID)")
+        			 .append(" INNER JOIN AD_Client c on (cl.AD_Client_ID = c.AD_Client_ID)")
+        			 .append(" WHERE li.AD_Reference_ID=").append(AD_Reference_Value_ID)
+        			 .append(" AND li.IsActive='Y'")
+        			 .append(" AND c.AD_Client_ID=").append(client.getAD_Client_ID())
+        			 .append(" AND li.ASP_Status='H')");
 			
 		}
 		if (Env.isBaseLanguage(language, "AD_Ref_List"))
 			realSQL.append("AD_Ref_List.Name,AD_Ref_List.IsActive FROM AD_Ref_List ");
 		else
-			realSQL.append("trl.Name, AD_Ref_List.IsActive "
-				+ "FROM AD_Ref_List  INNER JOIN AD_Ref_List_Trl trl "
-				+ " ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
+			realSQL.append("trl.Name, AD_Ref_List.IsActive ")
+				.append("FROM AD_Ref_List  INNER JOIN AD_Ref_List_Trl trl ")
+				.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 					.append(language.getAD_Language()).append("')");
 		realSQL.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_Value_ID);
-		realSQL.append(AspFilter);
+		realSQL.append(AspFilter.toString());
 		if ("Y".equals(byValue))
 			realSQL.append(" ORDER BY 2");
 		else
@@ -334,13 +334,13 @@ public class MLookupFactory
 	static public String getLookup_ListEmbed(Language language,
 		int AD_Reference_Value_ID, String linkColumnName)
 	{
-		StringBuffer realSQL = new StringBuffer ("SELECT ");
+		StringBuilder realSQL = new StringBuilder ("SELECT ");
 		if (Env.isBaseLanguage(language, "AD_Ref_List"))
 			realSQL.append("AD_Ref_List.Name FROM AD_Ref_List ");
 		else
-			realSQL.append("trl.Name "
-				+ "FROM AD_Ref_List  INNER JOIN AD_Ref_List_Trl trl "
-				+ " ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
+			realSQL.append("trl.Name ")
+				.append("FROM AD_Ref_List  INNER JOIN AD_Ref_List_Trl trl ")
+				.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 					.append(language.getAD_Language()).append("')");
 		realSQL.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_Value_ID)
 			.append(" AND AD_Ref_List.Value=").append(linkColumnName);
@@ -362,7 +362,7 @@ public class MLookupFactory
 		int WindowNo, int AD_Reference_Value_ID)
 	{
 		//	Try cache - assume no language change
-		String key = Env.getAD_Client_ID(ctx) + "|" + String.valueOf(AD_Reference_Value_ID);
+		StringBuilder key = new StringBuilder(Env.getAD_Client_ID(ctx)).append("|").append(String.valueOf(AD_Reference_Value_ID));
 		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key);
 		if (retValue != null)
 		{
@@ -434,7 +434,7 @@ public class MLookupFactory
 			return null;
 		}
 
-		StringBuffer realSQL = new StringBuffer("SELECT ");
+		StringBuilder realSQL = new StringBuilder("SELECT ");
 		if (!KeyColumn.endsWith("_ID"))
 			realSQL.append("NULL,");
 
@@ -513,9 +513,10 @@ public class MLookupFactory
 			ZoomWindow = overrideZoomWindow;
 			ZoomWindowPO = 0;
 		}
+		StringBuilder msginf = new StringBuilder(TableName).append(".").append(KeyColumn);
 		retValue = new MLookupInfo (realSQL.toString(), TableName,
-			TableName + "." + KeyColumn, ZoomWindow, ZoomWindowPO, zoomQuery);
-		s_cacheRefTable.put(key, retValue.cloneIt());
+			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
+		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		return retValue;
 	}	//	getLookup_Table
 
@@ -583,7 +584,7 @@ public class MLookupFactory
 			TableNameAlias = TableName;
 		}
 
-		StringBuffer embedSQL = new StringBuffer("SELECT ");
+		StringBuilder embedSQL = new StringBuilder("SELECT ");
 
 		//	Translated
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
@@ -649,7 +650,7 @@ public class MLookupFactory
 		int ZoomWindowPO = 0;
 
 		//try cache
-		String cacheKey = Env.getAD_Client_ID(ctx) + "|" + TableName + "." + KeyColumn;
+		StringBuilder cacheKey = new StringBuilder(Env.getAD_Client_ID(ctx)).append("|").append(TableName).append(".").append(KeyColumn);
 		if (s_cacheRefTable.containsKey(cacheKey))
 			return s_cacheRefTable.get(cacheKey).cloneIt();
 
@@ -709,10 +710,10 @@ public class MLookupFactory
 			list.add(new LookupDisplayColumn(KeyColumn, null, false, DisplayType.ID, 0));
 		}
 
-		StringBuffer realSQL = new StringBuffer("SELECT ");
+		StringBuilder realSQL = new StringBuilder("SELECT ");
 		realSQL.append(TableName).append(".").append(KeyColumn).append(",NULL,");
 
-		StringBuffer displayColumn = new StringBuffer();
+		StringBuilder displayColumn = new StringBuilder();
 		int size = list.size();
 		//  Get Display Column
 		for (int i = 0; i < size; i++)
@@ -720,7 +721,8 @@ public class MLookupFactory
 			if (i > 0)
 				displayColumn.append(" ||'_'|| " );
 			LookupDisplayColumn ldc = (LookupDisplayColumn)list.get(i);
-			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : TableName + "." + ldc.ColumnName;
+			StringBuilder msg = new StringBuilder(TableName).append(".").append(ldc.ColumnName);
+			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : msg.toString();
 
 			displayColumn.append("NVL(");
 
@@ -795,9 +797,10 @@ public class MLookupFactory
 
 		if (CLogMgt.isLevelFinest())
 			s_log.fine("ColumnName=" + ColumnName + " - " + realSQL);
+		StringBuilder msginf = new StringBuilder(TableName).append(".").append(KeyColumn);
 		MLookupInfo lInfo = new MLookupInfo(realSQL.toString(), TableName,
-			TableName + "." + KeyColumn, ZoomWindow, ZoomWindowPO, zoomQuery);
-		s_cacheRefTable.put(cacheKey, lInfo.cloneIt());
+			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
+		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir
 
@@ -881,7 +884,7 @@ public class MLookupFactory
 		}
 
 		//
-		StringBuffer embedSQL = new StringBuffer("SELECT ");
+		StringBuilder embedSQL = new StringBuilder("SELECT ");
 
 		int size = list.size();
 		for (int i = 0; i < size; i++)
@@ -889,7 +892,8 @@ public class MLookupFactory
 			if (i > 0)
 				embedSQL.append("||' - '||" );
 			LookupDisplayColumn ldc = (LookupDisplayColumn)list.get(i);
-			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : TableName + "." + ldc.ColumnName;
+			StringBuilder msg = new StringBuilder(TableName).append(".").append(ldc.ColumnName);
+			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : msg.toString();
 
 			//  translated
 			if (ldc.IsTranslated && !Env.isBaseLanguage(language, TableName) && !ldc.IsVirtual)

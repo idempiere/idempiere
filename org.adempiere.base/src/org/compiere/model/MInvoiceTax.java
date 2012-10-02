@@ -248,7 +248,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInvoiceTax[");
+		StringBuilder sb = new StringBuilder ("MInvoiceTax[");
 		sb.append("C_Invoice_ID=").append(getC_Invoice_ID())
 			.append(",C_Tax_ID=").append(getC_Tax_ID())
 			.append(", Base=").append(getTaxBaseAmt()).append(",Tax=").append(getTaxAmt())

@@ -52,8 +52,8 @@ public class MBPartnerInfo extends X_RV_BPartner
 	public static MBPartnerInfo[] find (Properties ctx, 
 		String Value, String Name, String Contact, String EMail, String Phone, String City)
 	{
-		StringBuffer sql = new StringBuffer ("SELECT * FROM RV_BPartner WHERE IsActive='Y'");
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sql = new StringBuilder ("SELECT * FROM RV_BPartner WHERE IsActive='Y'");
+		StringBuilder sb = new StringBuilder();
 		Value = getFindParameter (Value);
 		if (Value != null)
 			sb.append("UPPER(Value) LIKE ?");

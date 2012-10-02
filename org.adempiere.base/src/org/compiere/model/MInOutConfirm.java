@@ -174,8 +174,10 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 	
 	/**
@@ -193,7 +195,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInOutConfirm[");
+		StringBuilder sb = new StringBuilder ("MInOutConfirm[");
 		sb.append(get_ID()).append("-").append(getSummary())
 			.append ("]");
 		return sb.toString ();
@@ -205,7 +207,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		return Msg.getElement(getCtx(), "M_InOutConfirm_ID") + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder(Msg.getElement(getCtx(), "M_InOutConfirm_ID")).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -216,7 +219,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -249,11 +253,11 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		{
 			int AD_User_ID = Env.getAD_User_ID(getCtx());
 			MUser user = MUser.get(getCtx(), AD_User_ID);
-			String info = user.getName() 
-				+ ": "
-				+ Msg.translate(getCtx(), "IsApproved")
-				+ " - " + new Timestamp(System.currentTimeMillis());
-			addDescription(info);
+			StringBuilder info = new StringBuilder(user.getName()) 
+				.append(": ")
+				.append(Msg.translate(getCtx(), "IsApproved"))
+				.append(" - ").append(new Timestamp(System.currentTimeMillis()));
+			addDescription(info.toString());
 		}
 		super.setIsApproved (IsApproved);
 	}	//	setIsApproved
@@ -272,7 +276,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	}	//	processIt
 	
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	private StringBuffer	m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
@@ -305,7 +309,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	public String prepareIt()
 	{
 		log.info(toString());
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE));
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -323,7 +327,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		MInOutLineConfirm[] lines = getLines(true);
 		if (lines.length == 0)
 		{
-			m_processMsg = "@NoLines@";
+			m_processMsg  = new StringBuffer("@NoLines@");
 			return DocAction.STATUS_Invalid;
 		}
 		//	Set dispute if not fully confirmed
@@ -338,7 +342,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		}
 		setIsInDispute(difference);
 
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE));
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 		//
@@ -384,7 +388,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 				return status;
 		}
 		
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE));
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 		
@@ -404,7 +408,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			{
 				if (dt.getC_DocTypeDifference_ID() == 0)
 				{
-					m_processMsg = "No Split Document Type defined for: " + dt.getName();
+					m_processMsg = new StringBuffer("No Split Document Type defined for: ").append(dt.getName());
 					return DocAction.STATUS_Invalid;
 				}
 				splitInOut (inout, dt.getC_DocTypeDifference_ID(), lines);
@@ -419,7 +423,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			confirmLine.set_TrxName(get_TrxName());
 			if (!confirmLine.processLine (inout.isSOTrx(), getConfirmType()))
 			{
-				m_processMsg = "ShipLine not saved - " + confirmLine;
+				m_processMsg = new StringBuffer("ShipLine not saved - ").append(confirmLine);
 				return DocAction.STATUS_Invalid;
 			}
 			if (confirmLine.isFullyConfirmed())
@@ -444,9 +448,9 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		}	//	for all lines
 
 		if (m_creditMemo != null)
-			m_processMsg += " @C_Invoice_ID@=" + m_creditMemo.getDocumentNo();
+			m_processMsg.append(" @C_Invoice_ID@=").append(m_creditMemo.getDocumentNo());
 		if (m_inventory != null)
-			m_processMsg += " @M_Inventory_ID@=" + m_inventory.getDocumentNo();
+			m_processMsg.append(" @M_Inventory_ID@=").append(m_inventory.getDocumentNo());
 
 		
 		//	Try to complete Shipment
@@ -457,7 +461,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = valid;
+			m_processMsg = new StringBuffer(valid);
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -490,10 +494,12 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			if (split == null)
 			{
 				split = new MInOut (original, C_DocType_ID, original.getMovementDate());
-				split.addDescription("Splitted from " + original.getDocumentNo());
+				StringBuilder msgd = new StringBuilder("Splitted from ").append(original.getDocumentNo());
+				split.addDescription(msgd.toString());
 				split.setIsInDispute(true);
 				split.saveEx();
-				original.addDescription("Split: " + split.getDocumentNo());
+				msgd = new StringBuilder("Split: ").append(split.getDocumentNo());
+				original.addDescription(msgd.toString());
 				original.saveEx();
 			}
 			//
@@ -508,12 +514,14 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			splitLine.setM_Product_ID(oldLine.getM_Product_ID());
 			splitLine.setM_Warehouse_ID(oldLine.getM_Warehouse_ID());
 			splitLine.setRef_InOutLine_ID(oldLine.getRef_InOutLine_ID());
-			splitLine.addDescription("Split: from " + oldLine.getMovementQty());
+			StringBuilder msgd = new StringBuilder("Split: from ").append(oldLine.getMovementQty());
+			splitLine.addDescription(msgd.toString());
 			//	Qtys
 			splitLine.setQty(differenceQty);		//	Entered/Movement
 			splitLine.saveEx();
 			//	Old
-			oldLine.addDescription("Splitted: from " + oldLine.getMovementQty());
+			msgd = new StringBuilder("Splitted: from ").append(oldLine.getMovementQty());
+			oldLine.addDescription(msgd.toString());
 			oldLine.setQty(oldLine.getMovementQty().subtract(differenceQty));
 			oldLine.saveEx();
 			//	Update Confirmation Line
@@ -528,8 +536,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			return ;
 		}
 
-		m_processMsg = "Split @M_InOut_ID@=" + split.getDocumentNo()
-			+ " - @M_InOutConfirm_ID@=";
+		m_processMsg = new StringBuffer("Split @M_InOut_ID@=").append(split.getDocumentNo())
+			.append(" - @M_InOutConfirm_ID@=");
 		
 		MDocType dt = MDocType.get(getCtx(), original.getC_DocType_ID());
 		if (!dt.isPrepareSplitDocument())
@@ -552,13 +560,13 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 					index++;	//	try just next
 				if (splitConfirms[index].isProcessed())
 				{
-					m_processMsg += splitConfirms[index].getDocumentNo() + " processed??";
+					m_processMsg.append(splitConfirms[index].getDocumentNo()).append(" processed??");
 					return;
 				}
 			}
 			splitConfirms[index].setIsInDispute(true);
 			splitConfirms[index].saveEx();
-			m_processMsg += splitConfirms[index].getDocumentNo();
+			m_processMsg.append(splitConfirms[index].getDocumentNo());
 			//	Set Lines to unconfirmed
 			MInOutLineConfirm[] splitConfirmLines = splitConfirms[index].getLines(false);
 			for (int i = 0; i < splitConfirmLines.length; i++)
@@ -570,7 +578,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			}
 		}
 		else
-			m_processMsg += "??";
+			m_processMsg.append("??");
 		
 	}	//	splitInOut
 
@@ -584,9 +592,9 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	private boolean createDifferenceDoc (MInOut inout, MInOutLineConfirm confirm)
 	{
 		if (m_processMsg == null)
-			m_processMsg = "";
+			m_processMsg = new StringBuffer();
 		else if (m_processMsg.length() > 0)
-			m_processMsg += "; ";
+			m_processMsg.append("; ");
 		//	Credit Memo if linked Document
 		if (confirm.getDifferenceQty().signum() != 0
 			&& !inout.isSOTrx() && inout.getRef_InOut_ID() != 0)
@@ -595,7 +603,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			if (m_creditMemo == null)
 			{
 				m_creditMemo = new MInvoice (inout, null);
-				m_creditMemo.setDescription(Msg.translate(getCtx(), "M_InOutConfirm_ID") + " " + getDocumentNo());
+				StringBuilder msgd = new StringBuilder(Msg.translate(getCtx(), "M_InOutConfirm_ID")).append(" ").append(getDocumentNo());
+				m_creditMemo.setDescription(msgd.toString());
 				m_creditMemo.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APCreditMemo);
 				m_creditMemo.saveEx();
 				setC_Invoice_ID(m_creditMemo.getC_Invoice_ID());
@@ -620,7 +629,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			{
 				MWarehouse wh = MWarehouse.get(getCtx(), inout.getM_Warehouse_ID());
 				m_inventory = new MInventory (wh, get_TrxName());
-				m_inventory.setDescription(Msg.translate(getCtx(), "M_InOutConfirm_ID") + " " + getDocumentNo());
+				StringBuilder msgd = new StringBuilder(Msg.translate(getCtx(), "M_InOutConfirm_ID")).append(" ").append(getDocumentNo());
+				m_inventory.setDescription(msgd.toString());
 				m_inventory.saveEx();
 				setM_Inventory_ID(m_inventory.getM_Inventory_ID());
 			}
@@ -630,7 +640,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 				confirm.getScrappedQty(), Env.ZERO);
 			if (!line.save(get_TrxName()))
 			{
-				m_processMsg += "Inventory Line not created";
+				m_processMsg.append("Inventory Line not created");
 				return false;
 			}
 			confirm.setM_InventoryLine_ID(line.getM_InventoryLine_ID());
@@ -639,7 +649,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		//
 		if (!confirm.save(get_TrxName()))
 		{
-			m_processMsg += "Confirmation Line not saved";
+			m_processMsg.append("Confirmation Line not saved");
 			return false;
 		}
 		return true;
@@ -653,7 +663,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		log.info(toString());
 		// Before Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID));
 		if (m_processMsg != null)
 			return false;
 
@@ -661,7 +671,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 				|| DOCSTATUS_Reversed.equals(getDocStatus())
 				|| DOCSTATUS_Voided.equals(getDocStatus()))
 		{
-			m_processMsg = "Document Closed: " + getDocStatus();
+			m_processMsg = new StringBuffer("Document Closed: ").append(getDocStatus());
 			return false;
 		}
 
@@ -695,7 +705,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		}
 
 		// After Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID));
 		if (m_processMsg != null)
 			return false;
 		
@@ -713,14 +723,14 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		log.info(toString());
 		// Before Close
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE));
 		if (m_processMsg != null)
 			return false;
 		
 		setDocAction(DOCACTION_None);
 
 		// After Close
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE));
 		if (m_processMsg != null)
 			return false;
 
@@ -735,12 +745,12 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		log.info(toString());
 		// Before reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT));
 		if (m_processMsg != null)
 			return false;
 		
 		// After reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT));
 		if (m_processMsg != null)
 			return false;
 		
@@ -755,12 +765,12 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		log.info(toString());
 		// Before reverseAccrual
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL));
 		if (m_processMsg != null)
 			return false;
 		
 		// After reverseAccrual
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL));
 		if (m_processMsg != null)
 			return false;
 		
@@ -775,12 +785,12 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		log.info(toString());
 		// Before reActivate
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE));
 		if (m_processMsg != null)
 			return false;	
 		
 		// After reActivate
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
+		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE));
 		if (m_processMsg != null)
 			return false;
 		
@@ -794,7 +804,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")
@@ -812,7 +822,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public String getProcessMsg()
 	{
-		return m_processMsg;
+		return m_processMsg.toString();
 	}	//	getProcessMsg
 	
 	/**

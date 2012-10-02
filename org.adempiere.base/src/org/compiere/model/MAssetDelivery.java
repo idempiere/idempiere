@@ -124,7 +124,7 @@ public class MAssetDelivery extends X_A_Asset_Delivery
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAssetDelivery[")
+		StringBuilder sb = new StringBuilder ("MAssetDelivery[")
 			.append (get_ID ())
 			.append(",A_Asset_ID=").append(getA_Asset_ID())
 			.append(",MovementDate=").append(getMovementDate())

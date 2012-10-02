@@ -133,7 +133,7 @@ import org.compiere.impexp.BankStatementLoaderInterface;
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MBankStatementLoader[")
+		StringBuilder sb = new StringBuilder ("MBankStatementLoader[")
 			.append(get_ID ()).append("-").append(getName())
 			.append ("]");
 		return sb.toString ();

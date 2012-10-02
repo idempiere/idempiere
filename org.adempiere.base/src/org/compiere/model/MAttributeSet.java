@@ -385,18 +385,18 @@ public class MAttributeSet extends X_M_AttributeSet
 		//	Set Instance Attribute
 		if (!isInstanceAttribute())
 		{
-			String sql = "UPDATE M_AttributeSet mas"
-				+ " SET IsInstanceAttribute='Y' "
-				+ "WHERE M_AttributeSet_ID=" + getM_AttributeSet_ID()
-				+ " AND IsInstanceAttribute='N'"
-				+ " AND (IsSerNo='Y' OR IsLot='Y' OR IsGuaranteeDate='Y'"
-					+ " OR EXISTS (SELECT * FROM M_AttributeUse mau"
-						+ " INNER JOIN M_Attribute ma ON (mau.M_Attribute_ID=ma.M_Attribute_ID) "
-						+ "WHERE mau.M_AttributeSet_ID=mas.M_AttributeSet_ID"
-						+ " AND mau.IsActive='Y' AND ma.IsActive='Y'"
-						+ " AND ma.IsInstanceAttribute='Y')"
-						+ ")";
-			int no = DB.executeUpdate(sql, get_TrxName());
+			StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas")
+				.append(" SET IsInstanceAttribute='Y' ")
+				.append("WHERE M_AttributeSet_ID=").append(getM_AttributeSet_ID())
+				.append(" AND IsInstanceAttribute='N'")
+				.append(" AND (IsSerNo='Y' OR IsLot='Y' OR IsGuaranteeDate='Y'")
+					.append(" OR EXISTS (SELECT * FROM M_AttributeUse mau")
+						.append(" INNER JOIN M_Attribute ma ON (mau.M_Attribute_ID=ma.M_Attribute_ID) ")
+						.append("WHERE mau.M_AttributeSet_ID=mas.M_AttributeSet_ID")
+						.append(" AND mau.IsActive='Y' AND ma.IsActive='Y'")
+						.append(" AND ma.IsInstanceAttribute='Y')")
+						.append(")");
+			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
 			{
 				log.warning("Set Instance Attribute");
@@ -406,17 +406,17 @@ public class MAttributeSet extends X_M_AttributeSet
 		//	Reset Instance Attribute
 		if (isInstanceAttribute() && !isSerNo() && !isLot() && !isGuaranteeDate())
 		{
-			String sql = "UPDATE M_AttributeSet mas"
-				+ " SET IsInstanceAttribute='N' "
-				+ "WHERE M_AttributeSet_ID=" + getM_AttributeSet_ID()
-				+ " AND IsInstanceAttribute='Y'"
-				+ "	AND IsSerNo='N' AND IsLot='N' AND IsGuaranteeDate='N'"
-				+ " AND NOT EXISTS (SELECT * FROM M_AttributeUse mau"
-					+ " INNER JOIN M_Attribute ma ON (mau.M_Attribute_ID=ma.M_Attribute_ID) "
-					+ "WHERE mau.M_AttributeSet_ID=mas.M_AttributeSet_ID"
-					+ " AND mau.IsActive='Y' AND ma.IsActive='Y'"
-					+ " AND ma.IsInstanceAttribute='Y')";
-			int no = DB.executeUpdate(sql, get_TrxName());
+			StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas")
+				.append(" SET IsInstanceAttribute='N' ")
+				.append("WHERE M_AttributeSet_ID=").append(getM_AttributeSet_ID())
+				.append(" AND IsInstanceAttribute='Y'")
+				.append("	AND IsSerNo='N' AND IsLot='N' AND IsGuaranteeDate='N'")
+				.append(" AND NOT EXISTS (SELECT * FROM M_AttributeUse mau")
+					.append(" INNER JOIN M_Attribute ma ON (mau.M_Attribute_ID=ma.M_Attribute_ID) ")
+					.append("WHERE mau.M_AttributeSet_ID=mas.M_AttributeSet_ID")
+					.append(" AND mau.IsActive='Y' AND ma.IsActive='Y'")
+					.append(" AND ma.IsInstanceAttribute='Y')");
+			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
 			{
 				log.warning("Reset Instance Attribute");

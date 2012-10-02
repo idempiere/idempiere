@@ -372,7 +372,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MConversionRate[");
+		StringBuilder sb = new StringBuilder("MConversionRate[");
 		sb.append(get_ID())
 			.append(",Currency=").append(getC_Currency_ID())
 			.append(",To=").append(getC_Currency_ID_To())

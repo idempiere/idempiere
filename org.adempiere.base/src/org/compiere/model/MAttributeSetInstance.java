@@ -186,7 +186,7 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 			return;
 		}
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		
 		//	Instance Attribute Values
 		MAttribute[] attributes = m_mas.getMAttributes(true);

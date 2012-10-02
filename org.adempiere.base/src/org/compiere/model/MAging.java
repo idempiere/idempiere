@@ -273,7 +273,7 @@ public class MAging extends X_T_Aging
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MAging[");
+		StringBuilder sb = new StringBuilder("MAging[");
 		sb.append("AD_PInstance_ID=").append(getAD_PInstance_ID())
 			.append(",C_BPartner_ID=").append(getC_BPartner_ID())
 			.append(",C_Currency_ID=").append(getC_Currency_ID())

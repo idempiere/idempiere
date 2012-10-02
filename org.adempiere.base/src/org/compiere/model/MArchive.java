@@ -79,13 +79,13 @@ public class MArchive extends X_AD_Archive {
 	public static MArchive[] get(Properties ctx, String whereClause) {
 		ArrayList<MArchive> list = new ArrayList<MArchive>();
 		PreparedStatement pstmt = null;
-		String sql = "SELECT * FROM AD_Archive WHERE AD_Client_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT * FROM AD_Archive WHERE AD_Client_ID=?");
 		if (whereClause != null && whereClause.length() > 0)
-			sql += whereClause;
-		sql += " ORDER BY Created";
+			sql.append(whereClause);
+		sql.append(" ORDER BY Created");
 
 		try {
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, Env.getAD_Client_ID(ctx));
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
@@ -94,7 +94,7 @@ public class MArchive extends X_AD_Archive {
 			pstmt.close();
 			pstmt = null;
 		} catch (Exception e) {
-			s_log.log(Level.SEVERE, sql, e);
+			s_log.log(Level.SEVERE, sql.toString(), e);
 		}
 		try {
 			if (pstmt != null)
@@ -104,9 +104,9 @@ public class MArchive extends X_AD_Archive {
 			pstmt = null;
 		}
 		if (list.size() == 0)
-			s_log.fine(sql);
+			s_log.fine(sql.toString());
 		else
-			s_log.finer(sql);
+			s_log.finer(sql.toString());
 		//
 		MArchive[] retValue = new MArchive[list.size()];
 		list.toArray(retValue);
@@ -215,12 +215,12 @@ public class MArchive extends X_AD_Archive {
 	 * @return info
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer("MArchive[");
+		StringBuilder sb = new StringBuilder("MArchive[");
 		sb.append(get_ID()).append(",Name=").append(getName());
 		if (m_inflated != null)
-			sb.append(",Inflated=" + m_inflated);
+			sb.append(",Inflated=").append(m_inflated);
 		if (m_deflated != null)
-			sb.append(",Deflated=" + m_deflated);
+			sb.append(",Deflated=").append(m_deflated);
 		sb.append("]");
 		return sb.toString();
 	} // toString
@@ -419,8 +419,9 @@ public class MArchive extends X_AD_Archive {
 				}
 			}
 			// write to pdf
-			final File destFile = new File(m_archivePathRoot + File.separator
-					+ getArchivePathSnippet() + this.get_ID() + ".pdf");
+			StringBuilder msgfile = new StringBuilder(m_archivePathRoot).append(File.separator)
+					.append(getArchivePathSnippet()).append(this.get_ID()).append(".pdf");
+			final File destFile = new File(msgfile.toString());
 
 			out = new BufferedOutputStream(new FileOutputStream(destFile));
 			out.write(inflatedData);
@@ -433,7 +434,8 @@ public class MArchive extends X_AD_Archive {
 			document.appendChild(root);
 			document.setXmlStandalone(true);
 			final Element entry = document.createElement("entry");
-			entry.setAttribute("file", ARCHIVE_FOLDER_PLACEHOLDER + getArchivePathSnippet() + this.get_ID() + ".pdf");
+			StringBuilder msgsat = new StringBuilder(ARCHIVE_FOLDER_PLACEHOLDER).append(getArchivePathSnippet()).append(this.get_ID()).append(".pdf");
+			entry.setAttribute("file", msgsat.toString());
 			root.appendChild(entry);
 			final Source source = new DOMSource(document);
 			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -538,19 +540,19 @@ public class MArchive extends X_AD_Archive {
 	 * @return String
 	 */
 	private String getArchivePathSnippet() {
-		String path = this.getAD_Client_ID() + File.separator + this.getAD_Org_ID()
-				+ File.separator;
+		StringBuilder path = new StringBuilder(this.getAD_Client_ID()).append(File.separator).append(this.getAD_Org_ID())
+				.append(File.separator);
 		if (this.getAD_Process_ID() > 0) {
-			path = path + this.getAD_Process_ID() + File.separator;
+			path.append(this.getAD_Process_ID()).append(File.separator);
 		}
 		if (this.getAD_Table_ID() > 0) {
-			path = path + this.getAD_Table_ID() + File.separator;
+			path.append(this.getAD_Table_ID()).append(File.separator);
 		}
 		if (this.getRecord_ID() > 0) {
-			path = path + this.getRecord_ID() + File.separator;
+			path.append(this.getRecord_ID()).append(File.separator);
 		}
 		// path = path + this.get_ID() + ".pdf";
-		return path;
+		return path.toString();
 	}
 
 	/**

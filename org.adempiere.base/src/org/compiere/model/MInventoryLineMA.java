@@ -85,10 +85,10 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	 */
 	public static int deleteInventoryMA (int M_Inventory_ID, String trxName)
 	{
-		String sql = "DELETE FROM M_InventoryLineMA ma WHERE EXISTS "
-			+ "(SELECT * FROM M_InventoryLine l WHERE l.M_InventoryLine_ID=ma.M_InventoryLine_ID"
-			+ " AND M_Inventory_ID=" + M_Inventory_ID + ")";
-		return DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE FROM M_InventoryLineMA ma WHERE EXISTS ")
+			.append("(SELECT * FROM M_InventoryLine l WHERE l.M_InventoryLine_ID=ma.M_InventoryLine_ID")
+			.append(" AND M_Inventory_ID=").append(M_Inventory_ID).append(")");
+		return DB.executeUpdate(sql.toString(), trxName);
 	}	//	deleteInventoryMA
 
 	/**
@@ -99,10 +99,10 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	 */
 	public static int deleteInventoryLineMA (int M_InventoryLine_ID, String trxName)
 	{
-		String sql = "DELETE FROM M_InventoryLineMA ma WHERE EXISTS "
-			+ "(SELECT * FROM M_InventoryLine l WHERE l.M_InventoryLine_ID=ma.M_InventoryLine_ID"
-			+ " AND M_InventoryLine_ID=" + M_InventoryLine_ID + ")";
-		return DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE FROM M_InventoryLineMA ma WHERE EXISTS ")
+			.append("(SELECT * FROM M_InventoryLine l WHERE l.M_InventoryLine_ID=ma.M_InventoryLine_ID")
+			.append(" AND M_InventoryLine_ID=").append(M_InventoryLine_ID).append(")");
+		return DB.executeUpdate(sql.toString(), trxName);
 	}	//	deleteInventoryMA
 	
 	/**	Logger	*/
@@ -155,7 +155,7 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInventoryLineMA[");
+		StringBuilder sb = new StringBuilder ("MInventoryLineMA[");
 		sb.append("M_InventoryLine_ID=").append(getM_InventoryLine_ID())
 			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
 			.append(", Qty=").append(getMovementQty())

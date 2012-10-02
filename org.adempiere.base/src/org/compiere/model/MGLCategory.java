@@ -167,11 +167,12 @@ public class MGLCategory extends X_GL_Category
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+"["+get_ID()
-		+", Name="+getName()
-		+", IsDefault="+isDefault()
-		+", IsActive="+isActive()
-		+", CategoryType="+getCategoryType()
-		+"]";
+		StringBuilder msgreturn = new StringBuilder(getClass().getSimpleName()).append("[").append(get_ID())
+				.append(", Name=").append(getName())
+				.append(", IsDefault=").append(isDefault())
+				.append(", IsActive=").append(isActive())
+				.append(", CategoryType=").append(getCategoryType())
+				.append("]");
+		return msgreturn.toString();
 	}
 }	//	MGLCategory

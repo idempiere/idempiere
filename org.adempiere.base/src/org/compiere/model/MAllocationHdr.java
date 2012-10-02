@@ -278,10 +278,10 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		String sql = "UPDATE C_AllocationHdr SET Processed='"
-			+ (processed ? "Y" : "N")
-			+ "' WHERE C_AllocationHdr_ID=" + getC_AllocationHdr_ID();
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE C_AllocationHdr SET Processed='")
+			.append((processed ? "Y" : "N"))
+			.append("' WHERE C_AllocationHdr_ID=").append(getC_AllocationHdr_ID());
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		m_lines = null;
 		log.fine(processed + " - #" + no);
 	}	//	setProcessed
@@ -411,10 +411,10 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		{	
 			if (line.getC_Invoice_ID() != 0)
 			{
-				final String whereClause = I_C_Invoice.COLUMNNAME_C_Invoice_ID + "=? AND " 
-								   + I_C_Invoice.COLUMNNAME_IsPaid + "=? AND "
-								   + I_C_Invoice.COLUMNNAME_DocStatus + " NOT IN (?,?)";
-				boolean InvoiceIsPaid = new Query(getCtx(), I_C_Invoice.Table_Name, whereClause, get_TrxName())
+				StringBuilder whereClause = new StringBuilder(I_C_Invoice.COLUMNNAME_C_Invoice_ID).append("=? AND ") 
+								   .append(I_C_Invoice.COLUMNNAME_IsPaid).append("=? AND ")
+								   .append(I_C_Invoice.COLUMNNAME_DocStatus).append(" NOT IN (?,?)");
+				boolean InvoiceIsPaid = new Query(getCtx(), I_C_Invoice.Table_Name, whereClause.toString(), get_TrxName())
 				.setClient_ID()
 				.setParameters(line.getC_Invoice_ID(), "Y", X_C_Invoice.DOCSTATUS_Voided, X_C_Invoice.DOCSTATUS_Reversed)
 				.match();
@@ -638,7 +638,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAllocationHdr[");
+		StringBuilder sb = new StringBuilder ("MAllocationHdr[");
 		sb.append(get_ID()).append("-").append(getSummary()).append ("]");
 		return sb.toString ();
 	}	//	toString
@@ -649,7 +649,8 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		return Msg.getElement(getCtx(), "C_AllocationHdr_ID") + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder(Msg.getElement(getCtx(), "C_AllocationHdr_ID")).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -660,7 +661,8 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgctf = new StringBuilder(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgctf.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -689,7 +691,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")

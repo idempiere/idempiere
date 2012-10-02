@@ -108,15 +108,15 @@ public class MClickCount extends X_W_ClickCount
 	protected ValueNamePair[] getCount (String DateFormat)
 	{
 		ArrayList<ValueNamePair> list = new ArrayList<ValueNamePair>();
-		String sql = "SELECT TRUNC(Created, '" + DateFormat + "'), Count(*) "
-			+ "FROM W_Click "
-			+ "WHERE W_ClickCount_ID=? "
-			+ "GROUP BY TRUNC(Created, '" + DateFormat + "')";
+		StringBuilder sql = new StringBuilder("SELECT TRUNC(Created, '").append(DateFormat).append("'), Count(*) ")
+			.append("FROM W_Click ")
+			.append("WHERE W_ClickCount_ID=? ")
+			.append("GROUP BY TRUNC(Created, '").append(DateFormat).append("')");
 		//
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, getW_ClickCount_ID());
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
@@ -132,7 +132,7 @@ public class MClickCount extends X_W_ClickCount
 		}
 		catch (SQLException ex)
 		{
-			log.log(Level.SEVERE, sql, ex);
+			log.log(Level.SEVERE, sql.toString(), ex);
 		}
 		try
 		{

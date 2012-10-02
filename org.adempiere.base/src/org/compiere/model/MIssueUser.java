@@ -133,7 +133,7 @@ public class MIssueUser extends X_R_IssueUser
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MIssueUser[");
+		StringBuilder sb = new StringBuilder ("MIssueUser[");
 		sb.append (get_ID())
 			.append ("-").append(getUserName())
 			.append(",AD_User_ID=").append(getAD_User_ID())

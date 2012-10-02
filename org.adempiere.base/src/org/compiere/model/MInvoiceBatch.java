@@ -136,9 +136,9 @@ public class MInvoiceBatch extends X_C_InvoiceBatch
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		String set = "SET Processed='"
-			+ (processed ? "Y" : "N")
-			+ "' WHERE C_InvoiceBatch_ID=" + getC_InvoiceBatch_ID();
+		StringBuilder set = new StringBuilder("SET Processed='")
+			.append((processed ? "Y" : "N"))
+			.append("' WHERE C_InvoiceBatch_ID=").append(getC_InvoiceBatch_ID());
 		int noLine = DB.executeUpdate("UPDATE C_InvoiceBatchLine " + set, get_TrxName());
 		m_lines = null;
 		log.fine(processed + " - Lines=" + noLine);

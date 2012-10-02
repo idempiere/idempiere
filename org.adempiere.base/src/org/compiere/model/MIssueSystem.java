@@ -130,7 +130,7 @@ public class MIssueSystem extends X_R_IssueSystem
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MIssueSystem[");
+		StringBuilder sb = new StringBuilder ("MIssueSystem[");
 		sb.append(get_ID())
 			.append ("-").append (getDBAddress())
 			.append(",A_Asset_ID=").append(getA_Asset_ID())

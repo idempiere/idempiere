@@ -53,19 +53,19 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	public static MInvoicePaySchedule[] getInvoicePaySchedule(Properties ctx, 
 		int C_Invoice_ID, int C_InvoicePaySchedule_ID, String trxName)
 	{
-		String sql = "SELECT * FROM C_InvoicePaySchedule ips WHERE IsActive='Y' ";
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_InvoicePaySchedule ips WHERE IsActive='Y' ");
 		if (C_Invoice_ID != 0)
-			sql += "AND C_Invoice_ID=? ";
+			sql.append("AND C_Invoice_ID=? ");
 		else
-			sql += "AND EXISTS (SELECT * FROM C_InvoicePaySchedule x"
-			+ " WHERE x.C_InvoicePaySchedule_ID=? AND ips.C_Invoice_ID=x.C_Invoice_ID) ";
-		sql += "ORDER BY DueDate";
+			sql.append("AND EXISTS (SELECT * FROM C_InvoicePaySchedule x")
+			.append(" WHERE x.C_InvoicePaySchedule_ID=? AND ips.C_Invoice_ID=x.C_Invoice_ID) ");
+		sql.append("ORDER BY DueDate");
 		//
 		ArrayList<MInvoicePaySchedule> list = new ArrayList<MInvoicePaySchedule>();
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, trxName);
+			pstmt = DB.prepareStatement(sql.toString(), trxName);
 			if (C_Invoice_ID != 0)
 				pstmt.setInt(1, C_Invoice_ID);
 			else
@@ -205,9 +205,9 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MInvoicePaySchedule[");
-		sb.append(get_ID()).append("-Due=" + getDueDate() + "/" + getDueAmt())
-			.append(";Discount=").append(getDiscountDate() + "/" + getDiscountAmt())
+		StringBuilder sb = new StringBuilder("MInvoicePaySchedule[");
+		sb.append(get_ID()).append("-Due=").append(getDueDate()).append("/").append(getDueAmt())
+			.append(";Discount=").append(getDiscountDate()).append("/").append(getDiscountAmt())
 			.append("]");
 		return sb.toString();
 	}	//	toString

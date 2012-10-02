@@ -72,7 +72,8 @@ public class MAd extends X_CM_Ad
 	 */
 	public static MAd getNext(Properties ctx, int CM_Ad_Cat_ID, String trxName) {
 		MAd thisAd = null;
-		int [] thisAds = MAd.getAllIDs("CM_Ad","ActualImpression+StartImpression<MaxImpression AND CM_Ad_Cat_ID=" + CM_Ad_Cat_ID, trxName);
+		StringBuilder msgids = new StringBuilder("ActualImpression+StartImpression<MaxImpression AND CM_Ad_Cat_ID=").append(CM_Ad_Cat_ID);
+		int [] thisAds = MAd.getAllIDs("CM_Ad",msgids.toString(), trxName);
 		if (thisAds!=null) {
 			for (int i=0;i<thisAds.length;i++) {
 				MAd tempAd = new MAd(ctx, thisAds[i], trxName);

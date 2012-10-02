@@ -98,7 +98,7 @@ public class MAchievement extends X_PA_Achievement
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAchievement[");
+		StringBuilder sb = new StringBuilder ("MAchievement[");
 		sb.append (get_ID()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString

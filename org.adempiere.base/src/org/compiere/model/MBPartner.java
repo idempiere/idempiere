@@ -531,7 +531,7 @@ public class MBPartner extends X_C_BPartner
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MBPartner[ID=")
+		StringBuilder sb = new StringBuilder ("MBPartner[ID=")
 			.append(get_ID())
 			.append(",Value=").append(getValue())
 			.append(",Name=").append(getName())
@@ -988,18 +988,18 @@ public class MBPartner extends X_C_BPartner
 			//	Trees
 			insert_Tree(MTree_Base.TREETYPE_BPartner);
 			//	Accounting
-			insert_Accounting("C_BP_Customer_Acct", "C_BP_Group_Acct", 
-				"p.C_BP_Group_ID=" + getC_BP_Group_ID());
-			insert_Accounting("C_BP_Vendor_Acct", "C_BP_Group_Acct", 
-				"p.C_BP_Group_ID=" + getC_BP_Group_ID());
+			StringBuilder msgacc = new StringBuilder("p.C_BP_Group_ID=").append(getC_BP_Group_ID());
+			insert_Accounting("C_BP_Customer_Acct", "C_BP_Group_Acct", msgacc.toString());
+			insert_Accounting("C_BP_Vendor_Acct", "C_BP_Group_Acct",msgacc.toString());
 			insert_Accounting("C_BP_Employee_Acct", "C_AcctSchema_Default", null);
 		}
 
 		//	Value/Name change
 		if (success && !newRecord 
-			&& (is_ValueChanged("Value") || is_ValueChanged("Name")))
-			MAccount.updateValueDescription(getCtx(), "C_BPartner_ID=" + getC_BPartner_ID(), get_TrxName());
-
+			&& (is_ValueChanged("Value") || is_ValueChanged("Name"))){
+			StringBuilder msgacc = new StringBuilder("C_BPartner_ID=").append(getC_BPartner_ID());
+			MAccount.updateValueDescription(getCtx(), msgacc.toString(), get_TrxName());
+		}
 		return success;
 	}	//	afterSave
 

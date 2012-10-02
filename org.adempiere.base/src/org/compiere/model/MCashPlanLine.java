@@ -112,11 +112,11 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	private boolean updateHeader()
 	{
 		//	Update Cash Plan Header
-		String sql = "UPDATE C_CashPlan "
-			+ " SET GrandTotal="
-				+ "(SELECT COALESCE(SUM(LineTotalAmt),0) FROM C_CashPlanLine WHERE C_CashPlan.C_CashPlan_ID=C_CashPlanLine.C_CashPlan_ID) "
-			+ "WHERE C_CashPlan_ID=" + getC_CashPlan_ID();
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE C_CashPlan ")
+			.append(" SET GrandTotal=")
+				.append("(SELECT COALESCE(SUM(LineTotalAmt),0) FROM C_CashPlanLine WHERE C_CashPlan.C_CashPlan_ID=C_CashPlanLine.C_CashPlan_ID) ")
+			.append("WHERE C_CashPlan_ID=").append(getC_CashPlan_ID());
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 1)
 			log.warning("(1) #" + no);
 

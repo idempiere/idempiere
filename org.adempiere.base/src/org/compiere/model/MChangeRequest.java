@@ -61,7 +61,8 @@ public class MChangeRequest extends X_M_ChangeRequest
 	{
 		this (request.getCtx(), 0, request.get_TrxName());
 		setClientOrg(request);
-		setName(Msg.getElement(getCtx(), "R_Request_ID") + ": " + request.getDocumentNo());
+		StringBuilder msgset = new StringBuilder(Msg.getElement(getCtx(), "R_Request_ID")).append(": ").append(request.getDocumentNo());
+		setName(msgset.toString());
 		setHelp(request.getSummary());
 		//
 		setPP_Product_BOM_ID(group.getPP_Product_BOM_ID());

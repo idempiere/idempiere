@@ -125,7 +125,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	/** Cached Location */
 	private MLocation m_location = null;
 	/** Unique Name */
-	private String m_uniqueName = null;
+	private StringBuffer m_uniqueName = null;
 	private int m_unique = 0;
 
 	/**
@@ -148,7 +148,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	 * @return info
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer("MBPartner_Location[ID=")
+		StringBuilder sb = new StringBuilder("MBPartner_Location[ID=")
 				.append(get_ID()).append(",C_Location_ID=")
 				.append(getC_Location_ID()).append(",Name=").append(getName())
 				.append("]");
@@ -181,21 +181,21 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	 *            address
 	 */
 	private void makeUnique(MLocation address) {
-		m_uniqueName = "";
+		m_uniqueName = new StringBuffer();
 
 		// 0 - City
 		if (m_unique >= 0 || m_uniqueName.length() == 0) {
 			String xx = address.getCity();
 			if (xx != null && xx.length() > 0)
-				m_uniqueName = xx;
+				m_uniqueName = new StringBuffer(xx);
 		}
 		// 1 + Address1
 		if (m_unique >= 1 || m_uniqueName.length() == 0) {
 			String xx = address.getAddress1();
 			if (xx != null && xx.length() > 0) {
 				if (m_uniqueName.length() > 0)
-					m_uniqueName += " ";
-				m_uniqueName += xx;
+					m_uniqueName.append(" ");
+				m_uniqueName.append(xx);
 			}
 		}
 		// 2 + Address2
@@ -203,8 +203,8 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 			String xx = address.getAddress2();
 			if (xx != null && xx.length() > 0) {
 				if (m_uniqueName.length() > 0)
-					m_uniqueName += " ";
-				m_uniqueName += xx;
+					m_uniqueName.append(" ");
+				m_uniqueName.append(xx);
 			}
 		}
 		// 3 - Region
@@ -212,8 +212,8 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 			String xx = address.getRegionName(true);
 			if (xx != null && xx.length() > 0) {
 				if (m_uniqueName.length() > 0)
-					m_uniqueName += " ";
-				m_uniqueName += xx;
+					m_uniqueName.append(" ");
+				m_uniqueName.append(xx);
 			}
 		}
 		// 4 - ID
@@ -221,12 +221,12 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 			int id = get_ID();
 			if (id == 0)
 				id = address.get_ID();
-			m_uniqueName += "#" + id;
+			m_uniqueName.append("#").append(id);
 		}
 	} // makeUnique
 
 	public String getBPLocName(MLocation address) {
-		m_uniqueName = getName();
+		m_uniqueName = new StringBuffer(getName());
 		m_unique = MSysConfig.getIntValue("START_VALUE_BPLOCATION_NAME", 0,
 				getAD_Client_ID(), getAD_Org_ID());
 		if (m_unique < 0 || m_unique > 4)
@@ -256,7 +256,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 				}
 			}
 		}
-		return m_uniqueName;
+		return m_uniqueName.toString();
 	}
 
 } // MBPartnerLocation

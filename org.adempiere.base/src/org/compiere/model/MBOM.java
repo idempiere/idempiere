@@ -67,10 +67,10 @@ public class MBOM extends X_M_BOM
 		String trxName, String whereClause)
 	{
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		String where = "M_Product_ID=?";
+		StringBuilder where = new StringBuilder("M_Product_ID=?");
 		if (whereClause != null && whereClause.length() > 0)
-			where += " AND " + whereClause;
-		List <MBOM> list = new Query(ctx, I_M_BOM.Table_Name, where, trxName)
+			where.append(" AND ").append(whereClause);
+		List <MBOM> list = new Query(ctx, I_M_BOM.Table_Name, where.toString(), trxName)
 		.setParameters(M_Product_ID)
 		.list();
 		
@@ -128,8 +128,8 @@ public class MBOM extends X_M_BOM
 			//	Only one Current Active
 			if (getBOMType().equals(BOMTYPE_CurrentActive))
 			{
-				MBOM[] boms = getOfProduct(getCtx(), getM_Product_ID(), get_TrxName(),
-					"BOMType='A' AND BOMUse='" + getBOMUse() + "' AND IsActive='Y'");
+				StringBuilder msgofp = new StringBuilder("BOMType='A' AND BOMUse='").append(getBOMUse()).append("' AND IsActive='Y'");
+				MBOM[] boms = getOfProduct(getCtx(), getM_Product_ID(), get_TrxName(),msgofp.toString());
 				if (boms.length == 0	//	only one = this 
 					|| (boms.length == 1 && boms[0].getM_BOM_ID() == getM_BOM_ID()))
 					;

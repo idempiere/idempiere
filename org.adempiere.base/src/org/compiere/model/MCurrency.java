@@ -146,15 +146,15 @@ public class MCurrency extends X_C_Currency
 	 */
 	public static String getISO_Code (Properties ctx, int C_Currency_ID)
 	{
-		String contextKey = "C_Currency_" + C_Currency_ID;
-		String retValue = ctx.getProperty(contextKey);
+		StringBuilder contextKey = new StringBuilder("C_Currency_").append(C_Currency_ID);
+		String retValue = ctx.getProperty(contextKey.toString());
 		if (retValue != null)
 			return retValue;
 
 		//	Create it
 		MCurrency c = get(ctx, C_Currency_ID);
 		retValue = c.getISO_Code();
-		ctx.setProperty(contextKey, retValue);
+		ctx.setProperty(contextKey.toString(), retValue);
 		return retValue;
 	}	//	getISO
 
@@ -176,10 +176,11 @@ public class MCurrency extends X_C_Currency
 	 */
 	public String toString()
 	{
-		return "MCurrency[" + getC_Currency_ID()
-			+ "-" + getISO_Code() + "-" + getCurSymbol()
-			+ "," + getDescription()
-			+ ",Precision=" + getStdPrecision() + "/" + getCostingPrecision();
+		StringBuilder msgreturn = new StringBuilder("MCurrency[").append(getC_Currency_ID())
+				.append("-").append(getISO_Code()).append("-").append(getCurSymbol())
+				.append(",").append(getDescription())
+				.append(",Precision=").append(getStdPrecision()).append("/").append(getCostingPrecision());
+		return msgreturn.toString();
 	}	//	toString
 
 

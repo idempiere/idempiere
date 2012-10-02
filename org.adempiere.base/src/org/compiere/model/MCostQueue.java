@@ -115,21 +115,21 @@ public class MCostQueue extends X_M_CostQueue
 		MAcctSchema as, int Org_ID, MCostElement ce, String trxName)
 	{
 		ArrayList<MCostQueue> list = new ArrayList<MCostQueue>();
-		String sql = "SELECT * FROM M_CostQueue "
-			+ "WHERE AD_Client_ID=? AND AD_Org_ID=?"
-			+ " AND M_Product_ID=?"
-			+ " AND M_CostType_ID=? AND C_AcctSchema_ID=?"
-			+ " AND M_CostElement_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT * FROM M_CostQueue ")
+			.append("WHERE AD_Client_ID=? AND AD_Org_ID=?")
+			.append(" AND M_Product_ID=?")
+			.append(" AND M_CostType_ID=? AND C_AcctSchema_ID=?")
+			.append(" AND M_CostElement_ID=?");
 		if (M_ASI_ID != 0)
-			sql += " AND M_AttributeSetInstance_ID=?";
-		sql += " AND CurrentQty<>0 "
-			+ "ORDER BY M_AttributeSetInstance_ID ";
+			sql.append(" AND M_AttributeSetInstance_ID=?");
+		sql.append(" AND CurrentQty<>0 ")
+			.append("ORDER BY M_AttributeSetInstance_ID ");
 		if (!ce.isFifo())
-			sql += "DESC";
+			sql.append("DESC");
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, trxName);
+			pstmt = DB.prepareStatement (sql.toString(), trxName);
 			pstmt.setInt (1, product.getAD_Client_ID());
 			pstmt.setInt (2, Org_ID);
 			pstmt.setInt (3, product.getM_Product_ID());
@@ -147,7 +147,7 @@ public class MCostQueue extends X_M_CostQueue
 		}
 		catch (Exception e)
 		{
-			s_log.log (Level.SEVERE, sql, e);
+			s_log.log (Level.SEVERE, sql.toString(), e);
 		}
 		try
 		{

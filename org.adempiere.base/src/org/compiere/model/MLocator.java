@@ -269,8 +269,10 @@ public class MLocator extends X_M_Locator
 	public String getWarehouseName()
 	{
 		MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
-		if (wh.get_ID() == 0)
-			return "<" + getM_Warehouse_ID() + ">";
+		if (wh.get_ID() == 0){
+			StringBuilder msgreturn = new StringBuilder("<").append(getM_Warehouse_ID()).append(">");
+			return msgreturn.toString();
+		}	
 		return wh.getName();
 	}	//	getWarehouseName
 

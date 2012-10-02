@@ -61,7 +61,7 @@ public class MCostType extends X_M_CostType
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MCostType[");
+		StringBuilder sb = new StringBuilder ("MCostType[");
 		sb.append (get_ID()).append ("-").append (getName ()).append ("]");
 		return sb.toString ();
 	}	//	toString

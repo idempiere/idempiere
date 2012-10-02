@@ -105,17 +105,17 @@ public class MAcctSchema extends X_C_AcctSchema
 			list.add(as);
 		
 		ArrayList<Object> params = new ArrayList<Object>();
-		String whereClause = "IsActive=? "
-			+ " AND EXISTS (SELECT * FROM C_AcctSchema_GL gl WHERE C_AcctSchema.C_AcctSchema_ID=gl.C_AcctSchema_ID)"
-			+ " AND EXISTS (SELECT * FROM C_AcctSchema_Default d WHERE C_AcctSchema.C_AcctSchema_ID=d.C_AcctSchema_ID)"; 
+		StringBuilder whereClause = new StringBuilder("IsActive=? ")
+			.append(" AND EXISTS (SELECT * FROM C_AcctSchema_GL gl WHERE C_AcctSchema.C_AcctSchema_ID=gl.C_AcctSchema_ID)")
+			.append(" AND EXISTS (SELECT * FROM C_AcctSchema_Default d WHERE C_AcctSchema.C_AcctSchema_ID=d.C_AcctSchema_ID)"); 
 			params.add("Y");
 		if (AD_Client_ID != 0)
 		{	
-			whereClause += " AND AD_Client_ID=?";
+			whereClause.append(" AND AD_Client_ID=?");
 			params.add(AD_Client_ID);
 		}	
 		
-		List <MAcctSchema> ass = new Query(ctx, I_C_AcctSchema.Table_Name,whereClause,trxName)
+		List <MAcctSchema> ass = new Query(ctx, I_C_AcctSchema.Table_Name,whereClause.toString(),trxName)
 		.setParameters(params)
 		.setOrderBy(MAcctSchema.COLUMNNAME_C_AcctSchema_ID)
 		.list();
@@ -195,7 +195,8 @@ public class MAcctSchema extends X_C_AcctSchema
 		this (client.getCtx(), 0, client.get_TrxName());
 		setClientOrg(client);
 		setC_Currency_ID (currency.getKey());
-		setName (client.getName() + " " + getGAAP() + "/" + get_ColumnCount() + " " + currency.getName());
+		StringBuilder msgset = new StringBuilder(client.getName()).append(" ").append(getGAAP()).append("/").append(get_ColumnCount()).append(" ").append(currency.getName());
+		setName (msgset.toString());
 	}	//	MAcctSchema
 
 
@@ -291,7 +292,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("AcctSchema[");
+		StringBuilder sb = new StringBuilder("AcctSchema[");
 			sb.append(get_ID()).append("-").append(getName())
 				.append("]");
 		return sb.toString();

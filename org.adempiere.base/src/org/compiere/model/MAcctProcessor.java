@@ -94,8 +94,9 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	{
 		this (client.getCtx(), 0, client.get_TrxName());
 		setClientOrg(client);
-		setName (client.getName() + " - " 
-			+ Msg.translate(getCtx(), "C_AcctProcessor_ID"));
+		StringBuilder msgset = new StringBuilder(client.getName()).append(" - ") 
+							.append(Msg.translate(getCtx(), "C_AcctProcessor_ID"));
+		setName (msgset.toString());
 		setSupervisor_ID (Supervisor_ID);
 	}	//	MAcctProcessor
 	
@@ -107,7 +108,8 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	 */
 	public String getServerID ()
 	{
-		return "AcctProcessor" + get_ID();
+		StringBuilder msgreturn = new StringBuilder("AcctProcessor").append(get_ID());
+		return msgreturn.toString();
 	}	//	getServerID
 
 	/**
@@ -144,10 +146,10 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		String sql = "DELETE C_AcctProcessorLog "
-			+ "WHERE C_AcctProcessor_ID=" + getC_AcctProcessor_ID() 
-			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("DELETE C_AcctProcessorLog ")
+					.append("WHERE C_AcctProcessor_ID=").append(getC_AcctProcessor_ID()) 
+					.append(" AND (Created+").append(getKeepLogDays()).append(") < SysDate");
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		return no;
 	}	//	deleteLog
 

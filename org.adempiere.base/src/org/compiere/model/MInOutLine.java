@@ -423,8 +423,10 @@ public class MInOutLine extends X_M_InOutLine
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 
 	/**
@@ -628,7 +630,7 @@ public class MInOutLine extends X_M_InOutLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInOutLine[").append (get_ID())
+		StringBuilder sb = new StringBuilder ("MInOutLine[").append (get_ID())
 			.append(",M_Product_ID=").append(getM_Product_ID())
 			.append(",QtyEntered=").append(getQtyEntered())
 			.append(",MovementQty=").append(getMovementQty())
