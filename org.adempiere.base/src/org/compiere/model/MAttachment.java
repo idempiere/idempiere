@@ -814,7 +814,7 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	private String getAttachmentPathSnippet(){
 		
-		StringBuilder msgreturn = new StringBuilder(this.getAD_Client_ID()).append(File.separator)
+		StringBuilder msgreturn = new StringBuilder().append(this.getAD_Client_ID()).append(File.separator)
 				.append(this.getAD_Org_ID()).append(File.separator)
 				.append(this.getAD_Table_ID()).append(File.separator).append(this.getRecord_ID());
 		return msgreturn.toString();

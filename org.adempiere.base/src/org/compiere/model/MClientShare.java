@@ -88,7 +88,7 @@ public class MClientShare extends X_AD_ClientShare
 				{
 					int Client_ID = rs.getInt(1);
 					int table_ID = rs.getInt(2);
-					StringBuilder key = new StringBuilder(Client_ID).append("_").append(table_ID);
+					StringBuilder key = new StringBuilder().append(Client_ID).append("_").append(table_ID);
 					String ShareType = rs.getString(3);
 					if (ShareType.equals(SHARETYPE_ClientAllShared))
 						s_shares.put(key.toString(), Boolean.TRUE);
@@ -116,7 +116,7 @@ public class MClientShare extends X_AD_ClientShare
 			if (s_shares.isEmpty())		//	put in something
 				s_shares.put("0_0", Boolean.TRUE);
 		}	//	load
-		StringBuilder key = new StringBuilder(AD_Client_ID).append("_").append(AD_Table_ID);
+		StringBuilder key = new StringBuilder().append(AD_Client_ID).append("_").append(AD_Table_ID);
 		return s_shares.get(key);
 	}	//	load
 	

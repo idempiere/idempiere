@@ -362,7 +362,7 @@ public class MLookupFactory
 		int WindowNo, int AD_Reference_Value_ID)
 	{
 		//	Try cache - assume no language change
-		StringBuilder key = new StringBuilder(Env.getAD_Client_ID(ctx)).append("|").append(String.valueOf(AD_Reference_Value_ID));
+		StringBuilder key = new StringBuilder().append(Env.getAD_Client_ID(ctx)).append("|").append(String.valueOf(AD_Reference_Value_ID));
 		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key);
 		if (retValue != null)
 		{
@@ -650,7 +650,7 @@ public class MLookupFactory
 		int ZoomWindowPO = 0;
 
 		//try cache
-		StringBuilder cacheKey = new StringBuilder(Env.getAD_Client_ID(ctx)).append("|").append(TableName).append(".").append(KeyColumn);
+		StringBuilder cacheKey = new StringBuilder().append(Env.getAD_Client_ID(ctx)).append("|").append(TableName).append(".").append(KeyColumn);
 		if (s_cacheRefTable.containsKey(cacheKey))
 			return s_cacheRefTable.get(cacheKey).cloneIt();
 

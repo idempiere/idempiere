@@ -540,7 +540,7 @@ public class MArchive extends X_AD_Archive {
 	 * @return String
 	 */
 	private String getArchivePathSnippet() {
-		StringBuilder path = new StringBuilder(this.getAD_Client_ID()).append(File.separator).append(this.getAD_Org_ID())
+		StringBuilder path = new StringBuilder().append(this.getAD_Client_ID()).append(File.separator).append(this.getAD_Org_ID())
 				.append(File.separator);
 		if (this.getAD_Process_ID() > 0) {
 			path.append(this.getAD_Process_ID()).append(File.separator);

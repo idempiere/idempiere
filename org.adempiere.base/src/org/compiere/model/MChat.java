@@ -196,7 +196,7 @@ public class MChat extends X_CM_Chat
 		if (Description != null && Description.length() > 0)
 			super.setDescription (Description);
 		else{
-			StringBuilder msgsd = new StringBuilder(getAD_Table_ID()).append("#").append(getRecord_ID());
+			StringBuilder msgsd = new StringBuilder().append(getAD_Table_ID()).append("#").append(getRecord_ID());
 			super.setDescription (msgsd.toString());
 		}	
 	}	//	setDescription
