@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.acct.DocManager;
+import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.MAcctProcessor;
 import org.compiere.model.MAcctProcessorLog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
+import org.compiere.model.MSchedule;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -42,7 +44,7 @@ import org.compiere.util.TimeUtil;
  *  @author Jorg Janke
  *  @version $Id: AcctProcessor.java,v 1.3 2006/07/30 00:53:33 jjanke Exp $
  */
-public class AcctProcessor extends AdempiereServer
+public class AcctProcessor extends AdempiereServer        
 {
 	/**
 	 * 	Accounting Processor
@@ -243,4 +245,5 @@ public class AcctProcessor extends AdempiereServer
 		return "#" + p_runCount + " - Last=" + m_summary.toString();
 	}	//	getServerInfo
 
+	
 }	//	AcctProcessor

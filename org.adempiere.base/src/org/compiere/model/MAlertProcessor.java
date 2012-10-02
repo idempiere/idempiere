@@ -33,7 +33,7 @@ import org.compiere.util.DB;
  *  @version $Id: MAlertProcessor.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
 public class MAlertProcessor extends X_AD_AlertProcessor
-	implements AdempiereProcessor
+	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
 	 * 
@@ -161,5 +161,23 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 		s_cacheAlerts.put(get_ID(), alerts);
 		return alerts;
 	}	//	getAlerts
+
+	@Override
+	public int getFrequency() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.getFrequency();
+	}
+
+	@Override
+	public String getFrequencyType() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.getFrequencyType();
+	}
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.isIgnoreProcessingTime();
+	}
 
 }	//	MAlertProcessor

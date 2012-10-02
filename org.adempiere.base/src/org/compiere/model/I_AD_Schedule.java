@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for R_RequestProcessorLog
+/** Generated Interface for AD_Schedule
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS
  */
-public interface I_R_RequestProcessorLog 
+public interface I_AD_Schedule 
 {
 
-    /** TableName=R_RequestProcessorLog */
-    public static final String Table_Name = "R_RequestProcessorLog";
+    /** TableName=AD_Schedule */
+    public static final String Table_Name = "AD_Schedule";
 
-    /** AD_Table_ID=659 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200020 */
+    public static final int Table_ID = 200020;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 2 - Client 
+    /** AccessLevel =  - System 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(2);
+    BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
 
@@ -62,18 +62,14 @@ public interface I_R_RequestProcessorLog
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name BinaryData */
-    public static final String COLUMNNAME_BinaryData = "BinaryData";
+    /** Column name AD_Schedule_ID */
+    public static final String COLUMNNAME_AD_Schedule_ID = "AD_Schedule_ID";
 
-	/** Set Binary Data.
-	  * Binary Data
-	  */
-	public void setBinaryData (byte[] BinaryData);
+	/** Set AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID);
 
-	/** Get Binary Data.
-	  * Binary Data
-	  */
-	public byte[] getBinaryData();
+	/** Get AD_Schedule_ID	  */
+	public int getAD_Schedule_ID();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -91,6 +87,19 @@ public interface I_R_RequestProcessorLog
 	  */
 	public int getCreatedBy();
 
+    /** Column name CronPattern */
+    public static final String COLUMNNAME_CronPattern = "CronPattern";
+
+	/** Set Cron Scheduling Pattern.
+	  * Cron pattern to define when the process should be invoked.
+	  */
+	public void setCronPattern (String CronPattern);
+
+	/** Get Cron Scheduling Pattern.
+	  * Cron pattern to define when the process should be invoked.
+	  */
+	public String getCronPattern();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -103,6 +112,32 @@ public interface I_R_RequestProcessorLog
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name Frequency */
+    public static final String COLUMNNAME_Frequency = "Frequency";
+
+	/** Set Frequency.
+	  * Frequency of events
+	  */
+	public void setFrequency (int Frequency);
+
+	/** Get Frequency.
+	  * Frequency of events
+	  */
+	public int getFrequency();
+
+    /** Column name FrequencyType */
+    public static final String COLUMNNAME_FrequencyType = "FrequencyType";
+
+	/** Set Frequency Type.
+	  * Frequency of event
+	  */
+	public void setFrequencyType (String FrequencyType);
+
+	/** Get Frequency Type.
+	  * Frequency of event
+	  */
+	public String getFrequencyType();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -117,85 +152,70 @@ public interface I_R_RequestProcessorLog
 	  */
 	public boolean isActive();
 
-    /** Column name IsError */
-    public static final String COLUMNNAME_IsError = "IsError";
+    /** Column name IsIgnoreProcessingTime */
+    public static final String COLUMNNAME_IsIgnoreProcessingTime = "IsIgnoreProcessingTime";
 
-	/** Set Error.
-	  * An Error occurred in the execution
+	/** Set Ignore Processing Time.
+	  * Do not include processing time for the DateNextRun calculation
 	  */
-	public void setIsError (boolean IsError);
+	public void setIsIgnoreProcessingTime (boolean IsIgnoreProcessingTime);
 
-	/** Get Error.
-	  * An Error occurred in the execution
+	/** Get Ignore Processing Time.
+	  * Do not include processing time for the DateNextRun calculation
 	  */
-	public boolean isError();
+	public boolean isIgnoreProcessingTime();
 
-    /** Column name Reference */
-    public static final String COLUMNNAME_Reference = "Reference";
+    /** Column name MonthDay */
+    public static final String COLUMNNAME_MonthDay = "MonthDay";
 
-	/** Set Reference.
-	  * Reference for this record
+	/** Set Day of the Month.
+	  * Day of the month 1 to 28/29/30/31
 	  */
-	public void setReference (String Reference);
+	public void setMonthDay (int MonthDay);
 
-	/** Get Reference.
-	  * Reference for this record
+	/** Get Day of the Month.
+	  * Day of the month 1 to 28/29/30/31
 	  */
-	public String getReference();
+	public int getMonthDay();
 
-    /** Column name R_RequestProcessor_ID */
-    public static final String COLUMNNAME_R_RequestProcessor_ID = "R_RequestProcessor_ID";
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
 
-	/** Set Request Processor.
-	  * Processor for Requests
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public void setR_RequestProcessor_ID (int R_RequestProcessor_ID);
+	public void setName (String Name);
 
-	/** Get Request Processor.
-	  * Processor for Requests
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public int getR_RequestProcessor_ID();
+	public String getName();
 
-	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException;
+    /** Column name RunOnlyOnIP */
+    public static final String COLUMNNAME_RunOnlyOnIP = "RunOnlyOnIP";
 
-    /** Column name R_RequestProcessorLog_ID */
-    public static final String COLUMNNAME_R_RequestProcessorLog_ID = "R_RequestProcessorLog_ID";
-
-	/** Set Request Processor Log.
-	  * Result of the execution of the Request Processor
+	/** Set RunOnlyOnIP.
+	  * Defines the IP address to transfer data to
 	  */
-	public void setR_RequestProcessorLog_ID (int R_RequestProcessorLog_ID);
+	public void setRunOnlyOnIP (String RunOnlyOnIP);
 
-	/** Get Request Processor Log.
-	  * Result of the execution of the Request Processor
+	/** Get RunOnlyOnIP.
+	  * Defines the IP address to transfer data to
 	  */
-	public int getR_RequestProcessorLog_ID();
+	public String getRunOnlyOnIP();
 
-    /** Column name Summary */
-    public static final String COLUMNNAME_Summary = "Summary";
+    /** Column name ScheduleType */
+    public static final String COLUMNNAME_ScheduleType = "ScheduleType";
 
-	/** Set Summary.
-	  * Textual summary of this request
+	/** Set Schedule Type.
+	  * Type of schedule
 	  */
-	public void setSummary (String Summary);
+	public void setScheduleType (String ScheduleType);
 
-	/** Get Summary.
-	  * Textual summary of this request
+	/** Get Schedule Type.
+	  * Type of schedule
 	  */
-	public String getSummary();
-
-    /** Column name TextMsg */
-    public static final String COLUMNNAME_TextMsg = "TextMsg";
-
-	/** Set Text Message.
-	  * Text Message
-	  */
-	public void setTextMsg (String TextMsg);
-
-	/** Get Text Message.
-	  * Text Message
-	  */
-	public String getTextMsg();
+	public String getScheduleType();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -212,4 +232,17 @@ public interface I_R_RequestProcessorLog
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name WeekDay */
+    public static final String COLUMNNAME_WeekDay = "WeekDay";
+
+	/** Set Day of the Week.
+	  * Day of the Week
+	  */
+	public void setWeekDay (String WeekDay);
+
+	/** Get Day of the Week.
+	  * Day of the Week
+	  */
+	public String getWeekDay();
 }

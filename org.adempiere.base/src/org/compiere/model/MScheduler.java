@@ -72,16 +72,7 @@ public class MScheduler extends X_AD_Scheduler
 		super (ctx, AD_Scheduler_ID, trxName);
 		if (AD_Scheduler_ID == 0)
 		{
-		//	setAD_Process_ID (0);
-		//	setName (null);
-			setScheduleType (SCHEDULETYPE_Frequency);	// F
-			setFrequencyType (FREQUENCYTYPE_Day);
-		//	setFrequency (1);
-		//	setMonthDay(1);
-		//	setWeekDay(WEEKDAY_Monday);
-			//
 			setKeepLogDays (7);
-		//	setSupervisor_ID (0);
 		}
 	}	//	MScheduler
 
@@ -248,27 +239,6 @@ public class MScheduler extends X_AD_Scheduler
 	 */
 	protected boolean beforeSave(boolean newRecord)
 	{
-		//	Set Schedule Type & Frequencies
-		if (SCHEDULETYPE_Frequency.equals(getScheduleType()))
-		{
-			if (getFrequencyType() == null)
-				setFrequencyType(FREQUENCYTYPE_Day);
-			if (getFrequency() < 1)
-				setFrequency(1);
-			setCronPattern(null);
-		}
-		else if (SCHEDULETYPE_CronSchedulingPattern.equals(getScheduleType()))
-		{
-			String pattern = getCronPattern();
-			if (pattern != null && pattern.trim().length() > 0)
-			{
-				if (!SchedulingPattern.validate(pattern))
-				{
-					log.saveError("Error", "InvalidCronPattern");
-					return false;
-				}
-			}
-		}
 		
 		// FR [3135351] - Enable Scheduler for buttons
 		if (getAD_Table_ID() > 0) {
@@ -314,5 +284,26 @@ public class MScheduler extends X_AD_Scheduler
 		sb.append (get_ID ()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString
+
+	@Override
+	public String getFrequencyType() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		
+		return schedule.getFrequencyType();
+	}
+
+	@Override
+	public int getFrequency() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.getFrequency();
+	}
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.isIgnoreProcessingTime();
+	}
+
+
 
 }	//	MScheduler

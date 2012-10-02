@@ -35,12 +35,14 @@ import org.compiere.util.Msg;
  *  @version $Id: MAcctProcessor.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
 public class MAcctProcessor extends X_C_AcctProcessor
-	implements AdempiereProcessor
+	implements AdempiereProcessor, AdempiereProcessor2
 {
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6558688522646469260L;
+	private static final long serialVersionUID = -7574845047521861399L;
 
 	/**
 	 * 	Get Active
@@ -68,8 +70,8 @@ public class MAcctProcessor extends X_C_AcctProcessor
 		{
 		//	setName (null);
 		//	setSupervisor_ID (0);
-			setFrequencyType (FREQUENCYTYPE_Hour);
-			setFrequency (1);
+		//	setFrequencyType (FREQUENCYTYPE_Hour);
+		//	setFrequency (1);
 			setKeepLogDays (7);	// 7
 		}	
 	}	//	MAcctProcessor
@@ -152,5 +154,34 @@ public class MAcctProcessor extends X_C_AcctProcessor
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		return no;
 	}	//	deleteLog
+
+
+	@Override
+	public String getFrequencyType() {
+		int AD_Schedule_ID = this.getAD_Schedule_ID();
+		if( AD_Schedule_ID > 0) 
+		{
+		     MSchedule schedule=MSchedule.get(getCtx(), AD_Schedule_ID);
+		     return schedule.getFrequencyType();
+		}
+		return "";
+	}
+
+	@Override
+	public int getFrequency() {
+		int AD_Schedule_ID = this.getAD_Schedule_ID();
+		if( AD_Schedule_ID > 0) 
+		{
+		   MSchedule schedule=MSchedule.get(getCtx(),AD_Schedule_ID);
+		   return schedule.getFrequency();
+		}   
+		return 0;
+	}
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+		MSchedule schedule=MSchedule.get(getCtx(),getAD_Schedule_ID());
+		return schedule.isIgnoreProcessingTime();
+	}
 
 }	//	MAcctProcessor

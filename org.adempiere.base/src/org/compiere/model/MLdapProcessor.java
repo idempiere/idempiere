@@ -203,7 +203,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	 */
 	public String getFrequencyType()
 	{
-		return X_R_RequestProcessor.FREQUENCYTYPE_Minute;
+		return X_AD_Schedule.FREQUENCYTYPE_Minute;
 	}	//	getFrequencyType
 	
 	/**

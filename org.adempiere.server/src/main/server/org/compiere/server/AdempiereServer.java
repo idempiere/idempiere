@@ -29,8 +29,10 @@ import org.compiere.model.MAlertProcessor;
 import org.compiere.model.MClient;
 import org.compiere.model.MLdapProcessor;
 import org.compiere.model.MRequestProcessor;
+import org.compiere.model.MSchedule;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSystem;
+import org.compiere.model.X_AD_Schedule;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -42,7 +44,7 @@ import org.compiere.wf.MWorkflowProcessor;
  *  @author Jorg Janke
  *  @version $Id: AdempiereServer.java,v 1.3 2006/10/09 00:23:26 jjanke Exp $
  */
-public abstract class AdempiereServer extends Thread
+public abstract class AdempiereServer extends Thread 
 {
 	/**
 	 * 	Create New Server Thead
@@ -191,6 +193,23 @@ public abstract class AdempiereServer extends Thread
 	 */
 	public void run ()
 	{
+		
+		if(p_model instanceof AdempiereProcessor2)
+		{
+		   AdempiereProcessor2 model=(AdempiereProcessor2) p_model;
+		   int AD_Schedule_ID = model.getAD_Schedule_ID();		   
+		   MSchedule schedule = null;
+		   if (AD_Schedule_ID != 0)
+		   {
+			   schedule = MSchedule.get (getCtx(), AD_Schedule_ID);
+			   if (!schedule.isOKtoRunOnIP())
+			   {
+				   log.warning (getName() + ": Stopped - IP Restriction " + schedule);
+			 	  return;		//	done
+			   }
+		    }
+		} 
+
 		try
 		{
 			log.fine(getName() + ": pre-nap - " + m_initialNap);
@@ -234,7 +253,7 @@ public abstract class AdempiereServer extends Thread
 			m_runLastMS = now - p_startWork;
 			m_runTotalMS += m_runLastMS;
 			//
-			m_sleepMS = calculateSleep();
+			m_sleepMS = calculateSleep(m_start);
 			Timestamp lastRun = new Timestamp(now);
 			if (p_model instanceof AdempiereProcessor2)
 			{
@@ -344,7 +363,7 @@ public abstract class AdempiereServer extends Thread
 	 * 	Calculate Sleep ms
 	 *	@return miliseconds
 	 */
-	private long calculateSleep ()
+	private long calculateSleep (long now)
 	{
 		String frequencyType = p_model.getFrequencyType();
 		int frequency = p_model.getFrequency();
@@ -354,14 +373,32 @@ public abstract class AdempiereServer extends Thread
 		long typeSec = 600;			//	10 minutes
 		if (frequencyType == null)
 			typeSec = 300;			//	5 minutes
-		else if (MRequestProcessor.FREQUENCYTYPE_Minute.equals(frequencyType))
+		else if (X_AD_Schedule.FREQUENCYTYPE_Minute.equals(frequencyType))
 			typeSec = 60;
-		else if (MRequestProcessor.FREQUENCYTYPE_Hour.equals(frequencyType))
+		else if (X_AD_Schedule.FREQUENCYTYPE_Hour.equals(frequencyType))
 			typeSec = 3600;
-		else if (MRequestProcessor.FREQUENCYTYPE_Day.equals(frequencyType))
+		else if (X_AD_Schedule.FREQUENCYTYPE_Day.equals(frequencyType))
 			typeSec = 86400;
 		//
-		return typeSec * 1000 * frequency;		//	ms
+		long sleep= typeSec * 1000 * frequency;
+		
+		if (p_model instanceof AdempiereProcessor2) 
+		{
+			AdempiereProcessor2 model=(AdempiereProcessor2) p_model;
+			if (model.getAD_Schedule_ID() == 0)
+				return sleep;
+
+			// Calculate Schedule
+			MSchedule schedule = MSchedule.get(getCtx(),model.getAD_Schedule_ID());
+			long next = schedule.getNextRunMS(now);
+			long delta = next - now;
+			if (delta < 0) {
+				log.warning("Negative Delta=" + delta + " - set to " + sleep);
+				delta = sleep;
+			}
+			return delta;
+		}
+		return sleep;
 	}	//	calculateSleep
 
 	/**

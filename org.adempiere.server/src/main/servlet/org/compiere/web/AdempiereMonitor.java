@@ -25,12 +25,15 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,6 +65,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MStore;
 import org.compiere.model.MSystem;
 import org.compiere.server.AdempiereServer;
+import org.compiere.server.AdempiereServerGroup;
 import org.compiere.server.AdempiereServerMgr;
 import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
@@ -139,12 +143,12 @@ public class AdempiereMonitor extends HttpServlet
 		if (processRunNowParameter (request))
 			;
 		else
-			processActionParameter (request);
+			processActionParameter (request,response);
 		
 		if (xmlOutput)
 			createXMLSummaryPage(request, response);
 		else
-			createSummaryPage(request, response);
+			createSummaryPage(request, response,false);
 	}	//	doGet
 	
 	/**
@@ -265,7 +269,7 @@ public class AdempiereMonitor extends HttpServlet
 	 * 	Process Action Parameter
 	 *	@param request request
 	 */
-	private void processActionParameter (HttpServletRequest request)
+	private void processActionParameter (HttpServletRequest request,HttpServletResponse response)
 	{
 		String action = WebUtil.getParameter (request, "Action");
 		if (action == null || action.length() == 0)
@@ -274,6 +278,7 @@ public class AdempiereMonitor extends HttpServlet
 		try
 		{
 			boolean start = action.startsWith("Start");
+			boolean refresh=action.startsWith("Refresh");
 			m_message = new p();
 			String msg = (start ? "Started" : "Stopped") + ": ";
 			m_message.addElement(new strong(msg));
@@ -283,28 +288,36 @@ public class AdempiereMonitor extends HttpServlet
 			if (serverID.equals("All"))
 			{
 				if (start)
+				{	
 					ok = m_serverMgr.startAll();
-				else
+				} else{					
 					ok = m_serverMgr.stopAll();
+				}
+					
 				m_message.addElement("All");
 			}
 			else
 			{
-				AdempiereServer server = m_serverMgr.getServer(serverID);
-				if (server == null)
-				{
-					m_message = new p();
-					m_message.addElement(new strong("Server not found: "));
-					m_message.addElement(serverID);
-					return;
-				}
-				else
-				{
-					if (start)
-						ok = m_serverMgr.start (serverID);
-					else
-						ok = m_serverMgr.stop (serverID);
-					m_message.addElement(server.getName());
+				if (refresh) 
+				{					
+					m_serverMgr.stopAll();
+					ok=m_serverMgr.startServers();
+					this.createSummaryPage(request, response,true);
+					
+				} else {
+					AdempiereServer server = m_serverMgr.getServer(serverID);
+					if (server == null) {
+						m_message = new p();
+						m_message.addElement(new strong("Server not found: "));
+						m_message.addElement(serverID);
+						return;
+					} else {
+						if (start)
+							ok = m_serverMgr.start(serverID);
+						else
+							ok = m_serverMgr.stop(serverID);
+						m_message.addElement(server.getName());
+					}
 				}
 			}
 			m_message.addElement(ok ? " - OK" : " - Error!");
@@ -517,15 +530,17 @@ public class AdempiereMonitor extends HttpServlet
 	 *	@throws ServletException
 	 *	@throws IOException
 	 */
-	private void createSummaryPage (HttpServletRequest request, HttpServletResponse response)
+	private void createSummaryPage (HttpServletRequest request, HttpServletResponse response,boolean refresh)
 		throws ServletException, IOException
 	{
 		WebDoc doc = WebDoc.create ("Adempiere Server Monitor");
 	//	log.info("ServletConfig=" + getServletConfig());
-	//	AdempiereServerGroup.get().dump();
+		AdempiereServerGroup.get().dump();
 
 		//	Body
-		body bb = doc.getBody();
+		body bb=new body();
+		bb = doc.getBody();			
+		
 		//	Message
 		if (m_message != null)
 		{
@@ -574,11 +589,11 @@ public class AdempiereMonitor extends HttpServlet
 		link = new a ("adempiereMonitor?Action=Stop_All", "Stop All");
 		para.addElement(link);
 		para.addElement(" - ");
-		link = new a ("adempiereMonitor", "Refresh");
+		link = new a ("adempiereMonitor?Action=Refresh", "Refresh");
 		para.addElement(link);
 		bb.addElement(para);
 		
-		//	***** Server Links *****
+		//	***** Server Links *****			
 		bb.addElement(new hr());
 		para = new p();
 		AdempiereServer[] servers = m_serverMgr.getAll();		
@@ -602,6 +617,7 @@ public class AdempiereMonitor extends HttpServlet
 		createLogMgtPage(bb);	
 		
 		//	***** Server Details *****
+		bb.removeEndEndModifier();
 		for (int i = 0; i < servers.length; i++)
 		{
 			AdempiereServer server = servers[i];

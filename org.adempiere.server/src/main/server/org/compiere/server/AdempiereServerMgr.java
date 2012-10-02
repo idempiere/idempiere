@@ -103,10 +103,11 @@ public class AdempiereServerMgr
 	 * 	Start Environment
 	 *	@return true if started
 	 */
-	private boolean startServers()
+	public boolean startServers()
 	{
 		log.info("");
 		int noServers = 0;
+		m_servers=new ArrayList<AdempiereServer>();
 		//	Accounting
 		MAcctProcessor[] acctModels = MAcctProcessor.getActive(m_ctx);
 		for (int i = 0; i < acctModels.length; i++)

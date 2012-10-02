@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.model.AdempiereProcessor;
+import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.AdempiereProcessorLog;
+import org.compiere.model.MSchedule;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WorkflowProcessor;
 import org.compiere.util.DB;
@@ -35,7 +37,7 @@ import org.compiere.util.DB;
  *  @version $Id: MWorkflowProcessor.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MWorkflowProcessor extends X_AD_WorkflowProcessor
-	implements AdempiereProcessor
+	implements AdempiereProcessor,AdempiereProcessor2
 {
 	/**
 	 * 
@@ -131,5 +133,26 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 		int no = DB.executeUpdate(sql, get_TrxName());
 		return no;
 	}	//	deleteLog
+
+
+	@Override
+	public String getFrequencyType() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.getFrequencyType();
+	}
+
+
+	@Override
+	public int getFrequency() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.getFrequency();
+	}
+
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.isIgnoreProcessingTime();
+	}
 
 }	//	MWorkflowProcessor

@@ -77,6 +77,17 @@ public interface I_AD_Scheduler
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
+    /** Column name AD_Schedule_ID */
+    public static final String COLUMNNAME_AD_Schedule_ID = "AD_Schedule_ID";
+
+	/** Set AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID);
+
+	/** Get AD_Schedule_ID	  */
+	public int getAD_Schedule_ID();
+
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException;
+
     /** Column name AD_Scheduler_ID */
     public static final String COLUMNNAME_AD_Scheduler_ID = "AD_Scheduler_ID";
 
@@ -89,6 +100,15 @@ public interface I_AD_Scheduler
 	  * Schedule Processes
 	  */
 	public int getAD_Scheduler_ID();
+
+    /** Column name AD_Scheduler_UU */
+    public static final String COLUMNNAME_AD_Scheduler_UU = "AD_Scheduler_UU";
+
+	/** Set AD_Scheduler_UU	  */
+	public void setAD_Scheduler_UU (String AD_Scheduler_UU);
+
+	/** Get AD_Scheduler_UU	  */
+	public String getAD_Scheduler_UU();
 
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
@@ -120,19 +140,6 @@ public interface I_AD_Scheduler
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name CronPattern */
-    public static final String COLUMNNAME_CronPattern = "CronPattern";
-
-	/** Set Cron Scheduling Pattern.
-	  * Cron pattern to define when the process should be invoked.
-	  */
-	public void setCronPattern (String CronPattern);
-
-	/** Get Cron Scheduling Pattern.
-	  * Cron pattern to define when the process should be invoked.
-	  */
-	public String getCronPattern();
 
     /** Column name DateLastRun */
     public static final String COLUMNNAME_DateLastRun = "DateLastRun";
@@ -173,32 +180,6 @@ public interface I_AD_Scheduler
 	  */
 	public String getDescription();
 
-    /** Column name Frequency */
-    public static final String COLUMNNAME_Frequency = "Frequency";
-
-	/** Set Frequency.
-	  * Frequency of events
-	  */
-	public void setFrequency (int Frequency);
-
-	/** Get Frequency.
-	  * Frequency of events
-	  */
-	public int getFrequency();
-
-    /** Column name FrequencyType */
-    public static final String COLUMNNAME_FrequencyType = "FrequencyType";
-
-	/** Set Frequency Type.
-	  * Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType);
-
-	/** Get Frequency Type.
-	  * Frequency of event
-	  */
-	public String getFrequencyType();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -212,19 +193,6 @@ public interface I_AD_Scheduler
 	  */
 	public boolean isActive();
 
-    /** Column name IsIgnoreProcessingTime */
-    public static final String COLUMNNAME_IsIgnoreProcessingTime = "IsIgnoreProcessingTime";
-
-	/** Set Ignore Processing Time.
-	  * Do not include processing time for the DateNextRun calculation
-	  */
-	public void setIsIgnoreProcessingTime (boolean IsIgnoreProcessingTime);
-
-	/** Get Ignore Processing Time.
-	  * Do not include processing time for the DateNextRun calculation
-	  */
-	public boolean isIgnoreProcessingTime();
-
     /** Column name KeepLogDays */
     public static final String COLUMNNAME_KeepLogDays = "KeepLogDays";
 
@@ -237,19 +205,6 @@ public interface I_AD_Scheduler
 	  * Number of days to keep the log entries
 	  */
 	public int getKeepLogDays();
-
-    /** Column name MonthDay */
-    public static final String COLUMNNAME_MonthDay = "MonthDay";
-
-	/** Set Day of the Month.
-	  * Day of the month 1 to 28/29/30/31
-	  */
-	public void setMonthDay (int MonthDay);
-
-	/** Get Day of the Month.
-	  * Day of the month 1 to 28/29/30/31
-	  */
-	public int getMonthDay();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -286,19 +241,6 @@ public interface I_AD_Scheduler
 	  */
 	public int getRecord_ID();
 
-    /** Column name ScheduleType */
-    public static final String COLUMNNAME_ScheduleType = "ScheduleType";
-
-	/** Set Schedule Type.
-	  * Type of schedule
-	  */
-	public void setScheduleType (String ScheduleType);
-
-	/** Get Schedule Type.
-	  * Type of schedule
-	  */
-	public String getScheduleType();
-
     /** Column name Supervisor_ID */
     public static final String COLUMNNAME_Supervisor_ID = "Supervisor_ID";
 
@@ -329,17 +271,4 @@ public interface I_AD_Scheduler
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name WeekDay */
-    public static final String COLUMNNAME_WeekDay = "WeekDay";
-
-	/** Set Day of the Week.
-	  * Day of the Week
-	  */
-	public void setWeekDay (String WeekDay);
-
-	/** Get Day of the Week.
-	  * Day of the Week
-	  */
-	public String getWeekDay();
 }

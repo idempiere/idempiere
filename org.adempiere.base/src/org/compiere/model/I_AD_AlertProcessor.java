@@ -31,7 +31,7 @@ public interface I_AD_AlertProcessor
     public static final String Table_Name = "AD_AlertProcessor";
 
     /** AD_Table_ID=700 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 700;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,6 +54,15 @@ public interface I_AD_AlertProcessor
 	  */
 	public int getAD_AlertProcessor_ID();
 
+    /** Column name AD_AlertProcessor_UU */
+    public static final String COLUMNNAME_AD_AlertProcessor_UU = "AD_AlertProcessor_UU";
+
+	/** Set AD_AlertProcessor_UU	  */
+	public void setAD_AlertProcessor_UU (String AD_AlertProcessor_UU);
+
+	/** Get AD_AlertProcessor_UU	  */
+	public String getAD_AlertProcessor_UU();
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -74,6 +83,17 @@ public interface I_AD_AlertProcessor
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Schedule_ID */
+    public static final String COLUMNNAME_AD_Schedule_ID = "AD_Schedule_ID";
+
+	/** Set AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID);
+
+	/** Get AD_Schedule_ID	  */
+	public int getAD_Schedule_ID();
+
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -129,32 +149,6 @@ public interface I_AD_AlertProcessor
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name Frequency */
-    public static final String COLUMNNAME_Frequency = "Frequency";
-
-	/** Set Frequency.
-	  * Frequency of events
-	  */
-	public void setFrequency (int Frequency);
-
-	/** Get Frequency.
-	  * Frequency of events
-	  */
-	public int getFrequency();
-
-    /** Column name FrequencyType */
-    public static final String COLUMNNAME_FrequencyType = "FrequencyType";
-
-	/** Set Frequency Type.
-	  * Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType);
-
-	/** Get Frequency Type.
-	  * Frequency of event
-	  */
-	public String getFrequencyType();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -217,7 +211,7 @@ public interface I_AD_AlertProcessor
 	  */
 	public int getSupervisor_ID();
 
-	public I_AD_User getSupervisor() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

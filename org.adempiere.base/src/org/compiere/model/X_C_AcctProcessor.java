@@ -31,7 +31,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120920L;
 
     /** Standard Constructor */
     public X_C_AcctProcessor (Properties ctx, int C_AcctProcessor_ID, String trxName)
@@ -40,8 +40,6 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
       /** if (C_AcctProcessor_ID == 0)
         {
 			setC_AcctProcessor_ID (0);
-			setFrequency (0);
-			setFrequencyType (null);
 			setKeepLogDays (0);
 // 7
 			setName (null);
@@ -77,9 +75,34 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
       return sb.toString();
     }
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
+			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+
+	/** Set AD_Schedule_ID.
+		@param AD_Schedule_ID AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID)
+	{
+		if (AD_Schedule_ID < 1) 
+			set_Value (COLUMNNAME_AD_Schedule_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
+	}
+
+	/** Get AD_Schedule_ID.
+		@return AD_Schedule_ID	  */
+	public int getAD_Schedule_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -128,9 +151,23 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		return ii.intValue();
 	}
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException
+	/** Set C_AcctProcessor_UU.
+		@param C_AcctProcessor_UU C_AcctProcessor_UU	  */
+	public void setC_AcctProcessor_UU (String C_AcctProcessor_UU)
+	{
+		set_Value (COLUMNNAME_C_AcctProcessor_UU, C_AcctProcessor_UU);
+	}
+
+	/** Get C_AcctProcessor_UU.
+		@return C_AcctProcessor_UU	  */
+	public String getC_AcctProcessor_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_AcctProcessor_UU);
+	}
+
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
     {
-		return (I_C_AcctSchema)MTable.get(getCtx(), I_C_AcctSchema.Table_Name)
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
 			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
 
 	/** Set Accounting Schema.
@@ -207,52 +244,6 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set Frequency.
-		@param Frequency 
-		Frequency of events
-	  */
-	public void setFrequency (int Frequency)
-	{
-		set_Value (COLUMNNAME_Frequency, Integer.valueOf(Frequency));
-	}
-
-	/** Get Frequency.
-		@return Frequency of events
-	  */
-	public int getFrequency () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Frequency);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** FrequencyType AD_Reference_ID=221 */
-	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
-	/** Day = D */
-	public static final String FREQUENCYTYPE_Day = "D";
-	/** Set Frequency Type.
-		@param FrequencyType 
-		Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType)
-	{
-
-		set_Value (COLUMNNAME_FrequencyType, FrequencyType);
-	}
-
-	/** Get Frequency Type.
-		@return Frequency of event
-	  */
-	public String getFrequencyType () 
-	{
-		return (String)get_Value(COLUMNNAME_FrequencyType);
-	}
-
 	/** Set Days to keep Log.
 		@param KeepLogDays 
 		Number of days to keep the log entries
@@ -319,9 +310,9 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		return false;
 	}
 
-	public I_AD_User getSupervisor() throws RuntimeException
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSupervisor_ID(), get_TrxName());	}
 
 	/** Set Supervisor.

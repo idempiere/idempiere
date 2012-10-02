@@ -29,7 +29,7 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120920L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessorLog (Properties ctx, int AD_AlertProcessorLog_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
       return sb.toString();
     }
 
-	public I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException
+	public org.compiere.model.I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException
     {
-		return (I_AD_AlertProcessor)MTable.get(getCtx(), I_AD_AlertProcessor.Table_Name)
+		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_Name)
 			.getPO(getAD_AlertProcessor_ID(), get_TrxName());	}
 
 	/** Set Alert Processor.

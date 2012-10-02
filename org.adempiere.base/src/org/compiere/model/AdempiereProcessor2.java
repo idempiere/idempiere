@@ -25,4 +25,7 @@ public interface AdempiereProcessor2 {
 	 * server time is use as the base to the new DateNextRun value.
 	 */
 	public boolean isIgnoreProcessingTime();
+	
+	// IDEMPIERE-391
+    public int getAD_Schedule_ID();
 }

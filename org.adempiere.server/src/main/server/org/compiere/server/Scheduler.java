@@ -34,6 +34,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
+import org.compiere.model.MSchedule;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerLog;
 import org.compiere.model.MSchedulerPara;
@@ -422,33 +423,39 @@ public class Scheduler extends AdempiereServer
 	}	//	getServerInfo
 
 	@Override
-	public void run() {
-		String cronPattern = (String) m_model.getCronPattern();
-		if (cronPattern != null && cronPattern.trim().length() > 0 && SchedulingPattern.validate(cronPattern)) {
-			cronScheduler = new it.sauronsoftware.cron4j.Scheduler();
-			cronScheduler.schedule(cronPattern, new Runnable() {
-				public void run() {
-					runNow();
-					long next = predictor.nextMatchingTime();
-					p_model.setDateNextRun(new Timestamp(next));
-					p_model.saveEx();
+	public void run() 
+	{
+		if (m_model.getAD_Schedule_ID() > 0) 
+		{
+			MSchedule time = new MSchedule(getCtx(),m_model.getAD_Schedule_ID(), null);
+			String cronPattern = (String) time.getCronPattern();
+			if (cronPattern != null && cronPattern.trim().length() > 0
+					&& SchedulingPattern.validate(cronPattern)) {
+				cronScheduler = new it.sauronsoftware.cron4j.Scheduler();
+				cronScheduler.schedule(cronPattern, new Runnable() {
+					public void run() {
+						runNow();
+						long next = predictor.nextMatchingTime();
+						p_model.setDateNextRun(new Timestamp(next));
+						p_model.saveEx();
+					}
+				});
+				predictor = new Predictor(cronPattern);
+				long next = predictor.nextMatchingTime();
+				p_model.setDateNextRun(new Timestamp(next));
+				p_model.saveEx();
+				cronScheduler.start();
+				while (true) {
+					if (!sleep()) {
+						cronScheduler.stop();
+						break;
+					} else if (!cronScheduler.isStarted()) {
+						break;
+					}
 				}
-			});
-			predictor = new Predictor(cronPattern);
-			long next = predictor.nextMatchingTime();
-			p_model.setDateNextRun(new Timestamp(next));
-			p_model.saveEx();
-			cronScheduler.start();
-			while (true) {
-				if (!sleep()) {
-					cronScheduler.stop();
-					break;
-				} else if (!cronScheduler.isStarted()) {
-					break;
-				}
+			} else {
+				super.run();
 			}
-		} else {
-			super.run();
 		}
 	}
 }	//	Scheduler

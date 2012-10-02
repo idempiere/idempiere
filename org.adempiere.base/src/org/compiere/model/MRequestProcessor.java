@@ -34,7 +34,7 @@ import org.compiere.util.Msg;
  *  @version $Id: MRequestProcessor.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
 public class MRequestProcessor extends X_R_RequestProcessor 
-	implements AdempiereProcessor
+	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
 	 * 
@@ -96,8 +96,8 @@ public class MRequestProcessor extends X_R_RequestProcessor
 		if (R_RequestProcessor_ID == 0)
 		{
 		//	setName (null);
-			setFrequencyType (FREQUENCYTYPE_Day);
-			setFrequency (0);
+			//setFrequencyType (FREQUENCYTYPE_Day);
+			//setFrequency (0);
 			setKeepLogDays (7);
 			setOverdueAlertDays (0);
 			setOverdueAssignDays (0);
@@ -255,5 +255,23 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	{
 		return "RequestProcessor" + get_ID();
 	}	//	getServerID
+
+	@Override
+	public String getFrequencyType() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.getFrequencyType();
+	}
+
+	@Override
+	public int getFrequency() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.getFrequency();
+	}
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
+		return schedule.isIgnoreProcessingTime();
+	}
 	
 }	//	MRequestProcessor

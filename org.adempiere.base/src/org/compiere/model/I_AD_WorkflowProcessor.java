@@ -31,13 +31,13 @@ public interface I_AD_WorkflowProcessor
     public static final String Table_Name = "AD_WorkflowProcessor";
 
     /** AD_Table_ID=697 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 697;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -62,6 +62,17 @@ public interface I_AD_WorkflowProcessor
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Schedule_ID */
+    public static final String COLUMNNAME_AD_Schedule_ID = "AD_Schedule_ID";
+
+	/** Set AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID);
+
+	/** Get AD_Schedule_ID	  */
+	public int getAD_Schedule_ID();
+
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException;
+
     /** Column name AD_WorkflowProcessor_ID */
     public static final String COLUMNNAME_AD_WorkflowProcessor_ID = "AD_WorkflowProcessor_ID";
 
@@ -74,6 +85,15 @@ public interface I_AD_WorkflowProcessor
 	  * Workflow Processor Server
 	  */
 	public int getAD_WorkflowProcessor_ID();
+
+    /** Column name AD_WorkflowProcessor_UU */
+    public static final String COLUMNNAME_AD_WorkflowProcessor_UU = "AD_WorkflowProcessor_UU";
+
+	/** Set AD_WorkflowProcessor_UU	  */
+	public void setAD_WorkflowProcessor_UU (String AD_WorkflowProcessor_UU);
+
+	/** Get AD_WorkflowProcessor_UU	  */
+	public String getAD_WorkflowProcessor_UU();
 
     /** Column name AlertOverPriority */
     public static final String COLUMNNAME_AlertOverPriority = "AlertOverPriority";
@@ -142,32 +162,6 @@ public interface I_AD_WorkflowProcessor
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name Frequency */
-    public static final String COLUMNNAME_Frequency = "Frequency";
-
-	/** Set Frequency.
-	  * Frequency of events
-	  */
-	public void setFrequency (int Frequency);
-
-	/** Get Frequency.
-	  * Frequency of events
-	  */
-	public int getFrequency();
-
-    /** Column name FrequencyType */
-    public static final String COLUMNNAME_FrequencyType = "FrequencyType";
-
-	/** Set Frequency Type.
-	  * Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType);
-
-	/** Get Frequency Type.
-	  * Frequency of event
-	  */
-	public String getFrequencyType();
 
     /** Column name InactivityAlertDays */
     public static final String COLUMNNAME_InactivityAlertDays = "InactivityAlertDays";
@@ -256,7 +250,7 @@ public interface I_AD_WorkflowProcessor
 	  */
 	public int getSupervisor_ID();
 
-	public I_AD_User getSupervisor() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
