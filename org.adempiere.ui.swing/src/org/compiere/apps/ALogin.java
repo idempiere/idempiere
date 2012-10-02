@@ -966,8 +966,9 @@ public final class ALogin extends CDialog
 		Env.setContext(m_ctx, "#AD_Client_ID", client.getKey());
 		MUser user = MUser.get (m_ctx, userTextField.getText());
 		if (user != null) {
-			 Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
-			  Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
+			 Env.setContext(m_ctx, "#AD_User_Name", userTextField.getText());
+			 Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID());
+			 Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID());
 		}
 		//
 		KeyNamePair[] roles = m_login.getRoles(userTextField.getText(), client);
