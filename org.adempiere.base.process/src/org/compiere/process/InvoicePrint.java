@@ -130,21 +130,20 @@ public class InvoicePrint extends SvrProcess
 		MClient client = MClient.get(getCtx());
 		
 		//	Get Info
-		StringBuffer sql = new StringBuffer (
-			"SELECT i.C_Invoice_ID,bp.AD_Language,c.IsMultiLingualDocument,"		//	1..3
+		StringBuilder sql = new StringBuilder ("SELECT i.C_Invoice_ID,bp.AD_Language,c.IsMultiLingualDocument,")		//	1..3
 			//	Prio: 1. BPartner 2. DocType, 3. PrintFormat (Org)	//	see ReportCtl+MInvoice
-			+ " COALESCE(bp.Invoice_PrintFormat_ID, dt.AD_PrintFormat_ID, pf.Invoice_PrintFormat_ID),"	//	4 
-			+ " dt.DocumentCopies+bp.DocumentCopies,"								//	5
-			+ " bpc.AD_User_ID, i.DocumentNo,"										//	6..7
-			+ " bp.C_BPartner_ID "													//	8
-			+ "FROM C_Invoice i"
-			+ " INNER JOIN C_BPartner bp ON (i.C_BPartner_ID=bp.C_BPartner_ID)"
-			+ " LEFT OUTER JOIN AD_User bpc ON (i.AD_User_ID=bpc.AD_User_ID)"
-			+ " INNER JOIN AD_Client c ON (i.AD_Client_ID=c.AD_Client_ID)"
-			+ " INNER JOIN AD_PrintForm pf ON (i.AD_Client_ID=pf.AD_Client_ID)"
-			+ " INNER JOIN C_DocType dt ON (i.C_DocType_ID=dt.C_DocType_ID)"
-		    + " WHERE i.AD_Client_ID=? AND i.AD_Org_ID=? AND i.isSOTrx='Y' AND "
-		    + "       pf.AD_Org_ID IN (0,i.AD_Org_ID) AND " );	//	more them 1 PF
+			.append(" COALESCE(bp.Invoice_PrintFormat_ID, dt.AD_PrintFormat_ID, pf.Invoice_PrintFormat_ID),")	//	4 
+			.append(" dt.DocumentCopies+bp.DocumentCopies,")								//	5
+			.append(" bpc.AD_User_ID, i.DocumentNo,")										//	6..7
+			.append(" bp.C_BPartner_ID ")													//	8
+			.append("FROM C_Invoice i")
+			.append(" INNER JOIN C_BPartner bp ON (i.C_BPartner_ID=bp.C_BPartner_ID)")
+			.append(" LEFT OUTER JOIN AD_User bpc ON (i.AD_User_ID=bpc.AD_User_ID)")
+			.append(" INNER JOIN AD_Client c ON (i.AD_Client_ID=c.AD_Client_ID)")
+			.append(" INNER JOIN AD_PrintForm pf ON (i.AD_Client_ID=pf.AD_Client_ID)")
+			.append(" INNER JOIN C_DocType dt ON (i.C_DocType_ID=dt.C_DocType_ID)")
+		    .append(" WHERE i.AD_Client_ID=? AND i.AD_Org_ID=? AND i.isSOTrx='Y' AND ")
+		    .append("       pf.AD_Org_ID IN (0,i.AD_Org_ID) AND " );	//	more them 1 PF
 		boolean needAnd = false;
 		if (m_C_Invoice_ID != 0)
 			sql.append("i.C_Invoice_ID=").append(m_C_Invoice_ID);
@@ -289,8 +288,8 @@ public class InvoicePrint extends SvrProcess
 				boolean printed = false;
 				if (p_EMailPDF)
 				{
-					String subject = mText.getMailHeader() + " - " + DocumentNo;
-					EMail email = client.createEMail(to.getEMail(), subject, null);
+					StringBuilder subject =new StringBuilder(mText.getMailHeader()).append(" - ").append(DocumentNo);
+					EMail email = client.createEMail(to.getEMail(), subject.toString(), null);
 					if (!email.isValid())
 					{
 						addLog (C_Invoice_ID, null, null,
@@ -303,10 +302,10 @@ public class InvoicePrint extends SvrProcess
 					mText.setPO(new MInvoice(getCtx(), C_Invoice_ID, get_TrxName()));
 					String message = mText.getMailText(true);
 					if (mText.isHtml())
-						email.setMessageHTML(subject, message);
+						email.setMessageHTML(subject.toString(), message);
 					else
 					{
-						email.setSubject (subject);
+						email.setSubject (subject.toString());
 						email.setMessageText (message);
 					}
 					//
@@ -348,8 +347,8 @@ public class InvoicePrint extends SvrProcess
 				//	Print Confirm
 				if (printed)
 				{
-					StringBuffer sb = new StringBuffer ("UPDATE C_Invoice "
-						+ "SET DatePrinted=SysDate, IsPrinted='Y' WHERE C_Invoice_ID=")
+					StringBuilder sb = new StringBuilder ("UPDATE C_Invoice ")
+						.append("SET DatePrinted=SysDate, IsPrinted='Y' WHERE C_Invoice_ID=")
 						.append (C_Invoice_ID);
 					int no = DB.executeUpdate(sb.toString(), get_TrxName());
 				}
@@ -364,9 +363,12 @@ public class InvoicePrint extends SvrProcess
 			DB.close(rs, pstmt);
 		}
 		//
-		if (p_EMailPDF)
-			return "@Sent@=" + count + " - @Errors@=" + errors;
-		return "@Printed@=" + count;
+		if (p_EMailPDF){
+			StringBuilder msgreturn = new StringBuilder("@Sent@=").append(count).append(" - @Errors@=").append(errors);
+			return msgreturn.toString();
+		}	
+		StringBuilder msgreturn = new StringBuilder("@Printed@=").append(count);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	InvoicePrint

@@ -113,71 +113,71 @@ public class PaySelectionCreateFrom extends SvrProcess
 		
 	//	psel.getPayDate();
 
-		String sql = "SELECT C_Invoice_ID,"
+		StringBuilder sql = new StringBuilder("SELECT C_Invoice_ID,")
 			//	Open
-			+ " currencyConvert(invoiceOpen(i.C_Invoice_ID, 0)"
-				+ ",i.C_Currency_ID, ?,?, i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID),"	//	##1/2 Currency_To,PayDate
+			.append(" currencyConvert(invoiceOpen(i.C_Invoice_ID, 0)")
+				.append(",i.C_Currency_ID, ?,?, i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID),")	//	##1/2 Currency_To,PayDate
 			//	Discount
-			+ " currencyConvert(paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?)"	//	##3 PayDate
-				+ ",i.C_Currency_ID, ?,?,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID),"	//	##4/5 Currency_To,PayDate
-			+ " PaymentRule, IsSOTrx "		//	4..6
-			+ "FROM C_Invoice i "
-			+ "WHERE IsSOTrx='N' AND IsPaid='N' AND DocStatus IN ('CO','CL')"
-			+ " AND AD_Client_ID=?"				//	##6
+			.append(" currencyConvert(paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?)")	//	##3 PayDate
+				.append(",i.C_Currency_ID, ?,?,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID),")	//	##4/5 Currency_To,PayDate
+			.append(" PaymentRule, IsSOTrx ")		//	4..6
+			.append("FROM C_Invoice i ")
+			.append("WHERE IsSOTrx='N' AND IsPaid='N' AND DocStatus IN ('CO','CL')")
+			.append(" AND AD_Client_ID=?")				//	##6
 			//	Existing Payments - Will reselect Invoice if prepared but not paid 
-			+ " AND NOT EXISTS (SELECT * FROM C_PaySelectionLine psl"
-			+                 " INNER JOIN C_PaySelectionCheck psc ON (psl.C_PaySelectionCheck_ID=psc.C_PaySelectionCheck_ID)"
-			+                 " LEFT OUTER JOIN C_Payment pmt ON (pmt.C_Payment_ID=psc.C_Payment_ID)"
-			+                 " WHERE i.C_Invoice_ID=psl.C_Invoice_ID AND psl.IsActive='Y'"
-			+				  " AND (pmt.DocStatus IS NULL OR pmt.DocStatus NOT IN ('VO','RE')) )";
+			.append(" AND NOT EXISTS (SELECT * FROM C_PaySelectionLine psl")
+						.append(" INNER JOIN C_PaySelectionCheck psc ON (psl.C_PaySelectionCheck_ID=psc.C_PaySelectionCheck_ID)")
+						.append(" LEFT OUTER JOIN C_Payment pmt ON (pmt.C_Payment_ID=psc.C_Payment_ID)")
+						.append(" WHERE i.C_Invoice_ID=psl.C_Invoice_ID AND psl.IsActive='Y'")
+						.append(" AND (pmt.DocStatus IS NULL OR pmt.DocStatus NOT IN ('VO','RE')) )");
 		//	Disputed
 		if (!p_IncludeInDispute)
-			sql += " AND i.IsInDispute='N'";
+			sql.append(" AND i.IsInDispute='N'");
 		//	PaymentRule (optional)
 		if (p_PaymentRule != null)
-			sql += " AND PaymentRule=?";		//	##
+			sql.append(" AND PaymentRule=?");		//	##
 		//	OnlyDiscount
 		if (p_OnlyDiscount)
 		{
 			if (p_OnlyDue)
-				sql += " AND (";
+				sql.append(" AND (");
 			else
-				sql += " AND ";
-			sql += "paymentTermDiscount(invoiceOpen(C_Invoice_ID, 0), C_Currency_ID, C_PaymentTerm_ID, DateInvoiced, ?) > 0";	//	##
+				sql.append(" AND ");
+			sql.append("paymentTermDiscount(invoiceOpen(C_Invoice_ID, 0), C_Currency_ID, C_PaymentTerm_ID, DateInvoiced, ?) > 0");	//	##
 		}
 		//	OnlyDue
 		if (p_OnlyDue)
 		{
 			if (p_OnlyDiscount)
-				sql += " OR ";
+				sql.append(" OR ");
 			else
-				sql += " AND ";
-			sql += "paymentTermDueDays(C_PaymentTerm_ID, DateInvoiced, ?) >= 0";	//	##
+				sql.append(" AND ");
+			sql.append("paymentTermDueDays(C_PaymentTerm_ID, DateInvoiced, ?) >= 0");	//	##
 			if (p_OnlyDiscount)
-				sql += ")";
+				sql.append(")");
 		}
 		//	Business Partner
 		if (p_C_BPartner_ID != 0)
-			sql += " AND C_BPartner_ID=?";	//	##
+			sql.append(" AND C_BPartner_ID=?");	//	##
 		//	Business Partner Group
 		else if (p_C_BP_Group_ID != 0)
-			sql += " AND EXISTS (SELECT * FROM C_BPartner bp "
-				+ "WHERE bp.C_BPartner_ID=i.C_BPartner_ID AND bp.C_BP_Group_ID=?)";	//	##
+			sql.append(" AND EXISTS (SELECT * FROM C_BPartner bp ")
+				.append("WHERE bp.C_BPartner_ID=i.C_BPartner_ID AND bp.C_BP_Group_ID=?)");	//	##
 		//	PO Matching Requirement
 		if (p_MatchRequirement.equals("P") || p_MatchRequirement.equals("B"))
 		{
-			sql += " AND EXISTS (SELECT * FROM C_InvoiceLine il "
-				+ "WHERE i.C_Invoice_ID=il.C_Invoice_ID"
-				+ " AND QtyInvoiced=(SELECT SUM(Qty) FROM M_MatchPO m "
-					+ "WHERE il.C_InvoiceLine_ID=m.C_InvoiceLine_ID))";
+			sql.append(" AND EXISTS (SELECT * FROM C_InvoiceLine il ")
+				.append("WHERE i.C_Invoice_ID=il.C_Invoice_ID")
+				.append(" AND QtyInvoiced=(SELECT SUM(Qty) FROM M_MatchPO m ")
+					.append("WHERE il.C_InvoiceLine_ID=m.C_InvoiceLine_ID))");
 		}
 		//	Receipt Matching Requirement
 		if (p_MatchRequirement.equals("R") || p_MatchRequirement.equals("B"))
 		{
-			sql += " AND EXISTS (SELECT * FROM C_InvoiceLine il "
-				+ "WHERE i.C_Invoice_ID=il.C_Invoice_ID"
-				+ " AND QtyInvoiced=(SELECT SUM(Qty) FROM M_MatchInv m "
-					+ "WHERE il.C_InvoiceLine_ID=m.C_InvoiceLine_ID))";
+			sql.append(" AND EXISTS (SELECT * FROM C_InvoiceLine il ")
+				.append("WHERE i.C_Invoice_ID=il.C_Invoice_ID")
+				.append(" AND QtyInvoiced=(SELECT SUM(Qty) FROM M_MatchInv m ")
+					.append("WHERE il.C_InvoiceLine_ID=m.C_InvoiceLine_ID))");
 		}
 	
 		//
@@ -186,7 +186,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			int index = 1;
 			pstmt.setInt (index++, C_CurrencyTo_ID);
 			pstmt.setTimestamp(index++, psel.getPayDate());
@@ -234,7 +234,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		try
 		{
@@ -246,8 +246,8 @@ public class PaySelectionCreateFrom extends SvrProcess
 		{
 			pstmt = null;
 		}
-		
-		return "@C_PaySelectionLine_ID@  - #" + lines;
+		StringBuilder msgreturn = new StringBuilder("@C_PaySelectionLine_ID@  - #").append(lines);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	PaySelectionCreateFrom

@@ -29,6 +29,7 @@ import org.adempiere.webui.part.AbstractUIPart;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
@@ -122,7 +123,7 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
 
         if (newIndex != oldIndex)
         {
-            canJump = canNavigateTo(oldIndex, newIndex);
+            canJump = canNavigateTo(oldIndex, newIndex, true);
             if (canJump) 
             {
             	prepareContext(newIndex, newTab);
@@ -204,8 +205,12 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
     	}
     	return true;
     }
-    
+
 	public boolean canNavigateTo(int fromIndex, int toIndex) {
+		return canNavigateTo(fromIndex, toIndex, false);
+	}
+
+	public boolean canNavigateTo(int fromIndex, int toIndex, boolean checkRecordID) {
     	IADTabpanel newTab = tabPanelList.get(toIndex);
     	if (newTab instanceof ADTabpanel) 
     	{
@@ -222,8 +227,7 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
             IADTabpanel oldTabpanel = fromIndex >= 0 ? tabPanelList.get(fromIndex) : null;
             if (oldTabpanel != null)
             {
-                IADTabpanel oldTab = oldTabpanel;
-                if (newTab.getTabLevel() > oldTab.getTabLevel())
+                if (newTab.getTabLevel() > oldTabpanel.getTabLevel())
                 {
                     int currentLevel = newTab.getTabLevel();
                     for (int i = toIndex - 1; i >= 0; i--)
@@ -239,8 +243,13 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
                             currentLevel = tabPanel.getTabLevel();
                         }
                     }
+                    if (canJump && checkRecordID ) {
+                    	int zeroValid = (MTable.isZeroIDTable(oldTabpanel.getTableName()) ? 1 : 0);
+                        if (oldTabpanel.getRecord_ID() + zeroValid <= 0)
+                           	canJump = false;
+                    }
                 }
-            }                        
+            }
         }        
         return canJump;
     }

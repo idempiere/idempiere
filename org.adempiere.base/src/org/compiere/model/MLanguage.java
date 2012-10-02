@@ -162,9 +162,10 @@ public class MLanguage extends X_AD_Language
 	 */
 	public String toString()
 	{
-		return "MLanguage[" + getAD_Language() + "-" + getName()
-			+ ",Language=" + getLanguageISO() + ",Country=" + getCountryCode()
-			+ "]";
+		StringBuilder str = new StringBuilder("MLanguage[").append(getAD_Language()).append("-").append(getName())
+				.append(",Language=").append(getLanguageISO()).append(",Country=").append(getCountryCode())
+				.append("]");
+		return str.toString();
 	}	//	toString
 
 	/**
@@ -214,7 +215,7 @@ public class MLanguage extends X_AD_Language
 			//	some short formats have only one M and d (e.g. ths US)
 			if (sFormat.indexOf("MM") == -1 && sFormat.indexOf("dd") == -1)
 			{
-				StringBuffer nFormat = new StringBuffer("");
+				StringBuilder nFormat = new StringBuilder();
 				for (int i = 0; i < sFormat.length(); i++)
 				{
 					if (sFormat.charAt(i) == 'M')
@@ -235,7 +236,7 @@ public class MLanguage extends X_AD_Language
 			if (m_dateFormat.toPattern().indexOf("yyyy") == -1)
 			{
 				sFormat = m_dateFormat.toPattern();
-				StringBuffer nFormat = new StringBuffer("");
+				StringBuilder nFormat = new StringBuilder();
 				for (int i = 0; i < sFormat.length(); i++)
 				{
 					if (sFormat.charAt(i) == 'y')
@@ -365,8 +366,8 @@ public class MLanguage extends X_AD_Language
 	 */
 	private int deleteTable (String tableName)
 	{
-		String sql = "DELETE  FROM  "+tableName+" WHERE AD_Language=?";
-		int no = DB.executeUpdateEx(sql, new Object[]{getAD_Language()}, get_TrxName());
+		StringBuilder sql = new StringBuilder("DELETE  FROM  ").append(tableName).append(" WHERE AD_Language=?");
+		int no = DB.executeUpdateEx(sql.toString(), new Object[]{getAD_Language()}, get_TrxName());
 		log.fine(tableName + " #" + no);
 		return no;
 	}	//	deleteTable
@@ -420,27 +421,28 @@ public class MLanguage extends X_AD_Language
 		//	Insert Statement
 		int AD_User_ID = Env.getAD_User_ID(getCtx());
 		String keyColumn = baseTable + "_ID";
-		String insert = "INSERT INTO " + tableName
-			+ "(AD_Language,IsTranslated, AD_Client_ID,AD_Org_ID, "
-			+ "Createdby,UpdatedBy, "
-			+ keyColumn + cols + ") "
-			+ "SELECT '" + getAD_Language() + "','N', AD_Client_ID,AD_Org_ID, "
-			+ AD_User_ID + "," + AD_User_ID + ", "
-			+ keyColumn + cols
-			+ " FROM " + baseTable
-			+ " WHERE " + keyColumn + " NOT IN (SELECT " + keyColumn
-				+ " FROM " + tableName
-				+ " WHERE AD_Language='" + getAD_Language() + "')";
+		StringBuilder insert = new StringBuilder("INSERT INTO ").append(tableName)
+							.append("(AD_Language,IsTranslated, AD_Client_ID,AD_Org_ID, ")
+							.append("Createdby,UpdatedBy, ")
+							.append(keyColumn).append(cols).append(") ")
+							.append("SELECT '").append(getAD_Language()).append("','N', AD_Client_ID,AD_Org_ID, ")
+							.append(AD_User_ID).append(",").append(AD_User_ID).append(", ")
+							.append(keyColumn).append(cols)
+							.append(" FROM ").append(baseTable)
+							.append(" WHERE ").append(keyColumn).append(" NOT IN (SELECT ").append(keyColumn)
+							.append(" FROM ").append(tableName)
+							.append(" WHERE AD_Language='").append(getAD_Language()).append("')");
 		//	+ " WHERE (" + keyColumn + ",'" + getAD_Language()+ "') NOT IN (SELECT " 
 		//		+ keyColumn + ",AD_Language FROM " + tableName + ")";
-		int no = DB.executeUpdateEx(insert, null, get_TrxName());
+		int no = DB.executeUpdateEx(insert.toString(), null, get_TrxName());
 		// IDEMPIERE-99 Language Maintenance does not create UUIDs
 		MTable table = MTable.get(getCtx(), tableName);
 		MColumn column = table.getColumn(PO.getUUIDColumnName(tableName));
 		if (column != null)
 			UUIDGenerator.updateUUID(column, get_TrxName());
 		//
-		log.fine(tableName + " #" + no);
+		StringBuilder msglog = new StringBuilder(tableName).append(" #").append(no);
+		log.fine(msglog.toString());
 		return no;
 	}	//	addTable
 

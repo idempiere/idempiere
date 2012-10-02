@@ -31,11 +31,11 @@ public interface I_C_BankAccount_Acct
     public static final String Table_Name = "C_BankAccount_Acct";
 
     /** AD_Table_ID=391 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 391;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel =  - Client - Org 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
@@ -76,21 +76,6 @@ public interface I_C_BankAccount_Acct
 	public int getB_Asset_Acct();
 
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException;
-
-    /** Column name B_Expense_Acct */
-    public static final String COLUMNNAME_B_Expense_Acct = "B_Expense_Acct";
-
-	/** Set Bank Expense.
-	  * Bank Expense Account
-	  */
-	public void setB_Expense_Acct (int B_Expense_Acct);
-
-	/** Get Bank Expense.
-	  * Bank Expense Account
-	  */
-	public int getB_Expense_Acct();
-
-	public I_C_ValidCombination getB_Expense_A() throws RuntimeException;
 
     /** Column name B_InterestExp_Acct */
     public static final String COLUMNNAME_B_InterestExp_Acct = "B_InterestExp_Acct";
@@ -152,66 +137,6 @@ public interface I_C_BankAccount_Acct
 
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException;
 
-    /** Column name B_RevaluationGain_Acct */
-    public static final String COLUMNNAME_B_RevaluationGain_Acct = "B_RevaluationGain_Acct";
-
-	/** Set Bank Revaluation Gain.
-	  * Bank Revaluation Gain Account
-	  */
-	public void setB_RevaluationGain_Acct (int B_RevaluationGain_Acct);
-
-	/** Get Bank Revaluation Gain.
-	  * Bank Revaluation Gain Account
-	  */
-	public int getB_RevaluationGain_Acct();
-
-	public I_C_ValidCombination getB_RevaluationGain_A() throws RuntimeException;
-
-    /** Column name B_RevaluationLoss_Acct */
-    public static final String COLUMNNAME_B_RevaluationLoss_Acct = "B_RevaluationLoss_Acct";
-
-	/** Set Bank Revaluation Loss.
-	  * Bank Revaluation Loss Account
-	  */
-	public void setB_RevaluationLoss_Acct (int B_RevaluationLoss_Acct);
-
-	/** Get Bank Revaluation Loss.
-	  * Bank Revaluation Loss Account
-	  */
-	public int getB_RevaluationLoss_Acct();
-
-	public I_C_ValidCombination getB_RevaluationLoss_A() throws RuntimeException;
-
-    /** Column name B_SettlementGain_Acct */
-    public static final String COLUMNNAME_B_SettlementGain_Acct = "B_SettlementGain_Acct";
-
-	/** Set Bank Settlement Gain.
-	  * Bank Settlement Gain Account
-	  */
-	public void setB_SettlementGain_Acct (int B_SettlementGain_Acct);
-
-	/** Get Bank Settlement Gain.
-	  * Bank Settlement Gain Account
-	  */
-	public int getB_SettlementGain_Acct();
-
-	public I_C_ValidCombination getB_SettlementGain_A() throws RuntimeException;
-
-    /** Column name B_SettlementLoss_Acct */
-    public static final String COLUMNNAME_B_SettlementLoss_Acct = "B_SettlementLoss_Acct";
-
-	/** Set Bank Settlement Loss.
-	  * Bank Settlement Loss Account
-	  */
-	public void setB_SettlementLoss_Acct (int B_SettlementLoss_Acct);
-
-	/** Get Bank Settlement Loss.
-	  * Bank Settlement Loss Account
-	  */
-	public int getB_SettlementLoss_Acct();
-
-	public I_C_ValidCombination getB_SettlementLoss_A() throws RuntimeException;
-
     /** Column name B_UnallocatedCash_Acct */
     public static final String COLUMNNAME_B_UnallocatedCash_Acct = "B_UnallocatedCash_Acct";
 
@@ -227,21 +152,6 @@ public interface I_C_BankAccount_Acct
 
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException;
 
-    /** Column name B_Unidentified_Acct */
-    public static final String COLUMNNAME_B_Unidentified_Acct = "B_Unidentified_Acct";
-
-	/** Set Bank Unidentified Receipts.
-	  * Bank Unidentified Receipts Account
-	  */
-	public void setB_Unidentified_Acct (int B_Unidentified_Acct);
-
-	/** Get Bank Unidentified Receipts.
-	  * Bank Unidentified Receipts Account
-	  */
-	public int getB_Unidentified_Acct();
-
-	public I_C_ValidCombination getB_Unidentified_A() throws RuntimeException;
-
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 
@@ -255,7 +165,16 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+
+    /** Column name C_BankAccount_Acct_UU */
+    public static final String COLUMNNAME_C_BankAccount_Acct_UU = "C_BankAccount_Acct_UU";
+
+	/** Set C_BankAccount_Acct_UU	  */
+	public void setC_BankAccount_Acct_UU (String C_BankAccount_Acct_UU);
+
+	/** Get C_BankAccount_Acct_UU	  */
+	public String getC_BankAccount_Acct_UU();
 
     /** Column name C_BankAccount_ID */
     public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
@@ -270,7 +189,7 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getC_BankAccount_ID();
 
-	public I_C_BankAccount getC_BankAccount() throws RuntimeException;
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

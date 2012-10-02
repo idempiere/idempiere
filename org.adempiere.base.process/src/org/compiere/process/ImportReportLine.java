@@ -76,181 +76,181 @@ public class ImportReportLine extends SvrProcess
 	 */
 	protected String doIt() throws java.lang.Exception
 	{
-		StringBuffer sql = null;
+		StringBuilder sql = null;
 		int no = 0;
-		String clientCheck = " AND AD_Client_ID=" + m_AD_Client_ID;
+		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(m_AD_Client_ID);
 
 		//	****	Prepare	****
 
 		//	Delete Old Imported
 		if (m_deleteOldImported)
 		{
-			sql = new StringBuffer ("DELETE I_ReportLine "
-				+ "WHERE I_IsImported='Y'").append(clientCheck);
+			sql = new StringBuilder ("DELETE I_ReportLine ")
+				.append("WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, IsActive, Created/Updated
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET AD_Client_ID = COALESCE (AD_Client_ID, ").append(m_AD_Client_ID).append("),"
-			+ " AD_Org_ID = COALESCE (AD_Org_ID, 0),"
-			+ " IsActive = COALESCE (IsActive, 'Y'),"
-			+ " Created = COALESCE (Created, SysDate),"
-			+ " CreatedBy = COALESCE (CreatedBy, 0),"
-			+ " Updated = COALESCE (Updated, SysDate),"
-			+ " UpdatedBy = COALESCE (UpdatedBy, 0),"
-			+ " I_ErrorMsg = ' ',"
-			+ " I_IsImported = 'N' "
-			+ "WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET AD_Client_ID = COALESCE (AD_Client_ID, ").append(m_AD_Client_ID).append("),")
+			.append(" AD_Org_ID = COALESCE (AD_Org_ID, 0),")
+			.append(" IsActive = COALESCE (IsActive, 'Y'),")
+			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
+			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
+			.append(" I_ErrorMsg = ' ',")
+			.append(" I_IsImported = 'N' ")
+			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Reset=" + no);
 
 		//	ReportLineSetName (Default)
 		if (m_PA_ReportLineSet_ID != 0)
 		{
-			sql = new StringBuffer ("UPDATE I_ReportLine i "
-				+ "SET ReportLineSetName=(SELECT Name FROM PA_ReportLineSet r"
-				+ " WHERE PA_ReportLineSet_ID=").append(m_PA_ReportLineSet_ID).append(" AND i.AD_Client_ID=r.AD_Client_ID) "
-				+ "WHERE ReportLineSetName IS NULL AND PA_ReportLineSet_ID IS NULL"
-				+ " AND I_IsImported<>'Y'").append(clientCheck);
+			sql = new StringBuilder ("UPDATE I_ReportLine i ")
+				.append("SET ReportLineSetName=(SELECT Name FROM PA_ReportLineSet r")
+				.append(" WHERE PA_ReportLineSet_ID=").append(m_PA_ReportLineSet_ID).append(" AND i.AD_Client_ID=r.AD_Client_ID) ")
+				.append("WHERE ReportLineSetName IS NULL AND PA_ReportLineSet_ID IS NULL")
+				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("Set ReportLineSetName Default=" + no);
 		}
 		//	Set PA_ReportLineSet_ID
-		sql = new StringBuffer ("UPDATE I_ReportLine i "
-			+ "SET PA_ReportLineSet_ID=(SELECT PA_ReportLineSet_ID FROM PA_ReportLineSet r"
-			+ " WHERE i.ReportLineSetName=r.Name AND i.AD_Client_ID=r.AD_Client_ID) "
-			+ "WHERE PA_ReportLineSet_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine i ")
+			.append("SET PA_ReportLineSet_ID=(SELECT PA_ReportLineSet_ID FROM PA_ReportLineSet r")
+			.append(" WHERE i.ReportLineSetName=r.Name AND i.AD_Client_ID=r.AD_Client_ID) ")
+			.append("WHERE PA_ReportLineSet_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set PA_ReportLineSet_ID=" + no);
 		//
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid ReportLineSet, ' "
-			+ "WHERE PA_ReportLineSet_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid ReportLineSet, ' ")
+			.append("WHERE PA_ReportLineSet_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Invalid ReportLineSet=" + no);
 
 		//	Ignore if there is no Report Line Name or ID
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Ignored=NoLineName, ' "
-			+ "WHERE PA_ReportLine_ID IS NULL AND Name IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Ignored=NoLineName, ' ")
+			.append("WHERE PA_ReportLine_ID IS NULL AND Name IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Invalid LineName=" + no);
 
 		//	Validate ElementValue
-		sql = new StringBuffer ("UPDATE I_ReportLine i "
-			+ "SET C_ElementValue_ID=(SELECT C_ElementValue_ID FROM C_ElementValue e"
-			+ " WHERE i.ElementValue=e.Value AND i.AD_Client_ID=e.AD_Client_ID) "
-			+ "WHERE C_ElementValue_ID IS NULL AND ElementValue IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine i ")
+			.append("SET C_ElementValue_ID=(SELECT C_ElementValue_ID FROM C_ElementValue e")
+			.append(" WHERE i.ElementValue=e.Value AND i.AD_Client_ID=e.AD_Client_ID) ")
+			.append("WHERE C_ElementValue_ID IS NULL AND ElementValue IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set C_ElementValue_ID=" + no);
 		
 		//	Validate C_ElementValue_ID
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid ElementValue, ' "
-			+ "WHERE C_ElementValue_ID IS NULL AND LineType<>'C'" // MReportLine.LINETYPE_Calculation
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid ElementValue, ' ")
+			.append("WHERE C_ElementValue_ID IS NULL AND LineType<>'C'") // MReportLine.LINETYPE_Calculation
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Invalid AccountType=" + no);
 
 		//	Set SeqNo
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET SeqNo=I_ReportLine_ID "
-			+ "WHERE SeqNo IS NULL"
-			+ " AND I_IsImported='N'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET SeqNo=I_ReportLine_ID ")
+			.append("WHERE SeqNo IS NULL")
+			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set SeqNo Default=" + no);
 
 		//	Copy/Sync from first Row of Line
-		sql = new StringBuffer ("UPDATE I_ReportLine i "
-			+ "SET (Description, SeqNo, IsSummary, IsPrinted, LineType, CalculationType, AmountType, PAAmountType, PAPeriodType, PostingType)="
-			+ " (SELECT Description, SeqNo, IsSummary, IsPrinted, LineType, CalculationType, AmountType, PAAmountType, PAPeriodType, PostingType"
-			+ " FROM I_ReportLine ii WHERE i.Name=ii.Name AND i.PA_ReportLineSet_ID=ii.PA_ReportLineSet_ID"
-			+ " AND ii.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii"
-			+ " WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID)) "
-			+ "WHERE EXISTS (SELECT *"
-			+ " FROM I_ReportLine ii WHERE i.Name=ii.Name AND i.PA_ReportLineSet_ID=ii.PA_ReportLineSet_ID"
-			+ " AND ii.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii"
-			+ " WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID))"
-			+ " AND I_IsImported='N'").append(clientCheck);		//	 not if previous error
+		sql = new StringBuilder ("UPDATE I_ReportLine i ")
+			.append("SET (Description, SeqNo, IsSummary, IsPrinted, LineType, CalculationType, AmountType, PAAmountType, PAPeriodType, PostingType)=")
+			.append(" (SELECT Description, SeqNo, IsSummary, IsPrinted, LineType, CalculationType, AmountType, PAAmountType, PAPeriodType, PostingType")
+			.append(" FROM I_ReportLine ii WHERE i.Name=ii.Name AND i.PA_ReportLineSet_ID=ii.PA_ReportLineSet_ID")
+			.append(" AND ii.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii")
+			.append(" WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID)) ")
+			.append("WHERE EXISTS (SELECT *")
+			.append(" FROM I_ReportLine ii WHERE i.Name=ii.Name AND i.PA_ReportLineSet_ID=ii.PA_ReportLineSet_ID")
+			.append(" AND ii.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii")
+			.append(" WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID))")
+			.append(" AND I_IsImported='N'").append(clientCheck);		//	 not if previous error
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Sync from first Row of Line=" + no);
 
 		//	Validate IsSummary - (N) Y
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET IsSummary='N' "
-			+ "WHERE IsSummary IS NULL OR IsSummary NOT IN ('Y','N')"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET IsSummary='N' ")
+			.append("WHERE IsSummary IS NULL OR IsSummary NOT IN ('Y','N')")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set IsSummary Default=" + no);
 
 		//	Validate IsPrinted - (Y) N
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET IsPrinted='Y' "
-			+ "WHERE IsPrinted IS NULL OR IsPrinted NOT IN ('Y','N')"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET IsPrinted='Y' ")
+			.append("WHERE IsPrinted IS NULL OR IsPrinted NOT IN ('Y','N')")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set IsPrinted Default=" + no);
 
 		//	Validate Line Type - (S) C
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET LineType='S' "
-			+ "WHERE LineType IS NULL OR LineType NOT IN ('S','C')"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET LineType='S' ")
+			.append("WHERE LineType IS NULL OR LineType NOT IN ('S','C')")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set LineType Default=" + no);
 
 		//	Validate Optional Calculation Type - A P R S
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid CalculationType, ' "
-			+ "WHERE CalculationType IS NOT NULL AND CalculationType NOT IN ('A','P','R','S')"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid CalculationType, ' ")
+			.append("WHERE CalculationType IS NOT NULL AND CalculationType NOT IN ('A','P','R','S')")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Invalid CalculationType=" + no);
 
 		//	Convert Optional Amount Type to PAAmount Type and PAPeriodType
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET PAAmountType = substr(AmountType,1,1), PAPeriodType = substr(AmountType,1,2) "
-			+ "WHERE AmountType IS NOT NULL AND (PAAmountType IS NULL OR PAPeriodType IS NULL) "
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET PAAmountType = substr(AmountType,1,1), PAPeriodType = substr(AmountType,1,2) ")
+			.append("WHERE AmountType IS NOT NULL AND (PAAmountType IS NULL OR PAPeriodType IS NULL) ")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Converted AmountType=" + no);
 		
 		//		Validate Optional Amount Type -
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid PAAmountType, ' "
-			+ "WHERE PAAmountType IS NOT NULL AND UPPER(AmountType) NOT IN ('B','C','D','Q','S','R')"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid PAAmountType, ' ")
+			.append("WHERE PAAmountType IS NOT NULL AND UPPER(AmountType) NOT IN ('B','C','D','Q','S','R')")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Invalid AmountType=" + no);
 		
 		//		Validate Optional Period Type -
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid PAPeriodType, ' "
-			+ "WHERE PAPeriodType IS NOT NULL AND UPPER(AmountType) NOT IN ('P','Y','T','N')"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid PAPeriodType, ' ")
+			.append("WHERE PAPeriodType IS NOT NULL AND UPPER(AmountType) NOT IN ('P','Y','T','N')")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Invalid PeriodType=" + no);
 
 		//	Validate Optional Posting Type - A B E S R
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid CalculationType, ' "
-			+ "WHERE PostingType IS NOT NULL AND PostingType NOT IN ('A','B','E','S','R')"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid CalculationType, ' ")
+			.append("WHERE PostingType IS NOT NULL AND PostingType NOT IN ('A','B','E','S','R')")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Invalid PostingType=" + no);
 
 		//	Set PA_ReportLine_ID
-		sql = new StringBuffer ("UPDATE I_ReportLine i "
-			+ "SET PA_ReportLine_ID=(SELECT MAX(PA_ReportLine_ID) FROM PA_ReportLine r"
-			+ " WHERE i.Name=r.Name AND i.PA_ReportLineSet_ID=r.PA_ReportLineSet_ID) "
-			+ "WHERE PA_ReportLine_ID IS NULL AND PA_ReportLineSet_ID IS NOT NULL"
-			+ " AND I_IsImported='N'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine i ")
+			.append("SET PA_ReportLine_ID=(SELECT MAX(PA_ReportLine_ID) FROM PA_ReportLine r")
+			.append(" WHERE i.Name=r.Name AND i.PA_ReportLineSet_ID=r.PA_ReportLineSet_ID) ")
+			.append("WHERE PA_ReportLine_ID IS NULL AND PA_ReportLineSet_ID IS NOT NULL")
+			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set PA_ReportLine_ID=" + no);
 
@@ -261,29 +261,29 @@ public class ImportReportLine extends SvrProcess
 		int noUpdateLine = 0;
 
 		//	****	Create Missing ReportLines
-		sql = new StringBuffer ("SELECT DISTINCT PA_ReportLineSet_ID, Name "
-			+ "FROM I_ReportLine "
-			+ "WHERE I_IsImported='N' AND PA_ReportLine_ID IS NULL"
-			+ " AND I_IsImported='N'").append(clientCheck);
+		sql = new StringBuilder ("SELECT DISTINCT PA_ReportLineSet_ID, Name ")
+			.append("FROM I_ReportLine ")
+			.append("WHERE I_IsImported='N' AND PA_ReportLine_ID IS NULL")
+			.append(" AND I_IsImported='N'").append(clientCheck);
 		try
 		{
 			//	Insert ReportLine
-			PreparedStatement pstmt_insertLine = DB.prepareStatement
-				("INSERT INTO PA_ReportLine "
-				+ "(PA_ReportLine_ID,PA_ReportLineSet_ID,"
-				+ "AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"
-				+ "Name,SeqNo,IsPrinted,IsSummary,LineType)"
-				+ "SELECT ?,PA_ReportLineSet_ID,"
-				+ "AD_Client_ID,AD_Org_ID,'Y',SysDate,CreatedBy,SysDate,UpdatedBy,"
-				+ "Name,SeqNo,IsPrinted,IsSummary,LineType "
-				//jz + "FROM I_ReportLine "
-				// + "WHERE PA_ReportLineSet_ID=? AND Name=? AND ROWNUM=1"		//	#2..3
-				+ "FROM I_ReportLine "
-				+ "WHERE I_ReportLine_ID=(SELECT MAX(I_ReportLine_ID) "		
-				+ "FROM I_ReportLine "
-				+ "WHERE PA_ReportLineSet_ID=? AND Name=? "		//	#2..3
-				//jz + clientCheck, get_TrxName());
-				+ clientCheck + ")", get_TrxName());
+			StringBuilder dbpst = new StringBuilder("INSERT INTO PA_ReportLine ")
+			.append("(PA_ReportLine_ID,PA_ReportLineSet_ID,")
+			.append("AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,")
+			.append("Name,SeqNo,IsPrinted,IsSummary,LineType)")
+			.append("SELECT ?,PA_ReportLineSet_ID,")
+			.append("AD_Client_ID,AD_Org_ID,'Y',SysDate,CreatedBy,SysDate,UpdatedBy,")
+			.append("Name,SeqNo,IsPrinted,IsSummary,LineType ")
+			//jz + "FROM I_ReportLine "
+			// + "WHERE PA_ReportLineSet_ID=? AND Name=? AND ROWNUM=1"		//	#2..3
+			.append("FROM I_ReportLine ")
+			.append("WHERE I_ReportLine_ID=(SELECT MAX(I_ReportLine_ID) ")		
+			.append("FROM I_ReportLine ")
+			.append("WHERE PA_ReportLineSet_ID=? AND Name=? ")		//	#2..3
+			//jz + clientCheck, get_TrxName());
+			.append(clientCheck).append(")");
+			PreparedStatement pstmt_insertLine = DB.prepareStatement(dbpst.toString(), get_TrxName());
 
 			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			ResultSet rs = pstmt.executeQuery();
@@ -322,25 +322,25 @@ public class ImportReportLine extends SvrProcess
 		}
 
 		//	Set PA_ReportLine_ID (for newly created)
-		sql = new StringBuffer ("UPDATE I_ReportLine i "
-			+ "SET PA_ReportLine_ID=(SELECT MAX(PA_ReportLine_ID) FROM PA_ReportLine r"
-			+ " WHERE i.Name=r.Name AND i.PA_ReportLineSet_ID=r.PA_ReportLineSet_ID) "
-			+ "WHERE PA_ReportLine_ID IS NULL AND PA_ReportLineSet_ID IS NOT NULL"
-			+ " AND I_IsImported='N'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine i ")
+			.append("SET PA_ReportLine_ID=(SELECT MAX(PA_ReportLine_ID) FROM PA_ReportLine r")
+			.append(" WHERE i.Name=r.Name AND i.PA_ReportLineSet_ID=r.PA_ReportLineSet_ID) ")
+			.append("WHERE PA_ReportLine_ID IS NULL AND PA_ReportLineSet_ID IS NOT NULL")
+			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set PA_ReportLine_ID=" + no);
 
 		//	****	Update ReportLine
-		sql = new StringBuffer ("UPDATE PA_ReportLine r "
-			+ "SET (Description,SeqNo,IsSummary,IsPrinted,LineType,CalculationType,AmountType,PAAmountType,PAPeriodType,PostingType,Updated,UpdatedBy)="
-			+ " (SELECT Description,SeqNo,IsSummary,IsPrinted,LineType,CalculationType,AmountType,PAAmountType,PAPeriodType,PostingType,SysDate,UpdatedBy"
-			+ " FROM I_ReportLine i WHERE r.Name=i.Name AND r.PA_ReportLineSet_ID=i.PA_ReportLineSet_ID"
-			+ " AND i.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii"
-			+ " WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID)) "
-			+ "WHERE EXISTS (SELECT *"
-			+ " FROM I_ReportLine i WHERE r.Name=i.Name AND r.PA_ReportLineSet_ID=i.PA_ReportLineSet_ID"
-			+ " AND i.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii"
-			+ " WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID AND i.I_IsImported='N'))")
+		sql = new StringBuilder ("UPDATE PA_ReportLine r ")
+			.append("SET (Description,SeqNo,IsSummary,IsPrinted,LineType,CalculationType,AmountType,PAAmountType,PAPeriodType,PostingType,Updated,UpdatedBy)=")
+			.append(" (SELECT Description,SeqNo,IsSummary,IsPrinted,LineType,CalculationType,AmountType,PAAmountType,PAPeriodType,PostingType,SysDate,UpdatedBy")
+			.append(" FROM I_ReportLine i WHERE r.Name=i.Name AND r.PA_ReportLineSet_ID=i.PA_ReportLineSet_ID")
+			.append(" AND i.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii")
+			.append(" WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID)) ")
+			.append("WHERE EXISTS (SELECT *")
+			.append(" FROM I_ReportLine i WHERE r.Name=i.Name AND r.PA_ReportLineSet_ID=i.PA_ReportLineSet_ID")
+			.append(" AND i.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii")
+			.append(" WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID AND i.I_IsImported='N'))")
 			.append(clientCheck);
 		noUpdateLine = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.config("Update PA_ReportLine=" + noUpdateLine);
@@ -351,26 +351,26 @@ public class ImportReportLine extends SvrProcess
 		int noUpdateSource = 0;
 
 		//	****	Create ReportSource
-		sql = new StringBuffer ("SELECT I_ReportLine_ID, PA_ReportSource_ID "
-			+ "FROM I_ReportLine "
-			+ "WHERE PA_ReportLine_ID IS NOT NULL"
-			+ " AND I_IsImported='N'").append(clientCheck);
+		sql = new StringBuilder ("SELECT I_ReportLine_ID, PA_ReportSource_ID ")
+			.append("FROM I_ReportLine ")
+			.append("WHERE PA_ReportLine_ID IS NOT NULL")
+			.append(" AND I_IsImported='N'").append(clientCheck);
 		
 		try
 		{
 			//	Insert ReportSource
-			PreparedStatement pstmt_insertSource = DB.prepareStatement
-				("INSERT INTO PA_ReportSource "
-				+ "(PA_ReportSource_ID,"
-				+ "AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"
-				+ "PA_ReportLine_ID,ElementType,C_ElementValue_ID) "
-				+ "SELECT ?,"
-				+ "AD_Client_ID,AD_Org_ID,'Y',SysDate,CreatedBy,SysDate,UpdatedBy,"
-				+ "PA_ReportLine_ID,'AC',C_ElementValue_ID "
-				+ "FROM I_ReportLine "
-				+ "WHERE I_ReportLine_ID=?"
-				+ " AND I_IsImported='N'"
-				+ clientCheck, get_TrxName());
+			StringBuilder dbpst = new StringBuilder("INSERT INTO PA_ReportSource ")
+					.append("(PA_ReportSource_ID,")
+					.append("AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,")
+					.append("PA_ReportLine_ID,ElementType,C_ElementValue_ID) ")
+					.append("SELECT ?,")
+					.append("AD_Client_ID,AD_Org_ID,'Y',SysDate,CreatedBy,SysDate,UpdatedBy,")
+					.append("PA_ReportLine_ID,'AC',C_ElementValue_ID ")
+					.append("FROM I_ReportLine ")
+					.append("WHERE I_ReportLine_ID=?")
+					.append(" AND I_IsImported='N'")
+					.append(clientCheck);
+			PreparedStatement pstmt_insertSource = DB.prepareStatement(dbpst.toString(), get_TrxName());
 
 			//	Update ReportSource
 			//jz 
@@ -387,11 +387,11 @@ public class ImportReportLine extends SvrProcess
 				*/
 
 			// Delete ReportSource - afalcone 22/02/2007 - F.R. [ 1642250 ] Import ReportLine / Very Slow Reports
-			PreparedStatement pstmt_deleteSource = DB.prepareStatement
-				("DELETE FROM PA_ReportSource "
-				+ "WHERE C_ElementValue_ID IS NULL" 
-				+ " AND PA_ReportSource_ID=?"
-				+ clientCheck, get_TrxName());
+			dbpst = new StringBuilder("DELETE FROM PA_ReportSource ")
+					.append("WHERE C_ElementValue_ID IS NULL") 
+					.append(" AND PA_ReportSource_ID=?")
+					.append(clientCheck);
+			PreparedStatement pstmt_deleteSource = DB.prepareStatement(dbpst.toString(), get_TrxName());
 			//End afalcone 22/02/2007 - F.R. [ 1642250 ] Import ReportLine / Very Slow Reports
 			
 			//	Set Imported = Y
@@ -424,8 +424,8 @@ public class ImportReportLine extends SvrProcess
 					catch (Exception ex)
 					{
 						log.finest("Insert ReportSource - " + ex.toString());
-						sql = new StringBuffer ("UPDATE I_ReportLine i "
-							+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert ElementSource: " + ex.toString()))
+						sql = new StringBuilder ("UPDATE I_ReportLine i ")
+							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert ElementSource: " + ex.toString()))
 							.append("WHERE I_ReportLine_ID=").append(I_ReportLine_ID);
 						DB.executeUpdate(sql.toString(), get_TrxName());
 						continue;
@@ -434,15 +434,15 @@ public class ImportReportLine extends SvrProcess
 				else								//	update Report Source
 				{
 					//jz
-					String sqlt="UPDATE PA_ReportSource "
-						+ "SET (ElementType,C_ElementValue_ID,Updated,UpdatedBy)="
-						+ " (SELECT CAST('AC' AS CHAR(2)),C_ElementValue_ID,SysDate,UpdatedBy"  //jz
-						+ " FROM I_ReportLine"
-						+ " WHERE I_ReportLine_ID=" + I_ReportLine_ID + ") "
-						+ "WHERE PA_ReportSource_ID="+PA_ReportSource_ID+" "
-						+ clientCheck;
+					StringBuilder sqlt= new StringBuilder("UPDATE PA_ReportSource ")
+						.append("SET (ElementType,C_ElementValue_ID,Updated,UpdatedBy)=")
+						.append(" (SELECT CAST('AC' AS CHAR(2)),C_ElementValue_ID,SysDate,UpdatedBy")  //jz
+						.append(" FROM I_ReportLine")
+						.append(" WHERE I_ReportLine_ID=").append(I_ReportLine_ID).append(") ")
+						.append("WHERE PA_ReportSource_ID=").append(PA_ReportSource_ID).append(" ")
+						.append(clientCheck);
 					PreparedStatement pstmt_updateSource = DB.prepareStatement
-						(sqlt, get_TrxName());
+						(sqlt.toString(), get_TrxName());
 					//pstmt_updateSource.setInt(1, I_ReportLine_ID);
 					//pstmt_updateSource.setInt(2, PA_ReportSource_ID);
 					try
@@ -455,8 +455,8 @@ public class ImportReportLine extends SvrProcess
 					catch (SQLException ex)
 					{
 						log.finest( "Update ReportSource - " + ex.toString());
-						sql = new StringBuffer ("UPDATE I_ReportLine i "
-							+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Update ElementSource: " + ex.toString()))
+						sql = new StringBuilder ("UPDATE I_ReportLine i ")
+							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Update ElementSource: " + ex.toString()))
 							.append("WHERE I_ReportLine_ID=").append(I_ReportLine_ID);
 						DB.executeUpdate(sql.toString(), get_TrxName());
 						continue;
@@ -494,9 +494,9 @@ public class ImportReportLine extends SvrProcess
 		}
 
 		//	Set Error to indicator to not imported
-		sql = new StringBuffer ("UPDATE I_ReportLine "
-			+ "SET I_IsImported='N', Updated=SysDate "
-			+ "WHERE I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_ReportLine ")
+			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");

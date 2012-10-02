@@ -76,21 +76,21 @@ public class ExpenseAPInvoice extends SvrProcess
 	 */
 	protected String doIt() throws java.lang.Exception
 	{
-		StringBuffer sql = new StringBuffer ("SELECT * "
-			+ "FROM S_TimeExpense e "
-			+ "WHERE e.Processed='Y'"
-			+ " AND e.AD_Client_ID=?");				//	#1
+		StringBuilder sql = new StringBuilder ("SELECT * ")
+			.append("FROM S_TimeExpense e ")
+			.append("WHERE e.Processed='Y'")
+			.append(" AND e.AD_Client_ID=?");				//	#1
 		if (m_C_BPartner_ID != 0)
 			sql.append(" AND e.C_BPartner_ID=?");	//	#2
 		if (m_DateFrom != null)
 			sql.append(" AND e.DateReport >= ?");	//	#3
 		if (m_DateTo != null)
 			sql.append(" AND e.DateReport <= ?");	//	#4
-		sql.append(" AND EXISTS (SELECT * FROM S_TimeExpenseLine el "
-			+ "WHERE e.S_TimeExpense_ID=el.S_TimeExpense_ID"
-			+ " AND el.C_InvoiceLine_ID IS NULL"
-			+ " AND el.ConvertedAmt<>0) "
-			+ "ORDER BY e.C_BPartner_ID, e.S_TimeExpense_ID");
+		sql.append(" AND EXISTS (SELECT * FROM S_TimeExpenseLine el ")
+			.append("WHERE e.S_TimeExpense_ID=el.S_TimeExpense_ID")
+			.append(" AND el.C_InvoiceLine_ID IS NULL")
+			.append(" AND el.ConvertedAmt<>0) ")
+			.append("ORDER BY e.C_BPartner_ID, e.S_TimeExpense_ID");
 		//
 		int old_BPartner_ID = -1;
 		MInvoice invoice = null;
@@ -128,18 +128,19 @@ public class ExpenseAPInvoice extends SvrProcess
 					invoice.setBPartner(bp);
 					if (invoice.getC_BPartner_Location_ID() == 0)
 					{
-						log.log(Level.SEVERE, "No BP Location: " + bp);
-						addLog(0, te.getDateReport(), 
-							null, "No Location: " + te.getDocumentNo() + " " + bp.getName());
+						StringBuilder msglog = new StringBuilder("No BP Location: ").append(bp);
+						log.log(Level.SEVERE, msglog.toString());
+						msglog = new StringBuilder("No Location: ").append(te.getDocumentNo()).append(" ").append(bp.getName());
+						addLog(0, te.getDateReport(), null, msglog.toString() );
 						invoice = null;
 						break;
 					}
 					invoice.setM_PriceList_ID(te.getM_PriceList_ID());
 					invoice.setSalesRep_ID(te.getDoc_User_ID());
-					String descr = Msg.translate(getCtx(), "S_TimeExpense_ID") 
-						+ ": " + te.getDocumentNo() + " " 
-						+ DisplayType.getDateFormat(DisplayType.Date).format(te.getDateReport());  
-					invoice.setDescription(descr);
+					StringBuilder descr = new StringBuilder(Msg.translate(getCtx(), "S_TimeExpense_ID")) 
+						.append(": ").append(te.getDocumentNo()).append(" " )
+						.append(DisplayType.getDateFormat(DisplayType.Date).format(te.getDateReport()));  
+					invoice.setDescription(descr.toString());
 					if (!invoice.save())
 						new IllegalStateException("Cannot save Invoice");
 					old_BPartner_ID = bp.getC_BPartner_ID();
@@ -200,7 +201,8 @@ public class ExpenseAPInvoice extends SvrProcess
 			rs = null; pstmt = null;
 		}
 		completeInvoice (invoice);
-		return "@Created@=" + m_noInvoices;
+		StringBuilder msgreturn = new StringBuilder("@Created@=").append(m_noInvoices);
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**
@@ -213,8 +215,9 @@ public class ExpenseAPInvoice extends SvrProcess
 			return;
 		invoice.setDocAction(DocAction.ACTION_Prepare);
 		if (!invoice.processIt(DocAction.ACTION_Prepare)) {
-			log.warning("Invoice Process Failed: " + invoice + " - " + invoice.getProcessMsg());
-			throw new IllegalStateException("Invoice Process Failed: " + invoice + " - " + invoice.getProcessMsg());
+			StringBuilder msglog = new StringBuilder("Invoice Process Failed: ").append(invoice).append(" - ").append(invoice.getProcessMsg());
+			log.warning(msglog.toString());
+			throw new IllegalStateException(msglog.toString());
 			
 		}
 		if (!invoice.save())

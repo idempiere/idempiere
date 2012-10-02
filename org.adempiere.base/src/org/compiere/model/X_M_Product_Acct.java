@@ -29,7 +29,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120928L;
 
     /** Standard Constructor */
     public X_M_Product_Acct (Properties ctx, int M_Product_Acct_ID, String trxName)
@@ -40,27 +40,16 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 			setC_AcctSchema_ID (0);
 			setM_Product_ID (0);
 			setP_Asset_Acct (0);
-			setP_Burden_Acct (0);
 			setP_COGS_Acct (0);
 			setP_CostAdjustment_Acct (0);
-			setP_CostOfProduction_Acct (0);
 			setP_Expense_Acct (0);
-			setP_FloorStock_Acct (0);
 			setP_InventoryClearing_Acct (0);
 			setP_InvoicePriceVariance_Acct (0);
-			setP_Labor_Acct (0);
-			setP_MethodChangeVariance_Acct (0);
-			setP_MixVariance_Acct (0);
-			setP_OutsideProcessing_Acct (0);
-			setP_Overhead_Acct (0);
 			setP_PurchasePriceVariance_Acct (0);
 			setP_RateVariance_Acct (0);
 			setP_Revenue_Acct (0);
-			setP_Scrap_Acct (0);
 			setP_TradeDiscountGrant_Acct (0);
 			setP_TradeDiscountRec_Acct (0);
-			setP_UsageVariance_Acct (0);
-			setP_WIP_Acct (0);
         } */
     }
 
@@ -92,9 +81,9 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
       return sb.toString();
     }
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
     {
-		return (I_C_AcctSchema)MTable.get(getCtx(), I_C_AcctSchema.Table_Name)
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
 			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
 
 	/** Set Accounting Schema.
@@ -120,9 +109,23 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	/** Set M_Product_Acct_UU.
+		@param M_Product_Acct_UU M_Product_Acct_UU	  */
+	public void setM_Product_Acct_UU (String M_Product_Acct_UU)
+	{
+		set_Value (COLUMNNAME_M_Product_Acct_UU, M_Product_Acct_UU);
+	}
+
+	/** Get M_Product_Acct_UU.
+		@return M_Product_Acct_UU	  */
+	public String getM_Product_Acct_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_Product_Acct_UU);
+	}
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -198,31 +201,6 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getP_Burden_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Burden_Acct(), get_TrxName());	}
-
-	/** Set Burden.
-		@param P_Burden_Acct 
-		The Burden account is the account used Manufacturing Order
-	  */
-	public void setP_Burden_Acct (int P_Burden_Acct)
-	{
-		set_Value (COLUMNNAME_P_Burden_Acct, Integer.valueOf(P_Burden_Acct));
-	}
-
-	/** Get Burden.
-		@return The Burden account is the account used Manufacturing Order
-	  */
-	public int getP_Burden_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_Burden_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getP_COGS_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -273,31 +251,6 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getP_CostOfProduction_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_CostOfProduction_Acct(), get_TrxName());	}
-
-	/** Set Cost Of Production.
-		@param P_CostOfProduction_Acct 
-		The Cost Of Production account is the account used Manufacturing Order
-	  */
-	public void setP_CostOfProduction_Acct (int P_CostOfProduction_Acct)
-	{
-		set_Value (COLUMNNAME_P_CostOfProduction_Acct, Integer.valueOf(P_CostOfProduction_Acct));
-	}
-
-	/** Get Cost Of Production.
-		@return The Cost Of Production account is the account used Manufacturing Order
-	  */
-	public int getP_CostOfProduction_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_CostOfProduction_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getP_Expense_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -318,31 +271,6 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	public int getP_Expense_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_Expense_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_FloorStock_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_FloorStock_Acct(), get_TrxName());	}
-
-	/** Set Floor Stock.
-		@param P_FloorStock_Acct 
-		The Floor Stock account is the account used Manufacturing Order
-	  */
-	public void setP_FloorStock_Acct (int P_FloorStock_Acct)
-	{
-		set_Value (COLUMNNAME_P_FloorStock_Acct, Integer.valueOf(P_FloorStock_Acct));
-	}
-
-	/** Get Floor Stock.
-		@return The Floor Stock account is the account used Manufacturing Order
-	  */
-	public int getP_FloorStock_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_FloorStock_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -393,131 +321,6 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	public int getP_InvoicePriceVariance_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_InvoicePriceVariance_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_Labor_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Labor_Acct(), get_TrxName());	}
-
-	/** Set Labor.
-		@param P_Labor_Acct 
-		The Labor account is the account used Manufacturing Order
-	  */
-	public void setP_Labor_Acct (int P_Labor_Acct)
-	{
-		set_Value (COLUMNNAME_P_Labor_Acct, Integer.valueOf(P_Labor_Acct));
-	}
-
-	/** Get Labor.
-		@return The Labor account is the account used Manufacturing Order
-	  */
-	public int getP_Labor_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_Labor_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_MethodChangeVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_MethodChangeVariance_Acct(), get_TrxName());	}
-
-	/** Set Method Change Variance.
-		@param P_MethodChangeVariance_Acct 
-		The Method Change Variance account is the account used Manufacturing Order
-	  */
-	public void setP_MethodChangeVariance_Acct (int P_MethodChangeVariance_Acct)
-	{
-		set_Value (COLUMNNAME_P_MethodChangeVariance_Acct, Integer.valueOf(P_MethodChangeVariance_Acct));
-	}
-
-	/** Get Method Change Variance.
-		@return The Method Change Variance account is the account used Manufacturing Order
-	  */
-	public int getP_MethodChangeVariance_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_MethodChangeVariance_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_MixVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_MixVariance_Acct(), get_TrxName());	}
-
-	/** Set Mix Variance.
-		@param P_MixVariance_Acct 
-		The Mix Variance account is the account used Manufacturing Order
-	  */
-	public void setP_MixVariance_Acct (int P_MixVariance_Acct)
-	{
-		set_Value (COLUMNNAME_P_MixVariance_Acct, Integer.valueOf(P_MixVariance_Acct));
-	}
-
-	/** Get Mix Variance.
-		@return The Mix Variance account is the account used Manufacturing Order
-	  */
-	public int getP_MixVariance_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_MixVariance_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_OutsideProcessing_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_OutsideProcessing_Acct(), get_TrxName());	}
-
-	/** Set Outside Processing.
-		@param P_OutsideProcessing_Acct 
-		The Outside Processing Account is the account used in Manufacturing Order
-	  */
-	public void setP_OutsideProcessing_Acct (int P_OutsideProcessing_Acct)
-	{
-		set_Value (COLUMNNAME_P_OutsideProcessing_Acct, Integer.valueOf(P_OutsideProcessing_Acct));
-	}
-
-	/** Get Outside Processing.
-		@return The Outside Processing Account is the account used in Manufacturing Order
-	  */
-	public int getP_OutsideProcessing_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_OutsideProcessing_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_Overhead_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Overhead_Acct(), get_TrxName());	}
-
-	/** Set Overhead.
-		@param P_Overhead_Acct 
-		The Overhead account is the account used  in Manufacturing Order 
-	  */
-	public void setP_Overhead_Acct (int P_Overhead_Acct)
-	{
-		set_Value (COLUMNNAME_P_Overhead_Acct, Integer.valueOf(P_Overhead_Acct));
-	}
-
-	/** Get Overhead.
-		@return The Overhead account is the account used  in Manufacturing Order 
-	  */
-	public int getP_Overhead_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_Overhead_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -598,31 +401,6 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getP_Scrap_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Scrap_Acct(), get_TrxName());	}
-
-	/** Set Scrap.
-		@param P_Scrap_Acct 
-		The Scrap account is the account used  in Manufacturing Order 
-	  */
-	public void setP_Scrap_Acct (int P_Scrap_Acct)
-	{
-		set_Value (COLUMNNAME_P_Scrap_Acct, Integer.valueOf(P_Scrap_Acct));
-	}
-
-	/** Get Scrap.
-		@return The Scrap account is the account used  in Manufacturing Order 
-	  */
-	public int getP_Scrap_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_Scrap_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -668,56 +446,6 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	public int getP_TradeDiscountRec_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_TradeDiscountRec_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_UsageVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_UsageVariance_Acct(), get_TrxName());	}
-
-	/** Set Usage Variance.
-		@param P_UsageVariance_Acct 
-		The Usage Variance account is the account used Manufacturing Order
-	  */
-	public void setP_UsageVariance_Acct (int P_UsageVariance_Acct)
-	{
-		set_Value (COLUMNNAME_P_UsageVariance_Acct, Integer.valueOf(P_UsageVariance_Acct));
-	}
-
-	/** Get Usage Variance.
-		@return The Usage Variance account is the account used Manufacturing Order
-	  */
-	public int getP_UsageVariance_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_UsageVariance_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_WIP_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_WIP_Acct(), get_TrxName());	}
-
-	/** Set Work In Process.
-		@param P_WIP_Acct 
-		The Work in Process account is the account used Manufacturing Order
-	  */
-	public void setP_WIP_Acct (int P_WIP_Acct)
-	{
-		set_Value (COLUMNNAME_P_WIP_Acct, Integer.valueOf(P_WIP_Acct));
-	}
-
-	/** Get Work In Process.
-		@return The Work in Process account is the account used Manufacturing Order
-	  */
-	public int getP_WIP_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_WIP_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

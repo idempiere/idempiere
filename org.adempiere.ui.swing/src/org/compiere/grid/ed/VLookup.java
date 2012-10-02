@@ -1308,7 +1308,7 @@ public class VLookup extends JComponent
 			MBPartnerLocation bpl = new MBPartnerLocation(Env.getCtx(), BPLocation_ID, null);
 			MLocation location= new MLocation(Env.getCtx(), bpl.getC_Location_ID(), null);
 
-			VLocationDialog ld = new VLocationDialog(AEnv.getFrame(this), Msg.getMsg(Env.getCtx(), "C_Location_ID"), location);
+			VLocationDialog ld = new VLocationDialog(AEnv.getFrame(this), Msg.getMsg(Env.getCtx(), "Location"), location);
 			ld.setVisible(true);
 		}
 	}	//	actionBPartner

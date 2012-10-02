@@ -88,9 +88,9 @@ public class ImportPriceList extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		StringBuffer sql = null;
+		StringBuilder sql = null;
 		int no = 0;
-		String clientCheck = " AND AD_Client_ID=" + m_AD_Client_ID;
+		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(m_AD_Client_ID);
 		
 		int m_discountschema_id = DB.getSQLValue(get_TrxName(),
 				"SELECT MIN(M_DiscountSchema_ID) FROM M_DiscountSchema WHERE DiscountType='P' AND IsActive='Y' AND AD_Client_ID=?",
@@ -103,81 +103,81 @@ public class ImportPriceList extends SvrProcess
 		//	Delete Old Imported
 		if (m_deleteOldImported)
 		{
-			sql = new StringBuffer ("DELETE I_PriceList "
+			sql = new StringBuilder("DELETE I_PriceList "
 				+ "WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.info("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, IsActive, Created/Updated, EnforcePriceLimit, IsSOPriceList, IsTaxIncluded, PricePrecision
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET AD_Client_ID = COALESCE (AD_Client_ID, ").append(m_AD_Client_ID).append("),"
-			+ " AD_Org_ID = COALESCE (AD_Org_ID, 0),"
-			+ " IsActive = COALESCE (IsActive, 'Y'),"
-			+ " Created = COALESCE (Created, SysDate),"
-			+ " CreatedBy = COALESCE (CreatedBy, 0),"
-			+ " Updated = COALESCE (Updated, SysDate),"
-			+ " UpdatedBy = COALESCE (UpdatedBy, 0),"
-			+ " EnforcePriceLimit = COALESCE (EnforcePriceLimit, 'N'),"
-			+ " IsSOPriceList = COALESCE (IsSOPriceList, 'N'),"
-			+ " IsTaxIncluded = COALESCE (IsTaxIncluded, 'N'),"
-			+ " PricePrecision = COALESCE (PricePrecision, 2),"
-			+ " I_ErrorMsg = ' ',"
-			+ " I_IsImported = 'N' "
-			+ "WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
+		sql = new StringBuilder("UPDATE I_PriceList ")
+			.append("SET AD_Client_ID = COALESCE (AD_Client_ID, ").append(m_AD_Client_ID).append("),")
+			.append(" AD_Org_ID = COALESCE (AD_Org_ID, 0),")
+			.append(" IsActive = COALESCE (IsActive, 'Y'),")
+			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
+			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
+			.append(" EnforcePriceLimit = COALESCE (EnforcePriceLimit, 'N'),")
+			.append(" IsSOPriceList = COALESCE (IsSOPriceList, 'N'),")
+			.append(" IsTaxIncluded = COALESCE (IsTaxIncluded, 'N'),")
+			.append(" PricePrecision = COALESCE (PricePrecision, 2),")
+			.append(" I_ErrorMsg = ' ',")
+			.append(" I_IsImported = 'N' ")
+			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info("Reset=" + no);
 
 		//	Set Optional BPartner
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET C_BPartner_ID=(SELECT C_BPartner_ID FROM C_BPartner p"
-			+ " WHERE I_PriceList.BPartner_Value=p.Value AND I_PriceList.AD_Client_ID=p.AD_Client_ID) "
-			+ "WHERE C_BPartner_ID IS NULL AND BPartner_Value IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET C_BPartner_ID=(SELECT C_BPartner_ID FROM C_BPartner p")
+			.append(" WHERE I_PriceList.BPartner_Value=p.Value AND I_PriceList.AD_Client_ID=p.AD_Client_ID) ")
+			.append("WHERE C_BPartner_ID IS NULL AND BPartner_Value IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info("BPartner=" + no);
 		//
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid BPartner,' "
-			+ "WHERE C_BPartner_ID IS NULL AND BPartner_Value IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid BPartner,' ")
+			.append("WHERE C_BPartner_ID IS NULL AND BPartner_Value IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("Invalid BPartner=" + no);
 
 		//	Product
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			  + "SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p"
-			  + " WHERE I_PriceList.ProductValue=p.Value AND I_PriceList.AD_Client_ID=p.AD_Client_ID) "
-			  + "WHERE M_Product_ID IS NULL AND ProductValue IS NOT NULL"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder("UPDATE I_PriceList ")
+			  .append("SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p")
+			  .append(" WHERE I_PriceList.ProductValue=p.Value AND I_PriceList.AD_Client_ID=p.AD_Client_ID) ")
+			  .append("WHERE M_Product_ID IS NULL AND ProductValue IS NOT NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set Product from Value=" + no);
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			  + "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Product, ' "
-			  + "WHERE M_Product_ID IS NULL AND (ProductValue IS NOT NULL)"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Product, ' ")
+			  .append("WHERE M_Product_ID IS NULL AND (ProductValue IS NOT NULL)")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Product=" + no);
 
 		//	****	Find Price List
 		//	Name
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET M_PriceList_ID=(SELECT M_PriceList_ID FROM M_PriceList p"
-			+ " WHERE I_PriceList.Name=p.Name AND I_PriceList.AD_Client_ID=p.AD_Client_ID) "
-			+ "WHERE M_PriceList_ID IS NULL"
-			+ " AND I_IsImported='N'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET M_PriceList_ID=(SELECT M_PriceList_ID FROM M_PriceList p")
+			.append(" WHERE I_PriceList.Name=p.Name AND I_PriceList.AD_Client_ID=p.AD_Client_ID) ")
+			.append("WHERE M_PriceList_ID IS NULL")
+			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info("Price List Existing Value=" + no);
 
 		//	****	Find Price List Version
 		//	List Name (ID) + ValidFrom
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET M_PriceList_Version_ID=(SELECT M_PriceList_Version_ID FROM M_PriceList_Version p"
-			+ " WHERE I_PriceList.ValidFrom=p.ValidFrom AND I_PriceList.M_PriceList_ID=p.M_PriceList_ID) "
-			+ "WHERE M_PriceList_ID IS NOT NULL AND M_PriceList_Version_ID IS NULL"
-			+ " AND I_IsImported='N'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET M_PriceList_Version_ID=(SELECT M_PriceList_Version_ID FROM M_PriceList_Version p")
+			.append(" WHERE I_PriceList.ValidFrom=p.ValidFrom AND I_PriceList.M_PriceList_ID=p.M_PriceList_ID) ")
+			.append("WHERE M_PriceList_ID IS NOT NULL AND M_PriceList_Version_ID IS NULL")
+			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info("Price List Version Existing Value=" + no);
 		
@@ -208,55 +208,55 @@ public class ImportPriceList extends SvrProcess
 		*/
 
 		//	Set Currency
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET ISO_Code=(SELECT ISO_Code FROM C_Currency c"
-			+ " INNER JOIN C_AcctSchema a ON (a.C_Currency_ID=c.C_Currency_ID)"
-			+ " INNER JOIN AD_ClientInfo ci ON (a.C_AcctSchema_ID=ci.C_AcctSchema1_ID)"
-			+ " WHERE ci.AD_Client_ID=I_PriceList.AD_Client_ID) "
-			+ "WHERE C_Currency_ID IS NULL AND ISO_Code IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_PriceList ")
+			.append("SET ISO_Code=(SELECT ISO_Code FROM C_Currency c")
+			.append(" INNER JOIN C_AcctSchema a ON (a.C_Currency_ID=c.C_Currency_ID)")
+			.append(" INNER JOIN AD_ClientInfo ci ON (a.C_AcctSchema_ID=ci.C_AcctSchema1_ID)")
+			.append(" WHERE ci.AD_Client_ID=I_PriceList.AD_Client_ID) ")
+			.append("WHERE C_Currency_ID IS NULL AND ISO_Code IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set Currency Default=" + no);
 		//
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET C_Currency_ID=(SELECT C_Currency_ID FROM C_Currency c"
-			+ " WHERE I_PriceList.ISO_Code=c.ISO_Code AND c.AD_Client_ID IN (0,I_PriceList.AD_Client_ID)) "
-			+ "WHERE C_Currency_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET C_Currency_ID=(SELECT C_Currency_ID FROM C_Currency c")
+			.append(" WHERE I_PriceList.ISO_Code=c.ISO_Code AND c.AD_Client_ID IN (0,I_PriceList.AD_Client_ID)) ")
+			.append("WHERE C_Currency_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info("doIt- Set Currency=" + no);
 		//
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Currency,' "
-			+ "WHERE C_Currency_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Currency,' ")
+			.append("WHERE C_Currency_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("Invalid Currency=" + no);
 
 		//	Mandatory Name or PriceListID
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Mandatory Name or PriceListID,' "
-			+ "WHERE Name IS NULL AND M_PriceList_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Mandatory Name or PriceListID,' ")
+			.append("WHERE Name IS NULL AND M_PriceList_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("No Mandatory Name=" + no);
 
 		//	Mandatory ValidFrom or PriceListVersionID
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Mandatory ValidFrom or PriceListVersionID,' "
-			+ "WHERE ValidFrom IS NULL AND M_PriceList_Version_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Mandatory ValidFrom or PriceListVersionID,' ")
+			.append("WHERE ValidFrom IS NULL AND M_PriceList_Version_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("No Mandatory ValidFrom=" + no);
 
 		//	Mandatory BreakValue if BPartner set
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Mandatory BreakValue,' "
-			+ "WHERE BreakValue IS NULL AND (C_BPartner_ID IS NOT NULL OR BPartner_Value IS NOT NULL)"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Mandatory BreakValue,' ")
+			.append("WHERE BreakValue IS NULL AND (C_BPartner_ID IS NOT NULL OR BPartner_Value IS NOT NULL)")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("No Mandatory BreakValue=" + no);
@@ -273,7 +273,7 @@ public class ImportPriceList extends SvrProcess
 
 		//	Go through Records
 		log.fine("start inserting/updating ...");
-		sql = new StringBuffer ("SELECT * FROM I_PriceList WHERE I_IsImported='N'")
+		sql = new StringBuilder ("SELECT * FROM I_PriceList WHERE I_IsImported='N'")
 			.append(clientCheck);
 		PreparedStatement pstmt_setImported = null;
 		PreparedStatement pstmt = null;
@@ -300,7 +300,8 @@ public class ImportPriceList extends SvrProcess
 						M_PriceList_ID = 0;
 				}
 				boolean newPriceList = M_PriceList_ID == 0;
-				log.fine("I_PriceList_ID=" + I_PriceList_ID + ", M_PriceList_ID=" + M_PriceList_ID);
+				StringBuilder msglog = new StringBuilder("I_PriceList_ID=").append(I_PriceList_ID).append(", M_PriceList_ID=").append(M_PriceList_ID);
+				log.fine(msglog.toString());
 
 				MPriceList pricelist = null; 
 				//	PriceList
@@ -315,8 +316,8 @@ public class ImportPriceList extends SvrProcess
 					}
 					else
 					{
-						StringBuffer sql0 = new StringBuffer ("UPDATE I_PriceList i "
-							+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert Price List failed"))
+						StringBuilder sql0 = new StringBuilder ("UPDATE I_PriceList i ")
+							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert Price List failed"))
 							.append("WHERE I_PriceList_ID=").append(I_PriceList_ID);
 						DB.executeUpdate(sql0.toString(), get_TrxName());
 						continue;
@@ -334,7 +335,8 @@ public class ImportPriceList extends SvrProcess
 						M_PriceList_Version_ID = 0;
 				}
 				boolean newPriceListVersion = M_PriceList_Version_ID == 0;
-				log.fine("I_PriceList_ID=" + I_PriceList_ID + ", M_PriceList_Version_ID=" + M_PriceList_Version_ID);
+				msglog = new StringBuilder("I_PriceList_ID=").append(I_PriceList_ID).append(", M_PriceList_Version_ID=").append(M_PriceList_Version_ID);
+				log.fine(msglog.toString());
 
 				MPriceListVersion pricelistversion = null; 
 				//	PriceListVersion
@@ -352,8 +354,8 @@ public class ImportPriceList extends SvrProcess
 					}
 					else
 					{
-						StringBuffer sql0 = new StringBuffer ("UPDATE I_PriceList i "
-							+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert Price List Version failed"))
+						StringBuilder sql0 = new StringBuilder ("UPDATE I_PriceList i ")
+							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert Price List Version failed"))
 							.append("WHERE I_PriceList_ID=").append(I_PriceList_ID);
 						DB.executeUpdate(sql0.toString(), get_TrxName());
 						continue;
@@ -401,8 +403,8 @@ public class ImportPriceList extends SvrProcess
 					}
 					else
 					{
-						StringBuffer sql0 = new StringBuffer ("UPDATE I_PriceList i "
-							+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert/Update Product Price Vendor Break Version failed"))
+						StringBuilder sql0 = new StringBuilder ("UPDATE I_PriceList i ")
+							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert/Update Product Price Vendor Break Version failed"))
 							.append("WHERE I_PriceList_ID=").append(I_PriceList_ID);
 						DB.executeUpdate(sql0.toString(), get_TrxName());
 						continue;
@@ -432,8 +434,8 @@ public class ImportPriceList extends SvrProcess
 					}
 					else
 					{
-						StringBuffer sql0 = new StringBuffer ("UPDATE I_PriceList i "
-							+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert/Update Product Price failed"))
+						StringBuilder sql0 = new StringBuilder ("UPDATE I_PriceList i ")
+							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert/Update Product Price failed"))
 							.append("WHERE I_PriceList_ID=").append(I_PriceList_ID);
 						DB.executeUpdate(sql0.toString(), get_TrxName());
 						continue;
@@ -460,9 +462,9 @@ public class ImportPriceList extends SvrProcess
 		}
 
 		//	Set Error to indicator to not imported
-		sql = new StringBuffer ("UPDATE I_PriceList "
-			+ "SET I_IsImported='N', Updated=SysDate "
-			+ "WHERE I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_PriceList ")
+			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");
 		addLog (0, null, new BigDecimal (noInsertpl), "@M_PriceList_ID@: @Inserted@");

@@ -72,55 +72,52 @@ public class ProductCategoryAcctCopy extends SvrProcess
 			throw new AdempiereSystemError("Not Found - C_AcctSchema_ID=" + p_C_AcctSchema_ID);
 
 		//	Update
-		String sql = "UPDATE M_Product_Acct pa "
-			+ "SET (P_Revenue_Acct,P_Expense_Acct,P_CostAdjustment_Acct,P_InventoryClearing_Acct,P_Asset_Acct,P_COGS_Acct,"
-			+ " P_PurchasePriceVariance_Acct,P_InvoicePriceVariance_Acct,P_AverageCostVariance_Acct,"
-			+ " P_TradeDiscountRec_Acct,P_TradeDiscountGrant_Acct," 
-			+ " P_WIP_Acct,P_FloorStock_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,P_RateVariance_Acct," 
-			+ " P_MixVariance_Acct,P_Labor_Acct,P_Burden_Acct,P_CostOfProduction_Acct,P_OutsideProcessing_Acct,P_Overhead_Acct,P_Scrap_Acct)="
-		    + " (SELECT P_Revenue_Acct,P_Expense_Acct,P_CostAdjustment_Acct,P_InventoryClearing_Acct,P_Asset_Acct,P_COGS_Acct,"
-			+ " P_PurchasePriceVariance_Acct,P_InvoicePriceVariance_Acct,P_AverageCostVariance_Acct,"
-			+ " P_TradeDiscountRec_Acct,P_TradeDiscountGrant_Acct,"
-			+ " P_WIP_Acct,P_FloorStock_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,P_RateVariance_Acct," 
-			+ " P_MixVariance_Acct,P_Labor_Acct,P_Burden_Acct,P_CostOfProduction_Acct,P_OutsideProcessing_Acct,P_Overhead_Acct,P_Scrap_Acct"
-			+ " FROM M_Product_Category_Acct pca"
-			+ " WHERE pca.M_Product_Category_ID=" + p_M_Product_Category_ID
-			+ " AND pca.C_AcctSchema_ID=" + p_C_AcctSchema_ID
-			+ "), Updated=SysDate, UpdatedBy=0 "
-			+ "WHERE pa.C_AcctSchema_ID=" + p_C_AcctSchema_ID
-			+ " AND EXISTS (SELECT * FROM M_Product p "
-			+ "WHERE p.M_Product_ID=pa.M_Product_ID"
-			+ " AND p.M_Product_Category_ID=" + p_M_Product_Category_ID + ")";
-		int updated = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE M_Product_Acct pa ")
+			.append("SET (P_Revenue_Acct,P_Expense_Acct,P_CostAdjustment_Acct,P_InventoryClearing_Acct,P_Asset_Acct,P_COGS_Acct,")
+			.append(" P_PurchasePriceVariance_Acct,P_InvoicePriceVariance_Acct,P_AverageCostVariance_Acct,")
+			.append(" P_TradeDiscountRec_Acct,P_TradeDiscountGrant_Acct,") 
+			.append(" P_RateVariance_Acct)=")
+		    .append(" (SELECT P_Revenue_Acct,P_Expense_Acct,P_CostAdjustment_Acct,P_InventoryClearing_Acct,P_Asset_Acct,P_COGS_Acct,")
+			.append(" P_PurchasePriceVariance_Acct,P_InvoicePriceVariance_Acct,P_AverageCostVariance_Acct,")
+			.append(" P_TradeDiscountRec_Acct,P_TradeDiscountGrant_Acct,")
+			.append(" P_RateVariance_Acct")
+			.append(" FROM M_Product_Category_Acct pca")
+			.append(" WHERE pca.M_Product_Category_ID=").append(p_M_Product_Category_ID)
+			.append(" AND pca.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
+			.append("), Updated=SysDate, UpdatedBy=0 ")
+			.append("WHERE pa.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
+			.append(" AND EXISTS (SELECT * FROM M_Product p ")
+			.append("WHERE p.M_Product_ID=pa.M_Product_ID")
+			.append(" AND p.M_Product_Category_ID=").append(p_M_Product_Category_ID).append(")");
+		int updated = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog(0, null, new BigDecimal(updated), "@Updated@");
 
 		//	Insert new Products
-		sql = "INSERT INTO M_Product_Acct "
-			+ "(M_Product_ID, C_AcctSchema_ID,"
-			+ " AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,"
-			+ " P_Revenue_Acct, P_Expense_Acct, P_CostAdjustment_Acct, P_InventoryClearing_Acct, P_Asset_Acct, P_CoGs_Acct,"
-			+ " P_PurchasePriceVariance_Acct, P_InvoicePriceVariance_Acct, P_AverageCostVariance_Acct,"
-			+ " P_TradeDiscountRec_Acct, P_TradeDiscountGrant_Acct, "
-			+ " P_WIP_Acct,P_FloorStock_Acct, P_MethodChangeVariance_Acct, P_UsageVariance_Acct, P_RateVariance_Acct," 
-			+ " P_MixVariance_Acct, P_Labor_Acct, P_Burden_Acct, P_CostOfProduction_Acct, P_OutsideProcessing_Acct, P_Overhead_Acct, P_Scrap_Acct) "
-			+ "SELECT p.M_Product_ID, acct.C_AcctSchema_ID,"
-			+ " p.AD_Client_ID, p.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,"
-			+ " acct.P_Revenue_Acct, acct.P_Expense_Acct, acct.P_CostAdjustment_Acct, acct.P_InventoryClearing_Acct, acct.P_Asset_Acct, acct.P_CoGs_Acct,"
-			+ " acct.P_PurchasePriceVariance_Acct, acct.P_InvoicePriceVariance_Acct, acct.P_AverageCostVariance_Acct,"
-			+ " acct.P_TradeDiscountRec_Acct, acct.P_TradeDiscountGrant_Acct, "
-			+ " acct.P_WIP_Acct, acct.P_FloorStock_Acct, acct.P_MethodChangeVariance_Acct, acct.P_UsageVariance_Acct, acct.P_RateVariance_Acct," 
-			+ " acct.P_MixVariance_Acct, acct.P_Labor_Acct, acct.P_Burden_Acct, acct.P_CostOfProduction_Acct, acct.P_OutsideProcessing_Acct, acct.P_Overhead_Acct, acct.P_Scrap_Acct "
-			+ "FROM M_Product p"
-			+ " INNER JOIN M_Product_Category_Acct acct ON (acct.M_Product_Category_ID=p.M_Product_Category_ID)"
-			+ "WHERE acct.C_AcctSchema_ID=" + p_C_AcctSchema_ID			//	#
-			+ " AND p.M_Product_Category_ID=" + p_M_Product_Category_ID	//	#
-			+ " AND NOT EXISTS (SELECT * FROM M_Product_Acct pa "
-				+ "WHERE pa.M_Product_ID=p.M_Product_ID"
-				+ " AND pa.C_AcctSchema_ID=acct.C_AcctSchema_ID)";
-		int created = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("INSERT INTO M_Product_Acct ")
+			.append("(M_Product_ID, C_AcctSchema_ID,")
+			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,")
+			.append(" P_Revenue_Acct, P_Expense_Acct, P_CostAdjustment_Acct, P_InventoryClearing_Acct, P_Asset_Acct, P_CoGs_Acct,")
+			.append(" P_PurchasePriceVariance_Acct, P_InvoicePriceVariance_Acct, P_AverageCostVariance_Acct,")
+			.append(" P_TradeDiscountRec_Acct, P_TradeDiscountGrant_Acct, ")
+			.append(" P_RateVariance_Acct) ")
+			.append("SELECT p.M_Product_ID, acct.C_AcctSchema_ID,")
+			.append(" p.AD_Client_ID, p.AD_Org_ID, 'Y', SysDate, 0, SysDate, 0,")
+			.append(" acct.P_Revenue_Acct, acct.P_Expense_Acct, acct.P_CostAdjustment_Acct, acct.P_InventoryClearing_Acct, acct.P_Asset_Acct, acct.P_CoGs_Acct,")
+			.append(" acct.P_PurchasePriceVariance_Acct, acct.P_InvoicePriceVariance_Acct, acct.P_AverageCostVariance_Acct,")
+			.append(" acct.P_TradeDiscountRec_Acct, acct.P_TradeDiscountGrant_Acct, ")
+			.append(" acct.P_RateVariance_Acct ")
+			.append("FROM M_Product p")
+			.append(" INNER JOIN M_Product_Category_Acct acct ON (acct.M_Product_Category_ID=p.M_Product_Category_ID)")
+			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)			//	#
+			.append(" AND p.M_Product_Category_ID=").append(p_M_Product_Category_ID)	//	#
+			.append(" AND NOT EXISTS (SELECT * FROM M_Product_Acct pa ")
+				.append("WHERE pa.M_Product_ID=p.M_Product_ID")
+				.append(" AND pa.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
+		int created = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@");
 
-		return "@Created@=" + created + ", @Updated@=" + updated;
+		StringBuilder msgreturn = new StringBuilder("@Created@=").append(created).append(", @Updated@=").append(updated);
+		return msgreturn.toString();
 	}	//	doIt
 	
 }	//	ProductCategoryAcctCopy

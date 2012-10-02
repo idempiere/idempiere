@@ -31,11 +31,11 @@ public interface I_M_Warehouse_Acct
     public static final String Table_Name = "M_Warehouse_Acct";
 
     /** AD_Table_ID=191 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 191;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel =  - Client - Org 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
@@ -75,7 +75,7 @@ public interface I_M_Warehouse_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -106,6 +106,15 @@ public interface I_M_Warehouse_Acct
 	  */
 	public boolean isActive();
 
+    /** Column name M_Warehouse_Acct_UU */
+    public static final String COLUMNNAME_M_Warehouse_Acct_UU = "M_Warehouse_Acct_UU";
+
+	/** Set M_Warehouse_Acct_UU	  */
+	public void setM_Warehouse_Acct_UU (String M_Warehouse_Acct_UU);
+
+	/** Get M_Warehouse_Acct_UU	  */
+	public String getM_Warehouse_Acct_UU();
+
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
 
@@ -119,7 +128,7 @@ public interface I_M_Warehouse_Acct
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -151,49 +160,4 @@ public interface I_M_Warehouse_Acct
 	public int getW_Differences_Acct();
 
 	public I_C_ValidCombination getW_Differences_A() throws RuntimeException;
-
-    /** Column name W_InvActualAdjust_Acct */
-    public static final String COLUMNNAME_W_InvActualAdjust_Acct = "W_InvActualAdjust_Acct";
-
-	/** Set Inventory Adjustment.
-	  * Account for Inventory value adjustments for Actual Costing
-	  */
-	public void setW_InvActualAdjust_Acct (int W_InvActualAdjust_Acct);
-
-	/** Get Inventory Adjustment.
-	  * Account for Inventory value adjustments for Actual Costing
-	  */
-	public int getW_InvActualAdjust_Acct();
-
-	public I_C_ValidCombination getW_InvActualAdjust_A() throws RuntimeException;
-
-    /** Column name W_Inventory_Acct */
-    public static final String COLUMNNAME_W_Inventory_Acct = "W_Inventory_Acct";
-
-	/** Set (Not Used).
-	  * Warehouse Inventory Asset Account - Currently not used
-	  */
-	public void setW_Inventory_Acct (int W_Inventory_Acct);
-
-	/** Get (Not Used).
-	  * Warehouse Inventory Asset Account - Currently not used
-	  */
-	public int getW_Inventory_Acct();
-
-	public I_C_ValidCombination getW_Inventory_A() throws RuntimeException;
-
-    /** Column name W_Revaluation_Acct */
-    public static final String COLUMNNAME_W_Revaluation_Acct = "W_Revaluation_Acct";
-
-	/** Set Inventory Revaluation.
-	  * Account for Inventory Revaluation
-	  */
-	public void setW_Revaluation_Acct (int W_Revaluation_Acct);
-
-	/** Get Inventory Revaluation.
-	  * Account for Inventory Revaluation
-	  */
-	public int getW_Revaluation_Acct();
-
-	public I_C_ValidCombination getW_Revaluation_A() throws RuntimeException;
 }

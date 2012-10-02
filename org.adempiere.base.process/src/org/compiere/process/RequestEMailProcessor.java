@@ -160,9 +160,10 @@ public class RequestEMailProcessor extends SvrProcess
 		{
 		}
 		
-		return "processInBox - Total=" + noProcessed + 
-				" - Requests=" + noRequest + 
-				" - Errors=" + noError;
+		StringBuilder msgreturn = new StringBuilder("processInBox - Total=").append(noProcessed) 
+				.append(" - Requests=").append(noRequest)
+				.append(" - Errors=").append(noError);
+		return msgreturn.toString();
 	}	//	doIt
 	
 	/**************************************************************************
@@ -409,9 +410,11 @@ public class RequestEMailProcessor extends SvrProcess
 		
 		MRequest req = new MRequest(getCtx(), 0, get_TrxName());
 		// Subject as summary
-		req.setSummary("FROM: " + fromAddress + "\n" + msg.getSubject());
+		StringBuilder msgreq = new StringBuilder("FROM: ").append(fromAddress).append("\n").append(msg.getSubject());
+		req.setSummary(msgreq.toString());
 		// Body as result
-		req.setResult("FROM: " + from[0].toString() + "\n" + getMessage(msg));
+		msgreq = new StringBuilder("FROM: ") .append(from[0].toString()).append("\n").append(getMessage(msg));
+		req.setResult(msgreq.toString());
 		// Message-ID as documentNo
 		if (hdrs != null)
 			req.setDocumentNo(hdrs[0].substring(0,30));
@@ -534,7 +537,8 @@ public class RequestEMailProcessor extends SvrProcess
 		MRequest requp = new MRequest(getCtx(), request_upd, get_TrxName());
 		// Body as result
 		Address[] from = msg.getFrom();
-		requp.setResult("FROM: " + from[0].toString() + "\n" + getMessage(msg));
+		StringBuilder msgreq = new StringBuilder("FROM: ").append(from[0].toString()).append("\n").append(getMessage(msg));
+		requp.setResult(msgreq.toString());
 		return requp.save();
 	}
 
@@ -605,7 +609,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 */
 	private String getMessage (Part msg)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try
 		{
 			//	Text
@@ -790,30 +794,37 @@ public class RequestEMailProcessor extends SvrProcess
 	{
 		printOut("-----------------------------------------------------------------");
 		Address[] a;
+		StringBuilder msgout = new StringBuilder();
 		// FROM
 		if ((a = m.getFrom()) != null)
 		{ 
-			for (int j = 0; j < a.length; j++)
-				printOut("FROM: " + a[j].toString());
+			for (int j = 0; j < a.length; j++){
+				msgout = new StringBuilder("FROM: ").append(a[j].toString());
+				printOut(msgout.toString());
+			}	
 		}
 
 		// TO
 		if ((a = m.getRecipients(Message.RecipientType.TO)) != null)
 		{
-			for (int j = 0; j < a.length; j++)
-				printOut("TO: " + a[j].toString());
+			for (int j = 0; j < a.length; j++){
+				msgout = new StringBuilder("TO: ").append(a[j].toString());
+				printOut(msgout.toString());
+			}	
 		}
 
 		// SUBJECT
-		printOut("SUBJECT: " + m.getSubject());
+		msgout = new StringBuilder("SUBJECT: ").append(m.getSubject());
+		printOut(msgout.toString());
 
 		// DATE
 		java.util.Date d = m.getSentDate();
-		printOut("SendDate: " + (d != null ? d.toString() : "UNKNOWN"));
+		msgout = new StringBuilder("SendDate: ").append((d != null ? d.toString() : "UNKNOWN"));
+		printOut(msgout.toString());
 
 		// FLAGS
 		Flags flags = m.getFlags();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Flags.Flag[] sf = flags.getSystemFlags(); // get the system flags
 
 		boolean first = true;
@@ -851,13 +862,14 @@ public class RequestEMailProcessor extends SvrProcess
 				sb.append(' ');
 			sb.append(uf[i]);
 		}
-		printOut("FLAGS: " + sb.toString());
+		msgout = new StringBuilder("FLAGS: ").append(sb.toString());
+		printOut(msgout.toString());
 
 		// X-MAILER
 		String[] hdrs = m.getHeader("X-Mailer");
 		if (hdrs != null)
 		{
-			StringBuffer sb1 = new StringBuffer("X-Mailer: ");
+			StringBuilder sb1 = new StringBuilder("X-Mailer: ");
 			for (int i = 0; i < hdrs.length; i++)
 				sb1.append(hdrs[i]).append("  ");
 			printOut(sb1.toString());
@@ -869,7 +881,7 @@ public class RequestEMailProcessor extends SvrProcess
 		hdrs = m.getHeader("Message-ID");
 		if (hdrs != null)
 		{
-			StringBuffer sb1 = new StringBuffer("Message-ID: ");
+			StringBuilder sb1 = new StringBuilder("Message-ID: ");
 			for (int i = 0; i < hdrs.length; i++)
 				sb1.append(hdrs[i]).append("  ");
 			printOut(sb1.toString());
@@ -883,7 +895,8 @@ public class RequestEMailProcessor extends SvrProcess
 		while (en.hasMoreElements())
 		{
 			Header hdr = (Header)en.nextElement();
-			printOut ("  " + hdr.getName() + " = " + hdr.getValue());
+			msgout = new StringBuilder("  ").append(hdr.getName()).append(" = ").append(hdr.getValue());
+			printOut (msgout.toString());
 		}
 		
 		
@@ -899,7 +912,8 @@ public class RequestEMailProcessor extends SvrProcess
 	{
 		//	http://www.iana.org/assignments/media-types/
 		printOut("=================================================================");
-		printOut("CONTENT-TYPE: " + p.getContentType());
+		StringBuilder msgout = new StringBuilder("CONTENT-TYPE: ").append(p.getContentType());
+		printOut(msgout.toString());
 		/**
 		Enumeration en = p.getAllHeaders();
 		while (en.hasMoreElements())

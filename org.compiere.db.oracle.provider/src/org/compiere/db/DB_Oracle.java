@@ -194,17 +194,17 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String getConnectionURL (CConnection connection)
     {
-        StringBuffer sb = null;
+        StringBuilder sb = null;
         //  Server Connections (bequeath)
         if (connection.isBequeath())
         {
-            sb = new StringBuffer ("jdbc:oracle:oci8:@");
+            sb = new StringBuilder("jdbc:oracle:oci8:@");
             //  bug: does not work if there is more than one db instance - use Net8
         //  sb.append(connection.getDbName());
         }
         else        //  thin driver
         {
-            sb = new StringBuffer ("jdbc:oracle:thin:@");
+            sb = new StringBuilder("jdbc:oracle:thin:@");
             //  direct connection
             if (connection.isViaFirewall())
             {
@@ -305,11 +305,11 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer("DB_Oracle[");
+        StringBuilder sb = new StringBuilder("DB_Oracle[");
         sb.append(m_connectionURL);
         try
         {
-            StringBuffer logBuffer = new StringBuffer(50);
+            StringBuilder logBuffer = new StringBuilder(50);
             logBuffer.append("# Connections: ").append(m_ds.getNumConnections());
             logBuffer.append(" , # Busy Connections: ").append(m_ds.getNumBusyConnections());
             logBuffer.append(" , # Idle Connections: ").append(m_ds.getNumIdleConnections());
@@ -334,7 +334,7 @@ public class DB_Oracle implements AdempiereDatabase
             return null;
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         try
         {
             sb.append("# Connections: ").append(m_ds.getNumConnections());
@@ -431,7 +431,7 @@ public class DB_Oracle implements AdempiereDatabase
             return "SysDate";
         }
 
-        StringBuffer dateString = new StringBuffer("TO_DATE('");
+        StringBuilder dateString = new StringBuilder("TO_DATE('");
         //  YYYY-MM-DD HH24:MI:SS.mmmm  JDBC Timestamp format
         String myDate = time.toString();
         if (dayOnly)
@@ -462,7 +462,7 @@ public class DB_Oracle implements AdempiereDatabase
      *   */
     public String TO_CHAR (String columnName, int displayType, String AD_Language)
     {
-        StringBuffer retValue = new StringBuffer("TRIM(TO_CHAR(");
+        StringBuilder retValue = new StringBuilder("TRIM(TO_CHAR(");
         retValue.append(columnName);
 
         //  Numbers
@@ -699,9 +699,10 @@ public class DB_Oracle implements AdempiereDatabase
                         + getConnectionURL(connection)
                         + " - UserID=" + connection.getDbUid());
                     */
-                	System.err.println("Cannot connect to database: "
-                            + getConnectionURL(connection)
-                            + " - UserID=" + connection.getDbUid());
+                	StringBuilder msgerr = new StringBuilder("Cannot connect to database: ")
+                									.append(getConnectionURL(connection))
+                									.append(" - UserID=").append(connection.getDbUid());
+                	System.err.println(msgerr.toString());
                 }
             }
 
@@ -987,22 +988,22 @@ public class DB_Oracle implements AdempiereDatabase
         try
         {
             String myString1 = "123456789 12345678";
-            String myString = "";
+            StringBuilder myString = new StringBuilder();
             for (int i = 0; i < 99; i++)
-                myString += myString1 + (char)('a'+i) + "\n";
+                myString.append(myString1).append((char)('a'+i)).append("\n");
             System.out.println(myString.length());
-            System.out.println(Util.size(myString));
+            System.out.println(Util.size(myString.toString()));
             //
-            myString = Util.trimSize(myString, 2000);
+            myString = new StringBuilder(Util.trimSize(myString.toString(), 2000));
             System.out.println(myString.length());
-            System.out.println(Util.size(myString));
+            System.out.println(Util.size(myString.toString()));
             //
             Connection conn2 = db.getCachedConnection(cc, true, Connection.TRANSACTION_READ_COMMITTED);
             /** **/
             PreparedStatement pstmt = conn2.prepareStatement
                 ("INSERT INTO X_Test(Text1, Text2) values(?,?)");
-            pstmt.setString(1, myString); // NVARCHAR2 column
-            pstmt.setString(2, myString); // VARCHAR2 column
+            pstmt.setString(1, myString.toString()); // NVARCHAR2 column
+            pstmt.setString(2, myString.toString()); // VARCHAR2 column
             System.out.println(pstmt.executeUpdate());
             /** **/
             Statement stmt = conn2.createStatement();
@@ -1158,12 +1159,12 @@ public class DB_Oracle implements AdempiereDatabase
 	public boolean createSequence(String name , int increment , int minvalue , int maxvalue ,int  start , String trxName)
 	{
 		int no = DB.executeUpdate("DROP SEQUENCE "+name.toUpperCase(), trxName);
-		no = DB.executeUpdateEx("CREATE SEQUENCE "+name.toUpperCase()
-							+ " MINVALUE " + minvalue
-							+ " MAXVALUE " + maxvalue
-							+ " START WITH " + start
-							+ " INCREMENT BY " + increment +" CACHE 20", trxName)
-							;
+		StringBuilder msgDB = new StringBuilder("CREATE SEQUENCE ").append(name.toUpperCase())
+										.append(" MINVALUE ").append(minvalue)
+										.append(" MAXVALUE ").append(maxvalue)
+										.append(" START WITH ").append(start)
+										.append(" INCREMENT BY ").append(increment).append(" CACHE 20");
+		no = DB.executeUpdateEx(msgDB.toString(), trxName);
 		if(no == -1 )
 			return false;
 		else
@@ -1223,7 +1224,7 @@ public class DB_Oracle implements AdempiereDatabase
     	
     	String[] keyColumns = po.get_KeyColumns();
 		if (keyColumns != null && keyColumns.length > 0 && !po.is_new()) {
-			StringBuffer sqlBuffer = new StringBuffer(" SELECT ");
+			StringBuilder sqlBuffer = new StringBuilder(" SELECT ");
 			sqlBuffer.append(keyColumns[0])
 				.append(" FROM ")
 				.append(po.get_TableName())

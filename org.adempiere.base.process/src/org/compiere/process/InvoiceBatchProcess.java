@@ -142,7 +142,8 @@ public class InvoiceBatchProcess extends SvrProcess
 		batch.setProcessed(true);
 		batch.saveEx();
 		
-		return "#" + m_count;
+		StringBuilder msgreturn = new StringBuilder("#").append(m_count);
+		return msgreturn.toString();
 	}	//	doIt
 	
 	

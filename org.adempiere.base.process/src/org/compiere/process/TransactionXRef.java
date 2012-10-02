@@ -66,29 +66,32 @@ public class TransactionXRef extends SvrProcess
 		log.info("M_InOut_ID=" + p_Search_InOut_ID + ", C_Order_ID=" + p_Search_Order_ID
 			+ ", C_Invoice_ID=" + p_Search_Invoice_ID);
 		//
-		if (p_Search_InOut_ID != 0)
-			insertTrx(
-				"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) "
-				+ "FROM M_InOutLine iol"
-				+ " LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) "
-				+ "WHERE M_InOut_ID=" + p_Search_InOut_ID
-				);
-		else if (p_Search_Order_ID != 0)
-			insertTrx(
-				"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) "
-				+ "FROM M_InOutLine iol"
-				+ " LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) "
-				+ " INNER JOIN M_InOut io ON (iol.M_InOut_ID=io.M_InOut_ID)"
-				+ "WHERE io.C_Order_ID=" + p_Search_Order_ID
-				);
-		else if (p_Search_Invoice_ID != 0)
-			insertTrx(
-				"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) "
-				+ "FROM M_InOutLine iol"
-				+ " LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) "
-				+ " INNER JOIN C_InvoiceLine il ON (iol.M_InOutLine_ID=il.M_InOutLine_ID) "
-				+ "WHERE il.C_Invoice_ID=" + p_Search_Invoice_ID
-				);
+		if (p_Search_InOut_ID != 0){
+			StringBuilder msgtrx = new StringBuilder(
+					"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
+							.append("FROM M_InOutLine iol")
+							.append(" LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) ")
+							.append("WHERE M_InOut_ID=").append(p_Search_InOut_ID);
+			insertTrx(msgtrx.toString());
+		}	
+		else if (p_Search_Order_ID != 0){
+			StringBuilder msgtrx = new StringBuilder(
+					"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
+							.append("FROM M_InOutLine iol")
+							.append(" LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) ")
+							.append(" INNER JOIN M_InOut io ON (iol.M_InOut_ID=io.M_InOut_ID)")
+							.append("WHERE io.C_Order_ID=").append(p_Search_Order_ID);
+			insertTrx(msgtrx.toString());
+		}	
+		else if (p_Search_Invoice_ID != 0){
+			StringBuilder msgtrx = new StringBuilder(
+					"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
+							.append("FROM M_InOutLine iol")
+							.append(" LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) ")
+							.append(" INNER JOIN C_InvoiceLine il ON (iol.M_InOutLine_ID=il.M_InOutLine_ID) ")
+							.append("WHERE il.C_Invoice_ID=").append(p_Search_Invoice_ID);
+			insertTrx(msgtrx.toString());
+		}	
 		else
 			throw new AdempiereUserError("Select one Parameter");
 		//
@@ -101,37 +104,37 @@ public class TransactionXRef extends SvrProcess
 	 */
 	private void insertTrx (String sqlSubSelect)
 	{
-		String sql = "INSERT INTO T_Transaction "
-			+ "(AD_PInstance_ID, M_Transaction_ID,"
-			+ " AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy, Updated,UpdatedBy,"
-			+ " MovementType, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,"
-			+ " MovementDate, MovementQty,"
-			+ " M_InOutLine_ID, M_InOut_ID,"
-			+ " M_MovementLine_ID, M_Movement_ID,"
-			+ " M_InventoryLine_ID, M_Inventory_ID, "
-			+ " C_ProjectIssue_ID, C_Project_ID, "
-			+ " M_ProductionLine_ID, M_Production_ID, "
-			+ " Search_Order_ID, Search_Invoice_ID, Search_InOut_ID) "
+		StringBuilder sql = new StringBuilder("INSERT INTO T_Transaction ")
+			.append("(AD_PInstance_ID, M_Transaction_ID,")
+			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy, Updated,UpdatedBy,")
+			.append(" MovementType, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,")
+			.append(" MovementDate, MovementQty,")
+			.append(" M_InOutLine_ID, M_InOut_ID,")
+			.append(" M_MovementLine_ID, M_Movement_ID,")
+			.append(" M_InventoryLine_ID, M_Inventory_ID, ")
+			.append(" C_ProjectIssue_ID, C_Project_ID, ")
+			.append(" M_ProductionLine_ID, M_Production_ID, ")
+			.append(" Search_Order_ID, Search_Invoice_ID, Search_InOut_ID) ")
 			//	Data
-			+ "SELECT " + getAD_PInstance_ID() + ", M_Transaction_ID,"
-			+ " AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy, Updated,UpdatedBy,"
-			+ " MovementType, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,"
-			+ " MovementDate, MovementQty,"
-			+ " M_InOutLine_ID, M_InOut_ID, "
-			+ " M_MovementLine_ID, M_Movement_ID,"
-			+ " M_InventoryLine_ID, M_Inventory_ID, "
-			+ " C_ProjectIssue_ID, C_Project_ID, "
-			+ " M_ProductionLine_ID, M_Production_ID, "
+			.append("SELECT ").append(getAD_PInstance_ID()).append(", M_Transaction_ID,")
+			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy, Updated,UpdatedBy,")
+			.append(" MovementType, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,")
+			.append(" MovementDate, MovementQty,")
+			.append(" M_InOutLine_ID, M_InOut_ID, ")
+			.append(" M_MovementLine_ID, M_Movement_ID,")
+			.append(" M_InventoryLine_ID, M_Inventory_ID, ")
+			.append(" C_ProjectIssue_ID, C_Project_ID, ")
+			.append(" M_ProductionLine_ID, M_Production_ID, ")
 			//	Parameter
-			+ p_Search_Order_ID + ", " + p_Search_Invoice_ID + "," + p_Search_InOut_ID + " "
+			.append(p_Search_Order_ID).append(", ").append(p_Search_Invoice_ID).append(",").append(p_Search_InOut_ID).append(" ")
 			//
-			+ "FROM M_Transaction_v "
-			+ "WHERE M_AttributeSetInstance_ID > 0 AND M_AttributeSetInstance_ID IN (" 
-			+ sqlSubSelect
-			+ ") ORDER BY M_Transaction_ID";
+			.append("FROM M_Transaction_v ")
+			.append("WHERE M_AttributeSetInstance_ID > 0 AND M_AttributeSetInstance_ID IN (") 
+			.append(sqlSubSelect)
+			.append(") ORDER BY M_Transaction_ID");
 		//
-		int no = DB.executeUpdate(sql, get_TrxName());
-		log.fine(sql);
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
+		log.fine(sql.toString());
 		log.config("#" + no);
 		
 		//	Multi-Level

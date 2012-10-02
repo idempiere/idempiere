@@ -146,8 +146,8 @@ public class ChangeLogProcess extends SvrProcess
 		}
 		//	final call
 		executeStatement();
-		
-		return "@OK@: " + m_ok + " - @Errors@: " + m_errors + " - @Failed@: " + m_checkFailed;
+		StringBuilder msgreturn = new StringBuilder("@OK@: ").append(m_ok).append(" - @Errors@: ").append(m_errors).append(" - @Failed@: ").append(m_checkFailed);
+		return msgreturn.toString();
 	}	//	doIt
 
 	
@@ -369,7 +369,7 @@ public class ChangeLogProcess extends SvrProcess
 		//	Changed Tables
 			+ " AND EXISTS (SELECT * FROM AD_ChangeLog l "
 				+ "WHERE t.AD_Table_ID=l.AD_Table_ID)";
-		StringBuffer update = null;
+		StringBuilder update = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -384,14 +384,15 @@ public class ChangeLogProcess extends SvrProcess
 				String columnName = tableName + "_ID";
 				if (tableName.equals("AD_Ref_Table"))
 					columnName = "AD_Reference_ID";
-				update = new StringBuffer ("UPDATE AD_ChangeLog SET IsCustomization='Y' "
-					+ "WHERE AD_Table_ID=").append(table.getAD_Table_ID());
+				update = new StringBuilder ("UPDATE AD_ChangeLog SET IsCustomization='Y' ")
+					.append("WHERE AD_Table_ID=").append(table.getAD_Table_ID());
 				update.append (" AND Record_ID IN (SELECT ")
 					.append (columnName)
 					.append (" FROM ").append(tableName)
 					.append (" WHERE EntityType IN ('D','C'))");
 				int no = DB.executeUpdate(update.toString(), get_TrxName());
-				log.config(table.getTableName() + " = " + no);
+				StringBuilder msglog = new StringBuilder(table.getTableName()).append(" = ").append(no);
+				log.config(msglog.toString());
 				updateNo += no;
 				
 			}

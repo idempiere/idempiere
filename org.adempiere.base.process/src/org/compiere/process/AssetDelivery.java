@@ -112,10 +112,10 @@ public class AssetDelivery extends SvrProcess
 			return msg;
 		}
 		//
-		StringBuffer sql = new StringBuffer ("SELECT A_Asset_ID, GuaranteeDate "
-			+ "FROM A_Asset a"
-			+ " INNER JOIN M_Product p ON (a.M_Product_ID=p.M_Product_ID) "
-			+ "WHERE ");
+		StringBuilder sql = new StringBuilder("SELECT A_Asset_ID, GuaranteeDate ")
+			.append("FROM A_Asset a")
+			.append(" INNER JOIN M_Product p ON (a.M_Product_ID=p.M_Product_ID) ")
+			.append("WHERE ");
 		if (m_A_Asset_Group_ID != 0)
 			sql.append("a.A_Asset_Group_ID=").append(m_A_Asset_Group_ID).append(" AND ");
 		if (m_M_Product_ID != 0)

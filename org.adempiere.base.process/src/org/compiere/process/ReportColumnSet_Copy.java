@@ -80,7 +80,8 @@ public class ReportColumnSet_Copy extends SvrProcess
 			rc.saveEx();
 		}
 		//	Oper 1/2 were set to Null !
-		return "@Copied@=" + rcs.length;
+		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(rcs.length);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	ReportColumnSet_Copy

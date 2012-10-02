@@ -129,56 +129,72 @@ public class ColumnEncryption extends SvrProcess {
 		}
 
 		// Start
-		addLog(0, null, null, "Encryption Class = "
-				+ SecureEngine.getClassName());
+		StringBuilder msglog = new StringBuilder("Encryption Class = ")
+				.append(SecureEngine.getClassName());
+		addLog(0, null, null, msglog.toString());
 		boolean error = false;
 
 		// Test Value
 		if (p_TestValue != null && p_TestValue.length() > 0) {
 			String encString = SecureEngine.encrypt(p_TestValue);
-			addLog(0, null, null, "Encrypted Test Value=" + encString);
+			msglog = new StringBuilder("Encrypted Test Value=").append(encString);
+			addLog(0, null, null, msglog.toString());
 			String clearString = SecureEngine.decrypt(encString);
-			if (p_TestValue.equals(clearString))
-				addLog(0, null, null, "Decrypted=" + clearString
-						+ " (same as test value)");
+			if (p_TestValue.equals(clearString)){
+				msglog = new StringBuilder("Decrypted=").append(clearString)
+						.append(" (same as test value)");
+				addLog(0, null, null, msglog.toString());
+			}	
 			else {
-				addLog(0, null, null, "Decrypted=" + clearString
-						+ " (NOT the same as test value - check algorithm)");
+				msglog = new StringBuilder("Decrypted=").append(clearString)
+						.append(" (NOT the same as test value - check algorithm)");
+				addLog(0, null, null, msglog.toString());
 				error = true;
 			}
 			int encLength = encString.length();
-			addLog(0, null, null, "Test Length=" + p_TestValue.length()
-					+ " -> " + encLength);
-			if (encLength <= column.getFieldLength())
-				addLog(0, null, null, "Encrypted Length (" + encLength
-						+ ") fits into field (" + column.getFieldLength() + ")");
+			msglog = new StringBuilder("Test Length=").append(p_TestValue.length())
+					.append(" -> ").append(encLength);
+			addLog(0, null, null, msglog.toString());
+			if (encLength <= column.getFieldLength()){
+				msglog = new StringBuilder("Encrypted Length (").append(encLength)
+						.append(") fits into field (").append(column.getFieldLength()).append(")");
+				addLog(0, null, null, msglog.toString());
+			}
 			else {
-				addLog(0, null, null, "Encrypted Length (" + encLength
-						+ ") does NOT fit into field ("
-						+ column.getFieldLength() + ") - resize field");
+				msglog = new StringBuilder("Encrypted Length (").append(encLength)
+						.append(") does NOT fit into field (")
+						.append(column.getFieldLength()).append(") - resize field");
+				addLog(0, null, null, msglog.toString());
 				error = true;
 			}
 		}
 
 		// Length Test
 		if (p_MaxLength != 0) {
-			String testClear = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			StringBuilder testClear = new StringBuilder(); 
+			testClear.append("1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 			while (testClear.length() < p_MaxLength)
-				testClear += testClear;
-			testClear = testClear.substring(0, p_MaxLength);
-			log.config("Test=" + testClear + " (" + p_MaxLength + ")");
+				testClear.append(testClear);
+			testClear.delete(p_MaxLength,testClear.length());
+			msglog = new StringBuilder()
+				.append("Test=").append(testClear.toString()).append(" (").append(p_MaxLength).append(")");
+			log.config(msglog.toString());
 			//
-			String encString = SecureEngine.encrypt(testClear);
+			String encString = SecureEngine.encrypt(testClear.toString());
 			int encLength = encString.length();
-			addLog(0, null, null, "Test Max Length=" + testClear.length()
-					+ " -> " + encLength);
-			if (encLength <= column.getFieldLength())
-				addLog(0, null, null, "Encrypted Max Length (" + encLength
-						+ ") fits into field (" + column.getFieldLength() + ")");
+			msglog = new StringBuilder("Test Max Length=").append(testClear.length())
+					.append(" -> ").append(encLength);
+			addLog(0, null, null, msglog.toString());
+			if (encLength <= column.getFieldLength()){
+				msglog = new StringBuilder("Encrypted Max Length (").append(encLength)
+						.append(") fits into field (").append(column.getFieldLength()).append(")");
+				addLog(0, null, null, msglog.toString());
+			}	
 			else {
-				addLog(0, null, null, "Encrypted Max Length (" + encLength
-						+ ") does NOT fit into field ("
-						+ column.getFieldLength() + ") - resize field");
+				msglog = new StringBuilder("Encrypted Max Length (").append(encLength)
+						.append(") does NOT fit into field (")
+						.append(column.getFieldLength()).append(") - resize field");
+				addLog(0, null, null, msglog.toString());
 				error = true;
 			}
 		}
@@ -223,14 +239,18 @@ public class ColumnEncryption extends SvrProcess {
 			}
 			
 			if (p_IsEncrypted != column.isEncrypted()) {
-				if (error || !p_ChangeSetting)
-					addLog(0, null, null, "Encryption NOT changed - Encryption="
-							+ column.isEncrypted());
+				if (error || !p_ChangeSetting){
+					msglog = new StringBuilder("Encryption NOT changed - Encryption=")
+							.append(column.isEncrypted());
+					addLog(0, null, null, msglog.toString());
+				}
 				else {
 					column.setIsEncrypted(p_IsEncrypted);
-					if (column.save())
-						addLog(0, null, null, "Encryption CHANGED - Encryption="
-								+ column.isEncrypted());
+					if (column.save()){
+						msglog = new StringBuilder("Encryption CHANGED - Encryption=")
+								.append(column.isEncrypted());
+						addLog(0, null, null, msglog.toString());
+					}	
 					else
 						addLog(0, null, null, "Save Error");
 				}
@@ -270,17 +290,17 @@ public class ColumnEncryption extends SvrProcess {
 	private int encryptColumnContents(String columnName, String tableName)
 			throws Exception {
 		int recordsEncrypted = 0;
-		String idColumnName = tableName + "_ID";
+		StringBuilder idColumnName = new StringBuilder(tableName).append("_ID");
 
-		StringBuffer selectSql = new StringBuffer();
-		selectSql.append("SELECT " + idColumnName + "," + columnName);
-		selectSql.append(" FROM " + tableName);
-		selectSql.append(" ORDER BY " + idColumnName);
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append("SELECT ").append(idColumnName).append(",").append(columnName);
+		selectSql.append(" FROM ").append(tableName);
+		selectSql.append(" ORDER BY ").append(idColumnName);
 
-		StringBuffer updateSql = new StringBuffer();
-		updateSql.append("UPDATE " + tableName);
-		updateSql.append(" SET " + columnName + "=?");
-		updateSql.append(" WHERE " + idColumnName + "=?");
+		StringBuilder updateSql = new StringBuilder();
+		updateSql.append("UPDATE ").append(tableName);
+		updateSql.append(" SET ").append(columnName).append("=?");
+		updateSql.append(" WHERE ").append(idColumnName).append("=?");
 
 		PreparedStatement selectStmt = null;
 		PreparedStatement updateStmt = null;
@@ -321,13 +341,12 @@ public class ColumnEncryption extends SvrProcess {
 	 * @return The length of the encrypted column.
 	 */
 	private int encryptedColumnLength(int colLength) {
-		String str = "";
+		StringBuilder str = new StringBuilder();
 
 		for (int i = 0; i < colLength; i++) {
-			str += "1";
-		}
-		str = SecureEngine.encrypt(str);
-
+			str.append("1");
+		}		
+		str = new StringBuilder(SecureEngine.encrypt(str.toString()));
 		return str.length();
 	} // encryptedColumnLength
 
@@ -347,23 +366,23 @@ public class ColumnEncryption extends SvrProcess {
 		int rowsEffected = -1;
 
 		// Select SQL
-		StringBuffer selectSql = new StringBuffer();
+		StringBuilder selectSql = new StringBuilder();
 		selectSql.append("SELECT FieldLength");
 		selectSql.append(" FROM AD_Column");
 		selectSql.append(" WHERE AD_Column_ID=?");
 
 		// Alter SQL
 		StringBuffer alterSql = new StringBuffer();
-		alterSql.append("ALTER TABLE " + tableName);
-		alterSql.append(" MODIFY " + columnName);
+		alterSql.append("ALTER TABLE ").append(tableName);
+		alterSql.append(" MODIFY ").append(columnName);
 		alterSql.append(" NVARCHAR2(");
-		alterSql.append(length + ") ");
+		alterSql.append(length).append(") ");
 
 		// Update SQL
 		StringBuffer updateSql = new StringBuffer();
 		updateSql.append("UPDATE AD_Column");
-		updateSql.append(" SET FieldLength=" + length);
-		updateSql.append(" WHERE AD_Column_ID=" + columnID);
+		updateSql.append(" SET FieldLength=").append(length);
+		updateSql.append(" WHERE AD_Column_ID=").append(columnID);
 
 		PreparedStatement selectStmt = null;
 

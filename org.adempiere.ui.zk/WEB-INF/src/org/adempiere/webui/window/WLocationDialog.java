@@ -540,7 +540,7 @@ public class WLocationDialog extends Window implements EventListener
 		}
 		else if (toLink.equals(event.getTarget()))
 		{
-			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + m_location.getMapsLocation();
+			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + getFullAdress();
 			String message = null;
 			try {
 				Executions.getCurrent().sendRedirect(urlString, "_blank");
@@ -559,7 +559,7 @@ public class WLocationDialog extends Window implements EventListener
 
 				String urlString = MLocation.LOCATION_MAPS_ROUTE_PREFIX +
 						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + orgLocation.getMapsLocation() + //org
-						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + m_location.getMapsLocation(); //partner
+						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + getFullAdress(); //partner
 				String message = null;
 				try {
 					Executions.getCurrent().sendRedirect(urlString, "_blank");
@@ -700,5 +700,24 @@ public class WLocationDialog extends Window implements EventListener
 		}	
 		super.dispose();
 	}
+	/** returns a string that contains all fields of current form */
+	String getFullAdress()
+	{
+		MRegion region = null;
 
+		if (lstRegion.getSelectedItem()!=null)
+			region = new MRegion(Env.getCtx(), ((MRegion)lstRegion.getSelectedItem().getValue()).getC_Region_ID(), null);
+		
+		MCountry c = (MCountry)lstCountry.getSelectedItem().getValue();
+
+		String address = "";
+		address = address + (txtAddress1.getText() != null ? txtAddress1.getText() + ", " : "");
+		address = address + (txtAddress2.getText() != null ? txtAddress2.getText() + ", " : "");
+		address = address + (txtCity.getText() != null ? txtCity.getText() + ", " : "");
+		if (region != null)
+			address = address + (region.getName() != null ? region.getName() + ", " : "");
+
+		address = address + (c.getName() != null ? c.getName() : "");
+		return address.replace(" ", "+");
+	}
 }

@@ -73,7 +73,7 @@ public class M_Product_BOM_Check extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-        StringBuffer sql1 = null;
+        StringBuilder sql1 = null;
 		int no = 0;
 
 		log.info("Check BOM Structure");
@@ -90,20 +90,20 @@ public class M_Product_BOM_Check extends SvrProcess
 		}
 
 		// Table to put all BOMs - duplicate will cause exception
-        sql1 = new StringBuffer("DELETE FROM T_Selection2 WHERE Query_ID = 0 AND AD_PInstance_ID="+ m_AD_PInstance_ID);
+        sql1 = new StringBuilder("DELETE FROM T_Selection2 WHERE Query_ID = 0 AND AD_PInstance_ID=").append(m_AD_PInstance_ID);
         no = DB.executeUpdate(sql1.toString(), get_TrxName());
-        sql1 = new StringBuffer("INSERT INTO T_Selection2 (AD_PInstance_ID, Query_ID, T_Selection_ID) VALUES ("
-        		+ m_AD_PInstance_ID
-        		+ ", 0, " 
-        		+ p_Record_ID + ")");
+        sql1 = new StringBuilder("INSERT INTO T_Selection2 (AD_PInstance_ID, Query_ID, T_Selection_ID) VALUES (")
+        		.append(m_AD_PInstance_ID)
+        		.append(", 0, ")
+        		.append(p_Record_ID).append(")");
         no = DB.executeUpdate(sql1.toString(), get_TrxName());
 		// Table of root modes
-        sql1 = new StringBuffer("DELETE FROM T_Selection WHERE AD_PInstance_ID="+ m_AD_PInstance_ID);
+        sql1 = new StringBuilder("DELETE FROM T_Selection WHERE AD_PInstance_ID=").append(m_AD_PInstance_ID);
         no = DB.executeUpdate(sql1.toString(), get_TrxName());
-        sql1 = new StringBuffer("INSERT INTO T_Selection (AD_PInstance_ID, T_Selection_ID) VALUES ("
-        		+ m_AD_PInstance_ID
-        		+ ", " 
-        		+ p_Record_ID + ")");
+        sql1 = new StringBuilder("INSERT INTO T_Selection (AD_PInstance_ID, T_Selection_ID) VALUES (")
+        		.append(m_AD_PInstance_ID)
+        		.append(", ") 
+        		.append(p_Record_ID).append(")");
         no = DB.executeUpdate(sql1.toString(), get_TrxName());
         
         while (true) {
@@ -112,8 +112,8 @@ public class M_Product_BOM_Check extends SvrProcess
     		int countno = 0;
     		try
     		{
-    			PreparedStatement pstmt = DB.prepareStatement
-    				("SELECT COUNT(*) FROM T_Selection WHERE AD_PInstance_ID="+ m_AD_PInstance_ID, get_TrxName());
+    			StringBuilder dbpst = new StringBuilder("SELECT COUNT(*) FROM T_Selection WHERE AD_PInstance_ID=").append(m_AD_PInstance_ID);
+    			PreparedStatement pstmt = DB.prepareStatement(dbpst.toString(), get_TrxName());
     			ResultSet rs = pstmt.executeQuery();
     			if (rs.next())
     				countno = rs.getInt(1);
@@ -133,31 +133,31 @@ public class M_Product_BOM_Check extends SvrProcess
     		{
     			// if any command fails (no==-1) break and inform failure 
     			// Insert BOM Nodes into "All" table
-    			sql1 = new StringBuffer("INSERT INTO T_Selection2 (AD_PInstance_ID, Query_ID, T_Selection_ID) " 
-    					+ "SELECT " + m_AD_PInstance_ID + ", 0, p.M_Product_ID FROM M_Product p WHERE IsBOM='Y' AND EXISTS " 
+    			sql1 = new StringBuilder("INSERT INTO T_Selection2 (AD_PInstance_ID, Query_ID, T_Selection_ID) ") 
+    					.append("SELECT ").append(m_AD_PInstance_ID).append(", 0, p.M_Product_ID FROM M_Product p WHERE IsBOM='Y' AND EXISTS ") 
     					//+ "(SELECT * FROM M_Product_BOM b WHERE p.M_Product_ID=b.M_ProductBOM_ID AND b.M_Product_ID IN " 
-    					+ "(SELECT * FROM PP_Product_BOM b WHERE p.M_Product_ID=b.M_Product_ID AND b.M_Product_ID IN " 
-    					+ "(SELECT T_Selection_ID FROM T_Selection WHERE AD_PInstance_ID="+ m_AD_PInstance_ID + "))");
+    					.append("(SELECT * FROM PP_Product_BOM b WHERE p.M_Product_ID=b.M_Product_ID AND b.M_Product_ID IN ")
+    					.append("(SELECT T_Selection_ID FROM T_Selection WHERE AD_PInstance_ID=").append(m_AD_PInstance_ID).append("))");
     			no = DB.executeUpdate(sql1.toString(), get_TrxName());
     			if (no == -1) raiseError("InsertingRoot:ERROR", sql1.toString());
     			// Insert BOM Nodes into temporary table
-    			sql1 = new StringBuffer("DELETE FROM T_Selection2 WHERE Query_ID = 1 AND AD_PInstance_ID="+ m_AD_PInstance_ID);
+    			sql1 = new StringBuilder("DELETE FROM T_Selection2 WHERE Query_ID = 1 AND AD_PInstance_ID=").append(m_AD_PInstance_ID);
     			no = DB.executeUpdate(sql1.toString(), get_TrxName());
     			if (no == -1) raiseError("InsertingRoot:ERROR", sql1.toString());
-    			sql1 = new StringBuffer("INSERT INTO T_Selection2 (AD_PInstance_ID, Query_ID, T_Selection_ID) " 
-    					+ "SELECT " + m_AD_PInstance_ID + ", 1, p.M_Product_ID FROM M_Product p WHERE IsBOM='Y' AND EXISTS " 
+    			sql1 = new StringBuilder("INSERT INTO T_Selection2 (AD_PInstance_ID, Query_ID, T_Selection_ID) ") 
+    					.append("SELECT ").append(m_AD_PInstance_ID).append(", 1, p.M_Product_ID FROM M_Product p WHERE IsBOM='Y' AND EXISTS ") 
     					//+ "(SELECT * FROM M_Product_BOM b WHERE p.M_Product_ID=b.M_ProductBOM_ID AND b.M_Product_ID IN "  
-    					+ "(SELECT * FROM PP_Product_BOM b WHERE p.M_Product_ID=b.M_Product_ID AND b.M_Product_ID IN " 
-    					+ "(SELECT T_Selection_ID FROM T_Selection WHERE AD_PInstance_ID="+ m_AD_PInstance_ID + "))");
+    					.append("(SELECT * FROM PP_Product_BOM b WHERE p.M_Product_ID=b.M_Product_ID AND b.M_Product_ID IN ") 
+    					.append("(SELECT T_Selection_ID FROM T_Selection WHERE AD_PInstance_ID=").append(m_AD_PInstance_ID).append("))");
     			no = DB.executeUpdate(sql1.toString(), get_TrxName());
     			if (no == -1) raiseError("InsertingRoot:ERROR", sql1.toString());
     			// Copy into root table
-    			sql1 = new StringBuffer("DELETE FROM T_Selection WHERE AD_PInstance_ID="+ m_AD_PInstance_ID);
+    			sql1 = new StringBuilder("DELETE FROM T_Selection WHERE AD_PInstance_ID=").append(m_AD_PInstance_ID);
     			no = DB.executeUpdate(sql1.toString(), get_TrxName());
     			if (no == -1) raiseError("InsertingRoot:ERROR", sql1.toString());
-    			sql1 = new StringBuffer("INSERT INTO T_Selection (AD_PInstance_ID, T_Selection_ID) " 
-    					+ "SELECT " + m_AD_PInstance_ID + ", T_Selection_ID " 
-    					+ "FROM T_Selection2 WHERE Query_ID = 1 AND AD_PInstance_ID="+ m_AD_PInstance_ID);
+    			sql1 = new StringBuilder("INSERT INTO T_Selection (AD_PInstance_ID, T_Selection_ID) ") 
+    					.append("SELECT ").append(m_AD_PInstance_ID).append(", T_Selection_ID ") 
+    					.append("FROM T_Selection2 WHERE Query_ID = 1 AND AD_PInstance_ID=").append(m_AD_PInstance_ID);
     			no = DB.executeUpdate(sql1.toString(), get_TrxName());
     			if (no == -1) raiseError("InsertingRoot:ERROR", sql1.toString());
     		}
@@ -176,12 +176,12 @@ public class M_Product_BOM_Check extends SvrProcess
 	
 	private void raiseError(String string, String sql) throws Exception {
 		DB.rollback(false, get_TrxName());
-		String msg = string;
+		StringBuilder msg = new StringBuilder(string);
 		ValueNamePair pp = CLogger.retrieveError();
 		if (pp != null)
-			msg = pp.getName() + " - ";
-		msg += sql;
-		throw new AdempiereUserError (msg);
+			msg = new StringBuilder(pp.getName()).append(" - ");
+		msg.append(sql);
+		throw new AdempiereUserError (msg.toString());
 	}
 	
 }	//	M_Product_BOM_Check

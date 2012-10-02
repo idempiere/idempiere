@@ -90,15 +90,15 @@ public class TreeMaintenance extends SvrProcess
 		int C_Element_ID = 0;
 		if (MTree.TREETYPE_ElementValue.equals(tree.getTreeType()))
 		{
-			String sql = "SELECT C_Element_ID FROM C_Element "
-				+ "WHERE AD_Tree_ID=" + tree.getAD_Tree_ID();
-			C_Element_ID = DB.getSQLValue(null, sql);
+			StringBuilder sql = new StringBuilder("SELECT C_Element_ID FROM C_Element ")
+				.append("WHERE AD_Tree_ID=").append(tree.getAD_Tree_ID());
+			C_Element_ID = DB.getSQLValue(null, sql.toString());
 			if (C_Element_ID <= 0)
 				throw new IllegalStateException("No Account Element found");
 		}
 		
 		//	Delete unused
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("DELETE ").append(nodeTableName)
 			.append(" WHERE AD_Tree_ID=").append(tree.getAD_Tree_ID())
 			.append(" AND Node_ID NOT IN (SELECT ").append(sourceTableKey)
@@ -111,12 +111,13 @@ public class TreeMaintenance extends SvrProcess
 		//
 		int deletes = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog(0,null, new BigDecimal(deletes), tree.getName()+ " Deleted");
-		if (!tree.isAllNodes())
-			return tree.getName() + " OK";
-		
+		if (!tree.isAllNodes()){
+			StringBuilder msgreturn = new StringBuilder(tree.getName()).append(" OK");
+			return msgreturn.toString();
+		}
 		//	Insert new
 		int inserts = 0;
-		sql = new StringBuffer();
+		sql = new StringBuilder();
 		sql.append("SELECT ").append(sourceTableKey)
 			.append(" FROM ").append(sourceTableName)
 			.append(" WHERE AD_Client_ID=").append(AD_Client_ID);
@@ -175,8 +176,10 @@ public class TreeMaintenance extends SvrProcess
 		{
 			pstmt = null;
 		}
-		addLog(0,null, new BigDecimal(inserts), tree.getName()+ " Inserted");
-		return tree.getName() + (ok ? " OK" : " Error");
+		StringBuilder msglog = new StringBuilder(tree.getName()).append(" Inserted");
+		addLog(0,null, new BigDecimal(inserts), msglog.toString());
+		StringBuilder msgreturn = new StringBuilder(tree.getName()).append((ok ? " OK" : " Error"));
+		return msgreturn.toString();
 	}	//	verifyTree
 
 }	//	TreeMaintenence

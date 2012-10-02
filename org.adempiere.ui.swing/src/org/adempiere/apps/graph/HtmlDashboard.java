@@ -108,7 +108,7 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 	
 	private String createHTML(PAGE_TYPE requestPage){
 		
-		String result = "<html><head>";
+		StringBuilder result = new StringBuilder("<html><head>");
 		
 		// READ CSS
 		URL url = getClass().getClassLoader().
@@ -118,27 +118,28 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 			ins = new InputStreamReader(url.openStream());
 			BufferedReader bufferedReader = new BufferedReader( ins );
 			String cssLine;
-			result += "<style type=\"text/css\">";
+			result.append("<style type=\"text/css\">");
 			while ((cssLine = bufferedReader.readLine()) != null) 
-				result += cssLine + "\n";
-			result += "</style>";
+				result.append(cssLine).append("\n");
+			result.append("</style>");
 		} catch (IOException e1) {
 			log.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
 		}
 		//System.out.println(result);
 		switch (requestPage) {
 		    case PAGE_LOGO:
-		    	result += "</head><body class=\"header\">"
-		    			 + "<table width=\"100%\"><tr><td>"
-		    			 + "<img src=\"res:org/compiere/images/logo_ad.png\">"
-		    			 + "</td><td></td><td width=\"290\">"
-		    			 //+ "<img src=\"res:at/freecom/apps/images/logo_fc.png\">"
-		    			 + "</td></tr></table>"
-		    			 + "</body></html>";
+		    	
+		    	result.append("</head><body class=\"header\">")
+		    		  .append("<table width=\"100%\"><tr><td>")
+		    		  .append("<img src=\"res:org/compiere/images/logo_ad.png\">")
+		    		  .append("</td><td></td><td width=\"290\">")
+		    		  .append("</td></tr></table>")
+		    		  .append("</body></html>");
 		    	break;
+		    	
 			case PAGE_HOME: //**************************************************************
-				 result += // "<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///c:/standard.css\"/>"
-						 "</head><body><div class=\"content\">\n";
+				 
+				result.append("</head><body><div class=\"content\">\n");// "<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///c:/standard.css\"/>"
 				queryZoom = null;
 				queryZoom = new ArrayList<MQuery>();
 				String appendToHome = null;
@@ -164,21 +165,22 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 						String descriptionTrl = dp.get_Translation(MDashboardContent.COLUMNNAME_Description);
 						if (appendToHome != null) {
 							if (descriptionTrl != null)
-								result += "<H2>" + descriptionTrl + "</H2>\n";
-							result += stripHtml(appendToHome, false) + "<br>\n";
+								result.append("<H2>").append(descriptionTrl).append("</H2>\n");
+							result.append(stripHtml(appendToHome, false)).append("<br>\n");
 						}
 						
 						if (dc.getAD_Menu_ID() > 0) {
-							result += "<a class=\"hrefNode\" href=\"http:///window/node#" 
-								   + String.valueOf( dc.getAD_Window_ID() // "AD_MENU_ID") fcsku 3.7.07
-								   + "\">" 	
-								   + descriptionTrl
-								   + "</a><br>\n");
+							result.append("<a class=\"hrefNode\" href=\"http:///window/node#");
+							result.append(String.valueOf(dc.getAD_Window_ID()));// "AD_MENU_ID") fcsku 3.7.07
+							result.append("\">");
+							result.append(descriptionTrl.toString());
+							result.append("</a><br>\n");
+							
 						}
-						result += "<br>\n";
+						result.append("<br>\n");
 						//result += "table id: " + rs.getInt("AD_TABLE_ID");
 						if (dc.getPA_Goal_ID() > 0)
-							result += goalsDetail(dc.getPA_Goal_ID());
+							result.append(goalsDetail(dc.getPA_Goal_ID()));
 					}
 				}
 				catch (Exception e)
@@ -188,13 +190,13 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 				finally
 				{
 				}
-				result += "<br><br><br>\n"
-				+ "</div>\n</body>\n</html>\n";
+				result.append("<br><br><br>\n")
+					  .append("</div>\n</body>\n</html>\n");
 				break;
 			default: //************************************************************** 
 				log.warning("Unknown option - "+requestPage);
 		}
-		return result;
+		return result.toString();
 	}
 	
 	private void createDashboardPreference()
@@ -215,30 +217,33 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 			preference.setLine(dc.getLine());
 			preference.setPA_DashboardContent_ID(dc.getPA_DashboardContent_ID());
 			
-			if (!preference.save())
-				log.log(Level.SEVERE, "Failed to create dashboard preference " + preference.toString());
+			if (!preference.save()){
+				StringBuilder msglog = new StringBuilder("Failed to create dashboard preference ").append(preference.toString());
+				log.log(Level.SEVERE, msglog.toString());
+			}
 		}
 	}
 	 
 	ArrayList<MQuery> queryZoom = null; //new ArrayList<MQuery>();
 	
 	private String goalsDetail(int AD_Table_ID) { //TODO link to goals
-		String output = "";
-		if (m_goals==null) return output;
+		StringBuilder output = new StringBuilder();
+		if (m_goals==null) return output.toString();
 		for (int i = 0; i < m_goals.length; i++) {
 		  MMeasureCalc mc = MMeasureCalc.get(Env.getCtx(), m_goals[i].getMeasure().getPA_MeasureCalc_ID());
 		  if (AD_Table_ID == m_goals[i].getPA_Goal_ID()){// mc.getAD_Table_ID()) {
-			output += "<table class=\"dataGrid\"><tr>\n<th colspan=\"3\" class=\"label\"><b>" + m_goals[i].getName() + "</b></th></tr>\n";
-			output += "<tr><td class=\"label\">Target</td><td colspan=\"2\" class=\"tdcontent\">" + m_goals[i].getMeasureTarget() + "</td></tr>\n";
-			output += "<tr><td class=\"label\">Actual</td><td colspan=\"2\" class=\"tdcontent\">" + m_goals[i].getMeasureActual() + "</td></tr>\n";
+			output.append("<table class=\"dataGrid\"><tr>\n<th colspan=\"3\" class=\"label\"><b>").append(m_goals[i].getName()).append("</b></th></tr>\n");  
+			output.append("<tr><td class=\"label\">Target</td><td colspan=\"2\" class=\"tdcontent\">").append(m_goals[i].getMeasureTarget()).append("</td></tr>\n");  
+			output.append("<tr><td class=\"label\">Actual</td><td colspan=\"2\" class=\"tdcontent\">").append(m_goals[i].getMeasureActual()).append("</td></tr>\n");  
+			
 			//if (mc.getTableName()!=null) output += "table: " + mc.getAD_Table_ID() + "<br>\n";
 			Graph barPanel = new Graph(m_goals[i]);
 			GraphColumn[] bList = barPanel.getGraphColumnList();
 			MQuery query = null;
-			output += "<tr><td rowspan=\"" + bList.length + "\" class=\"label\" valign=\"top\">" + m_goals[i].getXAxisText() + "</td>\n";
+			output.append("<tr><td rowspan=\"").append(bList.length).append("\" class=\"label\" valign=\"top\">").append(m_goals[i].getXAxisText()).append("</td>\n");
 			for (int k=0; k<bList.length; k++) {
 				GraphColumn bgc = bList[k];
-				if (k>0) output += "<tr>";
+				if (k>0) output.append("<tr>");
 				if (bgc.getAchievement() != null)	//	Single Achievement
 				{
 					MAchievement a = bgc.getAchievement();
@@ -270,33 +275,33 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 						bgc.getMeasureDisplay(), bgc.getDate(), bgc.getID(),
 						MRole.getDefault());	//	logged in role
 				}
-				output += "<td class=\"tdcontent\">"+ bgc.getLabel() + "</td><td  class=\"tdcontent\">";
+				output.append("<td class=\"tdcontent\">").append(bgc.getLabel()).append("</td><td  class=\"tdcontent\">");
 				if (query != null) {
-					output += "<a class=\"hrefZoom\" href=\"http:///window/zoom#"  
-						   + queryZoom.size()
-						   + "\">"
-						   + bgc.getValue()
-						   + "</a><br>\n";
+					output.append("<a class=\"hrefZoom\" href=\"http:///window/zoom#")  
+						   .append(queryZoom.size())
+						   .append("\">")
+						   .append(bgc.getValue())
+						   .append("</a><br>\n");
 					queryZoom.add(query);
 				}
 				else {
 					log.info("Nothing to zoom to - " + bgc);
-					output += bgc.getValue();
+					output.append(bgc.getValue());
 				}
-				output += "</td></tr>";
+				output.append("</td></tr>");
 			}
-			output +=  "</tr>"
-				   + "<tr><td colspan=\"3\">" 
-				   + m_goals[i].getDescription()
-				   + "<br>"
-				   + stripHtml(m_goals[i].getColorSchema().getDescription(), true)
-				   + "</td></tr>" 
-				   + "</table>\n";
+			output.append("</tr>")
+				   .append("<tr><td colspan=\"3\">") 
+				   .append(m_goals[i].getDescription())
+				   .append("<br>")
+				   .append(stripHtml(m_goals[i].getColorSchema().getDescription(), true))
+				   .append("</td></tr>") 
+				   .append("</table>\n");
 			bList = null;
 			barPanel = null;
 		}
 		}
-		return output;
+		return output.toString();
 	}
 	
 	private String stripHtml(String htmlString, boolean all) {

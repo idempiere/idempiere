@@ -90,7 +90,7 @@ public class ImportPayment extends SvrProcess
 			p_AD_Org_ID = ba.getAD_Org_ID();
 		log.info("AD_Org_ID=" + p_AD_Org_ID);
 		
-		StringBuffer sql = null;
+		StringBuilder sql = null;
 		int no = 0;
 		String clientCheck = " AND AD_Client_ID=" + ba.getAD_Client_ID();
 
@@ -99,307 +99,307 @@ public class ImportPayment extends SvrProcess
 		//	Delete Old Imported
 		if (p_deleteOldImported)
 		{
-			sql = new StringBuffer ("DELETE I_Payment "
-				  + "WHERE I_IsImported='Y'").append (clientCheck);
+			sql = new StringBuilder ("DELETE I_Payment ")
+				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, IsActive, Created/Updated
-		sql = new StringBuffer ("UPDATE I_Payment "
-			  + "SET AD_Client_ID = COALESCE (AD_Client_ID,").append (ba.getAD_Client_ID()).append ("),"
-			  + " AD_Org_ID = COALESCE (AD_Org_ID,").append (p_AD_Org_ID).append ("),");
-		sql.append(" IsActive = COALESCE (IsActive, 'Y'),"
-			  + " Created = COALESCE (Created, SysDate),"
-			  + " CreatedBy = COALESCE (CreatedBy, 0),"
-			  + " Updated = COALESCE (Updated, SysDate),"
-			  + " UpdatedBy = COALESCE (UpdatedBy, 0),"
-			  + " I_ErrorMsg = ' ',"
-			  + " I_IsImported = 'N' "
-			  + "WHERE I_IsImported<>'Y' OR I_IsImported IS NULL OR AD_Client_ID IS NULL OR AD_Org_ID IS NULL OR AD_Client_ID=0 OR AD_Org_ID=0");
+		sql = new StringBuilder ("UPDATE I_Payment ")
+			  .append("SET AD_Client_ID = COALESCE (AD_Client_ID,").append (ba.getAD_Client_ID()).append ("),")
+			  .append(" AD_Org_ID = COALESCE (AD_Org_ID,").append (p_AD_Org_ID).append ("),");
+		sql.append(" IsActive = COALESCE (IsActive, 'Y'),")
+			  .append(" Created = COALESCE (Created, SysDate),")
+			  .append(" CreatedBy = COALESCE (CreatedBy, 0),")
+			  .append(" Updated = COALESCE (Updated, SysDate),")
+			  .append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
+			  .append(" I_ErrorMsg = ' ',")
+			  .append(" I_IsImported = 'N' ")
+			  .append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL OR AD_Client_ID IS NULL OR AD_Org_ID IS NULL OR AD_Client_ID=0 OR AD_Org_ID=0");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info ("Reset=" + no);
 
-		sql = new StringBuffer ("UPDATE I_Payment o "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, '"
-			+ "WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0"
-			+ " OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N')))"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment o ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, '")
+			.append("WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0")
+			.append(" OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N')))")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Org=" + no);
 			
 		//	Set Bank Account
-		sql = new StringBuffer("UPDATE I_Payment i "
-			+ "SET C_BankAccount_ID="
-			+ "( "
-			+ " SELECT C_BankAccount_ID "
-			+ " FROM C_BankAccount a, C_Bank b "
-			+ " WHERE b.IsOwnBank='Y' "
-			+ " AND a.AD_Client_ID=i.AD_Client_ID "
-			+ " AND a.C_Bank_ID=b.C_Bank_ID "
-			+ " AND a.AccountNo=i.BankAccountNo "
-			+ " AND b.RoutingNo=i.RoutingNo "
-			+ " OR b.SwiftCode=i.RoutingNo "
-			+ ") "
-			+ "WHERE i.C_BankAccount_ID IS NULL "
-			+ "AND i.I_IsImported<>'Y' "
-			+ "OR i.I_IsImported IS NULL").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment i ")
+			.append("SET C_BankAccount_ID=")
+			.append("( ")
+			.append(" SELECT C_BankAccount_ID ")
+			.append(" FROM C_BankAccount a, C_Bank b ")
+			.append(" WHERE b.IsOwnBank='Y' ")
+			.append(" AND a.AD_Client_ID=i.AD_Client_ID ")
+			.append(" AND a.C_Bank_ID=b.C_Bank_ID ")
+			.append(" AND a.AccountNo=i.BankAccountNo ")
+			.append(" AND b.RoutingNo=i.RoutingNo ")
+			.append(" OR b.SwiftCode=i.RoutingNo ")
+			.append(") ")
+			.append("WHERE i.C_BankAccount_ID IS NULL ")
+			.append("AND i.I_IsImported<>'Y' ")
+			.append("OR i.I_IsImported IS NULL").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Bank Account (With Routing No)=" + no);
 		//
-		sql = new StringBuffer("UPDATE I_Payment i " 
-		 	+ "SET C_BankAccount_ID="
-			+ "( "
-			+ " SELECT C_BankAccount_ID "
-			+ " FROM C_BankAccount a, C_Bank b "
-			+ " WHERE b.IsOwnBank='Y' "
-			+ " AND a.C_Bank_ID=b.C_Bank_ID " 
-			+ " AND a.AccountNo=i.BankAccountNo "
-			+ " AND a.AD_Client_ID=i.AD_Client_ID "
-			+ ") "
-			+ "WHERE i.C_BankAccount_ID IS NULL "
-			+ "AND i.I_isImported<>'Y' "
-			+ "OR i.I_isImported IS NULL").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment i ") 
+		 	.append("SET C_BankAccount_ID=")
+			.append("( ")
+			.append(" SELECT C_BankAccount_ID ")
+			.append(" FROM C_BankAccount a, C_Bank b ")
+			.append(" WHERE b.IsOwnBank='Y' ")
+			.append(" AND a.C_Bank_ID=b.C_Bank_ID ") 
+			.append(" AND a.AccountNo=i.BankAccountNo ")
+			.append(" AND a.AD_Client_ID=i.AD_Client_ID ")
+			.append(") ")
+			.append("WHERE i.C_BankAccount_ID IS NULL ")
+			.append("AND i.I_isImported<>'Y' ")
+			.append("OR i.I_isImported IS NULL").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Bank Account (Without Routing No)=" + no);
 		//
-		sql = new StringBuffer("UPDATE I_Payment i "
-			+ "SET C_BankAccount_ID=(SELECT C_BankAccount_ID FROM C_BankAccount a WHERE a.C_BankAccount_ID=").append(p_C_BankAccount_ID);
-		sql.append(" and a.AD_Client_ID=i.AD_Client_ID) "
-			+ "WHERE i.C_BankAccount_ID IS NULL "
-			+ "AND i.BankAccountNo IS NULL "
-			+ "AND i.I_isImported<>'Y' "
-			+ "OR i.I_isImported IS NULL").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment i ")
+			.append("SET C_BankAccount_ID=(SELECT C_BankAccount_ID FROM C_BankAccount a WHERE a.C_BankAccount_ID=").append(p_C_BankAccount_ID);
+		sql.append(" and a.AD_Client_ID=i.AD_Client_ID) ")
+			.append("WHERE i.C_BankAccount_ID IS NULL ")
+			.append("AND i.BankAccountNo IS NULL ")
+			.append("AND i.I_isImported<>'Y' ")
+			.append("OR i.I_isImported IS NULL").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Bank Account=" + no);
 		//	
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET I_isImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Bank Account, ' "
-			+ "WHERE C_BankAccount_ID IS NULL "
-			+ "AND I_isImported<>'Y' "
-			+ "OR I_isImported IS NULL").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET I_isImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Bank Account, ' ")
+			.append("WHERE C_BankAccount_ID IS NULL ")
+			.append("AND I_isImported<>'Y' ")
+			.append("OR I_isImported IS NULL").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("Invalid Bank Account=" + no);
 		 
 		//	Set Currency
-		sql = new StringBuffer ("UPDATE I_Payment i "
-			+ "SET C_Currency_ID=(SELECT C_Currency_ID FROM C_Currency c"
-			+ " WHERE i.ISO_Code=c.ISO_Code AND c.AD_Client_ID IN (0,i.AD_Client_ID)) "
-			+ "WHERE C_Currency_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment i ")
+			.append("SET C_Currency_ID=(SELECT C_Currency_ID FROM C_Currency c")
+			.append(" WHERE i.ISO_Code=c.ISO_Code AND c.AD_Client_ID IN (0,i.AD_Client_ID)) ")
+			.append("WHERE C_Currency_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Set Currency=" + no);
 		//
-		sql = new StringBuffer("UPDATE I_Payment i "
-			+ "SET C_Currency_ID=(SELECT C_Currency_ID FROM C_BankAccount WHERE C_BankAccount_ID=i.C_BankAccount_ID) "
-			+ "WHERE i.C_Currency_ID IS NULL "
-			+ "AND i.ISO_Code IS NULL").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment i ")
+			.append("SET C_Currency_ID=(SELECT C_Currency_ID FROM C_BankAccount WHERE C_BankAccount_ID=i.C_BankAccount_ID) ")
+			.append("WHERE i.C_Currency_ID IS NULL ")
+			.append("AND i.ISO_Code IS NULL").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Set Currency=" + no);
 		//
-		sql = new StringBuffer ("UPDATE I_Payment "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Currency,' "
-			+ "WHERE C_Currency_ID IS NULL "
-			+ "AND I_IsImported<>'E' "
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Currency,' ")
+			.append("WHERE C_Currency_ID IS NULL ")
+			.append("AND I_IsImported<>'E' ")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("No Currency=" + no);
 		 
 		//	Set Amount
-		sql = new StringBuffer("UPDATE I_Payment "
-		 	+ "SET ChargeAmt=0 "
-			+ "WHERE ChargeAmt IS NULL "
-			+ "AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+		 	.append("SET ChargeAmt=0 ")
+			.append("WHERE ChargeAmt IS NULL ")
+			.append("AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Charge Amount=" + no);
 		//
-		sql = new StringBuffer("UPDATE I_Payment "
-		 	+ "SET TaxAmt=0 "
-			+ "WHERE TaxAmt IS NULL "
-			+ "AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+		 	.append("SET TaxAmt=0 ")
+			.append("WHERE TaxAmt IS NULL ")
+			.append("AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Tax Amount=" + no);
 		//
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET WriteOffAmt=0 "
-			+ "WHERE WriteOffAmt IS NULL "
-			+ "AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET WriteOffAmt=0 ")
+			.append("WHERE WriteOffAmt IS NULL ")
+			.append("AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("WriteOff Amount=" + no);
 		//
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET DiscountAmt=0 "
-			+ "WHERE DiscountAmt IS NULL "
-			+ "AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET DiscountAmt=0 ")
+			.append("WHERE DiscountAmt IS NULL ")
+			.append("AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Discount Amount=" + no);
 		//
 			
 		//	Set Date
-		sql = new StringBuffer("UPDATE I_Payment "
-		 	+ "SET DateTrx=Created "
-			+ "WHERE DateTrx IS NULL "
-			+ "AND I_isImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+		 	.append("SET DateTrx=Created ")
+			.append("WHERE DateTrx IS NULL ")
+			.append("AND I_isImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Trx Date=" + no);
 		
-		sql = new StringBuffer("UPDATE I_Payment "
-		 	+ "SET DateAcct=DateTrx "
-			+ "WHERE DateAcct IS NULL "
-			+ "AND I_isImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+		 	.append("SET DateAcct=DateTrx ")
+			.append("WHERE DateAcct IS NULL ")
+			.append("AND I_isImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Acct Date=" + no);
 		
 		//	Invoice
-		sql = new StringBuffer ("UPDATE I_Payment i "
-			  + "SET C_Invoice_ID=(SELECT MAX(C_Invoice_ID) FROM C_Invoice ii"
-			  + " WHERE i.InvoiceDocumentNo=ii.DocumentNo AND i.AD_Client_ID=ii.AD_Client_ID) "
-			  + "WHERE C_Invoice_ID IS NULL AND InvoiceDocumentNo IS NOT NULL"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment i ")
+			  .append("SET C_Invoice_ID=(SELECT MAX(C_Invoice_ID) FROM C_Invoice ii")
+			  .append(" WHERE i.InvoiceDocumentNo=ii.DocumentNo AND i.AD_Client_ID=ii.AD_Client_ID) ")
+			  .append("WHERE C_Invoice_ID IS NULL AND InvoiceDocumentNo IS NOT NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("Set Invoice from DocumentNo=" + no);
 		
 		//	BPartner
-		sql = new StringBuffer ("UPDATE I_Payment i "
-			  + "SET C_BPartner_ID=(SELECT MAX(C_BPartner_ID) FROM C_BPartner bp"
-			  + " WHERE i.BPartnerValue=bp.Value AND i.AD_Client_ID=bp.AD_Client_ID) "
-			  + "WHERE C_BPartner_ID IS NULL AND BPartnerValue IS NOT NULL"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment i ")
+			  .append("SET C_BPartner_ID=(SELECT MAX(C_BPartner_ID) FROM C_BPartner bp")
+			  .append(" WHERE i.BPartnerValue=bp.Value AND i.AD_Client_ID=bp.AD_Client_ID) ")
+			  .append("WHERE C_BPartner_ID IS NULL AND BPartnerValue IS NOT NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("Set BP from Value=" + no);
 		
-		sql = new StringBuffer ("UPDATE I_Payment i "
-			  + "SET C_BPartner_ID=(SELECT MAX(C_BPartner_ID) FROM C_Invoice ii"
-			  + " WHERE i.C_Invoice_ID=ii.C_Invoice_ID AND i.AD_Client_ID=ii.AD_Client_ID) "
-			  + "WHERE C_BPartner_ID IS NULL AND C_Invoice_ID IS NOT NULL"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment i ")
+			  .append("SET C_BPartner_ID=(SELECT MAX(C_BPartner_ID) FROM C_Invoice ii")
+			  .append(" WHERE i.C_Invoice_ID=ii.C_Invoice_ID AND i.AD_Client_ID=ii.AD_Client_ID) ")
+			  .append("WHERE C_BPartner_ID IS NULL AND C_Invoice_ID IS NOT NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("Set BP from Invoice=" + no);
 		
-		sql = new StringBuffer ("UPDATE I_Payment "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No BPartner,' "
-			+ "WHERE C_BPartner_ID IS NULL "
-			+ "AND I_IsImported<>'E' "
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No BPartner,' ")
+			.append("WHERE C_BPartner_ID IS NULL ")
+			.append("AND I_IsImported<>'E' ")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("No BPartner=" + no);
 		
 		
 		//	Check Payment<->Invoice combination
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Err=Invalid Payment<->Invoice, ' "
-			+ "WHERE I_Payment_ID IN "
-				+ "(SELECT I_Payment_ID "
-				+ "FROM I_Payment i"
-				+ " INNER JOIN C_Payment p ON (i.C_Payment_ID=p.C_Payment_ID) "
-				+ "WHERE i.C_Invoice_ID IS NOT NULL "
-				+ " AND p.C_Invoice_ID IS NOT NULL "
-				+ " AND p.C_Invoice_ID<>i.C_Invoice_ID) ")
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Err=Invalid Payment<->Invoice, ' ")
+			.append("WHERE I_Payment_ID IN ")
+				.append("(SELECT I_Payment_ID ")
+				.append("FROM I_Payment i")
+				.append(" INNER JOIN C_Payment p ON (i.C_Payment_ID=p.C_Payment_ID) ")
+				.append("WHERE i.C_Invoice_ID IS NOT NULL ")
+				.append(" AND p.C_Invoice_ID IS NOT NULL ")
+				.append(" AND p.C_Invoice_ID<>i.C_Invoice_ID) ")
 			.append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Payment<->Invoice Mismatch=" + no);
 			
 		//	Check Payment<->BPartner combination
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Err=Invalid Payment<->BPartner, ' "
-			+ "WHERE I_Payment_ID IN "
-				+ "(SELECT I_Payment_ID "
-				+ "FROM I_Payment i"
-				+ " INNER JOIN C_Payment p ON (i.C_Payment_ID=p.C_Payment_ID) "
-				+ "WHERE i.C_BPartner_ID IS NOT NULL "
-				+ " AND p.C_BPartner_ID IS NOT NULL "
-				+ " AND p.C_BPartner_ID<>i.C_BPartner_ID) ")
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Err=Invalid Payment<->BPartner, ' ")
+			.append("WHERE I_Payment_ID IN ")
+				.append("(SELECT I_Payment_ID ")
+				.append("FROM I_Payment i")
+				.append(" INNER JOIN C_Payment p ON (i.C_Payment_ID=p.C_Payment_ID) ")
+				.append("WHERE i.C_BPartner_ID IS NOT NULL ")
+				.append(" AND p.C_BPartner_ID IS NOT NULL ")
+				.append(" AND p.C_BPartner_ID<>i.C_BPartner_ID) ")
 			.append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Payment<->BPartner Mismatch=" + no);
 			
 		//	Check Invoice<->BPartner combination
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Err=Invalid Invoice<->BPartner, ' "
-			+ "WHERE I_Payment_ID IN "
-				+ "(SELECT I_Payment_ID "
-				+ "FROM I_Payment i"
-				+ " INNER JOIN C_Invoice v ON (i.C_Invoice_ID=v.C_Invoice_ID) "
-				+ "WHERE i.C_BPartner_ID IS NOT NULL "
-				+ " AND v.C_BPartner_ID IS NOT NULL "
-				+ " AND v.C_BPartner_ID<>i.C_BPartner_ID) ")
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Err=Invalid Invoice<->BPartner, ' ")
+			.append("WHERE I_Payment_ID IN ")
+				.append("(SELECT I_Payment_ID ")
+				.append("FROM I_Payment i")
+				.append(" INNER JOIN C_Invoice v ON (i.C_Invoice_ID=v.C_Invoice_ID) ")
+				.append("WHERE i.C_BPartner_ID IS NOT NULL ")
+				.append(" AND v.C_BPartner_ID IS NOT NULL ")
+				.append(" AND v.C_BPartner_ID<>i.C_BPartner_ID) ")
 			.append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Invoice<->BPartner Mismatch=" + no);
 			
 		//	Check Invoice.BPartner<->Payment.BPartner combination
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Err=Invalid Invoice.BPartner<->Payment.BPartner, ' "
-			+ "WHERE I_Payment_ID IN "
-				+ "(SELECT I_Payment_ID "
-				+ "FROM I_Payment i"
-				+ " INNER JOIN C_Invoice v ON (i.C_Invoice_ID=v.C_Invoice_ID)"
-				+ " INNER JOIN C_Payment p ON (i.C_Payment_ID=p.C_Payment_ID) "
-				+ "WHERE p.C_Invoice_ID<>v.C_Invoice_ID"
-				+ " AND v.C_BPartner_ID<>p.C_BPartner_ID) ")
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'Err=Invalid Invoice.BPartner<->Payment.BPartner, ' ")
+			.append("WHERE I_Payment_ID IN ")
+				.append("(SELECT I_Payment_ID ")
+				.append("FROM I_Payment i")
+				.append(" INNER JOIN C_Invoice v ON (i.C_Invoice_ID=v.C_Invoice_ID)")
+				.append(" INNER JOIN C_Payment p ON (i.C_Payment_ID=p.C_Payment_ID) ")
+				.append("WHERE p.C_Invoice_ID<>v.C_Invoice_ID")
+				.append(" AND v.C_BPartner_ID<>p.C_BPartner_ID) ")
 			.append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Invoice.BPartner<->Payment.BPartner Mismatch=" + no);
 			
 		//	TrxType
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET TrxType='S' "	//	MPayment.TRXTYPE_Sales
-			+ "WHERE TrxType IS NULL "
-			+ "AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET TrxType='S' ")	//	MPayment.TRXTYPE_Sales
+			.append("WHERE TrxType IS NULL ")
+			.append("AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("TrxType Default=" + no);
 		
 		//	TenderType
-		sql = new StringBuffer("UPDATE I_Payment "
-			+ "SET TenderType='K' "	//	MPayment.TENDERTYPE_Check
-			+ "WHERE TenderType IS NULL "
-			+ "AND I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder("UPDATE I_Payment ")
+			.append("SET TenderType='K' ")	//	MPayment.TENDERTYPE_Check
+			.append("WHERE TenderType IS NULL ")
+			.append("AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("TenderType Default=" + no);
 
 		//	Document Type
-		sql = new StringBuffer ("UPDATE I_Payment i "
-			  + "SET C_DocType_ID=(SELECT C_DocType_ID FROM C_DocType d WHERE d.Name=i.DocTypeName"
-			  + " AND d.DocBaseType IN ('ARR','APP') AND i.AD_Client_ID=d.AD_Client_ID) "
-			  + "WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment i ")
+			  .append("SET C_DocType_ID=(SELECT C_DocType_ID FROM C_DocType d WHERE d.Name=i.DocTypeName")
+			  .append(" AND d.DocBaseType IN ('ARR','APP') AND i.AD_Client_ID=d.AD_Client_ID) ")
+			  .append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("Set DocType=" + no);
-		sql = new StringBuffer ("UPDATE I_Payment "
-			  + "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocTypeName, ' "
-			  + "WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment ")
+			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocTypeName, ' ")
+			  .append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid DocTypeName=" + no);
-		sql = new StringBuffer ("UPDATE I_Payment "
-			  + "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No DocType, ' "
-			  + "WHERE C_DocType_ID IS NULL"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment ")
+			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No DocType, ' ")
+			  .append("WHERE C_DocType_ID IS NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("No DocType=" + no);
@@ -407,9 +407,9 @@ public class ImportPayment extends SvrProcess
 		commitEx();
 		
 		//Import Bank Statement
-		sql = new StringBuffer("SELECT * FROM I_Payment"
-			+ " WHERE I_IsImported='N'"
-			+ " ORDER BY C_BankAccount_ID, CheckNo, DateTrx, R_AuthCode");
+		sql = new StringBuilder("SELECT * FROM I_Payment")
+			.append(" WHERE I_IsImported='N'")
+			.append(" ORDER BY C_BankAccount_ID, CheckNo, DateTrx, R_AuthCode");
 			
 		MBankAccount account = null;
 		PreparedStatement pstmt = null;
@@ -526,9 +526,9 @@ public class ImportPayment extends SvrProcess
 		}
 		
 		//	Set Error to indicator to not imported
-		sql = new StringBuffer ("UPDATE I_Payment "
-			+ "SET I_IsImported='N', Updated=SysDate "
-			+ "WHERE I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_Payment ")
+			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");
 		//

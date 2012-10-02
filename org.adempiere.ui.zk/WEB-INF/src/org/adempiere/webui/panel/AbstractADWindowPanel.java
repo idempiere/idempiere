@@ -1025,6 +1025,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		    FDialog.warn(curWindowNo, "TabSwitchJumpGo", title);
 		    if (callback != null)
 				callback.onCallback(false);
+		    return;
 		}
 
 		IADTabpanel oldTabpanel = curTabpanel;

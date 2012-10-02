@@ -30,7 +30,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120928L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_GL (Properties ctx, int C_AcctSchema_GL_ID, String trxName)
@@ -41,11 +41,9 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 			setC_AcctSchema_ID (0);
 			setCommitmentOffset_Acct (0);
 			setCommitmentOffsetSales_Acct (0);
-			setIncomeSummary_Acct (0);
 			setIntercompanyDueFrom_Acct (0);
 			setIntercompanyDueTo_Acct (0);
 			setPPVOffset_Acct (0);
-			setRetainedEarning_Acct (0);
 			setUseCurrencyBalancing (false);
 			setUseSuspenseBalancing (false);
 			setUseSuspenseError (false);
@@ -80,9 +78,23 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
       return sb.toString();
     }
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException
+	/** Set C_AcctSchema_GL_UU.
+		@param C_AcctSchema_GL_UU C_AcctSchema_GL_UU	  */
+	public void setC_AcctSchema_GL_UU (String C_AcctSchema_GL_UU)
+	{
+		set_Value (COLUMNNAME_C_AcctSchema_GL_UU, C_AcctSchema_GL_UU);
+	}
+
+	/** Get C_AcctSchema_GL_UU.
+		@return C_AcctSchema_GL_UU	  */
+	public String getC_AcctSchema_GL_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_AcctSchema_GL_UU);
+	}
+
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
     {
-		return (I_C_AcctSchema)MTable.get(getCtx(), I_C_AcctSchema.Table_Name)
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
 			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
 
 	/** Set Accounting Schema.
@@ -191,31 +203,6 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getIncomeSummary_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getIncomeSummary_Acct(), get_TrxName());	}
-
-	/** Set Income Summary Acct.
-		@param IncomeSummary_Acct 
-		Income Summary Account 
-	  */
-	public void setIncomeSummary_Acct (int IncomeSummary_Acct)
-	{
-		set_Value (COLUMNNAME_IncomeSummary_Acct, Integer.valueOf(IncomeSummary_Acct));
-	}
-
-	/** Get Income Summary Acct.
-		@return Income Summary Account 
-	  */
-	public int getIncomeSummary_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_IncomeSummary_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getIntercompanyDueFrom_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -291,28 +278,6 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getRetainedEarning_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getRetainedEarning_Acct(), get_TrxName());	}
-
-	/** Set Retained Earning Acct.
-		@param RetainedEarning_Acct Retained Earning Acct	  */
-	public void setRetainedEarning_Acct (int RetainedEarning_Acct)
-	{
-		set_Value (COLUMNNAME_RetainedEarning_Acct, Integer.valueOf(RetainedEarning_Acct));
-	}
-
-	/** Get Retained Earning Acct.
-		@return Retained Earning Acct	  */
-	public int getRetainedEarning_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_RetainedEarning_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getSuspenseBalancing_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -330,28 +295,6 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	public int getSuspenseBalancing_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SuspenseBalancing_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getSuspenseError_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getSuspenseError_Acct(), get_TrxName());	}
-
-	/** Set Suspense Error Acct.
-		@param SuspenseError_Acct Suspense Error Acct	  */
-	public void setSuspenseError_Acct (int SuspenseError_Acct)
-	{
-		set_Value (COLUMNNAME_SuspenseError_Acct, Integer.valueOf(SuspenseError_Acct));
-	}
-
-	/** Get Suspense Error Acct.
-		@return Suspense Error Acct	  */
-	public int getSuspenseError_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_SuspenseError_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

@@ -66,14 +66,15 @@ public class NoteDelete extends SvrProcess
 	{
 		log.info("doIt - AD_User_ID=" + p_AD_User_ID);
 		
-		String sql = "DELETE FROM AD_Note WHERE AD_Client_ID=" + getAD_Client_ID();
+		StringBuilder sql = new StringBuilder("DELETE FROM AD_Note WHERE AD_Client_ID=").append(getAD_Client_ID());
 		if (p_AD_User_ID > 0)
-			sql += " AND AD_User_ID=" + p_AD_User_ID;
+			sql.append(" AND AD_User_ID=").append(p_AD_User_ID);
 		if (p_KeepLogDays > 0)
-			sql += " AND (Created+" + p_KeepLogDays + ") < SysDate";
+			sql.append(" AND (Created+").append(p_KeepLogDays).append(") < SysDate");
 		//
-		int no = DB.executeUpdate(sql, get_TrxName());
-		return "@Deleted@ = " + no;
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
+		StringBuilder msgreturn = new StringBuilder("@Deleted@ = ").append(no);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	NoteDelete

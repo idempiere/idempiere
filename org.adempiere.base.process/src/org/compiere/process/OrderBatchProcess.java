@@ -102,8 +102,8 @@ public class OrderBatchProcess extends SvrProcess
 			throw new AdempiereUserError("@NotFound@: @DocAction@");
 		
 		//
-		StringBuffer sql = new StringBuffer("SELECT * FROM C_Order o "
-			+ " WHERE o.C_DocTypeTarget_ID=? AND o.DocStatus=? ");
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_Order o ")
+			.append(" WHERE o.C_DocTypeTarget_ID=? AND o.DocStatus=? ");
 		if (p_IsSelfService != null && p_IsSelfService.length() == 1)
 			sql.append(" AND o.IsSelfService='").append(p_IsSelfService).append("'");
 		if (p_C_BPartner_ID != 0)
@@ -159,7 +159,8 @@ public class OrderBatchProcess extends SvrProcess
 		{
 			pstmt = null;
 		}
-		return "@Updated@=" + counter + ", @Errors@=" + errCounter;
+		StringBuilder msgreturn = new StringBuilder("@Updated@=").append(counter).append(", @Errors@=").append(errCounter);
+		return msgreturn.toString();
 	}	//	doIt
 	
 	/**

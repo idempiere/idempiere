@@ -31,11 +31,11 @@ public interface I_C_Tax_Acct
     public static final String Table_Name = "C_Tax_Acct";
 
     /** AD_Table_ID=399 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 399;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel =  - Client - Org 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
@@ -75,7 +75,7 @@ public interface I_C_Tax_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -93,6 +93,15 @@ public interface I_C_Tax_Acct
 	  */
 	public int getCreatedBy();
 
+    /** Column name C_Tax_Acct_UU */
+    public static final String COLUMNNAME_C_Tax_Acct_UU = "C_Tax_Acct_UU";
+
+	/** Set C_Tax_Acct_UU	  */
+	public void setC_Tax_Acct_UU (String C_Tax_Acct_UU);
+
+	/** Get C_Tax_Acct_UU	  */
+	public String getC_Tax_Acct_UU();
+
     /** Column name C_Tax_ID */
     public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
 
@@ -106,7 +115,7 @@ public interface I_C_Tax_Acct
 	  */
 	public int getC_Tax_ID();
 
-	public I_C_Tax getC_Tax() throws RuntimeException;
+	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -165,36 +174,6 @@ public interface I_C_Tax_Acct
 	public int getT_Expense_Acct();
 
 	public I_C_ValidCombination getT_Expense_A() throws RuntimeException;
-
-    /** Column name T_Liability_Acct */
-    public static final String COLUMNNAME_T_Liability_Acct = "T_Liability_Acct";
-
-	/** Set Tax Liability.
-	  * Account for Tax declaration liability
-	  */
-	public void setT_Liability_Acct (int T_Liability_Acct);
-
-	/** Get Tax Liability.
-	  * Account for Tax declaration liability
-	  */
-	public int getT_Liability_Acct();
-
-	public I_C_ValidCombination getT_Liability_A() throws RuntimeException;
-
-    /** Column name T_Receivables_Acct */
-    public static final String COLUMNNAME_T_Receivables_Acct = "T_Receivables_Acct";
-
-	/** Set Tax Receivables.
-	  * Account for Tax credit after tax declaration
-	  */
-	public void setT_Receivables_Acct (int T_Receivables_Acct);
-
-	/** Get Tax Receivables.
-	  * Account for Tax credit after tax declaration
-	  */
-	public int getT_Receivables_Acct();
-
-	public I_C_ValidCombination getT_Receivables_A() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

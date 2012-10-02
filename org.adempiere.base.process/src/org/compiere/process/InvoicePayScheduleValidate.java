@@ -84,12 +84,12 @@ public class InvoicePayScheduleValidate extends SvrProcess
 				schedule[i].saveEx();				
 			}
 		}
-		String msg = "@OK@";
+		StringBuilder msg = new StringBuilder("@OK@");
 		if (!valid)
-			msg = "@GrandTotal@ = " + invoice.getGrandTotal() 
-				+ " <> @Total@ = " + total 
-				+ "  - @Difference@ = " + invoice.getGrandTotal().subtract(total); 
-		return Msg.parseTranslation(getCtx(), msg);
+			msg = new StringBuilder("@GrandTotal@ = ").append(invoice.getGrandTotal()) 
+				.append(" <> @Total@ = ").append(total) 
+				.append("  - @Difference@ = ").append(invoice.getGrandTotal().subtract(total)); 
+		return Msg.parseTranslation(getCtx(), msg.toString());
 	}	//	doIt
 
 }	//	InvoicePayScheduleValidate

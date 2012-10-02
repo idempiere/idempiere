@@ -107,10 +107,10 @@ public class ASPGenerateLevel extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("ASP_Status=" + p_ASP_Status 
-			+ ", AD_Menu_ID=" + p_AD_Menu_ID
-			+ ", IsGenerateFields=" + p_IsGenerateFields
-			);
+		StringBuilder msglog = new StringBuilder("ASP_Status=").append(p_ASP_Status) 
+				.append(", AD_Menu_ID=").append(p_AD_Menu_ID)
+				.append(", IsGenerateFields=").append(p_IsGenerateFields);
+		log.info(msglog.toString());
 		
 		MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
 		int AD_Tree_ID = clientInfo.getAD_Tree_Menu_ID();

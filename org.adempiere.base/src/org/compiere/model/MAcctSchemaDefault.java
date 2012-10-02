@@ -84,26 +84,31 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default
 	 *	@param C_Currency_ID currency
 	 *	@return gain acct
 	 */
-	public int getRealizedGain_Acct (int C_Currency_ID)
-	{
-		MCurrencyAcct acct = MCurrencyAcct.get (this, C_Currency_ID);
-		if (acct != null)
-			return acct.getRealizedGain_Acct(); 
-		return super.getRealizedGain_Acct();
-	}	//	getRealizedGain_Acct
+//    IDEMPIERE-362 Hide things that don't work on iDempiere
+	
+//	public int getRealizedGain_Acct (int C_Currency_ID)
+//	{
+//		MCurrencyAcct acct = MCurrencyAcct.get (this, C_Currency_ID);
+//		if (acct != null)
+//			return acct.getRealizedGain_Acct(); 
+//		return super.getRealizedGain_Acct();
+//	}	//	getRealizedGain_Acct
 	
 	/**
 	 * 	Get Realized Loss Acct for currency
 	 *	@param C_Currency_ID currency
 	 *	@return loss acct
 	 */
-	public int getRealizedLoss_Acct (int C_Currency_ID) 
-	{
-		MCurrencyAcct acct = MCurrencyAcct.get (this, C_Currency_ID);
-		if (acct != null)
-			return acct.getRealizedLoss_Acct(); 
-		return super.getRealizedLoss_Acct();
-	}	//	getRealizedLoss_Acct
+	
+//  IDEMPIERE-362 Hide things that don't work on iDempiere
+	
+//	public int getRealizedLoss_Acct (int C_Currency_ID) 
+//	{
+//		MCurrencyAcct acct = MCurrencyAcct.get (this, C_Currency_ID);
+//		if (acct != null)
+//			return acct.getRealizedLoss_Acct(); 
+//		return super.getRealizedLoss_Acct();
+//	}	//	getRealizedLoss_Acct
 
 	/**
 	 * 	Get Acct Info list 

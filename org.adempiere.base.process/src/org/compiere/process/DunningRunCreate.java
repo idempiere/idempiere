@@ -135,39 +135,41 @@ public class DunningRunCreate extends SvrProcess
 	private int addInvoices(MDunningLevel level)
 	{
 		int count = 0;
-		String sql = "SELECT i.C_Invoice_ID, i.C_Currency_ID,"
-			+ " i.GrandTotal*i.MultiplierAP,"
-			+ " invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)*MultiplierAP,"
-			+ " COALESCE(daysBetween(?,ips.DueDate),paymentTermDueDays(i.C_PaymentTerm_ID,i.DateInvoiced,?))," // ##1/2
-			+ " i.IsInDispute, i.C_BPartner_ID, i.C_InvoicePaySchedule_ID "
-			+ "FROM C_Invoice_v i "
-			+ " LEFT OUTER JOIN C_InvoicePaySchedule ips ON (i.C_InvoicePaySchedule_ID=ips.C_InvoicePaySchedule_ID) "
-			+ "WHERE i.IsPaid='N' AND i.AD_Client_ID=?"				//	##3
-			+ " AND i.DocStatus IN ('CO','CL')"
-			+ " AND (i.DunningGrace IS NULL OR i.DunningGrace<?) "
-		//	Only BP(Group) with Dunning defined
-			+ " AND EXISTS (SELECT * FROM C_DunningLevel dl "
-				+ "WHERE dl.C_DunningLevel_ID=?"	//	//	##4
-				+ " AND dl.C_Dunning_ID IN "
-					+ "(SELECT COALESCE(bp.C_Dunning_ID, bpg.C_Dunning_ID) "
-					+ "FROM C_BPartner bp"
-					+ " INNER JOIN C_BP_Group bpg ON (bp.C_BP_Group_ID=bpg.C_BP_Group_ID) "
-					+ "WHERE i.C_BPartner_ID=bp.C_BPartner_ID" +
-							" AND (bp.DunningGrace IS NULL OR bp.DunningGrace<?)))";
+		
+		StringBuilder sql = new StringBuilder("SELECT i.C_Invoice_ID, i.C_Currency_ID,");
+				sql.append(" i.GrandTotal*i.MultiplierAP,");
+				sql.append(" invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)*MultiplierAP,");
+				sql.append(" COALESCE(daysBetween(?,ips.DueDate),paymentTermDueDays(i.C_PaymentTerm_ID,i.DateInvoiced,?)),");// ##1/2
+				sql.append(" i.IsInDispute, i.C_BPartner_ID, i.C_InvoicePaySchedule_ID ");
+				sql.append("FROM C_Invoice_v i ");
+				sql.append(" LEFT OUTER JOIN C_InvoicePaySchedule ips ON (i.C_InvoicePaySchedule_ID=ips.C_InvoicePaySchedule_ID) ");
+				sql.append("WHERE i.IsPaid='N' AND i.AD_Client_ID=?");	//	##3
+				sql.append(" AND i.DocStatus IN ('CO','CL')");
+				sql.append(" AND (i.DunningGrace IS NULL OR i.DunningGrace<?) ");
+					// Only BP(Group) with Dunning defined
+					sql.append(" AND EXISTS (SELECT * FROM C_DunningLevel dl ");
+						sql.append("WHERE dl.C_DunningLevel_ID=?"); //##4
+						sql.append(" AND dl.C_Dunning_ID IN ");
+							sql.append("(SELECT COALESCE(bp.C_Dunning_ID, bpg.C_Dunning_ID) ");
+							sql.append("FROM C_BPartner bp");
+							sql.append(" INNER JOIN C_BP_Group bpg ON (bp.C_BP_Group_ID=bpg.C_BP_Group_ID) ");
+							sql.append("WHERE i.C_BPartner_ID=bp.C_BPartner_ID");
+								sql.append(" AND (bp.DunningGrace IS NULL OR bp.DunningGrace<?)))");
+									
 		if (p_C_BPartner_ID != 0)
-			sql += " AND i.C_BPartner_ID=?";	//	##5
+			sql.append(" AND i.C_BPartner_ID=?");	//	##5
 		else if (p_C_BP_Group_ID != 0)
-			sql += " AND EXISTS (SELECT * FROM C_BPartner bp "
-				+ "WHERE i.C_BPartner_ID=bp.C_BPartner_ID AND bp.C_BP_Group_ID=?)";	//	##5
+			sql.append(" AND EXISTS (SELECT * FROM C_BPartner bp ")
+				.append("WHERE i.C_BPartner_ID=bp.C_BPartner_ID AND bp.C_BP_Group_ID=?)");//	##5
 		if (p_OnlySOTrx)
-			sql += " AND i.IsSOTrx='Y'";
+			sql.append(" AND i.IsSOTrx='Y'");
 		if (!p_IsAllCurrencies) 
-			sql += " AND i.C_Currency_ID=" + p_C_Currency_ID;
+			sql.append(" AND i.C_Currency_ID=").append(p_C_Currency_ID);
 		if ( p_AD_Org_ID != 0 )
-			sql += " AND i.AD_Org_ID=" + p_AD_Org_ID;
+			sql.append(" AND i.AD_Org_ID=").append(p_AD_Org_ID);
 	//	log.info(sql);
 		
-		String sql2=null;
+		String sql2= "";
 		
 		// if sequentially we must check for other levels with smaller days for
 		// which this invoice is not yet included!
@@ -175,18 +177,20 @@ public class DunningRunCreate extends SvrProcess
 			// Build a list of all topmost Dunning Levels
 			MDunningLevel[] previousLevels = level.getPreviousLevels();
 			if (previousLevels!=null && previousLevels.length>0) {
-				String sqlAppend = "";
+				StringBuilder sqlAppend = new StringBuilder();
 				for (MDunningLevel element : previousLevels) {
-					sqlAppend += " AND i.C_Invoice_ID IN (SELECT C_Invoice_ID FROM C_DunningRunLine WHERE " +
-					"C_DunningRunEntry_ID IN (SELECT C_DunningRunEntry_ID FROM C_DunningRunEntry WHERE " +
-					"C_DunningRun_ID IN (SELECT C_DunningRun_ID FROM C_DunningRunEntry WHERE " +
-					"C_DunningLevel_ID=" + element.get_ID () + ")) AND Processed<>'N')";
+					sqlAppend.append(" AND i.C_Invoice_ID IN (SELECT C_Invoice_ID FROM C_DunningRunLine WHERE ");
+					sqlAppend.append("C_DunningRunEntry_ID IN (SELECT C_DunningRunEntry_ID FROM C_DunningRunEntry WHERE ");
+					sqlAppend.append("C_DunningRun_ID IN (SELECT C_DunningRun_ID FROM C_DunningRunEntry WHERE ");
+					sqlAppend.append("C_DunningLevel_ID="); 
+					sqlAppend.append(element.get_ID ());
+					sqlAppend.append(")) AND Processed<>'N')");
 				}
-				sql += sqlAppend;
+				sql.append(sqlAppend.toString());
 			}
 		}
 		// ensure that we do only dunn what's not yet dunned, so we lookup the max of last Dunn Date which was processed
-		sql2 = "SELECT COUNT(*), COALESCE(DAYSBETWEEN(MAX(dr2.DunningDate), MAX(dr.DunningDate)),0)"		
+		sql2 = "SELECT COUNT(*), COALESCE(DAYSBETWEEN(MAX(dr2.DunningDate), MAX(dr.DunningDate)),0)"
 			+ "FROM C_DunningRun dr2, C_DunningRun dr"
 			+ " INNER JOIN C_DunningRunEntry dre ON (dr.C_DunningRun_ID=dre.C_DunningRun_ID)"
 			+ " INNER JOIN C_DunningRunLine drl ON (dre.C_DunningRunEntry_ID=drl.C_DunningRunEntry_ID) "
@@ -200,7 +204,7 @@ public class DunningRunCreate extends SvrProcess
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			pstmt.setTimestamp(1, m_run.getDunningDate());
 			pstmt.setTimestamp(2, m_run.getDunningDate());
 			pstmt.setInt (3, m_run.getAD_Client_ID());
@@ -212,7 +216,7 @@ public class DunningRunCreate extends SvrProcess
 			else if (p_C_BP_Group_ID != 0)
 				pstmt.setInt (7, p_C_BP_Group_ID);
 			//
-			pstmt2 = DB.prepareStatement (sql2, get_TrxName());
+			pstmt2 = DB.prepareStatement (sql2.toString(), get_TrxName());
 			//
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
@@ -225,9 +229,15 @@ public class DunningRunCreate extends SvrProcess
 				boolean IsInDispute = "Y".equals(rs.getString(6));
 				int C_BPartner_ID = rs.getInt(7);
 				int C_InvoicePaySchedule_ID = rs.getInt(8);
-				log.fine("DaysAfterDue: " + DaysAfterDue.intValue() + " isShowAllDue: " + level.isShowAllDue());
-				log.fine("C_Invoice_ID - DaysDue - GrandTotal: " + C_Invoice_ID + " - " + DaysDue + " - " + GrandTotal);
-				log.fine("C_InvoicePaySchedule_ID: " + C_InvoicePaySchedule_ID);
+				
+				StringBuilder msglog = new StringBuilder()
+					.append("DaysAfterDue: ").append(DaysAfterDue.intValue()).append(" isShowAllDue: ").append(level.isShowAllDue());
+				log.fine(msglog.toString());
+				msglog = new StringBuilder()
+					.append("C_Invoice_ID - DaysDue - GrandTotal: ").append(C_Invoice_ID).append(" - ").append(DaysDue).append(" - ").append(GrandTotal);
+				log.fine(msglog.toString());
+				msglog = new StringBuilder("C_InvoicePaySchedule_ID: ").append(C_InvoicePaySchedule_ID);
+				log.fine(msglog.toString());
 				//
 				// Check for Dispute
 				if (!p_IncludeInDispute && IsInDispute)
@@ -317,10 +327,12 @@ public class DunningRunCreate extends SvrProcess
 		} 
 		catch (BPartnerNoAddressException e)
 		{
-			String msg = "@Skip@ @C_Invoice_ID@ " + MInvoice.get(getCtx(), C_Invoice_ID).getDocumentInfo()
-				+ ", @C_BPartner_ID@ " + MBPartner.get(getCtx(), C_BPartner_ID).getName()
-				+ " @No@ @IsActive@ @C_BPartner_Location_ID@";
-			getProcessInfo().addLog(getProcessInfo().getAD_PInstance_ID(), null, null, msg);
+			StringBuilder msg = new StringBuilder("@Skip@ @C_Invoice_ID@ ");
+				msg.append(MInvoice.get(getCtx(), C_Invoice_ID).getDocumentInfo().toString());
+				msg.append(", @C_BPartner_ID@ ");
+				msg.append(MBPartner.get(getCtx(), C_BPartner_ID).getName().toString());
+				msg.append(" @No@ @IsActive@ @C_BPartner_Location_ID@");
+			getProcessInfo().addLog(getProcessInfo().getAD_PInstance_ID(), null, null, msg.toString());
 			return false;
 		}
 		
@@ -349,42 +361,44 @@ public class DunningRunCreate extends SvrProcess
 	 */
 	private int addPayments(MDunningLevel level)
 	{
-		String sql = "SELECT C_Payment_ID, C_Currency_ID, PayAmt,"
-			+ " paymentAvailable(C_Payment_ID), C_BPartner_ID "
-			+ "FROM C_Payment_v p "
-			+ "WHERE AD_Client_ID=?"			//	##1
-			+ " AND IsAllocated='N' AND C_BPartner_ID IS NOT NULL"
-			+ " AND C_Charge_ID IS NULL"
-			+ " AND DocStatus IN ('CO','CL')"
-			//	Only BP(Group) with Dunning defined
-			+ " AND EXISTS (SELECT * FROM C_DunningLevel dl "
-				+ "WHERE dl.C_DunningLevel_ID=?"	//	//	##2
-				+ " AND dl.C_Dunning_ID IN "
-					+ "(SELECT COALESCE(bp.C_Dunning_ID, bpg.C_Dunning_ID) "
-					+ "FROM C_BPartner bp"
-					+ " INNER JOIN C_BP_Group bpg ON (bp.C_BP_Group_ID=bpg.C_BP_Group_ID) "
-					+ "WHERE p.C_BPartner_ID=bp.C_BPartner_ID))";
+		StringBuilder sql = new StringBuilder("SELECT C_Payment_ID, C_Currency_ID, PayAmt,");
+					sql.append(" paymentAvailable(C_Payment_ID), C_BPartner_ID ");
+					sql.append("FROM C_Payment_v p ");
+					sql.append("WHERE AD_Client_ID=?"); //	##1
+					sql.append(" AND IsAllocated='N' AND C_BPartner_ID IS NOT NULL");
+					sql.append(" AND C_Charge_ID IS NULL");
+					sql.append(" AND DocStatus IN ('CO','CL')");
+					//Only BP(Group) with Dunning defined
+						sql.append(" AND EXISTS (SELECT * FROM C_DunningLevel dl ");
+							sql.append("WHERE dl.C_DunningLevel_ID=?");
+							sql.append(" AND dl.C_Dunning_ID IN ");
+								sql.append("(SELECT COALESCE(bp.C_Dunning_ID, bpg.C_Dunning_ID) ");
+								sql.append("FROM C_BPartner bp");
+								sql.append(" INNER JOIN C_BP_Group bpg ON (bp.C_BP_Group_ID=bpg.C_BP_Group_ID) ");
+								sql.append("WHERE p.C_BPartner_ID=bp.C_BPartner_ID))");
+										
 		if (p_C_BPartner_ID != 0)
-			sql += " AND C_BPartner_ID=?";		//	##3
+			sql.append(" AND C_BPartner_ID=?");		//	##3
 		else if (p_C_BP_Group_ID != 0)
-			sql += " AND EXISTS (SELECT * FROM C_BPartner bp "
-				+ "WHERE p.C_BPartner_ID=bp.C_BPartner_ID AND bp.C_BP_Group_ID=?)";	//	##3
+			sql.append(" AND EXISTS (SELECT * FROM C_BPartner bp ")
+			   .append("WHERE p.C_BPartner_ID=bp.C_BPartner_ID AND bp.C_BP_Group_ID=?)");	//	##3
 		// If it is not a statement we will add lines only if InvoiceLines exists,
 		// because we do not want to dunn for money we owe the customer!
 		if (!level.isStatement())
-			sql += " AND C_BPartner_ID IN (SELECT C_BPartner_ID FROM C_DunningRunEntry WHERE C_DunningRun_ID=" + m_run.get_ID () + ")";
+			sql.append(" AND C_BPartner_ID IN (SELECT C_BPartner_ID FROM C_DunningRunEntry WHERE C_DunningRun_ID=")
+			   .append(m_run.get_ID ()).append(")");
 		// show only receipts / if only Sales
 		if (p_OnlySOTrx)
-			sql += " AND IsReceipt='Y'";
+			sql.append(" AND IsReceipt='Y'");
 		if ( p_AD_Org_ID != 0 )
-			sql += " AND p.AD_Org_ID=" + p_AD_Org_ID;
+			sql.append(" AND p.AD_Org_ID=").append(p_AD_Org_ID);
 		
 		int count = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			pstmt.setInt (1, getAD_Client_ID());
 			pstmt.setInt (2, level.getC_DunningLevel_ID());
 			if (p_C_BPartner_ID != 0)
@@ -413,7 +427,7 @@ public class DunningRunCreate extends SvrProcess
  		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 			getProcessInfo().addLog(getProcessInfo().getAD_PInstance_ID(), null, null, e.getLocalizedMessage());
 		}
 		finally
@@ -441,10 +455,13 @@ public class DunningRunCreate extends SvrProcess
 			entry = m_run.getEntry (C_BPartner_ID, p_C_Currency_ID, p_SalesRep_ID, c_DunningLevel_ID);
 		} catch (BPartnerNoAddressException e) {
 			MPayment payment = new MPayment(getCtx(), C_Payment_ID, null);
-			String msg = "@Skip@ @C_Payment_ID@ " + payment.getDocumentInfo()
-				+ ", @C_BPartner_ID@ " + MBPartner.get(getCtx(), C_BPartner_ID).getName()
-				+ " @No@ @IsActive@ @C_BPartner_Location_ID@";
-			getProcessInfo().addLog(getProcessInfo().getAD_PInstance_ID(), null, null, msg);
+			
+			StringBuilder msg = new StringBuilder("@Skip@ @C_Payment_ID@ ");
+				msg.append(payment.getDocumentInfo().toString());
+				msg.append(", @C_BPartner_ID@ ");
+				msg.append(MBPartner.get(getCtx(), C_BPartner_ID).getName().toString());
+				msg.append(" @No@ @IsActive@ @C_BPartner_Location_ID@");			
+			getProcessInfo().addLog(getProcessInfo().getAD_PInstance_ID(), null, null, msg.toString());
 			return false;
 		}
 		if (entry.get_ID() == 0)

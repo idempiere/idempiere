@@ -78,7 +78,8 @@ public class RfQClose extends SvrProcess
 			counter++;
 		}
 		//
-		return "# " + counter;
+		StringBuilder msgreturn = new StringBuilder("# ").append(counter);
+		return msgreturn.toString();
 	}	//	doIt
 	
 }	//	RfQClose

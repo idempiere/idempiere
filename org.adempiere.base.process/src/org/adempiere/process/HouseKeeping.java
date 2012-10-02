@@ -83,10 +83,10 @@ public class HouseKeeping extends SvrProcess{
 		int nodel = 0;
 
 		if (houseKeeping.isSaveInHistoric()){
-			String sql = "INSERT INTO hst_"+tableName + " SELECT * FROM " + tableName;
+			StringBuilder sql = new StringBuilder("INSERT INTO hst_").append(tableName).append(" SELECT * FROM ").append(tableName);
 			if (whereClause != null && whereClause.length() > 0)				
-				sql = sql + " WHERE " + whereClause;
-			noins = DB.executeUpdate(sql, get_TrxName());
+				sql.append(" WHERE ").append(whereClause);
+			noins = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (noins == -1)
 				throw new AdempiereSystemError("Cannot insert into hst_"+tableName);
 			addLog("@Inserted@ " + noins);
@@ -98,15 +98,15 @@ public class HouseKeeping extends SvrProcess{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 			String dateString = dateFormat.format(date);
 			FileWriter file = new FileWriter(pathFile+File.separator+tableName+dateString+".xml");
-			String sql = "SELECT * FROM " + tableName;
+			StringBuilder sql = new StringBuilder("SELECT * FROM ").append(tableName);
 			if (whereClause != null && whereClause.length() > 0)				
-				sql = sql + " WHERE " + whereClause;
+				sql.append(" WHERE ").append(whereClause);
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			StringBuffer linexml = null;
 			try
 			{
-				pstmt = DB.prepareStatement(sql, get_TrxName());
+				pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					GenericPO po = new GenericPO(tableName, getCtx(), rs, get_TrxName());
@@ -130,10 +130,10 @@ public class HouseKeeping extends SvrProcess{
 			addLog("@Exported@ " + noexp);
 		}//XmlExport
 		
-		String sql = "DELETE FROM " + tableName;
+		StringBuilder sql = new StringBuilder("DELETE FROM ").append(tableName);
 		if (whereClause != null && whereClause.length() > 0)				
-			sql = sql + " WHERE " + whereClause;
-		nodel = DB.executeUpdate(sql, get_TrxName());
+			sql.append(" WHERE ").append(whereClause);
+		nodel = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (nodel == -1)
 			throw new AdempiereSystemError("Cannot delete from " + tableName);
 		Timestamp time = new Timestamp(date.getTime());
@@ -141,7 +141,7 @@ public class HouseKeeping extends SvrProcess{
 		houseKeeping.setLastDeleted(nodel);
 		houseKeeping.saveEx();
 		addLog("@Deleted@ " + nodel);
-		String msg = Msg.getElement(getCtx(), tableName + "_ID") + " #" + nodel;
-		return msg;
+		StringBuilder msg = new StringBuilder(Msg.getElement(getCtx(), tableName + "_ID")).append(" #").append(nodel);
+		return msg.toString();
 	}//doIt
 }

@@ -97,7 +97,8 @@ public class RfQResponseRank extends SvrProcess
 			rankResponses(rfq, responses);
 		else
 			rankLines (rfq, responses);
-		return "# " + responses.length;
+		StringBuilder msgreturn = new StringBuilder("# ").append(responses.length);
+		return msgreturn.toString();
 	}	//	doIt
 
 	

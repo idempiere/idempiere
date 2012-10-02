@@ -103,6 +103,7 @@ public class RfQCopyLines extends SvrProcess
 		}	//	copy all lines	
 		
 		//
-		return "# " + counter;
+		StringBuilder msgreturn = new StringBuilder("# ").append(counter);
+		return msgreturn.toString();
 	}	//	doIt
 }

@@ -498,7 +498,7 @@ public class VLocationDialog extends CDialog
 		//BEGIN fernandinho/ricardo
 		else if (e.getSource() == toLink)
 		{
-			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + m_location.getMapsLocation();
+			String urlString = MLocation.LOCATION_MAPS_URL_PREFIX + getFullAdress();
 			String message = null;
 
 			try
@@ -520,7 +520,7 @@ public class VLocationDialog extends CDialog
 
 				String urlString = MLocation.LOCATION_MAPS_ROUTE_PREFIX +
 						         MLocation.LOCATION_MAPS_SOURCE_ADDRESS + orgLocation.getMapsLocation() + //org
-						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + m_location.getMapsLocation(); //partner
+						         MLocation.LOCATION_MAPS_DESTINATION_ADDRESS + getFullAdress(); //partner
 				String message = null;
 				try
 				{
@@ -803,4 +803,25 @@ public class VLocationDialog extends CDialog
 
 	}
 
+	/** returns a string that contains all fields of current form */
+	String getFullAdress()
+	{
+		MRegion region = null;
+
+		if (fRegion.getSelectedItem()!=null)
+			region = new MRegion(Env.getCtx(), ((MRegion)fRegion.getSelectedItem()).getC_Region_ID(), null);
+
+		MCountry c = (MCountry)fCountry.getSelectedItem();
+
+		String address = "";
+		address = address + (fAddress1.getText() != null ? fAddress1.getText() + ", " : "");
+		address = address + (fAddress2.getText() != null ? fAddress2.getText() + ", " : "");
+		address = address + (fCity.getText() != null ? fCity.getText() + ", " : "");
+		if (region != null)
+			address = address + (region.getName() != null ? region.getName() + ", " : "");
+
+		address = address + (c.getName() != null ? c.getName() : "");
+		return address.replace(" ", "+");
+	}
+	
 }	//	VLocationDialog

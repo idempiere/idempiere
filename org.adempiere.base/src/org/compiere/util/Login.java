@@ -1464,13 +1464,13 @@ public class Login
 		}
 		else
 		{
+			boolean foundLockedAccount = false;
 			for (MUser user : users) 
 			{
 				if (user.isLocked())
 				{
-					// User account '{0}' is locked, please contact the system administrator
-					loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});
-					break;
+					foundLockedAccount = true;
+					continue;
 				}
 				
 				int count = user.getFailedLoginCount() + 1;
@@ -1479,7 +1479,7 @@ public class Login
 				int MAX_LOGIN_ATTEMPT = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_LOGIN_ATTEMPT, 0);
 				if (MAX_LOGIN_ATTEMPT > 0 && count >= MAX_LOGIN_ATTEMPT)
 				{
-					// Reached the maximum number of login attempts, user account '{0}' is locked
+					// Reached the maximum number of login attempts, user account ({0}) is locked
 					loginErrMsg = Msg.getMsg(m_ctx, "ReachedMaxLoginAttempts", new Object[] {app_user});
 					reachMaxAttempt = true;
 				}
@@ -1499,6 +1499,12 @@ public class Login
 				user.setDateAccountLocked(user.isLocked() ? new Timestamp(now) : null);
 				if (!user.save())
 					log.severe("Failed to update user record with increase failed login count");
+			}
+			
+			if (loginErrMsg == null && foundLockedAccount)
+			{
+				// User account ({0}) is locked, please contact the system administrator
+				loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});				
 			}
 		}
 		return retValue;

@@ -124,7 +124,8 @@ public class TabCreateFields extends SvrProcess
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		return "@Created@ #" + count;
+		StringBuilder msgreturn = new StringBuilder("@Created@ #").append(count);
+		return msgreturn.toString();
 	}	//	doIt
 	
 }	//	TabCreateFields

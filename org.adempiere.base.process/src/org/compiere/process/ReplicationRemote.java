@@ -152,21 +152,21 @@ public class ReplicationRemote extends SvrProcess
 	 */
 	private void setupRemoteAD_Sequence (BigDecimal IDRangeStart) throws Exception
 	{
-		String sql = "UPDATE AD_Sequence SET StartNo = " + IDRangeStart
-			+ " WHERE IsTableID='Y' AND StartNo < " + IDRangeStart;
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE AD_Sequence SET StartNo = ").append(IDRangeStart)
+			.append(" WHERE IsTableID='Y' AND StartNo < ").append(IDRangeStart);
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no == -1)
 			throw new Exception("setupRemoteAD_Sequence_Start");
 		//
-		sql = "UPDATE AD_Sequence SET CurrentNext = " + IDRangeStart
-			+ " WHERE IsTableID='Y' AND CurrentNext < " + IDRangeStart;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE AD_Sequence SET CurrentNext = ").append(IDRangeStart)
+			.append(" WHERE IsTableID='Y' AND CurrentNext < ").append(IDRangeStart);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no == -1)
 			throw new Exception("setupRemoteAD_Sequence_Next");
 		//
-		sql = "UPDATE AD_Sequence SET CurrentNextSys = -1"
-			+ " WHERE IsTableID='Y' AND CurrentNextSys <> -1";
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE AD_Sequence SET CurrentNextSys = -1")
+			.append(" WHERE IsTableID='Y' AND CurrentNextSys <> -1");
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no == -1)
 			throw new Exception("setupRemoteAD_Sequence_Sys");
 	}	//	setupRemoteAD_Sequence
@@ -185,17 +185,17 @@ public class ReplicationRemote extends SvrProcess
 		if (Suffix == null)
 			Suffix = "";
 		//	DocNoSequence_ID
-		String sql = "UPDATE AD_Sequence SET Prefix=" + DB.TO_STRING(Prefix) + ", Suffix=" + DB.TO_STRING(Suffix)
-			+ " WHERE AD_Sequence_ID IN (SELECT DocNoSequence_ID FROM C_DocType"
-			+ " WHERE AD_Client_ID=" + AD_Client_ID + " AND DocNoSequence_ID IS NOT NULL)";
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE AD_Sequence SET Prefix=").append(DB.TO_STRING(Prefix)).append(", Suffix=").append(DB.TO_STRING(Suffix))
+			.append(" WHERE AD_Sequence_ID IN (SELECT DocNoSequence_ID FROM C_DocType")
+			.append(" WHERE AD_Client_ID=").append(AD_Client_ID).append(" AND DocNoSequence_ID IS NOT NULL)");
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no == -1)
 			throw new Exception("setupRemoteC_DocType_DocNo");
 		//	 BatchNoSequence_ID
-		sql = "UPDATE AD_Sequence SET Prefix=" + DB.TO_STRING(Prefix) + ", Suffix=" + DB.TO_STRING(Suffix)
-			+ " WHERE AD_Sequence_ID IN (SELECT BatchNoSequence_ID FROM C_DocType"
-			+ " WHERE AD_Client_ID=" + AD_Client_ID + " AND BatchNoSequence_ID IS NOT NULL)";
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE AD_Sequence SET Prefix=").append(DB.TO_STRING(Prefix)).append(", Suffix=").append(DB.TO_STRING(Suffix))
+			.append(" WHERE AD_Sequence_ID IN (SELECT BatchNoSequence_ID FROM C_DocType")
+			.append(" WHERE AD_Client_ID=").append(AD_Client_ID).append(" AND BatchNoSequence_ID IS NOT NULL)");
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no == -1)
 			throw new Exception("setupRemoteC_DocType_Batch");
 	}	//	setupRemoteC_DocType
@@ -208,9 +208,9 @@ public class ReplicationRemote extends SvrProcess
 	 */
 	private void setupRemoteAD_Table(String TableName, String ReplicationType) throws Exception
 	{
-		String sql = "UPDATE AD_Table SET ReplicationType = '" + ReplicationType
-			+ "' WHERE TableName='" + TableName + "' AND ReplicationType <> '" + ReplicationType + "'";
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE AD_Table SET ReplicationType = '").append(ReplicationType)
+			.append("' WHERE TableName='").append(TableName).append("' AND ReplicationType <> '").append(ReplicationType).append("'");
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no == -1)
 			throw new Exception("setupRemoteAD_Table");
 	}	//	setupRemoteAD_Table

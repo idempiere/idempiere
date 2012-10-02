@@ -26,6 +26,7 @@ import org.compiere.apps.ADialog;
 import org.compiere.apps.APanel;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridTab;
+import org.compiere.model.MTable;
 import org.compiere.swing.CTabbedPane;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -272,12 +273,15 @@ public class VTabbedPane extends CTabbedPane
 			if (oldC != null && oldC instanceof GridController)
 			{
 				GridController oldGC = (GridController)oldC;
-				if (newGC.getTabLevel() > oldGC.getTabLevel()+1)
+            	int zeroValid = (MTable.isZeroIDTable(oldGC.getMTab().getTableName()) ? 1 : 0);
+				if ((newGC.getTabLevel() > oldGC.getTabLevel()+1)
+					|| (newGC.getTabLevel() > oldGC.getTabLevel() && oldGC.getMTab().getRecord_ID()+zeroValid <=0)) // TabLevel increase and parent ID <=0 IDEMPIERE 382
 				{
 					//  validate
 					//	Search for right tab
 					GridController rightGC = null;
-					boolean canJump = true;
+					//boolean canJump = true;
+					boolean canJump = oldGC.getMTab().getRecord_ID()+zeroValid <=0 ? false : true;	// IDEMPIERE 382
 					int currentLevel = newGC.getTabLevel();
 					for (int i = index-1; i >=0; i--)
 					{

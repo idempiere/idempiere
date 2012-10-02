@@ -29,7 +29,7 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120928L;
 
     /** Standard Constructor */
     public X_M_Warehouse_Acct (Properties ctx, int M_Warehouse_Acct_ID, String trxName)
@@ -40,9 +40,6 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 			setC_AcctSchema_ID (0);
 			setM_Warehouse_ID (0);
 			setW_Differences_Acct (0);
-			setW_InvActualAdjust_Acct (0);
-			setW_Inventory_Acct (0);
-			setW_Revaluation_Acct (0);
         } */
     }
 
@@ -74,9 +71,9 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
       return sb.toString();
     }
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
     {
-		return (I_C_AcctSchema)MTable.get(getCtx(), I_C_AcctSchema.Table_Name)
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
 			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
 
 	/** Set Accounting Schema.
@@ -102,9 +99,23 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 		return ii.intValue();
 	}
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException
+	/** Set M_Warehouse_Acct_UU.
+		@param M_Warehouse_Acct_UU M_Warehouse_Acct_UU	  */
+	public void setM_Warehouse_Acct_UU (String M_Warehouse_Acct_UU)
+	{
+		set_Value (COLUMNNAME_M_Warehouse_Acct_UU, M_Warehouse_Acct_UU);
+	}
+
+	/** Get M_Warehouse_Acct_UU.
+		@return M_Warehouse_Acct_UU	  */
+	public String getM_Warehouse_Acct_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_Warehouse_Acct_UU);
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_Warehouse_ID(), get_TrxName());	}
 
 	/** Set Warehouse.
@@ -150,81 +161,6 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	public int getW_Differences_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_W_Differences_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getW_InvActualAdjust_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getW_InvActualAdjust_Acct(), get_TrxName());	}
-
-	/** Set Inventory Adjustment.
-		@param W_InvActualAdjust_Acct 
-		Account for Inventory value adjustments for Actual Costing
-	  */
-	public void setW_InvActualAdjust_Acct (int W_InvActualAdjust_Acct)
-	{
-		set_Value (COLUMNNAME_W_InvActualAdjust_Acct, Integer.valueOf(W_InvActualAdjust_Acct));
-	}
-
-	/** Get Inventory Adjustment.
-		@return Account for Inventory value adjustments for Actual Costing
-	  */
-	public int getW_InvActualAdjust_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_W_InvActualAdjust_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getW_Inventory_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getW_Inventory_Acct(), get_TrxName());	}
-
-	/** Set (Not Used).
-		@param W_Inventory_Acct 
-		Warehouse Inventory Asset Account - Currently not used
-	  */
-	public void setW_Inventory_Acct (int W_Inventory_Acct)
-	{
-		set_Value (COLUMNNAME_W_Inventory_Acct, Integer.valueOf(W_Inventory_Acct));
-	}
-
-	/** Get (Not Used).
-		@return Warehouse Inventory Asset Account - Currently not used
-	  */
-	public int getW_Inventory_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_W_Inventory_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getW_Revaluation_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getW_Revaluation_Acct(), get_TrxName());	}
-
-	/** Set Inventory Revaluation.
-		@param W_Revaluation_Acct 
-		Account for Inventory Revaluation
-	  */
-	public void setW_Revaluation_Acct (int W_Revaluation_Acct)
-	{
-		set_Value (COLUMNNAME_W_Revaluation_Acct, Integer.valueOf(W_Revaluation_Acct));
-	}
-
-	/** Get Inventory Revaluation.
-		@return Account for Inventory Revaluation
-	  */
-	public int getW_Revaluation_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_W_Revaluation_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
