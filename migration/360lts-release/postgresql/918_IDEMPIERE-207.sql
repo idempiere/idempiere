@@ -1383,7 +1383,7 @@ ALTER TABLE GL_JournalGeneratorSource ADD COLUMN GL_JournalGeneratorSource_UU VA
 
 -- Sep 24, 2012 1:52:08 PM COT
 -- IDEMPIERE-207 GL Journal Generator
-CREATE UNIQUE INDEX GL_JournalGeneratorSource_U_uu_idx ON gl_journalgeneratorsource(GL_JournalGeneratorSource_UU)
+CREATE UNIQUE INDEX GL_JournalGeneratorSour_uu_idx ON gl_journalgeneratorsource(GL_JournalGeneratorSource_UU)
 ;
 
 -- Sep 24, 2012 2:13:33 PM COT
