@@ -203,10 +203,8 @@ public class MJournal extends X_GL_Journal implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else{
-			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
-			setDescription(msgd.toString());
-		}	
+		else
+			setDescription(desc + " | " + description);
 	}
 	
 	/**************************************************************************
@@ -281,10 +279,10 @@ public class MJournal extends X_GL_Journal implements DocAction
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		StringBuilder sql = new StringBuilder("UPDATE GL_JournalLine SET Processed='")
-			.append((processed ? "Y" : "N"))
-			.append("' WHERE GL_Journal_ID=").append(getGL_Journal_ID());
-		int noLine = DB.executeUpdate(sql.toString(), get_TrxName());
+		String sql = "UPDATE GL_JournalLine SET Processed='"
+			+ (processed ? "Y" : "N")
+			+ "' WHERE GL_Journal_ID=" + getGL_Journal_ID();
+		int noLine = DB.executeUpdate(sql, get_TrxName());
 		log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
 
@@ -374,11 +372,11 @@ public class MJournal extends X_GL_Journal implements DocAction
 	private boolean updateBatch()
 	{
 		if (getGL_JournalBatch_ID()!=0) {	// idempiere 344 - nmicoud
-			StringBuilder sql = new StringBuilder("UPDATE GL_JournalBatch jb")
-					.append(" SET (TotalDr, TotalCr) = (SELECT COALESCE(SUM(TotalDr),0), COALESCE(SUM(TotalCr),0)")
-					.append(" FROM GL_Journal j WHERE j.IsActive='Y' AND jb.GL_JournalBatch_ID=j.GL_JournalBatch_ID) ")
-					.append("WHERE GL_JournalBatch_ID=").append(getGL_JournalBatch_ID());
-			int no = DB.executeUpdate(sql.toString(), get_TrxName());
+			String sql = "UPDATE GL_JournalBatch jb"
+					+ " SET (TotalDr, TotalCr) = (SELECT COALESCE(SUM(TotalDr),0), COALESCE(SUM(TotalCr),0)"
+					+ " FROM GL_Journal j WHERE j.IsActive='Y' AND jb.GL_JournalBatch_ID=j.GL_JournalBatch_ID) "
+					+ "WHERE GL_JournalBatch_ID=" + getGL_JournalBatch_ID();
+			int no = DB.executeUpdate(sql, get_TrxName());
 			if (no != 1)
 				log.warning("afterSave - Update Batch #" + no);
 			return no == 1;
@@ -400,7 +398,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	}	//	process
 	
 	/**	Process Message 			*/
-	private StringBuffer		m_processMsg = null;
+	private String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
@@ -432,7 +430,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	public String prepareIt()
 	{
 		log.info(toString());
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
@@ -442,14 +440,14 @@ public class MJournal extends X_GL_Journal implements DocAction
 		if (period == null)
 		{
 			log.warning("No Period for " + getDateAcct());
-			m_processMsg = new StringBuffer("@PeriodNotFound@");
+			m_processMsg = "@PeriodNotFound@";
 			return DocAction.STATUS_Invalid;
 		}
 		//	Standard Period
 		if (period.getC_Period_ID() != getC_Period_ID()
 			&& period.isStandardPeriod())
 		{
-			m_processMsg = new StringBuffer("@PeriodNotValid@");
+			m_processMsg = "@PeriodNotValid@";
 			return DocAction.STATUS_Invalid;
 		}
 		boolean open = period.isOpen(dt.getDocBaseType(), getDateAcct());
@@ -457,7 +455,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		{
 			log.warning(period.getName()
 				+ ": Not open for " + dt.getDocBaseType() + " (" + getDateAcct() + ")");
-			m_processMsg = new StringBuffer("@PeriodClosed@");
+			m_processMsg = "@PeriodClosed@";
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -465,7 +463,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		MJournalLine[] lines = getLines(true);
 		if (lines.length == 0)
 		{
-			m_processMsg = new StringBuffer("@NoLines@");
+			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
 		
@@ -481,8 +479,8 @@ public class MJournal extends X_GL_Journal implements DocAction
 			// bcahya, BF [2789319] No check of Actual, Budget, Statistical attribute
 			if (!line.getAccountElementValue().isActive())
 			{
-				m_processMsg = new StringBuffer("@InActiveAccount@ - @Line@=").append(line.getLine())
-				.append(" - ").append(line.getAccountElementValue());
+				m_processMsg = "@InActiveAccount@ - @Line@=" + line.getLine()
+				+ " - " + line.getAccountElementValue();
 				return DocAction.STATUS_Invalid;
 			}
 			
@@ -493,8 +491,8 @@ public class MJournal extends X_GL_Journal implements DocAction
 					  getPostingType().equals(POSTINGTYPE_Reservation)
 					 )
 			{
-				m_processMsg = new StringBuffer("@DocControlledError@ - @Line@=").append(line.getLine())
-					.append(" - ").append(line.getAccountElementValue());
+				m_processMsg = "@DocControlledError@ - @Line@=" + line.getLine()
+					+ " - " + line.getAccountElementValue();
 				return DocAction.STATUS_Invalid;
 			}
 			//
@@ -502,22 +500,22 @@ public class MJournal extends X_GL_Journal implements DocAction
 			// bcahya, BF [2789319] No check of Actual, Budget, Statistical attribute
 			if (getPostingType().equals(POSTINGTYPE_Actual) && !line.getAccountElementValue().isPostActual())
 			{
-				m_processMsg = new StringBuffer("@PostingTypeActualError@ - @Line@=").append(line.getLine())
-				.append(" - ").append(line.getAccountElementValue());
+				m_processMsg = "@PostingTypeActualError@ - @Line@=" + line.getLine()
+				+ " - " + line.getAccountElementValue();
 				return DocAction.STATUS_Invalid;
 			}
 			
 			if (getPostingType().equals(POSTINGTYPE_Budget) && !line.getAccountElementValue().isPostBudget())
 			{
-				m_processMsg = new StringBuffer("@PostingTypeBudgetError@ - @Line@=").append(line.getLine())
-				.append(" - ").append(line.getAccountElementValue());
+				m_processMsg = "@PostingTypeBudgetError@ - @Line@=" + line.getLine()
+				+ " - " + line.getAccountElementValue();
 				return DocAction.STATUS_Invalid;
 			}
 			
 			if (getPostingType().equals(POSTINGTYPE_Statistical) && !line.getAccountElementValue().isPostStatistical())
 			{
-				m_processMsg = new StringBuffer("@PostingTypeStatisticalError@ - @Line@=").append(line.getLine())
-				.append(" - ").append(line.getAccountElementValue());
+				m_processMsg = "@PostingTypeStatisticalError@ - @Line@=" + line.getLine()
+				+ " - " + line.getAccountElementValue();
 				return DocAction.STATUS_Invalid;
 			}
 			// end BF [2789319] No check of Actual, Budget, Statistical attribute
@@ -532,7 +530,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		if (Env.ZERO.compareTo(getControlAmt()) != 0
 			&& getControlAmt().compareTo(getTotalDr()) != 0)
 		{
-			m_processMsg = new StringBuffer("@ControlAmtError@");
+			m_processMsg = "@ControlAmtError@";
 			return DocAction.STATUS_Invalid;
 		}
 		
@@ -542,7 +540,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 			MAcctSchemaGL gl = MAcctSchemaGL.get(getCtx(), getC_AcctSchema_ID());
 			if (gl == null || !gl.isUseSuspenseBalancing())
 			{
-				m_processMsg = new StringBuffer("@UnbalancedJornal@");
+				m_processMsg = "@UnbalancedJornal@";
 				return DocAction.STATUS_Invalid;
 			}
 		}
@@ -550,7 +548,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		if (!DOCACTION_Complete.equals(getDocAction())) 
 			setDocAction(DOCACTION_Complete);
 		
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 		
@@ -594,7 +592,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 				return status;
 		}
 		
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 		
@@ -606,7 +604,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = new StringBuffer(valid);
+			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -646,7 +644,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	{
 		log.info(toString());
 		// Before Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
 			return false;
 
@@ -662,7 +660,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		}
 		
 		// After Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;
 		
@@ -678,7 +676,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	{
 		log.info(toString());
 		// Before Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
 			return false;
 		
@@ -693,7 +691,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		}
 		
 		// After Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
 			return false;			
 
@@ -708,7 +706,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	public boolean reverseCorrectIt()
 	{
 		// Before reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 		
@@ -718,7 +716,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 			return false;
 
 		// After reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 		
@@ -741,14 +739,12 @@ public class MJournal extends X_GL_Journal implements DocAction
 		reverse.setC_Period_ID(getC_Period_ID());
 		reverse.setDateAcct(getDateAcct());
 		//	Reverse indicator
-		StringBuilder msgd = new StringBuilder("(->").append(getDocumentNo()).append(")");
-		reverse.addDescription(msgd.toString());
+		reverse.addDescription("(->" + getDocumentNo() + ")");
 		//FR [ 1948157  ] 
 		reverse.setReversal_ID(getGL_Journal_ID());
 		if (!reverse.save())
 			return null;
-		msgd = new StringBuilder("(").append(reverse.getDocumentNo()).append("<-)");
-		addDescription(msgd.toString());
+		addDescription("(" + reverse.getDocumentNo() + "<-)");
 		
 		//	Lines
 		reverse.copyLinesFrom(this, null, 'C');
@@ -768,7 +764,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	public boolean reverseAccrualIt()
 	{
 		// Before reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 		
@@ -778,7 +774,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 			return false;
 
 		// After reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 		
@@ -801,12 +797,12 @@ public class MJournal extends X_GL_Journal implements DocAction
 		reverse.set_ValueNoCheck ("C_Period_ID", null);		//	reset
 		reverse.setDateAcct(reverse.getDateDoc());
 		//	Reverse indicator
-		StringBuilder description ;
-		if (reverse.getDescription() == null)
-			description = new StringBuilder("** ").append(getDocumentNo()).append(" **");
+		String description = reverse.getDescription();
+		if (description == null)
+			description = "** " + getDocumentNo() + " **";
 		else
-			description = new StringBuilder(reverse.getDescription()).append(" ** ").append(getDocumentNo()).append(" **");
-		reverse.setDescription(description.toString());
+			description += " ** " + getDocumentNo() + " **";
+		reverse.setDescription(description);
 		if (!reverse.save())
 			return null;
 		
@@ -826,7 +822,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	{
 		log.info(toString());
 		// Before reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;	
 		
@@ -838,7 +834,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		setDocAction(DOCACTION_Complete);
 		
 		// After reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;
 		
@@ -852,7 +848,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")
@@ -872,7 +868,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuilder sb = new StringBuilder ("MJournal[");
+		StringBuffer sb = new StringBuffer ("MJournal[");
 		sb.append(get_ID()).append(",").append(getDescription())
 			.append(",DR=").append(getTotalDr())
 			.append(",CR=").append(getTotalCr())
@@ -887,8 +883,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		StringBuilder msgreturn = new StringBuilder(dt.getName()).append(" ").append(getDocumentNo());
-		return msgreturn.toString();
+		return dt.getName() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**
@@ -899,8 +894,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	{
 		try
 		{
-			StringBuilder msgfile = new StringBuilder(get_TableName()).append(get_ID()).append("_");
-			File temp = File.createTempFile(msgfile.toString(), ".pdf");
+			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -930,7 +924,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public String getProcessMsg()
 	{
-		return m_processMsg.toString();
+		return m_processMsg;
 	}	//	getProcessMsg
 	
 	/**

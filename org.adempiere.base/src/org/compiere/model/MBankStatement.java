@@ -148,10 +148,8 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else{
-			StringBuilder msgsd = new StringBuilder(desc).append(" | ").append(description);
-			setDescription(msgsd.toString());
-		}	
+		else
+			setDescription(desc + " | " + description);
 	}	//	addDescription
 
 	/**
@@ -164,10 +162,10 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		StringBuilder sql = new StringBuilder("UPDATE C_BankStatementLine SET Processed='")
-			.append((processed ? "Y" : "N"))
-			.append("' WHERE C_BankStatement_ID=").append(getC_BankStatement_ID());
-		int noLine = DB.executeUpdate(sql.toString(), get_TrxName());
+		String sql = "UPDATE C_BankStatementLine SET Processed='"
+			+ (processed ? "Y" : "N")
+			+ "' WHERE C_BankStatement_ID=" + getC_BankStatement_ID();
+		int noLine = DB.executeUpdate(sql, get_TrxName());
 		m_lines = null;
 		log.fine("setProcessed - " + processed + " - Lines=" + noLine);
 	}	//	setProcessed
@@ -196,8 +194,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		StringBuilder msgreturn = new StringBuilder(getBankAccount().getName()).append(" ").append(getDocumentNo());
-		return msgreturn.toString();
+		return getBankAccount().getName() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**
@@ -208,8 +205,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	{
 		try
 		{
-			StringBuilder msgfile = new StringBuilder(get_TableName()).append(get_ID()).append("_");
-			File temp = File.createTempFile(msgfile.toString(), ".pdf");
+			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -263,7 +259,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	}	//	processIt
 	
 	/**	Process Message 			*/
-	private StringBuffer		m_processMsg = null;
+	private String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
@@ -296,7 +292,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	public String prepareIt()
 	{
 		log.info(toString());
-		m_processMsg = new StringBuffer( ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -305,7 +301,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		MBankStatementLine[] lines = getLines(true);
 		if (lines.length == 0)
 		{
-			m_processMsg = new StringBuffer("@NoLines@");
+			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
 		//	Lines
@@ -326,7 +322,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		MPeriod.testPeriodOpen(getCtx(), minDate, MDocType.DOCBASETYPE_BankStatement, 0);
 		MPeriod.testPeriodOpen(getCtx(), maxDate, MDocType.DOCBASETYPE_BankStatement, 0);
 
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -373,7 +369,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 				return status;
 		}
 
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 		
@@ -405,7 +401,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = new StringBuffer(valid);
+			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
 		//
@@ -422,7 +418,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	{
 		log.info(toString());
 		// Before Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
 			return false;
 		
@@ -430,7 +426,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
 			|| DOCSTATUS_Voided.equals(getDocStatus()))
 		{
-			m_processMsg = new StringBuffer("Document Closed: ").append(getDocStatus());
+			m_processMsg = "Document Closed: " + getDocStatus();
 			setDocAction(DOCACTION_None);
 			return false;
 		}
@@ -464,16 +460,16 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			MBankStatementLine line = lines[i];
 			if (line.getStmtAmt().compareTo(Env.ZERO) != 0)
 			{
-				StringBuilder description = new StringBuilder(Msg.getMsg(getCtx(), "Voided")).append(" (")
-					.append(Msg.translate(getCtx(), "StmtAmt")).append("=").append(line.getStmtAmt());
+				String description = Msg.getMsg(getCtx(), "Voided") + " ("
+					+ Msg.translate(getCtx(), "StmtAmt") + "=" + line.getStmtAmt();
 				if (line.getTrxAmt().compareTo(Env.ZERO) != 0)
-					description.append(", ").append(Msg.translate(getCtx(), "TrxAmt")).append("=").append(line.getTrxAmt());
+					description += ", " + Msg.translate(getCtx(), "TrxAmt") + "=" + line.getTrxAmt();
 				if (line.getChargeAmt().compareTo(Env.ZERO) != 0)
-					description.append(", ").append(Msg.translate(getCtx(), "ChargeAmt")).append("=").append(line.getChargeAmt());
+					description += ", " + Msg.translate(getCtx(), "ChargeAmt") + "=" + line.getChargeAmt();
 				if (line.getInterestAmt().compareTo(Env.ZERO) != 0)
-					description.append(", ").append(Msg.translate(getCtx(), "InterestAmt")).append("=").append(line.getInterestAmt());
-				description.append(")");
-				line.addDescription(description.toString());
+					description += ", " + Msg.translate(getCtx(), "InterestAmt") + "=" + line.getInterestAmt();
+				description += ")";
+				line.addDescription(description);
 				//
 				line.setStmtAmt(Env.ZERO);
 				line.setTrxAmt(Env.ZERO);
@@ -493,7 +489,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		setStatementDifference(Env.ZERO);
 		
 		// After Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;		
 		
@@ -510,14 +506,14 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	{
 		log.info("closeIt - " + toString());
 		// Before Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
 			return false;		
 
 		setDocAction(DOCACTION_None);
 
 		// After Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
 			return false;
 		return true;
@@ -531,12 +527,12 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	{
 		log.info("reverseCorrectIt - " + toString());
 		// Before reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 		
 		// After reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 		
@@ -551,12 +547,12 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	{
 		log.info("reverseAccrualIt - " + toString());
 		// Before reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 		
 		// After reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 		
@@ -571,12 +567,12 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	{
 		log.info("reActivateIt - " + toString());
 		// Before reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;		
 		
 		// After reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;		
 		return false;
@@ -589,7 +585,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 		sb.append(getName());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")
@@ -607,7 +603,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public String getProcessMsg()
 	{
-		return m_processMsg.toString();
+		return m_processMsg;
 	}	//	getProcessMsg
 	
 	/**

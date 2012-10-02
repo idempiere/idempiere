@@ -564,10 +564,8 @@ public class MInOut extends X_M_InOut implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else{
-			StringBuilder msgsd = new StringBuilder(desc).append(" | ").append(description);
-			setDescription(msgsd.toString());
-		}	
+		else
+			setDescription(desc + " | " + description);
 	}	//	addDescription
 
 	/**
@@ -576,7 +574,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuilder sb = new StringBuilder ("MInOut[")
+		StringBuffer sb = new StringBuffer ("MInOut[")
 			.append (get_ID()).append("-").append(getDocumentNo())
 			.append(",DocStatus=").append(getDocStatus())
 			.append ("]");
@@ -590,8 +588,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		StringBuilder msgreturn = new StringBuilder(dt.getName()).append(" ").append(getDocumentNo());
-		return msgreturn.toString();
+		return dt.getName() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**
@@ -602,8 +599,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	{
 		try
 		{
-			StringBuilder msgfile = new StringBuilder(get_TableName()).append(get_ID()).append("_");
-			File temp = File.createTempFile(msgfile.toString(), ".pdf");
+			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -805,10 +801,10 @@ public class MInOut extends X_M_InOut implements DocAction
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		StringBuilder sql = new StringBuilder("UPDATE M_InOutLine SET Processed='")
-			.append((processed ? "Y" : "N"))
-			.append("' WHERE M_InOut_ID=").append(getM_InOut_ID());
-		int noLine = DB.executeUpdate(sql.toString(), get_TrxName());
+		String sql = "UPDATE M_InOutLine SET Processed='"
+			+ (processed ? "Y" : "N")
+			+ "' WHERE M_InOut_ID=" + getM_InOut_ID();
+		int noLine = DB.executeUpdate(sql, get_TrxName());
 		m_lines = null;
 		log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
@@ -1049,12 +1045,12 @@ public class MInOut extends X_M_InOut implements DocAction
 
 		if (is_ValueChanged("AD_Org_ID"))
 		{
-			StringBuilder sql = new StringBuilder("UPDATE M_InOutLine ol")
-				.append(" SET AD_Org_ID =")
-					.append("(SELECT AD_Org_ID")
-					.append(" FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) ")
-				.append("WHERE M_InOut_ID=").append(getC_Order_ID());
-			int no = DB.executeUpdate(sql.toString(), get_TrxName());
+			String sql = "UPDATE M_InOutLine ol"
+				+ " SET AD_Org_ID ="
+					+ "(SELECT AD_Org_ID"
+					+ " FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) "
+				+ "WHERE M_InOut_ID=" + getC_Order_ID();
+			int no = DB.executeUpdate(sql, get_TrxName());
 			log.fine("Lines -> #" + no);
 		}
 		return true;
@@ -1074,7 +1070,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	}	//	process
 
 	/**	Process Message 			*/
-	private StringBuffer	m_processMsg = null;
+	private String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
@@ -1107,7 +1103,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	public String prepareIt()
 	{
 		log.info(toString());
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -1116,13 +1112,13 @@ public class MInOut extends X_M_InOut implements DocAction
 		//  Order OR RMA can be processed on a shipment/receipt
 		if (getC_Order_ID() != 0 && getM_RMA_ID() != 0)
 		{
-		    m_processMsg = new StringBuffer("@OrderOrRMA@");
+		    m_processMsg = "@OrderOrRMA@";
 		    return DocAction.STATUS_Invalid;
 		}
 		//	Std Period open?
 		if (!MPeriod.isOpen(getCtx(), getDateAcct(), dt.getDocBaseType(), getAD_Org_ID()))
 		{
-			m_processMsg = new StringBuffer("@PeriodClosed@");
+			m_processMsg = "@PeriodClosed@";
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -1137,24 +1133,24 @@ public class MInOut extends X_M_InOut implements DocAction
 				MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
 				if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
 				{
-					m_processMsg = new StringBuffer("@BPartnerCreditStop@ - @TotalOpenBalance@=")
-						.append(bp.getTotalOpenBalance())
-						.append(", @SO_CreditLimit@=").append(bp.getSO_CreditLimit());
+					m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@="
+						+ bp.getTotalOpenBalance()
+						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					return DocAction.STATUS_Invalid;
 				}
 				if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus()))
 				{
-					m_processMsg = new StringBuffer("@BPartnerCreditHold@ - @TotalOpenBalance@=")
-						.append(bp.getTotalOpenBalance())
-						.append(", @SO_CreditLimit@=").append(bp.getSO_CreditLimit());
+					m_processMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@="
+						+ bp.getTotalOpenBalance()
+						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					return DocAction.STATUS_Invalid;
 				}
 				BigDecimal notInvoicedAmt = MBPartner.getNotInvoicedAmt(getC_BPartner_ID());
 				if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(notInvoicedAmt)))
 				{
-					m_processMsg = new StringBuffer("@BPartnerOverSCreditHold@ - @TotalOpenBalance@=")
-						.append(bp.getTotalOpenBalance()).append(", @NotInvoicedAmt@=").append(notInvoicedAmt)
-						.append(", @SO_CreditLimit@=").append(bp.getSO_CreditLimit());
+					m_processMsg = "@BPartnerOverSCreditHold@ - @TotalOpenBalance@="
+						+ bp.getTotalOpenBalance() + ", @NotInvoicedAmt@=" + notInvoicedAmt
+						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					return DocAction.STATUS_Invalid;
 				}
 			}
@@ -1164,7 +1160,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		MInOutLine[] lines = getLines(true);
 		if (lines == null || lines.length == 0)
 		{
-			m_processMsg = new StringBuffer("@NoLines@");
+			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
 		BigDecimal Volume = Env.ZERO;
@@ -1185,8 +1181,8 @@ public class MInOut extends X_M_InOut implements DocAction
 				continue;
 			if (product != null && product.isASIMandatory(isSOTrx()))
 			{
-				m_processMsg = new StringBuffer("@M_AttributeSet_ID@ @IsMandatory@ (@Line@ #").append(lines[i].getLine())
-						.append(", @M_Product_ID@=").append(product.getValue()).append(")");
+				m_processMsg = "@M_AttributeSet_ID@ @IsMandatory@ (@Line@ #" + lines[i].getLine() +
+								", @M_Product_ID@=" + product.getValue() + ")";
 				return DocAction.STATUS_Invalid;
 			}
 		}
@@ -1198,7 +1194,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			createConfirmation();
 		}
 
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -1244,7 +1240,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				return status;
 		}
 
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -1258,8 +1254,8 @@ public class MInOut extends X_M_InOut implements DocAction
 				if (MInOutConfirm.CONFIRMTYPE_CustomerConfirmation.equals(confirm.getConfirmType()))
 					continue;
 				//
-				m_processMsg = new StringBuffer("Open @M_InOutConfirm_ID@: ")
-					.append(confirm.getConfirmTypeName()).append(" - ").append(confirm.getDocumentNo());
+				m_processMsg = "Open @M_InOutConfirm_ID@: " +
+					confirm.getConfirmTypeName() + " - " + confirm.getDocumentNo();
 				return DocAction.STATUS_InProgress;
 			}
 		}
@@ -1269,7 +1265,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (!isApproved())
 			approveIt();
 		log.info(toString());
-		StringBuilder info = new StringBuilder();
+		StringBuffer info = new StringBuffer();
 
 		//	For all lines
 		MInOutLine[] lines = getLines(false);
@@ -1363,7 +1359,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
-							m_processMsg = new StringBuffer("Cannot correct Inventory (MA) - ").append(lastError);
+							m_processMsg = "Cannot correct Inventory (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 						if (!sameWarehouse) {
@@ -1375,7 +1371,7 @@ public class MInOut extends X_M_InOut implements DocAction
 									ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 									Env.ZERO, reservedDiff, orderedDiff, get_TrxName()))
 								{
-									m_processMsg = new StringBuffer("Cannot correct Inventory (MA) in order warehouse");
+									m_processMsg = "Cannot correct Inventory (MA) in order warehouse";
 									return DocAction.STATUS_Invalid;
 								}
 						}
@@ -1387,7 +1383,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						mtrx.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
 						if (!mtrx.save())
 						{
-							m_processMsg = new StringBuffer("Could not create Material Transaction (MA)");
+							m_processMsg = "Could not create Material Transaction (MA)";
 							return DocAction.STATUS_Invalid;
 						}
 					}
@@ -1405,7 +1401,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 						Qty, reservedDiff, orderedDiff, get_TrxName()))
 					{
-						m_processMsg = new StringBuffer("Cannot correct Inventory");
+						m_processMsg = "Cannot correct Inventory";
 						return DocAction.STATUS_Invalid;
 					}
 					if (!sameWarehouse) {
@@ -1417,7 +1413,7 @@ public class MInOut extends X_M_InOut implements DocAction
 								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 								Env.ZERO, QtySO.negate(), QtyPO.negate(), get_TrxName()))
 							{
-								m_processMsg = new StringBuffer("Cannot correct Inventory");
+								m_processMsg = "Cannot correct Inventory";
 								return DocAction.STATUS_Invalid;
 							}
 					}
@@ -1429,7 +1425,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					mtrx.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
 					if (!mtrx.save())
 					{
-						m_processMsg = new StringBuffer(CLogger.retrieveErrorString("Could not create Material Transaction"));
+						m_processMsg = CLogger.retrieveErrorString("Could not create Material Transaction");
 						return DocAction.STATUS_Invalid;
 					}
 				}
@@ -1453,7 +1449,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				}
 				if (!oLine.save())
 				{
-					m_processMsg = new StringBuffer("Could not update Order Line");
+					m_processMsg = "Could not update Order Line";
 					return DocAction.STATUS_Invalid;
 				}
 				else
@@ -1473,7 +1469,7 @@ public class MInOut extends X_M_InOut implements DocAction
                 }
                 if (!rmaLine.save())
                 {
-                    m_processMsg = new StringBuffer("Could not update RMA Line");
+                    m_processMsg = "Could not update RMA Line";
                     return DocAction.STATUS_Invalid;
                 }
             }
@@ -1500,7 +1496,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					MAsset asset = new MAsset (this, sLine, deliveryCount);
 					if (!asset.save(get_TrxName()))
 					{
-						m_processMsg = new StringBuffer("Could not create Asset");
+						m_processMsg = "Could not create Asset";
 						return DocAction.STATUS_Invalid;
 					}
 					info.append(asset.getValue());
@@ -1537,7 +1533,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							isNewMatchInv = true;
 						if (!inv.save(get_TrxName()))
 						{
-							m_processMsg = new StringBuffer(CLogger.retrieveErrorString("Could not create Inv Matching"));
+							m_processMsg = CLogger.retrieveErrorString("Could not create Inv Matching");
 							return DocAction.STATUS_Invalid;
 						}
 						if (isNewMatchInv)
@@ -1556,7 +1552,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						isNewMatchPO = true;
 					if (!po.save(get_TrxName()))
 					{
-						m_processMsg = new StringBuffer("Could not create PO Matching");
+						m_processMsg = "Could not create PO Matching";
 						return DocAction.STATUS_Invalid;
 					}
 					if (isNewMatchPO)
@@ -1584,7 +1580,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							isNewMatchPO = true;
 						if (!po.save(get_TrxName()))
 						{
-							m_processMsg = new StringBuffer("Could not create PO(Inv) Matching");
+							m_processMsg = "Could not create PO(Inv) Matching";
 							return DocAction.STATUS_Invalid;
 						}
 						if (isNewMatchPO)
@@ -1616,14 +1612,14 @@ public class MInOut extends X_M_InOut implements DocAction
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = new StringBuffer(valid);
+			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
 
 		// Set the definite document number after completed (if needed)
 		setDefiniteDocumentNo();
 
-		m_processMsg = new StringBuffer(info.toString());
+		m_processMsg = info.toString();
 		setProcessed(true);
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
@@ -1946,7 +1942,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	{
 		log.info(toString());
 		// Before Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
 			return false;
 
@@ -1954,7 +1950,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
 			|| DOCSTATUS_Voided.equals(getDocStatus()))
 		{
-			m_processMsg = new StringBuffer("Document Closed: ").append(getDocStatus());
+			m_processMsg = "Document Closed: " + getDocStatus();
 			return false;
 		}
 
@@ -1974,8 +1970,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				if (old.signum() != 0)
 				{
 					line.setQty(Env.ZERO);
-					StringBuilder msgd = new StringBuilder("Void (").append(old).append(")");
-					line.addDescription(msgd.toString());
+					line.addDescription("Void (" + old + ")");
 					line.saveEx(get_TrxName());
 				}
 			}
@@ -1991,7 +1986,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		}
 
 		// After Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;
 
@@ -2008,7 +2003,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	{
 		log.info(toString());
 		// Before Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
 			return false;
 
@@ -2016,7 +2011,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		setDocAction(DOCACTION_None);
 
 		// After Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
 			return false;
 		return true;
@@ -2030,14 +2025,14 @@ public class MInOut extends X_M_InOut implements DocAction
 	{
 		log.info(toString());
 		// Before reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (!MPeriod.isOpen(getCtx(), getDateAcct(), dt.getDocBaseType(), getAD_Org_ID()))
 		{
-			m_processMsg = new StringBuffer("@PeriodClosed@");
+			m_processMsg = "@PeriodClosed@";
 			return false;
 		}
 
@@ -2066,7 +2061,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true);
 		if (reversal == null)
 		{
-			m_processMsg = new StringBuffer("Could not create Ship Reversal");
+			m_processMsg = "Could not create Ship Reversal";
 			return false;
 		}
 		reversal.setReversal(true);
@@ -2084,7 +2079,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			rLine.setReversalLine_ID(sLines[i].getM_InOutLine_ID());
 			if (!rLine.save(get_TrxName()))
 			{
-				m_processMsg = new StringBuffer("Could not correct Ship Reversal Line");
+				m_processMsg = "Could not correct Ship Reversal Line";
 				return false;
 			}
 			//	We need to copy MA
@@ -2105,17 +2100,14 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (asset != null)
 			{
 				asset.setIsActive(false);
-				StringBuilder msgd = new StringBuilder(
-						"(").append(reversal.getDocumentNo()).append(" #").append(rLine.getLine()).append("<-)");
-				asset.addDescription(msgd.toString());
+				asset.addDescription("(" + reversal.getDocumentNo() + " #" + rLine.getLine() + "<-)");
 				asset.saveEx();
 			}
 		}
 		reversal.setC_Order_ID(getC_Order_ID());
 		// Set M_RMA_ID
 		reversal.setM_RMA_ID(getM_RMA_ID());
-		StringBuilder msgd = new StringBuilder("{->").append(getDocumentNo()).append(")");
-		reversal.addDescription(msgd.toString());
+		reversal.addDescription("{->" + getDocumentNo() + ")");
 		//FR1948157
 		reversal.setReversal_ID(getM_InOut_ID());
 		reversal.saveEx(get_TrxName());
@@ -2123,7 +2115,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (!reversal.processIt(DocAction.ACTION_Complete)
 			|| !reversal.getDocStatus().equals(DocAction.STATUS_Completed))
 		{
-			m_processMsg = new StringBuffer("Reversal ERROR: ").append(reversal.getProcessMsg());
+			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
 			return false;
 		}
 		reversal.closeIt();
@@ -2132,8 +2124,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		reversal.setDocAction(DOCACTION_None);
 		reversal.saveEx(get_TrxName());
 		//
-		msgd = new StringBuilder("(").append(reversal.getDocumentNo()).append("<-)");
-		addDescription(msgd.toString());
+		addDescription("(" + reversal.getDocumentNo() + "<-)");
 		
 		//
 		// Void Confirmations
@@ -2144,11 +2135,11 @@ public class MInOut extends X_M_InOut implements DocAction
 		voidConfirmations();
 
 		// After reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 
-		m_processMsg = new StringBuffer(reversal.getDocumentNo());
+		m_processMsg = reversal.getDocumentNo();
 		setProcessed(true);
 		setDocStatus(DOCSTATUS_Reversed);		//	 may come from void
 		setDocAction(DOCACTION_None);
@@ -2163,12 +2154,12 @@ public class MInOut extends X_M_InOut implements DocAction
 	{
 		log.info(toString());
 		// Before reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 
 		// After reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 
@@ -2183,12 +2174,12 @@ public class MInOut extends X_M_InOut implements DocAction
 	{
 		log.info(toString());
 		// Before reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;
 
 		// After reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;
 
@@ -2202,7 +2193,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(":")
@@ -2220,7 +2211,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public String getProcessMsg()
 	{
-		return m_processMsg.toString();
+		return m_processMsg;
 	}	//	getProcessMsg
 
 	/**

@@ -162,10 +162,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else{
-			StringBuilder msgreturn = new StringBuilder(desc).append(" | ").append(description);
-			setDescription(msgreturn.toString());
-		}	
+		else
+			setDescription(desc + " | " + description);
 	}	//	addDescription
 	
 	/**
@@ -184,7 +182,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuilder sb = new StringBuilder ("MInventory[");
+		StringBuffer sb = new StringBuffer ("MInventory[");
 		sb.append (get_ID())
 			.append ("-").append (getDocumentNo())
 			.append (",M_Warehouse_ID=").append(getM_Warehouse_ID())
@@ -199,8 +197,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		StringBuilder msgreturn = new StringBuilder(dt.getName()).append(" ").append(getDocumentNo());
-		return msgreturn.toString();
+		return dt.getName() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**
@@ -211,8 +208,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		try
 		{
-			StringBuilder msgfile = new StringBuilder(get_TableName()).append(get_ID()).append("_");
-			File temp = File.createTempFile(msgfile.toString(), ".pdf");
+			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -289,7 +285,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	}	//	processIt
 	
 	/**	Process Message 			*/
-	private StringBuffer	m_processMsg = null;
+	private String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
@@ -322,7 +318,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	public String prepareIt()
 	{
 		log.info(toString());
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -331,14 +327,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 		MInventoryLine[] lines = getLines(false);
 		if (lines.length == 0)
 		{
-			m_processMsg = new StringBuffer("@NoLines@");
+			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
 
 		//	TODO: Add up Amounts
 	//	setApprovalAmt();
 		
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -384,7 +380,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				return status;
 		}
 
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -444,7 +440,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 								QtyMA.negate(), Env.ZERO, Env.ZERO, get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
-							m_processMsg = new StringBuffer("Cannot correct Inventory (MA) - ").append(lastError);
+							m_processMsg = "Cannot correct Inventory (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 
@@ -456,7 +452,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							storage.setDateLastInventory(getMovementDate());
 							if (!storage.save(get_TrxName()))
 							{
-								m_processMsg = new StringBuffer("Storage not updated(2)");
+								m_processMsg = "Storage not updated(2)";
 								return DocAction.STATUS_Invalid;
 							}
 						}
@@ -474,7 +470,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							mtrx.setM_InventoryLine_ID(line.getM_InventoryLine_ID());
 							if (!mtrx.save())
 							{
-								m_processMsg = new StringBuffer("Transaction not inserted(2)");
+								m_processMsg = "Transaction not inserted(2)";
 								return DocAction.STATUS_Invalid;
 							}
 							
@@ -494,7 +490,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							line.getM_AttributeSetInstance_ID(), 0, 
 							qtyDiff, Env.ZERO, Env.ZERO, get_TrxName()))
 					{
-						m_processMsg = new StringBuffer("Cannot correct Inventory (MA)");
+						m_processMsg = "Cannot correct Inventory (MA)";
 						return DocAction.STATUS_Invalid;
 					}
 
@@ -507,7 +503,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						storage.setDateLastInventory(getMovementDate());
 						if (!storage.save(get_TrxName()))
 						{
-							m_processMsg = new StringBuffer("Storage not updated(2)");
+							m_processMsg = "Storage not updated(2)";
 							return DocAction.STATUS_Invalid;
 						}
 					}
@@ -524,7 +520,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					mtrx.setM_InventoryLine_ID(line.getM_InventoryLine_ID());
 					if (!mtrx.save())
 					{
-						m_processMsg = new StringBuffer("Transaction not inserted(2)");
+						m_processMsg = "Transaction not inserted(2)";
 						return DocAction.STATUS_Invalid;
 					}					
 				}	//	Fallback
@@ -536,7 +532,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = new StringBuffer(valid);
+			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -661,7 +657,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		log.info(toString());
 		// Before Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
 			return false;
 		
@@ -669,7 +665,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
 			|| DOCSTATUS_Voided.equals(getDocStatus()))
 		{
-			m_processMsg = new StringBuffer("Document Closed: ").append(getDocStatus());
+			m_processMsg = "Document Closed: " + getDocStatus();
 			return false;
 		}
 
@@ -692,8 +688,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				{
 					line.setQtyInternalUse(Env.ZERO);
 					line.setQtyCount(line.getQtyBook());
-					StringBuilder msgd = new StringBuilder("Void (").append(oldCount).append("/").append(oldInternal).append(")");
-					line.addDescription(msgd.toString());
+					line.addDescription("Void (" + oldCount + "/" + oldInternal + ")");
 					line.saveEx(get_TrxName());
 				}
 			}
@@ -704,7 +699,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		}
 			
 		// After Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;		
 		setProcessed(true);
@@ -720,13 +715,13 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		log.info(toString());
 		// Before Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
 			return false;
 
 		setDocAction(DOCACTION_None);
 		// After Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
 			return false;
 		return true;
@@ -740,7 +735,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		log.info(toString());
 		// Before reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 
@@ -755,8 +750,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		reversal.setIsApproved (false);
 		reversal.setPosted(false);
 		reversal.setProcessed(false);
-		StringBuilder msgd = new StringBuilder("{->").append(getDocumentNo()).append(")");
-		reversal.addDescription(msgd.toString());
+		reversal.addDescription("{->" + getDocumentNo() + ")");
 		//FR1948157
 		reversal.setReversal_ID(getM_Inventory_ID());
 		reversal.saveEx();
@@ -798,20 +792,19 @@ public class MInventory extends X_M_Inventory implements DocAction
 		//
 		if (!reversal.processIt(DocAction.ACTION_Complete))
 		{
-			m_processMsg = new StringBuffer("Reversal ERROR: ").append(reversal.getProcessMsg());
+			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
 			return false;
 		}
 		reversal.closeIt();
 		reversal.setDocStatus(DOCSTATUS_Reversed);
 		reversal.setDocAction(DOCACTION_None);
 		reversal.saveEx();
-		m_processMsg = new StringBuffer(reversal.getDocumentNo());
+		m_processMsg = reversal.getDocumentNo();
 
 		//	Update Reversed (this)
-		msgd = new StringBuilder("(").append(reversal.getDocumentNo()).append("<-)");
-		addDescription(msgd.toString());
+		addDescription("(" + reversal.getDocumentNo() + "<-)");
 		// After reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 		setProcessed(true);
@@ -831,12 +824,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		log.info(toString());
 		// Before reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 		
 		// After reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 		
@@ -851,12 +844,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		log.info(toString());
 		// Before reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;	
 		
 		// After reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;
 		
@@ -870,7 +863,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")
@@ -888,7 +881,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public String getProcessMsg()
 	{
-		return m_processMsg.toString();
+		return m_processMsg;
 	}	//	getProcessMsg
 	
 	/**

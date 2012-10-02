@@ -219,7 +219,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public static String getPDFFileName (String documentDir, int C_Invoice_ID)
 	{
-		StringBuilder sb = new StringBuilder (documentDir);
+		StringBuffer sb = new StringBuffer (documentDir);
 		if (sb.length() == 0)
 			sb.append(".");
 		if (!sb.toString().endsWith(File.separator))
@@ -825,10 +825,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else{
-			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
-			setDescription(msgd.toString());
-		}	
+		else
+			setDescription(desc + " | " + description);
 	}	//	addDescription
 
 	/**
@@ -853,9 +851,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		StringBuilder set = new StringBuilder("SET Processed='")
-			.append((processed ? "Y" : "N"))
-			.append("' WHERE C_Invoice_ID=").append(getC_Invoice_ID());
+		String set = "SET Processed='"
+			+ (processed ? "Y" : "N")
+			+ "' WHERE C_Invoice_ID=" + getC_Invoice_ID();
 		int noLine = DB.executeUpdate("UPDATE C_InvoiceLine " + set, get_TrxName());
 		int noTax = DB.executeUpdate("UPDATE C_InvoiceTax " + set, get_TrxName());
 		m_lines = null;
@@ -1023,7 +1021,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuilder sb = new StringBuilder ("MInvoice[")
+		StringBuffer sb = new StringBuffer ("MInvoice[")
 			.append(get_ID()).append("-").append(getDocumentNo())
 			.append(",GrandTotal=").append(getGrandTotal());
 		if (m_lines != null)
@@ -1039,8 +1037,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		StringBuilder msgreturn = new StringBuilder(dt.getName()).append(" ").append(getDocumentNo());
-		return msgreturn.toString();
+		return dt.getName() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 
@@ -1057,12 +1054,12 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 		if (is_ValueChanged("AD_Org_ID"))
 		{
-			StringBuilder sql = new StringBuilder("UPDATE C_InvoiceLine ol")
-				.append(" SET AD_Org_ID =")
-					.append("(SELECT AD_Org_ID")
-					.append(" FROM C_Invoice o WHERE ol.C_Invoice_ID=o.C_Invoice_ID) ")
-				.append("WHERE C_Invoice_ID=").append(getC_Invoice_ID());
-			int no = DB.executeUpdate(sql.toString(), get_TrxName());
+			String sql = "UPDATE C_InvoiceLine ol"
+				+ " SET AD_Org_ID ="
+					+ "(SELECT AD_Org_ID"
+					+ " FROM C_Invoice o WHERE ol.C_Invoice_ID=o.C_Invoice_ID) "
+				+ "WHERE C_Invoice_ID=" + getC_Invoice_ID();
+			int no = DB.executeUpdate(sql, get_TrxName());
 			log.fine("Lines -> #" + no);
 		}
 		return true;
@@ -1258,8 +1255,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		try
 		{
-			StringBuilder msgfile = new StringBuilder(get_TableName()).append(get_ID()).append("_");
-			File temp = File.createTempFile(msgfile.toString(), ".pdf");
+			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -1339,7 +1335,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	}	//	process
 
 	/**	Process Message 			*/
-	private StringBuffer	m_processMsg = null;
+	private String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
 
@@ -1372,7 +1368,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	public String prepareIt()
 	{
 		log.info(toString());
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -1382,14 +1378,14 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		MInvoiceLine[] lines = getLines(true);
 		if (lines.length == 0)
 		{
-			m_processMsg = new StringBuffer("@NoLines@");
+			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
 		//	No Cash Book
 		if (PAYMENTRULE_Cash.equals(getPaymentRule())
 			&& MCashBook.get(getCtx(), getAD_Org_ID(), getC_Currency_ID()) == null)
 		{
-			m_processMsg = new StringBuffer("@NoCashBook@");
+			m_processMsg = "@NoCashBook@";
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -1398,14 +1394,14 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			setC_DocType_ID(getC_DocTypeTarget_ID());
 		if (getC_DocType_ID() == 0)
 		{
-			m_processMsg = new StringBuffer("No Document Type");
+			m_processMsg = "No Document Type";
 			return DocAction.STATUS_Invalid;
 		}
 
 		explodeBOM();
 		if (!calculateTaxTotal())	//	setTotals
 		{
-			m_processMsg = new StringBuffer("Error calculating Tax");
+			m_processMsg = "Error calculating Tax";
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -1414,13 +1410,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		{
 			if (!createPaySchedule())
 			{
-				m_processMsg = new StringBuffer("@ErrorPaymentSchedule@");
+				m_processMsg = "@ErrorPaymentSchedule@";
 				return DocAction.STATUS_Invalid;
 			}
 		} else {
 			if (MInvoicePaySchedule.getInvoicePaySchedule(getCtx(), getC_Invoice_ID(), 0, get_TrxName()).length > 0) 
 			{
-				m_processMsg = new StringBuffer("@ErrorPaymentSchedule@");
+				m_processMsg = "@ErrorPaymentSchedule@";
 				return DocAction.STATUS_Invalid;
 			}
 		}
@@ -1437,9 +1433,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), null);
 				if ( MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()) )
 				{
-					m_processMsg = new StringBuffer("@BPartnerCreditStop@ - @TotalOpenBalance@=")
-							.append(bp.getTotalOpenBalance())
-							.append(", @SO_CreditLimit@=").append(bp.getSO_CreditLimit());
+					m_processMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@="
+							+ bp.getTotalOpenBalance()
+							+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					return DocAction.STATUS_Invalid;
 				}
 			}  
@@ -1454,13 +1450,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				String error = line.allocateLandedCosts();
 				if (error != null && error.length() > 0)
 				{
-					m_processMsg = new StringBuffer(error);
+					m_processMsg = error;
 					return DocAction.STATUS_Invalid;
 				}
 			}
 		}
 
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -1545,12 +1541,12 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				line.setPriceList (Env.ZERO);
 				line.setLineNetAmt (Env.ZERO);
 				//
-				StringBuilder description = new StringBuilder(product.getName ());
+				String description = product.getName ();
 				if (product.getDescription () != null)
-					description.append(" ").append(product.getDescription ());
+					description += " " + product.getDescription ();
 				if (line.getDescription () != null)
-					description.append(" ").append(line.getDescription ());
-				line.setDescription (description.toString());
+					description += " " + line.getDescription ();
+				line.setDescription (description);
 				line.saveEx (get_TrxName());
 			} //	for all lines with BOM
 
@@ -1568,8 +1564,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		log.fine("");
 		//	Delete Taxes
-		StringBuilder msgdb = new StringBuilder("DELETE C_InvoiceTax WHERE C_Invoice_ID=").append(getC_Invoice_ID());
-		DB.executeUpdateEx(msgdb.toString(), get_TrxName());
+		DB.executeUpdateEx("DELETE C_InvoiceTax WHERE C_Invoice_ID=" + getC_Invoice_ID(), get_TrxName());
 		m_taxes = null;
 
 		//	Lines
@@ -1703,7 +1698,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				return status;
 		}
 
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
@@ -1711,7 +1706,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (!isApproved())
 			approveIt();
 		log.info(toString());
-		StringBuilder info = new StringBuilder();
+		StringBuffer info = new StringBuffer();
 		
 		// POS supports multiple payments
 		boolean fromPOS = false;
@@ -1748,17 +1743,17 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 			if (cash == null || cash.get_ID() == 0)
 			{
-				m_processMsg = new StringBuffer("@NoCashBook@");
+				m_processMsg = "@NoCashBook@";
 				return DocAction.STATUS_Invalid;
 			}
 			MCashLine cl = new MCashLine (cash);
 			cl.setInvoice(this);
 			if (!cl.save(get_TrxName()))
 			{
-				m_processMsg = new StringBuffer("Could not save Cash Journal Line");
+				m_processMsg = "Could not save Cash Journal Line";
 				return DocAction.STATUS_Invalid;
 			}
-			info.append("@C_Cash_ID@: ").append(cash.getName()).append(" #").append(cl.getLine());
+			info.append("@C_Cash_ID@: " + cash.getName() +  " #" + cl.getLine());
 			setC_CashLine_ID(cl.getC_CashLine_ID());
 		}	//	CashBook
 
@@ -1782,7 +1777,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						ol.setQtyInvoiced(ol.getQtyInvoiced().add(line.getQtyInvoiced()));
 					if (!ol.save(get_TrxName()))
 					{
-						m_processMsg = new StringBuffer("Could not update Order Line");
+						m_processMsg = "Could not update Order Line";
 						return DocAction.STATUS_Invalid;
 					}
 				}
@@ -1800,7 +1795,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						isNewMatchPO = true;
 					if (!po.save(get_TrxName()))
 					{
-						m_processMsg = new StringBuffer("Could not create PO Matching");
+						m_processMsg = "Could not create PO Matching";
 						return DocAction.STATUS_Invalid;
 					}
 					matchPO++;
@@ -1819,7 +1814,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					rmaLine.setQtyInvoiced(line.getQtyInvoiced());
 				if (!rmaLine.save(get_TrxName()))
 				{
-					m_processMsg = new StringBuffer("Could not update RMA Line");
+					m_processMsg = "Could not update RMA Line";
 					return DocAction.STATUS_Invalid;
 				}
 			}
@@ -1843,7 +1838,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					isNewMatchInv = true;
 				if (!inv.save(get_TrxName()))
 				{
-					m_processMsg = new StringBuffer(CLogger.retrieveErrorString("Could not create Invoice Matching"));
+					m_processMsg = CLogger.retrieveErrorString("Could not create Invoice Matching");
 					return DocAction.STATUS_Invalid;
 				}
 				matchInv++;
@@ -1865,8 +1860,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
 		if (invAmt == null)
 		{
-			m_processMsg = new StringBuffer("Could not convert C_Currency_ID=").append(getC_Currency_ID())
-				.append(" to base C_Currency_ID=").append(MClient.get(Env.getCtx()).getC_Currency_ID());
+			m_processMsg = "Could not convert C_Currency_ID=" + getC_Currency_ID()
+				+ " to base C_Currency_ID=" + MClient.get(Env.getCtx()).getC_Currency_ID();
 			return DocAction.STATUS_Invalid;
 		}
 		//	Total Balance
@@ -1907,7 +1902,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		bp.setSOCreditStatus();
 		if (!bp.save(get_TrxName()))
 		{
-			m_processMsg = new StringBuffer("Could not update Business Partner");
+			m_processMsg = "Could not update Business Partner";
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -1916,11 +1911,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		{
 			MUser user = new MUser (getCtx(), getAD_User_ID(), get_TrxName());
 			user.setLastContact(new Timestamp(System.currentTimeMillis()));
-			StringBuilder msgr = new StringBuilder(Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(getDocumentNo());
-			user.setLastResult(msgr.toString());
+			user.setLastResult(Msg.translate(getCtx(), "C_Invoice_ID") + ": " + getDocumentNo());
 			if (!user.save(get_TrxName()))
 			{
-				m_processMsg = new StringBuffer("Could not update Business Partner User");
+				m_processMsg = "Could not update Business Partner User";
 				return DocAction.STATUS_Invalid;
 			}
 		}	//	user
@@ -1936,8 +1930,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					getDateAcct(), 0, getAD_Client_ID(), getAD_Org_ID());
 			if (amt == null)
 			{
-				m_processMsg = new StringBuffer("Could not convert C_Currency_ID=").append(getC_Currency_ID())
-					.append(" to Project C_Currency_ID=").append(C_CurrencyTo_ID);
+				m_processMsg = "Could not convert C_Currency_ID=" + getC_Currency_ID()
+					+ " to Project C_Currency_ID=" + C_CurrencyTo_ID;
 				return DocAction.STATUS_Invalid;
 			}
 			BigDecimal newAmt = project.getInvoicedAmt();
@@ -1951,7 +1945,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			project.setInvoicedAmt(newAmt);
 			if (!project.save(get_TrxName()))
 			{
-				m_processMsg = new StringBuffer("Could not update Project");
+				m_processMsg = "Could not update Project";
 				return DocAction.STATUS_Invalid;
 			}
 		}	//	project
@@ -1960,7 +1954,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = new StringBuffer(valid);
+			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -1972,7 +1966,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (counter != null)
 			info.append(" - @CounterDoc@: @C_Invoice_ID@=").append(counter.getDocumentNo());
 
-		m_processMsg = new StringBuffer(info.toString().trim());
+		m_processMsg = info.toString().trim();
 		setProcessed(true);
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
@@ -2098,7 +2092,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		log.info(toString());
 		// Before Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
 			return false;
 
@@ -2106,7 +2100,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
 			|| DOCSTATUS_Voided.equals(getDocStatus()))
 		{
-			m_processMsg = new StringBuffer("Document Closed: ").append(getDocStatus());
+			m_processMsg = "Document Closed: " + getDocStatus();
 			setDocAction(DOCACTION_None);
 			return false;
 		}
@@ -2130,8 +2124,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					line.setTaxAmt(Env.ZERO);
 					line.setLineNetAmt(Env.ZERO);
 					line.setLineTotalAmt(Env.ZERO);
-					StringBuilder msgd = new StringBuilder(Msg.getMsg(getCtx(), "Voided")).append(" (").append(old).append(")");
-					line.addDescription(msgd.toString());
+					line.addDescription(Msg.getMsg(getCtx(), "Voided") + " (" + old + ")");
 					//	Unlink Shipment
 					if (line.getM_InOutLine_ID() != 0)
 					{
@@ -2153,7 +2146,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		}
 
 		// After Void
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;
 
@@ -2170,7 +2163,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		log.info(toString());
 		// Before Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
 			return false;
 
@@ -2178,7 +2171,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		setDocAction(DOCACTION_None);
 
 		// After Close
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
 			return false;
 		return true;
@@ -2192,7 +2185,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		log.info(toString());
 		// Before reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 
@@ -2235,7 +2228,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			reversal = copyFrom (this, getDateInvoiced(), getDateAcct(), getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true, getDocumentNo()+"^");
 		if (reversal == null)
 		{
-			m_processMsg = new StringBuffer("Could not create Invoice Reversal");
+			m_processMsg = "Could not create Invoice Reversal";
 			return false;
 		}
 		reversal.setReversal(true);
@@ -2254,7 +2247,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				rLine.setLineTotalAmt(rLine.getLineTotalAmt().negate());
 			if (!rLine.save(get_TrxName()))
 			{
-				m_processMsg = new StringBuffer("Could not correct Invoice Reversal Line");
+				m_processMsg = "Could not correct Invoice Reversal Line";
 				return false;
 			}
 		}
@@ -2266,7 +2259,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		//
 		if (!reversal.processIt(DocAction.ACTION_Complete))
 		{
-			m_processMsg = new StringBuffer("Reversal ERROR: ").append(reversal.getProcessMsg());
+			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
 			return false;
 		}
 		reversal.setC_Payment_ID(0);
@@ -2276,10 +2269,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		reversal.setDocStatus(DOCSTATUS_Reversed);
 		reversal.setDocAction(DOCACTION_None);
 		reversal.saveEx(get_TrxName());
-		m_processMsg = new StringBuffer(reversal.getDocumentNo());
+		m_processMsg = reversal.getDocumentNo();
 		//
-		StringBuilder msgd = new StringBuilder("(").append(reversal.getDocumentNo()).append("<-)");
-		addDescription(msgd.toString());
+		addDescription("(" + reversal.getDocumentNo() + "<-)");
 
 		//	Clean up Reversed (this)
 		MInvoiceLine[] iLines = getLines(false);
@@ -2305,10 +2297,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		setIsPaid(true);
 
 		//	Create Allocation
-		msgd = new StringBuilder(
-				Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(getDocumentNo()).append("/").append(reversal.getDocumentNo());
 		MAllocationHdr alloc = new MAllocationHdr(getCtx(), false, getDateAcct(),
-			getC_Currency_ID(),msgd.toString(),get_TrxName());
+			getC_Currency_ID(),
+			Msg.translate(getCtx(), "C_Invoice_ID")	+ ": " + getDocumentNo() + "/" + reversal.getDocumentNo(),
+			get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
 		if (alloc.save())
 		{
@@ -2334,7 +2326,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		}
 
 		// After reverseCorrect
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)
 			return false;
 
@@ -2349,12 +2341,12 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		log.info(toString());
 		// Before reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 
 		// After reverseAccrual
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 
@@ -2369,12 +2361,12 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		log.info(toString());
 		// Before reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;
 
 		// After reActivate
-		m_processMsg = new StringBuffer(ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE));
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;
 
@@ -2389,7 +2381,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 		sb.append(getDocumentNo());
 		//	: Grand Total = 123.00 (#1)
 		sb.append(": ").
@@ -2407,7 +2399,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public String getProcessMsg()
 	{
-		return m_processMsg.toString();
+		return m_processMsg;
 	}	//	getProcessMsg
 
 	/**
