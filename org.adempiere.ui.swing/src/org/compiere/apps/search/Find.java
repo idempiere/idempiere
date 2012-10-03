@@ -1074,7 +1074,7 @@ public final class Find extends CDialog
                         valueStr.append("%");
                     //
                     ColumnSQL = new StringBuilder("UPPER(").append(ColumnSQL).append(")");
-                    value = valueStr;
+                    value = valueStr.toString();
                 }
                 //
 				if (value.toString().indexOf('%') != -1)
