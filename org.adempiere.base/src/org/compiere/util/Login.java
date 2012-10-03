@@ -1372,6 +1372,7 @@ public class Login
 			}
 		}
 		
+		boolean validButLocked = false;
 		for (MUser user : users) {
 			if (clientsValidated.contains(user.getAD_Client_ID())) {
 				log.severe("Two users with password with the same name/email combination on same tenant: " + app_user);
@@ -1387,7 +1388,10 @@ public class Login
 			}
 			if (valid ) {			
 				if (user.isLocked())
+				{
+					validButLocked = true;
 					continue;
+				}
 				
 				if (user.isExpired())
 					isPasswordExpired = true;
@@ -1462,7 +1466,12 @@ public class Login
 					log.severe("Failed to update user record with date last login");
 			}
 		}
-		else
+		else if (validButLocked)
+		{
+			// User account ({0}) is locked, please contact the system administrator
+			loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});
+		}
+		else 
 		{
 			boolean foundLockedAccount = false;
 			for (MUser user : users) 
