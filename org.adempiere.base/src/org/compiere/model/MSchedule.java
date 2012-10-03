@@ -22,9 +22,6 @@ import it.sauronsoftware.cron4j.SchedulingPattern;
 
 import java.net.InetAddress;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -32,23 +29,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.compiere.util.DisplayType;
+import org.compiere.util.CCache;
 
 public class MSchedule extends X_AD_Schedule 
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2532063246191430056L;
-	
+	private static final long serialVersionUID = -3319184522988847237L;
+
 	private static Pattern VALID_IPV4_PATTERN = null;
 	private static Pattern VALID_IPV6_PATTERN = null;
 	private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
     private static final String ipv6Pattern = "([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}";
-
-    private it.sauronsoftware.cron4j.Scheduler cronScheduler;
-	private Predictor predictor;
 
 	public MSchedule(Properties ctx, int AD_Schedule_ID, String trxName) {
 		super(ctx, AD_Schedule_ID, trxName);
@@ -60,8 +53,8 @@ public class MSchedule extends X_AD_Schedule
 		// TODO Auto-generated constructor stub
 	}
 	
-	protected boolean beforeSave()
-	{
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
         //		Set Schedule Type & Frequencies
 			if (SCHEDULETYPE_Frequency.equals(getScheduleType()))
 			{
@@ -85,10 +78,7 @@ public class MSchedule extends X_AD_Schedule
 			}
 			return true;
 	}
-	
-   	
-	
-	
+
 	/**
 	 *  Brought from Compiere Open Source Community version 3.3.0
 	 * 	Is it OK to Run process On IP of this box
@@ -123,7 +113,7 @@ public class MSchedule extends X_AD_Schedule
 		{
 			InetAddress box = InetAddress.getLocalHost();
 			String ip = box.getHostAddress();
-			if (chekIPFormat()) {
+			if (chekIPFormat(ipOnly)) {
 				if (ipOnly.indexOf(ip) == -1) {
 					
 					log.fine("Not allowed here - IP=" + ip + " does not match "+ ipOnly);
@@ -133,7 +123,7 @@ public class MSchedule extends X_AD_Schedule
 			}
 			else{
 				String hostname=box.getHostName();
-				if(ipOnly.equals(hostname)){
+				if(! ipOnly.equals(hostname)){
 					log.fine("Not Allowed here -hostname " + hostname + " does not match "+ipOnly);
 					return false;
 				}
@@ -150,27 +140,31 @@ public class MSchedule extends X_AD_Schedule
 
 	public static MSchedule get(Properties ctx, int AD_Schedule_ID) 
 	{
-		if(AD_Schedule_ID > 0)
-		{
-		  MSchedule schedule=new MSchedule(ctx, AD_Schedule_ID, null);
-		   return schedule;
-		}
-		return null;
-		
+		Integer key = new Integer (AD_Schedule_ID);
+		MSchedule retValue = (MSchedule)s_cache.get (key);
+		if (retValue != null)
+			return retValue;
+		retValue = new MSchedule (ctx, AD_Schedule_ID, null);
+		if (retValue.get_ID() != 0)
+			s_cache.put (key, retValue);
+		return retValue;
 	}
-	
-	public boolean chekIPFormat()
+
+	/**	Cache						*/
+	private static CCache<Integer, MSchedule> s_cache = new CCache<Integer, MSchedule> ("AD_Schedule", 10);
+
+	public boolean chekIPFormat(String ipOnly)
 	{
 		boolean IsIp = false;
 		try {
 			VALID_IPV4_PATTERN = Pattern.compile(ipv4Pattern,Pattern.CASE_INSENSITIVE);
 			VALID_IPV6_PATTERN = Pattern.compile(ipv6Pattern,Pattern.CASE_INSENSITIVE);
 			
-			Matcher m1 = VALID_IPV4_PATTERN.matcher(getRunOnlyOnIP());
+			Matcher m1 = VALID_IPV4_PATTERN.matcher(ipOnly);
 			if (m1.matches()) {
 				IsIp = true;
 			} else {
-				Matcher m2 = VALID_IPV6_PATTERN.matcher(getRunOnlyOnIP());
+				Matcher m2 = VALID_IPV6_PATTERN.matcher(ipOnly);
 				if (m2.matches()) {
 					IsIp = true;
 				} else {
@@ -183,91 +177,55 @@ public class MSchedule extends X_AD_Schedule
 		}
 		return IsIp;
 	}
+
 	/**
-	 * Brought from Compiere 330
 	 * 	Get Next Run
 	 *	@param last in MS
 	 *	@return next run in MS
 	 */
-	public long getNextRunMS (long last)
+	public static long getNextRunMS (long last, String scheduleType, String frequencyType, int frequency, String cronPattern)
 	{
-		Calendar calNow = Calendar.getInstance();
-		calNow.setTimeInMillis (last);
-		//
-		Calendar calNext = Calendar.getInstance();
-		calNext.setTimeInMillis (last);
-		
-		
-		String scheduleType = getScheduleType();
-		if (SCHEDULETYPE_Frequency.equals(scheduleType))
+		long now = System.currentTimeMillis();
+		if (MSchedule.SCHEDULETYPE_Frequency.equals(scheduleType))
 		{
-			String frequencyType = getFrequencyType();
-			int frequency = getFrequency();
+			// Calculate sleep interval based on frequency defined
+			if (frequency < 1)
+				frequency = 1;
+			long typeSec = 600;			//	10 minutes
+			if (frequencyType == null)
+				typeSec = 300;			//	5 minutes
+			else if (MSchedule.FREQUENCYTYPE_Minute.equals(frequencyType))
+				typeSec = 60;
+			else if (MSchedule.FREQUENCYTYPE_Hour.equals(frequencyType))
+				typeSec = 3600;
+			else if (MSchedule.FREQUENCYTYPE_Day.equals(frequencyType))
+				typeSec = 86400;
+			long sleepInterval = typeSec * 1000 * frequency;		//	ms
 
-			boolean increment=true;
-
-
-			/*****	DAY		******/
-			if (X_AD_Schedule.FREQUENCYTYPE_Day.equals(frequencyType))
+			long next = last + sleepInterval;
+			while (next < now)
 			{
-				calNext.set (Calendar.HOUR_OF_DAY, 0);
-				calNext.set (Calendar.MINUTE, 0);
-				if(increment)
-				{
-					calNext.add(Calendar.DAY_OF_YEAR, frequency);
-				}
-			}	//	Day
-
-			/*****	HOUR	******/
-			else if (X_AD_Schedule.FREQUENCYTYPE_Hour.equals(frequencyType))
-			{
-				calNext.set (Calendar.MINUTE, 0);
-				if(increment)
-				{
-					calNext.add (Calendar.HOUR_OF_DAY, frequency);
-				}
-
-			}	//	Hour
-
-			/*****	MINUTE	******/
-			else if (X_AD_Schedule.FREQUENCYTYPE_Minute.equals(frequencyType))
-			{
-				if(increment)
-				{
-					calNext.add(Calendar.MINUTE, frequency);
-				}
-			}	//	Minute
-
-			long delta = calNext.getTimeInMillis() - calNow.getTimeInMillis();
-			StringBuilder info = new StringBuilder("Now=") .append(calNow.getTime().toString())
-				.append( ", Next=" + calNext.getTime().toString())
-				.append( ", Delta=" + delta)
-				.append( ", " + toString());
-			
-			if (delta < 0)
-			{
-				log.warning(info.toString());
+				next = next + sleepInterval;
 			}
-			else
-				log.info (info.toString());
-
-			return calNext.getTimeInMillis();
+			return next;
 		}
-		else
+		else if (MSchedule.SCHEDULETYPE_CronSchedulingPattern.equals(scheduleType))
 		{
-			String cronPattern = (String) getCronPattern();
 			if (cronPattern != null && cronPattern.trim().length() > 0
 					&& SchedulingPattern.validate(cronPattern)) {
-				cronScheduler = new it.sauronsoftware.cron4j.Scheduler();				
-				predictor = new Predictor(cronPattern);
+				Predictor predictor = new Predictor(cronPattern, last);
 				long next = predictor.nextMatchingTime();
+				while (next < now)
+				{
+					predictor = new Predictor(cronPattern, next);
+					next = predictor.nextMatchingTime();
+				}
 				return next;
 			}
 			
-		}
+		} // not implemented MSchedule.SCHEDULETYPE_MonthDay, MSchedule.SCHEDULETYPE_WeekDay - can be done with cron
 		
 		return 0;
-	
 	}	//	getNextRunMS
 
 }

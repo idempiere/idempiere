@@ -60,6 +60,18 @@ public interface AdempiereProcessor
 	public String getFrequencyType();
 
 	/**
+	 * 	Get the schedule type
+	 * 	@return schedule type
+	 */
+	public String getScheduleType();
+
+	/**
+	 * 	Get the cron pattern
+	 * 	@return cron pattern
+	 */
+	public String getCronPattern();
+
+	/**
 	 * 	Get the frequency
 	 * 	@return frequency
 	 */

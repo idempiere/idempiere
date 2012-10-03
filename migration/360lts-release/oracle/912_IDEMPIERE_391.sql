@@ -764,6 +764,31 @@ UPDATE AD_Field SET SeqNo=80,IsDisplayed='Y' WHERE AD_Field_ID=200495
 UPDATE AD_Column SET AD_Reference_ID=20,Updated=TO_DATE('2012-09-18 14:14:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=200478
 ;
 
+-- Sep 28, 2012 5:40:09 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('AD_Schedule_UU',200158,'D','AD_Schedule_UU','AD_Schedule_UU','027b3c04-57c2-4df2-bae1-daffffa41fa7',0,TO_DATE('2012-09-28 17:40:07','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2012-09-28 17:40:07','YYYY-MM-DD HH24:MI:SS'),0,0,0,'Y')
+;
+
+-- Sep 28, 2012 5:40:09 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Name,Description,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Name,t.Description,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=200158 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
+;
+
+-- Sep 28, 2012 5:40:56 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,SeqNoSelection) VALUES (0,200020,200559,'D','N','N','N',0,'N',36,'N',10,'N','N',200158,'N','Y','b4867242-4498-4608-aa86-c262f3af378e','N','Y','N','AD_Schedule_UU','AD_Schedule_UU','N',0,TO_DATE('2012-09-28 17:40:55','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-09-28 17:40:55','YYYY-MM-DD HH24:MI:SS'),0,0,0)
+;
+
+-- Sep 28, 2012 5:40:56 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200559 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Sep 28, 2012 5:40:59 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Schedule ADD AD_Schedule_UU NVARCHAR2(36) DEFAULT NULL 
+;
+
 -- Sep 20, 2012 9:38:20 AM COT
 -- IDEMPIERE-391 Scheduler improvements
 INSERT INTO AD_Schedule (Frequency,AD_Client_ID,AD_Org_ID,AD_Schedule_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive,FrequencyType,ScheduleType,MonthDay,Name) VALUES (1,0,0,200000,TO_DATE('2012-09-20 09:38:18','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2012-09-20 09:38:18','YYYY-MM-DD HH24:MI:SS'),100,'Y','D','F',0,'1 Day')
@@ -1064,6 +1089,7 @@ UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-20 11:53:05','YYYY-MM
 -- IDEMPIERE-391 Scheduler improvements
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-20 11:53:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11522
 ;
+
 -- Sep 20, 2012 6:24:20 PM COT
 -- IDEMPIERE-391 Scheduler improvements
 INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,SeqNoSelection) VALUES (0,695,200490,'D','N','N','N',0,'N',10,'N',19,'N','N',200132,'N','Y','7e549561-f9c8-44b7-9bc2-9e1d1bb4c728','N','Y','N','AD_Schedule_ID','AD_Schedule_ID','Y',100,TO_DATE('2012-09-20 18:24:18','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-09-20 18:24:18','YYYY-MM-DD HH24:MI:SS'),100,0,0)
@@ -1186,7 +1212,7 @@ UPDATE AD_Field SET ColumnSpan=3,Updated=TO_DATE('2012-09-20 18:28:12','YYYY-MM-
 
 -- Sep 20, 2012 6:29:41 PM COT
 -- IDEMPIERE-391 Scheduler improvements
-INSERT INTO AD_Schedule (Frequency,AD_Client_ID,AD_Org_ID,AD_Schedule_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive,FrequencyType,ScheduleType,MonthDay,Name) VALUES (10,0,0,200002,TO_DATE('2012-09-20 18:29:40','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2012-09-20 18:29:40','YYYY-MM-DD HH24:MI:SS'),100,'Y','M','F',0,'10 Minutes')
+INSERT INTO AD_Schedule (Frequency,AD_Client_ID,AD_Org_ID,AD_Schedule_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive,FrequencyType,ScheduleType,MonthDay,Name,Description) VALUES (10,0,0,200002,TO_DATE('2012-09-20 18:29:40','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2012-09-20 18:29:40','YYYY-MM-DD HH24:MI:SS'),100,'Y','M','F',0,'10 Minutes','(do not delete, used in Initial Client Setup)')
 ;
 
 -- Sep 20, 2012 6:31:38 PM COT
@@ -1431,7 +1457,7 @@ UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-20 19:37:41','YYYY-MM
 
 -- Sep 20, 2012 7:39:26 PM COT
 -- IDEMPIERE-391 Scheduler improvements
-INSERT INTO AD_Schedule (Frequency,AD_Client_ID,AD_Org_ID,AD_Schedule_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive,FrequencyType,ScheduleType,MonthDay,Name) VALUES (15,0,0,200003,TO_DATE('2012-09-20 19:39:24','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2012-09-20 19:39:24','YYYY-MM-DD HH24:MI:SS'),100,'Y','M','F',0,'15 Minutes')
+INSERT INTO AD_Schedule (Frequency,AD_Client_ID,AD_Org_ID,AD_Schedule_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive,FrequencyType,ScheduleType,MonthDay,Name,Description) VALUES (15,0,0,200003,TO_DATE('2012-09-20 19:39:24','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2012-09-20 19:39:24','YYYY-MM-DD HH24:MI:SS'),100,'Y','M','F',0,'15 Minutes','(do not delete, used in Initial Client Setup)')
 ;
 
 -- Sep 20, 2012 7:55:53 PM COT
@@ -1559,6 +1585,106 @@ UPDATE AD_Column SET EntityType='D',Updated=TO_DATE('2012-09-24 15:50:11','YYYY-
 ALTER TABLE AD_Schedule ADD IsIgnoreProcessingTime CHAR(1) DEFAULT 'N' CHECK (IsIgnoreProcessingTime IN ('Y','N'))
 ;
 
+-- Sep 24, 2012 5:05:08 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,Description,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('IsSystemSchedule',200157,'D','IsSystemSchedule','Schedule Just For System','System Schedule','0fcff3a8-e3d4-4d54-a060-7aa225b329c6',0,TO_DATE('2012-09-24 17:05:07','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2012-09-24 17:05:07','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y')
+;
+
+-- Sep 24, 2012 5:05:08 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Name,Description,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Name,t.Description,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=200157 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
+;
+
+-- Sep 24, 2012 5:06:10 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,DefaultValue,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,SeqNoSelection) VALUES (0,200020,200558,'D','N','N','N',0,'N',1,'N',20,'N','N',200157,'N','Y','f5b750f4-c9a7-4dfb-a4de-17f8431a1f47','N','Y','N','IsSystemSchedule','Schedule Just For System','N','IsSystemSchedule','Y',100,TO_DATE('2012-09-24 17:06:09','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-09-24 17:06:09','YYYY-MM-DD HH24:MI:SS'),100,0,0)
+;
+
+-- Sep 24, 2012 5:06:10 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200558 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Sep 24, 2012 5:06:23 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Schedule ADD IsSystemSchedule CHAR(1) DEFAULT 'N' CHECK (IsSystemSchedule IN ('Y','N'))
+;
+
+/* Create schedule records for actual configuration */
+insert into ad_schedule (ad_schedule_id, ad_schedule_uu, ad_client_id, ad_org_id, frequencytype, frequency, weekday, scheduletype, isignoreprocessingtime, cronpattern
+,created, createdby,description,isactive,runonlyonip,updated,updatedby,name,issystemschedule)
+select distinct nextidfunc( 200020 , 'N'), generate_uuid(), 0, 0, frequencytype, frequency, weekday, scheduletype, isignoreprocessingtime, cronpattern
+,sysdate,100,null,'Y',null,sysdate,100,coalesce(frequencytype,' ')||' '||coalesce(frequency,-1)||' '||coalesce(scheduletype,' ')||' '||nvl(cronpattern,' '),'N'
+from (
+select distinct frequencytype, frequency, weekday, scheduletype, isignoreprocessingtime, cronpattern
+from ad_scheduler
+where not exists (select 1 from ad_schedule where 
+coalesce(ad_scheduler.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
+coalesce(ad_scheduler.frequency,-1)              =coalesce(ad_schedule.frequency,-1) and
+coalesce(ad_scheduler.weekday,' ')               =coalesce(ad_schedule.weekday,' ') and
+coalesce(ad_scheduler.scheduletype,' ')          =coalesce(ad_schedule.scheduletype,' ') and
+coalesce(ad_scheduler.isignoreprocessingtime,' ')=coalesce(ad_schedule.isignoreprocessingtime,' ') and
+nvl(ad_scheduler.cronpattern,' ')           =nvl(ad_schedule.cronpattern,' ')
+)
+)
+;
+
+insert into ad_schedule (ad_schedule_id, ad_schedule_uu, ad_client_id, ad_org_id, frequencytype, frequency, scheduletype, isignoreprocessingtime
+,created, createdby,description,isactive,runonlyonip,updated,updatedby,name,issystemschedule)
+select distinct nextidfunc( 200020 , 'N'), generate_uuid(), 0, 0, frequencytype, frequency, scheduletype, isignoreprocessingtime
+,sysdate,100,null,'Y',null,sysdate,100,coalesce(frequencytype,' ')||' '||coalesce(frequency,-1)||' '||coalesce(scheduletype,' '),'N'
+from (
+select distinct frequencytype, frequency, 'F' as scheduletype, 'Y' as isignoreprocessingtime
+from c_acctprocessor
+where not exists (select 1 from ad_schedule where 
+coalesce(c_acctprocessor.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
+coalesce(c_acctprocessor.frequency,-1)              =coalesce(ad_schedule.frequency,-1)
+)
+)
+;
+
+insert into ad_schedule (ad_schedule_id, ad_schedule_uu, ad_client_id, ad_org_id, frequencytype, frequency, scheduletype, isignoreprocessingtime
+,created, createdby,description,isactive,runonlyonip,updated,updatedby,name,issystemschedule)
+select distinct nextidfunc( 200020 , 'N'), generate_uuid(), 0, 0, frequencytype, frequency, scheduletype, isignoreprocessingtime
+,sysdate,100,null,'Y',null,sysdate,100,coalesce(frequencytype,' ')||' '||coalesce(frequency,-1)||' '||coalesce(scheduletype,' '),'N'
+from (
+select distinct frequencytype, frequency, 'F' as scheduletype, 'Y' as isignoreprocessingtime
+from ad_alertprocessor
+where not exists (select 1 from ad_schedule where 
+coalesce(ad_alertprocessor.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
+coalesce(ad_alertprocessor.frequency,-1)              =coalesce(ad_schedule.frequency,-1)
+)
+)
+;
+
+insert into ad_schedule (ad_schedule_id, ad_schedule_uu, ad_client_id, ad_org_id, frequencytype, frequency, scheduletype, isignoreprocessingtime
+,created, createdby,description,isactive,runonlyonip,updated,updatedby,name,issystemschedule)
+select distinct nextidfunc( 200020 , 'N'), generate_uuid(), 0, 0, frequencytype, frequency, scheduletype, isignoreprocessingtime
+,sysdate,100,null,'Y',null,sysdate,100,coalesce(frequencytype,' ')||' '||coalesce(frequency,-1)||' '||coalesce(scheduletype,' '),'N'
+from (
+select distinct frequencytype, frequency, 'F' as scheduletype, 'Y' as isignoreprocessingtime
+from r_requestprocessor
+where not exists (select 1 from ad_schedule where 
+coalesce(r_requestprocessor.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
+coalesce(r_requestprocessor.frequency,-1)              =coalesce(ad_schedule.frequency,-1)
+)
+)
+;
+
+insert into ad_schedule (ad_schedule_id, ad_schedule_uu, ad_client_id, ad_org_id, frequencytype, frequency, scheduletype, isignoreprocessingtime
+,created, createdby,description,isactive,runonlyonip,updated,updatedby,name,issystemschedule)
+select distinct nextidfunc( 200020 , 'N'), generate_uuid(), 0, 0, frequencytype, frequency, scheduletype, isignoreprocessingtime
+,sysdate,100,null,'Y',null,sysdate,100,coalesce(frequencytype,' ')||' '||coalesce(frequency,-1)||' '||coalesce(scheduletype,' '),'N'
+from (
+select distinct frequencytype, frequency, 'F' as scheduletype, 'Y' as isignoreprocessingtime
+from ad_workflowprocessor
+where not exists (select 1 from ad_schedule where 
+coalesce(ad_workflowprocessor.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
+coalesce(ad_workflowprocessor.frequency,-1)              =coalesce(ad_schedule.frequency,-1)
+)
+)
+;
+
 -- Sep 24, 2012 3:50:36 PM COT
 -- IDEMPIERE-391 Scheduler improvements
 UPDATE AD_Table SET AD_Window_ID=200012,Updated=TO_DATE('2012-09-24 15:50:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200020
@@ -1589,31 +1715,6 @@ UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-24 15:51:17','YYYY-MM
 UPDATE AD_Field SET IsDisplayed='N', IsActive='N',Updated=TO_DATE('2012-09-24 15:52:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=58773
 ;
 
--- Sep 24, 2012 5:05:08 PM COT
--- IDEMPIERE-391 Scheduler improvements
-INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,Description,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('IsSystemSchedule',200157,'D','IsSystemSchedule','Schedule Just For System','System Schedule','0fcff3a8-e3d4-4d54-a060-7aa225b329c6',0,TO_DATE('2012-09-24 17:05:07','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2012-09-24 17:05:07','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y')
-;
-
--- Sep 24, 2012 5:05:08 PM COT
--- IDEMPIERE-391 Scheduler improvements
-INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Name,Description,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Name,t.Description,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=200157 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
-;
-
--- Sep 24, 2012 5:06:10 PM COT
--- IDEMPIERE-391 Scheduler improvements
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsSyncDatabase,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,DefaultValue,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,SeqNoSelection) VALUES (0,200020,200558,'D','N','N','N',0,'N',1,'N',20,'N','N',200157,'N','Y','f5b750f4-c9a7-4dfb-a4de-17f8431a1f47','N','Y','N','IsSystemSchedule','Schedule Just For System','N','IsSystemSchedule','Y',100,TO_DATE('2012-09-24 17:06:09','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-09-24 17:06:09','YYYY-MM-DD HH24:MI:SS'),100,0,0)
-;
-
--- Sep 24, 2012 5:06:10 PM COT
--- IDEMPIERE-391 Scheduler improvements
-INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200558 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
-;
-
--- Sep 24, 2012 5:06:23 PM COT
--- IDEMPIERE-391 Scheduler improvements
-ALTER TABLE AD_Schedule ADD IsSystemSchedule CHAR(1) DEFAULT 'N' CHECK (IsSystemSchedule IN ('Y','N'))
-;
-
 -- Sep 24, 2012 5:06:51 PM COT
 -- IDEMPIERE-391 Scheduler improvements
 INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Description,Name,IsDisplayed,IsFieldOnly,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive) VALUES ('N',200019,1,'N','N',200558,'Y',200553,'N','D','Schedule Just For System','IsSystemSchedule','Y','N','1a29d07e-df06-4d49-bab4-733c0f547714',100,0,TO_DATE('2012-09-24 17:06:50','YYYY-MM-DD HH24:MI:SS'),0,100,TO_DATE('2012-09-24 17:06:50','YYYY-MM-DD HH24:MI:SS'),'Y')
@@ -1641,7 +1742,7 @@ INSERT INTO AD_Val_Rule (Code,AD_Val_Rule_ID,EntityType,Name,Type,AD_Val_Rule_UU
 
 -- Sep 24, 2012 5:32:02 PM COT
 -- IDEMPIERE-391 Scheduler improvements
-UPDATE AD_Val_Rule SET Name='AD_schedule for System',Updated=TO_DATE('2012-09-24 17:32:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200007
+UPDATE AD_Val_Rule SET Name='AD_Schedule for System',Updated=TO_DATE('2012-09-24 17:32:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200007
 ;
 
 -- Sep 24, 2012 5:32:06 PM COT
@@ -1665,164 +1766,493 @@ UPDATE AD_Column SET AD_Val_Rule_ID=200007,Updated=TO_DATE('2012-09-24 17:51:36'
 ;
 
 -- Sep 27, 2012 10:19:28 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-09-27 10:19:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11348
 ;
 
 -- Sep 27, 2012 10:19:30 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE C_AcctProcessor MODIFY Frequency NUMBER(10) DEFAULT NULL 
 ;
 
--- Sep 27, 2012 10:19:30 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE C_AcctProcessor MODIFY Frequency NULL
 ;
 
 -- Sep 27, 2012 11:05:06 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-27 11:05:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11348
 ;
 
 -- Sep 27, 2012 11:36:59 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-09-27 11:36:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11441
 ;
 
 -- Sep 27, 2012 11:37:05 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE AD_AlertProcessor MODIFY Frequency NUMBER(10) DEFAULT NULL 
 ;
 
 -- Sep 27, 2012 11:37:18 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-27 11:37:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11441
 ;
 
 -- Sep 27, 2012 11:37:24 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-09-27 11:37:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11440
 ;
 
 -- Sep 27, 2012 11:37:28 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE AD_AlertProcessor MODIFY FrequencyType CHAR(1) DEFAULT NULL 
 ;
 
 -- Sep 27, 2012 11:37:34 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-27 11:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11440
 ;
 
 -- Sep 27, 2012 11:38:29 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-09-27 11:38:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5480
 ;
 
 -- Sep 27, 2012 11:38:33 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE R_RequestProcessor MODIFY Frequency NUMBER(10) DEFAULT 1
 ;
 
 -- Sep 27, 2012 11:38:33 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE R_RequestProcessor MODIFY Frequency NULL
 ;
 
 -- Sep 27, 2012 11:38:38 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-27 11:38:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5480
 ;
 
 -- Sep 27, 2012 11:38:45 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-09-27 11:38:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5481
 ;
 
 -- Sep 27, 2012 11:38:49 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE R_RequestProcessor MODIFY FrequencyType CHAR(1) DEFAULT NULL 
 ;
 
 -- Sep 27, 2012 11:38:50 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE R_RequestProcessor MODIFY FrequencyType NULL
 ;
 
 -- Sep 27, 2012 11:38:55 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-27 11:38:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5481
 ;
 
 -- Sep 27, 2012 11:39:55 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-09-27 11:39:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11391
 ;
 
 -- Sep 27, 2012 11:39:56 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE AD_WorkflowProcessor MODIFY Frequency NUMBER(10) DEFAULT NULL 
 ;
 
 -- Sep 27, 2012 11:39:56 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE AD_WorkflowProcessor MODIFY Frequency NULL
 ;
 
 -- Sep 27, 2012 11:40:03 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-27 11:40:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11391
 ;
 
 -- Sep 27, 2012 11:40:11 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N', IsActive='N',Updated=TO_DATE('2012-09-27 11:40:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11382
 ;
 
 -- Sep 27, 2012 11:45:45 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-09-27 11:45:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11247
 ;
 
 -- Sep 27, 2012 11:45:49 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE AD_Scheduler MODIFY Frequency NUMBER(10) DEFAULT NULL 
 ;
 
 -- Sep 27, 2012 11:45:49 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE AD_Scheduler MODIFY Frequency NULL
 ;
 
 -- Sep 27, 2012 11:45:55 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-27 11:45:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11247
 ;
 
 -- Sep 27, 2012 11:46:03 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-09-27 11:46:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11255
 ;
 
 -- Sep 27, 2012 11:46:05 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE AD_Scheduler MODIFY FrequencyType CHAR(1) DEFAULT NULL 
 ;
 
 -- Sep 27, 2012 11:46:05 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 ALTER TABLE AD_Scheduler MODIFY FrequencyType NULL
 ;
 
 -- Sep 27, 2012 11:46:10 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-27 11:46:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=11255
 ;
 
 -- Sep 27, 2012 11:49:52 AM COT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Window SET WindowType='M',Updated=TO_DATE('2012-09-27 11:49:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=200012
+;
+
+-- Sep 28, 2012 5:38:59 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Table SET Name='Schedule',Updated=TO_DATE('2012-09-28 17:38:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Table_ID=200020
+;
+
+-- Sep 28, 2012 5:38:59 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Table_Trl SET IsTranslated='N' WHERE AD_Table_ID=200020
+;
+
+-- Sep 28, 2012 5:42:10 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('RunOnlyOnIP',200159,'D','Run only on IP','Run only on IP','090ed7f1-67f7-4d25-ac6b-c4de976b732b',0,TO_DATE('2012-09-28 17:42:09','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2012-09-28 17:42:09','YYYY-MM-DD HH24:MI:SS'),0,0,0,'Y')
+;
+
+-- Sep 28, 2012 5:42:10 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Name,Description,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Name,t.Description,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=200159 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
+;
+
+-- Sep 28, 2012 5:42:18 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET AD_Element_ID=200159, ColumnName='RunOnlyOnIP', Description=NULL, Help=NULL, Name='Run only on IP',Updated=TO_DATE('2012-09-28 17:42:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=200486
+;
+
+-- Sep 28, 2012 5:42:18 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column_Trl SET IsTranslated='N' WHERE AD_Column_ID=200486
+;
+
+-- Sep 28, 2012 5:42:18 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Field SET Name='Run only on IP', Description=NULL, Help=NULL WHERE AD_Column_ID=200486 AND IsCentrallyMaintained='Y'
+;
+
+CREATE UNIQUE INDEX ad_schedule_uu_idx ON ad_schedule (ad_schedule_uu)
+;
+
+-- Sep 28, 2012 6:21:19 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Element SET Name='System Schedule',Updated=TO_DATE('2012-09-28 18:21:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=200157
+;
+
+-- Sep 28, 2012 6:21:19 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=200157
+;
+
+-- Sep 28, 2012 6:21:19 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET ColumnName='IsSystemSchedule', Name='System Schedule', Description='Schedule Just For System', Help=NULL WHERE AD_Element_ID=200157
+;
+
+-- Sep 28, 2012 6:21:19 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Process_Para SET ColumnName='IsSystemSchedule', Name='System Schedule', Description='Schedule Just For System', Help=NULL, AD_Element_ID=200157 WHERE UPPER(ColumnName)='ISSYSTEMSCHEDULE' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Sep 28, 2012 6:21:19 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Process_Para SET ColumnName='IsSystemSchedule', Name='System Schedule', Description='Schedule Just For System', Help=NULL WHERE AD_Element_ID=200157 AND IsCentrallyMaintained='Y'
+;
+
+-- Sep 28, 2012 6:21:19 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Field SET Name='System Schedule', Description='Schedule Just For System', Help=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=200157) AND IsCentrallyMaintained='Y'
+;
+
+-- Sep 28, 2012 6:21:19 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_PrintFormatItem pi SET PrintName='System Schedule', Name='System Schedule' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=200157)
+;
+
+-- Sep 28, 2012 6:22:28 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsMandatory='Y', FieldLength=60, IsUpdateable='Y',Updated=TO_DATE('2012-09-28 18:22:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200487
+;
+
+-- Sep 28, 2012 6:22:53 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Schedule SET Name='2 Hours',Updated=TO_DATE('2012-09-28 18:22:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Schedule_ID=200004
+;
+
+-- Sep 28, 2012 6:23:11 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Schedule MODIFY Name NVARCHAR2(60)
+;
+
+-- Sep 28, 2012 6:23:11 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Schedule MODIFY Name NOT NULL
+;
+
+-- Sep 28, 2012 6:26:22 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsIdentifier='N', SeqNo=0, IsUpdateable='N',Updated=TO_DATE('2012-09-28 18:26:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200473
+;
+
+-- Sep 28, 2012 6:26:38 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET SeqNo=1,Updated=TO_DATE('2012-09-28 18:26:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200487
+;
+
+-- Sep 28, 2012 6:26:53 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET SeqNoSelection=1,Updated=TO_DATE('2012-09-28 18:26:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200487
+;
+
+-- Sep 28, 2012 6:28:29 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-09-28 18:28:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200557
+;
+
+-- Sep 28, 2012 6:28:30 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Schedule MODIFY IsIgnoreProcessingTime CHAR(1) DEFAULT 'N'
+;
+
+-- Sep 28, 2012 6:28:31 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Schedule SET IsIgnoreProcessingTime='N' WHERE IsIgnoreProcessingTime IS NULL
+;
+
+-- Sep 28, 2012 6:28:31 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Schedule MODIFY IsIgnoreProcessingTime NOT NULL
+;
+
+-- Sep 28, 2012 6:28:42 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-09-28 18:28:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200558
+;
+
+-- Sep 28, 2012 6:28:48 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Schedule MODIFY IsSystemSchedule CHAR(1) DEFAULT 'N'
+;
+
+-- Sep 28, 2012 6:28:48 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Schedule SET IsSystemSchedule='N' WHERE IsSystemSchedule IS NULL
+;
+
+-- Sep 28, 2012 6:28:48 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Schedule MODIFY IsSystemSchedule NOT NULL
+;
+
+-- ?? MIGRATE ACTUAL DATA
+
+
+-- Sep 28, 2012 6:30:44 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Element SET Name='Schedule',Updated=TO_DATE('2012-09-28 18:30:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=200132
+;
+
+-- Sep 28, 2012 6:30:44 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=200132
+;
+
+-- Sep 28, 2012 6:30:44 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET ColumnName='AD_Schedule_ID', Name='Schedule', Description=NULL, Help=NULL WHERE AD_Element_ID=200132
+;
+
+-- Sep 28, 2012 6:30:44 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Process_Para SET ColumnName='AD_Schedule_ID', Name='Schedule', Description=NULL, Help=NULL, AD_Element_ID=200132 WHERE UPPER(ColumnName)='AD_SCHEDULE_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Sep 28, 2012 6:30:44 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Process_Para SET ColumnName='AD_Schedule_ID', Name='Schedule', Description=NULL, Help=NULL WHERE AD_Element_ID=200132 AND IsCentrallyMaintained='Y'
+;
+
+-- Sep 28, 2012 6:30:44 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Field SET Name='Schedule', Description=NULL, Help=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=200132) AND IsCentrallyMaintained='Y'
+;
+
+-- Sep 28, 2012 6:30:44 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_PrintFormatItem pi SET PrintName='Schedule', Name='Schedule' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=200132)
+;
+
+-- Sep 28, 2012 6:32:24 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Scheduler SET Record_ID=NULL, AD_Schedule_ID=200001,Updated=TO_DATE('2012-09-28 18:32:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Scheduler_ID=100
+;
+
+-- Sep 28, 2012 6:34:29 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-09-28 18:34:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200491
+;
+
+/* Set schedules for actual records before making them mandatory */
+update ad_scheduler set ad_schedule_id=(select min(ad_schedule_id) from ad_schedule where 
+coalesce(ad_scheduler.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
+coalesce(ad_scheduler.frequency,-1)              =coalesce(ad_schedule.frequency,-1) and
+coalesce(ad_scheduler.weekday,' ')               =coalesce(ad_schedule.weekday,' ') and
+coalesce(ad_scheduler.scheduletype,' ')          =coalesce(ad_schedule.scheduletype,' ') and
+coalesce(ad_scheduler.isignoreprocessingtime,' ')=coalesce(ad_schedule.isignoreprocessingtime,' ') and
+nvl(ad_scheduler.cronpattern,' ')           =nvl(ad_schedule.cronpattern,' '))
+;
+
+update c_acctprocessor set ad_schedule_id=(select min(ad_schedule_id) from ad_schedule where 
+coalesce(c_acctprocessor.frequencytype,' ')=coalesce(ad_schedule.frequencytype,' ') and
+coalesce(c_acctprocessor.frequency,-1)     =coalesce(ad_schedule.frequency,-1) and
+ad_schedule.scheduletype='F')
+;
+
+update ad_alertprocessor set ad_schedule_id=(select min(ad_schedule_id) from ad_schedule where 
+coalesce(ad_alertprocessor.frequencytype,' ')=coalesce(ad_schedule.frequencytype,' ') and
+coalesce(ad_alertprocessor.frequency,-1)     =coalesce(ad_schedule.frequency,-1) and
+ad_schedule.scheduletype='F')
+;
+
+update ad_workflowprocessor set ad_schedule_id=(select min(ad_schedule_id) from ad_schedule where 
+coalesce(ad_workflowprocessor.frequencytype,' ')=coalesce(ad_schedule.frequencytype,' ') and
+coalesce(ad_workflowprocessor.frequency,-1)     =coalesce(ad_schedule.frequency,-1) and
+ad_schedule.scheduletype='F')
+;
+
+update r_requestprocessor set ad_schedule_id=(select min(ad_schedule_id) from ad_schedule where 
+coalesce(r_requestprocessor.frequencytype,' ')=coalesce(ad_schedule.frequencytype,' ') and
+coalesce(r_requestprocessor.frequency,-1)     =coalesce(ad_schedule.frequency,-1) and
+ad_schedule.scheduletype='F')
+;
+
+-- Sep 28, 2012 6:34:33 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_AlertProcessor MODIFY AD_Schedule_ID NUMBER(10)
+;
+
+-- Sep 28, 2012 6:34:33 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_AlertProcessor MODIFY AD_Schedule_ID NOT NULL
+;
+
+-- Sep 28, 2012 6:34:50 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-09-28 18:34:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200489
+;
+
+-- Sep 28, 2012 6:34:52 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Scheduler MODIFY AD_Schedule_ID NUMBER(10)
+;
+
+-- Sep 28, 2012 6:34:52 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_Scheduler MODIFY AD_Schedule_ID NOT NULL
+;
+
+-- Sep 28, 2012 6:35:38 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_WorkflowProcessor SET AD_Schedule_ID=200004,Updated=TO_DATE('2012-09-28 18:35:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_WorkflowProcessor_ID=100
+;
+
+-- Sep 28, 2012 6:36:15 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-09-28 18:36:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200493
+;
+
+-- Sep 28, 2012 6:36:16 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_WorkflowProcessor MODIFY AD_Schedule_ID NUMBER(10)
+;
+
+-- Sep 28, 2012 6:36:16 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE AD_WorkflowProcessor MODIFY AD_Schedule_ID NOT NULL
+;
+
+-- Sep 28, 2012 6:37:32 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE C_AcctProcessor SET AD_Schedule_ID=200002,Updated=TO_DATE('2012-09-28 18:37:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_AcctProcessor_ID=100
+;
+
+-- Sep 28, 2012 6:38:02 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE R_RequestProcessor SET AD_Schedule_ID=200003,Updated=TO_DATE('2012-09-28 18:38:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE R_RequestProcessor_ID=100
+;
+
+-- Sep 28, 2012 6:38:36 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-09-28 18:38:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200490
+;
+
+-- Sep 28, 2012 6:38:37 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE C_AcctProcessor MODIFY AD_Schedule_ID NUMBER(10)
+;
+
+-- Sep 28, 2012 6:38:37 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE C_AcctProcessor MODIFY AD_Schedule_ID NOT NULL
+;
+
+-- Sep 28, 2012 6:39:50 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-09-28 18:39:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200492
+;
+
+-- Sep 28, 2012 6:39:52 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE R_RequestProcessor MODIFY AD_Schedule_ID NUMBER(10)
+;
+
+-- Sep 28, 2012 6:39:52 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+ALTER TABLE R_RequestProcessor MODIFY AD_Schedule_ID NOT NULL
+;
+
+-- Sep 28, 2012 6:47:43 PM COT
+-- IDEMPIERE-391 Scheduler improvements
+UPDATE AD_Column SET AD_Val_Rule_ID=200007,Updated=TO_DATE('2012-09-28 18:47:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200489
+;
+
+-- Oct 2, 2012 8:02:11 PM COT
+UPDATE AD_Field SET DisplayLogic='@ScheduleType@=F',Updated=TO_DATE('2012-10-02 20:02:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200495
+;
+
+-- Oct 2, 2012 8:06:14 PM COT
+UPDATE AD_Element SET Help='Cron pattern to define when the process should be invoked. See http://www.sauronsoftware.it/projects/cron4j/api/it/sauronsoftware/cron4j/SchedulingPattern.html',Updated=TO_DATE('2012-10-02 20:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=54124
+;
+
+-- Oct 2, 2012 8:06:14 PM COT
+UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=54124
+;
+
+-- Oct 2, 2012 8:06:14 PM COT
+UPDATE AD_Column SET ColumnName='CronPattern', Name='Cron Scheduling Pattern', Description='Cron pattern to define when the process should be invoked.', Help='Cron pattern to define when the process should be invoked. See http://www.sauronsoftware.it/projects/cron4j/api/it/sauronsoftware/cron4j/SchedulingPattern.html' WHERE AD_Element_ID=54124
+;
+
+-- Oct 2, 2012 8:06:14 PM COT
+UPDATE AD_Process_Para SET ColumnName='CronPattern', Name='Cron Scheduling Pattern', Description='Cron pattern to define when the process should be invoked.', Help='Cron pattern to define when the process should be invoked. See http://www.sauronsoftware.it/projects/cron4j/api/it/sauronsoftware/cron4j/SchedulingPattern.html', AD_Element_ID=54124 WHERE UPPER(ColumnName)='CRONPATTERN' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Oct 2, 2012 8:06:14 PM COT
+UPDATE AD_Process_Para SET ColumnName='CronPattern', Name='Cron Scheduling Pattern', Description='Cron pattern to define when the process should be invoked.', Help='Cron pattern to define when the process should be invoked. See http://www.sauronsoftware.it/projects/cron4j/api/it/sauronsoftware/cron4j/SchedulingPattern.html' WHERE AD_Element_ID=54124 AND IsCentrallyMaintained='Y'
+;
+
+-- Oct 2, 2012 8:06:14 PM COT
+UPDATE AD_Field SET Name='Cron Scheduling Pattern', Description='Cron pattern to define when the process should be invoked.', Help='Cron pattern to define when the process should be invoked. See http://www.sauronsoftware.it/projects/cron4j/api/it/sauronsoftware/cron4j/SchedulingPattern.html' WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=54124) AND IsCentrallyMaintained='Y'
+;
+
+ALTER TABLE C_AcctProcessor MODIFY FrequencyType NULL
+;
+
+ALTER TABLE AD_AlertProcessor MODIFY Frequency NULL
+;
+
+ALTER TABLE AD_WorkflowProcessor MODIFY FrequencyType NULL
+;
+
+-- Oct 2, 2012 10:44:20 PM COT
+UPDATE AD_Field SET IsDisplayed='N',Updated=TO_DATE('2012-10-02 22:44:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=9434
 ;
 
 SELECT register_migration_script('912_IDEMPIERE-391.sql') FROM dual
 ;
+

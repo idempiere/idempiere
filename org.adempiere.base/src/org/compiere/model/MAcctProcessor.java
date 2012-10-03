@@ -37,12 +37,10 @@ import org.compiere.util.Msg;
 public class MAcctProcessor extends X_C_AcctProcessor
 	implements AdempiereProcessor, AdempiereProcessor2
 {
-	
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7574845047521861399L;
+	private static final long serialVersionUID = -4760475718973777369L;
 
 	/**
 	 * 	Get Active
@@ -102,8 +100,23 @@ public class MAcctProcessor extends X_C_AcctProcessor
 		setSupervisor_ID (Supervisor_ID);
 	}	//	MAcctProcessor
 	
-	
-	
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord)
+	{
+		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			if (nextWork > 0)
+				setDateNextRun(new Timestamp(nextWork));
+		}
+		
+		return true;
+	}	//	beforeSave
+
 	/**
 	 * 	Get Server ID
 	 *	@return id
@@ -155,33 +168,29 @@ public class MAcctProcessor extends X_C_AcctProcessor
 		return no;
 	}	//	deleteLog
 
-
 	@Override
 	public String getFrequencyType() {
-		int AD_Schedule_ID = this.getAD_Schedule_ID();
-		if( AD_Schedule_ID > 0) 
-		{
-		     MSchedule schedule=MSchedule.get(getCtx(), AD_Schedule_ID);
-		     return schedule.getFrequencyType();
-		}
-		return "";
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequencyType();
 	}
 
 	@Override
 	public int getFrequency() {
-		int AD_Schedule_ID = this.getAD_Schedule_ID();
-		if( AD_Schedule_ID > 0) 
-		{
-		   MSchedule schedule=MSchedule.get(getCtx(),AD_Schedule_ID);
-		   return schedule.getFrequency();
-		}   
-		return 0;
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequency();
 	}
 
 	@Override
 	public boolean isIgnoreProcessingTime() {
-		MSchedule schedule=MSchedule.get(getCtx(),getAD_Schedule_ID());
-		return schedule.isIgnoreProcessingTime();
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).isIgnoreProcessingTime();
+	}
+
+	@Override
+	public String getScheduleType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getScheduleType();
+	}
+
+	@Override
+	public String getCronPattern() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getCronPattern();
 	}
 
 }	//	MAcctProcessor

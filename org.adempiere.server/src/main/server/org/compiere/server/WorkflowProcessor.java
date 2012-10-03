@@ -55,7 +55,7 @@ public class WorkflowProcessor extends AdempiereServer
 	 */
 	public WorkflowProcessor (MWorkflowProcessor model)
 	{
-		super (model, 120);		//	2 minute delay
+		super (model, 30);	//	30 seconds delay
 		m_model = model;
 		m_client = MClient.get(model.getCtx(), model.getAD_Client_ID());
 	}	//	WorkflowProcessor

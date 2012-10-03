@@ -32,7 +32,6 @@ import org.compiere.model.MRequestProcessor;
 import org.compiere.model.MSchedule;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSystem;
-import org.compiere.model.X_AD_Schedule;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -53,6 +52,8 @@ public abstract class AdempiereServer extends Thread
 	 */
 	public static AdempiereServer create (AdempiereProcessor model)
 	{
+		if (! isOKtoRunOnIP(model))
+			return null;
 		if (model instanceof MRequestProcessor)
 			return new RequestProcessor ((MRequestProcessor)model);
 		if (model instanceof MWorkflowProcessor)
@@ -85,23 +86,20 @@ public abstract class AdempiereServer extends Thread
 		p_client = MClient.get(m_ctx);
 		Env.setContext(m_ctx, "#AD_Client_ID", p_client.getAD_Client_ID());
 		m_initialNap = initialNap;
-		Timestamp dateNextRun = getDateNextRun(true);
-		if (dateNextRun != null)
-			m_nextWork = dateNextRun.getTime();
 	//	log.info(model.getName() + " - " + getThreadGroup());
 	}	//	ServerBase
 
 	/**	The Processor Model						*/
-	protected					AdempiereProcessor 	p_model;
+	protected	volatile AdempiereProcessor 	p_model;
 	/** Initial nap is seconds		*/
 	private int					m_initialNap = 0;
 
-	/**	Miliseconds to sleep - 10 Min default	*/
-	private long				m_sleepMS = 600000;
+	/**	Milliseconds to sleep - 10 Min default	*/
+	protected long				m_sleepMS = 600000;
 	/** Sleeping					*/
 	private volatile boolean	m_sleeping = false;
 	/** Server start time					*/
-	private long				m_start = 0;
+	protected long				m_start = 0;
 	/** Number of Work executions	*/
 	protected int 				p_runCount = 0;
 	/** Tine start of work				*/
@@ -118,7 +116,7 @@ public abstract class AdempiereServer extends Thread
 	/**	Context						*/
 	private Properties	m_ctx = null;
 	/** System						*/
-	protected static MSystem p_system = null;
+	protected volatile static MSystem p_system = null;
 	/** Client						*/
 	protected MClient	p_client = null;
 
@@ -193,23 +191,6 @@ public abstract class AdempiereServer extends Thread
 	 */
 	public void run ()
 	{
-		
-		if(p_model instanceof AdempiereProcessor2)
-		{
-		   AdempiereProcessor2 model=(AdempiereProcessor2) p_model;
-		   int AD_Schedule_ID = model.getAD_Schedule_ID();		   
-		   MSchedule schedule = null;
-		   if (AD_Schedule_ID != 0)
-		   {
-			   schedule = MSchedule.get (getCtx(), AD_Schedule_ID);
-			   if (!schedule.isOKtoRunOnIP())
-			   {
-				   log.warning (getName() + ": Stopped - IP Restriction " + schedule);
-			 	  return;		//	done
-			   }
-		    }
-		} 
-
 		try
 		{
 			log.fine(getName() + ": pre-nap - " + m_initialNap);
@@ -252,8 +233,8 @@ public abstract class AdempiereServer extends Thread
 			p_runCount++;
 			m_runLastMS = now - p_startWork;
 			m_runTotalMS += m_runLastMS;
-			//
-			m_sleepMS = calculateSleep(m_start);
+
+			// Finished work - calculate datetime for next run
 			Timestamp lastRun = new Timestamp(now);
 			if (p_model instanceof AdempiereProcessor2)
 			{
@@ -261,23 +242,15 @@ public abstract class AdempiereServer extends Thread
 				if (ap.isIgnoreProcessingTime())
 				{
 					lastRun = new Timestamp(p_startWork);
-					if (m_nextWork <= 0)
-						m_nextWork = p_startWork;
-					m_nextWork = m_nextWork + m_sleepMS;
-					while (m_nextWork < now)
-					{
-						m_nextWork = m_nextWork + m_sleepMS;
-					}
-				}
-				else
-				{
-					m_nextWork = now + m_sleepMS;
 				}
 			}
-			else
-			{
-				m_nextWork = now + m_sleepMS;
-			}
+			
+			m_nextWork = MSchedule.getNextRunMS(lastRun.getTime(),
+					p_model.getScheduleType(), p_model.getFrequencyType(),
+					p_model.getFrequency(), p_model.getCronPattern());
+
+			m_sleepMS = m_nextWork - now;
+			log.info(getName() + " Next run: " + new Timestamp(m_nextWork) + " sleep " + m_sleepMS);
 			//
 			p_model.setDateLastRun(lastRun);
 			p_model.setDateNextRun(new Timestamp(m_nextWork));
@@ -360,48 +333,6 @@ public abstract class AdempiereServer extends Thread
 	}	//	getModel
 
 	/**
-	 * 	Calculate Sleep ms
-	 *	@return miliseconds
-	 */
-	private long calculateSleep (long now)
-	{
-		String frequencyType = p_model.getFrequencyType();
-		int frequency = p_model.getFrequency();
-		if (frequency < 1)
-			frequency = 1;
-		//
-		long typeSec = 600;			//	10 minutes
-		if (frequencyType == null)
-			typeSec = 300;			//	5 minutes
-		else if (X_AD_Schedule.FREQUENCYTYPE_Minute.equals(frequencyType))
-			typeSec = 60;
-		else if (X_AD_Schedule.FREQUENCYTYPE_Hour.equals(frequencyType))
-			typeSec = 3600;
-		else if (X_AD_Schedule.FREQUENCYTYPE_Day.equals(frequencyType))
-			typeSec = 86400;
-		//
-		long sleep= typeSec * 1000 * frequency;
-		
-		if (p_model instanceof AdempiereProcessor2) 
-		{
-			AdempiereProcessor2 model=(AdempiereProcessor2) p_model;
-			if (model.getAD_Schedule_ID() == 0)
-				return sleep;
-
-			// Calculate Schedule
-			MSchedule schedule = MSchedule.get(getCtx(),model.getAD_Schedule_ID());
-			long next = schedule.getNextRunMS(now);
-			long delta = next - now;
-			if (delta < 0) {
-				log.warning("Negative Delta=" + delta + " - set to " + sleep);
-				delta = sleep;
-			}
-			return delta;
-		}
-		return sleep;
-	}	//	calculateSleep
-
-	/**
 	 * 	Is Sleeping
 	 *	@return sleeping
 	 */
@@ -459,5 +390,18 @@ public abstract class AdempiereServer extends Thread
 	{
 		return p_model.getLogs();
 	}	//	getLogs
+
+
+	public static boolean isOKtoRunOnIP(AdempiereProcessor model) {
+		if (model instanceof AdempiereProcessor2) {
+			int AD_Schedule_ID = ((AdempiereProcessor2)model).getAD_Schedule_ID();
+			MSchedule schedule = MSchedule.get(Env.getCtx(), AD_Schedule_ID);
+			if (!schedule.isOKtoRunOnIP())
+			{
+				return false;		//	done
+			}
+		}
+		return true;
+	}
 
 }	//	AdempiereServer

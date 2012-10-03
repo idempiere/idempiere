@@ -97,6 +97,20 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Schedule_ID()));
     }
 
+	/** Set AD_Schedule_UU.
+		@param AD_Schedule_UU AD_Schedule_UU	  */
+	public void setAD_Schedule_UU (String AD_Schedule_UU)
+	{
+		set_Value (COLUMNNAME_AD_Schedule_UU, AD_Schedule_UU);
+	}
+
+	/** Get AD_Schedule_UU.
+		@return AD_Schedule_UU	  */
+	public String getAD_Schedule_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Schedule_UU);
+	}
+
 	/** Set Cron Scheduling Pattern.
 		@param CronPattern 
 		Cron pattern to define when the process should be invoked.
@@ -201,6 +215,30 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 		return false;
 	}
 
+	/** Set IsSystemSchedule.
+		@param IsSystemSchedule 
+		Schedule Just For System
+	  */
+	public void setIsSystemSchedule (boolean IsSystemSchedule)
+	{
+		set_Value (COLUMNNAME_IsSystemSchedule, Boolean.valueOf(IsSystemSchedule));
+	}
+
+	/** Get IsSystemSchedule.
+		@return Schedule Just For System
+	  */
+	public boolean isSystemSchedule () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSystemSchedule);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Day of the Month.
 		@param MonthDay 
 		Day of the month 1 to 28/29/30/31
@@ -238,18 +276,15 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set RunOnlyOnIP.
-		@param RunOnlyOnIP 
-		Defines the IP address to transfer data to
-	  */
+	/** Set Run only on IP.
+		@param RunOnlyOnIP Run only on IP	  */
 	public void setRunOnlyOnIP (String RunOnlyOnIP)
 	{
 		set_Value (COLUMNNAME_RunOnlyOnIP, RunOnlyOnIP);
 	}
 
-	/** Get RunOnlyOnIP.
-		@return Defines the IP address to transfer data to
-	  */
+	/** Get Run only on IP.
+		@return Run only on IP	  */
 	public String getRunOnlyOnIP () 
 	{
 		return (String)get_Value(COLUMNNAME_RunOnlyOnIP);

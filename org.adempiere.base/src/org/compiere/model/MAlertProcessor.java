@@ -38,8 +38,7 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9060358751064718910L;
-
+	private static final long serialVersionUID = -6566030540146374829L;
 
 	/**
 	 * 	Get Active
@@ -162,22 +161,46 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 		return alerts;
 	}	//	getAlerts
 
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
 	@Override
-	public int getFrequency() {
-		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
-		return schedule.getFrequency();
-	}
+	protected boolean beforeSave(boolean newRecord)
+	{
+		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			if (nextWork > 0)
+				setDateNextRun(new Timestamp(nextWork));
+		}
+		
+		return true;
+	}	//	beforeSave
 
 	@Override
 	public String getFrequencyType() {
-		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
-		return schedule.getFrequencyType();
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequencyType();
+	}
+
+	@Override
+	public int getFrequency() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequency();
 	}
 
 	@Override
 	public boolean isIgnoreProcessingTime() {
-		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
-		return schedule.isIgnoreProcessingTime();
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).isIgnoreProcessingTime();
+	}
+
+	@Override
+	public String getScheduleType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getScheduleType();
+	}
+
+	@Override
+	public String getCronPattern() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getCronPattern();
 	}
 
 }	//	MAlertProcessor

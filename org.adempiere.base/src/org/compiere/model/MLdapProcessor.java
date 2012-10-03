@@ -39,7 +39,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7577593682255409240L;
+	private static final long serialVersionUID = -1477519989047580644L;
 
 	/**
 	 * 	Get Active LDAP Server
@@ -524,5 +524,15 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 		access.setSummary (info);
 		access.save ();
 	}	//	logAccess
+
+	@Override
+	public String getScheduleType() {
+		return MSchedule.SCHEDULETYPE_Frequency;
+	}
+
+	@Override
+	public String getCronPattern() {
+	   return null;
+	}
 
 }	//	MLdapProcessor

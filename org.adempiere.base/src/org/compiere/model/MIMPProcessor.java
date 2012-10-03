@@ -50,8 +50,8 @@ public class MIMPProcessor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8634765494025824138L;
-	/**	Static Logger	*/
+	private static final long serialVersionUID = 4477942100661801354L;
+
 	private static CLogger	s_log	= CLogger.getCLogger (MIMPProcessor.class);
 	
 	public MIMPProcessor(Properties ctx,
@@ -215,5 +215,15 @@ public class MIMPProcessor
 		list.toArray(retValue);
 		return retValue;
 	}	//	getActive
+
+	@Override
+	public String getScheduleType() {
+		return MSchedule.SCHEDULETYPE_Frequency;
+	}
 	
+	@Override
+	public String getCronPattern() {
+	   return null;
+	}
+
 }

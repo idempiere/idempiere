@@ -16,9 +16,6 @@
  *****************************************************************************/
 package org.compiere.server;
 
-import it.sauronsoftware.cron4j.Predictor;
-import it.sauronsoftware.cron4j.SchedulingPattern;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -34,12 +31,10 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
-import org.compiere.model.MSchedule;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerLog;
 import org.compiere.model.MSchedulerPara;
 import org.compiere.model.MUser;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -67,7 +62,7 @@ public class Scheduler extends AdempiereServer
 	 */
 	public Scheduler (MScheduler model)
 	{
-		super (model, 240);		//	nap
+		super (model, 30);	//	30 seconds delay
 		m_model = model;
 	//	m_client = MClient.get(model.getCtx(), model.getAD_Client_ID());
 	}	//	Scheduler
@@ -79,9 +74,6 @@ public class Scheduler extends AdempiereServer
 	/** Transaction					*/
 	private Trx					m_trx = null;
 
-	private it.sauronsoftware.cron4j.Scheduler cronScheduler;
-	private Predictor predictor;
-	
 	// ctx for the report/process
 	Properties m_schedulerctx = new Properties();
 
@@ -422,40 +414,4 @@ public class Scheduler extends AdempiereServer
 		return "#" + p_runCount + " - Last=" + m_summary.toString();
 	}	//	getServerInfo
 
-	@Override
-	public void run() 
-	{
-		if (m_model.getAD_Schedule_ID() > 0) 
-		{
-			MSchedule time = new MSchedule(getCtx(),m_model.getAD_Schedule_ID(), null);
-			String cronPattern = (String) time.getCronPattern();
-			if (cronPattern != null && cronPattern.trim().length() > 0
-					&& SchedulingPattern.validate(cronPattern)) {
-				cronScheduler = new it.sauronsoftware.cron4j.Scheduler();
-				cronScheduler.schedule(cronPattern, new Runnable() {
-					public void run() {
-						runNow();
-						long next = predictor.nextMatchingTime();
-						p_model.setDateNextRun(new Timestamp(next));
-						p_model.saveEx();
-					}
-				});
-				predictor = new Predictor(cronPattern);
-				long next = predictor.nextMatchingTime();
-				p_model.setDateNextRun(new Timestamp(next));
-				p_model.saveEx();
-				cronScheduler.start();
-				while (true) {
-					if (!sleep()) {
-						cronScheduler.stop();
-						break;
-					} else if (!cronScheduler.isStarted()) {
-						break;
-					}
-				}
-			} else {
-				super.run();
-			}
-		}
-	}
 }	//	Scheduler

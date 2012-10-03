@@ -114,9 +114,11 @@ public class AdempiereServerMgr
 		{
 			MAcctProcessor pModel = acctModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
-			server.start();
-			server.setPriority(Thread.NORM_PRIORITY-2);
-			m_servers.add(server);
+			if (server != null) {
+				server.start();
+				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(server);
+			}
 		}		
 		//	Request
 		MRequestProcessor[] requestModels = MRequestProcessor.getActive(m_ctx);
@@ -124,9 +126,11 @@ public class AdempiereServerMgr
 		{
 			MRequestProcessor pModel = requestModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
-			server.start();
-			server.setPriority(Thread.NORM_PRIORITY-2);
-			m_servers.add(server);
+			if (server != null) {
+				server.start();
+				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(server);
+			}
 		}
 		//	Workflow
 		MWorkflowProcessor[] workflowModels = MWorkflowProcessor.getActive(m_ctx);
@@ -134,9 +138,11 @@ public class AdempiereServerMgr
 		{
 			MWorkflowProcessor pModel = workflowModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
-			server.start();
-			server.setPriority(Thread.NORM_PRIORITY-2);
-			m_servers.add(server);
+			if (server != null) {
+				server.start();
+				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(server);
+			}
 		}		
 		//	Alert
 		MAlertProcessor[] alertModels = MAlertProcessor.getActive(m_ctx);
@@ -144,9 +150,11 @@ public class AdempiereServerMgr
 		{
 			MAlertProcessor pModel = alertModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
-			server.start();
-			server.setPriority(Thread.NORM_PRIORITY-2);
-			m_servers.add(server);
+			if (server != null) {
+				server.start();
+				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(server);
+			}
 		}		
 		//	Scheduler
 		MScheduler[] schedulerModels = MScheduler.getActive(m_ctx);
@@ -154,9 +162,11 @@ public class AdempiereServerMgr
 		{
 			MScheduler pModel = schedulerModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
-			server.start();
-			server.setPriority(Thread.NORM_PRIORITY-2);
-			m_servers.add(server);
+			if (server != null) {
+				server.start();
+				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(server);
+			}
 		}		
 		//	LDAP
 		MLdapProcessor[] ldapModels = MLdapProcessor.getActive(m_ctx);
@@ -164,9 +174,11 @@ public class AdempiereServerMgr
 		{
 			MLdapProcessor lp = ldapModels[i];
 			AdempiereServer server = AdempiereServer.create(lp);
-			server.start();
-			server.setPriority(Thread.NORM_PRIORITY-1);
-			m_servers.add(server);
+			if (server != null) {
+				server.start();
+				server.setPriority(Thread.NORM_PRIORITY-1);
+				m_servers.add(server);
+			}
 		}
 		
 		//osgi server

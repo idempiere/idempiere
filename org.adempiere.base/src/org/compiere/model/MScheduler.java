@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import it.sauronsoftware.cron4j.SchedulingPattern;
-
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
@@ -44,7 +42,7 @@ public class MScheduler extends X_AD_Scheduler
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6563650236096742870L;
+	private static final long serialVersionUID = 5106574386025319255L;
 
 	/**
 	 * 	Get Active
@@ -237,6 +235,7 @@ public class MScheduler extends X_AD_Scheduler
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
 		
@@ -269,7 +268,12 @@ public class MScheduler extends X_AD_Scheduler
 				return false;
 			}
 		}
-		//
+		
+		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			if (nextWork > 0)
+				setDateNextRun(new Timestamp(nextWork));
+		}
 		
 		return true;
 	}	//	beforeSave
@@ -287,23 +291,27 @@ public class MScheduler extends X_AD_Scheduler
 
 	@Override
 	public String getFrequencyType() {
-		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
-		
-		return schedule.getFrequencyType();
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequencyType();
 	}
 
 	@Override
 	public int getFrequency() {
-		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
-		return schedule.getFrequency();
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequency();
 	}
 
 	@Override
 	public boolean isIgnoreProcessingTime() {
-		MSchedule schedule=MSchedule.get(getCtx(), getAD_Schedule_ID());
-		return schedule.isIgnoreProcessingTime();
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).isIgnoreProcessingTime();
 	}
 
+	@Override
+	public String getScheduleType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getScheduleType();
+	}
 
+	@Override
+	public String getCronPattern() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getCronPattern();
+	}
 
 }	//	MScheduler

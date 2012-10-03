@@ -66,7 +66,7 @@ public class AlertProcessor extends AdempiereServer
 	 */
 	public AlertProcessor (MAlertProcessor model)
 	{
-		super (model, 180);		//	3 minute delay 
+		super (model, 30);	//	30 seconds delay 
 		m_model = model;
 		m_client = MClient.get(model.getCtx(), model.getAD_Client_ID());
 	}	//	AlertProcessor

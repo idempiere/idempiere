@@ -71,6 +71,15 @@ public interface I_AD_Schedule
 	/** Get AD_Schedule_ID	  */
 	public int getAD_Schedule_ID();
 
+    /** Column name AD_Schedule_UU */
+    public static final String COLUMNNAME_AD_Schedule_UU = "AD_Schedule_UU";
+
+	/** Set AD_Schedule_UU	  */
+	public void setAD_Schedule_UU (String AD_Schedule_UU);
+
+	/** Get AD_Schedule_UU	  */
+	public String getAD_Schedule_UU();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -165,6 +174,19 @@ public interface I_AD_Schedule
 	  */
 	public boolean isIgnoreProcessingTime();
 
+    /** Column name IsSystemSchedule */
+    public static final String COLUMNNAME_IsSystemSchedule = "IsSystemSchedule";
+
+	/** Set IsSystemSchedule.
+	  * Schedule Just For System
+	  */
+	public void setIsSystemSchedule (boolean IsSystemSchedule);
+
+	/** Get IsSystemSchedule.
+	  * Schedule Just For System
+	  */
+	public boolean isSystemSchedule();
+
     /** Column name MonthDay */
     public static final String COLUMNNAME_MonthDay = "MonthDay";
 
@@ -194,14 +216,10 @@ public interface I_AD_Schedule
     /** Column name RunOnlyOnIP */
     public static final String COLUMNNAME_RunOnlyOnIP = "RunOnlyOnIP";
 
-	/** Set RunOnlyOnIP.
-	  * Defines the IP address to transfer data to
-	  */
+	/** Set Run only on IP	  */
 	public void setRunOnlyOnIP (String RunOnlyOnIP);
 
-	/** Get RunOnlyOnIP.
-	  * Defines the IP address to transfer data to
-	  */
+	/** Get Run only on IP	  */
 	public String getRunOnlyOnIP();
 
     /** Column name ScheduleType */
