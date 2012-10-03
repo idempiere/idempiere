@@ -43,7 +43,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	private static final long serialVersionUID = 8514876566904723695L;
 
 
-	public static MPaymentProcessor[] find (Properties ctx,
+	public static MBankAccount[] find (Properties ctx,
 			String tender, String CCType,
 			int AD_Client_ID, int AD_Org_ID, int C_Currency_ID, BigDecimal Amt, String trxName)
 	{
@@ -61,37 +61,40 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 *	@param trxName transaction
 	 *  @return Array of BankAccount[0] & PaymentProcessor[1] or null
 	 */
-	protected static MPaymentProcessor[] find (Properties ctx,
+	protected static MBankAccount[] find (Properties ctx,
 		String tender, String CCType,
 		int AD_Client_ID, int C_Currency_ID, BigDecimal Amt, String trxName)
 	{
-		ArrayList<MPaymentProcessor> list = new ArrayList<MPaymentProcessor>();
-		StringBuffer sql = new StringBuffer("SELECT * "
-			+ "FROM C_PaymentProcessor "
-			+ "WHERE AD_Client_ID=? AND IsActive='Y'"				//	#1
-			+ " AND (C_Currency_ID IS NULL OR C_Currency_ID=?)"		//	#2
-			+ " AND (MinimumAmt IS NULL OR MinimumAmt = 0 OR MinimumAmt <= ?)");	//	#3
+		ArrayList<MBankAccount> list = new ArrayList<MBankAccount>();
+		StringBuffer sql = new StringBuffer("SELECT ba.* "
+			+ "FROM C_PaymentProcessor pp, C_BankAccount ba "
+			+ "WHERE pp.C_PaymentProcessor_ID = ba.C_PaymentProcessor_ID" 
+			+ " AND ba.AD_Client_ID=? AND ba.IsActive='Y'"				//	#1
+			+ " AND pp.IsActive='Y' "
+			+ " AND (pp.C_Currency_ID IS NULL OR pp.C_Currency_ID=?)"		//	#2
+			+ " AND (pp.MinimumAmt IS NULL OR pp.MinimumAmt = 0 OR pp.MinimumAmt <= ?)");	//	#3
 		if (MPayment.TENDERTYPE_DirectDeposit.equals(tender))
-			sql.append(" AND AcceptDirectDeposit='Y'");
+			sql.append(" AND pp.AcceptDirectDeposit='Y'");
 		else if (MPayment.TENDERTYPE_DirectDebit.equals(tender))
-			sql.append(" AND AcceptDirectDebit='Y'");
+			sql.append(" AND pp.AcceptDirectDebit='Y'");
 		else if (MPayment.TENDERTYPE_Check.equals(tender))
-			sql.append(" AND AcceptCheck='Y'");
+			sql.append(" AND pp.AcceptCheck='Y'");
 		//  CreditCards
 		else if (MPayment.CREDITCARDTYPE_ATM.equals(CCType))
-			sql.append(" AND AcceptATM='Y'");
+			sql.append(" AND pp.AcceptATM='Y'");
 		else if (MPayment.CREDITCARDTYPE_Amex.equals(CCType))
-			sql.append(" AND AcceptAMEX='Y'");
+			sql.append(" AND pp.AcceptAMEX='Y'");
 		else if (MPayment.CREDITCARDTYPE_Visa.equals(CCType))
-			sql.append(" AND AcceptVISA='Y'");
+			sql.append(" AND pp.AcceptVISA='Y'");
 		else if (MPayment.CREDITCARDTYPE_MasterCard.equals(CCType))
-			sql.append(" AND AcceptMC='Y'");
+			sql.append(" AND pp.AcceptMC='Y'");
 		else if (MPayment.CREDITCARDTYPE_Diners.equals(CCType))
-			sql.append(" AND AcceptDiners='Y'");
+			sql.append(" AND pp.AcceptDiners='Y'");
 		else if (MPayment.CREDITCARDTYPE_Discover.equals(CCType))
-			sql.append(" AND AcceptDiscover='Y'");
+			sql.append(" AND pp.AcceptDiscover='Y'");
 		else if (MPayment.CREDITCARDTYPE_PurchaseCard.equals(CCType))
-			sql.append(" AND AcceptCORPORATE='Y'");
+			sql.append(" AND pp.AcceptCORPORATE='Y'");
+		sql.append(" ORDER BY ba.IsDefault DESC ");
 		//
 		try
 		{
@@ -101,7 +104,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 			pstmt.setBigDecimal(3, Amt);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
-				list.add(new MPaymentProcessor (ctx, rs, trxName));
+				list.add(new MBankAccount (ctx, rs, trxName));
 			rs.close();
 			pstmt.close();
 		}
@@ -117,7 +120,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 		else
 			s_log.fine("find - #" + list.size() + " - AD_Client_ID=" + AD_Client_ID
 				+ ", C_Currency_ID=" + C_Currency_ID + ", Amt=" + Amt);
-		MPaymentProcessor[] retValue = new MPaymentProcessor[list.size()];
+		MBankAccount[] retValue = new MBankAccount[list.size()];
 		list.toArray(retValue);
 		return retValue;
 	}   //  find
@@ -205,4 +208,27 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 		return false;
 	}	//	accepts
 
+	/**
+	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID 
+	 */
+	@Override
+	public I_C_BankAccount getC_BankAccount() throws RuntimeException {
+		return super.getC_BankAccount();
+	}
+
+	/**
+	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID
+	 */
+	@Override
+	public void setC_BankAccount_ID(int C_BankAccount_ID) {
+		super.setC_BankAccount_ID(C_BankAccount_ID);
+	}
+
+	/**
+	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID
+	 */
+	@Override
+	public int getC_BankAccount_ID() {
+		return super.getC_BankAccount_ID();
+	}
 }	//	MPaymentProcessor

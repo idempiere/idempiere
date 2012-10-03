@@ -111,7 +111,9 @@ public class Core {
 		}
 		//
 		PaymentProcessor myProcessor = null;
-		myProcessor = Service.locate(PaymentProcessor.class);
+		ServiceQuery query = new ServiceQuery();
+		query.put(ServiceQuery.EXTENSION_ID, className);
+		myProcessor = Service.locate(PaymentProcessor.class, query);
 		if (myProcessor == null) {
 			try {
 				Class<?> ppClass = Class.forName(className);

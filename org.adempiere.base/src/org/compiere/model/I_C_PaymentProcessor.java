@@ -31,13 +31,13 @@ public interface I_C_PaymentProcessor
     public static final String Table_Name = "C_PaymentProcessor";
 
     /** AD_Table_ID=398 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 398;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -205,7 +205,7 @@ public interface I_C_PaymentProcessor
 	  */
 	public int getAD_Sequence_ID();
 
-	public I_AD_Sequence getAD_Sequence() throws RuntimeException;
+	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException;
 
     /** Column name C_BankAccount_ID */
     public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
@@ -220,7 +220,7 @@ public interface I_C_PaymentProcessor
 	  */
 	public int getC_BankAccount_ID();
 
-	public I_C_BankAccount getC_BankAccount() throws RuntimeException;
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -235,7 +235,29 @@ public interface I_C_PaymentProcessor
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+
+    /** Column name C_PaymentProcessor_ID */
+    public static final String COLUMNNAME_C_PaymentProcessor_ID = "C_PaymentProcessor_ID";
+
+	/** Set Payment Processor.
+	  * Payment processor for electronic payments
+	  */
+	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID);
+
+	/** Get Payment Processor.
+	  * Payment processor for electronic payments
+	  */
+	public int getC_PaymentProcessor_ID();
+
+    /** Column name C_PaymentProcessor_UU */
+    public static final String COLUMNNAME_C_PaymentProcessor_UU = "C_PaymentProcessor_UU";
+
+	/** Set C_PaymentProcessor_UU	  */
+	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU);
+
+	/** Get C_PaymentProcessor_UU	  */
+	public String getC_PaymentProcessor_UU();
 
     /** Column name Commission */
     public static final String COLUMNNAME_Commission = "Commission";
@@ -262,19 +284,6 @@ public interface I_C_PaymentProcessor
 	  * Fixed cost per transaction
 	  */
 	public BigDecimal getCostPerTrx();
-
-    /** Column name C_PaymentProcessor_ID */
-    public static final String COLUMNNAME_C_PaymentProcessor_ID = "C_PaymentProcessor_ID";
-
-	/** Set Payment Processor.
-	  * Payment processor for electronic payments
-	  */
-	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID);
-
-	/** Get Payment Processor.
-	  * Payment processor for electronic payments
-	  */
-	public int getC_PaymentProcessor_ID();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
