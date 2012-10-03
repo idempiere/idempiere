@@ -758,7 +758,7 @@ public final class MLookup extends Lookup implements Serializable
 					boolean isActive = rs.getString(4).equals("Y");
 					if (!isActive)
 					{
-						name.append(INACTIVE_S).append(INACTIVE_E);
+						name = new StringBuilder(INACTIVE_S).append(INACTIVE_E);
 						m_hasInactive = true;
 					}
 					if (isNumber)
