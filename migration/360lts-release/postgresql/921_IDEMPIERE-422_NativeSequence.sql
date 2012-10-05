@@ -71,8 +71,8 @@ EXCEPTION
     WHEN  OTHERS THEN
     	RAISE NOTICE '%',SQLERRM;
 END;
-
 $body$ LANGUAGE plpgsql;
 
+SELECT register_migration_script('921_IDEMPIERE-422_NativeSequence.sql') FROM dual
+;
 
- 	  	 

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION update_sequences() RETURNS void as $func$
+﻿CREATE OR REPLACE FUNCTION update_sequences() RETURNS void as $func$
 -- TODO: Currently not inserting new sequences
 DECLARE
    cmdsys           VARCHAR (1000);
@@ -11,10 +11,11 @@ DECLARE
    currentseq       NUMERIC (10);
    ok               BOOLEAN;
    r                RECORD;
+   isnativeseqon    VARCHAR (1);  
 BEGIN
 
-   FOR r IN (SELECT   tablename
-                 FROM AD_TABLE t
+ FOR r IN (SELECT tablename
+             FROM AD_TABLE t
                 WHERE EXISTS (
                          SELECT 1
                            FROM AD_COLUMN c
@@ -41,6 +42,17 @@ BEGIN
       END;
 
     IF ok THEN
+
+      BEGIN
+	 SELECT Value
+	   INTO isnativeseqon		
+	   FROM AD_SYSCONFIG 
+	  WHERE Name ='SYSTEM_NATIVE_SEQUENCE';
+      EXCEPTION
+         WHEN NO_DATA_FOUND THEN
+            isnativeseqon:= 'N';
+      END;
+          
       IF currentnextsys IS NULL
       THEN
          currentnextsys := 0;
@@ -72,15 +84,25 @@ BEGIN
                      ELSE coalesce (currentnext + 1, 1000000)
                      END ;
 
-      cmdseq :=
-            'SELECT currentnext, currentnextsys FROM AD_Sequence '
-         || 'WHERE Name = '''
-         || r.tablename
-         || ''' AND istableid = ''Y''';
+      IF isnativeseqon ='Y' THEN 
+       cmdseq :=
+ 	    'SELECT nextval('''||trim(r.tablename)||'_sq'''||') as currentnext, 
+		    currentnextsys 
+	       FROM AD_Sequence '
+ 	 || 'WHERE Name = '''
+	 || r.tablename
+	 || ''' AND istableid = ''Y''';
+      ELSE 
+       cmdseq :=
+ 	    'SELECT currentnext, currentnextsys FROM AD_Sequence '
+ 	 || 'WHERE Name = '''
+	 || r.tablename
+	 || ''' AND istableid = ''Y''';
+      END IF;  
 
       EXECUTE cmdseq INTO currentseq, currentseqsys;
 
-      IF currentnextsys <> currentseqsys OR currentnext <> currentseq
+      IF currentnextsys <> currentseqsys OR (currentnext <> currentseq AND isnativeseqon ='N')
       THEN
          cmdupd :=
                'update ad_sequence set currentnextsys = '
@@ -93,8 +115,14 @@ BEGIN
 
          EXECUTE cmdupd;
       END IF;
+      IF currentseq < currentnext AND isnativeseqon ='Y' THEN 
+	 --RAISE NOTICE 'currentseq % ,currentnext %',currentseq,currentnext;
+         WHILE NOT currentseq >= (currentnext-1) LOOP
+           EXECUTE 'SELECT nextval('''||trim(r.tablename)||'_sq'''||')' INTO currentseq;
+         --RAISE NOTICE 'currentseq % ,currentnext %',currentseq,currentnext;
+         END LOOP;
+      END IF;			
     END IF;
-
    END LOOP;
 END;
 $func$ LANGUAGE plpgsql;

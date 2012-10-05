@@ -202,42 +202,28 @@ public class SequenceCheck extends SvrProcess
 			+ "ORDER BY Name";
 		int counter = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String trxName = null;
 		if (sp != null)
 			trxName = sp.get_TrxName();
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				MSequence seq = new MSequence (ctx, rs, trxName);
-				int old = seq.getCurrentNext();
-				int oldSys = seq.getCurrentNextSys();
-				if (seq.validateTableIDValue())
-				{
-					if (seq.getCurrentNext() != old)
-					{
-						StringBuilder msg = new StringBuilder(seq.getName()).append(" ID  ") 
-							.append(old).append(" -> ").append(seq.getCurrentNext());
-						if (sp != null)
-							sp.addLog(0, null, null, msg.toString());
-						else
-							s_log.fine(msg.toString());
-					}
-					if (seq.getCurrentNextSys() != oldSys)
-					{
-						StringBuilder msg = new StringBuilder(seq.getName()).append(" Sys ") 
-							.append(oldSys).append(" -> ").append(seq.getCurrentNextSys());
-						if (sp != null)
-							sp.addLog(0, null, null, msg.toString());
-						else
-							s_log.fine(msg.toString());
-					}
-					if (seq.save())
-						counter++;
+				String tableValidation= seq.validateTableIDValue();
+				if (tableValidation!=null){
+					if (sp != null)
+					   sp.addLog(0, null, null, tableValidation);
 					else
-						s_log.severe("Not updated: " + seq);
+					   s_log.fine(tableValidation);
+						  
+				    if (seq.save())
+					   counter++;
+					else
+					   s_log.severe("Not updated: " + seq);
 				}
 			//	else if (CLogMgt.isLevel(6)) 
 			//		log.fine("checkTableID - skipped " + tableName);
@@ -249,16 +235,10 @@ public class SequenceCheck extends SvrProcess
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
-		}
-		try
+		}finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 		s_log.fine("#" + counter);
 	}	//	checkTableID

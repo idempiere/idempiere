@@ -24,11 +24,16 @@ BEGIN
 END;
  * 
  ************************************************************************/
-AS
+As
+Isnativeseqon   NVARCHAR2(1); 
+Tablename       Nvarchar2(60);
+sqlcmd          VARCHAR2(200);
 BEGIN
+
+
     IF (p_System = 'Y') THEN
         SELECT CurrentNextSys
-            INTO o_NextID
+        INTO o_NextID
         FROM AD_Sequence
         WHERE AD_Sequence_ID=p_AD_Sequence_ID
         FOR UPDATE OF CurrentNextSys;
@@ -36,16 +41,43 @@ BEGIN
         UPDATE AD_Sequence
           SET CurrentNextSys = CurrentNextSys + IncrementNo
         WHERE AD_Sequence_ID=p_AD_Sequence_ID;
-    ELSE
-        SELECT CurrentNext
-            INTO o_NextID
-        FROM AD_Sequence
-        WHERE AD_Sequence_ID=p_AD_Sequence_ID
-        FOR UPDATE OF CurrentNext;
-        --
-        UPDATE AD_Sequence
-          SET CurrentNext = CurrentNext + IncrementNo
-        WHERE AD_Sequence_ID=p_AD_Sequence_ID;
+    ELSE 
+     
+        BEGIN
+          SELECT Value
+            Into Isnativeseqon		
+            From Ad_Sysconfig 
+           Where Name ='SYSTEM_NATIVE_SEQUENCE';
+        EXCEPTION
+           WHEN NO_DATA_FOUND THEN
+              Isnativeseqon:= 'N';
+        END; 
+      
+       IF Isnativeseqon = 'Y' THEN 
+       
+          Select Name 
+            INTO tablename
+            From Ad_Sequence
+           Where Ad_Sequence_Id=P_Ad_Sequence_Id
+             And Istableid = 'Y';
+          --
+          Sqlcmd := 'SELECT '||Tablename||'_SQ.Nextval FROM DUAL'; 
+          --      
+          Execute Immediate Sqlcmd Into O_Nextid;       
+          --
+       ELSE 
+       
+         SELECT CurrentNext
+          INTO o_NextID
+          FROM AD_Sequence
+          WHERE AD_Sequence_ID=p_AD_Sequence_ID
+          FOR UPDATE OF CurrentNext;
+          --
+          Update Ad_Sequence
+             Set Currentnext = Currentnext + Incrementno
+           Where Ad_Sequence_Id=P_Ad_Sequence_Id;
+           --
+       END IF;
     END IF;
     --
 EXCEPTION

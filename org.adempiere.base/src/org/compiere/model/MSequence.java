@@ -62,7 +62,8 @@ public class MSequence extends X_AD_Sequence
 	private static final int QUERY_TIME_OUT = 30;
 	
 	private static final String NoYearNorMonth = "-";
-
+	
+	@Deprecated
 	public static int getNextID (int AD_Client_ID, String TableName)
 	{
 		return getNextID(AD_Client_ID, TableName, null);
@@ -75,7 +76,12 @@ public class MSequence extends X_AD_Sequence
 	 *  @param TableName table name
 	 * 	@param trxName deprecated.
 	 *  @return next no or (-1=not found, -2=error)
-	 */
+	 *  
+	 *  WARNING!! This method doesn't take into account the native sequence setting, it always read from table AD_Sequence
+	 *  must be used JUST for the method Enable Native Sequence
+	 *  
+	 *  @deprecated
+ 	 */
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
 		if (TableName == null || TableName.length() == 0)
@@ -693,7 +699,7 @@ public class MSequence extends X_AD_Sequence
 				seq.setDescription("Table " + TableName);
 				seq.setIsTableID(tableID);
 				seq.saveEx();
-				next_id = seq.getCurrentNext();
+				next_id = INIT_NO;
 			}
 			if (! CConnection.get().getDatabase().createSequence(TableName+"_SQ", 1, 0 , 99999999,  next_id, trxName))
 				return false;
@@ -883,10 +889,10 @@ public class MSequence extends X_AD_Sequence
 	 * 	Validate Table Sequence Values
 	 *	@return true if updated
 	 */
-	public boolean validateTableIDValue()
+	public String validateTableIDValue()
 	{
 		if (!isTableID())
-			return false;
+			return null;
 		String tableName = getName();
 		int AD_Column_ID = DB.getSQLValue(null, "SELECT MAX(c.AD_Column_ID) "
 			+ "FROM AD_Table t"
@@ -894,13 +900,14 @@ public class MSequence extends X_AD_Sequence
 			+ "WHERE t.TableName='" + tableName + "'"
 			+ " AND c.ColumnName='" + tableName + "_ID'");
 		if (AD_Column_ID <= 0)
-			return false;
+			return null;
 		//
 		MSystem system = MSystem.get(getCtx());
 		int IDRangeEnd = 0;
 		if (system.getIDRangeEnd() != null)
 			IDRangeEnd = system.getIDRangeEnd().intValue();
-		boolean change = false;
+
+		String changeMsg = null;
 		String info = null;
 
 		//	Current Next
@@ -911,11 +918,13 @@ public class MSequence extends X_AD_Sequence
 		if (maxTableID < INIT_NO)
 			maxTableID = INIT_NO - 1;
 		maxTableID++;		//	Next
-		if (getCurrentNext() < maxTableID)
+		
+		int currentNextValue = getCurrentNext();
+		if (currentNextValue < maxTableID)
 		{
 			setCurrentNext(maxTableID);
 			info = "CurrentNext=" + maxTableID;
-			change = true;
+			changeMsg = getName() + " ID  " + currentNextValue + " -> " + maxTableID;
 		}
 
 		//	Get Max System_ID used in Table
@@ -924,22 +933,44 @@ public class MSequence extends X_AD_Sequence
 		int maxTableSysID = DB.getSQLValue(null, sql);
 		if (maxTableSysID <= 0)
 			maxTableSysID = INIT_SYS_NO - 1;
-		maxTableSysID++;	//	Next
-		if (getCurrentNextSys() < maxTableSysID)
-		{
+		int currentNextSysValue = getCurrentNextSys();
+		if (currentNextSysValue < maxTableSysID){
 			setCurrentNextSys(maxTableSysID);
 			if (info == null)
 				info = "CurrentNextSys=" + maxTableSysID;
 			else
 				info += " - CurrentNextSys=" + maxTableSysID;
-			change = true;
+		
+			if (changeMsg == null) 
+				changeMsg = getName() + " Sys " + currentNextSysValue + " -> " + maxTableSysID;
+			else  
+				changeMsg += " - " +getName() + " Sys " + currentNextSysValue + " -> " + maxTableSysID;	
 		}
 		if (info != null)
 			log.fine(getName() + " - " + info);
-		return change;
+		
+		return changeMsg;
 	}	//	validate
 
-
+	@Override
+	public int getCurrentNext() {
+		if (MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false) && isTableID()){
+		    return DB.getNextID (getAD_Client_ID(),getName(),get_TrxName());
+		}else {
+		   return super.getCurrentNext();
+		}
+	}
+		 
+    @Override
+	public void setCurrentNext(int CurrentNext) {	
+		if (MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false) && isTableID()){
+			while (DB.getNextID(getAD_Client_ID(),getName(),get_TrxName()) < (CurrentNext-1)) {
+	        	// do nothing - the while is incrementing the sequence
+	        }
+		}else {
+			super.setCurrentNext(CurrentNext);			
+		}
+	}
 	/**************************************************************************
 	 *	Test
 	 *	@param args ignored
