@@ -1482,6 +1482,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (product != null
 				&& isSOTrx()
 				&& product.isCreateAsset()
+				&& !product.getM_Product_Category().getA_Asset_Group().isFixedAsset()
 				&& sLine.getMovementQty().signum() > 0
 				&& !isReversal())
 			{
