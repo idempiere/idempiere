@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION nextid(
+CREATE OR REPLACE FUNCTION nextid(
 	p_AD_Sequence_ID 	IN 	INTEGER, 
 	p_System 		IN 	VARCHAR,
 	o_NextID		OUT	INTEGER
@@ -37,16 +37,7 @@ BEGIN
         WHERE AD_Sequence_ID=p_AD_Sequence_ID;
     ELSE
     
-        BEGIN
-	  SELECT Value
-	    INTO Isnativeseqon		
-	    FROM AD_SYSCONFIG 
-	   WHERE Name ='SYSTEM_NATIVE_SEQUENCE';
-        EXCEPTION
-          WHEN NO_DATA_FOUND THEN
-             Isnativeseqon:= 'N';
-        END;
-      
+        Isnativeseqon := get_Sysconfig('SYSTEM_NATIVE_SEQUENCE','N',0,0);
         IF Isnativeseqon = 'Y' THEN 
           SELECT Name
             INTO tablename 
@@ -74,5 +65,3 @@ END;
 
 $body$ LANGUAGE plpgsql;
 
-
- 	  	 

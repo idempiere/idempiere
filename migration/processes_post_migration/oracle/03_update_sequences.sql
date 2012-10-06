@@ -40,26 +40,17 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE ('Table not found');
             DBMS_OUTPUT.PUT_LINE (cmdsys);
             GOTO next_iteration;
-      End;
+      END;
      
-      BEGIN
-        SELECT Value  
-          Into Isnativeseqon		
-          From Ad_Sysconfig 
-         Where Name ='SYSTEM_NATIVE_SEQUENCE';
-      Exception
-         When NO_DATA_FOUND Then
-            Isnativeseqon :='N';
-      End;
-      
+      Isnativeseqon := get_Sysconfig('SYSTEM_NATIVE_SEQUENCE','N',0,0);
       IF currentnextsys IS NULL
       THEN
          currentnextsys := 0;
       END IF;
 
-      SELECT DECODE (SIGN (currentnextsys - 50000),
-                     -1, 50000,
-                     NVL (currentnextsys + 1, 50000)
+      SELECT DECODE (SIGN (currentnextsys - 200000),
+                     -1, 200000,
+                     NVL (currentnextsys + 1, 200000)
                     )
         INTO currentnextsys
         FROM DUAL;

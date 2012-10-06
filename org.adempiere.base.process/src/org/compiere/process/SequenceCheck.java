@@ -117,7 +117,6 @@ public class SequenceCheck extends SvrProcess
 				}
 				else
 				{
-					rs.close();
 					throw new Exception ("Error creating Table Sequence for " + tableName);
 				}
 			}
@@ -213,8 +212,12 @@ public class SequenceCheck extends SvrProcess
 			while (rs.next())
 			{
 				MSequence seq = new MSequence (ctx, rs, trxName);
-				String tableValidation= seq.validateTableIDValue();
-				if (tableValidation!=null){
+				/* NOTE: When using native sequences - every time the sequence check process is run
+				 * a sequence number is lost on all sequences - because with native sequences
+				 * reading the sequence consumes a number
+				 */
+				String tableValidation = seq.validateTableIDValue();
+				if (tableValidation != null) {
 					if (sp != null)
 					   sp.addLog(0, null, null, tableValidation);
 					else
@@ -225,17 +228,13 @@ public class SequenceCheck extends SvrProcess
 					else
 					   s_log.severe("Not updated: " + seq);
 				}
-			//	else if (CLogMgt.isLevel(6)) 
-			//		log.fine("checkTableID - skipped " + tableName);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
-		}finally
+		}
+		finally
 		{
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;

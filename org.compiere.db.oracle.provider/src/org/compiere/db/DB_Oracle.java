@@ -41,6 +41,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_Oracle;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -1158,13 +1159,35 @@ public class DB_Oracle implements AdempiereDatabase
 
 	public boolean createSequence(String name , int increment , int minvalue , int maxvalue ,int  start , String trxName)
 	{
-		int no = DB.executeUpdate("DROP SEQUENCE "+name.toUpperCase(), trxName);
-		StringBuilder msgDB = new StringBuilder("CREATE SEQUENCE ").append(name.toUpperCase())
-										.append(" MINVALUE ").append(minvalue)
-										.append(" MAXVALUE ").append(maxvalue)
-										.append(" START WITH ").append(start)
-										.append(" INCREMENT BY ").append(increment).append(" CACHE 20");
-		no = DB.executeUpdateEx(msgDB.toString(), trxName);
+		// Check if Sequence exists
+		final int cnt = DB.getSQLValueEx(trxName, "SELECT COUNT(*) FROM USER_SEQUENCES WHERE UPPER(sequence_name)=?", name.toUpperCase());
+		final int no;
+		if (start < minvalue)
+			start = minvalue;
+		//
+		// New Sequence
+		if (cnt == 0)
+		{
+			no = DB.executeUpdate("CREATE SEQUENCE "+name.toUpperCase()
+								+ " MINVALUE " + minvalue
+								+ " MAXVALUE " + maxvalue
+								+ " START WITH " + start 
+								+ " INCREMENT BY " + increment
+								+ " CACHE 20", trxName);
+		}
+		//
+		// Already existing sequence => ALTER
+		else
+		{
+			no = DB.executeUpdate("ALTER SEQUENCE "+name.toUpperCase()
+					+ " INCREMENT BY " + increment
+					// + " MINVALUE " + minvalue // ORA-04007
+					+ " MAXVALUE " + maxvalue
+					+ " CACHE 20", trxName);
+			while (DB.getSQLValue(trxName, "SELECT " + name.toUpperCase() + ".NEXTVAL FROM DUAL") < start) {
+	        	// do nothing - the while is incrementing the sequence
+	        }
+		}
 		if(no == -1 )
 			return false;
 		else

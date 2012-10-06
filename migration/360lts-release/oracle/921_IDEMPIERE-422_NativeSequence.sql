@@ -1,6 +1,6 @@
 CREATE OR REPLACE PROCEDURE nextID
 (
-    p_AD_Sequence_ID    	IN  NUMBER,
+    p_AD_Sequence_ID            IN  NUMBER,
     p_System                    IN  CHAR,
     o_NextID                    OUT NUMBER
 )
@@ -16,15 +16,9 @@ CREATE OR REPLACE PROCEDURE nextID
  * Title:	Get Next ID - no Commit
  * Description:
  *          Test via
-DECLARE
-    v_NextID       NUMBER;
-BEGIN
-    nextID(2, 'Y', v_NextID);
-	DBMS_OUTPUT.PUT_LINE(v_NextID);
-END;
  * 
  ************************************************************************/
-As
+AS
 Isnativeseqon   NVARCHAR2(1); 
 Tablename       Nvarchar2(60);
 sqlcmd          VARCHAR2(200);
@@ -43,23 +37,13 @@ BEGIN
         WHERE AD_Sequence_ID=p_AD_Sequence_ID;
     ELSE 
      
-        BEGIN
-          SELECT Value
-            Into Isnativeseqon		
-            From Ad_Sysconfig 
-           Where Name ='SYSTEM_NATIVE_SEQUENCE';
-        EXCEPTION
-           WHEN NO_DATA_FOUND THEN
-              Isnativeseqon:= 'N';
-        END; 
-      
+       Isnativeseqon := get_Sysconfig('SYSTEM_NATIVE_SEQUENCE','N',0,0);
        IF Isnativeseqon = 'Y' THEN 
        
-          Select Name 
+          SELECT Name 
             INTO tablename
-            From Ad_Sequence
-           Where Ad_Sequence_Id=P_Ad_Sequence_Id
-             And Istableid = 'Y';
+            FROM Ad_Sequence
+           WHERE Ad_Sequence_Id=P_Ad_Sequence_Id;
           --
           Sqlcmd := 'SELECT '||Tablename||'_SQ.Nextval FROM DUAL'; 
           --      
@@ -73,9 +57,9 @@ BEGIN
           WHERE AD_Sequence_ID=p_AD_Sequence_ID
           FOR UPDATE OF CurrentNext;
           --
-          Update Ad_Sequence
-             Set Currentnext = Currentnext + Incrementno
-           Where Ad_Sequence_Id=P_Ad_Sequence_Id;
+          UPDATE Ad_Sequence
+             SET Currentnext = Currentnext + Incrementno
+           WHERE Ad_Sequence_Id=P_Ad_Sequence_Id;
            --
        END IF;
     END IF;
@@ -85,5 +69,19 @@ EXCEPTION
     	DBMS_OUTPUT.PUT_LINE(SQLERRM);
 END nextID;
 /
-SELECT register_migration_script('921_IDEMPIERE-422_NativeSequence.sql') FROM dual;
+
+DROP SEQUENCE ad_error_seq
+;
+
+DROP SEQUENCE ad_pinstance_seq
+;
+
+DROP SEQUENCE t_spool_seq
+;
+
+DROP SEQUENCE w_basket_seq
+;
+
+SELECT register_migration_script('921_IDEMPIERE-422_NativeSequence.sql') FROM dual
+;
 
