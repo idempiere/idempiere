@@ -63,6 +63,9 @@ public class MSequence extends X_AD_Sequence
 	
 	private static final String NoYearNorMonth = "-";
 
+	/**
+	 *  @deprecated please use DB.getNextID (int, String, String)
+	 */
 	public static int getNextID (int AD_Client_ID, String TableName)
 	{
 		return getNextID(AD_Client_ID, TableName, null);
