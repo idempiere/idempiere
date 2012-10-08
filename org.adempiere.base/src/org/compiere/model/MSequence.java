@@ -1181,7 +1181,10 @@ public class MSequence extends X_AD_Sequence
 					cym = sdf.format(d);
 				}
 				if (orgLevelSeq) {
-					org = (Integer)tab.getValue(seq.getOrgColumn());
+					String orgColumn = seq.getOrgColumn();
+					Object orgObj = tab.getValue(orgColumn);
+					if (orgObj != null)
+						org = (Integer)orgObj;
 				}
 				String sql = "SELECT CurrentNext FROM AD_Sequence_No WHERE AD_Sequence_ID=? AND CalendarYearMonth=? AND AD_Org_ID=?";
 				currentNext = DB.getSQLValue(null, sql, AD_Sequence_ID, cym, org);
