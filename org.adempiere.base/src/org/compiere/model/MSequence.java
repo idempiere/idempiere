@@ -63,21 +63,218 @@ public class MSequence extends X_AD_Sequence
 	
 	private static final String NoYearNorMonth = "-";
 
+	public static int getNextID (int AD_Client_ID, String TableName)
+	{
+		return getNextID(AD_Client_ID, TableName, null);
+	}
+
 	/**
 	 *
 	 *	Get next number for Key column = 0 is Error.
 	 *  @param AD_Client_ID client
 	 *  @param TableName table name
-	 * 	@param trxName deprecated.
+	 * 	@param trxName deprecated (NOT USED!!)
 	 *  @return next no or (-1=not found, -2=error)
- 	 */
+	 *  
+	 *  WARNING!! This method doesn't take into account the native sequence setting, it's just to be called from DB.getNextID()
+	 *  
+	 *  @deprecated please use DB.getNextID (int, String, String)
+	 */
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
 		if (TableName == null || TableName.length() == 0)
 			throw new IllegalArgumentException("TableName missing");
 
-		MSequence seq = MSequence.get (Env.getCtx(), TableName, trxName, true);
-		return seq.getNextID();
+		int retValue = -1;
+
+		//	Check AdempiereSys
+		boolean adempiereSys = false;
+		if (Ini.isClient()) 
+		{
+			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
+		} 
+		else
+		{
+			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
+
+		if (adempiereSys && AD_Client_ID > 11)
+			adempiereSys = false;
+		//
+		if (CLogMgt.isLevel(LOGLEVEL))
+			s_log.log(LOGLEVEL, TableName + " - AdempiereSys=" + adempiereSys  + " [" + trxName + "]");
+		  //begin vpj-cd e-evolution 09/02/2005 PostgreSQL
+		String selectSQL = null;
+		if (DB.isOracle() == false)
+		{
+			selectSQL = "SELECT CurrentNext, CurrentNextSys, IncrementNo, AD_Sequence_ID "
+				+ "FROM AD_Sequence "
+				+ "WHERE Name=?"
+				+ " AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y' "
+				+ " FOR UPDATE OF AD_Sequence ";
+		}
+		else
+		{
+			selectSQL = "SELECT CurrentNext, CurrentNextSys, IncrementNo, AD_Sequence_ID "
+			+ "FROM AD_Sequence "
+			+ "WHERE Name=?"
+			+ " AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y' ";
+
+		}
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		for (int i = 0; i < 3; i++)
+		{
+			try
+			{
+				conn = DB.getConnectionID();
+				//	Error
+				if (conn == null)
+					return -1;
+
+				pstmt = conn.prepareStatement(selectSQL,
+					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				pstmt.setString(1, TableName);
+				//
+				//postgresql use special syntax instead of the setQueryTimeout method
+				if (DB.isPostgreSQL())
+				{
+					Statement timeoutStatement = conn.createStatement();
+					timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
+				}
+				else if (DB.getDatabase().isQueryTimeoutSupported())
+				{
+					pstmt.setQueryTimeout(QUERY_TIME_OUT);
+				}
+				rs = pstmt.executeQuery();
+				if (CLogMgt.isLevelFinest())
+					s_log.finest("AC=" + conn.getAutoCommit() + ", RO=" + conn.isReadOnly()
+						+ " - Isolation=" + conn.getTransactionIsolation() + "(" + Connection.TRANSACTION_READ_COMMITTED
+						+ ") - RSType=" + pstmt.getResultSetType() + "(" + ResultSet.TYPE_SCROLL_SENSITIVE
+						+ "), RSConcur=" + pstmt.getResultSetConcurrency() + "(" + ResultSet.CONCUR_UPDATABLE
+						+ ")");
+				if (rs.next())
+				{
+
+					// Get the table
+					MTable table = MTable.get(Env.getCtx(), TableName);
+
+					int AD_Sequence_ID = rs.getInt(4);
+					boolean gotFromHTTP = false;
+
+					// If maintaining official dictionary try to get the ID from http official server
+					if (adempiereSys) {
+
+						String isUseCentralizedID = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, "Y"); // defaults to Y
+						if ( ( ! isUseCentralizedID.equals("N") ) && ( ! isExceptionCentralized(TableName) ) ) {
+							// get ID from http site
+							retValue = getNextOfficialID_HTTP(TableName);
+							if (retValue > 0) {
+								PreparedStatement updateSQL;
+								updateSQL = conn.prepareStatement("UPDATE AD_Sequence SET CurrentNextSys = ? + 1 WHERE AD_Sequence_ID = ?");
+								try {
+									updateSQL.setInt(1, retValue);
+									updateSQL.setInt(2, AD_Sequence_ID);
+									updateSQL.executeUpdate();
+								} finally {
+									updateSQL.close();
+								}
+							}
+							gotFromHTTP = true;
+						}
+
+					}
+
+					boolean queryProjectServer = false;
+					if (table.getColumn("EntityType") != null)
+						queryProjectServer = true;
+					if (!queryProjectServer && MSequence.Table_Name.equalsIgnoreCase(TableName))
+						queryProjectServer = true;
+
+					// If not official dictionary try to get the ID from http custom server - if configured
+					if (queryProjectServer && ( ! adempiereSys ) && ( ! isExceptionCentralized(TableName) ) ) {
+
+						String isUseProjectCentralizedID = MSysConfig.getValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, "N"); // defaults to N
+						if (isUseProjectCentralizedID.equals("Y")) {
+							// get ID from http site
+							retValue = getNextProjectID_HTTP(TableName);
+							if (retValue > 0) {
+								PreparedStatement updateSQL;
+								updateSQL = conn.prepareStatement("UPDATE AD_Sequence SET CurrentNext = GREATEST(CurrentNext, ? + 1) WHERE AD_Sequence_ID = ?");
+								try {
+									updateSQL.setInt(1, retValue);
+									updateSQL.setInt(2, AD_Sequence_ID);
+									updateSQL.executeUpdate();
+								} finally {
+									updateSQL.close();
+								}
+							}
+							gotFromHTTP = true;
+						}
+
+					}
+
+					if (! gotFromHTTP) {
+						PreparedStatement updateSQL;
+						int incrementNo = rs.getInt(3);
+						if (adempiereSys) {
+							updateSQL = conn
+									.prepareStatement("UPDATE AD_Sequence SET CurrentNextSys = CurrentNextSys + ? WHERE AD_Sequence_ID = ?");
+							retValue = rs.getInt(2);
+						} else {
+							updateSQL = conn
+									.prepareStatement("UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID = ?");
+							retValue = rs.getInt(1);
+						}
+						try {
+							updateSQL.setInt(1, incrementNo);
+							updateSQL.setInt(2, AD_Sequence_ID);
+							updateSQL.executeUpdate();
+						} finally {
+							updateSQL.close();
+						}
+					}
+
+					//if (trx == null)
+					conn.commit();
+				}
+				else
+					s_log.severe ("No record found - " + TableName);
+
+				//
+				break;		//	EXIT
+			}
+			catch (Exception e)
+			{
+				s_log.log(Level.SEVERE, TableName + " - " + e.getMessage(), e);
+				try
+				{
+					if (conn != null)
+						conn.rollback();
+				} catch (SQLException e1) { }
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				pstmt = null;
+				rs = null;
+				if (conn != null)
+				{
+					try {
+						conn.close();
+					} catch (SQLException e) {}
+					conn = null;
+				}
+			}
+			Thread.yield();		//	give it time
+		}
+
+
+		//s_log.finest (retValue + " - Table=" + TableName + " [" + trx + "]");
+		return retValue;
 	}	//	getNextID
 
 	/**************************************************************************

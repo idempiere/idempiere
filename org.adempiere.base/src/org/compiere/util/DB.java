@@ -1870,7 +1870,7 @@ public final class DB
 			return m_sequence_id;
 		}
 
-		return MSequence.getNextID (AD_Client_ID, TableName, trxName);
+		return MSequence.getNextID (AD_Client_ID, TableName, trxName); // it is ok to call deprecated method here
 	}	//	getNextID
 
 	/**
