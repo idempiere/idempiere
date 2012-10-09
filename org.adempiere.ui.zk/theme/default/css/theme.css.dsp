@@ -472,7 +472,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adwindow-breadcrumb {
 	height: 30px;
-	background-color: transparent;
+	background-color: #EEEEEE;
 	padding-left: 2px;
 }
 

@@ -123,8 +123,6 @@ public interface IADTabbox extends UIPart {
 
 	public boolean dataSave(boolean onSaveEvent);
 
-	public void refresh();
-
 	public void setDetailPaneStatusMessage(String status, boolean error);
 
 	IADTabpanel getSelectedDetailADTabpanel();
@@ -132,4 +130,6 @@ public interface IADTabbox extends UIPart {
 	IADTabpanel getDirtyADTabpanel();
 
 	public void updateDetailPaneToolbar(boolean changed, boolean readOnly);
+
+	public void setDetailpaneSelection(int tabIndex, int currentRow);
 }

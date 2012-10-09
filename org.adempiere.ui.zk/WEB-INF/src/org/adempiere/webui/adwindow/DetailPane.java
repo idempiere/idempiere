@@ -91,10 +91,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		tabbox.addEventListener(Events.ON_SELECT, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				int index = tabbox.getSelectedIndex();
-				IADTabpanel tabPanel = (IADTabpanel) tabbox.getTabpanel(index).getChildren().get(1);
-				Event activateEvent = new Event(ON_ACTIVATE_DETAIL_EVENT, tabPanel, prevSelectedIndex);
-				Events.sendEvent(activateEvent);
+				fireActivateDetailEvent();
 			}
 		});
 		tabbox.setStyle(TABBOX_STYLE);
@@ -410,5 +407,12 @@ public class DetailPane extends Panel implements EventListener<Event> {
 	public void onEdit() throws Exception {
 		Event openEvent = new Event(ON_EDIT_EVENT, DetailPane.this);
 		eventListener.onEvent(openEvent);
+	}
+
+	public void fireActivateDetailEvent() {
+		int index = tabbox.getSelectedIndex();
+		IADTabpanel tabPanel = (IADTabpanel) tabbox.getTabpanel(index).getChildren().get(1);
+		Event activateEvent = new Event(ON_ACTIVATE_DETAIL_EVENT, tabPanel, prevSelectedIndex);
+		Events.sendEvent(activateEvent);
 	}
 }

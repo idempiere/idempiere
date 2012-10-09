@@ -918,7 +918,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
     public void onEvent(Event event)
     {
-    	if ("onSelectionChanged".equals(event.getName()))
+    	if (CompositeADTabbox.ON_SELECTION_CHANGED_EVENT.equals(event.getName()))
     	{
     		Object eventData = event.getData();
 	
@@ -928,14 +928,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        	int newTabIndex = (Integer)indexes[1];
 	
 	        	final int originalTabIndex = adTabbox.getSelectedIndex();
+	        	final int originalTabRow = adTabbox.getSelectedGridTab().getCurrentRow();
 	            setActiveTab(newTabIndex, new Callback<Boolean>() {
 
 					@Override
 					public void onCallback(Boolean result) {
 						if (result)
 						{
-			            	//force sync model
-			            	adTabbox.refresh();
+			            	adTabbox.setDetailpaneSelection(originalTabIndex, originalTabRow);
 			            }
 			            else
 			            {
@@ -1548,6 +1548,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onIgnore()
     {
     	IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
+    	boolean newrecod = adTabbox.getSelectedGridTab().isNew();
     	if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isSortTab())
     	{
     		dirtyTabpanel.refresh();
@@ -1556,11 +1557,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	else
     	{
 	        adTabbox.dataIgnore();
-	        if (dirtyTabpanel != null) {
+	        toolbar.enableIgnore(false);
+	        if (newrecod) {
+	        	onRefresh(true);
+	        } else if (dirtyTabpanel != null) {
 	        	dirtyTabpanel.getGridTab().dataRefresh(true);	// update statusbar & toolbar
 	        	dirtyTabpanel.dynamicDisplay(0);
-	        }
-	        toolbar.enableIgnore(false);
+	        }	        
+	        
     	}
     	if (dirtyTabpanel != null)
     		focusToTabpanel(dirtyTabpanel);
@@ -1583,7 +1587,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    		breadCrumb.setStatusLine(statusLine);		    		
 		    	}				
 				if (dirtyTabpanel != null) {
-					onDetailRecord();
+					if (dirtyTabpanel == adTabbox.getSelectedDetailADTabpanel())
+						onDetailRecord();
 					focusToTabpanel(dirtyTabpanel);
 				} else {
 					focusToActivePanel();

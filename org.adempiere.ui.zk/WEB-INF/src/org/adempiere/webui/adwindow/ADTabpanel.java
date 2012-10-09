@@ -147,6 +147,8 @@ DataStatusListener, IADTabpanel
 
 	private Component detailPane;
 
+	public static final String ON_TOGGLE_EVENT = "onToggle";
+	
 	public ADTabpanel()
 	{
         init();
@@ -777,7 +779,7 @@ DataStatusListener, IADTabpanel
     {
     	if (event.getTarget() == listPanel.getListbox())
     	{    		
-    		Events.sendEvent(this, new Event("onToggle", this));
+    		Events.sendEvent(this, new Event(ON_TOGGLE_EVENT, this));
     	}
     	else if (event.getTarget() == treePanel.getTree()) {
     		Treeitem item =  treePanel.getTree().getSelectedItem();

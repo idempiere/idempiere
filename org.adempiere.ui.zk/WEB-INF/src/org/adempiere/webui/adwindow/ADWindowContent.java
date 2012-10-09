@@ -106,7 +106,6 @@ public class ADWindowContent extends AbstractADWindowContent
         toolbar.setParent(div);
         toolbar.setWindowNo(getWindowNo());
         breadCrumb = new BreadCrumb(getWindowNo());
-        breadCrumb.setStyle("background-color: #e9e9e9");
         breadCrumb.setToolbarListener(this);
         div.appendChild(breadCrumb);
 

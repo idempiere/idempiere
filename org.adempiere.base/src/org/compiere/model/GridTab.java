@@ -3223,4 +3223,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		
 		return col;
 	}
+	
+	public boolean isNew() {
+		return isOpen() && getCurrentRow() >= 0 && getCurrentRow() == m_mTable.getNewRow();
+	}
 }	//	GridTab

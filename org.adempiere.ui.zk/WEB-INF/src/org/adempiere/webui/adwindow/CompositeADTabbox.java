@@ -53,13 +53,11 @@ import org.zkoss.zul.Vlayout;
  */
 public class CompositeADTabbox extends AbstractADTabbox
 {
-    private static final String ON_TOGGLE_EVENT = "onToggle";
-
 	private static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
 
 	private static final String ON_ACTIVATE_EVENT = "onActivate";
 
-	private static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
+	public static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
 	
 	public static final String ADTAB_INDEX_ATTRIBUTE = "adtab.index";
 
@@ -265,7 +263,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			}
 		});
         
-        tabPanel.addEventListener(ON_TOGGLE_EVENT, new EventListener<Event>() {
+        tabPanel.addEventListener(ADTabpanel.ON_TOGGLE_EVENT, new EventListener<Event>() {
 
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -471,8 +469,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 		return null;
 	}
 
-	public void refresh() {
-	}
+//	public void refresh() {
+//	}
 	
 	class SyncDataStatusListener implements DataStatusListener {
 
@@ -642,5 +640,24 @@ public class CompositeADTabbox extends AbstractADTabbox
 	@Override
 	public void updateDetailPaneToolbar(boolean changed, boolean readOnly) {
 		detailPane.updateToolbar(changed, readOnly);
+	}
+
+	@Override
+	public void setDetailpaneSelection(int tabIndex, int currentRow) {
+		if (detailPane.getTabcount() > 0) {
+			for(int i = 0; i < detailPane.getTabcount(); i++) {
+				IADTabpanel adtab = detailPane.getADTabpanel(i);
+				int index = (Integer) adtab.getAttribute(ADTAB_INDEX_ATTRIBUTE);
+				if (index == tabIndex) {
+					if (i != detailPane.getSelectedIndex()) {
+						detailPane.setSelectedIndex(i);
+						detailPane.fireActivateDetailEvent();
+					}
+					if (adtab.getGridTab().getCurrentRow() != currentRow)
+						adtab.getGridTab().setCurrentRow(currentRow, true);
+					break;
+				}
+			}
+		}		
 	}
 }
