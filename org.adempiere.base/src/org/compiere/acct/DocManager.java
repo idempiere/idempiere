@@ -69,11 +69,11 @@ public class DocManager {
 	private static void fillDocumentsTableArrays() {
 		if (documentsTableID == null) {
 			String sql = "SELECT t.AD_Table_ID, t.TableName " +
-					"FROM AD_Table t, AD_Column c " +
-					"WHERE t.AD_Table_ID=c.AD_Table_ID AND " +
-					"c.ColumnName='Posted' AND " +
-					"IsView='N' " +
-					"ORDER BY t.AD_Table_ID";
+							"FROM AD_Table t, AD_Column c " +
+							"WHERE t.AD_Table_ID=c.AD_Table_ID AND " +
+							"c.ColumnName='Posted' AND " +
+							"IsView='N' " +
+							"ORDER BY t.AD_Table_ID";
 			ArrayList<Integer> tableIDs = new ArrayList<Integer>();
 			ArrayList<String> tableNames = new ArrayList<String>();
 			PreparedStatement pstmt = null;

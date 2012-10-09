@@ -65,6 +65,7 @@ import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 
 /**
  *	Application Login Window
@@ -120,9 +121,9 @@ public final class ALogin extends CDialog
 	private static final int CONNECTED_OK = 0;
 	private static final int CONNECTED_OK_WITH_PASSWORD_EXPIRED = 1;
 	
-/*	private static final int NO_OF_SECURITY_QUESTION = 5;
+	private static final int NO_OF_SECURITY_QUESTION = 5;
 	private static final String SECURITY_QUESTION_PREFIX = "SecurityQuestion_";
-*/
+	
 	private CPanel mainPanel = new CPanel(new BorderLayout());
 	private CTabbedPane loginTabPane = new CTabbedPane();
 	private CPanel connectionPanel = new CPanel();
@@ -169,11 +170,11 @@ public final class ALogin extends CDialog
     private JPasswordField txtNewPassword = new JPasswordField();
     private JPasswordField txtRetypeNewPassword = new JPasswordField();
     //
-/*    private CLabel lblSecurityQuestion = new CLabel();
+    private CLabel lblSecurityQuestion = new CLabel();
     private CLabel lblAnswer = new CLabel();
     private VComboBox lstSecurityQuestion = new VComboBox();
     private CTextField txtAnswer = new CTextField();
-*/
+
 	/** Server Connection       */
 	private CConnection 	m_cc;
 	/** Application User        */
@@ -382,7 +383,7 @@ public final class ALogin extends CDialog
 		lblRetypeNewPassword.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblRetypeNewPassword.setText(Msg.getMsg(m_ctx, "New Password Confirm"));
 		
-/*		lstSecurityQuestion.setName("lstSecurityQuestion");
+		lstSecurityQuestion.setName("lstSecurityQuestion");
 		lblSecurityQuestion.setRequestFocusEnabled(false);
 		lblSecurityQuestion.setLabelFor(lstSecurityQuestion);
 		lblSecurityQuestion.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -397,7 +398,7 @@ public final class ALogin extends CDialog
 		lblAnswer.setLabelFor(txtAnswer);
 		lblAnswer.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblAnswer.setText(Msg.getMsg(m_ctx, "Answer"));
-*/
+
 		changePasswordPanel.setLayout(changePasswordPanelLayout);
 		
 		changePasswordPanel.add(lblOldPassword,       new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
@@ -412,7 +413,7 @@ public final class ALogin extends CDialog
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
 			changePasswordPanel.add(txtRetypeNewPassword,        new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
-/*		changePasswordPanel.add(lblSecurityQuestion,       new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
+		changePasswordPanel.add(lblSecurityQuestion,       new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
 			changePasswordPanel.add(lstSecurityQuestion,        new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
@@ -420,7 +421,7 @@ public final class ALogin extends CDialog
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));		
 			changePasswordPanel.add(txtAnswer,        new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
-*/		loginTabPane.add(changePasswordPanel, res.getString("ChangePassword"));
+		loginTabPane.add(changePasswordPanel, res.getString("ChangePassword"));
 		loginTabPane.setEnabledAt(TAB_CHANGE_PASSWORD, false);
 		//
 
@@ -592,8 +593,10 @@ public final class ALogin extends CDialog
 		else if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL))
 			appExit();
 		//
-		else if (e.getSource() == hostField) 
+		else if (e.getSource() == hostField) {
 			validateConnection();
+			languageComboChanged();
+		}
 		else if (e.getSource() == languageCombo)
 			languageComboChanged();
 		//
@@ -656,12 +659,11 @@ public final class ALogin extends CDialog
     	String newPassword = new String(txtNewPassword.getPassword());
     	String retypeNewPassword = new String(txtRetypeNewPassword.getPassword());
     	
-/*    	String securityQuestion = null;
+    	String securityQuestion = null;
     	if (lstSecurityQuestion.getSelectedItem() != null)
-    		securityQuestion = ((ValueNamePair) lstSecurityQuestion.getSelectedItem()).getValue();
-    	
+    		securityQuestion = ((ValueNamePair) lstSecurityQuestion.getSelectedItem()).getName();
     	String answer = txtAnswer.getText();
-*/    	
+    	
     	if (Util.isEmpty(oldPassword))
     	{
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "OldPasswordMandatory"), true);
@@ -680,7 +682,7 @@ public final class ALogin extends CDialog
     		return;
     	}
     	
-/*    	if (Util.isEmpty(securityQuestion))
+    	if (Util.isEmpty(securityQuestion))
     	{
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "SecurityQuestionMandatory"), true);
     		return;
@@ -691,12 +693,21 @@ public final class ALogin extends CDialog
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "AnswerMandatory"), true);
     		return;
     	}
-*/    	
+    	
     	String m_userPassword = new String(m_pwd);
     	if (!oldPassword.equals(m_userPassword))
     	{
     		statusBar.setStatusLine(Msg.getMsg(m_ctx, "OldPasswordNoMatch"), true);
     		return;
+    	}
+    	
+    	if (MSysConfig.getBooleanValue(MSysConfig.CHANGE_PASSWORD_MUST_DIFFER, true))
+    	{
+    		if (oldPassword.equals(newPassword))
+    		{
+    			statusBar.setStatusLine(Msg.getMsg(m_ctx, "NewPasswordMustDiffer"), true);
+        		return;
+    		}
     	}
 
     	Trx trx = null;
@@ -721,9 +732,9 @@ public final class ALogin extends CDialog
 	    		
 	    		user.setPassword(newPassword);
 	    		user.setIsExpired(false);
-/*	    		user.setSecurityQuestion(securityQuestion);
+	    		user.setSecurityQuestion(securityQuestion);
 	    		user.setAnswer(answer);    		
-*/	    		if (!user.save(trx.getTrxName()))
+	    		if (!user.save(trx.getTrxName()))
 	    		{
 	    			trx.rollback();
 	    			statusBar.setStatusLine("Could not update user", true);
@@ -955,8 +966,9 @@ public final class ALogin extends CDialog
 		Env.setContext(m_ctx, "#AD_Client_ID", client.getKey());
 		MUser user = MUser.get (m_ctx, userTextField.getText());
 		if (user != null) {
-			 Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
-			  Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
+			 Env.setContext(m_ctx, "#AD_User_Name", userTextField.getText());
+			 Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID());
+			 Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID());
 		}
 		//
 		KeyNamePair[] roles = m_login.getRoles(userTextField.getText(), client);
@@ -1165,7 +1177,7 @@ public final class ALogin extends CDialog
 		//
 		this.setTitle(res.getString("Login"));
 		hostLabel.setText(res.getString("Host"));
-		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		boolean email_login = (DB.isConnected() && MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false));
 		if (email_login)
 			userLabel.setText(res.getString("EMail"));
 		else

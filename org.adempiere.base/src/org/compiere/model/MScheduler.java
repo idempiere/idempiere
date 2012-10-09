@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import it.sauronsoftware.cron4j.SchedulingPattern;
-
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
@@ -44,7 +42,7 @@ public class MScheduler extends X_AD_Scheduler
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6563650236096742870L;
+	private static final long serialVersionUID = 5106574386025319255L;
 
 	/**
 	 * 	Get Active
@@ -72,16 +70,7 @@ public class MScheduler extends X_AD_Scheduler
 		super (ctx, AD_Scheduler_ID, trxName);
 		if (AD_Scheduler_ID == 0)
 		{
-		//	setAD_Process_ID (0);
-		//	setName (null);
-			setScheduleType (SCHEDULETYPE_Frequency);	// F
-			setFrequencyType (FREQUENCYTYPE_Day);
-		//	setFrequency (1);
-		//	setMonthDay(1);
-		//	setWeekDay(WEEKDAY_Monday);
-			//
 			setKeepLogDays (7);
-		//	setSupervisor_ID (0);
 		}
 	}	//	MScheduler
 
@@ -246,29 +235,9 @@ public class MScheduler extends X_AD_Scheduler
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
-		//	Set Schedule Type & Frequencies
-		if (SCHEDULETYPE_Frequency.equals(getScheduleType()))
-		{
-			if (getFrequencyType() == null)
-				setFrequencyType(FREQUENCYTYPE_Day);
-			if (getFrequency() < 1)
-				setFrequency(1);
-			setCronPattern(null);
-		}
-		else if (SCHEDULETYPE_CronSchedulingPattern.equals(getScheduleType()))
-		{
-			String pattern = getCronPattern();
-			if (pattern != null && pattern.trim().length() > 0)
-			{
-				if (!SchedulingPattern.validate(pattern))
-				{
-					log.saveError("Error", "InvalidCronPattern");
-					return false;
-				}
-			}
-		}
 		
 		// FR [3135351] - Enable Scheduler for buttons
 		if (getAD_Table_ID() > 0) {
@@ -299,7 +268,12 @@ public class MScheduler extends X_AD_Scheduler
 				return false;
 			}
 		}
-		//
+		
+		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			if (nextWork > 0)
+				setDateNextRun(new Timestamp(nextWork));
+		}
 		
 		return true;
 	}	//	beforeSave
@@ -314,5 +288,30 @@ public class MScheduler extends X_AD_Scheduler
 		sb.append (get_ID ()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString
+
+	@Override
+	public String getFrequencyType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequencyType();
+	}
+
+	@Override
+	public int getFrequency() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequency();
+	}
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).isIgnoreProcessingTime();
+	}
+
+	@Override
+	public String getScheduleType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getScheduleType();
+	}
+
+	@Override
+	public String getCronPattern() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getCronPattern();
+	}
 
 }	//	MScheduler

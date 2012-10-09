@@ -140,12 +140,12 @@ public class ColumnSync extends SvrProcess
 	
 			if (no == -1)
 			{
-				String msg = "@Error@ ";
+				StringBuilder msg = new StringBuilder("@Error@ ");
 				ValueNamePair pp = CLogger.retrieveError();
 				if (pp != null)
-					msg = pp.getName() + " - ";
-				msg += sql;
-				throw new AdempiereUserError (msg);
+					msg = new StringBuilder(pp.getName()).append(" - ");
+				msg.append(sql);
+				throw new AdempiereUserError (msg.toString());
 			}
 			return sql;
 		} finally {

@@ -51,7 +51,7 @@ public class RequestProcessor extends AdempiereServer
 	 */
 	public RequestProcessor (MRequestProcessor model)
 	{
-		super (model, 60);	//	1 minute delay
+		super (model, 30);	//	30 seconds delay
 		m_model = model;
 		m_client = MClient.get(model.getCtx(), model.getAD_Client_ID());
 	}	//	RequestProcessor

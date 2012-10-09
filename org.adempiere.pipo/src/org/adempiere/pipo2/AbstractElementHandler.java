@@ -569,7 +569,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     		String id = element.properties.get(idColumn).contents.toString();
     		if (id != null && id.trim().length() > 0) {
     			Query query = new Query(ctx.ctx, tableName, idColumn+"=?", ctx.trx.getTrxName());
-    			po = query.setParameters(id.trim()).firstOnly();
+    			po = query.setParameters(Integer.valueOf(id.trim())).firstOnly();
     		}
     	}
     	return po;

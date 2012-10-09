@@ -221,7 +221,7 @@ public class MAllocationLine extends X_C_AllocationLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAllocationLine[");
+		StringBuilder sb = new StringBuilder ("MAllocationLine[");
 		sb.append(get_ID());
 		if (getC_Payment_ID() != 0)
 			sb.append(",C_Payment_ID=").append(getC_Payment_ID());
@@ -296,12 +296,12 @@ public class MAllocationLine extends X_C_AllocationLine
 			}
 			
 			//	Link to Order
-			String update = "UPDATE C_Order o "
-				+ "SET C_Payment_ID=" 
-					+ (reverse ? "NULL " : "(SELECT C_Payment_ID FROM C_Invoice WHERE C_Invoice_ID=" + C_Invoice_ID + ") ")
-				+ "WHERE o.C_Order_ID = (SELECT i.C_Order_ID FROM C_Invoice i "
-					+ "WHERE i.C_Invoice_ID=" + C_Invoice_ID + ")";
-			if (DB.executeUpdate(update, get_TrxName()) > 0)
+			StringBuilder update = new StringBuilder("UPDATE C_Order o ")
+				.append("SET C_Payment_ID=") 
+					.append((reverse ? "NULL " : "(SELECT C_Payment_ID FROM C_Invoice WHERE C_Invoice_ID=")).append(C_Invoice_ID).append(") ")
+				.append("WHERE o.C_Order_ID = (SELECT i.C_Order_ID FROM C_Invoice i ")
+					.append("WHERE i.C_Invoice_ID=").append(C_Invoice_ID).append(")");
+			if (DB.executeUpdate(update.toString(), get_TrxName()) > 0)
 				log.fine("C_Payment_ID=" + C_Payment_ID 
 					+ (reverse ? " UnLinked from" : " Linked to")
 					+ " order of C_Invoice_ID=" + C_Invoice_ID);
@@ -325,12 +325,12 @@ public class MAllocationLine extends X_C_AllocationLine
 			}
 			
 			//	Link to Order
-			String update = "UPDATE C_Order o "
-				+ "SET C_CashLine_ID="
-					+ (reverse ? "NULL " : "(SELECT C_CashLine_ID FROM C_Invoice WHERE C_Invoice_ID=" + C_Invoice_ID + ") ")
-				+ "WHERE o.C_Order_ID = (SELECT i.C_Order_ID FROM C_Invoice i "
-					+ "WHERE i.C_Invoice_ID=" + C_Invoice_ID + ")";
-			if (DB.executeUpdate(update, get_TrxName()) > 0)
+			StringBuilder update = new StringBuilder("UPDATE C_Order o ")
+				.append("SET C_CashLine_ID=")
+					.append((reverse ? "NULL " : "(SELECT C_CashLine_ID FROM C_Invoice WHERE C_Invoice_ID=")).append(C_Invoice_ID).append(") ")
+				.append("WHERE o.C_Order_ID = (SELECT i.C_Order_ID FROM C_Invoice i ")
+					.append("WHERE i.C_Invoice_ID=").append(C_Invoice_ID).append(")");
+			if (DB.executeUpdate(update.toString(), get_TrxName()) > 0)
 				log.fine("C_CashLine_ID=" + C_CashLine_ID 
 					+ (reverse ? " UnLinked from" : " Linked to")
 					+ " order of C_Invoice_ID=" + C_Invoice_ID);

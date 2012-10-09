@@ -45,6 +45,7 @@ import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * Executes search and opens windows for defined transaction codes
@@ -63,16 +64,18 @@ public abstract class AbstractDocumentSearch {
 	 */
 	public boolean openDocumentsByDocumentNo(String searchString) {
 		windowOpened = false;
-
-		log.fine("Search started with String: " + searchString);
+		StringBuilder msglog = new StringBuilder();
+				
+		msglog.append("Search started with String: ").append(searchString);
+		log.fine(msglog.toString());
 
 		// Check if / how many transaction-codes are used
-		if (searchString != null && !"".equals(searchString)) {
+		if (! Util.isEmpty(searchString)) {
 			String[] codes = searchString.trim().replaceAll("  ", " ").split(" ");
 
 			List<String> codeList = new ArrayList<String>();
 			boolean codeSearch = true;
-			searchString = "";
+			StringBuilder search = new StringBuilder();
 
 			// Analyze String to separate transactionCodes from searchString
 			for (int i = 0; i < codes.length; i++) {
@@ -84,9 +87,9 @@ public abstract class AbstractDocumentSearch {
 						// Build the searchString with eventually appearing
 						// whitespaces
 						codeSearch = false;
-						searchString += s;
+						search.append(s);
 						if (i != (codes.length - 1)) {
-							searchString += " ";
+							search.append(" ");
 						}
 					}
 				} catch (SQLException e) {
@@ -98,13 +101,16 @@ public abstract class AbstractDocumentSearch {
 			// Start the search for every single code
 			if (codeList.size() > 0) {
 				for (int i = 0; i < codeList.size(); i++) {
-					log.fine("Search with Transaction: '" + codeList.get(i) + "' for: '"
-							+ searchString + "'");
-					getID(codeList.get(i), searchString);
+						msglog = new StringBuilder("Search with Transaction: '");
+						msglog.append(codeList.get(i)).append("' for: '")
+							  .append(search.toString()).append("'");								
+					log.fine(msglog.toString());
+					getID(codeList.get(i), search.toString());
 				}
 			} else {
-				log.fine("Search without Transaction: " + searchString);
-				getID(null, searchString);
+				msglog = new StringBuilder("Search without Transaction: ").append(search.toString());
+				log.fine(msglog.toString());
+				getID(null, search.toString());
 			}
 		} else {
 			log.fine("Search String is invalid");
@@ -124,8 +130,10 @@ public abstract class AbstractDocumentSearch {
 		ResultSet rsPO = null;
 		PreparedStatement pstmtSO = null;
 		PreparedStatement pstmtPO = null;
-		String sqlSO = null;
-		String sqlPO = null;
+		StringBuilder sqlSO = null;
+		StringBuilder sqlPO = null;
+		StringBuilder msglog = null;
+		
 
 		final Properties ctx = Env.getCtx();
 		final MRole role = MRole.get(ctx, Env.getAD_Role_ID(ctx), Env.getAD_User_ID(ctx), true);
@@ -137,21 +145,22 @@ public abstract class AbstractDocumentSearch {
 				// SearchDefinition with a given table and column
 				if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_TABLE)) {
 					MColumn column = new MColumn(Env.getCtx(), msd.getAD_Column_ID(), null);
-					sqlSO = "SELECT " + table.getTableName() + "_ID FROM " + table.getTableName() + " ";
+					sqlSO = new StringBuilder("SELECT ").append(table.getTableName()).append("_ID FROM ").append(table.getTableName())
+							.append(" ");
 					// search for an Integer
 					if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
-						sqlSO += "WHERE " + column.getColumnName() + "=?";
+						sqlSO.append("WHERE ").append(column.getColumnName()).append("=?");
 						// search for a String
 					} else {
-						sqlSO += "WHERE UPPER(" + column.getColumnName()+ ") LIKE UPPER(?)";
+						sqlSO.append("WHERE UPPER(").append(column.getColumnName()).append(") LIKE UPPER(?)");
 					}
 
 					if (msd.getPO_Window_ID() != 0) {
-						sqlPO = sqlSO + " AND IsSOTrx='N'";
-						sqlSO += " AND IsSOTrx='Y'";
+						sqlPO = new StringBuilder(sqlSO.toString()).append(" AND IsSOTrx='N'");
+						sqlSO.append(" AND IsSOTrx='Y'");
 					}
-					pstmtSO = DB.prepareStatement(sqlSO, null);
-					pstmtPO = DB.prepareStatement(sqlPO, null);
+					pstmtSO = DB.prepareStatement(sqlSO.toString(), null);
+					pstmtPO = DB.prepareStatement(sqlPO.toString(), null);
 					// search for a Integer
 					if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
 						pstmtSO.setInt(1, Integer.valueOf(searchString.replaceAll("\\D", "")));
@@ -167,11 +176,11 @@ public abstract class AbstractDocumentSearch {
 					}
 					// SearchDefinition with a special query
 				} else if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_QUERY)) {
-					sqlSO = msd.getQuery();
-					pstmtSO = DB.prepareStatement(sqlSO, null);
+					sqlSO = new StringBuilder(msd.getQuery());
+					pstmtSO = DB.prepareStatement(sqlSO.toString(), null);
 					// count '?' in statement
 					int count = 1;
-					for (char c : sqlSO.toCharArray()) {
+					for (char c : sqlSO.toString().toCharArray()) {
 						if (c == '?') {
 							count++;
 						}
@@ -185,15 +194,17 @@ public abstract class AbstractDocumentSearch {
 					}
 				}
 				if (pstmtSO != null) {
-					log.fine("SQL Sales: " + sqlSO);
+					msglog = new StringBuilder("SQL Sales: ").append(sqlSO.toString());
+					log.fine(msglog.toString());
 					rsSO = pstmtSO.executeQuery();
 					Vector<Integer> idSO = new Vector<Integer>();
 					while (rsSO.next()) {
 						idSO.add(new Integer(rsSO.getInt(1)));
 					}
 					if (role.getWindowAccess(msd.getAD_Window_ID()) != null) {
-						log.fine("Open Window: " + msd.getAD_Window_ID() + " / Table: "
-								+ table.getTableName() + " / Number of Results: " + idSO.size());
+						msglog = new StringBuilder("Open Window: ").append(msd.getAD_Window_ID()).append(" / Table: ")
+									.append(table.getTableName()).append(" / Number of Results: ").append(idSO.size());
+						log.fine(msglog.toString());
 
 						if (idSO.size() == 0 && (searchString == null || searchString.trim().length() == 0)) {
 							// No search string - open the window with new record
@@ -206,15 +217,17 @@ public abstract class AbstractDocumentSearch {
 					}
 				}
 				if (pstmtPO != null) {
-					log.fine("SQL Purchase: " + sqlPO);
+					msglog = new StringBuilder("SQL Purchase: ").append(sqlPO);
+					log.fine(msglog.toString());
 					rsPO = pstmtPO.executeQuery();
 					Vector<Integer> idPO = new Vector<Integer>();
 					while (rsPO.next()) {
 						idPO.add(new Integer(rsPO.getInt(1)));
 					}
 					if (role.getWindowAccess(msd.getPO_Window_ID()) != null) {
-						log.fine("Open Window: " + msd.getPO_Window_ID() + " / Table: "
-								+ table.getTableName() + " / Number of Results: " + idPO.size());
+						msglog = new StringBuilder("Open Window: ").append(msd.getPO_Window_ID()).append(" / Table: ")
+								.append(table.getTableName()).append(" / Number of Results: ").append(idPO.size());						
+						log.fine(msglog.toString());
 						openWindow(idPO, table.getTableName(), msd.getPO_Window_ID());
 					} else {
 						log.warning("Role is not allowed to view this window");
@@ -252,32 +265,33 @@ public abstract class AbstractDocumentSearch {
 		if (ids == null || ids.size() == 0) {
 			return;
 		}
-		String whereString = " " + tableName + "_ID";
+		StringBuilder whereString = new StringBuilder(" ").append(tableName).append("_ID");
 		// create query string
 		if (ids.size() == 1) {
 			if (ids.get(0).intValue() == 0) {
 				whereString = null;
 			} else {
-				whereString += "=" + ids.get(0).intValue();
+				whereString.append("=").append(ids.get(0).intValue());
 			}
 		} else {
-			whereString += " IN (";
+			whereString.append(" IN (");
 			for (int i = 0; i < ids.size(); i++) {
-				whereString += ids.get(i).intValue();
+				whereString.append(ids.get(i).intValue());
 				if (i < ids.size() - 1) {
-					whereString += ",";
+					whereString.append(",");
 				} else {
-					whereString += ") ";
+					whereString.append(") ");
 				}
 			}
 		}
-		log.fine(whereString);
-
+		log.fine(whereString.toString());
+		
 		final MQuery query = new MQuery(tableName);
-		query.addRestriction(whereString);
+		query.addRestriction(whereString.toString());
 		final boolean ok = openWindow(windowId, query);
 		if (!ok) {
-			log.severe("Unable to open window: " + whereString);
+			StringBuilder msglog = new StringBuilder("Unable to open window: ").append(whereString.toString());			
+			log.severe(msglog.toString());
 		}
 		if (!windowOpened && ok)
 			windowOpened = true;

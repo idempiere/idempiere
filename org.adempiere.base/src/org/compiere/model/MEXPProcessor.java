@@ -78,7 +78,7 @@ public class MEXPProcessor extends X_EXP_Processor {
 	    
 		List<X_EXP_ProcessorParameter> resultList = new ArrayList<X_EXP_ProcessorParameter>();
 		                   
-		StringBuffer sql = new StringBuffer("SELECT * ")
+		StringBuilder sql = new StringBuilder("SELECT * ")
 			.append(" FROM ").append(X_EXP_ProcessorParameter.Table_Name)
 			.append(" WHERE ").append(X_EXP_ProcessorParameter.COLUMNNAME_EXP_Processor_ID).append("=?") // # 1
 			.append(" AND IsActive = ?")  // # 2

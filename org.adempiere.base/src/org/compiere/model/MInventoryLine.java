@@ -206,8 +206,10 @@ public class MInventoryLine extends X_M_InventoryLine
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 
 	/**
@@ -236,7 +238,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInventoryLine[");
+		StringBuilder sb = new StringBuilder ("MInventoryLine[");
 		sb.append (get_ID())
 			.append("-M_Product_ID=").append (getM_Product_ID())
 			.append(",QtyCount=").append(getQtyCount())

@@ -149,24 +149,26 @@ public class InitialClientSetup extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("InitialClientSetup"
-				+ ": ClientName=" + p_ClientName
-				+ ", OrgValue=" + p_OrgValue
-				+ ", OrgName=" + p_OrgName
-				+ ", AdminUserName=" + p_AdminUserName
-				+ ", NormalUserName=" + p_NormalUserName
-				+ ", C_Currency_ID=" + p_C_Currency_ID
-				+ ", C_Country_ID=" + p_C_Country_ID
-				+ ", C_Region_ID=" + p_C_Region_ID
-				+ ", CityName=" + p_CityName
-				+ ", C_City_ID=" + p_C_City_ID
-				+ ", IsUseBPDimension=" + p_IsUseBPDimension
-				+ ", IsUseProductDimension=" + p_IsUseProductDimension
-				+ ", IsUseProjectDimension=" + p_IsUseProjectDimension
-				+ ", IsUseCampaignDimension=" + p_IsUseCampaignDimension
-				+ ", IsUseSalesRegionDimension=" + p_IsUseSalesRegionDimension
-				+ ", CoAFile=" + p_CoAFile
-			);
+		
+		StringBuilder msglog = new StringBuilder("InitialClientSetup")
+								.append(": ClientName=").append(p_ClientName)
+								.append(", OrgValue=").append(p_OrgValue)
+								.append(", OrgName=").append(p_OrgName)
+								.append(", AdminUserName=").append(p_AdminUserName)
+								.append(", NormalUserName=").append(p_NormalUserName)
+								.append(", C_Currency_ID=").append(p_C_Currency_ID)
+								.append(", C_Country_ID=").append(p_C_Country_ID)
+								.append(", C_Region_ID=").append(p_C_Region_ID)
+								.append(", CityName=").append(p_CityName)
+								.append(", C_City_ID=").append(p_C_City_ID)
+								.append(", IsUseBPDimension=").append(p_IsUseBPDimension)
+								.append(", IsUseProductDimension=").append(p_IsUseProductDimension)
+								.append(", IsUseProjectDimension=").append(p_IsUseProjectDimension)
+								.append(", IsUseCampaignDimension=").append(p_IsUseCampaignDimension)
+								.append(", IsUseSalesRegionDimension=").append(p_IsUseSalesRegionDimension)
+								.append(", CoAFile=").append(p_CoAFile);
+		
+		log.info(msglog.toString());
 
 		// Validations
 
@@ -196,7 +198,8 @@ public class InitialClientSetup extends SvrProcess
 		if (p_C_City_ID > 0) {
 			MCity city = MCity.get(getCtx(), p_C_City_ID);
 			if (! city.getName().equals(p_CityName)) {
-				log.info("City name changed from " + p_CityName + " to " + city.getName());
+				msglog = new StringBuilder("City name changed from ").append(p_CityName).append(" to ").append(city.getName());
+				log.info(msglog.toString());
 				p_CityName = city.getName();
 			}
 		}

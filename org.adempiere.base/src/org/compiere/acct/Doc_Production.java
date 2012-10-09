@@ -83,8 +83,8 @@ public class Doc_Production extends Doc
 		//	Production
 		//	-- ProductionLine	- the real level
 		String sqlPL = "SELECT * FROM M_ProductionLine pl "
-			+ "WHERE pl.M_Production_ID=? "
-			+ "ORDER BY pl.Line";
+				+ "WHERE pl.M_Production_ID=? "
+				+ "ORDER BY pl.Line";
 
 		try
 		{

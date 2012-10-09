@@ -173,7 +173,7 @@ public class RequisitionPOCreate extends SvrProcess
 			+ ", ConsolidateDocument" + p_ConsolidateDocument);
 		
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuffer whereClause = new StringBuffer("C_OrderLine_ID IS NULL");
+		StringBuilder whereClause = new StringBuilder("C_OrderLine_ID IS NULL");
 		if (p_AD_Org_ID > 0)
 		{
 			whereClause.append(" AND AD_Org_ID=?");
@@ -355,8 +355,9 @@ public class RequisitionPOCreate extends SvrProcess
 			//	default po document type
 			if (!p_ConsolidateDocument)
 			{
-				m_order.setDescription(Msg.getElement(getCtx(), "M_Requisition_ID") 
-					+ ": " + rLine.getParent().getDocumentNo());
+				StringBuilder msgsd= new StringBuilder(Msg.getElement(getCtx(), "M_Requisition_ID")) 
+						.append(": ").append(rLine.getParent().getDocumentNo());
+				m_order.setDescription(msgsd.toString());
 			}
 			
 			//	Prepare Save
@@ -380,7 +381,8 @@ public class RequisitionPOCreate extends SvrProcess
 		if (m_order != null)
 		{
 			m_order.load(get_TrxName());
-			addLog(0, null, m_order.getGrandTotal(), m_order.getDocumentNo(),m_order.get_Table_ID(),m_order.getC_Order_ID());
+			String message = Msg.parseTranslation(getCtx(), "@GeneratedPO@ " + m_order.getDocumentNo());
+			addLog(0, null, m_order.getGrandTotal(), message, m_order.get_Table_ID(), m_order.getC_Order_ID());
 		}
 		m_order = null;
 		m_orderLine = null;

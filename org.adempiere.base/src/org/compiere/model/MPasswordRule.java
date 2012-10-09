@@ -29,6 +29,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 import edu.vt.middleware.dictionary.ArrayWordList;
 import edu.vt.middleware.dictionary.WordListDictionary;
@@ -64,7 +65,7 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7376091524332484101L;
+	private static final long serialVersionUID = 5454698615095632059L;
 
 	/**
 	 * @param ctx
@@ -92,6 +93,27 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			 pass = new MPasswordRule(ctx, pwdruleID, trxName);
 
 		return pass;
+	}
+	
+	@Override
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (isUsingDictionary()) {
+			StringBuilder msg = new StringBuilder();
+			if (Util.isEmpty(getPathDictionary())) {
+				msg.append(Msg.getElement(getCtx(), COLUMNNAME_PathDictionary));
+			}
+			if (getDictWordLength() <= 0) {
+				if (msg.length() > 0)
+					msg.append(", ");
+				msg.append(Msg.getElement(getCtx(), COLUMNNAME_DictWordLength));
+			}
+			if (msg.length() > 0) {
+				log.saveError("FillMandatory", msg.toString());
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void validate(String username, String newPassword) throws AdempiereException {
@@ -197,12 +219,13 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			passwordData.setUsername(username);
 			RuleResult result = validator.validate(passwordData);
 			if (!result.isValid()) {
-				String error = Msg.getMsg(getCtx(), "PasswordErrors") + ": [";
+				StringBuilder error = new StringBuilder(Msg.getMsg(getCtx(), "PasswordErrors"));
+				error.append(": [");
 				for (String msg : validator.getMessages(result)) {
-					error = error + " " + msg;
+					error.append(" ").append(msg);
 				}
-				error = error + " ]";
-				throw new AdempiereException(error);
+				error.append(" ]");
+				throw new AdempiereException(error.toString());
 			}
 		}
 	}
@@ -211,8 +234,9 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		Properties props = null;
 		InputStream in = null;
 		try {
-			String file = "vtpassword_messages_" + Env.getLoginLanguage(getCtx()).getLocale().getLanguage() + ".properties";
-			in = this.getClass().getResourceAsStream(file);
+			StringBuilder file = new StringBuilder("vtpassword_messages_").append(Env.getLoginLanguage(getCtx()).getLocale().getLanguage())
+					.append(".properties");
+			in = this.getClass().getResourceAsStream(file.toString());
 			if (in != null) {
 				props = new Properties();
 				props.load(in);

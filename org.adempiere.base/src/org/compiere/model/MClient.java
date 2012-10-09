@@ -212,7 +212,7 @@ public class MClient extends X_AD_Client
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MClient[")
+		StringBuilder sb = new StringBuilder ("MClient[")
 			.append(get_ID()).append("-").append(getValue())
 			.append("]");
 		return sb.toString();
@@ -289,13 +289,13 @@ public class MClient extends X_AD_Client
 	public boolean setupClientInfo (String language)
 	{
 		//	Create Trees
-		String sql = null;
+		StringBuilder sql = null;
 		if (Env.isBaseLanguage (language, "AD_Ref_List"))	//	Get TreeTypes & Name
-			sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=120 AND IsActive='Y'";
+			sql = new StringBuilder("SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=120 AND IsActive='Y'");
 		else
-			sql = "SELECT l.Value, t.Name FROM AD_Ref_List l, AD_Ref_List_Trl t "
-				+ "WHERE l.AD_Reference_ID=120 AND l.AD_Ref_List_ID=t.AD_Ref_List_ID AND l.IsActive='Y'"
-				+ " AND t.AD_Language=" + DB.TO_STRING(language);
+			sql = new StringBuilder("SELECT l.Value, t.Name FROM AD_Ref_List l, AD_Ref_List_Trl t ")
+				.append("WHERE l.AD_Reference_ID=120 AND l.AD_Ref_List_ID=t.AD_Ref_List_ID AND l.IsActive='Y'")
+				.append(" AND t.AD_Language=").append(DB.TO_STRING(language));
 
 		//  Tree IDs
 		int AD_Tree_Org_ID=0, AD_Tree_BPartner_ID=0, AD_Tree_Project_ID=0,
@@ -305,59 +305,59 @@ public class MClient extends X_AD_Client
 		boolean success = false;
 		try
 		{
-			PreparedStatement stmt = DB.prepareStatement(sql, get_TrxName());
+			PreparedStatement stmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			ResultSet rs = stmt.executeQuery();
 			MTree_Base tree = null;
 			while (rs.next())
 			{
 				String value = rs.getString(1);
-				String name = getName() + " " + rs.getString(2);
+				StringBuilder name = new StringBuilder(getName()).append(" ").append(rs.getString(2));
 				//
 				if (value.equals(X_AD_Tree.TREETYPE_Organization))
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 					AD_Tree_Org_ID = tree.getAD_Tree_ID();
 				}
 				else if (value.equals(X_AD_Tree.TREETYPE_BPartner))
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 					AD_Tree_BPartner_ID = tree.getAD_Tree_ID();
 				}
 				else if (value.equals(X_AD_Tree.TREETYPE_Project))
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 					AD_Tree_Project_ID = tree.getAD_Tree_ID();
 				}
 				else if (value.equals(X_AD_Tree.TREETYPE_SalesRegion))
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 					AD_Tree_SalesRegion_ID = tree.getAD_Tree_ID();
 				}
 				else if (value.equals(X_AD_Tree.TREETYPE_Product))
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 					AD_Tree_Product_ID = tree.getAD_Tree_ID();
 				}
 				else if (value.equals(X_AD_Tree.TREETYPE_ElementValue))
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 					m_AD_Tree_Account_ID = tree.getAD_Tree_ID();
 				}
 				else if (value.equals(X_AD_Tree.TREETYPE_Campaign))
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 					AD_Tree_Campaign_ID = tree.getAD_Tree_ID();
 				}
 				else if (value.equals(X_AD_Tree.TREETYPE_Activity))
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 					AD_Tree_Activity_ID = tree.getAD_Tree_ID();
 				}
@@ -365,7 +365,7 @@ public class MClient extends X_AD_Client
 					success = true;
 				else	//	PC (Product Category), BB (BOM)
 				{
-					tree = new MTree_Base (this, name, value);
+					tree = new MTree_Base (this, name.toString(), value);
 					success = tree.save();
 				}
 				if (!success)
@@ -467,14 +467,18 @@ public class MClient extends X_AD_Client
 	 */
 	public String testEMail()
 	{
-		if (getRequestEMail() == null || getRequestEMail().length() == 0)
-			return "No Request EMail for " + getName();
+		if (getRequestEMail() == null || getRequestEMail().length() == 0){
+			StringBuilder msgreturn = new StringBuilder("No Request EMail for ").append(getName());
+			return msgreturn.toString();
+		}	
 		//
+		StringBuilder msgce = new StringBuilder("Adempiere EMail Test: ").append(toString());
 		EMail email = createEMail (getRequestEMail(),
-			"Adempiere EMail Test",
-			"Adempiere EMail Test: " + toString());
-		if (email == null)
-			return "Could not create EMail: " + getName();
+			"Adempiere EMail Test",msgce.toString());
+		if (email == null){
+			StringBuilder msgreturn = new StringBuilder("Could not create EMail: ").append(getName());
+			return msgreturn.toString();
+		}	
 		try
 		{
 			String msg = null;
@@ -920,52 +924,52 @@ public class MClient extends X_AD_Client
 		if (m_fieldAccess == null)
 		{
 			m_fieldAccess = new ArrayList<Integer>(11000);
-			String sqlvalidate =
-				"SELECT AD_Field_ID "
-				 + "  FROM AD_Field "
-				 + " WHERE (   AD_Field_ID NOT IN ( "
-				 // ASP subscribed fields for client
-				 + "              SELECT f.AD_Field_ID "
-				 + "                FROM ASP_Field f, ASP_Tab t, ASP_Window w, ASP_Level l, ASP_ClientLevel cl "
-				 + "               WHERE w.ASP_Level_ID = l.ASP_Level_ID "
-				 + "                 AND cl.AD_Client_ID = " + getAD_Client_ID()
-				 + "                 AND cl.ASP_Level_ID = l.ASP_Level_ID "
-				 + "                 AND f.ASP_Tab_ID = t.ASP_Tab_ID "
-				 + "                 AND t.ASP_Window_ID = w.ASP_Window_ID "
-				 + "                 AND f.IsActive = 'Y' "
-				 + "                 AND t.IsActive = 'Y' "
-				 + "                 AND w.IsActive = 'Y' "
-				 + "                 AND l.IsActive = 'Y' "
-				 + "                 AND cl.IsActive = 'Y' "
-				 + "                 AND f.ASP_Status = 'H' "
-				 +"                  AND f.AD_Field_ID NOT IN ("
-				 +" 				 SELECT AD_Field_ID"             
-				 +" 				 FROM ASP_ClientException ce"            
-				 +" 				 WHERE ce.AD_Client_ID ="+getAD_Client_ID()             
-				 +" 				 AND ce.IsActive = 'Y'"              
-				 +"                  AND ce.AD_Field_ID IS NOT NULL"              
-				 +" 				 AND ce.ASP_Status <> 'H')"
-				 + "   UNION ALL "
+			StringBuilder sqlvalidate = new StringBuilder(
+				"SELECT AD_Field_ID ")
+				 .append("  FROM AD_Field ")
+				 .append(" WHERE (   AD_Field_ID NOT IN ( ")
+				 // ASP subscribed fields for client)
+				 .append("              SELECT f.AD_Field_ID ")
+				 .append("                FROM ASP_Field f, ASP_Tab t, ASP_Window w, ASP_Level l, ASP_ClientLevel cl ")
+				 .append("               WHERE w.ASP_Level_ID = l.ASP_Level_ID ")
+				 .append("                 AND cl.AD_Client_ID = ").append(getAD_Client_ID())
+				 .append("                 AND cl.ASP_Level_ID = l.ASP_Level_ID ")
+				 .append("                 AND f.ASP_Tab_ID = t.ASP_Tab_ID ")
+				 .append("                 AND t.ASP_Window_ID = w.ASP_Window_ID ")
+				 .append("                 AND f.IsActive = 'Y' ")
+				 .append("                 AND t.IsActive = 'Y' ")
+				 .append("                 AND w.IsActive = 'Y' ")
+				 .append("                 AND l.IsActive = 'Y' ")
+				 .append("                 AND cl.IsActive = 'Y' ")
+				 .append("                 AND f.ASP_Status = 'H' ")
+				 .append("                  AND f.AD_Field_ID NOT IN (")
+				 .append(" 				 SELECT AD_Field_ID")             
+				 .append(" 				 FROM ASP_ClientException ce")            
+				 .append(" 				 WHERE ce.AD_Client_ID =").append(getAD_Client_ID())             
+				 .append(" 				 AND ce.IsActive = 'Y'") 
+				 .append("                  AND ce.AD_Field_ID IS NOT NULL")              
+				 .append(" 				 AND ce.ASP_Status <> 'H')")
+				 .append("   UNION ALL ")
 				 // minus ASP hide exceptions for client
-				 + "          SELECT AD_Field_ID "
-				 + "            FROM ASP_ClientException ce "
-				 + "           WHERE ce.AD_Client_ID = " + getAD_Client_ID()
-				 + "             AND ce.IsActive = 'Y' "
-				 + "             AND ce.AD_Field_ID IS NOT NULL "
-				 + "             AND ce.ASP_Status = 'H'))"
-				 + " ORDER BY AD_Field_ID";
+				 .append("          SELECT AD_Field_ID ")
+				 .append("            FROM ASP_ClientException ce ")
+				 .append("           WHERE ce.AD_Client_ID = ").append(getAD_Client_ID())
+				 .append("             AND ce.IsActive = 'Y' ")
+				 .append("             AND ce.AD_Field_ID IS NOT NULL ")
+				 .append("             AND ce.ASP_Status = 'H'))")
+				 .append(" ORDER BY AD_Field_ID");
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
 			{
-				pstmt = DB.prepareStatement(sqlvalidate, get_TrxName());
+				pstmt = DB.prepareStatement(sqlvalidate.toString(), get_TrxName());
 				rs = pstmt.executeQuery();
 				while (rs.next())
 					m_fieldAccess.add(rs.getInt(1));
 			}
 			catch (Exception e)
 			{
-				log.log(Level.SEVERE, sqlvalidate, e);
+				log.log(Level.SEVERE, sqlvalidate.toString(), e);
 			}
 			finally
 			{

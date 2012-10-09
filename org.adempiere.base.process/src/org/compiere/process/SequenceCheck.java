@@ -117,7 +117,6 @@ public class SequenceCheck extends SvrProcess
 				}
 				else
 				{
-					rs.close();
 					throw new Exception ("Error creating Table Sequence for " + tableName);
 				}
 			}
@@ -143,8 +142,10 @@ public class SequenceCheck extends SvrProcess
 		int no = DB.executeUpdate(sql, trxName);
 		if (no > 0)
 		{
-			if (sp != null)
-				sp.addLog(0, null, null, "SyncName #" + no);
+			if (sp != null){
+				StringBuilder msglog = new StringBuilder("SyncName #").append(no);
+				sp.addLog(0, null, null,msglog.toString());
+			}	
 			else
 				s_log.fine("Sync #" + no);
 		}
@@ -165,7 +166,8 @@ public class SequenceCheck extends SvrProcess
 			{
 				String TableName = rs.getString(1);
 				String SeqName = rs.getString(2);
-				sp.addLog(0, null, null, "ERROR: TableName=" + TableName + " - Sequence=" + SeqName);
+				StringBuilder msglog = new StringBuilder("ERROR: TableName=").append(TableName).append(" - Sequence=").append(SeqName);
+				sp.addLog(0, null, null, msglog.toString());
 			}
 		}
 		catch (Exception e)
@@ -199,63 +201,43 @@ public class SequenceCheck extends SvrProcess
 			+ "ORDER BY Name";
 		int counter = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String trxName = null;
 		if (sp != null)
 			trxName = sp.get_TrxName();
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				MSequence seq = new MSequence (ctx, rs, trxName);
-				int old = seq.getCurrentNext();
-				int oldSys = seq.getCurrentNextSys();
-				if (seq.validateTableIDValue())
-				{
-					if (seq.getCurrentNext() != old)
-					{
-						String msg = seq.getName() + " ID  " 
-							+ old + " -> " + seq.getCurrentNext();
-						if (sp != null)
-							sp.addLog(0, null, null, msg);
-						else
-							s_log.fine(msg);
-					}
-					if (seq.getCurrentNextSys() != oldSys)
-					{
-						String msg = seq.getName() + " Sys " 
-							+ oldSys + " -> " + seq.getCurrentNextSys();
-						if (sp != null)
-							sp.addLog(0, null, null, msg);
-						else
-							s_log.fine(msg);
-					}
-					if (seq.save())
-						counter++;
+				/* NOTE: When using native sequences - every time the sequence check process is run
+				 * a sequence number is lost on all sequences - because with native sequences
+				 * reading the sequence consumes a number
+				 */
+				String tableValidation = seq.validateTableIDValue();
+				if (tableValidation != null) {
+					if (sp != null)
+					   sp.addLog(0, null, null, tableValidation);
 					else
-						s_log.severe("Not updated: " + seq);
+					   s_log.fine(tableValidation);
+						  
+				    if (seq.save())
+					   counter++;
+					else
+					   s_log.severe("Not updated: " + seq);
 				}
-			//	else if (CLogMgt.isLevel(6)) 
-			//		log.fine("checkTableID - skipped " + tableName);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 		s_log.fine("#" + counter);
 	}	//	checkTableID
@@ -305,6 +287,7 @@ public class SequenceCheck extends SvrProcess
 		SequenceCheck sc = new SequenceCheck();
 		sc.startProcess(Env.getCtx(), pi, null);
 		
-		System.out.println("Process=" + pi.getTitle() + " Error="+pi.isError() + " Summary=" + pi.getSummary());
+		StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle()).append(" Error=").append(pi.isError()).append(" Summary=").append(pi.getSummary());
+		System.out.println(msgout.toString());
 	}
 }	//	SequenceCheck

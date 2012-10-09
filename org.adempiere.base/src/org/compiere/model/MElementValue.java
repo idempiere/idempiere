@@ -183,7 +183,7 @@ public class MElementValue extends X_C_ElementValue
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getValue()).append(" - ").append(getName());
 		return sb.toString ();
 	}	//	toString
@@ -194,7 +194,7 @@ public class MElementValue extends X_C_ElementValue
 	 */
 	public String toStringX ()
 	{
-		StringBuffer sb = new StringBuffer ("MElementValue[");
+		StringBuilder sb = new StringBuilder ("MElementValue[");
 		sb.append(get_ID()).append(",").append(getValue()).append(" - ").append(getName())
 			.append ("]");
 		return sb.toString ();

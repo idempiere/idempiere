@@ -340,17 +340,17 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	private void updateEntry()
 	{
 		// we do not count the fee line as an item, but it sum it up.
-		String sql = "UPDATE C_DunningRunEntry e "
-			+ "SET Amt=NVL((SELECT SUM(ConvertedAmt)+SUM(FeeAmt)+SUM(InterestAmt)"
-			+ " FROM C_DunningRunLine l "
-				+ "WHERE e.C_DunningRunEntry_ID=l.C_DunningRunEntry_ID), 0), "
-			+ "QTY=(SELECT COUNT(*)"
-			+ " FROM C_DunningRunLine l "
-				+ "WHERE e.C_DunningRunEntry_ID=l.C_DunningRunEntry_ID "
-				+ " AND (NOT C_Invoice_ID IS NULL OR NOT C_Payment_ID IS NULL))"
-			+ " WHERE C_DunningRunEntry_ID=" + getC_DunningRunEntry_ID();
+		StringBuilder sql = new StringBuilder("UPDATE C_DunningRunEntry e ")
+			.append("SET Amt=NVL((SELECT SUM(ConvertedAmt)+SUM(FeeAmt)+SUM(InterestAmt)")
+			.append(" FROM C_DunningRunLine l ")
+				.append("WHERE e.C_DunningRunEntry_ID=l.C_DunningRunEntry_ID), 0), ")
+			.append("QTY=(SELECT COUNT(*)")
+			.append(" FROM C_DunningRunLine l ")
+				.append("WHERE e.C_DunningRunEntry_ID=l.C_DunningRunEntry_ID ")
+				.append(" AND (NOT C_Invoice_ID IS NULL OR NOT C_Payment_ID IS NULL))")
+			.append(" WHERE C_DunningRunEntry_ID=").append(getC_DunningRunEntry_ID());
 		
-		DB.executeUpdate(sql, get_TrxName());
+		DB.executeUpdate(sql.toString(), get_TrxName());
 	}	//	updateEntry
 	
 }	//	MDunningRunLine

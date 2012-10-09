@@ -223,8 +223,10 @@ public final class MLookup extends Lookup implements Serializable
 			return "";
 		//
 		Object display = get (key);
-		if (display == null)
-			return "<" + key.toString() + ">";
+		if (display == null){
+			StringBuilder msgreturn = new StringBuilder("<").append(key.toString()).append(">");
+			return msgreturn.toString();
+		}	
 		return display.toString();
 	}	//	getDisplay
 
@@ -251,10 +253,11 @@ public final class MLookup extends Lookup implements Serializable
 	 */
 	public String toString()
 	{
-		return "MLookup[" + m_info.KeyColumn + ",Column_ID=" + m_info.Column_ID
-			+ ",Size=" + m_lookup.size() + ",Validated=" + isValidated()
-			+ "-" + getValidation()
-			+ "]";
+		StringBuilder msgreturn = new StringBuilder("MLookup[").append(m_info.KeyColumn).append(",Column_ID=").append(m_info.Column_ID)
+				.append(",Size=").append(m_lookup.size()).append(",Validated=").append(isValidated())
+				.append("-").append(getValidation())
+				.append("]");
+		return msgreturn.toString();
 	}	//	toString
 
 	/**
@@ -665,7 +668,7 @@ public final class MLookup extends Lookup implements Serializable
 			long startTime = System.currentTimeMillis();
 			if (Ini.isClient())
 				MLookupCache.loadStart (m_info);
-			String sql = m_info.Query;
+			StringBuilder sql = new StringBuilder(m_info.Query);
 
 			//	not validated
 			if (!m_info.IsValidated)
@@ -692,14 +695,13 @@ public final class MLookup extends Lookup implements Serializable
 					//
 					int posOrder = sql.lastIndexOf(" ORDER BY ");
 					if (posOrder != -1)
-						sql = sql.substring(0, posOrder) 
-							+ (hasWhere ? " AND " : " WHERE ") 
-							+ validation
-							+ sql.substring(posOrder);
+						sql = new StringBuilder(sql.substring(0, posOrder)) 
+							.append((hasWhere ? " AND " : " WHERE ")) 
+							.append(validation)
+							.append(sql.substring(posOrder));
 					else
-						sql += (hasWhere ? " AND " : " WHERE ") 
- 
-							+ validation;
+						sql.append((hasWhere ? " AND " : " WHERE ")) 
+							.append(validation);
 					if (CLogMgt.isLevelFinest())
 						log.fine(m_info.KeyColumn + ": Validation=" + validation);
 				}
@@ -712,7 +714,7 @@ public final class MLookup extends Lookup implements Serializable
 			}
 			//
 			if (CLogMgt.isLevelFiner())
-				Env.setContext(m_info.ctx, Env.WINDOW_MLOOKUP, m_info.Column_ID, m_info.KeyColumn, sql);
+				Env.setContext(m_info.ctx, Env.WINDOW_MLOOKUP, m_info.Column_ID, m_info.KeyColumn, sql.toString());
 			if (CLogMgt.isLevelFinest())
 				log.fine(m_info.KeyColumn + ": " + sql);
 			
@@ -726,7 +728,7 @@ public final class MLookup extends Lookup implements Serializable
 			try
 			{
 				//	SELECT Key, Value, Name, IsActive FROM ...
-				pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql.toString(), null);
 				rs = pstmt.executeQuery();
 
 				//	Get first ... rows
@@ -735,16 +737,16 @@ public final class MLookup extends Lookup implements Serializable
 				{
 					if (rows++ > MAX_ROWS)
 					{
-						String s = m_info.KeyColumn + ": Loader - Too many records";
+						StringBuilder s = new StringBuilder(m_info.KeyColumn).append(": Loader - Too many records");
 						if (m_info.Column_ID > 0) 
 						{
 							MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
 							String column = mColumn.getColumnName();
-							s = s + ", Column="+column;
+							s.append(", Column=").append(column);
 							String tableName = MTable.getTableName(m_info.ctx, mColumn.getAD_Table_ID());
-							s = s + ", Table="+tableName;
+							s.append(", Table=").append(tableName);
 						}
-						log.warning(s);
+						log.warning(s.toString());
 						break;
 					}
 					//  check for interrupted every 10 rows
@@ -752,23 +754,23 @@ public final class MLookup extends Lookup implements Serializable
 						break;
 
 					//  load data
-					String name = rs.getString(3);
+					StringBuilder name = new StringBuilder(rs.getString(3));
 					boolean isActive = rs.getString(4).equals("Y");
 					if (!isActive)
 					{
-						name = INACTIVE_S + name + INACTIVE_E;
+						name = new StringBuilder(INACTIVE_S).append(name).append(INACTIVE_E);
 						m_hasInactive = true;
 					}
 					if (isNumber)
 					{
 						int key = rs.getInt(1);
-						KeyNamePair p = new KeyNamePair(key, name);
+						KeyNamePair p = new KeyNamePair(key, name.toString());
 						m_lookup.put(new Integer(key), p);
 					}
 					else
 					{
 						String value = rs.getString(2);
-						ValueNamePair p = new ValueNamePair(value, name);
+						ValueNamePair p = new ValueNamePair(value, name.toString());
 						m_lookup.put(value, p);
 					}
 				//	log.fine( m_info.KeyColumn + ": " + name);

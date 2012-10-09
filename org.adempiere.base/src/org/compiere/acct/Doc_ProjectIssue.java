@@ -169,10 +169,10 @@ public class Doc_ProjectIssue extends Doc
 		BigDecimal retValue = null;
 		//	Uses PO Date
 		String sql = "SELECT currencyConvert(ol.PriceActual, o.C_Currency_ID, ?, o.DateOrdered, o.C_ConversionType_ID, ?, ?) "
-			+ "FROM C_OrderLine ol"
-			+ " INNER JOIN M_InOutLine iol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID)"
-			+ " INNER JOIN C_Order o ON (o.C_Order_ID=ol.C_Order_ID) "
-			+ "WHERE iol.M_InOutLine_ID=?";
+				+ "FROM C_OrderLine ol"
+				+ " INNER JOIN M_InOutLine iol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID)"
+				+ " INNER JOIN C_Order o ON (o.C_Order_ID=ol.C_Order_ID) "
+				+ "WHERE iol.M_InOutLine_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -216,12 +216,12 @@ public class Doc_ProjectIssue extends Doc
 		BigDecimal qty = Env.ZERO;
 
 		String sql = "SELECT ConvertedAmt, Qty FROM S_TimeExpenseLine " +
-			  " WHERE S_TimeExpenseLine.S_TimeExpenseLine_ID = ?";
+				" WHERE S_TimeExpenseLine.S_TimeExpenseLine_ID = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql.toString (), getTrxName());
+			pstmt = DB.prepareStatement (sql, getTrxName());
 			pstmt.setInt(1, m_issue.getS_TimeExpenseLine_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -236,7 +236,7 @@ public class Doc_ProjectIssue extends Doc
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			log.log(Level.SEVERE, sql, e);
 		}
 		finally
 		{

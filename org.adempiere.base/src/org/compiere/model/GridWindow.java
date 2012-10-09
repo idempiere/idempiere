@@ -560,12 +560,12 @@ public class GridWindow implements Serializable
 		if (recalc || m_modelUpdated == null)
 		{
 			String sql = "SELECT MAX(w.Updated), MAX(t.Updated), MAX(tt.Updated), MAX(f.Updated), MAX(c.Updated) "
-				+ "FROM AD_Window w"
-				+ " INNER JOIN AD_Tab t ON (w.AD_Window_ID=t.AD_Window_ID)"
-				+ " INNER JOIN AD_Table tt ON (t.AD_Table_ID=tt.AD_Table_ID)"
-				+ " INNER JOIN AD_Field f ON (t.AD_Tab_ID=f.AD_Tab_ID)"
-				+ " INNER JOIN AD_Column c ON (f.AD_Column_ID=c.AD_Column_ID) "
-				+ "WHERE w.AD_Window_ID=?";
+					+ "FROM AD_Window w"
+					+ " INNER JOIN AD_Tab t ON (w.AD_Window_ID=t.AD_Window_ID)"
+					+ " INNER JOIN AD_Table tt ON (t.AD_Table_ID=tt.AD_Table_ID)"
+					+ " INNER JOIN AD_Field f ON (t.AD_Tab_ID=f.AD_Tab_ID)"
+					+ " INNER JOIN AD_Column c ON (f.AD_Column_ID=c.AD_Column_ID) "
+					+ "WHERE w.AD_Window_ID=?";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try

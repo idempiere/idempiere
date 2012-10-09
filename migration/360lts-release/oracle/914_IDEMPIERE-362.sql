@@ -1,0 +1,742 @@
+-- Sep 17, 2012 5:20:18 PM COT
+-- IDEMPIERE-362 Hide things that don't work on iDempiere
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:20:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=295
+;
+
+-- Sep 17, 2012 5:20:26 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:20:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=226
+;
+
+-- Sep 17, 2012 5:20:57 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:20:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=300
+;
+
+-- Sep 17, 2012 5:21:11 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:21:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=231
+;
+
+-- Sep 17, 2012 5:23:52 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:23:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=499
+;
+
+-- Sep 17, 2012 5:23:57 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-17 17:23:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=308
+;
+
+-- Sep 17, 2012 5:24:38 PM COT 
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:24:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53090
+;
+
+-- Sep 17, 2012 5:24:44 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-17 17:24:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=53070
+;
+
+-- Sep 17, 2012 5:24:44 PM COT
+UPDATE AD_Menu SET Name='Prepare Migration Scripts', Description=NULL, IsActive='N',Updated=TO_DATE('2012-09-17 17:24:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53090
+;
+
+-- Sep 17, 2012 5:24:44 PM COT
+UPDATE AD_Menu_Trl SET IsTranslated='N' WHERE AD_Menu_ID=53090
+;
+
+-- Sep 17, 2012 5:25:38 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:25:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=448
+;
+
+-- Sep 17, 2012 5:25:42 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:25:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=317
+;
+
+-- Sep 17, 2012 5:26:20 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:26:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=449
+;
+
+-- Sep 17, 2012 5:26:25 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:26:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=316
+;
+
+-- Sep 17, 2012 5:35:04 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:35:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=310
+;
+
+-- Sep 17, 2012 5:35:04 PM COT
+UPDATE AD_Menu SET Name='Auction Buyer', Description='Maintain Auction Buyer Information', IsActive='N',Updated=TO_DATE('2012-09-17 17:35:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=442
+;
+
+-- Sep 17, 2012 5:39:52 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:39:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=309
+;
+
+-- Sep 17, 2012 5:39:52 PM COT
+UPDATE AD_Menu SET Name='Auction Seller', Description='Maintain Auction Seller Information', IsActive='N',Updated=TO_DATE('2012-09-17 17:39:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=443
+;
+
+-- Sep 17, 2012 5:40:54 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:40:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=447
+;
+
+-- Sep 17, 2012 5:41:00 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:41:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=307
+;
+
+-- Sep 17, 2012 5:41:52 PM COT 
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:41:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=453
+;
+
+-- Sep 17, 2012 5:41:56 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:41:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=308
+;
+
+-- Sep 17, 2012 5:45:35 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:45:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=52000
+;
+
+-- Sep 17, 2012 5:46:02 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-17 17:46:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=52003
+;
+
+-- Sep 17, 2012 5:46:02 PM COT
+UPDATE AD_Menu SET Name='Update Role Menu', Description=NULL, IsActive='N',Updated=TO_DATE('2012-09-17 17:46:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=52000
+;
+
+-- Sep 17, 2012 5:46:02 PM COT
+UPDATE AD_Menu_Trl SET IsTranslated='N' WHERE AD_Menu_ID=52000
+;
+
+-- Sep 17, 2012 5:51:42 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:51:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=52002
+;
+
+-- Sep 17, 2012 5:51:51 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:51:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=52000
+;
+
+-- Sep 17, 2012 5:58:52 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:58:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=52003
+;
+
+-- Sep 17, 2012 5:58:57 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:58:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=52001
+;
+
+-- Sep 17, 2012 5:59:52 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 17:59:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=52004
+;
+
+-- Sep 17, 2012 5:59:59 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 17:59:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=52002
+;
+
+-- Sep 17, 2012 6:00:47 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 18:00:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=52005
+;
+
+-- Sep 17, 2012 6:00:52 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 18:00:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=52003
+;
+
+-- Sep 17, 2012 6:01:46 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 18:01:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53013
+;
+
+-- Sep 17, 2012 6:01:51 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-17 18:01:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=53002
+;
+
+-- Sep 17, 2012 6:01:51 PM COT
+UPDATE AD_Menu SET Name='Setup Web POS', Description=NULL, IsActive='N',Updated=TO_DATE('2012-09-17 18:01:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53013
+;
+
+-- Sep 17, 2012 6:01:51 PM COT
+UPDATE AD_Menu_Trl SET IsTranslated='N' WHERE AD_Menu_ID=53013
+;
+
+-- Sep 17, 2012 6:02:44 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-17 18:02:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53196
+;
+
+-- Sep 17, 2012 6:02:49 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-17 18:02:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=53065
+;
+
+-- Sep 17, 2012 6:02:49 PM COT
+UPDATE AD_Menu SET Name='Web POS Terminal', Description=NULL, IsActive='N',Updated=TO_DATE('2012-09-17 18:02:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53196
+;
+
+-- Sep 17, 2012 6:02:49 PM COT
+UPDATE AD_Menu_Trl SET IsTranslated='N' WHERE AD_Menu_ID=53196
+;
+
+-- Sep 18, 2012 2:17:00 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 14:17:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=392
+;
+
+-- Sep 18, 2012 2:17:59 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 14:17:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=389
+;
+
+-- Sep 18, 2012 2:18:04 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 14:18:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=287
+;
+
+-- Sep 18, 2012 2:18:55 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 14:18:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=390
+;
+
+-- Sep 18, 2012 2:19:00 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 14:19:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=290
+;
+
+-- Sep 18, 2012 5:29:19 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:29:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=391
+;
+
+-- Sep 18, 2012 5:29:29 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 17:29:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=289
+;
+
+-- Sep 18, 2012 5:30:50 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:30:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=590
+;
+
+-- Sep 18, 2012 5:30:55 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 17:30:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=386
+;
+
+-- Sep 18, 2012 5:31:26 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:31:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=591
+;
+
+-- Sep 18, 2012 5:31:30 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 17:31:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=387
+;
+
+-- Sep 18, 2012 5:32:23 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:32:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=592
+;
+
+-- Sep 18, 2012 5:32:27 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 17:32:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=388
+;
+
+-- Sep 18, 2012 5:34:02 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:34:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=593
+;
+
+-- Sep 18, 2012 5:34:09 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-18 17:34:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=350
+;
+
+-- Sep 18, 2012 5:34:09 PM COT
+UPDATE AD_Menu SET Name='Rebuild Index', Description=NULL, IsActive='N',Updated=TO_DATE('2012-09-18 17:34:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=593
+;
+
+-- Sep 18, 2012 5:34:09 PM COT
+UPDATE AD_Menu_Trl SET IsTranslated='N' WHERE AD_Menu_ID=593
+;
+
+-- Sep 18, 2012 5:52:15 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:52:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=573
+;
+
+-- Sep 18, 2012 5:52:20 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 17:52:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=379
+;
+
+-- Sep 18, 2012 5:53:08 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:53:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=574
+;
+
+-- Sep 18, 2012 5:53:14 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 17:53:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=376
+;
+
+-- Sep 18, 2012 5:54:07 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:54:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=576
+;
+
+-- Sep 18, 2012 5:54:11 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 17:54:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=375
+;
+
+-- Sep 18, 2012 5:58:59 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:58:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=579
+;
+
+-- Sep 18, 2012 5:59:05 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 17:59:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=373
+;
+
+-- Sep 18, 2012 5:59:45 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 17:59:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=584
+;
+
+-- Sep 18, 2012 5:59:50 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-18 17:59:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=345
+;
+
+-- Sep 18, 2012 6:00:23 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:00:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=587
+;
+
+-- Sep 18, 2012 6:00:28 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:00:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=383
+;
+
+-- Sep 18, 2012 6:01:07 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=588
+;
+
+-- Sep 18, 2012 6:01:11 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:01:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=384
+;
+
+-- Sep 18, 2012 6:07:03 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:07:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=52001
+;
+
+-- Sep 18, 2012 6:07:49 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:07:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=460
+;
+
+-- Sep 18, 2012 6:10:10 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:10:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53264
+;
+
+-- Sep 18, 2012 6:10:15 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:10:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=53109
+;
+
+-- Sep 18, 2012 6:10:15 PM COT
+UPDATE AD_Menu SET Name='Import Product Planning', Description=NULL, IsActive='N',Updated=TO_DATE('2012-09-18 18:10:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53264
+;
+
+-- Sep 18, 2012 6:10:15 PM COT
+UPDATE AD_Menu_Trl SET IsTranslated='N' WHERE AD_Menu_ID=53264
+;
+
+-- Sep 18, 2012 6:17:14 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:17:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=371
+;
+
+-- Sep 18, 2012 6:17:19 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:17:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=269
+;
+
+-- Sep 18, 2012 6:20:15 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:20:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=375
+;
+
+-- Sep 18, 2012 6:20:19 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:20:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=273
+;
+
+-- Sep 18, 2012 6:20:50 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:20:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=380
+;
+
+-- Sep 18, 2012 6:20:56 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:20:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=274
+;
+
+-- Sep 18, 2012 6:21:33 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:21:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=415
+;
+
+-- Sep 18, 2012 6:21:37 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-18 18:21:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=239
+;
+
+-- Sep 18, 2012 6:22:07 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:22:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=416
+;
+
+-- Sep 18, 2012 6:22:16 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-18 18:22:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=240
+;
+
+-- Sep 18, 2012 6:22:37 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:22:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=372
+;
+
+-- Sep 18, 2012 6:23:27 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:23:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=559
+;
+
+-- Sep 18, 2012 6:23:31 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:23:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=367
+;
+
+-- Sep 18, 2012 6:24:03 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:24:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=560
+;
+
+-- Sep 18, 2012 6:24:07 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=368
+;
+
+-- Sep 18, 2012 6:24:45 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:24:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=561
+;
+
+-- Sep 18, 2012 6:24:49 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:24:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=369
+;
+
+-- Sep 18, 2012 6:25:23 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:25:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=562
+;
+
+-- Sep 18, 2012 6:25:27 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:25:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=370
+;
+
+-- Sep 18, 2012 6:26:03 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:26:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=563
+;
+
+-- Sep 18, 2012 6:26:08 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:26:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=371
+;
+
+-- Sep 18, 2012 6:26:54 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:26:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=564
+;
+
+-- Sep 18, 2012 6:26:59 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:26:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=372
+;
+
+-- Sep 18, 2012 6:31:03 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:31:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=488
+;
+
+-- Sep 18, 2012 6:31:07 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:31:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=335
+;
+
+-- Sep 18, 2012 6:31:49 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:31:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=489
+;
+
+-- Sep 18, 2012 6:31:53 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:31:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=336
+;
+
+-- Sep 18, 2012 6:32:54 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:32:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=241
+;
+
+-- Sep 18, 2012 6:32:59 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:32:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=198
+;
+
+-- Sep 18, 2012 6:35:18 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:35:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=288
+;
+
+-- Sep 18, 2012 6:35:24 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-18 18:35:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=170
+;
+
+-- Sep 18, 2012 6:36:45 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:36:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53132
+;
+
+-- Sep 18, 2012 6:36:50 PM COT
+UPDATE AD_Form SET IsActive='N',Updated=TO_DATE('2012-09-18 18:36:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Form_ID=53010
+;
+
+-- Sep 18, 2012 6:39:43 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:39:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=187
+;
+
+-- Sep 18, 2012 6:39:49 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:39:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=175
+;
+
+-- Sep 18, 2012 6:40:25 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:40:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=358
+;
+
+-- Sep 18, 2012 6:40:31 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:40:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=261
+;
+
+-- Sep 18, 2012 6:41:15 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:41:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=477
+;
+
+-- Sep 18, 2012 6:41:19 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:41:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=329
+;
+
+-- Sep 18, 2012 6:42:01 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:42:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=504
+;
+
+-- Sep 18, 2012 6:42:05 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-18 18:42:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=311
+;
+
+-- Sep 18, 2012 6:42:46 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:42:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=360
+;
+
+-- Sep 18, 2012 6:42:52 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:42:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=262
+;
+
+-- Sep 18, 2012 6:43:26 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:43:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=498
+;
+
+-- Sep 18, 2012 6:43:32 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:43:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=340
+;
+
+-- Sep 18, 2012 6:44:09 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:44:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=532
+;
+
+-- Sep 18, 2012 6:44:12 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:44:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=353
+;
+
+-- Sep 18, 2012 6:45:08 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:45:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53187
+;
+
+-- Sep 18, 2012 6:45:11 PM COT
+UPDATE AD_Process SET IsActive='N',Updated=TO_DATE('2012-09-18 18:45:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=53152
+;
+
+-- Sep 18, 2012 6:45:11 PM COT
+UPDATE AD_Menu SET Name='Immediate Bank Transfer', Description=NULL, IsActive='N',Updated=TO_DATE('2012-09-18 18:45:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53187
+;
+
+-- Sep 18, 2012 6:45:11 PM COT
+UPDATE AD_Menu_Trl SET IsTranslated='N' WHERE AD_Menu_ID=53187
+;
+
+-- Sep 18, 2012 6:45:48 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:45:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53256
+;
+
+-- Sep 18, 2012 6:45:53 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:45:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=53104
+;
+
+-- Sep 18, 2012 6:46:37 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:46:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=173
+;
+
+-- Sep 18, 2012 6:46:43 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:46:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=160
+;
+
+-- Sep 18, 2012 6:47:44 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:47:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=284
+;
+
+-- Sep 18, 2012 6:47:48 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:47:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=220
+;
+
+-- Sep 18, 2012 6:48:25 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:48:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=344
+;
+
+-- Sep 18, 2012 6:48:30 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:48:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=253
+;
+
+-- Sep 18, 2012 6:51:14 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:51:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=547
+;
+
+-- Sep 18, 2012 6:51:19 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:51:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=359
+;
+
+-- Sep 18, 2012 6:51:50 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:51:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=550
+;
+
+-- Sep 18, 2012 6:51:54 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:51:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=361
+;
+
+-- Sep 18, 2012 6:52:26 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:52:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=551
+;
+
+-- Sep 18, 2012 6:52:30 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-18 18:52:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=362
+;
+
+-- Sep 18, 2012 6:55:48 PM COT
+UPDATE AD_Menu SET IsActive='N',Updated=TO_DATE('2012-09-18 18:55:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=53169
+;
+
+-- Sep 19, 2012 10:29:42 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:29:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=54416
+;
+
+-- Sep 19, 2012 10:37:37 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:37:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=9286
+;
+
+-- Sep 19, 2012 10:41:21 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:41:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=11517
+;
+
+-- Sep 19, 2012 10:41:38 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:41:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=11520
+;
+
+-- Sep 19, 2012 10:41:44 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:41:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=11521
+;
+
+-- Sep 19, 2012 10:41:48 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:41:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=11519
+;
+
+-- Sep 19, 2012 10:41:53 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:41:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=11516
+;
+
+-- Sep 19, 2012 10:41:56 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:41:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=11518
+;
+
+-- Sep 19, 2012 10:42:05 AM COT
+UPDATE AD_Tab SET IsActive='N',Updated=TO_DATE('2012-09-19 10:42:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Tab_ID=707
+;
+
+-- Sep 19, 2012 10:43:29 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:43:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=1494
+;
+
+-- Sep 19, 2012 10:43:36 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:43:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=2074
+;
+
+-- Sep 19, 2012 10:43:41 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:43:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=1597
+;
+
+-- Sep 19, 2012 10:43:45 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:43:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=1492
+;
+
+-- Sep 19, 2012 10:43:49 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:43:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=1495
+;
+
+-- Sep 19, 2012 10:43:56 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:43:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=2611
+;
+
+-- Sep 19, 2012 10:44:00 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:44:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=2612
+;
+
+-- Sep 19, 2012 10:44:08 AM COT
+UPDATE AD_Tab SET IsActive='N',Updated=TO_DATE('2012-09-19 10:44:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Tab_ID=214
+;
+
+-- Sep 19, 2012 10:50:54 AM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-19 10:50:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=12360
+;
+
+-- Sep 19, 2012 10:52:39 AM COT
+UPDATE AD_Window SET IsBetaFunctionality='N',Updated=TO_DATE('2012-09-19 10:52:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=229
+;
+
+-- Sep 19, 2012 10:52:56 AM COT
+UPDATE AD_Window SET IsBetaFunctionality='N',Updated=TO_DATE('2012-09-19 10:52:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=312
+;
+
+-- Sep 19, 2012 10:53:44 AM COT
+UPDATE AD_Window SET IsBetaFunctionality='N',Updated=TO_DATE('2012-09-19 10:53:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=53015
+;
+
+-- Sep 19, 2012 10:54:05 AM COT
+UPDATE AD_Window SET IsBetaFunctionality='N',Updated=TO_DATE('2012-09-19 10:54:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=53016
+;
+
+-- Sep 20, 2012 6:12:15 PM COT
+UPDATE AD_Window SET IsActive='N',Updated=TO_DATE('2012-09-20 18:12:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=288
+;
+
+-- Sep 20, 2012 6:12:15 PM COT
+UPDATE AD_Menu SET Name='Knowledge Base', Description='Maintain Knowledge Base', IsActive='N',Updated=TO_DATE('2012-09-20 18:12:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=388
+;
+
+-- Sep 20, 2012 6:13:16 PM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-20 18:13:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=55432
+;
+
+-- Sep 20, 2012 6:13:24 PM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-20 18:13:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=55433
+;
+
+-- Sep 20, 2012 6:13:44 PM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-20 18:13:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=50171
+;
+
+-- Sep 20, 2012 6:14:47 PM COT
+UPDATE AD_Column SET DefaultValue='N',Updated=TO_DATE('2012-09-20 18:14:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=50201
+;
+
+-- Sep 20, 2012 6:14:51 PM COT
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-20 18:14:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=50201
+;
+
+-- Sep 20, 2012 6:15:15 PM COT
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2012-09-20 18:15:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=50171
+;
+
+-- Sep 20, 2012 6:15:24 PM COT
+UPDATE AD_Column SET DefaultValue='N',Updated=TO_DATE('2012-09-20 18:15:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=55333
+;
+
+-- Sep 20, 2012 6:15:26 PM COT
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-20 18:15:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=55333
+;
+
+-- Sep 20, 2012 6:15:38 PM COT
+UPDATE AD_Column SET DefaultValue='N',Updated=TO_DATE('2012-09-20 18:15:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=55332
+;
+
+-- Sep 20, 2012 6:15:41 PM COT
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-09-20 18:15:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=55332
+;
+
+-- Sep 20, 2012 6:16:02 PM COT
+ALTER TABLE AD_Role MODIFY Allow_Info_MRP CHAR(1) DEFAULT 'N'
+;
+
+-- Sep 20, 2012 6:16:03 PM COT
+UPDATE AD_Role SET Allow_Info_MRP='N' WHERE Allow_Info_MRP IS NULL
+;
+
+-- Sep 20, 2012 6:16:33 PM COT
+ALTER TABLE AD_Role MODIFY Allow_Info_CRP CHAR(1) DEFAULT 'N'
+;
+
+-- Sep 20, 2012 6:16:34 PM COT
+UPDATE AD_Role SET Allow_Info_CRP='N' WHERE Allow_Info_CRP IS NULL
+;
+
+-- Sep 20, 2012 6:17:03 PM COT
+ALTER TABLE AD_Role MODIFY Allow_Info_CashJournal CHAR(1) DEFAULT 'N'
+;
+
+UPDATE AD_Role SET Allow_Info_CashJournal='N', Allow_Info_MRP='N', Allow_Info_CRP='N'  
+;
+
+SELECT register_migration_script('914_IDEMPIERE-362.sql') FROM dual
+;

@@ -35,12 +35,12 @@ import org.compiere.util.Msg;
  *  @version $Id: MAcctProcessor.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
 public class MAcctProcessor extends X_C_AcctProcessor
-	implements AdempiereProcessor
+	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6558688522646469260L;
+	private static final long serialVersionUID = -4760475718973777369L;
 
 	/**
 	 * 	Get Active
@@ -68,8 +68,8 @@ public class MAcctProcessor extends X_C_AcctProcessor
 		{
 		//	setName (null);
 		//	setSupervisor_ID (0);
-			setFrequencyType (FREQUENCYTYPE_Hour);
-			setFrequency (1);
+		//	setFrequencyType (FREQUENCYTYPE_Hour);
+		//	setFrequency (1);
 			setKeepLogDays (7);	// 7
 		}	
 	}	//	MAcctProcessor
@@ -94,20 +94,37 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	{
 		this (client.getCtx(), 0, client.get_TrxName());
 		setClientOrg(client);
-		setName (client.getName() + " - " 
-			+ Msg.translate(getCtx(), "C_AcctProcessor_ID"));
+		StringBuilder msgset = new StringBuilder(client.getName()).append(" - ") 
+							.append(Msg.translate(getCtx(), "C_AcctProcessor_ID"));
+		setName (msgset.toString());
 		setSupervisor_ID (Supervisor_ID);
 	}	//	MAcctProcessor
 	
-	
-	
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord)
+	{
+		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			if (nextWork > 0)
+				setDateNextRun(new Timestamp(nextWork));
+		}
+		
+		return true;
+	}	//	beforeSave
+
 	/**
 	 * 	Get Server ID
 	 *	@return id
 	 */
 	public String getServerID ()
 	{
-		return "AcctProcessor" + get_ID();
+		StringBuilder msgreturn = new StringBuilder("AcctProcessor").append(get_ID());
+		return msgreturn.toString();
 	}	//	getServerID
 
 	/**
@@ -144,11 +161,36 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		String sql = "DELETE C_AcctProcessorLog "
-			+ "WHERE C_AcctProcessor_ID=" + getC_AcctProcessor_ID() 
-			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("DELETE C_AcctProcessorLog ")
+					.append("WHERE C_AcctProcessor_ID=").append(getC_AcctProcessor_ID()) 
+					.append(" AND (Created+").append(getKeepLogDays()).append(") < SysDate");
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		return no;
 	}	//	deleteLog
+
+	@Override
+	public String getFrequencyType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequencyType();
+	}
+
+	@Override
+	public int getFrequency() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequency();
+	}
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).isIgnoreProcessingTime();
+	}
+
+	@Override
+	public String getScheduleType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getScheduleType();
+	}
+
+	@Override
+	public String getCronPattern() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getCronPattern();
+	}
 
 }	//	MAcctProcessor

@@ -353,7 +353,7 @@ public class VLocation extends JComponent
 		//
 		log.config( "actionPerformed - " + m_value);
 		VLocationDialog ld = new VLocationDialog(AEnv.getFrame(this),
-			Msg.getMsg(Env.getCtx(), "Location"), m_value);
+			Msg.getMsg(Env.getCtx(), "Location"), m_value, m_GridField);
 		ld.setVisible(true);
 		Object oldValue = getValue();
 		m_value = ld.getValue();
@@ -374,17 +374,11 @@ public class VLocation extends JComponent
 			if (C_Location_ID != 0)
 				fireVetoableChange(m_columnName, oldValue, ii);
 			setValue(ii);
-			if (ii.equals(oldValue) && m_GridTab != null && m_GridField != null)
-			{
-				//  force Change - user does not realize that embedded object is already saved.
-				m_GridTab.processFieldChange(m_GridField);
-			}
 		}
 		catch (PropertyVetoException pve)
 		{
 			log.log(Level.SEVERE, "VLocation.actionPerformed", pve);
 		}
-
 	}	//	actionPerformed
 
 	/**

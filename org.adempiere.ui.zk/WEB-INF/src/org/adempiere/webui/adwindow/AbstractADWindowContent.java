@@ -283,7 +283,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         gridWindow = new GridWindow(gWindowVO, true);
         title = gridWindow.getName();
 
-        // Set AutoNew for Window
+        // Set SO/AutoNew for Window
+        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
         if (!autoNew && gridWindow.isTransaction())
         {
             Env.setAutoNew(ctx, curWindowNo, true);
@@ -322,8 +323,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	gridTab.getTableModel().setChanged(false);
 
         adTabbox.setSelectedIndex(0);	        
-        // all fields context for window is clear at AbstractADTab.prepareContext, set IsSOTrx for window
-        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());	        
+        // all fields context for window is clear at AbstractADTab.prepareContext, set again IsSOTrx for window
+        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
         toolbar.enableTabNavigation(adTabbox.getTabCount() > 1);
         toolbar.enableFind(true);
         adTabbox.evaluate(null);
@@ -1019,6 +1020,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    FDialog.warn(curWindowNo, "TabSwitchJumpGo", title);
 		    if (callback != null)
 				callback.onCallback(false);
+		    return;
 		}
 
 		
@@ -2624,11 +2626,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			gridFieldIds.add(fields[i].getAD_Field_ID());
 			
 		}
-		if (CustomizeGridViewDialog.showCustomize(0, adTabbox.getSelectedGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds)) {			
-
-			if (tabPanel.getGridView() != null) {
-				tabPanel.getGridView().reInit();
-			}
-		}
+		CustomizeGridViewDialog.showCustomize(0, adTabbox.getSelectedGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds,tabPanel.getGridView());			
 	}
 }

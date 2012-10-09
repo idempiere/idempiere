@@ -470,10 +470,19 @@ public class StringElement extends PrintElement
 				{
 					layout = new TextLayout (iter, g2D.getFontRenderContext());
 					yPen = yPos + layout.getAscent();
-				//	layout.draw(g2D, xPen, yPen);
-					g2D.setFont(m_font);
-					g2D.setPaint(m_paint);
-					g2D.drawString(iter, xPen, yPen);
+
+					boolean fastDraw = LayoutEngine.s_FASTDRAW;
+					if (fastDraw && !isView && !is8Bit)
+						fastDraw = false;
+
+					if ( fastDraw )
+					{
+						g2D.setFont(m_font);
+						g2D.setPaint(m_paint);
+						g2D.drawString(iter, xPen, yPen);
+					}
+					else
+						layout.draw(g2D, xPen, yPen);
 					//
 					yPos += layout.getAscent() + layout.getDescent() + layout.getLeading();
 					if (width < layout.getAdvance())

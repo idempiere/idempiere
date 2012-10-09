@@ -50,8 +50,8 @@ public class MIMPProcessor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8634765494025824138L;
-	/**	Static Logger	*/
+	private static final long serialVersionUID = 4477942100661801354L;
+
 	private static CLogger	s_log	= CLogger.getCLogger (MIMPProcessor.class);
 	
 	public MIMPProcessor(Properties ctx,
@@ -134,21 +134,22 @@ public class MIMPProcessor
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		String sql = "DELETE " + X_IMP_ProcessorLog.Table_Name + " "
-			+ "WHERE "+X_IMP_ProcessorLog.COLUMNNAME_IMP_Processor_ID+"=" + getIMP_Processor_ID() 
-			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("DELETE ").append(X_IMP_ProcessorLog.Table_Name).append(" ")
+			.append("WHERE ").append(X_IMP_ProcessorLog.COLUMNNAME_IMP_Processor_ID).append("=").append(getIMP_Processor_ID()) 
+			.append(" AND (Created+").append(getKeepLogDays()).append(") < SysDate");
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		return no;
 	}
 
 	public String getServerID() {
-		return "ReplicationProcessor" + get_ID();
+		StringBuilder msgreturn = new StringBuilder("ReplicationProcessor").append(get_ID());
+		return msgreturn.toString();
 	}
 	
 	public X_IMP_ProcessorParameter[] getIMP_ProcessorParameters(String trxName) {
 		List<X_IMP_ProcessorParameter> resultList = new ArrayList<X_IMP_ProcessorParameter>();
 		                   
-		StringBuffer sql = new StringBuffer("SELECT * ")
+		StringBuilder sql = new StringBuilder("SELECT * ")
 			.append(" FROM ").append(X_IMP_ProcessorParameter.Table_Name)
 			.append(" WHERE ").append(X_IMP_ProcessorParameter.COLUMNNAME_IMP_Processor_ID).append("=?") // # 1
 			.append(" AND IsActive = ?")  // # 2
@@ -214,5 +215,15 @@ public class MIMPProcessor
 		list.toArray(retValue);
 		return retValue;
 	}	//	getActive
+
+	@Override
+	public String getScheduleType() {
+		return MSchedule.SCHEDULETYPE_Frequency;
+	}
 	
+	@Override
+	public String getCronPattern() {
+	   return null;
+	}
+
 }

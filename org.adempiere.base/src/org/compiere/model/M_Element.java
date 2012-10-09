@@ -186,10 +186,10 @@ public class M_Element extends X_AD_Element
 			if (getColumnName().length() != columnName.length())
 				setColumnName(columnName);
 			
-			String sql = "select count(*) from AD_Element where UPPER(ColumnName)=?";
+			StringBuilder sql = new StringBuilder("select count(*) from AD_Element where UPPER(ColumnName)=?");
 			if (!newRecord)
-				sql += " AND AD_Element_ID<>" + get_ID(); 
-			int no = DB.getSQLValue(null, sql, columnName.toUpperCase());
+				sql.append(" AND AD_Element_ID<>").append(get_ID()); 
+			int no = DB.getSQLValue(null, sql.toString(), columnName.toUpperCase());
 			if (no > 0) {
 				log.saveError("SaveErrorNotUnique", Msg.getElement(getCtx(), COLUMNNAME_ColumnName));
 				return false;
@@ -210,7 +210,7 @@ public class M_Element extends X_AD_Element
 		//	Update Columns, Fields, Parameters, Print Info
 		if (!newRecord)
 		{
-			StringBuffer sql = new StringBuffer();
+			StringBuilder sql = new StringBuilder();
 			int no = 0;
 			
 			if (   is_ValueChanged(M_Element.COLUMNNAME_Name)
@@ -219,7 +219,7 @@ public class M_Element extends X_AD_Element
 				|| is_ValueChanged(M_Element.COLUMNNAME_ColumnName)
 				) {
 				//	Column
-				sql = new StringBuffer("UPDATE AD_Column SET ColumnName=")
+				sql = new StringBuilder("UPDATE AD_Column SET ColumnName=")
 					.append(DB.TO_STRING(getColumnName()))
 					.append(", Name=").append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
@@ -229,7 +229,7 @@ public class M_Element extends X_AD_Element
 				log.fine("afterSave - Columns updated #" + no);
 
 				//	Parameter 
-				sql = new StringBuffer("UPDATE AD_Process_Para SET ColumnName=")
+				sql = new StringBuilder("UPDATE AD_Process_Para SET ColumnName=")
 					.append(DB.TO_STRING(getColumnName()))
 					.append(", Name=").append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
@@ -240,7 +240,7 @@ public class M_Element extends X_AD_Element
 					.append(" AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL");
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
 				
-				sql = new StringBuffer("UPDATE AD_Process_Para SET ColumnName=")
+				sql = new StringBuilder("UPDATE AD_Process_Para SET ColumnName=")
 					.append(DB.TO_STRING(getColumnName()))
 					.append(", Name=").append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
@@ -256,7 +256,7 @@ public class M_Element extends X_AD_Element
 				|| is_ValueChanged(M_Element.COLUMNNAME_Help)
 				) {
 				//	Field
-				sql = new StringBuffer("UPDATE AD_Field SET Name=")
+				sql = new StringBuilder("UPDATE AD_Field SET Name=")
 					.append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
 					.append(", Help=").append(DB.TO_STRING(getHelp()))
@@ -275,7 +275,7 @@ public class M_Element extends X_AD_Element
 				|| is_ValueChanged(M_Element.COLUMNNAME_Name)
 				) {
 				//	Print Info
-				sql = new StringBuffer("UPDATE AD_PrintFormatItem pi SET PrintName=")
+				sql = new StringBuilder("UPDATE AD_PrintFormatItem pi SET PrintName=")
 					.append(DB.TO_STRING(getPrintName()))
 					.append(", Name=").append(DB.TO_STRING(getName()))
 					.append(" WHERE IsCentrallyMaintained='Y'")	
@@ -296,7 +296,7 @@ public class M_Element extends X_AD_Element
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("M_Element[");
+		StringBuilder sb = new StringBuilder ("M_Element[");
 		sb.append (get_ID()).append ("-").append (getColumnName()).append ("]");
 		return sb.toString ();
 	}	//	toString

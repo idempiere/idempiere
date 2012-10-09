@@ -236,8 +236,9 @@ public class InOutGenerateRMA extends SvrProcess
         
         if (shipmentLines.length == 0)
         {
-            log.log(Level.WARNING, "No shipment lines created: M_RMA_ID="
-                    + M_RMA_ID + ", M_InOut_ID=" + shipment.get_ID());
+            StringBuilder msglog = new StringBuilder("No shipment lines created: M_RMA_ID=")
+                    .append(M_RMA_ID).append(", M_InOut_ID=").append(shipment.get_ID());
+        	log.log(Level.WARNING, msglog.toString());
         }
         
         StringBuffer processMsg = new StringBuffer(shipment.getDocumentNo());
@@ -245,7 +246,8 @@ public class InOutGenerateRMA extends SvrProcess
         if (!shipment.processIt(p_docAction))
         {
             processMsg.append(" (NOT Processed)");
-            log.warning("Shipment Processing failed: " + shipment + " - " + shipment.getProcessMsg());
+            StringBuilder msglog = new StringBuilder("Shipment Processing failed: ").append(shipment).append(" - ").append(shipment.getProcessMsg());
+            log.warning(msglog.toString());
             throw new IllegalStateException("Shipment Processing failed: " + shipment + " - " + shipment.getProcessMsg());
         }
         

@@ -16,6 +16,10 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.COUNTRY_US;
+import static org.compiere.model.SystemIDs.SCHEDULE_10_MINUTES;
+import static org.compiere.model.SystemIDs.SCHEDULE_15_MINUTES;
+
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,7 +38,6 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
-import static org.compiere.model.SystemIDs.*;
 
 /**
  * Initial Setup Model
@@ -340,9 +343,11 @@ public final class MSetup
 
 		//	Processors
 		MAcctProcessor ap = new MAcctProcessor(m_client, AD_User_ID);
+		ap.setAD_Schedule_ID(SCHEDULE_10_MINUTES);
 		ap.saveEx();
 		
 		MRequestProcessor rp = new MRequestProcessor (m_client, AD_User_ID);
+		rp.setAD_Schedule_ID(SCHEDULE_15_MINUTES);
 		rp.saveEx();
 		
 		log.info("fini");

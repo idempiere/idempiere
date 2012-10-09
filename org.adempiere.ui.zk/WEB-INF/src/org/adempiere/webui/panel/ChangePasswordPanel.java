@@ -29,6 +29,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.LoginWindow;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -277,7 +278,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	
     	String securityQuestion = null;
     	if (lstSecurityQuestion.getSelectedItem() != null)
-    		securityQuestion = (String) lstSecurityQuestion.getSelectedItem().getValue();
+    		securityQuestion = (String) lstSecurityQuestion.getSelectedItem().getLabel();
     	
     	String answer = txtAnswer.getValue();
     	
@@ -298,6 +299,12 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 
     	if (!oldPassword.equals(m_userPassword))
     		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "OldPasswordNoMatch"));
+    	
+    	if (MSysConfig.getBooleanValue(MSysConfig.CHANGE_PASSWORD_MUST_DIFFER, true))
+    	{
+    		if (oldPassword.equals(newPassword))
+        		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "NewPasswordMustDiffer"));
+    	}
 
     	Trx trx = null;
     	try

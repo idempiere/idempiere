@@ -55,11 +55,11 @@ public class FactAcctSummary extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception {
 		
-		String where = "";
+		StringBuilder where = new StringBuilder();
 		if ( p_Cube_ID > 0)
-			where = "PA_ReportCube_ID = " + p_Cube_ID;
+			where = new StringBuilder("PA_ReportCube_ID = ").append(p_Cube_ID);
 		
-		List<MReportCube> cubes = new Query(getCtx(), MReportCube.Table_Name, where, get_TrxName())
+		List<MReportCube> cubes = new Query(getCtx(), MReportCube.Table_Name, where.toString(), get_TrxName())
 		.setOnlyActiveRecords(true).setClient_ID()
 		.list();
 		

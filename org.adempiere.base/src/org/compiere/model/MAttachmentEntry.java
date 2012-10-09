@@ -144,7 +144,7 @@ public class MAttachmentEntry
 	 */
 	public String toStringX ()
 	{
-		StringBuffer sb = new StringBuffer (m_name);
+		StringBuilder sb = new StringBuilder (m_name);
 		if (m_data != null)
 		{
 			sb.append(" (");
@@ -176,8 +176,8 @@ public class MAttachmentEntry
 	 */
 	public void dump ()
 	{
-		String hdr = "----- " + getName() + " -----";
-		System.out.println (hdr);
+		StringBuilder hdr = new StringBuilder("----- ").append(getName()).append(" -----");
+		System.out.println (hdr.toString());
 		if (m_data == null)
 		{
 			System.out.println ("----- no data -----");
@@ -191,14 +191,15 @@ public class MAttachmentEntry
 		}
 			
 		System.out.println ();
-		System.out.println (hdr);
+		System.out.println (hdr.toString());
 		//	Count nulls at end
 		int ii = m_data.length -1;
 		int nullCount = 0;
 		while (m_data[ii--] == 0)
 			nullCount++;
-		System.out.println("----- Length=" + m_data.length + ", EndNulls=" + nullCount 
-			+ ", RealLength=" + (m_data.length-nullCount));
+		StringBuilder msgout = new StringBuilder("----- Length=").append(m_data.length).append(", EndNulls=").append(nullCount) 
+				.append(", RealLength=").append((m_data.length-nullCount));
+		System.out.println(msgout.toString());
 		/**
 		//	Dump w/o nulls
 		if (nullCount > 0)

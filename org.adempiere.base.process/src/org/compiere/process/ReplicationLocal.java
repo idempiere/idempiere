@@ -251,7 +251,7 @@ public class ReplicationLocal extends SvrProcess
 		data.Test = m_test;
 		data.TableName = TableName;
 		//	Create SQL
-		StringBuffer sql = new StringBuffer("SELECT * FROM ")
+		StringBuilder sql = new StringBuilder("SELECT * FROM ")
 			.append(TableName)
 			.append(" WHERE AD_Client_ID=").append(m_replication.getRemote_Client_ID());
 		if (m_replication.getRemote_Org_ID() != 0)
@@ -289,12 +289,12 @@ public class ReplicationLocal extends SvrProcess
 		//	send it
 		pi = m_serverRemote.process (new Properties (), pi);
 		ProcessInfoLog[] logs = pi.getLogs();
-		String msg = "< ";
+		StringBuilder msg = new StringBuilder("< ");
 		if (logs != null && logs.length > 0)
-			msg += logs[0].getP_Msg();	//	Remote Message
+			msg.append(logs[0].getP_Msg());	//	Remote Message
 		log.info("mergeDataTable - " + pi);
 		//
-		MReplicationLog rLog = new MReplicationLog (getCtx(), m_replicationRun.getAD_Replication_Run_ID(), AD_ReplicationTable_ID, msg, get_TrxName());
+		MReplicationLog rLog = new MReplicationLog (getCtx(), m_replicationRun.getAD_Replication_Run_ID(), AD_ReplicationTable_ID, msg.toString(), get_TrxName());
 		if (pi.isError())
 		{
 			log.severe ("mergeDataTable Error - " + pi);
@@ -429,7 +429,7 @@ public class ReplicationLocal extends SvrProcess
 		data.Test = m_test;
 		data.TableName = TableName;
 		//	Create SQL
-		StringBuffer sql = new StringBuffer ("SELECT * FROM ")
+		StringBuilder sql = new StringBuilder ("SELECT * FROM ")
 			.append(TableName)
 			.append(" WHERE AD_Client_ID=").append(m_replication.getRemote_Client_ID());
 		if (m_replication.getRemote_Org_ID() != 0)
@@ -488,11 +488,11 @@ public class ReplicationLocal extends SvrProcess
 		pi = m_serverRemote.process (new Properties (), pi);
 		log.info("sendUpdatesTable - " + pi);
 		ProcessInfoLog[] logs = pi.getLogs();
-		String msg = "> ";
+		StringBuilder msg = new StringBuilder("> ");
 		if (logs != null && logs.length > 0)
-			msg += logs[0].getP_Msg();	//	Remote Message
+			msg.append(logs[0].getP_Msg());	//	Remote Message
 		//
-		MReplicationLog rLog = new MReplicationLog (getCtx(), m_replicationRun.getAD_Replication_Run_ID(), AD_ReplicationTable_ID, msg, get_TrxName());
+		MReplicationLog rLog = new MReplicationLog (getCtx(), m_replicationRun.getAD_Replication_Run_ID(), AD_ReplicationTable_ID, msg.toString(), get_TrxName());
 		if (pi.isError())
 			m_replicated = false;
 		rLog.setIsReplicated(!pi.isError());

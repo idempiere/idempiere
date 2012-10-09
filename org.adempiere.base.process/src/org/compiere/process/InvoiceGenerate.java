@@ -129,38 +129,38 @@ public class InvoiceGenerate extends SvrProcess
 			+ ", C_Order_ID=" + p_C_Order_ID + ", DocAction=" + p_docAction 
 			+ ", Consolidate=" + p_ConsolidateDocument);
 		//
-		String sql = null;
+		StringBuilder sql = null;
 		if (p_Selection)	//	VInvoiceGen
 		{
-			sql = "SELECT C_Order.* FROM C_Order, T_Selection "
-				+ "WHERE C_Order.DocStatus='CO' AND C_Order.IsSOTrx='Y' "
-				+ "AND C_Order.C_Order_ID = T_Selection.T_Selection_ID "
-				+ "AND T_Selection.AD_PInstance_ID=? "
-				+ "ORDER BY C_Order.M_Warehouse_ID, C_Order.PriorityRule, C_Order.C_BPartner_ID, C_Order.Bill_Location_ID, C_Order.C_Order_ID";
+			sql = new StringBuilder("SELECT C_Order.* FROM C_Order, T_Selection ")
+				.append("WHERE C_Order.DocStatus='CO' AND C_Order.IsSOTrx='Y' ")
+				.append("AND C_Order.C_Order_ID = T_Selection.T_Selection_ID ")
+				.append("AND T_Selection.AD_PInstance_ID=? ")
+				.append("ORDER BY C_Order.M_Warehouse_ID, C_Order.PriorityRule, C_Order.C_BPartner_ID, C_Order.Bill_Location_ID, C_Order.C_Order_ID");
 		}
 		else
 		{
-			sql = "SELECT * FROM C_Order o "
-				+ "WHERE DocStatus IN('CO','CL') AND IsSOTrx='Y'";
+			sql = new StringBuilder("SELECT * FROM C_Order o ")
+				.append("WHERE DocStatus IN('CO','CL') AND IsSOTrx='Y'");
 			if (p_AD_Org_ID != 0)
-				sql += " AND AD_Org_ID=?";
+				sql.append(" AND AD_Org_ID=?");
 			if (p_C_BPartner_ID != 0)
-				sql += " AND C_BPartner_ID=?";
+				sql.append(" AND C_BPartner_ID=?");
 			if (p_C_Order_ID != 0)
-				sql += " AND C_Order_ID=?";
+				sql.append(" AND C_Order_ID=?");
 			//
-			sql += " AND EXISTS (SELECT * FROM C_OrderLine ol "
-					+ "WHERE o.C_Order_ID=ol.C_Order_ID AND ol.QtyOrdered<>ol.QtyInvoiced) "
-				+ "AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType "
-					+ "WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR')) "
-				+ "ORDER BY M_Warehouse_ID, PriorityRule, C_BPartner_ID, Bill_Location_ID, C_Order_ID";
+			sql.append(" AND EXISTS (SELECT * FROM C_OrderLine ol ")
+					.append("WHERE o.C_Order_ID=ol.C_Order_ID AND ol.QtyOrdered<>ol.QtyInvoiced) ")
+				.append("AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
+					.append("WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR')) ")
+				.append("ORDER BY M_Warehouse_ID, PriorityRule, C_BPartner_ID, Bill_Location_ID, C_Order_ID");
 		}
 	//	sql += " FOR UPDATE";
 		
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			int index = 1;
 			if (p_Selection) 
 			{
@@ -178,7 +178,7 @@ public class InvoiceGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		return generate(pstmt);
 	}	//	doIt
@@ -197,7 +197,8 @@ public class InvoiceGenerate extends SvrProcess
 			while (rs.next ())
 			{
 				MOrder order = new MOrder (getCtx(), rs, get_TrxName());
-				statusUpdate(Msg.getMsg(getCtx(), "Processing") + " " + order.getDocumentInfo());
+				StringBuilder msgsup = new StringBuilder(Msg.getMsg(getCtx(), "Processing")).append(" ").append(order.getDocumentInfo());
+				statusUpdate(msgsup.toString());
 				
 				//	New Invoice Location
 				if (!p_ConsolidateDocument 
@@ -337,7 +338,8 @@ public class InvoiceGenerate extends SvrProcess
 			pstmt = null;
 		}
 		completeInvoice();
-		return "@Created@ = " + m_created;
+		StringBuilder msgreturn = new StringBuilder("@Created@ = ").append(m_created);
+		return msgreturn.toString();
 	}	//	generate
 	
 	
@@ -400,14 +402,14 @@ public class InvoiceGenerate extends SvrProcess
 				AD_Language = Language.getBaseAD_Language();
 			java.text.SimpleDateFormat format = DisplayType.getDateFormat 
 				(DisplayType.Date, Language.getLanguage(AD_Language));
-			String reference = dt.getPrintName(m_bp.getAD_Language())
-				+ ": " + ship.getDocumentNo() 
-				+ " - " + format.format(ship.getMovementDate());
+			StringBuilder reference = new StringBuilder(dt.getPrintName(m_bp.getAD_Language()))
+				.append(": ").append(ship.getDocumentNo()) 
+				.append(" - ").append(format.format(ship.getMovementDate()));
 			m_ship = ship;
 			//
 			MInvoiceLine line = new MInvoiceLine (m_invoice);
 			line.setIsDescription(true);
-			line.setDescription(reference);
+			line.setDescription(reference.toString());
 			line.setLine(m_line + sLine.getLine() - 2);
 			if (!line.save())
 				throw new IllegalStateException("Could not create Invoice Comment Line (sh)");
@@ -497,7 +499,8 @@ public class InvoiceGenerate extends SvrProcess
 			}
 			m_invoice.saveEx();
 
-			addLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, m_invoice.getDocumentNo(),m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID());
+			String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
+			addLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
 			m_created++;
 		}
 		m_invoice = null;

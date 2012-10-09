@@ -88,12 +88,12 @@ public class MClientShare extends X_AD_ClientShare
 				{
 					int Client_ID = rs.getInt(1);
 					int table_ID = rs.getInt(2);
-					String key = Client_ID + "_" + table_ID;
+					StringBuilder key = new StringBuilder().append(Client_ID).append("_").append(table_ID);
 					String ShareType = rs.getString(3);
 					if (ShareType.equals(SHARETYPE_ClientAllShared))
-						s_shares.put(key, Boolean.TRUE);
+						s_shares.put(key.toString(), Boolean.TRUE);
 					else if (ShareType.equals(SHARETYPE_OrgNotShared))
-						s_shares.put(key, Boolean.FALSE);
+						s_shares.put(key.toString(), Boolean.FALSE);
 				}
 				rs.close ();
 				pstmt.close ();
@@ -116,7 +116,7 @@ public class MClientShare extends X_AD_ClientShare
 			if (s_shares.isEmpty())		//	put in something
 				s_shares.put("0_0", Boolean.TRUE);
 		}	//	load
-		String key = AD_Client_ID + "_" + AD_Table_ID;
+		StringBuilder key = new StringBuilder().append(AD_Client_ID).append("_").append(AD_Table_ID);
 		return s_shares.get(key);
 	}	//	load
 	
@@ -211,26 +211,26 @@ public class MClientShare extends X_AD_ClientShare
 	 */
 	public String setDataToLevel()
 	{
-		String info = "-";
+		StringBuilder info = new StringBuilder("-");
 		if (isClientLevelOnly())
 		{
-			StringBuffer sql = new StringBuffer("UPDATE ")
+			StringBuilder sql = new StringBuilder("UPDATE ")
 				.append(getTableName())
 				.append(" SET AD_Org_ID=0 WHERE AD_Org_ID<>0 AND AD_Client_ID=?");
 			int no = DB.executeUpdate(sql.toString(), getAD_Client_ID(), get_TrxName());
-			info = getTableName() + " set to Shared #" + no;
-			log.info(info);
+			info = new StringBuilder(getTableName()).append(" set to Shared #").append(no);
+			log.info(info.toString());
 		}
 		else if (isOrgLevelOnly())
 		{
-			StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM ")
+			StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ")
 				.append(getTableName())
 				.append(" WHERE AD_Org_ID=0 AND AD_Client_ID=?");
 			int no = DB.getSQLValue(get_TrxName(), sql.toString(), getAD_Client_ID());
-			info = getTableName() + " Shared records #" + no;
-			log.info(info);
+			info = new StringBuilder(getTableName()).append(" Shared records #").append(no);
+			log.info(info.toString());
 		}
-		return info;
+		return info.toString();
 	}	//	setDataToLevel
 
 	/**
@@ -239,7 +239,7 @@ public class MClientShare extends X_AD_ClientShare
 	 */
 	public String listChildRecords()
 	{
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		String sql = "SELECT AD_Table_ID, TableName "
 			+ "FROM AD_Table t "
 			+ "WHERE AccessLevel='3' AND IsView='N'"

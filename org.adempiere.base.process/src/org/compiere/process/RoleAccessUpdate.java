@@ -86,20 +86,20 @@ public class RoleAccessUpdate extends SvrProcess
 		else
 		{
 			List<Object> params = new ArrayList<Object>();
-			String whereClause = "1=1";
+			StringBuilder whereClause = new StringBuilder("1=1");
 			if (p_AD_Client_ID > 0)
 			{
-				whereClause += " AND AD_Client_ID=? ";
+				whereClause.append(" AND AD_Client_ID=? ");
 				params.add(p_AD_Client_ID);
 			}
 			if (p_AD_Role_ID == 0) // System Role
 			{
-				whereClause += " AND AD_Role_ID=?";
+				whereClause.append(" AND AD_Role_ID=?");
 				params.add(p_AD_Role_ID);
 			}
 			//sql += "ORDER BY AD_Client_ID, Name";
 			
-			List<MRole> roles = new Query(getCtx(), MRole.Table_Name, whereClause, get_TrxName())
+			List<MRole> roles = new Query(getCtx(), MRole.Table_Name, whereClause.toString(), get_TrxName())
 			.setOnlyActiveRecords(true)
 			.setParameters(params)
 			.setOrderBy("AD_Client_ID, Name")
@@ -120,8 +120,9 @@ public class RoleAccessUpdate extends SvrProcess
 	 */
 	private void updateRole (MRole role)
 	{
-		addLog(0, null, null, role.getName() + ": " 
-			+ role.updateAccessRecords(p_IsReset));
+		StringBuilder msglog = new StringBuilder(role.getName()).append(": ") 
+				.append(role.updateAccessRecords(p_IsReset));
+		addLog(0, null, null, msglog.toString());
 	}	//	updateRole
 	
 	//add main method, preparing for nightly build
@@ -138,7 +139,8 @@ public class RoleAccessUpdate extends SvrProcess
 		RoleAccessUpdate rau = new RoleAccessUpdate();
 		rau.startProcess(Env.getCtx(), pi, null);
 		
-		System.out.println("Process=" + pi.getTitle() + " Error="+pi.isError() + " Summary=" + pi.getSummary());
+		StringBuilder msgout= new StringBuilder("Process=").append(pi.getTitle()).append(" Error=").append(pi.isError()).append(" Summary=").append(pi.getSummary());
+		System.out.println(msgout.toString());
 	}
 	
 }	//	RoleAccessUpdate

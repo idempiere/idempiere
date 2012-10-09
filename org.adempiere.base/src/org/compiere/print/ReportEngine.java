@@ -703,12 +703,12 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			{
 				XhtmlDocument doc = new XhtmlDocument();
 				doc.appendBody(table);
-				if (extension.getStyleURL() != null)
+				if (extension != null && extension.getStyleURL() != null)
 				{
 					link l = new link(extension.getStyleURL(), "stylesheet", "text/css");
 					doc.appendHead(l);					
 				}
-				if (extension.getScriptURL() != null)
+				if (extension != null && extension.getScriptURL() != null)
 				{
 					script jslink = new script();
 					jslink.setLanguage("javascript");

@@ -72,10 +72,10 @@ public class MIndex extends X_K_Index
 	 */
 	public static int cleanUp (String trxName, int AD_Client_ID, int AD_Table_ID, int Record_ID)
 	{
-		StringBuffer sb = new StringBuffer ("DELETE FROM K_Index "
-			+ "WHERE AD_Client_ID=" + AD_Client_ID + " AND "
-			+ "AD_Table_ID=" + AD_Table_ID + " AND "
-			+ "Record_ID=" + Record_ID);
+		StringBuilder sb = new StringBuilder ("DELETE FROM K_Index ")
+			.append("WHERE AD_Client_ID=").append(AD_Client_ID).append( " AND ")
+			.append("AD_Table_ID=").append(AD_Table_ID).append( " AND ")
+			.append("Record_ID=").append(Record_ID);
 		int no = DB.executeUpdate(sb.toString(), trxName);
 		return no;
 	}
@@ -214,20 +214,20 @@ public class MIndex extends X_K_Index
 	public static void reIndex(boolean runCleanUp, String[] toBeIndexed, Properties ctx, 
 		int AD_Client_ID, int AD_Table_ID, int Record_ID, int CM_WebProject_ID, Timestamp lastUpdated) 
 	{
-		String trxName = "ReIndex_" + AD_Table_ID + "_" + Record_ID;
+		StringBuilder trxName = new StringBuilder("ReIndex_").append(AD_Table_ID).append("_").append(Record_ID);
 		try {
 			if (!runCleanUp)
 			{
-				MIndex.cleanUp(trxName, AD_Client_ID, AD_Table_ID, Record_ID);
+				MIndex.cleanUp(trxName.toString(), AD_Client_ID, AD_Table_ID, Record_ID);
 			}
 			for (int i=0;i<toBeIndexed.length;i++) {
-				MIndex.runIndex(toBeIndexed[i], ctx, trxName, AD_Table_ID, Record_ID, 
+				MIndex.runIndex(toBeIndexed[i], ctx, trxName.toString(), AD_Table_ID, Record_ID, 
 					CM_WebProject_ID, lastUpdated);
 			}
-			DB.commit (true, trxName);
+			DB.commit (true, trxName.toString());
 		} catch (SQLException sqlE) {
 			try {
-				DB.rollback (true, trxName);
+				DB.rollback (true, trxName.toString());
 			} catch (SQLException sqlE2) {
 			}
 		}
@@ -260,7 +260,7 @@ public class MIndex extends X_K_Index
 			return null;
 		//
 		keyword = keyword.toUpperCase();	//	default locale
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		char[] chars = keyword.toCharArray();
 		for (int i = 0; i < chars.length; i++)
 		{

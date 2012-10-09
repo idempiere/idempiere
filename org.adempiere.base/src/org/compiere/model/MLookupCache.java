@@ -69,7 +69,7 @@ public class MLookupCache
 		if (info == null)
 			return String.valueOf(System.currentTimeMillis());
 		//
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(info.WindowNo).append(":")
 		//	.append(info.Column_ID)
 			.append(info.KeyColumn)
@@ -125,7 +125,7 @@ public class MLookupCache
 	 */
 	public static void cacheReset (int WindowNo)
 	{
-		String key = String.valueOf(WindowNo) + ":";
+		StringBuilder key = new StringBuilder(String.valueOf(WindowNo)).append(":");
 		int startNo = s_loadedLookups.size();
 		//  find keys of Lookups to delete
 		ArrayList<String> toDelete = new ArrayList<String>();
@@ -133,7 +133,7 @@ public class MLookupCache
 		while (iterator.hasNext())
 		{
 			String info = (String)iterator.next();
-			if (info != null && info.startsWith(key))
+			if (info != null && info.startsWith(key.toString()))
 				toDelete.add(info);
 		}
 

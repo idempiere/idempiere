@@ -68,7 +68,7 @@ public class MColumnAccess extends X_AD_Column_Access
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MColumnAccess[");
+		StringBuilder sb = new StringBuilder("MColumnAccess[");
 		sb.append("AD_Role_ID=").append(getAD_Role_ID())
 			.append(",AD_Table_ID=").append(getAD_Table_ID())
 			.append(",AD_Column_ID=").append(getAD_Column_ID())
@@ -86,7 +86,7 @@ public class MColumnAccess extends X_AD_Column_Access
 	{
 		String in = Msg.getMsg(ctx, "Include");
 		String ex = Msg.getMsg(ctx, "Exclude");
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Msg.translate(ctx, "AD_Table_ID"))
 			.append("=").append(getTableName(ctx)).append(", ")
 			.append(Msg.translate(ctx, "AD_Column_ID"))
@@ -157,8 +157,9 @@ public class MColumnAccess extends X_AD_Column_Access
 				pstmt = null;
 			}
 			//	Get Clear Text
-			String realName = Msg.translate(ctx, m_tableName + "_ID");
-			if (!realName.equals(m_tableName + "_ID"))
+			StringBuilder msgrn = new StringBuilder(m_tableName).append("_ID");
+			String realName = Msg.translate(ctx, msgrn.toString());
+			if (!realName.equals(msgrn.toString()))
 				m_tableName = realName;
 			m_columnName = Msg.translate(ctx, m_columnName);
 		}		

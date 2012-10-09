@@ -31,7 +31,7 @@ public interface I_C_AcctProcessor
     public static final String Table_Name = "C_AcctProcessor";
 
     /** AD_Table_ID=695 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 695;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,6 +62,17 @@ public interface I_C_AcctProcessor
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Schedule_ID */
+    public static final String COLUMNNAME_AD_Schedule_ID = "AD_Schedule_ID";
+
+	/** Set AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID);
+
+	/** Get AD_Schedule_ID	  */
+	public int getAD_Schedule_ID();
+
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException;
+
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
 
@@ -75,7 +86,7 @@ public interface I_C_AcctProcessor
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name C_AcctProcessor_ID */
     public static final String COLUMNNAME_C_AcctProcessor_ID = "C_AcctProcessor_ID";
@@ -90,6 +101,15 @@ public interface I_C_AcctProcessor
 	  */
 	public int getC_AcctProcessor_ID();
 
+    /** Column name C_AcctProcessor_UU */
+    public static final String COLUMNNAME_C_AcctProcessor_UU = "C_AcctProcessor_UU";
+
+	/** Set C_AcctProcessor_UU	  */
+	public void setC_AcctProcessor_UU (String C_AcctProcessor_UU);
+
+	/** Get C_AcctProcessor_UU	  */
+	public String getC_AcctProcessor_UU();
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 
@@ -103,7 +123,7 @@ public interface I_C_AcctProcessor
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -159,32 +179,6 @@ public interface I_C_AcctProcessor
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name Frequency */
-    public static final String COLUMNNAME_Frequency = "Frequency";
-
-	/** Set Frequency.
-	  * Frequency of events
-	  */
-	public void setFrequency (int Frequency);
-
-	/** Get Frequency.
-	  * Frequency of events
-	  */
-	public int getFrequency();
-
-    /** Column name FrequencyType */
-    public static final String COLUMNNAME_FrequencyType = "FrequencyType";
-
-	/** Set Frequency Type.
-	  * Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType);
-
-	/** Get Frequency Type.
-	  * Frequency of event
-	  */
-	public String getFrequencyType();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -247,7 +241,7 @@ public interface I_C_AcctProcessor
 	  */
 	public int getSupervisor_ID();
 
-	public I_AD_User getSupervisor() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

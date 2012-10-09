@@ -131,7 +131,7 @@ public class MAttributeInstance extends X_M_AttributeInstance
 		}
 		//	Display number w/o decimal 0
 		char[] chars = ValueNumber.toString().toCharArray();
-		StringBuffer display = new StringBuffer();
+		StringBuilder display = new StringBuilder();
 		boolean add = false;
 		for (int i = chars.length-1; i >= 0; i--)
 		{

@@ -31,7 +31,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -51,18 +50,17 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 
 /**
  * 	Fixed length file import
@@ -368,18 +366,18 @@ public class WFileImport extends ADForm implements EventListener
 						
 			//	not safe see p108 Network pgm
 			String s = null;
-			String concat = "";
+			StringBuilder concat = new StringBuilder();
 			
 			while ((s = in.readLine()) != null)
 			{
 				m_data.add(s);
 				
-				concat += s;
-				concat += "\n";
+				concat.append(s);
+				concat.append("\n");
 				
 				if (m_data.size() < MAX_LOADED_LINES)
 				{
-					rawData.setValue(concat);
+					rawData.setValue(concat.toString());
 				}
 			}
 			in.close();
@@ -400,12 +398,13 @@ public class WFileImport extends ADForm implements EventListener
 		if (m_data.size() > 0)
 			length = m_data.get(index).toString().length();
 		
-		info.setValue(Msg.getMsg(Env.getCtx(), "Records") + "=" + m_data.size()
-			+ ", " + Msg.getMsg(Env.getCtx(), "Length") + "=" + length + "   ");
+		StringBuilder msginfo = new StringBuilder(Msg.getMsg(Env.getCtx(), "Records")).append("=").append(m_data.size()).append(", ")
+				.append(Msg.getMsg(Env.getCtx(), "Length")).append("=").append(length).append("   ");
+		info.setValue(msginfo.toString());
 		
 		//setCursor (Cursor.getDefaultCursor());
-		
-		log.config("Records=" + m_data.size() + ", Length=" + length);
+		StringBuilder msglog = new StringBuilder("Records=").append(m_data.size()).append(", Length=").append(length);
+		log.config(msglog.toString());
 	}	//	cmd_loadFile
 
 	/**

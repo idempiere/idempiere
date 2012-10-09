@@ -157,9 +157,12 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 			public void run(Treeitem treeItem) {
 				if (treeItem.getAttribute("menu.type") != null)
 				{
+					String menuType = (String) treeItem.getAttribute("menu.type");
+					if (menuType.equals("form"))
+						menuType = "window"; // treat forms as windows on filtering the menu
 					if (chk.isChecked())
 					{
-						if (chk.getId().equals(treeItem.getAttribute("menu.type")))
+						if (chk.getId().equals(menuType))
 						{
 							boolean open = false;
 							Treeitem parent = treeItem.getParentItem();
@@ -172,7 +175,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 					}
 					else
 					{
-						if (chk.getId().equals(treeItem.getAttribute("menu.type")))
+						if (chk.getId().equals(menuType))
 						{
 							boolean open = false;
 							Treeitem parent = treeItem.getParentItem();

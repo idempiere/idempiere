@@ -31,7 +31,7 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120920L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor (Properties ctx, int R_RequestProcessor_ID, String trxName)
@@ -39,9 +39,6 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
       super (ctx, R_RequestProcessor_ID, trxName);
       /** if (R_RequestProcessor_ID == 0)
         {
-			setFrequency (0);
-// 1
-			setFrequencyType (null);
 			setInactivityAlertDays (0);
 // 0
 			setKeepLogDays (0);
@@ -85,6 +82,31 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
+			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+
+	/** Set AD_Schedule_ID.
+		@param AD_Schedule_ID AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID)
+	{
+		if (AD_Schedule_ID < 1) 
+			set_Value (COLUMNNAME_AD_Schedule_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
+	}
+
+	/** Get AD_Schedule_ID.
+		@return AD_Schedule_ID	  */
+	public int getAD_Schedule_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Date last run.
 		@param DateLastRun 
@@ -135,52 +157,6 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
-	}
-
-	/** Set Frequency.
-		@param Frequency 
-		Frequency of events
-	  */
-	public void setFrequency (int Frequency)
-	{
-		set_Value (COLUMNNAME_Frequency, Integer.valueOf(Frequency));
-	}
-
-	/** Get Frequency.
-		@return Frequency of events
-	  */
-	public int getFrequency () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Frequency);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** FrequencyType AD_Reference_ID=221 */
-	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
-	/** Day = D */
-	public static final String FREQUENCYTYPE_Day = "D";
-	/** Set Frequency Type.
-		@param FrequencyType 
-		Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType)
-	{
-
-		set_Value (COLUMNNAME_FrequencyType, FrequencyType);
-	}
-
-	/** Get Frequency Type.
-		@return Frequency of event
-	  */
-	public String getFrequencyType () 
-	{
-		return (String)get_Value(COLUMNNAME_FrequencyType);
 	}
 
 	/** Set Inactivity Alert Days.
@@ -352,9 +328,23 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
 		return ii.intValue();
 	}
 
-	public I_R_RequestType getR_RequestType() throws RuntimeException
+	/** Set R_RequestProcessor_UU.
+		@param R_RequestProcessor_UU R_RequestProcessor_UU	  */
+	public void setR_RequestProcessor_UU (String R_RequestProcessor_UU)
+	{
+		set_Value (COLUMNNAME_R_RequestProcessor_UU, R_RequestProcessor_UU);
+	}
+
+	/** Get R_RequestProcessor_UU.
+		@return R_RequestProcessor_UU	  */
+	public String getR_RequestProcessor_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_R_RequestProcessor_UU);
+	}
+
+	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException
     {
-		return (I_R_RequestType)MTable.get(getCtx(), I_R_RequestType.Table_Name)
+		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_Name)
 			.getPO(getR_RequestType_ID(), get_TrxName());	}
 
 	/** Set Request Type.
@@ -380,9 +370,9 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
 		return ii.intValue();
 	}
 
-	public I_AD_User getSupervisor() throws RuntimeException
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSupervisor_ID(), get_TrxName());	}
 
 	/** Set Supervisor.

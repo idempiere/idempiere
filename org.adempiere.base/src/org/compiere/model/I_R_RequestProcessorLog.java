@@ -156,7 +156,7 @@ public interface I_R_RequestProcessorLog
 	  */
 	public int getR_RequestProcessor_ID();
 
-	public I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException;
+	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException;
 
     /** Column name R_RequestProcessorLog_ID */
     public static final String COLUMNNAME_R_RequestProcessorLog_ID = "R_RequestProcessorLog_ID";

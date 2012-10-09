@@ -76,14 +76,10 @@ public final class DocTax
 
 	/** Tax Due Acct        */
 	public static final int    ACCTTYPE_TaxDue = 0;
-	/** Tax Liability       */
-	public static final int    ACCTTYPE_TaxLiability = 1;
 	/** Tax Credit          */
-	public static final int    ACCTTYPE_TaxCredit = 2;
-	/** Tax Receivables     */
-	public static final int    ACCTTYPE_TaxReceivables = 3;
+	public static final int    ACCTTYPE_TaxCredit = 1;
 	/** Tax Expense         */
-	public static final int    ACCTTYPE_TaxExpense = 4;
+	public static final int    ACCTTYPE_TaxExpense = 2;
 
 	/**
 	 *	Get Account
@@ -93,11 +89,11 @@ public final class DocTax
 	 */
 	public MAccount getAccount (int AcctType, MAcctSchema as)
 	{
-		if (AcctType < 0 || AcctType > 4)
+		if (AcctType < ACCTTYPE_TaxDue || AcctType > ACCTTYPE_TaxExpense)
 			return null;
 		//
-		String sql = "SELECT T_Due_Acct, T_Liability_Acct, T_Credit_Acct, T_Receivables_Acct, T_Expense_Acct "
-			+ "FROM C_Tax_Acct WHERE C_Tax_ID=? AND C_AcctSchema_ID=?";
+		String sql = "SELECT T_Due_Acct, T_Credit_Acct, T_Expense_Acct "
+				+ "FROM C_Tax_Acct WHERE C_Tax_ID=? AND C_AcctSchema_ID=?";
 		int validCombination_ID = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -108,7 +104,7 @@ public final class DocTax
 			pstmt.setInt(2, as.getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
-				validCombination_ID = rs.getInt(AcctType+1);    //  1..5
+				validCombination_ID = rs.getInt(AcctType+1);    //  1..3
 		}
 		catch (SQLException e)
 		{

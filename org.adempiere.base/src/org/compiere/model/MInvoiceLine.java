@@ -308,8 +308,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 
 	/**
@@ -702,7 +704,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInvoiceLine[")
+		StringBuilder sb = new StringBuilder ("MInvoiceLine[")
 			.append(get_ID()).append(",").append(getLine())
 			.append(",QtyInvoiced=").append(getQtyInvoiced())
 			.append(",LineNetAmt=").append(getLineNetAmt())
@@ -1005,13 +1007,14 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		MLandedCost[] lcs = MLandedCost.getLandedCosts(this);
 		if (lcs.length == 0)
 			return "";
-		String sql = "DELETE C_LandedCostAllocation WHERE C_InvoiceLine_ID=" + getC_InvoiceLine_ID();
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("DELETE C_LandedCostAllocation WHERE C_InvoiceLine_ID=").append(getC_InvoiceLine_ID());
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.info("Deleted #" + no);
 
 		int inserted = 0;
 		//	*** Single Criteria ***
+		StringBuilder msgreturn;
 		if (lcs.length == 1)
 		{
 			MLandedCost lc = lcs[0];
@@ -1038,8 +1041,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					MInOutLine iol = (MInOutLine)list.get(i);
 					total = total.add(iol.getBase(lc.getLandedCostDistribution()));
 				}
-				if (total.signum() == 0)
-					return "Total of Base values is 0 - " + lc.getLandedCostDistribution();
+				if (total.signum() == 0){
+					msgreturn = new StringBuilder("Total of Base values is 0 - ").append(lc.getLandedCostDistribution());
+					return msgreturn.toString();
+				}	
 				//	Create Allocations
 				for (int i = 0; i < list.size(); i++)
 				{
@@ -1059,8 +1064,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 						result /= total.doubleValue();
 						lca.setAmt(result, getPrecision());
 					}
-					if (!lca.save())
-						return "Cannot save line Allocation = " + lca;
+					if (!lca.save()){
+						msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
+						return msgreturn.toString();
+					}	
 					inserted++;
 				}
 				log.info("Inserted " + inserted);
@@ -1071,8 +1078,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			else if (lc.getM_InOutLine_ID() != 0)
 			{
 				MInOutLine iol = new MInOutLine (getCtx(), lc.getM_InOutLine_ID(), get_TrxName());
-				if (iol.isDescription() || iol.getM_Product_ID() == 0)
-					return "Invalid Receipt Line - " + iol;
+				if (iol.isDescription() || iol.getM_Product_ID() == 0){
+					msgreturn = new StringBuilder("Invalid Receipt Line - ").append(iol);
+					return msgreturn.toString();
+				}	
 				MLandedCostAllocation lca = new MLandedCostAllocation (this, lc.getM_CostElement_ID());
 				lca.setM_Product_ID(iol.getM_Product_ID());
 				lca.setM_AttributeSetInstance_ID(iol.getM_AttributeSetInstance_ID());
@@ -1085,7 +1094,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				// end MZ
 				if (lca.save())
 					return "";
-				return "Cannot save single line Allocation = " + lc;
+				msgreturn = new StringBuilder("Cannot save single line Allocation = ").append(lc);
+				return msgreturn.toString();
 			}
 			//	Single Product
 			else if (lc.getM_Product_ID() != 0)
@@ -1095,10 +1105,13 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				lca.setAmt(getLineNetAmt());
 				if (lca.save())
 					return "";
-				return "Cannot save Product Allocation = " + lc;
+				msgreturn = new StringBuilder("Cannot save Product Allocation = ").append(lc);
+				return msgreturn.toString();
 			}
-			else
-				return "No Reference for " + lc;
+			else{
+				msgreturn = new StringBuilder("No Reference for ").append(lc);
+				return msgreturn.toString();
+			}	
 		}
 
 		//	*** Multiple Criteria ***
@@ -1149,8 +1162,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			MInOutLine iol = (MInOutLine)list.get(i);
 			total = total.add(iol.getBase(LandedCostDistribution));
 		}
-		if (total.signum() == 0)
-			return "Total of Base values is 0 - " + LandedCostDistribution;
+		if (total.signum() == 0){
+			msgreturn = new StringBuilder("Total of Base values is 0 - ").append(LandedCostDistribution);
+			return msgreturn.toString();
+		}	
 		//	Create Allocations
 		for (int i = 0; i < list.size(); i++)
 		{
@@ -1170,8 +1185,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				result /= total.doubleValue();
 				lca.setAmt(result, getPrecision());
 			}
-			if (!lca.save())
-				return "Cannot save line Allocation = " + lca;
+			if (!lca.save()){
+				msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
+				return msgreturn.toString();
+			}	
 			inserted++;
 		}
 

@@ -893,17 +893,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             GridField field = m_findFields[c];
             
             String columnName = field.getColumnName();
-            String header = field.getHeader();
+            StringBuilder header = new StringBuilder(field.getHeader());
             if (header == null || header.length() == 0)
             {
-                header = Msg.translate(Env.getCtx(), columnName);
+                header = new StringBuilder(Msg.translate(Env.getCtx(), columnName));
 
                 if (header == null || header.length() == 0)
                     continue;
             }
             if (field.isKey())
-                header += (" (ID)");
-            ValueNamePair pp = new ValueNamePair(columnName, header);
+                header.append((" (ID)"));
+            ValueNamePair pp = new ValueNamePair(columnName, header.toString());
             items.add(pp);
         }
         ValueNamePair[] cols = new ValueNamePair[items.size()];
@@ -1249,7 +1249,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				}
 				catch (Exception e)
 				{
-					log.log(Level.SEVERE, in + "(" + in.getClass() + ")" + e);
+					StringBuilder msglog = new StringBuilder(in.toString()).append("(").append(in.getClass()).append(")").append(e);
+					log.log(Level.SEVERE, msglog.toString());
 					time = DisplayType.getDateFormat(dt).parse(in).getTime();
 				}
 
@@ -1291,7 +1292,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		//
 		m_query = new MQuery(m_tableName);
 		m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, m_whereExtended, false));
-		StringBuffer code = new StringBuffer();
+		StringBuilder code = new StringBuilder();
 		
 		int openBrackets = 0;
 
@@ -1676,7 +1677,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             if (value != null && value.toString().length() > 0)
             {
                 String ColumnName = wed.getColumnName();
-                log.fine(ColumnName + "=" + value);
+                StringBuilder msglog = new StringBuilder(ColumnName).append("=").append(value);
+                log.fine(msglog.toString());
 
                 // globalqss - Carlos Ruiz - 20060711
                 // fix a bug with virtualColumn + isSelectionColumn not yielding results
@@ -1687,25 +1689,25 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 }
                 
                 boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
-                String ColumnSQL = field.getColumnSQL(false);
+                StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
                 //
                 // Be more permissive for String columns
                 if (isSearchLike(field))
                 {
-                    String valueStr = value.toString().toUpperCase();
-                    if (!valueStr.endsWith("%"))
-                        valueStr += "%";
+                    StringBuilder valueStr = new StringBuilder(value.toString().toUpperCase());
+                    if (!valueStr.toString().endsWith("%"))
+                        valueStr.append("%");
                     //
-                    ColumnSQL = "UPPER("+ColumnSQL+")";
-                    value = valueStr;
+                    ColumnSQL = new StringBuilder("UPPER(").append(ColumnSQL).append(")");
+                    value = valueStr.toString();
                 }
                 //
                 if (value.toString().indexOf('%') != -1)
-                    m_query.addRestriction(ColumnSQL, MQuery.LIKE, value, ColumnName, wed.getDisplay());
+                    m_query.addRestriction(ColumnSQL.toString(), MQuery.LIKE, value, ColumnName, wed.getDisplay());
                 else if (isProductCategoryField && value instanceof Integer)
                     m_query.addRestriction(getSubCategoryWhereClause(((Integer) value).intValue()));
                 else
-                    m_query.addRestriction(ColumnSQL, MQuery.EQUAL, value, ColumnName, wed.getDisplay());
+                    m_query.addRestriction(ColumnSQL.toString(), MQuery.EQUAL, value, ColumnName, wed.getDisplay());
                 
                 /*
                 if (value.toString().indexOf('%') != -1)
@@ -1761,7 +1763,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
     	if (null!=selectedHistoryItem && selectedHistoryItem.toString().length() > 0 && getHistoryDays(selectedHistoryValue) > 0)
     	{
-    		StringBuffer where = new StringBuffer();
+    		StringBuilder where = new StringBuilder();
     		where.append("Created >= ");
     		where.append("SysDate-").append(getHistoryDays(selectedHistoryValue));
     		m_query.addRestriction(where.toString());
@@ -1823,7 +1825,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private int getNoOfRecords (MQuery query, boolean alertZeroRecords)
     {
         log.config("" + query);
-        StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM ");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
         sql.append(m_tableName);
         boolean hasWhere = false;
         if (m_whereExtended != null && m_whereExtended.length() > 0)
@@ -1903,7 +1905,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private String getSubCategoryWhereClause(int productCategoryId) {
         //if a node with this id is found later in the search we have a loop in the tree
         int subTreeRootParentId = 0;
-        String retString = " M_Product_Category_ID IN (";
+        StringBuilder retString = new StringBuilder(" M_Product_Category_ID IN (");
         String sql = " SELECT M_Product_Category_ID, M_Product_Category_Parent_ID FROM M_Product_Category";
         final Vector<SimpleTreeNode> categories = new Vector<SimpleTreeNode>(100);
         try {
@@ -1915,18 +1917,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 }
                 categories.add(new SimpleTreeNode(rs.getInt(1), rs.getInt(2)));
             }
-            retString += getSubCategoriesString(productCategoryId, categories, subTreeRootParentId);
-            retString += ") ";
+            retString.append(getSubCategoriesString(productCategoryId, categories, subTreeRootParentId))
+            		 .append(") ");
             rs.close();
             stmt.close();
         } catch (SQLException e) {
             log.log(Level.SEVERE, sql, e);
-            retString = "";
+            retString = new StringBuilder();
         } catch (AdempiereSystemError e) {
             log.log(Level.SEVERE, sql, e);
-            retString = "";
+            retString = new StringBuilder();
         }
-        return retString;
+        return retString.toString();
 
     }   //  getSubCategoryWhereClause
 
@@ -1939,7 +1941,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @throws AdempiereSystemError if a loop is detected
     **/
     private String getSubCategoriesString(int productCategoryId, Vector<SimpleTreeNode> categories, int loopIndicatorId) throws AdempiereSystemError {
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         final Iterator<SimpleTreeNode> iter = categories.iterator();
         while (iter.hasNext()) {
             SimpleTreeNode node = (SimpleTreeNode) iter.next();
@@ -1947,11 +1949,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 if (node.getNodeId() == loopIndicatorId) {
                     throw new AdempiereSystemError("The product category tree contains a loop on categoryId: " + loopIndicatorId);
                 }
-                ret = ret + getSubCategoriesString(node.getNodeId(), categories, loopIndicatorId) + ",";
+                ret.append(getSubCategoriesString(node.getNodeId(), categories, loopIndicatorId)).append(",");
             }
         }
-        log.fine(ret);
-        return ret + productCategoryId;
+        log.fine(ret.toString());
+        return ret.toString() + productCategoryId;
 
     }   //  getSubCategoriesString
 
@@ -2022,7 +2024,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 }
                 catch (Exception e)
                 {
-                    log.log(Level.SEVERE, in + "(" + in.getClass() + ")" + e);
+                    StringBuilder msglog = new StringBuilder(in.toString()).append("(").append(in.getClass()).append(")").append(e);
+                	log.log(Level.SEVERE, msglog.toString());
                     time = DisplayType.getDateFormat(dt).parse(in.toString()).getTime();
                 }
                 return new Timestamp(time);
@@ -2037,7 +2040,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             String error = ex.getLocalizedMessage();
             if (error == null || error.length() == 0)
                 error = ex.toString();
-            StringBuffer errMsg = new StringBuffer();
+            StringBuilder errMsg = new StringBuilder();
             errMsg.append(field.getColumnName()).append(" = ").append(in).append(" - ").append(error);
             //
             FDialog.error(0, this, "ValidationError", errMsg.toString());

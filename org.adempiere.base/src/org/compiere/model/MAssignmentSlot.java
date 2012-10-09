@@ -438,7 +438,7 @@ public class MAssignmentSlot implements Comparator
 			return getInfo();
 
 		//	DISPLAY_ALL
-		StringBuffer sb = new StringBuffer("MAssignmentSlot[");
+		StringBuilder sb = new StringBuilder("MAssignmentSlot[");
 		sb.append(m_startTime).append("-").append(m_endTime)
 			.append("-Status=").append(m_status).append(",Name=")
 			.append(m_name).append(",").append(m_description).append("]");
@@ -460,7 +460,7 @@ public class MAssignmentSlot implements Comparator
 	 */
 	public String getInfoTimeFromTo()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(m_language.getTimeFormat().format(m_startTime))
 			.append(" - ")
 			.append(m_language.getTimeFormat().format(m_endTime));
@@ -473,7 +473,7 @@ public class MAssignmentSlot implements Comparator
 	 */
 	public String getInfoDateTimeFromTo()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(m_language.getDateTimeFormat().format(m_startTime))
 			.append(" - ");
 		if (TimeUtil.isSameDay(m_startTime, m_endTime))
@@ -489,7 +489,7 @@ public class MAssignmentSlot implements Comparator
 	 */
 	public String getInfoNameDescription()
 	{
-		StringBuffer sb = new StringBuffer(m_name);
+		StringBuilder sb = new StringBuilder(m_name);
 		if (m_description.length() > 0)
 			sb.append(" (").append(m_description).append(")");
 		return sb.toString();
@@ -501,7 +501,7 @@ public class MAssignmentSlot implements Comparator
 	 */
 	public String getInfo()
 	{
-		StringBuffer sb = new StringBuffer(getInfoDateTimeFromTo());
+		StringBuilder sb = new StringBuilder(getInfoDateTimeFromTo());
 		sb.append(": ").append(m_name);
 		if (m_description.length() > 0)
 			sb.append(" (").append(m_description).append(")");

@@ -31,7 +31,7 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120920L;
 
     /** Standard Constructor */
     public X_AD_WorkflowProcessor (Properties ctx, int AD_WorkflowProcessor_ID, String trxName)
@@ -40,8 +40,6 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
       /** if (AD_WorkflowProcessor_ID == 0)
         {
 			setAD_WorkflowProcessor_ID (0);
-			setFrequency (0);
-			setFrequencyType (null);
 			setKeepLogDays (0);
 // 7
 			setName (null);
@@ -56,7 +54,7 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -76,6 +74,31 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
+			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+
+	/** Set AD_Schedule_ID.
+		@param AD_Schedule_ID AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID)
+	{
+		if (AD_Schedule_ID < 1) 
+			set_Value (COLUMNNAME_AD_Schedule_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
+	}
+
+	/** Get AD_Schedule_ID.
+		@return AD_Schedule_ID	  */
+	public int getAD_Schedule_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Workflow Processor.
 		@param AD_WorkflowProcessor_ID 
@@ -98,6 +121,20 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_WorkflowProcessor_UU.
+		@param AD_WorkflowProcessor_UU AD_WorkflowProcessor_UU	  */
+	public void setAD_WorkflowProcessor_UU (String AD_WorkflowProcessor_UU)
+	{
+		set_Value (COLUMNNAME_AD_WorkflowProcessor_UU, AD_WorkflowProcessor_UU);
+	}
+
+	/** Get AD_WorkflowProcessor_UU.
+		@return AD_WorkflowProcessor_UU	  */
+	public String getAD_WorkflowProcessor_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_WorkflowProcessor_UU);
 	}
 
 	/** Set Alert over Priority.
@@ -169,52 +206,6 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
-	}
-
-	/** Set Frequency.
-		@param Frequency 
-		Frequency of events
-	  */
-	public void setFrequency (int Frequency)
-	{
-		set_Value (COLUMNNAME_Frequency, Integer.valueOf(Frequency));
-	}
-
-	/** Get Frequency.
-		@return Frequency of events
-	  */
-	public int getFrequency () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Frequency);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** FrequencyType AD_Reference_ID=221 */
-	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
-	/** Day = D */
-	public static final String FREQUENCYTYPE_Day = "D";
-	/** Set Frequency Type.
-		@param FrequencyType 
-		Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType)
-	{
-
-		set_Value (COLUMNNAME_FrequencyType, FrequencyType);
-	}
-
-	/** Get Frequency Type.
-		@return Frequency of event
-	  */
-	public String getFrequencyType () 
-	{
-		return (String)get_Value(COLUMNNAME_FrequencyType);
 	}
 
 	/** Set Inactivity Alert Days.
@@ -323,9 +314,9 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 		return ii.intValue();
 	}
 
-	public I_AD_User getSupervisor() throws RuntimeException
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSupervisor_ID(), get_TrxName());	}
 
 	/** Set Supervisor.

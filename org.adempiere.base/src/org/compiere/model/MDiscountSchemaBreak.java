@@ -109,7 +109,7 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MDiscountSchemaBreak[");
+		StringBuilder sb = new StringBuilder ("MDiscountSchemaBreak[");
 		sb.append(get_ID()).append("-Seq=").append(getSeqNo());
 		if (getM_Product_Category_ID() != 0)
 			sb.append(",M_Product_Category_ID=").append(getM_Product_Category_ID());

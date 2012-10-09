@@ -95,7 +95,7 @@ public class MBankAccount extends X_C_BankAccount
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MBankAccount[")
+		StringBuilder sb = new StringBuilder ("MBankAccount[")
 			.append (get_ID())
 			.append("-").append(getAccountNo())
 			.append ("]");
@@ -117,7 +117,8 @@ public class MBankAccount extends X_C_BankAccount
 	 */
 	public String getName()
 	{
-		return getBank().getName() + " " + getAccountNo();
+		StringBuilder msgreturn = new StringBuilder(getBank().getName()).append(" ").append(getAccountNo());
+		return msgreturn.toString();
 	}	//	getName
 	
 	/**

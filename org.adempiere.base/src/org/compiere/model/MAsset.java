@@ -183,20 +183,21 @@ public class MAsset extends X_A_Asset
 	public void setValueNameDescription (MInOut shipment,  
 		int deliveryCount, MProduct product, MBPartner partner)
 	{
-		String documentNo = "_" + shipment.getDocumentNo();
+		StringBuilder documentNo = new StringBuilder("_").append(shipment.getDocumentNo());
 		if (deliveryCount > 1)
-			documentNo += "_" + deliveryCount;
+			documentNo.append("_").append(deliveryCount);
 		//	Value
-		String value = partner.getValue() + "_" + product.getValue();
+		StringBuilder value = new StringBuilder(partner.getValue()).append("_").append(product.getValue());
 		if (value.length() > 40-documentNo.length())
-			value = value.substring(0,40-documentNo.length()) + documentNo;
-		setValue(value);
+			value.delete(40-documentNo.length(), value.length()).append(documentNo);
+		
+		setValue(value.toString());
 		
 		//	Name		MProduct.afterSave
-		String name = partner.getName() + " - " + product.getName();
+		StringBuilder name = new StringBuilder(partner.getName()).append(" - ").append(product.getName());
 		if (name.length() > 60)
-			name = name.substring(0,60);
-		setName(name);
+			name.delete(60,name.length());
+		setName(name.toString());
 		//	Description
 		String description = product.getDescription();
 		setDescription(description);
@@ -211,8 +212,10 @@ public class MAsset extends X_A_Asset
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgsd= new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgsd.toString());
+		}	
 	}	//	addDescription
 
 	/**
@@ -233,7 +236,7 @@ public class MAsset extends X_A_Asset
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAsset[")
+		StringBuilder sb = new StringBuilder ("MAsset[")
 			.append (get_ID ())
 			.append("-").append(getValue())
 			.append ("]");

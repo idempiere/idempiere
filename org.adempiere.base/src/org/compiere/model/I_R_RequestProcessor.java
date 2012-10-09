@@ -31,7 +31,7 @@ public interface I_R_RequestProcessor
     public static final String Table_Name = "R_RequestProcessor";
 
     /** AD_Table_ID=420 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 420;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,6 +61,17 @@ public interface I_R_RequestProcessor
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Schedule_ID */
+    public static final String COLUMNNAME_AD_Schedule_ID = "AD_Schedule_ID";
+
+	/** Set AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID);
+
+	/** Get AD_Schedule_ID	  */
+	public int getAD_Schedule_ID();
+
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -116,32 +127,6 @@ public interface I_R_RequestProcessor
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name Frequency */
-    public static final String COLUMNNAME_Frequency = "Frequency";
-
-	/** Set Frequency.
-	  * Frequency of events
-	  */
-	public void setFrequency (int Frequency);
-
-	/** Get Frequency.
-	  * Frequency of events
-	  */
-	public int getFrequency();
-
-    /** Column name FrequencyType */
-    public static final String COLUMNNAME_FrequencyType = "FrequencyType";
-
-	/** Set Frequency Type.
-	  * Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType);
-
-	/** Get Frequency Type.
-	  * Frequency of event
-	  */
-	public String getFrequencyType();
 
     /** Column name InactivityAlertDays */
     public static final String COLUMNNAME_InactivityAlertDays = "InactivityAlertDays";
@@ -256,6 +241,15 @@ public interface I_R_RequestProcessor
 	  */
 	public int getR_RequestProcessor_ID();
 
+    /** Column name R_RequestProcessor_UU */
+    public static final String COLUMNNAME_R_RequestProcessor_UU = "R_RequestProcessor_UU";
+
+	/** Set R_RequestProcessor_UU	  */
+	public void setR_RequestProcessor_UU (String R_RequestProcessor_UU);
+
+	/** Get R_RequestProcessor_UU	  */
+	public String getR_RequestProcessor_UU();
+
     /** Column name R_RequestType_ID */
     public static final String COLUMNNAME_R_RequestType_ID = "R_RequestType_ID";
 
@@ -269,7 +263,7 @@ public interface I_R_RequestProcessor
 	  */
 	public int getR_RequestType_ID();
 
-	public I_R_RequestType getR_RequestType() throws RuntimeException;
+	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException;
 
     /** Column name Supervisor_ID */
     public static final String COLUMNNAME_Supervisor_ID = "Supervisor_ID";
@@ -284,7 +278,7 @@ public interface I_R_RequestProcessor
 	  */
 	public int getSupervisor_ID();
 
-	public I_AD_User getSupervisor() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

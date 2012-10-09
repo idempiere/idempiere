@@ -83,8 +83,8 @@ public class TabCopy extends SvrProcess
 			else
 				throw new AdempiereUserError("@Error@ @AD_Field_ID@");
 		}
-		
-		return "@Copied@ #" + count;
+		StringBuilder msgreturn = new StringBuilder("@Copied@ #").append(count);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	TabCopy

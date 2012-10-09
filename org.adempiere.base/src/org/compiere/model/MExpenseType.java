@@ -67,7 +67,8 @@ public class MExpenseType extends X_S_ExpenseType
 	{
 		if (m_product == null)
 		{
-			MProduct[] products = MProduct.get(getCtx(), "S_ExpenseType_ID=" + getS_ExpenseType_ID(), get_TrxName());
+			StringBuilder msgmp = new StringBuilder("S_ExpenseType_ID=").append(getS_ExpenseType_ID());
+			MProduct[] products = MProduct.get(getCtx(), msgmp.toString(), get_TrxName());
 			if (products.length > 0)
 				m_product = products[0];
 		}

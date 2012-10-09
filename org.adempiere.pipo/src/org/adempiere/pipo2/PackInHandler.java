@@ -191,7 +191,7 @@ public class PackInHandler extends DefaultHandler {
 				packageInst.saveEx();
 			}
 
-			m_ctx.ctx.put("AD_Package_Imp_ID", AD_Package_Imp_ID);
+			m_ctx.ctx.put("AD_Package_Imp_ID", String.valueOf(AD_Package_Imp_ID));
 			m_ctx.ctx.put("UpdateMode", m_updateDictionary);
 			m_ctx.ctx.put("PackageDirectory", packageDirectory);
 			m_ctx.packIn = packIn;

@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.compiere.model.MBPartner;
+import org.compiere.model.MBankAccount;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrderTax;
@@ -396,29 +397,31 @@ public class PosOrderModel extends MOrder {
 	{
 		try
 		{
-			MPaymentProcessor[] m_mPaymentProcessors = MPaymentProcessor.find (getCtx (), null, null, 
+			MBankAccount[] m_mBankAccounts = MPaymentProcessor.find (getCtx (), null, null, 
 					getAD_Client_ID (), getAD_Org_ID(), getC_Currency_ID (), amt, get_TrxName());
 			//
 			HashMap<String,ValueNamePair> map = new HashMap<String,ValueNamePair>(); //	to eliminate duplicates
-			for (int i = 0; i < m_mPaymentProcessors.length; i++)
+			for (int i = 0; i < m_mBankAccounts.length; i++)
 			{
-				if (m_mPaymentProcessors[i].isAcceptAMEX ())
+				MBankAccount bankAccount = m_mBankAccounts[i];
+				MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccount.getCtx(), bankAccount.getC_PaymentProcessor_ID(), bankAccount.get_TrxName());
+				if (paymentProcessor.isAcceptAMEX ())
 					map.put (MPayment.CREDITCARDTYPE_Amex, getCreditCardPair (MPayment.CREDITCARDTYPE_Amex));
-				if (m_mPaymentProcessors[i].isAcceptDiners ())
+				if (paymentProcessor.isAcceptDiners ())
 					map.put (MPayment.CREDITCARDTYPE_Diners, getCreditCardPair (MPayment.CREDITCARDTYPE_Diners));
-				if (m_mPaymentProcessors[i].isAcceptDiscover ())
+				if (paymentProcessor.isAcceptDiscover ())
 					map.put (MPayment.CREDITCARDTYPE_Discover, getCreditCardPair (MPayment.CREDITCARDTYPE_Discover));
-				if (m_mPaymentProcessors[i].isAcceptMC ())
+				if (paymentProcessor.isAcceptMC ())
 					map.put (MPayment.CREDITCARDTYPE_MasterCard, getCreditCardPair (MPayment.CREDITCARDTYPE_MasterCard));
-				if (m_mPaymentProcessors[i].isAcceptCorporate ())
+				if (paymentProcessor.isAcceptCorporate ())
 					map.put (MPayment.CREDITCARDTYPE_PurchaseCard, getCreditCardPair (MPayment.CREDITCARDTYPE_PurchaseCard));
-				if (m_mPaymentProcessors[i].isAcceptVisa ())
+				if (paymentProcessor.isAcceptVisa ())
 					map.put (MPayment.CREDITCARDTYPE_Visa, getCreditCardPair (MPayment.CREDITCARDTYPE_Visa));
 			} //	for all payment processors
 			//
 			ValueNamePair[] retValue = new ValueNamePair[map.size ()];
 			map.values ().toArray (retValue);
-			log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mPaymentProcessors.length);
+			log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccounts.length);
 			return retValue;
 		}
 		catch (Exception ex)

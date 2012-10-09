@@ -63,7 +63,7 @@ public class MGoalRestriction extends X_PA_GoalRestriction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MGoalRestriction[");
+		StringBuilder sb = new StringBuilder ("MGoalRestriction[");
 		sb.append (get_ID()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString

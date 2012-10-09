@@ -49,24 +49,24 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	{
 		Properties ctx = Env.getCtx();
 		
-		String whereClause = COLUMNNAME_IsShowInDashboard+"=?";
+		StringBuilder whereClause = new StringBuilder(COLUMNNAME_IsShowInDashboard).append("=?");
 		
 		if (AD_Role_ID == 0)
-			whereClause += " AND ("+COLUMNNAME_AD_Role_ID+" IS NULL OR "+COLUMNNAME_AD_Role_ID+"=?)";
+			whereClause.append(" AND (").append(COLUMNNAME_AD_Role_ID).append(" IS NULL OR ").append(COLUMNNAME_AD_Role_ID).append("=?)");
 		else
-			whereClause += " AND "+COLUMNNAME_AD_Role_ID+"=?";
+			whereClause.append(" AND ").append(COLUMNNAME_AD_Role_ID).append("=?");
 
 		if (AD_User_ID == 0)
-			whereClause += " AND ("+COLUMNNAME_AD_User_ID+" IS NULL OR "+COLUMNNAME_AD_User_ID+"=?)";
+			whereClause.append(" AND (").append(COLUMNNAME_AD_User_ID).append(" IS NULL OR ").append(COLUMNNAME_AD_User_ID).append("=?)");
 		else
-			whereClause += " AND "+COLUMNNAME_AD_User_ID+"=?";
+			whereClause.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?");
 		
 		List<Object> parameters = new ArrayList<Object>();
 		parameters.add(isShowInDashboard);
 		parameters.add(AD_Role_ID);
 		parameters.add(AD_User_ID);
 		
-		return new Query(ctx, Table_Name, whereClause, null)
+		return new Query(ctx, Table_Name, whereClause.toString(), null)
 		.setParameters(parameters)
 		.setOnlyActiveRecords(true)
 		.setApplyAccessFilter(true, false)
@@ -83,23 +83,23 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	{
 		Properties ctx = Env.getCtx();
 		
-		String whereClause = "";
+		StringBuilder whereClause = new StringBuilder();
 		
 		if (AD_Role_ID == 0)
-			whereClause += "("+COLUMNNAME_AD_Role_ID+" IS NULL OR "+COLUMNNAME_AD_Role_ID+"=?)";
+			whereClause.append("(").append(COLUMNNAME_AD_Role_ID).append(" IS NULL OR ").append(COLUMNNAME_AD_Role_ID).append("=?)");
 		else
-			whereClause += COLUMNNAME_AD_Role_ID+"=?";
+			whereClause.append(COLUMNNAME_AD_Role_ID).append("=?");
 		
 		if (AD_User_ID == 0)
-			whereClause += " AND ("+COLUMNNAME_AD_User_ID+" IS NULL OR "+COLUMNNAME_AD_User_ID+"=?)";
+			whereClause.append(" AND (").append(COLUMNNAME_AD_User_ID).append(" IS NULL OR ").append(COLUMNNAME_AD_User_ID).append("=?)");
 		else
-			whereClause += " AND "+COLUMNNAME_AD_User_ID+"=?";
+			whereClause.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?");
 		
 		List<Object> parameters = new ArrayList<Object>();
 		parameters.add(AD_Role_ID);
 		parameters.add(AD_User_ID);
 		
-		return new Query(ctx, Table_Name, whereClause, null)
+		return new Query(ctx, Table_Name, whereClause.toString(), null)
 		.setParameters(parameters)
 		.setOnlyActiveRecords(true)
 		.setApplyAccessFilter(true, false)

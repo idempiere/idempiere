@@ -109,8 +109,8 @@ public class ModelInterfaceGenerator
 	public ModelInterfaceGenerator(int AD_Table_ID, String directory, String packageName) {
 		this.packageName = packageName;
 		// create column access methods
-		StringBuffer mandatory = new StringBuffer();
-		StringBuffer sb = createColumns(AD_Table_ID, mandatory);
+		StringBuilder mandatory = new StringBuilder();
+		StringBuilder sb = createColumns(AD_Table_ID, mandatory);
 
 		// Header
 		String tableName = createHeader(AD_Table_ID, sb, mandatory);
@@ -134,7 +134,7 @@ public class ModelInterfaceGenerator
 	 * @param packageName	package name
 	 * @return class name
 	 */
-	private String createHeader(int AD_Table_ID, StringBuffer sb, StringBuffer mandatory) {
+	private String createHeader(int AD_Table_ID, StringBuilder sb, StringBuilder mandatory) {
 		String tableName = "";
 		int accessLevel = 0;
 		String sql = "SELECT TableName, AccessLevel FROM AD_Table WHERE AD_Table_ID=?";
@@ -162,18 +162,18 @@ public class ModelInterfaceGenerator
 		if (tableName == null)
 			throw new RuntimeException("TableName not found for ID=" + AD_Table_ID);
 		//
-		String accessLevelInfo = accessLevel + " ";
+		StringBuilder accessLevelInfo = new StringBuilder().append(accessLevel).append(" ");
 		if (accessLevel >= 4 )
-			accessLevelInfo += "- System ";
+			accessLevelInfo.append("- System ");
 		if (accessLevel == 2 || accessLevel == 3 || accessLevel == 6 || accessLevel == 7)
-			accessLevelInfo += "- Client ";
+			accessLevelInfo.append("- Client ");
 		if (accessLevel == 1 || accessLevel == 3 || accessLevel == 5 || accessLevel == 7)
-			accessLevelInfo += "- Org ";
+			accessLevelInfo.append("- Org ");
 
 		//
 		String className = "I_" + tableName;
 		//
-		StringBuffer start = new StringBuffer()
+		StringBuilder start = new StringBuilder()
 			.append (COPY)
 			.append("package ").append(packageName).append(";").append(NL)
 		;
@@ -216,7 +216,7 @@ public class ModelInterfaceGenerator
 			 //.append("    POInfo initPO (Properties ctx);") // INFO - Should this be here???
 		;
 
-		StringBuffer end = new StringBuffer("}");
+		StringBuilder end = new StringBuilder("}");
 		//
 		sb.insert(0, start);
 		sb.append(end);
@@ -231,14 +231,15 @@ public class ModelInterfaceGenerator
 	 * @param mandatory   init call for mandatory columns
 	 * @return set/get method
 	 */
-	private StringBuffer createColumns(int AD_Table_ID, StringBuffer mandatory) {
-		StringBuffer sb = new StringBuffer();
+	private StringBuilder createColumns(int AD_Table_ID, StringBuilder mandatory) {
+		StringBuilder sb = new StringBuilder();
 		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory," // 1..3
 				+ " c.AD_Reference_ID, c.AD_Reference_Value_ID, DefaultValue, SeqNo, " // 4..7
 				+ " c.FieldLength, c.ValueMin, c.ValueMax, c.VFormat, c.Callout, " // 8..12
 				+ " c.Name, c.Description, c.ColumnSQL, c.IsEncrypted, c.IsKey "   // 13..17
 				+ "FROM AD_Column c "
 				+ "WHERE c.AD_Table_ID=?"
+
 //				+ " AND c.ColumnName <> 'AD_Client_ID'"
 //				+ " AND c.ColumnName <> 'AD_Org_ID'"
 //				+ " AND c.ColumnName <> 'IsActive'"
@@ -320,7 +321,7 @@ public class ModelInterfaceGenerator
 	 * @param IsEncrypted    stored encrypted
 	 * @return set/get method
 	 */
-	private String createColumnMethods(StringBuffer mandatory,
+	private String createColumnMethods(StringBuilder mandatory,
 			String columnName, boolean isUpdateable, boolean isMandatory,
 			int displayType, int AD_Reference_ID, int fieldLength,
 			String defaultValue, String ValueMin, String ValueMax,
@@ -332,7 +333,7 @@ public class ModelInterfaceGenerator
 		if (defaultValue == null)
 			defaultValue = "";
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		if (isGenerateSetter(columnName))
 		{
@@ -374,7 +375,7 @@ public class ModelInterfaceGenerator
 	}
 
 	// ****** Set/Get Comment ******
-	public void generateJavaComment(String startOfComment, String propertyName,	String description, StringBuffer result) {
+	public void generateJavaComment(String startOfComment, String propertyName,	String description, StringBuilder result) {
 		result.append("\n")
 			  .append("\t/** ").append(startOfComment).append(" ")
 			  .append(propertyName);
@@ -391,7 +392,7 @@ public class ModelInterfaceGenerator
 	 * @param sb string buffer
 	 * @param fileName file name
 	 */
-	private void writeToFile(StringBuffer sb, String fileName) {
+	private void writeToFile(StringBuilder sb, String fileName) {
 		try {
 			File out = new File(fileName);
 			Writer fw = new OutputStreamWriter(new FileOutputStream(out, false), "UTF-8");
@@ -461,7 +462,7 @@ public class ModelInterfaceGenerator
 	 * Generate java imports
 	 * @param sb
 	 */
-	private void createImports(StringBuffer sb) {
+	private void createImports(StringBuilder sb) {
 		for (String name : s_importClasses) {
 			sb.append("import ").append(name).append(";"); //.append(NL);
 		}
@@ -633,13 +634,13 @@ public class ModelInterfaceGenerator
 
 	public static String getReferenceClassName(int AD_Table_ID, String columnName, int displayType, int AD_Reference_ID)
 	{
-		String referenceClassName = null;
+		StringBuilder referenceClassName = null;
 		//
 		if (displayType == DisplayType.TableDir
 				|| (displayType == DisplayType.Search && AD_Reference_ID == 0))
 		{
 			String refTableName = MQuery.getZoomTableName(columnName); // teo_sarca: BF [ 1817768 ] Isolate hardcoded table direct columns
-			referenceClassName = "I_"+refTableName;
+			referenceClassName = new StringBuilder("I_").append(refTableName);
 
 			MTable table = MTable.get(Env.getCtx(), refTableName);
 			if (table != null)
@@ -648,7 +649,7 @@ public class ModelInterfaceGenerator
 				String modelpackage = getModelPackage(entityType) ;
 				if (modelpackage != null)
 				{
-					referenceClassName = modelpackage+"."+referenceClassName;
+					referenceClassName = new StringBuilder(modelpackage).append(".").append(referenceClassName);
 				}
 				if (!isGenerateModelGetterForEntity(AD_Table_ID, entityType))
 				{
@@ -690,11 +691,11 @@ public class ModelInterfaceGenerator
 					final int refDisplayType = rs.getInt(3);
 					if (refDisplayType == DisplayType.ID)
 					{
-						referenceClassName = "I_"+refTableName;
+						referenceClassName = new StringBuilder("I_").append(refTableName);
 						String modelpackage = getModelPackage(entityType);
 						if (modelpackage != null)
 						{
-							referenceClassName = modelpackage+"."+referenceClassName;
+							referenceClassName = new StringBuilder(modelpackage).append(".").append(referenceClassName);
 						}
 						if (!isGenerateModelGetterForEntity(AD_Table_ID, entityType))
 						{
@@ -715,19 +716,19 @@ public class ModelInterfaceGenerator
 		}
 		else if (displayType == DisplayType.Location)
 		{
-			referenceClassName = "I_C_Location";
+			referenceClassName = new StringBuilder("I_C_Location");
 		}
 		else if (displayType == DisplayType.Locator)
 		{
-			referenceClassName = "I_M_Locator";
+			referenceClassName = new StringBuilder("I_M_Locator");
 		}
 		else if (displayType == DisplayType.Account)
 		{
-			referenceClassName = "I_C_ValidCombination";
+			referenceClassName = new StringBuilder("I_C_ValidCombination");
 		}
 		else if (displayType == DisplayType.PAttribute)
 		{
-			referenceClassName = "I_M_AttributeSetInstance";
+			referenceClassName = new StringBuilder("I_M_AttributeSetInstance");
 		}
 		else
 		{
@@ -735,7 +736,7 @@ public class ModelInterfaceGenerator
 			//sb.append("\tpublic I_"+columnName+" getI_").append(columnName).append("(){return null; };");
 		}
 		//
-		return referenceClassName;
+		return referenceClassName.toString();
 	}
 
 
@@ -745,7 +746,7 @@ public class ModelInterfaceGenerator
 	 * @return string representation
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer("GenerateModel[").append("]");
+		StringBuilder sb = new StringBuilder("GenerateModel[").append("]");
 		return sb.toString();
 	}
 
@@ -774,52 +775,52 @@ public class ModelInterfaceGenerator
 		if (!tableLike.startsWith("'") || !tableLike.endsWith("'"))
 			tableLike = "'" + tableLike + "'";
 
-		String entityTypeFilter = null;
+		StringBuilder entityTypeFilter = new StringBuilder();
 		if (entityType != null && entityType.trim().length() > 0)
 		{
-			entityTypeFilter = "EntityType IN (";
+			entityTypeFilter.append("EntityType IN (");
 			StringTokenizer tokenizer = new StringTokenizer(entityType, ",");
 			int i = 0;
 			while(tokenizer.hasMoreTokens()) {
-				String token = tokenizer.nextToken().trim();
-				if (!token.startsWith("'") || !token.endsWith("'"))
-					token = "'" + token + "'";
+				StringBuilder token = new StringBuilder(tokenizer.nextToken().trim());
+				if (!token.toString().startsWith("'") || !token.toString().endsWith("'"))
+					token = new StringBuilder("'").append(token).append("'");
 				if (i > 0)
-					entityTypeFilter = entityTypeFilter + ",";
-				entityTypeFilter = entityTypeFilter + token;
+					entityTypeFilter.append(",");
+				entityTypeFilter.append(token);
 				i++;
 			}
-			entityTypeFilter = entityTypeFilter+")";
+			entityTypeFilter.append(")");
 		}
 		else
 		{
-			entityTypeFilter = "EntityType IN ('U','A')";
+			entityTypeFilter.append("EntityType IN ('U','A')");
 		}
 
-		String directory = sourceFolder.trim();
+		StringBuilder directory = new StringBuilder(sourceFolder.trim());
 		String packagePath = packageName.replace(".", File.separator);
-		if (!(directory.endsWith("/") || directory.endsWith("\\")))
+		if (!(directory.toString().endsWith("/") || directory.toString().endsWith("\\")))
 		{
-			directory = directory + File.separator;
+			directory.append(File.separator);
 		}
 		if (File.separator.equals("/"))
-			directory = directory.replaceAll("[\\\\]", File.separator);
+			directory = new StringBuilder(directory.toString().replaceAll("[\\\\]", File.separator));
 		else
-			directory = directory.replaceAll("[/]", File.separator);
-		directory = directory + packagePath;
-		file = new File(directory);
+			directory = new StringBuilder(directory.toString().replaceAll("[/]", File.separator));
+		directory = new StringBuilder(directory).append(packagePath);
+		file = new File(directory.toString());
 		if (!file.exists())
 			file.mkdirs();
 
 		//	complete sql
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT AD_Table_ID ")
 			.append("FROM AD_Table ")
 			.append("WHERE (TableName IN ('RV_WarehousePrice','RV_BPartner')")	//	special views
 			.append(" OR IsView='N')")
 			.append(" AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' ");
 		sql.append(" AND TableName LIKE ").append(tableLike);
-		sql.append(" AND ").append(entityTypeFilter);
+		sql.append(" AND ").append(entityTypeFilter.toString());
 		sql.append(" ORDER BY TableName");
 
 		//
@@ -832,7 +833,7 @@ public class ModelInterfaceGenerator
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				new ModelInterfaceGenerator(rs.getInt(1), directory, packageName);
+				new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName);
 				count++;
 			}
 		}

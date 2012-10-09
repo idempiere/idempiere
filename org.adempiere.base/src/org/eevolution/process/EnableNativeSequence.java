@@ -18,6 +18,8 @@ package org.eevolution.process;
 
 
 
+import static org.compiere.model.SystemIDs.PROCESS_AD_NATIVE_SEQUENCE_ENABLE;
+
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -29,12 +31,11 @@ import org.compiere.model.MSequence;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
-import static org.compiere.model.SystemIDs.*;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Table;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.CLogMgt;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -53,16 +54,20 @@ public class EnableNativeSequence extends SvrProcess
 	{
 	}	//	prepare
 	
-	protected String doIt()              
+	protected String doIt() throws Exception              
 	{
 		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
-		if(SYSTEM_NATIVE_SEQUENCE)
+		if (SYSTEM_NATIVE_SEQUENCE)
 		{
 			throw new AdempiereException("Native Sequence is Actived");
 		}
 		
-		setSystemNativeSequence(true);
-		boolean ok = false;
+		// update the sysconfig key to Y out of trx and reset the cache
+		MSysConfig conf = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_SYSTEM_NATIVE_SEQUENCE, null);
+		conf.setValue("Y");
+		conf.saveEx();
+		MSysConfig.resetCache();
+
 		try
 		{
 			createSequence("AD_Sequence", null);
@@ -77,14 +82,11 @@ public class EnableNativeSequence extends SvrProcess
 			{
 				createSequence(table, get_TrxName());
 			}
-			ok = true;
-		}
-		finally
-		{
-			if (!ok)
-			{
-				setSystemNativeSequence(false);
-			}
+		} catch (Exception e) {
+			// reset to N on exception
+			conf.setValue("N");
+			conf.saveEx();
+			throw e;
 		}
 		
 		return "@OK@";
@@ -107,15 +109,6 @@ public class EnableNativeSequence extends SvrProcess
 	private void createSequence(String tableName, String trxName)
 	{
 		createSequence(MTable.get(getCtx(), tableName), trxName);
-	}
-	
-	private void setSystemNativeSequence(boolean value)
-	{
-		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value=? WHERE Name='SYSTEM_NATIVE_SEQUENCE'",
-				new Object[]{value ? "Y" : "N"},
-				null // trxName
-		);
-		MSysConfig.resetCache();
 	}
 	
 	/**

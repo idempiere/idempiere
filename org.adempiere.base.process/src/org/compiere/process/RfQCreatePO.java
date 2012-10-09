@@ -202,7 +202,7 @@ public class RfQCreatePO extends SvrProcess
 				response.saveEx();
 			}
 		}
-		
-		return "#" + noOrders;
+		StringBuilder msgreturn = new StringBuilder("#").append(noOrders);
+		return msgreturn.toString();
 	}	//	doIt
 }	//	RfQCreatePO

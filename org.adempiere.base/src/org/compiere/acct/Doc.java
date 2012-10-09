@@ -842,10 +842,10 @@ public abstract class Doc
 		if (m_GL_Category_ID == 0)
 		{
 			String sql = "SELECT GL_Category_ID FROM C_DocType "
-				+ "WHERE AD_Client_ID=? AND DocBaseType=?";
+					+ "WHERE AD_Client_ID=? AND DocBaseType=?";
 			try
 			{
-				PreparedStatement pstmt = DB.prepareStatement(sql, null);
+				PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setInt(1, getAD_Client_ID());
 				pstmt.setString(2, m_DocumentType);
 				ResultSet rsDT = pstmt.executeQuery();

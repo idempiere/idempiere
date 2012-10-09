@@ -74,7 +74,7 @@ public class MAccount extends X_C_ValidCombination
 		int C_Project_ID, int C_Campaign_ID, int C_Activity_ID,
 		int User1_ID, int User2_ID, int UserElement1_ID, int UserElement2_ID)
 	{
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		info.append("AD_Client_ID=").append(AD_Client_ID).append(",AD_Org_ID=").append(AD_Org_ID);
 		//	Schema
 		info.append(",C_AcctSchema_ID=").append(C_AcctSchema_ID);
@@ -83,7 +83,7 @@ public class MAccount extends X_C_ValidCombination
 		
 		ArrayList<Object> params = new ArrayList<Object>();
 		//		Mandatory fields
-		StringBuffer whereClause =  new StringBuffer("AD_Client_ID=?"		//	#1
+		StringBuilder whereClause =  new StringBuilder("AD_Client_ID=?"		//	#1
 							+ " AND AD_Org_ID=?"
 							+ " AND C_AcctSchema_ID=?"
 							+ " AND Account_ID=?");			//	#4
@@ -422,7 +422,7 @@ public class MAccount extends X_C_ValidCombination
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MAccount=[");
+		StringBuilder sb = new StringBuilder("MAccount=[");
 		sb.append(getC_ValidCombination_ID());
 		if (getCombination() != null)
 			sb.append(",")
@@ -545,8 +545,8 @@ public class MAccount extends X_C_ValidCombination
 	 */
 	public void setValueDescription()
 	{
-		StringBuffer combi = new StringBuffer();
-		StringBuffer descr = new StringBuffer();
+		StringBuilder combi = new StringBuilder();
+		StringBuilder descr = new StringBuilder();
 		boolean fullyQualified = true;
 		//
 		MAcctSchema as = new MAcctSchema(getCtx(), getC_AcctSchema_ID(), get_TrxName());	//	In Trx!

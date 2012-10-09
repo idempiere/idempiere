@@ -86,7 +86,7 @@ public class MBank extends X_C_Bank
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MBank[");
+		StringBuilder sb = new StringBuilder ("MBank[");
 		sb.append (get_ID ()).append ("-").append(getName ()).append ("]");
 		return sb.toString ();
 	}	//	toString

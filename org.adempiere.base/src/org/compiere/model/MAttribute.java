@@ -64,9 +64,9 @@ public class MAttribute extends X_M_Attribute
 				sql += " AND AttributeValueType=?";
 				params.add(MAttribute.ATTRIBUTEVALUETYPE_List);
 			}
-		final String whereClause = "AD_Client_ID=?"+sql;
+		StringBuilder whereClause = new StringBuilder("AD_Client_ID=?").append(sql);
 		
-		List<MAttribute>list = new Query(ctx,I_M_Attribute.Table_Name,whereClause,null)
+		List<MAttribute>list = new Query(ctx,I_M_Attribute.Table_Name,whereClause.toString(),null)
 		.setParameters(params)
 		.setOnlyActiveRecords(true)
 		.setOrderBy("Name")
@@ -224,7 +224,7 @@ public class MAttribute extends X_M_Attribute
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAttribute[");
+		StringBuilder sb = new StringBuilder ("MAttribute[");
 		sb.append (get_ID()).append ("-").append (getName())
 			.append(",Type=").append(getAttributeValueType())
 			.append(",Instance=").append(isInstanceAttribute())
@@ -243,13 +243,13 @@ public class MAttribute extends X_M_Attribute
 		//	Changed to Instance Attribute
 		if (!newRecord && is_ValueChanged("IsInstanceAttribute") && isInstanceAttribute())
 		{
-			String sql = "UPDATE M_AttributeSet mas "
-				+ "SET IsInstanceAttribute='Y' "
-				+ "WHERE IsInstanceAttribute='N'"
-				+ " AND EXISTS (SELECT * FROM M_AttributeUse mau "
-					+ "WHERE mas.M_AttributeSet_ID=mau.M_AttributeSet_ID"
-					+ " AND mau.M_Attribute_ID=" + getM_Attribute_ID() + ")";
-			int no = DB.executeUpdate(sql, get_TrxName());
+			StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas ")
+				.append("SET IsInstanceAttribute='Y' ")
+				.append("WHERE IsInstanceAttribute='N'")
+				.append(" AND EXISTS (SELECT * FROM M_AttributeUse mau ")
+					.append("WHERE mas.M_AttributeSet_ID=mau.M_AttributeSet_ID")
+					.append(" AND mau.M_Attribute_ID=").append(getM_Attribute_ID()).append(")");
+			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("AttributeSet Instance set #" + no);
 		}
 		return success;

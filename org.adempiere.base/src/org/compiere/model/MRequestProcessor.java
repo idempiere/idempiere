@@ -34,13 +34,12 @@ import org.compiere.util.Msg;
  *  @version $Id: MRequestProcessor.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
 public class MRequestProcessor extends X_R_RequestProcessor 
-	implements AdempiereProcessor
+	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3149710397208186523L;
-
+	private static final long serialVersionUID = 8231854734466233461L;
 
 	/**
 	 * 	Get Active Request Processors
@@ -96,8 +95,8 @@ public class MRequestProcessor extends X_R_RequestProcessor
 		if (R_RequestProcessor_ID == 0)
 		{
 		//	setName (null);
-			setFrequencyType (FREQUENCYTYPE_Day);
-			setFrequency (0);
+			//setFrequencyType (FREQUENCYTYPE_Day);
+			//setFrequency (0);
 			setKeepLogDays (7);
 			setOverdueAlertDays (0);
 			setOverdueAssignDays (0);
@@ -255,5 +254,47 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	{
 		return "RequestProcessor" + get_ID();
 	}	//	getServerID
-	
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord)
+	{
+		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			if (nextWork > 0)
+				setDateNextRun(new Timestamp(nextWork));
+		}
+		
+		return true;
+	}	//	beforeSave
+
+	@Override
+	public String getFrequencyType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequencyType();
+	}
+
+	@Override
+	public int getFrequency() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequency();
+	}
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).isIgnoreProcessingTime();
+	}
+
+	@Override
+	public String getScheduleType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getScheduleType();
+	}
+
+	@Override
+	public String getCronPattern() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getCronPattern();
+	}
+
 }	//	MRequestProcessor

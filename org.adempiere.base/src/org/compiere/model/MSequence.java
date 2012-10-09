@@ -54,7 +54,7 @@ public class MSequence extends X_AD_Sequence
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1204207754819125876L;
+	private static final long serialVersionUID = -631878634759124313L;
 
 	/** Log Level for Next ID Call					*/
 	private static final Level LOGLEVEL = Level.ALL;
@@ -63,6 +63,9 @@ public class MSequence extends X_AD_Sequence
 	
 	private static final String NoYearNorMonth = "-";
 
+	/**
+	 *  @deprecated please use DB.getNextID (int, String, String)
+	 */
 	public static int getNextID (int AD_Client_ID, String TableName)
 	{
 		return getNextID(AD_Client_ID, TableName, null);
@@ -73,8 +76,12 @@ public class MSequence extends X_AD_Sequence
 	 *	Get next number for Key column = 0 is Error.
 	 *  @param AD_Client_ID client
 	 *  @param TableName table name
-	 * 	@param trxName deprecated.
+	 * 	@param trxName deprecated (NOT USED!!)
 	 *  @return next no or (-1=not found, -2=error)
+	 *  
+	 *  WARNING!! This method doesn't take into account the native sequence setting, it's just to be called from DB.getNextID()
+	 *  
+	 *  @deprecated please use DB.getNextID (int, String, String)
 	 */
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
@@ -682,6 +689,25 @@ public class MSequence extends X_AD_Sequence
 	{
 		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
 
+		if (tableID && SYSTEM_NATIVE_SEQUENCE)
+		{
+			int next_id = DB.getSQLValue(trxName, "SELECT CurrentNext FROM AD_Sequence WHERE Name=? AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y'", TableName);
+			if (next_id == -1)
+			{
+				MSequence seq = new MSequence (ctx, 0, trxName);
+				seq.setClientOrg(0, 0);
+				seq.setName(TableName);
+				seq.setDescription("Table " + TableName);
+				seq.setIsTableID(tableID);
+				seq.saveEx();
+				next_id = INIT_NO;
+			}
+			if (! CConnection.get().getDatabase().createSequence(TableName+"_SQ", 1, INIT_NO, Integer.MAX_VALUE, next_id, trxName))
+				return false;
+
+			return true;
+		}
+
 		MSequence seq = new MSequence (ctx, 0, trxName);
 		if (tableID)
 			seq.setClientOrg(0, 0);
@@ -697,13 +723,6 @@ public class MSequence extends X_AD_Sequence
 		}
 		seq.setIsTableID(tableID);
 		seq.saveEx();
-		
-		if (tableID && SYSTEM_NATIVE_SEQUENCE)
-		{
-			int next_id = seq.getCurrentNext();
-			if (! CConnection.get().getDatabase().createSequence(TableName+"_SQ", 1, 0 , 99999999,  next_id, trxName))
-				return false;
-		}
 
 		return true;
 	}	//	createTableSequence
@@ -863,7 +882,9 @@ public class MSequence extends X_AD_Sequence
 	public int getNextID()
 	{
 		int retValue = getCurrentNext();
-		setCurrentNext(retValue + getIncrementNo());
+		if (! (MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false) && isTableID())) {
+			setCurrentNext(retValue + getIncrementNo());
+		}
 		return retValue;
 	}	//	getNextNo
 
@@ -871,10 +892,10 @@ public class MSequence extends X_AD_Sequence
 	 * 	Validate Table Sequence Values
 	 *	@return true if updated
 	 */
-	public boolean validateTableIDValue()
+	public String validateTableIDValue()
 	{
 		if (!isTableID())
-			return false;
+			return null;
 		String tableName = getName();
 		int AD_Column_ID = DB.getSQLValue(null, "SELECT MAX(c.AD_Column_ID) "
 			+ "FROM AD_Table t"
@@ -882,13 +903,14 @@ public class MSequence extends X_AD_Sequence
 			+ "WHERE t.TableName='" + tableName + "'"
 			+ " AND c.ColumnName='" + tableName + "_ID'");
 		if (AD_Column_ID <= 0)
-			return false;
+			return null;
 		//
 		MSystem system = MSystem.get(getCtx());
 		int IDRangeEnd = 0;
 		if (system.getIDRangeEnd() != null)
 			IDRangeEnd = system.getIDRangeEnd().intValue();
-		boolean change = false;
+
+		String changeMsg = null;
 		String info = null;
 
 		//	Current Next
@@ -899,11 +921,13 @@ public class MSequence extends X_AD_Sequence
 		if (maxTableID < INIT_NO)
 			maxTableID = INIT_NO - 1;
 		maxTableID++;		//	Next
-		if (getCurrentNext() < maxTableID)
+		
+		int currentNextValue = getCurrentNext();
+		if (currentNextValue < maxTableID)
 		{
 			setCurrentNext(maxTableID);
 			info = "CurrentNext=" + maxTableID;
-			change = true;
+			changeMsg = getName() + " ID  " + currentNextValue + " -> " + maxTableID;
 		}
 
 		//	Get Max System_ID used in Table
@@ -911,23 +935,47 @@ public class MSequence extends X_AD_Sequence
 			+ " WHERE " + tableName + "_ID < " + INIT_NO;
 		int maxTableSysID = DB.getSQLValue(null, sql);
 		if (maxTableSysID <= 0)
-			maxTableSysID = INIT_SYS_NO - 1;
-		maxTableSysID++;	//	Next
-		if (getCurrentNextSys() < maxTableSysID)
-		{
+			maxTableSysID = INIT_SYS_NO;
+		int currentNextSysValue = getCurrentNextSys();
+		if (currentNextSysValue < maxTableSysID){
 			setCurrentNextSys(maxTableSysID);
 			if (info == null)
 				info = "CurrentNextSys=" + maxTableSysID;
 			else
 				info += " - CurrentNextSys=" + maxTableSysID;
-			change = true;
+		
+			if (changeMsg == null) 
+				changeMsg = getName() + " Sys " + currentNextSysValue + " -> " + maxTableSysID;
+			else  
+				changeMsg += " - " +getName() + " Sys " + currentNextSysValue + " -> " + maxTableSysID;	
 		}
 		if (info != null)
 			log.fine(getName() + " - " + info);
-		return change;
+		
+		return changeMsg;
 	}	//	validate
 
-
+	@Override
+	public int getCurrentNext() {
+		if (MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false) && isTableID()){
+		    return DB.getNextID (getAD_Client_ID(),getName(),get_TrxName());
+		} else {
+		   return super.getCurrentNext();
+		}
+	}
+		 
+    @Override
+	public void setCurrentNext(int CurrentNext) {	
+		if (MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false) && isTableID()){
+			while (true) {
+				int id = DB.getNextID(getAD_Client_ID(),getName(),get_TrxName());
+				if (id < 0 || id >= (CurrentNext-1))
+					break;
+	        }
+		}else {
+			super.setCurrentNext(CurrentNext);			
+		}
+	}
 	/**************************************************************************
 	 *	Test
 	 *	@param args ignored
@@ -1333,7 +1381,10 @@ public class MSequence extends X_AD_Sequence
 					cym = sdf.format(d);
 				}
 				if (orgLevelSeq) {
-					org = (Integer)tab.getValue(seq.getOrgColumn());
+					String orgColumn = seq.getOrgColumn();
+					Object orgObj = tab.getValue(orgColumn);
+					if (orgObj != null)
+						org = (Integer)orgObj;
 				}
 				String sql = "SELECT CurrentNext FROM AD_Sequence_No WHERE AD_Sequence_ID=? AND CalendarYearMonth=? AND AD_Org_ID=?";
 				currentNext = DB.getSQLValue(null, sql, AD_Sequence_ID, cym, org);

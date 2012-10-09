@@ -235,7 +235,7 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MDistributionRunLine[")
+		StringBuilder sb = new StringBuilder ("MDistributionRunLine[")
 			.append(get_ID()).append("-")
 			.append(getInfo())
 			.append ("]");
@@ -248,7 +248,7 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	 */
 	public String getInfo()
 	{
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		sb.append("Line=").append(getLine())
 			.append (",TotalQty=").append(getTotalQty())
 			.append(",SumMin=").append(getActualMin())

@@ -39,7 +39,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7577593682255409240L;
+	private static final long serialVersionUID = -1477519989047580644L;
 
 	/**
 	 * 	Get Active LDAP Server
@@ -121,8 +121,9 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	 */
 	public String getInfo()
 	{
-		return "Auth=" + m_auth 
-			+ ", OK=" + m_ok + ", Error=" + m_error;
+		StringBuilder msgreturn = new StringBuilder("Auth=").append(m_auth) 
+				.append(", OK=").append(m_ok).append(", Error=").append(m_error);
+		return msgreturn.toString();
 	}	//	getInfo
 	
 	/**
@@ -180,10 +181,10 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		String sql = "DELETE AD_LdapProcessorLog "
-			+ "WHERE AD_LdapProcessor_ID=" + getAD_LdapProcessor_ID() 
-			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("DELETE AD_LdapProcessorLog ")
+			.append("WHERE AD_LdapProcessor_ID=").append(getAD_LdapProcessor_ID()) 
+			.append(" AND (Created+").append(getKeepLogDays()).append(") < SysDate");
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		return no;
 	}	//	deleteLog
 
@@ -202,7 +203,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	 */
 	public String getFrequencyType()
 	{
-		return X_R_RequestProcessor.FREQUENCYTYPE_Minute;
+		return X_AD_Schedule.FREQUENCYTYPE_Minute;
 	}	//	getFrequencyType
 	
 	/**
@@ -211,7 +212,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MLdapProcessor[");
+		StringBuilder sb = new StringBuilder ("MLdapProcessor[");
 		sb.append (get_ID()).append ("-").append (getName())
 			.append (",Port=").append (getLdapPort())
 			.append ("]");
@@ -233,35 +234,35 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 		if (ldapUser == null)
 			ldapUser = new MLdapUser();
 		
-		String error = null;
-		String info = null;
+		StringBuilder error = null;
+		StringBuilder info = null;
 
 		//	User
 		if (usr == null || usr.trim().length () == 0)
 		{
-			error = "@NotFound@ User";
-			ldapUser.setErrorString(error);
+			error = new StringBuilder("@NotFound@ User");
+			ldapUser.setErrorString(error.toString());
 			m_error++;
-			log.warning (error);
+			log.warning (error.toString());
 			return ldapUser;
 		}
 		usr = usr.trim();
 		//	Client
 		if (o == null || o.length () == 0)
 		{
-			error = "@NotFound@ O";
-			ldapUser.setErrorString(error);
+			error = new StringBuilder("@NotFound@ O");
+			ldapUser.setErrorString(error.toString());
 			m_error++;
-			log.warning (error);
+			log.warning (error.toString());
 			return ldapUser;
 		}
 		int AD_Client_ID = findClient(o);
 		if (AD_Client_ID == 0)
 		{
-			error = "@NotFound@ O=" + o;
-			ldapUser.setErrorString(error);
+			error = new StringBuilder("@NotFound@ O=").append(o);
+			ldapUser.setErrorString(error.toString());
 			m_error++;
-			log.config (error);
+			log.config (error.toString());
 			return ldapUser;
 		}
 		//	Optional Interest Area
@@ -271,10 +272,10 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 			R_InterestArea_ID = findInterestArea (AD_Client_ID, ou);
 			if (R_InterestArea_ID == 0)
 			{
-				error = "@NotFound@ OU=" + ou;
-				ldapUser.setErrorString(error);
+				error = new StringBuilder("@NotFound@ OU=").append(ou);
+				ldapUser.setErrorString(error.toString());
 				m_error++;
-				log.config (error);
+				log.config (error.toString());
 				return ldapUser;
 			}
 		}
@@ -322,7 +323,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
-			error = "System Error";
+			error = new StringBuilder("System Error");
 		}
 		finally
 		{
@@ -332,51 +333,51 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 		if (error != null)
 		{
 			m_error++;
-			ldapUser.setErrorString(error);
+			ldapUser.setErrorString(error.toString());
 			return ldapUser;
 		}
 		//
 		if (AD_User_ID == 0)
 		{
-			error = "@NotFound@ User=" + usr;
-			info = "User not found - " + usr;
+			error = new StringBuilder("@NotFound@ User=").append(usr);
+			info = new StringBuilder("User not found - ").append(usr);
 		}
 		else if (!IsActive)
 		{
-			error = "@NotFound@ User=" + usr;
-			info = "User not active - " + usr;
+			error = new StringBuilder("@NotFound@ User=").append(usr);
+			info = new StringBuilder("User not active - ").append(usr);
 		}
 		else if (EMailVerify == null)
 		{
-			error = "@UserNotVerified@ User=" + usr;
-			info = "User EMail not verified - " + usr;
+			error = new StringBuilder("@UserNotVerified@ User=").append(usr);
+			info = new StringBuilder("User EMail not verified - ").append(usr);
 		}
 		else if (usr.equalsIgnoreCase(LdapUser))
-			info = "User verified - Ldap=" + usr 
-				+ (isUnique ? "" : " - Not Unique");
+			info = new StringBuilder("User verified - Ldap=").append(usr) 
+				.append((isUnique ? "" : " - Not Unique"));
 		else if (usr.equalsIgnoreCase(Value)) 
-			info = "User verified - Value=" + usr 
-				+ (isUnique ? "" : " - Not Unique");
+			info = new StringBuilder("User verified - Value=").append(usr) 
+				.append((isUnique ? "" : " - Not Unique"));
 		else if (usr.equalsIgnoreCase(EMail)) 
-			info = "User verified - EMail=" + usr 
-				+ (isUnique ? "" : " - Not Unique");
+			info = new StringBuilder("User verified - EMail=").append(usr) 
+				.append((isUnique ? "" : " - Not Unique"));
 		else 
-			info = "User verified ?? " + usr
-				+ " - Name=" + Name 
-				+ ", Ldap=" + LdapUser + ", Value=" + Value
-				+ (isUnique ? "" : " - Not Unique");
+			info = new StringBuilder("User verified ?? ").append(usr)
+				.append(" - Name=").append(Name) 
+				.append(", Ldap=").append(LdapUser).append(", Value=").append(Value)
+				.append((isUnique ? "" : " - Not Unique"));
 
 		//	Error
 		if (error != null)	//	should use Language of the User
 		{
-			logAccess (AD_Client_ID, AD_User_ID, R_InterestArea_ID, info, error);
-			ldapUser.setErrorString(Msg.translate (getCtx(), error));
+			logAccess (AD_Client_ID, AD_User_ID, R_InterestArea_ID, info.toString(), error.toString());
+			ldapUser.setErrorString(Msg.translate (getCtx(), error.toString()));
 			return ldapUser;
 		}
 		//	Done
 		if (R_InterestArea_ID == 0)
 		{
-			logAccess (AD_Client_ID, AD_User_ID, R_InterestArea_ID, info, null);
+			logAccess (AD_Client_ID, AD_User_ID, R_InterestArea_ID, info.toString(), null);
 			ldapUser.setOrg(o);
 			ldapUser.setOrgUnit(ou);
 			ldapUser.setUserId(usr);
@@ -407,7 +408,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
-			error = "System Error (2)";
+			error = new StringBuilder("System Error (2)");
 		}
 		finally
 		{
@@ -418,38 +419,38 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 		if (error != null)
 		{
 			m_error++;
-			ldapUser.setErrorString(error);
+			ldapUser.setErrorString(error.toString());
 			return ldapUser;
 		}
 		
 		if (!found)
 		{
-			error = "@UserNotSubscribed@ User=" + usr;
-			info = "No User Interest - " + usr 
-				+ " - R_InterestArea_ID=" + R_InterestArea_ID;
+			error = new StringBuilder("@UserNotSubscribed@ User=").append(usr);
+			info = new StringBuilder("No User Interest - ").append(usr) 
+				.append(" - R_InterestArea_ID=").append(R_InterestArea_ID);
 		}
 		else if (OptOutDate != null)
 		{
-			error = "@UserNotSubscribed@ User=" + usr + " @OptOutDate@=" + OptOutDate;
-			info = "Opted out - " + usr + " - OptOutDate=" + OptOutDate;
+			error = new StringBuilder("@UserNotSubscribed@ User=").append(usr).append(" @OptOutDate@=").append(OptOutDate);
+			info = new StringBuilder("Opted out - ").append(usr).append(" - OptOutDate=").append(OptOutDate);
 		}
 		else if (!IsActive)
 		{
-			error = "@UserNotSubscribed@ User=" + usr;
-			info = "User Interest Not Active - " + usr; 
+			error = new StringBuilder("@UserNotSubscribed@ User=").append(usr);
+			info = new StringBuilder("User Interest Not Active - ").append(usr); 
 		}
 		else
-			info = "User subscribed - " + usr;
+			info = new StringBuilder("User subscribed - ").append(usr);
 		
 		
 		if (error != null)	//	should use Language of the User
 		{
-			logAccess (AD_Client_ID, AD_User_ID, R_InterestArea_ID, info, error);
-			ldapUser.setErrorString(Msg.translate (getCtx(), error));
+			logAccess (AD_Client_ID, AD_User_ID, R_InterestArea_ID, info.toString(), error.toString());
+			ldapUser.setErrorString(Msg.translate (getCtx(), error.toString()));
 			return ldapUser;
 		}
 		//	Done
-		logAccess (AD_Client_ID, AD_User_ID, R_InterestArea_ID, info, null);
+		logAccess (AD_Client_ID, AD_User_ID, R_InterestArea_ID, info.toString(), null);
 		ldapUser.setOrg(o);
 		ldapUser.setOrgUnit(ou);
 		ldapUser.setUserId(usr);
@@ -523,5 +524,15 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 		access.setSummary (info);
 		access.save ();
 	}	//	logAccess
+
+	@Override
+	public String getScheduleType() {
+		return MSchedule.SCHEDULETYPE_Frequency;
+	}
+
+	@Override
+	public String getCronPattern() {
+	   return null;
+	}
 
 }	//	MLdapProcessor

@@ -543,14 +543,14 @@ public class Viewer extends CFrame
 			AEnv.addMenuItem("InfoSchedule", null, null, mView, this);			
 		}
 		//FR [ 1966328 ] 
-		if (MRole.getDefault().isAllow_Info_MRP())
-		{
-			AEnv.addMenuItem("InfoMRP", "Info", null, mView, this);	
-		}
-		if (MRole.getDefault().isAllow_Info_CRP())
-		{
-			AEnv.addMenuItem("InfoCRP", "Info", null, mView, this);	
-		}
+//		if (MRole.getDefault().isAllow_Info_MRP())
+//		{
+//			AEnv.addMenuItem("InfoMRP", "Info", null, mView, this);	
+//		}
+//		if (MRole.getDefault().isAllow_Info_CRP())
+//		{
+//			AEnv.addMenuItem("InfoCRP", "Info", null, mView, this);	
+//		}
 		mView.addSeparator();
 		if (MRole.getDefault().isAllow_Info_Order())
 		{
@@ -568,10 +568,10 @@ public class Viewer extends CFrame
 		{
 			AEnv.addMenuItem("InfoPayment", "Info", null, mView, this);	
 		}
-		if (MRole.getDefault().isAllow_Info_CashJournal())
-		{
-			AEnv.addMenuItem("InfoCashLine", "Info", null, mView, this);	
-		}
+//		if (MRole.getDefault().isAllow_Info_CashJournal())
+//		{
+//			AEnv.addMenuItem("InfoCashLine", "Info", null, mView, this);	
+//		}
 		if (MRole.getDefault().isAllow_Info_Resource())
 		{
 			AEnv.addMenuItem("InfoAssignment", "Info", null, mView, this);	

@@ -11,10 +11,11 @@ DECLARE
    currentseq       NUMERIC (10);
    ok               BOOLEAN;
    r                RECORD;
+   isnativeseqon    VARCHAR (1);  
 BEGIN
 
-   FOR r IN (SELECT   tablename
-                 FROM AD_TABLE t
+ FOR r IN (SELECT tablename
+             FROM AD_TABLE t
                 WHERE EXISTS (
                          SELECT 1
                            FROM AD_COLUMN c
@@ -41,14 +42,15 @@ BEGIN
       END;
 
     IF ok THEN
+      isnativeseqon := get_Sysconfig('SYSTEM_NATIVE_SEQUENCE','N',0,0);
       IF currentnextsys IS NULL
       THEN
          currentnextsys := 0;
       END IF;
 
-      SELECT INTO currentnextsys CASE SIGN (currentnextsys - 50000)
-                     WHEN -1 THEN 50000
-                     ELSE coalesce (currentnextsys + 1, 50000)
+      SELECT INTO currentnextsys CASE SIGN (currentnextsys - 200000)
+                     WHEN -1 THEN 200000
+                     ELSE coalesce (currentnextsys + 1, 200000)
                      END;
 
       cmdnosys :=
@@ -72,15 +74,25 @@ BEGIN
                      ELSE coalesce (currentnext + 1, 1000000)
                      END ;
 
-      cmdseq :=
-            'SELECT currentnext, currentnextsys FROM AD_Sequence '
-         || 'WHERE Name = '''
-         || r.tablename
-         || ''' AND istableid = ''Y''';
+      IF isnativeseqon ='Y' THEN 
+       cmdseq :=
+ 	    'SELECT nextval('''||trim(r.tablename)||'_sq'''||') as currentnext, 
+		    currentnextsys 
+	       FROM AD_Sequence '
+ 	 || 'WHERE Name = '''
+	 || r.tablename
+	 || ''' AND istableid = ''Y''';
+      ELSE 
+       cmdseq :=
+ 	    'SELECT currentnext, currentnextsys FROM AD_Sequence '
+ 	 || 'WHERE Name = '''
+	 || r.tablename
+	 || ''' AND istableid = ''Y''';
+      END IF;  
 
       EXECUTE cmdseq INTO currentseq, currentseqsys;
 
-      IF currentnextsys <> currentseqsys OR currentnext <> currentseq
+      IF currentnextsys <> currentseqsys OR (currentnext <> currentseq AND isnativeseqon ='N')
       THEN
          cmdupd :=
                'update ad_sequence set currentnextsys = '
@@ -93,8 +105,12 @@ BEGIN
 
          EXECUTE cmdupd;
       END IF;
+      IF currentseq < currentnext AND isnativeseqon ='Y' THEN 
+         WHILE NOT currentseq >= (currentnext-1) LOOP
+           EXECUTE 'SELECT nextval('''||trim(r.tablename)||'_sq'''||')' INTO currentseq;
+         END LOOP;
+      END IF;			
     END IF;
-
    END LOOP;
 END;
 $func$ LANGUAGE plpgsql;

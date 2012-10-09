@@ -75,8 +75,8 @@ public class ModelClassGenerator
 		this.packageName = packageName;
 
 		//	create column access methods
-		StringBuffer mandatory = new StringBuffer();
-		StringBuffer sb = createColumns(AD_Table_ID, mandatory);
+		StringBuilder mandatory = new StringBuilder();
+		StringBuilder sb = createColumns(AD_Table_ID, mandatory);
 
 		// Header
 		String className = createHeader(AD_Table_ID, sb, mandatory, packageName);
@@ -105,7 +105,7 @@ public class ModelClassGenerator
 	 * 	@param packageName package name
 	 * 	@return class name
 	 */
-	private String createHeader (int AD_Table_ID, StringBuffer sb, StringBuffer mandatory, String packageName)
+	private String createHeader (int AD_Table_ID, StringBuilder sb, StringBuilder mandatory, String packageName)
 	{
 		String tableName = "";
 		int accessLevel = 0;
@@ -147,7 +147,7 @@ public class ModelClassGenerator
 		String keyColumn = tableName + "_ID";
 		String className = "X_" + tableName;
 		//
-		StringBuffer start = new StringBuffer ()
+		StringBuilder start = new StringBuilder()
 			.append (ModelInterfaceGenerator.COPY)
 			.append ("/** Generated Model - DO NOT CHANGE */").append(NL)
 			.append("package " + packageName + ";").append(NL)
@@ -248,7 +248,7 @@ public class ModelClassGenerator
 			 .append("    }").append(NL)
 		;
 
-		StringBuffer end = new StringBuffer ("}");
+		StringBuilder end = new StringBuilder ("}");
 		//
 		sb.insert(0, start);
 		sb.append(end);
@@ -262,9 +262,9 @@ public class ModelClassGenerator
 	 * 	@param mandatory init call for mandatory columns
 	 * 	@return set/get method
 	 */
-	private StringBuffer createColumns (int AD_Table_ID, StringBuffer mandatory)
+	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory,"		//	1..3
 			+ " c.AD_Reference_ID, c.AD_Reference_Value_ID, DefaultValue, SeqNo, "	//	4..7
 			+ " c.FieldLength, c.ValueMin, c.ValueMax, c.VFormat, c.Callout, "	//	8..12
@@ -319,8 +319,10 @@ public class ModelClassGenerator
 						isKeyNamePairCreated = true;
 					}
 					else {
-						throw new RuntimeException("More than one primary identifier found "
-								+ " (AD_Table_ID=" + AD_Table_ID + ", ColumnName=" + columnName + ")");
+						
+						StringBuilder msgException = new StringBuilder("More than one primary identifier found ")
+									.append(" (AD_Table_ID=").append(AD_Table_ID).append(", ColumnName=").append(columnName).append(")");						
+						throw new RuntimeException(msgException.toString());
 					}
 				}
 			}
@@ -357,7 +359,7 @@ public class ModelClassGenerator
 	 * 	@param IsEncrypted stored encrypted
 	@return set/get method
 	 */
-	private String createColumnMethods (StringBuffer mandatory,
+	private String createColumnMethods (StringBuilder mandatory,
 		String columnName, boolean isUpdateable, boolean isMandatory,
 		int displayType, int AD_Reference_ID, int fieldLength,
 		String defaultValue, String ValueMin, String ValueMax, String VFormat,
@@ -384,7 +386,7 @@ public class ModelClassGenerator
 				setValue = "\t\tset_ValueNoCheckE";
 		}
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		// TODO - New functionality
 		// 1) Must understand which class to reference
@@ -542,7 +544,7 @@ public class ModelClassGenerator
 
 
 	//	****** Set Comment ******
-	public void generateJavaSetComment(String columnName, String propertyName, String description, StringBuffer result) {
+	public void generateJavaSetComment(String columnName, String propertyName, String description, StringBuilder result) {
 
 		result.append(NL)
 			.append("\t/** Set ").append(propertyName).append(".").append(NL)
@@ -558,7 +560,7 @@ public class ModelClassGenerator
 	}
 
 	//	****** Get Comment ******
-	public void generateJavaGetComment(String propertyName, String description, StringBuffer result) {
+	public void generateJavaGetComment(String propertyName, String description, StringBuilder result) {
 
 		result.append(NL)
 			.append("\t/** Get ").append(propertyName);
@@ -584,18 +586,18 @@ public class ModelClassGenerator
 		public static final String NEXTACTION_None = "N";
 		public static final String NEXTACTION_FollowUp = "F";
 	 */
-	private String addListValidation (StringBuffer sb, int AD_Reference_ID,
+	private String addListValidation (StringBuilder sb, int AD_Reference_ID,
 		String columnName)
 	{
-		StringBuffer retValue = new StringBuffer();
+		StringBuilder retValue = new StringBuilder();
 		retValue.append("\n\t/** ").append(columnName).append(" AD_Reference_ID=").append(AD_Reference_ID) .append(" */")
 			.append("\n\tpublic static final int ").append(columnName.toUpperCase())
 			.append("_AD_Reference_ID=").append(AD_Reference_ID).append(";");
 		//
 		boolean found = false;
-		StringBuffer values = new StringBuffer("Reference_ID=")
+		StringBuilder values = new StringBuilder("Reference_ID=")
 			.append(AD_Reference_ID);
-		StringBuffer statement = new StringBuffer();
+		StringBuilder statement = new StringBuilder();
 		//
 		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? ORDER BY AD_Ref_List_ID";
 		PreparedStatement pstmt = null;
@@ -625,7 +627,7 @@ public class ModelClassGenerator
 				//	Name (SmallTalkNotation)
 				String name = rs.getString(2);
 				char[] nameArray = name.toCharArray();
-				StringBuffer nameClean = new StringBuffer();
+				StringBuilder nameClean = new StringBuilder();
 				boolean initCap = true;
 				for (int i = 0; i < nameArray.length; i++)
 				{
@@ -678,10 +680,10 @@ public class ModelClassGenerator
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		statement.append(")"
-			+ "; "
-			+ "else "
-			+ "throw new IllegalArgumentException (\"").append(columnName)
+		statement.append(")")
+			.append("; ")
+			.append("else ")
+			.append("throw new IllegalArgumentException (\"").append(columnName)
 			.append(" Invalid value - \" + ").append(columnName)
 			.append(" + \" - ").append(values).append("\");");
 		// [1762461] - Remove hardcoded list items checking in generated models
@@ -697,13 +699,13 @@ public class ModelClassGenerator
 	 *	 * @param displayType int
 	@return method code
 	 */
-	private StringBuffer createKeyNamePair (String columnName, int displayType)
+	private StringBuilder createKeyNamePair (String columnName, int displayType)
 	{
 		String method = "get" + columnName + "()";
 		if (displayType != DisplayType.String)
 			method = "String.valueOf(" + method + ")";
 
-		StringBuffer sb = new StringBuffer(NL)
+		StringBuilder sb = new StringBuilder(NL)
 			.append("    /** Get Record ID/ColumnName").append(NL)
 			.append("        @return ID/ColumnName pair").append(NL)
 			.append("      */").append(NL)
@@ -722,7 +724,7 @@ public class ModelClassGenerator
 	 * 	@param sb string buffer
 	 * 	@param fileName file name
 	 */
-	private void writeToFile (StringBuffer sb, String fileName)
+	private void writeToFile (StringBuilder sb, String fileName)
 	{
 		try
 		{
@@ -797,7 +799,7 @@ public class ModelClassGenerator
 	 * Generate java imports
 	 * @param sb
 	 */
-	private void createImports(StringBuffer sb) {
+	private void createImports(StringBuilder sb) {
 		for (String name : s_importClasses) {
 			sb.append("import ").append(name).append(";").append(NL);
 		}
@@ -810,7 +812,7 @@ public class ModelClassGenerator
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("GenerateModel[").append("]");
+		StringBuilder sb = new StringBuilder("GenerateModel[").append("]");
 		return sb.toString();
 	}
 
@@ -839,10 +841,10 @@ public class ModelClassGenerator
 		if (!tableLike.startsWith("'") || !tableLike.endsWith("'"))
 			tableLike = "'" + tableLike + "'";
 
-		String entityTypeFilter = null;
+		StringBuilder entityTypeFilter = new StringBuilder();
 		if (entityType != null && entityType.trim().length() > 0)
 		{
-			entityTypeFilter = "EntityType IN (";
+			entityTypeFilter.append("EntityType IN (");
 			StringTokenizer tokenizer = new StringTokenizer(entityType, ",");
 			int i = 0;
 			while(tokenizer.hasMoreTokens()) {
@@ -850,15 +852,15 @@ public class ModelClassGenerator
 				if (!token.startsWith("'") || !token.endsWith("'"))
 					token = "'" + token + "'";
 				if (i > 0)
-					entityTypeFilter = entityTypeFilter + ",";
-				entityTypeFilter = entityTypeFilter + token;
+					entityTypeFilter.append(",");
+				entityTypeFilter.append(token);
 				i++;
 			}
-			entityTypeFilter = entityTypeFilter+")";
+			entityTypeFilter.append(")");
 		}
 		else
 		{
-			entityTypeFilter = "EntityType IN ('U','A')";
+			entityTypeFilter.append("EntityType IN ('U','A')");
 		}
 
 		String directory = sourceFolder.trim();
@@ -877,14 +879,14 @@ public class ModelClassGenerator
 			file.mkdirs();
 
 		//	complete sql
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT AD_Table_ID ")
 			.append("FROM AD_Table ")
 			.append("WHERE (TableName IN ('RV_WarehousePrice','RV_BPartner')")	//	special views
 			.append(" OR IsView='N')")
 			.append(" AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' ");
 		sql.append(" AND TableName LIKE ").append(tableLike);
-		sql.append(" AND ").append(entityTypeFilter);
+		sql.append(" AND ").append(entityTypeFilter.toString());
 		sql.append(" ORDER BY TableName");
 
 		//

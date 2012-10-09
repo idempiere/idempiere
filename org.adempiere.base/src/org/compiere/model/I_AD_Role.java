@@ -18,12 +18,11 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role
  *  @author Adempiere (generated) 
- *  @version 360LTS.015
+ *  @version Release 3.6.0LTS
  */
 public interface I_AD_Role 
 {
@@ -36,7 +35,7 @@ public interface I_AD_Role
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 6 - System - Client 
+    /** AccessLevel =  - System - Client 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(6);
 
@@ -75,6 +74,15 @@ public interface I_AD_Role
 	  * Responsibility Role
 	  */
 	public int getAD_Role_ID();
+
+    /** Column name AD_Role_UU */
+    public static final String COLUMNNAME_AD_Role_UU = "AD_Role_UU";
+
+	/** Set AD_Role_UU	  */
+	public void setAD_Role_UU (String AD_Role_UU);
+
+	/** Get AD_Role_UU	  */
+	public String getAD_Role_UU();
 
     /** Column name AD_Tree_Menu_ID */
     public static final String COLUMNNAME_AD_Tree_Menu_ID = "AD_Tree_Menu_ID";
@@ -133,24 +141,6 @@ public interface I_AD_Role
 	/** Get Allow Info BPartner	  */
 	public boolean isAllow_Info_BPartner();
 
-    /** Column name Allow_Info_CashJournal */
-    public static final String COLUMNNAME_Allow_Info_CashJournal = "Allow_Info_CashJournal";
-
-	/** Set Allow Info CashJournal	  */
-	public void setAllow_Info_CashJournal (boolean Allow_Info_CashJournal);
-
-	/** Get Allow Info CashJournal	  */
-	public boolean isAllow_Info_CashJournal();
-
-    /** Column name Allow_Info_CRP */
-    public static final String COLUMNNAME_Allow_Info_CRP = "Allow_Info_CRP";
-
-	/** Set Allow Info CRP	  */
-	public void setAllow_Info_CRP (boolean Allow_Info_CRP);
-
-	/** Get Allow Info CRP	  */
-	public boolean isAllow_Info_CRP();
-
     /** Column name Allow_Info_InOut */
     public static final String COLUMNNAME_Allow_Info_InOut = "Allow_Info_InOut";
 
@@ -168,15 +158,6 @@ public interface I_AD_Role
 
 	/** Get Allow Info Invoice	  */
 	public boolean isAllow_Info_Invoice();
-
-    /** Column name Allow_Info_MRP */
-    public static final String COLUMNNAME_Allow_Info_MRP = "Allow_Info_MRP";
-
-	/** Set Allow Info MRP	  */
-	public void setAllow_Info_MRP (boolean Allow_Info_MRP);
-
-	/** Get Allow Info MRP	  */
-	public boolean isAllow_Info_MRP();
 
     /** Column name Allow_Info_Order */
     public static final String COLUMNNAME_Allow_Info_Order = "Allow_Info_Order";
@@ -440,6 +421,19 @@ public interface I_AD_Role
 	  * This is a manual process
 	  */
 	public boolean isManual();
+
+    /** Column name IsMasterRole */
+    public static final String COLUMNNAME_IsMasterRole = "IsMasterRole";
+
+	/** Set Master Role.
+	  * A master role cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
+	  */
+	public void setIsMasterRole (boolean IsMasterRole);
+
+	/** Get Master Role.
+	  * A master role cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
+	  */
+	public boolean isMasterRole();
 
     /** Column name IsMenuAutoExpand */
     public static final String COLUMNNAME_IsMenuAutoExpand = "IsMenuAutoExpand";

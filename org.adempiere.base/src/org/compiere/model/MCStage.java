@@ -163,7 +163,7 @@ public class MCStage extends X_CM_CStage
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MCStage[")
+		StringBuilder sb = new StringBuilder ("MCStage[")
 			.append (get_ID()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	} 	//	toString
@@ -208,10 +208,10 @@ public class MCStage extends X_CM_CStage
 		}
 		if (newRecord)
 		{
-			StringBuffer sb = new StringBuffer ("INSERT INTO AD_TreeNodeCMS "
-				+ "(AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, "
-				+ "AD_Tree_ID, Node_ID, Parent_ID, SeqNo) "
-				+ "VALUES (")
+			StringBuilder sb = new StringBuilder ("INSERT INTO AD_TreeNodeCMS ")
+				.append("(AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, ")
+				.append("AD_Tree_ID, Node_ID, Parent_ID, SeqNo) ")
+				.append("VALUES (")
 				.append(getAD_Client_ID()).append(",0, 'Y', SysDate, 0, SysDate, 0,")
 				.append(getAD_Tree_ID()).append(",").append(get_ID())
 				.append(", 0, 999)");
@@ -237,7 +237,7 @@ public class MCStage extends X_CM_CStage
 		if (!success)
 			return success;
 		//
-		StringBuffer sb = new StringBuffer ("DELETE FROM AD_TreeNodeCMS ")
+		StringBuilder sb = new StringBuilder ("DELETE FROM AD_TreeNodeCMS ")
 			.append(" WHERE Node_ID=").append(get_IDOld())
 			.append(" AND AD_Tree_ID=").append(getAD_Tree_ID());
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
@@ -263,7 +263,7 @@ public class MCStage extends X_CM_CStage
 	 */
 	protected boolean checkElements () {
 		X_CM_Template thisTemplate = new X_CM_Template(getCtx(), this.getCM_Template_ID(), get_TrxName());
-		StringBuffer thisElementList = new StringBuffer(thisTemplate.getElements());
+		StringBuilder thisElementList = new StringBuilder(thisTemplate.getElements());
 		while (thisElementList.indexOf("\n")>=0) {
 			String thisElement = thisElementList.substring(0,thisElementList.indexOf("\n"));
 			thisElementList.delete(0,thisElementList.indexOf("\n")+1);
@@ -279,7 +279,8 @@ public class MCStage extends X_CM_CStage
 	 * @param elementName
 	 */
 	protected void checkElement(String elementName) {
-		int [] tableKeys = X_CM_CStage_Element.getAllIDs("CM_CStage_Element", "CM_CStage_ID=" + this.get_ID() + " AND Name like '" + elementName + "'", get_TrxName());
+		StringBuilder msgx = new StringBuilder("CM_CStage_ID=").append(this.get_ID()).append(" AND Name like '").append(elementName).append("'");
+		int [] tableKeys = X_CM_CStage_Element.getAllIDs("CM_CStage_Element", msgx.toString(), get_TrxName());
 		if (tableKeys==null || tableKeys.length==0) {
 			X_CM_CStage_Element thisElement = new X_CM_CStage_Element(getCtx(), 0, get_TrxName());
 			thisElement.setAD_Client_ID(getAD_Client_ID());
@@ -296,11 +297,13 @@ public class MCStage extends X_CM_CStage
 	 * @return true if updated
 	 */
 	protected boolean checkTemplateTable () {
-		int [] tableKeys = X_CM_TemplateTable.getAllIDs("CM_TemplateTable", "CM_Template_ID=" + this.getCM_Template_ID(), get_TrxName());
+		StringBuilder msgx = new StringBuilder("CM_Template_ID=").append(this.getCM_Template_ID());
+		int [] tableKeys = X_CM_TemplateTable.getAllIDs("CM_TemplateTable", msgx.toString(), get_TrxName());
 		if (tableKeys!=null) {
 			for (int i=0;i<tableKeys.length;i++) {
 				X_CM_TemplateTable thisTemplateTable = new X_CM_TemplateTable(getCtx(), tableKeys[i], get_TrxName());
-				int [] existingKeys = X_CM_CStageTTable.getAllIDs("CM_CStageTTable", "CM_TemplateTable_ID=" + thisTemplateTable.get_ID(), get_TrxName());
+				msgx = new StringBuilder("CM_TemplateTable_ID=").append(thisTemplateTable.get_ID());
+				int [] existingKeys = X_CM_CStageTTable.getAllIDs("CM_CStageTTable", msgx.toString(), get_TrxName());
 				if (existingKeys==null || existingKeys.length==0) {
 					X_CM_CStageTTable newCStageTTable = new X_CM_CStageTTable(getCtx(), 0, get_TrxName());
 					newCStageTTable.setAD_Client_ID(getAD_Client_ID());

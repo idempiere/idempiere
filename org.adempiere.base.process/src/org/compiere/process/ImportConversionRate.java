@@ -84,138 +84,139 @@ public class ImportConversionRate extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("doIt - AD_Client_ID=" + p_AD_Client_ID
-			+ ",AD_Org_ID=" + p_AD_Org_ID
-			+ ",C_ConversionType_ID=" + p_C_ConversionType_ID
-			+ ",ValidFrom=" + p_ValidFrom
-			+ ",CreateReciprocalRate=" + p_CreateReciprocalRate);
+		StringBuilder msglog = new StringBuilder("doIt - AD_Client_ID=").append(p_AD_Client_ID)
+				.append(",AD_Org_ID=").append(p_AD_Org_ID)
+				.append(",C_ConversionType_ID=").append(p_C_ConversionType_ID)
+				.append(",ValidFrom=").append(p_ValidFrom)
+				.append(",CreateReciprocalRate=").append(p_CreateReciprocalRate);
+		log.info(msglog.toString());
 		//
-		StringBuffer sql = null;
+		StringBuilder sql = null;
 		int no = 0;
-		String clientCheck = " AND AD_Client_ID=" + p_AD_Client_ID;
+		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(p_AD_Client_ID);
 		//	****	Prepare	****
 
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuffer ("DELETE I_Conversion_Rate "
-				  + "WHERE I_IsImported='Y'").append (clientCheck);
+			sql = new StringBuilder ("DELETE I_Conversion_Rate ")
+				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, Location, IsActive, Created/Updated
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate "
-			  + "SET AD_Client_ID = COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append ("),"
-			  + " AD_Org_ID = COALESCE (AD_Org_ID,").append (p_AD_Org_ID).append ("),");
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate ")
+			  .append("SET AD_Client_ID = COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append ("),")
+			  .append(" AD_Org_ID = COALESCE (AD_Org_ID,").append (p_AD_Org_ID).append ("),");
 		if (p_C_ConversionType_ID != 0)
 			sql.append(" C_ConversionType_ID = COALESCE (C_ConversionType_ID,").append (p_C_ConversionType_ID).append ("),");
 		if (p_ValidFrom != null)
 			sql.append(" ValidFrom = COALESCE (ValidFrom,").append (DB.TO_DATE(p_ValidFrom)).append ("),");
 		else
 			sql.append(" ValidFrom = COALESCE (ValidFrom,SysDate),");
-		sql.append(" CreateReciprocalRate = COALESCE (CreateReciprocalRate,'").append (p_CreateReciprocalRate ? "Y" : "N").append ("'),"
-			+ " IsActive = COALESCE (IsActive, 'Y'),"
-			+ " Created = COALESCE (Created, SysDate),"
-			+ " CreatedBy = COALESCE (CreatedBy, 0),"
-			+ " Updated = COALESCE (Updated, SysDate),"
-			+ " UpdatedBy = ").append(getAD_User_ID()).append(","
-			+ " I_ErrorMsg = ' ',"
-			+ " Processed = 'N',"	
-			+ " I_IsImported = 'N' "
-			+ "WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
+		sql.append(" CreateReciprocalRate = COALESCE (CreateReciprocalRate,'").append (p_CreateReciprocalRate ? "Y" : "N").append ("'),")
+			.append(" IsActive = COALESCE (IsActive, 'Y'),")
+			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
+			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" UpdatedBy = ").append(getAD_User_ID()).append(",")
+			.append(" I_ErrorMsg = ' ',")
+			.append(" Processed = 'N',"	)
+			.append(" I_IsImported = 'N' ")
+			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info ("Reset =" + no);
 
 		//	Org
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate o "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, '"
-			+ "WHERE (AD_Org_ID IS NULL"
-			+ " OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N')))"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate o ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, '")
+			.append("WHERE (AD_Org_ID IS NULL")
+			.append(" OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N')))")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Org =" + no);
 			
 		//	Conversion Type
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET C_ConversionType_ID = (SELECT C_ConversionType_ID FROM C_ConversionType c"
-			+ " WHERE c.Value=i.ConversionTypeValue AND c.AD_Client_ID IN (0,i.AD_Client_ID) AND c.IsActive='Y') "
-			+ "WHERE C_ConversionType_ID IS NULL AND ConversionTypeValue IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET C_ConversionType_ID = (SELECT C_ConversionType_ID FROM C_ConversionType c")
+			.append(" WHERE c.Value=i.ConversionTypeValue AND c.AD_Client_ID IN (0,i.AD_Client_ID) AND c.IsActive='Y') ")
+			.append("WHERE C_ConversionType_ID IS NULL AND ConversionTypeValue IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.fine("Set ConversionType =" + no);
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid ConversionType, ' "
-			+ "WHERE (C_ConversionType_ID IS NULL"
-			+ " OR NOT EXISTS (SELECT * FROM C_ConversionType c "
-				+ "WHERE i.C_ConversionType_ID=c.C_ConversionType_ID AND c.IsActive='Y'"
-				+ " AND c.AD_Client_ID IN (0,i.AD_Client_ID)))"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid ConversionType, ' ")
+			.append("WHERE (C_ConversionType_ID IS NULL")
+			.append(" OR NOT EXISTS (SELECT * FROM C_ConversionType c ")
+				.append("WHERE i.C_ConversionType_ID=c.C_ConversionType_ID AND c.IsActive='Y'")
+				.append(" AND c.AD_Client_ID IN (0,i.AD_Client_ID)))")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid ConversionType =" + no);
 		
 		//	Currency
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET C_Currency_ID = (SELECT C_Currency_ID FROM C_Currency c"
-			+ "	WHERE c.ISO_Code=i.ISO_Code AND c.AD_Client_ID IN (0,i.AD_Client_ID) AND c.IsActive='Y') "
-			+ "WHERE C_Currency_ID IS NULL AND ISO_Code IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET C_Currency_ID = (SELECT C_Currency_ID FROM C_Currency c")
+			.append("	WHERE c.ISO_Code=i.ISO_Code AND c.AD_Client_ID IN (0,i.AD_Client_ID) AND c.IsActive='Y') ")
+			.append("WHERE C_Currency_ID IS NULL AND ISO_Code IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.fine("Set Currency =" + no);
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Currency, ' "
-			+ "WHERE (C_Currency_ID IS NULL"
-			+ " OR NOT EXISTS (SELECT * FROM C_Currency c "
-				+ "WHERE i.C_Currency_ID=c.C_Currency_ID AND c.IsActive='Y'"
-				+ " AND c.AD_Client_ID IN (0,i.AD_Client_ID)))"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Currency, ' ")
+			.append("WHERE (C_Currency_ID IS NULL")
+			.append(" OR NOT EXISTS (SELECT * FROM C_Currency c ")
+				.append("WHERE i.C_Currency_ID=c.C_Currency_ID AND c.IsActive='Y'")
+				.append(" AND c.AD_Client_ID IN (0,i.AD_Client_ID)))")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Currency =" + no);
 
 		//	Currency To
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET C_Currency_ID_To = (SELECT C_Currency_ID FROM C_Currency c"
-			+ "	WHERE c.ISO_Code=i.ISO_Code_To AND c.AD_Client_ID IN (0,i.AD_Client_ID) AND c.IsActive='Y') "
-			+ "WHERE C_Currency_ID_To IS NULL AND ISO_Code_To IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET C_Currency_ID_To = (SELECT C_Currency_ID FROM C_Currency c")
+			.append("	WHERE c.ISO_Code=i.ISO_Code_To AND c.AD_Client_ID IN (0,i.AD_Client_ID) AND c.IsActive='Y') ")
+			.append("WHERE C_Currency_ID_To IS NULL AND ISO_Code_To IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.fine("Set Currency To =" + no);
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Currency To, ' "
-			+ "WHERE (C_Currency_ID_To IS NULL"
-			+ " OR NOT EXISTS (SELECT * FROM C_Currency c "
-				+ "WHERE i.C_Currency_ID_To=c.C_Currency_ID AND c.IsActive='Y'"
-				+ " AND c.AD_Client_ID IN (0,i.AD_Client_ID)))"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Currency To, ' ")
+			.append("WHERE (C_Currency_ID_To IS NULL")
+			.append(" OR NOT EXISTS (SELECT * FROM C_Currency c ")
+				.append("WHERE i.C_Currency_ID_To=c.C_Currency_ID AND c.IsActive='Y'")
+				.append(" AND c.AD_Client_ID IN (0,i.AD_Client_ID)))")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Currency To =" + no);
 			
 		//	Rates
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET MultiplyRate = 1 / DivideRate "
-			+ "WHERE (MultiplyRate IS NULL OR MultiplyRate = 0) AND DivideRate IS NOT NULL AND DivideRate<>0"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET MultiplyRate = 1 / DivideRate ")
+			.append("WHERE (MultiplyRate IS NULL OR MultiplyRate = 0) AND DivideRate IS NOT NULL AND DivideRate<>0")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.fine("Set MultiplyRate =" + no);
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET DivideRate = 1 / MultiplyRate "
-			+ "WHERE (DivideRate IS NULL OR DivideRate = 0) AND MultiplyRate IS NOT NULL AND MultiplyRate<>0"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET DivideRate = 1 / MultiplyRate ")
+			.append("WHERE (DivideRate IS NULL OR DivideRate = 0) AND MultiplyRate IS NOT NULL AND MultiplyRate<>0")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			log.fine("Set DivideRate =" + no);
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate i "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Rates, ' "
-			+ "WHERE (MultiplyRate IS NULL OR MultiplyRate = 0 OR DivideRate IS NULL OR DivideRate = 0)"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Rates, ' ")
+			.append("WHERE (MultiplyRate IS NULL OR MultiplyRate = 0 OR DivideRate IS NULL OR DivideRate = 0)")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Rates =" + no);
@@ -231,8 +232,8 @@ public class ImportConversionRate extends SvrProcess
 		/*********************************************************************/
 
 		int noInsert = 0;
-		sql = new StringBuffer ("SELECT * FROM I_Conversion_Rate "
-			+ "WHERE I_IsImported='N'").append (clientCheck)
+		sql = new StringBuilder ("SELECT * FROM I_Conversion_Rate ")
+			.append("WHERE I_IsImported='N'").append (clientCheck)
 			.append(" ORDER BY C_Currency_ID, C_Currency_ID_To, ValidFrom");
 		PreparedStatement pstmt = null;
 		try
@@ -289,9 +290,9 @@ public class ImportConversionRate extends SvrProcess
 		}
 
 		//	Set Error to indicator to not imported
-		sql = new StringBuffer ("UPDATE I_Conversion_Rate "
-			+ "SET I_IsImported='N', Updated=SysDate "
-			+ "WHERE I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_Conversion_Rate ")
+			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");
 		//

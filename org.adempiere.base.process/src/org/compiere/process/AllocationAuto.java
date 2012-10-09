@@ -33,6 +33,7 @@ import org.compiere.model.MPayment;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Automatic Allocation Process
@@ -170,7 +171,8 @@ public class AllocationAuto extends SvrProcess
 			}
 		}
 		//
-		return "@Created@ #" + countBP + "/" + countAlloc;
+		StringBuilder msgreturn = new StringBuilder("@Created@ #").append(countBP).append("/").append(countAlloc);
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**
@@ -258,19 +260,19 @@ public class AllocationAuto extends SvrProcess
 	private MPayment[] getPayments (int C_BPartner_ID)
 	{
 		ArrayList<MPayment> list = new ArrayList<MPayment>();
-		String sql = "SELECT * FROM C_Payment "
-			+ "WHERE IsAllocated='N' AND Processed='Y' AND C_BPartner_ID=?"
-			+ " AND IsPrepayment='N' AND C_Charge_ID IS NULL ";
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_Payment ")
+			.append("WHERE IsAllocated='N' AND Processed='Y' AND C_BPartner_ID=?")
+			.append(" AND IsPrepayment='N' AND C_Charge_ID IS NULL ");
 		if (ONLY_AP.equals(p_APAR))
-			sql += "AND IsReceipt='N' ";
+			sql.append("AND IsReceipt='N' ");
 		else if (ONLY_AR.equals(p_APAR))
-			sql += "AND IsReceipt='Y' ";
-		sql += "ORDER BY DateTrx";
+			sql.append("AND IsReceipt='Y' ");
+		sql.append("ORDER BY DateTrx");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			pstmt.setInt (1, C_BPartner_ID);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
@@ -288,7 +290,7 @@ public class AllocationAuto extends SvrProcess
  		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		finally
 		{
@@ -308,18 +310,18 @@ public class AllocationAuto extends SvrProcess
 	private MInvoice[] getInvoices (int C_BPartner_ID)
 	{
 		ArrayList<MInvoice> list = new ArrayList<MInvoice>();
-		String sql = "SELECT * FROM C_Invoice "
-			+ "WHERE IsPaid='N' AND Processed='Y' AND C_BPartner_ID=? ";
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_Invoice ")
+			.append("WHERE IsPaid='N' AND Processed='Y' AND C_BPartner_ID=? ");
 		if (ONLY_AP.equals(p_APAR))
-			sql += "AND IsSOTrx='N' ";
+			sql.append("AND IsSOTrx='N' ");
 		else if (ONLY_AR.equals(p_APAR))
-			sql += "AND IsSOTrx='Y' ";
-		sql += "ORDER BY DateInvoiced";
+			sql.append("AND IsSOTrx='Y' ");
+		sql.append("ORDER BY DateInvoiced");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			pstmt.setInt (1, C_BPartner_ID);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
@@ -336,7 +338,7 @@ public class AllocationAuto extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		finally
 		{
@@ -396,7 +398,8 @@ public class AllocationAuto extends SvrProcess
 							{
 								if (payment.allocateIt())
 								{
-									addLog(0, payment.getDateAcct(), openAmt, payment.getDocumentNo() + " [1]",payment.get_Table_ID(),payment.getC_Payment_ID());
+									String message = Msg.parseTranslation(getCtx(), "@PaymentAllocated@ " + payment.getDocumentNo() + " [1]");
+									addLog(0, payment.getDateAcct(), openAmt, message, payment.get_Table_ID(), payment.getC_Payment_ID());
 									count++;
 								}
 								break;
@@ -440,7 +443,8 @@ public class AllocationAuto extends SvrProcess
 				{
 					if (payment.allocateIt())
 					{
-						addLog(0, payment.getDateAcct(), availableAmt, payment.getDocumentNo() + " [n]");
+						String message = Msg.parseTranslation(getCtx(), "@PaymentAllocated@ " + payment.getDocumentNo() + " [n]");
+						addLog(0, payment.getDateAcct(), availableAmt, message);
 						count++;
 					}
 				}
@@ -768,8 +772,9 @@ public class AllocationAuto extends SvrProcess
 		
 		if (allocatedPayments.compareTo(allocatedInvoices) != 0)
 		{
-			throw new AdempiereSystemError("Allocated Payments=" + allocatedPayments
-				+  " <> Invoices=" + allocatedInvoices);
+			StringBuilder msg = new StringBuilder("Allocated Payments=").append(allocatedPayments)
+					.append(" <> Invoices=").append(allocatedInvoices);
+			throw new AdempiereSystemError(msg.toString());
 		}
 		processAllocation();	
 		return 1;
@@ -828,12 +833,15 @@ public class AllocationAuto extends SvrProcess
 		if (m_allocation == null)
 			return true;
 		boolean success = m_allocation.processIt(MAllocationHdr.DOCACTION_Complete);
-		if (!success)
-			throw new IllegalStateException("Allocation Process Failed "+ m_allocation.getDocumentNo() +
-					" " + m_allocation.getProcessMsg());
+		if (!success){
+			StringBuilder msg = new StringBuilder("Allocation Process Failed ").append(m_allocation.getDocumentNo())
+					.append(" ").append( m_allocation.getProcessMsg());
+			throw new IllegalStateException(msg.toString());
+		}	
 		else
 			m_allocation.saveEx();
-		addLog(0, m_allocation.getDateAcct(), null, m_allocation.getDescription());
+		String message = Msg.parseTranslation(getCtx(), "@AllocationProcessed@ " + m_allocation.getDescription());
+		addLog(0, m_allocation.getDateAcct(), null, message);
 		m_allocation = null;
 		return success;
 	}	//	processAllocation

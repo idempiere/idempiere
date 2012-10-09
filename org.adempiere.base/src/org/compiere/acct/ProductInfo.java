@@ -84,12 +84,12 @@ public class ProductInfo
 			return;
 
 		String sql = "SELECT p.ProductType, pc.Value, "     //  1..2
-			+ "p.C_RevenueRecognition_ID,p.C_UOM_ID, "	 	//  3..4
-			+ "p.AD_Client_ID,p.AD_Org_ID, "             	//  5..6
-			+ "p.IsBOM, p.IsStocked "						//	7..8
-			+ "FROM M_Product_Category pc"
-			+ " INNER JOIN M_Product p ON (pc.M_Product_Category_ID=p.M_Product_Category_ID) "
-			+ "WHERE p.M_Product_ID=?";						//  #1
+					+ "p.C_RevenueRecognition_ID,p.C_UOM_ID, "	 	//  3..4
+					+ "p.AD_Client_ID,p.AD_Org_ID, "             	//  5..6
+					+ "p.IsBOM, p.IsStocked "						//	7..8
+					+ "FROM M_Product_Category pc"
+					+ " INNER JOIN M_Product p ON (pc.M_Product_Category_ID=p.M_Product_Category_ID) "
+					+ "WHERE p.M_Product_ID=?";						//  #1
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -297,8 +297,8 @@ public class ProductInfo
 	private BigDecimal getPOCost (MAcctSchema as)
 	{
 		String sql = "SELECT C_Currency_ID, PriceList,PricePO,PriceLastPO "
-			+ "FROM M_Product_PO WHERE M_Product_ID=? "
-			+ "ORDER BY IsCurrentVendor DESC";
+				+ "FROM M_Product_PO WHERE M_Product_ID=? "
+				+ "ORDER BY IsCurrentVendor DESC";
 
 		int C_Currency_ID = 0;
 		BigDecimal PriceList = null;

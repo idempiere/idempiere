@@ -28,6 +28,7 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrgInfo;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 /**
  *	Generate PO from Sales Order
@@ -102,35 +103,34 @@ public class OrderPOCreate extends SvrProcess
 			&& p_C_BPartner_ID == 0 && p_Vendor_ID == 0)
 			throw new AdempiereUserError("You need to restrict selection");
 		//
-		String sql = "SELECT * FROM C_Order o "
-			+ "WHERE o.IsSOTrx='Y'"
+		StringBuilder sql = new StringBuilder("SELECT * FROM C_Order o ")
+			.append("WHERE o.IsSOTrx='Y'")
 			//	No Duplicates
 			//	" AND o.Link_Order_ID IS NULL"
-			+ " AND NOT EXISTS (SELECT * FROM C_OrderLine ol WHERE o.C_Order_ID=ol.C_Order_ID AND ol.Link_OrderLine_ID IS NOT NULL)"
-			; 
+			.append(" AND NOT EXISTS (SELECT * FROM C_OrderLine ol WHERE o.C_Order_ID=ol.C_Order_ID AND ol.Link_OrderLine_ID IS NOT NULL)"); 
 		if (p_C_Order_ID != 0)
-			sql += " AND o.C_Order_ID=?";
+			sql.append(" AND o.C_Order_ID=?");
 		else
 		{
 			if (p_C_BPartner_ID != 0)
-				sql += " AND o.C_BPartner_ID=?";
+				sql.append(" AND o.C_BPartner_ID=?");
 			if (p_Vendor_ID != 0)
-				sql += " AND EXISTS (SELECT * FROM C_OrderLine ol"
-					+ " INNER JOIN M_Product_PO po ON (ol.M_Product_ID=po.M_Product_ID) "
-						+ "WHERE o.C_Order_ID=ol.C_Order_ID AND po.C_BPartner_ID=?)"; 
+				sql.append(" AND EXISTS (SELECT * FROM C_OrderLine ol")
+					.append(" INNER JOIN M_Product_PO po ON (ol.M_Product_ID=po.M_Product_ID) ")
+						.append("WHERE o.C_Order_ID=ol.C_Order_ID AND po.C_BPartner_ID=?)"); 
 			if (p_DateOrdered_From != null && p_DateOrdered_To != null)
-				sql += "AND TRUNC(o.DateOrdered) BETWEEN ? AND ?";
+				sql.append("AND TRUNC(o.DateOrdered) BETWEEN ? AND ?");
 			else if (p_DateOrdered_From != null && p_DateOrdered_To == null)
-				sql += "AND TRUNC(o.DateOrdered) >= ?";
+				sql.append("AND TRUNC(o.DateOrdered) >= ?");
 			else if (p_DateOrdered_From == null && p_DateOrdered_To != null)
-				sql += "AND TRUNC(o.DateOrdered) <= ?";
+				sql.append("AND TRUNC(o.DateOrdered) <= ?");
 		}
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		int counter = 0;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			if (p_C_Order_ID != 0)
 				pstmt.setInt (1, p_C_Order_ID);
 			else
@@ -162,8 +162,9 @@ public class OrderPOCreate extends SvrProcess
 			rs = null; pstmt = null;
 		}
 		if (counter == 0)
-			log.fine(sql);
-		return "@Created@ " + counter;
+			log.fine(sql.toString());
+		StringBuilder msgreturn = new StringBuilder("@Created@ ").append(counter);
+		return msgreturn.toString();
 	}	//	doIt
 	
 	/**
@@ -208,7 +209,8 @@ public class OrderPOCreate extends SvrProcess
 				if (po == null || po.getBill_BPartner_ID() != C_BPartner_ID)
 				{
 					po = createPOForVendor(rs.getInt(1), so);
-					addLog(0, null, null, po.getDocumentNo(),po.get_Table_ID(),po.getC_Order_ID());
+					String message = Msg.parseTranslation(getCtx(), "@OrderCreated@ " + po.getDocumentNo());
+					addLog(0, null, null, message, po.get_Table_ID(), po.getC_Order_ID());
 					counter++;
 				}
 

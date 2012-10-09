@@ -83,12 +83,12 @@ public class OrderPayScheduleValidate extends SvrProcess
 				schedule[i].saveEx();				
 			}
 		}
-		String msg = "@OK@";
+		StringBuilder msg = new StringBuilder("@OK@");
 		if (!valid)
-			msg = "@GrandTotal@ = " + order.getGrandTotal() 
-				+ " <> @Total@ = " + total 
-				+ "  - @Difference@ = " + order.getGrandTotal().subtract(total); 
-		return Msg.parseTranslation(getCtx(), msg);
+			msg = new StringBuilder("@GrandTotal@ = ") .append(order.getGrandTotal()) 
+				.append(" <> @Total@ = ").append(total) 
+				.append("  - @Difference@ = ").append(order.getGrandTotal().subtract(total)); 
+		return Msg.parseTranslation(getCtx(), msg.toString());
 	}	//	doIt
 
 }	//	OrderPayScheduleValidate

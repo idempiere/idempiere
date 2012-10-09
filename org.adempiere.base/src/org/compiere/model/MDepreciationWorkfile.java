@@ -63,9 +63,9 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		int		p_wkasset_ID = 0;
 		//p_A_Asset_ID = getA_Asset_ID();
 		p_wkasset_ID = getA_Depreciation_Workfile_ID();
-		StringBuffer sqlB = new StringBuffer ("UPDATE A_Depreciation_Workfile "
-				+ "SET Processing = 'Y'"
-				+ " WHERE A_Depreciation_Workfile_ID = " + p_wkasset_ID	);
+		StringBuilder sqlB = new StringBuilder ("UPDATE A_Depreciation_Workfile ")
+				.append("SET Processing = 'Y'")
+				.append(" WHERE A_Depreciation_Workfile_ID = " ).append(p_wkasset_ID	);
 		
 		int no = DB.executeUpdate (sqlB.toString(),null);
 		if (no == -1)

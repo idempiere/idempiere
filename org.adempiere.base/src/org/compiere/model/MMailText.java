@@ -88,7 +88,7 @@ public class MMailText extends X_R_MailText
 		if (!all)
 			return parse(m_MailText);
 		//
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(m_MailText);
 		String s = m_MailText2;
 		if (s != null && s.length() > 0)
@@ -176,7 +176,7 @@ public class MMailText extends X_R_MailText
 		
 		String inStr = text;
 		String token;
-		StringBuffer outStr = new StringBuffer();
+		StringBuilder outStr = new StringBuilder();
 
 		int i = inStr.indexOf('@');
 		while (i != -1)
@@ -211,8 +211,10 @@ public class MMailText extends X_R_MailText
 	private String parseVariable (String variable, PO po)
 	{
 		int index = po.get_ColumnIndex(variable);
-		if (index == -1)
-			return "@" + variable + "@";	//	keep for next
+		if (index == -1){
+			StringBuilder msgreturn = new StringBuilder("@").append(variable).append("@");
+			return msgreturn.toString();	//	keep for next
+		}	
 		//
 		Object value = po.get_Value(index);
 		if (value == null)
@@ -305,13 +307,13 @@ public class MMailText extends X_R_MailText
 	{
 		if (m_bpartner != null && m_bpartner.getAD_Language() != null)
 		{
-			String key = m_bpartner.getAD_Language() + get_ID();
+			StringBuilder key = new StringBuilder(m_bpartner.getAD_Language()).append(get_ID());
 			MMailTextTrl trl = s_cacheTrl.get(key);
 			if (trl == null)
 			{
 				trl = getTranslation(m_bpartner.getAD_Language());
 				if (trl != null)
-					s_cacheTrl.put(key, trl);
+					s_cacheTrl.put(key.toString(), trl);
 			}
 			if (trl != null)
 			{

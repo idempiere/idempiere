@@ -84,18 +84,18 @@ public class ExpenseSOrder extends SvrProcess
 	 */
 	protected String doIt() throws java.lang.Exception
 	{
-		StringBuffer sql = new StringBuffer("SELECT * FROM S_TimeExpenseLine el "
-			+ "WHERE el.AD_Client_ID=?"						//	#1
-			+ " AND el.C_BPartner_ID>0 AND el.IsInvoiced='Y'"	//	Business Partner && to be invoiced
-			+ " AND el.C_OrderLine_ID IS NULL"					//	not invoiced yet
-			+ " AND EXISTS (SELECT * FROM S_TimeExpense e "		//	processed only
-				+ "WHERE el.S_TimeExpense_ID=e.S_TimeExpense_ID AND e.Processed='Y')");		
+		StringBuilder sql = new StringBuilder("SELECT * FROM S_TimeExpenseLine el ")
+			.append("WHERE el.AD_Client_ID=?")						//	#1
+			.append(" AND el.C_BPartner_ID>0 AND el.IsInvoiced='Y'")	//	Business Partner && to be invoiced
+			.append(" AND el.C_OrderLine_ID IS NULL")					//	not invoiced yet
+			.append(" AND EXISTS (SELECT * FROM S_TimeExpense e ")		//	processed only
+				.append("WHERE el.S_TimeExpense_ID=e.S_TimeExpense_ID AND e.Processed='Y')");		
 		if (p_C_BPartner_ID != 0)
 			sql.append(" AND el.C_BPartner_ID=?");			//	#2
 		if (p_DateFrom != null || m_DateTo != null)
 		{
-			sql.append(" AND EXISTS (SELECT * FROM S_TimeExpense e "
-				+ "WHERE el.S_TimeExpense_ID=e.S_TimeExpense_ID");
+			sql.append(" AND EXISTS (SELECT * FROM S_TimeExpense e ")
+				.append("WHERE el.S_TimeExpense_ID=e.S_TimeExpense_ID");
 			if (p_DateFrom != null)
 				sql.append(" AND e.DateReport >= ?");		//	#3
 			if (m_DateTo != null)
@@ -158,8 +158,8 @@ public class ExpenseSOrder extends SvrProcess
 			rs = null; pstmt = null;
 		}
 		completeOrder ();
-
-		return "@Created@=" + m_noOrders;
+		StringBuilder msgreturn = new StringBuilder("@Created@=").append(m_noOrders);
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**
@@ -180,9 +180,11 @@ public class ExpenseSOrder extends SvrProcess
 			m_order.setBPartner(bp);
 			if (m_order.getC_BPartner_Location_ID() == 0)
 			{
-				log.log(Level.SEVERE, "No BP Location: " + bp);
+				StringBuilder msglog = new StringBuilder("No BP Location: ").append(bp);
+				log.log(Level.SEVERE, msglog.toString());
+				msglog = new StringBuilder("No Location: ").append(te.getDocumentNo()).append(" ").append(bp.getName());
 				addLog(0, te.getDateReport(), 
-					null, "No Location: " + te.getDocumentNo() + " " + bp.getName());
+					null, msglog.toString());
 				m_order = null;
 				return;
 			}
@@ -271,8 +273,10 @@ public class ExpenseSOrder extends SvrProcess
 			return;
 		m_order.setDocAction(DocAction.ACTION_Prepare);
 		if (!m_order.processIt(DocAction.ACTION_Prepare)) {
-			log.warning("Order Process Failed: " + m_order + " - " + m_order.getProcessMsg());
-			throw new IllegalStateException("Order Process Failed: " + m_order + " - " + m_order.getProcessMsg());
+			StringBuilder msglog = new StringBuilder("Order Process Failed: ").append(m_order).append(" - ").append(m_order.getProcessMsg());
+			log.warning(msglog.toString());
+			msglog = new StringBuilder("Order Process Failed: ").append(m_order).append(" - ").append(m_order.getProcessMsg());
+			throw new IllegalStateException(msglog.toString());
 		}
 		if (!m_order.save())
 			throw new IllegalStateException("Cannot save Order");

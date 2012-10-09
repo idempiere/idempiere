@@ -109,9 +109,9 @@ public class OrgOwnership extends SvrProcess
 			throw new IllegalArgumentException ("Warehouse - Org cannot be * (0)");
 
 		//	Set Warehouse
-		StringBuffer sql = new StringBuffer();
-		sql.append("UPDATE M_Warehouse "
-			+ "SET AD_Org_ID=").append(p_AD_Org_ID)
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE M_Warehouse ")
+			.append("SET AD_Org_ID=").append(p_AD_Org_ID)
 			.append(" WHERE M_Warehouse_ID=").append(p_M_Warehouse_ID)
 			.append(" AND AD_Client_ID=").append(getAD_Client_ID())
 			.append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
@@ -119,9 +119,9 @@ public class OrgOwnership extends SvrProcess
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "M_Warehouse_ID"));
 		
 		//	Set Accounts
-		sql = new StringBuffer();
-		sql.append("UPDATE M_Warehouse_Acct "
-			+ "SET AD_Org_ID=").append(p_AD_Org_ID)
+		sql = new StringBuilder();
+		sql.append("UPDATE M_Warehouse_Acct ")
+			.append("SET AD_Org_ID=").append(p_AD_Org_ID)
 			.append(" WHERE M_Warehouse_ID=").append(p_M_Warehouse_ID)
 			.append(" AND AD_Client_ID=").append(getAD_Client_ID())
 			.append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
@@ -129,9 +129,9 @@ public class OrgOwnership extends SvrProcess
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_AcctSchema_ID"));
 
 		//	Set Locators
-		sql = new StringBuffer();
-		sql.append("UPDATE M_Locator "
-			+ "SET AD_Org_ID=").append(p_AD_Org_ID)
+		sql = new StringBuilder();
+		sql.append("UPDATE M_Locator ")
+			.append("SET AD_Org_ID=").append(p_AD_Org_ID)
 			.append(" WHERE M_Warehouse_ID=").append(p_M_Warehouse_ID)
 			.append(" AND AD_Client_ID=").append(getAD_Client_ID())
 			.append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
@@ -139,12 +139,12 @@ public class OrgOwnership extends SvrProcess
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "M_Locator_ID"));
 	
 		//	Set Storage
-		sql = new StringBuffer();
-		sql.append("UPDATE M_Storage s "
-			+ "SET AD_Org_ID=").append(p_AD_Org_ID)
-			.append(" WHERE EXISTS "
-				+ "(SELECT * FROM M_Locator l WHERE l.M_Locator_ID=s.M_Locator_ID"
-				+ " AND l.M_Warehouse_ID=").append(p_M_Warehouse_ID)
+		sql = new StringBuilder();
+		sql.append("UPDATE M_Storage s ")
+			.append("SET AD_Org_ID=").append(p_AD_Org_ID)
+			.append(" WHERE EXISTS ")
+				.append("(SELECT * FROM M_Locator l WHERE l.M_Locator_ID=s.M_Locator_ID")
+				.append(" AND l.M_Warehouse_ID=").append(p_M_Warehouse_ID)
 			.append(") AND AD_Client_ID=").append(getAD_Client_ID())
 			.append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
@@ -162,39 +162,39 @@ public class OrgOwnership extends SvrProcess
 		log.info ("productOwnership - M_Product_Category_ID=" + p_M_Product_Category_ID
 			+ ", M_Product_ID=" + p_M_Product_ID);
 			
-		String set = " SET AD_Org_ID=" + p_AD_Org_ID;
+		StringBuilder set = new StringBuilder(" SET AD_Org_ID=").append(p_AD_Org_ID);
 		if (p_M_Product_Category_ID > 0)
-			set += " WHERE EXISTS (SELECT * FROM M_Product p"
-				+ " WHERE p.M_Product_ID=x.M_Product_ID AND p.M_Product_Category_ID=" 
-					+ p_M_Product_Category_ID + ")";
+			set.append(" WHERE EXISTS (SELECT * FROM M_Product p")
+				.append(" WHERE p.M_Product_ID=x.M_Product_ID AND p.M_Product_Category_ID=") 
+					.append(p_M_Product_Category_ID).append(")");
 		else
-			set += " WHERE M_Product_ID=" + p_M_Product_ID;
-		set += " AND AD_Client_ID=" + getAD_Client_ID() + " AND AD_Org_ID<>" + p_AD_Org_ID;
+			set.append(" WHERE M_Product_ID=").append(p_M_Product_ID);
+		set.append(" AND AD_Client_ID=").append(getAD_Client_ID()).append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
 		log.fine("productOwnership - " + set);
 		
 		//	Product
-		String sql = "UPDATE M_Product x " + set;
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE M_Product x ").append(set);
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "M_Product_ID"));
 		
 		//	Acct
-		sql = "UPDATE M_Product_Acct x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE M_Product_Acct x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_AcctSchema_ID"));
 		
 		//	BOM
-		sql = "UPDATE M_Product_BOM x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE M_Product_BOM x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "M_Product_BOM_ID"));
 		
 		//	PO
-		sql = "UPDATE M_Product_PO x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE M_Product_PO x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "PO"));
 
 		//	Trl
-		sql = "UPDATE M_Product_Trl x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE M_Product_Trl x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "AD_Language"));
 
 		return "";
@@ -209,43 +209,43 @@ public class OrgOwnership extends SvrProcess
 		log.info ("bPartnerOwnership - C_BP_Group_ID=" + p_C_BP_Group_ID
 			+ ", C_BPartner_ID=" + p_C_BPartner_ID);
 			
-		String set = " SET AD_Org_ID=" + p_AD_Org_ID;
+		StringBuilder set = new StringBuilder(" SET AD_Org_ID=").append(p_AD_Org_ID);
 		if (p_C_BP_Group_ID > 0)
-			set += " WHERE EXISTS (SELECT * FROM C_BPartner bp WHERE bp.C_BPartner_ID=x.C_BPartner_ID AND bp.C_BP_Group_ID=" + p_C_BP_Group_ID + ")";
+			set.append(" WHERE EXISTS (SELECT * FROM C_BPartner bp WHERE bp.C_BPartner_ID=x.C_BPartner_ID AND bp.C_BP_Group_ID=").append(p_C_BP_Group_ID).append(")");
 		else
-			set += " WHERE C_BPartner_ID=" + p_C_BPartner_ID;
-		set += " AND AD_Client_ID=" + getAD_Client_ID() + " AND AD_Org_ID<>" + p_AD_Org_ID;
-		log.fine("bPartnerOwnership - " + set);
+			set.append(" WHERE C_BPartner_ID=").append(p_C_BPartner_ID);
+		set.append(" AND AD_Client_ID=").append(getAD_Client_ID()).append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
+		log.fine("bPartnerOwnership - " + set.toString());
 
 		//	BPartner
-		String sql = "UPDATE C_BPartner x " + set;
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE C_BPartner x ").append(set);
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_BPartner_ID"));
 		
 		//	Acct xxx
-		sql = "UPDATE C_BP_Customer_Acct x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE C_BP_Customer_Acct x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_AcctSchema_ID"));
-		sql = "UPDATE C_BP_Employee_Acct x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE C_BP_Employee_Acct x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_AcctSchema_ID"));
-		sql = "UPDATE C_BP_Vendor_Acct x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE C_BP_Vendor_Acct x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_AcctSchema_ID"));
 		
 		//	Location
-		sql = "UPDATE C_BPartner_Location x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE C_BPartner_Location x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_BPartner_Location_ID"));
 
 		//	Contcat/User
-		sql = "UPDATE AD_User x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE AD_User x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "AD_User_ID"));
 		
 		//	BankAcct
-		sql = "UPDATE C_BP_BankAccount x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE C_BP_BankAccount x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_BP_BankAccount_ID"));
 
 		return "";
@@ -257,36 +257,36 @@ public class OrgOwnership extends SvrProcess
 	 */
 	private void generalOwnership ()
 	{
-		String set = "SET AD_Org_ID=0 WHERE AD_Client_ID=" + getAD_Client_ID()
-			+ " AND AD_Org_ID<>0"; 
+		StringBuilder set = new StringBuilder("SET AD_Org_ID=0 WHERE AD_Client_ID=").append(getAD_Client_ID())
+			.append(" AND AD_Org_ID<>0"); 
 			
 		//	R_ContactInterest
-		String sql = "UPDATE R_ContactInterest " + set;
-		int no = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE R_ContactInterest ").append(set);
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("generalOwnership - R_ContactInterest=" + no);
 
 		//	AD_User_Roles
-		sql = "UPDATE AD_User_Roles " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE AD_User_Roles ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("generalOwnership - AD_User_Roles=" + no);
 		
 		//	C_BPartner_Product
-		sql = "UPDATE C_BPartner_Product " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE C_BPartner_Product ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("generalOwnership - C_BPartner_Product=" + no);
 
 		//	Withholding
-		sql = "UPDATE C_BP_Withholding x " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE C_BP_Withholding x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("generalOwnership - C_BP_Withholding=" + no);
 
 		//	Replenish
-		sql = "UPDATE M_Replenish " + set;
-		no = DB.executeUpdate(sql, get_TrxName());
+		sql = new StringBuilder("UPDATE M_Replenish ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("generalOwnership - M_Replenish=" + no);
 	

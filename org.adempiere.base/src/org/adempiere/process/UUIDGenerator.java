@@ -76,15 +76,15 @@ public class UUIDGenerator extends SvrProcess {
 			tableName = tableName.trim();
 		if (!tableName.endsWith("%"))
 			tableName = tableName + "%";
-		String sql = "SELECT AD_Table_ID, TableName FROM AD_Table WHERE TableName like ? AND IsView = 'N' AND IsActive='Y'";
+		StringBuilder sql = new StringBuilder("SELECT AD_Table_ID, TableName FROM AD_Table WHERE TableName like ? AND IsView = 'N' AND IsActive='Y'");
 		if (DB.isOracle()) {
-			sql = sql + " ESCAPE '\' ";
+			sql.append(" ESCAPE '\' ");
 		}
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		int count = 0;
 		try  {
-			stmt = DB.prepareStatement(sql, null);
+			stmt = DB.prepareStatement(sql.toString(), null);
 			stmt.setString(1, tableName);
 			rs = stmt.executeQuery();
 			while(rs.next()) {
@@ -133,7 +133,7 @@ public class UUIDGenerator extends SvrProcess {
 	public static void updateUUID(MColumn column, String trxName) {
 		MTable table = (MTable) column.getAD_Table();
 		int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column WHERE AD_Table_ID=? AND ColumnName=?", table.getAD_Table_ID(), table.getTableName()+"_ID");
-		StringBuffer sql = new StringBuffer("SELECT ");
+		StringBuilder sql = new StringBuilder("SELECT ");
 		String keyColumn = null;
 		List<String> compositeKeys = null;
 		if (AD_Column_ID > 0) {
@@ -151,14 +151,19 @@ public class UUIDGenerator extends SvrProcess {
 		}
 		sql.append(" FROM ").append(table.getTableName());
 		sql.append(" WHERE ").append(column.getColumnName()).append(" IS NULL ");
-		String updateSQL = "UPDATE "+table.getTableName()+" SET "+column.getColumnName()+"=? WHERE ";
+		StringBuilder updateSQL = new StringBuilder("UPDATE ");
+		updateSQL.append(table.getTableName());
+		updateSQL.append(" SET ");
+		updateSQL.append(column.getColumnName());
+		updateSQL.append("=? WHERE ");
 		if (AD_Column_ID > 0) {
-			updateSQL = updateSQL + keyColumn + "=?";
+			updateSQL.append(keyColumn).append("=?");
 		} else {
 			for(String s : compositeKeys) {
-				updateSQL = updateSQL + s + "=? AND "; 
+				updateSQL.append(s).append("=? AND "); 
 			}
-			updateSQL = updateSQL.substring(0, updateSQL.length() - " AND ".length());
+			int length = updateSQL.length();
+			updateSQL.delete(length-5, length); // delete last AND
 		}
 		
 		boolean localTrx = false;
@@ -180,7 +185,7 @@ public class UUIDGenerator extends SvrProcess {
 					int recordId = rs.getInt(1);
 					if (recordId > MTable.MAX_OFFICIAL_ID) {
 						UUID uuid = UUID.randomUUID();
-						DB.executeUpdateEx(updateSQL,new Object[]{uuid.toString(), recordId}, trx.getTrxName());
+						DB.executeUpdateEx(updateSQL.toString(),new Object[]{uuid.toString(), recordId}, trx.getTrxName());
 					}
 				} else {
 					UUID uuid = UUID.randomUUID();
@@ -189,7 +194,7 @@ public class UUIDGenerator extends SvrProcess {
 					for (String s : compositeKeys) {
 						params.add(rs.getObject(s));
 					}
-					DB.executeUpdateEx(updateSQL,params.toArray(),trx.getTrxName());
+					DB.executeUpdateEx(updateSQL.toString(),params.toArray(),trx.getTrxName());
 				}
 			}
 			if (localTrx) {
@@ -227,7 +232,7 @@ public class UUIDGenerator extends SvrProcess {
 				tableName = tableName.toLowerCase();
 			}
 			int noColumns = 0;
-			String sql = null;
+			StringBuilder sql = null;
 			//
 			ResultSet rs = null;
 			try
@@ -236,13 +241,13 @@ public class UUIDGenerator extends SvrProcess {
 				while (rs.next())
 				{
 					noColumns++;
-					String columnName = rs.getString ("COLUMN_NAME");
-					if (!columnName.equalsIgnoreCase(column.getColumnName()))
+					StringBuilder columnName = new StringBuilder(rs.getString ("COLUMN_NAME"));
+					if (!columnName.toString().equalsIgnoreCase(column.getColumnName()))
 						continue;
 
 					//	update existing column
 					boolean notNull = DatabaseMetaData.columnNoNulls == rs.getInt("NULLABLE");
-					sql = column.getSQLModify(table, column.isMandatory() != notNull);
+					sql = new StringBuilder(column.getSQLModify(table, column.isMandatory() != notNull));
 					break;
 				}
 			}
@@ -253,20 +258,20 @@ public class UUIDGenerator extends SvrProcess {
 
 			//	No Table
 			if (noColumns == 0)
-				sql = table.getSQLCreate ();
+				sql = new StringBuilder(table.getSQLCreate ());
 			//	No existing column
 			else if (sql == null)
-				sql = column.getSQLAdd(table);
+				sql = new StringBuilder(column.getSQLAdd(table));
 
-			int no = 0;
+			int no = 0;			
 			if (sql.indexOf(DB.SQLSTATEMENT_SEPARATOR) == -1)
 			{
-				no = DB.executeUpdate(sql, false, null);
-				addLog (0, null, new BigDecimal(no), sql);
+				no = DB.executeUpdate(sql.toString(), false, null);
+				addLog (0, null, new BigDecimal(no), sql.toString());
 			}
 			else
 			{
-				String statements[] = sql.split(DB.SQLSTATEMENT_SEPARATOR);
+				String statements[] = sql.toString().split(DB.SQLSTATEMENT_SEPARATOR);
 				for (int i = 0; i < statements.length; i++)
 				{
 					int count = DB.executeUpdate(statements[i], false, null);
@@ -277,25 +282,25 @@ public class UUIDGenerator extends SvrProcess {
 
 			if (no != -1)
 			{
-				String indexName = column.getColumnName()+"_idx";
+				StringBuilder indexName = new StringBuilder(column.getColumnName()).append("_idx");
 				if (indexName.length() > 30) {
 					int i = indexName.length() - 31;
-					indexName = column.getColumnName().substring(0, column.getColumnName().length() - i);
-					indexName = indexName + "_uu_idx";
+					indexName = new StringBuilder(column.getColumnName().substring(0, column.getColumnName().length() - i));
+					indexName.append("_uu_idx");
 				}
-				String indexSql = "CREATE UNIQUE INDEX " + indexName + " ON " + tableName
-					+ "(" + column.getColumnName() +")";
-				DB.executeUpdateEx(indexSql, null);
+				StringBuilder indexSql = new StringBuilder("CREATE UNIQUE INDEX ").append(indexName).append(" ON ").append(tableName)
+					.append("(").append(column.getColumnName()).append(")");
+				DB.executeUpdateEx(indexSql.toString(), null);
 			}
 
 			if (no == -1)
 			{
-				String msg = "@Error@ ";
+				StringBuilder msg = new StringBuilder("@Error@ ");
 				ValueNamePair pp = CLogger.retrieveError();
 				if (pp != null)
-					msg = pp.getName() + " - ";
-				msg += sql;
-				throw new AdempiereUserError (msg);
+					msg = new StringBuilder(pp.getName()).append(" - ");
+				msg.append(sql);
+				throw new AdempiereUserError (msg.toString());
 			}
 		} catch (SQLException e) {
 			throw new DBException(e);

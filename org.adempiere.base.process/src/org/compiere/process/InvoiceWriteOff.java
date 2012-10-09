@@ -134,10 +134,10 @@ public class InvoiceWriteOff extends SvrProcess
 		if (p_CreatePayment && p_C_BankAccount_ID == 0)
 			throw new AdempiereUserError ("@FillMandatory@  @C_BankAccount_ID@");
 		//
-		StringBuffer sql = new StringBuffer(
-			"SELECT C_Invoice_ID,DocumentNo,DateInvoiced,"
-			+ " C_Currency_ID,GrandTotal, invoiceOpen(C_Invoice_ID, 0) AS OpenAmt "
-			+ "FROM C_Invoice WHERE ");
+		StringBuilder sql = new StringBuilder(
+			"SELECT C_Invoice_ID,DocumentNo,DateInvoiced,")
+			.append(" C_Currency_ID,GrandTotal, invoiceOpen(C_Invoice_ID, 0) AS OpenAmt ")
+			.append("FROM C_Invoice WHERE ");
 		if (p_C_Invoice_ID != 0)
 			sql.append("C_Invoice_ID=").append(p_C_Invoice_ID);
 		else
@@ -201,7 +201,8 @@ public class InvoiceWriteOff extends SvrProcess
 		//	final
 		processPayment();
 		processAllocation();
-		return "#" + counter;
+		StringBuilder msgreturn = new StringBuilder("#").append(counter);
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**

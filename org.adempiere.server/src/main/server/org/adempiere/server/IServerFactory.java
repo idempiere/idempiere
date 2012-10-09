@@ -23,5 +23,7 @@ import org.compiere.server.AdempiereServer;
  *
  */
 public interface IServerFactory {
+	
+	// Class implementing this method must take into account if the server can be ran on this IP
 	public AdempiereServer[] create (Properties ctx);
 }

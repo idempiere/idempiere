@@ -758,7 +758,7 @@ public class MMatchPO extends X_M_MatchPO
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MMatchPO[");
+		StringBuilder sb = new StringBuilder ("MMatchPO[");
 		sb.append (get_ID())
 			.append (",Qty=").append (getQty())
 			.append (",C_OrderLine_ID=").append (getC_OrderLine_ID())
@@ -800,10 +800,10 @@ public class MMatchPO extends X_M_MatchPO
 					if (po1.getM_InOutLine_ID() != 0 && po1.getC_InvoiceLine_ID() == 0 
 						&& po2.getM_InOutLine_ID() == 0 && po2.getC_InvoiceLine_ID() != 0)
 					{
-						String s1 = "UPDATE M_MatchPO SET C_InvoiceLine_ID=" 
-							+ po2.getC_InvoiceLine_ID() 
-							+ " WHERE M_MatchPO_ID=" + po1.getM_MatchPO_ID();
-						int no1 = DB.executeUpdate(s1, null);
+						StringBuilder s1 = new StringBuilder("UPDATE M_MatchPO SET C_InvoiceLine_ID=") 
+							.append(po2.getC_InvoiceLine_ID()) 
+							.append(" WHERE M_MatchPO_ID=").append(po1.getM_MatchPO_ID());
+						int no1 = DB.executeUpdate(s1.toString(), null);
 						if (no1 != 1)
 						{
 							errors++;

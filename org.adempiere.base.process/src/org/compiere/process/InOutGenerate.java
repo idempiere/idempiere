@@ -74,7 +74,7 @@ public class InOutGenerate extends SvrProcess
 	private int			m_lastC_BPartner_Location_ID = -1;
 
 	/** The Query sql			*/
-	private String 		m_sql = null;
+	private StringBuffer 		m_sql = null;
 
 	
 	/** Storages temp space				*/
@@ -147,38 +147,38 @@ public class InOutGenerate extends SvrProcess
 		
 		if (p_Selection)	//	VInOutGen
 		{
-			m_sql = "SELECT C_Order.* FROM C_Order, T_Selection "
-				+ "WHERE C_Order.DocStatus='CO' AND C_Order.IsSOTrx='Y' AND C_Order.AD_Client_ID=? "
-				+ "AND C_Order.C_Order_ID = T_Selection.T_Selection_ID " 
-				+ "AND T_Selection.AD_PInstance_ID=? ";
+			m_sql = new StringBuffer("SELECT C_Order.* FROM C_Order, T_Selection ")
+				.append("WHERE C_Order.DocStatus='CO' AND C_Order.IsSOTrx='Y' AND C_Order.AD_Client_ID=? ")
+				.append("AND C_Order.C_Order_ID = T_Selection.T_Selection_ID ") 
+				.append("AND T_Selection.AD_PInstance_ID=? ");
 		}
 		else
 		{
-			m_sql = "SELECT * FROM C_Order o "
-				+ "WHERE DocStatus='CO' AND IsSOTrx='Y'"
+			m_sql = new StringBuffer("SELECT * FROM C_Order o ")
+				.append("WHERE DocStatus='CO' AND IsSOTrx='Y'")
 				//	No Offer,POS
-				+ " AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType "
-					+ "WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR'))"
-				+ "	AND o.IsDropShip='N'"
+				.append(" AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
+					.append("WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR'))")
+				.append("	AND o.IsDropShip='N'")
 				//	No Manual
-				+ " AND o.DeliveryRule<>'M'"
+				.append(" AND o.DeliveryRule<>'M'")
 				//	Open Order Lines with Warehouse
-				+ " AND EXISTS (SELECT * FROM C_OrderLine ol "
-					+ "WHERE ol.M_Warehouse_ID=?";					//	#1
+				.append(" AND EXISTS (SELECT * FROM C_OrderLine ol ")
+					.append("WHERE ol.M_Warehouse_ID=?");					//	#1
 			if (p_DatePromised != null)
-				m_sql += " AND TRUNC(ol.DatePromised)<=?";		//	#2
-			m_sql += " AND o.C_Order_ID=ol.C_Order_ID AND ol.QtyOrdered<>ol.QtyDelivered)";
+				m_sql.append(" AND TRUNC(ol.DatePromised)<=?");		//	#2
+			m_sql.append(" AND o.C_Order_ID=ol.C_Order_ID AND ol.QtyOrdered<>ol.QtyDelivered)");
 			//
 			if (p_C_BPartner_ID != 0)
-				m_sql += " AND o.C_BPartner_ID=?";					//	#3
+				m_sql.append(" AND o.C_BPartner_ID=?");					//	#3
 		}
-		m_sql += " ORDER BY M_Warehouse_ID, PriorityRule, M_Shipper_ID, C_BPartner_ID, C_BPartner_Location_ID, C_Order_ID";
+		m_sql.append(" ORDER BY M_Warehouse_ID, PriorityRule, M_Shipper_ID, C_BPartner_ID, C_BPartner_Location_ID, C_Order_ID");
 	//	m_sql += " FOR UPDATE";
 
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement (m_sql, get_TrxName());
+			pstmt = DB.prepareStatement (m_sql.toString(), get_TrxName());
 			int index = 1;
 			if (p_Selection)
 			{
@@ -196,7 +196,7 @@ public class InOutGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, m_sql, e);
+			log.log(Level.SEVERE, m_sql.toString(), e);
 		}
 		return generate(pstmt);
 	}	//	doIt
@@ -228,23 +228,23 @@ public class InOutGenerate extends SvrProcess
 				Timestamp minGuaranteeDate = m_movementDate;
 				boolean completeOrder = MOrder.DELIVERYRULE_CompleteOrder.equals(order.getDeliveryRule());
 				//	OrderLine WHERE
-				String where = " AND M_Warehouse_ID=" + p_M_Warehouse_ID;
+				StringBuilder where = new StringBuilder(" AND M_Warehouse_ID=").append(p_M_Warehouse_ID);
 				if (p_DatePromised != null)
-					where += " AND (TRUNC(DatePromised)<=" + DB.TO_DATE(p_DatePromised, true)
-						+ " OR DatePromised IS NULL)";		
+					where.append(" AND (TRUNC(DatePromised)<=").append(DB.TO_DATE(p_DatePromised, true))
+						.append(" OR DatePromised IS NULL)");		
 				//	Exclude Auto Delivery if not Force
 				if (!MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()))
-					where += " AND (C_OrderLine.M_Product_ID IS NULL"
-						+ " OR EXISTS (SELECT * FROM M_Product p "
-						+ "WHERE C_OrderLine.M_Product_ID=p.M_Product_ID"
-						+ " AND IsExcludeAutoDelivery='N'))";
+					where.append(" AND (C_OrderLine.M_Product_ID IS NULL")
+						.append(" OR EXISTS (SELECT * FROM M_Product p ")
+						.append("WHERE C_OrderLine.M_Product_ID=p.M_Product_ID")
+						.append(" AND IsExcludeAutoDelivery='N'))");
 				//	Exclude Unconfirmed
 				if (!p_IsUnconfirmedInOut)
-					where += " AND NOT EXISTS (SELECT * FROM M_InOutLine iol"
-							+ " INNER JOIN M_InOut io ON (iol.M_InOut_ID=io.M_InOut_ID) "
-								+ "WHERE iol.C_OrderLine_ID=C_OrderLine.C_OrderLine_ID AND io.DocStatus IN ('IP','WC'))";
+					where.append(" AND NOT EXISTS (SELECT * FROM M_InOutLine iol")
+							.append(" INNER JOIN M_InOut io ON (iol.M_InOut_ID=io.M_InOut_ID) ")
+								.append("WHERE iol.C_OrderLine_ID=C_OrderLine.C_OrderLine_ID AND io.DocStatus IN ('IP','WC'))");
 				//	Deadlock Prevention - Order by M_Product_ID
-				MOrderLine[] lines = order.getLines (where, "C_BPartner_Location_ID, M_Product_ID");
+				MOrderLine[] lines = order.getLines (where.toString(), "C_BPartner_Location_ID, M_Product_ID");
 				for (int i = 0; i < lines.length; i++)
 				{
 					MOrderLine line = lines[i];
@@ -272,18 +272,18 @@ public class InOutGenerate extends SvrProcess
 							line.getC_OrderLine_ID(), where2, null);
 						for (int j = 0; j < iols.length; j++) 
 							unconfirmedShippedQty = unconfirmedShippedQty.add(iols[j].getMovementQty());
-						String logInfo = "Unconfirmed Qty=" + unconfirmedShippedQty 
-							+ " - ToDeliver=" + toDeliver + "->";					
+						StringBuilder logInfo = new StringBuilder("Unconfirmed Qty=").append(unconfirmedShippedQty) 
+							.append(" - ToDeliver=").append(toDeliver).append("->");					
 						toDeliver = toDeliver.subtract(unconfirmedShippedQty);
-						logInfo += toDeliver;
+						logInfo.append(toDeliver);
 						if (toDeliver.signum() < 0)
 						{
 							toDeliver = Env.ZERO;
-							logInfo += " (set to 0)";
+							logInfo.append(" (set to 0)");
 						}
 						//	Adjust On Hand
 						onHand = onHand.subtract(unconfirmedShippedQty);
-						log.fine(logInfo);
+						log.fine(logInfo.toString());
 					}
 					
 					//	Comments & lines w/o product & services
@@ -397,7 +397,7 @@ public class InOutGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, m_sql, e);
+			log.log(Level.SEVERE, m_sql.toString(), e);
 		}
 		try
 		{
@@ -410,7 +410,8 @@ public class InOutGenerate extends SvrProcess
 			pstmt = null;
 		}
 		completeShipment();
-		return "@Created@ = " + m_created;
+		StringBuilder msgreturn = new StringBuilder("@Created@ = ").append(m_created);
+		return msgreturn.toString();
 	}	//	generate
 	
 	
@@ -584,7 +585,8 @@ public class InOutGenerate extends SvrProcess
 				
 			}
 			m_shipment.saveEx();
-			addLog(m_shipment.getM_InOut_ID(), m_shipment.getMovementDate(), null, m_shipment.getDocumentNo(),m_shipment.get_Table_ID(),m_shipment.getM_InOut_ID());
+			String message = Msg.parseTranslation(getCtx(), "@ShipmentProcessed@ " + m_shipment.getDocumentNo());
+			addLog(m_shipment.getM_InOut_ID(), m_shipment.getMovementDate(), null, message, m_shipment.get_Table_ID(),m_shipment.getM_InOut_ID());
 			m_created++;
 			
 			//reset storage cache as MInOut.completeIt will update m_storage

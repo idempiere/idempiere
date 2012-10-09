@@ -91,7 +91,8 @@ public class PaySelectionCreateCheck extends SvrProcess
 		psel.setProcessed(true);
 		psel.saveEx();
 		
-		return "@C_PaySelectionCheck_ID@ - #" + m_list.size();
+		StringBuilder msgreturn = new StringBuilder("@C_PaySelectionCheck_ID@ - #").append(m_list.size());
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**
@@ -130,8 +131,8 @@ public class PaySelectionCreateCheck extends SvrProcess
 		{
 			int C_BPartner_ID = check.getC_BPartner_ID();
 			MBPartner bp = MBPartner.get(getCtx(), C_BPartner_ID);
-			String msg = "@NotFound@ @C_BP_BankAccount@: " + bp.getName();
-			throw new AdempiereUserError(msg);
+			StringBuilder msg = new StringBuilder("@NotFound@ @C_BP_BankAccount@: ").append(bp.getName());
+			throw new AdempiereUserError(msg.toString());
 		}
 		if (!check.save())
 			throw new IllegalStateException("Cannot save MPaySelectionCheck");

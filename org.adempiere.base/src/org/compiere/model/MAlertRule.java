@@ -99,12 +99,12 @@ public class MAlertRule extends X_AD_AlertRule
 	 */
 	public String getSql(boolean applySecurity)
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT ").append(getSelectClause())
 			.append(" FROM ").append(getFromClause());
 		if (getWhereClause() != null && getWhereClause().length() > 0)
 			sql.append(" WHERE ").append(getWhereClause());
-		String finalSQL = sql.toString();
+		StringBuilder finalSQL = new StringBuilder(sql.toString());
 		//
 		// Apply Security:
 		if (applySecurity) {
@@ -118,14 +118,14 @@ public class MAlertRule extends X_AD_AlertRule
 				if (AD_Role_ID != -1)
 				{
 					MRole role = MRole.get(getCtx(), AD_Role_ID);
-					finalSQL = role.addAccessSQL(finalSQL, null, true, false);
+					finalSQL = new StringBuilder(role.addAccessSQL(finalSQL.toString(), null, true, false));
 				}
 			}
 		}
 		//
 		if (getOtherClause() != null && getOtherClause().length() > 0)
-			finalSQL += " " + getOtherClause();
-		return finalSQL;
+			finalSQL.append(" ").append(getOtherClause());
+		return finalSQL.toString();
 	}	//	getSql
 	
 	/**
@@ -139,12 +139,14 @@ public class MAlertRule extends X_AD_AlertRule
 		{
 			throw new IllegalArgumentException("Parameter extension cannot be empty");
 		}
-		String name = new SimpleDateFormat("yyyyMMddhhmm").format(new Timestamp(System.currentTimeMillis()))
-						+"_"+Util.stripDiacritics(getName().trim());
+		StringBuilder msgname = new StringBuilder(new SimpleDateFormat("yyyyMMddhhmm").format(new Timestamp(System.currentTimeMillis())))
+				.append("_").append(Util.stripDiacritics(getName().trim()));
+		String name = msgname.toString();
 		File file = null;
 		try
 		{
-			file = new File(System.getProperty("java.io.tmpdir"), name+"."+extension);
+			StringBuilder msgp = new StringBuilder(name).append(".").append(extension);
+			file = new File(System.getProperty("java.io.tmpdir"), msgp.toString());
 			file.createNewFile();
 			return file;
 		}
@@ -156,7 +158,8 @@ public class MAlertRule extends X_AD_AlertRule
 		String filePrefix = "Alert_"; // TODO: add AD_AlertRule.FileName (maybe)
 		try
 		{
-			file = File.createTempFile(filePrefix, "."+extension);
+			StringBuilder msgctf = new StringBuilder(".").append(extension);
+			file = File.createTempFile(filePrefix, msgctf.toString());
 		}
 		catch (IOException e)
 		{
@@ -198,16 +201,14 @@ public class MAlertRule extends X_AD_AlertRule
 	 * @return true if success
 	 */
 	private boolean updateParent() {
-		final String sql_count = "SELECT COUNT(*) FROM "+Table_Name+" r"
-							+" WHERE r."+COLUMNNAME_AD_Alert_ID+"=a."+MAlert.COLUMNNAME_AD_Alert_ID
-								+" AND r."+COLUMNNAME_IsValid+"='N'"
-								+" AND r.IsActive='Y'"
-		;
-		final String sql = "UPDATE "+MAlert.Table_Name+" a SET "
-			+" "+MAlert.COLUMNNAME_IsValid+"=(CASE WHEN ("+sql_count+") > 0 THEN 'N' ELSE 'Y' END)"
-			+" WHERE a."+MAlert.COLUMNNAME_AD_Alert_ID+"=?"
-		;
-		int no = DB.executeUpdate(sql, getAD_Alert_ID(), get_TrxName());
+		StringBuilder sql_count = new StringBuilder("SELECT COUNT(*) FROM ").append(Table_Name).append(" r")
+							.append(" WHERE r.").append(COLUMNNAME_AD_Alert_ID).append("=a.").append(MAlert.COLUMNNAME_AD_Alert_ID)
+								.append(" AND r.").append(COLUMNNAME_IsValid).append("='N'")
+								.append(" AND r.IsActive='Y'");
+		StringBuilder sql = new StringBuilder("UPDATE ").append(MAlert.Table_Name).append(" a SET ")
+			.append(" ").append(MAlert.COLUMNNAME_IsValid).append("=(CASE WHEN (").append(sql_count).append(") > 0 THEN 'N' ELSE 'Y' END)")
+			.append(" WHERE a.").append(MAlert.COLUMNNAME_AD_Alert_ID).append("=?");
+		int no = DB.executeUpdate(sql.toString(), getAD_Alert_ID(), get_TrxName());
 		return no == 1;
 	}
 
@@ -217,7 +218,7 @@ public class MAlertRule extends X_AD_AlertRule
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAlertRule[");
+		StringBuilder sb = new StringBuilder ("MAlertRule[");
 		sb.append(get_ID())
 			.append("-").append(getName())
 			.append(",Valid=").append(isValid())

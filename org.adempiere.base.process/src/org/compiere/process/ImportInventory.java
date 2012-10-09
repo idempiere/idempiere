@@ -112,7 +112,8 @@ public class ImportInventory extends SvrProcess
 	 */
 	protected String doIt() throws java.lang.Exception
 	{
-		log.info("M_Locator_ID=" + p_M_Locator_ID + ",MovementDate=" + p_MovementDate);
+		StringBuilder msglog = new StringBuilder("M_Locator_ID=").append(p_M_Locator_ID).append(",MovementDate=").append(p_MovementDate);
+		log.info(msglog.toString());
 		
 		if (p_UpdateCosting) {
 			if (p_C_AcctSchema_ID <= 0) {
@@ -130,174 +131,174 @@ public class ImportInventory extends SvrProcess
 			 acctSchema = MAcctSchema.get(getCtx(), p_C_AcctSchema_ID, get_TrxName());
 		}
 		
-		StringBuffer sql = null;
+		StringBuilder sql = null;
 		int no = 0;
-		String clientCheck = " AND AD_Client_ID=" + p_AD_Client_ID;
+		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(p_AD_Client_ID);
 
 		//	****	Prepare	****
 
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuffer ("DELETE I_Inventory "
-				  + "WHERE I_IsImported='Y'").append (clientCheck);
+			sql = new StringBuilder ("DELETE I_Inventory ")
+				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
 			log.fine("Delete Old Imported=" + no);
 		}
 
 		//	Set Client, Org, Location, IsActive, Created/Updated
-		sql = new StringBuffer ("UPDATE I_Inventory "
-			  + "SET AD_Client_ID = COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append ("),"
-			  + " AD_Org_ID = DECODE (NVL(AD_Org_ID),0,").append (p_AD_Org_ID).append (",AD_Org_ID),");
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			  .append("SET AD_Client_ID = COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append ("),")
+			  .append(" AD_Org_ID = DECODE (NVL(AD_Org_ID),0,").append (p_AD_Org_ID).append (",AD_Org_ID),");
 		if (p_MovementDate != null)
 			sql.append(" MovementDate = COALESCE (MovementDate,").append (DB.TO_DATE(p_MovementDate)).append ("),");
-		sql.append(" IsActive = COALESCE (IsActive, 'Y'),"
-			  + " Created = COALESCE (Created, SysDate),"
-			  + " CreatedBy = COALESCE (CreatedBy, 0),"
-			  + " Updated = COALESCE (Updated, SysDate),"
-			  + " UpdatedBy = COALESCE (UpdatedBy, 0),"
-			  + " I_ErrorMsg = ' ',"
-			  + " M_Warehouse_ID = NULL,"	//	reset
-			  + " I_IsImported = 'N' "
-			  + "WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
+		sql.append(" IsActive = COALESCE (IsActive, 'Y'),")
+			  .append(" Created = COALESCE (Created, SysDate),")
+			  .append(" CreatedBy = COALESCE (CreatedBy, 0),")
+			  .append(" Updated = COALESCE (Updated, SysDate),")
+			  .append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
+			  .append(" I_ErrorMsg = ' ',")
+			  .append(" M_Warehouse_ID = NULL,")	//	reset
+			  .append(" I_IsImported = 'N' ")
+			  .append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		log.info ("Reset=" + no);
 
-		sql = new StringBuffer ("UPDATE I_Inventory o "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, '"
-			+ "WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0"
-			+ " OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N')))"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory o ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, '")
+			.append("WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0")
+			.append(" OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N')))")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Org=" + no);
 
 		//	Document Type
-		sql = new StringBuffer ("UPDATE I_Inventory i "
-			+ "SET C_DocType_ID=(SELECT d.C_DocType_ID FROM C_DocType d"
-			+ " WHERE d.Name=i.DocTypeName AND d.DocBaseType='MMI' AND i.AD_Client_ID=d.AD_Client_ID) "
-			+ "WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory i ")
+			.append("SET C_DocType_ID=(SELECT d.C_DocType_ID FROM C_DocType d")
+			.append(" WHERE d.Name=i.DocTypeName AND d.DocBaseType='MMI' AND i.AD_Client_ID=d.AD_Client_ID) ")
+			.append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set DocType=" + no);
-		sql = new StringBuffer ("UPDATE I_Inventory i "
-				+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocType, ' "
-			    + "WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL"
-				+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory i ")
+				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocType, ' ")
+			    .append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL")
+				.append(" AND I_IsImported<>'Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
 				log.warning ("Invalid DocType=" + no);
 
 		//	Locator
-		sql = new StringBuffer ("UPDATE I_Inventory i "
-			+ "SET M_Locator_ID=(SELECT MAX(M_Locator_ID) FROM M_Locator l"
-			+ " WHERE i.LocatorValue=l.Value AND i.AD_Client_ID=l.AD_Client_ID) "
-			+ "WHERE M_Locator_ID IS NULL AND LocatorValue IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory i ")
+			.append("SET M_Locator_ID=(SELECT MAX(M_Locator_ID) FROM M_Locator l")
+			.append(" WHERE i.LocatorValue=l.Value AND i.AD_Client_ID=l.AD_Client_ID) ")
+			.append("WHERE M_Locator_ID IS NULL AND LocatorValue IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		log.fine("Set Locator from Value =" + no);
-		sql = new StringBuffer ("UPDATE I_Inventory i "
-			+ "SET M_Locator_ID=(SELECT MAX(M_Locator_ID) FROM M_Locator l"
-			+ " WHERE i.X=l.X AND i.Y=l.Y AND i.Z=l.Z AND i.AD_Client_ID=l.AD_Client_ID) "
-			+ "WHERE M_Locator_ID IS NULL AND X IS NOT NULL AND Y IS NOT NULL AND Z IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory i ")
+			.append("SET M_Locator_ID=(SELECT MAX(M_Locator_ID) FROM M_Locator l")
+			.append(" WHERE i.X=l.X AND i.Y=l.Y AND i.Z=l.Z AND i.AD_Client_ID=l.AD_Client_ID) ")
+			.append("WHERE M_Locator_ID IS NULL AND X IS NOT NULL AND Y IS NOT NULL AND Z IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		log.fine("Set Locator from X,Y,Z =" + no);
 		if (p_M_Locator_ID != 0)
 		{
-			sql = new StringBuffer ("UPDATE I_Inventory "
-				+ "SET M_Locator_ID = ").append (p_M_Locator_ID).append (
-				" WHERE M_Locator_ID IS NULL"
-				+ " AND I_IsImported<>'Y'").append (clientCheck);
+			sql = new StringBuilder ("UPDATE I_Inventory ")
+				.append("SET M_Locator_ID = ").append (p_M_Locator_ID)
+				.append (" WHERE M_Locator_ID IS NULL")
+				.append(" AND I_IsImported<>'Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
 			log.fine("Set Locator from Parameter=" + no);
 		}
-		sql = new StringBuffer ("UPDATE I_Inventory "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Location, ' "
-			+ "WHERE M_Locator_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Location, ' ")
+			.append("WHERE M_Locator_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
 			log.warning ("No Location=" + no);
 
 
 		//	Set M_Warehouse_ID
-		sql = new StringBuffer ("UPDATE I_Inventory i "
-			+ "SET M_Warehouse_ID=(SELECT M_Warehouse_ID FROM M_Locator l WHERE i.M_Locator_ID=l.M_Locator_ID) "
-			+ "WHERE M_Locator_ID IS NOT NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory i ")
+			.append("SET M_Warehouse_ID=(SELECT M_Warehouse_ID FROM M_Locator l WHERE i.M_Locator_ID=l.M_Locator_ID) ")
+			.append("WHERE M_Locator_ID IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		log.fine("Set Warehouse from Locator =" + no);
-		sql = new StringBuffer ("UPDATE I_Inventory "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Warehouse, ' "
-			+ "WHERE M_Warehouse_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Warehouse, ' ")
+			.append("WHERE M_Warehouse_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
 			log.warning ("No Warehouse=" + no);
 
 
 		//	Product
-		sql = new StringBuffer ("UPDATE I_Inventory i "
-			  + "SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p"
-			  + " WHERE i.Value=p.Value AND i.AD_Client_ID=p.AD_Client_ID) "
-			  + "WHERE M_Product_ID IS NULL AND Value IS NOT NULL"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory i ")
+			  .append("SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p")
+			  .append(" WHERE i.Value=p.Value AND i.AD_Client_ID=p.AD_Client_ID) ")
+			  .append("WHERE M_Product_ID IS NULL AND Value IS NOT NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		log.fine("Set Product from Value=" + no);
-		sql = new StringBuffer ("UPDATE I_Inventory i "
-				  + "SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p"
-				  + " WHERE i.UPC=p.UPC AND i.AD_Client_ID=p.AD_Client_ID) "
-				  + "WHERE M_Product_ID IS NULL AND UPC IS NOT NULL"
-				  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory i ")
+				  .append("SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p")
+				  .append(" WHERE i.UPC=p.UPC AND i.AD_Client_ID=p.AD_Client_ID) ")
+				  .append("WHERE M_Product_ID IS NULL AND UPC IS NOT NULL")
+				  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
 		log.fine("Set Product from UPC=" + no);
-		sql = new StringBuffer ("UPDATE I_Inventory "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Product, ' "
-			+ "WHERE M_Product_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Product, ' ")
+			.append("WHERE M_Product_ID IS NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
 			log.warning ("No Product=" + no);
 
 		//	Charge
-		sql = new StringBuffer ("UPDATE I_Inventory o "
-			  + "SET C_Charge_ID=(SELECT C_Charge_ID FROM C_Charge p"
-			  + " WHERE o.ChargeName=p.Name AND o.AD_Client_ID=p.AD_Client_ID) "
-			  + "WHERE C_Charge_ID IS NULL AND ChargeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory o ")
+			  .append("SET C_Charge_ID=(SELECT C_Charge_ID FROM C_Charge p")
+			  .append(" WHERE o.ChargeName=p.Name AND o.AD_Client_ID=p.AD_Client_ID) ")
+			  .append("WHERE C_Charge_ID IS NULL AND ChargeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set Charge=" + no);
-		sql = new StringBuffer ("UPDATE I_Inventory "
-				  + "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Charge, ' "
-				  + "WHERE C_Charge_ID IS NULL AND (ChargeName IS NOT NULL)"
-				  + " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+				  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Charge, ' ")
+				  .append("WHERE C_Charge_ID IS NULL AND (ChargeName IS NOT NULL)")
+				  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Charge=" + no);
 
 		//	No QtyCount or QtyInternalUse
-		sql = new StringBuffer ("UPDATE I_Inventory "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Qty Count or Internal Use, ' "
-			+ "WHERE QtyCount IS NULL AND QtyInternalUse IS NULL"
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Qty Count or Internal Use, ' ")
+			.append("WHERE QtyCount IS NULL AND QtyInternalUse IS NULL")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
 			log.warning ("No QtyCount or QtyInternalUse=" + no);
 
 		//	Excluding quantities
-		sql = new StringBuffer ("UPDATE I_Inventory "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Excluding quantities, ' "
-			+ "WHERE NVL(QtyInternalUse,0)<>0 AND (NVL(QtyCount,0)<>0 OR NVL(QtyBook,0)<>0) "
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Excluding quantities, ' ")
+			.append("WHERE NVL(QtyInternalUse,0)<>0 AND (NVL(QtyCount,0)<>0 OR NVL(QtyBook,0)<>0) ")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
 			log.warning ("Excluding quantities=" + no);
 
 		//	Required charge for internal use
-		sql = new StringBuffer ("UPDATE I_Inventory "
-			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Required charge, ' "
-			+ "WHERE NVL(QtyInternalUse,0)<>0 AND NVL(C_Charge_ID,0)=0 "
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Required charge, ' ")
+			.append("WHERE NVL(QtyInternalUse,0)<>0 AND NVL(C_Charge_ID,0)=0 ")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
 			log.warning ("Required charge=" + no);
@@ -312,8 +313,8 @@ public class ImportInventory extends SvrProcess
 		int noInsertLine = 0;
 
 		//	Go through Inventory Records
-		sql = new StringBuffer ("SELECT * FROM I_Inventory "
-			+ "WHERE I_IsImported='N'").append (clientCheck)
+		sql = new StringBuilder ("SELECT * FROM I_Inventory ")
+			.append("WHERE I_IsImported='N'").append (clientCheck)
 			.append(" ORDER BY M_Warehouse_ID, TRUNC(MovementDate), I_Inventory_ID");
 		try
 		{
@@ -415,9 +416,9 @@ public class ImportInventory extends SvrProcess
 		}
 
 		//	Set Error to indicator to not imported
-		sql = new StringBuffer ("UPDATE I_Inventory "
-			+ "SET I_IsImported='N', Updated=SysDate "
-			+ "WHERE I_IsImported<>'Y'").append(clientCheck);
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");
 		//

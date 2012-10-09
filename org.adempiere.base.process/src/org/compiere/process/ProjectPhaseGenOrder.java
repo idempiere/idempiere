@@ -77,7 +77,7 @@ public class ProjectPhaseGenOrder  extends SvrProcess
 		{
 			MOrderLine ol = new MOrderLine(order);
 			ol.setLine(fromPhase.getSeqNo());
-			StringBuffer sb = new StringBuffer (fromPhase.getName());
+			StringBuilder sb = new StringBuilder (fromPhase.getName());
 			if (fromPhase.getDescription() != null && fromPhase.getDescription().length() > 0)
 				sb.append(" - ").append(fromPhase.getDescription());
 			ol.setDescription(sb.toString());
@@ -90,7 +90,8 @@ public class ProjectPhaseGenOrder  extends SvrProcess
 			ol.setTax();
 			if (!ol.save())
 				log.log(Level.SEVERE, "doIt - Lines not generated");
-			return "@C_Order_ID@ " + order.getDocumentNo() + " (1)";
+			StringBuilder msgreturn = new StringBuilder("@C_Order_ID@ ").append(order.getDocumentNo()).append(" (1)");
+			return msgreturn.toString();
 		}
 		
 		//	Project Phase Lines
@@ -121,7 +122,7 @@ public class ProjectPhaseGenOrder  extends SvrProcess
 		{
 			MOrderLine ol = new MOrderLine(order);
 			ol.setLine(tasks[i].getSeqNo());
-			StringBuffer sb = new StringBuffer (tasks[i].getName());
+			StringBuilder sb = new StringBuilder (tasks[i].getName());
 			if (tasks[i].getDescription() != null && tasks[i].getDescription().length() > 0)
 				sb.append(" - ").append(tasks[i].getDescription());
 			ol.setDescription(sb.toString());
@@ -136,7 +137,8 @@ public class ProjectPhaseGenOrder  extends SvrProcess
 		if (tasks.length != count - lines.length)
 			log.log(Level.SEVERE, "doIt - Lines difference - ProjectTasks=" + tasks.length + " <> Saved=" + count);
 
-		return "@C_Order_ID@ " + order.getDocumentNo() + " (" + count + ")";
+		StringBuilder msgreturn = new StringBuilder("@C_Order_ID@ ").append(order.getDocumentNo()).append(" (").append(count).append(")");
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	ProjectPhaseGenOrder

@@ -63,8 +63,10 @@ public final class MLocationLookup extends Lookup
 		if (value == null)
 			return null;
 		MLocation loc = getLocation (value, null);
-		if (loc == null)
-			return "<" + value.toString() + ">";
+		if (loc == null){
+			StringBuilder msgreturn = new StringBuilder("<").append(value.toString()).append(">");
+			return msgreturn.toString();
+		}	
 		return loc.toString();
 	}	//	getDisplay
 

@@ -78,16 +78,16 @@ public class CalloutUser extends CalloutEngine
 			return "";
 
 		String sql = "SELECT p.AD_Language,p.C_PaymentTerm_ID,"
-			+ " COALESCE(p.M_PriceList_ID,g.M_PriceList_ID) AS M_PriceList_ID, p.PaymentRule,p.POReference,"
-			+ " p.SO_Description,p.IsDiscountPrinted,"
-			+ " p.SO_CreditLimit, p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
-			+ " l.C_BPartner_Location_ID,c.AD_User_ID,"
-			+ " COALESCE(p.PO_PriceList_ID,g.PO_PriceList_ID) AS PO_PriceList_ID, p.PaymentRulePO,p.PO_PaymentTerm_ID " 
-			+ "FROM C_BPartner p"
-			+ " INNER JOIN C_BP_Group g ON (p.C_BP_Group_ID=g.C_BP_Group_ID)"			
-			+ " LEFT OUTER JOIN C_BPartner_Location l ON (p.C_BPartner_ID=l.C_BPartner_ID AND l.IsBillTo='Y' AND l.IsActive='Y')"
-			+ " LEFT OUTER JOIN AD_User c ON (p.C_BPartner_ID=c.C_BPartner_ID) "
-			+ "WHERE p.C_BPartner_ID=? AND p.IsActive='Y'";		//	#1
+				+ " COALESCE(p.M_PriceList_ID,g.M_PriceList_ID) AS M_PriceList_ID, p.PaymentRule,p.POReference,"
+				+ " p.SO_Description,p.IsDiscountPrinted,"
+				+ " p.SO_CreditLimit, p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
+				+ " l.C_BPartner_Location_ID,c.AD_User_ID,"
+				+ " COALESCE(p.PO_PriceList_ID,g.PO_PriceList_ID) AS PO_PriceList_ID, p.PaymentRulePO,p.PO_PaymentTerm_ID " 
+				+ "FROM C_BPartner p"
+				+ " INNER JOIN C_BP_Group g ON (p.C_BP_Group_ID=g.C_BP_Group_ID)"			
+				+ " LEFT OUTER JOIN C_BPartner_Location l ON (p.C_BPartner_ID=l.C_BPartner_ID AND l.IsBillTo='Y' AND l.IsActive='Y')"
+				+ " LEFT OUTER JOIN AD_User c ON (p.C_BPartner_ID=c.C_BPartner_ID) "
+				+ "WHERE p.C_BPartner_ID=? AND p.IsActive='Y'";		//	#1
 
 		try
 		{

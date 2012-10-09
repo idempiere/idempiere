@@ -463,22 +463,22 @@ public class MCost extends X_M_Cost
 		int M_ASI_ID, int AD_Org_ID, int C_Currency_ID)
 	{
 		BigDecimal retValue = null;
-		String sql = "SELECT currencyConvert(il.PriceActual, i.C_Currency_ID, ?, i.DateAcct, i.C_ConversionType_ID, il.AD_Client_ID, il.AD_Org_ID) "
+		StringBuilder sql = new StringBuilder("SELECT currencyConvert(il.PriceActual, i.C_Currency_ID, ?, i.DateAcct, i.C_ConversionType_ID, il.AD_Client_ID, il.AD_Org_ID) ")
 			// ,il.PriceActual, il.QtyInvoiced, i.DateInvoiced, il.Line
-			+ "FROM C_InvoiceLine il "
-			+ " INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) "
-			+ "WHERE il.M_Product_ID=?"
-			+ " AND i.IsSOTrx='N'";
+			.append("FROM C_InvoiceLine il ")
+			.append(" INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) ")
+			.append("WHERE il.M_Product_ID=?")
+			.append(" AND i.IsSOTrx='N'");
 		if (AD_Org_ID != 0)
-			sql += " AND il.AD_Org_ID=?";
+			sql.append(" AND il.AD_Org_ID=?");
 		else if (M_ASI_ID != 0)
-			sql += " AND il.M_AttributeSetInstance_ID=?";
-		sql += " ORDER BY i.DateInvoiced DESC, il.Line DESC";
+			sql.append(" AND il.M_AttributeSetInstance_ID=?");
+		sql.append(" ORDER BY i.DateInvoiced DESC, il.Line DESC");
 		//
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, product.get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), product.get_TrxName());
 			pstmt.setInt (1, C_Currency_ID);
 			pstmt.setInt (2, product.getM_Product_ID());
 			if (AD_Org_ID != 0)
@@ -494,7 +494,7 @@ public class MCost extends X_M_Cost
 		}
 		catch (Exception e)
 		{
-			s_log.log (Level.SEVERE, sql, e);
+			s_log.log (Level.SEVERE, sql.toString(), e);
 		}
 		try
 		{
@@ -527,24 +527,24 @@ public class MCost extends X_M_Cost
 		int M_ASI_ID, int AD_Org_ID, int C_Currency_ID)
 	{
 		BigDecimal retValue = null;
-		String sql = "SELECT currencyConvert(ol.PriceCost, o.C_Currency_ID, ?, o.DateAcct, o.C_ConversionType_ID, ol.AD_Client_ID, ol.AD_Org_ID),"
-			+ " currencyConvert(ol.PriceActual, o.C_Currency_ID, ?, o.DateAcct, o.C_ConversionType_ID, ol.AD_Client_ID, ol.AD_Org_ID) "
+		StringBuilder sql = new StringBuilder("SELECT currencyConvert(ol.PriceCost, o.C_Currency_ID, ?, o.DateAcct, o.C_ConversionType_ID, ol.AD_Client_ID, ol.AD_Org_ID),")
+			.append(" currencyConvert(ol.PriceActual, o.C_Currency_ID, ?, o.DateAcct, o.C_ConversionType_ID, ol.AD_Client_ID, ol.AD_Org_ID) ")
 			//	,ol.PriceCost,ol.PriceActual, ol.QtyOrdered, o.DateOrdered, ol.Line
-			+ "FROM C_OrderLine ol"
-			+ " INNER JOIN C_Order o ON (ol.C_Order_ID=o.C_Order_ID) "
-			+ "WHERE ol.M_Product_ID=?"
-			+ " AND o.IsSOTrx='N'";
+			.append("FROM C_OrderLine ol")
+			.append(" INNER JOIN C_Order o ON (ol.C_Order_ID=o.C_Order_ID) ")
+			.append("WHERE ol.M_Product_ID=?")
+			.append(" AND o.IsSOTrx='N'");
 		if (AD_Org_ID != 0)
-			sql += " AND ol.AD_Org_ID=?";
+			sql.append(" AND ol.AD_Org_ID=?");
 		else if (M_ASI_ID != 0)
-			sql += " AND ol.M_AttributeSetInstance_ID=?";
-		sql += " ORDER BY o.DateOrdered DESC, ol.Line DESC";
+			sql.append(" AND ol.M_AttributeSetInstance_ID=?");
+		sql.append(" ORDER BY o.DateOrdered DESC, ol.Line DESC");
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, product.get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), product.get_TrxName());
 			pstmt.setInt (1, C_Currency_ID);
 			pstmt.setInt (2, C_Currency_ID);
 			pstmt.setInt (3, product.getM_Product_ID());
@@ -562,7 +562,7 @@ public class MCost extends X_M_Cost
 		}
 		catch (SQLException e)
 		{
-			throw new DBException(e, sql);
+			throw new DBException(e, sql.toString());
 		}
 		finally
 		{
@@ -838,18 +838,18 @@ public class MCost extends X_M_Cost
 	public static BigDecimal calculateAverageInv (MProduct product, int M_AttributeSetInstance_ID,
 		MAcctSchema as, int AD_Org_ID)
 	{
-		String sql = "SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,"
-			+ " i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID "
-			+ "FROM M_Transaction t"
-			+ " INNER JOIN M_MatchInv mi ON (t.M_InOutLine_ID=mi.M_InOutLine_ID)"
-			+ " INNER JOIN C_InvoiceLine il ON (mi.C_InvoiceLine_ID=il.C_InvoiceLine_ID)"
-			+ " INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) "
-			+ "WHERE t.M_Product_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,")
+			.append(" i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID ")
+			.append("FROM M_Transaction t")
+			.append(" INNER JOIN M_MatchInv mi ON (t.M_InOutLine_ID=mi.M_InOutLine_ID)")
+			.append(" INNER JOIN C_InvoiceLine il ON (mi.C_InvoiceLine_ID=il.C_InvoiceLine_ID)")
+			.append(" INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) ")
+			.append("WHERE t.M_Product_ID=?");
 		if (AD_Org_ID != 0)
-			sql += " AND t.AD_Org_ID=?";
+			sql.append(" AND t.AD_Org_ID=?");
 		else if (M_AttributeSetInstance_ID != 0)
-			sql += " AND t.M_AttributeSetInstance_ID=?";
-		sql += " ORDER BY t.M_Transaction_ID";
+			sql.append(" AND t.M_AttributeSetInstance_ID=?");
+		sql.append(" ORDER BY t.M_Transaction_ID");
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -859,7 +859,7 @@ public class MCost extends X_M_Cost
 		int oldTransaction_ID = 0;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql.toString(), null);
 			pstmt.setInt (1, product.getM_Product_ID());
 			if (AD_Org_ID != 0)
 				pstmt.setInt (2, AD_Org_ID);
@@ -904,7 +904,7 @@ public class MCost extends X_M_Cost
 		}
 		catch (SQLException e)
 		{
-			throw new DBException(e, sql);
+			throw new DBException(e, sql.toString());
 		}
 		finally
 		{
@@ -931,19 +931,19 @@ public class MCost extends X_M_Cost
 	public static BigDecimal calculateAveragePO (MProduct product, int M_AttributeSetInstance_ID,
 		MAcctSchema as, int AD_Org_ID)
 	{
-		String sql = "SELECT t.MovementQty, mp.Qty, ol.QtyOrdered, ol.PriceCost, ol.PriceActual,"	//	1..5
-			+ " o.C_Currency_ID, o.DateAcct, o.C_ConversionType_ID,"	//	6..8
-			+ " o.AD_Client_ID, o.AD_Org_ID, t.M_Transaction_ID "		//	9..11
-			+ "FROM M_Transaction t"
-			+ " INNER JOIN M_MatchPO mp ON (t.M_InOutLine_ID=mp.M_InOutLine_ID)"
-			+ " INNER JOIN C_OrderLine ol ON (mp.C_OrderLine_ID=ol.C_OrderLine_ID)"
-			+ " INNER JOIN C_Order o ON (ol.C_Order_ID=o.C_Order_ID) "
-			+ "WHERE t.M_Product_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT t.MovementQty, mp.Qty, ol.QtyOrdered, ol.PriceCost, ol.PriceActual,")	//	1..5
+			.append(" o.C_Currency_ID, o.DateAcct, o.C_ConversionType_ID,")	//	6..8
+			.append(" o.AD_Client_ID, o.AD_Org_ID, t.M_Transaction_ID ")		//	9..11
+			.append("FROM M_Transaction t")
+			.append(" INNER JOIN M_MatchPO mp ON (t.M_InOutLine_ID=mp.M_InOutLine_ID)")
+			.append(" INNER JOIN C_OrderLine ol ON (mp.C_OrderLine_ID=ol.C_OrderLine_ID)")
+			.append(" INNER JOIN C_Order o ON (ol.C_Order_ID=o.C_Order_ID) ")
+			.append("WHERE t.M_Product_ID=?");
 		if (AD_Org_ID != 0)
-			sql += " AND t.AD_Org_ID=?";
+			sql.append(" AND t.AD_Org_ID=?");
 		else if (M_AttributeSetInstance_ID != 0)
-			sql += " AND t.M_AttributeSetInstance_ID=?";
-		sql += " ORDER BY t.M_Transaction_ID";
+			sql.append(" AND t.M_AttributeSetInstance_ID=?");
+		sql.append(" ORDER BY t.M_Transaction_ID");
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -953,7 +953,7 @@ public class MCost extends X_M_Cost
 		int oldTransaction_ID = 0;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql.toString(), null);
 			pstmt.setInt (1, product.getM_Product_ID());
 			if (AD_Org_ID != 0)
 				pstmt.setInt (2, AD_Org_ID);
@@ -1000,7 +1000,7 @@ public class MCost extends X_M_Cost
 		}
 		catch (SQLException e)
 		{
-			throw new DBException(e, sql);
+			throw new DBException(e, sql.toString());
 		}
 		finally
 		{
@@ -1027,18 +1027,18 @@ public class MCost extends X_M_Cost
 	public static BigDecimal calculateFiFo (MProduct product, int M_AttributeSetInstance_ID,
 		MAcctSchema as, int AD_Org_ID)
 	{
-		String sql = "SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,"
-			+ " i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID "
-			+ "FROM M_Transaction t"
-			+ " INNER JOIN M_MatchInv mi ON (t.M_InOutLine_ID=mi.M_InOutLine_ID)"
-			+ " INNER JOIN C_InvoiceLine il ON (mi.C_InvoiceLine_ID=il.C_InvoiceLine_ID)"
-			+ " INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) "
-			+ "WHERE t.M_Product_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,")
+			.append(" i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID ")
+			.append("FROM M_Transaction t")
+			.append(" INNER JOIN M_MatchInv mi ON (t.M_InOutLine_ID=mi.M_InOutLine_ID)")
+			.append(" INNER JOIN C_InvoiceLine il ON (mi.C_InvoiceLine_ID=il.C_InvoiceLine_ID)")
+			.append(" INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) ")
+			.append("WHERE t.M_Product_ID=?");
 		if (AD_Org_ID != 0)
-			sql += " AND t.AD_Org_ID=?";
+			sql.append(" AND t.AD_Org_ID=?");
 		else if (M_AttributeSetInstance_ID != 0)
-			sql += " AND t.M_AttributeSetInstance_ID=?";
-		sql += " ORDER BY t.M_Transaction_ID";
+			sql.append(" AND t.M_AttributeSetInstance_ID=?");
+		sql.append(" ORDER BY t.M_Transaction_ID");
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1047,7 +1047,7 @@ public class MCost extends X_M_Cost
 		ArrayList<QtyCost> fifo = new ArrayList<QtyCost>();
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql.toString(), null);
 			pstmt.setInt (1, product.getM_Product_ID());
 			if (AD_Org_ID != 0)
 				pstmt.setInt (2, AD_Org_ID);
@@ -1136,7 +1136,7 @@ public class MCost extends X_M_Cost
 		}
 		catch (SQLException e)
 		{
-			throw new DBException(e, sql);
+			throw new DBException(e, sql.toString());
 		}
 		finally
 		{
@@ -1164,19 +1164,19 @@ public class MCost extends X_M_Cost
 	public static BigDecimal calculateLiFo (MProduct product, int M_AttributeSetInstance_ID,
 		MAcctSchema as, int AD_Org_ID)
 	{
-		String sql = "SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,"
-			+ " i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID "
-			+ "FROM M_Transaction t"
-			+ " INNER JOIN M_MatchInv mi ON (t.M_InOutLine_ID=mi.M_InOutLine_ID)"
-			+ " INNER JOIN C_InvoiceLine il ON (mi.C_InvoiceLine_ID=il.C_InvoiceLine_ID)"
-			+ " INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) "
-			+ "WHERE t.M_Product_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,")
+			.append(" i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID ")
+			.append("FROM M_Transaction t")
+			.append(" INNER JOIN M_MatchInv mi ON (t.M_InOutLine_ID=mi.M_InOutLine_ID)")
+			.append(" INNER JOIN C_InvoiceLine il ON (mi.C_InvoiceLine_ID=il.C_InvoiceLine_ID)")
+			.append(" INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) ")
+			.append("WHERE t.M_Product_ID=?");
 		if (AD_Org_ID != 0)
-			sql += " AND t.AD_Org_ID=?";
+			sql.append(" AND t.AD_Org_ID=?");
 		else if (M_AttributeSetInstance_ID != 0)
-			sql += " AND t.M_AttributeSetInstance_ID=?";
+			sql.append(" AND t.M_AttributeSetInstance_ID=?");
 		//	Starting point?
-		sql += " ORDER BY t.M_Transaction_ID DESC";
+		sql.append(" ORDER BY t.M_Transaction_ID DESC");
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1185,7 +1185,7 @@ public class MCost extends X_M_Cost
 		ArrayList<QtyCost> lifo = new ArrayList<QtyCost>();
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql.toString(), null);
 			pstmt.setInt (1, product.getM_Product_ID());
 			if (AD_Org_ID != 0)
 				pstmt.setInt (2, AD_Org_ID);
@@ -1255,7 +1255,7 @@ public class MCost extends X_M_Cost
 		}
 		catch (SQLException e)
 		{
-			throw new DBException(e, sql);
+			throw new DBException(e, sql.toString());
 		}
 		finally
 		{
@@ -1299,7 +1299,7 @@ public class MCost extends X_M_Cost
 		 */
 		public String toString ()
 		{
-			StringBuffer sb = new StringBuffer ("Qty=").append(Qty)
+			StringBuilder sb = new StringBuilder ("Qty=").append(Qty)
 				.append (",Cost=").append (Cost);
 			return sb.toString ();
 		}	//	toString
@@ -1562,7 +1562,7 @@ public class MCost extends X_M_Cost
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MCost[");
+		StringBuilder sb = new StringBuilder ("MCost[");
 		sb.append ("AD_Client_ID=").append (getAD_Client_ID());
 		if (getAD_Org_ID() != 0)
 			sb.append (",AD_Org_ID=").append (getAD_Org_ID());

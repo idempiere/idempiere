@@ -209,7 +209,7 @@ public class MAlert extends X_AD_Alert
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MAlert[");
+		StringBuilder sb = new StringBuilder ("MAlert[");
 		sb.append(get_ID())
 			.append("-").append(getName())
 			.append(",Valid=").append(isValid());

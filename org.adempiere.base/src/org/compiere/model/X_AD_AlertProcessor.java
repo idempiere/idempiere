@@ -31,7 +31,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120920L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessor (Properties ctx, int AD_AlertProcessor_ID, String trxName)
@@ -40,8 +40,6 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
       /** if (AD_AlertProcessor_ID == 0)
         {
 			setAD_AlertProcessor_ID (0);
-			setFrequency (0);
-			setFrequencyType (null);
 			setKeepLogDays (0);
 // 7
 			setName (null);
@@ -100,6 +98,45 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 		return ii.intValue();
 	}
 
+	/** Set AD_AlertProcessor_UU.
+		@param AD_AlertProcessor_UU AD_AlertProcessor_UU	  */
+	public void setAD_AlertProcessor_UU (String AD_AlertProcessor_UU)
+	{
+		set_Value (COLUMNNAME_AD_AlertProcessor_UU, AD_AlertProcessor_UU);
+	}
+
+	/** Get AD_AlertProcessor_UU.
+		@return AD_AlertProcessor_UU	  */
+	public String getAD_AlertProcessor_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_AlertProcessor_UU);
+	}
+
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
+			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+
+	/** Set AD_Schedule_ID.
+		@param AD_Schedule_ID AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID)
+	{
+		if (AD_Schedule_ID < 1) 
+			set_Value (COLUMNNAME_AD_Schedule_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
+	}
+
+	/** Get AD_Schedule_ID.
+		@return AD_Schedule_ID	  */
+	public int getAD_Schedule_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Date last run.
 		@param DateLastRun 
 		Date the process was last run.
@@ -149,52 +186,6 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
-	}
-
-	/** Set Frequency.
-		@param Frequency 
-		Frequency of events
-	  */
-	public void setFrequency (int Frequency)
-	{
-		set_Value (COLUMNNAME_Frequency, Integer.valueOf(Frequency));
-	}
-
-	/** Get Frequency.
-		@return Frequency of events
-	  */
-	public int getFrequency () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Frequency);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** FrequencyType AD_Reference_ID=221 */
-	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
-	/** Day = D */
-	public static final String FREQUENCYTYPE_Day = "D";
-	/** Set Frequency Type.
-		@param FrequencyType 
-		Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType)
-	{
-
-		set_Value (COLUMNNAME_FrequencyType, FrequencyType);
-	}
-
-	/** Get Frequency Type.
-		@return Frequency of event
-	  */
-	public String getFrequencyType () 
-	{
-		return (String)get_Value(COLUMNNAME_FrequencyType);
 	}
 
 	/** Set Days to keep Log.
@@ -263,9 +254,9 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 		return false;
 	}
 
-	public I_AD_User getSupervisor() throws RuntimeException
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSupervisor_ID(), get_TrxName());	}
 
 	/** Set Supervisor.

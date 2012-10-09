@@ -110,8 +110,10 @@ public class MActivity extends X_C_Activity
 		if (newRecord)
 			insert_Tree(MTree_Base.TREETYPE_Activity);
 		//	Value/Name change
-		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
-			MAccount.updateValueDescription(getCtx(), "C_Activity_ID=" + getC_Activity_ID(), get_TrxName());
+		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name"))){
+			StringBuilder msguvd = new StringBuilder("C_Activity_ID=").append(getC_Activity_ID());
+			MAccount.updateValueDescription(getCtx(), msguvd.toString(), get_TrxName());
+		}	
 		return true;
 	}	//	afterSave
 	

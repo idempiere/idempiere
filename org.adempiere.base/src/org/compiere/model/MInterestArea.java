@@ -159,7 +159,7 @@ public class MInterestArea extends X_R_InterestArea
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInterestArea[")
+		StringBuilder sb = new StringBuilder ("MInterestArea[")
 			.append (get_ID()).append(" - ").append(getName())
 			.append ("]");
 		return sb.toString ();

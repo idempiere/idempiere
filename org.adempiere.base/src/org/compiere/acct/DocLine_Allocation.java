@@ -75,6 +75,7 @@ public class DocLine_Allocation extends DocLine
 			+ "FROM C_Invoice "
 			+ "WHERE C_Invoice_ID=?";
 		return  DB.getSQLValue(null, sql, m_C_Invoice_ID);
+
 	}	//	getInvoiceC_Currency_ID
 
 	/**

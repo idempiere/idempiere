@@ -354,7 +354,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MDocTypeCounter[");
+		StringBuilder sb = new StringBuilder ("MDocTypeCounter[");
 		sb.append(get_ID()).append(",").append(getName())
 			.append(",C_DocType_ID=").append(getC_DocType_ID())
 			.append(",Counter=").append(getCounter_C_DocType_ID())

@@ -256,11 +256,11 @@ public class M_Production_Run extends SvrProcess {
 	}	
 	
 	private void raiseError(String string, String sql) throws Exception {
-		String msg = string;
+		StringBuilder msg = new StringBuilder(string);
 		ValueNamePair pp = CLogger.retrieveError();
 		if (pp != null)
-			msg = pp.getName() + " - ";
-		msg += sql;
-		throw new AdempiereUserError (msg);
+			msg = new StringBuilder(pp.getName()).append(" - ");
+		msg.append(sql);
+		throw new AdempiereUserError (msg.toString());
 	}
 } // M_Production_Run

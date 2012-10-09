@@ -21,7 +21,9 @@ CREATE OR REPLACE FUNCTION nextid(
  *	select * from nextid((select ad_sequence_id from ad_sequence where name = 'Test')::Integer, 'Y'::Varchar);
  * 
  ************************************************************************/
-
+DECLARE
+Isnativeseqon VARCHAR(1);
+tablename     VARCHAR(60);
 BEGIN
     IF (p_System = 'Y') THEN
 	RAISE NOTICE 'system';
@@ -34,14 +36,26 @@ BEGIN
           SET CurrentNextSys = CurrentNextSys + IncrementNo
         WHERE AD_Sequence_ID=p_AD_Sequence_ID;
     ELSE
-        SELECT CurrentNext
+    
+        Isnativeseqon := get_Sysconfig('SYSTEM_NATIVE_SEQUENCE','N',0,0);
+        IF Isnativeseqon = 'Y' THEN 
+          SELECT Name
+            INTO tablename 
+            FROM Ad_Sequence
+           WHERE Ad_Sequence_Id=P_Ad_Sequence_Id;
+	   --
+	   EXECUTE 'SELECT nextval('''||tablename||'_sq'''||')' INTO o_NextID;
+	   --
+       ELSE   
+          SELECT CurrentNext
             INTO o_NextID
-        FROM AD_Sequence
-        WHERE AD_Sequence_ID=p_AD_Sequence_ID;
-        --
-        UPDATE AD_Sequence
-          SET CurrentNext = CurrentNext + IncrementNo
-        WHERE AD_Sequence_ID=p_AD_Sequence_ID;
+            FROM AD_Sequence
+           WHERE AD_Sequence_ID=p_AD_Sequence_ID;
+          --
+          UPDATE AD_Sequence
+             SET CurrentNext = CurrentNext + IncrementNo
+           WHERE AD_Sequence_ID=p_AD_Sequence_ID;
+       END IF; 
     END IF;
     --
 EXCEPTION
@@ -51,5 +65,3 @@ END;
 
 $body$ LANGUAGE plpgsql;
 
-
- 	  	 

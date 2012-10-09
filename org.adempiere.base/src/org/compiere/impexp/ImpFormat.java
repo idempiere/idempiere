@@ -116,8 +116,8 @@ public final class ImpFormat
 		m_tableName = null;
 		m_tablePK = null;
 		String sql = "SELECT t.TableName,c.ColumnName "
-			+ "FROM AD_Table t INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID AND c.IsKey='Y') "
-			+ "WHERE t.AD_Table_ID=?";
+				+ "FROM AD_Table t INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID AND c.IsKey='Y') "
+				+ "WHERE t.AD_Table_ID=?";
 		try
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql, null);
@@ -302,10 +302,10 @@ public final class ImpFormat
 	private static void loadRows (ImpFormat format, int ID)
 	{
 		String sql = "SELECT f.SeqNo,c.ColumnName,f.StartNo,f.EndNo,f.DataType,c.FieldLength,"		//	1..6
-			+ "f.DataFormat,f.DecimalPoint,f.DivideBy100,f.ConstantValue,f.Callout "				//	7..11
-			+ "FROM AD_ImpFormat_Row f,AD_Column c "
-			+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y'"
-			+ "ORDER BY f.SeqNo";
+					+ "f.DataFormat,f.DecimalPoint,f.DivideBy100,f.ConstantValue,f.Callout "				//	7..11
+					+ "FROM AD_ImpFormat_Row f,AD_Column c "
+					+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y'"
+					+ "ORDER BY f.SeqNo";
 		try
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql, null);

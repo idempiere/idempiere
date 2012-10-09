@@ -69,7 +69,7 @@ public class OrderRePrice extends SvrProcess
 		if (p_C_Order_ID == 0 && p_C_Invoice_ID == 0)
 			throw new IllegalArgumentException("Nothing to do");
 
-		String retValue = "";
+		StringBuilder retValue = new StringBuilder();
 		if (p_C_Order_ID != 0)
 		{
 			MOrder order = new MOrder (getCtx(), p_C_Order_ID, get_TrxName());
@@ -82,7 +82,7 @@ public class OrderRePrice extends SvrProcess
 			}
 			order = new MOrder (getCtx(), p_C_Order_ID, get_TrxName());
 			BigDecimal newPrice = order.getGrandTotal();
-			retValue = order.getDocumentNo() + ":  " + oldPrice + " -> " + newPrice;
+			retValue = new StringBuilder(order.getDocumentNo()).append(":  ").append(oldPrice).append(" -> ").append(newPrice);
 		}
 		if (p_C_Invoice_ID != 0)
 		{
@@ -97,11 +97,11 @@ public class OrderRePrice extends SvrProcess
 			invoice = new MInvoice (getCtx(), p_C_Invoice_ID, null);
 			BigDecimal newPrice = invoice.getGrandTotal();
 			if (retValue.length() > 0)
-				retValue += Env.NL;
-			retValue += invoice.getDocumentNo() + ":  " + oldPrice + " -> " + newPrice;
+				retValue.append(Env.NL);
+			retValue.append(invoice.getDocumentNo()).append(":  ").append(oldPrice).append(" -> ").append(newPrice);
 		}
 		//
-		return retValue;
+		return retValue.toString();
 	}	//	doIt
 
 }	//	OrderRePrice

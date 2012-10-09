@@ -102,7 +102,7 @@ public class Export extends SvrProcess
 		AD_Table_ID = getTable_ID();
 		
 		// C_Invoice; AD_Table_ID = 318
-		StringBuffer sb = new StringBuffer ("AD_Table_ID=").append(AD_Table_ID);
+		StringBuilder sb = new StringBuilder("AD_Table_ID=").append(AD_Table_ID);
 		sb.append("; Record_ID=").append(getRecord_ID());
 		//	Parameter
 		ProcessInfoParameter[] para = getParameter();
@@ -154,7 +154,7 @@ public class Export extends SvrProcess
 		}
 		MEXPFormat exportFormat = new MEXPFormat(getCtx(), EXP_Format_ID, get_TrxName());
 		
-		StringBuffer sql = new StringBuffer("SELECT * ")
+		StringBuilder sql = new StringBuilder("SELECT * ")
 					.append("FROM ").append(table.getTableName()).append(" ")
 				   .append("WHERE ").append(po.get_KeyColumns()[0]).append("=?")
 		;
@@ -270,7 +270,8 @@ public class Export extends SvrProcess
 						}
 					}
 				}*/
-				log.info("EXP Field - column=["+column.getColumnName()+"]; value=" + value);
+				StringBuilder msglog = new StringBuilder("EXP Field - column=[").append(column.getColumnName()).append("]; value=").append(value);
+				log.info(msglog.toString());
 				if (valueString != null && !"".equals(valueString) && !"null".equals(valueString)) {
 					Text newText = outDocument.createTextNode(valueString);
 					newElement.appendChild(newText);
@@ -331,7 +332,8 @@ public class Export extends SvrProcess
 						}
 					}
 				}*/
-				log.info("EXP Field - column=["+column.getColumnName()+"]; value=" + value);
+				StringBuilder msglog = new StringBuilder("EXP Field - column=[").append(column.getColumnName()).append("]; value=").append(value);
+				log.info(msglog.toString());
 				if (valueString != null && !"".equals(valueString) && !"null".equals(valueString)) {
 					rootElement.setAttribute(formatLine.getValue(), valueString);
 					elementHasValue = true;
@@ -348,7 +350,7 @@ public class Export extends SvrProcess
 				
 				MTable tableEmbedded = MTable.get(getCtx(), embeddedFormat.getAD_Table_ID());
 				log.info("Table Embedded = " + tableEmbedded);
-				StringBuffer sql = new StringBuffer("SELECT * ")
+				StringBuilder sql = new StringBuilder("SELECT * ")
 					   .append("FROM ").append(tableEmbedded.getTableName()).append(" ")
 					   .append("WHERE ").append(masterPO.get_KeyColumns()[0]).append("=?")
 					   //+ "WHERE " + po.get_WhereClause(false)

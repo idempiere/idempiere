@@ -31,11 +31,11 @@ public interface I_C_BP_Employee_Acct
     public static final String Table_Name = "C_BP_Employee_Acct";
 
     /** AD_Table_ID=184 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 184;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel =  - Client - Org 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
@@ -75,7 +75,7 @@ public interface I_C_BP_Employee_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -90,7 +90,16 @@ public interface I_C_BP_Employee_Acct
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+
+    /** Column name C_BP_Employee_Acct_UU */
+    public static final String COLUMNNAME_C_BP_Employee_Acct_UU = "C_BP_Employee_Acct_UU";
+
+	/** Set C_BP_Employee_Acct_UU	  */
+	public void setC_BP_Employee_Acct_UU (String C_BP_Employee_Acct_UU);
+
+	/** Get C_BP_Employee_Acct_UU	  */
+	public String getC_BP_Employee_Acct_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -107,36 +116,6 @@ public interface I_C_BP_Employee_Acct
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name E_Expense_Acct */
-    public static final String COLUMNNAME_E_Expense_Acct = "E_Expense_Acct";
-
-	/** Set Employee Expense.
-	  * Account for Employee Expenses
-	  */
-	public void setE_Expense_Acct (int E_Expense_Acct);
-
-	/** Get Employee Expense.
-	  * Account for Employee Expenses
-	  */
-	public int getE_Expense_Acct();
-
-	public I_C_ValidCombination getE_Expense_A() throws RuntimeException;
-
-    /** Column name E_Prepayment_Acct */
-    public static final String COLUMNNAME_E_Prepayment_Acct = "E_Prepayment_Acct";
-
-	/** Set Employee Prepayment.
-	  * Account for Employee Expense Prepayments
-	  */
-	public void setE_Prepayment_Acct (int E_Prepayment_Acct);
-
-	/** Get Employee Prepayment.
-	  * Account for Employee Expense Prepayments
-	  */
-	public int getE_Prepayment_Acct();
-
-	public I_C_ValidCombination getE_Prepayment_A() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

@@ -173,7 +173,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		m_Role.setAllow_Info_Account(Boolean.valueOf(atts.getValue("AllowInfoAccount")));
 		m_Role.setAllow_Info_Asset(Boolean.valueOf(atts.getValue("AllowInfoAsset")));
 		m_Role.setAllow_Info_BPartner(Boolean.valueOf(atts.getValue("AllowInfoBPartner")));
-		m_Role.setAllow_Info_CashJournal(Boolean.valueOf(atts.getValue("AllowInfoCashJournal")));
+		// m_Role.setAllow_Info_CashJournal(Boolean.valueOf(atts.getValue("AllowInfoCashJournal")));
 		m_Role.setAllow_Info_InOut(Boolean.valueOf(atts.getValue("AllowInfoInOut")));
 		m_Role.setAllow_Info_Invoice(Boolean.valueOf(atts.getValue("AllowInfoInvoice")));
 		m_Role.setAllow_Info_Order(Boolean.valueOf(atts.getValue("AllowInfoOrder")));
@@ -181,8 +181,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 		m_Role.setAllow_Info_Product(Boolean.valueOf(atts.getValue("AllowInfoProduct")));
 		m_Role.setAllow_Info_Resource(Boolean.valueOf(atts.getValue("AllowInfoResource")));
 		m_Role.setAllow_Info_Schedule(Boolean.valueOf(atts.getValue("AllowInfoSchedule")));
-		m_Role.setAllow_Info_Schedule(Boolean.valueOf(atts.getValue("AllowInfoCRP")));
-		m_Role.setAllow_Info_Schedule(Boolean.valueOf(atts.getValue("AllowInfoMRP")));
+		//m_Role.setAllow_Info_CRP(Boolean.valueOf(atts.getValue("AllowInfoCRP")));
+		//m_Role.setAllow_Info_MRP(Boolean.valueOf(atts.getValue("AllowInfoMRP")));
 		
 
 		if (m_Role.save(getTrxName(ctx)) == true) {
@@ -504,7 +504,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		atts.addAttribute("", "", "AllowInfoAccount", "CDATA", Boolean.toString(m_Role.isAllow_Info_Account()));
 		atts.addAttribute("", "", "AllowInfoAsset", "CDATA", Boolean.toString(m_Role.isAllow_Info_Asset()));
 		atts.addAttribute("", "", "AllowInfoBPartner", "CDATA", Boolean.toString(m_Role.isAllow_Info_BPartner()));
-		atts.addAttribute("", "", "AllowInfoCashJournal", "CDATA", Boolean.toString(m_Role.isAllow_Info_CashJournal()));
+		// atts.addAttribute("", "", "AllowInfoCashJournal", "CDATA", Boolean.toString(m_Role.isAllow_Info_CashJournal()));
 		atts.addAttribute("", "", "AllowInfoInOut", "CDATA", Boolean.toString(m_Role.isAllow_Info_InOut()));
 		atts.addAttribute("", "", "AllowInfoInvoice", "CDATA", Boolean.toString(m_Role.isAllow_Info_Invoice()));
 		atts.addAttribute("", "", "AllowInfoOrder", "CDATA", Boolean.toString(m_Role.isAllow_Info_Order()));
@@ -512,8 +512,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 		atts.addAttribute("", "", "AllowInfoProduct", "CDATA", Boolean.toString(m_Role.isAllow_Info_Product()));
 		atts.addAttribute("", "", "AllowInfoResource", "CDATA", Boolean.toString(m_Role.isAllow_Info_Resource()));
 		atts.addAttribute("", "", "AllowInfoSchedule", "CDATA", Boolean.toString(m_Role.isAllow_Info_Schedule()));
-		atts.addAttribute("", "", "AllowInfoCRP", "CDATA", Boolean.toString(m_Role.isAllow_Info_CRP()));
-		atts.addAttribute("", "", "AllowInfoMRP", "CDATA", Boolean.toString(m_Role.isAllow_Info_MRP()));
+		// atts.addAttribute("", "", "AllowInfoCRP", "CDATA", Boolean.toString(m_Role.isAllow_Info_CRP()));
+		// atts.addAttribute("", "", "AllowInfoMRP", "CDATA", Boolean.toString(m_Role.isAllow_Info_MRP()));
 		
 		return atts;
 	}

@@ -29,6 +29,7 @@ import org.compiere.model.MRequestType;
 import org.compiere.model.MRequestUpdate;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 /**
  * 	Create Invoices for Requests
@@ -98,26 +99,26 @@ public class RequestInvoice extends SvrProcess
 		if (!type.isInvoiced())
 			throw new AdempiereSystemError("@R_RequestType_ID@ <> @IsInvoiced@");
 		
-		String sql = "SELECT * FROM R_Request r"
-			+ " INNER JOIN R_Status s ON (r.R_Status_ID=s.R_Status_ID) "
-			+ "WHERE s.IsClosed='Y'"
-			+ " AND r.R_RequestType_ID=?";
+		StringBuilder sql = new StringBuilder("SELECT * FROM R_Request r")
+			.append(" INNER JOIN R_Status s ON (r.R_Status_ID=s.R_Status_ID) ")
+			.append("WHERE s.IsClosed='Y'")
+			.append(" AND r.R_RequestType_ID=?");
 			// globalqss -- avoid double invoicing
 			// + " AND EXISTS (SELECT 1 FROM R_RequestUpdate ru " +
 			//		"WHERE ru.R_Request_ID=r.R_Request_ID AND NVL(C_InvoiceLine_ID,0)=0";
 		if (p_R_Group_ID != 0)
-			sql += " AND r.R_Group_ID=?";
+			sql.append(" AND r.R_Group_ID=?");
 		if (p_R_Category_ID != 0)
-			sql += " AND r.R_Category_ID=?";
+			sql.append(" AND r.R_Category_ID=?");
 		if (p_C_BPartner_ID != 0)
-			sql += " AND r.C_BPartner_ID=?";
-		sql += " AND r.IsInvoiced='Y' "
-			+ "ORDER BY C_BPartner_ID";
+			sql.append(" AND r.C_BPartner_ID=?");
+		sql.append(" AND r.IsInvoiced='Y' ")
+			.append("ORDER BY C_BPartner_ID");
 		
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			int index = 1;
 			pstmt.setInt (index++, p_R_RequestType_ID);
 			if (p_R_Group_ID != 0)
@@ -150,7 +151,7 @@ public class RequestInvoice extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log (Level.SEVERE, sql, e);
+			log.log (Level.SEVERE, sql.toString(), e);
 		}
 		try
 		{
@@ -184,7 +185,8 @@ public class RequestInvoice extends SvrProcess
 					
 				}
 				m_invoice.saveEx();
-				addLog(0, null, m_invoice.getGrandTotal(), m_invoice.getDocumentNo(),m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID());
+				String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
+				addLog(0, null, m_invoice.getGrandTotal(), message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
 			}
 		}
 		m_invoice = null;

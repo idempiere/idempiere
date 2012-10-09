@@ -110,7 +110,7 @@ public class MFactAcct extends X_Fact_Acct
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MFactAcct[");
+		StringBuilder sb = new StringBuilder ("MFactAcct[");
 		sb.append(get_ID()).append("-Acct=").append(getAccount_ID())
 			.append(",Dr=").append(getAmtSourceDr()).append("|").append(getAmtAcctDr())
 			.append(",Cr=").append(getAmtSourceCr()).append("|").append(getAmtAcctCr())

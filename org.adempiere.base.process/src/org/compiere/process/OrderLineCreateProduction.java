@@ -131,7 +131,8 @@ public class OrderLineCreateProduction extends SvrProcess
 		production.setIsCreated("Y");
 		production.saveEx();
 	
-		return "Production created -- " + production.get_ValueAsString("DocumentNo");
+		StringBuilder msgreturn = new StringBuilder("Production created -- ").append(production.get_ValueAsString("DocumentNo"));
+		return msgreturn.toString();
 	}	//	OrderLineCreateShipment
 	
 }	//	OrderLineCreateShipment

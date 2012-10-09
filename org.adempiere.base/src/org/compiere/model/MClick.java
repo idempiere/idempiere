@@ -202,7 +202,8 @@ public class MClick extends X_W_Click
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, "%" + url + "%");
+			StringBuilder msgstr = new StringBuilder("%").append(url).append("%");
+			pstmt.setString(1, msgstr.toString());
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -271,6 +272,7 @@ public class MClick extends X_W_Click
 				}
 			}
 		}
+		
 		System.out.println("#" + counter);
 	}	//	main
 	

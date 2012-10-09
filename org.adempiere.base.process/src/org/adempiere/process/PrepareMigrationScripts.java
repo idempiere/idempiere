@@ -72,18 +72,19 @@ public class PrepareMigrationScripts extends SvrProcess {
 		};
 		dirList = dir.listFiles(filter);
 
-		log.info("Searching for SQL files in the " + dir + " directory");
+		StringBuilder msglog = new StringBuilder("Searching for SQL files in the ").append(dir).append(" directory");
+		log.info(msglog.toString());
 
-		String msg = "";
+		StringBuilder msg = new StringBuilder();
 
 		// Get Filenames
 		for (int i = 0; i < dirList.length; i++) {
 			fileName.add(dirList[i].toString()
 					.substring(directory.length() + 1));
-			log
-					.fine("Found file ["
-							+ fileName.get(i)
-							+ "]. Finding out if the script has or hasn't been applied yet...");
+			msglog = new StringBuilder("Found file [")
+							.append(fileName.get(i))
+							.append("]. Finding out if the script has or hasn't been applied yet...");
+			log.fine(msglog.toString());
 			try {
 				// First of all, check if the script hasn't been applied yet...
 				String checkScript = "select ad_migrationscript_id from ad_migrationscript where name = ?";
@@ -92,15 +93,16 @@ public class PrepareMigrationScripts extends SvrProcess {
 				pstmt.setString(1, fileName.get(i));
 				ResultSet rs = pstmt.executeQuery();
 				if (rs.next()) {
-					log.warning("Script " + fileName.get(i)
-							+ " already in the database");
+					msglog = new StringBuilder("Script ").append(fileName.get(i))
+							.append(" already in the database");
+					log.warning(msglog.toString());
 					pstmt.close();
 					continue;
 				}
 				pstmt.close();
 				// first use a Scanner to get each line
 				Scanner scanner = new Scanner(dirList[i]);
-				StringBuffer body = new StringBuffer();
+				StringBuilder body = new StringBuilder();
 				boolean blHeader = false;
 				boolean blBody = false;
 				boolean isFirstLine = true;
@@ -215,8 +217,9 @@ public class PrepareMigrationScripts extends SvrProcess {
 				if (result > 0)
 					log.info("Header inserted. Now inserting the script body");
 				else {
-					log.severe("Script " + fileName.get(i) + " failed!");
-					msg = msg + "Script " + fileName.get(i) + " failed!";
+					msglog = new StringBuilder("Script ").append(fileName.get(i)).append(" failed!");
+					log.severe(msglog.toString());
+					msg.append(msglog);
 					continue;
 				}
 				sql = "UPDATE AD_MigrationScript SET script = ? WHERE AD_MigrationScript_ID = ?";
@@ -228,8 +231,9 @@ public class PrepareMigrationScripts extends SvrProcess {
 				if (result > 0)
 					log.info("Script Body inserted.");
 				else {
-					log.severe("Script Body " + fileName.get(i) + " failed!");
-					msg = msg + "Script Body " + fileName.get(i) + " failed!";
+					msglog = new StringBuilder("Script Body ").append(fileName.get(i)).append(" failed!");
+					log.severe(msglog.toString());
+					msg.append(msglog.toString());
 					pstmt = DB
 							.prepareStatement(
 									"DELETE FROM ad_migrationscript WHERE ad_migrationscript_id = ?",

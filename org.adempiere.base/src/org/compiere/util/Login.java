@@ -1372,6 +1372,7 @@ public class Login
 			}
 		}
 		
+		boolean validButLocked = false;
 		for (MUser user : users) {
 			if (clientsValidated.contains(user.getAD_Client_ID())) {
 				log.severe("Two users with password with the same name/email combination on same tenant: " + app_user);
@@ -1387,7 +1388,10 @@ public class Login
 			}
 			if (valid ) {			
 				if (user.isLocked())
+				{
+					validButLocked = true;
 					continue;
+				}
 				
 				if (user.isExpired())
 					isPasswordExpired = true;
@@ -1462,15 +1466,20 @@ public class Login
 					log.severe("Failed to update user record with date last login");
 			}
 		}
-		else
+		else if (validButLocked)
 		{
+			// User account ({0}) is locked, please contact the system administrator
+			loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});
+		}
+		else 
+		{
+			boolean foundLockedAccount = false;
 			for (MUser user : users) 
 			{
 				if (user.isLocked())
 				{
-					// User account '{0}' is locked, please contact the system administrator
-					loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});
-					break;
+					foundLockedAccount = true;
+					continue;
 				}
 				
 				int count = user.getFailedLoginCount() + 1;
@@ -1479,7 +1488,7 @@ public class Login
 				int MAX_LOGIN_ATTEMPT = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_LOGIN_ATTEMPT, 0);
 				if (MAX_LOGIN_ATTEMPT > 0 && count >= MAX_LOGIN_ATTEMPT)
 				{
-					// Reached the maximum number of login attempts, user account '{0}' is locked
+					// Reached the maximum number of login attempts, user account ({0}) is locked
 					loginErrMsg = Msg.getMsg(m_ctx, "ReachedMaxLoginAttempts", new Object[] {app_user});
 					reachMaxAttempt = true;
 				}
@@ -1499,6 +1508,12 @@ public class Login
 				user.setDateAccountLocked(user.isLocked() ? new Timestamp(now) : null);
 				if (!user.save())
 					log.severe("Failed to update user record with increase failed login count");
+			}
+			
+			if (loginErrMsg == null && foundLockedAccount)
+			{
+				// User account ({0}) is locked, please contact the system administrator
+				loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});				
 			}
 		}
 		return retValue;
@@ -1526,6 +1541,7 @@ public class Login
 			sql.append("u.EMail=?");
 		else
 			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
+		sql.append(" AND r.IsMasterRole='N'");
 		sql.append(" AND u.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
 		sql.append(" ORDER BY r.Name");
 

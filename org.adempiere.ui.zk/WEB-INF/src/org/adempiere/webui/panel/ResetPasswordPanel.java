@@ -23,7 +23,6 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
@@ -82,13 +81,17 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     private boolean 		m_noSecurityQuestion;
     /** Tries Counter			*/
     private int				counter;
+    /** EMail Login preference  */
+    boolean m_email_login = false;
 	
     private Label lblSecurityQuestion;
     private Label lblAnswer;
     private Label lblUserId;
-    private Combobox lstSecurityQuestion;
+    private Label lblEmail;
+    private Textbox txtSecurityQuestion;
     private Textbox txtAnswer;
     private Textbox txtUserId;
+    private Textbox txtEmail;
     
     public ResetPasswordPanel(Properties ctx, LoginWindow loginWindow, String userName, boolean noSecurityQuestion) 
     {
@@ -96,10 +99,13 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	m_ctx = ctx;
     	m_userName = userName;
     	m_noSecurityQuestion = noSecurityQuestion;
-    	
+		m_email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+
         initComponents();
         init();
         this.setId("resetPasswordPanel");
+        
+        loadData();
     }
 
     private void init()
@@ -129,21 +135,39 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         image.setSrc(ThemeManager.getLargeLogo());
         td.appendChild(image);
 
-        if (m_noSecurityQuestion)
-        {
-        	tr = new Tr();
-            tr.setId("rowUser");
-            table.appendChild(tr);
-        	td = new Td();
-        	tr.appendChild(td);
-        	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-        	td.appendChild(lblUserId);
-        	td = new Td();
-        	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
-        	tr.appendChild(td);
-        	td.appendChild(txtUserId);
-        }
-        else
+    	tr = new Tr();
+        tr.setId("rowUser");
+        table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(lblUserId);
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(txtUserId);
+    	
+    	tr = new Tr();
+        tr.setId("rowEmail");
+        table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(lblEmail);
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(txtEmail);
+    	
+    	if (m_email_login) {
+    		lblEmail.setVisible(false);
+    		txtEmail.setVisible(false);
+    	} else {
+    		lblUserId.setVisible(false);
+    		txtUserId.setVisible(false);
+    	}
+    	
+        if (! m_noSecurityQuestion)
         {
         	tr = new Tr();
 	        tr.setId("rowSecurityQuestion");
@@ -155,7 +179,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	td = new Td();
 	    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
 	    	tr.appendChild(td);
-	    	td.appendChild(lstSecurityQuestion);
+	    	td.appendChild(txtSecurityQuestion);
 	
 	    	tr = new Tr();
 	        tr.setId("rowAnswer");
@@ -184,21 +208,28 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 
     private void initComponents()
     {
-    	if (m_noSecurityQuestion)
-        {
-    		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
-    		lblUserId = new Label();
-            lblUserId.setId("lblUserId");
-            lblUserId.setValue(email_login ? Msg.getMsg(m_ctx, "Name") : Msg.getMsg(m_ctx, "EMail"));
-            
-    		txtUserId = new Textbox();
-            txtUserId.setId("txtUserId");
-            txtUserId.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtUserId.getId());
-            txtUserId.setCols(25);
-            txtUserId.setMaxlength(40);
-            txtUserId.setWidth("220px");
-        }
-    	else
+    	lblEmail = new Label();
+    	lblEmail.setId("lblEmail");
+    	lblEmail.setValue(Msg.getMsg(m_ctx, "EMail"));
+
+    	txtEmail = new Textbox();
+    	txtEmail.setId("txtEmail");
+    	txtEmail.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtEmail.getId());
+    	txtEmail.setCols(25);
+    	txtEmail.setWidth("220px");
+    	txtEmail.setReadonly(false);
+
+    	lblUserId = new Label();
+    	lblUserId.setId("lblUserId");
+    	lblUserId.setValue(Msg.getMsg(m_ctx, "User"));
+
+    	txtUserId = new Textbox();
+    	txtUserId.setId("txtUserId");
+    	txtUserId.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtUserId.getId());
+    	txtUserId.setCols(25);
+    	txtUserId.setMaxlength(40);
+    	txtUserId.setWidth("220px");
+    	if (! m_noSecurityQuestion)
     	{
 	    	lblSecurityQuestion = new Label();
 	    	lblSecurityQuestion.setId("lblSecurityQuestion");
@@ -208,16 +239,12 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	lblAnswer.setId("lblAnswer");
 	    	lblAnswer.setValue(Msg.getMsg(m_ctx, "Answer"));
 	    	
-	    	lstSecurityQuestion = new Combobox();
-	    	lstSecurityQuestion.setAutocomplete(true);
-	    	lstSecurityQuestion.setAutodrop(true);
-	    	lstSecurityQuestion.setId("lstSecurityQuestion");
-	    	lstSecurityQuestion.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstSecurityQuestion.getId());
-	    	lstSecurityQuestion.setWidth("220px");
-	    	
-	    	lstSecurityQuestion.getItems().clear();
-	    	for (int i = 1; i <= NO_OF_SECURITY_QUESTION; i++)
-	    		lstSecurityQuestion.appendItem(Msg.getMsg(m_ctx, SECURITY_QUESTION_PREFIX + i), SECURITY_QUESTION_PREFIX + i);
+	    	txtSecurityQuestion = new Textbox();
+	    	txtSecurityQuestion.setId("txtSecurityQuestion");
+	    	txtSecurityQuestion.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtSecurityQuestion.getId());
+	    	txtSecurityQuestion.setCols(25);
+	    	txtSecurityQuestion.setWidth("220px");
+	    	txtSecurityQuestion.setReadonly(true);
 	        
 	    	txtAnswer = new Textbox();
 	    	txtAnswer.setId("txtAnswer");
@@ -225,14 +252,51 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	        txtAnswer.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtAnswer.getId());
 	        txtAnswer.setCols(25);
 	        txtAnswer.setWidth("220px");
+	        txtAnswer.setReadonly(true);
     	}
-   }
+    }
+    
+    private void loadData()
+    {
+    	if (m_email_login)
+    	{
+    		txtEmail.setText(m_userName);
+    	} else {
+    		txtUserId.setText(m_userName);
+    	}
+    }
+    
+    private void loadSecurityQuestion()
+    {
+    	String email = txtEmail.getValue();
+    	String userid = txtUserId.getValue();
+		if (Util.isEmpty(email) || Util.isEmpty(userid))
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "FillMandatory") + " " + (m_email_login ? lblUserId.getValue() : lblEmail.getValue()));
+
+		// TODO: Validation for user with same email uses the same password and security question
+    	StringBuilder sql = new StringBuilder("SELECT SecurityQuestion ");
+    	sql.append("FROM AD_User ");
+    	sql.append("WHERE IsActive='Y' ");
+   		sql.append("AND COALESCE(LDAPUser,Name)=? ");
+    	sql.append("AND EMail=? ");
+    	sql.append("AND SecurityQuestion IS NOT NULL ");    	
+    	sql.append("ORDER BY AD_Client_ID DESC");
+    	
+    	String securityQuestion = DB.getSQLValueString(null, sql.toString(), userid, email);
+    	txtSecurityQuestion.setValue(securityQuestion);
+    	
+    	txtEmail.setReadonly(true);
+    	txtAnswer.setReadonly(false);
+    }
 
     public void onEvent(Event event)
     {
         if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
         {
-            validateResetPassword();
+        	if (txtAnswer != null && txtAnswer.isReadonly())
+        		validateEmail();
+        	else
+        		validateResetPassword();
         }
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
@@ -241,27 +305,48 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         }
     }
     
-    public void validateResetPassword()
+    private void validateEmail()
     {
+    	String email = txtEmail.getValue();
+    	String userid = txtUserId.getValue();
+		if (Util.isEmpty(email) || Util.isEmpty(userid))
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "FillMandatory") + " " + (m_email_login ? lblUserId.getValue() : lblEmail.getValue()));
+
+    	StringBuilder whereClause = new StringBuilder("Password IS NOT NULL ");
+		whereClause.append("AND COALESCE(LDAPUser,Name)=? ");
+    	whereClause.append("AND EMail=? ");
+		whereClause.append(" AND")
+				.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
+				.append("         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)")
+				.append("         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND ")
+				.append(" EXISTS (SELECT * FROM AD_Client c")
+				.append("         WHERE c.AD_Client_ID=AD_User.AD_Client_ID")
+				.append("         AND c.IsActive='Y') AND ")
+				.append(" AD_User.IsActive='Y'");
+		
+		List<MUser> users = new Query(m_ctx, MUser.Table_Name, whereClause.toString(), null)
+			.setParameters(userid, email)
+			.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+			.list();
+		
+		if (users.size() == 0)
+			throw new AdempiereException(Msg.getMsg(m_ctx, "InvalidUserNameAndEmail"));
+		
+		loadSecurityQuestion();
+    }
+    
+    private void validateResetPassword()
+    {
+    	String email = txtEmail.getValue();
+    	String userid = txtUserId.getValue();
+		if (Util.isEmpty(email) || Util.isEmpty(userid))
+    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "FillMandatory") + " " + (m_email_login ? lblUserId.getValue() : lblEmail.getValue()));
     	List<MUser> users = null;
     	if (m_noSecurityQuestion)
     	{
-    		String userId = txtUserId.getValue();
-    		if (Util.isEmpty(userId))
-        		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "FillMandatory") + " " + lblUserId.getValue());
-    		
 	    	StringBuilder whereClause = new StringBuilder("Password IS NOT NULL ");
-	    	boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
-	    	if (email_login)
-	    	{
-				whereClause.append("AND EMail=? ");
-				whereClause.append("AND COALESCE(LDAPUser,Name)=? ");
-	    	}
-	    	else
-	    	{
-				whereClause.append("AND COALESCE(LDAPUser,Name)=? ");
-	    		whereClause.append("AND EMail=? ");
-	    	}
+			whereClause.append("AND COALESCE(LDAPUser,Name)=? ");
+    		whereClause.append("AND EMail=? ");
 			whereClause.append(" AND")
 					.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
 					.append("         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)")
@@ -272,16 +357,13 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 					.append(" AD_User.IsActive='Y'");
 			
 			users = new Query(m_ctx, MUser.Table_Name, whereClause.toString(), null)
-				.setParameters(m_userName, userId)
+				.setParameters(userid, email)
 				.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
 				.list();
     	}
     	else
     	{
-	    	String securityQuestion = null;
-	    	if (lstSecurityQuestion.getSelectedItem() != null)
-	    		securityQuestion = (String) lstSecurityQuestion.getSelectedItem().getValue();
-	    	
+	    	String securityQuestion = txtSecurityQuestion.getValue();
 	    	String answer = txtAnswer.getValue();
 	    	
 	    	if (Util.isEmpty(securityQuestion))
@@ -290,12 +372,8 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	if (Util.isEmpty(answer))
 	    		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "AnswerMandatory"));
 	    	
-	    	boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 	    	StringBuilder whereClause = new StringBuilder("Password IS NOT NULL AND ");
-			if (email_login)
-				whereClause.append("EMail=?");
-			else
-				whereClause.append("COALESCE(LDAPUser,Name)=?");
+			whereClause.append("EMail=?");
 			whereClause.append(" AND")
 					.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
 					.append("         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)")
@@ -308,7 +386,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 					.append(" AND AD_User.Answer=?");
 			
 			users = new Query(m_ctx, MUser.Table_Name, whereClause.toString(), null)
-				.setParameters(m_userName, securityQuestion, answer)
+				.setParameters(email, securityQuestion, answer)
 				.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
 				.list();
     	}
@@ -358,7 +436,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 					if (errorMsg.length() > 0)
 						errorMsg += ", ";
 					errorMsg += user.getEMail();
-					throw new AdempiereException("Failed to send email to user - " + user.getEMail());
+					throw new AdempiereException(Msg.getMsg(m_ctx, "RequestActionEMailError") + ": " + user.getEMail());
 				}
 			}
 

@@ -73,12 +73,12 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		//	Delete Unprocessed zero Differences
-		String sql = "DELETE M_CostDetail "
-			+ "WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0"
-			+ " AND C_OrderLine_ID=" + C_OrderLine_ID
-			+ " AND C_AcctSchema_ID =" + as.getC_AcctSchema_ID()
-			+ " AND M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID;
-		int no = DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
+			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
+			.append(" AND C_OrderLine_ID=").append(C_OrderLine_ID)
+			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
+			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
+		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
 			s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "C_OrderLine_ID=?", 
@@ -140,12 +140,12 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		//	Delete Unprocessed zero Differences
-		String sql = "DELETE M_CostDetail "
-			+ "WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0"
-			+ " AND C_InvoiceLine_ID=" + C_InvoiceLine_ID
-			+ " AND C_AcctSchema_ID =" + as.getC_AcctSchema_ID()			
-			+ " AND M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID;
-		int no = DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
+			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
+			.append(" AND C_InvoiceLine_ID=").append(C_InvoiceLine_ID)
+			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())			
+			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
+		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
 			s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=?", 
@@ -207,12 +207,12 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, boolean IsSOTrx, String trxName)
 	{
 		//	Delete Unprocessed zero Differences
-		String sql = "DELETE M_CostDetail "
-			+ "WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0"
-			+ " AND M_InOutLine_ID=" + M_InOutLine_ID
-			+ " AND C_AcctSchema_ID =" + as.getC_AcctSchema_ID()
-			+ " AND M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID;
-		int no = DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
+			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
+			.append(" AND M_InOutLine_ID=").append(M_InOutLine_ID)
+			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
+			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
+		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
 			s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "M_InOutLine_ID=?", 
@@ -274,12 +274,12 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		//	Delete Unprocessed zero Differences
-		String sql = "DELETE M_CostDetail "
-			+ "WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0"
-			+ " AND M_InventoryLine_ID=" + M_InventoryLine_ID
-			+ " AND C_AcctSchema_ID =" + as.getC_AcctSchema_ID()
-			+ " AND M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID;
-		int no = DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
+			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
+			.append(" AND M_InventoryLine_ID=").append(M_InventoryLine_ID)
+			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
+			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
+		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
 			s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "M_InventoryLine_ID=?", 
@@ -341,17 +341,18 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		//	Delete Unprocessed zero Differences
-		String sql = "DELETE M_CostDetail "
-			+ "WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0"
-			+ " AND M_MovementLine_ID=" + M_MovementLine_ID 
-			+ " AND IsSOTrx=" + (from ? "'Y'" : "'N'")
-			+ " AND C_AcctSchema_ID =" + as.getC_AcctSchema_ID()
-			+ " AND M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID;
-		int no = DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
+			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
+			.append(" AND M_MovementLine_ID=").append(M_MovementLine_ID) 
+			.append(" AND IsSOTrx=").append((from ? "'Y'" : "'N'"))
+			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
+			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
+		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
 			s_log.config("Deleted #" + no);
-		MCostDetail cd = get (as.getCtx(), "M_MovementLine_ID=? AND IsSOTrx=" 
-			+ (from ? "'Y'" : "'N'"), 
+		StringBuilder msget = new StringBuilder( "M_MovementLine_ID=? AND IsSOTrx=") 
+				.append((from ? "'Y'" : "'N'"));
+		MCostDetail cd = get (as.getCtx(),msget.toString(), 
 			M_MovementLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
 		if (cd == null)		//	createNew
@@ -410,12 +411,12 @@ public class MCostDetail extends X_M_CostDetail
 		String Description, String trxName)
 	{
 		//	Delete Unprocessed zero Differences
-		String sql = "DELETE M_CostDetail "
-			+ "WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0"
-			+ " AND M_ProductionLine_ID=" + M_ProductionLine_ID
-			+ " AND C_AcctSchema_ID =" + as.getC_AcctSchema_ID()
-			+ " AND M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID;
-		int no = DB.executeUpdate(sql, trxName);
+		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
+			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
+			.append(" AND M_ProductionLine_ID=").append(M_ProductionLine_ID)
+			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
+			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
+		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
 			s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "M_ProductionLine_ID=?", 
@@ -467,21 +468,21 @@ public class MCostDetail extends X_M_CostDetail
 	public static MCostDetail get (Properties ctx, String whereClause,
 		int ID, int M_AttributeSetInstance_ID, String trxName)
 	{
-		String sql = "SELECT * FROM M_CostDetail WHERE " + whereClause;
+		StringBuilder sql = new StringBuilder("SELECT * FROM M_CostDetail WHERE ").append(whereClause);
 
 		MClientInfo clientInfo = MClientInfo.get(ctx);
 		MAcctSchema primary = clientInfo.getMAcctSchema1();
 		int C_AcctSchema_ID = primary != null ? primary.getC_AcctSchema_ID() : 0;
 		if (C_AcctSchema_ID > 0)
 		{
-			sql = sql + " AND C_AcctSchema_ID=?";
+			sql.append(" AND C_AcctSchema_ID=?");
 		}
 		MCostDetail retValue = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql.toString(), null);
 			pstmt.setInt (1, ID);
 			pstmt.setInt (2, M_AttributeSetInstance_ID);
 			if (C_AcctSchema_ID > 0)
@@ -515,10 +516,10 @@ public class MCostDetail extends X_M_CostDetail
 	public static MCostDetail get (Properties ctx, String whereClause, 
 		int ID, int M_AttributeSetInstance_ID, int C_AcctSchema_ID, String trxName)
 	{
-		final String localWhereClause = whereClause
-			+ " AND M_AttributeSetInstance_ID=?"
-			+ " AND C_AcctSchema_ID=?";
-		MCostDetail retValue = new Query(ctx,I_M_CostDetail.Table_Name,localWhereClause,trxName)
+		StringBuilder localWhereClause = new StringBuilder(whereClause)
+			.append(" AND M_AttributeSetInstance_ID=?")
+			.append(" AND C_AcctSchema_ID=?");
+		MCostDetail retValue = new Query(ctx,I_M_CostDetail.Table_Name,localWhereClause.toString(),trxName)
 		.setParameters(ID,M_AttributeSetInstance_ID,C_AcctSchema_ID)
 		.first();
 		return retValue;
@@ -714,7 +715,7 @@ public class MCostDetail extends X_M_CostDetail
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MCostDetail[");
+		StringBuilder sb = new StringBuilder ("MCostDetail[");
 		sb.append (get_ID());
 		if (getC_OrderLine_ID() != 0)
 			sb.append (",C_OrderLine_ID=").append (getC_OrderLine_ID());
@@ -1001,17 +1002,17 @@ public class MCostDetail extends X_M_CostDetail
 					 *  Solution:
 					 *  Make sure the current qty is reflecting the actual qty in storage
 					 */
-					String sql = "SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage"					
-						+ " WHERE AD_Client_ID=" + cost.getAD_Client_ID()
-						+ " AND M_Product_ID=" + cost.getM_Product_ID();
+					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage")					
+						.append(" WHERE AD_Client_ID=").append(cost.getAD_Client_ID())
+						.append(" AND M_Product_ID=").append(cost.getM_Product_ID());
 					//Costing Level
 					String CostingLevel = product.getCostingLevel(as);			
 					if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-						sql += " AND AD_Org_ID=" + cost.getAD_Org_ID();
+						sql.append(" AND AD_Org_ID=").append(cost.getAD_Org_ID());
 					else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-						sql += " AND M_AttributeSetInstance_ID=" + M_ASI_ID;	
+						sql.append(" AND M_AttributeSetInstance_ID=").append(M_ASI_ID);	
 					//
-					BigDecimal qtyOnhand = DB.getSQLValueBD(get_TrxName(), sql);					
+					BigDecimal qtyOnhand = DB.getSQLValueBD(get_TrxName(), sql.toString());					
 					if (qtyOnhand.signum() != 0)
 					{
 						BigDecimal oldSum = cost.getCurrentCostPrice().multiply(cost.getCurrentQty());
@@ -1158,17 +1159,17 @@ public class MCostDetail extends X_M_CostDetail
 				MCostElement[] lce = MCostElement.getNonCostingMethods(this);
 				if (lce.length > 0)
 				{					
-					String sql = "SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage"					
-						+ " WHERE AD_Client_ID=" + cost.getAD_Client_ID()
-						+ " AND M_Product_ID=" + cost.getM_Product_ID();
+					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage")					
+						.append(" WHERE AD_Client_ID=").append(cost.getAD_Client_ID())
+						.append(" AND M_Product_ID=").append(cost.getM_Product_ID());
 					//Costing Level
 					String CostingLevel = product.getCostingLevel(as);
 					if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-						sql += " AND AD_Org_ID=" + cost.getAD_Org_ID();
+						sql.append(" AND AD_Org_ID=").append(cost.getAD_Org_ID());
 					else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-						sql += " AND M_AttributeSetInstance_ID=" + M_ASI_ID;	
+						sql.append(" AND M_AttributeSetInstance_ID=").append(M_ASI_ID);	
 					//
-					BigDecimal qtyOnhand = DB.getSQLValueBD(get_TrxName(), sql);
+					BigDecimal qtyOnhand = DB.getSQLValueBD(get_TrxName(), sql.toString());
 					for (int i = 0 ; i < lce.length ; i++)
 					{
 						MCost lCost = MCost.get(getCtx(), cost.getAD_Client_ID(), cost.getAD_Org_ID(), 

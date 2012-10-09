@@ -164,7 +164,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
         if ("onClick".equals(event.getName()))
         {
             log.config( "actionPerformed - " + m_value);
-            final WLocationDialog ld = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), m_value);
+            final WLocationDialog ld = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), m_value, gridField);
             ld.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 
 				@Override

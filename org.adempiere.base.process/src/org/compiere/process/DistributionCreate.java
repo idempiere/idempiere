@@ -151,11 +151,13 @@ public class DistributionCreate extends SvrProcess
 		//	Update Qty
 		if (m_singleOrder != null)
 		{
-			m_singleOrder.setDescription("# " + counter + " - " + m_totalQty);
+			StringBuilder msg = new StringBuilder("# ").append(counter).append(" - ").append(m_totalQty);
+			m_singleOrder.setDescription(msg.toString());
 			m_singleOrder.saveEx();
 		}
 		
-		return "@Created@ #" + counter + " - @Qty@=" + m_totalQty;
+		StringBuilder msgreturn = new StringBuilder("@Created@ #").append(counter).append(" - @Qty@=").append(m_totalQty);
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**

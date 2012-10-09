@@ -100,8 +100,8 @@ public class Doc_Invoice extends Doc
 	{
 		ArrayList<DocTax> list = new ArrayList<DocTax>();
 		String sql = "SELECT it.C_Tax_ID, t.Name, t.Rate, it.TaxBaseAmt, it.TaxAmt, t.IsSalesTax "
-			+ "FROM C_Tax t, C_InvoiceTax it "
-			+ "WHERE t.C_Tax_ID=it.C_Tax_ID AND it.C_Invoice_ID=?";
+				+ "FROM C_Tax t, C_InvoiceTax it "
+				+ "WHERE t.C_Tax_ID=it.C_Tax_ID AND it.C_Invoice_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -885,14 +885,14 @@ public class Doc_Invoice extends Doc
 		if (ci.getC_AcctSchema1_ID() != as.getC_AcctSchema_ID())
 			return;
 
-		StringBuffer sql = new StringBuffer (
-			"UPDATE M_Product_PO po "
-			+ "SET PriceLastInv = "
+		StringBuilder sql = new StringBuilder (
+			"UPDATE M_Product_PO po ")
+			 .append("SET PriceLastInv = ")
 			//	select
-			+ "(SELECT currencyConvert(il.PriceActual,i.C_Currency_ID,po.C_Currency_ID,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) "
-			+ "FROM C_Invoice i, C_InvoiceLine il "
-			+ "WHERE i.C_Invoice_ID=il.C_Invoice_ID"
-			+ " AND po.M_Product_ID=il.M_Product_ID AND po.C_BPartner_ID=i.C_BPartner_ID");
+			.append("(SELECT currencyConvert(il.PriceActual,i.C_Currency_ID,po.C_Currency_ID,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) ")
+			.append("FROM C_Invoice i, C_InvoiceLine il ")
+			.append("WHERE i.C_Invoice_ID=il.C_Invoice_ID")
+			.append(" AND po.M_Product_ID=il.M_Product_ID AND po.C_BPartner_ID=i.C_BPartner_ID");
 			//jz + " AND ROWNUM=1 AND i.C_Invoice_ID=").append(get_ID()).append(") ")
 			if (DB.isOracle()) //jz
 			{

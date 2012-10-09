@@ -7,7 +7,9 @@ DECLARE
    currentnextsys   NUMBER (10);
    currentnext      NUMBER (10);
    currentseqsys    NUMBER (10);
-   currentseq       NUMBER (10);
+   Currentseq       Number (10);
+   Isnativeseqon    Varchar2(1);  
+   sqlcmd           VARCHAR2(200);
 BEGIN
    DBMS_OUTPUT.PUT_LINE ('Start');
 
@@ -39,15 +41,16 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE (cmdsys);
             GOTO next_iteration;
       END;
-
+     
+      Isnativeseqon := get_Sysconfig('SYSTEM_NATIVE_SEQUENCE','N',0,0);
       IF currentnextsys IS NULL
       THEN
          currentnextsys := 0;
       END IF;
 
-      SELECT DECODE (SIGN (currentnextsys - 50000),
-                     -1, 50000,
-                     NVL (currentnextsys + 1, 50000)
+      SELECT DECODE (SIGN (currentnextsys - 200000),
+                     -1, 200000,
+                     NVL (currentnextsys + 1, 200000)
                     )
         INTO currentnextsys
         FROM DUAL;
@@ -76,16 +79,26 @@ BEGIN
         INTO currentnext
         FROM DUAL;
 
-      cmdseq :=
-            'SELECT currentnext, currentnextsys FROM AD_Sequence '
+      If Isnativeseqon ='Y' Then 
+       Cmdseq :=
+            'SELECT '||R.Tablename||'_SQ.Nextval as currentnext, 
+                     currentnextsys 
+              FROM AD_Sequence '
          || 'WHERE Name = '''
-         || r.tablename
-         || ''' AND istableid = ''Y''';
+         || r.Tablename
+         || ''' AND istableid = ''Y''';      
+      ELSE   
+        cmdseq :=
+              'SELECT currentnext, currentnextsys FROM AD_Sequence '
+           || 'WHERE Name = '''
+           || r.tablename
+           || ''' AND istableid = ''Y''';
+      END IF;
 
       EXECUTE IMMEDIATE cmdseq
                    INTO currentseq, currentseqsys;
 
-      IF currentnextsys <> currentseqsys OR currentnext <> currentseq
+      IF currentnextsys <> currentseqsys OR (currentnext <> currentseq AND Isnativeseqon ='N')
       THEN
          DBMS_OUTPUT.PUT_LINE (   r.tablename
                                || ' sys='
@@ -108,8 +121,16 @@ BEGIN
          DBMS_OUTPUT.PUT_LINE (cmdupd);
 
          EXECUTE IMMEDIATE cmdupd;
-      END IF;
-
+      End If;
+      
+      If Currentseq < Currentnext And Isnativeseqon ='Y' Then 
+         Sqlcmd := 'SELECT '||R.Tablename||'_SQ.Nextval FROM DUAL'; 
+         DBMS_OUTPUT.PUT_LINE (Sqlcmd);
+         While Not Currentseq >= (currentnext-1) Loop
+           Execute Immediate Sqlcmd
+           Into currentseq;
+         End Loop;
+      END IF;			
       <<next_iteration>>
       NULL;
    END LOOP;

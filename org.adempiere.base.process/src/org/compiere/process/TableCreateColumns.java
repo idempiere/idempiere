@@ -116,8 +116,8 @@ public class TableCreateColumns extends SvrProcess
 				ResultSet rs = md.getColumns(catalog, schema, tableName, null);
 				addTableColumn(rs, table);
 			}
-			
-			return "#" + m_count;
+			StringBuilder msgreturn = new StringBuilder("#").append(m_count);
+			return msgreturn.toString();
 		} finally {
 			if (conn != null) {
 				try {
@@ -369,7 +369,8 @@ public class TableCreateColumns extends SvrProcess
 			//	Done
 			if (column.save ())
 			{
-				addLog (0, null, null, table.getTableName() + "." + column.getColumnName());
+				StringBuilder msglog = new StringBuilder(table.getTableName()).append(".").append(column.getColumnName());
+				addLog (0, null, null, msglog.toString());
 				m_count++;
 			}
 		}	//	while columns

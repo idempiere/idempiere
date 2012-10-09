@@ -854,25 +854,27 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		// Check if Sequence exists
 		final int cnt = DB.getSQLValueEx(trxName, "SELECT COUNT(*) FROM pg_class WHERE UPPER(relname)=? AND relkind='S'", name.toUpperCase());
 		final int no;
+		if (start < minvalue)
+			start = minvalue;
 		//
 		// New Sequence
 		if (cnt == 0)
 		{
 			no = DB.executeUpdate("CREATE SEQUENCE "+name.toUpperCase()
-								+ " INCREMENT " + increment
+								+ " INCREMENT BY " + increment
 								+ " MINVALUE " + minvalue
 								+ " MAXVALUE " + maxvalue
-								+ " START " + start , trxName);
+								+ " START WITH " + start, trxName);
 		}
 		//
 		// Already existing sequence => ALTER
 		else
 		{
 			no = DB.executeUpdate("ALTER SEQUENCE "+name.toUpperCase()
-					+ " INCREMENT " + increment
+					+ " INCREMENT BY " + increment
 					+ " MINVALUE " + minvalue
 					+ " MAXVALUE " + maxvalue
-					+ " RESTART " + start , trxName);
+					+ " RESTART WITH " + start, trxName);
 		}
 		if(no == -1 )
 			return false;

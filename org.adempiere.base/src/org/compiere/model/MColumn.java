@@ -304,7 +304,7 @@ public class MColumn extends X_AD_Column
 				|| is_ValueChanged(MColumn.COLUMNNAME_Description)
 				|| is_ValueChanged(MColumn.COLUMNNAME_Help)
 				) {
-				StringBuffer sql = new StringBuffer("UPDATE AD_Field SET Name=")
+				StringBuilder sql = new StringBuilder("UPDATE AD_Field SET Name=")
 					.append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
 					.append(", Help=").append(DB.TO_STRING(getHelp()))
@@ -324,7 +324,7 @@ public class MColumn extends X_AD_Column
 	 */
 	public String getSQLAdd (MTable table)
 	{
-		StringBuffer sql = new StringBuffer ("ALTER TABLE ")
+		StringBuilder sql = new StringBuilder ("ALTER TABLE ")
 			.append(table.getTableName())
 			.append(" ADD ").append(getSQLDDL());
 		String constraint = getConstraint(table.getTableName());
@@ -345,7 +345,7 @@ public class MColumn extends X_AD_Column
 		if (isVirtualColumn())
 			return null;
 		
-		StringBuffer sql = new StringBuffer (getColumnName())
+		StringBuilder sql = new StringBuilder (getColumnName())
 			.append(" ").append(getSQLDataType());
 
 		//	Default
@@ -393,13 +393,13 @@ public class MColumn extends X_AD_Column
 	 */
 	public String getSQLModify (MTable table, boolean setNullOption)
 	{
-		StringBuffer sql = new StringBuffer();
-		StringBuffer sqlBase = new StringBuffer ("ALTER TABLE ")
+		StringBuilder sql = new StringBuilder();
+		StringBuilder sqlBase = new StringBuilder ("ALTER TABLE ")
 			.append(table.getTableName())
 			.append(" MODIFY ").append(getColumnName());
 		
 		//	Default
-		StringBuffer sqlDefault = new StringBuffer(sqlBase)
+		StringBuilder sqlDefault = new StringBuilder(sqlBase)
 			.append(" ").append(getSQLDataType());
 		String defaultValue = getDefaultValue();
 		if (defaultValue != null 
@@ -433,7 +433,7 @@ public class MColumn extends X_AD_Column
 		//	Null Values
 		if (isMandatory() && defaultValue != null && defaultValue.length() > 0)
 		{
-			StringBuffer sqlSet = new StringBuffer("UPDATE ")
+			StringBuilder sqlSet = new StringBuilder("UPDATE ")
 				.append(table.getTableName())
 				.append(" SET ").append(getColumnName())
 				.append("=").append(defaultValue)
@@ -444,7 +444,7 @@ public class MColumn extends X_AD_Column
 		//	Null
 		if (setNullOption)
 		{
-			StringBuffer sqlNull = new StringBuffer(sqlBase);
+			StringBuilder sqlNull = new StringBuilder(sqlBase);
 			if (isMandatory())
 				sqlNull.append(" NOT NULL");
 			else
@@ -505,13 +505,14 @@ public class MColumn extends X_AD_Column
 	public String getConstraint(String tableName)
 	{
 		if (isKey()) {
-			String constraintName;
+			StringBuilder constraintName;
 			if (tableName.length() > 26)
 				// Oracle restricts object names to 30 characters
-				constraintName = tableName.substring(0, 26) + "_Key";
+				constraintName = new StringBuilder(tableName.substring(0, 26)).append("_Key");
 			else
-				constraintName = tableName + "_Key";
-			return "CONSTRAINT " + constraintName + " PRIMARY KEY (" + getColumnName() + ")";
+				constraintName = new StringBuilder(tableName).append("_Key");
+			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(constraintName).append(" PRIMARY KEY (").append(getColumnName()).append(")");
+			return msgreturn.toString();
 		}
 		/**
 		if (getAD_Reference_ID() == DisplayType.TableDir 
@@ -530,7 +531,7 @@ public class MColumn extends X_AD_Column
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MColumn[");
+		StringBuilder sb = new StringBuilder ("MColumn[");
 		sb.append (get_ID()).append ("-").append (getColumnName()).append ("]");
 		return sb.toString ();
 	}	//	toString

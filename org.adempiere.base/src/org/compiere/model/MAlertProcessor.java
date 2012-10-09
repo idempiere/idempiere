@@ -33,13 +33,12 @@ import org.compiere.util.DB;
  *  @version $Id: MAlertProcessor.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
 public class MAlertProcessor extends X_AD_AlertProcessor
-	implements AdempiereProcessor
+	implements AdempiereProcessor, AdempiereProcessor2
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9060358751064718910L;
-
+	private static final long serialVersionUID = -6566030540146374829L;
 
 	/**
 	 * 	Get Active
@@ -161,5 +160,47 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 		s_cacheAlerts.put(get_ID(), alerts);
 		return alerts;
 	}	//	getAlerts
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord)
+	{
+		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			if (nextWork > 0)
+				setDateNextRun(new Timestamp(nextWork));
+		}
+		
+		return true;
+	}	//	beforeSave
+
+	@Override
+	public String getFrequencyType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequencyType();
+	}
+
+	@Override
+	public int getFrequency() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getFrequency();
+	}
+
+	@Override
+	public boolean isIgnoreProcessingTime() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).isIgnoreProcessingTime();
+	}
+
+	@Override
+	public String getScheduleType() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getScheduleType();
+	}
+
+	@Override
+	public String getCronPattern() {
+	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getCronPattern();
+	}
 
 }	//	MAlertProcessor

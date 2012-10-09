@@ -31,11 +31,11 @@ public interface I_C_AcctSchema_GL
     public static final String Table_Name = "C_AcctSchema_GL";
 
     /** AD_Table_ID=266 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 266;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 2 - Client 
+    /** AccessLevel =  - Client 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(2);
 
@@ -62,6 +62,15 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_AcctSchema_GL_UU */
+    public static final String COLUMNNAME_C_AcctSchema_GL_UU = "C_AcctSchema_GL_UU";
+
+	/** Set C_AcctSchema_GL_UU	  */
+	public void setC_AcctSchema_GL_UU (String C_AcctSchema_GL_UU);
+
+	/** Get C_AcctSchema_GL_UU	  */
+	public String getC_AcctSchema_GL_UU();
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 
@@ -75,7 +84,7 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name CommitmentOffset_Acct */
     public static final String COLUMNNAME_CommitmentOffset_Acct = "CommitmentOffset_Acct";
@@ -138,21 +147,6 @@ public interface I_C_AcctSchema_GL
 
 	public I_C_ValidCombination getCurrencyBalancing_A() throws RuntimeException;
 
-    /** Column name IncomeSummary_Acct */
-    public static final String COLUMNNAME_IncomeSummary_Acct = "IncomeSummary_Acct";
-
-	/** Set Income Summary Acct.
-	  * Income Summary Account 
-	  */
-	public void setIncomeSummary_Acct (int IncomeSummary_Acct);
-
-	/** Get Income Summary Acct.
-	  * Income Summary Account 
-	  */
-	public int getIncomeSummary_Acct();
-
-	public I_C_ValidCombination getIncomeSummary_A() throws RuntimeException;
-
     /** Column name IntercompanyDueFrom_Acct */
     public static final String COLUMNNAME_IntercompanyDueFrom_Acct = "IntercompanyDueFrom_Acct";
 
@@ -211,17 +205,6 @@ public interface I_C_AcctSchema_GL
 
 	public I_C_ValidCombination getPPVOffset_A() throws RuntimeException;
 
-    /** Column name RetainedEarning_Acct */
-    public static final String COLUMNNAME_RetainedEarning_Acct = "RetainedEarning_Acct";
-
-	/** Set Retained Earning Acct	  */
-	public void setRetainedEarning_Acct (int RetainedEarning_Acct);
-
-	/** Get Retained Earning Acct	  */
-	public int getRetainedEarning_Acct();
-
-	public I_C_ValidCombination getRetainedEarning_A() throws RuntimeException;
-
     /** Column name SuspenseBalancing_Acct */
     public static final String COLUMNNAME_SuspenseBalancing_Acct = "SuspenseBalancing_Acct";
 
@@ -232,17 +215,6 @@ public interface I_C_AcctSchema_GL
 	public int getSuspenseBalancing_Acct();
 
 	public I_C_ValidCombination getSuspenseBalancing_A() throws RuntimeException;
-
-    /** Column name SuspenseError_Acct */
-    public static final String COLUMNNAME_SuspenseError_Acct = "SuspenseError_Acct";
-
-	/** Set Suspense Error Acct	  */
-	public void setSuspenseError_Acct (int SuspenseError_Acct);
-
-	/** Get Suspense Error Acct	  */
-	public int getSuspenseError_Acct();
-
-	public I_C_ValidCombination getSuspenseError_A() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

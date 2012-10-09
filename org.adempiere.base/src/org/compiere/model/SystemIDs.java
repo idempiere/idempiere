@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+
 /**
  *  List all hardcoded ID used in the code
  *  @author Carlos Ruiz, Nicolas Micoud, ...
@@ -146,5 +147,10 @@ public class SystemIDs
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
 
-	public final static int SYSCONFIG_USER_HASH_PASSWORD = 200013;	
+	public final static int SYSCONFIG_USER_HASH_PASSWORD = 200013;
+	public final static int SYSCONFIG_SYSTEM_NATIVE_SEQUENCE = 50016;	
+	
+	public final static int SCHEDULE_10_MINUTES = 200002;
+	public final static int SCHEDULE_15_MINUTES = 200003;
+
 }

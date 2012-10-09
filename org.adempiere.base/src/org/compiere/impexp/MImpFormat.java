@@ -70,8 +70,8 @@ public class MImpFormat extends X_AD_ImpFormat
 	{
 		ArrayList<MImpFormatRow> list = new ArrayList<MImpFormatRow>();
 		String sql = "SELECT * FROM AD_ImpFormat_Row "
-			+ "WHERE AD_ImpFormat_ID=? "
-			+ "ORDER BY SeqNo";
+				+ "WHERE AD_ImpFormat_ID=? "
+				+ "ORDER BY SeqNo";
 		PreparedStatement pstmt = null;
 		try
 		{

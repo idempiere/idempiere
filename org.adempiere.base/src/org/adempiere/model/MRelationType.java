@@ -63,32 +63,32 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * <b>Warning:</b> Doesn't support POs with more or less than one key
 	 * column.
 	 */
-	final static String SQL = //
-	"  SELECT " //
-			+ "    rt.AD_RelationType_ID AS " + COLUMNNAME_AD_RelationType_ID //
-			+ ",   rt.Name AS " + COLUMNNAME_Name //
-			+ ",   rt.IsDirected AS " + COLUMNNAME_IsDirected //
-			+ ",   ref.AD_Reference_ID AS " + COLUMNNAME_AD_Reference_ID //
-			+ ",   tab.WhereClause AS " + COLUMNNAME_WhereClause //
-			+ ",   tab.OrderByClause AS " + COLUMNNAME_OrderByClause //
-			+ "  FROM" //
-			+ "    AD_RelationType rt, AD_Reference ref, AD_Ref_Table tab" //
-			+ "  WHERE " //
-			+ "    rt.IsActive='Y'" //
-			+ "    AND ref.IsActive='Y'" //
-			+ "    AND ref.ValidationType='T'" // must have table validation
-			+ "    AND (" // join the source AD_Reference
-			+ "      rt.AD_Reference_Source_ID=ref.AD_Reference_ID" //
-			+ "      OR (" // not directed? -> also join the target AD_Reference
-			+ "        rt.IsDirected='N' " //
-			+ "        AND rt.AD_Reference_Target_ID=ref.AD_Reference_ID" //
-			+ "      )" //
-			+ "    )" //
-			+ "    AND tab.IsActive='Y'" // Join the AD_Reference's AD_Ref_Table
-			+ "    AND tab.AD_Reference_ID=ref.AD_Reference_ID" //
-			+ "    AND tab.AD_Table_ID=?" //
-			+ "    AND tab.AD_Key=?" //
-			+ "  ORDER BY rt.Name";
+	static StringBuffer SQL = //
+	new StringBuffer("  SELECT " )//
+			.append("    rt.AD_RelationType_ID AS ").append(COLUMNNAME_AD_RelationType_ID) //
+			.append(",   rt.Name AS ").append(COLUMNNAME_Name )//
+			.append(",   rt.IsDirected AS ").append(COLUMNNAME_IsDirected) //
+			.append(",   ref.AD_Reference_ID AS ").append(COLUMNNAME_AD_Reference_ID) //
+			.append(",   tab.WhereClause AS ").append(COLUMNNAME_WhereClause) //
+			.append(",   tab.OrderByClause AS ").append(COLUMNNAME_OrderByClause) //
+			.append("  FROM") //
+			.append("    AD_RelationType rt, AD_Reference ref, AD_Ref_Table tab") //
+			.append("  WHERE ") //
+			.append("    rt.IsActive='Y'") //
+			.append("    AND ref.IsActive='Y'") //
+			.append("    AND ref.ValidationType='T'") // must have table validation
+			.append("    AND (") // join the source AD_Reference
+			.append("      rt.AD_Reference_Source_ID=ref.AD_Reference_ID") //
+			.append("      OR (") // not directed? -> also join the target AD_Reference
+			.append("        rt.IsDirected='N' ") //
+			.append("        AND rt.AD_Reference_Target_ID=ref.AD_Reference_ID") //
+			.append("      )") //
+			.append("    )") //
+			.append("    AND tab.IsActive='Y'") // Join the AD_Reference's AD_Ref_Table
+			.append("    AND tab.AD_Reference_ID=ref.AD_Reference_ID") //
+			.append("    AND tab.AD_Table_ID=?") //
+			.append("    AND tab.AD_Key=?") //
+			.append("  ORDER BY rt.Name");
 
 	final static String SQL_WINDOW_NAME = "SELECT Name FROM AD_Window WHERE AD_WINDOW_ID=?";
 
@@ -131,7 +131,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 		final int colId = MColumn.getColumn_ID(po.get_TableName(), keyColumn);
 
-		final PreparedStatement pstmt = DB.prepareStatement(SQL, po
+		final PreparedStatement pstmt = DB.prepareStatement(SQL.toString(), po
 				.get_TrxName());
 
 		ResultSet rs = null;

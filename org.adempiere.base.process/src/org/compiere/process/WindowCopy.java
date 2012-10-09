@@ -96,8 +96,8 @@ public class WindowCopy extends SvrProcess
 			else
 				throw new AdempiereUserError("@Error@ @AD_Tab_ID@");
 		}
-		
-		return "@Copied@ #" + tabCount + "/" + fieldCount;
+		StringBuilder msgreturn = new StringBuilder("@Copied@ #").append(tabCount).append("/").append(fieldCount);
+		return msgreturn.toString();
 	}	//	doIt
 
 }	//	WindowCopy

@@ -29,7 +29,7 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20120928L;
 
     /** Standard Constructor */
     public X_C_Currency_Acct (Properties ctx, int C_Currency_Acct_ID, String trxName)
@@ -39,10 +39,6 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
         {
 			setC_AcctSchema_ID (0);
 			setC_Currency_ID (0);
-			setRealizedGain_Acct (0);
-			setRealizedLoss_Acct (0);
-			setUnrealizedGain_Acct (0);
-			setUnrealizedLoss_Acct (0);
         } */
     }
 
@@ -74,9 +70,9 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
       return sb.toString();
     }
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
     {
-		return (I_C_AcctSchema)MTable.get(getCtx(), I_C_AcctSchema.Table_Name)
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
 			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
 
 	/** Set Accounting Schema.
@@ -102,9 +98,23 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
 		return ii.intValue();
 	}
 
-	public I_C_Currency getC_Currency() throws RuntimeException
+	/** Set C_Currency_Acct_UU.
+		@param C_Currency_Acct_UU C_Currency_Acct_UU	  */
+	public void setC_Currency_Acct_UU (String C_Currency_Acct_UU)
+	{
+		set_Value (COLUMNNAME_C_Currency_Acct_UU, C_Currency_Acct_UU);
+	}
+
+	/** Get C_Currency_Acct_UU.
+		@return C_Currency_Acct_UU	  */
+	public String getC_Currency_Acct_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Currency_Acct_UU);
+	}
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
     {
-		return (I_C_Currency)MTable.get(getCtx(), I_C_Currency.Table_Name)
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
 			.getPO(getC_Currency_ID(), get_TrxName());	}
 
 	/** Set Currency.
@@ -125,106 +135,6 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
 	public int getC_Currency_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getRealizedGain_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getRealizedGain_Acct(), get_TrxName());	}
-
-	/** Set Realized Gain Acct.
-		@param RealizedGain_Acct 
-		Realized Gain Account
-	  */
-	public void setRealizedGain_Acct (int RealizedGain_Acct)
-	{
-		set_Value (COLUMNNAME_RealizedGain_Acct, Integer.valueOf(RealizedGain_Acct));
-	}
-
-	/** Get Realized Gain Acct.
-		@return Realized Gain Account
-	  */
-	public int getRealizedGain_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_RealizedGain_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getRealizedLoss_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getRealizedLoss_Acct(), get_TrxName());	}
-
-	/** Set Realized Loss Acct.
-		@param RealizedLoss_Acct 
-		Realized Loss Account
-	  */
-	public void setRealizedLoss_Acct (int RealizedLoss_Acct)
-	{
-		set_Value (COLUMNNAME_RealizedLoss_Acct, Integer.valueOf(RealizedLoss_Acct));
-	}
-
-	/** Get Realized Loss Acct.
-		@return Realized Loss Account
-	  */
-	public int getRealizedLoss_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_RealizedLoss_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getUnrealizedGain_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getUnrealizedGain_Acct(), get_TrxName());	}
-
-	/** Set Unrealized Gain Acct.
-		@param UnrealizedGain_Acct 
-		Unrealized Gain Account for currency revaluation
-	  */
-	public void setUnrealizedGain_Acct (int UnrealizedGain_Acct)
-	{
-		set_Value (COLUMNNAME_UnrealizedGain_Acct, Integer.valueOf(UnrealizedGain_Acct));
-	}
-
-	/** Get Unrealized Gain Acct.
-		@return Unrealized Gain Account for currency revaluation
-	  */
-	public int getUnrealizedGain_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_UnrealizedGain_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getUnrealizedLoss_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getUnrealizedLoss_Acct(), get_TrxName());	}
-
-	/** Set Unrealized Loss Acct.
-		@param UnrealizedLoss_Acct 
-		Unrealized Loss Account for currency revaluation
-	  */
-	public void setUnrealizedLoss_Acct (int UnrealizedLoss_Acct)
-	{
-		set_Value (COLUMNNAME_UnrealizedLoss_Acct, Integer.valueOf(UnrealizedLoss_Acct));
-	}
-
-	/** Get Unrealized Loss Acct.
-		@return Unrealized Loss Account for currency revaluation
-	  */
-	public int getUnrealizedLoss_Acct () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_UnrealizedLoss_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

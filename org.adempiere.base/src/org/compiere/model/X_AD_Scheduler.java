@@ -31,7 +31,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20110325L;
+	private static final long serialVersionUID = 20120924L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -44,8 +44,6 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 			setKeepLogDays (0);
 // 7
 			setName (null);
-			setScheduleType (null);
-// F
 			setSupervisor_ID (0);
         } */
     }
@@ -106,6 +104,31 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
+			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+
+	/** Set AD_Schedule_ID.
+		@param AD_Schedule_ID AD_Schedule_ID	  */
+	public void setAD_Schedule_ID (int AD_Schedule_ID)
+	{
+		if (AD_Schedule_ID < 1) 
+			set_Value (COLUMNNAME_AD_Schedule_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
+	}
+
+	/** Get AD_Schedule_ID.
+		@return AD_Schedule_ID	  */
+	public int getAD_Schedule_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Scheduler.
 		@param AD_Scheduler_ID 
 		Schedule Processes
@@ -127,6 +150,20 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Scheduler_UU.
+		@param AD_Scheduler_UU AD_Scheduler_UU	  */
+	public void setAD_Scheduler_UU (String AD_Scheduler_UU)
+	{
+		set_Value (COLUMNNAME_AD_Scheduler_UU, AD_Scheduler_UU);
+	}
+
+	/** Get AD_Scheduler_UU.
+		@return AD_Scheduler_UU	  */
+	public String getAD_Scheduler_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Scheduler_UU);
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
@@ -155,23 +192,6 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Cron Scheduling Pattern.
-		@param CronPattern 
-		Cron pattern to define when the process should be invoked.
-	  */
-	public void setCronPattern (String CronPattern)
-	{
-		set_Value (COLUMNNAME_CronPattern, CronPattern);
-	}
-
-	/** Get Cron Scheduling Pattern.
-		@return Cron pattern to define when the process should be invoked.
-	  */
-	public String getCronPattern () 
-	{
-		return (String)get_Value(COLUMNNAME_CronPattern);
 	}
 
 	/** Set Date last run.
@@ -225,76 +245,6 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set Frequency.
-		@param Frequency 
-		Frequency of events
-	  */
-	public void setFrequency (int Frequency)
-	{
-		set_Value (COLUMNNAME_Frequency, Integer.valueOf(Frequency));
-	}
-
-	/** Get Frequency.
-		@return Frequency of events
-	  */
-	public int getFrequency () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Frequency);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** FrequencyType AD_Reference_ID=221 */
-	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
-	/** Day = D */
-	public static final String FREQUENCYTYPE_Day = "D";
-	/** Set Frequency Type.
-		@param FrequencyType 
-		Frequency of event
-	  */
-	public void setFrequencyType (String FrequencyType)
-	{
-
-		set_Value (COLUMNNAME_FrequencyType, FrequencyType);
-	}
-
-	/** Get Frequency Type.
-		@return Frequency of event
-	  */
-	public String getFrequencyType () 
-	{
-		return (String)get_Value(COLUMNNAME_FrequencyType);
-	}
-
-	/** Set Ignore Processing Time.
-		@param IsIgnoreProcessingTime 
-		Do not include processing time for the DateNextRun calculation
-	  */
-	public void setIsIgnoreProcessingTime (boolean IsIgnoreProcessingTime)
-	{
-		set_Value (COLUMNNAME_IsIgnoreProcessingTime, Boolean.valueOf(IsIgnoreProcessingTime));
-	}
-
-	/** Get Ignore Processing Time.
-		@return Do not include processing time for the DateNextRun calculation
-	  */
-	public boolean isIgnoreProcessingTime () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsIgnoreProcessingTime);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Days to keep Log.
 		@param KeepLogDays 
 		Number of days to keep the log entries
@@ -310,26 +260,6 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	public int getKeepLogDays () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_KeepLogDays);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Day of the Month.
-		@param MonthDay 
-		Day of the month 1 to 28/29/30/31
-	  */
-	public void setMonthDay (int MonthDay)
-	{
-		set_Value (COLUMNNAME_MonthDay, Integer.valueOf(MonthDay));
-	}
-
-	/** Get Day of the Month.
-		@return Day of the month 1 to 28/29/30/31
-	  */
-	public int getMonthDay () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_MonthDay);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -404,34 +334,6 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		return ii.intValue();
 	}
 
-	/** ScheduleType AD_Reference_ID=318 */
-	public static final int SCHEDULETYPE_AD_Reference_ID=318;
-	/** Frequency = F */
-	public static final String SCHEDULETYPE_Frequency = "F";
-	/** Week Day = W */
-	public static final String SCHEDULETYPE_WeekDay = "W";
-	/** Month Day = M */
-	public static final String SCHEDULETYPE_MonthDay = "M";
-	/** Cron Scheduling Pattern = C */
-	public static final String SCHEDULETYPE_CronSchedulingPattern = "C";
-	/** Set Schedule Type.
-		@param ScheduleType 
-		Type of schedule
-	  */
-	public void setScheduleType (String ScheduleType)
-	{
-
-		set_Value (COLUMNNAME_ScheduleType, ScheduleType);
-	}
-
-	/** Get Schedule Type.
-		@return Type of schedule
-	  */
-	public String getScheduleType () 
-	{
-		return (String)get_Value(COLUMNNAME_ScheduleType);
-	}
-
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
@@ -458,39 +360,5 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** WeekDay AD_Reference_ID=167 */
-	public static final int WEEKDAY_AD_Reference_ID=167;
-	/** Sunday = 7 */
-	public static final String WEEKDAY_Sunday = "7";
-	/** Monday = 1 */
-	public static final String WEEKDAY_Monday = "1";
-	/** Tuesday = 2 */
-	public static final String WEEKDAY_Tuesday = "2";
-	/** Wednesday = 3 */
-	public static final String WEEKDAY_Wednesday = "3";
-	/** Thursday = 4 */
-	public static final String WEEKDAY_Thursday = "4";
-	/** Friday = 5 */
-	public static final String WEEKDAY_Friday = "5";
-	/** Saturday = 6 */
-	public static final String WEEKDAY_Saturday = "6";
-	/** Set Day of the Week.
-		@param WeekDay 
-		Day of the Week
-	  */
-	public void setWeekDay (String WeekDay)
-	{
-
-		set_Value (COLUMNNAME_WeekDay, WeekDay);
-	}
-
-	/** Get Day of the Week.
-		@return Day of the Week
-	  */
-	public String getWeekDay () 
-	{
-		return (String)get_Value(COLUMNNAME_WeekDay);
 	}
 }

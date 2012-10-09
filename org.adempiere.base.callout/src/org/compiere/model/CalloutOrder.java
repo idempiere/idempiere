@@ -1317,8 +1317,9 @@ public class CalloutOrder extends CalloutEngine
 					BigDecimal total = available.subtract(notReserved);
 					if (total.compareTo(QtyOrdered) < 0)
 					{
-						String info = Msg.parseTranslation(ctx, "@QtyAvailable@=" + available
-							+ "  -  @QtyNotReserved@=" + notReserved + "  =  " + total);
+						StringBuilder msgpts = new StringBuilder("@QtyAvailable@=").append(available)
+								.append("  -  @QtyNotReserved@=").append(notReserved).append("  =  ").append(total);
+						String info = Msg.parseTranslation(ctx, msgpts.toString());
 						mTab.fireDataStatusEEvent ("InsufficientQtyAvailable",
 							info, false);
 					}

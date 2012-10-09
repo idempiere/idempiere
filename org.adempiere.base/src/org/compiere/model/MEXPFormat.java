@@ -131,7 +131,7 @@ public class MEXPFormat extends X_EXP_Format {
 		if(retValue!=null)
 			return retValue;
 		
-		StringBuffer whereClause = new StringBuffer(X_EXP_Format.COLUMNNAME_Value).append("=?")
+		StringBuilder whereClause = new StringBuilder(X_EXP_Format.COLUMNNAME_Value).append("=?")
 		.append(" AND AD_Client_ID = ?")
 		.append(" AND ").append(X_EXP_Format.COLUMNNAME_Version).append(" = ?");
 
@@ -157,7 +157,7 @@ public class MEXPFormat extends X_EXP_Format {
 		if(retValue!=null)
 			return retValue;
 		
-		StringBuffer whereClause = new StringBuffer(" AD_Client_ID = ? ")
+		StringBuilder whereClause = new StringBuilder(" AD_Client_ID = ? ")
 			.append("  AND ").append(X_EXP_Format.COLUMNNAME_AD_Table_ID).append(" = ? ")
 			.append("  AND ").append(X_EXP_Format.COLUMNNAME_Version).append(" = ?");
 
@@ -176,7 +176,7 @@ public class MEXPFormat extends X_EXP_Format {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer ("X_EXP_Format[ID=").append(get_ID()).append("; Value = "+getValue()+"]");
+		StringBuilder sb = new StringBuilder ("X_EXP_Format[ID=").append(get_ID()).append("; Value = ").append(getValue()).append("]");
 		return sb.toString();
 
 	}

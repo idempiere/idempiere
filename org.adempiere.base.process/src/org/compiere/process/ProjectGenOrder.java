@@ -105,7 +105,8 @@ public class ProjectGenOrder extends SvrProcess
 				log.log(Level.SEVERE, "Lines difference - ProjectLines=" + lines.length + " <> Saved=" + count);
 		}	//	Order Lines
 
-		return "@C_Order_ID@ " + order.getDocumentNo() + " (" + count + ")";
+		StringBuilder msgreturn = new StringBuilder("@C_Order_ID@ ").append(order.getDocumentNo()).append(" (").append(count).append(")");
+		return msgreturn.toString();
 	}	//	doIt
 
 	/**

@@ -148,7 +148,7 @@ public class MIssueProject extends X_R_IssueProject
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MIssueProject[");
+		StringBuilder sb = new StringBuilder ("MIssueProject[");
 		sb.append (get_ID())
 			.append ("-").append (getName())
 			.append(",A_Asset_ID=").append(getA_Asset_ID())

@@ -57,7 +57,7 @@ public class CalloutAssignment extends CalloutEngine
 			return "";
 
 		int M_Product_ID = 0;
-		String Name = null;
+		StringBuilder Name = null;
 		String Description = null;
 		BigDecimal Qty = null;
 		String sql = "SELECT p.M_Product_ID, ra.Name, ra.Description, ra.Qty "
@@ -74,7 +74,7 @@ public class CalloutAssignment extends CalloutEngine
 			if (rs.next())
 			{
 				M_Product_ID = rs.getInt (1);
-				Name = rs.getString(2);
+				Name = new StringBuilder(rs.getString(2));
 				Description = rs.getString(3);
 				Qty = rs.getBigDecimal(4);
 			}
@@ -94,9 +94,9 @@ public class CalloutAssignment extends CalloutEngine
 		{
 			mTab.setValue ("M_Product_ID", new Integer (M_Product_ID));
 			if (Description != null)
-				Name += " (" + Description + ")";
-			if (!".".equals(Name))
-				mTab.setValue("Description", Name);
+				Name.append(" (").append(Description).append(")");
+			if (!".".equals(Name.toString()))
+				mTab.setValue("Description", Name.toString());
 			//
 			String variable = "Qty";	//	TimeExpenseLine
 			if (mTab.getTableName().startsWith("C_Order"))
