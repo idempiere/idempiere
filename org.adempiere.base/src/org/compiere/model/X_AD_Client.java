@@ -30,7 +30,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120802L;
+	private static final long serialVersionUID = 20121008L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 // N
 			setIsMultiLingualDocument (false);
 			setIsPostImmediate (false);
+// N
+			setIsSecureSMTP (false);
 // N
 			setIsServerEMail (false);
 			setIsSmtpAuthorization (false);
@@ -126,8 +128,8 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 		return (org.compiere.model.I_AD_PasswordRule)MTable.get(getCtx(), org.compiere.model.I_AD_PasswordRule.Table_Name)
 			.getPO(getAD_PasswordRule_ID(), get_TrxName());	}
 
-	/** Set AD_PasswordRule.
-		@param AD_PasswordRule_ID AD_PasswordRule	  */
+	/** Set Password Policies.
+		@param AD_PasswordRule_ID Password Policies	  */
 	public void setAD_PasswordRule_ID (int AD_PasswordRule_ID)
 	{
 		if (AD_PasswordRule_ID < 1) 
@@ -136,8 +138,8 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 			set_Value (COLUMNNAME_AD_PasswordRule_ID, Integer.valueOf(AD_PasswordRule_ID));
 	}
 
-	/** Get AD_PasswordRule.
-		@return AD_PasswordRule	  */
+	/** Get Password Policies.
+		@return Password Policies	  */
 	public int getAD_PasswordRule_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PasswordRule_ID);
@@ -292,6 +294,30 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public boolean isPostImmediate () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsPostImmediate);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set SMTP SSL/TLS.
+		@param IsSecureSMTP 
+		Use SSL/TLS for SMTP
+	  */
+	public void setIsSecureSMTP (boolean IsSecureSMTP)
+	{
+		set_Value (COLUMNNAME_IsSecureSMTP, Boolean.valueOf(IsSecureSMTP));
+	}
+
+	/** Get SMTP SSL/TLS.
+		@return Use SSL/TLS for SMTP
+	  */
+	public boolean isSecureSMTP () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSecureSMTP);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
@@ -543,6 +569,26 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public String getSMTPHost () 
 	{
 		return (String)get_Value(COLUMNNAME_SMTPHost);
+	}
+
+	/** Set SMTP Port.
+		@param SMTPPort 
+		SMTP Port Number
+	  */
+	public void setSMTPPort (int SMTPPort)
+	{
+		set_Value (COLUMNNAME_SMTPPort, Integer.valueOf(SMTPPort));
+	}
+
+	/** Get SMTP Port.
+		@return SMTP Port Number
+	  */
+	public int getSMTPPort () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SMTPPort);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Store Archive On File System.

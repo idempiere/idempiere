@@ -56,7 +56,7 @@ public class MClient extends X_AD_Client
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -6482473737885701403L;
+	private static final long serialVersionUID = 5428247545086634858L;
 
 
 	/**
@@ -977,6 +977,19 @@ public class MClient extends X_AD_Client
 			}
 		}
 		return (Collections.binarySearch(m_fieldAccess, aDFieldID) > 0);
+	}
+
+	
+	@Override
+	protected boolean beforeSave(boolean newRecord)
+	{
+		//gmail specific support
+		if ("smtp.gmail.com".equals(getSMTPHost()))
+		{
+			if (getSMTPPort() == 0)
+				setSMTPPort(587);
+		}
+		return true;
 	}
 
 }	//	MClient
