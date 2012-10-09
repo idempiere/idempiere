@@ -24,16 +24,16 @@ import java.util.Set;
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.adwindow.AbstractADWindowContent;
+import org.adempiere.webui.adwindow.IADTabbox;
+import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.IADTab;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.panel.AbstractADWindowPanel;
-import org.adempiere.webui.panel.IADTabpanel;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.util.Env;
@@ -53,7 +53,7 @@ import org.zkoss.zul.Vbox;
  */
 public class ExportAction implements EventListener<Event>
 {
-	private AbstractADWindowPanel panel;
+	private AbstractADWindowContent panel;
 
 	private Map<String, IGridTabExporter> exporterMap = null;
 	private Map<String, String> extensionMap = null;
@@ -66,7 +66,7 @@ public class ExportAction implements EventListener<Event>
 	/**
 	 * @param panel
 	 */
-	public ExportAction(AbstractADWindowPanel panel)
+	public ExportAction(AbstractADWindowContent panel)
 	{
 		this.panel = panel;
 	}
@@ -162,7 +162,7 @@ public class ExportAction implements EventListener<Event>
 
 			boolean currentRowOnly = chkCurrentRow.isSelected();
 			File file = File.createTempFile("Export", "."+ext);
-			IADTab adTab = panel.getADTab();
+			IADTabbox adTab = panel.getADTab();
 			int selected = adTab.getSelectedIndex();
 			int tabLevel = panel.getActiveGridTab().getTabLevel();
 			Set<String> tables = new HashSet<String>();

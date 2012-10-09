@@ -135,9 +135,10 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
         
         Center center = new Center();
         center.setAutoscroll(true);
-        center.setFlex(true);
-		borderlayout.appendChild(center);
+        borderlayout.appendChild(center);
 		center.appendChild(m_table);
+		m_table.setVflex("1");
+		m_table.setHflex("1");
 		
 		South south = new South();
 		borderlayout.appendChild(south);

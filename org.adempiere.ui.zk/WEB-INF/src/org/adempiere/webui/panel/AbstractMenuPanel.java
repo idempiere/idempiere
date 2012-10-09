@@ -20,12 +20,12 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TouchEventHelper;
 import org.adempiere.webui.event.TouchEvents;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.ADWindow;
 import org.compiere.model.GridTab;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
@@ -306,7 +306,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 			if(frame == null)
 				return;
     					
-			GridTab tab = frame.getADWindowPanel().getActiveGridTab();
+			GridTab tab = frame.getADWindowContent().getActiveGridTab();
 			tab.dataNew(false);
         }
         catch (Exception e)

@@ -159,7 +159,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		center = new Center();
 		layout.appendChild(center);
 		center.appendChild(centerPanel);
-		center.setFlex(true);
+		centerPanel.setHflex("1");
+		centerPanel.setVflex("1");
 		center.setAutoscroll(true);
 		center.setStyle("border: none");
 		
@@ -459,6 +460,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		messageDiv.setStyle("");
 		north.setVisible(false);
 		center.appendChild(messageDiv);
+		messageDiv.setVflex("1");
+		messageDiv.setHflex("1");
 		invalidate();
 		
 		Clients.response(new AuEcho(this, "onAfterProcess", null));

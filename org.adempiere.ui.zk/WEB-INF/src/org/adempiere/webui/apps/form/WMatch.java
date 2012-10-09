@@ -272,7 +272,8 @@ public class WMatch extends Match
 		Center center = new Center();
 		mainLayout.appendChild(center);
 		center.appendChild(centerPanel);
-		center.setFlex(true);
+		centerPanel.setHflex("1");
+		centerPanel.setVflex("1");
 		centerLayout.setWidth("100%");
 		centerLayout.setHeight("100%");
 		north = new North();
@@ -298,9 +299,10 @@ public class WMatch extends Match
 		center = new Center();
 		centerLayout.appendChild(center);
 		center.setStyle("border: none");
-		center.setFlex(false);
 //		center.setHeight("6%");
 		center.appendChild(xPanel);
+		xPanel.setVflex("1");
+		xPanel.setHflex("1");
 		xPanel.appendChild(sameBPartner);
 		xPanel.appendChild(new Space());
 		xPanel.appendChild(sameProduct);

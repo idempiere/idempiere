@@ -14,12 +14,12 @@
 package org.adempiere.webui.desktop;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.UIPart;
 import org.adempiere.webui.util.ServerPushTemplate;
-import org.adempiere.webui.window.ADWindow;
 import org.compiere.model.MQuery;
 import org.compiere.util.WebDoc;
 import org.zkoss.zk.ui.Component;

@@ -237,7 +237,8 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		Center center = new Center();
 		borderlayout.appendChild(center);
 		center.appendChild(grid);
-		center.setFlex(true);
+		grid.setVflex("1");
+		grid.setHflex("1");
 		
 		South south = new South();
 		borderlayout.appendChild(south);

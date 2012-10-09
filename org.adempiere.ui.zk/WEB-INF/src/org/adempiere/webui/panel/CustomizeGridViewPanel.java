@@ -258,7 +258,8 @@ public class CustomizeGridViewPanel extends Panel
 		centerPanel.appendChild(div);
 		
 		center.appendChild(centerPanel);
-		center.setFlex(true);
+		centerPanel.setVflex("1");
+		centerPanel.setHflex("1");
 		layout.appendChild(center);
 		
 		South south = new South();
