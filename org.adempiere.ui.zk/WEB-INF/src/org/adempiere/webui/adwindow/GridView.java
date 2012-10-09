@@ -10,7 +10,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.component;
+package org.adempiere.webui.adwindow;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,11 +22,14 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import org.adempiere.model.MTabCustomization;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Borderlayout;
+import org.adempiere.webui.component.Columns;
+import org.adempiere.webui.component.EditorBox;
+import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.TouchEventHelper;
-import org.adempiere.webui.panel.AbstractADWindowPanel;
 import org.adempiere.webui.util.SortComparator;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -34,6 +37,8 @@ import org.compiere.model.GridTable;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
@@ -42,14 +47,14 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Frozen;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.event.ZulEvents;
 
 /**
@@ -57,8 +62,12 @@ import org.zkoss.zul.event.ZulEvents;
  * @author Low Heng Sin
  *
  */
-public class GridPanel extends Borderlayout implements EventListener<Event>
+public class GridView extends Vbox implements EventListener<Event>
 {
+	private static final int DEFAULT_DETAIL_PAGE_SIZE = 10;
+
+	private static final int DEFAULT_PAGE_SIZE = 50;
+
 	/**
 	 * generated serial version ID
 	 */
@@ -74,7 +83,7 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 
 	private Grid listbox = null;
 
-	private int pageSize = 100;
+	private int pageSize = DEFAULT_PAGE_SIZE;
 
 	private GridField[] gridField;
 	private AbstractTableModel tableModel;
@@ -93,19 +102,23 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 
 	private GridTabRowRenderer renderer;
 
-	private South south;
+	private Div gridFooter;
 
 	private boolean modeless = true;
 
 	private String columnOnClick;
 
-	private AbstractADWindowPanel windowPanel;
+	private AbstractADWindowContent windowPanel;
 
 	private boolean refreshing;
 
 	private Map<Integer, String> columnWidthMap;
 
-	public GridPanel()
+	private Component detail;
+
+	private Borderlayout borderLayout;
+
+	public GridView()
 	{
 		this(0);
 	}
@@ -113,14 +126,29 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 	/**
 	 * @param windowNo
 	 */
-	public GridPanel(int windowNo)
+	public GridView(int windowNo)
 	{
 		this.windowNo = windowNo;
-		listbox = new Grid();
-		listbox.addEventListener(ZulEvents.ON_AFTER_RENDER, this);
-		south = new South();
-		this.appendChild(south);
+		createListbox();
 
+		this.setHflex("1");
+		
+		gridFooter = new Div();
+		gridFooter.setHflex("1");
+		gridFooter.setVflex("0");
+		
+		borderLayout = new Borderlayout();
+		borderLayout.setStyle("position: absolute; height: 100%; width: 100%;");
+		appendChild(borderLayout);
+		Center center = new Center();
+		borderLayout.appendChild(center);
+		North north = new North();
+		north.setVflex("min");
+		borderLayout.appendChild(north);
+		
+		borderLayout.appendCenter(listbox);		
+		borderLayout.appendNorth(gridFooter);
+		
 		//default paging size
 		if (AEnv.isTablet())
 		{
@@ -129,12 +157,57 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 		}
 		else
 		{
-			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 100);
+			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 50);
 		}
 		
 		//default true for better UI experience
 		modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
 		
+	}
+
+	protected void createListbox() {
+		listbox = new Grid();
+		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "FindZeroRecords")));
+		listbox.addEventListener(ZulEvents.ON_AFTER_RENDER, this);
+		listbox.setSizedByContent(true);
+		listbox.setVflex("1");
+		listbox.setHflex("1");
+	}
+	
+	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
+		if (detailPaneMode) {
+			pageSize = DEFAULT_DETAIL_PAGE_SIZE;
+			updatePaging();
+			if (borderLayout.getParent() != null) {
+				listbox.detach();
+				gridFooter.detach();
+				borderLayout.detach();
+				appendChild(listbox);
+				appendChild(gridFooter);								
+			}
+			//false work for header form, true work for header grid
+			listbox.setVflex(vflex);
+			this.setVflex(Boolean.toString(vflex));
+		} else {
+			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 50);
+			updatePaging();
+			if (borderLayout.getParent() == null) {
+				listbox.detach();
+				gridFooter.detach();
+				appendChild(borderLayout);
+				borderLayout.appendCenter(listbox);		
+				borderLayout.appendNorth(gridFooter);
+			}
+			listbox.setVflex("true");
+			this.setVflex("true");
+		}
+	}
+
+	private void updatePaging() {
+		if (paging != null && paging.getPageSize() != pageSize) {
+			paging.setPageSize(pageSize);
+			updateModel();
+		}
 	}
 
 	/**
@@ -260,6 +333,10 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 		if (pageSize > 0) {
 			if (paging.getTotalSize() != gridTab.getRowCount())
 				paging.setTotalSize(gridTab.getRowCount());
+			if (paging.getPageCount() > 1 && !gridFooter.isVisible()) {
+				gridFooter.setVisible(true);
+				borderLayout.invalidate();
+			}
 			int pgIndex = rowIndex >= 0 ? rowIndex % pageSize : 0;
 			int pgNo = rowIndex >= 0 ? (rowIndex - pgIndex) / pageSize : 0;
 			if (listModel.getPage() != pgNo) {
@@ -281,6 +358,11 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 			}
 			if (paging.getActivePage() != pgNo) {
 				paging.setActivePage(pgNo);
+			}
+			if (paging.getPageCount() == 1) {
+				gridFooter.setVisible(false);
+			} else {
+				gridFooter.setVisible(true);
 			}
 			if (rowIndex >= 0 && pgIndex >= 0) {
 				Events.echoEvent("onPostSelectedRowChanged", this, null);
@@ -389,21 +471,9 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 
 	private void render()
 	{
-		LayoutUtils.addSclass("adtab-grid-panel", this);
-
-		listbox.setVflex(true);
-		//true might looks better, false for better performance
-		listbox.setSizedByContent(false);
 		listbox.addEventListener(Events.ON_CLICK, this);
 
 		updateModel();
-
-		Center center = new Center();
-		center.appendChild(listbox);
-		if (AEnv.isTablet()) {
-			LayoutUtils.addSclass("tablet-scrolling", center);
-		}
-		this.appendChild(center);
 
 		if (pageSize > 0)
 		{
@@ -411,14 +481,19 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 			paging.setPageSize(pageSize);
 			paging.setTotalSize(tableModel.getRowCount());
 			paging.setDetailed(true);
-			south.appendChild(paging);
-			south.setSclass("adtab-grid-south");
+			gridFooter.appendChild(paging);
+			gridFooter.setSclass("adtab-grid-south");
 			paging.addEventListener(ZulEvents.ON_PAGING, this);
 			renderer.setPaging(paging);
+			if (paging.getPageCount() == 1) {
+				gridFooter.setVisible(false);
+			} else {
+				gridFooter.setVisible(true);
+			}
 		}
 		else
 		{
-			south.setVisible(false);
+			gridFooter.setVisible(false);
 		}		
 		
 		if (AEnv.isTablet()) {
@@ -531,8 +606,6 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 			if (!isRowRendered(row, pgIndex)) {
 				listbox.renderRow(row);
 			} else {
-//				Row old = renderer.getCurrentRow();
-//				int oldIndex = renderer.getCurrentRowIndex();
 				renderer.setCurrentRow(row);
 				//remark: following 3 line cause the previously selected row being render twice
 //				if (old != null && old != row && oldIndex >= 0 && oldIndex != gridTab.getCurrentRow())
@@ -556,8 +629,6 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 			if (!isRowRendered(row, rowIndex)) {
 				listbox.renderRow(row);
 			} else {
-//				Row old = renderer.getCurrentRow();
-//				int oldIndex = renderer.getCurrentRowIndex();
 				renderer.setCurrentRow(row);
 				//remark: following 3 line cause the previously selected row being render twice
 //				if (old != null && old != row && oldIndex >= 0 && oldIndex != gridTab.getCurrentRow())
@@ -758,7 +829,7 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 	/**
 	 * @param winPanel
 	 */
-	public void setADWindowPanel(AbstractADWindowPanel winPanel) {
+	public void setADWindowPanel(AbstractADWindowContent winPanel) {
 		windowPanel = winPanel;
 		if (renderer != null)
 			renderer.setADWindowPanel(windowPanel);
@@ -781,5 +852,26 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 
 	public GridField[] getFields() {
 		return gridField;
+	}
+
+	public void addDetails(Component component) {
+		detail = component;
+		borderLayout.appendSouth(detail);
+		borderLayout.getSouth().setCollapsible(true);
+		borderLayout.getSouth().setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
+		borderLayout.getSouth().setOpen(false);
+		borderLayout.getSouth().setHeight("250px");
+	}
+	
+	public Component removeDetails() {
+		Component details = null;
+		if (detail != null) {
+			if (detail.getParent() != null) { 
+				detail.detach();
+				details = detail;
+			}
+			detail = null;
+		}
+		return details;
 	}
 }

@@ -10,7 +10,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.component;
+package org.adempiere.webui.adwindow;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -23,6 +23,9 @@ import java.util.Map.Entry;
 
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.EditorBox;
+import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -30,10 +33,8 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.ContextMenuListener;
-import org.adempiere.webui.panel.AbstractADWindowPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.GridTabDataBinder;
-import org.adempiere.webui.window.ADWindow;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.util.DisplayType;
@@ -80,12 +81,12 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private RowListener rowListener;
 
 	private Grid grid = null;
-	private GridPanel gridPanel = null;
+	private GridView gridPanel = null;
 	private Row currentRow;
 	private Object[] currentValues;
 	private boolean editing = false;
 	private int currentRowIndex = -1;
-	private AbstractADWindowPanel m_windowPanel;
+	private AbstractADWindowContent m_windowPanel;
 
 	/**
 	 *
@@ -122,7 +123,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 					Object window = SessionManager.getAppDesktop().findWindow(windowNo);
 	            	if (window != null && window instanceof ADWindow)
 	            	{
-	            		AbstractADWindowPanel windowPanel = ((ADWindow)window).getADWindowPanel();
+	            		AbstractADWindowContent windowPanel = ((ADWindow)window).getADWindowContent();
 	            		((WButtonEditor)editor).addActionListener(windowPanel);
 	            	}
 				}
@@ -625,7 +626,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 *
 	 * @param gridPanel
 	 */
-	public void setGridPanel(GridPanel gridPanel) {
+	public void setGridPanel(GridView gridPanel) {
 		this.gridPanel = gridPanel;
 	}
 
@@ -664,7 +665,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/**
 	 * @param windowPanel
 	 */
-	public void setADWindowPanel(AbstractADWindowPanel windowPanel) {
+	public void setADWindowPanel(AbstractADWindowContent windowPanel) {
 		this.m_windowPanel = windowPanel;
 	}
 }

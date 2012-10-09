@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Posterita Ajax UI 												  *
- * Copyright (C) 2007 Posterita Ltd.  All Rights Reserved.                    *
+ * Copyright (C) 2012 Heng Sin Low                                            *
+ * Copyright (C) 2012 Trek Global                 							  *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -10,33 +10,30 @@
  * You should have received a copy of the GNU General Public License along    *
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- * For the text or an alternative of this public license, you may reach us    *
- * Posterita Ltd., 3, Draper Avenue, Quatre Bornes, Mauritius                 *
- * or via info@posterita.org or http://www.posterita.org/                     *
  *****************************************************************************/
+package org.adempiere.webui.adwindow;
 
-package org.adempiere.webui.editor;
-
-import org.compiere.model.GridField;
+import org.zkoss.zul.A;
 
 /**
+ * @author hengsin
  *
- * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
- * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
-public class WPasswordEditor extends WStringEditor
-{
+public class BreadCrumbLink extends A {
+	
+	/**
+	 * generated serial id
+	 */
+	private static final long serialVersionUID = 170361731431877695L;
+	
+	private String pathId;
 
-    public WPasswordEditor(GridField gridField)
-    {
-        super(gridField);
-        super.setTypePassword(true);
-    }
+	public String getPathId() {
+		return pathId;
+	}
 
-    public WPasswordEditor(GridField gridField, boolean tableEditor)
-    {
-    	super(gridField, tableEditor);
-    	super.setTypePassword(true);
-    }
+	public void setPathId(String pathId) {
+		this.pathId = pathId;
+	}
+
 }

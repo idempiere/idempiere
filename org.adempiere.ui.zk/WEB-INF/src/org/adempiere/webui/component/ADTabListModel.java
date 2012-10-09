@@ -14,6 +14,7 @@ package org.adempiere.webui.component;
 
 import java.util.List;
 
+import org.adempiere.webui.adwindow.IADTabbox;
 import org.zkoss.zul.AbstractListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -28,9 +29,9 @@ public class ADTabListModel extends AbstractListModel implements ListitemRendere
 	 */
 	private static final long serialVersionUID = 7683969121090679214L;
 	List<ADTabLabel> listItems = null;
-	private IADTab tabbox;
+	private IADTabbox tabbox;
 	
-	public ADTabListModel(List<ADTabLabel> listItems, IADTab tabbox) {
+	public ADTabListModel(List<ADTabLabel> listItems, IADTabbox tabbox) {
 		this.listItems = listItems;
 		this.tabbox = tabbox;
 	}

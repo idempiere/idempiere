@@ -21,17 +21,16 @@
  * - Idalica Corporation                                                      *
  *****************************************************************************/
 
-package org.adempiere.webui.panel;
+package org.adempiere.webui.adwindow;
 
 import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.CompositeADTab;
-import org.adempiere.webui.component.IADTab;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabs;
+import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.UserPreference;
@@ -48,6 +47,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.East;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -64,10 +64,10 @@ import org.zkoss.zul.West;
  * @date Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class ADWindowPanel extends AbstractADWindowPanel
+public class ADWindowContent extends AbstractADWindowContent
 {
     @SuppressWarnings("unused")
-	private static final CLogger logger = CLogger.getCLogger(ADWindowPanel.class);
+	private static final CLogger logger = CLogger.getCLogger(ADWindowContent.class);
 
 	private Borderlayout layout;
 
@@ -77,15 +77,14 @@ public class ADWindowPanel extends AbstractADWindowPanel
 
 	private East east;
 
-	private Keylistener keyListener;
+	private Keylistener keyListener;	
 
-    public ADWindowPanel(Properties ctx, int windowNo)
+    public ADWindowContent(Properties ctx, int windowNo)
     {
         super(ctx, windowNo);
     }
 
-
-	protected Component doCreatePart(Component parent)
+   	protected Component doCreatePart(Component parent)
     {
         layout = new Borderlayout();
         if (parent != null) {
@@ -100,8 +99,16 @@ public class ADWindowPanel extends AbstractADWindowPanel
         n.setParent(layout);
         n.setCollapsible(false);
         n.setSclass("adwindow-north");
-        toolbar.setParent(n);
+        Div div = new Div();
+        div.setHflex("1");
+        div.setVflex("1");
+        n.appendChild(div);
+        toolbar.setParent(div);
         toolbar.setWindowNo(getWindowNo());
+        breadCrumb = new BreadCrumb(getWindowNo());
+        breadCrumb.setStyle("background-color: #e9e9e9");
+        breadCrumb.setToolbarListener(this);
+        div.appendChild(breadCrumb);
 
         //status bar
         South s = new South();
@@ -112,50 +119,9 @@ public class ADWindowPanel extends AbstractADWindowPanel
         
         LayoutUtils.addSclass("adwindow-status", statusBar);
 
-        if (adTab.isUseExternalSelection())
-        {
-        	String tabPlacement = SessionManager.getSessionApplication().getUserPreference().getProperty(UserPreference.P_WINDOW_TAB_PLACEMENT);
-        	if (tabPlacement == null || "left".equalsIgnoreCase(tabPlacement))
-        	{
-        		west = new West();
-    	        layout.appendChild(west);
-    	        west.setSplittable(false);
-    	        west.setAutoscroll(true);
-    	        west.setFlex(true);
-    	        LayoutUtils.addSclass("adwindow-nav adwindow-left-nav", west);
-    	        adTab.setTabplacement(IADTab.LEFT);
-    	        adTab.getTabSelectionComponent().setParent(west);
-
-    	        if (SessionManager.getSessionApplication().getUserPreference().isPropertyBool(UserPreference.P_WINDOW_TAB_COLLAPSIBLE))
-    	        {
-    	        	west.setTitle(Msg.getElement(Env.getCtx(), "AD_Tab_ID"));
-    	        	west.setCollapsible(true);
-    	        }
-        	}
-	        else
-        	{
-	        	east = new East();
-		        layout.appendChild(east);
-		        east.setSplittable(false);
-		        east.setAutoscroll(true);
-		        east.setFlex(true);
-		        LayoutUtils.addSclass("adwindow-nav adwindow-right-nav", east);
-		        adTab.setTabplacement(IADTab.RIGHT);
-		        adTab.getTabSelectionComponent().setParent(east);
-
-		        if (SessionManager.getSessionApplication().getUserPreference().isPropertyBool(UserPreference.P_WINDOW_TAB_COLLAPSIBLE))
-    	        {
-		        	east.setTitle(Msg.getElement(Env.getCtx(), "AD_Tab_ID"));
-    	        	east.setCollapsible(true);
-    	        }
-        	}
-	        LayoutUtils.addSclass("adwindow-nav-content", (HtmlBasedComponent) adTab.getTabSelectionComponent());
-        }
-
         contentArea = new Center();
         contentArea.setParent(layout);
         contentArea.setAutoscroll(true);
-        contentArea.setFlex(true);
         adTab.createPart(contentArea);
 
         if (parent instanceof Tabpanel) {
@@ -174,7 +140,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
 
         layout.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, new ITabOnSelectHandler() {
 			public void onSelect() {
-				IADTab adTab = getADTab();
+				IADTabbox adTab = getADTab();
 				if (adTab != null) {
 					IADTabpanel iadTabpanel = adTab.getSelectedTabpanel();
 					if (iadTabpanel != null && iadTabpanel instanceof ADTabpanel) {
@@ -191,9 +157,9 @@ public class ADWindowPanel extends AbstractADWindowPanel
         return layout;
     }
 
-    protected IADTab createADTab()
+    protected IADTabbox createADTab()
     {
-    	CompositeADTab composite = new CompositeADTab();
+    	CompositeADTabbox composite = new CompositeADTabbox();
     	return composite;
     }
 
@@ -240,7 +206,7 @@ public class ADWindowPanel extends AbstractADWindowPanel
 	class TabOnCloseHanlder implements ITabOnCloseHandler {
 
 		public void onClose(Tabpanel tabPanel) {
-			if (ADWindowPanel.this.onExit()) {
+			if (ADWindowContent.this.onExit()) {
 				Tab tab = tabPanel.getLinkedTab();
 				Tabbox tabbox = (Tabbox) tab.getTabbox();
 				if (tabbox.getSelectedTab() == tab) {

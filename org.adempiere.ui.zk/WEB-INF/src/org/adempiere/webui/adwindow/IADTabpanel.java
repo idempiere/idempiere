@@ -10,7 +10,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.panel;
+package org.adempiere.webui.adwindow;
 
 import org.compiere.model.GridTab;
 import org.compiere.util.Evaluatee;
@@ -101,4 +101,13 @@ public interface IADTabpanel extends Component, Evaluatee {
 	 * @return true if the event is process
 	 */
 	public boolean onEnterKey();
+	
+	/**
+	 * @return boolean
+	 */
+	public boolean isGridView();
+	
+	public boolean isActive();
+
+	public void setDetailPaneMode(boolean detailMode, boolean vflex);	
 }

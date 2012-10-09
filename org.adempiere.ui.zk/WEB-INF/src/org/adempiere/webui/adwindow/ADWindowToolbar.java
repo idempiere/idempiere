@@ -15,7 +15,7 @@
  * or via info@posterita.org or http://www.posterita.org/                     *
  *****************************************************************************/
 
-package org.adempiere.webui.component;
+package org.adempiere.webui.adwindow;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,6 +28,8 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.FToolbar;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MRole;
@@ -52,7 +54,7 @@ import org.zkoss.zul.Space;
  * @author Cristina Ghita, www.arhipac.ro
  * 				<li>FR [ 2076330 ] Add new methods in CWindowToolbar class
  */
-public class CWindowToolbar extends FToolbar implements EventListener<Event>
+public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 {
 	/**
 	 * 
@@ -61,7 +63,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 
 	private static final String BTNPREFIX = "Btn";
 
-    private static CLogger log = CLogger.getCLogger(CWindowToolbar.class);
+    private static CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
 
     private ToolBarButton btnIgnore;
 
@@ -74,8 +76,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     private ToolBarButton btnGridToggle;
 
     private ToolBarButton btnParentRecord, btnDetailRecord;
-
-    private ToolBarButton btnFirst, btnPrevious, btnNext, btnLast;
 
     private ToolBarButton btnReport, btnArchive, btnPrint;
 
@@ -114,12 +114,12 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 //	public int 				lastModifiers;
 	//
 
-    public CWindowToolbar()
+    public ADWindowToolbar()
     {
     	this(0);
     }
 
-    public CWindowToolbar(int windowNo) {
+    public ADWindowToolbar(int windowNo) {
     	setWindowNo(windowNo);
         init();
 	}
@@ -145,11 +145,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
         btnGridToggle = createButton("Toggle", "Multi", "Multi");
         addSeparator();
         btnParentRecord = createButton("ParentRecord", "Parent", "Parent");
-        btnDetailRecord = createButton("DetailRecord", "Detail", "Detail");
-        btnFirst = createButton("First", "First", "First");
-        btnPrevious = createButton("Previous", "Previous", "Previous");
-        btnNext = createButton("Next", "Next", "Next");
-        btnLast = createButton("Last", "Last", "Last");
+        btnDetailRecord = createButton("DetailRecord", "Detail", "Detail");        
         addSeparator();
         btnReport = createButton("Report", "Report", "Report");
         btnArchive = createButton("Archive", "Archive", "Archive");
@@ -259,11 +255,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 		keyMap.put(KeyEvent.F12, btnPrint);
 
 		altKeyMap.put(KeyEvent.LEFT, btnParentRecord);
-		altKeyMap.put(KeyEvent.RIGHT, btnDetailRecord);
-		altKeyMap.put(KeyEvent.UP, btnPrevious);
-		altKeyMap.put(KeyEvent.DOWN, btnNext);
-		altKeyMap.put(KeyEvent.PAGE_UP, btnFirst);
-		altKeyMap.put(KeyEvent.PAGE_DOWN, btnLast);
+		altKeyMap.put(KeyEvent.RIGHT, btnDetailRecord);		
 		altKeyMap.put(VK_P, btnReport);
 		altKeyMap.put(VK_Z, btnIgnore);
 
@@ -363,15 +355,7 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 		this.event = null;
 	}
-
-    public void enableNavigation(boolean enabled)
-    {
-        this.btnFirst.setDisabled(!enabled);
-        this.btnPrevious.setDisabled(!enabled);
-        this.btnNext.setDisabled(!enabled);
-        this.btnLast.setDisabled(!enabled);
-    }
-
+	
     public void enableTabNavigation(boolean enabled)
     {
         enableTabNavigation(enabled, enabled);
@@ -381,18 +365,6 @@ public class CWindowToolbar extends FToolbar implements EventListener<Event>
     {
         this.btnParentRecord.setDisabled(!enableParent);
         this.btnDetailRecord.setDisabled(!enableDetail);
-    }
-
-    public void enableFirstNavigation(boolean enabled)
-    {
-        this.btnFirst.setDisabled(!enabled);
-        this.btnPrevious.setDisabled(!enabled);
-    }
-
-    public void enableLastNavigation(boolean enabled)
-    {
-        this.btnLast.setDisabled(!enabled);
-        this.btnNext.setDisabled(!enabled);
     }
 
     public void enableRefresh(boolean enabled)

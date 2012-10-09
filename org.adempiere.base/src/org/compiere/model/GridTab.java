@@ -1006,11 +1006,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 			fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_SAVE));
 
-			if (retValue) {
-				// refresh parent tabs
-				refreshParents();
-			}
-
 			return retValue;
 		}
 		catch (Exception e)
@@ -1057,28 +1052,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 		}
 		return false;
-	}
-
-	private void refreshParents() {
-		if (isDetail()) {
-			// get parent tab
-			// the parent tab is the first tab above with level = this_tab_level-1
-			int level = m_vo.TabLevel;
-			for (int i = m_window.getTabIndex(this) - 1; i >= 0; i--) {
-				GridTab parentTab = m_window.getTab(i);
-				if (parentTab.m_vo.TabLevel == level-1) {
-					parentTab.dataRefresh(false);
-					// search for the next parent
-					if (parentTab.isDetail()) {
-						level = parentTab.m_vo.TabLevel;
-					} else {
-						break;
-					}
-				}
-			}
-			// refresh this tab
-			dataRefresh(false);
-		}
 	}
 
 	/**
@@ -2514,7 +2487,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param fireEvents fire events
 	 *  @return current row
 	 */
-	private int setCurrentRow (int newCurrentRow, boolean fireEvents)
+	public int setCurrentRow (int newCurrentRow, boolean fireEvents)
 	{
 		int oldCurrentRow = m_currentRow;
 		m_currentRow = verifyRow (newCurrentRow);

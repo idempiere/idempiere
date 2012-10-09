@@ -8,6 +8,7 @@ html,body {
 	width: 100%;
 	background-color: #D4E3F4;
 	color: #333;
+	font-family: Helvetica,Arial,sans-serif;
 	overflow: hidden;
 }
 
@@ -168,15 +169,6 @@ html,body {
 .toolbar-button .z-toolbarbutton-body .z-toolbarbutton-cnt img {
 	width: 22px;
 	height: 22px;
-	padding: 0px 1px 0px 1px;
-	border-style: solid;
-	border-width: 1px;
-	border-color: transparent;
-}
-
-.embedded-toolbar-button .z-toolbarbutton-body .z-toolbarbutton-cnt img {
-	width: 16px;
-	height: 16px;
 	padding: 0px 1px 0px 1px;
 	border-style: solid;
 	border-width: 1px;
@@ -355,7 +347,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-status {
-	background-color: #D2E0EB;
+	background-color: #EEEEEE;
 	height: 20px;
 }
 
@@ -478,6 +470,12 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	-webkit-border-bottom-right-radius: 5px;
 }
 
+.adwindow-breadcrumb {
+	height: 30px;
+	background-color: transparent;
+	padding-left: 2px;
+}
+
 <%-- ad tab --%>
 .adtab-body {
 	position: absolute;
@@ -492,18 +490,14 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	margin: 0;
 	padding: 0;
 	border: none;
-	overflow: auto;
-	width: 100%;
-	height: 100%;
-	position: absolute;
+	position: relative;
 }
 
 .adtab-form {
-	width:100%;
-	height:100%;
 	border:none !important;
 	margin:0;
 	padding:0;
+	overflow-y: visible;
 }
 
 .adtab-form .z-grid {
@@ -541,7 +535,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adtab-tabpanels {
-	width: 80%;
 	border-top: 1px solid #9CBDFF;
 	border-bottom: 1px solid #9CBDFF;
 	border-left: 2px solid #9CBDFF;
@@ -789,6 +782,7 @@ img.z-group-img-close {
 .z-tab-seld .z-tab-text, .z-tab .z-tab-text, div.z-treefooter-cnt, div.z-treecell-cnt, div.z-treecol-cnt, 
 .z-label, .z-toolbarbutton-cnt, tr.z-treerow, tr.z-treerow a, tr.z-treerow a:visited {
 	color: #333;
+	font-family: Helvetica,Arial,sans-serif;
 }
 
 .z-textbox-readonly, .z-intbox-readonly, .z-longbox-readonly, .z-doublebox-readonly, .z-decimalbox-readonly {
@@ -923,4 +917,17 @@ div.simileAjax-bubble-container {
 .field-label {
 	position: relative; 
 	float: right;
+}
+
+tbody.z-grid-empty-body td {
+	text-align: left;
+}
+
+.adtab-detail-toolbar .z-toolbar-body {
+	width: 100%;
+}
+
+.z-notification .z-notification-cl, 
+.z-notification .z-notification-cnt {
+    width: 300px;
 }

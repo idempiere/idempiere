@@ -15,7 +15,7 @@
  * or via info@posterita.org or http://www.posterita.org/                     *
  *****************************************************************************/
 
-package org.adempiere.webui.panel;
+package org.adempiere.webui.adwindow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,6 @@ import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
-import org.adempiere.webui.component.GridPanel;
 import org.adempiere.webui.component.Group;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.NumberBox;
@@ -72,10 +71,10 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Groupfoot;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.West;
 import org.zkoss.zul.impl.XulElement;
 
@@ -114,11 +113,11 @@ DataStatusListener, IADTabpanel
     @SuppressWarnings("unused")
 	private GridWindow        gridWindow;
 
-    private AbstractADWindowPanel      windowPanel;
+    private AbstractADWindowContent      windowPanel;
 
     private int               windowNo;
 
-    private Grid              grid;
+    private Grid              form;
 
     private ArrayList<WEditor> editors = new ArrayList<WEditor>();
     
@@ -126,7 +125,7 @@ DataStatusListener, IADTabpanel
 
     private boolean			  uiCreated = false;
 
-    private GridPanel		  listPanel;
+    private GridView		  listPanel;
 
     private Map<String, List<Row>> fieldGroupContents = new HashMap<String, List<Row>>();
 
@@ -136,18 +135,17 @@ DataStatusListener, IADTabpanel
 
 	List<Group> allCollapsibleGroups = new ArrayList<Group>();
 
-	private Component formComponent = null;
+	private Component formContainer = null;
 
 	private ADTreePanel treePanel = null;
 
 	private GridTabDataBinder dataBinder;
 
-	private Map<Integer, Group> includedTab = new HashMap<Integer, Group>();
-	private Map<Integer, Groupfoot> includedTabFooter = new HashMap<Integer, Groupfoot>();
-
 	private boolean active = false;
 
 	private Group currentGroup;
+
+	private Component detailPane;
 
 	public ADTabpanel()
 	{
@@ -164,15 +162,46 @@ DataStatusListener, IADTabpanel
     {
     	LayoutUtils.addSclass("adtab-content", this);
 
-        grid = new Grid();
-        //have problem moving the following out as css class
-        grid.setHflex("1");
-        grid.setHeight("100%");
-        grid.setVflex(true);
-        grid.setSclass("grid-layout");
+    	this.setWidth("100%");
+    	
+        form = new Grid();
+        form.setHflex("1");
+        form.setHeight(null);
+        form.setVflex(false);
+        form.setSclass("grid-layout");
+        form.addEventListener(Events.ON_FOCUS, this);
         
-        listPanel = new GridPanel();
+        listPanel = new GridView();
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
+    }
+    
+    public void addDetails(Component component) {
+    	if (formContainer.isVisible()) {
+    		detailPane = component;
+    		if (formContainer instanceof Borderlayout) {
+    			form.getParent().appendChild(detailPane);
+    		} else {
+    			formContainer.appendChild(component);
+    		}
+    	} else {
+    		listPanel.addDetails(component);
+    	}
+    }
+    
+    public Component removeDetails() {
+    	Component details = null;
+    	if (listPanel.isVisible()) {
+    		details = listPanel.removeDetails();
+    	} else {
+    		if (detailPane != null) {
+    			if (detailPane.getParent() != null) {
+    				details = detailPane;
+    				detailPane.detach();
+    			}
+    			detailPane = null;
+    		}
+    	}
+    	return details;
     }
 
     /**
@@ -182,7 +211,7 @@ DataStatusListener, IADTabpanel
      * @param gridTab
      * @param gridWindow
      */
-    public void init(AbstractADWindowPanel winPanel, int windowNo, GridTab gridTab,
+    public void init(AbstractADWindowContent winPanel, int windowNo, GridTab gridTab,
             GridWindow gridWindow)
     {
         this.windowNo = windowNo;
@@ -214,12 +243,15 @@ DataStatusListener, IADTabpanel
 			layout.appendChild(west);
 
 			Center center = new Center();
-			center.setFlex(true);
-			center.appendChild(grid);
-			center.setSclass("adtab-form");
+			Vlayout div = new Vlayout();
+			div.appendChild(form);
+			center.appendChild(div);
+			div.setVflex("1");
+			div.setHflex("1");
+			div.setSclass("adtab-form");
 			layout.appendChild(center);
 
-			formComponent = layout;
+			formContainer = layout;
 			treePanel.getTree().addEventListener(Events.ON_SELECT, this);
 			
 			if (AEnv.isTablet()) 
@@ -230,16 +262,18 @@ DataStatusListener, IADTabpanel
 		}
 		else
 		{
-			Div div = new Div();
+			Vlayout div = new Vlayout();
 			div.setSclass("adtab-form");
-			div.appendChild(grid);
+			div.appendChild(form);
+			div.setVflex("1");
+			div.setWidth("100%");
 			this.appendChild(div);
-			formComponent = div;
+			formContainer = div;
 			
 			if (AEnv.isTablet()) 
 			{
 				LayoutUtils.addSclass("tablet-scrolling", div);
-			}
+			}			
 		}
         this.appendChild(listPanel);
         listPanel.setVisible(false);
@@ -264,7 +298,7 @@ DataStatusListener, IADTabpanel
 
     	// set size in percentage per column leaving a MARGIN on right
     	Columns columns = new Columns();
-    	grid.appendChild(columns);
+    	form.appendChild(columns);
 		String numColsS=String.valueOf(numCols);
     	int equalWidth = 98 / numCols;
 
@@ -274,7 +308,7 @@ DataStatusListener, IADTabpanel
     		columns.appendChild(col);
     	}
 
-    	Rows rows = grid.newRows();
+    	Rows rows = form.newRows();
         GridField fields[] = gridTab.getFields();
         Row row = new Row();
         int actualxpos = 0;
@@ -286,55 +320,6 @@ DataStatusListener, IADTabpanel
         	if (!field.isDisplayed())
         		continue;
 
-        	//included tab
-        	if (field.getIncluded_Tab_ID() > 0)
-        	{
-        		// NOT CHANGING INCLUDED TAB AS THIS IS BEING REDESIGNED WITH
-        		// IDEMPIERE-369 Master Detail layout improvements
-        		if (row.getChildren().size() == 2)
-        		{
-        			row.appendChild(createSpacer());
-        			row.appendChild(createSpacer());
-        			row.appendChild(createSpacer());
-        			rows.appendChild(row);
-        			if (rowList != null)
-        				rowList.add(row);
-        		} else if (row.getChildren().size() > 0)
-        		{
-        			rows.appendChild(row);
-        			if (rowList != null)
-        				rowList.add(row);
-        		}
-
-        		//end current field group
-        		if (currentGroup != null) {
-        			Groupfoot rowg = new Groupfoot();
-        			rows.appendChild(rowg);
-        			currentGroup = null;
-        			currentFieldGroup = null;
-        		}
-
-        		row = new Row();
-        		row.setSpans("5");
-        		row.appendChild(new Separator());
-        		rows.appendChild(row);
-
-        		Group rowg = new Group();
-        		rowg.setSpans("2,3");
-        		rows.appendChild(rowg);
-        		includedTab.put(field.getIncluded_Tab_ID(), (Group)rowg);
-        		Groupfoot rowgf = new Groupfoot();
-        		rows.appendChild(rowgf);
-        		includedTabFooter.put(field.getIncluded_Tab_ID(), (Groupfoot)rowgf);
-
-        		row = new Row();
-        		row.setSpans("5");
-        		row.appendChild(new Separator());
-        		rows.appendChild(row);
-
-        		row = new Row();
-        		continue;
-        	}
         	// field group
         	String fieldGroup = field.getFieldGroup();
         	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
@@ -569,7 +554,7 @@ DataStatusListener, IADTabpanel
         }   //  all components
 
         //hide row if all editor within the row is invisible
-        List<Component> rows = grid.getRows().getChildren();
+        List<Component> rows = form.getRows().getChildren();
         for (Component comp : rows)
         {
         	if (comp instanceof Row) {
@@ -743,7 +728,7 @@ DataStatusListener, IADTabpanel
         		listPanel.deactivate();
         } else {
         	if (activate) {
-        		formComponent.setVisible(activate);
+        		formContainer.setVisible(activate);
         		setFocusToField();
         	}
         }
@@ -751,6 +736,9 @@ DataStatusListener, IADTabpanel
         if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
         	setSelectedNode(gridTab.getRecord_ID());
         }
+        
+        Event event = new Event("onActivate", this, activate);
+        Events.sendEvent(event);
     }
 
 	/**
@@ -790,11 +778,7 @@ DataStatusListener, IADTabpanel
     {
     	if (event.getTarget() == listPanel.getListbox())
     	{    		
-    		if (windowPanel != null) {
-    			windowPanel.onToggle();
-    		} else {
-    			this.switchRowPresentation();
-    		}
+    		Events.sendEvent(this, new Event("onToggle", this));
     	}
     	else if (event.getTarget() == treePanel.getTree()) {
     		Treeitem item =  treePanel.getTree().getSelectedItem();
@@ -804,6 +788,8 @@ DataStatusListener, IADTabpanel
     		if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
             	setSelectedNode(gridTab.getRecord_ID());
             }
+    	} else {
+    		System.out.println(event.getName() + " " + event.getTarget());
     	}
     }
 
@@ -979,19 +965,25 @@ DataStatusListener, IADTabpanel
 	 * Toggle between form and grid view
 	 */
 	public void switchRowPresentation() {
-		if (formComponent.isVisible()) {
-			formComponent.setVisible(false);
+		Component details = removeDetails();
+		if (formContainer.isVisible()) {
+			formContainer.setVisible(false);
 		} else {
-			formComponent.setVisible(true);
-	        formComponent.getParent().invalidate();
+			formContainer.setVisible(true);
+	        formContainer.getParent().invalidate();
 		}
-		listPanel.setVisible(!formComponent.isVisible());
+		listPanel.setVisible(!formContainer.isVisible());
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
 			listPanel.scrollToCurrentRow();
 		} else {
 			listPanel.deactivate();
 		}
+		
+		if (details != null)
+			addDetails(details);
+		
+		Events.sendEvent(this, new Event("onSwitchView", this));
 	}
 
 	class ZoomListener implements EventListener {
@@ -1019,14 +1011,14 @@ DataStatusListener, IADTabpanel
 
 	@Override
 	public void focus() {
-		if (formComponent.isVisible())
+		if (formContainer.isVisible())
 			this.setFocusToField();
 		else
 			listPanel.focus();
 	}
 
 	public void setFocusToField(String columnName) {
-		if (formComponent.isVisible()) {
+		if (formContainer.isVisible()) {
 			boolean found = false;
 			for (WEditor editor : editors) {
 				if (found)
@@ -1063,8 +1055,23 @@ DataStatusListener, IADTabpanel
 	 *
 	 * @return GridPanel
 	 */
-	public GridPanel getGridView() {
+	public GridView getGridView() {
 		return listPanel;
+	}
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	@Override
+	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
+		if (detailPaneMode) {
+			detailPane = null;
+			this.setVflex("true");
+		} else {
+			this.setVflex(Boolean.toString(vflex));
+		}
+		listPanel.setDetailPaneMode(detailPaneMode, vflex);
 	}
 }
 
