@@ -1,5 +1,5 @@
 /******************************************************************************
- * Product: Posterita Ajax UI 												  *
+f * Product: Posterita Ajax UI 												  *
  * Copyright (C) 2007 Posterita Ltd.  All Rights Reserved.                    *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -169,7 +169,6 @@ DataStatusListener, IADTabpanel
         form.setHeight(null);
         form.setVflex(false);
         form.setSclass("grid-layout");
-        form.addEventListener(Events.ON_FOCUS, this);
         
         listPanel = new GridView();
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
@@ -788,9 +787,7 @@ DataStatusListener, IADTabpanel
     		if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
             	setSelectedNode(gridTab.getRecord_ID());
             }
-    	} else {
-    		System.out.println(event.getName() + " " + event.getTarget());
-    	}
+    	} 
     }
 
     private void navigateTo(DefaultTreeNode value) {

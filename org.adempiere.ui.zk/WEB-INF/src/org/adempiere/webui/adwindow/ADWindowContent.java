@@ -122,7 +122,7 @@ public class ADWindowContent extends AbstractADWindowContent
         contentArea = new Center();
         contentArea.setParent(layout);
         contentArea.setAutoscroll(true);
-        adTab.createPart(contentArea);
+        adTabbox.createPart(contentArea);
 
         if (parent instanceof Tabpanel) {
         	TabOnCloseHanlder handler = new TabOnCloseHanlder();
@@ -172,7 +172,7 @@ public class ADWindowContent extends AbstractADWindowContent
 	@Override
 	public boolean initPanel(int adWindowId, MQuery query) {
 		boolean retValue = super.initPanel(adWindowId, query);
-		if (adTab.getTabCount() == 1) {
+		if (adTabbox.getTabCount() == 1) {
 			if (west != null)
 				west.setVisible(false);
 			else if (east != null)
@@ -191,7 +191,7 @@ public class ADWindowContent extends AbstractADWindowContent
     		KeyEvent keyEvent = (KeyEvent) event;
     		//enter == 13
     		if (keyEvent.getKeyCode() == 13 && this.getComponent().getParent().isVisible()) {
-    			IADTabpanel panel = adTab.getSelectedTabpanel();
+    			IADTabpanel panel = adTabbox.getSelectedTabpanel();
     			if (panel != null) {
     				if (panel.onEnterKey()) {
     					keyEvent.stopPropagation();

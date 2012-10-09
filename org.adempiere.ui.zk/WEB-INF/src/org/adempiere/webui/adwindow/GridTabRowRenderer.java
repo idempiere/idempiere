@@ -40,7 +40,6 @@ import org.compiere.model.GridTab;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.NamePair;
-import org.zkoss.xml.XMLs;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
