@@ -1867,6 +1867,11 @@ public final class DB
 		if(SYSTEM_NATIVE_SEQUENCE && !adempiereSys)
 		{
 			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ");
+			if (m_sequence_id == -1) {
+				// try to create the sequence and try again
+				MSequence.createTableSequence(Env.getCtx(), TableName, trxName, true);
+				m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ");
+			}
 			return m_sequence_id;
 		}
 
