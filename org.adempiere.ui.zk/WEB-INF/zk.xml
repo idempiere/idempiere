@@ -12,7 +12,7 @@
 		</listener-class>
 	</listener>
 
-	<!-- uncomment following to debug event flow -->
+	<!-- uncomment following to debug server event flow -->
 	<!-- listener>
 	    <listener-class>org.adempiere.webui.util.LogEventInterceptor</listener-class>
 	</listener -->
@@ -23,9 +23,9 @@
 		<log-base></log-base>
 	</log>
 
-	<!--  change to false to use compress js which is much smaller -->
+	<!--  false to use compress js which is much smaller. change to true if you need to debug -->
 	<client-config>
-		<debug-js>true</debug-js>
+		<debug-js>false</debug-js>
 		<processing-prompt-delay>500</processing-prompt-delay>
 	</client-config>
 
@@ -46,9 +46,10 @@
 		</system-config>
 	-->
 
-	<system-config>
+	<!-- uncomment the following for selenium testing -->
+	<!--  system-config>
 		<id-generator-class>org.adempiere.webui.AdempiereIdGenerator</id-generator-class>
-	</system-config>
+	</system-config -->
 
 	<!--
 		polling - org.zkoss.zkex.ui.impl.PollingServerPush
@@ -56,10 +57,10 @@
 	-->
 	<device-config>
  		<device-type>ajax</device-type>
-<!--		<server-push-class>org.zkoss.zk.ui.impl.PollingServerPush</server-push-class> -->
       	<server-push-class>fi.jawsy.jawwa.zk.atmosphere.AtmosphereServerPush</server-push-class>
 	</device-config>
 
+	<!-- true for better performance and lower resource usage -->
 	<system-config>
 		<disable-event-thread>true</disable-event-thread>
 	</system-config>
