@@ -13,9 +13,6 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.Listbox;
-import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.editor.WYesNoEditor;
@@ -29,7 +26,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
-import org.zkoss.zul.Space;
 
 /**
  *
@@ -44,10 +40,8 @@ public class WPreference extends Popup implements EventListener<Event> {
 
 	private WYesNoEditor autoCommit;
 	private WYesNoEditor autoNew;
-	private WYesNoEditor tabCollapsible;
 	private WYesNoEditor adempiereSys;
 	private WYesNoEditor logMigrationScript;
-	private Listbox tabPlacement;
 
 	public WPreference() {
 		super();
@@ -70,26 +64,6 @@ public class WPreference extends Popup implements EventListener<Event> {
 		div = new Div();
 		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
 		div.appendChild(autoNew.getComponent());
-		this.appendChild(div);
-
-		tabCollapsible = new WYesNoEditor("WindowTabCollapsible", Msg.getMsg(Env.getCtx(), "WindowTabCollapsible", true),
-				null, false, false, true);
-		tabCollapsible.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), "WindowTabCollapsible", false));
-		div = new Div();
-		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
-		div.appendChild(tabCollapsible.getComponent());
-		this.appendChild(div);
-
-		div = new Div();
-		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
-		Label label = new Label(Msg.getMsg(Env.getCtx(), "WindowTabPlacement", true));
-		label.setTooltiptext(Msg.getMsg(Env.getCtx(), "WindowTabPlacement", false));
-		div.appendChild(label);
-		div.appendChild(new Space());
-		tabPlacement = ListboxFactory.newDropdownListbox();
-		tabPlacement.appendItem(Msg.getMsg(Env.getCtx(), "Left", true), "Left");
-		tabPlacement.appendItem(Msg.getMsg(Env.getCtx(), "Right", true), "Right");
-		div.appendChild(tabPlacement);
 		this.appendChild(div);
 
 		if (Env.getAD_Client_ID(Env.getCtx()) <= 20 && Env.getAD_User_ID(Env.getCtx()) <= 102) {
@@ -133,8 +107,6 @@ public class WPreference extends Popup implements EventListener<Event> {
 		UserPreference preference = SessionManager.getSessionApplication().getUserPreference();
 		autoCommit.setValue(preference.getProperty(UserPreference.P_AUTO_COMMIT));
 		autoNew.setValue(preference.getProperty(UserPreference.P_AUTO_NEW));
-		tabCollapsible.setValue(preference.getProperty(UserPreference.P_WINDOW_TAB_COLLAPSIBLE));
-		tabPlacement.setValue(preference.getProperty(UserPreference.P_WINDOW_TAB_PLACEMENT));
 	}
 
 	public void onEvent(Event event) throws Exception {
@@ -149,10 +121,6 @@ public class WPreference extends Popup implements EventListener<Event> {
 				(Boolean)autoCommit.getValue() ? "Y" : "N");
 		preference.setProperty(UserPreference.P_AUTO_NEW,
 				(Boolean)autoNew.getValue() ? "Y" : "N");
-		preference.setProperty(UserPreference.P_WINDOW_TAB_COLLAPSIBLE,
-				(Boolean)tabCollapsible.getValue() ? "Y" : "N");
-		preference.setProperty(UserPreference.P_WINDOW_TAB_PLACEMENT,
-				(String)tabPlacement.getSelectedItem().getValue());
 
 		preference.savePreference();
 
