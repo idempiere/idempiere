@@ -25,7 +25,7 @@
 
 	<!--  change to false to use compress js which is much smaller -->
 	<client-config>
-		<debug-js>false</debug-js>
+		<debug-js>true</debug-js>
 		<processing-prompt-delay>500</processing-prompt-delay>
 	</client-config>
 
