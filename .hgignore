@@ -59,6 +59,7 @@ syntax: regexp
 ^lib/plugins$
 ^plugins/.*\.class$
 ^adempiere-local\.properties$
+^org.adempiere.extend/test.properties$
 ^org\.adempiere\.ui/.*\.class$
 ^org\.adempiere\.ui/bin/.*\.css$
 ^org\.adempiere\.pipo.handlers/.*\.class$
