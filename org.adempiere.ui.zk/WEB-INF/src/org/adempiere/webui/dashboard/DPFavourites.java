@@ -15,11 +15,11 @@ package org.adempiere.webui.dashboard;
 
 import java.util.Enumeration;
 
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TouchEventHelper;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.ADWindow;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MMenu;
@@ -293,7 +293,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 					if(frame == null)
 	    				return;
 	        		
-					GridTab tab = frame.getADWindowPanel().getActiveGridTab();
+					GridTab tab = frame.getADWindowContent().getActiveGridTab();
 					tab.dataNew(false);
 	            }
 	            catch (Exception e)

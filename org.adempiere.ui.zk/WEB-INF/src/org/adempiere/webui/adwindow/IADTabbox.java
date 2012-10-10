@@ -10,14 +10,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.component;
+package org.adempiere.webui.adwindow;
 
-import org.adempiere.webui.panel.AbstractADWindowPanel;
-import org.adempiere.webui.panel.IADTabpanel;
 import org.adempiere.webui.part.UIPart;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridTab;
-import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
 /**
@@ -25,7 +23,7 @@ import org.zkoss.zk.ui.event.EventListener;
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  *
  */
-public interface IADTab extends UIPart {
+public interface IADTabbox extends UIPart {
 
 	/**
 	 *
@@ -91,35 +89,13 @@ public interface IADTab extends UIPart {
 	 *
 	 * @param listener
 	 */
-	public void addSelectionEventListener(EventListener listener);
-
-	/**
-	 * @return tab selection component
-	 */
-	public Component getTabSelectionComponent();
-
-	/**
-	 * @return boolean
-	 */
-	public boolean isUseExternalSelection();
+	public void setSelectionEventListener(EventListener<Event> listener);
 
 	/**
 	 * @param index
 	 * @return IADTabpanel
 	 */
 	public IADTabpanel getADTabpanel(int index);
-
-	/**
-	 * constant for tab placement
-	 */
-	public final int LEFT = 0;
-	public final int RIGHT = 1;
-
-	/**
-	 * Set tab placement ( left or right )
-	 * @param tabPlacement
-	 */
-	public void setTabplacement(int tabPlacement);
 
 	/**
 	 * @param gTab
@@ -131,5 +107,29 @@ public interface IADTab extends UIPart {
 	 * 
 	 * @param abstractADWindowPanel
 	 */
-	public void setADWindowPanel(AbstractADWindowPanel abstractADWindowPanel);
+	public void setADWindowPanel(AbstractADWindowContent abstractADWindowPanel);
+
+	public void onDetailRecord();
+
+	public void onParentRecord();
+
+	public boolean isSortTab();
+
+	public boolean needSave(boolean rowChange, boolean onlyRealChange);
+
+	public void dataIgnore();
+
+	public GridTab getSelectedGridTab();
+
+	public boolean dataSave(boolean onSaveEvent);
+
+	public void setDetailPaneStatusMessage(String status, boolean error);
+
+	IADTabpanel getSelectedDetailADTabpanel();
+
+	IADTabpanel getDirtyADTabpanel();
+
+	public void updateDetailPaneToolbar(boolean changed, boolean readOnly);
+
+	public void setDetailpaneSelection(int tabIndex, int currentRow);
 }

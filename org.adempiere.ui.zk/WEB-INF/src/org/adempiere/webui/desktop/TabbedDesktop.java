@@ -15,6 +15,7 @@ package org.adempiere.webui.desktop;
 
 import java.util.List;
 
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.wf.WFPanel;
 import org.adempiere.webui.component.DesktopTabpanel;
@@ -24,7 +25,6 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.ADWindow;
 import org.adempiere.webui.window.WTask;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;

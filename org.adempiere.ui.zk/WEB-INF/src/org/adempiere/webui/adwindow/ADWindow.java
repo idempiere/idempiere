@@ -15,12 +15,11 @@
  * or via info@posterita.org or http://www.posterita.org/                     *
  *****************************************************************************/
 
-package org.adempiere.webui.window;
+package org.adempiere.webui.adwindow;
 
 import java.util.Properties;
 
 import org.adempiere.webui.desktop.IDesktop;
-import org.adempiere.webui.panel.ADWindowPanel;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MQuery;
@@ -34,7 +33,7 @@ import org.zkoss.zk.ui.Component;
  */
 public class ADWindow extends AbstractUIPart
 {
-    private ADWindowPanel windowPanel;
+    private ADWindowContent windowContent;
     private Properties ctx;
     private int adWindowId;
     private String _title;
@@ -63,7 +62,7 @@ public class ADWindow extends AbstractUIPart
     
     private void init()
     {
-        windowPanel = new ADWindowPanel(ctx, windowNo);                
+        windowContent = new ADWindowContent(ctx, windowNo);                
     }
     
     public String getTitle()
@@ -73,12 +72,12 @@ public class ADWindow extends AbstractUIPart
     
     protected Component doCreatePart(Component parent) 
     {
-    	windowPanelComponent = windowPanel.createPart(parent);
+    	windowPanelComponent = windowContent.createPart(parent);
     	windowPanelComponent.setAttribute("ADWindow", this);
     	windowPanelComponent.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, windowNo);
-    	if (windowPanel.initPanel(adWindowId, query))
+    	if (windowContent.initPanel(adWindowId, query))
     	{
-    		_title = windowPanel.getTitle();    	
+    		_title = windowContent.getTitle();    	
     		return windowPanelComponent;
     	}
     	else
@@ -93,9 +92,9 @@ public class ADWindow extends AbstractUIPart
 	}	
 	
 	/**
-	 * @return ADWindowPanel
+	 * @return ADWindowContent
 	 */
-	public ADWindowPanel getADWindowPanel() {
-		return windowPanel;
+	public ADWindowContent getADWindowContent() {
+		return windowContent;
 	}
 }

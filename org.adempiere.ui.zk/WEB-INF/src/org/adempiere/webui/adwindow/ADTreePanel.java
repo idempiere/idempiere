@@ -11,11 +11,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.panel;
+package org.adempiere.webui.adwindow;
 
 
 import org.adempiere.webui.component.SimpleTreeModel;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.panel.TreeSearchPanel;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;

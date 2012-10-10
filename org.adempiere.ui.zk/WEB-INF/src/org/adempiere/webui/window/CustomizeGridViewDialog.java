@@ -3,8 +3,8 @@ package org.adempiere.webui.window;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.component.GridPanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.CustomizeGridViewPanel;
 import org.compiere.util.Env;
@@ -51,7 +51,7 @@ public class CustomizeGridViewDialog extends Window {
 		return customizePanel.isSaved();
 	}
 	
-	public void setGridPanel(GridPanel gridPanel){
+	public void setGridPanel(GridView gridPanel){
 		customizePanel.setGridPanel(gridPanel);
 	}
 
@@ -61,7 +61,7 @@ public class CustomizeGridViewDialog extends Window {
 	 * @param AD_Tab_ID
 	 * @param columnsWidth 
 	 */
-	public static boolean showCustomize (int WindowNo, int AD_Tab_ID, Map<Integer, String> columnsWidth,ArrayList<Integer> gridFieldIds,GridPanel gridPanel)
+	public static boolean showCustomize (int WindowNo, int AD_Tab_ID, Map<Integer, String> columnsWidth,ArrayList<Integer> gridFieldIds,GridView gridPanel)
 	{
 		CustomizeGridViewDialog customizeWindow = new CustomizeGridViewDialog(WindowNo, AD_Tab_ID, Env.getAD_User_ID(Env.getCtx()), columnsWidth,gridFieldIds);
 		customizeWindow.setGridPanel(gridPanel);

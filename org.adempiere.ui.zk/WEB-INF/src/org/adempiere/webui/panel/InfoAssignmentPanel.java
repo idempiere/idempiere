@@ -237,7 +237,6 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener, Val
 
         Center center = new Center();
 		layout.appendChild(center);
-		center.setFlex(true);
 		div = new Div();
 		div.appendChild(contentPanel);
 		if (isLookup())
@@ -247,6 +246,8 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener, Val
         contentPanel.setVflex(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
+		div.setVflex("1");
+		div.setHflex("1");
         
 		South south = new South();
 		layout.appendChild(south);

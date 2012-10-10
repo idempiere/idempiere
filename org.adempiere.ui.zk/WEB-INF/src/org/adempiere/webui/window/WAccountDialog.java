@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -35,7 +36,6 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
-import org.adempiere.webui.panel.ADTabpanel;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.DataStatusEvent;

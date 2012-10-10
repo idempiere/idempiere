@@ -44,7 +44,8 @@ Export-Package: metainfo.zk,
  org.adempiere.webui.session,
  org.adempiere.webui.theme,
  org.adempiere.webui.util,
- org.adempiere.webui.window
+ org.adempiere.webui.window,
+ metainfo.zk
 Require-Bundle: org.adempiere.report.jasper;bundle-version="1.0.0",
  org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.report.jasper.library;bundle-version="1.0.0",

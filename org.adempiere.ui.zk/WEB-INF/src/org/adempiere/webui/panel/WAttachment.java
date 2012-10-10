@@ -267,9 +267,10 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		Center centerPane = new Center();
 		centerPane.setAutoscroll(true);
-		centerPane.setFlex(true);
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
+		previewPanel.setVflex("1");
+		previewPanel.setHflex("1");
 
 		South southPane = new South();
 		mainPanel.appendChild(southPane);

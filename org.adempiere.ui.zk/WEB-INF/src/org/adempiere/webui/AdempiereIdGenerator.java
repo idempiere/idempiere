@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.sys.IdGenerator;
 
 public class AdempiereIdGenerator implements IdGenerator {
@@ -33,7 +34,7 @@ public class AdempiereIdGenerator implements IdGenerator {
 	public static final String ZK_COMPONENT_PREFIX_ATTRIBUTE = "zk_component_prefix";
 
 	@Override
-	public String nextComponentUuid(Desktop desktop, Component comp) {
+	public String nextComponentUuid(Desktop desktop, Component comp, ComponentInfo compInfo) {
 		String prefix = (String) comp.getAttribute(ZK_COMPONENT_PREFIX_ATTRIBUTE);
 		if (prefix == null || prefix.length() == 0)
 			prefix = DEFAULT_ZK_COMP_PREFIX;

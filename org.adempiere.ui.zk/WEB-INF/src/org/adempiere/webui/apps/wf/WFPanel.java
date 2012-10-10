@@ -108,7 +108,6 @@ public class WFPanel extends Borderlayout implements EventListener
 		center.appendChild(table);
 		contentPanel.setStyle("width: 100%; heigh: 100%;");
 		center.setAutoscroll(true);
-		center.setFlex(false);
 		
 		South south = new South();
 		this.appendChild(south);
@@ -120,7 +119,8 @@ public class WFPanel extends Borderlayout implements EventListener
 		south.setSplittable(true);
 		south.setCollapsible(true);
 		south.setAutoscroll(true);
-		south.setFlex(true);		
+		div.setVflex("1");
+		div.setHflex("1");
 	}	//	jbInit
 
 	private void createTable() {

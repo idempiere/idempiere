@@ -56,14 +56,6 @@ public final class UserPreference implements Serializable {
 	/** Language Name Context **/
 	public static final String LANGUAGE_NAME = "#LanguageName";
 
-	/** window tab placement **/
-	public static final String P_WINDOW_TAB_PLACEMENT = "WindowTabPlacement";
-	public static final String DEFAULT_WINDOW_TAB_PLACEMENT = "Right";
-
-	/** window tab collapsible **/
-	public static final String P_WINDOW_TAB_COLLAPSIBLE = "WindowTabCollapsible";
-	public static final String DEFAULT_WINDOW_TAB_COLLAPSIBLE = "N";
-
 	/** Auto New **/
 	public static final String P_AUTO_NEW = "AutoNew";
 	public static final String DEFAULT_AUTO_NEW = "Y";
@@ -81,8 +73,6 @@ public final class UserPreference implements Serializable {
 		P_WAREHOUSE,
 		P_AUTO_COMMIT,
 		P_AUTO_NEW,
-		P_WINDOW_TAB_PLACEMENT,
-		P_WINDOW_TAB_COLLAPSIBLE,
 		P_MENU_COLLAPSED};
 	/** Ini Property Values */
 	private static final String[] VALUES = new String[] {
@@ -93,8 +83,6 @@ public final class UserPreference implements Serializable {
 		DEFAULT_WAREHOUSE,
 		DEFAULT_AUTO_COMMIT,
 		DEFAULT_AUTO_NEW,
-		DEFAULT_WINDOW_TAB_PLACEMENT,
-		DEFAULT_WINDOW_TAB_COLLAPSIBLE,
 		DEFAULT_MENU_COLLAPSED};
 
 	/** Container for Properties */

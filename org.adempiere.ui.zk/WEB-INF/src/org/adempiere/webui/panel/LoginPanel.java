@@ -348,7 +348,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 
         chkSelectRole = new Checkbox(Msg.getMsg(Language.getBaseAD_Language(), "SelectRole"));
         
-        btnResetPassword = new ToolBarButton(Msg.getMsg(Language.getBaseAD_Language(), "ResetPassword"));
+        btnResetPassword = new ToolBarButton(Msg.getMsg(Language.getBaseAD_Language(), "ForgotMyPassword"));
 
         // Make the default language the language of client System
         String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
@@ -455,7 +455,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     	lblLanguage.setValue(Msg.getMsg(language, "Language"));
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
-    	btnResetPassword.setLabel(Msg.getMsg(language, "ResetPassword"));
+    	btnResetPassword.setLabel(Msg.getMsg(language, "ForgotMyPassword"));
     }
 
 	private Language findLanguage(String langName) {

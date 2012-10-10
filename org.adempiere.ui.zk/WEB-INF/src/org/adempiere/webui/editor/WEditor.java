@@ -37,6 +37,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -315,11 +316,20 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     /**
      * @param evt
      */
-    public void propertyChange(PropertyChangeEvent evt)
+    public void propertyChange(final PropertyChangeEvent evt)
     {
         if (evt.getPropertyName().equals(org.compiere.model.GridField.PROPERTY))
         {
-            setValue((evt.getNewValue()));
+        	if (Executions.getCurrent() == null) {
+        		Executions.schedule(this.getComponent().getDesktop(), new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						setValue((evt.getNewValue()));
+					}
+				}, new Event("onPropertyChange"));
+        	} else {
+        		setValue((evt.getNewValue()));
+        	}
         }
     }
 
