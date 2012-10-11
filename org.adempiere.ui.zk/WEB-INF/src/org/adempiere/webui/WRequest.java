@@ -18,8 +18,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.ADWindow;
 import org.compiere.model.GridTab;
 import org.compiere.model.MAsset;
 import org.compiere.model.MBPartner;
@@ -212,7 +212,7 @@ public class WRequest implements EventListener
 			//	New - set Table/Record
 			if (e.getTarget() == m_new)
 			{
-				GridTab tab = frame.getADWindowPanel().getActiveGridTab();
+				GridTab tab = frame.getADWindowContent().getActiveGridTab();
 				tab.dataNew (false);
 				tab.setValue("AD_Table_ID", new Integer(m_AD_Table_ID));
 				tab.setValue("Record_ID", new Integer(m_Record_ID));

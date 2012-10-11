@@ -42,7 +42,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.adempiere.exceptions.DBException;
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
@@ -619,13 +618,8 @@ public class GridTable extends AbstractTableModel
 		m_sort = new ArrayList<MSort>(m_rowCount+10);
 		if (m_rowCount > 0)
 		{
-			if (m_rowCount < 1000)
-				m_loader.run();
-			else
-			{
-				m_loader.setContext(ServerContext.getCurrentInstance());
-				m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
-			}
+			m_loader.setContext(ServerContext.getCurrentInstance());
+			m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
 		}
 		else
 			m_loader.close();

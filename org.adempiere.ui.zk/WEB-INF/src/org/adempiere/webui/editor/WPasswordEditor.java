@@ -34,4 +34,9 @@ public class WPasswordEditor extends WStringEditor
         super.setTypePassword(true);
     }
 
+    public WPasswordEditor(GridField gridField, boolean tableEditor)
+    {
+    	super(gridField, tableEditor);
+    	super.setTypePassword(true);
+    }
 }

@@ -70,7 +70,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         {
             if (gridField.isEncryptedField())
             {
-                editor = new WPasswordEditor(gridField);
+                editor = new WPasswordEditor(gridField, tableEditor);
             }
             else
             {
@@ -90,7 +90,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         /** Number */
         else if (DisplayType.isNumeric(displayType))
         {
-            editor = new WNumberEditor(gridField);
+            editor = new WNumberEditor(tableEditor, gridField);
         }
 
         /** YesNo */
@@ -104,7 +104,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         /** Text */
         else if (displayType == DisplayType.Text || displayType == DisplayType.Memo || displayType == DisplayType.TextLong)
         {
-            editor = new WStringEditor(gridField);
+            editor = new WStringEditor(gridField, tableEditor);
         }
 
         /** Date */

@@ -21,10 +21,13 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
@@ -112,7 +115,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     {
     	Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
-    	Label label = new Label(Msg.getMsg(m_ctx, "ResetPassword"));
+    	Label label = new Label(Msg.getMsg(m_ctx, "ForgotMyPassword"));
     	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
     	div.appendChild(label);
     	this.appendChild(div);
@@ -229,15 +232,18 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	txtUserId.setCols(25);
     	txtUserId.setMaxlength(40);
     	txtUserId.setWidth("220px");
+    	txtUserId.setReadonly(false);
     	if (! m_noSecurityQuestion)
     	{
 	    	lblSecurityQuestion = new Label();
 	    	lblSecurityQuestion.setId("lblSecurityQuestion");
 	    	lblSecurityQuestion.setValue(Msg.getMsg(m_ctx, "SecurityQuestion"));
+	    	lblSecurityQuestion.setVisible(false);
 	
 	    	lblAnswer = new Label();
 	    	lblAnswer.setId("lblAnswer");
 	    	lblAnswer.setValue(Msg.getMsg(m_ctx, "Answer"));
+	    	lblAnswer.setVisible(false);
 	    	
 	    	txtSecurityQuestion = new Textbox();
 	    	txtSecurityQuestion.setId("txtSecurityQuestion");
@@ -245,6 +251,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	txtSecurityQuestion.setCols(25);
 	    	txtSecurityQuestion.setWidth("220px");
 	    	txtSecurityQuestion.setReadonly(true);
+	    	txtSecurityQuestion.setVisible(false);
 	        
 	    	txtAnswer = new Textbox();
 	    	txtAnswer.setId("txtAnswer");
@@ -253,6 +260,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	        txtAnswer.setCols(25);
 	        txtAnswer.setWidth("220px");
 	        txtAnswer.setReadonly(true);
+	        txtAnswer.setVisible(false);
     	}
     }
     
@@ -283,10 +291,22 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	sql.append("ORDER BY AD_Client_ID DESC");
     	
     	String securityQuestion = DB.getSQLValueString(null, sql.toString(), userid, email);
+    	if (securityQuestion == null)
+    	{
+    		m_noSecurityQuestion = true;
+    		validateResetPassword();
+    		return;
+    	}
     	txtSecurityQuestion.setValue(securityQuestion);
     	
+    	txtUserId.setReadonly(true);
     	txtEmail.setReadonly(true);
     	txtAnswer.setReadonly(false);
+    	
+    	lblSecurityQuestion.setVisible(true);
+    	lblAnswer.setVisible(true);
+    	txtSecurityQuestion.setVisible(true);
+        txtAnswer.setVisible(true);
     }
 
     public void onEvent(Event event)
@@ -457,9 +477,16 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 			throw new AdempiereException(Msg.getMsg(m_ctx, "RequestActionEMailError") + ": " + errorMsg);
     	else
     	{
-        	SessionManager.logoutSession();
-        	wndLogin.loginCancelled();
-//    		FDialog.info(0, this, Msg.getMsg(m_ctx, "RequestActionEMailOK"));
+    		// Passwords for all tenants using ({0}) as email have been reset
+    		String msg = Msg.getMsg(m_ctx, "PasswordsForAllTenantsReset", new Object[] {email});
+    		Messagebox.showDialog(msg, AEnv.getDialogHeader(Env.getCtx(), 0), Messagebox.OK, Messagebox.INFORMATION, new Callback<Integer>() {
+				@Override
+				public void onCallback(Integer result) {
+		        	SessionManager.logoutSession();
+		        	wndLogin.loginCancelled();
+				}
+				
+			});
     	}    	
     }
     

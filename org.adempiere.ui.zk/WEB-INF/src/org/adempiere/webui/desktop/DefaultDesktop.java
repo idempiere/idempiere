@@ -34,6 +34,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
+import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -120,7 +121,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         w.setSclass("desktop-left-column");
         w.setCollapsible(true);
         w.setSplittable(true);
-        w.setFlex(false);
         w.setHflex("1");
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
@@ -139,7 +139,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
         windowArea = new Center();
         windowArea.setParent(layout);
-        windowArea.setFlex(true);
         windowArea.setSclass("desktop-center");
 
         windowContainer.createPart(windowArea);
@@ -178,8 +177,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			}
 		};
 
-		Thread thread = new Thread(runnable);
-		thread.start();
+		Adempiere.getThreadPoolExecutor().submit(runnable);
 
         return layout;
     }

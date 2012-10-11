@@ -11,21 +11,29 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.zkoss.util.resource;
+package org.adempiere.webui.adwindow;
 
-import java.net.URL;
+import org.zkoss.zul.A;
 
 /**
- * 
  * @author hengsin
  *
  */
-public interface IResourceLocator {
-
-	/**
-	 * @param name
-	 * @return resource url
-	 */
-	public URL getResource(String name);
+public class BreadCrumbLink extends A {
 	
+	/**
+	 * generated serial id
+	 */
+	private static final long serialVersionUID = 170361731431877695L;
+	
+	private String pathId;
+
+	public String getPathId() {
+		return pathId;
+	}
+
+	public void setPathId(String pathId) {
+		this.pathId = pathId;
+	}
+
 }

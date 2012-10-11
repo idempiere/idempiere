@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Accordion;
@@ -32,7 +33,6 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
-import org.adempiere.webui.window.ADWindow;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -118,7 +118,6 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
         w.setWidth("300px");
         w.setCollapsible(true);
         w.setSplittable(true);
-        w.setFlex(true);
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {			
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -136,12 +135,13 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 
         Center center = new Center();
         center.setParent(layout);
-        center.setFlex(true);
 
         Borderlayout innerLayout = new Borderlayout();
         innerLayout.setHeight("100%");
         innerLayout.setWidth("100%");
         innerLayout.setParent(center);
+        innerLayout.setVflex("1");
+        innerLayout.setHflex("1");
 
         West innerW = new West();
         innerW.setWidth("200px");
@@ -173,7 +173,6 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 
         windowArea = new Center();
         windowArea.setParent(innerLayout);
-        windowArea.setFlex(true);
 
         windowContainer.createPart(windowArea);
 

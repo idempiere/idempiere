@@ -27,9 +27,9 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.model.MTabCustomization;
+import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
-import org.adempiere.webui.component.GridPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
@@ -68,7 +68,7 @@ public class CustomizeGridViewPanel extends Panel
 	private static final long serialVersionUID = 4289328613547509587L;
 	private Map<Integer, String> m_columnsWidth;
 	ArrayList<Integer> tableSeqs;
-	GridPanel gridPanel = null;
+	GridView gridPanel = null;
 	/**
 	 *	Sort Tab Constructor
 	 *
@@ -260,7 +260,8 @@ public class CustomizeGridViewPanel extends Panel
 		centerPanel.appendChild(div);
 		
 		center.appendChild(centerPanel);
-		center.setFlex(true);
+		centerPanel.setVflex("1");
+		centerPanel.setHflex("1");
 		layout.appendChild(center);
 		
 		South south = new South();
@@ -765,7 +766,7 @@ public class CustomizeGridViewPanel extends Panel
 	public boolean isSaved() {
 		return m_saved;
 	}
-	public void setGridPanel(GridPanel gridPanel){
+	public void setGridPanel(GridView gridPanel){
 		this.gridPanel = gridPanel;
 	}
 }	//ADSortTab

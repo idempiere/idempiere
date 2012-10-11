@@ -15,16 +15,13 @@
  * or via info@posterita.org or http://www.posterita.org/                     *
  *****************************************************************************/
 
-package org.adempiere.webui.component;
+package org.adempiere.webui.adwindow;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.adempiere.webui.panel.ADTabpanel;
-import org.adempiere.webui.panel.AbstractADWindowPanel;
 import org.adempiere.webui.panel.CustomizeGridViewPanel;
-import org.adempiere.webui.panel.IADTabpanel;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridField;
@@ -41,18 +38,18 @@ import org.compiere.util.Evaluator;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public abstract class AbstractADTab extends AbstractUIPart implements IADTab
+public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabbox
 {
     /** Logger                  */
-    private static CLogger  log = CLogger.getCLogger (AbstractADTab.class);
+    private static CLogger  log = CLogger.getCLogger (AbstractADTabbox.class);
     /** List of dependent Variables     */
     private ArrayList<String>   m_dependents = new ArrayList<String>();
     
     /** Tabs associated to this tab box */
     protected List<IADTabpanel> tabPanelList = new ArrayList<IADTabpanel>();
-	protected AbstractADWindowPanel adWindowPanel;
+	protected AbstractADWindowContent adWindowPanel;
     
-    public AbstractADTab()
+    public AbstractADTabbox()
     {
     }
     
@@ -336,7 +333,7 @@ public abstract class AbstractADTab extends AbstractUIPart implements IADTab
     	updateSelectedIndex(oldIndex, newIndex);
     }
 
-	public void setADWindowPanel(AbstractADWindowPanel abstractADWindowPanel) {
+	public void setADWindowPanel(AbstractADWindowContent abstractADWindowPanel) {
 		this.adWindowPanel = abstractADWindowPanel;
 	}
 }

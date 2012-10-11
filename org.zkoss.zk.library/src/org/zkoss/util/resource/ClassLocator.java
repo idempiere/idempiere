@@ -53,19 +53,9 @@ import org.zkoss.idom.input.SAXBuilder;
 public class ClassLocator implements XMLResourcesLocator {
 	private static final Log log = Log.lookup(ClassLocator.class);
 	
-	private static List<IResourceLocator> resourceLocators = new ArrayList<IResourceLocator>();
-
 	public ClassLocator() {
 	}
 	
-	public static synchronized void addResourceLocator(IResourceLocator locator) {
-		resourceLocators.add(locator);
-	}
-	
-	private static synchronized IResourceLocator[] getResourceLocators() {
-		return resourceLocators.toArray(new IResourceLocator[0]);
-	}
-
 	//XMLResourcesLocator//
 	public Enumeration<URL> getResources(String name) throws IOException {
 		List<URL> list = null;
@@ -95,15 +85,6 @@ public class ClassLocator implements XMLResourcesLocator {
 			final Enumeration<URL> en = ClassLoader.getSystemResources(name);
 			list = Collections.list(en);
 		}
-		IResourceLocator[] locators = ClassLocator.getResourceLocators();
-		if (locators != null && locators.length > 0) {
-			for (IResourceLocator locator : locators) {
-				URL url = locator.getResource(name);
-				if (url != null) {
-					list.add(url);
-				}
-			}
-		}
 		return Collections.enumeration(list);
 	}
 	public List<Resource> getDependentXMLResources(String name, String elName,
@@ -116,11 +97,6 @@ public class ClassLocator implements XMLResourcesLocator {
 			if (old != null)
 				log.warning("Replicate resource: "+xr.name
 					+"\nOverwrite "+old.url+"\nwith "+xr.url);
-			else {
-				if (log.infoable()) {
-					log.info(xr);
-				}
-			}
 			//it is possible if zcommon.jar is placed in both
 			//WEB-INF/lib and shared/lib, i.e., appear twice in the class path
 			//We overwrite because the order is the parent class loader first

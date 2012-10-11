@@ -69,7 +69,6 @@ public class WLogin extends AbstractUIPart
         Center center = new Center();
         center.setParent(layout);
         center.setBorder("none");
-        center.setFlex(true);
         center.setAutoscroll(true);
         center.setStyle("border: none; background-color: transparent;");
 
@@ -80,6 +79,8 @@ public class WLogin extends AbstractUIPart
         vb.setPack("center");
         vb.setAlign("center");
         vb.setStyle("background-color: transparent;");
+        vb.setHflex("1");
+        vb.setVflex("1");
 
         loginWindow = new LoginWindow(app);
         loginWindow.setParent(vb);

@@ -501,20 +501,22 @@ public class InfoProductPanel extends InfoPanel implements EventListener
         Center center = new Center();
         //true will conflict with listbox scrolling
         center.setAutoscroll(false);
-        center.setFlex(true);
-		borderlayout.appendChild(center);
+        borderlayout.appendChild(center);
 		center.appendChild(contentPanel);
+		contentPanel.setVflex("1");
+		contentPanel.setHflex("1");
 		South south = new South();
 		int detailHeight = (height * 25 / 100);
 		south.setHeight(detailHeight + "px");
 		south.setCollapsible(true);
 		south.setSplittable(true);
-		south.setFlex(true);
 		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
 		south.setTooltiptext(Msg.translate(Env.getCtx(), "WarehouseStock"));
 		borderlayout.appendChild(south);
 		tabbedPane.setSclass("info-product-tabbedpane");
 		south.appendChild(tabbedPane);
+		tabbedPane.setVflex("1");
+		tabbedPane.setHflex("1");
 
         Borderlayout mainPanel = new Borderlayout();
         mainPanel.setWidth("100%");

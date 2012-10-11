@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -36,7 +37,6 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.ADForm;
-import org.adempiere.webui.panel.ADTabpanel;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.StatusBarPanel;
@@ -212,8 +212,9 @@ public class WTrxMaterial extends TrxMaterial
 			m_gridController.switchRowPresentation();
 		Center center = new Center();
 		mainLayout.appendChild(center);
-		center.setFlex(true);
 		center.appendChild(m_gridController);
+		m_gridController.setVflex("1");
+		m_gridController.setHflex("1");
 	}   //  dynInit
 
 

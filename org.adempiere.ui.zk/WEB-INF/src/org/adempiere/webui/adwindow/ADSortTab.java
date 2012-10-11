@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.adempiere.webui.panel;
+package org.adempiere.webui.adwindow;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -101,7 +101,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	private boolean		m_IdentifierTranslated = false;
 
 	private String		m_ParentColumnName = null;
-	private AbstractADWindowPanel adWindowPanel = null;
+	private AbstractADWindowContent adWindowPanel = null;
 
 	//	UI variables
 	private Label noLabel = new Label();
@@ -137,6 +137,8 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 	private GridTab gridTab;
 	private boolean uiCreated;
+	private boolean active = false;
+	private boolean isChanged;
 
 	/**
 	 * 	Dynamic Init
@@ -493,12 +495,17 @@ public class ADSortTab extends Panel implements IADTabpanel
 	 * @param value
 	 */
 	private void setIsChanged(boolean value) {
+		isChanged = value;
 		if (adWindowPanel != null) {
 			adWindowPanel.getToolbar().enableSave(value);
 			adWindowPanel.getToolbar().enableIgnore(value);
 		}
 	}
 
+	public boolean isChanged() {
+		return isChanged;
+	}
+	
 	/**
 	 * @param event
 	 */
@@ -613,7 +620,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	/* (non-Javadoc)
 	 * @see org.compiere.grid.APanelTab#registerAPanel(APanel)
 	 */
-	public void registerAPanel (AbstractADWindowPanel panel)
+	public void registerAPanel (AbstractADWindowContent panel)
 	{
 		adWindowPanel = panel;
 	}	//	registerAPanel
@@ -835,6 +842,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}
 
 	public void activate(boolean b) {
+		active  = b;
 		if (b && !uiCreated) createUI();
 	}
 
@@ -911,6 +919,20 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 	public boolean onEnterKey() {
 		return false;
+	}
+
+	@Override
+	public boolean isGridView() {
+		return false;
+	}
+
+	@Override
+	public boolean isActive() {
+		return active;
+	}
+
+	@Override
+	public void setDetailPaneMode(boolean detailMode, boolean vflex) {
 	}
 }	//ADSortTab
 

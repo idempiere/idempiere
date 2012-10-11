@@ -57,12 +57,16 @@ public class WindowContainer extends AbstractUIPart
         tabbox.setSclass("desktop-tabbox");
         
         Tabpanels tabpanels = new Tabpanels();
+        tabpanels.setVflex("1");
+        tabpanels.setHflex("1");
         Tabs tabs = new Tabs();
 
         tabbox.appendChild(tabs);
         tabbox.appendChild(tabpanels);
         tabbox.setWidth("100%");
         tabbox.setHeight("100%");
+        tabbox.setVflex("1");
+        tabbox.setHflex("1");
         
         if (parent != null)
         	tabbox.setParent(parent);
@@ -135,7 +139,9 @@ public class WindowContainer extends AbstractUIPart
         }                
         tabpanel.setHeight("100%");
         tabpanel.setWidth("100%");
-        tabpanel.setZclass("desktop-tabpanel");
+        tabpanel.setVflex("1");
+        tabpanel.setHflex("1");
+        tabpanel.setSclass("desktop-tabpanel");
         
         if (refTab == null)  
         {

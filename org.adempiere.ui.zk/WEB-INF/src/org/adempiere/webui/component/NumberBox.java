@@ -24,15 +24,13 @@ import java.text.ParseException;
 import org.adempiere.webui.LayoutUtils;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.zkoss.zhtml.Table;
-import org.zkoss.zhtml.Td;
-import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Vbox;
 
@@ -75,35 +73,23 @@ public class NumberBox extends Div
     
     private void init()
     {
-    	Table grid = new Table();
-		appendChild(grid);
-		grid.setStyle("border: none; padding: 0px; margin: 0px;");
-		grid.setDynamicProperty("border", "0");
-		grid.setDynamicProperty("cellpadding", "0");
-		grid.setDynamicProperty("cellspacing", "0");
-		
-		Tr tr = new Tr();
-		grid.appendChild(tr);
-		tr.setStyle("border: none; padding: 0px; margin: 0px; white-space:nowrap; ");
+    	Hlayout hlayout = new Hlayout();
+    	hlayout.setHflex("1");
+    	appendChild(hlayout);
 
-		Td td = new Td();
-		tr.appendChild(td);
-		td.setStyle("border: none; padding: 0px; margin: 0px;");
 		decimalBox = new Decimalbox();
     	if (integral)
     		decimalBox.setScale(0);
     	decimalBox.setStyle("display: inline;text-align:right");
-    	td.appendChild(decimalBox);
+    	decimalBox.setHflex("1");
+    	hlayout.appendChild(decimalBox);
 		
-		Td btnColumn = new Td();
-		tr.appendChild(btnColumn);
-		btnColumn.setStyle("border: none; padding: 0px; margin: 0px;");
-		btnColumn.setSclass("editor-button");
 		btn = new Button();
         btn.setImage("/images/Calculator10.png");
 		btn.setTabindex(-1);
+		btn.setHflex("min");
 		LayoutUtils.addSclass("editor-button", btn);
-		btnColumn.appendChild(btn);
+		hlayout.appendChild(btn);
         
         popup = getCalculatorPopup();
         appendChild(popup);

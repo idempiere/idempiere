@@ -103,4 +103,25 @@ public final class LayoutUtils {
 		window.doPopup();
 		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
 	}
+	
+	/**
+	 * open popup window relative to the ref component
+	 * @param ref
+	 * @param window
+	 * @param position
+	 */
+	public static void openOverlappedWindow(Component ref, Window window, String position) {
+		if (window.getPage() == null)
+			window.setPage(ref.getPage());
+		StringBuilder script = new StringBuilder();
+		script.append("_idempiere_popup_window('#")
+			.append(ref.getUuid())
+			.append("','#")
+			.append(window.getUuid())
+			.append("','")
+			.append(position)
+			.append("');");
+		window.doOverlapped();
+		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
+	}
 }

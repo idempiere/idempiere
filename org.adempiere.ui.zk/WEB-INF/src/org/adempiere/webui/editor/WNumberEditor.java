@@ -55,20 +55,32 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 
 	private int displayType;
 
+	private boolean tableEditor;
+
     public WNumberEditor()
     {
     	this("Number", false, false, true, DisplayType.Number, "");
     }
 
     /**
+    *
+    * @param gridField
+    */
+    public WNumberEditor(GridField gridField)
+    {
+    	this(false, gridField);
+    }
+   
+    /**
      *
      * @param gridField
      */
-    public WNumberEditor(GridField gridField)
+    public WNumberEditor(boolean tableEditor, GridField gridField)
     {
         super(new NumberBox(gridField.getDisplayType() == DisplayType.Integer),
                 gridField);
         this.displayType = gridField.getDisplayType();
+        this.tableEditor = tableEditor;
         init();
     }
 
@@ -112,7 +124,10 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 	            displayLength = MAX_DISPLAY_LENGTH;
 	        else if (displayLength <= 0 || displayLength < MIN_DISPLAY_LENGTH)
 	        	displayLength = MIN_DISPLAY_LENGTH;
-			getComponent().getDecimalbox().setCols(displayLength);
+	        if (!tableEditor)
+	        	getComponent().getDecimalbox().setCols(displayLength);
+//	        else
+//	        	getComponent().getDecimalbox().setCols(0);
 		}
 
 		if (DisplayType.isID(displayType)) 

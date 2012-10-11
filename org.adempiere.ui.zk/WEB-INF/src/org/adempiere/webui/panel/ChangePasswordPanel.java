@@ -18,11 +18,14 @@ package org.adempiere.webui.panel;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
@@ -331,7 +334,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 	    		user.saveEx(trx.getTrxName());
 	    	}
 	    	
-	    	trx.commit();
+	    	trx.commit();	    	
     	}
     	catch (AdempiereException e)
     	{
@@ -345,6 +348,13 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     			trx.close();
     	}
     	
-    	wndLogin.loginOk(m_userName, m_show, m_clientKNPairs);
+		String msg = Msg.getMsg(m_ctx, "NewPasswordValidForAllTenants");
+		Messagebox.showDialog(msg, AEnv.getDialogHeader(Env.getCtx(), 0), Messagebox.OK, Messagebox.INFORMATION, new Callback<Integer>() {
+			@Override
+			public void onCallback(Integer result) {
+		    	wndLogin.loginOk(m_userName, m_show, m_clientKNPairs);
+			}
+			
+		});
     }
 }

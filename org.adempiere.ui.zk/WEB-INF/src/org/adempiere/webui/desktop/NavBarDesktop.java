@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Accordion;
@@ -34,7 +35,6 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
-import org.adempiere.webui.window.ADWindow;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -127,7 +127,6 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
         leftRegion.setCollapsible(true);
         leftRegion.setSplittable(true);
         leftRegion.setTitle("Navigation");
-        leftRegion.setFlex(true);
         leftRegion.addEventListener(Events.ON_OPEN, new EventListener<Event>() {			
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -174,7 +173,6 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 
         windowArea = new Center();
         windowArea.setParent(layout);
-        windowArea.setFlex(true);
 
         windowContainer.createPart(windowArea);
 

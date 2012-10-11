@@ -251,7 +251,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		West west = new West();
 		mainLayout.appendChild(west);	
 		west.appendChild(wfnodeTree);
-		west.setFlex(true);
+		wfnodeTree.setVflex("1");
+		wfnodeTree.setHflex("1");
 		west.setAutoscroll(true);
 		west.setWidth("30%");
 		

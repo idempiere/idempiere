@@ -109,7 +109,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	userPanel.setHeight("100%");
     	userPanel.setAlign("right");
     	userPanel.setStyle("position: absolute; text-align:right;");
-    	center.setFlex(true);
+    	userPanel.setVflex("1");
+    	userPanel.setHflex("1");
     	LayoutUtils.addSclass("desktop-header-right", center);
     }
 

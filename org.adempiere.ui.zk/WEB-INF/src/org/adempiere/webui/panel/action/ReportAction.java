@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import javax.sql.RowSet;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.WProcessCtl;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -34,7 +35,6 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.panel.AbstractADWindowPanel;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
@@ -66,7 +66,7 @@ public class ReportAction implements EventListener<Event>
 {
 	private static CLogger log = CLogger.getCLogger(ReportAction.class);
 	
-	private AbstractADWindowPanel panel;
+	private AbstractADWindowContent panel;
 	
 	private Window winReport = null;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
@@ -78,7 +78,7 @@ public class ReportAction implements EventListener<Event>
 	
 	private ArrayList<KeyNamePair>	printFormatList = new ArrayList<KeyNamePair>();
 
-	public ReportAction(AbstractADWindowPanel panel)
+	public ReportAction(AbstractADWindowContent panel)
 	{
 		this.panel = panel;		
 		getPrintFormats(panel.getActiveGridTab().getAD_Table_ID());
