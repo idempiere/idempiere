@@ -58,6 +58,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
+import org.zkoss.zhtml.Text;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.event.Event;
@@ -486,6 +487,20 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
     	
     	this.appendChild(logMessageTable);
 
+    	boolean datePresents = false;
+		boolean numberPresents = false;
+		boolean msgPresents = false;
+
+		for (ProcessInfoLog log : m_logs) {
+			if (log.getP_Date() != null)
+				datePresents = true;
+			if (log.getP_Number() != null)
+				numberPresents = true;
+			if (log.getP_Msg() != null)
+				msgPresents = true;
+		}
+
+		
     	for (int i = 0; i < m_logs.length; i++)
 		{
 		
@@ -494,37 +509,47 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
         	
     		ProcessInfoLog log = m_logs[i];
 			
-			if (log.getP_Date() != null){
-				Label label = new Label(dateFormat.format(log.getP_Date()));
-				//label.setStyle("padding-right:100px");
+    		if (datePresents) {
 				Td td = new Td();
-				td = new Td();
-		    	td.appendChild(label);
-		    	tr.appendChild(td);				
-				
-			}
-			
-			if (log.getP_Number() != null){
-				Label labelPno= new Label(""+log.getP_Number());
-				Td td = new Td();
-		    	td.appendChild(labelPno);
-		    	tr.appendChild(td);				
-			}
-			
-			A recordLink = null;
-			if (log.getP_Msg() != null){
-				recordLink = new A();
-				recordLink.setLabel(log.getP_Msg());
-
-				if (log.getAD_Table_ID() > 0 && log.getRecord_ID()> 0) {
-					recordLink.setAttribute("Record_ID", String.valueOf(log.getRecord_ID()));
-					recordLink.setAttribute("AD_Table_ID", String.valueOf(log.getAD_Table_ID()));
-					recordLink.addEventListener(Events.ON_CLICK, this);
-					
+				if (log.getP_Date() != null) {
+					Label label = new Label(dateFormat.format(log.getP_Date()));
+					td.appendChild(label);
+					// label.setStyle("padding-right:100px");
 				}
+				tr.appendChild(td);
+
+			}
+
+			if (numberPresents) {
+
 				Td td = new Td();
-				td.appendChild(recordLink);
-				tr.appendChild(td);				
+				if (log.getP_Number() != null) {
+					Label labelPno = new Label("" + log.getP_Number());
+					td.appendChild(labelPno);
+				}
+				tr.appendChild(td);
+			}
+			
+			if (msgPresents) {
+				Td td = new Td();
+				if (log.getP_Msg() != null) {
+					if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0) {
+						A recordLink = new A();
+						recordLink.setLabel(log.getP_Msg());
+						recordLink.setAttribute("Record_ID",
+								String.valueOf(log.getRecord_ID()));
+						recordLink.setAttribute("AD_Table_ID",
+								String.valueOf(log.getAD_Table_ID()));
+						recordLink.addEventListener(Events.ON_CLICK, this);
+						td.appendChild(recordLink);
+					} else {
+						Text t = new Text();
+						t.setEncode(false);
+						t.setValue(log.getP_Msg());
+						td.appendChild(t);
+					}
+				}
+				tr.appendChild(td);
 			}
 		}
     	messageDiv.appendChild(logMessageTable);
