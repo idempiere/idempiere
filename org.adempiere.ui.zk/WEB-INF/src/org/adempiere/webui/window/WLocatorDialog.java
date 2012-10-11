@@ -254,15 +254,15 @@ public class WLocatorDialog extends Window implements EventListener
 		boxButtons.setWidth("100%");
 		boxButtons.setStyle("padding: 5px;");
 		boxButtons.setPack("end");		
+	
+		btnOk.setImage("/images/Ok16.png");
+		btnOk.addEventListener(Events.ON_CLICK, this);
 		
 		btnCancel.setImage("/images/Cancel16.png");
 		btnCancel.addEventListener(Events.ON_CLICK, this);
 		
-		btnOk.setImage("/images/Ok16.png");
-		btnOk.addEventListener(Events.ON_CLICK, this);
-		
-		boxButtons.appendChild(btnCancel);
 		boxButtons.appendChild(btnOk);
+		boxButtons.appendChild(btnCancel);
 		
 		mainBox.setWidth("250px");
 		mainBox.setStyle("text-align:right");

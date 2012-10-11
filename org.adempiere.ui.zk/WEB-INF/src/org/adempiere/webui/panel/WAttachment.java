@@ -291,8 +291,9 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		confirmPanel.appendChild(bDeleteAll);
 		confirmPanel.appendChild(bRefresh);
-		confirmPanel.appendChild(bCancel);
 		confirmPanel.appendChild(bOk);
+		confirmPanel.appendChild(bCancel);
+		
 
 		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));
 		

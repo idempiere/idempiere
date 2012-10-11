@@ -1903,7 +1903,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		div.appendChild(hbox);
 
 		Button btnOk = new Button();
-		btnOk.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "OK")));
+		// Invert - Unify  OK/Cancel IDEMPIERE-77
+		//btnOk.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "OK")));
 		btnOk.setImage("/images/Ok16.png");
 		btnOk.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 		{
@@ -1953,7 +1954,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		hbox.appendChild(btnOk);
 
 		Button btnCancel = new Button();
-		btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Cancel")));
+		//btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Cancel")));
 		btnCancel.setImage("/images/Cancel16.png");
 		btnCancel.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 		{

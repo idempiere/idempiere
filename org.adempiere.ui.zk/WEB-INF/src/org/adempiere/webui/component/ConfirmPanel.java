@@ -56,7 +56,7 @@ public final class ConfirmPanel extends Hbox
     public static final String A_HISTORY = "History";
     /** Action String Zoom.      */
     public static final String A_ZOOM = "Zoom";
-
+    
     /** Action String Process.   */
     public static final String A_PROCESS = "Process";
     /** Action String Print.     */
@@ -171,11 +171,11 @@ public final class ConfirmPanel extends Hbox
 
         init();
 
+        addComponentsRight(createButton(A_OK));
+                
         setVisible(A_CANCEL, withCancelButton);
         if (withCancelButton)
-        	addComponentsRight(createButton(A_CANCEL));
-
-        addComponentsRight(createButton(A_OK));
+        	addComponentsRight(createButton(A_CANCEL));    
 
         if (withRefreshButton)
         {

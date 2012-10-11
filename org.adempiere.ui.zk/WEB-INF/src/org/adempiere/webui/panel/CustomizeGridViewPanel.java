@@ -271,7 +271,7 @@ public class CustomizeGridViewPanel extends Panel
 		southPanel.setAlign("Right");
 		southPanel.setStyle("margin-top: 2px; margin-right: 4px");
 		String label = Msg.getMsg(Env.getCtx(), "save");
-		Button bOK = new Button(label);
+		Button bOK = new Button();
 		bOK.setImage("/images/Ok16.png");
 		bOK.setId("Ok");
 		EventListener onClickListener = new EventListener()
@@ -290,7 +290,7 @@ public class CustomizeGridViewPanel extends Panel
 		bOK.setSclass("action-button");
 		southPanel.appendChild(bOK);
 		label = Msg.getMsg(Env.getCtx(), "Cancel");
-		Button btn = new Button(label.replaceAll("&", ""));
+		Button btn = new Button();
 		btn.setImage("/images/Cancel16.png");
 		btn.setId("Cancel");
 		EventListener onClickCancelListener = new EventListener()

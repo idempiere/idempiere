@@ -168,15 +168,17 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		Div div = new Div();
 		Hbox hbox = new Hbox();
 		String label = Msg.getMsg(Env.getCtx(), "Start");
-		bOK = new Button(label.replaceAll("&", ""));
+		// Invert - Unify  OK/Cancel IDEMPIERE-77
+		//bOK = new Button(label.replaceAll("&", ""));
+		bOK = new Button();
 		bOK.setImage("/images/Ok16.png");
 		bOK.setId("Ok");
 		bOK.addEventListener(Events.ON_CLICK, this);
 		bOK.setSclass("action-image-text-button");
 		hbox.appendChild(bOK);
 		
-		label = Msg.getMsg(Env.getCtx(), "Cancel");
-		Button btn = new Button(label.replaceAll("&", ""));
+		//label = Msg.getMsg(Env.getCtx(), "Cancel");
+		Button btn = new Button();
 		btn.setImage("/images/Cancel16.png");
 		btn.setId("Cancel");
 		btn.addEventListener(Events.ON_CLICK, this);
