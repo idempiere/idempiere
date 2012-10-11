@@ -311,7 +311,7 @@ public class MClient extends X_AD_Client
 			while (rs.next())
 			{
 				String value = rs.getString(1);
-				StringBuilder name = new StringBuilder(getName()).append(" ").append(rs.getString(2));
+				StringBuilder name = new StringBuilder().append(getName()).append(" ").append(rs.getString(2));
 				//
 				if (value.equals(X_AD_Tree.TREETYPE_Organization))
 				{

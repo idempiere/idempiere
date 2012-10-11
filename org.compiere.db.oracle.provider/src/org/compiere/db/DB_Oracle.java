@@ -995,7 +995,7 @@ public class DB_Oracle implements AdempiereDatabase
             System.out.println(myString.length());
             System.out.println(Util.size(myString.toString()));
             //
-            myString = new StringBuilder(Util.trimSize(myString.toString(), 2000));
+            myString = new StringBuilder().append(Util.trimSize(myString.toString(), 2000));
             System.out.println(myString.length());
             System.out.println(Util.size(myString.toString()));
             //

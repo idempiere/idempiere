@@ -84,7 +84,7 @@ public class DocLine_Allocation extends DocLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("DocLine_Allocation[");
+		StringBuilder sb = new StringBuilder ("DocLine_Allocation[");
 		sb.append(get_ID())
 			.append(",Amt=").append(getAmtSource())
 			.append(",Discount=").append(getDiscountAmt())

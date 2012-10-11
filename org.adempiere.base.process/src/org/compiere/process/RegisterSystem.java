@@ -131,7 +131,7 @@ public class RegisterSystem extends SvrProcess
 		
 		//	Send it
 		URL url = new URL (urlString.toString());
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try
 		{
 			URLConnection uc = url.openConnection();

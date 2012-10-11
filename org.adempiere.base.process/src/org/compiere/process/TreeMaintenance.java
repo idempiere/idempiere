@@ -112,7 +112,7 @@ public class TreeMaintenance extends SvrProcess
 		int deletes = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog(0,null, new BigDecimal(deletes), tree.getName()+ " Deleted");
 		if (!tree.isAllNodes()){
-			StringBuilder msgreturn = new StringBuilder(tree.getName()).append(" OK");
+			StringBuilder msgreturn = new StringBuilder().append(tree.getName()).append(" OK");
 			return msgreturn.toString();
 		}
 		//	Insert new
@@ -176,9 +176,9 @@ public class TreeMaintenance extends SvrProcess
 		{
 			pstmt = null;
 		}
-		StringBuilder msglog = new StringBuilder(tree.getName()).append(" Inserted");
+		StringBuilder msglog = new StringBuilder().append(tree.getName()).append(" Inserted");
 		addLog(0,null, new BigDecimal(inserts), msglog.toString());
-		StringBuilder msgreturn = new StringBuilder(tree.getName()).append((ok ? " OK" : " Error"));
+		StringBuilder msgreturn = new StringBuilder().append(tree.getName()).append((ok ? " OK" : " Error"));
 		return msgreturn.toString();
 	}	//	verifyTree
 

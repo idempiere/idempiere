@@ -155,7 +155,7 @@ public class MIssue extends X_AD_Issue
 	public MIssue (LogRecord record)
 	{
 		this (Env.getCtx(), 0, null);
-		StringBuilder summary = new StringBuilder(record.getMessage());
+		String summary = record.getMessage();
 		setSourceClassName(record.getSourceClassName());
 		setSourceMethodName(record.getSourceMethodName());
 		setLoggerName(record.getLoggerName());
@@ -163,9 +163,9 @@ public class MIssue extends X_AD_Issue
 		if (t != null)
 		{
 			if (summary != null && summary.length() > 0)
-				summary = new StringBuilder(t.toString()).append(" ").append(summary);
+				summary = t.toString() + " " + summary;
 			if (summary == null || summary.length() == 0)
-				summary = new StringBuilder(t.toString());
+				summary = t.toString();
 			//
 			StringBuilder error = new StringBuilder();
 			StackTraceElement[] tes = t.getStackTrace();
@@ -179,7 +179,7 @@ public class MIssue extends X_AD_Issue
 					error.append(s).append("\n");
 					if (count == 0)
 					{
-						StringBuilder source = new StringBuilder(element.getClassName())
+						StringBuilder source = new StringBuilder().append(element.getClassName())
 							.append(".").append(element.getMethodName());
 						setSourceClassName(source.toString());
 						setLineNo(element.getLineNumber());
@@ -197,7 +197,7 @@ public class MIssue extends X_AD_Issue
 			setStackTrace(cWriter.toString());
 		}
 		if (summary == null || summary.length() == 0)
-			summary = new StringBuilder("??");
+			summary = "??";
 		setIssueSummary(summary.toString());
 		setRecord_ID(1);
 	}	//	MIssue

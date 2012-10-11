@@ -633,12 +633,12 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		reverse.setC_Period_ID(getC_Period_ID());
 		reverse.setDateAcct(getDateAcct());
 		//	Reverse indicator
-		String description = reverse.getDescription();
-		if (description == null)
-			description = "** " + getDocumentNo() + " **";
+		StringBuilder description;
+		if (reverse.getDescription() == null)
+			description = new StringBuilder("** ").append(getDocumentNo()).append(" **");
 		else
-			description += " ** " + getDocumentNo() + " **";
-		reverse.setDescription(description);
+			description = new StringBuilder(reverse.getDescription()).append(" ** ").append(getDocumentNo()).append(" **");
+		reverse.setDescription(description.toString());
 		//[ 1948157  ]
 		reverse.setReversal_ID(getGL_JournalBatch_ID());
 		reverse.saveEx();
@@ -704,12 +704,12 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		reverse.setDateDoc(new Timestamp(System.currentTimeMillis()));
 		reverse.setDateAcct(reverse.getDateDoc());
 		//	Reverse indicator
-		String description = reverse.getDescription();
-		if (description == null)
-			description = "** " + getDocumentNo() + " **";
+		StringBuilder description;
+		if (reverse.getDescription() == null)
+			description = new StringBuilder("** ").append(getDocumentNo()).append(" **");
 		else
-			description += " ** " + getDocumentNo() + " **";
-		reverse.setDescription(description);
+			description = new StringBuilder(reverse.getDescription()).append(" ** ").append(getDocumentNo()).append(" **");
+		reverse.setDescription(description.toString());
 		reverse.saveEx();
 		
 		//	Reverse Journals
@@ -778,7 +778,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")
@@ -798,7 +798,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MJournalBatch[");
+		StringBuilder sb = new StringBuilder ("MJournalBatch[");
 		sb.append(get_ID()).append(",").append(getDescription())
 			.append(",DR=").append(getTotalDr())
 			.append(",CR=").append(getTotalCr())
@@ -813,7 +813,8 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		return dt.getName() + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder().append(dt.getName()).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -824,7 +825,8 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder().append(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)

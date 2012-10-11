@@ -137,7 +137,7 @@ public class ExpenseAPInvoice extends SvrProcess
 					}
 					invoice.setM_PriceList_ID(te.getM_PriceList_ID());
 					invoice.setSalesRep_ID(te.getDoc_User_ID());
-					StringBuilder descr = new StringBuilder(Msg.translate(getCtx(), "S_TimeExpense_ID")) 
+					StringBuilder descr = new StringBuilder().append(Msg.translate(getCtx(), "S_TimeExpense_ID")) 
 						.append(": ").append(te.getDocumentNo()).append(" " )
 						.append(DisplayType.getDateFormat(DisplayType.Date).format(te.getDateReport()));  
 					invoice.setDescription(descr.toString());

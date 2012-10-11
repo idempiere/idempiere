@@ -141,7 +141,7 @@ public class HouseKeeping extends SvrProcess{
 		houseKeeping.setLastDeleted(nodel);
 		houseKeeping.saveEx();
 		addLog("@Deleted@ " + nodel);
-		StringBuilder msg = new StringBuilder(Msg.getElement(getCtx(), tableName + "_ID")).append(" #").append(nodel);
+		StringBuilder msg = new StringBuilder().append(Msg.getElement(getCtx(), tableName + "_ID")).append(" #").append(nodel);
 		return msg.toString();
 	}//doIt
 }

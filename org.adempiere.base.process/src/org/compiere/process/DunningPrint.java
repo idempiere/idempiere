@@ -167,7 +167,7 @@ public class DunningPrint extends SvrProcess
 				MDunningRunEntry.Table_ID,
 				entry.getC_DunningRunEntry_ID(),
 				entry.getC_BPartner_ID());
-			StringBuilder msginfo = new StringBuilder(bp.getName()).append(", Amt=").append(entry.getAmt());
+			StringBuilder msginfo = new StringBuilder().append(bp.getName()).append(", Amt=").append(entry.getAmt());
 			info.setDescription(msginfo.toString());
 			ReportEngine re = null;
 			if (format != null)
@@ -198,7 +198,7 @@ public class DunningPrint extends SvrProcess
 				//
 				if (re != null) {
 					File attachment = re.getPDF(File.createTempFile("Dunning", ".pdf"));
-					StringBuilder msglog = new StringBuilder(to.toString()).append(" - ").append(attachment);
+					StringBuilder msglog = new StringBuilder().append(to.toString()).append(" - ").append(attachment);
 					log.fine(msglog.toString());
 					email.addAttachment(attachment);
 				}
@@ -208,15 +208,15 @@ public class DunningPrint extends SvrProcess
 				um.saveEx();
 				if (msg.equals(EMail.SENT_OK))
 				{
-					StringBuilder msglog = new StringBuilder(
-							bp.getName()).append(" @RequestActionEMailOK@");
+					StringBuilder msglog = new StringBuilder()
+							.append(bp.getName()).append(" @RequestActionEMailOK@");
 					addLog (entry.get_ID(), null, null,msglog.toString());
 					count++;
 					printed = true;
 				}
 				else
 				{
-					StringBuilder msglog = new StringBuilder(bp.getName()).append(" @RequestActionEMailError@ ").append(msg);
+					StringBuilder msglog = new StringBuilder().append(bp.getName()).append(" @RequestActionEMailError@ ").append(msg);
 					addLog (entry.get_ID(), null, null,msglog.toString()	);
 					errors++;
 				}
@@ -244,7 +244,8 @@ public class DunningPrint extends SvrProcess
 			StringBuilder msgreturn = new StringBuilder("@Sent@=").append(count).append(" - @Errors@=").append(errors);
 			return msgreturn.toString();
 		}
-		return "@Printed@=" + count;
+		StringBuilder msgreturn = new StringBuilder("@Printed@=").append(count);
+		return msgreturn.toString();
 	}	//	doIt
 	
 }	//	DunningPrint

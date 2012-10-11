@@ -391,7 +391,7 @@ public class ChangeLogProcess extends SvrProcess
 					.append (" FROM ").append(tableName)
 					.append (" WHERE EntityType IN ('D','C'))");
 				int no = DB.executeUpdate(update.toString(), get_TrxName());
-				StringBuilder msglog = new StringBuilder(table.getTableName()).append(" = ").append(no);
+				StringBuilder msglog = new StringBuilder().append(table.getTableName()).append(" = ").append(no);
 				log.config(msglog.toString());
 				updateNo += no;
 				
@@ -406,8 +406,8 @@ public class ChangeLogProcess extends SvrProcess
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		
-		return "@Reset@: " + resetNo + " - @Updated@: " + updateNo;
+		StringBuilder msgreturn = new StringBuilder("@Reset@: ").append(resetNo).append(" - @Updated@: ").append(updateNo);
+		return msgreturn.toString();
 	}	//	setCustomization
 	
 }	//	ChangeLogProcess

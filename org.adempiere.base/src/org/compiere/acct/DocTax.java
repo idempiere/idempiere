@@ -170,7 +170,8 @@ public final class DocTax
 	 */
 	public String getDescription()
 	{
-		return m_name + " " + m_taxBaseAmt.toString();
+		StringBuilder msgreturn = new StringBuilder().append(m_name).append(" ").append(m_taxBaseAmt.toString());
+		return msgreturn.toString();
 	}   //  getDescription
 
 	/**
@@ -236,7 +237,7 @@ public final class DocTax
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("Tax=(");
+		StringBuilder sb = new StringBuilder("Tax=(");
 		sb.append(m_name);
 		sb.append(" Amt=").append(m_amount);
 		sb.append(")");

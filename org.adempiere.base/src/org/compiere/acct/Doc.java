@@ -426,22 +426,24 @@ public abstract class Doc
 			|| m_DocStatus.equals(DocumentEngine.STATUS_Voided)
 			|| m_DocStatus.equals(DocumentEngine.STATUS_Reversed))
 			;
-		else
-			return "Invalid DocStatus='" + m_DocStatus + "' for DocumentNo=" + getDocumentNo();
+		else{
+			StringBuilder msgreturn = new StringBuilder("Invalid DocStatus='").append(m_DocStatus).append("' for DocumentNo=").append(getDocumentNo());
+			return msgreturn.toString();
+		}	
 		//
 		if (p_po.getAD_Client_ID() != m_as.getAD_Client_ID())
 		{
-			String error = "AD_Client_ID Conflict - Document=" + p_po.getAD_Client_ID()
-				+ ", AcctSchema=" + m_as.getAD_Client_ID();
-			log.severe(error);
-			return error;
+			StringBuilder error = new StringBuilder("AD_Client_ID Conflict - Document=").append(p_po.getAD_Client_ID())
+				.append(", AcctSchema=").append(m_as.getAD_Client_ID());
+			log.severe(error.toString());
+			return error.toString();
 		}
 
 		//  Lock Record ----
 		String trxName = null;	//	outside trx if on server
 		if (! m_manageLocalTrx)
 			trxName = getTrxName(); // on trx if it's in client
-		StringBuffer sql = new StringBuffer ("UPDATE ");
+		StringBuilder sql = new StringBuilder ("UPDATE ");
 		sql.append(get_TableName()).append( " SET Processing='Y' WHERE ")
 			.append(get_TableName()).append("_ID=").append(get_ID())
 			.append(" AND Processed='Y' AND IsActive='Y'");
@@ -565,7 +567,7 @@ public abstract class Doc
 			//  Reference
 			note.setReference(toString());	//	Document
 			//	Text
-			StringBuffer Text = new StringBuffer (Msg.getMsg(Env.getCtx(), AD_MessageValue));
+			StringBuilder Text = new StringBuilder (Msg.getMsg(Env.getCtx(), AD_MessageValue));
 			if (p_Error != null)
 				Text.append(" (").append(p_Error).append(")");
 			String cn = getClass().getName();
@@ -603,7 +605,7 @@ public abstract class Doc
 	 */
 	protected int deleteAcct()
 	{
-		StringBuffer sql = new StringBuffer ("DELETE Fact_Acct WHERE AD_Table_ID=")
+		StringBuilder sql = new StringBuilder ("DELETE Fact_Acct WHERE AD_Table_ID=")
 			.append(get_Table_ID())
 			.append(" AND Record_ID=").append(p_po.get_ID())
 			.append(" AND C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
@@ -776,7 +778,7 @@ public abstract class Doc
 		String trxName = null;	//	outside trx if on server
 		if (! m_manageLocalTrx)
 			trxName = getTrxName(); // on trx if it's in client
-		StringBuffer sql = new StringBuffer ("UPDATE ");
+		StringBuilder sql = new StringBuilder ("UPDATE ");
 		sql.append(get_TableName()).append( " SET Processing='N' WHERE ")
 			.append(get_TableName()).append("_ID=").append(p_po.get_ID());
 		DB.executeUpdate(sql.toString(), trxName);

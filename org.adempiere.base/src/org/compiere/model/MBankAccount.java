@@ -117,7 +117,7 @@ public class MBankAccount extends X_C_BankAccount
 	 */
 	public String getName()
 	{
-		StringBuilder msgreturn = new StringBuilder(getBank().getName()).append(" ").append(getAccountNo());
+		StringBuilder msgreturn = new StringBuilder().append(getBank().getName()).append(" ").append(getAccountNo());
 		return msgreturn.toString();
 	}	//	getName
 	

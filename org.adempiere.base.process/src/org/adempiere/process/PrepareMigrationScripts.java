@@ -160,7 +160,7 @@ public class PrepareMigrationScripts extends SvrProcess {
 							}
 						}
 						if (blBody) {
-							body.append(line + '\n');
+							body.append(line).append('\n');
 						}
 						if (line.equals("--BEGINHEADER--")) {
 							blHeader = true;
@@ -173,7 +173,7 @@ public class PrepareMigrationScripts extends SvrProcess {
 					} else {
 						if (!isFirstLine)
 							line = scanner.nextLine();
-						body.append(line + '\n');
+						body.append(line).append('\n');
 					}
 					isFirstLine = false;
 				}

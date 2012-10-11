@@ -195,7 +195,7 @@ public class MAcctSchema extends X_C_AcctSchema
 		this (client.getCtx(), 0, client.get_TrxName());
 		setClientOrg(client);
 		setC_Currency_ID (currency.getKey());
-		StringBuilder msgset = new StringBuilder(client.getName()).append(" ").append(getGAAP()).append("/").append(get_ColumnCount()).append(" ").append(currency.getName());
+		StringBuilder msgset = new StringBuilder().append(client.getName()).append(" ").append(getGAAP()).append("/").append(get_ColumnCount()).append(" ").append(currency.getName());
 		setName (msgset.toString());
 	}	//	MAcctSchema
 

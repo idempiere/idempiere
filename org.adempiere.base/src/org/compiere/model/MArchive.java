@@ -411,15 +411,16 @@ public class MArchive extends X_AD_Archive {
 		BufferedOutputStream out = null;
 		try {
 			// create destination folder
-			final File destFolder = new File(m_archivePathRoot + File.separator
-					+ getArchivePathSnippet());
+			StringBuilder msgfile = new StringBuilder().append(m_archivePathRoot).append(File.separator)
+					.append(getArchivePathSnippet());
+			final File destFolder = new File(msgfile.toString());
 			if (!destFolder.exists()) {
 				if (!destFolder.mkdirs()) {
 					log.warning("unable to create folder: " + destFolder.getPath());
 				}
 			}
 			// write to pdf
-			StringBuilder msgfile = new StringBuilder(m_archivePathRoot).append(File.separator)
+			msgfile = new StringBuilder().append(m_archivePathRoot).append(File.separator)
 					.append(getArchivePathSnippet()).append(this.get_ID()).append(".pdf");
 			final File destFile = new File(msgfile.toString());
 

@@ -264,12 +264,12 @@ public class ClientAcctProcessor extends SvrProcess
 				if (countError[i] > 0)
 					m_summary.append("(Errors=").append(countError[i]).append(")");
 				m_summary.append(" - ");
-				StringBuilder msglog = new StringBuilder(getName()).append(": ").append(m_summary.toString());
+				StringBuilder msglog = new StringBuilder().append(getName()).append(": ").append(m_summary.toString());
 				log.finer(msglog.toString());
 			}
 			else
 			{
-				StringBuilder msglog = new StringBuilder(getName()).append(": ").append(TableName).append(" - no work");
+				StringBuilder msglog = new StringBuilder().append(getName()).append(": ").append(TableName).append(" - no work");
 				log.finer(msglog.toString());
 			}
 		}

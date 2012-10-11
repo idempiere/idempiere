@@ -55,7 +55,7 @@ public class EMailTest extends SvrProcess
 		
 		//	 Test Client Mail
 		String clientTest = client.testEMail();
-		StringBuilder msglog = new StringBuilder(client.getName()).append(": ").append(clientTest);
+		StringBuilder msglog = new StringBuilder().append(client.getName()).append(": ").append(clientTest);
 		addLog(0, null, null, msglog.toString());
 		
 		//	Test Client DocumentDir
@@ -76,7 +76,7 @@ public class EMailTest extends SvrProcess
 		{
 			MStore store = wstores[i];
 			String test = store.testEMail();
-			msglog = new StringBuilder(store.getName()).append(": ").append(test);
+			msglog = new StringBuilder().append(store.getName()).append(": ").append(test);
 			addLog(0, null, null, msglog.toString());
 		}
 		

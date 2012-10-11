@@ -187,14 +187,14 @@ public class MAsset extends X_A_Asset
 		if (deliveryCount > 1)
 			documentNo.append("_").append(deliveryCount);
 		//	Value
-		StringBuilder value = new StringBuilder(partner.getValue()).append("_").append(product.getValue());
+		StringBuilder value = new StringBuilder().append(partner.getValue()).append("_").append(product.getValue());
 		if (value.length() > 40-documentNo.length())
 			value.delete(40-documentNo.length(), value.length()).append(documentNo);
 		
 		setValue(value.toString());
 		
 		//	Name		MProduct.afterSave
-		StringBuilder name = new StringBuilder(partner.getName()).append(" - ").append(product.getName());
+		StringBuilder name = new StringBuilder().append(partner.getName()).append(" - ").append(product.getName());
 		if (name.length() > 60)
 			name.delete(60,name.length());
 		setName(name.toString());

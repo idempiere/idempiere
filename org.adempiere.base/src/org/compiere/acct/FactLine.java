@@ -351,7 +351,7 @@ public final class FactLine extends X_Fact_Acct
 		if (m_docLine != null)
 			setC_Tax_ID (m_docLine.getC_Tax_ID());
 		//	Description
-		StringBuffer description = new StringBuffer(m_doc.getDocumentNo());
+		StringBuilder description = new StringBuilder().append(m_doc.getDocumentNo());
 		if (m_docLine != null)
 		{
 			description.append(" #").append(m_docLine.getLine());
@@ -458,8 +458,10 @@ public final class FactLine extends X_Fact_Acct
 		String original = getDescription();
 		if (original == null || original.trim().length() == 0)
 			super.setDescription(description);
-		else
-			super.setDescription(original + " - " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(original).append(" - ").append(description);
+			super.setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 	
 	/**
@@ -729,7 +731,7 @@ public final class FactLine extends X_Fact_Acct
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("FactLine=[");
+		StringBuilder sb = new StringBuilder("FactLine=[");
 		sb.append(getAD_Table_ID()).append(":").append(getRecord_ID())
 			.append(",").append(m_acct)
 			.append(",Cur=").append(getC_Currency_ID())
@@ -1104,7 +1106,7 @@ public final class FactLine extends X_Fact_Acct
 				//  end Bayu Sistematika
 				//
 				success = true;
-				log.fine(new StringBuffer("(Table=").append(AD_Table_ID)
+				log.fine(new StringBuilder("(Table=").append(AD_Table_ID)
 					.append(",Record_ID=").append(Record_ID)
 					.append(",Line=").append(Record_ID)
 					.append(", Account=").append(m_acct)
@@ -1132,7 +1134,7 @@ public final class FactLine extends X_Fact_Acct
 				setAD_Org_ID (fact.getAD_Org_ID());
 			}
 			else
-				log.warning(new StringBuffer("Not Found (try later) ")
+				log.warning(new StringBuilder("Not Found (try later) ")
 					.append(",C_AcctSchema_ID=").append(getC_AcctSchema_ID())
 					.append(", AD_Table_ID=").append(AD_Table_ID)
 					.append(",Record_ID=").append(Record_ID)

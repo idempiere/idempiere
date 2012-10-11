@@ -87,7 +87,8 @@ public class AD_PrintPaper_Default extends SvrProcess
 			log.log(Level.SEVERE, "set print format", e);
 		}
 
-		return "@Copied@=" + cnt;		
+		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(cnt);
+		return msgreturn.toString();		
 	}	//	doIt
 	
 }	//	AD_PrintPaper_Default

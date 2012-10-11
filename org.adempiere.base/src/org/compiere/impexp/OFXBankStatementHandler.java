@@ -731,7 +731,7 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 			{
 				if (!m_controller.saveLine())
 				{
-					m_errorMessage = new StringBuffer(m_controller.getErrorMessage());
+					m_errorMessage = new StringBuffer().append(m_controller.getErrorMessage());
 						m_errorDescription = new StringBuffer(m_controller.getErrorDescription());
 					throw new SAXException(m_errorMessage.toString());
 				}

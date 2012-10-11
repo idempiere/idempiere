@@ -893,16 +893,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             GridField field = m_findFields[c];
             
             String columnName = field.getColumnName();
-            StringBuilder header = new StringBuilder(field.getHeader());
+            String header = field.getHeader();
             if (header == null || header.length() == 0)
             {
-                header = new StringBuilder(Msg.translate(Env.getCtx(), columnName));
+                header = Msg.translate(Env.getCtx(), columnName);
 
                 if (header == null || header.length() == 0)
                     continue;
             }
             if (field.isKey())
-                header.append((" (ID)"));
+                header += (" (ID)");
             ValueNamePair pp = new ValueNamePair(columnName, header.toString());
             items.add(pp);
         }
@@ -1249,7 +1249,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				}
 				catch (Exception e)
 				{
-					StringBuilder msglog = new StringBuilder(in.toString()).append("(").append(in.getClass()).append(")").append(e);
+					StringBuilder msglog = new StringBuilder().append(in.toString()).append("(").append(in.getClass()).append(")").append(e);
 					log.log(Level.SEVERE, msglog.toString());
 					time = DisplayType.getDateFormat(dt).parse(in).getTime();
 				}
@@ -1953,7 +1953,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             }
         }
         log.fine(ret.toString());
-        return ret.toString() + productCategoryId;
+        StringBuilder msgreturn = new StringBuilder(ret.toString()).append(productCategoryId);
+        return msgreturn.toString();
 
     }   //  getSubCategoriesString
 

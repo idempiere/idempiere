@@ -668,7 +668,7 @@ public final class MLookup extends Lookup implements Serializable
 			long startTime = System.currentTimeMillis();
 			if (Ini.isClient())
 				MLookupCache.loadStart (m_info);
-			StringBuilder sql = new StringBuilder(m_info.Query);
+			StringBuilder sql = new StringBuilder().append(m_info.Query);
 
 			//	not validated
 			if (!m_info.IsValidated)
@@ -737,7 +737,7 @@ public final class MLookup extends Lookup implements Serializable
 				{
 					if (rows++ > MAX_ROWS)
 					{
-						StringBuilder s = new StringBuilder(m_info.KeyColumn).append(": Loader - Too many records");
+						StringBuilder s = new StringBuilder().append(m_info.KeyColumn).append(": Loader - Too many records");
 						if (m_info.Column_ID > 0) 
 						{
 							MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
@@ -754,7 +754,7 @@ public final class MLookup extends Lookup implements Serializable
 						break;
 
 					//  load data
-					StringBuilder name = new StringBuilder(rs.getString(3));
+					StringBuilder name = new StringBuilder().append(rs.getString(3));
 					boolean isActive = rs.getString(4).equals("Y");
 					if (!isActive)
 					{

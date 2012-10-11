@@ -174,8 +174,10 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 	
 	/**
@@ -193,7 +195,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInOutConfirm[");
+		StringBuilder sb = new StringBuilder ("MInOutConfirm[");
 		sb.append(get_ID()).append("-").append(getSummary())
 			.append ("]");
 		return sb.toString ();
@@ -205,7 +207,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		return Msg.getElement(getCtx(), "M_InOutConfirm_ID") + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder().append(Msg.getElement(getCtx(), "M_InOutConfirm_ID")).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -216,7 +219,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder().append(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -249,11 +253,11 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		{
 			int AD_User_ID = Env.getAD_User_ID(getCtx());
 			MUser user = MUser.get(getCtx(), AD_User_ID);
-			String info = user.getName() 
-				+ ": "
-				+ Msg.translate(getCtx(), "IsApproved")
-				+ " - " + new Timestamp(System.currentTimeMillis());
-			addDescription(info);
+			StringBuilder info = new StringBuilder().append(user.getName()) 
+				.append(": ")
+				.append(Msg.translate(getCtx(), "IsApproved"))
+				.append(" - ").append(new Timestamp(System.currentTimeMillis()));
+			addDescription(info.toString());
 		}
 		super.setIsApproved (IsApproved);
 	}	//	setIsApproved
@@ -490,10 +494,12 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			if (split == null)
 			{
 				split = new MInOut (original, C_DocType_ID, original.getMovementDate());
-				split.addDescription("Splitted from " + original.getDocumentNo());
+				StringBuilder msgd = new StringBuilder("Splitted from ").append(original.getDocumentNo());
+				split.addDescription(msgd.toString());
 				split.setIsInDispute(true);
 				split.saveEx();
-				original.addDescription("Split: " + split.getDocumentNo());
+				msgd = new StringBuilder("Split: ").append(split.getDocumentNo());
+				original.addDescription(msgd.toString());
 				original.saveEx();
 			}
 			//
@@ -508,12 +514,14 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			splitLine.setM_Product_ID(oldLine.getM_Product_ID());
 			splitLine.setM_Warehouse_ID(oldLine.getM_Warehouse_ID());
 			splitLine.setRef_InOutLine_ID(oldLine.getRef_InOutLine_ID());
-			splitLine.addDescription("Split: from " + oldLine.getMovementQty());
+			StringBuilder msgd = new StringBuilder("Split: from ").append(oldLine.getMovementQty());
+			splitLine.addDescription(msgd.toString());
 			//	Qtys
 			splitLine.setQty(differenceQty);		//	Entered/Movement
 			splitLine.saveEx();
 			//	Old
-			oldLine.addDescription("Splitted: from " + oldLine.getMovementQty());
+			msgd = new StringBuilder("Splitted: from ").append(oldLine.getMovementQty());
+			oldLine.addDescription(msgd.toString());
 			oldLine.setQty(oldLine.getMovementQty().subtract(differenceQty));
 			oldLine.saveEx();
 			//	Update Confirmation Line
@@ -595,7 +603,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			if (m_creditMemo == null)
 			{
 				m_creditMemo = new MInvoice (inout, null);
-				m_creditMemo.setDescription(Msg.translate(getCtx(), "M_InOutConfirm_ID") + " " + getDocumentNo());
+				StringBuilder msgd = new StringBuilder().append(Msg.translate(getCtx(), "M_InOutConfirm_ID")).append(" ").append(getDocumentNo());
+				m_creditMemo.setDescription(msgd.toString());
 				m_creditMemo.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APCreditMemo);
 				m_creditMemo.saveEx();
 				setC_Invoice_ID(m_creditMemo.getC_Invoice_ID());
@@ -620,7 +629,8 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			{
 				MWarehouse wh = MWarehouse.get(getCtx(), inout.getM_Warehouse_ID());
 				m_inventory = new MInventory (wh, get_TrxName());
-				m_inventory.setDescription(Msg.translate(getCtx(), "M_InOutConfirm_ID") + " " + getDocumentNo());
+				StringBuilder msgd = new StringBuilder().append(Msg.translate(getCtx(), "M_InOutConfirm_ID")).append(" ").append(getDocumentNo());
+				m_inventory.setDescription(msgd.toString());
 				m_inventory.saveEx();
 				setM_Inventory_ID(m_inventory.getM_Inventory_ID());
 			}
@@ -794,7 +804,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")

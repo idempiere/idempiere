@@ -564,8 +564,10 @@ public class MInOut extends X_M_InOut implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 
 	/**
@@ -574,7 +576,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInOut[")
+		StringBuilder sb = new StringBuilder ("MInOut[")
 			.append (get_ID()).append("-").append(getDocumentNo())
 			.append(",DocStatus=").append(getDocStatus())
 			.append ("]");
@@ -588,7 +590,8 @@ public class MInOut extends X_M_InOut implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		return dt.getName() + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder().append(dt.getName()).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -599,7 +602,8 @@ public class MInOut extends X_M_InOut implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder().append(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -801,10 +805,10 @@ public class MInOut extends X_M_InOut implements DocAction
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		String sql = "UPDATE M_InOutLine SET Processed='"
-			+ (processed ? "Y" : "N")
-			+ "' WHERE M_InOut_ID=" + getM_InOut_ID();
-		int noLine = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE M_InOutLine SET Processed='")
+			.append((processed ? "Y" : "N"))
+			.append("' WHERE M_InOut_ID=").append(getM_InOut_ID());
+		int noLine = DB.executeUpdate(sql.toString(), get_TrxName());
 		m_lines = null;
 		log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
@@ -1045,12 +1049,12 @@ public class MInOut extends X_M_InOut implements DocAction
 
 		if (is_ValueChanged("AD_Org_ID"))
 		{
-			String sql = "UPDATE M_InOutLine ol"
-				+ " SET AD_Org_ID ="
-					+ "(SELECT AD_Org_ID"
-					+ " FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) "
-				+ "WHERE M_InOut_ID=" + getC_Order_ID();
-			int no = DB.executeUpdate(sql, get_TrxName());
+			StringBuilder sql = new StringBuilder("UPDATE M_InOutLine ol")
+				.append(" SET AD_Org_ID =")
+					.append("(SELECT AD_Org_ID")
+					.append(" FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) ")
+				.append("WHERE M_InOut_ID=").append(getC_Order_ID());
+			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("Lines -> #" + no);
 		}
 		return true;
@@ -1265,7 +1269,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (!isApproved())
 			approveIt();
 		log.info(toString());
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 
 		//	For all lines
 		MInOutLine[] lines = getLines(false);
@@ -1970,7 +1974,8 @@ public class MInOut extends X_M_InOut implements DocAction
 				if (old.signum() != 0)
 				{
 					line.setQty(Env.ZERO);
-					line.addDescription("Void (" + old + ")");
+					StringBuilder msgadd = new StringBuilder("Void (").append(old).append(")");
+					line.addDescription(msgadd.toString());
 					line.saveEx(get_TrxName());
 				}
 			}
@@ -2100,14 +2105,16 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (asset != null)
 			{
 				asset.setIsActive(false);
-				asset.addDescription("(" + reversal.getDocumentNo() + " #" + rLine.getLine() + "<-)");
+				StringBuilder msgadd = new StringBuilder("(").append(reversal.getDocumentNo()).append(" #").append(rLine.getLine()).append("<-)");
+				asset.addDescription(msgadd.toString());
 				asset.saveEx();
 			}
 		}
 		reversal.setC_Order_ID(getC_Order_ID());
 		// Set M_RMA_ID
 		reversal.setM_RMA_ID(getM_RMA_ID());
-		reversal.addDescription("{->" + getDocumentNo() + ")");
+		StringBuilder msgadd = new StringBuilder("{->").append(getDocumentNo()).append(")");
+		reversal.addDescription(msgadd.toString());
 		//FR1948157
 		reversal.setReversal_ID(getM_InOut_ID());
 		reversal.saveEx(get_TrxName());
@@ -2124,7 +2131,8 @@ public class MInOut extends X_M_InOut implements DocAction
 		reversal.setDocAction(DOCACTION_None);
 		reversal.saveEx(get_TrxName());
 		//
-		addDescription("(" + reversal.getDocumentNo() + "<-)");
+		msgadd = new StringBuilder("(").append(reversal.getDocumentNo()).append("<-)");
+		addDescription(msgadd.toString());
 		
 		//
 		// Void Confirmations
@@ -2193,7 +2201,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(":")

@@ -162,8 +162,10 @@ public class MInventory extends X_M_Inventory implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgreturn = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgreturn.toString());
+		}
 	}	//	addDescription
 	
 	/**
@@ -182,7 +184,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInventory[");
+		StringBuilder sb = new StringBuilder ("MInventory[");
 		sb.append (get_ID())
 			.append ("-").append (getDocumentNo())
 			.append (",M_Warehouse_ID=").append(getM_Warehouse_ID())
@@ -197,7 +199,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		return dt.getName() + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder().append(dt.getName()).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -208,7 +211,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder().append(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -688,7 +692,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 				{
 					line.setQtyInternalUse(Env.ZERO);
 					line.setQtyCount(line.getQtyBook());
-					line.addDescription("Void (" + oldCount + "/" + oldInternal + ")");
+					StringBuilder msgd = new StringBuilder("Void (").append(oldCount).append("/").append(oldInternal).append(")");
+					line.addDescription(msgd.toString());
 					line.saveEx(get_TrxName());
 				}
 			}
@@ -750,7 +755,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 		reversal.setIsApproved (false);
 		reversal.setPosted(false);
 		reversal.setProcessed(false);
-		reversal.addDescription("{->" + getDocumentNo() + ")");
+		StringBuilder msgd = new StringBuilder("{->").append(getDocumentNo()).append(")");
+		reversal.addDescription(msgd.toString());
 		//FR1948157
 		reversal.setReversal_ID(getM_Inventory_ID());
 		reversal.saveEx();
@@ -802,7 +808,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 		m_processMsg = reversal.getDocumentNo();
 
 		//	Update Reversed (this)
-		addDescription("(" + reversal.getDocumentNo() + "<-)");
+		msgd = new StringBuilder("(").append(reversal.getDocumentNo()).append("<-)");
+		addDescription(msgd.toString());
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -863,7 +870,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")

@@ -171,7 +171,7 @@ public class ModelInterfaceGenerator
 			accessLevelInfo.append("- Org ");
 
 		//
-		String className = "I_" + tableName;
+		StringBuilder className = new StringBuilder("I_").append(tableName);
 		//
 		StringBuilder start = new StringBuilder()
 			.append (COPY)
@@ -216,12 +216,12 @@ public class ModelInterfaceGenerator
 			 //.append("    POInfo initPO (Properties ctx);") // INFO - Should this be here???
 		;
 
-		StringBuilder end = new StringBuilder("}");
+		String end = "}";
 		//
 		sb.insert(0, start);
 		sb.append(end);
 
-		return className;
+		return className.toString();
 	}
 
 	/**
@@ -418,7 +418,8 @@ public class ModelInterfaceGenerator
 			fw.close();
 			float size = out.length();
 			size /= 1024;
-			System.out.println(out.getAbsolutePath() + " - " + size + " kB");
+			StringBuilder msgout = new StringBuilder().append(out.getAbsolutePath()).append(" - ").append(size).append(" kB");
+			System.out.println(msgout.toString());
 		} catch (Exception ex) {
 			log.log(Level.SEVERE, fileName, ex);
 			throw new RuntimeException(ex);
@@ -797,7 +798,7 @@ public class ModelInterfaceGenerator
 			entityTypeFilter.append("EntityType IN ('U','A')");
 		}
 
-		StringBuilder directory = new StringBuilder(sourceFolder.trim());
+		StringBuilder directory = new StringBuilder().append(sourceFolder.trim());
 		String packagePath = packageName.replace(".", File.separator);
 		if (!(directory.toString().endsWith("/") || directory.toString().endsWith("\\")))
 		{

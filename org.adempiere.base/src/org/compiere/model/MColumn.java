@@ -345,7 +345,7 @@ public class MColumn extends X_AD_Column
 		if (isVirtualColumn())
 			return null;
 		
-		StringBuilder sql = new StringBuilder (getColumnName())
+		StringBuilder sql = new StringBuilder ().append(getColumnName())
 			.append(" ").append(getSQLDataType());
 
 		//	Default

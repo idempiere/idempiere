@@ -350,7 +350,7 @@ public final class ImpFormat
 		for (int i = 0; i < m_rows.size(); i++)
 		{
 			ImpFormatRow row = (ImpFormatRow)m_rows.get(i);
-			StringBuffer entry = new StringBuffer ();
+			StringBuilder entry = new StringBuilder ();
 			//	Label-Start
 			if (withLabel)
 			{
@@ -439,7 +439,7 @@ public final class ImpFormat
 		int length = line.length();
 		for (int field = 1; field <= fieldNo && pos < length; field++)
 		{
-			StringBuffer content = new StringBuffer();
+			StringBuilder content = new StringBuilder();
 			//  two delimiter directly after each other
 			if (line.charAt(pos) == delimiter)
 			{
@@ -518,7 +518,7 @@ public final class ImpFormat
 
 
 		//	Check if the record is already there ------------------------------
-		StringBuffer sql = new StringBuffer ("SELECT COUNT(*), MAX(")
+		StringBuilder sql = new StringBuilder ("SELECT COUNT(*), MAX(")
 			.append(m_tablePK).append(") FROM ").append(m_tableName)
 			.append(" WHERE AD_Client_ID=").append(AD_Client_ID).append(" AND (");
 		//
@@ -541,7 +541,7 @@ public final class ImpFormat
 					whereParentChild += " AND " + nodes[i];
 			}
 		}
-		StringBuffer find = new StringBuffer();
+		StringBuilder find = new StringBuilder();
 		if (where1 != null)
 			find.append(where1);
 		if (where2 != null)
@@ -587,7 +587,7 @@ public final class ImpFormat
 		if (ID == 0)
 		{
 			ID = DB.getNextID(ctx, m_tableName, null);		//	get ID
-			sql = new StringBuffer("INSERT INTO ")
+			sql = new StringBuilder("INSERT INTO ")
 				.append(m_tableName).append("(").append(m_tablePK).append(",")
 				.append("AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive")	//	StdFields
 				.append(") VALUES (").append(ID).append(",")
@@ -607,7 +607,7 @@ public final class ImpFormat
 			log.finer("Old ID=" + ID + " " + find);
 
 		//	Update Info -------------------------------------------------------
-		sql = new StringBuffer ("UPDATE ")
+		sql = new StringBuilder ("UPDATE ")
 			.append(m_tableName).append(" SET ");
 		for (int i = 0; i < nodes.length; i++)
 			sql.append(nodes[i]).append(",");		//	column=value

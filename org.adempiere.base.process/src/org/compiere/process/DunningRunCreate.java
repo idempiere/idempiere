@@ -123,7 +123,8 @@ public class DunningRunCreate extends SvrProcess
 
 		int entries = DB.getSQLValue(get_TrxName(), "SELECT COUNT(*) FROM C_DunningRunEntry WHERE C_DunningRun_ID=?", m_run.get_ID());
 		
-		return "@C_DunningRunEntry_ID@ #" + entries;
+		StringBuilder msgreturn = new StringBuilder("@C_DunningRunEntry_ID@ #").append(entries);
+		return msgreturn.toString();
 	}	//	doIt
 
 	

@@ -83,10 +83,10 @@ public class MAccount extends X_C_ValidCombination
 		
 		ArrayList<Object> params = new ArrayList<Object>();
 		//		Mandatory fields
-		StringBuilder whereClause =  new StringBuilder("AD_Client_ID=?"		//	#1
-							+ " AND AD_Org_ID=?"
-							+ " AND C_AcctSchema_ID=?"
-							+ " AND Account_ID=?");			//	#4
+		StringBuilder whereClause =  new StringBuilder("AD_Client_ID=?")		//	#1
+							.append(" AND AD_Org_ID=?")
+							.append(" AND C_AcctSchema_ID=?")
+							.append(" AND Account_ID=?");			//	#4
 		params.add(AD_Client_ID);
 		params.add(AD_Org_ID);
 		params.add(C_AcctSchema_ID);

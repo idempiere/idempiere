@@ -263,7 +263,7 @@ public class MCStage extends X_CM_CStage
 	 */
 	protected boolean checkElements () {
 		X_CM_Template thisTemplate = new X_CM_Template(getCtx(), this.getCM_Template_ID(), get_TrxName());
-		StringBuilder thisElementList = new StringBuilder(thisTemplate.getElements());
+		StringBuilder thisElementList = new StringBuilder().append(thisTemplate.getElements());
 		while (thisElementList.indexOf("\n")>=0) {
 			String thisElement = thisElementList.substring(0,thisElementList.indexOf("\n"));
 			thisElementList.delete(0,thisElementList.indexOf("\n")+1);

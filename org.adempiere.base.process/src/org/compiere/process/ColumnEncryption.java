@@ -125,7 +125,8 @@ public class ColumnEncryption extends SvrProcess {
 				column.setIsEncrypted(false);
 				column.saveEx();
 			}
-			return columnName + ": cannot be encrypted";
+			StringBuilder msgreturn = new StringBuilder().append(columnName).append(": cannot be encrypted");
+			return msgreturn.toString();
 		}
 
 		// Start
@@ -257,7 +258,8 @@ public class ColumnEncryption extends SvrProcess {
 			}
 		}
 		
-		return "Encryption=" + column.isEncrypted();
+		StringBuilder msgreturn = new StringBuilder("Encryption=").append(column.isEncrypted());
+		return msgreturn.toString();
 	} // doIt
 
 	/**
@@ -346,7 +348,7 @@ public class ColumnEncryption extends SvrProcess {
 		for (int i = 0; i < colLength; i++) {
 			str.append("1");
 		}		
-		str = new StringBuilder(SecureEngine.encrypt(str.toString()));
+		str = new StringBuilder().append(SecureEngine.encrypt(str.toString()));
 		return str.length();
 	} // encryptedColumnLength
 
@@ -372,14 +374,14 @@ public class ColumnEncryption extends SvrProcess {
 		selectSql.append(" WHERE AD_Column_ID=?");
 
 		// Alter SQL
-		StringBuffer alterSql = new StringBuffer();
+		StringBuilder alterSql = new StringBuilder();
 		alterSql.append("ALTER TABLE ").append(tableName);
 		alterSql.append(" MODIFY ").append(columnName);
 		alterSql.append(" NVARCHAR2(");
 		alterSql.append(length).append(") ");
 
 		// Update SQL
-		StringBuffer updateSql = new StringBuffer();
+		StringBuilder updateSql = new StringBuilder();
 		updateSql.append("UPDATE AD_Column");
 		updateSql.append(" SET FieldLength=").append(length);
 		updateSql.append(" WHERE AD_Column_ID=").append(columnID);

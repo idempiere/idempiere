@@ -126,7 +126,8 @@ public class InOutGenerateRMA extends SvrProcess
             }
         }
         
-        return "@Created@ = " + m_created;
+        StringBuilder msgreturn = new StringBuilder("@Created@ = ").append(m_created);
+        return msgreturn.toString();
     }
     
     private int getShipmentDocTypeId(int M_RMA_ID)
@@ -241,7 +242,7 @@ public class InOutGenerateRMA extends SvrProcess
         	log.log(Level.WARNING, msglog.toString());
         }
         
-        StringBuffer processMsg = new StringBuffer(shipment.getDocumentNo());
+        StringBuffer processMsg = new StringBuffer().append(shipment.getDocumentNo());
         
         if (!shipment.processIt(p_docAction))
         {

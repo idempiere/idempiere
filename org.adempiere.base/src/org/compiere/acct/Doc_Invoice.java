@@ -245,7 +245,7 @@ public class Doc_Invoice extends Doc
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
-		StringBuffer sb = new StringBuffer (" [");
+		StringBuilder sb = new StringBuilder (" [");
 		//  Total
 		retValue = retValue.add(getAmount(Doc.AMTTYPE_Gross));
 		sb.append(getAmount(Doc.AMTTYPE_Gross));
@@ -900,19 +900,19 @@ public class Doc_Invoice extends Doc
 			}
 			else
 			{
-				sql.append(" AND il.C_InvoiceLine_ID = (SELECT MIN(il1.C_InvoiceLine_ID) "
-						+ "FROM C_Invoice i1, C_InvoiceLine il1 "
-						+ "WHERE i1.C_Invoice_ID=il1.C_Invoice_ID"
-						+ " AND po.M_Product_ID=il1.M_Product_ID AND po.C_BPartner_ID=i1.C_BPartner_ID")
+				sql.append(" AND il.C_InvoiceLine_ID = (SELECT MIN(il1.C_InvoiceLine_ID) ")
+						.append("FROM C_Invoice i1, C_InvoiceLine il1 ")
+						.append("WHERE i1.C_Invoice_ID=il1.C_Invoice_ID")
+						.append(" AND po.M_Product_ID=il1.M_Product_ID AND po.C_BPartner_ID=i1.C_BPartner_ID")
 						.append("  AND i1.C_Invoice_ID=").append(get_ID()).append(") ");
 			}
 			sql.append("  AND i.C_Invoice_ID=").append(get_ID()).append(") ")
 			//	update
-			.append("WHERE EXISTS (SELECT * "
-			+ "FROM C_Invoice i, C_InvoiceLine il "
-			+ "WHERE i.C_Invoice_ID=il.C_Invoice_ID"
-			+ " AND po.M_Product_ID=il.M_Product_ID AND po.C_BPartner_ID=i.C_BPartner_ID"
-			+ " AND i.C_Invoice_ID=").append(get_ID()).append(")");
+			.append("WHERE EXISTS (SELECT * ")
+			.append("FROM C_Invoice i, C_InvoiceLine il ")
+			.append("WHERE i.C_Invoice_ID=il.C_Invoice_ID")
+			.append(" AND po.M_Product_ID=il.M_Product_ID AND po.C_BPartner_ID=i.C_BPartner_ID")
+			.append(" AND i.C_Invoice_ID=").append(get_ID()).append(")");
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		log.fine("Updated=" + no);
 	}	//	updateProductPO
