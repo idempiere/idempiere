@@ -80,7 +80,7 @@ public class CSVFactory
 	
 	private String[] getCSVHeader() throws IOException
 	{
-		String[] header = reader.getCSVHeader(true);
+		String[] header = reader.getHeader(true);
 		for (int i = 0; i < header.length; i++)
 		{
 			header[i] = header[i].trim().replaceAll("\\s", "");

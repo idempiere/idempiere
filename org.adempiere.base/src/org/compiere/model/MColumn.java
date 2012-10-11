@@ -603,4 +603,24 @@ public class MColumn extends X_AD_Column
         else
         	return false;
 	}
+
+	public String getReferenceTableName() {
+		String foreignTable = null;
+		if (DisplayType.TableDir == getAD_Reference_ID()
+			|| (DisplayType.Search == getAD_Reference_ID() && getAD_Reference_Value_ID() == 0)) {
+			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
+		} else 	if (DisplayType.Table == getAD_Reference_ID() || DisplayType.Search == getAD_Reference_ID()) {
+			X_AD_Reference ref = new X_AD_Reference(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
+			if (X_AD_Reference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
+				MRefTable rt = new MRefTable(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
+				if (rt != null)
+					foreignTable = rt.getAD_Table().getTableName();
+			}
+		} else 	if (DisplayType.List == getAD_Reference_ID()) {
+			foreignTable = "AD_Ref_List";
+		}
+
+		return foreignTable;
+	}
+
 }	//	MColumn

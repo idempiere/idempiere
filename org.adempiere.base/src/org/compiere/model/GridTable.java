@@ -537,7 +537,7 @@ public class GridTable extends AbstractTableModel
 	}	//	getColumn
 
 	/**
-	 *	Return Columns with Indentifier (ColumnName)
+	 *	Return Columns with Identifier (ColumnName)
 	 *  @param identifier column name
 	 *  @return MField
 	 */
