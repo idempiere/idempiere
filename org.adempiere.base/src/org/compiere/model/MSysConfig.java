@@ -16,6 +16,9 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -463,6 +466,71 @@ public class MSysConfig extends X_AD_SysConfig
 			return Boolean.valueOf(s).booleanValue();
 	}
 
+	/**
+	 * Get system configuration property of type Timestamp
+	 * @param Name
+	 * @return Timestamp
+	 */
+	public static Timestamp getTimestampValue(String Name)
+	{
+		return getTimestampValue(Name, null);
+	}
+
+	/**
+	 * Get system configuration property of type Timestamp
+	 * @param Name
+	 * @param defaultValue
+	 * @return Timestamp
+	 */
+	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue)
+	{
+		return getTimestampValue(Name, defaultValue, 0);
+	}
+
+	/**
+	 * Get system configuration property of type Timestamp
+	 * @param Name
+	 * @param defaultValue
+	 * @param Client ID
+	 * @return Timestamp
+	 */
+	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue, int AD_Client_ID)
+	{
+		return getTimestampValue(Name, defaultValue, AD_Client_ID, 0);
+	}
+
+	/**
+	 * Get system configuration property of type Timestamp
+	 * @param Name
+	 * @param defaultValue
+	 * @param Client ID
+	 * @param Organization ID
+	 * @return Timestamp
+	 */
+	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue, int AD_Client_ID, int AD_Org_ID)
+	{
+		String text = getValue(Name, null, AD_Client_ID, AD_Org_ID);
+		if (text !=null)
+			return convertStringToTimestamp(text);
+
+		return defaultValue;
+	}
+	/** convert a string to a timestamp */
+	static Timestamp convertStringToTimestamp(String text)
+	{
+		Timestamp dt = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date date = null;
+
+		try {
+			date = sdf.parse(text);
+			dt = new Timestamp(date.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return dt;
+	}	
+	
 	/**************************************************************************
 	 * 	Before Save
 	 *	@param newRecord
