@@ -306,7 +306,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		if (fDocumentNo.getText().length() > 0)
 			sql.append(" AND UPPER(p.DocumentNo) LIKE ?");
 
-		if (fBPartner_ID.getDisplay() != "")
+		if (!"".equals(fBPartner_ID.getDisplay()))
 			sql.append(" AND p.C_BPartner_ID=?");
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
@@ -331,7 +331,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 				sql.append(" AND TRUNC(p.DateTrx) BETWEEN ? AND ?");
 		}
 
-		if (fAmtFrom.getText() != "" || fAmtTo.getText() != "")
+		if (!"".equals(fAmtFrom.getText()) || !"".equals(fAmtTo.getText()))
 		{
 			BigDecimal from = new BigDecimal(fAmtFrom.getValue());
 			BigDecimal to = new BigDecimal(fAmtTo.getValue());
@@ -365,7 +365,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		if (fDocumentNo.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(fDocumentNo));
 
-		if (fBPartner_ID.getDisplay() != "")
+		if (!"".equals(fBPartner_ID.getDisplay()))
 		{
 			Integer bp = (Integer)fBPartner_ID.getValue();
 			pstmt.setInt(index++, bp.intValue());
@@ -399,7 +399,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 			}
 		}
 
-		if (fAmtFrom.getText() != "" || fAmtTo.getText() != "")
+		if (!"".equals(fAmtFrom.getText()) || !"".equals(fAmtTo.getText()))
 		{
 			BigDecimal from = new BigDecimal(fAmtFrom.getValue());
 			BigDecimal to = new BigDecimal(fAmtTo.getValue());

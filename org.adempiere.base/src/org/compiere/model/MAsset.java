@@ -442,7 +442,7 @@ public class MAsset extends X_A_Asset
 					MAssetGroupAcct assetgrpacct = new MAssetGroupAcct (getCtx(), rs, get_TrxName());
 					MAssetAcct assetacct = new MAssetAcct (getCtx(), 0, get_TrxName());			
 					isdepreciate = assetgrpacct.isProcessing();
-					if (isDepreciated()== true | isdepreciate == true)
+					if (isDepreciated()== true || isdepreciate == true)
 					{			
 						assetacct.setPostingType(assetgrpacct.getPostingType());
 						assetacct.setA_Split_Percent(assetgrpacct.getA_Split_Percent());
@@ -454,7 +454,7 @@ public class MAsset extends X_A_Asset
 						assetacct.setA_Period_Start(1);
 
 
-						if (getUseLifeMonths() == 0 & getUseLifeYears() == 0){
+						if (getUseLifeMonths() == 0 && getUseLifeYears() == 0){
 							assetacct.setA_Period_End(assetgrpacct.getUseLifeMonths());
 							asset.setUseLifeYears(assetgrpacct.getUseLifeYears());
 							asset.setUseLifeMonths(assetgrpacct.getUseLifeMonths());
@@ -541,7 +541,7 @@ public class MAsset extends X_A_Asset
 					if (DB.getSQLValue(get_TrxName(), sql2, asset.getA_Asset_ID(),assetgrpacct.getPostingType())== 0) 
 					{
 
-						if (isDepreciated()== true | isdepreciate == true)						
+						if (isDepreciated()== true || isdepreciate == true)						
 						{
 							X_A_Depreciation_Workfile assetwk = new X_A_Depreciation_Workfile (getCtx(), 0, get_TrxName());
 							assetwk.setA_Asset_ID(p_A_Asset_ID);		

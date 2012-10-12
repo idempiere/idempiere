@@ -318,10 +318,10 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		if (fName.getText().length() > 0)
 			sql.append(" AND UPPER(c.Name) LIKE ?");
 
-		if (fCashBook_ID.getDisplay() != "")
+		if (!"".equals(fCashBook_ID.getDisplay()))
 			sql.append(" AND c.C_CashBook_ID=?");
 
-		if (fInvoice_ID.getDisplay() != "")
+		if (!"".equals(fInvoice_ID.getDisplay()))
 			sql.append(" AND cl.C_Invoice_ID=?");
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
