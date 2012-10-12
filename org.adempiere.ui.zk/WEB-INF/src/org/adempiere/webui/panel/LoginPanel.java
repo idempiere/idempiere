@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -47,6 +48,7 @@ import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
@@ -236,8 +238,14 @@ public class LoginPanel extends Window implements EventListener<Event>
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
-        ConfirmPanel pnlButtons = new ConfirmPanel(false);
+        ConfirmPanel pnlButtons = new ConfirmPanel();
         pnlButtons.addActionListener(this);
+
+        Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
+		helpButton.addEventListener(Events.ON_CLICK, this);
+		helpButton.setSclass(ITheme.LOGIN_BUTTON_CLASS);
+		pnlButtons.addComponentsRight(helpButton);
+        
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
         pnlButtons.setWidth(null);
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
@@ -372,6 +380,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         {
             validateLogin();
         }
+        else if (event.getTarget().getId().equals(ConfirmPanel.A_HELP))
+        {
+            openLoginHelp();
+        }
         else if (event.getName().equals(Events.ON_SELECT))
         {
             if(eventComp.getId().equals(lstLanguage.getId())) {
@@ -404,6 +416,17 @@ public class LoginPanel extends Window implements EventListener<Event>
         }
         //
     }
+
+	private void openLoginHelp() {
+		String helpURL = MSysConfig.getValue("LOGIN_HELP_URL", 	"http://wiki.idempiere.org/wiki/Login_Help");
+		try {
+			Executions.getCurrent().sendRedirect(helpURL, "_blank");
+		}
+		catch (Exception e) {
+			String message = e.getMessage();
+			FDialog.warn(0, this, "URLnotValid", message);
+		}
+	}
 
 	private void onUserIdChange(int AD_User_ID) {
 		String userName = txtUserId.getValue();
