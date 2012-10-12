@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://bizidium.com/WebInterface"
+	xmlns:tns="http://bizidium.com/WebInterface"
+	xmlns:ens="http://3e.pl/ADInterface" elementFormDefault="qualified">
+
+
+	<xsd:import schemaLocation="schema.xsd" namespace="http://3e.pl/ADInterface"></xsd:import>
+	
+	<xsd:complexType name="operations">
+		<xsd:sequence>
+			<xsd:element name="operation" type="tns:operation" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="operation">
+		<xsd:sequence>
+			<xsd:element name="TargetPort">
+		     	<xsd:simpleType>
+		     		<xsd:restriction base="xsd:string">
+		     			<xsd:enumeration value="createData"></xsd:enumeration>
+		     			<xsd:enumeration value="readData"></xsd:enumeration>
+		     			<xsd:enumeration value="updateData"></xsd:enumeration>
+		     			<xsd:enumeration value="deleteData"></xsd:enumeration>
+		     			<xsd:enumeration value="getList"></xsd:enumeration>
+		     			<xsd:enumeration value="queryData"></xsd:enumeration>
+		     			<xsd:enumeration value="runProcess"></xsd:enumeration>
+		     			<xsd:enumeration value="setDocAction"></xsd:enumeration>
+		     		</xsd:restriction>
+		     	</xsd:simpleType>
+		     </xsd:element>
+			<xsd:element name="ModelCRUD" type="ens:ModelCRUD" ></xsd:element>
+			<xsd:element name="operations" type="tns:operations" minOccurs="0" maxOccurs="1"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="preCommit" type="xsd:boolean" default="false"></xsd:attribute>
+		<xsd:attribute name="postCommit" type="xsd:boolean" default="false"></xsd:attribute>
+	</xsd:complexType>
+	<xsd:element name="CompositeCRUDRequest" type="tns:CompositeCRUDRequest"></xsd:element>
+	<xsd:complexType name="CompositeCRUDRequest">
+		<xsd:sequence>
+			<xsd:element name="ADLoginRequest" type="ens:ADLoginRequest"></xsd:element>
+		     <xsd:element name="serviceType" type="xsd:string"/>
+			<xsd:element name="operation" type="tns:operation" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
