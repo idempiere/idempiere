@@ -110,10 +110,7 @@ html,body {
 }
 
 .desktop-header {
-	background-image: url(../images/header-bg.png);
-	background-repeat: repeat-x;
-	background-position: bottom left;
-	background-color: white;
+	background-color: #F4F4F4;
 	width: 100%;
 	height: 38px;
 }
@@ -214,7 +211,11 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .desktop-tabbox {
 	padding-top: 0px; 
-	background-color: #D1E7F6;
+	background-color: #F4F4F4;
+}
+
+.desktop-tabbox .z-tab {
+	margin-right: 2px;
 }
 
 .desktop-north, .desktop-center {
@@ -239,9 +240,9 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .desktop-left-column {
-	width: 310px;
+	width: 300px;
 	border: none;
-	background-color: #D2E0EB;
+	background-color: #F4F4F4; 
 }
 
 .desktop-left-column + .z-west-splt {
@@ -315,13 +316,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 <%-- adwindow and form --%>
-.adform-content-none {
-	overflow: auto;
-	position: absolute;
-	width: 100%;
-	margin: 3px;
-}
-
 .adwindow-layout {
 	position:absolute; 
 	border: none;
@@ -335,6 +329,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adwindow-north {
 	border: none;
+	border-bottom: 1px solid #C5C5C5 !important;
 }
 
 .adwindow-south {
@@ -347,145 +342,58 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-status {
-	background-color: #EEEEEE;
+	background-color: #F4F4F4;
 	height: 20px;
-}
-
-.adwindow-nav {
-}
-
-.adwindow-left-nav {
-	border-right: 1px solid #7EAAC6;
-	border-left: none;
-	border-top: none;
-	border-bottom: none;
-}
-
-.adwindow-right-nav {
-	border-left: 1px solid #7EAAC6;
-	border-right: none;
-	border-top: none;
-	border-bottom: none;
-}
-
-.adwindow-nav-content {
-	background-color: #D2E0EB;
-	height: 100%;
-	padding-top: 2px;
 }
 
 .adwindow-toolbar {
 	border: 0px;
 }
 
-.adwindow-navbtn-first {
-	margin-top: 8px !important;
-}
-
-.adwindow-navbtn-dis, .adwindow-navbtn-sel, .adwindow-navbtn-uns {
-	border: 0px;
-	margin-top: 3px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-
-.adwindow-navbtn-sel {
-	background-color: #9CBDFF;
-	font-weight: bold;
-	color: #274D5F;
-	cursor: pointer;
-	border-top: 2px solid #7EAAC6;
-	border-bottom: 2px solid #7EAAC6;
-}
-
-.adwindow-left-navbtn-sel {
-	border-left: 2px solid #7EAAC6;
-	border-right: none;
-	text-align: right;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	background-color: #D2E0EB !important;
-	background-image: url(../images/adtab-left-bg.png);
-	background-repeat: repeat-y;
-	background-position: top right;
-}
-
-.adwindow-right-navbtn-sel {
-	border-right: 2px solid #7EAAC6;
-	border-left: none;
-	text-align: left;
-	-moz-border-radius-topright: 5px;
-	-moz-border-radius-bottomright: 5px;
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	-webkit-border-bottom-right-radius: 5px;
-	background-color: #D2E0EB !important;
-	background-image: url(../images/adtab-right-bg.png);
-	background-repeat: repeat-y;
-	background-position: top left;
-}
-
-.adwindow-navbtn-uns {
-	background-color: #C4DCFB;
-	font-weight: normal;
-	color: #274D5F;
-	cursor: pointer;
-}
-
-.adwindow-navbtn-dis {
-	background-color: #C4DCFB;
-}
-
-.adwindow-navbtn-uns, .adwindow-navbtn-dis {
-	border-top: 1px solid #CCCCCC;
-	border-bottom: 1px solid #CCCCCC;
-}
-
-.adwindow-left-navbtn-uns, .adwindow-left-navbtn-dis {
-	border-left: 1px solid #CCCCCC;
-	border-right: none;
-	text-align: right;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-}
-
-.adwindow-right-navbtn-uns, .adwindow-right-navbtn-dis {
-	border-right: 1px solid #CCCCCC;
-	border-left: none;
-	text-align: left;
-	-moz-border-radius-topright: 5px;
-	-moz-border-radius-bottomright: 5px;
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	-webkit-border-bottom-right-radius: 5px;
-}
-
 .adwindow-breadcrumb {
 	height: 30px;
-	background-color: #EEEEEE;
+	background-color: #FFF;
 	padding-left: 2px;
 }
 
-<%-- ad tab --%>
-.adtab-body {
-	position: absolute;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
+.adwindow-detailpane {
+	min-height: 200px; width: 100%; overflow-y: visible;
+}
+
+.adwindow-detailpane-toolbar {
 	border: none;
 }
 
+.adwindow-detailpane-toolbar .z-toolbar-body {
+	width: 100%;
+}
+
+.adwindow-detailpane-toolbar .z-toolbarbutton {
+	float: left;
+	display: inline-block;
+}
+
+.adwindow-detailpane-message {
+	float: right;
+}
+
+.adwindow-detailpane-tabbox {
+	min-height: 200px; width: 99%; margin: auto;
+}
+
+.adwindow-gridview-detail {
+	height: 250px;
+}
+
+.adwindow-gridview-detail .z-south-body {
+	padding-top: 1px;
+}
+
+.adwindow-gridview-borderlayout {
+	position: absolute; height: 100%; width: 100%;
+}
+
+<%-- ad tab --%>
 .adtab-content {
 	margin: 0;
 	padding: 0;
@@ -500,30 +408,9 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	overflow-y: visible;
 }
 
-.adtab-form .z-grid {
-	border:none !important;
-}
-
-.adtab-grid-panel {
-	position: absolute;
-	overflow: hidden;
-	width: 100%;
-	height: 100%;
-	border: none;
-}
-
-.adtab-grid-panel .z-grid {
-	border: none;
-}
-
-.adtab-grid-panel .z-center {
-	border: none;
-	
-}
-
 .adtab-grid {
-	width: 100%;
-	position: absolute;
+	margin-top: -1px;
+	border: none !important;
 }
 
 .adtab-grid-south {
@@ -532,16 +419,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adtab-grid-south .z-paging {
 	border: none;
+	padding: 0;
 }
 
-.adtab-tabpanels {
-	border-top: 1px solid #9CBDFF;
-	border-bottom: 1px solid #9CBDFF;
-	border-left: 2px solid #9CBDFF;
-	border-right: 2px solid #9CBDFF;
-}
-
-.adtab-tree-layout {
+.adtab-form-borderlayout {
 	width: 100%; 
 	height: 100%; 
 	position: absolute;
@@ -789,6 +670,10 @@ img.z-group-img-close {
 	background-color: #F0F0F0;
 }
 
+span.z-tab-text {
+	height: 13px; 
+}
+
 <%-- menu tree cell --%>
 div.z-tree-body td.menu-tree-cell {
 	cursor: pointer;
@@ -921,10 +806,6 @@ div.simileAjax-bubble-container {
 
 tbody.z-grid-empty-body td {
 	text-align: left;
-}
-
-.adtab-detail-toolbar .z-toolbar-body {
-	width: 100%;
 }
 
 .z-notification .z-notification-cl, 

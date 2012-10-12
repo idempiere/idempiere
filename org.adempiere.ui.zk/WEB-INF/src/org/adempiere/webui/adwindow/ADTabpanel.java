@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
@@ -52,6 +53,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MLookup;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.X_AD_FieldGroup;
@@ -59,6 +61,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
@@ -67,12 +70,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
+import org.zkoss.zul.Style;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.West;
@@ -180,7 +183,17 @@ DataStatusListener, IADTabpanel
     	if (formContainer.isVisible()) {
     		detailPane = component;
     		if (formContainer instanceof Borderlayout) {
-    			form.getParent().appendChild(detailPane);
+    			if (isUseSplitViewForForm()) {    			
+	    			Borderlayout borderLayout = (Borderlayout) formContainer;
+	    			borderLayout.appendSouth(detailPane);
+	    			
+	    			borderLayout.getSouth().setCollapsible(true);
+	    			borderLayout.getSouth().setSplittable(true);
+	    			borderLayout.getSouth().setOpen(true);
+	    			borderLayout.getSouth().setSclass("adwindow-gridview-detail");
+    			} else {
+    				form.getParent().appendChild(detailPane);
+    			}
     		} else {
     			formContainer.appendChild(component);
     		}
@@ -230,9 +243,23 @@ DataStatusListener, IADTabpanel
 				Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
 		if (gridTab.isTreeTab() && AD_Tree_ID != 0)
 		{
+			StringBuilder cssContent = new StringBuilder();
+			cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
+			cssContent.append("content: \"");
+			cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
+			cssContent.append("\"; ");
+			cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
+			cssContent.append("top: 3px; ");
+			cssContent.append("left: 4px; ");
+			cssContent.append("z-index: -1; ");
+			cssContent.append("} ");
+			Style style = new Style();
+			style.setContent(cssContent.toString());
+			appendChild(style);
+			
 			Borderlayout layout = new Borderlayout();
 			layout.setParent(this);
-			layout.setSclass("adtab-tree-layout");
+			layout.setSclass("adtab-form-borderlayout");
 			
 			treePanel = new ADTreePanel(windowNo, gridTab.getTabNo());
 			West west = new West();
@@ -268,8 +295,34 @@ DataStatusListener, IADTabpanel
 			div.appendChild(form);
 			div.setVflex("1");
 			div.setWidth("100%");
-			this.appendChild(div);
-			formContainer = div;
+			
+			if (isUseSplitViewForForm()) {
+				StringBuilder cssContent = new StringBuilder();
+				cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
+				cssContent.append("content: \"");
+				cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
+				cssContent.append("\"; ");
+				cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
+				cssContent.append("top: 3px; ");
+				cssContent.append("left: 4px; ");
+				cssContent.append("z-index: -1; ");
+				cssContent.append("} ");
+				Style style = new Style();
+				style.setContent(cssContent.toString());
+				appendChild(style);
+				
+				Borderlayout layout = new Borderlayout();
+				layout.setParent(this);
+				layout.setSclass("adtab-form-borderlayout");
+							
+				Center center = new Center();
+				layout.appendChild(center);
+				center.appendChild(div);
+				formContainer = layout;
+			} else {			
+				this.appendChild(div);
+				formContainer = div;
+			}
 			
 			if (AEnv.isTablet()) 
 			{
@@ -283,7 +336,11 @@ DataStatusListener, IADTabpanel
 
     }
 
-    /**
+    public static boolean isUseSplitViewForForm() {
+		return MSysConfig.getBooleanValue("ZK_AD_WINDOW_FORM_SPLITVIEW", true);
+	}
+
+	/**
      * Create UI components if not already created
      */
     public void createUI()

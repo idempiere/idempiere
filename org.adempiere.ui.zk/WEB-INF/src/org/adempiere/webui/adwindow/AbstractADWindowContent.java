@@ -658,19 +658,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
     public void onDetailRecord()
     {
-    	/*
-        int maxInd = adTab.getTabCount() - 1;
-        int curInd = adTab.getSelectedIndex();
-        if (curInd < maxInd)
-        {
-            setActiveTab(curInd + 1, new Callback<Boolean>() {
-				
-				@Override
-				public void onCallback(Boolean result) {
-					focusToActivePanel();
-				}
-			});
-        }*/
     	adTabbox.onDetailRecord();
     }
 
@@ -679,17 +666,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
     public void onParentRecord()
     {
-//        int curInd = adTab.getSelectedIndex();
-//        if (curInd > 0)
-//        {
-//            setActiveTab(curInd - 1, new Callback<Boolean>() {
-//				@Override
-//				public void onCallback(Boolean result) {
-//					focusToActivePanel();
-//				}
-//			});
-//        }
-    	adTabbox.onParentRecord();
+    	List<BreadCrumbLink> parents = breadCrumb.getParentLinks();
+    	if (!parents.isEmpty()) {    		
+    		Events.sendEvent(parents.get(parents.size()-1), new Event(Events.ON_CLICK, parents.get(parents.size()-1)));
+    	}
     }
 
     /**
@@ -1087,7 +1067,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 //		toolbar.enableTabNavigation(adTab.getSelectedGridTab()Index > 0,
 //		        adTab.getSelectedGridTab()Index < (adTab.getTabCount() - 1));
-		toolbar.enableTabNavigation(adTabbox.getTabCount() > 1, adTabbox.getTabCount() > 1);
+		toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
 
 		toolbar.getButton("Attachment").setPressed(adTabbox.getSelectedGridTab().hasAttachment());
 		toolbar.getButton("Chat").setPressed(adTabbox.getSelectedGridTab().hasChat());

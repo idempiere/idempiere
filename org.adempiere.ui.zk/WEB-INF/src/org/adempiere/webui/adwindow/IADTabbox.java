@@ -111,8 +111,6 @@ public interface IADTabbox extends UIPart {
 
 	public void onDetailRecord();
 
-	public void onParentRecord();
-
 	public boolean isSortTab();
 
 	public boolean needSave(boolean rowChange, boolean onlyRealChange);

@@ -54,6 +54,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Style;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.event.ZulEvents;
 
@@ -137,8 +138,22 @@ public class GridView extends Vbox implements EventListener<Event>
 		gridFooter.setHflex("1");
 		gridFooter.setVflex("0");
 		
+		StringBuilder cssContent = new StringBuilder();
+		cssContent.append(".adwindow-gridview-borderlayout .z-south-colpsd:before { ");
+		cssContent.append("content: \"");
+		cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
+		cssContent.append("\"; ");
+		cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
+		cssContent.append("top: 3px; ");
+		cssContent.append("left: 4px; ");
+		cssContent.append("z-index: -1; ");
+		cssContent.append("} ");
+		Style style = new Style();
+		style.setContent(cssContent.toString());
+		appendChild(style);
+		
 		borderLayout = new Borderlayout();
-		borderLayout.setStyle("position: absolute; height: 100%; width: 100%;");
+		borderLayout.setSclass("adwindow-gridview-borderlayout");
 		appendChild(borderLayout);
 		Center center = new Center();
 		borderLayout.appendChild(center);
@@ -172,6 +187,7 @@ public class GridView extends Vbox implements EventListener<Event>
 		listbox.setSizedByContent(true);
 		listbox.setVflex("1");
 		listbox.setHflex("1");
+		listbox.setSclass("adtab-grid");
 	}
 	
 	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
@@ -187,6 +203,7 @@ public class GridView extends Vbox implements EventListener<Event>
 			}
 			//false work for header form, true work for header grid
 			listbox.setVflex(vflex);
+			listbox.setSclass("");
 			this.setVflex(Boolean.toString(vflex));
 		} else {
 			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 50);
@@ -199,6 +216,7 @@ public class GridView extends Vbox implements EventListener<Event>
 				borderLayout.appendNorth(gridFooter);
 			}
 			listbox.setVflex("true");
+			listbox.setSclass("adtab-grid");
 			this.setVflex("true");
 		}
 	}
@@ -858,9 +876,9 @@ public class GridView extends Vbox implements EventListener<Event>
 		detail = component;
 		borderLayout.appendSouth(detail);
 		borderLayout.getSouth().setCollapsible(true);
-		borderLayout.getSouth().setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
-		borderLayout.getSouth().setOpen(false);
-		borderLayout.getSouth().setHeight("250px");
+		borderLayout.getSouth().setSplittable(true);
+		borderLayout.getSouth().setOpen(true);
+		borderLayout.getSouth().setSclass("adwindow-gridview-detail");
 	}
 	
 	public Component removeDetails() {

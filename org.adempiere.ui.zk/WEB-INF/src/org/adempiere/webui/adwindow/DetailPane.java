@@ -48,11 +48,9 @@ public class DetailPane extends Panel implements EventListener<Event> {
 
 	private static final String STATUS_ERROR_ATTRIBUTE = "status.error";
 
-	private static final String TABBOX_STYLE = "min-height: 200px; overflow-y: visible; width: 99%; margin: auto;";
 	private static final String DELETE_IMAGE = "/images/Delete16.png";
 	private static final String EDIT_IMAGE = "/images/EditRecord16.png";
 	private static final String NEW_IMAGE = "/images/New16.png";
-	private static final String STYLE = "min-height: 200px; width: 100%; overflow-y: visible;";
 
 	/**
 	 * generated serial id 
@@ -94,14 +92,12 @@ public class DetailPane extends Panel implements EventListener<Event> {
 				fireActivateDetailEvent();
 			}
 		});
-		tabbox.setStyle(TABBOX_STYLE);
+		tabbox.setSclass("adwindow-detailpane-tabbox");
 		
 		createPopup();
 		
-		this.setStyle(STYLE);
+		this.setSclass("adwindow-detailpane");
 		
-		//TODO: this probably not needed
-		this.setHflex("true");
 	}
 	
 	public int getSelectedIndex() {
@@ -200,11 +196,11 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		
 		Hbox messageContainer = new Hbox();
 		messageContainer.setPack("end");
-		messageContainer.setHflex("1");
-		messageContainer.setStyle("float: right");
+		messageContainer.setAlign("center");
+		messageContainer.setSclass("adwindow-detailpane-message");
 		
 		toolbar.appendChild(messageContainer);
-		toolbar.setSclass("adtab-detail-toolbar");
+		toolbar.setSclass("adwindow-detailpane-toolbar");
 		toolbar.setVflex("0");
 		messageContainers.put(tabLabel.AD_Tab_ID, messageContainer);
 		tabPanel.setAttribute("AD_Tab_ID", tabLabel.AD_Tab_ID);
@@ -282,7 +278,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
     	messageContainer.appendChild(image);
     	String labelText = buildLabelText(status);
     	if (error) {
-    		Clients.showNotification(labelText, "error", image, "overlap_start", 3500, true);
+    		Clients.showNotification(buildNotificationText(status), "error", image, "overlap_start", 3500, true);
     	}
     	Label label = new Label(labelText);
     	messageContainer.appendChild(label);
@@ -313,6 +309,18 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		return statusText.substring(0, 80);
 	}
 
+	private String buildNotificationText(String statusText) {
+		if (statusText == null)
+			return "";
+		if (statusText.length() <= 140)
+			return statusText;
+		
+		int index = statusText.indexOf(" - java.lang.Exception");
+		if (index > 0)
+			return statusText.substring(0, index);
+		return statusText.substring(0, 136) + " ...";
+	}
+	
 	@Override
 	public void onEvent(Event event) throws Exception {
 		Component messageContainer = event.getTarget().getParent();
@@ -414,5 +422,35 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		IADTabpanel tabPanel = (IADTabpanel) tabbox.getTabpanel(index).getChildren().get(1);
 		Event activateEvent = new Event(ON_ACTIVATE_DETAIL_EVENT, tabPanel, prevSelectedIndex);
 		Events.sendEvent(activateEvent);
+	}
+
+	public void setTabVisibility(int i, boolean visible) {
+		if (i < 0 || tabbox.getTabs() == null || i >= tabbox.getTabs().getChildren().size())
+			return;
+		
+		tabbox.getTabs().getChildren().get(i).setVisible(visible);
+	}
+	
+	public boolean isTabVisible(int i) {
+		if (i < 0 || tabbox.getTabs() == null || i >= tabbox.getTabs().getChildren().size())
+			return false;
+		
+		return tabbox.getTabs().getChildren().get(i).isVisible();
+	}
+	
+	public boolean isTabEnabled(int i) {
+		if (i < 0 || tabbox.getTabs() == null || i >= tabbox.getTabs().getChildren().size())
+			return false;
+		
+		Tab tab = (Tab) tabbox.getTabs().getChildren().get(i);
+		return !tab.isDisabled();
+	}
+	
+	public void setTabEnabled(int i, boolean enabled) {
+		if (i < 0 || tabbox.getTabs() == null || i >= tabbox.getTabs().getChildren().size())
+			return;
+		
+		Tab tab = (Tab) tabbox.getTabs().getChildren().get(i);
+		tab.setDisabled(!enabled);
 	}
 }

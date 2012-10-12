@@ -504,7 +504,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         			image.setWidth("24px");
         			image.setHeight("24px");
         		} else {
-        			if (getComponent() instanceof InputElement && !tableEditor) {
+        			if (getComponent() instanceof InputElement) {
         				((InputElement)getComponent()).setHflex("1");
         			} else {
         				((HtmlBasedComponent)getComponent()).setWidth(width);

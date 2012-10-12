@@ -13,8 +13,10 @@
  *****************************************************************************/
 package org.adempiere.webui.adwindow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.adempiere.webui.AdempiereIdGenerator;
@@ -32,6 +34,7 @@ import org.compiere.model.MRole;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -176,6 +179,15 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 		}
 	}
 	
+	public List<BreadCrumbLink> getParentLinks() {
+		List<BreadCrumbLink> parents = new ArrayList<BreadCrumbLink>();
+		for(Component component : layout.getChildren()) {
+			if (component instanceof BreadCrumbLink)
+				parents.add((BreadCrumbLink) component);
+		}
+		return parents;
+	}
+	
 	public void addLinks(LinkedHashMap<String, String> links) {
 		this.links = links;
 		final Label pathLabel = (Label) layout.getChildren().get(layout.getChildren().size()-2);
@@ -222,8 +234,7 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 			if (toolbarListener != null)
 				toolbarListener.onLast();
 		} else {
-			MouseEvent me = (MouseEvent) event;
-			Events.sendEvent(this, me);
+			Events.sendEvent(this, event);
 		}
 	}
 
@@ -350,7 +361,7 @@ public class BreadCrumb extends Div implements EventListener<Event>{
     	messageContainer.appendChild(image);
     	String labelText = buildLabelText(m_statusText);
     	if (error) {
-    		Clients.showNotification(labelText, "error", image, "overlap_start", 3500, true);
+    		Clients.showNotification(buildNotificationText(m_statusText), "error", image, "overlap_start", 3500, true);
     	}
     	Label label = new Label(labelText);
     	messageContainer.appendChild(label);
@@ -380,6 +391,18 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 		if (index > 0)
 			return statusText.substring(0, index);
 		return statusText.substring(0, 80);
+	}
+	
+	private String buildNotificationText(String statusText) {
+		if (statusText == null)
+			return "";
+		if (statusText.length() <= 140)
+			return statusText;
+		
+		int index = statusText.indexOf(" - java.lang.Exception");
+		if (index > 0)
+			return statusText.substring(0, index);
+		return statusText.substring(0, 136) + " ...";
 	}
 
 	protected void createPopupContent() {
@@ -430,5 +453,13 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 		toolbarContainer.setVisible(visible);
 	}
 
+	public boolean hasParentLink() {
+		for(Component c : layout.getChildren()) {
+			if (c instanceof BreadCrumbLink) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
