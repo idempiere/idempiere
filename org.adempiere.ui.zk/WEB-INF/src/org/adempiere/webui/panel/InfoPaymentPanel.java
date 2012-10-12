@@ -311,11 +311,17 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
-			Date f = fDateFrom.getValue();
-			Timestamp from = new Timestamp(f.getTime());
+			Timestamp from = null;
+			if (fDateFrom.getValue() != null) {
+				Date f = fDateFrom.getValue();
+				from = new Timestamp(f.getTime());
+			}
 
-			Date t = fDateTo.getValue();
-			Timestamp to = new Timestamp(t.getTime());
+			Timestamp to = null;
+			if (fDateTo.getValue() != null) {
+				Date t = fDateTo.getValue();
+				to = new Timestamp(t.getTime());
+			}
 
 			if (from == null && to != null)
 				sql.append(" AND TRUNC(p.DateTrx) <= ?");
@@ -368,11 +374,17 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
-			Date f = fDateFrom.getValue();
-			Timestamp from = new Timestamp(f.getTime());
+			Timestamp from = null;
+			if (fDateFrom.getValue() != null) {
+				Date f = fDateFrom.getValue();
+				from = new Timestamp(f.getTime());
+			}
 
-			Date t = fDateTo.getValue();
-			Timestamp to = new Timestamp(t.getTime());
+			Timestamp to = null;
+			if (fDateTo.getValue() != null) {
+				Date t = fDateTo.getValue();
+				to = new Timestamp(t.getTime());
+			}
 
 			log.fine("Date From=" + from + ", To=" + to);
 

@@ -1093,6 +1093,9 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
     				contentPanel.setSelectedIndex(0);
     			}
             }
+            else if (event.getName().equals(Events.ON_CHANGE))
+            {
+            }
             //default
             else
             {
@@ -1108,9 +1111,11 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		progressWindow.doHighlighted();
 	}
 
-	private void hideBusyDialog() {
-		progressWindow.dispose();
-		progressWindow = null;
+	private void hideBusyDialog() {		
+		if (progressWindow != null) {
+			progressWindow.dispose();
+			progressWindow = null;
+		}		
 	}
 
     public void onQueryCallback()
