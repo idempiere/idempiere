@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/composite_XMLSBean.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlbeans-2.5.0.jar" sourcepath="E:/spring/xmlbeans-2.5.0-source.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/generated_xbeans.jar" sourcepath="XBeans/src"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cxf-rt-frontend-jaxws-2.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-aop-3.0.7.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/stax2-api-3.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlschema-core-2.0.3.jar" sourcepath="E:/spring/xmlschema-core-2.0.3-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cxf-2.6.2.jar" sourcepath="E:/bizzidium/apache-cxf-2.6.2-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/neethi-3.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/wsdl4j-1.6.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-expression-3.0.7.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-asm-3.0.7.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-core-3.0.7.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-beans-3.0.7.RELEASE.jar" sourcepath="E:/spring/spring-beans-3.0.7.RELEASE-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-context-3.0.7.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-web-3.0.7.RELEASE.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="WEB-INF/src"/>
+	<classpathentry kind="output" path="WEB-INF/classes/"/>
+</classpath>

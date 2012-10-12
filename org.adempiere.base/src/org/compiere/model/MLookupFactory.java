@@ -513,7 +513,7 @@ public class MLookupFactory
 			ZoomWindow = overrideZoomWindow;
 			ZoomWindowPO = 0;
 		}
-		StringBuilder msginf = new StringBuilder(TableName).append(".").append(KeyColumn);
+		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		retValue = new MLookupInfo (realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
@@ -721,7 +721,7 @@ public class MLookupFactory
 			if (i > 0)
 				displayColumn.append(" ||'_'|| " );
 			LookupDisplayColumn ldc = (LookupDisplayColumn)list.get(i);
-			StringBuilder msg = new StringBuilder(TableName).append(".").append(ldc.ColumnName);
+			StringBuilder msg = new StringBuilder().append(TableName).append(".").append(ldc.ColumnName);
 			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : msg.toString();
 
 			displayColumn.append("NVL(");
@@ -797,7 +797,7 @@ public class MLookupFactory
 
 		if (CLogMgt.isLevelFinest())
 			s_log.fine("ColumnName=" + ColumnName + " - " + realSQL);
-		StringBuilder msginf = new StringBuilder(TableName).append(".").append(KeyColumn);
+		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		MLookupInfo lInfo = new MLookupInfo(realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
@@ -892,7 +892,7 @@ public class MLookupFactory
 			if (i > 0)
 				embedSQL.append("||' - '||" );
 			LookupDisplayColumn ldc = (LookupDisplayColumn)list.get(i);
-			StringBuilder msg = new StringBuilder(TableName).append(".").append(ldc.ColumnName);
+			StringBuilder msg = new StringBuilder().append(TableName).append(".").append(ldc.ColumnName);
 			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : msg.toString();
 
 			//  translated

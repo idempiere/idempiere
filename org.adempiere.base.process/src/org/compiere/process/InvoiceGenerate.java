@@ -402,7 +402,7 @@ public class InvoiceGenerate extends SvrProcess
 				AD_Language = Language.getBaseAD_Language();
 			java.text.SimpleDateFormat format = DisplayType.getDateFormat 
 				(DisplayType.Date, Language.getLanguage(AD_Language));
-			StringBuilder reference = new StringBuilder(dt.getPrintName(m_bp.getAD_Language()))
+			StringBuilder reference = new StringBuilder().append(dt.getPrintName(m_bp.getAD_Language()))
 				.append(": ").append(ship.getDocumentNo()) 
 				.append(" - ").append(format.format(ship.getMovementDate()));
 			m_ship = ship;

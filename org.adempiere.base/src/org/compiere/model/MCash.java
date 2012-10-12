@@ -159,9 +159,10 @@ public class MCash extends X_C_Cash implements DocAction
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 			setStatementDate (today);	// @#Date@
 			setDateAcct (today);	// @#Date@
-			String name = DisplayType.getDateFormat(DisplayType.Date).format(today)
-				+ " " + MOrg.get(ctx, getAD_Org_ID()).getValue();
-			setName (name);	
+			
+			StringBuilder name = new StringBuilder(DisplayType.getDateFormat(DisplayType.Date).format(today))
+			.append(" ").append(MOrg.get(ctx, getAD_Org_ID()).getValue());
+			setName (name.toString());
 			setIsApproved(false);
 			setPosted (false);	// N
 			setProcessed (false);
@@ -193,9 +194,9 @@ public class MCash extends X_C_Cash implements DocAction
 		{
 			setStatementDate (today);	
 			setDateAcct (today);
-			String name = DisplayType.getDateFormat(DisplayType.Date).format(today)
-				+ " " + cb.getName();
-			setName (name);	
+			StringBuilder name = new StringBuilder(DisplayType.getDateFormat(DisplayType.Date).format(today))
+				.append(" ").append(cb.getName());
+			setName (name.toString());
 		}
 		m_book = cb;
 	}	//	MCash
@@ -254,7 +255,8 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		return Msg.getElement(getCtx(), "C_Cash_ID") + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder().append(Msg.getElement(getCtx(), "C_Cash_ID")).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -265,7 +267,8 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder().append(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -470,11 +473,11 @@ public class MCash extends X_C_Cash implements DocAction
 					return DocAction.STATUS_Invalid;
 				}
 				//
-				String name = Msg.translate(getCtx(), "C_Cash_ID") + ": " + getName()
-								+ " - " + Msg.translate(getCtx(), "Line") + " " + line.getLine();
+				StringBuilder name = new StringBuilder().append(Msg.translate(getCtx(), "C_Cash_ID")).append(": ").append(getName())
+										.append(" - ").append(Msg.translate(getCtx(), "Line")).append(" ").append(line.getLine());
 				MAllocationHdr hdr = new MAllocationHdr(getCtx(), false, 
 						getDateAcct(), line.getC_Currency_ID(),
-						name, get_TrxName());
+						name.toString(), get_TrxName());
 				hdr.setAD_Org_ID(getAD_Org_ID());
 				if (!hdr.save())
 				{
@@ -621,9 +624,10 @@ public class MCash extends X_C_Cash implements DocAction
 			cashline.setAmount(Env.ZERO);
 			cashline.setDiscountAmt(Env.ZERO);
 			cashline.setWriteOffAmt(Env.ZERO);
-			cashline.addDescription(Msg.getMsg(getCtx(), "Voided")
-					+ " (Amount=" + oldAmount + ", Discount=" + oldDiscount
-					+ ", WriteOff=" + oldWriteOff + ", )");
+			StringBuilder msgadd = new StringBuilder().append(Msg.getMsg(getCtx(), "Voided"))
+				.append(" (Amount=").append(oldAmount).append(", Discount=").append(oldDiscount)
+				.append(", WriteOff=").append(oldWriteOff).append(", )");
+			cashline.addDescription(msgadd.toString());
 			if (MCashLine.CASHTYPE_BankAccountTransfer.equals(cashline.getCashType()))
 			{
 				if (cashline.getC_Payment_ID() == 0)
@@ -659,8 +663,10 @@ public class MCash extends X_C_Cash implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 
 	/**
@@ -760,10 +766,10 @@ public class MCash extends X_C_Cash implements DocAction
 	public void setProcessed (boolean processed)
 	{
 		super.setProcessed (processed);
-		String sql = "UPDATE C_CashLine SET Processed='"
-			+ (processed ? "Y" : "N")
-			+ "' WHERE C_Cash_ID=" + getC_Cash_ID();
-		int noLine = DB.executeUpdate (sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE C_CashLine SET Processed='")
+			.append((processed ? "Y" : "N"))
+			.append("' WHERE C_Cash_ID=").append(getC_Cash_ID());
+		int noLine = DB.executeUpdate (sql.toString(), get_TrxName());
 		m_lines = null;
 		log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
@@ -774,7 +780,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MCash[");
+		StringBuilder sb = new StringBuilder ("MCash[");
 		sb.append (get_ID ())
 			.append ("-").append (getName())
 			.append(", Balance=").append(getBeginningBalance())
@@ -789,7 +795,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getName());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")

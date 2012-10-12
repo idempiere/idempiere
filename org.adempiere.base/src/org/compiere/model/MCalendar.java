@@ -113,7 +113,7 @@ public class MCalendar extends X_C_Calendar
 	{
 		super(client.getCtx(), 0, client.get_TrxName());
 		setClientOrg(client);
-		StringBuilder msgset = new StringBuilder(client.getName()).append(" ").append(Msg.translate(client.getCtx(), "C_Calendar_ID"));
+		StringBuilder msgset = new StringBuilder().append(client.getName()).append(" ").append(Msg.translate(client.getCtx(), "C_Calendar_ID"));
 		setName(msgset.toString());
 	}	//	MCalendar
 	

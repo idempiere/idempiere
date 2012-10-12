@@ -112,13 +112,13 @@ public class Messagebox extends Window implements EventListener<Event>
 		Properties ctx = Env.getCtx();
 		lblMsg.setEncode(false);
 		lblMsg.setValue(msg);
-
-		btnOk.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "OK")));
+		// Invert - Unify  OK/Cancel IDEMPIERE-77
+		//btnOk.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "OK")));
 		btnOk.setImage("/images/Ok16.png");
 		btnOk.addEventListener(Events.ON_CLICK, this);
 		LayoutUtils.addSclass("action-text-button", btnOk);
 
-		btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "Cancel")));
+		//btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "Cancel")));
 		btnCancel.setImage("/images/Cancel16.png");
 		btnCancel.addEventListener(Events.ON_CLICK, this);
 		LayoutUtils.addSclass("action-text-button", btnCancel);

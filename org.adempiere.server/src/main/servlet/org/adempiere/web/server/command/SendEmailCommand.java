@@ -23,6 +23,7 @@ import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
+import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
@@ -31,8 +32,8 @@ import org.restlet.resource.ServerResource;
  * @author hengsin
  */
 public class SendEmailCommand extends ServerResource {
-	@Override
-	protected Representation post(Representation entity)
+	@Post
+	public Representation sendEmail(Representation entity)
 			throws ResourceException {
 		try {
 			HashMap<String, Serializable> map = RestletUtil.toObject(entity);

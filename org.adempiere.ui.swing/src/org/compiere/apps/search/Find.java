@@ -670,16 +670,16 @@ public final class Find extends CDialog
 		{
 			GridField field = m_findFields[c];
 			String columnName = field.getColumnName();
-			StringBuilder header = new StringBuilder(field.getHeader());
+			String header = field.getHeader();
 			if (header == null || header.length() == 0)
 			{
-				header = new StringBuilder(Msg.translate(Env.getCtx(), columnName));
+				header = Msg.translate(Env.getCtx(), columnName);
 				if (header == null || header.length() == 0)
 					continue;
 			}
 			if (field.isKey())
-				header.append((" (ID)"));
-			ValueNamePair pp = new ValueNamePair(columnName, header.toString());
+				header += (" (ID)");
+			ValueNamePair pp = new ValueNamePair(columnName, header);
 		//	System.out.println(pp + " = " + field);
 			items.add(pp);
 		}
@@ -1056,15 +1056,15 @@ public final class Find extends CDialog
 			Object value = ved.getValue();
 			if (value != null && value.toString().length() > 0)
 			{
-				StringBuilder ColumnName = new StringBuilder(((Component)ved).getName ());
-				msglog = new StringBuilder(ColumnName).append("=").append(value);
+				String ColumnName = ((Component)ved).getName ();
+				msglog = new StringBuilder().append(ColumnName).append("=").append(value);
 				log.fine(msglog.toString());
 				
 				// globalqss - Carlos Ruiz - 20060711
 				// fix a bug with virtualColumn + isSelectionColumn not yielding results
 				GridField field = getTargetMField(ColumnName.toString());
 				boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
-				StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
+				StringBuilder ColumnSQL = new StringBuilder().append(field.getColumnSQL(false));
                 //
                 // Be more permissive for String columns
                 if (isSearchLike(field))
@@ -1078,11 +1078,11 @@ public final class Find extends CDialog
                 }
                 //
 				if (value.toString().indexOf('%') != -1)
-					m_query.addRestriction(ColumnSQL.toString(), MQuery.LIKE, value, ColumnName.toString(), ved.getDisplay());
+					m_query.addRestriction(ColumnSQL.toString(), MQuery.LIKE, value, ColumnName, ved.getDisplay());
 				else if (isProductCategoryField && value instanceof Integer) 
 					m_query.addRestriction(getSubCategoryWhereClause(((Integer) value).intValue()));
 				else
-					m_query.addRestriction(ColumnSQL.toString(), MQuery.EQUAL, value, ColumnName.toString(), ved.getDisplay());
+					m_query.addRestriction(ColumnSQL.toString(), MQuery.EQUAL, value, ColumnName, ved.getDisplay());
 				/*
 				if (value.toString().indexOf('%') != -1)
 					m_query.addRestriction(ColumnName, MQuery.LIKE, value, ColumnName, ved.getDisplay());
@@ -1163,17 +1163,17 @@ public final class Find extends CDialog
 			Object column = advancedTable.getValueAt(row, INDEX_COLUMNNAME);
 			if (column == null)
 				continue;
-			StringBuilder ColumnName = new StringBuilder(column instanceof ValueNamePair ? 
-					((ValueNamePair)column).getValue() : column.toString());
-			StringBuilder infoName = new StringBuilder(column.toString());
+			String ColumnName = column instanceof ValueNamePair ? 
+					((ValueNamePair)column).getValue() : column.toString();
+			String infoName = column.toString();
 			//
 			GridField field = getTargetMField(ColumnName.toString());
 			if (field == null)
 				continue;
 			boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
-			StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
+			String ColumnSQL = field.getColumnSQL(false);
 			
-			StringBuilder lBrackets = new StringBuilder((String) advancedTable.getValueAt(row, INDEX_LEFTBRACKET));
+			String lBrackets = (String) advancedTable.getValueAt(row, INDEX_LEFTBRACKET);
 			if ( lBrackets != null )
 				openBrackets += lBrackets.length();
 			String rBrackets = (String) advancedTable.getValueAt(row, INDEX_RIGHTBRACKET);
@@ -1196,12 +1196,12 @@ public final class Find extends CDialog
 				if ( MQuery.OPERATORS[MQuery.EQUAL_INDEX].equals(op) 
 						||  MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].equals(op) )
 				{
-					m_query.addRestriction(ColumnSQL.toString(), Operator, null,
-							infoName.toString(), null, and, openBrackets);
+					m_query.addRestriction(ColumnSQL, Operator, null,
+							infoName, null, and, openBrackets);
 					
 					if (code.length() > 0)
 						code.append(SEGMENT_SEPARATOR);
-					code.append(ColumnName.toString())
+					code.append(ColumnName)
 					.append(FIELD_SEPARATOR)
 					.append(Operator)
 					.append(FIELD_SEPARATOR)
@@ -1241,8 +1241,8 @@ public final class Find extends CDialog
 				String infoDisplay_to = value2.toString();
 				if (parsedValue2 == null)
 					continue;
-				m_query.addRangeRestriction(ColumnSQL.toString(), parsedValue, parsedValue2,
-							infoName.toString(), infoDisplay, infoDisplay_to, and, openBrackets);
+				m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
+							infoName, infoDisplay, infoDisplay_to, and, openBrackets);
 			}
 			else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].equals(op)) {
 				if (!(parsedValue instanceof Integer)) {
@@ -1253,8 +1253,8 @@ public final class Find extends CDialog
 					.addRestriction(getSubCategoryWhereClause(((Integer) parsedValue).intValue()), and, openBrackets);
 			}
 			else
-				m_query.addRestriction(ColumnSQL.toString(), Operator, parsedValue,
-							infoName.toString(), infoDisplay, and, openBrackets);
+				m_query.addRestriction(ColumnSQL, Operator, parsedValue,
+							infoName, infoDisplay, and, openBrackets);
 			
 			if (code.length() > 0)
 				code.append(SEGMENT_SEPARATOR);
@@ -1276,17 +1276,17 @@ public final class Find extends CDialog
 		}
 		Object selected = fQueryName.getSelectedItem();
 		if (selected != null && saveQuery) {
-			StringBuilder name = new StringBuilder(selected.toString());
+			String name = selected.toString();
 			if (Util.isEmpty(name.toString(), true))
 			{
 				ADialog.warn(m_targetWindowNo, this, "FillMandatory", Msg.translate(Env.getCtx(), "Name"));
 				return;
 			}
-			MUserQuery uq = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID, name.toString());
+			MUserQuery uq = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID, name);
 			if (uq == null && code.length() > 0)
 			{				
 				uq = new MUserQuery (Env.getCtx(), 0, null);
-				uq.setName (name.toString());
+				uq.setName (name);
 				uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
 				uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx())); //red1 - [ 1798539 ] missing in Compiere delayed source :-)
 			}			
@@ -1294,11 +1294,11 @@ public final class Find extends CDialog
 			{
 				if (uq.delete(true))
 				{
-					ADialog.info (m_targetWindowNo, this, "Deleted", name.toString());
+					ADialog.info (m_targetWindowNo, this, "Deleted", name);
 					refreshUserQueries();
 				}
 				else
-					ADialog.warn (m_targetWindowNo, this, "DeleteError", name.toString());
+					ADialog.warn (m_targetWindowNo, this, "DeleteError", name);
 				return;
 			}
 			
@@ -1307,11 +1307,11 @@ public final class Find extends CDialog
 			//
 			if (uq.save())
 			{
-				ADialog.info (m_targetWindowNo, this, "Saved", name.toString());
+				ADialog.info (m_targetWindowNo, this, "Saved", name);
 				refreshUserQueries();
 			}
 			else
-				ADialog.warn (m_targetWindowNo, this, "SaveError", name.toString());
+				ADialog.warn (m_targetWindowNo, this, "SaveError", name);
 		}
 	}	//	cmd_save
 
@@ -1401,7 +1401,8 @@ public final class Find extends CDialog
 			}
 		}
 		log.fine(ret.toString());
-		return ret.toString() + productCategoryId;
+		StringBuilder msgreturn = new StringBuilder(ret.toString()).append(productCategoryId);
+		return msgreturn.toString();
 	}
 
 	/**
@@ -1472,7 +1473,7 @@ public final class Find extends CDialog
 				}
 				catch (Exception e)
 				{
-					StringBuilder msglog = new StringBuilder(in.toString()).append("(").append(in.getClass()).append(")").append(e);
+					StringBuilder msglog = new StringBuilder().append(in.toString()).append("(").append(in.getClass()).append(")").append(e);
 					log.log(Level.SEVERE, msglog.toString());
 					time = DisplayType.getDateFormat(dt).parse(in.toString()).getTime();
 				}

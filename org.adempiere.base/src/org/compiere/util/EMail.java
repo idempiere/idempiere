@@ -85,7 +85,7 @@ public final class EMail implements Serializable
 	public EMail (MClient client, String from, String to,
 		String subject, String message)
 	{
-		this (client.getCtx(), client.getSMTPHost(), from, to, subject, message);
+		this (client.getCtx(), client.getSMTPHost(), client.getSMTPPort(), client.isSecureSMTP(), from, to, subject, message, false);
 	}	//	EMail
 
 	/**
@@ -100,7 +100,7 @@ public final class EMail implements Serializable
 	public EMail (MClient client, String from, String to,
 		String subject, String message, boolean html)
 	{
-		this (client.getCtx(), client.getSMTPHost(), from, to, subject, message, html);
+		this (client.getCtx(), client.getSMTPHost(), client.getSMTPPort(), client.isSecureSMTP(), from, to, subject, message, html);
 	}	//	EMail
 
 	/**
@@ -115,7 +115,7 @@ public final class EMail implements Serializable
 	public EMail (Properties ctx, String smtpHost, String from, String to,
 		String subject, String message)
 	{
-		this(ctx, smtpHost, from, to, subject, message, false);
+		this(ctx, smtpHost, 0, false, from, to, subject, message, false);
 	}
 
 	/**
@@ -131,6 +131,26 @@ public final class EMail implements Serializable
 	public EMail (Properties ctx, String smtpHost, String from, String to,
 		String subject, String message, boolean html)
 	{
+	   this(ctx, smtpHost, 0, false, from, to, subject, message, html);
+	}
+
+	/**
+	 *	Full Constructor
+	 *	@param ctx context
+	 *  @param smtpHost The mail server
+	 *  @param smtpPort
+	 *  @param isSecureSmtp
+	 *  @param from Sender's EMail address
+	 *  @param to   Recipient EMail address
+	 *  @param subject  Subject of message
+	 *  @param message  The message
+	 *  @param html html email
+	 */
+
+	public EMail (Properties ctx, String smtpHost, int smtpPort, boolean isSecureSmtp, String from, String to,
+		String subject, String message, boolean html)
+	{
+		
 		setSmtpHost(smtpHost);
 		setFrom(from);
 		String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
@@ -150,7 +170,17 @@ public final class EMail implements Serializable
 				setMessageText (message);
 		}
 		m_valid = isValid (true);
+	    setSmtpPort(smtpPort);
+		setSecureSmtp(isSecureSmtp);
 	}	//	EMail
+	
+	private void setSecureSmtp(boolean isSecureSmtp) {
+		m_secureSmtp = isSecureSmtp;
+	}
+
+	private void setSmtpPort(int smtpPort) {
+		m_smtpPort = smtpPort;
+	}
 
 	/**	From Address				*/
 	private InternetAddress     m_from;
@@ -170,14 +200,14 @@ public final class EMail implements Serializable
 	private String  			m_messageHTML;
 	/**	Mail SMTP Server			*/
 	private String  			m_smtpHost;
-	/**	Mail SMTP Server Port		*/
-	// @TODO - make port configurable - private int  				m_smtpPort = 0;
-	/**	SMTP enable start TLS		*/
-	// @TODO - make tls configurable - private boolean 			m_smtpStarttlsEnable = false;
+	private int					m_smtpPort;
+	private boolean				m_secureSmtp;
+
+	
 	/**	Attachments					*/
 	private ArrayList<DataSource>	m_attachments;
 	/**	UserName and Password		*/
-	private EMailAuthenticator	m_auth = null;
+	private transient EMailAuthenticator	m_auth = null;
 	/**	Message						*/
 	private SMTPMessage 		m_msg = null;
 	/** Context - may be null		*/
@@ -192,7 +222,7 @@ public final class EMail implements Serializable
 	public static final String      SENT_OK = "OK";
 
 	/**	Logger							*/
-	protected static CLogger		log = CLogger.getCLogger (EMail.class);
+	protected transient static CLogger		log = CLogger.getCLogger (EMail.class);
 
 	/**
 	 *	Send Mail direct
@@ -201,6 +231,8 @@ public final class EMail implements Serializable
 	public String send ()
 	{
 		log.info("(" + m_smtpHost + ") " + m_from + " -> " + m_to);
+		log.info("(m_auth) " + m_auth);
+		
 		m_sentMsg = null;
 		//
 		if (!isValid(true))
@@ -224,10 +256,12 @@ public final class EMail implements Serializable
 		{
 			if (m_auth != null)		//	createAuthenticator was called
 				props.put("mail.smtp.auth", "true");
-			if (m_smtpHost.equalsIgnoreCase("smtp.gmail.com")) {
-				// TODO: make it configurable
-				// Enable gmail port and ttls - Hardcoded
-				props.put("mail.smtp.port", "587");
+			if (m_smtpPort > 0)
+			{
+				props.put("mail.smtp.port", String.valueOf(m_smtpPort));
+			}
+			if (m_secureSmtp)
+			{
 				props.put("mail.smtp.starttls.enable", "true");
 			}
 
@@ -247,6 +281,7 @@ public final class EMail implements Serializable
 			return e.toString();
 		}
 
+		Transport t = null;
 		try
 		{
 		//	m_msg = new MimeMessage(session);
@@ -283,7 +318,7 @@ public final class EMail implements Serializable
 		//	log.fine("message =" + m_msg);
 			//
 		//	Transport.send(msg);
-			Transport t = session.getTransport("smtp");
+			t = session.getTransport("smtp");
 		//	log.fine("transport=" + t);
 			t.connect();
 		//	t.connect(m_smtpHost, user, password);
@@ -379,6 +414,17 @@ public final class EMail implements Serializable
 			log.log(Level.SEVERE, "", e);
 			m_sentMsg = e.getLocalizedMessage();
 			return e.getLocalizedMessage();
+		}
+		finally
+		{
+			if(t != null) 
+			{
+				try {
+					t.close();					
+				} catch (Exception e) {
+				}
+				t = null;
+			}
 		}
 		//
 		if (CLogMgt.isLevelFinest())

@@ -176,7 +176,7 @@ public abstract class AbstractDocumentSearch {
 					}
 					// SearchDefinition with a special query
 				} else if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_QUERY)) {
-					sqlSO = new StringBuilder(msd.getQuery());
+					sqlSO = new StringBuilder().append(msd.getQuery());
 					pstmtSO = DB.prepareStatement(sqlSO.toString(), null);
 					// count '?' in statement
 					int count = 1;

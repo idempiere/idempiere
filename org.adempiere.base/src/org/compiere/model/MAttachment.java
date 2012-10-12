@@ -579,14 +579,14 @@ public class MAttachment extends X_AD_Attachment
 					FileChannel out = null;
 					try {
 						//create destination folder
-						StringBuilder msgfile = new StringBuilder(m_attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet());
+						StringBuilder msgfile = new StringBuilder().append(m_attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet());
 						final File destFolder = new File(msgfile.toString());
 						if(!destFolder.exists()){
 							if(!destFolder.mkdirs()){
 								log.warning("unable to create folder: " + destFolder.getPath());
 							}
 						}
-						msgfile = new StringBuilder(m_attachmentPathRoot).append(File.separator)
+						msgfile = new StringBuilder().append(m_attachmentPathRoot).append(File.separator)
 								.append(getAttachmentPathSnippet()).append(File.separator).append(entryFile.getName());
 						final File destFile = new File(msgfile.toString());
 						in = new FileInputStream(entryFile).getChannel();

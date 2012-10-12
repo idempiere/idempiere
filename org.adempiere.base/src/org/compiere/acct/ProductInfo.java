@@ -236,12 +236,12 @@ public class ProductInfo
 	 */
 	private BigDecimal getPriceList (MAcctSchema as, boolean onlyPOPriceList)
 	{
-		StringBuffer sql = new StringBuffer (
-			"SELECT pl.C_Currency_ID, pp.PriceList, pp.PriceStd, pp.PriceLimit "
-			+ "FROM M_PriceList pl, M_PriceList_Version plv, M_ProductPrice pp "
-			+ "WHERE pl.M_PriceList_ID = plv.M_PriceList_ID"
-			+ " AND plv.M_PriceList_Version_ID = pp.M_PriceList_Version_ID"
-			+ " AND pp.M_Product_ID=?");
+		StringBuilder sql = new StringBuilder (
+			"SELECT pl.C_Currency_ID, pp.PriceList, pp.PriceStd, pp.PriceLimit ")
+			.append("FROM M_PriceList pl, M_PriceList_Version plv, M_ProductPrice pp ")
+			.append("WHERE pl.M_PriceList_ID = plv.M_PriceList_ID")
+			.append(" AND plv.M_PriceList_Version_ID = pp.M_PriceList_Version_ID")
+			.append(" AND pp.M_Product_ID=?");
 		if (onlyPOPriceList)
 			sql.append(" AND pl.IsSOPriceList='N'");
 		sql.append(" ORDER BY pl.IsSOPriceList ASC, plv.ValidFrom DESC");

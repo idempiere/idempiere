@@ -148,8 +148,10 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}	
 	}	//	addDescription
 
 	/**
@@ -162,10 +164,10 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		String sql = "UPDATE C_BankStatementLine SET Processed='"
-			+ (processed ? "Y" : "N")
-			+ "' WHERE C_BankStatement_ID=" + getC_BankStatement_ID();
-		int noLine = DB.executeUpdate(sql, get_TrxName());
+		StringBuilder sql = new StringBuilder("UPDATE C_BankStatementLine SET Processed='")
+			.append((processed ? "Y" : "N"))
+			.append("' WHERE C_BankStatement_ID=").append(getC_BankStatement_ID());
+		int noLine = DB.executeUpdate(sql.toString(), get_TrxName());
 		m_lines = null;
 		log.fine("setProcessed - " + processed + " - Lines=" + noLine);
 	}	//	setProcessed
@@ -194,7 +196,8 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		return getBankAccount().getName() + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder().append(getBankAccount().getName()).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 	/**
@@ -205,7 +208,8 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder().append(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -460,16 +464,16 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			MBankStatementLine line = lines[i];
 			if (line.getStmtAmt().compareTo(Env.ZERO) != 0)
 			{
-				String description = Msg.getMsg(getCtx(), "Voided") + " ("
-					+ Msg.translate(getCtx(), "StmtAmt") + "=" + line.getStmtAmt();
+				StringBuilder description = new StringBuilder(Msg.getMsg(getCtx(), "Voided")).append(" (")
+					.append(Msg.translate(getCtx(), "StmtAmt")).append("=").append(line.getStmtAmt());
 				if (line.getTrxAmt().compareTo(Env.ZERO) != 0)
-					description += ", " + Msg.translate(getCtx(), "TrxAmt") + "=" + line.getTrxAmt();
+					description.append(", ").append(Msg.translate(getCtx(), "TrxAmt")).append("=").append(line.getTrxAmt());
 				if (line.getChargeAmt().compareTo(Env.ZERO) != 0)
-					description += ", " + Msg.translate(getCtx(), "ChargeAmt") + "=" + line.getChargeAmt();
+					description.append(", ").append(Msg.translate(getCtx(), "ChargeAmt")).append("=").append(line.getChargeAmt());
 				if (line.getInterestAmt().compareTo(Env.ZERO) != 0)
-					description += ", " + Msg.translate(getCtx(), "InterestAmt") + "=" + line.getInterestAmt();
-				description += ")";
-				line.addDescription(description);
+					description.append(", ").append(Msg.translate(getCtx(), "InterestAmt")).append("=").append(line.getInterestAmt());
+				description.append(")");
+				line.addDescription(description.toString());
 				//
 				line.setStmtAmt(Env.ZERO);
 				line.setTrxAmt(Env.ZERO);
@@ -585,7 +589,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getName());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")

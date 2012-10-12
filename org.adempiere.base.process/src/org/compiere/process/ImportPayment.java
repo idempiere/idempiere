@@ -92,7 +92,7 @@ public class ImportPayment extends SvrProcess
 		
 		StringBuilder sql = null;
 		int no = 0;
-		String clientCheck = " AND AD_Client_ID=" + ba.getAD_Client_ID();
+		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(ba.getAD_Client_ID());
 
 		//	****	Prepare	****
 

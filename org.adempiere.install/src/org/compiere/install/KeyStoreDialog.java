@@ -23,6 +23,7 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -86,10 +87,13 @@ public class KeyStoreDialog extends JDialog implements ActionListener
 	private JTextField 	fS = new JTextField(20);
 	private JLabel 		lC = new JLabel("(C) Country (2 Char)");
 	private JTextField 	fC = new JTextField(2);
-
-	private JButton		bOK = ConfirmPanel.createOKButton("OK");
-	private JButton		bCancel = ConfirmPanel.createCancelButton("Cancel");
+	// Invert OK/Cancel IDEMPIERE-77
+	private JButton		bOK = ConfirmPanel.createOKButton("");
+	private JButton		bCancel = ConfirmPanel.createCancelButton("");
 	private boolean		m_ok = false;
+	
+	
+
 	
 	/**
 	 * 	Static Layout
@@ -115,12 +119,14 @@ public class KeyStoreDialog extends JDialog implements ActionListener
 		getContentPane().add (panel, BorderLayout.CENTER);
 		//
 		JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		confirmPanel.add(bCancel);
+		// Invert OK/Cancel IDEMPIERE-77
 		confirmPanel.add(bOK);
+		confirmPanel.add(bCancel);
 		getContentPane().add (confirmPanel, BorderLayout.SOUTH);
 		//
-		bCancel.addActionListener(this);
 		bOK.addActionListener(this);
+		bCancel.addActionListener(this);
+
 	}	//	jbInit
 	
 	/**

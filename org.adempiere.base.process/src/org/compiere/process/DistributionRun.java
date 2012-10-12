@@ -208,7 +208,8 @@ public class DistributionRun extends SvrProcess
 			createOrders();
 		}
 		
-		return "@Created@ #" + m_counter;
+		StringBuilder msgreturn = new StringBuilder("@Created@ #").append(m_counter);
+		return msgreturn.toString();
 	}	//	doIt
 	
 
@@ -547,7 +548,7 @@ public class DistributionRun extends SvrProcess
 				product = MProduct.get (getCtx(), detail.getM_Product_ID());
 			if (p_IsTest)
 			{
-				StringBuilder msglog = new StringBuilder(bp.getName()).append(" - ").append(product.getName());
+				StringBuilder msglog = new StringBuilder().append(bp.getName()).append(" - ").append(product.getName());
 				addLog(0,null, detail.getActualAllocation(), msglog.toString());
 				continue;
 			}
@@ -571,7 +572,7 @@ public class DistributionRun extends SvrProcess
 				log.log(Level.SEVERE, "OrderLine not saved");
 				return false;
 			}
-			StringBuilder msglog = new StringBuilder(order.getDocumentNo()).append(": ").append(bp.getName()).append(" - ").append(product.getName());
+			StringBuilder msglog = new StringBuilder().append(order.getDocumentNo()).append(": ").append(bp.getName()).append(" - ").append(product.getName());
 			addLog(0,null, detail.getActualAllocation(), msglog.toString());
 		}
 		//	finish order
@@ -997,7 +998,7 @@ public class DistributionRun extends SvrProcess
 				product = MProduct.get (getCtx(), detail.getM_Product_ID());
 			if (p_IsTest)
 			{
-				StringBuilder msglog = new StringBuilder(bp.getName()).append(" - ").append(product.getName());
+				StringBuilder msglog = new StringBuilder().append(bp.getName()).append(" - ").append(product.getName());
 				addLog(0,null, detail.getActualAllocation(), msglog.toString());
 				continue;
 			}
@@ -1082,7 +1083,7 @@ public class DistributionRun extends SvrProcess
 				line.saveEx();
 				
 			}	
-			StringBuilder msglog = new StringBuilder(order.getDocumentNo()) 
+			StringBuilder msglog = new StringBuilder().append(order.getDocumentNo()) 
 					.append(": ").append(bp.getName()).append(" - ").append(product.getName());
 			addLog(0,null, detail.getActualAllocation(), msglog.toString());
 		}

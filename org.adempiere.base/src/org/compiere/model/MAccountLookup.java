@@ -191,7 +191,7 @@ public final class MAccountLookup extends Lookup implements Serializable
 		
 		for(MAccount account :accounts)
 		{
-			StringBuilder msglist = new StringBuilder(account.getCombination()).append(" - ") 
+			StringBuilder msglist = new StringBuilder().append(account.getCombination()).append(" - ") 
 												.append(account.getDescription());
 			list.add (new KeyNamePair(account.getC_ValidCombination_ID(), msglist.toString()));
 		}

@@ -157,12 +157,12 @@ public class Matcher
 	//	MMatchInv inv = new MMatchInv ();
 		int M_MatchInv_ID = DB.getNextID (AD_Client_ID, "M_MatchInv", m_trxName);
 		//
-		StringBuffer sql = new StringBuffer("INSERT INTO M_MatchInv ("
-			+ "M_MatchInv_ID, "
-			+ "AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy, "
-			+ "M_InOutLine_ID,C_InvoiceLine_ID, "
-			+ "M_Product_ID,DateTrx,Qty, "
-			+ "Processing,Processed,Posted) VALUES (")
+		StringBuilder sql = new StringBuilder("INSERT INTO M_MatchInv (")
+			.append("M_MatchInv_ID, ")
+			.append("AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy, ")
+			.append("M_InOutLine_ID,C_InvoiceLine_ID, ")
+			.append("M_Product_ID,DateTrx,Qty, ")
+			.append("Processing,Processed,Posted) VALUES (")
 			.append(M_MatchInv_ID).append(", ")
 			.append(AD_Client_ID).append(",").append(AD_Org_ID).append(",'Y',SysDate,0,SysDate,0, ")
 			.append(M_InOutLine_ID).append(",").append(C_InvoiceLine_ID).append(", ")

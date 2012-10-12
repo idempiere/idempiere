@@ -63,7 +63,7 @@ public class BOMFlagValidate extends SvrProcess {
 
 			while (rs.next())
 			{
-				StringBuilder msglog=new StringBuilder(rs.getString(1)).append(" BOM without BOM lines");
+				StringBuilder msglog=new StringBuilder().append(rs.getString(1)).append(" BOM without BOM lines");
 				addLog(0, null, null, msglog.toString(), MProduct.Table_ID, rs.getInt(2));
 			}
 		} catch (SQLException e) {
@@ -119,7 +119,7 @@ public class BOMFlagValidate extends SvrProcess {
 
 			while (rs.next())
 			{
-				StringBuilder msglog = new StringBuilder(rs.getString(1)).append(" not BOM with BOM lines");
+				StringBuilder msglog = new StringBuilder().append(rs.getString(1)).append(" not BOM with BOM lines");
 				addLog(0, null, null, msglog.toString(), MProduct.Table_ID, rs.getInt(2));
 			}
 		} catch (SQLException e) {

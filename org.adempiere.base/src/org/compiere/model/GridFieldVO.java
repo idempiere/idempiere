@@ -676,7 +676,7 @@ public class GridFieldVO implements Serializable
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MFieldVO[");
+		StringBuilder sb = new StringBuilder ("MFieldVO[");
 		sb.append(AD_Column_ID).append("-").append(ColumnName)
 			.append ("]");
 		return sb.toString ();

@@ -227,10 +227,11 @@ public class DocManager {
 		if (tableName == null)
 		{
 			s_log.severe("Table not a financial document. AD_Table_ID=" + AD_Table_ID);
-			return "Table not a financial document. AD_Table_ID="+AD_Table_ID;
+			StringBuilder msgreturn = new StringBuilder("Table not a financial document. AD_Table_ID=").append(AD_Table_ID);
+			return msgreturn.toString();
 		}
 
-		StringBuffer sql = new StringBuffer("SELECT * FROM ")
+		StringBuilder sql = new StringBuilder("SELECT * FROM ")
 		.append(tableName)
 		.append(" WHERE ").append(tableName).append("_ID=? AND Processed='Y'");
 		PreparedStatement pstmt = null;
@@ -366,7 +367,7 @@ public class DocManager {
 	private final static boolean save (String trxName, int AD_Table_ID, int Record_ID, String status)
 	{
 		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
-		StringBuffer sql = new StringBuffer("UPDATE ");
+		StringBuilder sql = new StringBuilder("UPDATE ");
 		sql.append(table.getTableName()).append(" SET Posted='").append(status)
 			.append("',Processing='N' ")
 			.append("WHERE ")

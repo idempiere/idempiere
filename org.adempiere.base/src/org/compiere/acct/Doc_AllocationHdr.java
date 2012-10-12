@@ -747,9 +747,9 @@ public class Doc_AllocationHdr extends Doc
 		if (invoiceSource == null || invoiceAccounted == null)
 			return "Gain/Loss - Invoice not posted yet";
 		//
-		String description = "Invoice=(" + invoice.getC_Currency_ID() + ")" + invoiceSource + "/" + invoiceAccounted
-			+ " - Allocation=(" + getC_Currency_ID() + ")" + allocationSource + "/" + allocationAccounted;
-		log.fine(description);
+		StringBuilder description = new StringBuilder("Invoice=(").append(invoice.getC_Currency_ID()).append(")").append(invoiceSource).append("/").append(invoiceAccounted)
+			.append(" - Allocation=(").append(getC_Currency_ID()).append(")").append(allocationSource).append("/").append(allocationAccounted);
+		log.fine(description.toString());
 		//	Allocation not Invoice Currency
 		if (getC_Currency_ID() != invoice.getC_Currency_ID())
 		{
@@ -759,10 +759,10 @@ public class Doc_AllocationHdr extends Doc
 				invoice.getC_ConversionType_ID(), invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
 			if (allocationSourceNew == null)
 				return "Gain/Loss - No Conversion from Allocation->Invoice";
-			String d2 = "Allocation=(" + getC_Currency_ID() + ")" + allocationSource
-				+ "->(" + invoice.getC_Currency_ID() + ")" + allocationSourceNew;
-			log.fine(d2);
-			description += " - " + d2;
+			StringBuilder d2 = new StringBuilder("Allocation=(").append(getC_Currency_ID()).append(")").append(allocationSource)
+				.append("->(").append(invoice.getC_Currency_ID()).append(")").append(allocationSourceNew);
+			log.fine(d2.toString());
+			description.append(" - ").append(d2);
 			allocationSource = allocationSourceNew;
 		}
 
@@ -771,9 +771,9 @@ public class Doc_AllocationHdr extends Doc
 		if (allocationSource.compareTo(invoiceSource) == 0)
 		{
 			acctDifference = invoiceAccounted.subtract(allocationAccounted);	//	gain is negative
-			String d2 = "(full) = " + acctDifference;
-			log.fine(d2);
-			description += " - " + d2;
+			StringBuilder d2 = new StringBuilder("(full) = ").append(acctDifference);
+			log.fine(d2.toString());
+			description.append(" - ").append(d2);
 		}
 		else	//	partial or MC
 		{
@@ -790,9 +790,9 @@ public class Doc_AllocationHdr extends Doc
 			int precision = as.getStdPrecision();
 			if (acctDifference.scale() > precision)
 				acctDifference = acctDifference.setScale(precision, BigDecimal.ROUND_HALF_UP);
-			String d2 = "(partial) = " + acctDifference + " - Multiplier=" + multiplier;
-			log.fine(d2);
-			description += " - " + d2;
+			StringBuilder d2 = new StringBuilder("(partial) = ").append(acctDifference).append(" - Multiplier=").append(multiplier);
+			log.fine(d2.toString());
+			description.append(" - ").append(d2);
 		}
 
 		if (acctDifference.signum() == 0)
@@ -808,10 +808,10 @@ public class Doc_AllocationHdr extends Doc
 		{
 			FactLine fl = fact.createLine (line, loss, gain,
 				as.getC_Currency_ID(), acctDifference);
-			fl.setDescription(description);
+			fl.setDescription(description.toString());
 			fact.createLine (line, acct,
 				as.getC_Currency_ID(), acctDifference.negate());
-			fl.setDescription(description);
+			fl.setDescription(description.toString());
 		}
 		else
 		{

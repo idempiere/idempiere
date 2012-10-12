@@ -130,6 +130,10 @@ public final class DisplayType
 	/** Default Amount Precision    */
 	private static final int    AMOUNT_FRACTION = 2;
 
+	public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
+	public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (DisplayType.class);
 
@@ -398,7 +402,7 @@ public final class DisplayType
 	 */
 	static public SimpleDateFormat getDateFormat_JDBC()
 	{
-		return new SimpleDateFormat ("yyyy-MM-dd");
+		return new SimpleDateFormat (DEFAULT_DATE_FORMAT);
 	}   //  getDateFormat_JDBC
 
 	/**
@@ -407,8 +411,13 @@ public final class DisplayType
 	 */
 	static public SimpleDateFormat getTimestampFormat_Default()
 	{
-		return new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		return new SimpleDateFormat (DEFAULT_TIMESTAMP_FORMAT);
 	}   //  getTimestampFormat_JDBC
+
+	static public SimpleDateFormat getTimeFormat_Default()
+	{
+		return new SimpleDateFormat (DEFAULT_TIME_FORMAT);
+	}   //  getTimeFormat_Default
 
 	/**
 	 *  Return Storage Class.

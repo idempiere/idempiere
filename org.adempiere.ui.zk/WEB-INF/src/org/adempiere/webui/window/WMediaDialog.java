@@ -180,14 +180,14 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		southPane.appendChild(confirmPanel);
 		southPane.setHeight("30px");
 		
-		bCancel.setImage("/images/Cancel24.png");
-		bCancel.addEventListener(Events.ON_CLICK, this);
-
 		bOk.setImage("/images/Ok24.png");
 		bOk.addEventListener(Events.ON_CLICK, this);
+				
+		bCancel.setImage("/images/Cancel24.png");
+		bCancel.addEventListener(Events.ON_CLICK, this);
 		
-		confirmPanel.appendChild(bCancel);
 		confirmPanel.appendChild(bOk);
+		confirmPanel.appendChild(bCancel);
 		
 		addEventListener(Events.ON_UPLOAD, this);
 	}

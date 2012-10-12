@@ -181,7 +181,8 @@ public class AssetDelivery extends SvrProcess
 		
 		log.info("Count=" + count + ", Errors=" + errors + ", Reminder=" + reminders
 			+ " - " + (System.currentTimeMillis()-start) + "ms");
-		return "@Sent@=" + count + " - @Errors@=" + errors;
+		StringBuilder msgreturn = new StringBuilder("@Sent@=").append(count).append(" - @Errors@=").append(errors);
+		return msgreturn.toString();
 	}	//	doIt
 
 
@@ -218,8 +219,10 @@ public class AssetDelivery extends SvrProcess
 		}
 		String msg = email.send();
 		new MUserMail(m_MailText, asset.getAD_User_ID(), email).saveEx();
-		if (!EMail.SENT_OK.equals(msg))
-			return "** Not delivered: " + user.getEMail() + " - " + msg;
+		if (!EMail.SENT_OK.equals(msg)){
+			StringBuilder msgreturn = new StringBuilder("** Not delivered: ").append(user.getEMail()).append(" - ").append(msg);
+			return msgreturn.toString();
+		}	
 		//
 		return user.getEMail();
 	}	//	sendNoGuaranteeMail
@@ -285,8 +288,10 @@ public class AssetDelivery extends SvrProcess
 		}
 		String msg = email.send();
 		new MUserMail(m_MailText, asset.getAD_User_ID(), email).saveEx();
-		if (!EMail.SENT_OK.equals(msg))
-			return "** Not delivered: " + user.getEMail() + " - " + msg;
+		if (!EMail.SENT_OK.equals(msg)){
+			StringBuilder msgreturn = new StringBuilder("** Not delivered: ").append(user.getEMail()).append(" - ").append(msg);
+			return msgreturn.toString();
+		}	
 
 		MAssetDelivery ad = asset.confirmDelivery(email, user.getAD_User_ID());
 		ad.saveEx();
@@ -294,7 +299,8 @@ public class AssetDelivery extends SvrProcess
 		//
 		log.fine((System.currentTimeMillis()-start) + " ms");
 		//	success
-		return user.getEMail() + " - " + asset.getProductVersionNo();
+		StringBuilder msgreturn = new StringBuilder().append(user.getEMail()).append(" - ").append(asset.getProductVersionNo());
+		return msgreturn.toString();
 	}	//	deliverIt
 
 }	//	AssetDelivery

@@ -120,7 +120,8 @@ public class InvoiceGenerateRMA extends SvrProcess
                 log.log(Level.SEVERE, "Could not close prepared statement");
             }
         }
-        return "@Created@ = " + m_created;
+        StringBuilder msgreturn = new StringBuilder("@Created@ = ").append(m_created);
+        return msgreturn.toString();
     }
     
     private int getInvoiceDocTypeId(int M_RMA_ID)
@@ -203,7 +204,7 @@ public class InvoiceGenerateRMA extends SvrProcess
         	log.log(Level.WARNING, msglog.toString());
         }
         
-        StringBuilder processMsg = new StringBuilder(invoice.getDocumentNo());
+        StringBuilder processMsg = new StringBuilder().append(invoice.getDocumentNo());
         
         if (!invoice.processIt(p_docAction))
         {

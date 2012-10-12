@@ -43,6 +43,15 @@
       </exporter>
    </extension>
    <extension
+         id="org.adempiere.impexp.GridTabCSVExporter"
+         name="Grid data CSV exporter"
+         point="org.adempiere.base.IGridTabExporter">
+      <exporter
+            class="org.adempiere.impexp.GridTabCSVExporter"
+            priority="0">
+      </exporter>
+   </extension>
+   <extension
          id="org.adempiere.base.ModelGeneratorApplication"
          name="Model Generator"
          point="org.eclipse.core.runtime.applications">

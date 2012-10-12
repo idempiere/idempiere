@@ -127,7 +127,8 @@ public class UUIDGenerator extends SvrProcess {
 		} finally {
 			DB.close(rs,stmt);
 		}
-		return count + " table altered";
+		StringBuilder msgreturn = new StringBuilder().append(count).append(" table altered");
+		return msgreturn.toString();
 	}
 
 	public static void updateUUID(MColumn column, String trxName) {
@@ -241,13 +242,13 @@ public class UUIDGenerator extends SvrProcess {
 				while (rs.next())
 				{
 					noColumns++;
-					StringBuilder columnName = new StringBuilder(rs.getString ("COLUMN_NAME"));
+					StringBuilder columnName = new StringBuilder().append(rs.getString ("COLUMN_NAME"));
 					if (!columnName.toString().equalsIgnoreCase(column.getColumnName()))
 						continue;
 
 					//	update existing column
 					boolean notNull = DatabaseMetaData.columnNoNulls == rs.getInt("NULLABLE");
-					sql = new StringBuilder(column.getSQLModify(table, column.isMandatory() != notNull));
+					sql = new StringBuilder().append(column.getSQLModify(table, column.isMandatory() != notNull));
 					break;
 				}
 			}
@@ -282,10 +283,10 @@ public class UUIDGenerator extends SvrProcess {
 
 			if (no != -1)
 			{
-				StringBuilder indexName = new StringBuilder(column.getColumnName()).append("_idx");
+				StringBuilder indexName = new StringBuilder().append(column.getColumnName()).append("_idx");
 				if (indexName.length() > 30) {
 					int i = indexName.length() - 31;
-					indexName = new StringBuilder(column.getColumnName().substring(0, column.getColumnName().length() - i));
+					indexName = new StringBuilder().append(column.getColumnName().substring(0, column.getColumnName().length() - i));
 					indexName.append("_uu_idx");
 				}
 				StringBuilder indexSql = new StringBuilder("CREATE UNIQUE INDEX ").append(indexName).append(" ON ").append(tableName)

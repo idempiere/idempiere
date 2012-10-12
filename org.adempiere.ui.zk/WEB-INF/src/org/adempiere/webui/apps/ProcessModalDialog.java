@@ -174,13 +174,15 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		Hbox hbox = new Hbox();
 		hbox.setWidth("100%");
 		hbox.setStyle("margin-top: 10px");
-		Button btn = new Button("Ok");
+		Button btn = new Button("");
+		btn.setImage("/images/Ok24.png");
 		LayoutUtils.addSclass("action-text-button", btn);
 		btn.setId("Ok");
 		btn.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btn);
 
-		btn = new Button("Cancel");
+		btn = new Button("");
+		btn.setImage("/images/Cancel24.png");
 		btn.setId("Cancel");
 		LayoutUtils.addSclass("action-text-button", btn);
 		btn.addEventListener(Events.ON_CLICK, this);

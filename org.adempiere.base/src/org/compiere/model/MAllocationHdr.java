@@ -649,7 +649,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		StringBuilder msgreturn = new StringBuilder(Msg.getElement(getCtx(), "C_AllocationHdr_ID")).append(" ").append(getDocumentNo());
+		StringBuilder msgreturn = new StringBuilder().append(Msg.getElement(getCtx(), "C_AllocationHdr_ID")).append(" ").append(getDocumentNo());
 		return msgreturn.toString();
 	}	//	getDocumentInfo
 
@@ -661,7 +661,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	{
 		try
 		{
-			StringBuilder msgctf = new StringBuilder(get_TableName()).append(get_ID()).append("_");
+			StringBuilder msgctf = new StringBuilder().append(get_TableName()).append(get_ID()).append("_");
 			File temp = File.createTempFile(msgctf.toString(), ".pdf");
 			return createPDF (temp);
 		}

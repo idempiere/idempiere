@@ -413,7 +413,8 @@ public class GridWindow implements Serializable
 	 */
 	public String toString()
 	{
-		return "MWindow[" + m_vo.WindowNo + "," + m_vo.Name + " (" + m_vo.AD_Window_ID + ")]";
+		StringBuilder msgreturn = new StringBuilder("MWindow[").append(m_vo.WindowNo).append(",").append(m_vo.Name).append(" (").append(m_vo.AD_Window_ID).append(")]");
+		return msgreturn.toString();
 	}   //  toString
 
 	/**
@@ -423,15 +424,15 @@ public class GridWindow implements Serializable
 	 */
 	public WebDoc getHelpDoc (boolean javaClient)
 	{
-		String title = Msg.getMsg(Env.getCtx(), "Window") + ": " + getName();
+		StringBuilder title = new StringBuilder(Msg.getMsg(Env.getCtx(), "Window")).append(": ").append(getName());
 		WebDoc doc = null;
 		if (javaClient)
 		{
-			doc = WebDoc.create (false, title, javaClient);
+			doc = WebDoc.create (false, title.toString(), javaClient);
 		}
 		else	//	HTML
 		{
-			doc = WebDoc.createPopup (title);
+			doc = WebDoc.createPopup (title.toString());
 			doc.addPopupClose(Env.getCtx());
 		}
 		

@@ -369,7 +369,7 @@ public class TableCreateColumns extends SvrProcess
 			//	Done
 			if (column.save ())
 			{
-				StringBuilder msglog = new StringBuilder(table.getTableName()).append(".").append(column.getColumnName());
+				StringBuilder msglog = new StringBuilder().append(table.getTableName()).append(".").append(column.getColumnName());
 				addLog (0, null, null, msglog.toString());
 				m_count++;
 			}

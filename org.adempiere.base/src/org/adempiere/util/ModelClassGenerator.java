@@ -135,22 +135,22 @@ public class ModelClassGenerator
 		if (tableName == null)
 			throw new RuntimeException ("TableName not found for ID=" + AD_Table_ID);
 		//
-		String accessLevelInfo = accessLevel + " ";
+		StringBuilder accessLevelInfo = new StringBuilder().append(accessLevel).append(" ");
 		if (accessLevel >= 4 )
-			accessLevelInfo += "- System ";
+			accessLevelInfo.append("- System ");
 		if (accessLevel == 2 || accessLevel == 3 || accessLevel == 6 || accessLevel == 7)
-			accessLevelInfo += "- Client ";
+			accessLevelInfo.append("- Client ");
 		if (accessLevel == 1 || accessLevel == 3 || accessLevel == 5 || accessLevel == 7)
-			accessLevelInfo += "- Org ";
+			accessLevelInfo.append("- Org ");
 
 		//
-		String keyColumn = tableName + "_ID";
-		String className = "X_" + tableName;
+		StringBuilder keyColumn = new StringBuilder().append(tableName).append("_ID");
+		StringBuilder className = new StringBuilder("X_").append(tableName);
 		//
 		StringBuilder start = new StringBuilder()
 			.append (ModelInterfaceGenerator.COPY)
 			.append ("/** Generated Model - DO NOT CHANGE */").append(NL)
-			.append("package " + packageName + ";").append(NL)
+			.append("package ").append(packageName).append(";").append(NL)
 			.append(NL)
 		;
 
@@ -248,12 +248,12 @@ public class ModelClassGenerator
 			 .append("    }").append(NL)
 		;
 
-		StringBuilder end = new StringBuilder ("}");
+		String end = "}";
 		//
 		sb.insert(0, start);
 		sb.append(end);
 
-		return className;
+		return className.toString();
 	}
 
 	/**
@@ -398,10 +398,10 @@ public class ModelClassGenerator
 			if (fieldName != null && referenceClassName != null)
 			{
 				sb.append(NL)
-				.append("\tpublic "+referenceClassName+" get").append(fieldName).append("() throws RuntimeException").append(NL)
+				.append("\tpublic ").append(referenceClassName).append(" get").append(fieldName).append("() throws RuntimeException").append(NL)
 				.append("    {").append(NL)
-				.append("\t\treturn ("+referenceClassName+")MTable.get(getCtx(), "+referenceClassName+".Table_Name)").append(NL)
-				.append("\t\t\t.getPO(get"+columnName+"(), get_TrxName());")
+				.append("\t\treturn (").append(referenceClassName).append(")MTable.get(getCtx(), ").append(referenceClassName).append(".Table_Name)").append(NL)
+				.append("\t\t\t.getPO(get").append(columnName).append("(), get_TrxName());")
 				/**/
 				.append("\t}").append(NL)
 				;
@@ -701,9 +701,9 @@ public class ModelClassGenerator
 	 */
 	private StringBuilder createKeyNamePair (String columnName, int displayType)
 	{
-		String method = "get" + columnName + "()";
+		StringBuilder method = new StringBuilder("get").append(columnName).append("()");
 		if (displayType != DisplayType.String)
-			method = "String.valueOf(" + method + ")";
+			method = new StringBuilder("String.valueOf(").append(method).append(")");
 
 		StringBuilder sb = new StringBuilder(NL)
 			.append("    /** Get Record ID/ColumnName").append(NL)
@@ -757,7 +757,8 @@ public class ModelClassGenerator
 			fw.close ();
 			float size = out.length();
 			size /= 1024;
-			System.out.println(out.getAbsolutePath() + " - " + size + " kB");
+			StringBuilder msgout = new StringBuilder().append(out.getAbsolutePath()).append(" - ").append(size).append(" kB");
+			System.out.println(msgout.toString());
 		}
 		catch (Exception ex)
 		{
@@ -837,9 +838,9 @@ public class ModelClassGenerator
 		if (tableName == null || tableName.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify table name");
 
-		String tableLike = tableName.trim();
-		if (!tableLike.startsWith("'") || !tableLike.endsWith("'"))
-			tableLike = "'" + tableLike + "'";
+		StringBuilder tableLike = new StringBuilder().append(tableName.trim());
+		if (!tableLike.toString().startsWith("'") || !tableLike.toString().endsWith("'"))
+			tableLike = new StringBuilder("'").append(tableLike).append("'");
 
 		StringBuilder entityTypeFilter = new StringBuilder();
 		if (entityType != null && entityType.trim().length() > 0)
@@ -848,9 +849,9 @@ public class ModelClassGenerator
 			StringTokenizer tokenizer = new StringTokenizer(entityType, ",");
 			int i = 0;
 			while(tokenizer.hasMoreTokens()) {
-				String token = tokenizer.nextToken().trim();
-				if (!token.startsWith("'") || !token.endsWith("'"))
-					token = "'" + token + "'";
+				StringBuilder token = new StringBuilder().append(tokenizer.nextToken().trim());
+				if (!token.toString().startsWith("'") || !token.toString().endsWith("'"))
+					token = new StringBuilder("'").append(token).append("'");
 				if (i > 0)
 					entityTypeFilter.append(",");
 				entityTypeFilter.append(token);
@@ -863,18 +864,18 @@ public class ModelClassGenerator
 			entityTypeFilter.append("EntityType IN ('U','A')");
 		}
 
-		String directory = sourceFolder.trim();
+		StringBuilder directory = new StringBuilder().append(sourceFolder.trim());
 		String packagePath = packageName.replace(".", File.separator);
-		if (!(directory.endsWith("/") || directory.endsWith("\\")))
+		if (!(directory.toString().endsWith("/") || directory.toString().endsWith("\\")))
 		{
-			directory = directory + File.separator;
+			directory.append(File.separator);
 		}
 		if (File.separator.equals("/"))
-			directory = directory.replaceAll("[\\\\]", File.separator);
+			directory = new StringBuilder(directory.toString().replaceAll("[\\\\]", File.separator));
 		else
-			directory = directory.replaceAll("[/]", File.separator);
-		directory = directory + packagePath;
-		file = new File(directory);
+			directory = new StringBuilder(directory.toString().replaceAll("[/]", File.separator));
+		directory.append(packagePath);
+		file = new File(directory.toString());
 		if (!file.exists())
 			file.mkdirs();
 
@@ -899,7 +900,7 @@ public class ModelClassGenerator
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				new ModelClassGenerator(rs.getInt(1), directory, packageName);
+				new ModelClassGenerator(rs.getInt(1), directory.toString(), packageName);
 				count++;
 			}
 		}

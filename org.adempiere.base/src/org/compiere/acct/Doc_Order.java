@@ -282,7 +282,7 @@ public class Doc_Order extends Doc
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
-		StringBuffer sb = new StringBuffer (" [");
+		StringBuilder sb = new StringBuilder (" [");
 		//  Total
 		retValue = retValue.add(getAmount(Doc.AMTTYPE_Gross));
 		sb.append(getAmount(Doc.AMTTYPE_Gross));
@@ -461,7 +461,7 @@ public class Doc_Order extends Doc
 		if (ci.getC_AcctSchema1_ID() != as.getC_AcctSchema_ID())
 			return;
 
-		StringBuffer sql = new StringBuffer (
+		StringBuilder sql = new StringBuilder (
 			"UPDATE M_Product_PO po ")
 			.append("SET PriceLastPO = (SELECT currencyConvert(ol.PriceActual,ol.C_Currency_ID,po.C_Currency_ID,o.DateOrdered,o.C_ConversionType_ID,o.AD_Client_ID,o.AD_Org_ID) ")
 			.append("FROM C_Order o, C_OrderLine ol ")
@@ -479,11 +479,11 @@ public class Doc_Order extends Doc
 						.append(" AND po.M_Product_ID=ol1.M_Product_ID AND po.C_BPartner_ID=o1.C_BPartner_ID")
 						.append("  AND o1.C_Order_ID=").append(get_ID()).append(") ");
 			sql.append("  AND o.C_Order_ID=").append(get_ID()).append(") ")
-			.append("WHERE EXISTS (SELECT * "
-			+ "FROM C_Order o, C_OrderLine ol "
-			+ "WHERE o.C_Order_ID=ol.C_Order_ID"
-			+ " AND po.M_Product_ID=ol.M_Product_ID AND po.C_BPartner_ID=o.C_BPartner_ID"
-			+ " AND o.C_Order_ID=").append(get_ID()).append(")");
+			.append("WHERE EXISTS (SELECT * ")
+			.append("FROM C_Order o, C_OrderLine ol ")
+			.append("WHERE o.C_Order_ID=ol.C_Order_ID")
+			.append(" AND po.M_Product_ID=ol.M_Product_ID AND po.C_BPartner_ID=o.C_BPartner_ID")
+			.append(" AND o.C_Order_ID=").append(get_ID()).append(")");
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		log.fine("Updated=" + no);
 	}	//	updateProductPO

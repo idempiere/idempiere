@@ -76,7 +76,7 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (acct == null || acct.get_ID() == 0)
 			throw new AdempiereSystemError("Default Not Found - C_AcctSchema_ID=" + p_C_AcctSchema_ID);
 		
-		StringBuilder sql;
+		StringBuilder sql = null;
 		int updated = 0;
 		int created = 0;
 		int updatedTotal = 0;

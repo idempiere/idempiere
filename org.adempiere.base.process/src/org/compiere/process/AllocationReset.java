@@ -111,7 +111,8 @@ public class AllocationReset extends SvrProcess
 			if (delete(hdr))
 				count++;
 			m_trx.close();
-			return "@Deleted@ #" + count;
+			StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
+			return msgreturn.toString();
 		}
 		
 		//	Selection
@@ -171,7 +172,8 @@ public class AllocationReset extends SvrProcess
 			rs = null; pstmt = null;
 		}
 		m_trx.close();
-		return "@Deleted@ #" + count;
+		StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
+		return msgreturn.toString();
 	}	//	doIt
 
 	

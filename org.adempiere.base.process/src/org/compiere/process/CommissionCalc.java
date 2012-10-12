@@ -89,7 +89,7 @@ public class CommissionCalc extends SvrProcess
 		comRun.setStartDate(p_StartDate);		
 		//	01-Jan-2000 - 31-Jan-2001 - USD
 		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.Date);
-		StringBuilder description = new StringBuilder(format.format(p_StartDate)) 
+		StringBuilder description = new StringBuilder().append(format.format(p_StartDate)) 
 			.append(" - ").append(format.format(m_EndDate))
 			.append(" - ").append(MCurrency.getISO_Code(getCtx(), m_com.getC_Currency_ID()));
 		comRun.setDescription(description.toString());

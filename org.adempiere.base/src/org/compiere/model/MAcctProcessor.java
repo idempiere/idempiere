@@ -94,7 +94,7 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	{
 		this (client.getCtx(), 0, client.get_TrxName());
 		setClientOrg(client);
-		StringBuilder msgset = new StringBuilder(client.getName()).append(" - ") 
+		StringBuilder msgset = new StringBuilder().append(client.getName()).append(" - ") 
 							.append(Msg.translate(getCtx(), "C_AcctProcessor_ID"));
 		setName (msgset.toString());
 		setSupervisor_ID (Supervisor_ID);

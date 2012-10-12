@@ -219,7 +219,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public static String getPDFFileName (String documentDir, int C_Invoice_ID)
 	{
-		StringBuffer sb = new StringBuffer (documentDir);
+		StringBuilder sb = new StringBuilder (documentDir);
 		if (sb.length() == 0)
 			sb.append(".");
 		if (!sb.toString().endsWith(File.separator))
@@ -825,8 +825,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		String desc = getDescription();
 		if (desc == null)
 			setDescription(description);
-		else
-			setDescription(desc + " | " + description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}
 	}	//	addDescription
 
 	/**
@@ -851,11 +853,14 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		super.setProcessed (processed);
 		if (get_ID() == 0)
 			return;
-		String set = "SET Processed='"
-			+ (processed ? "Y" : "N")
-			+ "' WHERE C_Invoice_ID=" + getC_Invoice_ID();
-		int noLine = DB.executeUpdate("UPDATE C_InvoiceLine " + set, get_TrxName());
-		int noTax = DB.executeUpdate("UPDATE C_InvoiceTax " + set, get_TrxName());
+		StringBuilder set = new StringBuilder("SET Processed='")
+		.append((processed ? "Y" : "N"))
+		.append("' WHERE C_Invoice_ID=").append(getC_Invoice_ID());
+		
+		StringBuilder msgdb = new StringBuilder("UPDATE C_InvoiceLine ").append(set);
+		int noLine = DB.executeUpdate(msgdb.toString(), get_TrxName());
+		msgdb = new StringBuilder("UPDATE C_InvoiceTax ").append(set);
+		int noTax = DB.executeUpdate(msgdb.toString(), get_TrxName());
 		m_lines = null;
 		m_taxes = null;
 		log.fine(processed + " - Lines=" + noLine + ", Tax=" + noTax);
@@ -1021,7 +1026,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MInvoice[")
+		StringBuilder sb = new StringBuilder ("MInvoice[")
 			.append(get_ID()).append("-").append(getDocumentNo())
 			.append(",GrandTotal=").append(getGrandTotal());
 		if (m_lines != null)
@@ -1037,7 +1042,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		return dt.getName() + " " + getDocumentNo();
+		StringBuilder msgreturn = new StringBuilder().append(dt.getName()).append(" ").append(getDocumentNo());
+		return msgreturn.toString();
 	}	//	getDocumentInfo
 
 
@@ -1054,12 +1060,12 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 		if (is_ValueChanged("AD_Org_ID"))
 		{
-			String sql = "UPDATE C_InvoiceLine ol"
-				+ " SET AD_Org_ID ="
-					+ "(SELECT AD_Org_ID"
-					+ " FROM C_Invoice o WHERE ol.C_Invoice_ID=o.C_Invoice_ID) "
-				+ "WHERE C_Invoice_ID=" + getC_Invoice_ID();
-			int no = DB.executeUpdate(sql, get_TrxName());
+			StringBuilder sql = new StringBuilder("UPDATE C_InvoiceLine ol")
+				.append(" SET AD_Org_ID =")
+					.append("(SELECT AD_Org_ID")
+					.append(" FROM C_Invoice o WHERE ol.C_Invoice_ID=o.C_Invoice_ID) ")
+				.append("WHERE C_Invoice_ID=").append(getC_Invoice_ID());
+			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			log.fine("Lines -> #" + no);
 		}
 		return true;
@@ -1161,7 +1167,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	public static void setIsPaid (Properties ctx, int C_BPartner_ID, String trxName)
 	{
 		List<Object> params = new ArrayList<Object>();
-		StringBuffer whereClause = new StringBuffer("IsPaid='N' AND DocStatus IN ('CO','CL')");
+		StringBuilder whereClause = new StringBuilder("IsPaid='N' AND DocStatus IN ('CO','CL')");
 		if (C_BPartner_ID > 1)
 		{
 			whereClause.append(" AND C_BPartner_ID=?");
@@ -1255,7 +1261,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		try
 		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
+			StringBuilder msgfile = new StringBuilder().append(get_TableName()).append(get_ID()).append("_");
+			File temp = File.createTempFile(msgfile.toString(), ".pdf");
 			return createPDF (temp);
 		}
 		catch (Exception e)
@@ -1541,12 +1548,12 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				line.setPriceList (Env.ZERO);
 				line.setLineNetAmt (Env.ZERO);
 				//
-				String description = product.getName ();
+				StringBuilder description = new StringBuilder().append(product.getName ());
 				if (product.getDescription () != null)
-					description += " " + product.getDescription ();
+					description.append(" ").append(product.getDescription ());
 				if (line.getDescription () != null)
-					description += " " + line.getDescription ();
-				line.setDescription (description);
+					description.append(" ").append(line.getDescription ());
+				line.setDescription (description.toString());
 				line.saveEx (get_TrxName());
 			} //	for all lines with BOM
 
@@ -1564,7 +1571,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		log.fine("");
 		//	Delete Taxes
-		DB.executeUpdateEx("DELETE C_InvoiceTax WHERE C_Invoice_ID=" + getC_Invoice_ID(), get_TrxName());
+		StringBuilder msgdb = new StringBuilder("DELETE C_InvoiceTax WHERE C_Invoice_ID=").append(getC_Invoice_ID());
+		DB.executeUpdateEx(msgdb.toString(), get_TrxName());
 		m_taxes = null;
 
 		//	Lines
@@ -1706,7 +1714,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (!isApproved())
 			approveIt();
 		log.info(toString());
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		
 		// POS supports multiple payments
 		boolean fromPOS = false;
@@ -1911,7 +1919,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		{
 			MUser user = new MUser (getCtx(), getAD_User_ID(), get_TrxName());
 			user.setLastContact(new Timestamp(System.currentTimeMillis()));
-			user.setLastResult(Msg.translate(getCtx(), "C_Invoice_ID") + ": " + getDocumentNo());
+			StringBuilder msgset = new StringBuilder().append(Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(getDocumentNo());
+			user.setLastResult(msgset.toString());
 			if (!user.save(get_TrxName()))
 			{
 				m_processMsg = "Could not update Business Partner User";
@@ -2124,7 +2133,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					line.setTaxAmt(Env.ZERO);
 					line.setLineNetAmt(Env.ZERO);
 					line.setLineTotalAmt(Env.ZERO);
-					line.addDescription(Msg.getMsg(getCtx(), "Voided") + " (" + old + ")");
+					StringBuilder msgadd = new StringBuilder(Msg.getMsg(getCtx(), "Voided")).append(" (").append(old).append(")");
+					line.addDescription(msgadd.toString());
 					//	Unlink Shipment
 					if (line.getM_InOutLine_ID() != 0)
 					{
@@ -2252,7 +2262,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			}
 		}
 		reversal.setC_Order_ID(getC_Order_ID());
-		reversal.addDescription("{->" + getDocumentNo() + ")");
+		StringBuilder msgadd = new StringBuilder("{->").append(getDocumentNo()).append(")");
+		reversal.addDescription(msgadd.toString());
 		//FR1948157
 		reversal.setReversal_ID(getC_Invoice_ID());
 		reversal.saveEx(get_TrxName());
@@ -2271,7 +2282,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		reversal.saveEx(get_TrxName());
 		m_processMsg = reversal.getDocumentNo();
 		//
-		addDescription("(" + reversal.getDocumentNo() + "<-)");
+		msgadd = new StringBuilder("(").append(reversal.getDocumentNo()).append("<-)");
+		addDescription(msgadd.toString());
 
 		//	Clean up Reversed (this)
 		MInvoiceLine[] iLines = getLines(false);
@@ -2297,9 +2309,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		setIsPaid(true);
 
 		//	Create Allocation
+		StringBuilder msgall = new StringBuilder().append(Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(getDocumentNo()).append("/").append(reversal.getDocumentNo());
 		MAllocationHdr alloc = new MAllocationHdr(getCtx(), false, getDateAcct(),
 			getC_Currency_ID(),
-			Msg.translate(getCtx(), "C_Invoice_ID")	+ ": " + getDocumentNo() + "/" + reversal.getDocumentNo(),
+			msgall.toString(),
 			get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
 		if (alloc.save())
@@ -2381,7 +2394,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Grand Total = 123.00 (#1)
 		sb.append(": ").

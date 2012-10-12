@@ -82,7 +82,7 @@ public class OrderRePrice extends SvrProcess
 			}
 			order = new MOrder (getCtx(), p_C_Order_ID, get_TrxName());
 			BigDecimal newPrice = order.getGrandTotal();
-			retValue = new StringBuilder(order.getDocumentNo()).append(":  ").append(oldPrice).append(" -> ").append(newPrice);
+			retValue = new StringBuilder().append(order.getDocumentNo()).append(":  ").append(oldPrice).append(" -> ").append(newPrice);
 		}
 		if (p_C_Invoice_ID != 0)
 		{

@@ -218,7 +218,7 @@ public class MClientShare extends X_AD_ClientShare
 				.append(getTableName())
 				.append(" SET AD_Org_ID=0 WHERE AD_Org_ID<>0 AND AD_Client_ID=?");
 			int no = DB.executeUpdate(sql.toString(), getAD_Client_ID(), get_TrxName());
-			info = new StringBuilder(getTableName()).append(" set to Shared #").append(no);
+			info = new StringBuilder().append(getTableName()).append(" set to Shared #").append(no);
 			log.info(info.toString());
 		}
 		else if (isOrgLevelOnly())
@@ -227,7 +227,7 @@ public class MClientShare extends X_AD_ClientShare
 				.append(getTableName())
 				.append(" WHERE AD_Org_ID=0 AND AD_Client_ID=?");
 			int no = DB.getSQLValue(get_TrxName(), sql.toString(), getAD_Client_ID());
-			info = new StringBuilder(getTableName()).append(" Shared records #").append(no);
+			info = new StringBuilder().append(getTableName()).append(" Shared records #").append(no);
 			log.info(info.toString());
 		}
 		return info.toString();

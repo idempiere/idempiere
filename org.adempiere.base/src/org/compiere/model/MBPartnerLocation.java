@@ -125,7 +125,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	/** Cached Location */
 	private MLocation m_location = null;
 	/** Unique Name */
-	private StringBuffer m_uniqueName = null;
+	private String m_uniqueName = null;
 	private int m_unique = 0;
 
 	/**
@@ -181,21 +181,21 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	 *            address
 	 */
 	private void makeUnique(MLocation address) {
-		m_uniqueName = new StringBuffer();
+		m_uniqueName = "";
 
 		// 0 - City
 		if (m_unique >= 0 || m_uniqueName.length() == 0) {
 			String xx = address.getCity();
 			if (xx != null && xx.length() > 0)
-				m_uniqueName = new StringBuffer(xx);
+				m_uniqueName = xx;
 		}
 		// 1 + Address1
 		if (m_unique >= 1 || m_uniqueName.length() == 0) {
 			String xx = address.getAddress1();
 			if (xx != null && xx.length() > 0) {
 				if (m_uniqueName.length() > 0)
-					m_uniqueName.append(" ");
-				m_uniqueName.append(xx);
+					m_uniqueName += " ";
+				m_uniqueName += xx;
 			}
 		}
 		// 2 + Address2
@@ -203,8 +203,8 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 			String xx = address.getAddress2();
 			if (xx != null && xx.length() > 0) {
 				if (m_uniqueName.length() > 0)
-					m_uniqueName.append(" ");
-				m_uniqueName.append(xx);
+					m_uniqueName += " ";
+				m_uniqueName += xx;
 			}
 		}
 		// 3 - Region
@@ -212,8 +212,8 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 			String xx = address.getRegionName(true);
 			if (xx != null && xx.length() > 0) {
 				if (m_uniqueName.length() > 0)
-					m_uniqueName.append(" ");
-				m_uniqueName.append(xx);
+						m_uniqueName += " ";
+				m_uniqueName += xx;
 			}
 		}
 		// 4 - ID
@@ -221,12 +221,12 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 			int id = get_ID();
 			if (id == 0)
 				id = address.get_ID();
-			m_uniqueName.append("#").append(id);
+			m_uniqueName += "#" + id;
 		}
 	} // makeUnique
 
 	public String getBPLocName(MLocation address) {
-		m_uniqueName = new StringBuffer(getName());
+		m_uniqueName = getName();
 		m_unique = MSysConfig.getIntValue("START_VALUE_BPLOCATION_NAME", 0,
 				getAD_Client_ID(), getAD_Org_ID());
 		if (m_unique < 0 || m_unique > 4)

@@ -86,9 +86,12 @@ public class Doc_ProjectIssue extends Doc
 	public String getDocumentNo ()
 	{
 		MProject p = m_issue.getParent();
-		if (p != null)
-			return p.getValue() + " #" + m_issue.getLine();
-		return "(" + m_issue.get_ID() + ")";
+		if (p != null){
+			StringBuilder msgreturn = new StringBuilder().append(p.getValue()).append(" #").append(m_issue.getLine());
+			return msgreturn.toString();
+		}	
+		StringBuilder msgreturn = new StringBuilder("(").append(m_issue.get_ID()).append(")");
+		return msgreturn.toString();
 	}	//	getDocumentNo
 
 	/**

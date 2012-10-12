@@ -580,8 +580,8 @@ public class ImportGLJournal extends SvrProcess
 		commitEx();
 		
 		//	Count Errors
-		int errors = DB.getSQLValue(get_TrxName(), 
-			"SELECT COUNT(*) FROM I_GLJournal WHERE I_IsImported NOT IN ('Y','N')" + clientCheck);
+		StringBuilder msgdb = new StringBuilder("SELECT COUNT(*) FROM I_GLJournal WHERE I_IsImported NOT IN ('Y','N')").append(clientCheck);
+		int errors = DB.getSQLValue(get_TrxName(), msgdb.toString());
 
 		if (errors != 0)
 		{
@@ -652,11 +652,11 @@ public class ImportGLJournal extends SvrProcess
 						batch.setDocumentNo (imp.getBatchDocumentNo());
 					batch.setC_DocType_ID(imp.getC_DocType_ID());
 					batch.setPostingType(imp.getPostingType());
-					StringBuilder description = new StringBuilder(imp.getBatchDescription());
-					if (description == null || description.length() == 0)
+					StringBuilder description;
+					if (imp.getBatchDescription() == null || imp.getBatchDescription().toString().length() == 0)
 						description = new StringBuilder("*Import-");
 					else
-						description.append(" *Import-");
+						description = new StringBuilder(imp.getBatchDescription()).append(" *Import-");
 					description.append(new Timestamp(System.currentTimeMillis()));
 					batch.setDescription(description.toString());
 					if (!batch.save())

@@ -17,7 +17,8 @@ Bundle-ClassPath: base.jar,
  jnlp.jar,
  groovy-all-1.7.5.jar,
  vt-dictionary-3.0.jar,
- vt-password-3.1.1.jar
+ vt-password-3.1.1.jar,
+ super-csv-2.0.0-beta-1.jar
 Export-Package: bsh,
  bsh.classpath,
  bsh.collection,
@@ -237,7 +238,14 @@ Export-Package: bsh,
  org.jfree.ui.about.resources,
  org.jfree.ui.action,
  org.jfree.ui.tabbedui,
- org.jfree.util
+ org.jfree.util,
+ org.supercsv.cellprocessor,
+ org.supercsv.cellprocessor.constraint,
+ org.supercsv.cellprocessor.ift,
+ org.supercsv.exception,
+ org.supercsv.io,
+ org.supercsv.prefs,
+ org.supercsv.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.sun.mail.smtp;version="1.4.0",
  javax.jms;version="1.1.0",

@@ -414,8 +414,8 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 	private static void evaluateQuery(final MQuery query) {
 
-		final String sqlCommon = " FROM " + query.getZoomTableName()
-				+ " WHERE " + query.getWhereClause(false);
+		StringBuilder sqlCommon = new StringBuilder(" FROM ").append(query.getZoomTableName())
+				.append(" WHERE ").append(query.getWhereClause(false));
 
 		final String sqlCount = "SELECT COUNT(*) " + sqlCommon;
 
@@ -424,10 +424,10 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 		if (count > 0) {
 
-			final String sqlFirstKey = "SELECT " + query.getZoomColumnName()
-					+ sqlCommon;
+			StringBuilder sqlFirstKey = new StringBuilder("SELECT ").append(query.getZoomColumnName())
+					.append(sqlCommon);
 
-			final int firstKey = DB.getSQLValueEx(null, sqlFirstKey);
+			final int firstKey = DB.getSQLValueEx(null, sqlFirstKey.toString());
 			query.setZoomValue(firstKey);
 		}
 	}
@@ -462,7 +462,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 	@Override
 	public String toString() {
-		final StringBuffer sb = new StringBuffer("MRelationType[");
+		StringBuilder sb = new StringBuilder("MRelationType[");
 		//
 		sb.append(get_ID());
 		sb.append(", Name=").append(getName());

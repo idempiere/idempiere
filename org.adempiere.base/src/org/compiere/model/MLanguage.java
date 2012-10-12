@@ -414,13 +414,13 @@ public class MLanguage extends X_AD_Language
 			log.log(Level.SEVERE, "No Columns found for " + baseTable);
 			return 0;
 		}
-		StringBuffer cols = new StringBuffer();
+		StringBuilder cols = new StringBuilder();
 		for (int i = 0; i < columns.size(); i++)
 			cols.append(",").append(columns.get(i));
 			
 		//	Insert Statement
 		int AD_User_ID = Env.getAD_User_ID(getCtx());
-		String keyColumn = baseTable + "_ID";
+		StringBuilder keyColumn = new StringBuilder(baseTable).append("_ID");
 		StringBuilder insert = new StringBuilder("INSERT INTO ").append(tableName)
 							.append("(AD_Language,IsTranslated, AD_Client_ID,AD_Org_ID, ")
 							.append("Createdby,UpdatedBy, ")
@@ -441,7 +441,7 @@ public class MLanguage extends X_AD_Language
 		if (column != null)
 			UUIDGenerator.updateUUID(column, get_TrxName());
 		//
-		StringBuilder msglog = new StringBuilder(tableName).append(" #").append(no);
+		StringBuilder msglog = new StringBuilder().append(tableName).append(" #").append(no);
 		log.fine(msglog.toString());
 		return no;
 	}	//	addTable

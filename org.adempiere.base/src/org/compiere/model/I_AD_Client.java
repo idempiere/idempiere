@@ -87,10 +87,10 @@ public interface I_AD_Client
     /** Column name AD_PasswordRule_ID */
     public static final String COLUMNNAME_AD_PasswordRule_ID = "AD_PasswordRule_ID";
 
-	/** Set AD_PasswordRule	  */
+	/** Set Password Policies	  */
 	public void setAD_PasswordRule_ID (int AD_PasswordRule_ID);
 
-	/** Get AD_PasswordRule	  */
+	/** Get Password Policies	  */
 	public int getAD_PasswordRule_ID();
 
 	public org.compiere.model.I_AD_PasswordRule getAD_PasswordRule() throws RuntimeException;
@@ -216,6 +216,19 @@ public interface I_AD_Client
 	  * Post the accounting immediately for testing (Deprecated)
 	  */
 	public boolean isPostImmediate();
+
+    /** Column name IsSecureSMTP */
+    public static final String COLUMNNAME_IsSecureSMTP = "IsSecureSMTP";
+
+	/** Set SMTP SSL/TLS.
+	  * Use SSL/TLS for SMTP
+	  */
+	public void setIsSecureSMTP (boolean IsSecureSMTP);
+
+	/** Get SMTP SSL/TLS.
+	  * Use SSL/TLS for SMTP
+	  */
+	public boolean isSecureSMTP();
 
     /** Column name IsServerEMail */
     public static final String COLUMNNAME_IsServerEMail = "IsServerEMail";
@@ -372,6 +385,19 @@ public interface I_AD_Client
 	  * Hostname of Mail Server for SMTP and IMAP
 	  */
 	public String getSMTPHost();
+
+    /** Column name SMTPPort */
+    public static final String COLUMNNAME_SMTPPort = "SMTPPort";
+
+	/** Set SMTP Port.
+	  * SMTP Port Number
+	  */
+	public void setSMTPPort (int SMTPPort);
+
+	/** Get SMTP Port.
+	  * SMTP Port Number
+	  */
+	public int getSMTPPort();
 
     /** Column name StoreArchiveOnFileSystem */
     public static final String COLUMNNAME_StoreArchiveOnFileSystem = "StoreArchiveOnFileSystem";

@@ -171,7 +171,7 @@ public class ModelInterfaceGenerator
 			accessLevelInfo.append("- Org ");
 
 		//
-		String className = "I_" + tableName;
+		StringBuilder className = new StringBuilder("I_").append(tableName);
 		//
 		StringBuilder start = new StringBuilder()
 			.append (COPY)
@@ -216,12 +216,12 @@ public class ModelInterfaceGenerator
 			 //.append("    POInfo initPO (Properties ctx);") // INFO - Should this be here???
 		;
 
-		StringBuilder end = new StringBuilder("}");
+		String end = "}";
 		//
 		sb.insert(0, start);
 		sb.append(end);
 
-		return className;
+		return className.toString();
 	}
 
 	/**
@@ -418,7 +418,8 @@ public class ModelInterfaceGenerator
 			fw.close();
 			float size = out.length();
 			size /= 1024;
-			System.out.println(out.getAbsolutePath() + " - " + size + " kB");
+			StringBuilder msgout = new StringBuilder().append(out.getAbsolutePath()).append(" - ").append(size).append(" kB");
+			System.out.println(msgout.toString());
 		} catch (Exception ex) {
 			log.log(Level.SEVERE, fileName, ex);
 			throw new RuntimeException(ex);
@@ -634,13 +635,13 @@ public class ModelInterfaceGenerator
 
 	public static String getReferenceClassName(int AD_Table_ID, String columnName, int displayType, int AD_Reference_ID)
 	{
-		StringBuilder referenceClassName = null;
+		String referenceClassName = null;
 		//
 		if (displayType == DisplayType.TableDir
 				|| (displayType == DisplayType.Search && AD_Reference_ID == 0))
 		{
 			String refTableName = MQuery.getZoomTableName(columnName); // teo_sarca: BF [ 1817768 ] Isolate hardcoded table direct columns
-			referenceClassName = new StringBuilder("I_").append(refTableName);
+			referenceClassName = "I_"+refTableName;
 
 			MTable table = MTable.get(Env.getCtx(), refTableName);
 			if (table != null)
@@ -649,7 +650,7 @@ public class ModelInterfaceGenerator
 				String modelpackage = getModelPackage(entityType) ;
 				if (modelpackage != null)
 				{
-					referenceClassName = new StringBuilder(modelpackage).append(".").append(referenceClassName);
+					referenceClassName = modelpackage+"."+referenceClassName;
 				}
 				if (!isGenerateModelGetterForEntity(AD_Table_ID, entityType))
 				{
@@ -691,11 +692,11 @@ public class ModelInterfaceGenerator
 					final int refDisplayType = rs.getInt(3);
 					if (refDisplayType == DisplayType.ID)
 					{
-						referenceClassName = new StringBuilder("I_").append(refTableName);
+						referenceClassName = "I_"+refTableName;
 						String modelpackage = getModelPackage(entityType);
 						if (modelpackage != null)
 						{
-							referenceClassName = new StringBuilder(modelpackage).append(".").append(referenceClassName);
+							referenceClassName = modelpackage+"."+referenceClassName;
 						}
 						if (!isGenerateModelGetterForEntity(AD_Table_ID, entityType))
 						{
@@ -716,19 +717,19 @@ public class ModelInterfaceGenerator
 		}
 		else if (displayType == DisplayType.Location)
 		{
-			referenceClassName = new StringBuilder("I_C_Location");
+			referenceClassName = "I_C_Location";
 		}
 		else if (displayType == DisplayType.Locator)
 		{
-			referenceClassName = new StringBuilder("I_M_Locator");
+			referenceClassName = "I_M_Locator";
 		}
 		else if (displayType == DisplayType.Account)
 		{
-			referenceClassName = new StringBuilder("I_C_ValidCombination");
+			referenceClassName = "I_C_ValidCombination";
 		}
 		else if (displayType == DisplayType.PAttribute)
 		{
-			referenceClassName = new StringBuilder("I_M_AttributeSetInstance");
+			referenceClassName = "I_M_AttributeSetInstance";
 		}
 		else
 		{
@@ -736,7 +737,7 @@ public class ModelInterfaceGenerator
 			//sb.append("\tpublic I_"+columnName+" getI_").append(columnName).append("(){return null; };");
 		}
 		//
-		return referenceClassName.toString();
+		return referenceClassName;
 	}
 
 
@@ -797,7 +798,7 @@ public class ModelInterfaceGenerator
 			entityTypeFilter.append("EntityType IN ('U','A')");
 		}
 
-		StringBuilder directory = new StringBuilder(sourceFolder.trim());
+		StringBuilder directory = new StringBuilder().append(sourceFolder.trim());
 		String packagePath = packageName.replace(".", File.separator);
 		if (!(directory.toString().endsWith("/") || directory.toString().endsWith("\\")))
 		{

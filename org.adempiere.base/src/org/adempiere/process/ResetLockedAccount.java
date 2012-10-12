@@ -55,7 +55,8 @@ public class ResetLockedAccount extends SvrProcess {
 			if (no < 0)
 				throw new AdempiereException("Could not unlock user account" + user.toString());
 
-			return "@OK@ - The user '" + user.getName() + "' has been unlocked";
+			StringBuilder msgreturn = new StringBuilder("@OK@ - The user '").append(user.getName()).append("' has been unlocked");
+			return msgreturn.toString();
 		} 
 		else 
 		{
@@ -84,7 +85,8 @@ public class ResetLockedAccount extends SvrProcess {
 			int no = DB.executeUpdate(sql.toString(), p_AD_Client_ID, get_TrxName());
 			if (no < 0)
 				throw new AdempiereException("Could not unlock user account");
-			return no + " locked account has been reset";
+			StringBuilder msgreturn = new StringBuilder().append(no).append(" locked account has been reset");
+			return msgreturn.toString();
 		}
 	}
 }

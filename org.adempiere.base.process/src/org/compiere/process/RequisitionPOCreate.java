@@ -243,7 +243,7 @@ public class RequisitionPOCreate extends SvrProcess
 		whereClause.append(")"); // End Requisition Header
 		//
 		// ORDER BY clause
-		StringBuffer orderClause = new StringBuffer();
+		StringBuilder orderClause = new StringBuilder();
 		if (!p_ConsolidateDocument)
 		{
 			orderClause.append("M_Requisition_ID, ");
@@ -355,7 +355,7 @@ public class RequisitionPOCreate extends SvrProcess
 			//	default po document type
 			if (!p_ConsolidateDocument)
 			{
-				StringBuilder msgsd= new StringBuilder(Msg.getElement(getCtx(), "M_Requisition_ID")) 
+				StringBuilder msgsd= new StringBuilder().append(Msg.getElement(getCtx(), "M_Requisition_ID")) 
 						.append(": ").append(rLine.getParent().getDocumentNo());
 				m_order.setDescription(msgsd.toString());
 			}

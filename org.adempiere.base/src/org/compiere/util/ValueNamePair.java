@@ -83,6 +83,16 @@ public final class ValueNamePair extends NamePair
 		return false;
 	}	//	equals
 
+
+	/**
+	 * Get the Object representation of the value
+	 * @return value
+	 */
+	public Object getValueObject()
+	{
+	    return m_value;
+	}
+	
 	/**
 	 *  Return Hashcode of value
 	 *  @return hascode
