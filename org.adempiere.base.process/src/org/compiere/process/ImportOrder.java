@@ -90,7 +90,7 @@ public class ImportOrder extends SvrProcess
 	{
 		StringBuilder sql = null;
 		int no = 0;
-		String clientCheck = " AND AD_Client_ID=" + m_AD_Client_ID;
+		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(m_AD_Client_ID);
 
 		//	****	Prepare	****
 
