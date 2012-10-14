@@ -427,6 +427,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	height: 250px;
 }
 
+.adwindow-gridview-detail + .z-south-splt {
+	border-top: 1px solid #C5C5C5;
+}
+
 .adwindow-gridview-detail .z-south-body {
 	padding-top: 1px;
 }
