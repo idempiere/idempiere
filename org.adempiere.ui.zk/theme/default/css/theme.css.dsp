@@ -776,6 +776,14 @@ div.simileAjax-bubble-container {
 	background-color: transparent !important;
 }
 
+.grid-layout tr.z-row-over>td.z-row-inner {
+	border: none !important;
+}
+
+.grid-layout tr.z-row-over>td.z-row-inner, .grid-layout tr.z-row-over>.z-cell {
+	background-image: none !important;
+}
+
 .confirm-panel {
 	width: 100%;
 	height: 36px;
