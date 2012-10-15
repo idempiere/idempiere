@@ -202,10 +202,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//	Create adempiere Session - user id in ctx
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
+        String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
+        
+		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : currSess.getRemoteAddr(),
+			currSess.getRemoteHost(), httpSess.getId() );
 
-		MSession mSession = MSession.get (ctx, currSess.getRemoteAddr(),
-		currSess.getRemoteHost(), httpSess.getId() );
-		
 		 currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
 
 		//enable full interface, relook into this when doing preference

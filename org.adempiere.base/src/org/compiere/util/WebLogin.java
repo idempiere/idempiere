@@ -154,6 +154,9 @@ public class WebLogin
 	 */
 	public boolean action() throws IOException, ServletException
 	{
+		//remote Address
+		String remoteIP = m_request.getHeader("X-Forwarded-For");
+		remoteIP = remoteIP!=null ? remoteIP : m_request.getRemoteAddr(); 
 		//	Mode
 		if (getMode() == null) 
 		{
@@ -228,7 +231,7 @@ public class WebLogin
 				if (m_forward==null || m_forward.equals(getLogin_RelURL ()))
 					m_forward = "/index.jsp";
 				//	Create Session with User ID
-				MSession cSession = MSession.get (m_ctx, m_request.getRemoteAddr(), 
+				MSession cSession = MSession.get (m_ctx, remoteIP, 
 					m_request.getRemoteHost(), m_session.getId());
 				if (cSession != null)
 					cSession.setWebStoreSession(true);
@@ -275,7 +278,7 @@ public class WebLogin
 					//	Create / set session
 					if (m_wu.isLoggedIn())
 					{
-						MSession cSession = MSession.get (m_ctx, m_request.getRemoteAddr(), 
+						MSession cSession = MSession.get (m_ctx, remoteIP, 
 							m_request.getRemoteHost(), m_session.getId());
 						if (cSession != null)
 							cSession.setWebStoreSession(true);
@@ -312,7 +315,7 @@ public class WebLogin
 					{
 						m_session.setAttribute (WebInfo.NAME, new WebInfo (m_ctx, m_wu));
 						//	Create / set session
-						MSession cSession = MSession.get (m_ctx, m_request.getRemoteAddr(), 
+						MSession cSession = MSession.get (m_ctx, remoteIP, 
 							m_request.getRemoteHost(), m_session.getId());
 						if (cSession != null)
 							cSession.setWebStoreSession(true);
@@ -380,7 +383,7 @@ public class WebLogin
                 return false;
             }
 
-            MSession cSession = MSession.get (m_ctx, m_request.getRemoteAddr(), m_request.getRemoteHost(), m_session.getId());
+            MSession cSession = MSession.get (m_ctx, remoteIP, m_request.getRemoteHost(), m_session.getId());
             if (cSession != null)
                 cSession.setWebStoreSession(true);
 
