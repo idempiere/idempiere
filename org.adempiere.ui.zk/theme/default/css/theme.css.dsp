@@ -826,8 +826,42 @@ tbody.z-grid-empty-body td {
 	text-align: left;
 }
 
+<%-- notification message --%>
 .z-notification .z-notification-cl, 
 .z-notification .z-notification-cnt {
     width: 300px;
 }
 
+<%-- toolbar popup dialog --%>
+.toolbar-popup-window .z-window-popup-cnt {
+	margin-top: 6px;
+}
+
+.toolbar-popup-window-cnt {
+}
+
+.toolbar-popup-window::before {
+	content: '';
+	position: absolute;
+	width: 0px;
+	height: 0px;
+	top: -7px;
+	left: 6px;
+	border-top: 7px dashed transparent;
+	border-left: 7px dashed transparent;
+	border-right: 7px dashed transparent;
+	border-bottom: 7px solid #ACACAC;
+}
+
+.toolbar-popup-window-cnt::before {
+	content: '';
+	position: absolute;
+	width: 0px;
+	height: 0px;
+	top: -5px;
+	left: 7px;
+	border-top: 6px dashed transparent;
+	border-left: 6px dashed transparent;
+	border-right: 6px dashed transparent;
+	border-bottom: 6px solid #FFF;
+}
