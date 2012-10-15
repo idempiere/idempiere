@@ -299,7 +299,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .desktop-home-tabpanel .z-panel-hl {
 	padding-bottom: 1px;
-	border-bottom: 2px solid #9D9D9D;  
+	border-bottom: 2px solid #008BB6;
 }
 
 .desktop-home-tabpanel .z-panel-hl .z-panel-header {
@@ -315,7 +315,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .desktop-left-column .z-panel-hl {
 	padding-bottom: 1px;
-	border-bottom: 2px solid #9D9D9D;
+	border-bottom: 2px solid #008BB6;
 }
 
 .desktop-left-column .z-panel-hl .z-panel-header {
@@ -394,7 +394,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .adwindow-breadcrumb {
 	height: 30px;
 	background-color: #FFF;
-	padding-left: 2px;
+	padding-left: 5px;
 }
 
 .adwindow-detailpane {
@@ -820,16 +820,3 @@ tbody.z-grid-empty-body td {
     width: 300px;
 }
 
-.z-toolbarbutton-ck {
-	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
-	-moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-	box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
-	background-color: #FFF;
-	background-image: -webkit-linear-gradient(top,#FFF,#D0D0D0);
-	background-image: -moz-linear-gradient(top,#FFF,#E0E0E0);
-	background-image: -ms-linear-gradient(top,#FFF,#E0E0E0);
-	background-image: -o-linear-gradient(top,#FFF,#E0E0E0);
-	background-image: linear-gradient(top,#FFF,#E0E0E0);
-	border: 1px solid #CCC;
-	color: #333;
-}
