@@ -96,6 +96,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_LOCATOR = 31;
 	public final static int REFERENCE_DATATYPE_MEMO = 34;
 	public final static int REFERENCE_DATATYPE_NUMBER = 22;
+	public final static int REFERENCE_DATATYPE_PAYMENT = 200012;
 	public final static int REFERENCE_DATATYPE_PRINTNAME = 42;
 	public final static int REFERENCE_DATATYPE_PRODUCTATTRIBUTE = 35;
 	public final static int REFERENCE_DATATYPE_QUANTITY = 29;
