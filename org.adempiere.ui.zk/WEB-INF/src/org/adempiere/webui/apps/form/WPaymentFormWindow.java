@@ -95,6 +95,14 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		
 	} // actionPerformed
 	
+	public void runProcessOnline() {
+		try {
+			paymentForm.processOnline();
+		} finally {
+			unlockUI();
+		}
+	}
+	
 	public void unlockUI() {
 		if (!m_isLocked) return;
 		

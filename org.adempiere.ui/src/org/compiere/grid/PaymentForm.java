@@ -275,6 +275,11 @@ public abstract class PaymentForm implements IPaymentForm {
 		return retValue;
 	}   //  getInvoiceID
 	
+	public void processOnline()
+	{
+		
+	}
+	
 	public GridTab getGridTab()
 	{
 		return m_mTab;

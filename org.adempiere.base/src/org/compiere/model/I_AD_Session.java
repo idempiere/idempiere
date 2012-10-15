@@ -180,6 +180,15 @@ public interface I_AD_Session
 	  */
 	public String getRemote_Host();
 
+    /** Column name ServerName */
+    public static final String COLUMNNAME_ServerName = "ServerName";
+
+	/** Set Server name	  */
+	public void setServerName (String ServerName);
+
+	/** Get Server name	  */
+	public String getServerName();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

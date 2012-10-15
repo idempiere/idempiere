@@ -220,6 +220,20 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 		return (String)get_Value(COLUMNNAME_Remote_Host);
 	}
 
+	/** Set Server name.
+		@param ServerName Server name	  */
+	public void setServerName (String ServerName)
+	{
+		set_Value (COLUMNNAME_ServerName, ServerName);
+	}
+
+	/** Get Server name.
+		@return Server name	  */
+	public String getServerName () 
+	{
+		return (String)get_Value(COLUMNNAME_ServerName);
+	}
+
 	/** Set Web Session.
 		@param WebSession 
 		Web Session ID
