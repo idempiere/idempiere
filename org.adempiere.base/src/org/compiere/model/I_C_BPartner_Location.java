@@ -31,7 +31,7 @@ public interface I_C_BPartner_Location
     public static final String Table_Name = "C_BPartner_Location";
 
     /** AD_Table_ID=293 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 293;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_BPartner_Location
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
     public static final String COLUMNNAME_C_BPartner_Location_ID = "C_BPartner_Location_ID";
@@ -89,6 +89,15 @@ public interface I_C_BPartner_Location
 	  * Identifies the (ship to) address for this Business Partner
 	  */
 	public int getC_BPartner_Location_ID();
+
+    /** Column name C_BPartner_Location_UU */
+    public static final String COLUMNNAME_C_BPartner_Location_UU = "C_BPartner_Location_UU";
+
+	/** Set C_BPartner_Location_UU	  */
+	public void setC_BPartner_Location_UU (String C_BPartner_Location_UU);
+
+	/** Get C_BPartner_Location_UU	  */
+	public String getC_BPartner_Location_UU();
 
     /** Column name C_Location_ID */
     public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
@@ -104,6 +113,21 @@ public interface I_C_BPartner_Location
 	public int getC_Location_ID();
 
 	public I_C_Location getC_Location() throws RuntimeException;
+
+    /** Column name C_SalesRegion_ID */
+    public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
+
+	/** Set Sales Region.
+	  * Sales coverage region
+	  */
+	public void setC_SalesRegion_ID (int C_SalesRegion_ID);
+
+	/** Get Sales Region.
+	  * Sales coverage region
+	  */
+	public int getC_SalesRegion_ID();
+
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -121,20 +145,14 @@ public interface I_C_BPartner_Location
 	  */
 	public int getCreatedBy();
 
-    /** Column name C_SalesRegion_ID */
-    public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
+    /** Column name CustomerAddressID */
+    public static final String COLUMNNAME_CustomerAddressID = "CustomerAddressID";
 
-	/** Set Sales Region.
-	  * Sales coverage region
-	  */
-	public void setC_SalesRegion_ID (int C_SalesRegion_ID);
+	/** Set Customer Address ID	  */
+	public void setCustomerAddressID (String CustomerAddressID);
 
-	/** Get Sales Region.
-	  * Sales coverage region
-	  */
-	public int getC_SalesRegion_ID();
-
-	public I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
+	/** Get Customer Address ID	  */
+	public String getCustomerAddressID();
 
     /** Column name Fax */
     public static final String COLUMNNAME_Fax = "Fax";

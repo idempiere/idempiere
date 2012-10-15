@@ -87,7 +87,6 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Util;
 import org.compiere.util.WebDoc;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -451,12 +450,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	private void initQueryOnNew(MQuery result) {
 		GridTab curTab = adTabbox.getSelectedGridTab();
+		boolean onNew = false;
 		if (curTab.isHighVolume() && m_findCreateNew)
-			onNew();
+			onNew = true;
 		else if (result == null && curTab.getRowCount() == 0 && Env.isAutoNew(ctx, curWindowNo))
-			onNew();
+			onNew = true;
 		else if (!curTab.isReadOnly() && curTab.isQueryNewRecord())
-			onNew();
+			onNew = true;
+		if (onNew) {
+			Executions.schedule(AEnv.getDesktop(), new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					onNew();
+				}
+			}, new Event("onInsert"));
+		}
 	}
 	
 	/**
@@ -1211,7 +1219,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
         	adTabbox.updateDetailPaneToolbar(changed, readOnly);
         }
-        toolbar.enableIgnore(adTabbox.needSave(true, false));
+        toolbar.enableIgnore(adTabbox.needSave(true, false) ||
+        		adTabbox.getSelectedGridTab().isNew() ||
+        		(adTabbox.getSelectedDetailADTabpanel() != null && adTabbox.getSelectedDetailADTabpanel().getGridTab().isNew()));
 
         if (changed && !readOnly && !toolbar.isSaveEnable() ) {
         	if (tabPanel.getGridTab().getRecord_ID() > 0) {
@@ -1577,6 +1587,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 			}
 		});    	    	
+    }
+    
+    public void onSavePayment()
+    {
+    	onSave(false, false, new Callback<Boolean>() {
+		
+			@Override
+			public void onCallback(Boolean result) {
+				onRefresh(false, false);
+			}
+			
+		});
     }
 
     /**

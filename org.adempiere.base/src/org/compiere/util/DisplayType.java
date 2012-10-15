@@ -16,14 +16,46 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ACCOUNT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_AMOUNT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ASSIGNMENT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BINARY;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_COLOR;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_COSTPRICE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATETIME;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_FILENAME;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_FILEPATH;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ID;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_IMAGE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_INTEGER;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATION;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATOR;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_MEMO;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_NUMBER;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PAYMENT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PRINTNAME;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PRODUCTATTRIBUTE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_QUANTITY;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ROWID;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SEARCH;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_STRING;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXT;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXTLONG;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIME;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.logging.Level;
-
-import static org.compiere.model.SystemIDs.*;
 
 /**
  *	System Display Types.
@@ -103,6 +135,8 @@ public final class DisplayType
 	/** Display Type 42	PrinterName	*/
 	public static final int PrinterName  = REFERENCE_DATATYPE_PRINTNAME;
 	//	Candidates:
+	/** Display Type 200012	Payment	*/
+	public static final int Payment  = REFERENCE_DATATYPE_PAYMENT;
 
 	/**
 	 *	- New Display Type
@@ -428,7 +462,7 @@ public final class DisplayType
 	 */
 	public static Class getClass (int displayType, boolean yesNoAsBoolean)
 	{
-		if (isText(displayType) || displayType == List)
+		if (isText(displayType) || displayType == List || displayType == Payment)
 			return String.class;
 		else if (isID(displayType) || displayType == Integer)    //  note that Integer is stored as BD
 			return Integer.class;
@@ -488,7 +522,7 @@ public final class DisplayType
 			return "CLOB";
 		if (displayType == DisplayType.YesNo)
 			return "CHAR(1)";
-		if (displayType == DisplayType.List) {
+		if (displayType == DisplayType.List || displayType == DisplayType.Payment) {
 			if (fieldLength == 1)
 				return "CHAR(" + fieldLength + ")";
 			else
@@ -585,6 +619,8 @@ public final class DisplayType
 			return "URL";
 		if (displayType == PrinterName)
 			return "PrinterName";
+		if (displayType == Payment)
+			return "Payment";
 		//
 		return "UNKNOWN DisplayType=" + displayType;
 	}	//	getDescription

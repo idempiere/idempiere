@@ -202,6 +202,11 @@ public class GridField
 			MPAttributeLookup pa = new MPAttributeLookup (m_vo.ctx, m_vo.WindowNo);
 			m_lookup = pa;
 		}
+		else if (m_vo.displayType == DisplayType.Payment)
+		{
+			MPaymentLookup pl = new MPaymentLookup (m_vo.ctx, m_vo.WindowNo, m_vo.AD_Column_ID);
+			m_lookup = pl;
+		}
 	}   //  m_lookup
 
 	/**
@@ -239,7 +244,8 @@ public class GridField
 		else if (m_vo.displayType == DisplayType.Location
 			|| m_vo.displayType == DisplayType.Locator
 			|| m_vo.displayType == DisplayType.Account
-			|| m_vo.displayType == DisplayType.PAttribute)
+			|| m_vo.displayType == DisplayType.PAttribute
+			|| m_vo.displayType == DisplayType.Payment)
 			retValue = true;
 
 		return retValue;

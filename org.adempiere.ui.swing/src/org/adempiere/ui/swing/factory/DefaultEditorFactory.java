@@ -31,6 +31,7 @@ import org.compiere.grid.ed.VMemo;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.grid.ed.VPAttribute;
 import org.compiere.grid.ed.VPassword;
+import org.compiere.grid.ed.VPaymentEditor;
 import org.compiere.grid.ed.VString;
 import org.compiere.grid.ed.VText;
 import org.compiere.grid.ed.VTextLong;
@@ -41,6 +42,7 @@ import org.compiere.model.MAccountLookup;
 import org.compiere.model.MLocationLookup;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MPAttributeLookup;
+import org.compiere.model.MPaymentLookup;
 import org.compiere.util.DisplayType;
 
 /**
@@ -284,6 +286,12 @@ public class DefaultEditorFactory implements IEditorFactory {
 			bin.setName(columnName);
 			bin.setField (mField);
 			editor = bin;
+		}
+		
+		else if (displayType == DisplayType.Payment)
+		{
+			VPaymentEditor p = new VPaymentEditor (mField, columnName, mandatory, readOnly, updateable, (MPaymentLookup) mField.getLookup());
+			editor = p;
 		}
 
 		return editor;

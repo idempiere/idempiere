@@ -42,6 +42,7 @@ import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
+import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.util.GridTabDataBinder;
@@ -103,7 +104,7 @@ DataStatusListener, IADTabpanel
 	private static final long serialVersionUID = -6082680802978974909L;
 
 	private static final String ON_DEFER_SET_SELECTED_NODE = "onDeferSetSelectedNode";
-
+	
 	private static final CLogger logger;
 
     static
@@ -161,6 +162,7 @@ DataStatusListener, IADTabpanel
     {
         initComponents();
         addEventListener(ON_DEFER_SET_SELECTED_NODE, this);
+        addEventListener(WPaymentEditor.ON_SAVE_PAYMENT, this);
     }
 
     private void initComponents()
@@ -854,7 +856,7 @@ DataStatusListener, IADTabpanel
     	{    		
     		Events.sendEvent(this, new Event(ON_TOGGLE_EVENT, this));
     	}
-    	else if (event.getTarget() == treePanel.getTree()) {
+    	else if (treePanel != null && event.getTarget() == treePanel.getTree()) {
     		Treeitem item =  treePanel.getTree().getSelectedItem();
     		navigateTo((DefaultTreeNode)item.getValue());
     	}
@@ -862,7 +864,10 @@ DataStatusListener, IADTabpanel
     		if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
             	setSelectedNode(gridTab.getRecord_ID());
             }
-    	} 
+    	}
+    	else if (WPaymentEditor.ON_SAVE_PAYMENT.equals(event.getName())) {
+    		windowPanel.onSavePayment();
+    	}
     }
 
     private void navigateTo(DefaultTreeNode value) {

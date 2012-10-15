@@ -25,17 +25,17 @@ public class Group extends org.zkoss.zul.Group {
 
 	public Group() {
 		super();
-		setSclass("z-group");
+		setZclass("z-group");
 	}
 	
 	public Group(String label) {
 		super(label);
-		setSclass("z-group");
+		setZclass("z-group");
 	}
 	
 	public <T> Group(String label, T value) {
 		super(label, value);
-		setSclass("z-group");
+		setZclass("z-group");
 	}
 
 	public String getLabel() {
@@ -101,9 +101,10 @@ public class Group extends org.zkoss.zul.Group {
 		
 		private void init()
 		{
-			setSclass("z-group-cnt");
+			setZclass("z-group-cnt");
 			
 			img = new Image();
+			img.setZclass("z-group-img");
 			appendChild(img);
 			img.addEventListener(Events.ON_CLICK, this);
 			

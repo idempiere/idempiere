@@ -132,6 +132,9 @@ public class ReportAction implements EventListener<Event>
 			Vbox vb = new Vbox();
 			vb.setWidth("100%");
 			winReport.appendChild(vb);
+			winReport.setSclass("toolbar-popup-window");
+			vb.setSclass("toolbar-popup-window-cnt");
+			vb.setAlign("stretch");
 
 			Hbox hb = new Hbox();
 			hb.setAlign("center");
