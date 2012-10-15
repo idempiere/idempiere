@@ -87,7 +87,6 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Util;
 import org.compiere.util.WebDoc;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -1588,6 +1587,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 			}
 		});    	    	
+    }
+    
+    public void onSavePayment()
+    {
+    	onSave(false, false, new Callback<Boolean>() {
+		
+			@Override
+			public void onCallback(Boolean result) {
+				onRefresh(false, false);
+			}
+			
+		});
     }
 
     /**

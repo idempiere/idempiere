@@ -30,7 +30,7 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121012L;
 
     /** Standard Constructor */
     public X_C_BPartner_Location (Properties ctx, int C_BPartner_Location_ID, String trxName)
@@ -82,9 +82,9 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
       return sb.toString();
     }
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_BPartner_ID(), get_TrxName());	}
 
 	/** Set Business Partner .
@@ -133,6 +133,20 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 		return ii.intValue();
 	}
 
+	/** Set C_BPartner_Location_UU.
+		@param C_BPartner_Location_UU C_BPartner_Location_UU	  */
+	public void setC_BPartner_Location_UU (String C_BPartner_Location_UU)
+	{
+		set_Value (COLUMNNAME_C_BPartner_Location_UU, C_BPartner_Location_UU);
+	}
+
+	/** Get C_BPartner_Location_UU.
+		@return C_BPartner_Location_UU	  */
+	public String getC_BPartner_Location_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_BPartner_Location_UU);
+	}
+
 	public I_C_Location getC_Location() throws RuntimeException
     {
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
@@ -161,9 +175,9 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 		return ii.intValue();
 	}
 
-	public I_C_SalesRegion getC_SalesRegion() throws RuntimeException
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
     {
-		return (I_C_SalesRegion)MTable.get(getCtx(), I_C_SalesRegion.Table_Name)
+		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_Name)
 			.getPO(getC_SalesRegion_ID(), get_TrxName());	}
 
 	/** Set Sales Region.
@@ -187,6 +201,20 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Customer Address ID.
+		@param CustomerAddressID Customer Address ID	  */
+	public void setCustomerAddressID (String CustomerAddressID)
+	{
+		set_Value (COLUMNNAME_CustomerAddressID, CustomerAddressID);
+	}
+
+	/** Get Customer Address ID.
+		@return Customer Address ID	  */
+	public String getCustomerAddressID () 
+	{
+		return (String)get_Value(COLUMNNAME_CustomerAddressID);
 	}
 
 	/** Set Fax.

@@ -28,6 +28,7 @@ import org.adempiere.webui.editor.WLocatorEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WPAttributeEditor;
 import org.adempiere.webui.editor.WPasswordEditor;
+import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -130,6 +131,11 @@ public class DefaultEditorFactory implements IEditorFactory {
                 || displayType == DisplayType.ID )
         {
             editor = new WTableDirEditor(gridField);
+        }
+        
+        else if (displayType == DisplayType.Payment)
+        {
+        	editor = new WPaymentEditor(gridField);
         }
 
         else if (displayType == DisplayType.URL)
