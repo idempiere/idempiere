@@ -164,6 +164,17 @@ html,body {
 	height: 24px;
 }
 
+.breadcrumb-toolbar-button {
+	background-color: transparent; 
+	display:inline-block; 
+	width: 22px; 
+	height: 22px;
+}
+
+.breadcrumb-record-info {
+	font-size: 12px;
+}
+
 .toolbar-button .z-toolbarbutton-body .z-toolbarbutton-cnt img {
 	width: 22px;
 	height: 22px;

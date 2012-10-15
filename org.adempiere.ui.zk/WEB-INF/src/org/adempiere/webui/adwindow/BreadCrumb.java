@@ -33,6 +33,7 @@ import org.compiere.model.DataStatusEvent;
 import org.compiere.model.MRole;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -42,7 +43,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
@@ -126,9 +126,9 @@ public class BreadCrumb extends Div implements EventListener<Event>{
         toolbar.appendChild(btnPrevious);
         btnRecordInfo = new ToolBarButton();
         btnRecordInfo.setLabel("");
-        btnRecordInfo.setStyle("font-size: 12px");
-        btnRecordInfo.setTooltiptext("Record Info");
+        btnRecordInfo.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Who")));
         btnRecordInfo.addEventListener(Events.ON_CLICK, this);
+        btnRecordInfo.setSclass("breadcrumb-record-info");
         toolbar.appendChild(btnRecordInfo);
         btnNext = createButton("Next", "Next", "Next");
         toolbar.appendChild(btnNext);
@@ -274,7 +274,7 @@ public class BreadCrumb extends Div implements EventListener<Event>{
         	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, btn.getName());
         btn.setImage("/images/"+image + "24.png");
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
-        btn.setSclass("toolbar-button");
+        btn.setSclass("breadcrumb-toolbar-button");
         
         buttons.put(name, btn);
         this.appendChild(btn);
