@@ -155,14 +155,6 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 			Clients.response(new AuEcho(window, "runProcessOnline", null));
 		}
 	}
-	
-	public void runProcessOnline() {
-		try {
-			processOnline();
-		} finally {
-			window.unlockUI();
-		}
-	}
 
 	@Override
 	public boolean checkMandatory() {
@@ -186,10 +178,8 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		return true;
 	}
 	
-	/**************************************************************************
-	 *  Process Online (sales only) - if approved - exit
-	 */
-	private void processOnline()
+	@Override
+	public void processOnline()
 	{
 		log.config("");
 		if (!checkMandatory())
