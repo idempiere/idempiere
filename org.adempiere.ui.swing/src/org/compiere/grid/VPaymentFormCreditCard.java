@@ -157,7 +157,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 	/**************************************************************************
 	 *  Process Online (sales only) - if approved - exit
 	 */
-	private void processOnline()
+	public void processOnline()
 	{
 		ValueNamePair vp = (ValueNamePair)kTypeCombo.getSelectedItem();
 		String CCType = vp.getValue();
