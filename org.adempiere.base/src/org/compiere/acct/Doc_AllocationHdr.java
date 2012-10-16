@@ -70,7 +70,7 @@ public class Doc_AllocationHdr extends Doc
 	}   //  Doc_Allocation
 
 	/**	Tolerance G&L				*/
-	private static final BigDecimal	TOLERANCE = new BigDecimal (0.02);
+	private static final BigDecimal	TOLERANCE = BigDecimal.valueOf(0.02);
 	/** Facts						*/
 	private ArrayList<Fact>		m_facts = null;
 
