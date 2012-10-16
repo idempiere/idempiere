@@ -27,6 +27,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.WebUtil;
 
 /**
  *	Session Model.
@@ -148,7 +149,8 @@ public class MSession extends X_AD_Session
 	public MSession (Properties ctx, String Remote_Addr, String Remote_Host, String WebSession, String trxName)
 	{
 		this (ctx, 0, trxName);
-		setServerName(Ini.getProperties().getProperty("ServerName"));
+		
+		setServerName(WebUtil.getServerName());
 		if (Remote_Addr != null)
 			setRemote_Addr(Remote_Addr);
 		if (Remote_Host != null)
@@ -173,7 +175,7 @@ public class MSession extends X_AD_Session
 		try
 		{
 			InetAddress lh = InetAddress.getLocalHost();
-			setServerName(Ini.getProperties().getProperty("ServerName"));
+			setServerName(WebUtil.getServerName());
 			setRemote_Addr(lh.getHostAddress());
 			setRemote_Host(lh.getHostName());
 			setDescription(Adempiere.MAIN_VERSION + "_"

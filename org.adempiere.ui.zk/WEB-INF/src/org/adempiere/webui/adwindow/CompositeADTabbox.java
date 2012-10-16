@@ -593,14 +593,14 @@ public class CompositeADTabbox extends AbstractADTabbox
 	@Override
 	public boolean dataSave(boolean onSaveEvent) {
 		IADTabpanel detail = getSelectedDetailADTabpanel();
-		if (detail != null && detail.getGridTab().needSave(true, true)) {
+		if (detail != null && !detail.getGridTab().isSortTab() && detail.getGridTab().needSave(true, true)) {
 			Execution execution = Executions.getCurrent();
 			if (execution != null) {
 				execution.setAttribute(getClass().getName()+".dataAction", detail.getUuid());
 			}
 			return detail.getGridTab().dataSave(onSaveEvent);
 		}
-		return headerTab.getGridTab().dataSave(onSaveEvent);
+		return headerTab.getGridTab().isSortTab() ? true : headerTab.getGridTab().dataSave(onSaveEvent);
 	}
 
 	@Override
@@ -637,7 +637,6 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (tabPanel instanceof ADSortTab) {
 			detailPane.invalidate();
 			detailPane.updateToolbar(false, true);
-			onDetailRecord();
 		}
 	}
 	

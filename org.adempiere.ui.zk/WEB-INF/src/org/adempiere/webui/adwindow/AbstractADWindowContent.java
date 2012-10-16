@@ -95,6 +95,7 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
@@ -1580,7 +1581,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    	}				
 				if (dirtyTabpanel != null) {
 					if (dirtyTabpanel == adTabbox.getSelectedDetailADTabpanel())
-						onDetailRecord();
+						Clients.scrollIntoView(dirtyTabpanel);
 					focusToTabpanel(dirtyTabpanel);
 				} else {
 					focusToActivePanel();
