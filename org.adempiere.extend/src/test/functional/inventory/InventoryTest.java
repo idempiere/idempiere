@@ -28,7 +28,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLocator;
 import org.compiere.model.MProduct;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -193,7 +193,7 @@ public class InventoryTest extends AdempiereTestCase
 		params.add(product.get_ID());
 		if (M_ASI_ID >= 0)
 		{
-			sql += " AND "+MStorage.COLUMNNAME_M_AttributeSetInstance_ID+"=?";
+			sql += " AND "+MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID+"=?";
 			params.add(M_ASI_ID);
 		}
 		PreparedStatement pstmt = null;
@@ -232,11 +232,11 @@ public class InventoryTest extends AdempiereTestCase
 	private void dumpStatus(MMDocument doc, String trxName)
 	{
 		MProduct product = InventoryUtil.getCreateProduct(doc.ProductValue, null); 
-		MStorage[] storage = MStorage.getOfProduct(getCtx(), product.get_ID(), trxName);
+		MStorageOnHand[] storage = MStorageOnHand.getOfProduct(getCtx(), product.get_ID(), trxName);
 		
 		System.err.println("STORAGE____________________________________________________");
 		System.err.println("   "+doc);
-		for (MStorage s : storage)
+		for (MStorageOnHand s : storage)
 		{
 			System.err.println(""+s);
 		}

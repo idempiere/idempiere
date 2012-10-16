@@ -304,7 +304,7 @@ public class MInOutLine extends X_M_InOutLine
 		}
 
 		//	Get existing Location
-		int M_Locator_ID = MStorage.getM_Locator_ID (getM_Warehouse_ID(),
+		int M_Locator_ID = MStorageOnHand.getM_Locator_ID (getM_Warehouse_ID(),
 				getM_Product_ID(), getM_AttributeSetInstance_ID(),
 				Qty, get_TrxName());
 		//	Get default Location

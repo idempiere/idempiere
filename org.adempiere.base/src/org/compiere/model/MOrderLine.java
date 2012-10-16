@@ -873,7 +873,7 @@ public class MOrderLine extends X_C_OrderLine
 				//	Max
 				if (isInstance)
 				{
-					MStorage[] storages = MStorage.getWarehouse(getCtx(), 
+					MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 
 						getM_Warehouse_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(), 
 						M_AttributeSet_ID, false, null, true, get_TrxName());
 					BigDecimal qty = Env.ZERO;

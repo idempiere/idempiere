@@ -101,12 +101,12 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (qty.signum() == 0)
 				continue;
 			//	Stock Info
-			MStorage[] storages = null;
+			MStorageOnHand[] storages = null;
 			MProduct product = oLines[i].getProduct();
 			if (product != null && product.get_ID() != 0 && product.isStocked())
 			{
 				String MMPolicy = product.getMMPolicy();
-				storages = MStorage.getWarehouse (order.getCtx(), order.getM_Warehouse_ID(),
+				storages = MStorageOnHand.getWarehouse (order.getCtx(), order.getM_Warehouse_ID(),
 					oLines[i].getM_Product_ID(), oLines[i].getM_AttributeSetInstance_ID(),
 					minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, 0, trxName);
 			} else {
@@ -1353,7 +1353,7 @@ public class MInOut extends X_M_InOut implements DocAction
 
 
 						//	Update Storage - see also VMatch.createMatchRecord
-						if (!MStorage.add(getCtx(), getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							sLine.getM_Locator_ID(),
 							sLine.getM_Product_ID(),
 							ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
@@ -1369,7 +1369,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						if (!sameWarehouse) {
 							//correct qtyOrdered in warehouse of order
 							MWarehouse wh = MWarehouse.get(getCtx(), oLine.getM_Warehouse_ID());
-							if (!MStorage.add(getCtx(), oLine.getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(), oLine.getM_Warehouse_ID(),
 									wh.getDefaultLocator().getM_Locator_ID(),
 									sLine.getM_Product_ID(),
 									ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
@@ -1399,7 +1399,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					BigDecimal orderedDiff = sameWarehouse ? QtyPO.negate(): Env.ZERO;
 
 					//	Fallback: Update Storage - see also VMatch.createMatchRecord
-					if (!MStorage.add(getCtx(), getM_Warehouse_ID(),
+					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 						sLine.getM_Locator_ID(),
 						sLine.getM_Product_ID(),
 						sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
@@ -1411,7 +1411,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					if (!sameWarehouse) {
 						//correct qtyOrdered in warehouse of order
 						MWarehouse wh = MWarehouse.get(getCtx(), oLine.getM_Warehouse_ID());
-						if (!MStorage.add(getCtx(), oLine.getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(), oLine.getM_Warehouse_ID(),
 								wh.getDefaultLocator().getM_Locator_ID(),
 								sLine.getM_Product_ID(),
 								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
@@ -1775,9 +1775,9 @@ public class MInOut extends X_M_InOut implements DocAction
 			{
 				MAttributeSetInstance asi = null;
 				//auto balance negative on hand
-				MStorage[] storages = MStorage.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
 						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false, line.getM_Locator_ID(), get_TrxName());
-				for (MStorage storage : storages)
+				for (MStorageOnHand storage : storages)
 				{
 					if (storage.getQtyOnHand().signum() < 0)
 					{
@@ -1799,10 +1799,10 @@ public class MInOut extends X_M_InOut implements DocAction
 			{
 				String MMPolicy = product.getMMPolicy();
 				Timestamp minGuaranteeDate = getMovementDate();
-				MStorage[] storages = MStorage.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName());
 				BigDecimal qtyToDeliver = line.getMovementQty();
-				for (MStorage storage: storages)
+				for (MStorageOnHand storage: storages)
 				{
 					if (storage.getQtyOnHand().compareTo(qtyToDeliver) >= 0)
 					{

@@ -350,7 +350,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	 */
 	private void createMA()
 	{
-		MStorage[] storages = MStorage.getAll(getCtx(), getM_Product_ID(), 
+		MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), getM_Product_ID(), 
 			getM_Locator_ID(), get_TrxName());
 		boolean allZeroASI = true;
 		for (int i = 0; i < storages.length; i++)
@@ -368,7 +368,7 @@ public class MInventoryLine extends X_M_InventoryLine
 		BigDecimal sum = Env.ZERO;
 		for (int i = 0; i < storages.length; i++)
 		{
-			MStorage storage = storages[i];
+			MStorageOnHand storage = storages[i];
 			if (storage.getQtyOnHand().signum() == 0)
 				continue;
 			if (ma != null 

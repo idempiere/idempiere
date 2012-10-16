@@ -121,7 +121,7 @@ public class CalloutMovement extends CalloutEngine
 				if (M_Locator_ID <= 0)
 					return;
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, "M_AttributeSetInstance_ID");
-				BigDecimal available = MStorage.getQtyAvailable(0, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
+				BigDecimal available = MStorageOnHand.getQtyAvailable(0, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
 				if (available == null)
 					available = Env.ZERO;
 				if (available.signum() == 0)

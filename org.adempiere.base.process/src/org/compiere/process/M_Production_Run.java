@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import org.compiere.model.MClient;
 import org.compiere.model.MLocator;
 import org.compiere.model.MProduct;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MTransaction;
 import org.compiere.model.Query;
 import org.compiere.model.X_M_Production;
@@ -140,7 +140,7 @@ public class M_Production_Run extends SvrProcess {
 								continue ;
 							else if(MovementQty.signum() < 0)
 							{
-								BigDecimal QtyAvailable = MStorage.getQtyAvailable(
+								BigDecimal QtyAvailable = MStorageOnHand.getQtyAvailable(
 										locator.getM_Warehouse_ID(), 
 										locator.getM_Locator_ID(), 
 										pline.getM_Product_ID(), 
@@ -155,7 +155,7 @@ public class M_Production_Run extends SvrProcess {
 								MovementType = MTransaction.MOVEMENTTYPE_Production_;
 							}
 						
-							if (!MStorage.add(getCtx(), locator.getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(), locator.getM_Warehouse_ID(),
 								locator.getM_Locator_ID(),
 								pline.getM_Product_ID(), 
 								pline.getM_AttributeSetInstance_ID(), 0 , 

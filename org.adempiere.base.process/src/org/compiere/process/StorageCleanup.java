@@ -26,7 +26,7 @@ import org.compiere.model.MLocator;
 import org.compiere.model.MMovement;
 import org.compiere.model.MMovementLine;
 import org.compiere.model.MRefList;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -105,7 +105,7 @@ public class StorageCleanup extends SvrProcess
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
-				lines += move (new MStorage(getCtx(), rs, get_TrxName()));
+				lines += move (new MStorageOnHand(getCtx(), rs, get_TrxName()));
 			}
  		}
 		catch (Exception e)
@@ -126,7 +126,7 @@ public class StorageCleanup extends SvrProcess
 	 *	@param target target storage
 	 *	@return no of movements
 	 */
-	private int move (MStorage target)
+	private int move (MStorageOnHand target)
 	{
 		log.info(target.toString());
 		BigDecimal qty = target.getQtyOnHand().negate();
@@ -140,10 +140,10 @@ public class StorageCleanup extends SvrProcess
 			return 0;
 
 		int lines = 0;
-		MStorage[] sources = getSources(target.getM_Product_ID(), target.getM_Locator_ID());
+		MStorageOnHand[] sources = getSources(target.getM_Product_ID(), target.getM_Locator_ID());
 		for (int i = 0; i < sources.length; i++)
 		{
-			MStorage source = sources[i];
+			MStorageOnHand source = sources[i];
 			
 			//	Movement Line
 			MMovementLine ml = new MMovementLine(mh);
@@ -189,13 +189,13 @@ public class StorageCleanup extends SvrProcess
 	 * 	Eliminate Reserved/Ordered
 	 *	@param target target Storage
 	 */
-	private void eliminateReservation(MStorage target)
+	private void eliminateReservation(MStorageOnHand target)
 	{
 		//	Negative Ordered / Reserved Qty
 		if (target.getQtyReserved().signum() != 0 || target.getQtyOrdered().signum() != 0)
 		{
 			int M_Locator_ID = target.getM_Locator_ID();
-			MStorage storage0 = MStorage.get(getCtx(), M_Locator_ID, 
+			MStorageOnHand storage0 = MStorageOnHand.get(getCtx(), M_Locator_ID, 
 				target.getM_Product_ID(), 0, get_TrxName());
 			if (storage0 == null)
 			{
@@ -203,7 +203,7 @@ public class StorageCleanup extends SvrProcess
 				if (M_Locator_ID != defaultLoc.getM_Locator_ID())
 				{
 					M_Locator_ID = defaultLoc.getM_Locator_ID();
-					storage0 = MStorage.get(getCtx(), M_Locator_ID, 
+					storage0 = MStorageOnHand.get(getCtx(), M_Locator_ID, 
 						target.getM_Product_ID(), 0, get_TrxName());
 				}
 			}
@@ -218,12 +218,12 @@ public class StorageCleanup extends SvrProcess
 				//	Eliminate Reservation
 				if (reserved.signum() != 0 || ordered.signum() != 0)
 				{
-					if (MStorage.add(getCtx(), target.getM_Warehouse_ID(), target.getM_Locator_ID(), 
+					if (MStorageOnHand.add(getCtx(), target.getM_Warehouse_ID(), target.getM_Locator_ID(), 
 						target.getM_Product_ID(), 
 						target.getM_AttributeSetInstance_ID(), target.getM_AttributeSetInstance_ID(),
 						Env.ZERO, reserved.negate(), ordered.negate(), get_TrxName()))
 					{
-						if (MStorage.add(getCtx(), storage0.getM_Warehouse_ID(), storage0.getM_Locator_ID(), 
+						if (MStorageOnHand.add(getCtx(), storage0.getM_Warehouse_ID(), storage0.getM_Locator_ID(), 
 							storage0.getM_Product_ID(), 
 							storage0.getM_AttributeSetInstance_ID(), storage0.getM_AttributeSetInstance_ID(),
 							Env.ZERO, reserved, ordered, get_TrxName()))
@@ -244,9 +244,9 @@ public class StorageCleanup extends SvrProcess
 	 *	@param M_Locator_ID locator
 	 *	@return sources
 	 */
-	private MStorage[] getSources (int M_Product_ID, int M_Locator_ID)
+	private MStorageOnHand[] getSources (int M_Product_ID, int M_Locator_ID)
 	{
-		ArrayList<MStorage> list = new ArrayList<MStorage>();
+		ArrayList<MStorageOnHand> list = new ArrayList<MStorageOnHand>();
 		String sql = "SELECT * "
 			+ "FROM M_Storage s "
 			+ "WHERE QtyOnHand > 0"
@@ -272,7 +272,7 @@ public class StorageCleanup extends SvrProcess
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
-				list.add (new MStorage (getCtx(), rs, get_TrxName()));
+				list.add (new MStorageOnHand (getCtx(), rs, get_TrxName()));
 			}
  		}
 		catch (Exception e)
@@ -284,7 +284,7 @@ public class StorageCleanup extends SvrProcess
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		MStorage[] retValue = new MStorage[list.size()];
+		MStorageOnHand[] retValue = new MStorageOnHand[list.size()];
 		list.toArray(retValue);
 		return retValue;
 	}	//	getSources

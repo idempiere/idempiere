@@ -1571,7 +1571,7 @@ public class MOrder extends X_C_Order implements DocAction
 					int M_Locator_ID = 0; 
 					//	Get Locator to reserve
 					if (line.getM_AttributeSetInstance_ID() != 0)	//	Get existing Location
-						M_Locator_ID = MStorage.getM_Locator_ID (line.getM_Warehouse_ID(), 
+						M_Locator_ID = MStorageOnHand.getM_Locator_ID (line.getM_Warehouse_ID(), 
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), 
 							ordered, get_TrxName());
 					//	Get default Location
@@ -1592,7 +1592,7 @@ public class MOrder extends X_C_Order implements DocAction
 						}
 					}
 					//	Update Storage
-					if (!MStorage.add(getCtx(), line.getM_Warehouse_ID(), M_Locator_ID, 
+					if (!MStorageOnHand.add(getCtx(), line.getM_Warehouse_ID(), M_Locator_ID, 
 						line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(), line.getM_AttributeSetInstance_ID(),
 						Env.ZERO, reserved, ordered, get_TrxName()))
@@ -2036,7 +2036,7 @@ public class MOrder extends X_C_Order implements DocAction
 			//	Qty = Ordered - Delivered
 			BigDecimal MovementQty = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered()); 
 			//	Location
-			int M_Locator_ID = MStorage.getM_Locator_ID (oLine.getM_Warehouse_ID(), 
+			int M_Locator_ID = MStorageOnHand.getM_Locator_ID (oLine.getM_Warehouse_ID(), 
 					oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), 
 					MovementQty, get_TrxName());
 			if (M_Locator_ID == 0)		//	Get default Location

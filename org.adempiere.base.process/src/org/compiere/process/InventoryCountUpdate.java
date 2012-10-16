@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -145,11 +145,11 @@ public class InventoryCountUpdate extends SvrProcess
 			{
 				MInventoryLine il = new MInventoryLine (getCtx(), rs, get_TrxName());
 				BigDecimal onHand = Env.ZERO;
-				MStorage[] storages = MStorage.getAll(getCtx(), il.getM_Product_ID(), il.getM_Locator_ID(), get_TrxName());
+				MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), il.getM_Product_ID(), il.getM_Locator_ID(), get_TrxName());
 				MInventoryLineMA ma = null;
 				for (int i = 0; i < storages.length; i++)
 				{
-					MStorage storage = storages[i];
+					MStorageOnHand storage = storages[i];
 					if (storage.getQtyOnHand().signum() == 0)
 						continue;
 					onHand = onHand.add(storage.getQtyOnHand());

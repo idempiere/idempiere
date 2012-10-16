@@ -163,7 +163,7 @@ public class MProjectIssue extends X_C_ProjectIssue
 		mTrx.setC_ProjectIssue_ID(getC_ProjectIssue_ID());
 		//
 		MLocator loc = MLocator.get(getCtx(), getM_Locator_ID());
-		if (MStorage.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
+		if (MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
 				getM_Product_ID(), getM_AttributeSetInstance_ID(), getM_AttributeSetInstance_ID(),
 				getMovementQty().negate(), null, null, get_TrxName()))
 		{

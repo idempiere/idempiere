@@ -35,7 +35,7 @@ import org.compiere.model.MOrg;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRequisition;
 import org.compiere.model.MRequisitionLine;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.X_T_Replenish;
 import org.compiere.util.AdempiereSystemError;
@@ -534,7 +534,7 @@ public class ReplenishReport extends SvrProcess
 			//	From: Look-up Storage
 			MProduct product = MProduct.get(getCtx(), replenish.getM_Product_ID());
 			String MMPolicy = product.getMMPolicy();
-			MStorage[] storages = MStorage.getWarehouse(getCtx(), 
+			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 
 				whSource.getM_Warehouse_ID(), replenish.getM_Product_ID(), 0, 0,
 				true, null, 
 				MClient.MMPOLICY_FiFo.equals(MMPolicy), get_TrxName());
@@ -542,7 +542,7 @@ public class ReplenishReport extends SvrProcess
 			BigDecimal target = replenish.getQtyToOrder();
 			for (int j = 0; j < storages.length; j++)
 			{
-				MStorage storage = storages[j];
+				MStorageOnHand storage = storages[j];
 				if (storage.getQtyOnHand().signum() <= 0)
 					continue;
 				BigDecimal moveQty = target;

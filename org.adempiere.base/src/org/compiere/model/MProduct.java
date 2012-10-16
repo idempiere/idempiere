@@ -571,7 +571,7 @@ public class MProduct extends X_M_Product
 			|| (is_ValueChanged("ProductType") 					//	from Item
 				&& PRODUCTTYPE_Item.equals(get_ValueOld("ProductType")))))
 		{
-			MStorage[] storages = MStorage.getOfProduct(getCtx(), get_ID(), get_TrxName());
+			MStorageOnHand[] storages = MStorageOnHand.getOfProduct(getCtx(), get_ID(), get_TrxName());
 			BigDecimal OnHand = Env.ZERO;
 			BigDecimal Ordered = Env.ZERO;
 			BigDecimal Reserved = Env.ZERO;
@@ -710,7 +710,7 @@ public class MProduct extends X_M_Product
 		//	Check Storage
 		if (isStocked() || PRODUCTTYPE_Item.equals(getProductType()))
 		{
-			MStorage[] storages = MStorage.getOfProduct(getCtx(), get_ID(), get_TrxName());
+			MStorageOnHand[] storages = MStorageOnHand.getOfProduct(getCtx(), get_ID(), get_TrxName());
 			BigDecimal OnHand = Env.ZERO;
 			BigDecimal Ordered = Env.ZERO;
 			BigDecimal Reserved = Env.ZERO;
