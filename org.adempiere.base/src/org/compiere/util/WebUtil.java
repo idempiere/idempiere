@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.InetAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -1250,4 +1252,31 @@ public final class WebUtil
 		}
 		return wu.save();
 	}	//	updateFields
+	
+	/**
+	 * 
+	 * @return Servername including host name: IP : instance name
+	 */
+	public static String getServerName(){
+		StringBuilder strBuilder = new StringBuilder();
+		String serverName = Ini.getProperties().getProperty("ServerName");
+		
+		
+		try {
+			strBuilder.append(InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException e) {
+			log.log(Level.WARNING, "Local host or IP not found", e);
+		}
+		strBuilder.append(":");
+		try {
+			strBuilder.append(InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+			log.log(Level.WARNING, "Local host or IP not found", e);
+		}
+		strBuilder.append(":");
+		if(serverName!=null)
+			strBuilder.append(serverName);
+			
+		return strBuilder.toString();
+	}
 }   //  WUtil
