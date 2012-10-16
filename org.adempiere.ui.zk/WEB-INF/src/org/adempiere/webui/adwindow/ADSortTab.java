@@ -41,13 +41,13 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
-import org.zkoss.zhtml.Span;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.event.ListDataEvent;
 
@@ -86,8 +86,8 @@ public class ADSortTab extends Panel implements IADTabpanel
 		this.gridTab = gridTab;
 
 		m_AD_Table_ID = gridTab.getAD_Table_ID();
-		this.setHeight("100%");
-	}	//	VSortTab
+		this.setVflex("true");
+	}	//	ADSortTab
 
 	/**	Logger			*/
 	static CLogger log = CLogger.getCLogger(ADSortTab.class);
@@ -254,13 +254,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 	 */
 	private void init() throws Exception
 	{
-		this.setStyle("height: 100%; width: 100%;");
 		//
 		noLabel.setValue("No");
 		yesLabel.setValue("Yes");
 
-		yesList.setHeight("100%");
-		noList.setHeight("100%");
 		yesList.setVflex(true);
 		noList.setVflex(true);
 
@@ -287,10 +284,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesList.setSeltype("multiple");
 		noList.setSeltype("multiple");
 
-		bAdd.setImage("images/Detail24.png");
+		bAdd.setImage("images/Next24.png");
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
 
-		bRemove.setImage("images/Parent24.png");
+		bRemove.setImage("images/Previous24.png");
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener crossListMouseListener = new DragListener();
@@ -306,10 +303,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 			}
 		};
 
-		bUp.setImage("images/Previous24.png");
+		bUp.setImage("images/Parent24.png");
 		bUp.addEventListener(Events.ON_CLICK, actionListener);
 
-		bDown.setImage("images/Next24.png");
+		bDown.setImage("images/Detail24.png");
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener yesListMouseMotionListener = new EventListener()
@@ -354,29 +351,28 @@ public class ADSortTab extends Panel implements IADTabpanel
 		listHeader.appendChild(noLabel);
 		listHeader.setParent(listHead);
 
-		Span span = new Span();
-		span.setParent(this);
-		span.setStyle("height: 99%; display: inline-block; width: 40%;");
-		span.appendChild(noList);
+		Hlayout hlayout = new Hlayout();
+		hlayout.setVflex("true");
+		hlayout.setHflex("true");
+		hlayout.setStyle("margin: auto;");
+		appendChild(hlayout);
+		noList.setHflex("1");
+		noList.setVflex(true);
+		hlayout.appendChild(noList);
 		Vbox vbox = new Vbox();
 		vbox.appendChild(bAdd);
 		vbox.appendChild(bRemove);
-		span = new Span();
-		span.setParent(this);
-		span.setStyle("height: 99%; display: inline-block; width: 46px");
-		span.appendChild(vbox);
+		vbox.setWidth("46px");
+		hlayout.appendChild(vbox);
 
-		span = new Span();
-		span.setParent(this);
-		span.setStyle("height: 99%; display: inline-block; width: 40%");
-		span.appendChild(yesList);
+		yesList.setVflex(true);
+		yesList.setHflex("1");
+		hlayout.appendChild(yesList);
 		vbox = new Vbox();
 		vbox.appendChild(bUp);
 		vbox.appendChild(bDown);
-		span = new Span();
-		span.setParent(this);
-		span.setStyle("height: 99%; display: inline-block; width: 46px");
-		span.appendChild(vbox);
+		vbox.setWidth("46px");
+		hlayout.appendChild(vbox);
 	}	//	Init
 
 	/* (non-Javadoc)
@@ -933,6 +929,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 	@Override
 	public void setDetailPaneMode(boolean detailMode, boolean vflex) {
+		this.setVflex(Boolean.toString(vflex));
 	}
 }	//ADSortTab
 
