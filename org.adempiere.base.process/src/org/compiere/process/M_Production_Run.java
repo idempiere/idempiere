@@ -160,8 +160,6 @@ public class M_Production_Run extends SvrProcess {
 								pline.getM_Product_ID(), 
 								pline.getM_AttributeSetInstance_ID(), 0 , 
 								MovementQty,
-								Env.ZERO,
-								Env.ZERO,
 								get_TrxName()))
 							{
 								raiseError("Cannot correct Inventory", "");

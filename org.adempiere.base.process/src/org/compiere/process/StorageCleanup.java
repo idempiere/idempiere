@@ -221,12 +221,12 @@ public class StorageCleanup extends SvrProcess
 					if (MStorageOnHand.add(getCtx(), target.getM_Warehouse_ID(), target.getM_Locator_ID(), 
 						target.getM_Product_ID(), 
 						target.getM_AttributeSetInstance_ID(), target.getM_AttributeSetInstance_ID(),
-						Env.ZERO, reserved.negate(), ordered.negate(), get_TrxName()))
+						Env.ZERO,  get_TrxName()))
 					{
 						if (MStorageOnHand.add(getCtx(), storage0.getM_Warehouse_ID(), storage0.getM_Locator_ID(), 
 							storage0.getM_Product_ID(), 
 							storage0.getM_AttributeSetInstance_ID(), storage0.getM_AttributeSetInstance_ID(),
-							Env.ZERO, reserved, ordered, get_TrxName()))
+							Env.ZERO, get_TrxName()))
 							log.info("Reserved=" + reserved + ",Ordered=" + ordered);
 						else
 							log.warning("Failed Storage0 Update");

@@ -1358,8 +1358,6 @@ public class MInOut extends X_M_InOut implements DocAction
 							sLine.getM_Product_ID(),
 							ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 							QtyMA,
-							sameWarehouse ? reservedDiff : Env.ZERO,
-							sameWarehouse ? orderedDiff : Env.ZERO,
 							get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
@@ -1373,7 +1371,7 @@ public class MInOut extends X_M_InOut implements DocAction
 									wh.getDefaultLocator().getM_Locator_ID(),
 									sLine.getM_Product_ID(),
 									ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-									Env.ZERO, reservedDiff, orderedDiff, get_TrxName()))
+									Env.ZERO, get_TrxName()))
 								{
 									m_processMsg = "Cannot correct Inventory (MA) in order warehouse";
 									return DocAction.STATUS_Invalid;
@@ -1403,7 +1401,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						sLine.getM_Locator_ID(),
 						sLine.getM_Product_ID(),
 						sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-						Qty, reservedDiff, orderedDiff, get_TrxName()))
+						Qty, get_TrxName()))
 					{
 						m_processMsg = "Cannot correct Inventory";
 						return DocAction.STATUS_Invalid;
@@ -1415,7 +1413,7 @@ public class MInOut extends X_M_InOut implements DocAction
 								wh.getDefaultLocator().getM_Locator_ID(),
 								sLine.getM_Product_ID(),
 								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-								Env.ZERO, QtySO.negate(), QtyPO.negate(), get_TrxName()))
+								Env.ZERO, get_TrxName()))
 							{
 								m_processMsg = "Cannot correct Inventory";
 								return DocAction.STATUS_Invalid;

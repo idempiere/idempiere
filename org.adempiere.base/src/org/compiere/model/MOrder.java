@@ -1595,7 +1595,7 @@ public class MOrder extends X_C_Order implements DocAction
 					if (!MStorageOnHand.add(getCtx(), line.getM_Warehouse_ID(), M_Locator_ID, 
 						line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(), line.getM_AttributeSetInstance_ID(),
-						Env.ZERO, reserved, ordered, get_TrxName()))
+						Env.ZERO, get_TrxName()))
 						return false;
 				}	//	stockec
 				//	update line

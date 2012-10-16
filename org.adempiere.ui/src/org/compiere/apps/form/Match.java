@@ -495,7 +495,7 @@ public class Match
 							sLine.getM_Locator_ID(), 
 							sLine.getM_Product_ID(), 
 							sLine.getM_AttributeSetInstance_ID(), oLine.getM_AttributeSetInstance_ID(), 
-							null, null, qty.negate(), trxName);
+							null,  trxName);
 				}
 			}
 			else
