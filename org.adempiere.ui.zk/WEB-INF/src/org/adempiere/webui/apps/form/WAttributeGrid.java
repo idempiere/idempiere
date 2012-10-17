@@ -44,6 +44,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.MRole;
 import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MStorageReservation;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -607,7 +608,7 @@ public class WAttributeGrid extends ADForm implements EventListener
 		formatted = "";
 		if (m_M_Warehouse_ID != 0)
 		{
-			BigDecimal qty = MStorageOnHand.getQtyAvailable(m_M_Warehouse_ID, M_Product_ID, 0, null);
+			BigDecimal qty = MStorageReservation.getQtyAvailable(m_M_Warehouse_ID, M_Product_ID, 0, null);
 			if (qty == null)
 				formatted = "-";
 			else

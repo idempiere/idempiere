@@ -51,6 +51,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.MRole;
 import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MStorageReservation;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
@@ -518,7 +519,7 @@ public class VAttributeGrid extends CPanel
 		formatted = "";
 		if (m_M_Warehouse_ID != 0)
 		{
-			BigDecimal qty = MStorageOnHand.getQtyAvailable(m_M_Warehouse_ID, M_Product_ID, 0, null);
+			BigDecimal qty = MStorageReservation.getQtyAvailable(m_M_Warehouse_ID, 0, M_Product_ID, 0, null);
 			if (qty == null)
 				formatted = "-";
 			else
