@@ -43,7 +43,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	private static final long serialVersionUID = 8514876566904723695L;
 
 
-	public static MBankAccount[] find (Properties ctx,
+	public static MBankAccountProcessor[] find (Properties ctx,
 			String tender, String CCType,
 			int AD_Client_ID, int AD_Org_ID, int C_Currency_ID, BigDecimal Amt, String trxName)
 	{
@@ -51,7 +51,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	}
 	
 	/**
-	 * 	Get BankAccount & PaymentProcessor
+	 * 	Get Bank Account Processor
 	 * 	@param ctx context
 	 *  @param tender optional Tender see TENDER_
 	 *  @param CCType optional CC Type see CC_
@@ -61,18 +61,19 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 *	@param trxName transaction
 	 *  @return Array of BankAccount[0] & PaymentProcessor[1] or null
 	 */
-	protected static MBankAccount[] find (Properties ctx,
+	protected static MBankAccountProcessor[] find (Properties ctx,
 		String tender, String CCType,
 		int AD_Client_ID, int C_Currency_ID, BigDecimal Amt, String trxName)
 	{
-		ArrayList<MBankAccount> list = new ArrayList<MBankAccount>();
-		StringBuffer sql = new StringBuffer("SELECT ba.* "
-			+ "FROM C_PaymentProcessor pp, C_BankAccount ba "
-			+ "WHERE pp.C_PaymentProcessor_ID = ba.C_PaymentProcessor_ID" 
-			+ " AND ba.AD_Client_ID=? AND ba.IsActive='Y'"				//	#1
-			+ " AND pp.IsActive='Y' "
-			+ " AND (pp.C_Currency_ID IS NULL OR pp.C_Currency_ID=?)"		//	#2
-			+ " AND (pp.MinimumAmt IS NULL OR pp.MinimumAmt = 0 OR pp.MinimumAmt <= ?)");	//	#3
+		ArrayList<MBankAccountProcessor> list = new ArrayList<MBankAccountProcessor>();
+		StringBuffer sql = new StringBuffer("SELECT bap.* "
+				+ "FROM C_BankAccount_Processor bap, C_PaymentProcessor pp, C_BankAccount ba "
+				+ "WHERE pp.C_PaymentProcessor_ID = bap.C_PaymentProcessor_ID" 
+				+ " AND ba.C_BankAccount_ID = bap.C_BankAccount_ID" 
+				+ " AND ba.AD_Client_ID=? AND pp.IsActive='Y'"				//	#1
+				+ " AND ba.IsActive='Y' AND bap.IsActive='Y' "
+				+ " AND (pp.C_Currency_ID IS NULL OR pp.C_Currency_ID=?)"		//	#2
+				+ " AND (pp.MinimumAmt IS NULL OR pp.MinimumAmt = 0 OR pp.MinimumAmt <= ?)");	//	#3
 		if (MPayment.TENDERTYPE_DirectDeposit.equals(tender))
 			sql.append(" AND pp.AcceptDirectDeposit='Y'");
 		else if (MPayment.TENDERTYPE_DirectDebit.equals(tender))
@@ -104,7 +105,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 			pstmt.setBigDecimal(3, Amt);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
-				list.add(new MBankAccount (ctx, rs, trxName));
+				list.add(new MBankAccountProcessor (ctx, rs, trxName));
 			rs.close();
 			pstmt.close();
 		}
@@ -120,7 +121,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 		else
 			s_log.fine("find - #" + list.size() + " - AD_Client_ID=" + AD_Client_ID
 				+ ", C_Currency_ID=" + C_Currency_ID + ", Amt=" + Amt);
-		MBankAccount[] retValue = new MBankAccount[list.size()];
+		MBankAccountProcessor[] retValue = new MBankAccountProcessor[list.size()];
 		list.toArray(retValue);
 		return retValue;
 	}   //  find

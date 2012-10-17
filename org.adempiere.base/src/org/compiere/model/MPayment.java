@@ -162,10 +162,10 @@ public final class MPayment extends X_C_Payment
 		super(ctx, rs, trxName);
 	}	//	MPayment
 
-	/**	Temporary	Bank Accounts & Payment Processors		*/
-	private MBankAccount[]	m_mBankAccounts = null;
-	/**	Temporary	Bank Account & Payment Processor		*/
-	private MBankAccount	m_mBankAccount = null;
+	/**	Temporary	Bank Account Processors		*/
+	private MBankAccountProcessor[]	m_mBankAccountProcessors = null;
+	/**	Temporary	Bank Account Processor		*/
+	private MBankAccountProcessor	m_mBankAccountProcessor = null;
 	/** Logger								*/
 	private static CLogger		s_log = CLogger.getCLogger (MPayment.class);
 	/** Error Message						*/
@@ -466,9 +466,9 @@ public final class MPayment extends X_C_Payment
 			return true;
 		}
 
-		if (m_mBankAccount == null)
+		if (m_mBankAccountProcessor == null)
 			setPaymentProcessor();
-		if (m_mBankAccount == null)
+		if (m_mBankAccountProcessor == null)
 		{
 			log.log(Level.WARNING, "No Payment Processor Model");
 			setErrorMessage("No Payment Processor Model");
@@ -479,7 +479,7 @@ public final class MPayment extends X_C_Payment
 
 		try
 		{
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(m_mBankAccount.getCtx(), m_mBankAccount.getC_PaymentProcessor_ID(), m_mBankAccount.get_TrxName());
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(m_mBankAccountProcessor.getCtx(), m_mBankAccountProcessor.getC_PaymentProcessor_ID(), m_mBankAccountProcessor.get_TrxName());
 			PaymentProcessor pp = PaymentProcessor.create(paymentProcessor, this);
 			if (pp == null)
 				setErrorMessage("No Payment Processor");
@@ -826,33 +826,33 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean setPaymentProcessor (String tender, String CCType)
 	{
-		m_mBankAccount = null;
+		m_mBankAccountProcessor = null;
 		//	Get Processor List
-		if (m_mBankAccounts == null || m_mBankAccounts.length == 0)
-			m_mBankAccounts = MPaymentProcessor.find (getCtx(), tender, CCType, getAD_Client_ID(),
+		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
+			m_mBankAccountProcessors = MPaymentProcessor.find (getCtx(), tender, CCType, getAD_Client_ID(),
 				getC_Currency_ID(), getPayAmt(), get_TrxName());
 		//	Relax Amount
-		if (m_mBankAccounts == null || m_mBankAccounts.length == 0)
-			m_mBankAccounts = MPaymentProcessor.find (getCtx(), tender, CCType, getAD_Client_ID(),
+		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
+			m_mBankAccountProcessors = MPaymentProcessor.find (getCtx(), tender, CCType, getAD_Client_ID(),
 				getC_Currency_ID(), Env.ZERO, get_TrxName());
-		if (m_mBankAccounts == null || m_mBankAccounts.length == 0)
+		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
 			return false;
 
 		//	Find the first right one
-		for (int i = 0; i < m_mBankAccounts.length; i++)
+		for (int i = 0; i < m_mBankAccountProcessors.length; i++)
 		{
-			MBankAccount bankAccount = m_mBankAccounts[i];
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccount.getCtx(), bankAccount.getC_PaymentProcessor_ID(), bankAccount.get_TrxName());
+			MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccountProcessor.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), bankAccountProcessor.get_TrxName());
 			if (paymentProcessor.accepts (tender, CCType))
 			{
-				m_mBankAccount = m_mBankAccounts[i];
+				m_mBankAccountProcessor = m_mBankAccountProcessors[i];
 				break;
 			}
 		}
-		if (m_mBankAccount != null)
-			setC_BankAccount_ID (m_mBankAccount.getC_BankAccount_ID());
+		if (m_mBankAccountProcessor != null)
+			setC_BankAccount_ID (m_mBankAccountProcessor.getC_BankAccount_ID());
 		//
-		return m_mBankAccount != null;
+		return m_mBankAccountProcessor != null;
 	}   //  setPaymentProcessor
 
 
@@ -875,15 +875,15 @@ public final class MPayment extends X_C_Payment
 	{
 		try
 		{
-			if (m_mBankAccounts == null || m_mBankAccounts.length == 0)
-				m_mBankAccounts = MPaymentProcessor.find (getCtx (), null, null, 
+			if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
+				m_mBankAccountProcessors = MPaymentProcessor.find (getCtx (), null, null, 
 					getAD_Client_ID (), getC_Currency_ID (), amt, get_TrxName());
 			//
 			HashMap<String,ValueNamePair> map = new HashMap<String,ValueNamePair>(); //	to eliminate duplicates
-			for (int i = 0; i < m_mBankAccounts.length; i++)
+			for (int i = 0; i < m_mBankAccountProcessors.length; i++)
 			{
-				MBankAccount bankAccount = m_mBankAccounts[i];
-				MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccount.getCtx(), bankAccount.getC_PaymentProcessor_ID(), bankAccount.get_TrxName());
+				MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
+				MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccountProcessor.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), bankAccountProcessor.get_TrxName());
 				if (paymentProcessor.isAcceptAMEX ())
 					map.put (CREDITCARDTYPE_Amex, getCreditCardPair (CREDITCARDTYPE_Amex));
 				if (paymentProcessor.isAcceptDiners ())
@@ -900,7 +900,7 @@ public final class MPayment extends X_C_Payment
 			//
 			ValueNamePair[] retValue = new ValueNamePair[map.size ()];
 			map.values ().toArray (retValue);
-			log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccounts.length);
+			log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccountProcessors.length);
 			return retValue;
 		}
 		catch (Exception ex)

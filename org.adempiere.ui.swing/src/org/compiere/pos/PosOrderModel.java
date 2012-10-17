@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.compiere.model.MBPartner;
-import org.compiere.model.MBankAccount;
+import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrderTax;
@@ -397,14 +397,14 @@ public class PosOrderModel extends MOrder {
 	{
 		try
 		{
-			MBankAccount[] m_mBankAccounts = MPaymentProcessor.find (getCtx (), null, null, 
+			MBankAccountProcessor[] m_mBankAccountProcessors = MPaymentProcessor.find (getCtx (), null, null, 
 					getAD_Client_ID (), getAD_Org_ID(), getC_Currency_ID (), amt, get_TrxName());
 			//
 			HashMap<String,ValueNamePair> map = new HashMap<String,ValueNamePair>(); //	to eliminate duplicates
-			for (int i = 0; i < m_mBankAccounts.length; i++)
+			for (int i = 0; i < m_mBankAccountProcessors.length; i++)
 			{
-				MBankAccount bankAccount = m_mBankAccounts[i];
-				MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccount.getCtx(), bankAccount.getC_PaymentProcessor_ID(), bankAccount.get_TrxName());
+				MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
+				MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccountProcessor.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), bankAccountProcessor.get_TrxName());
 				if (paymentProcessor.isAcceptAMEX ())
 					map.put (MPayment.CREDITCARDTYPE_Amex, getCreditCardPair (MPayment.CREDITCARDTYPE_Amex));
 				if (paymentProcessor.isAcceptDiners ())
@@ -421,7 +421,7 @@ public class PosOrderModel extends MOrder {
 			//
 			ValueNamePair[] retValue = new ValueNamePair[map.size ()];
 			map.values ().toArray (retValue);
-			log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccounts.length);
+			log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccountProcessors.length);
 			return retValue;
 		}
 		catch (Exception ex)
