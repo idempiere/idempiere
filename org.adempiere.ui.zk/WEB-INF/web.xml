@@ -53,6 +53,15 @@
 			org.zkoss.zk.ui.http.HttpSessionListener
 		</listener-class>
 	</listener>
+	<listener>
+		<description>
+			Used to track the session currently used
+		</description>
+		<display-name>Update Session</display-name>
+		<listener-class>
+			org.adempiere.webui.LoggedSessionListener
+		</listener-class>
+	</listener>
 
 	<servlet>
 		<description>ZK loader for ZUML pages</description>

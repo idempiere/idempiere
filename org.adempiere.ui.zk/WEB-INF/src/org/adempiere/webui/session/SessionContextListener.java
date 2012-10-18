@@ -22,10 +22,13 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpSession;
 
-import org.compiere.util.CLogMgt;
+import org.adempiere.util.ServerContext;
+import org.adempiere.util.ServerContextURLHandler;
+import org.compiere.model.MSession;
 import org.compiere.util.Env;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -36,11 +39,10 @@ import org.zkoss.zk.ui.event.EventThreadResume;
 import org.zkoss.zk.ui.event.EventThreadSuspend;
 import org.zkoss.zk.ui.sys.DesktopCtrl;
 import org.zkoss.zk.ui.sys.ServerPush;
+import org.zkoss.zk.ui.util.DesktopCleanup;
+import org.zkoss.zk.ui.util.DesktopInit;
 import org.zkoss.zk.ui.util.ExecutionCleanup;
 import org.zkoss.zk.ui.util.ExecutionInit;
-
-import org.adempiere.util.ServerContextURLHandler;
-import org.adempiere.util.ServerContext;
 
 /**
  *
@@ -49,7 +51,7 @@ import org.adempiere.util.ServerContext;
  * @version $Revision: 0.10 $
  */
 public class SessionContextListener implements ExecutionInit,
-        ExecutionCleanup, EventThreadInit, EventThreadResume, EventThreadCleanup, EventThreadSuspend
+        ExecutionCleanup, EventThreadInit, EventThreadResume, EventThreadCleanup, EventThreadSuspend, DesktopCleanup, DesktopInit
 {
 	public static final String SERVLET_SESSION_ID = "servlet.sessionId";
     public static final String SESSION_CTX = "WebUISessionContext";
@@ -300,5 +302,34 @@ public class SessionContextListener implements ExecutionInit,
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public void cleanup(Desktop desktop) throws Exception {
+		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
+		MSession mSession = MSession.get(Env.getCtx(), false);
+		if(mSession!=null && !mSession.isProcessed() && (Env.getContext(Env.getCtx(), "isReloaded")==null  || Env.getContext(Env.getCtx(), "isReloaded").equals("")  || Env.getContext(Env.getCtx(), "isReloaded").equals("N"))){
+	        mSession.setProcessed(true);
+	        mSession.save();
+		}
+		Env.setContext(Env.getCtx(), "isReloaded", "N");
+	}
+
+	@Override
+	public void init(Desktop desktop, Object request) throws Exception {
+		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
+		MSession mSession = MSession.get(Env.getCtx(), false);
+		if(mSession!=null && mSession.isProcessed()){
+			mSession.setProcessed(false);
+			mSession.save();
+		}else if(mSession!=null){
+			Env.setContext(Env.getCtx(), "isReloaded", "Y");
+		}
 	}
 }
