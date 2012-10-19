@@ -139,6 +139,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	private boolean uiCreated;
 	private boolean active = false;
 	private boolean isChanged;
+	private boolean detailPaneMode;
 
 	/**
 	 * 	Dynamic Init
@@ -698,15 +699,6 @@ public class ADSortTab extends Panel implements IADTabpanel
 		}
 	}	//	saveData
 
-	/* (non-Javadoc)
-	 * @see org.compiere.grid.APanelTab#unregisterPanel()
-	 */
-	public void unregisterPanel ()
-	{
-		saveData();
-		adWindowPanel = null;
-	}	//	dispose
-
 	/**
 	 * List Item
 	 * @author Teo Sarca
@@ -929,12 +921,32 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 	@Override
 	public void setDetailPaneMode(boolean detailMode, boolean vflex) {
+		this.detailPaneMode = detailMode;
 		this.setVflex(Boolean.toString(vflex));
+	}
+	
+	public boolean isDetailPaneMode() {
+		return this.detailPaneMode;
 	}
 
 	@Override
 	public GridView getGridView() {
 		return null;
+	}
+
+	@Override
+	public boolean needSave(boolean rowChange, boolean onlyRealChange) {
+		return isChanged();
+	}
+
+	@Override
+	public boolean dataSave(boolean onSaveEvent) {
+		if (isChanged()) {
+			saveData();
+			return isChanged() == false;
+		} else {
+			return true;
+		}
 	}
 }	//ADSortTab
 

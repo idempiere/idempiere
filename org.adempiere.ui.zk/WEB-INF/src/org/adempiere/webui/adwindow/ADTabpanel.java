@@ -159,6 +159,8 @@ DataStatusListener, IADTabpanel
 
 	private Component detailPane;
 
+	private boolean detailPaneMode;
+
 	public static final String ON_TOGGLE_EVENT = "onToggle";
 	
 	public ADTabpanel()
@@ -1187,6 +1189,7 @@ DataStatusListener, IADTabpanel
 
 	@Override
 	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
+		this.detailPaneMode = detailPaneMode;
 		if (detailPaneMode) {
 			detailPane = null;
 			this.setVflex("true");
@@ -1215,6 +1218,21 @@ DataStatusListener, IADTabpanel
 			}
 		}
 		return buttonList;
+	}
+
+	@Override
+	public boolean needSave(boolean rowChange, boolean onlyRealChange) {
+		return getGridTab().needSave(rowChange, onlyRealChange);
+	}
+
+	@Override
+	public boolean dataSave(boolean onSaveEvent) {
+		return getGridTab().dataSave(onSaveEvent);
+	}
+
+	@Override
+	public boolean isDetailPaneMode() {
+		return this.detailPaneMode;
 	}
 }
 

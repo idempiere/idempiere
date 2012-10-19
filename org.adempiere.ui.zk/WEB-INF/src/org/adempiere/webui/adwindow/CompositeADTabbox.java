@@ -230,7 +230,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				int oldIndex = (Integer) event.getData();
 				if (oldIndex != detailPane.getSelectedIndex()) {					
 					IADTabpanel prevTabPanel = detailPane.getADTabpanel(oldIndex);
-					if (prevTabPanel != null && prevTabPanel.getGridTab().needSave(true, true)) {
+					if (prevTabPanel != null && prevTabPanel.needSave(true, true)) {
 						final int newIndex = detailPane.getSelectedIndex();
 						detailPane.setSelectedIndex(oldIndex);
 						adWindowPanel.saveAndNavigate(new Callback<Boolean>() {							
@@ -243,6 +243,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 							}
 						});
 					} else {
+						detailPane.setSelectedIndex(detailPane.getSelectedIndex());
 						onActivateDetail(tabPanel);
 					}
 				} else {
@@ -571,13 +572,13 @@ public class CompositeADTabbox extends AbstractADTabbox
 	
 	@Override
 	public boolean needSave(boolean rowChange, boolean onlyRealChange) {
-		boolean b = headerTab.getGridTab().needSave(rowChange, onlyRealChange);
+		boolean b = headerTab.needSave(rowChange, onlyRealChange);
 		if (b)
 			return b;
 		
 		IADTabpanel detailPanel = getSelectedDetailADTabpanel();
 		if (detailPanel != null) {
-			b = detailPanel.getGridTab().needSave(rowChange, onlyRealChange);
+			b = detailPanel.needSave(rowChange, onlyRealChange);
 		}
 		
 		return b;
@@ -601,14 +602,14 @@ public class CompositeADTabbox extends AbstractADTabbox
 	@Override
 	public boolean dataSave(boolean onSaveEvent) {
 		IADTabpanel detail = getSelectedDetailADTabpanel();
-		if (detail != null && !detail.getGridTab().isSortTab() && detail.getGridTab().needSave(true, true)) {
+		if (detail != null && detail.needSave(true, true)) {
 			Execution execution = Executions.getCurrent();
 			if (execution != null) {
 				execution.setAttribute(getClass().getName()+".dataAction", detail.getUuid());
 			}
-			return detail.getGridTab().dataSave(onSaveEvent);
+			return detail.dataSave(onSaveEvent);
 		}
-		return headerTab.getGridTab().isSortTab() ? true : headerTab.getGridTab().dataSave(onSaveEvent);
+		return headerTab.dataSave(onSaveEvent);
 	}
 
 	@Override
@@ -619,13 +620,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 	@Override
 	public IADTabpanel getDirtyADTabpanel() {
 		IADTabpanel detail = getSelectedDetailADTabpanel();
-		if (detail != null && detail.getGridTab().needSave(true, true)) {
+		if (detail != null && detail.needSave(true, true)) {
 			return detail;
-		} else if (detail != null && detail instanceof ADSortTab && ((ADSortTab)detail).isChanged()) {
-			return detail;
-		} else if (headerTab.getGridTab().needSave(true, true)) {
-			return headerTab;
-		} else if (headerTab instanceof ADSortTab && ((ADSortTab)headerTab).isChanged()) {
+		} else if (headerTab.needSave(true, true)) {
 			return headerTab;
 		}
 		
@@ -678,7 +675,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				IADTabpanel adtab = detailPane.getADTabpanel(i);
 				int index = (Integer) adtab.getAttribute(ADTAB_INDEX_ATTRIBUTE);
 				if (index == tabIndex) {
-					if (!detailPane.isTabVisible(i)) {
+					if (!detailPane.isTabVisible(i) || !detailPane.isTabEnabled(i)) {
 						return;
 					}
 					if (i != detailPane.getSelectedIndex()) {						

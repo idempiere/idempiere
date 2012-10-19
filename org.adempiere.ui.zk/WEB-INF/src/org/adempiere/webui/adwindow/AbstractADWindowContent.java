@@ -1627,10 +1627,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (dirtyTabpanel != null && dirtyTabpanel instanceof ADSortTab)
     	{
     		ADSortTab sortTab = (ADSortTab) dirtyTabpanel;
-    		if (onNavigationEvent)
-    			sortTab.unregisterPanel();
-    		else
-    			sortTab.saveData();
+    		sortTab.saveData();
+    		
     		if (!onNavigationEvent)
     		{
 	    		toolbar.enableSave(sortTab.isChanged());	//	set explicitly

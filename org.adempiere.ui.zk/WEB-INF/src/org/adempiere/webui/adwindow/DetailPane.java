@@ -151,15 +151,14 @@ public class DetailPane extends Panel implements EventListener<Event> {
 				if (!tab.isSelected()) 
 					return;
 				org.zkoss.zul.Tabpanel zkTabpanel = tab.getLinkedPanel();
-				ADTabpanel adtab = null;
+				IADTabpanel adtab = null;
 				for(Component c : zkTabpanel.getChildren()) {
-					if (c instanceof ADTabpanel) {
-						adtab = (ADTabpanel) c;
+					if (c instanceof IADTabpanel) {
+						adtab = (IADTabpanel) c;
 						break;
 					}
 				}
-				if (adtab != null && adtab.getGridView() != null
-					&& adtab.getGridView().isDetailPaneMode()) {
+				if (adtab != null && adtab.isDetailPaneMode()) {
 					onEdit();
 				}
 			}
