@@ -213,16 +213,18 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		});
 		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Delete")));
 		
-		button = new ToolBarButton();
-		button.setImage(PROCESS_IMAGE);
-		toolbar.appendChild(button);
-		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				onProcess(event.getTarget());
-			}
-		});
-		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Process")));
+		if (!tabPanel.getGridTab().isSortTab()) {
+			button = new ToolBarButton();
+			button.setImage(PROCESS_IMAGE);
+			toolbar.appendChild(button);
+			button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					onProcess(event.getTarget());
+				}
+			});
+			button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Process")));
+		}
 		
 		Hbox messageContainer = new Hbox();
 		messageContainer.setPack("end");
