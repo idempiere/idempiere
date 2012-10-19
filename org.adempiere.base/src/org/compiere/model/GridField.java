@@ -1970,4 +1970,9 @@ public class GridField
 		return m_vo.NumLines;
 	}
 	
+	public boolean isToolbarButton()
+	{
+		return m_vo.displayType == DisplayType.Button && m_vo.IsToolbarButton;
+	}
+	
 }   //  MField

@@ -32,7 +32,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20110918L;
+	private static final long serialVersionUID = 20121019L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -60,6 +60,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsMandatory (false);
 			setIsParent (false);
 			setIsSelectionColumn (false);
+			setIsToolbarButton (true);
+// Y
 			setIsTranslated (false);
 			setIsUpdateable (true);
 // Y
@@ -742,6 +744,30 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return (String)get_Value(COLUMNNAME_IsSyncDatabase);
 	}
 
+	/** Set Toolbar Button.
+		@param IsToolbarButton 
+		Add the column button to the toolbar
+	  */
+	public void setIsToolbarButton (boolean IsToolbarButton)
+	{
+		set_Value (COLUMNNAME_IsToolbarButton, Boolean.valueOf(IsToolbarButton));
+	}
+
+	/** Get Toolbar Button.
+		@return Add the column button to the toolbar
+	  */
+	public boolean isToolbarButton () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsToolbarButton);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Translated.
 		@param IsTranslated 
 		This column is translated
@@ -853,6 +879,26 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public int getSeqNo () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Selection Column Sequence.
+		@param SeqNoSelection 
+		Selection Column Sequence
+	  */
+	public void setSeqNoSelection (int SeqNoSelection)
+	{
+		set_Value (COLUMNNAME_SeqNoSelection, Integer.valueOf(SeqNoSelection));
+	}
+
+	/** Get Selection Column Sequence.
+		@return Selection Column Sequence
+	  */
+	public int getSeqNoSelection () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNoSelection);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

@@ -480,6 +480,19 @@ public interface I_AD_Column
 	  */
 	public String getIsSyncDatabase();
 
+    /** Column name IsToolbarButton */
+    public static final String COLUMNNAME_IsToolbarButton = "IsToolbarButton";
+
+	/** Set Toolbar Button.
+	  * Add the column button to the toolbar
+	  */
+	public void setIsToolbarButton (boolean IsToolbarButton);
+
+	/** Get Toolbar Button.
+	  * Add the column button to the toolbar
+	  */
+	public boolean isToolbarButton();
+
     /** Column name IsTranslated */
     public static final String COLUMNNAME_IsTranslated = "IsTranslated";
 
@@ -555,6 +568,19 @@ public interface I_AD_Column
  lowest number comes first
 	  */
 	public int getSeqNo();
+
+    /** Column name SeqNoSelection */
+    public static final String COLUMNNAME_SeqNoSelection = "SeqNoSelection";
+
+	/** Set Selection Column Sequence.
+	  * Selection Column Sequence
+	  */
+	public void setSeqNoSelection (int SeqNoSelection);
+
+	/** Get Selection Column Sequence.
+	  * Selection Column Sequence
+	  */
+	public int getSeqNoSelection();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
