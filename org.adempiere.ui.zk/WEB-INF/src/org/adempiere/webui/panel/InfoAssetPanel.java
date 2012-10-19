@@ -281,7 +281,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 		
 		Integer C_BPartner_ID = null;
 		
-		if (fBPartner_ID.getDisplay() != "")
+		if (!"".equals(fBPartner_ID.getDisplay()))
 			C_BPartner_ID = (Integer)fBPartner_ID.getValue();
 		
 		if (C_BPartner_ID != null)
@@ -291,7 +291,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 		
 		Integer M_Product_ID = null;
 		
-		if (fProduct_ID.getDisplay() != "")
+		if (!"".equals(fProduct_ID.getDisplay()))
 			M_Product_ID = (Integer)fProduct_ID.getValue();
 		
 		if (M_Product_ID != null)

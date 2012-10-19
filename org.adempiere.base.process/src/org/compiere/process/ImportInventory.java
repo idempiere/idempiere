@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
@@ -29,6 +30,7 @@ import org.compiere.model.MCost;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProduct;
+import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.X_I_Inventory;
 import org.compiere.util.DB;
 import org.compiere.util.TimeUtil;
@@ -356,12 +358,12 @@ public class ImportInventory extends SvrProcess
 					x_isInternalUse = isInternalUse;
 					noInsert++;
 				}
-
+				MProduct product = MProduct.get(getCtx(), imp.getM_Product_ID());
 				//	Line
 				int M_AttributeSetInstance_ID = 0;
 				if ((imp.getLot() != null && imp.getLot().length() > 0) || (imp.getSerNo() != null && imp.getSerNo().length() > 0))
 				{
-					MProduct product = MProduct.get(getCtx(), imp.getM_Product_ID());
+					
 					if (product.isInstanceAttribute())
 					{
 						MAttributeSet mas = product.getAttributeSet();
@@ -394,15 +396,28 @@ public class ImportInventory extends SvrProcess
 						noInsertLine++;
 						//@Trifon update Product cost record if Update costing is enabled
 						if (p_UpdateCosting) {
-							MCost cost = MCost.get (MProduct.get(getCtx(), imp.getM_Product_ID()), /*M_AttributeSetInstance_ID*/ 0
-									, acctSchema, p_AD_OrgTrx_ID, p_M_CostElement_ID, get_TrxName());
-							cost.setCurrentCostPrice( imp.getCurrentCostPrice() );
-							if (cost.save()) {
-								// nothing here.
-							} else {
-								log.log(Level.SEVERE, "Cost not saved!");
-								break;
+							String costingLevel = null;
+							if(product.getM_Product_Category_ID() > 0){
+								MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), product.getM_Product_Category_ID(), p_C_AcctSchema_ID, get_TrxName());
+								costingLevel = pca.getCostingLevel();
+								if (costingLevel == null) {
+									costingLevel = acctSchema.getCostingLevel();
+								}
+
 							}
+
+							int costOrgID = p_AD_OrgTrx_ID;
+							int costASI = line.getM_AttributeSetInstance_ID();
+							if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)){
+								costOrgID = 0;
+								costASI = 0;
+							} else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) { 
+								costASI = 0;
+							}
+							MCost cost = MCost.get (MProduct.get(getCtx(), imp.getM_Product_ID()), costASI
+									, acctSchema, costOrgID, p_M_CostElement_ID, get_TrxName());
+							cost.setCurrentCostPrice( imp.getCurrentCostPrice() );
+							cost.saveEx();
 						}
 					}
 				}
@@ -412,7 +427,7 @@ public class ImportInventory extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			throw new AdempiereException(e);
 		}
 
 		//	Set Error to indicator to not imported
