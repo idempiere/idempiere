@@ -247,7 +247,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 		Grid grid = GridFactory.newGridLayout();
         grid.setId("grd");
-        grid.setWidth("400px");
+        grid.setStyle("width: 390px; margin: auto;");
 
         Rows rows = new Rows();
 
@@ -258,10 +258,10 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 		Panel pnlDocAction = new Panel();
 		pnlDocAction.appendChild(lblDocAction);
+		pnlDocAction.appendChild(new Space());
 		pnlDocAction.appendChild(lstDocAction);
 
 		rowDocAction.appendChild(pnlDocAction);
-		rowDocAction.setAlign("right");
 		rowLabel.appendChild(label);
 		rowConfirm.appendChild(confirmPanel);
 		rowSpacer.appendChild(new Space());

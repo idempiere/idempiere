@@ -205,10 +205,18 @@ public class MColumn extends X_AD_Column
 			else if (DisplayType.isDate (displayType))
 				setFieldLength(7);
 			else
-		{
-			log.saveError("FillMandatory", Msg.getElement(getCtx(), "FieldLength"));
-			return false;
+			{
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), "FieldLength"));
+				return false;
+			}
 		}
+		
+		if (displayType != DisplayType.Button)
+		{
+			if (isToolbarButton())
+			{
+				setIsToolbarButton(false);
+			}
 		}
 		
 		/** Views are not updateable

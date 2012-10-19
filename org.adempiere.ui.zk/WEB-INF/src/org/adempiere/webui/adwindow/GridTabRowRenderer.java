@@ -39,7 +39,9 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -74,6 +76,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private int windowNo;
 	private GridTabDataBinder dataBinder;
 	private Map<GridField, WEditor> editors = new LinkedHashMap<GridField, WEditor>();
+	private Map<GridField, WEditor> toolbarEditors = new LinkedHashMap<GridField, WEditor>();
 	private Paging paging;
 
 	private Map<String, Map<Object, String>> lookupCache = null;
@@ -86,6 +89,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private boolean editing = false;
 	private int currentRowIndex = -1;
 	private AbstractADWindowContent m_windowPanel;
+	private ActionListener buttonListener;
 
 	/**
 	 *
@@ -113,9 +117,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private void prepareFieldEditor(GridField gridField, WEditor editor) {
 			if (editor instanceof WButtonEditor)
             {
-				if (m_windowPanel != null)
+				if (buttonListener != null)
 				{
-					((WButtonEditor)editor).addActionListener(m_windowPanel);	
+					((WButtonEditor)editor).removeActionListener(buttonListener);
+					((WButtonEditor)editor).addActionListener(buttonListener);	
 				}
 				else
 				{
@@ -229,16 +234,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
 			editor.setReadWrite(gridField.isEditable(gridRowCtx, true,true));
 			editor.getComponent().setAttribute("grid.row.index", rowIndex);
-			editor.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					WButtonEditor editor = (WButtonEditor) event.getSource();
-					int rowIndex = (Integer) editor.getComponent().getAttribute("grid.row.index");
-					int newRowIndex = gridTab.navigate(rowIndex);
-					if (newRowIndex == rowIndex) {
-						m_windowPanel.actionPerformed(event);
-					}
-				}
-			});
+			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
 		} else {
 			String text = getDisplayText(value, gridField);
@@ -278,6 +274,13 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (!editors.isEmpty())
 			editorList.addAll(editors.values());
 
+		return editorList;
+	}
+	
+	public List<WEditor> getToolbarEditors() {
+		List<WEditor> editorList = new ArrayList<WEditor>();
+		if (!toolbarEditors.isEmpty())
+			editorList.addAll(toolbarEditors.values());
 		return editorList;
 	}
 
@@ -398,16 +401,33 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 		Cell cell = new Cell();
 		cell.setWidth("10px");
+		cell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				Cell cell = (Cell) event.getTarget();
+				if (cell.getSclass() != null && cell.getSclass().indexOf("row-indicator-seld") >= 0)
+					Events.sendEvent(gridPanel, new Event(DetailPane.ON_EDIT_EVENT, gridPanel));
+				else
+					Events.sendEvent(event.getTarget().getParent(), event);
+			}
+		});
+		cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
+		
 		//TODO: checkbox for selection and batch action ( delete, export, complete, etc )
 //		cell.appendChild(new Checkbox());
 		row.appendChild(cell);
 		
 		int colIndex = -1;
 		for (int i = 0; i < columnCount; i++) {
-			if (editors.get(gridPanelFields[i]) == null)
-				editors.put(gridPanelFields[i], WebEditorFactory.getEditor(gridPanelFields[i], true));
+			if (editors.get(gridPanelFields[i]) == null) {
+				WEditor editor = WebEditorFactory.getEditor(gridPanelFields[i], true);
+				editors.put(gridPanelFields[i], editor);
+				if (editor instanceof WButtonEditor) {
+					((WButtonEditor)editor).addActionListener(buttonListener);
+				}
+			}
 			
-			if (!gridPanelFields[i].isDisplayedGrid()) {
+			if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
 				continue;
 			}
 			colIndex ++;
@@ -436,6 +456,16 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			row.appendChild(div);
 		}
 
+		for (GridField gridField : gridTabFields) {
+			if (gridField.isToolbarButton() && gridField.isDisplayed()) {
+				if (toolbarEditors.get(gridField) == null) {
+					WButtonEditor editor = (WButtonEditor) WebEditorFactory.getEditor(gridField, true);
+					toolbarEditors.put(gridField, editor);
+					editor.addActionListener(buttonListener);
+				}
+			}
+		}
+		
 		if (rowIndex == gridTab.getCurrentRow()) {
 			setCurrentRow(row);
 		}
@@ -450,13 +480,13 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			Cell cell = (Cell) currentRow.getFirstChild();
 			if (cell != null) {
 				cell.setStyle("background-color: transparent");
-				cell.setSclass(null);
+				cell.setSclass("row-indicator");
 			}
 		}
 		currentRow = row;
 		Cell cell = (Cell) currentRow.getFirstChild();
 		if (cell != null) {
-			cell.setSclass("current-row-indicator");
+			cell.setSclass("row-indicator-seld");
 		}
 		currentRowIndex = gridTab.getCurrentRow();
 		
@@ -499,7 +529,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			//skip indicator column
 			int colIndex = 0;
 			for (int i = 0; i < columnCount; i++) {
-				if (!gridPanelFields[i].isDisplayedGrid()) {
+				if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
 					continue;
 				}
 				colIndex ++;
@@ -665,6 +695,24 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * @param windowPanel
 	 */
 	public void setADWindowPanel(AbstractADWindowContent windowPanel) {
+		if (this.m_windowPanel == windowPanel)
+			return;
+		
 		this.m_windowPanel = windowPanel;
+		
+		buttonListener = new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				WButtonEditor editor = (WButtonEditor) event.getSource();
+				Integer rowIndex = (Integer) editor.getComponent().getAttribute("grid.row.index");
+				if (rowIndex != null) {
+					int newRowIndex = gridTab.navigate(rowIndex);
+					if (newRowIndex == rowIndex) {
+						m_windowPanel.actionPerformed(event);
+					}
+				} else {
+					m_windowPanel.actionPerformed(event);
+				}
+			}
+		};
 	}
 }

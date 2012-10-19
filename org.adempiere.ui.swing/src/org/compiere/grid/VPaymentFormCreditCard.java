@@ -1,3 +1,16 @@
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.compiere.grid;
 
 import java.awt.Dimension;
@@ -6,11 +19,15 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.math.BigDecimal;
 
 import org.compiere.apps.ADialog;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccountProcessor;
+import org.compiere.model.MPaymentProcessor;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CLabel;
@@ -19,7 +36,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
-public class VPaymentFormCreditCard extends PaymentFormCreditCard implements ActionListener {
+/**
+ * 
+ * @author Elaine
+ *
+ */
+public class VPaymentFormCreditCard extends PaymentFormCreditCard implements ActionListener, FocusListener {
 
 	private VPaymentFormDialog dialog;
 	
@@ -65,6 +87,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 0, 2, 0), 0, 0));
 		dialog.getPanel().add(kTypeCombo, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 5, 2, 5), 0, 0));
+		kTypeCombo.addActionListener(this);
 		dialog.getPanel().add(kNumberLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 0, 2, 0), 0, 0));
 		dialog.getPanel().add(kNumberField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0
@@ -81,6 +104,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 0, 5, 0), 0, 0));
 		dialog.getPanel().add(kAmountField,     new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 5, 5, 5), 0, 0));
+		kAmountField.addFocusListener(this);
 		dialog.getPanel().add(kApprovalLabel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
 		dialog.getPanel().add(kApprovalField, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0
@@ -124,12 +148,66 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		//	Set Selection
 		if (selectedCreditCard != null)
 			kTypeCombo.setSelectedItem(selectedCreditCard);
+		
+		if (m_mPayment.isApproved())
+		{
+			kOnline.setVisible(true);
+			kOnline.setEnabled(false);
+			
+			MBankAccountProcessor bankAccountProcessor = new MBankAccountProcessor(m_mPayment.getCtx(), m_mPayment.getC_BankAccount_ID(), m_mPayment.getC_PaymentProcessor_ID(), null);
+			setBankAccountProcessor(bankAccountProcessor);
+		}
+		else
+		{
+			boolean exist = isBankAccountProcessorExist("", (BigDecimal) kAmountField.getValue());
+			kOnline.setVisible(exist);
+			
+			if (exist)
+				updateOnlineButton();
+		}
 	}
 	
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == kOnline)
 			processOnline();
+		else if (e.getSource() == kTypeCombo)
+			updateOnlineButton();
+	}
+	
+	@Override
+	public void focusGained(FocusEvent e) {
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		if (e.getSource() == kAmountField)
+			updateOnlineButton();
+	}
+	
+	private void updateOnlineButton()
+	{
+		String CCType = null;
+		ValueNamePair vp = (ValueNamePair)kTypeCombo.getSelectedItem();
+		if (vp != null)
+			CCType = vp.getValue();
+		
+		BigDecimal PayAmt = (BigDecimal) kAmountField.getValue();
+		
+		if (CCType != null && PayAmt != null)
+		{
+			MBankAccountProcessor bankAccountProcessor = getBankAccountProcessor(CCType, PayAmt);
+			kOnline.setEnabled(bankAccountProcessor != null);
+			setBankAccountProcessor(bankAccountProcessor);
+			
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(Env.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), null);
+			kApprovalField.setReadWrite(paymentProcessor.isRequireVV());
+		}
+		else
+		{
+			kOnline.setEnabled(false);
+			setBankAccountProcessor(null);
+		}
 	}
 	
 	@Override
@@ -150,7 +228,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		else if (processMsg != null)
 			ADialog.info(getWindowNo(), dialog, "PaymentCreated", processMsg);
 		
-		return true;
+		return ok;
 		
 	}
 	

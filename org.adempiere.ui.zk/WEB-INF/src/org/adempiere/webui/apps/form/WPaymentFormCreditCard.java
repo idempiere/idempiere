@@ -1,3 +1,16 @@
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
 import java.math.BigDecimal;
@@ -12,6 +25,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
+import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
@@ -19,15 +33,23 @@ import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentFormCreditCard;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccountProcessor;
+import org.compiere.model.MPaymentProcessor;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Space;
 
+/**
+ * 
+ * @author Elaine
+ *
+ */
 public class WPaymentFormCreditCard extends PaymentFormCreditCard implements EventListener<Event> {
 
 	private WPaymentFormWindow window;
@@ -44,6 +66,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	private Textbox kApprovalField = new Textbox();
 	private Button kOnline = new Button();
 	private Label kStatus = new Label();
+	private Panel customizePanel = new Panel();
 	
 	public WPaymentFormCreditCard(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
@@ -73,15 +96,11 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		
 		Column column = new Column();
 		columns.appendChild(column);
-		column.setWidth("30%");
+		column.setWidth("40%");
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("50%");
-		
-		column = new Column();
-		columns.appendChild(column);
-		column.setWidth("20%");
+		column.setWidth("60%");
 		
 		kAmountField.getComponent().setWidth("150px");
 		
@@ -89,30 +108,34 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		Row row = rows.newRow();
 		row.appendChild(kTypeLabel.rightAlign());
 		row.appendChild(kTypeCombo);
-		row.appendChild(new Space());
+		kTypeCombo.addEventListener(Events.ON_SELECT, this);
 		
 		row = rows.newRow();
 		row.appendChild(kNumberLabel.rightAlign());
 		row.appendChild(kNumberField);
-		row.appendChild(new Space());
 		
 		row = rows.newRow();
 		row.appendChild(kExpLabel.rightAlign());
 		row.appendChild(kExpField);
-		row.appendChild(new Space());
 		
 		row = rows.newRow();
 		row.appendChild(kAmountLabel.rightAlign());
 		row.appendChild(kAmountField.getComponent());
-		row.appendChild(new Space());
+		kAmountField.getComponent().addEventListener(Events.ON_BLUR, this);
 		
 		row = rows.newRow();
 		row.appendChild(kApprovalLabel.rightAlign());
 		row.appendChild(kApprovalField);
+		
+		row = rows.newRow();
+		row.appendCellChild(customizePanel, 2);
+		
+		row = rows.newRow();
+		row.appendChild(new Space());
 		row.appendChild(kOnline);
 		
 		row = rows.newRow();
-		row.appendCellChild(kStatus, 3);
+		row.appendCellChild(kStatus, 2);
 	}
 
 	@Override
@@ -146,6 +169,23 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		//	Set Selection
 		if (selectedCreditCard != null)
 			kTypeCombo.setSelectedValueNamePair(selectedCreditCard);
+		
+		if (m_mPayment.isApproved())
+		{
+			kOnline.setVisible(true);
+			kOnline.setEnabled(false);
+			
+			MBankAccountProcessor bankAccountProcessor = new MBankAccountProcessor(m_mPayment.getCtx(), m_mPayment.getC_BankAccount_ID(), m_mPayment.getC_PaymentProcessor_ID(), null);
+			setBankAccountProcessor(bankAccountProcessor);
+		}
+		else
+		{
+			boolean exist = isBankAccountProcessorExist("", (BigDecimal) kAmountField.getValue());
+			kOnline.setVisible(exist);
+			
+			if (exist)
+				updateOnlineButton();
+		}
 	}
 	
 	public void onEvent(Event e)
@@ -153,6 +193,34 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		if (e.getTarget() == kOnline) {
 			window.lockUI();
 			Clients.response(new AuEcho(window, "runProcessOnline", null));
+		}
+		else if (e.getTarget() == kTypeCombo || e.getTarget() == kAmountField)
+			updateOnlineButton();
+	}
+	
+	private void updateOnlineButton()
+	{
+		String CCType = null;
+		ListItem selected = kTypeCombo.getSelectedItem(); 
+		ValueNamePair vp = selected != null ? selected.toValueNamePair() : null;
+		if (vp != null)
+			CCType = vp.getValue();
+		
+		BigDecimal PayAmt = (BigDecimal) kAmountField.getValue();
+		
+		if (CCType != null && PayAmt != null)
+		{
+			MBankAccountProcessor bankAccountProcessor = getBankAccountProcessor(CCType, PayAmt);
+			kOnline.setEnabled(bankAccountProcessor != null);
+			setBankAccountProcessor(bankAccountProcessor);
+			
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(Env.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), null);
+			kApprovalField.setReadonly(!paymentProcessor.isRequireVV());
+		}
+		else
+		{
+			kOnline.setEnabled(false);
+			setBankAccountProcessor(null);
 		}
 	}
 
@@ -175,7 +243,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		else if (processMsg != null)
 			FDialog.info(getWindowNo(), window, "PaymentCreated", processMsg);
 		
-		return true;
+		return ok;
 	}
 	
 	@Override
@@ -190,7 +258,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		
 		boolean ok = processOnline(CCType, kNumberField.getText(), kExpField.getText());
 		if (!ok)
-			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
+			FDialog.error(getWindowNo(), window, "PaymentNotProcessed", processMsg);
 		else if (processMsg != null)
 			FDialog.info(getWindowNo(), window, "PaymentProcessed", processMsg);
 	}   //  online
@@ -208,5 +276,10 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	@Override
 	public Object getWindow() {
 		return window;
+	}
+
+	@Override
+	public Object getCustomizePanel() {
+		return customizePanel;
 	}
 }

@@ -28,6 +28,7 @@ import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.NumberBox;
+import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.TouchEventHelper;
 import org.adempiere.webui.util.SortComparator;
@@ -119,6 +120,8 @@ public class GridView extends Vbox implements EventListener<Event>
 
 	private Borderlayout borderLayout;
 
+	private boolean detailPaneMode;
+
 	public GridView()
 	{
 		this(0);
@@ -191,7 +194,8 @@ public class GridView extends Vbox implements EventListener<Event>
 	}
 	
 	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
-		if (detailPaneMode) {
+		this.detailPaneMode = detailPaneMode;
+		if (detailPaneMode) {			
 			pageSize = DEFAULT_DETAIL_PAGE_SIZE;
 			updatePaging();
 			if (borderLayout.getParent() != null) {
@@ -221,6 +225,10 @@ public class GridView extends Vbox implements EventListener<Event>
 		}
 	}
 
+	public boolean isDetailPaneMode() {
+		return this.detailPaneMode;
+	}
+	
 	private void updatePaging() {
 		if (paging != null && paging.getPageSize() != pageSize) {
 			paging.setPageSize(pageSize);
@@ -264,7 +272,7 @@ public class GridView extends Vbox implements EventListener<Event>
 				int AD_Field_ID = Integer.parseInt(fieldIdStr);
 				for(GridField gridField : tmpFields) {
 					if (gridField.getAD_Field_ID() == AD_Field_ID) {
-						if(gridField.isDisplayedGrid())
+						if(gridField.isDisplayedGrid() && !gridField.isToolbarButton())
 							fieldList.add(gridField);
 						
 						break;
@@ -282,7 +290,7 @@ public class GridView extends Vbox implements EventListener<Event>
 			ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
 			
 			for(GridField field:tmpFields){
-				if(field.isDisplayedGrid()){
+				if(field.isDisplayedGrid() && !field.isToolbarButton()) {
 					gridFieldList.add(field);
 				}
 			}
@@ -435,14 +443,14 @@ public class GridView extends Vbox implements EventListener<Event>
 		columns.appendChild(indicator);
 		listbox.appendChild(columns);
 		columns.setSizable(true);
-		columns.setMenupopup("auto");
+		columns.setMenupopup("none");
 		columns.setColumnsgroup(false);
 
 		Map<Integer, String> colnames = new HashMap<Integer, String>();
 		int index = 0;
 		for (int i = 0; i < numColumns; i++)
 		{
-			if (gridField[i].isDisplayedGrid())
+			if (gridField[i].isDisplayedGrid() && !gridField[i].isToolbarButton())
 			{
 				colnames.put(index, gridField[i].getHeader());
 				index++;
@@ -758,6 +766,9 @@ public class GridView extends Vbox implements EventListener<Event>
         {
             return;
         }
+		
+		if (renderer.getEditors().isEmpty())
+			listbox.onInitRender();
 
         //  Selective
         if (col > 0)
@@ -774,10 +785,16 @@ public class GridView extends Vbox implements EventListener<Event>
 
         boolean noData = gridTab.getRowCount() == 0;
         List<WEditor> list =  renderer.getEditors();
-        for (WEditor comp : list)
+        dynamicDisplayEditors(noData, list);   
+        list =  renderer.getToolbarEditors();
+        dynamicDisplayEditors(noData, list);   //  all components
+	}
+
+	private void dynamicDisplayEditors(boolean noData, List<WEditor> list) {
+		for (WEditor comp : list)
         {
             GridField mField = comp.getGridField();
-            if (mField != null && mField.getIncluded_Tab_ID() <= 0)
+            if (mField != null)
             {
                 if (noData)
                 {
@@ -792,7 +809,7 @@ public class GridView extends Vbox implements EventListener<Event>
                 
                 comp.setVisible(mField.isDisplayedGrid());
             }
-        }   //  all components
+        }
 	}
 
 	/**
@@ -891,5 +908,19 @@ public class GridView extends Vbox implements EventListener<Event>
 			detail = null;
 		}
 		return details;
+	}
+
+	public List<WButtonEditor> getToolbarButtons() {
+		List<WButtonEditor> buttonList = new ArrayList<WButtonEditor>(); 
+		List<WEditor> editors = renderer.getToolbarEditors();
+		for(WEditor editor : editors) {
+			if (editor instanceof WButtonEditor && editor.getComponent() != null && editor.getComponent().isVisible()) {
+				WButtonEditor btnEditor = (WButtonEditor) editor;
+				buttonList.add(btnEditor);
+				editor.setValue(editor.getGridField().getValue());
+				btnEditor.setADTabpanel((IADTabpanel) this.getParent());
+			}
+		}
+		return buttonList;
 	}
 }

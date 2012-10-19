@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
@@ -71,6 +72,8 @@ public class WButtonEditor extends WEditor
     private GridField gridfield = null;
     
     private ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
+
+	private IADTabpanel adTabpanel;
     
     public WButtonEditor(GridField gridField)
     {
@@ -260,6 +263,11 @@ public class WButtonEditor extends WEditor
     		actionListeners.add(actionListener);
     }
 
+    public boolean removeActionListener(ActionListener actionListener)
+    {
+    	return actionListeners.remove(actionListener);
+    }
+    
     @Override
     public String[] getEvents()
     {
@@ -278,5 +286,13 @@ public class WButtonEditor extends WEditor
 				evtListener.actionPerformed(actionEvent);
 			}
 		}
+	}
+	
+	public void setADTabpanel(IADTabpanel adTabpanel) {
+		this.adTabpanel = adTabpanel;
+	}
+	
+	public IADTabpanel getADTabpanel() {
+		return adTabpanel;
 	}
 }

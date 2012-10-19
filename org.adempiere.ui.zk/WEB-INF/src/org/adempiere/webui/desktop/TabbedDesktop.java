@@ -78,12 +78,17 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	public ADForm openForm(int formId) {
 		ADForm form = ADForm.openForm(formId);
 
-		DesktopTabpanel tabPanel = new DesktopTabpanel();
-		form.setParent(tabPanel);
-		//do not show window title when open as tab
-		form.setTitle(null);
-		preOpenNewTab();
-		windowContainer.addWindow(tabPanel, form.getFormName(), true);
+		if (Window.Mode.EMBEDDED == form.getWindowMode()) {
+			DesktopTabpanel tabPanel = new DesktopTabpanel();
+			form.setParent(tabPanel);
+			//do not show window title when open as tab
+			form.setTitle(null);
+			preOpenNewTab();
+			windowContainer.addWindow(tabPanel, form.getFormName(), true);
+		} else {
+			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
+			showWindow(form);
+		}
 
 		return form;
 	}

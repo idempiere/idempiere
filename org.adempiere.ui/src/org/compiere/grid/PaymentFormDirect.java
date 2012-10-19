@@ -26,7 +26,6 @@ import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
-import org.compiere.model.MRole;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -38,30 +37,29 @@ import org.compiere.util.Msg;
  * @author Elaine
  *
  */
-public abstract class PaymentFormCheck extends PaymentForm {
-	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_Check;
+public abstract class PaymentFormDirect extends PaymentForm {
+	private String PAYMENTRULE;
 	
-	public PaymentFormCheck(int WindowNo, GridTab mTab) {
+	public PaymentFormDirect(int WindowNo, GridTab mTab, boolean isDebit) {
 		super(WindowNo, mTab);
+		PAYMENTRULE = isDebit ? MInvoice.PAYMENTRULE_DirectDebit : MInvoice.PAYMENTRULE_DirectDeposit;
 	}
 	
-	public KeyNamePair selectedBankAccount;
-	public ArrayList<KeyNamePair> getBankAccountList() {
-		selectedBankAccount = null;
+	public ArrayList<KeyNamePair> getBPBankAccountList() {
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		
 		/**
-		 *  Load Bank Accounts
+		 * 	Load Accounts
 		 */
-		String SQL = MRole.getDefault().addAccessSQL(
-			"SELECT C_BankAccount_ID, ba.Name || ' ' || AccountNo, IsDefault "
-			+ "FROM C_BankAccount ba"
-			+ " INNER JOIN C_Bank b ON (ba.C_Bank_ID=b.C_Bank_ID) "
-			+ "WHERE b.IsActive='Y'",
-			"ba", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
+		String SQL = "SELECT a.C_BP_BankAccount_ID, NVL(b.Name, ' ')||'_'||NVL(a.AccountNo, ' ') AS Acct "
+			+ "FROM C_BP_BankAccount a"
+			+ " LEFT OUTER JOIN C_Bank b ON (a.C_Bank_ID=b.C_Bank_ID) "
+			+ "WHERE C_BPartner_ID=?"
+			+ "AND a.IsActive='Y' AND a.IsACH='Y'";
 		try
 		{
 			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt.setInt(1, m_C_BPartner_ID);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -69,26 +67,23 @@ public abstract class PaymentFormCheck extends PaymentForm {
 				String name = rs.getString(2);
 				KeyNamePair pp = new KeyNamePair(key, name);
 				list.add(pp);
-				if (key == m_C_BankAccount_ID)
-					selectedBankAccount = pp;
-				if (selectedBankAccount == null && rs.getString(3).equals("Y"))    //  Default
-					selectedBankAccount = pp;
 			}
 			rs.close();
 			pstmt.close();
 		}
-		catch (SQLException ept)
+		catch (SQLException eac)
 		{
-			log.log(Level.SEVERE, SQL, ept);
+			log.log(Level.SEVERE, SQL, eac);
 		}
 		
 		return list;
 	}
 	
-	public String processMsg = null;
-	public boolean save(int newC_BankAccount_ID, String routing, String number, String check, BigDecimal amount)
+	public String processMsg;
+	public boolean save(int newC_BankAccount_ID, String routing, String number)
 	{
 		processMsg = null;
+		
 		String payTypes = m_Cash_As_Payment ? "KTSDB" : "KTSD";
 		
 		/***********************
@@ -167,13 +162,8 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		/***********************
 		 *  Payments
 		 */
-		log.fine("Payment - " + PAYMENTRULE);
-		//  Set Amount
+		m_mPayment.setBankACH(newC_BankAccount_ID, m_isSOTrx, PAYMENTRULE, routing, number);
 		m_mPayment.setAmount(m_C_Currency_ID, payAmount);
-		m_mPayment.setBankCheck(newC_BankAccount_ID, m_isSOTrx, routing,
-			number, check);
-		// Get changes to check amount
-		m_mPayment.setAmount(m_C_Currency_ID, amount);
 		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
 		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
 		if (order != null)
@@ -214,16 +204,19 @@ public abstract class PaymentFormCheck extends PaymentForm {
 			else
 				getGridTab().setValue("C_Payment_ID", new Integer(m_mPayment.getC_Payment_ID()));
 		}
+		
 		return true;
 	}
-		
-	public boolean isBankAccountProcessorExist(int C_Currency_ID, BigDecimal PayAmt)
+	
+	public boolean isBankAccountProcessorExist()
 	{
-		return isBankAccountProcessorExist(Env.getCtx(), MPayment.TENDERTYPE_Check, "", Env.getAD_Client_ID(Env.getCtx()), C_Currency_ID, PayAmt, null);
+		String tender = PAYMENTRULE.equals(MInvoice.PAYMENTRULE_DirectDebit) ? MPayment.TENDERTYPE_DirectDebit : MPayment.TENDERTYPE_DirectDeposit;
+		return isBankAccountProcessorExist(Env.getCtx(), tender, "", Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, m_Amount, null);
 	}
 	
-	public MBankAccountProcessor getBankAccountProcessor(int C_Currency_ID, BigDecimal PayAmt)
+	public MBankAccountProcessor getBankAccountProcessor()
 	{
-		return getBankAccountProcessor(Env.getCtx(), MPayment.TENDERTYPE_Check, "", Env.getAD_Client_ID(Env.getCtx()), C_Currency_ID, PayAmt, null);
+		String tender = PAYMENTRULE.equals(MInvoice.PAYMENTRULE_DirectDebit) ? MPayment.TENDERTYPE_DirectDebit : MPayment.TENDERTYPE_DirectDeposit;
+		return getBankAccountProcessor(Env.getCtx(), tender, "", Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, m_Amount, null);
 	}
 }

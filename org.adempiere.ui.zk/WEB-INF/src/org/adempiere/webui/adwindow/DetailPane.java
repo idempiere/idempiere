@@ -51,6 +51,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 	private static final String DELETE_IMAGE = "/images/Delete16.png";
 	private static final String EDIT_IMAGE = "/images/EditRecord16.png";
 	private static final String NEW_IMAGE = "/images/New16.png";
+	private static final String PROCESS_IMAGE = "/images/Process16.png";
 
 	/**
 	 * generated serial id 
@@ -140,19 +141,36 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		tab.setLabel(tabLabel.label);
 		if (!enabled) {
 			tab.setDisabled(true);
+			tab.setSclass("adwindow-detailpane-sub-tab");
 		}
+		
+		tab.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				Tab tab = (Tab) event.getTarget();
+				if (!tab.isSelected()) 
+					return;
+				org.zkoss.zul.Tabpanel zkTabpanel = tab.getLinkedPanel();
+				IADTabpanel adtab = null;
+				for(Component c : zkTabpanel.getChildren()) {
+					if (c instanceof IADTabpanel) {
+						adtab = (IADTabpanel) c;
+						break;
+					}
+				}
+				if (adtab != null && adtab.isDetailPaneMode()) {
+					onEdit();
+				}
+			}
+		});
 		
 		Tabpanels tabpanels = tabbox.getTabpanels();
 		if (tabpanels == null) {
 			tabpanels = new Tabpanels();
-			//TODO: is this style needed ?
-			tabpanels.setStyle("min-height: 200px; overflow-y: visible;");
 			tabpanels.setWidth("100%");
 			tabbox.appendChild(tabpanels);
 		}
 		Tabpanel tp = new Tabpanel();
-		//TODO: is this style needed
-		tp.setStyle("min-height: 180px; overflow-y: visible; width: 99%; margin: auto;");
 		tabpanels.appendChild(tp);
 		tp.setStyle("background-color: #fff");				
 		ToolBar toolbar = new ToolBar();
@@ -194,6 +212,19 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		});
 		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Delete")));
 		
+		if (!tabPanel.getGridTab().isSortTab()) {
+			button = new ToolBarButton();
+			button.setImage(PROCESS_IMAGE);
+			toolbar.appendChild(button);
+			button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					onProcess(event.getTarget());
+				}
+			});
+			button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Process")));
+		}
+		
 		Hbox messageContainer = new Hbox();
 		messageContainer.setPack("end");
 		messageContainer.setAlign("center");
@@ -206,8 +237,27 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		tabPanel.setAttribute("AD_Tab_ID", tabLabel.AD_Tab_ID);
 		
 		tp.appendChild(tabPanel);
+		if (tabPanel.getGridView() != null) {
+			tabPanel.addEventListener(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT, this);
+			tabPanel.getGridView().addEventListener(ON_EDIT_EVENT, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					GridView gridView = (GridView) event.getTarget();
+					if (gridView.isDetailPaneMode())
+						onEdit();
+				}				
+			});
+		}
 	}
 	
+	protected void onProcess(Component button) {
+		ProcessButtonPopup popup = new ProcessButtonPopup();
+		ADTabpanel adtab = (ADTabpanel) getSelectedADTabpanel();
+		popup.render(adtab.getToolbarButtons());
+		
+		LayoutUtils.openPopupWindow(button, popup, "after_start");		
+	}
+
 	public void setEventListener(EventListener<Event> listener) {
 		eventListener = listener;
 	}
@@ -247,6 +297,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 
 	public void setStatusMessage(String status, boolean error) {		
 		IADTabpanel tabPanel = getSelectedADTabpanel();
+		if (tabPanel == null) return;
 		Hbox messageContainer = messageContainers.get(tabPanel.getAttribute("AD_Tab_ID"));
 		
 		Execution execution = Executions.getCurrent();
@@ -323,12 +374,16 @@ public class DetailPane extends Panel implements EventListener<Event> {
 	
 	@Override
 	public void onEvent(Event event) throws Exception {
-		Component messageContainer = event.getTarget().getParent();
-		Boolean error = (Boolean) messageContainer.getAttribute(STATUS_ERROR_ATTRIBUTE);
-		String status = (String) messageContainer.getAttribute(STATUS_TEXT_ATTRIBUTE);
-		
-		createPopupContent(status);
-		showPopup(error, messageContainer);
+		if (event.getName().equals(Events.ON_CLICK)) {
+			Component messageContainer = event.getTarget().getParent();
+			Boolean error = (Boolean) messageContainer.getAttribute(STATUS_ERROR_ATTRIBUTE);
+			String status = (String) messageContainer.getAttribute(STATUS_TEXT_ATTRIBUTE);
+			
+			createPopupContent(status);
+			showPopup(error, messageContainer);
+		} else if (event.getName().equals(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT)) {
+			updateProcessToolbar();
+		}
 	}
 	
 	protected void createPopupContent(String status) {
@@ -394,20 +449,38 @@ public class DetailPane extends Panel implements EventListener<Event> {
         }
         boolean enableNew = !changed && insertRecord && !adtab.getGridTab().isSortTab();
         boolean enableDelete = !changed && !readOnly && !adtab.getGridTab().isSortTab();
-        int newBtn = 0;
-        int deleteBtn = 0;
         for(Component c : toolbar.getChildren()) {
         	if (c instanceof ToolBarButton) {
         		ToolBarButton btn = (ToolBarButton) c;
         		if (NEW_IMAGE.equals(btn.getImage())) {
         			btn.setDisabled(!enableNew);
-        			newBtn++;
         		} else if (DELETE_IMAGE.equals(btn.getImage())) {
         			btn.setDisabled(!enableDelete);
-        			deleteBtn++;
         		}
-        		if (newBtn > 0 && deleteBtn > 0)
+        	}        	
+        }
+	}
+	
+	private void updateProcessToolbar() {
+		int index = getSelectedIndex();
+		if (index < 0 || index >= getTabcount()) return;
+		
+		Tabpanel tabpanel = tabbox.getTabpanel(index);
+		Toolbar toolbar = (Toolbar) tabpanel.getFirstChild();
+		
+		IADTabpanel adtab = getADTabpanel(index);
+		
+        for(Component c : toolbar.getChildren()) {
+        	if (c instanceof ToolBarButton) {
+        		ToolBarButton btn = (ToolBarButton) c;
+        		if (PROCESS_IMAGE.equals(btn.getImage())) {
+        			if (adtab.getGridTab().isSortTab()) {
+        				btn.setDisabled(true);
+        			} else {
+        				btn.setDisabled(((ADTabpanel)adtab).getToolbarButtons().isEmpty());
+        			}
         			break;
+        		}
         	}        	
         }
 	}
@@ -452,5 +525,19 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		
 		Tab tab = (Tab) tabbox.getTabs().getChildren().get(i);
 		tab.setDisabled(!enabled);
+	}
+	
+	public void disableToolbar() {
+		int index = getSelectedIndex();
+		if (index < 0 || index >= getTabcount()) return;
+		
+		Tabpanel tabpanel = tabbox.getTabpanel(index);
+		Toolbar toolbar = (Toolbar) tabpanel.getFirstChild();
+		for(Component c : toolbar.getChildren()) {
+        	if (c instanceof ToolBarButton) {
+        		ToolBarButton btn = (ToolBarButton) c;
+        		btn.setDisabled(true);
+        	}
+		}
 	}
 }

@@ -1,3 +1,16 @@
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.compiere.grid;
 
 import java.awt.BorderLayout;
@@ -15,10 +28,19 @@ import org.compiere.swing.CPanel;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
+/**
+ * 
+ * @author Elaine
+ *
+ */
 public class VPaymentFormDialog extends CDialog implements ActionListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6249016140530436885L;
 	private PaymentForm paymentForm;
-	private int windowNo;
+//	private int windowNo;
 
 	private CPanel mainPanel = new CPanel();
 	private BorderLayout mainLayout = new BorderLayout();
@@ -32,7 +54,7 @@ public class VPaymentFormDialog extends CDialog implements ActionListener
 		super(AEnv.getWindow(windowNo), Msg.getMsg(Env.getCtx(), "Payment"), true);
 		
 		this.paymentForm = paymentForm;
-		this.windowNo = windowNo;
+//		this.windowNo = windowNo;
 
 		try {
 			jbInit();

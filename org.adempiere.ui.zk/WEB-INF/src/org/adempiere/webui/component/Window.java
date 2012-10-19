@@ -76,6 +76,30 @@ public class Window extends org.zkoss.zul.Window
 		super.onPageDetached(page);
 		Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
 	}
-    
-    
+
+	/**
+	 * Get the window mode attribute
+	 * @return Window.Mode
+	 */
+	public Mode getModeAttribute() {
+		Object modeValue = getAttribute(Window.MODE_KEY);
+		if (modeValue instanceof Mode) {
+			return (Mode) modeValue;
+		}
+		
+		final String mode = modeValue != null ? modeValue.toString() : Window.MODE_HIGHLIGHTED;
+		if (Window.MODE_EMBEDDED.equals(mode)) {
+			return Mode.EMBEDDED;
+		} else if (Window.MODE_HIGHLIGHTED.equals(mode)) {
+			return Mode.HIGHLIGHTED;
+		} else if (Window.MODE_MODAL.equals(mode)) {
+			return Mode.MODAL;
+		} else if (Window.MODE_OVERLAPPED.equals(mode)) {
+			return Mode.OVERLAPPED;
+		} else if (Window.MODE_POPUP.equals(mode)) {
+			return Mode.POPUP;
+		} else {
+			return Mode.HIGHLIGHTED;
+		}
+	}
 }

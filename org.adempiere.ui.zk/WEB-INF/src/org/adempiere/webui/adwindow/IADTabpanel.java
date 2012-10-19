@@ -119,5 +119,13 @@ public interface IADTabpanel extends Component, Evaluatee {
 	
 	public boolean isActive();
 
-	public void setDetailPaneMode(boolean detailMode, boolean vflex);	
+	public void setDetailPaneMode(boolean detailMode, boolean vflex);
+	
+	public boolean isDetailPaneMode();
+
+	public abstract GridView getGridView();	
+	
+	public boolean needSave(boolean rowChange, boolean onlyRealChange);
+
+	public boolean dataSave(boolean onSaveEvent);
 }

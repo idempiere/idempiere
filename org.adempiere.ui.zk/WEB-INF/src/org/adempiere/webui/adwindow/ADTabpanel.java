@@ -98,6 +98,14 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel
 {
+	public static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
+
+	public static final String ON_ACTIVATE_EVENT = "onActivate";
+
+	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
+	
+	private static final String ATTR_ON_ACTIVATE_POSTED = "org.adempiere.webui.adwindow.ADTabpanel.onActivatePosted";
+
 	/**
 	 * 
 	 */
@@ -151,6 +159,8 @@ DataStatusListener, IADTabpanel
 
 	private Component detailPane;
 
+	private boolean detailPaneMode;
+
 	public static final String ON_TOGGLE_EVENT = "onToggle";
 	
 	public ADTabpanel()
@@ -163,6 +173,13 @@ DataStatusListener, IADTabpanel
         initComponents();
         addEventListener(ON_DEFER_SET_SELECTED_NODE, this);
         addEventListener(WPaymentEditor.ON_SAVE_PAYMENT, this);
+        
+        addEventListener(ON_ACTIVATE_EVENT, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				removeAttribute(ATTR_ON_ACTIVATE_POSTED);
+			}
+		});
     }
 
     private void initComponents()
@@ -380,6 +397,22 @@ DataStatusListener, IADTabpanel
         	if (!field.isDisplayed())
         		continue;
 
+        	if (field.isToolbarButton()) {
+        		WButtonEditor editor = (WButtonEditor) WebEditorFactory.getEditor(gridTab, field, false);
+
+        		if (editor != null) {
+        			if (windowPanel != null)
+    					editor.addActionListener(windowPanel);
+        			editor.setGridTab(this.getGridTab());
+        			editor.setADTabpanel(this);
+        			field.addPropertyChangeListener(editor);
+        			editors.add(editor);
+        			editorComps.add(editor.getComponent());
+        			        			
+        			continue;
+        		}
+        	}
+        	
         	// field group
         	String fieldGroup = field.getFieldGroup();
         	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
@@ -586,7 +619,7 @@ DataStatusListener, IADTabpanel
         for (WEditor comp : editors)
         {
             GridField mField = comp.getGridField();
-            if (mField != null && mField.getIncluded_Tab_ID() <= 0)
+            if (mField != null)
             {
                 if (mField.isDisplayed(true))       //  check context
                 {
@@ -679,7 +712,12 @@ DataStatusListener, IADTabpanel
         for (Group group : collapsedGroups) {
         	group.setOpen(false);
         }
+        
+        if (listPanel.isVisible()) {
+        	listPanel.dynamicDisplay(col);
+        }
 
+        Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
         logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
 
@@ -796,6 +834,14 @@ DataStatusListener, IADTabpanel
      */
     public void activate(boolean activate)
     {
+    	if (activate) {
+	    	if (getAttribute(ATTR_ON_ACTIVATE_POSTED) != null) {
+	    		return;
+	    	}
+	    	
+	    	setAttribute(ATTR_ON_ACTIVATE_POSTED, Boolean.TRUE);
+    	}
+    	
     	active = activate;
         if (listPanel.isVisible()) {
         	if (activate)
@@ -813,8 +859,8 @@ DataStatusListener, IADTabpanel
         	setSelectedNode(gridTab.getRecord_ID());
         }
         
-        Event event = new Event("onActivate", this, activate);
-        Events.sendEvent(event);
+        Event event = new Event(ON_ACTIVATE_EVENT, this, activate);
+        Events.postEvent(event);
     }
 
 	/**
@@ -1060,7 +1106,7 @@ DataStatusListener, IADTabpanel
 		if (details != null)
 			addDetails(details);
 		
-		Events.sendEvent(this, new Event("onSwitchView", this));
+		Events.sendEvent(this, new Event(ON_SWITCH_VIEW_EVENT, this));
 	}
 
 	class ZoomListener implements EventListener {
@@ -1132,6 +1178,7 @@ DataStatusListener, IADTabpanel
 	 *
 	 * @return GridPanel
 	 */
+	@Override
 	public GridView getGridView() {
 		return listPanel;
 	}
@@ -1142,6 +1189,7 @@ DataStatusListener, IADTabpanel
 
 	@Override
 	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
+		this.detailPaneMode = detailPaneMode;
 		if (detailPaneMode) {
 			detailPane = null;
 			this.setVflex("true");
@@ -1149,6 +1197,42 @@ DataStatusListener, IADTabpanel
 			this.setVflex(Boolean.toString(vflex));
 		}
 		listPanel.setDetailPaneMode(detailPaneMode, vflex);
+	}
+	
+	/**
+	 * Get all visible button editors
+	 * @return List<WButtonEditor>
+	 */
+	public List<WButtonEditor> getToolbarButtons() {
+		List<WButtonEditor> buttonList = new ArrayList<WButtonEditor>();
+		if (isGridView()) {
+			buttonList = listPanel.getToolbarButtons();
+		} else {
+			for(WEditor editor : editors) {
+				if (editor instanceof WButtonEditor && editor.getComponent() != null 
+						&& editor.getComponent().isVisible()
+						&& editor.getGridField() != null
+						&& editor.getGridField().isToolbarButton()) {
+					buttonList.add((WButtonEditor) editor);
+				}
+			}
+		}
+		return buttonList;
+	}
+
+	@Override
+	public boolean needSave(boolean rowChange, boolean onlyRealChange) {
+		return getGridTab().needSave(rowChange, onlyRealChange);
+	}
+
+	@Override
+	public boolean dataSave(boolean onSaveEvent) {
+		return getGridTab().dataSave(onSaveEvent);
+	}
+
+	@Override
+	public boolean isDetailPaneMode() {
+		return this.detailPaneMode;
 	}
 }
 

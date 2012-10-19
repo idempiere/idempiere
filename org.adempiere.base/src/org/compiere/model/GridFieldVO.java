@@ -204,6 +204,8 @@ public class GridFieldVO implements Serializable
 					vo.ColumnSpan=rs.getInt(i);
 				else if (columnName.equalsIgnoreCase("NumLines"))
 					vo.NumLines=rs.getInt(i);
+				else if (columnName.equalsIgnoreCase("IsToolbarButton"))
+					vo.IsToolbarButton  = "Y".equals(rs.getString(i));
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -537,6 +539,8 @@ public class GridFieldVO implements Serializable
 	public boolean IsAutocomplete = false;
 	/* Allow copy - IDEMPIERE-67 - Carlos Ruiz - globalqss */
 	public boolean IsAllowCopy = false;
+	/** Toolbar Button **/
+	public boolean IsToolbarButton = false;
 	
 	/**
 	 *  Set Context including contained elements

@@ -850,7 +850,10 @@ public final class MPayment extends X_C_Payment
 			}
 		}
 		if (m_mBankAccountProcessor != null)
+		{
 			setC_BankAccount_ID (m_mBankAccountProcessor.getC_BankAccount_ID());
+			setC_PaymentProcessor_ID (m_mBankAccountProcessor.getC_PaymentProcessor_ID());
+		}
 		//
 		return m_mBankAccountProcessor != null;
 	}   //  setPaymentProcessor
