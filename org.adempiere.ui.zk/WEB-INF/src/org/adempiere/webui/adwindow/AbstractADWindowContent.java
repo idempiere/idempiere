@@ -1126,6 +1126,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
 	            dbInfo = "[ " + dbInfo + " ]";
 	        breadCrumb.setStatusDB(dbInfo, e);
+    	} else if (adTabbox.getSelectedDetailADTabpanel() == null)
+    	{
+    		return;
     	}
 
         //  Set Message / Info
@@ -1485,6 +1488,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     }
 
 	private void doOnFind() {
+		adTabbox.dataIgnore();
+		
 		//  Gets Fields from AD_Field_v
         GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
         if (findWindow == null || !findWindow.validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),

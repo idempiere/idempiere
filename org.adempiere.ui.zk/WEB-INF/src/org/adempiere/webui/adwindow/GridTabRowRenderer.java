@@ -39,7 +39,9 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -86,6 +88,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private boolean editing = false;
 	private int currentRowIndex = -1;
 	private AbstractADWindowContent m_windowPanel;
+	private ActionListener buttonListener;
 
 	/**
 	 *
@@ -113,9 +116,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private void prepareFieldEditor(GridField gridField, WEditor editor) {
 			if (editor instanceof WButtonEditor)
             {
-				if (m_windowPanel != null)
+				if (buttonListener != null)
 				{
-					((WButtonEditor)editor).addActionListener(m_windowPanel);	
+					((WButtonEditor)editor).removeActionListener(buttonListener);
+					((WButtonEditor)editor).addActionListener(buttonListener);	
 				}
 				else
 				{
@@ -229,16 +233,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
 			editor.setReadWrite(gridField.isEditable(gridRowCtx, true,true));
 			editor.getComponent().setAttribute("grid.row.index", rowIndex);
-			editor.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					WButtonEditor editor = (WButtonEditor) event.getSource();
-					int rowIndex = (Integer) editor.getComponent().getAttribute("grid.row.index");
-					int newRowIndex = gridTab.navigate(rowIndex);
-					if (newRowIndex == rowIndex) {
-						m_windowPanel.actionPerformed(event);
-					}
-				}
-			});
+			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
 		} else {
 			String text = getDisplayText(value, gridField);
@@ -398,6 +393,18 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 		Cell cell = new Cell();
 		cell.setWidth("10px");
+		cell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				Cell cell = (Cell) event.getTarget();
+				if (cell.getSclass() != null && cell.getSclass().indexOf("row-indicator-seld") >= 0)
+					Events.sendEvent(gridPanel, new Event(DetailPane.ON_EDIT_EVENT, gridPanel));
+				else
+					Events.sendEvent(event.getTarget().getParent(), event);
+			}
+		});
+		cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
+		
 		//TODO: checkbox for selection and batch action ( delete, export, complete, etc )
 //		cell.appendChild(new Checkbox());
 		row.appendChild(cell);
@@ -450,13 +457,13 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			Cell cell = (Cell) currentRow.getFirstChild();
 			if (cell != null) {
 				cell.setStyle("background-color: transparent");
-				cell.setSclass(null);
+				cell.setSclass("row-indicator");
 			}
 		}
 		currentRow = row;
 		Cell cell = (Cell) currentRow.getFirstChild();
 		if (cell != null) {
-			cell.setSclass("current-row-indicator");
+			cell.setSclass("row-indicator-seld");
 		}
 		currentRowIndex = gridTab.getCurrentRow();
 		
@@ -665,6 +672,24 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * @param windowPanel
 	 */
 	public void setADWindowPanel(AbstractADWindowContent windowPanel) {
+		if (this.m_windowPanel == windowPanel)
+			return;
+		
 		this.m_windowPanel = windowPanel;
+		
+		buttonListener = new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				WButtonEditor editor = (WButtonEditor) event.getSource();
+				Integer rowIndex = (Integer) editor.getComponent().getAttribute("grid.row.index");
+				if (rowIndex != null) {
+					int newRowIndex = gridTab.navigate(rowIndex);
+					if (newRowIndex == rowIndex) {
+						m_windowPanel.actionPerformed(event);
+					}
+				} else {
+					m_windowPanel.actionPerformed(event);
+				}
+			}
+		};
 	}
 }

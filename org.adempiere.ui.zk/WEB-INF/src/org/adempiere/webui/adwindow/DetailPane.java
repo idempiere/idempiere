@@ -140,19 +140,16 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		tab.setLabel(tabLabel.label);
 		if (!enabled) {
 			tab.setDisabled(true);
+			tab.setSclass("adwindow-detailpane-sub-tab");
 		}
 		
 		Tabpanels tabpanels = tabbox.getTabpanels();
 		if (tabpanels == null) {
 			tabpanels = new Tabpanels();
-			//TODO: is this style needed ?
-			tabpanels.setStyle("min-height: 200px; overflow-y: visible;");
 			tabpanels.setWidth("100%");
 			tabbox.appendChild(tabpanels);
 		}
 		Tabpanel tp = new Tabpanel();
-		//TODO: is this style needed
-		tp.setStyle("min-height: 180px; overflow-y: visible; width: 99%; margin: auto;");
 		tabpanels.appendChild(tp);
 		tp.setStyle("background-color: #fff");				
 		ToolBar toolbar = new ToolBar();
@@ -206,6 +203,17 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		tabPanel.setAttribute("AD_Tab_ID", tabLabel.AD_Tab_ID);
 		
 		tp.appendChild(tabPanel);
+		if (tabPanel instanceof ADTabpanel) {
+			ADTabpanel adtab = (ADTabpanel) tabPanel;
+			adtab.getGridView().addEventListener(ON_EDIT_EVENT, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					GridView gridView = (GridView) event.getTarget();
+					if (gridView.isDetailPaneMode())
+						onEdit();
+				}				
+			});
+		}
 	}
 	
 	public void setEventListener(EventListener<Event> listener) {
@@ -247,6 +255,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 
 	public void setStatusMessage(String status, boolean error) {		
 		IADTabpanel tabPanel = getSelectedADTabpanel();
+		if (tabPanel == null) return;
 		Hbox messageContainer = messageContainers.get(tabPanel.getAttribute("AD_Tab_ID"));
 		
 		Execution execution = Executions.getCurrent();
@@ -323,12 +332,14 @@ public class DetailPane extends Panel implements EventListener<Event> {
 	
 	@Override
 	public void onEvent(Event event) throws Exception {
-		Component messageContainer = event.getTarget().getParent();
-		Boolean error = (Boolean) messageContainer.getAttribute(STATUS_ERROR_ATTRIBUTE);
-		String status = (String) messageContainer.getAttribute(STATUS_TEXT_ATTRIBUTE);
-		
-		createPopupContent(status);
-		showPopup(error, messageContainer);
+		if (event.getName().equals(Events.ON_CLICK)) {
+			Component messageContainer = event.getTarget().getParent();
+			Boolean error = (Boolean) messageContainer.getAttribute(STATUS_ERROR_ATTRIBUTE);
+			String status = (String) messageContainer.getAttribute(STATUS_TEXT_ATTRIBUTE);
+			
+			createPopupContent(status);
+			showPopup(error, messageContainer);
+		} 
 	}
 	
 	protected void createPopupContent(String status) {
@@ -394,20 +405,14 @@ public class DetailPane extends Panel implements EventListener<Event> {
         }
         boolean enableNew = !changed && insertRecord && !adtab.getGridTab().isSortTab();
         boolean enableDelete = !changed && !readOnly && !adtab.getGridTab().isSortTab();
-        int newBtn = 0;
-        int deleteBtn = 0;
         for(Component c : toolbar.getChildren()) {
         	if (c instanceof ToolBarButton) {
         		ToolBarButton btn = (ToolBarButton) c;
         		if (NEW_IMAGE.equals(btn.getImage())) {
         			btn.setDisabled(!enableNew);
-        			newBtn++;
         		} else if (DELETE_IMAGE.equals(btn.getImage())) {
         			btn.setDisabled(!enableDelete);
-        			deleteBtn++;
         		}
-        		if (newBtn > 0 && deleteBtn > 0)
-        			break;
         	}        	
         }
 	}
@@ -452,5 +457,19 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		
 		Tab tab = (Tab) tabbox.getTabs().getChildren().get(i);
 		tab.setDisabled(!enabled);
+	}
+	
+	public void disableToolbar() {
+		int index = getSelectedIndex();
+		if (index < 0 || index >= getTabcount()) return;
+		
+		Tabpanel tabpanel = tabbox.getTabpanel(index);
+		Toolbar toolbar = (Toolbar) tabpanel.getFirstChild();
+		for(Component c : toolbar.getChildren()) {
+        	if (c instanceof ToolBarButton) {
+        		ToolBarButton btn = (ToolBarButton) c;
+        		btn.setDisabled(true);
+        	}
+		}
 	}
 }

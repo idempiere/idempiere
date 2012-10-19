@@ -98,6 +98,12 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel
 {
+	public static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
+
+	public static final String ON_ACTIVATE_EVENT = "onActivate";
+
+	private static final String ATTR_ON_ACTIVATE_POSTED = "org.adempiere.webui.adwindow.ADTabpanel.onActivatePosted";
+
 	/**
 	 * 
 	 */
@@ -163,6 +169,13 @@ DataStatusListener, IADTabpanel
         initComponents();
         addEventListener(ON_DEFER_SET_SELECTED_NODE, this);
         addEventListener(WPaymentEditor.ON_SAVE_PAYMENT, this);
+        
+        addEventListener(ON_ACTIVATE_EVENT, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				removeAttribute(ATTR_ON_ACTIVATE_POSTED);
+			}
+		});
     }
 
     private void initComponents()
@@ -586,7 +599,7 @@ DataStatusListener, IADTabpanel
         for (WEditor comp : editors)
         {
             GridField mField = comp.getGridField();
-            if (mField != null && mField.getIncluded_Tab_ID() <= 0)
+            if (mField != null)
             {
                 if (mField.isDisplayed(true))       //  check context
                 {
@@ -796,6 +809,14 @@ DataStatusListener, IADTabpanel
      */
     public void activate(boolean activate)
     {
+    	if (activate) {
+	    	if (getAttribute(ATTR_ON_ACTIVATE_POSTED) != null) {
+	    		return;
+	    	}
+	    	
+	    	setAttribute(ATTR_ON_ACTIVATE_POSTED, Boolean.TRUE);
+    	}
+    	
     	active = activate;
         if (listPanel.isVisible()) {
         	if (activate)
@@ -813,8 +834,8 @@ DataStatusListener, IADTabpanel
         	setSelectedNode(gridTab.getRecord_ID());
         }
         
-        Event event = new Event("onActivate", this, activate);
-        Events.sendEvent(event);
+        Event event = new Event(ON_ACTIVATE_EVENT, this, activate);
+        Events.postEvent(event);
     }
 
 	/**
@@ -1060,7 +1081,7 @@ DataStatusListener, IADTabpanel
 		if (details != null)
 			addDetails(details);
 		
-		Events.sendEvent(this, new Event("onSwitchView", this));
+		Events.sendEvent(this, new Event(ON_SWITCH_VIEW_EVENT, this));
 	}
 
 	class ZoomListener implements EventListener {
@@ -1132,6 +1153,7 @@ DataStatusListener, IADTabpanel
 	 *
 	 * @return GridPanel
 	 */
+	@Override
 	public GridView getGridView() {
 		return listPanel;
 	}

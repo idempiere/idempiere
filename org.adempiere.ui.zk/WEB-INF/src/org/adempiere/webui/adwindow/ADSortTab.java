@@ -931,5 +931,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 	public void setDetailPaneMode(boolean detailMode, boolean vflex) {
 		this.setVflex(Boolean.toString(vflex));
 	}
+
+	@Override
+	public GridView getGridView() {
+		return null;
+	}
 }	//ADSortTab
 

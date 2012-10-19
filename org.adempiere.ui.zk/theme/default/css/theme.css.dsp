@@ -230,6 +230,22 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	margin-right: 2px;
 }
 
+.desktop-tabbox .z-tab .z-tab-hl,  .desktop-tabbox .z-tab .z-tab-hr, 
+.desktop-tabbox .z-tab .z-tab-hm {
+	height: 22px;
+}
+
+.desktop-tabbox .z-tab-seld .z-tab-hl,  .desktop-tabbox .z-tab-seld .z-tab-hr, 
+.desktop-tabbox .z-tab-seld .z-tab-hm {
+	height: 21px;
+}
+
+.desktop-tabbox .z-tab-seld {
+	border-top: 2px solid #666;
+	border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+}
+
 .desktop-north, .desktop-center {
 	border: none;
 }
@@ -485,8 +501,13 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	position: absolute;
 }
 
-.current-row-indicator {
-	background-color: #FA962F !important;
+.row-indicator-seld {
+	background-color: #666 !important;
+	background-image: none !important;  
+}
+
+.row-indicator {
+	background-color: transparent !important;
 	background-image: none !important; 
 }
 
@@ -864,4 +885,17 @@ tbody.z-grid-empty-body td {
 	border-left: 6px dashed transparent;
 	border-right: 6px dashed transparent;
 	border-bottom: 6px solid #FFF;
+}
+
+.adwindow-detailpane-sub-tab::before {
+	content: '';
+	position: absolute;
+	width: 0px;
+	height: 0px;
+	top: 6px;
+	left: 4px;
+	border-top: 5px dashed transparent;
+	border-left: 5px dashed #696969;
+	border-right: 5px dashed transparent;
+	border-bottom: 5px solid transparent;
 }

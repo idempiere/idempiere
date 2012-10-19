@@ -119,6 +119,8 @@ public class GridView extends Vbox implements EventListener<Event>
 
 	private Borderlayout borderLayout;
 
+	private boolean detailPaneMode;
+
 	public GridView()
 	{
 		this(0);
@@ -191,7 +193,8 @@ public class GridView extends Vbox implements EventListener<Event>
 	}
 	
 	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
-		if (detailPaneMode) {
+		this.detailPaneMode = detailPaneMode;
+		if (detailPaneMode) {			
 			pageSize = DEFAULT_DETAIL_PAGE_SIZE;
 			updatePaging();
 			if (borderLayout.getParent() != null) {
@@ -221,6 +224,10 @@ public class GridView extends Vbox implements EventListener<Event>
 		}
 	}
 
+	public boolean isDetailPaneMode() {
+		return this.detailPaneMode;
+	}
+	
 	private void updatePaging() {
 		if (paging != null && paging.getPageSize() != pageSize) {
 			paging.setPageSize(pageSize);
@@ -435,7 +442,7 @@ public class GridView extends Vbox implements EventListener<Event>
 		columns.appendChild(indicator);
 		listbox.appendChild(columns);
 		columns.setSizable(true);
-		columns.setMenupopup("auto");
+		columns.setMenupopup("none");
 		columns.setColumnsgroup(false);
 
 		Map<Integer, String> colnames = new HashMap<Integer, String>();
@@ -777,7 +784,7 @@ public class GridView extends Vbox implements EventListener<Event>
         for (WEditor comp : list)
         {
             GridField mField = comp.getGridField();
-            if (mField != null && mField.getIncluded_Tab_ID() <= 0)
+            if (mField != null)
             {
                 if (noData)
                 {

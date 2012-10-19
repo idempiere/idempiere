@@ -2657,7 +2657,9 @@ public class GridTable extends AbstractTableModel
 	{
 		if (!m_inserting && !m_changed && m_rowChanged < 0)
 		{
-			log.fine("Nothing to ignore");
+			if (log.isLoggable(Level.FINE))
+				log.fine("Nothing to ignore");
+			m_newRow = -1;
 			return;
 		}
 		log.info("Inserting=" + m_inserting);

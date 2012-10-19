@@ -160,10 +160,10 @@ public class CustomizeGridViewPanel extends Panel
 		yesList.setSeltype("multiple");
 		noList.setSeltype("multiple");
 
-		bAdd.setImage("images/Detail24.png");
+		bAdd.setImage("images/Next24.png");
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
 
-		bRemove.setImage("images/Parent24.png");
+		bRemove.setImage("images/Previous24.png");
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener crossListMouseListener = new DragListener();
@@ -179,10 +179,10 @@ public class CustomizeGridViewPanel extends Panel
 			}
 		};
 
-		bUp.setImage("images/Previous24.png");
+		bUp.setImage("images/Parent24.png");
 		bUp.addEventListener(Events.ON_CLICK, actionListener);
 
-		bDown.setImage("images/Next24.png");
+		bDown.setImage("images/Detail24.png");
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener yesListMouseMotionListener = new EventListener()
