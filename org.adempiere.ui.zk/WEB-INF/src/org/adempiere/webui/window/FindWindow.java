@@ -1385,7 +1385,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
                     infoName, infoDisplay, infoDisplay_to, and, openBrackets);
             }
-            else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].equals(op)) {
+            else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator)) {
                 if (!(parsedValue instanceof Integer)) {
                     continue;
                 }

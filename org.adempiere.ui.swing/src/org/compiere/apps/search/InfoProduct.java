@@ -1206,7 +1206,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			{
 				CTabbedPane tab = (CTabbedPane) e.getSource();
 
-				if(tab.getSelectedIndex() == 4 & warehouseTbl.getRowCount() > 0)
+				if(tab.getSelectedIndex() == 4 && warehouseTbl.getRowCount() > 0)
 				{
 					// If no warehouse row is selected in the warehouse tab, use the first warehouse
 					// row to prevent array index out of bounds. BF 3051361

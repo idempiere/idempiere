@@ -1,18 +1,39 @@
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.compiere.grid;
 
 import java.math.BigDecimal;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
+/**
+ * 
+ * @author Elaine
+ *
+ */
 public abstract class PaymentFormCreditCard extends PaymentForm {
-	public static final String PAYMENTRULE = MInvoice.PAYMENTRULE_CreditCard;
-
+	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_CreditCard;
+	
 	public PaymentFormCreditCard(int WindowNo, GridTab mTab) {
 		super(WindowNo, mTab);
 	}
@@ -34,7 +55,6 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	public boolean save(String newCCType, String newCCNumber, String newCCExp, BigDecimal newAmount)
 	{
 		processMsg = null;
-		boolean error = false;
 		String payTypes = m_Cash_As_Payment ? "KTSDB" : "KTSD";
 				
 		/***********************
@@ -51,11 +71,11 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 				boolean ok = m_mPaymentOriginal.processIt(DocAction.ACTION_Reverse_Correct);
 				m_mPaymentOriginal.saveEx();
 				if (ok)
-					log.info( "Payment Canecelled - " + m_mPaymentOriginal);
+					log.info( "Payment Cancelled - " + m_mPaymentOriginal);
 				else
 				{
-					processMsg = "PaymentNotCancelled " + m_mPaymentOriginal.getDocumentNo();
-					error = true;
+					processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCancelled") + " " + m_mPaymentOriginal.getDocumentNo();
+					throw new AdempiereException(processMsg);
 				}
 				m_mPayment.resetNew();
 			}
@@ -77,8 +97,8 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 					}
 					else
 					{
-						processMsg = "PaymentNotCancelled " + m_mPayment.getDocumentNo();
-						error = true;
+						processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCancelled") + " " + m_mPayment.getDocumentNo();
+						throw new AdempiereException(processMsg);
 					}
 				}
 			}
@@ -130,6 +150,14 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		}
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
+		setCustomizeValues();
+		
+		if (!m_mPayment.isApproved())
+		{
+			processMsg = Msg.getMsg(Env.getCtx(), "CardNotProcessed");
+			throw new AdempiereException(processMsg);
+		}
+		
 		m_mPayment.saveEx();
 		
 		//  Save/Post
@@ -141,8 +169,8 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 				processMsg = m_mPayment.getDocumentNo();
 			else
 			{
-				processMsg = "PaymentNotCreated";
-				error = true;
+				processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
+				throw new AdempiereException(processMsg);
 			}
 		}
 		else
@@ -161,7 +189,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 				getGridTab().setValue("C_Payment_ID", new Integer(m_mPayment.getC_Payment_ID()));
 		}
 		
-		return !error;
+		return true;
 	}
 	
 	public boolean processOnline(String CCType, String CCNumber, String CCExp)
@@ -188,8 +216,9 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		m_mPayment.setDateTrx(m_DateAcct);
 		//  Set Amount
 		m_mPayment.setAmount(m_C_Currency_ID, m_Amount);
+		setCustomizeValues();
 		if (!m_mPayment.save()) {
-			processMsg = "PaymentNotCreated";
+			processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
 			return false;
 		} else {
 			approved = m_mPayment.processOnline();
@@ -205,7 +234,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 					processMsg = info + "\n" + m_mPayment.getDocumentNo();
 				else
 				{
-					processMsg = "PaymentNotCreated";
+					processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
 					error = true;
 				}
 				saveChanges();
@@ -217,5 +246,15 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 			}
 		}
 		return !error;
+	}
+	
+	public boolean isBankAccountProcessorExist(String CCType, BigDecimal PayAmt)
+	{
+		return isBankAccountProcessorExist(Env.getCtx(), MPayment.TENDERTYPE_CreditCard, CCType, Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, PayAmt, null);
+	}
+	
+	public MBankAccountProcessor getBankAccountProcessor(String CCType, BigDecimal PayAmt)
+	{
+		return getBankAccountProcessor(Env.getCtx(), MPayment.TENDERTYPE_CreditCard, CCType, Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, PayAmt, null);
 	}
 }

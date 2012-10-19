@@ -746,7 +746,7 @@ public class RequestEMailProcessor extends SvrProcess
 		String deliveryMessage = null;
 		if (content instanceof InputStream)
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			InputStream is = (InputStream)content;
 			int c;
 			while ((c = is.read()) != -1)

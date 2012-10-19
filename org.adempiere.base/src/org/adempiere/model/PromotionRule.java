@@ -337,7 +337,7 @@ public class PromotionRule {
 		//optional promotion code filter
 		String promotionCode = (String)order.get_Value("PromotionCode");
 
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(select)
 			.append(" WHERE")
 			.append(" (" + bpFilter + ")")

@@ -77,7 +77,7 @@ public class ProjectPhaseGenOrder  extends SvrProcess
 		{
 			MOrderLine ol = new MOrderLine(order);
 			ol.setLine(fromPhase.getSeqNo());
-			StringBuilder sb = new StringBuilder (fromPhase.getName());
+			StringBuilder sb = new StringBuilder ().append(fromPhase.getName());
 			if (fromPhase.getDescription() != null && fromPhase.getDescription().length() > 0)
 				sb.append(" - ").append(fromPhase.getDescription());
 			ol.setDescription(sb.toString());
@@ -122,7 +122,7 @@ public class ProjectPhaseGenOrder  extends SvrProcess
 		{
 			MOrderLine ol = new MOrderLine(order);
 			ol.setLine(tasks[i].getSeqNo());
-			StringBuilder sb = new StringBuilder (tasks[i].getName());
+			StringBuilder sb = new StringBuilder ().append(tasks[i].getName());
 			if (tasks[i].getDescription() != null && tasks[i].getDescription().length() > 0)
 				sb.append(" - ").append(tasks[i].getDescription());
 			ol.setDescription(sb.toString());

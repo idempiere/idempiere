@@ -249,7 +249,7 @@ public class ImmediateBankTransfer extends SvrProcess
 		MCash cash = createCash();
 		MCashLine cashLines[]= createCashLines(cash);
 		
-		StringBuilder processMsg = new StringBuilder(cash.getDocumentNo());
+		StringBuilder processMsg = new StringBuilder().append(cash.getDocumentNo());
 	
 		cash.setDocAction(p_docAction);
 		if (!cash.processIt(p_docAction))

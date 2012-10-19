@@ -92,7 +92,7 @@ public class TaxNotFoundException extends AdempiereException
 			return "?";
 		}
 		MLocation loc = MLocation.get(Env.getCtx(), C_Location_ID, null);
-		if (loc == null | loc.get_ID() != C_Location_ID)
+		if (loc == null || loc.get_ID() != C_Location_ID)
 		{
 			return "?";
 		}

@@ -229,145 +229,145 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		if (from.isMinute())
 		{
 			if (to.isHour())
-				return new BigDecimal(1.0/60.0);
+				return BigDecimal.valueOf(1.0/60.0);
 			if (to.isDay())
-				return new BigDecimal(1.0/1440.0);		//	24 * 60
+				return BigDecimal.valueOf(1.0/1440.0);		//	24 * 60
 			if (to.isWorkDay())
-				return new BigDecimal(1.0/480.0);		//	8 * 60
+				return BigDecimal.valueOf(1.0/480.0);		//	8 * 60
 			if (to.isWeek())
-				return new BigDecimal(1.0/10080.0);		//	7 * 24 * 60
+				return BigDecimal.valueOf(1.0/10080.0);		//	7 * 24 * 60
 			if (to.isMonth())
-				return new BigDecimal(1.0/43200.0);		//	30 * 24 * 60
+				return BigDecimal.valueOf(1.0/43200.0);		//	30 * 24 * 60
 			if (to.isWorkMonth())
-				return new BigDecimal(1.0/9600.0);		//	4 * 5 * 8 * 60
+				return BigDecimal.valueOf(1.0/9600.0);		//	4 * 5 * 8 * 60
 			if (to.isYear())
-				return new BigDecimal(1.0/525600.0);	//	365 * 24 * 60
+				return BigDecimal.valueOf(1.0/525600.0);	//	365 * 24 * 60
 		}
 		//	Time - Hour
 		if (from.isHour())
 		{
 			if (to.isMinute())
-				return new BigDecimal(60.0);
+				return BigDecimal.valueOf(60.0);
 			if (to.isDay())
-				return new BigDecimal(1.0/24.0);
+				return BigDecimal.valueOf(1.0/24.0);
 			if (to.isWorkDay())
-				return new BigDecimal(1.0/8.0);
+				return BigDecimal.valueOf(1.0/8.0);
 			if (to.isWeek())
-				return new BigDecimal(1.0/168.0);		//	7 * 24
+				return BigDecimal.valueOf(1.0/168.0);		//	7 * 24
 			if (to.isMonth())
-				return new BigDecimal(1.0/720.0);		//	30 * 24
+				return BigDecimal.valueOf(1.0/720.0);		//	30 * 24
 			if (to.isWorkMonth())
-				return new BigDecimal(1.0/160.0);		//	4 * 5 * 8
+				return BigDecimal.valueOf(1.0/160.0);		//	4 * 5 * 8
 			if (to.isYear())
-				return new BigDecimal(1.0/8760.0);		//	365 * 24
+				return BigDecimal.valueOf(1.0/8760.0);		//	365 * 24
 		}
 		//	Time - Day
 		if (from.isDay())
 		{
 			if (to.isMinute())
-				return new BigDecimal(1440.0);			//	24 * 60
+				return BigDecimal.valueOf(1440.0);			//	24 * 60
 			if (to.isHour())
-				return new BigDecimal(24.0);
+				return BigDecimal.valueOf(24.0);
 			if (to.isWorkDay())
-				return new BigDecimal(3.0);				//	24 / 8
+				return BigDecimal.valueOf(3.0);				//	24 / 8
 			if (to.isWeek())
-				return new BigDecimal(1.0/7.0);			//	7
+				return BigDecimal.valueOf(1.0/7.0);			//	7
 			if (to.isMonth())
-				return new BigDecimal(1.0/30.0);		//	30
+				return BigDecimal.valueOf(1.0/30.0);		//	30
 			if (to.isWorkMonth())
-				return new BigDecimal(1.0/20.0);		//	4 * 5
+				return BigDecimal.valueOf(1.0/20.0);		//	4 * 5
 			if (to.isYear())
-				return new BigDecimal(1.0/365.0);		//	365
+				return BigDecimal.valueOf(1.0/365.0);		//	365
 		}
 		//	Time - WorkDay
 		if (from.isWorkDay())
 		{
 			if (to.isMinute())
-				return new BigDecimal(480.0);			//	8 * 60
+				return BigDecimal.valueOf(480.0);			//	8 * 60
 			if (to.isHour())
-				return new BigDecimal(8.0);				//	8
+				return BigDecimal.valueOf(8.0);				//	8
 			if (to.isDay())
-				return new BigDecimal(1.0/3.0);			//	24 / 8
+				return BigDecimal.valueOf(1.0/3.0);			//	24 / 8
 			if (to.isWeek())
-				return new BigDecimal(1.0/5);			//	5
+				return BigDecimal.valueOf(1.0/5);			//	5
 			if (to.isMonth())
-				return new BigDecimal(1.0/20.0);		//	4 * 5
+				return BigDecimal.valueOf(1.0/20.0);		//	4 * 5
 			if (to.isWorkMonth())
-				return new BigDecimal(1.0/20.0);		//	4 * 5
+				return BigDecimal.valueOf(1.0/20.0);		//	4 * 5
 			if (to.isYear())
-				return new BigDecimal(1.0/240.0);		//	4 * 5 * 12
+				return BigDecimal.valueOf(1.0/240.0);		//	4 * 5 * 12
 		}
 		//	Time - Week
 		if (from.isWeek())
 		{
 			if (to.isMinute())
-				return new BigDecimal(10080.0);			//	7 * 24 * 60
+				return BigDecimal.valueOf(10080.0);			//	7 * 24 * 60
 			if (to.isHour())
-				return new BigDecimal(168.0);			//	7 * 24
+				return BigDecimal.valueOf(168.0);			//	7 * 24
 			if (to.isDay())
-				return new BigDecimal(7.0);
+				return BigDecimal.valueOf(7.0);
 			if (to.isWorkDay())
-				return new BigDecimal(5.0);
+				return BigDecimal.valueOf(5.0);
 			if (to.isMonth())
-				return new BigDecimal(1.0/4.0);			//	4
+				return BigDecimal.valueOf(1.0/4.0);			//	4
 			if (to.isWorkMonth())
-				return new BigDecimal(1.0/4.0);			//	4
+				return BigDecimal.valueOf(1.0/4.0);			//	4
 			if (to.isYear())
-				return new BigDecimal(1.0/50.0);		//	50
+				return BigDecimal.valueOf(1.0/50.0);		//	50
 		}
 		//	Time - Month
 		if (from.isMonth())
 		{
 			if (to.isMinute())
-				return new BigDecimal(43200.0);			//	30 * 24 * 60
+				return BigDecimal.valueOf(43200.0);			//	30 * 24 * 60
 			if (to.isHour())
-				return new BigDecimal(720.0);			//	30 * 24
+				return BigDecimal.valueOf(720.0);			//	30 * 24
 			if (to.isDay())
-				return new BigDecimal(30.0);			//	30
+				return BigDecimal.valueOf(30.0);			//	30
 			if (to.isWorkDay())
-				return new BigDecimal(20.0);			//	4 * 5
+				return BigDecimal.valueOf(20.0);			//	4 * 5
 			if (to.isWeek())
-				return new BigDecimal(4.0);				//	4
+				return BigDecimal.valueOf(4.0);				//	4
 			if (to.isWorkMonth())
-				return new BigDecimal(1.5);				//	30 / 20
+				return BigDecimal.valueOf(1.5);				//	30 / 20
 			if (to.isYear())
-				return new BigDecimal(1.0/12.0);		//	12
+				return BigDecimal.valueOf(1.0/12.0);		//	12
 		}
 		//	Time - WorkMonth
 		if (from.isWorkMonth())
 		{
 			if (to.isMinute())
-				return new BigDecimal(9600.0);			//	4 * 5 * 8 * 60
+				return BigDecimal.valueOf(9600.0);			//	4 * 5 * 8 * 60
 			if (to.isHour())
-				return new BigDecimal(160.0);			//	4 * 5 * 8
+				return BigDecimal.valueOf(160.0);			//	4 * 5 * 8
 			if (to.isDay())
-				return new BigDecimal(20.0);			//	4 * 5
+				return BigDecimal.valueOf(20.0);			//	4 * 5
 			if (to.isWorkDay())
-				return new BigDecimal(20.0);			//	4 * 5
+				return BigDecimal.valueOf(20.0);			//	4 * 5
 			if (to.isWeek())
-				return new BigDecimal(4.0);				//	4
+				return BigDecimal.valueOf(4.0);				//	4
 			if (to.isMonth())
-				return new BigDecimal(20.0/30.0);		//	20 / 30
+				return BigDecimal.valueOf(20.0/30.0);		//	20 / 30
 			if (to.isYear())
-				return new BigDecimal(1.0/12.0);		//	12
+				return BigDecimal.valueOf(1.0/12.0);		//	12
 		}
 		//	Time - Year
 		if (from.isYear())
 		{
 			if (to.isMinute())
-				return new BigDecimal(518400.0);		//	12 * 30 * 24 * 60
+				return BigDecimal.valueOf(518400.0);		//	12 * 30 * 24 * 60
 			if (to.isHour())
-				return new BigDecimal(8640.0);			//	12 * 30 * 24
+				return BigDecimal.valueOf(8640.0);			//	12 * 30 * 24
 			if (to.isDay())
-				return new BigDecimal(365.0);			//	365
+				return BigDecimal.valueOf(365.0);			//	365
 			if (to.isWorkDay())
-				return new BigDecimal(240.0);			//	12 * 4 * 5
+				return BigDecimal.valueOf(240.0);			//	12 * 4 * 5
 			if (to.isWeek())
-				return new BigDecimal(50.0);			//	52
+				return BigDecimal.valueOf(50.0);			//	52
 			if (to.isMonth())
-				return new BigDecimal(12.0);			//	12
+				return BigDecimal.valueOf(12.0);			//	12
 			if (to.isWorkMonth())
-				return new BigDecimal(12.0);			//	12
+				return BigDecimal.valueOf(12.0);			//	12
 		}
 		//
 		return null;
@@ -620,7 +620,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	/** Static Logger					*/
 	private static final CLogger s_log = CLogger.getCLogger(MUOMConversion.class);
 	/**	Indicator for Rate					*/
-	private static final BigDecimal GETRATE = new BigDecimal(123.456);
+	private static final BigDecimal GETRATE = BigDecimal.valueOf(123.456);
 	/**	Conversion Map: Key=Point(from,to) Value=BigDecimal	*/
 	private static CCache<Point,BigDecimal>	s_conversions = null;
 	/** Product Conversion Map					*/

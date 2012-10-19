@@ -214,8 +214,8 @@ public class GridTabVO implements Evaluatee, Serializable
 			if (vo.WhereClause == null)
 				vo.WhereClause = "";
 			//jz col=null not good for Derby
-			if (vo.WhereClause.indexOf("=null")>0)
-				vo.WhereClause.replaceAll("=null", " IS NULL ");
+			if (vo.WhereClause.indexOf("=null")>0)				
+				vo.WhereClause = vo.WhereClause.replaceAll("=null", " IS NULL ");
 			// Where Clauses should be surrounded by parenthesis - teo_sarca, BF [ 1982327 ] 
 			if (vo.WhereClause.trim().length() > 0) {
 				vo.WhereClause = "("+vo.WhereClause+")";

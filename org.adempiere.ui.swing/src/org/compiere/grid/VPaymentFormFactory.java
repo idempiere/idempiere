@@ -1,11 +1,30 @@
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.compiere.grid;
 
 import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.compiere.model.GridTab;
+import org.compiere.model.MInvoice;
 import org.compiere.util.CLogger;
 
+/**
+ * 
+ * @author Elaine
+ *
+ */
 public class VPaymentFormFactory {
 	/**	Static Logger	*/
 	private static CLogger 	s_log = CLogger.getCLogger (VPaymentFormFactory.class);
@@ -27,13 +46,13 @@ public class VPaymentFormFactory {
 	{
 		// Register defaults:
 		s_registeredClasses = new HashMap<String, Class<? extends IPaymentForm>>();
-		s_registeredClasses.put(PaymentFormCash.PAYMENTRULE, VPaymentFormCash.class);
-		s_registeredClasses.put(PaymentFormCheck.PAYMENTRULE, VPaymentFormCheck.class);
-		s_registeredClasses.put(PaymentFormCreditCard.PAYMENTRULE, VPaymentFormCreditCard.class);
-		s_registeredClasses.put(PaymentFormDirectDebit.PAYMENTRULE, VPaymentFormDirectDebit.class);
-		s_registeredClasses.put(PaymentFormDirectDeposit.PAYMENTRULE, VPaymentFormDirectDeposit.class);
-		s_registeredClasses.put(PaymentFormMixedPOS.PAYMENTRULE, VPaymentFormMixedPOS.class);
-		s_registeredClasses.put(PaymentFormOnCredit.PAYMENTRULE, VPaymentFormOnCredit.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_Cash, VPaymentFormCash.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_Check, VPaymentFormCheck.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_CreditCard, VPaymentFormCreditCard.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_DirectDebit, VPaymentFormDirectDebit.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_DirectDeposit, VPaymentFormDirectDeposit.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_MixedPOSPayment, VPaymentFormMixedPOS.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_OnCredit, VPaymentFormOnCredit.class);
 	}
 	
 	public static IPaymentForm create (int windowNo, GridTab mTab, String paymentRule)

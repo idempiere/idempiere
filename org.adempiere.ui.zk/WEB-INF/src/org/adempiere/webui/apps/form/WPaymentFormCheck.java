@@ -1,3 +1,16 @@
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
 import java.math.BigDecimal;
@@ -14,6 +27,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
+import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
@@ -21,16 +35,24 @@ import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentFormCheck;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MPaymentValidate;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Cell;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Space;
 
+/**
+ * 
+ * @author Elaine
+ *
+ */
 public class WPaymentFormCheck extends PaymentFormCheck implements EventListener<Event> {
 
 	private WPaymentFormWindow window;
@@ -39,6 +61,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 	private Listbox sBankAccountCombo = ListboxFactory.newDropdownListbox();
 	private Label sCurrencyLabel = new Label();
 	private Listbox sCurrencyCombo = ListboxFactory.newDropdownListbox();
+	private Space sCurrencySpace = new Space();
 	private Label sAmountLabel = new Label();
 	private WNumberEditor sAmountField = new WNumberEditor();
 	private Label sRoutingLabel = new Label();
@@ -49,6 +72,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 	private Label sCheckLabel = new Label();
 	private Button sOnline = new Button();
 	private Label sStatus = new Label();
+	private Panel customizePanel = new Panel();
 	
 	public WPaymentFormCheck(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
@@ -71,7 +95,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		sStatus.setText(" ");
 		sOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
 		LayoutUtils.addSclass("action-text-button", sOnline);
-//		sOnline.addActionListener(this);
+		sOnline.addActionListener(this);
 		window.getPanel().setId("sPanel");
 		
 		Columns columns = new Columns();
@@ -79,15 +103,11 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		
 		Column column = new Column();
 		columns.appendChild(column);
-		column.setWidth("30%");
+		column.setWidth("40%");
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("50%");
-		
-		column = new Column();
-		columns.appendChild(column);
-		column.setWidth("20%");
+		column.setWidth("60%");
 		
 		sAmountField.getComponent().setWidth("150px");
 		
@@ -95,38 +115,37 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		Row row = rows.newRow();
 		row.appendChild(sBankAccountLabel.rightAlign());
 		row.appendChild(sBankAccountCombo);
-		row.appendChild(new Space());
 		
 		row = rows.newRow();
 		row.appendChild(sCurrencyLabel.rightAlign());
 		row.appendChild(sCurrencyCombo);
-		row.appendChild(new Space());
 		
 		row = rows.newRow();
 		row.appendChild(sAmountLabel.rightAlign());
 		row.appendChild(sAmountField.getComponent());
-		row.appendChild(new Space());
+		sAmountField.getComponent().addEventListener(Events.ON_BLUR, this);
 		
 		row = rows.newRow();
 		row.appendChild(sRoutingLabel.rightAlign());
 		row.appendChild(sRoutingField);
-		row.appendChild(new Space());
 		
 		row = rows.newRow();
 		row.appendChild(sNumberLabel.rightAlign());
 		row.appendChild(sNumberField);
-		row.appendChild(new Space());
 		
 		row = rows.newRow();
 		row.appendChild(sCheckLabel.rightAlign());
 		row.appendChild(sCheckField);
+		
+		row = rows.newRow();
+		row.appendCellChild(customizePanel, 2);
+		
+		row = rows.newRow();
+		row.appendChild(new Space());
 		row.appendChild(sOnline);
 		
 		row = rows.newRow();
-		Cell cell = new Cell();
-		row.appendChild(cell);
-		cell.appendChild(sStatus);
-		cell.setColspan(3);
+		row.appendCellChild(sStatus, 2);
 	}
 
 	@Override
@@ -159,6 +178,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		{
 			sCurrencyLabel.setVisible(false);	//	Check
 			sCurrencyCombo.setVisible(false);
+			sCurrencySpace.setVisible(false);
 		}
 
 		ArrayList<KeyNamePair> list = getBankAccountList();
@@ -168,21 +188,59 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		//	Set Selection
 		if (selectedBankAccount != null)
 			sBankAccountCombo.setSelectedKeyNamePair(selectedBankAccount);
+		
+		boolean exist = isBankAccountProcessorExist(m_C_Currency_ID, (BigDecimal) sAmountField.getValue());
+		sOnline.setVisible(exist);
+		
+		if (exist)
+			updateOnlineButton();
 	}
 	
 	public void onEvent(Event e)
 	{
-		if (e.getTarget() == sCurrencyCombo)
+		if (e.getTarget() == sCurrencyCombo || e.getTarget() == sAmountField)
 		{
+			int C_Currency_ID = 0;
 			KeyNamePair pp = sCurrencyCombo.getSelectedItem().toKeyNamePair();
-			BigDecimal amt = MConversionRate.convert(Env.getCtx(),
-					m_Amount, m_C_Currency_ID, pp.getKey(), m_AD_Client_ID, m_AD_Org_ID);
-			sAmountField.setValue(amt);
+			if (pp != null)
+				C_Currency_ID = pp.getKey();
+					
+			if (e.getTarget() == sCurrencyCombo)
+			{
+				BigDecimal amt = MConversionRate.convert(Env.getCtx(),
+						m_Amount, m_C_Currency_ID, C_Currency_ID, m_AD_Client_ID, m_AD_Org_ID);
+				sAmountField.setValue(amt);
+			}
+			
+			updateOnlineButton();
 		}
-//		else if (e.getTarget() == sOnline) {
-//			window.lockUI();
-//			Clients.response(new AuEcho(window, "runProcessOnline", null));
-//		}
+		else if (e.getTarget() == sOnline) 
+		{
+			window.lockUI();
+			Clients.response(new AuEcho(window, "runProcessOnline", null));
+		}
+	}
+	
+	private void updateOnlineButton()
+	{
+		int C_Currency_ID = 0;
+		KeyNamePair pp = sCurrencyCombo.getSelectedItem().toKeyNamePair();
+		if (pp != null)
+			C_Currency_ID = pp.getKey();
+				
+		BigDecimal PayAmt = (BigDecimal) sAmountField.getValue();
+		
+		if (C_Currency_ID > 0 && PayAmt != null)
+		{
+			MBankAccountProcessor bankAccountProcessor = getBankAccountProcessor(C_Currency_ID, PayAmt);
+			sOnline.setEnabled(bankAccountProcessor != null);
+			setBankAccountProcessor(bankAccountProcessor);
+		}
+		else
+		{
+			sOnline.setEnabled(false);
+			setBankAccountProcessor(null);
+		}
 	}
 	
 	@Override
@@ -240,7 +298,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		else if (processMsg != null)
 			FDialog.info(getWindowNo(), window, "PaymentCreated", m_mPayment.getDocumentNo());
 		
-		return true;
+		return ok;
 	}
 	
 	@Override
@@ -256,5 +314,10 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 	@Override
 	public Object getWindow() {
 		return window;
+	}
+
+	@Override
+	public Object getCustomizePanel() {
+		return customizePanel;
 	}
 }

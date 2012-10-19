@@ -417,7 +417,7 @@ public class CreateAdempiere
 				if (def != null)
 				{
 					//jz: replace '' to \', otherwise exception
-					def.replaceAll("''", "\\'");
+					def = def.replaceAll("''", "\\'");
 					sb.append(" DEFAULT ").append(def);
 				}
 				//	Null

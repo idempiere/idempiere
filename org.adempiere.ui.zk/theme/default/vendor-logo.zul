@@ -14,7 +14,16 @@ Copyright (C) 2009 Idalica Corporation
 			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1em; font-weight: bold;" />
 	</hbox>
 </div>
-<div style="height: 90px" if="${desktop.execution.localName != &quot;ip-10-8-0-1.ec2.internal&quot;}">
+<div style="background-color: #E5E5E5; margin: 5px;"
+	if="${desktop.execution.localName.startsWith(&quot;demo.&quot;)}">
+	<hbox align="center">
+		<toolbarbutton
+			href="http://www.idempiere.org" image="http://www.idempiere.org/_/rsrc/1341897488671/config/customLogo.gif?revision=2" target="_blank"/>
+		<label value="iDempiere Online Demonstration"
+			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1.5em; font-weight: bold;" />
+	</hbox>
+</div>
+<div style="height: 90px" if="${desktop.execution.localName != &quot;ip-10-8-0-1.ec2.internal&quot; and ! desktop.execution.localName.startsWith(&quot;demo.&quot;)}">
 	<space/>
 </div>
 

@@ -1,3 +1,16 @@
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.compiere.grid;
 
 import java.math.BigDecimal;
@@ -6,20 +19,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MCashLine;
 import org.compiere.model.MPayment;
+import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
 
+/**
+ * 
+ * @author Elaine
+ *
+ */
 public abstract class PaymentForm implements IPaymentForm {
 
 	/**	Logger			*/
@@ -198,6 +220,9 @@ public abstract class PaymentForm implements IPaymentForm {
 		};
 		try {
 			Trx.run(r);
+		} catch (AdempiereException ae) {
+			success[0] = false;
+			throw ae;
 		} catch (Throwable e) {
 			success[0] = false;
 			throw new AdempiereException("PaymentError", e);
@@ -277,7 +302,43 @@ public abstract class PaymentForm implements IPaymentForm {
 	
 	public void processOnline()
 	{
-		
+		throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ActionNotSupported"));
+	}
+	
+	public boolean isBankAccountProcessorExist(Properties ctx, String tender, String CCType, int AD_Client_ID, int C_Currency_ID, BigDecimal PayAmt, String trxName)
+	{
+		MBankAccountProcessor[] m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, PayAmt, trxName);
+		//	Relax Amount
+		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
+			m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, Env.ZERO, trxName);
+		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
+			return false;
+		return true;
+	}
+	
+	public MBankAccountProcessor getBankAccountProcessor(Properties ctx, String tender, String CCType, int AD_Client_ID, int C_Currency_ID, BigDecimal PayAmt, String trxName)
+	{
+		MBankAccountProcessor[] m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, PayAmt, trxName);
+		//	Relax Amount
+		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
+			m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, Env.ZERO, trxName);
+		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
+			return null;
+
+		MBankAccountProcessor m_mBankAccountProcessor = null;
+		//	Find the first right one
+		for (int i = 0; i < m_mBankAccountProcessors.length; i++)
+		{
+			MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccountProcessor.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), bankAccountProcessor.get_TrxName());
+			if (paymentProcessor.accepts (tender, CCType))
+			{
+				m_mBankAccountProcessor = m_mBankAccountProcessors[i];
+				break;
+			}
+		}
+		//
+		return m_mBankAccountProcessor;
 	}
 	
 	public GridTab getGridTab()
@@ -298,5 +359,20 @@ public abstract class PaymentForm implements IPaymentForm {
 	public int getWindowNo()
 	{
 		return m_WindowNo;
+	}
+	
+	public Object getCustomizePanel()
+	{
+		return null;
+	}
+	
+	public void setCustomizeValues()
+	{
+		
+	}
+	
+	public void setBankAccountProcessor(MBankAccountProcessor bankAccountProcessor)
+	{
+		
 	}
 }

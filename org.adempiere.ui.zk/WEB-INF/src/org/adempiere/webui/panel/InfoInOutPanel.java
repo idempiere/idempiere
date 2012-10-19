@@ -299,7 +299,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		if (fPOReference.getText().length() > 0)
 			sql.append(" AND UPPER(i.POReference) LIKE ?");
 
-		if (fBPartner_ID.getDisplay() != "")
+		if (!"".equals(fBPartner_ID.getDisplay()))
 			sql.append(" AND i.C_BPartner_ID=?");
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
@@ -343,7 +343,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		if (fPOReference.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(fPOReference));
 
-		if (fBPartner_ID.getDisplay() != "")
+		if (!"".equals(fBPartner_ID.getDisplay()))
 		{
 			Integer bp = (Integer)fBPartner_ID.getValue();
 			pstmt.setInt(index++, bp.intValue());

@@ -420,7 +420,7 @@ public class ExportHelper {
 				    whereClause.append(" AND ").append(embeddedFormat.getWhereClause());
 				}
 				String columnName = "";
-				if(formatLine.getAD_Reference_ID()== DisplayType.Table | formatLine.getAD_Reference_ID()==DisplayType.Search)
+				if(formatLine.getAD_Reference_ID()== DisplayType.Table || formatLine.getAD_Reference_ID()==DisplayType.Search)
 				{
 					MColumn column = MColumn.get(masterPO.getCtx(), formatLine.getAD_Column_ID());
 					columnName = column.getColumnName();
