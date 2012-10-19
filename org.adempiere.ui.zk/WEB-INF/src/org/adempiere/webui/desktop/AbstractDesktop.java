@@ -28,6 +28,7 @@ import org.compiere.util.Env;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Window.Mode;
 
 /**
  * Base class for desktop implementation
@@ -148,11 +149,9 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      */
    	public void showWindow(final Window win, final String pos)
 	{
-		Object objMode = win.getAttribute(Window.MODE_KEY);
-
-		final String mode = objMode != null ? objMode.toString() : Window.MODE_HIGHLIGHTED;
+		final Window.Mode windowMode = win.getModeAttribute();		
 		
-		if (Window.MODE_MODAL.equals(mode))
+		if (Mode.MODAL == windowMode)
 		{
 			if (pos != null)
 				win.setPosition(pos);
@@ -162,14 +161,14 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		{
 			if (Executions.getCurrent() != null) 
 			{
-				showNonModalWindow(win, pos, mode);
+				showNonModalWindow(win, pos, windowMode);
 			}
 			else
 			{
 				Executions.schedule(getComponent().getDesktop(), new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
-						showNonModalWindow(win, pos, mode);
+						showNonModalWindow(win, pos, windowMode);
 					}
 				}, new Event("onExecute"));
 			}
@@ -177,20 +176,20 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	}
 
 	private void showNonModalWindow(final Window win, final String pos,
-			final String mode) {		
-		if (Window.MODE_POPUP.equals(mode))
+			final Mode mode) {		
+		if (Mode.POPUP == mode)
 		{
 			showPopup(win, pos);
 		}
-		else if (Window.MODE_OVERLAPPED.equals(mode))
+		else if (Mode.OVERLAPPED == mode)
 		{
 			showOverlapped(win, pos);
 		}
-		else if (Window.MODE_EMBEDDED.equals(mode))
+		else if (Mode.EMBEDDED == mode)
 		{
 			showEmbedded(win);
 		}
-		else if (Window.MODE_HIGHLIGHTED.equals(mode))
+		else if (Mode.HIGHLIGHTED == mode)
 		{
 			showHighlighted(win, pos);
 		}

@@ -397,4 +397,12 @@ public abstract class ADForm extends Window implements EventListener
 	{
 		return m_customForm;
 	}
+	
+	/**
+	 * Default to embedded mode, subclass may override this to open form in different mode
+	 * @return Window mode
+	 */
+	public Mode getWindowMode() {
+		return Mode.EMBEDDED;
+	}
 }

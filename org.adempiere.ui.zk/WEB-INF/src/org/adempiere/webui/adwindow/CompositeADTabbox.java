@@ -417,6 +417,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			adtabpanel.addDetails(detailPane);
 			detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));
 			detailPane.setSelectedIndex(0);
+			activateDetailADTabpanel();
 		}
 		
 		headerTab.setDetailPaneMode(false, isUseVflexForDetailPane());
@@ -644,6 +645,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (tabPanel instanceof ADSortTab) {
 			detailPane.invalidate();
 			detailPane.updateToolbar(false, true);
+		} else {
+			tabPanel.dynamicDisplay(0);
 		}
 	}
 	

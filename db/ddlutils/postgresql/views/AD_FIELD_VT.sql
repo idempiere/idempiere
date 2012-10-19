@@ -10,7 +10,7 @@ CREATE OR REPLACE VIEW ad_field_vt AS
  COALESCE(f.IsAllowCopy, c.IsAllowCopy) AS IsAllowCopy,
 	f.isdisplayedgrid, 
 	f.seqnogrid,
-	c.seqnoselection, f.xposition, f.columnspan, f.numlines
+	c.seqnoselection, f.xposition, f.columnspan, f.numlines, c.isToolbarButton
    FROM ad_field f
    JOIN ad_field_trl trl ON f.ad_field_id = trl.ad_field_id
    JOIN ad_tab t ON f.ad_tab_id = t.ad_tab_id

@@ -587,7 +587,8 @@ public class WWFActivity extends ADForm implements EventListener
 		{
 			int AD_Form_ID = node.getAD_Form_ID();
 
-			Window form = ADForm.openForm(AD_Form_ID);
+			ADForm form = ADForm.openForm(AD_Form_ID);
+			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 			AEnv.showWindow(form);
 		}
 		else

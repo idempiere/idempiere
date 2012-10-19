@@ -76,6 +76,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private int windowNo;
 	private GridTabDataBinder dataBinder;
 	private Map<GridField, WEditor> editors = new LinkedHashMap<GridField, WEditor>();
+	private Map<GridField, WEditor> toolbarEditors = new LinkedHashMap<GridField, WEditor>();
 	private Paging paging;
 
 	private Map<String, Map<Object, String>> lookupCache = null;
@@ -275,6 +276,13 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 		return editorList;
 	}
+	
+	public List<WEditor> getToolbarEditors() {
+		List<WEditor> editorList = new ArrayList<WEditor>();
+		if (!toolbarEditors.isEmpty())
+			editorList.addAll(toolbarEditors.values());
+		return editorList;
+	}
 
 	/**
 	 * @param paging
@@ -411,10 +419,15 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		
 		int colIndex = -1;
 		for (int i = 0; i < columnCount; i++) {
-			if (editors.get(gridPanelFields[i]) == null)
-				editors.put(gridPanelFields[i], WebEditorFactory.getEditor(gridPanelFields[i], true));
+			if (editors.get(gridPanelFields[i]) == null) {
+				WEditor editor = WebEditorFactory.getEditor(gridPanelFields[i], true);
+				editors.put(gridPanelFields[i], editor);
+				if (editor instanceof WButtonEditor) {
+					((WButtonEditor)editor).addActionListener(buttonListener);
+				}
+			}
 			
-			if (!gridPanelFields[i].isDisplayedGrid()) {
+			if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
 				continue;
 			}
 			colIndex ++;
@@ -443,6 +456,16 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			row.appendChild(div);
 		}
 
+		for (GridField gridField : gridTabFields) {
+			if (gridField.isToolbarButton() && gridField.isDisplayed()) {
+				if (toolbarEditors.get(gridField) == null) {
+					WButtonEditor editor = (WButtonEditor) WebEditorFactory.getEditor(gridField, true);
+					toolbarEditors.put(gridField, editor);
+					editor.addActionListener(buttonListener);
+				}
+			}
+		}
+		
 		if (rowIndex == gridTab.getCurrentRow()) {
 			setCurrentRow(row);
 		}
@@ -506,7 +529,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			//skip indicator column
 			int colIndex = 0;
 			for (int i = 0; i < columnCount; i++) {
-				if (!gridPanelFields[i].isDisplayedGrid()) {
+				if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
 					continue;
 				}
 				colIndex ++;

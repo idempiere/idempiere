@@ -86,6 +86,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     private ToolBarButton btnCustomize;
     
     private ToolBarButton btnExport;
+    
+    private ToolBarButton btnProcess;
 
     private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
 
@@ -162,6 +164,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         addSeparator();
         btnCustomize= createButton("Customize", "Customize", "Customize");
         btnCustomize.setDisabled(false);
+        
+        btnProcess= createButton("Process", "Process", "Process");
+        btnProcess.setDisabled(false);
         
 
         // Help and Exit should always be enabled
@@ -572,6 +577,12 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}	// All restrictions
 
 		ToolBarMenuRestictionLoaded = true;
+	}
+
+	public void enableProcessButton(boolean b) {
+		if (btnProcess != null) {
+			btnProcess.setDisabled(!b);
+		}
 	}
 
 }

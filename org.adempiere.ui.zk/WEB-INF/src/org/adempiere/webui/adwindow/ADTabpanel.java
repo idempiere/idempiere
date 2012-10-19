@@ -102,6 +102,8 @@ DataStatusListener, IADTabpanel
 
 	public static final String ON_ACTIVATE_EVENT = "onActivate";
 
+	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
+	
 	private static final String ATTR_ON_ACTIVATE_POSTED = "org.adempiere.webui.adwindow.ADTabpanel.onActivatePosted";
 
 	/**
@@ -393,6 +395,22 @@ DataStatusListener, IADTabpanel
         	if (!field.isDisplayed())
         		continue;
 
+        	if (field.isToolbarButton()) {
+        		WButtonEditor editor = (WButtonEditor) WebEditorFactory.getEditor(gridTab, field, false);
+
+        		if (editor != null) {
+        			if (windowPanel != null)
+    					editor.addActionListener(windowPanel);
+        			editor.setGridTab(this.getGridTab());
+        			editor.setADTabpanel(this);
+        			field.addPropertyChangeListener(editor);
+        			editors.add(editor);
+        			editorComps.add(editor.getComponent());
+        			        			
+        			continue;
+        		}
+        	}
+        	
         	// field group
         	String fieldGroup = field.getFieldGroup();
         	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
@@ -692,7 +710,12 @@ DataStatusListener, IADTabpanel
         for (Group group : collapsedGroups) {
         	group.setOpen(false);
         }
+        
+        if (listPanel.isVisible()) {
+        	listPanel.dynamicDisplay(col);
+        }
 
+        Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
         logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
 
@@ -1171,6 +1194,27 @@ DataStatusListener, IADTabpanel
 			this.setVflex(Boolean.toString(vflex));
 		}
 		listPanel.setDetailPaneMode(detailPaneMode, vflex);
+	}
+	
+	/**
+	 * Get all visible button editors
+	 * @return List<WButtonEditor>
+	 */
+	public List<WButtonEditor> getToolbarButtons() {
+		List<WButtonEditor> buttonList = new ArrayList<WButtonEditor>();
+		if (isGridView()) {
+			buttonList = listPanel.getToolbarButtons();
+		} else {
+			for(WEditor editor : editors) {
+				if (editor instanceof WButtonEditor && editor.getComponent() != null 
+						&& editor.getComponent().isVisible()
+						&& editor.getGridField() != null
+						&& editor.getGridField().isToolbarButton()) {
+					buttonList.add((WButtonEditor) editor);
+				}
+			}
+		}
+		return buttonList;
 	}
 }
 

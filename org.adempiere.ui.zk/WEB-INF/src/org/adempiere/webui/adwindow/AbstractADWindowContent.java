@@ -533,6 +533,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		else
 		{
 			ADTabpanel fTabPanel = new ADTabpanel();
+			fTabPanel.addEventListener(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT, this);
 	    	gTab.addDataStatusListener(this);
 	    	fTabPanel.init(this, curWindowNo, gTab, gridWindow);
 	    	adTabbox.addTab(gTab, fTabPanel);
@@ -942,6 +943,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
     		onModalClose(dialog.getProcessInfo());
     		onRefresh(false, false);
+    	}
+    	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
+    	{
+    		ADTabpanel adtab = (ADTabpanel) event.getTarget();
+    		if (adtab == adTabbox.getSelectedTabpanel()) {
+    			toolbar.enableProcessButton(adtab.getToolbarButtons().size() > 0);
+    		} 
     	}
     }
 
@@ -2444,7 +2452,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			pi.setAD_Client_ID (Env.getAD_Client_ID(ctx));
 			ADForm form = ADForm.openForm(adFormID);
 			form.setProcessInfo(pi);
-			form.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 			form.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 			SessionManager.getAppDesktop().showWindow(form);
 			onRefresh(false, false);
@@ -2515,6 +2523,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	public IADTabpanel findADTabpanel(WButtonEditor button) {
 		IADTabpanel adtab = null;
+		if (button.getADTabpanel() != null)
+			return button.getADTabpanel();
+		
 		Component c = button.getComponent();
 		while (c != null) {
 			if (c instanceof IADTabpanel) {
@@ -2636,5 +2647,17 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			
 		}
 		CustomizeGridViewDialog.showCustomize(0, adTabbox.getSelectedGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds,tabPanel.getGridView());			
+	}
+
+	/**
+	 * @see org.adempiere.webui.event.ToolbarListener#onProcess()
+	 */
+	@Override
+	public void onProcess() {
+		ProcessButtonPopup popup = new ProcessButtonPopup();
+		ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+		popup.render(adtab.getToolbarButtons());
+		
+		LayoutUtils.openPopupWindow(toolbar.getButton("Process"), popup, "after_start");
 	}
 }
