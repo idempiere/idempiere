@@ -1,8 +1,9 @@
 CREATE OR REPLACE VIEW ad_sessioninfo_v AS 
- SELECT s.ad_session_id,0 ad_client_id, s.ad_org_id, s.isactive, 
+ SELECT s.ad_session_id,0 as ad_client_id,0 as ad_org_id, s.isactive, 
 		s.created, s.createdby, s.updated, s.updatedby, s.websession, 
 		s.remote_addr, s.remote_host, s.ad_role_id, s.logindate, s.ad_session_uu, 
-		s.servername, s.ad_client_id AS login_client_id
+		s.servername, s.ad_client_id AS login_client_id,createdby as ad_user_id,s.ad_org_id as login_org_id,s.ad_session_id as ad_sessioninfo_v_id,
+		s.ad_session_uu as ad_sessioninfo_v_uu
    FROM ad_session s
   WHERE s.processed = 'N';
 
@@ -180,7 +181,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Oct 11, 2012 6:13:32 PM PDT
 -- IDEMPIERE-293-List of logged users
-INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200025,200602,'D','N','N','N','N',40,'Y',10,'N',1000006,'992d57b8-76ef-45a8-8dd7-0226cb17b3e4','N','Y','N','ServerName','Server name',100,TO_DATE('2012-10-11 18:13:29','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-10-11 18:13:29','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200025,200602,'D','N','N','N','N',40,'Y',10,'N',200182,'992d57b8-76ef-45a8-8dd7-0226cb17b3e4','N','Y','N','ServerName','Server name',100,TO_DATE('2012-10-11 18:13:29','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-10-11 18:13:29','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Oct 11, 2012 6:13:32 PM PDT
@@ -802,6 +803,404 @@ DELETE  FROM  AD_Reference_Trl WHERE AD_Reference_ID=200013
 -- Oct 18, 2012 2:39:09 PM IST
 -- IDEMPIERE-293  List of Active Session
 DELETE FROM AD_Reference WHERE AD_Reference_ID=200013
+;
+
+-- Oct 19, 2012 1:35:06 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Description,Help,Name,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200025,200705,'D','N','N','N','N',10,'N',19,'N',138,'f1336921-57f1-4fe8-8c12-543d2b4a49bf','N','N','N','AD_User_ID','User within the system - Internal or Business Partner Contact','The User identifies a unique user in the system. This could be an internal user or a business partner contact','User/Contact',100,TO_DATE('2012-10-19 13:35:00','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-10-19 13:35:00','YYYY-MM-DD HH24:MI:SS'),100,0)
+;
+
+-- Oct 19, 2012 1:35:07 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200705 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Oct 19, 2012 1:40:53 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('login_org_id',200189,'D','login_org_id','login_org_id','a5353900-dd61-4d08-8a16-ff00125c61cd',0,TO_DATE('2012-10-19 13:40:45','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2012-10-19 13:40:45','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y')
+;
+
+-- Oct 19, 2012 1:40:53 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Description,Name,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Description,t.Name,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=200189 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
+;
+
+-- Oct 19, 2012 1:40:59 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200025,200706,'D','N','N','N','N',10,'N',19,'N',200189,'f6a3b130-de25-4cbd-802f-560435d2cbab','N','N','N','login_org_id','login_org_id',100,TO_DATE('2012-10-19 13:40:45','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-10-19 13:40:45','YYYY-MM-DD HH24:MI:SS'),100,0)
+;
+
+-- Oct 19, 2012 1:40:59 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200706 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Oct 19, 2012 1:44:02 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Element SET Name='Login Org', PrintName='Login Org',Updated=TO_DATE('2012-10-19 13:44:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=200189
+;
+
+-- Oct 19, 2012 1:44:02 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=200189
+;
+
+-- Oct 19, 2012 1:44:02 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Column SET ColumnName='login_org_id', Name='Login Org', Description=NULL, Help=NULL WHERE AD_Element_ID=200189
+;
+
+-- Oct 19, 2012 1:44:02 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Process_Para SET ColumnName='login_org_id', Name='Login Org', Description=NULL, Help=NULL, AD_Element_ID=200189 WHERE UPPER(ColumnName)='LOGIN_ORG_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Oct 19, 2012 1:44:02 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Process_Para SET ColumnName='login_org_id', Name='Login Org', Description=NULL, Help=NULL WHERE AD_Element_ID=200189 AND IsCentrallyMaintained='Y'
+;
+
+-- Oct 19, 2012 1:44:02 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET Name='Login Org', Description=NULL, Help=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=200189) AND IsCentrallyMaintained='Y'
+;
+
+-- Oct 19, 2012 1:44:03 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_PrintFormatItem pi SET PrintName='Login Org', Name='Login Org' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=200189)
+;
+
+-- Oct 19, 2012 1:44:52 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Element SET Name='Loing Client', PrintName='Loing Client',Updated=TO_DATE('2012-10-19 13:44:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=200186
+;
+
+-- Oct 19, 2012 1:44:52 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=200186
+;
+
+-- Oct 19, 2012 1:44:52 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Column SET ColumnName='login_client_id', Name='Loing Client', Description=NULL, Help=NULL WHERE AD_Element_ID=200186
+;
+
+-- Oct 19, 2012 1:44:52 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Process_Para SET ColumnName='login_client_id', Name='Loing Client', Description=NULL, Help=NULL, AD_Element_ID=200186 WHERE UPPER(ColumnName)='LOGIN_CLIENT_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Oct 19, 2012 1:44:52 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Process_Para SET ColumnName='login_client_id', Name='Loing Client', Description=NULL, Help=NULL WHERE AD_Element_ID=200186 AND IsCentrallyMaintained='Y'
+;
+
+-- Oct 19, 2012 1:44:52 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET Name='Loing Client', Description=NULL, Help=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=200186) AND IsCentrallyMaintained='Y'
+;
+
+-- Oct 19, 2012 1:44:52 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_PrintFormatItem pi SET PrintName='Loing Client', Name='Loing Client' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=200186)
+;
+
+-- Oct 19, 2012 1:46:13 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Column SET IsKey='Y', IsUpdateable='N', IsAllowCopy='N',Updated=TO_DATE('2012-10-19 13:46:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200588
+;
+
+-- Oct 19, 2012 1:46:39 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Name,IsFieldOnly,IsDisplayed,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive) VALUES ('N',200025,10,'N','N',200706,'Y',200650,'N','D','Login Org','N','Y','b40af732-2db2-4cac-aa21-1149a50b106b',100,0,TO_DATE('2012-10-19 13:46:38','YYYY-MM-DD HH24:MI:SS'),0,100,TO_DATE('2012-10-19 13:46:38','YYYY-MM-DD HH24:MI:SS'),'Y')
+;
+
+-- Oct 19, 2012 1:46:39 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Field_Trl_UU ) SELECT l.AD_Language,t.AD_Field_ID, t.Help,t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Field t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Field_ID=200650 AND NOT EXISTS (SELECT * FROM AD_Field_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Field_ID=t.AD_Field_ID)
+;
+
+-- Oct 19, 2012 1:46:40 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,Help,EntityType,Description,Name,IsFieldOnly,IsDisplayed,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive) VALUES ('N',200025,10,'N','N',200705,'Y',200651,'N','The User identifies a unique user in the system. This could be an internal user or a business partner contact','D','User within the system - Internal or Business Partner Contact','User/Contact','N','Y','4dc92524-ada7-4797-9501-54e662606e48',100,0,TO_DATE('2012-10-19 13:46:39','YYYY-MM-DD HH24:MI:SS'),0,100,TO_DATE('2012-10-19 13:46:39','YYYY-MM-DD HH24:MI:SS'),'Y')
+;
+
+-- Oct 19, 2012 1:46:40 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Field_Trl_UU ) SELECT l.AD_Language,t.AD_Field_ID, t.Help,t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Field t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Field_ID=200651 AND NOT EXISTS (SELECT * FROM AD_Field_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Field_ID=t.AD_Field_ID)
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=200606
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=200608
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=10,IsDisplayedGrid='Y' WHERE AD_Field_ID=200647
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=20,IsDisplayedGrid='Y' WHERE AD_Field_ID=200650
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=30,IsDisplayedGrid='Y' WHERE AD_Field_ID=200609
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=40,IsDisplayedGrid='Y' WHERE AD_Field_ID=200610
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=50,IsDisplayedGrid='Y' WHERE AD_Field_ID=200651
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=60,IsDisplayedGrid='Y' WHERE AD_Field_ID=200611
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=70,IsDisplayedGrid='Y' WHERE AD_Field_ID=200646
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=80,IsDisplayedGrid='Y' WHERE AD_Field_ID=200607
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=90,IsDisplayedGrid='Y' WHERE AD_Field_ID=200613
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=100,IsDisplayedGrid='Y' WHERE AD_Field_ID=200614
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=110,IsDisplayedGrid='Y' WHERE AD_Field_ID=200604
+;
+
+-- Oct 19, 2012 1:50:04 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=120,IsDisplayedGrid='Y' WHERE AD_Field_ID=200605
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=0,IsDisplayed='N' WHERE AD_Field_ID=200608
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=20,IsDisplayed='Y' WHERE AD_Field_ID=200609
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=30,IsDisplayed='Y' WHERE AD_Field_ID=200610
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=40,IsDisplayed='Y' WHERE AD_Field_ID=200611
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=50,IsDisplayed='Y' WHERE AD_Field_ID=200607
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=60,IsDisplayed='Y' WHERE AD_Field_ID=200646
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=70,IsDisplayed='Y' WHERE AD_Field_ID=200614
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=80,IsDisplayed='Y' WHERE AD_Field_ID=200604
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=90,IsDisplayed='Y' WHERE AD_Field_ID=200613
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=100,IsDisplayed='Y' WHERE AD_Field_ID=200605
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=110,IsDisplayed='Y' WHERE AD_Field_ID=200650
+;
+
+-- Oct 19, 2012 1:51:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=120,IsDisplayed='Y' WHERE AD_Field_ID=200651
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=20,IsDisplayed='Y' WHERE AD_Field_ID=200650
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=30,IsDisplayed='Y' WHERE AD_Field_ID=200609
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=40,IsDisplayed='Y' WHERE AD_Field_ID=200610
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=50,IsDisplayed='Y' WHERE AD_Field_ID=200651
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=60,IsDisplayed='Y' WHERE AD_Field_ID=200611
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=70,IsDisplayed='Y' WHERE AD_Field_ID=200607
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=80,IsDisplayed='Y' WHERE AD_Field_ID=200646
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=90,IsDisplayed='Y' WHERE AD_Field_ID=200614
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=100,IsDisplayed='Y' WHERE AD_Field_ID=200604
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=110,IsDisplayed='Y' WHERE AD_Field_ID=200613
+;
+
+-- Oct 19, 2012 2:01:01 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNo=120,IsDisplayed='Y' WHERE AD_Field_ID=200605
+;
+
+
+
+
+-- Oct 19, 2012 2:02:21 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET XPosition=4, ColumnSpan=2,Updated=TO_DATE('2012-10-19 14:02:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200650
+;
+
+-- Oct 19, 2012 2:04:08 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Column SET AD_Reference_Value_ID=276, AD_Reference_ID=18,Updated=TO_DATE('2012-10-19 14:04:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200706
+;
+
+-- Oct 19, 2012 2:04:49 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Column SET AD_Reference_Value_ID=130,Updated=TO_DATE('2012-10-19 14:04:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200706
+;
+
+-- Oct 19, 2012 2:05:16 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Column SET AD_Reference_Value_ID=276,Updated=TO_DATE('2012-10-19 14:05:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200706
+;
+
+-- Oct 19, 2012 2:10:54 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('AD_SessionInfo_v_ID',200190,'D','AD_SessionInfo_v','AD_SessionInfo_v','388c863c-f3a7-4645-8591-6e1604e725e8',0,TO_DATE('2012-10-19 14:10:47','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2012-10-19 14:10:47','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y')
+;
+
+-- Oct 19, 2012 2:10:54 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Description,Name,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Description,t.Name,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=200190 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
+;
+
+-- Oct 19, 2012 2:10:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200025,200707,'D','N','N','N','N',10,'N',13,'Y',200190,'49302e65-9959-4cd4-8604-bc83ca508df0','N','N','N','AD_SessionInfo_v_ID','AD_SessionInfo_v',100,TO_DATE('2012-10-19 14:10:47','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-10-19 14:10:47','YYYY-MM-DD HH24:MI:SS'),100,0)
+;
+
+-- Oct 19, 2012 2:10:55 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200707 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Oct 19, 2012 2:12:49 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Name,IsFieldOnly,IsDisplayed,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive,IsDisplayedGrid) VALUES ('N',200025,10,'N','N',200707,'Y',200652,'N','D','AD_SessionInfo_v','N','N','d5552148-760e-4df8-a701-1c768670718f',100,0,TO_DATE('2012-10-19 14:12:45','YYYY-MM-DD HH24:MI:SS'),0,100,TO_DATE('2012-10-19 14:12:45','YYYY-MM-DD HH24:MI:SS'),'Y','N')
+;
+
+-- Oct 19, 2012 2:12:49 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Field_Trl_UU ) SELECT l.AD_Language,t.AD_Field_ID, t.Help,t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Field t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Field_ID=200652 AND NOT EXISTS (SELECT * FROM AD_Field_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Field_ID=t.AD_Field_ID)
+;
+
+-- Oct 19, 2012 2:32:50 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('ad_sessioninfo_v_uu',200191,'D','ad_sessioninfo_v_uu','ad_sessioninfo_v_uu','c84d427a-3b7b-479a-82e2-7dd40d061ff6',0,TO_DATE('2012-10-19 14:32:49','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2012-10-19 14:32:49','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y')
+;
+
+-- Oct 19, 2012 2:32:50 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Description,Name,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Description,t.Name,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=200191 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
+;
+
+-- Oct 19, 2012 2:32:50 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsEncrypted,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (0,200025,200708,'D','N','N','N','N',36,'N',10,'N',200191,'2aeb7648-a543-4a73-af45-87b3b6096a1a','N','N','N','ad_sessioninfo_v_uu','ad_sessioninfo_v_uu',100,TO_DATE('2012-10-19 14:32:49','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-10-19 14:32:49','YYYY-MM-DD HH24:MI:SS'),100,0)
+;
+
+-- Oct 19, 2012 2:32:50 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200708 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Oct 19, 2012 2:33:58 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Name,IsFieldOnly,IsDisplayed,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive) VALUES ('N',200025,36,'N','N',200708,'Y',200653,'N','D','ad_sessioninfo_v_uu','N','Y','008aae2b-0106-44a8-a6a1-bbec08dba31a',100,0,TO_DATE('2012-10-19 14:33:58','YYYY-MM-DD HH24:MI:SS'),0,100,TO_DATE('2012-10-19 14:33:58','YYYY-MM-DD HH24:MI:SS'),'Y')
+;
+
+-- Oct 19, 2012 2:33:58 PM IST
+-- IDEMPIERE-293  List of Active Session
+INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Field_Trl_UU ) SELECT l.AD_Language,t.AD_Field_ID, t.Help,t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Field t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Field_ID=200653 AND NOT EXISTS (SELECT * FROM AD_Field_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Field_ID=t.AD_Field_ID)
+;
+
+-- Oct 19, 2012 2:34:16 PM IST
+-- IDEMPIERE-293  List of Active Session
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=200653
 ;
 
 
