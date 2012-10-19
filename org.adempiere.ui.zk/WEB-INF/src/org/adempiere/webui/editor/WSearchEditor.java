@@ -430,9 +430,11 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	 *	Action - Special BPartner Screen
 	 *  @param newRecord true if new record should be created
 	 */
-
 	private void actionBPartner (boolean newRecord)
 	{
+		if(!getComponent().isEnabled())
+			return;
+		
 		final WBPartner vbp = new WBPartner (lookup.getWindowNo());
 		int BPartner_ID = 0;
 

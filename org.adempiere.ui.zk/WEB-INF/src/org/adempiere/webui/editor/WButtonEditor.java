@@ -260,6 +260,11 @@ public class WButtonEditor extends WEditor
     		actionListeners.add(actionListener);
     }
 
+    public boolean removeActionListener(ActionListener actionListener)
+    {
+    	return actionListeners.remove(actionListener);
+    }
+    
     @Override
     public String[] getEvents()
     {
