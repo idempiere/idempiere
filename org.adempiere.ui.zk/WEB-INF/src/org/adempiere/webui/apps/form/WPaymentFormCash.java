@@ -224,7 +224,7 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 		else if (processMsg != null)
 			FDialog.info(getWindowNo(), window, "PaymentCreated", processMsg);
 		
-		return true;
+		return ok;
 	}
 	
 	@Override

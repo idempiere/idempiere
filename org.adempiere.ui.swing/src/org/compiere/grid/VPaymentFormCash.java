@@ -209,7 +209,7 @@ public class VPaymentFormCash extends PaymentFormCash implements ActionListener 
 		else if (processMsg != null)
 			ADialog.info(getWindowNo(), dialog, "PaymentCreated", processMsg);
 		
-		return true;
+		return ok;
 	}
 
 	@Override

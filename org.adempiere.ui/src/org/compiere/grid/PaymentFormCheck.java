@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
@@ -16,9 +18,10 @@ import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 
 public abstract class PaymentFormCheck extends PaymentForm {
-	public static final String PAYMENTRULE = MInvoice.PAYMENTRULE_Check;
+	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_Check;
 	
 	public PaymentFormCheck(int WindowNo, GridTab mTab) {
 		super(WindowNo, mTab);
@@ -68,7 +71,6 @@ public abstract class PaymentFormCheck extends PaymentForm {
 	public boolean save(int newC_BankAccount_ID, String routing, String number, String check, BigDecimal amount)
 	{
 		processMsg = null;
-		boolean error = false;
 		String payTypes = m_Cash_As_Payment ? "KTSDB" : "KTSD";
 		
 		/***********************
@@ -85,11 +87,11 @@ public abstract class PaymentFormCheck extends PaymentForm {
 				boolean ok = m_mPaymentOriginal.processIt(DocAction.ACTION_Reverse_Correct);
 				m_mPaymentOriginal.saveEx();
 				if (ok)
-					log.info( "Payment Canecelled - " + m_mPaymentOriginal);
+					log.info( "Payment Cancelled - " + m_mPaymentOriginal);
 				else
 				{
-					processMsg = "PaymentNotCancelled " + m_mPaymentOriginal.getDocumentNo();
-					error = true;
+					processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCancelled") + " " + m_mPaymentOriginal.getDocumentNo();
+					throw new AdempiereException(processMsg);
 				}
 				m_mPayment.resetNew();
 			}
@@ -111,8 +113,8 @@ public abstract class PaymentFormCheck extends PaymentForm {
 					}
 					else
 					{
-						processMsg = "PaymentNotCancelled " + m_mPayment.getDocumentNo();
-						error = true;
+						processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCancelled") + " " + m_mPayment.getDocumentNo();
+						throw new AdempiereException(processMsg);
 					}
 				}
 			}
@@ -163,6 +165,7 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		}
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
+		setCustomizeValues();
 		m_mPayment.saveEx();
 		
 		//  Save/Post
@@ -174,8 +177,8 @@ public abstract class PaymentFormCheck extends PaymentForm {
 				processMsg = m_mPayment.getDocumentNo();
 			else
 			{
-				processMsg = "PaymentNotCreated";
-				error = true;
+				processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
+				throw new AdempiereException(processMsg);
 			}
 		}
 		else
@@ -193,6 +196,16 @@ public abstract class PaymentFormCheck extends PaymentForm {
 			else
 				getGridTab().setValue("C_Payment_ID", new Integer(m_mPayment.getC_Payment_ID()));
 		}
-		return !error;
+		return true;
+	}
+		
+	public boolean isBankAccountProcessorExist(int C_Currency_ID, BigDecimal PayAmt)
+	{
+		return isBankAccountProcessorExist(Env.getCtx(), MPayment.TENDERTYPE_Check, "", Env.getAD_Client_ID(Env.getCtx()), C_Currency_ID, PayAmt, null);
+	}
+	
+	public MBankAccountProcessor getBankAccountProcessor(int C_Currency_ID, BigDecimal PayAmt)
+	{
+		return getBankAccountProcessor(Env.getCtx(), MPayment.TENDERTYPE_Check, "", Env.getAD_Client_ID(Env.getCtx()), C_Currency_ID, PayAmt, null);
 	}
 }

@@ -1,5 +1,7 @@
 package org.compiere.grid;
 
+import org.compiere.model.MBankAccountProcessor;
+
 public interface IPaymentForm {
 
 	public boolean checkMandatory();
@@ -13,4 +15,10 @@ public interface IPaymentForm {
 	public void closeWindow();
 	
 	public Object getWindow();
+	
+	public Object getCustomizePanel();
+	
+	public void setCustomizeValues();
+	
+	public void setBankAccountProcessor(MBankAccountProcessor bankAccountProcessor);
 }

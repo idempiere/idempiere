@@ -4,14 +4,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.compiere.grid.IPaymentForm;
-import org.compiere.grid.PaymentFormCash;
-import org.compiere.grid.PaymentFormCheck;
-import org.compiere.grid.PaymentFormCreditCard;
-import org.compiere.grid.PaymentFormDirectDebit;
-import org.compiere.grid.PaymentFormDirectDeposit;
-import org.compiere.grid.PaymentFormMixedPOS;
-import org.compiere.grid.PaymentFormOnCredit;
 import org.compiere.model.GridTab;
+import org.compiere.model.MInvoice;
 import org.compiere.util.CLogger;
 
 public class WPaymentFormFactory {
@@ -36,13 +30,13 @@ public class WPaymentFormFactory {
 	{
 		// Register defaults:
 		s_registeredClasses = new HashMap<String, Class<? extends IPaymentForm>>();
-		s_registeredClasses.put(PaymentFormCash.PAYMENTRULE, WPaymentFormCash.class);
-		s_registeredClasses.put(PaymentFormCheck.PAYMENTRULE, WPaymentFormCheck.class);
-		s_registeredClasses.put(PaymentFormCreditCard.PAYMENTRULE, WPaymentFormCreditCard.class);
-		s_registeredClasses.put(PaymentFormDirectDebit.PAYMENTRULE, WPaymentFormDirectDebit.class);
-		s_registeredClasses.put(PaymentFormDirectDeposit.PAYMENTRULE, WPaymentFormDirectDeposit.class);
-		s_registeredClasses.put(PaymentFormMixedPOS.PAYMENTRULE, WPaymentFormMixedPOS.class);
-		s_registeredClasses.put(PaymentFormOnCredit.PAYMENTRULE, WPaymentFormOnCredit.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_Cash, WPaymentFormCash.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_Check, WPaymentFormCheck.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_CreditCard, WPaymentFormCreditCard.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_DirectDebit, WPaymentFormDirectDebit.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_DirectDeposit, WPaymentFormDirectDeposit.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_MixedPOSPayment, WPaymentFormMixedPOS.class);
+		s_registeredClasses.put(MInvoice.PAYMENTRULE_OnCredit, WPaymentFormOnCredit.class);
 	}
 	
 	public static IPaymentForm create(int windowNo, GridTab mTab, String paymentRule)

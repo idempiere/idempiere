@@ -59,6 +59,9 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		Center center = new Center();
 		mainLayout.appendChild(center);
 		center.appendChild(centerPanel = getPanel());
+		centerPanel.setHflex("1");
+		centerPanel.setVflex("1");
+		center.setAutoscroll(true);
 		//
 		South south = new South();
 		south.setStyle("border: none");

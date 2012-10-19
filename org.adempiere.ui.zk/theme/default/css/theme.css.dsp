@@ -803,12 +803,12 @@ div.simileAjax-bubble-container {
 	background-color: transparent !important;
 }
 
-.grid-layout .z-row-inner {
+.grid-layout .z-row-inner, .grid-layout .z-cell {
 	border: none !important;
 	background-color: transparent !important;
 }
 
-.grid-layout tr.z-row-over>td.z-row-inner {
+.grid-layout tr.z-row-over>td.z-row-inner, .grid-layout tr.z-row-over>.z-cell {
 	border: none !important;
 }
 

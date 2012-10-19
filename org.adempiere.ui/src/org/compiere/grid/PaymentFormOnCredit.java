@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.GridTab;
-import org.compiere.model.MInvoice;
 import org.compiere.model.MRole;
 import org.compiere.util.DB;
 import org.compiere.util.KeyNamePair;
 
 public abstract class PaymentFormOnCredit extends PaymentForm {
-	public static final String PAYMENTRULE = MInvoice.PAYMENTRULE_OnCredit;
 	
 	/** Start Payment Term */
 	public int 				m_C_PaymentTerm_ID = 0;

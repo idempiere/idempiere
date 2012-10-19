@@ -2,10 +2,10 @@ package org.compiere.grid;
 
 import org.compiere.model.GridTab;
 
-public class VPaymentFormDirectDebit extends VPaymentFormDirectDeposit {
+public class VPaymentFormDirectDebit extends VPaymentFormDirect {
 
-	public VPaymentFormDirectDebit(int WindowNo, GridTab mTab) {
-		super(WindowNo, mTab);
+	public VPaymentFormDirectDebit(int windowNo, GridTab mTab) {
+		super(windowNo, mTab, true);
 	}
 
 }

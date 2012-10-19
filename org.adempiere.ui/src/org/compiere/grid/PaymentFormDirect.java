@@ -1,6 +1,11 @@
 package org.compiere.grid;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridTab;
@@ -9,36 +14,60 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
 import org.compiere.process.DocAction;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
-import org.compiere.util.ValueNamePair;
 
-public abstract class PaymentFormCreditCard extends PaymentForm {
-	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_CreditCard;
+public abstract class PaymentFormDirect extends PaymentForm {
+	private String PAYMENTRULE;
 	
-	public PaymentFormCreditCard(int WindowNo, GridTab mTab) {
+	public PaymentFormDirect(int WindowNo, GridTab mTab, boolean isDebit) {
 		super(WindowNo, mTab);
+		PAYMENTRULE = isDebit ? MInvoice.PAYMENTRULE_DirectDebit : MInvoice.PAYMENTRULE_DirectDeposit;
 	}
 	
-	public ValueNamePair selectedCreditCard;
-	public ValueNamePair[] getCreditCardList()
-	{
-		selectedCreditCard = null;
-		ValueNamePair[] ccs = m_mPayment.getCreditCards();
-		for (int i = 0; i < ccs.length; i++)
+	public ArrayList<KeyNamePair> getBPBankAccountList() {
+		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
+		
+		/**
+		 * 	Load Accounts
+		 */
+		String SQL = "SELECT a.C_BP_BankAccount_ID, NVL(b.Name, ' ')||'_'||NVL(a.AccountNo, ' ') AS Acct "
+			+ "FROM C_BP_BankAccount a"
+			+ " LEFT OUTER JOIN C_Bank b ON (a.C_Bank_ID=b.C_Bank_ID) "
+			+ "WHERE C_BPartner_ID=?"
+			+ "AND a.IsActive='Y' AND a.IsACH='Y'";
+		try
 		{
-			if (ccs[i].getValue().equals(m_CCType))
-				selectedCreditCard = ccs[i];
+			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt.setInt(1, m_C_BPartner_ID);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				int key = rs.getInt(1);
+				String name = rs.getString(2);
+				KeyNamePair pp = new KeyNamePair(key, name);
+				list.add(pp);
+			}
+			rs.close();
+			pstmt.close();
 		}
-		return ccs;
+		catch (SQLException eac)
+		{
+			log.log(Level.SEVERE, SQL, eac);
+		}
+		
+		return list;
 	}
 	
-	public String processMsg = null;
-	public boolean save(String newCCType, String newCCNumber, String newCCExp, BigDecimal newAmount)
+	public String processMsg;
+	public boolean save(int newC_BankAccount_ID, String routing, String number)
 	{
 		processMsg = null;
+		
 		String payTypes = m_Cash_As_Payment ? "KTSDB" : "KTSD";
-				
+		
 		/***********************
 		 *  Changed PaymentRule
 		 */
@@ -115,14 +144,8 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		/***********************
 		 *  Payments
 		 */
-		log.fine("Payment - " + PAYMENTRULE);
-		//  Set Amount
+		m_mPayment.setBankACH(newC_BankAccount_ID, m_isSOTrx, PAYMENTRULE, routing, number);
 		m_mPayment.setAmount(m_C_Currency_ID, payAmount);
-		m_mPayment.setCreditCard(MPayment.TRXTYPE_Sales, newCCType, newCCNumber, "", newCCExp);
-		// Get changes to credit card amount
-		m_mPayment.setAmount(m_C_Currency_ID, newAmount);
-		m_mPayment.setPaymentProcessor();
-
 		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
 		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
 		if (order != null)
@@ -133,13 +156,6 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
 		setCustomizeValues();
-		
-		if (!m_mPayment.isApproved())
-		{
-			processMsg = Msg.getMsg(Env.getCtx(), "CardNotProcessed");
-			throw new AdempiereException(processMsg);
-		}
-		
 		m_mPayment.saveEx();
 		
 		//  Save/Post
@@ -174,69 +190,15 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		return true;
 	}
 	
-	public boolean processOnline(String CCType, String CCNumber, String CCExp)
+	public boolean isBankAccountProcessorExist()
 	{
-		processMsg = null;
-		boolean error = false;
-		
-		boolean approved = false;
-		String info = "";
-
-		m_mPayment.setCreditCard(MPayment.TRXTYPE_Sales, CCType,
-			CCNumber, "", CCExp);
-		m_mPayment.setAmount(m_C_Currency_ID, m_Amount);
-		m_mPayment.setPaymentProcessor();
-		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
-		//
-		int C_Invoice_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Invoice_ID");
-		if (C_Invoice_ID == 0 && m_DocStatus.equals("CO"))
-		{
-			int C_Order_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Order_ID");
-			C_Invoice_ID = getInvoiceID (C_Order_ID);
-		}
-		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
-		m_mPayment.setDateTrx(m_DateAcct);
-		//  Set Amount
-		m_mPayment.setAmount(m_C_Currency_ID, m_Amount);
-		setCustomizeValues();
-		if (!m_mPayment.save()) {
-			processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
-			return false;
-		} else {
-			approved = m_mPayment.processOnline();
-			info = m_mPayment.getR_RespMsg() + " (" + m_mPayment.getR_AuthCode()
-				+ ") ID=" + m_mPayment.getR_PnRef();
-			m_mPayment.saveEx();
-
-			if (approved)
-			{
-				boolean ok = m_mPayment.processIt(DocAction.ACTION_Complete);
-				m_mPayment.saveEx();
-				if (ok)
-					processMsg = info + "\n" + m_mPayment.getDocumentNo();
-				else
-				{
-					processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
-					error = true;
-				}
-				saveChanges();
-			}
-			else
-			{
-				processMsg = info;
-				error = true;
-			}
-		}
-		return !error;
+		String tender = PAYMENTRULE.equals(MInvoice.PAYMENTRULE_DirectDebit) ? MPayment.TENDERTYPE_DirectDebit : MPayment.TENDERTYPE_DirectDeposit;
+		return isBankAccountProcessorExist(Env.getCtx(), tender, "", Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, m_Amount, null);
 	}
 	
-	public boolean isBankAccountProcessorExist(String CCType, BigDecimal PayAmt)
+	public MBankAccountProcessor getBankAccountProcessor()
 	{
-		return isBankAccountProcessorExist(Env.getCtx(), MPayment.TENDERTYPE_CreditCard, CCType, Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, PayAmt, null);
-	}
-	
-	public MBankAccountProcessor getBankAccountProcessor(String CCType, BigDecimal PayAmt)
-	{
-		return getBankAccountProcessor(Env.getCtx(), MPayment.TENDERTYPE_CreditCard, CCType, Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, PayAmt, null);
+		String tender = PAYMENTRULE.equals(MInvoice.PAYMENTRULE_DirectDebit) ? MPayment.TENDERTYPE_DirectDebit : MPayment.TENDERTYPE_DirectDeposit;
+		return getBankAccountProcessor(Env.getCtx(), tender, "", Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, m_Amount, null);
 	}
 }

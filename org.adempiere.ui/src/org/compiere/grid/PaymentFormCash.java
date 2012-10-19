@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridTab;
 import org.compiere.model.MCash;
 import org.compiere.model.MCashLine;
@@ -20,10 +21,11 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 
 public abstract class PaymentFormCash extends PaymentForm {
-	public static final String PAYMENTRULE = MInvoice.PAYMENTRULE_Cash;
+	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_Cash;
 	
 	public PaymentFormCash(int WindowNo, GridTab mTab) {
 		super(WindowNo, mTab);
@@ -116,7 +118,6 @@ public abstract class PaymentFormCash extends PaymentForm {
 	public boolean save(int newC_BankAccount_ID, int newC_CashBook_ID, Timestamp newDateAcct, BigDecimal newAmount, String trxName)
 	{
 		processMsg = null;
-		boolean error = false;
 		int newC_CashLine_ID = m_C_CashLine_ID;
 		
 		/***********************
@@ -134,8 +135,8 @@ public abstract class PaymentFormCash extends PaymentForm {
 					log.config( "CashCancelled");
 				else
 				{
-					processMsg = "CashNotCancelled";
-					error = true;
+					processMsg = Msg.getMsg(Env.getCtx(), "CashNotCancelled");
+					throw new AdempiereException(processMsg);
 				}
 			}
 			newC_CashLine_ID = 0;      //  reset
@@ -177,8 +178,8 @@ public abstract class PaymentFormCash extends PaymentForm {
 			if (C_Invoice_ID == 0 && order == null)
 			{
 				log.config("No Invoice!");
-				processMsg = "CashNotCreated";
-				error = false;
+				processMsg = Msg.getMsg(Env.getCtx(), "CashNotCreated");
+				throw new AdempiereException(processMsg);
 			}
 			else
 			{
@@ -219,7 +220,7 @@ public abstract class PaymentFormCash extends PaymentForm {
 					if (cash == null || cash.get_ID() == 0)
 					{
 						processMsg = CLogger.retrieveErrorString("CashNotCreated");
-						error = true;
+						throw new AdempiereException(processMsg);
 					}
 					else
 					{
@@ -290,8 +291,8 @@ public abstract class PaymentFormCash extends PaymentForm {
 					processMsg = m_mPayment.getDocumentNo();
 				else
 				{
-					processMsg = "PaymentNotCreated";
-					error = true;
+					processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
+					throw new AdempiereException(processMsg);
 				}
 			}
 			else
@@ -321,6 +322,6 @@ public abstract class PaymentFormCash extends PaymentForm {
 			else
 				getGridTab().setValue("C_CashLine_ID", new Integer(newC_CashLine_ID));
 		}
-		return !error;
+		return true;
 	}
 }

@@ -61,7 +61,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 *	@param trxName transaction
 	 *  @return Array of BankAccount[0] & PaymentProcessor[1] or null
 	 */
-	protected static MBankAccountProcessor[] find (Properties ctx,
+	public static MBankAccountProcessor[] find (Properties ctx,
 		String tender, String CCType,
 		int AD_Client_ID, int C_Currency_ID, BigDecimal Amt, String trxName)
 	{

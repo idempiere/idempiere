@@ -6,6 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -14,6 +16,7 @@ import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MPaymentValidate;
 import org.compiere.swing.CButton;
@@ -24,7 +27,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
-public class VPaymentFormCheck extends PaymentFormCheck implements ActionListener {
+public class VPaymentFormCheck extends PaymentFormCheck implements ActionListener, FocusListener {
 
 	private VPaymentFormDialog dialog;
 	
@@ -64,6 +67,7 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 		sRoutingField.setPreferredSize(new Dimension(70, 21));
 		sStatus.setText(" ");
 		sOnline.setText(Msg.getMsg(Env.getCtx(), "Online"));
+		sOnline.addActionListener(this);
 		dialog.getPanel().add(sBankAccountLabel,   new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 0, 2, 0), 0, 0));
 		dialog.getPanel().add(sBankAccountCombo,    new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
@@ -76,6 +80,7 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 0, 5, 0), 0, 0));
 		dialog.getPanel().add(sAmountField,     new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 5, 5, 5), 0, 0));
+		sAmountField.addFocusListener(this);
 		dialog.getPanel().add(sRoutingLabel,   new GridBagConstraints(0, 3, 1, 2, 0.0, 0.0
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 2, 0), 0, 0));
 		dialog.getPanel().add(sRoutingField,    new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0
@@ -133,19 +138,63 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 		//	Set Selection
 		if (selectedBankAccount != null)
 			sBankAccountCombo.setSelectedItem(selectedBankAccount);
+		
+		boolean exist = isBankAccountProcessorExist(m_C_Currency_ID, (BigDecimal) sAmountField.getValue());
+		sOnline.setVisible(exist);
+		
+		if (exist)
+			updateOnlineButton();
 	}
 	
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == sCurrencyCombo)
 		{
+			int C_Currency_ID = 0;
 			KeyNamePair pp = (KeyNamePair)sCurrencyCombo.getSelectedItem();
+			if (pp != null)
+				C_Currency_ID = pp.getKey();
+			
 			BigDecimal amt = MConversionRate.convert(Env.getCtx(),
-				m_Amount, m_C_Currency_ID, pp.getKey(), m_AD_Client_ID, m_AD_Org_ID);
+				m_Amount, m_C_Currency_ID, C_Currency_ID, m_AD_Client_ID, m_AD_Org_ID);
 			sAmountField.setValue(amt);
+			
+			updateOnlineButton();
 		}
-//		else if (e.getSource() == sOnline)
-//			processOnline();
+		else if (e.getSource() == sOnline)
+			processOnline();
+	}
+	
+	@Override
+	public void focusGained(FocusEvent e) {
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		if (e.getSource() == sAmountField)
+			updateOnlineButton();
+	}
+	
+	private void updateOnlineButton()
+	{
+		int C_Currency_ID = 0;
+		KeyNamePair pp = (KeyNamePair)sCurrencyCombo.getSelectedItem();
+		if (pp != null)
+			C_Currency_ID = pp.getKey();
+		
+		BigDecimal PayAmt = (BigDecimal) sAmountField.getValue();
+		
+		if (C_Currency_ID > 0 && PayAmt != null)
+		{
+			MBankAccountProcessor bankAccountProcessor = getBankAccountProcessor(C_Currency_ID, PayAmt);
+			sOnline.setEnabled(bankAccountProcessor != null);
+			setBankAccountProcessor(bankAccountProcessor);
+		}
+		else
+		{
+			sOnline.setEnabled(false);
+			setBankAccountProcessor(null);
+		}
 	}
 	
 	@Override
@@ -203,7 +252,7 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 		else if (processMsg != null)
 			ADialog.info(getWindowNo(), dialog, "PaymentCreated", m_mPayment.getDocumentNo());
 		
-		return true;
+		return ok;
 	}
 
 	@Override
