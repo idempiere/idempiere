@@ -344,6 +344,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
     private void updateRoleList()
     {
 		lstRole.getItems().clear();
+		lstRole.setText("");
         Comboitem lstItemClient = lstClient.getSelectedItem();
         if (lstItemClient != null)
         {
@@ -387,7 +388,6 @@ public class RolePanel extends Window implements EventListener, Deferrable
     			lblRole.setVisible(true);
     			lstRole.setVisible(true);
     		}
-            
         }
         setUserID();
         updateOrganisationList();
@@ -491,7 +491,11 @@ public class RolePanel extends Window implements EventListener, Deferrable
     }
     
     private void setUserID() {
-    	Env.setContext(m_ctx, "#AD_Client_ID", (String) lstClient.getSelectedItem().getValue());
+    	if (lstClient.getSelectedItem() != null) {
+        	Env.setContext(m_ctx, "#AD_Client_ID", (String) lstClient.getSelectedItem().getValue());
+    	} else {
+        	Env.setContext(m_ctx, "#AD_Client_ID", (String) null);
+    	}
     	MUser user = MUser.get (m_ctx, m_userName);
     	if (user != null) {
     		Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
