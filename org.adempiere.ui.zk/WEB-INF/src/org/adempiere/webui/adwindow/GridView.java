@@ -282,7 +282,7 @@ public class GridView extends Vbox implements EventListener<Event>
 			gridField = fieldList.toArray(new GridField[0]);			
 			if (customComponent.length == 2) {
 				String[] widths = customComponent[1].split("[,]");
-				for(int i = 0; i< gridField.length; i++) {
+				for(int i = 0; i< gridField.length && i<widths.length; i++) {
 					columnWidthMap.put(gridField[i].getAD_Field_ID(), widths[i]);
 				}
 			}
