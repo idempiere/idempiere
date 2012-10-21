@@ -141,9 +141,6 @@ public final class Ini implements Serializable
 	/** Role					*/
 	public static final String  P_ROLE =			"Role";
 	private static final String  DEFAULT_ROLE =		"";
-	/**Server Name				*/
-	public static final String  P_SERVERNAME =			"ServerName";
-	private static final String  DEFAULT_SERVERNAME =	"";
 	/** Client Name				*/
 	public static final String	P_CLIENT =			"Client";
 	private static final String	DEFAULT_CLIENT =	"";
@@ -199,7 +196,7 @@ public final class Ini implements Serializable
 		P_ADEMPIERESYS, P_LOGMIGRATIONSCRIPT, P_SHOW_ACCT, P_SHOW_TRL,
 		P_SHOW_ADVANCED, P_CACHE_WINDOW,
 		P_CONTEXT, P_TEMP_DIR,
-		P_ROLE, P_SERVERNAME, P_CLIENT, P_ORG, P_PRINTER, P_WAREHOUSE, P_TODAY,
+		P_ROLE, P_CLIENT, P_ORG, P_PRINTER, P_WAREHOUSE, P_TODAY,
 		P_PRINTPREVIEW,
 		P_VALIDATE_CONNECTION_ON_STARTUP,
 		P_SINGLE_INSTANCE_PER_WINDOW,
@@ -217,7 +214,7 @@ public final class Ini implements Serializable
 		DEFAULT_ADEMPIERESYS?"Y":"N", DEFAULT_LOGMIGRATIONSCRIPT?"Y":"N", DEFAULT_SHOW_ACCT?"Y":"N", DEFAULT_SHOW_TRL?"Y":"N",
 		DEFAULT_SHOW_ADVANCED?"Y":"N", DEFAULT_CACHE_WINDOW?"Y":"N",
 		DEFAULT_CONTEXT, DEFAULT_TEMP_DIR,
-		DEFAULT_ROLE, DEFAULT_SERVERNAME, DEFAULT_CLIENT, DEFAULT_ORG, DEFAULT_PRINTER, DEFAULT_WAREHOUSE, DEFAULT_TODAY.toString(),
+		DEFAULT_ROLE, DEFAULT_CLIENT, DEFAULT_ORG, DEFAULT_PRINTER, DEFAULT_WAREHOUSE, DEFAULT_TODAY.toString(),
 		DEFAULT_PRINTPREVIEW?"Y":"N",
 		DEFAULT_VALIDATE_CONNECTION_ON_STARTUP?"Y":"N",
 		DEFAULT_SINGLE_INSTANCE_PER_WINDOW?"Y":"N",
