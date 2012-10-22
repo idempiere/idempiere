@@ -315,4 +315,11 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="com.springsource.javax.mail"
+         download-size="0"
+         install-size="0"
+         version="1.4.5"
+         unpack="false"/>
+
 </feature>

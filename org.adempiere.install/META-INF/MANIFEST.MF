@@ -9,8 +9,8 @@ Export-Package: org.adempiere.install,
  org.compiere.install
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: javax.mail;version="1.4.0",
- javax.mail.internet;version="1.4.0",
+Import-Package: javax.mail;version="1.4.5",
+ javax.mail.internet;version="1.4.5",
  org.apache.tools.ant,
  org.eclipse.ant.core,
  org.eclipse.core.runtime;version="3.4.0",

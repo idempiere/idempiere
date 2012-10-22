@@ -13,7 +13,7 @@ Bundle-ClassPath: WEB-INF/lib/jardiff.jar,
  WEB-INF/lib/jnlp-servlet.jar,
  .
 Import-Package: javax.jms;version="1.1.0",
- javax.mail;version="1.4.0",
+ javax.mail;version="1.4.5",
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  org.apache.activemq;version="5.3.0",

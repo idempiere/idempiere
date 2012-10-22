@@ -9,4 +9,8 @@
     <cq:advisorNode namePattern="^org\.apache\.poi$" componentType="osgi.bundle" versionOverride="[3.7.0,4.0.0)">
         <cq:property key="jar.version" value="3.7.0"/>
     </cq:advisorNode>
+    <cq:advisorNode namePattern="^com\.springsource\.javax\.mail$" componentType="osgi.bundle" versionOverride="[1.4.5,1.4.5]">
+        <cq:property key="jar.version" value="1.4.5"/>
+    </cq:advisorNode>
+    <cq:advisorNode namePattern="^com\.springsource\.javax\.activation$" componentType="osgi.bundle" skipComponent="true"/>
 </cq:componentQuery>
