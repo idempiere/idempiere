@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Label;
@@ -45,7 +44,6 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.au.out.AuEcho;
-import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -57,7 +55,6 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
 
@@ -295,9 +292,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		confirmPanel.appendChild(bCancel);
 		
 
-		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));
-		
-		this.addEventListener(Events.ON_UPLOAD, this);
+		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));		
 	}
 
 	/**

@@ -582,23 +582,31 @@ public class GridFieldVO implements Serializable
 		//  Create Lookup, if not ID
 		if (DisplayType.isLookup(displayType) && IsDisplayed)
 		{
-			try
-			{
-				lookupInfo = MLookupFactory.getLookupInfo (ctx, WindowNo, AD_Column_ID, displayType,
-					Env.getLanguage(ctx), ColumnName, AD_Reference_Value_ID,
-					IsParent, ValidationCode);
-				if (lookupInfo == null)
-					displayType = DisplayType.ID;
-				else
-					lookupInfo.InfoFactoryClass = this.InfoFactoryClass;
-			}
-			catch (Exception e)     //  Cannot create Lookup
-			{
-				CLogger.get().log(Level.SEVERE, "No LookupInfo for " + ColumnName, e);
-				displayType = DisplayType.ID;
-			}
+			loadLookupInfo();
 		}
 	}   //  initFinish
+
+	/**
+	 * load lookup info.
+	 * used by findwindow to loadlookupinfo for invisible field
+	 */
+	public void loadLookupInfo() {
+		try
+		{
+			lookupInfo = MLookupFactory.getLookupInfo (ctx, WindowNo, AD_Column_ID, displayType,
+				Env.getLanguage(ctx), ColumnName, AD_Reference_Value_ID,
+				IsParent, ValidationCode);
+			if (lookupInfo == null)
+				displayType = DisplayType.ID;
+			else
+				lookupInfo.InfoFactoryClass = this.InfoFactoryClass;
+		}
+		catch (Exception e)     //  Cannot create Lookup
+		{
+			CLogger.get().log(Level.SEVERE, "No LookupInfo for " + ColumnName, e);
+			displayType = DisplayType.ID;
+		}
+	}
 
 	/**
 	 * 	Clone Field.

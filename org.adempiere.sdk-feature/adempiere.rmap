@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
   <rm:locator pattern="^org\.apache\.poi$" searchPathRef="workspace.bundle.jar"/>
+  <rm:locator pattern="^com\.springsource\.javax\.mail$" searchPathRef="workspace.bundle.jar"/>
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
   <rm:locator pattern="^org\.slf4j(\..+)?" searchPathRef="orbit"/>
@@ -37,10 +38,10 @@
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="file:///{0}/lib/plugins/{1}_{2}.jar">
-	    <bc:replace>
-      	   <bc:propertyRef key="workspace.root"/>
-           <bc:match pattern="\s" replacement="%20" />
-    	</bc:replace>
+        <bc:replace>
+          <bc:propertyRef key="workspace.root"/>
+          <bc:match pattern="\s" replacement="%20"/>
+        </bc:replace>
         <bc:propertyRef key="buckminster.component"/>
         <bc:propertyRef key="jar.version"/>
       </rm:uri>
