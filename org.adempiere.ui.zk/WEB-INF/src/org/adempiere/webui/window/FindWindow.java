@@ -1638,8 +1638,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         field.addPropertyChangeListener(editor);
         editor.addValueChangeListener(this);
         editor.setValue(null);
-        editor.setReadWrite(true);
-        editor.setVisible(true);
+        editor.setReadWrite(enabled);
+        editor.setVisible(enabled);
         editor.dynamicDisplay();
         //
         return editor.getComponent();
