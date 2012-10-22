@@ -25,6 +25,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
@@ -32,6 +34,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -1259,24 +1262,56 @@ public final class WebUtil
 	 */
 	public static String getServerName(){
 		StringBuilder strBuilder = new StringBuilder();
-		String serverName = Ini.getProperties().getProperty("ServerName");
-		
 		
 		try {
 			strBuilder.append(InetAddress.getLocalHost().getHostName());
 		} catch (UnknownHostException e) {
 			log.log(Level.WARNING, "Local host or IP not found", e);
 		}
-		strBuilder.append(":");
-		try {
-			strBuilder.append(InetAddress.getLocalHost().getHostAddress());
-		} catch (UnknownHostException e) {
-			log.log(Level.WARNING, "Local host or IP not found", e);
-		}
-		strBuilder.append(":");
-		if(serverName!=null)
-			strBuilder.append(serverName);
+		strBuilder.append(":").append(getHostIP());
+		
 			
 		return strBuilder.toString();
+	}
+	
+	public static String getHostIP() {
+		String retVal = null;
+		try {
+			InetAddress localAddress= InetAddress.getLocalHost();
+			if (!localAddress.isLinkLocalAddress() && !localAddress.isLoopbackAddress() && localAddress.isSiteLocalAddress())
+				return localAddress.getHostAddress();
+		} catch (UnknownHostException e) {
+			log.log(Level.WARNING,
+					"UnknownHostException while retrieving host ip");
+		}
+		
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface
+					.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf
+						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress()
+							&& !inetAddress.isLinkLocalAddress()
+							&& inetAddress.isSiteLocalAddress()) {
+						retVal = inetAddress.getHostAddress().toString();
+						break;
+					}
+				}
+			}
+		} catch (SocketException e) {
+			log.log(Level.WARNING, "Socket Exeception while retrieving host ip");
+		}
+
+		if (retVal == null) {
+			try {
+				retVal = InetAddress.getLocalHost().getHostAddress();
+			} catch (UnknownHostException e) {
+				log.log(Level.WARNING,
+						"UnknownHostException while retrieving host ip");
+			}
+		}
+		return retVal;
 	}
 }   //  WUtil
