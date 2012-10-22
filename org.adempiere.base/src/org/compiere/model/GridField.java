@@ -178,9 +178,7 @@ public class GridField
 				m_vo.lookupInfo.DisplayType = DisplayType.Search;
 			}
 			//
-			m_vo.lookupInfo.IsKey = isKey();
-			MLookup ml = new MLookup (m_vo.lookupInfo, m_vo.TabNo);
-			m_lookup = ml;
+			loadLookupNoValidate();
 		}
 		else if (m_vo.displayType == DisplayType.Location)   //  not cached
 		{
@@ -208,6 +206,21 @@ public class GridField
 			m_lookup = pl;
 		}
 	}   //  m_lookup
+
+	/***
+	 * bypass isdisplay validation, used by findwindow
+	 */
+	public void loadLookupNoValidate() {
+		if (m_vo.lookupInfo == null) {
+			m_vo.loadLookupInfo();
+		}
+		if (m_vo.lookupInfo == null) {
+			return;
+		}
+		m_vo.lookupInfo.IsKey = isKey();
+		MLookup ml = new MLookup (m_vo.lookupInfo, m_vo.TabNo);
+		m_lookup = ml;
+	}
 
 	/**
 	 *  Wait until Load is complete

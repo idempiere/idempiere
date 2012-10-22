@@ -1626,7 +1626,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         else
         {
-            editor = WebEditorFactory.getEditor(field, true);
+        	//lookupinfo is null for invisible field
+        	if (DisplayType.isLookup(field.getDisplayType()) && field.getLookup() == null) {
+        		field.loadLookupNoValidate();
+        	}
+            editor = WebEditorFactory.getEditor(field, true);            
         }
         if (editor == null)
             editor = new WStringEditor(field);
@@ -1634,8 +1638,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         field.addPropertyChangeListener(editor);
         editor.addValueChangeListener(this);
         editor.setValue(null);
-        editor.setReadWrite(enabled);
-        editor.setVisible(enabled);
+        editor.setReadWrite(true);
+        editor.setVisible(true);
         editor.dynamicDisplay();
         //
         return editor.getComponent();
