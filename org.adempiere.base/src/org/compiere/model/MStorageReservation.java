@@ -3,6 +3,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.CLogMgt;
@@ -28,6 +29,49 @@ public class MStorageReservation extends X_M_StorageReservation {
 		super(ctx, rs, trxName);
 		// TODO Auto-generated constructor stub
 	}
+	
+	/**
+	 * Get Storage Info for Product on specified Warehouse
+	 * @param ctx
+	 * @param m_Warehouse_ID
+	 * @param m_Product_ID
+	 * @param i
+	 * @param get_TrxName
+	 * @return
+	 */
+	public static MStorageReservation[] get(Properties ctx, int m_Warehouse_ID,
+			int m_Product_ID, int i, String trxName) {
+		String sqlWhere = "M_Product_ID=? AND M_Warehouse_ID=?";
+		
+		List<MStorageReservation> list = new Query(ctx, MStorageReservation.Table_Name, sqlWhere, trxName)
+								.setParameters(m_Product_ID, m_Warehouse_ID)
+								.list();
+		
+		MStorageReservation[] retValue = new MStorageReservation[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}
+	
+	/**
+	 * 	Get Storage Info for Product across warehouses
+	 *	@param ctx context
+	 *	@param M_Product_ID product
+	 *	@param trxName transaction
+	 *	@return existing or null
+	 */
+	public static MStorageReservation[] getOfProduct (Properties ctx, int M_Product_ID, String trxName)
+	{
+		String sqlWhere = "M_Product_ID=?";
+		
+		List<MStorageReservation> list = new Query(ctx, MStorageReservation.Table_Name, sqlWhere, trxName)
+								.setParameters(M_Product_ID)
+								.list(); 
+		
+		MStorageReservation[] retValue = new MStorageReservation[list.size()];
+		list.toArray(retValue);
+		return retValue;
+		
+	}	//	getOfProduct
 	
 	/**
 	 * 	Get Available Qty.
@@ -90,5 +134,4 @@ public class MStorageReservation extends X_M_StorageReservation {
 				+ ",M_Product_ID=" + M_Product_ID + " = " + retValue);
 		return retValue;
 	}	//	getQtyAvailable
-
 }
