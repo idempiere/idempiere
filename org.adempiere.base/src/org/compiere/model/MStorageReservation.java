@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 public class MStorageReservation extends X_M_StorageReservation {
 
@@ -105,28 +106,58 @@ public class MStorageReservation extends X_M_StorageReservation {
 		int M_Product_ID, int M_AttributeSetInstance_ID, String trxName)
 	{
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuffer sql = new StringBuffer("SELECT COALESCE(SUM(COALESCE(SUM(s.QtyOnHand),0)-COALESCE(SUM(r.Qty),0),0)")
-								.append(" FROM M_StorageOnHand s")
-								.append(" JOIN M_StorageReservation r ON s.M_Product_ID=r.M_Product_ID")
-								.append(" WHERE s.M_Product_ID=?")
-								.append(" AND EXISTS (SELECT 1 FROM M_Locator l WHERE s.M_Locator_ID=l.M_Locator_ID AND l.M_Warehouse_ID=r.M_Warehouse_ID");
+		StringBuffer sql = new StringBuffer("");
 		
-		params.add(M_Product_ID, M_Product_ID);
-		// Warehouse level
-		if (M_Locator_ID == 0) {
-			sql.append("  AND l.M_Warehouse_ID=?)");
-			params.add(M_Warehouse_ID);
+		if (M_Locator_ID != 0) {
+			MLocator locator = new MLocator(Env.getCtx(), M_Locator_ID, trxName);
+			MWarehouse wh = new MWarehouse(Env.getCtx(), locator.getM_Warehouse_ID(), trxName);
+			if (wh.get_ValueAsInt("M_ReserveLocator_ID") != M_Locator_ID) {
+				sql.append("SELECT COALESCE(SUM(s.QtyOnHand),0)")
+						.append(" FROM M_StorageOnHand s")
+						.append(" WHERE s.M_Product_ID=? AND s.M_Locator_ID=?");
+				
+				params.add(M_Product_ID, M_Locator_ID);
+				
+				// With ASI
+				if (M_AttributeSetInstance_ID != 0) {
+					sql.append(" AND s.M_AttributeSetInstance_ID=?");
+					params.add(M_AttributeSetInstance_ID);
+				}
+			}
+			else {
+				sql.append("SELECT COALESCE(SUM(s.QtyOnHand),0)-COALESCE(SUM(r.Qty),0)")
+					.append(" FROM M_StorageOnHand s")
+					.append(" LEFT JOIN M_StorageReservation r ON s.M_Product_ID=r.M_Product_ID")
+					.append(" WHERE s.M_Product_ID=? AND AND s.M_Locator_ID=?")
+					.append(" AND EXISTS (SELECT 1 FROM M_Locator l JOIN M_Warehouse w ON w.M_ReserveLocator_ID=l.M_Locator_ID")
+					.append(" WHERE s.M_Locator_ID=l.M_Locator_ID AND l.M_Warehouse_ID=r.M_Warehouse_ID");
+
+				params.add(M_Product_ID, M_Locator_ID);
+				
+				// With ASI
+				if (M_AttributeSetInstance_ID != 0) {
+					sql.append(" AND s.M_AttributeSetInstance_ID=? AND r.M_AttributeSetInstance_ID=?");
+					params.add(M_AttributeSetInstance_ID, M_AttributeSetInstance_ID);
+				}
+			}
+		
+		} else {
+			sql.append("SELECT COALESCE(SUM(s.QtyOnHand),0)-COALESCE(SUM(r.Qty),0)")
+			.append(" FROM M_StorageOnHand s")
+			.append(" LEFT JOIN M_StorageReservation r ON s.M_Product_ID=r.M_Product_ID")
+			.append(" WHERE s.M_Product_ID=?")
+			.append(" AND EXISTS (SELECT 1 FROM M_Locator l")
+			.append(" WHERE s.M_Locator_ID=l.M_Locator_ID AND l.M_Warehouse_ID=r.M_Warehouse_ID")
+			.append(" AND l.M_Warehouse_ID=?)");
+			
+			params.add(M_Product_ID, M_Warehouse_ID);		
+			// With ASI
+			if (M_AttributeSetInstance_ID != 0) {
+				sql.append(" AND s.M_AttributeSetInstance_ID=? AND r.M_AttributeSetInstance_ID=?");
+				params.add(M_AttributeSetInstance_ID, M_AttributeSetInstance_ID);
+			}
 		}
-		// Locator level
-		else {
-			sql.append(" AND s.M_Locator_ID=?)");
-			params.add(M_Locator_ID);
-		}
-		// With ASI
-		if (M_AttributeSetInstance_ID != 0) {
-			sql.append(" AND s.M_AttributeSetInstance_ID=? AND r.M_AttributeSetInstance_ID=?");
-			params.add(M_AttributeSetInstance_ID, M_AttributeSetInstance_ID);
-		}
+
 		//
 		BigDecimal retValue = DB.getSQLValueBD(trxName, sql.toString(), params);
 		if (CLogMgt.isLevelFine())
