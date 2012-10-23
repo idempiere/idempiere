@@ -16,8 +16,11 @@
  *****************************************************************************/
 package org.compiere.web;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
@@ -25,15 +28,13 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Locale;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -90,7 +91,7 @@ public class AdempiereMonitor extends HttpServlet
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1821229399092760008L;
+	private static final long serialVersionUID = -387582087015910664L;
 	/**	Logger				*/
 	private static CLogger	log = CLogger.getCLogger(AdempiereMonitor.class);
 	/**	The Server			*/
@@ -98,7 +99,7 @@ public class AdempiereMonitor extends HttpServlet
 	/** Message				*/
 	private p				m_message = null;
 	
-
+	private ArrayList<File>	m_dirAccessList = null;
 	
 	/**
 	 * 	Get
@@ -278,7 +279,7 @@ public class AdempiereMonitor extends HttpServlet
 		try
 		{
 			boolean start = action.startsWith("Start");
-			boolean refresh=action.startsWith("Refresh");
+			boolean reload=action.startsWith("Reload");
 			m_message = new p();
 			String msg = (start ? "Started" : "Stopped") + ": ";
 			m_message.addElement(new strong(msg));
@@ -298,12 +299,12 @@ public class AdempiereMonitor extends HttpServlet
 			}
 			else
 			{
-				if (refresh) 
-				{					
+				if (reload) 
+				{
 					m_serverMgr.stopAll();
 					ok=m_serverMgr.startServers();
 					this.createSummaryPage(request, response,true);
-					
+					m_dirAccessList = getDirAcessList();
 				} else {
 					AdempiereServer server = m_serverMgr.getServer(serverID);
 					if (server == null) {
@@ -391,7 +392,7 @@ public class AdempiereMonitor extends HttpServlet
 		
 		//	Spool File
 		File file = new File (traceCmd);
-		if (!file.exists())
+		if (!file.exists() || !file.canRead())
 		{
 			log.warning ("Did not find File: " + traceCmd);
 			return false;
@@ -399,6 +400,27 @@ public class AdempiereMonitor extends HttpServlet
 		if (file.length() == 0)
 		{
 			log.warning ("File Length=0: " + traceCmd);
+			return false;
+		}
+
+		boolean found = false;
+		if (m_dirAccessList == null)
+			m_dirAccessList = getDirAcessList();
+		
+		for (File dir : m_dirAccessList)
+		{
+			if (file.getCanonicalPath().startsWith(dir.getAbsolutePath()))
+			{
+				found = true;
+				break;				
+			}
+		}
+		
+		if (!found)
+		{
+			log.warning ("Couldn't find file in directories that allowed to access");
+			for (File dirAccess : m_dirAccessList)
+				log.warning(" - " + dirAccess.getAbsoluteFile());
 			return false;
 		}
 		
@@ -411,12 +433,12 @@ public class AdempiereMonitor extends HttpServlet
 			int bufferSize = 2048; //	2k Buffer
 			byte[] buffer = new byte[bufferSize];
 			//
+			FileInputStream fis = new FileInputStream(file);
+			ServletOutputStream out = response.getOutputStream ();
+			//
 			response.setContentType("text/plain");
 			response.setBufferSize(bufferSize);
 			response.setContentLength(fileLength);
-			//
-			FileInputStream fis = new FileInputStream(file);
-			ServletOutputStream out = response.getOutputStream ();
 			int read = 0;
 			while ((read = fis.read(buffer)) > 0)
 				out.write (buffer, 0, read);
@@ -431,9 +453,10 @@ public class AdempiereMonitor extends HttpServlet
 				+ time + " ms - " 
 				+ speed + " kB/sec");
 		}
-		catch (IOException ex)
+		catch (Exception ex)
 		{
 			log.log(Level.SEVERE, "stream" + ex);
+			return false;
 		}
 		return true;
 	}	//	processTraceParameter
@@ -589,7 +612,10 @@ public class AdempiereMonitor extends HttpServlet
 		link = new a ("adempiereMonitor?Action=Stop_All", "Stop All");
 		para.addElement(link);
 		para.addElement(" - ");
-		link = new a ("adempiereMonitor?Action=Refresh", "Refresh");
+		link = new a ("adempiereMonitor?Action=Reload", "Reload");
+		para.addElement(link);
+		para.addElement(" - ");
+		link = new a ("adempiereMonitor", "Refresh");
 		para.addElement(link);
 		bb.addElement(para);
 		
@@ -1023,6 +1049,7 @@ public class AdempiereMonitor extends HttpServlet
 		WebEnv.initWeb(config);
 		log.info ("");
 		m_serverMgr = AdempiereServerMgr.get();
+		m_dirAccessList = getDirAcessList();
 	}	//	init
 	
 	/**
@@ -1032,6 +1059,7 @@ public class AdempiereMonitor extends HttpServlet
 	{
 		log.info ("destroy");
 		m_serverMgr = null;
+		m_dirAccessList = null;
 	}	//	destroy
 	
 	/**
@@ -1074,4 +1102,56 @@ public class AdempiereMonitor extends HttpServlet
 		return "Adempiere Server Monitor";
 	}	//	getServletName
 
+	private static final String s_dirAccessFileName = "dirAccess.txt";
+	
+	private ArrayList<File> getDirAcessList()
+	{
+		final ArrayList<File> dirAccessList = new ArrayList<File>();
+		
+		// by default has access to log directory
+		CLogFile fileHandler = CLogFile.get (true, null, false);
+		File logDir = fileHandler.getLogDirectory();
+		dirAccessList.add(logDir);
+		
+		// load from dirAccess.properties file
+		String dirAccessPathName = Adempiere.getAdempiereHome() + File.separator + s_dirAccessFileName;
+		File dirAccessFile = new File(dirAccessPathName);
+		if (dirAccessFile.exists()) 
+		{
+			try 
+			{
+				BufferedReader br = new BufferedReader(new FileReader(dirAccessFile));
+		        while (true) {
+		            String pathName = br.readLine();
+		            if (pathName == null)
+		            	break;
+					File pathDir = new File(pathName);
+					if (pathDir.exists() && !dirAccessList.contains(pathDir))
+						dirAccessList.add(pathDir);
+		        }
+		        br.close();
+			} 
+			catch (Exception e) 
+			{
+				log.log(Level.SEVERE, dirAccessPathName + " - " + e.toString());
+			}
+		}
+		/* -- uncomment to generate a default file
+		else
+		{
+			try 
+			{
+				FileWriter fw = new FileWriter(dirAccessFile);
+				fw.write(logDir.getCanonicalPath() + "\n");
+				fw.close();
+			} 
+			catch (Exception e) 
+			{
+				log.log(Level.SEVERE, dirAccessPathName + " - " + e.toString());
+			}
+		}
+		*/
+				
+		return dirAccessList;
+	}
 }	//	AdempiereMonitor
