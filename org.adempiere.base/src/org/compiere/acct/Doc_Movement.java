@@ -224,7 +224,7 @@ public class Doc_Movement extends Doc
 	}   //  createFact
 
 	private boolean isReversal(DocLine line) {
-		return m_DocStatus.equals(MMovement.DOCSTATUS_Reversed) && m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
+		return m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
 	}
 
 }   //  Doc_Movement

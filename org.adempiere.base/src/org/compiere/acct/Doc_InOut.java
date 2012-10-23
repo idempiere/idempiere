@@ -609,8 +609,7 @@ public class Doc_InOut extends Doc
 	}   //  createFact
 
 	private boolean isReversal(DocLine line) {
-		return m_DocStatus.equals(MInOut.DOCSTATUS_Reversed)
-				&& m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
+		return m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
 	}
 
 }   //  Doc_InOut
