@@ -129,6 +129,11 @@ public class Translation
 			SAXParser parser = factory.newSAXParser();
 			parser.parse(in, handler);
 			log.info("Updated=" + handler.getUpdateCount());
+			MLanguage lang = MLanguage.get(m_ctx, AD_Language);
+			if (! lang.isLoginLocale()) {
+				lang.setIsLoginLocale(true);
+				lang.saveEx();
+			}
 			return Msg.getMsg(m_ctx, "Updated") + "=" + handler.getUpdateCount();
 		}
 		catch (Exception e)

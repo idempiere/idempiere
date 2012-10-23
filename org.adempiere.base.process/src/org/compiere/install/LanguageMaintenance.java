@@ -95,6 +95,8 @@ public class LanguageMaintenance extends SvrProcess
 			if (m_language.isActive() && m_language.isSystemLanguage())
 			{
 				insertNo = m_language.maintain(true);
+				m_language.setIsLoginLocale(true);
+				m_language.saveEx();
 			}
 			else
 				throw new Exception ("Language not active System Language");
