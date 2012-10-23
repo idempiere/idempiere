@@ -31,7 +31,7 @@ public interface I_AD_Language
     public static final String Table_Name = "AD_Language";
 
     /** AD_Table_ID=111 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 111;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -70,6 +70,15 @@ public interface I_AD_Language
 
 	/** Get Language ID	  */
 	public int getAD_Language_ID();
+
+    /** Column name AD_Language_UU */
+    public static final String COLUMNNAME_AD_Language_UU = "AD_Language_UU";
+
+	/** Set AD_Language_UU	  */
+	public void setAD_Language_UU (String AD_Language_UU);
+
+	/** Get AD_Language_UU	  */
+	public String getAD_Language_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -164,6 +173,15 @@ public interface I_AD_Language
 	  * The number notation has a decimal point (no decimal comma)
 	  */
 	public boolean isDecimalPoint();
+
+    /** Column name IsLoginLocale */
+    public static final String COLUMNNAME_IsLoginLocale = "IsLoginLocale";
+
+	/** Set Login Locale	  */
+	public void setIsLoginLocale (boolean IsLoginLocale);
+
+	/** Get Login Locale	  */
+	public boolean isLoginLocale();
 
     /** Column name IsSystemLanguage */
     public static final String COLUMNNAME_IsSystemLanguage = "IsSystemLanguage";

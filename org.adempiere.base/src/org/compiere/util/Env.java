@@ -1104,6 +1104,37 @@ public final class Env
 		return AD_Languages;
 	}
 
+	public static ArrayList<String> getLoginLanguages()
+	{
+		ArrayList<String> AD_Languages = new ArrayList<String>();
+		String sql = "SELECT AD_Language FROM AD_Language WHERE IsLoginLocale = 'Y'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				String AD_Language = rs.getString(1);
+				// called to add the language to supported in case it's not added
+				Language.getLanguage(AD_Language);
+				AD_Languages.add(AD_Language);
+			}
+		}
+		catch (SQLException e)
+		{
+			getLogger().log(Level.SEVERE, "", e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		
+		return AD_Languages;
+	}
+	
 	/**
 	 *  Verify Language.
 	 *  Check that language is supported by the system

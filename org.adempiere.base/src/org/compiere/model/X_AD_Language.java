@@ -30,7 +30,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121019L;
 
     /** Standard Constructor */
     public X_AD_Language (Properties ctx, int AD_Language_ID, String trxName)
@@ -114,6 +114,20 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set AD_Language_UU.
+		@param AD_Language_UU AD_Language_UU	  */
+	public void setAD_Language_UU (String AD_Language_UU)
+	{
+		set_Value (COLUMNNAME_AD_Language_UU, AD_Language_UU);
+	}
+
+	/** Get AD_Language_UU.
+		@return AD_Language_UU	  */
+	public String getAD_Language_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Language_UU);
+	}
+
 	/** Set ISO Country Code.
 		@param CountryCode 
 		Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
@@ -187,6 +201,27 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	public boolean isDecimalPoint () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsDecimalPoint);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Login Locale.
+		@param IsLoginLocale Login Locale	  */
+	public void setIsLoginLocale (boolean IsLoginLocale)
+	{
+		set_Value (COLUMNNAME_IsLoginLocale, Boolean.valueOf(IsLoginLocale));
+	}
+
+	/** Get Login Locale.
+		@return Login Locale	  */
+	public boolean isLoginLocale () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsLoginLocale);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
