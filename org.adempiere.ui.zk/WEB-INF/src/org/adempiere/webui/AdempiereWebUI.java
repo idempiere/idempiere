@@ -259,6 +259,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 						if (desktopCache != null)
 							desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
 					} catch (Exception e) {
+						e.printStackTrace();
 						appDesktop = null;
 					} finally {
 						eco.cleanup();

@@ -18,6 +18,7 @@
 package org.adempiere.webui.component;
 
 import org.adempiere.webui.event.DialogEvents;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -74,7 +75,10 @@ public class Window extends org.zkoss.zul.Window
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
-		Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
+		if (Executions.getCurrent() != null && Executions.getCurrent().getDesktop() != null &&
+				Executions.getCurrent().getDesktop().getExecution() != null) {
+			Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
+		}
 	}
 
 	/**
