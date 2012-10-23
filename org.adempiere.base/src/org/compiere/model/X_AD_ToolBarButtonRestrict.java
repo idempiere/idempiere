@@ -19,18 +19,17 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.model.*;
 
 /** Generated Model for AD_ToolBarButtonRestrict
  *  @author Adempiere (generated) 
- *  @version 360LTS.015 - $Id$ */
+ *  @version Release 3.6.0LTS - $Id$ */
 public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButtonRestrict, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120329L;
+	private static final long serialVersionUID = 20121012L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)
@@ -38,8 +37,6 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
       super (ctx, AD_ToolBarButtonRestrict_ID, trxName);
       /** if (AD_ToolBarButtonRestrict_ID == 0)
         {
-			setAction (null);
-			setAD_Role_ID (0);
 			setAD_ToolBarButtonRestrict_ID (0);
         } */
     }
@@ -95,7 +92,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public void setAction (String Action)
 	{
 
-		set_Value (COLUMNNAME_Action, Action);
+		set_ValueNoCheck (COLUMNNAME_Action, Action);
 	}
 
 	/** Get Action.
@@ -106,9 +103,37 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return (String)get_Value(COLUMNNAME_Action);
 	}
 
-	public I_AD_Role getAD_Role() throws RuntimeException
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
     {
-		return (I_AD_Role)MTable.get(getCtx(), I_AD_Role.Table_Name)
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
+			.getPO(getAD_Process_ID(), get_TrxName());	}
+
+	/** Set Process.
+		@param AD_Process_ID 
+		Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1) 
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
 			.getPO(getAD_Role_ID(), get_TrxName());	}
 
 	/** Set Role.
@@ -118,9 +143,9 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
 		if (AD_Role_ID < 0) 
-			set_Value (COLUMNNAME_AD_Role_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
@@ -134,9 +159,9 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return ii.intValue();
 	}
 
-	public I_AD_ToolBarButton getAD_ToolBarButton() throws RuntimeException
+	public org.compiere.model.I_AD_ToolBarButton getAD_ToolBarButton() throws RuntimeException
     {
-		return (I_AD_ToolBarButton)MTable.get(getCtx(), I_AD_ToolBarButton.Table_Name)
+		return (org.compiere.model.I_AD_ToolBarButton)MTable.get(getCtx(), org.compiere.model.I_AD_ToolBarButton.Table_Name)
 			.getPO(getAD_ToolBarButton_ID(), get_TrxName());	}
 
 	/** Set ToolBar Button.
@@ -179,9 +204,23 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return ii.intValue();
 	}
 
-	public I_AD_Window getAD_Window() throws RuntimeException
+	/** Set AD_ToolBarButtonRestrict_UU.
+		@param AD_ToolBarButtonRestrict_UU AD_ToolBarButtonRestrict_UU	  */
+	public void setAD_ToolBarButtonRestrict_UU (String AD_ToolBarButtonRestrict_UU)
+	{
+		set_Value (COLUMNNAME_AD_ToolBarButtonRestrict_UU, AD_ToolBarButtonRestrict_UU);
+	}
+
+	/** Get AD_ToolBarButtonRestrict_UU.
+		@return AD_ToolBarButtonRestrict_UU	  */
+	public String getAD_ToolBarButtonRestrict_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_ToolBarButtonRestrict_UU);
+	}
+
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
     {
-		return (I_AD_Window)MTable.get(getCtx(), I_AD_Window.Table_Name)
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
 			.getPO(getAD_Window_ID(), get_TrxName());	}
 
 	/** Set Window.
@@ -191,9 +230,9 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
 		if (AD_Window_ID < 1) 
-			set_Value (COLUMNNAME_AD_Window_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.

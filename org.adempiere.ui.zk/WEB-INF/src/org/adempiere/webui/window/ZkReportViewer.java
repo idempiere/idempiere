@@ -43,6 +43,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabs;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
@@ -58,7 +59,9 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
+import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
@@ -143,17 +146,17 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	//
 	private StatusBarPanel statusBar = new StatusBarPanel();
 	private Toolbar toolBar = new Toolbar();
-	private Toolbarbutton bSendMail = new Toolbarbutton();
-	private Toolbarbutton bArchive = new Toolbarbutton();
-	private Toolbarbutton bCustomize = new Toolbarbutton();
-	private Toolbarbutton bFind = new Toolbarbutton();
-	private Toolbarbutton bExport = new Toolbarbutton();
+	private ToolBarButton bSendMail = new ToolBarButton();
+	private ToolBarButton bArchive = new ToolBarButton();
+	private ToolBarButton bCustomize = new ToolBarButton();
+	private ToolBarButton bFind = new ToolBarButton();
+	private ToolBarButton bExport = new ToolBarButton();
 	private Listbox comboReport = new Listbox();
 	private Label labelDrill = new Label();
 	private Listbox comboDrill = new Listbox();
 	private Listbox previewType = new Listbox();
 	
-	private Toolbarbutton bRefresh = new Toolbarbutton();
+	private ToolBarButton bRefresh = new ToolBarButton();
 	private Iframe iframe;
 	
 	private Window winExportFile = null;
@@ -165,6 +168,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private int mediaVersion = 0;
 
 	private A reportLink;
+	
+	private static final String REPORT = "org.idempiere.ui.report";
 	
 	/**
 	 * 	Static Layout
@@ -255,11 +260,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		toolBar.appendChild(new Separator("vertical"));
 		
+		bCustomize.setName("Customize");
 		bCustomize.setImage("/images/Preference24.png");
 		bCustomize.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintCustomize")));
 		toolBar.appendChild(bCustomize);
 		bCustomize.addEventListener(Events.ON_CLICK, this);
 		
+		
+		
+		bFind.setName("Find");
 		bFind.setImage("/images/Find24.png");
 		bFind.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Find")));
 		toolBar.appendChild(bFind);
@@ -267,11 +276,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		toolBar.appendChild(new Separator("vertical"));
 		
+		bSendMail.setName("SendMail");
 		bSendMail.setImage("/images/SendMail24.png");
 		bSendMail.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SendMail")));
 		toolBar.appendChild(bSendMail);
 		bSendMail.addEventListener(Events.ON_CLICK, this);
 		
+		bSendMail.setName("Archive");
 		bArchive.setImage("/images/Archive24.png");
 		bArchive.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Archive")));
 		toolBar.appendChild(bArchive);
@@ -279,6 +290,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		if (m_isCanExport)
 		{
+			bExport.setName("Export");
 			bExport.setImage("/images/ExportX24.png");
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
 			toolBar.appendChild(bExport);
@@ -287,11 +299,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		toolBar.appendChild(new Separator("vertical"));
 		
+		bRefresh.setName("Refresh");
 		bRefresh.setImage("/images/Refresh24.png");
 		bRefresh.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		toolBar.appendChild(bRefresh);
 		bRefresh.addEventListener(Events.ON_CLICK, this);
-		
+
 		North north = new North();
 		layout.appendChild(north);
 		north.appendChild(toolBar);
@@ -312,7 +325,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		linkDiv.setStyle("width:100%; height: 20px");
 		linkDiv.appendChild(reportLink);
 		south.appendChild(linkDiv);
-
+		//m_WindowNo
+		updateToolBarAndMenuWithRestriction(m_reportEngine.getWindowNo());
+		
 		try {
 			renderReport();
 		} catch (Exception e) {
@@ -1086,4 +1101,35 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			return media;
 		}
 	}
+	
+	private boolean ToolBarMenuRestictionLoaded = false;
+	public void updateToolBarAndMenuWithRestriction(int AD_Window_ID) {
+		if (ToolBarMenuRestictionLoaded)
+			return;
+		Properties m_ctx = Env.getCtx();
+		int ToolBarButton_ID = 0;
+
+		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "R", AD_Window_ID, REPORT, null);
+		log.info("restrictionList="+restrictionList.toString());
+
+		for (int i = 0; i < restrictionList.length; i++)
+		{
+			ToolBarButton_ID= restrictionList[i];
+			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
+			String restrictName = tbt.getComponentName();
+			log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
+
+			for (Component p = this.toolBar.getFirstChild(); p != null; p = p.getNextSibling()) {
+				if (p instanceof Toolbarbutton) {
+					if ( restrictName.equals(((ToolBarButton)p).getName()) ) {
+						this.toolBar.removeChild(p);
+						break;
+					}
+				}
+			}
+		}	// All restrictions
+
+		ToolBarMenuRestictionLoaded = true;
+	}//updateToolBarAndMenuWithRestriction
+	
 }

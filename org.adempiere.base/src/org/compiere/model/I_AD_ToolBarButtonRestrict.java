@@ -18,12 +18,11 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ToolBarButtonRestrict
  *  @author Adempiere (generated) 
- *  @version 360LTS.015
+ *  @version Release 3.6.0LTS
  */
 public interface I_AD_ToolBarButtonRestrict 
 {
@@ -32,7 +31,7 @@ public interface I_AD_ToolBarButtonRestrict
     public static final String Table_Name = "AD_ToolBarButtonRestrict";
 
     /** AD_Table_ID=200004 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 200004;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,6 +75,21 @@ public interface I_AD_ToolBarButtonRestrict
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
     /** Column name AD_Role_ID */
     public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
 
@@ -89,7 +103,7 @@ public interface I_AD_ToolBarButtonRestrict
 	  */
 	public int getAD_Role_ID();
 
-	public I_AD_Role getAD_Role() throws RuntimeException;
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_ToolBarButton_ID */
     public static final String COLUMNNAME_AD_ToolBarButton_ID = "AD_ToolBarButton_ID";
@@ -100,7 +114,7 @@ public interface I_AD_ToolBarButtonRestrict
 	/** Get ToolBar Button	  */
 	public int getAD_ToolBarButton_ID();
 
-	public I_AD_ToolBarButton getAD_ToolBarButton() throws RuntimeException;
+	public org.compiere.model.I_AD_ToolBarButton getAD_ToolBarButton() throws RuntimeException;
 
     /** Column name AD_ToolBarButtonRestrict_ID */
     public static final String COLUMNNAME_AD_ToolBarButtonRestrict_ID = "AD_ToolBarButtonRestrict_ID";
@@ -110,6 +124,15 @@ public interface I_AD_ToolBarButtonRestrict
 
 	/** Get ToolBar Button Restrict	  */
 	public int getAD_ToolBarButtonRestrict_ID();
+
+    /** Column name AD_ToolBarButtonRestrict_UU */
+    public static final String COLUMNNAME_AD_ToolBarButtonRestrict_UU = "AD_ToolBarButtonRestrict_UU";
+
+	/** Set AD_ToolBarButtonRestrict_UU	  */
+	public void setAD_ToolBarButtonRestrict_UU (String AD_ToolBarButtonRestrict_UU);
+
+	/** Get AD_ToolBarButtonRestrict_UU	  */
+	public String getAD_ToolBarButtonRestrict_UU();
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -124,7 +147,7 @@ public interface I_AD_ToolBarButtonRestrict
 	  */
 	public int getAD_Window_ID();
 
-	public I_AD_Window getAD_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -155,6 +155,8 @@ public final class APanel extends CPanel
 
 	private boolean isNested = false;
 	private boolean ToolBarMenuRestictionLoaded = false;
+	
+	private static final String WINDOW = "org.idempiere.ui.window";
 
 	/**
 	 * Constructs a new instance.
@@ -2924,7 +2926,7 @@ public final class APanel extends CPanel
 	{
 		int ToolBarButton_ID = 0;
 
-		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "W", m_window.getAD_Window_ID(), this.getClass().getName(), null);
+		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "W", m_window.getAD_Window_ID(), WINDOW, null);
 		log.info("restrictionList="+restrictionList.toString());
 
 		for (int i = 0; i < restrictionList.length; i++)

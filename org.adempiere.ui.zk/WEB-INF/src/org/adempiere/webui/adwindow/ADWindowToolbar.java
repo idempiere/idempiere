@@ -115,6 +115,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**	Last Modifier of Action Event					*/
 //	public int 				lastModifiers;
 	//
+	
+	private static final String WINDOW = "org.idempiere.ui.window";
 
     public ADWindowToolbar()
     {
@@ -554,7 +556,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
 		int ToolBarButton_ID = 0;
 
-		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "W", AD_Window_ID, this.getClass().getName(), null);
+		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "W", AD_Window_ID, WINDOW, null);
 		log.info("restrictionList="+restrictionList.toString());
 
 		for (int i = 0; i < restrictionList.length; i++)
