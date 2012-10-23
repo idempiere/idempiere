@@ -2621,9 +2621,13 @@ public final class MRole extends X_AD_Role
 		}
 		
 		s_log.info("Include "+role);
-		this.m_includedRoles.add(role);
-		role.setParentRole(this);
-		role.m_includedSeqNo = seqNo;
+		
+		if(role.isActive()){
+			this.m_includedRoles.add(role);
+			role.setParentRole(this);
+			role.m_includedSeqNo = seqNo;
+		}
+		
 	}
 
 	/**

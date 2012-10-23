@@ -97,6 +97,7 @@ syntax: regexp
 ^Adempiere.properties$
 ^idempiere.properties$
 ^AdempiereEnv.properties$
+^idempiereEnv.properties$
 ^event\.test/bin.*\.class$
 ^packages/.*$
 ^work/.*$
