@@ -12,5 +12,7 @@
     <cq:advisorNode namePattern="^com\.springsource\.javax\.mail$" componentType="osgi.bundle" versionOverride="[1.4.5,1.4.5]">
         <cq:property key="jar.version" value="1.4.5"/>
     </cq:advisorNode>
-    <cq:advisorNode namePattern="^com\.springsource\.javax\.activation$" componentType="osgi.bundle" skipComponent="true"/>
+    <cq:advisorNode namePattern="^com\.springsource\.javax\.activation$" componentType="osgi.bundle">
+        <cq:property key="jar.version" value="1.1.1"/>
+    </cq:advisorNode>
 </cq:componentQuery>
