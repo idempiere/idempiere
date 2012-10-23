@@ -308,7 +308,10 @@ public class SessionContextListener implements ExecutionInit,
 	public void cleanup(Desktop desktop) throws Exception {
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
-    		setupExecutionContextFromSession(Executions.getCurrent());
+			if(Executions.getCurrent()==null)
+				return;
+				
+			setupExecutionContextFromSession(Executions.getCurrent());
     	}
 		MSession mSession = MSession.get(Env.getCtx(), false);
 		if(mSession!=null && !mSession.isProcessed() && (Env.getContext(Env.getCtx(), "isReloaded")==null  || Env.getContext(Env.getCtx(), "isReloaded").equals("")  || Env.getContext(Env.getCtx(), "isReloaded").equals("N"))){
@@ -322,7 +325,8 @@ public class SessionContextListener implements ExecutionInit,
 	public void init(Desktop desktop, Object request) throws Exception {
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
-    		setupExecutionContextFromSession(Executions.getCurrent());
+			if(Executions.getCurrent()!=null)
+				setupExecutionContextFromSession(Executions.getCurrent());
     	}
 		MSession mSession = MSession.get(Env.getCtx(), false);
 		if(mSession!=null && mSession.isProcessed()){
