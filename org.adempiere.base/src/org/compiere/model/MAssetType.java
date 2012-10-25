@@ -99,7 +99,7 @@ public class MAssetType extends X_A_Asset_Type
 	public static boolean isFixedAsset(int A_Asset_ID)
 	{
 		final String whereClause = MAsset.COLUMNNAME_A_Asset_ID+"=?"
-									+" AND "+MAsset.COLUMNNAME_A_Asset_Type+"=?";
+									+" AND "+MAsset.COLUMNNAME_A_AssetType+"=?";
 		
 		return new Query(Env.getCtx(), MAsset.Table_Name, whereClause, null)
 					.setParameters(new Object[]{A_Asset_ID, A_ASSET_TYPE_MFX})

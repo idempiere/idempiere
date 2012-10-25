@@ -459,4 +459,11 @@ public class MDepreciation extends X_A_Depreciation
 		}
 		return assetExp;
 	}
+
+	public int getFixMonthOffset() {
+		// IDEMPIERE-197 Stabilize Fixed Assets
+		// MDepreciationWorkfile is requiring this missing column
+		// TODO: Adding this method to compile correctly and future research
+		return 0;
+	}
 }

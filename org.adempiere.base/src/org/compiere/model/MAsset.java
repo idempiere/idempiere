@@ -601,7 +601,7 @@ public class MAsset extends X_A_Asset
 	public int getProductR_MailText_ID() {
 		// IDEMPIERE-197 Stabilize Fixed Assets
 		// AssetDelivery is requiring this missing column
-		// Adding this method to compile correctly and future research,
+		// TODO: Adding this method to compile correctly and future research,
 		// but the process AssetDelivery will fail with error "** Product Mail Text"
 		return 0;
 	}
@@ -609,7 +609,7 @@ public class MAsset extends X_A_Asset
 	public boolean isDownloadable() {
 		// IDEMPIERE-197 Stabilize Fixed Assets
 		// AssetServlet is requiring this missing column
-		// Adding this method to compile correctly and future research
+		// TODO: Adding this method to compile correctly and future research
 		return false;
 	}
 }
