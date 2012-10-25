@@ -31,7 +31,7 @@ public interface I_A_Depreciation_Method
     public static final String Table_Name = "A_Depreciation_Method";
 
     /** AD_Table_ID=53124 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53124;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -52,11 +52,20 @@ public interface I_A_Depreciation_Method
     /** Column name A_Depreciation_Method_ID */
     public static final String COLUMNNAME_A_Depreciation_Method_ID = "A_Depreciation_Method_ID";
 
-	/** Set Depreciation Calculation Type	  */
+	/** Set Depreciation Method	  */
 	public void setA_Depreciation_Method_ID (int A_Depreciation_Method_ID);
 
-	/** Get Depreciation Calculation Type	  */
+	/** Get Depreciation Method	  */
 	public int getA_Depreciation_Method_ID();
+
+    /** Column name A_Depreciation_Method_UU */
+    public static final String COLUMNNAME_A_Depreciation_Method_UU = "A_Depreciation_Method_UU";
+
+	/** Set A_Depreciation_Method_UU	  */
+	public void setA_Depreciation_Method_UU (String A_Depreciation_Method_UU);
+
+	/** Get A_Depreciation_Method_UU	  */
+	public String getA_Depreciation_Method_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -151,10 +160,10 @@ public interface I_A_Depreciation_Method
     /** Column name Text */
     public static final String COLUMNNAME_Text = "Text";
 
-	/** Set Text	  */
+	/** Set Description	  */
 	public void setText (String Text);
 
-	/** Get Text	  */
+	/** Get Description	  */
 	public String getText();
 
     /** Column name Updated */

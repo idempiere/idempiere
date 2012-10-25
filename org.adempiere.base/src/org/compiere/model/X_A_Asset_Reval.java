@@ -24,10 +24,10 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for A_Depreciation_Entry
+/** Generated Model for A_Asset_Reval
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS - $Id$ */
-public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry, I_Persistent 
+public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent 
 {
 
 	/**
@@ -36,40 +36,34 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
-    public X_A_Depreciation_Entry (Properties ctx, int A_Depreciation_Entry_ID, String trxName)
+    public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName)
     {
-      super (ctx, A_Depreciation_Entry_ID, trxName);
-      /** if (A_Depreciation_Entry_ID == 0)
+      super (ctx, A_Asset_Reval_ID, trxName);
+      /** if (A_Asset_Reval_ID == 0)
         {
-			setA_Depreciation_Entry_ID (0);
-			setC_AcctSchema_ID (0);
-			setC_Currency_ID (0);
-// @$C_CURRENCY_ID@
-			setC_DocType_ID (0);
-			setC_Period_ID (0);
+			setA_Asset_Cost_Change (Env.ZERO);
+// 0
+			setA_Asset_ID (0);
+			setA_Asset_Reval_ID (0);
+			setA_Change_Acumulated_Depr (Env.ZERO);
+// 0
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
-// @Date@
-			setDateDoc (new Timestamp( System.currentTimeMillis() ));
-// @Date@
+// @#Date@
 			setDocAction (null);
-// 'CO'
+// CO
 			setDocStatus (null);
-// 'DR'
-			setDocumentNo (null);
-			setGL_Category_ID (0);
-			setIsApproved (false);
-// @#IsCanApproveOwnDoc@
-			setPosted (false);
-// 'N'
+// DR
 			setPostingType (null);
-// 'A'
+// A
 			setProcessed (false);
+// N
 			setProcessing (false);
+// N
         } */
     }
 
     /** Load Constructor */
-    public X_A_Depreciation_Entry (Properties ctx, ResultSet rs, String trxName)
+    public X_A_Asset_Reval (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -91,26 +85,105 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Depreciation_Entry[")
+      StringBuffer sb = new StringBuffer ("X_A_Asset_Reval[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
-	/** Set Depreciation Entry.
-		@param A_Depreciation_Entry_ID Depreciation Entry	  */
-	public void setA_Depreciation_Entry_ID (int A_Depreciation_Entry_ID)
+	/** Set Accumulated Depreciation.
+		@param A_Accumulated_Depr Accumulated Depreciation	  */
+	public void setA_Accumulated_Depr (BigDecimal A_Accumulated_Depr)
 	{
-		if (A_Depreciation_Entry_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Entry_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Entry_ID, Integer.valueOf(A_Depreciation_Entry_ID));
+		set_Value (COLUMNNAME_A_Accumulated_Depr, A_Accumulated_Depr);
 	}
 
-	/** Get Depreciation Entry.
-		@return Depreciation Entry	  */
-	public int getA_Depreciation_Entry_ID () 
+	/** Get Accumulated Depreciation.
+		@return Accumulated Depreciation	  */
+	public BigDecimal getA_Accumulated_Depr () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Entry_ID);
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Accumulated_Depr);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Asset Cost.
+		@param A_Asset_Cost Asset Cost	  */
+	public void setA_Asset_Cost (BigDecimal A_Asset_Cost)
+	{
+		set_Value (COLUMNNAME_A_Asset_Cost, A_Asset_Cost);
+	}
+
+	/** Get Asset Cost.
+		@return Asset Cost	  */
+	public BigDecimal getA_Asset_Cost () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Asset_Cost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Asset Cost Change.
+		@param A_Asset_Cost_Change Asset Cost Change	  */
+	public void setA_Asset_Cost_Change (BigDecimal A_Asset_Cost_Change)
+	{
+		set_Value (COLUMNNAME_A_Asset_Cost_Change, A_Asset_Cost_Change);
+	}
+
+	/** Get Asset Cost Change.
+		@return Asset Cost Change	  */
+	public BigDecimal getA_Asset_Cost_Change () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Asset_Cost_Change);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
+    {
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
+			.getPO(getA_Asset_ID(), get_TrxName());	}
+
+	/** Set Asset.
+		@param A_Asset_ID 
+		Asset used internally or by customers
+	  */
+	public void setA_Asset_ID (int A_Asset_ID)
+	{
+		if (A_Asset_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
+	}
+
+	/** Get Asset.
+		@return Asset used internally or by customers
+	  */
+	public int getA_Asset_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Asset Revaluation.
+		@param A_Asset_Reval_ID Asset Revaluation	  */
+	public void setA_Asset_Reval_ID (int A_Asset_Reval_ID)
+	{
+		if (A_Asset_Reval_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_A_Asset_Reval_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_A_Asset_Reval_ID, Integer.valueOf(A_Asset_Reval_ID));
+	}
+
+	/** Get Asset Revaluation.
+		@return Asset Revaluation	  */
+	public int getA_Asset_Reval_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Reval_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -121,162 +194,24 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
       */
     public KeyNamePair getKeyNamePair() 
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getA_Depreciation_Entry_ID()));
+        return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Reval_ID()));
     }
 
-	/** Set A_Depreciation_Entry_UU.
-		@param A_Depreciation_Entry_UU A_Depreciation_Entry_UU	  */
-	public void setA_Depreciation_Entry_UU (String A_Depreciation_Entry_UU)
+	/** Set Change Acumulated Depreciation.
+		@param A_Change_Acumulated_Depr Change Acumulated Depreciation	  */
+	public void setA_Change_Acumulated_Depr (BigDecimal A_Change_Acumulated_Depr)
 	{
-		set_Value (COLUMNNAME_A_Depreciation_Entry_UU, A_Depreciation_Entry_UU);
+		set_Value (COLUMNNAME_A_Change_Acumulated_Depr, A_Change_Acumulated_Depr);
 	}
 
-	/** Get A_Depreciation_Entry_UU.
-		@return A_Depreciation_Entry_UU	  */
-	public String getA_Depreciation_Entry_UU () 
+	/** Get Change Acumulated Depreciation.
+		@return Change Acumulated Depreciation	  */
+	public BigDecimal getA_Change_Acumulated_Depr () 
 	{
-		return (String)get_Value(COLUMNNAME_A_Depreciation_Entry_UU);
-	}
-
-	/** A_Entry_Type AD_Reference_ID=53257 */
-	public static final int A_ENTRY_TYPE_AD_Reference_ID=53257;
-	/** Depreciation = DEP */
-	public static final String A_ENTRY_TYPE_Depreciation = "DEP";
-	/** Disposals = DIS */
-	public static final String A_ENTRY_TYPE_Disposals = "DIS";
-	/** Forecasts = FOR */
-	public static final String A_ENTRY_TYPE_Forecasts = "FOR";
-	/** New = NEW */
-	public static final String A_ENTRY_TYPE_New = "NEW";
-	/** Splits = SPL */
-	public static final String A_ENTRY_TYPE_Splits = "SPL";
-	/** Transfers = TRN */
-	public static final String A_ENTRY_TYPE_Transfers = "TRN";
-	/** Set Entry Type.
-		@param A_Entry_Type Entry Type	  */
-	public void setA_Entry_Type (String A_Entry_Type)
-	{
-
-		set_Value (COLUMNNAME_A_Entry_Type, A_Entry_Type);
-	}
-
-	/** Get Entry Type.
-		@return Entry Type	  */
-	public String getA_Entry_Type () 
-	{
-		return (String)get_Value(COLUMNNAME_A_Entry_Type);
-	}
-
-	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
-
-	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
-	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
-	{
-		if (C_AcctSchema_ID < 1) 
-			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
-	}
-
-	/** Get Accounting Schema.
-		@return Rules for accounting
-	  */
-	public int getC_AcctSchema_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
-
-	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
-	public void setC_Currency_ID (int C_Currency_ID)
-	{
-		if (C_Currency_ID < 1) 
-			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
-	}
-
-	/** Get Currency.
-		@return The Currency for this record
-	  */
-	public int getC_Currency_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocType_ID(), get_TrxName());	}
-
-	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
-	public void setC_DocType_ID (int C_DocType_ID)
-	{
-		if (C_DocType_ID < 0) 
-			set_Value (COLUMNNAME_C_DocType_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
-	}
-
-	/** Get Document Type.
-		@return Document type or rules
-	  */
-	public int getC_DocType_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getC_Period_ID(), get_TrxName());	}
-
-	/** Set Period.
-		@param C_Period_ID 
-		Period of the Calendar
-	  */
-	public void setC_Period_ID (int C_Period_ID)
-	{
-		if (C_Period_ID < 1) 
-			set_Value (COLUMNNAME_C_Period_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
-	}
-
-	/** Get Period.
-		@return Period of the Calendar
-	  */
-	public int getC_Period_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Change_Acumulated_Depr);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Account Date.
@@ -311,23 +246,6 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 	public Timestamp getDateDoc () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
-	}
-
-	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
-	public void setDescription (String Description)
-	{
-		set_Value (COLUMNNAME_Description, Description);
-	}
-
-	/** Get Description.
-		@return Optional short description of the record
-	  */
-	public String getDescription () 
-	{
-		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
@@ -437,58 +355,6 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 	public String getDocumentNo () 
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
-	}
-
-	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_Name)
-			.getPO(getGL_Category_ID(), get_TrxName());	}
-
-	/** Set GL Category.
-		@param GL_Category_ID 
-		General Ledger Category
-	  */
-	public void setGL_Category_ID (int GL_Category_ID)
-	{
-		if (GL_Category_ID < 1) 
-			set_Value (COLUMNNAME_GL_Category_ID, null);
-		else 
-			set_Value (COLUMNNAME_GL_Category_ID, Integer.valueOf(GL_Category_ID));
-	}
-
-	/** Get GL Category.
-		@return General Ledger Category
-	  */
-	public int getGL_Category_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Category_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
-	public void setIsApproved (boolean IsApproved)
-	{
-		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
-	}
-
-	/** Get Approved.
-		@return Indicates if this document requires approval
-	  */
-	public boolean isApproved () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	/** Set Posted.

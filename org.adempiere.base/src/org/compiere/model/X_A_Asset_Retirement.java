@@ -32,7 +32,7 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_A_Asset_Retirement (Properties ctx, int A_Asset_Retirement_ID, String trxName)
@@ -75,9 +75,9 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
       return sb.toString();
     }
 
-	public I_A_Asset getA_Asset() throws RuntimeException
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
     {
-		return (I_A_Asset)MTable.get(getCtx(), I_A_Asset.Table_Name)
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
 			.getPO(getA_Asset_ID(), get_TrxName());	}
 
 	/** Set Asset.
@@ -134,6 +134,20 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Retirement_ID()));
     }
 
+	/** Set A_Asset_Retirement_UU.
+		@param A_Asset_Retirement_UU A_Asset_Retirement_UU	  */
+	public void setA_Asset_Retirement_UU (String A_Asset_Retirement_UU)
+	{
+		set_Value (COLUMNNAME_A_Asset_Retirement_UU, A_Asset_Retirement_UU);
+	}
+
+	/** Get A_Asset_Retirement_UU.
+		@return A_Asset_Retirement_UU	  */
+	public String getA_Asset_Retirement_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_Asset_Retirement_UU);
+	}
+
 	/** Set Market value Amount.
 		@param AssetMarketValueAmt 
 		Market value of the asset
@@ -174,9 +188,9 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 		return bd;
 	}
 
-	public I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
+	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
     {
-		return (I_C_InvoiceLine)MTable.get(getCtx(), I_C_InvoiceLine.Table_Name)
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
 			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
 
 	/** Set Invoice Line.

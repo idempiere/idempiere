@@ -31,7 +31,7 @@ public interface I_A_Asset_Delivery
     public static final String Table_Name = "A_Asset_Delivery";
 
     /** AD_Table_ID=541 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 541;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,6 +54,15 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getA_Asset_Delivery_ID();
 
+    /** Column name A_Asset_Delivery_UU */
+    public static final String COLUMNNAME_A_Asset_Delivery_UU = "A_Asset_Delivery_UU";
+
+	/** Set A_Asset_Delivery_UU	  */
+	public void setA_Asset_Delivery_UU (String A_Asset_Delivery_UU);
+
+	/** Get A_Asset_Delivery_UU	  */
+	public String getA_Asset_Delivery_UU();
+
     /** Column name A_Asset_ID */
     public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
 
@@ -67,7 +76,7 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getA_Asset_ID();
 
-	public I_A_Asset getA_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -103,7 +112,7 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -212,7 +221,7 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getM_InOutLine_ID();
 
-	public I_M_InOutLine getM_InOutLine() throws RuntimeException;
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name MovementDate */
     public static final String COLUMNNAME_MovementDate = "MovementDate";
@@ -240,7 +249,7 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getM_ProductDownload_ID();
 
-	public I_M_ProductDownload getM_ProductDownload() throws RuntimeException;
+	public org.compiere.model.I_M_ProductDownload getM_ProductDownload() throws RuntimeException;
 
     /** Column name Referrer */
     public static final String COLUMNNAME_Referrer = "Referrer";
@@ -314,12 +323,12 @@ public interface I_A_Asset_Delivery
     public static final String COLUMNNAME_URL = "URL";
 
 	/** Set URL.
-	  * Full URL address - e.g. http://www.adempiere.org
+	  * Full URL address - e.g. http://www.idempiere.org
 	  */
 	public void setURL (String URL);
 
 	/** Get URL.
-	  * Full URL address - e.g. http://www.adempiere.org
+	  * Full URL address - e.g. http://www.idempiere.org
 	  */
 	public String getURL();
 

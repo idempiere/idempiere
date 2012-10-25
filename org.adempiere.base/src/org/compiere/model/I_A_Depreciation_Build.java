@@ -31,7 +31,7 @@ public interface I_A_Depreciation_Build
     public static final String Table_Name = "A_Depreciation_Build";
 
     /** AD_Table_ID=53129 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53129;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -52,11 +52,20 @@ public interface I_A_Depreciation_Build
     /** Column name A_Depreciation_Build_ID */
     public static final String COLUMNNAME_A_Depreciation_Build_ID = "A_Depreciation_Build_ID";
 
-	/** Set Depreciation Build	  */
+	/** Set Build Depreciation	  */
 	public void setA_Depreciation_Build_ID (int A_Depreciation_Build_ID);
 
-	/** Get Depreciation Build	  */
+	/** Get Build Depreciation	  */
 	public int getA_Depreciation_Build_ID();
+
+    /** Column name A_Depreciation_Build_UU */
+    public static final String COLUMNNAME_A_Depreciation_Build_UU = "A_Depreciation_Build_UU";
+
+	/** Set A_Depreciation_Build_UU	  */
+	public void setA_Depreciation_Build_UU (String A_Depreciation_Build_UU);
+
+	/** Get A_Depreciation_Build_UU	  */
+	public String getA_Depreciation_Build_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -74,24 +83,24 @@ public interface I_A_Depreciation_Build
     /** Column name A_End_Asset_ID */
     public static final String COLUMNNAME_A_End_Asset_ID = "A_End_Asset_ID";
 
-	/** Set End Aset ID	  */
+	/** Set To Asset	  */
 	public void setA_End_Asset_ID (int A_End_Asset_ID);
 
-	/** Get End Aset ID	  */
+	/** Get To Asset	  */
 	public int getA_End_Asset_ID();
 
-	public I_A_Asset getA_End_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_End_Asset() throws RuntimeException;
 
     /** Column name A_Start_Asset_ID */
     public static final String COLUMNNAME_A_Start_Asset_ID = "A_Start_Asset_ID";
 
-	/** Set Start Asset	  */
+	/** Set From Asset	  */
 	public void setA_Start_Asset_ID (int A_Start_Asset_ID);
 
-	/** Get Start Asset	  */
+	/** Get From Asset	  */
 	public int getA_Start_Asset_ID();
 
-	public I_A_Asset getA_Start_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Start_Asset() throws RuntimeException;
 
     /** Column name C_Period_ID */
     public static final String COLUMNNAME_C_Period_ID = "C_Period_ID";
@@ -106,7 +115,7 @@ public interface I_A_Depreciation_Build
 	  */
 	public int getC_Period_ID();
 
-	public I_C_Period getC_Period() throws RuntimeException;
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

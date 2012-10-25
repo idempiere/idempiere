@@ -19,11 +19,12 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.KeyNamePair;
 
-/** Generated Model for A_Depreciation
+/** Generated Model for A_FundingMode
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS - $Id$ */
-public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persistent 
+public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent 
 {
 
 	/**
@@ -32,21 +33,19 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
-    public X_A_Depreciation (Properties ctx, int A_Depreciation_ID, String trxName)
+    public X_A_FundingMode (Properties ctx, int A_FundingMode_ID, String trxName)
     {
-      super (ctx, A_Depreciation_ID, trxName);
-      /** if (A_Depreciation_ID == 0)
+      super (ctx, A_FundingMode_ID, trxName);
+      /** if (A_FundingMode_ID == 0)
         {
-			setA_Depreciation_ID (0);
-			setDepreciationType (null);
+			setA_FundingMode_ID (0);
 			setName (null);
-			setProcessed (false);
-// N
+			setValue (null);
         } */
     }
 
     /** Load Constructor */
-    public X_A_Depreciation (Properties ctx, ResultSet rs, String trxName)
+    public X_A_FundingMode (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -68,57 +67,29 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Depreciation[")
+      StringBuffer sb = new StringBuffer ("X_A_FundingMode[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
-	/** Set Depreciation.
-		@param A_Depreciation_ID Depreciation	  */
-	public void setA_Depreciation_ID (int A_Depreciation_ID)
+	/** Set Asset Funding Mode.
+		@param A_FundingMode_ID Asset Funding Mode	  */
+	public void setA_FundingMode_ID (int A_FundingMode_ID)
 	{
-		if (A_Depreciation_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_A_Depreciation_ID, null);
+		if (A_FundingMode_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_A_FundingMode_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_A_Depreciation_ID, Integer.valueOf(A_Depreciation_ID));
+			set_ValueNoCheck (COLUMNNAME_A_FundingMode_ID, Integer.valueOf(A_FundingMode_ID));
 	}
 
-	/** Get Depreciation.
-		@return Depreciation	  */
-	public int getA_Depreciation_ID () 
+	/** Get Asset Funding Mode.
+		@return Asset Funding Mode	  */
+	public int getA_FundingMode_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_A_FundingMode_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set A_Depreciation_UU.
-		@param A_Depreciation_UU A_Depreciation_UU	  */
-	public void setA_Depreciation_UU (String A_Depreciation_UU)
-	{
-		set_Value (COLUMNNAME_A_Depreciation_UU, A_Depreciation_UU);
-	}
-
-	/** Get A_Depreciation_UU.
-		@return A_Depreciation_UU	  */
-	public String getA_Depreciation_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_A_Depreciation_UU);
-	}
-
-	/** Set DepreciationType.
-		@param DepreciationType DepreciationType	  */
-	public void setDepreciationType (String DepreciationType)
-	{
-		set_Value (COLUMNNAME_DepreciationType, DepreciationType);
-	}
-
-	/** Get DepreciationType.
-		@return DepreciationType	  */
-	public String getDepreciationType () 
-	{
-		return (String)get_Value(COLUMNNAME_DepreciationType);
 	}
 
 	/** Set Description.
@@ -155,41 +126,28 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set Processed.
-		@param Processed 
-		The document has been processed
+	/** Set Search Key.
+		@param Value 
+		Search key for the record in the format required - must be unique
 	  */
-	public void setProcessed (boolean Processed)
+	public void setValue (String Value)
 	{
-		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
+		set_Value (COLUMNNAME_Value, Value);
 	}
 
-	/** Get Processed.
-		@return The document has been processed
+	/** Get Search Key.
+		@return Search key for the record in the format required - must be unique
 	  */
-	public boolean isProcessed () 
+	public String getValue () 
 	{
-		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_Value);
 	}
 
-	/** Set Description.
-		@param Text Description	  */
-	public void setText (String Text)
-	{
-		set_Value (COLUMNNAME_Text, Text);
-	}
-
-	/** Get Description.
-		@return Description	  */
-	public String getText () 
-	{
-		return (String)get_Value(COLUMNNAME_Text);
-	}
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getValue());
+    }
 }

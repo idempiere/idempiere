@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for A_Asset_Use
+/** Generated Interface for A_Asset_Product
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS
  */
-public interface I_A_Asset_Use 
+public interface I_A_Asset_Product 
 {
 
-    /** TableName=A_Asset_Use */
-    public static final String Table_Name = "A_Asset_Use";
+    /** TableName=A_Asset_Product */
+    public static final String Table_Name = "A_Asset_Product";
 
-    /** AD_Table_ID=53138 */
-    public static final int Table_ID = 53138;
+    /** AD_Table_ID=53270 */
+    public static final int Table_ID = 53270;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 7 - System - Client - Org 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(7);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
 
@@ -56,23 +56,14 @@ public interface I_A_Asset_Use
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
-    /** Column name A_Asset_Use_ID */
-    public static final String COLUMNNAME_A_Asset_Use_ID = "A_Asset_Use_ID";
+    /** Column name A_Asset_Product_ID */
+    public static final String COLUMNNAME_A_Asset_Product_ID = "A_Asset_Product_ID";
 
-	/** Set A_Asset_Use_ID	  */
-	public void setA_Asset_Use_ID (int A_Asset_Use_ID);
+	/** Set Asset Product	  */
+	public void setA_Asset_Product_ID (int A_Asset_Product_ID);
 
-	/** Get A_Asset_Use_ID	  */
-	public int getA_Asset_Use_ID();
-
-    /** Column name A_Asset_Use_UU */
-    public static final String COLUMNNAME_A_Asset_Use_UU = "A_Asset_Use_UU";
-
-	/** Set A_Asset_Use_UU	  */
-	public void setA_Asset_Use_UU (String A_Asset_Use_UU);
-
-	/** Get A_Asset_Use_UU	  */
-	public String getA_Asset_Use_UU();
+	/** Get Asset Product	  */
+	public int getA_Asset_Product_ID();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -94,6 +85,15 @@ public interface I_A_Asset_Use
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name A_QTY_Current */
+    public static final String COLUMNNAME_A_QTY_Current = "A_QTY_Current";
+
+	/** Set Current Qty	  */
+	public void setA_QTY_Current (BigDecimal A_QTY_Current);
+
+	/** Get Current Qty	  */
+	public BigDecimal getA_QTY_Current();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -137,6 +137,51 @@ public interface I_A_Asset_Use
 	  */
 	public boolean isActive();
 
+    /** Column name M_AttributeSetInstance_ID */
+    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+
+	/** Set Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
+
+	/** Get Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID();
+
+	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
+
+    /** Column name M_Locator_ID */
+    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
+
+	/** Set Locator.
+	  * Warehouse Locator
+	  */
+	public void setM_Locator_ID (int M_Locator_ID);
+
+	/** Get Locator.
+	  * Warehouse Locator
+	  */
+	public int getM_Locator_ID();
+
+	public I_M_Locator getM_Locator() throws RuntimeException;
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -152,26 +197,4 @@ public interface I_A_Asset_Use
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name UseDate */
-    public static final String COLUMNNAME_UseDate = "UseDate";
-
-	/** Set UseDate	  */
-	public void setUseDate (Timestamp UseDate);
-
-	/** Get UseDate	  */
-	public Timestamp getUseDate();
-
-    /** Column name UseUnits */
-    public static final String COLUMNNAME_UseUnits = "UseUnits";
-
-	/** Set Use units.
-	  * Currently used units of the assets
-	  */
-	public void setUseUnits (int UseUnits);
-
-	/** Get Use units.
-	  * Currently used units of the assets
-	  */
-	public int getUseUnits();
 }

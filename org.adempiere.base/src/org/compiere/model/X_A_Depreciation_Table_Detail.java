@@ -32,7 +32,7 @@ public class X_A_Depreciation_Table_Detail extends PO implements I_A_Depreciatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Table_Detail (Properties ctx, int A_Depreciation_Table_Detail_ID, String trxName)
@@ -135,15 +135,29 @@ public class X_A_Depreciation_Table_Detail extends PO implements I_A_Depreciatio
         return new KeyNamePair(get_ID(), String.valueOf(getA_Depreciation_Table_Detail_ID()));
     }
 
-	/** Set Period/Yearly.
-		@param A_Period Period/Yearly	  */
+	/** Set A_Depreciation_Table_Detail_UU.
+		@param A_Depreciation_Table_Detail_UU A_Depreciation_Table_Detail_UU	  */
+	public void setA_Depreciation_Table_Detail_UU (String A_Depreciation_Table_Detail_UU)
+	{
+		set_Value (COLUMNNAME_A_Depreciation_Table_Detail_UU, A_Depreciation_Table_Detail_UU);
+	}
+
+	/** Get A_Depreciation_Table_Detail_UU.
+		@return A_Depreciation_Table_Detail_UU	  */
+	public String getA_Depreciation_Table_Detail_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_Depreciation_Table_Detail_UU);
+	}
+
+	/** Set Asset Period.
+		@param A_Period Asset Period	  */
 	public void setA_Period (int A_Period)
 	{
 		set_Value (COLUMNNAME_A_Period, Integer.valueOf(A_Period));
 	}
 
-	/** Get Period/Yearly.
-		@return Period/Yearly	  */
+	/** Get Asset Period.
+		@return Asset Period	  */
 	public int getA_Period () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Period);

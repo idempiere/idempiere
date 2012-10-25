@@ -31,7 +31,7 @@ public interface I_A_Asset_Reval_Index
     public static final String Table_Name = "A_Asset_Reval_Index";
 
     /** AD_Table_ID=53120 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53120;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -49,6 +49,15 @@ public interface I_A_Asset_Reval_Index
 
 	/** Get Asset Reval Index	  */
 	public int getA_Asset_Reval_Index_ID();
+
+    /** Column name A_Asset_Reval_Index_UU */
+    public static final String COLUMNNAME_A_Asset_Reval_Index_UU = "A_Asset_Reval_Index_UU";
+
+	/** Set A_Asset_Reval_Index_UU	  */
+	public void setA_Asset_Reval_Index_UU (String A_Asset_Reval_Index_UU);
+
+	/** Get A_Asset_Reval_Index_UU	  */
+	public String getA_Asset_Reval_Index_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";

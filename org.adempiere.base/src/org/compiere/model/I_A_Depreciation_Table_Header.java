@@ -31,7 +31,7 @@ public interface I_A_Depreciation_Table_Header
     public static final String Table_Name = "A_Depreciation_Table_Header";
 
     /** AD_Table_ID=53114 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53114;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,11 +61,20 @@ public interface I_A_Depreciation_Table_Header
     /** Column name A_Depreciation_Table_Header_ID */
     public static final String COLUMNNAME_A_Depreciation_Table_Header_ID = "A_Depreciation_Table_Header_ID";
 
-	/** Set Depreciation Table Header	  */
+	/** Set A_Depreciation_Table_Header_ID	  */
 	public void setA_Depreciation_Table_Header_ID (int A_Depreciation_Table_Header_ID);
 
-	/** Get Depreciation Table Header	  */
+	/** Get A_Depreciation_Table_Header_ID	  */
 	public int getA_Depreciation_Table_Header_ID();
+
+    /** Column name A_Depreciation_Table_Header_UU */
+    public static final String COLUMNNAME_A_Depreciation_Table_Header_UU = "A_Depreciation_Table_Header_UU";
+
+	/** Set A_Depreciation_Table_Header_UU	  */
+	public void setA_Depreciation_Table_Header_UU (String A_Depreciation_Table_Header_UU);
+
+	/** Get A_Depreciation_Table_Header_UU	  */
+	public String getA_Depreciation_Table_Header_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

@@ -30,7 +30,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Table_Header (Properties ctx, int A_Depreciation_Table_Header_ID, String trxName)
@@ -89,8 +89,8 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 		return (String)get_Value(COLUMNNAME_A_Depreciation_Table_Code);
 	}
 
-	/** Set Depreciation Table Header.
-		@param A_Depreciation_Table_Header_ID Depreciation Table Header	  */
+	/** Set A_Depreciation_Table_Header_ID.
+		@param A_Depreciation_Table_Header_ID A_Depreciation_Table_Header_ID	  */
 	public void setA_Depreciation_Table_Header_ID (int A_Depreciation_Table_Header_ID)
 	{
 		if (A_Depreciation_Table_Header_ID < 1) 
@@ -99,8 +99,8 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Table_Header_ID, Integer.valueOf(A_Depreciation_Table_Header_ID));
 	}
 
-	/** Get Depreciation Table Header.
-		@return Depreciation Table Header	  */
+	/** Get A_Depreciation_Table_Header_ID.
+		@return A_Depreciation_Table_Header_ID	  */
 	public int getA_Depreciation_Table_Header_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Table_Header_ID);
@@ -116,6 +116,20 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Depreciation_Table_Header_ID()));
     }
+
+	/** Set A_Depreciation_Table_Header_UU.
+		@param A_Depreciation_Table_Header_UU A_Depreciation_Table_Header_UU	  */
+	public void setA_Depreciation_Table_Header_UU (String A_Depreciation_Table_Header_UU)
+	{
+		set_Value (COLUMNNAME_A_Depreciation_Table_Header_UU, A_Depreciation_Table_Header_UU);
+	}
+
+	/** Get A_Depreciation_Table_Header_UU.
+		@return A_Depreciation_Table_Header_UU	  */
+	public String getA_Depreciation_Table_Header_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_Depreciation_Table_Header_UU);
+	}
 
 	/** A_Table_Rate_Type AD_Reference_ID=53255 */
 	public static final int A_TABLE_RATE_TYPE_AD_Reference_ID=53255;

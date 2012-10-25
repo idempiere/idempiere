@@ -31,7 +31,7 @@ public interface I_A_Asset_Split
     public static final String Table_Name = "A_Asset_Split";
 
     /** AD_Table_ID=53122 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53122;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -53,10 +53,10 @@ public interface I_A_Asset_Split
     /** Column name A_Asset_Acct_ID */
     public static final String COLUMNNAME_A_Asset_Acct_ID = "A_Asset_Acct_ID";
 
-	/** Set Asset Acct.	  */
+	/** Set A_Asset_Acct_ID	  */
 	public void setA_Asset_Acct_ID (int A_Asset_Acct_ID);
 
-	/** Get Asset Acct.	  */
+	/** Get A_Asset_Acct_ID	  */
 	public int getA_Asset_Acct_ID();
 
     /** Column name A_Asset_Cost */
@@ -90,7 +90,7 @@ public interface I_A_Asset_Split
 	/** Get To Asset ID	  */
 	public int getA_Asset_ID_To();
 
-	public I_A_Asset getA_Asset_To() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Asset_To() throws RuntimeException;
 
     /** Column name A_Asset_Split_ID */
     public static final String COLUMNNAME_A_Asset_Split_ID = "A_Asset_Split_ID";
@@ -100,6 +100,15 @@ public interface I_A_Asset_Split
 
 	/** Get Asset Split	  */
 	public int getA_Asset_Split_ID();
+
+    /** Column name A_Asset_Split_UU */
+    public static final String COLUMNNAME_A_Asset_Split_UU = "A_Asset_Split_UU";
+
+	/** Set A_Asset_Split_UU	  */
+	public void setA_Asset_Split_UU (String A_Asset_Split_UU);
+
+	/** Get A_Asset_Split_UU	  */
+	public String getA_Asset_Split_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -112,10 +121,10 @@ public interface I_A_Asset_Split
     /** Column name A_Depreciation_Workfile_ID */
     public static final String COLUMNNAME_A_Depreciation_Workfile_ID = "A_Depreciation_Workfile_ID";
 
-	/** Set Depreciation Workfile	  */
+	/** Set A_Depreciation_Workfile_ID	  */
 	public void setA_Depreciation_Workfile_ID (int A_Depreciation_Workfile_ID);
 
-	/** Get Depreciation Workfile	  */
+	/** Get A_Depreciation_Workfile_ID	  */
 	public int getA_Depreciation_Workfile_ID();
 
     /** Column name AD_Org_ID */
@@ -152,10 +161,10 @@ public interface I_A_Asset_Split
     /** Column name A_QTY_Current */
     public static final String COLUMNNAME_A_QTY_Current = "A_QTY_Current";
 
-	/** Set Quantity	  */
+	/** Set Current Qty	  */
 	public void setA_QTY_Current (BigDecimal A_QTY_Current);
 
-	/** Get Quantity	  */
+	/** Get Current Qty	  */
 	public BigDecimal getA_QTY_Current();
 
     /** Column name A_QTY_Split */
@@ -179,10 +188,10 @@ public interface I_A_Asset_Split
     /** Column name A_Transfer_Balance_IS */
     public static final String COLUMNNAME_A_Transfer_Balance_IS = "A_Transfer_Balance_IS";
 
-	/** Set Transfer Balance IS	  */
+	/** Set A_Transfer_Balance_IS	  */
 	public void setA_Transfer_Balance_IS (boolean A_Transfer_Balance_IS);
 
-	/** Get Transfer Balance IS	  */
+	/** Get A_Transfer_Balance_IS	  */
 	public boolean isA_Transfer_Balance_IS();
 
     /** Column name C_Period_ID */
@@ -198,7 +207,7 @@ public interface I_A_Asset_Split
 	  */
 	public int getC_Period_ID();
 
-	public I_C_Period getC_Period() throws RuntimeException;
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

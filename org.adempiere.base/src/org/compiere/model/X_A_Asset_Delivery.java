@@ -31,7 +31,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_A_Asset_Delivery (Properties ctx, int A_Asset_Delivery_ID, String trxName)
@@ -96,9 +96,23 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 		return ii.intValue();
 	}
 
-	public I_A_Asset getA_Asset() throws RuntimeException
+	/** Set A_Asset_Delivery_UU.
+		@param A_Asset_Delivery_UU A_Asset_Delivery_UU	  */
+	public void setA_Asset_Delivery_UU (String A_Asset_Delivery_UU)
+	{
+		set_Value (COLUMNNAME_A_Asset_Delivery_UU, A_Asset_Delivery_UU);
+	}
+
+	/** Get A_Asset_Delivery_UU.
+		@return A_Asset_Delivery_UU	  */
+	public String getA_Asset_Delivery_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_Asset_Delivery_UU);
+	}
+
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
     {
-		return (I_A_Asset)MTable.get(getCtx(), I_A_Asset.Table_Name)
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
 			.getPO(getA_Asset_ID(), get_TrxName());	}
 
 	/** Set Asset.
@@ -124,9 +138,9 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 		return ii.intValue();
 	}
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -237,9 +251,9 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 		return (String)get_Value(COLUMNNAME_MessageID);
 	}
 
-	public I_M_InOutLine getM_InOutLine() throws RuntimeException
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
     {
-		return (I_M_InOutLine)MTable.get(getCtx(), I_M_InOutLine.Table_Name)
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
 			.getPO(getM_InOutLine_ID(), get_TrxName());	}
 
 	/** Set Shipment/Receipt Line.
@@ -290,9 +304,9 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getMovementDate()));
     }
 
-	public I_M_ProductDownload getM_ProductDownload() throws RuntimeException
+	public org.compiere.model.I_M_ProductDownload getM_ProductDownload() throws RuntimeException
     {
-		return (I_M_ProductDownload)MTable.get(getCtx(), I_M_ProductDownload.Table_Name)
+		return (org.compiere.model.I_M_ProductDownload)MTable.get(getCtx(), org.compiere.model.I_M_ProductDownload.Table_Name)
 			.getPO(getM_ProductDownload_ID(), get_TrxName());	}
 
 	/** Set Product Download.
@@ -388,7 +402,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 
 	/** Set URL.
 		@param URL 
-		Full URL address - e.g. http://www.adempiere.org
+		Full URL address - e.g. http://www.idempiere.org
 	  */
 	public void setURL (String URL)
 	{
@@ -396,7 +410,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Get URL.
-		@return Full URL address - e.g. http://www.adempiere.org
+		@return Full URL address - e.g. http://www.idempiere.org
 	  */
 	public String getURL () 
 	{

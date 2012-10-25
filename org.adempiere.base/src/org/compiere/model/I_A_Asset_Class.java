@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for A_Asset_Use
+/** Generated Interface for A_Asset_Class
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS
  */
-public interface I_A_Asset_Use 
+public interface I_A_Asset_Class 
 {
 
-    /** TableName=A_Asset_Use */
-    public static final String Table_Name = "A_Asset_Use";
+    /** TableName=A_Asset_Class */
+    public static final String Table_Name = "A_Asset_Class";
 
-    /** AD_Table_ID=53138 */
-    public static final int Table_ID = 53138;
+    /** AD_Table_ID=53269 */
+    public static final int Table_ID = 53269;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -41,38 +41,14 @@ public interface I_A_Asset_Use
 
     /** Load Meta Data */
 
-    /** Column name A_Asset_ID */
-    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
+    /** Column name A_Asset_Class_ID */
+    public static final String COLUMNNAME_A_Asset_Class_ID = "A_Asset_Class_ID";
 
-	/** Set Asset.
-	  * Asset used internally or by customers
-	  */
-	public void setA_Asset_ID (int A_Asset_ID);
+	/** Set Asset class	  */
+	public void setA_Asset_Class_ID (int A_Asset_Class_ID);
 
-	/** Get Asset.
-	  * Asset used internally or by customers
-	  */
-	public int getA_Asset_ID();
-
-	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
-
-    /** Column name A_Asset_Use_ID */
-    public static final String COLUMNNAME_A_Asset_Use_ID = "A_Asset_Use_ID";
-
-	/** Set A_Asset_Use_ID	  */
-	public void setA_Asset_Use_ID (int A_Asset_Use_ID);
-
-	/** Get A_Asset_Use_ID	  */
-	public int getA_Asset_Use_ID();
-
-    /** Column name A_Asset_Use_UU */
-    public static final String COLUMNNAME_A_Asset_Use_UU = "A_Asset_Use_UU";
-
-	/** Set A_Asset_Use_UU	  */
-	public void setA_Asset_Use_UU (String A_Asset_Use_UU);
-
-	/** Get A_Asset_Use_UU	  */
-	public String getA_Asset_Use_UU();
+	/** Get Asset class	  */
+	public int getA_Asset_Class_ID();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -94,6 +70,42 @@ public interface I_A_Asset_Use
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name A_Life_Period_2004 */
+    public static final String COLUMNNAME_A_Life_Period_2004 = "A_Life_Period_2004";
+
+	/** Set Life Periods 2004 (min)	  */
+	public void setA_Life_Period_2004 (int A_Life_Period_2004);
+
+	/** Get Life Periods 2004 (min)	  */
+	public int getA_Life_Period_2004();
+
+    /** Column name A_Life_Period_Max */
+    public static final String COLUMNNAME_A_Life_Period_Max = "A_Life_Period_Max";
+
+	/** Set Life periods (max)	  */
+	public void setA_Life_Period_Max (int A_Life_Period_Max);
+
+	/** Get Life periods (max)	  */
+	public int getA_Life_Period_Max();
+
+    /** Column name A_Life_Period_Min */
+    public static final String COLUMNNAME_A_Life_Period_Min = "A_Life_Period_Min";
+
+	/** Set Life periods (min)	  */
+	public void setA_Life_Period_Min (int A_Life_Period_Min);
+
+	/** Get Life periods (min)	  */
+	public int getA_Life_Period_Min();
+
+    /** Column name A_Value_2004 */
+    public static final String COLUMNNAME_A_Value_2004 = "A_Value_2004";
+
+	/** Set Value 2004	  */
+	public void setA_Value_2004 (String A_Value_2004);
+
+	/** Get Value 2004	  */
+	public String getA_Value_2004();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -137,6 +149,55 @@ public interface I_A_Asset_Use
 	  */
 	public boolean isActive();
 
+    /** Column name MFX_Clasa */
+    public static final String COLUMNNAME_MFX_Clasa = "MFX_Clasa";
+
+	/** Set Fixed Asset Class	  */
+	public void setMFX_Clasa (int MFX_Clasa);
+
+	/** Get Fixed Asset Class	  */
+	public int getMFX_Clasa();
+
+    /** Column name MFX_Grupa */
+    public static final String COLUMNNAME_MFX_Grupa = "MFX_Grupa";
+
+	/** Set Fixed Asset Group	  */
+	public void setMFX_Grupa (int MFX_Grupa);
+
+	/** Get Fixed Asset Group	  */
+	public int getMFX_Grupa();
+
+    /** Column name MFX_SubClasa */
+    public static final String COLUMNNAME_MFX_SubClasa = "MFX_SubClasa";
+
+	/** Set Fixed Asset Subclass	  */
+	public void setMFX_SubClasa (int MFX_SubClasa);
+
+	/** Get Fixed Asset Subclass	  */
+	public int getMFX_SubClasa();
+
+    /** Column name MFX_SubGrupa */
+    public static final String COLUMNNAME_MFX_SubGrupa = "MFX_SubGrupa";
+
+	/** Set Fixed Asset Subgroup	  */
+	public void setMFX_SubGrupa (int MFX_SubGrupa);
+
+	/** Get Fixed Asset Subgroup	  */
+	public int getMFX_SubGrupa();
+
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
+
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -153,25 +214,16 @@ public interface I_A_Asset_Use
 	  */
 	public int getUpdatedBy();
 
-    /** Column name UseDate */
-    public static final String COLUMNNAME_UseDate = "UseDate";
+    /** Column name Value */
+    public static final String COLUMNNAME_Value = "Value";
 
-	/** Set UseDate	  */
-	public void setUseDate (Timestamp UseDate);
-
-	/** Get UseDate	  */
-	public Timestamp getUseDate();
-
-    /** Column name UseUnits */
-    public static final String COLUMNNAME_UseUnits = "UseUnits";
-
-	/** Set Use units.
-	  * Currently used units of the assets
+	/** Set Search Key.
+	  * Search key for the record in the format required - must be unique
 	  */
-	public void setUseUnits (int UseUnits);
+	public void setValue (String Value);
 
-	/** Get Use units.
-	  * Currently used units of the assets
+	/** Get Search Key.
+	  * Search key for the record in the format required - must be unique
 	  */
-	public int getUseUnits();
+	public String getValue();
 }

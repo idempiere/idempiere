@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for A_Depreciation_Entry
+/** Generated Interface for A_Asset_Reval
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS
  */
-public interface I_A_Depreciation_Entry 
+public interface I_A_Asset_Reval 
 {
 
-    /** TableName=A_Depreciation_Entry */
-    public static final String Table_Name = "A_Depreciation_Entry";
+    /** TableName=A_Asset_Reval */
+    public static final String Table_Name = "A_Asset_Reval";
 
-    /** AD_Table_ID=53121 */
-    public static final int Table_ID = 53121;
+    /** AD_Table_ID=53275 */
+    public static final int Table_ID = 53275;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -41,6 +41,66 @@ public interface I_A_Depreciation_Entry
 
     /** Load Meta Data */
 
+    /** Column name A_Accumulated_Depr */
+    public static final String COLUMNNAME_A_Accumulated_Depr = "A_Accumulated_Depr";
+
+	/** Set Accumulated Depreciation	  */
+	public void setA_Accumulated_Depr (BigDecimal A_Accumulated_Depr);
+
+	/** Get Accumulated Depreciation	  */
+	public BigDecimal getA_Accumulated_Depr();
+
+    /** Column name A_Asset_Cost */
+    public static final String COLUMNNAME_A_Asset_Cost = "A_Asset_Cost";
+
+	/** Set Asset Cost	  */
+	public void setA_Asset_Cost (BigDecimal A_Asset_Cost);
+
+	/** Get Asset Cost	  */
+	public BigDecimal getA_Asset_Cost();
+
+    /** Column name A_Asset_Cost_Change */
+    public static final String COLUMNNAME_A_Asset_Cost_Change = "A_Asset_Cost_Change";
+
+	/** Set Asset Cost Change	  */
+	public void setA_Asset_Cost_Change (BigDecimal A_Asset_Cost_Change);
+
+	/** Get Asset Cost Change	  */
+	public BigDecimal getA_Asset_Cost_Change();
+
+    /** Column name A_Asset_ID */
+    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
+
+	/** Set Asset.
+	  * Asset used internally or by customers
+	  */
+	public void setA_Asset_ID (int A_Asset_ID);
+
+	/** Get Asset.
+	  * Asset used internally or by customers
+	  */
+	public int getA_Asset_ID();
+
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
+
+    /** Column name A_Asset_Reval_ID */
+    public static final String COLUMNNAME_A_Asset_Reval_ID = "A_Asset_Reval_ID";
+
+	/** Set Asset Revaluation	  */
+	public void setA_Asset_Reval_ID (int A_Asset_Reval_ID);
+
+	/** Get Asset Revaluation	  */
+	public int getA_Asset_Reval_ID();
+
+    /** Column name A_Change_Acumulated_Depr */
+    public static final String COLUMNNAME_A_Change_Acumulated_Depr = "A_Change_Acumulated_Depr";
+
+	/** Set Change Acumulated Depreciation	  */
+	public void setA_Change_Acumulated_Depr (BigDecimal A_Change_Acumulated_Depr);
+
+	/** Get Change Acumulated Depreciation	  */
+	public BigDecimal getA_Change_Acumulated_Depr();
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -48,24 +108,6 @@ public interface I_A_Depreciation_Entry
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name A_Depreciation_Entry_ID */
-    public static final String COLUMNNAME_A_Depreciation_Entry_ID = "A_Depreciation_Entry_ID";
-
-	/** Set Depreciation Entry	  */
-	public void setA_Depreciation_Entry_ID (int A_Depreciation_Entry_ID);
-
-	/** Get Depreciation Entry	  */
-	public int getA_Depreciation_Entry_ID();
-
-    /** Column name A_Depreciation_Entry_UU */
-    public static final String COLUMNNAME_A_Depreciation_Entry_UU = "A_Depreciation_Entry_UU";
-
-	/** Set A_Depreciation_Entry_UU	  */
-	public void setA_Depreciation_Entry_UU (String A_Depreciation_Entry_UU);
-
-	/** Get A_Depreciation_Entry_UU	  */
-	public String getA_Depreciation_Entry_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -79,75 +121,6 @@ public interface I_A_Depreciation_Entry
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
-
-    /** Column name A_Entry_Type */
-    public static final String COLUMNNAME_A_Entry_Type = "A_Entry_Type";
-
-	/** Set Entry Type	  */
-	public void setA_Entry_Type (String A_Entry_Type);
-
-	/** Get Entry Type	  */
-	public String getA_Entry_Type();
-
-    /** Column name C_AcctSchema_ID */
-    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
-
-	/** Set Accounting Schema.
-	  * Rules for accounting
-	  */
-	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
-
-	/** Get Accounting Schema.
-	  * Rules for accounting
-	  */
-	public int getC_AcctSchema_ID();
-
-	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
-
-    /** Column name C_Currency_ID */
-    public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
-
-	/** Set Currency.
-	  * The Currency for this record
-	  */
-	public void setC_Currency_ID (int C_Currency_ID);
-
-	/** Get Currency.
-	  * The Currency for this record
-	  */
-	public int getC_Currency_ID();
-
-	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
-
-    /** Column name C_DocType_ID */
-    public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
-
-	/** Set Document Type.
-	  * Document type or rules
-	  */
-	public void setC_DocType_ID (int C_DocType_ID);
-
-	/** Get Document Type.
-	  * Document type or rules
-	  */
-	public int getC_DocType_ID();
-
-	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
-
-    /** Column name C_Period_ID */
-    public static final String COLUMNNAME_C_Period_ID = "C_Period_ID";
-
-	/** Set Period.
-	  * Period of the Calendar
-	  */
-	public void setC_Period_ID (int C_Period_ID);
-
-	/** Get Period.
-	  * Period of the Calendar
-	  */
-	public int getC_Period_ID();
-
-	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -191,19 +164,6 @@ public interface I_A_Depreciation_Entry
 	  */
 	public Timestamp getDateDoc();
 
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
     /** Column name DocAction */
     public static final String COLUMNNAME_DocAction = "DocAction";
 
@@ -243,21 +203,6 @@ public interface I_A_Depreciation_Entry
 	  */
 	public String getDocumentNo();
 
-    /** Column name GL_Category_ID */
-    public static final String COLUMNNAME_GL_Category_ID = "GL_Category_ID";
-
-	/** Set GL Category.
-	  * General Ledger Category
-	  */
-	public void setGL_Category_ID (int GL_Category_ID);
-
-	/** Get GL Category.
-	  * General Ledger Category
-	  */
-	public int getGL_Category_ID();
-
-	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException;
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -270,19 +215,6 @@ public interface I_A_Depreciation_Entry
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name IsApproved */
-    public static final String COLUMNNAME_IsApproved = "IsApproved";
-
-	/** Set Approved.
-	  * Indicates if this document requires approval
-	  */
-	public void setIsApproved (boolean IsApproved);
-
-	/** Get Approved.
-	  * Indicates if this document requires approval
-	  */
-	public boolean isApproved();
 
     /** Column name Posted */
     public static final String COLUMNNAME_Posted = "Posted";

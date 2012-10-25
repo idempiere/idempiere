@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for A_Asset_Use
+/** Generated Interface for A_FundingMode
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS
  */
-public interface I_A_Asset_Use 
+public interface I_A_FundingMode 
 {
 
-    /** TableName=A_Asset_Use */
-    public static final String Table_Name = "A_Asset_Use";
+    /** TableName=A_FundingMode */
+    public static final String Table_Name = "A_FundingMode";
 
-    /** AD_Table_ID=53138 */
-    public static final int Table_ID = 53138;
+    /** AD_Table_ID=53273 */
+    public static final int Table_ID = 53273;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -40,39 +40,6 @@ public interface I_A_Asset_Use
     BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
-
-    /** Column name A_Asset_ID */
-    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
-
-	/** Set Asset.
-	  * Asset used internally or by customers
-	  */
-	public void setA_Asset_ID (int A_Asset_ID);
-
-	/** Get Asset.
-	  * Asset used internally or by customers
-	  */
-	public int getA_Asset_ID();
-
-	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
-
-    /** Column name A_Asset_Use_ID */
-    public static final String COLUMNNAME_A_Asset_Use_ID = "A_Asset_Use_ID";
-
-	/** Set A_Asset_Use_ID	  */
-	public void setA_Asset_Use_ID (int A_Asset_Use_ID);
-
-	/** Get A_Asset_Use_ID	  */
-	public int getA_Asset_Use_ID();
-
-    /** Column name A_Asset_Use_UU */
-    public static final String COLUMNNAME_A_Asset_Use_UU = "A_Asset_Use_UU";
-
-	/** Set A_Asset_Use_UU	  */
-	public void setA_Asset_Use_UU (String A_Asset_Use_UU);
-
-	/** Get A_Asset_Use_UU	  */
-	public String getA_Asset_Use_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -94,6 +61,15 @@ public interface I_A_Asset_Use
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name A_FundingMode_ID */
+    public static final String COLUMNNAME_A_FundingMode_ID = "A_FundingMode_ID";
+
+	/** Set Asset Funding Mode	  */
+	public void setA_FundingMode_ID (int A_FundingMode_ID);
+
+	/** Get Asset Funding Mode	  */
+	public int getA_FundingMode_ID();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -137,6 +113,19 @@ public interface I_A_Asset_Use
 	  */
 	public boolean isActive();
 
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
+
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -153,25 +142,16 @@ public interface I_A_Asset_Use
 	  */
 	public int getUpdatedBy();
 
-    /** Column name UseDate */
-    public static final String COLUMNNAME_UseDate = "UseDate";
+    /** Column name Value */
+    public static final String COLUMNNAME_Value = "Value";
 
-	/** Set UseDate	  */
-	public void setUseDate (Timestamp UseDate);
-
-	/** Get UseDate	  */
-	public Timestamp getUseDate();
-
-    /** Column name UseUnits */
-    public static final String COLUMNNAME_UseUnits = "UseUnits";
-
-	/** Set Use units.
-	  * Currently used units of the assets
+	/** Set Search Key.
+	  * Search key for the record in the format required - must be unique
 	  */
-	public void setUseUnits (int UseUnits);
+	public void setValue (String Value);
 
-	/** Get Use units.
-	  * Currently used units of the assets
+	/** Get Search Key.
+	  * Search key for the record in the format required - must be unique
 	  */
-	public int getUseUnits();
+	public String getValue();
 }
