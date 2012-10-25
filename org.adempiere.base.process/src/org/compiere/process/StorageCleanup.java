@@ -191,6 +191,7 @@ public class StorageCleanup extends SvrProcess
 	 */
 	private void eliminateReservation(MStorageOnHand target)
 	{
+		/*
 		//	Negative Ordered / Reserved Qty
 		if (target.getQtyReserved().signum() != 0 || target.getQtyOrdered().signum() != 0)
 		{
@@ -236,6 +237,7 @@ public class StorageCleanup extends SvrProcess
 				}
 			}
 		}
+		*/
 	}	//	eliminateReservation
 	
 	/**
