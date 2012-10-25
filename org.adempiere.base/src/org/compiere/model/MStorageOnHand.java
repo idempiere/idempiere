@@ -627,6 +627,33 @@ public class MStorageOnHand extends X_M_StorageOnHand
 
 		return true;
 	}
+	
+	/**
+	 * Get Quantity On Hand of Warehouse
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param trxName
+	 * @return
+	 */
+	public static BigDecimal getQtyOnHand(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName){
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh")
+		.append(" WHERE M_Product_ID=? AND M_AttributeSetInstance_ID=?")
+		.append(" AND EXISTS(SELECT 1 FROM M_Locator loc WHERE oh.M_Locator_ID=loc.M_Locator_ID AND loc.M_Warehouse_ID=?)");
+		
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_AttributeSetInstance_ID);
+		params.add(M_Warehouse_ID);
+		
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if(qty==null)
+			qty = Env.ZERO;
+		
+		return qty;
+	}
 
 	/**
 	 *	String Representation
