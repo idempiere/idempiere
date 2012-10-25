@@ -587,7 +587,10 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return m_M_Warehouse_ID;
 	}	//	getM_Warehouse_ID
 	
+
 	/**
+	 * 
+	 * 
 	 * Before Save
 	 * @param newRecord new
 	 * @param success success
@@ -637,16 +640,19 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * @return
 	 */
 	public static BigDecimal getQtyOnHand(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName){
-		
+		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh")
-		.append(" WHERE M_Product_ID=? AND M_AttributeSetInstance_ID=?")
-		.append(" AND EXISTS(SELECT 1 FROM M_Locator loc WHERE oh.M_Locator_ID=loc.M_Locator_ID AND loc.M_Warehouse_ID=?)");
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND EXISTS(SELECT 1 FROM M_Locator loc WHERE oh.M_Locator_ID=loc.M_Locator_ID AND loc.M_Warehouse_ID=?)");
+			
+		params.add(M_Product_ID,M_Warehouse_ID);
 		
-		ArrayList<Object> params = new ArrayList<Object>();
-		params.add(M_Product_ID);
-		params.add(M_AttributeSetInstance_ID);
-		params.add(M_Warehouse_ID);
+		// With ASI
+		if (M_AttributeSetInstance_ID != 0) {
+			sql.append(" AND M_AttributeSetInstance_ID=?");
+			params.add(M_AttributeSetInstance_ID);
+		}
 		
 		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
 		if(qty==null)
