@@ -4,27 +4,17 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.model.MClient;
-import org.compiere.model.MDocType;
-import org.compiere.model.MPeriod;
-import org.compiere.model.ModelValidationEngine;
-import org.compiere.model.ModelValidator;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;
 import org.idempiere.fa.exceptions.AssetAlreadyDepreciatedException;
-import org.idempiere.fa.exceptions.AssetException;
 import org.idempiere.fa.exceptions.AssetNotImplementedException;
 import org.idempiere.fa.exceptions.AssetNotSupportedException;
 import org.idempiere.fa.exceptions.AssetStatusChangedException;
-import org.idempiere.fa.feature.UseLifeImpl;
 import org.idempiere.fa.util.POCacheLocal;
-
-import com.sun.enterprise.connectors.util.SetMethodAction;
 
 
 
