@@ -1,168 +1,184 @@
-/******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- * For the text or an alternative of this public license, you may reach us    *
- * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
- * or via info@compiere.org or http://www.compiere.org/license.html           *
-******************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Properties;
 
-import org.compiere.util.DB;
+import org.apache.commons.collections.keyvalue.MultiKey;
+import org.compiere.model.MAccount;
+import org.compiere.model.MAcctSchema;
+import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
+import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 
 /**
- * Asset Addition Model
- * 
- * 
+ *  Asset Acct Model
+ *	@author	Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-public class MAssetAcct extends X_A_Asset_Acct {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4779953750434068382L;
+public class MAssetAcct extends X_A_Asset_Acct
+{
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Default ConstructorX_A_Asset_Group_Acct
-	 * 
-	 * @param ctx
-	 *            context
-	 * @param M_InventoryLine_ID
-	 *            line
+	 * DO NOT USE DIRECTLY
 	 */
-	public MAssetAcct(Properties ctx, int X_A_Asset_Acct_ID, String trxName) {
-		super(ctx, X_A_Asset_Acct_ID, trxName);
-		if (X_A_Asset_Acct_ID == 0) {
-			//
+	public MAssetAcct (Properties ctx, int X_A_Asset_Acct_ID, String trxName)
+	{
+		super (ctx,X_A_Asset_Acct_ID, trxName);
+		if (X_A_Asset_Acct_ID == 0)
+		{
+			setA_Salvage_Value(Env.ZERO);
 		}
-	} // MAssetAddition
-
+	}
+	
+	public MAssetAcct (Properties ctx, ResultSet rs, String trxName)
+	{
+		super (ctx, rs, trxName);
+	}
+	
+	/**		Static Cache: A_Asset_Acct_ID -> MAssetAcct					*/
+	private static CCache<Integer,MAssetAcct> s_cache = new CCache<Integer,MAssetAcct>(Table_Name, 5);
+	/**		Static Cache: Asset,PostingType,DateAcct -> MAssetAcct				*/
+	private static CCache<MultiKey,MAssetAcct> s_cacheAsset = new CCache<MultiKey,MAssetAcct>(Table_Name+"_Asset", 5);
+	
 	/**
-	 * Load Constructor
-	 * 
-	 * @param ctx
-	 *            context
-	 * @param rs
-	 *            result set
+	 * Get Asset Accounting (from cache)
+	 * @param ctx context
+	 * @param A_Asset_Acct_ID asset accounting id
+	 * @return asset accounting or null if not found
 	 */
-	public MAssetAcct(Properties ctx, ResultSet rs, String trxName) {
-		super(ctx, rs, trxName);
-	} // MInventoryLine
+	public static MAssetAcct get (Properties ctx, int A_Asset_Acct_ID)
+	{
+		MAssetAcct acct = s_cache.get(A_Asset_Acct_ID);
+		if (acct != null)
+		{
+			return acct;
+		}
+		acct = new MAssetAcct(ctx, A_Asset_Acct_ID, null);
+		if (acct.get_ID() > 0)
+		{
+			addToCache(acct, null);
+		}
+		else
+		{
+			acct = null;
+		}
+		return acct;
+	}
+	
+	/**
+	 * Get asset accounting.
+	 * @param ctx context
+	 * @param A_Asset_ID asset
+	 * @param postingType Posting type
+	 * @param dateAcct check ValidFrom
+	 * @return asset accounting for the given asset
+	 */
+	public static MAssetAcct forA_Asset_ID (Properties ctx, int A_Asset_ID, String postingType, Timestamp dateAcct, String trxName)
+	{
+		MultiKey key = new MultiKey(A_Asset_ID, postingType, dateAcct);
+		MAssetAcct acct = null;
+		if (trxName == null)
+		{
+			// do not use cache
+			//acct = s_cacheAsset.get(key);
+		}
+		if (acct != null)
+		{
+			return acct;
+		}
+		//
+		ArrayList<Object> params = new ArrayList<Object>();
+		StringBuffer whereClause = new StringBuffer(COLUMNNAME_A_Asset_ID+"=? AND "+COLUMNNAME_PostingType+"=?");
+		params.add(A_Asset_ID);
+		params.add(postingType);
+		if (dateAcct != null)
+		{
+			whereClause.append(" AND " + COLUMNNAME_ValidFrom).append("<=?");
+			params.add(dateAcct);
+		}
+		acct = new Query(ctx, Table_Name, whereClause.toString(), trxName)
+								.setParameters(params)
+								.setOrderBy(COLUMNNAME_ValidFrom+" DESC NULLS LAST")
+								.first();
+		if (trxName == null)
+		{
+			addToCache(acct, key);
+		}
+		return acct;
+	}
+	
+	private static void addToCache(MAssetAcct acct, MultiKey keyAsset)
+	{
+		if (acct == null || acct.get_ID() <= 0)
+		{
+			return;
+		}
+		s_cache.put(acct.get_ID(), acct);
+		if (keyAsset != null)
+		{
+			s_cacheAsset.put(keyAsset, acct);
+		}
+	}
+	
+	/**
+	 * Create new asset accounting from asset group accounting
+	 * @param asset asset
+	 * @param assetgrpacct asset group accounting
+	 */
+	public MAssetAcct(MAsset asset, MAssetGroupAcct assetgrpacct)
+	{
+		this(assetgrpacct.getCtx(), 0, asset.get_TrxName());
+		
+		SetGetUtil.copyValues(this, assetgrpacct, null, null);
+		setA_Asset_ID(asset.getA_Asset_ID());
+		if (asset.getA_Depreciation_ID() > 0)
+		{
+			setA_Depreciation_ID(asset.getA_Depreciation_ID());
+		}
+		if (asset.getA_Depreciation_F_ID() > 0)
+		{
+			setA_Depreciation_F_ID(asset.getA_Depreciation_F_ID());
+		}
+		setA_Period_Start(1);
+		setA_Period_End(asset.getUseLifeMonths());
+		//~ setProcessing(false);
+		dump();
+	}
+	
+	/**
+	 *
+	 */
+	public BigDecimal getA_Depreciation_Variable_Perc(boolean fiscal)
+	{
+		return fiscal ? getA_Depreciation_Variable_Perc_F() : getA_Depreciation_Variable_Perc();
+	}
+	
+	
+	public MAcctSchema getC_AcctSchema()
+	{
+		return MAcctSchema.get(getCtx(), getC_AcctSchema_ID());
+	}
+	
+	public MAccount getP_Asset_Acct(int M_Product_ID)
+	{
+		MAcctSchema as = getC_AcctSchema();
+		ProductCost pc = new ProductCost(getCtx(), M_Product_ID, 0, null);
+		return pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+	}
 
-	protected boolean afterSave(boolean newRecord, boolean success) {
-		log.info("afterSave");
-		int p_actasset_ID = getA_Asset_Acct_ID();
-		int p_A_Asset_ID = getA_Asset_ID();
-
-		if (isProcessing() == true) {
-			MAssetChange change = new MAssetChange(getCtx(), 0, null);
-			change.setChangeType("SET");
-			change.setTextDetails(MRefList.getListDescription(getCtx(),
-					"A_Update_Type", "SET"));
-			change.setPostingType(getPostingType());
-			change.setA_Split_Percent(getA_Split_Percent());
-			change.setConventionType(getA_Depreciation_Conv_ID());
-			change.setA_Salvage_Value(getA_Salvage_Value());
-			change.setA_Asset_ID(getA_Asset_ID());
-			change.setDepreciationType(getA_Depreciation_ID());
-			change.setA_Asset_Spread_Type(getA_Asset_Spread_ID());
-			change.setA_Period_Start(getA_Period_Start());
-			change.setA_Period_End(getA_Period_End());
-			change.setA_Depreciation_Calc_Type(getA_Depreciation_Method_ID());
-			change.setA_Asset_Acct(getA_Asset_Acct());
-			change.setC_AcctSchema_ID(getC_AcctSchema_ID());
-			change.setA_Accumdepreciation_Acct(getA_Accumdepreciation_Acct());
-			change.setA_Depreciation_Acct(getA_Depreciation_Acct());
-			change.setA_Disposal_Revenue(getA_Disposal_Revenue());
-			change.setA_Disposal_Loss(getA_Disposal_Loss());
-			change.setA_Reval_Accumdep_Offset_Cur(getA_Reval_Accumdep_Offset_Cur());
-			change.setA_Reval_Accumdep_Offset_Prior(getA_Reval_Accumdep_Offset_Prior());
-			if (getA_Reval_Cal_Method() == null)
-				change.setA_Reval_Cal_Method("DFT");
-			else
-				change.setA_Reval_Cal_Method(getA_Reval_Cal_Method());
-			change.setA_Reval_Cost_Offset(getA_Reval_Cost_Offset());
-			change.setA_Reval_Cost_Offset_Prior(getA_Reval_Cost_Offset_Prior());
-			change.setA_Reval_Depexp_Offset(getA_Reval_Depexp_Offset());
-			change.setA_Depreciation_Manual_Amount(getA_Depreciation_Manual_Amount());
-			change.setA_Depreciation_Manual_Period(getA_Depreciation_Manual_Period());
-			change.setA_Depreciation_Table_Header_ID(getA_Depreciation_Table_Header_ID());
-			change.setA_Depreciation_Variable_Perc(getA_Depreciation_Variable_Perc());
-			change.saveEx();
-
-			String sql = "SELECT * FROM A_Depreciation_Workfile WHERE A_Asset_ID=? AND IsActive='Y'";
-			PreparedStatement pstmt = null;
-			try {
-				pstmt = DB.prepareStatement(sql, null);
-				pstmt.setInt(1, p_A_Asset_ID);
-				ResultSet rs = pstmt.executeQuery();
-
-				while (rs.next()) {
-					// MADepreciationWorkfile asset = new MADepreciationWorkfile
-					// (getCtx(), rs.getInt("A_Depreciation_Workfile_ID"));
-					X_A_Depreciation_Workfile assetwk = new X_A_Depreciation_Workfile(
-							getCtx(), rs, null);
-					assetwk.setA_Salvage_Value(getA_Salvage_Value());
-					assetwk.saveEx();
-				}
-				rs.close();
-				pstmt.close();
-				pstmt = null;
-			} catch (Exception e) {
-				log.info("getAssets" + e);
-			} finally {
-				try {
-					if (pstmt != null)
-						pstmt.close();
-				} catch (Exception e) {
-				}
-				pstmt = null;
-			}
-
-		} else {
-			X_A_Asset_Acct assetacct = new X_A_Asset_Acct(getCtx(),
-					p_actasset_ID, this.get_TrxName());
-			assetacct.setPostingType(getPostingType());
-			assetacct.setA_Split_Percent(getA_Split_Percent());
-			assetacct.setA_Depreciation_Conv_ID(getA_Depreciation_Conv_ID());
-			assetacct.setA_Salvage_Value(getA_Salvage_Value());
-			assetacct.setA_Asset_ID(getA_Asset_ID());
-			assetacct.setA_Depreciation_ID(getA_Depreciation_ID());
-			assetacct.setA_Asset_Spread_ID(getA_Asset_Spread_ID());
-			assetacct.setA_Period_Start(getA_Period_Start());
-			assetacct.setA_Depreciation_Method_ID(getA_Depreciation_Method_ID());
-			assetacct.setA_Asset_Acct(getA_Asset_Acct());
-			assetacct.setC_AcctSchema_ID(getC_AcctSchema_ID());
-			assetacct.setA_Accumdepreciation_Acct(getA_Accumdepreciation_Acct());
-			assetacct.setA_Depreciation_Acct(getA_Depreciation_Acct());
-			assetacct.setA_Disposal_Revenue(getA_Disposal_Revenue());
-			assetacct.setA_Disposal_Loss(getA_Disposal_Loss());
-			assetacct.setA_Reval_Accumdep_Offset_Cur(getA_Reval_Accumdep_Offset_Cur());
-			assetacct.setA_Reval_Accumdep_Offset_Prior(getA_Reval_Accumdep_Offset_Prior());
-			assetacct.setA_Reval_Cal_Method(getA_Reval_Cal_Method());
-			assetacct.setA_Reval_Cost_Offset(getA_Reval_Cost_Offset());
-			assetacct.setA_Reval_Cost_Offset_Prior(getA_Reval_Cost_Offset_Prior());
-			assetacct.setA_Reval_Depexp_Offset(getA_Reval_Depexp_Offset());
-			assetacct.setA_Depreciation_Manual_Amount(getA_Depreciation_Manual_Amount());
-			assetacct.setA_Depreciation_Manual_Period(getA_Depreciation_Manual_Period());
-			assetacct.setA_Depreciation_Table_Header_ID(getA_Depreciation_Table_Header_ID());
-			assetacct.setA_Depreciation_Variable_Perc(getA_Depreciation_Variable_Perc());
-			assetacct.setProcessing(true);
-			assetacct.saveEx();
-
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getValidFrom() == null && newRecord)
+		{
+			setValidFrom(TimeUtil.getDay(1970, 01, 01)); // FIXME
 		}
 		return true;
 	}
-
-} // MAssetAddition
+	
+	
+}	//	class MAssetAcct

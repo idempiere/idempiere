@@ -2105,8 +2105,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (asset != null)
 			{
 				asset.setIsActive(false);
-				StringBuilder msgadd = new StringBuilder("(").append(reversal.getDocumentNo()).append(" #").append(rLine.getLine()).append("<-)");
-				asset.addDescription(msgadd.toString());
+				asset.setDescription(asset.getDescription() + " (" + reversal.getDocumentNo() + " #" + rLine.getLine() + "<-)");
 				asset.saveEx();
 			}
 		}
