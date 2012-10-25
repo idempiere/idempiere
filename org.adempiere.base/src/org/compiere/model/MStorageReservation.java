@@ -116,7 +116,8 @@ public class MStorageReservation extends X_M_StorageReservation {
 						.append(" FROM M_StorageOnHand s")
 						.append(" WHERE s.M_Product_ID=? AND s.M_Locator_ID=?");
 				
-				params.add(M_Product_ID, M_Locator_ID);
+				params.add(M_Product_ID);
+				params.add(M_Locator_ID);
 				
 				// With ASI
 				if (M_AttributeSetInstance_ID != 0) {
