@@ -168,8 +168,9 @@ public class ConfigurationData
 	/** 				*/
 	public static final String	ADEMPIERE_DB_PASSWORD 	= "ADEMPIERE_DB_PASSWORD";
 	/** 				*/
-	public static final String	ADEMPIERE_DB_SYSTEM 	= "ADEMPIERE_DB_SYSTEM";
-
+	public static final String	ADEMPIERE_DB_SYSTEM 	= "ADEMPIERE_DB_SYSTEM";	
+	/** 				*/
+	public static final String	ADEMPIERE_DB_EXISTS 	= "ADEMPIERE_DB_EXISTS";
 	/** 				*/
 	public static final String	ADEMPIERE_MAIL_SERVER 	= "ADEMPIERE_MAIL_SERVER";
 	/** 				*/
@@ -277,6 +278,9 @@ public class ConfigurationData
 				setDatabasePassword((String)loaded.get(ADEMPIERE_DB_PASSWORD));
 			if (loaded.containsKey(ADEMPIERE_DB_SYSTEM))
 				setDatabaseSystemPassword((String)loaded.get(ADEMPIERE_DB_SYSTEM));
+			if (loaded.containsKey(ADEMPIERE_DB_EXISTS))
+				setDatabaseExists((String)loaded.get(ADEMPIERE_DB_EXISTS));
+			
 
 			if (p_panel != null)
 			{
@@ -1385,6 +1389,28 @@ public class ConfigurationData
 		if (p_panel != null)
 			p_panel.fSystemPassword.setEnabled(enable);
 	}
+	/**
+	 * @param ADEMPIERE_DB_EXISTS
+	 */
+	public void setDatabaseExists(String pass)
+	{
+	    
+		if (p_panel != null)
+			p_panel.okdbExists.setSelected("Yes".equalsIgnoreCase(pass));
+		else
+			updateProperty(ADEMPIERE_DB_EXISTS, pass);
+	}
+	
+	/**
+	 * @param 
+	 */
+	public boolean getDatabaseExists()
+	{
+		return p_panel != null
+				? p_panel.okdbExists.isSelected()
+				: "Yes".equalsIgnoreCase(p_properties.get(ADEMPIERE_DB_EXISTS).toString());
+	}
+	
 	/**
 	 * @return Returns the databaseUser.
 	 */

@@ -175,12 +175,17 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getConnectionURL (CConnection connection)
 	{
 		//  jdbc:postgresql://hostname:portnumber/databasename?encoding=UNICODE
+		String urlParameters = System.getProperty("org.idempiere.postgresql.URLParameters") ;
 		StringBuffer sb = new StringBuffer("jdbc:postgresql:");
 		sb.append("//").append(connection.getDbHost())
 			.append(":").append(connection.getDbPort())
 			.append("/").append(connection.getDbName())
 			.append("?encoding=UNICODE");
-		m_connection = sb.toString();
+		
+	    if (urlParameters != null) 
+			sb.append(urlParameters);  
+		
+		m_connection = sb.toString();		
 		return m_connection;
 	}   //  getConnectionString
 
@@ -195,8 +200,17 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getConnectionURL (String dbHost, int dbPort, String dbName,
 		String userName)
 	{
-		return "jdbc:postgresql://"
-			+ dbHost + ":" + dbPort + "/" + dbName;
+		//String ULR = "jdbc:postgresql://"+ dbHost + ":" + dbPort + "/" + dbName;
+		String urlParameters = System.getProperty("org.idempiere.postgresql.URLParameters") ;
+		StringBuffer sb = new StringBuffer("jdbc:postgresql:");
+		sb.append("//").append(dbHost)
+		.append(":").append(dbPort)
+		.append("/").append(dbName);
+		
+		if (urlParameters != null) 
+			sb.append("?").append(urlParameters);  
+		
+		return sb.toString();
 	}	//	getConnectionURL
 
         	/**

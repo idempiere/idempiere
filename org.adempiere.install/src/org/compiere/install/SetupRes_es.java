@@ -73,6 +73,7 @@ public class SetupRes_es extends ListResourceBundle
 	{ "MailPassword", 			"Contrase\u00f1a Correo" },
 	{ "KeyStorePassword",		"Contrase\u00f1a Key Store" },
 	{ "KeyStorePasswordInfo",	"Contrase\u00f1a para SSL Key Store" },
+	{ "DbExists"			,	"Base de Datos Existe" },
 	//
 	{ "JavaType",				"Java VM"},
 	{ "JavaTypeInfo",			"Proveedor Java VM"},

@@ -53,6 +53,7 @@ public class ConfigurationConsole {
 			appServerWebPort(reader, writer);
 			appServerSSLPort(reader, writer);
 
+			dbExists(reader, writer);
 			dbType(reader, writer);
 			dbHostname(reader, writer);
 			dbPort(reader, writer);
@@ -173,6 +174,7 @@ public class ConfigurationConsole {
 			if (error != null && error.trim().length() > 0)
 			{
 				writer.println("Database test fail: " + error);
+				dbExists(reader, writer);
 				dbType(reader, writer);
 				dbHostname(reader, writer);
 				dbPort(reader, writer);
@@ -422,6 +424,20 @@ public class ConfigurationConsole {
 		}
 	}
 
+	private void dbExists(BufferedReader reader, PrintWriter writer) throws IOException {
+	
+		writer.println("DB Already Exists?(Y/N) [N]: ");
+		String yesNo = reader.readLine();
+		if ((yesNo == null || yesNo.trim().length() == 0) || "n".equalsIgnoreCase(yesNo))
+		{
+			data.setDatabaseExists("No");
+		}
+		else
+		{
+		    data.setDatabaseExists("Yes");
+		}
+		
+	}
 
 	private void dbType(BufferedReader reader, PrintWriter writer) throws IOException {
 		String dbType = data.getDatabaseType();
