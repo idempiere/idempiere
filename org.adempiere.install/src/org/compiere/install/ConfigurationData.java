@@ -1392,13 +1392,13 @@ public class ConfigurationData
 	/**
 	 * @param ADEMPIERE_DB_EXISTS
 	 */
-	public void setDatabaseExists(String pass)
+	public void setDatabaseExists(String dbExists)
 	{
 	    
 		if (p_panel != null)
-			p_panel.okdbExists.setSelected("Yes".equalsIgnoreCase(pass));
+			p_panel.okdbExists.setSelected("Y".equalsIgnoreCase(dbExists));
 		else
-			updateProperty(ADEMPIERE_DB_EXISTS, pass);
+			updateProperty(ADEMPIERE_DB_EXISTS, dbExists);
 	}
 	
 	/**
@@ -1406,9 +1406,14 @@ public class ConfigurationData
 	 */
 	public boolean getDatabaseExists()
 	{
+		Object dbExists = p_properties.get(ADEMPIERE_DB_EXISTS);
+		if (dbExists == null)
+			dbExists = "N";
+		else
+			dbExists = dbExists.toString();
 		return p_panel != null
 				? p_panel.okdbExists.isSelected()
-				: "Yes".equalsIgnoreCase(p_properties.get(ADEMPIERE_DB_EXISTS).toString());
+				: "Y".equalsIgnoreCase( (String) dbExists);
 	}
 	
 	/**

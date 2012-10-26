@@ -51,7 +51,7 @@ public class BaseActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		//Load SSL 
-		loadSSLDBProperties(Adempiere.getAdempiereHome());
+		loadInitProperties(Adempiere.getAdempiereHome());
 		bundleContext = context;
 		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
 	}
@@ -59,19 +59,19 @@ public class BaseActivator implements BundleActivator {
 	/* 
 	 * Load idempiereInit.properties into the system.
 	 */
-	private void loadSSLDBProperties(String filePath)  {
+	private void loadInitProperties(String filePath)  {
 
-		Properties s_prop = new Properties();
+		Properties props = new Properties();
 		String fileName = filePath+ File.separator+"idempiereInit.properties";
 		File env = new File (fileName);
 		boolean loadOk = true;
-		if (env.exists())
+		if (env.exists() && env.isFile() && env.canRead())
 		{
 			FileInputStream fis = null;
 			try
 			{
 				fis = new FileInputStream(env);
-				s_prop.load(fis);
+				props.load(fis);
 			}catch (Exception e){
 				loadOk = false;
 				System.err.println("Exception while loading idempiereInit.properties: "+ e.toString());
@@ -85,10 +85,10 @@ public class BaseActivator implements BundleActivator {
 			if (loadOk) {	
 			    String key = null;
 			    String value =null;
-				Enumeration<?> enumeration = s_prop.propertyNames();
+				Enumeration<?> enumeration = props.propertyNames();
 			     while (enumeration.hasMoreElements()) {
 			        key = (String) enumeration.nextElement();
-			        value = s_prop.getProperty(key);
+			        value = props.getProperty(key);
 			        System.setProperty(key,value) ;
 			        //System.out.println("Loaded Key: "+ key + "- Value :"+value);                        
 	            }			

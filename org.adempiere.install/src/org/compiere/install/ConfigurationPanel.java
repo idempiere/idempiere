@@ -130,7 +130,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 	private JLabel lDatabaseType = new JLabel();
 	JComboBox fDatabaseType = new JComboBox(ConfigurationData.DBTYPE);
 	//
-	JLabel lDatabaseServer = new JLabel("Base de Datos Existe");
+	JLabel lDatabaseServer = new JLabel();
 	JLabel ldbExists = new JLabel();
 	JTextField fDatabaseServer = new JTextField(FIELDLENGTH);
 	private JLabel lDatabaseName = new JLabel();
@@ -526,7 +526,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 				m_success = false;
 				m_errorString = null;
 				try
-				{   
+				{
 					test();
 				}
 				catch (Exception ex)

@@ -60,6 +60,7 @@ public class SetupRes extends ListResourceBundle
 	{ "MailServer", 			"Mail Server" },
 	{ "AdminEMailInfo", 		"iDempiere Administrator EMail" },
 	{ "AdminEMail", 			"Admin EMail" },
+	{ "DbExists",				"DB Already Exists" },
 	{ "DatabaseServerInfo", 	"Database Server Name" },
 	{ "DatabaseServer", 		"Database Server" },
 	{ "JavaHomeInfo", 			"Java Home Folder" },
@@ -72,7 +73,6 @@ public class SetupRes extends ListResourceBundle
 	{ "MailPassword", 			"Mail Password" },
 	{ "KeyStorePassword",		"KeyStore Password" },
 	{ "KeyStorePasswordInfo",	"Password for SSL Key Store" },
-	{ "DbExists"			,	"DB Already Exists" },
 	//
 	{ "JavaType",				"Java VM"},
 	{ "JavaTypeInfo",			"Java VM Vendor"},

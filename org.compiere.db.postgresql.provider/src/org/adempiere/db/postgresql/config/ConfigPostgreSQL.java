@@ -122,6 +122,7 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 		//	JDBC Database Info
 		String databaseName = data.getDatabaseName();	//	Service Name
 		String systemPassword = data.getDatabaseSystemPassword();
+
 		//	URL (derived)
 		String urlSystem = p_db.getConnectionURL(databaseServer.getHostName(), databasePort,
 			p_db.getSystemDatabase(databaseName), p_db.getSystemUser());
@@ -131,9 +132,13 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SYSTEM_PASSWORD, "ErrorJDBC",
 				pass, true, error));
-		if (!pass && !isDBExists)
-			return error;
-		
+		if (!pass) {
+			if (isDBExists) {
+				log.warning(error);
+			} else {
+				return error;
+			}
+		}
 		log.info("OK: System Connection = " + urlSystem);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_SYSTEM, systemPassword);
 
@@ -141,13 +146,6 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 		//	Database User Info
 		String databaseUser = data.getDatabaseUser();	//	UID
 		String databasePassword = data.getDatabasePassword();	//	PWD
-		pass = databasePassword != null && databasePassword.length() > 0;
-		error = "Invalid Database User Password";
-		if (monitor != null)
-			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC",
-				pass, true, error));
-		if (!pass)
-			return error;
 		//
 		String url= p_db.getConnectionURL(databaseServer.getHostName(), databasePort,
 			databaseName, databaseUser);
@@ -157,20 +155,24 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC",
 				pass, true, error));
-		if (pass){
+		if (pass)
+		{
 			log.info("OK: Database User = " + databaseUser);
-		}else{
-			if (isDBExists){ 
+		}
+		else
+		{
+			if (isDBExists) {
 			   return error;
-			}else {
+			} else {
 				log.warning(error);
 			}
 		}
-	    data.setProperty(ConfigurationData.ADEMPIERE_DB_URL, url);
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_URL, url);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_NAME, databaseName);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_USER, databaseUser);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PASSWORD, databasePassword);
-		data.setProperty(ConfigurationData.ADEMPIERE_DB_EXISTS,(isDBExists==true ?"Yes":"No"));
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_EXISTS, (isDBExists ? "Y" : "N"));		
+
 		return null;
 	}	//	test
 

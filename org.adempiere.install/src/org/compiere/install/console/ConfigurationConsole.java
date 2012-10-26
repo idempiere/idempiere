@@ -425,16 +425,19 @@ public class ConfigurationConsole {
 	}
 
 	private void dbExists(BufferedReader reader, PrintWriter writer) throws IOException {
+		String dbExists = data.getDatabaseExists() ? "Y" : "N";
 	
-		writer.println("DB Already Exists?(Y/N) [N]: ");
+		writer.println("DB Already Exists?(Y/N) [" + dbExists + "]: ");
 		String yesNo = reader.readLine();
-		if ((yesNo == null || yesNo.trim().length() == 0) || "n".equalsIgnoreCase(yesNo))
+		if (yesNo == null || yesNo.trim().length() == 0)
+			yesNo = dbExists;
+		if ("n".equalsIgnoreCase(yesNo))
 		{
-			data.setDatabaseExists("No");
+			data.setDatabaseExists("N");
 		}
 		else
 		{
-		    data.setDatabaseExists("Yes");
+		    data.setDatabaseExists("Y");
 		}
 		
 	}
