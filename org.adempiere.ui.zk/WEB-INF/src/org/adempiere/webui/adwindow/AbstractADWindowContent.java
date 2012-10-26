@@ -1343,7 +1343,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableFileImport(!changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
 
         //Deepak-Enabling customize button IDEMPIERE-364
-    	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView() && !adTabbox.getSelectedGridTab().isSortTab());
+        if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
+        	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
         toolbar.updateToolBarAndMenuWithRestriction(gridWindow.getAD_Window_ID());
     }
 
