@@ -1,6 +1,7 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 2010 Heng Sin Low                							  *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 2012 Trek Global                							  *
+ * Copyright (C) 2012 Carlos Ruiz                							  *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -14,25 +15,27 @@
 package org.adempiere.base;
 
 import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.compiere.model.GridTab;
 
 /**
  *
- * @author hengsin
+ * @author Carlos Ruiz
  *
  */
-public interface IGridTabExporter {
+public interface IGridTabImporter {
 
 	/**
 	 * export gridTab data to file
 	 * @param gridTab
 	 * @param childs
-	 * @param isCurrentRowOnly
-	 * @param file
+	 * @param filestream
+	 * @param charset
 	 */
-	public void export(GridTab gridTab, List<GridTab> childs, boolean isCurrentRowOnly, File file);
+	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset);
 
 	/**
 	 * @return file extension

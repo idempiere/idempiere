@@ -12,6 +12,7 @@
    <extension-point id="org.adempiere.base.IModelFactory" name="Model Factory" schema="schema/org.adempiere.base.IModelFactory.exsd"/>
    <extension-point id="org.adempiere.base.IDocFactory" name="Financial Document Factory" schema="schema/org.adempiere.base.IDocFactory.exsd"/>
    <extension-point id="org.adempiere.base.IGridTabExporter" name="Grid data export extension" schema="schema/org.adempiere.base.IGridTabExporter.exsd"/>
+   <extension-point id="org.adempiere.base.IGridTabImporter" name="Grid data import extension" schema="schema/org.adempiere.base.IGridTabImporter.exsd"/>
    <extension-point id="org.compiere.model.PaymentProcessor" name="Payment Processor" schema="schema/org.compiere.model.PaymentProcessor.exsd"/>
    <extension-point id="org.compiere.model.Callout" name="Callout" schema="schema/org.compiere.model.Callout.exsd"/>
    <extension
@@ -50,6 +51,15 @@
             class="org.adempiere.impexp.GridTabCSVExporter"
             priority="0">
       </exporter>
+   </extension>
+   <extension
+         id="org.adempiere.impexp.GridTabCSVImporter"
+         name="Grid data CSV importer"
+         point="org.adempiere.base.IGridTabImporter">
+      <importer
+            class="org.adempiere.impexp.GridTabCSVImporter"
+            priority="0">
+      </importer>
    </extension>
    <extension
          id="org.adempiere.base.ModelGeneratorApplication"

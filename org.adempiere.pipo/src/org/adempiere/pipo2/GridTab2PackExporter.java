@@ -145,4 +145,9 @@ public class GridTab2PackExporter implements IGridTabExporter {
 	public String getContentType() {
 		return "application/zip";
 	}
+
+	@Override
+	public String getSuggestedFileName(GridTab gridTab) {
+		return gridTab.getName() + "." + getFileExtension();
+	}
 }

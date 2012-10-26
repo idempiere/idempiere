@@ -17,6 +17,7 @@ package org.adempiere.impexp;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.base.IGridTabExporter;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.MTabCustomization;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -77,7 +79,9 @@ public class GridTabCSVExporter implements IGridTabExporter
 				} else if (DisplayType.Time == column.getAD_Reference_ID()) {
 					procArray.add(new Optional(new FmtDate("DisplayType.DEFAULT_TIME_FORMAT")));
 				} else if (DisplayType.Integer == column.getAD_Reference_ID() || DisplayType.isNumeric(column.getAD_Reference_ID())) {
-					procArray.add(new Optional(new FmtNumber(DisplayType.getNumberFormat(column.getAD_Reference_ID()))));
+					DecimalFormat nf = DisplayType.getNumberFormat(column.getAD_Reference_ID());
+					nf.setGroupingUsed(false);
+					procArray.add(new Optional(new FmtNumber(nf)));
 				} else if (DisplayType.YesNo == column.getAD_Reference_ID()) {
 					procArray.add(new Optional(new FmtBool("Y", "N")));
 				} else { // lookups and text
@@ -110,7 +114,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 				mapWriter.write(row, header, processors);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new AdempiereException(e);
 		} finally {
 			if (mapWriter != null) {
 				try {
@@ -125,7 +129,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 
 	private Object resolveValue(GridTab gridTab, MTable table, MColumn column, int i, String headName) {
 		Object value = null;
-		if (headName.contains("[") && headName.endsWith("]")) {
+		if (headName.indexOf("[") >= 0 && headName.endsWith("]")) {
 			String foreignTable = column.getReferenceTableName();
 			Object idO = gridTab.getValue(i, column.getColumnName());
 			if (idO != null) {
@@ -157,12 +161,14 @@ public class GridTabCSVExporter implements IGridTabExporter
 			String foreignTable = column.getReferenceTableName();
 			if ( ! ("AD_Language".equals(foreignTable) || "AD_EntityType".equals(foreignTable))) {
 				MTable fTable = MTable.get(Env.getCtx(), foreignTable);
-				// Hardcoded / do not check for Value on AD_Org and AD_User, must use name for these two tables
-				if (! ("AD_Org".equals(foreignTable) || "AD_User".equals(foreignTable)) 
+				// Hardcoded / do not check for Value on AD_Org, AD_User and AD_Ref_List, must use name for these two tables
+				if (! ("AD_Org".equals(foreignTable) || "AD_User".equals(foreignTable) || "AD_Ref_List".equals(foreignTable))
 					&& fTable.getColumn("Value") != null) {
 					name.append("[Value]"); // fully qualified
 				} else if (fTable.getColumn("Name") != null) {
 					name.append("[Name]");
+				} else if (fTable.getColumn("DocumentNo") != null) {
+					name.append("[DocumentNo]");
 				}
 			}
 		}
@@ -197,16 +203,16 @@ public class GridTabCSVExporter implements IGridTabExporter
 			String[] customComponent = custom.split(";");
 			String[] fieldIds = customComponent[0].split("[,]");
 			List<GridField> fieldList = new ArrayList<GridField>();
-			for(String fieldIdStr : fieldIds) 
+			for (String fieldIdStr : fieldIds) 
 			{
 				fieldIdStr = fieldIdStr.trim();
 				if (fieldIdStr.length() == 0) continue;
 				int AD_Field_ID = Integer.parseInt(fieldIdStr);
-				for(GridField gridField : tmpFields) 
+				for (GridField gridField : tmpFields) 
 				{
 					if (gridField.getAD_Field_ID() == AD_Field_ID) 
 					{
-						if(gridField.isDisplayedGrid())
+						if (!gridField.isReadOnly() && gridField.isDisplayedGrid())
 							fieldList.add(gridField);
 						
 						break;
@@ -219,9 +225,11 @@ public class GridTabCSVExporter implements IGridTabExporter
 		{
 			ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
 			
-			for(GridField field:tmpFields)
+			for (GridField field:tmpFields)
 			{
-				if(field.isDisplayedGrid())
+				if ("AD_Client_ID".equals(field.getColumnName()))
+					continue;
+				if (field.isParentValue() || (!field.isReadOnly() && field.isDisplayedGrid()))
 					gridFieldList.add(field);
 			}
 			
@@ -238,19 +246,9 @@ public class GridTabCSVExporter implements IGridTabExporter
 		return gridFields;
 	}
 
-	public boolean isColumnPrinted(GridTab tab, int col)
-	{
-		GridField field = tab.getField(col);
-		// field not displayed
-		if (!field.isDisplayed())
-			return false;
-		// field encrypted
-		if (field.isEncrypted())
-			return false;
-		// button without a reference value
-		if (field.getDisplayType() == DisplayType.Button && field.getAD_Reference_Value_ID() == 0)
-			return false;
-		return true;
+	@Override
+	public String getSuggestedFileName(GridTab gridTab) {
+		return "Export_" + gridTab.getTableName() + "." + getFileExtension();
 	}
 
 }

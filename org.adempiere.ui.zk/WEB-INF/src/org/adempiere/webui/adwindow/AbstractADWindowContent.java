@@ -58,6 +58,7 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.WAttachment;
 import org.adempiere.webui.panel.WDocActionPanel;
 import org.adempiere.webui.panel.action.ExportAction;
+import org.adempiere.webui.panel.action.FileImportAction;
 import org.adempiere.webui.panel.action.ReportAction;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
@@ -1202,12 +1203,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         //  Confirm Warning
         else if (e.isWarning() && !e.isConfirmed())
         {
-            FDialog.warn(curWindowNo, null, e.getAD_Message(), e.getInfo());
-            e.setConfirmed(true);   //  show just once - if MTable.setCurrentRow is involved the status event is re-issued
+        	if (! adTabbox.getSelectedGridTab().getTableModel().isImporting()) {
+                FDialog.warn(curWindowNo, null, e.getAD_Message(), e.getInfo());
+                e.setConfirmed(true);   //  show just once - if MTable.setCurrentRow is involved the status event is re-issued
+        	}
         }
 
         boolean changed = e.isChanged() || e.isInserting();
-        boolean readOnly = tabPanel.getGridTab().isReadOnly();
+        boolean readOnly = adTabbox.getSelectedGridTab().isReadOnly();
         boolean insertRecord = !readOnly;
         if (!detailTab) 
         {
@@ -1337,10 +1340,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
         toolbar.enableReport(true);
         toolbar.enableExport(!adTabbox.getSelectedGridTab().isSortTab());
-        
+        toolbar.enableFileImport(!changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
+
         //Deepak-Enabling customize button IDEMPIERE-364
-        if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
-        	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
+    	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView() && !adTabbox.getSelectedGridTab().isSortTab());
         toolbar.updateToolBarAndMenuWithRestriction(gridWindow.getAD_Window_ID());
     }
 
@@ -2153,6 +2156,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void onExport() {
 		ExportAction action = new ExportAction(this);
 		action.export();
+	}
+
+	@Override
+	public void onFileImport() {
+		FileImportAction action = new FileImportAction(this);
+		action.fileImport();
 	}
 
 	/**************************************************************************

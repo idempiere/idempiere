@@ -59,7 +59,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 904447827065380369L;
+	private static final long serialVersionUID = 3390505814516682801L;
 
 	private static final String BTNPREFIX = "Btn";
 
@@ -85,7 +85,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
     private ToolBarButton btnCustomize;
     
-    private ToolBarButton btnExport;
+    private ToolBarButton btnExport, btnFileImport;
     
     private ToolBarButton btnProcess;
 
@@ -186,6 +186,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         {
         	btnExport = createButton("Export", "Export", "Export");
         }
+        btnFileImport = createButton("FileImport", "FileImport", "FileImport");
 
         configureKeyMap();
 
@@ -546,6 +547,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableExport(boolean b) {
 		if (btnExport != null)
 			btnExport.setDisabled(!b);
+	}
+
+	/**
+	 * Enable/disable file import button
+	 * @param b
+	 */
+	public void enableFileImport(boolean b) {
+		if (btnFileImport != null)
+			btnFileImport.setDisabled(!b);
 	}
 
 	private boolean ToolBarMenuRestictionLoaded = false;

@@ -177,4 +177,9 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 	public String getContentType() {
 		return "application/vnd.ms-excel";
 	}
+
+	@Override
+	public String getSuggestedFileName(GridTab gridTab) {
+		return gridTab.getName() + "." + getFileExtension();
+	}
 }
