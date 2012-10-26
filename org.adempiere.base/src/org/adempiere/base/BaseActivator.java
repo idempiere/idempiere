@@ -50,7 +50,7 @@ public class BaseActivator implements BundleActivator {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-		//Load SSL 
+		//Load Init Properties 
 		loadInitProperties(Adempiere.getAdempiereHome());
 		bundleContext = context;
 		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
