@@ -1,8 +1,13 @@
-CREATE OR REPLACE VIEW ad_sessioninfo_v AS 
+drop view ad_sessioninfo_v;
+CREATE OR REPLACE VIEW ad_sessioninfo_v AS  
  SELECT s.ad_session_id, 0::numeric(10,0) AS ad_client_id, 0::numeric(10,0) AS  ad_org_id, s.isactive, 
 		s.created, s.createdby, s.updated, s.updatedby, s.websession, 
-		s.remote_addr, s.remote_host, s.ad_role_id, s.logindate, s.ad_session_uu, 
-		s.servername, s.ad_client_id AS login_client_id,createdby as ad_user_id,s.ad_org_id as login_org_id,s.ad_session_id as ad_sessioninfo_v_id,
-		s.ad_session_uu as ad_sessioninfo_v_uu
+		s.remote_addr, s.remote_host, r.name as roleName, s.logindate, s.ad_session_uu, 
+		s.servername, c.name AS ClientName,o.name as orgName,s.ad_session_id as ad_sessioninfo_v_id,
+		s.ad_session_uu as ad_sessioninfo_v_uu,u.name as LoginName,u.email as email
    FROM ad_session s
+   inner join AD_User u on (s.createdby = u.AD_User_ID)
+   left join AD_Role r on (s.ad_role_id=r.ad_role_id)
+   inner join AD_Client c on (s.ad_client_id=c.ad_client_id)
+   left join AD_Org o on (s.ad_org_id=o.ad_org_id)
   WHERE s.processed = 'N'::bpchar;
