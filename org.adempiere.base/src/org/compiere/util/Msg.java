@@ -258,7 +258,8 @@ public final class Msg
 		//
 		if (retStr == null || retStr.length() == 0)
 		{
-			s_log.warning("NOT found: " + AD_Message);
+			if (s_log.isLoggable(Level.INFO))
+				s_log.info("NOT found: " + AD_Message);
 			return AD_Message;
 		}
 

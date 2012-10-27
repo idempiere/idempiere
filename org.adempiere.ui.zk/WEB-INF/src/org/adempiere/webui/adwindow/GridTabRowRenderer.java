@@ -76,7 +76,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private int windowNo;
 	private GridTabDataBinder dataBinder;
 	private Map<GridField, WEditor> editors = new LinkedHashMap<GridField, WEditor>();
-	private Map<GridField, WEditor> toolbarEditors = new LinkedHashMap<GridField, WEditor>();
 	private Paging paging;
 
 	private Map<String, Map<Object, String>> lookupCache = null;
@@ -277,13 +276,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		return editorList;
 	}
 	
-	public List<WEditor> getToolbarEditors() {
-		List<WEditor> editorList = new ArrayList<WEditor>();
-		if (!toolbarEditors.isEmpty())
-			editorList.addAll(toolbarEditors.values());
-		return editorList;
-	}
-
 	/**
 	 * @param paging
 	 */
@@ -456,16 +448,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			row.appendChild(div);
 		}
 
-		for (GridField gridField : gridTabFields) {
-			if (gridField.isToolbarButton() && gridField.isDisplayed()) {
-				if (toolbarEditors.get(gridField) == null) {
-					WButtonEditor editor = (WButtonEditor) WebEditorFactory.getEditor(gridField, true);
-					toolbarEditors.put(gridField, editor);
-					editor.addActionListener(buttonListener);
-				}
-			}
-		}
-		
 		if (rowIndex == gridTab.getCurrentRow()) {
 			setCurrentRow(row);
 		}

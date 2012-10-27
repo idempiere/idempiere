@@ -19,19 +19,18 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ToolBarButton
  *  @author Adempiere (generated) 
- *  @version 360LTS.015 - $Id$ */
+ *  @version Release 3.6.0LTS - $Id$ */
 public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120329L;
+	private static final long serialVersionUID = 20121025L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -39,8 +38,9 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
       super (ctx, AD_ToolBarButton_ID, trxName);
       /** if (AD_ToolBarButton_ID == 0)
         {
+			setAction (null);
+// W
 			setAD_ToolBarButton_ID (0);
-			setClassname (null);
 			setComponentName (null);
 			setIsCustomization (false);
 // N
@@ -76,6 +76,40 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
       return sb.toString();
     }
 
+	/** Action AD_Reference_ID=104 */
+	public static final int ACTION_AD_Reference_ID=104;
+	/** Window = W */
+	public static final String ACTION_Window = "W";
+	/** Task = T */
+	public static final String ACTION_Task = "T";
+	/** WorkFlow = F */
+	public static final String ACTION_WorkFlow = "F";
+	/** Process = P */
+	public static final String ACTION_Process = "P";
+	/** Report = R */
+	public static final String ACTION_Report = "R";
+	/** Form = X */
+	public static final String ACTION_Form = "X";
+	/** Workbench = B */
+	public static final String ACTION_Workbench = "B";
+	/** Set Action.
+		@param Action 
+		Indicates the Action to be performed
+	  */
+	public void setAction (String Action)
+	{
+
+		set_Value (COLUMNNAME_Action, Action);
+	}
+
+	/** Get Action.
+		@return Indicates the Action to be performed
+	  */
+	public String getAction () 
+	{
+		return (String)get_Value(COLUMNNAME_Action);
+	}
+
 	/** Set Action Class Name.
 		@param ActionClassName 
 		The class name that implements the interface for toolbar actions
@@ -110,6 +144,62 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 		return (String)get_Value(COLUMNNAME_ActionName);
 	}
 
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
+			.getPO(getAD_Process_ID(), get_TrxName());	}
+
+	/** Set Process.
+		@param AD_Process_ID 
+		Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1) 
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
+			.getPO(getAD_Tab_ID(), get_TrxName());	}
+
+	/** Set Tab.
+		@param AD_Tab_ID 
+		Tab within a Window
+	  */
+	public void setAD_Tab_ID (int AD_Tab_ID)
+	{
+		if (AD_Tab_ID < 1) 
+			set_Value (COLUMNNAME_AD_Tab_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
+	}
+
+	/** Get Tab.
+		@return Tab within a Window
+	  */
+	public int getAD_Tab_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set ToolBar Button.
 		@param AD_ToolBarButton_ID ToolBar Button	  */
 	public void setAD_ToolBarButton_ID (int AD_ToolBarButton_ID)
@@ -130,21 +220,18 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 		return ii.intValue();
 	}
 
-	/** Set Classname.
-		@param Classname 
-		Java Classname
-	  */
-	public void setClassname (String Classname)
+	/** Set AD_ToolBarButton_UU.
+		@param AD_ToolBarButton_UU AD_ToolBarButton_UU	  */
+	public void setAD_ToolBarButton_UU (String AD_ToolBarButton_UU)
 	{
-		set_Value (COLUMNNAME_Classname, Classname);
+		set_Value (COLUMNNAME_AD_ToolBarButton_UU, AD_ToolBarButton_UU);
 	}
 
-	/** Get Classname.
-		@return Java Classname
-	  */
-	public String getClassname () 
+	/** Get AD_ToolBarButton_UU.
+		@return AD_ToolBarButton_UU	  */
+	public String getAD_ToolBarButton_UU () 
 	{
-		return (String)get_Value(COLUMNNAME_Classname);
+		return (String)get_Value(COLUMNNAME_AD_ToolBarButton_UU);
 	}
 
 	/** Set Component Name.
@@ -159,6 +246,23 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	public String getComponentName () 
 	{
 		return (String)get_Value(COLUMNNAME_ComponentName);
+	}
+
+	/** Set Display Logic.
+		@param DisplayLogic 
+		If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public void setDisplayLogic (String DisplayLogic)
+	{
+		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
+	}
+
+	/** Get Display Logic.
+		@return If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public String getDisplayLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
 
 	/** Set Customization.
@@ -249,4 +353,24 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Sequence.
+		@param SeqNo 
+		Method of ordering records; lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo)
+	{
+		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
+	}
+
+	/** Get Sequence.
+		@return Method of ordering records; lowest number comes first
+	  */
+	public int getSeqNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 }

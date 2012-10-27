@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -30,6 +31,28 @@ import org.compiere.util.Env;
  */
 public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 {
+	private static final String GET_OF_WINDOW_SQL = "SELECT AD_ToolBarButton_ID FROM AD_ToolBarButtonRestrict WHERE IsActive = 'Y'"
+			+ " AND AD_Client_ID IN (0, ?)"
+			+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = ?)"	
+			+ " AND (AD_Window_ID IS NULL OR (Action='W' AND AD_Window_ID=?))"
+			+ " AND AD_ToolBarButton_ID IN" 
+			+ " (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE AD_Tab_ID IS NULL AND IsActive='Y' AND Action=?)";
+	
+	private static final String GET_OF_REPORT_SQL = "SELECT AD_ToolBarButton_ID FROM AD_ToolBarButtonRestrict WHERE IsActive = 'Y'"
+			+ " AND AD_Client_ID IN (0, ?)"
+			+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = ?)"	
+			+ " AND (AD_Process_ID IS NULL OR (Action='R' AND AD_Process_ID=?))"
+			+ " AND AD_ToolBarButton_ID IN" 
+			+ " (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE AD_Tab_ID IS NULL AND IsActive='Y' AND Action=?)";
+
+	private static final String GET_OF_TAB_SQL = "SELECT AD_ToolBarButton_ID FROM AD_ToolBarButtonRestrict WHERE IsActive = 'Y'"
+			+ " AND AD_Client_ID IN (0, ?)"
+			+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = ?)"	
+			+ " AND Action='W'"
+			+ " AND AD_ToolBarButton_ID IN" 
+			+ " (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE AD_Tab_ID=?" 
+			+ " AND AD_Process_ID IS NOT NULL AND IsActive='Y' AND Action='W')";
+
 	/**
 	 * 
 	 */
@@ -59,21 +82,51 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 		super(ctx, rs, trxName);
 	}	//	MToolBarButtonRestrict
 
-	/** Returns a list of restrictions to be applied according to the role, the window of the form ... **/
-	public static int[] getOf (Properties ctx, int AD_Role_ID, String Action, int Action_ID, String className, String trxName)
-	{
-		// Action : R-Report, W-Window, X-form
-		String sql = "SELECT AD_ToolBarButton_ID FROM AD_ToolBarButtonRestrict WHERE IsActive = 'Y'"
-				+ " AND AD_Client_ID IN (0, ?)"
-				+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = ?)"		
-				+ " AND (Action IS NULL OR Action=? AND (AD_Window_ID IS NULL OR (Action='W' AND AD_Window_ID=?)))"
-				+ " AND AD_ToolBarButton_ID IN (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE IsActive='Y' AND Classname=?)";
-		s_log.info("sql="+sql);
+	/** 
+	 * Returns a list of restrictions to be applied according to the role, the window of the form ...
+	 * @param ctx
+	 * @param AD_Role_ID
+	 * @param AD_Window_ID
+	 * @param reportViewer
+	 * @param trxName
+	 **/
+	public static int[] getOfWindow(Properties ctx, int AD_Role_ID, int AD_Window_ID, boolean reportViewer, String trxName)
+	{		
+		if (s_log.isLoggable(Level.INFO))
+			s_log.info("sql="+GET_OF_WINDOW_SQL);
 		
-		int[] ids = DB.getIDsEx(trxName, sql, Env.getAD_Client_ID(ctx), AD_Role_ID, Action, Action_ID, className);
+		int[] ids = DB.getIDsEx(trxName, GET_OF_WINDOW_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Window_ID, reportViewer ? "R" : "W");
+
+		return ids;
+	}	//	getOfWindow
+	
+	/** 
+	 * Returns a list of restrictions to be applied according to the role, the window of the form ...
+	 * @param ctx
+	 * @param AD_Role_ID
+	 * @param AD_Window_ID
+	 * @param trxName
+	 **/
+	public static int[] getOfReport(Properties ctx, int AD_Role_ID, int AD_Process_ID, String trxName)
+	{		
+		if (s_log.isLoggable(Level.INFO))
+			s_log.info("sql="+GET_OF_REPORT_SQL);
+		
+		int[] ids = DB.getIDsEx(trxName, GET_OF_REPORT_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Process_ID, "R");
 
 		return ids;
 	}	//	getOf
+	
+	/** Returns a list of restrictions to be applied according to the role for ad_tab toolbar buttons **/
+	public static int[] getOfTab(Properties ctx, int AD_Role_ID, int AD_Tab_ID, String trxName)
+	{
+		if (s_log.isLoggable(Level.INFO))
+			s_log.info("sql="+GET_OF_TAB_SQL);
+		
+		int[] ids = DB.getIDsEx(trxName, GET_OF_TAB_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Tab_ID);
+
+		return ids;
+	}	//	getOfTab
 	
 	/**
 	 * 	String Representation

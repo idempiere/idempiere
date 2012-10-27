@@ -56,8 +56,6 @@ public class CompositeADTabbox extends AbstractADTabbox
 {
 	public static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
 	
-	public static final String ADTAB_INDEX_ATTRIBUTE = "adtab.index";
-
 	/** Logger                  */
     @SuppressWarnings("unused")
 	private static CLogger  log = CLogger.getCLogger (CompositeADTabbox.class);
@@ -141,7 +139,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 		int oldIndex = selectedIndex;
 		IADTabpanel selectedPanel = detailPane.getSelectedADTabpanel();
 		if (selectedPanel == null) return;
-		int newIndex = (Integer)selectedPanel.getAttribute(ADTAB_INDEX_ATTRIBUTE);
+		int newIndex = selectedPanel.getTabNo();
 		
 		Event selectionChanged = new Event(ON_SELECTION_CHANGED_EVENT, layout, new Object[]{oldIndex, newIndex});
 		try {
@@ -200,7 +198,7 @@ public class CompositeADTabbox extends AbstractADTabbox
         tabLabelList.add(tabLabel);
         tabPanelList.add(tabPanel);
         
-        tabPanel.setAttribute(ADTAB_INDEX_ATTRIBUTE, tabPanelList.size()-1);
+        tabPanel.setTabNo(tabPanelList.size()-1);
         
         tabPanel.addEventListener(ADTabpanel.ON_ACTIVATE_EVENT, new EventListener<Event>() {
 			@Override
@@ -673,7 +671,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (detailPane.getTabcount() > 0) {
 			for(int i = 0; i < detailPane.getTabcount(); i++) {
 				IADTabpanel adtab = detailPane.getADTabpanel(i);
-				int index = (Integer) adtab.getAttribute(ADTAB_INDEX_ATTRIBUTE);
+				int index = adtab.getTabNo();
 				if (index == tabIndex) {
 					if (!detailPane.isTabVisible(i) || !detailPane.isTabEnabled(i)) {
 						return;

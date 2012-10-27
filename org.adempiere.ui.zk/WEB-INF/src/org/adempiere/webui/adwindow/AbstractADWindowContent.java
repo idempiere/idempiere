@@ -47,7 +47,9 @@ import org.adempiere.webui.apps.form.WPayment;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.IProcessButton;
 import org.adempiere.webui.editor.WButtonEditor;
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.DialogEvents;
@@ -57,7 +59,6 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.WAttachment;
 import org.adempiere.webui.panel.WDocActionPanel;
-import org.adempiere.webui.panel.action.ExportAction;
 import org.adempiere.webui.panel.action.ReportAction;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
@@ -318,6 +319,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             	return false;
         }
         Env.setContext(ctx, curWindowNo, "WindowName", gridWindow.getName());
+        Env.setContext(ctx, curWindowNo, "AD_Window_ID", gridWindow.getAD_Window_ID());
         
         if (gridTab != null)
         	gridTab.getTableModel().setChanged(false);
@@ -334,6 +336,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	return true;
         }
 
+        toolbar.updateToolbarAccess(adWindowId);
         updateToolbar();
 
         return true;
@@ -949,6 +952,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		ADTabpanel adtab = (ADTabpanel) event.getTarget();
     		if (adtab == adTabbox.getSelectedTabpanel()) {
     			toolbar.enableProcessButton(adtab.getToolbarButtons().size() > 0);
+    			toolbar.dynamicDisplay();
     		} 
     	}
     }
@@ -1336,12 +1340,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
         toolbar.enableReport(true);
-        toolbar.enableExport(!adTabbox.getSelectedGridTab().isSortTab());
         
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
-        	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
-        toolbar.updateToolBarAndMenuWithRestriction(gridWindow.getAD_Window_ID());
+        	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());        
     }
 
     /**
@@ -2149,17 +2151,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	//
 
-	@Override
-	public void onExport() {
-		ExportAction action = new ExportAction(this);
-		action.export();
-	}
-
 	/**************************************************************************
 	 *	Start Button Process
 	 *  @param vButton button
 	 */
-	private void actionButton (final WButtonEditor wButton)
+	private void actionButton (final IProcessButton wButton)
 	{
 		if (adTabbox.getSelectedGridTab().hasChangedCurrentTabAndParents()) {
 			String msg = CLogger.retrieveErrorString("Please ReQuery Window");
@@ -2205,7 +2201,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @param col 
 	 * @param wButton 
 	 */
-	private void actionButton0 (String col, final WButtonEditor wButton)
+	private void actionButton0 (String col, final IProcessButton wButton)
 	{
 		final IADTabpanel adtabPanel = findADTabpanel(wButton);
 		boolean startWOasking = false;
@@ -2242,7 +2238,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		//	Pop up Payment Rules
 		if (col.equals("PaymentRule"))
 		{
-			final WPayment vp = new WPayment(curWindowNo, adtabPanel.getGridTab(), wButton);
+			final WPayment vp = new WPayment(curWindowNo, adtabPanel.getGridTab(), (WButtonEditor) wButton);
 			if (vp.isInitOK())		//	may not be allowed
 			{
 				vp.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
@@ -2397,7 +2393,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				isProcessMandatory);
 	} // actionButton
 
-	private void executeButtonProcess(final WButtonEditor wButton,
+	private void executeButtonProcess(final IProcessButton wButton,
 			final boolean startWOasking, final int table_ID, final int record_ID,
 			boolean isProcessMandatory) {
 		/**
@@ -2435,7 +2431,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 	}
 
-	private void executeButtonProcess0(final WButtonEditor wButton,
+	private void executeButtonProcess0(final IProcessButton wButton,
 			boolean startWOasking, int table_ID, int record_ID) {
 		// call form
 		MProcess pr = new MProcess(ctx, wButton.getProcess_ID(), null);
@@ -2482,13 +2478,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		Runnable runnable = new Runnable() {
 			public void run() {
-				String error = processButtonCallout((WButtonEditor)event.getSource());
+				String error = processButtonCallout((IProcessButton) event.getSource());
 				if (error != null && error.trim().length() > 0)
 				{
 					breadCrumb.setStatusLine(error, true);
 					return;
 				}
-				actionButton((WButtonEditor)event.getSource());
+				actionButton((IProcessButton) event.getSource());
 			}
 		};
 		BusyDialogTemplate template = new BusyDialogTemplate(runnable);
@@ -2508,23 +2504,26 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @return error message or ""
 	 * @see org.compiere.model.Callout
 	 */
-	private String processButtonCallout (WButtonEditor button)
+	private String processButtonCallout (IProcessButton button)
 	{
 		IADTabpanel adtab = findADTabpanel(button);
 		if (adtab != null) {
 			GridField field = adtab.getGridTab().getField(button.getColumnName());
-			return adtab.getGridTab().processCallout(field);
+			if (field != null)
+				return adtab.getGridTab().processCallout(field);
+			else
+				return "";
 		} else {
 			return "";
 		}
 	}	//	processButtonCallout
 
-	public IADTabpanel findADTabpanel(WButtonEditor button) {
+	public IADTabpanel findADTabpanel(IProcessButton button) {
 		IADTabpanel adtab = null;
 		if (button.getADTabpanel() != null)
 			return button.getADTabpanel();
 		
-		Component c = button.getComponent();
+		Component c = button instanceof WEditor ? ((WEditor)button).getComponent() : (Component)button;
 		while (c != null) {
 			if (c instanceof IADTabpanel) {
 				adtab = (IADTabpanel) c;

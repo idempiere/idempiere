@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 2010 Heng Sin Low                							  *
+ * Copyright (C) 2012 Heng Sin Low                                            *
+ * Copyright (C) 2012 Trek Global                 							  *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -11,7 +11,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.panel.action;
+package org.adempiere.ui.zk.example.action;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +24,8 @@ import java.util.Set;
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.action.IAction;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabbox;
 import org.adempiere.webui.adwindow.IADTabpanel;
@@ -36,6 +38,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
+import org.compiere.model.MRole;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
@@ -47,12 +50,11 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Vbox;
 
 /**
- *
  * @author hengsin
  *
  */
-public class ExportAction implements EventListener<Event>
-{
+public class ExportAction implements IAction, EventListener<Event> {
+	
 	private AbstractADWindowContent panel;
 
 	private Map<String, IGridTabExporter> exporterMap = null;
@@ -62,20 +64,29 @@ public class ExportAction implements EventListener<Event>
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Listbox cboType = new Listbox();
 	private Checkbox chkCurrentRow = new Checkbox();
-
 	/**
-	 * @param panel
+	 * 
 	 */
-	public ExportAction(AbstractADWindowContent panel)
-	{
-		this.panel = panel;
+	public ExportAction() {
 	}
 
-	/**
-	 * execute export action
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.action.IAction#execute(java.lang.Object)
 	 */
-	public void export()
-	{
+	@Override
+	public void execute(Object target) {		
+		ADWindow adwindow = (ADWindow) target;
+		panel = adwindow.getADWindowContent();
+		
+		if (!MRole.getDefault().isCanExport()) {
+			FDialog.error(panel.getWindowNo(), "AccessTableNoView");
+			return;
+		}
+		
+		doExport();
+	}
+
+	private void doExport() {
 		exporterMap = new HashMap<String, IGridTabExporter>();
 		extensionMap = new HashMap<String, String>();
 		List<IGridTabExporter> exporterList = Service.list(IGridTabExporter.class);

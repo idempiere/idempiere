@@ -29,7 +29,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121012L;
+	private static final long serialVersionUID = 20121025L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)
@@ -37,7 +37,10 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
       super (ctx, AD_ToolBarButtonRestrict_ID, trxName);
       /** if (AD_ToolBarButtonRestrict_ID == 0)
         {
+			setAction (null);
 			setAD_ToolBarButtonRestrict_ID (0);
+			setIsExclude (true);
+// Y
         } */
     }
 
@@ -92,7 +95,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public void setAction (String Action)
 	{
 
-		set_ValueNoCheck (COLUMNNAME_Action, Action);
+		set_Value (COLUMNNAME_Action, Action);
 	}
 
 	/** Get Action.
@@ -143,9 +146,9 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
 		if (AD_Role_ID < 0) 
-			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
+			set_Value (COLUMNNAME_AD_Role_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
+			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
@@ -154,6 +157,34 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public int getAD_Role_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
+			.getPO(getAD_Tab_ID(), get_TrxName());	}
+
+	/** Set Tab.
+		@param AD_Tab_ID 
+		Tab within a Window
+	  */
+	public void setAD_Tab_ID (int AD_Tab_ID)
+	{
+		if (AD_Tab_ID < 1) 
+			set_Value (COLUMNNAME_AD_Tab_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
+	}
+
+	/** Get Tab.
+		@return Tab within a Window
+	  */
+	public int getAD_Tab_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -230,9 +261,9 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
 		if (AD_Window_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, null);
+			set_Value (COLUMNNAME_AD_Window_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
+			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
@@ -244,5 +275,29 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Exclude.
+		@param IsExclude 
+		Exclude access to the data - if not selected Include access to the data
+	  */
+	public void setIsExclude (boolean IsExclude)
+	{
+		set_ValueNoCheck (COLUMNNAME_IsExclude, Boolean.valueOf(IsExclude));
+	}
+
+	/** Get Exclude.
+		@return Exclude access to the data - if not selected Include access to the data
+	  */
+	public boolean isExclude () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsExclude);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

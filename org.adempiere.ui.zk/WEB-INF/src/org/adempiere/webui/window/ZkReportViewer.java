@@ -282,7 +282,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		toolBar.appendChild(bSendMail);
 		bSendMail.addEventListener(Events.ON_CLICK, this);
 		
-		bSendMail.setName("Archive");
+		bArchive.setName("Archive");
 		bArchive.setImage("/images/Archive24.png");
 		bArchive.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Archive")));
 		toolBar.appendChild(bArchive);
@@ -326,7 +326,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		linkDiv.appendChild(reportLink);
 		south.appendChild(linkDiv);
 		//m_WindowNo
-		updateToolBarAndMenuWithRestriction(m_reportEngine.getWindowNo());
+		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "AD_Window_ID", true);
+		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		updateToolbarAccess(AD_Window_ID, AD_Process_ID);
 		
 		try {
 			renderReport();
@@ -1103,21 +1105,28 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	}
 	
 	private boolean ToolBarMenuRestictionLoaded = false;
-	public void updateToolBarAndMenuWithRestriction(int AD_Window_ID) {
+	public void updateToolbarAccess(int AD_Window_ID, int AD_Process_ID) {
 		if (ToolBarMenuRestictionLoaded)
 			return;
 		Properties m_ctx = Env.getCtx();
 		int ToolBarButton_ID = 0;
 
-		int[] restrictionList = MToolBarButtonRestrict.getOf(m_ctx, MRole.getDefault().getAD_Role_ID(), "R", AD_Window_ID, REPORT, null);
-		log.info("restrictionList="+restrictionList.toString());
+		int[] restrictionList = AD_Window_ID > 0 
+				? MToolBarButtonRestrict.getOfWindow(m_ctx, MRole.getDefault().getAD_Role_ID(), AD_Window_ID, true, null)
+				: MToolBarButtonRestrict.getOfReport(m_ctx, MRole.getDefault().getAD_Role_ID(), AD_Process_ID, null);
+		if (log.isLoggable(Level.INFO))
+			log.info("restrictionList="+restrictionList.toString());
 
 		for (int i = 0; i < restrictionList.length; i++)
 		{
 			ToolBarButton_ID= restrictionList[i];
 			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
+			if (!"R".equals(tbt.getAction()))
+				continue;
+			
 			String restrictName = tbt.getComponentName();
-			log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
+			if (log.isLoggable(Level.CONFIG))
+				log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
 
 			for (Component p = this.toolBar.getFirstChild(); p != null; p = p.getNextSibling()) {
 				if (p instanceof Toolbarbutton) {

@@ -55,9 +55,12 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MLookup;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MToolBarButton;
+import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.X_AD_FieldGroup;
+import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -71,6 +74,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Div;
@@ -134,6 +138,10 @@ DataStatusListener, IADTabpanel
     private ArrayList<WEditor> editors = new ArrayList<WEditor>();
     
     private ArrayList<Component> editorComps = new ArrayList<Component>();
+    
+    private ArrayList<WButtonEditor> toolbarButtonEditors = new ArrayList<WButtonEditor>();
+    
+    private ArrayList<ToolbarProcessButton> toolbarProcessButtons = new ArrayList<ToolbarProcessButton>();
 
     private boolean			  uiCreated = false;
 
@@ -160,6 +168,8 @@ DataStatusListener, IADTabpanel
 	private Component detailPane;
 
 	private boolean detailPaneMode;
+
+	private int tabNo;
 
 	public static final String ON_TOGGLE_EVENT = "onToggle";
 	
@@ -407,7 +417,7 @@ DataStatusListener, IADTabpanel
         			editor.setADTabpanel(this);
         			field.addPropertyChangeListener(editor);
         			editors.add(editor);
-        			editorComps.add(editor.getComponent());
+        			toolbarButtonEditors.add(editor);
         			        			
         			continue;
         		}
@@ -563,6 +573,8 @@ DataStatusListener, IADTabpanel
         if (rowList != null)
 			rowList.add(row);
 
+        loadToolbarButtons();
+        		
         //create tree
         if (gridTab.isTreeTab() && treePanel != null) {
 			int AD_Tree_ID = MTree.getDefaultAD_Tree_ID (
@@ -573,6 +585,30 @@ DataStatusListener, IADTabpanel
         if (!gridTab.isSingleRow() && !isGridView())
         	switchRowPresentation();                
     }
+
+	private void loadToolbarButtons() {
+		//get extra toolbar process buttons
+        MToolBarButton[] mToolbarButtons = MToolBarButton.getOfTab(gridTab.getAD_Tab_ID(), null);
+        for(MToolBarButton mToolbarButton : mToolbarButtons) {
+        	ToolbarProcessButton toolbarProcessButton = new ToolbarProcessButton(mToolbarButton, this, windowPanel, windowNo);
+        	toolbarProcessButtons.add(toolbarProcessButton);
+        }
+        
+        if (toolbarProcessButtons.size() > 0) {
+        	int ids[] = MToolBarButtonRestrict.getOfTab(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
+        	if (ids != null && ids.length > 0) {
+        		for(int id : ids) {
+        			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(Env.getCtx(), id, null);
+        			for(ToolbarProcessButton btn : toolbarProcessButtons) {
+        				if (tbt.getComponentName().equals(btn.getColumnName())) {
+        					toolbarProcessButtons.remove(btn);
+        					break;
+        				}
+        			}
+        		}
+        	}
+        }
+	}
 
 	private Component createSpacer() {
 		return new Space();
@@ -715,6 +751,10 @@ DataStatusListener, IADTabpanel
         
         if (listPanel.isVisible()) {
         	listPanel.dynamicDisplay(col);
+        }
+        
+        for (ToolbarProcessButton btn : toolbarProcessButtons) {
+        	btn.dynamicDisplay();
         }
 
         Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
@@ -1203,18 +1243,18 @@ DataStatusListener, IADTabpanel
 	 * Get all visible button editors
 	 * @return List<WButtonEditor>
 	 */
-	public List<WButtonEditor> getToolbarButtons() {
-		List<WButtonEditor> buttonList = new ArrayList<WButtonEditor>();
-		if (isGridView()) {
-			buttonList = listPanel.getToolbarButtons();
-		} else {
-			for(WEditor editor : editors) {
-				if (editor instanceof WButtonEditor && editor.getComponent() != null 
-						&& editor.getComponent().isVisible()
-						&& editor.getGridField() != null
-						&& editor.getGridField().isToolbarButton()) {
-					buttonList.add((WButtonEditor) editor);
-				}
+	public List<Button> getToolbarButtons() {
+		List<Button> buttonList = new ArrayList<Button>();
+		for(WButtonEditor editor : toolbarButtonEditors) {
+			if (editor.getComponent() != null 
+					&& editor.getComponent().isVisible()) {
+				buttonList.add(editor.getComponent());
+			}
+		}
+		
+		for(ToolbarProcessButton processButton : toolbarProcessButtons) {
+			if (processButton.getButton().isVisible()) {
+				buttonList.add(processButton.getButton());
 			}
 		}
 		return buttonList;
@@ -1233,6 +1273,16 @@ DataStatusListener, IADTabpanel
 	@Override
 	public boolean isDetailPaneMode() {
 		return this.detailPaneMode;
+	}
+
+	@Override
+	public void setTabNo(int tabNo) {
+		this.tabNo = tabNo;
+	}
+
+	@Override
+	public int getTabNo() {
+		return tabNo;
 	}
 }
 

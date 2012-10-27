@@ -25,10 +25,12 @@ public class AdempiereActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
-		logger.info(getName() + " " + getVersion() + " starting...");
+		if (logger.isLoggable(Level.INFO))
+			logger.info(getName() + " " + getVersion() + " starting...");
 		installPackage();
 		start();
-		logger.info(getName() + " " + getVersion() + " ready.");
+		if (logger.isLoggable(Level.INFO))
+			logger.info(getName() + " " + getVersion() + " ready.");
 	}
 
 	public String getName() {
@@ -45,20 +47,28 @@ public class AdempiereActivator implements BundleActivator {
 
 	private void installPackage() {
 		String trxName = Trx.createTrxName();
-		String where = "Name=? AND PK_Version=?";
-		Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
-				where.toString(), trxName);
-		q.setParameters(new Object[] { getName(), getVersion() });
-		X_AD_Package_Imp pkg = q.first();
-		if (pkg == null) {
-			packIn(trxName);
-			install();
-			logger.info(getName() + " " + getVersion() + " installed.");
-		} else {
-			logger.info(getName() + " " + getVersion() + " was installed: "
-					+ pkg.getCreated());
+		try {
+			String where = "Name=? AND PK_Version=?";
+			Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
+					where.toString(), trxName);
+			q.setParameters(new Object[] { getName(), getVersion() });
+			X_AD_Package_Imp pkg = q.first();
+			if (pkg == null) {
+				packIn(trxName);
+				install();
+				if (logger.isLoggable(Level.INFO))
+					logger.info(getName() + " " + getVersion() + " installed.");
+			} else {
+				if (logger.isLoggable(Level.INFO))
+					logger.info(getName() + " " + getVersion() + " was installed: "
+						+ pkg.getCreated());
+			}
+			Trx.get(trxName, false).commit();
+		} finally {
+			if (Trx.get(trxName, false) != null) {
+				Trx.get(trxName, false).close();
+			}
 		}
-		Trx.get(trxName, false).commit();
 	}
 
 	protected void packIn(String trxName) {
@@ -78,7 +88,7 @@ public class AdempiereActivator implements BundleActivator {
 			    // call 2pack
 				service.merge(context, zipfile);
 			} catch (Exception e) {
-				logger.log(Level.WARNING, "Error on Dictionary service", e);
+				logger.log(Level.SEVERE, "Error on Dictionary service", e);
 			}
 		} 
 	}

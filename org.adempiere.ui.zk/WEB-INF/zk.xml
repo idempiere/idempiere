@@ -74,6 +74,10 @@
   		<name>org.zkoss.zul.Button.mold</name>
   		<value>trendy</value>
 	</library-property>
+	<library-property>
+  		<name>org.adempiere.webui.component.Button.mold</name>
+  		<value>trendy</value>
+	</library-property>
 
 	<library-property>
 		<name>org.zkoss.zul.theme.fontSizeM

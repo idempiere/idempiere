@@ -128,4 +128,8 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public boolean needSave(boolean rowChange, boolean onlyRealChange);
 
 	public boolean dataSave(boolean onSaveEvent);
+	
+	public void setTabNo(int tabNo);
+	
+	public int getTabNo();	
 }

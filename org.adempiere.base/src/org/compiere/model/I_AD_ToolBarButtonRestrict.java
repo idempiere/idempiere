@@ -105,6 +105,21 @@ public interface I_AD_ToolBarButtonRestrict
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
+    /** Column name AD_Tab_ID */
+    public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
+
+	/** Set Tab.
+	  * Tab within a Window
+	  */
+	public void setAD_Tab_ID (int AD_Tab_ID);
+
+	/** Get Tab.
+	  * Tab within a Window
+	  */
+	public int getAD_Tab_ID();
+
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
+
     /** Column name AD_ToolBarButton_ID */
     public static final String COLUMNNAME_AD_ToolBarButton_ID = "AD_ToolBarButton_ID";
 
@@ -177,6 +192,19 @@ public interface I_AD_ToolBarButtonRestrict
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsExclude */
+    public static final String COLUMNNAME_IsExclude = "IsExclude";
+
+	/** Set Exclude.
+	  * Exclude access to the data - if not selected Include access to the data
+	  */
+	public void setIsExclude (boolean IsExclude);
+
+	/** Get Exclude.
+	  * Exclude access to the data - if not selected Include access to the data
+	  */
+	public boolean isExclude();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

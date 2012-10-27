@@ -97,4 +97,8 @@ public class ADWindow extends AbstractUIPart
 	public ADWindowContent getADWindowContent() {
 		return windowContent;
 	}
+	
+	public static ADWindow get(int windowNo) {
+		return (ADWindow) SessionManager.getAppDesktop().findWindow(windowNo);
+	}
 }

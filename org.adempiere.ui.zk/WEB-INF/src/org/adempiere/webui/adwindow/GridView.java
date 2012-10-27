@@ -28,7 +28,6 @@ import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.NumberBox;
-import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.TouchEventHelper;
 import org.adempiere.webui.util.SortComparator;
@@ -785,8 +784,6 @@ public class GridView extends Vbox implements EventListener<Event>
 
         boolean noData = gridTab.getRowCount() == 0;
         List<WEditor> list =  renderer.getEditors();
-        dynamicDisplayEditors(noData, list);   
-        list =  renderer.getToolbarEditors();
         dynamicDisplayEditors(noData, list);   //  all components
 	}
 
@@ -908,19 +905,5 @@ public class GridView extends Vbox implements EventListener<Event>
 			detail = null;
 		}
 		return details;
-	}
-
-	public List<WButtonEditor> getToolbarButtons() {
-		List<WButtonEditor> buttonList = new ArrayList<WButtonEditor>(); 
-		List<WEditor> editors = renderer.getToolbarEditors();
-		for(WEditor editor : editors) {
-			if (editor instanceof WButtonEditor && editor.getComponent() != null && editor.getComponent().isVisible()) {
-				WButtonEditor btnEditor = (WButtonEditor) editor;
-				buttonList.add(btnEditor);
-				editor.setValue(editor.getGridField().getValue());
-				btnEditor.setADTabpanel((IADTabpanel) this.getParent());
-			}
-		}
-		return buttonList;
 	}
 }

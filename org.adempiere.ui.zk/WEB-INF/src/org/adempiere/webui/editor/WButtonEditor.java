@@ -47,7 +47,7 @@ import org.zkoss.zk.ui.event.Events;
  * Modifications - UI Compatibility
  * @author ashley
  */
-public class WButtonEditor extends WEditor
+public class WButtonEditor extends WEditor implements IProcessButton
 {
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
@@ -88,10 +88,10 @@ public class WButtonEditor extends WEditor
         init();
 	}
 
-	/**
-	 *	Get AD_Process_ID
-	 *  @return AD_Process_ID or 0
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.IProcessButton#getProcess_ID()
 	 */
+	@Override
 	public int getProcess_ID()
 	{
 		return AD_Process_ID;
@@ -292,6 +292,10 @@ public class WButtonEditor extends WEditor
 		this.adTabpanel = adTabpanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.IProcessButton#getADTabpanel()
+	 */
+	@Override
 	public IADTabpanel getADTabpanel() {
 		return adTabpanel;
 	}

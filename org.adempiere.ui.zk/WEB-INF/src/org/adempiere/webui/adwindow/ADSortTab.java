@@ -140,6 +140,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	private boolean active = false;
 	private boolean isChanged;
 	private boolean detailPaneMode;
+	private int tabNo;
 
 	/**
 	 * 	Dynamic Init
@@ -947,6 +948,16 @@ public class ADSortTab extends Panel implements IADTabpanel
 		} else {
 			return true;
 		}
+	}
+
+	@Override
+	public void setTabNo(int tabNo) {
+		this.tabNo = tabNo;
+	}
+
+	@Override
+	public int getTabNo() {
+		return tabNo;
 	}
 }	//ADSortTab
 

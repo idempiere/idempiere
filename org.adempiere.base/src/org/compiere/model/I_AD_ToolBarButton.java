@@ -18,12 +18,11 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ToolBarButton
  *  @author Adempiere (generated) 
- *  @version 360LTS.015
+ *  @version Release 3.6.0LTS
  */
 public interface I_AD_ToolBarButton 
 {
@@ -32,7 +31,7 @@ public interface I_AD_ToolBarButton
     public static final String Table_Name = "AD_ToolBarButton";
 
     /** AD_Table_ID=200003 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 200003;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -41,6 +40,19 @@ public interface I_AD_ToolBarButton
     BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
+
+    /** Column name Action */
+    public static final String COLUMNNAME_Action = "Action";
+
+	/** Set Action.
+	  * Indicates the Action to be performed
+	  */
+	public void setAction (String Action);
+
+	/** Get Action.
+	  * Indicates the Action to be performed
+	  */
+	public String getAction();
 
     /** Column name ActionClassName */
     public static final String COLUMNNAME_ActionClassName = "ActionClassName";
@@ -89,6 +101,36 @@ public interface I_AD_ToolBarButton
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
+    /** Column name AD_Tab_ID */
+    public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
+
+	/** Set Tab.
+	  * Tab within a Window
+	  */
+	public void setAD_Tab_ID (int AD_Tab_ID);
+
+	/** Get Tab.
+	  * Tab within a Window
+	  */
+	public int getAD_Tab_ID();
+
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
+
     /** Column name AD_ToolBarButton_ID */
     public static final String COLUMNNAME_AD_ToolBarButton_ID = "AD_ToolBarButton_ID";
 
@@ -98,18 +140,14 @@ public interface I_AD_ToolBarButton
 	/** Get ToolBar Button	  */
 	public int getAD_ToolBarButton_ID();
 
-    /** Column name Classname */
-    public static final String COLUMNNAME_Classname = "Classname";
+    /** Column name AD_ToolBarButton_UU */
+    public static final String COLUMNNAME_AD_ToolBarButton_UU = "AD_ToolBarButton_UU";
 
-	/** Set Classname.
-	  * Java Classname
-	  */
-	public void setClassname (String Classname);
+	/** Set AD_ToolBarButton_UU	  */
+	public void setAD_ToolBarButton_UU (String AD_ToolBarButton_UU);
 
-	/** Get Classname.
-	  * Java Classname
-	  */
-	public String getClassname();
+	/** Get AD_ToolBarButton_UU	  */
+	public String getAD_ToolBarButton_UU();
 
     /** Column name ComponentName */
     public static final String COLUMNNAME_ComponentName = "ComponentName";
@@ -135,6 +173,19 @@ public interface I_AD_ToolBarButton
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DisplayLogic */
+    public static final String COLUMNNAME_DisplayLogic = "DisplayLogic";
+
+	/** Set Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public void setDisplayLogic (String DisplayLogic);
+
+	/** Get Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public String getDisplayLogic();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -200,6 +251,21 @@ public interface I_AD_ToolBarButton
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name SeqNo */
+    public static final String COLUMNNAME_SeqNo = "SeqNo";
+
+	/** Set Sequence.
+	  * Method of ordering records;
+ lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo);
+
+	/** Get Sequence.
+	  * Method of ordering records;
+ lowest number comes first
+	  */
+	public int getSeqNo();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
