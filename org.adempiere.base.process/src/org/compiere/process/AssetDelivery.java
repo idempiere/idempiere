@@ -299,7 +299,7 @@ public class AssetDelivery extends SvrProcess
 		//
 		log.fine((System.currentTimeMillis()-start) + " ms");
 		//	success
-		StringBuilder msgreturn = new StringBuilder().append(user.getEMail()).append(" - ").append(asset.getProductVersionNo());
+		StringBuilder msgreturn = new StringBuilder().append(user.getEMail()).append(" - ").append(asset.getVersionNo());
 		return msgreturn.toString();
 	}	//	deliverIt
 

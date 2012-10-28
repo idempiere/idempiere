@@ -31,7 +31,7 @@ public interface I_A_Asset_Info_Tax
     public static final String Table_Name = "A_Asset_Info_Tax";
 
     /** AD_Table_ID=53131 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53131;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -63,6 +63,15 @@ public interface I_A_Asset_Info_Tax
 	/** Get Asset Info Tax	  */
 	public int getA_Asset_Info_Tax_ID();
 
+    /** Column name A_Asset_Info_Tax_UU */
+    public static final String COLUMNNAME_A_Asset_Info_Tax_UU = "A_Asset_Info_Tax_UU";
+
+	/** Set A_Asset_Info_Tax_UU	  */
+	public void setA_Asset_Info_Tax_UU (String A_Asset_Info_Tax_UU);
+
+	/** Get A_Asset_Info_Tax_UU	  */
+	public String getA_Asset_Info_Tax_UU();
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -87,28 +96,28 @@ public interface I_A_Asset_Info_Tax
     /** Column name A_Finance_Meth */
     public static final String COLUMNNAME_A_Finance_Meth = "A_Finance_Meth";
 
-	/** Set Finance Method	  */
+	/** Set Asset Finance Method	  */
 	public void setA_Finance_Meth (String A_Finance_Meth);
 
-	/** Get Finance Method	  */
+	/** Get Asset Finance Method	  */
 	public String getA_Finance_Meth();
 
     /** Column name A_Investment_CR */
     public static final String COLUMNNAME_A_Investment_CR = "A_Investment_CR";
 
-	/** Set Investment Credit	  */
+	/** Set Asset Investment CR	  */
 	public void setA_Investment_CR (int A_Investment_CR);
 
-	/** Get Investment Credit	  */
+	/** Get Asset Investment CR	  */
 	public int getA_Investment_CR();
 
     /** Column name A_New_Used */
     public static final String COLUMNNAME_A_New_Used = "A_New_Used";
 
-	/** Set Purchased New?	  */
+	/** Set Asset New Used	  */
 	public void setA_New_Used (boolean A_New_Used);
 
-	/** Get Purchased New?	  */
+	/** Get Asset New Used	  */
 	public boolean isA_New_Used();
 
     /** Column name A_State */
@@ -127,10 +136,10 @@ public interface I_A_Asset_Info_Tax
     /** Column name A_Tax_Entity */
     public static final String COLUMNNAME_A_Tax_Entity = "A_Tax_Entity";
 
-	/** Set Tax Entity	  */
+	/** Set Asset Tax Entity	  */
 	public void setA_Tax_Entity (String A_Tax_Entity);
 
-	/** Get Tax Entity	  */
+	/** Get Asset Tax Entity	  */
 	public String getA_Tax_Entity();
 
     /** Column name Created */

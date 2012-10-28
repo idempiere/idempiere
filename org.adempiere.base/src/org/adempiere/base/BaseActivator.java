@@ -19,6 +19,12 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Properties;
+
 import org.adempiere.base.equinox.StackTraceCommand;
 import org.compiere.Adempiere;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -44,8 +50,50 @@ public class BaseActivator implements BundleActivator {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
+		//Load Init Properties 
+		loadInitProperties(Adempiere.getAdempiereHome());
 		bundleContext = context;
 		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
+	}
+	
+	/* 
+	 * Load idempiereInit.properties into the system.
+	 */
+	private void loadInitProperties(String filePath)  {
+
+		Properties props = new Properties();
+		String fileName = filePath+ File.separator+"idempiereInit.properties";
+		File env = new File (fileName);
+		boolean loadOk = true;
+		if (env.exists() && env.isFile() && env.canRead())
+		{
+			FileInputStream fis = null;
+			try
+			{
+				fis = new FileInputStream(env);
+				props.load(fis);
+			}catch (Exception e){
+				loadOk = false;
+				System.err.println("Exception while loading idempiereInit.properties: "+ e.toString());
+			}finally{
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (loadOk) {	
+			    String key = null;
+			    String value =null;
+				Enumeration<?> enumeration = props.propertyNames();
+			     while (enumeration.hasMoreElements()) {
+			        key = (String) enumeration.nextElement();
+			        value = props.getProperty(key);
+			        System.setProperty(key,value) ;
+			        //System.out.println("Loaded Key: "+ key + "- Value :"+value);                        
+	            }			
+			}
+		}
 	}
 
 	/* (non-Javadoc)

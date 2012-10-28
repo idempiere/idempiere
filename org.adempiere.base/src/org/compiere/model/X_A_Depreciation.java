@@ -29,7 +29,7 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_A_Depreciation (Properties ctx, int A_Depreciation_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 			setA_Depreciation_ID (0);
 			setDepreciationType (null);
 			setName (null);
-			setProcessed (true);
-// Y
+			setProcessed (false);
+// N
         } */
     }
 
@@ -73,8 +73,8 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
       return sb.toString();
     }
 
-	/** Set Depreciation Type.
-		@param A_Depreciation_ID Depreciation Type	  */
+	/** Set Depreciation.
+		@param A_Depreciation_ID Depreciation	  */
 	public void setA_Depreciation_ID (int A_Depreciation_ID)
 	{
 		if (A_Depreciation_ID < 1) 
@@ -83,14 +83,28 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_ID, Integer.valueOf(A_Depreciation_ID));
 	}
 
-	/** Get Depreciation Type.
-		@return Depreciation Type	  */
+	/** Get Depreciation.
+		@return Depreciation	  */
 	public int getA_Depreciation_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set A_Depreciation_UU.
+		@param A_Depreciation_UU A_Depreciation_UU	  */
+	public void setA_Depreciation_UU (String A_Depreciation_UU)
+	{
+		set_Value (COLUMNNAME_A_Depreciation_UU, A_Depreciation_UU);
+	}
+
+	/** Get A_Depreciation_UU.
+		@return A_Depreciation_UU	  */
+	public String getA_Depreciation_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_Depreciation_UU);
 	}
 
 	/** Set DepreciationType.
@@ -165,15 +179,15 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 		return false;
 	}
 
-	/** Set Text.
-		@param Text Text	  */
+	/** Set Description.
+		@param Text Description	  */
 	public void setText (String Text)
 	{
 		set_Value (COLUMNNAME_Text, Text);
 	}
 
-	/** Get Text.
-		@return Text	  */
+	/** Get Description.
+		@return Description	  */
 	public String getText () 
 	{
 		return (String)get_Value(COLUMNNAME_Text);

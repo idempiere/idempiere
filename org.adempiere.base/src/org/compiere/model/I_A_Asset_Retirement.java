@@ -31,7 +31,7 @@ public interface I_A_Asset_Retirement
     public static final String Table_Name = "A_Asset_Retirement";
 
     /** AD_Table_ID=540 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 540;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_A_Asset_Retirement
 	  */
 	public int getA_Asset_ID();
 
-	public I_A_Asset getA_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Retirement_ID */
     public static final String COLUMNNAME_A_Asset_Retirement_ID = "A_Asset_Retirement_ID";
@@ -68,6 +68,15 @@ public interface I_A_Asset_Retirement
 	  * Internally used asset is not longer used.
 	  */
 	public int getA_Asset_Retirement_ID();
+
+    /** Column name A_Asset_Retirement_UU */
+    public static final String COLUMNNAME_A_Asset_Retirement_UU = "A_Asset_Retirement_UU";
+
+	/** Set A_Asset_Retirement_UU	  */
+	public void setA_Asset_Retirement_UU (String A_Asset_Retirement_UU);
+
+	/** Get A_Asset_Retirement_UU	  */
+	public String getA_Asset_Retirement_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -129,7 +138,7 @@ public interface I_A_Asset_Retirement
 	  */
 	public int getC_InvoiceLine_ID();
 
-	public I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
+	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

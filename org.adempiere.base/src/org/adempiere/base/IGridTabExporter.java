@@ -48,4 +48,9 @@ public interface IGridTabExporter {
 	 * @return mime type
 	 */
 	public String getContentType();
+
+	/**
+	 * @return suggested file name
+	 */
+	public String getSuggestedFileName(GridTab gridTab);
 }

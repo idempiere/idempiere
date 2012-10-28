@@ -33,7 +33,7 @@ public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval_Index (Properties ctx, int A_Asset_Reval_Index_ID, String trxName)
@@ -104,6 +104,20 @@ public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, 
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Reval_Index_ID()));
     }
+
+	/** Set A_Asset_Reval_Index_UU.
+		@param A_Asset_Reval_Index_UU A_Asset_Reval_Index_UU	  */
+	public void setA_Asset_Reval_Index_UU (String A_Asset_Reval_Index_UU)
+	{
+		set_Value (COLUMNNAME_A_Asset_Reval_Index_UU, A_Asset_Reval_Index_UU);
+	}
+
+	/** Get A_Asset_Reval_Index_UU.
+		@return A_Asset_Reval_Index_UU	  */
+	public String getA_Asset_Reval_Index_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_Asset_Reval_Index_UU);
+	}
 
 	/** Set Effective Date.
 		@param A_Effective_Date Effective Date	  */

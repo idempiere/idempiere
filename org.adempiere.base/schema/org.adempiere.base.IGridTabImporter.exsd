@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.adempiere.base" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.adempiere.base" id="org.adempiere.base.IGridTabImporter" name="Grid data import extension"/>
+      </appinfo>
+      <documentation>
+         Extension point to provide import service for data from that is generated from the AD_Window definition. The client in use ( swing or zk ) is responsible to present all available import extension to user to pick the one to use.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="importer"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="importer">
+      <complexType>
+         <attribute name="priority" type="string" use="required">
+            <annotation>
+               <documentation>
+                  numeric priority value, higher value is of higher priority.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Implementation class name for the org.adempiere.base.IGridTabImporter interface
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.adempiere.base.IGridTabImporter"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         1.0.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;pre&gt;
+&lt;extension
+         id=&quot;org.adempiere.impexp.GridTabCSVImporter&quot;
+         name=&quot;Grid data CSV importer&quot;
+         point=&quot;org.adempiere.base.IGridTabImporter&quot;&gt;
+      &lt;importer
+            class=&quot;org.adempiere.impexp.GridTabCSVImporter&quot;
+            priority=&quot;0&quot;&gt;
+      &lt;/importer&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         The class attribute must represent an implementor of org.adempiere.base.IGridTabImporter
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         CSV import in org.adempiere.base
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+          This file is part of iDempiere ERP http://www.idempiere.org.
+                                                                           
+ Copyright (C) Carlos Ruiz
+ Copyright (C) Trek Global
+                                                                           
+ This program is free software; you can redistribute it and/or modify it   
+ under the terms version 2 of the GNU General Public License as published  
+ by the Free Software Foundation. This program is distributed in the hope  
+ that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.          
+ See the GNU General Public License for more details.                      
+ You should have received a copy of the GNU General Public License along   
+ with this program; if not, write to the Free Software Foundation, Inc.,   
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                    
+
+      </documentation>
+   </annotation>
+
+</schema>

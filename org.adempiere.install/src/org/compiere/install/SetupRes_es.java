@@ -61,6 +61,7 @@ public class SetupRes_es extends ListResourceBundle
 	{ "MailServer", 			"Servidor Correo" },
 	{ "AdminEMailInfo", 		"Email Administrador iDempiere" },
 	{ "AdminEMail", 			"Email Admin" },
+	{ "DbExists",				"Base de Datos Existe" },
 	{ "DatabaseServerInfo", 	"Nombre Servidor Base de Datos" },
 	{ "DatabaseServer", 		"Servidor Base de Datos" },
 	{ "JavaHomeInfo", 			"Carpeta Java Home" },

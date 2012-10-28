@@ -31,7 +31,7 @@ public interface I_A_Depreciation_Forecast
     public static final String Table_Name = "A_Depreciation_Forecast";
 
     /** AD_Table_ID=53118 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53118;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -58,6 +58,15 @@ public interface I_A_Depreciation_Forecast
 	/** Get Depreciation Forecast	  */
 	public int getA_Depreciation_Forecast_ID();
 
+    /** Column name A_Depreciation_Forecast_UU */
+    public static final String COLUMNNAME_A_Depreciation_Forecast_UU = "A_Depreciation_Forecast_UU";
+
+	/** Set A_Depreciation_Forecast_UU	  */
+	public void setA_Depreciation_Forecast_UU (String A_Depreciation_Forecast_UU);
+
+	/** Get A_Depreciation_Forecast_UU	  */
+	public String getA_Depreciation_Forecast_UU();
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -74,24 +83,24 @@ public interface I_A_Depreciation_Forecast
     /** Column name A_End_Asset_ID */
     public static final String COLUMNNAME_A_End_Asset_ID = "A_End_Asset_ID";
 
-	/** Set End Aset ID	  */
+	/** Set To Asset	  */
 	public void setA_End_Asset_ID (int A_End_Asset_ID);
 
-	/** Get End Aset ID	  */
+	/** Get To Asset	  */
 	public int getA_End_Asset_ID();
 
-	public I_A_Asset getA_End_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_End_Asset() throws RuntimeException;
 
     /** Column name A_Start_Asset_ID */
     public static final String COLUMNNAME_A_Start_Asset_ID = "A_Start_Asset_ID";
 
-	/** Set Start Asset	  */
+	/** Set From Asset	  */
 	public void setA_Start_Asset_ID (int A_Start_Asset_ID);
 
-	/** Get Start Asset	  */
+	/** Get From Asset	  */
 	public int getA_Start_Asset_ID();
 
-	public I_A_Asset getA_Start_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Start_Asset() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

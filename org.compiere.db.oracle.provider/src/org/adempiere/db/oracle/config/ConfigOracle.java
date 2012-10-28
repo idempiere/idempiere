@@ -325,7 +325,7 @@ public class ConfigOracle implements IDatabaseConfig
 		log.info("OK: Database Port = " + databasePort);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PORT, String.valueOf(databasePort));
 
-
+		boolean  isDBExists =  data.getDatabaseExists();
 		//	JDBC Database Info
 		String databaseName = data.getDatabaseName();	//	Service Name
 		String systemPassword = data.getDatabaseSystemPassword();
@@ -334,8 +334,13 @@ public class ConfigOracle implements IDatabaseConfig
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SYSTEM_PASSWORD, "ErrorJDBC",
 				pass, true,	error));
-		if (!pass)
-			return error;
+		if (!pass) {
+			if (isDBExists) {
+				log.warning(error);
+			} else {
+				return error;
+			}
+		}
 		//
 		//	URL (derived)	jdbc:oracle:thin:@//prod1:1521/prod1
 		String url = "jdbc:oracle:thin:@//" + databaseServer.getHostName()
@@ -371,7 +376,7 @@ public class ConfigOracle implements IDatabaseConfig
 		error = "Cannot connect to User: " + databaseUser + "/" + databasePassword + " - Database may not be imported yet (OK on initial run).";
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC",
-				pass, false, error));
+				pass, true, error));
 		if (pass)
 		{
 			log.info("OK: Database User = " + databaseUser);
@@ -379,10 +384,16 @@ public class ConfigOracle implements IDatabaseConfig
 				data.setProperty(ConfigurationData.ADEMPIERE_WEBSTORES, data.getWebStores(m_con));
 		}
 		else
-			log.warning(error);
+		{
+			if (isDBExists) {
+			   return error;
+			} else {
+				log.warning(error);
+			}
+		}
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_USER, databaseUser);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PASSWORD, databasePassword);
-
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_EXISTS, (isDBExists ? "Y" : "N"));		
 		String ospath;
 		if (System.getProperty("os.name").startsWith("Windows"))
 			ospath = "windows";

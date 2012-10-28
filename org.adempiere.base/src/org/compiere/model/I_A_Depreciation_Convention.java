@@ -31,7 +31,7 @@ public interface I_A_Depreciation_Convention
     public static final String Table_Name = "A_Depreciation_Convention";
 
     /** AD_Table_ID=53125 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53125;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -57,6 +57,15 @@ public interface I_A_Depreciation_Convention
 
 	/** Get Depreciation Convention	  */
 	public int getA_Depreciation_Convention_ID();
+
+    /** Column name A_Depreciation_Convention_UU */
+    public static final String COLUMNNAME_A_Depreciation_Convention_UU = "A_Depreciation_Convention_UU";
+
+	/** Set A_Depreciation_Convention_UU	  */
+	public void setA_Depreciation_Convention_UU (String A_Depreciation_Convention_UU);
+
+	/** Get A_Depreciation_Convention_UU	  */
+	public String getA_Depreciation_Convention_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

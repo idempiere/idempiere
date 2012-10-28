@@ -31,7 +31,7 @@ public interface I_A_Asset_Spread
     public static final String Table_Name = "A_Asset_Spread";
 
     /** AD_Table_ID=53126 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53126;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -44,20 +44,29 @@ public interface I_A_Asset_Spread
     /** Column name A_Asset_Spread_ID */
     public static final String COLUMNNAME_A_Asset_Spread_ID = "A_Asset_Spread_ID";
 
-	/** Set Asset Spread	  */
+	/** Set A_Asset_Spread_ID	  */
 	public void setA_Asset_Spread_ID (int A_Asset_Spread_ID);
 
-	/** Get Asset Spread	  */
+	/** Get A_Asset_Spread_ID	  */
 	public int getA_Asset_Spread_ID();
 
     /** Column name A_Asset_Spread_Type */
     public static final String COLUMNNAME_A_Asset_Spread_Type = "A_Asset_Spread_Type";
 
-	/** Set Asset Spread Type	  */
+	/** Set Spread Type	  */
 	public void setA_Asset_Spread_Type (String A_Asset_Spread_Type);
 
-	/** Get Asset Spread Type	  */
+	/** Get Spread Type	  */
 	public String getA_Asset_Spread_Type();
+
+    /** Column name A_Asset_Spread_UU */
+    public static final String COLUMNNAME_A_Asset_Spread_UU = "A_Asset_Spread_UU";
+
+	/** Set A_Asset_Spread_UU	  */
+	public void setA_Asset_Spread_UU (String A_Asset_Spread_UU);
+
+	/** Get A_Asset_Spread_UU	  */
+	public String getA_Asset_Spread_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";

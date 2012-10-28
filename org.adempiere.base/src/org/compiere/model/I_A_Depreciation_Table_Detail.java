@@ -31,7 +31,7 @@ public interface I_A_Depreciation_Table_Detail
     public static final String Table_Name = "A_Depreciation_Table_Detail";
 
     /** AD_Table_ID=53113 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53113;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,6 +76,15 @@ public interface I_A_Depreciation_Table_Detail
 	/** Get Depreciation Table Detail	  */
 	public int getA_Depreciation_Table_Detail_ID();
 
+    /** Column name A_Depreciation_Table_Detail_UU */
+    public static final String COLUMNNAME_A_Depreciation_Table_Detail_UU = "A_Depreciation_Table_Detail_UU";
+
+	/** Set A_Depreciation_Table_Detail_UU	  */
+	public void setA_Depreciation_Table_Detail_UU (String A_Depreciation_Table_Detail_UU);
+
+	/** Get A_Depreciation_Table_Detail_UU	  */
+	public String getA_Depreciation_Table_Detail_UU();
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -92,10 +101,10 @@ public interface I_A_Depreciation_Table_Detail
     /** Column name A_Period */
     public static final String COLUMNNAME_A_Period = "A_Period";
 
-	/** Set Period/Yearly	  */
+	/** Set Asset Period	  */
 	public void setA_Period (int A_Period);
 
-	/** Get Period/Yearly	  */
+	/** Get Asset Period	  */
 	public int getA_Period();
 
     /** Column name A_Table_Rate_Type */

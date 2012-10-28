@@ -94,7 +94,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4648364477309024202L;
+	private static final long serialVersionUID = 2328810326636468776L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 
@@ -2040,10 +2040,12 @@ public class GridTable extends AbstractTableModel
 		//
 		MTable table = MTable.get (m_ctx, m_AD_Table_ID);
 		PO po = null;
+		if (! m_importing) // Just use trx when importing
+			m_trxName = null;
 		if (Record_ID != -1)
-			po = table.getPO(Record_ID, null);
+			po = table.getPO(Record_ID, m_trxName);
 		else	//	Multi - Key
-			po = table.getPO(getWhereClause(rowData), null);
+			po = table.getPO(getWhereClause(rowData), m_trxName);
 		//	No Persistent Object
 		if (po == null)
 			throw new ClassNotFoundException ("No Persistent Object");
@@ -2373,6 +2375,10 @@ public class GridTable extends AbstractTableModel
 
 	/**	LOB Info				*/
 	private ArrayList<PO_LOB>	m_lobInfo = null;
+
+	// IDEMPIERE-454 Easy import
+	private boolean m_importing = false;
+	private String m_trxName = null;
 
 	/**
 	 * 	Reset LOB info
@@ -3707,10 +3713,19 @@ public class GridTable extends AbstractTableModel
 		PO po = null;
 		int Record_ID = getKeyID(row);
 		if (Record_ID != -1)
-			po = table.getPO(Record_ID, null);
+			po = table.getPO(Record_ID, m_trxName);
 		else	//	Multi - Key
-			po = table.getPO(getWhereClause(getDataAtRow(row)), null);
+			po = table.getPO(getWhereClause(getDataAtRow(row)), m_trxName);
 		return po;
+	}
+
+	public void setImportingMode(boolean importing, String trxName) {
+		m_importing = importing;
+		m_trxName = trxName;
+	}
+
+	public boolean isImporting() {
+		return m_importing;
 	}
 	
 }

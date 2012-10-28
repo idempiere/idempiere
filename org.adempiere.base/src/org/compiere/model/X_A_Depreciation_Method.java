@@ -30,7 +30,7 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Method (Properties ctx, int A_Depreciation_Method_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
       /** if (A_Depreciation_Method_ID == 0)
         {
 			setA_Depreciation_Method_ID (0);
-			setProcessed (true);
-// Y
+			setProcessed (false);
+// N
         } */
     }
 
@@ -72,8 +72,8 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
       return sb.toString();
     }
 
-	/** Set Depreciation Calculation Type.
-		@param A_Depreciation_Method_ID Depreciation Calculation Type	  */
+	/** Set Depreciation Method.
+		@param A_Depreciation_Method_ID Depreciation Method	  */
 	public void setA_Depreciation_Method_ID (int A_Depreciation_Method_ID)
 	{
 		if (A_Depreciation_Method_ID < 1) 
@@ -82,8 +82,8 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Method_ID, Integer.valueOf(A_Depreciation_Method_ID));
 	}
 
-	/** Get Depreciation Calculation Type.
-		@return Depreciation Calculation Type	  */
+	/** Get Depreciation Method.
+		@return Depreciation Method	  */
 	public int getA_Depreciation_Method_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Method_ID);
@@ -99,6 +99,20 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Depreciation_Method_ID()));
     }
+
+	/** Set A_Depreciation_Method_UU.
+		@param A_Depreciation_Method_UU A_Depreciation_Method_UU	  */
+	public void setA_Depreciation_Method_UU (String A_Depreciation_Method_UU)
+	{
+		set_Value (COLUMNNAME_A_Depreciation_Method_UU, A_Depreciation_Method_UU);
+	}
+
+	/** Get A_Depreciation_Method_UU.
+		@return A_Depreciation_Method_UU	  */
+	public String getA_Depreciation_Method_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_Depreciation_Method_UU);
+	}
 
 	/** Set DepreciationType.
 		@param DepreciationType DepreciationType	  */
@@ -172,15 +186,15 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
 		return false;
 	}
 
-	/** Set Text.
-		@param Text Text	  */
+	/** Set Description.
+		@param Text Description	  */
 	public void setText (String Text)
 	{
 		set_Value (COLUMNNAME_Text, Text);
 	}
 
-	/** Get Text.
-		@return Text	  */
+	/** Get Description.
+		@return Description	  */
 	public String getText () 
 	{
 		return (String)get_Value(COLUMNNAME_Text);

@@ -33,7 +33,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120821L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -1099,6 +1099,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public static final String PRODUCTTYPE_ExpenseType = "E";
 	/** Online = O */
 	public static final String PRODUCTTYPE_Online = "O";
+	/** Asset = A */
+	public static final String PRODUCTTYPE_Asset = "A";
 	/** Set Product Type.
 		@param ProductType 
 		Type of product

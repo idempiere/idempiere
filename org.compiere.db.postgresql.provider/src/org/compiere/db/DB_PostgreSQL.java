@@ -47,6 +47,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -175,11 +176,17 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getConnectionURL (CConnection connection)
 	{
 		//  jdbc:postgresql://hostname:portnumber/databasename?encoding=UNICODE
-		StringBuffer sb = new StringBuffer("jdbc:postgresql:");
-		sb.append("//").append(connection.getDbHost())
+		StringBuilder sb = new StringBuilder("jdbc:postgresql://")
+			.append(connection.getDbHost())
 			.append(":").append(connection.getDbPort())
 			.append("/").append(connection.getDbName())
 			.append("?encoding=UNICODE");
+
+		String urlParameters = System.getProperty("org.idempiere.postgresql.URLParameters");
+	    if (!Util.isEmpty(urlParameters)) {
+   			sb.append("&").append(urlParameters);  
+	    }
+
 		m_connection = sb.toString();
 		return m_connection;
 	}   //  getConnectionString
@@ -195,8 +202,17 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getConnectionURL (String dbHost, int dbPort, String dbName,
 		String userName)
 	{
-		return "jdbc:postgresql://"
-			+ dbHost + ":" + dbPort + "/" + dbName;
+		StringBuilder sb = new StringBuilder("jdbc:postgresql://")
+			.append(dbHost)
+			.append(":").append(dbPort)
+			.append("/").append(dbName);
+
+		String urlParameters = System.getProperty("org.idempiere.postgresql.URLParameters") ;
+	    if (!Util.isEmpty(urlParameters)) {
+			sb.append("?").append(urlParameters);  
+		}
+
+		return sb.toString();
 	}	//	getConnectionURL
 
         	/**
