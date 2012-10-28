@@ -456,6 +456,8 @@ public class DetailPane extends Panel implements EventListener<Event> {
         			btn.setDisabled(!enableNew);
         		} else if (DELETE_IMAGE.equals(btn.getImage())) {
         			btn.setDisabled(!enableDelete);
+        		} else if (EDIT_IMAGE.equals(btn.getImage())) {
+        			btn.setDisabled(false);
         		}
         	}        	
         }

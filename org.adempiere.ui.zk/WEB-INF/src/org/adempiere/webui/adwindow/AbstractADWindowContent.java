@@ -947,7 +947,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	{
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
     		onModalClose(dialog.getProcessInfo());
-    		onRefresh(false, false);
+    		onRefresh(true, false);
     	}
     	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
     	{
@@ -1088,8 +1088,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	private void updateToolbar()
 	{
-//		toolbar.enableTabNavigation(adTab.getSelectedGridTab()Index > 0,
-//		        adTab.getSelectedGridTab()Index < (adTab.getTabCount() - 1));
 		toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
 
 		toolbar.getButton("Attachment").setPressed(adTabbox.getSelectedGridTab().hasAttachment());
@@ -1108,6 +1106,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
         else
         	toolbar.enableCustomize(false);
+
 	}
 
 	/**
@@ -1263,12 +1262,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	}
         }
 
-        toolbar.enableSave(adTabbox.needSave(true, false));
-        if (detailTab) {
-        	ToolBarButton btn = toolbar.getButton("SaveCreate");
-        	if (btn != null && !btn.isDisabled())
-        		btn.setDisabled(true);
-        }
+        toolbar.enableSave(adTabbox.needSave(true, false) ||
+        		adTabbox.getSelectedGridTab().isNew() ||
+        		(adTabbox.getSelectedDetailADTabpanel() != null && adTabbox.getSelectedDetailADTabpanel().getGridTab().isNew()));
+
         //
         //  No Rows
         if (e.getTotalRows() == 0 && insertRecord && !detailTab)
@@ -1435,8 +1432,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 			            toolbar.enableNew(false);
 			            toolbar.enableDelete(false);
-			            breadCrumb.enableNavigation(false);
-			            toolbar.enableTabNavigation(false);
+			            breadCrumb.enableFirstNavigation(adTabbox.getSelectedGridTab().getCurrentRow() > 0);
+			            breadCrumb.enableLastNavigation(adTabbox.getSelectedGridTab().getCurrentRow() + 1 < adTabbox.getSelectedGridTab().getRowCount());
+			            toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
 			            toolbar.enableIgnore(true);
 			            toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
 			            toolbar.enableReport(true);
@@ -1469,7 +1467,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             adTabbox.getSelectedTabpanel().dynamicDisplay(0);
             toolbar.enableNew(false);
             toolbar.enableDelete(false);
-            breadCrumb.enableNavigation(false);
+            breadCrumb.enableFirstNavigation(adTabbox.getSelectedGridTab().getCurrentRow() > 0);
+            breadCrumb.enableLastNavigation(adTabbox.getSelectedGridTab().getCurrentRow() + 1 < adTabbox.getSelectedGridTab().getRowCount());
             toolbar.enableTabNavigation(false);
             toolbar.enableIgnore(true);
             toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());

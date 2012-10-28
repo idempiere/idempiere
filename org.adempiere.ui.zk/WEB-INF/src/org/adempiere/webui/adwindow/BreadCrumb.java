@@ -243,27 +243,19 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 		layout.appendChild(toolbarContainer);
 		this.links = null;
 	}
-	
-    private void enableFirstNavigation(boolean enabled)
+
+    public void enableFirstNavigation(boolean enabled)
     {
         this.btnFirst.setDisabled(!enabled);
         this.btnPrevious.setDisabled(!enabled);
     }
 
-    private void enableLastNavigation(boolean enabled)
+    public void enableLastNavigation(boolean enabled)
     {
         this.btnLast.setDisabled(!enabled);
         this.btnNext.setDisabled(!enabled);
     }
-    
-	public void enableNavigation(boolean enabled)
-    {
-        this.btnFirst.setDisabled(!enabled);
-        this.btnPrevious.setDisabled(!enabled);
-        this.btnNext.setDisabled(!enabled);
-        this.btnLast.setDisabled(!enabled);
-    }
-	
+
 	private ToolBarButton createButton(String name, String image, String tooltip)
     {
     	ToolBarButton btn = new ToolBarButton("");
