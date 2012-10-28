@@ -308,6 +308,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			ctx.put(ZK_DESKTOP_SESSION_KEY, this.getPage().getDesktop());
 		}
 		
+		//ensure server push is on
+		if (!this.getPage().getDesktop().isServerPushEnabled())
+			this.getPage().getDesktop().enableServerPush(true);
+		
 		//update session context
 		currSess.setAttribute(SessionContextListener.SESSION_CTX, ServerContext.getCurrentInstance());
 		

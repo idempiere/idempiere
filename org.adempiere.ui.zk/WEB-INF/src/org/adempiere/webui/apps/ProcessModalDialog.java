@@ -447,9 +447,22 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 
 	@Override
 	public void unlockUI(ProcessInfo pi) {
-		if (!isLocked || Executions.getCurrent() == null)
+		if (!isLocked)
 			return;
 		
+		if (Executions.getCurrent() == null) {
+			Executions.schedule(getDesktop(), new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					doUnlockUI();
+				}
+			}, new Event("onUnLockUI"));
+		} else {		
+			doUnlockUI();
+		}
+	}
+	
+	private void doUnlockUI() {
 		hideBusyDialog();
 		isLocked = false;
 	}
