@@ -111,7 +111,7 @@ public class GridWindowVO implements Serializable
 
 		StringBuffer sql = new StringBuffer("SELECT Name,Description,Help,WindowType, "
 			+ "AD_Color_ID,AD_Image_ID,WinHeight,WinWidth, "
-			+ "IsSOTrx ");
+			+ "IsSOTrx, AD_Window_UU ");
 
 		if (Env.isBaseLanguage(vo.ctx, "AD_Window"))
 			sql.append("FROM AD_Window w WHERE w.AD_Window_ID=? AND w.IsActive='Y'");
@@ -148,6 +148,7 @@ public class GridWindowVO implements Serializable
 				vo.WinWidth = rs.getInt(8);
 				//
 				vo.IsSOTrx = "Y".equals(rs.getString(9));
+				vo.AD_Window_UU = rs.getString(10);
 			}
 			else
 				vo = null;
@@ -288,6 +289,8 @@ public class GridWindowVO implements Serializable
 
 	/** Window				*/
 	public	int			AD_Window_ID = 0;
+	/** Window UUID			*/
+	public String		AD_Window_UU = "";
 	/** Name				*/
 	public	String		Name = "";
 	/** Desription			*/

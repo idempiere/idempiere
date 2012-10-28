@@ -101,6 +101,8 @@ public class GridTabVO implements Evaluatee, Serializable
 		{
 			vo.AD_Tab_ID = rs.getInt("AD_Tab_ID");
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_ID, String.valueOf(vo.AD_Tab_ID));
+			vo.AD_Tab_UU = rs.getString("AD_Tab_UU");
+			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_UU, vo.AD_Tab_UU);
 			// FR IDEMPIERE-177
 			MUserDefTab userDef = MUserDefTab.get(vo.ctx, vo.AD_Tab_ID, vo.AD_Window_ID);
 			vo.Name = rs.getString("Name");
@@ -161,6 +163,9 @@ public class GridTabVO implements Evaluatee, Serializable
 					+ vo.AD_Tab_ID + " " + vo. Name);
 				return false;
 			}
+			vo.AD_Table_UU = rs.getString("AD_Table_UU");
+			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Table_UU, vo.AD_Table_UU);
+			
 			if (rs.getString("IsReadOnly").equals("Y"))
 				vo.IsReadOnly = true;
 			if (userDef != null && userDef.get_ValueAsString("ReadOnlyLogic") != null)
@@ -240,6 +245,7 @@ public class GridTabVO implements Evaluatee, Serializable
 				vo.TabLevel = 0;
 			//
 			vo.IsSortTab = rs.getString("IsSortTab").equals("Y");
+			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsSortTab, vo.IsSortTab ? "Y" : "N");
 			if (vo.IsSortTab)
 			{
 				vo.AD_ColumnSortOrder_ID = rs.getInt("AD_ColumnSortOrder_ID");
@@ -388,6 +394,8 @@ public class GridTabVO implements Evaluatee, Serializable
 
 	/**	Tab	ID			*/
 	public	int		    AD_Tab_ID;
+	/** Tab UUID		*/
+	public  String		AD_Tab_UU;
 	/** Name			*/
 	public	String	    Name = "";
 	/** Description		*/
@@ -404,6 +412,8 @@ public class GridTabVO implements Evaluatee, Serializable
 	public  boolean	    HasTree = false;
 	/** Table			*/
 	public  int		    AD_Table_ID;
+	/** Table UUID		*/
+	public  String		AD_Table_UU;
 	/** Primary Link Column   */
 	public  int		    AD_Column_ID = 0;
 	/** Parent Tab Link Column */

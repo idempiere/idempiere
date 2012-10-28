@@ -604,5 +604,9 @@ public class GridWindow implements Serializable
 		return m_modelUpdated;
 	}	//	getModelUpdated
 
+	public String getAD_Window_UU() {
+		return m_vo.AD_Window_UU;
+	}
+
 	
 }	//	MWindow
