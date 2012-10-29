@@ -91,6 +91,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
     private ToolBarButton btnCustomize;
 
+    private ToolBarButton btnExport;
     private ToolBarButton btnFileImport;
 
     private ToolBarButton btnProcess;
@@ -188,6 +189,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnArchive.setDisabled(false); // Elaine 2008/07/28
         btnLock.setDisabled(!isPersonalLock); // Elaine 2008/12/04
 
+        if (MRole.getDefault().isCanExport())
+        {
+        	btnExport = createButton("Export", "Export", "Export");
+        }
         btnFileImport = createButton("FileImport", "FileImport", "FileImport");
 
         configureKeyMap();
@@ -541,6 +546,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	 */
 	public void setWindowNo(int windowNo) {
 		this.windowNo = windowNo;
+	}
+
+	/**
+	 * Enable/disable export button
+	 * @param b
+	 */
+	public void enableExport(boolean b) {
+		if (btnExport != null)
+			btnExport.setDisabled(!b);
 	}
 
 	/**
