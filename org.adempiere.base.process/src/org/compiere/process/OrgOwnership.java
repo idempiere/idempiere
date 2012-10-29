@@ -140,7 +140,7 @@ public class OrgOwnership extends SvrProcess
 	
 		//	Set Storage
 		sql = new StringBuilder();
-		sql.append("UPDATE M_Storage s ")
+		sql.append("UPDATE M_StorageOnHand	 s ")
 			.append("SET AD_Org_ID=").append(p_AD_Org_ID)
 			.append(" WHERE EXISTS ")
 				.append("(SELECT * FROM M_Locator l WHERE l.M_Locator_ID=s.M_Locator_ID")

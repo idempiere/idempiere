@@ -143,7 +143,6 @@ public class M_Production_Run extends SvrProcess {
 							{
 								BigDecimal QtyAvailable = MStorageReservation.getQtyAvailable(
 										locator.getM_Warehouse_ID(), 
-										locator.getM_Locator_ID(), 
 										pline.getM_Product_ID(), 
 										pline.getM_AttributeSetInstance_ID(),
 										get_TrxName());

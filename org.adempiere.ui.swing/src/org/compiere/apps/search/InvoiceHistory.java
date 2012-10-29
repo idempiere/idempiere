@@ -566,7 +566,7 @@ public class InvoiceHistory extends CDialog
 			sql = "SELECT SUM(s.QtyOnHand), SUM(s.QtyReserved), SUM(s.QtyOrdered),"
 				+ " productAttribute(s.M_AttributeSetInstance_ID), 0,";
 		sql += " w.Name, l.Value "
-			+ "FROM M_Storage s"
+			+ "FROM M_StorageOnHand s"
 			+ " INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)"
 			+ " INNER JOIN M_Warehouse w ON (l.M_Warehouse_ID=w.M_Warehouse_ID) "
 			+ "WHERE M_Product_ID=?";

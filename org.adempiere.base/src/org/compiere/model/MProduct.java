@@ -580,8 +580,7 @@ public class MProduct extends X_M_Product
 			for (int i = 0; i < onHandStorages.length; i++)
 			{
 				OnHand = OnHand.add(onHandStorages[i].getQtyOnHand());
-				//Ordered = Ordered.add(storages[i].getQtyOrdered());
-				//Reserved = Reserved.add(storages[i].getQtyReserved());
+
 			}
 			for (int i = 0; i < reservationStorages.length; i++)
 			{
@@ -720,26 +719,23 @@ public class MProduct extends X_M_Product
 		//	Check Storage
 		if (isStocked() || PRODUCTTYPE_Item.equals(getProductType()))
 		{
-			// large modified related to storages by zuhri
 			MStorageOnHand[] onHandStorages = MStorageOnHand.getOfProduct(getCtx(), get_ID(), get_TrxName());
-			MStorageReservation[] reservationStorages = MStorageReservation.getOfProduct(getCtx(), get_ID(), get_TrxName());
+			MStorageReservation[] reserves = MStorageReservation.getOfProduct(getCtx(), get_ID(), get_TrxName());
+
 			BigDecimal OnHand = Env.ZERO;
 			BigDecimal Ordered = Env.ZERO;
 			BigDecimal Reserved = Env.ZERO;
 			for (int i = 0; i < onHandStorages.length; i++)
 			{
 				OnHand = OnHand.add(onHandStorages[i].getQtyOnHand());
-				//Ordered = Ordered.add(storages[i].getQtyOrdered());
-				//Reserved = Reserved.add(storages[i].getQtyReserved());
 			}
-			for (int i = 0; i < reservationStorages.length; i++)
-			{
-				if(reservationStorages[i].isSOTrx())
-					Reserved = Reserved.add(reservationStorages[i].getQty());
-				else
-					Ordered = Ordered.add(reservationStorages[i].getQty());
+
+			for (int i = 0; i < reserves.length; i++)
+			{               
+				Ordered = OnHand.add(reserves[i].getQtyOrdered());
+				Reserved = OnHand.add(reserves[i].getQtyReserved());
 			}
-			// end large modified related to storages by zuhri
+
 			String errMsg = "";
 			if (OnHand.signum() != 0)
 				errMsg = "@QtyOnHand@ = " + OnHand;

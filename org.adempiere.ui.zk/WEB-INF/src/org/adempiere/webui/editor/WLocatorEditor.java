@@ -349,7 +349,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 			sql.append(" AND (IsDefault='Y' ")						//	Default Locator
 				.append("OR EXISTS (SELECT * FROM M_Product p ")	//	Product Locator
 				.append("WHERE p.M_Locator_ID=M_Locator.M_Locator_ID AND p.M_Product_ID=?)")
-				.append("OR EXISTS (SELECT * FROM M_Storage s ")	//	Storage Locator
+				.append("OR EXISTS (SELECT * FROM M_StorageOnHand s ")	//	Storage Locator
 				.append("WHERE s.M_Locator_ID=M_Locator.M_Locator_ID AND s.M_Product_ID=?))");
 		
 		String finalSql = MRole.getDefault(Env.getCtx(), false).addAccessSQL(

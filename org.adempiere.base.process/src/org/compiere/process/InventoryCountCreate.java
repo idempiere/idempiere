@@ -135,13 +135,13 @@ public class InventoryCountCreate extends SvrProcess
 		//	Create Null Storage records
 		if (p_QtyRange != null && p_QtyRange.equals("="))
 		{
-			StringBuilder sql = new StringBuilder("INSERT INTO M_Storage ");
+			StringBuilder sql = new StringBuilder("INSERT INTO M_StorageOnHand ");
 								sql.append("(AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,");
 								sql.append(" M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,");
-								sql.append(" QtyOnHand, QtyReserved, QtyOrdered, DateLastInventory) ");
+								sql.append(" QtyOnHand, DateLastInventory) ");
 								sql.append("SELECT l.AD_CLIENT_ID, l.AD_ORG_ID, 'Y', SysDate, 0,SysDate, 0,");
 								sql.append(" l.M_Locator_ID, p.M_Product_ID, 0,");
-								sql.append(" 0,0,0,null ");
+								sql.append(" 0,null ");
 								sql.append("FROM M_Locator l");
 								sql.append(" INNER JOIN M_Product p ON (l.AD_Client_ID=p.AD_Client_ID) ");
 								sql.append("WHERE l.M_Warehouse_ID=");
@@ -151,7 +151,7 @@ public class InventoryCountCreate extends SvrProcess
 				sql.append(" AND l.M_Locator_ID=").append(p_M_Locator_ID);
 			sql.append(" AND l.IsDefault='Y'")
 				.append(" AND p.IsActive='Y' AND p.IsStocked='Y' and p.ProductType='I'")
-				.append(" AND NOT EXISTS (SELECT * FROM M_Storage s")
+				.append(" AND NOT EXISTS (SELECT * FROM M_StorageOnHand s")
 					.append(" INNER JOIN M_Locator sl ON (s.M_Locator_ID=sl.M_Locator_ID) ")
 					.append("WHERE sl.M_Warehouse_ID=l.M_Warehouse_ID")
 						.append(" AND s.M_Product_ID=p.M_Product_ID)");
@@ -162,7 +162,7 @@ public class InventoryCountCreate extends SvrProcess
 		StringBuilder sql = new StringBuilder("SELECT s.M_Product_ID, s.M_Locator_ID, s.M_AttributeSetInstance_ID,");
 							   sql.append(" s.QtyOnHand, p.M_AttributeSet_ID ");
 							   sql.append("FROM M_Product p");
-							   sql.append(" INNER JOIN M_Storage s ON (s.M_Product_ID=p.M_Product_ID)");
+							   sql.append(" INNER JOIN M_StorageOnHand s ON (s.M_Product_ID=p.M_Product_ID)");
 							   sql.append(" INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID) ");
 							   sql.append("WHERE l.M_Warehouse_ID=?");
 							   sql.append(" AND p.IsActive='Y' AND p.IsStocked='Y' and p.ProductType='I'");

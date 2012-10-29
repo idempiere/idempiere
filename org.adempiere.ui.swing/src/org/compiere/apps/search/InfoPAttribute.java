@@ -512,7 +512,7 @@ public class InfoPAttribute extends CDialog
 		//	finish Instance Attributes
 		if (sb.length() > 0)
 		{
-			sb.insert(0, " AND EXISTS (SELECT * FROM M_Storage s"
+			sb.insert(0, " AND EXISTS (SELECT * FROM M_StorageOnHand s"
 				+ " INNER JOIN M_AttributeSetInstance asi ON (s.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID) "
 				+ "WHERE s.M_Product_ID=p.M_Product_ID");
 			sb.append(")");

@@ -271,10 +271,10 @@ public class ReplenishReportProduction extends SvrProcess
 		sql = new StringBuilder("UPDATE T_Replenish t SET ");
 			sql.append("QtyOnHand = (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
 				sql.append(" AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),");
-			sql.append("QtyReserved = (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
-				sql.append(" AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),");
-			sql.append("QtyOrdered = (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
-				sql.append(" AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID)");
+			sql.append("QtyReserved = (SELECT COALESCE(SUM(QtyReserved),0) FROM M_StorageReservation s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
+				sql.append(" AND l.M_Warehouse_ID=t.M_Warehouse_ID),");
+			sql.append("QtyOrdered = (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_StorageReservation s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
+				sql.append(" AND l.M_Warehouse_ID=t.M_Warehouse_ID)");
 		if (p_C_DocType_ID != 0)
 			sql.append(", C_DocType_ID=").append(p_C_DocType_ID);
 		sql.append(" WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());

@@ -173,7 +173,7 @@ public class WPAttributeInstance extends Window implements EventListener
 		new ColumnInfo(Msg.translate(Env.getCtx(), "ShelfLifeRemainingPct"), "CASE WHEN p.GuaranteeDays > 0 THEN TRUNC(((daysbetween(asi.GuaranteeDate, SYSDATE))/p.GuaranteeDays)*100) ELSE 0 END", Integer.class),
 	};
 	/**	From Clause							*/
-	private static String s_sqlFrom = "M_Storage s"
+	private static String s_sqlFrom = "M_StorageOnHand s"
 		+ " INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)"
 		+ " INNER JOIN M_Product p ON (s.M_Product_ID=p.M_Product_ID)"
 		+ " LEFT OUTER JOIN M_AttributeSetInstance asi ON (s.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID)";

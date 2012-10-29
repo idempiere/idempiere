@@ -68,7 +68,7 @@ public class StorageCleanup extends SvrProcess
 	{
 		log.info("");
 		//	Clean up empty Storage
-		String sql = "DELETE FROM M_Storage "
+		String sql = "DELETE FROM M_StorageOnHand "
 			+ "WHERE QtyOnHand = 0 AND QtyReserved = 0 AND QtyOrdered = 0"
 			+ " AND Created < SysDate-3";
 		int no = DB.executeUpdate(sql, get_TrxName());
@@ -76,7 +76,7 @@ public class StorageCleanup extends SvrProcess
 		
 		//
 		sql = "SELECT * "
-			+ "FROM M_Storage s "
+			+ "FROM M_StorageOnHand s "
 			+ "WHERE AD_Client_ID = ?"
 			+ " AND QtyOnHand < 0"
 			//	Instance Attribute
@@ -89,7 +89,7 @@ public class StorageCleanup extends SvrProcess
 		//		+ " AND s.M_Product_ID=sl.M_Product_ID"
 		//		+ " AND s.M_Locator_ID=sl.M_Locator_ID)"
 			//	Stock in same Warehouse
-			+ " AND EXISTS (SELECT * FROM M_Storage sw"
+			+ " AND EXISTS (SELECT * FROM M_StorageOnHand sw"
 				+ " INNER JOIN M_Locator swl ON (sw.M_Locator_ID=swl.M_Locator_ID), M_Locator sl "
 				+ "WHERE sw.QtyOnHand > 0"
 				+ " AND s.M_Product_ID=sw.M_Product_ID"
@@ -250,7 +250,7 @@ public class StorageCleanup extends SvrProcess
 	{
 		ArrayList<MStorageOnHand> list = new ArrayList<MStorageOnHand>();
 		String sql = "SELECT * "
-			+ "FROM M_Storage s "
+			+ "FROM M_StorageOnHand s "
 			+ "WHERE QtyOnHand > 0"
 			+ " AND M_Product_ID=?"
 			//	Empty ASI

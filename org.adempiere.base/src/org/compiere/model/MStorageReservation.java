@@ -105,6 +105,13 @@ public class MStorageReservation extends X_M_StorageReservation {
 		return qty;
 	}
 	
+	
+	public static BigDecimal getQtyOrdered (int M_Warehouse_ID, 
+			int M_Product_ID, int M_AttributeSetInstance_ID, String trxName)
+	{
+		BigDecimal retValue = null;
+		return retValue;
+	}
 	/**
 	 * 	Get Available Qty.
 	 * 	The call is accurate only if there is a storage record 
@@ -122,6 +129,16 @@ public class MStorageReservation extends X_M_StorageReservation {
 		BigDecimal qtyReserved = getQtyReserved(M_Product_ID, M_Warehouse_ID, M_AttributeSetInstance_ID, trxName);
 		BigDecimal retValue = qtyOnHand.subtract(qtyReserved);
 		return retValue;
+	}
+
+	public BigDecimal getQtyOrdered() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public BigDecimal getQtyReserved() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

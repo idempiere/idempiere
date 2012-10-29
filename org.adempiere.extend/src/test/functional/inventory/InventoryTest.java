@@ -185,9 +185,7 @@ public class InventoryTest extends AdempiereTestCase
 		ArrayList<Object> params = new ArrayList<Object>();
 		String sql = "SELECT"
 			+" COALESCE(SUM(QtyOnHand),0)"
-			+",COALESCE(SUM(QtyReserved),0)"
-			+",COALESCE(SUM(QtyOrdered),0)"
-			+" FROM M_Storage"
+			+" FROM M_StorageOnHand"
 			+" WHERE M_Locator_ID=? AND M_Product_ID=?";
 		params.add(locator.get_ID());
 		params.add(product.get_ID());
@@ -199,8 +197,6 @@ public class InventoryTest extends AdempiereTestCase
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		BigDecimal qtyOnHand = Env.ZERO;
-		BigDecimal qtyOrdered = Env.ZERO;
-		BigDecimal qtyReserved = Env.ZERO;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
@@ -209,8 +205,6 @@ public class InventoryTest extends AdempiereTestCase
 			if (rs.next())
 			{
 				qtyOnHand = rs.getBigDecimal(1);
-				qtyReserved = rs.getBigDecimal(2);
-				qtyOrdered = rs.getBigDecimal(3);
 			}
 		}
 		catch (SQLException e)
@@ -225,8 +219,7 @@ public class InventoryTest extends AdempiereTestCase
 		//
 		//
 		assertEquals("QtyOnHand not match "+doc, doc.Qty, qtyOnHand);
-		assertEquals("QtyReserved not match "+doc, doc.QtyReserved, qtyReserved);
-		assertEquals("QtyOrdered not match "+doc, doc.QtyOrdered, qtyOrdered);
+
 	}
 	
 	private void dumpStatus(MMDocument doc, String trxName)
