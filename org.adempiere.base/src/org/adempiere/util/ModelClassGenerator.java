@@ -35,6 +35,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
+import org.compiere.model.MPaymentLookup;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -417,12 +418,21 @@ public class ModelClassGenerator
 		sb.append("\tpublic void set").append(columnName).append(" (").append(dataType).append(" ").append(columnName).append(")").append(NL)
 			.append("\t{").append(NL)
 		;
+				
 		//	List Validation
 		if (AD_Reference_ID != 0 && String.class == clazz)
 		{
 			String staticVar = addListValidation (sb, AD_Reference_ID, columnName);
 			sb.insert(0, staticVar);
 		}
+		
+		//	Payment Validation
+		if (displayType == DisplayType.Payment)
+		{
+			String staticVar = addListValidation (sb, MPaymentLookup.PAYMENTRULE_AD_Reference_ID, columnName);
+			sb.insert(0, staticVar);			
+		}
+
 		//	setValue ("ColumnName", xx);
 		if (virtualColumn)
 		{
