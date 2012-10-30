@@ -15,7 +15,6 @@
 package org.adempiere.impexp;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,6 +36,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -202,7 +202,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 						}
 						if (!isLineError) {
 							MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
-							if (isForeign) {
+							if (isForeign && value != null) {
 								String foreignTable = column.getReferenceTableName();
 								String idS = null;
 								int id = -1;
@@ -315,7 +315,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 						}
 						if (! error) {
 							if (gridTab.dataSave(false)) {
-								logMsg = Msg.getMsg(Env.getCtx(), "SuccessfullySaved", new Object[] {gridTab.getTableModel().getKeyID(gridTab.getCurrentRow())});
+								PO po = gridTab.getTableModel().getPO(gridTab.getCurrentRow());
+								logMsg = Msg.getMsg(Env.getCtx(), "SuccessfullySaved", 
+										new Object[] {po != null ? po.toString() : gridTab.getTableModel().getKeyID(gridTab.getCurrentRow())});
 							} else {
 								error = true;
 								ValueNamePair ppE = CLogger.retrieveWarning();
