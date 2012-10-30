@@ -115,7 +115,7 @@ public class ExportAction implements EventListener<Event>
 			Hbox hb = new Hbox();
 			Div div = new Div();
 			div.setAlign("right");
-			div.appendChild(new Label("Files of Type: "));
+			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
 			hb.appendChild(div);
 			hb.appendChild(cboType);
 			cboType.setWidth("100%");
@@ -195,7 +195,7 @@ public class ExportAction implements EventListener<Event>
 			winExportFile.onClose();
 			winExportFile = null;
 			AMedia media = null;
-			media = new AMedia(panel.getActiveGridTab().getName() + "." + ext, null, exporter.getContentType(), file, true);
+			media = new AMedia(exporter.getSuggestedFileName(panel.getActiveGridTab()), null, exporter.getContentType(), file, true);
 			Filedownload.save(media, panel.getActiveGridTab().getName() + "." + ext);
 		} catch (Exception e) {
 			throw new AdempiereException(e);

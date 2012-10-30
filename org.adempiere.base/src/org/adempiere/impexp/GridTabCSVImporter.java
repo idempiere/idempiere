@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.DecimalFormatSymbols;
@@ -75,16 +76,16 @@ public class GridTabCSVImporter implements IGridTabImporter
 		ICsvMapReader mapReader = null;
 		File errFile = null;
 		File logFile = null;
-		FileWriter errFileW = null;
-		FileWriter logFileW = null;
+		PrintWriter errFileW = null;
+		PrintWriter logFileW = null;
 		CsvPreference csvpref = CsvPreference.STANDARD_PREFERENCE;
 		String delimiter = String.valueOf((char) csvpref.getDelimiterChar());
 		String quoteChar = String.valueOf((char) csvpref.getQuoteChar());
 		try {
 			String errFileName = FileUtil.getTempMailName("Import_" + gridTab.getTableName(), "_err.csv");
 			errFile = new File(errFileName);
-			errFileW = new FileWriter(errFile, false);
-			mapReader = new CsvMapReader(new InputStreamReader(filestream), csvpref);
+			errFileW = new PrintWriter(errFile, charset.name());
+			mapReader = new CsvMapReader(new InputStreamReader(filestream, charset), csvpref);
 
 			String[] header = mapReader.getHeader(true);
 			List<CellProcessor> readProcArray = new ArrayList<CellProcessor>();
@@ -240,7 +241,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			if (!m_isError) {
 				String logFileName = FileUtil.getTempMailName("Import_" + gridTab.getTableName(), "_log.csv");
 				logFile = new File(logFileName);
-				logFileW = new FileWriter(logFile, false);
+				logFileW = new PrintWriter(logFile, charset.name());
 				
 				// write the header
 				logFileW.write(rawHeader + delimiter + LOG_HEADER + "\n");

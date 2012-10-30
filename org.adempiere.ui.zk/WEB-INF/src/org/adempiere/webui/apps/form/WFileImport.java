@@ -50,6 +50,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -262,6 +263,7 @@ public class WFileImport extends ADForm implements EventListener
 			if (charset == compare)
 			{
 				fCharset.setSelectedIndex(i);
+				Executions.getCurrent().getDesktop().getWebApp().getConfiguration().setUploadCharset(compare.name());
 				break;
 			}
 		}
@@ -282,10 +284,17 @@ public class WFileImport extends ADForm implements EventListener
 		}
 		else if (e.getTarget() == fCharset) 
 		{
-			int record = m_record;
-			cmd_reloadFile();
-			m_record = record - 1;
-			cmd_applyFormat(true);
+			if (m_file_istream != null) {
+				m_file_istream.close();
+				m_file_istream = null;
+			}
+			clearAll();
+			ListItem listitem = fCharset.getSelectedItem();
+			if (listitem == null)
+				return;
+			Charset charset = (Charset)listitem.getValue();
+			Executions.getCurrent().getDesktop().getWebApp().getConfiguration().setUploadCharset(charset.name());
+			bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
 		}
 		else if (e.getTarget() == pickFormat)
 		{
@@ -316,6 +325,20 @@ public class WFileImport extends ADForm implements EventListener
 			confirmPanel.getButton("Ok").setEnabled(false);
 	}
 	
+	private void clearAll() {
+		m_record = -1;
+		record.setValue("------");
+		info.setValue("   ");
+		rawData.setText(null);
+		m_data.clear();
+		if (m_fields != null) {
+			for (Textbox field : m_fields)
+			{
+				field.setText(null);
+			}
+		}
+	}
+
 	private void processUploadMedia(Media media) {
 		if (media == null)
 			return;
