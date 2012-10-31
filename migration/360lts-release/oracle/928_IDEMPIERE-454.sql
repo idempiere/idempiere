@@ -1,6 +1,6 @@
 -- Oct 7, 2012 7:15:57 PM COT
 -- IDEMPIERE-454 Easy import
-INSERT INTO AD_ToolBarButton (Name,ComponentName,Classname,IsCustomization,KeyStroke_KeyCode,KeyStroke_Modifiers,AD_Client_ID,AD_Org_ID,Created,CreatedBy,AD_ToolBarButton_ID,Updated,UpdatedBy,IsActive,AD_ToolBarButton_UU) VALUES ('zk Window - File Import','FileImport','org.idempiere.ui.window','N',0,0,0,0,TO_DATE('2012-10-07 19:15:57','YYYY-MM-DD HH24:MI:SS'),100,1000007,TO_DATE('2012-10-07 19:15:57','YYYY-MM-DD HH24:MI:SS'),100,'Y','afdd17a6-5fd1-411e-8596-5310aa68785f')
+INSERT INTO AD_ToolBarButton (Name,ComponentName,Classname,IsCustomization,KeyStroke_KeyCode,KeyStroke_Modifiers,AD_Client_ID,AD_Org_ID,Created,CreatedBy,AD_ToolBarButton_ID,Updated,UpdatedBy,IsActive,AD_ToolBarButton_UU) VALUES ('zk Window - File Import','FileImport','org.idempiere.ui.window','N',0,0,0,0,TO_DATE('2012-10-07 19:15:57','YYYY-MM-DD HH24:MI:SS'),100,200067,TO_DATE('2012-10-07 19:15:57','YYYY-MM-DD HH24:MI:SS'),100,'Y','afdd17a6-5fd1-411e-8596-5310aa68785f')
 ;
 
 -- Oct 25, 2012 11:42:24 PM COT
