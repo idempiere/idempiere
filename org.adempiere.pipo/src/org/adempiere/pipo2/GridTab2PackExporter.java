@@ -59,12 +59,13 @@ public class GridTab2PackExporter implements IGridTabExporter {
 			} else {
 				for(int i = 0; i < gridTab.getRowCount(); i++) {
 					if (i == 0)
-						sql.append(" WHERE ");
+						sql.append(" WHERE ((");
 					else
-						sql.append(" OR ");
+						sql.append(") OR (");
 					gridTab.navigate(i);
 					sql.append(gridTab.getTableModel().getWhereClause(gridTab.getCurrentRow()));
 				}
+				sql.append("))");
 			}
 			for(GridTab child : childs) {
 				if (child.getTabLevel() > gridTab.getTabLevel()+1) {
