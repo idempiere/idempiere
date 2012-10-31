@@ -24,7 +24,6 @@ import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
-import org.adempiere.webui.component.Window;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
@@ -70,8 +69,8 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 	}
 	
 	public void init()
-	{		
-		
+	{
+
 		Hlayout hlayout = new Hlayout();
 		hlayout.setVflex("true");
 		hlayout.setHflex("true");
@@ -81,7 +80,8 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		sortModel =new SimpleListModel();
 		sortList.setHeight("100%");
 		sortList.setWidth("40%");
-		sortList.setVflex(true);
+		sortList.setHflex("40");
+		sortList.setVflex("true");
 		sortList.addDoubleClickListener(this);
 		sortList.setSeltype("multiple");
 		sortList.addOnDropListener(this);
@@ -145,6 +145,7 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		ListHead listHead = new ListHead();
 		listHead.setParent(sortList);
 		ListHeader header=new ListHeader();
+		header.setHflex("40");
 		header.setParent(listHead);
 		
 		hlayout.appendChild(sortList);
@@ -166,6 +167,7 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		vbox.appendChild(bUp);
 		vbox.appendChild(bDown);
 		vbox.setWidth("50px");
+		vbox.setHflex("60");
 		//vbox.setParent(wind);
 		hlayout.appendChild(vbox);
 		this.appendChild(hlayout);
