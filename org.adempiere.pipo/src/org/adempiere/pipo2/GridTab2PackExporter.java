@@ -46,6 +46,7 @@ public class GridTab2PackExporter implements IGridTabExporter {
 	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file) {
 		String tableName = gridTab.getTableName();
 		PackOut packOut = new PackOut();
+		packOut.setCtx(Env.getCtx());
 		Map properties = new HashMap();
 		properties.putAll(Env.getCtx());
 		List<PackoutItem> packoutItems = new ArrayList<PackoutItem>();
@@ -54,14 +55,15 @@ public class GridTab2PackExporter implements IGridTabExporter {
 			StringBuffer sql = new StringBuffer("SELECT * FROM ");
 			sql.append(tableName);
 			if (currentRowOnly) {
-				sql.append(" WHERE ").append(tableName).append("_ID=").append(gridTab.getRecord_ID());
+				sql.append(" WHERE ").append(gridTab.getTableModel().getWhereClause(gridTab.getCurrentRow()));
 			} else {
 				for(int i = 0; i < gridTab.getRowCount(); i++) {
 					if (i == 0)
 						sql.append(" WHERE ");
 					else
 						sql.append(" OR ");
-					sql.append(tableName).append("_ID=").append(gridTab.getKeyID(i));
+					gridTab.navigate(i);
+					sql.append(gridTab.getTableModel().getWhereClause(gridTab.getCurrentRow()));
 				}
 			}
 			for(GridTab child : childs) {
