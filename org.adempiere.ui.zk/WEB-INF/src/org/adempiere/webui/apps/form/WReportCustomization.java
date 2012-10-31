@@ -20,7 +20,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -47,7 +46,6 @@ import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.model.MRole;
-import org.compiere.model.SystemIDs;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.ReportEngine;
@@ -66,9 +64,7 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Foot;
 import org.zkoss.zul.Footer;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Separator;
-import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vbox;
 
 
@@ -106,7 +102,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	private Window winExportFile = null;
 	private Listbox cboType = new Listbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
-	public static boolean  IsChange=false;
+	public boolean isChange=false;
 	public ZkReportViewer viewer;
 	MPrintFormat fm;
 	
@@ -122,8 +118,6 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	WRC3SortCriteriaPanel tpsc3=new WRC3SortCriteriaPanel();
 	WRC4GroupingCriteriaPanel tpgc4=new WRC4GroupingCriteriaPanel();
 	WRC5SummaryFieldsPanel tpsf5=new WRC5SummaryFieldsPanel();
-	
-	private Iframe iframe = new Iframe();
 
 	private int oldtabidx = 0;
 	
@@ -136,13 +130,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	 */
 	public WReportCustomization() {
 		super();
-		
+
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
-		
-		//dynInit();
 	}
-	
-	
 		
 	/**
 	 * 	Static Layout
@@ -157,7 +147,6 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		{
 			m_ctx = m_reportEngine.getCtx();
 			init();
-			//dynInit();
 		}
  		catch(Exception e)
 		{
@@ -166,32 +155,28 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		}
 	}
 	
-	public void setViewer(ZkReportViewer parent){
-		viewer=parent;
-	}
-	
 	private void init() 
 	{
-		
+
 		form.setStyle("width: 90%; height: 90%; position: absolute; border:none; padding:none; margin:none;");
 
 		headerPanel.setHeight("40px");
 		headerPanel.setWidth("100%");
-		
+
 		headerPanel.appendChild(new Separator("vertical"));
-		
+
 		comboReport.setMold("select");
 		fm =m_reportEngine.getPrintFormat();
 		comboReport.setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 		comboReport.appendItem(fm.getName(), fm.get_ID());
 		headerPanel.appendChild(comboReport);
 		headerPanel.appendChild(new Separator("vertical"));
-	
+
 		newPrintFormat=new Button();
 		newPrintFormat.setName("NewPrintFormat");
 		newPrintFormat.setLabel(Msg.getMsg(Env.getCtx(), "CreatePrintFormat"));
 		newPrintFormat.addActionListener(this);
-					
+
 		headerPanel.appendChild(newPrintFormat);
 		Separator tor =new Separator("vertical");
 		tor.setSpacing("500px");
@@ -210,15 +195,15 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		headerPanel.appendChild(pipeSeparator);
 		headerPanel.appendChild(new Separator("vertical"));
 		headerPanel.appendChild(deselectAll);
-		
+
 		headerPanel.appendChild(new Separator("vertical"));
-		
+
 		Auxhead head=new Auxhead();
 		head.appendChild(headerPanel);
 		form.appendChild(head);
-		
+
 		headerPanel.appendChild(new Separator("horizontal"));
-		
+
 		tabbox.setWidth("100%");
 		tabbox.setHeight("80%");
 		tabfo2.addEventListener(Events.ON_CLICK, this);
@@ -230,14 +215,13 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		tabs.appendChild(tabsc3);
 		tabs.appendChild(tabgc4);
 		tabs.appendChild(tabsf5);
-		
+
 		tpdf1.setMPrintFormat(fm);
 		tpdf1.setPrintFormatItems(pfi);
 		tpdf1.setWReportCustomization(this);
 		tpdf1.init();
 		tabpanels.appendChild(tpdf1);
-		
-		tpfo2.setReportEngine(m_reportEngine);
+
 		tpfo2.setMPrintFormat(fm);
 		tpfo2.setPrintFormatItems(pfi);
 		tpfo2.setListColumns();		
@@ -245,120 +229,90 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		tpfo2.refresh();
 		tpfo2.setWReportCustomization(this);
 		tabpanels.appendChild(tpfo2);
-	
+
 		tpsc3.setMPrintFormat(fm);
 		tpsc3.setPrintFormatItems(pfi);
 		tpsc3.init();	
 		tpsc3.refresh();
 		tpsc3.setWReportCustomization(this);
 		tabpanels.appendChild(tpsc3);
-		
+
 		tpgc4.setMPrintFormat(fm);
 		tpgc4.setPrintFormatItems(pfi);		
 		tpgc4.init();
 		tpgc4.refresh();
 		tpgc4.setWReportCustomization(this);
 		tabpanels.appendChild(tpgc4);
-		
+
 		tpsf5.setMPrintFormat(fm);
 		tpsf5.setPrintFormatItems(pfi);		
 		tpsf5.init();
 		tpsf5.refresh();
 		tpsf5.setWReportCustomization(this);
 		tabpanels.appendChild(tpsf5);
-	
+
 		tabbox.appendChild(tabs);
 		tabbox.appendChild(tabpanels);
 		tabbox.addEventListener(Events.ON_SELECT, this);
-	
+
 		form.appendChild(tabbox);
-	
+
 		Footer foot =new Footer();
-	     Foot f=new Foot();
-		
+		Foot f=new Foot();
+
 		Grid grid=new Grid();
 		btnSave = new ToolBarButton();
-        btnSave.setAttribute("name","btnSave");
-        btnSave.setImage("/images/Save24.png");
-        if(fm.getAD_Client_ID()== 0 || !IsChange)
-        {	
-           btnSave.setVisible(false);
-        }   
-        btnSave.addEventListener(Events.ON_CLICK, this);
-        
-        foot.appendChild(btnSave);
-        foot.appendChild(new Separator("vertical"));
-    	
-    	if (m_isCanExport)
+		btnSave.setAttribute("name","btnSave");
+		btnSave.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Save")));
+		btnSave.setImage("/images/Save24.png");
+		if(fm.getAD_Client_ID()== 0 || !isChange)
+		{	
+			btnSave.setDisabled(true);
+		}   
+		btnSave.addEventListener(Events.ON_CLICK, this);
+
+		foot.appendChild(btnSave);
+		foot.appendChild(new Separator("vertical"));
+
+		if (m_isCanExport)
 		{
 			bExport.setImage("/images/ExportX24.png");
 			bExport.setAttribute("name","btnExport");
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
 			bExport.addEventListener(Events.ON_CLICK, this);
-			
+
 			foot.appendChild(bExport);
 			foot.appendChild(new Separator("vertical"));
-			
 		}
-    	
-    	bRun=new Button();
-    	bRun.setLabel(Msg.getMsg(Env.getCtx(), "Run"));
-    	bRun.setName("bRun");
-    	bRun.addEventListener(Events.ON_CLICK, this);
-    	
-    	foot.appendChild(bRun);
-    	Separator se =new Separator("vertical");
-    	se.setSpacing("800px");
-    	foot.appendChild(se);
-    	 bnext=new Button();
-    	 bnext.setLabel(Msg.getMsg(Env.getCtx(), "NextPage"));
-    	 bnext.setName("Next");
-    	 bnext.addEventListener(Events.ON_CLICK, this);
-    	 foot.appendChild(bnext);
-    	 foot.appendChild(new Separator("vertical"));
-    	 bcancel=new Button();
-    	 bcancel.setName("Cancel");
-    	 bcancel.addEventListener(Events.ON_CLICK, this);
-    	 bcancel.setLabel("Cancel");
-    	 
-    	 foot.appendChild(bcancel);
-    	
-    	f.appendChild(foot);
-        grid.appendChild(f);
-    	form.appendChild(grid);
+
+		bRun=new Button();
+		bRun.setLabel(Msg.getMsg(Env.getCtx(), "Run"));
+		bRun.setName("bRun");
+		bRun.addEventListener(Events.ON_CLICK, this);
+		foot.appendChild(bRun);
+		Separator se =new Separator("vertical");
+		se.setSpacing("500px");
+		foot.appendChild(se);
+
+		bnext=new Button();
+		bnext.setLabel(Msg.getMsg(Env.getCtx(), "NextPage"));
+		bnext.setName("Next");
+		bnext.addEventListener(Events.ON_CLICK, this);
+		foot.appendChild(bnext);
+		foot.appendChild(new Separator("vertical"));
+
+		bcancel=new Button();
+		bcancel.setName("Cancel");
+		bcancel.addEventListener(Events.ON_CLICK, this);
+		bcancel.setLabel("Cancel");
+		foot.appendChild(bcancel);
+
+		f.appendChild(foot);
+		grid.appendChild(f);
+		form.appendChild(grid);
 		form.setBorder("normal");
-		
-		//renderStep();
 	}
 
-
-	
-/*private void renderStep(){
-		switch (curStep){
-		case 0:
-			renderSelectStep();
-		}
-	}
-	private void renderSelectStep()
-	{
-		if(stepPanels[0]==null){
-			stepPanels[0] = new SelectColumnpanel(m_reportEngine.getPrintFormat());
-			centerPanel.appendChild(stepPanels[0]);
-		}else{
-			stepPanels[0].setVisible(true);
-		}
-	}*/
-	
-	
-	private void cleanUp() {
-		if (m_WindowNo >= 0)
-		{
-			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
-			m_ctx = null;
-			m_WindowNo = -1;
-		}
-	}
-	
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName())) {
@@ -567,65 +521,53 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			log.log(Level.SEVERE, "Failed to export content.", e);
 		}
 	}
-	
-	
-	 public void close()
-	 {
-	      SessionManager.getAppDesktop().closeActiveWindow();
-	  }
-	 
-	 
-	 public void copyFormat(){
+
+	public void close()
+	{
+		SessionManager.getAppDesktop().closeActiveWindow();
+	}
+
+	public void copyFormat(){
 		MPrintFormat newpf=MPrintFormat.copyToClient(m_ctx, m_reportEngine.getPrintFormat().get_ID() ,Env.getAD_Client_ID(m_ctx));
-		pfi=newpf.getAllItems("IsPrinted DESC, NULLIF(SeqNo,0), Name");
-		
+		pfi = newpf.getAllItems("IsPrinted DESC, NULLIF(SeqNo,0), Name");
+
 		tpdf1.setMPrintFormat(newpf);
 		tpdf1.setPrintFormatItems(pfi);
 		tpdf1.refresh();
-	
-		//tpfo2.setReportEngine(m_reportEngine);
+
 		tpfo2.setMPrintFormat(newpf);
 		tpfo2.setPrintFormatItems(pfi);
 		tpfo2.setListColumns();		
 		tpfo2.refresh();
-	
+
 		tpsc3.setMPrintFormat(newpf);
 		tpsc3.setPrintFormatItems(pfi);
 		tpsc3.refresh();
-		
-		
+
 		tpgc4.setMPrintFormat(newpf);
 		tpgc4.setPrintFormatItems(pfi);		
-		
-		
+
 		tpsf5.setMPrintFormat(newpf);
 		tpsf5.setPrintFormatItems(pfi);		
 		tpsf5.refresh();
 		setIsChanged(true);
-	
+
 		comboReport.removeAllItems();
 		comboReport.appendItem(newpf.getName(), newpf.get_ID());
 		m_reportEngine.setPrintFormat(newpf);
-	 }
+	}
 
 	 public void setIsChanged(boolean change){
-		 IsChange=change;
+		 isChange=change;
 		 
-		 if(IsChange){
-			 btnSave.setVisible(true);
-			 bExport.setVisible(false);
-			  bRun.setVisible(false);
-			  newPrintFormat.setVisible(false);
-		 }
-		 else{
-			 btnSave.setVisible(false);
-			 bExport.setVisible(true);
-				bRun.setVisible(true);
-				newPrintFormat.setVisible(true);
-		 }
+		 btnSave.setDisabled(!isChange);
+		 bExport.setDisabled(isChange);
+		 bRun.setDisabled(isChange);
+		 newPrintFormat.setDisabled(isChange);
 	 }
 	 
 	 public void runReport(){
+		 m_reportEngine.setPrintFormat(m_reportEngine.getPrintFormat()); // reload
 		 new ZkReportViewerProvider().openViewer(m_reportEngine);
 	 }
 }

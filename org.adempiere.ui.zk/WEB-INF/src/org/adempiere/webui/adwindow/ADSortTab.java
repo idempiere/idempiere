@@ -704,7 +704,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	 * List Item
 	 * @author Teo Sarca
 	 */
-	public class ListElement extends NamePair {
+	private class ListElement extends NamePair {
 		/**
 		 *
 		 */

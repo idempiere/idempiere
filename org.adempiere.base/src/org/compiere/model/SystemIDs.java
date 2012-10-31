@@ -48,6 +48,7 @@ public class SystemIDs
 
 	public final static int FORM_PAYMENT_PRINT_EXPORT = 106;
 	public final static int FORM_ARCHIVEVIEWER = 118;
+	public final static int FORM_REPORT_WIZARD = 200002;
 
 	public final static int MENU_NOTICE = 233;
 
@@ -154,6 +155,4 @@ public class SystemIDs
 	public final static int SCHEDULE_10_MINUTES = 200002;
 	public final static int SCHEDULE_15_MINUTES = 200003;
 	
-	public final static int WIZARD_REPORT_FORM=200002;
-
 }

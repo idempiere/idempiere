@@ -26,8 +26,6 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
 import org.compiere.print.MPrintFormatItem;
-import org.compiere.print.ReportEngine;
-import org.compiere.util.CLogger;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 import org.zkoss.zk.au.out.AuFocus;
@@ -54,36 +52,12 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 	private Button bDown = new Button();
 	
 	private ArrayList<MPrintFormatItem> listColumns=new ArrayList<MPrintFormatItem>();
-	Window wind=new Window();
 	SimpleListModel sortModel;
-	private ReportEngine m_reportEngine=null;
-	
-	private static CLogger log = CLogger.getCLogger(WRC2FieldOrderPanel.class);
 	
 	public WRC2FieldOrderPanel() {
 		super();	
-		
 	}
 
-	public Window getWind() {
-		return wind;
-	}
-
-
-	public void setWind(Window wind) {
-		this.wind = wind;
-	}
-
-
-	/**
-	 * 	Static Layout
-	 * 	@throws Exception
-	 */
-	public void setReportEngine(ReportEngine re) {
-		m_reportEngine = re;
-		
-	}
-	
 	public void setListColumns() {
 		listColumns = new ArrayList<MPrintFormatItem>();
 		if (m_pfi != null && m_pfi.length > 0) {
@@ -93,7 +67,6 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 				}
 			}
 		}
-
 	}
 	
 	public void init()
@@ -173,7 +146,6 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		listHead.setParent(sortList);
 		ListHeader header=new ListHeader();
 		header.setParent(listHead);
-
 		
 		hlayout.appendChild(sortList);
 	
@@ -200,10 +172,8 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 
 	}
 	
-
 	@Override
 	public void onEvent(Event event) throws Exception {
-		 
 		
 	}
 
@@ -247,13 +217,6 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 
 	@Override
 	public void updatePFI() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void updateSortModel(){
-		sortList.removeAllItems();
-	//	SortList=SortModel;
 		
 	}
 	

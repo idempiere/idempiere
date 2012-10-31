@@ -23,7 +23,6 @@ import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -37,7 +36,6 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 	private static final long serialVersionUID = -3142169077710161360L;
 
 	private static final int RENDER_IN_COLUMNS=2;
-	private MPrintFormat m_printFormat;
 	Checkbox m_chkboxes[]=null;
 	String m_oldLabel[]=null;
 	ArrayList<MPrintFormatItem> orderfield=new ArrayList<MPrintFormatItem>();
@@ -46,7 +44,6 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 	public WRC4GroupingCriteriaPanel() {
 		super();
 	}
-
 
 	@Override
 	public void refresh() {
@@ -61,22 +58,20 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 
 	@Override
 	public void updatePFI() {
-	
 		for(int i=0 ; i<orderfield.size() ; i++){
 			for(int j=0 ;j<m_pfi.length ; j++){
-			    if(orderfield.get(i).get_ID() == m_pfi[j].get_ID()){
-			    	m_pfi[j].setIsGroupBy(m_chkboxes[i].isChecked());
-			    }
+				if(orderfield.get(i).get_ID() == m_pfi[j].get_ID()){
+					m_pfi[j].setIsGroupBy(m_chkboxes[i].isChecked());
+				}
 			}
 		}
-	
 	}
+
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CHECK.equals(event.getName())) {
 			wc.setIsChanged(true);
 		}
-		
 	}
 	
 	public void init(){
@@ -85,7 +80,6 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 		wind.setWidth("90%");
 		wind.setHeight("100%");
 		wind.setHflex("1");
-		
 
         grid.setHflex("1");
         grid.setHeight("90%");
@@ -108,23 +102,17 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 	    	columns.appendChild(cols[i+1]);
 		}
 		grid.appendChild(columns);
-		
-		
 
 		this.appendChild(wind);
 		wind.appendChild(grid);
-		
-		
 	}
-	
 	
 	public void dynamicInit()
 	{
-		
+
 		if (grid.getRows() != null)
 			grid.removeChild(grid.getRows());
 
-	
 		m_chkboxes = new Checkbox[orderfield.size()];
 		m_oldLabel = new String[orderfield.size()];
 		int curCol=0;
@@ -138,7 +126,7 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 			m_chkboxes[i] = new Checkbox();
 			m_chkboxes[i].setChecked(orderfield.get(i).isGroupBy());
 			m_chkboxes[i].addEventListener(Events.ON_CHECK, this);
-			
+
 			String strValue = orderfield.get(i).getPrintName(); 
 			if(strValue ==null || strValue.length()==0){
 				strValue = orderfield.get(i).getName();
@@ -148,9 +136,8 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 			curCol++;
 			curCol = curCol%RENDER_IN_COLUMNS;
 		}
-		
+
 		grid.appendChild(rows);
-		
 	}
 
 }

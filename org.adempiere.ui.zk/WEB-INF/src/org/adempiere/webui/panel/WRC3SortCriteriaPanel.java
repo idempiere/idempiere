@@ -28,8 +28,6 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.compiere.print.MPrintFormatItem;
-import org.compiere.print.ReportEngine;
-import org.compiere.util.CLogger;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 import org.zkoss.zk.au.out.AuFocus;
@@ -48,10 +46,6 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	 */
 	private static final long serialVersionUID = -2798618953887598651L;
 
-	private ReportEngine m_reportEngine;
-	private static CLogger log = CLogger.getCLogger(WRC3SortCriteriaPanel.class);
-
-
 	//	UI variables
 	private Label noLabel = new Label();
 	private Label yesLabel = new Label();
@@ -59,7 +53,6 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	private Button bRemove = new Button();
 	private Button bUp = new Button();
 	private Button bDown = new Button();
-	//private AbstractADWindowContent adWindowPanel = null;
 
 	public ArrayList<MPrintFormatItem> yesItems=new ArrayList<MPrintFormatItem>();
 	public ArrayList<MPrintFormatItem> noItems=new ArrayList<MPrintFormatItem>();
@@ -72,16 +65,6 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 
 	public WRC3SortCriteriaPanel() {
 		super();
-		//m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
-	}
-
-	/**
-	 * 	Static Layout
-	 * 	@throws Exception
-	 */
-	public void setReportEngine(ReportEngine re) {
-
-		m_reportEngine = re;
 	}
 
 	public void init()
@@ -127,7 +110,6 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		noList.addOnDropListener(crossListMouseListener);
 		yesList.setItemDraggable(true);
 		noList.setItemDraggable(true);
-
 
 		EventListener yesListMouseMotionListener = new EventListener()
 		{
@@ -193,8 +175,6 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		listHeader.appendChild(noLabel);
 		listHeader.setParent(listHead);
 
-
-
 		Hlayout hlayout = new Hlayout();
 		hlayout.setVflex("true");
 		hlayout.setHflex("true");
@@ -235,12 +215,8 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		this.appendChild(hlayout);
 	}
 
-
-
-
 	@Override
 	public void onEvent(Event event) throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -310,12 +286,9 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		}
 	}
 
-
-
 	@Override
 	public void updatePFI() {
 		// pfi is being updated on every refresh
-
 	}
 
 	/**
@@ -373,7 +346,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	 * 	Move within Yes List
 	 *	@param event event
 	 */
-	void migrateValueWithinYesList (Event event)
+	private void migrateValueWithinYesList (Event event)
 	{
 		Object[] selObjects = yesList.getSelectedItems().toArray();
 		if (selObjects == null)
@@ -432,27 +405,25 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		}
 	}	//	migrateValueWithinYesList
 	
-	
 	public void updateYesList(){
 		yesList.removeAllItems();
 		wc.setIsChanged(true);
 		int sortNo=10;
 		for(int i=0;i<yesModel.getSize();i++){		
-		ListElement obj=(ListElement) yesModel.getElementAt(i);
-		 for(int j=0;j<m_pfi.length;j++){
-			if(m_pfi[j].get_ID() == obj.getKey()){
-				String name=obj.getName();
-				int ID=obj.getKey();
-				KeyNamePair pair=new KeyNamePair(ID, name);
-				yesList.addItem(pair);
-				m_pfi[j].setSortNo(sortNo);
-				sortNo=sortNo+10;
+			ListElement obj=(ListElement) yesModel.getElementAt(i);
+			for(int j=0;j<m_pfi.length;j++){
+				if(m_pfi[j].get_ID() == obj.getKey()){
+					String name=obj.getName();
+					int ID=obj.getKey();
+					KeyNamePair pair=new KeyNamePair(ID, name);
+					yesList.addItem(pair);
+					m_pfi[j].setSortNo(sortNo);
+					sortNo=sortNo+10;
+				}
 			}
-		  }
-		
 		}
-		
 	}
+
 	/**
 	 * List Item
 	 */
@@ -500,8 +471,6 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		public int getAD_Org_ID() {
 			return m_AD_Org_ID;
 		}
-		
-		
 
 		@Override
 		public String getID() {

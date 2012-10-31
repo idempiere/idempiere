@@ -59,7 +59,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1246145881920021984L;
+	private static final long serialVersionUID = -8307496567084341384L;
 
 	/**
 	 *	Public Constructor.
@@ -83,6 +83,10 @@ public class MPrintFormat extends X_AD_PrintFormat
 		m_items = getItems();
 	}	//	MPrintFormat
 
+	public void reloadItems() {
+		m_items = getItems();
+	}
+	
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

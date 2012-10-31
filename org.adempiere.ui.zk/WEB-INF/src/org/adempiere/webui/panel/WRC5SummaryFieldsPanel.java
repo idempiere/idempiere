@@ -24,7 +24,6 @@ import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -34,8 +33,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Row;
 
-
-
 public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener<Event> {
 	/**
 	 * 
@@ -43,7 +40,6 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 	private static final long serialVersionUID = -2231369601903381581L;
 
 	private static final int RENDER_IN_COLUMNS=10;
-	private MPrintFormat m_printFormat;
 	Checkbox m_chkSum[]=null;
 	Checkbox m_chkCount[]=null;
 	Checkbox m_chkMin[]=null;
@@ -58,13 +54,11 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		super();		
 	}
 	
-
 	public void init(){
 		Window wind=new Window();
 		wind.setWidth("90%");
 		wind.setHeight("100%");
 		wind.setHflex("1");
-
 		
 		grid.setHflex("1");
 		grid.setHeight("90%");
@@ -78,7 +72,6 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		wind.appendChild(div);
 		this.appendChild(wind);
 
-
 		if (AEnv.isTablet())
 		{
 			LayoutUtils.addSclass("tablet-scrolling", div);
@@ -88,14 +81,11 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		grid.appendChild(columns);
 		Column cols[] = new Column[RENDER_IN_COLUMNS];
 		int width = 100/RENDER_IN_COLUMNS;
-		int widthChk = width/5;
 		for(int i=0;i<RENDER_IN_COLUMNS;i++){
 			cols[i] = new Column();
 			cols[i].setWidth(width+"%");
 			columns.appendChild(cols[i]);
 		}
-
-		
 	}
 
 	@Override
@@ -123,9 +113,7 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 					m_pfi[j].setIsDeviationCalc(m_chkDesviation[i].isChecked());
 				}
 			}
-			
 		}
-
 	}
 
 	@Override
@@ -133,7 +121,6 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		if (Events.ON_CHECK.equals(event.getName())) {
 			wc.setIsChanged(true);
 		}
-		
 	}
 	
 	public void dynamicInit(){
@@ -169,7 +156,6 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		m_chkMean=new Checkbox[DisplayItems.size()];
 		m_chkVariance=new Checkbox[DisplayItems.size()];
 		m_chkDesviation=new Checkbox[DisplayItems.size()];
-		
 		
 		for(int i=0 ;i<DisplayItems.size(); i++){
 			row=new Row();

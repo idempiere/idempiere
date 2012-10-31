@@ -124,7 +124,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2079827289589862794L;
+	private static final long serialVersionUID = 344552813342946104L;
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
@@ -308,12 +308,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		bRefresh.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		toolBar.appendChild(bRefresh);
 		bRefresh.addEventListener(Events.ON_CLICK, this);
-		
+
 		bWizard.setImage("/images/Wizard24.png");
 		bWizard.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintWizard")));
 		toolBar.appendChild(bWizard);
 		bWizard.addEventListener(Events.ON_CLICK, this);
-			
 
 		North north = new North();
 		layout.appendChild(north);
@@ -923,7 +922,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 	Report Combo - Start other Report or create new one
 	 */
-	public void cmd_report()
+	private void cmd_report()
 	{
 		ListItem li = comboReport.getSelectedItem();
 		if(li == null || li.getValue() == null) return;
@@ -1104,23 +1103,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/*IDEMPIERE -379*/
 	private void cmd_Wizard()
 	{
-	    int AD_Window_ID = WINDOW_PRINTFORMAT;		//	hardcoded
-	    int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
-	    
-	    Env.setContext(m_ctx, "AD_PrintFormat_ID", AD_PrintFormat_ID);
+		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
 
-	    ADForm form = ADForm.openForm(SystemIDs.WIZARD_REPORT_FORM);
-	    WReportCustomization av = (WReportCustomization) form.getICustomForm();
-	    av.setReportEngine(m_reportEngine);
+		Env.setContext(m_ctx, "AD_PrintFormat_ID", AD_PrintFormat_ID);
 
-	     form.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
-	     SessionManager.getAppDesktop().showWindow(form);
-	
-				//ZkReportCustomization zkCustomization = new ZkReportCustomization(m_reportEngine);
-				//zkCustomization.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
-				//zkCustomization.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
-		    	//SessionManager.getAppDesktop().showWindow(zkCustomization);	
-	}	//	cmd_customize
+		ADForm form = ADForm.openForm(SystemIDs.FORM_REPORT_WIZARD);
+		WReportCustomization av = (WReportCustomization) form.getICustomForm();
+		av.setReportEngine(m_reportEngine);
+
+		form.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+		SessionManager.getAppDesktop().showWindow(form);
+	}	//	cmd_Wizard
+
 	//-- ComponentCtrl --//
 	public Object getExtraCtrl() {
 		return new ExtraCtrl();
