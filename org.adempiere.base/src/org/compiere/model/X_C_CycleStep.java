@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CycleStep
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_CycleStep (Properties ctx, int C_CycleStep_ID, String trxName)
@@ -78,9 +78,9 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
       return sb.toString();
     }
 
-	public I_C_Cycle getC_Cycle() throws RuntimeException
+	public org.compiere.model.I_C_Cycle getC_Cycle() throws RuntimeException
     {
-		return (I_C_Cycle)MTable.get(getCtx(), I_C_Cycle.Table_Name)
+		return (org.compiere.model.I_C_Cycle)MTable.get(getCtx(), org.compiere.model.I_C_Cycle.Table_Name)
 			.getPO(getC_Cycle_ID(), get_TrxName());	}
 
 	/** Set Project Cycle.
@@ -127,6 +127,20 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_CycleStep_UU.
+		@param C_CycleStep_UU C_CycleStep_UU	  */
+	public void setC_CycleStep_UU (String C_CycleStep_UU)
+	{
+		set_Value (COLUMNNAME_C_CycleStep_UU, C_CycleStep_UU);
+	}
+
+	/** Get C_CycleStep_UU.
+		@return C_CycleStep_UU	  */
+	public String getC_CycleStep_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_CycleStep_UU);
 	}
 
 	/** Set Name.

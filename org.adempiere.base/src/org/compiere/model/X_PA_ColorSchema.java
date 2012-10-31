@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ColorSchema
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_PA_ColorSchema (Properties ctx, int PA_ColorSchema_ID, String trxName)
@@ -77,9 +77,9 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
       return sb.toString();
     }
 
-	public I_AD_PrintColor getAD_PrintColor1() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor1() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getAD_PrintColor1_ID(), get_TrxName());	}
 
 	/** Set Color 1.
@@ -105,9 +105,9 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_AD_PrintColor getAD_PrintColor2() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor2() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getAD_PrintColor2_ID(), get_TrxName());	}
 
 	/** Set Color 2.
@@ -133,9 +133,9 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_AD_PrintColor getAD_PrintColor3() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor3() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getAD_PrintColor3_ID(), get_TrxName());	}
 
 	/** Set Color 3.
@@ -161,9 +161,9 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_AD_PrintColor getAD_PrintColor4() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor4() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getAD_PrintColor4_ID(), get_TrxName());	}
 
 	/** Set Color 4.
@@ -352,5 +352,19 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set PA_ColorSchema_UU.
+		@param PA_ColorSchema_UU PA_ColorSchema_UU	  */
+	public void setPA_ColorSchema_UU (String PA_ColorSchema_UU)
+	{
+		set_Value (COLUMNNAME_PA_ColorSchema_UU, PA_ColorSchema_UU);
+	}
+
+	/** Get PA_ColorSchema_UU.
+		@return PA_ColorSchema_UU	  */
+	public String getPA_ColorSchema_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_PA_ColorSchema_UU);
 	}
 }

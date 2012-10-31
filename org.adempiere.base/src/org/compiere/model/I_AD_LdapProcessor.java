@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_LdapProcessor
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_LdapProcessor 
 {
@@ -31,7 +31,7 @@ public interface I_AD_LdapProcessor
     public static final String Table_Name = "AD_LdapProcessor";
 
     /** AD_Table_ID=902 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 902;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,6 +61,15 @@ public interface I_AD_LdapProcessor
 	  * LDAP Server to authenticate and authorize external systems based on Adempiere
 	  */
 	public int getAD_LdapProcessor_ID();
+
+    /** Column name AD_LdapProcessor_UU */
+    public static final String COLUMNNAME_AD_LdapProcessor_UU = "AD_LdapProcessor_UU";
+
+	/** Set AD_LdapProcessor_UU	  */
+	public void setAD_LdapProcessor_UU (String AD_LdapProcessor_UU);
+
+	/** Get AD_LdapProcessor_UU	  */
+	public String getAD_LdapProcessor_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -204,7 +213,7 @@ public interface I_AD_LdapProcessor
 	  */
 	public int getSupervisor_ID();
 
-	public I_AD_User getSupervisor() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

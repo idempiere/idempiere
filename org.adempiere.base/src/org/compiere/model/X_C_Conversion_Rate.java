@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Conversion_Rate
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_Conversion_Rate (Properties ctx, int C_Conversion_Rate_ID, String trxName)
@@ -110,9 +110,23 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
         return new KeyNamePair(get_ID(), String.valueOf(getC_Conversion_Rate_ID()));
     }
 
-	public I_C_ConversionType getC_ConversionType() throws RuntimeException
+	/** Set C_Conversion_Rate_UU.
+		@param C_Conversion_Rate_UU C_Conversion_Rate_UU	  */
+	public void setC_Conversion_Rate_UU (String C_Conversion_Rate_UU)
+	{
+		set_Value (COLUMNNAME_C_Conversion_Rate_UU, C_Conversion_Rate_UU);
+	}
+
+	/** Get C_Conversion_Rate_UU.
+		@return C_Conversion_Rate_UU	  */
+	public String getC_Conversion_Rate_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Conversion_Rate_UU);
+	}
+
+	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
     {
-		return (I_C_ConversionType)MTable.get(getCtx(), I_C_ConversionType.Table_Name)
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_Name)
 			.getPO(getC_ConversionType_ID(), get_TrxName());	}
 
 	/** Set Currency Type.
@@ -138,9 +152,9 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_Currency getC_Currency() throws RuntimeException
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
     {
-		return (I_C_Currency)MTable.get(getCtx(), I_C_Currency.Table_Name)
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
 			.getPO(getC_Currency_ID(), get_TrxName());	}
 
 	/** Set Currency.
@@ -166,9 +180,9 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_Currency getC_Currency_To() throws RuntimeException
+	public org.compiere.model.I_C_Currency getC_Currency_To() throws RuntimeException
     {
-		return (I_C_Currency)MTable.get(getCtx(), I_C_Currency.Table_Name)
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
 			.getPO(getC_Currency_ID_To(), get_TrxName());	}
 
 	/** Set Currency To.

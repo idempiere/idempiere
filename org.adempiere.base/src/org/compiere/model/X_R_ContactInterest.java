@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_ContactInterest
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_R_ContactInterest (Properties ctx, int R_ContactInterest_ID, String trxName)
@@ -73,9 +73,9 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
       return sb.toString();
     }
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -126,9 +126,23 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 		return (Timestamp)get_Value(COLUMNNAME_OptOutDate);
 	}
 
-	public I_R_InterestArea getR_InterestArea() throws RuntimeException
+	/** Set R_ContactInterest_UU.
+		@param R_ContactInterest_UU R_ContactInterest_UU	  */
+	public void setR_ContactInterest_UU (String R_ContactInterest_UU)
+	{
+		set_Value (COLUMNNAME_R_ContactInterest_UU, R_ContactInterest_UU);
+	}
+
+	/** Get R_ContactInterest_UU.
+		@return R_ContactInterest_UU	  */
+	public String getR_ContactInterest_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_R_ContactInterest_UU);
+	}
+
+	public org.compiere.model.I_R_InterestArea getR_InterestArea() throws RuntimeException
     {
-		return (I_R_InterestArea)MTable.get(getCtx(), I_R_InterestArea.Table_Name)
+		return (org.compiere.model.I_R_InterestArea)MTable.get(getCtx(), org.compiere.model.I_R_InterestArea.Table_Name)
 			.getPO(getR_InterestArea_ID(), get_TrxName());	}
 
 	/** Set Interest Area.

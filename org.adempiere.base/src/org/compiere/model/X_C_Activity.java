@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Activity
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_Activity extends PO implements I_C_Activity, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_Activity (Properties ctx, int C_Activity_ID, String trxName)
@@ -94,6 +94,20 @@ public class X_C_Activity extends PO implements I_C_Activity, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_Activity_UU.
+		@param C_Activity_UU C_Activity_UU	  */
+	public void setC_Activity_UU (String C_Activity_UU)
+	{
+		set_Value (COLUMNNAME_C_Activity_UU, C_Activity_UU);
+	}
+
+	/** Get C_Activity_UU.
+		@return C_Activity_UU	  */
+	public String getC_Activity_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Activity_UU);
 	}
 
 	/** Set Description.

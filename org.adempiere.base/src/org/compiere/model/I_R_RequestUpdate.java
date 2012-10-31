@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestUpdate
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_R_RequestUpdate 
 {
@@ -31,7 +31,7 @@ public interface I_R_RequestUpdate
     public static final String Table_Name = "R_RequestUpdate";
 
     /** AD_Table_ID=802 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 802;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -130,7 +130,7 @@ public interface I_R_RequestUpdate
 	  */
 	public int getM_ProductSpent_ID();
 
-	public I_M_Product getM_ProductSpent() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_ProductSpent() throws RuntimeException;
 
     /** Column name QtyInvoiced */
     public static final String COLUMNNAME_QtyInvoiced = "QtyInvoiced";
@@ -184,7 +184,7 @@ public interface I_R_RequestUpdate
 	  */
 	public int getR_Request_ID();
 
-	public I_R_Request getR_Request() throws RuntimeException;
+	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
 
     /** Column name R_RequestUpdate_ID */
     public static final String COLUMNNAME_R_RequestUpdate_ID = "R_RequestUpdate_ID";
@@ -198,6 +198,15 @@ public interface I_R_RequestUpdate
 	  * Request Updates
 	  */
 	public int getR_RequestUpdate_ID();
+
+    /** Column name R_RequestUpdate_UU */
+    public static final String COLUMNNAME_R_RequestUpdate_UU = "R_RequestUpdate_UU";
+
+	/** Set R_RequestUpdate_UU	  */
+	public void setR_RequestUpdate_UU (String R_RequestUpdate_UU);
+
+	/** Get R_RequestUpdate_UU	  */
+	public String getR_RequestUpdate_UU();
 
     /** Column name StartTime */
     public static final String COLUMNNAME_StartTime = "StartTime";

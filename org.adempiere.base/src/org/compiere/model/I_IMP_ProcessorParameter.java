@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for IMP_ProcessorParameter
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_IMP_ProcessorParameter 
 {
@@ -31,7 +31,7 @@ public interface I_IMP_ProcessorParameter
     public static final String Table_Name = "IMP_ProcessorParameter";
 
     /** AD_Table_ID=53078 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53078;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -123,6 +123,15 @@ public interface I_IMP_ProcessorParameter
 
 	/** Get Import Processor Parameter	  */
 	public int getIMP_ProcessorParameter_ID();
+
+    /** Column name IMP_ProcessorParameter_UU */
+    public static final String COLUMNNAME_IMP_ProcessorParameter_UU = "IMP_ProcessorParameter_UU";
+
+	/** Set IMP_ProcessorParameter_UU	  */
+	public void setIMP_ProcessorParameter_UU (String IMP_ProcessorParameter_UU);
+
+	/** Get IMP_ProcessorParameter_UU	  */
+	public String getIMP_ProcessorParameter_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

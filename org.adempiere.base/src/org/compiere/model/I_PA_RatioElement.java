@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_RatioElement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PA_RatioElement 
 {
@@ -31,7 +31,7 @@ public interface I_PA_RatioElement
     public static final String Table_Name = "PA_RatioElement";
 
     /** AD_Table_ID=836 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 836;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_PA_RatioElement
 	  */
 	public int getAccount_ID();
 
-	public I_C_ElementValue getAccount() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -158,7 +158,7 @@ public interface I_PA_RatioElement
 	  */
 	public int getPA_MeasureCalc_ID();
 
-	public I_PA_MeasureCalc getPA_MeasureCalc() throws RuntimeException;
+	public org.compiere.model.I_PA_MeasureCalc getPA_MeasureCalc() throws RuntimeException;
 
     /** Column name PA_RatioElement_ID */
     public static final String COLUMNNAME_PA_RatioElement_ID = "PA_RatioElement_ID";
@@ -173,6 +173,15 @@ public interface I_PA_RatioElement
 	  */
 	public int getPA_RatioElement_ID();
 
+    /** Column name PA_RatioElement_UU */
+    public static final String COLUMNNAME_PA_RatioElement_UU = "PA_RatioElement_UU";
+
+	/** Set PA_RatioElement_UU	  */
+	public void setPA_RatioElement_UU (String PA_RatioElement_UU);
+
+	/** Get PA_RatioElement_UU	  */
+	public String getPA_RatioElement_UU();
+
     /** Column name PA_Ratio_ID */
     public static final String COLUMNNAME_PA_Ratio_ID = "PA_Ratio_ID";
 
@@ -186,7 +195,7 @@ public interface I_PA_RatioElement
 	  */
 	public int getPA_Ratio_ID();
 
-	public I_PA_Ratio getPA_Ratio() throws RuntimeException;
+	public org.compiere.model.I_PA_Ratio getPA_Ratio() throws RuntimeException;
 
     /** Column name PA_RatioUsed_ID */
     public static final String COLUMNNAME_PA_RatioUsed_ID = "PA_RatioUsed_ID";
@@ -201,7 +210,7 @@ public interface I_PA_RatioElement
 	  */
 	public int getPA_RatioUsed_ID();
 
-	public I_PA_Ratio getPA_RatioUsed() throws RuntimeException;
+	public org.compiere.model.I_PA_Ratio getPA_RatioUsed() throws RuntimeException;
 
     /** Column name PostingType */
     public static final String COLUMNNAME_PostingType = "PostingType";

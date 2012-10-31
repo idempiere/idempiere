@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Org
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Org extends PO implements I_AD_Org, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Org (Properties ctx, int AD_Org_ID, String trxName)
@@ -72,9 +72,23 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
+	/** Set AD_Org_UU.
+		@param AD_Org_UU AD_Org_UU	  */
+	public void setAD_Org_UU (String AD_Org_UU)
+	{
+		set_Value (COLUMNNAME_AD_Org_UU, AD_Org_UU);
+	}
+
+	/** Get AD_Org_UU.
+		@return AD_Org_UU	  */
+	public String getAD_Org_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Org_UU);
+	}
+
+	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
     {
-		return (I_AD_ReplicationStrategy)MTable.get(getCtx(), I_AD_ReplicationStrategy.Table_Name)
+		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_Name)
 			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());	}
 
 	/** Set Replication Strategy.

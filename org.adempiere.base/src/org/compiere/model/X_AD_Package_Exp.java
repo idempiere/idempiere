@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Exp
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120528L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp (Properties ctx, int AD_Package_Exp_ID, String trxName)
@@ -74,8 +74,8 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
       return sb.toString();
     }
 
-	/** Set Pack Out.
-		@param AD_Package_Exp_ID Pack Out	  */
+	/** Set Package Exp..
+		@param AD_Package_Exp_ID Package Exp.	  */
 	public void setAD_Package_Exp_ID (int AD_Package_Exp_ID)
 	{
 		if (AD_Package_Exp_ID < 1) 
@@ -84,8 +84,8 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Exp_ID, Integer.valueOf(AD_Package_Exp_ID));
 	}
 
-	/** Get Pack Out.
-		@return Pack Out	  */
+	/** Get Package Exp..
+		@return Package Exp.	  */
 	public int getAD_Package_Exp_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Exp_ID);
@@ -94,15 +94,15 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Set Pack Out UUID.
-		@param AD_Package_Exp_UU Pack Out UUID	  */
+	/** Set AD_Package_Exp_UU.
+		@param AD_Package_Exp_UU AD_Package_Exp_UU	  */
 	public void setAD_Package_Exp_UU (String AD_Package_Exp_UU)
 	{
 		set_Value (COLUMNNAME_AD_Package_Exp_UU, AD_Package_Exp_UU);
 	}
 
-	/** Get Pack Out UUID.
-		@return Pack Out UUID	  */
+	/** Get AD_Package_Exp_UU.
+		@return AD_Package_Exp_UU	  */
 	public String getAD_Package_Exp_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Exp_UU);

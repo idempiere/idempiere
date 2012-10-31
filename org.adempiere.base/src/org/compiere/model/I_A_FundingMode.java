@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_FundingMode
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_A_FundingMode 
 {
@@ -70,6 +70,15 @@ public interface I_A_FundingMode
 
 	/** Get Asset Funding Mode	  */
 	public int getA_FundingMode_ID();
+
+    /** Column name A_FundingMode_UU */
+    public static final String COLUMNNAME_A_FundingMode_UU = "A_FundingMode_UU";
+
+	/** Set A_FundingMode_UU	  */
+	public void setA_FundingMode_UU (String A_FundingMode_UU);
+
+	/** Get A_FundingMode_UU	  */
+	public String getA_FundingMode_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

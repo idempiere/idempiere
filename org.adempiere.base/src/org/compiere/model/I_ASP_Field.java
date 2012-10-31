@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Field
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_ASP_Field 
 {
@@ -31,7 +31,7 @@ public interface I_ASP_Field
     public static final String Table_Name = "ASP_Field";
 
     /** AD_Table_ID=53048 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53048;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_ASP_Field
 	  */
 	public int getAD_Field_ID();
 
-	public I_AD_Field getAD_Field() throws RuntimeException;
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -86,6 +86,15 @@ public interface I_ASP_Field
 	/** Get ASP Field	  */
 	public int getASP_Field_ID();
 
+    /** Column name ASP_Field_UU */
+    public static final String COLUMNNAME_ASP_Field_UU = "ASP_Field_UU";
+
+	/** Set ASP_Field_UU	  */
+	public void setASP_Field_UU (String ASP_Field_UU);
+
+	/** Get ASP_Field_UU	  */
+	public String getASP_Field_UU();
+
     /** Column name ASP_Status */
     public static final String COLUMNNAME_ASP_Status = "ASP_Status";
 
@@ -104,7 +113,7 @@ public interface I_ASP_Field
 	/** Get ASP Tab	  */
 	public int getASP_Tab_ID();
 
-	public I_ASP_Tab getASP_Tab() throws RuntimeException;
+	public org.compiere.model.I_ASP_Tab getASP_Tab() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for K_EntryRelated
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_K_EntryRelated extends PO implements I_K_EntryRelated, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_K_EntryRelated (Properties ctx, int K_EntryRelated_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_K_EntryRelated extends PO implements I_K_EntryRelated, I_Persiste
       return sb.toString();
     }
 
-	public I_K_Entry getK_Entry() throws RuntimeException
+	public org.compiere.model.I_K_Entry getK_Entry() throws RuntimeException
     {
-		return (I_K_Entry)MTable.get(getCtx(), I_K_Entry.Table_Name)
+		return (org.compiere.model.I_K_Entry)MTable.get(getCtx(), org.compiere.model.I_K_Entry.Table_Name)
 			.getPO(getK_Entry_ID(), get_TrxName());	}
 
 	/** Set Entry.
@@ -129,6 +129,20 @@ public class X_K_EntryRelated extends PO implements I_K_EntryRelated, I_Persiste
     {
         return new KeyNamePair(get_ID(), String.valueOf(getK_EntryRelated_ID()));
     }
+
+	/** Set K_EntryRelated_UU.
+		@param K_EntryRelated_UU K_EntryRelated_UU	  */
+	public void setK_EntryRelated_UU (String K_EntryRelated_UU)
+	{
+		set_Value (COLUMNNAME_K_EntryRelated_UU, K_EntryRelated_UU);
+	}
+
+	/** Get K_EntryRelated_UU.
+		@return K_EntryRelated_UU	  */
+	public String getK_EntryRelated_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_K_EntryRelated_UU);
+	}
 
 	/** Set Name.
 		@param Name 

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Session
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Session extends PO implements I_AD_Session, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Session (Properties ctx, int AD_Session_ID, String trxName)
@@ -72,9 +72,9 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Role getAD_Role() throws RuntimeException
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
     {
-		return (I_AD_Role)MTable.get(getCtx(), I_AD_Role.Table_Name)
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
 			.getPO(getAD_Role_ID(), get_TrxName());	}
 
 	/** Set Role.
@@ -130,6 +130,20 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Session_ID()));
     }
+
+	/** Set AD_Session_UU.
+		@param AD_Session_UU AD_Session_UU	  */
+	public void setAD_Session_UU (String AD_Session_UU)
+	{
+		set_Value (COLUMNNAME_AD_Session_UU, AD_Session_UU);
+	}
+
+	/** Get AD_Session_UU.
+		@return AD_Session_UU	  */
+	public String getAD_Session_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Session_UU);
+	}
 
 	/** Set Description.
 		@param Description 
@@ -220,15 +234,15 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 		return (String)get_Value(COLUMNNAME_Remote_Host);
 	}
 
-	/** Set Server name.
-		@param ServerName Server name	  */
+	/** Set Server Name.
+		@param ServerName Server Name	  */
 	public void setServerName (String ServerName)
 	{
 		set_Value (COLUMNNAME_ServerName, ServerName);
 	}
 
-	/** Get Server name.
-		@return Server name	  */
+	/** Get Server Name.
+		@return Server Name	  */
 	public String getServerName () 
 	{
 		return (String)get_Value(COLUMNNAME_ServerName);

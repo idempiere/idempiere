@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_HR_ListLine (Properties ctx, int HR_ListLine_ID, String trxName)
@@ -229,6 +229,20 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set HR_ListLine_UU.
+		@param HR_ListLine_UU HR_ListLine_UU	  */
+	public void setHR_ListLine_UU (String HR_ListLine_UU)
+	{
+		set_Value (COLUMNNAME_HR_ListLine_UU, HR_ListLine_UU);
+	}
+
+	/** Get HR_ListLine_UU.
+		@return HR_ListLine_UU	  */
+	public String getHR_ListLine_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_HR_ListLine_UU);
 	}
 
 	public org.eevolution.model.I_HR_ListVersion getHR_ListVersion() throws RuntimeException

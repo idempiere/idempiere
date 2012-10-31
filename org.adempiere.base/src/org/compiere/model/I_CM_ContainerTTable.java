@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_ContainerTTable
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_ContainerTTable 
 {
@@ -31,7 +31,7 @@ public interface I_CM_ContainerTTable
     public static final String Table_Name = "CM_ContainerTTable";
 
     /** AD_Table_ID=880 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 880;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_CM_ContainerTTable
 	  */
 	public int getCM_Container_ID();
 
-	public I_CM_Container getCM_Container() throws RuntimeException;
+	public org.compiere.model.I_CM_Container getCM_Container() throws RuntimeException;
 
     /** Column name CM_ContainerTTable_ID */
     public static final String COLUMNNAME_CM_ContainerTTable_ID = "CM_ContainerTTable_ID";
@@ -90,6 +90,15 @@ public interface I_CM_ContainerTTable
 	  */
 	public int getCM_ContainerTTable_ID();
 
+    /** Column name CM_ContainerTTable_UU */
+    public static final String COLUMNNAME_CM_ContainerTTable_UU = "CM_ContainerTTable_UU";
+
+	/** Set CM_ContainerTTable_UU	  */
+	public void setCM_ContainerTTable_UU (String CM_ContainerTTable_UU);
+
+	/** Get CM_ContainerTTable_UU	  */
+	public String getCM_ContainerTTable_UU();
+
     /** Column name CM_TemplateTable_ID */
     public static final String COLUMNNAME_CM_TemplateTable_ID = "CM_TemplateTable_ID";
 
@@ -103,7 +112,7 @@ public interface I_CM_ContainerTTable
 	  */
 	public int getCM_TemplateTable_ID();
 
-	public I_CM_TemplateTable getCM_TemplateTable() throws RuntimeException;
+	public org.compiere.model.I_CM_TemplateTable getCM_TemplateTable() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

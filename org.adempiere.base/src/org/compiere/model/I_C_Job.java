@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Job
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_Job 
 {
@@ -31,7 +31,7 @@ public interface I_C_Job
     public static final String Table_Name = "C_Job";
 
     /** AD_Table_ID=789 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 789;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_Job
 	  */
 	public int getC_JobCategory_ID();
 
-	public I_C_JobCategory getC_JobCategory() throws RuntimeException;
+	public org.compiere.model.I_C_JobCategory getC_JobCategory() throws RuntimeException;
 
     /** Column name C_Job_ID */
     public static final String COLUMNNAME_C_Job_ID = "C_Job_ID";
@@ -89,6 +89,15 @@ public interface I_C_Job
 	  * Job Position
 	  */
 	public int getC_Job_ID();
+
+    /** Column name C_Job_UU */
+    public static final String COLUMNNAME_C_Job_UU = "C_Job_UU";
+
+	/** Set C_Job_UU	  */
+	public void setC_Job_UU (String C_Job_UU);
+
+	/** Get C_Job_UU	  */
+	public String getC_Job_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

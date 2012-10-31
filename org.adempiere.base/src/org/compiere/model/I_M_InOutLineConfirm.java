@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InOutLineConfirm
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_InOutLineConfirm 
 {
@@ -31,7 +31,7 @@ public interface I_M_InOutLineConfirm
     public static final String Table_Name = "M_InOutLineConfirm";
 
     /** AD_Table_ID=728 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 728;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_M_InOutLineConfirm
 	  */
 	public int getC_InvoiceLine_ID();
 
-	public I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
+	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name ConfirmationNo */
     public static final String COLUMNNAME_ConfirmationNo = "ConfirmationNo";
@@ -171,7 +171,7 @@ public interface I_M_InOutLineConfirm
 	  */
 	public int getM_InOutConfirm_ID();
 
-	public I_M_InOutConfirm getM_InOutConfirm() throws RuntimeException;
+	public org.compiere.model.I_M_InOutConfirm getM_InOutConfirm() throws RuntimeException;
 
     /** Column name M_InOutLineConfirm_ID */
     public static final String COLUMNNAME_M_InOutLineConfirm_ID = "M_InOutLineConfirm_ID";
@@ -186,6 +186,15 @@ public interface I_M_InOutLineConfirm
 	  */
 	public int getM_InOutLineConfirm_ID();
 
+    /** Column name M_InOutLineConfirm_UU */
+    public static final String COLUMNNAME_M_InOutLineConfirm_UU = "M_InOutLineConfirm_UU";
+
+	/** Set M_InOutLineConfirm_UU	  */
+	public void setM_InOutLineConfirm_UU (String M_InOutLineConfirm_UU);
+
+	/** Get M_InOutLineConfirm_UU	  */
+	public String getM_InOutLineConfirm_UU();
+
     /** Column name M_InOutLine_ID */
     public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
 
@@ -199,7 +208,7 @@ public interface I_M_InOutLineConfirm
 	  */
 	public int getM_InOutLine_ID();
 
-	public I_M_InOutLine getM_InOutLine() throws RuntimeException;
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_InventoryLine_ID */
     public static final String COLUMNNAME_M_InventoryLine_ID = "M_InventoryLine_ID";
@@ -214,7 +223,7 @@ public interface I_M_InOutLineConfirm
 	  */
 	public int getM_InventoryLine_ID();
 
-	public I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
+	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

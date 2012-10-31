@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_RecentItem
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_RecentItem 
 {
@@ -70,6 +70,15 @@ public interface I_AD_RecentItem
 
 	/** Get Recent Item	  */
 	public int getAD_RecentItem_ID();
+
+    /** Column name AD_RecentItem_UU */
+    public static final String COLUMNNAME_AD_RecentItem_UU = "AD_RecentItem_UU";
+
+	/** Set AD_RecentItem_UU	  */
+	public void setAD_RecentItem_UU (String AD_RecentItem_UU);
+
+	/** Get AD_RecentItem_UU	  */
+	public String getAD_RecentItem_UU();
 
     /** Column name AD_Role_ID */
     public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
@@ -119,12 +128,12 @@ public interface I_AD_RecentItem
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
-	/** Set Usuario.
+	/** Set User/Contact.
 	  * User within the system - Internal or Business Partner Contact
 	  */
 	public void setAD_User_ID (int AD_User_ID);
 
-	/** Get Usuario.
+	/** Get User/Contact.
 	  * User within the system - Internal or Business Partner Contact
 	  */
 	public int getAD_User_ID();

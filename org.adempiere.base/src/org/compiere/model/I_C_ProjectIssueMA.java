@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ProjectIssueMA
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_ProjectIssueMA 
 {
@@ -31,7 +31,7 @@ public interface I_C_ProjectIssueMA
     public static final String Table_Name = "C_ProjectIssueMA";
 
     /** AD_Table_ID=761 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 761;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,16 @@ public interface I_C_ProjectIssueMA
 	  */
 	public int getC_ProjectIssue_ID();
 
-	public I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
+	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
+
+    /** Column name C_ProjectIssueMA_UU */
+    public static final String COLUMNNAME_C_ProjectIssueMA_UU = "C_ProjectIssueMA_UU";
+
+	/** Set C_ProjectIssueMA_UU	  */
+	public void setC_ProjectIssueMA_UU (String C_ProjectIssueMA_UU);
+
+	/** Get C_ProjectIssueMA_UU	  */
+	public String getC_ProjectIssueMA_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

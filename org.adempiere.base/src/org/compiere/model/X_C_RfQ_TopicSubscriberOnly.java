@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_TopicSubscriberOnly
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubscriberOnly, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_RfQ_TopicSubscriberOnly (Properties ctx, int C_RfQ_TopicSubscriberOnly_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
       return sb.toString();
     }
 
-	public I_C_RfQ_TopicSubscriber getC_RfQ_TopicSubscriber() throws RuntimeException
+	public org.compiere.model.I_C_RfQ_TopicSubscriber getC_RfQ_TopicSubscriber() throws RuntimeException
     {
-		return (I_C_RfQ_TopicSubscriber)MTable.get(getCtx(), I_C_RfQ_TopicSubscriber.Table_Name)
+		return (org.compiere.model.I_C_RfQ_TopicSubscriber)MTable.get(getCtx(), org.compiere.model.I_C_RfQ_TopicSubscriber.Table_Name)
 			.getPO(getC_RfQ_TopicSubscriber_ID(), get_TrxName());	}
 
 	/** Set RfQ Subscriber.
@@ -122,6 +122,20 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 		return ii.intValue();
 	}
 
+	/** Set C_RfQ_TopicSubscriberOnly_UU.
+		@param C_RfQ_TopicSubscriberOnly_UU C_RfQ_TopicSubscriberOnly_UU	  */
+	public void setC_RfQ_TopicSubscriberOnly_UU (String C_RfQ_TopicSubscriberOnly_UU)
+	{
+		set_Value (COLUMNNAME_C_RfQ_TopicSubscriberOnly_UU, C_RfQ_TopicSubscriberOnly_UU);
+	}
+
+	/** Get C_RfQ_TopicSubscriberOnly_UU.
+		@return C_RfQ_TopicSubscriberOnly_UU	  */
+	public String getC_RfQ_TopicSubscriberOnly_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_RfQ_TopicSubscriberOnly_UU);
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -139,9 +153,9 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public I_M_Product_Category getM_Product_Category() throws RuntimeException
+	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
     {
-		return (I_M_Product_Category)MTable.get(getCtx(), I_M_Product_Category.Table_Name)
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
 			.getPO(getM_Product_Category_ID(), get_TrxName());	}
 
 	/** Set Product Category.
@@ -175,9 +189,9 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
         return new KeyNamePair(get_ID(), String.valueOf(getM_Product_Category_ID()));
     }
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.

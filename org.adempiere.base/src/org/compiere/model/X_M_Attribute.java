@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Attribute
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName)
@@ -189,9 +189,9 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_AttributeSearch getM_AttributeSearch() throws RuntimeException
+	public org.compiere.model.I_M_AttributeSearch getM_AttributeSearch() throws RuntimeException
     {
-		return (I_M_AttributeSearch)MTable.get(getCtx(), I_M_AttributeSearch.Table_Name)
+		return (org.compiere.model.I_M_AttributeSearch)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSearch.Table_Name)
 			.getPO(getM_AttributeSearch_ID(), get_TrxName());	}
 
 	/** Set Attribute Search.
@@ -215,6 +215,20 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_Attribute_UU.
+		@param M_Attribute_UU M_Attribute_UU	  */
+	public void setM_Attribute_UU (String M_Attribute_UU)
+	{
+		set_Value (COLUMNNAME_M_Attribute_UU, M_Attribute_UU);
+	}
+
+	/** Get M_Attribute_UU.
+		@return M_Attribute_UU	  */
+	public String getM_Attribute_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_Attribute_UU);
 	}
 
 	/** Set Name.

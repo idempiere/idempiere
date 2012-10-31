@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Measure
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_PA_SLA_Measure (Properties ctx, int PA_SLA_Measure_ID, String trxName)
@@ -77,9 +77,9 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
       return sb.toString();
     }
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -167,9 +167,9 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 		return bd;
 	}
 
-	public I_PA_SLA_Goal getPA_SLA_Goal() throws RuntimeException
+	public org.compiere.model.I_PA_SLA_Goal getPA_SLA_Goal() throws RuntimeException
     {
-		return (I_PA_SLA_Goal)MTable.get(getCtx(), I_PA_SLA_Goal.Table_Name)
+		return (org.compiere.model.I_PA_SLA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_SLA_Goal.Table_Name)
 			.getPO(getPA_SLA_Goal_ID(), get_TrxName());	}
 
 	/** Set SLA Goal.
@@ -216,6 +216,20 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set PA_SLA_Measure_UU.
+		@param PA_SLA_Measure_UU PA_SLA_Measure_UU	  */
+	public void setPA_SLA_Measure_UU (String PA_SLA_Measure_UU)
+	{
+		set_Value (COLUMNNAME_PA_SLA_Measure_UU, PA_SLA_Measure_UU);
+	}
+
+	/** Get PA_SLA_Measure_UU.
+		@return PA_SLA_Measure_UU	  */
+	public String getPA_SLA_Measure_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_PA_SLA_Measure_UU);
 	}
 
 	/** Set Processed.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_WebAccessLog
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_WebAccessLog 
 {
@@ -31,7 +31,7 @@ public interface I_CM_WebAccessLog
     public static final String Table_Name = "CM_WebAccessLog";
 
     /** AD_Table_ID=894 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 894;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_CM_WebAccessLog
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name CM_BroadcastServer_ID */
     public static final String COLUMNNAME_CM_BroadcastServer_ID = "CM_BroadcastServer_ID";
@@ -103,7 +103,7 @@ public interface I_CM_WebAccessLog
 	  */
 	public int getCM_BroadcastServer_ID();
 
-	public I_CM_BroadcastServer getCM_BroadcastServer() throws RuntimeException;
+	public org.compiere.model.I_CM_BroadcastServer getCM_BroadcastServer() throws RuntimeException;
 
     /** Column name CM_Media_ID */
     public static final String COLUMNNAME_CM_Media_ID = "CM_Media_ID";
@@ -118,7 +118,7 @@ public interface I_CM_WebAccessLog
 	  */
 	public int getCM_Media_ID();
 
-	public I_CM_Media getCM_Media() throws RuntimeException;
+	public org.compiere.model.I_CM_Media getCM_Media() throws RuntimeException;
 
     /** Column name CM_WebAccessLog_ID */
     public static final String COLUMNNAME_CM_WebAccessLog_ID = "CM_WebAccessLog_ID";
@@ -133,6 +133,15 @@ public interface I_CM_WebAccessLog
 	  */
 	public int getCM_WebAccessLog_ID();
 
+    /** Column name CM_WebAccessLog_UU */
+    public static final String COLUMNNAME_CM_WebAccessLog_UU = "CM_WebAccessLog_UU";
+
+	/** Set CM_WebAccessLog_UU	  */
+	public void setCM_WebAccessLog_UU (String CM_WebAccessLog_UU);
+
+	/** Get CM_WebAccessLog_UU	  */
+	public String getCM_WebAccessLog_UU();
+
     /** Column name CM_WebProject_ID */
     public static final String COLUMNNAME_CM_WebProject_ID = "CM_WebProject_ID";
 
@@ -146,7 +155,7 @@ public interface I_CM_WebAccessLog
 	  */
 	public int getCM_WebProject_ID();
 
-	public I_CM_WebProject getCM_WebProject() throws RuntimeException;
+	public org.compiere.model.I_CM_WebProject getCM_WebProject() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

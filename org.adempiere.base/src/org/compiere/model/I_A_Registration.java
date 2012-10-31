@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Registration
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_A_Registration 
 {
@@ -31,7 +31,7 @@ public interface I_A_Registration
     public static final String Table_Name = "A_Registration";
 
     /** AD_Table_ID=651 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 651;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_A_Registration
 	  */
 	public int getA_Asset_ID();
 
-	public I_A_Asset getA_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -90,7 +90,7 @@ public interface I_A_Registration
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name A_Registration_ID */
     public static final String COLUMNNAME_A_Registration_ID = "A_Registration_ID";
@@ -104,6 +104,15 @@ public interface I_A_Registration
 	  * User Asset Registration
 	  */
 	public int getA_Registration_ID();
+
+    /** Column name A_Registration_UU */
+    public static final String COLUMNNAME_A_Registration_UU = "A_Registration_UU";
+
+	/** Set A_Registration_UU	  */
+	public void setA_Registration_UU (String A_Registration_UU);
+
+	/** Get A_Registration_UU	  */
+	public String getA_Registration_UU();
 
     /** Column name AssetServiceDate */
     public static final String COLUMNNAME_AssetServiceDate = "AssetServiceDate";
@@ -131,7 +140,7 @@ public interface I_A_Registration
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -240,7 +249,7 @@ public interface I_A_Registration
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

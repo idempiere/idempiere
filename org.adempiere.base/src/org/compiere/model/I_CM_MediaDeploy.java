@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_MediaDeploy
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_MediaDeploy 
 {
@@ -31,7 +31,7 @@ public interface I_CM_MediaDeploy
     public static final String Table_Name = "CM_MediaDeploy";
 
     /** AD_Table_ID=892 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 892;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,6 +75,15 @@ public interface I_CM_MediaDeploy
 	  */
 	public int getCM_MediaDeploy_ID();
 
+    /** Column name CM_MediaDeploy_UU */
+    public static final String COLUMNNAME_CM_MediaDeploy_UU = "CM_MediaDeploy_UU";
+
+	/** Set CM_MediaDeploy_UU	  */
+	public void setCM_MediaDeploy_UU (String CM_MediaDeploy_UU);
+
+	/** Get CM_MediaDeploy_UU	  */
+	public String getCM_MediaDeploy_UU();
+
     /** Column name CM_Media_ID */
     public static final String COLUMNNAME_CM_Media_ID = "CM_Media_ID";
 
@@ -88,7 +97,7 @@ public interface I_CM_MediaDeploy
 	  */
 	public int getCM_Media_ID();
 
-	public I_CM_Media getCM_Media() throws RuntimeException;
+	public org.compiere.model.I_CM_Media getCM_Media() throws RuntimeException;
 
     /** Column name CM_Media_Server_ID */
     public static final String COLUMNNAME_CM_Media_Server_ID = "CM_Media_Server_ID";
@@ -103,7 +112,7 @@ public interface I_CM_MediaDeploy
 	  */
 	public int getCM_Media_Server_ID();
 
-	public I_CM_Media_Server getCM_Media_Server() throws RuntimeException;
+	public org.compiere.model.I_CM_Media_Server getCM_Media_Server() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

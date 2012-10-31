@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocTypeCounter
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_DocTypeCounter extends PO implements I_C_DocTypeCounter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_DocTypeCounter (Properties ctx, int C_DocTypeCounter_ID, String trxName)
@@ -99,9 +99,23 @@ public class X_C_DocTypeCounter extends PO implements I_C_DocTypeCounter, I_Pers
 		return ii.intValue();
 	}
 
-	public I_C_DocType getC_DocType() throws RuntimeException
+	/** Set C_DocTypeCounter_UU.
+		@param C_DocTypeCounter_UU C_DocTypeCounter_UU	  */
+	public void setC_DocTypeCounter_UU (String C_DocTypeCounter_UU)
+	{
+		set_Value (COLUMNNAME_C_DocTypeCounter_UU, C_DocTypeCounter_UU);
+	}
+
+	/** Get C_DocTypeCounter_UU.
+		@return C_DocTypeCounter_UU	  */
+	public String getC_DocTypeCounter_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_DocTypeCounter_UU);
+	}
+
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getC_DocType_ID(), get_TrxName());	}
 
 	/** Set Document Type.
@@ -127,9 +141,9 @@ public class X_C_DocTypeCounter extends PO implements I_C_DocTypeCounter, I_Pers
 		return ii.intValue();
 	}
 
-	public I_C_DocType getCounter_C_DocType() throws RuntimeException
+	public org.compiere.model.I_C_DocType getCounter_C_DocType() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getCounter_C_DocType_ID(), get_TrxName());	}
 
 	/** Set Counter Document Type.

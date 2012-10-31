@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for W_CounterCount
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_W_CounterCount 
 {
@@ -31,7 +31,7 @@ public interface I_W_CounterCount
     public static final String Table_Name = "W_CounterCount";
 
     /** AD_Table_ID=552 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 552;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_W_CounterCount
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Counter */
     public static final String COLUMNNAME_Counter = "Counter";
@@ -182,4 +182,13 @@ public interface I_W_CounterCount
 	  * Web Counter Count Management
 	  */
 	public int getW_CounterCount_ID();
+
+    /** Column name W_CounterCount_UU */
+    public static final String COLUMNNAME_W_CounterCount_UU = "W_CounterCount_UU";
+
+	/** Set W_CounterCount_UU	  */
+	public void setW_CounterCount_UU (String W_CounterCount_UU);
+
+	/** Get W_CounterCount_UU	  */
+	public String getW_CounterCount_UU();
 }

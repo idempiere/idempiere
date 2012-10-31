@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ChargeType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_ChargeType 
 {
@@ -31,7 +31,7 @@ public interface I_C_ChargeType
     public static final String Table_Name = "C_ChargeType";
 
     /** AD_Table_ID=53145 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53145;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -70,6 +70,15 @@ public interface I_C_ChargeType
 
 	/** Get Charge Type	  */
 	public int getC_ChargeType_ID();
+
+    /** Column name C_ChargeType_UU */
+    public static final String COLUMNNAME_C_ChargeType_UU = "C_ChargeType_UU";
+
+	/** Set C_ChargeType_UU	  */
+	public void setC_ChargeType_UU (String C_ChargeType_UU);
+
+	/** Get C_ChargeType_UU	  */
+	public String getC_ChargeType_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

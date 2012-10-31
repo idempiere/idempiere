@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for QM_Specification
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_QM_Specification 
 {
@@ -32,7 +32,7 @@ public interface I_QM_Specification
     public static final String Table_Name = "QM_Specification";
 
     /** AD_Table_ID=53040 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53040;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,7 +76,7 @@ public interface I_QM_Specification
 	  */
 	public int getAD_Workflow_ID();
 
-	public I_AD_Workflow getAD_Workflow() throws RuntimeException;
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -133,7 +133,7 @@ public interface I_QM_Specification
 	  */
 	public int getM_AttributeSet_ID();
 
-	public I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
+	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -148,7 +148,7 @@ public interface I_QM_Specification
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -186,6 +186,15 @@ public interface I_QM_Specification
 
 	/** Get Quality Specification	  */
 	public int getQM_Specification_ID();
+
+    /** Column name QM_Specification_UU */
+    public static final String COLUMNNAME_QM_Specification_UU = "QM_Specification_UU";
+
+	/** Set QM_Specification_UU	  */
+	public void setQM_Specification_UU (String QM_Specification_UU);
+
+	/** Get QM_Specification_UU	  */
+	public String getQM_Specification_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

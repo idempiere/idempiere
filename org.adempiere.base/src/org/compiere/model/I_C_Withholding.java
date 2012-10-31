@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Withholding
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_Withholding 
 {
@@ -31,7 +31,7 @@ public interface I_C_Withholding
     public static final String Table_Name = "C_Withholding";
 
     /** AD_Table_ID=304 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 304;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_Withholding
 	  */
 	public int getBeneficiary();
 
-	public I_C_BPartner getBenefici() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getBenefici() throws RuntimeException;
 
     /** Column name C_PaymentTerm_ID */
     public static final String COLUMNNAME_C_PaymentTerm_ID = "C_PaymentTerm_ID";
@@ -90,7 +90,7 @@ public interface I_C_Withholding
 	  */
 	public int getC_PaymentTerm_ID();
 
-	public I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
+	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -120,6 +120,15 @@ public interface I_C_Withholding
 	  * Withholding type defined
 	  */
 	public int getC_Withholding_ID();
+
+    /** Column name C_Withholding_UU */
+    public static final String COLUMNNAME_C_Withholding_UU = "C_Withholding_UU";
+
+	/** Set C_Withholding_UU	  */
+	public void setC_Withholding_UU (String C_Withholding_UU);
+
+	/** Get C_Withholding_UU	  */
+	public String getC_Withholding_UU();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

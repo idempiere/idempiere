@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ToolBarButton
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121025L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -110,17 +110,17 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 		return (String)get_Value(COLUMNNAME_Action);
 	}
 
-	/** Set Action Class Name.
+	/** Set Service Component Name.
 		@param ActionClassName 
-		The class name that implements the interface for toolbar actions
+		The service component name that implements the interface for toolbar actions
 	  */
 	public void setActionClassName (String ActionClassName)
 	{
 		set_Value (COLUMNNAME_ActionClassName, ActionClassName);
 	}
 
-	/** Get Action Class Name.
-		@return The class name that implements the interface for toolbar actions
+	/** Get Service Component Name.
+		@return The service component name that implements the interface for toolbar actions
 	  */
 	public String getActionClassName () 
 	{

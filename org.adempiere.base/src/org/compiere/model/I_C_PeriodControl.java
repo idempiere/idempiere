@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PeriodControl
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_PeriodControl 
 {
@@ -31,7 +31,7 @@ public interface I_C_PeriodControl
     public static final String Table_Name = "C_PeriodControl";
 
     /** AD_Table_ID=229 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 229;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -71,6 +71,15 @@ public interface I_C_PeriodControl
 	/** Get Period Control	  */
 	public int getC_PeriodControl_ID();
 
+    /** Column name C_PeriodControl_UU */
+    public static final String COLUMNNAME_C_PeriodControl_UU = "C_PeriodControl_UU";
+
+	/** Set C_PeriodControl_UU	  */
+	public void setC_PeriodControl_UU (String C_PeriodControl_UU);
+
+	/** Get C_PeriodControl_UU	  */
+	public String getC_PeriodControl_UU();
+
     /** Column name C_Period_ID */
     public static final String COLUMNNAME_C_Period_ID = "C_Period_ID";
 
@@ -84,7 +93,7 @@ public interface I_C_PeriodControl
 	  */
 	public int getC_Period_ID();
 
-	public I_C_Period getC_Period() throws RuntimeException;
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

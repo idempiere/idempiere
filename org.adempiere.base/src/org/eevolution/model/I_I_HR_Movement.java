@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_HR_Movement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_I_HR_Movement 
 {
@@ -32,7 +32,7 @@ public interface I_I_HR_Movement
     public static final String Table_Name = "I_HR_Movement";
 
     /** AD_Table_ID=53259 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53259;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -200,6 +200,15 @@ public interface I_I_HR_Movement
 
 	/** Get Payroll Movement Import	  */
 	public int getI_HR_Movement_ID();
+
+    /** Column name I_HR_Movement_UU */
+    public static final String COLUMNNAME_I_HR_Movement_UU = "I_HR_Movement_UU";
+
+	/** Set I_HR_Movement_UU	  */
+	public void setI_HR_Movement_UU (String I_HR_Movement_UU);
+
+	/** Get I_HR_Movement_UU	  */
+	public String getI_HR_Movement_UU();
 
     /** Column name I_IsImported */
     public static final String COLUMNNAME_I_IsImported = "I_IsImported";

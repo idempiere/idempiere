@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Window
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_ASP_Window 
 {
@@ -31,7 +31,7 @@ public interface I_ASP_Window
     public static final String Table_Name = "ASP_Window";
 
     /** AD_Table_ID=53046 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53046;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_ASP_Window
 	  */
 	public int getAD_Window_ID();
 
-	public I_AD_Window getAD_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name ASP_Level_ID */
     public static final String COLUMNNAME_ASP_Level_ID = "ASP_Level_ID";
@@ -86,7 +86,7 @@ public interface I_ASP_Window
 	/** Get ASP Level	  */
 	public int getASP_Level_ID();
 
-	public I_ASP_Level getASP_Level() throws RuntimeException;
+	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException;
 
     /** Column name ASP_Status */
     public static final String COLUMNNAME_ASP_Status = "ASP_Status";
@@ -105,6 +105,15 @@ public interface I_ASP_Window
 
 	/** Get ASP Window	  */
 	public int getASP_Window_ID();
+
+    /** Column name ASP_Window_UU */
+    public static final String COLUMNNAME_ASP_Window_UU = "ASP_Window_UU";
+
+	/** Set ASP_Window_UU	  */
+	public void setASP_Window_UU (String ASP_Window_UU);
+
+	/** Get ASP_Window_UU	  */
+	public String getASP_Window_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

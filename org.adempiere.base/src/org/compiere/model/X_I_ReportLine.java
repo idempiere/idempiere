@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_ReportLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_I_ReportLine (Properties ctx, int I_ReportLine_ID, String trxName)
@@ -96,9 +96,9 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_CalculationType);
 	}
 
-	public I_C_ElementValue getC_ElementValue() throws RuntimeException
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
     {
-		return (I_C_ElementValue)MTable.get(getCtx(), I_C_ElementValue.Table_Name)
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
 			.getPO(getC_ElementValue_ID(), get_TrxName());	}
 
 	/** Set Account Element.
@@ -220,6 +220,20 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set I_ReportLine_UU.
+		@param I_ReportLine_UU I_ReportLine_UU	  */
+	public void setI_ReportLine_UU (String I_ReportLine_UU)
+	{
+		set_Value (COLUMNNAME_I_ReportLine_UU, I_ReportLine_UU);
+	}
+
+	/** Get I_ReportLine_UU.
+		@return I_ReportLine_UU	  */
+	public String getI_ReportLine_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_I_ReportLine_UU);
 	}
 
 	/** Set Printed.
@@ -376,9 +390,9 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_PAPeriodType);
 	}
 
-	public I_PA_ReportLine getPA_ReportLine() throws RuntimeException
+	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException
     {
-		return (I_PA_ReportLine)MTable.get(getCtx(), I_PA_ReportLine.Table_Name)
+		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_Name)
 			.getPO(getPA_ReportLine_ID(), get_TrxName());	}
 
 	/** Set Report Line.
@@ -401,9 +415,9 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
+	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
     {
-		return (I_PA_ReportLineSet)MTable.get(getCtx(), I_PA_ReportLineSet.Table_Name)
+		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_Name)
 			.getPO(getPA_ReportLineSet_ID(), get_TrxName());	}
 
 	/** Set Report Line Set.
@@ -426,9 +440,9 @@ public class X_I_ReportLine extends PO implements I_I_ReportLine, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_PA_ReportSource getPA_ReportSource() throws RuntimeException
+	public org.compiere.model.I_PA_ReportSource getPA_ReportSource() throws RuntimeException
     {
-		return (I_PA_ReportSource)MTable.get(getCtx(), I_PA_ReportSource.Table_Name)
+		return (org.compiere.model.I_PA_ReportSource)MTable.get(getCtx(), org.compiere.model.I_PA_ReportSource.Table_Name)
 			.getPO(getPA_ReportSource_ID(), get_TrxName());	}
 
 	/** Set Report Source.

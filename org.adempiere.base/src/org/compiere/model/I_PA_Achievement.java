@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_Achievement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PA_Achievement 
 {
@@ -31,7 +31,7 @@ public interface I_PA_Achievement
     public static final String Table_Name = "PA_Achievement";
 
     /** AD_Table_ID=438 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 438;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -182,6 +182,15 @@ public interface I_PA_Achievement
 	  */
 	public int getPA_Achievement_ID();
 
+    /** Column name PA_Achievement_UU */
+    public static final String COLUMNNAME_PA_Achievement_UU = "PA_Achievement_UU";
+
+	/** Set PA_Achievement_UU	  */
+	public void setPA_Achievement_UU (String PA_Achievement_UU);
+
+	/** Get PA_Achievement_UU	  */
+	public String getPA_Achievement_UU();
+
     /** Column name PA_Measure_ID */
     public static final String COLUMNNAME_PA_Measure_ID = "PA_Measure_ID";
 
@@ -195,7 +204,7 @@ public interface I_PA_Achievement
 	  */
 	public int getPA_Measure_ID();
 
-	public I_PA_Measure getPA_Measure() throws RuntimeException;
+	public org.compiere.model.I_PA_Measure getPA_Measure() throws RuntimeException;
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

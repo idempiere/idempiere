@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQ_Topic
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_RfQ_Topic 
 {
@@ -31,7 +31,7 @@ public interface I_C_RfQ_Topic
     public static final String Table_Name = "C_RfQ_Topic";
 
     /** AD_Table_ID=671 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 671;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_RfQ_Topic
 	  */
 	public int getAD_PrintFormat_ID();
 
-	public I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -105,6 +105,15 @@ public interface I_C_RfQ_Topic
 	  * Topic for Request for Quotations
 	  */
 	public int getC_RfQ_Topic_ID();
+
+    /** Column name C_RfQ_Topic_UU */
+    public static final String COLUMNNAME_C_RfQ_Topic_UU = "C_RfQ_Topic_UU";
+
+	/** Set C_RfQ_Topic_UU	  */
+	public void setC_RfQ_Topic_UU (String C_RfQ_Topic_UU);
+
+	/** Get C_RfQ_Topic_UU	  */
+	public String getC_RfQ_Topic_UU();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

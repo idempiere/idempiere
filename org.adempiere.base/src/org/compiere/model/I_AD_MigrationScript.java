@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_MigrationScript
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_MigrationScript 
 {
@@ -31,7 +31,7 @@ public interface I_AD_MigrationScript
     public static final String Table_Name = "AD_MigrationScript";
 
     /** AD_Table_ID=53064 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53064;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,6 +61,15 @@ public interface I_AD_MigrationScript
 	  * Table to check whether the migration script has been applied
 	  */
 	public int getAD_MigrationScript_ID();
+
+    /** Column name AD_MigrationScript_UU */
+    public static final String COLUMNNAME_AD_MigrationScript_UU = "AD_MigrationScript_UU";
+
+	/** Set AD_MigrationScript_UU	  */
+	public void setAD_MigrationScript_UU (String AD_MigrationScript_UU);
+
+	/** Get AD_MigrationScript_UU	  */
+	public String getAD_MigrationScript_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -255,12 +264,12 @@ public interface I_AD_MigrationScript
     public static final String COLUMNNAME_URL = "URL";
 
 	/** Set URL.
-	  * Full URL address - e.g. http://www.adempiere.org
+	  * Full URL address - e.g. http://www.idempiere.org
 	  */
 	public void setURL (String URL);
 
 	/** Get URL.
-	  * Full URL address - e.g. http://www.adempiere.org
+	  * Full URL address - e.g. http://www.idempiere.org
 	  */
 	public String getURL();
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Workbench
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Workbench 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Workbench
     public static final String Table_Name = "AD_Workbench";
 
     /** AD_Table_ID=468 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 468;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_AD_Workbench
 	  */
 	public int getAD_Column_ID();
 
-	public I_AD_Column getAD_Column() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Image_ID */
     public static final String COLUMNNAME_AD_Image_ID = "AD_Image_ID";
@@ -115,6 +115,15 @@ public interface I_AD_Workbench
 	  * Collection of windows, reports
 	  */
 	public int getAD_Workbench_ID();
+
+    /** Column name AD_Workbench_UU */
+    public static final String COLUMNNAME_AD_Workbench_UU = "AD_Workbench_UU";
+
+	/** Set AD_Workbench_UU	  */
+	public void setAD_Workbench_UU (String AD_Workbench_UU);
+
+	/** Get AD_Workbench_UU	  */
+	public String getAD_Workbench_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

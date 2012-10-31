@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ChangeRequest
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_ChangeRequest (Properties ctx, int M_ChangeRequest_ID, String trxName)
@@ -175,9 +175,9 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 		return false;
 	}
 
-	public I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
+	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
     {
-		return (I_M_ChangeNotice)MTable.get(getCtx(), I_M_ChangeNotice.Table_Name)
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
 			.getPO(getM_ChangeNotice_ID(), get_TrxName());	}
 
 	/** Set Change Notice.
@@ -226,9 +226,23 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 		return ii.intValue();
 	}
 
-	public I_M_ChangeNotice getM_FixChangeNotice() throws RuntimeException
+	/** Set M_ChangeRequest_UU.
+		@param M_ChangeRequest_UU M_ChangeRequest_UU	  */
+	public void setM_ChangeRequest_UU (String M_ChangeRequest_UU)
+	{
+		set_Value (COLUMNNAME_M_ChangeRequest_UU, M_ChangeRequest_UU);
+	}
+
+	/** Get M_ChangeRequest_UU.
+		@return M_ChangeRequest_UU	  */
+	public String getM_ChangeRequest_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ChangeRequest_UU);
+	}
+
+	public org.compiere.model.I_M_ChangeNotice getM_FixChangeNotice() throws RuntimeException
     {
-		return (I_M_ChangeNotice)MTable.get(getCtx(), I_M_ChangeNotice.Table_Name)
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
 			.getPO(getM_FixChangeNotice_ID(), get_TrxName());	}
 
 	/** Set Fixed in.

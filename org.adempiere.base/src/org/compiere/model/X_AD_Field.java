@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120831L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -726,6 +726,26 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	/** Set Number of Lines.
+		@param NumLines 
+		Number of lines for a field
+	  */
+	public void setNumLines (int NumLines)
+	{
+		set_Value (COLUMNNAME_NumLines, Integer.valueOf(NumLines));
+	}
+
+	/** Get Number of Lines.
+		@return Number of lines for a field
+	  */
+	public int getNumLines () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_NumLines);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** ObscureType AD_Reference_ID=291 */
 	public static final int OBSCURETYPE_AD_Reference_ID=291;
 	/** Obscure Digits but last 4 = 904 */
@@ -752,26 +772,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public String getObscureType () 
 	{
 		return (String)get_Value(COLUMNNAME_ObscureType);
-	}
-
-	/** Set Row Span.
-		@param NumLines 
-		Number of rows for a field
-	  */
-	public void setNumLines (int NumLines)
-	{
-		set_Value (COLUMNNAME_NumLines, Integer.valueOf(NumLines));
-	}
-
-	/** Get Row Span.
-		@return Number of rows for a field
-	  */
-	public int getNumLines () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_NumLines);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Sequence.

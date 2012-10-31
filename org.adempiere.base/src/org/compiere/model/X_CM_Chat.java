@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_Chat
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_Chat (Properties ctx, int CM_Chat_ID, String trxName)
@@ -74,9 +74,9 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -125,9 +125,9 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_CM_ChatType getCM_ChatType() throws RuntimeException
+	public org.compiere.model.I_CM_ChatType getCM_ChatType() throws RuntimeException
     {
-		return (I_CM_ChatType)MTable.get(getCtx(), I_CM_ChatType.Table_Name)
+		return (org.compiere.model.I_CM_ChatType)MTable.get(getCtx(), org.compiere.model.I_CM_ChatType.Table_Name)
 			.getPO(getCM_ChatType_ID(), get_TrxName());	}
 
 	/** Set Chat Type.
@@ -151,6 +151,20 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set CM_Chat_UU.
+		@param CM_Chat_UU CM_Chat_UU	  */
+	public void setCM_Chat_UU (String CM_Chat_UU)
+	{
+		set_Value (COLUMNNAME_CM_Chat_UU, CM_Chat_UU);
+	}
+
+	/** Get CM_Chat_UU.
+		@return CM_Chat_UU	  */
+	public String getCM_Chat_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_Chat_UU);
 	}
 
 	/** ConfidentialType AD_Reference_ID=340 */

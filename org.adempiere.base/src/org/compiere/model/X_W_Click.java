@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for W_Click
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_W_Click extends PO implements I_W_Click, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_W_Click (Properties ctx, int W_Click_ID, String trxName)
@@ -245,9 +245,9 @@ public class X_W_Click extends PO implements I_W_Click, I_Persistent
 		return (String)get_Value(COLUMNNAME_UserAgent);
 	}
 
-	public I_W_ClickCount getW_ClickCount() throws RuntimeException
+	public org.compiere.model.I_W_ClickCount getW_ClickCount() throws RuntimeException
     {
-		return (I_W_ClickCount)MTable.get(getCtx(), I_W_ClickCount.Table_Name)
+		return (org.compiere.model.I_W_ClickCount)MTable.get(getCtx(), org.compiere.model.I_W_ClickCount.Table_Name)
 			.getPO(getW_ClickCount_ID(), get_TrxName());	}
 
 	/** Set Click Count.
@@ -294,5 +294,19 @@ public class X_W_Click extends PO implements I_W_Click, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set W_Click_UU.
+		@param W_Click_UU W_Click_UU	  */
+	public void setW_Click_UU (String W_Click_UU)
+	{
+		set_Value (COLUMNNAME_W_Click_UU, W_Click_UU);
+	}
+
+	/** Get W_Click_UU.
+		@return W_Click_UU	  */
+	public String getW_Click_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_W_Click_UU);
 	}
 }

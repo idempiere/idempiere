@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQResponseLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_RfQResponseLine 
 {
@@ -31,7 +31,7 @@ public interface I_C_RfQResponseLine
     public static final String Table_Name = "C_RfQResponseLine";
 
     /** AD_Table_ID=673 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 673;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -91,7 +91,7 @@ public interface I_C_RfQResponseLine
 	  */
 	public int getC_RfQLine_ID();
 
-	public I_C_RfQLine getC_RfQLine() throws RuntimeException;
+	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException;
 
     /** Column name C_RfQResponse_ID */
     public static final String COLUMNNAME_C_RfQResponse_ID = "C_RfQResponse_ID";
@@ -106,7 +106,7 @@ public interface I_C_RfQResponseLine
 	  */
 	public int getC_RfQResponse_ID();
 
-	public I_C_RfQResponse getC_RfQResponse() throws RuntimeException;
+	public org.compiere.model.I_C_RfQResponse getC_RfQResponse() throws RuntimeException;
 
     /** Column name C_RfQResponseLine_ID */
     public static final String COLUMNNAME_C_RfQResponseLine_ID = "C_RfQResponseLine_ID";
@@ -120,6 +120,15 @@ public interface I_C_RfQResponseLine
 	  * Request for Quotation Response Line
 	  */
 	public int getC_RfQResponseLine_ID();
+
+    /** Column name C_RfQResponseLine_UU */
+    public static final String COLUMNNAME_C_RfQResponseLine_UU = "C_RfQResponseLine_UU";
+
+	/** Set C_RfQResponseLine_UU	  */
+	public void setC_RfQResponseLine_UU (String C_RfQResponseLine_UU);
+
+	/** Get C_RfQResponseLine_UU	  */
+	public String getC_RfQResponseLine_UU();
 
     /** Column name DateWorkComplete */
     public static final String COLUMNNAME_DateWorkComplete = "DateWorkComplete";

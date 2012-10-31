@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_NewsChannel
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_NewsChannel extends PO implements I_CM_NewsChannel, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_NewsChannel (Properties ctx, int CM_NewsChannel_ID, String trxName)
@@ -116,9 +116,23 @@ public class X_CM_NewsChannel extends PO implements I_CM_NewsChannel, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_CM_WebProject getCM_WebProject() throws RuntimeException
+	/** Set CM_NewsChannel_UU.
+		@param CM_NewsChannel_UU CM_NewsChannel_UU	  */
+	public void setCM_NewsChannel_UU (String CM_NewsChannel_UU)
+	{
+		set_Value (COLUMNNAME_CM_NewsChannel_UU, CM_NewsChannel_UU);
+	}
+
+	/** Get CM_NewsChannel_UU.
+		@return CM_NewsChannel_UU	  */
+	public String getCM_NewsChannel_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_NewsChannel_UU);
+	}
+
+	public org.compiere.model.I_CM_WebProject getCM_WebProject() throws RuntimeException
     {
-		return (I_CM_WebProject)MTable.get(getCtx(), I_CM_WebProject.Table_Name)
+		return (org.compiere.model.I_CM_WebProject)MTable.get(getCtx(), org.compiere.model.I_CM_WebProject.Table_Name)
 			.getPO(getCM_WebProject_ID(), get_TrxName());	}
 
 	/** Set Web Project.

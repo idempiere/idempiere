@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Concept_Category
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_HR_Concept_Category 
 {
@@ -32,7 +32,7 @@ public interface I_HR_Concept_Category
     public static final String Table_Name = "HR_Concept_Category";
 
     /** AD_Table_ID=53097 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53097;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -111,6 +111,15 @@ public interface I_HR_Concept_Category
 
 	/** Get Payroll Concept Category	  */
 	public int getHR_Concept_Category_ID();
+
+    /** Column name HR_Concept_Category_UU */
+    public static final String COLUMNNAME_HR_Concept_Category_UU = "HR_Concept_Category_UU";
+
+	/** Set HR_Concept_Category_UU	  */
+	public void setHR_Concept_Category_UU (String HR_Concept_Category_UU);
+
+	/** Get HR_Concept_Category_UU	  */
+	public String getHR_Concept_Category_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

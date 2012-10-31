@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Replication_Run
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Replication_Run 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Replication_Run
     public static final String Table_Name = "AD_Replication_Run";
 
     /** AD_Table_ID=603 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 603;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_AD_Replication_Run
 	  */
 	public int getAD_Replication_ID();
 
-	public I_AD_Replication getAD_Replication() throws RuntimeException;
+	public org.compiere.model.I_AD_Replication getAD_Replication() throws RuntimeException;
 
     /** Column name AD_Replication_Run_ID */
     public static final String COLUMNNAME_AD_Replication_Run_ID = "AD_Replication_Run_ID";
@@ -89,6 +89,15 @@ public interface I_AD_Replication_Run
 	  * Data Replication Run
 	  */
 	public int getAD_Replication_Run_ID();
+
+    /** Column name AD_Replication_Run_UU */
+    public static final String COLUMNNAME_AD_Replication_Run_UU = "AD_Replication_Run_UU";
+
+	/** Set AD_Replication_Run_UU	  */
+	public void setAD_Replication_Run_UU (String AD_Replication_Run_UU);
+
+	/** Get AD_Replication_Run_UU	  */
+	public String getAD_Replication_Run_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_Node_Asset
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PP_Order_Node_Asset 
 {
@@ -32,7 +32,7 @@ public interface I_PP_Order_Node_Asset
     public static final String Table_Name = "PP_Order_Node_Asset";
 
     /** AD_Table_ID=53031 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53031;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -55,7 +55,7 @@ public interface I_PP_Order_Node_Asset
 	  */
 	public int getA_Asset_ID();
 
-	public I_A_Asset getA_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -130,6 +130,15 @@ public interface I_PP_Order_Node_Asset
 
 	/** Get Manufacturing Order Activity Asset	  */
 	public int getPP_Order_Node_Asset_ID();
+
+    /** Column name PP_Order_Node_Asset_UU */
+    public static final String COLUMNNAME_PP_Order_Node_Asset_UU = "PP_Order_Node_Asset_UU";
+
+	/** Set PP_Order_Node_Asset_UU	  */
+	public void setPP_Order_Node_Asset_UU (String PP_Order_Node_Asset_UU);
+
+	/** Get PP_Order_Node_Asset_UU	  */
+	public String getPP_Order_Node_Asset_UU();
 
     /** Column name PP_Order_Node_ID */
     public static final String COLUMNNAME_PP_Order_Node_ID = "PP_Order_Node_ID";

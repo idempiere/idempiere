@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_EventAudit
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_WF_EventAudit 
 {
@@ -31,7 +31,7 @@ public interface I_AD_WF_EventAudit
     public static final String Table_Name = "AD_WF_EventAudit";
 
     /** AD_Table_ID=649 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 649;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_AD_WF_EventAudit
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -90,7 +90,7 @@ public interface I_AD_WF_EventAudit
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_WF_EventAudit_ID */
     public static final String COLUMNNAME_AD_WF_EventAudit_ID = "AD_WF_EventAudit_ID";
@@ -105,6 +105,15 @@ public interface I_AD_WF_EventAudit
 	  */
 	public int getAD_WF_EventAudit_ID();
 
+    /** Column name AD_WF_EventAudit_UU */
+    public static final String COLUMNNAME_AD_WF_EventAudit_UU = "AD_WF_EventAudit_UU";
+
+	/** Set AD_WF_EventAudit_UU	  */
+	public void setAD_WF_EventAudit_UU (String AD_WF_EventAudit_UU);
+
+	/** Get AD_WF_EventAudit_UU	  */
+	public String getAD_WF_EventAudit_UU();
+
     /** Column name AD_WF_Node_ID */
     public static final String COLUMNNAME_AD_WF_Node_ID = "AD_WF_Node_ID";
 
@@ -118,7 +127,7 @@ public interface I_AD_WF_EventAudit
 	  */
 	public int getAD_WF_Node_ID();
 
-	public I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name AD_WF_Process_ID */
     public static final String COLUMNNAME_AD_WF_Process_ID = "AD_WF_Process_ID";
@@ -133,7 +142,7 @@ public interface I_AD_WF_EventAudit
 	  */
 	public int getAD_WF_Process_ID();
 
-	public I_AD_WF_Process getAD_WF_Process() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Process getAD_WF_Process() throws RuntimeException;
 
     /** Column name AD_WF_Responsible_ID */
     public static final String COLUMNNAME_AD_WF_Responsible_ID = "AD_WF_Responsible_ID";
@@ -148,7 +157,7 @@ public interface I_AD_WF_EventAudit
 	  */
 	public int getAD_WF_Responsible_ID();
 
-	public I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException;
 
     /** Column name AttributeName */
     public static final String COLUMNNAME_AttributeName = "AttributeName";

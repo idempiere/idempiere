@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Table
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Table 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Table
     public static final String Table_Name = "AD_Table";
 
     /** AD_Table_ID=100 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 100;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,6 +88,15 @@ public interface I_AD_Table
 	  */
 	public int getAD_Table_ID();
 
+    /** Column name AD_Table_UU */
+    public static final String COLUMNNAME_AD_Table_UU = "AD_Table_UU";
+
+	/** Set AD_Table_UU	  */
+	public void setAD_Table_UU (String AD_Table_UU);
+
+	/** Get AD_Table_UU	  */
+	public String getAD_Table_UU();
+
     /** Column name AD_Val_Rule_ID */
     public static final String COLUMNNAME_AD_Val_Rule_ID = "AD_Val_Rule_ID";
 
@@ -101,7 +110,7 @@ public interface I_AD_Table
 	  */
 	public int getAD_Val_Rule_ID();
 
-	public I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -116,7 +125,7 @@ public interface I_AD_Table
 	  */
 	public int getAD_Window_ID();
 
-	public I_AD_Window getAD_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name CopyColumnsFromTable */
     public static final String COLUMNNAME_CopyColumnsFromTable = "CopyColumnsFromTable";
@@ -323,7 +332,7 @@ public interface I_AD_Table
 	  */
 	public int getPO_Window_ID();
 
-	public I_AD_Window getPO_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException;
 
     /** Column name ReplicationType */
     public static final String COLUMNNAME_ReplicationType = "ReplicationType";

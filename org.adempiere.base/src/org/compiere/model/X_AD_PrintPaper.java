@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintPaper
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_PrintPaper (Properties ctx, int AD_PrintPaper_ID, String trxName)
@@ -107,6 +107,20 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_PrintPaper_UU.
+		@param AD_PrintPaper_UU AD_PrintPaper_UU	  */
+	public void setAD_PrintPaper_UU (String AD_PrintPaper_UU)
+	{
+		set_Value (COLUMNNAME_AD_PrintPaper_UU, AD_PrintPaper_UU);
+	}
+
+	/** Get AD_PrintPaper_UU.
+		@return AD_PrintPaper_UU	  */
+	public String getAD_PrintPaper_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_PrintPaper_UU);
 	}
 
 	/** Set Validation code.

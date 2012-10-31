@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_QualityTest
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_QualityTest extends PO implements I_M_QualityTest, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20101207L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_QualityTest (Properties ctx, int M_QualityTest_ID, String trxName)
@@ -123,6 +123,20 @@ public class X_M_QualityTest extends PO implements I_M_QualityTest, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_QualityTest_UU.
+		@param M_QualityTest_UU M_QualityTest_UU	  */
+	public void setM_QualityTest_UU (String M_QualityTest_UU)
+	{
+		set_Value (COLUMNNAME_M_QualityTest_UU, M_QualityTest_UU);
+	}
+
+	/** Get M_QualityTest_UU.
+		@return M_QualityTest_UU	  */
+	public String getM_QualityTest_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_QualityTest_UU);
 	}
 
 	/** Set Name.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_SerNoCtlExclude
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_SerNoCtlExclude 
 {
@@ -31,7 +31,7 @@ public interface I_M_SerNoCtlExclude
     public static final String Table_Name = "M_SerNoCtlExclude";
 
     /** AD_Table_ID=811 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 811;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_M_SerNoCtlExclude
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -132,6 +132,15 @@ public interface I_M_SerNoCtlExclude
 	  */
 	public int getM_SerNoCtlExclude_ID();
 
+    /** Column name M_SerNoCtlExclude_UU */
+    public static final String COLUMNNAME_M_SerNoCtlExclude_UU = "M_SerNoCtlExclude_UU";
+
+	/** Set M_SerNoCtlExclude_UU	  */
+	public void setM_SerNoCtlExclude_UU (String M_SerNoCtlExclude_UU);
+
+	/** Get M_SerNoCtlExclude_UU	  */
+	public String getM_SerNoCtlExclude_UU();
+
     /** Column name M_SerNoCtl_ID */
     public static final String COLUMNNAME_M_SerNoCtl_ID = "M_SerNoCtl_ID";
 
@@ -145,7 +154,7 @@ public interface I_M_SerNoCtlExclude
 	  */
 	public int getM_SerNoCtl_ID();
 
-	public I_M_SerNoCtl getM_SerNoCtl() throws RuntimeException;
+	public org.compiere.model.I_M_SerNoCtl getM_SerNoCtl() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

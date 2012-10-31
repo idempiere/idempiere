@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_System
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_System extends PO implements I_AD_System, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_System (Properties ctx, int AD_System_ID, String trxName)
@@ -111,6 +111,20 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_System_UU.
+		@param AD_System_UU AD_System_UU	  */
+	public void setAD_System_UU (String AD_System_UU)
+	{
+		set_Value (COLUMNNAME_AD_System_UU, AD_System_UU);
+	}
+
+	/** Get AD_System_UU.
+		@return AD_System_UU	  */
+	public String getAD_System_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_System_UU);
 	}
 
 	/** Set Custom Prefix.
@@ -381,6 +395,23 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 	public String getLastBuildInfo () 
 	{
 		return (String)get_Value(COLUMNNAME_LastBuildInfo);
+	}
+
+	/** Set Last Migration Script Applied.
+		@param LastMigrationScriptApplied 
+		Register of the filename for the last migration script applied on this database
+	  */
+	public void setLastMigrationScriptApplied (String LastMigrationScriptApplied)
+	{
+		set_Value (COLUMNNAME_LastMigrationScriptApplied, LastMigrationScriptApplied);
+	}
+
+	/** Get Last Migration Script Applied.
+		@return Register of the filename for the last migration script applied on this database
+	  */
+	public String getLastMigrationScriptApplied () 
+	{
+		return (String)get_Value(COLUMNNAME_LastMigrationScriptApplied);
 	}
 
 	/** Set LDAP Domain.

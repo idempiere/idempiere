@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ConversionType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_ConversionType (Properties ctx, int C_ConversionType_ID, String trxName)
@@ -94,6 +94,20 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_ConversionType_UU.
+		@param C_ConversionType_UU C_ConversionType_UU	  */
+	public void setC_ConversionType_UU (String C_ConversionType_UU)
+	{
+		set_Value (COLUMNNAME_C_ConversionType_UU, C_ConversionType_UU);
+	}
+
+	/** Get C_ConversionType_UU.
+		@return C_ConversionType_UU	  */
+	public String getC_ConversionType_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_ConversionType_UU);
 	}
 
 	/** Set Description.

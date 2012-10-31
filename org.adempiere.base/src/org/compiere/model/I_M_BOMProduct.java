@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_BOMProduct
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_BOMProduct 
 {
@@ -31,7 +31,7 @@ public interface I_M_BOMProduct
     public static final String Table_Name = "M_BOMProduct";
 
     /** AD_Table_ID=801 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 801;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -210,7 +210,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_BOMAlternative_ID();
 
-	public I_M_BOMAlternative getM_BOMAlternative() throws RuntimeException;
+	public org.compiere.model.I_M_BOMAlternative getM_BOMAlternative() throws RuntimeException;
 
     /** Column name M_BOM_ID */
     public static final String COLUMNNAME_M_BOM_ID = "M_BOM_ID";
@@ -225,7 +225,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_BOM_ID();
 
-	public I_M_BOM getM_BOM() throws RuntimeException;
+	public org.compiere.model.I_M_BOM getM_BOM() throws RuntimeException;
 
     /** Column name M_BOMProduct_ID */
     public static final String COLUMNNAME_M_BOMProduct_ID = "M_BOMProduct_ID";
@@ -240,6 +240,15 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_BOMProduct_ID();
 
+    /** Column name M_BOMProduct_UU */
+    public static final String COLUMNNAME_M_BOMProduct_UU = "M_BOMProduct_UU";
+
+	/** Set M_BOMProduct_UU	  */
+	public void setM_BOMProduct_UU (String M_BOMProduct_UU);
+
+	/** Get M_BOMProduct_UU	  */
+	public String getM_BOMProduct_UU();
+
     /** Column name M_ChangeNotice_ID */
     public static final String COLUMNNAME_M_ChangeNotice_ID = "M_ChangeNotice_ID";
 
@@ -253,7 +262,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_ChangeNotice_ID();
 
-	public I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException;
+	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException;
 
     /** Column name M_ProductBOM_ID */
     public static final String COLUMNNAME_M_ProductBOM_ID = "M_ProductBOM_ID";
@@ -268,7 +277,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_ProductBOM_ID();
 
-	public I_M_Product getM_ProductBOM() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_ProductBOM() throws RuntimeException;
 
     /** Column name M_ProductOperation_ID */
     public static final String COLUMNNAME_M_ProductOperation_ID = "M_ProductOperation_ID";
@@ -283,7 +292,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_ProductOperation_ID();
 
-	public I_M_ProductOperation getM_ProductOperation() throws RuntimeException;
+	public org.compiere.model.I_M_ProductOperation getM_ProductOperation() throws RuntimeException;
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

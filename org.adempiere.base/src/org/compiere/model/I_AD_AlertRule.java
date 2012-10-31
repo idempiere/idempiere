@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AlertRule
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_AlertRule 
 {
@@ -31,7 +31,7 @@ public interface I_AD_AlertRule
     public static final String Table_Name = "AD_AlertRule";
 
     /** AD_Table_ID=593 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 593;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_AD_AlertRule
 	  */
 	public int getAD_Alert_ID();
 
-	public I_AD_Alert getAD_Alert() throws RuntimeException;
+	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException;
 
     /** Column name AD_AlertRule_ID */
     public static final String COLUMNNAME_AD_AlertRule_ID = "AD_AlertRule_ID";
@@ -68,6 +68,15 @@ public interface I_AD_AlertRule
 	  * Definition of the alert element
 	  */
 	public int getAD_AlertRule_ID();
+
+    /** Column name AD_AlertRule_UU */
+    public static final String COLUMNNAME_AD_AlertRule_UU = "AD_AlertRule_UU";
+
+	/** Set AD_AlertRule_UU	  */
+	public void setAD_AlertRule_UU (String AD_AlertRule_UU);
+
+	/** Get AD_AlertRule_UU	  */
+	public String getAD_AlertRule_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -103,7 +112,7 @@ public interface I_AD_AlertRule
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

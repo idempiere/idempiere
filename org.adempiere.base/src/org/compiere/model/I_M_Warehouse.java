@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Warehouse
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_Warehouse 
 {
@@ -172,6 +172,15 @@ public interface I_M_Warehouse
 	public int getM_WarehouseSource_ID();
 
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
+
+    /** Column name M_Warehouse_UU */
+    public static final String COLUMNNAME_M_Warehouse_UU = "M_Warehouse_UU";
+
+	/** Set M_Warehouse_UU	  */
+	public void setM_Warehouse_UU (String M_Warehouse_UU);
+
+	/** Get M_Warehouse_UU	  */
+	public String getM_Warehouse_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

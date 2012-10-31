@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeInstance
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_AttributeInstance (Properties ctx, int M_AttributeInstance_ID, String trxName)
@@ -73,9 +73,9 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
       return sb.toString();
     }
 
-	public I_M_Attribute getM_Attribute() throws RuntimeException
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
     {
-		return (I_M_Attribute)MTable.get(getCtx(), I_M_Attribute.Table_Name)
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_Name)
 			.getPO(getM_Attribute_ID(), get_TrxName());	}
 
 	/** Set Attribute.
@@ -99,6 +99,20 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_AttributeInstance_UU.
+		@param M_AttributeInstance_UU M_AttributeInstance_UU	  */
+	public void setM_AttributeInstance_UU (String M_AttributeInstance_UU)
+	{
+		set_Value (COLUMNNAME_M_AttributeInstance_UU, M_AttributeInstance_UU);
+	}
+
+	/** Get M_AttributeInstance_UU.
+		@return M_AttributeInstance_UU	  */
+	public String getM_AttributeInstance_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_AttributeInstance_UU);
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
@@ -129,9 +143,9 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 		return ii.intValue();
 	}
 
-	public I_M_AttributeValue getM_AttributeValue() throws RuntimeException
+	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException
     {
-		return (I_M_AttributeValue)MTable.get(getCtx(), I_M_AttributeValue.Table_Name)
+		return (org.compiere.model.I_M_AttributeValue)MTable.get(getCtx(), org.compiere.model.I_M_AttributeValue.Table_Name)
 			.getPO(getM_AttributeValue_ID(), get_TrxName());	}
 
 	/** Set Attribute Value.

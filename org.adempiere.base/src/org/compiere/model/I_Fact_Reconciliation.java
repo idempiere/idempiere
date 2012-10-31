@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Fact_Reconciliation
- *  @author Adempiere (generated) 
- *  @version 360LTS.015
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_Fact_Reconciliation 
 {
@@ -31,7 +31,7 @@ public interface I_Fact_Reconciliation
     public static final String Table_Name = "Fact_Reconciliation";
 
     /** AD_Table_ID=53286 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53286;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_Fact_Reconciliation
 	  */
 	public int getAccount_ID();
 
-	public I_C_ElementValue getAccount() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -103,7 +103,7 @@ public interface I_Fact_Reconciliation
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -143,7 +143,7 @@ public interface I_Fact_Reconciliation
 	/** Get Accounting Fact	  */
 	public int getFact_Acct_ID();
 
-	public I_Fact_Acct getFact_Acct() throws RuntimeException;
+	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException;
 
     /** Column name Fact_Reconciliation_ID */
     public static final String COLUMNNAME_Fact_Reconciliation_ID = "Fact_Reconciliation_ID";
@@ -153,6 +153,15 @@ public interface I_Fact_Reconciliation
 
 	/** Get Accounting Fact Reconciliation	  */
 	public int getFact_Reconciliation_ID();
+
+    /** Column name Fact_Reconciliation_UU */
+    public static final String COLUMNNAME_Fact_Reconciliation_UU = "Fact_Reconciliation_UU";
+
+	/** Set Fact_Reconciliation_UU	  */
+	public void setFact_Reconciliation_UU (String Fact_Reconciliation_UU);
+
+	/** Get Fact_Reconciliation_UU	  */
+	public String getFact_Reconciliation_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

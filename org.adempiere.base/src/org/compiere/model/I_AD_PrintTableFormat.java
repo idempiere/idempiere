@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintTableFormat
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_PrintTableFormat 
 {
@@ -31,7 +31,7 @@ public interface I_AD_PrintTableFormat
     public static final String Table_Name = "AD_PrintTableFormat";
 
     /** AD_Table_ID=523 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 523;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getAD_Image_ID();
 
-	public I_AD_Image getAD_Image() throws RuntimeException;
+	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -89,6 +89,15 @@ public interface I_AD_PrintTableFormat
 	  * Table Format in Reports
 	  */
 	public int getAD_PrintTableFormat_ID();
+
+    /** Column name AD_PrintTableFormat_UU */
+    public static final String COLUMNNAME_AD_PrintTableFormat_UU = "AD_PrintTableFormat_UU";
+
+	/** Set AD_PrintTableFormat_UU	  */
+	public void setAD_PrintTableFormat_UU (String AD_PrintTableFormat_UU);
+
+	/** Get AD_PrintTableFormat_UU	  */
+	public String getAD_PrintTableFormat_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -171,7 +180,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunctBG_PrintColor_ID();
 
-	public I_AD_PrintColor getFunctBG_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getFunctBG_PrintColor() throws RuntimeException;
 
     /** Column name FunctFG_PrintColor_ID */
     public static final String COLUMNNAME_FunctFG_PrintColor_ID = "FunctFG_PrintColor_ID";
@@ -186,7 +195,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunctFG_PrintColor_ID();
 
-	public I_AD_PrintColor getFunctFG_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getFunctFG_PrintColor() throws RuntimeException;
 
     /** Column name Funct_PrintFont_ID */
     public static final String COLUMNNAME_Funct_PrintFont_ID = "Funct_PrintFont_ID";
@@ -201,7 +210,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunct_PrintFont_ID();
 
-	public I_AD_PrintFont getFunct_PrintFont() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFont getFunct_PrintFont() throws RuntimeException;
 
     /** Column name HdrLine_PrintColor_ID */
     public static final String COLUMNNAME_HdrLine_PrintColor_ID = "HdrLine_PrintColor_ID";
@@ -216,7 +225,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrLine_PrintColor_ID();
 
-	public I_AD_PrintColor getHdrLine_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getHdrLine_PrintColor() throws RuntimeException;
 
     /** Column name Hdr_PrintFont_ID */
     public static final String COLUMNNAME_Hdr_PrintFont_ID = "Hdr_PrintFont_ID";
@@ -231,7 +240,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdr_PrintFont_ID();
 
-	public I_AD_PrintFont getHdr_PrintFont() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFont getHdr_PrintFont() throws RuntimeException;
 
     /** Column name HdrStroke */
     public static final String COLUMNNAME_HdrStroke = "HdrStroke";
@@ -272,7 +281,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrTextBG_PrintColor_ID();
 
-	public I_AD_PrintColor getHdrTextBG_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getHdrTextBG_PrintColor() throws RuntimeException;
 
     /** Column name HdrTextFG_PrintColor_ID */
     public static final String COLUMNNAME_HdrTextFG_PrintColor_ID = "HdrTextFG_PrintColor_ID";
@@ -287,7 +296,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrTextFG_PrintColor_ID();
 
-	public I_AD_PrintColor getHdrTextFG_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getHdrTextFG_PrintColor() throws RuntimeException;
 
     /** Column name HeaderCenter */
     public static final String COLUMNNAME_HeaderCenter = "HeaderCenter";
@@ -471,7 +480,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getLine_PrintColor_ID();
 
-	public I_AD_PrintColor getLine_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getLine_PrintColor() throws RuntimeException;
 
     /** Column name LineStroke */
     public static final String COLUMNNAME_LineStroke = "LineStroke";

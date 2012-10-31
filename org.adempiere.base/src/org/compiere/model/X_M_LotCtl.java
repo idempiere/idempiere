@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_LotCtl
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_LotCtl (Properties ctx, int M_LotCtl_ID, String trxName)
@@ -155,6 +155,20 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_LotCtl_UU.
+		@param M_LotCtl_UU M_LotCtl_UU	  */
+	public void setM_LotCtl_UU (String M_LotCtl_UU)
+	{
+		set_Value (COLUMNNAME_M_LotCtl_UU, M_LotCtl_UU);
+	}
+
+	/** Get M_LotCtl_UU.
+		@return M_LotCtl_UU	  */
+	public String getM_LotCtl_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_LotCtl_UU);
 	}
 
 	/** Set Name.

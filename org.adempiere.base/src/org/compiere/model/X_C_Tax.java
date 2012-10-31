@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Tax
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_Tax extends PO implements I_C_Tax, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_Tax (Properties ctx, int C_Tax_ID, String trxName)
@@ -86,9 +86,9 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Rule getAD_Rule() throws RuntimeException
+	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException
     {
-		return (I_AD_Rule)MTable.get(getCtx(), I_AD_Rule.Table_Name)
+		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_Name)
 			.getPO(getAD_Rule_ID(), get_TrxName());	}
 
 	/** Set Rule.
@@ -134,9 +134,9 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_Region getC_Region() throws RuntimeException
+	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
     {
-		return (I_C_Region)MTable.get(getCtx(), I_C_Region.Table_Name)
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_Name)
 			.getPO(getC_Region_ID(), get_TrxName());	}
 
 	/** Set Region.
@@ -162,9 +162,9 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_TaxCategory getC_TaxCategory() throws RuntimeException
+	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
     {
-		return (I_C_TaxCategory)MTable.get(getCtx(), I_C_TaxCategory.Table_Name)
+		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_Name)
 			.getPO(getC_TaxCategory_ID(), get_TrxName());	}
 
 	/** Set Tax Category.
@@ -211,6 +211,20 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_Tax_UU.
+		@param C_Tax_UU C_Tax_UU	  */
+	public void setC_Tax_UU (String C_Tax_UU)
+	{
+		set_Value (COLUMNNAME_C_Tax_UU, C_Tax_UU);
+	}
+
+	/** Get C_Tax_UU.
+		@return C_Tax_UU	  */
+	public String getC_Tax_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Tax_UU);
 	}
 
 	/** Set Description.
@@ -375,9 +389,9 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
-	public I_C_Tax getParent_Tax() throws RuntimeException
+	public org.compiere.model.I_C_Tax getParent_Tax() throws RuntimeException
     {
-		return (I_C_Tax)MTable.get(getCtx(), I_C_Tax.Table_Name)
+		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_Name)
 			.getPO(getParent_Tax_ID(), get_TrxName());	}
 
 	/** Set Parent Tax.
@@ -513,9 +527,9 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_Region getTo_Region() throws RuntimeException
+	public org.compiere.model.I_C_Region getTo_Region() throws RuntimeException
     {
-		return (I_C_Region)MTable.get(getCtx(), I_C_Region.Table_Name)
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_Name)
 			.getPO(getTo_Region_ID(), get_TrxName());	}
 
 	/** Set To.

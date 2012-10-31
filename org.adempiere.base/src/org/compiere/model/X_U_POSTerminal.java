@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for U_POSTerminal
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_U_POSTerminal (Properties ctx, int U_POSTerminal_ID, String trxName)
@@ -99,9 +99,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return false;
 	}
 
-	public I_C_BankAccount getCard_BankAccount() throws RuntimeException
+	public org.compiere.model.I_C_BankAccount getCard_BankAccount() throws RuntimeException
     {
-		return (I_C_BankAccount)MTable.get(getCtx(), I_C_BankAccount.Table_Name)
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
 			.getPO(getCard_BankAccount_ID(), get_TrxName());	}
 
 	/** Set Card Bank Account.
@@ -127,9 +127,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_BankAccount getCardTransferBankAccount() throws RuntimeException
+	public org.compiere.model.I_C_BankAccount getCardTransferBankAccount() throws RuntimeException
     {
-		return (I_C_BankAccount)MTable.get(getCtx(), I_C_BankAccount.Table_Name)
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
 			.getPO(getCardTransferBankAccount_ID(), get_TrxName());	}
 
 	/** Set Transfer Card trx to.
@@ -155,9 +155,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_CashBook getCardTransferCashBook() throws RuntimeException
+	public org.compiere.model.I_C_CashBook getCardTransferCashBook() throws RuntimeException
     {
-		return (I_C_CashBook)MTable.get(getCtx(), I_C_CashBook.Table_Name)
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
 			.getPO(getCardTransferCashBook_ID(), get_TrxName());	}
 
 	/** Set Transfer Card trx to.
@@ -228,9 +228,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return (String)get_Value(COLUMNNAME_CashBookTransferType);
 	}
 
-	public I_C_BankAccount getCashTransferBankAccount() throws RuntimeException
+	public org.compiere.model.I_C_BankAccount getCashTransferBankAccount() throws RuntimeException
     {
-		return (I_C_BankAccount)MTable.get(getCtx(), I_C_BankAccount.Table_Name)
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
 			.getPO(getCashTransferBankAccount_ID(), get_TrxName());	}
 
 	/** Set Transfer Cash trx to.
@@ -256,9 +256,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_CashBook getCashTransferCashBook() throws RuntimeException
+	public org.compiere.model.I_C_CashBook getCashTransferCashBook() throws RuntimeException
     {
-		return (I_C_CashBook)MTable.get(getCtx(), I_C_CashBook.Table_Name)
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
 			.getPO(getCashTransferCashBook_ID(), get_TrxName());	}
 
 	/** Set Transfer Cash trx to.
@@ -284,9 +284,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_CashBook getC_CashBook() throws RuntimeException
+	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
     {
-		return (I_C_CashBook)MTable.get(getCtx(), I_C_CashBook.Table_Name)
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
 			.getPO(getC_CashBook_ID(), get_TrxName());	}
 
 	/** Set Cash Book.
@@ -312,9 +312,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_BPartner getC_CashBPartner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_CashBPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_CashBPartner_ID(), get_TrxName());	}
 
 	/** Set Cash BPartner.
@@ -340,9 +340,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_BankAccount getCheck_BankAccount() throws RuntimeException
+	public org.compiere.model.I_C_BankAccount getCheck_BankAccount() throws RuntimeException
     {
-		return (I_C_BankAccount)MTable.get(getCtx(), I_C_BankAccount.Table_Name)
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
 			.getPO(getCheck_BankAccount_ID(), get_TrxName());	}
 
 	/** Set Check Bank Account.
@@ -368,9 +368,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_BankAccount getCheckTransferBankAccount() throws RuntimeException
+	public org.compiere.model.I_C_BankAccount getCheckTransferBankAccount() throws RuntimeException
     {
-		return (I_C_BankAccount)MTable.get(getCtx(), I_C_BankAccount.Table_Name)
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
 			.getPO(getCheckTransferBankAccount_ID(), get_TrxName());	}
 
 	/** Set Tranfer Check trx to.
@@ -396,9 +396,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_CashBook getCheckTransferCashBook() throws RuntimeException
+	public org.compiere.model.I_C_CashBook getCheckTransferCashBook() throws RuntimeException
     {
-		return (I_C_CashBook)MTable.get(getCtx(), I_C_CashBook.Table_Name)
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
 			.getPO(getCheckTransferCashBook_ID(), get_TrxName());	}
 
 	/** Set Transfer Check trx to.
@@ -445,9 +445,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return (String)get_Value(COLUMNNAME_CheckTransferType);
 	}
 
-	public I_C_BPartner getC_TemplateBPartner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_TemplateBPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_TemplateBPartner_ID(), get_TrxName());	}
 
 	/** Set Template BPartner.
@@ -568,9 +568,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_Warehouse_ID(), get_TrxName());	}
 
 	/** Set Warehouse.
@@ -613,9 +613,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	public I_M_PriceList getPO_PriceList() throws RuntimeException
+	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException
     {
-		return (I_M_PriceList)MTable.get(getCtx(), I_M_PriceList.Table_Name)
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
 			.getPO(getPO_PriceList_ID(), get_TrxName());	}
 
 	/** Set Purchase Pricelist.
@@ -658,9 +658,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return (String)get_Value(COLUMNNAME_PrinterName);
 	}
 
-	public I_AD_User getSalesRep() throws RuntimeException
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSalesRep_ID(), get_TrxName());	}
 
 	/** Set Sales Representative.
@@ -686,9 +686,9 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_PriceList getSO_PriceList() throws RuntimeException
+	public org.compiere.model.I_M_PriceList getSO_PriceList() throws RuntimeException
     {
-		return (I_M_PriceList)MTable.get(getCtx(), I_M_PriceList.Table_Name)
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
 			.getPO(getSO_PriceList_ID(), get_TrxName());	}
 
 	/** Set Sales Pricelist.
@@ -746,6 +746,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set U_POSTerminal_UU.
+		@param U_POSTerminal_UU U_POSTerminal_UU	  */
+	public void setU_POSTerminal_UU (String U_POSTerminal_UU)
+	{
+		set_Value (COLUMNNAME_U_POSTerminal_UU, U_POSTerminal_UU);
+	}
+
+	/** Get U_POSTerminal_UU.
+		@return U_POSTerminal_UU	  */
+	public String getU_POSTerminal_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_U_POSTerminal_UU);
 	}
 
 	/** Set Search Key.

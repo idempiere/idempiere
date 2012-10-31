@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_RegistrationAttribute
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAttribute, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_A_RegistrationAttribute (Properties ctx, int A_RegistrationAttribute_ID, String trxName)
@@ -75,9 +75,9 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
       return sb.toString();
     }
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
     {
-		return (I_AD_Reference)MTable.get(getCtx(), I_AD_Reference.Table_Name)
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
 			.getPO(getAD_Reference_ID(), get_TrxName());	}
 
 	/** Set Reference.
@@ -103,9 +103,9 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 		return ii.intValue();
 	}
 
-	public I_AD_Reference getAD_Reference_Value() throws RuntimeException
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
     {
-		return (I_AD_Reference)MTable.get(getCtx(), I_AD_Reference.Table_Name)
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
 			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
 
 	/** Set Reference Key.
@@ -152,6 +152,20 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set A_RegistrationAttribute_UU.
+		@param A_RegistrationAttribute_UU A_RegistrationAttribute_UU	  */
+	public void setA_RegistrationAttribute_UU (String A_RegistrationAttribute_UU)
+	{
+		set_Value (COLUMNNAME_A_RegistrationAttribute_UU, A_RegistrationAttribute_UU);
+	}
+
+	/** Get A_RegistrationAttribute_UU.
+		@return A_RegistrationAttribute_UU	  */
+	public String getA_RegistrationAttribute_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_RegistrationAttribute_UU);
 	}
 
 	/** Set DB Column Name.

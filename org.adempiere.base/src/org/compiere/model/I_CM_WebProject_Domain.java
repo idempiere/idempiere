@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_WebProject_Domain
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_WebProject_Domain 
 {
@@ -31,7 +31,7 @@ public interface I_CM_WebProject_Domain
     public static final String Table_Name = "CM_WebProject_Domain";
 
     /** AD_Table_ID=873 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 873;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_CM_WebProject_Domain
 	  */
 	public int getCM_Container_ID();
 
-	public I_CM_Container getCM_Container() throws RuntimeException;
+	public org.compiere.model.I_CM_Container getCM_Container() throws RuntimeException;
 
     /** Column name CM_WebProject_Domain_ID */
     public static final String COLUMNNAME_CM_WebProject_Domain_ID = "CM_WebProject_Domain_ID";
@@ -90,6 +90,15 @@ public interface I_CM_WebProject_Domain
 	  */
 	public int getCM_WebProject_Domain_ID();
 
+    /** Column name CM_WebProject_Domain_UU */
+    public static final String COLUMNNAME_CM_WebProject_Domain_UU = "CM_WebProject_Domain_UU";
+
+	/** Set CM_WebProject_Domain_UU	  */
+	public void setCM_WebProject_Domain_UU (String CM_WebProject_Domain_UU);
+
+	/** Get CM_WebProject_Domain_UU	  */
+	public String getCM_WebProject_Domain_UU();
+
     /** Column name CM_WebProject_ID */
     public static final String COLUMNNAME_CM_WebProject_ID = "CM_WebProject_ID";
 
@@ -103,7 +112,7 @@ public interface I_CM_WebProject_Domain
 	  */
 	public int getCM_WebProject_ID();
 
-	public I_CM_WebProject getCM_WebProject() throws RuntimeException;
+	public org.compiere.model.I_CM_WebProject getCM_WebProject() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_Resource
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_S_Resource 
 {
@@ -31,7 +31,7 @@ public interface I_S_Resource
     public static final String Table_Name = "S_Resource";
 
     /** AD_Table_ID=487 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 487;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_S_Resource
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name ChargeableQty */
     public static final String COLUMNNAME_ChargeableQty = "ChargeableQty";
@@ -181,7 +181,7 @@ public interface I_S_Resource
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -253,7 +253,16 @@ public interface I_S_Resource
 	/** Get Resource Type	  */
 	public int getS_ResourceType_ID();
 
-	public I_S_ResourceType getS_ResourceType() throws RuntimeException;
+	public org.compiere.model.I_S_ResourceType getS_ResourceType() throws RuntimeException;
+
+    /** Column name S_Resource_UU */
+    public static final String COLUMNNAME_S_Resource_UU = "S_Resource_UU";
+
+	/** Set S_Resource_UU	  */
+	public void setS_Resource_UU (String S_Resource_UU);
+
+	/** Get S_Resource_UU	  */
+	public String getS_Resource_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

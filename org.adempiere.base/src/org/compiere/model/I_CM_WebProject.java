@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_WebProject
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_WebProject 
 {
@@ -31,7 +31,7 @@ public interface I_CM_WebProject
     public static final String Table_Name = "CM_WebProject";
 
     /** AD_Table_ID=853 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 853;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_CM_WebProject
 	  */
 	public int getAD_TreeCMC_ID();
 
-	public I_AD_Tree getAD_TreeCMC() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_TreeCMC() throws RuntimeException;
 
     /** Column name AD_TreeCMM_ID */
     public static final String COLUMNNAME_AD_TreeCMM_ID = "AD_TreeCMM_ID";
@@ -90,7 +90,7 @@ public interface I_CM_WebProject
 	  */
 	public int getAD_TreeCMM_ID();
 
-	public I_AD_Tree getAD_TreeCMM() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_TreeCMM() throws RuntimeException;
 
     /** Column name AD_TreeCMS_ID */
     public static final String COLUMNNAME_AD_TreeCMS_ID = "AD_TreeCMS_ID";
@@ -105,7 +105,7 @@ public interface I_CM_WebProject
 	  */
 	public int getAD_TreeCMS_ID();
 
-	public I_AD_Tree getAD_TreeCMS() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_TreeCMS() throws RuntimeException;
 
     /** Column name AD_TreeCMT_ID */
     public static final String COLUMNNAME_AD_TreeCMT_ID = "AD_TreeCMT_ID";
@@ -120,7 +120,7 @@ public interface I_CM_WebProject
 	  */
 	public int getAD_TreeCMT_ID();
 
-	public I_AD_Tree getAD_TreeCMT() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_TreeCMT() throws RuntimeException;
 
     /** Column name CM_WebProject_ID */
     public static final String COLUMNNAME_CM_WebProject_ID = "CM_WebProject_ID";
@@ -134,6 +134,15 @@ public interface I_CM_WebProject
 	  * A web project is the main data container for Containers, URLs, Ads, Media etc.
 	  */
 	public int getCM_WebProject_ID();
+
+    /** Column name CM_WebProject_UU */
+    public static final String COLUMNNAME_CM_WebProject_UU = "CM_WebProject_UU";
+
+	/** Set CM_WebProject_UU	  */
+	public void setCM_WebProject_UU (String CM_WebProject_UU);
+
+	/** Get CM_WebProject_UU	  */
+	public String getCM_WebProject_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

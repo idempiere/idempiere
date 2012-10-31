@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_CStage_Element
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_CStage_Element 
 {
@@ -31,7 +31,7 @@ public interface I_CM_CStage_Element
     public static final String Table_Name = "CM_CStage_Element";
 
     /** AD_Table_ID=867 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 867;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,6 +75,15 @@ public interface I_CM_CStage_Element
 	  */
 	public int getCM_CStage_Element_ID();
 
+    /** Column name CM_CStage_Element_UU */
+    public static final String COLUMNNAME_CM_CStage_Element_UU = "CM_CStage_Element_UU";
+
+	/** Set CM_CStage_Element_UU	  */
+	public void setCM_CStage_Element_UU (String CM_CStage_Element_UU);
+
+	/** Get CM_CStage_Element_UU	  */
+	public String getCM_CStage_Element_UU();
+
     /** Column name CM_CStage_ID */
     public static final String COLUMNNAME_CM_CStage_ID = "CM_CStage_ID";
 
@@ -88,7 +97,7 @@ public interface I_CM_CStage_Element
 	  */
 	public int getCM_CStage_ID();
 
-	public I_CM_CStage getCM_CStage() throws RuntimeException;
+	public org.compiere.model.I_CM_CStage getCM_CStage() throws RuntimeException;
 
     /** Column name ContentHTML */
     public static final String COLUMNNAME_ContentHTML = "ContentHTML";

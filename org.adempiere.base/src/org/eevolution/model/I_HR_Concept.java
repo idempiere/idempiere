@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Concept
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_HR_Concept 
 {
@@ -32,7 +32,7 @@ public interface I_HR_Concept
     public static final String Table_Name = "HR_Concept";
 
     /** AD_Table_ID=53090 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53090;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -89,7 +89,7 @@ public interface I_HR_Concept
 	  */
 	public int getAD_Reference_ID();
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name ColumnType */
     public static final String COLUMNNAME_ColumnType = "ColumnType";
@@ -148,6 +148,15 @@ public interface I_HR_Concept
 
 	/** Get Payroll Concept	  */
 	public int getHR_Concept_ID();
+
+    /** Column name HR_Concept_UU */
+    public static final String COLUMNNAME_HR_Concept_UU = "HR_Concept_UU";
+
+	/** Set HR_Concept_UU	  */
+	public void setHR_Concept_UU (String HR_Concept_UU);
+
+	/** Get HR_Concept_UU	  */
+	public String getHR_Concept_UU();
 
     /** Column name HR_Department_ID */
     public static final String COLUMNNAME_HR_Department_ID = "HR_Department_ID";

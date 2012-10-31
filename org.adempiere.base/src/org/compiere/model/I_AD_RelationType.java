@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_RelationType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_RelationType 
 {
@@ -31,7 +31,7 @@ public interface I_AD_RelationType
     public static final String Table_Name = "AD_RelationType";
 
     /** AD_Table_ID=53246 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53246;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -71,7 +71,7 @@ public interface I_AD_RelationType
 	/** Get Source Reference	  */
 	public int getAD_Reference_Source_ID();
 
-	public I_AD_Reference getAD_Reference_Source() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference_Source() throws RuntimeException;
 
     /** Column name AD_Reference_Target_ID */
     public static final String COLUMNNAME_AD_Reference_Target_ID = "AD_Reference_Target_ID";
@@ -82,7 +82,7 @@ public interface I_AD_RelationType
 	/** Get Target Reference	  */
 	public int getAD_Reference_Target_ID();
 
-	public I_AD_Reference getAD_Reference_Target() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference_Target() throws RuntimeException;
 
     /** Column name AD_RelationType_ID */
     public static final String COLUMNNAME_AD_RelationType_ID = "AD_RelationType_ID";
@@ -92,6 +92,15 @@ public interface I_AD_RelationType
 
 	/** Get Relation Type	  */
 	public int getAD_RelationType_ID();
+
+    /** Column name AD_RelationType_UU */
+    public static final String COLUMNNAME_AD_RelationType_UU = "AD_RelationType_UU";
+
+	/** Set AD_RelationType_UU	  */
+	public void setAD_RelationType_UU (String AD_RelationType_UU);
+
+	/** Get AD_RelationType_UU	  */
+	public String getAD_RelationType_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

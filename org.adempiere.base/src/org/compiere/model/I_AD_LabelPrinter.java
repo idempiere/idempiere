@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_LabelPrinter
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_LabelPrinter 
 {
@@ -31,7 +31,7 @@ public interface I_AD_LabelPrinter
     public static final String Table_Name = "AD_LabelPrinter";
 
     /** AD_Table_ID=626 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 626;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,6 +61,15 @@ public interface I_AD_LabelPrinter
 	  * Label Printer Definition
 	  */
 	public int getAD_LabelPrinter_ID();
+
+    /** Column name AD_LabelPrinter_UU */
+    public static final String COLUMNNAME_AD_LabelPrinter_UU = "AD_LabelPrinter_UU";
+
+	/** Set AD_LabelPrinter_UU	  */
+	public void setAD_LabelPrinter_UU (String AD_LabelPrinter_UU);
+
+	/** Get AD_LabelPrinter_UU	  */
+	public String getAD_LabelPrinter_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

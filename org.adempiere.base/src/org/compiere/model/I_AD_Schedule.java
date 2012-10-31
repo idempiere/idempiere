@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Schedule
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Schedule 
 {
@@ -35,7 +35,7 @@ public interface I_AD_Schedule
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel =  - System 
+    /** AccessLevel = 4 - System 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(4);
 
@@ -65,10 +65,10 @@ public interface I_AD_Schedule
     /** Column name AD_Schedule_ID */
     public static final String COLUMNNAME_AD_Schedule_ID = "AD_Schedule_ID";
 
-	/** Set AD_Schedule_ID	  */
+	/** Set Schedule	  */
 	public void setAD_Schedule_ID (int AD_Schedule_ID);
 
-	/** Get AD_Schedule_ID	  */
+	/** Get Schedule	  */
 	public int getAD_Schedule_ID();
 
     /** Column name AD_Schedule_UU */
@@ -177,12 +177,12 @@ public interface I_AD_Schedule
     /** Column name IsSystemSchedule */
     public static final String COLUMNNAME_IsSystemSchedule = "IsSystemSchedule";
 
-	/** Set IsSystemSchedule.
+	/** Set System Schedule.
 	  * Schedule Just For System
 	  */
 	public void setIsSystemSchedule (boolean IsSystemSchedule);
 
-	/** Get IsSystemSchedule.
+	/** Get System Schedule.
 	  * Schedule Just For System
 	  */
 	public boolean isSystemSchedule();

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User_Substitute
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_User_Substitute (Properties ctx, int AD_User_Substitute_ID, String trxName)
@@ -74,9 +74,9 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
       return sb.toString();
     }
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -125,6 +125,20 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 		return ii.intValue();
 	}
 
+	/** Set AD_User_Substitute_UU.
+		@param AD_User_Substitute_UU AD_User_Substitute_UU	  */
+	public void setAD_User_Substitute_UU (String AD_User_Substitute_UU)
+	{
+		set_Value (COLUMNNAME_AD_User_Substitute_UU, AD_User_Substitute_UU);
+	}
+
+	/** Get AD_User_Substitute_UU.
+		@return AD_User_Substitute_UU	  */
+	public String getAD_User_Substitute_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_User_Substitute_UU);
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -167,9 +181,9 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
         return new KeyNamePair(get_ID(), getName());
     }
 
-	public I_AD_User getSubstitute() throws RuntimeException
+	public org.compiere.model.I_AD_User getSubstitute() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSubstitute_ID(), get_TrxName());	}
 
 	/** Set Substitute.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_TreeNodeMM
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_TreeNodeMM (Properties ctx, int AD_TreeNodeMM_ID, String trxName)
@@ -70,9 +70,9 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Tree getAD_Tree() throws RuntimeException
+	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException
     {
-		return (I_AD_Tree)MTable.get(getCtx(), I_AD_Tree.Table_Name)
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
 			.getPO(getAD_Tree_ID(), get_TrxName());	}
 
 	/** Set Tree.
@@ -96,6 +96,20 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_TreeNodeMM_UU.
+		@param AD_TreeNodeMM_UU AD_TreeNodeMM_UU	  */
+	public void setAD_TreeNodeMM_UU (String AD_TreeNodeMM_UU)
+	{
+		set_Value (COLUMNNAME_AD_TreeNodeMM_UU, AD_TreeNodeMM_UU);
+	}
+
+	/** Get AD_TreeNodeMM_UU.
+		@return AD_TreeNodeMM_UU	  */
+	public String getAD_TreeNodeMM_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_TreeNodeMM_UU);
 	}
 
 	/** Set Node.

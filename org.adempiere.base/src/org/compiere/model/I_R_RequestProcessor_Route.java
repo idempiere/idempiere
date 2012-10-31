@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestProcessor_Route
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_R_RequestProcessor_Route 
 {
@@ -31,7 +31,7 @@ public interface I_R_RequestProcessor_Route
     public static final String Table_Name = "R_RequestProcessor_Route";
 
     /** AD_Table_ID=474 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 474;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -146,6 +146,15 @@ public interface I_R_RequestProcessor_Route
 	  * Automatic routing of requests
 	  */
 	public int getR_RequestProcessor_Route_ID();
+
+    /** Column name R_RequestProcessor_Route_UU */
+    public static final String COLUMNNAME_R_RequestProcessor_Route_UU = "R_RequestProcessor_Route_UU";
+
+	/** Set R_RequestProcessor_Route_UU	  */
+	public void setR_RequestProcessor_Route_UU (String R_RequestProcessor_Route_UU);
+
+	/** Get R_RequestProcessor_Route_UU	  */
+	public String getR_RequestProcessor_Route_UU();
 
     /** Column name R_RequestType_ID */
     public static final String COLUMNNAME_R_RequestType_ID = "R_RequestType_ID";

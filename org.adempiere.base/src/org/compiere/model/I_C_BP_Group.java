@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BP_Group
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_BP_Group 
 {
@@ -31,7 +31,7 @@ public interface I_C_BP_Group
     public static final String Table_Name = "C_BP_Group";
 
     /** AD_Table_ID=394 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 394;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_BP_Group
 	  */
 	public int getAD_PrintColor_ID();
 
-	public I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
 
     /** Column name C_BP_Group_ID */
     public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
@@ -90,6 +90,15 @@ public interface I_C_BP_Group
 	  */
 	public int getC_BP_Group_ID();
 
+    /** Column name C_BP_Group_UU */
+    public static final String COLUMNNAME_C_BP_Group_UU = "C_BP_Group_UU";
+
+	/** Set C_BP_Group_UU	  */
+	public void setC_BP_Group_UU (String C_BP_Group_UU);
+
+	/** Get C_BP_Group_UU	  */
+	public String getC_BP_Group_UU();
+
     /** Column name C_Dunning_ID */
     public static final String COLUMNNAME_C_Dunning_ID = "C_Dunning_ID";
 
@@ -103,7 +112,7 @@ public interface I_C_BP_Group
 	  */
 	public int getC_Dunning_ID();
 
-	public I_C_Dunning getC_Dunning() throws RuntimeException;
+	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -199,7 +208,7 @@ public interface I_C_BP_Group
 	  */
 	public int getM_DiscountSchema_ID();
 
-	public I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
+	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_PriceList_ID */
     public static final String COLUMNNAME_M_PriceList_ID = "M_PriceList_ID";
@@ -214,7 +223,7 @@ public interface I_C_BP_Group
 	  */
 	public int getM_PriceList_ID();
 
-	public I_M_PriceList getM_PriceList() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -242,7 +251,7 @@ public interface I_C_BP_Group
 	  */
 	public int getPO_DiscountSchema_ID();
 
-	public I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException;
+	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException;
 
     /** Column name PO_PriceList_ID */
     public static final String COLUMNNAME_PO_PriceList_ID = "PO_PriceList_ID";
@@ -257,7 +266,7 @@ public interface I_C_BP_Group
 	  */
 	public int getPO_PriceList_ID();
 
-	public I_M_PriceList getPO_PriceList() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException;
 
     /** Column name PriceMatchTolerance */
     public static final String COLUMNNAME_PriceMatchTolerance = "PriceMatchTolerance";

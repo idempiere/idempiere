@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Withholding
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_Withholding (Properties ctx, int C_Withholding_ID, String trxName)
@@ -79,9 +79,9 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
       return sb.toString();
     }
 
-	public I_C_BPartner getBenefici() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getBenefici() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getBeneficiary(), get_TrxName());	}
 
 	/** Set Beneficiary.
@@ -104,9 +104,9 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
+	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
     {
-		return (I_C_PaymentTerm)MTable.get(getCtx(), I_C_PaymentTerm.Table_Name)
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_Name)
 			.getPO(getC_PaymentTerm_ID(), get_TrxName());	}
 
 	/** Set Payment Term.
@@ -153,6 +153,20 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_Withholding_UU.
+		@param C_Withholding_UU C_Withholding_UU	  */
+	public void setC_Withholding_UU (String C_Withholding_UU)
+	{
+		set_Value (COLUMNNAME_C_Withholding_UU, C_Withholding_UU);
+	}
+
+	/** Get C_Withholding_UU.
+		@return C_Withholding_UU	  */
+	public String getC_Withholding_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Withholding_UU);
 	}
 
 	/** Set Description.

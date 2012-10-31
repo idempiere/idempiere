@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Process
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_ASP_Process 
 {
@@ -31,7 +31,7 @@ public interface I_ASP_Process
     public static final String Table_Name = "ASP_Process";
 
     /** AD_Table_ID=53049 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53049;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_ASP_Process
 	  */
 	public int getAD_Process_ID();
 
-	public I_AD_Process getAD_Process() throws RuntimeException;
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name ASP_Level_ID */
     public static final String COLUMNNAME_ASP_Level_ID = "ASP_Level_ID";
@@ -86,7 +86,7 @@ public interface I_ASP_Process
 	/** Get ASP Level	  */
 	public int getASP_Level_ID();
 
-	public I_ASP_Level getASP_Level() throws RuntimeException;
+	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException;
 
     /** Column name ASP_Process_ID */
     public static final String COLUMNNAME_ASP_Process_ID = "ASP_Process_ID";
@@ -96,6 +96,15 @@ public interface I_ASP_Process
 
 	/** Get ASP Process	  */
 	public int getASP_Process_ID();
+
+    /** Column name ASP_Process_UU */
+    public static final String COLUMNNAME_ASP_Process_UU = "ASP_Process_UU";
+
+	/** Set ASP_Process_UU	  */
+	public void setASP_Process_UU (String ASP_Process_UU);
+
+	/** Get ASP_Process_UU	  */
+	public String getASP_Process_UU();
 
     /** Column name ASP_Status */
     public static final String COLUMNNAME_ASP_Status = "ASP_Status";

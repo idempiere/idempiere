@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for PP_Order_NodeNext
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_PP_Order_NodeNext (Properties ctx, int PP_Order_NodeNext_ID, String trxName)
@@ -76,9 +76,9 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
       return sb.toString();
     }
 
-	public I_AD_WF_Node getAD_WF_Next() throws RuntimeException
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Next() throws RuntimeException
     {
-		return (I_AD_WF_Node)MTable.get(getCtx(), I_AD_WF_Node.Table_Name)
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
 			.getPO(getAD_WF_Next_ID(), get_TrxName());	}
 
 	/** Set Next Node.
@@ -104,9 +104,9 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_WF_Node getAD_WF_Node() throws RuntimeException
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
     {
-		return (I_AD_WF_Node)MTable.get(getCtx(), I_AD_WF_Node.Table_Name)
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
 			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
 
 	/** Set Node.
@@ -292,6 +292,20 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set PP_Order_NodeNext_UU.
+		@param PP_Order_NodeNext_UU PP_Order_NodeNext_UU	  */
+	public void setPP_Order_NodeNext_UU (String PP_Order_NodeNext_UU)
+	{
+		set_Value (COLUMNNAME_PP_Order_NodeNext_UU, PP_Order_NodeNext_UU);
+	}
+
+	/** Get PP_Order_NodeNext_UU.
+		@return PP_Order_NodeNext_UU	  */
+	public String getPP_Order_NodeNext_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_PP_Order_NodeNext_UU);
 	}
 
 	/** Set Sequence.

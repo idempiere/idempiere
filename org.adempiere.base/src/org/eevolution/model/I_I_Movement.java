@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Movement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_I_Movement 
 {
@@ -32,7 +32,7 @@ public interface I_I_Movement
     public static final String Table_Name = "I_Movement";
 
     /** AD_Table_ID=53278 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53278;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -50,21 +50,6 @@ public interface I_I_Movement
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_OrgTrx_ID */
-    public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
-
-	/** Set Trx Organization.
-	  * Performing or initiating organization
-	  */
-	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID);
-
-	/** Get Trx Organization.
-	  * Performing or initiating organization
-	  */
-	public int getAD_OrgTrx_ID();
-
-	public I_AD_Org getAD_OrgTrx() throws RuntimeException;
-
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -78,20 +63,35 @@ public interface I_I_Movement
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_OrgTrx_ID */
+    public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
+
+	/** Set Trx Organization.
+	  * Performing or initiating organization
+	  */
+	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID);
+
+	/** Get Trx Organization.
+	  * Performing or initiating organization
+	  */
+	public int getAD_OrgTrx_ID();
+
+	public org.compiere.model.I_AD_Org getAD_OrgTrx() throws RuntimeException;
+
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
-	/** Set Usuario.
+	/** Set User/Contact.
 	  * User within the system - Internal or Business Partner Contact
 	  */
 	public void setAD_User_ID (int AD_User_ID);
 
-	/** Get Usuario.
+	/** Get User/Contact.
 	  * User within the system - Internal or Business Partner Contact
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name BPartnerValue */
     public static final String COLUMNNAME_BPartnerValue = "BPartnerValue";
@@ -106,6 +106,15 @@ public interface I_I_Movement
 	  */
 	public String getBPartnerValue();
 
+    /** Column name CampaignValue */
+    public static final String COLUMNNAME_CampaignValue = "CampaignValue";
+
+	/** Set CampaignValue	  */
+	public void setCampaignValue (String CampaignValue);
+
+	/** Get CampaignValue	  */
+	public String getCampaignValue();
+
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
@@ -119,7 +128,7 @@ public interface I_I_Movement
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
     public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
@@ -134,7 +143,7 @@ public interface I_I_Movement
 	  */
 	public int getC_Campaign_ID();
 
-	public I_C_Campaign getC_Campaign() throws RuntimeException;
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -149,7 +158,7 @@ public interface I_I_Movement
 	  */
 	public int getC_DocType_ID();
 
-	public I_C_DocType getC_DocType() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -164,16 +173,7 @@ public interface I_I_Movement
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
-
-    /** Column name CampaignValue */
-    public static final String COLUMNNAME_CampaignValue = "CampaignValue";
-
-	/** Set CampaignValue	  */
-	public void setCampaignValue (String CampaignValue);
-
-	/** Get CampaignValue	  */
-	public String getCampaignValue();
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -291,6 +291,15 @@ public interface I_I_Movement
 	/** Get I_Movement_ID	  */
 	public int getI_Movement_ID();
 
+    /** Column name I_Movement_UU */
+    public static final String COLUMNNAME_I_Movement_UU = "I_Movement_UU";
+
+	/** Set I_Movement_UU	  */
+	public void setI_Movement_UU (String I_Movement_UU);
+
+	/** Get I_Movement_UU	  */
+	public String getI_Movement_UU();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -326,21 +335,6 @@ public interface I_I_Movement
 	  */
 	public String getLocatorValue();
 
-    /** Column name M_LocatorTo_ID */
-    public static final String COLUMNNAME_M_LocatorTo_ID = "M_LocatorTo_ID";
-
-	/** Set Locator To.
-	  * Location inventory is moved to
-	  */
-	public void setM_LocatorTo_ID (int M_LocatorTo_ID);
-
-	/** Get Locator To.
-	  * Location inventory is moved to
-	  */
-	public int getM_LocatorTo_ID();
-
-	public I_M_Locator getM_LocatorTo() throws RuntimeException;
-
     /** Column name M_Locator_ID */
     public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
 
@@ -356,20 +350,20 @@ public interface I_I_Movement
 
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
-    /** Column name M_MovementLine_ID */
-    public static final String COLUMNNAME_M_MovementLine_ID = "M_MovementLine_ID";
+    /** Column name M_LocatorTo_ID */
+    public static final String COLUMNNAME_M_LocatorTo_ID = "M_LocatorTo_ID";
 
-	/** Set Move Line.
-	  * Inventory Move document Line
+	/** Set Locator To.
+	  * Location inventory is moved to
 	  */
-	public void setM_MovementLine_ID (int M_MovementLine_ID);
+	public void setM_LocatorTo_ID (int M_LocatorTo_ID);
 
-	/** Get Move Line.
-	  * Inventory Move document Line
+	/** Get Locator To.
+	  * Location inventory is moved to
 	  */
-	public int getM_MovementLine_ID();
+	public int getM_LocatorTo_ID();
 
-	public I_M_MovementLine getM_MovementLine() throws RuntimeException;
+	public I_M_Locator getM_LocatorTo() throws RuntimeException;
 
     /** Column name M_Movement_ID */
     public static final String COLUMNNAME_M_Movement_ID = "M_Movement_ID";
@@ -384,37 +378,22 @@ public interface I_I_Movement
 	  */
 	public int getM_Movement_ID();
 
-	public I_M_Movement getM_Movement() throws RuntimeException;
+	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
 
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+    /** Column name M_MovementLine_ID */
+    public static final String COLUMNNAME_M_MovementLine_ID = "M_MovementLine_ID";
 
-	/** Set Product.
-	  * Product, Service, Item
+	/** Set Move Line.
+	  * Inventory Move document Line
 	  */
-	public void setM_Product_ID (int M_Product_ID);
+	public void setM_MovementLine_ID (int M_MovementLine_ID);
 
-	/** Get Product.
-	  * Product, Service, Item
+	/** Get Move Line.
+	  * Inventory Move document Line
 	  */
-	public int getM_Product_ID();
+	public int getM_MovementLine_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
-
-    /** Column name M_Shipper_ID */
-    public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
-
-	/** Set Shipper.
-	  * Method or manner of product delivery
-	  */
-	public void setM_Shipper_ID (int M_Shipper_ID);
-
-	/** Get Shipper.
-	  * Method or manner of product delivery
-	  */
-	public int getM_Shipper_ID();
-
-	public I_M_Shipper getM_Shipper() throws RuntimeException;
+	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException;
 
     /** Column name MovementDate */
     public static final String COLUMNNAME_MovementDate = "MovementDate";
@@ -441,6 +420,36 @@ public interface I_I_Movement
 	  * Quantity of a product moved.
 	  */
 	public BigDecimal getMovementQty();
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_Shipper_ID */
+    public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
+
+	/** Set Shipper.
+	  * Method or manner of product delivery
+	  */
+	public void setM_Shipper_ID (int M_Shipper_ID);
+
+	/** Get Shipper.
+	  * Method or manner of product delivery
+	  */
+	public int getM_Shipper_ID();
+
+	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name OrgTrxValue */
     public static final String COLUMNNAME_OrgTrxValue = "OrgTrxValue";

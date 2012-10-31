@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Org
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Org 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Org
     public static final String Table_Name = "AD_Org";
 
     /** AD_Table_ID=155 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 155;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,6 +62,15 @@ public interface I_AD_Org
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Org_UU */
+    public static final String COLUMNNAME_AD_Org_UU = "AD_Org_UU";
+
+	/** Set AD_Org_UU	  */
+	public void setAD_Org_UU (String AD_Org_UU);
+
+	/** Get AD_Org_UU	  */
+	public String getAD_Org_UU();
+
     /** Column name AD_ReplicationStrategy_ID */
     public static final String COLUMNNAME_AD_ReplicationStrategy_ID = "AD_ReplicationStrategy_ID";
 
@@ -75,7 +84,7 @@ public interface I_AD_Org
 	  */
 	public int getAD_ReplicationStrategy_ID();
 
-	public I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException;
+	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

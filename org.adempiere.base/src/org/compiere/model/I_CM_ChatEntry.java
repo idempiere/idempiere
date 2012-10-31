@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_ChatEntry
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_ChatEntry 
 {
@@ -31,7 +31,7 @@ public interface I_CM_ChatEntry
     public static final String Table_Name = "CM_ChatEntry";
 
     /** AD_Table_ID=877 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 877;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_CM_ChatEntry
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name CharacterData */
     public static final String COLUMNNAME_CharacterData = "CharacterData";
@@ -116,7 +116,7 @@ public interface I_CM_ChatEntry
 	  */
 	public int getCM_ChatEntryGrandParent_ID();
 
-	public I_CM_ChatEntry getCM_ChatEntryGrandParent() throws RuntimeException;
+	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryGrandParent() throws RuntimeException;
 
     /** Column name CM_ChatEntry_ID */
     public static final String COLUMNNAME_CM_ChatEntry_ID = "CM_ChatEntry_ID";
@@ -144,7 +144,16 @@ public interface I_CM_ChatEntry
 	  */
 	public int getCM_ChatEntryParent_ID();
 
-	public I_CM_ChatEntry getCM_ChatEntryParent() throws RuntimeException;
+	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryParent() throws RuntimeException;
+
+    /** Column name CM_ChatEntry_UU */
+    public static final String COLUMNNAME_CM_ChatEntry_UU = "CM_ChatEntry_UU";
+
+	/** Set CM_ChatEntry_UU	  */
+	public void setCM_ChatEntry_UU (String CM_ChatEntry_UU);
+
+	/** Get CM_ChatEntry_UU	  */
+	public String getCM_ChatEntry_UU();
 
     /** Column name CM_Chat_ID */
     public static final String COLUMNNAME_CM_Chat_ID = "CM_Chat_ID";
@@ -159,7 +168,7 @@ public interface I_CM_ChatEntry
 	  */
 	public int getCM_Chat_ID();
 
-	public I_CM_Chat getCM_Chat() throws RuntimeException;
+	public org.compiere.model.I_CM_Chat getCM_Chat() throws RuntimeException;
 
     /** Column name ConfidentialType */
     public static final String COLUMNNAME_ConfidentialType = "ConfidentialType";

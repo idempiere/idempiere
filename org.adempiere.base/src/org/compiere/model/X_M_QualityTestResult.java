@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for M_QualityTestResult
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20101207L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_QualityTestResult (Properties ctx, int M_QualityTestResult_ID, String trxName)
@@ -37,6 +37,8 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
       super (ctx, M_QualityTestResult_ID, trxName);
       /** if (M_QualityTestResult_ID == 0)
         {
+			setIsQCPass (false);
+// N
 			setM_AttributeSetInstance_ID (0);
 			setM_QualityTest_ID (0);
 			setM_QualityTestResult_ID (0);
@@ -151,9 +153,9 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 		return ii.intValue();
 	}
 
-	public I_M_QualityTest getM_QualityTest() throws RuntimeException
+	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException
     {
-		return (I_M_QualityTest)MTable.get(getCtx(), I_M_QualityTest.Table_Name)
+		return (org.compiere.model.I_M_QualityTest)MTable.get(getCtx(), org.compiere.model.I_M_QualityTest.Table_Name)
 			.getPO(getM_QualityTest_ID(), get_TrxName());	}
 
 	/** Set Quality Test.
@@ -194,6 +196,20 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_QualityTestResult_UU.
+		@param M_QualityTestResult_UU M_QualityTestResult_UU	  */
+	public void setM_QualityTestResult_UU (String M_QualityTestResult_UU)
+	{
+		set_Value (COLUMNNAME_M_QualityTestResult_UU, M_QualityTestResult_UU);
+	}
+
+	/** Get M_QualityTestResult_UU.
+		@return M_QualityTestResult_UU	  */
+	public String getM_QualityTestResult_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_QualityTestResult_UU);
 	}
 
 	/** Set Processed.

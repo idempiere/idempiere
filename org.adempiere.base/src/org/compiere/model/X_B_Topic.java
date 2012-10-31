@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_Topic
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_B_Topic extends PO implements I_B_Topic, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_B_Topic (Properties ctx, int B_Topic_ID, String trxName)
@@ -80,9 +80,9 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
       return sb.toString();
     }
 
-	public I_B_TopicCategory getB_TopicCategory() throws RuntimeException
+	public org.compiere.model.I_B_TopicCategory getB_TopicCategory() throws RuntimeException
     {
-		return (I_B_TopicCategory)MTable.get(getCtx(), I_B_TopicCategory.Table_Name)
+		return (org.compiere.model.I_B_TopicCategory)MTable.get(getCtx(), org.compiere.model.I_B_TopicCategory.Table_Name)
 			.getPO(getB_TopicCategory_ID(), get_TrxName());	}
 
 	/** Set Topic Category.
@@ -131,9 +131,9 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_B_TopicType getB_TopicType() throws RuntimeException
+	public org.compiere.model.I_B_TopicType getB_TopicType() throws RuntimeException
     {
-		return (I_B_TopicType)MTable.get(getCtx(), I_B_TopicType.Table_Name)
+		return (org.compiere.model.I_B_TopicType)MTable.get(getCtx(), org.compiere.model.I_B_TopicType.Table_Name)
 			.getPO(getB_TopicType_ID(), get_TrxName());	}
 
 	/** Set Topic Type.
@@ -157,6 +157,20 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set B_Topic_UU.
+		@param B_Topic_UU B_Topic_UU	  */
+	public void setB_Topic_UU (String B_Topic_UU)
+	{
+		set_Value (COLUMNNAME_B_Topic_UU, B_Topic_UU);
+	}
+
+	/** Get B_Topic_UU.
+		@return B_Topic_UU	  */
+	public String getB_Topic_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_B_Topic_UU);
 	}
 
 	/** Set Decision date.

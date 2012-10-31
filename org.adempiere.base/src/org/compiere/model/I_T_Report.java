@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -20,8 +20,8 @@ import java.math.BigDecimal;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_Report
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_T_Report 
 {
@@ -30,7 +30,7 @@ public interface I_T_Report
     public static final String Table_Name = "T_Report";
 
     /** AD_Table_ID=544 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 544;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -53,7 +53,7 @@ public interface I_T_Report
 	  */
 	public int getAD_PInstance_ID();
 
-	public I_AD_PInstance getAD_PInstance() throws RuntimeException;
+	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name Col_0 */
     public static final String COLUMNNAME_Col_0 = "Col_0";
@@ -297,7 +297,7 @@ public interface I_T_Report
 	/** Get Report Line	  */
 	public int getPA_ReportLine_ID();
 
-	public I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
+	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
 
     /** Column name Record_ID */
     public static final String COLUMNNAME_Record_ID = "Record_ID";
@@ -326,4 +326,13 @@ public interface I_T_Report
  lowest number comes first
 	  */
 	public int getSeqNo();
+
+    /** Column name T_Report_UU */
+    public static final String COLUMNNAME_T_Report_UU = "T_Report_UU";
+
+	/** Set T_Report_UU	  */
+	public void setT_Report_UU (String T_Report_UU);
+
+	/** Get T_Report_UU	  */
+	public String getT_Report_UU();
 }

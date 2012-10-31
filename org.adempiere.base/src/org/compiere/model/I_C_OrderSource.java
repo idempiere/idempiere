@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_OrderSource
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_OrderSource 
 {
@@ -31,7 +31,7 @@ public interface I_C_OrderSource
     public static final String Table_Name = "C_OrderSource";
 
     /** AD_Table_ID=53244 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53244;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -70,6 +70,15 @@ public interface I_C_OrderSource
 
 	/** Get Order Source	  */
 	public int getC_OrderSource_ID();
+
+    /** Column name C_OrderSource_UU */
+    public static final String COLUMNNAME_C_OrderSource_UU = "C_OrderSource_UU";
+
+	/** Set C_OrderSource_UU	  */
+	public void setC_OrderSource_UU (String C_OrderSource_UU);
+
+	/** Get C_OrderSource_UU	  */
+	public String getC_OrderSource_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

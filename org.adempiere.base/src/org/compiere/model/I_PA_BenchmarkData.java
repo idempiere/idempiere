@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_BenchmarkData
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PA_BenchmarkData 
 {
@@ -31,7 +31,7 @@ public interface I_PA_BenchmarkData
     public static final String Table_Name = "PA_BenchmarkData";
 
     /** AD_Table_ID=834 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 834;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -156,6 +156,15 @@ public interface I_PA_BenchmarkData
 	  */
 	public int getPA_BenchmarkData_ID();
 
+    /** Column name PA_BenchmarkData_UU */
+    public static final String COLUMNNAME_PA_BenchmarkData_UU = "PA_BenchmarkData_UU";
+
+	/** Set PA_BenchmarkData_UU	  */
+	public void setPA_BenchmarkData_UU (String PA_BenchmarkData_UU);
+
+	/** Get PA_BenchmarkData_UU	  */
+	public String getPA_BenchmarkData_UU();
+
     /** Column name PA_Benchmark_ID */
     public static final String COLUMNNAME_PA_Benchmark_ID = "PA_Benchmark_ID";
 
@@ -169,7 +178,7 @@ public interface I_PA_BenchmarkData
 	  */
 	public int getPA_Benchmark_ID();
 
-	public I_PA_Benchmark getPA_Benchmark() throws RuntimeException;
+	public org.compiere.model.I_PA_Benchmark getPA_Benchmark() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

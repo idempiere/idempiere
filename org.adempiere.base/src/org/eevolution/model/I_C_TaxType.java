@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_TaxType 
 {
@@ -32,7 +32,7 @@ public interface I_C_TaxType
     public static final String Table_Name = "C_TaxType";
 
     /** AD_Table_ID=53068 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53068;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -87,6 +87,15 @@ public interface I_C_TaxType
 
 	/** Get Tax Type	  */
 	public int getC_TaxType_ID();
+
+    /** Column name C_TaxType_UU */
+    public static final String COLUMNNAME_C_TaxType_UU = "C_TaxType_UU";
+
+	/** Set C_TaxType_UU	  */
+	public void setC_TaxType_UU (String C_TaxType_UU);
+
+	/** Get C_TaxType_UU	  */
+	public String getC_TaxType_UU();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

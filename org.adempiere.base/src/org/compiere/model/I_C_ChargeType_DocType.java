@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ChargeType_DocType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_ChargeType_DocType 
 {
@@ -31,7 +31,7 @@ public interface I_C_ChargeType_DocType
     public static final String Table_Name = "C_ChargeType_DocType";
 
     /** AD_Table_ID=53146 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53146;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,6 +62,15 @@ public interface I_C_ChargeType_DocType
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_ChargeType_DocType_UU */
+    public static final String COLUMNNAME_C_ChargeType_DocType_UU = "C_ChargeType_DocType_UU";
+
+	/** Set C_ChargeType_DocType_UU	  */
+	public void setC_ChargeType_DocType_UU (String C_ChargeType_DocType_UU);
+
+	/** Get C_ChargeType_DocType_UU	  */
+	public String getC_ChargeType_DocType_UU();
+
     /** Column name C_ChargeType_ID */
     public static final String COLUMNNAME_C_ChargeType_ID = "C_ChargeType_ID";
 
@@ -71,7 +80,7 @@ public interface I_C_ChargeType_DocType
 	/** Get Charge Type	  */
 	public int getC_ChargeType_ID();
 
-	public I_C_ChargeType getC_ChargeType() throws RuntimeException;
+	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -86,7 +95,7 @@ public interface I_C_ChargeType_DocType
 	  */
 	public int getC_DocType_ID();
 
-	public I_C_DocType getC_DocType() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_RegistrationValue
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_A_RegistrationValue (Properties ctx, int A_RegistrationValue_ID, String trxName)
@@ -72,9 +72,9 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
       return sb.toString();
     }
 
-	public I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException
+	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException
     {
-		return (I_A_RegistrationAttribute)MTable.get(getCtx(), I_A_RegistrationAttribute.Table_Name)
+		return (org.compiere.model.I_A_RegistrationAttribute)MTable.get(getCtx(), org.compiere.model.I_A_RegistrationAttribute.Table_Name)
 			.getPO(getA_RegistrationAttribute_ID(), get_TrxName());	}
 
 	/** Set Registration Attribute.
@@ -108,9 +108,9 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
         return new KeyNamePair(get_ID(), String.valueOf(getA_RegistrationAttribute_ID()));
     }
 
-	public I_A_Registration getA_Registration() throws RuntimeException
+	public org.compiere.model.I_A_Registration getA_Registration() throws RuntimeException
     {
-		return (I_A_Registration)MTable.get(getCtx(), I_A_Registration.Table_Name)
+		return (org.compiere.model.I_A_Registration)MTable.get(getCtx(), org.compiere.model.I_A_Registration.Table_Name)
 			.getPO(getA_Registration_ID(), get_TrxName());	}
 
 	/** Set Registration.
@@ -134,6 +134,20 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set A_RegistrationValue_UU.
+		@param A_RegistrationValue_UU A_RegistrationValue_UU	  */
+	public void setA_RegistrationValue_UU (String A_RegistrationValue_UU)
+	{
+		set_Value (COLUMNNAME_A_RegistrationValue_UU, A_RegistrationValue_UU);
+	}
+
+	/** Get A_RegistrationValue_UU.
+		@return A_RegistrationValue_UU	  */
+	public String getA_RegistrationValue_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_RegistrationValue_UU);
 	}
 
 	/** Set Description.
