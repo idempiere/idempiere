@@ -35,6 +35,7 @@ import org.adempiere.pdf.Document;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.WReport;
+import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -48,6 +49,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.ZoomEvent;
+import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.report.HTMLExtension;
@@ -61,6 +63,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
@@ -151,6 +154,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private ToolBarButton bCustomize = new ToolBarButton();
 	private ToolBarButton bFind = new ToolBarButton();
 	private ToolBarButton bExport = new ToolBarButton();
+	private ToolBarButton bWizard = new ToolBarButton();
 	private Listbox comboReport = new Listbox();
 	private Label labelDrill = new Label();
 	private Listbox comboDrill = new Listbox();
@@ -304,6 +308,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		bRefresh.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		toolBar.appendChild(bRefresh);
 		bRefresh.addEventListener(Events.ON_CLICK, this);
+		
+		bWizard.setImage("/images/Wizard24.png");
+		bWizard.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintWizard")));
+		toolBar.appendChild(bWizard);
+		bWizard.addEventListener(Events.ON_CLICK, this);
+			
 
 		North north = new North();
 		layout.appendChild(north);
@@ -682,6 +692,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			cmd_archive();
 		else if (e.getTarget() == bCustomize)
 			cmd_customize();
+		else if (e.getTarget() == bWizard)
+			cmd_Wizard();
 		else if (e.getTarget() == bRefresh)
 			cmd_report();
 		//
@@ -911,7 +923,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 	Report Combo - Start other Report or create new one
 	 */
-	private void cmd_report()
+	public void cmd_report()
 	{
 		ListItem li = comboReport.getSelectedItem();
 		if(li == null || li.getValue() == null) return;
@@ -1089,6 +1101,26 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		AEnv.zoom(AD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
 	}	//	cmd_customize
 	
+	/*IDEMPIERE -379*/
+	private void cmd_Wizard()
+	{
+	    int AD_Window_ID = WINDOW_PRINTFORMAT;		//	hardcoded
+	    int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
+	    
+	    Env.setContext(m_ctx, "AD_PrintFormat_ID", AD_PrintFormat_ID);
+
+	    ADForm form = ADForm.openForm(SystemIDs.WIZARD_REPORT_FORM);
+	    WReportCustomization av = (WReportCustomization) form.getICustomForm();
+	    av.setReportEngine(m_reportEngine);
+
+	     form.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+	     SessionManager.getAppDesktop().showWindow(form);
+	
+				//ZkReportCustomization zkCustomization = new ZkReportCustomization(m_reportEngine);
+				//zkCustomization.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+				//zkCustomization.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
+		    	//SessionManager.getAppDesktop().showWindow(zkCustomization);	
+	}	//	cmd_customize
 	//-- ComponentCtrl --//
 	public Object getExtraCtrl() {
 		return new ExtraCtrl();
