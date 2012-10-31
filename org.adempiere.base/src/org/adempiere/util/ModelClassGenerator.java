@@ -19,6 +19,8 @@
  *****************************************************************************/
 package org.adempiere.util;
 
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -35,7 +37,6 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
-import org.compiere.model.MPaymentLookup;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -429,7 +430,7 @@ public class ModelClassGenerator
 		//	Payment Validation
 		if (displayType == DisplayType.Payment)
 		{
-			String staticVar = addListValidation (sb, MPaymentLookup.PAYMENTRULE_AD_Reference_ID, columnName);
+			String staticVar = addListValidation (sb, REFERENCE_PAYMENTRULE, columnName);
 			sb.insert(0, staticVar);			
 		}
 

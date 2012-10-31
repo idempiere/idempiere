@@ -17,6 +17,10 @@
 
 package org.adempiere.webui.editor;
 
+import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -111,12 +115,12 @@ public class WButtonEditor extends WEditor implements IProcessButton
         String columnName = super.getColumnName();
         if (columnName.equals("PaymentRule"))
         {
-            readReference(195);
+            readReference(REFERENCE_PAYMENTRULE);
             getComponent().setImage("/images/Payment16.png");    //  29*14
         }
         else if (columnName.equals("DocAction"))
         {
-            readReference(135);
+            readReference(REFERENCE_DOCUMENTACTION);
             getComponent().setImage("/images/Process16.png");    //  16*16
         }
         else if (columnName.equals("CreateFrom"))
@@ -130,7 +134,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
         }
         else if (columnName.equals("Posted"))
         {
-            readReference(234);
+            readReference(REFERENCE_POSTED);
             getComponent().setImage("/images/InfoAccount16.png");    //  16*16
         }
         
