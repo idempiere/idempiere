@@ -163,7 +163,7 @@ public class ModelClassGenerator
 		createImports(start);
 		//	Class
 		start.append("/** Generated Model for ").append(tableName).append(NL)
-			 .append(" *  @author Adempiere (generated) ").append(NL)
+			 .append(" *  @author iDempiere (generated) ").append(NL)
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(" - $Id$ */").append(NL)
 			 .append("public class ").append(className)
 			 	.append(" extends PO")
