@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Oct 23, 2012 5:37:00 PM MYT
 -- IDEMPIERE-234 Configurable Toolbar
 UPDATE AD_Field SET ColumnSpan=2,Updated=TO_DATE('2012-10-23 17:37:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200068
@@ -200,7 +203,7 @@ UPDATE AD_Field SET SeqNo=100,IsDisplayed='Y' WHERE AD_Field_ID=200059
 UPDATE AD_Field SET SeqNo=110,IsDisplayed='Y' WHERE AD_Field_ID=200053
 ;
 
-ALTER TABLE AD_ToolBarButtonRestrict MODIFY Classname NULL
+ALTER TABLE AD_ToolBarButton MODIFY Classname NULL
 ;
 
 UPDATE AD_ToolbarButton SET Classname=NULL WHERE Classname IS NOT NULL
@@ -323,7 +326,10 @@ UPDATE AD_Field SET SeqNo=0,IsDisplayed='N' WHERE AD_Field_ID=200052
 
 -- Oct 24, 2012 4:45:48 PM MYT
 -- IDEMPIERE-234 Configurable Toolbar
-UPDATE AD_Field SET SeqNo=0,IsDisplayed='N' WHERE AD_Field_ID=200058, 2012 4:45:48 PM MYT
+UPDATE AD_Field SET SeqNo=0,IsDisplayed='N' WHERE AD_Field_ID=200058
+;
+
+-- Oct 24, 2012 4:45:48 PM MYT
 -- IDEMPIERE-234 Configurable Toolbar
 UPDATE AD_Field SET SeqNo=0,IsDisplayed='N' WHERE AD_Field_ID=200059
 ;
