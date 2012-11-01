@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for K_Entry
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_K_Entry 
 {
@@ -31,7 +31,7 @@ public interface I_K_Entry
     public static final String Table_Name = "K_Entry";
 
     /** AD_Table_ID=612 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 612;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_K_Entry
 	  */
 	public int getAD_Session_ID();
 
-	public I_AD_Session getAD_Session() throws RuntimeException;
+	public org.compiere.model.I_AD_Session getAD_Session() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -145,6 +145,15 @@ public interface I_K_Entry
 	  */
 	public int getK_Entry_ID();
 
+    /** Column name K_Entry_UU */
+    public static final String COLUMNNAME_K_Entry_UU = "K_Entry_UU";
+
+	/** Set K_Entry_UU	  */
+	public void setK_Entry_UU (String K_Entry_UU);
+
+	/** Get K_Entry_UU	  */
+	public String getK_Entry_UU();
+
     /** Column name Keywords */
     public static final String COLUMNNAME_Keywords = "Keywords";
 
@@ -171,7 +180,7 @@ public interface I_K_Entry
 	  */
 	public int getK_Source_ID();
 
-	public I_K_Source getK_Source() throws RuntimeException;
+	public org.compiere.model.I_K_Source getK_Source() throws RuntimeException;
 
     /** Column name K_Topic_ID */
     public static final String COLUMNNAME_K_Topic_ID = "K_Topic_ID";
@@ -186,7 +195,7 @@ public interface I_K_Entry
 	  */
 	public int getK_Topic_ID();
 
-	public I_K_Topic getK_Topic() throws RuntimeException;
+	public org.compiere.model.I_K_Topic getK_Topic() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

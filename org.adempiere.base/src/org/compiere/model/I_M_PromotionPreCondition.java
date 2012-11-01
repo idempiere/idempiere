@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PromotionPreCondition
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_PromotionPreCondition 
 {
@@ -31,7 +31,7 @@ public interface I_M_PromotionPreCondition
     public static final String Table_Name = "M_PromotionPreCondition";
 
     /** AD_Table_ID=53180 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53180;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_M_PromotionPreCondition
 	  */
 	public int getC_Activity_ID();
 
-	public I_C_Activity getC_Activity() throws RuntimeException;
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -90,7 +90,7 @@ public interface I_M_PromotionPreCondition
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BP_Group_ID */
     public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
@@ -105,7 +105,7 @@ public interface I_M_PromotionPreCondition
 	  */
 	public int getC_BP_Group_ID();
 
-	public I_C_BP_Group getC_BP_Group() throws RuntimeException;
+	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -162,7 +162,7 @@ public interface I_M_PromotionPreCondition
 	  */
 	public int getM_PriceList_ID();
 
-	public I_M_PriceList getM_PriceList() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_Promotion_ID */
     public static final String COLUMNNAME_M_Promotion_ID = "M_Promotion_ID";
@@ -173,7 +173,7 @@ public interface I_M_PromotionPreCondition
 	/** Get Promotion	  */
 	public int getM_Promotion_ID();
 
-	public I_M_Promotion getM_Promotion() throws RuntimeException;
+	public org.compiere.model.I_M_Promotion getM_Promotion() throws RuntimeException;
 
     /** Column name M_PromotionPreCondition_ID */
     public static final String COLUMNNAME_M_PromotionPreCondition_ID = "M_PromotionPreCondition_ID";
@@ -183,6 +183,15 @@ public interface I_M_PromotionPreCondition
 
 	/** Get Promotion Pre Condition	  */
 	public int getM_PromotionPreCondition_ID();
+
+    /** Column name M_PromotionPreCondition_UU */
+    public static final String COLUMNNAME_M_PromotionPreCondition_UU = "M_PromotionPreCondition_UU";
+
+	/** Set M_PromotionPreCondition_UU	  */
+	public void setM_PromotionPreCondition_UU (String M_PromotionPreCondition_UU);
+
+	/** Get M_PromotionPreCondition_UU	  */
+	public String getM_PromotionPreCondition_UU();
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -197,7 +206,7 @@ public interface I_M_PromotionPreCondition
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name PromotionCode */
     public static final String COLUMNNAME_PromotionCode = "PromotionCode";

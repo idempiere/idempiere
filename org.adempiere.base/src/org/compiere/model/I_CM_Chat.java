@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_Chat
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_Chat 
 {
@@ -31,7 +31,7 @@ public interface I_CM_Chat
     public static final String Table_Name = "CM_Chat";
 
     /** AD_Table_ID=876 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 876;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_CM_Chat
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name CM_Chat_ID */
     public static final String COLUMNNAME_CM_Chat_ID = "CM_Chat_ID";
@@ -103,7 +103,16 @@ public interface I_CM_Chat
 	  */
 	public int getCM_ChatType_ID();
 
-	public I_CM_ChatType getCM_ChatType() throws RuntimeException;
+	public org.compiere.model.I_CM_ChatType getCM_ChatType() throws RuntimeException;
+
+    /** Column name CM_Chat_UU */
+    public static final String COLUMNNAME_CM_Chat_UU = "CM_Chat_UU";
+
+	/** Set CM_Chat_UU	  */
+	public void setCM_Chat_UU (String CM_Chat_UU);
+
+	/** Get CM_Chat_UU	  */
+	public String getCM_Chat_UU();
 
     /** Column name ConfidentialType */
     public static final String COLUMNNAME_ConfidentialType = "ConfidentialType";

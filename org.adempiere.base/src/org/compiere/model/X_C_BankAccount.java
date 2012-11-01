@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankAccount
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121017L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_BankAccount (Properties ctx, int C_BankAccount_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
         {
 			setAccountNo (null);
 			setBankAccountType (null);
-			setC_Bank_ID (0);
 			setC_BankAccount_ID (0);
+			setC_Bank_ID (0);
 			setC_Currency_ID (0);
 			setCreditLimit (Env.ZERO);
 			setCurrentBalance (Env.ZERO);
@@ -143,34 +143,6 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 		return (String)get_Value(COLUMNNAME_BBAN);
 	}
 
-	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_Name)
-			.getPO(getC_Bank_ID(), get_TrxName());	}
-
-	/** Set Bank.
-		@param C_Bank_ID 
-		Bank
-	  */
-	public void setC_Bank_ID (int C_Bank_ID)
-	{
-		if (C_Bank_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_C_Bank_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_C_Bank_ID, Integer.valueOf(C_Bank_ID));
-	}
-
-	/** Get Bank.
-		@return Bank
-	  */
-	public int getC_Bank_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Bank_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Bank Account.
 		@param C_BankAccount_ID 
 		Account at the Bank
@@ -206,6 +178,34 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	public String getC_BankAccount_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_C_BankAccount_UU);
+	}
+
+	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_Name)
+			.getPO(getC_Bank_ID(), get_TrxName());	}
+
+	/** Set Bank.
+		@param C_Bank_ID 
+		Bank
+	  */
+	public void setC_Bank_ID (int C_Bank_ID)
+	{
+		if (C_Bank_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_Bank_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_Bank_ID, Integer.valueOf(C_Bank_ID));
+	}
+
+	/** Get Bank.
+		@return Bank
+	  */
+	public int getC_Bank_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Bank_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException

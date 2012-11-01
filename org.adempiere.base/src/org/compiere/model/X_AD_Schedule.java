@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Schedule
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120924L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Schedule (Properties ctx, int AD_Schedule_ID, String trxName)
@@ -38,6 +38,11 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
       super (ctx, AD_Schedule_ID, trxName);
       /** if (AD_Schedule_ID == 0)
         {
+			setIsIgnoreProcessingTime (false);
+// N
+			setIsSystemSchedule (false);
+// N
+			setName (null);
         } */
     }
 
@@ -69,8 +74,8 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
       return sb.toString();
     }
 
-	/** Set AD_Schedule_ID.
-		@param AD_Schedule_ID AD_Schedule_ID	  */
+	/** Set Schedule.
+		@param AD_Schedule_ID Schedule	  */
 	public void setAD_Schedule_ID (int AD_Schedule_ID)
 	{
 		if (AD_Schedule_ID < 1) 
@@ -79,8 +84,8 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 			set_ValueNoCheck (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
 	}
 
-	/** Get AD_Schedule_ID.
-		@return AD_Schedule_ID	  */
+	/** Get Schedule.
+		@return Schedule	  */
 	public int getAD_Schedule_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
@@ -88,14 +93,6 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getAD_Schedule_ID()));
-    }
 
 	/** Set AD_Schedule_UU.
 		@param AD_Schedule_UU AD_Schedule_UU	  */
@@ -215,7 +212,7 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 		return false;
 	}
 
-	/** Set IsSystemSchedule.
+	/** Set System Schedule.
 		@param IsSystemSchedule 
 		Schedule Just For System
 	  */
@@ -224,7 +221,7 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 		set_Value (COLUMNNAME_IsSystemSchedule, Boolean.valueOf(IsSystemSchedule));
 	}
 
-	/** Get IsSystemSchedule.
+	/** Get System Schedule.
 		@return Schedule Just For System
 	  */
 	public boolean isSystemSchedule () 
@@ -265,7 +262,7 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 	  */
 	public void setName (String Name)
 	{
-		set_ValueNoCheck (COLUMNNAME_Name, Name);
+		set_Value (COLUMNNAME_Name, Name);
 	}
 
 	/** Get Name.
@@ -275,6 +272,14 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getName());
+    }
 
 	/** Set Run only on IP.
 		@param RunOnlyOnIP Run only on IP	  */

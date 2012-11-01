@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaySchedule
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_PaySchedule 
 {
@@ -31,7 +31,7 @@ public interface I_C_PaySchedule
     public static final String Table_Name = "C_PaySchedule";
 
     /** AD_Table_ID=548 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 548;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_PaySchedule
 	  */
 	public int getC_PaymentTerm_ID();
 
-	public I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
+	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
 
     /** Column name C_PaySchedule_ID */
     public static final String COLUMNNAME_C_PaySchedule_ID = "C_PaySchedule_ID";
@@ -89,6 +89,15 @@ public interface I_C_PaySchedule
 	  * Payment Schedule Template
 	  */
 	public int getC_PaySchedule_ID();
+
+    /** Column name C_PaySchedule_UU */
+    public static final String COLUMNNAME_C_PaySchedule_UU = "C_PaySchedule_UU";
+
+	/** Set C_PaySchedule_UU	  */
+	public void setC_PaySchedule_UU (String C_PaySchedule_UU);
+
+	/** Get C_PaySchedule_UU	  */
+	public String getC_PaySchedule_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

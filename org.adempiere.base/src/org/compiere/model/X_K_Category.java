@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for K_Category
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_K_Category extends PO implements I_K_Category, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_K_Category (Properties ctx, int K_Category_ID, String trxName)
@@ -126,6 +126,20 @@ public class X_K_Category extends PO implements I_K_Category, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set K_Category_UU.
+		@param K_Category_UU K_Category_UU	  */
+	public void setK_Category_UU (String K_Category_UU)
+	{
+		set_Value (COLUMNNAME_K_Category_UU, K_Category_UU);
+	}
+
+	/** Get K_Category_UU.
+		@return K_Category_UU	  */
+	public String getK_Category_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_K_Category_UU);
 	}
 
 	/** Set Name.

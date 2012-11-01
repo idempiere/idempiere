@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Resource
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_S_Resource extends PO implements I_S_Resource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_S_Resource (Properties ctx, int S_Resource_ID, String trxName)
@@ -80,9 +80,9 @@ public class X_S_Resource extends PO implements I_S_Resource, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -229,9 +229,9 @@ public class X_S_Resource extends PO implements I_S_Resource, I_Persistent
 		return (String)get_Value(COLUMNNAME_ManufacturingResourceType);
 	}
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_Warehouse_ID(), get_TrxName());	}
 
 	/** Set Warehouse.
@@ -362,9 +362,9 @@ public class X_S_Resource extends PO implements I_S_Resource, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_S_ResourceType getS_ResourceType() throws RuntimeException
+	public org.compiere.model.I_S_ResourceType getS_ResourceType() throws RuntimeException
     {
-		return (I_S_ResourceType)MTable.get(getCtx(), I_S_ResourceType.Table_Name)
+		return (org.compiere.model.I_S_ResourceType)MTable.get(getCtx(), org.compiere.model.I_S_ResourceType.Table_Name)
 			.getPO(getS_ResourceType_ID(), get_TrxName());	}
 
 	/** Set Resource Type.
@@ -385,6 +385,20 @@ public class X_S_Resource extends PO implements I_S_Resource, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set S_Resource_UU.
+		@param S_Resource_UU S_Resource_UU	  */
+	public void setS_Resource_UU (String S_Resource_UU)
+	{
+		set_Value (COLUMNNAME_S_Resource_UU, S_Resource_UU);
+	}
+
+	/** Get S_Resource_UU.
+		@return S_Resource_UU	  */
+	public String getS_Resource_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_S_Resource_UU);
 	}
 
 	/** Set Search Key.

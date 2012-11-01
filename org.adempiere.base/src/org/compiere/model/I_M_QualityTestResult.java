@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_QualityTestResult
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_QualityTestResult 
 {
@@ -30,8 +30,8 @@ public interface I_M_QualityTestResult
     /** TableName=M_QualityTestResult */
     public static final String Table_Name = "M_QualityTestResult";
 
-    /** AD_Table_ID=1000006 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=53331 */
+    public static final int Table_ID = 53331;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -52,13 +52,13 @@ public interface I_M_QualityTestResult
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
-	/** Set Organisation.
-	  * Organisational entity within client
+	/** Set Organization.
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
-	/** Get Organisation.
-	  * Organisational entity within client
+	/** Get Organization.
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
 
@@ -146,7 +146,7 @@ public interface I_M_QualityTestResult
 	/** Get Quality Test	  */
 	public int getM_QualityTest_ID();
 
-	public I_M_QualityTest getM_QualityTest() throws RuntimeException;
+	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException;
 
     /** Column name M_QualityTestResult_ID */
     public static final String COLUMNNAME_M_QualityTestResult_ID = "M_QualityTestResult_ID";
@@ -156,6 +156,15 @@ public interface I_M_QualityTestResult
 
 	/** Get Quality Test Result	  */
 	public int getM_QualityTestResult_ID();
+
+    /** Column name M_QualityTestResult_UU */
+    public static final String COLUMNNAME_M_QualityTestResult_UU = "M_QualityTestResult_UU";
+
+	/** Set M_QualityTestResult_UU	  */
+	public void setM_QualityTestResult_UU (String M_QualityTestResult_UU);
+
+	/** Get M_QualityTestResult_UU	  */
+	public String getM_QualityTestResult_UU();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

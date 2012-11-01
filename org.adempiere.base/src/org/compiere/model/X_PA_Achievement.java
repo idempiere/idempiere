@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Achievement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName)
@@ -221,9 +221,23 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_PA_Measure getPA_Measure() throws RuntimeException
+	/** Set PA_Achievement_UU.
+		@param PA_Achievement_UU PA_Achievement_UU	  */
+	public void setPA_Achievement_UU (String PA_Achievement_UU)
+	{
+		set_Value (COLUMNNAME_PA_Achievement_UU, PA_Achievement_UU);
+	}
+
+	/** Get PA_Achievement_UU.
+		@return PA_Achievement_UU	  */
+	public String getPA_Achievement_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_PA_Achievement_UU);
+	}
+
+	public org.compiere.model.I_PA_Measure getPA_Measure() throws RuntimeException
     {
-		return (I_PA_Measure)MTable.get(getCtx(), I_PA_Measure.Table_Name)
+		return (org.compiere.model.I_PA_Measure)MTable.get(getCtx(), org.compiere.model.I_PA_Measure.Table_Name)
 			.getPO(getPA_Measure_ID(), get_TrxName());	}
 
 	/** Set Measure.

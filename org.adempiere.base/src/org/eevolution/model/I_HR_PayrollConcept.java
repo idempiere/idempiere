@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_PayrollConcept
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_HR_PayrollConcept 
 {
@@ -32,7 +32,7 @@ public interface I_HR_PayrollConcept
     public static final String Table_Name = "HR_PayrollConcept";
 
     /** AD_Table_ID=53096 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53096;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -72,7 +72,7 @@ public interface I_HR_PayrollConcept
 	/** Get Rule	  */
 	public int getAD_Rule_ID();
 
-	public I_AD_Rule getAD_Rule() throws RuntimeException;
+	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -109,6 +109,15 @@ public interface I_HR_PayrollConcept
 
 	/** Get Payroll Concept	  */
 	public int getHR_PayrollConcept_ID();
+
+    /** Column name HR_PayrollConcept_UU */
+    public static final String COLUMNNAME_HR_PayrollConcept_UU = "HR_PayrollConcept_UU";
+
+	/** Set HR_PayrollConcept_UU	  */
+	public void setHR_PayrollConcept_UU (String HR_PayrollConcept_UU);
+
+	/** Get HR_PayrollConcept_UU	  */
+	public String getHR_PayrollConcept_UU();
 
     /** Column name HR_Payroll_ID */
     public static final String COLUMNNAME_HR_Payroll_ID = "HR_Payroll_ID";

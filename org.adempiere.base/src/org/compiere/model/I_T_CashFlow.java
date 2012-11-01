@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_CashFlow
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_T_CashFlow 
 {
@@ -380,6 +380,15 @@ public interface I_T_CashFlow
 
 	/** Get T_CashFlow_ID	  */
 	public int getT_CashFlow_ID();
+
+    /** Column name T_CashFlow_UU */
+    public static final String COLUMNNAME_T_CashFlow_UU = "T_CashFlow_UU";
+
+	/** Set T_CashFlow_UU	  */
+	public void setT_CashFlow_UU (String T_CashFlow_UU);
+
+	/** Get T_CashFlow_UU	  */
+	public String getT_CashFlow_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

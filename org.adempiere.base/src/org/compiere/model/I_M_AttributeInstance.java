@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeInstance
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_AttributeInstance 
 {
@@ -31,7 +31,7 @@ public interface I_M_AttributeInstance
     public static final String Table_Name = "M_AttributeInstance";
 
     /** AD_Table_ID=561 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 561;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -104,7 +104,16 @@ public interface I_M_AttributeInstance
 	  */
 	public int getM_Attribute_ID();
 
-	public I_M_Attribute getM_Attribute() throws RuntimeException;
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
+
+    /** Column name M_AttributeInstance_UU */
+    public static final String COLUMNNAME_M_AttributeInstance_UU = "M_AttributeInstance_UU";
+
+	/** Set M_AttributeInstance_UU	  */
+	public void setM_AttributeInstance_UU (String M_AttributeInstance_UU);
+
+	/** Get M_AttributeInstance_UU	  */
+	public String getM_AttributeInstance_UU();
 
     /** Column name M_AttributeSetInstance_ID */
     public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
@@ -134,7 +143,7 @@ public interface I_M_AttributeInstance
 	  */
 	public int getM_AttributeValue_ID();
 
-	public I_M_AttributeValue getM_AttributeValue() throws RuntimeException;
+	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

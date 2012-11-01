@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Cost_Collector
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PP_Cost_Collector 
 {
@@ -32,7 +32,7 @@ public interface I_PP_Cost_Collector
     public static final String Table_Name = "PP_Cost_Collector";
 
     /** AD_Table_ID=53035 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53035;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -89,7 +89,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -104,7 +104,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Activity_ID();
 
-	public I_C_Activity getC_Activity() throws RuntimeException;
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
     public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
@@ -119,7 +119,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Campaign_ID();
 
-	public I_C_Campaign getC_Campaign() throws RuntimeException;
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -134,7 +134,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_DocType_ID();
 
-	public I_C_DocType getC_DocType() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_DocTypeTarget_ID */
     public static final String COLUMNNAME_C_DocTypeTarget_ID = "C_DocTypeTarget_ID";
@@ -149,7 +149,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_DocTypeTarget_ID();
 
-	public I_C_DocType getC_DocTypeTarget() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocTypeTarget() throws RuntimeException;
 
     /** Column name CostCollectorType */
     public static final String COLUMNNAME_CostCollectorType = "CostCollectorType";
@@ -177,7 +177,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -208,7 +208,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_UOM_ID();
 
-	public I_C_UOM getC_UOM() throws RuntimeException;
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
@@ -384,7 +384,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -399,7 +399,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Posted */
     public static final String COLUMNNAME_Posted = "Posted";
@@ -422,6 +422,15 @@ public interface I_PP_Cost_Collector
 
 	/** Get Manufacturing Cost Collector	  */
 	public int getPP_Cost_Collector_ID();
+
+    /** Column name PP_Cost_Collector_UU */
+    public static final String COLUMNNAME_PP_Cost_Collector_UU = "PP_Cost_Collector_UU";
+
+	/** Set PP_Cost_Collector_UU	  */
+	public void setPP_Cost_Collector_UU (String PP_Cost_Collector_UU);
+
+	/** Get PP_Cost_Collector_UU	  */
+	public String getPP_Cost_Collector_UU();
 
     /** Column name PP_Order_BOMLine_ID */
     public static final String COLUMNNAME_PP_Order_BOMLine_ID = "PP_Order_BOMLine_ID";
@@ -569,7 +578,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getS_Resource_ID();
 
-	public I_S_Resource getS_Resource() throws RuntimeException;
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -600,7 +609,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getUser1_ID();
 
-	public I_AD_User getUser1() throws RuntimeException;
+	public org.compiere.model.I_AD_User getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
     public static final String COLUMNNAME_User2_ID = "User2_ID";
@@ -615,5 +624,5 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getUser2_ID();
 
-	public I_AD_User getUser2() throws RuntimeException;
+	public org.compiere.model.I_AD_User getUser2() throws RuntimeException;
 }

@@ -127,6 +127,7 @@ public class MSequence extends X_AD_Sequence
 		}
 
 		Connection conn = null;
+		Statement timeoutStatement = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		for (int i = 0; i < 3; i++)
@@ -145,7 +146,7 @@ public class MSequence extends X_AD_Sequence
 				//postgresql use special syntax instead of the setQueryTimeout method
 				if (DB.isPostgreSQL())
 				{
-					Statement timeoutStatement = conn.createStatement();
+					timeoutStatement = conn.createStatement();
 					timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
 				}
 				else if (DB.getDatabase().isQueryTimeoutSupported())
@@ -264,6 +265,12 @@ public class MSequence extends X_AD_Sequence
 				DB.close(rs, pstmt);
 				pstmt = null;
 				rs = null;
+				if (timeoutStatement != null){
+					try {
+						timeoutStatement.close();
+					}catch(Exception e){}
+					timeoutStatement = null;
+				}
 				if (conn != null)
 				{
 					try {
@@ -378,6 +385,7 @@ public class MSequence extends X_AD_Sequence
 		int docOrg_ID = 0;
 		int next = -1;
 
+		Statement timeoutStatement = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -430,7 +438,7 @@ public class MSequence extends X_AD_Sequence
 			//postgresql use special syntax instead of the setQueryTimeout method
 			if (DB.isPostgreSQL())
 			{
-				Statement timeoutStatement = conn.createStatement();
+				timeoutStatement = conn.createStatement();
 				timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
 			}
 			else if (DB.getDatabase().isQueryTimeoutSupported())
@@ -511,6 +519,10 @@ public class MSequence extends X_AD_Sequence
 			//	Finish
 			try
 			{
+				if (timeoutStatement != null) {
+					timeoutStatement.close();
+					timeoutStatement = null;
+				}
 				if (trx == null && conn != null) {
 					conn.close();
 					conn = null;

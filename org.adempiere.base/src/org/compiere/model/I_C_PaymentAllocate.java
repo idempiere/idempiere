@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaymentAllocate
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_PaymentAllocate 
 {
@@ -31,7 +31,7 @@ public interface I_C_PaymentAllocate
     public static final String Table_Name = "C_PaymentAllocate";
 
     /** AD_Table_ID=812 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 812;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_C_PaymentAllocate
 	  */
 	public int getC_AllocationLine_ID();
 
-	public I_C_AllocationLine getC_AllocationLine() throws RuntimeException;
+	public org.compiere.model.I_C_AllocationLine getC_AllocationLine() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
@@ -103,7 +103,7 @@ public interface I_C_PaymentAllocate
 	  */
 	public int getC_Invoice_ID();
 
-	public I_C_Invoice getC_Invoice() throws RuntimeException;
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_PaymentAllocate_ID */
     public static final String COLUMNNAME_C_PaymentAllocate_ID = "C_PaymentAllocate_ID";
@@ -118,6 +118,15 @@ public interface I_C_PaymentAllocate
 	  */
 	public int getC_PaymentAllocate_ID();
 
+    /** Column name C_PaymentAllocate_UU */
+    public static final String COLUMNNAME_C_PaymentAllocate_UU = "C_PaymentAllocate_UU";
+
+	/** Set C_PaymentAllocate_UU	  */
+	public void setC_PaymentAllocate_UU (String C_PaymentAllocate_UU);
+
+	/** Get C_PaymentAllocate_UU	  */
+	public String getC_PaymentAllocate_UU();
+
     /** Column name C_Payment_ID */
     public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
 
@@ -131,7 +140,7 @@ public interface I_C_PaymentAllocate
 	  */
 	public int getC_Payment_ID();
 
-	public I_C_Payment getC_Payment() throws RuntimeException;
+	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportCube
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PA_ReportCube 
 {
@@ -31,7 +31,7 @@ public interface I_PA_ReportCube
     public static final String Table_Name = "PA_ReportCube";
 
     /** AD_Table_ID=53202 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53202;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_PA_ReportCube
 	  */
 	public int getC_Calendar_ID();
 
-	public I_C_Calendar getC_Calendar() throws RuntimeException;
+	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -378,6 +378,15 @@ public interface I_PA_ReportCube
 	  * Define reporting cube for pre-calculation of summary accounting data.
 	  */
 	public int getPA_ReportCube_ID();
+
+    /** Column name PA_ReportCube_UU */
+    public static final String COLUMNNAME_PA_ReportCube_UU = "PA_ReportCube_UU";
+
+	/** Set PA_ReportCube_UU	  */
+	public void setPA_ReportCube_UU (String PA_ReportCube_UU);
+
+	/** Get PA_ReportCube_UU	  */
+	public String getPA_ReportCube_UU();
 
     /** Column name Processing */
     public static final String COLUMNNAME_Processing = "Processing";

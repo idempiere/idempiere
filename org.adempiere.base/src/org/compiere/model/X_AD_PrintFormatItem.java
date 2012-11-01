@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormatItem
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -48,6 +48,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 			setIsAveraged (false);
 			setIsCentrallyMaintained (false);
 			setIsCounted (false);
+			setIsDesc (false);
+// N
 			setIsDeviationCalc (false);
 			setIsFilledRectangle (false);
 // N
@@ -121,9 +123,9 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
       return sb.toString();
     }
 
-	public I_AD_Column getAD_Column() throws RuntimeException
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
     {
-		return (I_AD_Column)MTable.get(getCtx(), I_AD_Column.Table_Name)
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
 			.getPO(getAD_Column_ID(), get_TrxName());	}
 
 	/** Set Column.
@@ -149,9 +151,9 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
-	public I_AD_PrintColor getAD_PrintColor() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getAD_PrintColor_ID(), get_TrxName());	}
 
 	/** Set Print Color.
@@ -177,9 +179,9 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
-	public I_AD_PrintFont getAD_PrintFont() throws RuntimeException
+	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException
     {
-		return (I_AD_PrintFont)MTable.get(getCtx(), I_AD_PrintFont.Table_Name)
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
 			.getPO(getAD_PrintFont_ID(), get_TrxName());	}
 
 	/** Set Print Font.
@@ -205,9 +207,9 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
-	public I_AD_PrintFormat getAD_PrintFormatChild() throws RuntimeException
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormatChild() throws RuntimeException
     {
-		return (I_AD_PrintFormat)MTable.get(getCtx(), I_AD_PrintFormat.Table_Name)
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
 			.getPO(getAD_PrintFormatChild_ID(), get_TrxName());	}
 
 	/** Set Included Print Format.
@@ -233,9 +235,9 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
-	public I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
     {
-		return (I_AD_PrintFormat)MTable.get(getCtx(), I_AD_PrintFormat.Table_Name)
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
 			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
 
 	/** Set Print Format.
@@ -284,9 +286,23 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
-	public I_AD_PrintGraph getAD_PrintGraph() throws RuntimeException
+	/** Set AD_PrintFormatItem_UU.
+		@param AD_PrintFormatItem_UU AD_PrintFormatItem_UU	  */
+	public void setAD_PrintFormatItem_UU (String AD_PrintFormatItem_UU)
+	{
+		set_Value (COLUMNNAME_AD_PrintFormatItem_UU, AD_PrintFormatItem_UU);
+	}
+
+	/** Get AD_PrintFormatItem_UU.
+		@return AD_PrintFormatItem_UU	  */
+	public String getAD_PrintFormatItem_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_PrintFormatItem_UU);
+	}
+
+	public org.compiere.model.I_AD_PrintGraph getAD_PrintGraph() throws RuntimeException
     {
-		return (I_AD_PrintGraph)MTable.get(getCtx(), I_AD_PrintGraph.Table_Name)
+		return (org.compiere.model.I_AD_PrintGraph)MTable.get(getCtx(), org.compiere.model.I_AD_PrintGraph.Table_Name)
 			.getPO(getAD_PrintGraph_ID(), get_TrxName());	}
 
 	/** Set Graph.
@@ -571,6 +587,30 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isCounted () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsCounted);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Descending.
+		@param IsDesc 
+		Sort your data using a SQL Desc Order By statement
+	  */
+	public void setIsDesc (boolean IsDesc)
+	{
+		set_Value (COLUMNNAME_IsDesc, Boolean.valueOf(IsDesc));
+	}
+
+	/** Get Descending.
+		@return Sort your data using a SQL Desc Order By statement
+	  */
+	public boolean isDesc () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDesc);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

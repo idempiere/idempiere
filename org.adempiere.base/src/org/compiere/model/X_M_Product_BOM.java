@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_BOM
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_Product_BOM (Properties ctx, int M_Product_BOM_ID, String trxName)
@@ -140,6 +140,44 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 		return (String)get_Value(COLUMNNAME_BOMType);
 	}
 
+	/** Set Standard Cost.
+		@param CostStandard 
+		Standard Costs
+	  */
+	public void setCostStandard (BigDecimal CostStandard)
+	{
+		throw new IllegalArgumentException ("CostStandard is virtual column");	}
+
+	/** Get Standard Cost.
+		@return Standard Costs
+	  */
+	public BigDecimal getCostStandard () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostStandard);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Std Cost Amount Sum.
+		@param CostStandardCumAmt 
+		Standard Cost Invoice Amount Sum (internal)
+	  */
+	public void setCostStandardCumAmt (BigDecimal CostStandardCumAmt)
+	{
+		throw new IllegalArgumentException ("CostStandardCumAmt is virtual column");	}
+
+	/** Get Std Cost Amount Sum.
+		@return Standard Cost Invoice Amount Sum (internal)
+	  */
+	public BigDecimal getCostStandardCumAmt () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostStandardCumAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -157,6 +195,29 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set Bill of Materials.
+		@param IsBillOfMaterial 
+		Bill of Materials
+	  */
+	public void setIsBillOfMaterial (boolean IsBillOfMaterial)
+	{
+		throw new IllegalArgumentException ("IsBillOfMaterial is virtual column");	}
+
+	/** Get Bill of Materials.
+		@return Bill of Materials
+	  */
+	public boolean isBillOfMaterial () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsBillOfMaterial);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Line No.
 		@param Line 
 		Unique line for this document
@@ -172,6 +233,27 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 	public int getLine () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_PartType getM_PartType() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_PartType)MTable.get(getCtx(), org.compiere.model.I_M_PartType.Table_Name)
+			.getPO(getM_PartType_ID(), get_TrxName());	}
+
+	/** Set Part Type.
+		@param M_PartType_ID Part Type	  */
+	public void setM_PartType_ID (int M_PartType_ID)
+	{
+		throw new IllegalArgumentException ("M_PartType_ID is virtual column");	}
+
+	/** Get Part Type.
+		@return Part Type	  */
+	public int getM_PartType_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_PartType_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -197,9 +279,9 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_ProductBOM() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_ProductBOM() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_ProductBOM_ID(), get_TrxName());	}
 
 	/** Set BOM Product.
@@ -233,9 +315,23 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
         return new KeyNamePair(get_ID(), String.valueOf(getM_ProductBOM_ID()));
     }
 
-	public I_M_Product getM_Product() throws RuntimeException
+	/** Set M_Product_BOM_UU.
+		@param M_Product_BOM_UU M_Product_BOM_UU	  */
+	public void setM_Product_BOM_UU (String M_Product_BOM_UU)
+	{
+		set_Value (COLUMNNAME_M_Product_BOM_UU, M_Product_BOM_UU);
+	}
+
+	/** Get M_Product_BOM_UU.
+		@return M_Product_BOM_UU	  */
+	public String getM_Product_BOM_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_Product_BOM_UU);
+	}
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -259,5 +355,21 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Search Key.
+		@param Value 
+		Search key for the record in the format required - must be unique
+	  */
+	public void setValue (String Value)
+	{
+		throw new IllegalArgumentException ("Value is virtual column");	}
+
+	/** Get Search Key.
+		@return Search key for the record in the format required - must be unique
+	  */
+	public String getValue () 
+	{
+		return (String)get_Value(COLUMNNAME_Value);
 	}
 }

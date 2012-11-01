@@ -191,6 +191,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	public void setPrintFormat (MPrintFormat pf)
 	{
 		m_printFormat = pf;
+		pf.reloadItems();
 		if (m_layout != null)
 		{
 			setPrintData();

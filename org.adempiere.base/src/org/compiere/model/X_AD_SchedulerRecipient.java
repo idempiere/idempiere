@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SchedulerRecipient
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipient, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_SchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
       return sb.toString();
     }
 
-	public I_AD_Role getAD_Role() throws RuntimeException
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
     {
-		return (I_AD_Role)MTable.get(getCtx(), I_AD_Role.Table_Name)
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
 			.getPO(getAD_Role_ID(), get_TrxName());	}
 
 	/** Set Role.
@@ -99,9 +99,9 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 		return ii.intValue();
 	}
 
-	public I_AD_Scheduler getAD_Scheduler() throws RuntimeException
+	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException
     {
-		return (I_AD_Scheduler)MTable.get(getCtx(), I_AD_Scheduler.Table_Name)
+		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_Name)
 			.getPO(getAD_Scheduler_ID(), get_TrxName());	}
 
 	/** Set Scheduler.
@@ -150,9 +150,23 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 		return ii.intValue();
 	}
 
-	public I_AD_User getAD_User() throws RuntimeException
+	/** Set AD_SchedulerRecipient_UU.
+		@param AD_SchedulerRecipient_UU AD_SchedulerRecipient_UU	  */
+	public void setAD_SchedulerRecipient_UU (String AD_SchedulerRecipient_UU)
+	{
+		set_Value (COLUMNNAME_AD_SchedulerRecipient_UU, AD_SchedulerRecipient_UU);
+	}
+
+	/** Get AD_SchedulerRecipient_UU.
+		@return AD_SchedulerRecipient_UU	  */
+	public String getAD_SchedulerRecipient_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_SchedulerRecipient_UU);
+	}
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_IssueSystem
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_R_IssueSystem 
 {
@@ -31,7 +31,7 @@ public interface I_R_IssueSystem
     public static final String Table_Name = "R_IssueSystem";
 
     /** AD_Table_ID=843 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 843;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_R_IssueSystem
 	  */
 	public int getA_Asset_ID();
 
-	public I_A_Asset getA_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -144,6 +144,15 @@ public interface I_R_IssueSystem
 	  * System creating the issue
 	  */
 	public int getR_IssueSystem_ID();
+
+    /** Column name R_IssueSystem_UU */
+    public static final String COLUMNNAME_R_IssueSystem_UU = "R_IssueSystem_UU";
+
+	/** Set R_IssueSystem_UU	  */
+	public void setR_IssueSystem_UU (String R_IssueSystem_UU);
+
+	/** Get R_IssueSystem_UU	  */
+	public String getR_IssueSystem_UU();
 
     /** Column name StatisticsInfo */
     public static final String COLUMNNAME_StatisticsInfo = "StatisticsInfo";

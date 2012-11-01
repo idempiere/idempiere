@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReplicationTable
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_ReplicationTable (Properties ctx, int AD_ReplicationTable_ID, String trxName)
@@ -75,9 +75,9 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
       return sb.toString();
     }
 
-	public I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
+	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
     {
-		return (I_AD_ReplicationStrategy)MTable.get(getCtx(), I_AD_ReplicationStrategy.Table_Name)
+		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_Name)
 			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());	}
 
 	/** Set Replication Strategy.
@@ -134,9 +134,23 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 		return ii.intValue();
 	}
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	/** Set AD_ReplicationTable_UU.
+		@param AD_ReplicationTable_UU AD_ReplicationTable_UU	  */
+	public void setAD_ReplicationTable_UU (String AD_ReplicationTable_UU)
+	{
+		set_Value (COLUMNNAME_AD_ReplicationTable_UU, AD_ReplicationTable_UU);
+	}
+
+	/** Get AD_ReplicationTable_UU.
+		@return AD_ReplicationTable_UU	  */
+	public String getAD_ReplicationTable_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_ReplicationTable_UU);
+	}
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ProductPrice
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_ProductPrice 
 {
@@ -31,7 +31,7 @@ public interface I_M_ProductPrice
     public static final String Table_Name = "M_ProductPrice";
 
     /** AD_Table_ID=251 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 251;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -104,7 +104,7 @@ public interface I_M_ProductPrice
 	  */
 	public int getM_PriceList_Version_ID();
 
-	public I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -119,7 +119,16 @@ public interface I_M_ProductPrice
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_ProductPrice_UU */
+    public static final String COLUMNNAME_M_ProductPrice_UU = "M_ProductPrice_UU";
+
+	/** Set M_ProductPrice_UU	  */
+	public void setM_ProductPrice_UU (String M_ProductPrice_UU);
+
+	/** Get M_ProductPrice_UU	  */
+	public String getM_ProductPrice_UU();
 
     /** Column name PriceLimit */
     public static final String COLUMNNAME_PriceLimit = "PriceLimit";

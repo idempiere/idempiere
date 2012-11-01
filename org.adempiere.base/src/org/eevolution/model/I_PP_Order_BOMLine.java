@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_BOMLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PP_Order_BOMLine 
 {
@@ -32,7 +32,7 @@ public interface I_PP_Order_BOMLine
     public static final String Table_Name = "PP_Order_BOMLine";
 
     /** AD_Table_ID=53025 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53025;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,7 +76,7 @@ public interface I_PP_Order_BOMLine
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Assay */
     public static final String COLUMNNAME_Assay = "Assay";
@@ -159,7 +159,7 @@ public interface I_PP_Order_BOMLine
 	  */
 	public int getC_UOM_ID();
 
-	public I_C_UOM getC_UOM() throws RuntimeException;
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name DateDelivered */
     public static final String COLUMNNAME_DateDelivered = "DateDelivered";
@@ -332,7 +332,7 @@ public interface I_PP_Order_BOMLine
 	  */
 	public int getM_ChangeNotice_ID();
 
-	public I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException;
+	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException;
 
     /** Column name M_Locator_ID */
     public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
@@ -362,7 +362,7 @@ public interface I_PP_Order_BOMLine
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -377,7 +377,7 @@ public interface I_PP_Order_BOMLine
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name PP_Order_BOM_ID */
     public static final String COLUMNNAME_PP_Order_BOM_ID = "PP_Order_BOM_ID";
@@ -398,6 +398,15 @@ public interface I_PP_Order_BOMLine
 
 	/** Get Manufacturing Order BOM Line	  */
 	public int getPP_Order_BOMLine_ID();
+
+    /** Column name PP_Order_BOMLine_UU */
+    public static final String COLUMNNAME_PP_Order_BOMLine_UU = "PP_Order_BOMLine_UU";
+
+	/** Set PP_Order_BOMLine_UU	  */
+	public void setPP_Order_BOMLine_UU (String PP_Order_BOMLine_UU);
+
+	/** Get PP_Order_BOMLine_UU	  */
+	public String getPP_Order_BOMLine_UU();
 
     /** Column name PP_Order_ID */
     public static final String COLUMNNAME_PP_Order_ID = "PP_Order_ID";

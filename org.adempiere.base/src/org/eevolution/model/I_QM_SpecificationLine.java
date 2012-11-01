@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for QM_SpecificationLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_QM_SpecificationLine 
 {
@@ -32,7 +32,7 @@ public interface I_QM_SpecificationLine
     public static final String Table_Name = "QM_SpecificationLine";
 
     /** AD_Table_ID=53041 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53041;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -118,7 +118,7 @@ public interface I_QM_SpecificationLine
 	  */
 	public int getM_Attribute_ID();
 
-	public I_M_Attribute getM_Attribute() throws RuntimeException;
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
 
     /** Column name Operation */
     public static final String COLUMNNAME_Operation = "Operation";
@@ -152,6 +152,15 @@ public interface I_QM_SpecificationLine
 
 	/** Get QM Specification Line	  */
 	public int getQM_SpecificationLine_ID();
+
+    /** Column name QM_SpecificationLine_UU */
+    public static final String COLUMNNAME_QM_SpecificationLine_UU = "QM_SpecificationLine_UU";
+
+	/** Set QM_SpecificationLine_UU	  */
+	public void setQM_SpecificationLine_UU (String QM_SpecificationLine_UU);
+
+	/** Get QM_SpecificationLine_UU	  */
+	public String getQM_SpecificationLine_UU();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Package
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_Package 
 {
@@ -31,7 +31,7 @@ public interface I_M_Package
     public static final String Table_Name = "M_Package";
 
     /** AD_Table_ID=664 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 664;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -143,7 +143,7 @@ public interface I_M_Package
 	  */
 	public int getM_InOut_ID();
 
-	public I_M_InOut getM_InOut() throws RuntimeException;
+	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException;
 
     /** Column name M_Package_ID */
     public static final String COLUMNNAME_M_Package_ID = "M_Package_ID";
@@ -158,6 +158,15 @@ public interface I_M_Package
 	  */
 	public int getM_Package_ID();
 
+    /** Column name M_Package_UU */
+    public static final String COLUMNNAME_M_Package_UU = "M_Package_UU";
+
+	/** Set M_Package_UU	  */
+	public void setM_Package_UU (String M_Package_UU);
+
+	/** Get M_Package_UU	  */
+	public String getM_Package_UU();
+
     /** Column name M_Shipper_ID */
     public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
 
@@ -171,7 +180,7 @@ public interface I_M_Package
 	  */
 	public int getM_Shipper_ID();
 
-	public I_M_Shipper getM_Shipper() throws RuntimeException;
+	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name ReceivedInfo */
     public static final String COLUMNNAME_ReceivedInfo = "ReceivedInfo";

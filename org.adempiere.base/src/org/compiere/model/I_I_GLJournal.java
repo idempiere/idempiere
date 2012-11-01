@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_GLJournal
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_I_GLJournal 
 {
@@ -31,7 +31,7 @@ public interface I_I_GLJournal
     public static final String Table_Name = "I_GLJournal";
 
     /** AD_Table_ID=599 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 599;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_I_GLJournal
 	  */
 	public int getAccount_ID();
 
-	public I_C_ElementValue getAccount() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name AccountValue */
     public static final String COLUMNNAME_AccountValue = "AccountValue";
@@ -233,7 +233,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -248,7 +248,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Activity_ID();
 
-	public I_C_Activity getC_Activity() throws RuntimeException;
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name CategoryName */
     public static final String COLUMNNAME_CategoryName = "CategoryName";
@@ -276,7 +276,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
     public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
@@ -291,7 +291,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Campaign_ID();
 
-	public I_C_Campaign getC_Campaign() throws RuntimeException;
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
     public static final String COLUMNNAME_C_ConversionType_ID = "C_ConversionType_ID";
@@ -306,7 +306,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_ConversionType_ID();
 
-	public I_C_ConversionType getC_ConversionType() throws RuntimeException;
+	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -321,7 +321,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -336,7 +336,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_DocType_ID();
 
-	public I_C_DocType getC_DocType() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name ClientValue */
     public static final String COLUMNNAME_ClientValue = "ClientValue";
@@ -364,7 +364,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_LocFrom_ID();
 
-	public I_C_Location getC_LocFrom() throws RuntimeException;
+	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException;
 
     /** Column name C_LocTo_ID */
     public static final String COLUMNNAME_C_LocTo_ID = "C_LocTo_ID";
@@ -379,7 +379,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_LocTo_ID();
 
-	public I_C_Location getC_LocTo() throws RuntimeException;
+	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException;
 
     /** Column name ConversionTypeValue */
     public static final String COLUMNNAME_ConversionTypeValue = "ConversionTypeValue";
@@ -407,7 +407,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Period_ID();
 
-	public I_C_Period getC_Period() throws RuntimeException;
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -422,7 +422,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -453,7 +453,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_SalesRegion_ID();
 
-	public I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name C_UOM_ID */
     public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
@@ -468,7 +468,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_UOM_ID();
 
-	public I_C_UOM getC_UOM() throws RuntimeException;
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name CurrencyRate */
     public static final String COLUMNNAME_CurrencyRate = "CurrencyRate";
@@ -496,7 +496,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_ValidCombination_ID();
 
-	public I_C_ValidCombination getC_ValidCombination() throws RuntimeException;
+	public org.compiere.model.I_C_ValidCombination getC_ValidCombination() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
@@ -550,7 +550,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_Budget_ID();
 
-	public I_GL_Budget getGL_Budget() throws RuntimeException;
+	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException;
 
     /** Column name GL_Category_ID */
     public static final String COLUMNNAME_GL_Category_ID = "GL_Category_ID";
@@ -565,7 +565,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_Category_ID();
 
-	public I_GL_Category getGL_Category() throws RuntimeException;
+	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException;
 
     /** Column name GL_JournalBatch_ID */
     public static final String COLUMNNAME_GL_JournalBatch_ID = "GL_JournalBatch_ID";
@@ -580,7 +580,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_JournalBatch_ID();
 
-	public I_GL_JournalBatch getGL_JournalBatch() throws RuntimeException;
+	public org.compiere.model.I_GL_JournalBatch getGL_JournalBatch() throws RuntimeException;
 
     /** Column name GL_Journal_ID */
     public static final String COLUMNNAME_GL_Journal_ID = "GL_Journal_ID";
@@ -595,7 +595,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_Journal_ID();
 
-	public I_GL_Journal getGL_Journal() throws RuntimeException;
+	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException;
 
     /** Column name GL_JournalLine_ID */
     public static final String COLUMNNAME_GL_JournalLine_ID = "GL_JournalLine_ID";
@@ -610,7 +610,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_JournalLine_ID();
 
-	public I_GL_JournalLine getGL_JournalLine() throws RuntimeException;
+	public org.compiere.model.I_GL_JournalLine getGL_JournalLine() throws RuntimeException;
 
     /** Column name I_ErrorMsg */
     public static final String COLUMNNAME_I_ErrorMsg = "I_ErrorMsg";
@@ -637,6 +637,15 @@ public interface I_I_GLJournal
 	  * Import General Ledger Journal
 	  */
 	public int getI_GLJournal_ID();
+
+    /** Column name I_GLJournal_UU */
+    public static final String COLUMNNAME_I_GLJournal_UU = "I_GLJournal_UU";
+
+	/** Set I_GLJournal_UU	  */
+	public void setI_GLJournal_UU (String I_GLJournal_UU);
+
+	/** Get I_GLJournal_UU	  */
+	public String getI_GLJournal_UU();
 
     /** Column name I_IsImported */
     public static final String COLUMNNAME_I_IsImported = "I_IsImported";
@@ -742,7 +751,7 @@ public interface I_I_GLJournal
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name OrgTrxValue */
     public static final String COLUMNNAME_OrgTrxValue = "OrgTrxValue";
@@ -899,7 +908,7 @@ public interface I_I_GLJournal
 	  */
 	public int getUser1_ID();
 
-	public I_C_ElementValue getUser1() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
     public static final String COLUMNNAME_User2_ID = "User2_ID";
@@ -914,5 +923,5 @@ public interface I_I_GLJournal
 	  */
 	public int getUser2_ID();
 
-	public I_C_ElementValue getUser2() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 }

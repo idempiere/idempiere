@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Find
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Find extends PO implements I_AD_Find, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName)
@@ -79,9 +79,9 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Column getAD_Column() throws RuntimeException
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
     {
-		return (I_AD_Column)MTable.get(getCtx(), I_AD_Column.Table_Name)
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
 			.getPO(getAD_Column_ID(), get_TrxName());	}
 
 	/** Set Column.
@@ -134,6 +134,20 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Find_ID()));
     }
+
+	/** Set AD_Find_UU.
+		@param AD_Find_UU AD_Find_UU	  */
+	public void setAD_Find_UU (String AD_Find_UU)
+	{
+		set_Value (COLUMNNAME_AD_Find_UU, AD_Find_UU);
+	}
+
+	/** Get AD_Find_UU.
+		@return AD_Find_UU	  */
+	public String getAD_Find_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Find_UU);
+	}
 
 	/** AndOr AD_Reference_ID=204 */
 	public static final int ANDOR_AD_Reference_ID=204;

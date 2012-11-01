@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ServiceLevel
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_ServiceLevel 
 {
@@ -31,7 +31,7 @@ public interface I_C_ServiceLevel
     public static final String Table_Name = "C_ServiceLevel";
 
     /** AD_Table_ID=337 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 337;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -91,7 +91,7 @@ public interface I_C_ServiceLevel
 	  */
 	public int getC_RevenueRecognition_Plan_ID();
 
-	public I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException;
+	public org.compiere.model.I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException;
 
     /** Column name C_ServiceLevel_ID */
     public static final String COLUMNNAME_C_ServiceLevel_ID = "C_ServiceLevel_ID";
@@ -105,6 +105,15 @@ public interface I_C_ServiceLevel
 	  * Product Revenue Recognition Service Level 
 	  */
 	public int getC_ServiceLevel_ID();
+
+    /** Column name C_ServiceLevel_UU */
+    public static final String COLUMNNAME_C_ServiceLevel_UU = "C_ServiceLevel_UU";
+
+	/** Set C_ServiceLevel_UU	  */
+	public void setC_ServiceLevel_UU (String C_ServiceLevel_UU);
+
+	/** Get C_ServiceLevel_UU	  */
+	public String getC_ServiceLevel_UU();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -145,7 +154,7 @@ public interface I_C_ServiceLevel
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

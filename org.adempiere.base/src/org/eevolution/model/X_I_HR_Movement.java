@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -26,15 +26,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_HR_Movement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20101013L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_I_HR_Movement (Properties ctx, int I_HR_Movement_ID, String trxName)
@@ -293,6 +293,20 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set I_HR_Movement_UU.
+		@param I_HR_Movement_UU I_HR_Movement_UU	  */
+	public void setI_HR_Movement_UU (String I_HR_Movement_UU)
+	{
+		set_Value (COLUMNNAME_I_HR_Movement_UU, I_HR_Movement_UU);
+	}
+
+	/** Get I_HR_Movement_UU.
+		@return I_HR_Movement_UU	  */
+	public String getI_HR_Movement_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_I_HR_Movement_UU);
 	}
 
 	/** Set Imported.

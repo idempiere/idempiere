@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Scheduler
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120924L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -40,6 +40,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
       /** if (AD_Scheduler_ID == 0)
         {
 			setAD_Process_ID (0);
+			setAD_Schedule_ID (0);
 			setAD_Scheduler_ID (0);
 			setKeepLogDays (0);
 // 7
@@ -109,8 +110,8 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
 			.getPO(getAD_Schedule_ID(), get_TrxName());	}
 
-	/** Set AD_Schedule_ID.
-		@param AD_Schedule_ID AD_Schedule_ID	  */
+	/** Set Schedule.
+		@param AD_Schedule_ID Schedule	  */
 	public void setAD_Schedule_ID (int AD_Schedule_ID)
 	{
 		if (AD_Schedule_ID < 1) 
@@ -119,8 +120,8 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
 	}
 
-	/** Get AD_Schedule_ID.
-		@return AD_Schedule_ID	  */
+	/** Get Schedule.
+		@return Schedule	  */
 	public int getAD_Schedule_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);

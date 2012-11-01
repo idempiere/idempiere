@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for I_Movement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_I_Movement extends PO implements I_I_Movement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100620L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName)
@@ -42,8 +42,10 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
       /** if (I_Movement_ID == 0)
         {
 			setI_IsImported (false);
+// N
 			setI_Movement_ID (0);
 			setProcessed (false);
+// N
 			setProcessing (false);
         } */
     }
@@ -76,9 +78,9 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Org getAD_OrgTrx() throws RuntimeException
+	public org.compiere.model.I_AD_Org getAD_OrgTrx() throws RuntimeException
     {
-		return (I_AD_Org)MTable.get(getCtx(), I_AD_Org.Table_Name)
+		return (org.compiere.model.I_AD_Org)MTable.get(getCtx(), org.compiere.model.I_AD_Org.Table_Name)
 			.getPO(getAD_OrgTrx_ID(), get_TrxName());	}
 
 	/** Set Trx Organization.
@@ -104,12 +106,12 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
-	/** Set Usuario.
+	/** Set User/Contact.
 		@param AD_User_ID 
 		User within the system - Internal or Business Partner Contact
 	  */
@@ -121,7 +123,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
-	/** Get Usuario.
+	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
 	public int getAD_User_ID () 
@@ -149,9 +151,23 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_BPartnerValue);
 	}
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException
+	/** Set CampaignValue.
+		@param CampaignValue CampaignValue	  */
+	public void setCampaignValue (String CampaignValue)
+	{
+		set_Value (COLUMNNAME_CampaignValue, CampaignValue);
+	}
+
+	/** Get CampaignValue.
+		@return CampaignValue	  */
+	public String getCampaignValue () 
+	{
+		return (String)get_Value(COLUMNNAME_CampaignValue);
+	}
+
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_BPartner_ID(), get_TrxName());	}
 
 	/** Set Business Partner .
@@ -177,9 +193,9 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_Campaign getC_Campaign() throws RuntimeException
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
     {
-		return (I_C_Campaign)MTable.get(getCtx(), I_C_Campaign.Table_Name)
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
 			.getPO(getC_Campaign_ID(), get_TrxName());	}
 
 	/** Set Campaign.
@@ -205,9 +221,9 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_DocType getC_DocType() throws RuntimeException
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getC_DocType_ID(), get_TrxName());	}
 
 	/** Set Document Type.
@@ -233,9 +249,9 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_Project getC_Project() throws RuntimeException
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
     {
-		return (I_C_Project)MTable.get(getCtx(), I_C_Project.Table_Name)
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
 			.getPO(getC_Project_ID(), get_TrxName());	}
 
 	/** Set Project.
@@ -259,20 +275,6 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set CampaignValue.
-		@param CampaignValue CampaignValue	  */
-	public void setCampaignValue (String CampaignValue)
-	{
-		set_Value (COLUMNNAME_CampaignValue, CampaignValue);
-	}
-
-	/** Get CampaignValue.
-		@return CampaignValue	  */
-	public String getCampaignValue () 
-	{
-		return (String)get_Value(COLUMNNAME_CampaignValue);
 	}
 
 	/** Set Delivery Rule.
@@ -421,6 +423,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set I_Movement_UU.
+		@param I_Movement_UU I_Movement_UU	  */
+	public void setI_Movement_UU (String I_Movement_UU)
+	{
+		set_Value (COLUMNNAME_I_Movement_UU, I_Movement_UU);
+	}
+
+	/** Get I_Movement_UU.
+		@return I_Movement_UU	  */
+	public String getI_Movement_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_I_Movement_UU);
+	}
+
 	/** Set Locator To Key.
 		@param LocatorToValue Locator To Key	  */
 	public void setLocatorToValue (String LocatorToValue)
@@ -452,34 +468,6 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_LocatorValue);
 	}
 
-	public I_M_Locator getM_LocatorTo() throws RuntimeException
-    {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
-			.getPO(getM_LocatorTo_ID(), get_TrxName());	}
-
-	/** Set Locator To.
-		@param M_LocatorTo_ID 
-		Location inventory is moved to
-	  */
-	public void setM_LocatorTo_ID (int M_LocatorTo_ID)
-	{
-		if (M_LocatorTo_ID < 1) 
-			set_Value (COLUMNNAME_M_LocatorTo_ID, null);
-		else 
-			set_Value (COLUMNNAME_M_LocatorTo_ID, Integer.valueOf(M_LocatorTo_ID));
-	}
-
-	/** Get Locator To.
-		@return Location inventory is moved to
-	  */
-	public int getM_LocatorTo_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_LocatorTo_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_M_Locator getM_Locator() throws RuntimeException
     {
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
@@ -508,37 +496,37 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_MovementLine getM_MovementLine() throws RuntimeException
+	public I_M_Locator getM_LocatorTo() throws RuntimeException
     {
-		return (I_M_MovementLine)MTable.get(getCtx(), I_M_MovementLine.Table_Name)
-			.getPO(getM_MovementLine_ID(), get_TrxName());	}
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
+			.getPO(getM_LocatorTo_ID(), get_TrxName());	}
 
-	/** Set Move Line.
-		@param M_MovementLine_ID 
-		Inventory Move document Line
+	/** Set Locator To.
+		@param M_LocatorTo_ID 
+		Location inventory is moved to
 	  */
-	public void setM_MovementLine_ID (int M_MovementLine_ID)
+	public void setM_LocatorTo_ID (int M_LocatorTo_ID)
 	{
-		if (M_MovementLine_ID < 1) 
-			set_Value (COLUMNNAME_M_MovementLine_ID, null);
+		if (M_LocatorTo_ID < 1) 
+			set_Value (COLUMNNAME_M_LocatorTo_ID, null);
 		else 
-			set_Value (COLUMNNAME_M_MovementLine_ID, Integer.valueOf(M_MovementLine_ID));
+			set_Value (COLUMNNAME_M_LocatorTo_ID, Integer.valueOf(M_LocatorTo_ID));
 	}
 
-	/** Get Move Line.
-		@return Inventory Move document Line
+	/** Get Locator To.
+		@return Location inventory is moved to
 	  */
-	public int getM_MovementLine_ID () 
+	public int getM_LocatorTo_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLine_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_LocatorTo_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	public I_M_Movement getM_Movement() throws RuntimeException
+	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException
     {
-		return (I_M_Movement)MTable.get(getCtx(), I_M_Movement.Table_Name)
+		return (org.compiere.model.I_M_Movement)MTable.get(getCtx(), org.compiere.model.I_M_Movement.Table_Name)
 			.getPO(getM_Movement_ID(), get_TrxName());	}
 
 	/** Set Inventory Move.
@@ -564,57 +552,29 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_Name)
+			.getPO(getM_MovementLine_ID(), get_TrxName());	}
 
-	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
+	/** Set Move Line.
+		@param M_MovementLine_ID 
+		Inventory Move document Line
 	  */
-	public void setM_Product_ID (int M_Product_ID)
+	public void setM_MovementLine_ID (int M_MovementLine_ID)
 	{
-		if (M_Product_ID < 1) 
-			set_Value (COLUMNNAME_M_Product_ID, null);
+		if (M_MovementLine_ID < 1) 
+			set_Value (COLUMNNAME_M_MovementLine_ID, null);
 		else 
-			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+			set_Value (COLUMNNAME_M_MovementLine_ID, Integer.valueOf(M_MovementLine_ID));
 	}
 
-	/** Get Product.
-		@return Product, Service, Item
+	/** Get Move Line.
+		@return Inventory Move document Line
 	  */
-	public int getM_Product_ID () 
+	public int getM_MovementLine_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_M_Shipper getM_Shipper() throws RuntimeException
-    {
-		return (I_M_Shipper)MTable.get(getCtx(), I_M_Shipper.Table_Name)
-			.getPO(getM_Shipper_ID(), get_TrxName());	}
-
-	/** Set Shipper.
-		@param M_Shipper_ID 
-		Method or manner of product delivery
-	  */
-	public void setM_Shipper_ID (int M_Shipper_ID)
-	{
-		if (M_Shipper_ID < 1) 
-			set_Value (COLUMNNAME_M_Shipper_ID, null);
-		else 
-			set_Value (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
-	}
-
-	/** Get Shipper.
-		@return Method or manner of product delivery
-	  */
-	public int getM_Shipper_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLine_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -655,6 +615,62 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
+			.getPO(getM_Product_ID(), get_TrxName());	}
+
+	/** Set Product.
+		@param M_Product_ID 
+		Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID)
+	{
+		if (M_Product_ID < 1) 
+			set_Value (COLUMNNAME_M_Product_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+	}
+
+	/** Get Product.
+		@return Product, Service, Item
+	  */
+	public int getM_Product_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_Name)
+			.getPO(getM_Shipper_ID(), get_TrxName());	}
+
+	/** Set Shipper.
+		@param M_Shipper_ID 
+		Method or manner of product delivery
+	  */
+	public void setM_Shipper_ID (int M_Shipper_ID)
+	{
+		if (M_Shipper_ID < 1) 
+			set_Value (COLUMNNAME_M_Shipper_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
+	}
+
+	/** Get Shipper.
+		@return Method or manner of product delivery
+	  */
+	public int getM_Shipper_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Trx Org Key.

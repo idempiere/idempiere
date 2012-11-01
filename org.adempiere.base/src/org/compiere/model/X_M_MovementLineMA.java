@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementLineMA
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_MovementLineMA (Properties ctx, int M_MovementLineMA_ID, String trxName)
@@ -101,9 +101,9 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
 		return ii.intValue();
 	}
 
-	public I_M_MovementLine getM_MovementLine() throws RuntimeException
+	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
     {
-		return (I_M_MovementLine)MTable.get(getCtx(), I_M_MovementLine.Table_Name)
+		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_Name)
 			.getPO(getM_MovementLine_ID(), get_TrxName());	}
 
 	/** Set Move Line.
@@ -136,6 +136,20 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_MovementLine_ID()));
     }
+
+	/** Set M_MovementLineMA_UU.
+		@param M_MovementLineMA_UU M_MovementLineMA_UU	  */
+	public void setM_MovementLineMA_UU (String M_MovementLineMA_UU)
+	{
+		set_Value (COLUMNNAME_M_MovementLineMA_UU, M_MovementLineMA_UU);
+	}
+
+	/** Get M_MovementLineMA_UU.
+		@return M_MovementLineMA_UU	  */
+	public String getM_MovementLineMA_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_MovementLineMA_UU);
+	}
 
 	/** Set Movement Quantity.
 		@param MovementQty 

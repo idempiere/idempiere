@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQLineQty
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_RfQLineQty 
 {
@@ -31,7 +31,7 @@ public interface I_C_RfQLineQty
     public static final String Table_Name = "C_RfQLineQty";
 
     /** AD_Table_ID=675 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 675;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -117,7 +117,7 @@ public interface I_C_RfQLineQty
 	  */
 	public int getC_RfQLine_ID();
 
-	public I_C_RfQLine getC_RfQLine() throws RuntimeException;
+	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException;
 
     /** Column name C_RfQLineQty_ID */
     public static final String COLUMNNAME_C_RfQLineQty_ID = "C_RfQLineQty_ID";
@@ -132,6 +132,15 @@ public interface I_C_RfQLineQty
 	  */
 	public int getC_RfQLineQty_ID();
 
+    /** Column name C_RfQLineQty_UU */
+    public static final String COLUMNNAME_C_RfQLineQty_UU = "C_RfQLineQty_UU";
+
+	/** Set C_RfQLineQty_UU	  */
+	public void setC_RfQLineQty_UU (String C_RfQLineQty_UU);
+
+	/** Get C_RfQLineQty_UU	  */
+	public String getC_RfQLineQty_UU();
+
     /** Column name C_UOM_ID */
     public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
 
@@ -145,7 +154,7 @@ public interface I_C_RfQLineQty
 	  */
 	public int getC_UOM_ID();
 
-	public I_C_UOM getC_UOM() throws RuntimeException;
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

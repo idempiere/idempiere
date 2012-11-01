@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_AccessStage
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_AccessStage 
 {
@@ -31,7 +31,7 @@ public interface I_CM_AccessStage
     public static final String Table_Name = "CM_AccessStage";
 
     /** AD_Table_ID=889 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 889;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,16 @@ public interface I_CM_AccessStage
 	  */
 	public int getCM_AccessProfile_ID();
 
-	public I_CM_AccessProfile getCM_AccessProfile() throws RuntimeException;
+	public org.compiere.model.I_CM_AccessProfile getCM_AccessProfile() throws RuntimeException;
+
+    /** Column name CM_AccessStage_UU */
+    public static final String COLUMNNAME_CM_AccessStage_UU = "CM_AccessStage_UU";
+
+	/** Set CM_AccessStage_UU	  */
+	public void setCM_AccessStage_UU (String CM_AccessStage_UU);
+
+	/** Get CM_AccessStage_UU	  */
+	public String getCM_AccessStage_UU();
 
     /** Column name CM_CStage_ID */
     public static final String COLUMNNAME_CM_CStage_ID = "CM_CStage_ID";
@@ -90,7 +99,7 @@ public interface I_CM_AccessStage
 	  */
 	public int getCM_CStage_ID();
 
-	public I_CM_CStage getCM_CStage() throws RuntimeException;
+	public org.compiere.model.I_CM_CStage getCM_CStage() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

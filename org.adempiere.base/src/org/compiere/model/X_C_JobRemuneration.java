@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_JobRemuneration
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_JobRemuneration (Properties ctx, int C_JobRemuneration_ID, String trxName)
@@ -74,9 +74,9 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
       return sb.toString();
     }
 
-	public I_C_Job getC_Job() throws RuntimeException
+	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
     {
-		return (I_C_Job)MTable.get(getCtx(), I_C_Job.Table_Name)
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_Name)
 			.getPO(getC_Job_ID(), get_TrxName());	}
 
 	/** Set Position.
@@ -133,9 +133,23 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_Remuneration getC_Remuneration() throws RuntimeException
+	/** Set C_JobRemuneration_UU.
+		@param C_JobRemuneration_UU C_JobRemuneration_UU	  */
+	public void setC_JobRemuneration_UU (String C_JobRemuneration_UU)
+	{
+		set_Value (COLUMNNAME_C_JobRemuneration_UU, C_JobRemuneration_UU);
+	}
+
+	/** Get C_JobRemuneration_UU.
+		@return C_JobRemuneration_UU	  */
+	public String getC_JobRemuneration_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_JobRemuneration_UU);
+	}
+
+	public org.compiere.model.I_C_Remuneration getC_Remuneration() throws RuntimeException
     {
-		return (I_C_Remuneration)MTable.get(getCtx(), I_C_Remuneration.Table_Name)
+		return (org.compiere.model.I_C_Remuneration)MTable.get(getCtx(), org.compiere.model.I_C_Remuneration.Table_Name)
 			.getPO(getC_Remuneration_ID(), get_TrxName());	}
 
 	/** Set Remuneration.

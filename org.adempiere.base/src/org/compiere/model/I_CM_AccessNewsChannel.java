@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_AccessNewsChannel
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_AccessNewsChannel 
 {
@@ -31,7 +31,7 @@ public interface I_CM_AccessNewsChannel
     public static final String Table_Name = "CM_AccessNewsChannel";
 
     /** AD_Table_ID=891 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 891;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,6 +62,15 @@ public interface I_CM_AccessNewsChannel
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name CM_AccessNewsChannel_UU */
+    public static final String COLUMNNAME_CM_AccessNewsChannel_UU = "CM_AccessNewsChannel_UU";
+
+	/** Set CM_AccessNewsChannel_UU	  */
+	public void setCM_AccessNewsChannel_UU (String CM_AccessNewsChannel_UU);
+
+	/** Get CM_AccessNewsChannel_UU	  */
+	public String getCM_AccessNewsChannel_UU();
+
     /** Column name CM_AccessProfile_ID */
     public static final String COLUMNNAME_CM_AccessProfile_ID = "CM_AccessProfile_ID";
 
@@ -75,7 +84,7 @@ public interface I_CM_AccessNewsChannel
 	  */
 	public int getCM_AccessProfile_ID();
 
-	public I_CM_AccessProfile getCM_AccessProfile() throws RuntimeException;
+	public org.compiere.model.I_CM_AccessProfile getCM_AccessProfile() throws RuntimeException;
 
     /** Column name CM_NewsChannel_ID */
     public static final String COLUMNNAME_CM_NewsChannel_ID = "CM_NewsChannel_ID";
@@ -90,7 +99,7 @@ public interface I_CM_AccessNewsChannel
 	  */
 	public int getCM_NewsChannel_ID();
 
-	public I_CM_NewsChannel getCM_NewsChannel() throws RuntimeException;
+	public org.compiere.model.I_CM_NewsChannel getCM_NewsChannel() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

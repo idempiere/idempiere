@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for IMP_ProcessorLog
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_IMP_ProcessorLog 
 {
@@ -31,7 +31,7 @@ public interface I_IMP_ProcessorLog
     public static final String Table_Name = "IMP_ProcessorLog";
 
     /** AD_Table_ID=53079 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53079;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -136,6 +136,15 @@ public interface I_IMP_ProcessorLog
 
 	/** Get Import Processor Log	  */
 	public int getIMP_ProcessorLog_ID();
+
+    /** Column name IMP_ProcessorLog_UU */
+    public static final String COLUMNNAME_IMP_ProcessorLog_UU = "IMP_ProcessorLog_UU";
+
+	/** Set IMP_ProcessorLog_UU	  */
+	public void setIMP_ProcessorLog_UU (String IMP_ProcessorLog_UU);
+
+	/** Get IMP_ProcessorLog_UU	  */
+	public String getIMP_ProcessorLog_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

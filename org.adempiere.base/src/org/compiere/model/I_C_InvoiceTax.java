@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_InvoiceTax
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_InvoiceTax 
 {
@@ -31,7 +31,7 @@ public interface I_C_InvoiceTax
     public static final String Table_Name = "C_InvoiceTax";
 
     /** AD_Table_ID=334 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 334;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,16 @@ public interface I_C_InvoiceTax
 	  */
 	public int getC_Invoice_ID();
 
-	public I_C_Invoice getC_Invoice() throws RuntimeException;
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
+
+    /** Column name C_InvoiceTax_UU */
+    public static final String COLUMNNAME_C_InvoiceTax_UU = "C_InvoiceTax_UU";
+
+	/** Set C_InvoiceTax_UU	  */
+	public void setC_InvoiceTax_UU (String C_InvoiceTax_UU);
+
+	/** Get C_InvoiceTax_UU	  */
+	public String getC_InvoiceTax_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -106,7 +115,7 @@ public interface I_C_InvoiceTax
 	  */
 	public int getC_Tax_ID();
 
-	public I_C_Tax getC_Tax() throws RuntimeException;
+	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

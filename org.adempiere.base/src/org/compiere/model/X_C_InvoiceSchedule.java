@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoiceSchedule
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_InvoiceSchedule (Properties ctx, int C_InvoiceSchedule_ID, String trxName)
@@ -121,6 +121,20 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_InvoiceSchedule_UU.
+		@param C_InvoiceSchedule_UU C_InvoiceSchedule_UU	  */
+	public void setC_InvoiceSchedule_UU (String C_InvoiceSchedule_UU)
+	{
+		set_Value (COLUMNNAME_C_InvoiceSchedule_UU, C_InvoiceSchedule_UU);
+	}
+
+	/** Get C_InvoiceSchedule_UU.
+		@return C_InvoiceSchedule_UU	  */
+	public String getC_InvoiceSchedule_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_InvoiceSchedule_UU);
 	}
 
 	/** Set Description.

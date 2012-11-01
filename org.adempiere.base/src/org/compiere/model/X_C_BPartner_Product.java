@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_BPartner_Product
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_BPartner_Product (Properties ctx, int C_BPartner_Product_ID, String trxName)
@@ -41,6 +41,7 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
         {
 			setC_BPartner_ID (0);
 			setIsManufacturer (false);
+// N
 			setM_Product_ID (0);
 			setShelfLifeMinDays (0);
 			setShelfLifeMinPct (0);
@@ -75,9 +76,9 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
       return sb.toString();
     }
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_BPartner_ID(), get_TrxName());	}
 
 	/** Set Business Partner .
@@ -101,6 +102,20 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_BPartner_Product_UU.
+		@param C_BPartner_Product_UU C_BPartner_Product_UU	  */
+	public void setC_BPartner_Product_UU (String C_BPartner_Product_UU)
+	{
+		set_Value (COLUMNNAME_C_BPartner_Product_UU, C_BPartner_Product_UU);
+	}
+
+	/** Get C_BPartner_Product_UU.
+		@return C_BPartner_Product_UU	  */
+	public String getC_BPartner_Product_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_BPartner_Product_UU);
 	}
 
 	/** Set Description.
@@ -161,9 +176,9 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 		return (String)get_Value(COLUMNNAME_Manufacturer);
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.

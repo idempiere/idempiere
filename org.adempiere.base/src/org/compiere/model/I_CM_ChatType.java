@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_ChatType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_ChatType 
 {
@@ -31,7 +31,7 @@ public interface I_CM_ChatType
     public static final String Table_Name = "CM_ChatType";
 
     /** AD_Table_ID=874 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 874;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_CM_ChatType
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name CM_ChatType_ID */
     public static final String COLUMNNAME_CM_ChatType_ID = "CM_ChatType_ID";
@@ -89,6 +89,15 @@ public interface I_CM_ChatType
 	  * Type of discussion / chat
 	  */
 	public int getCM_ChatType_ID();
+
+    /** Column name CM_ChatType_UU */
+    public static final String COLUMNNAME_CM_ChatType_UU = "CM_ChatType_UU";
+
+	/** Set CM_ChatType_UU	  */
+	public void setCM_ChatType_UU (String CM_ChatType_UU);
+
+	/** Get CM_ChatType_UU	  */
+	public String getCM_ChatType_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PromotionDistribution
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_PromotionDistribution 
 {
@@ -31,7 +31,7 @@ public interface I_M_PromotionDistribution
     public static final String Table_Name = "M_PromotionDistribution";
 
     /** AD_Table_ID=53181 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53181;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -126,6 +126,15 @@ public interface I_M_PromotionDistribution
 	/** Get Promotion Distribution	  */
 	public int getM_PromotionDistribution_ID();
 
+    /** Column name M_PromotionDistribution_UU */
+    public static final String COLUMNNAME_M_PromotionDistribution_UU = "M_PromotionDistribution_UU";
+
+	/** Set M_PromotionDistribution_UU	  */
+	public void setM_PromotionDistribution_UU (String M_PromotionDistribution_UU);
+
+	/** Get M_PromotionDistribution_UU	  */
+	public String getM_PromotionDistribution_UU();
+
     /** Column name M_Promotion_ID */
     public static final String COLUMNNAME_M_Promotion_ID = "M_Promotion_ID";
 
@@ -135,7 +144,7 @@ public interface I_M_PromotionDistribution
 	/** Get Promotion	  */
 	public int getM_Promotion_ID();
 
-	public I_M_Promotion getM_Promotion() throws RuntimeException;
+	public org.compiere.model.I_M_Promotion getM_Promotion() throws RuntimeException;
 
     /** Column name M_PromotionLine_ID */
     public static final String COLUMNNAME_M_PromotionLine_ID = "M_PromotionLine_ID";
@@ -146,7 +155,7 @@ public interface I_M_PromotionDistribution
 	/** Get Promotion Line	  */
 	public int getM_PromotionLine_ID();
 
-	public I_M_PromotionLine getM_PromotionLine() throws RuntimeException;
+	public org.compiere.model.I_M_PromotionLine getM_PromotionLine() throws RuntimeException;
 
     /** Column name Operation */
     public static final String COLUMNNAME_Operation = "Operation";

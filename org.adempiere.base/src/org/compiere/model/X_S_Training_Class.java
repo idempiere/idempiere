@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Training_Class
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_S_Training_Class (Properties ctx, int S_Training_Class_ID, String trxName)
@@ -92,9 +92,9 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -168,9 +168,23 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 		return ii.intValue();
 	}
 
-	public I_S_Training getS_Training() throws RuntimeException
+	/** Set S_Training_Class_UU.
+		@param S_Training_Class_UU S_Training_Class_UU	  */
+	public void setS_Training_Class_UU (String S_Training_Class_UU)
+	{
+		set_Value (COLUMNNAME_S_Training_Class_UU, S_Training_Class_UU);
+	}
+
+	/** Get S_Training_Class_UU.
+		@return S_Training_Class_UU	  */
+	public String getS_Training_Class_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_S_Training_Class_UU);
+	}
+
+	public org.compiere.model.I_S_Training getS_Training() throws RuntimeException
     {
-		return (I_S_Training)MTable.get(getCtx(), I_S_Training.Table_Name)
+		return (org.compiere.model.I_S_Training)MTable.get(getCtx(), org.compiere.model.I_S_Training.Table_Name)
 			.getPO(getS_Training_ID(), get_TrxName());	}
 
 	/** Set Training.

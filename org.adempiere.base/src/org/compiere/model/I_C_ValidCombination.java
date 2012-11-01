@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ValidCombination
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_ValidCombination 
 {
@@ -31,7 +31,7 @@ public interface I_C_ValidCombination
     public static final String Table_Name = "C_ValidCombination";
 
     /** AD_Table_ID=176 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 176;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getAccount_ID();
 
-	public I_C_ElementValue getAccount() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -116,7 +116,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -131,7 +131,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_Activity_ID();
 
-	public I_C_Activity getC_Activity() throws RuntimeException;
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -146,7 +146,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
     public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
@@ -161,7 +161,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_Campaign_ID();
 
-	public I_C_Campaign getC_Campaign() throws RuntimeException;
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_LocFrom_ID */
     public static final String COLUMNNAME_C_LocFrom_ID = "C_LocFrom_ID";
@@ -176,7 +176,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_LocFrom_ID();
 
-	public I_C_Location getC_LocFrom() throws RuntimeException;
+	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException;
 
     /** Column name C_LocTo_ID */
     public static final String COLUMNNAME_C_LocTo_ID = "C_LocTo_ID";
@@ -191,7 +191,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_LocTo_ID();
 
-	public I_C_Location getC_LocTo() throws RuntimeException;
+	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException;
 
     /** Column name Combination */
     public static final String COLUMNNAME_Combination = "Combination";
@@ -219,7 +219,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -250,7 +250,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_SalesRegion_ID();
 
-	public I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name C_SubAcct_ID */
     public static final String COLUMNNAME_C_SubAcct_ID = "C_SubAcct_ID";
@@ -265,7 +265,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_SubAcct_ID();
 
-	public I_C_SubAcct getC_SubAcct() throws RuntimeException;
+	public org.compiere.model.I_C_SubAcct getC_SubAcct() throws RuntimeException;
 
     /** Column name C_ValidCombination_ID */
     public static final String COLUMNNAME_C_ValidCombination_ID = "C_ValidCombination_ID";
@@ -279,6 +279,15 @@ public interface I_C_ValidCombination
 	  * Valid Account Combination
 	  */
 	public int getC_ValidCombination_ID();
+
+    /** Column name C_ValidCombination_UU */
+    public static final String COLUMNNAME_C_ValidCombination_UU = "C_ValidCombination_UU";
+
+	/** Set C_ValidCombination_UU	  */
+	public void setC_ValidCombination_UU (String C_ValidCombination_UU);
+
+	/** Get C_ValidCombination_UU	  */
+	public String getC_ValidCombination_UU();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -332,7 +341,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -363,7 +372,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getUser1_ID();
 
-	public I_C_ElementValue getUser1() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
     public static final String COLUMNNAME_User2_ID = "User2_ID";
@@ -378,7 +387,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getUser2_ID();
 
-	public I_C_ElementValue getUser2() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 
     /** Column name UserElement1_ID */
     public static final String COLUMNNAME_UserElement1_ID = "UserElement1_ID";

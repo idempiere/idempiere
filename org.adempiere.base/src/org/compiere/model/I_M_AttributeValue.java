@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeValue
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_AttributeValue 
 {
@@ -31,7 +31,7 @@ public interface I_M_AttributeValue
     public static final String Table_Name = "M_AttributeValue";
 
     /** AD_Table_ID=558 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 558;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -117,7 +117,7 @@ public interface I_M_AttributeValue
 	  */
 	public int getM_Attribute_ID();
 
-	public I_M_Attribute getM_Attribute() throws RuntimeException;
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
 
     /** Column name M_AttributeValue_ID */
     public static final String COLUMNNAME_M_AttributeValue_ID = "M_AttributeValue_ID";
@@ -131,6 +131,15 @@ public interface I_M_AttributeValue
 	  * Product Attribute Value
 	  */
 	public int getM_AttributeValue_ID();
+
+    /** Column name M_AttributeValue_UU */
+    public static final String COLUMNNAME_M_AttributeValue_UU = "M_AttributeValue_UU";
+
+	/** Set M_AttributeValue_UU	  */
+	public void setM_AttributeValue_UU (String M_AttributeValue_UU);
+
+	/** Get M_AttributeValue_UU	  */
+	public String getM_AttributeValue_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

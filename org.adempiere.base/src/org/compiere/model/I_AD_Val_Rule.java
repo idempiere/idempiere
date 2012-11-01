@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Val_Rule
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Val_Rule 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Val_Rule
     public static final String Table_Name = "AD_Val_Rule";
 
     /** AD_Table_ID=108 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 108;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -74,6 +74,15 @@ public interface I_AD_Val_Rule
 	  * Dynamic Validation Rule
 	  */
 	public int getAD_Val_Rule_ID();
+
+    /** Column name AD_Val_Rule_UU */
+    public static final String COLUMNNAME_AD_Val_Rule_UU = "AD_Val_Rule_UU";
+
+	/** Set AD_Val_Rule_UU	  */
+	public void setAD_Val_Rule_UU (String AD_Val_Rule_UU);
+
+	/** Get AD_Val_Rule_UU	  */
+	public String getAD_Val_Rule_UU();
 
     /** Column name Code */
     public static final String COLUMNNAME_Code = "Code";

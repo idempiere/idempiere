@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Task
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_Task extends PO implements I_C_Task, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_Task (Properties ctx, int C_Task_ID, String trxName)
@@ -78,9 +78,9 @@ public class X_C_Task extends PO implements I_C_Task, I_Persistent
       return sb.toString();
     }
 
-	public I_C_Phase getC_Phase() throws RuntimeException
+	public org.compiere.model.I_C_Phase getC_Phase() throws RuntimeException
     {
-		return (I_C_Phase)MTable.get(getCtx(), I_C_Phase.Table_Name)
+		return (org.compiere.model.I_C_Phase)MTable.get(getCtx(), org.compiere.model.I_C_Phase.Table_Name)
 			.getPO(getC_Phase_ID(), get_TrxName());	}
 
 	/** Set Standard Phase.
@@ -129,6 +129,20 @@ public class X_C_Task extends PO implements I_C_Task, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set C_Task_UU.
+		@param C_Task_UU C_Task_UU	  */
+	public void setC_Task_UU (String C_Task_UU)
+	{
+		set_Value (COLUMNNAME_C_Task_UU, C_Task_UU);
+	}
+
+	/** Get C_Task_UU.
+		@return C_Task_UU	  */
+	public String getC_Task_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Task_UU);
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -163,9 +177,9 @@ public class X_C_Task extends PO implements I_C_Task, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DiscountSchemaLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_DiscountSchemaLine 
 {
@@ -31,7 +31,7 @@ public interface I_M_DiscountSchemaLine
     public static final String Table_Name = "M_DiscountSchemaLine";
 
     /** AD_Table_ID=477 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 477;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
     public static final String COLUMNNAME_C_ConversionType_ID = "C_ConversionType_ID";
@@ -90,7 +90,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getC_ConversionType_ID();
 
-	public I_C_ConversionType getC_ConversionType() throws RuntimeException;
+	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
     /** Column name Classification */
     public static final String COLUMNNAME_Classification = "Classification";
@@ -364,7 +364,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_DiscountSchema_ID();
 
-	public I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
+	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_DiscountSchemaLine_ID */
     public static final String COLUMNNAME_M_DiscountSchemaLine_ID = "M_DiscountSchemaLine_ID";
@@ -379,6 +379,15 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_DiscountSchemaLine_ID();
 
+    /** Column name M_DiscountSchemaLine_UU */
+    public static final String COLUMNNAME_M_DiscountSchemaLine_UU = "M_DiscountSchemaLine_UU";
+
+	/** Set M_DiscountSchemaLine_UU	  */
+	public void setM_DiscountSchemaLine_UU (String M_DiscountSchemaLine_UU);
+
+	/** Get M_DiscountSchemaLine_UU	  */
+	public String getM_DiscountSchemaLine_UU();
+
     /** Column name M_Product_Category_ID */
     public static final String COLUMNNAME_M_Product_Category_ID = "M_Product_Category_ID";
 
@@ -392,7 +401,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_Product_Category_ID();
 
-	public I_M_Product_Category getM_Product_Category() throws RuntimeException;
+	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -407,7 +416,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

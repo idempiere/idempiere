@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_Ad
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_Ad extends PO implements I_CM_Ad, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_Ad (Properties ctx, int CM_Ad_ID, String trxName)
@@ -123,9 +123,9 @@ public class X_CM_Ad extends PO implements I_CM_Ad, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_CM_Ad_Cat getCM_Ad_Cat() throws RuntimeException
+	public org.compiere.model.I_CM_Ad_Cat getCM_Ad_Cat() throws RuntimeException
     {
-		return (I_CM_Ad_Cat)MTable.get(getCtx(), I_CM_Ad_Cat.Table_Name)
+		return (org.compiere.model.I_CM_Ad_Cat)MTable.get(getCtx(), org.compiere.model.I_CM_Ad_Cat.Table_Name)
 			.getPO(getCM_Ad_Cat_ID(), get_TrxName());	}
 
 	/** Set Advertisement Category.
@@ -174,9 +174,23 @@ public class X_CM_Ad extends PO implements I_CM_Ad, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_CM_Media getCM_Media() throws RuntimeException
+	/** Set CM_Ad_UU.
+		@param CM_Ad_UU CM_Ad_UU	  */
+	public void setCM_Ad_UU (String CM_Ad_UU)
+	{
+		set_Value (COLUMNNAME_CM_Ad_UU, CM_Ad_UU);
+	}
+
+	/** Get CM_Ad_UU.
+		@return CM_Ad_UU	  */
+	public String getCM_Ad_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_Ad_UU);
+	}
+
+	public org.compiere.model.I_CM_Media getCM_Media() throws RuntimeException
     {
-		return (I_CM_Media)MTable.get(getCtx(), I_CM_Media.Table_Name)
+		return (org.compiere.model.I_CM_Media)MTable.get(getCtx(), org.compiere.model.I_CM_Media.Table_Name)
 			.getPO(getCM_Media_ID(), get_TrxName());	}
 
 	/** Set Media Item.

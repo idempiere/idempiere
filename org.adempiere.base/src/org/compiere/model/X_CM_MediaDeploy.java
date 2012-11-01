@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for CM_MediaDeploy
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_MediaDeploy extends PO implements I_CM_MediaDeploy, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_MediaDeploy (Properties ctx, int CM_MediaDeploy_ID, String trxName)
@@ -96,9 +96,23 @@ public class X_CM_MediaDeploy extends PO implements I_CM_MediaDeploy, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_CM_Media getCM_Media() throws RuntimeException
+	/** Set CM_MediaDeploy_UU.
+		@param CM_MediaDeploy_UU CM_MediaDeploy_UU	  */
+	public void setCM_MediaDeploy_UU (String CM_MediaDeploy_UU)
+	{
+		set_Value (COLUMNNAME_CM_MediaDeploy_UU, CM_MediaDeploy_UU);
+	}
+
+	/** Get CM_MediaDeploy_UU.
+		@return CM_MediaDeploy_UU	  */
+	public String getCM_MediaDeploy_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_MediaDeploy_UU);
+	}
+
+	public org.compiere.model.I_CM_Media getCM_Media() throws RuntimeException
     {
-		return (I_CM_Media)MTable.get(getCtx(), I_CM_Media.Table_Name)
+		return (org.compiere.model.I_CM_Media)MTable.get(getCtx(), org.compiere.model.I_CM_Media.Table_Name)
 			.getPO(getCM_Media_ID(), get_TrxName());	}
 
 	/** Set Media Item.
@@ -124,9 +138,9 @@ public class X_CM_MediaDeploy extends PO implements I_CM_MediaDeploy, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_CM_Media_Server getCM_Media_Server() throws RuntimeException
+	public org.compiere.model.I_CM_Media_Server getCM_Media_Server() throws RuntimeException
     {
-		return (I_CM_Media_Server)MTable.get(getCtx(), I_CM_Media_Server.Table_Name)
+		return (org.compiere.model.I_CM_Media_Server)MTable.get(getCtx(), org.compiere.model.I_CM_Media_Server.Table_Name)
 			.getPO(getCM_Media_Server_ID(), get_TrxName());	}
 
 	/** Set Media Server.

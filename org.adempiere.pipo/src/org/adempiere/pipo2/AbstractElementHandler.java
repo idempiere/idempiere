@@ -62,7 +62,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 *
 	 */
 	public int findIdByName (PIPOContext ctx, String tableName, String name) {
-		return IDFinder.findIdByName(tableName, name, getClientId(ctx.ctx), ctx.trx.getTrxName());
+		return IDFinder.findIdByName(tableName, name, getClientId(ctx.ctx), getTrxName(ctx));
 	}
 
 	/**
@@ -77,13 +77,13 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		if ("AD_Table".equals(tableName) && "TableName".equals(columnName) && value != null) {
 			id = ctx.packIn.getTableId(value.toString());
 			if (id <= 0) {
-				id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx.ctx), ignorecase, ctx.trx.getTrxName());
+				id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx.ctx), ignorecase, getTrxName(ctx));
 				if (id > 0) {
 					ctx.packIn.addTable(value.toString(), id);
 				}
 			}
 		} else {
-			id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx.ctx), ignorecase, ctx.trx.getTrxName());
+			id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx.ctx), ignorecase, getTrxName(ctx));
 		}
 		return id;
 	}
@@ -99,7 +99,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 * @return X_AD_Package_Imp_Detail
 	 */
 	public X_AD_Package_Imp_Detail createImportDetail(PIPOContext ctx, String type, String tableName, int tableId) {
-		X_AD_Package_Imp_Detail impDetail = new X_AD_Package_Imp_Detail(ctx.ctx, 0, ctx.trx.getTrxName());
+		X_AD_Package_Imp_Detail impDetail = new X_AD_Package_Imp_Detail(ctx.ctx, 0, getTrxName(ctx));
 		impDetail.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));
 		impDetail.setAD_Org_ID(Env.getAD_Org_ID(ctx.ctx) );
 		impDetail.setType(type);
@@ -108,7 +108,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		impDetail.setAD_Original_ID(1);
 		impDetail.setTableName(tableName);
 		impDetail.setAD_Table_ID(tableId);
-		impDetail.saveEx(ctx.trx.getTrxName());
+		impDetail.saveEx(getTrxName(ctx));
 
 		return impDetail;
 	}
@@ -145,7 +145,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 * @param nameMaster
 	 */
 	public int findIdByNameAndParentName (PIPOContext ctx, String tableName, String name, String tableNameMaster, String nameMaster) {
-		return IDFinder.findIdByNameAndParentName(tableName, name, tableNameMaster, nameMaster, getClientId(ctx.ctx), ctx.trx.getTrxName());
+		return IDFinder.findIdByNameAndParentName(tableName, name, tableNameMaster, nameMaster, getClientId(ctx.ctx), getTrxName(ctx));
 	}
 
     /**
@@ -159,7 +159,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 
 	public int findIdByColumnAndParentId (PIPOContext ctx, String tableName, String columnName, String name, String tableNameMaster, int masterID) {
 		return IDFinder.findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, getClientId(ctx.ctx), 
-				ctx.trx.getTrxName());
+				getTrxName(ctx));
 	}
 
 	/**
@@ -173,7 +173,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
 	public int findIdByColumnAndParentId (PIPOContext ctx, String tableName, String columnName, String name, String tableNameMaster, int masterID, boolean ignoreCase) {
 		return IDFinder.findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, getClientId(ctx.ctx), 
-				ignoreCase, ctx.trx.getTrxName());
+				ignoreCase, getTrxName(ctx));
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	 * @param masterID
 	 */
 	public int findIdByNameAndParentId (PIPOContext ctx, String tableName, String name, String tableNameMaster, int masterID) {
-		return IDFinder.findIdByNameAndParentId(tableName, name, tableNameMaster, masterID, getClientId(ctx.ctx), ctx.trx.getTrxName());
+		return IDFinder.findIdByNameAndParentId(tableName, name, tableNameMaster, masterID, getClientId(ctx.ctx), getTrxName(ctx));
 	}
 
     /**
@@ -203,7 +203,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	int tableID = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
 		POInfo poInfo = POInfo.getPOInfo(ctx.ctx, tableID);
 
-		PreparedStatement pstmtReferenceId = DB.prepareStatement("SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?", ctx.trx.getTrxName());
+		PreparedStatement pstmtReferenceId = DB.prepareStatement("SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?", getTrxName(ctx));
 		ResultSet rs=null;
 
 	    try{
@@ -220,7 +220,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 					if (rs.next())
 						referenceID = rs.getInt(1);
 	
-		    		X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, ctx.trx.getTrxName());
+		    		X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, getTrxName(ctx));
 		    		backup.setAD_Org_ID(Env.getAD_Org_ID(ctx.ctx));
 		    		backup.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));
 		    		backup.setAD_Package_Imp_Detail_ID(AD_Package_Imp_Detail_ID);
@@ -560,7 +560,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	if (element.properties.containsKey(uuidColumn)) {
     		String uuid = element.properties.get(uuidColumn).contents.toString();
     		if (uuid != null && uuid.trim().length() == 36) {
-    			Query query = new Query(ctx.ctx, tableName, uuidColumn+"=?", ctx.trx.getTrxName());
+    			Query query = new Query(ctx.ctx, tableName, uuidColumn+"=?", getTrxName(ctx));
     			po = query.setParameters(uuid.trim()).firstOnly();
     		}
     	} 
@@ -568,7 +568,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	if (po == null && element.properties.containsKey(idColumn)) {
     		String id = element.properties.get(idColumn).contents.toString();
     		if (id != null && id.trim().length() > 0) {
-    			Query query = new Query(ctx.ctx, tableName, idColumn+"=?", ctx.trx.getTrxName());
+    			Query query = new Query(ctx.ctx, tableName, idColumn+"=?", getTrxName(ctx));
     			po = query.setParameters(Integer.valueOf(id.trim())).firstOnly();
     		}
     	}

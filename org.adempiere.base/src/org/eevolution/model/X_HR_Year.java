@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for HR_Year
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_HR_Year extends PO implements I_HR_Year, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_HR_Year (Properties ctx, int HR_Year_ID, String trxName)
@@ -76,9 +76,9 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
       return sb.toString();
     }
 
-	public I_C_Year getC_Year() throws RuntimeException
+	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException
     {
-		return (I_C_Year)MTable.get(getCtx(), I_C_Year.Table_Name)
+		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_Name)
 			.getPO(getC_Year_ID(), get_TrxName());	}
 
 	/** Set Year.
@@ -147,6 +147,20 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set HR_Year_UU.
+		@param HR_Year_UU HR_Year_UU	  */
+	public void setHR_Year_UU (String HR_Year_UU)
+	{
+		set_Value (COLUMNNAME_HR_Year_UU, HR_Year_UU);
+	}
+
+	/** Get HR_Year_UU.
+		@return HR_Year_UU	  */
+	public String getHR_Year_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_HR_Year_UU);
 	}
 
 	/** Set Net Days.

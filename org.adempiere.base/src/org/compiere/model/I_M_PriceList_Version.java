@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PriceList_Version
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_PriceList_Version 
 {
@@ -31,7 +31,7 @@ public interface I_M_PriceList_Version
     public static final String Table_Name = "M_PriceList_Version";
 
     /** AD_Table_ID=295 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 295;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -117,7 +117,7 @@ public interface I_M_PriceList_Version
 	  */
 	public int getM_DiscountSchema_ID();
 
-	public I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
+	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_PriceList_ID */
     public static final String COLUMNNAME_M_PriceList_ID = "M_PriceList_ID";
@@ -132,7 +132,7 @@ public interface I_M_PriceList_Version
 	  */
 	public int getM_PriceList_ID();
 
-	public I_M_PriceList getM_PriceList() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_Pricelist_Version_Base_ID */
     public static final String COLUMNNAME_M_Pricelist_Version_Base_ID = "M_Pricelist_Version_Base_ID";
@@ -147,7 +147,7 @@ public interface I_M_PriceList_Version
 	  */
 	public int getM_Pricelist_Version_Base_ID();
 
-	public I_M_PriceList_Version getM_Pricelist_Version_Base() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList_Version getM_Pricelist_Version_Base() throws RuntimeException;
 
     /** Column name M_PriceList_Version_ID */
     public static final String COLUMNNAME_M_PriceList_Version_ID = "M_PriceList_Version_ID";
@@ -161,6 +161,15 @@ public interface I_M_PriceList_Version
 	  * Identifies a unique instance of a Price List
 	  */
 	public int getM_PriceList_Version_ID();
+
+    /** Column name M_PriceList_Version_UU */
+    public static final String COLUMNNAME_M_PriceList_Version_UU = "M_PriceList_Version_UU";
+
+	/** Set M_PriceList_Version_UU	  */
+	public void setM_PriceList_Version_UU (String M_PriceList_Version_UU);
+
+	/** Get M_PriceList_Version_UU	  */
+	public String getM_PriceList_Version_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

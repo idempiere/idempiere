@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ChangeNotice
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_ChangeNotice 
 {
@@ -31,7 +31,7 @@ public interface I_M_ChangeNotice
     public static final String Table_Name = "M_ChangeNotice";
 
     /** AD_Table_ID=799 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 799;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -155,6 +155,15 @@ public interface I_M_ChangeNotice
 	  * Bill of Materials (Engineering) Change Notice (Version)
 	  */
 	public int getM_ChangeNotice_ID();
+
+    /** Column name M_ChangeNotice_UU */
+    public static final String COLUMNNAME_M_ChangeNotice_UU = "M_ChangeNotice_UU";
+
+	/** Set M_ChangeNotice_UU	  */
+	public void setM_ChangeNotice_UU (String M_ChangeNotice_UU);
+
+	/** Get M_ChangeNotice_UU	  */
+	public String getM_ChangeNotice_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

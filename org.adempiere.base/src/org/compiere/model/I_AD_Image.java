@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Image
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Image 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Image
     public static final String Table_Name = "AD_Image";
 
     /** AD_Table_ID=461 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 461;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,6 +61,15 @@ public interface I_AD_Image
 	  * Image or Icon
 	  */
 	public int getAD_Image_ID();
+
+    /** Column name AD_Image_UU */
+    public static final String COLUMNNAME_AD_Image_UU = "AD_Image_UU";
+
+	/** Set AD_Image_UU	  */
+	public void setAD_Image_UU (String AD_Image_UU);
+
+	/** Get AD_Image_UU	  */
+	public String getAD_Image_UU();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

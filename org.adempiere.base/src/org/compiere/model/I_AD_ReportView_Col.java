@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ReportView_Col
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_ReportView_Col 
 {
@@ -31,7 +31,7 @@ public interface I_AD_ReportView_Col
     public static final String Table_Name = "AD_ReportView_Col";
 
     /** AD_Table_ID=428 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 428;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_AD_ReportView_Col
 	  */
 	public int getAD_Column_ID();
 
-	public I_AD_Column getAD_Column() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -86,6 +86,15 @@ public interface I_AD_ReportView_Col
 	/** Get Report view Column	  */
 	public int getAD_ReportView_Col_ID();
 
+    /** Column name AD_ReportView_Col_UU */
+    public static final String COLUMNNAME_AD_ReportView_Col_UU = "AD_ReportView_Col_UU";
+
+	/** Set AD_ReportView_Col_UU	  */
+	public void setAD_ReportView_Col_UU (String AD_ReportView_Col_UU);
+
+	/** Get AD_ReportView_Col_UU	  */
+	public String getAD_ReportView_Col_UU();
+
     /** Column name AD_ReportView_ID */
     public static final String COLUMNNAME_AD_ReportView_ID = "AD_ReportView_ID";
 
@@ -99,7 +108,7 @@ public interface I_AD_ReportView_Col
 	  */
 	public int getAD_ReportView_ID();
 
-	public I_AD_ReportView getAD_ReportView() throws RuntimeException;
+	public org.compiere.model.I_AD_ReportView getAD_ReportView() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DistributionRun
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_DistributionRun 
 {
@@ -31,7 +31,7 @@ public interface I_M_DistributionRun
     public static final String Table_Name = "M_DistributionRun";
 
     /** AD_Table_ID=712 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 712;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_M_DistributionRun
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
     public static final String COLUMNNAME_C_BPartner_Location_ID = "C_BPartner_Location_ID";
@@ -90,7 +90,7 @@ public interface I_M_DistributionRun
 	  */
 	public int getC_BPartner_Location_ID();
 
-	public I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -159,6 +159,15 @@ public interface I_M_DistributionRun
 	  * Distribution Run create Orders to distribute products to a selected list of partners
 	  */
 	public int getM_DistributionRun_ID();
+
+    /** Column name M_DistributionRun_UU */
+    public static final String COLUMNNAME_M_DistributionRun_UU = "M_DistributionRun_UU";
+
+	/** Set M_DistributionRun_UU	  */
+	public void setM_DistributionRun_UU (String M_DistributionRun_UU);
+
+	/** Get M_DistributionRun_UU	  */
+	public String getM_DistributionRun_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

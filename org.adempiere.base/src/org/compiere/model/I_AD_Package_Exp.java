@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Exp
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Package_Exp 
 {
@@ -65,19 +65,19 @@ public interface I_AD_Package_Exp
     /** Column name AD_Package_Exp_ID */
     public static final String COLUMNNAME_AD_Package_Exp_ID = "AD_Package_Exp_ID";
 
-	/** Set Pack Out	  */
+	/** Set Package Exp.	  */
 	public void setAD_Package_Exp_ID (int AD_Package_Exp_ID);
 
-	/** Get Pack Out	  */
+	/** Get Package Exp.	  */
 	public int getAD_Package_Exp_ID();
 
     /** Column name AD_Package_Exp_UU */
     public static final String COLUMNNAME_AD_Package_Exp_UU = "AD_Package_Exp_UU";
 
-	/** Set Pack Out UUID	  */
+	/** Set AD_Package_Exp_UU	  */
 	public void setAD_Package_Exp_UU (String AD_Package_Exp_UU);
 
-	/** Get Pack Out UUID	  */
+	/** Get AD_Package_Exp_UU	  */
 	public String getAD_Package_Exp_UU();
 
     /** Column name AD_Package_Type */

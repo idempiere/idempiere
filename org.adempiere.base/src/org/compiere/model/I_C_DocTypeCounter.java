@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocTypeCounter
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_DocTypeCounter 
 {
@@ -31,7 +31,7 @@ public interface I_C_DocTypeCounter
     public static final String Table_Name = "C_DocTypeCounter";
 
     /** AD_Table_ID=718 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 718;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,6 +75,15 @@ public interface I_C_DocTypeCounter
 	  */
 	public int getC_DocTypeCounter_ID();
 
+    /** Column name C_DocTypeCounter_UU */
+    public static final String COLUMNNAME_C_DocTypeCounter_UU = "C_DocTypeCounter_UU";
+
+	/** Set C_DocTypeCounter_UU	  */
+	public void setC_DocTypeCounter_UU (String C_DocTypeCounter_UU);
+
+	/** Get C_DocTypeCounter_UU	  */
+	public String getC_DocTypeCounter_UU();
+
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
 
@@ -88,7 +97,7 @@ public interface I_C_DocTypeCounter
 	  */
 	public int getC_DocType_ID();
 
-	public I_C_DocType getC_DocType() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name Counter_C_DocType_ID */
     public static final String COLUMNNAME_Counter_C_DocType_ID = "Counter_C_DocType_ID";
@@ -103,7 +112,7 @@ public interface I_C_DocTypeCounter
 	  */
 	public int getCounter_C_DocType_ID();
 
-	public I_C_DocType getCounter_C_DocType() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getCounter_C_DocType() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

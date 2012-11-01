@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPriceVendorBreak
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceVendorBreak, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_ProductPriceVendorBreak (Properties ctx, int M_ProductPriceVendorBreak_ID, String trxName)
@@ -98,9 +98,9 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 		return bd;
 	}
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_BPartner_ID(), get_TrxName());	}
 
 	/** Set Business Partner .
@@ -126,9 +126,9 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 		return ii.intValue();
 	}
 
-	public I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
+	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
     {
-		return (I_M_PriceList_Version)MTable.get(getCtx(), I_M_PriceList_Version.Table_Name)
+		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_Name)
 			.getPO(getM_PriceList_Version_ID(), get_TrxName());	}
 
 	/** Set Price List Version.
@@ -154,9 +154,9 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -182,8 +182,8 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 		return ii.intValue();
 	}
 
-	/** Set Product Price Vendor Break.
-		@param M_ProductPriceVendorBreak_ID Product Price Vendor Break	  */
+	/** Set Product Price Break.
+		@param M_ProductPriceVendorBreak_ID Product Price Break	  */
 	public void setM_ProductPriceVendorBreak_ID (int M_ProductPriceVendorBreak_ID)
 	{
 		if (M_ProductPriceVendorBreak_ID < 1) 
@@ -192,14 +192,28 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 			set_ValueNoCheck (COLUMNNAME_M_ProductPriceVendorBreak_ID, Integer.valueOf(M_ProductPriceVendorBreak_ID));
 	}
 
-	/** Get Product Price Vendor Break.
-		@return Product Price Vendor Break	  */
+	/** Get Product Price Break.
+		@return Product Price Break	  */
 	public int getM_ProductPriceVendorBreak_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductPriceVendorBreak_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_ProductPriceVendorBreak_UU.
+		@param M_ProductPriceVendorBreak_UU M_ProductPriceVendorBreak_UU	  */
+	public void setM_ProductPriceVendorBreak_UU (String M_ProductPriceVendorBreak_UU)
+	{
+		set_Value (COLUMNNAME_M_ProductPriceVendorBreak_UU, M_ProductPriceVendorBreak_UU);
+	}
+
+	/** Get M_ProductPriceVendorBreak_UU.
+		@return M_ProductPriceVendorBreak_UU	  */
+	public String getM_ProductPriceVendorBreak_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ProductPriceVendorBreak_UU);
 	}
 
 	/** Set Limit Price.

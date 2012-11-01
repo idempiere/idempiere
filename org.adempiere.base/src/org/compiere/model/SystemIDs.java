@@ -48,6 +48,7 @@ public class SystemIDs
 
 	public final static int FORM_PAYMENT_PRINT_EXPORT = 106;
 	public final static int FORM_ARCHIVEVIEWER = 118;
+	public final static int FORM_REPORT_WIZARD = 200002;
 
 	public final static int MENU_NOTICE = 233;
 
@@ -111,10 +112,11 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_URL = 40;
 	public final static int REFERENCE_DATATYPE_YES_NO = 20;
 
-	public static final int REFERENCE_AD_USER = 110;
+	public final static int REFERENCE_AD_USER = 110;
 	public final static int REFERENCE_DOCUMENTACTION = 135;
 	public final static int REFERENCE_PAYMENTRULE = 195;
 	public final static int REFERENCE_POSTING_TYPE = 125;
+	public final static int REFERENCE_POSTED = 234;
 	public final static int REFERENCE_YESNO = 319;
 	public final static int REFERENCE_WIZARDSTATUS = 200003;
 
@@ -133,7 +135,7 @@ public class SystemIDs
 	public final static int USER_SYSTEM = 0;
 
 	public final static int WINDOW_ACCOUNTCOMBINATION = 153;
-	public static final int WINDOW_CUSTOMERRETURN = 53097;
+	public final static int WINDOW_CUSTOMERRETURN = 53097;
 	public final static int WINDOW_INVENTORYMOVE = 170;
 	public final static int WINDOW_LOT = 257;
 	public final static int WINDOW_MATERIALRECEIPT = 184;
@@ -143,7 +145,7 @@ public class SystemIDs
 	public final static int WINDOW_PRINTFORMAT = 240;
 	public final static int WINDOW_PRODUCTION = 191;
 	public final static int WINDOW_REQUESTS_ALL = 232;
-	public static final int WINDOW_RETURNTOVENDOR = 53098;
+	public final static int WINDOW_RETURNTOVENDOR = 53098;
 	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
@@ -153,5 +155,5 @@ public class SystemIDs
 	
 	public final static int SCHEDULE_10_MINUTES = 200002;
 	public final static int SCHEDULE_15_MINUTES = 200003;
-
+	
 }

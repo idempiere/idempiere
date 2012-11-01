@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_TemplateTable
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_TemplateTable 
 {
@@ -31,7 +31,7 @@ public interface I_CM_TemplateTable
     public static final String Table_Name = "CM_TemplateTable";
 
     /** AD_Table_ID=879 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 879;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_CM_TemplateTable
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name CM_Template_ID */
     public static final String COLUMNNAME_CM_Template_ID = "CM_Template_ID";
@@ -90,7 +90,7 @@ public interface I_CM_TemplateTable
 	  */
 	public int getCM_Template_ID();
 
-	public I_CM_Template getCM_Template() throws RuntimeException;
+	public org.compiere.model.I_CM_Template getCM_Template() throws RuntimeException;
 
     /** Column name CM_TemplateTable_ID */
     public static final String COLUMNNAME_CM_TemplateTable_ID = "CM_TemplateTable_ID";
@@ -104,6 +104,15 @@ public interface I_CM_TemplateTable
 	  * CM Template Table Link
 	  */
 	public int getCM_TemplateTable_ID();
+
+    /** Column name CM_TemplateTable_UU */
+    public static final String COLUMNNAME_CM_TemplateTable_UU = "CM_TemplateTable_UU";
+
+	/** Set CM_TemplateTable_UU	  */
+	public void setCM_TemplateTable_UU (String CM_TemplateTable_UU);
+
+	/** Get CM_TemplateTable_UU	  */
+	public String getCM_TemplateTable_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

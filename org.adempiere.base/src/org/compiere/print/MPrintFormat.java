@@ -36,6 +36,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_PrintFormat;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -56,9 +57,9 @@ import org.compiere.util.Util;
 public class MPrintFormat extends X_AD_PrintFormat
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 3626220385155526700L;
+	private static final long serialVersionUID = -8307496567084341384L;
 
 	/**
 	 *	Public Constructor.
@@ -82,6 +83,10 @@ public class MPrintFormat extends X_AD_PrintFormat
 		m_items = getItems();
 	}	//	MPrintFormat
 
+	public void reloadItems() {
+		m_items = getItems();
+	}
+	
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context
@@ -231,7 +236,43 @@ public class MPrintFormat extends X_AD_PrintFormat
 	}	//	getItems
 
 	/**
-	 * 	Get active Items
+	 * 	Get All Items
+	 * 	@return items
+	 */
+	public MPrintFormatItem[] getAllItems() {
+		return getAllItems("SeqNo");
+	}
+	
+	/**
+	 * 	Get All Items
+	 *  @param orderBy
+	 * 	@return items
+	 */
+	public MPrintFormatItem[] getAllItems(String orderBy)
+	{
+		String whereClause = "AD_PrintFormatItem.AD_PrintFormat_ID=? "
+			//	Display restrictions - Passwords, etc.
+			+ " AND NOT EXISTS (SELECT * FROM AD_Field f "
+				+ "WHERE AD_PrintFormatItem.AD_Column_ID=f.AD_Column_ID"
+				+ " AND (f.IsEncrypted='Y' OR f.ObscureType IS NOT NULL))";
+		List<MPrintFormatItem> list = new Query(getCtx(), MPrintFormatItem.Table_Name, whereClause, get_TrxName())
+			.setParameters(get_ID())
+			.setOnlyActiveRecords(true)
+			.setOrderBy(orderBy)
+			.list();
+
+		MRole role = MRole.getDefault(getCtx(), false);
+		for (MPrintFormatItem pfi : list) {
+			if (! role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true))
+				list.remove(pfi);
+		}
+		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	getAllItems
+
+	/**
+	 * 	Get Items Not in A Print Format
 	 * 	@return items
 	 */
 	private MPrintFormatItem[] getItemsNotIn(int AD_PrintFormat_ID)
@@ -273,7 +314,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
 		list.toArray(retValue);
 		return retValue;
-	}	//	getItems
+	}	//	getItemsNotIn
 
 	/**
 	 * 	Get Item Count

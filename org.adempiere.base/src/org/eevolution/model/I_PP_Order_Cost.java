@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_Cost
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PP_Order_Cost 
 {
@@ -32,7 +32,7 @@ public interface I_PP_Order_Cost
     public static final String Table_Name = "PP_Order_Cost";
 
     /** AD_Table_ID=53024 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53024;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,7 +76,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getAD_Workflow_ID();
 
-	public I_AD_Workflow getAD_Workflow() throws RuntimeException;
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
@@ -91,7 +91,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name CostingMethod */
     public static final String COLUMNNAME_CostingMethod = "CostingMethod";
@@ -246,7 +246,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getM_CostElement_ID();
 
-	public I_M_CostElement getM_CostElement() throws RuntimeException;
+	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_CostType_ID */
     public static final String COLUMNNAME_M_CostType_ID = "M_CostType_ID";
@@ -261,7 +261,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getM_CostType_ID();
 
-	public I_M_CostType getM_CostType() throws RuntimeException;
+	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -276,7 +276,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name PP_Order_Cost_ID */
     public static final String COLUMNNAME_PP_Order_Cost_ID = "PP_Order_Cost_ID";
@@ -286,6 +286,15 @@ public interface I_PP_Order_Cost
 
 	/** Get Manufacturing Order Cost	  */
 	public int getPP_Order_Cost_ID();
+
+    /** Column name PP_Order_Cost_UU */
+    public static final String COLUMNNAME_PP_Order_Cost_UU = "PP_Order_Cost_UU";
+
+	/** Set PP_Order_Cost_UU	  */
+	public void setPP_Order_Cost_UU (String PP_Order_Cost_UU);
+
+	/** Get PP_Order_Cost_UU	  */
+	public String getPP_Order_Cost_UU();
 
     /** Column name PP_Order_ID */
     public static final String COLUMNNAME_PP_Order_ID = "PP_Order_ID";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_ListVersion
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_HR_ListVersion 
 {
@@ -32,7 +32,7 @@ public interface I_HR_ListVersion
     public static final String Table_Name = "HR_ListVersion";
 
     /** AD_Table_ID=53100 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53100;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -122,6 +122,15 @@ public interface I_HR_ListVersion
 
 	/** Get Payroll List Version	  */
 	public int getHR_ListVersion_ID();
+
+    /** Column name HR_ListVersion_UU */
+    public static final String COLUMNNAME_HR_ListVersion_UU = "HR_ListVersion_UU";
+
+	/** Set HR_ListVersion_UU	  */
+	public void setHR_ListVersion_UU (String HR_ListVersion_UU);
+
+	/** Get HR_ListVersion_UU	  */
+	public String getHR_ListVersion_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

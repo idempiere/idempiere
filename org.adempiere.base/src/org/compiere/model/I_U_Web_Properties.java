@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for U_Web_Properties
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_U_Web_Properties 
 {
@@ -31,7 +31,7 @@ public interface I_U_Web_Properties
     public static final String Table_Name = "U_Web_Properties";
 
     /** AD_Table_ID=52001 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 52001;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -133,4 +133,13 @@ public interface I_U_Web_Properties
 
 	/** Get Web Properties	  */
 	public int getU_Web_Properties_ID();
+
+    /** Column name U_Web_Properties_UU */
+    public static final String COLUMNNAME_U_Web_Properties_UU = "U_Web_Properties_UU";
+
+	/** Set U_Web_Properties_UU	  */
+	public void setU_Web_Properties_UU (String U_Web_Properties_UU);
+
+	/** Get U_Web_Properties_UU	  */
+	public String getU_Web_Properties_UU();
 }

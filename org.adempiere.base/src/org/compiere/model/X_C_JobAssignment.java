@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_JobAssignment
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_JobAssignment (Properties ctx, int C_JobAssignment_ID, String trxName)
@@ -74,9 +74,9 @@ public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persis
       return sb.toString();
     }
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -125,9 +125,23 @@ public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persis
 		return ii.intValue();
 	}
 
-	public I_C_Job getC_Job() throws RuntimeException
+	/** Set C_JobAssignment_UU.
+		@param C_JobAssignment_UU C_JobAssignment_UU	  */
+	public void setC_JobAssignment_UU (String C_JobAssignment_UU)
+	{
+		set_Value (COLUMNNAME_C_JobAssignment_UU, C_JobAssignment_UU);
+	}
+
+	/** Get C_JobAssignment_UU.
+		@return C_JobAssignment_UU	  */
+	public String getC_JobAssignment_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_JobAssignment_UU);
+	}
+
+	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
     {
-		return (I_C_Job)MTable.get(getCtx(), I_C_Job.Table_Name)
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_Name)
 			.getPO(getC_Job_ID(), get_TrxName());	}
 
 	/** Set Position.

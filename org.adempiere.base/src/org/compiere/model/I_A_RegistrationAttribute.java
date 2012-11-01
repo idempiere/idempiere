@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_RegistrationAttribute
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_A_RegistrationAttribute 
 {
@@ -31,7 +31,7 @@ public interface I_A_RegistrationAttribute
     public static final String Table_Name = "A_RegistrationAttribute";
 
     /** AD_Table_ID=652 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 652;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_A_RegistrationAttribute
 	  */
 	public int getAD_Reference_ID();
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
     public static final String COLUMNNAME_AD_Reference_Value_ID = "AD_Reference_Value_ID";
@@ -90,7 +90,7 @@ public interface I_A_RegistrationAttribute
 	  */
 	public int getAD_Reference_Value_ID();
 
-	public I_AD_Reference getAD_Reference_Value() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name A_RegistrationAttribute_ID */
     public static final String COLUMNNAME_A_RegistrationAttribute_ID = "A_RegistrationAttribute_ID";
@@ -104,6 +104,15 @@ public interface I_A_RegistrationAttribute
 	  * Asset Registration Attribute
 	  */
 	public int getA_RegistrationAttribute_ID();
+
+    /** Column name A_RegistrationAttribute_UU */
+    public static final String COLUMNNAME_A_RegistrationAttribute_UU = "A_RegistrationAttribute_UU";
+
+	/** Set A_RegistrationAttribute_UU	  */
+	public void setA_RegistrationAttribute_UU (String A_RegistrationAttribute_UU);
+
+	/** Get A_RegistrationAttribute_UU	  */
+	public String getA_RegistrationAttribute_UU();
 
     /** Column name ColumnName */
     public static final String COLUMNNAME_ColumnName = "ColumnName";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_WikiToken
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_WikiToken extends PO implements I_CM_WikiToken, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_WikiToken (Properties ctx, int CM_WikiToken_ID, String trxName)
@@ -73,9 +73,9 @@ public class X_CM_WikiToken extends PO implements I_CM_WikiToken, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -122,6 +122,20 @@ public class X_CM_WikiToken extends PO implements I_CM_WikiToken, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set CM_WikiToken_UU.
+		@param CM_WikiToken_UU CM_WikiToken_UU	  */
+	public void setCM_WikiToken_UU (String CM_WikiToken_UU)
+	{
+		set_Value (COLUMNNAME_CM_WikiToken_UU, CM_WikiToken_UU);
+	}
+
+	/** Get CM_WikiToken_UU.
+		@return CM_WikiToken_UU	  */
+	public String getCM_WikiToken_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_WikiToken_UU);
 	}
 
 	/** Set Description.

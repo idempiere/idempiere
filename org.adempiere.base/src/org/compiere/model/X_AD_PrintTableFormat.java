@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintTableFormat
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_PrintTableFormat (Properties ctx, int AD_PrintTableFormat_ID, String trxName)
@@ -82,9 +82,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
       return sb.toString();
     }
 
-	public I_AD_Image getAD_Image() throws RuntimeException
+	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
     {
-		return (I_AD_Image)MTable.get(getCtx(), I_AD_Image.Table_Name)
+		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_Name)
 			.getPO(getAD_Image_ID(), get_TrxName());	}
 
 	/** Set Image.
@@ -131,6 +131,20 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_PrintTableFormat_UU.
+		@param AD_PrintTableFormat_UU AD_PrintTableFormat_UU	  */
+	public void setAD_PrintTableFormat_UU (String AD_PrintTableFormat_UU)
+	{
+		set_Value (COLUMNNAME_AD_PrintTableFormat_UU, AD_PrintTableFormat_UU);
+	}
+
+	/** Get AD_PrintTableFormat_UU.
+		@return AD_PrintTableFormat_UU	  */
+	public String getAD_PrintTableFormat_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_PrintTableFormat_UU);
 	}
 
 	/** Set Description.
@@ -201,9 +215,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return (String)get_Value(COLUMNNAME_FooterRight);
 	}
 
-	public I_AD_PrintColor getFunctBG_PrintColor() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getFunctBG_PrintColor() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getFunctBG_PrintColor_ID(), get_TrxName());	}
 
 	/** Set Function BG Color.
@@ -229,9 +243,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
-	public I_AD_PrintColor getFunctFG_PrintColor() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getFunctFG_PrintColor() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getFunctFG_PrintColor_ID(), get_TrxName());	}
 
 	/** Set Function Color.
@@ -257,9 +271,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
-	public I_AD_PrintFont getFunct_PrintFont() throws RuntimeException
+	public org.compiere.model.I_AD_PrintFont getFunct_PrintFont() throws RuntimeException
     {
-		return (I_AD_PrintFont)MTable.get(getCtx(), I_AD_PrintFont.Table_Name)
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
 			.getPO(getFunct_PrintFont_ID(), get_TrxName());	}
 
 	/** Set Function Font.
@@ -285,9 +299,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
-	public I_AD_PrintColor getHdrLine_PrintColor() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getHdrLine_PrintColor() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getHdrLine_PrintColor_ID(), get_TrxName());	}
 
 	/** Set Header Line Color.
@@ -313,9 +327,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
-	public I_AD_PrintFont getHdr_PrintFont() throws RuntimeException
+	public org.compiere.model.I_AD_PrintFont getHdr_PrintFont() throws RuntimeException
     {
-		return (I_AD_PrintFont)MTable.get(getCtx(), I_AD_PrintFont.Table_Name)
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
 			.getPO(getHdr_PrintFont_ID(), get_TrxName());	}
 
 	/** Set Header Row Font.
@@ -389,9 +403,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return (String)get_Value(COLUMNNAME_HdrStrokeType);
 	}
 
-	public I_AD_PrintColor getHdrTextBG_PrintColor() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getHdrTextBG_PrintColor() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getHdrTextBG_PrintColor_ID(), get_TrxName());	}
 
 	/** Set Header Row BG Color.
@@ -417,9 +431,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
-	public I_AD_PrintColor getHdrTextFG_PrintColor() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getHdrTextFG_PrintColor() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getHdrTextFG_PrintColor_ID(), get_TrxName());	}
 
 	/** Set Header Row Color.
@@ -705,9 +719,9 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return false;
 	}
 
-	public I_AD_PrintColor getLine_PrintColor() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getLine_PrintColor() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getLine_PrintColor_ID(), get_TrxName());	}
 
 	/** Set Line Color.

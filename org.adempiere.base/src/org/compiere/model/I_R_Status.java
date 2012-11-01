@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_Status
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_R_Status 
 {
@@ -31,7 +31,7 @@ public interface I_R_Status
     public static final String Table_Name = "R_Status";
 
     /** AD_Table_ID=776 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 776;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -208,7 +208,7 @@ public interface I_R_Status
 	  */
 	public int getNext_Status_ID();
 
-	public I_R_Status getNext_Status() throws RuntimeException;
+	public org.compiere.model.I_R_Status getNext_Status() throws RuntimeException;
 
     /** Column name R_StatusCategory_ID */
     public static final String COLUMNNAME_R_StatusCategory_ID = "R_StatusCategory_ID";
@@ -223,7 +223,7 @@ public interface I_R_Status
 	  */
 	public int getR_StatusCategory_ID();
 
-	public I_R_StatusCategory getR_StatusCategory() throws RuntimeException;
+	public org.compiere.model.I_R_StatusCategory getR_StatusCategory() throws RuntimeException;
 
     /** Column name R_Status_ID */
     public static final String COLUMNNAME_R_Status_ID = "R_Status_ID";
@@ -237,6 +237,15 @@ public interface I_R_Status
 	  * Request Status
 	  */
 	public int getR_Status_ID();
+
+    /** Column name R_Status_UU */
+    public static final String COLUMNNAME_R_Status_UU = "R_Status_UU";
+
+	/** Set R_Status_UU	  */
+	public void setR_Status_UU (String R_Status_UU);
+
+	/** Get R_Status_UU	  */
+	public String getR_Status_UU();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
@@ -295,7 +304,7 @@ public interface I_R_Status
 	  */
 	public int getUpdate_Status_ID();
 
-	public I_R_Status getUpdate_Status() throws RuntimeException;
+	public org.compiere.model.I_R_Status getUpdate_Status() throws RuntimeException;
 
     /** Column name Value */
     public static final String COLUMNNAME_Value = "Value";

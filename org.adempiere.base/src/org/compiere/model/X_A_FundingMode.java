@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_FundingMode
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121024L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_A_FundingMode (Properties ctx, int A_FundingMode_ID, String trxName)
@@ -90,6 +90,20 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set A_FundingMode_UU.
+		@param A_FundingMode_UU A_FundingMode_UU	  */
+	public void setA_FundingMode_UU (String A_FundingMode_UU)
+	{
+		set_Value (COLUMNNAME_A_FundingMode_UU, A_FundingMode_UU);
+	}
+
+	/** Get A_FundingMode_UU.
+		@return A_FundingMode_UU	  */
+	public String getA_FundingMode_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_FundingMode_UU);
 	}
 
 	/** Set Description.

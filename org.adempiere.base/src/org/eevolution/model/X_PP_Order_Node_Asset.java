@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for PP_Order_Node_Asset
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_PP_Order_Node_Asset (Properties ctx, int PP_Order_Node_Asset_ID, String trxName)
@@ -74,9 +74,9 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
       return sb.toString();
     }
 
-	public I_A_Asset getA_Asset() throws RuntimeException
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
     {
-		return (I_A_Asset)MTable.get(getCtx(), I_A_Asset.Table_Name)
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
 			.getPO(getA_Asset_ID(), get_TrxName());	}
 
 	/** Set Asset.
@@ -148,6 +148,20 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set PP_Order_Node_Asset_UU.
+		@param PP_Order_Node_Asset_UU PP_Order_Node_Asset_UU	  */
+	public void setPP_Order_Node_Asset_UU (String PP_Order_Node_Asset_UU)
+	{
+		set_Value (COLUMNNAME_PP_Order_Node_Asset_UU, PP_Order_Node_Asset_UU);
+	}
+
+	/** Get PP_Order_Node_Asset_UU.
+		@return PP_Order_Node_Asset_UU	  */
+	public String getPP_Order_Node_Asset_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_PP_Order_Node_Asset_UU);
 	}
 
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException

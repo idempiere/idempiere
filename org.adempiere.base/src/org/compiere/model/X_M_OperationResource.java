@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_OperationResource
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_OperationResource extends PO implements I_M_OperationResource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_OperationResource (Properties ctx, int M_OperationResource_ID, String trxName)
@@ -77,9 +77,9 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
       return sb.toString();
     }
 
-	public I_A_Asset getA_Asset() throws RuntimeException
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
     {
-		return (I_A_Asset)MTable.get(getCtx(), I_A_Asset.Table_Name)
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
 			.getPO(getA_Asset_ID(), get_TrxName());	}
 
 	/** Set Asset.
@@ -105,9 +105,9 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 		return ii.intValue();
 	}
 
-	public I_C_Job getC_Job() throws RuntimeException
+	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
     {
-		return (I_C_Job)MTable.get(getCtx(), I_C_Job.Table_Name)
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_Name)
 			.getPO(getC_Job_ID(), get_TrxName());	}
 
 	/** Set Position.
@@ -190,9 +190,23 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 		return ii.intValue();
 	}
 
-	public I_M_ProductOperation getM_ProductOperation() throws RuntimeException
+	/** Set M_OperationResource_UU.
+		@param M_OperationResource_UU M_OperationResource_UU	  */
+	public void setM_OperationResource_UU (String M_OperationResource_UU)
+	{
+		set_Value (COLUMNNAME_M_OperationResource_UU, M_OperationResource_UU);
+	}
+
+	/** Get M_OperationResource_UU.
+		@return M_OperationResource_UU	  */
+	public String getM_OperationResource_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_OperationResource_UU);
+	}
+
+	public org.compiere.model.I_M_ProductOperation getM_ProductOperation() throws RuntimeException
     {
-		return (I_M_ProductOperation)MTable.get(getCtx(), I_M_ProductOperation.Table_Name)
+		return (org.compiere.model.I_M_ProductOperation)MTable.get(getCtx(), org.compiere.model.I_M_ProductOperation.Table_Name)
 			.getPO(getM_ProductOperation_ID(), get_TrxName());	}
 
 	/** Set Product Operation.

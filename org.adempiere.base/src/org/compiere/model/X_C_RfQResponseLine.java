@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for C_RfQResponseLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)
@@ -74,9 +74,9 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
       return sb.toString();
     }
 
-	public I_C_RfQLine getC_RfQLine() throws RuntimeException
+	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException
     {
-		return (I_C_RfQLine)MTable.get(getCtx(), I_C_RfQLine.Table_Name)
+		return (org.compiere.model.I_C_RfQLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQLine.Table_Name)
 			.getPO(getC_RfQLine_ID(), get_TrxName());	}
 
 	/** Set RfQ Line.
@@ -102,9 +102,9 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_RfQResponse getC_RfQResponse() throws RuntimeException
+	public org.compiere.model.I_C_RfQResponse getC_RfQResponse() throws RuntimeException
     {
-		return (I_C_RfQResponse)MTable.get(getCtx(), I_C_RfQResponse.Table_Name)
+		return (org.compiere.model.I_C_RfQResponse)MTable.get(getCtx(), org.compiere.model.I_C_RfQResponse.Table_Name)
 			.getPO(getC_RfQResponse_ID(), get_TrxName());	}
 
 	/** Set RfQ Response.
@@ -151,6 +151,20 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_RfQResponseLine_UU.
+		@param C_RfQResponseLine_UU C_RfQResponseLine_UU	  */
+	public void setC_RfQResponseLine_UU (String C_RfQResponseLine_UU)
+	{
+		set_Value (COLUMNNAME_C_RfQResponseLine_UU, C_RfQResponseLine_UU);
+	}
+
+	/** Get C_RfQResponseLine_UU.
+		@return C_RfQResponseLine_UU	  */
+	public String getC_RfQResponseLine_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_RfQResponseLine_UU);
 	}
 
 	/** Set Work Complete.

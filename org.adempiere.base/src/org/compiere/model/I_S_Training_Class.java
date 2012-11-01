@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_Training_Class
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_S_Training_Class 
 {
@@ -31,7 +31,7 @@ public interface I_S_Training_Class
     public static final String Table_Name = "S_Training_Class";
 
     /** AD_Table_ID=537 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 537;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -117,7 +117,7 @@ public interface I_S_Training_Class
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name StartDate */
     public static final String COLUMNNAME_StartDate = "StartDate";
@@ -145,6 +145,15 @@ public interface I_S_Training_Class
 	  */
 	public int getS_Training_Class_ID();
 
+    /** Column name S_Training_Class_UU */
+    public static final String COLUMNNAME_S_Training_Class_UU = "S_Training_Class_UU";
+
+	/** Set S_Training_Class_UU	  */
+	public void setS_Training_Class_UU (String S_Training_Class_UU);
+
+	/** Get S_Training_Class_UU	  */
+	public String getS_Training_Class_UU();
+
     /** Column name S_Training_ID */
     public static final String COLUMNNAME_S_Training_ID = "S_Training_ID";
 
@@ -158,7 +167,7 @@ public interface I_S_Training_Class
 	  */
 	public int getS_Training_ID();
 
-	public I_S_Training getS_Training() throws RuntimeException;
+	public org.compiere.model.I_S_Training getS_Training() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

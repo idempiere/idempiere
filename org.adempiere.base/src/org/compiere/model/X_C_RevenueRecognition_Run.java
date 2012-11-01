@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition_Run
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecognition_Run, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition_Run (Properties ctx, int C_RevenueRecognition_Run_ID, String trxName)
@@ -75,9 +75,9 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
       return sb.toString();
     }
 
-	public I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException
+	public org.compiere.model.I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException
     {
-		return (I_C_RevenueRecognition_Plan)MTable.get(getCtx(), I_C_RevenueRecognition_Plan.Table_Name)
+		return (org.compiere.model.I_C_RevenueRecognition_Plan)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition_Plan.Table_Name)
 			.getPO(getC_RevenueRecognition_Plan_ID(), get_TrxName());	}
 
 	/** Set Revenue Recognition Plan.
@@ -134,9 +134,23 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 		return ii.intValue();
 	}
 
-	public I_GL_Journal getGL_Journal() throws RuntimeException
+	/** Set C_RevenueRecognition_Run_UU.
+		@param C_RevenueRecognition_Run_UU C_RevenueRecognition_Run_UU	  */
+	public void setC_RevenueRecognition_Run_UU (String C_RevenueRecognition_Run_UU)
+	{
+		set_Value (COLUMNNAME_C_RevenueRecognition_Run_UU, C_RevenueRecognition_Run_UU);
+	}
+
+	/** Get C_RevenueRecognition_Run_UU.
+		@return C_RevenueRecognition_Run_UU	  */
+	public String getC_RevenueRecognition_Run_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_RevenueRecognition_Run_UU);
+	}
+
+	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException
     {
-		return (I_GL_Journal)MTable.get(getCtx(), I_GL_Journal.Table_Name)
+		return (org.compiere.model.I_GL_Journal)MTable.get(getCtx(), org.compiere.model.I_GL_Journal.Table_Name)
 			.getPO(getGL_Journal_ID(), get_TrxName());	}
 
 	/** Set Journal.

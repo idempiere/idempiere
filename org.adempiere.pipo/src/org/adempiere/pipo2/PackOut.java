@@ -294,7 +294,8 @@ public class PackOut
 	}
 
 	private void initContext() {
-		pipoContext.trx = Trx.get(trxName, true);
+		if (trxName != null)
+			pipoContext.trx = Trx.get(trxName, true);
 		pipoContext.packOut = this;
 	}
 

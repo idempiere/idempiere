@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for CM_AccessMedia
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_AccessMedia extends PO implements I_CM_AccessMedia, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_AccessMedia (Properties ctx, int CM_AccessMedia_ID, String trxName)
@@ -70,9 +70,23 @@ public class X_CM_AccessMedia extends PO implements I_CM_AccessMedia, I_Persiste
       return sb.toString();
     }
 
-	public I_CM_AccessProfile getCM_AccessProfile() throws RuntimeException
+	/** Set CM_AccessMedia_UU.
+		@param CM_AccessMedia_UU CM_AccessMedia_UU	  */
+	public void setCM_AccessMedia_UU (String CM_AccessMedia_UU)
+	{
+		set_Value (COLUMNNAME_CM_AccessMedia_UU, CM_AccessMedia_UU);
+	}
+
+	/** Get CM_AccessMedia_UU.
+		@return CM_AccessMedia_UU	  */
+	public String getCM_AccessMedia_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_AccessMedia_UU);
+	}
+
+	public org.compiere.model.I_CM_AccessProfile getCM_AccessProfile() throws RuntimeException
     {
-		return (I_CM_AccessProfile)MTable.get(getCtx(), I_CM_AccessProfile.Table_Name)
+		return (org.compiere.model.I_CM_AccessProfile)MTable.get(getCtx(), org.compiere.model.I_CM_AccessProfile.Table_Name)
 			.getPO(getCM_AccessProfile_ID(), get_TrxName());	}
 
 	/** Set Web Access Profile.
@@ -98,9 +112,9 @@ public class X_CM_AccessMedia extends PO implements I_CM_AccessMedia, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_CM_Media getCM_Media() throws RuntimeException
+	public org.compiere.model.I_CM_Media getCM_Media() throws RuntimeException
     {
-		return (I_CM_Media)MTable.get(getCtx(), I_CM_Media.Table_Name)
+		return (org.compiere.model.I_CM_Media)MTable.get(getCtx(), org.compiere.model.I_CM_Media.Table_Name)
 			.getPO(getCM_Media_ID(), get_TrxName());	}
 
 	/** Set Media Item.

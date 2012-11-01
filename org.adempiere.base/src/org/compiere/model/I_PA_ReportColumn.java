@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportColumn
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PA_ReportColumn 
 {
@@ -31,7 +31,7 @@ public interface I_PA_ReportColumn
     public static final String Table_Name = "PA_ReportColumn";
 
     /** AD_Table_ID=446 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 446;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Activity_ID();
 
-	public I_C_Activity getC_Activity() throws RuntimeException;
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name CalculationType */
     public static final String COLUMNNAME_CalculationType = "CalculationType";
@@ -112,7 +112,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
     public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
@@ -127,7 +127,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Campaign_ID();
 
-	public I_C_Campaign getC_Campaign() throws RuntimeException;
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -142,7 +142,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_ElementValue_ID */
     public static final String COLUMNNAME_C_ElementValue_ID = "C_ElementValue_ID";
@@ -157,7 +157,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_ElementValue_ID();
 
-	public I_C_ElementValue getC_ElementValue() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name C_Location_ID */
     public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
@@ -196,7 +196,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -227,7 +227,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_SalesRegion_ID();
 
-	public I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name CurrencyType */
     public static final String COLUMNNAME_CurrencyType = "CurrencyType";
@@ -303,7 +303,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getGL_Budget_ID();
 
-	public I_GL_Budget getGL_Budget() throws RuntimeException;
+	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -513,7 +513,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -541,7 +541,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getOper_1_ID();
 
-	public I_PA_ReportColumn getOper_1() throws RuntimeException;
+	public org.compiere.model.I_PA_ReportColumn getOper_1() throws RuntimeException;
 
     /** Column name Oper_2_ID */
     public static final String COLUMNNAME_Oper_2_ID = "Oper_2_ID";
@@ -556,7 +556,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getOper_2_ID();
 
-	public I_PA_ReportColumn getOper_2() throws RuntimeException;
+	public org.compiere.model.I_PA_ReportColumn getOper_2() throws RuntimeException;
 
     /** Column name Org_ID */
     public static final String COLUMNNAME_Org_ID = "Org_ID";
@@ -623,7 +623,16 @@ public interface I_PA_ReportColumn
 	  */
 	public int getPA_ReportColumnSet_ID();
 
-	public I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException;
+	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException;
+
+    /** Column name PA_ReportColumn_UU */
+    public static final String COLUMNNAME_PA_ReportColumn_UU = "PA_ReportColumn_UU";
+
+	/** Set PA_ReportColumn_UU	  */
+	public void setPA_ReportColumn_UU (String PA_ReportColumn_UU);
+
+	/** Get PA_ReportColumn_UU	  */
+	public String getPA_ReportColumn_UU();
 
     /** Column name PostingType */
     public static final String COLUMNNAME_PostingType = "PostingType";

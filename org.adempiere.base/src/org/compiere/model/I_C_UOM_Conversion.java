@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_UOM_Conversion
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_UOM_Conversion 
 {
@@ -31,7 +31,7 @@ public interface I_C_UOM_Conversion
     public static final String Table_Name = "C_UOM_Conversion";
 
     /** AD_Table_ID=175 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 175;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -91,6 +91,15 @@ public interface I_C_UOM_Conversion
 	  */
 	public int getC_UOM_Conversion_ID();
 
+    /** Column name C_UOM_Conversion_UU */
+    public static final String COLUMNNAME_C_UOM_Conversion_UU = "C_UOM_Conversion_UU";
+
+	/** Set C_UOM_Conversion_UU	  */
+	public void setC_UOM_Conversion_UU (String C_UOM_Conversion_UU);
+
+	/** Get C_UOM_Conversion_UU	  */
+	public String getC_UOM_Conversion_UU();
+
     /** Column name C_UOM_ID */
     public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
 
@@ -104,7 +113,7 @@ public interface I_C_UOM_Conversion
 	  */
 	public int getC_UOM_ID();
 
-	public I_C_UOM getC_UOM() throws RuntimeException;
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name C_UOM_To_ID */
     public static final String COLUMNNAME_C_UOM_To_ID = "C_UOM_To_ID";
@@ -119,7 +128,7 @@ public interface I_C_UOM_Conversion
 	  */
 	public int getC_UOM_To_ID();
 
-	public I_C_UOM getC_UOM_To() throws RuntimeException;
+	public org.compiere.model.I_C_UOM getC_UOM_To() throws RuntimeException;
 
     /** Column name DivideRate */
     public static final String COLUMNNAME_DivideRate = "DivideRate";
@@ -160,7 +169,7 @@ public interface I_C_UOM_Conversion
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name MultiplyRate */
     public static final String COLUMNNAME_MultiplyRate = "MultiplyRate";

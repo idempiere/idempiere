@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_TimeExpenseLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_S_TimeExpenseLine 
 {
@@ -31,7 +31,7 @@ public interface I_S_TimeExpenseLine
     public static final String Table_Name = "S_TimeExpenseLine";
 
     /** AD_Table_ID=488 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 488;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_Activity_ID();
 
-	public I_C_Activity getC_Activity() throws RuntimeException;
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -90,7 +90,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
     public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
@@ -105,7 +105,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_Campaign_ID();
 
-	public I_C_Campaign getC_Campaign() throws RuntimeException;
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -120,7 +120,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
     public static final String COLUMNNAME_C_InvoiceLine_ID = "C_InvoiceLine_ID";
@@ -135,7 +135,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_InvoiceLine_ID();
 
-	public I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
+	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name ConvertedAmt */
     public static final String COLUMNNAME_ConvertedAmt = "ConvertedAmt";
@@ -163,7 +163,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_OrderLine_ID();
 
-	public I_C_OrderLine getC_OrderLine() throws RuntimeException;
+	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -178,7 +178,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name C_ProjectPhase_ID */
     public static final String COLUMNNAME_C_ProjectPhase_ID = "C_ProjectPhase_ID";
@@ -193,7 +193,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_ProjectPhase_ID();
 
-	public I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException;
+	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException;
 
     /** Column name C_ProjectTask_ID */
     public static final String COLUMNNAME_C_ProjectTask_ID = "C_ProjectTask_ID";
@@ -208,7 +208,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_ProjectTask_ID();
 
-	public I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
+	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -239,7 +239,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_UOM_ID();
 
-	public I_C_UOM getC_UOM() throws RuntimeException;
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name DateExpense */
     public static final String COLUMNNAME_DateExpense = "DateExpense";
@@ -358,7 +358,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Note */
     public static final String COLUMNNAME_Note = "Note";
@@ -477,7 +477,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getS_TimeExpense_ID();
 
-	public I_S_TimeExpense getS_TimeExpense() throws RuntimeException;
+	public org.compiere.model.I_S_TimeExpense getS_TimeExpense() throws RuntimeException;
 
     /** Column name S_TimeExpenseLine_ID */
     public static final String COLUMNNAME_S_TimeExpenseLine_ID = "S_TimeExpenseLine_ID";
@@ -492,6 +492,15 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getS_TimeExpenseLine_ID();
 
+    /** Column name S_TimeExpenseLine_UU */
+    public static final String COLUMNNAME_S_TimeExpenseLine_UU = "S_TimeExpenseLine_UU";
+
+	/** Set S_TimeExpenseLine_UU	  */
+	public void setS_TimeExpenseLine_UU (String S_TimeExpenseLine_UU);
+
+	/** Get S_TimeExpenseLine_UU	  */
+	public String getS_TimeExpenseLine_UU();
+
     /** Column name S_TimeType_ID */
     public static final String COLUMNNAME_S_TimeType_ID = "S_TimeType_ID";
 
@@ -505,7 +514,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getS_TimeType_ID();
 
-	public I_S_TimeType getS_TimeType() throws RuntimeException;
+	public org.compiere.model.I_S_TimeType getS_TimeType() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

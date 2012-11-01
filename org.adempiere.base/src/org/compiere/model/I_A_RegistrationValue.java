@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_RegistrationValue
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_A_RegistrationValue 
 {
@@ -31,7 +31,7 @@ public interface I_A_RegistrationValue
     public static final String Table_Name = "A_RegistrationValue";
 
     /** AD_Table_ID=653 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 653;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_A_RegistrationValue
 	  */
 	public int getA_RegistrationAttribute_ID();
 
-	public I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException;
+	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException;
 
     /** Column name A_Registration_ID */
     public static final String COLUMNNAME_A_Registration_ID = "A_Registration_ID";
@@ -90,7 +90,16 @@ public interface I_A_RegistrationValue
 	  */
 	public int getA_Registration_ID();
 
-	public I_A_Registration getA_Registration() throws RuntimeException;
+	public org.compiere.model.I_A_Registration getA_Registration() throws RuntimeException;
+
+    /** Column name A_RegistrationValue_UU */
+    public static final String COLUMNNAME_A_RegistrationValue_UU = "A_RegistrationValue_UU";
+
+	/** Set A_RegistrationValue_UU	  */
+	public void setA_RegistrationValue_UU (String A_RegistrationValue_UU);
+
+	/** Get A_RegistrationValue_UU	  */
+	public String getA_RegistrationValue_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

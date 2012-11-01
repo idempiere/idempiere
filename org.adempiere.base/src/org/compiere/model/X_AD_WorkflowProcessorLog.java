@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_WorkflowProcessorLog
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProcessorLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_WorkflowProcessorLog (Properties ctx, int AD_WorkflowProcessorLog_ID, String trxName)
@@ -50,7 +50,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -71,9 +71,9 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
       return sb.toString();
     }
 
-	public I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException
+	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException
     {
-		return (I_AD_WorkflowProcessor)MTable.get(getCtx(), I_AD_WorkflowProcessor.Table_Name)
+		return (org.compiere.model.I_AD_WorkflowProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_WorkflowProcessor.Table_Name)
 			.getPO(getAD_WorkflowProcessor_ID(), get_TrxName());	}
 
 	/** Set Workflow Processor.
@@ -120,6 +120,20 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_WorkflowProcessorLog_UU.
+		@param AD_WorkflowProcessorLog_UU AD_WorkflowProcessorLog_UU	  */
+	public void setAD_WorkflowProcessorLog_UU (String AD_WorkflowProcessorLog_UU)
+	{
+		set_Value (COLUMNNAME_AD_WorkflowProcessorLog_UU, AD_WorkflowProcessorLog_UU);
+	}
+
+	/** Get AD_WorkflowProcessorLog_UU.
+		@return AD_WorkflowProcessorLog_UU	  */
+	public String getAD_WorkflowProcessorLog_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_WorkflowProcessorLog_UU);
 	}
 
 	/** Set Binary Data.

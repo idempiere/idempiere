@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for QM_SpecificationLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_QM_SpecificationLine (Properties ctx, int QM_SpecificationLine_ID, String trxName)
@@ -98,9 +98,9 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 		return (String)get_Value(COLUMNNAME_AndOr);
 	}
 
-	public I_M_Attribute getM_Attribute() throws RuntimeException
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
     {
-		return (I_M_Attribute)MTable.get(getCtx(), I_M_Attribute.Table_Name)
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_Name)
 			.getPO(getM_Attribute_ID(), get_TrxName());	}
 
 	/** Set Attribute.
@@ -207,6 +207,20 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set QM_SpecificationLine_UU.
+		@param QM_SpecificationLine_UU QM_SpecificationLine_UU	  */
+	public void setQM_SpecificationLine_UU (String QM_SpecificationLine_UU)
+	{
+		set_Value (COLUMNNAME_QM_SpecificationLine_UU, QM_SpecificationLine_UU);
+	}
+
+	/** Get QM_SpecificationLine_UU.
+		@return QM_SpecificationLine_UU	  */
+	public String getQM_SpecificationLine_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_QM_SpecificationLine_UU);
 	}
 
 	/** Set Sequence.

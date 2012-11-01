@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_System
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_System 
 {
@@ -31,7 +31,7 @@ public interface I_AD_System
     public static final String Table_Name = "AD_System";
 
     /** AD_Table_ID=531 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 531;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -74,6 +74,15 @@ public interface I_AD_System
 	  * System Definition
 	  */
 	public int getAD_System_ID();
+
+    /** Column name AD_System_UU */
+    public static final String COLUMNNAME_AD_System_UU = "AD_System_UU";
+
+	/** Set AD_System_UU	  */
+	public void setAD_System_UU (String AD_System_UU);
+
+	/** Get AD_System_UU	  */
+	public String getAD_System_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -273,6 +282,19 @@ public interface I_AD_System
 
 	/** Get Last Build Info	  */
 	public String getLastBuildInfo();
+
+    /** Column name LastMigrationScriptApplied */
+    public static final String COLUMNNAME_LastMigrationScriptApplied = "LastMigrationScriptApplied";
+
+	/** Set Last Migration Script Applied.
+	  * Register of the filename for the last migration script applied on this database
+	  */
+	public void setLastMigrationScriptApplied (String LastMigrationScriptApplied);
+
+	/** Get Last Migration Script Applied.
+	  * Register of the filename for the last migration script applied on this database
+	  */
+	public String getLastMigrationScriptApplied();
 
     /** Column name LDAPDomain */
     public static final String COLUMNNAME_LDAPDomain = "LDAPDomain";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPrice
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_ProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
@@ -75,9 +75,9 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
       return sb.toString();
     }
 
-	public I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
+	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
     {
-		return (I_M_PriceList_Version)MTable.get(getCtx(), I_M_PriceList_Version.Table_Name)
+		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_Name)
 			.getPO(getM_PriceList_Version_ID(), get_TrxName());	}
 
 	/** Set Price List Version.
@@ -103,9 +103,9 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -129,6 +129,20 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_ProductPrice_UU.
+		@param M_ProductPrice_UU M_ProductPrice_UU	  */
+	public void setM_ProductPrice_UU (String M_ProductPrice_UU)
+	{
+		set_Value (COLUMNNAME_M_ProductPrice_UU, M_ProductPrice_UU);
+	}
+
+	/** Get M_ProductPrice_UU.
+		@return M_ProductPrice_UU	  */
+	public String getM_ProductPrice_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ProductPrice_UU);
 	}
 
 	/** Set Limit Price.

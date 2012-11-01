@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for U_RoleMenu
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_U_RoleMenu 
 {
@@ -31,7 +31,7 @@ public interface I_U_RoleMenu
     public static final String Table_Name = "U_RoleMenu";
 
     /** AD_Table_ID=52002 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 52002;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_U_RoleMenu
 	  */
 	public int getAD_Role_ID();
 
-	public I_AD_Role getAD_Role() throws RuntimeException;
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -131,6 +131,15 @@ public interface I_U_RoleMenu
 	/** Get Role Menu	  */
 	public int getU_RoleMenu_ID();
 
+    /** Column name U_RoleMenu_UU */
+    public static final String COLUMNNAME_U_RoleMenu_UU = "U_RoleMenu_UU";
+
+	/** Set U_RoleMenu_UU	  */
+	public void setU_RoleMenu_UU (String U_RoleMenu_UU);
+
+	/** Get U_RoleMenu_UU	  */
+	public String getU_RoleMenu_UU();
+
     /** Column name U_WebMenu_ID */
     public static final String COLUMNNAME_U_WebMenu_ID = "U_WebMenu_ID";
 
@@ -140,5 +149,5 @@ public interface I_U_RoleMenu
 	/** Get Web Menu	  */
 	public int getU_WebMenu_ID();
 
-	public I_U_WebMenu getU_WebMenu() throws RuntimeException;
+	public org.compiere.model.I_U_WebMenu getU_WebMenu() throws RuntimeException;
 }

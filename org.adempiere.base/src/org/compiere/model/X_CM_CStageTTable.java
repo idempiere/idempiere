@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_CStageTTable
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_CStageTTable extends PO implements I_CM_CStageTTable, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_CStageTTable (Properties ctx, int CM_CStageTTable_ID, String trxName)
@@ -73,9 +73,9 @@ public class X_CM_CStageTTable extends PO implements I_CM_CStageTTable, I_Persis
       return sb.toString();
     }
 
-	public I_CM_CStage getCM_CStage() throws RuntimeException
+	public org.compiere.model.I_CM_CStage getCM_CStage() throws RuntimeException
     {
-		return (I_CM_CStage)MTable.get(getCtx(), I_CM_CStage.Table_Name)
+		return (org.compiere.model.I_CM_CStage)MTable.get(getCtx(), org.compiere.model.I_CM_CStage.Table_Name)
 			.getPO(getCM_CStage_ID(), get_TrxName());	}
 
 	/** Set Web Container Stage.
@@ -124,9 +124,23 @@ public class X_CM_CStageTTable extends PO implements I_CM_CStageTTable, I_Persis
 		return ii.intValue();
 	}
 
-	public I_CM_TemplateTable getCM_TemplateTable() throws RuntimeException
+	/** Set CM_CStageTTable_UU.
+		@param CM_CStageTTable_UU CM_CStageTTable_UU	  */
+	public void setCM_CStageTTable_UU (String CM_CStageTTable_UU)
+	{
+		set_Value (COLUMNNAME_CM_CStageTTable_UU, CM_CStageTTable_UU);
+	}
+
+	/** Get CM_CStageTTable_UU.
+		@return CM_CStageTTable_UU	  */
+	public String getCM_CStageTTable_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_CStageTTable_UU);
+	}
+
+	public org.compiere.model.I_CM_TemplateTable getCM_TemplateTable() throws RuntimeException
     {
-		return (I_CM_TemplateTable)MTable.get(getCtx(), I_CM_TemplateTable.Table_Name)
+		return (org.compiere.model.I_CM_TemplateTable)MTable.get(getCtx(), org.compiere.model.I_CM_TemplateTable.Table_Name)
 			.getPO(getCM_TemplateTable_ID(), get_TrxName());	}
 
 	/** Set Template Table.

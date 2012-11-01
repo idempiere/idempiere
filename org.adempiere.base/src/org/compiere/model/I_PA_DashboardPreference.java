@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DashboardPreference
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PA_DashboardPreference 
 {
@@ -192,6 +192,15 @@ public interface I_PA_DashboardPreference
 
 	/** Get Dashboard Preference	  */
 	public int getPA_DashboardPreference_ID();
+
+    /** Column name PA_DashboardPreference_UU */
+    public static final String COLUMNNAME_PA_DashboardPreference_UU = "PA_DashboardPreference_UU";
+
+	/** Set PA_DashboardPreference_UU	  */
+	public void setPA_DashboardPreference_UU (String PA_DashboardPreference_UU);
+
+	/** Get PA_DashboardPreference_UU	  */
+	public String getPA_DashboardPreference_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

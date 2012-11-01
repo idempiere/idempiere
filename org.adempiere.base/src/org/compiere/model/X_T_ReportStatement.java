@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for T_ReportStatement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_T_ReportStatement (Properties ctx, int T_ReportStatement_ID, String trxName)
@@ -76,9 +76,9 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
       return sb.toString();
     }
 
-	public I_AD_PInstance getAD_PInstance() throws RuntimeException
+	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
     {
-		return (I_AD_PInstance)MTable.get(getCtx(), I_AD_PInstance.Table_Name)
+		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_Name)
 			.getPO(getAD_PInstance_ID(), get_TrxName());	}
 
 	/** Set Process Instance.
@@ -195,9 +195,9 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public I_Fact_Acct getFact_Acct() throws RuntimeException
+	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException
     {
-		return (I_Fact_Acct)MTable.get(getCtx(), I_Fact_Acct.Table_Name)
+		return (org.compiere.model.I_Fact_Acct)MTable.get(getCtx(), org.compiere.model.I_Fact_Acct.Table_Name)
 			.getPO(getFact_Acct_ID(), get_TrxName());	}
 
 	/** Set Accounting Fact.
@@ -280,5 +280,19 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set T_ReportStatement_UU.
+		@param T_ReportStatement_UU T_ReportStatement_UU	  */
+	public void setT_ReportStatement_UU (String T_ReportStatement_UU)
+	{
+		set_Value (COLUMNNAME_T_ReportStatement_UU, T_ReportStatement_UU);
+	}
+
+	/** Get T_ReportStatement_UU.
+		@return T_ReportStatement_UU	  */
+	public String getT_ReportStatement_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_T_ReportStatement_UU);
 	}
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_FundRestriction
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_GL_FundRestriction 
 {
@@ -31,7 +31,7 @@ public interface I_GL_FundRestriction
     public static final String Table_Name = "GL_FundRestriction";
 
     /** AD_Table_ID=824 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 824;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_GL_FundRestriction
 	  */
 	public int getC_ElementValue_ID();
 
-	public I_C_ElementValue getC_ElementValue() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -119,7 +119,7 @@ public interface I_GL_FundRestriction
 	  */
 	public int getGL_Fund_ID();
 
-	public I_GL_Fund getGL_Fund() throws RuntimeException;
+	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException;
 
     /** Column name GL_FundRestriction_ID */
     public static final String COLUMNNAME_GL_FundRestriction_ID = "GL_FundRestriction_ID";
@@ -133,6 +133,15 @@ public interface I_GL_FundRestriction
 	  * Restriction of Funds
 	  */
 	public int getGL_FundRestriction_ID();
+
+    /** Column name GL_FundRestriction_UU */
+    public static final String COLUMNNAME_GL_FundRestriction_UU = "GL_FundRestriction_UU";
+
+	/** Set GL_FundRestriction_UU	  */
+	public void setGL_FundRestriction_UU (String GL_FundRestriction_UU);
+
+	/** Get GL_FundRestriction_UU	  */
+	public String getGL_FundRestriction_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

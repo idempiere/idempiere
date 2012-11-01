@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoColumn
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_InfoColumn 
 {
@@ -31,7 +31,7 @@ public interface I_AD_InfoColumn
     public static final String Table_Name = "AD_InfoColumn";
 
     /** AD_Table_ID=897 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 897;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_Element_ID();
 
-	public I_AD_Element getAD_Element() throws RuntimeException;
+	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException;
 
     /** Column name AD_InfoColumn_ID */
     public static final String COLUMNNAME_AD_InfoColumn_ID = "AD_InfoColumn_ID";
@@ -77,6 +77,15 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_InfoColumn_ID();
 
+    /** Column name AD_InfoColumn_UU */
+    public static final String COLUMNNAME_AD_InfoColumn_UU = "AD_InfoColumn_UU";
+
+	/** Set AD_InfoColumn_UU	  */
+	public void setAD_InfoColumn_UU (String AD_InfoColumn_UU);
+
+	/** Get AD_InfoColumn_UU	  */
+	public String getAD_InfoColumn_UU();
+
     /** Column name AD_InfoWindow_ID */
     public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
 
@@ -90,7 +99,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_InfoWindow_ID();
 
-	public I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -118,7 +127,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_Reference_ID();
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

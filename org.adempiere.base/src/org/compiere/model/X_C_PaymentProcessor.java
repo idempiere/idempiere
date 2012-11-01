@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentProcessor
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121022L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_PaymentProcessor (Properties ctx, int C_PaymentProcessor_ID, String trxName)
@@ -50,9 +50,9 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 			setAcceptDiscover (false);
 			setAcceptMC (false);
 			setAcceptVisa (false);
-			setC_PaymentProcessor_ID (0);
 			setCommission (Env.ZERO);
 			setCostPerTrx (Env.ZERO);
+			setC_PaymentProcessor_ID (0);
 			setHostAddress (null);
 			setHostPort (0);
 			setName (null);
@@ -414,43 +414,6 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 		return ii.intValue();
 	}
 
-	/** Set Payment Processor.
-		@param C_PaymentProcessor_ID 
-		Payment processor for electronic payments
-	  */
-	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID)
-	{
-		if (C_PaymentProcessor_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, Integer.valueOf(C_PaymentProcessor_ID));
-	}
-
-	/** Get Payment Processor.
-		@return Payment processor for electronic payments
-	  */
-	public int getC_PaymentProcessor_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentProcessor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_PaymentProcessor_UU.
-		@param C_PaymentProcessor_UU C_PaymentProcessor_UU	  */
-	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU)
-	{
-		set_Value (COLUMNNAME_C_PaymentProcessor_UU, C_PaymentProcessor_UU);
-	}
-
-	/** Get C_PaymentProcessor_UU.
-		@return C_PaymentProcessor_UU	  */
-	public String getC_PaymentProcessor_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_C_PaymentProcessor_UU);
-	}
-
 	/** Set Commission %.
 		@param Commission 
 		Commission stated as a percentage
@@ -489,6 +452,43 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Payment Processor.
+		@param C_PaymentProcessor_ID 
+		Payment processor for electronic payments
+	  */
+	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID)
+	{
+		if (C_PaymentProcessor_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, Integer.valueOf(C_PaymentProcessor_ID));
+	}
+
+	/** Get Payment Processor.
+		@return Payment processor for electronic payments
+	  */
+	public int getC_PaymentProcessor_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentProcessor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set C_PaymentProcessor_UU.
+		@param C_PaymentProcessor_UU C_PaymentProcessor_UU	  */
+	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU)
+	{
+		set_Value (COLUMNNAME_C_PaymentProcessor_UU, C_PaymentProcessor_UU);
+	}
+
+	/** Get C_PaymentProcessor_UU.
+		@return C_PaymentProcessor_UU	  */
+	public String getC_PaymentProcessor_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_PaymentProcessor_UU);
 	}
 
 	/** Set Description.
@@ -734,38 +734,6 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** TrxType AD_Reference_ID=215 */
-	public static final int TRXTYPE_AD_Reference_ID=215;
-	/** Sales = S */
-	public static final String TRXTYPE_Sales = "S";
-	/** Delayed Capture = D */
-	public static final String TRXTYPE_DelayedCapture = "D";
-	/** Credit (Payment) = C */
-	public static final String TRXTYPE_CreditPayment = "C";
-	/** Voice Authorization = F */
-	public static final String TRXTYPE_VoiceAuthorization = "F";
-	/** Authorization = A */
-	public static final String TRXTYPE_Authorization = "A";
-	/** Void = V */
-	public static final String TRXTYPE_Void = "V";
-	/** Set Transaction Type.
-		@param TrxType 
-		Type of credit card transaction
-	  */
-	public void setTrxType (String TrxType)
-	{
-
-		set_Value (COLUMNNAME_TrxType, TrxType);
-	}
-
-	/** Get Transaction Type.
-		@return Type of credit card transaction
-	  */
-	public String getTrxType () 
-	{
-		return (String)get_Value(COLUMNNAME_TrxType);
 	}
 
 	/** Set User ID.

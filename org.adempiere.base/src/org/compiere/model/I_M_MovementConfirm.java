@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_MovementConfirm
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_MovementConfirm 
 {
@@ -31,7 +31,7 @@ public interface I_M_MovementConfirm
     public static final String Table_Name = "M_MovementConfirm";
 
     /** AD_Table_ID=738 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 738;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -182,7 +182,7 @@ public interface I_M_MovementConfirm
 	  */
 	public int getM_Inventory_ID();
 
-	public I_M_Inventory getM_Inventory() throws RuntimeException;
+	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException;
 
     /** Column name M_MovementConfirm_ID */
     public static final String COLUMNNAME_M_MovementConfirm_ID = "M_MovementConfirm_ID";
@@ -197,6 +197,15 @@ public interface I_M_MovementConfirm
 	  */
 	public int getM_MovementConfirm_ID();
 
+    /** Column name M_MovementConfirm_UU */
+    public static final String COLUMNNAME_M_MovementConfirm_UU = "M_MovementConfirm_UU";
+
+	/** Set M_MovementConfirm_UU	  */
+	public void setM_MovementConfirm_UU (String M_MovementConfirm_UU);
+
+	/** Get M_MovementConfirm_UU	  */
+	public String getM_MovementConfirm_UU();
+
     /** Column name M_Movement_ID */
     public static final String COLUMNNAME_M_Movement_ID = "M_Movement_ID";
 
@@ -210,7 +219,7 @@ public interface I_M_MovementConfirm
 	  */
 	public int getM_Movement_ID();
 
-	public I_M_Movement getM_Movement() throws RuntimeException;
+	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

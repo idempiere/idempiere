@@ -311,8 +311,8 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						filler.export(excludes, true);
 					}
 				}
-				if (index + 1 < tables.length) {
-					exportDetail(ctx, document, po, index+1, tables);
+				for (int i=index+1; i<tables.length; i++) {
+					exportDetail(ctx, document, po, 0, new String[] {tables[i]});
 				}
 				if (createElement) {
 					document.endElement("","",tables[index]);

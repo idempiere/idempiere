@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for W_Advertisement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_W_Advertisement 
 {
@@ -31,7 +31,7 @@ public interface I_W_Advertisement
     public static final String Table_Name = "W_Advertisement";
 
     /** AD_Table_ID=579 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 579;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_W_Advertisement
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -103,7 +103,7 @@ public interface I_W_Advertisement
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -289,6 +289,15 @@ public interface I_W_Advertisement
 	  */
 	public int getW_Advertisement_ID();
 
+    /** Column name W_Advertisement_UU */
+    public static final String COLUMNNAME_W_Advertisement_UU = "W_Advertisement_UU";
+
+	/** Set W_Advertisement_UU	  */
+	public void setW_Advertisement_UU (String W_Advertisement_UU);
+
+	/** Get W_Advertisement_UU	  */
+	public String getW_Advertisement_UU();
+
     /** Column name W_ClickCount_ID */
     public static final String COLUMNNAME_W_ClickCount_ID = "W_ClickCount_ID";
 
@@ -302,7 +311,7 @@ public interface I_W_Advertisement
 	  */
 	public int getW_ClickCount_ID();
 
-	public I_W_ClickCount getW_ClickCount() throws RuntimeException;
+	public org.compiere.model.I_W_ClickCount getW_ClickCount() throws RuntimeException;
 
     /** Column name W_CounterCount_ID */
     public static final String COLUMNNAME_W_CounterCount_ID = "W_CounterCount_ID";
@@ -317,7 +326,7 @@ public interface I_W_Advertisement
 	  */
 	public int getW_CounterCount_ID();
 
-	public I_W_CounterCount getW_CounterCount() throws RuntimeException;
+	public org.compiere.model.I_W_CounterCount getW_CounterCount() throws RuntimeException;
 
     /** Column name WebParam1 */
     public static final String COLUMNNAME_WebParam1 = "WebParam1";

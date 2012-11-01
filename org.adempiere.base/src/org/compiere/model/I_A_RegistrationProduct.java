@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_RegistrationProduct
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_A_RegistrationProduct 
 {
@@ -31,7 +31,7 @@ public interface I_A_RegistrationProduct
     public static final String Table_Name = "A_RegistrationProduct";
 
     /** AD_Table_ID=715 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 715;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,16 @@ public interface I_A_RegistrationProduct
 	  */
 	public int getA_RegistrationAttribute_ID();
 
-	public I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException;
+	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException;
+
+    /** Column name A_RegistrationProduct_UU */
+    public static final String COLUMNNAME_A_RegistrationProduct_UU = "A_RegistrationProduct_UU";
+
+	/** Set A_RegistrationProduct_UU	  */
+	public void setA_RegistrationProduct_UU (String A_RegistrationProduct_UU);
+
+	/** Get A_RegistrationProduct_UU	  */
+	public String getA_RegistrationProduct_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -132,7 +141,7 @@ public interface I_A_RegistrationProduct
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

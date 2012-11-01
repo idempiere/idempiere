@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Status
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_R_Status extends PO implements I_R_Status, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_R_Status (Properties ctx, int R_Status_ID, String trxName)
@@ -252,9 +252,9 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	public I_R_Status getNext_Status() throws RuntimeException
+	public org.compiere.model.I_R_Status getNext_Status() throws RuntimeException
     {
-		return (I_R_Status)MTable.get(getCtx(), I_R_Status.Table_Name)
+		return (org.compiere.model.I_R_Status)MTable.get(getCtx(), org.compiere.model.I_R_Status.Table_Name)
 			.getPO(getNext_Status_ID(), get_TrxName());	}
 
 	/** Set Next Status.
@@ -280,9 +280,9 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_R_StatusCategory getR_StatusCategory() throws RuntimeException
+	public org.compiere.model.I_R_StatusCategory getR_StatusCategory() throws RuntimeException
     {
-		return (I_R_StatusCategory)MTable.get(getCtx(), I_R_StatusCategory.Table_Name)
+		return (org.compiere.model.I_R_StatusCategory)MTable.get(getCtx(), org.compiere.model.I_R_StatusCategory.Table_Name)
 			.getPO(getR_StatusCategory_ID(), get_TrxName());	}
 
 	/** Set Status Category.
@@ -329,6 +329,20 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set R_Status_UU.
+		@param R_Status_UU R_Status_UU	  */
+	public void setR_Status_UU (String R_Status_UU)
+	{
+		set_Value (COLUMNNAME_R_Status_UU, R_Status_UU);
+	}
+
+	/** Get R_Status_UU.
+		@return R_Status_UU	  */
+	public String getR_Status_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_R_Status_UU);
 	}
 
 	/** Set Sequence.
@@ -379,9 +393,9 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_R_Status getUpdate_Status() throws RuntimeException
+	public org.compiere.model.I_R_Status getUpdate_Status() throws RuntimeException
     {
-		return (I_R_Status)MTable.get(getCtx(), I_R_Status.Table_Name)
+		return (org.compiere.model.I_R_Status)MTable.get(getCtx(), org.compiere.model.I_R_Status.Table_Name)
 			.getPO(getUpdate_Status_ID(), get_TrxName());	}
 
 	/** Set Update Status.

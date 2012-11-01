@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionRunLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_DistributionRunLine (Properties ctx, int M_DistributionRunLine_ID, String trxName)
@@ -117,9 +117,9 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 		return ii.intValue();
 	}
 
-	public I_M_DistributionList getM_DistributionList() throws RuntimeException
+	public org.compiere.model.I_M_DistributionList getM_DistributionList() throws RuntimeException
     {
-		return (I_M_DistributionList)MTable.get(getCtx(), I_M_DistributionList.Table_Name)
+		return (org.compiere.model.I_M_DistributionList)MTable.get(getCtx(), org.compiere.model.I_M_DistributionList.Table_Name)
 			.getPO(getM_DistributionList_ID(), get_TrxName());	}
 
 	/** Set Distribution List.
@@ -145,9 +145,9 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 		return ii.intValue();
 	}
 
-	public I_M_DistributionRun getM_DistributionRun() throws RuntimeException
+	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException
     {
-		return (I_M_DistributionRun)MTable.get(getCtx(), I_M_DistributionRun.Table_Name)
+		return (org.compiere.model.I_M_DistributionRun)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRun.Table_Name)
 			.getPO(getM_DistributionRun_ID(), get_TrxName());	}
 
 	/** Set Distribution Run.
@@ -204,6 +204,20 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 		return ii.intValue();
 	}
 
+	/** Set M_DistributionRunLine_UU.
+		@param M_DistributionRunLine_UU M_DistributionRunLine_UU	  */
+	public void setM_DistributionRunLine_UU (String M_DistributionRunLine_UU)
+	{
+		set_Value (COLUMNNAME_M_DistributionRunLine_UU, M_DistributionRunLine_UU);
+	}
+
+	/** Get M_DistributionRunLine_UU.
+		@return M_DistributionRunLine_UU	  */
+	public String getM_DistributionRunLine_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_DistributionRunLine_UU);
+	}
+
 	/** Set Minimum Quantity.
 		@param MinQty 
 		Minimum quantity for the business partner
@@ -224,9 +238,9 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 		return bd;
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
