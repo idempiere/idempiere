@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_EventAudit
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_WF_EventAudit (Properties ctx, int AD_WF_EventAudit_ID, String trxName)
@@ -80,9 +80,9 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
       return sb.toString();
     }
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -108,9 +108,9 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 		return ii.intValue();
 	}
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -167,9 +167,23 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_EventAudit_ID()));
     }
 
-	public I_AD_WF_Node getAD_WF_Node() throws RuntimeException
+	/** Set AD_WF_EventAudit_UU.
+		@param AD_WF_EventAudit_UU AD_WF_EventAudit_UU	  */
+	public void setAD_WF_EventAudit_UU (String AD_WF_EventAudit_UU)
+	{
+		set_Value (COLUMNNAME_AD_WF_EventAudit_UU, AD_WF_EventAudit_UU);
+	}
+
+	/** Get AD_WF_EventAudit_UU.
+		@return AD_WF_EventAudit_UU	  */
+	public String getAD_WF_EventAudit_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_WF_EventAudit_UU);
+	}
+
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
     {
-		return (I_AD_WF_Node)MTable.get(getCtx(), I_AD_WF_Node.Table_Name)
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
 			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
 
 	/** Set Node.
@@ -195,9 +209,9 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 		return ii.intValue();
 	}
 
-	public I_AD_WF_Process getAD_WF_Process() throws RuntimeException
+	public org.compiere.model.I_AD_WF_Process getAD_WF_Process() throws RuntimeException
     {
-		return (I_AD_WF_Process)MTable.get(getCtx(), I_AD_WF_Process.Table_Name)
+		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_Name)
 			.getPO(getAD_WF_Process_ID(), get_TrxName());	}
 
 	/** Set Workflow Process.
@@ -223,9 +237,9 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 		return ii.intValue();
 	}
 
-	public I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
+	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
     {
-		return (I_AD_WF_Responsible)MTable.get(getCtx(), I_AD_WF_Responsible.Table_Name)
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_Name)
 			.getPO(getAD_WF_Responsible_ID(), get_TrxName());	}
 
 	/** Set Workflow Responsible.

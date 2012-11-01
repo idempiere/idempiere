@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueKnown
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_R_IssueKnown (Properties ctx, int R_IssueKnown_ID, String trxName)
@@ -229,9 +229,23 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_R_IssueRecommendation getR_IssueRecommendation() throws RuntimeException
+	/** Set R_IssueKnown_UU.
+		@param R_IssueKnown_UU R_IssueKnown_UU	  */
+	public void setR_IssueKnown_UU (String R_IssueKnown_UU)
+	{
+		set_Value (COLUMNNAME_R_IssueKnown_UU, R_IssueKnown_UU);
+	}
+
+	/** Get R_IssueKnown_UU.
+		@return R_IssueKnown_UU	  */
+	public String getR_IssueKnown_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_R_IssueKnown_UU);
+	}
+
+	public org.compiere.model.I_R_IssueRecommendation getR_IssueRecommendation() throws RuntimeException
     {
-		return (I_R_IssueRecommendation)MTable.get(getCtx(), I_R_IssueRecommendation.Table_Name)
+		return (org.compiere.model.I_R_IssueRecommendation)MTable.get(getCtx(), org.compiere.model.I_R_IssueRecommendation.Table_Name)
 			.getPO(getR_IssueRecommendation_ID(), get_TrxName());	}
 
 	/** Set Issue Recommendation.
@@ -257,9 +271,9 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_R_IssueStatus getR_IssueStatus() throws RuntimeException
+	public org.compiere.model.I_R_IssueStatus getR_IssueStatus() throws RuntimeException
     {
-		return (I_R_IssueStatus)MTable.get(getCtx(), I_R_IssueStatus.Table_Name)
+		return (org.compiere.model.I_R_IssueStatus)MTable.get(getCtx(), org.compiere.model.I_R_IssueStatus.Table_Name)
 			.getPO(getR_IssueStatus_ID(), get_TrxName());	}
 
 	/** Set Issue Status.
@@ -285,9 +299,9 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_R_Request getR_Request() throws RuntimeException
+	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
     {
-		return (I_R_Request)MTable.get(getCtx(), I_R_Request.Table_Name)
+		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_Name)
 			.getPO(getR_Request_ID(), get_TrxName());	}
 
 	/** Set Request.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_MigrationScript
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_MigrationScript (Properties ctx, int AD_MigrationScript_ID, String trxName)
@@ -97,6 +97,20 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_MigrationScript_UU.
+		@param AD_MigrationScript_UU AD_MigrationScript_UU	  */
+	public void setAD_MigrationScript_UU (String AD_MigrationScript_UU)
+	{
+		set_Value (COLUMNNAME_AD_MigrationScript_UU, AD_MigrationScript_UU);
+	}
+
+	/** Get AD_MigrationScript_UU.
+		@return AD_MigrationScript_UU	  */
+	public String getAD_MigrationScript_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_MigrationScript_UU);
 	}
 
 	/** Set Description.
@@ -303,7 +317,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 
 	/** Set URL.
 		@param URL 
-		Full URL address - e.g. http://www.adempiere.org
+		Full URL address - e.g. http://www.idempiere.org
 	  */
 	public void setURL (String URL)
 	{
@@ -311,7 +325,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	}
 
 	/** Get URL.
-		@return Full URL address - e.g. http://www.adempiere.org
+		@return Full URL address - e.g. http://www.idempiere.org
 	  */
 	public String getURL () 
 	{

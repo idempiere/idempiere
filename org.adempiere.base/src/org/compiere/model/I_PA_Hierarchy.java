@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_Hierarchy
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PA_Hierarchy 
 {
@@ -31,7 +31,7 @@ public interface I_PA_Hierarchy
     public static final String Table_Name = "PA_Hierarchy";
 
     /** AD_Table_ID=821 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 821;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_PA_Hierarchy
 	  */
 	public int getAD_Tree_Account_ID();
 
-	public I_AD_Tree getAD_Tree_Account() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_Account() throws RuntimeException;
 
     /** Column name AD_Tree_Activity_ID */
     public static final String COLUMNNAME_AD_Tree_Activity_ID = "AD_Tree_Activity_ID";
@@ -90,7 +90,7 @@ public interface I_PA_Hierarchy
 	  */
 	public int getAD_Tree_Activity_ID();
 
-	public I_AD_Tree getAD_Tree_Activity() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_Activity() throws RuntimeException;
 
     /** Column name AD_Tree_BPartner_ID */
     public static final String COLUMNNAME_AD_Tree_BPartner_ID = "AD_Tree_BPartner_ID";
@@ -105,7 +105,7 @@ public interface I_PA_Hierarchy
 	  */
 	public int getAD_Tree_BPartner_ID();
 
-	public I_AD_Tree getAD_Tree_BPartner() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_BPartner() throws RuntimeException;
 
     /** Column name AD_Tree_Campaign_ID */
     public static final String COLUMNNAME_AD_Tree_Campaign_ID = "AD_Tree_Campaign_ID";
@@ -120,7 +120,7 @@ public interface I_PA_Hierarchy
 	  */
 	public int getAD_Tree_Campaign_ID();
 
-	public I_AD_Tree getAD_Tree_Campaign() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_Campaign() throws RuntimeException;
 
     /** Column name AD_Tree_Org_ID */
     public static final String COLUMNNAME_AD_Tree_Org_ID = "AD_Tree_Org_ID";
@@ -135,7 +135,7 @@ public interface I_PA_Hierarchy
 	  */
 	public int getAD_Tree_Org_ID();
 
-	public I_AD_Tree getAD_Tree_Org() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_Org() throws RuntimeException;
 
     /** Column name AD_Tree_Product_ID */
     public static final String COLUMNNAME_AD_Tree_Product_ID = "AD_Tree_Product_ID";
@@ -150,7 +150,7 @@ public interface I_PA_Hierarchy
 	  */
 	public int getAD_Tree_Product_ID();
 
-	public I_AD_Tree getAD_Tree_Product() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_Product() throws RuntimeException;
 
     /** Column name AD_Tree_Project_ID */
     public static final String COLUMNNAME_AD_Tree_Project_ID = "AD_Tree_Project_ID";
@@ -165,7 +165,7 @@ public interface I_PA_Hierarchy
 	  */
 	public int getAD_Tree_Project_ID();
 
-	public I_AD_Tree getAD_Tree_Project() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_Project() throws RuntimeException;
 
     /** Column name AD_Tree_SalesRegion_ID */
     public static final String COLUMNNAME_AD_Tree_SalesRegion_ID = "AD_Tree_SalesRegion_ID";
@@ -180,7 +180,7 @@ public interface I_PA_Hierarchy
 	  */
 	public int getAD_Tree_SalesRegion_ID();
 
-	public I_AD_Tree getAD_Tree_SalesRegion() throws RuntimeException;
+	public org.compiere.model.I_AD_Tree getAD_Tree_SalesRegion() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -262,6 +262,15 @@ public interface I_PA_Hierarchy
 	  * Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.
 	  */
 	public int getPA_Hierarchy_ID();
+
+    /** Column name PA_Hierarchy_UU */
+    public static final String COLUMNNAME_PA_Hierarchy_UU = "PA_Hierarchy_UU";
+
+	/** Set PA_Hierarchy_UU	  */
+	public void setPA_Hierarchy_UU (String PA_Hierarchy_UU);
+
+	/** Get PA_Hierarchy_UU	  */
+	public String getPA_Hierarchy_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

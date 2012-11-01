@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Process 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Process
     public static final String Table_Name = "AD_Process";
 
     /** AD_Table_ID=284 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 284;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_AD_Process
 	  */
 	public int getAD_Form_ID();
 
-	public I_AD_Form getAD_Form() throws RuntimeException;
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -103,7 +103,7 @@ public interface I_AD_Process
 	  */
 	public int getAD_PrintFormat_ID();
 
-	public I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_ID */
     public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
@@ -118,6 +118,15 @@ public interface I_AD_Process
 	  */
 	public int getAD_Process_ID();
 
+    /** Column name AD_Process_UU */
+    public static final String COLUMNNAME_AD_Process_UU = "AD_Process_UU";
+
+	/** Set AD_Process_UU	  */
+	public void setAD_Process_UU (String AD_Process_UU);
+
+	/** Get AD_Process_UU	  */
+	public String getAD_Process_UU();
+
     /** Column name AD_ReportView_ID */
     public static final String COLUMNNAME_AD_ReportView_ID = "AD_ReportView_ID";
 
@@ -131,7 +140,7 @@ public interface I_AD_Process
 	  */
 	public int getAD_ReportView_ID();
 
-	public I_AD_ReportView getAD_ReportView() throws RuntimeException;
+	public org.compiere.model.I_AD_ReportView getAD_ReportView() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
     public static final String COLUMNNAME_AD_Workflow_ID = "AD_Workflow_ID";
@@ -146,7 +155,7 @@ public interface I_AD_Process
 	  */
 	public int getAD_Workflow_ID();
 
-	public I_AD_Workflow getAD_Workflow() throws RuntimeException;
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Classname */
     public static final String COLUMNNAME_Classname = "Classname";

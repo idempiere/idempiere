@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for CM_AccessNewsChannel
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_AccessNewsChannel extends PO implements I_CM_AccessNewsChannel, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_AccessNewsChannel (Properties ctx, int CM_AccessNewsChannel_ID, String trxName)
@@ -70,9 +70,23 @@ public class X_CM_AccessNewsChannel extends PO implements I_CM_AccessNewsChannel
       return sb.toString();
     }
 
-	public I_CM_AccessProfile getCM_AccessProfile() throws RuntimeException
+	/** Set CM_AccessNewsChannel_UU.
+		@param CM_AccessNewsChannel_UU CM_AccessNewsChannel_UU	  */
+	public void setCM_AccessNewsChannel_UU (String CM_AccessNewsChannel_UU)
+	{
+		set_Value (COLUMNNAME_CM_AccessNewsChannel_UU, CM_AccessNewsChannel_UU);
+	}
+
+	/** Get CM_AccessNewsChannel_UU.
+		@return CM_AccessNewsChannel_UU	  */
+	public String getCM_AccessNewsChannel_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_AccessNewsChannel_UU);
+	}
+
+	public org.compiere.model.I_CM_AccessProfile getCM_AccessProfile() throws RuntimeException
     {
-		return (I_CM_AccessProfile)MTable.get(getCtx(), I_CM_AccessProfile.Table_Name)
+		return (org.compiere.model.I_CM_AccessProfile)MTable.get(getCtx(), org.compiere.model.I_CM_AccessProfile.Table_Name)
 			.getPO(getCM_AccessProfile_ID(), get_TrxName());	}
 
 	/** Set Web Access Profile.
@@ -98,9 +112,9 @@ public class X_CM_AccessNewsChannel extends PO implements I_CM_AccessNewsChannel
 		return ii.intValue();
 	}
 
-	public I_CM_NewsChannel getCM_NewsChannel() throws RuntimeException
+	public org.compiere.model.I_CM_NewsChannel getCM_NewsChannel() throws RuntimeException
     {
-		return (I_CM_NewsChannel)MTable.get(getCtx(), I_CM_NewsChannel.Table_Name)
+		return (org.compiere.model.I_CM_NewsChannel)MTable.get(getCtx(), org.compiere.model.I_CM_NewsChannel.Table_Name)
 			.getPO(getCM_NewsChannel_ID(), get_TrxName());	}
 
 	/** Set News Channel.

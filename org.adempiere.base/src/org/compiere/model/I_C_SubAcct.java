@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_SubAcct
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_SubAcct 
 {
@@ -31,7 +31,7 @@ public interface I_C_SubAcct
     public static final String Table_Name = "C_SubAcct";
 
     /** AD_Table_ID=825 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 825;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_SubAcct
 	  */
 	public int getC_ElementValue_ID();
 
-	public I_C_ElementValue getC_ElementValue() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -105,6 +105,15 @@ public interface I_C_SubAcct
 	  * Sub account for Element Value
 	  */
 	public int getC_SubAcct_ID();
+
+    /** Column name C_SubAcct_UU */
+    public static final String COLUMNNAME_C_SubAcct_UU = "C_SubAcct_UU";
+
+	/** Set C_SubAcct_UU	  */
+	public void setC_SubAcct_UU (String C_SubAcct_UU);
+
+	/** Get C_SubAcct_UU	  */
+	public String getC_SubAcct_UU();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

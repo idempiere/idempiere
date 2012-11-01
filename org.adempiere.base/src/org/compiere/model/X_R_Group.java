@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Group
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_R_Group extends PO implements I_R_Group, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_R_Group (Properties ctx, int R_Group_ID, String trxName)
@@ -105,9 +105,9 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	public I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
+	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
     {
-		return (I_M_ChangeNotice)MTable.get(getCtx(), I_M_ChangeNotice.Table_Name)
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
 			.getPO(getM_ChangeNotice_ID(), get_TrxName());	}
 
 	/** Set Change Notice.
@@ -207,5 +207,19 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set R_Group_UU.
+		@param R_Group_UU R_Group_UU	  */
+	public void setR_Group_UU (String R_Group_UU)
+	{
+		set_Value (COLUMNNAME_R_Group_UU, R_Group_UU);
+	}
+
+	/** Get R_Group_UU.
+		@return R_Group_UU	  */
+	public String getR_Group_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_R_Group_UU);
 	}
 }

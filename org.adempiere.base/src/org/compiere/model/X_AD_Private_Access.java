@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Private_Access
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Private_Access extends PO implements I_AD_Private_Access, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Private_Access (Properties ctx, int AD_Private_Access_ID, String trxName)
@@ -71,9 +71,23 @@ public class X_AD_Private_Access extends PO implements I_AD_Private_Access, I_Pe
       return sb.toString();
     }
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	/** Set AD_Private_Access_UU.
+		@param AD_Private_Access_UU AD_Private_Access_UU	  */
+	public void setAD_Private_Access_UU (String AD_Private_Access_UU)
+	{
+		set_Value (COLUMNNAME_AD_Private_Access_UU, AD_Private_Access_UU);
+	}
+
+	/** Get AD_Private_Access_UU.
+		@return AD_Private_Access_UU	  */
+	public String getAD_Private_Access_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Private_Access_UU);
+	}
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -99,9 +113,9 @@ public class X_AD_Private_Access extends PO implements I_AD_Private_Access, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.

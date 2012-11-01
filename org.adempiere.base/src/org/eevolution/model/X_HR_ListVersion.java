@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListVersion
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_HR_ListVersion (Properties ctx, int HR_ListVersion_ID, String trxName)
@@ -161,6 +161,20 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set HR_ListVersion_UU.
+		@param HR_ListVersion_UU HR_ListVersion_UU	  */
+	public void setHR_ListVersion_UU (String HR_ListVersion_UU)
+	{
+		set_Value (COLUMNNAME_HR_ListVersion_UU, HR_ListVersion_UU);
+	}
+
+	/** Get HR_ListVersion_UU.
+		@return HR_ListVersion_UU	  */
+	public String getHR_ListVersion_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_HR_ListVersion_UU);
 	}
 
 	/** Set Name.

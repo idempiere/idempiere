@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_CostType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_CostType extends PO implements I_M_CostType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_CostType (Properties ctx, int M_CostType_ID, String trxName)
@@ -126,6 +126,20 @@ public class X_M_CostType extends PO implements I_M_CostType, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_CostType_UU.
+		@param M_CostType_UU M_CostType_UU	  */
+	public void setM_CostType_UU (String M_CostType_UU)
+	{
+		set_Value (COLUMNNAME_M_CostType_UU, M_CostType_UU);
+	}
+
+	/** Get M_CostType_UU.
+		@return M_CostType_UU	  */
+	public String getM_CostType_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_CostType_UU);
 	}
 
 	/** Set Name.

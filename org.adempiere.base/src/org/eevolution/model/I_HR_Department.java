@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Department
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_HR_Department 
 {
@@ -32,7 +32,7 @@ public interface I_HR_Department
     public static final String Table_Name = "HR_Department";
 
     /** AD_Table_ID=53088 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53088;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,7 +76,7 @@ public interface I_HR_Department
 	  */
 	public int getC_Activity_ID();
 
-	public I_C_Activity getC_Activity() throws RuntimeException;
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -115,6 +115,15 @@ public interface I_HR_Department
 
 	/** Get Payroll Department	  */
 	public int getHR_Department_ID();
+
+    /** Column name HR_Department_UU */
+    public static final String COLUMNNAME_HR_Department_UU = "HR_Department_UU";
+
+	/** Set HR_Department_UU	  */
+	public void setHR_Department_UU (String HR_Department_UU);
+
+	/** Get HR_Department_UU	  */
+	public String getHR_Department_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

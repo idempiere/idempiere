@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Tab
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_ASP_Tab 
 {
@@ -31,7 +31,7 @@ public interface I_ASP_Tab
     public static final String Table_Name = "ASP_Tab";
 
     /** AD_Table_ID=53047 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53047;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_ASP_Tab
 	  */
 	public int getAD_Tab_ID();
 
-	public I_AD_Tab getAD_Tab() throws RuntimeException;
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AllFields */
     public static final String COLUMNNAME_AllFields = "AllFields";
@@ -104,6 +104,15 @@ public interface I_ASP_Tab
 	/** Get ASP Tab	  */
 	public int getASP_Tab_ID();
 
+    /** Column name ASP_Tab_UU */
+    public static final String COLUMNNAME_ASP_Tab_UU = "ASP_Tab_UU";
+
+	/** Set ASP_Tab_UU	  */
+	public void setASP_Tab_UU (String ASP_Tab_UU);
+
+	/** Get ASP_Tab_UU	  */
+	public String getASP_Tab_UU();
+
     /** Column name ASP_Window_ID */
     public static final String COLUMNNAME_ASP_Window_ID = "ASP_Window_ID";
 
@@ -113,7 +122,7 @@ public interface I_ASP_Tab
 	/** Get ASP Window	  */
 	public int getASP_Window_ID();
 
-	public I_ASP_Window getASP_Window() throws RuntimeException;
+	public org.compiere.model.I_ASP_Window getASP_Window() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

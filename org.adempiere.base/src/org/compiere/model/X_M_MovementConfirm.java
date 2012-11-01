@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementConfirm
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_MovementConfirm (Properties ctx, int M_MovementConfirm_ID, String trxName)
@@ -257,9 +257,9 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 		return false;
 	}
 
-	public I_M_Inventory getM_Inventory() throws RuntimeException
+	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
     {
-		return (I_M_Inventory)MTable.get(getCtx(), I_M_Inventory.Table_Name)
+		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_Name)
 			.getPO(getM_Inventory_ID(), get_TrxName());	}
 
 	/** Set Phys.Inventory.
@@ -308,9 +308,23 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 		return ii.intValue();
 	}
 
-	public I_M_Movement getM_Movement() throws RuntimeException
+	/** Set M_MovementConfirm_UU.
+		@param M_MovementConfirm_UU M_MovementConfirm_UU	  */
+	public void setM_MovementConfirm_UU (String M_MovementConfirm_UU)
+	{
+		set_Value (COLUMNNAME_M_MovementConfirm_UU, M_MovementConfirm_UU);
+	}
+
+	/** Get M_MovementConfirm_UU.
+		@return M_MovementConfirm_UU	  */
+	public String getM_MovementConfirm_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_MovementConfirm_UU);
+	}
+
+	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException
     {
-		return (I_M_Movement)MTable.get(getCtx(), I_M_Movement.Table_Name)
+		return (org.compiere.model.I_M_Movement)MTable.get(getCtx(), org.compiere.model.I_M_Movement.Table_Name)
 			.getPO(getM_Movement_ID(), get_TrxName());	}
 
 	/** Set Inventory Move.

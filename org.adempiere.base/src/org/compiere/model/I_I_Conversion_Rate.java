@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Conversion_Rate
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_I_Conversion_Rate 
 {
@@ -31,7 +31,7 @@ public interface I_I_Conversion_Rate
     public static final String Table_Name = "I_Conversion_Rate";
 
     /** AD_Table_ID=641 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 641;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_I_Conversion_Rate
 	  */
 	public int getC_Conversion_Rate_ID();
 
-	public I_C_Conversion_Rate getC_Conversion_Rate() throws RuntimeException;
+	public org.compiere.model.I_C_Conversion_Rate getC_Conversion_Rate() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
     public static final String COLUMNNAME_C_ConversionType_ID = "C_ConversionType_ID";
@@ -90,7 +90,7 @@ public interface I_I_Conversion_Rate
 	  */
 	public int getC_ConversionType_ID();
 
-	public I_C_ConversionType getC_ConversionType() throws RuntimeException;
+	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -105,7 +105,7 @@ public interface I_I_Conversion_Rate
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_Currency_ID_To */
     public static final String COLUMNNAME_C_Currency_ID_To = "C_Currency_ID_To";
@@ -120,7 +120,7 @@ public interface I_I_Conversion_Rate
 	  */
 	public int getC_Currency_ID_To();
 
-	public I_C_Currency getC_Currency_To() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency_To() throws RuntimeException;
 
     /** Column name ConversionTypeValue */
     public static final String COLUMNNAME_ConversionTypeValue = "ConversionTypeValue";
@@ -189,6 +189,15 @@ public interface I_I_Conversion_Rate
 	  * Import Currency Conversion Rate
 	  */
 	public int getI_Conversion_Rate_ID();
+
+    /** Column name I_Conversion_Rate_UU */
+    public static final String COLUMNNAME_I_Conversion_Rate_UU = "I_Conversion_Rate_UU";
+
+	/** Set I_Conversion_Rate_UU	  */
+	public void setI_Conversion_Rate_UU (String I_Conversion_Rate_UU);
+
+	/** Get I_Conversion_Rate_UU	  */
+	public String getI_Conversion_Rate_UU();
 
     /** Column name I_ErrorMsg */
     public static final String COLUMNNAME_I_ErrorMsg = "I_ErrorMsg";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for CM_ChatTypeUpdate
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_ChatTypeUpdate (Properties ctx, int CM_ChatTypeUpdate_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
       return sb.toString();
     }
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -99,9 +99,9 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 		return ii.intValue();
 	}
 
-	public I_CM_ChatType getCM_ChatType() throws RuntimeException
+	public org.compiere.model.I_CM_ChatType getCM_ChatType() throws RuntimeException
     {
-		return (I_CM_ChatType)MTable.get(getCtx(), I_CM_ChatType.Table_Name)
+		return (org.compiere.model.I_CM_ChatType)MTable.get(getCtx(), org.compiere.model.I_CM_ChatType.Table_Name)
 			.getPO(getCM_ChatType_ID(), get_TrxName());	}
 
 	/** Set Chat Type.
@@ -125,6 +125,20 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set CM_ChatTypeUpdate_UU.
+		@param CM_ChatTypeUpdate_UU CM_ChatTypeUpdate_UU	  */
+	public void setCM_ChatTypeUpdate_UU (String CM_ChatTypeUpdate_UU)
+	{
+		set_Value (COLUMNNAME_CM_ChatTypeUpdate_UU, CM_ChatTypeUpdate_UU);
+	}
+
+	/** Get CM_ChatTypeUpdate_UU.
+		@return CM_ChatTypeUpdate_UU	  */
+	public String getCM_ChatTypeUpdate_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_ChatTypeUpdate_UU);
 	}
 
 	/** Set Self-Service.

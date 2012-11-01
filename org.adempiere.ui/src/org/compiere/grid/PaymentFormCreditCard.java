@@ -18,9 +18,12 @@ import java.math.BigDecimal;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
+import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
+import org.compiere.model.MPaymentProcessor;
+import org.compiere.model.MPaymentTransaction;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -34,8 +37,87 @@ import org.compiere.util.ValueNamePair;
 public abstract class PaymentFormCreditCard extends PaymentForm {
 	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_CreditCard;
 	
+	/** Start Payment */
+	public int 					m_C_Payment_ID = 0;
+	public MPayment 			m_mPayment = null;
+	public MPayment 			m_mPaymentOriginal = null;
+	public MPaymentTransaction	m_mPaymentTransaction = null;
+	/** Start CreditCard */
+	public String 				m_CCType = "";
+	
 	public PaymentFormCreditCard(int WindowNo, GridTab mTab) {
 		super(WindowNo, mTab);
+	}
+	
+	@Override
+	public void loadData() {
+		//  Existing Payment
+		if (getGridTab().getValue("C_Payment_ID") != null)
+		{
+			m_C_Payment_ID = ((Integer)getGridTab().getValue("C_Payment_ID")).intValue();
+			if (m_C_Payment_ID != 0)
+			{
+				m_mPayment = new MPayment(Env.getCtx(), m_C_Payment_ID, null);
+				m_mPaymentOriginal = new MPayment(Env.getCtx(), m_C_Payment_ID, null);	//	full copy
+			}
+		}
+		
+		if (m_mPayment == null || m_mPayment.getC_Payment_ID() == 0)
+		{
+			int C_Order_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Order_ID");
+			int C_Invoice_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Invoice_ID");
+			if (C_Invoice_ID == 0 && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed))
+				C_Invoice_ID = getInvoiceID (C_Order_ID);
+			
+			boolean found = false;
+			if (C_Order_ID > 0 || C_Invoice_ID > 0)
+			{
+				int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(C_Order_ID, C_Invoice_ID, null);
+				
+				if (ids.length > 0)
+				{
+					if (C_Invoice_ID > 0)
+					{
+						for (int id : ids)
+						{
+							MPaymentTransaction pt = new MPaymentTransaction(Env.getCtx(), id, null);
+							if (pt.getC_Invoice_ID() == C_Invoice_ID)
+							{
+								m_mPaymentTransaction = new MPaymentTransaction(Env.getCtx(), id, null);
+								found = true;
+								break;
+							}
+						}
+					}
+					
+					if (!found)
+					{
+						for (int id : ids)
+						{
+							MPaymentTransaction pt = new MPaymentTransaction(Env.getCtx(), id, null);
+							if (pt.getC_Order_ID() == C_Order_ID)
+							{
+								m_mPaymentTransaction = new MPaymentTransaction(Env.getCtx(), id, null);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (m_mPayment == null)
+		{
+			m_mPayment = new MPayment (Env.getCtx (), 0, null);
+			m_mPayment.setAD_Org_ID(m_AD_Org_ID);
+			m_mPayment.setAmount (m_C_Currency_ID, m_Amount);
+		}
+		
+		if (m_C_Payment_ID > 0 && m_mPayment != null)
+			m_CCType = m_mPayment.getCreditCardType();
+		
+		if (m_mPaymentTransaction != null)
+			m_CCType = m_mPaymentTransaction.getCreditCardType();
 	}
 	
 	public ValueNamePair selectedCreditCard;
@@ -51,9 +133,32 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		return ccs;
 	}
 	
+	@Override
+	public boolean saveChanges() {
+		boolean ok = super.saveChanges();
+		if (m_mPayment != null)
+			m_mPayment.set_TrxName(null);
+		if (m_mPaymentOriginal != null)
+			m_mPaymentOriginal.set_TrxName(null);
+		if (m_mPaymentTransaction != null)
+			m_mPaymentTransaction.set_TrxName(null);
+		return ok;
+	}
+	
 	public String processMsg = null;
-	public boolean save(String newCCType, String newCCNumber, String newCCExp, BigDecimal newAmount)
+	public boolean save(String newCCType, String newCCNumber, String newCCExp, BigDecimal newAmount, String trxName)
 	{
+		// set trxname for class objects
+		if (m_mPayment != null)
+			m_mPayment.set_TrxName(trxName);		
+		if (m_mPaymentOriginal != null)
+			m_mPaymentOriginal.set_TrxName(trxName);
+		if (m_mPaymentTransaction != null)
+			m_mPaymentTransaction.set_TrxName(trxName);
+		
+		if (m_mPaymentTransaction != null)
+			return true;
+				
 		processMsg = null;
 		String payTypes = m_Cash_As_Payment ? "KTSDB" : "KTSD";
 				
@@ -107,8 +212,23 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		//  Get Order and optionally Invoice
 		int C_Order_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Order_ID");
 		int C_Invoice_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Invoice_ID");
-		if (C_Invoice_ID == 0 && m_DocStatus.equals("CO"))
+		if (C_Invoice_ID == 0 && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed))
 			C_Invoice_ID = getInvoiceID (C_Order_ID);
+		
+		boolean isPOSOrder = false;
+		boolean isInvoice = false;
+		boolean isCreditMemo = false;
+		int doctype = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_DocTypeTarget_ID");
+		if(doctype > 0)
+		{
+			MDocType mDocType = MDocType.get(Env.getCtx(), doctype);
+			if (MDocType.DOCSUBTYPESO_POSOrder.equals(mDocType.getDocSubTypeSO()))
+				isPOSOrder = true;
+			else if (MDocType.DOCBASETYPE_ARInvoice.equals(mDocType.getDocBaseType()))
+				isInvoice = true;
+			else if (MDocType.DOCBASETYPE_ARCreditMemo.equals(mDocType.getDocBaseType()))
+				isCreditMemo = true;
+		}
 
 		//  Amount sign negative, if ARC (Credit Memo) or API (AP Invoice)
 		boolean negateAmt = false;
@@ -137,9 +257,26 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		//  Set Amount
 		m_mPayment.setAmount(m_C_Currency_ID, payAmount);
 		m_mPayment.setCreditCard(MPayment.TRXTYPE_Sales, newCCType, newCCNumber, "", newCCExp);
-		// Get changes to credit card amount
-		m_mPayment.setAmount(m_C_Currency_ID, newAmount);
 		m_mPayment.setPaymentProcessor();
+		
+		if (isPOSOrder || isInvoice)
+			m_mPayment.setTrxType(MPayment.TRXTYPE_Sales);
+		else if (isCreditMemo)
+		{
+			m_mPayment.setTrxType(MPayment.TRXTYPE_CreditPayment);
+//			m_mPayment.setOrig_TrxID(kPGOrderIDField.getValue());
+		}
+		else if (C_Invoice_ID != 0)
+		{
+			if (invoice.isComplete())
+				m_mPayment.setTrxType(MPayment.TRXTYPE_Sales);
+		}
+		else
+		{
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(m_mPayment.getCtx(), m_mPayment.getC_PaymentProcessor_ID(), m_mPayment.get_TrxName());
+			if (paymentProcessor.getTrxType() != null)
+				m_mPayment.setTrxType(paymentProcessor.getTrxType());
+		}
 
 		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
 		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
@@ -152,7 +289,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		m_mPayment.setDateAcct(m_DateAcct);
 		setCustomizeValues();
 		
-		if (!m_mPayment.isApproved())
+		if (!m_mPayment.isOnline() && !m_mPayment.isApproved())
 		{
 			processMsg = Msg.getMsg(Env.getCtx(), "CardNotProcessed");
 			throw new AdempiereException(processMsg);
@@ -196,52 +333,87 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	{
 		processMsg = null;
 		boolean error = false;
-		
-		boolean approved = false;
-		String info = "";
 
-		m_mPayment.setCreditCard(MPayment.TRXTYPE_Sales, CCType,
-			CCNumber, "", CCExp);
-		m_mPayment.setAmount(m_C_Currency_ID, m_Amount);
-		m_mPayment.setPaymentProcessor();
-		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
-		//
+		int C_Order_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Order_ID");
 		int C_Invoice_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Invoice_ID");
-		if (C_Invoice_ID == 0 && m_DocStatus.equals("CO"))
-		{
-			int C_Order_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Order_ID");
+		if (C_Invoice_ID == 0 && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed))
 			C_Invoice_ID = getInvoiceID (C_Order_ID);
+
+		boolean isPOSOrder = false;
+		boolean isInvoice = false;
+		boolean isCreditMemo = false;
+		int doctype = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_DocTypeTarget_ID");
+		if(doctype > 0)
+		{
+			MDocType mDocType = MDocType.get(Env.getCtx(), doctype);
+			if (MDocType.DOCSUBTYPESO_POSOrder.equals(mDocType.getDocSubTypeSO()))
+				isPOSOrder = true;
+			else if (MDocType.DOCBASETYPE_ARInvoice.equals(mDocType.getDocBaseType()))
+				isInvoice = true;
+			else if (MDocType.DOCBASETYPE_ARCreditMemo.equals(mDocType.getDocBaseType()))
+				isCreditMemo = true;
 		}
-		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
-		m_mPayment.setDateTrx(m_DateAcct);
-		//  Set Amount
-		m_mPayment.setAmount(m_C_Currency_ID, m_Amount);
+
+		boolean approved = false;
+		
+		MPaymentTransaction mpt = new MPaymentTransaction(Env.getCtx(), 0, null);
+		mpt.setAD_Org_ID(m_AD_Org_ID);
+		mpt.setCreditCard(MPayment.TRXTYPE_Sales, CCType, CCNumber, "", CCExp);
+		mpt.setAmount(m_C_Currency_ID, m_Amount);
+		mpt.setPaymentProcessor();
+		
+		if (isPOSOrder || isInvoice)
+			mpt.setTrxType(MPayment.TRXTYPE_Sales);
+		else if (isCreditMemo)
+		{
+			mpt.setTrxType(MPayment.TRXTYPE_CreditPayment);
+//			mpt.setOrig_TrxID(kPGOrderIDField.getValue());
+		}
+		else if (C_Invoice_ID != 0)
+		{
+			MInvoice invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
+			if (invoice.isComplete())
+				mpt.setTrxType(MPayment.TRXTYPE_Sales);
+		}
+		else
+		{
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(mpt.getCtx(), mpt.getC_PaymentProcessor_ID(), mpt.get_TrxName());
+			if (paymentProcessor.getTrxType() != null)
+				mpt.setTrxType(paymentProcessor.getTrxType());
+		}
+		
+		mpt.setC_BPartner_ID(m_C_BPartner_ID);
+		//
+		mpt.setC_Order_ID(C_Order_ID);
+		mpt.setC_Invoice_ID(C_Invoice_ID);
+		mpt.setDateTrx(m_DateAcct);
 		setCustomizeValues();
-		if (!m_mPayment.save()) {
+		if (!mpt.save()) {
 			processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
 			return false;
 		} else {
-			approved = m_mPayment.processOnline();
-			info = m_mPayment.getR_RespMsg() + " (" + m_mPayment.getR_AuthCode()
-				+ ") ID=" + m_mPayment.getR_PnRef();
-			m_mPayment.saveEx();
-
+			approved = mpt.processOnline();
+			mpt.saveEx();
+			
 			if (approved)
 			{
-				boolean ok = m_mPayment.processIt(DocAction.ACTION_Complete);
-				m_mPayment.saveEx();
-				if (ok)
+				m_needSave = true;
+				if (mpt.getC_Payment_ID() > 0)
+				{
+					m_mPayment = new MPayment(mpt.getCtx(), mpt.getC_Payment_ID(), mpt.get_TrxName());
+					String info = m_mPayment.getR_RespMsg() + " (" + m_mPayment.getR_AuthCode() + ") ID=" + m_mPayment.getR_PnRef();
 					processMsg = info + "\n" + m_mPayment.getDocumentNo();
+					saveChanges();
+				}
 				else
 				{
-					processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
-					error = true;
+					String info = mpt.getR_RespMsg() + " (" + mpt.getR_AuthCode() + ") ID=" + mpt.getR_PnRef();
+					processMsg = info;
 				}
-				saveChanges();
 			}
 			else
 			{
-				processMsg = info;
+				processMsg = mpt.getErrorMessage();				
 				error = true;
 			}
 		}
@@ -256,5 +428,10 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	public MBankAccountProcessor getBankAccountProcessor(String CCType, BigDecimal PayAmt)
 	{
 		return getBankAccountProcessor(Env.getCtx(), MPayment.TENDERTYPE_CreditCard, CCType, Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, PayAmt, null);
+	}
+
+	@Override
+	public boolean isApproved() {
+		return m_mPayment.isApproved();
 	}
 }

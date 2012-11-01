@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Substitute
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_Substitute (Properties ctx, int M_Substitute_ID, String trxName)
@@ -89,9 +89,9 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -115,6 +115,20 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_Substitute_UU.
+		@param M_Substitute_UU M_Substitute_UU	  */
+	public void setM_Substitute_UU (String M_Substitute_UU)
+	{
+		set_Value (COLUMNNAME_M_Substitute_UU, M_Substitute_UU);
+	}
+
+	/** Get M_Substitute_UU.
+		@return M_Substitute_UU	  */
+	public String getM_Substitute_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_Substitute_UU);
 	}
 
 	/** Set Name.
@@ -142,9 +156,9 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
-	public I_M_Product getSubstitute() throws RuntimeException
+	public org.compiere.model.I_M_Product getSubstitute() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getSubstitute_ID(), get_TrxName());	}
 
 	/** Set Substitute.

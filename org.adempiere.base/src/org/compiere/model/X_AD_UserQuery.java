@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserQuery
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_UserQuery (Properties ctx, int AD_UserQuery_ID, String trxName)
@@ -73,9 +73,9 @@ public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Tab getAD_Tab() throws RuntimeException
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
     {
-		return (I_AD_Tab)MTable.get(getCtx(), I_AD_Tab.Table_Name)
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
 			.getPO(getAD_Tab_ID(), get_TrxName());	}
 
 	/** Set Tab.
@@ -101,9 +101,9 @@ public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -129,9 +129,9 @@ public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -178,6 +178,20 @@ public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_UserQuery_UU.
+		@param AD_UserQuery_UU AD_UserQuery_UU	  */
+	public void setAD_UserQuery_UU (String AD_UserQuery_UU)
+	{
+		set_Value (COLUMNNAME_AD_UserQuery_UU, AD_UserQuery_UU);
+	}
+
+	/** Get AD_UserQuery_UU.
+		@return AD_UserQuery_UU	  */
+	public String getAD_UserQuery_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_UserQuery_UU);
 	}
 
 	/** Set Validation code.

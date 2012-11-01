@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Charge
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_Charge 
 {
@@ -31,7 +31,7 @@ public interface I_C_Charge
     public static final String Table_Name = "C_Charge";
 
     /** AD_Table_ID=313 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 313;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_Charge
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Charge_ID */
     public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
@@ -99,7 +99,16 @@ public interface I_C_Charge
 	/** Get Charge Type	  */
 	public int getC_ChargeType_ID();
 
-	public I_C_ChargeType getC_ChargeType() throws RuntimeException;
+	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException;
+
+    /** Column name C_Charge_UU */
+    public static final String COLUMNNAME_C_Charge_UU = "C_Charge_UU";
+
+	/** Set C_Charge_UU	  */
+	public void setC_Charge_UU (String C_Charge_UU);
+
+	/** Get C_Charge_UU	  */
+	public String getC_Charge_UU();
 
     /** Column name ChargeAmt */
     public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
@@ -143,7 +152,7 @@ public interface I_C_Charge
 	  */
 	public int getC_TaxCategory_ID();
 
-	public I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
+	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

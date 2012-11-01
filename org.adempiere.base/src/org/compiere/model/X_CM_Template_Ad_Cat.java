@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_Template_Ad_Cat
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_Template_Ad_Cat extends PO implements I_CM_Template_Ad_Cat, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_Template_Ad_Cat (Properties ctx, int CM_Template_Ad_Cat_ID, String trxName)
@@ -72,9 +72,9 @@ public class X_CM_Template_Ad_Cat extends PO implements I_CM_Template_Ad_Cat, I_
       return sb.toString();
     }
 
-	public I_CM_Ad_Cat getCM_Ad_Cat() throws RuntimeException
+	public org.compiere.model.I_CM_Ad_Cat getCM_Ad_Cat() throws RuntimeException
     {
-		return (I_CM_Ad_Cat)MTable.get(getCtx(), I_CM_Ad_Cat.Table_Name)
+		return (org.compiere.model.I_CM_Ad_Cat)MTable.get(getCtx(), org.compiere.model.I_CM_Ad_Cat.Table_Name)
 			.getPO(getCM_Ad_Cat_ID(), get_TrxName());	}
 
 	/** Set Advertisement Category.
@@ -100,9 +100,23 @@ public class X_CM_Template_Ad_Cat extends PO implements I_CM_Template_Ad_Cat, I_
 		return ii.intValue();
 	}
 
-	public I_CM_Template getCM_Template() throws RuntimeException
+	/** Set CM_Template_Ad_Cat_UU.
+		@param CM_Template_Ad_Cat_UU CM_Template_Ad_Cat_UU	  */
+	public void setCM_Template_Ad_Cat_UU (String CM_Template_Ad_Cat_UU)
+	{
+		set_Value (COLUMNNAME_CM_Template_Ad_Cat_UU, CM_Template_Ad_Cat_UU);
+	}
+
+	/** Get CM_Template_Ad_Cat_UU.
+		@return CM_Template_Ad_Cat_UU	  */
+	public String getCM_Template_Ad_Cat_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_Template_Ad_Cat_UU);
+	}
+
+	public org.compiere.model.I_CM_Template getCM_Template() throws RuntimeException
     {
-		return (I_CM_Template)MTable.get(getCtx(), I_CM_Template.Table_Name)
+		return (org.compiere.model.I_CM_Template)MTable.get(getCtx(), org.compiere.model.I_CM_Template.Table_Name)
 			.getPO(getCM_Template_ID(), get_TrxName());	}
 
 	/** Set Template.

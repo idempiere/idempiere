@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_InOutLineConfirm
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_I_InOutLineConfirm (Properties ctx, int I_InOutLineConfirm_ID, String trxName)
@@ -200,6 +200,20 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
         return new KeyNamePair(get_ID(), String.valueOf(getI_InOutLineConfirm_ID()));
     }
 
+	/** Set I_InOutLineConfirm_UU.
+		@param I_InOutLineConfirm_UU I_InOutLineConfirm_UU	  */
+	public void setI_InOutLineConfirm_UU (String I_InOutLineConfirm_UU)
+	{
+		set_Value (COLUMNNAME_I_InOutLineConfirm_UU, I_InOutLineConfirm_UU);
+	}
+
+	/** Get I_InOutLineConfirm_UU.
+		@return I_InOutLineConfirm_UU	  */
+	public String getI_InOutLineConfirm_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_I_InOutLineConfirm_UU);
+	}
+
 	/** Set Imported.
 		@param I_IsImported 
 		Has this import been processed
@@ -224,9 +238,9 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 		return false;
 	}
 
-	public I_M_InOutLineConfirm getM_InOutLineConfirm() throws RuntimeException
+	public org.compiere.model.I_M_InOutLineConfirm getM_InOutLineConfirm() throws RuntimeException
     {
-		return (I_M_InOutLineConfirm)MTable.get(getCtx(), I_M_InOutLineConfirm.Table_Name)
+		return (org.compiere.model.I_M_InOutLineConfirm)MTable.get(getCtx(), org.compiere.model.I_M_InOutLineConfirm.Table_Name)
 			.getPO(getM_InOutLineConfirm_ID(), get_TrxName());	}
 
 	/** Set Ship/Receipt Confirmation Line.

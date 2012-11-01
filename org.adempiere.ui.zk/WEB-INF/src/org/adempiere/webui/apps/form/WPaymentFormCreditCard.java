@@ -15,6 +15,7 @@ package org.adempiere.webui.apps.form;
 
 import java.math.BigDecimal;
 
+import org.adempiere.util.PaymentUtil;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
@@ -34,6 +35,7 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentFormCreditCard;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
+import org.compiere.model.MInvoice;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -88,7 +90,6 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		kOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
 		LayoutUtils.addSclass("action-text-button", kOnline);
 		kOnline.addActionListener(this);
-		kStatus.setText(" ");
 		window.getPanel().setId("kPanel");
 		
 		Columns columns = new Columns();
@@ -140,6 +141,8 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 
 	@Override
 	public void loadData() {
+		super.loadData();
+		
 		kAmountField.setValue(m_Amount);
 		
 		if (m_C_Payment_ID != 0)
@@ -151,17 +154,35 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 			kAmountField.setValue(m_mPayment.getPayAmt());
 			
 			//	if approved/paid, don't let it change
-			kTypeCombo.setEnabled(!m_mPayment.isApproved());
-			kNumberField.setReadonly(m_mPayment.isApproved());
-			kExpField.setReadonly(m_mPayment.isApproved());
-			kApprovalField.setReadonly(m_mPayment.isApproved());
-			kOnline.setEnabled(!m_mPayment.isApproved());
-			kAmountField.setReadWrite(!m_mPayment.isApproved());
+			kTypeCombo.setEnabled(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kNumberField.setReadonly(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed));
+			kExpField.setReadonly(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed));
+			kApprovalField.setReadonly(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed));
+			kOnline.setEnabled(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kAmountField.setReadWrite(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+		}
+		else if (m_mPaymentTransaction != null)
+		{
+			kNumberField.setText(m_mPaymentTransaction.getCreditCardNumber());
+			kExpField.setText(PaymentUtil.getCreditCardExp(m_mPaymentTransaction.getCreditCardExpMM(), m_mPaymentTransaction.getCreditCardExpYY(), null));
+			kApprovalField.setText(m_mPaymentTransaction.getVoiceAuthCode());
+			kStatus.setText(m_mPaymentTransaction.getR_PnRef());
+			kAmountField.setValue(m_mPaymentTransaction.getPayAmt());
+			
+			//	if approved/paid, don't let it change
+			kTypeCombo.setEnabled(!m_mPaymentTransaction.isApproved());
+			kNumberField.setReadonly(m_mPaymentTransaction.isApproved());
+			kExpField.setReadonly(m_mPaymentTransaction.isApproved());
+			kApprovalField.setReadonly(m_mPaymentTransaction.isApproved());
+			kOnline.setEnabled(!m_mPaymentTransaction.isApproved());
+			kAmountField.setReadWrite(!m_mPaymentTransaction.isApproved());			
 		}
 		
 		/**
 		 *	Load Credit Cards
 		 */
+		kTypeCombo.removeAllItems();
+		
 		ValueNamePair[] ccs = getCreditCardList();
 		for (int i = 0; i < ccs.length; i++)
 			kTypeCombo.addItem(ccs[i]);
@@ -170,13 +191,21 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		if (selectedCreditCard != null)
 			kTypeCombo.setSelectedValueNamePair(selectedCreditCard);
 		
-		if (m_mPayment.isApproved())
+		if (m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed))
 		{
-			kOnline.setVisible(true);
+			kOnline.setVisible(m_mPayment.isOnline());
 			kOnline.setEnabled(false);
 			
 			MBankAccountProcessor bankAccountProcessor = new MBankAccountProcessor(m_mPayment.getCtx(), m_mPayment.getC_BankAccount_ID(), m_mPayment.getC_PaymentProcessor_ID(), null);
 			setBankAccountProcessor(bankAccountProcessor);
+		}
+		else if (m_mPaymentTransaction != null)
+		{
+			kOnline.setVisible(m_mPaymentTransaction.isOnline());
+			kOnline.setEnabled(false);
+			
+			MBankAccountProcessor bankAccountProcessor = new MBankAccountProcessor(m_mPaymentTransaction.getCtx(), m_mPaymentTransaction.getC_BankAccount_ID(), m_mPaymentTransaction.getC_PaymentProcessor_ID(), null);
+			setBankAccountProcessor(bankAccountProcessor);			
 		}
 		else
 		{
@@ -237,7 +266,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		if (vp != null)
 			newCCType = vp.getValue();
 		
-		boolean ok = save(newCCType, kNumberField.getText(), kExpField.getText(), (BigDecimal) kAmountField.getValue());		
+		boolean ok = save(newCCType, kNumberField.getText(), kExpField.getText(), (BigDecimal) kAmountField.getValue(), trxName);		
 		if(!ok)
 			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
 		else if (processMsg != null)
@@ -259,8 +288,12 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		boolean ok = processOnline(CCType, kNumberField.getText(), kExpField.getText());
 		if (!ok)
 			FDialog.error(getWindowNo(), window, "PaymentNotProcessed", processMsg);
-		else if (processMsg != null)
-			FDialog.info(getWindowNo(), window, "PaymentProcessed", processMsg);
+		else 
+		{
+			loadData();
+			if (processMsg != null)
+				FDialog.info(getWindowNo(), window, "PaymentProcessed", processMsg);
+		}
 	}   //  online
 	
 	@Override

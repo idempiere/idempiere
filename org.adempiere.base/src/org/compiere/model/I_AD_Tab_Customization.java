@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tab_Customization
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Tab_Customization 
 {
@@ -70,6 +70,15 @@ public interface I_AD_Tab_Customization
 
 	/** Get Tab Customization	  */
 	public int getAD_Tab_Customization_ID();
+
+    /** Column name AD_Tab_Customization_UU */
+    public static final String COLUMNNAME_AD_Tab_Customization_UU = "AD_Tab_Customization_UU";
+
+	/** Set AD_Tab_Customization_UU	  */
+	public void setAD_Tab_Customization_UU (String AD_Tab_Customization_UU);
+
+	/** Get AD_Tab_Customization_UU	  */
+	public String getAD_Tab_Customization_UU();
 
     /** Column name AD_Tab_ID */
     public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";

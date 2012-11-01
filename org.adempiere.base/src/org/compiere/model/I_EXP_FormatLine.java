@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for EXP_FormatLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_EXP_FormatLine 
 {
@@ -31,7 +31,7 @@ public interface I_EXP_FormatLine
     public static final String Table_Name = "EXP_FormatLine";
 
     /** AD_Table_ID=53073 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53073;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_EXP_FormatLine
 	  */
 	public int getAD_Column_ID();
 
-	public I_AD_Column getAD_Column() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -90,7 +90,7 @@ public interface I_EXP_FormatLine
 	  */
 	public int getAD_Reference_ID();
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException;
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -164,6 +164,15 @@ public interface I_EXP_FormatLine
 
 	/** Get Format Line	  */
 	public int getEXP_FormatLine_ID();
+
+    /** Column name EXP_FormatLine_UU */
+    public static final String COLUMNNAME_EXP_FormatLine_UU = "EXP_FormatLine_UU";
+
+	/** Set EXP_FormatLine_UU	  */
+	public void setEXP_FormatLine_UU (String EXP_FormatLine_UU);
+
+	/** Get EXP_FormatLine_UU	  */
+	public String getEXP_FormatLine_UU();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";

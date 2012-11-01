@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_HR_Concept (Properties ctx, int HR_Concept_ID, String trxName)
@@ -101,9 +101,9 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 		return (String)get_Value(COLUMNNAME_AccountSign);
 	}
 
-	public I_AD_Reference getAD_Reference() throws RuntimeException
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
     {
-		return (I_AD_Reference)MTable.get(getCtx(), I_AD_Reference.Table_Name)
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
 			.getPO(getAD_Reference_ID(), get_TrxName());	}
 
 	/** Set Reference.
@@ -181,9 +181,9 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	public void setHR_Concept_Category_ID (int HR_Concept_Category_ID)
 	{
 		if (HR_Concept_Category_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_HR_Concept_Category_ID, null);
+			set_Value (COLUMNNAME_HR_Concept_Category_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_HR_Concept_Category_ID, Integer.valueOf(HR_Concept_Category_ID));
+			set_Value (COLUMNNAME_HR_Concept_Category_ID, Integer.valueOf(HR_Concept_Category_ID));
 	}
 
 	/** Get Payroll Concept Category.
@@ -214,6 +214,20 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set HR_Concept_UU.
+		@param HR_Concept_UU HR_Concept_UU	  */
+	public void setHR_Concept_UU (String HR_Concept_UU)
+	{
+		set_Value (COLUMNNAME_HR_Concept_UU, HR_Concept_UU);
+	}
+
+	/** Get HR_Concept_UU.
+		@return HR_Concept_UU	  */
+	public String getHR_Concept_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_HR_Concept_UU);
 	}
 
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException

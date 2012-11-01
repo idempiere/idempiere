@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for W_Counter
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_W_Counter 
 {
@@ -31,7 +31,7 @@ public interface I_W_Counter
     public static final String Table_Name = "W_Counter";
 
     /** AD_Table_ID=403 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 403;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -233,7 +233,7 @@ public interface I_W_Counter
 	  */
 	public int getW_CounterCount_ID();
 
-	public I_W_CounterCount getW_CounterCount() throws RuntimeException;
+	public org.compiere.model.I_W_CounterCount getW_CounterCount() throws RuntimeException;
 
     /** Column name W_Counter_ID */
     public static final String COLUMNNAME_W_Counter_ID = "W_Counter_ID";
@@ -247,4 +247,13 @@ public interface I_W_Counter
 	  * Individual Count hit
 	  */
 	public int getW_Counter_ID();
+
+    /** Column name W_Counter_UU */
+    public static final String COLUMNNAME_W_Counter_UU = "W_Counter_UU";
+
+	/** Set W_Counter_UU	  */
+	public void setW_Counter_UU (String W_Counter_UU);
+
+	/** Get W_Counter_UU	  */
+	public String getW_Counter_UU();
 }

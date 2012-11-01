@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_ClientException
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_ASP_ClientException 
 {
@@ -31,7 +31,7 @@ public interface I_ASP_ClientException
     public static final String Table_Name = "ASP_ClientException";
 
     /** AD_Table_ID=53057 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53057;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_ASP_ClientException
 	  */
 	public int getAD_Field_ID();
 
-	public I_AD_Field getAD_Field() throws RuntimeException;
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
 
     /** Column name AD_Form_ID */
     public static final String COLUMNNAME_AD_Form_ID = "AD_Form_ID";
@@ -77,7 +77,7 @@ public interface I_ASP_ClientException
 	  */
 	public int getAD_Form_ID();
 
-	public I_AD_Form getAD_Form() throws RuntimeException;
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -105,7 +105,7 @@ public interface I_ASP_ClientException
 	  */
 	public int getAD_Process_ID();
 
-	public I_AD_Process getAD_Process() throws RuntimeException;
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Process_Para_ID */
     public static final String COLUMNNAME_AD_Process_Para_ID = "AD_Process_Para_ID";
@@ -116,7 +116,7 @@ public interface I_ASP_ClientException
 	/** Get Process Parameter	  */
 	public int getAD_Process_Para_ID();
 
-	public I_AD_Process_Para getAD_Process_Para() throws RuntimeException;
+	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException;
 
     /** Column name AD_Tab_ID */
     public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
@@ -131,7 +131,7 @@ public interface I_ASP_ClientException
 	  */
 	public int getAD_Tab_ID();
 
-	public I_AD_Tab getAD_Tab() throws RuntimeException;
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AD_Task_ID */
     public static final String COLUMNNAME_AD_Task_ID = "AD_Task_ID";
@@ -146,7 +146,7 @@ public interface I_ASP_ClientException
 	  */
 	public int getAD_Task_ID();
 
-	public I_AD_Task getAD_Task() throws RuntimeException;
+	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException;
 
     /** Column name AD_WF_Node_ID */
     public static final String COLUMNNAME_AD_WF_Node_ID = "AD_WF_Node_ID";
@@ -161,7 +161,7 @@ public interface I_ASP_ClientException
 	  */
 	public int getAD_WF_Node_ID();
 
-	public I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -176,7 +176,7 @@ public interface I_ASP_ClientException
 	  */
 	public int getAD_Window_ID();
 
-	public I_AD_Window getAD_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
     public static final String COLUMNNAME_AD_Workflow_ID = "AD_Workflow_ID";
@@ -191,7 +191,7 @@ public interface I_ASP_ClientException
 	  */
 	public int getAD_Workflow_ID();
 
-	public I_AD_Workflow getAD_Workflow() throws RuntimeException;
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name ASP_ClientException_ID */
     public static final String COLUMNNAME_ASP_ClientException_ID = "ASP_ClientException_ID";
@@ -201,6 +201,15 @@ public interface I_ASP_ClientException
 
 	/** Get Client Exception	  */
 	public int getASP_ClientException_ID();
+
+    /** Column name ASP_ClientException_UU */
+    public static final String COLUMNNAME_ASP_ClientException_UU = "ASP_ClientException_UU";
+
+	/** Set ASP_ClientException_UU	  */
+	public void setASP_ClientException_UU (String ASP_ClientException_UU);
+
+	/** Get ASP_ClientException_UU	  */
+	public String getASP_ClientException_UU();
 
     /** Column name ASP_Status */
     public static final String COLUMNNAME_ASP_Status = "ASP_Status";

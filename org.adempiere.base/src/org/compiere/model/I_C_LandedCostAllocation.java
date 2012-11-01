@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_LandedCostAllocation
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_LandedCostAllocation 
 {
@@ -31,7 +31,7 @@ public interface I_C_LandedCostAllocation
     public static final String Table_Name = "C_LandedCostAllocation";
 
     /** AD_Table_ID=760 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 760;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -101,7 +101,7 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getC_InvoiceLine_ID();
 
-	public I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
+	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_LandedCostAllocation_ID */
     public static final String COLUMNNAME_C_LandedCostAllocation_ID = "C_LandedCostAllocation_ID";
@@ -115,6 +115,15 @@ public interface I_C_LandedCostAllocation
 	  * Allocation for Land Costs
 	  */
 	public int getC_LandedCostAllocation_ID();
+
+    /** Column name C_LandedCostAllocation_UU */
+    public static final String COLUMNNAME_C_LandedCostAllocation_UU = "C_LandedCostAllocation_UU";
+
+	/** Set C_LandedCostAllocation_UU	  */
+	public void setC_LandedCostAllocation_UU (String C_LandedCostAllocation_UU);
+
+	/** Get C_LandedCostAllocation_UU	  */
+	public String getC_LandedCostAllocation_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -160,7 +169,7 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getM_CostElement_ID();
 
-	public I_M_CostElement getM_CostElement() throws RuntimeException;
+	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -175,7 +184,7 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Qty */
     public static final String COLUMNNAME_Qty = "Qty";

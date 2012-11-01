@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_RelationType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_RelationType (Properties ctx, int AD_RelationType_ID, String trxName)
@@ -75,9 +75,9 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
       return sb.toString();
     }
 
-	public I_AD_Reference getAD_Reference_Source() throws RuntimeException
+	public org.compiere.model.I_AD_Reference getAD_Reference_Source() throws RuntimeException
     {
-		return (I_AD_Reference)MTable.get(getCtx(), I_AD_Reference.Table_Name)
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
 			.getPO(getAD_Reference_Source_ID(), get_TrxName());	}
 
 	/** Set Source Reference.
@@ -100,9 +100,9 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 		return ii.intValue();
 	}
 
-	public I_AD_Reference getAD_Reference_Target() throws RuntimeException
+	public org.compiere.model.I_AD_Reference getAD_Reference_Target() throws RuntimeException
     {
-		return (I_AD_Reference)MTable.get(getCtx(), I_AD_Reference.Table_Name)
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
 			.getPO(getAD_Reference_Target_ID(), get_TrxName());	}
 
 	/** Set Target Reference.
@@ -143,6 +143,20 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_RelationType_UU.
+		@param AD_RelationType_UU AD_RelationType_UU	  */
+	public void setAD_RelationType_UU (String AD_RelationType_UU)
+	{
+		set_Value (COLUMNNAME_AD_RelationType_UU, AD_RelationType_UU);
+	}
+
+	/** Get AD_RelationType_UU.
+		@return AD_RelationType_UU	  */
+	public String getAD_RelationType_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_RelationType_UU);
 	}
 
 	/** Set Description.

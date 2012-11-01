@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchemaBreak
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBreak, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaBreak (Properties ctx, int M_DiscountSchemaBreak_ID, String trxName)
@@ -166,9 +166,23 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 		return ii.intValue();
 	}
 
-	public I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException
+	/** Set M_DiscountSchemaBreak_UU.
+		@param M_DiscountSchemaBreak_UU M_DiscountSchemaBreak_UU	  */
+	public void setM_DiscountSchemaBreak_UU (String M_DiscountSchemaBreak_UU)
+	{
+		set_Value (COLUMNNAME_M_DiscountSchemaBreak_UU, M_DiscountSchemaBreak_UU);
+	}
+
+	/** Get M_DiscountSchemaBreak_UU.
+		@return M_DiscountSchemaBreak_UU	  */
+	public String getM_DiscountSchemaBreak_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_DiscountSchemaBreak_UU);
+	}
+
+	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException
     {
-		return (I_M_DiscountSchema)MTable.get(getCtx(), I_M_DiscountSchema.Table_Name)
+		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_Name)
 			.getPO(getM_DiscountSchema_ID(), get_TrxName());	}
 
 	/** Set Discount Schema.
@@ -194,9 +208,9 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 		return ii.intValue();
 	}
 
-	public I_M_Product_Category getM_Product_Category() throws RuntimeException
+	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
     {
-		return (I_M_Product_Category)MTable.get(getCtx(), I_M_Product_Category.Table_Name)
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
 			.getPO(getM_Product_Category_ID(), get_TrxName());	}
 
 	/** Set Product Category.
@@ -222,9 +236,9 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.

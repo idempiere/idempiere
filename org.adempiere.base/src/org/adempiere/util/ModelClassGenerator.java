@@ -19,6 +19,8 @@
  *****************************************************************************/
 package org.adempiere.util;
 
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -161,7 +163,7 @@ public class ModelClassGenerator
 		createImports(start);
 		//	Class
 		start.append("/** Generated Model for ").append(tableName).append(NL)
-			 .append(" *  @author Adempiere (generated) ").append(NL)
+			 .append(" *  @author iDempiere (generated) ").append(NL)
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(" - $Id$ */").append(NL)
 			 .append("public class ").append(className)
 			 	.append(" extends PO")
@@ -417,12 +419,21 @@ public class ModelClassGenerator
 		sb.append("\tpublic void set").append(columnName).append(" (").append(dataType).append(" ").append(columnName).append(")").append(NL)
 			.append("\t{").append(NL)
 		;
+				
 		//	List Validation
 		if (AD_Reference_ID != 0 && String.class == clazz)
 		{
 			String staticVar = addListValidation (sb, AD_Reference_ID, columnName);
 			sb.insert(0, staticVar);
 		}
+		
+		//	Payment Validation
+		if (displayType == DisplayType.Payment)
+		{
+			String staticVar = addListValidation (sb, REFERENCE_PAYMENTRULE, columnName);
+			sb.insert(0, staticVar);			
+		}
+
 		//	setValue ("ColumnName", xx);
 		if (virtualColumn)
 		{

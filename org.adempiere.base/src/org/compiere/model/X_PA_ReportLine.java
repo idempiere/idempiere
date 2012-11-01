@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -119,9 +119,9 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public I_GL_Budget getGL_Budget() throws RuntimeException
+	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
     {
-		return (I_GL_Budget)MTable.get(getCtx(), I_GL_Budget.Table_Name)
+		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_Name)
 			.getPO(getGL_Budget_ID(), get_TrxName());	}
 
 	/** Set Budget.
@@ -217,9 +217,9 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
-	public I_PA_ReportLine getOper_1() throws RuntimeException
+	public org.compiere.model.I_PA_ReportLine getOper_1() throws RuntimeException
     {
-		return (I_PA_ReportLine)MTable.get(getCtx(), I_PA_ReportLine.Table_Name)
+		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_Name)
 			.getPO(getOper_1_ID(), get_TrxName());	}
 
 	/** Set Operand 1.
@@ -245,9 +245,9 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_PA_ReportLine getOper_2() throws RuntimeException
+	public org.compiere.model.I_PA_ReportLine getOper_2() throws RuntimeException
     {
-		return (I_PA_ReportLine)MTable.get(getCtx(), I_PA_ReportLine.Table_Name)
+		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_Name)
 			.getPO(getOper_2_ID(), get_TrxName());	}
 
 	/** Set Operand 2.
@@ -353,9 +353,9 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
+	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
     {
-		return (I_PA_ReportLineSet)MTable.get(getCtx(), I_PA_ReportLineSet.Table_Name)
+		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_Name)
 			.getPO(getPA_ReportLineSet_ID(), get_TrxName());	}
 
 	/** Set Report Line Set.
@@ -376,6 +376,20 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set PA_ReportLine_UU.
+		@param PA_ReportLine_UU PA_ReportLine_UU	  */
+	public void setPA_ReportLine_UU (String PA_ReportLine_UU)
+	{
+		set_Value (COLUMNNAME_PA_ReportLine_UU, PA_ReportLine_UU);
+	}
+
+	/** Get PA_ReportLine_UU.
+		@return PA_ReportLine_UU	  */
+	public String getPA_ReportLine_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_PA_ReportLine_UU);
 	}
 
 	/** PostingType AD_Reference_ID=125 */

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for U_BlackListCheque
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_U_BlackListCheque extends PO implements I_U_BlackListCheque, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_U_BlackListCheque (Properties ctx, int U_BlackListCheque_ID, String trxName)
@@ -117,5 +117,19 @@ public class X_U_BlackListCheque extends PO implements I_U_BlackListCheque, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set U_BlackListCheque_UU.
+		@param U_BlackListCheque_UU U_BlackListCheque_UU	  */
+	public void setU_BlackListCheque_UU (String U_BlackListCheque_UU)
+	{
+		set_Value (COLUMNNAME_U_BlackListCheque_UU, U_BlackListCheque_UU);
+	}
+
+	/** Get U_BlackListCheque_UU.
+		@return U_BlackListCheque_UU	  */
+	public String getU_BlackListCheque_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_U_BlackListCheque_UU);
 	}
 }

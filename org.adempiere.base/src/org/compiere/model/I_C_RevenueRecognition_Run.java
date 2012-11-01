@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RevenueRecognition_Run
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_RevenueRecognition_Run 
 {
@@ -31,7 +31,7 @@ public interface I_C_RevenueRecognition_Run
     public static final String Table_Name = "C_RevenueRecognition_Run";
 
     /** AD_Table_ID=444 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 444;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -91,7 +91,7 @@ public interface I_C_RevenueRecognition_Run
 	  */
 	public int getC_RevenueRecognition_Plan_ID();
 
-	public I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException;
+	public org.compiere.model.I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException;
 
     /** Column name C_RevenueRecognition_Run_ID */
     public static final String COLUMNNAME_C_RevenueRecognition_Run_ID = "C_RevenueRecognition_Run_ID";
@@ -106,6 +106,15 @@ public interface I_C_RevenueRecognition_Run
 	  */
 	public int getC_RevenueRecognition_Run_ID();
 
+    /** Column name C_RevenueRecognition_Run_UU */
+    public static final String COLUMNNAME_C_RevenueRecognition_Run_UU = "C_RevenueRecognition_Run_UU";
+
+	/** Set C_RevenueRecognition_Run_UU	  */
+	public void setC_RevenueRecognition_Run_UU (String C_RevenueRecognition_Run_UU);
+
+	/** Get C_RevenueRecognition_Run_UU	  */
+	public String getC_RevenueRecognition_Run_UU();
+
     /** Column name GL_Journal_ID */
     public static final String COLUMNNAME_GL_Journal_ID = "GL_Journal_ID";
 
@@ -119,7 +128,7 @@ public interface I_C_RevenueRecognition_Run
 	  */
 	public int getGL_Journal_ID();
 
-	public I_GL_Journal getGL_Journal() throws RuntimeException;
+	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

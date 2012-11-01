@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for R_RequestTypeUpdates
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_R_RequestTypeUpdates (Properties ctx, int R_RequestTypeUpdates_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
       return sb.toString();
     }
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -123,9 +123,9 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 		return false;
 	}
 
-	public I_R_RequestType getR_RequestType() throws RuntimeException
+	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException
     {
-		return (I_R_RequestType)MTable.get(getCtx(), I_R_RequestType.Table_Name)
+		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_Name)
 			.getPO(getR_RequestType_ID(), get_TrxName());	}
 
 	/** Set Request Type.
@@ -149,5 +149,19 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set R_RequestTypeUpdates_UU.
+		@param R_RequestTypeUpdates_UU R_RequestTypeUpdates_UU	  */
+	public void setR_RequestTypeUpdates_UU (String R_RequestTypeUpdates_UU)
+	{
+		set_Value (COLUMNNAME_R_RequestTypeUpdates_UU, R_RequestTypeUpdates_UU);
+	}
+
+	/** Get R_RequestTypeUpdates_UU.
+		@return R_RequestTypeUpdates_UU	  */
+	public String getR_RequestTypeUpdates_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_R_RequestTypeUpdates_UU);
 	}
 }

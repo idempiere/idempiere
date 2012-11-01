@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Table_ScriptValidator
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Table_ScriptValidator 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Table_ScriptValidator
     public static final String Table_Name = "AD_Table_ScriptValidator";
 
     /** AD_Table_ID=53059 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53059;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -71,7 +71,7 @@ public interface I_AD_Table_ScriptValidator
 	/** Get Rule	  */
 	public int getAD_Rule_ID();
 
-	public I_AD_Rule getAD_Rule() throws RuntimeException;
+	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException;
 
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
@@ -86,7 +86,7 @@ public interface I_AD_Table_ScriptValidator
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Table_ScriptValidator_ID */
     public static final String COLUMNNAME_AD_Table_ScriptValidator_ID = "AD_Table_ScriptValidator_ID";
@@ -96,6 +96,15 @@ public interface I_AD_Table_ScriptValidator
 
 	/** Get Table Script Validator	  */
 	public int getAD_Table_ScriptValidator_ID();
+
+    /** Column name AD_Table_ScriptValidator_UU */
+    public static final String COLUMNNAME_AD_Table_ScriptValidator_UU = "AD_Table_ScriptValidator_UU";
+
+	/** Set AD_Table_ScriptValidator_UU	  */
+	public void setAD_Table_ScriptValidator_UU (String AD_Table_ScriptValidator_UU);
+
+	/** Get AD_Table_ScriptValidator_UU	  */
+	public String getAD_Table_ScriptValidator_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

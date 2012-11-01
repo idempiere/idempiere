@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PromotionLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_PromotionLine 
 {
@@ -31,7 +31,7 @@ public interface I_M_PromotionLine
     public static final String Table_Name = "M_PromotionLine";
 
     /** AD_Table_ID=53179 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53179;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -126,7 +126,7 @@ public interface I_M_PromotionLine
 	/** Get Promotion Group	  */
 	public int getM_PromotionGroup_ID();
 
-	public I_M_PromotionGroup getM_PromotionGroup() throws RuntimeException;
+	public org.compiere.model.I_M_PromotionGroup getM_PromotionGroup() throws RuntimeException;
 
     /** Column name M_Promotion_ID */
     public static final String COLUMNNAME_M_Promotion_ID = "M_Promotion_ID";
@@ -137,7 +137,7 @@ public interface I_M_PromotionLine
 	/** Get Promotion	  */
 	public int getM_Promotion_ID();
 
-	public I_M_Promotion getM_Promotion() throws RuntimeException;
+	public org.compiere.model.I_M_Promotion getM_Promotion() throws RuntimeException;
 
     /** Column name M_PromotionLine_ID */
     public static final String COLUMNNAME_M_PromotionLine_ID = "M_PromotionLine_ID";
@@ -147,6 +147,15 @@ public interface I_M_PromotionLine
 
 	/** Get Promotion Line	  */
 	public int getM_PromotionLine_ID();
+
+    /** Column name M_PromotionLine_UU */
+    public static final String COLUMNNAME_M_PromotionLine_UU = "M_PromotionLine_UU";
+
+	/** Set M_PromotionLine_UU	  */
+	public void setM_PromotionLine_UU (String M_PromotionLine_UU);
+
+	/** Get M_PromotionLine_UU	  */
+	public String getM_PromotionLine_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

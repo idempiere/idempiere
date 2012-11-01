@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_MovementLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_MovementLine 
 {
@@ -31,7 +31,7 @@ public interface I_M_MovementLine
     public static final String Table_Name = "M_MovementLine";
 
     /** AD_Table_ID=324 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 324;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -214,7 +214,7 @@ public interface I_M_MovementLine
 	  */
 	public int getM_Movement_ID();
 
-	public I_M_Movement getM_Movement() throws RuntimeException;
+	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
 
     /** Column name M_MovementLine_ID */
     public static final String COLUMNNAME_M_MovementLine_ID = "M_MovementLine_ID";
@@ -228,6 +228,15 @@ public interface I_M_MovementLine
 	  * Inventory Move document Line
 	  */
 	public int getM_MovementLine_ID();
+
+    /** Column name M_MovementLine_UU */
+    public static final String COLUMNNAME_M_MovementLine_UU = "M_MovementLine_UU";
+
+	/** Set M_MovementLine_UU	  */
+	public void setM_MovementLine_UU (String M_MovementLine_UU);
+
+	/** Get M_MovementLine_UU	  */
+	public String getM_MovementLine_UU();
 
     /** Column name MovementQty */
     public static final String COLUMNNAME_MovementQty = "MovementQty";
@@ -255,7 +264,7 @@ public interface I_M_MovementLine
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
@@ -283,7 +292,7 @@ public interface I_M_MovementLine
 	  */
 	public int getReversalLine_ID();
 
-	public I_M_MovementLine getReversalLine() throws RuntimeException;
+	public org.compiere.model.I_M_MovementLine getReversalLine() throws RuntimeException;
 
     /** Column name ScrappedQty */
     public static final String COLUMNNAME_ScrappedQty = "ScrappedQty";

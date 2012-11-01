@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ProcessData
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_WF_ProcessData (Properties ctx, int AD_WF_ProcessData_ID, String trxName)
@@ -95,9 +95,23 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_WF_Process getAD_WF_Process() throws RuntimeException
+	/** Set AD_WF_ProcessData_UU.
+		@param AD_WF_ProcessData_UU AD_WF_ProcessData_UU	  */
+	public void setAD_WF_ProcessData_UU (String AD_WF_ProcessData_UU)
+	{
+		set_Value (COLUMNNAME_AD_WF_ProcessData_UU, AD_WF_ProcessData_UU);
+	}
+
+	/** Get AD_WF_ProcessData_UU.
+		@return AD_WF_ProcessData_UU	  */
+	public String getAD_WF_ProcessData_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_WF_ProcessData_UU);
+	}
+
+	public org.compiere.model.I_AD_WF_Process getAD_WF_Process() throws RuntimeException
     {
-		return (I_AD_WF_Process)MTable.get(getCtx(), I_AD_WF_Process.Table_Name)
+		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_Name)
 			.getPO(getAD_WF_Process_ID(), get_TrxName());	}
 
 	/** Set Workflow Process.

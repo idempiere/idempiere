@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for ASP_ClientException
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_ASP_ClientException extends PO implements I_ASP_ClientException, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_ASP_ClientException (Properties ctx, int ASP_ClientException_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
       return sb.toString();
     }
 
-	public I_AD_Field getAD_Field() throws RuntimeException
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
     {
-		return (I_AD_Field)MTable.get(getCtx(), I_AD_Field.Table_Name)
+		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
 			.getPO(getAD_Field_ID(), get_TrxName());	}
 
 	/** Set Field.
@@ -99,9 +99,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	public I_AD_Form getAD_Form() throws RuntimeException
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
     {
-		return (I_AD_Form)MTable.get(getCtx(), I_AD_Form.Table_Name)
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
 			.getPO(getAD_Form_ID(), get_TrxName());	}
 
 	/** Set Special Form.
@@ -127,9 +127,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	public I_AD_Process getAD_Process() throws RuntimeException
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
     {
-		return (I_AD_Process)MTable.get(getCtx(), I_AD_Process.Table_Name)
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
 			.getPO(getAD_Process_ID(), get_TrxName());	}
 
 	/** Set Process.
@@ -155,9 +155,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	public I_AD_Process_Para getAD_Process_Para() throws RuntimeException
+	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
     {
-		return (I_AD_Process_Para)MTable.get(getCtx(), I_AD_Process_Para.Table_Name)
+		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_Name)
 			.getPO(getAD_Process_Para_ID(), get_TrxName());	}
 
 	/** Set Process Parameter.
@@ -180,9 +180,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	public I_AD_Tab getAD_Tab() throws RuntimeException
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
     {
-		return (I_AD_Tab)MTable.get(getCtx(), I_AD_Tab.Table_Name)
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
 			.getPO(getAD_Tab_ID(), get_TrxName());	}
 
 	/** Set Tab.
@@ -208,9 +208,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	public I_AD_Task getAD_Task() throws RuntimeException
+	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
     {
-		return (I_AD_Task)MTable.get(getCtx(), I_AD_Task.Table_Name)
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
 			.getPO(getAD_Task_ID(), get_TrxName());	}
 
 	/** Set OS Task.
@@ -236,9 +236,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	public I_AD_WF_Node getAD_WF_Node() throws RuntimeException
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
     {
-		return (I_AD_WF_Node)MTable.get(getCtx(), I_AD_WF_Node.Table_Name)
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
 			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
 
 	/** Set Node.
@@ -264,9 +264,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	public I_AD_Window getAD_Window() throws RuntimeException
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
     {
-		return (I_AD_Window)MTable.get(getCtx(), I_AD_Window.Table_Name)
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
 			.getPO(getAD_Window_ID(), get_TrxName());	}
 
 	/** Set Window.
@@ -292,9 +292,9 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	public I_AD_Workflow getAD_Workflow() throws RuntimeException
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
     {
-		return (I_AD_Workflow)MTable.get(getCtx(), I_AD_Workflow.Table_Name)
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
 			.getPO(getAD_Workflow_ID(), get_TrxName());	}
 
 	/** Set Workflow.
@@ -338,6 +338,20 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set ASP_ClientException_UU.
+		@param ASP_ClientException_UU ASP_ClientException_UU	  */
+	public void setASP_ClientException_UU (String ASP_ClientException_UU)
+	{
+		set_Value (COLUMNNAME_ASP_ClientException_UU, ASP_ClientException_UU);
+	}
+
+	/** Get ASP_ClientException_UU.
+		@return ASP_ClientException_UU	  */
+	public String getASP_ClientException_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_ASP_ClientException_UU);
 	}
 
 	/** ASP_Status AD_Reference_ID=53234 */

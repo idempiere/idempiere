@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_BPartner
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_I_BPartner 
 {
@@ -31,7 +31,7 @@ public interface I_I_BPartner
     public static final String Table_Name = "I_BPartner";
 
     /** AD_Table_ID=533 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 533;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -101,7 +101,7 @@ public interface I_I_BPartner
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Birthday */
     public static final String COLUMNNAME_Birthday = "Birthday";
@@ -142,7 +142,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
     public static final String COLUMNNAME_C_BPartner_Location_ID = "C_BPartner_Location_ID";
@@ -157,7 +157,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_BPartner_Location_ID();
 
-	public I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_BP_Group_ID */
     public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
@@ -172,7 +172,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_BP_Group_ID();
 
-	public I_C_BP_Group getC_BP_Group() throws RuntimeException;
+	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_Country_ID */
     public static final String COLUMNNAME_C_Country_ID = "C_Country_ID";
@@ -187,7 +187,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_Country_ID();
 
-	public I_C_Country getC_Country() throws RuntimeException;
+	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
 
     /** Column name C_Greeting_ID */
     public static final String COLUMNNAME_C_Greeting_ID = "C_Greeting_ID";
@@ -202,7 +202,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_Greeting_ID();
 
-	public I_C_Greeting getC_Greeting() throws RuntimeException;
+	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException;
 
     /** Column name City */
     public static final String COLUMNNAME_City = "City";
@@ -298,7 +298,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_Region_ID();
 
-	public I_C_Region getC_Region() throws RuntimeException;
+	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -373,6 +373,15 @@ public interface I_I_BPartner
 
 	/** Get Import Business Partner	  */
 	public int getI_BPartner_ID();
+
+    /** Column name I_BPartner_UU */
+    public static final String COLUMNNAME_I_BPartner_UU = "I_BPartner_UU";
+
+	/** Set I_BPartner_UU	  */
+	public void setI_BPartner_UU (String I_BPartner_UU);
+
+	/** Get I_BPartner_UU	  */
+	public String getI_BPartner_UU();
 
     /** Column name I_ErrorMsg */
     public static final String COLUMNNAME_I_ErrorMsg = "I_ErrorMsg";
@@ -617,7 +626,7 @@ public interface I_I_BPartner
 	  */
 	public int getR_InterestArea_ID();
 
-	public I_R_InterestArea getR_InterestArea() throws RuntimeException;
+	public org.compiere.model.I_R_InterestArea getR_InterestArea() throws RuntimeException;
 
     /** Column name TaxID */
     public static final String COLUMNNAME_TaxID = "TaxID";

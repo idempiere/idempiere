@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for K_Source
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_K_Source 
 {
@@ -31,7 +31,7 @@ public interface I_K_Source
     public static final String Table_Name = "K_Source";
 
     /** AD_Table_ID=609 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 609;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -116,6 +116,15 @@ public interface I_K_Source
 	  * Source of a Knowledge Entry
 	  */
 	public int getK_Source_ID();
+
+    /** Column name K_Source_UU */
+    public static final String COLUMNNAME_K_Source_UU = "K_Source_UU";
+
+	/** Set K_Source_UU	  */
+	public void setK_Source_UU (String K_Source_UU);
+
+	/** Get K_Source_UU	  */
+	public String getK_Source_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

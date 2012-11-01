@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Bank
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_Bank extends PO implements I_C_Bank, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20110325L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_Bank (Properties ctx, int C_Bank_ID, String trxName)
@@ -95,6 +95,20 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_Bank_UU.
+		@param C_Bank_UU C_Bank_UU	  */
+	public void setC_Bank_UU (String C_Bank_UU)
+	{
+		set_Value (COLUMNNAME_C_Bank_UU, C_Bank_UU);
+	}
+
+	/** Get C_Bank_UU.
+		@return C_Bank_UU	  */
+	public String getC_Bank_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Bank_UU);
 	}
 
 	public I_C_Location getC_Location() throws RuntimeException

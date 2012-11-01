@@ -16,10 +16,10 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.io.*;
+import java.io.Serializable;
 import java.math.RoundingMode;
-import java.util.*;
-import java.util.logging.*;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
 
 import org.compiere.util.Util;
 
@@ -150,7 +150,7 @@ public final class PP_PayFlowPro4 extends PaymentProcessor
 		param.append(createPair("&INVNUM", p_mp.getC_Invoice_ID(), 9));
 
 		//	COMMENT1/2
-		param.append(createPair("&COMMENT1", p_mp.getC_Payment_ID(), 128));		//	Comment
+		param.append(createPair("&COMMENT1", p_mp.getPO().get_ID(), 128));		//	Comment
 		param.append(createPair("&COMMENT2", p_mp.getC_BPartner_ID(), 128)); 	//	Comment2
 
 		return process(param.toString());

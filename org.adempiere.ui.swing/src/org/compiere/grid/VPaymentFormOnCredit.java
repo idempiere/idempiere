@@ -55,6 +55,8 @@ public class VPaymentFormOnCredit extends PaymentFormOnCredit {
 	
 	@Override
 	public void loadData() {
+		super.loadData();
+		
 		ArrayList<KeyNamePair> list = getPaymentTermList();
 		for (KeyNamePair pp : list)
 			pTermCombo.addItem(pp);

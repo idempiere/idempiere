@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_ReportLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_I_ReportLine 
 {
@@ -31,7 +31,7 @@ public interface I_I_ReportLine
     public static final String Table_Name = "I_ReportLine";
 
     /** AD_Table_ID=535 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 535;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -84,7 +84,7 @@ public interface I_I_ReportLine
 	  */
 	public int getC_ElementValue_ID();
 
-	public I_C_ElementValue getC_ElementValue() throws RuntimeException;
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -166,6 +166,15 @@ public interface I_I_ReportLine
 	  * Import Report Line Set values
 	  */
 	public int getI_ReportLine_ID();
+
+    /** Column name I_ReportLine_UU */
+    public static final String COLUMNNAME_I_ReportLine_UU = "I_ReportLine_UU";
+
+	/** Set I_ReportLine_UU	  */
+	public void setI_ReportLine_UU (String I_ReportLine_UU);
+
+	/** Get I_ReportLine_UU	  */
+	public String getI_ReportLine_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -263,7 +272,7 @@ public interface I_I_ReportLine
 	/** Get Report Line	  */
 	public int getPA_ReportLine_ID();
 
-	public I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
+	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
 
     /** Column name PA_ReportLineSet_ID */
     public static final String COLUMNNAME_PA_ReportLineSet_ID = "PA_ReportLineSet_ID";
@@ -274,7 +283,7 @@ public interface I_I_ReportLine
 	/** Get Report Line Set	  */
 	public int getPA_ReportLineSet_ID();
 
-	public I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException;
+	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException;
 
     /** Column name PA_ReportSource_ID */
     public static final String COLUMNNAME_PA_ReportSource_ID = "PA_ReportSource_ID";
@@ -289,7 +298,7 @@ public interface I_I_ReportLine
 	  */
 	public int getPA_ReportSource_ID();
 
-	public I_PA_ReportSource getPA_ReportSource() throws RuntimeException;
+	public org.compiere.model.I_PA_ReportSource getPA_ReportSource() throws RuntimeException;
 
     /** Column name PostingType */
     public static final String COLUMNNAME_PostingType = "PostingType";

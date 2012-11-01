@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningRunEntry
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_DunningRunEntry (Properties ctx, int C_DunningRunEntry_ID, String trxName)
@@ -82,9 +82,9 @@ public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Pe
       return sb.toString();
     }
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -130,9 +130,9 @@ public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Pe
 		return bd;
 	}
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_BPartner_ID(), get_TrxName());	}
 
 	/** Set Business Partner .
@@ -158,9 +158,9 @@ public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
     {
-		return (I_C_BPartner_Location)MTable.get(getCtx(), I_C_BPartner_Location.Table_Name)
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
 			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
 
 	/** Set Partner Location.
@@ -186,9 +186,9 @@ public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_Currency getC_Currency() throws RuntimeException
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
     {
-		return (I_C_Currency)MTable.get(getCtx(), I_C_Currency.Table_Name)
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
 			.getPO(getC_Currency_ID(), get_TrxName());	}
 
 	/** Set Currency.
@@ -214,9 +214,9 @@ public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_DunningLevel getC_DunningLevel() throws RuntimeException
+	public org.compiere.model.I_C_DunningLevel getC_DunningLevel() throws RuntimeException
     {
-		return (I_C_DunningLevel)MTable.get(getCtx(), I_C_DunningLevel.Table_Name)
+		return (org.compiere.model.I_C_DunningLevel)MTable.get(getCtx(), org.compiere.model.I_C_DunningLevel.Table_Name)
 			.getPO(getC_DunningLevel_ID(), get_TrxName());	}
 
 	/** Set Dunning Level.
@@ -262,9 +262,23 @@ public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_DunningRun getC_DunningRun() throws RuntimeException
+	/** Set C_DunningRunEntry_UU.
+		@param C_DunningRunEntry_UU C_DunningRunEntry_UU	  */
+	public void setC_DunningRunEntry_UU (String C_DunningRunEntry_UU)
+	{
+		set_Value (COLUMNNAME_C_DunningRunEntry_UU, C_DunningRunEntry_UU);
+	}
+
+	/** Get C_DunningRunEntry_UU.
+		@return C_DunningRunEntry_UU	  */
+	public String getC_DunningRunEntry_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_DunningRunEntry_UU);
+	}
+
+	public org.compiere.model.I_C_DunningRun getC_DunningRun() throws RuntimeException
     {
-		return (I_C_DunningRun)MTable.get(getCtx(), I_C_DunningRun.Table_Name)
+		return (org.compiere.model.I_C_DunningRun)MTable.get(getCtx(), org.compiere.model.I_C_DunningRun.Table_Name)
 			.getPO(getC_DunningRun_ID(), get_TrxName());	}
 
 	/** Set Dunning Run.
@@ -359,9 +373,9 @@ public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Pe
 		return bd;
 	}
 
-	public I_AD_User getSalesRep() throws RuntimeException
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getSalesRep_ID(), get_TrxName());	}
 
 	/** Set Sales Representative.

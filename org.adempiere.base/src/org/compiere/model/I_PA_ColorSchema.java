@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ColorSchema
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PA_ColorSchema 
 {
@@ -31,7 +31,7 @@ public interface I_PA_ColorSchema
     public static final String Table_Name = "PA_ColorSchema";
 
     /** AD_Table_ID=831 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 831;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_PA_ColorSchema
 	  */
 	public int getAD_PrintColor1_ID();
 
-	public I_AD_PrintColor getAD_PrintColor1() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor1() throws RuntimeException;
 
     /** Column name AD_PrintColor2_ID */
     public static final String COLUMNNAME_AD_PrintColor2_ID = "AD_PrintColor2_ID";
@@ -90,7 +90,7 @@ public interface I_PA_ColorSchema
 	  */
 	public int getAD_PrintColor2_ID();
 
-	public I_AD_PrintColor getAD_PrintColor2() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor2() throws RuntimeException;
 
     /** Column name AD_PrintColor3_ID */
     public static final String COLUMNNAME_AD_PrintColor3_ID = "AD_PrintColor3_ID";
@@ -105,7 +105,7 @@ public interface I_PA_ColorSchema
 	  */
 	public int getAD_PrintColor3_ID();
 
-	public I_AD_PrintColor getAD_PrintColor3() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor3() throws RuntimeException;
 
     /** Column name AD_PrintColor4_ID */
     public static final String COLUMNNAME_AD_PrintColor4_ID = "AD_PrintColor4_ID";
@@ -120,7 +120,7 @@ public interface I_PA_ColorSchema
 	  */
 	public int getAD_PrintColor4_ID();
 
-	public I_AD_PrintColor getAD_PrintColor4() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor4() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -256,6 +256,15 @@ public interface I_PA_ColorSchema
 	  * Performance Color Schema
 	  */
 	public int getPA_ColorSchema_ID();
+
+    /** Column name PA_ColorSchema_UU */
+    public static final String COLUMNNAME_PA_ColorSchema_UU = "PA_ColorSchema_UU";
+
+	/** Set PA_ColorSchema_UU	  */
+	public void setPA_ColorSchema_UU (String PA_ColorSchema_UU);
+
+	/** Get PA_ColorSchema_UU	  */
+	public String getPA_ColorSchema_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

@@ -16,6 +16,10 @@
  *****************************************************************************/
 package org.compiere.grid.ed;
 
+import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
+
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -88,13 +92,13 @@ public final class VButton extends CButton
 		//	Special Buttons
 		if (columnName.equals("PaymentRule"))
 		{
-			readReference(195);
+			readReference(REFERENCE_PAYMENTRULE);
 			this.setForeground(Color.blue);
 			setIcon(Env.getImageIcon("Payment16.gif"));    //  29*14
 		}
 		else if (columnName.equals("DocAction"))
 		{
-			readReference(135);
+			readReference(REFERENCE_DOCUMENTACTION);
 			this.setForeground(Color.blue);
 			setIcon(Env.getImageIcon("Process16.gif"));    //  16*16
 		}
@@ -109,7 +113,7 @@ public final class VButton extends CButton
 		}
 		else if (columnName.equals("Posted"))
 		{
-			readReference(234);
+			readReference(REFERENCE_POSTED);
 			this.setForeground(Color.magenta);
 			setIcon(Env.getImageIcon("InfoAccount16.gif"));    //  16*16
 		}

@@ -92,7 +92,6 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		sCurrencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		sNumberField.setWidth("100pt");
 		sRoutingField.setWidth("70pt");
-		sStatus.setText(" ");
 		sOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
 		LayoutUtils.addSclass("action-text-button", sOnline);
 		sOnline.addActionListener(this);
@@ -149,7 +148,9 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 	}
 
 	@Override
-	public void loadData() {		
+	public void loadData() {	
+		super.loadData();
+		
 		sAmountField.setValue(m_Amount);
 		
 		if (m_C_Payment_ID != 0)
@@ -292,7 +293,8 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		if (kp != null)
 			newC_BankAccount_ID = kp.getKey();
 		
-		boolean ok = save(newC_BankAccount_ID, sRoutingField.getText(), sNumberField.getText(), sCheckField.getText(), (BigDecimal) sAmountField.getValue());		
+		boolean ok = save(newC_BankAccount_ID, sRoutingField.getText(), sNumberField.getText(), 
+				sCheckField.getText(), (BigDecimal) sAmountField.getValue(), trxName);		
 		if (!ok)
 			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
 		else if (processMsg != null)

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_CostDetail
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_CostDetail 
 {
@@ -31,7 +31,7 @@ public interface I_M_CostDetail
     public static final String Table_Name = "M_CostDetail";
 
     /** AD_Table_ID=808 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 808;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_M_CostDetail
 	  */
 	public int getC_AcctSchema_ID();
 
-	public I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
     public static final String COLUMNNAME_C_InvoiceLine_ID = "C_InvoiceLine_ID";
@@ -103,7 +103,7 @@ public interface I_M_CostDetail
 	  */
 	public int getC_InvoiceLine_ID();
 
-	public I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
+	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_OrderLine_ID */
     public static final String COLUMNNAME_C_OrderLine_ID = "C_OrderLine_ID";
@@ -118,7 +118,7 @@ public interface I_M_CostDetail
 	  */
 	public int getC_OrderLine_ID();
 
-	public I_C_OrderLine getC_OrderLine() throws RuntimeException;
+	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name C_ProjectIssue_ID */
     public static final String COLUMNNAME_C_ProjectIssue_ID = "C_ProjectIssue_ID";
@@ -133,7 +133,7 @@ public interface I_M_CostDetail
 	  */
 	public int getC_ProjectIssue_ID();
 
-	public I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
+	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -296,6 +296,15 @@ public interface I_M_CostDetail
 	  */
 	public int getM_CostDetail_ID();
 
+    /** Column name M_CostDetail_UU */
+    public static final String COLUMNNAME_M_CostDetail_UU = "M_CostDetail_UU";
+
+	/** Set M_CostDetail_UU	  */
+	public void setM_CostDetail_UU (String M_CostDetail_UU);
+
+	/** Get M_CostDetail_UU	  */
+	public String getM_CostDetail_UU();
+
     /** Column name M_CostElement_ID */
     public static final String COLUMNNAME_M_CostElement_ID = "M_CostElement_ID";
 
@@ -309,7 +318,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_CostElement_ID();
 
-	public I_M_CostElement getM_CostElement() throws RuntimeException;
+	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_InOutLine_ID */
     public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
@@ -324,7 +333,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_InOutLine_ID();
 
-	public I_M_InOutLine getM_InOutLine() throws RuntimeException;
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_InventoryLine_ID */
     public static final String COLUMNNAME_M_InventoryLine_ID = "M_InventoryLine_ID";
@@ -339,7 +348,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_InventoryLine_ID();
 
-	public I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
+	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
 
     /** Column name M_MovementLine_ID */
     public static final String COLUMNNAME_M_MovementLine_ID = "M_MovementLine_ID";
@@ -354,7 +363,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_MovementLine_ID();
 
-	public I_M_MovementLine getM_MovementLine() throws RuntimeException;
+	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -369,7 +378,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_ProductionLine_ID */
     public static final String COLUMNNAME_M_ProductionLine_ID = "M_ProductionLine_ID";
@@ -384,7 +393,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_ProductionLine_ID();
 
-	public I_M_ProductionLine getM_ProductionLine() throws RuntimeException;
+	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException;
 
     /** Column name PP_Cost_Collector_ID */
     public static final String COLUMNNAME_PP_Cost_Collector_ID = "PP_Cost_Collector_ID";

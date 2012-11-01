@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Level
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_ASP_Level 
 {
@@ -31,7 +31,7 @@ public interface I_ASP_Level
     public static final String Table_Name = "ASP_Level";
 
     /** AD_Table_ID=53055 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53055;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -71,6 +71,15 @@ public interface I_ASP_Level
 	/** Get ASP Level	  */
 	public int getASP_Level_ID();
 
+    /** Column name ASP_Level_UU */
+    public static final String COLUMNNAME_ASP_Level_UU = "ASP_Level_UU";
+
+	/** Set ASP_Level_UU	  */
+	public void setASP_Level_UU (String ASP_Level_UU);
+
+	/** Get ASP_Level_UU	  */
+	public String getASP_Level_UU();
+
     /** Column name ASP_Module_ID */
     public static final String COLUMNNAME_ASP_Module_ID = "ASP_Module_ID";
 
@@ -80,7 +89,7 @@ public interface I_ASP_Level
 	/** Get ASP Module	  */
 	public int getASP_Module_ID();
 
-	public I_ASP_Module getASP_Module() throws RuntimeException;
+	public org.compiere.model.I_ASP_Module getASP_Module() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

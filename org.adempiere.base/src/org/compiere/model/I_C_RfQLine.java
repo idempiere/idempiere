@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_RfQLine 
 {
@@ -31,7 +31,7 @@ public interface I_C_RfQLine
     public static final String Table_Name = "C_RfQLine";
 
     /** AD_Table_ID=676 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 676;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -91,7 +91,7 @@ public interface I_C_RfQLine
 	  */
 	public int getC_RfQ_ID();
 
-	public I_C_RfQ getC_RfQ() throws RuntimeException;
+	public org.compiere.model.I_C_RfQ getC_RfQ() throws RuntimeException;
 
     /** Column name C_RfQLine_ID */
     public static final String COLUMNNAME_C_RfQLine_ID = "C_RfQLine_ID";
@@ -105,6 +105,15 @@ public interface I_C_RfQLine
 	  * Request for Quotation Line
 	  */
 	public int getC_RfQLine_ID();
+
+    /** Column name C_RfQLine_UU */
+    public static final String COLUMNNAME_C_RfQLine_UU = "C_RfQLine_UU";
+
+	/** Set C_RfQLine_UU	  */
+	public void setC_RfQLine_UU (String C_RfQLine_UU);
+
+	/** Get C_RfQLine_UU	  */
+	public String getC_RfQLine_UU();
 
     /** Column name DateWorkComplete */
     public static final String COLUMNNAME_DateWorkComplete = "DateWorkComplete";
@@ -225,7 +234,7 @@ public interface I_C_RfQLine
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

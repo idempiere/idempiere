@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TaskInstance
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_TaskInstance (Properties ctx, int AD_TaskInstance_ID, String trxName)
@@ -121,4 +121,18 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_TaskInstance_ID()));
     }
+
+	/** Set AD_TaskInstance_UU.
+		@param AD_TaskInstance_UU AD_TaskInstance_UU	  */
+	public void setAD_TaskInstance_UU (String AD_TaskInstance_UU)
+	{
+		set_Value (COLUMNNAME_AD_TaskInstance_UU, AD_TaskInstance_UU);
+	}
+
+	/** Get AD_TaskInstance_UU.
+		@return AD_TaskInstance_UU	  */
+	public String getAD_TaskInstance_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_TaskInstance_UU);
+	}
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_Replenish
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_T_Replenish 
 {
@@ -31,7 +31,7 @@ public interface I_T_Replenish
     public static final String Table_Name = "T_Replenish";
 
     /** AD_Table_ID=364 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 364;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_T_Replenish
 	  */
 	public int getAD_PInstance_ID();
 
-	public I_AD_PInstance getAD_PInstance() throws RuntimeException;
+	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -90,7 +90,7 @@ public interface I_T_Replenish
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -105,7 +105,7 @@ public interface I_T_Replenish
 	  */
 	public int getC_DocType_ID();
 
-	public I_C_DocType getC_DocType() throws RuntimeException;
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name Level_Max */
     public static final String COLUMNNAME_Level_Max = "Level_Max";
@@ -146,7 +146,7 @@ public interface I_T_Replenish
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -161,7 +161,7 @@ public interface I_T_Replenish
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name M_WarehouseSource_ID */
     public static final String COLUMNNAME_M_WarehouseSource_ID = "M_WarehouseSource_ID";
@@ -176,7 +176,7 @@ public interface I_T_Replenish
 	  */
 	public int getM_WarehouseSource_ID();
 
-	public I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
 
     /** Column name Order_Min */
     public static final String COLUMNNAME_Order_Min = "Order_Min";
@@ -277,6 +277,15 @@ public interface I_T_Replenish
 	  * Method for re-ordering a product
 	  */
 	public String getReplenishType();
+
+    /** Column name T_Replenish_UU */
+    public static final String COLUMNNAME_T_Replenish_UU = "T_Replenish_UU";
+
+	/** Set T_Replenish_UU	  */
+	public void setT_Replenish_UU (String T_Replenish_UU);
+
+	/** Get T_Replenish_UU	  */
+	public String getT_Replenish_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

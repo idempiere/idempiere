@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_WebProject
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_CM_WebProject extends PO implements I_CM_WebProject, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_CM_WebProject (Properties ctx, int CM_WebProject_ID, String trxName)
@@ -81,9 +81,9 @@ public class X_CM_WebProject extends PO implements I_CM_WebProject, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Tree getAD_TreeCMC() throws RuntimeException
+	public org.compiere.model.I_AD_Tree getAD_TreeCMC() throws RuntimeException
     {
-		return (I_AD_Tree)MTable.get(getCtx(), I_AD_Tree.Table_Name)
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
 			.getPO(getAD_TreeCMC_ID(), get_TrxName());	}
 
 	/** Set Container Tree.
@@ -109,9 +109,9 @@ public class X_CM_WebProject extends PO implements I_CM_WebProject, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_Tree getAD_TreeCMM() throws RuntimeException
+	public org.compiere.model.I_AD_Tree getAD_TreeCMM() throws RuntimeException
     {
-		return (I_AD_Tree)MTable.get(getCtx(), I_AD_Tree.Table_Name)
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
 			.getPO(getAD_TreeCMM_ID(), get_TrxName());	}
 
 	/** Set Media Tree.
@@ -137,9 +137,9 @@ public class X_CM_WebProject extends PO implements I_CM_WebProject, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_Tree getAD_TreeCMS() throws RuntimeException
+	public org.compiere.model.I_AD_Tree getAD_TreeCMS() throws RuntimeException
     {
-		return (I_AD_Tree)MTable.get(getCtx(), I_AD_Tree.Table_Name)
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
 			.getPO(getAD_TreeCMS_ID(), get_TrxName());	}
 
 	/** Set Stage Tree.
@@ -165,9 +165,9 @@ public class X_CM_WebProject extends PO implements I_CM_WebProject, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_AD_Tree getAD_TreeCMT() throws RuntimeException
+	public org.compiere.model.I_AD_Tree getAD_TreeCMT() throws RuntimeException
     {
-		return (I_AD_Tree)MTable.get(getCtx(), I_AD_Tree.Table_Name)
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
 			.getPO(getAD_TreeCMT_ID(), get_TrxName());	}
 
 	/** Set Template Tree.
@@ -214,6 +214,20 @@ public class X_CM_WebProject extends PO implements I_CM_WebProject, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set CM_WebProject_UU.
+		@param CM_WebProject_UU CM_WebProject_UU	  */
+	public void setCM_WebProject_UU (String CM_WebProject_UU)
+	{
+		set_Value (COLUMNNAME_CM_WebProject_UU, CM_WebProject_UU);
+	}
+
+	/** Get CM_WebProject_UU.
+		@return CM_WebProject_UU	  */
+	public String getCM_WebProject_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_CM_WebProject_UU);
 	}
 
 	/** Set Description.

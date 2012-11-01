@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_RMALine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_RMALine 
 {
@@ -31,7 +31,7 @@ public interface I_M_RMALine
     public static final String Table_Name = "M_RMALine";
 
     /** AD_Table_ID=660 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 660;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_M_RMALine
 	  */
 	public int getC_Charge_ID();
 
-	public I_C_Charge getC_Charge() throws RuntimeException;
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -171,7 +171,7 @@ public interface I_M_RMALine
 	  */
 	public int getM_InOutLine_ID();
 
-	public I_M_InOutLine getM_InOutLine() throws RuntimeException;
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_RMA_ID */
     public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
@@ -186,7 +186,7 @@ public interface I_M_RMALine
 	  */
 	public int getM_RMA_ID();
 
-	public I_M_RMA getM_RMA() throws RuntimeException;
+	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
 
     /** Column name M_RMALine_ID */
     public static final String COLUMNNAME_M_RMALine_ID = "M_RMALine_ID";
@@ -200,6 +200,15 @@ public interface I_M_RMALine
 	  * Return Material Authorization Line
 	  */
 	public int getM_RMALine_ID();
+
+    /** Column name M_RMALine_UU */
+    public static final String COLUMNNAME_M_RMALine_UU = "M_RMALine_UU";
+
+	/** Set M_RMALine_UU	  */
+	public void setM_RMALine_UU (String M_RMALine_UU);
+
+	/** Get M_RMALine_UU	  */
+	public String getM_RMALine_UU();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
@@ -262,7 +271,7 @@ public interface I_M_RMALine
 	/** Get Referenced RMA Line	  */
 	public int getRef_RMALine_ID();
 
-	public I_M_RMALine getRef_RMALine() throws RuntimeException;
+	public org.compiere.model.I_M_RMALine getRef_RMALine() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

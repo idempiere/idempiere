@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Period
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_HR_Period 
 {
@@ -32,7 +32,7 @@ public interface I_HR_Period
     public static final String Table_Name = "HR_Period";
 
     /** AD_Table_ID=53094 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53094;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,7 +76,7 @@ public interface I_HR_Period
 	  */
 	public int getC_Period_ID();
 
-	public I_C_Period getC_Period() throws RuntimeException;
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -107,7 +107,7 @@ public interface I_HR_Period
 	  */
 	public int getC_Year_ID();
 
-	public I_C_Year getC_Year() throws RuntimeException;
+	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
@@ -167,6 +167,15 @@ public interface I_HR_Period
 
 	/** Get Payroll Period	  */
 	public int getHR_Period_ID();
+
+    /** Column name HR_Period_UU */
+    public static final String COLUMNNAME_HR_Period_UU = "HR_Period_UU";
+
+	/** Set HR_Period_UU	  */
+	public void setHR_Period_UU (String HR_Period_UU);
+
+	/** Get HR_Period_UU	  */
+	public String getHR_Period_UU();
 
     /** Column name HR_Year_ID */
     public static final String COLUMNNAME_HR_Year_ID = "HR_Year_ID";

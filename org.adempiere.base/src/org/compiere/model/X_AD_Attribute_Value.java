@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_Attribute_Value
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Attribute_Value (Properties ctx, int AD_Attribute_Value_ID, String trxName)
@@ -89,6 +89,20 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Attribute_Value_UU.
+		@param AD_Attribute_Value_UU AD_Attribute_Value_UU	  */
+	public void setAD_Attribute_Value_UU (String AD_Attribute_Value_UU)
+	{
+		set_Value (COLUMNNAME_AD_Attribute_Value_UU, AD_Attribute_Value_UU);
+	}
+
+	/** Get AD_Attribute_Value_UU.
+		@return AD_Attribute_Value_UU	  */
+	public String getAD_Attribute_Value_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Attribute_Value_UU);
 	}
 
 	/** Set Record ID.

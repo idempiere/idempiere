@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_ListLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_HR_ListLine 
 {
@@ -32,7 +32,7 @@ public interface I_HR_ListLine
     public static final String Table_Name = "HR_ListLine";
 
     /** AD_Table_ID=53101 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53101;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -159,6 +159,15 @@ public interface I_HR_ListLine
 
 	/** Get Payroll List Line	  */
 	public int getHR_ListLine_ID();
+
+    /** Column name HR_ListLine_UU */
+    public static final String COLUMNNAME_HR_ListLine_UU = "HR_ListLine_UU";
+
+	/** Set HR_ListLine_UU	  */
+	public void setHR_ListLine_UU (String HR_ListLine_UU);
+
+	/** Get HR_ListLine_UU	  */
+	public String getHR_ListLine_UU();
 
     /** Column name HR_ListVersion_ID */
     public static final String COLUMNNAME_HR_ListVersion_ID = "HR_ListVersion_ID";

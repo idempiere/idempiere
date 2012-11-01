@@ -76,7 +76,7 @@ import org.compiere.util.ValueNamePair;
  *  @version 	$Id: MPayment.java,v 1.4 2006/10/02 05:18:39 jjanke Exp $
  */
 public final class MPayment extends X_C_Payment 
-	implements DocAction, ProcessCall
+	implements DocAction, ProcessCall, PaymentInterface
 {
 
 
@@ -459,11 +459,32 @@ public final class MPayment extends X_C_Payment
 		setIsOnline(true);
 		setErrorMessage(null);
 		//	prevent charging twice
-		if (isApproved())
+		if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
 		{
-			log.info("Already processed - " + getR_Result() + " - " + getR_RespMsg());
-			setErrorMessage("Payment already Processed");
-			return true;
+			if (isVoided())
+			{
+				log.info("Already voided - " + getR_Result() + " - " + getR_RespMsg());
+				setErrorMessage("Payment already voided");
+				return true;
+			}
+		}
+		else if(getTrxType().equals(TRXTYPE_DelayedCapture))
+		{
+			if (isDelayedCapture())
+			{
+				log.info("Already delay captured - " + getR_Result() + " - " + getR_RespMsg());
+				setErrorMessage("Payment already delay captured");
+				return true;
+			}
+		}
+		else
+		{
+			if (isApproved())
+			{
+				log.info("Already processed - " + getR_Result() + " - " + getR_RespMsg());
+				setErrorMessage("Payment already processed");
+				return true;
+			}
 		}
 
 		if (m_mBankAccountProcessor == null)
@@ -492,10 +513,16 @@ public final class MPayment extends X_C_Payment
 				} else {
 					// Process if validation succeeds
 					approved = pp.processCC ();
+					
 					if (approved)
 						setErrorMessage(null);
 					else
-						setErrorMessage("From " +  getCreditCardName() + ": " + getR_RespMsg());
+					{
+						if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
+							setErrorMessage("From " +  getCreditCardName() + ": " + getR_VoidMsg());
+						else
+							setErrorMessage("From " +  getCreditCardName() + ": " + getR_RespMsg());							
+					}
 				}
 			}
 		}
@@ -504,7 +531,48 @@ public final class MPayment extends X_C_Payment
 			log.log(Level.SEVERE, "processOnline", e);
 			setErrorMessage("Payment Processor Error: " + e.getMessage());
 		}
+		
+		if (approved)
+		{
+			setDateTrx(new Timestamp(System.currentTimeMillis()));
+			setDateAcct(new Timestamp(System.currentTimeMillis()));
+			setProcessed(true);		// prevent editing of payment details once approved
+		}
+		
 		setIsApproved(approved);
+		
+		MPaymentTransaction m_mPaymentTransaction = createPaymentTransaction();
+		m_mPaymentTransaction.setIsApproved(approved);
+		if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
+			m_mPaymentTransaction.setIsVoided(approved);	
+		m_mPaymentTransaction.setProcessed(approved);
+		m_mPaymentTransaction.setC_Payment_ID(getC_Payment_ID());
+		m_mPaymentTransaction.saveEx();
+		
+		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, get_TrxName());
+		history.setAD_Table_ID(MPaymentTransaction.Table_ID);
+		history.setRecord_ID(m_mPaymentTransaction.getC_PaymentTransaction_ID());
+		history.setIsError(!approved);
+		history.setProcessed(approved);
+		
+		StringBuffer msg = new StringBuffer();
+		if (approved)
+		{
+			msg.append("Result: " + getR_Result() + "\n");
+			msg.append("Response Message: " + getR_RespMsg() + "\n");
+			msg.append("Reference: " + getR_PnRef() + "\n");
+			msg.append("Authorization Code: " + getR_AuthCode() + "\n");
+		}
+		else
+			msg.append("ERROR: " + getErrorMessage() + "\n");
+		msg.append("Transaction Type: " + getTrxType());
+		history.setTextMsg(msg.toString());
+		
+		history.saveEx();
+		
+		if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
+			setIsVoided(approved);
+		
 		return approved;
 	}   //  processOnline
 
@@ -1884,6 +1952,26 @@ public final class MPayment extends X_C_Payment
 		}
 		// End Trifon - CashPayments
 		
+		//	update C_Invoice.C_Payment_ID and C_Order.C_Payment_ID reference
+		if (getC_Invoice_ID() != 0)
+		{
+			MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+			if (inv.getC_Payment_ID() != getC_Payment_ID())
+			{
+				inv.setC_Payment_ID(getC_Payment_ID());
+				inv.saveEx();
+			}
+		}		
+		if (getC_Order_ID() != 0)
+		{
+			MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+			if (ord.getC_Payment_ID() != getC_Payment_ID())
+			{
+				ord.setC_Payment_ID(getC_Payment_ID());
+				ord.saveEx();
+			}
+		}
+		
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
@@ -2293,6 +2381,9 @@ public final class MPayment extends X_C_Payment
 			|| DOCSTATUS_Approved.equals(getDocStatus())
 			|| DOCSTATUS_NotApproved.equals(getDocStatus()) )
 		{
+			if (!voidOnlinePayment())
+				return false;
+			
 			addDescription(Msg.getMsg(getCtx(), "Voided") + " (" + getPayAmt() + ")");
 			setPayAmt(Env.ZERO);
 			setDiscountAmt(Env.ZERO);
@@ -2347,6 +2438,9 @@ public final class MPayment extends X_C_Payment
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
+			return false;
+		
+		if (!voidOnlinePayment())
 			return false;
 		
 		//	Std Period open?
@@ -2631,6 +2725,116 @@ public final class MPayment extends X_C_Payment
 	@Override
 	public void setProcessUI(IProcessUI processMonitor) {
 		m_processUI = processMonitor;
+	}
+	
+	public MPaymentTransaction createPaymentTransaction()
+	{
+		MPaymentTransaction paymentTransaction = new MPaymentTransaction(getCtx(), 0, get_TrxName());
+		paymentTransaction.setA_City(getA_City());
+		paymentTransaction.setA_Country(getA_Country());
+		paymentTransaction.setA_EMail(getA_EMail());
+		paymentTransaction.setA_Ident_DL(getA_Ident_DL());
+		paymentTransaction.setA_Ident_SSN(getA_Ident_SSN());
+		paymentTransaction.setA_Name(getA_Name());
+		paymentTransaction.setA_State(getA_State());
+		paymentTransaction.setA_Street(getA_Street());
+		paymentTransaction.setA_Zip(getA_Zip());
+		paymentTransaction.setAccountNo(getAccountNo());
+		paymentTransaction.setAD_Org_ID(getAD_Org_ID());
+		paymentTransaction.setC_BankAccount_ID(getC_BankAccount_ID());
+		paymentTransaction.setC_BP_BankAccount_ID(getC_BP_BankAccount_ID());
+		paymentTransaction.setC_BPartner_ID(getC_BPartner_ID());
+		paymentTransaction.setC_ConversionType_ID(getC_ConversionType_ID());
+		paymentTransaction.setC_Currency_ID(getC_Currency_ID());
+		paymentTransaction.setC_Invoice_ID(getC_Invoice_ID());
+		paymentTransaction.setC_Order_ID(getC_Order_ID());
+		paymentTransaction.setC_PaymentProcessor_ID(getC_PaymentProcessor_ID());
+		paymentTransaction.setC_POSTenderType_ID(getC_POSTenderType_ID());
+		paymentTransaction.setCheckNo(getCheckNo());
+		paymentTransaction.setCreditCardExpMM(getCreditCardExpMM());
+		paymentTransaction.setCreditCardExpYY(getCreditCardExpYY());
+		paymentTransaction.setCreditCardNumber(getCreditCardNumber());
+		paymentTransaction.setCreditCardType(getCreditCardType());
+		paymentTransaction.setCreditCardVV(getCreditCardVV());
+		paymentTransaction.setCustomerAddressID(getCustomerAddressID());
+		paymentTransaction.setCustomerPaymentProfileID(getCustomerPaymentProfileID());
+		paymentTransaction.setCustomerProfileID(getCustomerProfileID());
+		paymentTransaction.setDateTrx(getDateTrx());
+		paymentTransaction.setDescription(getDescription());
+		paymentTransaction.setIsActive(isActive());
+		paymentTransaction.setIsApproved(isApproved());
+		paymentTransaction.setIsDelayedCapture(isDelayedCapture());
+		paymentTransaction.setIsOnline(isOnline());
+		paymentTransaction.setIsReceipt(isReceipt());
+		paymentTransaction.setIsSelfService(isSelfService());
+		paymentTransaction.setIsVoided(isVoided());
+		paymentTransaction.setMicr(getMicr());
+		paymentTransaction.setOrig_TrxID(getOrig_TrxID());
+		paymentTransaction.setPayAmt(getPayAmt());
+		paymentTransaction.setPONum(getPONum());
+		paymentTransaction.setProcessed(isProcessed());
+		paymentTransaction.setR_AuthCode(getR_AuthCode());
+		paymentTransaction.setR_AvsAddr(getR_AvsAddr());
+		paymentTransaction.setR_AvsZip(getR_AvsZip());
+		paymentTransaction.setR_CVV2Match(isR_CVV2Match());
+		paymentTransaction.setR_Info(getR_Info());
+		paymentTransaction.setR_PnRef(getR_PnRef());
+		paymentTransaction.setR_RespMsg(getR_RespMsg());
+		paymentTransaction.setR_Result(getR_Result());
+		paymentTransaction.setR_VoidMsg(getR_VoidMsg());
+		paymentTransaction.setRoutingNo(getRoutingNo());
+		paymentTransaction.setTaxAmt(getTaxAmt());
+		paymentTransaction.setTenderType(getTenderType());
+		paymentTransaction.setTrxType(getTrxType());
+		paymentTransaction.setVoiceAuthCode(getVoiceAuthCode());
+		
+		return paymentTransaction;
+	}
+	
+	private boolean voidOnlinePayment() 
+	{
+		if (getTenderType().equals(TENDERTYPE_CreditCard) && isOnline())
+		{
+			setOrig_TrxID(getR_PnRef());
+			setTrxType(TRXTYPE_Void);
+			if(!processOnline())
+			{
+				setTrxType(TRXTYPE_CreditPayment);
+				if(!processOnline())
+				{
+					log.log(Level.SEVERE, "Failed to cancel payment online");
+					m_processMsg = "Failed to cancel payment online";
+					return false;
+				}
+			}
+		}
+
+		// clear out the cc data when a Void happens since at that point we won't need the card information any longer
+		if (getTenderType().equals(TENDERTYPE_CreditCard))
+		{
+//			setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
+//            setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
+		}
+
+		if (getC_Invoice_ID() != 0)
+		{
+			MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+			inv.setC_Payment_ID(0);
+			inv.save();
+		}
+		if (getC_Order_ID() != 0)
+		{
+			MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+			ord.setC_Payment_ID(0);
+			ord.save();
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public PO getPO() {
+		return this;
 	}
 	
 }   //  MPayment

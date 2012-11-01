@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintGraph
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_PrintGraph 
 {
@@ -31,7 +31,7 @@ public interface I_AD_PrintGraph
     public static final String Table_Name = "AD_PrintGraph";
 
     /** AD_Table_ID=521 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 521;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_AD_PrintGraph
 	  */
 	public int getAD_PrintFormat_ID();
 
-	public I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_PrintGraph_ID */
     public static final String COLUMNNAME_AD_PrintGraph_ID = "AD_PrintGraph_ID";
@@ -89,6 +89,15 @@ public interface I_AD_PrintGraph
 	  * Graph included in Reports
 	  */
 	public int getAD_PrintGraph_ID();
+
+    /** Column name AD_PrintGraph_UU */
+    public static final String COLUMNNAME_AD_PrintGraph_UU = "AD_PrintGraph_UU";
+
+	/** Set AD_PrintGraph_UU	  */
+	public void setAD_PrintGraph_UU (String AD_PrintGraph_UU);
+
+	/** Get AD_PrintGraph_UU	  */
+	public String getAD_PrintGraph_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -119,7 +128,7 @@ public interface I_AD_PrintGraph
 	  */
 	public int getData1_PrintFormatItem_ID();
 
-	public I_AD_PrintFormatItem getData1_PrintFormatItem() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormatItem getData1_PrintFormatItem() throws RuntimeException;
 
     /** Column name Data2_PrintFormatItem_ID */
     public static final String COLUMNNAME_Data2_PrintFormatItem_ID = "Data2_PrintFormatItem_ID";
@@ -134,7 +143,7 @@ public interface I_AD_PrintGraph
 	  */
 	public int getData2_PrintFormatItem_ID();
 
-	public I_AD_PrintFormatItem getData2_PrintFormatItem() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormatItem getData2_PrintFormatItem() throws RuntimeException;
 
     /** Column name Data3_PrintFormatItem_ID */
     public static final String COLUMNNAME_Data3_PrintFormatItem_ID = "Data3_PrintFormatItem_ID";
@@ -149,7 +158,7 @@ public interface I_AD_PrintGraph
 	  */
 	public int getData3_PrintFormatItem_ID();
 
-	public I_AD_PrintFormatItem getData3_PrintFormatItem() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormatItem getData3_PrintFormatItem() throws RuntimeException;
 
     /** Column name Data4_PrintFormatItem_ID */
     public static final String COLUMNNAME_Data4_PrintFormatItem_ID = "Data4_PrintFormatItem_ID";
@@ -164,7 +173,7 @@ public interface I_AD_PrintGraph
 	  */
 	public int getData4_PrintFormatItem_ID();
 
-	public I_AD_PrintFormatItem getData4_PrintFormatItem() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormatItem getData4_PrintFormatItem() throws RuntimeException;
 
     /** Column name Data_PrintFormatItem_ID */
     public static final String COLUMNNAME_Data_PrintFormatItem_ID = "Data_PrintFormatItem_ID";
@@ -179,7 +188,7 @@ public interface I_AD_PrintGraph
 	  */
 	public int getData_PrintFormatItem_ID();
 
-	public I_AD_PrintFormatItem getData_PrintFormatItem() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormatItem getData_PrintFormatItem() throws RuntimeException;
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -207,7 +216,7 @@ public interface I_AD_PrintGraph
 	  */
 	public int getDescription_PrintFormatItem_ID();
 
-	public I_AD_PrintFormatItem getDescription_PrintFormatItem() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormatItem getDescription_PrintFormatItem() throws RuntimeException;
 
     /** Column name GraphType */
     public static final String COLUMNNAME_GraphType = "GraphType";

@@ -59,6 +59,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.WAttachment;
 import org.adempiere.webui.panel.WDocActionPanel;
+import org.adempiere.webui.panel.action.ExportAction;
 import org.adempiere.webui.panel.action.FileImportAction;
 import org.adempiere.webui.panel.action.ReportAction;
 import org.adempiere.webui.part.AbstractUIPart;
@@ -1341,6 +1342,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
         toolbar.enableReport(true);
+        toolbar.enableExport(!adTabbox.getSelectedGridTab().isSortTab());
         toolbar.enableFileImport(!changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
 
         //Deepak-Enabling customize button IDEMPIERE-364
@@ -2154,6 +2156,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 
 	//
+
+	@Override
+	public void onExport() {
+		ExportAction action = new ExportAction(this);
+		action.export();
+	}
 
 	@Override
 	public void onFileImport() {

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintFont
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_PrintFont 
 {
@@ -31,7 +31,7 @@ public interface I_AD_PrintFont
     public static final String Table_Name = "AD_PrintFont";
 
     /** AD_Table_ID=491 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 491;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -74,6 +74,15 @@ public interface I_AD_PrintFont
 	  * Maintain Print Font
 	  */
 	public int getAD_PrintFont_ID();
+
+    /** Column name AD_PrintFont_UU */
+    public static final String COLUMNNAME_AD_PrintFont_UU = "AD_PrintFont_UU";
+
+	/** Set AD_PrintFont_UU	  */
+	public void setAD_PrintFont_UU (String AD_PrintFont_UU);
+
+	/** Get AD_PrintFont_UU	  */
+	public String getAD_PrintFont_UU();
 
     /** Column name Code */
     public static final String COLUMNNAME_Code = "Code";

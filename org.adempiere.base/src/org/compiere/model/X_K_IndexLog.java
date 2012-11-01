@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for K_IndexLog
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_K_IndexLog extends PO implements I_K_IndexLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_K_IndexLog (Properties ctx, int K_IndexLog_ID, String trxName)
@@ -139,6 +139,20 @@ public class X_K_IndexLog extends PO implements I_K_IndexLog, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set K_IndexLog_UU.
+		@param K_IndexLog_UU K_IndexLog_UU	  */
+	public void setK_IndexLog_UU (String K_IndexLog_UU)
+	{
+		set_Value (COLUMNNAME_K_IndexLog_UU, K_IndexLog_UU);
+	}
+
+	/** Get K_IndexLog_UU.
+		@return K_IndexLog_UU	  */
+	public String getK_IndexLog_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_K_IndexLog_UU);
 	}
 
 	/** QuerySource AD_Reference_ID=391 */

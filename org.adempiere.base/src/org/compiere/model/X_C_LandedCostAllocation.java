@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_LandedCostAllocation
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAllocation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName)
@@ -118,9 +118,9 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 		return bd;
 	}
 
-	public I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
+	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
     {
-		return (I_C_InvoiceLine)MTable.get(getCtx(), I_C_InvoiceLine.Table_Name)
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
 			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
 
 	/** Set Invoice Line.
@@ -177,6 +177,20 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 		return ii.intValue();
 	}
 
+	/** Set C_LandedCostAllocation_UU.
+		@param C_LandedCostAllocation_UU C_LandedCostAllocation_UU	  */
+	public void setC_LandedCostAllocation_UU (String C_LandedCostAllocation_UU)
+	{
+		set_Value (COLUMNNAME_C_LandedCostAllocation_UU, C_LandedCostAllocation_UU);
+	}
+
+	/** Get C_LandedCostAllocation_UU.
+		@return C_LandedCostAllocation_UU	  */
+	public String getC_LandedCostAllocation_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_LandedCostAllocation_UU);
+	}
+
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
     {
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
@@ -205,9 +219,9 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 		return ii.intValue();
 	}
 
-	public I_M_CostElement getM_CostElement() throws RuntimeException
+	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
     {
-		return (I_M_CostElement)MTable.get(getCtx(), I_M_CostElement.Table_Name)
+		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_Name)
 			.getPO(getM_CostElement_ID(), get_TrxName());	}
 
 	/** Set Cost Element.
@@ -233,9 +247,9 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.

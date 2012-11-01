@@ -45,6 +45,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -99,11 +100,11 @@ public class FileImportAction implements EventListener<Event>
 			if (charset == compare)
 			{
 				fCharset.setSelectedIndex(i);
+				Executions.getCurrent().getDesktop().getWebApp().getConfiguration().setUploadCharset(compare.name());
 				break;
 			}
 		}
-		// TODO: change the streamreader when changing the charset
-		// fCharset.addEventListener(Events.ON_SELECT, this);
+		fCharset.addEventListener(Events.ON_SELECT, this);
 
 		importerMap = new HashMap<String, IGridTabImporter>();
 		extensionMap = new HashMap<String, String>();
@@ -151,6 +152,13 @@ public class FileImportAction implements EventListener<Event>
 			vb.appendChild(hb);
 
 			hb = new Hbox();
+			fCharset.setMold("select");
+			fCharset.setRows(0);
+			fCharset.setTooltiptext(Msg.getMsg(Env.getCtx(), "Charset", false));
+			hb.appendChild(fCharset);
+			vb.appendChild(hb);
+			
+			hb = new Hbox();
 			bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
 			bFile.setTooltiptext(Msg.getMsg(Env.getCtx(), "FileImportFileInfo"));
 			bFile.setUpload("true");
@@ -158,13 +166,6 @@ public class FileImportAction implements EventListener<Event>
 			hb.appendChild(bFile);
 			vb.appendChild(hb);
 
-			hb = new Hbox();
-			fCharset.setMold("select");
-			fCharset.setRows(0);
-			fCharset.setTooltiptext(Msg.getMsg(Env.getCtx(), "Charset", false));
-			hb.appendChild(fCharset);
-			vb.appendChild(hb);
-			
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
 		}
@@ -181,9 +182,20 @@ public class FileImportAction implements EventListener<Event>
 			processUploadMedia(ue.getMedia());
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
 			winImportFile.onClose();
-		}
-		else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
-			// TODO: Verify that file and charset are mandatory
+		} else if (event.getTarget() == fCharset) {
+			if (m_file_istream != null) {
+				m_file_istream.close();
+				m_file_istream = null;
+			}
+			ListItem listitem = fCharset.getSelectedItem();
+			if (listitem == null)
+				return;
+			Charset charset = (Charset)listitem.getValue();
+			Executions.getCurrent().getDesktop().getWebApp().getConfiguration().setUploadCharset(charset.name());
+			bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
+		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
+			if (m_file_istream == null || fCharset.getSelectedItem() == null)
+				return;
 			importFile();
 		}
 	}

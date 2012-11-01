@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSetInstance
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_AttributeSetInstance (Properties ctx, int M_AttributeSetInstance_ID, String trxName)
@@ -123,9 +123,9 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 		return (String)get_Value(COLUMNNAME_Lot);
 	}
 
-	public I_M_AttributeSet getM_AttributeSet() throws RuntimeException
+	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
     {
-		return (I_M_AttributeSet)MTable.get(getCtx(), I_M_AttributeSet.Table_Name)
+		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_Name)
 			.getPO(getM_AttributeSet_ID(), get_TrxName());	}
 
 	/** Set Attribute Set.
@@ -182,9 +182,23 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
         return new KeyNamePair(get_ID(), String.valueOf(getM_AttributeSetInstance_ID()));
     }
 
-	public I_M_Lot getM_Lot() throws RuntimeException
+	/** Set M_AttributeSetInstance_UU.
+		@param M_AttributeSetInstance_UU M_AttributeSetInstance_UU	  */
+	public void setM_AttributeSetInstance_UU (String M_AttributeSetInstance_UU)
+	{
+		set_Value (COLUMNNAME_M_AttributeSetInstance_UU, M_AttributeSetInstance_UU);
+	}
+
+	/** Get M_AttributeSetInstance_UU.
+		@return M_AttributeSetInstance_UU	  */
+	public String getM_AttributeSetInstance_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_AttributeSetInstance_UU);
+	}
+
+	public org.compiere.model.I_M_Lot getM_Lot() throws RuntimeException
     {
-		return (I_M_Lot)MTable.get(getCtx(), I_M_Lot.Table_Name)
+		return (org.compiere.model.I_M_Lot)MTable.get(getCtx(), org.compiere.model.I_M_Lot.Table_Name)
 			.getPO(getM_Lot_ID(), get_TrxName());	}
 
 	/** Set Lot.

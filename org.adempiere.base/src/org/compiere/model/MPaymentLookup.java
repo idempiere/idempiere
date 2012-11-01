@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,8 +40,6 @@ public class MPaymentLookup extends Lookup implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -6863672221350217533L;
-
-	private static final int PAYMENT_RULE_REFERENCE_ID = 195;
 	
 	/**	Context					*/
 	private Properties 		m_ctx;
@@ -136,7 +136,7 @@ public class MPaymentLookup extends Lookup implements Serializable {
 		try
 		{
 			pstmt = DB.prepareStatement(sb.toString(), null);
-			pstmt.setInt(1, PAYMENT_RULE_REFERENCE_ID);
+			pstmt.setInt(1, REFERENCE_PAYMENTRULE);
 			if (!isBaseLanguage)
 				pstmt.setString(2, ad_language);
 			rs = pstmt.executeQuery();

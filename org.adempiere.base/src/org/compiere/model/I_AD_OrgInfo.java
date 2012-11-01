@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_OrgInfo
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_OrgInfo 
 {
@@ -31,7 +31,7 @@ public interface I_AD_OrgInfo
     public static final String Table_Name = "AD_OrgInfo";
 
     /** AD_Table_ID=228 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 228;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,6 +62,15 @@ public interface I_AD_OrgInfo
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_OrgInfo_UU */
+    public static final String COLUMNNAME_AD_OrgInfo_UU = "AD_OrgInfo_UU";
+
+	/** Set AD_OrgInfo_UU	  */
+	public void setAD_OrgInfo_UU (String AD_OrgInfo_UU);
+
+	/** Get AD_OrgInfo_UU	  */
+	public String getAD_OrgInfo_UU();
+
     /** Column name AD_OrgType_ID */
     public static final String COLUMNNAME_AD_OrgType_ID = "AD_OrgType_ID";
 
@@ -75,7 +84,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getAD_OrgType_ID();
 
-	public I_AD_OrgType getAD_OrgType() throws RuntimeException;
+	public org.compiere.model.I_AD_OrgType getAD_OrgType() throws RuntimeException;
 
     /** Column name C_Calendar_ID */
     public static final String COLUMNNAME_C_Calendar_ID = "C_Calendar_ID";
@@ -90,7 +99,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getC_Calendar_ID();
 
-	public I_C_Calendar getC_Calendar() throws RuntimeException;
+	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException;
 
     /** Column name C_Location_ID */
     public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
@@ -136,7 +145,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getDropShip_Warehouse_ID();
 
-	public I_M_Warehouse getDropShip_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getDropShip_Warehouse() throws RuntimeException;
 
     /** Column name DUNS */
     public static final String COLUMNNAME_DUNS = "DUNS";
@@ -212,7 +221,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Parent_Org_ID */
     public static final String COLUMNNAME_Parent_Org_ID = "Parent_Org_ID";
@@ -279,7 +288,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getSupervisor_ID();
 
-	public I_AD_User getSupervisor() throws RuntimeException;
+	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name TaxID */
     public static final String COLUMNNAME_TaxID = "TaxID";
@@ -307,7 +316,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getTransferBank_ID();
 
-	public I_C_Bank getTransferBank() throws RuntimeException;
+	public org.compiere.model.I_C_Bank getTransferBank() throws RuntimeException;
 
     /** Column name TransferCashBook_ID */
     public static final String COLUMNNAME_TransferCashBook_ID = "TransferCashBook_ID";
@@ -318,7 +327,7 @@ public interface I_AD_OrgInfo
 	/** Get CashBook for transfers	  */
 	public int getTransferCashBook_ID();
 
-	public I_C_CashBook getTransferCashBook() throws RuntimeException;
+	public org.compiere.model.I_C_CashBook getTransferCashBook() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

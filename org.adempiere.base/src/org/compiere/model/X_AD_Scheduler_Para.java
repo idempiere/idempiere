@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Scheduler_Para
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Scheduler_Para (Properties ctx, int AD_Scheduler_Para_ID, String trxName)
@@ -70,9 +70,9 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
       return sb.toString();
     }
 
-	public I_AD_Process_Para getAD_Process_Para() throws RuntimeException
+	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
     {
-		return (I_AD_Process_Para)MTable.get(getCtx(), I_AD_Process_Para.Table_Name)
+		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_Name)
 			.getPO(getAD_Process_Para_ID(), get_TrxName());	}
 
 	/** Set Process Parameter.
@@ -95,9 +95,9 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_Scheduler getAD_Scheduler() throws RuntimeException
+	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException
     {
-		return (I_AD_Scheduler)MTable.get(getCtx(), I_AD_Scheduler.Table_Name)
+		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_Name)
 			.getPO(getAD_Scheduler_ID(), get_TrxName());	}
 
 	/** Set Scheduler.
@@ -121,6 +121,20 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Scheduler_Para_UU.
+		@param AD_Scheduler_Para_UU AD_Scheduler_Para_UU	  */
+	public void setAD_Scheduler_Para_UU (String AD_Scheduler_Para_UU)
+	{
+		set_Value (COLUMNNAME_AD_Scheduler_Para_UU, AD_Scheduler_Para_UU);
+	}
+
+	/** Get AD_Scheduler_Para_UU.
+		@return AD_Scheduler_Para_UU	  */
+	public String getAD_Scheduler_Para_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Scheduler_Para_UU);
 	}
 
 	/** Set Description.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQ_TopicSubscriber
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_RfQ_TopicSubscriber 
 {
@@ -31,7 +31,7 @@ public interface I_C_RfQ_TopicSubscriber
     public static final String Table_Name = "C_RfQ_TopicSubscriber";
 
     /** AD_Table_ID=670 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 670;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -90,7 +90,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
     public static final String COLUMNNAME_C_BPartner_Location_ID = "C_BPartner_Location_ID";
@@ -105,7 +105,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getC_BPartner_Location_ID();
 
-	public I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -136,7 +136,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getC_RfQ_Topic_ID();
 
-	public I_C_RfQ_Topic getC_RfQ_Topic() throws RuntimeException;
+	public org.compiere.model.I_C_RfQ_Topic getC_RfQ_Topic() throws RuntimeException;
 
     /** Column name C_RfQ_TopicSubscriber_ID */
     public static final String COLUMNNAME_C_RfQ_TopicSubscriber_ID = "C_RfQ_TopicSubscriber_ID";
@@ -150,6 +150,15 @@ public interface I_C_RfQ_TopicSubscriber
 	  * Request for Quotation Topic Subscriber
 	  */
 	public int getC_RfQ_TopicSubscriber_ID();
+
+    /** Column name C_RfQ_TopicSubscriber_UU */
+    public static final String COLUMNNAME_C_RfQ_TopicSubscriber_UU = "C_RfQ_TopicSubscriber_UU";
+
+	/** Set C_RfQ_TopicSubscriber_UU	  */
+	public void setC_RfQ_TopicSubscriber_UU (String C_RfQ_TopicSubscriber_UU);
+
+	/** Get C_RfQ_TopicSubscriber_UU	  */
+	public String getC_RfQ_TopicSubscriber_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

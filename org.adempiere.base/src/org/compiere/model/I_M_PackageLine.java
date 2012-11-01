@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PackageLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_PackageLine 
 {
@@ -31,7 +31,7 @@ public interface I_M_PackageLine
     public static final String Table_Name = "M_PackageLine";
 
     /** AD_Table_ID=663 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 663;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -117,7 +117,7 @@ public interface I_M_PackageLine
 	  */
 	public int getM_InOutLine_ID();
 
-	public I_M_InOutLine getM_InOutLine() throws RuntimeException;
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_Package_ID */
     public static final String COLUMNNAME_M_Package_ID = "M_Package_ID";
@@ -132,7 +132,7 @@ public interface I_M_PackageLine
 	  */
 	public int getM_Package_ID();
 
-	public I_M_Package getM_Package() throws RuntimeException;
+	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException;
 
     /** Column name M_PackageLine_ID */
     public static final String COLUMNNAME_M_PackageLine_ID = "M_PackageLine_ID";
@@ -146,6 +146,15 @@ public interface I_M_PackageLine
 	  * The detail content of the Package
 	  */
 	public int getM_PackageLine_ID();
+
+    /** Column name M_PackageLine_UU */
+    public static final String COLUMNNAME_M_PackageLine_UU = "M_PackageLine_UU";
+
+	/** Set M_PackageLine_UU	  */
+	public void setM_PackageLine_UU (String M_PackageLine_UU);
+
+	/** Get M_PackageLine_UU	  */
+	public String getM_PackageLine_UU();
 
     /** Column name Qty */
     public static final String COLUMNNAME_Qty = "Qty";

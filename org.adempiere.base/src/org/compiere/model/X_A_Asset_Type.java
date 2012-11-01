@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Type
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121024L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_A_Asset_Type (Properties ctx, int A_Asset_Type_ID, String trxName)
@@ -96,6 +96,20 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set A_Asset_Type_UU.
+		@param A_Asset_Type_UU A_Asset_Type_UU	  */
+	public void setA_Asset_Type_UU (String A_Asset_Type_UU)
+	{
+		set_Value (COLUMNNAME_A_Asset_Type_UU, A_Asset_Type_UU);
+	}
+
+	/** Get A_Asset_Type_UU.
+		@return A_Asset_Type_UU	  */
+	public String getA_Asset_Type_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_A_Asset_Type_UU);
 	}
 
 	/** Set Description.

@@ -25,8 +25,6 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
-import org.compiere.model.MCashLine;
-import org.compiere.model.MPayment;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
@@ -56,23 +54,12 @@ public abstract class PaymentForm implements IPaymentForm {
 	public String 				m_DocStatus = null;
 	/** Start Payment Rule */
 	public String 				m_PaymentRule = "";
-	/** Start Payment Term */
-	public int 					m_C_PaymentTerm_ID = 0;
 	/** Start Acct Date */
 	public Timestamp 			m_DateAcct = null;
 	/** Start Payment */
-	public int 					m_C_Payment_ID = 0;
-	public MPayment 			m_mPayment = null;
-	public MPayment 			m_mPaymentOriginal = null;
-	/** Start CashBook Line */
-	public int 					m_C_CashLine_ID = 0;
-	public MCashLine 			m_cashLine = null;
-	/** Start CreditCard */
-	public String 				m_CCType = "";
-	/** Start Bank Account */
-	public int 					m_C_BankAccount_ID = 0;
-	/** Start CashBook */
-	public int 					m_C_CashBook_ID = 0;
+//	public int 					m_C_Payment_ID = 0;
+//	public MPayment 			m_mPayment = null;
+//	public MPayment 			m_mPaymentOriginal = null;
 
 	/** Invoice Currency */
 	public int 					m_C_Currency_ID = 0;
@@ -96,6 +83,7 @@ public abstract class PaymentForm implements IPaymentForm {
 		m_mTab = mTab;
 	}
 	
+	@Override
 	public boolean dynInit() throws Exception {
 		m_DocStatus = (String) m_mTab.getValue("DocStatus");
 		log.config(m_DocStatus);
@@ -120,8 +108,6 @@ public abstract class PaymentForm implements IPaymentForm {
 		if (!m_onlyRule // Only order has Warehouse
 				&& !m_isSOTrx && m_mTab.getValue("M_Warehouse_ID") != null)
 			m_onlyRule = true;
-
-//		centerPanel.setVisible(!m_onlyRule);
 		
 		//  Amount
 		m_Amount = (BigDecimal)m_mTab.getValue("GrandTotal");
@@ -140,45 +126,9 @@ public abstract class PaymentForm implements IPaymentForm {
 		m_PaymentRule = (String)m_mTab.getValue("PaymentRule");
 		m_C_Currency_ID = ((Integer)m_mTab.getValue("C_Currency_ID")).intValue();
 		m_DateAcct = (Timestamp)m_mTab.getValue("DateAcct");
-		if (m_mTab.getValue("C_PaymentTerm_ID") != null)
-			m_C_PaymentTerm_ID = ((Integer)m_mTab.getValue("C_PaymentTerm_ID")).intValue();
-		//  Existing Payment
-		if (m_mTab.getValue("C_Payment_ID") != null)
-		{
-			m_C_Payment_ID = ((Integer)m_mTab.getValue("C_Payment_ID")).intValue();
-			if (m_C_Payment_ID != 0)
-			{
-				m_mPayment = new MPayment(Env.getCtx(), m_C_Payment_ID, null);
-				m_mPaymentOriginal = new MPayment(Env.getCtx(), m_C_Payment_ID, null);	//	full copy
-				m_CCType = m_mPayment.getCreditCardType();
-				m_C_BankAccount_ID = m_mPayment.getC_BankAccount_ID();
-			}
-		}
-		
-		if (m_mPayment == null)
-		{
-			m_mPayment = new MPayment (Env.getCtx (), 0, null);
-			m_mPayment.setAD_Org_ID(m_AD_Org_ID);
-			m_mPayment.setAmount (m_C_Currency_ID, m_Amount);
-		}
 		
 		if (s_Currencies == null)
 			loadCurrencies();
-		
-		m_cashLine = null;
-		m_C_CashLine_ID = 0;
-		if (m_mTab.getValue("C_CashLine_ID") != null)
-		{
-			m_C_CashLine_ID = ((Integer)m_mTab.getValue("C_CashLine_ID")).intValue();
-			if (m_C_CashLine_ID == 0)
-				m_cashLine = null;
-			else
-			{
-				m_cashLine = new MCashLine (Env.getCtx(), m_C_CashLine_ID, null);
-				m_DateAcct = m_cashLine.getStatementDate();
-				m_C_CashBook_ID = m_cashLine.getCashBook().getC_CashBook_ID();
-			}
-		}
 				
 		/**
 		 *	Payment Combo
@@ -191,26 +141,13 @@ public abstract class PaymentForm implements IPaymentForm {
 		return true;
 	}
 	
-	public abstract void loadData();
-	
-	/**************************************************************************
-	 *	Save Changes
-	 *	@return true, if Window can exit
-	 */
+	@Override
 	public boolean saveChanges() {
 		// BF [ 1920179 ] perform the save in a trx's context.
 		final boolean[] success = new boolean[] { false };
 		final TrxRunnable r = new TrxRunnable() {
 
 			public void run(String trxName) {
-				// set trxname for class objects
-				if (m_cashLine != null)
-					m_cashLine.set_TrxName(trxName);
-				if (m_mPayment != null)
-					m_mPayment.set_TrxName(trxName);
-				if (m_mPaymentOriginal != null)
-					m_mPaymentOriginal.set_TrxName(trxName);
-				
 				//  only Payment Rule
 				if (m_onlyRule)
 					success[0] = true;
@@ -227,12 +164,6 @@ public abstract class PaymentForm implements IPaymentForm {
 			success[0] = false;
 			throw new AdempiereException("PaymentError", e);
 		}
-		if (m_cashLine != null)
-			m_cashLine.set_TrxName(null);
-		if (m_mPayment != null)
-			m_mPayment.set_TrxName(null);
-		if (m_mPaymentOriginal != null)
-			m_mPayment.set_TrxName(null);
 		return success[0];
 	} // saveChanges
 	
@@ -264,10 +195,7 @@ public abstract class PaymentForm implements IPaymentForm {
 		}
 	}	//	loadCurrencies
 	
-	/**
-	 * 	Need Save record (payment with waiting order)
-	 *	@return true if payment with waiting order
-	 */
+	@Override
 	public boolean needSave()
 	{
 		return m_needSave;
@@ -300,12 +228,13 @@ public abstract class PaymentForm implements IPaymentForm {
 		return retValue;
 	}   //  getInvoiceID
 	
+	@Override
 	public void processOnline()
 	{
 		throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ActionNotSupported"));
 	}
 	
-	public boolean isBankAccountProcessorExist(Properties ctx, String tender, String CCType, int AD_Client_ID, int C_Currency_ID, BigDecimal PayAmt, String trxName)
+	protected boolean isBankAccountProcessorExist(Properties ctx, String tender, String CCType, int AD_Client_ID, int C_Currency_ID, BigDecimal PayAmt, String trxName)
 	{
 		MBankAccountProcessor[] m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, PayAmt, trxName);
 		//	Relax Amount
@@ -316,7 +245,7 @@ public abstract class PaymentForm implements IPaymentForm {
 		return true;
 	}
 	
-	public MBankAccountProcessor getBankAccountProcessor(Properties ctx, String tender, String CCType, int AD_Client_ID, int C_Currency_ID, BigDecimal PayAmt, String trxName)
+	protected MBankAccountProcessor getBankAccountProcessor(Properties ctx, String tender, String CCType, int AD_Client_ID, int C_Currency_ID, BigDecimal PayAmt, String trxName)
 	{
 		MBankAccountProcessor[] m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, PayAmt, trxName);
 		//	Relax Amount
@@ -329,8 +258,8 @@ public abstract class PaymentForm implements IPaymentForm {
 		//	Find the first right one
 		for (int i = 0; i < m_mBankAccountProcessors.length; i++)
 		{
-			MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccountProcessor.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), bankAccountProcessor.get_TrxName());
+			MBankAccountProcessor bap = m_mBankAccountProcessors[i];
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(bap.getCtx(), bap.getC_PaymentProcessor_ID(), bap.get_TrxName());
 			if (paymentProcessor.accepts (tender, CCType))
 			{
 				m_mBankAccountProcessor = m_mBankAccountProcessors[i];
@@ -351,9 +280,10 @@ public abstract class PaymentForm implements IPaymentForm {
 		return m_onlyRule;
 	}
 	
+	@Override
 	public boolean isApproved()
 	{
-		return m_mPayment.isApproved();
+		return true;
 	}
 	
 	public int getWindowNo()
@@ -361,16 +291,19 @@ public abstract class PaymentForm implements IPaymentForm {
 		return m_WindowNo;
 	}
 	
+	@Override
 	public Object getCustomizePanel()
 	{
 		return null;
 	}
 	
+	@Override
 	public void setCustomizeValues()
 	{
 		
 	}
 	
+	@Override
 	public void setBankAccountProcessor(MBankAccountProcessor bankAccountProcessor)
 	{
 		

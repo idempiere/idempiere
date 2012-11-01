@@ -963,6 +963,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		}
 		finally
 		{
+			if (rs != null)
+				rs.getStatement().close();
 			DB.close(rs);
 		}
 		

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_SerNoCtl
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_SerNoCtl 
 {
@@ -31,7 +31,7 @@ public interface I_M_SerNoCtl
     public static final String Table_Name = "M_SerNoCtl";
 
     /** AD_Table_ID=555 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 555;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -142,6 +142,15 @@ public interface I_M_SerNoCtl
 	  * Product Serial Number Control
 	  */
 	public int getM_SerNoCtl_ID();
+
+    /** Column name M_SerNoCtl_UU */
+    public static final String COLUMNNAME_M_SerNoCtl_UU = "M_SerNoCtl_UU";
+
+	/** Set M_SerNoCtl_UU	  */
+	public void setM_SerNoCtl_UU (String M_SerNoCtl_UU);
+
+	/** Get M_SerNoCtl_UU	  */
+	public String getM_SerNoCtl_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

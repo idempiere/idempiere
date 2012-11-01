@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Attribute
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_HR_Attribute 
 {
@@ -32,7 +32,7 @@ public interface I_HR_Attribute
     public static final String Table_Name = "HR_Attribute";
 
     /** AD_Table_ID=53087 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53087;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -72,7 +72,7 @@ public interface I_HR_Attribute
 	/** Get Rule	  */
 	public int getAD_Rule_ID();
 
-	public I_AD_Rule getAD_Rule() throws RuntimeException;
+	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException;
 
     /** Column name Amount */
     public static final String COLUMNNAME_Amount = "Amount";
@@ -100,7 +100,7 @@ public interface I_HR_Attribute
 	  */
 	public int getC_BPartner_ID();
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name ColumnType */
     public static final String COLUMNNAME_ColumnType = "ColumnType";
@@ -159,6 +159,15 @@ public interface I_HR_Attribute
 
 	/** Get Payroll Employee Attribute	  */
 	public int getHR_Attribute_ID();
+
+    /** Column name HR_Attribute_UU */
+    public static final String COLUMNNAME_HR_Attribute_UU = "HR_Attribute_UU";
+
+	/** Set HR_Attribute_UU	  */
+	public void setHR_Attribute_UU (String HR_Attribute_UU);
+
+	/** Get HR_Attribute_UU	  */
+	public String getHR_Attribute_UU();
 
     /** Column name HR_Concept_ID */
     public static final String COLUMNNAME_HR_Concept_ID = "HR_Concept_ID";

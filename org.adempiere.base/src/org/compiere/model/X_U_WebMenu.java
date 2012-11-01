@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -23,15 +23,15 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for U_WebMenu
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_U_WebMenu (Properties ctx, int U_WebMenu_ID, String trxName)
@@ -204,9 +204,9 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	public I_U_WebMenu getParentMenu() throws RuntimeException
+	public org.compiere.model.I_U_WebMenu getParentMenu() throws RuntimeException
     {
-		return (I_U_WebMenu)MTable.get(getCtx(), I_U_WebMenu.Table_Name)
+		return (org.compiere.model.I_U_WebMenu)MTable.get(getCtx(), org.compiere.model.I_U_WebMenu.Table_Name)
 			.getPO(getParentMenu_ID(), get_TrxName());	}
 
 	/** Set Parent Menu.
@@ -278,5 +278,19 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set U_WebMenu_UU.
+		@param U_WebMenu_UU U_WebMenu_UU	  */
+	public void setU_WebMenu_UU (String U_WebMenu_UU)
+	{
+		set_Value (COLUMNNAME_U_WebMenu_UU, U_WebMenu_UU);
+	}
+
+	/** Get U_WebMenu_UU.
+		@return U_WebMenu_UU	  */
+	public String getU_WebMenu_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_U_WebMenu_UU);
 	}
 }

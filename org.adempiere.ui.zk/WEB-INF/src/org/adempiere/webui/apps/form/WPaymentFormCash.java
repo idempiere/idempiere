@@ -129,6 +129,8 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 
 	@Override
 	public void loadData() {
+		super.loadData();
+		
 		bAmountField.setValue(m_Amount);
 		
 		if (m_C_Payment_ID != 0)

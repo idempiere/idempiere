@@ -66,16 +66,16 @@ public final class Adempiere
 	/** Main Version String         */
 	// Conventions for naming second number is even for stable, and odd for unstable
 	// the releases will have a suffix (a) for alpha - (b) for beta - (t) for trunk - (s) for stable - and (LTS) for long term support
-	static public String	MAIN_VERSION	= "Release 3.6.0LTS";
+	static public String	MAIN_VERSION	= "Release 1.0a";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2010-06-14";
+	static public String	DATE_VERSION	= "2012-10-31";
 	/** Database Version as date    Compared with AD_System		*/
-	static public String	DB_VERSION		= "2010-06-14";
+	static public String	DB_VERSION		= "2012-10-31";
 
 	/** Product Name            */
-	static public final String	NAME 			= "ADempiere\u00AE";
+	static public final String	NAME 			= "iDempiere\u00AE";
 	/** URL of Product          */
-	static public final String	URL				= "www.adempiere.org";
+	static public final String	URL				= "www.idempiere.org";
 	/** 16*16 Product Image. **/
 	static private final String	s_File16x16		= "images/AD16.gif";
 	/** 32*32 Product Image.   	*/
@@ -89,9 +89,9 @@ public final class Adempiere
 	static private String		s_supportEmail	= "";
 
 	/** Subtitle                */
-	static public final String	SUB_TITLE		= "Smart Suite ERP,CRM and SCM";
-	static public final String	ADEMPIERE_R		= "ADempiere\u00AE";
-	static public final String	COPYRIGHT		= "\u00A9 1999-2010 ADempiere\u00AE";
+	static public final String	SUB_TITLE		= "Smart Suite ERP, CRM and SCM";
+	static public final String	ADEMPIERE_R		= "iDempiere\u00AE";
+	static public final String	COPYRIGHT		= "\u00A9 1999-2012 iDempiere\u00AE";
 
 	static private String		s_ImplementationVersion = null;
 	static private String		s_ImplementationVendor = null;
@@ -102,7 +102,7 @@ public final class Adempiere
 	static private ImageIcon 	s_imageIcon32;
 	static private ImageIcon 	s_imageIconLogo;
 
-	static private final String ONLINE_HELP_URL = "http://www.adempiere.com/wiki/index.php/Manual";
+	static private final String ONLINE_HELP_URL = "http://wiki.idempiere.org";
 
 	/**	Logging								*/
 	private static CLogger		log = null;
@@ -176,7 +176,7 @@ public final class Adempiere
 
 	/**
 	 *	Summary (Windows).
-	 * 	Adempiere(tm) Version 2.5.1a_2004-03-15 - Smart ERP & CRM - Copyright (c) 1999-2005 Jorg Janke; Implementation: 2.5.1a 20040417-0243 - (C) 1999-2005 Jorg Janke, Adempiere Inc. USA
+	 * 	iDempiere(tm) Release 1.0a_2012-10-31 -Smart Suite ERP, CRM and SCM- Copyright (c) 1999-2012 iDempiere; Implementation: 2.5.1a 20040417-0243 - (C) 1999-2005 Jorg Janke, iDempiere Inc. USA
 	 *  @return Summary in Windows character set
 	 */
 	public static String getSummary()

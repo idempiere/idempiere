@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_FixedAsset
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_I_FixedAsset 
 {
@@ -377,6 +377,15 @@ public interface I_I_FixedAsset
 
 	/** Get Imported Fixed Asset	  */
 	public int getI_FixedAsset_ID();
+
+    /** Column name I_FixedAsset_UU */
+    public static final String COLUMNNAME_I_FixedAsset_UU = "I_FixedAsset_UU";
+
+	/** Set I_FixedAsset_UU	  */
+	public void setI_FixedAsset_UU (String I_FixedAsset_UU);
+
+	/** Get I_FixedAsset_UU	  */
+	public String getI_FixedAsset_UU();
 
     /** Column name I_IsImported */
     public static final String COLUMNNAME_I_IsImported = "I_IsImported";

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_WF_Node_Product
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PP_WF_Node_Product 
 {
@@ -32,7 +32,7 @@ public interface I_PP_WF_Node_Product
     public static final String Table_Name = "PP_WF_Node_Product";
 
     /** AD_Table_ID=53016 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53016;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,7 +76,7 @@ public interface I_PP_WF_Node_Product
 	  */
 	public int getAD_WF_Node_ID();
 
-	public I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name ConfigurationLevel */
     public static final String COLUMNNAME_ConfigurationLevel = "ConfigurationLevel";
@@ -157,7 +157,7 @@ public interface I_PP_WF_Node_Product
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name PP_WF_Node_Product_ID */
     public static final String COLUMNNAME_PP_WF_Node_Product_ID = "PP_WF_Node_Product_ID";
@@ -167,6 +167,15 @@ public interface I_PP_WF_Node_Product
 
 	/** Get Workflow Node Product	  */
 	public int getPP_WF_Node_Product_ID();
+
+    /** Column name PP_WF_Node_Product_UU */
+    public static final String COLUMNNAME_PP_WF_Node_Product_UU = "PP_WF_Node_Product_UU";
+
+	/** Set PP_WF_Node_Product_UU	  */
+	public void setPP_WF_Node_Product_UU (String PP_WF_Node_Product_UU);
+
+	/** Get PP_WF_Node_Product_UU	  */
+	public String getPP_WF_Node_Product_UU();
 
     /** Column name Qty */
     public static final String COLUMNNAME_Qty = "Qty";

@@ -17,11 +17,29 @@ import org.compiere.model.MBankAccountProcessor;
 
 public interface IPaymentForm {
 
+	public boolean dynInit() throws Exception;
+	
+	public void loadData();
+	
 	public boolean checkMandatory();
+	
+	/**************************************************************************
+	 *	Save Changes
+	 *	@return true, if Window can exit
+	 */
+	public boolean saveChanges();
 	
 	public boolean saveChangesInTrx(final String trxName);
 	
+	/**
+	 * 	Need Save record (payment with waiting order)
+	 *	@return true if payment with waiting order
+	 */
 	public boolean needSave();
+	
+	public void processOnline();
+	
+	public boolean isApproved();
 	
 	public void showWindow();
 	

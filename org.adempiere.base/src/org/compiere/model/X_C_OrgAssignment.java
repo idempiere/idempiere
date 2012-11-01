@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for C_OrgAssignment
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_OrgAssignment (Properties ctx, int C_OrgAssignment_ID, String trxName)
@@ -72,9 +72,9 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
       return sb.toString();
     }
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -121,6 +121,20 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_OrgAssignment_UU.
+		@param C_OrgAssignment_UU C_OrgAssignment_UU	  */
+	public void setC_OrgAssignment_UU (String C_OrgAssignment_UU)
+	{
+		set_Value (COLUMNNAME_C_OrgAssignment_UU, C_OrgAssignment_UU);
+	}
+
+	/** Get C_OrgAssignment_UU.
+		@return C_OrgAssignment_UU	  */
+	public String getC_OrgAssignment_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_OrgAssignment_UU);
 	}
 
 	/** Set Description.

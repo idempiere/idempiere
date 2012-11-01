@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for K_Topic
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_K_Topic extends PO implements I_K_Topic, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_K_Topic (Properties ctx, int K_Topic_ID, String trxName)
@@ -181,9 +181,23 @@ public class X_K_Topic extends PO implements I_K_Topic, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_K_Type getK_Type() throws RuntimeException
+	/** Set K_Topic_UU.
+		@param K_Topic_UU K_Topic_UU	  */
+	public void setK_Topic_UU (String K_Topic_UU)
+	{
+		set_Value (COLUMNNAME_K_Topic_UU, K_Topic_UU);
+	}
+
+	/** Get K_Topic_UU.
+		@return K_Topic_UU	  */
+	public String getK_Topic_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_K_Topic_UU);
+	}
+
+	public org.compiere.model.I_K_Type getK_Type() throws RuntimeException
     {
-		return (I_K_Type)MTable.get(getCtx(), I_K_Type.Table_Name)
+		return (org.compiere.model.I_K_Type)MTable.get(getCtx(), org.compiere.model.I_K_Type.Table_Name)
 			.getPO(getK_Type_ID(), get_TrxName());	}
 
 	/** Set Knowledge Type.

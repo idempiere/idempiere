@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_EDI
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_C_BP_EDI (Properties ctx, int C_BP_EDI_ID, String trxName)
@@ -84,9 +84,9 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Sequence getAD_Sequence() throws RuntimeException
+	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException
     {
-		return (I_AD_Sequence)MTable.get(getCtx(), I_AD_Sequence.Table_Name)
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
 			.getPO(getAD_Sequence_ID(), get_TrxName());	}
 
 	/** Set Sequence.
@@ -112,9 +112,9 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_BPartner getC_BPartner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
-		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getC_BPartner_ID(), get_TrxName());	}
 
 	/** Set Business Partner .
@@ -161,6 +161,20 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_BP_EDI_UU.
+		@param C_BP_EDI_UU C_BP_EDI_UU	  */
+	public void setC_BP_EDI_UU (String C_BP_EDI_UU)
+	{
+		set_Value (COLUMNNAME_C_BP_EDI_UU, C_BP_EDI_UU);
+	}
+
+	/** Get C_BP_EDI_UU.
+		@return C_BP_EDI_UU	  */
+	public String getC_BP_EDI_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_BP_EDI_UU);
 	}
 
 	/** Set Customer No.
@@ -370,9 +384,9 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 		return false;
 	}
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_Warehouse_ID(), get_TrxName());	}
 
 	/** Set Warehouse.

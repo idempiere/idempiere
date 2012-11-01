@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintFormatItem
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_PrintFormatItem 
 {
@@ -31,7 +31,7 @@ public interface I_AD_PrintFormatItem
     public static final String Table_Name = "AD_PrintFormatItem";
 
     /** AD_Table_ID=489 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 489;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getAD_Column_ID();
 
-	public I_AD_Column getAD_Column() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -90,7 +90,7 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getAD_PrintColor_ID();
 
-	public I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
 
     /** Column name AD_PrintFont_ID */
     public static final String COLUMNNAME_AD_PrintFont_ID = "AD_PrintFont_ID";
@@ -105,7 +105,7 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getAD_PrintFont_ID();
 
-	public I_AD_PrintFont getAD_PrintFont() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException;
 
     /** Column name AD_PrintFormatChild_ID */
     public static final String COLUMNNAME_AD_PrintFormatChild_ID = "AD_PrintFormatChild_ID";
@@ -120,7 +120,7 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getAD_PrintFormatChild_ID();
 
-	public I_AD_PrintFormat getAD_PrintFormatChild() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormatChild() throws RuntimeException;
 
     /** Column name AD_PrintFormat_ID */
     public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
@@ -135,7 +135,7 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getAD_PrintFormat_ID();
 
-	public I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_PrintFormatItem_ID */
     public static final String COLUMNNAME_AD_PrintFormatItem_ID = "AD_PrintFormatItem_ID";
@@ -150,6 +150,15 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getAD_PrintFormatItem_ID();
 
+    /** Column name AD_PrintFormatItem_UU */
+    public static final String COLUMNNAME_AD_PrintFormatItem_UU = "AD_PrintFormatItem_UU";
+
+	/** Set AD_PrintFormatItem_UU	  */
+	public void setAD_PrintFormatItem_UU (String AD_PrintFormatItem_UU);
+
+	/** Get AD_PrintFormatItem_UU	  */
+	public String getAD_PrintFormatItem_UU();
+
     /** Column name AD_PrintGraph_ID */
     public static final String COLUMNNAME_AD_PrintGraph_ID = "AD_PrintGraph_ID";
 
@@ -163,7 +172,7 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getAD_PrintGraph_ID();
 
-	public I_AD_PrintGraph getAD_PrintGraph() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintGraph getAD_PrintGraph() throws RuntimeException;
 
     /** Column name ArcDiameter */
     public static final String COLUMNNAME_ArcDiameter = "ArcDiameter";
@@ -323,6 +332,19 @@ public interface I_AD_PrintFormatItem
 	  * Count number of not empty elements
 	  */
 	public boolean isCounted();
+
+    /** Column name IsDesc */
+    public static final String COLUMNNAME_IsDesc = "IsDesc";
+
+	/** Set Descending.
+	  * Sort your data using a SQL Desc Order By statement
+	  */
+	public void setIsDesc (boolean IsDesc);
+
+	/** Get Descending.
+	  * Sort your data using a SQL Desc Order By statement
+	  */
+	public boolean isDesc();
 
     /** Column name IsDeviationCalc */
     public static final String COLUMNNAME_IsDeviationCalc = "IsDeviationCalc";

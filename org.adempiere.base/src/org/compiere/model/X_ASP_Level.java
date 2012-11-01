@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Level
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_ASP_Level (Properties ctx, int ASP_Level_ID, String trxName)
@@ -93,9 +93,23 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_ASP_Module getASP_Module() throws RuntimeException
+	/** Set ASP_Level_UU.
+		@param ASP_Level_UU ASP_Level_UU	  */
+	public void setASP_Level_UU (String ASP_Level_UU)
+	{
+		set_Value (COLUMNNAME_ASP_Level_UU, ASP_Level_UU);
+	}
+
+	/** Get ASP_Level_UU.
+		@return ASP_Level_UU	  */
+	public String getASP_Level_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_ASP_Level_UU);
+	}
+
+	public org.compiere.model.I_ASP_Module getASP_Module() throws RuntimeException
     {
-		return (I_ASP_Module)MTable.get(getCtx(), I_ASP_Module.Table_Name)
+		return (org.compiere.model.I_ASP_Module)MTable.get(getCtx(), org.compiere.model.I_ASP_Module.Table_Name)
 			.getPO(getASP_Module_ID(), get_TrxName());	}
 
 	/** Set ASP Module.

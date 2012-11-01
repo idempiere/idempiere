@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CashBook
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_CashBook 
 {
@@ -31,7 +31,7 @@ public interface I_C_CashBook
     public static final String Table_Name = "C_CashBook";
 
     /** AD_Table_ID=408 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 408;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,6 +75,15 @@ public interface I_C_CashBook
 	  */
 	public int getC_CashBook_ID();
 
+    /** Column name C_CashBook_UU */
+    public static final String COLUMNNAME_C_CashBook_UU = "C_CashBook_UU";
+
+	/** Set C_CashBook_UU	  */
+	public void setC_CashBook_UU (String C_CashBook_UU);
+
+	/** Get C_CashBook_UU	  */
+	public String getC_CashBook_UU();
+
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
 
@@ -88,7 +97,7 @@ public interface I_C_CashBook
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

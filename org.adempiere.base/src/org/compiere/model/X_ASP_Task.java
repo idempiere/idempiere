@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for ASP_Task
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_ASP_Task (Properties ctx, int ASP_Task_ID, String trxName)
@@ -72,9 +72,9 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Task getAD_Task() throws RuntimeException
+	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
     {
-		return (I_AD_Task)MTable.get(getCtx(), I_AD_Task.Table_Name)
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
 			.getPO(getAD_Task_ID(), get_TrxName());	}
 
 	/** Set OS Task.
@@ -100,9 +100,9 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_ASP_Level getASP_Level() throws RuntimeException
+	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
     {
-		return (I_ASP_Level)MTable.get(getCtx(), I_ASP_Level.Table_Name)
+		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_Name)
 			.getPO(getASP_Level_ID(), get_TrxName());	}
 
 	/** Set ASP Level.
@@ -166,5 +166,19 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set ASP_Task_UU.
+		@param ASP_Task_UU ASP_Task_UU	  */
+	public void setASP_Task_UU (String ASP_Task_UU)
+	{
+		set_Value (COLUMNNAME_ASP_Task_UU, ASP_Task_UU);
+	}
+
+	/** Get ASP_Task_UU.
+		@return ASP_Task_UU	  */
+	public String getASP_Task_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_ASP_Task_UU);
 	}
 }

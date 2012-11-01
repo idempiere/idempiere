@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for ASP_Field
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_ASP_Field (Properties ctx, int ASP_Field_ID, String trxName)
@@ -70,9 +70,9 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Field getAD_Field() throws RuntimeException
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
     {
-		return (I_AD_Field)MTable.get(getCtx(), I_AD_Field.Table_Name)
+		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
 			.getPO(getAD_Field_ID(), get_TrxName());	}
 
 	/** Set Field.
@@ -118,6 +118,20 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set ASP_Field_UU.
+		@param ASP_Field_UU ASP_Field_UU	  */
+	public void setASP_Field_UU (String ASP_Field_UU)
+	{
+		set_Value (COLUMNNAME_ASP_Field_UU, ASP_Field_UU);
+	}
+
+	/** Get ASP_Field_UU.
+		@return ASP_Field_UU	  */
+	public String getASP_Field_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_ASP_Field_UU);
+	}
+
 	/** ASP_Status AD_Reference_ID=53234 */
 	public static final int ASP_STATUS_AD_Reference_ID=53234;
 	/** Hide = H */
@@ -141,9 +155,9 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}
 
-	public I_ASP_Tab getASP_Tab() throws RuntimeException
+	public org.compiere.model.I_ASP_Tab getASP_Tab() throws RuntimeException
     {
-		return (I_ASP_Tab)MTable.get(getCtx(), I_ASP_Tab.Table_Name)
+		return (org.compiere.model.I_ASP_Tab)MTable.get(getCtx(), org.compiere.model.I_ASP_Tab.Table_Name)
 			.getPO(getASP_Tab_ID(), get_TrxName());	}
 
 	/** Set ASP Tab.

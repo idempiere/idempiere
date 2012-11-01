@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorLog
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName)
@@ -166,6 +166,20 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set IMP_ProcessorLog_UU.
+		@param IMP_ProcessorLog_UU IMP_ProcessorLog_UU	  */
+	public void setIMP_ProcessorLog_UU (String IMP_ProcessorLog_UU)
+	{
+		set_Value (COLUMNNAME_IMP_ProcessorLog_UU, IMP_ProcessorLog_UU);
+	}
+
+	/** Get IMP_ProcessorLog_UU.
+		@return IMP_ProcessorLog_UU	  */
+	public String getIMP_ProcessorLog_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_IMP_ProcessorLog_UU);
 	}
 
 	/** Set Error.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_RecentItem
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120127L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_RecentItem (Properties ctx, int AD_RecentItem_ID, String trxName)
@@ -90,6 +90,20 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_RecentItem_UU.
+		@param AD_RecentItem_UU AD_RecentItem_UU	  */
+	public void setAD_RecentItem_UU (String AD_RecentItem_UU)
+	{
+		set_Value (COLUMNNAME_AD_RecentItem_UU, AD_RecentItem_UU);
+	}
+
+	/** Get AD_RecentItem_UU.
+		@return AD_RecentItem_UU	  */
+	public String getAD_RecentItem_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_RecentItem_UU);
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
@@ -181,7 +195,7 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
-	/** Set Usuario.
+	/** Set User/Contact.
 		@param AD_User_ID 
 		User within the system - Internal or Business Partner Contact
 	  */
@@ -193,7 +207,7 @@ public class X_AD_RecentItem extends PO implements I_AD_RecentItem, I_Persistent
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
-	/** Get Usuario.
+	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
 	public int getAD_User_ID () 

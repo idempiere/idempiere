@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_IssueProject
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_R_IssueProject 
 {
@@ -31,7 +31,7 @@ public interface I_R_IssueProject
     public static final String Table_Name = "R_IssueProject";
 
     /** AD_Table_ID=842 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 842;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -54,7 +54,7 @@ public interface I_R_IssueProject
 	  */
 	public int getA_Asset_ID();
 
-	public I_A_Asset getA_Asset() throws RuntimeException;
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -90,7 +90,7 @@ public interface I_R_IssueProject
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -172,6 +172,15 @@ public interface I_R_IssueProject
 	  * Implementation Projects
 	  */
 	public int getR_IssueProject_ID();
+
+    /** Column name R_IssueProject_UU */
+    public static final String COLUMNNAME_R_IssueProject_UU = "R_IssueProject_UU";
+
+	/** Set R_IssueProject_UU	  */
+	public void setR_IssueProject_UU (String R_IssueProject_UU);
+
+	/** Get R_IssueProject_UU	  */
+	public String getR_IssueProject_UU();
 
     /** Column name StatisticsInfo */
     public static final String COLUMNNAME_StatisticsInfo = "StatisticsInfo";

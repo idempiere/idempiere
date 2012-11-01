@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -25,15 +25,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalBatch
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_GL_JournalBatch (Properties ctx, int GL_JournalBatch_ID, String trxName)
@@ -86,9 +86,9 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
       return sb.toString();
     }
 
-	public I_C_Currency getC_Currency() throws RuntimeException
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
     {
-		return (I_C_Currency)MTable.get(getCtx(), I_C_Currency.Table_Name)
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
 			.getPO(getC_Currency_ID(), get_TrxName());	}
 
 	/** Set Currency.
@@ -114,9 +114,9 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 		return ii.intValue();
 	}
 
-	public I_C_DocType getC_DocType() throws RuntimeException
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
     {
-		return (I_C_DocType)MTable.get(getCtx(), I_C_DocType.Table_Name)
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
 			.getPO(getC_DocType_ID(), get_TrxName());	}
 
 	/** Set Document Type.
@@ -179,9 +179,9 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 		return (String)get_Value(COLUMNNAME_CopyFrom);
 	}
 
-	public I_C_Period getC_Period() throws RuntimeException
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
     {
-		return (I_C_Period)MTable.get(getCtx(), I_C_Period.Table_Name)
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
 			.getPO(getC_Period_ID(), get_TrxName());	}
 
 	/** Set Period.
@@ -375,9 +375,9 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
 
-	public I_GL_Category getGL_Category() throws RuntimeException
+	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
     {
-		return (I_GL_Category)MTable.get(getCtx(), I_GL_Category.Table_Name)
+		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_Name)
 			.getPO(getGL_Category_ID(), get_TrxName());	}
 
 	/** Set GL Category.
@@ -424,6 +424,20 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set GL_JournalBatch_UU.
+		@param GL_JournalBatch_UU GL_JournalBatch_UU	  */
+	public void setGL_JournalBatch_UU (String GL_JournalBatch_UU)
+	{
+		set_Value (COLUMNNAME_GL_JournalBatch_UU, GL_JournalBatch_UU);
+	}
+
+	/** Get GL_JournalBatch_UU.
+		@return GL_JournalBatch_UU	  */
+	public String getGL_JournalBatch_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_GL_JournalBatch_UU);
 	}
 
 	/** Set Approved.
@@ -525,9 +539,9 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 		return false;
 	}
 
-	public I_GL_JournalBatch getReversal() throws RuntimeException
+	public org.compiere.model.I_GL_JournalBatch getReversal() throws RuntimeException
     {
-		return (I_GL_JournalBatch)MTable.get(getCtx(), I_GL_JournalBatch.Table_Name)
+		return (org.compiere.model.I_GL_JournalBatch)MTable.get(getCtx(), org.compiere.model.I_GL_JournalBatch.Table_Name)
 			.getPO(getReversal_ID(), get_TrxName());	}
 
 	/** Set Reversal ID.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_OrderPaySchedule
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_OrderPaySchedule 
 {
@@ -85,6 +85,15 @@ public interface I_C_OrderPaySchedule
 
 	/** Get Order Payment Schedule	  */
 	public int getC_OrderPaySchedule_ID();
+
+    /** Column name C_OrderPaySchedule_UU */
+    public static final String COLUMNNAME_C_OrderPaySchedule_UU = "C_OrderPaySchedule_UU";
+
+	/** Set C_OrderPaySchedule_UU	  */
+	public void setC_OrderPaySchedule_UU (String C_OrderPaySchedule_UU);
+
+	/** Get C_OrderPaySchedule_UU	  */
+	public String getC_OrderPaySchedule_UU();
 
     /** Column name C_PaySchedule_ID */
     public static final String COLUMNNAME_C_PaySchedule_ID = "C_PaySchedule_ID";

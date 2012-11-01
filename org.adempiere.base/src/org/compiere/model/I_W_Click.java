@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for W_Click
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_W_Click 
 {
@@ -31,7 +31,7 @@ public interface I_W_Click
     public static final String Table_Name = "W_Click";
 
     /** AD_Table_ID=550 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 550;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -237,7 +237,7 @@ public interface I_W_Click
 	  */
 	public int getW_ClickCount_ID();
 
-	public I_W_ClickCount getW_ClickCount() throws RuntimeException;
+	public org.compiere.model.I_W_ClickCount getW_ClickCount() throws RuntimeException;
 
     /** Column name W_Click_ID */
     public static final String COLUMNNAME_W_Click_ID = "W_Click_ID";
@@ -251,4 +251,13 @@ public interface I_W_Click
 	  * Individual Web Click
 	  */
 	public int getW_Click_ID();
+
+    /** Column name W_Click_UU */
+    public static final String COLUMNNAME_W_Click_UU = "W_Click_UU";
+
+	/** Set W_Click_UU	  */
+	public void setW_Click_UU (String W_Click_UU);
+
+	/** Get W_Click_UU	  */
+	public String getW_Click_UU();
 }

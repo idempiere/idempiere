@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_InventoryValue
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_T_InventoryValue 
 {
@@ -31,7 +31,7 @@ public interface I_T_InventoryValue
     public static final String Table_Name = "T_InventoryValue";
 
     /** AD_Table_ID=478 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 478;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_T_InventoryValue
 	  */
 	public int getAD_PInstance_ID();
 
-	public I_AD_PInstance getAD_PInstance() throws RuntimeException;
+	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -90,7 +90,7 @@ public interface I_T_InventoryValue
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name Cost */
     public static final String COLUMNNAME_Cost = "Cost";
@@ -185,7 +185,7 @@ public interface I_T_InventoryValue
 	  */
 	public int getM_CostElement_ID();
 
-	public I_M_CostElement getM_CostElement() throws RuntimeException;
+	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_PriceList_Version_ID */
     public static final String COLUMNNAME_M_PriceList_Version_ID = "M_PriceList_Version_ID";
@@ -200,7 +200,7 @@ public interface I_T_InventoryValue
 	  */
 	public int getM_PriceList_Version_ID();
 
-	public I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -215,7 +215,7 @@ public interface I_T_InventoryValue
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -230,7 +230,7 @@ public interface I_T_InventoryValue
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name PriceLimit */
     public static final String COLUMNNAME_PriceLimit = "PriceLimit";
@@ -348,4 +348,13 @@ public interface I_T_InventoryValue
 	  * On Hand Quantity
 	  */
 	public BigDecimal getQtyOnHand();
+
+    /** Column name T_InventoryValue_UU */
+    public static final String COLUMNNAME_T_InventoryValue_UU = "T_InventoryValue_UU";
+
+	/** Set T_InventoryValue_UU	  */
+	public void setT_InventoryValue_UU (String T_InventoryValue_UU);
+
+	/** Get T_InventoryValue_UU	  */
+	public String getT_InventoryValue_UU();
 }

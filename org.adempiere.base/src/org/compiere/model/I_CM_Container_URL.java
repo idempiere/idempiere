@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_Container_URL
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_CM_Container_URL 
 {
@@ -31,7 +31,7 @@ public interface I_CM_Container_URL
     public static final String Table_Name = "CM_Container_URL";
 
     /** AD_Table_ID=865 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 865;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,7 +88,7 @@ public interface I_CM_Container_URL
 	  */
 	public int getCM_Container_ID();
 
-	public I_CM_Container getCM_Container() throws RuntimeException;
+	public org.compiere.model.I_CM_Container getCM_Container() throws RuntimeException;
 
     /** Column name CM_Container_URL_ID */
     public static final String COLUMNNAME_CM_Container_URL_ID = "CM_Container_URL_ID";
@@ -102,6 +102,15 @@ public interface I_CM_Container_URL
 	  * Contains info on used URLs
 	  */
 	public int getCM_Container_URL_ID();
+
+    /** Column name CM_Container_URL_UU */
+    public static final String COLUMNNAME_CM_Container_URL_UU = "CM_Container_URL_UU";
+
+	/** Set CM_Container_URL_UU	  */
+	public void setCM_Container_URL_UU (String CM_Container_URL_UU);
+
+	/** Get CM_Container_URL_UU	  */
+	public String getCM_Container_URL_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

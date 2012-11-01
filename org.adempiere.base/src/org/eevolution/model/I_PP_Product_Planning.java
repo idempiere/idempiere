@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Product_Planning
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PP_Product_Planning 
 {
@@ -32,7 +32,7 @@ public interface I_PP_Product_Planning
     public static final String Table_Name = "PP_Product_Planning";
 
     /** AD_Table_ID=53020 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53020;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -76,7 +76,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getAD_Workflow_ID();
 
-	public I_AD_Workflow getAD_Workflow() throws RuntimeException;
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -147,14 +147,10 @@ public interface I_PP_Product_Planning
     /** Column name IsMPS */
     public static final String COLUMNNAME_IsMPS = "IsMPS";
 
-	/** Set Is MPS.
-	  * Determines if this product is part of the master production schedule
-	  */
+	/** Set Is MPS	  */
 	public void setIsMPS (boolean IsMPS);
 
-	/** Get Is MPS.
-	  * Determines if this product is part of the master production schedule
-	  */
+	/** Get Is MPS	  */
 	public boolean isMPS();
 
     /** Column name IsPhantom */
@@ -201,7 +197,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
@@ -216,7 +212,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getM_Warehouse_ID();
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException;
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Order_Max */
     public static final String COLUMNNAME_Order_Max = "Order_Max";
@@ -284,6 +280,17 @@ public interface I_PP_Product_Planning
 	/** Get Order Qty	  */
 	public BigDecimal getOrder_Qty();
 
+    /** Column name Planner_ID */
+    public static final String COLUMNNAME_Planner_ID = "Planner_ID";
+
+	/** Set Planner	  */
+	public void setPlanner_ID (int Planner_ID);
+
+	/** Get Planner	  */
+	public int getPlanner_ID();
+
+	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException;
+
     /** Column name PP_Product_BOM_ID */
     public static final String COLUMNNAME_PP_Product_BOM_ID = "PP_Product_BOM_ID";
 
@@ -308,16 +315,27 @@ public interface I_PP_Product_Planning
 	/** Get Product Planning	  */
 	public int getPP_Product_Planning_ID();
 
-    /** Column name Planner_ID */
-    public static final String COLUMNNAME_Planner_ID = "Planner_ID";
+    /** Column name PP_Product_Planning_UU */
+    public static final String COLUMNNAME_PP_Product_Planning_UU = "PP_Product_Planning_UU";
 
-	/** Set Planner	  */
-	public void setPlanner_ID (int Planner_ID);
+	/** Set PP_Product_Planning_UU	  */
+	public void setPP_Product_Planning_UU (String PP_Product_Planning_UU);
 
-	/** Get Planner	  */
-	public int getPlanner_ID();
+	/** Get PP_Product_Planning_UU	  */
+	public String getPP_Product_Planning_UU();
 
-	public I_AD_User getPlanner() throws RuntimeException;
+    /** Column name SafetyStock */
+    public static final String COLUMNNAME_SafetyStock = "SafetyStock";
+
+	/** Set Safety Stock Qty.
+	  * Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
+	  */
+	public void setSafetyStock (BigDecimal SafetyStock);
+
+	/** Get Safety Stock Qty.
+	  * Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
+	  */
+	public BigDecimal getSafetyStock();
 
     /** Column name S_Resource_ID */
     public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";
@@ -332,20 +350,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getS_Resource_ID();
 
-	public I_S_Resource getS_Resource() throws RuntimeException;
-
-    /** Column name SafetyStock */
-    public static final String COLUMNNAME_SafetyStock = "SafetyStock";
-
-	/** Set Safety Stock Qty.
-	  * Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
-	  */
-	public void setSafetyStock (BigDecimal SafetyStock);
-
-	/** Get Safety Stock Qty.
-	  * Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
-	  */
-	public BigDecimal getSafetyStock();
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name TimeFence */
     public static final String COLUMNNAME_TimeFence = "TimeFence";

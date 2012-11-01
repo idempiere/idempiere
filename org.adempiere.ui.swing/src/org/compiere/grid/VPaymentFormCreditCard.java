@@ -82,7 +82,6 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		kAmountLabel.setText(Msg.getMsg(Env.getCtx(), "Amount"));
 		kOnline.setText(Msg.getMsg(Env.getCtx(), "Online"));
 		kOnline.addActionListener(this);
-		kStatus.setText(" ");
 		dialog.getPanel().add(kTypeLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 0, 2, 0), 0, 0));
 		dialog.getPanel().add(kTypeCombo, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
@@ -117,6 +116,8 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 
 	@Override
 	public void loadData() {
+		super.loadData();
+		
 		kAmountField.setValue(m_Amount);
 		
 		if (m_C_Payment_ID != 0)
@@ -141,6 +142,8 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		/**
 		 *	Load Credit Cards
 		 */
+		kTypeCombo.removeAllItems();
+		
 		ValueNamePair[] ccs = getCreditCardList();
 		for (int i = 0; i < ccs.length; i++)
 			kTypeCombo.addItem(ccs[i]);
@@ -222,7 +225,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		if (vp != null)
 			newCCType = vp.getValue();
 
-		boolean ok = save(newCCType, kNumberField.getText(), kExpField.getText(), (BigDecimal) kAmountField.getValue());		
+		boolean ok = save(newCCType, kNumberField.getText(), kExpField.getText(), (BigDecimal) kAmountField.getValue(), trxName);		
 		if(!ok)
 			ADialog.error(getWindowNo(), dialog, "PaymentError", processMsg);
 		else if (processMsg != null)
@@ -243,8 +246,12 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		boolean ok = processOnline(CCType, kNumberField.getText(), kExpField.getText());
 		if (!ok)
 			ADialog.error(getWindowNo(), dialog, "PaymentError", processMsg);
-		else if (processMsg != null)
-			ADialog.info(getWindowNo(), dialog, "PaymentProcessed", processMsg);
+		else 
+		{
+			loadData();
+			if (processMsg != null)
+				ADialog.info(getWindowNo(), dialog, "PaymentProcessed", processMsg);
+		}
 	}   //  online
 
 	@Override

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Registration
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_Registration 
 {
@@ -31,7 +31,7 @@ public interface I_AD_Registration
     public static final String Table_Name = "AD_Registration";
 
     /** AD_Table_ID=625 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 625;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,6 +75,15 @@ public interface I_AD_Registration
 	  */
 	public int getAD_Registration_ID();
 
+    /** Column name AD_Registration_UU */
+    public static final String COLUMNNAME_AD_Registration_UU = "AD_Registration_UU";
+
+	/** Set AD_Registration_UU	  */
+	public void setAD_Registration_UU (String AD_Registration_UU);
+
+	/** Get AD_Registration_UU	  */
+	public String getAD_Registration_UU();
+
     /** Column name AD_System_ID */
     public static final String COLUMNNAME_AD_System_ID = "AD_System_ID";
 
@@ -88,7 +97,7 @@ public interface I_AD_Registration
 	  */
 	public int getAD_System_ID();
 
-	public I_AD_System getAD_System() throws RuntimeException;
+	public org.compiere.model.I_AD_System getAD_System() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -103,7 +112,7 @@ public interface I_AD_Registration
 	  */
 	public int getC_Currency_ID();
 
-	public I_C_Currency getC_Currency() throws RuntimeException;
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_Location_ID */
     public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";

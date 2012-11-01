@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BankStatementLoader
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_BankStatementLoader 
 {
@@ -31,7 +31,7 @@ public interface I_C_BankStatementLoader
     public static final String Table_Name = "C_BankStatementLoader";
 
     /** AD_Table_ID=640 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 640;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -101,7 +101,7 @@ public interface I_C_BankStatementLoader
 	  */
 	public int getC_BankAccount_ID();
 
-	public I_C_BankAccount getC_BankAccount() throws RuntimeException;
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name C_BankStatementLoader_ID */
     public static final String COLUMNNAME_C_BankStatementLoader_ID = "C_BankStatementLoader_ID";
@@ -115,6 +115,15 @@ public interface I_C_BankStatementLoader
 	  * Definition of Bank Statement Loader (SWIFT, OFX)
 	  */
 	public int getC_BankStatementLoader_ID();
+
+    /** Column name C_BankStatementLoader_UU */
+    public static final String COLUMNNAME_C_BankStatementLoader_UU = "C_BankStatementLoader_UU";
+
+	/** Set C_BankStatementLoader_UU	  */
+	public void setC_BankStatementLoader_UU (String C_BankStatementLoader_UU);
+
+	/** Get C_BankStatementLoader_UU	  */
+	public String getC_BankStatementLoader_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

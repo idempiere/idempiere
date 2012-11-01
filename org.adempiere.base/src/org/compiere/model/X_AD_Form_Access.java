@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Form_Access
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Form_Access extends PO implements I_AD_Form_Access, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Form_Access (Properties ctx, int AD_Form_Access_ID, String trxName)
@@ -71,9 +71,23 @@ public class X_AD_Form_Access extends PO implements I_AD_Form_Access, I_Persiste
       return sb.toString();
     }
 
-	public I_AD_Form getAD_Form() throws RuntimeException
+	/** Set AD_Form_Access_UU.
+		@param AD_Form_Access_UU AD_Form_Access_UU	  */
+	public void setAD_Form_Access_UU (String AD_Form_Access_UU)
+	{
+		set_Value (COLUMNNAME_AD_Form_Access_UU, AD_Form_Access_UU);
+	}
+
+	/** Get AD_Form_Access_UU.
+		@return AD_Form_Access_UU	  */
+	public String getAD_Form_Access_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Form_Access_UU);
+	}
+
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
     {
-		return (I_AD_Form)MTable.get(getCtx(), I_AD_Form.Table_Name)
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
 			.getPO(getAD_Form_ID(), get_TrxName());	}
 
 	/** Set Special Form.
@@ -99,9 +113,9 @@ public class X_AD_Form_Access extends PO implements I_AD_Form_Access, I_Persiste
 		return ii.intValue();
 	}
 
-	public I_AD_Role getAD_Role() throws RuntimeException
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
     {
-		return (I_AD_Role)MTable.get(getCtx(), I_AD_Role.Table_Name)
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
 			.getPO(getAD_Role_ID(), get_TrxName());	}
 
 	/** Set Role.

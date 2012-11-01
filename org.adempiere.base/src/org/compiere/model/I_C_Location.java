@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Location
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_Location 
 {
@@ -31,7 +31,7 @@ public interface I_C_Location
     public static final String Table_Name = "C_Location";
 
     /** AD_Table_ID=162 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 162;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -127,7 +127,7 @@ public interface I_C_Location
 	  */
 	public int getC_City_ID();
 
-	public I_C_City getC_City() throws RuntimeException;
+	public org.compiere.model.I_C_City getC_City() throws RuntimeException;
 
     /** Column name C_Country_ID */
     public static final String COLUMNNAME_C_Country_ID = "C_Country_ID";
@@ -142,7 +142,7 @@ public interface I_C_Location
 	  */
 	public int getC_Country_ID();
 
-	public I_C_Country getC_Country() throws RuntimeException;
+	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
 
     /** Column name City */
     public static final String COLUMNNAME_City = "City";
@@ -169,6 +169,15 @@ public interface I_C_Location
 	  * Location or Address
 	  */
 	public int getC_Location_ID();
+
+    /** Column name C_Location_UU */
+    public static final String COLUMNNAME_C_Location_UU = "C_Location_UU";
+
+	/** Set C_Location_UU	  */
+	public void setC_Location_UU (String C_Location_UU);
+
+	/** Get C_Location_UU	  */
+	public String getC_Location_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -199,7 +208,7 @@ public interface I_C_Location
 	  */
 	public int getC_Region_ID();
 
-	public I_C_Region getC_Region() throws RuntimeException;
+	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

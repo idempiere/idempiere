@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DemandDetail
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_DemandDetail 
 {
@@ -31,7 +31,7 @@ public interface I_M_DemandDetail
     public static final String Table_Name = "M_DemandDetail";
 
     /** AD_Table_ID=721 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 721;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,7 @@ public interface I_M_DemandDetail
 	  */
 	public int getC_OrderLine_ID();
 
-	public I_C_OrderLine getC_OrderLine() throws RuntimeException;
+	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -119,6 +119,15 @@ public interface I_M_DemandDetail
 	  */
 	public int getM_DemandDetail_ID();
 
+    /** Column name M_DemandDetail_UU */
+    public static final String COLUMNNAME_M_DemandDetail_UU = "M_DemandDetail_UU";
+
+	/** Set M_DemandDetail_UU	  */
+	public void setM_DemandDetail_UU (String M_DemandDetail_UU);
+
+	/** Get M_DemandDetail_UU	  */
+	public String getM_DemandDetail_UU();
+
     /** Column name M_DemandLine_ID */
     public static final String COLUMNNAME_M_DemandLine_ID = "M_DemandLine_ID";
 
@@ -132,7 +141,7 @@ public interface I_M_DemandDetail
 	  */
 	public int getM_DemandLine_ID();
 
-	public I_M_DemandLine getM_DemandLine() throws RuntimeException;
+	public org.compiere.model.I_M_DemandLine getM_DemandLine() throws RuntimeException;
 
     /** Column name M_ForecastLine_ID */
     public static final String COLUMNNAME_M_ForecastLine_ID = "M_ForecastLine_ID";
@@ -147,7 +156,7 @@ public interface I_M_DemandDetail
 	  */
 	public int getM_ForecastLine_ID();
 
-	public I_M_ForecastLine getM_ForecastLine() throws RuntimeException;
+	public org.compiere.model.I_M_ForecastLine getM_ForecastLine() throws RuntimeException;
 
     /** Column name M_RequisitionLine_ID */
     public static final String COLUMNNAME_M_RequisitionLine_ID = "M_RequisitionLine_ID";
@@ -162,7 +171,7 @@ public interface I_M_DemandDetail
 	  */
 	public int getM_RequisitionLine_ID();
 
-	public I_M_RequisitionLine getM_RequisitionLine() throws RuntimeException;
+	public org.compiere.model.I_M_RequisitionLine getM_RequisitionLine() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

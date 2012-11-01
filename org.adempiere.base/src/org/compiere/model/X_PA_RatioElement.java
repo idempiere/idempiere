@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_RatioElement
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_PA_RatioElement (Properties ctx, int PA_RatioElement_ID, String trxName)
@@ -78,9 +78,9 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
       return sb.toString();
     }
 
-	public I_C_ElementValue getAccount() throws RuntimeException
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
     {
-		return (I_C_ElementValue)MTable.get(getCtx(), I_C_ElementValue.Table_Name)
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
 			.getPO(getAccount_ID(), get_TrxName());	}
 
 	/** Set Account.
@@ -160,9 +160,9 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	public I_PA_MeasureCalc getPA_MeasureCalc() throws RuntimeException
+	public org.compiere.model.I_PA_MeasureCalc getPA_MeasureCalc() throws RuntimeException
     {
-		return (I_PA_MeasureCalc)MTable.get(getCtx(), I_PA_MeasureCalc.Table_Name)
+		return (org.compiere.model.I_PA_MeasureCalc)MTable.get(getCtx(), org.compiere.model.I_PA_MeasureCalc.Table_Name)
 			.getPO(getPA_MeasureCalc_ID(), get_TrxName());	}
 
 	/** Set Measure Calculation.
@@ -211,9 +211,23 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 		return ii.intValue();
 	}
 
-	public I_PA_Ratio getPA_Ratio() throws RuntimeException
+	/** Set PA_RatioElement_UU.
+		@param PA_RatioElement_UU PA_RatioElement_UU	  */
+	public void setPA_RatioElement_UU (String PA_RatioElement_UU)
+	{
+		set_Value (COLUMNNAME_PA_RatioElement_UU, PA_RatioElement_UU);
+	}
+
+	/** Get PA_RatioElement_UU.
+		@return PA_RatioElement_UU	  */
+	public String getPA_RatioElement_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_PA_RatioElement_UU);
+	}
+
+	public org.compiere.model.I_PA_Ratio getPA_Ratio() throws RuntimeException
     {
-		return (I_PA_Ratio)MTable.get(getCtx(), I_PA_Ratio.Table_Name)
+		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_Name)
 			.getPO(getPA_Ratio_ID(), get_TrxName());	}
 
 	/** Set Ratio.
@@ -239,9 +253,9 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 		return ii.intValue();
 	}
 
-	public I_PA_Ratio getPA_RatioUsed() throws RuntimeException
+	public org.compiere.model.I_PA_Ratio getPA_RatioUsed() throws RuntimeException
     {
-		return (I_PA_Ratio)MTable.get(getCtx(), I_PA_Ratio.Table_Name)
+		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_Name)
 			.getPO(getPA_RatioUsed_ID(), get_TrxName());	}
 
 	/** Set Ratio Used.

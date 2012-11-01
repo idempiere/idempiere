@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for M_PromotionGroupLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_PromotionGroupLine (Properties ctx, int M_PromotionGroupLine_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
       return sb.toString();
     }
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -99,9 +99,9 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 		return ii.intValue();
 	}
 
-	public I_M_PromotionGroup getM_PromotionGroup() throws RuntimeException
+	public org.compiere.model.I_M_PromotionGroup getM_PromotionGroup() throws RuntimeException
     {
-		return (I_M_PromotionGroup)MTable.get(getCtx(), I_M_PromotionGroup.Table_Name)
+		return (org.compiere.model.I_M_PromotionGroup)MTable.get(getCtx(), org.compiere.model.I_M_PromotionGroup.Table_Name)
 			.getPO(getM_PromotionGroup_ID(), get_TrxName());	}
 
 	/** Set Promotion Group.
@@ -142,5 +142,19 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_PromotionGroupLine_UU.
+		@param M_PromotionGroupLine_UU M_PromotionGroupLine_UU	  */
+	public void setM_PromotionGroupLine_UU (String M_PromotionGroupLine_UU)
+	{
+		set_Value (COLUMNNAME_M_PromotionGroupLine_UU, M_PromotionGroupLine_UU);
+	}
+
+	/** Get M_PromotionGroupLine_UU.
+		@return M_PromotionGroupLine_UU	  */
+	public String getM_PromotionGroupLine_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_PromotionGroupLine_UU);
 	}
 }

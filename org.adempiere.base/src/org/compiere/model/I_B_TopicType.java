@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for B_TopicType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_B_TopicType 
 {
@@ -31,7 +31,7 @@ public interface I_B_TopicType
     public static final String Table_Name = "B_TopicType";
 
     /** AD_Table_ID=690 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 690;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -83,6 +83,15 @@ public interface I_B_TopicType
 	  * Auction Topic Type
 	  */
 	public int getB_TopicType_ID();
+
+    /** Column name B_TopicType_UU */
+    public static final String COLUMNNAME_B_TopicType_UU = "B_TopicType_UU";
+
+	/** Set B_TopicType_UU	  */
+	public void setB_TopicType_UU (String B_TopicType_UU);
+
+	/** Get B_TopicType_UU	  */
+	public String getB_TopicType_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -152,7 +161,7 @@ public interface I_B_TopicType
 	  */
 	public int getM_PriceList_ID();
 
-	public I_M_PriceList getM_PriceList() throws RuntimeException;
+	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -167,7 +176,7 @@ public interface I_B_TopicType
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_ProductMember_ID */
     public static final String COLUMNNAME_M_ProductMember_ID = "M_ProductMember_ID";
@@ -182,7 +191,7 @@ public interface I_B_TopicType
 	  */
 	public int getM_ProductMember_ID();
 
-	public I_M_Product getM_ProductMember() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_ProductMember() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

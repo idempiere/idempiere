@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CashPlanLine
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_C_CashPlanLine 
 {
@@ -139,6 +139,15 @@ public interface I_C_CashPlanLine
 
 	/** Get Cash Plan Line	  */
 	public int getC_CashPlanLine_ID();
+
+    /** Column name C_CashPlanLine_UU */
+    public static final String COLUMNNAME_C_CashPlanLine_UU = "C_CashPlanLine_UU";
+
+	/** Set C_CashPlanLine_UU	  */
+	public void setC_CashPlanLine_UU (String C_CashPlanLine_UU);
+
+	/** Get C_CashPlanLine_UU	  */
+	public String getC_CashPlanLine_UU();
 
     /** Column name C_Charge_ID */
     public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";

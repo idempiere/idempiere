@@ -36,9 +36,12 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 	
 	public PaymentFormOnCredit(int WindowNo, GridTab mTab) {
 		super(WindowNo, mTab);
-		
-		if (mTab.getValue("C_PaymentTerm_ID") != null)
-			m_C_PaymentTerm_ID = ((Integer)mTab.getValue("C_PaymentTerm_ID")).intValue();
+	}
+	
+	@Override
+	public void loadData() {
+		if (getGridTab().getValue("C_PaymentTerm_ID") != null)
+			m_C_PaymentTerm_ID = ((Integer)getGridTab().getValue("C_PaymentTerm_ID")).intValue();
 	}
 
 	public KeyNamePair selectedPaymentTerm = null;

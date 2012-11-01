@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance_Para
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_PInstance_Para 
 {
@@ -31,7 +31,7 @@ public interface I_AD_PInstance_Para
     public static final String Table_Name = "AD_PInstance_Para";
 
     /** AD_Table_ID=283 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 283;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -75,7 +75,16 @@ public interface I_AD_PInstance_Para
 	  */
 	public int getAD_PInstance_ID();
 
-	public I_AD_PInstance getAD_PInstance() throws RuntimeException;
+	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
+
+    /** Column name AD_PInstance_Para_UU */
+    public static final String COLUMNNAME_AD_PInstance_Para_UU = "AD_PInstance_Para_UU";
+
+	/** Set AD_PInstance_Para_UU	  */
+	public void setAD_PInstance_Para_UU (String AD_PInstance_Para_UU);
+
+	/** Get AD_PInstance_Para_UU	  */
+	public String getAD_PInstance_Para_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

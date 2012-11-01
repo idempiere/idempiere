@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for EXP_Format
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_EXP_Format (Properties ctx, int EXP_Format_ID, String trxName)
@@ -73,9 +73,9 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
       return sb.toString();
     }
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -136,6 +136,20 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set EXP_Format_UU.
+		@param EXP_Format_UU EXP_Format_UU	  */
+	public void setEXP_Format_UU (String EXP_Format_UU)
+	{
+		set_Value (COLUMNNAME_EXP_Format_UU, EXP_Format_UU);
+	}
+
+	/** Get EXP_Format_UU.
+		@return EXP_Format_UU	  */
+	public String getEXP_Format_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_EXP_Format_UU);
 	}
 
 	/** Set Comment/Help.

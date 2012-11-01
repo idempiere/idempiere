@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication_Run
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100614L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_AD_Replication_Run (Properties ctx, int AD_Replication_Run_ID, String trxName)
@@ -74,9 +74,9 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
       return sb.toString();
     }
 
-	public I_AD_Replication getAD_Replication() throws RuntimeException
+	public org.compiere.model.I_AD_Replication getAD_Replication() throws RuntimeException
     {
-		return (I_AD_Replication)MTable.get(getCtx(), I_AD_Replication.Table_Name)
+		return (org.compiere.model.I_AD_Replication)MTable.get(getCtx(), org.compiere.model.I_AD_Replication.Table_Name)
 			.getPO(getAD_Replication_ID(), get_TrxName());	}
 
 	/** Set Replication.
@@ -123,6 +123,20 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Replication_Run_UU.
+		@param AD_Replication_Run_UU AD_Replication_Run_UU	  */
+	public void setAD_Replication_Run_UU (String AD_Replication_Run_UU)
+	{
+		set_Value (COLUMNNAME_AD_Replication_Run_UU, AD_Replication_Run_UU);
+	}
+
+	/** Get AD_Replication_Run_UU.
+		@return AD_Replication_Run_UU	  */
+	public String getAD_Replication_Run_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Replication_Run_UU);
 	}
 
 	/** Set Description.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSet
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20110308L;
+	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -365,6 +365,20 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set M_AttributeSet_UU.
+		@param M_AttributeSet_UU M_AttributeSet_UU	  */
+	public void setM_AttributeSet_UU (String M_AttributeSet_UU)
+	{
+		set_Value (COLUMNNAME_M_AttributeSet_UU, M_AttributeSet_UU);
+	}
+
+	/** Get M_AttributeSet_UU.
+		@return M_AttributeSet_UU	  */
+	public String getM_AttributeSet_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_AttributeSet_UU);
 	}
 
 	public org.compiere.model.I_M_LotCtl getM_LotCtl() throws RuntimeException

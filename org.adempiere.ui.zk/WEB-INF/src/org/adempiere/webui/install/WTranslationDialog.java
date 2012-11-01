@@ -27,6 +27,7 @@ import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
@@ -43,8 +44,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.South;
 
 public class WTranslationDialog extends TranslationController implements IFormController, EventListener {
 
@@ -91,6 +92,10 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 	private Label lTable = new Label();
 	private Listbox cbTable = ListboxFactory.newDropdownListbox();
 	private StatusBarPanel statusBar = new StatusBarPanel();
+	private ValueNamePair m_AD_Table;
+	private int m_AD_Client_ID;
+	private boolean m_imp;
+	private ValueNamePair m_AD_Language;
 	
 	private void zkInit() throws Exception
 	{
@@ -173,8 +178,8 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 			return;
 		}	
 		
-		ValueNamePair AD_Language = (ValueNamePair)cbLanguage.getSelectedItem().toValueNamePair();
-		if (AD_Language == null)
+		m_AD_Language = (ValueNamePair)cbLanguage.getSelectedItem().toValueNamePair();
+		if (m_AD_Language == null)
 		{
 			statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "LanguageSetupError"), true);
 			return;
@@ -183,66 +188,75 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		if (cbTable.getSelectedIndex() == -1)
 			return;
 			
-		ValueNamePair AD_Table = (ValueNamePair)cbTable.getSelectedItem().toValueNamePair();
-		if (AD_Table == null)
+		m_AD_Table = (ValueNamePair)cbTable.getSelectedItem().toValueNamePair();
+		if (m_AD_Table == null)
 			return;
 		
-		boolean imp = (e.getTarget() == bImport);
+		m_imp = (e.getTarget() == bImport);
 		
-		int AD_Client_ID = -1;
+		m_AD_Client_ID = -1;
 		KeyNamePair AD_Client = null;
 		if (cbTable.getSelectedIndex() != -1)
 			AD_Client = (KeyNamePair)cbClient.getSelectedItem().toKeyNamePair();
 		
 		if (AD_Client != null)
-			AD_Client_ID = AD_Client.getKey();
+			m_AD_Client_ID = AD_Client.getKey();
 		
-		FolderBrowser directoryDialog = new FolderBrowser(true);
-		String directory = directoryDialog.getPath();
-		
-		if(directory == null) return;
-		//
-		statusBar.setStatusLine(directory);
-		
-		Translation t = new Translation(Env.getCtx());
-		StringBuilder msg = new StringBuilder(t.validateLanguage(AD_Language.getValue()));
-		if (msg.length() > 0)
-		{
-			FDialog.error(m_WindowNo, form, "LanguageSetupError", msg.toString());
-			return;
-		}
-
-		//	All Tables
-		if (AD_Table.getValue().equals(""))
-		{
-			msg = new StringBuilder();
-			
-			for (int i = 1; i < cbTable.getItemCount(); i++)
-			{
-				AD_Table = (ValueNamePair)cbTable.getItemAtIndex(i).toValueNamePair();
-				// Carlos Ruiz - globalqss - improve output message from translation import process
-				msg.append(AD_Table.getValue()).append(" ").append((imp
-						? t.importTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue())
-						: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue()))).append(" ");
+		final FolderBrowser directoryDialog = new FolderBrowser(true);
+		directoryDialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				callImportProcess(directoryDialog.getPath());
 			}
-			
-			if(msg == null || msg.length() == 0)
-				msg = new StringBuilder((imp ? "Import" : "Export")).append(" Successful. [").append(directory).append("]");
 
-			statusBar.setStatusLine(msg.toString());
-		}
-		else	//	single table
-		{
-			msg = null;
-			msg = new StringBuilder(imp
-				? t.importTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue())
-				: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue()));
+			private void callImportProcess(String path) {
+				String directory = directoryDialog.getPath();
 				
-			if(msg == null || msg.length() == 0)
-				msg = new StringBuilder(imp ? "Import" : "Export").append(" Successful. [").append(directory).append("]");
-			
-			statusBar.setStatusLine(msg.toString());
-		}
+				if(directory == null) return;
+				//
+				statusBar.setStatusLine(directory);
+				
+				Translation t = new Translation(Env.getCtx());
+				StringBuilder msg = new StringBuilder(t.validateLanguage(m_AD_Language.getValue()));
+				if (msg.length() > 0)
+				{
+					FDialog.error(m_WindowNo, form, "LanguageSetupError", msg.toString());
+					return;
+				}
+
+				//	All Tables
+				if (m_AD_Table.getValue().equals(""))
+				{
+					msg = new StringBuilder();
+					
+					for (int i = 1; i < cbTable.getItemCount(); i++)
+					{
+						m_AD_Table = (ValueNamePair)cbTable.getItemAtIndex(i).toValueNamePair();
+						// Carlos Ruiz - globalqss - improve output message from translation import process
+						msg.append(m_AD_Table.getValue()).append(" ").append((m_imp
+								? t.importTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue())
+								: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue()))).append(" ");
+					}
+					
+					if(msg == null || msg.length() == 0)
+						msg = new StringBuilder((m_imp ? "Import" : "Export")).append(" Successful. [").append(directory).append("]");
+
+					statusBar.setStatusLine(msg.toString());
+				}
+				else	//	single table
+				{
+					msg = null;
+					msg = new StringBuilder(m_imp
+						? t.importTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue())
+						: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue()));
+						
+					if(msg == null || msg.length() == 0)
+						msg = new StringBuilder(m_imp ? "Import" : "Export").append(" Successful. [").append(directory).append("]");
+					
+					statusBar.setStatusLine(msg.toString());
+				}
+			}
+		});
 	}   //  actionPerformed
 	
 	public ADForm getForm() {

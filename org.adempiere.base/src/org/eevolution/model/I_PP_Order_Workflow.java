@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,8 +22,8 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_Workflow
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_PP_Order_Workflow 
 {
@@ -32,7 +32,7 @@ public interface I_PP_Order_Workflow
     public static final String Table_Name = "PP_Order_Workflow";
 
     /** AD_Table_ID=53029 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53029;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -89,7 +89,7 @@ public interface I_PP_Order_Workflow
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_WF_Node_ID */
     public static final String COLUMNNAME_AD_WF_Node_ID = "AD_WF_Node_ID";
@@ -104,7 +104,7 @@ public interface I_PP_Order_Workflow
 	  */
 	public int getAD_WF_Node_ID();
 
-	public I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name AD_WF_Responsible_ID */
     public static final String COLUMNNAME_AD_WF_Responsible_ID = "AD_WF_Responsible_ID";
@@ -119,7 +119,7 @@ public interface I_PP_Order_Workflow
 	  */
 	public int getAD_WF_Responsible_ID();
 
-	public I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
     public static final String COLUMNNAME_AD_Workflow_ID = "AD_Workflow_ID";
@@ -134,7 +134,7 @@ public interface I_PP_Order_Workflow
 	  */
 	public int getAD_Workflow_ID();
 
-	public I_AD_Workflow getAD_Workflow() throws RuntimeException;
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name AD_WorkflowProcessor_ID */
     public static final String COLUMNNAME_AD_WorkflowProcessor_ID = "AD_WorkflowProcessor_ID";
@@ -149,7 +149,7 @@ public interface I_PP_Order_Workflow
 	  */
 	public int getAD_WorkflowProcessor_ID();
 
-	public I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException;
+	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException;
 
     /** Column name Author */
     public static final String COLUMNNAME_Author = "Author";
@@ -386,6 +386,15 @@ public interface I_PP_Order_Workflow
 	/** Get Manufacturing Order Workflow	  */
 	public int getPP_Order_Workflow_ID();
 
+    /** Column name PP_Order_Workflow_UU */
+    public static final String COLUMNNAME_PP_Order_Workflow_UU = "PP_Order_Workflow_UU";
+
+	/** Set PP_Order_Workflow_UU	  */
+	public void setPP_Order_Workflow_UU (String PP_Order_Workflow_UU);
+
+	/** Get PP_Order_Workflow_UU	  */
+	public String getPP_Order_Workflow_UU();
+
     /** Column name Priority */
     public static final String COLUMNNAME_Priority = "Priority";
 
@@ -469,7 +478,7 @@ public interface I_PP_Order_Workflow
 	  */
 	public int getS_Resource_ID();
 
-	public I_S_Resource getS_Resource() throws RuntimeException;
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name UnitsCycles */
     public static final String COLUMNNAME_UnitsCycles = "UnitsCycles";

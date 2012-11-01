@@ -1101,6 +1101,7 @@ public final class DB
 			{
 				if (DB.isPostgreSQL())
 				{
+					Statement timeoutStatement = null;
 					try
 					{
 						Connection conn = cs.getConnection();
@@ -1119,16 +1120,26 @@ public final class DB
 							}
 							finally
 							{
+								if (rs != null)
+									rs.getStatement().close();
 								DB.close(rs);
 							}
 						}
-						Statement timeoutStatement = conn.createStatement();
+						timeoutStatement = conn.createStatement();
 						timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( timeOut * 1000 ));
 						if (log.isLoggable(Level.FINEST))
 						{
 							log.finest("Set statement timeout to " + timeOut);
 						}
 					} catch (SQLException e) {}
+					finally{
+						if (timeoutStatement != null) {
+							try {
+								timeoutStatement.close();
+							} catch (Exception e) {}
+							timeoutStatement = null;
+						}
+					}
 				}
 				else
 				{
@@ -1150,7 +1161,8 @@ public final class DB
 		{
 			if (DB.isPostgreSQL() && timeOut > 0)
 			{
-				try {
+				Statement timeoutStatement = null;
+				try {					
 					if (autoCommit)
 					{
 						cs.getConnection().setAutoCommit(true);
@@ -1159,7 +1171,7 @@ public final class DB
 					{
 						if (currentTimeout > 0)
 						{
-							Statement timeoutStatement = cs.getConnection().createStatement();
+							timeoutStatement = cs.getConnection().createStatement();
 							timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( currentTimeout * 1000 ));
 							if (log.isLoggable(Level.FINEST))
 							{
@@ -1168,7 +1180,7 @@ public final class DB
 						}
 						else
 						{
-							Statement timeoutStatement = cs.getConnection().createStatement();
+							timeoutStatement = cs.getConnection().createStatement();
 							timeoutStatement.execute("SET LOCAL statement_timeout TO Default");
 							if (log.isLoggable(Level.FINEST))
 							{
@@ -1178,6 +1190,14 @@ public final class DB
 						}
 					}
 				} catch (SQLException e) {
+				}
+				finally{
+					if (timeoutStatement != null) {
+						try {
+							timeoutStatement.close();
+						} catch (Exception e) {}
+						timeoutStatement = null;
+					}
 				}
 			}
 			DB.close(cs);

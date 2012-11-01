@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for K_EntryCategory
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_K_EntryCategory 
 {
@@ -31,7 +31,7 @@ public interface I_K_EntryCategory
     public static final String Table_Name = "K_EntryCategory";
 
     /** AD_Table_ID=611 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 611;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -104,7 +104,7 @@ public interface I_K_EntryCategory
 	  */
 	public int getK_Category_ID();
 
-	public I_K_Category getK_Category() throws RuntimeException;
+	public org.compiere.model.I_K_Category getK_Category() throws RuntimeException;
 
     /** Column name K_CategoryValue_ID */
     public static final String COLUMNNAME_K_CategoryValue_ID = "K_CategoryValue_ID";
@@ -119,7 +119,16 @@ public interface I_K_EntryCategory
 	  */
 	public int getK_CategoryValue_ID();
 
-	public I_K_CategoryValue getK_CategoryValue() throws RuntimeException;
+	public org.compiere.model.I_K_CategoryValue getK_CategoryValue() throws RuntimeException;
+
+    /** Column name K_EntryCategory_UU */
+    public static final String COLUMNNAME_K_EntryCategory_UU = "K_EntryCategory_UU";
+
+	/** Set K_EntryCategory_UU	  */
+	public void setK_EntryCategory_UU (String K_EntryCategory_UU);
+
+	/** Get K_EntryCategory_UU	  */
+	public String getK_EntryCategory_UU();
 
     /** Column name K_Entry_ID */
     public static final String COLUMNNAME_K_Entry_ID = "K_Entry_ID";
@@ -134,7 +143,7 @@ public interface I_K_EntryCategory
 	  */
 	public int getK_Entry_ID();
 
-	public I_K_Entry getK_Entry() throws RuntimeException;
+	public org.compiere.model.I_K_Entry getK_Entry() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
