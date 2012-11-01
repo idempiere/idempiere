@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.PaymentUtil;
 import org.compiere.util.CLogMgt;
 
 /**
@@ -217,10 +218,10 @@ public class PP_Optimal extends PaymentProcessor
 
 		param.append(AMP).append(createPair(CARD_TYPE, "VI", 6));
 		param.append(AMP).append(createPair(CARD_NUMBER, p_mp.getCreditCardNumber(), 19));
-		param.append(AMP).append(createPair(CARD_EXPIRATION, p_mp.getCreditCardExp("/"), 5));
-		param.append(AMP).append(createPair(AMOUNT, p_mp.getPayAmtInCents(), 10));
+		param.append(AMP).append(createPair(CARD_EXPIRATION, PaymentUtil.getCreditCardExp(p_mp.getCreditCardExpMM(), p_mp.getCreditCardExpYY(), "/"), 5));
+		param.append(AMP).append(createPair(AMOUNT, PaymentUtil.getPayAmtInCents(p_mp.getPayAmt()), 10));
 		param.append(AMP).append(createPair(OPERATION, OPERATION_Purchase, 1));
-		param.append(AMP).append(createPair(MERCHANT_TXN, p_mp.getC_Payment_ID(), 255));
+		param.append(AMP).append(createPair(MERCHANT_TXN, p_mp.getPO().get_ID(), 255));
 		param.append(AMP).append(createPair(CLIENT_VERSION, _CLIENT_VERSION, 4));
 		param.append(AMP).append(createPair(CUST_NAME1, p_mp.getA_Name(), 255));
 		param.append(AMP).append(createPair(STREET, p_mp.getA_Street(), 255));

@@ -63,7 +63,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 			zkInit();
 			initOK = dynInit(); // Null Pointer if order/invoice not saved yet
 		} catch (Exception ex) {
-			FDialog.error(windowNo, this, ex.getMessage());
+			FDialog.error(windowNo, this, ex.getMessage() == null ? ex.toString() : ex.getMessage());
 			initOK = false;
 		}
 		

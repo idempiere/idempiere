@@ -115,6 +115,8 @@ public class VPaymentFormCash extends PaymentFormCash implements ActionListener 
 	
 	@Override
 	public void loadData() {
+		super.loadData();
+		
 		bAmountField.setValue(m_Amount);
 		
 		if (m_C_Payment_ID != 0)

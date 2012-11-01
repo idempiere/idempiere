@@ -41,8 +41,39 @@ import org.compiere.util.Msg;
 public abstract class PaymentFormCheck extends PaymentForm {
 	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_Check;
 	
+	/** Start Payment */
+	public int 					m_C_Payment_ID = 0;
+	public MPayment 			m_mPayment = null;
+	public MPayment 			m_mPaymentOriginal = null;
+	/** Start Bank Account */
+	public int 					m_C_BankAccount_ID = 0;
+	
 	public PaymentFormCheck(int WindowNo, GridTab mTab) {
 		super(WindowNo, mTab);
+	}
+	
+	@Override
+	public void loadData() {
+		//  Existing Payment
+		if (getGridTab().getValue("C_Payment_ID") != null)
+		{
+			m_C_Payment_ID = ((Integer)getGridTab().getValue("C_Payment_ID")).intValue();
+			if (m_C_Payment_ID != 0)
+			{
+				m_mPayment = new MPayment(Env.getCtx(), m_C_Payment_ID, null);
+				m_mPaymentOriginal = new MPayment(Env.getCtx(), m_C_Payment_ID, null);	//	full copy
+			}
+		}
+		
+		if (m_mPayment == null)
+		{
+			m_mPayment = new MPayment (Env.getCtx (), 0, null);
+			m_mPayment.setAD_Org_ID(m_AD_Org_ID);
+			m_mPayment.setAmount (m_C_Currency_ID, m_Amount);
+		}
+		
+		if (m_C_Payment_ID > 0 && m_mPayment != null)
+			m_C_BankAccount_ID = m_mPayment.getC_BankAccount_ID();
 	}
 	
 	public KeyNamePair selectedBankAccount;
@@ -85,9 +116,25 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		return list;
 	}
 	
+	@Override
+	public boolean saveChanges() {
+		boolean ok = super.saveChanges();
+		if (m_mPayment != null)
+			m_mPayment.set_TrxName(null);
+		if (m_mPaymentOriginal != null)
+			m_mPaymentOriginal.set_TrxName(null);
+		return ok;
+	}
+	
 	public String processMsg = null;
-	public boolean save(int newC_BankAccount_ID, String routing, String number, String check, BigDecimal amount)
+	public boolean save(int newC_BankAccount_ID, String routing, String number, String check, BigDecimal amount, String trxName)
 	{
+		// set trxname for class objects
+		if (m_mPayment != null)
+			m_mPayment.set_TrxName(trxName);
+		if (m_mPaymentOriginal != null)
+			m_mPaymentOriginal.set_TrxName(trxName);
+				
 		processMsg = null;
 		String payTypes = m_Cash_As_Payment ? "KTSDB" : "KTSD";
 		
@@ -172,8 +219,6 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		m_mPayment.setAmount(m_C_Currency_ID, payAmount);
 		m_mPayment.setBankCheck(newC_BankAccount_ID, m_isSOTrx, routing,
 			number, check);
-		// Get changes to check amount
-		m_mPayment.setAmount(m_C_Currency_ID, amount);
 		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
 		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
 		if (order != null)

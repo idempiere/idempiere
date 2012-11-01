@@ -32,7 +32,7 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121003L;
+	private static final long serialVersionUID = 20121022L;
 
     /** Standard Constructor */
     public X_C_PaymentProcessor (Properties ctx, int C_PaymentProcessor_ID, String trxName)
@@ -734,6 +734,38 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** TrxType AD_Reference_ID=215 */
+	public static final int TRXTYPE_AD_Reference_ID=215;
+	/** Sales = S */
+	public static final String TRXTYPE_Sales = "S";
+	/** Delayed Capture = D */
+	public static final String TRXTYPE_DelayedCapture = "D";
+	/** Credit (Payment) = C */
+	public static final String TRXTYPE_CreditPayment = "C";
+	/** Voice Authorization = F */
+	public static final String TRXTYPE_VoiceAuthorization = "F";
+	/** Authorization = A */
+	public static final String TRXTYPE_Authorization = "A";
+	/** Void = V */
+	public static final String TRXTYPE_Void = "V";
+	/** Set Transaction Type.
+		@param TrxType 
+		Type of credit card transaction
+	  */
+	public void setTrxType (String TrxType)
+	{
+
+		set_Value (COLUMNNAME_TrxType, TrxType);
+	}
+
+	/** Get Transaction Type.
+		@return Type of credit card transaction
+	  */
+	public String getTrxType () 
+	{
+		return (String)get_Value(COLUMNNAME_TrxType);
 	}
 
 	/** Set User ID.

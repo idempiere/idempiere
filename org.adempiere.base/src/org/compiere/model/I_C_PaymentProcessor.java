@@ -483,6 +483,19 @@ public interface I_C_PaymentProcessor
 	  */
 	public boolean isRequireVV();
 
+    /** Column name TrxType */
+    public static final String COLUMNNAME_TrxType = "TrxType";
+
+	/** Set Transaction Type.
+	  * Type of credit card transaction
+	  */
+	public void setTrxType (String TrxType);
+
+	/** Get Transaction Type.
+	  * Type of credit card transaction
+	  */
+	public String getTrxType();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

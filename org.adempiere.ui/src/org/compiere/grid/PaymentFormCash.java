@@ -45,8 +45,59 @@ import org.compiere.util.TimeUtil;
 public abstract class PaymentFormCash extends PaymentForm {
 	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_Cash;
 	
+	/** Start Payment */
+	public int 					m_C_Payment_ID = 0;
+	public MPayment 			m_mPayment = null;
+	public MPayment 			m_mPaymentOriginal = null;
+	/** Start Bank Account */
+	public int 					m_C_BankAccount_ID = 0;
+	/** Start CashBook Line */
+	public int 					m_C_CashLine_ID = 0;
+	public MCashLine 			m_cashLine = null;
+	/** Start CashBook */
+	public int 					m_C_CashBook_ID = 0;
+	
 	public PaymentFormCash(int WindowNo, GridTab mTab) {
 		super(WindowNo, mTab);
+	}
+	
+	@Override
+	public void loadData() {
+		//  Existing Payment
+		if (getGridTab().getValue("C_Payment_ID") != null)
+		{
+			m_C_Payment_ID = ((Integer)getGridTab().getValue("C_Payment_ID")).intValue();
+			if (m_C_Payment_ID != 0)
+			{
+				m_mPayment = new MPayment(Env.getCtx(), m_C_Payment_ID, null);
+				m_mPaymentOriginal = new MPayment(Env.getCtx(), m_C_Payment_ID, null);	//	full copy
+			}
+		}
+		
+		if (m_mPayment == null)
+		{
+			m_mPayment = new MPayment (Env.getCtx (), 0, null);
+			m_mPayment.setAD_Org_ID(m_AD_Org_ID);
+			m_mPayment.setAmount (m_C_Currency_ID, m_Amount);
+		}
+			
+		if (m_C_Payment_ID > 0 && m_mPayment != null)
+			m_C_BankAccount_ID = m_mPayment.getC_BankAccount_ID();
+		
+		m_cashLine = null;
+		m_C_CashLine_ID = 0;
+		if (getGridTab().getValue("C_CashLine_ID") != null)
+		{
+			m_C_CashLine_ID = ((Integer)getGridTab().getValue("C_CashLine_ID")).intValue();
+			if (m_C_CashLine_ID == 0)
+				m_cashLine = null;
+			else
+			{
+				m_cashLine = new MCashLine (Env.getCtx(), m_C_CashLine_ID, null);
+				m_DateAcct = m_cashLine.getStatementDate();
+				m_C_CashBook_ID = m_cashLine.getCashBook().getC_CashBook_ID();
+			}
+		}
 	}
 	
 	public KeyNamePair selectedBankAccount;
@@ -132,9 +183,29 @@ public abstract class PaymentFormCash extends PaymentForm {
 		return list;
 	}
 	
+	@Override
+	public boolean saveChanges() {
+		boolean ok = super.saveChanges();
+		if (m_cashLine != null)
+			m_cashLine.set_TrxName(null);
+		if (m_mPayment != null)
+			m_mPayment.set_TrxName(null);
+		if (m_mPaymentOriginal != null)
+			m_mPaymentOriginal.set_TrxName(null);
+		return ok;
+	}
+	
 	public String processMsg;
 	public boolean save(int newC_BankAccount_ID, int newC_CashBook_ID, Timestamp newDateAcct, BigDecimal newAmount, String trxName)
 	{
+		// set trxname for class objects
+		if (m_cashLine != null)
+			m_cashLine.set_TrxName(trxName);
+		if (m_mPayment != null)
+			m_mPayment.set_TrxName(trxName);
+		if (m_mPaymentOriginal != null)
+			m_mPaymentOriginal.set_TrxName(trxName);
+		
 		processMsg = null;
 		int newC_CashLine_ID = m_C_CashLine_ID;
 		
@@ -288,7 +359,6 @@ public abstract class PaymentFormCash extends PaymentForm {
 			// Get changes to cash amount
 			m_mPayment.setTenderType(MPayment.TENDERTYPE_Cash);
 			m_mPayment.setBankCash(newC_BankAccount_ID, m_isSOTrx, MPayment.TENDERTYPE_Cash);
-			m_mPayment.setAmount(m_C_Currency_ID, payAmount);
 			m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
 			m_mPayment.setC_Invoice_ID(C_Invoice_ID);
 			if (order != null)

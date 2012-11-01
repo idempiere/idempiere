@@ -24,9 +24,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.compiere.model.MPayment;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.ModelValidator;
+import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CLogger;
@@ -102,7 +102,7 @@ public class Core {
 	 * 	@param mp payment model
 	 *  @return initialized PaymentProcessor or null
 	 */
-	public static PaymentProcessor getPaymentProcessor(MPaymentProcessor mpp, MPayment mp) {
+	public static PaymentProcessor getPaymentProcessor(MPaymentProcessor mpp, PaymentInterface mp) {
 		s_log.info("create for " + mpp);
 		String className = mpp.getPayProcessorClass();
 		if (className == null || className.length() == 0) {

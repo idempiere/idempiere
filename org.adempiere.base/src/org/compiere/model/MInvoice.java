@@ -1958,6 +1958,78 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				return DocAction.STATUS_Invalid;
 			}
 		}	//	project
+		
+		// auto allocate sales payment
+		if (isSOTrx() && !isReversal())
+		{
+			
+			
+		}
+		
+		// auto delay capture authorization payment
+		if (isSOTrx() && !isReversal())
+		{
+			int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(getC_Order_ID(), getC_Invoice_ID(), get_TrxName());
+			
+			if (ids.length > 0)
+			{
+				ArrayList<MPaymentTransaction> ptList = new ArrayList<MPaymentTransaction>();
+				BigDecimal totalPayAmt = BigDecimal.ZERO;
+				for (int id : ids)
+				{
+					MPaymentTransaction pt = new MPaymentTransaction(Env.getCtx(), id, get_TrxName());
+					totalPayAmt = totalPayAmt.add(pt.getPayAmt());
+					ptList.add(pt);
+				}
+				
+				// automatically void authorization payment and create a new sales payment when invoiced amount is NOT equals to the authorized amount
+				if(getGrandTotal().compareTo(totalPayAmt) != 0)
+				{
+					// create a new sales payment
+					MPaymentTransaction newSalesPT = MPaymentTransaction.copyFrom(ptList.get(0), new Timestamp(System.currentTimeMillis()), MPayment.TRXTYPE_Sales, "", get_TrxName());
+					newSalesPT.setIsApproved(false);
+					newSalesPT.setIsVoided(false);
+					newSalesPT.setIsDelayedCapture(false);
+					newSalesPT.setDescription("InvoicedAmt: " + getGrandTotal() + " > TotalAuthorizedAmt: " + totalPayAmt);
+					
+					// void authorization payment
+					for (MPaymentTransaction pt : ptList)
+					{
+						pt.setDescription("InvoicedAmt: " + getGrandTotal() + " > AuthorizedAmt: " + pt.getPayAmt());
+						boolean ok = pt.voidOnlineAuthorizationPaymentTransaction();
+						pt.saveEx();
+						if (!ok)
+						{
+							m_processMsg = "Failed to void authorization payment: " + pt.getErrorMessage();
+							return DocAction.STATUS_Invalid;
+						}					
+					}
+					
+					// process the new sales payment
+					boolean ok = newSalesPT.processOnline();
+					newSalesPT.saveEx();
+					if (!ok)
+					{
+						m_processMsg = "Failed to create a new sales payment: " + newSalesPT.getErrorMessage();
+						return DocAction.STATUS_Invalid;
+					}
+				}
+				else
+				{
+					// delay capture authorization payment
+					for (MPaymentTransaction pt : ptList)
+					{
+						boolean ok = pt.delayCaptureOnlineAuthorizationPaymentTransaction(getC_Invoice_ID());
+						pt.saveEx();
+						if (!ok)
+						{
+							m_processMsg = "Failed to delay capture authorization payment: " + pt.getErrorMessage();
+							return DocAction.STATUS_Invalid;
+						}					
+					}
+				}
+			}
+		}
 
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);

@@ -83,7 +83,6 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 		sCurrencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		sNumberField.setPreferredSize(new Dimension(100, 21));
 		sRoutingField.setPreferredSize(new Dimension(70, 21));
-		sStatus.setText(" ");
 		sOnline.setText(Msg.getMsg(Env.getCtx(), "Online"));
 		sOnline.addActionListener(this);
 		dialog.getPanel().add(sBankAccountLabel,   new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
@@ -119,6 +118,8 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 
 	@Override
 	public void loadData() {
+		super.loadData();
+		
 		sAmountField.setValue(m_Amount);
 		
 		if (m_C_Payment_ID != 0)
@@ -264,7 +265,8 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 		if (kp != null)
 			newC_BankAccount_ID = kp.getKey();
 		
-		boolean ok = save(newC_BankAccount_ID, sRoutingField.getText(), sNumberField.getText(), sCheckField.getText(), (BigDecimal) sAmountField.getValue());		
+		boolean ok = save(newC_BankAccount_ID, sRoutingField.getText(), sNumberField.getText(), 
+				sCheckField.getText(), (BigDecimal) sAmountField.getValue(), trxName);		
 		if (!ok)
 			ADialog.error(getWindowNo(), dialog, "PaymentError", processMsg);
 		else if (processMsg != null)

@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.util;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.NumberFormat;
@@ -24,6 +25,7 @@ import org.compiere.model.MBPBankAccount;
 import org.compiere.model.MBPartner;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  * 
@@ -104,5 +106,34 @@ public class PaymentUtil {
 			return str.length() == pos.getIndex();
 		}
 		return true;
+	}
+	
+	public static int getPayAmtInCents(BigDecimal payAmt)
+	{
+		if (payAmt == null)
+			return 0;
+		
+		BigDecimal bd = payAmt.multiply(Env.ONEHUNDRED);
+		return bd.intValue();
+	}
+	
+	public static String getCreditCardExp(int creditCardExpMM, int creditCardExpYY, String delimiter)
+	{
+		String mm = String.valueOf(creditCardExpMM);
+		String yy = String.valueOf(creditCardExpYY);
+
+		StringBuffer retValue = new StringBuffer();
+		if (mm.length() == 1)
+			retValue.append("0");
+		retValue.append(mm);
+		//
+		if (delimiter != null)
+			retValue.append(delimiter);
+		//
+		if (yy.length() == 1)
+			retValue.append("0");
+		retValue.append(yy);
+		//
+		return (retValue.toString());
 	}
 }

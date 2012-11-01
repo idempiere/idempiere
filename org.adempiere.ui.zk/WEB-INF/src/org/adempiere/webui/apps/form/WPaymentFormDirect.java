@@ -78,7 +78,6 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		tOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
 		LayoutUtils.addSclass("action-text-button", tOnline);
 		tOnline.addActionListener(this);
-		tStatus.setText(" ");
 		window.getPanel().setId("tPanel");
 		
 		Columns columns = new Columns();
@@ -112,7 +111,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		row.appendChild(new Space());
 		row.appendChild(tOnline);		
 		
-		row = rows.newRow();		
+		row = rows.newRow();
 		row.appendCellChild(tStatus, 2);
 	}
 
@@ -165,7 +164,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 
 	@Override
 	public boolean saveChangesInTrx(final String trxName) {		
-		boolean ok = save(0, tRoutingField.getText(), tNumberField.getText());		
+		boolean ok = save(0, tRoutingField.getText(), tNumberField.getText(), trxName);		
 		if (!ok)
 			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
 		else if (processMsg != null)

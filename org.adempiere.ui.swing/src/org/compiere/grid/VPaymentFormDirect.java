@@ -66,7 +66,6 @@ public abstract class VPaymentFormDirect extends PaymentFormDirect implements Ac
 		tNumberText.setText(Msg.translate(Env.getCtx(), "AccountNo"));
 		tOnline.setText(Msg.getMsg(Env.getCtx(), "Online"));
 		tOnline.addActionListener(this);
-		tStatus.setText(" ");
 		dialog.getPanel().add(tAccountLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
 		dialog.getPanel().add(tAccountCombo, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
@@ -131,7 +130,7 @@ public abstract class VPaymentFormDirect extends PaymentFormDirect implements Ac
 
 	@Override
 	public boolean saveChangesInTrx(String trxName) {
-		boolean ok = save(0, tRoutingField.getText(), tNumberField.getText());		
+		boolean ok = save(0, tRoutingField.getText(), tNumberField.getText(), trxName);		
 		if (!ok)
 			ADialog.error(getWindowNo(), dialog, "PaymentError", processMsg);
 		else if (processMsg != null)
