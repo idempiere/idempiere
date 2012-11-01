@@ -124,6 +124,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         initComponents();
         init();
         this.setId("loginPanel");
+        this.setSclass("login-box");
 
         txtUserId.setEnabled(false);
         txtPassword.setEnabled(false);
@@ -238,7 +239,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
-        ConfirmPanel pnlButtons = new ConfirmPanel();
+        ConfirmPanel pnlButtons = new ConfirmPanel(false, false, false, false, false, false, true);
         pnlButtons.addActionListener(this);
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);

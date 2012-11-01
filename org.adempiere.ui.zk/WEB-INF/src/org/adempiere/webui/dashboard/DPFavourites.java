@@ -85,6 +85,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		Panelchildren favContent = new Panelchildren();
 		panel.appendChild(favContent);
 		bxFav = new Vbox();
+		this.setSclass("favourites-box");
 		favContent.appendChild(bxFav);
 		createFavouritesPanel();
 		

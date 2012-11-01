@@ -115,6 +115,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
         initComponents();
         init();
         this.setId("rolePanel");
+        this.setSclass("login-box");
 
         if (m_show) {
         	AuFocus auf = null;
@@ -222,7 +223,7 @@ public class RolePanel extends Window implements EventListener, Deferrable
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
-        ConfirmPanel pnlButtons = new ConfirmPanel(true);
+        ConfirmPanel pnlButtons = new ConfirmPanel(true, false, false, false, false, false, true);
         pnlButtons.addActionListener(this);
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
         pnlButtons.setWidth(null);

@@ -202,7 +202,7 @@ DataStatusListener, IADTabpanel
         form.setHflex("1");
         form.setHeight(null);
         form.setVflex(false);
-        form.setSclass("grid-layout");
+        form.setSclass("grid-layout adwindow-form");
         
         listPanel = new GridView();
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);

@@ -58,6 +58,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
 	public DPActivities()
 	{
 		super();
+		this.setSclass("activities-box");
         this.appendChild(createActivitiesPanel());
 	}
 

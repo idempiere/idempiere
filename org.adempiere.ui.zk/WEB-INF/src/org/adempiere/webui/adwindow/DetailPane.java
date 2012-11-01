@@ -172,7 +172,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		}
 		Tabpanel tp = new Tabpanel();
 		tabpanels.appendChild(tp);
-		tp.setStyle("background-color: #fff");				
+		tp.setSclass("adwindow-detailpane-tabpanel");
 		ToolBar toolbar = new ToolBar();
 		tp.appendChild(toolbar);
 		ToolBarButton button = new ToolBarButton();

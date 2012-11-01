@@ -70,6 +70,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		Panelchildren recentItemsContent = new Panelchildren();
 		panel.appendChild(recentItemsContent);
 		bxRecentItems = new Vbox();
+		this.setSclass("recentitems-box");
 		recentItemsContent.appendChild(bxRecentItems);
 		createRecentItemsPanel();
 		

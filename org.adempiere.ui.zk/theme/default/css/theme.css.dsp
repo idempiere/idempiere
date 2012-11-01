@@ -126,14 +126,17 @@ html,body {
 	font-weight: normal;
 	color: #333 !important;
 	text-decoration: none !important;
+	padding-right: 4px;
 }
 
 .menu-href:hover, .menu-href:active {
 	text-decoration: underline !important;
+	color: blue !important;
 }
 
 .menu-href img {
 	padding: 2px;
+	padding-right: 4px;
 }
 
 .fav-new-btn {
@@ -315,6 +318,23 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .desktop-home-tabpanel {
 	background-color: #FFFFFF;
+	width: 99% !important;
+}
+
+.link.z-toolbarbutton-over {
+	border: none;
+	padding: 1px 0;
+} 
+
+.link.z-toolbarbutton-over .z-toolbarbutton-body {
+	border: none;
+	padding: 0 1px;
+}
+
+.link.z-toolbarbutton-over .z-toolbarbutton-cnt {
+	background-image: none;
+	color: blue;
+	text-decoration: underline;
 }
 
 <%-- dashlet --%>
@@ -383,6 +403,67 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	height: 90%;
 }
 
+.favourites-box {
+	width: 90%;
+	margin: auto;
+	padding: 5px 0px 5px 0px;
+}
+
+.favourites-box .z-vbox {
+	width: 100%;
+}
+
+.favourites-box .z-hbox {
+	padding: 2px 0px;
+	width: 100%;
+}
+
+.recentitems-box {
+	width: 90%;
+	margin: auto;
+	padding: 5px 0px 5px 0px;
+}
+
+.recentitems-box A {
+	display: block;
+	width: 100%;
+	padding: 2px 0px;
+}
+	
+.views-box {
+	width: 90%;
+	margin: auto;
+	padding: 5px 0px 5px 0px;
+}
+
+.views-box .z-vbox {
+	width: 100%;
+}
+
+.views-box .z-toolbarbutton {
+	width: 100%;
+	padding: 2px 0px;
+}
+
+.activities-box {
+	width: 90%;
+	margin: auto;
+	padding: 5px 0px 5px 0px;
+}
+
+.activities-box .z-vbox {
+	width: 100%;
+}
+
+.activities-box .z-button .z-button-cm {
+	text-align: left;
+}
+
+.recentitems-box .z-toolbar, .favourites-box .z-toolbar {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
 <%-- adwindow and form --%>
 .adwindow-layout {
 	position:absolute; 
@@ -426,6 +507,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adwindow-detailpane {
 	min-height: 200px; width: 100%; overflow-y: visible;
+}
+
+.adwindow-detailpane-tabpanel {
+	background-color: #fff
 }
 
 .adwindow-detailpane-toolbar {

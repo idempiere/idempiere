@@ -44,6 +44,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 	public DPViews()
 	{
 		super();
+		setSclass("views-box");
         this.appendChild(createViewPanel());
 	}
 	
@@ -54,6 +55,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_Product())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoProduct");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoProduct")));
 			btnViewItem.setImage("/images/InfoProduct16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -62,6 +64,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_BPartner())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoBPartner");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoBPartner")));
 			btnViewItem.setImage("/images/InfoBPartner16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -70,6 +73,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isShowAcct() && MRole.getDefault().isAllow_Info_Account())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAccount");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAccount")));
 			btnViewItem.setImage("/images/InfoAccount16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -78,6 +82,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_Schedule())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoSchedule");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoSchedule")));
 			btnViewItem.setImage("/images/InfoSchedule16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -87,6 +92,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_Order())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoOrder");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoOrder")));
 			btnViewItem.setImage("/images/Info16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -95,6 +101,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_Invoice())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoInvoice");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoInvoice")));
 			btnViewItem.setImage("/images/Info16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -103,6 +110,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_InOut())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoInOut");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoInOut")));
 			btnViewItem.setImage("/images/Info16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -111,6 +119,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_Payment())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoPayment");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoPayment")));
 			btnViewItem.setImage("/images/Info16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -127,6 +136,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_Resource())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAssignment");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAssignment")));
 			btnViewItem.setImage("/images/Info16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -135,6 +145,7 @@ public class DPViews extends DashboardPanel implements EventListener {
 		if (MRole.getDefault().isAllow_Info_Asset())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAsset");
+			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAsset")));
 			btnViewItem.setImage("/images/Info16.png");
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
