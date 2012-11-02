@@ -311,11 +311,6 @@ DataStatusListener, IADTabpanel
 			formContainer = layout;
 			treePanel.getTree().addEventListener(Events.ON_SELECT, this);
 			
-			if (AEnv.isTablet()) 
-			{
-				LayoutUtils.addSclass("tablet-scrolling", west);
-				LayoutUtils.addSclass("tablet-scrolling", center);
-			}
 		}
 		else
 		{
@@ -353,10 +348,6 @@ DataStatusListener, IADTabpanel
 				formContainer = div;
 			}
 			
-			if (AEnv.isTablet()) 
-			{
-				LayoutUtils.addSclass("tablet-scrolling", div);
-			}			
 		}
         this.appendChild(listPanel);
         listPanel.setVisible(false);

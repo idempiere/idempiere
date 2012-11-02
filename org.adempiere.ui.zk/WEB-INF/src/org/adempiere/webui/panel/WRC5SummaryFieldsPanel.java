@@ -72,11 +72,6 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		wind.appendChild(div);
 		this.appendChild(wind);
 
-		if (AEnv.isTablet())
-		{
-			LayoutUtils.addSclass("tablet-scrolling", div);
-		}
-
 		Columns columns = new Columns();
 		grid.appendChild(columns);
 		Column cols[] = new Column[RENDER_IN_COLUMNS];

@@ -15,9 +15,6 @@ package org.adempiere.webui.dashboard;
 
 import java.util.List;
 
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.event.TouchEventHelper;
-import org.adempiere.webui.event.TouchEvents;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.MQuery;
@@ -47,8 +44,6 @@ import org.zkoss.zul.Vbox;
  */
 public class DPRecentItems extends DashboardPanel implements EventListener<Event> {
 
-	private static final String ON_ADD_TAP_EVENT_LISTENER = "onAddTapEventListener";
-	
 	private static final String AD_RECENT_ITEM_ID_ATTR = "AD_RecentItem_ID";
 
 	/**
@@ -115,11 +110,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
         Component comp = event.getTarget();
         String eventName = event.getName();
 
-        if (eventName.equals(TouchEvents.ON_TAP))
-        {
-        	doOnClick(comp);
-        }
-        else if (eventName.equals(Events.ON_CLICK) && !TouchEventHelper.isIgnoreClick(comp))
+        if (eventName.equals(Events.ON_CLICK))
         {
             doOnClick(comp);
         }
@@ -136,10 +127,6 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
         			removeLink(btn);
         		}
         	}
-        }
-        else if (eventName.equals(ON_ADD_TAP_EVENT_LISTENER))
-        {
-        	TouchEventHelper.addOnTapEventListener(event.getTarget(), this);
         }
 	}
 
@@ -203,18 +190,6 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			btnrecentItem.addEventListener(Events.ON_CLICK, this);
 			btnrecentItem.addEventListener(Events.ON_DROP, this);
 			btnrecentItem.setSclass("menu-href");
-			if (AEnv.isTablet())
-			{
-				if (getPage() != null)
-				{
-					TouchEventHelper.addOnTapEventListener(btnrecentItem, this);
-				}
-				else
-				{
-					btnrecentItem.addEventListener(ON_ADD_TAP_EVENT_LISTENER, this);
-					Events.echoEvent(new Event(ON_ADD_TAP_EVENT_LISTENER, btnrecentItem, null));
-				}
-			}
 			
 			riShown++;
 			if (riShown >= maxri)

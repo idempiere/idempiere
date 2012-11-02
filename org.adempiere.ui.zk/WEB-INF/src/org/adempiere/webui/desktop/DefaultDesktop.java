@@ -190,13 +190,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		//register as 0
         registerWindow(homeTab);
         
-		dashboardController.render(homeTab, this, true);
-		
-		if (AEnv.isTablet()) 
-		{
-			homeTab.addEventListener("onAddTabletScrolling", this);
-			Events.echoEvent("onAddTabletScrolling", homeTab, null);
-		}
+		dashboardController.render(homeTab, this, true);		
 	}
 
 	public void onEvent(Event event)
@@ -216,10 +210,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	            	if(menuId > 0) onMenuSelected(menuId);
             	}
             }
-        }
-        else if (eventName.equals("onAddTabletScrolling"))
-        {
-        	LayoutUtils.addSclass("tablet-scrolling", homeTab);
         }
     }
 

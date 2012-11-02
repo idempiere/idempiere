@@ -521,9 +521,6 @@ public class GridView extends Vbox implements EventListener<Event>
 			gridFooter.setVisible(false);
 		}		
 		
-		if (AEnv.isTablet()) {
-			TouchEventHelper.addTabletScrollingFix(listbox);
-		}
 	}
 
 	private void updateModel() {

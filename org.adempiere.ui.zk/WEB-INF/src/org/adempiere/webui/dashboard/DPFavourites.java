@@ -16,8 +16,6 @@ package org.adempiere.webui.dashboard;
 import java.util.Enumeration;
 
 import org.adempiere.webui.adwindow.ADWindow;
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.event.TouchEventHelper;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
@@ -55,8 +53,6 @@ import org.zkoss.zul.Vbox;
  * @date November 20, 2008
  */
 public class DPFavourites extends DashboardPanel implements EventListener<Event> {
-
-	private static final String ON_ADD_TAP_EVENT_LISTENER = "onAddTapEventListener";
 
 	private static final String NODE_ID_ATTR = "Node_ID";
 
@@ -153,20 +149,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		btnFavItem.addEventListener(Events.ON_CLICK, this);
 		btnFavItem.addEventListener(Events.ON_DROP, this);
 		btnFavItem.setSclass("menu-href");
-							
-		if (AEnv.isTablet())
-		{
-			if (getPage() != null)
-			{
-				TouchEventHelper.addOnTapEventListener(btnFavItem, this);
-			}
-			else
-			{
-				btnFavItem.addEventListener(ON_ADD_TAP_EVENT_LISTENER, this);
-				Events.echoEvent(new Event(ON_ADD_TAP_EVENT_LISTENER, btnFavItem, null));
-			}
-		}
-		
+									
 		if (addNewBtn)
 		{
 			Toolbarbutton newBtn = new Toolbarbutton(null, "/images/New10.png");
@@ -212,11 +195,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
         Component comp = event.getTarget();
         String eventName = event.getName();
         
-        if (eventName.equals(TouchEventHelper.ON_TAP))
-        {
-        	doOnClick(comp);
-        }
-        else if(eventName.equals(Events.ON_CLICK) && !TouchEventHelper.isIgnoreClick(comp))
+        if(eventName.equals(Events.ON_CLICK))
         {
             doOnClick(comp);
         }
@@ -244,10 +223,6 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
         			removeLink(btn);
         		}
         	}
-        }
-        else if (eventName.equals(ON_ADD_TAP_EVENT_LISTENER))
-        {
-        	TouchEventHelper.addOnTapEventListener(event.getTarget(), this);
         }
         //
 	}
