@@ -21,9 +21,6 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.adempiere.webui.adwindow.ADWindow;
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.event.TouchEventHelper;
-import org.adempiere.webui.event.TouchEvents;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.GridTab;
@@ -240,9 +237,6 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 
                 link.addEventListener(Events.ON_CLICK, this);
                 link.setSclass("menu-href");
-                if (AEnv.isTablet()) {
-                	TouchEventHelper.addOnTapEventListener(link, this);
-                }
                 
                 treeitem.getTreerow().setDraggable("favourite"); // Elaine 2008/07/24
             }
@@ -253,11 +247,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     {
         Component comp = event.getTarget();
         String eventName = event.getName();
-        if (eventName.equals(TouchEvents.ON_TAP))
-        {
-        	doOnClick(comp);
-        }
-        else if (eventName.equals(Events.ON_CLICK) && !TouchEventHelper.isIgnoreClick(comp))
+        if (eventName.equals(Events.ON_CLICK))
         {
         	doOnClick(comp);
         }

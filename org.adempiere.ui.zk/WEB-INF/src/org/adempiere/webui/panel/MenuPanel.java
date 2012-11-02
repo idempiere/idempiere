@@ -21,11 +21,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.MenuListener;
-import org.adempiere.webui.event.TouchEventHelper;
-import org.adempiere.webui.event.TouchEvents;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.TreeUtils;
@@ -219,9 +216,6 @@ public class MenuPanel extends Panel implements EventListener<Event>
                 
                 link.addEventListener(Events.ON_CLICK, this);
                 link.setSclass("menu-href");
-                if (AEnv.isTablet()) {
-                	TouchEventHelper.addOnTapEventListener(link, this);
-                }
             }
         }
     }
@@ -240,11 +234,7 @@ public class MenuPanel extends Panel implements EventListener<Event>
     {
         Component comp = event.getTarget();
         String eventName = event.getName();
-        if (eventName.equals(TouchEvents.ON_TAP))
-        {
-        	doOnClick(comp);
-        }
-        else if (eventName.equals(Events.ON_CLICK) && !TouchEventHelper.isIgnoreClick(comp))
+        if (eventName.equals(Events.ON_CLICK))
         {
         	doOnClick(comp);
         }

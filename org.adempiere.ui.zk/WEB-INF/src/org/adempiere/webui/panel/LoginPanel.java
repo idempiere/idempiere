@@ -575,7 +575,7 @@ public class LoginPanel extends Window implements EventListener<Event>
             //  Code assumes Database version {0}, but Database has Version {1}.
             String msg = Msg.getMsg(ctx, AD_Message);   //  complete message
             msg = MessageFormat.format(msg, new Object[] {Adempiere.DB_VERSION, version});
-            throw new ApplicationException(msg);
+//            throw new ApplicationException(msg);
         }
 
     }
