@@ -1959,13 +1959,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			}
 		}	//	project
 		
-		// auto allocate sales payment
-		if (isSOTrx() && !isReversal())
-		{
-			
-			
-		}
-		
 		// auto delay capture authorization payment
 		if (isSOTrx() && !isReversal())
 		{
@@ -2000,7 +1993,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						pt.saveEx();
 						if (!ok)
 						{
-							m_processMsg = "Failed to void authorization payment: " + pt.getErrorMessage();
+							m_processMsg = Msg.getMsg(getCtx(), "VoidAuthorizationPaymentFailed") + ": " + pt.getErrorMessage();
 							return DocAction.STATUS_Invalid;
 						}					
 					}
@@ -2010,7 +2003,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					newSalesPT.saveEx();
 					if (!ok)
 					{
-						m_processMsg = "Failed to create a new sales payment: " + newSalesPT.getErrorMessage();
+						m_processMsg = Msg.getMsg(getCtx(), "CreateNewSalesPaymentFailed") + ": " + newSalesPT.getErrorMessage();
 						return DocAction.STATUS_Invalid;
 					}
 				}
@@ -2023,7 +2016,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						pt.saveEx();
 						if (!ok)
 						{
-							m_processMsg = "Failed to delay capture authorization payment: " + pt.getErrorMessage();
+							m_processMsg = Msg.getMsg(getCtx(), "DelayCaptureAuthFailed") + ": " + pt.getErrorMessage();
 							return DocAction.STATUS_Invalid;
 						}					
 					}

@@ -33,7 +33,7 @@ public class VoidOnlineAuthorizationPaymentTransaction extends SvrProcess {
 		if (pt.isVoided())
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyVoided"));
 		if (pt.isDelayedCapture())
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyDelayCaptured"));
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyDelayedCapture"));
 		
 		//  Process it
 		boolean ok = pt.voidOnlineAuthorizationPaymentTransaction();

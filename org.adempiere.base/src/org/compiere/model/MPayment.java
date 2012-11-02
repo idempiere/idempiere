@@ -464,7 +464,7 @@ public final class MPayment extends X_C_Payment
 			if (isVoided())
 			{
 				log.info("Already voided - " + getR_Result() + " - " + getR_RespMsg());
-				setErrorMessage("Payment already voided");
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentAlreadyVoided"));
 				return true;
 			}
 		}
@@ -472,8 +472,8 @@ public final class MPayment extends X_C_Payment
 		{
 			if (isDelayedCapture())
 			{
-				log.info("Already delay captured - " + getR_Result() + " - " + getR_RespMsg());
-				setErrorMessage("Payment already delay captured");
+				log.info("Already delayed capture - " + getR_Result() + " - " + getR_RespMsg());
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentAlreadyDelayedCapture"));
 				return true;
 			}
 		}
@@ -482,7 +482,7 @@ public final class MPayment extends X_C_Payment
 			if (isApproved())
 			{
 				log.info("Already processed - " + getR_Result() + " - " + getR_RespMsg());
-				setErrorMessage("Payment already processed");
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentAlreadyProcessed"));
 				return true;
 			}
 		}
@@ -492,7 +492,7 @@ public final class MPayment extends X_C_Payment
 		if (m_mBankAccountProcessor == null)
 		{
 			log.log(Level.WARNING, "No Payment Processor Model");
-			setErrorMessage("No Payment Processor Model");
+			setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessorModel"));
 			return false;
 		}
 
@@ -503,7 +503,7 @@ public final class MPayment extends X_C_Payment
 			MPaymentProcessor paymentProcessor = new MPaymentProcessor(m_mBankAccountProcessor.getCtx(), m_mBankAccountProcessor.getC_PaymentProcessor_ID(), m_mBankAccountProcessor.get_TrxName());
 			PaymentProcessor pp = PaymentProcessor.create(paymentProcessor, this);
 			if (pp == null)
-				setErrorMessage("No Payment Processor");
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessor"));
 			else
 			{
 				// Validate before trying to process
@@ -529,7 +529,7 @@ public final class MPayment extends X_C_Payment
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "processOnline", e);
-			setErrorMessage("Payment Processor Error: " + e.getMessage());
+			setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNotProcessed") + ": " + e.getMessage());
 		}
 		
 		if (approved)
@@ -2803,7 +2803,7 @@ public final class MPayment extends X_C_Payment
 				if(!processOnline())
 				{
 					log.log(Level.SEVERE, "Failed to cancel payment online");
-					m_processMsg = "Failed to cancel payment online";
+					m_processMsg = Msg.getMsg(getCtx(), "PaymentNotCancelled");
 					return false;
 				}
 			}
