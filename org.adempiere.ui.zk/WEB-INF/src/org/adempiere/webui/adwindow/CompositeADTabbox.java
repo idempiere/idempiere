@@ -540,7 +540,10 @@ public class CompositeADTabbox extends AbstractADTabbox
         		}
         		detailTab.activate(true);
         		detailTab.setDetailPaneMode(true, isUseVflexForDetailPane());
-        		detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));        		        		
+        		detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));    
+        		if (!ADTabpanel.isUseSplitViewForForm()) {
+        			detailPane.invalidate();
+        		}
 			}
 		}
 		
