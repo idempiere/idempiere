@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (C) 2012 Elaine Tan                                              *
+ * Copyright (C) 2012 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
+
 package org.compiere.model;
 
 import java.math.BigDecimal;
@@ -14,7 +28,17 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
+/**
+ * 
+ * @author Elaine
+ *
+ */
 public class MPaymentTransaction extends X_C_PaymentTransaction implements ProcessCall, PaymentInterface {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3136835982476528825L;
 
 	public MPaymentTransaction(Properties ctx, int C_PaymentTransaction_ID, String trxName) {
 		super(ctx, C_PaymentTransaction_ID, trxName);
@@ -147,7 +171,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			if (isVoided())
 			{
 				log.info("Already voided - " + getR_Result() + " - " + getR_RespMsg());
-				setErrorMessage("Payment already voided");
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyVoided"));
 				return true;
 			}
 		}
@@ -155,8 +179,8 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		{
 			if (isDelayedCapture())
 			{
-				log.info("Already delay captured - " + getR_Result() + " - " + getR_RespMsg());
-				setErrorMessage("Payment already delay captured");
+				log.info("Already delayed capture - " + getR_Result() + " - " + getR_RespMsg());
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyDelayedCapture"));
 				return true;
 			}
 		}
@@ -165,7 +189,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			if (isApproved())
 			{
 				log.info("Already processed - " + getR_Result() + " - " + getR_RespMsg());
-				setErrorMessage("Payment already processed");
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyProcessed"));
 				return true;
 			}
 		}
@@ -175,7 +199,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		if (m_mBankAccountProcessor == null)
 		{
 			log.log(Level.WARNING, "No Payment Processor Model");
-			setErrorMessage("No Payment Processor Model");
+			setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessorModel"));
 			return false;
 		}
 
@@ -187,7 +211,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			MPaymentProcessor paymentProcessor = new MPaymentProcessor(m_mBankAccountProcessor.getCtx(), m_mBankAccountProcessor.getC_PaymentProcessor_ID(), m_mBankAccountProcessor.get_TrxName());
 			PaymentProcessor pp = PaymentProcessor.create(paymentProcessor, this);
 			if (pp == null)
-				setErrorMessage("No Payment Processor");
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessor"));
 			else
 			{
 				// Validate before trying to process
@@ -232,7 +256,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "processOnline", e);
-			setErrorMessage("Payment Processor Error: " + e.getMessage());
+			setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNotProcessed") + ": " + e.getMessage());
 		}
 		
 		setIsApproved(approved);

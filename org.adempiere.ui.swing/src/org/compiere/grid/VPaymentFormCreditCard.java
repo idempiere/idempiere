@@ -23,10 +23,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.math.BigDecimal;
 
+import org.adempiere.util.PaymentUtil;
 import org.compiere.apps.ADialog;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
+import org.compiere.model.MInvoice;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
@@ -130,13 +132,31 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 			kAmountField.setValue(m_mPayment.getPayAmt());
 			
 			//	if approved/paid, don't let it change
-			kTypeCombo.setReadWrite(!m_mPayment.isApproved());
-			kNumberField.setReadWrite(!m_mPayment.isApproved());
-			kNameField.setReadWrite(!m_mPayment.isApproved());
-			kExpField.setReadWrite(!m_mPayment.isApproved());
-			kApprovalField.setReadWrite(!m_mPayment.isApproved());
-			kOnline.setReadWrite(!m_mPayment.isApproved());
-			kAmountField.setReadWrite(!m_mPayment.isApproved());
+			kTypeCombo.setReadWrite(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kNumberField.setReadWrite(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kNameField.setReadWrite(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kExpField.setReadWrite(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kApprovalField.setReadWrite(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kOnline.setReadWrite(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kAmountField.setReadWrite(!(m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+		}
+		else if (m_mPaymentTransaction != null)
+		{
+			kNumberField.setText(m_mPaymentTransaction.getCreditCardNumber());
+			kNameField.setText(m_mPaymentTransaction.getA_Name());
+			kExpField.setText(PaymentUtil.getCreditCardExp(m_mPaymentTransaction.getCreditCardExpMM(), m_mPaymentTransaction.getCreditCardExpYY(), null));
+			kApprovalField.setText(m_mPaymentTransaction.getVoiceAuthCode());
+			kStatus.setText(m_mPaymentTransaction.getR_PnRef());
+			kAmountField.setValue(m_mPaymentTransaction.getPayAmt());
+			
+			//	if approved/paid, don't let it change
+			kTypeCombo.setReadWrite(!(m_mPaymentTransaction.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kNumberField.setReadWrite(!(m_mPaymentTransaction.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kNameField.setReadWrite(!(m_mPaymentTransaction.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kExpField.setReadWrite(!(m_mPaymentTransaction.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kApprovalField.setReadWrite(!(m_mPaymentTransaction.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kOnline.setReadWrite(!(m_mPaymentTransaction.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));
+			kAmountField.setReadWrite(!(m_mPaymentTransaction.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed)));		
 		}
 		
 		/**
@@ -152,13 +172,21 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		if (selectedCreditCard != null)
 			kTypeCombo.setSelectedItem(selectedCreditCard);
 		
-		if (m_mPayment.isApproved())
+		if (m_mPayment.isApproved() && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed))
 		{
-			kOnline.setVisible(true);
+			kOnline.setVisible(m_mPayment.isOnline());
 			kOnline.setEnabled(false);
 			
 			MBankAccountProcessor bankAccountProcessor = new MBankAccountProcessor(m_mPayment.getCtx(), m_mPayment.getC_BankAccount_ID(), m_mPayment.getC_PaymentProcessor_ID(), null);
 			setBankAccountProcessor(bankAccountProcessor);
+		}
+		else if (m_mPaymentTransaction != null)
+		{
+			kOnline.setVisible(m_mPaymentTransaction.isOnline());
+			kOnline.setEnabled(false);
+			
+			MBankAccountProcessor bankAccountProcessor = new MBankAccountProcessor(m_mPaymentTransaction.getCtx(), m_mPaymentTransaction.getC_BankAccount_ID(), m_mPaymentTransaction.getC_PaymentProcessor_ID(), null);
+			setBankAccountProcessor(bankAccountProcessor);			
 		}
 		else
 		{

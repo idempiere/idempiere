@@ -39,7 +39,7 @@ public class PaymentUtil {
 	public static MBPBankAccount[] getBankAccounts(MBPartner bpartner,
 			String creditCardNo) {
 		ArrayList<MBPBankAccount> list = new ArrayList<MBPBankAccount>();
-		String sql = "SELECT * FROM C_BP_BankAccount WHERE C_BPartner_ID=? AND CREDITCARDNUMBER=?";
+		String sql = "SELECT * FROM C_BP_BankAccount WHERE C_BPartner_ID=? AND CREDITCARDNUMBER=? AND IsActive='Y' order by created";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -74,7 +74,7 @@ public class PaymentUtil {
 		StringBuffer encryptedCC = new StringBuffer();
 
 		for (int i = 0; i < (valueLength - 4); i++) {
-			encryptedCC.append("*");
+			encryptedCC.append("0");
 		}
 
 		encryptedCC.append(value.substring(valueLength - 4, valueLength));
