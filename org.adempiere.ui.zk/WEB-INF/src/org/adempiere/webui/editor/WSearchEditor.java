@@ -423,7 +423,17 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (!updated)
 		{
 			setValue(value);
-		}
+			if (gridTab != null && gridField != null) {
+				if (value == null && gridField.getValue() != null) {
+					gridTab.setValue(gridField, value);
+				} else if (value != null && gridField.getValue() == null) {
+					gridTab.setValue(gridField, value);
+				} else if (value != null && !value.equals(gridField.getValue())) {
+					gridTab.setValue(gridField, value);
+				}
+			}
+		}				
+		
 	}	//	actionCombo
 
 	/**
