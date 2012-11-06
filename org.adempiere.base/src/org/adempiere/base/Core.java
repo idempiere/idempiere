@@ -49,7 +49,7 @@ public class Core {
 		return new IResourceFinder() {
 
 			public URL getResource(String name) {
-				List<IResourceFinder> f = Service.list(IResourceFinder.class);
+				List<IResourceFinder> f = Service.locator().list(IResourceFinder.class).getServices();
 				for (IResourceFinder finder : f) {
 					URL url = finder.getResource(name);
 					if (url!=null)
@@ -71,39 +71,37 @@ public class Core {
 		query.put("tableName", tableName);
 		query.put("columnName", columnName);
 
-		return Service.list(IColumnCallout.class, query);
+		return Service.locator().list(IColumnCallout.class, query).getServices();
 	}
 
 	/**
 	 *
-	 * @param extensionId
-	 * @return ProcessCall instance or null if extensionId not found
+	 * @param serviceId
+	 * @return ProcessCall instance or null if serviceId not found
 	 */
-	public static ProcessCall getProcess(String extensionId) {
-		ServiceQuery query = new ServiceQuery();
-		query.put(ServiceQuery.EXTENSION_ID, extensionId);
-		return Service.locate(ProcessCall.class, "org.adempiere.base.Process", query);
+	public static ProcessCall getProcess(String serviceId) {
+		return Service.locator().locate(ProcessCall.class, "org.adempiere.base.Process", serviceId, null).getService();
 	}
 
 	/**
 	 *
-	 * @param extensionId
-	 * @return ModelValidator instance of null if extensionId not found
+	 * @param serviceId
+	 * @return ModelValidator instance of null if serviceId not found
 	 */
-	public static ModelValidator getModelValidator(String extensionId) {
-		ServiceQuery query = new ServiceQuery();
-		query.put(ServiceQuery.EXTENSION_ID, extensionId);
-		return Service.locate(ModelValidator.class, "org.adempiere.base.ModelValidator", query);
+	public static ModelValidator getModelValidator(String serviceId) {
+		return Service.locator().locate(ModelValidator.class, "org.adempiere.base.ModelValidator", serviceId, null).getService();
 	}
 
 	/**
-	 *  Factory
+	 *  Get payment processor instance
 	 * 	@param mpp payment processor model
 	 * 	@param mp payment model
 	 *  @return initialized PaymentProcessor or null
 	 */
 	public static PaymentProcessor getPaymentProcessor(MPaymentProcessor mpp, PaymentInterface mp) {
-		s_log.info("create for " + mpp);
+		if (s_log.isLoggable(Level.FINE))
+			s_log.fine("create for " + mpp);
+		
 		String className = mpp.getPayProcessorClass();
 		if (className == null || className.length() == 0) {
 			s_log.log(Level.SEVERE, "No PaymentProcessor class name in " + mpp);
@@ -111,10 +109,9 @@ public class Core {
 		}
 		//
 		PaymentProcessor myProcessor = null;
-		ServiceQuery query = new ServiceQuery();
-		query.put(ServiceQuery.EXTENSION_ID, className);
-		myProcessor = Service.locate(PaymentProcessor.class, query);
+		myProcessor = Service.locator().locate(PaymentProcessor.class, className, null).getService();
 		if (myProcessor == null) {
+			//fall back to dynamic java class loadup
 			try {
 				Class<?> ppClass = Class.forName(className);
 				if (ppClass != null)
@@ -128,7 +125,7 @@ public class Core {
 			}
 		}
 		if (myProcessor == null) {
-			s_log.log(Level.SEVERE, "Not found in extension registry and classpath");
+			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
 			return null;
 		}
 

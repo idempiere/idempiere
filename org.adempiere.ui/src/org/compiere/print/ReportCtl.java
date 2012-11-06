@@ -377,7 +377,7 @@ public class ReportCtl
 	 */
 	public static void preview(ReportEngine re)
 	{
-		ReportViewerProvider viewer = Service.locate(ReportViewerProvider.class);
+		ReportViewerProvider viewer = Service.locator().locate(ReportViewerProvider.class).getService();
 		viewer.openViewer(re);
 	}
 

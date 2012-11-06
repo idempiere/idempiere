@@ -37,9 +37,7 @@ public class Client {
 	 * @return
 	 */
 	public static FormPanel getFormPanel(String extensionId) {
-		ServiceQuery query = new ServiceQuery();
-		query.put(ServiceQuery.EXTENSION_ID, extensionId);
-		return Service.locate(FormPanel.class, "org.adempiere.apps.Form", query);
+		return Service.locator().locate(FormPanel.class, "org.adempiere.apps.Form", extensionId, null).getService();
 	}
 
 }

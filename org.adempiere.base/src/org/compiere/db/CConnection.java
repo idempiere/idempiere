@@ -379,7 +379,7 @@ public class CConnection implements Serializable, Cloneable
 
 		try
 		{
-			Status status = Service.locate(Status.class);
+			Status status = Service.locator().locate(Status.class).getService();
 			m_version = status.getDateVersion();
 		}
 		catch (Throwable t)
@@ -408,7 +408,7 @@ public class CConnection implements Serializable, Cloneable
 	{
 		if (m_server == null)
 		{
-			m_server = Service.locate(Server.class);
+			m_server = Service.locator().locate(Server.class).getService();
 		}
 		return m_server;
 	}	//	getServer
@@ -1400,7 +1400,7 @@ public class CConnection implements Serializable, Cloneable
 			return m_okApps; // false
 		}
 
-		Status status = Service.locate(Status.class);
+		Status status = Service.locator().locate(Status.class).getService();
 		try {
 			updateInfoFromServer(status);
 			m_okApps = true;

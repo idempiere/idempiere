@@ -41,7 +41,7 @@ import org.eclipse.core.runtime.Platform;
  */
 public class ExtensionList<T> implements Iterable<T>{
 
-	public class ExtensionIterator<T> implements Iterator<T> {
+	public class ExtensionIterator<E extends T> implements Iterator<T> {
 
 		private int index = 0;
 
@@ -59,23 +59,22 @@ public class ExtensionList<T> implements Iterable<T>{
 		}
 
 		private boolean accept(IConfigurationElement element) {
+			if (extensionId != null) {
+				String id = element.getDeclaringExtension().getUniqueIdentifier();
+				if (!extensionId.equals(id))
+					return false;
+			}
 			for (String name : filters.keySet()) {
 				String expected = filters.get(name);
-				if (name.equals(ServiceQuery.EXTENSION_ID)) {
-					String id = element.getDeclaringExtension().getUniqueIdentifier();
-					if (!expected.equals(id))
-						return false;
-				} else {
-					String actual = element.getAttribute(name);
-					if (!expected.equals(actual))
-						return false;
-				}
+				String actual = element.getAttribute(name);
+				if (!expected.equals(actual))
+					return false;
 			}
 			return true;
 		}
 
 		@SuppressWarnings("unchecked")
-		public T next() {
+		public E next() {
 			iterateUntilAccepted();
 			IConfigurationElement e = elements[index++];
 			if (e.getAttribute("class") == null) {
@@ -90,7 +89,7 @@ public class ExtensionList<T> implements Iterable<T>{
 				}
 			}
 			try {
-				return (T) e.createExecutableExtension("class");
+				return (E) e.createExecutableExtension("class");
 			} catch (CoreException ex) {
 				throw new IllegalStateException(ex);
 			}
@@ -104,8 +103,16 @@ public class ExtensionList<T> implements Iterable<T>{
 
 	private IConfigurationElement[] elements;
 	private HashMap<String, String> filters = new HashMap<String, String>();
+	private String extensionId;
 
+	/**
+	 * @param clazz
+	 * @param extensionPointId
+	 */
 	public ExtensionList(Class<T> clazz, String extensionPointId) {
+		if (extensionPointId == null)
+			extensionPointId = clazz.getName();
+		
 		try {
 			elements = Platform.getExtensionRegistry().getConfigurationElementsFor(extensionPointId);
 			if (elements != null && elements.length > 1) {
@@ -116,6 +123,16 @@ public class ExtensionList<T> implements Iterable<T>{
 		}
 	}
 
+	public ExtensionList(Class<T> type, String extensionPointId, String extensionId, ServiceQuery query) {
+		this(type, extensionPointId);
+		this.extensionId = extensionId;
+		if (query != null) {
+			for (String key : query.keySet()) {
+				addFilter(key, query.get(key));
+			}
+		}
+	}
+	
 	private IConfigurationElement[] sort(IConfigurationElement[] elementArray) {
 		IConfigurationElement[] result = elementArray;
 		TreeMap<Integer, List<IConfigurationElement>> elementMap = new TreeMap<Integer, List<IConfigurationElement>>();
@@ -150,13 +167,6 @@ public class ExtensionList<T> implements Iterable<T>{
 			}
 		}
 		return result;
-	}
-
-	public ExtensionList(Class<T> type, String extensionPointId, ServiceQuery query) {
-		this(type, extensionPointId);
-		for (String key : query.keySet()) {
-			addFilter(key, query.get(key));
-		}
 	}
 
 	public Iterator<T> iterator() {

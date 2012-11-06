@@ -60,7 +60,7 @@ public class Database
 	{
 		ServiceQuery query = new ServiceQuery();
 		query.put("id", type);
-		AdempiereDatabase db = Service.locate(AdempiereDatabase.class, query);
+		AdempiereDatabase db = Service.locator().locate(AdempiereDatabase.class, query).getService();
 		return db;
 	}
 	

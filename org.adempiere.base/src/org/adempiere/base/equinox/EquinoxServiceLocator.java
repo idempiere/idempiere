@@ -16,9 +16,9 @@
  *****************************************************************************/
 package org.adempiere.base.equinox;
 
-import java.util.List;
-
+import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.IServiceLocator;
+import org.adempiere.base.IServicesHolder;
 import org.adempiere.base.ServiceQuery;
 
 
@@ -32,44 +32,60 @@ import org.adempiere.base.ServiceQuery;
  */
 public class EquinoxServiceLocator implements IServiceLocator {
 
-	public <T> List<T> list(Class<T> type) {
+	@Override
+	public <T> IServicesHolder<T> list(Class<T> type) {
 		return list(type, type.getName());
 	}
 	
 	@Override
-	public <T> List<T> list(Class<T> type, String extensionPointId) {
-		ExtensionList<T> list = new ExtensionList<T>(type, extensionPointId);
-		return list.asList();
+	public <T> IServicesHolder<T> list(Class<T> type, String serviceType) {
+		ExtensionList<T> list = new ExtensionList<T>(type, serviceType);
+		return new EquinoxServiceHolder<T>(list);
 	}
 
-	public <T> List<T> list(Class<T> type, ServiceQuery query) {
-		return list(type, type.getName(), query);
+	@Override
+	public <T> IServicesHolder<T> list(Class<T> type, ServiceQuery query) {
+		return list(type, type.getName(), null, query);
 	}
 	
 	@Override
-	public <T> List<T> list(Class<T> type, String extensionPointId,
+	public <T> IServicesHolder<T> list(Class<T> type, String serviceId, ServiceQuery query) {
+		ExtensionList<T> list = new ExtensionList<T>(type, null, serviceId, query);
+		return new EquinoxServiceHolder<T>(list);
+	}
+	
+	@Override
+	public <T> IServicesHolder<T> list(Class<T> type, String serviceType, String serviceId,
 			ServiceQuery query) {
-		ExtensionList<T> list = new ExtensionList<T>(type, extensionPointId, query);
-		return list.asList();
+		ExtensionList<T> list = new ExtensionList<T>(type, serviceType, serviceId, query);
+		return new EquinoxServiceHolder<T>(list);
 	}
 		
-	public <T> T locate(Class<T> type) {
+	@Override
+	public <T> IServiceHolder<T> locate(Class<T> type) {
 		return locate(type, type.getName());
 	}
 
 	@Override
-	public <T> T locate(Class<T> type, String extensionPointId) {
-		ExtensionList<T> list = new ExtensionList<T>(type, extensionPointId);
-		return list.first();
+	public <T> IServiceHolder<T> locate(Class<T> type, String serviceType) {
+		ExtensionList<T> list = new ExtensionList<T>(type, serviceType);
+		return new EquinoxServiceHolder<T>(list);
 	}
 	
-	public <T> T locate(Class<T> type, ServiceQuery query) {
-		return locate(type, type.getName(), query);
+	@Override
+	public <T> IServiceHolder<T> locate(Class<T> type, ServiceQuery query) {
+		return locate(type, type.getName(), null, query);
 	}
 
 	@Override
-	public <T> T locate(Class<T> type, String extensionPointId, ServiceQuery query) {
-		ExtensionList<T> list = new ExtensionList<T>(type, extensionPointId, query);
-		return list.first();
+	public <T> IServiceHolder<T> locate(Class<T> type, String serviceId, ServiceQuery query) {
+		ExtensionList<T> list = new ExtensionList<T>(type, null, serviceId, query);
+		return new EquinoxServiceHolder<T>(list);
+	}
+	
+	@Override
+	public <T> IServiceHolder<T> locate(Class<T> type, String serviceType, String serviceId, ServiceQuery query) {
+		ExtensionList<T> list = new ExtensionList<T>(type, serviceType, serviceId, query);
+		return new EquinoxServiceHolder<T>(list);
 	}	
 }

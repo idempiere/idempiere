@@ -33,7 +33,7 @@ public class InfoManager
     {
         InfoPanel info = null;
 
-		List<IInfoFactory> factoryList = Service.list(IInfoFactory.class);
+		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
 		for(IInfoFactory factory : factoryList)
 		{
 			info = factory.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, lookup);
@@ -49,7 +49,7 @@ public class InfoManager
 			String whereClause)
 	{
 		InfoPanel ip = null;
-		List<IInfoFactory> factoryList = Service.list(IInfoFactory.class);
+		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
 		for(IInfoFactory factory : factoryList)
 		{
 			ip = factory.create(lookup, field, tableName, keyColumn, queryValue, false, whereClause);

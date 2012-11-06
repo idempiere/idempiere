@@ -4,54 +4,5 @@
    <extension-point id="org.adempiere.webui.Form" name="Web Form" schema="schema/org.adempiere.webui.Form.exsd"/>
    <extension-point id="org.adempiere.webui.factory.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.webui.factory.IInfoFactory.exsd"/>
    <extension-point id="org.adempiere.webui.factory.IEditorFactory" name="Field editor factory" schema="schema/org.adempiere.webui.factory.IEditorFactory.exsd"/>
-   <extension
-         point="org.compiere.print.ReportViewerProvider">
-      <provider
-            class="org.adempiere.webui.window.ZkReportViewerProvider">
-      </provider>
-   </extension>
-   <extension
-         point="org.compiere.report.JRViewerProvider">
-      <provider
-            class="org.adempiere.webui.window.ZkJRViewerProvider">
-      </provider>
-   </extension>
-   <extension
-         point="org.compiere.interfaces.Server">
-      <interface
-            class="org.compiere.interfaces.impl.ServerBean">
-      </interface>
-   </extension>
-   <extension
-         point="org.compiere.interfaces.Status">
-      <interface
-            class="org.compiere.interfaces.impl.StatusBean">
-      </interface>
-   </extension>
-   <extension
-         id="org.adempiere.webui.factory.DefaultInfoFactory"
-         name="Default Info Factory"
-         point="org.adempiere.webui.factory.IInfoFactory">
-      <factory
-            class="org.adempiere.webui.factory.DefaultInfoFactory"
-            priority="0">
-      </factory>
-   </extension>
-   <extension
-         id="org.adempiere.webui.factory.DefaultEditorFactory"
-         name="Default field editor factory"
-         point="org.adempiere.webui.factory.IEditorFactory">
-      <factory
-            class="org.adempiere.webui.factory.DefaultEditorFactory"
-            priority="0">
-      </factory>
-   </extension>
-   <extension
-         id="org.adempiere.ui.zk.WebUIResourceFinder"
-         point="org.adempiere.base.IResourceFinder">
-      <finder
-            class="org.adempiere.webui.util.WebUIResourceFinder">
-      </finder>
-   </extension>
 
 </plugin>

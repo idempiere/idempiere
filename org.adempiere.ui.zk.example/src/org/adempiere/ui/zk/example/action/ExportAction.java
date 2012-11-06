@@ -89,7 +89,7 @@ public class ExportAction implements IAction, EventListener<Event> {
 	private void doExport() {
 		exporterMap = new HashMap<String, IGridTabExporter>();
 		extensionMap = new HashMap<String, String>();
-		List<IGridTabExporter> exporterList = Service.list(IGridTabExporter.class);
+		List<IGridTabExporter> exporterList = Service.locator().list(IGridTabExporter.class).getServices();
 		for(IGridTabExporter exporter : exporterList)
 		{
 			String extension = exporter.getFileExtension();

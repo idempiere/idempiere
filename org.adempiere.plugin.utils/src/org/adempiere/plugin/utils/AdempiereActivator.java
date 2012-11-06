@@ -74,7 +74,7 @@ public class AdempiereActivator implements BundleActivator {
 	protected void packIn(String trxName) {
 		URL packout = context.getBundle().getEntry("/META-INF/2Pack.zip");
 		if (packout != null) {
-			IDictionaryService service = Service.locate(IDictionaryService.class);
+			IDictionaryService service = Service.locator().locate(IDictionaryService.class).getService();
 			try {
 				// copy the resource to a temporary file to process it with 2pack
 				InputStream stream = context.getBundle().getEntry("/META-INF/2Pack.zip").openStream();

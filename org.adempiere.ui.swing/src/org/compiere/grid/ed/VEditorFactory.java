@@ -58,7 +58,7 @@ public class VEditorFactory
 	public static VEditor getEditor (GridTab mTab, GridField mField, boolean tableEditor)
 	{
 		VEditor editor = null;
-		List<IEditorFactory> factoryList = Service.list(IEditorFactory.class);
+		List<IEditorFactory> factoryList = Service.locator().list(IEditorFactory.class).getServices();
 		for(IEditorFactory factory : factoryList)
 		{
 			editor = factory.getEditor(mTab, mField, tableEditor);

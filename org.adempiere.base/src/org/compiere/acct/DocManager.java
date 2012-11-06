@@ -135,7 +135,7 @@ public class DocManager {
 
 		ServiceQuery query = new ServiceQuery();
 		query.put("gaap", as.getGAAP());
-		List<IDocFactory> factoryList = Service.list(IDocFactory.class, query);
+		List<IDocFactory> factoryList = Service.locator().list(IDocFactory.class, query).getServices();
 		if (factoryList != null)
 		{
 			for(IDocFactory factory : factoryList)
@@ -148,7 +148,7 @@ public class DocManager {
 
 		query.clear();
 		query.put("gaap", "*");
-		factoryList = Service.list(IDocFactory.class, query);
+		factoryList = Service.locator().list(IDocFactory.class, query).getServices();
 		if (factoryList != null)
 		{
 			for(IDocFactory factory : factoryList)
@@ -175,7 +175,7 @@ public class DocManager {
 	{
 		ServiceQuery query = new ServiceQuery();
 		query.put("gaap", as.getGAAP());
-		List<IDocFactory> factoryList = Service.list(IDocFactory.class,query);
+		List<IDocFactory> factoryList = Service.locator().list(IDocFactory.class,query).getServices();
 		if (factoryList != null)
 		{
 			for(IDocFactory factory : factoryList)
@@ -188,7 +188,7 @@ public class DocManager {
 
 		query.clear();
 		query.put("gaap", "*");
-		factoryList = Service.list(IDocFactory.class,query);
+		factoryList = Service.locator().list(IDocFactory.class,query).getServices();
 		if (factoryList != null)
 		{
 			for(IDocFactory factory : factoryList)

@@ -12,8 +12,6 @@ Import-Package: javax.servlet,
  org.apache.ecs.xhtml,
  org.compiere.css,
  org.osgi.framework;version="1.5.0",
- org.osgi.service.component;version="1.1.0",
- org.osgi.util.tracker;version="1.5.0",
  org.slf4j;version="1.6.1",
  org.slf4j.helpers;version="1.6.1",
  org.slf4j.spi;version="1.6.1"
@@ -59,3 +57,4 @@ Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.zkoss.zk.library
 Web-ContextPath: webui
+Service-Component: OSGI-INF/reportviewerprovider.xml, OSGI-INF/defaultinfofactory.xml, OSGI-INF/defaulteditorfactory.xml, OSGI-INF/jrviewerprovider.xml, OSGI-INF/resourcefinder.xml

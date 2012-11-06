@@ -78,7 +78,7 @@ public class ExportAction implements EventListener<Event>
 	{
 		exporterMap = new HashMap<String, IGridTabExporter>();
 		extensionMap = new HashMap<String, String>();
-		List<IGridTabExporter> exporterList = Service.list(IGridTabExporter.class);
+		List<IGridTabExporter> exporterList = Service.locator().list(IGridTabExporter.class).getServices();
 		for(IGridTabExporter exporter : exporterList)
 		{
 			String extension = exporter.getFileExtension();

@@ -38,8 +38,6 @@ public class Extensions {
 	 * @return IFormController instance or null if extensionId not found
 	 */
 	public static IFormController getForm(String extensionId) {
-		ServiceQuery query = new ServiceQuery();
-		query.put(ServiceQuery.EXTENSION_ID, extensionId);
-		return Service.locate(IFormController.class, "org.adempiere.webui.Form", query);
+		return Service.locator().locate(IFormController.class, "org.adempiere.webui.Form", extensionId, null).getService();
 	}
 }

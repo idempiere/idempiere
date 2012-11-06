@@ -47,7 +47,7 @@ public class InfoManager
 			boolean multiSelection, String whereClause)
 	{
 		Info info = null;
-		List<IInfoFactory> factoryList = Service.list(IInfoFactory.class);
+		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
 		for(IInfoFactory factory : factoryList)
 		{
 			info = factory.create(frame, true, lookup, field, tableName, keyColumn,
@@ -77,7 +77,7 @@ public class InfoManager
 	{
 		Info info = null;
 
-		List<IInfoFactory> factoryList = Service.list(IInfoFactory.class);
+		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
 		for(IInfoFactory factory : factoryList)
 		{
 			info = factory.create(frame, modal, WindowNo, tableName, keyColumn, value,

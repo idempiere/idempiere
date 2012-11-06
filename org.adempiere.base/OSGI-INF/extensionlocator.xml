@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.base.equinox.service.locator">
+   <property name="service.ranking" type="Integer" value="0"/>
+   <service>
+      <provide interface="org.adempiere.base.IServiceLocator"/>
+   </service>
+   <implementation class="org.adempiere.base.equinox.EquinoxServiceLocator"/>
+</scr:component>

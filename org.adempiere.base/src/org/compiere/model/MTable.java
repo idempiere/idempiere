@@ -163,7 +163,7 @@ public class MTable extends X_AD_Table
 	 */
 	public static Class<?> getClass (String tableName)
 	{
-		List<IModelFactory> factoryList = Service.list(IModelFactory.class);
+		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
 		if (factoryList == null)
 			return null;
 		for(IModelFactory factory : factoryList) {
@@ -322,7 +322,7 @@ public class MTable extends X_AD_Table
 		}
 
 		PO po = null;
-		List<IModelFactory> factoryList = Service.list(IModelFactory.class);
+		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
 		if (factoryList != null)
 		{
 			for(IModelFactory factory : factoryList)
@@ -359,7 +359,7 @@ public class MTable extends X_AD_Table
 		String tableName = getTableName();
 
 		PO po = null;
-		List<IModelFactory> factoryList = Service.list(IModelFactory.class);
+		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
 		if (factoryList != null)
 		{
 			for(IModelFactory factory : factoryList) {

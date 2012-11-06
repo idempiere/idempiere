@@ -108,7 +108,7 @@ public class FileImportAction implements EventListener<Event>
 
 		importerMap = new HashMap<String, IGridTabImporter>();
 		extensionMap = new HashMap<String, String>();
-		List<IGridTabImporter> importerList = Service.list(IGridTabImporter.class);
+		List<IGridTabImporter> importerList = Service.locator().list(IGridTabImporter.class).getServices();
 		for(IGridTabImporter importer : importerList)
 		{
 			String extension = importer.getFileExtension();

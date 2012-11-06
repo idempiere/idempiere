@@ -79,7 +79,7 @@ public class ConfigurationData
 
 	private void initDatabaseConfig()
 	{
-		List<IDatabaseConfig> configList = Service.list(IDatabaseConfig.class);
+		List<IDatabaseConfig> configList = Service.locator().list(IDatabaseConfig.class).getServices();
 		m_databaseConfig = new IDatabaseConfig[configList.size()];
 		DBTYPE = new String[m_databaseConfig.length];
 		for(int i = 0; i < configList.size(); i++)

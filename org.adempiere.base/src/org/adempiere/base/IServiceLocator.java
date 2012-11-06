@@ -16,25 +16,99 @@
  *****************************************************************************/
 package org.adempiere.base;
 
-import java.util.List;
-
 /**
  * A service locator looks up services.
  * This is the central authority for adempiere service definition,
  * because each service defined has to be looked up via this interface.
  * 
- * A service in adempiere is an interface extended from the tagging interface IService.
+ * A service in adempiere is an implementation for the registered interface, expose through osgi service registry or equinox extension registry
  * 
  * @author viola
  *
  */
 public interface IServiceLocator {
-	<T> T locate(Class<T> type);
-	<T> T locate(Class<T> type, String extensionPointId);
-	<T> T locate(Class<T> type, ServiceQuery query);
-	<T> T locate(Class<T> type, String extensionPointId, ServiceQuery query);
-	<T> List<T> list(Class<T> type);
-	<T> List<T> list(Class<T> type, String extensionPointId);
-	<T> List<T> list(Class<T> type, ServiceQuery query);
-	<T> List<T> list(Class<T> type, String extensionPointId, ServiceQuery query);
+	/**
+	 * 
+	 * @param type service interface
+	 * @return holder for dynamic service
+	 */
+	<T> IServiceHolder<T> locate(Class<T> type);
+	
+	/**
+	 * 
+	 * @param type
+	 * @param serviceType equinox extension point id, ignore by osgi service locator
+	 * type.getName
+	 * @return holder for dynamic service
+	 */
+	<T> IServiceHolder<T> locate(Class<T> type, String serviceType);
+	
+	/**
+	 * 
+	 * @param type
+	 * @param query
+	 * @return
+	 */
+	<T> IServiceHolder<T> locate(Class<T> type, ServiceQuery query);
+	
+	/**
+	 * 
+	 * @param type
+	 * @param serviceId component name or extension id
+	 * @param query
+	 * @return holder for dynamic service
+	 */
+	<T> IServiceHolder<T> locate(Class<T> type, String serviceId, ServiceQuery query);
+	
+	/**
+	 * 
+	 * @param type
+	 * @param serviceType equinox extension point id, ignore by osgi service locator
+	 * @param serviceId component name or extension id
+	 * @param query
+	 * @return holder for dynamic service
+	 */
+	<T> IServiceHolder<T> locate(Class<T> type, String serviceType, String serviceId, ServiceQuery query);
+	
+	/**
+	 * 
+	 * @param type
+	 * @return holder for list of dynamic service
+	 */
+	<T> IServicesHolder<T> list(Class<T> type);
+	
+	/**
+	 * 
+	 * @param type
+	 * @param serviceType equinox extension point id, ignore by osgi service locator
+	 * @return holder for list of dynamic service
+	 */
+	<T> IServicesHolder<T> list(Class<T> type, String serviceType);
+	
+	/**
+	 * 
+	 * @param type
+	 * @param query
+	 * @return holder for list of dynamic service
+	 */
+	<T> IServicesHolder<T> list(Class<T> type, ServiceQuery query);
+	
+	/**
+	 * 
+	 * @param type
+	 * @param serviceId component name or extension id
+	 * @param query
+	 * @return holder for list of dynamic service
+	 */
+	<T> IServicesHolder<T> list(Class<T> type, String serviceId, ServiceQuery query);
+	
+	/**
+	 * 
+	 * @param type
+	 * @param serviceType equinox extension point id, ignore by osgi service locator
+	 * @param serviceId component name or extension id
+	 * @param query
+	 * @return holder for list of dynamic service
+	 */
+	<T> IServicesHolder<T> list(Class<T> type, String serviceType, String serviceId, ServiceQuery query);
 }

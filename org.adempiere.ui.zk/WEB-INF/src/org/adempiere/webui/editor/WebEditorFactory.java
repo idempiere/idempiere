@@ -20,13 +20,10 @@ package org.adempiere.webui.editor;
 import java.util.List;
 
 import org.adempiere.base.Service;
-import org.adempiere.webui.component.EditorBox;
-import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.factory.IEditorFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.util.CLogger;
-import org.zkoss.zul.impl.InputElement;
 
 /**
  *
@@ -56,7 +53,7 @@ public class WebEditorFactory
     public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor)
     {
         WEditor editor = null;
-        List<IEditorFactory> factoryList = Service.list(IEditorFactory.class);
+        List<IEditorFactory> factoryList = Service.locator().list(IEditorFactory.class).getServices();
         for(IEditorFactory factory : factoryList)
         {
         	editor = factory.getEditor(gridTab, gridField, tableEditor);

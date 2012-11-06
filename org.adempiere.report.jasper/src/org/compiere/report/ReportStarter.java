@@ -671,7 +671,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	//                        JasperExportManager.exportReportToPdfFile(jasperPrint, "BasicReport.pdf");
 	                } else {
 	                    log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
-	                    JRViewerProvider viewerLauncher = Service.locate(JRViewerProvider.class);
+	                    JRViewerProvider viewerLauncher = Service.locator().locate(JRViewerProvider.class).getService();
 	                    viewerLauncher.openViewer(jasperPrint, pi.getTitle()+" - " + reportPath);
 	                }
                 }

@@ -16,13 +16,9 @@ package org.adempiere.webui.action;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.adempiere.webui.WebUIActivator;
+import org.adempiere.base.IServiceHolder;
+import org.adempiere.base.Service;
 import org.compiere.util.CCache;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.service.component.ComponentConstants;
-import org.osgi.util.tracker.ServiceTracker;
 import org.zkoss.image.AImage;
 
 /**
@@ -33,36 +29,24 @@ import org.zkoss.image.AImage;
 public class Actions {
 
 	private static final String ACTION_IMAGES_PATH = "/action/images/";
-	private static CCache<String, ServiceTracker<IAction, IAction>> trackerCache = new CCache<String, ServiceTracker<IAction,IAction>>("ActionsServiceTracker", 5);
+	private static CCache<String, IServiceHolder<IAction>> trackerCache = new CCache<String, IServiceHolder<IAction>>("ActionsServiceTracker", 5);
 	private static CCache<String, AImage> imageCache = new CCache<String, AImage>("ActionsImages",5);
 	
-	private static final String COMPONENT_FILTER = "(&(objectclass=org.adempiere.webui.action.IAction)("
-			+ ComponentConstants.COMPONENT_NAME + "=?))";
-	
-	public static ServiceTracker<IAction, IAction> getActionTracker(String actionId) {
-		ServiceTracker<IAction, IAction> actionTracker = null;
+	public static IServiceHolder<IAction> getAction(String actionId) {
+		IServiceHolder<IAction> action = null;
 		synchronized (trackerCache) {
-			actionTracker = trackerCache.get(actionId);
-		}
-		if (actionTracker != null)
-			return actionTracker;
-		BundleContext context = WebUIActivator.getBundleContext();
-		Filter filter = null;
-		try {
-			String sFilter = COMPONENT_FILTER.replaceFirst("[?]", actionId);
-			filter = context.createFilter(sFilter);
-		} catch (InvalidSyntaxException e) {
-			e.printStackTrace();
-		}
-
-		actionTracker = new ServiceTracker<IAction, IAction>(context, filter, null);
-		if (actionTracker != null) {
-			actionTracker.open();
+			action = trackerCache.get(actionId);
+		} 
+		if (action != null)
+			return action;
+		
+		action = Service.locator().locate(IAction.class, actionId, null);
+		if (action != null) {
 			synchronized (trackerCache) {
-				trackerCache.put(actionId, actionTracker);
+				trackerCache.put(actionId, action);
 			}
 		}
-		return actionTracker;
+		return action;
 	}
 	
 	public static AImage getActionImage(String actionId) {

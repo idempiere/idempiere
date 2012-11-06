@@ -36,11 +36,11 @@ public class OSGiHandlerRegistry implements IHandlerRegistry {
 		
 		ServiceQuery query = new ServiceQuery();
 		query.put("id", id);
-		handler = Service.locate(ElementHandler.class, SERVICE_ID, query);
+		handler = Service.locator().locate(ElementHandler.class, SERVICE_ID, null, query).getService();
 		if (handler == null) {
 			id = TABLE_GENERIC_HANDLER;
 			query.put("id", id);
-			handler = Service.locate(ElementHandler.class, SERVICE_ID, query);
+			handler = Service.locator().locate(ElementHandler.class, SERVICE_ID, null, query).getService();
 		}
 		return handler;
 	}
@@ -53,7 +53,7 @@ public class OSGiHandlerRegistry implements IHandlerRegistry {
 		ElementHandler handler = null;
 		ServiceQuery query = new ServiceQuery();
 		query.put("id", name);
-		handler = Service.locate(ElementHandler.class, SERVICE_ID, query);
+		handler = Service.locator().locate(ElementHandler.class, SERVICE_ID, null, query).getService();
 		return handler;
 	}
 }

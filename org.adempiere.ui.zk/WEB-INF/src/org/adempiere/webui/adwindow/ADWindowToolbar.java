@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IServiceHolder;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
@@ -42,7 +43,6 @@ import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.osgi.util.tracker.ServiceTracker;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -609,8 +609,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		if (mToolbarButtons != null && mToolbarButtons.length > 0) {
 			for (MToolBarButton mToolBarButton : mToolbarButtons) {
 				String actionId = mToolBarButton.getActionClassName();
-				ServiceTracker<IAction, IAction> serviceTracker = Actions.getActionTracker(actionId);
-				if (serviceTracker != null && serviceTracker.size() > 0) {
+				IServiceHolder<IAction> serviceHolder = Actions.getAction(actionId);
+				if (serviceHolder != null && serviceHolder.getService() != null) {
 					String labelKey = actionId + ".label";
 					String tooltipKey = actionId + ".tooltip";
 					String label = Msg.getMsg(Env.getCtx(), labelKey);

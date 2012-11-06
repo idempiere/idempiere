@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
+ * Copyright (C) 2012 Heng Sin Low                                            *
+ * Copyright (C) 2012 Trek Global                 							  *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -10,27 +10,21 @@
  * You should have received a copy of the GNU General Public License along    *
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- * For the text or an alternative of this public license, you may reach us    *
- * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
- * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 package org.adempiere.base;
 
 /**
- * This is a very simple factory for service locators
  * 
- * @author viola
- * 
+ * @author hengsin
+ *
+ * @param <T>
  */
-public class Service {
-
-	private static IServiceLocator theLocator = new DelegatingServiceLocator();
+public interface IServiceHolder<T> {
 
 	/**
 	 * 
-	 * @return service locator instance
+	 * @return service instance. null if not available or no matching service found
 	 */
-	public static IServiceLocator locator() {
-		return theLocator;
-	}
+	public T getService();
+	
 }

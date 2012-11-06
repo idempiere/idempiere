@@ -182,7 +182,7 @@ public class AdempiereServerMgr
 		}
 		
 		//osgi server
-		List<IServerFactory> serverFactoryList = Service.list(IServerFactory.class);
+		List<IServerFactory> serverFactoryList = Service.locator().list(IServerFactory.class).getServices();
 		if (serverFactoryList != null && !serverFactoryList.isEmpty())
 		{
 			for(IServerFactory factory : serverFactoryList )

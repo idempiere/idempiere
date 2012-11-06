@@ -13,13 +13,13 @@
  *****************************************************************************/
 package org.adempiere.webui.adwindow;
 
+import org.adempiere.base.IServiceHolder;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.compiere.model.MToolBarButton;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
-import org.osgi.util.tracker.ServiceTracker;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -43,9 +43,9 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 	
 	@Override
 	public void onEvent(Event event) throws Exception {
-		ServiceTracker<IAction, IAction> serviceTracker = Actions.getActionTracker(actionId);
-		if (serviceTracker != null) {
-			IAction action = serviceTracker.getService();
+		IServiceHolder<IAction> serviceHolder = Actions.getAction(actionId);
+		if (serviceHolder != null) {
+			IAction action = serviceHolder.getService();
 			if (action != null) {
 				action.execute(ADWindow.get(windowNo));
 			}
