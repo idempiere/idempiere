@@ -249,9 +249,13 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 						Object[] objects = new Object[0];
 						objects = collection.toArray(objects);
 						for(Object obj : objects) {
-							if (obj instanceof Component) {
-								((Component)obj).detach();
-								rootComponents.add((Component) obj);
+							try {
+								if (obj instanceof Component) {
+									((Component)obj).detach();
+									rootComponents.add((Component) obj);
+								}
+							} catch (Exception e) {
+//								e.printStackTrace();
 							}
 						}
 						appDesktop.getComponent().detach();
