@@ -1,12 +1,12 @@
-CREATE OR REPLACE PROCEDURE C_Order_DrillDown
+CREATE OR REPLACE PROCEDURE C_ORDER_DRILLDOWN
 (
 	PInstance_ID		IN NUMBER
 )
 /******************************************************************************
- * ** Adempiere Product **             Copyright (c) 1999-2001 Accorto, Inc. USA
+ * ** Compiere Product **             Copyright (c) 1999-2001 Accorto, Inc. USA
  * Open  Source  Software        Provided "AS IS" without warranty or liability
- * When you use any parts (changed or unchanged), add  "Powered by Adempiere" to
- * your product name;  See license details http://www.adempiere.org/license.html
+ * When you use any parts (changed or unchanged), add  "Powered by Compiere" to
+ * your product name;  See license details http://www.compiere.org/license.html
  ******************************************************************************
  *	List Orders with their Shipments and Invoices
  *	Spool to T_Spool
@@ -58,7 +58,7 @@ BEGIN
 	--	Order Info
 	FOR o IN Cur_Order LOOP
 
-		INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, T_Spool_Seq.NextVal, 
+		INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, nextidfunc(1173, 'N'), 
 			o.Name || ' ' || o.DocumentNo || ':  @DocStatus@=' || o.DocStatus
 			|| ', @DocAction@=' || o.DocAction || ', @Processed@=' || o.Processed);
 
@@ -71,7 +71,7 @@ BEGIN
 				ORDER BY Line;
 		BEGIN
 			FOR ol IN Cur_OrderLine LOOP
-				INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, T_Spool_Seq.NextVal, 
+				INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, nextidfunc(1173, 'N'), 
 					'   @QtyOrdered@=' || ol.QtyOrdered || ', @QtyReserved@=' || ol.QtyReserved
 					|| ', @QtyDelivered@=' || ol.QtyDelivered || ', @QtyInvoiced@=' || ol.QtyInvoiced
 					|| ' - Wh=' || ol.M_Warehouse_ID
@@ -88,7 +88,7 @@ BEGIN
 				  AND	s.C_DocType_ID=d.C_DocType_ID;
 		BEGIN
 			FOR s IN Cur_InOut LOOP
-				INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, T_Spool_Seq.NextVal, 
+				INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, nextidfunc(1173, 'N'), 
 					'> ' || s.Name || ' ' || s.DocumentNo || ':  @DocStatus@=' || s.DocStatus 
 					|| ', @Processed@=' || s.Processed || ', Wh=' || s.M_Warehouse_ID);
 
@@ -101,7 +101,7 @@ BEGIN
 						ORDER BY Line;
 				BEGIN
 					FOR sl IN Cur_InOutLine LOOP
-						INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, T_Spool_Seq.NextVal, 
+						INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, nextidfunc(1173, 'N'), 
 							'   @QtyDelivered@=' || sl.MovementQty || ', Prd=' || sl.M_Product_ID);
 					END LOOP;
 				END;	-- 	Shipment Lines
@@ -121,7 +121,7 @@ BEGIN
 		BEGIN
 			FOR i IN Cur_Invoice LOOP
 
-				INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, T_Spool_Seq.NextVal, 
+				INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, nextidfunc(1173, 'N'), 
 					'> ' || i.Name || ' ' || i.DocumentNo || ':  @DocStatus@=' || i.DocStatus
 					|| ', @Processed@=' || i.Processed);
 
@@ -134,7 +134,7 @@ BEGIN
 						ORDER BY Line;
 				BEGIN
 					FOR il IN Cur_InvoiceLine LOOP
-						INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, T_Spool_Seq.NextVal, 
+						INSERT INTO T_Spool (AD_PInstance_ID, SeqNo, MsgText) VALUES (PInstance_ID, nextidfunc(1173, 'N'), 
 							'   @QtyInvoiced@=' || il.QtyInvoiced || ', Prd=' || il.M_Product_ID);
 					END LOOP;
 				END;	-- 	Invoice Lines
