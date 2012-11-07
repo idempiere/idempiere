@@ -25,8 +25,12 @@ public class WPaymentFormMixedPOS extends PaymentFormMixedPOS {
 
 	private WPaymentFormWindow window;
 	
-	public WPaymentFormMixedPOS(int windowNo, GridTab mTab) {
-		super(windowNo, mTab);
+	public WPaymentFormMixedPOS() {
+		super();
+	}
+	
+	public void init(int windowNo, GridTab mTab) {
+		super.init(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 	}
 

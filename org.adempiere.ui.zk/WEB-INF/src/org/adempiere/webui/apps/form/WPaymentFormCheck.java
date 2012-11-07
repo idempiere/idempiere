@@ -74,8 +74,12 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 	private Label sStatus = new Label();
 	private Panel customizePanel = new Panel();
 	
-	public WPaymentFormCheck(int windowNo, GridTab mTab) {
-		super(windowNo, mTab);
+	public WPaymentFormCheck() {
+		super();
+	}
+	
+	public void init(int windowNo, GridTab mTab) {
+		super.init(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}

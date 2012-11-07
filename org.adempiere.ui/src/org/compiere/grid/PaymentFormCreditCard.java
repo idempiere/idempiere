@@ -45,8 +45,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	/** Start CreditCard */
 	public String 				m_CCType = "";
 	
-	public PaymentFormCreditCard(int WindowNo, GridTab mTab) {
-		super(WindowNo, mTab);
+	public PaymentFormCreditCard() {
 	}
 	
 	@Override

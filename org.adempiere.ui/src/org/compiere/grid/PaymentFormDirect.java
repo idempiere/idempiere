@@ -45,8 +45,7 @@ public abstract class PaymentFormDirect extends PaymentForm {
 	public MPayment 			m_mPayment = null;
 	public MPayment 			m_mPaymentOriginal = null;
 	
-	public PaymentFormDirect(int WindowNo, GridTab mTab, boolean isDebit) {
-		super(WindowNo, mTab);
+	public PaymentFormDirect(boolean isDebit) {
 		PAYMENTRULE = isDebit ? MInvoice.PAYMENTRULE_DirectDebit : MInvoice.PAYMENTRULE_DirectDeposit;
 	}
 	

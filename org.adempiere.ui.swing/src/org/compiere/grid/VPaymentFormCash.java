@@ -56,8 +56,12 @@ public class VPaymentFormCash extends PaymentFormCash implements ActionListener 
 	private CLabel bAmountLabel = new CLabel();
 	private VNumber bAmountField = new VNumber();
 
-	public VPaymentFormCash(int windowNo, GridTab mTab) {
-		super(windowNo, mTab);
+	public VPaymentFormCash() {
+		super();
+	}
+	
+	public void init(int windowNo, GridTab mTab) {
+		super.init(windowNo, mTab);
 		bDateField = new VDate("DateAcct", false, false, true, DisplayType.Date, "DateAcct");
 		dialog = new VPaymentFormDialog(this, windowNo);	
 		init();		

@@ -48,8 +48,7 @@ public abstract class PaymentFormCheck extends PaymentForm {
 	/** Start Bank Account */
 	public int 					m_C_BankAccount_ID = 0;
 	
-	public PaymentFormCheck(int WindowNo, GridTab mTab) {
-		super(WindowNo, mTab);
+	public PaymentFormCheck() {
 	}
 	
 	@Override

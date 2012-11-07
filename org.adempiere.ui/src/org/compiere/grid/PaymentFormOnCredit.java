@@ -34,8 +34,7 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 	/** Start Payment Term */
 	public int 				m_C_PaymentTerm_ID = 0;
 	
-	public PaymentFormOnCredit(int WindowNo, GridTab mTab) {
-		super(WindowNo, mTab);
+	public PaymentFormOnCredit() {
 	}
 	
 	@Override

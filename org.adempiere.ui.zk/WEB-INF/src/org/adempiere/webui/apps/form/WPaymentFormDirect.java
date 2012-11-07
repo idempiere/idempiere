@@ -61,8 +61,12 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 	private Label tNumberText = new Label();
 	private Panel customizePanel = new Panel();
 	
-	public WPaymentFormDirect(int windowNo, GridTab mTab, boolean isDebit) {
-		super(windowNo, mTab, isDebit);
+	public WPaymentFormDirect(boolean isDebit) {
+		super(isDebit);
+	}
+	
+	public void init(int windowNo, GridTab mTab) {
+		super.init(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}

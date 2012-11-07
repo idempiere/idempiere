@@ -50,8 +50,12 @@ public abstract class VPaymentFormDirect extends PaymentFormDirect implements Ac
 	private CLabel tRoutingText = new CLabel();
 	private CLabel tNumberText = new CLabel();
 
-	public VPaymentFormDirect(int windowNo, GridTab mTab, boolean isDebit) {
-		super(windowNo, mTab, isDebit);
+	public VPaymentFormDirect(boolean isDebit) {
+		super(isDebit);
+	}
+	
+	public void init(int windowNo, GridTab mTab) {
+		super.init(windowNo, mTab);
 		dialog = new VPaymentFormDialog(this, windowNo);
 		init();
 	}

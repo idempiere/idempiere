@@ -13,9 +13,12 @@
  *****************************************************************************/
 package org.compiere.grid;
 
+import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
 
 public interface IPaymentForm {
+	
+	public void init(int WindowNo, GridTab mTab);
 
 	public boolean dynInit() throws Exception;
 	

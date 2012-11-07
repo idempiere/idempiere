@@ -311,18 +311,7 @@ public class WPaymentEditor extends WEditor implements ListDataListener {
 	    									Events.sendEvent(comp, new Event(ON_SAVE_PAYMENT, comp));
 	    									return;
 	    								}
-	    							}
-	    							
-//	    					        Events.sendEvent(new Event("onSave", this));
-	    					        
-//	    							onSave(false, false, new Callback<Boolean>() {
-//	    							
-//	    								@Override
-//	    								public void onCallback(Boolean result) {
-//	    									onRefresh(false, false);
-//	    								}
-//	    								
-//	    							});							
+	    							}							
 	    						}	
 	    					}
 	    				});

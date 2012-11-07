@@ -86,3 +86,5 @@ Import-Package: javax.net.ssl,
  org.restlet.security,
  org.restlet.service,
  org.restlet.util
+Service-Component: OSGI-INF/paymentformcash.xml, OSGI-INF/paymentformcheck.xml, OSGI-INF/paymentformcreditcard.xml, OSGI-INF/paymentformdirectdebit.xml, OSGI-INF/paymentformdirectdeposit.xml, OSGI-INF/paymentformmixedpos.xml, OSGI-INF/paymentformoncredit.xml
+Bundle-ActivationPolicy: lazy
