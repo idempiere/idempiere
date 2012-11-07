@@ -77,7 +77,10 @@ public abstract class PaymentForm implements IPaymentForm {
 	
 	public Hashtable<Integer,KeyNamePair> s_Currencies = null;
 	
-	public PaymentForm(int WindowNo, GridTab mTab) {
+	public PaymentForm() {
+	}
+	
+	public void init(int WindowNo, GridTab mTab) {
 		m_WindowNo = WindowNo;
 		m_isSOTrx = "Y".equals(Env.getContext(Env.getCtx(), WindowNo, "IsSOTrx"));
 		m_mTab = mTab;

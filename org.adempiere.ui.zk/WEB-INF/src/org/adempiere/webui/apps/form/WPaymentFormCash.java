@@ -61,8 +61,12 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 	private Label bAmountLabel = new Label();
 	private WNumberEditor bAmountField = new WNumberEditor();
 	
-	public WPaymentFormCash(int windowNo, GridTab mTab) {
-		super(windowNo, mTab);
+	public WPaymentFormCash() {
+		super();
+	}
+	
+	public void init(int windowNo, GridTab mTab) {
+		super.init(windowNo, mTab);
 		bDateField = new WDateEditor("DateAcct", false, false, true, "DateAcct");
 		window = new WPaymentFormWindow(this, windowNo);
 		init();

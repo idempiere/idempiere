@@ -70,8 +70,12 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	private Label kStatus = new Label();
 	private Panel customizePanel = new Panel();
 	
-	public WPaymentFormCreditCard(int windowNo, GridTab mTab) {
-		super(windowNo, mTab);
+	public WPaymentFormCreditCard() {
+		super();
+	}
+	
+	public void init(int windowNo, GridTab mTab) {
+		super.init(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
