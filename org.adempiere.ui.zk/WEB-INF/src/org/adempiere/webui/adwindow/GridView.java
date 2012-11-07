@@ -376,8 +376,13 @@ public class GridView extends Vbox implements EventListener<Event>
 			} else {
 				if (renderer.isEditing()) {
 					renderer.stopEditing(false);
-					if (((renderer.getCurrentRowIndex() - pgIndex) / pageSize) == pgNo) {
-						listModel.updateComponent(renderer.getCurrentRowIndex() % pageSize);
+					int editingRow = renderer.getCurrentRowIndex();
+					if (editingRow >= 0) {
+						int editingPgIndex = editingRow % pageSize;
+						int editingPgNo = (editingRow - editingPgIndex) / pageSize;
+						if (editingPgNo == pgNo) {
+							listModel.updateComponent(renderer.getCurrentRowIndex() % pageSize);
+						}
 					}
 				}
 			}
