@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -104,12 +103,8 @@ DataStatusListener, IADTabpanel
 {
 	public static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
 
-	public static final String ON_ACTIVATE_EVENT = "onActivate";
-
 	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
 	
-	private static final String ATTR_ON_ACTIVATE_POSTED = "org.adempiere.webui.adwindow.ADTabpanel.onActivatePosted";
-
 	/**
 	 * 
 	 */

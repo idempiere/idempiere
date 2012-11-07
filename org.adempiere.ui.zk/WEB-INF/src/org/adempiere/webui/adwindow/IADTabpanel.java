@@ -23,6 +23,9 @@ import org.zkoss.zk.ui.Component;
  */
 public interface IADTabpanel extends Component, Evaluatee {
 
+	public static final String ON_ACTIVATE_EVENT = "onActivate";
+	public static final String ATTR_ON_ACTIVATE_POSTED = "org.adempiere.webui.adwindow.IADTabpanel.onActivatePosted";
+
 	/**
 	 * @return display logic
 	 */

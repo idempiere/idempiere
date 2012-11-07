@@ -375,6 +375,13 @@ public class ADSortTab extends Panel implements IADTabpanel
 		vbox.appendChild(bDown);
 		vbox.setWidth("46px");
 		hlayout.appendChild(vbox);
+		
+		addEventListener(ON_ACTIVATE_EVENT, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				removeAttribute(ATTR_ON_ACTIVATE_POSTED);
+			}
+		});
 	}	//	Init
 
 	/* (non-Javadoc)
@@ -831,8 +838,16 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}
 
 	public void activate(boolean b) {
-		active  = b;
-		if (b && !uiCreated) createUI();
+		if (b) {
+	    	if (getAttribute(ATTR_ON_ACTIVATE_POSTED) != null) {
+	    		return;
+	    	}
+	    	
+	    	setAttribute(ATTR_ON_ACTIVATE_POSTED, Boolean.TRUE);
+    	}
+		
+		Event event = new Event(ON_ACTIVATE_EVENT, this, b);
+        Events.postEvent(event);
 	}
 
 	public void createUI() {
