@@ -1742,6 +1742,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    }
 		}
 
+		if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
+			dirtyTabpanel.getGridTab().refreshParentTabs();
+		}
+		
 		if (callback != null)
 			callback.onCallback(true);
 	}

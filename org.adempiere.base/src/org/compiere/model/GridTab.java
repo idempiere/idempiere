@@ -1057,6 +1057,30 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}
 
 	/**
+	 * refresh current row of parent tabs
+	 */
+	public void refreshParentTabs() {
+		if (isDetail()) {
+			// get parent tab
+			// the parent tab is the first tab above with level = this_tab_level-1
+			int level = m_vo.TabLevel;
+			for (int i = m_window.getTabIndex(this) - 1; i >= 0; i--) {
+				GridTab parentTab = m_window.getTab(i);
+				if (parentTab.m_vo.TabLevel == level-1) {
+					// this is parent tab
+					parentTab.dataRefresh(false);
+					// search for the next parent
+					if (parentTab.isDetail()) {
+						level = parentTab.m_vo.TabLevel;
+					} else {
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 *  Do we need to Save?
 	 *  @param rowChange row change
 	 *  @param  onlyRealChange if true the value of a field was actually changed
