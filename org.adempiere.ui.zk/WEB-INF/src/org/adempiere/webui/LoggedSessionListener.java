@@ -10,12 +10,15 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.compiere.Adempiere;
 import org.compiere.model.MSession;
+import org.compiere.model.ServerStateChangeEvent;
+import org.compiere.model.ServerStateChangeListener;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.WebUtil;
 
-public class LoggedSessionListener implements HttpSessionListener, ServletContextListener{
+public class LoggedSessionListener implements HttpSessionListener, ServletContextListener, ServerStateChangeListener{
 	private static Hashtable<String, HttpSession> AD_SessionList = new Hashtable<String, HttpSession>();
 	
 	@Override
@@ -45,6 +48,12 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 	}
 	
 	public void DestroyAllSession() {
+		if (!Adempiere.isStarted())
+		{
+			Adempiere.addServerStateChangeListener(this);
+			return;
+		}
+		
 		String serverName = WebUtil.getServerName();
 		String sql = "UPDATE AD_Session SET processed = 'Y' WHERE processed ='N' AND servername = '"+serverName+"'";
 		Statement stmt = DB.createStatement();
@@ -53,7 +62,8 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 		}catch (Exception e) {
 			System.out.println("UpdateSession: "+e);
 		}
-
+		
+		Adempiere.removeServerStateChangeListener(this);
 	}
 	
 	public void removeADSession(String sessionID, String serverName) {
@@ -72,5 +82,10 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 		}catch (Exception e) {
 			System.out.println("UpdateSession: "+e);
 		}
+	}
+
+	@Override
+	public void stateChange(ServerStateChangeEvent event) {
+		DestroyAllSession();
 	}
 }
