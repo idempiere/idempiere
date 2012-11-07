@@ -32,12 +32,15 @@ import javax.jnlp.BasicService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
 import javax.swing.ImageIcon;
+import javax.swing.event.EventListenerList;
 
 import org.adempiere.base.Core;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
 import org.compiere.model.MSystem;
 import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.ServerStateChangeEvent;
+import org.compiere.model.ServerStateChangeListener;
 import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -109,6 +112,9 @@ public final class Adempiere
 	
 	/** Thread pool **/
 	private static ThreadPoolExecutor threadPoolExecutor = null;
+	
+	 /** A list of event listeners for this component.	*/
+    private static EventListenerList m_listenerList = new EventListenerList();
 
 	static {
 		ClassLoader loader = Adempiere.class.getClassLoader();
@@ -538,6 +544,8 @@ public final class Adempiere
 
 		createThreadPool();
 		
+		fireServerStateChanged(new ServerStateChangeEvent(new Object(), ServerStateChangeEvent.SERVER_START));
+		
 		if (isClient)		//	don't test connection
 			return false;	//	need to call
 
@@ -654,5 +662,27 @@ public final class Adempiere
 	
 	public static ThreadPoolExecutor getThreadPoolExecutor() {
 		return threadPoolExecutor;
+	}
+	
+	/**
+	 *  @param l listener
+	 */
+	public static synchronized void removeServerStateChangeListener(ServerStateChangeListener l)
+	{
+		m_listenerList.remove(ServerStateChangeListener.class, l);
+	}
+	/**
+	 *  @param l listener
+	 */
+	public static synchronized void addServerStateChangeListener(ServerStateChangeListener l)
+	{
+		m_listenerList.add(ServerStateChangeListener.class, l);
+	}
+	
+	private static void fireServerStateChanged(ServerStateChangeEvent e)
+	{
+		ServerStateChangeListener[] listeners = m_listenerList.getListeners(ServerStateChangeListener.class);
+		for (int i = 0; i < listeners.length; i++)
+        	listeners[i].stateChange(e);
 	}
 }	//	Adempiere
