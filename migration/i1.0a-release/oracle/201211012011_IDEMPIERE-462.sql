@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Oct 22, 2012 3:47:39 PM SGT
 -- IDEMPIERE-462 Ticket #1001503: Credit Cards Online
 INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,LoadSeq,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,AD_Table_UU,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,AD_Client_ID,IsActive,AD_Org_ID,Updated,CreatedBy,UpdatedBy,Created) VALUES ('N','1',105,200031,'N','N','N','D','L','32bb4613-d058-44fb-9e5c-01f060281cc9','Y','Y','C_PaymentTransaction','Payment Transaction','Payment Transaction',0,'Y',0,TO_DATE('2012-10-22 15:47:37','YYYY-MM-DD HH24:MI:SS'),100,100,TO_DATE('2012-10-22 15:47:37','YYYY-MM-DD HH24:MI:SS'))
@@ -1287,7 +1290,86 @@ UPDATE AD_Column SET EntityType='D',Updated=TO_DATE('2012-10-22 15:56:20','YYYY-
 
 -- Oct 22, 2012 3:56:35 PM SGT
 -- IDEMPIERE-462 Ticket #1001503: Credit Cards Online
-CREATE TABLE C_PaymentTransaction (A_City NVARCHAR2(60) DEFAULT NULL , A_Country NVARCHAR2(40) DEFAULT NULL , A_EMail NVARCHAR2(60) DEFAULT NULL , A_Ident_DL NVARCHAR2(20) DEFAULT NULL , A_Ident_SSN NVARCHAR2(20) DEFAULT NULL , A_Name NVARCHAR2(60) DEFAULT NULL , A_State NVARCHAR2(40) DEFAULT NULL , A_Street NVARCHAR2(60) DEFAULT NULL , A_Zip NVARCHAR2(20) DEFAULT NULL , AccountNo NVARCHAR2(20) DEFAULT NULL , AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_OrgTrx_ID NUMBER(10) DEFAULT NULL , C_Activity_ID NUMBER(10) DEFAULT NULL , C_BankAccount_ID NUMBER(10) DEFAULT NULL , C_BP_BankAccount_ID NUMBER(10) DEFAULT NULL , C_BPartner_ID NUMBER(10) NOT NULL, C_Campaign_ID NUMBER(10) DEFAULT NULL , C_CashBook_ID NUMBER(10) DEFAULT NULL , C_Charge_ID NUMBER(10) DEFAULT NULL , C_ConversionType_ID NUMBER(10) DEFAULT NULL , C_Currency_ID NUMBER(10) NOT NULL, C_DocType_ID NUMBER(10) NOT NULL, C_Invoice_ID NUMBER(10) DEFAULT NULL , C_Order_ID NUMBER(10) DEFAULT NULL , C_Payment_ID NUMBER(10) DEFAULT NULL , C_PaymentBatch_ID NUMBER(10) DEFAULT NULL , C_PaymentProcessor_ID NUMBER(10) DEFAULT NULL , C_PaymentTransaction_ID NUMBER(10) NOT NULL, C_PaymentTransaction_UU NVARCHAR2(36) DEFAULT NULL , C_POSTenderType_ID NUMBER(10) DEFAULT NULL , C_Project_ID NUMBER(10) DEFAULT NULL , CheckNo NVARCHAR2(20) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, CreditCardExpMM NUMBER(10) DEFAULT 1, CreditCardExpYY NUMBER(10) DEFAULT 03, CreditCardNumber NVARCHAR2(20) DEFAULT NULL , CreditCardType CHAR(1) DEFAULT 'M', CreditCardVV NVARCHAR2(4) DEFAULT NULL , CustomerAddressID NVARCHAR2(60) DEFAULT NULL , CustomerPaymentProfileID NVARCHAR2(60) DEFAULT NULL , CustomerProfileID NVARCHAR2(60) DEFAULT NULL , DateTrx DATE NOT NULL, Description NVARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsApproved CHAR(1) DEFAULT 'N' CHECK (IsApproved IN ('Y','N')) NOT NULL, IsDelayedCapture CHAR(1) CHECK (IsDelayedCapture IN ('Y','N')) NOT NULL, IsOnline CHAR(1) CHECK (IsOnline IN ('Y','N')) NOT NULL, IsReceipt CHAR(1) CHECK (IsReceipt IN ('Y','N')) NOT NULL, IsSelfService CHAR(1) CHECK (IsSelfService IN ('Y','N')) NOT NULL, IsVoided CHAR(1) DEFAULT 'N' CHECK (IsVoided IN ('Y','N')) NOT NULL, Micr NVARCHAR2(20) DEFAULT NULL , Orig_TrxID NVARCHAR2(20) DEFAULT NULL , PayAmt NUMBER DEFAULT 0 NOT NULL, PONum NVARCHAR2(60) DEFAULT NULL , R_AuthCode NVARCHAR2(20) DEFAULT NULL , R_AvsAddr CHAR(1) DEFAULT NULL , R_AvsZip CHAR(1) DEFAULT NULL , R_CVV2Match CHAR(1) DEFAULT NULL  CHECK (R_CVV2Match IN ('Y','N')), R_Info NVARCHAR2(2000) DEFAULT NULL , R_PnRef NVARCHAR2(20) DEFAULT NULL , R_RespMsg NVARCHAR2(60) DEFAULT NULL , R_Result NVARCHAR2(20) DEFAULT NULL , R_VoidMsg NVARCHAR2(255) DEFAULT NULL , Ref_PaymentTransaction_ID NUMBER(10) DEFAULT NULL , RoutingNo NVARCHAR2(20) DEFAULT NULL , TaxAmt NUMBER DEFAULT NULL , TenderType CHAR(1) DEFAULT 'K' NOT NULL, TrxType CHAR(1) DEFAULT 'S' NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, User1_ID NUMBER(10) DEFAULT NULL , User2_ID NUMBER(10) DEFAULT NULL , VoiceAuthCode NVARCHAR2(20) DEFAULT NULL , VoidIt CHAR(1) DEFAULT NULL , CONSTRAINT C_PaymentTransaction_Key PRIMARY KEY (C_PaymentTransaction_ID))
+CREATE TABLE c_paymenttransaction
+  (
+     a_city                    NVARCHAR2(60) DEFAULT NULL,
+     a_country                 NVARCHAR2(40) DEFAULT NULL,
+     a_email                   NVARCHAR2(60) DEFAULT NULL,
+     a_ident_dl                NVARCHAR2(20) DEFAULT NULL,
+     a_ident_ssn               NVARCHAR2(20) DEFAULT NULL,
+     a_name                    NVARCHAR2(60) DEFAULT NULL,
+     a_state                   NVARCHAR2(40) DEFAULT NULL,
+     a_street                  NVARCHAR2(60) DEFAULT NULL,
+     a_zip                     NVARCHAR2(20) DEFAULT NULL,
+     accountno                 NVARCHAR2(20) DEFAULT NULL,
+     ad_client_id              NUMBER(10) NOT NULL,
+     ad_org_id                 NUMBER(10) NOT NULL,
+     ad_orgtrx_id              NUMBER(10) DEFAULT NULL,
+     c_activity_id             NUMBER(10) DEFAULT NULL,
+     c_bankaccount_id          NUMBER(10) DEFAULT NULL,
+     c_bp_bankaccount_id       NUMBER(10) DEFAULT NULL,
+     c_bpartner_id             NUMBER(10) NOT NULL,
+     c_campaign_id             NUMBER(10) DEFAULT NULL,
+     c_cashbook_id             NUMBER(10) DEFAULT NULL,
+     c_charge_id               NUMBER(10) DEFAULT NULL,
+     c_conversiontype_id       NUMBER(10) DEFAULT NULL,
+     c_currency_id             NUMBER(10) NOT NULL,
+     c_doctype_id              NUMBER(10) NOT NULL,
+     c_invoice_id              NUMBER(10) DEFAULT NULL,
+     c_order_id                NUMBER(10) DEFAULT NULL,
+     c_payment_id              NUMBER(10) DEFAULT NULL,
+     c_paymentbatch_id         NUMBER(10) DEFAULT NULL,
+     c_paymentprocessor_id     NUMBER(10) DEFAULT NULL,
+     c_paymenttransaction_id   NUMBER(10) NOT NULL,
+     c_paymenttransaction_uu   NVARCHAR2(36) DEFAULT NULL,
+     c_postendertype_id        NUMBER(10) DEFAULT NULL,
+     c_project_id              NUMBER(10) DEFAULT NULL,
+     checkno                   NVARCHAR2(20) DEFAULT NULL,
+     created                   DATE NOT NULL,
+     createdby                 NUMBER(10) NOT NULL,
+     creditcardexpmm           NUMBER(10) DEFAULT 1,
+     creditcardexpyy           NUMBER(10) DEFAULT 03,
+     creditcardnumber          NVARCHAR2(20) DEFAULT NULL,
+     creditcardtype            CHAR(1) DEFAULT 'M',
+     creditcardvv              NVARCHAR2(4) DEFAULT NULL,
+     customeraddressid         NVARCHAR2(60) DEFAULT NULL,
+     customerpaymentprofileid  NVARCHAR2(60) DEFAULT NULL,
+     customerprofileid         NVARCHAR2(60) DEFAULT NULL,
+     datetrx                   DATE NOT NULL,
+     description               NVARCHAR2(255) DEFAULT NULL,
+     isactive                  CHAR(1) DEFAULT 'Y' CHECK (isactive IN ('Y', 'N')) NOT NULL,
+     isapproved                CHAR(1) DEFAULT 'N' CHECK (isapproved IN ('Y', 'N')) NOT NULL,
+     isdelayedcapture          CHAR(1) CHECK (isdelayedcapture IN ('Y', 'N')) NOT NULL,
+     isonline                  CHAR(1) CHECK (isonline IN ('Y', 'N')) NOT NULL,
+     isreceipt                 CHAR(1) CHECK (isreceipt IN ('Y', 'N')) NOT NULL,
+     isselfservice             CHAR(1) CHECK (isselfservice IN ('Y', 'N')) NOT NULL,
+     isvoided                  CHAR(1) DEFAULT 'N' CHECK (isvoided IN ('Y', 'N')) NOT NULL,
+     micr                      NVARCHAR2(20) DEFAULT NULL,
+     orig_trxid                NVARCHAR2(20) DEFAULT NULL,
+     payamt                    NUMBER DEFAULT 0 NOT NULL,
+     ponum                     NVARCHAR2(60) DEFAULT NULL,
+     r_authcode                NVARCHAR2(20) DEFAULT NULL,
+     r_avsaddr                 CHAR(1) DEFAULT NULL,
+     r_avszip                  CHAR(1) DEFAULT NULL,
+     r_cvv2match               CHAR(1) DEFAULT NULL CHECK (r_cvv2match IN ('Y', 'N')),
+     r_info                    NVARCHAR2(2000) DEFAULT NULL,
+     r_pnref                   NVARCHAR2(20) DEFAULT NULL,
+     r_respmsg                 NVARCHAR2(60) DEFAULT NULL,
+     r_result                  NVARCHAR2(20) DEFAULT NULL,
+     r_voidmsg                 NVARCHAR2(255) DEFAULT NULL,
+     ref_paymenttransaction_id NUMBER(10) DEFAULT NULL,
+     routingno                 NVARCHAR2(20) DEFAULT NULL,
+     taxamt                    NUMBER DEFAULT NULL,
+     tendertype                CHAR(1) DEFAULT 'K' NOT NULL,
+     trxtype                   CHAR(1) DEFAULT 'S' NOT NULL,
+     updated                   DATE NOT NULL,
+     updatedby                 NUMBER(10) NOT NULL,
+     user1_id                  NUMBER(10) DEFAULT NULL,
+     user2_id                  NUMBER(10) DEFAULT NULL,
+     voiceauthcode             NVARCHAR2(20) DEFAULT NULL,
+     voidit                    CHAR(1) DEFAULT NULL,
+     CONSTRAINT c_paymenttransaction_key PRIMARY KEY (c_paymenttransaction_id)
+  )  
 ;
 
 -- Oct 22, 2012 3:57:37 PM SGT
