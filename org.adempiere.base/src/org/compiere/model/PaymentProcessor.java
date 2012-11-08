@@ -117,7 +117,7 @@ public abstract class PaymentProcessor
 	 */
 	public String validate() throws IllegalArgumentException {
 		String msg = null;
-		if (p_mp.getCustomerPaymentProfileID() != null)
+		if (p_mp.getC_BP_BankAccount_ID() != 0 || p_mp.getCustomerPaymentProfileID() != null)
 			return msg;		
 		if (MPayment.TENDERTYPE_CreditCard.equals(p_mp.getTenderType())) {
 			msg = validateCreditCard();

@@ -355,6 +355,27 @@ public class GridFieldVO implements Serializable
 		return voT;
 	}   //  createParameter
 
+	public static GridFieldVO createParameter (Properties ctx, int WindowNo, 
+			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID, 
+			boolean IsMandatory, boolean IsEncrypted)
+	{
+		GridFieldVO vo = new GridFieldVO (ctx, WindowNo, 0, 0, 0, false);
+		vo.isProcess = true;
+		vo.IsDisplayed = true;
+		vo.IsReadOnly = false;
+		vo.IsUpdateable = true;
+		vo.AD_Table_ID = 0;
+		vo.AD_Column_ID = AD_Column_ID;	//	**
+		vo.ColumnName = ColumnName;
+		vo.Header = Name;
+		vo.displayType = AD_Reference_ID;
+		vo.AD_Reference_Value_ID = AD_Reference_Value_ID;
+		vo.IsMandatory = IsMandatory;
+		vo.IsEncryptedField= IsEncrypted;			
+		//
+		vo.initFinish();
+		return vo;
+	}
 
 	/**
 	 *  Make a standard field (Created/Updated/By)

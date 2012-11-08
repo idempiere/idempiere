@@ -49,7 +49,7 @@ public class CalloutEngine implements Callout
 
 	/** Logger					*/
 	protected CLogger		log = CLogger.getCLogger(getClass());
-	private GridTab m_mTab;
+	private IGridTab m_mTab;
 	private GridField m_mField;
 
 	/**
@@ -70,7 +70,7 @@ public class CalloutEngine implements Callout
 	 *  @return Error message or ""
 	 */
 	public String start (Properties ctx, String methodName, int WindowNo,
-		GridTab mTab, GridField mField, Object value, Object oldValue)
+		IGridTab mTab, GridField mField, Object value, Object oldValue)
 	{
 		if (methodName == null || methodName.length() == 0)
 			throw new IllegalArgumentException ("No Method Name");
@@ -267,7 +267,7 @@ public class CalloutEngine implements Callout
 	 * 
 	 * @return gridTab
 	 */
-	public GridTab getGridTab() 
+	public IGridTab getGridTab() 
 	{
 		return m_mTab;
 	}

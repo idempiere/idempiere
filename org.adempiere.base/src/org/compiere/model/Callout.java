@@ -45,7 +45,7 @@ public interface Callout
 	 *  @return Error message or ""
 	 */
 	public String start (Properties ctx, String method, int WindowNo,
-		GridTab mTab, GridField mField, Object value, Object oldValue);
+		IGridTab mTab, GridField mField, Object value, Object oldValue);
 
 	/**
 	 *	Conversion Rules.
