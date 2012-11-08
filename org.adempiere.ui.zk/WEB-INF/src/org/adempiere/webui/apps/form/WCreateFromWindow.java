@@ -31,7 +31,6 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
@@ -125,12 +124,10 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 				{
 					public void run(String trxName)
 					{
-						if (save(trxName))
-						{
-							dispose();
-						}
+						save(trxName);
 					}
 				});
+				dispose();
 			}
 			catch (Exception ex)
 			{

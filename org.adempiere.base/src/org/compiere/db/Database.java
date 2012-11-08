@@ -22,8 +22,6 @@ import java.util.List;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
 import org.compiere.util.CLogger;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 
 /**
  *  General Database Constants and Utilities
@@ -67,14 +65,11 @@ public class Database
 	public static String[] getDatabaseNames()
 	{
 		List<String> names = new ArrayList<String>();
-		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(AdempiereDatabase.class.getName());		
-		for(IConfigurationElement element : elements)
-		{
-			String type = element.getAttribute("id");
-			names.add(type);
+		List<AdempiereDatabase> services = Service.locator().list(AdempiereDatabase.class).getServices();
+		for (AdempiereDatabase db : services) {
+			names.add(db.getName());
 		}
-		String[] nameArray = names.toArray(new String[0]);
-		return nameArray;
+		return names.toArray(new String[0]);
 	}
 	
 	/**

@@ -289,6 +289,6 @@ Import-Package: com.sun.mail.auth;version="1.4.5",
 Eclipse-BuddyPolicy: registered
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.adempiere.base.BaseActivator
-Service-Component: OSGI-INF/eventmanager.xml, OSGI-INF/dslocator.xml, OSGI-INF/extensionlocator.xml, OSGI-INF/serverbean.xml, OSGI-INF/statusbean.xml
+Service-Component: OSGI-INF/eventmanager.xml, OSGI-INF/dslocator.xml, OSGI-INF/extensionlocator.xml, OSGI-INF/serverbean.xml, OSGI-INF/statusbean.xml, OSGI-INF/defaultmodelfactory.xml, OSGI-INF/defaultdocfactory.xml
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.equinox.app;bundle-version="1.3.1"
