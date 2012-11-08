@@ -14,9 +14,14 @@
 package org.adempiere.webui.action;
 
 /**
+ * Custom UI action provided through OSGi service. Implementation must be thread safe.   
  * @author hengsin
  *
  */
 public interface IAction {
+	/**
+	 * 
+	 * @param target
+	 */
 	public void execute(Object target);
 }
