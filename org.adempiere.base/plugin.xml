@@ -16,25 +16,6 @@
    <extension-point id="org.compiere.model.PaymentProcessor" name="Payment Processor" schema="schema/org.compiere.model.PaymentProcessor.exsd"/>
    <extension-point id="org.compiere.model.Callout" name="Callout" schema="schema/org.compiere.model.Callout.exsd"/>
    <extension
-         id="org.adempiere.base.DefaultModelFactory"
-         name="Default model factory"
-         point="org.adempiere.base.IModelFactory">
-      <factory
-            class="org.adempiere.base.DefaultModelFactory"
-            priority="0">
-      </factory>
-   </extension>
-   <extension
-         id="org.adempiere.base.DefaultDocFactory"
-         name="Default Document Factory"
-         point="org.adempiere.base.IDocFactory">
-      <factory
-            class="org.adempiere.base.DefaultDocumentFactory"
-            gaap="*"
-            priority="0">
-      </factory>
-   </extension>
-   <extension
          id="org.adempiere.impexp.GridTabXlsExporter"
          name="Grid data excel exporter"
          point="org.adempiere.base.IGridTabExporter">

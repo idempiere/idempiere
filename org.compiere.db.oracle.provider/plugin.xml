@@ -2,13 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.compiere.db.AdempiereDatabase">
-      <database
-            class="org.compiere.db.DB_Oracle"
-            id="Oracle">
-      </database>
-   </extension>
-   <extension
          id="org.adempiere.db.config.ConfigOracle"
          name="Oracle Database Configuration"
          point="org.adempiere.install.IDatabaseConfig">

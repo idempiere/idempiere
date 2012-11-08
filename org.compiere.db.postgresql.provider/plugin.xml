@@ -2,13 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.compiere.db.AdempiereDatabase">
-      <database
-            class="org.compiere.db.DB_PostgreSQL"
-            id="PostgreSQL">
-      </database>
-   </extension>
-   <extension
          id="org.adempiere.db.postgresql.config.ConfigPostgreSQL"
          name="PostgreSQL Database Configuration"
          point="org.adempiere.install.IDatabaseConfig">
