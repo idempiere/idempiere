@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MClient;
@@ -38,6 +39,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.ValueNamePair;
 
 public class Match
 {
@@ -416,50 +418,74 @@ public class Match
 			{
 				MMatchInv match = new MMatchInv (iLine, null, qty);
 				match.setM_InOutLine_ID(M_InOutLine_ID);
-				if (match.save()) {
-					success = true;
-					if (MClient.isClientAccountingImmediate()) {
-						String ignoreError = DocumentEngine.postImmediate(match.getCtx(), match.getAD_Client_ID(), match.get_Table_ID(), match.get_ID(), true, match.get_TrxName());						
+				match.saveEx();
+				success = true;
+				if (MClient.isClientAccountingImmediate()) {
+					String ignoreError = DocumentEngine.postImmediate(match.getCtx(), match.getAD_Client_ID(), match.get_Table_ID(), match.get_ID(), true, match.get_TrxName());						
+					if (ignoreError != null) {
+						log.info(ignoreError);
 					}
 				}
-				else
-					log.log(Level.SEVERE, "Inv Match not created: " + match);
 			}
 			else
 				success = true;
 			//	Create PO - Invoice Link = corrects PO
-			if (iLine.getC_OrderLine_ID() != 0 && iLine.getM_Product_ID() != 0)
+			if (iLine.getM_Product_ID() != 0)
 			{
-				MMatchPO matchPO = MMatchPO.create(iLine, sLine, null, qty);
-				matchPO.setC_InvoiceLine_ID(iLine);
-				matchPO.setM_InOutLine_ID(M_InOutLine_ID);
-				if (!matchPO.save())
-					log.log(Level.SEVERE, "PO(Inv) Match not created: " + matchPO);
-				if (MClient.isClientAccountingImmediate()) {
-					String ignoreError = DocumentEngine.postImmediate(matchPO.getCtx(), matchPO.getAD_Client_ID(), matchPO.get_Table_ID(), matchPO.get_ID(), true, matchPO.get_TrxName());						
+				BigDecimal matchedQty = DB.getSQLValueBD(iLine.get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID=?" , iLine.getC_InvoiceLine_ID());
+				if (matchedQty.add(qty).compareTo(iLine.getQtyInvoiced()) <= 0) 
+				{
+					MMatchPO matchPO = MMatchPO.create(iLine, sLine, null, qty);
+					if (matchPO != null)
+					{
+						matchPO.saveEx();
+						if (MClient.isClientAccountingImmediate()) {
+							String ignoreError = DocumentEngine.postImmediate(matchPO.getCtx(), matchPO.getAD_Client_ID(), matchPO.get_Table_ID(), matchPO.get_ID(), true, matchPO.get_TrxName());						
+							if (ignoreError != null)
+								log.info(ignoreError);
+						}
+					}
 				}
 			}
 		}
 		else	//	Shipment - Order
 		{
-			//	Update Shipment Line
-			sLine.setC_OrderLine_ID(Line_ID);
-			sLine.saveEx();
 			//	Update Order Line
 			MOrderLine oLine = new MOrderLine(Env.getCtx(), Line_ID, trxName);
 			if (oLine.get_ID() != 0)	//	other in MInOut.completeIt
 			{
 				oLine.setQtyReserved(oLine.getQtyReserved().subtract(qty));
-				if(!oLine.save())
-					log.severe("QtyReserved not updated - C_OrderLine_ID=" + Line_ID);
+				oLine.saveEx();
+			}
+
+			// Update Shipment Line
+			BigDecimal toDeliver = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered());
+			if (sLine.getMovementQty().compareTo(toDeliver) <= 0)
+			{
+				sLine.setC_OrderLine_ID(Line_ID);
+				sLine.saveEx();
+			}
+			else if (sLine.getC_OrderLine_ID() != 0)
+			{ 
+				sLine.setC_OrderLine_ID(0);
+				sLine.saveEx();
 			}
 
 			//	Create PO - Shipment Link
 			if (sLine.getM_Product_ID() != 0)
 			{
 				MMatchPO match = new MMatchPO (sLine, null, qty);
+				match.setC_OrderLine_ID(Line_ID);
 				if (!match.save())
-					log.log(Level.SEVERE, "PO Match not created: " + match);
+				{
+					String msg = "PO Match not created: " + match;
+					ValueNamePair error = CLogger.retrieveError();
+					if (error != null)
+					{
+						msg = msg + ". " + error.getName();
+					}
+					throw new AdempiereException(msg);
+				}	
 				else
 				{
 					success = true;

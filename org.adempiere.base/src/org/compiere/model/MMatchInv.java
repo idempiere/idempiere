@@ -222,6 +222,33 @@ public class MMatchInv extends X_M_MatchInv
 		return true;
 	}	//	beforeSave
 	
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (!success)
+			return false;
+		
+		if (getM_InOutLine_ID() > 0)
+		{
+			MInOutLine line = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
+			BigDecimal matchedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchInv WHERE M_InOutLine_ID=?" , getM_InOutLine_ID());
+			if (matchedQty != null && matchedQty.compareTo(line.getMovementQty()) > 0)
+			{
+				throw new IllegalStateException("Total matched qty > movement qty. MatchedQty="+matchedQty+", MovementQty="+line.getMovementQty()+", Line="+line);
+			}
+		}
+		
+		if (getC_InvoiceLine_ID() > 0)
+		{
+			MInvoiceLine line = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
+			BigDecimal matchedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchInv WHERE C_InvoiceLine_ID=?" , getC_InvoiceLine_ID());
+			if (matchedQty != null && matchedQty.compareTo(line.getQtyInvoiced()) > 0)
+			{
+				throw new IllegalStateException("Total matched qty > invoiced qty. MatchedQty="+matchedQty+", InvoicedQty="+line.getQtyInvoiced()+", Line="+line);
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * 	Get the later Date Acct from invoice or shipment
 	 *	@return date or null
@@ -279,7 +306,9 @@ public class MMatchInv extends X_M_MatchInv
 			deleteMatchInvCostDetail();
 			// end AZ
 			
+			// delete m_matchinv doesn't auto make m_matchpo invalid
 			//	Get Order and decrease invoices
+			/*
 			MInvoiceLine iLine = new MInvoiceLine (getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 			int C_OrderLine_ID = iLine.getC_OrderLine_ID();
 			if (C_OrderLine_ID == 0)
@@ -303,6 +332,7 @@ public class MMatchInv extends X_M_MatchInv
 					mPO[i].saveEx();
 				}
 			}
+			*/
 		}
 		return success;
 	}	//	afterDelete

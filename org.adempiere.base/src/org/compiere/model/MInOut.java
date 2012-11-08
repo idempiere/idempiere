@@ -1552,16 +1552,18 @@ public class MInOut extends X_M_InOut implements DocAction
 					log.fine("PO Matching");
 					//	Ship - PO
 					MMatchPO po = MMatchPO.create (null, sLine, getMovementDate(), matchQty);
-					boolean isNewMatchPO = false;
-					if (po.get_ID() == 0)
-						isNewMatchPO = true;
-					if (!po.save(get_TrxName()))
-					{
-						m_processMsg = "Could not create PO Matching";
-						return DocAction.STATUS_Invalid;
+					if (po != null) {
+						boolean isNewMatchPO = false;
+						if (po.get_ID() == 0)
+							isNewMatchPO = true;
+						if (!po.save(get_TrxName()))
+						{
+							m_processMsg = "Could not create PO Matching";
+							return DocAction.STATUS_Invalid;
+						}
+						if (isNewMatchPO)
+							addDocsPostProcess(po);
 					}
-					if (isNewMatchPO)
-						addDocsPostProcess(po);
 					//	Update PO with ASI
 					if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
 						&& sLine.getMovementQty().compareTo(oLine.getQtyOrdered()) == 0) //  just if full match [ 1876965 ]
@@ -1580,18 +1582,21 @@ public class MInOut extends X_M_InOut implements DocAction
 						//	Ship - Invoice
 						MMatchPO po = MMatchPO.create (iLine, sLine,
 							getMovementDate(), matchQty);
-						boolean isNewMatchPO = false;
-						if (po.get_ID() == 0)
-							isNewMatchPO = true;
-						if (!po.save(get_TrxName()))
-						{
-							m_processMsg = "Could not create PO(Inv) Matching";
-							return DocAction.STATUS_Invalid;
+						if (po != null) {
+							boolean isNewMatchPO = false;
+							if (po.get_ID() == 0)
+								isNewMatchPO = true;
+							if (!po.save(get_TrxName()))
+							{
+								m_processMsg = "Could not create PO(Inv) Matching";
+								return DocAction.STATUS_Invalid;
+							}
+							if (isNewMatchPO)
+								addDocsPostProcess(po);
 						}
-						if (isNewMatchPO)
-							addDocsPostProcess(po);
+						
 						//	Update PO with ASI
-						oLine = new MOrderLine (getCtx(), po.getC_OrderLine_ID(), get_TrxName());
+						oLine = new MOrderLine (getCtx(), iLine.getC_OrderLine_ID(), get_TrxName());
 						if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
 							&& sLine.getMovementQty().compareTo(oLine.getQtyOrdered()) == 0) //  just if full match [ 1876965 ]
 						{

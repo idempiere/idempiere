@@ -419,7 +419,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			activateDetailADTabpanel();
 		}
 		
-		headerTab.setDetailPaneMode(false, isUseVflexForDetailPane());
+		headerTab.setDetailPaneMode(false, true);
 		
         updateBreadCrumb();
 	}
