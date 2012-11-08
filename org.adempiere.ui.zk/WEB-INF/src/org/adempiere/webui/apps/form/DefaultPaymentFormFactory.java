@@ -13,17 +13,34 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import org.compiere.grid.IPaymentForm;
+import org.compiere.grid.IPaymentFormFactory;
 import org.compiere.model.GridTab;
-
+import org.compiere.model.MInvoice;
 
 /**
  * 
  * @author Elaine
  *
  */
-public class WPaymentFormDirectDebit extends WPaymentFormDirect {
+public class DefaultPaymentFormFactory implements IPaymentFormFactory {
 
-	public WPaymentFormDirectDebit(int windowNo, GridTab mTab) {
-		super(windowNo, mTab, true);
+	public IPaymentForm create(int windowNo, GridTab mTab, String paymentRule)
+	{
+		if (paymentRule.equals(MInvoice.PAYMENTRULE_Cash))
+			return new WPaymentFormCash(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_Check))
+			return new WPaymentFormCheck(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_CreditCard))
+			return new WPaymentFormCreditCard(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_DirectDebit))
+			return new WPaymentFormDirectDebit(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_DirectDeposit))
+			return new WPaymentFormDirectDeposit(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_MixedPOSPayment))
+			return new WPaymentFormMixedPOS(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_OnCredit))
+			return new WPaymentFormOnCredit(windowNo, mTab);
+		return null;
 	}
 }

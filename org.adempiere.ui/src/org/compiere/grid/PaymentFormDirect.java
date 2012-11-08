@@ -45,7 +45,8 @@ public abstract class PaymentFormDirect extends PaymentForm {
 	public MPayment 			m_mPayment = null;
 	public MPayment 			m_mPaymentOriginal = null;
 	
-	public PaymentFormDirect(boolean isDebit) {
+	public PaymentFormDirect(int windowNo, GridTab mTab, boolean isDebit) {
+		super(windowNo, mTab);
 		PAYMENTRULE = isDebit ? MInvoice.PAYMENTRULE_DirectDebit : MInvoice.PAYMENTRULE_DirectDeposit;
 	}
 	
@@ -215,7 +216,7 @@ public abstract class PaymentFormDirect extends PaymentForm {
 		}
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
-		setCustomizeValues();
+		setCustomizeValues(m_mPayment);
 		m_mPayment.saveEx();
 		
 		//  Save/Post

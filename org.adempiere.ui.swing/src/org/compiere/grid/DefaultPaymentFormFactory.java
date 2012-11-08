@@ -14,17 +14,31 @@
 package org.compiere.grid;
 
 import org.compiere.model.GridTab;
-
+import org.compiere.model.MInvoice;
 
 /**
  * 
  * @author Elaine
  *
  */
-public class VPaymentFormDirectDebit extends VPaymentFormDirect {
+public class DefaultPaymentFormFactory implements IPaymentFormFactory {
 
-	public VPaymentFormDirectDebit(int windowNo, GridTab mTab) {
-		super(windowNo, mTab, true);
+	public IPaymentForm create(int windowNo, GridTab mTab, String paymentRule)
+	{
+		if (paymentRule.equals(MInvoice.PAYMENTRULE_Cash))
+			return new VPaymentFormCash(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_Check))
+			return new VPaymentFormCheck(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_CreditCard))
+			return new VPaymentFormCreditCard(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_DirectDebit))
+			return new VPaymentFormDirectDebit(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_DirectDeposit))
+			return new VPaymentFormDirectDeposit(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_MixedPOSPayment))
+			return new VPaymentFormMixedPOS(windowNo, mTab);
+		else if (paymentRule.equals(MInvoice.PAYMENTRULE_OnCredit))
+			return new VPaymentFormOnCredit(windowNo, mTab);
+		return null;
 	}
-
 }

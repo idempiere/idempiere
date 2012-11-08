@@ -25,7 +25,6 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
-import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
@@ -59,14 +58,9 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 	private Label tStatus = new Label();
 	private Label tRoutingText = new Label();
 	private Label tNumberText = new Label();
-	private Panel customizePanel = new Panel();
 	
-	public WPaymentFormDirect(boolean isDebit) {
-		super(isDebit);
-	}
-	
-	public void init(int windowNo, GridTab mTab) {
-		super.init(windowNo, mTab);
+	public WPaymentFormDirect(int windowNo, GridTab mTab, boolean isDebit) {
+		super(windowNo, mTab, isDebit);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
@@ -107,9 +101,6 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		row = rows.newRow();
 		row.appendChild(tNumberText.rightAlign());
 		row.appendChild(tNumberField);
-		
-		row = rows.newRow();
-		row.appendCellChild(customizePanel, 2);
 		
 		row = rows.newRow();
 		row.appendChild(new Space());
@@ -190,10 +181,5 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 	@Override
 	public Object getWindow() {
 		return window;
-	}
-
-	@Override
-	public Object getCustomizePanel() {
-		return customizePanel;
 	}
 }

@@ -27,6 +27,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -77,10 +78,7 @@ public abstract class PaymentForm implements IPaymentForm {
 	
 	public Hashtable<Integer,KeyNamePair> s_Currencies = null;
 	
-	public PaymentForm() {
-	}
-	
-	public void init(int WindowNo, GridTab mTab) {
+	public PaymentForm(int WindowNo, GridTab mTab) {
 		m_WindowNo = WindowNo;
 		m_isSOTrx = "Y".equals(Env.getContext(Env.getCtx(), WindowNo, "IsSOTrx"));
 		m_mTab = mTab;
@@ -295,13 +293,7 @@ public abstract class PaymentForm implements IPaymentForm {
 	}
 	
 	@Override
-	public Object getCustomizePanel()
-	{
-		return null;
-	}
-	
-	@Override
-	public void setCustomizeValues()
+	public void setCustomizeValues(PO po) 
 	{
 		
 	}

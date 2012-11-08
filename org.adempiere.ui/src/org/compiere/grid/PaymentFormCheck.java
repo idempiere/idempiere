@@ -48,7 +48,8 @@ public abstract class PaymentFormCheck extends PaymentForm {
 	/** Start Bank Account */
 	public int 					m_C_BankAccount_ID = 0;
 	
-	public PaymentFormCheck() {
+	public PaymentFormCheck(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 	}
 	
 	@Override
@@ -227,7 +228,7 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		}
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
-		setCustomizeValues();
+		setCustomizeValues(m_mPayment);
 		m_mPayment.saveEx();
 		
 		//  Save/Post

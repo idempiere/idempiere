@@ -15,6 +15,7 @@ package org.compiere.grid;
 
 import org.compiere.model.GridTab;
 
+
 /**
  * 
  * @author Elaine
@@ -22,6 +23,7 @@ import org.compiere.model.GridTab;
  */
 public abstract class PaymentFormMixedPOS extends PaymentForm {
 
-	public PaymentFormMixedPOS() {
+	public PaymentFormMixedPOS(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 	}
 }

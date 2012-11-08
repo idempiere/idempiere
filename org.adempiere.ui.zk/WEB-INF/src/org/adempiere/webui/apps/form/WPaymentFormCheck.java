@@ -27,7 +27,6 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
-import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
@@ -72,14 +71,9 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 	private Label sCheckLabel = new Label();
 	private Button sOnline = new Button();
 	private Label sStatus = new Label();
-	private Panel customizePanel = new Panel();
 	
-	public WPaymentFormCheck() {
-		super();
-	}
-	
-	public void init(int windowNo, GridTab mTab) {
-		super.init(windowNo, mTab);
+	public WPaymentFormCheck(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
@@ -139,9 +133,6 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		row = rows.newRow();
 		row.appendChild(sCheckLabel.rightAlign());
 		row.appendChild(sCheckField);
-		
-		row = rows.newRow();
-		row.appendCellChild(customizePanel, 2);
 		
 		row = rows.newRow();
 		row.appendChild(new Space());
@@ -320,10 +311,5 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 	@Override
 	public Object getWindow() {
 		return window;
-	}
-
-	@Override
-	public Object getCustomizePanel() {
-		return customizePanel;
 	}
 }

@@ -26,7 +26,6 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
-import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
@@ -68,14 +67,9 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	private Textbox kApprovalField = new Textbox();
 	private Button kOnline = new Button();
 	private Label kStatus = new Label();
-	private Panel customizePanel = new Panel();
 	
-	public WPaymentFormCreditCard() {
-		super();
-	}
-	
-	public void init(int windowNo, GridTab mTab) {
-		super.init(windowNo, mTab);
+	public WPaymentFormCreditCard(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
@@ -131,9 +125,6 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		row = rows.newRow();
 		row.appendChild(kApprovalLabel.rightAlign());
 		row.appendChild(kApprovalField);
-		
-		row = rows.newRow();
-		row.appendCellChild(customizePanel, 2);
 		
 		row = rows.newRow();
 		row.appendChild(new Space());
@@ -313,10 +304,5 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	@Override
 	public Object getWindow() {
 		return window;
-	}
-
-	@Override
-	public Object getCustomizePanel() {
-		return customizePanel;
 	}
 }

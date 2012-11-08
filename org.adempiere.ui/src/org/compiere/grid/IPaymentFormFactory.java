@@ -13,42 +13,15 @@
  *****************************************************************************/
 package org.compiere.grid;
 
-import org.compiere.model.MBankAccountProcessor;
-import org.compiere.model.PO;
+import org.compiere.model.GridTab;
 
-public interface IPaymentForm {
-
-	public boolean dynInit() throws Exception;
+/**
+ * 
+ * @author Elaine
+ *
+ */
+public interface IPaymentFormFactory {
 	
-	public void loadData();
+	public IPaymentForm create(int windowNo, GridTab mTab, String paymentRule);
 	
-	public boolean checkMandatory();
-	
-	/**************************************************************************
-	 *	Save Changes
-	 *	@return true, if Window can exit
-	 */
-	public boolean saveChanges();
-	
-	public boolean saveChangesInTrx(final String trxName);
-	
-	/**
-	 * 	Need Save record (payment with waiting order)
-	 *	@return true if payment with waiting order
-	 */
-	public boolean needSave();
-	
-	public void processOnline();
-	
-	public boolean isApproved();
-	
-	public void showWindow();
-	
-	public void closeWindow();
-	
-	public Object getWindow();
-	
-	public void setCustomizeValues(PO po);
-	
-	public void setBankAccountProcessor(MBankAccountProcessor bankAccountProcessor);
 }

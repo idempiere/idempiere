@@ -43,12 +43,8 @@ public class WPaymentFormOnCredit extends PaymentFormOnCredit {
 	private Label pTermLabel = new Label();
 	private Listbox pTermCombo = ListboxFactory.newDropdownListbox();
 		
-	public WPaymentFormOnCredit() {
-		super();
-	}
-	
-	public void init(int windowNo, GridTab mTab) {
-		super.init(windowNo, mTab);
+	public WPaymentFormOnCredit(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}

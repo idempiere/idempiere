@@ -57,7 +57,8 @@ public abstract class PaymentFormCash extends PaymentForm {
 	/** Start CashBook */
 	public int 					m_C_CashBook_ID = 0;
 	
-	public PaymentFormCash() {
+	public PaymentFormCash(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 	}
 	
 	@Override

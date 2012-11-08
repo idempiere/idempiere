@@ -23,12 +23,8 @@ import org.compiere.model.GridTab;
 public class VPaymentFormMixedPOS extends PaymentFormMixedPOS {
 	private VPaymentFormDialog dialog;
 	
-	public VPaymentFormMixedPOS() {
-		super();
-	}
-	
-	public void init(int windowNo, GridTab mTab) {
-		super.init(windowNo, mTab);
+	public VPaymentFormMixedPOS(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 		dialog = new VPaymentFormDialog(this, windowNo);
 	}
 		

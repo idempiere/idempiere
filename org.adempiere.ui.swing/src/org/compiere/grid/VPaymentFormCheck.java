@@ -64,12 +64,8 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 	private CButton sOnline = new CButton();
 	private CLabel sStatus = new CLabel();
 
-	public VPaymentFormCheck() {
-		super();
-	}
-	
-	public void init(int windowNo, GridTab mTab) {
-		super.init(windowNo, mTab);
+	public VPaymentFormCheck(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 		dialog = new VPaymentFormDialog(this, windowNo);
 		init();
 	}

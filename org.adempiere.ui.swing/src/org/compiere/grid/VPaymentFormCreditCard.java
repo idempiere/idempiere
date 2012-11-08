@@ -63,12 +63,8 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 	private CLabel kStatus = new CLabel();
 
 	
-	public VPaymentFormCreditCard() {
-		super();
-	}
-	
-	public void init(int windowNo, GridTab mTab) {
-		super.init(windowNo, mTab);
+	public VPaymentFormCreditCard(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 		dialog = new VPaymentFormDialog(this, windowNo);
 		init();
 	}

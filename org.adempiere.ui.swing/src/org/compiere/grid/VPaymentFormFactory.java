@@ -13,8 +13,9 @@
  *****************************************************************************/
 package org.compiere.grid;
 
+import java.util.List;
+
 import org.adempiere.base.Service;
-import org.adempiere.base.ServiceQuery;
 import org.compiere.model.GridTab;
 
 /**
@@ -24,18 +25,15 @@ import org.compiere.model.GridTab;
  */
 public class VPaymentFormFactory {
 	
-	public static IPaymentForm getPaymentForm(int windowNo, GridTab mTab, String paymentRule)
-	{
-		ServiceQuery query = new ServiceQuery();
-		query.put("paymentRule", paymentRule);
-		return Service.locator().locate(IPaymentForm.class, query).getService();
-	}
-	
 	public static IPaymentForm create(int windowNo, GridTab mTab, String paymentRule)
 	{
-		IPaymentForm form = getPaymentForm(windowNo, mTab, paymentRule);
-		if (form != null)
-			form.init(windowNo, mTab);
-		return form;
+		IPaymentForm paymentForm = null;
+		List<IPaymentFormFactory> factories = Service.locator().list(IPaymentFormFactory.class).getServices();
+		for (IPaymentFormFactory factory : factories) {
+			paymentForm = factory.create(windowNo, mTab, paymentRule);
+			if (paymentForm != null)
+				break;
+		}
+		return paymentForm;
 	}
 }

@@ -45,7 +45,8 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	/** Start CreditCard */
 	public String 				m_CCType = "";
 	
-	public PaymentFormCreditCard() {
+	public PaymentFormCreditCard(int windowNo, GridTab mTab) {
+		super(windowNo, mTab);
 	}
 	
 	@Override
@@ -286,7 +287,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		}
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
-		setCustomizeValues();
+		setCustomizeValues(m_mPayment);
 		
 		if (!m_mPayment.isOnline() && !m_mPayment.isApproved())
 		{
@@ -386,7 +387,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		mpt.setC_Order_ID(C_Order_ID);
 		mpt.setC_Invoice_ID(C_Invoice_ID);
 		mpt.setDateTrx(m_DateAcct);
-		setCustomizeValues();
+		setCustomizeValues(mpt);
 		if (!mpt.save()) {
 			processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
 			return false;
