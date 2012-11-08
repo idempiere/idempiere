@@ -45,7 +45,6 @@ import org.adempiere.webui.apps.form.WCreateFromFactory;
 import org.adempiere.webui.apps.form.WCreateFromWindow;
 import org.adempiere.webui.apps.form.WPayment;
 import org.adempiere.webui.component.Listbox;
-import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.IProcessButton;
 import org.adempiere.webui.editor.WButtonEditor;
@@ -107,6 +106,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Window.Mode;
 
 /**
  *
@@ -948,7 +948,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	{
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
     		onModalClose(dialog.getProcessInfo());
+    		String s = breadCrumb.getStatusLine(); 
     		onRefresh(true, false);
+    		breadCrumb.setStatusLine(s);
     	}
     	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
     	{
@@ -1617,7 +1619,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 			@Override
 			public void onCallback(Boolean result) {
-				onRefresh(false, false);
+				onRefresh(true, false);
 			}
 
 		});
@@ -2273,7 +2275,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 								@Override
 								public void onCallback(Boolean result) {
-									onRefresh(false, false);
+									onRefresh(true, false);
 								}
 
 							});
@@ -2331,7 +2333,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						@Override
 						public void onEvent(Event event) throws Exception {
 							if (!window.isCancel()) {
-								adtabPanel.getGridTab().dataRefresh();
+								onRefresh(true, false);
 							}
 						}
 					});
@@ -2403,7 +2405,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							if (error != null)
 								breadCrumb.setStatusLine(error, true);
 
-							onRefresh(false, false);
+							onRefresh(true, false);
 						}
 					}
 				});
@@ -2468,10 +2470,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			pi.setAD_Client_ID (Env.getAD_Client_ID(ctx));
 			ADForm form = ADForm.openForm(adFormID);
 			form.setProcessInfo(pi);
+			Mode mode = form.getWindowMode();
 			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 			form.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
+			if (mode == Mode.HIGHLIGHTED || mode == Mode.MODAL) {
+				form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						onRefresh(true, false);
+					}
+				});
+			}
 			SessionManager.getAppDesktop().showWindow(form);
-			onRefresh(false, false);
 		}
 		else
 		{
@@ -2487,7 +2497,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 			else
 			{
-				onRefresh(false, false);
+				onRefresh(true, false);
 			}
 		}
 	}

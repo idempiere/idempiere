@@ -52,9 +52,8 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 import org.zkoss.zul.Space;
+import org.zkoss.zul.Vlayout;
 
 public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener<Event>, ValueChangeListener
 {
@@ -152,29 +151,26 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
         sameWarehouseCb.setTooltiptext(Msg.getMsg(Env.getCtx(), "FromSameWarehouseOnly", false));
         upcLabel.setText(Msg.getElement(Env.getCtx(), "UPC", false));
 
-		Borderlayout parameterLayout = new Borderlayout();
-		parameterLayout.setHeight("110px");
-		parameterLayout.setWidth("100%");
+		Vlayout vlayout = new Vlayout();
+		vlayout.setVflex("1");
+		vlayout.setWidth("100%");
     	Panel parameterPanel = window.getParameterPanel();
-		parameterPanel.appendChild(parameterLayout);
+		parameterPanel.appendChild(vlayout);
 		
 		Grid parameterStdLayout = GridFactory.newGridLayout();
-    	Panel parameterStdPanel = new Panel();
-		parameterStdPanel.appendChild(parameterStdLayout);
-
-		Center center = new Center();
-		parameterLayout.appendChild(center);
-		center.appendChild(parameterStdPanel);
+    	vlayout.appendChild(parameterStdLayout);
 		
-		parameterStdPanel.appendChild(parameterStdLayout);
 		Rows rows = (Rows) parameterStdLayout.newRows();
 		Row row = rows.newRow();
 		row.appendChild(bPartnerLabel.rightAlign());
-		if (bPartnerField != null)
+		if (bPartnerField != null) {
 			row.appendChild(bPartnerField.getComponent());
+			bPartnerField.fillHorizontal();
+		}
     	if (! isRMAWindow) {
     		row.appendChild(orderLabel.rightAlign());
     		row.appendChild(orderField);
+    		orderField.setHflex("1");
     	}
 		
 		row = rows.newRow();
@@ -182,7 +178,8 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		row.appendChild(locatorField.getComponent());
     	if (! isRMAWindow) {
     		row.appendChild(invoiceLabel.rightAlign());
-    		row.appendChild(invoiceField);		
+    		row.appendChild(invoiceField);
+    		invoiceField.setHflex("1");
     	}
         
 		row = rows.newRow();
@@ -196,6 +193,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
             // Add RMA document selection to panel
             row.appendChild(rmaLabel.rightAlign());
             row.appendChild(rmaField);
+            rmaField.setHflex("1");
     	}
 	}
 

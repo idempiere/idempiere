@@ -536,6 +536,7 @@ public class Trx implements VetoableChangeListener
 	 * 
 	 * @param trxName transaction name (if null, a new transaction will be created)
 	 * @param r runnable object
+	 * @throws RuntimeException or {@link AdempiereException}
 	 */
 	public static void run(String trxName, TrxRunnable r)
 	{

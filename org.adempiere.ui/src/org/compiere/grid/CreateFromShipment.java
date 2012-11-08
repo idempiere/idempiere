@@ -659,10 +659,9 @@ public abstract class CreateFromShipment extends CreateFrom
 				}
 				// Set locator
 				iol.setM_Locator_ID(M_Locator_ID);
-				if (!iol.save())
-					log.log(Level.SEVERE, "Line NOT created #" + i);
+				iol.saveEx();
 				//	Create Invoice Line Link
-				else if (il != null)
+				if (il != null)
 				{
 					il.setM_InOutLine_ID(iol.getM_InOutLine_ID());
 					il.saveEx();
