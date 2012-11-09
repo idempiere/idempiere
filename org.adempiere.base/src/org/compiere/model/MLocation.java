@@ -277,6 +277,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		if (region == null)
 		{
 			super.setC_Region_ID(0);
+			setRegionName(null);
 		}
 		else
 		{
@@ -618,6 +619,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 				getCountry();
 			if (!m_c.isHasRegion())
 				setC_Region_ID(0);
+		} else {
+			setRegionName(null);
 		}
 		if (getC_City_ID() <= 0 && getCity() != null && getCity().length() > 0) {
 			int city_id = DB.getSQLValue(
