@@ -663,7 +663,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (user.equals(oldUser))
 			{
 				log.info("Loop - " + user.getName());
-				//return (Integer) null;
 				user=null;
 				break;
 			}
@@ -916,7 +915,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (processMsg == null || processMsg.length() == 0)
 				processMsg = e.getMessage();
 			setTextMsg(processMsg);
-			addTextMsg(e);
+			// addTextMsg(e); // do not add the exception text
 			setWFState (StateEngine.STATE_Terminated);	//	unlocks
 			//	Set Document Status
 			if (m_po != null && m_po instanceof DocAction && m_docStatus != null)
@@ -1162,8 +1161,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						doc.getC_Currency_ID(), doc.getApprovalAmt(),
 						doc.getAD_Org_ID(),
 						startAD_User_ID == doc.getDoc_User_ID());	//	own doc
-                   if(nextAD_User_ID<=0){
-                	   throw new AdempiereException("No exist approval user for this user or for this amount");
+                   if (nextAD_User_ID<=0) {
+                	   m_docStatus = DocAction.STATUS_Invalid;
+                	   throw new AdempiereException(Msg.getMsg(getCtx(), "NoApprover"));
                    }
 					//	same user = approved
 					autoApproval = startAD_User_ID == nextAD_User_ID;
@@ -1351,7 +1351,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						if (nextAD_User_ID <= 0)
 						{
 							newState = StateEngine.STATE_Aborted;
-							setTextMsg ("Cannot Approve - No Approver");
+							setTextMsg (Msg.getMsg(getCtx(), "NoApprover"));
 							doc.processIt (DocAction.ACTION_Reject);
 						}
 						else if (startAD_User_ID != nextAD_User_ID)
