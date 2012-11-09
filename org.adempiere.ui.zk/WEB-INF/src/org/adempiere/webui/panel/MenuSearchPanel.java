@@ -20,7 +20,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Style;
 import org.zkoss.zul.Toolbar;
 
 /**
@@ -46,6 +45,7 @@ public class MenuSearchPanel extends AbstractMenuPanel
 	{
 		super.init();
         pnlSearch.initialise();
+        pnlSearch.cmbSearch.setDraggable("favourite");
         
         EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.APPLICATION, true).subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {

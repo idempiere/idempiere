@@ -17,6 +17,7 @@ import java.util.Enumeration;
 
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.panel.TreeSearchPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
@@ -36,6 +37,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Box;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
@@ -214,6 +216,24 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
         			
         			addItem(treeitem);
         		}
+        		else if(dragged instanceof Combobox) 
+            	{
+        			TreeSearchPanel tsp = null;
+        			Component parent = dragged.getParent();
+            		while(tsp == null && parent != null) {
+            			if (parent instanceof TreeSearchPanel) {
+            				tsp = (TreeSearchPanel) parent;
+            			} else {
+            				parent = parent.getParent();
+            			}
+            		}
+            		if (tsp != null) {
+	            		Treeitem treeitem = tsp.getSelectedItem();
+	            		if (treeitem != null) {
+	            			addItem(treeitem);
+	            		}
+            		}
+            	}
         	}
         	else if(comp instanceof Image)
         	{
@@ -222,7 +242,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
         			A btn = (A) dragged;
         			removeLink(btn);
         		}
-        	}
+        	}        	
         }
         //
 	}

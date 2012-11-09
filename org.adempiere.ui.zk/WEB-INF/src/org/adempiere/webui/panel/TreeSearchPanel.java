@@ -66,13 +66,14 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     private String[] treeImages;
 
     private Label lblSearch;
-    private AutoComplete cmbSearch;
+    protected AutoComplete cmbSearch;
 
 	private Tree tree;
 
 	private String eventToFire;
 	private int m_windowno = 0;
 	private int m_tabno = 0;
+	private Treeitem selectedItem;
 
 	private static final String PREFIX_DOCUMENT_SEARCH = "/";
 
@@ -123,6 +124,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
        	cmbSearch.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unqCmbSearch" + "_" + m_windowno + "_" + m_tabno);
       
         cmbSearch.addEventListener(Events.ON_CHANGE, this);
+        cmbSearch.addEventListener(Events.ON_OK, this);        
         if (AEnv.isInternetExplorer())
         {
         	cmbSearch.setWidth("200px");
@@ -256,8 +258,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
      */
     public void onEvent(Event event)
     {
-        if (cmbSearch.equals(event.getTarget()) && (event.getName().equals(Events.ON_CHANGE)))
+        if (cmbSearch.equals(event.getTarget()) && ((event.getName().equals(Events.ON_CHANGE) || event.getName().equals(Events.ON_OK))))
         {
+        	selectedItem = null;
             String value = cmbSearch.getValue();
 
             if (value != null && value.trim().length() > 0
@@ -283,6 +286,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
             }
             if (treeItem != null)
             {
+            	selectedItem = treeItem;
                 select(treeItem);
                 Clients.showBusy(Msg.getMsg(Env.getCtx(), "Loading"));
                 Events.echoEvent("onPostSelect", this, null);
@@ -329,5 +333,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	 */
 	public void onChange(TreeDataEvent event) {
 		refreshSearchList();
+	}
+	
+	public Treeitem getSelectedItem() {
+		return selectedItem;
 	}
 }
