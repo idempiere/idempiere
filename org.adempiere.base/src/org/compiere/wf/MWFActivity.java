@@ -663,7 +663,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (user.equals(oldUser))
 			{
 				log.info("Loop - " + user.getName());
-				return -1;
+				//return (Integer) null;
+				user=null;
+				break;
 			}
 			oldUser = user;
 			log.fine("User=" + user.getName());
@@ -749,7 +751,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			ownDocument = false;
 		}	//	while there is a user to approve
 
-		log.fine("No user found");
+		log.fine("No user found");	
 		return -1;
 	}	//	getApproval
 
@@ -1160,6 +1162,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						doc.getC_Currency_ID(), doc.getApprovalAmt(),
 						doc.getAD_Org_ID(),
 						startAD_User_ID == doc.getDoc_User_ID());	//	own doc
+                   if(nextAD_User_ID<=0){
+                	   throw new AdempiereException("No exist approval user for this user or for this amount");
+                   }
 					//	same user = approved
 					autoApproval = startAD_User_ID == nextAD_User_ID;
 					if (!autoApproval)
