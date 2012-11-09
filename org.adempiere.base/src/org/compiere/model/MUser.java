@@ -763,7 +763,7 @@ public class MUser extends X_AD_User
 			+ "WHERE r.IsActive='Y'" 
 			+ " AND EXISTS (SELECT * FROM AD_User_Roles ur" 
 			+ " WHERE r.AD_Role_ID=ur.AD_Role_ID AND ur.IsActive='Y' AND ur.AD_User_ID=?) "
-			+ " AND ("
+			+ " AND ( ( r.isaccessallorgs = 'Y' ) OR "
 			+ " ("
 			+ " r.IsUseUserOrgAccess <> 'Y'"
 			+ " AND EXISTS (SELECT * FROM AD_Role_OrgAccess ro"
