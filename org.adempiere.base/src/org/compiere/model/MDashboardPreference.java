@@ -49,17 +49,9 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	{
 		Properties ctx = Env.getCtx();
 		
-		StringBuilder whereClause = new StringBuilder(COLUMNNAME_IsShowInDashboard).append("=?");
-		
-		if (AD_Role_ID == 0)
-			whereClause.append(" AND (").append(COLUMNNAME_AD_Role_ID).append(" IS NULL OR ").append(COLUMNNAME_AD_Role_ID).append("=?)");
-		else
-			whereClause.append(" AND ").append(COLUMNNAME_AD_Role_ID).append("=?");
-
-		if (AD_User_ID == 0)
-			whereClause.append(" AND (").append(COLUMNNAME_AD_User_ID).append(" IS NULL OR ").append(COLUMNNAME_AD_User_ID).append("=?)");
-		else
-			whereClause.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?");
+		StringBuilder whereClause = new StringBuilder(COLUMNNAME_IsShowInDashboard).append("=?")
+			.append(" AND ").append(COLUMNNAME_AD_Role_ID).append("=?")
+			.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?");
 		
 		List<Object> parameters = new ArrayList<Object>();
 		parameters.add(isShowInDashboard);
@@ -83,17 +75,9 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	{
 		Properties ctx = Env.getCtx();
 		
-		StringBuilder whereClause = new StringBuilder();
-		
-		if (AD_Role_ID == 0)
-			whereClause.append("(").append(COLUMNNAME_AD_Role_ID).append(" IS NULL OR ").append(COLUMNNAME_AD_Role_ID).append("=?)");
-		else
-			whereClause.append(COLUMNNAME_AD_Role_ID).append("=?");
-		
-		if (AD_User_ID == 0)
-			whereClause.append(" AND (").append(COLUMNNAME_AD_User_ID).append(" IS NULL OR ").append(COLUMNNAME_AD_User_ID).append("=?)");
-		else
-			whereClause.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?");
+		StringBuilder whereClause = new StringBuilder()
+			.append(COLUMNNAME_AD_Role_ID).append("=?")
+			.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?");
 		
 		List<Object> parameters = new ArrayList<Object>();
 		parameters.add(AD_Role_ID);

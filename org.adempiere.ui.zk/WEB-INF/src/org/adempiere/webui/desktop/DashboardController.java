@@ -516,16 +516,13 @@ public class DashboardController implements EventListener<Event> {
 	
 	private void createDashboardPreference()
 	{
-		if (Env.getAD_User_ID(Env.getCtx()) == 0 && Env.getAD_Role_ID(Env.getCtx()) == 0)
-			return;
-		
 		MDashboardContent[] dcs = MDashboardContent.getForSession(0, 0);
 		for (MDashboardContent dc : dcs)
 		{
 			MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), 0, null);
 			preference.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
 			preference.setAD_Role_ID(Env.getAD_Role_ID(Env.getCtx()));
-			preference.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			preference.set_ValueNoCheck("AD_User_ID", Env.getAD_User_ID(Env.getCtx()));
 			preference.setColumnNo(dc.getColumnNo());
 			preference.setIsCollapsedByDefault(dc.isCollapsedByDefault());
 			preference.setIsShowInDashboard(dc.isShowInDashboard());
