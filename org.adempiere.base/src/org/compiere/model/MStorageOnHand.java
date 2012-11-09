@@ -646,7 +646,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			.append(" WHERE oh.M_Product_ID=?")
 			.append(" AND EXISTS(SELECT 1 FROM M_Locator loc WHERE oh.M_Locator_ID=loc.M_Locator_ID AND loc.M_Warehouse_ID=?)");
 			
-		params.add(M_Product_ID,M_Warehouse_ID);
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
 		
 		// With ASI
 		if (M_AttributeSetInstance_ID != 0) {
