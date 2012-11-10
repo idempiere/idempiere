@@ -32,7 +32,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121101L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -52,6 +52,8 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			setIsEncrypted (false);
 			setIsFieldOnly (false);
 			setIsHeading (false);
+			setIsQuickEntry (false);
+// N
 			setIsReadOnly (false);
 			setIsSameLine (false);
 			setName (null);
@@ -651,6 +653,27 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public String getIsMandatory () 
 	{
 		return (String)get_Value(COLUMNNAME_IsMandatory);
+	}
+
+	/** Set Quick Entry.
+		@param IsQuickEntry Quick Entry	  */
+	public void setIsQuickEntry (boolean IsQuickEntry)
+	{
+		set_Value (COLUMNNAME_IsQuickEntry, Boolean.valueOf(IsQuickEntry));
+	}
+
+	/** Get Quick Entry.
+		@return Quick Entry	  */
+	public boolean isQuickEntry () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsQuickEntry);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Read Only.

@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.compiere.model.Lookup;
+import org.compiere.model.MRole;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -41,7 +44,8 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5813878069049398656L;
+	private static final long serialVersionUID = 7826535512581441259L;
+
 	public static final String EVENT_ATTRIBUTE = "EVENT";
     public static final String ZOOM_EVENT = "ZOOM";
     public static final String REQUERY_EVENT = "REQUERY";
@@ -70,20 +74,37 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences)
     {
-        this(zoom, requery, preferences, false, false, false);
+        this(zoom, requery, preferences, false, false, false, null); // no check zoom
     }
     
+    @Deprecated
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord)
     {
-    	this(zoom, requery, preferences, newRecord, false, false);
+    	this(zoom, requery, preferences, newRecord, false, false, null);
     }
     
+    @Deprecated
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord)
     {
-    	this(zoom, requery, preferences, newRecord, updateRecord, false);
+    	this(zoom, requery, preferences, newRecord, updateRecord, false, null);
     }
 
+    @Deprecated
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation)
+    {
+    	this(zoom, requery, preferences, newRecord, updateRecord, false, null);
+    }
+
+    /**
+     * @param zoom - enable zoom in menu - disabled if the lookup cannot zoom
+     * @param requery - enable requery in menu
+     * @param preferences - enable preferences in menu
+     * @param newRecord - enable new record (ignored and recalculated if lookup is received)
+     * @param updateRecord - enable update record (ignored and recalculated if lookup is received)
+     * @param showLocation - enable show location in menu
+     * @param lookup - when this parameter is received then new and update are calculated based on the zoom and quickentry
+     */
+    public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation, Lookup lookup)
     {
     	super();
     	this.zoomEnabled = zoom;
@@ -92,6 +113,33 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     	this.newEnabled = newRecord;
     	this.updateEnabled = updateRecord; // Elaine 2009/02/16 - update record
     	this.showLocation = showLocation;
+    	if (lookup != null) {
+    		int winID = lookup.getZoom();
+    		Boolean canAccess = MRole.getDefault().getWindowAccess(winID);
+    		if (winID <= 0 || canAccess == null || ! canAccess) {
+    	    	this.zoomEnabled = false;
+    	    	this.newEnabled = false;
+    	    	this.updateEnabled = false;
+    		} else {
+    			int cnt = DB.getSQLValueEx(null,
+    					"SELECT COUNT(*) "
+    							+ "FROM   AD_Field f "
+    							+ "       JOIN AD_Tab t "
+    							+ "         ON ( t.AD_Tab_ID = f.AD_Tab_ID ) "
+    							+ "WHERE  t.AD_Window_ID = ? "
+    							+ "       AND f.IsActive = 'Y' "
+    							+ "       AND t.IsActive = 'Y' "
+    							+ "       AND f.IsQuickEntry = 'Y' ",
+    					winID);
+    			if (cnt > 0) {
+        	    	this.newEnabled = true;
+        	    	this.updateEnabled = true;
+    			} else {
+        	    	this.newEnabled = false;
+        	    	this.updateEnabled = false;
+    			}
+    		}
+    	}
     	init();
     }
 

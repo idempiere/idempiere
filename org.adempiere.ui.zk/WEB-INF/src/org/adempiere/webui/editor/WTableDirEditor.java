@@ -27,7 +27,9 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
 import org.compiere.model.GridField;
@@ -42,6 +44,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Comboitem;
 
@@ -151,9 +154,9 @@ ContextMenuListener, IZoomableEditor
     				|| (columnName.toUpperCase().equals("BILL_LOCATION_ID"))
     				|| (columnName.toUpperCase().equals("DROPSHIP_LOCATION_ID")))
     		{
-    			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true);
+    			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true, lookup);
     		} else {
-            	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference());
+            	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference(), false, false, false, lookup);
     		}
         	addChangeLogMenu(popupMenu);
         }
@@ -387,8 +390,57 @@ ContextMenuListener, IZoomableEditor
     public void actionZoom()
 	{
     	AEnv.actionZoom(lookup, getValue());
-	}	
+	}
     
+	/**
+	 *	Action - Special Quick Entry Screen
+	 *  @param newRecord true if new record should be created
+	 */
+	private void actionQuickEntry (boolean newRecord)
+	{
+		if(!getComponent().isEnabled())
+			return;
+
+		final WQuickEntry vqe = new WQuickEntry (lookup.getWindowNo(), lookup.getZoom());
+		int Record_ID = 0;
+
+		Object value = getValue();
+		//  if update, get current value
+		if (!newRecord)
+		{
+			if (value instanceof Integer)
+				Record_ID = ((Integer)value).intValue();
+			else if (value != null && "".compareTo(value.toString())!= 0)
+				Record_ID = Integer.parseInt(value.toString());
+		}
+
+		vqe.loadRecord (Record_ID);
+
+		final int finalRecord_ID = Record_ID;
+		vqe.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				// get result
+				int result = vqe.getRecord_ID();
+
+				if (result == 0					//	0 = not saved
+					&& result == finalRecord_ID)	//	the same
+					return;
+
+				//  Maybe new Record - put in cache
+				Object newValue = new Integer(result);
+				lookup.getDirect(newValue, false, true);
+				setValue(new Integer(result));
+		        ValueChangeEvent changeEvent = new ValueChangeEvent(this, getColumnName(), oldValue, newValue);
+		        fireValueChange(changeEvent);
+		        oldValue = newValue;
+			}
+		});
+
+		vqe.setVisible(true);
+		AEnv.showWindow(vqe);		
+	}	//	actionQuickEntry
+
 	private void actionLocation() {
 		int BPLocation_ID = 0;
 		Object value = getValue();
@@ -424,6 +476,14 @@ ContextMenuListener, IZoomableEditor
 			if (isShowPreference())
 				ValuePreference.start (this.getGridField(), getValue());
 			return;
+		}
+		else if (WEditorPopupMenu.NEW_EVENT.equals(evt.getContextEvent()))
+		{
+			actionQuickEntry(true);
+		}
+		else if (WEditorPopupMenu.UPDATE_EVENT.equals(evt.getContextEvent()))
+		{
+			actionQuickEntry(false);
 		}
 		else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{

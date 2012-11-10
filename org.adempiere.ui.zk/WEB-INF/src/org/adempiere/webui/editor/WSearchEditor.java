@@ -17,6 +17,9 @@
 
 package org.adempiere.webui.editor;
 
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICELINE_M_PRODUCT_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
+
 import java.beans.PropertyChangeEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +35,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.InfoManager;
-import org.adempiere.webui.grid.WBPartner;
+import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
@@ -40,7 +43,6 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRole;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -151,17 +153,17 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		columnName = this.getColumnName();
 		if (columnName.equals("C_BPartner_ID"))
 		{
-			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
 			getComponent().setButtonImage("/images/BPartner10.png");
 		}
 		else if (columnName.equals("M_Product_ID"))
 		{
-			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
 			getComponent().setButtonImage("/images/Product10.png");
 		}
 		else
 		{
-			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
 			getComponent().setButtonImage("/images/PickOpen10.png");
 		}
 
@@ -293,7 +295,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				infoPanel.detach();
 				infoPanel = null;
 			}
-			actionBPartner(true);
+			actionQuickEntry(true);
 		}
 		// Elaine 2009/02/16 - update record
 		else if (WEditorPopupMenu.UPDATE_EVENT.equals(evt.getContextEvent()))
@@ -303,7 +305,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				infoPanel.detach();
 				infoPanel = null;
 			}
-			actionBPartner(false);
+			actionQuickEntry(false);
 		}
 		else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{
@@ -437,40 +439,40 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}	//	actionCombo
 
 	/**
-	 *	Action - Special BPartner Screen
+	 *	Action - Special Quick Entry Screen
 	 *  @param newRecord true if new record should be created
 	 */
-	private void actionBPartner (boolean newRecord)
+	private void actionQuickEntry (boolean newRecord)
 	{
 		if(!getComponent().isEnabled())
 			return;
-		
-		final WBPartner vbp = new WBPartner (lookup.getWindowNo());
-		int BPartner_ID = 0;
+
+		final WQuickEntry vqe = new WQuickEntry (lookup.getWindowNo(), lookup.getZoom());
+		int Record_ID = 0;
 
 		//  if update, get current value
 		if (!newRecord)
 		{
 			if (value instanceof Integer)
-				BPartner_ID = ((Integer)value).intValue();
-			else if (value != null)
-				BPartner_ID = Integer.parseInt(value.toString());
+				Record_ID = ((Integer)value).intValue();
+			else if (value != null && "".compareTo(value.toString())!= 0)
+				Record_ID = Integer.parseInt(value.toString());
 		}
 
-		vbp.loadBPartner (BPartner_ID);
+		vqe.loadRecord (Record_ID);
 
-		final int finalBPartner_ID = BPartner_ID;
-		vbp.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+		final int finalRecord_ID = Record_ID;
+		vqe.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				// get result
-				int result = vbp.getC_BPartner_ID();
+				int result = vqe.getRecord_ID();
 
 				if (result == 0					//	0 = not saved
-					&& result == finalBPartner_ID)	//	the same
+					&& result == finalRecord_ID)	//	the same
 					return;
 
-				//  Maybe new BPartner - put in cache
+				//  Maybe new Record - put in cache
 				lookup.getDirect(new Integer(result), false, true);
 				setValue(new Integer(result));
 				actionCombo (new Integer(result));      //  data binding
@@ -479,9 +481,9 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			}
 		});
 
-		vbp.setVisible(true);
-		AEnv.showWindow(vbp);		
-	}	//	actionBPartner
+		vqe.setVisible(true);
+		AEnv.showWindow(vqe);		
+	}	//	actionQuickEntry
 
 	private void actionButton(String queryValue)
 	{

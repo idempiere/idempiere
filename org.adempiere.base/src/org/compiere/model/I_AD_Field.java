@@ -426,6 +426,15 @@ public interface I_AD_Field
 	  */
 	public String getIsMandatory();
 
+    /** Column name IsQuickEntry */
+    public static final String COLUMNNAME_IsQuickEntry = "IsQuickEntry";
+
+	/** Set Quick Entry	  */
+	public void setIsQuickEntry (boolean IsQuickEntry);
+
+	/** Get Quick Entry	  */
+	public boolean isQuickEntry();
+
     /** Column name IsReadOnly */
     public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";
 
