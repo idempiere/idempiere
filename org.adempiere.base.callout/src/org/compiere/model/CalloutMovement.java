@@ -123,7 +123,7 @@ public class CalloutMovement extends CalloutEngine
 				if (M_Locator_ID <= 0)
 					return;
 				//@win - IDEMPIERE-385
-				int M_Warehouse_ID = DB.getSQLValue(null, "SELECT M_Warehouse_ID FROM M_Locator WHERE M_Locator_ID=?");
+				int M_Warehouse_ID = DB.getSQLValue(null, "SELECT M_Warehouse_ID FROM M_Locator WHERE M_Locator_ID=?", M_Locator_ID);
 				//
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable(M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, null);

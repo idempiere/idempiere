@@ -87,10 +87,12 @@ public class MStorageReservation extends X_M_StorageReservation {
 	public static BigDecimal getQtyReserved(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName){
 		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT SUM(QtyReserved) FROM M_StorageReservation oh")
-			.append(" WHERE oh.M_Product_ID=? AND oh.M_Warehouse_ID=?");
-			
-		params.add(M_Product_ID,M_Warehouse_ID);
+		sql.append(" SELECT SUM(Qty) FROM M_StorageReservation oh")
+			.append(" WHERE oh.M_Product_ID=? AND oh.M_Warehouse_ID=?")
+			.append(" AND oh.IsSOTrx='Y'");
+		
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
 		
 		// With ASI
 		if (M_AttributeSetInstance_ID != 0) {
