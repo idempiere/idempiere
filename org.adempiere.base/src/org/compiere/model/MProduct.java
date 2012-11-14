@@ -719,15 +719,15 @@ public class MProduct extends X_M_Product
 		//	Check Storage
 		if (isStocked() || PRODUCTTYPE_Item.equals(getProductType()))
 		{
-			MStorageOnHand[] onHandStorages = MStorageOnHand.getOfProduct(getCtx(), get_ID(), get_TrxName());
+			MStorageOnHand[] storages = MStorageOnHand.getOfProduct(getCtx(), get_ID(), get_TrxName());
 			MStorageReservation[] reserves = MStorageReservation.getOfProduct(getCtx(), get_ID(), get_TrxName());
 
 			BigDecimal OnHand = Env.ZERO;
 			BigDecimal Ordered = Env.ZERO;
 			BigDecimal Reserved = Env.ZERO;
-			for (int i = 0; i < onHandStorages.length; i++)
+			for (int i = 0; i < storages.length; i++)
 			{
-				OnHand = OnHand.add(onHandStorages[i].getQtyOnHand());
+				OnHand = OnHand.add(storages[i].getQtyOnHand());
 			}
 
 			for (int i = 0; i < reserves.length; i++)
