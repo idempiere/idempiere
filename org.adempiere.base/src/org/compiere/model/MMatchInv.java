@@ -419,5 +419,30 @@ public class MMatchInv extends X_M_MatchInv
 	}	//	getInOutLine
 	// end Bayu
 	
-	
+	/**
+	 * 	Reverse MatchPO.
+	 *  @param reversalDate
+	 *	@return message
+	 *	@throws Exception
+	 */
+	public boolean reverse(Timestamp reversalDate)  
+	{
+		if (this.isPosted())
+		{		
+			MMatchInv reversal = new MMatchInv (getCtx(), 0, get_TrxName());
+			PO.copyValues(this, reversal);
+			reversal.setAD_Org_ID(this.getAD_Org_ID());
+			reversal.setDescription("(->" + this.getDocumentNo() + ")");
+			reversal.setQty(this.getQty().negate());
+			reversal.setDateAcct(reversalDate);
+			reversal.setDateTrx(reversalDate);
+			reversal.set_ValueNoCheck ("DocumentNo", null);
+			reversal.setPosted (false);
+			reversal.setReversal_ID(getM_MatchInv_ID());
+			this.setDescription("(" + this.getDocumentNo() + "<-)");
+			if (reversal.save() && this.save())
+				return true;
+		}
+		return false;
+	}
 }	//	MMatchInv

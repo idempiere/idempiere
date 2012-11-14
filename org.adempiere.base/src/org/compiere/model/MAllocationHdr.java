@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
@@ -531,7 +532,17 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		if (m_processMsg != null)
 			return false;
 
-		boolean retValue = reverseIt();
+		boolean accrual = false;
+		try 
+		{
+			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MPeriodControl.DOCBASETYPE_PaymentAllocation, getAD_Org_ID());
+		}
+		catch (PeriodClosedException e) 
+		{
+			accrual = true;
+		}
+		
+		boolean retValue = reverseIt(accrual);
 
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
@@ -578,7 +589,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		if (m_processMsg != null)
 			return false;
 		
-		boolean retValue = reverseIt();
+		boolean retValue = reverseIt(false);
 
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
@@ -601,7 +612,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		if (m_processMsg != null)
 			return false;
 		
-		boolean retValue = reverseIt();
+		boolean retValue = reverseIt(true);
 
 		// After reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
@@ -721,43 +732,104 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		return getCreatedBy();
 	}	//	getDoc_User_ID
 
+	/**
+	 * 	Add to Description
+	 *	@param description text
+	 */
+	public void addDescription (String description)
+	{
+		String desc = getDescription();
+		if (desc == null)
+			setDescription(description);
+		else
+			setDescription(desc + " | " + description);
+	}	//	addDescription
 	
 	/**************************************************************************
 	 * 	Reverse Allocation.
 	 * 	Period needs to be open
 	 *	@return true if reversed
 	 */
-	private boolean reverseIt() 
+	private boolean reverseIt(boolean accrual) 
 	{
 		if (!isActive())
 			throw new IllegalStateException("Allocation already reversed (not active)");
 
-		//	Can we delete posting
-		MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MPeriodControl.DOCBASETYPE_PaymentAllocation, getAD_Org_ID());
-
-		//	Set Inactive
-		setIsActive (false);
-		if ( !isPosted() )
-			setPosted(true);
-		setDocumentNo(getDocumentNo()+"^");
-		setDocStatus(DOCSTATUS_Reversed);	//	for direct calls
-		if (!save() || isActive())
-			throw new IllegalStateException("Cannot de-activate allocation");
-			
-		//	Delete Posting
-		MFactAcct.deleteEx(MAllocationHdr.Table_ID, getC_AllocationHdr_ID(), get_TrxName());
-		
-		//	Unlink Invoices
-		getLines(true);
-		HashSet<Integer> bps = new HashSet<Integer>();
-		for (int i = 0; i < m_lines.length; i++)
-		{
-			MAllocationLine line = m_lines[i];
-			line.setIsActive(false);
-			line.saveEx();
-			bps.add(new Integer(line.processIt(true)));	//	reverse
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		if (reversalDate == null) {
+			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
-		updateBP(bps);
+		
+		//	Can we delete posting
+		MPeriod.testPeriodOpen(getCtx(), reversalDate, MPeriodControl.DOCBASETYPE_PaymentAllocation, getAD_Org_ID());
+
+		if (accrual) 
+		{
+			//	Deep Copy
+			MAllocationHdr reversal = copyFrom (this, reversalDate, reversalDate, get_TrxName());
+			if (reversal == null)
+			{
+				m_processMsg = "Could not create Payment Allocation Reversal";
+				return false;
+			}
+			reversal.setReversal_ID(getC_AllocationHdr_ID());
+
+			//	Reverse Line Amt
+			MAllocationLine[] rLines = reversal.getLines(false);
+			for (MAllocationLine rLine : rLines) {
+				rLine.setAmount(rLine.getAmount().negate());
+				rLine.setDiscountAmt(rLine.getDiscountAmt().negate());
+				rLine.setWriteOffAmt(rLine.getWriteOffAmt().negate());
+				rLine.setOverUnderAmt(rLine.getOverUnderAmt().negate());
+				if (!rLine.save(get_TrxName()))
+				{
+					m_processMsg = "Could not correct Payment Allocation Reversal Line";
+					return false;
+				}
+			}
+			reversal.addDescription("{->" + getDocumentNo() + ")");
+			//
+			if (!DocumentEngine.processIt(reversal, DocAction.ACTION_Complete))
+			{
+				m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
+				return false;
+			}
+
+			DocumentEngine.processIt(reversal, DocAction.ACTION_Close);
+			reversal.setProcessing (false);
+			reversal.setDocStatus(DOCSTATUS_Reversed);
+			reversal.setDocAction(DOCACTION_None);
+			reversal.saveEx();
+			m_processMsg = reversal.getDocumentNo();
+			addDescription("(" + reversal.getDocumentNo() + "<-)");
+			
+		}
+		else
+		{
+			//	Set Inactive
+			setIsActive (false);
+			if ( !isPosted() )
+				setPosted(true);
+			setDocumentNo(getDocumentNo()+"^");
+			setDocStatus(DOCSTATUS_Reversed);	//	for direct calls
+			if (!save() || isActive())
+				throw new IllegalStateException("Cannot de-activate allocation");
+				
+			//	Delete Posting
+			MFactAcct.deleteEx(MAllocationHdr.Table_ID, getC_AllocationHdr_ID(), get_TrxName());
+			
+			//	Unlink Invoices
+			getLines(true);
+			HashSet<Integer> bps = new HashSet<Integer>();
+			for (int i = 0; i < m_lines.length; i++)
+			{
+				MAllocationLine line = m_lines[i];
+				line.setIsActive(false);
+				line.saveEx();
+				bps.add(new Integer(line.processIt(true)));	//	reverse
+			}
+			updateBP(bps);
+		}
 		return true;
 	}	//	reverse
 
@@ -794,5 +866,79 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			|| DOCSTATUS_Closed.equals(ds)
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
+
+	/**
+	 * 	Create new Allocation by copying
+	 * 	@param from allocation
+	 * 	@param dateAcct date of the document accounting date
+	 *  @param dateTrx date of the document transaction.
+	 * 	@param trxName
+	 *	@return Allocation
+	 */
+	public static MAllocationHdr copyFrom (MAllocationHdr from, Timestamp dateAcct, Timestamp dateTrx,
+		String trxName)
+	{
+		MAllocationHdr to = new MAllocationHdr (from.getCtx(), 0, trxName);
+		PO.copyValues (from, to, from.getAD_Client_ID(), from.getAD_Org_ID());
+		to.set_ValueNoCheck ("DocumentNo", null);
+		//
+		to.setDocStatus (DOCSTATUS_Drafted);		//	Draft
+		to.setDocAction(DOCACTION_Complete);
+		//
+		to.setDateTrx (dateAcct);
+		to.setDateAcct (dateTrx);
+		to.setIsManual(false);
+		//
+		to.setIsApproved (false);
+		//
+		to.setPosted (false);
+		to.setProcessed (false);
+
+		to.saveEx();
+
+		//	Lines
+		if (to.copyLinesFrom(from) == 0)
+			throw new AdempiereException("Could not create Allocation Lines");
+
+		return to;
+	}	//	copyFrom
+	
+	/**
+	 * 	Copy Lines From other Allocation.
+	 *	@param otherAllocation allocation
+	 *	@return number of lines copied
+	 */
+	public int copyLinesFrom (MAllocationHdr otherAllocation)
+	{
+		if (isProcessed() || isPosted() || (otherAllocation == null))
+			return 0;
+		MAllocationLine[] fromLines = otherAllocation.getLines(false);
+		int count = 0;
+		for (MAllocationLine fromLine : fromLines) {
+			MAllocationLine line = new MAllocationLine (getCtx(), 0, get_TrxName());
+			PO.copyValues (fromLine, line, fromLine.getAD_Client_ID(), fromLine.getAD_Org_ID());
+			line.setC_AllocationHdr_ID(getC_AllocationHdr_ID());
+			line.setParent(this);
+			line.set_ValueNoCheck ("C_AllocationLine_ID", I_ZERO);	// new
+
+			if (line.getC_Payment_ID() != 0)
+			{
+				MPayment payment = new MPayment(getCtx(), line.getC_Payment_ID(), get_TrxName());
+				if (DOCSTATUS_Reversed.equals(payment.getDocStatus()))
+				{
+					MPayment reversal = (MPayment) payment.getReversal();
+					if (reversal != null)
+					{
+						line.setPaymentInfo(reversal.getC_Payment_ID(), 0);
+					}
+				}				
+			}
+
+			line.saveEx();
+			count++;
+		}
+		
+		return count;
+	}	//	copyLinesFrom
 	
 }   //  MAllocation

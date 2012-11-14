@@ -744,12 +744,33 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if (m_processMsg != null)
 			return false;
 
+		MInventory reversal = reverse(false);
+		if (reversal == null)
+			return false;
+		
+		// After reverseCorrect
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
+		if (m_processMsg != null)
+			return false;
+
+		m_processMsg = reversal.getDocumentNo();
+
+		return true;
+	}	//	reverseCorrectIt
+
+	private MInventory reverse(boolean accrual) {
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
+		if (reversalDate == null) {
+			reversalDate = new Timestamp(System.currentTimeMillis());
+		}
+		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), dt.getDocBaseType(), getAD_Org_ID());
+		MPeriod.testPeriodOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID());
 
 		//	Deep Copy
 		MInventory reversal = new MInventory(getCtx(), 0, get_TrxName());
 		copyValues(this, reversal, getAD_Client_ID(), getAD_Org_ID());
+		reversal.setMovementDate(reversalDate);
 		reversal.setDocStatus(DOCSTATUS_Drafted);
 		reversal.setDocAction(DOCACTION_Complete);
 		reversal.setIsApproved (false);
@@ -799,29 +820,24 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if (!reversal.processIt(DocAction.ACTION_Complete))
 		{
 			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
-			return false;
+			return null;
 		}
 		reversal.closeIt();
 		reversal.setDocStatus(DOCSTATUS_Reversed);
 		reversal.setDocAction(DOCACTION_None);
 		reversal.saveEx();
-		m_processMsg = reversal.getDocumentNo();
-
+		
 		//	Update Reversed (this)
 		msgd = new StringBuilder("(").append(reversal.getDocumentNo()).append("<-)");
 		addDescription(msgd.toString());
-		// After reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
-		if (m_processMsg != null)
-			return false;
 		setProcessed(true);
 		//FR1948157
 		setReversal_ID(reversal.getM_Inventory_ID());
 		setDocStatus(DOCSTATUS_Reversed);	//	may come from void
 		setDocAction(DOCACTION_None);
-
-		return true;
-	}	//	reverseCorrectIt
+		
+		return reversal;
+	}
 	
 	/**
 	 * 	Reverse Accrual
@@ -835,10 +851,16 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if (m_processMsg != null)
 			return false;
 		
+		MInventory reversal = reverse(true);
+		if (reversal == null)
+			return false;
+		
 		// After reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
+
+		m_processMsg = reversal.getDocumentNo();
 		
 		return false;
 	}	//	reverseAccrualIt

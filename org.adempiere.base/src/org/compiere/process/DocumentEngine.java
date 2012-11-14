@@ -976,6 +976,7 @@ public class DocumentEngine implements DocAction
 			{
 				options[index++] = DocumentEngine.ACTION_Void;
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
 		/********************
@@ -988,6 +989,7 @@ public class DocumentEngine implements DocAction
 			{
 				options[index++] = DocumentEngine.ACTION_Void;
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
 		/********************
@@ -1000,6 +1002,7 @@ public class DocumentEngine implements DocAction
 			{
 				options[index++] = DocumentEngine.ACTION_Void;
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
 		/********************
@@ -1025,6 +1028,7 @@ public class DocumentEngine implements DocAction
 			{
 				options[index++] = DocumentEngine.ACTION_Void;
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
 		//[ 1782412 ]
@@ -1061,6 +1065,7 @@ public class DocumentEngine implements DocAction
 			{
 				options[index++] = DocumentEngine.ACTION_Void;
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
 		/********************
@@ -1244,4 +1249,33 @@ public class DocumentEngine implements DocAction
 		return error;
 	}	//	postImmediate
 
+	/**
+	 * Process document.  This replaces DocAction.processIt().
+	 * @param doc
+	 * @param processAction 
+	 * @return true if performed
+	 */
+	public static boolean processIt(DocAction doc, String processAction) {
+		boolean success = false;
+		
+		//ensure doc status not change by other session
+		if (doc instanceof PO) {
+			PO docPO = (PO) doc;
+			if (docPO.get_ID() > 0 && docPO.get_TrxName() != null && docPO.get_ValueOld("DocStatus") != null) {
+				DB.getDatabase().forUpdate(docPO, 30);
+				String docStatusOriginal = (String) docPO.get_ValueOld("DocStatus");
+				String currentStatus = DB.getSQLValueString((String)null, 
+						"SELECT DocStatus FROM " + docPO.get_TableName() + " WHERE " + docPO.get_KeyColumns()[0] + " = ? ", 
+						docPO.get_ID());
+				if (!docStatusOriginal.equals(currentStatus) && currentStatus != null) {
+					throw new IllegalStateException("Document status have been change by other session, please refresh your window and try again. " + docPO.toString());
+				}
+			}
+		}
+		
+		DocumentEngine engine = new DocumentEngine(doc, doc.getDocStatus());
+		success = engine.processIt(processAction, doc.getDocAction());
+
+		return success;
+	}
 }	//	DocumentEnine

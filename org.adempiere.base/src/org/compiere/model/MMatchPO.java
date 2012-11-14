@@ -1165,5 +1165,34 @@ public class MMatchPO extends X_M_MatchPO
 		
 		return "";
 	}
-	
+
+	/**
+	 * 	Reverse MatchPO.
+	 *  @param reversalDate
+	 *	@return boolean
+	 *	@throws Exception
+	 */
+
+	public boolean reverse(Timestamp reversalDate)  
+	{
+		if (this.isPosted())
+		{		
+			MMatchPO reversal = new MMatchPO (getCtx(), 0, get_TrxName());
+			reversal.setC_InvoiceLine_ID(getC_InvoiceLine_ID()); 
+			reversal.setM_InOutLine_ID(getM_InOutLine_ID()); 
+			PO.copyValues(this, reversal);
+			reversal.setAD_Org_ID(this.getAD_Org_ID());
+			reversal.setDescription("(->" + this.getDocumentNo() + ")");
+			reversal.setQty(this.getQty().negate());
+			reversal.setDateAcct(reversalDate);
+			reversal.setDateTrx(reversalDate);
+			reversal.set_ValueNoCheck ("DocumentNo", null);
+			reversal.setPosted (false);
+			reversal.setReversal_ID(getM_MatchPO_ID());   
+			this.setDescription("(" + this.getDocumentNo() + "<-)");
+			if (reversal.save() && this.save())
+				return true;
+		}
+		return false;
+	}
 }	//	MMatchPO

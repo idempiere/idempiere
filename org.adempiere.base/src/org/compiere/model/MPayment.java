@@ -2440,14 +2440,30 @@ public final class MPayment extends X_C_Payment
 		if (m_processMsg != null)
 			return false;
 		
-		if (!voidOnlinePayment())
+		StringBuilder info = reverse(false);
+		if (info == null) {
 			return false;
+		}
+		
+		// After reverseCorrect
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
+		if (m_processMsg != null)
+			return false;
+
+		m_processMsg = info.toString();
+		return true;
+	}	//	reverseCorrectionIt
+
+	private StringBuilder reverse(boolean accrual) {
+		if (!voidOnlinePayment())
+			return null;
 		
 		//	Std Period open?
-		Timestamp dateAcct = getDateAcct();
-		if (!MPeriod.isOpen(getCtx(), dateAcct, 
-			isReceipt() ? X_C_DocType.DOCBASETYPE_ARReceipt : X_C_DocType.DOCBASETYPE_APPayment, getAD_Org_ID()))
+		Timestamp dateAcct = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		if (dateAcct == null) {
 			dateAcct = new Timestamp(System.currentTimeMillis());
+		}
+		MPeriod.testPeriodOpen(getCtx(), dateAcct, getC_DocType_ID(), getAD_Org_ID());
 		
 		//	Auto Reconcile if not on Bank Statement				
 		boolean reconciled = getC_BankStatementLine_ID() == 0; //AZ Goodwill
@@ -2491,7 +2507,7 @@ public final class MPayment extends X_C_Payment
 		if (!reversal.processIt(DocAction.ACTION_Complete))
 		{
 			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
-			return false;
+			return null;
 		}
 		reversal.closeIt();
 		reversal.setDocStatus(DOCSTATUS_Reversed);
@@ -2540,7 +2556,7 @@ public final class MPayment extends X_C_Payment
 		// end added
 		alloc.saveEx(get_TrxName());
 		//
-		StringBuffer info = new StringBuffer (reversal.getDocumentNo());
+		StringBuilder info = new StringBuilder(reversal.getDocumentNo());
 		info.append(" - @C_AllocationHdr_ID@: ").append(alloc.getDocumentNo());
 		
 		//	Update BPartner
@@ -2549,15 +2565,11 @@ public final class MPayment extends X_C_Payment
 			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
 			bp.setTotalOpenBalance();
 			bp.saveEx(get_TrxName());
-		}		
-		// After reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
-		if (m_processMsg != null)
-			return false;
+		}
+		
+		return info;
+	}
 
-		m_processMsg = info.toString();
-		return true;
-	}	//	reverseCorrectionIt
 
 	/**
 	 * 	Get Bank Statement Line of payment or 0
@@ -2585,11 +2597,17 @@ public final class MPayment extends X_C_Payment
 		if (m_processMsg != null)
 			return false;
 		
+		StringBuilder info = reverse(true);
+		if (info == null) {
+			return false;
+		}
+		
 		// After reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 				
+		m_processMsg = info.toString();
 		return false;
 	}	//	reverseAccrualIt
 	

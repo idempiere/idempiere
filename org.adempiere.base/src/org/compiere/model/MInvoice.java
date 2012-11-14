@@ -2264,31 +2264,95 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (m_processMsg != null)
 			return false;
 
-		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+		MInvoice reversal = reverse(false);
+		if (reversal == null)
+			return false;
+
+		// After reverseCorrect
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
+		if (m_processMsg != null)
+			return false;
+
+		m_processMsg = reversal.getDocumentNo();
+		
+		return true;
+	}	//	reverseCorrectIt
+
+	private MInvoice reverse(boolean accrual) {
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		if (reversalDate == null) {
+			reversalDate = new Timestamp(System.currentTimeMillis());
+		}
+		Timestamp reversalDateInvoiced = accrual ? reversalDate : getDateInvoiced();
+		
+		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
 		//
 		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(),
 			getC_Invoice_ID(), get_TrxName());
 		for (int i = 0; i < allocations.length; i++)
 		{
-			allocations[i].setDocAction(DocAction.ACTION_Reverse_Correct);
-			allocations[i].reverseCorrectIt();
-			allocations[i].saveEx(get_TrxName());
+			if (accrual)
+			{
+				allocations[i].setDocAction(DocAction.ACTION_Reverse_Accrual);
+				allocations[i].reverseAccrualIt();
+				allocations[i].saveEx(get_TrxName());
+			}
+			else
+			{
+				allocations[i].setDocAction(DocAction.ACTION_Reverse_Correct);
+				allocations[i].reverseCorrectIt();
+				allocations[i].saveEx(get_TrxName());
+			}
 		}
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
 		{
-			MMatchInv[] mInv = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
-			for (int i = 0; i < mInv.length; i++)
-				mInv[i].delete(true);
-			MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
-			for (int i = 0; i < mPO.length; i++)
+			if (accrual) 
 			{
-				if (mPO[i].getM_InOutLine_ID() == 0)
-					mPO[i].delete(true);
-				else
+				MMatchInv[] mInv = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+				for (int i = 0; i < mInv.length; i++)
 				{
-					mPO[i].setC_InvoiceLine_ID(null);
-					mPO[i].saveEx(get_TrxName());
+					if (!mInv[i].reverse(reversalDate)) 
+					{
+						m_processMsg = "Could not Reverse MatchInv";
+						return null;
+					}
+				}
+				MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+				for (int i = 0; i < mPO.length; i++)
+				{
+					if (mPO[i].getM_InOutLine_ID() == 0)
+					{
+						if (!mPO[i].reverse(reversalDate)) 
+						{
+							m_processMsg = "Could not Reverse MatchPO";
+							return null;
+						}
+					}
+					else
+					{
+						mPO[i].setC_InvoiceLine_ID(null);
+						mPO[i].saveEx(get_TrxName());
+					}
+				}
+			}
+			else
+			{
+				MMatchInv[] mInv = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+				for (int i = 0; i < mInv.length; i++)
+				{
+					mInv[i].deleteEx(true);
+				}
+				MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+				for (int i = 0; i < mPO.length; i++)
+				{
+					if (mPO[i].getM_InOutLine_ID() == 0)
+						mPO[i].deleteEx(true);
+					else
+					{
+						mPO[i].setC_InvoiceLine_ID(null);
+						mPO[i].saveEx(get_TrxName());
+					}
 				}
 			}
 		}
@@ -2298,13 +2362,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		//	Deep Copy
 		MInvoice reversal = null;
 		if (MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID()))
-			reversal = copyFrom (this, getDateInvoiced(), getDateAcct(), getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true);
+			reversal = copyFrom (this, reversalDateInvoiced, reversalDate, getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true);
 		else 
-			reversal = copyFrom (this, getDateInvoiced(), getDateAcct(), getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true, getDocumentNo()+"^");
+			reversal = copyFrom (this, reversalDateInvoiced, reversalDate, getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true, getDocumentNo()+"^");
 		if (reversal == null)
 		{
 			m_processMsg = "Could not create Invoice Reversal";
-			return false;
+			return null;
 		}
 		reversal.setReversal(true);
 
@@ -2323,7 +2387,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (!rLine.save(get_TrxName()))
 			{
 				m_processMsg = "Could not correct Invoice Reversal Line";
-				return false;
+				return null;
 			}
 		}
 		reversal.setC_Order_ID(getC_Order_ID());
@@ -2336,7 +2400,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (!reversal.processIt(DocAction.ACTION_Complete))
 		{
 			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
-			return false;
+			return null;
 		}
 		reversal.setC_Payment_ID(0);
 		reversal.setIsPaid(true);
@@ -2345,7 +2409,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		reversal.setDocStatus(DOCSTATUS_Reversed);
 		reversal.setDocAction(DOCACTION_None);
 		reversal.saveEx(get_TrxName());
-		m_processMsg = reversal.getDocumentNo();
 		//
 		msgadd = new StringBuilder("(").append(reversal.getDocumentNo()).append("<-)");
 		addDescription(msgadd.toString());
@@ -2375,7 +2438,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 		//	Create Allocation
 		StringBuilder msgall = new StringBuilder().append(Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(getDocumentNo()).append("/").append(reversal.getDocumentNo());
-		MAllocationHdr alloc = new MAllocationHdr(getCtx(), false, getDateAcct(),
+		MAllocationHdr alloc = new MAllocationHdr(getCtx(), false, reversalDate,
 			getC_Currency_ID(),
 			msgall.toString(),
 			get_TrxName());
@@ -2402,14 +2465,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			// end added
 				alloc.saveEx();
 		}
-
-		// After reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
-		if (m_processMsg != null)
-			return false;
-
-		return true;
-	}	//	reverseCorrectIt
+		
+		return reversal;
+	}
 
 	/**
 	 * 	Reverse Accrual - none
@@ -2423,12 +2481,18 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (m_processMsg != null)
 			return false;
 
+		MInvoice reversal = reverse(true);
+		if (reversal == null)
+			return false;
+		
 		// After reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 
-		return false;
+		m_processMsg = reversal.getDocumentNo();
+		
+		return true;
 	}	//	reverseAccrualIt
 
 	/**

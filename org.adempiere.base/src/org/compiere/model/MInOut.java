@@ -2040,40 +2040,70 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (m_processMsg != null)
 			return false;
 
+		MInOut reversal = reverse(false);
+		if (reversal == null)
+			return false;
+
+		// After reverseCorrect
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
+		if (m_processMsg != null)
+			return false;
+
+		m_processMsg = reversal.getDocumentNo();
+		setProcessed(true);
+		setDocStatus(DOCSTATUS_Reversed);		//	 may come from void
+		setDocAction(DOCACTION_None);
+		return true;
+	}	//	reverseCorrectionIt
+
+	private MInOut reverse(boolean accrual) {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		if (!MPeriod.isOpen(getCtx(), getDateAcct(), dt.getDocBaseType(), getAD_Org_ID()))
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		if (reversalDate == null) {
+			reversalDate = new Timestamp(System.currentTimeMillis());
+		}
+		Timestamp reversalMovementDate = accrual ? reversalDate : getMovementDate();
+		if (!MPeriod.isOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID()))
 		{
 			m_processMsg = "@PeriodClosed@";
-			return false;
+			return null;
 		}
 
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
 		{
-			MMatchInv[] mInv = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
-			for (int i = 0; i < mInv.length; i++)
-				mInv[i].deleteEx(true);
-			MMatchPO[] mPO = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
-			for (int i = 0; i < mPO.length; i++)
+			if (accrual) 
 			{
-				if (mPO[i].getC_InvoiceLine_ID() == 0)
-					mPO[i].deleteEx(true);
-				else
+				if (!reverseMatching(reversalDate))
+					return null;
+			}
+			else 
+			{
+				MMatchInv[] mInv = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
+				for (int i = 0; i < mInv.length; i++)
+					mInv[i].deleteEx(true);
+				MMatchPO[] mPO = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
+				for (int i = 0; i < mPO.length; i++)
 				{
-					mPO[i].setM_InOutLine_ID(0);
-					mPO[i].saveEx();
-
+					if (mPO[i].getC_InvoiceLine_ID() == 0)
+						mPO[i].deleteEx(true);
+					else
+					{
+						mPO[i].setM_InOutLine_ID(0);
+						mPO[i].saveEx();
+	
+					}
 				}
 			}
 		}
 
 		//	Deep Copy
-		MInOut reversal = copyFrom (this, getMovementDate(), getDateAcct(),
+		MInOut reversal = copyFrom (this, reversalMovementDate, reversalDate,
 			getC_DocType_ID(), isSOTrx(), false, get_TrxName(), true);
 		if (reversal == null)
 		{
 			m_processMsg = "Could not create Ship Reversal";
-			return false;
+			return null;
 		}
 		reversal.setReversal(true);
 
@@ -2091,7 +2121,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (!rLine.save(get_TrxName()))
 			{
 				m_processMsg = "Could not correct Ship Reversal Line";
-				return false;
+				return null;
 			}
 			//	We need to copy MA
 			if (rLine.getM_AttributeSetInstance_ID() == 0)
@@ -2128,7 +2158,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			|| !reversal.getDocStatus().equals(DocAction.STATUS_Completed))
 		{
 			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
-			return false;
+			return null;
 		}
 		reversal.closeIt();
 		reversal.setProcessing (false);
@@ -2146,18 +2176,38 @@ public class MInOut extends X_M_InOut implements DocAction
 		//FR1948157
 		this.setReversal_ID(reversal.getM_InOut_ID());
 		voidConfirmations();
+		return reversal;
+	}
 
-		// After reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
-		if (m_processMsg != null)
-			return false;
-
-		m_processMsg = reversal.getDocumentNo();
-		setProcessed(true);
-		setDocStatus(DOCSTATUS_Reversed);		//	 may come from void
-		setDocAction(DOCACTION_None);
+	private boolean reverseMatching(Timestamp reversalDate) {
+		MMatchInv[] mInv = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
+		for (MMatchInv mMatchInv : mInv)
+		{				
+			String description = mMatchInv.getDescription();
+			if (description == null || !description.endsWith("<-)"))
+			{
+				if (!mMatchInv.reverse(reversalDate))
+				{
+					log.log(Level.SEVERE, "Failed to create reversal for match invoice " + mMatchInv.getDocumentNo());
+					return false;
+				}
+			}
+		}
+		MMatchPO[] mMatchPOList = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
+		for (MMatchPO mMatchPO : mMatchPOList) 
+		{
+			String description = mMatchPO.getDescription();
+			if (description == null || !description.endsWith("<-)"))
+			{
+				if (!mMatchPO.reverse(reversalDate))
+				{
+					log.log(Level.SEVERE, "Failed to create reversal for match purchase order " + mMatchPO.getDocumentNo());
+					return false;
+				}
+			}
+		}
 		return true;
-	}	//	reverseCorrectionIt
+	}
 
 	/**
 	 * 	Reverse Accrual - none
@@ -2171,12 +2221,20 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (m_processMsg != null)
 			return false;
 
+		MInOut reversal = reverse(true);
+		if (reversal == null)
+			return false;
+		
 		// After reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 
-		return false;
+		m_processMsg = reversal.getDocumentNo();
+		setProcessed(true);
+		setDocStatus(DOCSTATUS_Reversed);		//	 may come from void
+		setDocAction(DOCACTION_None);
+		return true;
 	}	//	reverseAccrualIt
 
 	/**
