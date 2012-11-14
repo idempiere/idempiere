@@ -374,3 +374,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 CREATE TABLE M_StorageReservation (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, DateLastInventory DATE DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsSOTrx CHAR(1) DEFAULT 'Y' CHECK (IsSOTrx IN ('Y','N')), M_AttributeSetInstance_ID NUMBER(10) NOT NULL, M_Product_ID NUMBER(10) NOT NULL, M_Warehouse_ID NUMBER(10) NOT NULL, Qty NUMBER NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT M_StorageReservation_Key PRIMARY KEY (M_AttributeSetInstance_ID, M_Product_ID, M_Warehouse_ID))
 ;
 
+SELECT register_migration_script('201211141732_IDEMPIERE-385_m_storage.sql') FROM dual
+;
+

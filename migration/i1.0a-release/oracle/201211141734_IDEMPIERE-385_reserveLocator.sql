@@ -43,3 +43,6 @@ UPDATE AD_Field SET Name='Reserve Locator',Updated=TO_DATE('2012-10-19 14:09:08'
 UPDATE AD_Field_Trl SET IsTranslated='N' WHERE AD_Field_ID=200649
 ;
 
+SELECT register_migration_script('201211141734_IDEMPIERE-385_reserveLocator.sql') FROM dual
+;
+

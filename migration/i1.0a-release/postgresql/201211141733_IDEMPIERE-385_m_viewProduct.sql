@@ -29,3 +29,7 @@ UNION
    JOIN ad_org org ON org.ad_org_id = mw.ad_org_id
    LEFT JOIN m_storagereservation mr ON ms.m_product_id = mr.m_product_id AND mw.m_warehouse_id = mr.m_warehouse_id AND mr.isSOTrx='Y'
   GROUP BY r.ad_client_id, r.ad_org_id, r.isactive, r.created, r.createdby, r.updated, r.updatedby, r.m_product_id, r.relatedproduct_id, mw.m_warehouse_id, mpr.m_pricelist_version_id, org.name, mp.name;
+
+SELECT register_migration_script('201211141733_IDEMPIERE-385_m_viewProduct.sql') FROM dual
+;
+
