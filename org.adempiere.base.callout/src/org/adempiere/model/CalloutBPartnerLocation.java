@@ -25,6 +25,7 @@ import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MColumn;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	BPartnerLocation Callouts.
@@ -81,5 +82,18 @@ public class CalloutBPartnerLocation extends CalloutEngine
 
 		return "";
 	}	//	formatPhone
+
+	public String quickEntryMandatory	(Properties ctx, int WindowNo,
+			GridTab mTab, GridField mField, Object value, Object oldValue)
+	{
+		// this callout is just for quick entry window
+		if ("Y".equals(Env.getContext(ctx, WindowNo, "_QUICK_ENTRY_MODE_"))) {
+			if (value == null) {
+				return Msg.getMsg(ctx, "FillMandatory") + " " + Msg.getElement(ctx, mField.getColumnName());
+			}
+		}
+		
+		return "";
+	}
 	
 }	//	CalloutBPartnerLocation

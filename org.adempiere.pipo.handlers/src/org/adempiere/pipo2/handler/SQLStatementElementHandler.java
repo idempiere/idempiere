@@ -18,6 +18,7 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 
@@ -47,36 +48,38 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 			sql = sql.substring(0, sql.length() - 1);
 		PreparedStatement pstmt = null;
 		try {
+			// NOTE Postgres needs to commit DDL statements
+			// add a SQL command just with COMMIT if you want to simulate the Oracle behavior (commit on DDL)
+			
+			// It is also recommended on postgres to add a COMMIT before any SQL statement that can fail
+			// for example a create index where is possible the index already exists
+
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
-			if(DBType.equals("ALL")) {
+			if (DBType.equals("ALL")) {
 				int n = pstmt.executeUpdate();
 				log.info("Executed SQL Statement: "+ getStringValue(element, "statement") + " ReturnValue="+n);
-			}
-			else if(DB.isOracle() == true && DBType.equals("Oracle")) {
+			} else if (DB.isOracle() == true && DBType.equals("Oracle")) {
 				int n = pstmt.executeUpdate();
 				log.info("Executed SQL Statement for Oracle: "+ getStringValue(element, "statement") + " ReturnValue="+n);
-			}
-			else if (   DB.isPostgreSQL()
+			} else if (DB.isPostgreSQL()
 					 && (   DBType.equals("Postgres")
 						 || DBType.equals("PostgreSQL")  // backward compatibility with old packages developed by hand
 						)
 					 ) {
 				// Avoid convert layer - command specific for postgresql
 				//
-				// pstmt = DB.prepareStatement(sql, null);
+				// pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 				// pstmt.executeUpdate();
 				//
-				Connection m_con = DB.getConnectionRW(true);
+				
+				Statement stmt = null;
 				try {
-					Statement stmt = m_con.createStatement();
+					stmt = pstmt.getConnection().createStatement();
 					int n = stmt.executeUpdate (sql);
 					log.info("Executed SQL Statement for PostgreSQL: "+ getStringValue(element,"statement") + " ReturnValue="+n);
-					// Postgres needs to commit DDL statements
-					if (m_con != null && !m_con.getAutoCommit())
-						m_con.commit();
-					stmt.close();
 				} finally {
-					m_con.close();
+					if (stmt != null)
+						stmt.close();
 				}
 			}
 			
@@ -84,6 +87,18 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 					0);
 			logImportDetail (ctx, impDetail, 1, "SQLStatement",1,"Execute");
 		} catch (Exception e)	{
+			if (DB.isPostgreSQL()) {
+				// rollback immediately postgres on exception to avoid a wrong SQL stop the whole process
+				if (pstmt != null) {
+					Connection m_con = null;
+					try {
+						m_con = pstmt.getConnection();
+						if (m_con != null && !m_con.getAutoCommit())
+							m_con.rollback();
+					} catch (SQLException ex) {
+					}
+				}
+			}
 			log.log(Level.SEVERE,"SQLSatement", e);
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, "",
 					0);

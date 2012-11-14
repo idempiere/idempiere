@@ -983,19 +983,7 @@ public class GridTable extends AbstractTableModel
 			return null;
 		}
 
-		//	need to wait for data read into buffer
-		int loops = 0;
-		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < 15)
-		{
-			log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
-			try
-			{
-				Thread.sleep(500);		//	1/2 second
-			}
-			catch (InterruptedException ie)
-			{}
-			loops++;
-		}
+		waitLoadm_sort(row);
 
 		//	empty buffer
 		if (row >= m_sort.size())
@@ -1015,6 +1003,22 @@ public class GridTable extends AbstractTableModel
 		return rowData[col];
 	}	//	getValueAt
 
+	private void waitLoadm_sort(int row) {
+		//	need to wait for data read into buffer
+		int loops = 0;
+		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < 15)
+		{
+			log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
+			try
+			{
+				Thread.sleep(500);		//	1/2 second
+			}
+			catch (InterruptedException ie)
+			{}
+			loops++;
+		}
+	}
+
 	private Object[] getDataAtRow(int row)
 	{
 		return getDataAtRow(row, true);
@@ -1022,6 +1026,7 @@ public class GridTable extends AbstractTableModel
 
 	private Object[] getDataAtRow(int row, boolean fetchIfNotFound)
 	{
+		waitLoadm_sort(row);
 		MSort sort = (MSort)m_sort.get(row);
 		Object[] rowData = null;
 		if (m_virtual)
@@ -2754,7 +2759,6 @@ public class GridTable extends AbstractTableModel
 		if (row < 0 || m_sort.size() == 0 || m_inserting)
 			return;
 
-		MSort sort = (MSort)m_sort.get(row);
 		Object[] rowData = getDataAtRow(row);
 
 		//  ignore
@@ -2765,7 +2769,6 @@ public class GridTable extends AbstractTableModel
 		if (where == null || where.length() == 0)
 			where = "1=2";
 		String sql = m_SQL_Select + " WHERE " + where;
-		sort = (MSort)m_sort.get(row);
 		Object[] rowDataDB = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

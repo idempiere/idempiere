@@ -39,6 +39,7 @@ public class SystemIDs
 	public final static int COLUMN_S_RESOURCE_S_RESOURCETYPE_ID = 6851;
 	public final static int COLUMN_S_RESOURCEASSIGNMENT_S_RESOURCE_ID = 6826;
 	public final static int COLUMN_WIZARDSTATUS = 200310;
+	public final static int COLUMN_AD_FIELD_AD_FIELDGROUP_ID = 5375;
 
 	public final static int COUNTRY_US = 100;
 	public final static int COUNTRY_JAPAN = 216;
@@ -149,6 +150,8 @@ public class SystemIDs
 	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
+
+	public final static int TAB_TAB = 106;
 
 	public final static int SYSCONFIG_USER_HASH_PASSWORD = 200013;
 	public final static int SYSCONFIG_SYSTEM_NATIVE_SEQUENCE = 50016;	

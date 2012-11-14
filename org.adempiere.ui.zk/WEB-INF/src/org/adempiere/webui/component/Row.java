@@ -33,6 +33,8 @@ public class Row extends org.zkoss.zul.Row
 	 */
 	private static final long serialVersionUID = -5813452501151101553L;
 
+	private Cell m_lastCell;
+
 	public boolean appendCellChild(Component child) {
 		return this.appendCellChild(child, 1);
 	}
@@ -42,6 +44,7 @@ public class Row extends org.zkoss.zul.Row
 		cell.setColspan(colspan);
 		cell.setRowspan(1);
 		cell.appendChild(child);
+		m_lastCell = cell;
 		return super.appendChild(cell);
 	}
 
@@ -57,4 +60,8 @@ public class Row extends org.zkoss.zul.Row
 			m_group.add(this);
 	}
 	
+	public Cell getLastCell() {
+		return m_lastCell;
+	}
+
 }
