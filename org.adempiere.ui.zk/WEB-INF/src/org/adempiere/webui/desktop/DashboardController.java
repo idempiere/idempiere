@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
@@ -38,6 +40,7 @@ import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.ZkReportViewerProvider;
+import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardPreference;
@@ -48,6 +51,7 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -91,8 +95,8 @@ public class DashboardController implements EventListener<Event> {
 	private List<Anchorchildren> columnList = new ArrayList<Anchorchildren>();
 	private Anchorlayout dashboardLayout;
 	private Anchorchildren maximizedHolder;	
-	private Thread dashboardThread;
 	private DashboardRunnable dashboardRunnable;
+	private ScheduledFuture<?> dashboardFuture;
 
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
@@ -406,9 +410,9 @@ public class DashboardController implements EventListener<Event> {
         {
         	dashboardRunnable.refreshDashboard();
 
-	        dashboardThread = new Thread(dashboardRunnable, "UpdateInfo");
-        	dashboardThread.setDaemon(true);
-        	dashboardThread.start();
+        	// default Update every one minutes
+    		int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
+    		dashboardFuture = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(dashboardRunnable, interval, interval, TimeUnit.MILLISECONDS);    		
 		}       
 	}
 	
@@ -620,15 +624,14 @@ public class DashboardController implements EventListener<Event> {
 	 * @param appDesktop
 	 */
 	public void onSetPage(Page page, Desktop desktop, IDesktop appDesktop) {
-		if (dashboardThread != null && dashboardThread.isAlive()) {
-			dashboardRunnable.stop();
-			dashboardThread.interrupt();
+		if (dashboardFuture != null && !dashboardFuture.isDone()) {
+			dashboardFuture.cancel(true);
 
 			DashboardRunnable tmp = dashboardRunnable;
 			dashboardRunnable = new DashboardRunnable(tmp, desktop, appDesktop);
-			dashboardThread = new Thread(dashboardRunnable, "UpdateInfo");
-	        dashboardThread.setDaemon(true);
-	        dashboardThread.start();
+			// default Update every one minutes
+			int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
+			dashboardFuture = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(dashboardRunnable, interval, interval, TimeUnit.MILLISECONDS);
 		}
 	}
 	
@@ -636,9 +639,8 @@ public class DashboardController implements EventListener<Event> {
 	 * clean up for logout
 	 */
 	public void onLogOut() {
-		if (dashboardThread != null && dashboardThread.isAlive()) {
-			dashboardRunnable.stop();
-			dashboardThread.interrupt();
+		if (dashboardFuture != null && !dashboardFuture.isDone()) {
+			dashboardFuture.cancel(true);
 		}
 	}
 

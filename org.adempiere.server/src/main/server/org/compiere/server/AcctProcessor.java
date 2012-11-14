@@ -26,13 +26,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.acct.DocManager;
-import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.MAcctProcessor;
 import org.compiere.model.MAcctProcessorLog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
-import org.compiere.model.MSchedule;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -130,7 +128,7 @@ public class AcctProcessor extends AdempiereServer
 				pstmt.setInt(1, m_model.getAD_Client_ID());
 				pstmt.setBigDecimal(2, value);
 				rs = pstmt.executeQuery();
-				while (!isInterrupted() && rs.next())
+				while (!Thread.currentThread().isInterrupted() && rs.next())
 				{
 					BigDecimal processedOn = rs.getBigDecimal(1);
 					if (!listProcessedOn.contains(processedOn))
@@ -198,7 +196,7 @@ public class AcctProcessor extends AdempiereServer
 					}
 					catch (Exception e)
 					{
-						log.log(Level.SEVERE, getName() + ": " + TableName, e);
+						log.log(Level.SEVERE, TableName, e);
 						ok = false;
 					}
 					if (!ok)

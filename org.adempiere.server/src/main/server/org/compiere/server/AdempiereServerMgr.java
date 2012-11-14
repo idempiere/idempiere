@@ -20,6 +20,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.Service;
@@ -75,7 +77,7 @@ public class AdempiereServerMgr
 	}	//	AdempiereServerMgr
 
 	/**	The Servers				*/
-	private ArrayList<AdempiereServer>	m_servers = new ArrayList<AdempiereServer>();
+	private ArrayList<ServerWrapper>	m_servers = new ArrayList<ServerWrapper>();
 	/** Context					*/
 	private Properties		m_ctx = Env.getCtx();
 	/** Start					*/
@@ -107,7 +109,7 @@ public class AdempiereServerMgr
 	{
 		log.info("");
 		int noServers = 0;
-		m_servers=new ArrayList<AdempiereServer>();
+		m_servers=new ArrayList<ServerWrapper>();
 		//	Accounting
 		MAcctProcessor[] acctModels = MAcctProcessor.getActive(m_ctx);
 		for (int i = 0; i < acctModels.length; i++)
@@ -115,9 +117,9 @@ public class AdempiereServerMgr
 			MAcctProcessor pModel = acctModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
 			if (server != null) {
-				server.start();
-				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(server);
+//				server.start();
+//				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(new ServerWrapper(server));
 			}
 		}		
 		//	Request
@@ -127,9 +129,9 @@ public class AdempiereServerMgr
 			MRequestProcessor pModel = requestModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
 			if (server != null) {
-				server.start();
-				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(server);
+//				server.start();
+//				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(new ServerWrapper(server));
 			}
 		}
 		//	Workflow
@@ -139,9 +141,9 @@ public class AdempiereServerMgr
 			MWorkflowProcessor pModel = workflowModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
 			if (server != null) {
-				server.start();
-				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(server);
+//				server.start();
+//				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(new ServerWrapper(server));
 			}
 		}		
 		//	Alert
@@ -151,9 +153,9 @@ public class AdempiereServerMgr
 			MAlertProcessor pModel = alertModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
 			if (server != null) {
-				server.start();
-				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(server);
+//				server.start();
+//				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(new ServerWrapper(server));
 			}
 		}		
 		//	Scheduler
@@ -163,9 +165,9 @@ public class AdempiereServerMgr
 			MScheduler pModel = schedulerModels[i];
 			AdempiereServer server = AdempiereServer.create(pModel);
 			if (server != null) {
-				server.start();
-				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(server);
+//				server.start();
+//				server.setPriority(Thread.NORM_PRIORITY-2);
+				m_servers.add(new ServerWrapper(server));
 			}
 		}		
 		//	LDAP
@@ -175,9 +177,9 @@ public class AdempiereServerMgr
 			MLdapProcessor lp = ldapModels[i];
 			AdempiereServer server = AdempiereServer.create(lp);
 			if (server != null) {
-				server.start();
-				server.setPriority(Thread.NORM_PRIORITY-1);
-				m_servers.add(server);
+//				server.start();
+//				server.setPriority(Thread.NORM_PRIORITY-1);
+				m_servers.add(new ServerWrapper(server));
 			}
 		}
 		
@@ -192,9 +194,9 @@ public class AdempiereServerMgr
 				{
 					for (AdempiereServer server : servers)
 					{
-						server.start();
-						server.setPriority(Thread.NORM_PRIORITY-1);
-						m_servers.add(server);						
+//						server.start();
+//						server.setPriority(Thread.NORM_PRIORITY-1);
+						m_servers.add(new ServerWrapper(server));						
 					}
 				}				
 			}
@@ -220,47 +222,17 @@ public class AdempiereServerMgr
 	public boolean startAll()
 	{
 		log.info ("");
-		AdempiereServer[] servers = getInActive();
+		ServerWrapper[] servers = getInActive();
 		for (int i = 0; i < servers.length; i++)
 		{
-			AdempiereServer server = servers[i];
+			ServerWrapper server = servers[i];
 			try
 			{
-				if (server.isAlive())
+				if (server.scheduleFuture != null || !server.scheduleFuture.isDone())
 					continue;
-				//	Wait until dead
-				if (server.isInterrupted())
-				{
-					int maxWait = 10;	//	10 iterations = 1 sec
-					while (server.isAlive())
-					{
-						if (maxWait-- == 0)
-						{
-							log.severe ("Wait timeout for interruped " + server);
-							break;
-						}
-						try
-						{
-							Thread.sleep(100);		//	1/10 sec
-						}
-						catch (InterruptedException e)
-						{
-							log.log(Level.SEVERE, "While sleeping", e);
-						}
-					}
-				}
 				//	Do start
-				if (!server.isAlive())
-				{
-					//	replace
-					server = AdempiereServer.create (server.getModel());
-					if (server == null)
-						m_servers.remove(i);
-					else
-						m_servers.set(i, server);
-					server.start();
-					server.setPriority(Thread.NORM_PRIORITY-2);
-				}
+				//	replace
+				server.start();
 			}
 			catch (Exception e)
 			{
@@ -273,10 +245,10 @@ public class AdempiereServerMgr
 		int noStopped = 0;
 		for (int i = 0; i < servers.length; i++)
 		{
-			AdempiereServer server = servers[i];
+			ServerWrapper server = servers[i];
 			try
 			{
-				if (server.isAlive())
+				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 				{
 					log.info("Alive: " + server);
 					noRunning++;
@@ -294,7 +266,6 @@ public class AdempiereServerMgr
 			}
 		}
 		log.fine("Running=" + noRunning + ", Stopped=" + noStopped);
-		AdempiereServerGroup.get().dump();
 		return noStopped == 0;
 	}	//	startAll
 
@@ -305,24 +276,16 @@ public class AdempiereServerMgr
 	 */
 	public boolean start (String serverID)
 	{
-		AdempiereServer server = getServer(serverID);
+		ServerWrapper server = getServer(serverID);
 		if (server == null)
 			return false;
-		if (server.isAlive())
+		if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 			return true;
 		
 		try
 		{
 			//	replace
-			int index = m_servers.indexOf(server);
-			server = AdempiereServer.create (server.getModel());
-			if (server == null)
-				m_servers.remove(index);
-			else
-				m_servers.set(index, server);
 			server.start();
-			server.setPriority(Thread.NORM_PRIORITY-2);
-			Thread.yield();
 		}
 		catch (Exception e)
 		{
@@ -330,10 +293,7 @@ public class AdempiereServerMgr
 			return false;
 		}
 		log.info(server.toString());
-		AdempiereServerGroup.get().dump();
-		if (server == null)
-			return false;
-		return server.isAlive();
+		return (server.scheduleFuture != null && !server.scheduleFuture.isDone());
 	}	//	startIt
 	
 	/**
@@ -343,17 +303,16 @@ public class AdempiereServerMgr
 	public boolean stopAll()
 	{
 		log.info ("");
-		AdempiereServer[] servers = getActive();
+		ServerWrapper[] servers = getActive();
 		//	Interrupt
 		for (int i = 0; i < servers.length; i++)
 		{
-			AdempiereServer server = servers[i];
+			ServerWrapper server = servers[i];
 			try
 			{
-				if (server.isAlive() && !server.isInterrupted())
+				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 				{
-					server.setPriority(Thread.MAX_PRIORITY-1);
-					server.interrupt();
+					server.scheduleFuture.cancel(true);
 				}
 			}
 			catch (Exception e)
@@ -366,11 +325,11 @@ public class AdempiereServerMgr
 		//	Wait for death
 		for (int i = 0; i < servers.length; i++)
 		{
-			AdempiereServer server = servers[i];
+			ServerWrapper server = servers[i];
 			try
 			{
 				int maxWait = 10;	//	10 iterations = 1 sec
-				while (server.isAlive())
+				while (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 				{
 					if (maxWait-- == 0)
 					{
@@ -391,10 +350,10 @@ public class AdempiereServerMgr
 		int noStopped = 0;
 		for (int i = 0; i < servers.length; i++)
 		{
-			AdempiereServer server = servers[i];
+			ServerWrapper server = servers[i];
 			try
 			{
-				if (server.isAlive())
+				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 				{
 					log.warning ("Alive: " + server);
 					noRunning++;
@@ -423,15 +382,15 @@ public class AdempiereServerMgr
 	 */
 	public boolean stop (String serverID)
 	{
-		AdempiereServer server = getServer(serverID);
+		ServerWrapper server = getServer(serverID);
 		if (server == null)
 			return false;
-		if (!server.isAlive())
+		if (server.scheduleFuture == null || server.scheduleFuture.isDone())
 			return true;
 
 		try
 		{
-			server.interrupt();
+			server.scheduleFuture.cancel(true);
 			Thread.sleep(10);	//	1/100 sec
 		}
 		catch (Exception e)
@@ -440,8 +399,7 @@ public class AdempiereServerMgr
 			return false;
 		}
 		log.info(server.toString());
-		AdempiereServerGroup.get().dump();
-		return !server.isAlive();
+		return (server.scheduleFuture == null || server.scheduleFuture.isDone());
 	}	//	stop
 
 	
@@ -459,16 +417,16 @@ public class AdempiereServerMgr
 	 * 	Get Active Servers
 	 *	@return array of active servers
 	 */
-	protected AdempiereServer[] getActive()
+	protected ServerWrapper[] getActive()
 	{
-		ArrayList<AdempiereServer> list = new ArrayList<AdempiereServer>();
+		ArrayList<ServerWrapper> list = new ArrayList<ServerWrapper>();
 		for (int i = 0; i < m_servers.size(); i++)
 		{
-			AdempiereServer server = (AdempiereServer)m_servers.get(i);
-			if (server != null && server.isAlive() && !server.isInterrupted())
+			ServerWrapper server = (ServerWrapper)m_servers.get(i);
+			if (server != null && server.scheduleFuture != null && !server.scheduleFuture.isDone())
 				list.add (server);
 		}
-		AdempiereServer[] retValue = new AdempiereServer[list.size ()];
+		ServerWrapper[] retValue = new ServerWrapper[list.size ()];
 		list.toArray (retValue);
 		return retValue;
 	}	//	getActive
@@ -477,16 +435,16 @@ public class AdempiereServerMgr
 	 * 	Get InActive Servers
 	 *	@return array of inactive servers
 	 */
-	protected AdempiereServer[] getInActive()
+	protected ServerWrapper[] getInActive()
 	{
-		ArrayList<AdempiereServer> list = new ArrayList<AdempiereServer>();
+		ArrayList<ServerWrapper> list = new ArrayList<ServerWrapper>();
 		for (int i = 0; i < m_servers.size(); i++)
 		{
-			AdempiereServer server = (AdempiereServer)m_servers.get(i);
-			if (server != null && (!server.isAlive() || !server.isInterrupted()))
+			ServerWrapper server = m_servers.get(i);
+			if (server != null && (server.scheduleFuture == null || server.scheduleFuture.isDone()))
 				list.add (server);
 		}
-		AdempiereServer[] retValue = new AdempiereServer[list.size()];
+		ServerWrapper[] retValue = new ServerWrapper[list.size()];
 		list.toArray (retValue);
 		return retValue;
 	}	//	getInActive
@@ -495,9 +453,9 @@ public class AdempiereServerMgr
 	 * 	Get all Servers
 	 *	@return array of servers
 	 */
-	public AdempiereServer[] getAll()
+	public ServerWrapper[] getAll()
 	{
-		AdempiereServer[] retValue = new AdempiereServer[m_servers.size()];
+		ServerWrapper[] retValue = new ServerWrapper[m_servers.size()];
 		m_servers.toArray (retValue);
 		return retValue;
 	}	//	getAll
@@ -507,14 +465,14 @@ public class AdempiereServerMgr
 	 *	@param serverID server id
 	 *	@return server or null
 	 */
-	public AdempiereServer getServer (String serverID)
+	public ServerWrapper getServer (String serverID)
 	{
 		if (serverID == null)
 			return null;
 		for (int i = 0; i < m_servers.size(); i++)
 		{
-			AdempiereServer server = (AdempiereServer)m_servers.get(i);
-			if (serverID.equals(server.getServerID()))
+			ServerWrapper server = m_servers.get(i);
+			if (serverID.equals(server.server.getServerID()))
 				return server;
 		}
 		return null;
@@ -553,8 +511,8 @@ public class AdempiereServerMgr
 		int noStopped = 0;
 		for (int i = 0; i < m_servers.size(); i++)
 		{
-			AdempiereServer server = (AdempiereServer)m_servers.get(i);
-			if (server.isAlive())
+			ServerWrapper server = m_servers.get(i);
+			if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 				noRunning++;
 			else
 				noStopped++;
@@ -574,4 +532,38 @@ public class AdempiereServerMgr
 		return m_start;
 	}	//	getStartTime
 
+	public static class ServerWrapper implements Runnable
+	{
+
+		protected AdempiereServer server;
+		protected volatile ScheduledFuture<?> scheduleFuture;
+
+		public ServerWrapper(AdempiereServer server) {
+			this.server = server;
+			start();
+		}
+		
+		public void start() {
+			scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, server.getInitialNap() * 1000 + server.getSleepMS(), TimeUnit.MILLISECONDS);
+		}
+
+		@Override
+		public void run() {
+			server.run();
+			scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, server.getSleepMS(), TimeUnit.MILLISECONDS);
+		}
+		
+		public AdempiereServer getServer() {
+			return server;
+		}
+
+		public boolean isAlive() {
+			return scheduleFuture != null && !scheduleFuture.isDone();
+		}
+
+		public boolean isInterrupted() {
+			return scheduleFuture != null && scheduleFuture.isCancelled();
+		}
+		
+	}
 }	//	AdempiereServerMgr

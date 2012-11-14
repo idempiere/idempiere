@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -50,6 +49,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.Login;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.SecureInterface;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
@@ -111,7 +111,7 @@ public final class Adempiere
 	private static CLogger		log = null;
 	
 	/** Thread pool **/
-	private static ThreadPoolExecutor threadPoolExecutor = null;
+	private static ScheduledThreadPoolExecutor threadPoolExecutor = null;
 	
 	 /** A list of event listeners for this component.	*/
     private static EventListenerList m_listenerList = new EventListenerList();
@@ -553,8 +553,10 @@ public final class Adempiere
 	}   //  startup
 
 	private static void createThreadPool() {
-		int min = 10;
-		int max = 200;
+		int max = Runtime.getRuntime().availableProcessors() * 3;
+		int min = max / 2;
+		int defaultMax = max;
+		int defaultMin = min;
 		Properties properties = Ini.getProperties();
 		String maxSize = properties.getProperty("MaxThreadPoolSize");
 		String minSize = properties.getProperty("MinThreadPoolSize");
@@ -572,14 +574,19 @@ public final class Adempiere
 			max = min;
 		}
 		if (max <= 0) {
-			max = 200;
+			max = defaultMax;
 		}
 		if (min < 0) {
-			min = 10;
+			min = defaultMin;
 		}
+		
 		// start thread pool
-		threadPoolExecutor = new ThreadPoolExecutor(min, max, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		threadPoolExecutor = new ScheduledThreadPoolExecutor(min);		
+		threadPoolExecutor.setMaximumPoolSize(max);
+		threadPoolExecutor.setKeepAliveTime(10, TimeUnit.MINUTES);
 		threadPoolExecutor.allowCoreThreadTimeOut(true);
+		
+		Trx.startTrxMonitor();
 	}
 
 	/**
@@ -660,7 +667,7 @@ public final class Adempiere
 		}
 	}
 	
-	public static ThreadPoolExecutor getThreadPoolExecutor() {
+	public static ScheduledThreadPoolExecutor getThreadPoolExecutor() {
 		return threadPoolExecutor;
 	}
 	

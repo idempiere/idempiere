@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
@@ -65,9 +64,9 @@ import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
 import org.compiere.model.MStore;
 import org.compiere.model.MSystem;
-import org.compiere.server.AdempiereServer;
 import org.compiere.server.AdempiereServerGroup;
 import org.compiere.server.AdempiereServerMgr;
+import org.compiere.server.AdempiereServerMgr.ServerWrapper;
 import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -181,8 +180,8 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		
 		log.info ("ServerID=" + serverID);
-		AdempiereServer server = m_serverMgr.getServer(serverID);
-		if (server == null)
+		ServerWrapper server = m_serverMgr.getServer(serverID);
+		if (server == null || server.getServer() == null)
 		{
 			m_message = new p();
 			m_message.addElement(new strong("Server not found: "));
@@ -199,7 +198,7 @@ public class AdempiereMonitor extends HttpServlet
 		para.addElement(link);
 		b.addElement(para);
 		//
-		b.addElement(new h2(server.getName()));
+		b.addElement(new h2(server.getServer().getName()));
 		//
 		table table = new table();
 		table.setBorder(1);
@@ -216,7 +215,7 @@ public class AdempiereMonitor extends HttpServlet
 	//	line.addElement(new th().addElement("Description"));
 		table.addElement(line);
 		
-		AdempiereProcessorLog[] logs = server.getLogs();
+		AdempiereProcessorLog[] logs = server.getServer().getLogs();
 		for (int i = 0; i < logs.length; i++)
 		{
 			AdempiereProcessorLog pLog = logs[i];
@@ -252,8 +251,8 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		
 		log.info ("ServerID=" + serverID);
-		AdempiereServer server = m_serverMgr.getServer(serverID);
-		if (server == null)
+		ServerWrapper server = m_serverMgr.getServer(serverID);
+		if (server == null || server.getServer() == null)
 		{
 			m_message = new p();
 			m_message.addElement(new strong("Server not found: "));
@@ -261,7 +260,7 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		}
 		//
-		server.runNow();
+		server.getServer().runNow();
 		//
 		return true;
 	}	//	processRunParameter
@@ -306,8 +305,8 @@ public class AdempiereMonitor extends HttpServlet
 					this.createSummaryPage(request, response,true);
 					m_dirAccessList = getDirAcessList();
 				} else {
-					AdempiereServer server = m_serverMgr.getServer(serverID);
-					if (server == null) {
+					ServerWrapper server = m_serverMgr.getServer(serverID);
+					if (server == null || server.getServer() == null) {
 						m_message = new p();
 						m_message.addElement(new strong("Server not found: "));
 						m_message.addElement(serverID);
@@ -317,7 +316,7 @@ public class AdempiereMonitor extends HttpServlet
 							ok = m_serverMgr.start(serverID);
 						else
 							ok = m_serverMgr.stop(serverID);
-						m_message.addElement(server.getName());
+						m_message.addElement(server.getServer().getName());
 					}
 				}
 			}
@@ -622,13 +621,13 @@ public class AdempiereMonitor extends HttpServlet
 		//	***** Server Links *****			
 		bb.addElement(new hr());
 		para = new p();
-		AdempiereServer[] servers = m_serverMgr.getAll();		
+		ServerWrapper[] servers = m_serverMgr.getAll();		
 		for (int i = 0; i < servers.length; i++)
 		{
 			if (i > 0)
 				para.addElement(new br());
-			AdempiereServer server = servers[i];
-			link = new a ("#" + server.getServerID(), server.getName());
+			ServerWrapper server = servers[i];
+			link = new a ("#" + server.getServer().getServerID(), server.getServer().getName());
 			para.addElement(link);
 			font status = null;
 			if (server.isAlive())
@@ -646,10 +645,10 @@ public class AdempiereMonitor extends HttpServlet
 		bb.removeEndEndModifier();
 		for (int i = 0; i < servers.length; i++)
 		{
-			AdempiereServer server = servers[i];
+			ServerWrapper server = servers[i];
 			bb.addElement(new hr());
-			bb.addElement(new a().setName(server.getServerID()));
-			bb.addElement(new h2(server.getName()));
+			bb.addElement(new a().setName(server.getServer().getServerID()));
+			bb.addElement(new h2(server.getServer().getName()));
 			//
 			table = new table();
 			table.setBorder(1);
@@ -660,10 +659,8 @@ public class AdempiereMonitor extends HttpServlet
 			if (server.isAlive())
 			{
 				String msg = "Stop";
-				if (server.isInterrupted())
-					msg += " (Interrupted)";
-				link = new a ("adempiereMonitor?Action=Stop_" + server.getServerID(), msg);
-				if (server.isSleeping())
+				link = new a ("adempiereMonitor?Action=Stop_" + server.getServer().getServerID(), msg);
+				if (server.getServer().isSleeping())
 				{
 					line.addElement(new th().addElement("Sleeping"));
 					line.addElement(new td().addElement(link));
@@ -676,47 +673,45 @@ public class AdempiereMonitor extends HttpServlet
 				table.addElement(line);
 				line = new tr();
 				line.addElement(new th().addElement("Start - Elapsed"));
-				line.addElement(new td().addElement(WebEnv.getCellContent(server.getStartTime()) 
-					+ " - " + TimeUtil.formatElapsed(server.getStartTime())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(server.getServer().getStartTime()) 
+					+ " - " + TimeUtil.formatElapsed(server.getServer().getStartTime())));
 			}
 			else
 			{
 				String msg = "Start";
-				if (server.isInterrupted())
-					msg += " (Interrupted)";
 				line.addElement(new th().addElement("Not Started"));
-				link = new a ("adempiereMonitor?Action=Start_" + server.getServerID(), msg);
+				link = new a ("adempiereMonitor?Action=Start_" + server.getServer().getServerID(), msg);
 				line.addElement(new td().addElement(link));
 			}
 			table.addElement(line);
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Description"));
-			line.addElement(new td().addElement(WebEnv.getCellContent(server.getDescription())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(server.getServer().getDescription())));
 			table.addElement(line);
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Last Run"));
-			line.addElement(new td().addElement(WebEnv.getCellContent(server.getDateLastRun())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(server.getServer().getDateLastRun())));
 			table.addElement(line);
 			line = new tr();
 			line.addElement(new th().addElement("Info"));
-			line.addElement(new td().addElement(WebEnv.getCellContent(server.getServerInfo())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(server.getServer().getServerInfo())));
 			table.addElement(line);
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Next Run"));
 			td td = new td();
-			td.addElement(WebEnv.getCellContent(server.getDateNextRun(false)));
+			td.addElement(WebEnv.getCellContent(server.getServer().getDateNextRun(false)));
 			td.addElement(" - ");
-			link = new a ("adempiereMonitor?RunNow=" + server.getServerID(), "(Run Now)");
+			link = new a ("adempiereMonitor?RunNow=" + server.getServer().getServerID(), "(Run Now)");
 			td.addElement(link);
 			line.addElement(td);
 			table.addElement(line);
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Statistics"));
-			line.addElement(new td().addElement(server.getStatistics()));
+			line.addElement(new td().addElement(server.getServer().getStatistics()));
 			table.addElement(line);
 			//
 			
@@ -725,7 +720,7 @@ public class AdempiereMonitor extends HttpServlet
 			link = new a ("#top", "Top");
 			bb.addElement(link);
 			bb.addElement(" - ");
-			link = new a ("adempiereMonitor?Log=" + server.getServerID(), "Log");
+			link = new a ("adempiereMonitor?Log=" + server.getServer().getServerID(), "Log");
 			bb.addElement(link);
 			bb.addElement(" - ");
 			link = new a ("adempiereMonitor", "Refresh");
@@ -787,29 +782,29 @@ public class AdempiereMonitor extends HttpServlet
 		writer.print(m_serverMgr.getServerCount());
 		writer.println("</server-count>");
 		
-		AdempiereServer[] servers = m_serverMgr.getAll();		
+		ServerWrapper[] servers = m_serverMgr.getAll();		
 		for (int i = 0; i < servers.length; i++)
 		{
-			AdempiereServer server = servers[i];
+			ServerWrapper server = servers[i];
 			writer.println("\t\t<server>");
 			writer.print("\t\t\t<id>");
-			writer.print(server.getServerID());
+			writer.print(server.getServer().getServerID());
 			writer.println("</id>");
 			writer.print("\t\t\t<name>");
-			writer.print(server.getName());
+			writer.print(server.getServer().getName());
 			writer.println("</name>");
 			writer.print("\t\t\t<description>");
-			writer.print(server.getDescription());
+			writer.print(server.getServer().getDescription());
 			writer.println("</description>");
 			writer.print("\t\t\t<info>");
-			writer.print(server.getServerInfo());
+			writer.print(server.getServer().getServerInfo());
 			writer.println("</info>");
 			writer.print("\t\t\t<status>");
 			if (server.isAlive())
 			{
 				if (server.isInterrupted())
 					writer.print("Interrupted");
-				else if (server.isSleeping())
+				else if (server.getServer().isSleeping())
 					writer.print("Sleeping");
 				else
 					writer.print("Running");
@@ -818,16 +813,16 @@ public class AdempiereMonitor extends HttpServlet
 				writer.print("Stopped");
 			writer.println("</status>");
 			writer.print("\t\t\t<start-time>");
-			writer.print(server.getStartTime());
+			writer.print(server.getServer().getStartTime());
 			writer.println("</start-time>");
 			writer.print("\t\t\t<last-run>");
-			writer.print(server.getDateLastRun());
+			writer.print(server.getServer().getDateLastRun());
 			writer.println("</last-run>");
 			writer.print("\t\t\t<next-run>");
-			writer.print(server.getDateNextRun(false));
+			writer.print(server.getServer().getDateNextRun(false));
 			writer.println("</next-run>");
 			writer.print("\t\t\t<statistics>");
-			writer.print(server.getStatistics());
+			writer.print(server.getServer().getStatistics());
 			writer.println("</statistics>");
 			writer.println("\t\t</server>");
 		}

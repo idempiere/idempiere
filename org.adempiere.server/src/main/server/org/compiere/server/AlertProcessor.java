@@ -454,8 +454,8 @@ public class AlertProcessor extends AdempiereServer
 		Adempiere.startup(true);
 		MAlertProcessor model = new MAlertProcessor (Env.getCtx(), 100, null);
 		AlertProcessor ap = new AlertProcessor(model);
-		ap.start();
-		
+		AdempiereServerMgr.ServerWrapper wrapper = new AdempiereServerMgr.ServerWrapper(ap);
+		wrapper.start();
 		
 	}
 	

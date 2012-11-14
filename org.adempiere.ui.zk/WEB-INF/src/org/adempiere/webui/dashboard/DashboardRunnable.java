@@ -21,15 +21,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.ServerContext;
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.util.ServerPushTemplate;
-import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Desktop;
-import org.zkoss.zk.ui.DesktopUnavailableException;
 import org.zkoss.zk.ui.event.Events;
 
 /**
@@ -44,7 +41,6 @@ public class DashboardRunnable implements Runnable, Serializable
 	private static final long serialVersionUID = 5995227773511788894L;
 
 	private Desktop desktop;
-	private boolean stop = false;
 	private List<DashboardPanel> dashboardPanels;
 	private IDesktop appDesktop;
 	private Locale locale;
@@ -71,78 +67,12 @@ public class DashboardRunnable implements Runnable, Serializable
 	}
 
 	public void run()
-	{
-		// default Update every one minutes
-		int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
-		int cumulativeFailure = 0;
-		while(!stop) {
-			try {
-				Thread.sleep(interval);
-			} catch (InterruptedException e1) {
-				if (stop) break;
-			}
-
-			if (desktop.isAlive()) {
-				Locales.setThreadLocal(locale);
-				try {
-					refreshDashboard();
-					cumulativeFailure = 0;
-				} catch (DesktopUnavailableException de) {
-					cumulativeFailure++;
-				} catch (Exception e) {
-					logger.log(Level.INFO, e.getLocalizedMessage(), (e.getCause() != null ? e.getCause() : e));
-					cumulativeFailure++;
-				}
-				if (cumulativeFailure > 3)
-					break;
-			} else {
-				logger.log(Level.INFO, "Desktop destroy, will kill session.");
-				killSession();
-				break;
-			}
-		}
-	}
-
-	private void killSession() {
-		if (desktop.getSession() != null && desktop.getSession().getNativeSession() != null)
-		{
-			//differentiate between real destroy and refresh
-			try
-			{
-				Thread.sleep(90000);
-			}
-			catch (InterruptedException e)
-			{
-				try
-				{
-					desktop.getSession().getAttributes().clear();
-					desktop.getSession().invalidate();
-				}
-				catch (Exception e1) {}
-				return;
-			}
-
-			try
-			{
-				Object sessionObj = desktop.getSession().getAttribute(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY);
-				if (sessionObj != null && sessionObj instanceof Desktop)
-				{
-					Desktop sessionDesktop = (Desktop) sessionObj;
-
-					//don't destroy session if it have been attached to another desktop ( refresh will do that )
-					if (sessionDesktop == desktop)
-					{
-						desktop.getSession().getAttributes().clear();
-						desktop.getSession().invalidate();
-					}
-				}
-				else
-				{
-					desktop.getSession().getAttributes().clear();
-					desktop.getSession().invalidate();
-				}
-			}
-			catch (Exception e1) {}
+	{		
+		Locales.setThreadLocal(locale);
+		try {
+			refreshDashboard();
+		} catch (Exception e) {
+			logger.log(Level.INFO, e.getLocalizedMessage(), (e.getCause() != null ? e.getCause() : e));
 		}
 	}
 
@@ -182,10 +112,6 @@ public class DashboardRunnable implements Runnable, Serializable
 				ServerContext.dispose();
 			}
 		}
-	}
-
-	public void stop() {
-		stop = true;
 	}
 
 	/**

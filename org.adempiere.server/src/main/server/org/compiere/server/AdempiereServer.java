@@ -43,7 +43,7 @@ import org.compiere.wf.MWorkflowProcessor;
  *  @author Jorg Janke
  *  @version $Id: AdempiereServer.java,v 1.3 2006/10/09 00:23:26 jjanke Exp $
  */
-public abstract class AdempiereServer extends Thread 
+public abstract class AdempiereServer implements Runnable 
 {
 	/**
 	 * 	Create New Server Thead
@@ -78,7 +78,6 @@ public abstract class AdempiereServer extends Thread
 	 */
 	protected AdempiereServer (AdempiereProcessor model, int initialNap)
 	{
-		super (AdempiereServerGroup.get(), null, model.getName(), 0);
 		p_model = model;
 		m_ctx = new Properties(model.getCtx());
 		if (p_system == null)
@@ -86,7 +85,16 @@ public abstract class AdempiereServer extends Thread
 		p_client = MClient.get(m_ctx);
 		Env.setContext(m_ctx, "#AD_Client_ID", p_client.getAD_Client_ID());
 		m_initialNap = initialNap;
-	//	log.info(model.getName() + " - " + getThreadGroup());
+	
+		Timestamp dateNextRun = getDateNextRun(true);
+		if (dateNextRun != null)
+			m_nextWork = dateNextRun.getTime();
+		
+		long now = System.currentTimeMillis();
+		if (m_nextWork > now) 
+		{
+			m_sleepMS = m_nextWork - now;
+		}
 	}	//	ServerBase
 
 	/**	The Processor Model						*/
@@ -97,7 +105,7 @@ public abstract class AdempiereServer extends Thread
 	/**	Milliseconds to sleep - 10 Min default	*/
 	protected long				m_sleepMS = 600000;
 	/** Sleeping					*/
-	private volatile boolean	m_sleeping = false;
+	private volatile boolean	m_sleeping = true;
 	/** Server start time					*/
 	protected long				m_start = 0;
 	/** Number of Work executions	*/
@@ -137,40 +145,17 @@ public abstract class AdempiereServer extends Thread
 		return m_sleepMS;
 	}	//	getSleepMS
 
-
-	/**
-	 * 	Sleep for set time
-	 *	@return true if not interrupted
-	 */
-	public boolean sleep()
+	public long getInitialNap()
 	{
-		if (isInterrupted())
-		{
-			log.info (getName() + ": interrupted");
-			return false;
-		}
-		log.fine(getName() + ": sleeping " + TimeUtil.formatElapsed(m_sleepMS));
-		m_sleeping = true;
-		try
-		{
-			sleep (m_sleepMS);
-		}
-		catch (InterruptedException e)
-		{
-			log.info (getName() + ": interrupted");
-			m_sleeping = false;
-			return false;
-		}
-		m_sleeping = false;
-		return true;
-	}	//	sleep
+		return m_initialNap;
+	}
 
 	/**
 	 * 	Run Now
 	 */
 	public void runNow()
 	{
-		log.info(getName());
+		m_sleeping = false;
 		p_startWork = System.currentTimeMillis();
 		doWork();
 		long now = System.currentTimeMillis();
@@ -183,7 +168,9 @@ public abstract class AdempiereServer extends Thread
 		p_model.setDateLastRun(new Timestamp(now));
 		p_model.saveEx();
 		//
-		log.fine(getName() + ": " + getStatistics());
+		if (log.isLoggable(Level.FINE))
+			log.fine(getStatistics());
+		m_sleeping = true;
 	}	//	runNow
 
 	/**************************************************************************
@@ -191,76 +178,43 @@ public abstract class AdempiereServer extends Thread
 	 */
 	public void run ()
 	{
-		try
+		m_sleeping = false;
+		if (m_start == 0)
+			m_start = System.currentTimeMillis();
+		
+		//	---------------
+		p_startWork = System.currentTimeMillis();
+		doWork();
+		long now = System.currentTimeMillis();
+		//	---------------
+
+		p_runCount++;
+		m_runLastMS = now - p_startWork;
+		m_runTotalMS += m_runLastMS;
+
+		// Finished work - calculate datetime for next run
+		Timestamp lastRun = new Timestamp(now);
+		if (p_model instanceof AdempiereProcessor2)
 		{
-			log.fine(getName() + ": pre-nap - " + m_initialNap);
-			sleep (m_initialNap * 1000);
+			AdempiereProcessor2 ap = (AdempiereProcessor2) p_model;
+			if (ap.isIgnoreProcessingTime())
+			{
+				lastRun = new Timestamp(p_startWork);
+			}
 		}
-		catch (InterruptedException e)
-		{
-			log.log(Level.SEVERE, getName() + ": pre-nap interrupted", e);
-			return;
-		}
+		
+		m_nextWork = MSchedule.getNextRunMS(lastRun.getTime(),
+				p_model.getScheduleType(), p_model.getFrequencyType(),
+				p_model.getFrequency(), p_model.getCronPattern());
 
-		m_start = System.currentTimeMillis();
-		while (true)
-		{
-			if (m_nextWork == 0)
-			{
-				Timestamp dateNextRun = getDateNextRun(true);
-				if (dateNextRun != null)
-					m_nextWork = dateNextRun.getTime();
-			}
-			long now = System.currentTimeMillis();
-			if (m_nextWork > now)
-			{
-				m_sleepMS = m_nextWork - now;
-				if (!sleep ())
-					break;
-			}
-			if (isInterrupted())
-			{
-				log.info (getName() + ": interrupted");
-				break;
-			}
-
-			//	---------------
-			p_startWork = System.currentTimeMillis();
-			doWork();
-			now = System.currentTimeMillis();
-			//	---------------
-
-			p_runCount++;
-			m_runLastMS = now - p_startWork;
-			m_runTotalMS += m_runLastMS;
-
-			// Finished work - calculate datetime for next run
-			Timestamp lastRun = new Timestamp(now);
-			if (p_model instanceof AdempiereProcessor2)
-			{
-				AdempiereProcessor2 ap = (AdempiereProcessor2) p_model;
-				if (ap.isIgnoreProcessingTime())
-				{
-					lastRun = new Timestamp(p_startWork);
-				}
-			}
-			
-			m_nextWork = MSchedule.getNextRunMS(lastRun.getTime(),
-					p_model.getScheduleType(), p_model.getFrequencyType(),
-					p_model.getFrequency(), p_model.getCronPattern());
-
-			m_sleepMS = m_nextWork - now;
-			log.info(getName() + " Next run: " + new Timestamp(m_nextWork) + " sleep " + m_sleepMS);
-			//
-			p_model.setDateLastRun(lastRun);
-			p_model.setDateNextRun(new Timestamp(m_nextWork));
-			p_model.saveEx();
-			//
-			log.fine(getName() + ": " + getStatistics());
-			if (!sleep())
-				break;
-		}
-		m_start = 0;
+		m_sleepMS = m_nextWork - now;
+		if (log.isLoggable(Level.INFO))
+			log.info(" Next run: " + new Timestamp(m_nextWork) + " sleep " + m_sleepMS);
+		//
+		p_model.setDateLastRun(lastRun);
+		p_model.setDateNextRun(new Timestamp(m_nextWork));
+		p_model.saveEx();
+		m_sleeping = true;
 	}	//	run
 
 	/**
@@ -347,11 +301,8 @@ public abstract class AdempiereServer extends Thread
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer (getName())
-			.append (",Prio=").append(getPriority())
-			.append (",").append (getThreadGroup())
-			.append (",Alive=").append(isAlive())
-			.append (",Sleeping=").append(m_sleeping)
+		StringBuffer sb = new StringBuffer ()
+			.append ("Sleeping=").append(m_sleeping)
 			.append (",Last=").append(getDateLastRun());
 		if (m_sleeping)
 			sb.append (",Next=").append(getDateNextRun(false));
@@ -390,6 +341,16 @@ public abstract class AdempiereServer extends Thread
 	{
 		return p_model.getLogs();
 	}	//	getLogs
+
+
+	protected boolean isInterrupted() {
+		return Thread.currentThread().isInterrupted();
+	}
+
+
+	public String getName() {
+		return p_model.getName();
+	}
 
 
 	public static boolean isOKtoRunOnIP(AdempiereProcessor model) {

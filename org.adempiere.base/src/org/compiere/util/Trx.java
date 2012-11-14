@@ -25,9 +25,11 @@ import java.sql.Savepoint;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.Adempiere;
 import org.compiere.model.PO;
 
 /**
@@ -85,13 +87,9 @@ public class Trx implements VetoableChangeListener
 	
 	private static Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
 
-	static
+	public static void startTrxMonitor()
 	{
-		Thread monitorThread = new Thread(s_monitor);
-		monitorThread.setDaemon(true);
-		monitorThread.setPriority(Thread.MIN_PRIORITY);
-		monitorThread.setName("Trx-Monitor");
-		monitorThread.start();
+		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, 5, 5, TimeUnit.MINUTES);
 	}
 
 	/**
@@ -611,32 +609,23 @@ public class Trx implements VetoableChangeListener
 
 		public void run()
 		{
-			for(;;)
+			if (Trx.s_cache != null && !Trx.s_cache.isEmpty())
 			{
-				if (Trx.s_cache != null && !Trx.s_cache.isEmpty())
+				Trx[] trxs = Trx.s_cache.values().toArray(new Trx[0]);
+				for(int i = 0; i < trxs.length; i++)
 				{
-					Trx[] trxs = Trx.s_cache.values().toArray(new Trx[0]);
-					for(int i = 0; i < trxs.length; i++)
-					{
-						if (trxs[i].m_startTime <= 0)
-							continue;
+					if (trxs[i].m_startTime <= 0)
+						continue;
 
-						long since = System.currentTimeMillis() - trxs[i].m_startTime;
-						if (since > trxs[i].getTimeout() * 1000)
-						{
-							trxs[i].log.log(Level.WARNING, "Transaction timeout. Name="+trxs[i].getTrxName() + ", timeout(sec)="+(since / 1000));
-							trxs[i].close();
-						}
+					long since = System.currentTimeMillis() - trxs[i].m_startTime;
+					if (since > trxs[i].getTimeout() * 1000)
+					{
+						trxs[i].log.log(Level.WARNING, "Transaction timeout. Name="+trxs[i].getTrxName() + ", timeout(sec)="+(since / 1000));
+						trxs[i].close();
 					}
-				}
-				try {
-					Thread.sleep(1000 * 10);
-				} catch (InterruptedException e) {
-					Thread.interrupted();
 				}
 			}
 		}
-
 	}
 
 	private boolean isLocalTrx(String trxName)
