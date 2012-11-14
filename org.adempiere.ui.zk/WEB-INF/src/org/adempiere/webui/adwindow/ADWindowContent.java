@@ -67,9 +67,9 @@ public class ADWindowContent extends AbstractADWindowContent
 
 	private Keylistener keyListener;	
 
-    public ADWindowContent(Properties ctx, int windowNo)
+    public ADWindowContent(Properties ctx, int windowNo, int adWindowId)
     {
-        super(ctx, windowNo);
+        super(ctx, windowNo, adWindowId);
     }
 
    	protected Component doCreatePart(Component parent)

@@ -31,6 +31,17 @@ public class WebUIResourceFinder implements IResourceFinder {
 		if (url == null && name.startsWith("org/compiere/images")) {
 			String t = name.substring("org/compiere/".length());
 			url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+			if (url == null && t.endsWith(".gif")) {
+				t = t.replace(".gif", ".png");
+				url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+			}
+		} else if (url == null && name.startsWith("/org/compiere/images")) {
+			String t = name.substring("/org/compiere/".length());
+			url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+			if (url == null && t.endsWith(".gif")) {
+				t = t.replace(".gif", ".png");
+				url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+			}
 		}
 		return url;
 	}

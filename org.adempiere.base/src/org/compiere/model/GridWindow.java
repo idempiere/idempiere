@@ -250,6 +250,18 @@ public class GridWindow implements Serializable
 		MImage mImage = MImage.get(Env.getCtx(), m_vo.AD_Image_ID);
 		return mImage.getImage();
 	}   //  getImage
+	
+	/**
+	 * @return MImage
+	 */
+	public MImage getMImage()
+	{
+		if (m_vo.AD_Image_ID == 0)
+			return null;
+		//
+		MImage mImage = MImage.get(Env.getCtx(), m_vo.AD_Image_ID);
+		return mImage;
+	}
 
 	/**
 	 *  Get Window Icon

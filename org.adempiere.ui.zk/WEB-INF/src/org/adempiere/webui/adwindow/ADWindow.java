@@ -17,12 +17,16 @@
 
 package org.adempiere.webui.adwindow;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.MImage;
 import org.compiere.model.MQuery;
+import org.compiere.util.CCache;
+import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -42,6 +46,9 @@ public class ADWindow extends AbstractUIPart
 	private MQuery query;
 
 	private Component windowPanelComponent;
+	private MImage image;
+	
+	private static final CCache<Integer, AImage> imageCache = new CCache<Integer, AImage>("WindowImageCache", 5);
     
     public ADWindow(Properties ctx, int adWindowId)
     {
@@ -62,7 +69,9 @@ public class ADWindow extends AbstractUIPart
     
     private void init()
     {
-        windowContent = new ADWindowContent(ctx, windowNo);                
+        windowContent = new ADWindowContent(ctx, windowNo, adWindowId);      
+        _title = windowContent.getTitle();
+        image = windowContent.getImage();
     }
     
     public String getTitle()
@@ -70,14 +79,35 @@ public class ADWindow extends AbstractUIPart
         return _title;
     }
     
+    public MImage getMImage()
+    {
+    	return image;
+    }
+    
+    public AImage getAImage() throws IOException {
+    	MImage image = getMImage();
+    	AImage aImage = null;
+    	if (image != null) {
+    		synchronized (imageCache) {
+    			aImage = imageCache.get(image.getAD_Image_ID());
+			}
+    		if (aImage == null) {
+    			aImage = new AImage(image.getName(), image.getData());
+    			synchronized (imageCache) {
+    				imageCache.put(image.getAD_Image_ID(), aImage);
+    			}
+    		}
+    	}
+		return aImage;
+	}
+    
     protected Component doCreatePart(Component parent) 
     {
     	windowPanelComponent = windowContent.createPart(parent);
     	windowPanelComponent.setAttribute("ADWindow", this);
     	windowPanelComponent.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, windowNo);
-    	if (windowContent.initPanel(adWindowId, query))
+    	if (windowContent.initPanel(query))
     	{
-    		_title = windowContent.getTitle();    	
     		return windowPanelComponent;
     	}
     	else

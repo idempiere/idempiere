@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import org.adempiere.base.Core;
 import org.compiere.util.CCache;
 import org.compiere.util.Ini;
 
@@ -257,6 +258,10 @@ public class MImage extends X_AD_Image
 		}
 		//	Get from URL
 		URL url = getURL();
+		if (url == null) 
+		{
+			url = Core.getResourceFinder().getResource(str);
+		}
 		if (url == null)
 		{
 			log.config("No URL");

@@ -77,6 +77,7 @@ import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.Lookup;
+import org.compiere.model.MImage;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
@@ -175,15 +176,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	protected BreadCrumb breadCrumb;
 
+	private int adWindowId;
+
+	private MImage image;
+
 	/**
 	 * Constructor
 	 * @param ctx
 	 * @param windowNo
+	 * @param adWindowId 
 	 */
-    public AbstractADWindowContent(Properties ctx, int windowNo)
+    public AbstractADWindowContent(Properties ctx, int windowNo, int adWindowId)
     {
         this.ctx = ctx;
         this.curWindowNo = windowNo;
+        this.adWindowId = adWindowId;
 
         initComponents();
     }
@@ -224,7 +231,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.addListener(this);
 
         statusBar = new StatusBar();
-    }
+        
+        GridWindowVO gWindowVO = AEnv.getMWindowVO(curWindowNo, adWindowId, 0);
+        if (gWindowVO == null)
+        {
+            throw new ApplicationException(Msg.getMsg(ctx,
+                    "AccessTableNoView")
+                    + "(No Window Model Info)");
+        }
+        gridWindow = new GridWindow(gWindowVO, true);
+        title = gridWindow.getName();
+        image = gridWindow.getMImage();
+    }    
 
     /**
      * @return IADTab
@@ -247,7 +265,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      * @param query
      * @return boolean
      */
-	public boolean initPanel(int adWindowId, MQuery query)
+	public boolean initPanel(MQuery query)
     {
 		// This temporary validation code is added to check the reported bug
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
@@ -276,15 +294,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		boolean autoNew = Env.isAutoNew(ctx);
 		Env.setAutoNew(ctx, curWindowNo, autoNew);
 
-        GridWindowVO gWindowVO = AEnv.getMWindowVO(curWindowNo, adWindowId, 0);
-        if (gWindowVO == null)
-        {
-            throw new ApplicationException(Msg.getMsg(ctx,
-                    "AccessTableNoView")
-                    + "(No Window Model Info)");
-        }
-        gridWindow = new GridWindow(gWindowVO, true);
-        title = gridWindow.getName();
+        
 
         // Set SO/AutoNew for Window
         Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
@@ -518,8 +528,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 
 			});
-
-//		    curTab = gTab;
 		}
 
 		if (gTab.isSortTab())
@@ -667,6 +675,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public String getTitle()
     {
         return title;
+    }
+    
+    public MImage getImage()
+    {
+    	return image;
     }
 
     /**

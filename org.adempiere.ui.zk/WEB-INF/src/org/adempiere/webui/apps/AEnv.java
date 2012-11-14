@@ -269,7 +269,8 @@ public final class AEnv
 					if (mWindowVO != null)
 					{
 						mWindowVO = mWindowVO.clone(WindowNo);
-						log.info("Cached=" + mWindowVO);
+						if (log.isLoggable(Level.INFO))
+							log.info("Cached=" + mWindowVO);
 					}
 				}
 			}
@@ -280,7 +281,7 @@ public final class AEnv
 		{
 			log.config("create local");
 			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
-			if (mWindowVO != null)
+			if (mWindowVO != null && Ini.isCacheWindow())
 			{
 				synchronized (windowCache)
 				{

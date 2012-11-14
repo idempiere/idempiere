@@ -13,8 +13,11 @@
  *****************************************************************************/
 package org.adempiere.webui.desktop;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.wf.WFPanel;
@@ -24,13 +27,16 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.WindowContainer;
-import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.IServerPushCallback;
+import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.window.WTask;
+import org.compiere.Adempiere;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;
 import org.compiere.util.Env;
 import org.compiere.util.WebDoc;
 import org.compiere.wf.MWorkflow;
+import org.zkoss.image.AImage;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Iframe;
@@ -44,6 +50,7 @@ import org.zkoss.zul.Tabpanels;
  */
 public abstract class TabbedDesktop extends AbstractDesktop {
 
+	private static final String IN_PROGRESS_IMAGE = "~./zk/img/progress3.gif";
 	protected WindowContainer windowContainer;
 
 	public TabbedDesktop() {
@@ -109,21 +116,12 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 
 	/**
 	 *
+	 * @param <T>
 	 * @param windowId
 	 * @return ADWindow
 	 */
 	public ADWindow openWindow(int windowId) {
-		ADWindow adWindow = new ADWindow(Env.getCtx(), windowId);
-
-		DesktopTabpanel tabPanel = new DesktopTabpanel();
-		if (adWindow.createPart(tabPanel) != null) {
-			preOpenNewTab();
-			windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
-			return adWindow;
-		} else {
-			//user cancel
-			return null;
-		}
+		return openWindow(windowId, null);
 	}
 
 	/**
@@ -133,17 +131,16 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 * @return ADWindow
 	 */
 	public ADWindow openWindow(int windowId, MQuery query) {
-    	ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
+		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
-		DesktopTabpanel tabPanel = new DesktopTabpanel();
-		if (adWindow.createPart(tabPanel) != null) {
-			preOpenNewTab();
-			windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
-			return adWindow;
-		} else {
-			//user cancel
-			return null;
-		}
+		final DesktopTabpanel tabPanel = new DesktopTabpanel();		
+		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
+		tab.setImage(IN_PROGRESS_IMAGE);
+		tab.setClosable(false);		
+		OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel);
+		Adempiere.getThreadPoolExecutor().schedule(runnable, 100, TimeUnit.MICROSECONDS);
+		
+		return adWindow;
 	}
 
 	/**
@@ -220,14 +217,14 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      */
     public void showZoomWindow(int AD_Window_ID, MQuery query)
     {
-    	ADWindow wnd = new ADWindow(Env.getCtx(), AD_Window_ID, query);
+    	final ADWindow wnd = new ADWindow(Env.getCtx(), AD_Window_ID, query);
 
-    	DesktopTabpanel tabPanel = new DesktopTabpanel();
-    	if (wnd.createPart(tabPanel) != null)
-    	{
-    		preOpenNewTab();
-    		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, wnd.getTitle(), true, true);
-    	}
+    	final DesktopTabpanel tabPanel = new DesktopTabpanel();		
+		final Tab tab = windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, wnd.getTitle(), true, true);
+		tab.setImage(IN_PROGRESS_IMAGE);
+		tab.setClosable(false);		
+		OpenWindowRunnable runnable = new OpenWindowRunnable(wnd, tab, tabPanel);
+		Adempiere.getThreadPoolExecutor().schedule(runnable, 100, TimeUnit.MICROSECONDS);
 	}
 
     /**
@@ -334,5 +331,46 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 */
 	protected void preOpenNewTab()
 	{
+	}
+	
+	class OpenWindowRunnable extends ContextRunnable {
+
+		private final ADWindow adWindow;
+		private final Tab tab;
+		private final DesktopTabpanel tabPanel;
+
+		protected OpenWindowRunnable(ADWindow adWindow, Tab tab, DesktopTabpanel tabPanel) {
+			this.adWindow = adWindow;
+			this.tab = tab;
+			this.tabPanel = tabPanel;
+		}
+		
+		@Override
+		protected void doRun() {
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+			}
+			ServerPushTemplate template = new ServerPushTemplate(windowContainer.getComponent().getDesktop());
+			template.executeAsync(new IServerPushCallback() {					
+				@Override
+				public void updateUI() {
+					preOpenNewTab();
+					if (adWindow.createPart(tabPanel) != null ) {
+						tab.setImage(null);
+						tab.setClosable(true);
+						if (adWindow.getMImage() != null) {
+							try {
+								AImage aImage = adWindow.getAImage();
+								tab.setImageContent(aImage);
+							} catch (IOException e) {
+							}
+						}
+					} else {
+						tab.onClose();
+					}
+				}
+			});
+		}		
 	}
 }
