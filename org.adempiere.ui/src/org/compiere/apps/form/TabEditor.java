@@ -17,7 +17,9 @@ package org.compiere.apps.form;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.compiere.model.GridField;
 import org.compiere.model.MField;
@@ -40,10 +42,14 @@ public class TabEditor
 	public static CLogger log = CLogger.getCLogger(TabEditor.class);
 
 	private List<MField> fields = new ArrayList<MField>();
-
-	private MField m_activeField;
-
+	
 	private List<GridField> gridFields = new ArrayList<GridField>();
+	
+	private MField m_activeField;
+	
+	private Map<Integer, MField> mapField = new HashMap<Integer, MField>();
+	
+	private Map<Integer, GridField> mapGridField = new HashMap<Integer, GridField>();
 
 	public List<GridField> getGridFields() {
 		return gridFields;
@@ -62,8 +68,10 @@ public class TabEditor
 		GridField[] l_gridFields = GridField.createFields(Env.getCtx(), windowNo, 0, tabid);
 		for (GridField gridField : l_gridFields) {
 			gridFields.add(gridField);
+			mapGridField.put(gridField.getAD_Field_ID(), gridField);
 			MField field = new MField(Env.getCtx(), gridField.getAD_Field_ID(), null);
 			fields.add(field);
+			mapField.put(field.getAD_Field_ID(), field);
 			gridField.getVO().IsReadOnly = true;
 			gridField.getVO().IsMandatory = false;
 			gridField.getVO().IsUpdateable = false;
@@ -81,21 +89,11 @@ public class TabEditor
 	}
 
 	protected MField getMField(int fieldid) {
-		for (MField field : fields) {
-			if (field.getAD_Field_ID() == fieldid) {
-				return field;
-			}
-		}
-		return null;
+		return 	mapField.get(fieldid);
 	}
 
 	protected GridField getGridField(MField field) {
-		for (GridField gridfield : gridFields) {
-			if (gridfield.getAD_Field_ID() == field.getAD_Field_ID()) {
-				return gridfield;
-			}
-		}
-		return null;
+		return  mapGridField.get( field.getAD_Field_ID());
 	}
 
 	public MField getActiveMField() {
