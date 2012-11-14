@@ -34,7 +34,6 @@ import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.impl.ExecutionCarryOver;
-import org.zkoss.zk.ui.sys.DesktopCtrl;
 import org.zkoss.zk.ui.sys.Scheduler;
 import org.zkoss.zk.ui.sys.ServerPush;
 import org.zkoss.zk.ui.util.Clients;
@@ -126,12 +125,12 @@ public class AtmosphereServerPush implements ServerPush {
 
     private synchronized void onPush() throws IOException {
     	AtmosphereResource resource = this.resource.get();
-    	if (resource != null) {
+    	if (resource != null) {	    	
 	    	switch (resource.transport()) {
-	    	case JSONP:
+	    	case POLLING:
 	    	case LONG_POLLING:
 	    		if (resource.isSuspended())
-	    			commitResponse();	
+	    			commitResponse();
 	    		break;
 	    	case WEBSOCKET :
 	    	case STREAMING:
@@ -178,15 +177,12 @@ public class AtmosphereServerPush implements ServerPush {
     @Override
 	public synchronized <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
-    	boolean pendingPush = ((DesktopCtrl)desktop.get()).scheduledServerPush();
         scheduler.schedule(task, event);
-        if (!pendingPush || (this.resource.get() != null && this.resource.get().isSuspended())) {
-	        try {
-				onPush();
-			} catch (IOException e) {
-				log.warn(e.getLocalizedMessage(), e);
-			}
-        }
+        try {
+			onPush();
+		} catch (IOException e) {
+			log.error(e.getLocalizedMessage(), e);
+		}
     }
 
     @Override
@@ -222,25 +218,19 @@ public class AtmosphereServerPush implements ServerPush {
     public synchronized void onRequest(AtmosphereResource resource) {
     	if (this.resource.get() != null) {
     		AtmosphereResource aResource = this.resource.get();
-    		if (aResource.isSuspended()) {
+    		if (aResource != resource) {
     			try {
-					commitResponse();
+					onPush();
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error(e.getLocalizedMessage(), e);
 				}
     		}
 		} 
 
-    	Desktop desktop = this.desktop.get();
-    	if (desktop != null && desktop instanceof DesktopCtrl)
-		{
-			if (((DesktopCtrl)desktop).scheduledServerPush()) 
-		  	{
-		  		return;
-		  	}
-		}
-    	
 	  	this.resource.set(resource);
+	  	if (log.isTraceEnabled()) {
+	  		log.trace(resource.transport().name());
+	  	}
 	  	if (!resource.isSuspended()) {
 	  		resource.suspend(-1, true);
 	  	}

@@ -16,9 +16,8 @@
     desktop: null,
     active: false,
     timeout: 300000,
-    delay: 1000,
+    delay: 100,
     failures: 0,
-    count: 0,
 
     $init: function(desktop, timeout) {
       this.desktop = desktop;
@@ -37,40 +36,42 @@
         return;
       
       var me = this;
-      
       var socket = $.atmosphere;
       var request = { 
     		url: zk.ajaxURI("/comet", {
     	          au: true
     	        }),    	        
 		  	logLevel : 'debug',
-		  	transport :  'streaming',
-		  	fallbackTransport: 'long-polling',
+		  	transport :  'long-polling',
+		  	fallbackTransport: 'streaming',
 			method: "GET",
 			cache: false,
 			async: true,
 		    timeout: me.timeout,
 		    onError: function(response) {
+		    	if (typeof console == "object") {
+		            console.error(response);
+		        }
 		    	me.failures += 1;
-		    	me.count--;
-		    	if (response.transport == 'long-polling' && me.count == 0) {
-		    		me._schedule();
-		    	} else if (me.failures >= 10) {
+		    	if (me.failures < 10) {
+		    		if (response.transport == 'long-polling') {		    			
+			    		me._schedule();
+		    		}		    		
+		    	} else {
 		    		me.stop();
 		    	}
             },
             onMessage: function(response) {
             	zAu.cmd0.echo(me.desktop);
             	me.failures = 0;
-            	me.count--;
-                if (response.transport == 'long-polling' && me.count == 0) {
-                	me._schedule();
-                }
+            	if (response.transport == 'long-polling') {
+            		me._schedule();
+            	}
             }
       };
       
       request.url = request.url+'?dtid='+me.desktop.id;
-      this.count++;
+      socket.unsubscribe();
       socket.subscribe(request);      
     },
     start: function() {
