@@ -31,16 +31,10 @@ import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
-import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.util.UserPreference;
-import org.compiere.model.MQuery;
 import org.compiere.util.CLogger;
-import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.zkforge.keylistener.Keylistener;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -48,11 +42,9 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.East;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.West;
 
 /**
  *
@@ -72,10 +64,6 @@ public class ADWindowContent extends AbstractADWindowContent
 	private Borderlayout layout;
 
 	private Center contentArea;
-
-	private West west;
-
-	private East east;
 
 	private Keylistener keyListener;	
 
@@ -136,22 +124,6 @@ public class ADWindowContent extends AbstractADWindowContent
     	keyListener.addEventListener(Events.ON_CTRL_KEY, toolbar);
     	keyListener.addEventListener(Events.ON_CTRL_KEY, this);
     	keyListener.setAutoBlur(false);
-
-        layout.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, new ITabOnSelectHandler() {
-			public void onSelect() {
-				IADTabbox adTab = getADTab();
-				if (adTab != null) {
-					IADTabpanel iadTabpanel = adTab.getSelectedTabpanel();
-					if (iadTabpanel != null && iadTabpanel instanceof ADTabpanel) {
-						ADTabpanel adTabpanel = (ADTabpanel) iadTabpanel;
-						if (adTabpanel.isGridView()) {
-							adTabpanel.getGridView().scrollToCurrentRow();
-						}
-					}
-				}
-				getComponent().getParent().invalidate();
-			}
-		});
         
         return layout;
     }
@@ -165,21 +137,6 @@ public class ADWindowContent extends AbstractADWindowContent
 	public Borderlayout getComponent() {
 		return layout;
 	}
-
-
-
-	@Override
-	public boolean initPanel(int adWindowId, MQuery query) {
-		boolean retValue = super.initPanel(adWindowId, query);
-		if (adTabbox.getTabCount() == 1) {
-			if (west != null)
-				west.setVisible(false);
-			else if (east != null)
-				east.setVisible(false);
-		}
-		return retValue;
-	}
-
 
 	/**
      * @param event
