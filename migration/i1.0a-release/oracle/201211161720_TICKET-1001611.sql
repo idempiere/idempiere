@@ -158,11 +158,6 @@ INSERT INTO AD_Column (Version,IsSyncDatabase,IsEncrypted,AD_Table_ID,AD_Column_
 INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200893 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
 ;
 
--- Nov 14, 2012 2:30:42 PM SGT
--- Ticket #1001611: Adjust Payment Processor Options for Tenant
-ALTER TABLE C_BankAccount_Processor ADD HostAddress NVARCHAR2(60) NOT NULL
-;
-
 -- Nov 14, 2012 2:30:55 PM SGT
 -- Ticket #1001611: Adjust Payment Processor Options for Tenant
 UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2012-11-14 14:30:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200893
@@ -181,11 +176,6 @@ INSERT INTO AD_Column (Version,IsSyncDatabase,IsEncrypted,AD_Table_ID,AD_Column_
 -- Nov 14, 2012 2:31:49 PM SGT
 -- Ticket #1001611: Adjust Payment Processor Options for Tenant
 INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200894 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
-;
-
--- Nov 14, 2012 2:31:52 PM SGT
--- Ticket #1001611: Adjust Payment Processor Options for Tenant
-ALTER TABLE C_BankAccount_Processor ADD HostPort NUMBER(10) NOT NULL
 ;
 
 -- Nov 14, 2012 2:31:56 PM SGT
