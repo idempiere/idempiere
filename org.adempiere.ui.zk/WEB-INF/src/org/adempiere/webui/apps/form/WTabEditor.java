@@ -122,6 +122,8 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	Grid form;
 	Vlayout centerVLayout;
 	Vlayout westVLayout ;
+
+	private static final int POSSEQMULTIPLIER = 10000000;
 	
 	public WTabEditor()
 	{
@@ -351,7 +353,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	private void setLastCellProps(Cell lastCell, int actualxpos, int seqNo) {
 		lastCell.setDroppable("true");
 		lastCell.addEventListener(Events.ON_DROP, this);
-		int value = (actualxpos+1) * 10000000 + seqNo;
+		int value = (actualxpos+1) * POSSEQMULTIPLIER + seqNo;
 		mapEmptyCellField.put(lastCell, value);
 	}
 
@@ -547,8 +549,8 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				MField field = getMField(fieldid);
 				if (field != null) {
 					setActiveMField(field);
-					setBackgroundField(field);
 					setProperties(field);
+					setBackgroundField(field);
 				}
 			}
 		}
@@ -560,13 +562,14 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				MField field = getMField(gridField.getAD_Field_ID());
 				if (field != null) {
 					setActiveMField(field);
-					setBackgroundField(field);
 					setProperties(field);
-				}
-				// select the field on the visible list and set focus
-				for (Listitem item : visible.getItems()) {
-					if (field.getAD_Field_ID() == (Integer) item.getValue()) {
-						visible.setSelectedItem(item);
+					setBackgroundField(field);
+					// select the field on the visible list and set focus
+					for (Listitem item : visible.getItems()) {
+						if (field.getAD_Field_ID() == (Integer) item.getValue()) {
+							visible.setSelectedItem(item);
+							break;
+						}
 					}
 				}
 			}
@@ -588,22 +591,17 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				} else {
 					field.setColumnSpan(field.getColumnSpan()+mult);
 				}
-				setProperties(field);
-				resortArrays();
-				setProperties(field); // seqno could change
-				updateLists(field);
-				repaintGrid();
-				if (field != null) {
-					setActiveMField(field);
-					setBackgroundField(field);
-					setProperties(field);
-				}
 				// select the field on the visible list and set focus
 				for (Listitem item : visible.getItems()) {
 					if (field.getAD_Field_ID() == (Integer) item.getValue()) {
 						visible.setSelectedItem(item);
+						break;
 					}
 				}
+				setActiveMField(field);
+				setProperties(field);
+				repaintGrid();
+				setBackgroundField(field);
 			}
 		}
 
@@ -624,13 +622,12 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 					// check empty cells
 					Integer posseq = mapEmptyCellField.get(me.getTarget());
 					if (posseq != null) {
-						int actualxpos = posseq / 10000000;
-						int seqno = posseq - (actualxpos * 10000000);
+						int actualxpos = posseq / POSSEQMULTIPLIER;
+						int seqno = posseq - (actualxpos * POSSEQMULTIPLIER);
 						MField field = getMField((Integer) startItem.getValue());
 						field.setSeqNo(seqno-5);
 						field.setIsDisplayed(true);
 						field.setXPosition(actualxpos);
-						setProperties(field);
 						resortArrays();
 						setProperties(field); // seqno could change
 						updateLists(field);
@@ -646,17 +643,16 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				// item moved from visible to invisible
 				MField field = getMField((Integer) startItem.getValue());
 				setActiveMField(field);
-				setBackgroundField(field);
 				field.setSeqNo(0);
 				field.setIsDisplayed(false);
 				field.setXPosition(1);
-				setProperties(field);
 				resortArrays();
 				setProperties(field); // seqno could change
 				updateLists(field);
 				repaintGrid();
+				setBackgroundField(field);
 			}
-			else if (startItem.getListbox() == invisible && endItem.getListbox() == visible)
+			else if (startItem.getListbox() == invisible && endItem.getListbox() == visible && (Integer) startItem.getValue() != 0)
 			{
 				// item moved from invisible to visible
 				MField field = getMField((Integer) startItem.getValue());
@@ -664,7 +660,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				field.setSeqNo(fieldTo.getSeqNo()-5);
 				field.setIsDisplayed(true);
 				field.setXPosition(fieldTo.getXPosition());
-				setProperties(field);
 				resortArrays();
 				setProperties(field); // seqno could change
 				updateLists(field);
@@ -680,7 +675,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				field.setSeqNo(fieldTo.getSeqNo()-5);
 				field.setIsDisplayed(true);
 				field.setXPosition(fieldTo.getXPosition());
-				setProperties(field);
 				resortArrays();
 				setProperties(field); // seqno could change
 				updateLists(field);
@@ -766,9 +760,10 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		visible.removeAllItems();
 		invisible.removeAllItems();
 
-		for(MField field : getMFields())
+		for (MField field : getMFields())
 		{
-			if (!field.isActive())
+			GridField gridField = getGridField(field);
+			if (!field.isActive() || gridField.isToolbarButton())
 				continue;
 			KeyNamePair pair = new KeyNamePair(field.getAD_Field_ID(), field.getName());
 			if (field.isDisplayed()) {
@@ -781,6 +776,9 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 					invisible.setSelectedKeyNamePair(pair);
 			}
 		} 
+		if  (invisible.getItems().isEmpty()){
+			 invisible.addItem(new KeyNamePair(0, "..."));
+		}
 	}
 	
 	@Override

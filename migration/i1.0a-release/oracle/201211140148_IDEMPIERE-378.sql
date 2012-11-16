@@ -133,3 +133,6 @@ INSERT INTO AD_ToolBarButton (Action,AD_Tab_ID,SeqNo,AD_Process_ID,AD_ToolBarBut
 INSERT INTO AD_ToolBarButton (Action,AD_Tab_ID,SeqNo,AD_Process_ID,AD_ToolBarButton_ID,Updated,IsActive,IsCustomization,Name,AD_Client_ID,AD_ToolBarButton_UU,ComponentName,Created,CreatedBy,UpdatedBy,AD_Org_ID) VALUES ('W',692,10,200016,200072,TO_DATE('2012-11-12 18:37:49','YYYY-MM-DD HH24:MI:SS'),'Y','N','Reverse PO Matching',0,'99e7e98d-a600-4174-9b55-923b790d03ba','ReverseMatchPO',TO_DATE('2012-11-12 18:37:49','YYYY-MM-DD HH24:MI:SS'),100,100,0)
 ;
 
+SELECT register_migration_script('201211140148_IDEMPIERE-378.sql') FROM dual
+;
+

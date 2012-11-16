@@ -155,29 +155,31 @@ public class WPaymentEditor extends WEditor implements ListDataListener {
 	@Override
 	public void setReadWrite(boolean readWrite) {
 		GridTab m_mTab = gridField.getGridTab();
-		String m_DocStatus = (String) m_mTab.getValue("DocStatus");
-		// DocStatus
-		if (m_DocStatus == null)
-			m_DocStatus = "";
-		// Is the Trx closed? Reversed / Voided / Cloased
-		if (m_DocStatus.equals("RE") || m_DocStatus.equals("VO") || m_DocStatus.equals("CL"))
-		{
-			getComponent().setEnabled(readWrite, false);
-			return;
-		}
-		
 		boolean m_onlyRule = false;
-		// Document is not complete - allow to change the Payment Rule only
-		if (m_DocStatus.equals("CO") || m_DocStatus.equals("WP"))
-			m_onlyRule = false;
-		else
-			m_onlyRule = true;
-		
-		boolean m_isSOTrx = "Y".equals(Env.getContext(Env.getCtx(), gridField.getWindowNo(), "IsSOTrx"));
-		// PO only Rule
-		if (!m_onlyRule // Only order has Warehouse
-				&& !m_isSOTrx && m_mTab.getValue("M_Warehouse_ID") != null)
-			m_onlyRule = true;
+		if (m_mTab != null) {
+			String m_DocStatus = (String) m_mTab.getValue("DocStatus");
+			// DocStatus
+			if (m_DocStatus == null)
+				m_DocStatus = "";
+			// Is the Trx closed? Reversed / Voided / Cloased
+			if (m_DocStatus.equals("RE") || m_DocStatus.equals("VO") || m_DocStatus.equals("CL"))
+			{
+				getComponent().setEnabled(readWrite, false);
+				return;
+			}
+			
+			// Document is not complete - allow to change the Payment Rule only
+			if (m_DocStatus.equals("CO") || m_DocStatus.equals("WP"))
+				m_onlyRule = false;
+			else
+				m_onlyRule = true;
+			
+			boolean m_isSOTrx = "Y".equals(Env.getContext(Env.getCtx(), gridField.getWindowNo(), "IsSOTrx"));
+			// PO only Rule
+			if (!m_onlyRule // Only order has Warehouse
+					&& !m_isSOTrx && m_mTab.getValue("M_Warehouse_ID") != null)
+				m_onlyRule = true;
+		}
 
 		getComponent().setEnabled(readWrite, readWrite && !m_onlyRule);
 	}
