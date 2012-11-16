@@ -32,7 +32,7 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121116L;
 
     /** Standard Constructor */
     public X_C_PaymentProcessor (Properties ctx, int C_PaymentProcessor_ID, String trxName)
@@ -50,15 +50,13 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 			setAcceptDiscover (false);
 			setAcceptMC (false);
 			setAcceptVisa (false);
+			setC_PaymentProcessor_ID (0);
 			setCommission (Env.ZERO);
 			setCostPerTrx (Env.ZERO);
-			setC_PaymentProcessor_ID (0);
 			setHostAddress (null);
 			setHostPort (0);
 			setName (null);
-			setPassword (null);
 			setRequireVV (false);
-			setUserID (null);
         } */
     }
 
@@ -414,6 +412,43 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 		return ii.intValue();
 	}
 
+	/** Set Payment Processor.
+		@param C_PaymentProcessor_ID 
+		Payment processor for electronic payments
+	  */
+	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID)
+	{
+		if (C_PaymentProcessor_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, Integer.valueOf(C_PaymentProcessor_ID));
+	}
+
+	/** Get Payment Processor.
+		@return Payment processor for electronic payments
+	  */
+	public int getC_PaymentProcessor_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentProcessor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set C_PaymentProcessor_UU.
+		@param C_PaymentProcessor_UU C_PaymentProcessor_UU	  */
+	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU)
+	{
+		set_Value (COLUMNNAME_C_PaymentProcessor_UU, C_PaymentProcessor_UU);
+	}
+
+	/** Get C_PaymentProcessor_UU.
+		@return C_PaymentProcessor_UU	  */
+	public String getC_PaymentProcessor_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_PaymentProcessor_UU);
+	}
+
 	/** Set Commission %.
 		@param Commission 
 		Commission stated as a percentage
@@ -452,43 +487,6 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** Set Payment Processor.
-		@param C_PaymentProcessor_ID 
-		Payment processor for electronic payments
-	  */
-	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID)
-	{
-		if (C_PaymentProcessor_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, Integer.valueOf(C_PaymentProcessor_ID));
-	}
-
-	/** Get Payment Processor.
-		@return Payment processor for electronic payments
-	  */
-	public int getC_PaymentProcessor_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentProcessor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_PaymentProcessor_UU.
-		@param C_PaymentProcessor_UU C_PaymentProcessor_UU	  */
-	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU)
-	{
-		set_Value (COLUMNNAME_C_PaymentProcessor_UU, C_PaymentProcessor_UU);
-	}
-
-	/** Get C_PaymentProcessor_UU.
-		@return C_PaymentProcessor_UU	  */
-	public String getC_PaymentProcessor_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_C_PaymentProcessor_UU);
 	}
 
 	/** Set Description.
@@ -589,40 +587,6 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
     {
         return new KeyNamePair(get_ID(), getName());
     }
-
-	/** Set Partner ID.
-		@param PartnerID 
-		Partner ID or Account for the Payment Processor
-	  */
-	public void setPartnerID (String PartnerID)
-	{
-		set_Value (COLUMNNAME_PartnerID, PartnerID);
-	}
-
-	/** Get Partner ID.
-		@return Partner ID or Account for the Payment Processor
-	  */
-	public String getPartnerID () 
-	{
-		return (String)get_Value(COLUMNNAME_PartnerID);
-	}
-
-	/** Set Password.
-		@param Password 
-		Password of any length (case sensitive)
-	  */
-	public void setPassword (String Password)
-	{
-		set_Value (COLUMNNAME_Password, Password);
-	}
-
-	/** Get Password.
-		@return Password of any length (case sensitive)
-	  */
-	public String getPassword () 
-	{
-		return (String)get_Value(COLUMNNAME_Password);
-	}
 
 	/** Set Payment Processor Class.
 		@param PayProcessorClass 
@@ -766,39 +730,5 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	public String getTrxType () 
 	{
 		return (String)get_Value(COLUMNNAME_TrxType);
-	}
-
-	/** Set User ID.
-		@param UserID 
-		User ID or account number
-	  */
-	public void setUserID (String UserID)
-	{
-		set_Value (COLUMNNAME_UserID, UserID);
-	}
-
-	/** Get User ID.
-		@return User ID or account number
-	  */
-	public String getUserID () 
-	{
-		return (String)get_Value(COLUMNNAME_UserID);
-	}
-
-	/** Set Vendor ID.
-		@param VendorID 
-		Vendor ID for the Payment Processor
-	  */
-	public void setVendorID (String VendorID)
-	{
-		set_Value (COLUMNNAME_VendorID, VendorID);
-	}
-
-	/** Get Vendor ID.
-		@return Vendor ID for the Payment Processor
-	  */
-	public String getVendorID () 
-	{
-		return (String)get_Value(COLUMNNAME_VendorID);
 	}
 }

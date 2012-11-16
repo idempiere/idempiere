@@ -106,7 +106,7 @@ import org.compiere.util.ValueNamePair;
  *  @author Paul Bowden, phib BF 2900767 Zoom to child tab - inefficient queries
  *  @see https://sourceforge.net/tracker/?func=detail&aid=2900767&group_id=176962&atid=879332
  */
-public class GridTab implements IGridTab, DataStatusListener, Evaluatee, Serializable
+public class GridTab implements DataStatusListener, Evaluatee, Serializable
 {
 	
 

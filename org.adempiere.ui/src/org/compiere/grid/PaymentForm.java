@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
-import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
@@ -237,10 +236,10 @@ public abstract class PaymentForm implements IPaymentForm {
 	
 	protected boolean isBankAccountProcessorExist(Properties ctx, String tender, String CCType, int AD_Client_ID, int C_Currency_ID, BigDecimal PayAmt, String trxName)
 	{
-		MBankAccountProcessor[] m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, PayAmt, trxName);
+		MBankAccountProcessor[] m_mBankAccountProcessors = MBankAccountProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, PayAmt, trxName);
 		//	Relax Amount
 		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
-			m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, Env.ZERO, trxName);
+			m_mBankAccountProcessors = MBankAccountProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, Env.ZERO, trxName);
 		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
 			return false;
 		return true;
@@ -248,10 +247,10 @@ public abstract class PaymentForm implements IPaymentForm {
 	
 	protected MBankAccountProcessor getBankAccountProcessor(Properties ctx, String tender, String CCType, int AD_Client_ID, int C_Currency_ID, BigDecimal PayAmt, String trxName)
 	{
-		MBankAccountProcessor[] m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, PayAmt, trxName);
+		MBankAccountProcessor[] m_mBankAccountProcessors = MBankAccountProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, PayAmt, trxName);
 		//	Relax Amount
 		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
-			m_mBankAccountProcessors = MPaymentProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, Env.ZERO, trxName);
+			m_mBankAccountProcessors = MBankAccountProcessor.find(ctx, tender, CCType, AD_Client_ID, C_Currency_ID, Env.ZERO, trxName);
 		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
 			return null;
 
@@ -260,8 +259,7 @@ public abstract class PaymentForm implements IPaymentForm {
 		for (int i = 0; i < m_mBankAccountProcessors.length; i++)
 		{
 			MBankAccountProcessor bap = m_mBankAccountProcessors[i];
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(bap.getCtx(), bap.getC_PaymentProcessor_ID(), bap.get_TrxName());
-			if (paymentProcessor.accepts (tender, CCType))
+			if (bap.accepts(tender, CCType))
 			{
 				m_mBankAccountProcessor = m_mBankAccountProcessors[i];
 				break;

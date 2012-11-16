@@ -126,11 +126,11 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		m_mBankAccountProcessor = null;
 		//	Get Processor List
 		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
-			m_mBankAccountProcessors = MPaymentProcessor.find (getCtx(), tender, CCType, getAD_Client_ID(),
+			m_mBankAccountProcessors = MBankAccountProcessor.find(getCtx(), tender, CCType, getAD_Client_ID(),
 				getC_Currency_ID(), getPayAmt(), get_TrxName());
 		//	Relax Amount
 		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
-			m_mBankAccountProcessors = MPaymentProcessor.find (getCtx(), tender, CCType, getAD_Client_ID(),
+			m_mBankAccountProcessors = MBankAccountProcessor.find(getCtx(), tender, CCType, getAD_Client_ID(),
 				getC_Currency_ID(), Env.ZERO, get_TrxName());
 		if (m_mBankAccountProcessors == null || m_mBankAccountProcessors.length == 0)
 			return false;
@@ -139,8 +139,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		for (int i = 0; i < m_mBankAccountProcessors.length; i++)
 		{
 			MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccountProcessor.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), bankAccountProcessor.get_TrxName());
-			if (paymentProcessor.accepts (tender, CCType))
+			if (bankAccountProcessor.accepts(tender, CCType))
 			{
 				m_mBankAccountProcessor = m_mBankAccountProcessors[i];
 				break;
@@ -208,8 +207,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 
 		try
 		{
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(m_mBankAccountProcessor.getCtx(), m_mBankAccountProcessor.getC_PaymentProcessor_ID(), m_mBankAccountProcessor.get_TrxName());
-			PaymentProcessor pp = PaymentProcessor.create(paymentProcessor, this);
+			PaymentProcessor pp = PaymentProcessor.create(m_mBankAccountProcessor, this);
 			if (pp == null)
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessor"));
 			else

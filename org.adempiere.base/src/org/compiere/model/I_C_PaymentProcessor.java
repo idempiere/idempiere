@@ -237,6 +237,28 @@ public interface I_C_PaymentProcessor
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
+    /** Column name C_PaymentProcessor_ID */
+    public static final String COLUMNNAME_C_PaymentProcessor_ID = "C_PaymentProcessor_ID";
+
+	/** Set Payment Processor.
+	  * Payment processor for electronic payments
+	  */
+	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID);
+
+	/** Get Payment Processor.
+	  * Payment processor for electronic payments
+	  */
+	public int getC_PaymentProcessor_ID();
+
+    /** Column name C_PaymentProcessor_UU */
+    public static final String COLUMNNAME_C_PaymentProcessor_UU = "C_PaymentProcessor_UU";
+
+	/** Set C_PaymentProcessor_UU	  */
+	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU);
+
+	/** Get C_PaymentProcessor_UU	  */
+	public String getC_PaymentProcessor_UU();
+
     /** Column name Commission */
     public static final String COLUMNNAME_Commission = "Commission";
 
@@ -262,28 +284,6 @@ public interface I_C_PaymentProcessor
 	  * Fixed cost per transaction
 	  */
 	public BigDecimal getCostPerTrx();
-
-    /** Column name C_PaymentProcessor_ID */
-    public static final String COLUMNNAME_C_PaymentProcessor_ID = "C_PaymentProcessor_ID";
-
-	/** Set Payment Processor.
-	  * Payment processor for electronic payments
-	  */
-	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID);
-
-	/** Get Payment Processor.
-	  * Payment processor for electronic payments
-	  */
-	public int getC_PaymentProcessor_ID();
-
-    /** Column name C_PaymentProcessor_UU */
-    public static final String COLUMNNAME_C_PaymentProcessor_UU = "C_PaymentProcessor_UU";
-
-	/** Set C_PaymentProcessor_UU	  */
-	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU);
-
-	/** Get C_PaymentProcessor_UU	  */
-	public String getC_PaymentProcessor_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -378,32 +378,6 @@ public interface I_C_PaymentProcessor
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
-
-    /** Column name PartnerID */
-    public static final String COLUMNNAME_PartnerID = "PartnerID";
-
-	/** Set Partner ID.
-	  * Partner ID or Account for the Payment Processor
-	  */
-	public void setPartnerID (String PartnerID);
-
-	/** Get Partner ID.
-	  * Partner ID or Account for the Payment Processor
-	  */
-	public String getPartnerID();
-
-    /** Column name Password */
-    public static final String COLUMNNAME_Password = "Password";
-
-	/** Set Password.
-	  * Password of any length (case sensitive)
-	  */
-	public void setPassword (String Password);
-
-	/** Get Password.
-	  * Password of any length (case sensitive)
-	  */
-	public String getPassword();
 
     /** Column name PayProcessorClass */
     public static final String COLUMNNAME_PayProcessorClass = "PayProcessorClass";
@@ -511,30 +485,4 @@ public interface I_C_PaymentProcessor
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name UserID */
-    public static final String COLUMNNAME_UserID = "UserID";
-
-	/** Set User ID.
-	  * User ID or account number
-	  */
-	public void setUserID (String UserID);
-
-	/** Get User ID.
-	  * User ID or account number
-	  */
-	public String getUserID();
-
-    /** Column name VendorID */
-    public static final String COLUMNNAME_VendorID = "VendorID";
-
-	/** Set Vendor ID.
-	  * Vendor ID for the Payment Processor
-	  */
-	public void setVendorID (String VendorID);
-
-	/** Get Vendor ID.
-	  * Vendor ID for the Payment Processor
-	  */
-	public String getVendorID();
 }

@@ -83,8 +83,8 @@ public final class PP_PayFlowPro extends PaymentProcessor
 	 */
 	public boolean processCC () throws IllegalArgumentException
 	{
-		log.fine(p_mpp.getHostAddress() + " " + p_mpp.getHostPort() + ", Timeout=" + getTimeout()
-			+ "; Proxy=" + p_mpp.getProxyAddress() + " " + p_mpp.getProxyPort() + " " + p_mpp.getProxyLogon() + " " + p_mpp.getProxyPassword());
+		log.fine(p_mbap.getHostAddress() + " " + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
+			+ "; Proxy=" + p_mbap.getProxyAddress() + " " + p_mbap.getProxyPort() + " " + p_mbap.getProxyLogon() + " " + p_mbap.getProxyPassword());
 		//
 		StringBuffer param = new StringBuffer();
 		//  Transaction Type
@@ -151,15 +151,15 @@ public final class PP_PayFlowPro extends PaymentProcessor
 		StringBuffer param = new StringBuffer(parameter);
 		//  Usr/Pwd
 		param
-			.append("&PARTNER=").append(p_mpp.getPartnerID())
-			.append("&VENDOR=").append(p_mpp.getVendorID())
-			.append("&USER=").append(p_mpp.getUserID())
-			.append("&PWD=").append(p_mpp.getPassword());
+			.append("&PARTNER=").append(p_mbap.getPartnerID())
+			.append("&VENDOR=").append(p_mbap.getVendorID())
+			.append("&USER=").append(p_mbap.getUserID())
+			.append("&PWD=").append(p_mbap.getPassword());
 		log.fine("-> " + param.toString());
 
 		// Call the PayFlowPro client.
-		int rc = m_pp.CreateContext (p_mpp.getHostAddress(), p_mpp.getHostPort(), getTimeout(),
-			p_mpp.getProxyAddress(), p_mpp.getProxyPort(), p_mpp.getProxyLogon(), p_mpp.getProxyPassword());
+		int rc = m_pp.CreateContext (p_mbap.getHostAddress(), p_mbap.getHostPort(), getTimeout(),
+			p_mbap.getProxyAddress(), p_mbap.getProxyPort(), p_mbap.getProxyLogon(), p_mbap.getProxyPassword());
 		String response = m_pp.SubmitTransaction(param.toString());
 		m_pp.DestroyContext();
 		//
