@@ -108,12 +108,10 @@ import org.compiere.util.ValueNamePair;
  */
 public class GridTab implements DataStatusListener, Evaluatee, Serializable
 {
-	
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6259178346327832664L;
+	private static final long serialVersionUID = 336562925897569888L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -3239,17 +3237,25 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		return m_window.getTab(parentTabNo);
 	}
 	
-	public int getColumns(){
-		int col=0;
-
-		String sql="SELECT MAX(f.XPosition+f.ColumnSpan-case when f.isfieldonly='Y' OR c.ad_reference_id in (20/*yesno*/,28/*button*/) then 1 else 0 end)"
-				   +" FROM AD_Field f JOIN AD_Column c ON (f.AD_Column_ID=c.AD_Column_ID)"
-				   +" WHERE f.isdisplayed='Y' AND f.isactive='Y' AND c.isactive='Y' AND f.AD_Tab_ID=?";
-		col=DB.getSQLValue(null, sql, getAD_Tab_ID());
-		
-		return col;
+	public int getNumColumns() {
+		int maxcol=0;
+        for (GridField gridField : getFields())
+        {
+        	if (!gridField.isDisplayed() || gridField.isToolbarButton())
+        		continue;
+        	int col = gridField.getXPosition() + gridField.getColumnSpan();
+        	if (gridField.isFieldOnly()
+        		|| gridField.getDisplayType() == DisplayType.Button
+    			|| gridField.getDisplayType() == DisplayType.YesNo) {
+        		col--;
+        	}
+        	if (col > maxcol) {
+        		maxcol = col;
+        	}
+        }
+		return maxcol;
 	}
-	
+
 	public boolean isNew() {
 		return isOpen() && getCurrentRow() >= 0 && getCurrentRow() == m_mTable.getNewRow();
 	}

@@ -55,7 +55,6 @@ import org.compiere.model.MField;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.X_AD_FieldGroup;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -181,7 +180,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         form.setHeight(null);
         form.setVflex(false);
 
-    	int numCols = getMaxColumns(getMTab().getAD_Tab_ID());
+    	int numCols = getNumColumns();
     	if (numCols <= 0) {
     		numCols=4;
     	}
@@ -201,19 +200,15 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
     	Rows rows = form.newRows();
         Row row = new Row();
         int actualxpos = 0;
-
+        int lastseq  = 0;
         String currentFieldGroup = null;
         for (GridField gridField : getGridFields())
         {
         	MField field = getMField(gridField.getAD_Field_ID());
 
-        	if (!gridField.isDisplayed())
+        	if (!gridField.isDisplayed() || gridField.isToolbarButton())
         		continue;
 
-        	if (gridField.isToolbarButton()) {
-        		continue;
-        	}
-        	
         	// field group
         	String fieldGroup = gridField.getFieldGroup();
         	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
@@ -331,10 +326,14 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         		row.appendCellChild(div);
 				setLastCellProps(row.getLastCell(), gridField);
         	}
+        	lastseq = field.getSeqNo();
         }
 
-		if (numCols - actualxpos + 1 > 0)
+		if (numCols - actualxpos + 1 > 0){
 			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
+			// make last empty space droppable
+		    setLastCellProps(row.getLastCell(), actualxpos, lastseq + 10);
+		}
 		row.setGroup(currentGroup);
 		rows.appendChild(row);
         if (rowList != null)
@@ -361,15 +360,23 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		return new Space();
 	}
 
-	private int getMaxColumns(int ad_Tab_ID) {
-		int col=0;
-
-		String sql="SELECT MAX(f.XPosition+f.ColumnSpan-case when f.isfieldonly='Y' OR c.ad_reference_id in (20/*yesno*/,28/*button*/) then 1 else 0 end)"
-				+" FROM AD_Field f JOIN AD_Column c ON (f.AD_Column_ID=c.AD_Column_ID)"
-				+" WHERE f.isdisplayed='Y' AND f.isactive='Y' AND c.isactive='Y' AND f.AD_Tab_ID=?";
-		col = DB.getSQLValue(null, sql, ad_Tab_ID);
-
-		return col;
+	private int getNumColumns() {
+		int maxcol=0;
+        for (GridField gridField : getGridFields())
+        {
+        	if (!gridField.isDisplayed() || gridField.isToolbarButton())
+        		continue;
+        	int col = gridField.getXPosition() + gridField.getColumnSpan();
+        	if (gridField.isFieldOnly()
+        		|| (gridField.getDisplayType() == DisplayType.Button && !gridField.isToolbarButton())
+    			|| gridField.getDisplayType() == DisplayType.YesNo) {
+        		col--;
+        	}
+        	if (col > maxcol) {
+        		maxcol = col;
+        	}
+        }
+		return maxcol;
 	}
 
 	/**
