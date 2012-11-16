@@ -79,14 +79,14 @@ public final class PP_PayFlowPro4 extends PaymentProcessor
 	 */
 	public boolean processCC () throws IllegalArgumentException
 	{
-		log.fine(p_mpp.getHostAddress() + " " + p_mpp.getHostPort() + ", Timeout=" + getTimeout()
-			+ "; Proxy=" + p_mpp.getProxyAddress() + " " + p_mpp.getProxyPort() + " " + p_mpp.getProxyLogon() + " " + p_mpp.getProxyPassword());
+		log.fine(p_mbap.getHostAddress() + " " + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
+			+ "; Proxy=" + p_mbap.getProxyAddress() + " " + p_mbap.getProxyPort() + " " + p_mbap.getProxyLogon() + " " + p_mbap.getProxyPassword());
 
-		if ( p_mpp.getC_Currency_ID() != 0 && p_mpp.getC_Currency_ID() != p_mp.getC_Currency_ID() )
+		if ( p_mbap.getC_Currency_ID() != 0 && p_mbap.getC_Currency_ID() != p_mp.getC_Currency_ID() )
 			throw new IllegalArgumentException("Payment currency not supported by processor.");
-		if ( p_mpp.getMinimumAmt().compareTo(p_mp.getPayAmt()) > 0)
+		if ( p_mbap.getMinimumAmt().compareTo(p_mp.getPayAmt()) > 0)
 			throw new IllegalArgumentException("Payment amount is less than minimum accepted.");
-		if ( p_mpp.isRequireVV() && Util.isEmpty(p_mp.getCreditCardVV(), true) )
+		if ( p_mbap.isRequireVV() && Util.isEmpty(p_mp.getCreditCardVV(), true) )
 			throw new IllegalArgumentException("Credit card verification code required.");
 		
 		
@@ -169,22 +169,22 @@ public final class PP_PayFlowPro4 extends PaymentProcessor
 		StringBuffer param = new StringBuffer(parameter);
 		//  Usr/Pwd
 		param
-			.append("&PARTNER=").append(p_mpp.getPartnerID())
-			.append("&VENDOR=").append(p_mpp.getVendorID())
-			.append("&USER=").append(p_mpp.getUserID())
-			.append("&PWD=").append(p_mpp.getPassword());
+			.append("&PARTNER=").append(p_mbap.getPartnerID())
+			.append("&VENDOR=").append(p_mbap.getVendorID())
+			.append("&USER=").append(p_mbap.getUserID())
+			.append("&PWD=").append(p_mbap.getPassword());
 		// PCI DSS don't log private data
 		// log.fine("-> " + param.toString());
 
 
-		SDKProperties.setHostAddress(p_mpp.getHostAddress());
-		SDKProperties.setHostPort(p_mpp.getHostPort());
+		SDKProperties.setHostAddress(p_mbap.getHostAddress());
+		SDKProperties.setHostPort(p_mbap.getHostPort());
 		SDKProperties.setTimeOut(getTimeout());
 		
-		SDKProperties.setProxyAddress(p_mpp.getProxyAddress());
-		SDKProperties.setProxyPort(p_mpp.getProxyPort());
-		SDKProperties.setProxyLogin(p_mpp.getProxyLogon());
-		SDKProperties.setProxyPassword(p_mpp.getProxyPassword());
+		SDKProperties.setProxyAddress(p_mbap.getProxyAddress());
+		SDKProperties.setProxyPort(p_mbap.getProxyPort());
+		SDKProperties.setProxyLogin(p_mbap.getProxyLogon());
+		SDKProperties.setProxyPassword(p_mbap.getProxyPassword());
 		
 		//Logging is by default off. To turn logging on uncomment the following lines:
 		//SDKProperties.setLogFileName("payflow_java.log");

@@ -191,22 +191,22 @@ public class PP_Optimal extends PaymentProcessor
 	public boolean processCC ()
 		throws IllegalArgumentException
 	{
-		log.fine(p_mpp.getHostAddress() + ":" + p_mpp.getHostPort() + ", Timeout=" + getTimeout()
-			+ "; Proxy=" + p_mpp.getProxyAddress() + ":" + p_mpp.getProxyPort() + " " + p_mpp.getProxyLogon() + " " + p_mpp.getProxyPassword());
+		log.fine(p_mbap.getHostAddress() + ":" + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
+			+ "; Proxy=" + p_mbap.getProxyAddress() + ":" + p_mbap.getProxyPort() + " " + p_mbap.getProxyLogon() + " " + p_mbap.getProxyPassword());
 		setEncoded(true);
 
-		String urlString = p_mpp.getHostAddress();
+		String urlString = p_mbap.getHostAddress();
 			//	"https://realtime.firepay.com/servlet/DPServlet";
 			//	"https://realtime.test.firepay.com/servlet/DPServlet";
-		if (p_mpp.getHostPort() != 0)
-			urlString += ":" + p_mpp.getHostPort();
+		if (p_mbap.getHostPort() != 0)
+			urlString += ":" + p_mbap.getHostPort();
 		
 		/** General Parameters			*/
 		StringBuffer param = new StringBuffer(200);
 		//	 Merchant username and password.
-		param.append(createPair(MERCHANT_ID, p_mpp.getUserID(), 80))
-			.append(AMP).append(createPair(MERCHANT_PWD, p_mpp.getPassword(), 20))
-			.append(AMP).append(createPair(ACCOUNT_ID, p_mpp.getPartnerID(), 10));
+		param.append(createPair(MERCHANT_ID, p_mbap.getUserID(), 80))
+			.append(AMP).append(createPair(MERCHANT_PWD, p_mbap.getPassword(), 20))
+			.append(AMP).append(createPair(ACCOUNT_ID, p_mbap.getPartnerID(), 10));
 	//	param.append(AMP).append(createPair(MERCHANT_DATA, "comment", 255));
 
 		/**	Cipher supported : 	SSL_RSA_WITH_RC4_128_MD5, SSL_RSA_WITH_RC4_128_SHA,	SSL_RSA_WITH_DES_CBC_SHA, SSL_RSA_WITH_3DES_EDE_CBC_SHA, SSL_RSA_EXPORT_WITH_RC4_40_MD5

@@ -24,7 +24,6 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrderTax;
 import org.compiere.model.MPOS;
 import org.compiere.model.MPayment;
-import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MProduct;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
@@ -397,25 +396,24 @@ public class PosOrderModel extends MOrder {
 	{
 		try
 		{
-			MBankAccountProcessor[] m_mBankAccountProcessors = MPaymentProcessor.find (getCtx (), null, null, 
+			MBankAccountProcessor[] m_mBankAccountProcessors = MBankAccountProcessor.find(getCtx (), null, null, 
 					getAD_Client_ID (), getAD_Org_ID(), getC_Currency_ID (), amt, get_TrxName());
 			//
 			HashMap<String,ValueNamePair> map = new HashMap<String,ValueNamePair>(); //	to eliminate duplicates
 			for (int i = 0; i < m_mBankAccountProcessors.length; i++)
 			{
 				MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
-				MPaymentProcessor paymentProcessor = new MPaymentProcessor(bankAccountProcessor.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), bankAccountProcessor.get_TrxName());
-				if (paymentProcessor.isAcceptAMEX ())
+				if (bankAccountProcessor.isAcceptAMEX())
 					map.put (MPayment.CREDITCARDTYPE_Amex, getCreditCardPair (MPayment.CREDITCARDTYPE_Amex));
-				if (paymentProcessor.isAcceptDiners ())
+				if (bankAccountProcessor.isAcceptDiners())
 					map.put (MPayment.CREDITCARDTYPE_Diners, getCreditCardPair (MPayment.CREDITCARDTYPE_Diners));
-				if (paymentProcessor.isAcceptDiscover ())
+				if (bankAccountProcessor.isAcceptDiscover())
 					map.put (MPayment.CREDITCARDTYPE_Discover, getCreditCardPair (MPayment.CREDITCARDTYPE_Discover));
-				if (paymentProcessor.isAcceptMC ())
+				if (bankAccountProcessor.isAcceptMC())
 					map.put (MPayment.CREDITCARDTYPE_MasterCard, getCreditCardPair (MPayment.CREDITCARDTYPE_MasterCard));
-				if (paymentProcessor.isAcceptCorporate ())
+				if (bankAccountProcessor.isAcceptCorporate())
 					map.put (MPayment.CREDITCARDTYPE_PurchaseCard, getCreditCardPair (MPayment.CREDITCARDTYPE_PurchaseCard));
-				if (paymentProcessor.isAcceptVisa ())
+				if (bankAccountProcessor.isAcceptVisa())
 					map.put (MPayment.CREDITCARDTYPE_Visa, getCreditCardPair (MPayment.CREDITCARDTYPE_Visa));
 			} //	for all payment processors
 			//
