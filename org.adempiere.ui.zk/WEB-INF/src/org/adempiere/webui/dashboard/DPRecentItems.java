@@ -148,7 +148,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 				String TableName = MTable.getTableName(Env.getCtx(), ri.getAD_Table_ID());
 				MQuery query = MQuery.getEqualQuery(TableName + "_ID", ri.getRecord_ID());
 
-				SessionManager.getAppDesktop().openWindow(ri.getAD_Window_ID(), query);
+				SessionManager.getAppDesktop().openWindow(ri.getAD_Window_ID(), query, null);
 			}
 		}
 		if (comp instanceof Image) // Refresh button

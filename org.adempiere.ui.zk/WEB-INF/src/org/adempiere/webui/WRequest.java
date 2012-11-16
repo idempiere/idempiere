@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.GridTab;
@@ -57,7 +58,7 @@ import org.zkoss.zul.Menupopup;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1904928 ] Request: Related Request field not filled
  */
-public class WRequest implements EventListener
+public class WRequest implements EventListener<Event>
 {
 	/**
 	 * 	Constructor
@@ -180,7 +181,7 @@ public class WRequest implements EventListener
 		m_popup.open(invoker);
 	}	//	getZoomTargets
 	
-	public void onEvent(Event e) throws Exception 
+	public void onEvent(final Event e) throws Exception 
 	{
 		if (e.getTarget() instanceof Menuitem) 
 		{
@@ -206,60 +207,68 @@ public class WRequest implements EventListener
 			}
 			
 			int AD_Window_ID = WINDOW_REQUESTS_ALL;		//	232=all - 201=my
-			ADWindow frame = SessionManager.getAppDesktop().openWindow(AD_Window_ID, query);
-			if(frame == null)
-				return;
-			//	New - set Table/Record
-			if (e.getTarget() == m_new)
-			{
-				GridTab tab = frame.getADWindowContent().getActiveGridTab();
-				tab.dataNew (false);
-				tab.setValue("AD_Table_ID", new Integer(m_AD_Table_ID));
-				tab.setValue("Record_ID", new Integer(m_Record_ID));
-				//
-				if (m_C_BPartner_ID != 0)
-					tab.setValue("C_BPartner_ID", new Integer(m_C_BPartner_ID));
-				//
-				if (m_AD_Table_ID == MBPartner.Table_ID)
-					tab.setValue("C_BPartner_ID", new Integer(m_Record_ID));
-				else if (m_AD_Table_ID == MUser.Table_ID)
-					tab.setValue("AD_User_ID", new Integer(m_Record_ID));
-				//
-				else if (m_AD_Table_ID == MProject.Table_ID)
-					tab.setValue("C_Project_ID", new Integer(m_Record_ID));
-				else if (m_AD_Table_ID == MAsset.Table_ID)
-					tab.setValue("A_Asset_ID", new Integer(m_Record_ID));
-				//
-				else if (m_AD_Table_ID == MOrder.Table_ID)
-					tab.setValue("C_Order_ID", new Integer(m_Record_ID));
-				else if (m_AD_Table_ID == MInvoice.Table_ID)
-					tab.setValue("C_Invoice_ID", new Integer(m_Record_ID));
-				//
-				else if (m_AD_Table_ID == MProduct.Table_ID)
-					tab.setValue("M_Product_ID", new Integer(m_Record_ID));
-				else if (m_AD_Table_ID == MPayment.Table_ID)
-					tab.setValue("C_Payment_ID", new Integer(m_Record_ID));
-				//
-				else if (m_AD_Table_ID == MInOut.Table_ID)
-					tab.setValue("M_InOut_ID", new Integer(m_Record_ID));
-				else if (m_AD_Table_ID == MRMA.Table_ID)
-					tab.setValue("M_RMA_ID", new Integer(m_Record_ID));
-				//
-				else if (m_AD_Table_ID == MCampaign.Table_ID)
-					tab.setValue("C_Campaign_ID", new Integer(m_Record_ID));
-				//
-				else if (m_AD_Table_ID == MRequest.Table_ID)
-					tab.setValue(MRequest.COLUMNNAME_R_RequestRelated_ID, new Integer(m_Record_ID));
-				// FR [2842165] - Order Ref link from SO line creating new request
-				else if (m_AD_Table_ID == MOrderLine.Table_ID) {
-					MOrderLine oLine = new MOrderLine(Env.getCtx(), m_Record_ID, null);
-					if (oLine != null) {
-						tab.setValue(MOrderLine.COLUMNNAME_C_Order_ID, new Integer(oLine.getC_Order_ID()));
-					}
+			SessionManager.getAppDesktop().openWindow(AD_Window_ID, query, new Callback<ADWindow>() {
+				
+				@Override
+				public void onCallback(ADWindow result) {
+					if(result == null)
+						return;
+				
+					onNew(e, result);
+				}
+			});									
+		}
+	}
+
+	private void onNew(Event e, ADWindow frame) {
+		//	New - set Table/Record
+		if (e.getTarget() == m_new)
+		{
+			GridTab tab = frame.getADWindowContent().getActiveGridTab();
+			tab.dataNew (false);
+			tab.setValue("AD_Table_ID", new Integer(m_AD_Table_ID));
+			tab.setValue("Record_ID", new Integer(m_Record_ID));
+			//
+			if (m_C_BPartner_ID != 0)
+				tab.setValue("C_BPartner_ID", new Integer(m_C_BPartner_ID));
+			//
+			if (m_AD_Table_ID == MBPartner.Table_ID)
+				tab.setValue("C_BPartner_ID", new Integer(m_Record_ID));
+			else if (m_AD_Table_ID == MUser.Table_ID)
+				tab.setValue("AD_User_ID", new Integer(m_Record_ID));
+			//
+			else if (m_AD_Table_ID == MProject.Table_ID)
+				tab.setValue("C_Project_ID", new Integer(m_Record_ID));
+			else if (m_AD_Table_ID == MAsset.Table_ID)
+				tab.setValue("A_Asset_ID", new Integer(m_Record_ID));
+			//
+			else if (m_AD_Table_ID == MOrder.Table_ID)
+				tab.setValue("C_Order_ID", new Integer(m_Record_ID));
+			else if (m_AD_Table_ID == MInvoice.Table_ID)
+				tab.setValue("C_Invoice_ID", new Integer(m_Record_ID));
+			//
+			else if (m_AD_Table_ID == MProduct.Table_ID)
+				tab.setValue("M_Product_ID", new Integer(m_Record_ID));
+			else if (m_AD_Table_ID == MPayment.Table_ID)
+				tab.setValue("C_Payment_ID", new Integer(m_Record_ID));
+			//
+			else if (m_AD_Table_ID == MInOut.Table_ID)
+				tab.setValue("M_InOut_ID", new Integer(m_Record_ID));
+			else if (m_AD_Table_ID == MRMA.Table_ID)
+				tab.setValue("M_RMA_ID", new Integer(m_Record_ID));
+			//
+			else if (m_AD_Table_ID == MCampaign.Table_ID)
+				tab.setValue("C_Campaign_ID", new Integer(m_Record_ID));
+			//
+			else if (m_AD_Table_ID == MRequest.Table_ID)
+				tab.setValue(MRequest.COLUMNNAME_R_RequestRelated_ID, new Integer(m_Record_ID));
+			// FR [2842165] - Order Ref link from SO line creating new request
+			else if (m_AD_Table_ID == MOrderLine.Table_ID) {
+				MOrderLine oLine = new MOrderLine(Env.getCtx(), m_Record_ID, null);
+				if (oLine != null) {
+					tab.setValue(MOrderLine.COLUMNNAME_C_Order_ID, new Integer(oLine.getC_Order_ID()));
 				}
 			}
-			
-			frame = null;
 		}
 	}
 }

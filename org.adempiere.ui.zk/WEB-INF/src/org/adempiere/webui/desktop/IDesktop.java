@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.desktop;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
@@ -142,7 +143,7 @@ public interface IDesktop extends UIPart {
 	 * @param windowId
 	 * @return ADWindow
 	 */
-	public ADWindow openWindow(int windowId);
+	public void openWindow(int windowId, Callback<ADWindow> callback);
 
 	/**
 	 *
@@ -150,7 +151,7 @@ public interface IDesktop extends UIPart {
 	 * @param query
 	 * @return ADWindow
 	 */
-	public ADWindow openWindow(int windowId, MQuery query);
+	public void openWindow(int windowId, MQuery query, Callback<ADWindow> callback);
 
 	/**
 	 * Open operating system task window

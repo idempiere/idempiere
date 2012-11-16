@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
@@ -297,12 +298,16 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 				((Popup)getParent()).close();
 			}
 			
-			ADWindow frame = SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query);
-			if(frame == null)
-				return;
-    					
-			GridTab tab = frame.getADWindowContent().getActiveGridTab();
-			tab.dataNew(false);
+			SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query, new Callback<ADWindow>() {				
+				@Override
+				public void onCallback(ADWindow result) {
+					if(result == null)
+						return;
+		    					
+					GridTab tab = result.getADWindowContent().getActiveGridTab();
+					tab.dataNew(false);					
+				}
+			});			
         }
         catch (Exception e)
         {
