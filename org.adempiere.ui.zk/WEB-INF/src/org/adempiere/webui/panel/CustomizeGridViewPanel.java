@@ -563,7 +563,7 @@ public class CustomizeGridViewPanel extends Panel
 		//
 		if(ok) {
 			m_saved = true;
-			FDialog.info(m_WindowNo, null, "Saved");
+			// FDialog.info(m_WindowNo, null, "Saved");
 			getParent().detach();
 			if(gridPanel!=null){
 				gridPanel.reInit();
