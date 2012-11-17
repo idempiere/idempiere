@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
@@ -120,8 +121,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 * @param windowId
 	 * @return ADWindow
 	 */
-	public ADWindow openWindow(int windowId) {
-		return openWindow(windowId, null);
+	public void openWindow(int windowId, Callback<ADWindow> callback) {
+		openWindow(windowId, null, callback);
 	}
 
 	/**
@@ -130,17 +131,15 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @param query
 	 * @return ADWindow
 	 */
-	public ADWindow openWindow(int windowId, MQuery query) {
+	public void openWindow(int windowId, MQuery query, Callback<ADWindow> callback) {
 		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
 		final DesktopTabpanel tabPanel = new DesktopTabpanel();		
 		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
 		tab.setImage(IN_PROGRESS_IMAGE);
 		tab.setClosable(false);		
-		OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel);
-		Adempiere.getThreadPoolExecutor().schedule(runnable, 100, TimeUnit.MICROSECONDS);
-		
-		return adWindow;
+		OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel, callback);
+		Adempiere.getThreadPoolExecutor().schedule(runnable, 10, TimeUnit.MILLISECONDS);		
 	}
 
 	/**
@@ -223,7 +222,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		final Tab tab = windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, wnd.getTitle(), true, true);
 		tab.setImage(IN_PROGRESS_IMAGE);
 		tab.setClosable(false);		
-		OpenWindowRunnable runnable = new OpenWindowRunnable(wnd, tab, tabPanel);
+		OpenWindowRunnable runnable = new OpenWindowRunnable(wnd, tab, tabPanel, null);
 		Adempiere.getThreadPoolExecutor().schedule(runnable, 100, TimeUnit.MICROSECONDS);
 	}
 
@@ -234,7 +233,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      */
     public void showWindow(int AD_Window_ID, MQuery query)
     {
-    	openWindow(AD_Window_ID, query);
+    	openWindow(AD_Window_ID, query, null);
 	}
 
 	/**
@@ -338,19 +337,17 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		private final ADWindow adWindow;
 		private final Tab tab;
 		private final DesktopTabpanel tabPanel;
+		private Callback<ADWindow> callback;
 
-		protected OpenWindowRunnable(ADWindow adWindow, Tab tab, DesktopTabpanel tabPanel) {
+		protected OpenWindowRunnable(ADWindow adWindow, Tab tab, DesktopTabpanel tabPanel, Callback<ADWindow> callback) {
 			this.adWindow = adWindow;
 			this.tab = tab;
 			this.tabPanel = tabPanel;
+			this.callback = callback;
 		}
 		
 		@Override
 		protected void doRun() {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-			}
 			ServerPushTemplate template = new ServerPushTemplate(windowContainer.getComponent().getDesktop());
 			template.executeAsync(new IServerPushCallback() {					
 				@Override
@@ -365,6 +362,9 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 								tab.setImageContent(aImage);
 							} catch (IOException e) {
 							}
+						}
+						if (callback != null) {
+							callback.onCallback(adWindow);
 						}
 					} else {
 						tab.onClose();

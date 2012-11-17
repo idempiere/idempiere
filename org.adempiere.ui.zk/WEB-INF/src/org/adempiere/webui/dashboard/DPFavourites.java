@@ -15,6 +15,7 @@ package org.adempiere.webui.dashboard;
 
 import java.util.Enumeration;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.panel.TreeSearchPanel;
@@ -285,12 +286,17 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 	        		query.addRestriction("1=2");
 					query.setRecordCount(0);
 
-					ADWindow frame = SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query);
-					if(frame == null)
-	    				return;
-	        		
-					GridTab tab = frame.getADWindowContent().getActiveGridTab();
-					tab.dataNew(false);
+					SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query, new Callback<ADWindow>() {
+						
+						@Override
+						public void onCallback(ADWindow result) {
+							if(result == null)
+			    				return;
+			        		
+							GridTab tab = result.getADWindowContent().getActiveGridTab();
+							tab.dataNew(false);
+						}
+					});					
 	            }
 	            catch (Exception e)
 	            {
