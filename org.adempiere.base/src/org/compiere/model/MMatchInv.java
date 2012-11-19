@@ -427,7 +427,7 @@ public class MMatchInv extends X_M_MatchInv
 	 */
 	public boolean reverse(Timestamp reversalDate)  
 	{
-		if (this.isPosted())
+		if (this.isPosted() && this.getReversal_ID() == 0)
 		{		
 			MMatchInv reversal = new MMatchInv (getCtx(), 0, get_TrxName());
 			PO.copyValues(this, reversal);
@@ -439,9 +439,11 @@ public class MMatchInv extends X_M_MatchInv
 			reversal.set_ValueNoCheck ("DocumentNo", null);
 			reversal.setPosted (false);
 			reversal.setReversal_ID(getM_MatchInv_ID());
-			this.setDescription("(" + this.getDocumentNo() + "<-)");
-			if (reversal.save() && this.save())
-				return true;
+			reversal.saveEx();
+			this.setDescription("(" + reversal.getDocumentNo() + "<-)");
+			this.setReversal_ID(reversal.getM_MatchInv_ID());
+			this.saveEx();
+			return true;
 		}
 		return false;
 	}
