@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_StorageOnHand
- *  @author Adempiere (generated) 
- *  @version 360LTS.015
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_M_StorageOnHand 
 {
@@ -31,7 +31,7 @@ public interface I_M_StorageOnHand
     public static final String Table_Name = "M_StorageOnHand";
 
     /** AD_Table_ID=200026 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 200026;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -147,7 +147,16 @@ public interface I_M_StorageOnHand
 	  */
 	public int getM_Product_ID();
 
-	public I_M_Product getM_Product() throws RuntimeException;
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_StorageOnHand_UU */
+    public static final String COLUMNNAME_M_StorageOnHand_UU = "M_StorageOnHand_UU";
+
+	/** Set M_StorageOnHand_UU	  */
+	public void setM_StorageOnHand_UU (String M_StorageOnHand_UU);
+
+	/** Get M_StorageOnHand_UU	  */
+	public String getM_StorageOnHand_UU();
 
     /** Column name QtyOnHand */
     public static final String COLUMNNAME_QtyOnHand = "QtyOnHand";

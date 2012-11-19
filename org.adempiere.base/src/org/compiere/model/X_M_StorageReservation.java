@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -24,15 +24,15 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservation
- *  @author Adempiere (generated) 
- *  @version 360LTS.015 - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_M_StorageReservation extends PO implements I_M_StorageReservation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121016L;
+	private static final long serialVersionUID = 20121119L;
 
     /** Standard Constructor */
     public X_M_StorageReservation (Properties ctx, int M_StorageReservation_ID, String trxName)
@@ -144,9 +144,9 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 		return ii.intValue();
 	}
 
-	public I_M_Product getM_Product() throws RuntimeException
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
-		return (I_M_Product)MTable.get(getCtx(), I_M_Product.Table_Name)
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
 			.getPO(getM_Product_ID(), get_TrxName());	}
 
 	/** Set Product.
@@ -172,9 +172,23 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 		return ii.intValue();
 	}
 
-	public I_M_Warehouse getM_Warehouse() throws RuntimeException
+	/** Set M_StorageReservation_UU.
+		@param M_StorageReservation_UU M_StorageReservation_UU	  */
+	public void setM_StorageReservation_UU (String M_StorageReservation_UU)
+	{
+		set_Value (COLUMNNAME_M_StorageReservation_UU, M_StorageReservation_UU);
+	}
+
+	/** Get M_StorageReservation_UU.
+		@return M_StorageReservation_UU	  */
+	public String getM_StorageReservation_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_StorageReservation_UU);
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
     {
-		return (I_M_Warehouse)MTable.get(getCtx(), I_M_Warehouse.Table_Name)
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
 			.getPO(getM_Warehouse_ID(), get_TrxName());	}
 
 	/** Set Warehouse.

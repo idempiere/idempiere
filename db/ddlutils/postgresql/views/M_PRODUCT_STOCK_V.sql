@@ -1,8 +1,13 @@
-CREATE OR REPLACE VIEW m_product_stock_v AS 
- SELECT ms.isactive, ms.created, ms.createdby, ms.updated, ms.updatedby, mp.value, mp.help, ms.qtyonhand - coalesce(mr.qty,0) AS qtyavailable, ms.qtyonhand, coalesce(mr.qty,0) as qtyreserved, mp.description, mw.name AS warehouse, mw.m_warehouse_id, mw.ad_client_id, mw.ad_org_id, mp.documentnote
-   FROM m_storageonhand ms
-   JOIN m_product mp ON ms.m_product_id = mp.m_product_id
-   JOIN m_locator ml ON ms.m_locator_id = ml.m_locator_id
-   JOIN m_warehouse mw ON ml.m_warehouse_id = mw.m_warehouse_id
-   LEFT JOIN m_storagereservation mr ON ms.m_product_id = mr.m_product_id AND mw.m_warehouse_id = mr.m_warehouse_id AND mr.isSOTrx='Y'
-  ORDER BY mw.name;
+--create views
+CREATE OR REPLACE VIEW M_PRODUCT_STOCK_V
+AS
+SELECT 
+ms.IsActive, ms.Created, ms.CreatedBy, ms.Updated, ms.UpdatedBy,
+mp.VALUE, mp.help, (ms.qtyonhand - ms.qtyreserved) AS qtyavailable, ms.qtyonhand, 
+ms.qtyreserved, mp.description, mw.NAME AS warehouse, mw.m_warehouse_id, mw.ad_client_id, 
+mw.ad_org_id, mp.documentnote
+FROM M_STORAGE ms 
+JOIN M_PRODUCT mp ON ms.m_product_id = mp.m_product_id
+JOIN M_LOCATOR ml ON ms.m_locator_id = ml.m_locator_id
+JOIN M_WAREHOUSE mw ON ml.m_warehouse_id = mw.m_warehouse_id 
+ORDER BY mw.NAME;
