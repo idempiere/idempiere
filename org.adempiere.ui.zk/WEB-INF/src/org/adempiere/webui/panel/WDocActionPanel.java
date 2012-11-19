@@ -234,7 +234,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		lstDocAction.setId("lstDocAction");
 		lstDocAction.setRows(0);
 		lstDocAction.setMold("select");
-		lstDocAction.setWidth("100px");
+		lstDocAction.setWidth("200px");
 		lstDocAction.addEventListener(Events.ON_SELECT, this);
 
         confirmPanel = new ConfirmPanel(true);
