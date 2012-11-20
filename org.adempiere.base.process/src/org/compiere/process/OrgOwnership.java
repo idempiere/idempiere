@@ -150,6 +150,16 @@ public class OrgOwnership extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "Storage"));
 			
+		//	Set Storage Reservation
+		sql = new StringBuilder();
+		sql.append("UPDATE M_StorageReservation	 s ")
+			.append("SET AD_Org_ID=").append(p_AD_Org_ID)
+			.append(" WHERE M_Warehouse_ID=").append(p_M_Warehouse_ID)
+			.append(" AND AD_Client_ID=").append(getAD_Client_ID())
+			.append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "StorageReservation"));
+			
 		return "";
 	}	//	warehouseOwnership
 

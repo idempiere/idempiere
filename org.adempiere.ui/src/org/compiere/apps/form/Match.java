@@ -32,6 +32,7 @@ import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MRole;
 import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MStorageReservation;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -491,11 +492,10 @@ public class Match
 					success = true;
 					//	Correct Ordered Qty for Stocked Products (see MOrder.reserveStock / MInOut.processIt)
 					if (sLine.getProduct() != null && sLine.getProduct().isStocked())
-						success = MStorageOnHand.add (Env.getCtx(), sLine.getM_Warehouse_ID(), 
-							sLine.getM_Locator_ID(), 
-							sLine.getM_Product_ID(), 
-							sLine.getM_AttributeSetInstance_ID(), oLine.getM_AttributeSetInstance_ID(), 
-							null,  trxName);
+						success = MStorageReservation.add (Env.getCtx(), sLine.getM_Warehouse_ID(),
+							sLine.getM_Product_ID(),
+							sLine.getM_AttributeSetInstance_ID(), oLine.getM_AttributeSetInstance_ID(),
+							qty.negate(), false, trxName);
 				}
 			}
 			else

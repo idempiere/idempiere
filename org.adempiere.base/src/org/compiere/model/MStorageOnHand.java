@@ -22,11 +22,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.List;
 
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -36,14 +35,14 @@ import org.compiere.util.Msg;
  * 	Inventory Storage Model
  *
  *	@author Jorg Janke
- *	@version $Id: MStorage.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
+ *	@version $Id: MStorageOnHand.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MStorageOnHand extends X_M_StorageOnHand
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3911132565445025309L;
+	private static final long serialVersionUID = 3649163126231150631L;
 
 	/**
 	 * 	Get Storage Info
@@ -132,12 +131,10 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	public static MStorageOnHand[] getAll (Properties ctx, 
 		int M_Product_ID, int M_Locator_ID, String trxName)
 	{
-		String sqlWhere = "M_Product_ID=? AND M_Locator_ID=?"
-				+ " AND QtyOnHand <> 0 "
-				+ "ORDER BY M_AttributeSetInstance_ID";
-		
+		String sqlWhere = "M_Product_ID=? AND M_Locator_ID=? AND QtyOnHand <> 0";
 		List<MStorageOnHand> list = new Query(ctx, MStorageOnHand.Table_Name, sqlWhere, trxName)
 								.setParameters(M_Product_ID, M_Locator_ID)
+								.setOrderBy(MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID)
 								.list(); 
 		
 		MStorageOnHand[] retValue = new MStorageOnHand[list.size()];
@@ -173,8 +170,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@param M_Warehouse_ID 
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance
-	 *	@param M_AttributeSet_ID attribute set
-	 *	@param allAttributeInstances if true, all attribute set instances
+	 *	@param M_AttributeSet_ID attribute set (NOT USED)
+	 *	@param allAttributeInstances if true, all attribute set instances (NOT USED)
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
 	 *	@param trxName transaction
@@ -219,11 +216,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		//	Specific Attribute Set Instance
 		String sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
 			+ "s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
-			//@win change
-			//+ "s.QtyOnHand,s.QtyReserved,s.QtyOrdered,s.DateLastInventory "
 			+ "s.QtyOnHand,s.DateLastInventory "
-			//end @win change
-			
 			+ "FROM M_StorageOnHand s"
 			+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID) ";
 		if (M_Locator_ID > 0)
@@ -248,11 +241,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		{
 			sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
 				+ "s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
-				//@win change
-				//+ "s.QtyOnHand,s.QtyReserved,s.QtyOrdered,s.DateLastInventory "
-				+ "s.QtyOnHand,s.DateLastInventory "
-				//end @win change
-				
+				+ "s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU "
 				+ "FROM M_StorageOnHand s"
 				+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID)"
 				+ " LEFT OUTER JOIN M_AttributeSetInstance asi ON (s.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID) ";
@@ -349,7 +338,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			throw new IllegalArgumentException("Not found M_Locator_ID=" + M_Locator_ID);
 		//
 		retValue = new MStorageOnHand (locator, M_Product_ID, M_AttributeSetInstance_ID);
-		retValue.save(trxName);
+		retValue.saveEx(trxName);
 		s_log.fine("New " + retValue);
 		return retValue;
 	}	//	getCreate
@@ -442,7 +431,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			diffText.append(") -> ").append(storage.toString());
 			s_log.fine(diffText.toString());
 			if (storage0 != null)
-				storage0.save(trxName);		//	No AttributeSetInstance (reserved/ordered)
+				storage0.saveEx(trxName);		//	No AttributeSetInstance (reserved/ordered)
 			return storage.save (trxName);
 		}
 		
@@ -525,7 +514,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		//
 		setQtyOnHand (Env.ZERO);
 		
-	}	//	MStorage
+	}	//	MStorageOnHand
 
 	/**
 	 * 	Load Constructor
@@ -536,7 +525,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	public MStorageOnHand (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-	}	//	MStorage
+	}	//	MStorageOnHand
 
 	/**
 	 * 	Full NEW Constructor
@@ -551,7 +540,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		setM_Locator_ID (locator.getM_Locator_ID());
 		setM_Product_ID (M_Product_ID);
 		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
-	}	//	MStorage
+	}	//	MStorageOnHand
 
 	/** Log								*/
 	private static CLogger		s_log = CLogger.getCLogger (MStorageOnHand.class);
@@ -639,26 +628,26 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * @param trxName
 	 * @return
 	 */
-	public static BigDecimal getQtyOnHand(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName){
-		ArrayList<Object> params = new ArrayList<Object>();
+	public static BigDecimal getQtyOnHand(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName) {
 		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh")
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)")
 			.append(" WHERE oh.M_Product_ID=?")
-			.append(" AND EXISTS(SELECT 1 FROM M_Locator loc WHERE oh.M_Locator_ID=loc.M_Locator_ID AND loc.M_Warehouse_ID=?)");
-			
+			.append(" AND loc.M_Warehouse_ID=?");
+
+		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(M_Product_ID);
 		params.add(M_Warehouse_ID);
-		
+
 		// With ASI
 		if (M_AttributeSetInstance_ID != 0) {
-			sql.append(" AND M_AttributeSetInstance_ID=?");
+			sql.append(" AND oh.M_AttributeSetInstance_ID=?");
 			params.add(M_AttributeSetInstance_ID);
 		}
-		
+
 		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
-		if(qty==null)
+		if (qty == null)
 			qty = Env.ZERO;
-		
+
 		return qty;
 	}
 
@@ -668,7 +657,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MStorage[")
+		StringBuffer sb = new StringBuffer("MStorageOnHand[")
 			.append("M_Locator_ID=").append(getM_Locator_ID())
 				.append(",M_Product_ID=").append(getM_Product_ID())
 				.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
@@ -681,4 +670,4 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return sb.toString();
 	}	//	toString
 
-}	//	MStorage
+}	//	MStorageOnHand

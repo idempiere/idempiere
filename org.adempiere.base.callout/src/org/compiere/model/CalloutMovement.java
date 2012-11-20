@@ -118,15 +118,14 @@ public class CalloutMovement extends CalloutEngine
 				if (MovementQty == null)
 					MovementQty = (BigDecimal) mTab.getValue("MovementQty");
 				int M_Locator_ID = Env.getContextAsInt(ctx, WindowNo, "M_Locator_ID");
-				
 				// If no locator, don't check anything and assume is ok
 				if (M_Locator_ID <= 0)
 					return;
-				//@win - IDEMPIERE-385
-				int M_Warehouse_ID = DB.getSQLValue(null, "SELECT M_Warehouse_ID FROM M_Locator WHERE M_Locator_ID=?", M_Locator_ID);
-				//
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, "M_AttributeSetInstance_ID");
-				BigDecimal available = MStorageReservation.getQtyAvailable(M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
+				BigDecimal available = Env.ZERO;
+				MStorageOnHand oh = MStorageOnHand.get(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
+				if (oh != null)
+					available = oh.getQtyOnHand();
 				if (available == null)
 					available = Env.ZERO;
 				if (available.signum() == 0)

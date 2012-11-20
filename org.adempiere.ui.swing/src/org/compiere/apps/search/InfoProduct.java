@@ -1240,23 +1240,21 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 
 		//	Fill Storage Data
 		boolean showDetail = CLogMgt.isLevelFine();
-		String sql = "SELECT s.QtyOnHand, r.Qty as QtyReserved, o.Qty as QtyOrdered,"
+		String sql = "SELECT s.QtyOnHand, s.QtyReserved, s.QtyOrdered,"
 			+ " productAttribute(s.M_AttributeSetInstance_ID), s.M_AttributeSetInstance_ID,";
 		if (!showDetail)
-			sql = "SELECT SUM(s.QtyOnHand), SUM(r.Qty), SUM(o.Qty),"
+			sql = "SELECT SUM(s.QtyOnHand), SUM(s.QtyReserved), SUM(s.QtyOrdered),"
 				+ " productAttribute(s.M_AttributeSetInstance_ID), 0,";
 		sql += " w.Name, l.Value "
-			+ "FROM M_StorageOnHand s"
+			+ "FROM M_Storage s"
 			+ " INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)"
 			+ " INNER JOIN M_Warehouse w ON (l.M_Warehouse_ID=w.M_Warehouse_ID) "
-			+ " LEFT JOIN M_StorageReservation r ON (s.M_Product_ID=r.M_Product_ID AND w.M_Warehouse_ID=r.M_Warehouse_ID AND r.IsSOTrx='Y') "
-			+ " LEFT JOIN M_StorageReservation o ON (s.M_Product_ID=o.M_Product_ID AND w.M_Warehouse_ID=o.M_Warehouse_ID AND o.IsSOTrx='N') "
-			+ "WHERE s.M_Product_ID=?";
+			+ "WHERE M_Product_ID=?";
 		if (m_M_Warehouse_ID != 0)
 			sql += " AND l.M_Warehouse_ID=?";
 		if (m_M_AttributeSetInstance_ID > 0)
 			sql += " AND s.M_AttributeSetInstance_ID=?";
-		sql += " AND (s.QtyOnHand<>0 OR r.Qty<>0 OR o.Qty<>0)";
+		sql += " AND (s.QtyOnHand<>0 OR s.QtyReserved<>0 OR s.QtyOrdered<>0)";
 		if (!showDetail)
 			sql += " GROUP BY productAttribute(s.M_AttributeSetInstance_ID), w.Name, l.Value";
 		sql += " ORDER BY l.Value";

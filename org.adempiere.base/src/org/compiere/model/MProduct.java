@@ -26,6 +26,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Product Model
@@ -571,33 +572,8 @@ public class MProduct extends X_M_Product
 			|| (is_ValueChanged("ProductType") 					//	from Item
 				&& PRODUCTTYPE_Item.equals(get_ValueOld("ProductType")))))
 		{
-			// large modified related to storages by zuhri
-			MStorageOnHand[] onHandStorages = MStorageOnHand.getOfProduct(getCtx(), get_ID(), get_TrxName());
-			MStorageReservation[] reservationStorages = MStorageReservation.getOfProduct(getCtx(), get_ID(), get_TrxName());
-			BigDecimal OnHand = Env.ZERO;
-			BigDecimal Ordered = Env.ZERO;
-			BigDecimal Reserved = Env.ZERO;
-			for (int i = 0; i < onHandStorages.length; i++)
-			{
-				OnHand = OnHand.add(onHandStorages[i].getQtyOnHand());
-
-			}
-			for (int i = 0; i < reservationStorages.length; i++)
-			{
-				if(reservationStorages[i].isSOTrx())
-					Reserved = Reserved.add(reservationStorages[i].getQty());
-				else
-					Ordered = Ordered.add(reservationStorages[i].getQty());
-			}
-			// end large modified related to storages by zuhri
-			String errMsg = "";
-			if (OnHand.signum() != 0)
-				errMsg = "@QtyOnHand@ = " + OnHand;
-			if (Ordered.signum() != 0)
-				errMsg += " - @QtyOrdered@ = " + Ordered;
-			if (Reserved.signum() != 0)
-				errMsg += " - @QtyReserved@" + Reserved;
-			if (errMsg.length() > 0)
+			String errMsg = verifyStorage();
+			if (! Util.isEmpty(errMsg))
 			{
 				log.saveError("Error", Msg.parseTranslation(getCtx(), errMsg)); 
 				return false;
@@ -637,6 +613,32 @@ public class MProduct extends X_M_Product
 
 		return true;
 	}	//	beforeSave
+
+	private String verifyStorage() {
+		BigDecimal qtyOnHand = Env.ZERO;
+		BigDecimal qtyOrdered = Env.ZERO;
+		BigDecimal qtyReserved = Env.ZERO;
+		for (MStorageOnHand ohs: MStorageOnHand.getOfProduct(getCtx(), get_ID(), get_TrxName()))
+		{
+			qtyOnHand = qtyOnHand.add(ohs.getQtyOnHand());
+		}
+		for (MStorageReservation rs : MStorageReservation.getOfProduct(getCtx(), get_ID(), get_TrxName()))
+		{
+			if (rs.isSOTrx())
+				qtyReserved = qtyReserved.add(rs.getQty());
+			else
+				qtyOrdered = qtyOrdered.add(rs.getQty());
+		}
+
+		StringBuilder errMsg = new StringBuilder();
+		if (qtyOnHand.signum() != 0)
+			errMsg.append("@QtyOnHand@ = ").append(qtyOnHand);
+		if (qtyOrdered.signum() != 0)
+			errMsg.append(" - @QtyOrdered@ = ").append(qtyOrdered);
+		if (qtyReserved.signum() != 0)
+			errMsg.append(" - @QtyReserved@").append(qtyReserved);
+		return errMsg.toString();
+	}
 
 	/**
 	 * 	HasInventoryOrCost 
@@ -719,31 +721,8 @@ public class MProduct extends X_M_Product
 		//	Check Storage
 		if (isStocked() || PRODUCTTYPE_Item.equals(getProductType()))
 		{
-			MStorageOnHand[] storages = MStorageOnHand.getOfProduct(getCtx(), get_ID(), get_TrxName());
-			MStorageReservation[] reserves = MStorageReservation.getOfProduct(getCtx(), get_ID(), get_TrxName());
-
-			BigDecimal OnHand = Env.ZERO;
-			BigDecimal Ordered = Env.ZERO;
-			BigDecimal Reserved = Env.ZERO;
-			for (int i = 0; i < storages.length; i++)
-			{
-				OnHand = OnHand.add(storages[i].getQtyOnHand());
-			}
-
-			for (int i = 0; i < reserves.length; i++)
-			{               
-				Ordered = OnHand.add(reserves[i].getQtyOrdered());
-				Reserved = OnHand.add(reserves[i].getQtyReserved());
-			}
-
-			String errMsg = "";
-			if (OnHand.signum() != 0)
-				errMsg = "@QtyOnHand@ = " + OnHand;
-			if (Ordered.signum() != 0)
-				errMsg += " - @QtyOrdered@ = " + Ordered;
-			if (Reserved.signum() != 0)
-				errMsg += " - @QtyReserved@" + Reserved;
-			if (errMsg.length() > 0)
+			String errMsg = verifyStorage();
+			if (! Util.isEmpty(errMsg))
 			{
 				log.saveError("Error", Msg.parseTranslation(getCtx(), errMsg)); 
 				return false;

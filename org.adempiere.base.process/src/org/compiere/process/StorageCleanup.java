@@ -69,11 +69,18 @@ public class StorageCleanup extends SvrProcess
 		log.info("");
 		//	Clean up empty Storage
 		String sql = "DELETE FROM M_StorageOnHand "
-			+ "WHERE QtyOnHand = 0 AND QtyReserved = 0 AND QtyOrdered = 0"
+			+ "WHERE QtyOnHand = 0"
 			+ " AND Created < SysDate-3";
 		int no = DB.executeUpdate(sql, get_TrxName());
 		log.info("Delete Empty #" + no);
-		
+
+		//	Clean up empty Reservation Storage
+		sql = "DELETE FROM M_StorageReservation "
+			+ "WHERE Qty = 0"
+			+ " AND Created < SysDate-3";
+		no = DB.executeUpdate(sql, get_TrxName());
+		log.info("Delete Empty #" + no);
+
 		//
 		sql = "SELECT * "
 			+ "FROM M_StorageOnHand s "
