@@ -489,6 +489,26 @@ SELECT s.ad_client_id,
    			mp.name
 ;
 
+-- Nov 20, 2012 5:06:02 PM COT
+-- IDEMPIERE-385 Resolve M_Storage locking and data consistency
+UPDATE AD_Column SET IsParent='Y', IsUpdateable='N', IsToolbarButton='N',Updated=TO_TIMESTAMP('2012-11-20 17:06:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200640
+;
+
+-- Nov 20, 2012 5:28:27 PM COT
+-- IDEMPIERE-385 Resolve M_Storage locking and data consistency
+UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='N',Updated=TO_TIMESTAMP('2012-11-20 17:28:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200640
+;
+
+-- Nov 20, 2012 5:28:36 PM COT
+-- IDEMPIERE-385 Resolve M_Storage locking and data consistency
+INSERT INTO t_alter_column values('m_storagereservation','IsSOTrx','CHAR(1)',null,'Y')
+;
+
+-- Nov 20, 2012 5:28:36 PM COT
+-- IDEMPIERE-385 Resolve M_Storage locking and data consistency
+UPDATE M_StorageReservation SET IsSOTrx='Y' WHERE IsSOTrx IS NULL
+;
+
 SELECT register_migration_script('201211191100_IDEMPIERE-385_DB.sql') FROM dual
 ;
 
