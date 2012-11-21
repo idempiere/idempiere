@@ -55,7 +55,7 @@ public class MBank extends X_C_Bank
 
 	/**	Cache						*/
 	private static CCache<Integer,MBank> s_cache = 
-		new CCache<Integer,MBank> ("C_Bank", 3);
+		new CCache<Integer,MBank> (Table_Name, 3);
 	
 	
 	/**************************************************************************

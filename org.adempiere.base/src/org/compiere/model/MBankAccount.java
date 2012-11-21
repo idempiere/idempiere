@@ -56,7 +56,7 @@ public class MBankAccount extends X_C_BankAccount
 
 	/**	Cache						*/
 	private static CCache<Integer,MBankAccount>	s_cache
-		= new CCache<Integer,MBankAccount>("C_BankAccount", 5);
+		= new CCache<Integer,MBankAccount>(Table_Name, 5);
 	
 	/**
 	 * 	Bank Account Model
