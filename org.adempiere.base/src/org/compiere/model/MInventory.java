@@ -70,7 +70,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MInventory> s_cache = new CCache<Integer,MInventory>("M_Inventory", 5, 5);
+	private static CCache<Integer,MInventory> s_cache = new CCache<Integer,MInventory>(Table_Name, 5, 5);
 
 
 	/**

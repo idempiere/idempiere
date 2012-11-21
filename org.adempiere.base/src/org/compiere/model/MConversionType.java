@@ -71,7 +71,7 @@ public class MConversionType extends X_C_ConversionType
 	}	//	getDefault
 	
 	/**	Cache Client-ID					*/
-	private static CCache<Integer,Integer> s_cache = new CCache<Integer,Integer>("C_ConversionType", 4);
+	private static CCache<Integer,Integer> s_cache = new CCache<Integer,Integer>(Table_Name, 4);
 	
 	/**************************************************************************
 	 * 	Standard Constructor

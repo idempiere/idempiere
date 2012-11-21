@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -4301,5 +4303,10 @@ public abstract class PO
 		return clone;
 	}
 
-
+	private void readObject(ObjectInputStream ois)
+			throws ClassNotFoundException, IOException {
+	    // default deserialization
+	    ois.defaultReadObject();
+	    log = CLogger.getCLogger(getClass());
+	}
 }   //  PO

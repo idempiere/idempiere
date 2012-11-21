@@ -686,7 +686,7 @@ public final class Adempiere
 		m_listenerList.add(ServerStateChangeListener.class, l);
 	}
 	
-	private static void fireServerStateChanged(ServerStateChangeEvent e)
+	private static synchronized void fireServerStateChanged(ServerStateChangeEvent e)
 	{
 		ServerStateChangeListener[] listeners = m_listenerList.getListeners(ServerStateChangeListener.class);
 		for (int i = 0; i < listeners.length; i++)

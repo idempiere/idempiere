@@ -59,7 +59,7 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MInvoiceSchedule>	s_cache	= new CCache<Integer,MInvoiceSchedule>("C_InvoiceSchedule", 5);
+	private static CCache<Integer,MInvoiceSchedule>	s_cache	= new CCache<Integer,MInvoiceSchedule>(Table_Name, 5);
 	
 	
 	/**************************************************************************

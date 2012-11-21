@@ -31,6 +31,7 @@ import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -890,7 +891,7 @@ public final class ALogin extends CDialog
 			}
 			else
 			{
-				log.severe(CLogger.getRootCause(e).getLocalizedMessage());
+				log.log(Level.SEVERE, CLogger.getRootCause(e).getLocalizedMessage(), CLogger.getRootCause(e));
 				statusBar.setStatusLine(CLogger.getRootCause(e).getLocalizedMessage(), true);
 				return NOT_CONNECTED;
 			}

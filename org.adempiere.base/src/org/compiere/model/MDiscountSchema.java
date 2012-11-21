@@ -62,7 +62,7 @@ public class MDiscountSchema extends X_M_DiscountSchema
 
 	/**	Cache						*/
 	private static CCache<Integer,MDiscountSchema>	s_cache
-		= new CCache<Integer,MDiscountSchema>("M_DiscountSchema", 20);
+		= new CCache<Integer,MDiscountSchema>(Table_Name, 20);
 
 	
 	/**************************************************************************

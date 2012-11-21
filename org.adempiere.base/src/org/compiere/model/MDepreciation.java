@@ -43,7 +43,7 @@ public class MDepreciation extends X_A_Depreciation
 	s_cache = new CCache<Integer,MDepreciation>(Table_Name, 5);
 	/**		Cache for type							*/
 	private static CCache<String,MDepreciation>
-	s_cache_forType = new CCache<String,MDepreciation>(Table_Name+"_DepreciationType", 5);
+	s_cache_forType = new CCache<String,MDepreciation>(Table_Name, Table_Name+"_DepreciationType", 5);
 	/**		Static logger							*/
 	private static Logger s_log = CLogger.getCLogger(MDepreciation.class);
 	/** The accuracy of calculation on depreciation */

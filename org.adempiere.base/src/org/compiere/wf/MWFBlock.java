@@ -56,7 +56,7 @@ public class MWFBlock extends X_AD_WF_Block
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MWFBlock>	s_cache	= new CCache<Integer,MWFBlock>("AD_WF_Block", 20);
+	private static CCache<Integer,MWFBlock>	s_cache	= new CCache<Integer,MWFBlock>(Table_Name, 20);
 	
 	
 	/**

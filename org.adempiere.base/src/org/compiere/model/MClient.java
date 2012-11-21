@@ -107,7 +107,7 @@ public class MClient extends X_AD_Client
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MClient.class);
 	/**	Cache						*/
-	private static CCache<Integer,MClient>	s_cache = new CCache<Integer,MClient>("AD_Client", 3);
+	private static CCache<Integer,MClient>	s_cache = new CCache<Integer,MClient>(Table_Name, 3);
 
 
 	/**************************************************************************
@@ -633,7 +633,8 @@ public class MClient extends X_AD_Client
 		}
 		catch (Exception ex)
 		{
-			log.severe(getName() + " - " + ex.getLocalizedMessage());
+			ex.printStackTrace();
+			log.log(Level.SEVERE, getName() + " - " + ex.getLocalizedMessage(), ex);
 			return false;
 		}
 	}	//	sendEMail

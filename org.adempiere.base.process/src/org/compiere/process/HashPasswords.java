@@ -23,6 +23,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.SystemIDs;
+import org.compiere.util.CacheMgt;
 
 /**
  *	Hash existing passwords
@@ -54,7 +55,7 @@ public class HashPasswords extends SvrProcess
 		MSysConfig conf = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_USER_HASH_PASSWORD, null);
 		conf.setValue("Y");
 		conf.saveEx();
-		MSysConfig.resetCache();
+		CacheMgt.get().reset(MSysConfig.Table_Name);
 
 		int count = 0;
 		try {

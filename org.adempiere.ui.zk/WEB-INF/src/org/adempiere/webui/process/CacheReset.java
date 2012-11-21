@@ -42,8 +42,8 @@ public class CacheReset extends SvrProcess
 	 */
 	protected String doIt() throws java.lang.Exception
 	{
-		CacheMgt.get().reset();
-		return "Cache Reset";
+		int count = CacheMgt.get().reset();
+		return "Cache Reset #" + count;
 	}	//	doIt
 
 }	//	CacheReset

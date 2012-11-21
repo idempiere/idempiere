@@ -58,7 +58,7 @@ public class MWFResponsible extends X_AD_WF_Responsible
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MWFResponsible>	s_cache	= new CCache<Integer,MWFResponsible>("AD_WF_Responsible", 10);
+	private static CCache<Integer,MWFResponsible>	s_cache	= new CCache<Integer,MWFResponsible>(Table_Name, 10);
 
 	
 	/**************************************************************************

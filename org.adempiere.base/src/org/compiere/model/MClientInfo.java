@@ -111,7 +111,7 @@ public class MClientInfo extends X_AD_ClientInfo
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MClientInfo> s_cache = new CCache<Integer,MClientInfo>("AD_ClientInfo", 2);
+	private static CCache<Integer,MClientInfo> s_cache = new CCache<Integer,MClientInfo>(Table_Name, 2);
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MClientInfo.class);
 

@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
+import org.compiere.model.I_AD_Message;
 
 /**
  *	Reads all Messages and stores them in a HashMap
@@ -67,7 +68,7 @@ public final class Msg
 
 	/**  The Map                    */
 	private CCache<String,CCache<String,String>> m_languages 
-		= new CCache<String,CCache<String,String>>("msg_lang", 2, 0);
+		= new CCache<String,CCache<String,String>>(null, "msg_lang", 2, 0, false);
 
 	/**
 	 *  Get Language specific Message Map
@@ -105,7 +106,7 @@ public final class Msg
 	private CCache<String,String> initMsg (String AD_Language)
 	{
 	//	Trace.printStack();
-		CCache<String,String> msg = new CCache<String,String>("AD_Message", MAP_SIZE, 0);
+		CCache<String,String> msg = new CCache<String,String>(I_AD_Message.Table_Name, MAP_SIZE, 0);
 		//
 		if (!DB.isConnected())
 		{

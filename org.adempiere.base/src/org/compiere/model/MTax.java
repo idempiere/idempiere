@@ -45,7 +45,7 @@ public class MTax extends X_C_Tax
 	/**	Cache						*/
 	private static CCache<Integer,MTax>		s_cache	= new CCache<Integer,MTax>(Table_Name, 5);
 	/**	Cache of Client						*/
-	private static CCache<Integer,MTax[]>	s_cacheAll = new CCache<Integer,MTax[]>(Table_Name, 5);
+	private static CCache<Integer,MTax[]>	s_cacheAll = new CCache<Integer,MTax[]>(Table_Name, Table_Name+"_Of_Client", 5);
 	
 	/**	100					*/
 	private static BigDecimal ONEHUNDRED = new BigDecimal(100);

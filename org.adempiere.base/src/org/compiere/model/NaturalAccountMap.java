@@ -69,7 +69,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	 */
 	public NaturalAccountMap(Properties ctx, String trxName)
 	{
-		super("NaturalAccountMap", 100);
+		super(null, "NaturalAccountMap", 100, false);
 		m_ctx = ctx;
 		m_trxName = trxName;
 	}   //  NaturalAccountMap

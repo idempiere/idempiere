@@ -99,7 +99,7 @@ public class WebSessionCtx implements Serializable
 	/**	Logger							*/
 	static private CLogger			log = CLogger.getCLogger (WebSessionCtx.class);
 	/** Cache 60 minutes				*/
-	static private CCache<Integer,Properties> s_cacheCtx = new CCache<Integer,Properties>("WebSessionCtx", 30, 60);
+	static private CCache<Integer,Properties> s_cacheCtx = new CCache<Integer,Properties>(null, "WebSessionCtx", 30, 60, false);
 	
 	/**************************************************************************
 	 * 	Web Session Context

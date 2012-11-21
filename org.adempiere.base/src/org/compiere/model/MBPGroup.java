@@ -158,10 +158,10 @@ public class MBPGroup extends X_C_BP_Group
 	
 	/**	Cache						*/
 	private static CCache<Integer,MBPGroup>	s_cache
-		= new CCache<Integer,MBPGroup>("BP_Group", 10);
+		= new CCache<Integer,MBPGroup>(Table_Name, 10);
 	/**	Default Cache					*/
 	private static CCache<Integer,MBPGroup>	s_cacheDefault
-		= new CCache<Integer,MBPGroup>("BP_Group", 5);
+		= new CCache<Integer,MBPGroup>(Table_Name, MBPGroup.class.getName()+".Default", 5);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MBPGroup.class);
 	

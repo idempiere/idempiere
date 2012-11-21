@@ -122,7 +122,7 @@ public class MClientShare extends X_AD_ClientShare
 	
 	/**	Shared Info								*/
 	private static CCache<String,Boolean>	s_shares 
-		= new CCache<String,Boolean>("AD_ClientShare", 10, 120);	//	2h
+		= new CCache<String,Boolean>(Table_Name, 10, 120);	//	2h
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MClientShare.class);
 	

@@ -172,7 +172,7 @@ public class MDistribution extends X_GL_Distribution
 	private static CLogger	s_log	= CLogger.getCLogger (MDistribution.class);
 	/**	Distributions by Account			*/
 	private static CCache<Integer,MDistribution[]> s_accounts 
-		= new CCache<Integer,MDistribution[]>("GL_Distribution", 100);
+		= new CCache<Integer,MDistribution[]>(Table_Name, 100);
 	
 	
 	/**************************************************************************

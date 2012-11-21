@@ -61,7 +61,7 @@ public class MProjectType extends X_C_ProjectType
 
 	/**	Cache						*/
 	private static CCache<Integer, MProjectType> s_cache 
-		= new CCache<Integer, MProjectType> ("C_ProjectType", 20);
+		= new CCache<Integer, MProjectType> (Table_Name, 20);
 	
 	
 	/**************************************************************************

@@ -169,7 +169,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	 */
 	private static void createRates (Properties ctx)
 	{
-		s_conversions = new CCache<Point,BigDecimal>("C_UOMConversion", 20);
+		s_conversions = new CCache<Point,BigDecimal>(Table_Name, 20);
 		//
 		String sql = MRole.getDefault(ctx, false).addAccessSQL (
 			"SELECT C_UOM_ID, C_UOM_To_ID, MultiplyRate, DivideRate "
@@ -625,7 +625,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	private static CCache<Point,BigDecimal>	s_conversions = null;
 	/** Product Conversion Map					*/
 	private static final CCache<Integer,MUOMConversion[]>	s_conversionProduct 
-		= new CCache<Integer,MUOMConversion[]>("C_UOMConversion", 20); 
+		= new CCache<Integer,MUOMConversion[]>(Table_Name, Table_Name+"_Of_Product", 20); 
 	
 	
 	/**************************************************************************

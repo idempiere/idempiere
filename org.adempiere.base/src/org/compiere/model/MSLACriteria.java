@@ -61,7 +61,7 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MSLACriteria>	s_cache	= new CCache<Integer,MSLACriteria>("PA_SLA_Criteria", 20);
+	private static CCache<Integer,MSLACriteria>	s_cache	= new CCache<Integer,MSLACriteria>(Table_Name, 20);
 	
 	
 	/**

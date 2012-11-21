@@ -108,8 +108,8 @@ public class MSession extends X_AD_Session
 
 	/**	Sessions					*/
 	private static CCache<Integer, MSession> s_sessions = Ini.isClient() 
-		? new CCache<Integer, MSession>("AD_Session_ID", 1, 0)		//	one client session 
-		: new CCache<Integer, MSession>("AD_Session_ID", 30, 0);	//	no time-out	
+		? new CCache<Integer, MSession>(null, "AD_Session_ID", 1, 0, false)		//	one client session 
+		: new CCache<Integer, MSession>(null, "AD_Session_ID", 30, 0, false);	//	no time-out	
 	
 	
 	/**************************************************************************

@@ -336,7 +336,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 	/** Static cache: Asset/PostingType -> Workfile */
 	private static CCache<MultiKey, MDepreciationWorkfile>
-	s_cacheAsset = new CCache<MultiKey, MDepreciationWorkfile>(Table_Name+"_Asset", 10); 
+	s_cacheAsset = new CCache<MultiKey, MDepreciationWorkfile>(Table_Name, Table_Name+"_Asset", 10); 
 	
 	/**	Returns the date of the last action
 	 */

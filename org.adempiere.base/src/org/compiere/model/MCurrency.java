@@ -87,9 +87,9 @@ public class MCurrency extends X_C_Currency
 
 
 	/**	Store System Currencies			**/
-	private static CCache<Integer,MCurrency> s_currencies = new CCache<Integer,MCurrency>("C_Currency", 50);
+	private static CCache<Integer,MCurrency> s_currencies = new CCache<Integer,MCurrency>(Table_Name, 50);
 	/** Cache System Currencies by using ISO code as key **/
-	private static CCache<String,MCurrency> s_currenciesISO = new CCache<String,MCurrency>("C_CurrencyISO", 50);
+	private static CCache<String,MCurrency> s_currenciesISO = new CCache<String,MCurrency>(Table_Name, "C_CurrencyISO", 50);
 
 	/**
 	 * 	Get Currency using ISO code

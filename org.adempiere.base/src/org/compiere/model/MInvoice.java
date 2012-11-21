@@ -250,7 +250,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MInvoice>	s_cache	= new CCache<Integer,MInvoice>("C_Invoice", 20, 2);	//	2 minutes
+	private static CCache<Integer,MInvoice>	s_cache	= new CCache<Integer,MInvoice>(Table_Name, 20, 2);	//	2 minutes
 
 
 	/**************************************************************************

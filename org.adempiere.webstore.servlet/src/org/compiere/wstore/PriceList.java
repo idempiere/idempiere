@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.I_M_PriceList;
 import org.compiere.model.MProductCategory;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -95,7 +96,7 @@ public class PriceList
 
 	/**	Price List Cache				*/
 	private static CCache<String,PriceList> s_cache
-		= new CCache<String,PriceList>("PriceList", 5, 60);	// 1h Cache	
+		= new CCache<String,PriceList>(I_M_PriceList.Table_Name, "PriceList", 5, 60, true);	// 1h Cache	
 	/** Maximum Lines to be displayed	*/
 	public static int				MAX_LINES = 50;
 

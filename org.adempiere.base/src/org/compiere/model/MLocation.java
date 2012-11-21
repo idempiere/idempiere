@@ -120,7 +120,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	}	//	getBPLocation
 
 	/**	Cache						*/
-	private static CCache<Integer,MLocation> s_cache = new CCache<Integer,MLocation>("C_Location", 100, 30);
+	private static CCache<Integer,MLocation> s_cache = new CCache<Integer,MLocation>(Table_Name, 100, 30);
 	/**	Static Logger				*/
 	private static CLogger	s_log = CLogger.getCLogger(MLocation.class);
 

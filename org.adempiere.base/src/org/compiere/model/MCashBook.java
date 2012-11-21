@@ -102,7 +102,7 @@ public class MCashBook extends X_C_CashBook
 
 	/**	Cache						*/
 	private static CCache<Integer,MCashBook> s_cache
-		= new CCache<Integer,MCashBook>("", 20);
+		= new CCache<Integer,MCashBook>(Table_Name, 20);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCashBook.class);
 	

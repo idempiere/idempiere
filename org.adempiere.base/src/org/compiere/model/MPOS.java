@@ -72,7 +72,7 @@ public class MPOS extends X_C_POS
 	}	//	get
 	
 	/**	Cache						*/
-	private static CCache<Integer,MPOS> s_cache = new CCache<Integer,MPOS>("C_POS", 20);
+	private static CCache<Integer,MPOS> s_cache = new CCache<Integer,MPOS>(Table_Name, 20);
 
 	/**
 	 * 	Standard Constructor

@@ -784,8 +784,6 @@ public class VLocationDialog extends CDialog
 							if (region.save())
  							{
 								log.fine("Added new region from web service: " + values.getRegion());
-								// clears cache
-								Env.reset(false);
 								//reload regions to combo box
 								fRegion = new CComboBoxEditable(MRegion.getRegions(Env.getCtx(), country.getC_Country_ID()));
 								// select region

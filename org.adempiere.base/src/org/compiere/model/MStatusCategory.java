@@ -124,7 +124,7 @@ public class MStatusCategory extends X_R_StatusCategory
 
 	/**	Cache						*/
 	private static CCache<Integer, MStatusCategory> s_cache 
-		= new CCache<Integer, MStatusCategory> ("R_StatusCategory", 20);
+		= new CCache<Integer, MStatusCategory> (Table_Name, 20);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MStatusCategory.class);
 	

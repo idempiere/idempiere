@@ -113,7 +113,7 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 	private static CLogger s_log = CLogger.getCLogger(MRegistrationAttribute.class);
 	/**	Cache						*/
 	private static CCache<Integer,MRegistrationAttribute> s_cache 
-		= new CCache<Integer,MRegistrationAttribute>("A_RegistrationAttribute", 20);
+		= new CCache<Integer,MRegistrationAttribute>(Table_Name, 20);
 
 	/**************************************************************************
 	 * 	Standard Constructor

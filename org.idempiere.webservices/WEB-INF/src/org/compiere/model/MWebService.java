@@ -178,7 +178,7 @@ public class MWebService extends X_WS_WebService
 	}	//	getMethod
 	
 	/**	Cache						*/
-	private static CCache<Integer,MWebService>	s_cache	= new CCache<Integer,MWebService>("WS_WebService", 20);
+	private static CCache<Integer,MWebService>	s_cache	= new CCache<Integer,MWebService>(Table_Name, 20);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWebService.class);

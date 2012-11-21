@@ -536,7 +536,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	/*************************************************************************/
 
 	private static CCache<Integer,MPrintTableFormat>	s_cache
-		= new CCache<Integer,MPrintTableFormat>("AD_PrintTableFormat", 3);
+		= new CCache<Integer,MPrintTableFormat>(Table_Name, 3);
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MPrintTableFormat.class);
 

@@ -39,7 +39,7 @@ public class MRecentItem extends X_AD_RecentItem
 	private static final long serialVersionUID = 8337619537799431984L;
 
 	/**	Recent Item Cache				*/
-	private static CCache<Integer,MRecentItem>	s_cache = new CCache<Integer,MRecentItem>("AD_RecentItem", 10);
+	private static CCache<Integer,MRecentItem>	s_cache = new CCache<Integer,MRecentItem>(Table_Name, 10);
 	/**	Logger			*/
 	private static CLogger s_log = CLogger.getCLogger(MRecentItem.class);
 

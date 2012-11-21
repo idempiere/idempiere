@@ -16,14 +16,13 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -54,7 +53,7 @@ import org.compiere.model.PO;
  *  		<li>BF [ 2849122 ] PO.AfterSave is not rollback on error - add releaseSavepoint method
  *  			https://sourceforge.net/tracker/index.php?func=detail&aid=2849122&group_id=176962&atid=879332#
  */
-public class Trx implements VetoableChangeListener
+public class Trx
 {
 	/**
 	 * 	Get Transaction
@@ -69,8 +68,7 @@ public class Trx implements VetoableChangeListener
 
 		if (s_cache == null)
 		{
-			s_cache = new CCache<String,Trx>("Trx", 10, -1);	//	no expiration
-			s_cache.addVetoableChangeListener(new Trx("controller_" + "_" + UUID.randomUUID()));
+			s_cache = new HashMap<String,Trx>(10);
 		}
 		
 		Trx retValue = (Trx)s_cache.get(trxName);
@@ -83,7 +81,7 @@ public class Trx implements VetoableChangeListener
 	}	//	get
 	
 	/**	Transaction Cache					*/
-	private static CCache<String,Trx> 	s_cache = null;	//	create change listener
+	private static Map<String,Trx> 	s_cache = null;	//	create change listener
 	
 	private static Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
 
@@ -484,19 +482,6 @@ public class Trx implements VetoableChangeListener
 		return sb.toString();
 	}	//	toString
 
-	/**
-	 * 	Vetoable Change.
-	 * 	Called from CCache to close connections
-	 *	@param evt event
-	 *	@throws PropertyVetoException
-	 */
-	public void vetoableChange (PropertyChangeEvent evt)
-		throws PropertyVetoException
-	{
-		log.info(evt.toString());
-		throw new PropertyVetoException("Skip reset for trx entries cache", evt);
-	}	//	vetoableChange	
-	
 	/**
 	 * @return Trx[]
 	 */

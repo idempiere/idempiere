@@ -99,7 +99,7 @@ public class MCharge extends X_C_Charge
 
 	/**	Cache						*/
 	private static CCache<Integer, MCharge> s_cache 
-		= new CCache<Integer, MCharge> ("C_Charge", 10);
+		= new CCache<Integer, MCharge> (Table_Name, 10);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCharge.class);

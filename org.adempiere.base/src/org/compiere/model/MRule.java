@@ -123,7 +123,7 @@ public class MRule extends X_AD_Rule
 	}	//	getModelValidatorLoginRules
 
 	/**	Cache						*/
-	private static CCache<Integer,MRule> s_cache = new CCache<Integer,MRule>("AD_Rule", 20);
+	private static CCache<Integer,MRule> s_cache = new CCache<Integer,MRule>(Table_Name, 20);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MRule.class);

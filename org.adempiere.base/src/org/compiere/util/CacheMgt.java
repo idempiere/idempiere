@@ -16,7 +16,19 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import org.adempiere.base.IServiceHolder;
+import org.adempiere.base.Service;
+import org.idempiere.distributed.ICacheService;
+import org.idempiere.distributed.IClusterService;
 
 /**
  *  Adempiere Cache Management
@@ -56,21 +68,35 @@ public class CacheMgt
 
 	
 	/**************************************************************************
-	 * 	Register Cache Instance
+	 * 	Create Cache Instance
 	 *	@param instance Cache
+	 *  @param distributed
 	 *	@return true if added
 	 */
-	@SuppressWarnings("unchecked")
-	public synchronized boolean register (CacheInterface instance)
+	public synchronized <K,V>Map<K, V> register (CCache<K, V> instance, boolean distributed)
 	{
 		if (instance == null)
-			return false;
-		if (instance instanceof CCache)
-		{
-			String tableName = ((CCache)instance).getName(); 
+			return null;
+		
+		String name = instance.getName();
+		String tableName = instance.getTableName();
+		if (tableName != null)
 			m_tableNames.add(tableName);
+		
+		m_instances.add (instance);
+		Map<K, V> map = null;
+		if (distributed) 
+		{
+			ICacheService provider = Service.locator().locate(ICacheService.class).getService();
+			if (provider != null)
+				map = provider.getMap(name);
 		}
-		return m_instances.add (instance);
+		
+		if (map == null)
+		{
+			map = new HashMap<K, V>();
+		}		
+		return map;
 	}	//	register
 
 	/**
@@ -96,11 +122,81 @@ public class CacheMgt
 		return found;
 	}	//	unregister
 
-	/**************************************************************************
-	 * 	Reset All registered Cache
+	/**
+	 * do a cluster wide cache reset 
+	 * @return number of deleted cache entries
+	 */
+	private int  clusterReset() {
+		return clusterReset(null, -1);
+	}
+	
+	/**
+	 * do a cluster wide cache reset for tableName with recordId key
+	 * @param tableName
+	 * @param recordId record id for the cache entries to delete. pass -1 if you don't want to delete 
+	 * cache entries by record id   
+	 * @return number of deleted cache entries
+	 */
+	private int clusterReset(String tableName, int recordId) {
+		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
+		IClusterService service = holder.getService();
+		if (service != null) {			
+			ResetCacheCallable callable = new ResetCacheCallable(tableName, recordId);
+			Future<Collection<Integer>> future = service.execute(callable, service.getMembers());
+			int total = 0;
+			try {
+				Collection<Integer> results = future.get();
+				for(Integer i : results) 
+				{
+					total += i.intValue();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+			return total;
+		} else {
+			return resetLocalCache(tableName, recordId);
+		}
+	}
+	
+	/**
+	 * do a cluster wide cache reset 
+	 * @return number of deleted cache entries
+	 */
+	public int reset() 
+	{
+		return clusterReset();
+	}
+	
+	/**
+	 * 	do a cluster wide cache reset for tableName
+	 * 	@param tableName table name
 	 * 	@return number of deleted cache entries
 	 */
-	public int reset()
+	public int reset (String tableName)
+	{
+		return reset(tableName, -1);
+	}
+	
+	/**
+	 * do a cluster wide cache reset for tableName with recordId key
+	 * @param tableName
+	 * @param Record_ID record id for the cache entries to delete. pass -1 if you don't want to delete 
+	 * cache entries by record id
+	 * @return number of deleted cache entries
+	 */
+	public int reset (String tableName, int Record_ID)
+	{
+		return clusterReset(tableName, Record_ID);
+	}
+	
+	/**************************************************************************
+	 * 	Reset local Cache
+	 * 	@return number of deleted cache entries
+	 */
+	public int resetLocalCache()
 	{
 		int counter = 0;
 		int total = 0;
@@ -116,31 +212,19 @@ public class CacheMgt
 		}
 		log.fine("#" + counter + " (" + total + ")");
 		return total;
-	}	//	reset
-
-	/**
-	 * 	Reset registered Cache
-	 * 	@param tableName table name
-	 * 	@return number of deleted cache entries
-	 */
-	public int reset (String tableName)
-	{
-		return reset (tableName, 0);
-	}	//	reset
+	}
 	
 	/**
-	 * 	Reset registered Cache
+	 * 	Reset local Cache
 	 * 	@param tableName table name
 	 * 	@param Record_ID record if applicable or 0 for all
 	 * 	@return number of deleted cache entries
 	 */
 	@SuppressWarnings("unchecked")
-	public int reset (String tableName, int Record_ID)
+	protected int resetLocalCache (String tableName, int Record_ID)
 	{
 		if (tableName == null)
-			return reset();
-	//	if (tableName.endsWith("Set"))
-	//		tableName = tableName.substring(0, tableName.length()-3);
+			return resetLocalCache();
 		if (!m_tableNames.contains(tableName))
 			return 0;
 		//
@@ -152,12 +236,11 @@ public class CacheMgt
 			if (stored != null && stored instanceof CCache)
 			{
 				CCache cc = (CCache)stored;
-				if (cc.getName().startsWith(tableName))		//	reset lines/dependent too
+				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
 				{
-				//	if (Record_ID == 0)
 					{
 						log.fine("(all) - " + stored);
-						total += stored.reset();
+						total += stored.reset(Record_ID);
 						counter++;
 					}
 				}
@@ -166,7 +249,7 @@ public class CacheMgt
 		log.fine(tableName + ": #" + counter + " (" + total + ")");
 
 		return total;
-	}	//	reset
+	}
 	
 	/**
 	 * 	Total Cached Elements
@@ -218,6 +301,5 @@ public class CacheMgt
 			.append(getElementCount())
 			.append("]");
 		return sb.toString ();
-	}	//	toString
-
+	}	//	toString	
 }	//	CCache

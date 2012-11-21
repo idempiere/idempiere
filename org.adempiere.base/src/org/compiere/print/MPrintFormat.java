@@ -1035,7 +1035,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	/*************************************************************************/
 
 	/** Cached Formats						*/
-	static private CCache<Integer,MPrintFormat> s_formats = new CCache<Integer,MPrintFormat>("AD_PrintFormat", 30);
+	static private CCache<Integer,MPrintFormat> s_formats = new CCache<Integer,MPrintFormat>(Table_Name, 30);
 
 	/**
 	 * 	Get Format

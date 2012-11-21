@@ -59,7 +59,7 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MRfQLineQty>	s_cache	= new CCache<Integer,MRfQLineQty>("C_RfQLineQty", 20);
+	private static CCache<Integer,MRfQLineQty>	s_cache	= new CCache<Integer,MRfQLineQty>(Table_Name, 20);
 	
 	/**
 	 * 	Standard Constructor

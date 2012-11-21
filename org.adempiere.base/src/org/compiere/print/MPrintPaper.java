@@ -93,7 +93,7 @@ public class MPrintPaper extends X_AD_PrintPaper
 	private static CLogger s_log = CLogger.getCLogger(MPrintPaper.class);
 	/** Cached Fonts						*/
 	static private CCache<Integer,MPrintPaper> s_papers 
-		= new CCache<Integer,MPrintPaper>("AD_PrintPaper", 5);
+		= new CCache<Integer,MPrintPaper>(Table_Name, 5);
 	
 	
 	/**************************************************************************

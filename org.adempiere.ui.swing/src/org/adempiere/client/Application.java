@@ -6,6 +6,7 @@ import java.util.List;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
+import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 
 import org.eclipse.equinox.app.IApplication;
@@ -41,6 +42,7 @@ public class Application implements IApplication {
 		context.setClientDispatcher(client);
 		client.start();
 		
+		Adempiere.startup(true);
 		org.compiere.AdempiereClient.main(new String[]{});
 		return IApplication.EXIT_OK;
 	}

@@ -74,7 +74,7 @@ public class MMailText extends X_R_MailText
 	/** Translated Text 3	*/
 	private String		m_MailText3 = null;
 	/** Translation Cache	*/
-	private static CCache<String,MMailTextTrl> s_cacheTrl = new CCache<String,MMailTextTrl> ("", 20);
+	private static CCache<String,MMailTextTrl> s_cacheTrl = new CCache<String,MMailTextTrl> (Table_Name, 20);
 	
 	/**
 	 * 	Get parsed/translated Mail Text

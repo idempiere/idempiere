@@ -77,7 +77,7 @@ public class MPrintColor extends X_AD_PrintColor
 	/*************************************************************************/
 
 	/** Cached Colors						*/
-	static private CCache<Integer,MPrintColor> 	s_colors = new CCache<Integer,MPrintColor>("AD_PrintColor", 20);
+	static private CCache<Integer,MPrintColor> 	s_colors = new CCache<Integer,MPrintColor>(Table_Name, 20);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MPrintColor.class);
 

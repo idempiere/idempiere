@@ -59,7 +59,7 @@ public class MProcessPara extends X_AD_Process_Para
 
 	/**	Cache						*/
 	private static CCache<Integer, MProcessPara> s_cache 
-		= new CCache<Integer, MProcessPara> ("AD_Process_Para", 20);
+		= new CCache<Integer, MProcessPara> (Table_Name, 20);
 	
 	
 	/**************************************************************************

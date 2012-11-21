@@ -36,6 +36,7 @@ import org.compiere.model.X_AD_Table;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.CLogMgt;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 
 /**
@@ -66,7 +67,7 @@ public class EnableNativeSequence extends SvrProcess
 		MSysConfig conf = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_SYSTEM_NATIVE_SEQUENCE, null);
 		conf.setValue("Y");
 		conf.saveEx();
-		MSysConfig.resetCache();
+		CacheMgt.get().reset(MSysConfig.Table_Name);
 
 		try
 		{

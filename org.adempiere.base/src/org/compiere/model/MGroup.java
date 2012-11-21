@@ -53,7 +53,7 @@ public class MGroup extends X_R_Group
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MGroup> s_cache = new CCache<Integer,MGroup>("R_Group", 20);
+	private static CCache<Integer,MGroup> s_cache = new CCache<Integer,MGroup>(Table_Name, 20);
 	
 	
 	/**************************************************************************

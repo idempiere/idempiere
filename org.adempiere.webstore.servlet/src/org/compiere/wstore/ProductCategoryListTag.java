@@ -25,6 +25,8 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.ecs.xhtml.option;
 import org.apache.ecs.xhtml.select;
+import org.compiere.model.I_M_Product;
+import org.compiere.model.I_M_Product_Category;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -129,7 +131,7 @@ public class ProductCategoryListTag extends TagSupport
 
 	/** Client Category Cache		*/
 	static CCache<Integer,option[]> s_categories
-		= new CCache<Integer,option[]>("ProductCategory", 10, 60);
+		= new CCache<Integer,option[]>(I_M_Product_Category.Table_Name, "ProductCategory", 10, 60, true);
 
 }	//	ProductCategoryListTag
 

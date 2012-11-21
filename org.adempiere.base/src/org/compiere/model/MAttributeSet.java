@@ -64,7 +64,7 @@ public class MAttributeSet extends X_M_AttributeSet
 
 	/**	Cache						*/
 	private static CCache<Integer,MAttributeSet> s_cache
-		= new CCache<Integer,MAttributeSet> ("M_AttributeSet", 20);
+		= new CCache<Integer,MAttributeSet> (Table_Name, 20);
 	
 	
 	/**

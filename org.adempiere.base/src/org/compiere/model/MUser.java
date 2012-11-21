@@ -275,7 +275,7 @@ public class MUser extends X_AD_User
 	}	//	isSalesRep
 	
 	/**	Cache					*/
-	static private CCache<Integer,MUser> s_cache = new CCache<Integer,MUser>("AD_User", 30, 60);
+	static private CCache<Integer,MUser> s_cache = new CCache<Integer,MUser>(Table_Name, 30, 60);
 	/**	Static Logger			*/
 	private static CLogger	s_log	= CLogger.getCLogger (MUser.class);
 	
