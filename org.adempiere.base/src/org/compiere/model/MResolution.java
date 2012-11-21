@@ -54,7 +54,7 @@ public class MResolution extends X_R_Resolution
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MResolution>	s_cache	= new CCache<Integer,MResolution>("R_Resolution", 10);
+	private static CCache<Integer,MResolution>	s_cache	= new CCache<Integer,MResolution>(Table_Name, 10);
 	
 	
 	

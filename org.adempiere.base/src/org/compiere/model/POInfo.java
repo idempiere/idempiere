@@ -86,7 +86,7 @@ public class POInfo implements Serializable
 	}   //  getPOInfo
 
 	/** Cache of POInfo     */
-	private static CCache<Integer,POInfo>  s_cache = new CCache<Integer,POInfo>("POInfo", 200);
+	private static CCache<Integer,POInfo>  s_cache = new CCache<Integer,POInfo>(I_AD_Table.Table_Name, "POInfo", 200);
 	
 	/**************************************************************************
 	 *  Create Persistent Info

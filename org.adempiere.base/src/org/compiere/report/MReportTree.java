@@ -91,7 +91,7 @@ public class MReportTree
 	}	//	getChildIDs
 
 	/**	Map with Tree				*/
-	private static CCache<String,MReportTree> s_trees = new CCache<String,MReportTree>("MReportTree", 20);
+	private static CCache<String,MReportTree> s_trees = new CCache<String,MReportTree>(null, "MReportTree", 20, false);
 
 
 	/**************************************************************************

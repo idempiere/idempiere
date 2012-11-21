@@ -112,7 +112,7 @@ public final class MCountry extends X_C_Country
 		MLanguage lang = MLanguage.get(ctx, client.getAD_Language());
 		MCountry usa = null;
 		//
-		s_countries = new CCache<String,MCountry>("C_Country", 250);
+		s_countries = new CCache<String,MCountry>(Table_Name, 250);
 		String sql = "SELECT * FROM C_Country WHERE IsActive='Y'";
 		try
 		{

@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 
 /**
@@ -43,6 +44,7 @@ public class CacheReset extends SvrProcess implements ClientProcess
 	{
 		log.info("");
 		Env.reset(false);	// not final
+		CacheMgt.get().reset();
 		return "Cache Reset";
 	}	//	doIt
 

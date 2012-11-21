@@ -77,7 +77,7 @@ public class MColumn extends X_AD_Column
 	}	//	getColumnName
 	
 	/**	Cache						*/
-	private static CCache<Integer,MColumn>	s_cache	= new CCache<Integer,MColumn>("AD_Column", 20);
+	private static CCache<Integer,MColumn>	s_cache	= new CCache<Integer,MColumn>(Table_Name, 20);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MColumn.class);

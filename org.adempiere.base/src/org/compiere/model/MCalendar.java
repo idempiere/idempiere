@@ -80,7 +80,7 @@ public class MCalendar extends X_C_Calendar
 	
 	/**	Cache						*/
 	private static CCache<Integer,MCalendar> s_cache
-		= new CCache<Integer,MCalendar>("C_Calendar", 20);
+		= new CCache<Integer,MCalendar>(Table_Name, 20);
 	
 	
 	/*************************************************************************

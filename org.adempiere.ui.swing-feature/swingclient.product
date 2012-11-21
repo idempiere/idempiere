@@ -28,6 +28,7 @@
    <features>
       <feature id="org.adempiere.base" version="1.0.0.qualifier"/>
       <feature id="org.adempiere.ui.swing" version="1.0.0.qualifier"/>
+      <feature id="org.idempiere.hazelcast.service" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
@@ -35,6 +36,7 @@
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="3" />
+      <plugin id="org.idempiere.hazelcast.service" autoStart="true" startLevel="0" />
       <plugin id="org.restlet" autoStart="true" startLevel="0" />
       <plugin id="org.restlet.ext.net" autoStart="true" startLevel="0" />
    </configurations>

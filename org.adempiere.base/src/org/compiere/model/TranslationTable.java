@@ -105,7 +105,7 @@ public class TranslationTable
 	private static Integer	s_activeLanguages = null;
 	
 	/**	Cache						*/
-	private static CCache<String,TranslationTable> s_cache = new CCache<String,TranslationTable>("TranslationTable", 20);
+	private static CCache<String,TranslationTable> s_cache = new CCache<String,TranslationTable>(null, "TranslationTable", 20, true);
 
 	
 	/**

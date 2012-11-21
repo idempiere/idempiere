@@ -54,7 +54,7 @@ public class MChatType extends X_CM_ChatType
 
 	/**	Cache						*/
 	private static CCache<Integer, MChatType> s_cache 
-		= new CCache<Integer, MChatType> ("CM_ChatType", 20);
+		= new CCache<Integer, MChatType> (Table_Name, 20);
 	
 	/**
 	 * 	Standard Constructor

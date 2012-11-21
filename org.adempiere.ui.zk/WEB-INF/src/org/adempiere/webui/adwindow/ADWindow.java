@@ -48,7 +48,7 @@ public class ADWindow extends AbstractUIPart
 	private Component windowPanelComponent;
 	private MImage image;
 	
-	private static final CCache<Integer, AImage> imageCache = new CCache<Integer, AImage>("WindowImageCache", 5);
+	private static final CCache<Integer, AImage> imageCache = new CCache<Integer, AImage>(null, "WindowImageCache", 5, false);
     
     public ADWindow(Properties ctx, int adWindowId)
     {

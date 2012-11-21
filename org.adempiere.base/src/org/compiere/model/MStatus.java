@@ -157,10 +157,10 @@ public class MStatus extends X_R_Status
 	private static CLogger s_log = CLogger.getCLogger(MStatus.class);
 	/**	Cache							*/
 	static private CCache<Integer,MStatus> s_cache
-		= new CCache<Integer,MStatus> ("R_Status", 10);
+		= new CCache<Integer,MStatus> (Table_Name, 10);
 	/**	Default Cache (Key=Client)		*/
 	static private CCache<Integer,MStatus> s_cacheDefault
-		= new CCache<Integer,MStatus>("R_Status", 10);
+		= new CCache<Integer,MStatus>(Table_Name, "R_Status_Default", 10);
 
 
 	/**************************************************************************

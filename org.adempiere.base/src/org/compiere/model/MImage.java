@@ -71,7 +71,7 @@ public class MImage extends X_AD_Image
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MImage> s_cache = new CCache<Integer,MImage>("AD_Image", 20);
+	private static CCache<Integer,MImage> s_cache = new CCache<Integer,MImage>(Table_Name, 20);
 	
 	/**
 	 *  Constructor

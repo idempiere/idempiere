@@ -151,7 +151,7 @@ public class MSchedule extends X_AD_Schedule
 	}
 
 	/**	Cache						*/
-	private static CCache<Integer, MSchedule> s_cache = new CCache<Integer, MSchedule> ("AD_Schedule", 10);
+	private static CCache<Integer, MSchedule> s_cache = new CCache<Integer, MSchedule> (Table_Name, 10);
 
 	public boolean chekIPFormat(String ipOnly)
 	{

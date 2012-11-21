@@ -1,0 +1,2 @@
+eclipse -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher -metadataRepository file:/<workspace root>/lib -artifactRepository file:/<workspace root>/lib -source lib -publishArtifact
+

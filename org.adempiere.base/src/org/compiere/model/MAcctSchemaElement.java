@@ -172,7 +172,7 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 	private static CLogger		s_log = CLogger.getCLogger (MAcctSchemaElement.class);
 
 	/**	Cache						*/
-	private static CCache<Integer,MAcctSchemaElement[]> s_cache = new CCache<Integer,MAcctSchemaElement[]>("C_AcctSchema_Element", 10);
+	private static CCache<Integer,MAcctSchemaElement[]> s_cache = new CCache<Integer,MAcctSchemaElement[]>(Table_Name, 10);
 	
 	
 	/*************************************************************************

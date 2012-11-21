@@ -190,7 +190,7 @@ public class MPrintFont extends X_AD_PrintFont
 	/*************************************************************************/
 
 	/** Cached Fonts						*/
-	static private CCache<Integer,MPrintFont> s_fonts = new CCache<Integer,MPrintFont>("AD_PrintFont", 20);
+	static private CCache<Integer,MPrintFont> s_fonts = new CCache<Integer,MPrintFont>(Table_Name, 20);
 
 	/**
 	 * 	Get Font

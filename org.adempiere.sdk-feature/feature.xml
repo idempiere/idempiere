@@ -29,6 +29,11 @@
          id="org.adempiere.ui.swing"
          version="0.0.0"/>
 
+   <includes
+         id="org.idempiere.hazelcast.service"
+         version="0.0.0"
+         optional="true"/>
+
    <plugin
          id="org.eclipse.swt"
          download-size="0"

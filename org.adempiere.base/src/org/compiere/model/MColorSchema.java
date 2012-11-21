@@ -100,7 +100,7 @@ public class MColorSchema extends X_PA_ColorSchema
 
 	/**	Cache						*/
 	private static CCache<Integer, MColorSchema> s_cache 
-		= new CCache<Integer, MColorSchema> ("PA_ColorSchema", 20);
+		= new CCache<Integer, MColorSchema> (Table_Name, 20);
 	
 	/**
 	 * 	Standard Constructor

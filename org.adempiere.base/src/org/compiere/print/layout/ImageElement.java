@@ -121,7 +121,7 @@ public class ImageElement extends PrintElement
 	
 	/**	60 minute Cache						*/
 	private static CCache<Object,ImageElement>	s_cache 
-		= new CCache<Object,ImageElement>("ImageElement", 10, 60);
+		= new CCache<Object,ImageElement>(null, "ImageElement", 10, 60, false);
 	
 	/**************************************************************************
 	 *	Create from existing Image

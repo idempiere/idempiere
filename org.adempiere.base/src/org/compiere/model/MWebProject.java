@@ -55,7 +55,7 @@ public class MWebProject extends X_CM_WebProject
 
 	/**	Cache						*/
 	private static CCache<Integer, MWebProject> s_cache 
-		= new CCache<Integer, MWebProject> ("CM_WebProject", 5);
+		= new CCache<Integer, MWebProject> (Table_Name, 5);
 	
 	
 	/**************************************************************************

@@ -321,7 +321,7 @@ public class MPeriod extends X_C_Period
 	}	//	getFirstInYear
 
 	/**	Cache							*/
-	private static CCache<Integer,MPeriod> s_cache = new CCache<Integer,MPeriod>("C_Period", 10);
+	private static CCache<Integer,MPeriod> s_cache = new CCache<Integer,MPeriod>(Table_Name, 10);
 	
 	/**	Logger							*/
 	private static CLogger			s_log = CLogger.getCLogger (MPeriod.class); 

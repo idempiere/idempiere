@@ -117,9 +117,9 @@ public class MProductCategory extends X_M_Product_Category
 	}	//	isCategory
 	
 	/**	Categopry Cache				*/
-	private static CCache<Integer,MProductCategory>	s_cache = new CCache<Integer,MProductCategory>("M_Product_Category", 20);
+	private static CCache<Integer,MProductCategory>	s_cache = new CCache<Integer,MProductCategory>(Table_Name, 20);
 	/**	Product Cache				*/
-	private static CCache<Integer,Integer> s_products = new CCache<Integer,Integer>("M_Product", 100);
+	private static CCache<Integer,Integer> s_products = new CCache<Integer,Integer>(I_M_Product.Table_Name, Table_Name + ".M_Product", 100);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MProductCategory.class);
 

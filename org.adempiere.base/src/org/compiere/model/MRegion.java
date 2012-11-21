@@ -55,7 +55,7 @@ public final class MRegion extends X_C_Region
 	 */
 	private static void loadAllRegions (Properties ctx)
 	{
-		s_regions = new CCache<String,MRegion>("C_Region", 100);
+		s_regions = new CCache<String,MRegion>(Table_Name, 100);
 		String sql = "SELECT * FROM C_Region WHERE IsActive='Y'";
 		try
 		{

@@ -43,7 +43,7 @@ public class MAssetAcct extends X_A_Asset_Acct
 	/**		Static Cache: A_Asset_Acct_ID -> MAssetAcct					*/
 	private static CCache<Integer,MAssetAcct> s_cache = new CCache<Integer,MAssetAcct>(Table_Name, 5);
 	/**		Static Cache: Asset,PostingType,DateAcct -> MAssetAcct				*/
-	private static CCache<MultiKey,MAssetAcct> s_cacheAsset = new CCache<MultiKey,MAssetAcct>(Table_Name+"_Asset", 5);
+	private static CCache<MultiKey,MAssetAcct> s_cacheAsset = new CCache<MultiKey,MAssetAcct>(Table_Name, Table_Name+"_Asset", 5, false);
 	
 	/**
 	 * Get Asset Accounting (from cache)

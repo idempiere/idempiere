@@ -54,7 +54,7 @@ public class MHierarchy extends X_PA_Hierarchy
 
 	/**	Cache						*/
 	private static CCache<Integer, MHierarchy> s_cache 
-		= new CCache<Integer, MHierarchy> ("PA_Hierarchy_ID", 20);
+		= new CCache<Integer, MHierarchy> (Table_Name, 20);
 	
 	/**
 	 * 	Default Constructor

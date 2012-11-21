@@ -40,7 +40,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 	s_cache = new CCache<Integer,MDepreciationMethod>(Table_Name, 5);
 	/**		Cache for type							*/
 	private static CCache<String,MDepreciationMethod>
-	s_cache_forType = new CCache<String,MDepreciationMethod>(Table_Name+"_DepreciationType", 5);
+	s_cache_forType = new CCache<String,MDepreciationMethod>(Table_Name, Table_Name+"_DepreciationType", 5);
 	
 	/**
 	 *

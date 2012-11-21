@@ -65,7 +65,7 @@ public class MRequestType extends X_R_RequestType
 	/** Static Logger					*/
 	private static CLogger s_log = CLogger.getCLogger(MRequestType.class);
 	/**	Cache							*/
-	static private CCache<Integer,MRequestType> s_cache = new CCache<Integer,MRequestType>("R_RequestType", 10);
+	static private CCache<Integer,MRequestType> s_cache = new CCache<Integer,MRequestType>(Table_Name, 10);
 
 	/**
 	 * 	Get Default Request Type

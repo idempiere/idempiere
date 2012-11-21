@@ -1175,7 +1175,7 @@ public class MMatchPO extends X_M_MatchPO
 
 	public boolean reverse(Timestamp reversalDate)  
 	{
-		if (this.isPosted())
+		if (this.isPosted() && this.getReversal_ID() == 0)
 		{		
 			MMatchPO reversal = new MMatchPO (getCtx(), 0, get_TrxName());
 			reversal.setC_InvoiceLine_ID(getC_InvoiceLine_ID()); 
@@ -1189,9 +1189,11 @@ public class MMatchPO extends X_M_MatchPO
 			reversal.set_ValueNoCheck ("DocumentNo", null);
 			reversal.setPosted (false);
 			reversal.setReversal_ID(getM_MatchPO_ID());   
-			this.setDescription("(" + this.getDocumentNo() + "<-)");
-			if (reversal.save() && this.save())
-				return true;
+			reversal.saveEx();
+			this.setDescription("(" + reversal.getDocumentNo() + "<-)");			
+			this.setReversal_ID(reversal.getM_MatchPO_ID());
+			this.saveEx();
+			return true;
 		}
 		return false;
 	}

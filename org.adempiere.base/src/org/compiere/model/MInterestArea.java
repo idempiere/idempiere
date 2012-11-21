@@ -107,7 +107,7 @@ public class MInterestArea extends X_R_InterestArea
 
 	/**	Cache						*/
 	private static CCache<Integer,MInterestArea> s_cache = 
-		new CCache<Integer,MInterestArea>("R_InterestArea", 5);
+		new CCache<Integer,MInterestArea>(Table_Name, 5);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MInterestArea.class);
 	

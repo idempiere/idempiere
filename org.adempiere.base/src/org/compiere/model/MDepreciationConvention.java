@@ -37,7 +37,7 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 	}	//	MDepreciationConvention
 
 	/**		Cache									*/
-	private static CCache<Integer,MDepreciationConvention> s_cache = new CCache<Integer,MDepreciationConvention>("A_Depreciation_Convention", 5);
+	private static CCache<Integer,MDepreciationConvention> s_cache = new CCache<Integer,MDepreciationConvention>(Table_Name, 5);
 	//~ /**		Static logger							*/
 	//~ private static Logger s_log = CLogger.getCLogger(MDepreciationConvention.class);
 	

@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?metadataRepository version='1.1.0'?>
+<repository name='file:/home/hengsin/workspace/idempiere-trekglobal/lib/ - metadata' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1'>
+  <properties size='2'>
+    <property name='p2.timestamp' value='1353402021281'/>
+    <property name='p2.compressed' value='false'/>
+  </properties>
+  <units size='3'>
+    <unit id='com.springsource.javax.mail' version='1.4.5' singleton='false'>
+      <update id='com.springsource.javax.mail' range='[0.0.0,1.4.5)' severity='0'/>
+      <properties size='4'>
+        <property name='org.eclipse.equinox.p2.name' value='Java Mail'/>
+        <property name='org.eclipse.equinox.p2.description' value='JavaMail API (compat)'/>
+        <property name='org.eclipse.equinox.p2.provider' value='SpringSource'/>
+        <property name='org.eclipse.equinox.p2.doc.url' value='http://www.oracle.com'/>
+      </properties>
+      <provides size='18'>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.springsource.javax.mail' version='1.4.5'/>
+        <provided namespace='osgi.bundle' name='com.springsource.javax.mail' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.auth' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.handlers' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.iap' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.imap' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.imap.protocol' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.pop3' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.smtp' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.util' version='1.4.5'/>
+        <provided namespace='java.package' name='com.sun.mail.util.logging' version='1.4.5'/>
+        <provided namespace='java.package' name='javax.mail' version='1.4.5'/>
+        <provided namespace='java.package' name='javax.mail.event' version='1.4.5'/>
+        <provided namespace='java.package' name='javax.mail.internet' version='1.4.5'/>
+        <provided namespace='java.package' name='javax.mail.search' version='1.4.5'/>
+        <provided namespace='java.package' name='javax.mail.util' version='1.4.5'/>
+        <provided namespace='java.package' name='javax.activation' version='1.1.1'/>
+        <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+      </provides>
+      <requires size='9'>
+        <required namespace='java.package' name='javax.crypto' range='0.0.0'/>
+        <required namespace='java.package' name='javax.crypto.spec' range='0.0.0'/>
+        <required namespace='java.package' name='javax.net' range='0.0.0'/>
+        <required namespace='java.package' name='javax.net.ssl' range='0.0.0'/>
+        <required namespace='java.package' name='javax.security.auth.callback' range='0.0.0'/>
+        <required namespace='java.package' name='javax.security.auth.x500' range='0.0.0'/>
+        <required namespace='java.package' name='javax.security.sasl' range='0.0.0'/>
+        <required namespace='java.package' name='javax.xml.transform' range='0.0.0'/>
+        <required namespace='java.package' name='javax.xml.transform.stream' range='0.0.0'/>
+      </requires>
+      <artifacts size='1'>
+        <artifact classifier='osgi.bundle' id='com.springsource.javax.mail' version='1.4.5'/>
+      </artifacts>
+      <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+      <touchpointData size='1'>
+        <instructions size='1'>
+          <instruction key='manifest'>
+            Bundle-SymbolicName: com.springsource.javax.mail&#xA;Bundle-Version: 1.4.5&#xA;
+          </instruction>
+        </instructions>
+      </touchpointData>
+    </unit>
+    <unit id='com.springsource.javax.activation' version='1.1.1' singleton='false'>
+      <update id='com.springsource.javax.activation' range='[0.0.0,1.1.1)' severity='0'/>
+      <properties size='2'>
+        <property name='org.eclipse.equinox.p2.name' value='Java Activation API'/>
+        <property name='org.eclipse.equinox.p2.provider' value='SpringSource'/>
+      </properties>
+      <provides size='3'>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.springsource.javax.activation' version='1.1.1'/>
+        <provided namespace='osgi.bundle' name='com.springsource.javax.activation' version='1.1.1'/>
+        <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+      </provides>
+      <artifacts size='1'>
+        <artifact classifier='osgi.bundle' id='com.springsource.javax.activation' version='1.1.1'/>
+      </artifacts>
+      <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+      <touchpointData size='1'>
+        <instructions size='1'>
+          <instruction key='manifest'>
+            Bundle-SymbolicName: com.springsource.javax.activation&#xA;Bundle-Version: 1.1.1&#xA;
+          </instruction>
+        </instructions>
+      </touchpointData>
+    </unit>
+    <unit id='org.apache.poi' version='3.7.0' singleton='false'>
+      <update id='org.apache.poi' range='[0.0.0,3.7.0)' severity='0'/>
+      <properties size='2'>
+        <property name='org.eclipse.equinox.p2.name' value='Apache POI'/>
+        <property name='org.eclipse.equinox.p2.provider' value='Apache'/>
+      </properties>
+      <provides size='50'>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='org.apache.poi' version='3.7.0'/>
+        <provided namespace='osgi.bundle' name='org.apache.poi' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.common.usermodel' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ddf' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.dev' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hpsf' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hpsf.extractor' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hpsf.wellknown' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.dev' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.eventmodel' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.eventusermodel' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.eventusermodel.dummyrecord' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.extractor' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.model' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.aggregates' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.cf' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.chart' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.common' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.constant' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.cont' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.crypto' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.formula' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.formula.atp' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.formula.eval' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.formula.function' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.formula.functions' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.formula.udf' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.record.pivottable' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.usermodel' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.hssf.util' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.poifs.common' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.poifs.crypt' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.poifs.dev' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.poifs.eventfilesystem' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.poifs.filesystem' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.poifs.property' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.poifs.storage' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ss' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ss.extractor' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ss.format' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ss.formula' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ss.formula.eval' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ss.formula.eval.forked' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ss.usermodel' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.ss.util' version='3.7.0'/>
+        <provided namespace='java.package' name='org.apache.poi.util' version='3.7.0'/>
+        <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+      </provides>
+      <requires size='11'>
+        <required namespace='java.package' name='javax.imageio' range='0.0.0'/>
+        <required namespace='java.package' name='javax.xml.transform' range='0.0.0'/>
+        <required namespace='java.package' name='javax.crypto.spec' range='0.0.0'/>
+        <required namespace='java.package' name='javax.crypto' range='0.0.0'/>
+        <required namespace='java.package' name='org.apache.commons.logging' range='0.0.0'/>
+        <required namespace='java.package' name='javax.imageio.metadata' range='0.0.0'/>
+        <required namespace='java.package' name='javax.imageio.stream' range='0.0.0'/>
+        <required namespace='java.package' name='javax.swing' range='0.0.0'/>
+        <required namespace='java.package' name='javax.xml.parsers' range='0.0.0'/>
+        <required namespace='java.package' name='javax.xml.transform.stream' range='0.0.0'/>
+        <required namespace='java.package' name='org.w3c.dom' range='1.3.4'/>
+      </requires>
+      <artifacts size='1'>
+        <artifact classifier='osgi.bundle' id='org.apache.poi' version='3.7.0'/>
+      </artifacts>
+      <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+      <touchpointData size='1'>
+        <instructions size='1'>
+          <instruction key='manifest'>
+            Bundle-SymbolicName: org.apache.poi&#xA;Bundle-Version: 3.7.0&#xA;
+          </instruction>
+        </instructions>
+      </touchpointData>
+    </unit>
+  </units>
+</repository>

@@ -54,7 +54,7 @@ public class MRequestCategory extends X_R_Category
 
 	/**	Cache						*/
 	private static CCache<Integer,MRequestCategory>	s_cache	
-		= new CCache<Integer,MRequestCategory>("R_Category", 20);
+		= new CCache<Integer,MRequestCategory>(Table_Name, 20);
 	
 	
 	/**************************************************************************

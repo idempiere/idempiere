@@ -29,8 +29,8 @@ import org.zkoss.image.AImage;
 public class Actions {
 
 	private static final String ACTION_IMAGES_PATH = "/action/images/";
-	private static CCache<String, IServiceHolder<IAction>> trackerCache = new CCache<String, IServiceHolder<IAction>>("ActionsServiceTracker", 5);
-	private static CCache<String, AImage> imageCache = new CCache<String, AImage>("ActionsImages",5);
+	private static CCache<String, IServiceHolder<IAction>> trackerCache = new CCache<String, IServiceHolder<IAction>>(null, "ActionsServiceTracker", 5, false);
+	private static CCache<String, AImage> imageCache = new CCache<String, AImage>(null, "ActionsImages",5, false);
 	
 	public static IServiceHolder<IAction> getAction(String actionId) {
 		IServiceHolder<IAction> action = null;

@@ -51,6 +51,7 @@ import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.db.CConnection;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.I_AD_Window;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookupCache;
 import org.compiere.model.MRole;
@@ -176,16 +177,19 @@ public final class Env
 					getCtx().remove(keys[i]);
 			}
 		}
-
-		//	Cache
-		CacheMgt.get().reset();
-		if (Ini.isClient())
+		
+		if (Ini.isClient()) {			
 			DB.closeTarget();
+		}
+		
 		//	Reset Role Access
 		if (!finalCall)
 		{
-			if (Ini.isClient())
+			if (Ini.isClient()) {
+				// Cache
+				CacheMgt.get().resetLocalCache();
 				DB.setDBTarget(CConnection.get());
+			}
 			MRole defaultRole = MRole.getDefault(getCtx(), false);
 			if (defaultRole != null)
 				defaultRole.loadAccess(true);	//	Reload
@@ -1694,7 +1698,7 @@ public final class Env
 
 	/**	Window Cache		*/
 	private static CCache<Integer,GridWindowVO>	s_windowsvo
-		= new CCache<Integer,GridWindowVO>("AD_Window", 10);
+		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, 10);
 
 	/**
 	 *  Get Window Model

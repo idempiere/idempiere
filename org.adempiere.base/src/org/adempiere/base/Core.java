@@ -81,7 +81,16 @@ public class Core {
 	 * @return ProcessCall instance or null if serviceId not found
 	 */
 	public static ProcessCall getProcess(String serviceId) {
-		return Service.locator().locate(ProcessCall.class, "org.adempiere.base.Process", serviceId, null).getService();
+		ProcessCall process = null;
+		List<IProcessFactory> factories = Service.locator().list(IProcessFactory.class).getServices();
+		if (factories != null && !factories.isEmpty()) {
+			for(IProcessFactory factory : factories) {
+				process = factory.newProcessInstance(serviceId);
+				if (process != null)
+					return process;
+			}
+		}
+		return Service.locator().locate(ProcessCall.class, "org.adempiere.base.Process", serviceId, null).getService();		
 	}
 
 	/**

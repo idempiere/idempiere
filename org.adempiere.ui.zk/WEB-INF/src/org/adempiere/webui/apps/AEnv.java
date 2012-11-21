@@ -45,6 +45,7 @@ import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.acct.Doc;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.I_AD_Window;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MLookup;
@@ -288,7 +289,7 @@ public final class AEnv
 					CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
 					if (cache == null)
 					{
-						cache = new CCache<Integer, GridWindowVO>("AD_Window", 10);
+						cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, 10);
 						windowCache.put(sessionID, cache);
 					}
 					cache.put(AD_Window_ID, mWindowVO);

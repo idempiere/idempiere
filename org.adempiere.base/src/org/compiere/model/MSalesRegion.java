@@ -55,7 +55,7 @@ public class MSalesRegion extends X_C_SalesRegion
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MSalesRegion>	s_cache	= new CCache<Integer,MSalesRegion>("C_SalesRegion", 10);
+	private static CCache<Integer,MSalesRegion>	s_cache	= new CCache<Integer,MSalesRegion>(Table_Name, 10);
 	
 	
 	/**************************************************************************

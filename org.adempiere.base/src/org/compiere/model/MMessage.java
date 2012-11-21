@@ -118,7 +118,7 @@ public class MMessage extends X_AD_Message
 	}	//	getAD_Message_ID
 	
 	/**	Cache					*/
-	static private CCache<String,MMessage> s_cache = new CCache<String,MMessage>("AD_Message", 100);
+	static private CCache<String,MMessage> s_cache = new CCache<String,MMessage>(Table_Name, 100);
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MMessage.class);
 	

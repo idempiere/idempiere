@@ -235,7 +235,7 @@ public final class MRole extends X_AD_Role
 	}	//	getOf
 		
 	/** Role/User Cache			*/
-	private static CCache<String,MRole> s_roles = new CCache<String,MRole>("AD_Role", 5);
+	private static CCache<String,MRole> s_roles = new CCache<String,MRole>(Table_Name, 5);
 	/** Log						*/ 
 	private static CLogger			s_log = CLogger.getCLogger(MRole.class);
 	

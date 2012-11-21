@@ -200,9 +200,9 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 	
 	
 	/**	Object Cache				*/
-	private static CCache<Integer,MDocTypeCounter> s_cache = new CCache<Integer,MDocTypeCounter>("C_DocTypeCounter", 20);
+	private static CCache<Integer,MDocTypeCounter> s_cache = new CCache<Integer,MDocTypeCounter>(Table_Name, 20);
 	/**	Counter Relationship Cache	*/
-	private static CCache<Integer,MDocTypeCounter> s_counter = new CCache<Integer,MDocTypeCounter>("C_DocTypeCounter", 20);
+	private static CCache<Integer,MDocTypeCounter> s_counter = new CCache<Integer,MDocTypeCounter>(Table_Name, "C_DocTypeCounter_Relation", 20);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MDocTypeCounter.class);
 	

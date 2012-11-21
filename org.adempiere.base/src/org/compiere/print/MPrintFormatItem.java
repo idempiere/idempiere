@@ -383,7 +383,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 
 
 	/**	Lookup Map of AD_Column_ID for ColumnName	*/
-	private static CCache<Integer,String>	s_columns = new CCache<Integer,String>("AD_PrintFormatItem", 200);
+	private static CCache<Integer,String>	s_columns = new CCache<Integer,String>(Table_Name, 200);
 
 	/**
 	 * 	Get ColumnName from AD_Column_ID

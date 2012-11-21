@@ -76,7 +76,7 @@ public class MMeasure extends X_PA_Measure
 
 	/**	Cache						*/
 	private static CCache<Integer, MMeasure> s_cache 
-		= new CCache<Integer, MMeasure> ("PA_Measure", 10);
+		= new CCache<Integer, MMeasure> (Table_Name, 10);
 	
 	/**
 	 * 	Standard Constructor

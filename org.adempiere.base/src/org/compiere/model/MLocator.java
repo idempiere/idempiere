@@ -174,7 +174,7 @@ public class MLocator extends X_M_Locator
 	public static MLocator get (Properties ctx, int M_Locator_ID)
 	{
 		if (s_cache == null)
-			s_cache	= new CCache<Integer,MLocator>("M_Locator", 20);
+			s_cache	= new CCache<Integer,MLocator>(Table_Name, 20);
 		Integer key = new Integer (M_Locator_ID);
 		MLocator retValue = (MLocator) s_cache.get (key);
 		if (retValue != null)

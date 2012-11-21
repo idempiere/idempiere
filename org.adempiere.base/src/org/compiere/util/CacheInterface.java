@@ -29,6 +29,12 @@ public interface CacheInterface
 	 *	@return number of items reset
 	 */
 	public int reset();
+	
+	/**
+	 *	Reset Cache
+	 *	@return number of items reset
+	 */
+	public int reset(int recordId);
 
 	/**
 	 * 	Get Size of Cache

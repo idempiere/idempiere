@@ -219,7 +219,7 @@ public class MTree_Base extends X_AD_Tree
 
 	
 	/**	Cache						*/
-	private static CCache<Integer,MTree_Base> s_cache = new CCache<Integer,MTree_Base>("AD_Tree", 10);
+	private static CCache<Integer,MTree_Base> s_cache = new CCache<Integer,MTree_Base>(Table_Name, 10);
 	
 	
 	/**************************************************************************

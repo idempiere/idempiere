@@ -61,7 +61,7 @@ public class MRfQ extends X_C_RfQ
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MRfQ>	s_cache	= new CCache<Integer,MRfQ>("C_RfQ", 10);
+	private static CCache<Integer,MRfQ>	s_cache	= new CCache<Integer,MRfQ>(Table_Name, 10);
 	
 	
 	/**

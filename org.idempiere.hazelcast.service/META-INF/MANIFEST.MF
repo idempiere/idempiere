@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iDempiere Hazelcast Service
+Bundle-SymbolicName: org.idempiere.hazelcast.service
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.idempiere.hazelcast.service.Activator
+Bundle-ActivationPolicy: lazy
+Import-Package: javax.crypto,
+ javax.crypto.spec,
+ javax.management,
+ javax.net.ssl,
+ javax.security.auth,
+ javax.security.auth.login,
+ javax.xml.namespace,
+ javax.xml.parsers,
+ javax.xml.transform,
+ javax.xml.transform.dom,
+ javax.xml.transform.stream,
+ javax.xml.xpath,
+ org.adempiere.base,
+ org.compiere,
+ org.compiere.model,
+ org.idempiere.distributed,
+ org.osgi.framework;version="1.3.0",
+ org.slf4j;version="1.6.1",
+ org.w3c.dom
+DynamicImport-Package: *
+Bundle-ClassPath: .,
+ hazelcast-2.4.jar,
+ hazelcast-cloud-2.4.jar
+Service-Component: OSGI-INF/clusterservice.xml, OSGI-INF/cacheservice.xml, OSGI-INF/messageservice.xml

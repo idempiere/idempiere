@@ -36,7 +36,7 @@ public class MLookupCache
 	/** Static Logger					*/
 	private static CLogger 		s_log = CLogger.getCLogger(MLookupCache.class);
 	/** Static Lookup data with MLookupInfo -> HashMap  */
-	private static CCache<String,HashMap> s_loadedLookups = new CCache<String,HashMap>("MLookupCache", 50);
+	private static CCache<String,HashMap> s_loadedLookups = new CCache<String,HashMap>(null, "MLookupCache", 50, false);
 	
 	/**
 	 *  MLookup Loader starts loading - ignore for now

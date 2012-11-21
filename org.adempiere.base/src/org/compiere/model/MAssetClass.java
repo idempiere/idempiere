@@ -37,7 +37,7 @@ public class MAssetClass extends X_A_Asset_Class
 	}	//	MAssetClass
 	
 	/**		*/
-	private static CCache<Integer, MAssetClass> s_cache = new CCache<Integer, MAssetClass>("A_Asset_Class", 20);
+	private static CCache<Integer, MAssetClass> s_cache = new CCache<Integer, MAssetClass>(Table_Name, 20);
 
 	/**	Get Asset Class from cache
 	 *	@param ctx	context

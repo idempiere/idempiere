@@ -210,7 +210,7 @@ public class MCostElement extends X_M_CostElement
 	}	
 
 	/**	Cache						*/
-	private static CCache<Integer,MCostElement>	s_cache	= new CCache<Integer,MCostElement>("M_CostElement", 20);
+	private static CCache<Integer,MCostElement>	s_cache	= new CCache<Integer,MCostElement>(Table_Name, 20);
 	
 	/**	Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCostElement.class);

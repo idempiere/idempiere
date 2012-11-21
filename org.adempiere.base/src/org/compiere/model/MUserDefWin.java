@@ -186,7 +186,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	}
 	
 	/**	Cache of selected MUserDefWin entries 					**/
-	private static CCache<Integer,MUserDefWin> s_cache = new CCache<Integer,MUserDefWin>("AD_UserDef_Win", 3);	//  3 weights
+	private static CCache<Integer,MUserDefWin> s_cache = new CCache<Integer,MUserDefWin>(Table_Name, 3);	//  3 weights
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {

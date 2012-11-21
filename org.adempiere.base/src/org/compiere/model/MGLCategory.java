@@ -133,7 +133,7 @@ public class MGLCategory extends X_GL_Category
 	private static CLogger s_log = CLogger.getCLogger (MGLCategory.class);
 	/**	Cache						*/
 	private static CCache<Integer, MGLCategory> s_cache 
-		= new CCache<Integer, MGLCategory> ("GL_Category", 5);
+		= new CCache<Integer, MGLCategory> (Table_Name, 5);
 	
 
 	/**************************************************************************

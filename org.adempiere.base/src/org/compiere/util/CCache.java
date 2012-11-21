@@ -18,49 +18,87 @@ package org.compiere.util;
 
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
+import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.adempiere.base.Service;
+import org.idempiere.distributed.ICacheService;
+
 /**
- *  Adempiere Cache.
+ *  Cache for table.
  *	@param <K> Key 
  *	@param <V> Value
  *
  *  @author Jorg Janke
  *  @version $Id: CCache.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $
  */
-public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
+public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2268565219001179841L;
 
+	private Map<K, V> cache = null;
+	
+	private Set<K> nullList = null;
+
+	private String m_tableName;
+
+	private boolean m_distributed;
+	
+	public CCache (String name, int initialCapacity)
+	{
+		this(name, name, initialCapacity);
+	}
+	
+	public CCache (String name, int initialCapacity, int expireMinutes)
+	{
+		this(name, initialCapacity, expireMinutes, false);
+	}
+	
+	public CCache (String name, int initialCapacity, int expireMinutes, boolean distributed)
+	{
+		this(name, name, initialCapacity, expireMinutes, distributed);
+	}
+	
 	/**
 	 * 	Adempiere Cache - expires after 2 hours
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity
 	 */
-	public CCache (String name, int initialCapacity)
+	public CCache (String tableName, String name, int initialCapacity)
 	{
-		this (name, initialCapacity, 120);
+		this (tableName, name, initialCapacity, false);
 	}	//	CCache
 
-
+	public CCache (String tableName, String name, int initialCapacity, boolean distributed)
+	{
+		this (tableName, name, initialCapacity, 120, distributed);
+	}		
+	
 	/**
 	 * 	Adempiere Cache
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity
 	 * 	@param expireMinutes expire after minutes (0=no expire)
 	 */
-	public CCache (String name, int initialCapacity, int expireMinutes)
+	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed)
 	{
-		super(initialCapacity);
+//		super(initialCapacity);
 		m_name = name;
+		m_tableName = tableName;
 		setExpireMinutes(expireMinutes);
-		CacheMgt.get().register(this);
+		cache = CacheMgt.get().register(this, distributed);
+		m_distributed = distributed;
+		if (distributed) {
+			ICacheService provider = Service.locator().locate(ICacheService.class).getService();
+			if (provider != null) {
+				nullList = provider.getSet(name);
+			}
+		}
 	}	//	CCache
 
 	/**	Name						*/
@@ -86,6 +124,11 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 		return m_name;
 	}	//	getName
 
+	public String getTableName()
+	{
+		return m_tableName;
+	}
+	
 	/**
 	 * 	Set Expire Minutes and start it
 	 *	@param expireMinutes minutes or 0
@@ -138,7 +181,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	 */
 	public int reset()
 	{
-		int no = super.size();
+		int no = cache.size();
 		clear();
 		return no;
 	}	//	reset
@@ -163,7 +206,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	{
 		return "CCache[" + m_name 
 			+ ",Exp=" + getExpireMinutes()  
-			+ ", #" + super.size() + "]";
+			+ ", #" + cache.size() + "]";
 	}	//	toString
 
 	/**
@@ -176,7 +219,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 		{
 			try
 			{
-				m_changeSupport.fireVetoableChange(PROPERTYNAME, super.size(), 0);
+				m_changeSupport.fireVetoableChange(PROPERTYNAME, cache.size(), 0);
 			}
 			catch (Exception e)
 			{
@@ -185,7 +228,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 			}
 		}
 		//	Clear
-		super.clear();
+		cache.clear();
 		if (m_expire != 0)
 		{
 			long addMS = 60000L * m_expire;
@@ -201,7 +244,14 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	public boolean containsKey(Object key)
 	{
 		expire();
-		return super.containsKey(key);
+		if (nullList != null)
+		{
+			return cache.containsKey(key) || nullList.contains(key);
+		}
+		else
+		{
+			return cache.containsKey(key);
+		}
 	}	//	containsKey
 
 	/**
@@ -210,7 +260,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	public boolean containsValue(Object value)
 	{
 		expire();
-		return super.containsValue(value);
+		return cache.containsValue(value);
 	}	//	containsValue
 
 	/**
@@ -219,7 +269,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	public Set<Map.Entry<K,V>> entrySet()
 	{
 		expire();
-		return super.entrySet();
+		return cache.entrySet();
 	}	//	entrySet
 
 	/**
@@ -228,7 +278,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	public V get(Object key)
 	{
 		expire();
-		return super.get(key);
+		return cache.get(key);
 	}	//	get
 
 	/**
@@ -241,7 +291,13 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	{
 		expire();
 		m_justReset = false;
-		return super.put (key, value);
+		if (value == null && m_distributed && nullList != null) {
+			cache.remove(key);
+			if (!nullList.contains(key))
+				nullList.add(key);
+			return null;
+		}
+		return cache.put (key, value);
 	}	// put
 
 	/**
@@ -252,7 +308,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	{
 		expire();
 		m_justReset = false;
-		super.putAll (m);
+		cache.putAll (m);
 	}	//	putAll
 	
 	/**
@@ -261,7 +317,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	public boolean isEmpty()
 	{
 		expire();
-		return super.isEmpty();
+		return cache.isEmpty();
 	}	// isEmpty
 
 	/**
@@ -270,7 +326,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	public Set<K> keySet()
 	{
 		expire();
-		return super.keySet();
+		return cache.keySet();
 	}	//	keySet
 
 	/**
@@ -279,7 +335,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	public int size()
 	{
 		expire();
-		return super.size();
+		return cache.size();
 	}	//	size
 
 	/**
@@ -289,7 +345,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	 */
 	public int sizeNoExpire()
 	{
-		return super.size();
+		return cache.size();
 	}	//	size
 
 	/**
@@ -298,7 +354,7 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 	public Collection<V> values()
 	{
 		expire();
-		return super.values();
+		return cache.values();
 	}	//	values
 
 	
@@ -323,5 +379,20 @@ public class CCache<K,V> extends HashMap<K,V> implements CacheInterface
 		if (m_changeSupport != null && listener != null)
 			m_changeSupport.removeVetoableChangeListener(listener);
     }	//	removeVetoableChangeListener
+
+
+	@Override
+	public V remove(Object key) {
+		return cache.remove(key);
+	}
+
+	@Override
+	public int reset(int recordId) {
+		if (recordId < 0)
+			return reset();
+				
+		V removed = cache.remove(recordId);
+		return removed != null ? 1 : 0;
+	}
 	
 }	//	CCache

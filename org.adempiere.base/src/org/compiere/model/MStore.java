@@ -219,7 +219,7 @@ public class MStore extends X_W_Store
 
 	/**	Cache						*/
 	private static CCache<Integer,MStore> s_cache
-		= new CCache<Integer,MStore>("W_Store", 2);
+		= new CCache<Integer,MStore>(Table_Name, 2);
 	/**	Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MStore.class);
 	

@@ -57,7 +57,7 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MPOSKeyLayout> s_cache = new CCache<Integer,MPOSKeyLayout>("C_POSKeyLayout", 3);
+	private static CCache<Integer,MPOSKeyLayout> s_cache = new CCache<Integer,MPOSKeyLayout>(Table_Name, 3);
 
 	/**
 	 * 	Standard Constructor
