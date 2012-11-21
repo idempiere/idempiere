@@ -64,6 +64,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	/**	Logger. */
 	private static CLogger logger = CLogger.getCLogger(WListbox.class);
 
+	/** Is Total Show */
+	private boolean showTotals = false;
+
 	/** Model Index of Key Column.   */
 	protected int m_keyColumnIndex = -1;
 
@@ -623,6 +626,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		{
 			logger.log(Level.SEVERE, "", exception);
 		}
+		if (getShowTotals())
+			addTotals(m_layout);
 		// TODO implement this
 		//autoSize();
 
@@ -700,6 +705,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 				getModel().setDataAt(data, row, col);
 			}
 		}
+		if (getShowTotals())
+			addTotals(m_layout);
 		// TODO implement this
 		//autoSize();
 
@@ -849,6 +856,23 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	{
 		return this.isMultiple();
 	}   //  isMultiSelection
+
+	/**
+	 *  Set if Totals is Show
+	 *  @param boolean Show
+	 */
+	public void setShowTotals(boolean show)
+	{
+		showTotals= show;
+	}
+	/**
+	 *  get if Totals is Show
+	 *  @param boolean Show
+	 */
+	public boolean getShowTotals()
+	{
+		return showTotals;
+	}
 
 	/**
 	 *  Set ColorColumn comparison criteria.
@@ -1059,6 +1083,81 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	
 	public int getKeyColumnIndex() {
 		return m_keyColumnIndex;
+	}
+
+	/**
+	 *  Adding a new row with the totals
+	 */
+	public void addTotals(ColumnInfo[] layout)
+	{
+		if (getRowCount() == 0 || layout.length == 0)
+			return;
+		
+		Object[] total = new Object[layout.length];
+		
+		for (int row = 0 ; row < getRowCount(); row ++)
+		{
+
+				for (int col = 0; col < layout.length; col++)
+				{
+					Object data = getModel().getValueAt(row, col);
+					Class<?> c = layout[col].getColClass();
+					if (c == BigDecimal.class)
+					{	
+						BigDecimal subtotal = Env.ZERO;
+						if(total[col]!= null)
+							subtotal = (BigDecimal)(total[col]);
+							
+						BigDecimal amt =  (BigDecimal) data;
+						if(subtotal == null)
+							subtotal = Env.ZERO;
+						if(amt == null )
+							amt = Env.ZERO;
+						total[col] = subtotal.add(amt);
+					}
+					else if (c == Double.class)
+					{
+						Double subtotal = new Double(0);
+						if(total[col] != null)
+							subtotal = (Double)(total[col]);
+						
+						Double amt =  (Double) data;
+						if(subtotal == null)
+							subtotal = new Double(0);
+						if(amt == null )
+							subtotal = new Double(0);
+						total[col] = subtotal + amt;
+						
+					}		
+				}	
+		}
+		
+		//adding total row
+
+		int row = getRowCount() + 1;
+		setRowCount(row);
+		for (int col = 0; col < layout.length; col++)
+		{
+			Class<?> c = layout[col].getColClass();
+			if (c == BigDecimal.class)
+			{	
+				setValueAt(total[col] , row - 1, col);
+			}
+			else if (c == Double.class)
+			{
+				setValueAt(total[col] , row -1 , col);
+			}
+			else
+			{	
+				if(col == 0 )
+				{	
+					setValueAt(" Σ  " , row -1 , col);
+				}	
+				else
+					setValueAt(null , row - 1, col );	
+			}	
+			
+		}
 	}
 
 }

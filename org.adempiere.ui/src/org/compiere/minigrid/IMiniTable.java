@@ -51,4 +51,7 @@ public interface IMiniTable
 	public void repaint();
 	
 	public void autoSize();
+	
+	public void setShowTotals(boolean show);
+
 }
