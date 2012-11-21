@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PaymentInterface;
@@ -80,7 +81,16 @@ public class Core {
 	 * @return ProcessCall instance or null if serviceId not found
 	 */
 	public static ProcessCall getProcess(String serviceId) {
-		return Service.locator().locate(ProcessCall.class, "org.adempiere.base.Process", serviceId, null).getService();
+		ProcessCall process = null;
+		List<IProcessFactory> factories = Service.locator().list(IProcessFactory.class).getServices();
+		if (factories != null && !factories.isEmpty()) {
+			for(IProcessFactory factory : factories) {
+				process = factory.newProcessInstance(serviceId);
+				if (process != null)
+					return process;
+			}
+		}
+		return Service.locator().locate(ProcessCall.class, "org.adempiere.base.Process", serviceId, null).getService();		
 	}
 
 	/**
@@ -94,17 +104,18 @@ public class Core {
 
 	/**
 	 *  Get payment processor instance
-	 * 	@param mpp payment processor model
+	 * 	@param mbap payment processor model
 	 * 	@param mp payment model
 	 *  @return initialized PaymentProcessor or null
 	 */
-	public static PaymentProcessor getPaymentProcessor(MPaymentProcessor mpp, PaymentInterface mp) {
+	public static PaymentProcessor getPaymentProcessor(MBankAccountProcessor mbap, PaymentInterface mp) {
 		if (s_log.isLoggable(Level.FINE))
-			s_log.fine("create for " + mpp);
+			s_log.fine("create for " + mbap);
 		
+		MPaymentProcessor mpp = new MPaymentProcessor(mbap.getCtx(), mbap.getC_PaymentProcessor_ID(), mbap.get_TrxName());
 		String className = mpp.getPayProcessorClass();
 		if (className == null || className.length() == 0) {
-			s_log.log(Level.SEVERE, "No PaymentProcessor class name in " + mpp);
+			s_log.log(Level.SEVERE, "No PaymentProcessor class name in " + mbap);
 			return null;
 		}
 		//
@@ -130,7 +141,7 @@ public class Core {
 		}
 
 		//  Initialize
-		myProcessor.initialize(mpp, mp);
+		myProcessor.initialize(mbap, mp);
 		//
 		return myProcessor;
 	}
