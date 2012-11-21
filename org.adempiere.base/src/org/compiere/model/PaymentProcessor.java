@@ -68,9 +68,9 @@ public abstract class PaymentProcessor
 	 * @param mpp
 	 * @param mp
 	 */
-	public void initialize(MPaymentProcessor mpp, PaymentInterface mp)
+	public void initialize(MBankAccountProcessor mbap, PaymentInterface mp)
 	{
-		p_mpp = mpp;
+		p_mbap = mbap;
 		p_mp = mp;
 	}
 
@@ -80,14 +80,14 @@ public abstract class PaymentProcessor
 	 * 	@param mp payment model
 	 *  @return initialized PaymentProcessor or null
 	 */
-	public static PaymentProcessor create (MPaymentProcessor mpp, PaymentInterface mp)
+	public static PaymentProcessor create (MBankAccountProcessor mbap, PaymentInterface mp)
 	{
-		return Core.getPaymentProcessor(mpp, mp);
+		return Core.getPaymentProcessor(mbap, mp);
 	}   //  create
 
 	/*************************************************************************/
 
-	protected MPaymentProcessor 	p_mpp = null;
+	protected MBankAccountProcessor p_mbap = null;
 	protected PaymentInterface		p_mp = null;
 	//
 	private int     m_timeout = 30;
