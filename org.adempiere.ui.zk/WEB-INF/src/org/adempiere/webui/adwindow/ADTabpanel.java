@@ -364,7 +364,7 @@ DataStatusListener, IADTabpanel
 
     	uiCreated = true;
     	
-    	int numCols=gridTab.getColumns();
+    	int numCols=gridTab.getNumColumns();
     	if (numCols <= 0) {
     		numCols=4;
     	}
