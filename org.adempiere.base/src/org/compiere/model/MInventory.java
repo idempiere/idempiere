@@ -494,7 +494,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 							line.getM_AttributeSetInstance_ID(), 0, 
 							qtyDiff,get_TrxName()))
 					{
-						m_processMsg = "Cannot correct Inventory (MA)";
+						String lastError = CLogger.retrieveErrorString("");
+						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
 

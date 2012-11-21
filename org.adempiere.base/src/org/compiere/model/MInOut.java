@@ -1441,7 +1441,8 @@ public class MInOut extends X_M_InOut implements DocAction
 						sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 						Qty, get_TrxName()))
 					{
-						m_processMsg = "Cannot correct Inventory OnHand";
+						String lastError = CLogger.retrieveErrorString("");
+						m_processMsg = "Cannot correct Inventory OnHand - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
 					if (reservedDiff.signum() != 0) {

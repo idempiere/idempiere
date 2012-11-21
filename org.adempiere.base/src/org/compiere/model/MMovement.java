@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -405,7 +406,8 @@ public class MMovement extends X_M_Movement implements DocAction
 								ma.getM_AttributeSetInstance_ID(), 0, 
 								ma.getMovementQty().negate(), get_TrxName()))
 						{
-							m_processMsg = "Cannot correct Inventory (MA)";
+							String lastError = CLogger.retrieveErrorString("");
+							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 
@@ -422,7 +424,8 @@ public class MMovement extends X_M_Movement implements DocAction
 								M_AttributeSetInstanceTo_ID, 0, 
 								ma.getMovementQty(), get_TrxName()))
 						{
-							m_processMsg = "Cannot correct Inventory (MA)";
+							String lastError = CLogger.retrieveErrorString("");
+							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 
@@ -461,7 +464,8 @@ public class MMovement extends X_M_Movement implements DocAction
 							line.getM_AttributeSetInstance_ID(), 0, 
 							line.getMovementQty().negate(), get_TrxName()))
 					{
-						m_processMsg = "Cannot correct Inventory (MA)";
+						String lastError = CLogger.retrieveErrorString("");
+						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
 
@@ -472,7 +476,8 @@ public class MMovement extends X_M_Movement implements DocAction
 							line.getM_AttributeSetInstanceTo_ID(), 0, 
 							line.getMovementQty(), get_TrxName()))
 					{
-						m_processMsg = "Cannot correct Inventory (MA)";
+						String lastError = CLogger.retrieveErrorString("");
+						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
 
