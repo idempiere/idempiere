@@ -3,6 +3,7 @@
   <rm:locator pattern="^org\.apache\.poi$" searchPathRef="workspace.bundle.jar"/>
   <rm:locator pattern="^com\.springsource\.javax\.mail$" searchPathRef="workspace.bundle.jar"/>
   <rm:locator pattern="^com\.springsource\.javax\.activation$" searchPathRef="workspace.bundle.jar"/>
+  <rm:locator searchPathRef="workspace.bundle.jar" failOnError="false"/>
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
   <rm:locator pattern="^org\.slf4j(\..+)?" searchPathRef="orbit"/>
@@ -13,7 +14,6 @@
   <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="gemini" failOnError="false"/>
   <rm:locator pattern="^org\.springframework(\..+)?" searchPathRef="gemini" failOnError="false"/>
   <rm:locator pattern="^javax(\..+)?" searchPathRef="gemini" failOnError="false"/>
-  <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="workspace.bundle.jar" failOnError="false"/>
   <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven" failOnError="false"/>
   <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="spring.external.maven" failOnError="false"/>
   <rm:locator searchPathRef="orbit" failOnError="false"/>
@@ -35,16 +35,14 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="workspace.bundle.jar">
-    <rm:provider componentTypes="osgi.bundle" readerType="url" source="false" mutable="false">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="file:///{0}/lib/plugins/{1}_{2}.jar">
+      <rm:uri format="file:///{0}/lib">
         <bc:replace>
           <bc:propertyRef key="workspace.root"/>
           <bc:match pattern="\s" replacement="%20"/>
         </bc:replace>
-        <bc:propertyRef key="buckminster.component"/>
-        <bc:propertyRef key="jar.version"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>

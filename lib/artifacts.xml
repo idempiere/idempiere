@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<repository name='file:/home/hengsin/workspace/idempiere-trekglobal/lib/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
+  <properties size='2'>
+    <property name='p2.timestamp' value='1353402021279'/>
+    <property name='p2.compressed' value='false'/>
+  </properties>
+  <mappings size='3'>
+    <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
+    <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
+    <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
+  </mappings>
+  <artifacts size='3'>
+    <artifact classifier='osgi.bundle' id='org.apache.poi' version='3.7.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='1651480'/>
+        <property name='download.size' value='1651480'/>
+        <property name='download.md5' value='982062b95e5299e63d25de5144f5b136'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.springsource.javax.mail' version='1.4.5'>
+      <properties size='3'>
+        <property name='artifact.size' value='570498'/>
+        <property name='download.size' value='570498'/>
+        <property name='download.md5' value='a867863806ddab9b8cecd115fe56159c'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.springsource.javax.activation' version='1.1.1'>
+      <properties size='3'>
+        <property name='artifact.size' value='12359'/>
+        <property name='download.size' value='12359'/>
+        <property name='download.md5' value='4ffafe635551f1f1096dffc01a7e0c50'/>
+      </properties>
+    </artifact>
+  </artifacts>
+</repository>
