@@ -501,7 +501,8 @@ UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='N',Updated=TO_TIMESTAMP('201
 
 -- Nov 20, 2012 5:28:36 PM COT
 -- IDEMPIERE-385 Resolve M_Storage locking and data consistency
-INSERT INTO t_alter_column values('m_storagereservation','IsSOTrx','CHAR(1)',null,'Y')
+-- INSERT INTO t_alter_column values('m_storagereservation','IsSOTrx','CHAR(1)',null,'Y')
+-- not needed - avoid ERROR: failed to recreate dependent view
 ;
 
 -- Nov 20, 2012 5:28:36 PM COT
