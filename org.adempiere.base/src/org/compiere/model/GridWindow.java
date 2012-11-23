@@ -204,14 +204,22 @@ public class GridWindow implements Serializable
 				mTab.setLinkColumnName((String)parents.get(0));
 			else
 			{
+				GridTab parentTab = null;
 				//	More than one parent.
 				//	Search prior tabs for the "right parent"
 				//	for all previous tabs
 				for (int i = 0; i < index; i++)
 				{
+					if (m_tabs.get(i).getTabLevel() + 1 == mTab.getTabLevel()) {
+						parentTab = m_tabs.get(i);
+						break;						
+					}
+				}
+				
+				if (parentTab != null)
+				{
 					//	we have a tab
-					GridTab tab = (GridTab)m_tabs.get(i);
-					String tabKey = tab.getKeyColumnName();		//	may be ""
+					String tabKey = parentTab.getKeyColumnName();		//	may be ""
 					//	look, if one of our parents is the key of that tab
 					for (int j = 0; j < parents.size(); j++)
 					{
@@ -223,8 +231,8 @@ public class GridWindow implements Serializable
 						}
 						//	The tab could have more than one key, look into their parents
 						if (tabKey.equals(""))
-							for (int k = 0; k < tab.getParentColumnNames().size(); k++)
-								if (parent.equals(tab.getParentColumnNames().get(k)))
+							for (int k = 0; k < parentTab.getParentColumnNames().size(); k++)
+								if (parent.equals(parentTab.getParentColumnNames().get(k)))
 								{
 									mTab.setLinkColumnName(parent);
 									break;
