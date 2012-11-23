@@ -64,12 +64,12 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Nov 20, 2012 10:31:09 AM COT
 -- IDEMPIERE-163: Adding UI Fields to  AD_Field and Ad_Userdef_Field
-ALTER TABLE AD_Field ADD IsUpdateable CHAR(1) DEFAULT 'Y'
+ALTER TABLE AD_Field ADD IsUpdateable CHAR(1) DEFAULT NULL
 ;
 
 -- Nov 20, 2012 10:31:25 AM COT
 -- IDEMPIERE-163: Adding UI Fields to  AD_Field and Ad_Userdef_Field
-ALTER TABLE AD_Field ADD IsAlwaysUpdateable CHAR(1) DEFAULT 'N'
+ALTER TABLE AD_Field ADD IsAlwaysUpdateable CHAR(1) DEFAULT NULL
 ;
 
 -- Nov 20, 2012 10:31:42 AM COT
@@ -84,7 +84,7 @@ ALTER TABLE AD_Field ADD ReadOnlyLogic NVARCHAR2(2000) DEFAULT NULL
 
 -- Nov 20, 2012 10:32:14 AM COT
 -- IDEMPIERE-163: Adding UI Fields to  AD_Field and Ad_Userdef_Field
-ALTER TABLE AD_Field ADD IsToolbarButton CHAR(1) DEFAULT 'Y'
+ALTER TABLE AD_Field ADD IsToolbarButton CHAR(1) DEFAULT NULL
 ;
 
 -- Nov 20, 2012 10:34:08 AM COT
@@ -361,7 +361,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Nov 20, 2012 11:02:36 AM COT
 -- IDEMPIERE-163: Adding UI Fields to  AD_Field and Ad_Userdef_Field
-ALTER TABLE AD_UserDef_Field ADD IsAlwaysUpdateable CHAR(1) DEFAULT 'N'
+ALTER TABLE AD_UserDef_Field ADD IsAlwaysUpdateable CHAR(1) DEFAULT NULL
 ;
 
 -- Nov 20, 2012 11:02:52 AM COT
@@ -386,22 +386,22 @@ ALTER TABLE AD_UserDef_Field ADD IsMandatory CHAR(1) DEFAULT NULL
 
 -- Nov 20, 2012 11:03:57 AM COT
 -- IDEMPIERE-163: Adding UI Fields to  AD_Field and Ad_Userdef_Field
-ALTER TABLE AD_UserDef_Field ADD XPosition NUMBER(10) DEFAULT 1
+ALTER TABLE AD_UserDef_Field ADD XPosition NUMBER(10) DEFAULT NULL
 ;
 
 -- Nov 20, 2012 11:04:13 AM COT
 -- IDEMPIERE-163: Adding UI Fields to  AD_Field and Ad_Userdef_Field
-ALTER TABLE AD_UserDef_Field ADD NumLines NUMBER(10) DEFAULT 1
+ALTER TABLE AD_UserDef_Field ADD NumLines NUMBER(10) DEFAULT NULL
 ;
 
 -- Nov 20, 2012 11:04:25 AM COT
 -- IDEMPIERE-163: Adding UI Fields to  AD_Field and Ad_Userdef_Field
-ALTER TABLE AD_UserDef_Field ADD ColumnSpan NUMBER(10) DEFAULT 1
+ALTER TABLE AD_UserDef_Field ADD ColumnSpan NUMBER(10) DEFAULT NULL
 ;
 
 -- Nov 20, 2012 11:04:42 AM COT
 -- IDEMPIERE-163: Adding UI Fields to  AD_Field and Ad_Userdef_Field
-ALTER TABLE AD_UserDef_Field ADD IsToolbarButton CHAR(1) DEFAULT 'Y'
+ALTER TABLE AD_UserDef_Field ADD IsToolbarButton CHAR(1) DEFAULT NULL
 ;
 
 -- Nov 20, 2012 11:07:13 AM COT
@@ -628,7 +628,6 @@ FROM AD_FIELD f
   LEFT OUTER JOIN AD_FIELDGROUP fg ON (f.AD_FieldGroup_ID = fg.AD_FieldGroup_ID)
   LEFT OUTER JOIN AD_COLUMN c ON (f.AD_Column_ID = c.AD_Column_ID)
  INNER JOIN AD_TABLE tbl ON (c.AD_Table_ID = tbl.AD_Table_ID)
- INNER JOIN AD_REFERENCE r ON (c.AD_Reference_ID = r.AD_Reference_ID)
  LEFT OUTER JOIN AD_VAL_RULE vr ON (vr.AD_Val_Rule_ID = COALESCE(f.AD_Val_Rule_ID, c.AD_Val_Rule_ID))
 WHERE f.IsActive = 'Y'
   AND c.IsActive = 'Y';
@@ -668,7 +667,6 @@ CREATE OR REPLACE VIEW AD_FIELD_VT AS
    (f.AD_FieldGroup_ID = fgt.AD_FieldGroup_ID AND trl.AD_LANGUAGE=fgt.AD_LANGUAGE)
     LEFT OUTER JOIN AD_COLUMN c ON (f.AD_Column_ID = c.AD_Column_ID)
    INNER JOIN AD_TABLE tbl ON (c.AD_Table_ID = tbl.AD_Table_ID)
-   INNER JOIN AD_REFERENCE r ON (c.AD_Reference_ID = r.AD_Reference_ID)
    LEFT OUTER JOIN AD_VAL_RULE vr ON (vr.AD_Val_Rule_ID=COALESCE(f.AD_Val_Rule_ID, c.AD_Val_Rule_ID))
   WHERE f.IsActive = 'Y'
   AND c.IsActive = 'Y';
@@ -968,7 +966,331 @@ UPDATE AD_Field SET SeqNo=120, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('201
 UPDATE AD_Field SET SeqNo=240, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-11-22 15:49:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5057
 ;
 
-SELECT register_migration_script('201211211000_IDEMPIERE-163.sql') FROM dual
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=140, IsDisplayed='Y', XPosition=2,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200771
 ;
 
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=200, IsDisplayed='Y', XPosition=2,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=142
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=210,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8343
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=220,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=140
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=230,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=141
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=260,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=13425
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=270,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200837
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=280,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=54402
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=290,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=54401
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=300,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200838
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=310,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200834
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=320,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=13424
+;
+
+-- Nov 23, 2012 12:13:22 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=330, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-11-23 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=62468
+;
+
+-- Nov 23, 2012 12:37:33 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=260, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 12:37:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200350
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=270, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200348
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=280, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200349
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=290,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=13425
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=300,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200837
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=310,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=54402
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=320,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=54401
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=330,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200838
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=340,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200834
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=350,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=13424
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=360,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=62468
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=370,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200835
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=380,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200836
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=390,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=136
+;
+
+-- Nov 23, 2012 12:37:34 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=400,Updated=TO_DATE('2012-11-23 12:37:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=139
+;
+
+-- Nov 23, 2012 12:38:25 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_FieldGroup SET FieldGroupType='C', IsCollapsedByDefault='Y',Updated=TO_DATE('2012-11-23 12:38:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_FieldGroup_ID=200000
+;
+
+update ad_field set seqnogrid=seqno where ad_tab_id=107
+;
+
+-- hide org field on grid for system only windows (all org=0 in this case)
+update ad_field set isdisplayedgrid='N'
+where ad_column_id in (select ad_column_id from ad_column where ad_element_id=113) /* ad_org_id */
+and ad_field_id < 1000000
+and ad_column_id in (select c.ad_column_id from ad_column c join ad_table t on t.ad_table_id=c.ad_table_id where t.accesslevel='4')
+;
+
+-- Nov 23, 2012 12:46:44 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 12:46:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200946
+;
+
+-- Nov 23, 2012 12:48:19 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 12:48:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200949
+;
+
+-- Nov 23, 2012 12:48:38 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 12:48:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200945
+;
+
+-- Nov 23, 2012 12:50:37 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 12:50:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200950
+;
+
+-- Nov 23, 2012 12:51:12 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 12:51:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200955
+;
+
+-- Nov 23, 2012 12:52:07 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 12:52:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200956
+;
+
+-- Nov 23, 2012 12:52:50 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 12:52:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200957
+;
+
+-- Nov 23, 2012 12:53:54 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 12:53:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200958
+;
+
+-- Nov 23, 2012 1:04:11 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 13:04:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6349
+;
+
+-- Nov 23, 2012 1:04:40 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+ALTER TABLE AD_UserDef_Field MODIFY IsDisplayed CHAR(1) DEFAULT NULL 
+;
+
+-- Nov 23, 2012 1:04:41 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+ALTER TABLE AD_UserDef_Field MODIFY IsDisplayed NULL
+;
+
+-- Nov 23, 2012 1:05:41 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 13:05:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6352
+;
+
+-- Nov 23, 2012 1:05:44 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+ALTER TABLE AD_UserDef_Field MODIFY IsReadOnly CHAR(1) DEFAULT NULL 
+;
+
+-- Nov 23, 2012 1:05:45 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+ALTER TABLE AD_UserDef_Field MODIFY IsReadOnly NULL
+;
+
+-- Nov 23, 2012 1:06:07 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2012-11-23 13:06:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6356
+;
+
+-- Nov 23, 2012 1:06:11 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+ALTER TABLE AD_UserDef_Field MODIFY IsSameLine CHAR(1) DEFAULT NULL 
+;
+
+-- Nov 23, 2012 1:06:11 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+ALTER TABLE AD_UserDef_Field MODIFY IsSameLine NULL
+;
+
+-- Nov 23, 2012 1:32:08 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=70, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5049
+;
+
+-- Nov 23, 2012 1:32:08 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=80,Updated=TO_DATE('2012-11-23 13:32:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5044
+;
+
+-- Nov 23, 2012 1:32:08 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=100, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-11-23 13:32:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5053
+;
+
+-- Nov 23, 2012 1:32:08 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=110,Updated=TO_DATE('2012-11-23 13:32:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5052
+;
+
+-- Nov 23, 2012 1:32:08 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=120, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5056
+;
+
+-- Nov 23, 2012 1:32:08 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=130, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5055
+;
+
+-- Nov 23, 2012 1:32:08 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=140, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11252
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=150, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200857
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=160, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200850
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=170, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200853
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=210, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5054
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=220, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200849
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=230, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200851
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=240, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200852
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=250,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200854
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=260,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5051
+;
+
+-- Nov 23, 2012 1:32:09 PM COT
+-- IDEMPIERE-163 Implement isupdateable and isalwaysupdateable on ad_field
+UPDATE AD_Field SET SeqNo=270,Updated=TO_DATE('2012-11-23 13:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5057
+;
+
+SELECT register_migration_script('201211211000_IDEMPIERE-163.sql') FROM dual
+;
 

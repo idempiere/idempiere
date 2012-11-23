@@ -42,12 +42,10 @@ import static org.compiere.model.SystemIDs.*;
  */
 public class GridFieldVO implements Serializable
 {
-
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6196878184196075974L;
+	private static final long serialVersionUID = 542767511640866058L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create

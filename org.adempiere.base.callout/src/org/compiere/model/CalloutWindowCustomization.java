@@ -27,12 +27,6 @@ import org.compiere.util.Env;
  */
 public class CalloutWindowCustomization extends CalloutEngine
 {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 *	Set fields to current values from DB for selected window.
 	 *	@param ctx context
@@ -57,15 +51,15 @@ public class CalloutWindowCustomization extends CalloutEngine
 		ud_win.setDescription(window.get_Translation("Description", lang));
 		ud_win.setHelp(window.get_Translation("Help", lang));
 		
-		// XXX what for?
+		//  what for?
 		ud_win.setIsDefault(window.isDefault()); 
 		
 		// default from menu, actual from role
-		// XXX Read Only
-		// XXX User updateable
+		//  Read Only
+		//  User updateable
 		
 		return NO_ERROR;
-	}	//	storeAttachmentOnFilesystem
+	}	//	window
 	
 	/**
 	 *	Set fields to current values from DB for selected Tab
@@ -93,9 +87,9 @@ public class CalloutWindowCustomization extends CalloutEngine
 		
 		ud_tab.setIsSingleRow(tab.isSingleRow()); 
 		ud_tab.setIsReadOnly(tab.isReadOnly()); 
-				
+
 		return NO_ERROR;
-	}	//	storeArchiveOnFileSystem
+	}	//	tab
 	
 	/**
 	 *	Set fields to current values from DB for selected Tab
@@ -113,25 +107,16 @@ public class CalloutWindowCustomization extends CalloutEngine
 			return "";
 
 		I_AD_UserDef_Field ud_field = GridTabWrapper.create(mTab, I_AD_UserDef_Field.class);
-		
-		MField field = new MField(Env.getCtx(),p_AD_Field_ID, null);
+
+		MField field = new MField(ctx, p_AD_Field_ID, null);
 		String lang = Env.getContext(ctx, WindowNo, "AD_Language");
 
 		ud_field.setName(field.get_Translation("Name", lang));
 		ud_field.setDescription(field.get_Translation("Description", lang));
 		ud_field.setHelp(field.get_Translation("Help", lang));
-		//IDEMPIERE-163
-		ud_field.setIsDisplayed(field.isDisplayed()? "Y": "N");
-		ud_field.setDisplayLength(field.getDisplayLength());
-		ud_field.setDisplayLogic(field.getDisplayLogic());
-		ud_field.setIsReadOnly(field.isReadOnly()? "Y": "N");
-		// XXX from column? set to true for starters
-		ud_field.setIsUpdateable("Y"); 
-		ud_field.setSeqNo(field.getSeqNo()); 
-		ud_field.setIsSameLine(field.isSameLine()? "Y": "N"); 
-		ud_field.setSortNo(field.getSortNo().intValue()); 
-		
+		//IDEMPIERE-163 / do not inherit configuration from field - all configuration was made nullable, if null it inherit the field/column config
+
 		return NO_ERROR;
-	}	//	storeArchiveOnFileSystem
+	}	//	field
 
 }	//	CalloutClient
