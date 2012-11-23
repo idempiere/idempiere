@@ -32,7 +32,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121101L;
+	private static final long serialVersionUID = 20121120L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -490,6 +490,30 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return (String)get_Value(COLUMNNAME_IsAllowCopy);
 	}
 
+	/** IsAlwaysUpdateable AD_Reference_ID=319 */
+	public static final int ISALWAYSUPDATEABLE_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISALWAYSUPDATEABLE_Yes = "Y";
+	/** No = N */
+	public static final String ISALWAYSUPDATEABLE_No = "N";
+	/** Set Always Updateable.
+		@param IsAlwaysUpdateable 
+		The column is always updateable, even if the record is not active or processed
+	  */
+	public void setIsAlwaysUpdateable (String IsAlwaysUpdateable)
+	{
+
+		set_Value (COLUMNNAME_IsAlwaysUpdateable, IsAlwaysUpdateable);
+	}
+
+	/** Get Always Updateable.
+		@return The column is always updateable, even if the record is not active or processed
+	  */
+	public String getIsAlwaysUpdateable () 
+	{
+		return (String)get_Value(COLUMNNAME_IsAlwaysUpdateable);
+	}
+
 	/** Set Centrally maintained.
 		@param IsCentrallyMaintained 
 		Information maintained in System Element table
@@ -724,6 +748,68 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return false;
 	}
 
+	/** IsToolbarButton AD_Reference_ID=319 */
+	public static final int ISTOOLBARBUTTON_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISTOOLBARBUTTON_Yes = "Y";
+	/** No = N */
+	public static final String ISTOOLBARBUTTON_No = "N";
+	/** Set Toolbar Button.
+		@param IsToolbarButton 
+		Add the column button to the toolbar
+	  */
+	public void setIsToolbarButton (String IsToolbarButton)
+	{
+
+		set_Value (COLUMNNAME_IsToolbarButton, IsToolbarButton);
+	}
+
+	/** Get Toolbar Button.
+		@return Add the column button to the toolbar
+	  */
+	public String getIsToolbarButton () 
+	{
+		return (String)get_Value(COLUMNNAME_IsToolbarButton);
+	}
+
+	/** IsUpdateable AD_Reference_ID=319 */
+	public static final int ISUPDATEABLE_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISUPDATEABLE_Yes = "Y";
+	/** No = N */
+	public static final String ISUPDATEABLE_No = "N";
+	/** Set Updatable.
+		@param IsUpdateable 
+		Determines, if the field can be updated
+	  */
+	public void setIsUpdateable (String IsUpdateable)
+	{
+
+		set_Value (COLUMNNAME_IsUpdateable, IsUpdateable);
+	}
+
+	/** Get Updatable.
+		@return Determines, if the field can be updated
+	  */
+	public String getIsUpdateable () 
+	{
+		return (String)get_Value(COLUMNNAME_IsUpdateable);
+	}
+
+	/** Set Mandatory Logic.
+		@param MandatoryLogic Mandatory Logic	  */
+	public void setMandatoryLogic (String MandatoryLogic)
+	{
+		set_Value (COLUMNNAME_MandatoryLogic, MandatoryLogic);
+	}
+
+	/** Get Mandatory Logic.
+		@return Mandatory Logic	  */
+	public String getMandatoryLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_MandatoryLogic);
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -795,6 +881,23 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public String getObscureType () 
 	{
 		return (String)get_Value(COLUMNNAME_ObscureType);
+	}
+
+	/** Set Read Only Logic.
+		@param ReadOnlyLogic 
+		Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public void setReadOnlyLogic (String ReadOnlyLogic)
+	{
+		set_Value (COLUMNNAME_ReadOnlyLogic, ReadOnlyLogic);
+	}
+
+	/** Get Read Only Logic.
+		@return Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public String getReadOnlyLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_ReadOnlyLogic);
 	}
 
 	/** Set Sequence.

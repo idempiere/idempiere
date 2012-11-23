@@ -232,16 +232,12 @@ public class GridFieldVO implements Serializable
 			userDef = MUserDefField.get(vo.ctx,AD_Field_ID, AD_Tab_ID, AD_Window_ID);
 			if (userDef != null)
 			{
-				vo.IsDisplayed = userDef.isDisplayed();
 				if (userDef.getName() != null)
 					vo.Header = userDef.getName();
 				if (userDef.getDescription() != null)
 					vo.Description = userDef.getDescription();
 				if (userDef.getHelp() != null)
 					vo.Help = userDef.getHelp();
-				vo.IsReadOnly = userDef.isReadOnly();
-				vo.IsSameLine = userDef.isSameLine();
-				vo.IsUpdateable = userDef.isUpdateable();
 				if (userDef.getDisplayLength() > 0)
 					vo.DisplayLength = userDef.getDisplayLength();
 				if (userDef.getDisplayLogic() != null)
@@ -250,9 +246,35 @@ public class GridFieldVO implements Serializable
 					vo.DefaultValue = userDef.getDefaultValue();
 				if (userDef.getSortNo() > 0)
 					vo.SortNo = userDef.getSortNo();
-				// ToDo SeqNo
-				//if (userDef.getSeqNo() > 0)
-				//	vo.SeqNo = userDef.getSeqNo();
+				//IDEMPIERE-163
+				if (userDef.getIsDisplayed()!= null)
+				    vo.IsDisplayed = "Y".equals(userDef.getIsDisplayed());
+				if (userDef.getIsReadOnly()!= null)
+				    vo.IsReadOnly = "Y".equals(userDef.getIsReadOnly());
+				if (userDef.getIsSameLine()!= null)
+				    vo.IsSameLine = "Y".equals(userDef.getIsSameLine());
+				if (userDef.getIsUpdateable()!= null)
+				    vo.IsUpdateable = "Y".equals(userDef.getIsUpdateable());
+				if (userDef.getIsAlwaysUpdateable()!= null)	
+				   vo.IsAlwaysUpdateable = "Y".equals(userDef.getIsAlwaysUpdateable());
+				if (userDef.getReadOnlyLogic()!= null)
+					vo.ReadOnlyLogic = userDef.getReadOnlyLogic();
+				if (userDef.getMandatoryLogic()!= null )
+					vo.MandatoryLogic = userDef.getMandatoryLogic();	
+				if (userDef.getAD_Reference_ID()>0)
+					vo.displayType = userDef.getAD_Reference_ID();
+				if (userDef.getAD_Reference_Value_ID()>0)
+					vo.AD_Reference_Value_ID = userDef.getAD_Reference_Value_ID();
+				if (userDef.getIsMandatory()!= null)
+					vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
+				if (userDef.getXPosition() > 0)
+					vo.XPosition = userDef.getXPosition();
+				if (userDef.getColumnSpan() > 0)
+					vo.ColumnSpan=userDef.getColumnSpan();
+				if (userDef.getNumLines() > 0)
+					vo.NumLines=userDef.getNumLines();
+				if (userDef.getIsToolbarButton() != null)
+					vo.IsToolbarButton  = "Y".equals(userDef.getIsToolbarButton());		
 			}
 		}
 		//

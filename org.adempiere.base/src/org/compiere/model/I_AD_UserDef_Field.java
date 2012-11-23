@@ -77,6 +77,36 @@ public interface I_AD_UserDef_Field
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Reference_ID */
+    public static final String COLUMNNAME_AD_Reference_ID = "AD_Reference_ID";
+
+	/** Set Reference.
+	  * System Reference and Validation
+	  */
+	public void setAD_Reference_ID (int AD_Reference_ID);
+
+	/** Get Reference.
+	  * System Reference and Validation
+	  */
+	public int getAD_Reference_ID();
+
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
+
+    /** Column name AD_Reference_Value_ID */
+    public static final String COLUMNNAME_AD_Reference_Value_ID = "AD_Reference_Value_ID";
+
+	/** Set Reference Key.
+	  * Required to specify, if data type is Table or List
+	  */
+	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID);
+
+	/** Get Reference Key.
+	  * Required to specify, if data type is Table or List
+	  */
+	public int getAD_Reference_Value_ID();
+
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
+
     /** Column name AD_UserDef_Field_ID */
     public static final String COLUMNNAME_AD_UserDef_Field_ID = "AD_UserDef_Field_ID";
 
@@ -105,6 +135,19 @@ public interface I_AD_UserDef_Field
 	public int getAD_UserDef_Tab_ID();
 
 	public org.compiere.model.I_AD_UserDef_Tab getAD_UserDef_Tab() throws RuntimeException;
+
+    /** Column name ColumnSpan */
+    public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";
+
+	/** Set Column Span.
+	  * Number of column for a box of field
+	  */
+	public void setColumnSpan (int ColumnSpan);
+
+	/** Get Column Span.
+	  * Number of column for a box of field
+	  */
+	public int getColumnSpan();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -202,18 +245,44 @@ public interface I_AD_UserDef_Field
 	  */
 	public boolean isActive();
 
+    /** Column name IsAlwaysUpdateable */
+    public static final String COLUMNNAME_IsAlwaysUpdateable = "IsAlwaysUpdateable";
+
+	/** Set Always Updatable.
+	  * The column is always updateable, even if the record is not active or processed
+	  */
+	public void setIsAlwaysUpdateable (String IsAlwaysUpdateable);
+
+	/** Get Always Updatable.
+	  * The column is always updateable, even if the record is not active or processed
+	  */
+	public String getIsAlwaysUpdateable();
+
     /** Column name IsDisplayed */
     public static final String COLUMNNAME_IsDisplayed = "IsDisplayed";
 
 	/** Set Displayed.
 	  * Determines, if this field is displayed
 	  */
-	public void setIsDisplayed (boolean IsDisplayed);
+	public void setIsDisplayed (String IsDisplayed);
 
 	/** Get Displayed.
 	  * Determines, if this field is displayed
 	  */
-	public boolean isDisplayed();
+	public String getIsDisplayed();
+
+    /** Column name IsMandatory */
+    public static final String COLUMNNAME_IsMandatory = "IsMandatory";
+
+	/** Set Mandatory.
+	  * Data entry is required in this column
+	  */
+	public void setIsMandatory (String IsMandatory);
+
+	/** Get Mandatory.
+	  * Data entry is required in this column
+	  */
+	public String getIsMandatory();
 
     /** Column name IsReadOnly */
     public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";
@@ -221,12 +290,12 @@ public interface I_AD_UserDef_Field
 	/** Set Read Only.
 	  * Field is read only
 	  */
-	public void setIsReadOnly (boolean IsReadOnly);
+	public void setIsReadOnly (String IsReadOnly);
 
 	/** Get Read Only.
 	  * Field is read only
 	  */
-	public boolean isReadOnly();
+	public String getIsReadOnly();
 
     /** Column name IsSameLine */
     public static final String COLUMNNAME_IsSameLine = "IsSameLine";
@@ -234,12 +303,25 @@ public interface I_AD_UserDef_Field
 	/** Set Same Line.
 	  * Displayed on same line as previous field
 	  */
-	public void setIsSameLine (boolean IsSameLine);
+	public void setIsSameLine (String IsSameLine);
 
 	/** Get Same Line.
 	  * Displayed on same line as previous field
 	  */
-	public boolean isSameLine();
+	public String getIsSameLine();
+
+    /** Column name IsToolbarButton */
+    public static final String COLUMNNAME_IsToolbarButton = "IsToolbarButton";
+
+	/** Set Toolbar Button.
+	  * Add the column button to the toolbar
+	  */
+	public void setIsToolbarButton (String IsToolbarButton);
+
+	/** Get Toolbar Button.
+	  * Add the column button to the toolbar
+	  */
+	public String getIsToolbarButton();
 
     /** Column name IsUpdateable */
     public static final String COLUMNNAME_IsUpdateable = "IsUpdateable";
@@ -247,12 +329,21 @@ public interface I_AD_UserDef_Field
 	/** Set Updatable.
 	  * Determines, if the field can be updated
 	  */
-	public void setIsUpdateable (boolean IsUpdateable);
+	public void setIsUpdateable (String IsUpdateable);
 
 	/** Get Updatable.
 	  * Determines, if the field can be updated
 	  */
-	public boolean isUpdateable();
+	public String getIsUpdateable();
+
+    /** Column name MandatoryLogic */
+    public static final String COLUMNNAME_MandatoryLogic = "MandatoryLogic";
+
+	/** Set Mandatory Logic	  */
+	public void setMandatoryLogic (String MandatoryLogic);
+
+	/** Get Mandatory Logic	  */
+	public String getMandatoryLogic();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -266,6 +357,32 @@ public interface I_AD_UserDef_Field
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name NumLines */
+    public static final String COLUMNNAME_NumLines = "NumLines";
+
+	/** Set Number of Lines.
+	  * Number of lines for a field
+	  */
+	public void setNumLines (int NumLines);
+
+	/** Get Number of Lines.
+	  * Number of lines for a field
+	  */
+	public int getNumLines();
+
+    /** Column name ReadOnlyLogic */
+    public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
+
+	/** Set Read Only Logic.
+	  * Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public void setReadOnlyLogic (String ReadOnlyLogic);
+
+	/** Get Read Only Logic.
+	  * Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public String getReadOnlyLogic();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
@@ -310,4 +427,17 @@ public interface I_AD_UserDef_Field
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name XPosition */
+    public static final String COLUMNNAME_XPosition = "XPosition";
+
+	/** Set X Position.
+	  * Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public void setXPosition (int XPosition);
+
+	/** Get X Position.
+	  * Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public int getXPosition();
 }

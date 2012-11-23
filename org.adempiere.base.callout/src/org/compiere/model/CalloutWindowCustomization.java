@@ -120,15 +120,15 @@ public class CalloutWindowCustomization extends CalloutEngine
 		ud_field.setName(field.get_Translation("Name", lang));
 		ud_field.setDescription(field.get_Translation("Description", lang));
 		ud_field.setHelp(field.get_Translation("Help", lang));
-		
-		ud_field.setIsDisplayed(field.isDisplayed());
+		//IDEMPIERE-163
+		ud_field.setIsDisplayed(field.isDisplayed()? "Y": "N");
 		ud_field.setDisplayLength(field.getDisplayLength());
 		ud_field.setDisplayLogic(field.getDisplayLogic());
-		ud_field.setIsReadOnly(field.isReadOnly());
+		ud_field.setIsReadOnly(field.isReadOnly()? "Y": "N");
 		// XXX from column? set to true for starters
-		ud_field.setIsUpdateable(true); 
+		ud_field.setIsUpdateable("Y"); 
 		ud_field.setSeqNo(field.getSeqNo()); 
-		ud_field.setIsSameLine(field.isSameLine()); 
+		ud_field.setIsSameLine(field.isSameLine()? "Y": "N"); 
 		ud_field.setSortNo(field.getSortNo().intValue()); 
 		
 		return NO_ERROR;

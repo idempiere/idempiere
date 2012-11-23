@@ -9,8 +9,11 @@ CREATE OR REPLACE VIEW AD_FIELD_V AS
  COALESCE(f.IsMandatory, c.IsMandatory) AS IsMandatory, 
     c.IsIdentifier, c.IsTranslated, COALESCE(f.AD_Reference_Value_ID, c.AD_Reference_Value_ID) AS AD_Reference_Value_ID, 
  c.Callout, COALESCE(f.AD_Reference_ID, c.AD_Reference_ID) AS AD_Reference_ID, 
-    COALESCE(f.AD_Val_Rule_ID, c.AD_Val_Rule_ID) AS AD_Val_Rule_ID, c.AD_Process_ID, c.IsAlwaysUpdateable,
- c.ReadOnlyLogic, c.MandatoryLogic, c.IsUpdateable, c.IsEncrypted AS IsEncryptedColumn, 
+    COALESCE(f.AD_Val_Rule_ID, c.AD_Val_Rule_ID) AS AD_Val_Rule_ID, c.AD_Process_ID, 
+ COALESCE(f.Isalwaysupdateable , C.Isalwaysupdateable) As Isalwaysupdateable,
+ COALESCE(f.Readonlylogic,  c.Readonlylogic ) As Readonlylogic,
+ COALESCE(f.Mandatorylogic , C.Mandatorylogic) As Mandatorylogic, 
+ COALESCE(f.isupdateable, c.isupdateable) AS isupdateable, c.IsEncrypted AS IsEncryptedColumn, 
     c.IsSelectionColumn,
  tbl.TableName, c.ValueMin, c.ValueMax,
  fg.NAME AS FieldGroup, vr.Code AS ValidationCode,
@@ -19,7 +22,8 @@ CREATE OR REPLACE VIEW AD_FIELD_V AS
  c.IsAutocomplete, COALESCE(f.IsAllowCopy, c.IsAllowCopy) AS IsAllowCopy,
 	f.isdisplayedgrid, 
 	f.seqnogrid,
-	c.seqnoselection, f.xposition, f.columnspan, f.numlines, c.isToolbarButton
+	c.seqnoselection, f.xposition, f.columnspan, f.numlines, 
+ COALESCE(f.istoolbarbutton , c.istoolbarbutton ) As istoolbarbutton
 FROM AD_FIELD f 
   INNER JOIN AD_TAB t ON (f.AD_Tab_ID = t.AD_Tab_ID)
   LEFT OUTER JOIN AD_FIELDGROUP fg ON (f.AD_FieldGroup_ID = fg.AD_FieldGroup_ID) 
