@@ -88,7 +88,11 @@ public class DashboardRunnable implements Runnable, Serializable
 		boolean isEventThread = Events.inEventListener();
 		if (!isEventThread)
 		{
-			ctx = (Properties)template.getDesktop().getSession().getAttribute(SessionContextListener.SESSION_CTX);
+			try {
+				ctx = (Properties)template.getDesktop().getSession().getAttribute(SessionContextListener.SESSION_CTX);
+			} catch (Exception e) {
+				ctx = null;
+			}
 			if (ctx == null)
 				return;
 		}
