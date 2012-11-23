@@ -506,7 +506,12 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-detailpane {
-	min-height: 200px; width: 100%; overflow-y: visible;
+	width: 100%; 
+	overflow-y: visible;
+}
+
+.adwindow-detailpane-xsplit {
+	min-height: 200px;
 }
 
 .adwindow-detailpane-tabpanel {
@@ -531,12 +536,17 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-detailpane-tabbox {
-	min-height: 200px; width: 99%; margin: auto;
+	width: 99%; 
+	margin: auto;
 	background-color: #E4E4E4;
 }
 
+.adwindow-detailpane-tabbox-xsplit .z-tabpanel {
+	min-height: 200px;
+}
+
 .adwindow-gridview-detail {
-	height: 250px;
+	height: 40%;
 }
 
 .adwindow-gridview-detail + .z-south-splt {

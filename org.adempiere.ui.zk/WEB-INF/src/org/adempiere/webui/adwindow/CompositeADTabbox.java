@@ -188,6 +188,13 @@ public class CompositeADTabbox extends AbstractADTabbox
 			}
 		});
     	
+    	layout.addEventListener("onPostInit", new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				layout.invalidate();
+			}
+		});
+    	
     	return layout;
     }
 
@@ -303,7 +310,6 @@ public class CompositeADTabbox extends AbstractADTabbox
     		} else
     			tabPanel.setVisible(false);
     		detailPane.setHflex("1");
-    		detailPane.setStyle("min-height: 200px; overflow-y: visible;");
     		detailPane.addADTabpanel(tabPanel, tabLabel);
     		tabPanel.setDetailPaneMode(true, isUseVflexForDetailPane());
     		detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));
@@ -542,7 +548,7 @@ public class CompositeADTabbox extends AbstractADTabbox
         		detailTab.setDetailPaneMode(true, isUseVflexForDetailPane());
         		detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));    
         		if (!ADTabpanel.isUseSplitViewForForm()) {
-        			detailPane.invalidate();
+        			layout.invalidate();
         		}
 			}
 		}
@@ -645,6 +651,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 			detailPane.updateToolbar(false, true);
 		} else {
 			tabPanel.dynamicDisplay(0);
+			if (!ADTabpanel.isUseSplitViewForForm() && !headerTab.isGridView()) {
+				detailPane.invalidate();				
+			}
 		}
 	}
 	
