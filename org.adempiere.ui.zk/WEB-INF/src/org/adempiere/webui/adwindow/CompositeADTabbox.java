@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ADTabListModel;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
 import org.adempiere.webui.window.FDialog;
@@ -54,6 +55,8 @@ import org.zkoss.zul.Vlayout;
  */
 public class CompositeADTabbox extends AbstractADTabbox
 {
+	public static final String ON_POST_INIT_EVENT = "onPostInit";
+
 	public static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
 	
 	/** Logger                  */
@@ -133,6 +136,18 @@ public class CompositeADTabbox extends AbstractADTabbox
 				}
 			}			
 		});
+    	
+    	detailPane.addEventListener(DetailPane.ON_POST_SELECT_TAB_EVENT, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if ((!ADTabpanel.isUseSplitViewForForm() && !headerTab.isGridView()) 
+					|| (detailPane.getSelectedADTabpanel() instanceof ADSortTab)) {					
+					LayoutUtils.redraw(detailPane);
+					Clients.scrollIntoView(detailPane.getSelectedADTabpanel());
+				}
+				
+			}
+		});
     }
 
     protected void onEditDetail(int row) {
@@ -188,10 +203,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 			}
 		});
     	
-    	layout.addEventListener("onPostInit", new EventListener<Event>() {
+    	layout.addEventListener(ON_POST_INIT_EVENT, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				layout.invalidate();
+				LayoutUtils.redraw(layout);
 			}
 		});
     	
@@ -547,8 +562,8 @@ public class CompositeADTabbox extends AbstractADTabbox
         		detailTab.activate(true);
         		detailTab.setDetailPaneMode(true, isUseVflexForDetailPane());
         		detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));    
-        		if (!ADTabpanel.isUseSplitViewForForm()) {
-        			layout.invalidate();
+        		if (!ADTabpanel.isUseSplitViewForForm() && !headerTab.isGridView()) {
+        			Events.echoEvent(new Event(DetailPane.ON_REDRAW_EVENT, detailPane));
         		}
 			}
 		}
@@ -647,13 +662,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 		tabPanel.setDetailPaneMode(true, isUseVflexForDetailPane());
 		detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));
 		if (tabPanel instanceof ADSortTab) {
-			detailPane.invalidate();
 			detailPane.updateToolbar(false, true);
 		} else {
 			tabPanel.dynamicDisplay(0);
-			if (!ADTabpanel.isUseSplitViewForForm() && !headerTab.isGridView()) {
-				detailPane.invalidate();				
-			}
 		}
 	}
 	

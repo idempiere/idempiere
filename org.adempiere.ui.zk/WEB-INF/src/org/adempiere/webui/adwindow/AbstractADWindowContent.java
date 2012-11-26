@@ -570,8 +570,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	private void initFirstTabpanel() {
 		adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());
-		adTabbox.getSelectedTabpanel().activate(true);
-		Events.echoEvent(new Event("onPostInit", adTabbox.getComponent()));
+		adTabbox.getSelectedTabpanel().activate(true);		
+
+		if (adTabbox.getSelectedTabpanel().isGridView()) {
+			Events.postEvent(new Event(CompositeADTabbox.ON_POST_INIT_EVENT, adTabbox.getComponent()));
+		}
 	}
 
     /**

@@ -44,6 +44,10 @@ import org.zkoss.zul.Toolbar;
  */
 public class DetailPane extends Panel implements EventListener<Event> {
 
+	public static final String ON_POST_SELECT_TAB_EVENT = "onPostSelectTab";
+
+	public static final String ON_REDRAW_EVENT = "onRedraw";
+
 	private static final String STATUS_TEXT_ATTRIBUTE = "status.text";
 
 	private static final String STATUS_ERROR_ATTRIBUTE = "status.error";
@@ -91,9 +95,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				fireActivateDetailEvent();
-				if (!ADTabpanel.isUseSplitViewForForm()) {
-					Clients.scrollIntoView(getSelectedADTabpanel());
-				}
+				Events.postEvent(new Event(ON_POST_SELECT_TAB_EVENT, DetailPane.this));				
 			}
 		});
 		tabbox.setSclass("adwindow-detailpane-tabbox");
@@ -107,6 +109,8 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		if (!ADTabpanel.isUseSplitViewForForm()) {
 			LayoutUtils.addSclass("adwindow-detailpane-xsplit", this);
 		}		
+		
+		addEventListener(ON_REDRAW_EVENT, this);
 	}
 	
 	public int getSelectedIndex() {
@@ -391,6 +395,8 @@ public class DetailPane extends Panel implements EventListener<Event> {
 			showPopup(error, messageContainer);
 		} else if (event.getName().equals(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT)) {
 			updateProcessToolbar();
+		} else if (event.getName().equals(ON_REDRAW_EVENT)) {
+			LayoutUtils.redraw(this);
 		}
 	}
 	

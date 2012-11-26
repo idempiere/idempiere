@@ -12,8 +12,13 @@
  *****************************************************************************/
 package org.adempiere.webui;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
 import org.adempiere.webui.component.Label;
+import org.zkoss.zk.au.out.AuOuter;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.util.Clients;
@@ -123,5 +128,15 @@ public final class LayoutUtils {
 			.append("');");
 		window.doOverlapped();
 		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
+	}
+	
+	public static void redraw(AbstractComponent component) {
+		StringWriter writer = new StringWriter(1024);
+		try {
+			component.redraw(writer);
+			Clients.response(new AuOuter(component, writer.toString()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
 	}
 }
