@@ -134,6 +134,9 @@ public class WindowElementHandler extends AbstractElementHandler {
 		//export color
 		if (m_Window.getAD_Color_ID() > 0) {
 			ElementHandler handler = ctx.packOut.getHandler(I_AD_Color.Table_Name);
+			if (handler == null) {
+				handler = new GenericPOElementHandler(I_AD_Color.Table_Name);
+			}
 			try {
 				handler.packOut(ctx.packOut, document, null, m_Window.getAD_Color_ID());
 			} catch (Exception e) {
@@ -144,6 +147,9 @@ public class WindowElementHandler extends AbstractElementHandler {
 		//export image
 		if (m_Window.getAD_Image_ID() > 0) {
 			ElementHandler handler = ctx.packOut.getHandler(I_AD_Image.Table_Name);
+			if (handler == null) {
+				handler = new GenericPOElementHandler(I_AD_Image.Table_Name);
+			}
 			try {
 				handler.packOut(ctx.packOut, document, null, m_Window.getAD_Image_ID());
 			} catch (Exception e) {
