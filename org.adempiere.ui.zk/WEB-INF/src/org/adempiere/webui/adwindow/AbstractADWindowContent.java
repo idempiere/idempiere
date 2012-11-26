@@ -573,7 +573,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		adTabbox.getSelectedTabpanel().activate(true);		
 
 		if (adTabbox.getSelectedTabpanel().isGridView()) {
-			Events.postEvent(new Event(CompositeADTabbox.ON_POST_INIT_EVENT, adTabbox.getComponent()));
+			Events.postEvent(new Event(CompositeADTabbox.ON_POST_INIT_EVENT, adTabbox.getComponent(), null));
 		}
 	}
 

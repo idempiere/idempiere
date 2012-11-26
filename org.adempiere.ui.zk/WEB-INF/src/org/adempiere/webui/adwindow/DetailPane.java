@@ -28,6 +28,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
@@ -396,6 +397,11 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		} else if (event.getName().equals(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT)) {
 			updateProcessToolbar();
 		} else if (event.getName().equals(ON_REDRAW_EVENT)) {
+			ExecutionCtrl ctrl = (ExecutionCtrl) Executions.getCurrent();
+			if (ctrl.getNextEvent() != null) {
+				Events.postEvent(new Event(ON_REDRAW_EVENT, this));
+				return;
+			}
 			LayoutUtils.redraw(this);
 		}
 	}

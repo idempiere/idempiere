@@ -42,6 +42,7 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Vlayout;
@@ -204,6 +205,11 @@ public class CompositeADTabbox extends AbstractADTabbox
     	layout.addEventListener(ON_POST_INIT_EVENT, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
+				ExecutionCtrl ctrl = (ExecutionCtrl) Executions.getCurrent();
+				if (ctrl.getNextEvent() != null) {
+					Events.postEvent(new Event(ON_POST_INIT_EVENT, layout));
+					return;
+				}
 				LayoutUtils.redraw(layout);
 			}
 		});
@@ -561,7 +567,7 @@ public class CompositeADTabbox extends AbstractADTabbox
         		detailTab.setDetailPaneMode(true, isUseVflexForDetailPane());
         		detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));    
         		if (!ADTabpanel.isUseSplitViewForForm() && !headerTab.isGridView()) {
-        			Events.echoEvent(new Event(DetailPane.ON_REDRAW_EVENT, detailPane));
+        			Events.postEvent(new Event(DetailPane.ON_REDRAW_EVENT, detailPane));
         		}
 			}
 		}
