@@ -17,6 +17,7 @@ import org.adempiere.webui.apps.graph.WPAPanel;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
@@ -46,14 +47,16 @@ public class DPPerformance extends DashboardPanel {
 	
 	public void refresh(ServerPushTemplate template) {
 		super.refresh(template);
-		Events.echoEvent("onPostRender", this, null);
+		if (Executions.getCurrent() != null)
+			Events.echoEvent("onPostRender", this, null);
 	}
 	
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
-			Events.echoEvent("onPostRender", this, null);
+			if (Executions.getCurrent() != null)
+				Events.echoEvent("onPostRender", this, null);
 		}
 	}
 
@@ -63,6 +66,7 @@ public class DPPerformance extends DashboardPanel {
 		Component grid = this.getFirstChild().getFirstChild();
 		String script = "setTimeout(function() { var grid = jq('#" + grid.getUuid() + "');";
 		script = script + "grid.parent().height(grid.css('height'));}, 500);";
-		Clients.response(new AuScript(script));
+		if (Executions.getCurrent() != null)
+			Clients.response(new AuScript(script));
 	}
 }
