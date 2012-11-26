@@ -20,6 +20,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.util.Properties;
 
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -121,7 +122,10 @@ public class CalloutMovement extends CalloutEngine
 				if (M_Locator_ID <= 0)
 					return;
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, "M_AttributeSetInstance_ID");
-				BigDecimal available = MStorage.getQtyAvailable(0, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
+				BigDecimal available = Env.ZERO;
+				MStorageOnHand oh = MStorageOnHand.get(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
+				if (oh != null)
+					available = oh.getQtyOnHand();
 				if (available == null)
 					available = Env.ZERO;
 				if (available.signum() == 0)

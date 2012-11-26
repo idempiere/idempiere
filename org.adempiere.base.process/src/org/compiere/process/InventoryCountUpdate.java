@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -92,14 +92,14 @@ public class InventoryCountUpdate extends SvrProcess
 		//	ASI
 		sql = new StringBuilder("UPDATE M_InventoryLine l ")
 			.append("SET (QtyBook,QtyCount) = ")
-				.append("(SELECT QtyOnHand,QtyOnHand FROM M_Storage s ")
+				.append("(SELECT QtyOnHand,QtyOnHand FROM M_StorageOnHand s ")
 				.append("WHERE s.M_Product_ID=l.M_Product_ID AND s.M_Locator_ID=l.M_Locator_ID")
 				.append(" AND s.M_AttributeSetInstance_ID=l.M_AttributeSetInstance_ID),")
 			.append(" Updated=SysDate,")
 			.append(" UpdatedBy=").append(getAD_User_ID())
 			//
 			.append(" WHERE M_Inventory_ID=").append(p_M_Inventory_ID)
-			.append(" AND EXISTS (SELECT * FROM M_Storage s ")
+			.append(" AND EXISTS (SELECT * FROM M_StorageOnHand s ")
 				.append("WHERE s.M_Product_ID=l.M_Product_ID AND s.M_Locator_ID=l.M_Locator_ID")
 				.append(" AND s.M_AttributeSetInstance_ID=l.M_AttributeSetInstance_ID)");
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
@@ -145,11 +145,11 @@ public class InventoryCountUpdate extends SvrProcess
 			{
 				MInventoryLine il = new MInventoryLine (getCtx(), rs, get_TrxName());
 				BigDecimal onHand = Env.ZERO;
-				MStorage[] storages = MStorage.getAll(getCtx(), il.getM_Product_ID(), il.getM_Locator_ID(), get_TrxName());
+				MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), il.getM_Product_ID(), il.getM_Locator_ID(), get_TrxName());
 				MInventoryLineMA ma = null;
 				for (int i = 0; i < storages.length; i++)
 				{
-					MStorage storage = storages[i];
+					MStorageOnHand storage = storages[i];
 					if (storage.getQtyOnHand().signum() == 0)
 						continue;
 					onHand = onHand.add(storage.getQtyOnHand());

@@ -25,7 +25,7 @@ import org.compiere.model.MInOutLine;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MProjectLine;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MTimeExpense;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.util.Env;
@@ -234,7 +234,7 @@ public class ProjectIssue extends SvrProcess
 			int M_Locator_ID = 0;
 		//	MProduct product = new MProduct (getCtx(), expenseLines[i].getM_Product_ID());
 		//	if (product.isStocked())
-				M_Locator_ID = MStorage.getM_Locator_ID(expense.getM_Warehouse_ID(), 
+				M_Locator_ID = MStorageOnHand.getM_Locator_ID(expense.getM_Warehouse_ID(), 
 					expenseLines[i].getM_Product_ID(), 0, 	//	no ASI
 					expenseLines[i].getQty(), null);
 			if (M_Locator_ID == 0)	//	Service/Expense - get default (and fallback)

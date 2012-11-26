@@ -36,7 +36,7 @@ import org.compiere.model.MPeriod;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProject;
 import org.compiere.model.MRefList;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MUser;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
@@ -883,18 +883,18 @@ public class MDDOrder extends X_DD_Order implements DocAction
 				if (product.isStocked())
 				{
 					//	Update Storage
-					if (!MStorage.add(getCtx(), locator_to.getM_Warehouse_ID(), locator_to.getM_Locator_ID(), 
+					if (!MStorageOnHand.add(getCtx(), locator_to.getM_Warehouse_ID(), locator_to.getM_Locator_ID(), 
 						line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(), line.getM_AttributeSetInstance_ID(),
-						Env.ZERO, Env.ZERO , reserved_ordered , get_TrxName()))
+						Env.ZERO, get_TrxName()))
 					{
 						throw new AdempiereException();
 					}
 					
-					if (!MStorage.add(getCtx(), locator_from.getM_Warehouse_ID(), locator_from.getM_Locator_ID(), 
+					if (!MStorageOnHand.add(getCtx(), locator_from.getM_Warehouse_ID(), locator_from.getM_Locator_ID(), 
 						line.getM_Product_ID(), 
 						line.getM_AttributeSetInstanceTo_ID(), line.getM_AttributeSetInstance_ID(),
-						Env.ZERO, reserved_ordered, Env.ZERO , get_TrxName()))
+						Env.ZERO, get_TrxName()))
 					{
 						throw new AdempiereException();
 					}

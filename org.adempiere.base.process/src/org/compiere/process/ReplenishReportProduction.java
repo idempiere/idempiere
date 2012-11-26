@@ -38,7 +38,7 @@ import org.compiere.model.MProduction;
 import org.compiere.model.MReplenish;
 import org.compiere.model.MRequisition;
 import org.compiere.model.MRequisitionLine;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.X_T_Replenish;
 import org.compiere.util.AdempiereSystemError;
@@ -269,12 +269,12 @@ public class ReplenishReportProduction extends SvrProcess
 		}
 		
 		sql = new StringBuilder("UPDATE T_Replenish t SET ");
-			sql.append("QtyOnHand = (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
+			sql.append("QtyOnHand = (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
 				sql.append(" AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),");
-			sql.append("QtyReserved = (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
-				sql.append(" AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),");
-			sql.append("QtyOrdered = (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
-				sql.append(" AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID)");
+			sql.append("QtyReserved = (SELECT COALESCE(SUM(Qty),0) FROM M_StorageReservation s WHERE t.M_Product_ID=s.M_Product_ID");
+				sql.append(" AND t.M_Warehouse_ID=s.M_Warehouse_ID),");
+			sql.append("QtyOrdered = (SELECT COALESCE(SUM(Qty),0) FROM M_StorageReservation s WHERE t.M_Product_ID=s.M_Product_ID");
+				sql.append(" AND t.M_Warehouse_ID=s.M_Warehouse_ID)");
 		if (p_C_DocType_ID != 0)
 			sql.append(", C_DocType_ID=").append(p_C_DocType_ID);
 		sql.append(" WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
@@ -570,15 +570,14 @@ public class ReplenishReportProduction extends SvrProcess
 			//	From: Look-up Storage
 			MProduct product = MProduct.get(getCtx(), replenish.getM_Product_ID());
 			String MMPolicy = product.getMMPolicy();
-			MStorage[] storages = MStorage.getWarehouse(getCtx(), 
-				whSource.getM_Warehouse_ID(), replenish.getM_Product_ID(), 0, 0,
-				true, null, 
-				MClient.MMPOLICY_FiFo.equals(MMPolicy), get_TrxName());
+			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(),
+					whSource.getM_Warehouse_ID(), replenish.getM_Product_ID(), 0, null, 
+					MClient.MMPOLICY_FiFo.equals(MMPolicy), false, 0, get_TrxName());
 			//
 			BigDecimal target = replenish.getQtyToOrder();
 			for (int j = 0; j < storages.length; j++)
 			{
-				MStorage storage = storages[j];
+				MStorageOnHand storage = storages[j];
 				if (storage.getQtyOnHand().signum() <= 0)
 					continue;
 				BigDecimal moveQty = target;

@@ -147,12 +147,12 @@ public class CalloutInventory extends CalloutEngine
 	private BigDecimal setQtyBook (int M_AttributeSetInstance_ID, int M_Product_ID, int M_Locator_ID) throws Exception {
 		// Set QtyBook from first storage location
 		BigDecimal bd = null;
-		String sql = "SELECT QtyOnHand FROM M_Storage "
+		String sql = "SELECT QtyOnHand FROM M_StorageOnHand "
 			+ "WHERE M_Product_ID=?"	//	1
 			+ " AND M_Locator_ID=?"		//	2
 			+ " AND M_AttributeSetInstance_ID=?";
 		if (M_AttributeSetInstance_ID == 0)
-			sql = "SELECT SUM(QtyOnHand) FROM M_Storage "
+			sql = "SELECT SUM(QtyOnHand) FROM M_StorageOnHand "
 			+ "WHERE M_Product_ID=?"	//	1
 			+ " AND M_Locator_ID=?";	//	2
 		

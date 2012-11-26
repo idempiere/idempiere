@@ -186,7 +186,7 @@ public class MProduction extends X_M_Production {
 					{
 
 						// BOM stock info
-						MStorage[] storages = null;
+						MStorageOnHand[] storages = null;
 						MProduct usedProduct = MProduct.get(getCtx(), BOMProduct_ID);
 						defaultLocator = usedProduct.getM_Locator_ID();
 						if ( defaultLocator == 0 )
@@ -203,7 +203,7 @@ public class MProduction extends X_M_Production {
 							MMPolicy = client.getMMPolicy();
 						}
 
-						storages = MStorage.getWarehouse(getCtx(), M_Warehouse_ID, BOMProduct_ID, 0, null,
+						storages = MStorageOnHand.getWarehouse(getCtx(), M_Warehouse_ID, BOMProduct_ID, 0, null,
 								MProductCategory.MMPOLICY_FiFo.equals(MMPolicy), true, 0, get_TrxName());
 
 						MProductionLine BOMLine = null;

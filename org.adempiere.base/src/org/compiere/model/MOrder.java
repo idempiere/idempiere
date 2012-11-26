@@ -1566,38 +1566,13 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				if (product.isStocked())
 				{
-					BigDecimal ordered = isSOTrx ? Env.ZERO : difference;
-					BigDecimal reserved = isSOTrx ? difference : Env.ZERO;
-					int M_Locator_ID = 0; 
-					//	Get Locator to reserve
-					if (line.getM_AttributeSetInstance_ID() != 0)	//	Get existing Location
-						M_Locator_ID = MStorage.getM_Locator_ID (line.getM_Warehouse_ID(), 
-							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), 
-							ordered, get_TrxName());
-					//	Get default Location
-					if (M_Locator_ID == 0)
-					{
-						// try to take default locator for product first
-						// if it is from the selected warehouse
-						MWarehouse wh = MWarehouse.get(getCtx(), line.getM_Warehouse_ID());
-						M_Locator_ID = product.getM_Locator_ID();
-						if (M_Locator_ID!=0) {
-							MLocator locator = new MLocator(getCtx(), product.getM_Locator_ID(), get_TrxName());
-							//product has default locator defined but is not from the order warehouse
-							if(locator.getM_Warehouse_ID()!=wh.get_ID()) {
-								M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
-							}
-						} else {
-							M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
-						}
-					}
-					//	Update Storage
-					if (!MStorage.add(getCtx(), line.getM_Warehouse_ID(), M_Locator_ID, 
+					//	Update Reservation Storage
+					if (!MStorageReservation.add(getCtx(), line.getM_Warehouse_ID(), 
 						line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(), line.getM_AttributeSetInstance_ID(),
-						Env.ZERO, reserved, ordered, get_TrxName()))
+						difference, isSOTrx, get_TrxName()))
 						return false;
-				}	//	stockec
+				}	//	stocked
 				//	update line
 				line.setQtyReserved(line.getQtyReserved().add(difference));
 				if (!line.save(get_TrxName()))
@@ -2036,7 +2011,7 @@ public class MOrder extends X_C_Order implements DocAction
 			//	Qty = Ordered - Delivered
 			BigDecimal MovementQty = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered()); 
 			//	Location
-			int M_Locator_ID = MStorage.getM_Locator_ID (oLine.getM_Warehouse_ID(), 
+			int M_Locator_ID = MStorageOnHand.getM_Locator_ID (oLine.getM_Warehouse_ID(), 
 					oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), 
 					MovementQty, get_TrxName());
 			if (M_Locator_ID == 0)		//	Get default Location

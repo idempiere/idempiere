@@ -1321,6 +1321,8 @@ public abstract class PO
 				Object oo = m_IDs[i];
 				if (oo instanceof Integer)
 					pstmt.setInt(i+1, ((Integer)m_IDs[i]).intValue());
+				else if (oo instanceof Boolean)
+					pstmt.setString(i+1, ((Boolean) m_IDs[i] ? "Y" : "N"));
 				else
 					pstmt.setString(i+1, m_IDs[i].toString());
 			}
@@ -2955,8 +2957,19 @@ public abstract class PO
 			{
 				if (m_KeyColumns[i].endsWith("_ID"))
 					sb.append(m_IDs[i]);
-				else
-					sb.append("'").append(m_IDs[i]).append("'");
+				else {
+					sb.append("'");
+					if (m_IDs[i] instanceof Boolean) {
+						if ((Boolean) m_IDs[i]) {
+							sb.append("Y");
+						} else {
+							sb.append("N");
+						}
+					} else {
+						sb.append(m_IDs[i]);
+					}
+					sb.append("'");
+				}
 			}
 			else
 				sb.append("?");

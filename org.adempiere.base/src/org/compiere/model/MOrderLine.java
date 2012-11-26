@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -873,9 +874,9 @@ public class MOrderLine extends X_C_OrderLine
 				//	Max
 				if (isInstance)
 				{
-					MStorage[] storages = MStorage.getWarehouse(getCtx(), 
+					MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 
 						getM_Warehouse_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(), 
-						M_AttributeSet_ID, false, null, true, get_TrxName());
+						null, true, false, 0, get_TrxName());
 					BigDecimal qty = Env.ZERO;
 					for (int i = 0; i < storages.length; i++)
 					{

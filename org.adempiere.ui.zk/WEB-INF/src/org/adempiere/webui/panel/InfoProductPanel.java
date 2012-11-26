@@ -376,7 +376,8 @@ public class InfoProductPanel extends InfoPanel implements EventListener
         m_sqlWarehouse = warehouseTbl.prepareTable(s_layoutWarehouse, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_STOCK_V");
 		m_sqlWarehouse += " Group By Warehouse, documentnote ";
 		warehouseTbl.setMultiSelection(false);
-        warehouseTbl.autoSize();
+		warehouseTbl.setShowTotals(true);
+		warehouseTbl.autoSize();
         warehouseTbl.getModel().addTableModelListener(this);
 
         ColumnInfo[] s_layoutSubstitute = new ColumnInfo[]{

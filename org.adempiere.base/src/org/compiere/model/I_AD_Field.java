@@ -339,6 +339,19 @@ public interface I_AD_Field
 	  */
 	public String getIsAllowCopy();
 
+    /** Column name IsAlwaysUpdateable */
+    public static final String COLUMNNAME_IsAlwaysUpdateable = "IsAlwaysUpdateable";
+
+	/** Set Always Updateable.
+	  * The column is always updateable, even if the record is not active or processed
+	  */
+	public void setIsAlwaysUpdateable (String IsAlwaysUpdateable);
+
+	/** Get Always Updateable.
+	  * The column is always updateable, even if the record is not active or processed
+	  */
+	public String getIsAlwaysUpdateable();
+
     /** Column name IsCentrallyMaintained */
     public static final String COLUMNNAME_IsCentrallyMaintained = "IsCentrallyMaintained";
 
@@ -461,6 +474,41 @@ public interface I_AD_Field
 	  */
 	public boolean isSameLine();
 
+    /** Column name IsToolbarButton */
+    public static final String COLUMNNAME_IsToolbarButton = "IsToolbarButton";
+
+	/** Set Toolbar Button.
+	  * Add the column button to the toolbar
+	  */
+	public void setIsToolbarButton (String IsToolbarButton);
+
+	/** Get Toolbar Button.
+	  * Add the column button to the toolbar
+	  */
+	public String getIsToolbarButton();
+
+    /** Column name IsUpdateable */
+    public static final String COLUMNNAME_IsUpdateable = "IsUpdateable";
+
+	/** Set Updatable.
+	  * Determines, if the field can be updated
+	  */
+	public void setIsUpdateable (String IsUpdateable);
+
+	/** Get Updatable.
+	  * Determines, if the field can be updated
+	  */
+	public String getIsUpdateable();
+
+    /** Column name MandatoryLogic */
+    public static final String COLUMNNAME_MandatoryLogic = "MandatoryLogic";
+
+	/** Set Mandatory Logic	  */
+	public void setMandatoryLogic (String MandatoryLogic);
+
+	/** Get Mandatory Logic	  */
+	public String getMandatoryLogic();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -499,6 +547,19 @@ public interface I_AD_Field
 	  * Type of obscuring the data (limiting the display)
 	  */
 	public String getObscureType();
+
+    /** Column name ReadOnlyLogic */
+    public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
+
+	/** Set Read Only Logic.
+	  * Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public void setReadOnlyLogic (String ReadOnlyLogic);
+
+	/** Get Read Only Logic.
+	  * Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public String getReadOnlyLogic();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

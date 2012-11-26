@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_Storage
+/** Generated Interface for M_StorageOnHand
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_M_Storage 
+public interface I_M_StorageOnHand 
 {
 
-    /** TableName=M_Storage */
-    public static final String Table_Name = "M_Storage";
+    /** TableName=M_StorageOnHand */
+    public static final String Table_Name = "M_StorageOnHand";
 
-    /** AD_Table_ID=250 */
-    public static final int Table_ID = 250;
+    /** AD_Table_ID=200026 */
+    public static final int Table_ID = 200026;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -149,14 +149,14 @@ public interface I_M_Storage
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
-    /** Column name M_Storage_UU */
-    public static final String COLUMNNAME_M_Storage_UU = "M_Storage_UU";
+    /** Column name M_StorageOnHand_UU */
+    public static final String COLUMNNAME_M_StorageOnHand_UU = "M_StorageOnHand_UU";
 
-	/** Set M_Storage_UU	  */
-	public void setM_Storage_UU (String M_Storage_UU);
+	/** Set M_StorageOnHand_UU	  */
+	public void setM_StorageOnHand_UU (String M_StorageOnHand_UU);
 
-	/** Get M_Storage_UU	  */
-	public String getM_Storage_UU();
+	/** Get M_StorageOnHand_UU	  */
+	public String getM_StorageOnHand_UU();
 
     /** Column name QtyOnHand */
     public static final String COLUMNNAME_QtyOnHand = "QtyOnHand";
@@ -170,32 +170,6 @@ public interface I_M_Storage
 	  * On Hand Quantity
 	  */
 	public BigDecimal getQtyOnHand();
-
-    /** Column name QtyOrdered */
-    public static final String COLUMNNAME_QtyOrdered = "QtyOrdered";
-
-	/** Set Ordered Quantity.
-	  * Ordered Quantity
-	  */
-	public void setQtyOrdered (BigDecimal QtyOrdered);
-
-	/** Get Ordered Quantity.
-	  * Ordered Quantity
-	  */
-	public BigDecimal getQtyOrdered();
-
-    /** Column name QtyReserved */
-    public static final String COLUMNNAME_QtyReserved = "QtyReserved";
-
-	/** Set Reserved Quantity.
-	  * Reserved Quantity
-	  */
-	public void setQtyReserved (BigDecimal QtyReserved);
-
-	/** Get Reserved Quantity.
-	  * Reserved Quantity
-	  */
-	public BigDecimal getQtyReserved();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

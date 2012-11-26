@@ -8,19 +8,22 @@ CREATE OR REPLACE VIEW ad_field_v AS
  COALESCE(f.ad_reference_value_id, c.ad_reference_value_id) AS ad_reference_value_id, c.callout, 
  COALESCE(f.ad_reference_id, c.ad_reference_id) AS ad_reference_id, 
  COALESCE(f.ad_val_rule_id, c.ad_val_rule_id) AS ad_val_rule_id, c.ad_process_id, 
- c.isalwaysupdateable, c.readonlylogic, c.mandatorylogic, c.isupdateable, 
+ COALESCE(f.Isalwaysupdateable , C.Isalwaysupdateable) As Isalwaysupdateable, 
+ COALESCE(f.Readonlylogic,  c.Readonlylogic ) As Readonlylogic, 
+ COALESCE(f.Mandatorylogic , C.Mandatorylogic) As Mandatorylogic, 
+ COALESCE(f.isupdateable, c.isupdateable) AS isupdateable, 
  c.isencrypted AS isencryptedcolumn, c.isselectioncolumn, tbl.tablename, c.valuemin, c.valuemax, 
  fg.name AS fieldgroup, vr.code AS validationcode, f.included_tab_id, fg.fieldgrouptype, fg.iscollapsedbydefault, 
  COALESCE(f.infofactoryclass, c.infofactoryclass) AS infofactoryclass, c.isautocomplete,
  COALESCE(f.IsAllowCopy, c.IsAllowCopy) AS IsAllowCopy,
 	f.isdisplayedgrid, 
 	f.seqnogrid,
-	c.seqnoselection, f.xposition, f.columnspan, f.numlines, c.isToolbarButton
+	c.seqnoselection, f.xposition, f.columnspan, f.numlines, 
+ COALESCE(f.istoolbarbutton , c.istoolbarbutton ) As istoolbarbutton
    FROM ad_field f
    JOIN ad_tab t ON f.ad_tab_id = t.ad_tab_id
    LEFT JOIN ad_fieldgroup fg ON f.ad_fieldgroup_id = fg.ad_fieldgroup_id
    LEFT JOIN ad_column c ON f.ad_column_id = c.ad_column_id
    JOIN ad_table tbl ON c.ad_table_id = tbl.ad_table_id
-   JOIN ad_reference r ON c.ad_reference_id = r.ad_reference_id
    LEFT JOIN ad_val_rule vr ON vr.ad_val_rule_id = COALESCE(f.ad_val_rule_id, c.ad_val_rule_id)
   WHERE f.isactive = 'Y'::bpchar AND c.isactive = 'Y'::bpchar;

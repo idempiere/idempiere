@@ -1002,7 +1002,7 @@ public class MCostDetail extends X_M_CostDetail
 					 *  Solution:
 					 *  Make sure the current qty is reflecting the actual qty in storage
 					 */
-					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage")					
+					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand")					
 						.append(" WHERE AD_Client_ID=").append(cost.getAD_Client_ID())
 						.append(" AND M_Product_ID=").append(cost.getM_Product_ID());
 					//Costing Level
@@ -1159,7 +1159,7 @@ public class MCostDetail extends X_M_CostDetail
 				MCostElement[] lce = MCostElement.getNonCostingMethods(this);
 				if (lce.length > 0)
 				{					
-					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage")					
+					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand")					
 						.append(" WHERE AD_Client_ID=").append(cost.getAD_Client_ID())
 						.append(" AND M_Product_ID=").append(cost.getM_Product_ID());
 					//Costing Level

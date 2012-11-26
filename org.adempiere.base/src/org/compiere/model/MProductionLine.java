@@ -104,7 +104,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				log.log(Level.SEVERE, "Could not save transaction for " + toString());
 				errorString.append("Could not save transaction for " + toString() + "\n");
 			}
-			MStorage storage = MStorage.getCreate(getCtx(), getM_Locator_ID(),
+			MStorageOnHand storage = MStorageOnHand.getCreate(getCtx(), getM_Locator_ID(),
 					getM_Product_ID(), asi.get_ID(), get_TrxName());
 			storage.changeQtyOnHand(getMovementQty(), true);
 			if ( !storage.save(get_TrxName()) )  {
@@ -117,7 +117,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		}
 		
 		// create transactions and update stock used in production
-		MStorage[] storages = MStorage.getAll( getCtx(), getM_Product_ID(),
+		MStorageOnHand[] storages = MStorageOnHand.getAll( getCtx(), getM_Product_ID(),
 				getM_Locator_ID(), get_TrxName());
 		
 		MProductionLineMA lineMA = null;
@@ -192,10 +192,10 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 			else
 			{
-				MStorage storage = MStorage.get(Env.getCtx(), getM_Locator_ID(), getM_Product_ID(), 0, get_TrxName());
+				MStorageOnHand storage = MStorageOnHand.get(Env.getCtx(), getM_Locator_ID(), getM_Product_ID(), 0, get_TrxName());
 				if (storage == null)
 				{
-					storage = new MStorage(Env.getCtx(), 0, get_TrxName());
+					storage = new MStorageOnHand(Env.getCtx(), 0, get_TrxName());
 					storage.setM_Locator_ID(getM_Locator_ID());
 					storage.setM_Product_ID(getM_Product_ID());
 					storage.setM_AttributeSetInstance_ID(0);

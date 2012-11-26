@@ -23,34 +23,32 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
 
-/** Generated Model for M_Storage
+/** Generated Model for M_StorageReservation
  *  @author iDempiere (generated) 
  *  @version Release 1.0a - $Id$ */
-public class X_M_Storage extends PO implements I_M_Storage, I_Persistent 
+public class X_M_StorageReservation extends PO implements I_M_StorageReservation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121119L;
 
     /** Standard Constructor */
-    public X_M_Storage (Properties ctx, int M_Storage_ID, String trxName)
+    public X_M_StorageReservation (Properties ctx, int M_StorageReservation_ID, String trxName)
     {
-      super (ctx, M_Storage_ID, trxName);
-      /** if (M_Storage_ID == 0)
+      super (ctx, M_StorageReservation_ID, trxName);
+      /** if (M_StorageReservation_ID == 0)
         {
 			setM_AttributeSetInstance_ID (0);
-			setM_Locator_ID (0);
 			setM_Product_ID (0);
-			setQtyOnHand (Env.ZERO);
-			setQtyOrdered (Env.ZERO);
-			setQtyReserved (Env.ZERO);
+			setM_Warehouse_ID (0);
+			setQty (Env.ZERO);
         } */
     }
 
     /** Load Constructor */
-    public X_M_Storage (Properties ctx, ResultSet rs, String trxName)
+    public X_M_StorageReservation (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -72,7 +70,7 @@ public class X_M_Storage extends PO implements I_M_Storage, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_Storage[")
+      StringBuffer sb = new StringBuffer ("X_M_StorageReservation[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -92,6 +90,30 @@ public class X_M_Storage extends PO implements I_M_Storage, I_Persistent
 	public Timestamp getDateLastInventory () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastInventory);
+	}
+
+	/** Set Sales Transaction.
+		@param IsSOTrx 
+		This is a Sales Transaction
+	  */
+	public void setIsSOTrx (boolean IsSOTrx)
+	{
+		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
+	}
+
+	/** Get Sales Transaction.
+		@return This is a Sales Transaction
+	  */
+	public boolean isSOTrx () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSOTrx);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
@@ -117,34 +139,6 @@ public class X_M_Storage extends PO implements I_M_Storage, I_Persistent
 	public int getM_AttributeSetInstance_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
-
-	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
-	public void setM_Locator_ID (int M_Locator_ID)
-	{
-		if (M_Locator_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
-	}
-
-	/** Get Locator.
-		@return Warehouse Locator
-	  */
-	public int getM_Locator_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -178,75 +172,63 @@ public class X_M_Storage extends PO implements I_M_Storage, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set M_Storage_UU.
-		@param M_Storage_UU M_Storage_UU	  */
-	public void setM_Storage_UU (String M_Storage_UU)
+	/** Set M_StorageReservation_UU.
+		@param M_StorageReservation_UU M_StorageReservation_UU	  */
+	public void setM_StorageReservation_UU (String M_StorageReservation_UU)
 	{
-		set_Value (COLUMNNAME_M_Storage_UU, M_Storage_UU);
+		set_Value (COLUMNNAME_M_StorageReservation_UU, M_StorageReservation_UU);
 	}
 
-	/** Get M_Storage_UU.
-		@return M_Storage_UU	  */
-	public String getM_Storage_UU () 
+	/** Get M_StorageReservation_UU.
+		@return M_StorageReservation_UU	  */
+	public String getM_StorageReservation_UU () 
 	{
-		return (String)get_Value(COLUMNNAME_M_Storage_UU);
+		return (String)get_Value(COLUMNNAME_M_StorageReservation_UU);
 	}
 
-	/** Set On Hand Quantity.
-		@param QtyOnHand 
-		On Hand Quantity
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
+			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+
+	/** Set Warehouse.
+		@param M_Warehouse_ID 
+		Storage Warehouse and Service Point
 	  */
-	public void setQtyOnHand (BigDecimal QtyOnHand)
+	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		set_ValueNoCheck (COLUMNNAME_QtyOnHand, QtyOnHand);
+		if (M_Warehouse_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
-	/** Get On Hand Quantity.
-		@return On Hand Quantity
+	/** Get Warehouse.
+		@return Storage Warehouse and Service Point
 	  */
-	public BigDecimal getQtyOnHand () 
+	public int getM_Warehouse_ID () 
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOnHand);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
-	/** Set Ordered Quantity.
-		@param QtyOrdered 
-		Ordered Quantity
+	/** Set Quantity.
+		@param Qty 
+		Quantity
 	  */
-	public void setQtyOrdered (BigDecimal QtyOrdered)
+	public void setQty (BigDecimal Qty)
 	{
-		set_ValueNoCheck (COLUMNNAME_QtyOrdered, QtyOrdered);
+		set_ValueNoCheck (COLUMNNAME_Qty, Qty);
 	}
 
-	/** Get Ordered Quantity.
-		@return Ordered Quantity
+	/** Get Quantity.
+		@return Quantity
 	  */
-	public BigDecimal getQtyOrdered () 
+	public BigDecimal getQty () 
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOrdered);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Reserved Quantity.
-		@param QtyReserved 
-		Reserved Quantity
-	  */
-	public void setQtyReserved (BigDecimal QtyReserved)
-	{
-		set_ValueNoCheck (COLUMNNAME_QtyReserved, QtyReserved);
-	}
-
-	/** Get Reserved Quantity.
-		@return Reserved Quantity
-	  */
-	public BigDecimal getQtyReserved () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyReserved);
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

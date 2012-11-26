@@ -437,11 +437,11 @@ public class MInventory extends X_M_Inventory implements DocAction
 						log.fine("Diff=" + qtyDiff 
 								+ " - Instance OnHand=" + QtyMA + "->" + QtyNew);
 
-						if (!MStorage.add(getCtx(), getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
 								ma.getM_AttributeSetInstance_ID(), 0, 
-								QtyMA.negate(), Env.ZERO, Env.ZERO, get_TrxName()))
+								QtyMA.negate(), get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory (MA) - " + lastError;
@@ -451,7 +451,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						// Only Update Date Last Inventory if is a Physical Inventory
 						if(line.getQtyInternalUse().compareTo(Env.ZERO) == 0)
 						{	
-							MStorage storage = MStorage.get(getCtx(), line.getM_Locator_ID(), 
+							MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
 									line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(), get_TrxName());						
 							storage.setDateLastInventory(getMovementDate());
 							if (!storage.save(get_TrxName()))
@@ -488,20 +488,21 @@ public class MInventory extends X_M_Inventory implements DocAction
 				if (mtrx == null)
 				{
 					//Fallback: Update Storage - see also VMatch.createMatchRecord
-					if (!MStorage.add(getCtx(), getM_Warehouse_ID(),
+					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							line.getM_Locator_ID(),
 							line.getM_Product_ID(), 
 							line.getM_AttributeSetInstance_ID(), 0, 
-							qtyDiff, Env.ZERO, Env.ZERO, get_TrxName()))
+							qtyDiff,get_TrxName()))
 					{
-						m_processMsg = "Cannot correct Inventory (MA)";
+						String lastError = CLogger.retrieveErrorString("");
+						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
 
 					// Only Update Date Last Inventory if is a Physical Inventory
 					if(line.getQtyInternalUse().compareTo(Env.ZERO) == 0)
 					{	
-						MStorage storage = MStorage.get(getCtx(), line.getM_Locator_ID(), 
+						MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), get_TrxName());						
 
 						storage.setDateLastInventory(getMovementDate());
@@ -583,9 +584,9 @@ public class MInventory extends X_M_Inventory implements DocAction
 			{
 				MAttributeSetInstance asi = null;
 				//auto balance negative on hand
-				MStorage[] storages = MStorage.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
 						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false, line.getM_Locator_ID(), get_TrxName());
-				for (MStorage storage : storages)
+				for (MStorageOnHand storage : storages)
 				{
 					if (storage.getQtyOnHand().signum() < 0)
 					{
@@ -603,12 +604,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 			else	//	Outgoing Trx
 			{
 				String MMPolicy = product.getMMPolicy();
-				MStorage[] storages = MStorage.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
 						null, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName());
 
 				BigDecimal qtyToDeliver = qtyDiff.negate();
 
-				for (MStorage storage: storages)
+				for (MStorageOnHand storage: storages)
 				{					
 					if (storage.getQtyOnHand().compareTo(qtyToDeliver) >= 0)
 					{

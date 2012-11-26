@@ -175,7 +175,7 @@ public class InventoryValue extends SvrProcess
 
 		//  Get current QtyOnHand with ASI
 		sql = new StringBuilder ("UPDATE T_InventoryValue iv SET QtyOnHand = ")
-				.append("(SELECT SUM(QtyOnHand) FROM M_Storage s")
+				.append("(SELECT SUM(QtyOnHand) FROM M_StorageOnHand s")
 				.append(" INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID) ")
 				.append("WHERE iv.M_Product_ID=s.M_Product_ID")
 				.append(" AND iv.M_Warehouse_ID=l.M_Warehouse_ID")
@@ -186,7 +186,7 @@ public class InventoryValue extends SvrProcess
 		log.fine("QtHand with ASI=" + no);
 		//  Get current QtyOnHand without ASI
 		sql = new StringBuilder ("UPDATE T_InventoryValue iv SET QtyOnHand = ")
-				.append("(SELECT SUM(QtyOnHand) FROM M_Storage s")
+				.append("(SELECT SUM(QtyOnHand) FROM M_StorageOnHand s")
 				.append(" INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID) ")
 				.append("WHERE iv.M_Product_ID=s.M_Product_ID")
 				.append(" AND iv.M_Warehouse_ID=l.M_Warehouse_ID) ")

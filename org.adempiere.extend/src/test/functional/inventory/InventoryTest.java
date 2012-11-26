@@ -28,7 +28,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLocator;
 import org.compiere.model.MProduct;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -185,22 +185,18 @@ public class InventoryTest extends AdempiereTestCase
 		ArrayList<Object> params = new ArrayList<Object>();
 		String sql = "SELECT"
 			+" COALESCE(SUM(QtyOnHand),0)"
-			+",COALESCE(SUM(QtyReserved),0)"
-			+",COALESCE(SUM(QtyOrdered),0)"
-			+" FROM M_Storage"
+			+" FROM M_StorageOnHand"
 			+" WHERE M_Locator_ID=? AND M_Product_ID=?";
 		params.add(locator.get_ID());
 		params.add(product.get_ID());
 		if (M_ASI_ID >= 0)
 		{
-			sql += " AND "+MStorage.COLUMNNAME_M_AttributeSetInstance_ID+"=?";
+			sql += " AND "+MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID+"=?";
 			params.add(M_ASI_ID);
 		}
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		BigDecimal qtyOnHand = Env.ZERO;
-		BigDecimal qtyOrdered = Env.ZERO;
-		BigDecimal qtyReserved = Env.ZERO;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
@@ -209,8 +205,6 @@ public class InventoryTest extends AdempiereTestCase
 			if (rs.next())
 			{
 				qtyOnHand = rs.getBigDecimal(1);
-				qtyReserved = rs.getBigDecimal(2);
-				qtyOrdered = rs.getBigDecimal(3);
 			}
 		}
 		catch (SQLException e)
@@ -225,18 +219,17 @@ public class InventoryTest extends AdempiereTestCase
 		//
 		//
 		assertEquals("QtyOnHand not match "+doc, doc.Qty, qtyOnHand);
-		assertEquals("QtyReserved not match "+doc, doc.QtyReserved, qtyReserved);
-		assertEquals("QtyOrdered not match "+doc, doc.QtyOrdered, qtyOrdered);
+
 	}
 	
 	private void dumpStatus(MMDocument doc, String trxName)
 	{
 		MProduct product = InventoryUtil.getCreateProduct(doc.ProductValue, null); 
-		MStorage[] storage = MStorage.getOfProduct(getCtx(), product.get_ID(), trxName);
+		MStorageOnHand[] storage = MStorageOnHand.getOfProduct(getCtx(), product.get_ID(), trxName);
 		
 		System.err.println("STORAGE____________________________________________________");
 		System.err.println("   "+doc);
-		for (MStorage s : storage)
+		for (MStorageOnHand s : storage)
 		{
 			System.err.println(""+s);
 		}

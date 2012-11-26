@@ -30,7 +30,7 @@ import org.compiere.model.MInOutLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -78,11 +78,11 @@ public class InOutGenerate extends SvrProcess
 
 	
 	/** Storages temp space				*/
-	private HashMap<SParameter,MStorage[]> m_map = new HashMap<SParameter,MStorage[]>();
+	private HashMap<SParameter,MStorageOnHand[]> m_map = new HashMap<SParameter,MStorageOnHand[]>();
 	/** Last Parameter					*/
 	private SParameter		m_lastPP = null;
 	/** Last Storage					*/
-	private MStorage[]		m_lastStorages = null;
+	private MStorageOnHand[]		m_lastStorages = null;
 
 	
 	/**
@@ -299,13 +299,13 @@ public class InOutGenerate extends SvrProcess
 					//	Stored Product
 					String MMPolicy = product.getMMPolicy();
 
-					MStorage[] storages = getStorages(line.getM_Warehouse_ID(),
+					MStorageOnHand[] storages = getStorages(line.getM_Warehouse_ID(),
 							 line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							 minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy));
 					
 					for (int j = 0; j < storages.length; j++)
 					{
-						MStorage storage = storages[j];
+						MStorageOnHand storage = storages[j];
 						onHand = onHand.add(storage.getQtyOnHand());
 					}
 					boolean fullLine = onHand.compareTo(toDeliver) >= 0
@@ -377,7 +377,7 @@ public class InOutGenerate extends SvrProcess
 						MProduct product = line.getProduct();
 						BigDecimal toDeliver = line.getQtyOrdered().subtract(line.getQtyDelivered());
 						//
-						MStorage[] storages = null;
+						MStorageOnHand[] storages = null;
 						if (product != null && product.isStocked())
 						{
 							String MMPolicy = product.getMMPolicy();
@@ -425,7 +425,7 @@ public class InOutGenerate extends SvrProcess
 	 *	@param force force delivery
 	 */
 	private void createLine (MOrder order, MOrderLine orderLine, BigDecimal qty, 
-		MStorage[] storages, boolean force)
+		MStorageOnHand[] storages, boolean force)
 	{
 		//	Complete last Shipment - can have multiple shipments
 		if (m_lastC_BPartner_Location_ID != orderLine.getC_BPartner_Location_ID() )
@@ -466,7 +466,7 @@ public class InOutGenerate extends SvrProcess
 		BigDecimal toDeliver = qty;
 		for (int i = 0; i < storages.length; i++)
 		{
-			MStorage storage = storages[i];
+			MStorageOnHand storage = storages[i];
 			BigDecimal deliver = toDeliver;
 			//skip negative storage record
 			if (storage.getQtyOnHand().signum() < 0) 
@@ -550,7 +550,7 @@ public class InOutGenerate extends SvrProcess
 	 *	@param FiFo
 	 *	@return storages
 	 */
-	private MStorage[] getStorages(int M_Warehouse_ID, 
+	private MStorageOnHand[] getStorages(int M_Warehouse_ID, 
 			 int M_Product_ID, int M_AttributeSetInstance_ID,
 			  Timestamp minGuaranteeDate, boolean FiFo)
 	{
@@ -562,7 +562,7 @@ public class InOutGenerate extends SvrProcess
 		
 		if (m_lastStorages == null)
 		{
-			m_lastStorages = MStorage.getWarehouse(getCtx(), 
+			m_lastStorages = MStorageOnHand.getWarehouse(getCtx(), 
 				M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID,
 				minGuaranteeDate, FiFo,false, 0, get_TrxName());
 			m_map.put(m_lastPP, m_lastStorages);
@@ -590,7 +590,7 @@ public class InOutGenerate extends SvrProcess
 			m_created++;
 			
 			//reset storage cache as MInOut.completeIt will update m_storage
-			m_map = new HashMap<SParameter,MStorage[]>();
+			m_map = new HashMap<SParameter,MStorageOnHand[]>();
 			m_lastPP = null;
 			m_lastStorages = null;
 		}

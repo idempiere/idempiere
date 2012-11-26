@@ -140,7 +140,7 @@ public class OrgOwnership extends SvrProcess
 	
 		//	Set Storage
 		sql = new StringBuilder();
-		sql.append("UPDATE M_Storage s ")
+		sql.append("UPDATE M_StorageOnHand	 s ")
 			.append("SET AD_Org_ID=").append(p_AD_Org_ID)
 			.append(" WHERE EXISTS ")
 				.append("(SELECT * FROM M_Locator l WHERE l.M_Locator_ID=s.M_Locator_ID")
@@ -149,6 +149,16 @@ public class OrgOwnership extends SvrProcess
 			.append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "Storage"));
+			
+		//	Set Storage Reservation
+		sql = new StringBuilder();
+		sql.append("UPDATE M_StorageReservation	 s ")
+			.append("SET AD_Org_ID=").append(p_AD_Org_ID)
+			.append(" WHERE M_Warehouse_ID=").append(p_M_Warehouse_ID)
+			.append(" AND AD_Client_ID=").append(getAD_Client_ID())
+			.append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "StorageReservation"));
 			
 		return "";
 	}	//	warehouseOwnership

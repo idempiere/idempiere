@@ -23,9 +23,10 @@ import java.util.Properties;
 
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MCharge;
+import org.compiere.model.MClient;
 import org.compiere.model.MLocator;
 import org.compiere.model.MProduct;
-import org.compiere.model.MStorage;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MUOM;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -577,9 +578,9 @@ public class MDDOrderLine extends X_DD_OrderLine
 				if (isInstance)
 				{
 					MLocator locator_from = MLocator.get(getCtx(), getM_Locator_ID());
-					MStorage[] storages = MStorage.getWarehouse(getCtx(), 
-							locator_from.getM_Warehouse_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(), 
-						M_AttributeSet_ID, false, null, true, get_TrxName());
+					MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(),
+							locator_from.getM_Warehouse_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(),
+							null, true, false, 0, get_TrxName());
 					BigDecimal qty = Env.ZERO;
 					for (int i = 0; i < storages.length; i++)
 					{

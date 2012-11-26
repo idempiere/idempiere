@@ -30,7 +30,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121122L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -41,12 +41,6 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 			setAD_Field_ID (0);
 			setAD_UserDef_Field_ID (0);
 			setAD_UserDef_Tab_ID (0);
-			setIsDisplayed (true);
-// 'Y'
-			setIsReadOnly (false);
-// 'N'
-			setIsSameLine (false);
-// 'N'
 			setSeqNo (0);
 // 0
         } */
@@ -116,6 +110,62 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Field_ID()));
     }
 
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
+			.getPO(getAD_Reference_ID(), get_TrxName());	}
+
+	/** Set Reference.
+		@param AD_Reference_ID 
+		System Reference and Validation
+	  */
+	public void setAD_Reference_ID (int AD_Reference_ID)
+	{
+		if (AD_Reference_ID < 1) 
+			set_Value (COLUMNNAME_AD_Reference_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
+	}
+
+	/** Get Reference.
+		@return System Reference and Validation
+	  */
+	public int getAD_Reference_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+
+	/** Set Reference Key.
+		@param AD_Reference_Value_ID 
+		Required to specify, if data type is Table or List
+	  */
+	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID)
+	{
+		if (AD_Reference_Value_ID < 1) 
+			set_Value (COLUMNNAME_AD_Reference_Value_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Reference_Value_ID, Integer.valueOf(AD_Reference_Value_ID));
+	}
+
+	/** Get Reference Key.
+		@return Required to specify, if data type is Table or List
+	  */
+	public int getAD_Reference_Value_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Value_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set User defined Field.
 		@param AD_UserDef_Field_ID User defined Field	  */
 	public void setAD_UserDef_Field_ID (int AD_UserDef_Field_ID)
@@ -170,6 +220,26 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public int getAD_UserDef_Tab_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Tab_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Column Span.
+		@param ColumnSpan 
+		Number of column for a box of field
+	  */
+	public void setColumnSpan (int ColumnSpan)
+	{
+		set_Value (COLUMNNAME_ColumnSpan, Integer.valueOf(ColumnSpan));
+	}
+
+	/** Get Column Span.
+		@return Number of column for a box of field
+	  */
+	public int getColumnSpan () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ColumnSpan);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -263,100 +333,186 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** IsAlwaysUpdateable AD_Reference_ID=319 */
+	public static final int ISALWAYSUPDATEABLE_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISALWAYSUPDATEABLE_Yes = "Y";
+	/** No = N */
+	public static final String ISALWAYSUPDATEABLE_No = "N";
+	/** Set Always Updatable.
+		@param IsAlwaysUpdateable 
+		The column is always updateable, even if the record is not active or processed
+	  */
+	public void setIsAlwaysUpdateable (String IsAlwaysUpdateable)
+	{
+
+		set_Value (COLUMNNAME_IsAlwaysUpdateable, IsAlwaysUpdateable);
+	}
+
+	/** Get Always Updatable.
+		@return The column is always updateable, even if the record is not active or processed
+	  */
+	public String getIsAlwaysUpdateable () 
+	{
+		return (String)get_Value(COLUMNNAME_IsAlwaysUpdateable);
+	}
+
+	/** IsDisplayed AD_Reference_ID=319 */
+	public static final int ISDISPLAYED_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISDISPLAYED_Yes = "Y";
+	/** No = N */
+	public static final String ISDISPLAYED_No = "N";
 	/** Set Displayed.
 		@param IsDisplayed 
 		Determines, if this field is displayed
 	  */
-	public void setIsDisplayed (boolean IsDisplayed)
+	public void setIsDisplayed (String IsDisplayed)
 	{
-		set_Value (COLUMNNAME_IsDisplayed, Boolean.valueOf(IsDisplayed));
+
+		set_Value (COLUMNNAME_IsDisplayed, IsDisplayed);
 	}
 
 	/** Get Displayed.
 		@return Determines, if this field is displayed
 	  */
-	public boolean isDisplayed () 
+	public String getIsDisplayed () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsDisplayed);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsDisplayed);
 	}
 
+	/** IsMandatory AD_Reference_ID=319 */
+	public static final int ISMANDATORY_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISMANDATORY_Yes = "Y";
+	/** No = N */
+	public static final String ISMANDATORY_No = "N";
+	/** Set Mandatory.
+		@param IsMandatory 
+		Data entry is required in this column
+	  */
+	public void setIsMandatory (String IsMandatory)
+	{
+
+		set_Value (COLUMNNAME_IsMandatory, IsMandatory);
+	}
+
+	/** Get Mandatory.
+		@return Data entry is required in this column
+	  */
+	public String getIsMandatory () 
+	{
+		return (String)get_Value(COLUMNNAME_IsMandatory);
+	}
+
+	/** IsReadOnly AD_Reference_ID=319 */
+	public static final int ISREADONLY_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISREADONLY_Yes = "Y";
+	/** No = N */
+	public static final String ISREADONLY_No = "N";
 	/** Set Read Only.
 		@param IsReadOnly 
 		Field is read only
 	  */
-	public void setIsReadOnly (boolean IsReadOnly)
+	public void setIsReadOnly (String IsReadOnly)
 	{
-		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
+
+		set_Value (COLUMNNAME_IsReadOnly, IsReadOnly);
 	}
 
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public String getIsReadOnly () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsReadOnly);
 	}
 
+	/** IsSameLine AD_Reference_ID=319 */
+	public static final int ISSAMELINE_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISSAMELINE_Yes = "Y";
+	/** No = N */
+	public static final String ISSAMELINE_No = "N";
 	/** Set Same Line.
 		@param IsSameLine 
 		Displayed on same line as previous field
 	  */
-	public void setIsSameLine (boolean IsSameLine)
+	public void setIsSameLine (String IsSameLine)
 	{
-		set_Value (COLUMNNAME_IsSameLine, Boolean.valueOf(IsSameLine));
+
+		set_Value (COLUMNNAME_IsSameLine, IsSameLine);
 	}
 
 	/** Get Same Line.
 		@return Displayed on same line as previous field
 	  */
-	public boolean isSameLine () 
+	public String getIsSameLine () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsSameLine);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsSameLine);
 	}
 
+	/** IsToolbarButton AD_Reference_ID=319 */
+	public static final int ISTOOLBARBUTTON_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISTOOLBARBUTTON_Yes = "Y";
+	/** No = N */
+	public static final String ISTOOLBARBUTTON_No = "N";
+	/** Set Toolbar Button.
+		@param IsToolbarButton 
+		Add the column button to the toolbar
+	  */
+	public void setIsToolbarButton (String IsToolbarButton)
+	{
+
+		set_Value (COLUMNNAME_IsToolbarButton, IsToolbarButton);
+	}
+
+	/** Get Toolbar Button.
+		@return Add the column button to the toolbar
+	  */
+	public String getIsToolbarButton () 
+	{
+		return (String)get_Value(COLUMNNAME_IsToolbarButton);
+	}
+
+	/** IsUpdateable AD_Reference_ID=319 */
+	public static final int ISUPDATEABLE_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISUPDATEABLE_Yes = "Y";
+	/** No = N */
+	public static final String ISUPDATEABLE_No = "N";
 	/** Set Updatable.
 		@param IsUpdateable 
 		Determines, if the field can be updated
 	  */
-	public void setIsUpdateable (boolean IsUpdateable)
+	public void setIsUpdateable (String IsUpdateable)
 	{
-		set_Value (COLUMNNAME_IsUpdateable, Boolean.valueOf(IsUpdateable));
+
+		set_Value (COLUMNNAME_IsUpdateable, IsUpdateable);
 	}
 
 	/** Get Updatable.
 		@return Determines, if the field can be updated
 	  */
-	public boolean isUpdateable () 
+	public String getIsUpdateable () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsUpdateable);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsUpdateable);
+	}
+
+	/** Set Mandatory Logic.
+		@param MandatoryLogic Mandatory Logic	  */
+	public void setMandatoryLogic (String MandatoryLogic)
+	{
+		set_Value (COLUMNNAME_MandatoryLogic, MandatoryLogic);
+	}
+
+	/** Get Mandatory Logic.
+		@return Mandatory Logic	  */
+	public String getMandatoryLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_MandatoryLogic);
 	}
 
 	/** Set Name.
@@ -374,6 +530,43 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Number of Lines.
+		@param NumLines 
+		Number of lines for a field
+	  */
+	public void setNumLines (int NumLines)
+	{
+		set_Value (COLUMNNAME_NumLines, Integer.valueOf(NumLines));
+	}
+
+	/** Get Number of Lines.
+		@return Number of lines for a field
+	  */
+	public int getNumLines () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_NumLines);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Read Only Logic.
+		@param ReadOnlyLogic 
+		Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public void setReadOnlyLogic (String ReadOnlyLogic)
+	{
+		set_Value (COLUMNNAME_ReadOnlyLogic, ReadOnlyLogic);
+	}
+
+	/** Get Read Only Logic.
+		@return Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public String getReadOnlyLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_ReadOnlyLogic);
 	}
 
 	/** Set Sequence.
@@ -411,6 +604,26 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public int getSortNo () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SortNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set X Position.
+		@param XPosition 
+		Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public void setXPosition (int XPosition)
+	{
+		set_Value (COLUMNNAME_XPosition, Integer.valueOf(XPosition));
+	}
+
+	/** Get X Position.
+		@return Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public int getXPosition () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_XPosition);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

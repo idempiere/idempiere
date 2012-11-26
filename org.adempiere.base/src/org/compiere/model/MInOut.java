@@ -101,12 +101,12 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (qty.signum() == 0)
 				continue;
 			//	Stock Info
-			MStorage[] storages = null;
+			MStorageOnHand[] storages = null;
 			MProduct product = oLines[i].getProduct();
 			if (product != null && product.get_ID() != 0 && product.isStocked())
 			{
 				String MMPolicy = product.getMMPolicy();
-				storages = MStorage.getWarehouse (order.getCtx(), order.getM_Warehouse_ID(),
+				storages = MStorageOnHand.getWarehouse (order.getCtx(), order.getM_Warehouse_ID(),
 					oLines[i].getM_Product_ID(), oLines[i].getM_AttributeSetInstance_ID(),
 					minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, 0, trxName);
 			} else {
@@ -1353,31 +1353,67 @@ public class MInOut extends X_M_InOut implements DocAction
 
 
 						//	Update Storage - see also VMatch.createMatchRecord
-						if (!MStorage.add(getCtx(), getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							sLine.getM_Locator_ID(),
 							sLine.getM_Product_ID(),
 							ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 							QtyMA,
-							sameWarehouse ? reservedDiff : Env.ZERO,
-							sameWarehouse ? orderedDiff : Env.ZERO,
 							get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
-							m_processMsg = "Cannot correct Inventory (MA) - " + lastError;
+							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
+						}
+						if (sameWarehouse && reservedDiff.signum() != 0) {
+							if (!MStorageReservation.add(getCtx(), getM_Warehouse_ID(),
+									sLine.getM_Product_ID(),
+									ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+									reservedDiff,
+									true,
+									get_TrxName()))
+							{
+								String lastError = CLogger.retrieveErrorString("");
+								m_processMsg = "Cannot correct Inventory Reserved (MA) - " + lastError;
+								return DocAction.STATUS_Invalid;
+							}
+						}
+						if (sameWarehouse && orderedDiff.signum() != 0) {
+							if (!MStorageReservation.add(getCtx(), getM_Warehouse_ID(),
+									sLine.getM_Product_ID(),
+									ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+									orderedDiff,
+									false,
+									get_TrxName()))
+							{
+								String lastError = CLogger.retrieveErrorString("");
+								m_processMsg = "Cannot correct Inventory Ordered (MA) - " + lastError;
+								return DocAction.STATUS_Invalid;
+							}
 						}
 						if (!sameWarehouse) {
 							//correct qtyOrdered in warehouse of order
 							MWarehouse wh = MWarehouse.get(getCtx(), oLine.getM_Warehouse_ID());
-							if (!MStorage.add(getCtx(), oLine.getM_Warehouse_ID(),
-									wh.getDefaultLocator().getM_Locator_ID(),
-									sLine.getM_Product_ID(),
-									ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-									Env.ZERO, reservedDiff, orderedDiff, get_TrxName()))
+							if (reservedDiff.signum() != 0) {
+								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
+										sLine.getM_Product_ID(),
+										ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+										reservedDiff, true, get_TrxName()))
 								{
-									m_processMsg = "Cannot correct Inventory (MA) in order warehouse";
+									m_processMsg = "Cannot correct Inventory Reserved (MA) in order warehouse";
 									return DocAction.STATUS_Invalid;
 								}
+							}
+							if (orderedDiff.signum() != 0) {
+								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
+										sLine.getM_Product_ID(),
+										ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+										orderedDiff, false, get_TrxName()))
+								{
+									m_processMsg = "Cannot correct Inventory Ordered (MA) in order warehouse";
+									return DocAction.STATUS_Invalid;
+								}
+
+							}
 						}
 						//	Create Transaction
 						mtrx = new MTransaction (getCtx(), sLine.getAD_Org_ID(),
@@ -1399,27 +1435,59 @@ public class MInOut extends X_M_InOut implements DocAction
 					BigDecimal orderedDiff = sameWarehouse ? QtyPO.negate(): Env.ZERO;
 
 					//	Fallback: Update Storage - see also VMatch.createMatchRecord
-					if (!MStorage.add(getCtx(), getM_Warehouse_ID(),
+					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 						sLine.getM_Locator_ID(),
 						sLine.getM_Product_ID(),
 						sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-						Qty, reservedDiff, orderedDiff, get_TrxName()))
+						Qty, get_TrxName()))
 					{
-						m_processMsg = "Cannot correct Inventory";
+						String lastError = CLogger.retrieveErrorString("");
+						m_processMsg = "Cannot correct Inventory OnHand - " + lastError;
 						return DocAction.STATUS_Invalid;
+					}
+					if (reservedDiff.signum() != 0) {
+						if (!MStorageReservation.add(getCtx(), getM_Warehouse_ID(),
+								sLine.getM_Product_ID(),
+								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+								reservedDiff, true, get_TrxName()))
+						{
+							m_processMsg = "Cannot correct Inventory Reserved";
+							return DocAction.STATUS_Invalid;
+						}
+					}
+					if (orderedDiff.signum() != 0) {
+						if (!MStorageReservation.add(getCtx(), getM_Warehouse_ID(),
+								sLine.getM_Product_ID(),
+								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+								orderedDiff, false, get_TrxName()))
+						{
+							m_processMsg = "Cannot correct Inventory Ordered";
+							return DocAction.STATUS_Invalid;
+						}
 					}
 					if (!sameWarehouse) {
 						//correct qtyOrdered in warehouse of order
 						MWarehouse wh = MWarehouse.get(getCtx(), oLine.getM_Warehouse_ID());
-						if (!MStorage.add(getCtx(), oLine.getM_Warehouse_ID(),
-								wh.getDefaultLocator().getM_Locator_ID(),
-								sLine.getM_Product_ID(),
-								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-								Env.ZERO, QtySO.negate(), QtyPO.negate(), get_TrxName()))
+						if (QtySO.signum() != 0) {
+							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
+									sLine.getM_Product_ID(),
+									sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+									QtySO.negate(), true, get_TrxName()))
 							{
-								m_processMsg = "Cannot correct Inventory";
+								m_processMsg = "Cannot correct Inventory Reserved";
 								return DocAction.STATUS_Invalid;
 							}
+						}
+						if (QtyPO.signum() != 0) {
+							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
+									sLine.getM_Product_ID(),
+									sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+									QtyPO.negate(), false, get_TrxName()))
+							{
+								m_processMsg = "Cannot correct Inventory Ordered";
+								return DocAction.STATUS_Invalid;
+							}
+						}
 					}
 					//	FallBack: Create Transaction
 					mtrx = new MTransaction (getCtx(), sLine.getAD_Org_ID(),
@@ -1775,9 +1843,9 @@ public class MInOut extends X_M_InOut implements DocAction
 			{
 				MAttributeSetInstance asi = null;
 				//auto balance negative on hand
-				MStorage[] storages = MStorage.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
 						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false, line.getM_Locator_ID(), get_TrxName());
-				for (MStorage storage : storages)
+				for (MStorageOnHand storage : storages)
 				{
 					if (storage.getQtyOnHand().signum() < 0)
 					{
@@ -1799,10 +1867,10 @@ public class MInOut extends X_M_InOut implements DocAction
 			{
 				String MMPolicy = product.getMMPolicy();
 				Timestamp minGuaranteeDate = getMovementDate();
-				MStorage[] storages = MStorage.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName());
 				BigDecimal qtyToDeliver = line.getMovementQty();
-				for (MStorage storage: storages)
+				for (MStorageOnHand storage: storages)
 				{
 					if (storage.getQtyOnHand().compareTo(qtyToDeliver) >= 0)
 					{
