@@ -140,12 +140,10 @@ public class CompositeADTabbox extends AbstractADTabbox
     	detailPane.addEventListener(DetailPane.ON_POST_SELECT_TAB_EVENT, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				if ((!ADTabpanel.isUseSplitViewForForm() && !headerTab.isGridView()) 
-					|| (detailPane.getSelectedADTabpanel() instanceof ADSortTab)) {					
+				if ((!ADTabpanel.isUseSplitViewForForm() && !headerTab.isGridView())) {					
 					LayoutUtils.redraw(detailPane);
 					Clients.scrollIntoView(detailPane.getSelectedADTabpanel());
-				}
-				
+				} 				
 			}
 		});
     }
