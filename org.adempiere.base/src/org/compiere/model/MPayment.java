@@ -557,10 +557,15 @@ public final class MPayment extends X_C_Payment
 		StringBuffer msg = new StringBuffer();
 		if (approved)
 		{
-			msg.append("Result: " + getR_Result() + "\n");
-			msg.append("Response Message: " + getR_RespMsg() + "\n");
-			msg.append("Reference: " + getR_PnRef() + "\n");
-			msg.append("Authorization Code: " + getR_AuthCode() + "\n");
+			if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
+				msg.append(getR_VoidMsg() + "\n");
+			else
+			{
+				msg.append("Result: " + getR_Result() + "\n");
+				msg.append("Response Message: " + getR_RespMsg() + "\n");
+				msg.append("Reference: " + getR_PnRef() + "\n");
+				msg.append("Authorization Code: " + getR_AuthCode() + "\n");
+			}
 		}
 		else
 			msg.append("ERROR: " + getErrorMessage() + "\n");
