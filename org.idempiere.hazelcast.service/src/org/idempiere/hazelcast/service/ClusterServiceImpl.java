@@ -37,7 +37,7 @@ public class ClusterServiceImpl implements IClusterService {
 	 */
 	@Override
 	public Collection<IClusterMember> getMembers() {
-		Set<Member> members = Activator.hazelcastInstance.getCluster().getMembers();
+		Set<Member> members = Activator.getHazelcastInstance().getCluster().getMembers();
 		Set<IClusterMember> clusterMembers = new HashSet<IClusterMember>();
 		for(Member member : members) {
 			clusterMembers.add(new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress()));
@@ -50,7 +50,7 @@ public class ClusterServiceImpl implements IClusterService {
 	 */
 	@Override
 	public IClusterMember getLocalMember() {
-		Member member = Activator.hazelcastInstance.getCluster().getLocalMember();
+		Member member = Activator.getHazelcastInstance().getCluster().getLocalMember();
 		return new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress());
 	}
 
@@ -59,11 +59,11 @@ public class ClusterServiceImpl implements IClusterService {
 	 */
 	@Override
 	public <V> Future<V> execute(Callable<V> task, IClusterMember clusterMember) {
-		Set<Member> members = Activator.hazelcastInstance.getCluster().getMembers();
+		Set<Member> members = Activator.getHazelcastInstance().getCluster().getMembers();
 		for(Member member : members) {
 			if (member.getUuid().equals(clusterMember.getId())) {
 				DistributedTask<V> distributedTask = new DistributedTask<V>(task, member);
-				Activator.hazelcastInstance.getExecutorService().execute(distributedTask);
+				Activator.getHazelcastInstance().getExecutorService().execute(distributedTask);
 				return distributedTask;
 			}
 		}
@@ -81,7 +81,7 @@ public class ClusterServiceImpl implements IClusterService {
 		for(IClusterMember clusterMember : clusterMembers) {
 			selectedIds.add(clusterMember.getId());
 		}
-		Set<Member> members = Activator.hazelcastInstance.getCluster().getMembers();
+		Set<Member> members = Activator.getHazelcastInstance().getCluster().getMembers();
 		Set<Member> selectedMembers = new HashSet<Member>();
 		for(Member member : members) {
 			if (selectedIds.contains(member.getUuid())) {
@@ -90,7 +90,7 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 		if (selectedMembers.size() > 0) {
 			MultiTask<V> multiTask = new MultiTask<V>(task, selectedMembers);
-			Activator.hazelcastInstance.getExecutorService().execute(multiTask);
+			Activator.getHazelcastInstance().getExecutorService().execute(multiTask);
 			return multiTask;
 		}
 		return null;

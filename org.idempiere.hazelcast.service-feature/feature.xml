@@ -38,4 +38,11 @@
          fragment="true"
          unpack="false"/>
 
+   <plugin
+         id="org.idempiere.hazelcast.service.config"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
 </feature>

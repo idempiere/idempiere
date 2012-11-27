@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hazelcast Service Configuration
+Bundle-SymbolicName: org.idempiere.hazelcast.service.config
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.idempiere.hazelcast.service;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

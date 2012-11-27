@@ -13,8 +13,10 @@
  *****************************************************************************/
 package org.idempiere.hazelcast.service;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.compiere.Adempiere;
 import org.compiere.model.ServerStateChangeEvent;
@@ -22,7 +24,6 @@ import org.compiere.model.ServerStateChangeListener;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import com.hazelcast.config.*;
 import com.hazelcast.core.*;
 
 /**
@@ -38,8 +39,8 @@ public class Activator implements BundleActivator {
 		return context;
 	}
 
-	protected static HazelcastInstance hazelcastInstance;
-	private Future<?> future;
+	private static HazelcastInstance hazelcastInstance;
+	private static AtomicReference<Future<?>> futureRef = new AtomicReference<Future<?>>();
 
 	/*
 	 * (non-Javadoc)
@@ -52,7 +53,6 @@ public class Activator implements BundleActivator {
 			createHazelCastInstance();
 		else {
 			Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {
-				
 				@Override
 				public void stateChange(ServerStateChangeEvent event) {
 					if (event.getEventType() == ServerStateChangeEvent.SERVER_START)
@@ -64,26 +64,42 @@ public class Activator implements BundleActivator {
 
 	private void createHazelCastInstance() {
 		ScheduledThreadPoolExecutor executor = Adempiere.getThreadPoolExecutor();
-		future = executor.submit(new Runnable() {			
+		
+		Future<?> future = executor.submit(new Runnable() {			
 			@Override
 			public void run() {
-				Config config = new Config();
-				hazelcastInstance = Hazelcast.newHazelcastInstance(config);				
+				hazelcastInstance = Hazelcast.newHazelcastInstance(null);		
 			}
 		});
+		futureRef.set(future);
 	}
 
+	public static HazelcastInstance getHazelcastInstance() {
+		Future<?> future = futureRef.get();
+		if (future != null && !future.isDone()) {
+			try {
+				future.get();
+			} catch (InterruptedException e) {
+			} catch (ExecutionException e) {
+			}		
+		}
+				
+		return hazelcastInstance;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
+		Future<?> future = futureRef.get();
 		if (future != null && !future.isDone()) {
 			future.cancel(true); 
 		} else if (hazelcastInstance != null) {
 			hazelcastInstance.getLifecycleService().shutdown();
 			hazelcastInstance = null;
 		}
+		futureRef.set(null);
 	}
 }

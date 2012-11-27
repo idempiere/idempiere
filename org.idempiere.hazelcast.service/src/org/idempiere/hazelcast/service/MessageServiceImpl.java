@@ -30,7 +30,7 @@ public class MessageServiceImpl implements IMessageService {
 
 	@Override
 	public <T> ITopic<T> getTopic(String name) {
-		com.hazelcast.core.ITopic<T> topic = Activator.hazelcastInstance.getTopic(name);
+		com.hazelcast.core.ITopic<T> topic = Activator.getHazelcastInstance().getTopic(name);
 		return new TopicImpl<T>(topic);
 	}
 }
