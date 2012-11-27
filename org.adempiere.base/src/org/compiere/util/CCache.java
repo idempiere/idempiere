@@ -388,7 +388,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 
 	@Override
 	public int reset(int recordId) {
-		if (recordId < 0)
+		if (recordId <= 0)
 			return reset();
 				
 		V removed = cache.remove(recordId);
