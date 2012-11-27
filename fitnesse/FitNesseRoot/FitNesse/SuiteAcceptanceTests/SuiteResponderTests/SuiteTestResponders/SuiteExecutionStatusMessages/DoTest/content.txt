@@ -1,0 +1,25 @@
+Create a simple test page
+
+!|script|Page Builder|
+|line|!-!path classes-!|
+|line|!-!path fitnesse.jar-!|
+|line|!-!|-!fitnesse.testutil.${FIXTURE_NAME}!-|-!|
+|line|!-|blah|-!|
+|page|!-TestPage-!|
+
+Now run the test page.
+
+|Response Requester.|
+|uri   |valid?|
+|!-TestPage?responder=test-!|true|
+
+|Response Examiner.|
+|contents?|
+||
+
+Check the status message.
+
+|Response Examiner.|
+|type  |pattern|matches?|
+|contents|<div id="execution-status">.*?${EXPECTED_STATUS_MESSAGE}.*?</div>|true|
+|contents|<div id="execution-status">.*?<img.*?src="${EXPECTED_ICON_URL}".*?/>.*?</div>|true|

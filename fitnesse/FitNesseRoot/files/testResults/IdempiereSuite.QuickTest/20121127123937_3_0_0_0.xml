@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<testResults>
+  <FitNesseVersion>v20111026</FitNesseVersion>
+  <rootPath>QuickTest</rootPath>
+    <result>
+    <counts>
+      <right>3</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>264</runTimeInMillis>
+    <content><![CDATA[<div class="collapse_rim">
+	<div style="float: right;" class="meta">
+		<a href="javascript:expandAll();">Expand All</a>
+ | 
+		<a href="javascript:collapseAll();">Collapse All</a>
+	</div>
+	<a href="javascript:toggleCollapsable('11');">
+		<img src="/files/images/collapsableClosed.gif" class="left" id="img11"/>
+	</a>
+&nbsp;
+	<span class="meta">Included page: <a href="IdempiereSuite.TestLoginGardenAdmin">TestLoginGardenAdmin</a> <a href="IdempiereSuite.TestLoginGardenAdmin?edit&amp;redirectToReferer=true&amp;redirectAction=">(edit)</a></span>
+	<div class="hidden" id="11"><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Login</td>
+	</tr>
+	<tr>
+		<td>User</td>
+		<td>GardenAdmin</td>
+	</tr>
+	<tr>
+		<td>Password</td>
+		<td>GardenAdmin</td>
+	</tr>
+	<tr>
+		<td>AD_ClIEnT_id</td>
+		<td>@Ref=AD_Client[Value='GardenWorld'].AD_Client_ID<hr/>11</td>
+	</tr>
+	<tr>
+		<td>AD_Role_id</td>
+		<td>@Ref=AD_Role[Name='GardenWorld Admin'].AD_Role_ID<hr/>102</td>
+	</tr>
+	<tr>
+		<td class="pass">*Login*</td>
+		<td class="pass"></td>
+	</tr>
+</table>
+</div>
+</div>
+<br/><br/>Check the inventory level before the document<br/><br/><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Set Variable</td>
+	</tr>
+	<tr>
+		<td>@InventoryLevelBefore@</td>
+		<td>@SQL=SELECT SUM(s.qtyonhand) FROM m_storage s, m_locator l, m_warehouse w WHERE s.m_product_id=133 AND s.m_locator_id = l.m_locator_id AND l.m_warehouse_id=w.m_warehouse_id AND w.m_warehouse_id=103<hr/>61</td>
+	</tr>
+</table>
+<br/>Check the bp balance before the document<br/><br/><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Read Record</td>
+	</tr>
+	<tr>
+		<td>*Table*</td>
+		<td>C_bpartner</td>
+	</tr>
+	<tr>
+		<td>c_bpartner_id</td>
+		<td>120</td>
+	</tr>
+	<tr>
+		<td>*Read*</td>
+		<td class="pass">MBPartner[ID=120,Value=SeedFarm,Name=Seed Farm Inc.,Open=-2731.5]</td>
+	</tr>
+	<tr>
+		<td>actuallifetimevalue</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td>so_creditused</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td>totalopenbalance</td>
+		<td>-2731.5</td>
+	</tr>
+</table>
+]]></content>
+    <relativePageName>QuickTest</relativePageName>
+    
+    
+    
+  </result>
+  
+    <finalCounts>
+    <right>0</right>
+    <wrong>0</wrong>
+    <ignores>0</ignores>
+    <exceptions>0</exceptions>
+  </finalCounts>
+  <totalRunTimeInMillis>0</totalRunTimeInMillis>
+  
+</testResults>
+

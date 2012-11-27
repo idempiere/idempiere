@@ -1,0 +1,8 @@
+!|Create Record|
+|*Table*  |M_ProductPrice|
+|M_PriceList_Version_ID         |@Ref=M_PriceList_Version[IsActive='Y' AND M_PriceList_ID=(select m_pricelist_id from m_pricelist where name='Purchase')].M_PriceList_Version_ID|
+|M_Product_ID        |@m_product.m_product_id@|
+|PriceLimit | 0 |
+|PriceList  | 0 |
+|PriceStd   | 0 |
+|*Save*   |           |

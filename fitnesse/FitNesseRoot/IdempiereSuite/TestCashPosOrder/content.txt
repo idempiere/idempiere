@@ -1,0 +1,139 @@
+!include -c TestLoginGardenAdmin
+
+Check the inventory level before the document
+
+!|Set Variable|
+|@InventoryLevelBefore@       |@SQL=SELECT SUM(s.qtyonhand) FROM m_storage s, m_locator l, m_warehouse w WHERE s.m_product_id=133 AND s.m_locator_id = l.m_locator_id AND l.m_warehouse_id=w.m_warehouse_id AND w.m_warehouse_id=103   |
+|@ExpectedInventoryLevelAfter@|@SQL=SELECT SUM(s.qtyonhand) -2 FROM m_storage s, m_locator l, m_warehouse w WHERE s.m_product_id=133 AND s.m_locator_id = l.m_locator_id AND l.m_warehouse_id=w.m_warehouse_id AND w.m_warehouse_id=103|
+
+Check the bp balance before the document
+
+!|Read Record|
+|*Table*            |C_bpartner                                     |
+|c_bpartner_id      |@Ref=c_bpartner[Value='SeedFarm'].c_bpartner_id|
+|*Read*             |                                               |
+|actuallifetimevalue|                                               |
+|so_creditused      |                                               |
+|totalopenbalance   |                                               |
+
+Create sales order
+
+!|Create Record|
+|*Table*               |C_Order                                      |
+|ad_org_id             |11                                           |
+|c_doctypetarget_id    |@Ref=c_doctype[Name='POS Order'].c_doctype_id|
+|salesrep_id           |101                                          |
+|dateordered           |2009-03-25 00:00:00.0                        |
+|c_bpartner_id         |@c_bpartner.c_bpartner_id@                   |
+|c_bpartner_location_id|114                                          |
+|paymentrule           |B                                            |
+|m_warehouse_id        |103                                          |
+|m_pricelist_id        |101                                          |
+|ad_user_id            |105                                          |
+|*Save*                |                                             |
+
+Create sales order line
+
+!|Create Record|
+|*Table*     |C_OrderLine                                |
+|c_order_id  |@C_order.c_Order_id@                       |
+|ad_org_id   |@C_Order.AD_Org_ID@                        |
+|m_product_id|@Ref=M_Product[Value='PChair'].M_Product_ID|
+|qtyentered  |2                                          |
+|qtyordered  |2                                          |
+|*Save*      |                                           |
+
+Complete the sales order
+
+!|Run Process|
+|*ProcessValue*|C_Order Process     |
+|*RecordID*    |@C_Order.C_Order_ID@|
+|*DocAction*   |CO                  |
+|*Run*         |                    |
+
+Assert the order
+
+!|Assert Record|
+|*Table*   |C_order             |
+|c_order_id|@C_order.c_Order_id@|
+|*Read*    |                    |
+|GrandTotal|67.50               |
+
+Check the inventory level after the document
+
+!|Assert Variable|
+|@ExpectedInventoryLevelAfter@|@SQL=SELECT SUM(s.qtyonhand) FROM m_storage s, m_locator l, m_warehouse w WHERE s.m_product_id=133 AND s.m_locator_id = l.m_locator_id AND l.m_warehouse_id=w.m_warehouse_id AND w.m_warehouse_id=103|
+
+
+Check the bp balance after the document
+
+!|Assert Record|
+|*Table*            |C_bpartner                                                                   |
+|*Where*            |c_bpartner_id=120                                                            |
+|*Read*             |                                                                             |
+|actuallifetimevalue|@SQL=SELECT @C_bpartner.actuallifetimevalue@ + @c_order.grandtotal@ FROM DUAL|
+|so_creditused      |@SQL=SELECT @C_bpartner.so_creditused@ + @c_order.grandtotal@ FROM DUAL      |
+|totalopenbalance   |@SQL=SELECT @C_bpartner.totalopenbalance@ + @c_order.grandtotal@ FROM DUAL   |
+
+Check existance of shipment
+
+!|Read Record|
+|*Table*       |M_InOut             |
+|c_order_id    |@C_Order.C_Order_ID@|
+|*Read*        |                    |
+|documentno    |                    |
+|docstatus     |                    |
+|issotrx       |                    |
+|m_warehouse_id|                    |
+|description   |                    |
+
+!|Read Record|
+|*Table*       |M_InOutLine         |
+|m_inout_id    |@M_InOut.M_InOut_ID@|
+|*Read*        |                    |
+|line          |                    |
+|description   |                    |
+|c_orderline_id|                    |
+|m_locator_id  |                    |
+|m_product_id  |                    |
+|movementqty   |                    |
+
+Check existance of invoice
+
+!|Read Record|
+|*Table*      |C_Invoice           |
+|c_order_id   |@C_Order.C_Order_ID@|
+|*Read*       |                    |
+|documentno   |                    |
+|issotrx      |                    |
+|docstatus    |                    |
+|c_bpartner_id|                    |
+|description  |                    |
+|totallines   |                    |
+|grandtotal   |                    |
+
+!|Read Record|
+|*Table*       |C_InvoiceLine           |
+|C_Invoice_id  |@C_Invoice.C_Invoice_id@|
+|*Read*        |                        |
+|line          |                        |
+|description   |                        |
+|c_orderline_id|                        |
+|m_product_id  |                        |
+|qtyinvoiced   |                        |
+|linenetamt    |                        |
+
+Check existance of cash journal line
+
+!|Read Record|
+|*Table*     |C_CashLine              |
+|C_Invoice_id|@C_Invoice.C_Invoice_id@|
+|*Read*      |                        |
+|line        |                        |
+|c_cash_id   |                        |
+|line        |                        |
+|description |                        |
+|amount      |                        |
+|isgenerated |                        |
+|processed   |                        |
+

@@ -1,0 +1,9 @@
+!include -c TestLoginGardenAdmin
+
+!|Create Record|
+|*Table*  |C_BPartnEr |
+|NAME         |@random_string(Carlos , Ruiz,6)|
+|Value        |@random_number(,,8)|
+|C_BP_Group_ID|103        |
+|PotentialLifeTimeValue|@random_number(-,,4,2)|
+|*Save*   |           |

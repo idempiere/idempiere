@@ -1,0 +1,46 @@
+To check error reported here:
+[ adempiere-Bugs-2713724 ] Incorrect Accounting for Internal Use Inventory
+https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2713724&group_id=176962
+
+!include -c TestLoginGardenAdmin
+
+Create the internal use document
+
+!|Create Record|
+|*Table*|M_Inventory          |
+|ad_org_id     |11                   |
+|c_doctype_id  |144                  |
+|m_warehouse_id|103                  |
+|movementdate  |2009-03-26 00:00:00.0|
+|*Save*|         |
+
+Create internal use line
+
+!|Create Record|
+|*Table*|M_InventoryLine                                                                                                  |
+|M_Inventory_ID|@M_Inventory.M_Inventory_ID@                                                                                     |
+|ad_org_id     |@M_Inventory.AD_Org_ID@                                                                                          |
+|m_locator_id  |101                                                                                                              |
+|m_product_id  |141                                                                                                              |
+|c_charge_id   |101                                                                                                              |
+|qtyinternaluse|@SQL=select sum(qtyonhand) from m_storage where m_product_id=141 and m_locator_id=101 and m_attributesetinstance_id=0|
+|qtybook|@SQL=select sum(qtyonhand) from m_storage where m_product_id=141 and m_locator_id=101 and m_attributesetinstance_id=0|
+|*Save*|         |
+
+Complete the internal use
+
+!|Run Process|
+|*ProcessValue*|M_Inventory Process     |
+|*RecordID*    |@M_Inventory.M_Inventory_ID@|
+|*DocAction*   |CO                  |
+|*Run*|                    |
+
+Post
+
+!|Set DocAction|
+|*Table* |M_Inventory|
+|M_Inventory_ID|@M_Inventory.M_Inventory_ID@                                                                                     |
+|docAction   |PO       |
+|*Save*|         |
+
+Check the postings

@@ -1,0 +1,41 @@
+Create purchase order
+
+!|Read Record|
+|*Table*            |C_BPartner                                     |
+|c_bpartner_id      |@Ref=C_BPartner[Name='Patio Fun, Inc.'].c_bpartner_id|
+|*Read*             |                                               |
+
+!|Create Record|
+|*Table*               |C_Order                                      |
+|ad_org_id             |@AD_Org_ID@                                  |
+|c_doctypetarget_id    |@Ref=C_DocType[Name='Purchase Order'].C_DocType_ID|
+|issotrx               |N |
+|salesrep_id           |@Ref=AD_User[Name='GardenAdmin'].AD_User_ID|
+|c_bpartner_id         |@c_bpartner.c_bpartner_id@  |
+|c_bpartner_location_id|@Ref=C_BPartner_Location[C_BPartner_ID=@c_bpartner.c_bpartner_id@].C_BPartner_Location_ID |
+|paymentrule           |B                                            |
+|m_warehouse_id        |@M_Warehouse_ID@                             |
+|m_pricelist_id        |@Ref=M_PriceList[Name='Purchase'].M_PriceList_ID  |
+|ad_user_id            |@Ref=AD_User[Name='GardenAdmin'].AD_User_ID       |
+|*Save*                |                                             |
+
+Create purchase order line
+
+!|Create Record|
+|*Table*     |C_OrderLine                                |
+|c_order_id  |@C_order.c_Order_id@                       |
+|ad_org_id   |@C_Order.AD_Org_ID@                        |
+|m_product_id|@M_Product.M_Product_ID@|
+|qtyentered  |50                                         |
+|qtyordered  |50                                         |
+|priceactual |10                                         |
+|c_uom_id    |@m_product.c_uom_id@|
+|*Save*      |                                           |
+
+Complete the purchase order
+
+!|Run Process|
+|*ProcessValue*|C_Order Process     |
+|*RecordID*    |@C_Order.C_Order_ID@|
+|*DocAction*   |CO                  |
+|*Run*         |                    |

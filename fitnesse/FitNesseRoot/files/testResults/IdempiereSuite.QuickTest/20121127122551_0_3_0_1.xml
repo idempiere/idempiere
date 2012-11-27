@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<testResults>
+  <FitNesseVersion>v20111026</FitNesseVersion>
+  <rootPath>QuickTest</rootPath>
+    <result>
+    <counts>
+      <right>0</right>
+      <wrong>3</wrong>
+      <ignores>0</ignores>
+      <exceptions>1</exceptions>
+    </counts>
+    <runTimeInMillis>16</runTimeInMillis>
+    <content><![CDATA[<div class="collapse_rim">
+	<div style="float: right;" class="meta">
+		<a href="javascript:expandAll();">Expand All</a>
+ | 
+		<a href="javascript:collapseAll();">Collapse All</a>
+	</div>
+	<a href="javascript:toggleCollapsable('6');">
+		<img src="/files/images/collapsableClosed.gif" class="left" id="img6"/>
+	</a>
+&nbsp;
+	<span class="meta">Included page: <a href="IdempiereSuite.TestLoginGardenAdmin">TestLoginGardenAdmin</a> <a href="IdempiereSuite.TestLoginGardenAdmin?edit&amp;redirectToReferer=true&amp;redirectAction=">(edit)</a></span>
+	<div class="hidden" id="6"><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Login</td>
+	</tr>
+	<tr>
+		<td>User</td>
+		<td>GardenAdmin</td>
+	</tr>
+	<tr>
+		<td>Password</td>
+		<td>GardenAdmin</td>
+	</tr>
+	<tr>
+		<td>AD_ClIEnT_id</td>
+		<td>@Ref=AD_Client[Value='GardenWorld'].AD_Client_ID<hr/>11</td>
+	</tr>
+	<tr>
+		<td>AD_Role_id</td>
+		<td>@Ref=AD_Role[Name='GardenWorld Admin'].AD_Role_ID<hr/>102</td>
+	</tr>
+	<tr>
+		<td class="fail">*Login*</td>
+		<td class="error"><hr><pre><div class="fit_stacktrace">java.lang.Exception: Error logging in - no organizations for this role
+	at org.idempiere.fitnesse.fixture.Login.doStaticTable(Login.java:116)
+	at fitnesse.fixtures.TableFixture.doRows(TableFixture.java:16)
+	at fit.Fixture.doTable(Fixture.java:153)
+	at fit.Fixture.interpretTables(Fixture.java:99)
+	at fit.Fixture.doTables(Fixture.java:79)
+	at fit.FitServer.process(FitServer.java:81)
+	at fit.FitServer.run(FitServer.java:56)
+	at org.idempiere.fitnesse.server.fit.FitServerRunner.run(FitServerRunner.java:18)
+	at org.idempiere.fitnesse.server.Runner.execute(Runner.java:18)
+	at org.idempiere.fitnesse.server.fit.FitServlet.runTests(FitServlet.java:25)
+	at org.idempiere.fitnesse.server.fit.FitServlet.service(FitServlet.java:21)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:304)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:224)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:185)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:151)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:100)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:405)
+	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:269)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:515)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:300)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:679)
+</div></pre></td>
+	</tr>
+</table>
+</div>
+</div>
+<br/><br/>Check the inventory level before the document<br/><br/><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Set Variable</td>
+	</tr>
+	<tr>
+		<td>@InventoryLevelBefore@</td>
+		<td class="fail">@SQL=SELECT SUM(s.qtyonhand) FROM m_storage s, m_locator l, m_warehouse w WHERE s.m_product_id=133 AND s.m_locator_id = l.m_locator_id AND l.m_warehouse_id=w.m_warehouse_id AND w.m_warehouse_id=103not logged in</td>
+	</tr>
+</table>
+<br/>Check the bp balance before the document<br/><br/><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Read Record</td>
+	</tr>
+	<tr>
+		<td>*Table*</td>
+		<td>C_bpartner</td>
+	</tr>
+	<tr>
+		<td>c_bpartner_id</td>
+		<td>120</td>
+	</tr>
+	<tr>
+		<td>*Read*</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>actuallifetimevalue</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>so_creditused</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>totalopenbalance</td>
+		<td class="fail">not logged in</td>
+	</tr>
+</table>
+]]></content>
+    <relativePageName>QuickTest</relativePageName>
+    
+    
+    
+  </result>
+  
+    <finalCounts>
+    <right>0</right>
+    <wrong>0</wrong>
+    <ignores>0</ignores>
+    <exceptions>0</exceptions>
+  </finalCounts>
+  <totalRunTimeInMillis>0</totalRunTimeInMillis>
+  
+</testResults>
+

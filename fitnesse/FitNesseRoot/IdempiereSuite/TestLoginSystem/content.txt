@@ -1,0 +1,6 @@
+!|Login|
+|User        |SuperUser|
+|Password    |System   |
+|AD_ClIEnT_id|0        |
+|AD_Role_id  |0        |
+|*Login*     |         |

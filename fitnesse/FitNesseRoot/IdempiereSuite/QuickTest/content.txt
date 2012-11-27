@@ -1,0 +1,16 @@
+!include -c TestLoginGardenAdmin
+
+Check the inventory level before the document
+
+!|Set Variable|
+|@InventoryLevelBefore@|@SQL=SELECT SUM(s.qtyonhand) FROM m_storage s, m_locator l, m_warehouse w WHERE s.m_product_id=133 AND s.m_locator_id = l.m_locator_id AND l.m_warehouse_id=w.m_warehouse_id AND w.m_warehouse_id=103|
+
+Check the bp balance before the document
+
+!|Read Record|
+|*Table*            |C_bpartner|
+|c_bpartner_id      |120       |
+|*Read*             |          |
+|actuallifetimevalue|          |
+|so_creditused      |          |
+|totalopenbalance   |          |

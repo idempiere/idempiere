@@ -1,0 +1,10 @@
+This test tries to create a reference in the database, intentionally the !-ValidationType-! is left to a wrong value (Y) to make it fail.
+
+!include TestLoginSystem
+
+!|Create Record|
+|*Table*   |AD_Reference |
+|Name          |Fitnesse Test|
+|ValidationType|Y            |
+|invalidcolumn|Y            |
+|*Save*    |             |

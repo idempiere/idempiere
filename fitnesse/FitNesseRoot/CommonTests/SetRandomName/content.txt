@@ -1,0 +1,2 @@
+!|Set Variable|
+|@RandomName@       |@random_string(TestAvg-,,4)|

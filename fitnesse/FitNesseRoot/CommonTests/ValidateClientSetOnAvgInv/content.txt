@@ -1,0 +1,2 @@
+!|Assert Variable|
+|I|@SQL=select costingmethod from c_acctschema where c_acctschema_id = (select c_acctschema1_id from ad_clientinfo where ad_client_id=@AD_Client_ID@)|

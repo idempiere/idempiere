@@ -1,0 +1,32 @@
+Create material receipt
+
+!|Create Record|
+|*Table*               |M_InOut                                      |
+|ad_org_id             |@AD_Org_ID@                                  |
+|c_doctype_id          |@Ref=C_DocType[Name='MM Receipt'].C_DocType_ID|
+|c_bpartner_id         |@c_bpartner.c_bpartner_id@  |
+|c_bpartner_location_id|@Ref=C_BPartner_Location[C_BPartner_ID=@c_bpartner.c_bpartner_id@].C_BPartner_Location_ID |
+|m_warehouse_id        |@M_Warehouse_ID@                             |
+|salesrep_id           |@Ref=AD_User[Name='GardenAdmin'].AD_User_ID       |
+|movementtype          |V+       |
+|*Save*                |                                             |
+
+Create material receipt line
+
+!|Create Record|
+|*Table*     |M_InOutLine                                |
+|m_inout_id  |@m_inout.m_inout_id@                       |
+|ad_org_id   |@m_inout.AD_Org_ID@                        |
+|m_product_id|@m_product.M_Product_ID@|
+|qtyentered  |50                                         |
+|c_uom_id    |@m_product.c_uom_id@|
+|m_locator_id|@Ref=M_Locator[M_Warehouse_ID=@M_Warehouse_ID@ AND IsDefault='Y'].M_Locator_ID|
+|*Save*      |                                           |
+
+Complete the material receipt
+
+!|Run Process|
+|*ProcessValue*|M_InOut Process     |
+|*RecordID*    |@M_InOut.M_InOut_ID@|
+|*DocAction*   |CO                  |
+|*Run*         |                    |

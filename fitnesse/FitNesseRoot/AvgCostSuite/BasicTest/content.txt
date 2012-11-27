@@ -1,0 +1,36 @@
+This test is intended to create repeatable test cases for Average Invoice Costing, in order to make a refactor we need to:
+* stabilize current code
+* guarantee that refactoring don't break actual results
+
+Brief description of the tests:
+* login into !-GardenAdmin-!
+* ensure that tenant is configured with avg inv costing
+* create a product (random name/value)
+* create a PO to purchase 50 products with value 10
+* create a material receipt
+* create a matchPO
+* post the matchPO
+* create an invoice
+* post the invoice
+* verify that avg cost=10 and qty=50
+* create a POS sales order for 3 products
+* post the shipment
+* verify that shipment was posted with cost=10
+* verify that avg cost=10 and qty=47
+* create a PO to purchase 10 products with value 11
+* create a material receipt based on the PO
+* check the matchPO created
+* post the matchPO
+* verify that avg cost=10.175438596 and qty=57
+* create an internal use inventory for 2 products
+* post internal use
+* verify that internal use used avg cost=10.175438596
+* verify that avg cost=10.175438596 and qty=55
+
+!include -c .CommonTests.LoginGardenAdmin
+!include -c .CommonTests.ValidateClientSetOnAvgInv
+!include -c .CommonTests.SetRandomName
+!include -c .CommonTests.CreateProduct
+!include -c .CommonTests.CreateProductPrice
+!include -c .CommonTests.CreatePurchaseOrder
+!include -c .CommonTests.CreateMaterialReceipt

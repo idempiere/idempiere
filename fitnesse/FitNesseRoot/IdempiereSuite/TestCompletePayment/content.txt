@@ -1,0 +1,30 @@
+!include -c TestLoginGardenAdmin
+
+!|Set DocAction|
+|*Table*|C_Payment|
+|C_Payment_ID|100      |
+|docAction   |VO       |
+|*Save*  |         |
+
+!|Create Record|
+|*Table*     |C_Payment            |
+|ad_org_id       |11                   |
+|datetrx         |2002-02-22 00:00:00.0|
+|isreceipt       |Y                    |
+|c_doctype_id    |119                  |
+|c_bankaccount_id|100                  |
+|c_bpartner_id   |112                  |
+|c_invoice_id    |101                  |
+|tendertype      |K                    |
+|c_currency_id   |100                  |
+|payamt          |98.8                 |
+|discountamt     |1.9                  |
+|description     |Testing from fitnesse|
+|isprepayment    |N                    |
+|*Save*  |         |
+
+!|Set DocAction|
+|*Table* |C_Payment               |
+|C_Payment_ID|@C_Payment.C_Payment_ID@|
+|docAction   |CO                      |
+|*Save*  |         |

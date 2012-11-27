@@ -1,0 +1,25 @@
+Define the global path:
+
+Where to find the fixtures classes: ( i.e. /home/hengsin/workspace/idempiere/fitnesse/bin )
+
+!define fitnesse_home {/home/hengsin/workspace/idempiere/fitnesse}
+
+!path ${fitnesse_home}/fitnesse.jar:${fitnesse_home}/lib/*.jar:${fitnesse_home}/bin
+
+Define the command to access iDempiere fitnesse servlet
+
+There are some important variables here:
+* LOG4J_LEVEL to set the desired log level
+* Include "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044" to enable remote debugging of the test
+* URL to access the iDempiere fitnesse servlet
+
+This variables can be redefined specifically at page level.
+
+!define TEST_RUNNER {fitnesse.client.FitServerServletInvoker}
+!define COMMAND_PATTERN {java -Xms32m -Xmx512m -DLOG4J_LEVEL=CONFIG -cp %p %m http://localhost:8080/fitnesse/FitServlet}
+
+To enable remote debugging the tests will stop until you connect remotely via eclipse using RemoteADempiereFitnesse.launch
+
+You must add this to the URL ?responder=test&remote_debug=true
+
+!define REMOTE_DEBUG_COMMAND {java -Xms32m -Xmx512m -DLOG4J_LEVEL=ALL -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 -cp %p %m http://localhost:8080/fitnesse/FitServlet}

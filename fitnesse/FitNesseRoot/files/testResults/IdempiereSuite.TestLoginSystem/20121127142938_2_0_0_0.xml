@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<testResults>
+  <FitNesseVersion>v20111026</FitNesseVersion>
+  <rootPath>TestLoginSystem</rootPath>
+    <result>
+    <counts>
+      <right>2</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>1</runTimeInMillis>
+    <content><![CDATA[<table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Login</td>
+	</tr>
+	<tr>
+		<td>User</td>
+		<td>SuperUser</td>
+	</tr>
+	<tr>
+		<td>Password</td>
+		<td>System</td>
+	</tr>
+	<tr>
+		<td>AD_ClIEnT_id</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td>AD_Role_id</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td class="pass">*Login*</td>
+		<td class="pass"></td>
+	</tr>
+</table>
+]]></content>
+    <relativePageName>TestLoginSystem</relativePageName>
+    
+    
+    
+  </result>
+  
+    <finalCounts>
+    <right>0</right>
+    <wrong>0</wrong>
+    <ignores>0</ignores>
+    <exceptions>0</exceptions>
+  </finalCounts>
+  <totalRunTimeInMillis>0</totalRunTimeInMillis>
+  
+</testResults>
+

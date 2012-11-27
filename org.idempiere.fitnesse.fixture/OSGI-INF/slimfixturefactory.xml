@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.idempiere.fitnesse.fixture">
+   <implementation class="org.idempiere.fitnesse.fixture.SlimFixtureFactory"/>
+   <service>
+      <provide interface="org.idempiere.fitnesse.server.slim.ISlimFixtureFactory"/>
+   </service>
+</scr:component>

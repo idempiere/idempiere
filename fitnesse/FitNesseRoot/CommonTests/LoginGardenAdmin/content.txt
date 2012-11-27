@@ -1,0 +1,8 @@
+!|Login|
+|User        |GardenAdmin|
+|Password    |GardenAdmin|
+|AD_Client_ID|@Ref=AD_Client[Value='GardenWorld'].AD_Client_ID|
+|AD_Role_id  |@Ref=AD_Role[Name='GardenWorld Admin'].AD_Role_ID|
+|AD_Org_ID   |@Ref=AD_Org[Name='HQ'].AD_Org_ID|
+|M_Warehouse_ID|@Ref=M_Warehouse[Name='HQ Warehouse'].M_Warehouse_ID|
+|*Login*     |           |

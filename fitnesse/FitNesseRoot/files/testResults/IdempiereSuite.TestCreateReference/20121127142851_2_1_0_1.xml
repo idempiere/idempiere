@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<testResults>
+  <FitNesseVersion>v20111026</FitNesseVersion>
+  <rootPath>TestCreateReference</rootPath>
+    <result>
+    <counts>
+      <right>2</right>
+      <wrong>1</wrong>
+      <ignores>0</ignores>
+      <exceptions>1</exceptions>
+    </counts>
+    <runTimeInMillis>6</runTimeInMillis>
+    <content><![CDATA[This test tries to create a reference in the database, intentionally the ValidationType is left to a wrong value (Y) to make it fail.<br/><br/><div class="collapse_rim">
+	<div style="float: right;" class="meta">
+		<a href="javascript:expandAll();">Expand All</a>
+ | 
+		<a href="javascript:collapseAll();">Collapse All</a>
+	</div>
+	<a href="javascript:toggleCollapsable('30');">
+		<img src="/files/images/collapsableOpen.gif" class="left" id="img30"/>
+	</a>
+&nbsp;
+	<span class="meta">Included page: <a href="IdempiereSuite.TestLoginSystem">TestLoginSystem</a> <a href="IdempiereSuite.TestLoginSystem?edit&amp;redirectToReferer=true&amp;redirectAction=">(edit)</a></span>
+	<div class="collapsable" id="30"><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Login</td>
+	</tr>
+	<tr>
+		<td>User</td>
+		<td>SuperUser</td>
+	</tr>
+	<tr>
+		<td>Password</td>
+		<td>System</td>
+	</tr>
+	<tr>
+		<td>AD_ClIEnT_id</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td>AD_Role_id</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td class="pass">*Login*</td>
+		<td class="pass"></td>
+	</tr>
+</table>
+</div>
+</div>
+<br/><br/><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2">Create Record</td>
+	</tr>
+	<tr>
+		<td>*Table*</td>
+		<td>AD_Reference</td>
+	</tr>
+	<tr>
+		<td>Name</td>
+		<td>Fitnesse Test</td>
+	</tr>
+	<tr>
+		<td>ValidationType</td>
+		<td class="error">Y<hr><pre><div class="fit_stacktrace">java.lang.IllegalArgumentException: ValidationType Invalid value - Y - Reference_ID=2 - D - L - T
+	at org.compiere.model.PO.set_Value(PO.java:826)
+	at org.compiere.model.PO.set_ValueOfColumnReturningBoolean(PO.java:1009)
+	at org.compiere.model.PO.set_ValueOfColumnReturningBoolean(PO.java:978)
+	at org.idempiere.fitnesse.fixture.CreateRecord.doStaticTable(CreateRecord.java:176)
+	at fitnesse.fixtures.TableFixture.doRows(TableFixture.java:16)
+	at fit.Fixture.doTable(Fixture.java:153)
+	at fit.Fixture.interpretFollowingTables(Fixture.java:119)
+	at fit.Fixture.interpretTables(Fixture.java:105)
+	at fit.Fixture.doTables(Fixture.java:79)
+	at fit.FitServer.process(FitServer.java:81)
+	at fit.FitServer.run(FitServer.java:56)
+	at org.idempiere.fitnesse.server.fit.FitServerRunner.run(FitServerRunner.java:18)
+	at org.idempiere.fitnesse.server.Runner.execute(Runner.java:18)
+	at org.idempiere.fitnesse.server.fit.FitServlet.runTests(FitServlet.java:25)
+	at org.idempiere.fitnesse.server.fit.FitServlet.service(FitServlet.java:21)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:304)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:224)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:185)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:151)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:100)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:405)
+	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:269)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:515)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:300)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:679)
+</div></pre></td>
+	</tr>
+	<tr>
+		<td class="fail">invalidcolumn</td>
+		<td>Y</td>
+	</tr>
+	<tr>
+		<td>*Save*</td>
+		<td></td>
+	</tr>
+</table>
+]]></content>
+    <relativePageName>TestCreateReference</relativePageName>
+    
+    
+    
+  </result>
+  
+    <finalCounts>
+    <right>0</right>
+    <wrong>0</wrong>
+    <ignores>0</ignores>
+    <exceptions>0</exceptions>
+  </finalCounts>
+  <totalRunTimeInMillis>0</totalRunTimeInMillis>
+  
+</testResults>
+

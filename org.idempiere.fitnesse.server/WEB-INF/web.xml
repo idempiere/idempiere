@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app id="iDempiere" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+    <display-name>Fitnesse Server</display-name>
+	
+	<!-- Fit Servlet -->
+	<servlet>
+		<servlet-name>FitServlet</servlet-name>
+		<servlet-class>org.idempiere.fitnesse.server.fit.FitServlet</servlet-class>
+	</servlet>
+
+	<!-- Slim Servlet -->
+	<servlet>
+		<servlet-name>SlimServlet</servlet-name>
+		<servlet-class>org.idemiere.fitnesse.server.slim.SlimServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>FitServlet</servlet-name>
+		<url-pattern>/FitServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SlimServlet</servlet-name>
+		<url-pattern>/SlimServlet/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>

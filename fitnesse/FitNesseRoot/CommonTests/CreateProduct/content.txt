@@ -1,0 +1,8 @@
+!|Create Record|
+|*Table*  |M_Product|
+|Name         |@RandomName@|
+|Value        |@RandomName@|
+|C_UOM_ID     |@Ref=C_UOM[Name='Each'].C_UOM_ID|
+|M_Product_Category_ID     |@Ref=M_Product_Category[Name='Standard' and AD_Client_ID=@AD_Client_ID@].M_Product_Category_ID|
+|C_TaxCategory_ID          |@Ref=C_TaxCategory[Name='Standard' and AD_Client_ID=@AD_Client_ID@].C_TaxCategory_ID|
+|*Save*   |           |

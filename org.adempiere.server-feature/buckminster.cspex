@@ -6,6 +6,9 @@
 	<dependencies>
 		<!-- Place your Dependencies here -->
 		<dependency name="org.idempiere.eclipse.platform" componentType="eclipse.feature"/>
+		<dependency name="org.idempiere.fitnesse" componentType="eclipse.feature"/>
+		<dependency name="org.idempiere.fitnesse.fixture" componentType="osgi.bundle"/>
+		<dependency name="org.idempiere.fitnesse.server" componentType="osgi.bundle"/>
 	</dependencies>
 	<generators>
 		<!-- Place your Generators here -->
@@ -59,9 +62,13 @@
 	<alterGroups>
 		<public name="bundle.jars">
 			<attribute name="bundle.jars" component="org.idempiere.eclipse.platform"/>
+			<attribute name="bundle.jars" component="org.idempiere.fitnesse.fixture"/>
+			<attribute name="bundle.jars" component="org.idempiere.fitnesse.server"/>
+			<attribute name="bundle.jars" component="org.idempiere.fitnesse"/>
 		</public>
 		<public name="feature.references">
 			<attribute name="feature.jars" component="org.idempiere.eclipse.platform"/>
+			<attribute name="feature.jars" component="org.idempiere.fitnesse"/>
         </public>
 	</alterGroups>
 </cspecExtension>

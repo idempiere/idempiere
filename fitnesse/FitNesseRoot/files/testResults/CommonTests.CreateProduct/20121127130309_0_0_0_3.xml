@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<testResults>
+  <FitNesseVersion>v20111026</FitNesseVersion>
+  <rootPath>CreateProduct</rootPath>
+    <result>
+    <counts>
+      <right>0</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>3</exceptions>
+    </counts>
+    <runTimeInMillis>7</runTimeInMillis>
+    <content><![CDATA[<table border="1" cellspacing="0">
+	<tr>
+		<td colspan="2" class="error">Create Record<hr><pre><div class="fit_stacktrace">org.adempiere.exceptions.DBException: org.postgresql.util.PSQLException: ERROR: syntax error at end of input
+  Position: 59
+	at org.compiere.util.DB.getSQLValueStringEx(DB.java:1448)
+	at org.idempiere.fitnesse.fixture.Util.evaluate(Util.java:120)
+	at org.idempiere.fitnesse.fixture.CreateRecord.doStaticTable(CreateRecord.java:134)
+	at fitnesse.fixtures.TableFixture.doRows(TableFixture.java:16)
+	at fit.Fixture.doTable(Fixture.java:153)
+	at fit.Fixture.interpretTables(Fixture.java:99)
+	at fit.Fixture.doTables(Fixture.java:79)
+	at fit.FitServer.process(FitServer.java:81)
+	at fit.FitServer.run(FitServer.java:56)
+	at org.idempiere.fitnesse.server.fit.FitServerRunner.run(FitServerRunner.java:18)
+	at org.idempiere.fitnesse.server.Runner.execute(Runner.java:18)
+	at org.idempiere.fitnesse.server.fit.FitServlet.runTests(FitServlet.java:25)
+	at org.idempiere.fitnesse.server.fit.FitServlet.service(FitServlet.java:21)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:304)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:224)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:185)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:151)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:100)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:405)
+	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:269)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:515)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:300)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:679)
+Caused by: org.postgresql.util.PSQLException: ERROR: syntax error at end of input
+  Position: 59
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2157)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:1886)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:255)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.execute(AbstractJdbc2Statement.java:555)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeWithFlags(AbstractJdbc2Statement.java:417)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeQuery(AbstractJdbc2Statement.java:302)
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.executeQuery(NewProxyPreparedStatement.java:76)
+	at sun.reflect.GeneratedMethodAccessor20.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:616)
+	at org.compiere.db.StatementProxy.invoke(StatementProxy.java:125)
+	at $Proxy0.executeQuery(Unknown Source)
+	at org.compiere.util.DB.getSQLValueStringEx(DB.java:1440)
+	... 27 more
+</div></pre></td>
+	</tr>
+	<tr>
+		<td>*Table*</td>
+		<td>M_Product</td>
+	</tr>
+	<tr>
+		<td>Name</td>
+		<td class="error">@RandomName@<hr/><hr><pre><div class="fit_stacktrace">java.lang.IllegalArgumentException: Name is mandatory.
+	at org.compiere.model.PO.set_Value(PO.java:751)
+	at org.compiere.model.PO.set_ValueOfColumnReturningBoolean(PO.java:1009)
+	at org.compiere.model.PO.set_ValueOfColumnReturningBoolean(PO.java:978)
+	at org.idempiere.fitnesse.fixture.CreateRecord.doStaticTable(CreateRecord.java:176)
+	at fitnesse.fixtures.TableFixture.doRows(TableFixture.java:16)
+	at fit.Fixture.doTable(Fixture.java:153)
+	at fit.Fixture.interpretTables(Fixture.java:99)
+	at fit.Fixture.doTables(Fixture.java:79)
+	at fit.FitServer.process(FitServer.java:81)
+	at fit.FitServer.run(FitServer.java:56)
+	at org.idempiere.fitnesse.server.fit.FitServerRunner.run(FitServerRunner.java:18)
+	at org.idempiere.fitnesse.server.Runner.execute(Runner.java:18)
+	at org.idempiere.fitnesse.server.fit.FitServlet.runTests(FitServlet.java:25)
+	at org.idempiere.fitnesse.server.fit.FitServlet.service(FitServlet.java:21)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:304)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:224)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:185)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:151)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:100)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:405)
+	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:269)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:515)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:300)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:679)
+</div></pre></td>
+	</tr>
+	<tr>
+		<td>Value</td>
+		<td class="error">@RandomName@<hr/><hr><pre><div class="fit_stacktrace">java.lang.IllegalArgumentException: Value is mandatory.
+	at org.compiere.model.PO.set_Value(PO.java:751)
+	at org.compiere.model.PO.set_ValueOfColumnReturningBoolean(PO.java:1009)
+	at org.compiere.model.PO.set_ValueOfColumnReturningBoolean(PO.java:978)
+	at org.idempiere.fitnesse.fixture.CreateRecord.doStaticTable(CreateRecord.java:176)
+	at fitnesse.fixtures.TableFixture.doRows(TableFixture.java:16)
+	at fit.Fixture.doTable(Fixture.java:153)
+	at fit.Fixture.interpretTables(Fixture.java:99)
+	at fit.Fixture.doTables(Fixture.java:79)
+	at fit.FitServer.process(FitServer.java:81)
+	at fit.FitServer.run(FitServer.java:56)
+	at org.idempiere.fitnesse.server.fit.FitServerRunner.run(FitServerRunner.java:18)
+	at org.idempiere.fitnesse.server.Runner.execute(Runner.java:18)
+	at org.idempiere.fitnesse.server.fit.FitServlet.runTests(FitServlet.java:25)
+	at org.idempiere.fitnesse.server.fit.FitServlet.service(FitServlet.java:21)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:304)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:224)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:185)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:151)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:100)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:405)
+	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:269)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:515)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:300)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:679)
+</div></pre></td>
+	</tr>
+	<tr>
+		<td>C_UOM_ID</td>
+		<td>@Ref=C_UOM[Name='Each'].C_UOM_ID<hr/>100</td>
+	</tr>
+	<tr>
+		<td>M_Product_Category_ID</td>
+		<td>@Ref=M_Product_Category[Name='Standard' and AD_Client_ID=@AD_Client_ID@].M_Product_Category_ID</td>
+	</tr>
+	<tr>
+		<td>C_TaxCategory_ID</td>
+		<td>@Ref=C_TaxCategory[Name='Standard' and AD_Client_ID=@AD_Client_ID@].C_TaxCategory_ID</td>
+	</tr>
+	<tr>
+		<td>*Save*</td>
+		<td></td>
+	</tr>
+</table>
+]]></content>
+    <relativePageName>CreateProduct</relativePageName>
+    
+    
+    
+  </result>
+  
+    <finalCounts>
+    <right>0</right>
+    <wrong>0</wrong>
+    <ignores>0</ignores>
+    <exceptions>0</exceptions>
+  </finalCounts>
+  <totalRunTimeInMillis>0</totalRunTimeInMillis>
+  
+</testResults>
+

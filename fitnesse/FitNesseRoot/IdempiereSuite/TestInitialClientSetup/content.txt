@@ -1,0 +1,20 @@
+This test creates a new tenant in the database.
+
+!include TestLoginSystem
+
+!|Run Process|
+|*ProcessValue*       |InitialClientSetup                                          |
+|ClientName               |Prueba                                                      |
+|OrgName                  |Prueba                                                      |
+|AdminUserName            |PruebaAdmin                                                 |
+|NormalUserName           |PruebaUser                                                  |
+|C_Currency_ID            |230                                                         |
+|C_Country_ID             |156                                                         |
+|CityName                 |Bogotá                                                      |
+|IsUseBPDimension         |Y                                                           |
+|IsUseProductDimension    |Y                                                           |
+|IsUseProjectDimension    |Y                                                           |
+|IsUseCampaignDimension   |N                                                           |
+|IsUseSalesRegionDimension|N                                                           |
+|CoAFile                  |/home/carlos/hgAdempiere/adempiere361/data/import/AccountingUS.csv|
+|*Run*                |                                                            |
