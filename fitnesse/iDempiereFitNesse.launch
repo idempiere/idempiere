@@ -9,5 +9,4 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fitnesseMain.FitNesseMain"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-p 8089 -l log"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="fitnesse"/>
-<booleanAttribute key="org.eclipse.jdt.launching.STOP_IN_MAIN" value="true"/>
 </launchConfiguration>
