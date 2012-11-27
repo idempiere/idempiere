@@ -36,17 +36,26 @@ public class CacheServiceImpl implements ICacheService {
 	 */
 	@Override
 	public <K, V> Map<K, V> getMap(String name) {
-		return Activator.hazelcastInstance.getMap(name);
+		if (Activator.hazelcastInstance != null)
+			return Activator.hazelcastInstance.getMap(name);
+		else
+			return null;
 	}
 
 	@Override
 	public <K> List<K> getList(String name) {
-		return Activator.hazelcastInstance.getList(name);
+		if (Activator.hazelcastInstance != null)
+			return Activator.hazelcastInstance.getList(name);
+		else
+			return null;
 	}
 
 	@Override
 	public <K> Set<K> getSet(String name) {
-		return Activator.hazelcastInstance.getSet(name);
+		if (Activator.hazelcastInstance != null)
+			return Activator.hazelcastInstance.getSet(name);
+		else
+			return null;
 	}
 
 }

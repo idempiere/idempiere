@@ -926,7 +926,8 @@ public class CConnection implements Serializable, Cloneable
 		if (!retest && m_ds != null && m_okDB)
 			return null;
 
-		getDatabase().close();
+		if (getDatabase() != null)
+			getDatabase().close();
 		m_ds = null;
 		setDataSource();
 		//  the actual test
