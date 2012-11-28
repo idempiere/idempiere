@@ -408,15 +408,6 @@ public interface I_AD_Client
 	/** Get Store Archive On File System	  */
 	public boolean isStoreArchiveOnFileSystem();
 
-    /** Column name StoreAttachmentsOnFileSystem */
-    public static final String COLUMNNAME_StoreAttachmentsOnFileSystem = "StoreAttachmentsOnFileSystem";
-
-	/** Set Store Attachments On File System	  */
-	public void setStoreAttachmentsOnFileSystem (boolean StoreAttachmentsOnFileSystem);
-
-	/** Get Store Attachments On File System	  */
-	public boolean isStoreAttachmentsOnFileSystem();
-
     /** Column name UnixArchivePath */
     public static final String COLUMNNAME_UnixArchivePath = "UnixArchivePath";
 
@@ -425,15 +416,6 @@ public interface I_AD_Client
 
 	/** Get Unix Archive Path	  */
 	public String getUnixArchivePath();
-
-    /** Column name UnixAttachmentPath */
-    public static final String COLUMNNAME_UnixAttachmentPath = "UnixAttachmentPath";
-
-	/** Set Unix Attachment Path	  */
-	public void setUnixAttachmentPath (String UnixAttachmentPath);
-
-	/** Get Unix Attachment Path	  */
-	public String getUnixAttachmentPath();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -472,13 +454,4 @@ public interface I_AD_Client
 
 	/** Get Windows Archive Path	  */
 	public String getWindowsArchivePath();
-
-    /** Column name WindowsAttachmentPath */
-    public static final String COLUMNNAME_WindowsAttachmentPath = "WindowsAttachmentPath";
-
-	/** Set Windows Attachment Path	  */
-	public void setWindowsAttachmentPath (String WindowsAttachmentPath);
-
-	/** Get Windows Attachment Path	  */
-	public String getWindowsAttachmentPath();
 }

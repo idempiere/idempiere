@@ -19,7 +19,9 @@ package org.adempiere.webui.panel;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,6 +37,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
+import org.codehaus.groovy.vmplugin.v6.Java6;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.util.CLogger;
@@ -57,6 +60,8 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
+
+import com.lowagie.text.pdf.ByteBuffer;
 
 /**
  *
@@ -574,24 +579,27 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 	}
 
-	private byte[] getMediaData(Media media) {
+	private byte[] getMediaData(Media media)  {
 		byte[] bytes = null;
-
-		if (media.inMemory())
-			bytes = media.getByteData();
-		else {
-			InputStream is = media.getStreamData();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] buf = new byte[ 1000 ];
-			int byteread = 0;
-			try {
-				while (( byteread=is.read(buf) )!=-1)
+		
+		try{
+			
+	      if (media.inMemory())
+		     	bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
+		  else {
+			 InputStream is = media.getStreamData();
+			 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 byte[] buf = new byte[ 1000 ];
+			 int byteread = 0;
+			 
+				  while (( byteread=is.read(buf) )!=-1)
 					baos.write(buf,0,byteread);
-			} catch (IOException e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				throw new IllegalStateException(e.getLocalizedMessage());
-			}
+			
 			bytes = baos.toByteArray();
+		 }
+		} catch (IOException e) {
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			throw new IllegalStateException(e.getLocalizedMessage());
 		}
 
 		return bytes;
@@ -673,4 +681,16 @@ public class WAttachment extends Window implements EventListener<Event>
 			}
 		}
 	}	//	saveAttachmentToFile
+	
+	
+	static private String getCharset(String contentType) {
+		if (contentType != null) {
+			int j = contentType.indexOf("charset=");
+			if (j >= 0) {
+				String cs = contentType.substring(j + 8).trim();
+				if (cs.length() > 0) return cs;
+			}
+		}
+		return "UTF-8";
+	}
 }

@@ -30,7 +30,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121127L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -56,7 +56,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 // F
 			setName (null);
 			setStoreArchiveOnFileSystem (false);
-			setStoreAttachmentsOnFileSystem (false);
 			setValue (null);
         } */
     }
@@ -612,27 +611,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 		return false;
 	}
 
-	/** Set Store Attachments On File System.
-		@param StoreAttachmentsOnFileSystem Store Attachments On File System	  */
-	public void setStoreAttachmentsOnFileSystem (boolean StoreAttachmentsOnFileSystem)
-	{
-		set_Value (COLUMNNAME_StoreAttachmentsOnFileSystem, Boolean.valueOf(StoreAttachmentsOnFileSystem));
-	}
-
-	/** Get Store Attachments On File System.
-		@return Store Attachments On File System	  */
-	public boolean isStoreAttachmentsOnFileSystem () 
-	{
-		Object oo = get_Value(COLUMNNAME_StoreAttachmentsOnFileSystem);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Unix Archive Path.
 		@param UnixArchivePath Unix Archive Path	  */
 	public void setUnixArchivePath (String UnixArchivePath)
@@ -645,20 +623,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public String getUnixArchivePath () 
 	{
 		return (String)get_Value(COLUMNNAME_UnixArchivePath);
-	}
-
-	/** Set Unix Attachment Path.
-		@param UnixAttachmentPath Unix Attachment Path	  */
-	public void setUnixAttachmentPath (String UnixAttachmentPath)
-	{
-		set_Value (COLUMNNAME_UnixAttachmentPath, UnixAttachmentPath);
-	}
-
-	/** Get Unix Attachment Path.
-		@return Unix Attachment Path	  */
-	public String getUnixAttachmentPath () 
-	{
-		return (String)get_Value(COLUMNNAME_UnixAttachmentPath);
 	}
 
 	/** Set Search Key.
@@ -690,19 +654,5 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public String getWindowsArchivePath () 
 	{
 		return (String)get_Value(COLUMNNAME_WindowsArchivePath);
-	}
-
-	/** Set Windows Attachment Path.
-		@param WindowsAttachmentPath Windows Attachment Path	  */
-	public void setWindowsAttachmentPath (String WindowsAttachmentPath)
-	{
-		set_Value (COLUMNNAME_WindowsAttachmentPath, WindowsAttachmentPath);
-	}
-
-	/** Get Windows Attachment Path.
-		@return Windows Attachment Path	  */
-	public String getWindowsAttachmentPath () 
-	{
-		return (String)get_Value(COLUMNNAME_WindowsAttachmentPath);
 	}
 }
