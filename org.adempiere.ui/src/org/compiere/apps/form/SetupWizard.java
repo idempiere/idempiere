@@ -80,12 +80,14 @@ public class SetupWizard
 			.list();
 	}
 
-	public void save(String note, String wizardStatus) {
+	public void save(String note, String wizardStatus, int userField) {
 		MWizardProcess wp = MWizardProcess.get(Env.getCtx(), m_node.getAD_WF_Node_ID(), Env.getAD_Client_ID(Env.getCtx()));
 		if (note != null && note.length() == 0)
 			note = null;
 		if (wizardStatus != null && wizardStatus.length() == 0)
 			wizardStatus = null;
+		if ((wp.getAD_User_ID() == 0 && userField != 0) || (userField == 0 && userField != wp.getAD_User_ID()))
+			wp.setAD_User_ID(userField);
 		if ((wp.getNote() == null && note != null) || (note != null && !note.equals(wp.getNote())))
 			wp.setNote(note);
 		if ((wp.getWizardStatus() == null && wizardStatus != null) || (wizardStatus != null && !wizardStatus.equals(wp.getWizardStatus())))
