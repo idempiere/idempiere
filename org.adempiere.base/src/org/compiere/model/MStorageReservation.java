@@ -225,6 +225,9 @@ public class MStorageReservation extends X_M_StorageReservation {
 		int M_Product_ID, int M_AttributeSetInstance_ID, int reservationAttributeSetInstance_ID,
 		BigDecimal diffQty, boolean isSOTrx, String trxName)
 	{
+		if (diffQty == null || diffQty.signum() == 0)
+			return true;
+
 		/* Do NOT use FIFO ASI for reservation */
 		MProduct prd = new MProduct(ctx, M_Product_ID, trxName);
 		if (prd.getM_AttributeSet_ID() == 0 || ! prd.getM_AttributeSet().isInstanceAttribute()) {
@@ -232,15 +235,15 @@ public class MStorageReservation extends X_M_StorageReservation {
 			reservationAttributeSetInstance_ID = 0;
 			M_AttributeSetInstance_ID = 0;
 		}
-		//		
-
-		MStorageReservation storage = null;
-		StringBuffer diffText = new StringBuffer("(");
+		//
+		if (M_AttributeSetInstance_ID != reservationAttributeSetInstance_ID) {
+			M_AttributeSetInstance_ID = reservationAttributeSetInstance_ID;
+		}
 
 		//	Get Storage
-		if (storage == null)
-			storage = getCreate (ctx, M_Warehouse_ID, 
+		MStorageReservation storage = getCreate (ctx, M_Warehouse_ID,
 				M_Product_ID, M_AttributeSetInstance_ID, isSOTrx, trxName);
+		DB.getDatabase().forUpdate(storage, 120);
 		//	Verify
 		if (storage.getM_Warehouse_ID() != M_Warehouse_ID 
 			&& storage.getM_Product_ID() != M_Product_ID
@@ -251,37 +254,12 @@ public class MStorageReservation extends X_M_StorageReservation {
 			return false;
 		}
 
-		MStorageReservation storage0 = null;
-		if (M_AttributeSetInstance_ID != reservationAttributeSetInstance_ID)
-		{
-			storage0 = get(ctx, M_Warehouse_ID, 
-				M_Product_ID, reservationAttributeSetInstance_ID, isSOTrx, trxName);
-			if (storage0 == null)	//	create if not existing - should not happen
-			{
-				storage0 = getCreate (ctx, M_Warehouse_ID, 
-					M_Product_ID, reservationAttributeSetInstance_ID, isSOTrx, trxName);
-			}
-		}
-		boolean changed = false;
-		if (diffQty != null && diffQty.signum() != 0)
-		{
-			if (storage0 == null)
-				storage.setQty (storage.getQty().add(diffQty));
-			else
-				storage0.setQty (storage0.getQty().add (diffQty));
-			diffText.append(" Qty=").append(diffQty);
-			changed = true;
-		}
-		if (changed)
-		{
-			diffText.append(") -> ").append(storage.toString());
+		storage.setQty (storage.getQty().add(diffQty));
+		if (s_log.isLoggable(Level.FINE)) {
+			StringBuilder diffText = new StringBuilder("(Qty=").append(diffQty).append(") -> ").append(storage.toString());
 			s_log.fine(diffText.toString());
-			if (storage0 != null)
-				storage0.saveEx(trxName);		//	No AttributeSetInstance
-			return storage.save (trxName);
 		}
-		
-		return true;
+		return storage.save (trxName);
 	}	//	add
 
 	/**

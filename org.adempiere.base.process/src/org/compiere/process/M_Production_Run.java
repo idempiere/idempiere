@@ -158,7 +158,7 @@ public class M_Production_Run extends SvrProcess {
 							if (!MStorageOnHand.add(getCtx(), locator.getM_Warehouse_ID(),
 								locator.getM_Locator_ID(),
 								pline.getM_Product_ID(), 
-								pline.getM_AttributeSetInstance_ID(), 0 , 
+								pline.getM_AttributeSetInstance_ID(),
 								MovementQty,
 								get_TrxName()))
 							{

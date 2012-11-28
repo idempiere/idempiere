@@ -358,16 +358,15 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@return true if updated
 	 */
 	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
-		int M_Product_ID, int M_AttributeSetInstance_ID, int reservationAttributeSetInstance_ID,
+		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand, String trxName)
 	{
-		MStorageOnHand storage = null;
-		StringBuffer diffText = new StringBuffer("(");
+		if (diffQtyOnHand == null || diffQtyOnHand.signum() == 0)
+			return true;
 
 		//	Get Storage
-		if (storage == null)
-			storage = getCreate (ctx, M_Locator_ID, 
-				M_Product_ID, M_AttributeSetInstance_ID, trxName);
+		MStorageOnHand storage = getCreate (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, trxName);
+		DB.getDatabase().forUpdate(storage, 120);
 		//	Verify
 		if (storage.getM_Locator_ID() != M_Locator_ID 
 			&& storage.getM_Product_ID() != M_Product_ID
@@ -377,65 +376,13 @@ public class MStorageOnHand extends X_M_StorageOnHand
 				+ ",M_Product_ID=" + M_Product_ID + ",ASI=" + M_AttributeSetInstance_ID);
 			return false;
 		}
-		
-		// CarlosRuiz - globalqss - Fix [ 1725383 ] QtyOrdered wrongly updated
-		MProduct prd = new MProduct(ctx, M_Product_ID, trxName);
-		if (prd.getM_AttributeSet_ID() == 0) {
-			// Product doesn't manage attribute set, always reserved with 0
-			reservationAttributeSetInstance_ID = 0;
-		}
-		//		
-		
-		MStorageOnHand storage0 = null;
-		if (M_AttributeSetInstance_ID != reservationAttributeSetInstance_ID)
-		{
-			storage0 = get(ctx, M_Locator_ID, 
-				M_Product_ID, reservationAttributeSetInstance_ID, trxName);
-			if (storage0 == null)	//	create if not existing - should not happen
-			{
-				MWarehouse wh = MWarehouse.get(ctx, M_Warehouse_ID);
-				int xM_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
-				storage0 = getCreate (ctx, xM_Locator_ID, 
-					M_Product_ID, reservationAttributeSetInstance_ID, trxName);
-			}
-		}		
-		boolean changed = false;
-		if (diffQtyOnHand != null && diffQtyOnHand.signum() != 0)
-		{
-			storage.setQtyOnHand (storage.getQtyOnHand().add (diffQtyOnHand));
-			diffText.append("OnHand=").append(diffQtyOnHand);
-			changed = true;
-		}
-		/*//@win commented out
-		if (diffQtyReserved != null && diffQtyReserved.signum() != 0)
-		{
-			if (storage0 == null)
-				storage.setQtyReserved (storage.getQtyReserved().add (diffQtyReserved));
-			else
-				storage0.setQtyReserved (storage0.getQtyReserved().add (diffQtyReserved));
-			diffText.append(" Reserved=").append(diffQtyReserved);
-			changed = true;
-		}
-		if (diffQtyOrdered != null && diffQtyOrdered.signum() != 0)
-		{
-			if (storage0 == null)
-				storage.setQtyOrdered (storage.getQtyOrdered().add (diffQtyOrdered));
-			else
-				storage0.setQtyOrdered (storage0.getQtyOrdered().add (diffQtyOrdered));
-			diffText.append(" Ordered=").append(diffQtyOrdered);
-			changed = true;
-		}
-		*/
-		if (changed)
-		{
-			diffText.append(") -> ").append(storage.toString());
+
+		storage.setQtyOnHand (storage.getQtyOnHand().add (diffQtyOnHand));
+		if (s_log.isLoggable(Level.FINE)) {
+			StringBuilder diffText = new StringBuilder("(OnHand=").append(diffQtyOnHand).append(") -> ").append(storage.toString());
 			s_log.fine(diffText.toString());
-			if (storage0 != null)
-				storage0.saveEx(trxName);		//	No AttributeSetInstance (reserved/ordered)
-			return storage.save (trxName);
 		}
-		
-		return true;
+		return storage.save (trxName);
 	}	//	add
 
 	

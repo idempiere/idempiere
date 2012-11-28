@@ -2,7 +2,7 @@ Define the global path:
 
 Where to find the fixtures classes: ( i.e. /home/hengsin/workspace/idempiere/fitnesse/bin )
 
-!define fitnesse_home {/home/hengsin/workspace/idempiere/fitnesse}
+!define fitnesse_home {/home/carlos/hgAdempiere/localosgi/fitnesse}
 
 !path ${fitnesse_home}/fitnesse.jar:${fitnesse_home}/lib/*.jar:${fitnesse_home}/bin
 
@@ -16,7 +16,7 @@ There are some important variables here:
 This variables can be redefined specifically at page level.
 
 !define TEST_RUNNER {fitnesse.client.FitServerServletInvoker}
-!define COMMAND_PATTERN {java -Xms32m -Xmx512m -DLOG4J_LEVEL=CONFIG -cp %p %m http://localhost:8080/fitnesse/FitServlet}
+!define COMMAND_PATTERN {java -Xms32m -Xmx512m -DLOG4J_LEVEL=CONFIG -cp %p %m http://localhost:8082/fitnesse/FitServlet}
 
 To enable remote debugging the tests will stop until you connect remotely via eclipse using RemoteADempiereFitnesse.launch
 
