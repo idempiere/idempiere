@@ -64,7 +64,6 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		if("".equals(m_attachmentPathRoot)){
 			log.severe("no attachmentPath defined");
 		} else if (!m_attachmentPathRoot.endsWith(File.separator)){
-			log.warning("attachment path doesn't end with " + File.separator);
 			m_attachmentPathRoot = m_attachmentPathRoot + File.separator;
 			log.fine(m_attachmentPathRoot);
 		}

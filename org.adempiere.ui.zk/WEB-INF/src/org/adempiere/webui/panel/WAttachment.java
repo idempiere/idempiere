@@ -19,9 +19,7 @@ package org.adempiere.webui.panel;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,7 +35,6 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
-import org.codehaus.groovy.vmplugin.v6.Java6;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.util.CLogger;
@@ -45,8 +42,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -54,14 +51,12 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
-
-import com.lowagie.text.pdf.ByteBuffer;
+import org.zkoss.zul.North;
+import org.zkoss.zul.South;
 
 /**
  *
@@ -71,9 +66,9 @@ import com.lowagie.text.pdf.ByteBuffer;
 public class WAttachment extends Window implements EventListener<Event>
 {
 	/**
-	 * generated serial version Id
+	 * 
 	 */
-	private static final long serialVersionUID = 2923895336573554570L;
+	private static final long serialVersionUID = 4311076973993361653L;
 
 	private static CLogger log = CLogger.getCLogger(WAttachment.class);
 

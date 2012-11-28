@@ -484,7 +484,6 @@ UPDATE AD_Field SET SeqNo=90, XPosition=4,Updated=TO_DATE('2012-11-23 18:36:40',
 CREATE TABLE AD_StorageProvider (AD_Client_ID NUMBER(10) DEFAULT NULL , AD_Org_ID NUMBER(10) DEFAULT NULL , AD_StorageProvider_ID NUMBER(10) DEFAULT NULL , AD_StorageProvider_UU NVARCHAR2(36) DEFAULT NULL , Created DATE DEFAULT NULL , CreatedBy NUMBER(10) DEFAULT NULL , Folder NVARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')), Method NVARCHAR2(60) DEFAULT NULL , Name NVARCHAR2(60) DEFAULT NULL , Password NVARCHAR2(255) DEFAULT NULL , Updated DATE DEFAULT NULL , UpdatedBy NUMBER(10) DEFAULT NULL , URL NVARCHAR2(225) DEFAULT NULL , UserName NVARCHAR2(60) DEFAULT NULL )
 ;
 
-
 -- Nov 23, 2012 7:05:25 PM COT
 -- IDEMPIERE-390 Attachments/archives on load balancer scenario
 INSERT INTO AD_Menu (AD_Window_ID,AD_Menu_ID,IsSummary,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,Name,Description,Action,AD_Menu_UU,IsActive,AD_Client_ID,CreatedBy,Updated,AD_Org_ID,Created,UpdatedBy) VALUES (200022,200027,'N','N','N','D','Y','Storage Provider','Storage Provider','W','4b3344c7-7f1b-445d-8b1d-28774d15c361','Y',0,100,TO_DATE('2012-11-23 19:05:24','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2012-11-23 19:05:24','YYYY-MM-DD HH24:MI:SS'),100)
@@ -755,77 +754,6 @@ INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_El
 INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Name,Description,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Name,t.Description,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=200241 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
 ;
 
--- Nov 23, 2012 7:20:55 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,IsEncrypted,Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,IsAlwaysUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,IsToolbarButton) VALUES (0,'N','N',0,112,200976,'U','N','N','N',0,'N',22,'N',18,'N',200241,'N','Y','5a753477-c244-4624-a325-47647a5552b2','Y','N','AttachmentMethod','AttachmentMethod','Y',TO_DATE('2012-11-23 19:20:54','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2012-11-23 19:20:54','YYYY-MM-DD HH24:MI:SS'),100,0,'N')
-;
-
--- Nov 23, 2012 7:20:55 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=200976 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
-;
-
--- Nov 23, 2012 7:23:58 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Column SET EntityType='D', AD_Reference_ID=19, AD_Element_ID=200238, ColumnName='AD_StorageProvider_ID', Description=NULL, Help=NULL, Name='AD_StorageProvider_ID',Updated=TO_DATE('2012-11-23 19:23:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200976
-;
-
--- Nov 23, 2012 7:23:58 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Column_Trl SET IsTranslated='N' WHERE AD_Column_ID=200976
-;
-
--- Nov 23, 2012 7:23:58 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Field SET Name='AD_StorageProvider_ID', Description=NULL, Help=NULL WHERE AD_Column_ID=200976 AND IsCentrallyMaintained='Y'
-;
-
--- Nov 23, 2012 7:27:30 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-INSERT INTO AD_Field (ColumnSpan,NumLines,SortNo,IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,SeqNo,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry) VALUES (2,1,0,'N',145,0,'N','N',200976,270,'Y',200871,'N','D','AD_StorageProvider_ID','5f2578c0-0f8c-4278-8a02-574af285a1a9','Y','N',100,0,TO_DATE('2012-11-23 19:27:29','YYYY-MM-DD HH24:MI:SS'),0,100,TO_DATE('2012-11-23 19:27:29','YYYY-MM-DD HH24:MI:SS'),'Y','Y',270,1,'N')
-;
-
--- Nov 23, 2012 7:27:30 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Field_Trl_UU ) SELECT l.AD_Language,t.AD_Field_ID, t.Help,t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Field t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Field_ID=200871 AND NOT EXISTS (SELECT * FROM AD_Field_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Field_ID=t.AD_Field_ID)
-;
-
--- Nov 23, 2012 7:28:02 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Field SET SeqNo=210,IsDisplayed='Y' WHERE AD_Field_ID=200871
-;
-
--- Nov 23, 2012 7:28:02 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Field SET SeqNo=220,IsDisplayed='Y' WHERE AD_Field_ID=50184
-;
-
--- Nov 23, 2012 7:28:03 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Field SET SeqNo=230,IsDisplayed='Y' WHERE AD_Field_ID=50185
-;
-
--- Nov 23, 2012 7:28:03 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Field SET SeqNo=240,IsDisplayed='Y' WHERE AD_Field_ID=50186
-;
-
--- Nov 23, 2012 7:28:03 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Field SET SeqNo=250,IsDisplayed='Y' WHERE AD_Field_ID=54238
-;
-
--- Nov 23, 2012 7:28:03 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Field SET SeqNo=260,IsDisplayed='Y' WHERE AD_Field_ID=54680
-;
-
--- Nov 23, 2012 7:28:03 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE AD_Field SET SeqNo=270,IsDisplayed='Y' WHERE AD_Field_ID=200096
-;
-
-
 -- Nov 26, 2012 3:25:14 PM COT
 -- IDEMPIERE-390 Attachments/archives on load balancer scenario
 UPDATE AD_Table SET AccessLevel='7', AD_Window_ID=200022, Name='Storage Provider',Updated=TO_DATE('2012-11-26 15:25:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200037
@@ -1037,14 +965,14 @@ SELECT
              0,
              nextidfunc(200033,'N'),
              generate_uuid(),
-             now(),
+             sysdate,
              100,
              coalesce(windowsattachmentpath, unixattachmentpath),
              'Y',
              'FileSystem',
              'Folder',
              null,
-             now(),
+             sysdate,
              100,
              null,
              null
@@ -1057,6 +985,221 @@ UPDATE ad_clientinfo
 FROM ad_storageprovider
 WHERE ad_clientinfo.ad_client_id IN
   (SELECT ad_client_id FROM ad_client WHERE storeattachmentsonfilesystem='Y' AND (windowsattachmentpath is not null or unixattachmentpath is not null))
+;
+
+-- Nov 28, 2012 4:20:06 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Element SET Name='Storage Provider',Updated=TO_DATE('2012-11-28 16:20:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=200238
+;
+
+-- Nov 28, 2012 4:20:06 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=200238
+;
+
+-- Nov 28, 2012 4:20:06 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET ColumnName='AD_StorageProvider_ID', Name='Storage Provider', Description=NULL, Help=NULL WHERE AD_Element_ID=200238
+;
+
+-- Nov 28, 2012 4:20:06 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Process_Para SET ColumnName='AD_StorageProvider_ID', Name='Storage Provider', Description=NULL, Help=NULL, AD_Element_ID=200238 WHERE UPPER(ColumnName)='AD_STORAGEPROVIDER_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Nov 28, 2012 4:20:06 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Process_Para SET ColumnName='AD_StorageProvider_ID', Name='Storage Provider', Description=NULL, Help=NULL WHERE AD_Element_ID=200238 AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 28, 2012 4:20:06 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Field SET Name='Storage Provider', Description=NULL, Help=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=200238) AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 28, 2012 4:20:06 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_PrintFormatItem pi SET PrintName='Storage Provider', Name='Storage Provider' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=200238)
+;
+
+-- Nov 28, 2012 4:23:32 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsKey='Y', IsUpdateable='N', IsAllowCopy='N',Updated=TO_DATE('2012-11-28 16:23:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200961
+;
+
+-- Nov 28, 2012 4:23:43 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY AD_StorageProvider_ID NUMBER(10) DEFAULT NULL 
+;
+
+-- Nov 28, 2012 4:25:18 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='N',Updated=TO_DATE('2012-11-28 16:25:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200962
+;
+
+-- Nov 28, 2012 4:25:21 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY AD_Client_ID NUMBER(10)
+;
+
+-- Nov 28, 2012 4:25:21 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY AD_Client_ID NOT NULL
+;
+
+-- Nov 28, 2012 4:26:02 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsMandatory='Y', AD_Val_Rule_ID=104, IsUpdateable='N',Updated=TO_DATE('2012-11-28 16:26:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200963
+;
+
+-- Nov 28, 2012 4:26:05 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY AD_Org_ID NUMBER(10)
+;
+
+-- Nov 28, 2012 4:26:05 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY AD_Org_ID NOT NULL
+;
+
+-- Nov 28, 2012 4:26:50 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='N',Updated=TO_DATE('2012-11-28 16:26:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200964
+;
+
+-- Nov 28, 2012 4:26:53 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY Created DATE
+;
+
+-- Nov 28, 2012 4:26:53 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY Created NOT NULL
+;
+
+-- Nov 28, 2012 4:27:21 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='N',Updated=TO_DATE('2012-11-28 16:27:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200965
+;
+
+-- Nov 28, 2012 4:27:24 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY CreatedBy NUMBER(10)
+;
+
+-- Nov 28, 2012 4:27:24 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY CreatedBy NOT NULL
+;
+
+-- Nov 28, 2012 4:28:01 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2012-11-28 16:28:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200968
+;
+
+-- Nov 28, 2012 4:28:05 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY IsActive CHAR(1) DEFAULT 'Y'
+;
+
+-- Nov 28, 2012 4:28:05 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_StorageProvider SET IsActive='Y' WHERE IsActive IS NULL
+;
+
+-- Nov 28, 2012 4:28:05 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY IsActive NOT NULL
+;
+
+-- Nov 28, 2012 4:28:41 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='N',Updated=TO_DATE('2012-11-28 16:28:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200961
+;
+
+-- Nov 28, 2012 4:28:45 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY AD_StorageProvider_ID NUMBER(10)
+;
+
+-- Nov 28, 2012 4:28:45 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY AD_StorageProvider_ID NOT NULL
+;
+
+-- Nov 28, 2012 4:29:44 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsIdentifier='Y', SeqNo=1,Updated=TO_DATE('2012-11-28 16:29:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200969
+;
+
+-- Nov 28, 2012 4:29:49 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY Name NVARCHAR2(60)
+;
+
+-- Nov 28, 2012 4:30:25 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='N',Updated=TO_DATE('2012-11-28 16:30:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200966
+;
+
+-- Nov 28, 2012 4:30:29 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY Updated DATE
+;
+
+-- Nov 28, 2012 4:30:29 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY Updated NOT NULL
+;
+
+-- Nov 28, 2012 4:30:58 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET IsMandatory='Y', IsUpdateable='N',Updated=TO_DATE('2012-11-28 16:30:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200967
+;
+
+-- Nov 28, 2012 4:31:03 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY UpdatedBy NUMBER(10)
+;
+
+-- Nov 28, 2012 4:31:03 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+ALTER TABLE AD_StorageProvider MODIFY UpdatedBy NOT NULL
+;
+
+-- Nov 28, 2012 4:32:20 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Element SET Help=NULL, Name='User Name', Description=NULL, PrintName='User Name',Updated=TO_DATE('2012-11-28 16:32:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=1903
+;
+
+-- Nov 28, 2012 4:32:20 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=1903
+;
+
+-- Nov 28, 2012 4:32:20 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Column SET ColumnName='UserName', Name='User Name', Description=NULL, Help=NULL WHERE AD_Element_ID=1903
+;
+
+-- Nov 28, 2012 4:32:20 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Process_Para SET ColumnName='UserName', Name='User Name', Description=NULL, Help=NULL, AD_Element_ID=1903 WHERE UPPER(ColumnName)='USERNAME' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Nov 28, 2012 4:32:20 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Process_Para SET ColumnName='UserName', Name='User Name', Description=NULL, Help=NULL WHERE AD_Element_ID=1903 AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 28, 2012 4:32:20 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_Field SET Name='User Name', Description=NULL, Help=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=1903) AND IsCentrallyMaintained='Y'
+;
+
+-- Nov 28, 2012 4:32:20 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario
+UPDATE AD_PrintFormatItem pi SET PrintName='User Name', Name='User Name' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=1903)
 ;
 
 SELECT register_migration_script('201211281100IDEMPIERE_390.sql') FROM dual
