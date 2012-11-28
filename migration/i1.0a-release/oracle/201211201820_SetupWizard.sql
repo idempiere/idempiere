@@ -615,6 +615,26 @@ UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=28, Updated=SysDate WHERE AD_Tree_
 UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=29, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200024
 ;
 
+-- Nov 28, 2012 1:11:04 AM COT
+-- IDEMPIERE-393 Setup wizards
+INSERT INTO AD_Message (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,Value,IsActive,Updated,CreatedBy,UpdatedBy,AD_Client_ID,AD_Org_ID,Created) VALUES ('I','Just Mine',200117,'D','0c220c5c-719f-4b8f-82d6-a21b0c123e66','JustMine','Y',TO_DATE('2012-11-28 01:11:03','YYYY-MM-DD HH24:MI:SS'),100,100,0,0,TO_DATE('2012-11-28 01:11:03','YYYY-MM-DD HH24:MI:SS'))
+;
+
+-- Nov 28, 2012 1:11:04 AM COT
+-- IDEMPIERE-393 Setup wizards
+INSERT INTO AD_Message_Trl (AD_Language,AD_Message_ID, MsgText,MsgTip, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Message_Trl_UU ) SELECT l.AD_Language,t.AD_Message_ID, t.MsgText,t.MsgTip, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Message t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Message_ID=200117 AND NOT EXISTS (SELECT * FROM AD_Message_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Message_ID=t.AD_Message_ID)
+;
+
+-- Nov 28, 2012 1:11:20 AM COT
+-- IDEMPIERE-393 Setup wizards
+INSERT INTO AD_Message (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,Value,IsActive,Updated,CreatedBy,UpdatedBy,AD_Client_ID,AD_Org_ID,Created) VALUES ('I','Show Colors',200118,'D','4f917ca8-a515-4038-add0-a3bd5d4b2907','ShowColors','Y',TO_DATE('2012-11-28 01:11:20','YYYY-MM-DD HH24:MI:SS'),100,100,0,0,TO_DATE('2012-11-28 01:11:20','YYYY-MM-DD HH24:MI:SS'))
+;
+
+-- Nov 28, 2012 1:11:20 AM COT
+-- IDEMPIERE-393 Setup wizards
+INSERT INTO AD_Message_Trl (AD_Language,AD_Message_ID, MsgText,MsgTip, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Message_Trl_UU ) SELECT l.AD_Language,t.AD_Message_ID, t.MsgText,t.MsgTip, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Message t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Message_ID=200118 AND NOT EXISTS (SELECT * FROM AD_Message_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Message_ID=t.AD_Message_ID)
+;
+
 SELECT register_migration_script('201211201820_SetupWizard.sql') FROM dual
 ;
 
