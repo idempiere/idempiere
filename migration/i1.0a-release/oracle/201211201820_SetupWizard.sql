@@ -145,6 +145,476 @@ UPDATE AD_Field SET SeqNo=30,Updated=TO_DATE('2012-11-20 14:55:17','YYYY-MM-DD H
 INSERT INTO AD_TreeBar (AD_Tree_ID,AD_User_ID,Node_ID, AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy)VALUES (10,0,495,0,0,'Y',SysDate,0,SysDate,0)
 ;
 
+-- Nov 27, 2012 10:58:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Tab SET IsSingleRow='Y', IsInsertRecord='N',Updated=TO_DATE('2012-11-27 22:58:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200031
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET ColumnSpan=2, SeqNo=10, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200841
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET ColumnSpan=2, SeqNo=20, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200844
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET ColumnSpan=2, SeqNo=30,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200842
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNo=40, IsDisplayed='Y', XPosition=5,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200839
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET ColumnSpan=2, SeqNo=50, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200847
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET ColumnSpan=2, SeqNo=60, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200845
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET ColumnSpan=5, NumLines=5, SeqNo=70, IsDisplayed='Y', XPosition=1,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200843
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNo=0, IsDisplayed='N', XPosition=1,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200840
+;
+
+-- Nov 27, 2012 11:01:07 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET ColumnSpan=2, SeqNo=0, IsDisplayed='N', XPosition=1,Updated=TO_DATE('2012-11-27 23:01:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200846
+;
+
+-- Nov 27, 2012 11:02:42 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Column SET AD_Reference_Value_ID=286, AD_Reference_ID=30,Updated=TO_DATE('2012-11-27 23:02:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200913
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=200840
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=200841
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=200844
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=200846
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=10,IsDisplayedGrid='Y' WHERE AD_Field_ID=200842
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=20,IsDisplayedGrid='Y' WHERE AD_Field_ID=200847
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=30,IsDisplayedGrid='Y' WHERE AD_Field_ID=200845
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=40,IsDisplayedGrid='Y' WHERE AD_Field_ID=200843
+;
+
+-- Nov 27, 2012 11:04:10 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_Field SET SeqNoGrid=50,IsDisplayedGrid='Y' WHERE AD_Field_ID=200839
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=218
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=1, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=153
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=2, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=263
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=3, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=166
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=4, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=203
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=5, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53242
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=6, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=236
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=7, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=183
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=8, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=160
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=9, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=278
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=10, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=345
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=11, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53296
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=12, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=519
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=13, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53014
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=14, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53108
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=15, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=518
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=16, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200024
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=261
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=1, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53202
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=2, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=225
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=3, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200009
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=4, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200026
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=5, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=148
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=6, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=529
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=7, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=397
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=8, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=532
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=9, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53084
+;
+
+-- Nov 27, 2012 11:08:18 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=156, SeqNo=10, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53083
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=218
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=1, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=153
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=2, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=263
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=3, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=166
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=4, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=203
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=5, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53242
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=6, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=236
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=7, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=183
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=8, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=160
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=9, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=278
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=10, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=345
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=11, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53296
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=12, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=519
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=13, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53014
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=14, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53108
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=15, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=518
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=241
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=1, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=288
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=2, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=432
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=3, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=243
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=4, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=413
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=5, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=538
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=6, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=462
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=7, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=505
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=8, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200023
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=9, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=235
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=10, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=511
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=11, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=245
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=12, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=251
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=13, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=246
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=14, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=509
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=15, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=510
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=16, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=496
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=17, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=497
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=18, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=304
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=19, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=255
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=20, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=286
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=21, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=287
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=22, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=438
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=23, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=234
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=24, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=244
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=25, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53313
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=26, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53314
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=27, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53190
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=28, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53187
+;
+
+-- Nov 27, 2012 11:08:49 PM COT
+-- IDEMPIERE-393 Setup wizards
+UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=29, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200024
+;
+
 SELECT register_migration_script('201211201820_SetupWizard.sql') FROM dual
 ;
 

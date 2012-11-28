@@ -588,9 +588,15 @@ public abstract class PO
 			log.log(Level.WARNING, "Index invalid - " + index);
 			return false;
 		}
-		if (m_newValues[index] == null)
+		Object newval = m_newValues[index];
+		if (newval == null)
 			return false;
-		return !m_newValues[index].equals(m_oldValues[index]);
+		if (newval == Null.NULL)
+			newval = null;
+		Object oldval = m_oldValues[index];
+		if (newval == null && oldval == null)
+			return false;
+		return !newval.equals(oldval);
 	}   //  is_ValueChanged
 
 	/**

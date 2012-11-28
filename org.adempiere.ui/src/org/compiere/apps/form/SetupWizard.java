@@ -80,20 +80,21 @@ public class SetupWizard
 			.list();
 	}
 
-	public void save(String note, String wizardStatus, int userField) {
+	public boolean save(String note, String wizardStatus, int userid) {
 		MWizardProcess wp = MWizardProcess.get(Env.getCtx(), m_node.getAD_WF_Node_ID(), Env.getAD_Client_ID(Env.getCtx()));
 		if (note != null && note.length() == 0)
 			note = null;
 		if (wizardStatus != null && wizardStatus.length() == 0)
 			wizardStatus = null;
-		if ((wp.getAD_User_ID() == 0 && userField != 0) || (userField == 0 && userField != wp.getAD_User_ID()))
-			wp.setAD_User_ID(userField);
-		if ((wp.getNote() == null && note != null) || (note != null && !note.equals(wp.getNote())))
-			wp.setNote(note);
-		if ((wp.getWizardStatus() == null && wizardStatus != null) || (wizardStatus != null && !wizardStatus.equals(wp.getWizardStatus())))
-			wp.setWizardStatus(wizardStatus);
-		if (wp.is_Changed())
+		wp.setAD_User_ID(userid);
+		wp.setNote(note);
+		wp.setWizardStatus(wizardStatus);
+		boolean statusChanged = wp.is_ValueChanged("WizardStatus");
+		if (statusChanged
+			|| wp.is_ValueChanged("Note")
+			|| wp.is_ValueChanged("AD_User_ID"))
 			wp.saveEx();
+		return statusChanged;
 	}
 
 }   //  SetupWizard

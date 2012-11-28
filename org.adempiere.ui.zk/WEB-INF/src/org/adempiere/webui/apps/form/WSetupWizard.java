@@ -35,8 +35,6 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
-import org.adempiere.webui.event.ValueChangeEvent;
-import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
@@ -75,8 +73,7 @@ import org.zkoss.zul.West;
  * @author Carlos Ruiz
  *
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
-public class WSetupWizard extends SetupWizard implements IFormController, EventListener, ValueChangeListener
+public class WSetupWizard extends SetupWizard implements IFormController, EventListener
 {
 	private CustomForm form = new CustomForm();	
 	
@@ -86,6 +83,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private Label			progressLabel	= new Label();
 	//
 	private Tree			wfnodeTree;
+	private Treeitem 		prevti = null;
 
 	private Label			titleLabel	= new Label();
 	private Iframe			helpFrame	= new Iframe();
@@ -103,9 +101,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private Button 			bNext 		= new Button();
 	private Button 			bZoom 		= new Button();
 	private Button 			bExpand 	= new Button();
-	
-	
-	
+
 	private Checkbox		justmine    = new Checkbox();
 	private Checkbox		showColors = new Checkbox();
 	
@@ -117,12 +113,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private Vbox east = new Vbox();
 	private Vbox eastdown = new Vbox();
 	private Vbox westdown = new Vbox();
-	
-	private Boolean [] status= null;
-	private boolean first = true;
-	private int i = 0;
-	
-	
+	private ArrayList<Integer> openNodes = new ArrayList<Integer>();
 
 	public WSetupWizard()
 	{
@@ -131,7 +122,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			preInit();
 			jbInit ();
 			LayoutUtils.sendDeferLayoutEvent(mainLayout, 100);
-			first = false;
 		}
 		catch (Exception ex)
 		{
@@ -154,6 +144,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	 * 	Load Wizard Nodes
 	 */
 	private void loadWizardNodes() {
+		nextItems.removeAll(nextItems);
 		Treechildren treeChildren = wfnodeTree.getTreechildren();		
 		List<MWorkflow> wfwizards = getWfWizards();
 		if (treeChildren == null)
@@ -161,7 +152,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			treeChildren = new Treechildren();
 			wfnodeTree.appendChild(treeChildren);
 			wfnodeTree.setMultiple(false);
-			status= new Boolean[wfwizards.size()];
 		}
 		
 		for(MWorkflow wfwizard : wfwizards)
@@ -189,17 +179,16 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		Treecell treecell = new Treecell();
 		treerow.appendChild(treecell);
 		treecell.appendChild(div);
-		
-		if(first)
 		nextItems.add(treeitemwf);
-		
-		if (status[i] != null){
-			treeitemwf.setOpen(status[i]);
-			i++;
-		}
+		if (openNodes.contains(wfwizard.getAD_Workflow_ID()))
+			treeitemwf.setOpen(true);
 		addNodes(wfwizard, treeitemwf);
 
 		treeitemwf.setAttribute("AD_Workflow_ID", wfwizard.getAD_Workflow_ID());
+		if (prevti != null && prevti.getAttribute("AD_Workflow_ID") != null) {
+			if (prevti.getAttribute("AD_Workflow_ID").equals(treeitemwf.getAttribute("AD_Workflow_ID")))
+				wfnodeTree.setSelectedItem(treeitemwf);
+		}
 
 	}
 
@@ -213,19 +202,14 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private void addWfNode(MWFNode node, Treeitem treeitemwf) {
 		/* TODO: Color of node according to wizard status */
 		Label nodeLabel = new Label(node.getName(true));
-		if (node != null && showColors.isChecked()){
+		if (node != null && showColors.isChecked()) {
 			MWizardProcess wp = MWizardProcess.get(Env.getCtx(), node.getAD_WF_Node_ID(), Env.getAD_Client_ID(Env.getCtx()));
-			
-			if (MWizardProcess.WIZARDSTATUS_Pending.equals(wp.getWizardStatus())         || 
-					MWizardProcess.WIZARDSTATUS_Delayed.equals(wp.getWizardStatus())     ||
-					MWizardProcess.WIZARDSTATUS_In_Progress.equals(wp.getWizardStatus()) ||
-					wp.getWizardStatus() == null){
+			String status = wp.getWizardStatus();
+			if (   MWizardProcess.WIZARDSTATUS_Finished.equals(status)
+				|| MWizardProcess.WIZARDSTATUS_Skipped.equals(status)) {
+				nodeLabel.setStyle("background-color: #90EE90;margin-left:20px;");
+			} else {
 				nodeLabel.setStyle("background-color: #FFFF00;margin-left:20px;");
-				
-				
-			}else if (MWizardProcess.WIZARDSTATUS_Finished.equals(wp.getWizardStatus()) || 
-						MWizardProcess.WIZARDSTATUS_Skipped.equals(wp.getWizardStatus())){
-				nodeLabel.setStyle("background-color: #00b300;margin-left:20px;");
 			}
 		}
 		
@@ -249,7 +233,10 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		treecell.appendChild(div);
 
 		childItem.setAttribute("AD_WF_Node_ID", node.getAD_WF_Node_ID());
-		if(first)
+		if (prevti != null && prevti.getAttribute("AD_WF_Node_ID") != null) {
+			if (prevti.getAttribute("AD_WF_Node_ID").equals(childItem.getAttribute("AD_WF_Node_ID")))
+				wfnodeTree.setSelectedItem(childItem);
+		}
 		nextItems.add(childItem);
 	}
 
@@ -275,7 +262,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		bOK.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
 		bOK.addEventListener(Events.ON_CLICK, this);
 
-		bNext.setImage("/images/Detail24.png");
+		bNext.setImage("/images/Next24.png");
 		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		bNext.addEventListener(Events.ON_CLICK, this);
 		
@@ -315,7 +302,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 				false, "AD_Ref_List.Value IN ('D','S','I','F','P')");
 		statusField = new WTableDirEditor("WizardStatus", true, false, true,wizardL);
 		statusField.setValue(MWizardProcess.WIZARDSTATUS_Pending);
-		statusField.addValueChangeListener(this);
 		
 		east.setVflex("1");
 		east.setHflex("1");
@@ -367,11 +353,9 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), form.getWindowNo(),
                 0, 200913, DisplayType.Search);
-        userField = new WSearchEditor(lookup, Msg.translate(
+		userField = new WSearchEditor(lookup, Msg.translate(
                 Env.getCtx(), "AD_User_ID"), "", false, false, true);
-        userField.addValueChangeListener(this);
 
-    
 		row = new Row();
 		rows.appendChild(row);
 		westdown.setOrient("horizontal");
@@ -388,7 +372,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		row.appendChild(westdown);
 		row.setAlign("right");
 
-		
 		East east = new East();
 		mainLayout.appendChild(east);
 		east.appendChild(gridView);
@@ -432,16 +415,13 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		if (e.getTarget() == wfnodeTree) {
 			onTreeSelection(e);
 		} else if (e.getTarget() == bRefresh) {
-			refresh();
 			showInRightPanel(0, m_node.getAD_WF_Node_ID());
 		} else if (e.getTarget() == bOK) {
 			int userid = 0;
 			if (!userField.isNullOrEmpty())
 				userid = (Integer)userField.getValue();
-			save(notesField.getText(), (String) statusField.getValue(), userid);
-			showInRightPanel(0, m_node.getAD_WF_Node_ID());
-			refreshProgress();
-			repaintTree();
+			if (save(notesField.getText(), (String) statusField.getValue(), userid))
+				repaintTree();
 		} else if (e.getTarget() == bNext) {
 			navigateToNext();
 		} else if (e.getTarget() == bZoom) {
@@ -457,36 +437,33 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}	//	actionPerformed
 
 	private void showColors() {
-		if(!showColors.isChecked()){
+		if (!showColors.isChecked()) {
 			for (Treeitem nextItem : nextItems){
 				Treeitem ti= nextItem;
-				if (ti.getLevel()!= 0){
-					MWizardProcess wp = MWizardProcess.get(Env.getCtx(), (Integer) ti.getAttribute("AD_WF_Node_ID"), Env.getAD_Client_ID(Env.getCtx()));
+				if (ti.getLevel() != 0) {
 					ti.setStyle("background-color: #FFFFFF;");
 				}
 			}
 		}
 		repaintTree();
-		
 	}
 
 	private void justMine() {
-		
-		if(justmine.isChecked()){
+		if (justmine.isChecked()) {
 			showChildren(false);
-		}else {
+		} else {
 			showChildren(true);
 		}
 	}
 
-	private void showChildren(Boolean show) {
+	private void showChildren(boolean showmine) {
 		int user = Env.getAD_User_ID(Env.getCtx());
 		for (Treeitem nextItem : nextItems){
 			Treeitem ti= nextItem;
 			if (ti.getLevel()!= 0){
 				MWizardProcess wp = MWizardProcess.get(Env.getCtx(), (Integer) ti.getAttribute("AD_WF_Node_ID"), Env.getAD_Client_ID(Env.getCtx()));
 				if (wp.getAD_User_ID() != user){
-					ti.setVisible(show);
+					ti.setVisible(showmine);
 				}
 			}
 		}
@@ -515,36 +492,27 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		east.removeChild(eastdown);
 		east.setVflex("1");
 		east.setHflex("1");
-		for (Treeitem nextItem : nextItems){
-			Treeitem ti= nextItem;
-			ti.getValue();
-			if(ti.getLevel()==0){
-				status[i]= ti.isOpen();
-				i++;
+		openNodes.removeAll(openNodes);
+		for (Treeitem nextItem : nextItems) {
+			if (nextItem.isOpen() && nextItem.getAttribute("AD_Workflow_ID") != null) {
+				openNodes.add((Integer) nextItem.getAttribute("AD_Workflow_ID"));
 			}
 		}
-		i=0;
+		prevti = wfnodeTree.getSelectedItem();
 		wfnodeTree.clear();
 		loadWizardNodes();
-		i=0;
 		east.appendChild(wfnodeTree);
 		east.appendChild(eastdown);
 		refreshProgress();
 	}
 	
-	private void refresh() {
-		if (m_node != null) {
-			MWizardProcess wp = MWizardProcess.get(Env.getCtx(), m_node.getAD_WF_Node_ID(), Env.getAD_Client_ID(Env.getCtx()));
-			notesField.setText(wp.getNote());
-			statusField.setValue(wp.getWizardStatus());
-			userField.setValue(wp.getAD_User());
-		}
-	}
-
 	private void navigateToNext() {
+		boolean repaint = false;
 		if (m_node != null) {
-			save(notesField.getText(), (String) statusField.getValue(), (Integer)userField.getValue());
-			refreshProgress();
+			int userid = 0;
+			if (!userField.isNullOrEmpty())
+				userid = (Integer)userField.getValue();
+			repaint = save(notesField.getText(), (String) statusField.getValue(), userid);
 		}
 		Treeitem ti = wfnodeTree.getSelectedItem();
 		if (ti == null || nextItems.indexOf(ti)+1 == nextItems.size()) {
@@ -557,6 +525,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			wfnodeTree.setSelectedItem(nextti);
 			showItem(nextti);
 		}
+		if (repaint)
+			repaintTree();
 	}
 
 	/**
@@ -593,11 +563,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			MWizardProcess wp = MWizardProcess.get(Env.getCtx(), ad_wf_node_id, Env.getAD_Client_ID(Env.getCtx()));
 			notesField.setText(wp.getNote());
 			statusField.setValue(wp.getWizardStatus());
-			if (wp.getAD_User_ID()==0){
-				userField.setValue(null);
-			}else{
-				userField.setValue(wp.getAD_User_ID());
-			}
+			userField.setValue(wp.getAD_User_ID() > 0 ? wp.getAD_User_ID() : null);
 			setNotesPanelVisible(true);
 		} else {
 			MWorkflow wf = MWorkflow.get(Env.getCtx(), ad_workflow_id);
@@ -632,12 +598,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	public ADForm getForm() 
 	{
 		return form;
-	}
-
-	@Override
-	public void valueChange(ValueChangeEvent e) {
-		log.info(e.getPropertyName() + "=" + e.getNewValue());
-		/* if (e.getPropertyName().equals("WizardStatus")) */
 	}
 
 } // WSetupWizard
