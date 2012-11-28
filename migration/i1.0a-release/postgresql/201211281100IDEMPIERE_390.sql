@@ -982,7 +982,6 @@ WHERE storeattachmentsonfilesystem='Y' AND (windowsattachmentpath is not null or
 
 UPDATE ad_clientinfo
    SET ad_storageprovider_id = (SELECT ad_storageprovider_id FROM ad_storageprovider WHERE ad_storageprovider.ad_client_id=ad_clientinfo.ad_client_id)
-FROM ad_storageprovider
 WHERE ad_clientinfo.ad_client_id IN
   (SELECT ad_client_id FROM ad_client WHERE storeattachmentsonfilesystem='Y' AND (windowsattachmentpath is not null or unixattachmentpath is not null))
 ;
