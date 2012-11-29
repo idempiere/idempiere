@@ -553,7 +553,7 @@ public final class Adempiere
 	}   //  startup
 
 	private static void createThreadPool() {
-		int max = Runtime.getRuntime().availableProcessors() * 3;
+		int max = Runtime.getRuntime().availableProcessors() * 20;
 		int min = max / 2;
 		int defaultMax = max;
 		int defaultMin = min;

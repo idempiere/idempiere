@@ -20,9 +20,11 @@ the License.
 package fi.jawsy.jawwa.zk.atmosphere;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.atmosphere.cpr.AtmosphereResource;
+import org.compiere.Adempiere;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.lang.Library;
@@ -34,6 +36,7 @@ import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.impl.ExecutionCarryOver;
+import org.zkoss.zk.ui.sys.DesktopCtrl;
 import org.zkoss.zk.ui.sys.Scheduler;
 import org.zkoss.zk.ui.sys.ServerPush;
 import org.zkoss.zk.ui.util.Clients;
@@ -112,35 +115,19 @@ public class AtmosphereServerPush implements ServerPush {
     	return true;
     }
 
-    public synchronized void clearResource(AtmosphereResource resource) {
+    public void clearResource(AtmosphereResource resource) {
         this.resource.compareAndSet(resource, null);
     }
 
-    private synchronized void commitResponse() throws IOException {    	
+    private boolean commitResponse() throws IOException {    	
         AtmosphereResource resource = this.resource.getAndSet(null);
-        if (resource != null) {
-        	resource.resume();            
-        }
+        if (resource != null && resource.isSuspended()) {
+        	resource.resume();
+        	return true;
+        } 
+        return false;
     }
 
-    private synchronized void onPush() throws IOException {
-    	AtmosphereResource resource = this.resource.get();
-    	if (resource != null) {	    	
-	    	switch (resource.transport()) {
-	    	case POLLING:
-	    	case LONG_POLLING:
-	    		if (resource.isSuspended())
-	    			commitResponse();
-	    		break;
-	    	case WEBSOCKET :
-	    	case STREAMING:
-	    		resource.getResponse().getWriter().write("<!-- dummy -->");
-	    		resource.getResponse().getWriter().flush();
-	    		break;
-	    	}
-    	} 
-    }
-    
     @Override
     public boolean deactivate(boolean stop) {
     	boolean stopped = false;
@@ -175,11 +162,11 @@ public class AtmosphereServerPush implements ServerPush {
     }
 
     @Override
-	public synchronized <T extends Event> void schedule(EventListener<T> task, T event,
+	public <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
         scheduler.schedule(task, event);
         try {
-			onPush();
+        	commitResponse();
 		} catch (IOException e) {
 			log.error(e.getLocalizedMessage(), e);
 		}
@@ -215,26 +202,53 @@ public class AtmosphereServerPush implements ServerPush {
 		}
     }
 
-    public synchronized void onRequest(AtmosphereResource resource) {
-    	if (this.resource.get() != null) {
-    		AtmosphereResource aResource = this.resource.get();
-    		if (aResource != resource) {
-    			try {
-					onPush();
-				} catch (IOException e) {
-					log.error(e.getLocalizedMessage(), e);
-				}
-    		}
-		} 
-
-	  	this.resource.set(resource);
-	  	if (log.isTraceEnabled()) {
+    public void onRequest(AtmosphereResource resource) {
+    	if (log.isTraceEnabled()) {
 	  		log.trace(resource.transport().name());
 	  	}
-	  	if (!resource.isSuspended()) {
-	  		resource.suspend(-1, true);
-	  	}
+    	
+		try {
+			commitResponse();
+		} catch (IOException e) {
+			log.error(e.getLocalizedMessage(), e);
+		}
+
+    	DesktopCtrl desktopCtrl = (DesktopCtrl) this.desktop.get();
+        if (desktopCtrl == null) {
+        	log.error("No desktop available");
+            return;
+        }
+
+        boolean suspend = !desktopCtrl.scheduledServerPush();
+        if (suspend) {
+		  	if (!resource.isSuspended()) {
+		  		resource.suspend(-1, true);
+		  	}
+		  	this.resource.set(resource);
+		  	
+		  	//check again, just in case task is schedule between the resource.suspend and resource.set call
+		  	if (desktopCtrl.scheduledServerPush()) {
+		  		scheduleCommit();
+		  	}
+        }	  	
     }
+
+	private void scheduleCommit() {
+		Adempiere.getThreadPoolExecutor().schedule(new Runnable() {					
+			@Override
+			public void run() {
+				DesktopCtrl desktopCtrl = (DesktopCtrl) AtmosphereServerPush.this.desktop.get();
+		        if (desktopCtrl == null) return;
+		        if (desktopCtrl.scheduledServerPush()) {
+					try {
+						commitResponse();
+					} catch (IOException e) {
+						log.error(e.getLocalizedMessage(), e);
+					}
+		        }
+			}
+		}, 100, TimeUnit.MILLISECONDS);
+	}
     
 	private static class ThreadInfo {
 		private final Thread thread;

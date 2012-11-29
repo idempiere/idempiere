@@ -24,9 +24,8 @@
       this.timeout = timeout;
     },
     _schedule: function() {
-      if (this.failures < 10) {
-        var delay = this.delay * Math.pow(2, Math.min(this.failures, 7));
-        setTimeout(this.proxy(this._send), delay);
+      if (this.failures < 100) {
+        setTimeout(this.proxy(this._send), this.delay);
       } else {
         this.stop();
       }
@@ -34,45 +33,36 @@
     _send: function() {
       if (!this.active)
         return;
-      
+
       var me = this;
-      var socket = $.atmosphere;
-      var request = { 
-    		url: zk.ajaxURI("/comet", {
-    	          au: true
-    	        }),    	        
-		  	logLevel : 'debug',
-		  	transport :  'long-polling',
-		  	fallbackTransport: 'streaming',
-			method: "GET",
-			cache: false,
-			async: true,
-		    timeout: me.timeout,
-		    onError: function(response) {
-		    	if (typeof console == "object") {
-		            console.error(response);
-		        }
-		    	me.failures += 1;
-		    	if (me.failures < 10) {
-		    		if (response.transport == 'long-polling') {		    			
-			    		me._schedule();
-		    		}		    		
-		    	} else {
-		    		me.stop();
-		    	}
-            },
-            onMessage: function(response) {
-            	zAu.cmd0.echo(me.desktop);
-            	me.failures = 0;
-            	if (response.transport == 'long-polling') {
-            		me._schedule();
-            	}
-            }
-      };
-      
-      request.url = request.url+'?dtid='+me.desktop.id;
-      socket.unsubscribe();
-      socket.subscribe(request);      
+      var jqxhr = $.ajax({
+        url: zk.ajaxURI("/comet", {
+          au: true
+        }),
+        type: "GET",
+        cache: false,
+        async: true,
+        global: false,
+        data: {
+          dtid: this.desktop.id
+        },
+        accepts: "text/plain",
+        dataType: "text",
+        timeout: me.timeout,
+        error: function(jqxhr, textStatus, errorThrown) {
+          if (typeof console == "object") {
+            console.error(errorThrown);
+          }
+          me.failures += 1;
+          me._schedule();
+        },
+        success: function(data) {
+          zAu.cmd0.echo(me.desktop);
+          me.failures = 0;
+          me._schedule();
+        }
+      });
+      this._req = jqxhr;
     },
     start: function() {
       this.desktop._serverpush = this;
