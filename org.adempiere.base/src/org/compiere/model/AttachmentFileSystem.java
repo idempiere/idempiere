@@ -17,29 +17,29 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.compiere.util.CLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.SAXException;
 
 /**
@@ -92,7 +92,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 					FileChannel out = null;
 					try {
 						//create destination folder
-						StringBuilder msgfile = new StringBuilder().append(attach.m_attachmentPathRoot).append(File.separator).append(attach.getAttachmentPathSnippet());
+						StringBuilder msgfile = new StringBuilder().append(attach.m_attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet(attach));
 						final File destFolder = new File(msgfile.toString());
 						if(!destFolder.exists()){
 							if(!destFolder.mkdirs()){
@@ -100,7 +100,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 							}
 						}
 						msgfile = new StringBuilder().append(attach.m_attachmentPathRoot).append(File.separator)
-								.append(attach.getAttachmentPathSnippet()).append(File.separator).append(entryFile.getName());
+								.append(getAttachmentPathSnippet(attach)).append(File.separator).append(entryFile.getName());
 						final File destFile = new File(msgfile.toString());
 						in = new FileInputStream(entryFile).getChannel();
 						out = new FileOutputStream(destFile).getChannel();
@@ -118,7 +118,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 						e.printStackTrace();
 						log.severe("unable to copy file " + entryFile.getAbsolutePath() + " to "
 								+ attach.m_attachmentPathRoot + File.separator + 
-								attach.getAttachmentPathSnippet() + File.separator + entryFile.getName());
+								getAttachmentPathSnippet(attach) + File.separator + entryFile.getName());
 					} finally {
 						if (in != null && in.isOpen()) {
 							in.close();
@@ -146,6 +146,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			final byte[] xmlData = bos.toByteArray();
 			log.fine(bos.toString());
 			attach.setBinaryData(xmlData);
+			attach.setTitle(MAttachment.XML);
 			return true;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "saveLOBData", e);
@@ -246,5 +247,53 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		return true;
 	}
 
+	/**
+	 * Returns a path snippet, containing client, org, table and record id.
+	 * @return String
+	 */
+	private String getAttachmentPathSnippet(MAttachment attach){
+		
+		StringBuilder msgreturn = new StringBuilder().append(attach.getAD_Client_ID()).append(File.separator)
+				.append(attach.getAD_Org_ID()).append(File.separator)
+				.append(attach.getAD_Table_ID()).append(File.separator).append(attach.getRecord_ID());
+		return msgreturn.toString();
+	}
+
+	@Override
+	public boolean delete(MAttachment attach, MStorageProvider prov) {
+		//delete all attachment files and folder
+		for (int i=0; i < attach.m_items.size(); i++) {
+			final MAttachmentEntry entry = attach.m_items.get(i);
+			final File file = entry.getFile();
+			if (file !=null && file.exists()) {
+				if (!file.delete()) {
+					log.warning("unable to delete " + file.getAbsolutePath());
+				}
+			}
+		}
+		final File folder = new File(m_attachmentPathRoot + getAttachmentPathSnippet(attach));
+		if (folder.exists()) {
+			if (!folder.delete()) {
+				log.warning("unable to delete " + folder.getAbsolutePath());
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean deleteEntry(MAttachment attach, MStorageProvider provider, int index) {
+		//remove files
+		final MAttachmentEntry entry = attach.m_items.get(index);
+		final File file = entry.getFile();
+		log.fine("delete: " + file.getAbsolutePath());
+		if (file != null && file.exists()) {
+			if (!file.delete()) {
+				log.warning("unable to delete " + file.getAbsolutePath());
+			}
+		}
+		attach.m_items.remove(index);
+		log.config("Index=" + index + " - NewSize=" + attach.m_items.size());
+		return true;
+	}
 	
 }

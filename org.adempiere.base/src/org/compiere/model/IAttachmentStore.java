@@ -18,9 +18,15 @@
 package org.compiere.model;
 
 
+
 public interface IAttachmentStore {
 
     public boolean loadLOBData(MAttachment attach,MStorageProvider prov);
 
 	boolean save(MAttachment attach, MStorageProvider prov);
+
+	public boolean delete(MAttachment attach, MStorageProvider prov);
+
+	public boolean deleteEntry(MAttachment mAttachment, MStorageProvider provider, int index);
+
 }
