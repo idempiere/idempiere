@@ -398,7 +398,9 @@ public class DetailPane extends Panel implements EventListener<Event> {
 			updateProcessToolbar();
 		} else if (event.getName().equals(ON_REDRAW_EVENT)) {
 			ExecutionCtrl ctrl = (ExecutionCtrl) Executions.getCurrent();
-			if (ctrl.getNextEvent() != null) {
+			Event evt = ctrl.getNextEvent();
+			if (evt != null) {
+				Events.sendEvent(evt);
 				Events.postEvent(new Event(ON_REDRAW_EVENT, this));
 				return;
 			}

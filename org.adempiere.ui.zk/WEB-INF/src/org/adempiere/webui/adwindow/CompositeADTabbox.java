@@ -206,7 +206,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 			@Override
 			public void onEvent(Event event) throws Exception {
 				ExecutionCtrl ctrl = (ExecutionCtrl) Executions.getCurrent();
-				if (ctrl.getNextEvent() != null) {
+				Event evt = ctrl.getNextEvent();
+				if (evt != null) {					
+					Events.sendEvent(evt);
 					Events.postEvent(new Event(ON_POST_INIT_EVENT, layout));
 					return;
 				}

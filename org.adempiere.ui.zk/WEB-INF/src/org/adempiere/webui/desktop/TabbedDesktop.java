@@ -15,10 +15,8 @@ package org.adempiere.webui.desktop;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.adempiere.util.Callback;
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.wf.WFPanel;
@@ -28,10 +26,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.WindowContainer;
-import org.adempiere.webui.util.IServerPushCallback;
-import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.window.WTask;
-import org.compiere.Adempiere;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;
 import org.compiere.util.Env;
@@ -40,6 +35,9 @@ import org.compiere.wf.MWorkflow;
 import org.zkoss.image.AImage;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanels;
@@ -138,8 +136,14 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
 		tab.setImage(IN_PROGRESS_IMAGE);
 		tab.setClosable(false);		
-		OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel, callback);
-		Adempiere.getThreadPoolExecutor().schedule(runnable, 10, TimeUnit.MILLISECONDS);		
+		final OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel, callback);
+		tabPanel.addEventListener("onOpenWindow", new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				runnable.run();
+			}
+		});				
+		Events.echoEvent(new Event("onOpenWindow", tabPanel));
 	}
 
 	/**
@@ -222,8 +226,14 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		final Tab tab = windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, wnd.getTitle(), true, true);
 		tab.setImage(IN_PROGRESS_IMAGE);
 		tab.setClosable(false);		
-		OpenWindowRunnable runnable = new OpenWindowRunnable(wnd, tab, tabPanel, null);
-		Adempiere.getThreadPoolExecutor().schedule(runnable, 100, TimeUnit.MICROSECONDS);
+		final OpenWindowRunnable runnable = new OpenWindowRunnable(wnd, tab, tabPanel, null);
+		tabPanel.addEventListener("onOpenWindow", new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				runnable.run();
+			}
+		});				
+		Events.echoEvent(new Event("onOpenWindow", tabPanel));
 	}
 
     /**
@@ -332,7 +342,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	{
 	}
 	
-	class OpenWindowRunnable extends ContextRunnable {
+	class OpenWindowRunnable implements Runnable {
 
 		private final ADWindow adWindow;
 		private final Tab tab;
@@ -347,30 +357,24 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		}
 		
 		@Override
-		protected void doRun() {
-			ServerPushTemplate template = new ServerPushTemplate(windowContainer.getComponent().getDesktop());
-			template.executeAsync(new IServerPushCallback() {					
-				@Override
-				public void updateUI() {
-					preOpenNewTab();
-					if (adWindow.createPart(tabPanel) != null ) {
-						tab.setImage(null);
-						tab.setClosable(true);
-						if (adWindow.getMImage() != null) {
-							try {
-								AImage aImage = adWindow.getAImage();
-								tab.setImageContent(aImage);
-							} catch (IOException e) {
-							}
-						}
-						if (callback != null) {
-							callback.onCallback(adWindow);
-						}
-					} else {
-						tab.onClose();
+		public void run() {
+			preOpenNewTab();
+			if (adWindow.createPart(tabPanel) != null ) {
+				tab.setImage(null);
+				tab.setClosable(true);
+				if (adWindow.getMImage() != null) {
+					try {
+						AImage aImage = adWindow.getAImage();
+						tab.setImageContent(aImage);
+					} catch (IOException e) {
 					}
 				}
-			});
+				if (callback != null) {
+					callback.onCallback(adWindow);
+				}
+			} else {
+				tab.onClose();
+			}
 		}		
 	}
 }
