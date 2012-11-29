@@ -93,8 +93,6 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	private Label pipeSeparator;
 	private ToolBarButton bExport = new ToolBarButton();
 	private Button bnext ;
-	private Button bcancel;
-	private Button bRun;
 	private ToolBarButton btnSave;
 	private Tabbox tabbox = new Tabbox();
 	private Tabs tabs = new Tabs();
@@ -102,6 +100,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	private Window winExportFile = null;
 	private Listbox cboType = new Listbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
+	private ConfirmPanel confirmPanelMain = new ConfirmPanel(true);
 	public boolean isChange=false;
 	public ZkReportViewer viewer;
 	MPrintFormat fm;
@@ -179,7 +178,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		headerPanel.appendChild(newPrintFormat);
 		Separator tor =new Separator("vertical");
-		tor.setSpacing("500px");
+		tor.setSpacing("23%");
 		headerPanel.appendChild(tor);
 
 		selectAll = new Label(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SelectAll")));
@@ -195,7 +194,6 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		headerPanel.appendChild(pipeSeparator);
 		headerPanel.appendChild(new Separator("vertical"));
 		headerPanel.appendChild(deselectAll);
-
 		headerPanel.appendChild(new Separator("vertical"));
 
 		Auxhead head=new Auxhead();
@@ -205,7 +203,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		headerPanel.appendChild(new Separator("horizontal"));
 
 		tabbox.setWidth("100%");
-		tabbox.setHeight("80%");
+		tabbox.setHeight("87%");
 		tabfo2.addEventListener(Events.ON_CLICK, this);
 		tabsc3.addEventListener(Events.ON_CLICK, this);
 		tabgc4.addEventListener(Events.ON_CLICK, this);
@@ -285,28 +283,18 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			foot.appendChild(new Separator("vertical"));
 		}
 
-		bRun=new Button();
-		bRun.setLabel(Msg.getMsg(Env.getCtx(), "Run"));
-		bRun.setName("bRun");
-		bRun.addEventListener(Events.ON_CLICK, this);
-		foot.appendChild(bRun);
-		Separator se =new Separator("vertical");
-		se.setSpacing("500px");
-		foot.appendChild(se);
-
 		bnext=new Button();
 		bnext.setLabel(Msg.getMsg(Env.getCtx(), "NextPage"));
 		bnext.setName("Next");
 		bnext.addEventListener(Events.ON_CLICK, this);
 		foot.appendChild(bnext);
-		foot.appendChild(new Separator("vertical"));
-
-		bcancel=new Button();
-		bcancel.setName("Cancel");
-		bcancel.addEventListener(Events.ON_CLICK, this);
-		bcancel.setLabel("Cancel");
-		foot.appendChild(bcancel);
-
+		Vbox vb = new Vbox();
+		vb.setWidth("50%");
+		foot.appendChild(vb);
+		vb.appendChild(confirmPanelMain);
+		confirmPanelMain.addActionListener(this);
+		confirmPanelMain.setVflex("0");
+		
 		f.appendChild(foot);
 		grid.appendChild(f);
 		form.appendChild(grid);
@@ -345,14 +333,8 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 					tabbox.setSelectedIndex(oldtabidx);
 				}
 				else{
-					if("Cancel".equals(bt.getName())){
-						close();
-					}
 					if("NewPrintFormat".equals(bt.getName())){
 						copyFormat();
-					}
-					if("bRun".equals(bt.getName())){
-						runReport();
 					}
 				}
 			}
@@ -365,12 +347,13 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 				oldtabidx = tabidx;
 			}
 		}
-
-		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
-			winExportFile.onClose();
-		else if (event.getTarget().getId().equals(ConfirmPanel.A_OK))			
-			exportFile();
-
+		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)){
+			close();
+		}else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)){			
+			((WRCTabPanel) tabbox.getSelectedTabpanel()).updatePFI();
+			onSave();
+			close();
+	    } 
 		selectAll.setVisible(oldtabidx == 0);
 		deselectAll.setVisible(oldtabidx == 0);
 		pipeSeparator.setVisible(oldtabidx == 0);
@@ -439,10 +422,18 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			winExportFile.appendChild(vb);
 			vb.appendChild(hb);
 			vb.appendChild(confirmPanel);
-			confirmPanel.addActionListener(this);
+			EventListener exportListener= new EventListener()
+			{
+				public void onEvent(Event event) throws Exception {
+					if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
+						winExportFile.onClose();
+					else if (event.getTarget().getId().equals(ConfirmPanel.A_OK))			
+						exportFile();
+				}
+			};
+			confirmPanel.addActionListener(exportListener);
 			confirmPanel.setVflex("0");
 		}
-		
 		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		AEnv.showWindow(winExportFile);
 	}	//	cmd_export
@@ -523,8 +514,8 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	}
 
 	public void close()
-	{
-		SessionManager.getAppDesktop().closeActiveWindow();
+	{	
+		form.detach();
 	}
 
 	public void copyFormat(){
@@ -550,7 +541,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		tpsf5.setMPrintFormat(newpf);
 		tpsf5.setPrintFormatItems(pfi);		
 		tpsf5.refresh();
-		setIsChanged(true);
+		setIsChanged(false);
 
 		comboReport.removeAllItems();
 		comboReport.appendItem(newpf.getName(), newpf.get_ID());
@@ -562,12 +553,6 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		 
 		 btnSave.setDisabled(!isChange);
 		 bExport.setDisabled(isChange);
-		 bRun.setDisabled(isChange);
 		 newPrintFormat.setDisabled(isChange);
-	 }
-	 
-	 public void runReport(){
-		 m_reportEngine.setPrintFormat(m_reportEngine.getPrintFormat()); // reload
-		 new ZkReportViewerProvider().openViewer(m_reportEngine);
 	 }
 }

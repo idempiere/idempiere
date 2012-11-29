@@ -1255,18 +1255,29 @@ public class DB_Oracle implements AdempiereDatabase
 			for(int i = 0; i < keyColumns.length; i++) {
 				if (i > 0)
 					sqlBuffer.append(" AND ");
-				sqlBuffer.append(keyColumns[i]).append(" = ? ");
+				sqlBuffer.append(keyColumns[i]).append("=?");
 			}
-			sqlBuffer.append(" FOR UPDATE ");
-			sqlBuffer.append(" WAIT ").append((timeout > 0 ? timeout : LOCK_TIME_OUT));
-			
+			sqlBuffer.append(" FOR UPDATE WAIT ").append((timeout > 0 ? timeout : LOCK_TIME_OUT));
+
+			Object[] parameters = new Object[keyColumns.length];
+			for(int i = 0; i < keyColumns.length; i++) {
+				Object parameter = po.get_Value(keyColumns[i]);
+				if (parameter != null && parameter instanceof Boolean) {
+					if ((Boolean) parameter)
+						parameter = "Y";
+					else
+						parameter = "N";
+				}
+				parameters[i] = parameter;
+			}
+
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
 			try {
 				stmt = DB.prepareStatement(sqlBuffer.toString(),
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE, po.get_TrxName());
 				for(int i = 0; i < keyColumns.length; i++) {
-					stmt.setObject(i+1, po.get_Value(keyColumns[i]));
+					stmt.setObject(i+1, parameters[i]);
 				}
 				rs = stmt.executeQuery();
 				if (rs.next()) {
@@ -1275,7 +1286,8 @@ public class DB_Oracle implements AdempiereDatabase
 					return false;
 				}
 			} catch (Exception e) {
-				log.log(Level.INFO, e.getLocalizedMessage(), e);				
+				log.log(Level.INFO, e.getLocalizedMessage(), e);
+				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage());
 			} finally {
 				DB.close(rs, stmt);
 			}			

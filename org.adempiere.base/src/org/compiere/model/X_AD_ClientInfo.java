@@ -29,7 +29,7 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121127L;
 
     /** Standard Constructor */
     public X_AD_ClientInfo (Properties ctx, int AD_ClientInfo_ID, String trxName)
@@ -81,6 +81,31 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	public String getAD_ClientInfo_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_ClientInfo_UU);
+	}
+
+	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_Name)
+			.getPO(getAD_StorageProvider_ID(), get_TrxName());	}
+
+	/** Set AD_StorageProvider_ID.
+		@param AD_StorageProvider_ID AD_StorageProvider_ID	  */
+	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID)
+	{
+		if (AD_StorageProvider_ID < 1) 
+			set_Value (COLUMNNAME_AD_StorageProvider_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
+	}
+
+	/** Get AD_StorageProvider_ID.
+		@return AD_StorageProvider_ID	  */
+	public int getAD_StorageProvider_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StorageProvider_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Tree getAD_Tree_Activity() throws RuntimeException

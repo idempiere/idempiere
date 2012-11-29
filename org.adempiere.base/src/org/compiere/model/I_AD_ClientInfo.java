@@ -71,6 +71,17 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_StorageProvider_ID */
+    public static final String COLUMNNAME_AD_StorageProvider_ID = "AD_StorageProvider_ID";
+
+	/** Set AD_StorageProvider_ID	  */
+	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID);
+
+	/** Get AD_StorageProvider_ID	  */
+	public int getAD_StorageProvider_ID();
+
+	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException;
+
     /** Column name AD_Tree_Activity_ID */
     public static final String COLUMNNAME_AD_Tree_Activity_ID = "AD_Tree_Activity_ID";
 

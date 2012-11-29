@@ -403,7 +403,7 @@ public class MMovement extends X_M_Movement implements DocAction
 						if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
-								ma.getM_AttributeSetInstance_ID(), 0, 
+								ma.getM_AttributeSetInstance_ID(),
 								ma.getMovementQty().negate(), get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
@@ -421,7 +421,7 @@ public class MMovement extends X_M_Movement implements DocAction
 						if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
 								line.getM_LocatorTo_ID(),
 								line.getM_Product_ID(), 
-								M_AttributeSetInstanceTo_ID, 0, 
+								M_AttributeSetInstanceTo_ID,
 								ma.getMovementQty(), get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
@@ -461,7 +461,7 @@ public class MMovement extends X_M_Movement implements DocAction
 					if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
 							line.getM_Locator_ID(),
 							line.getM_Product_ID(), 
-							line.getM_AttributeSetInstance_ID(), 0, 
+							line.getM_AttributeSetInstance_ID(),
 							line.getMovementQty().negate(), get_TrxName()))
 					{
 						String lastError = CLogger.retrieveErrorString("");
@@ -473,7 +473,7 @@ public class MMovement extends X_M_Movement implements DocAction
 					if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
 							line.getM_LocatorTo_ID(),
 							line.getM_Product_ID(), 
-							line.getM_AttributeSetInstanceTo_ID(), 0, 
+							line.getM_AttributeSetInstanceTo_ID(),
 							line.getMovementQty(), get_TrxName()))
 					{
 						String lastError = CLogger.retrieveErrorString("");

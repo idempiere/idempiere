@@ -1356,7 +1356,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							sLine.getM_Locator_ID(),
 							sLine.getM_Product_ID(),
-							ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+							ma.getM_AttributeSetInstance_ID(),
 							QtyMA,
 							get_TrxName()))
 						{
@@ -1438,7 +1438,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 						sLine.getM_Locator_ID(),
 						sLine.getM_Product_ID(),
-						sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
+						sLine.getM_AttributeSetInstance_ID(),
 						Qty, get_TrxName()))
 					{
 						String lastError = CLogger.retrieveErrorString("");

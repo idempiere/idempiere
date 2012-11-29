@@ -1106,12 +1106,24 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
 
 		Env.setContext(m_ctx, "AD_PrintFormat_ID", AD_PrintFormat_ID);
-
-		ADForm form = ADForm.openForm(SystemIDs.FORM_REPORT_WIZARD);
+	    ADForm form = ADForm.openForm(SystemIDs.FORM_REPORT_WIZARD);
 		WReportCustomization av = (WReportCustomization) form.getICustomForm();
 		av.setReportEngine(m_reportEngine);
-
-		form.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+		form.setClosable(true);
+		form.setWidth("70%");
+		form.setHeight("85%");
+		form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if (DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())) {
+				   if(m_reportEngine.getPrintFormat().get_ID()!=Env.getContextAsInt(m_ctx, "AD_PrintFormat_ID")){
+					  fillComboReport (m_reportEngine.getPrintFormat().get_ID());	
+				   }
+				   cmd_report();		
+				}
+			}
+		});
+		form.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		SessionManager.getAppDesktop().showWindow(form);
 	}	//	cmd_Wizard
 

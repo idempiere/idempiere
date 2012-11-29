@@ -440,7 +440,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
-								ma.getM_AttributeSetInstance_ID(), 0, 
+								ma.getM_AttributeSetInstance_ID(), 
 								QtyMA.negate(), get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
@@ -491,7 +491,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							line.getM_Locator_ID(),
 							line.getM_Product_ID(), 
-							line.getM_AttributeSetInstance_ID(), 0, 
+							line.getM_AttributeSetInstance_ID(), 
 							qtyDiff,get_TrxName()))
 					{
 						String lastError = CLogger.retrieveErrorString("");

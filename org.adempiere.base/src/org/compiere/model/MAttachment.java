@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.zip.Deflater;
@@ -43,6 +44,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.adempiere.base.Service;
+import org.adempiere.base.ServiceQuery;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.MimeType;
@@ -71,8 +74,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1948066627503677516L;
-
+	private static final long serialVersionUID = 1415801644995116959L;
 
 	/**
 	 * 	Get Attachment (if there are more than one attachment it gets the first in no specific order)
@@ -92,6 +94,8 @@ public class MAttachment extends X_AD_Attachment
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MAttachment.class);
+	
+	public MStorageProvider provider;
 
 	
 	/**************************************************************************
@@ -145,25 +149,38 @@ public class MAttachment extends X_AD_Attachment
 	public static final String 	XML = "xml";
 
 	/**	List of Entry Data		*/
-	private ArrayList<MAttachmentEntry> m_items = null;
+	public ArrayList<MAttachmentEntry> m_items = null;
+
 	
 	/** is this client using the file system for attachments */
 	private boolean isStoreAttachmentsOnFileSystem = false;
 	
 	/** attachment (root) path - if file system is used */
-	private String m_attachmentPathRoot = "";
+	public String m_attachmentPathRoot = "";
 	
 	/** string replaces the attachment root in stored xml file
 	 * to allow the changing of the attachment root. */
-	private final String ATTACHMENT_FOLDER_PLACEHOLDER = "%ATTACHMENT_FOLDER%";
+	public final String ATTACHMENT_FOLDER_PLACEHOLDER = "%ATTACHMENT_FOLDER%";
 	
 	/**
 	 * Get the isStoreAttachmentsOnFileSystem and attachmentPath for the client.
 	 * @param ctx
 	 * @param trxName
 	 */
-	private void initAttachmentStoreDetails(Properties ctx, String trxName){
-		final MClient client = new MClient(ctx, this.getAD_Client_ID(), trxName);
+	private void initAttachmentStoreDetails(Properties ctx, String trxName)
+	{
+	
+		MClientInfo clientInfo = MClientInfo.get(ctx);
+	
+		provider=new MStorageProvider(ctx, clientInfo.getAD_StorageProvider_ID(), trxName);		
+		
+		m_attachmentPathRoot=provider.getFolder();
+		
+		if(m_attachmentPathRoot == null){
+			log.severe("no attachmentPath defined");
+		}
+		
+		/*	final MClient client = new MClient(ctx, this.getAD_Client_ID(), trxName);
 		isStoreAttachmentsOnFileSystem = client.isStoreAttachmentsOnFileSystem();
 		if(isStoreAttachmentsOnFileSystem){
 			if(File.separatorChar == '\\'){
@@ -178,7 +195,7 @@ public class MAttachment extends X_AD_Attachment
 				m_attachmentPathRoot = m_attachmentPathRoot + File.separator;
 				log.fine(m_attachmentPathRoot);
 			}
-		}
+		}*/
 	}
 	
 	/**
@@ -244,6 +261,7 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	public boolean addEntry (File file)
 	{
+		
 		if (file == null)
 		{
 			log.warning("No File");
@@ -411,11 +429,14 @@ public class MAttachment extends X_AD_Attachment
 	 * @return name or null
 	 */
 	public String getEntryName(int index) {
+		String method=provider.getMethod();
+		if(method == null)
+			method="DB";
 		MAttachmentEntry item = getEntry(index);
 		if (item != null){
 			//strip path
 			String name = item.getName();
-			if(name!=null && isStoreAttachmentsOnFileSystem){
+			if(name!=null && "FileSystem".equals(method)){
 				name = name.substring(name.lastIndexOf(File.separator)+1);
 			}
 			return name;
@@ -491,10 +512,24 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	private boolean saveLOBData()
 	{
-		if(isStoreAttachmentsOnFileSystem){
+		ServiceQuery query=new ServiceQuery();
+		String method=provider.getMethod();
+		if(method == null)
+			method="DB";
+		query.put("method", method);
+		List<IAttachmentStore> storelist = Service.locator().list(IAttachmentStore.class, query).getServices();
+		
+		if(storelist != null){
+			for(IAttachmentStore prov:storelist){
+				return prov.save(this,provider);
+			}
+		}
+		return false;
+		
+		/*if(isStoreAttachmentsOnFileSystem){
 			return saveLOBDataToFileSystem();
 		}
-		return saveLOBDataToDB();
+		return saveLOBDataToDB();*/
 	}
 	
 	/**
@@ -648,10 +683,25 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	private boolean loadLOBData ()
 	{
-		if(isStoreAttachmentsOnFileSystem){
+		
+		ServiceQuery query=new ServiceQuery();
+		String method=provider.getMethod();
+		if(method == null)
+			method="DB";
+		query.put("method", method);
+		
+		List<IAttachmentStore> storelist = Service.locator().list(IAttachmentStore.class, query).getServices();
+		
+		if(storelist != null){
+			for(IAttachmentStore prov:storelist){
+				return prov.loadLOBData(this,provider);
+			}
+		}
+		return false;
+		/*if(isStoreAttachmentsOnFileSystem){
 			return loadLOBDataFromFileSystem();
 		}
-		return loadLOBDataFromDB();
+		return loadLOBDataFromDB();*/
 	}
 	
 	/**
@@ -717,7 +767,7 @@ public class MAttachment extends X_AD_Attachment
 	 * 	Load Data from file system
 	 *	@return true if success
 	 */
-	private boolean loadLOBDataFromFileSystem(){
+	public boolean loadLOBDataFromFileSystem(){
 		if("".equals(m_attachmentPathRoot)){
 			log.severe("no attachmentPath defined");
 			return false;
@@ -812,7 +862,7 @@ public class MAttachment extends X_AD_Attachment
 	 * Returns a path snippet, containing client, org, table and record id.
 	 * @return String
 	 */
-	private String getAttachmentPathSnippet(){
+	public String getAttachmentPathSnippet(){
 		
 		StringBuilder msgreturn = new StringBuilder().append(this.getAD_Client_ID()).append(File.separator)
 				.append(this.getAD_Org_ID()).append(File.separator)

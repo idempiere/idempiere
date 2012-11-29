@@ -42,8 +42,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -51,12 +51,12 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
+import org.zkoss.zul.North;
+import org.zkoss.zul.South;
 
 /**
  *
@@ -66,9 +66,9 @@ import org.zkoss.zul.Iframe;
 public class WAttachment extends Window implements EventListener<Event>
 {
 	/**
-	 * generated serial version Id
+	 * 
 	 */
-	private static final long serialVersionUID = 2923895336573554570L;
+	private static final long serialVersionUID = 4311076973993361653L;
 
 	private static CLogger log = CLogger.getCLogger(WAttachment.class);
 
@@ -574,24 +574,27 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 	}
 
-	private byte[] getMediaData(Media media) {
+	private byte[] getMediaData(Media media)  {
 		byte[] bytes = null;
-
-		if (media.inMemory())
-			bytes = media.getByteData();
-		else {
-			InputStream is = media.getStreamData();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] buf = new byte[ 1000 ];
-			int byteread = 0;
-			try {
-				while (( byteread=is.read(buf) )!=-1)
+		
+		try{
+			
+	      if (media.inMemory())
+		     	bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
+		  else {
+			 InputStream is = media.getStreamData();
+			 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 byte[] buf = new byte[ 1000 ];
+			 int byteread = 0;
+			 
+				  while (( byteread=is.read(buf) )!=-1)
 					baos.write(buf,0,byteread);
-			} catch (IOException e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				throw new IllegalStateException(e.getLocalizedMessage());
-			}
+			
 			bytes = baos.toByteArray();
+		 }
+		} catch (IOException e) {
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			throw new IllegalStateException(e.getLocalizedMessage());
 		}
 
 		return bytes;
@@ -673,4 +676,16 @@ public class WAttachment extends Window implements EventListener<Event>
 			}
 		}
 	}	//	saveAttachmentToFile
+	
+	
+	static private String getCharset(String contentType) {
+		if (contentType != null) {
+			int j = contentType.indexOf("charset=");
+			if (j >= 0) {
+				String cs = contentType.substring(j + 8).trim();
+				if (cs.length() > 0) return cs;
+			}
+		}
+		return "UTF-8";
+	}
 }
