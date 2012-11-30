@@ -60,7 +60,14 @@ public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>,EventH
 				BroadcastMsgUtil.pushToQueue(message);
 				break;
 			case BroadCastUtil.EVENT_SESSION_TIMEOUT:
-				
+				message.setFromCluster(true);
+				BroadcastMsgUtil.pushToQueue(message);
+				break;
+			case BroadCastUtil.EVENT_SESSION_ONNODE_TIMEOUT:
+				if(WebUtil.getServerName().equalsIgnoreCase(message.getTarget())){
+					message.setFromCluster(true);
+					BroadcastMsgUtil.pushToQueue(message);
+				}
 				break;
 			}
 		}

@@ -11,68 +11,46 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.idempiere.broadcast;
 
-import java.io.Serializable;
+package org.adempiere.webui.process;
+
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
+import org.idempiere.broadcast.BroadCastMsg;
+import org.idempiere.broadcast.BroadCastUtil;
+import org.idempiere.broadcast.BroadcastMsgUtil;
 
 /**
  * 
  * @author Deepak Pansheriya
  *
  */
-public class BroadCastMsg implements Serializable {
+public class KillCurrentSession extends SvrProcess {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7669279373526944539L;
+	private int scndTimeout = 0;
 
-	private String src;
-	private int intData;
-	private String target;
-	private int eventId;
-	
-	private boolean fromCluster = false;
-	
-	public boolean isFromCluster() {
-		return fromCluster;
+	@Override
+	protected void prepare() {
+		ProcessInfoParameter[] para = getParameter();
+		for (int i = 0; i < para.length; i++) {
+			String name = para[i].getParameterName();
+			if (para[i].getParameter() == null)
+				;
+			else if (name.equals("TimeOutInSeconds"))
+				scndTimeout = para[i].getParameterAsInt();
+		}
 	}
 
-	public void setFromCluster(boolean fromCluster) {
-		this.fromCluster = fromCluster;
+	@Override
+	protected String doIt() throws Exception {
+
+		BroadCastMsg msg = new BroadCastMsg();
+		msg.setEventId(BroadCastUtil.EVENT_SESSION_TIMEOUT);
+		msg.setIntData(scndTimeout);
+		msg.setTarget(Integer.toString(getRecord_ID()));
+		BroadcastMsgUtil.pushToQueue(msg);
+		
+		return "Session notified";
 	}
 
-	public int getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(int eventId) {
-		this.eventId = eventId;
-	}
-
-	public String getTarget() {
-		return target;
-	}
-
-	public void setTarget(String targetNode) {
-		this.target = targetNode;
-	}
-
-	public String getSrc() {
-		return src;
-	}
-	
-	public void setSrc(String src) {
-		this.src = src;
-	}
-
-	public int getIntData() {
-		return intData;
-	}
-	
-	public void setIntData(int messageId) {
-		this.intData = messageId;
-	}
-	
-	
 }
