@@ -77,7 +77,7 @@ public class AdempiereTreeModel extends DefaultTreeModel {
 				no = DB.executeUpdate(sql.toString(),trx.getTrxName());
 			}
 			if (from != to)
-				for (int i = 0; i < to.getChildCount(); i++)
+				for (int i = 0; i < to.getChildCount()-1; i++)
 				{
 					MTreeNode nd = (MTreeNode)to.getChildAt(i);
 					StringBuffer sql = new StringBuffer("UPDATE ");
