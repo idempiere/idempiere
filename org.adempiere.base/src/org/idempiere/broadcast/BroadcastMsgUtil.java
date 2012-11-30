@@ -106,7 +106,7 @@ public class BroadcastMsgUtil
 		
 		if (!MBroadcastMessage.BROADCASTTYPE_Login.equals(broadcastType)) {
 			BroadCastMsg msg = new BroadCastMsg();
-			msg.setMessageId(messageID);
+			msg.setIntData(messageID);
 			msg.setEventId(BroadCastUtil.EVENT_BROADCAST_MESSAGE);
 			pushToQueue(msg);
 		}
@@ -136,10 +136,10 @@ public class BroadcastMsgUtil
 	 */
 	public static void testBroadcastMessage(int messageID, int AD_Session_ID) {
 		BroadCastMsg msg = new BroadCastMsg();
-		msg.setMessageId(messageID);
+		msg.setIntData(messageID);
 		msg.setFromCluster(true);
 		msg.setEventId(BroadCastUtil.EVENT_TEST_BROADCAST_MESSAGE);
-		msg.setTargetNode(Integer.toString(AD_Session_ID));
+		msg.setTarget(Integer.toString(AD_Session_ID));
 
 		pushToQueue(msg);
 	}

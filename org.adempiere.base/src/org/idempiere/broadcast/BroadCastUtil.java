@@ -27,6 +27,7 @@ public class BroadCastUtil {
 	public static final int EVENT_BROADCAST_MESSAGE =1;
 	public static final int EVENT_TEST_BROADCAST_MESSAGE=2;
 	public static final int EVENT_SESSION_TIMEOUT =3;
+	public static final int EVENT_SESSION_ONNODE_TIMEOUT=4;
 	
 	public static void subscribe(ITopicSubscriber<BroadCastMsg> subscriber){
 		

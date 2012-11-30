@@ -25,7 +25,6 @@ import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.util.ServerContext;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.component.Tabpanel;
@@ -35,6 +34,7 @@ import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.event.ZKBroadCastManager;
 import org.adempiere.webui.panel.BroadcastMessageWindow;
 import org.adempiere.webui.panel.HeaderPanel;
+import org.adempiere.webui.panel.TimeoutPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
@@ -45,6 +45,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.compiere.util.WebUtil;
 import org.idempiere.broadcast.BroadCastMsg;
 import org.idempiere.broadcast.BroadCastUtil;
 import org.idempiere.broadcast.BroadcastMsgUtil;
@@ -105,6 +106,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private HeaderPanel pnlHead;
 	
 	private Desktop m_desktop = null;
+	private TimeoutPanel panel = null; 
+
     public DefaultDesktop()
     {
     	super();
@@ -322,7 +325,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	 * @param eventManager
 	 */
 	public void bindEventManager() {
-		EventManager.getInstance().register(IEventTopics.BROADCAST_MESSAGE, this);
+		String topics [] = {IEventTopics.BROADCAST_MESSAGE,IEventTopics.KILL_SESSION};
+		EventManager.getInstance().register(topics, this);
 	}
 
 	/**
@@ -336,19 +340,21 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	public void handleEvent(final org.osgi.service.event.Event event) {
 		String eventName = event.getTopic();
 		if (eventName.equals(IEventTopics.BROADCAST_MESSAGE)) {
-			EventListener<Event> listner = new EventListener<Event>(){
-				
+			EventListener<Event> listner = new EventListener<Event>() {
+
 				@Override
 				public void onEvent(Event event) throws Exception {
 					BroadCastMsg msg = (BroadCastMsg) event.getData();
-					MBroadcastMessage mbMessage = MBroadcastMessage.get(
-							Env.getCtx(), msg.getMessageId());
-					if (msg.getEventId() == BroadCastUtil.EVENT_TEST_BROADCAST_MESSAGE) {
+					
 
+					switch (msg.getEventId()) {
+					case BroadCastUtil.EVENT_TEST_BROADCAST_MESSAGE:
+						MBroadcastMessage mbMessage = MBroadcastMessage.get(
+								Env.getCtx(), msg.getIntData());
 						String currSession = Integer
 								.toString(Env.getContextAsInt(Env.getCtx(),
 										"AD_Session_ID"));
-						if (currSession.equals(msg.getTargetNode())) {
+						if (currSession.equals(msg.getTarget())) {
 							if (testMessageWindow == null)
 								testMessageWindow = new BroadcastMessageWindow(
 										pnlHead);
@@ -356,16 +362,51 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 							testMessageWindow = null;
 
 						}
-					} else if (mbMessage.isValidUserforMessage()) {
-						if (messageWindow == null)
-							messageWindow = new BroadcastMessageWindow(pnlHead);
-						messageWindow.appendMessage(mbMessage, false);
+						break;
+					case BroadCastUtil.EVENT_BROADCAST_MESSAGE:
+						mbMessage = MBroadcastMessage.get(
+								Env.getCtx(), msg.getIntData());
+						if (mbMessage.isValidUserforMessage()) {
+							
+							if (messageWindow == null)
+								messageWindow = new BroadcastMessageWindow(
+										pnlHead);
+							messageWindow.appendMessage(mbMessage, false);
+						}
+						break;
+					case BroadCastUtil.EVENT_SESSION_TIMEOUT:
+
+						currSession = Integer.toString(Env.getContextAsInt(
+								Env.getCtx(), "AD_Session_ID"));
+						System.out.println("Current Session" + currSession);
+						if (currSession.equalsIgnoreCase(msg.getTarget())) {
+							if (panel == null) {
+								panel = new TimeoutPanel(pnlHead,
+										msg.getIntData());
+							}
+						}
+
+						break;
+					case BroadCastUtil.EVENT_SESSION_ONNODE_TIMEOUT:
+
+						currSession = WebUtil.getServerName();
+
+						if (currSession.equalsIgnoreCase(msg.getTarget())) {
+							if (panel == null) {
+								panel = new TimeoutPanel(pnlHead,
+										msg.getIntData());
+							}
+						}
+
 					}
-					
+
 				}
+
 			};
-			Executions.schedule(m_desktop, listner, new Event("OnBroadcast", null, event.getProperty(IEventManager.EVENT_DATA)));
-			
+
+			Executions.schedule(m_desktop, listner, new Event("OnBroadcast",
+					null, event.getProperty(IEventManager.EVENT_DATA)));
+
 		}
 	}
 
