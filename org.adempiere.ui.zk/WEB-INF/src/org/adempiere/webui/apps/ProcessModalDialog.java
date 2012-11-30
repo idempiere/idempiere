@@ -365,6 +365,8 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 
 		progressWindow = new BusyDialog();
 		this.appendChild(progressWindow);
+		if (this.getParent() != null)
+			LayoutUtils.openOverlappedWindow(this.getParent(), progressWindow, "middle_center");
 	}
 
 	/**

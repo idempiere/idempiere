@@ -47,8 +47,6 @@ public class DetailPane extends Panel implements EventListener<Event> {
 
 	public static final String ON_POST_SELECT_TAB_EVENT = "onPostSelectTab";
 
-	public static final String ON_REDRAW_EVENT = "onRedraw";
-
 	private static final String STATUS_TEXT_ATTRIBUTE = "status.text";
 
 	private static final String STATUS_ERROR_ATTRIBUTE = "status.error";
@@ -111,7 +109,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 			LayoutUtils.addSclass("adwindow-detailpane-xsplit", this);
 		}		
 		
-		addEventListener(ON_REDRAW_EVENT, this);
+		addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
 	}
 	
 	public int getSelectedIndex() {
@@ -396,12 +394,12 @@ public class DetailPane extends Panel implements EventListener<Event> {
 			showPopup(error, messageContainer);
 		} else if (event.getName().equals(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT)) {
 			updateProcessToolbar();
-		} else if (event.getName().equals(ON_REDRAW_EVENT)) {
+		} else if (event.getName().equals(LayoutUtils.ON_REDRAW_EVENT)) {
 			ExecutionCtrl ctrl = (ExecutionCtrl) Executions.getCurrent();
 			Event evt = ctrl.getNextEvent();
 			if (evt != null) {
 				Events.sendEvent(evt);
-				Events.postEvent(new Event(ON_REDRAW_EVENT, this));
+				Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, this));
 				return;
 			}
 			LayoutUtils.redraw(this);

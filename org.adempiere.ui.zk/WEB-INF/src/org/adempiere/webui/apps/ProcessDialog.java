@@ -21,6 +21,7 @@ import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
@@ -422,9 +423,10 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	}
 
 	private void showBusyDialog() {
+		Clients.showBusy(this, " ");
 		progressWindow = new BusyDialog();
-		progressWindow.setPage(this.getPage());
-		progressWindow.doHighlighted();
+		progressWindow.setStyle("position: absolute;");
+		LayoutUtils.openOverlappedWindow(this, progressWindow, "middle_center");
 	}
 
 	public void unlockUI(ProcessInfo pi) {
@@ -436,6 +438,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	}
 
 	private void hideBusyDialog() {
+		Clients.clearBusy(this);
 		if (progressWindow != null) {
 			progressWindow.dispose();
 			progressWindow = null;

@@ -24,16 +24,17 @@ import java.util.Set;
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabbox;
 import org.adempiere.webui.adwindow.IADTabpanel;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.util.Env;
@@ -41,6 +42,8 @@ import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
@@ -131,8 +134,10 @@ public class ExportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		AEnv.showWindow(winExportFile);
+		Clients.showBusy(panel.getComponent(), " ");
+		panel.getComponent().getParent().appendChild(winExportFile);
+		LayoutUtils.openOverlappedWindow(panel.getComponent(), winExportFile, "middle_center");
+		winExportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
 	}
 
 	@Override
@@ -141,6 +146,10 @@ public class ExportAction implements EventListener<Event>
 			winExportFile.onClose();
 		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK))
 			exportFile();
+		else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
+			Clients.clearBusy(panel.getComponent());
+			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, panel.getComponent()));
+		}
 	}
 
 	private void exportFile() {

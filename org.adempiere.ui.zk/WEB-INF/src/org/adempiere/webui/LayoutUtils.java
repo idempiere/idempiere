@@ -33,6 +33,8 @@ import org.zkoss.zul.Window;
  */
 public final class LayoutUtils {
 
+	public static final String ON_REDRAW_EVENT = "onRedraw";
+	
 	/**
 	 * @param layout
 	 */

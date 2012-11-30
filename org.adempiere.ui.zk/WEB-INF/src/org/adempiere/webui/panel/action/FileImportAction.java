@@ -27,16 +27,17 @@ import java.util.Set;
 import org.adempiere.base.IGridTabImporter;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabbox;
 import org.adempiere.webui.adwindow.IADTabpanel;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ReaderInputStream;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
@@ -50,6 +51,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
@@ -170,8 +172,10 @@ public class FileImportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		winImportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		AEnv.showWindow(winImportFile);
+		Clients.showBusy(panel.getComponent(), " ");
+		panel.getComponent().getParent().appendChild(winImportFile);
+		LayoutUtils.openOverlappedWindow(panel.getComponent(), winImportFile, "middle_center");
+		winImportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
 	}
 
 	@Override
@@ -197,6 +201,9 @@ public class FileImportAction implements EventListener<Event>
 			if (m_file_istream == null || fCharset.getSelectedItem() == null)
 				return;
 			importFile();
+		} else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
+			Clients.clearBusy(panel.getComponent());
+			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, panel.getComponent()));
 		}
 	}
 

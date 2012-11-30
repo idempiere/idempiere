@@ -55,8 +55,6 @@ import org.zkoss.zul.Vlayout;
  */
 public class CompositeADTabbox extends AbstractADTabbox
 {
-	public static final String ON_POST_INIT_EVENT = "onPostInit";
-
 	public static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
 	
 	/** Logger                  */
@@ -554,7 +552,7 @@ public class CompositeADTabbox extends AbstractADTabbox
         		detailTab.setDetailPaneMode(true, isUseVflexForDetailPane());
         		detailPane.setVflex(Boolean.toString(isUseVflexForDetailPane()));    
         		if (!ADTabpanel.isUseSplitViewForForm() && !headerTab.isGridView()) {
-        			Events.postEvent(new Event(DetailPane.ON_REDRAW_EVENT, detailPane));
+        			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, detailPane));
         		}
 			}
 		}

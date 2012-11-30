@@ -91,6 +91,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.WebDoc;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -98,6 +99,7 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
@@ -208,7 +210,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		adTabbox.setSelectionEventListener(this);
 		adTabbox.setADWindowPanel(this);
 
-        return super.createPart(parent);
+        Component comp = super.createPart(parent);
+        comp.addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
+        return comp;
     }
 
 	public BreadCrumb getBreadCrumb()
@@ -972,6 +976,16 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     			toolbar.enableProcessButton(adtab.getToolbarButtons().size() > 0);
     			toolbar.dynamicDisplay();
     		}
+    	}
+    	else if (event.getTarget() == getComponent() && event.getName().equals(LayoutUtils.ON_REDRAW_EVENT)) {
+    		ExecutionCtrl ctrl = (ExecutionCtrl) Executions.getCurrent();
+    		Event evt = ctrl.getNextEvent();
+    		if (evt != null) {
+    			Events.sendEvent(evt);
+    			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, getComponent()));
+    			return;
+    		}
+    		LayoutUtils.redraw((AbstractComponent) getComponent());
     	}
     }
 
@@ -2313,11 +2327,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			else
 			{
 				final int recordIdParam = record_ID;
-				win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				win.setPosition("center");
+				getComponent().getParent().appendChild(win);
+				win.setStyle("position: absolute;");
 				win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
+						Clients.clearBusy(getComponent());						
 						if (!win.isStartProcess()) {
+							Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, getComponent()));
 							return;
 						}
 						boolean startWOasking = true;
@@ -2325,7 +2341,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						executeButtonProcess(wButton, startWOasking, table_ID, recordIdParam, isProcessMandatory);
 					}
 				});
-				AEnv.showWindow(win);
+				Clients.showBusy(getComponent(), " ");
+				LayoutUtils.openOverlappedWindow(getComponent(), win, "middle_center");
 				return;
 			}
 		} // DocAction
@@ -2490,11 +2507,19 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
+						Clients.clearBusy(getComponent());
 						onRefresh(true, false);
+						Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, getComponent()));
 					}
 				});
+				form.setStyle("position: absolute;");
+				getComponent().getParent().appendChild(form);
+				Clients.showBusy(getComponent(), " ");
+				LayoutUtils.openOverlappedWindow(getComponent(), form, "middle_center");
 			}
-			SessionManager.getAppDesktop().showWindow(form);
+			else {
+				SessionManager.getAppDesktop().showWindow(form);
+			}
 		}
 		else
 		{
@@ -2502,11 +2527,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 			if (dialog.isValid())
 			{
+				dialog.setStyle("position: absolute;");
 				dialog.setWidth("500px");
-				dialog.setVisible(true);
-				dialog.setPosition("center");
-				dialog.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				AEnv.showWindow(dialog);
+				dialog.setBorder("normal");
+				Clients.showBusy(getComponent(), " ");
+				getComponent().getParent().appendChild(dialog);
+				LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
 			}
 			else
 			{
@@ -2605,10 +2631,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (Executions.getCurrent() != null)
 		{
+			Clients.clearBusy(getComponent());
 			if (notPrint)		//	refresh if not print
 			{
 				updateUI(pi);
 			}
+			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, getComponent()));
 		}
 		else
 		{
@@ -2616,10 +2644,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				//acquire desktop, 2 second timeout
 				Executions.activate(getComponent().getDesktop(), 2000);
 				try {
+					Clients.clearBusy(getComponent());
 					if (notPrint)		//	refresh if not print
 					{
 						updateUI(pi);
 					}
+					Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, getComponent()));
                 } catch(Error ex){
                 	throw ex;
                 } finally{
