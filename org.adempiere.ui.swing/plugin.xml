@@ -27,18 +27,6 @@
       </provider>
    </extension>
    <extension
-         point="org.compiere.interfaces.Server">
-      <interface
-            class="org.adempiere.client.ServerInterface">
-      </interface>
-   </extension>
-   <extension
-         point="org.compiere.interfaces.Status">
-      <interface
-            class="org.adempiere.client.StatusInterface">
-      </interface>
-   </extension>
-   <extension
          id="client_product"
          point="org.eclipse.core.runtime.products">
       <product
