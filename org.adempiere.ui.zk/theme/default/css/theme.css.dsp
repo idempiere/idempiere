@@ -546,7 +546,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-gridview-detail {
-	height: 40%;
+	height: 200px;
 }
 
 .adwindow-gridview-detail + .z-south-splt {

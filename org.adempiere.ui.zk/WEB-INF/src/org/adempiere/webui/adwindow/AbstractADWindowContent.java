@@ -571,8 +571,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	private void initFirstTabpanel() {
 		adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());
 		adTabbox.getSelectedTabpanel().activate(true);		
-
-		Events.postEvent(new Event(CompositeADTabbox.ON_POST_INIT_EVENT, adTabbox.getComponent(), null));
 	}
 
     /**
@@ -2635,6 +2633,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 
 	private void updateUI(ProcessInfo pi) {
+				
+		
 		//	Timeout
 		if (pi.isTimeout())		//	set temporarily to R/O
 			Env.setContext(ctx, curWindowNo, "Processed", "Y");
@@ -2648,7 +2648,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		String logInfo = pi.getLogInfo();
 		if (logInfo.length() > 0)
 			FDialog.info(curWindowNo, this.getComponent(), Env.getHeader(ctx, curWindowNo),
-				pi.getTitle() + "<br>" + logInfo);
+				pi.getTitle() + "<br>" + logInfo);				
 	}
 
 	/**

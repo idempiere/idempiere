@@ -42,7 +42,6 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Vlayout;
@@ -199,20 +198,6 @@ public class CompositeADTabbox extends AbstractADTabbox
 					Event selectionChanged = new Event(ON_SELECTION_CHANGED_EVENT, layout, new Object[]{oldIndex, newIndex});
 					selectionListener.onEvent(selectionChanged);
 				}
-			}
-		});
-    	
-    	layout.addEventListener(ON_POST_INIT_EVENT, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				ExecutionCtrl ctrl = (ExecutionCtrl) Executions.getCurrent();
-				Event evt = ctrl.getNextEvent();
-				if (evt != null) {					
-					Events.sendEvent(evt);
-					Events.postEvent(new Event(ON_POST_INIT_EVENT, layout));
-					return;
-				}
-				LayoutUtils.redraw(layout);
 			}
 		});
     	
