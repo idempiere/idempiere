@@ -20,6 +20,10 @@ package org.adempiere.webui.desktop;
 import java.io.Serializable;
 import java.util.Properties;
 
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.IEventManager;
+import org.adempiere.base.event.IEventTopics;
+import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -28,6 +32,8 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DPActivities;
 import org.adempiere.webui.event.MenuListener;
+import org.adempiere.webui.event.ZKBroadCastManager;
+import org.adempiere.webui.panel.BroadcastMessageWindow;
 import org.adempiere.webui.panel.HeaderPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
@@ -39,14 +45,21 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.broadcast.BroadCastMsg;
+import org.idempiere.broadcast.BroadCastUtil;
+import org.idempiere.broadcast.BroadcastMsgUtil;
+import org.osgi.service.event.EventHandler;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
@@ -59,8 +72,9 @@ import org.zkoss.zul.West;
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date Mar 2, 2007
  * @version $Revision: 0.10 $
+ * @author Deepak Pansheriya/Vivek - Adding support for message broadcasting
  */
-public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, IServerPushCallback
+public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, IServerPushCallback,EventHandler,DesktopCleanup
 {
 	/**
 	 * generated serial version ID
@@ -85,17 +99,28 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private Tabpanel homeTab;
 
 	private DashboardController dashboardController, sideController;
-		
+	
+	private BroadcastMessageWindow messageWindow;
+	private BroadcastMessageWindow testMessageWindow;
+	private HeaderPanel pnlHead;
+	
+	private Desktop m_desktop = null;
     public DefaultDesktop()
     {
     	super();
     	dashboardController = new DashboardController();
     	sideController = new DashboardController();
+    	
+    	m_desktop = AEnv.getDesktop();
+    	m_desktop.addListener(this);
+    	//subscribing to broadcast event
+    	bindEventManager();
+    	ZKBroadCastManager.getBroadCastMgr();
     }
 
     protected Component doCreatePart(Component parent)
     {
-    	HeaderPanel pnlHead = new HeaderPanel();
+    	pnlHead = new HeaderPanel();
 
         layout = new Borderlayout();
         if (parent != null)
@@ -149,7 +174,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         BusyDialog busyDialog = new BusyDialog();
         busyDialog.setShadow(false);
         homeTab.appendChild(busyDialog);
-
+        
+        messageWindow = new BroadcastMessageWindow(pnlHead);
+        BroadcastMsgUtil.showPendingMeassage(Env.getAD_User_ID(Env.getCtx()), messageWindow);
+        
         if (!layout.getDesktop().isServerPushEnabled())
     	{
     		layout.getDesktop().enableServerPush(true);
@@ -251,6 +279,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	public void logout() {
+		unbindEventManager();
 		if (dashboardController != null) {
 			dashboardController.onLogOut();
 		}
@@ -286,5 +315,63 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	protected void preOpenNewTab()
 	{
 		autoHideMenu();
+	}
+
+	//Implementation for Broadcast message
+	/**
+	 * @param eventManager
+	 */
+	public void bindEventManager() {
+		EventManager.getInstance().register(IEventTopics.BROADCAST_MESSAGE, this);
+	}
+
+	/**
+	 * @param eventManager
+	 */
+	public void unbindEventManager() {
+		EventManager.getInstance().unregister(this);
+	}
+	
+	@Override
+	public void handleEvent(final org.osgi.service.event.Event event) {
+		String eventName = event.getTopic();
+		if (eventName.equals(IEventTopics.BROADCAST_MESSAGE)) {
+			EventListener<Event> listner = new EventListener<Event>(){
+				
+				@Override
+				public void onEvent(Event event) throws Exception {
+					BroadCastMsg msg = (BroadCastMsg) event.getData();
+					MBroadcastMessage mbMessage = MBroadcastMessage.get(
+							Env.getCtx(), msg.getMessageId());
+					if (msg.getEventId() == BroadCastUtil.EVENT_TEST_BROADCAST_MESSAGE) {
+
+						String currSession = Integer
+								.toString(Env.getContextAsInt(Env.getCtx(),
+										"AD_Session_ID"));
+						if (currSession.equals(msg.getTargetNode())) {
+							if (testMessageWindow == null)
+								testMessageWindow = new BroadcastMessageWindow(
+										pnlHead);
+							testMessageWindow.appendMessage(mbMessage, true);
+							testMessageWindow = null;
+
+						}
+					} else if (mbMessage.isValidUserforMessage()) {
+						if (messageWindow == null)
+							messageWindow = new BroadcastMessageWindow(pnlHead);
+						messageWindow.appendMessage(mbMessage, false);
+					}
+					
+				}
+			};
+			Executions.schedule(m_desktop, listner, new Event("OnBroadcast", null, event.getProperty(IEventManager.EVENT_DATA)));
+			
+		}
+	}
+
+	@Override
+	public void cleanup(Desktop desktop) throws Exception {
+		unbindEventManager();
+		
 	}
 }

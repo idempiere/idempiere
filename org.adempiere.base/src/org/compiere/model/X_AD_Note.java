@@ -18,6 +18,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
@@ -30,7 +31,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121024L;
 
     /** Standard Constructor */
     public X_AD_Note (Properties ctx, int AD_Note_ID, String trxName)
@@ -70,6 +71,51 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Acknowledgement Time.
+		@param AcknowledgeDateTime 
+		Acknowledgement Time of message
+	  */
+	public void setAcknowledgeDateTime (Timestamp AcknowledgeDateTime)
+	{
+		set_Value (COLUMNNAME_AcknowledgeDateTime, AcknowledgeDateTime);
+	}
+
+	/** Get Acknowledgement Time.
+		@return Acknowledgement Time of message
+	  */
+	public Timestamp getAcknowledgeDateTime () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_AcknowledgeDateTime);
+	}
+
+	public org.compiere.model.I_AD_BroadcastMessage getAD_Broadcastmessage() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_BroadcastMessage)MTable.get(getCtx(), org.compiere.model.I_AD_BroadcastMessage.Table_Name)
+			.getPO(getAD_Broadcastmessage_ID(), get_TrxName());	}
+
+	/** Set Broadcast Message.
+		@param AD_Broadcastmessage_ID 
+		Broadcast Message
+	  */
+	public void setAD_Broadcastmessage_ID (int AD_Broadcastmessage_ID)
+	{
+		if (AD_Broadcastmessage_ID < 1) 
+			set_Value (COLUMNNAME_AD_Broadcastmessage_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Broadcastmessage_ID, Integer.valueOf(AD_Broadcastmessage_ID));
+	}
+
+	/** Get Broadcast Message.
+		@return Broadcast Message
+	  */
+	public int getAD_Broadcastmessage_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Broadcastmessage_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException
     {

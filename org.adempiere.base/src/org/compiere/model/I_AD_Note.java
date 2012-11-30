@@ -41,6 +41,34 @@ public interface I_AD_Note
 
     /** Load Meta Data */
 
+    /** Column name AcknowledgeDateTime */
+    public static final String COLUMNNAME_AcknowledgeDateTime = "AcknowledgeDateTime";
+
+	/** Set Acknowledgement Time.
+	  * Acknowledgement Time of message
+	  */
+	public void setAcknowledgeDateTime (Timestamp AcknowledgeDateTime);
+
+	/** Get Acknowledgement Time.
+	  * Acknowledgement Time of message
+	  */
+	public Timestamp getAcknowledgeDateTime();
+
+    /** Column name AD_Broadcastmessage_ID */
+    public static final String COLUMNNAME_AD_Broadcastmessage_ID = "AD_Broadcastmessage_ID";
+
+	/** Set Broadcast Message.
+	  * Broadcast Message
+	  */
+	public void setAD_Broadcastmessage_ID (int AD_Broadcastmessage_ID);
+
+	/** Get Broadcast Message.
+	  * Broadcast Message
+	  */
+	public int getAD_Broadcastmessage_ID();
+
+	public I_AD_BroadcastMessage getAD_Broadcastmessage() throws RuntimeException;
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 

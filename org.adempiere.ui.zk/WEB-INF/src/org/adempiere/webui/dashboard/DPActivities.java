@@ -40,6 +40,10 @@ import org.zkoss.zul.Vbox;
  * 
  * Contributors:
  * CarlosRuiz - globalqss - Add unprocessed button to iDempiere
+ * 
+ * 
+ * Contributors: 
+ * Deepak Pansheriya - showing only notes message
  */
 public class DPActivities extends DashboardPanel implements EventListener<Event> {
 	/**
@@ -123,7 +127,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
 	{
 		String sql = "SELECT COUNT(1) FROM AD_Note "
 			+ "WHERE AD_Client_ID=? AND AD_User_ID IN (0,?)"
-			+ " AND Processed='N'";
+			+ " AND Processed='N' AND AD_BroadcastMessage_ID IS NULL";
 
 		int retValue = DB.getSQLValue(null, sql, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()));
 		return retValue;
