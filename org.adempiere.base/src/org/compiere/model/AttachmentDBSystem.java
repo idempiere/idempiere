@@ -44,7 +44,7 @@ public class AttachmentDBSystem implements IAttachmentStore
 			log.fine("ZipSize=" + data.length);
 			if (data.length == 0)
 				return true;
-				
+
 			//	Old Format - single file
 			if (!ZIP.equals(attach.getTitle()))
 			{
@@ -122,6 +122,7 @@ public class AttachmentDBSystem implements IAttachmentStore
 			byte[] zipData = out.toByteArray();
 			log.fine("Length=" +  zipData.length);
 			attach.setBinaryData(zipData);
+			attach.setTitle(MAttachment.ZIP);
 			return true;
 		}
 		catch (Exception e)
@@ -132,4 +133,16 @@ public class AttachmentDBSystem implements IAttachmentStore
 		return false;
 	}
 
+	@Override
+	public boolean delete(MAttachment attach, MStorageProvider prov) {
+		// nothing todo - deleting the db record deletes the items
+		return true;
+	}
+
+	@Override
+	public boolean deleteEntry(MAttachment attach, MStorageProvider provider, int index) {
+		attach.m_items.remove(index);
+		return true;
+	}
+	
 }

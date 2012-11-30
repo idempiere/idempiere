@@ -86,5 +86,5 @@ Import-Package: javax.net.ssl,
  org.restlet.security,
  org.restlet.service,
  org.restlet.util
-Service-Component: OSGI-INF/defaultpaymentformfactory.xml
+Service-Component: OSGI-INF/defaultpaymentformfactory.xml, OSGI-INF/serverinterface.xml, OSGI-INF/statusinterface.xml
 Bundle-ActivationPolicy: lazy

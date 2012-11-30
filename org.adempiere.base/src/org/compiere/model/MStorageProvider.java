@@ -17,13 +17,17 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
+
+import org.adempiere.base.Service;
+import org.adempiere.base.ServiceQuery;
 
 public class MStorageProvider extends X_AD_StorageProvider {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4048103579840786187L;
+	private static final long serialVersionUID = -1317908636350952835L;
 
 	public MStorageProvider(Properties ctx, int AD_StorageProvider_ID,
 			String trxName) {
@@ -33,6 +37,23 @@ public class MStorageProvider extends X_AD_StorageProvider {
 	public MStorageProvider(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 		
+	}
+
+	public IAttachmentStore getAttachmentStore() {
+		ServiceQuery query=new ServiceQuery();
+		String method = this.getMethod();
+		if (method == null)
+			method = "DB";
+		query.put("method", method);
+		List<IAttachmentStore> storelist = Service.locator().list(IAttachmentStore.class, query).getServices();
+
+		IAttachmentStore store = null;		
+		if (storelist == null) {
+			log.saveError("Error", "No storage provider found");
+		} else {
+			store = storelist.get(0);
+		}
+		return store;
 	}
 		
 }
