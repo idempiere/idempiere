@@ -16,13 +16,12 @@ package org.idempiere.broadcast;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
+import org.adempiere.exceptions.DBException;
 import org.adempiere.model.MBroadcastMessage;
 import org.compiere.model.MNote;
 import org.compiere.util.CLogger;
@@ -55,53 +54,35 @@ public class BroadcastMsgUtil
 		if (MBroadcastMessage.BROADCASTTYPE_Login.equals(broadcastType)
 				|| MBroadcastMessage.BROADCASTTYPE_ImmediatePlusLogin.equals(broadcastType)) {
 			// get list of users based on rule
-			ArrayList<Integer> userIDs = new ArrayList<Integer>();
-			String SQL = "";
-
 			if (mbMessage.getTarget() != null) {
+				String sql = "SELECT DISTINCT(AD_User_ID) FROM AD_User_Roles WHERE IsActive='Y'";
+
 				// Role
-				if (mbMessage.getTarget().equals("R")) {
-					SQL = "select DISTINCT(ad_user_id) from ad_user_roles where ad_role_id = "
-							+ mbMessage.getAD_Role_ID();
-				} else if (mbMessage.getTarget().equals("U")) {
-					SQL = "select DISTINCT(ad_user_id) from ad_user_roles where ad_user_id = "
-							+ mbMessage.getAD_User_ID();
-				} else if (mbMessage.getTarget().equals("C")) {
-					SQL = "select DISTINCT(ad_user_id) from ad_user_roles where ad_client_id = "
-							+ mbMessage.getNotification_Client();
-				} else if (mbMessage.getTarget().equals("E")) {
-					SQL = "select DISTINCT(ad_user_id) from ad_user_roles";
+				if (mbMessage.getTarget().equals(MBroadcastMessage.TARGET_Role)) {
+					sql += " AND AD_Role_ID=" + mbMessage.getAD_Role_ID();
+				} else if (mbMessage.getTarget().equals(MBroadcastMessage.TARGET_User)) {
+					sql += " AND AD_User_ID=" + mbMessage.getAD_User_ID();
+				} else if (mbMessage.getTarget().equals(MBroadcastMessage.TARGET_Client)) {
+					sql += " AND ad_client_id = " + mbMessage.getNotification_Client_ID();
 				}
 
-				Statement stmt = DB.createStatement();
-				ResultSet rs =null;
-				try {
-					rs = stmt.executeQuery(SQL);
-					while (rs.next()) {
-						int AD_User_ID = rs.getInt("ad_user_id");
-						userIDs.add(AD_User_ID);
-					}
-				} catch (SQLException e) {
-					logger.log(Level.SEVERE, "Exception while retrieving user list",e);
-				}finally{
-					DB.close(rs, stmt);
-				}
+				int[] userIDs = DB.getIDsEx(null, sql);
 
-				for (Integer userID : userIDs) {
+				for (int userID : userIDs) {
 					MNote note = new MNote(Env.getCtx(), 0, trxName);
 					note.setAD_Broadcastmessage_ID(messageID);
 					note.setAD_User_ID(userID);
 					note.setAD_Message_ID(0);
-					note.save();
+					note.saveEx();
 				}
 				mbMessage.setIsPublished(true);
 				mbMessage.setProcessed(true);
-				mbMessage.save(trxName);
+				mbMessage.saveEx(trxName);
 			}	// create entry for users in AD_Note
 		}else if(MBroadcastMessage.BROADCASTTYPE_Immediate.equals(broadcastType)){
 			mbMessage.setProcessed(true);
 			mbMessage.setIsPublished(true);
-			mbMessage.save(trxName);
+			mbMessage.saveEx(trxName);
 		}
 		
 		if (!MBroadcastMessage.BROADCASTTYPE_Login.equals(broadcastType)) {
@@ -150,20 +131,19 @@ public class BroadcastMsgUtil
 	 * @param AD_User_ID
 	 * @param messageWindow
 	 */
-	public static void showPendingMeassage(int AD_User_ID, IBroadcastMsgPopup messageWindow) {
-		StringBuilder sql = new StringBuilder("SELECT bm.AD_BroadcastMessage_ID ")
-				.append(" FROM AD_Note n INNER JOIN AD_BroadcastMessage bm ON bm.AD_BroadcastMessage_ID=n.AD_BroadcastMessage_ID ")
-				.append(" WHERE n.AD_User_ID = ?")
-				.append(" AND (bm.BroadcastType='IL' OR bm.BroadcastType='L') ")
-				.append(" AND bm.isPublished='Y' AND n.processed = 'N'")
-				.append(" AND ((bm.BroadcastFrequency='U' AND bm.Expired='N' AND bm.expiration > current_timestamp) OR bm.BroadcastFrequency='J') ");
-		
-		
+	public static void showPendingMessage(int AD_User_ID, IBroadcastMsgPopup messageWindow) {
+		String sql = "SELECT bm.AD_BroadcastMessage_ID "
+				+ " FROM AD_Note n INNER JOIN AD_BroadcastMessage bm ON (bm.AD_BroadcastMessage_ID=n.AD_BroadcastMessage_ID) "
+				+ " WHERE n.AD_User_ID=?"
+				+ " AND (bm.BroadcastType='IL' OR bm.BroadcastType='L') "
+				+ " AND bm.isPublished='Y' AND n.processed = 'N'"
+				+ " AND ((bm.BroadcastFrequency='U' AND bm.Expired='N' AND bm.expiration > SYSDATE) OR bm.BroadcastFrequency='J')";
+
 		ArrayList<MBroadcastMessage> mbMessages = new ArrayList<MBroadcastMessage>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			pstmt = DB.prepareStatement(sql.toString(),null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_User_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -171,11 +151,12 @@ public class BroadcastMsgUtil
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Broadcast messages could not be retrieved",e);
+			throw new DBException(e);
 		}
 		finally{
 			DB.close(rs, pstmt);
 		}
-		if(mbMessages.size()>0){
+		if (mbMessages.size()>0) {
 			messageWindow.prepareMessage(mbMessages);
 		}
 	}

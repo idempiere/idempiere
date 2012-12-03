@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -296,7 +297,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 			boolean ack = hashMessages.get(mbMessage.get_ID());
     		acknowledged.setChecked(ack);
 			acknowledged.setVisible(true);
-		}else if((broadcastFrequency.equals("J"))
+		}else if((broadcastFrequency.equals(MBroadcastMessage.BROADCASTFREQUENCY_JustOnce))
 				|| (mbMessage.getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate))){
 			acknowledged.setVisible(false);
 			hashMessages.put(mbMessages.get(currMsg).get_ID(), true);
@@ -312,9 +313,9 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	 * @return
 	 */
 	public MNote getMNote(MBroadcastMessage mbMessage) {
-		String sql = "SELECT * FROM AD_Note WHERE AD_BroadcastMessage_ID = ? AND AD_User_ID = ?";
 		MNote note =null;
 		if(!mbMessage.getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate)){
+			String sql = "SELECT * FROM AD_Note WHERE AD_BroadcastMessage_ID = ? AND AD_User_ID = ?";
 			PreparedStatement pstmt = null;
 			ResultSet rs=null;
 			try {
@@ -326,6 +327,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 					note = new MNote(Env.getCtx(), rs, null);
 			} catch (Exception e) {
 				log.log(Level.SEVERE, "Note for the Mesaage Could not be retrieved ",e);
+				throw new DBException(e);
 			}finally{
 				DB.close(rs, pstmt);
 			}
@@ -351,7 +353,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 					if(hashMessages.get(mbMessage.get_ID())){
 						acknowedgedMsgs.add(mbMessage);
 					}
-					note.save();
+					note.saveEx();
 				}else{
 					acknowedgedMsgs.add(mbMessage);
 				}

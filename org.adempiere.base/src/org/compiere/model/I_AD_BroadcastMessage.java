@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_BroadcastMessage
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_AD_BroadcastMessage 
 {
@@ -30,7 +30,7 @@ public interface I_AD_BroadcastMessage
     /** TableName=AD_BroadcastMessage */
     public static final String Table_Name = "AD_BroadcastMessage";
 
-    /** AD_Table_ID=200024 */
+    /** AD_Table_ID=200038 */
     public static final int Table_ID = 200038;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -41,18 +41,27 @@ public interface I_AD_BroadcastMessage
 
     /** Load Meta Data */
 
-    /** Column name AD_Broadcastmessage_ID */
-    public static final String COLUMNNAME_AD_Broadcastmessage_ID = "AD_Broadcastmessage_ID";
+    /** Column name AD_BroadcastMessage_ID */
+    public static final String COLUMNNAME_AD_BroadcastMessage_ID = "AD_BroadcastMessage_ID";
 
 	/** Set Broadcast Message.
 	  * Broadcast Message
 	  */
-	public void setAD_Broadcastmessage_ID (int AD_Broadcastmessage_ID);
+	public void setAD_BroadcastMessage_ID (int AD_BroadcastMessage_ID);
 
 	/** Get Broadcast Message.
 	  * Broadcast Message
 	  */
-	public int getAD_Broadcastmessage_ID();
+	public int getAD_BroadcastMessage_ID();
+
+    /** Column name AD_BroadcastMessage_UU */
+    public static final String COLUMNNAME_AD_BroadcastMessage_UU = "AD_BroadcastMessage_UU";
+
+	/** Set AD_BroadcastMessage_UU	  */
+	public void setAD_BroadcastMessage_UU (String AD_BroadcastMessage_UU);
+
+	/** Get AD_BroadcastMessage_UU	  */
+	public String getAD_BroadcastMessage_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -163,13 +172,13 @@ public interface I_AD_BroadcastMessage
     /** Column name Expiration */
     public static final String COLUMNNAME_Expiration = "Expiration";
 
-	/** Set Expiration.
-	  * Expiration
+	/** Set Expire On.
+	  * Expire On
 	  */
 	public void setExpiration (Timestamp Expiration);
 
-	/** Get Expiration.
-	  * Expiration
+	/** Get Expire On.
+	  * Expire On
 	  */
 	public Timestamp getExpiration();
 
@@ -234,14 +243,18 @@ public interface I_AD_BroadcastMessage
 	  */
 	public boolean isLogAcknowledge();
 
-    /** Column name Notification_Client */
-    public static final String COLUMNNAME_Notification_Client = "Notification_Client";
+    /** Column name Notification_Client_ID */
+    public static final String COLUMNNAME_Notification_Client_ID = "Notification_Client_ID";
 
-	/** Set Notification_Client	  */
-	public void setNotification_Client (int Notification_Client);
+	/** Set Notification Client.
+	  * Notification Client
+	  */
+	public void setNotification_Client_ID (int Notification_Client_ID);
 
-	/** Get Notification_Client	  */
-	public int getNotification_Client();
+	/** Get Notification Client.
+	  * Notification Client
+	  */
+	public int getNotification_Client_ID();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

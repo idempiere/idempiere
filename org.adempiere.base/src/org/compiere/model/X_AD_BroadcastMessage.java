@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_BroadcastMessage
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121107L;
+	private static final long serialVersionUID = 20121202L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
@@ -38,6 +38,11 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
       super (ctx, AD_BroadcastMessage_ID, trxName);
       /** if (AD_BroadcastMessage_ID == 0)
         {
+			setAD_BroadcastMessage_ID (0);
+			setBroadcastFrequency (null);
+			setBroadcastMessage (null);
+			setBroadcastType (null);
+			setTarget (null);
         } */
     }
 
@@ -70,26 +75,40 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
     }
 
 	/** Set Broadcast Message.
-		@param AD_Broadcastmessage_ID 
+		@param AD_BroadcastMessage_ID 
 		Broadcast Message
 	  */
-	public void setAD_Broadcastmessage_ID (int AD_Broadcastmessage_ID)
+	public void setAD_BroadcastMessage_ID (int AD_BroadcastMessage_ID)
 	{
-		if (AD_Broadcastmessage_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_Broadcastmessage_ID, null);
+		if (AD_BroadcastMessage_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_BroadcastMessage_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_AD_Broadcastmessage_ID, Integer.valueOf(AD_Broadcastmessage_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_BroadcastMessage_ID, Integer.valueOf(AD_BroadcastMessage_ID));
 	}
 
 	/** Get Broadcast Message.
 		@return Broadcast Message
 	  */
-	public int getAD_Broadcastmessage_ID () 
+	public int getAD_BroadcastMessage_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Broadcastmessage_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_BroadcastMessage_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_BroadcastMessage_UU.
+		@param AD_BroadcastMessage_UU AD_BroadcastMessage_UU	  */
+	public void setAD_BroadcastMessage_UU (String AD_BroadcastMessage_UU)
+	{
+		set_Value (COLUMNNAME_AD_BroadcastMessage_UU, AD_BroadcastMessage_UU);
+	}
+
+	/** Get AD_BroadcastMessage_UU.
+		@return AD_BroadcastMessage_UU	  */
+	public String getAD_BroadcastMessage_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_BroadcastMessage_UU);
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
@@ -148,8 +167,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 		return ii.intValue();
 	}
 
-	/** BroadcastFrequency AD_Reference_ID=200010 */
-	public static final int BROADCASTFREQUENCY_AD_Reference_ID=200010;
+	/** BroadcastFrequency AD_Reference_ID=200020 */
+	public static final int BROADCASTFREQUENCY_AD_Reference_ID=200020;
 	/** Just Once = J */
 	public static final String BROADCASTFREQUENCY_JustOnce = "J";
 	/** Until Expiration = U */
@@ -189,14 +208,14 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 		return (String)get_Value(COLUMNNAME_BroadcastMessage);
 	}
 
-	/** BroadcastType AD_Reference_ID=200009 */
-	public static final int BROADCASTTYPE_AD_Reference_ID=200009;
-	/** Login = L */
-	public static final String BROADCASTTYPE_Login = "L";
+	/** BroadcastType AD_Reference_ID=200021 */
+	public static final int BROADCASTTYPE_AD_Reference_ID=200021;
 	/** Immediate = I */
 	public static final String BROADCASTTYPE_Immediate = "I";
 	/** Immediate + Login = IL */
 	public static final String BROADCASTTYPE_ImmediatePlusLogin = "IL";
+	/** Login = L */
+	public static final String BROADCASTTYPE_Login = "L";
 	/** Set Broadcast Type.
 		@param BroadcastType 
 		Type of Broadcast
@@ -215,17 +234,17 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 		return (String)get_Value(COLUMNNAME_BroadcastType);
 	}
 
-	/** Set Expiration.
+	/** Set Expire On.
 		@param Expiration 
-		Expiration
+		Expire On
 	  */
 	public void setExpiration (Timestamp Expiration)
 	{
 		set_Value (COLUMNNAME_Expiration, Expiration);
 	}
 
-	/** Get Expiration.
-		@return Expiration
+	/** Get Expire On.
+		@return Expire On
 	  */
 	public Timestamp getExpiration () 
 	{
@@ -318,18 +337,24 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 		return false;
 	}
 
-	/** Set Notification_Client.
-		@param Notification_Client Notification_Client	  */
-	public void setNotification_Client (int Notification_Client)
+	/** Set Notification Client.
+		@param Notification_Client_ID 
+		Notification Client
+	  */
+	public void setNotification_Client_ID (int Notification_Client_ID)
 	{
-		set_Value (COLUMNNAME_Notification_Client, Integer.valueOf(Notification_Client));
+		if (Notification_Client_ID < 1) 
+			set_Value (COLUMNNAME_Notification_Client_ID, null);
+		else 
+			set_Value (COLUMNNAME_Notification_Client_ID, Integer.valueOf(Notification_Client_ID));
 	}
 
-	/** Get Notification_Client.
-		@return Notification_Client	  */
-	public int getNotification_Client () 
+	/** Get Notification Client.
+		@return Notification Client
+	  */
+	public int getNotification_Client_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Notification_Client);
+		Integer ii = (Integer)get_Value(COLUMNNAME_Notification_Client_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -376,16 +401,16 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 		return (String)get_Value(COLUMNNAME_Publish);
 	}
 
-	/** Target AD_Reference_ID=200011 */
-	public static final int TARGET_AD_Reference_ID=200011;
-	/** Everybody = E */
-	public static final String TARGET_Everybody = "E";
+	/** Target AD_Reference_ID=200022 */
+	public static final int TARGET_AD_Reference_ID=200022;
 	/** Client = C */
 	public static final String TARGET_Client = "C";
-	/** User = U */
-	public static final String TARGET_User = "U";
+	/** Everybody = E */
+	public static final String TARGET_Everybody = "E";
 	/** Role = R */
 	public static final String TARGET_Role = "R";
+	/** User = U */
+	public static final String TARGET_User = "U";
 	/** Set Target.
 		@param Target 
 		Target client

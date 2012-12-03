@@ -14,8 +14,6 @@
 
 package org.idempiere.broadcast.process;
 
-import java.sql.PreparedStatement;
-
 import org.adempiere.model.MBroadcastMessage;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -36,21 +34,13 @@ public class ExpireBrodcastMessage extends SvrProcess{
 	@Override
 	protected String doIt() throws Exception {
 		MBroadcastMessage mbMessage = MBroadcastMessage.get(Env.getCtx(), getRecord_ID());
-		if(mbMessage.getBroadcastFrequency().equals("U") && !mbMessage.isExpired() && mbMessage.isPublished()){
-			String sql = "UPDATE AD_Note SET processed='Y' WHERE AD_BroadcastMessage_ID = ?";
-			PreparedStatement pstmt = null;
-			try {
-				pstmt = DB.prepareStatement(sql,null);
-				pstmt.setInt(1, getRecord_ID());
-				pstmt.executeUpdate();
-				mbMessage.setProcessed(true);
-				mbMessage.setExpired(true);				
-			} catch (Exception e) {
-				return "Message is not Expired";
-			}finally{
-				DB.close(pstmt);
-			}
-			mbMessage.save();
+		if (MBroadcastMessage.BROADCASTFREQUENCY_UntilExpiration.equals(mbMessage.getBroadcastFrequency())
+				&& !mbMessage.isExpired() && mbMessage.isPublished()){
+			String sql = "UPDATE AD_Note SET Processed='Y' WHERE AD_BroadcastMessage_ID = ?";
+			DB.executeUpdateEx(sql, new Object[] {getRecord_ID()}, null);
+			mbMessage.setProcessed(true);
+			mbMessage.setExpired(true);				
+			mbMessage.saveEx();
 		}
 		return "Expired";
 	}

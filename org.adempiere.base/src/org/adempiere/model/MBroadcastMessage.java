@@ -70,17 +70,17 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
     {
     	Properties ctx = Env.getCtx();
 		
-    	if(getBroadcastType()!=null && getBroadcastType().equals("I") && getTarget()!=null){
-			if (getTarget().equals("R") ) {
-				String SQL = "select count(*) from ad_user_roles where ad_role_id = ? and ad_User_ID=?";
-				int roleSubs = DB.getSQLValue(null, SQL, getAD_Role_ID(),Env.getAD_User_ID(ctx));
+    	if(getBroadcastType()!=null && getBroadcastType().equals(BROADCASTTYPE_Immediate) && getTarget()!=null){
+			if (getTarget().equals(TARGET_Role) ) {
+				String sql = "SELECT COUNT(*) FROM AD_User_Roles WHERE AD_Role_ID = ? AND AD_User_ID=? AND IsActive='Y'";
+				int roleSubs = DB.getSQLValue(null, sql, getAD_Role_ID(),Env.getAD_User_ID(ctx));
 				if(roleSubs>0)
 					return true;
-			} else if (getTarget().equals("U") && getAD_User_ID() == Env.getAD_User_ID(ctx)) {
+			} else if (getTarget().equals(TARGET_User) && getAD_User_ID() == Env.getAD_User_ID(ctx)) {
 				return true;
-			} else if (getTarget().equals("C") && getAD_Client_ID() == Env.getAD_Client_ID(ctx)) {
+			} else if (getTarget().equals(TARGET_Client) && getAD_Client_ID() == Env.getAD_Client_ID(ctx)) {
 				return true;
-			}else if (getTarget().equals("E")){
+			}else if (getTarget().equals(TARGET_Everybody)){
 				return true;
 			}
 		}
@@ -88,7 +88,7 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
     		
 			int AD_User_ID = Env.getAD_User_ID(ctx);
 			String sql = "SELECT AD_User_ID from AD_Note WHERE AD_BroadcastMessage_ID = ?  AND AD_User_ID = ? ";
-			int result = DB.getSQLValue(null, sql,getAD_Broadcastmessage_ID(),AD_User_ID);
+			int result = DB.getSQLValue(null, sql,getAD_BroadcastMessage_ID(),AD_User_ID);
 			if (result <= 0) {
 				return false;
 			}

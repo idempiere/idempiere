@@ -176,7 +176,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         homeTab.appendChild(busyDialog);
         
         messageWindow = new BroadcastMessageWindow(pnlHead);
-        BroadcastMsgUtil.showPendingMeassage(Env.getAD_User_ID(Env.getCtx()), messageWindow);
+        BroadcastMsgUtil.showPendingMessage(Env.getAD_User_ID(Env.getCtx()), messageWindow);
         
         if (!layout.getDesktop().isServerPushEnabled())
     	{
