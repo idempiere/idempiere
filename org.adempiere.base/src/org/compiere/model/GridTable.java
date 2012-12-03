@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.swing.event.TableModelListener;
@@ -1011,9 +1012,9 @@ public class GridTable extends AbstractTableModel
 			log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
 			try
 			{
-				Thread.sleep(500);		//	1/2 second
+				m_loaderFuture.get(500, TimeUnit.MILLISECONDS); 
 			}
-			catch (InterruptedException ie)
+			catch (Exception ie)
 			{}
 			loops++;
 		}
@@ -3318,6 +3319,8 @@ public class GridTable extends AbstractTableModel
 		private ResultSet 		    m_rs = null;
 		private Trx trx = null;
 		private Properties m_context = null;
+		private int maxRows;
+		private int rows;
 		
 		public void setContext(Properties context)
 		{
@@ -3331,9 +3334,10 @@ public class GridTable extends AbstractTableModel
 		 */
 		protected int open (int maxRows)
 		{
-		//	log.config( "MTable Loader.open");
+			this.maxRows = maxRows;
+
 			//	Get Number of Rows
-			int rows = 0;
+			rows = 0;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;			
 			try
@@ -3361,7 +3365,20 @@ public class GridTable extends AbstractTableModel
 			info.append(rows);
 			if (rows == 0)
 				info.append(" - ").append(m_SQL_Count);
-						
+				
+			if (maxRows > 0 && rows > maxRows)
+			{
+				info.append(" - MaxRows=").append(maxRows);					
+				rows = maxRows;
+			}
+					
+			if (log.isLoggable(Level.FINE))
+				log.fine(info.toString());
+			
+			return rows;
+		}	//	open
+
+		private void openResultSet() {
 			//postgresql need trx to use cursor based resultset
 			String trxName = m_virtual ? Trx.createTrxName("Loader") : null;
 			trx  = trxName != null ? Trx.get(trxName, true) : null;
@@ -3369,11 +3386,9 @@ public class GridTable extends AbstractTableModel
 			try
 			{
 				m_pstmt = DB.prepareStatement(m_SQL, trxName);
-				if (maxRows > 0 && rows > maxRows)
+				if (this.maxRows > 0 && rows > this.maxRows)
 				{
-					m_pstmt.setMaxRows(maxRows);
-					info.append(" - MaxRows=").append(maxRows);
-					rows = maxRows;
+					m_pstmt.setMaxRows(this.maxRows);					
 				}
 				//ensure not all row is fectch into memory for virtual table
 				if (m_virtual)
@@ -3384,11 +3399,8 @@ public class GridTable extends AbstractTableModel
 			catch (SQLException e)
 			{
 				log.log(Level.SEVERE, m_SQL, e);
-				return 0;
 			}
-			log.fine(info.toString());
-			return rows;
-		}	//	open
+		}
 
 		/**
 		 *	Close RS and Statement
@@ -3419,7 +3431,7 @@ public class GridTable extends AbstractTableModel
 		}	//	run
 
 		private void doRun() {
-			log.info("");
+			openResultSet();
 			if (m_rs == null)
 				return;
 
