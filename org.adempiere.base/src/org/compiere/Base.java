@@ -121,22 +121,6 @@ class Base
 	}   //  getMemoryUsed
 
 	/**
-	 *  Sleep for a second
-	 */
-	private static void sleep()
-	{
-		System.out.println(".. sleeping-ini .. -> " + Thread.activeCount());
-		Thread.yield();
-		try
-		{
-			Thread.sleep(1000);
-		}
-		catch (final InterruptedException ie)
-		{}
-		System.out.println(".. sleeping-end .. -> " + Thread.activeCount());
-	}   //  sleep
-
-	/**
 	 *  List Threads
 	 */
 	private static void listThreads()
