@@ -554,37 +554,20 @@ public final class Adempiere
 
 	private static void createThreadPool() {
 		int max = Runtime.getRuntime().availableProcessors() * 20;
-		int min = max / 2;
 		int defaultMax = max;
-		int defaultMin = min;
 		Properties properties = Ini.getProperties();
 		String maxSize = properties.getProperty("MaxThreadPoolSize");
-		String minSize = properties.getProperty("MinThreadPoolSize");
 		if (maxSize != null) {
 			try {
 				max = Integer.parseInt(maxSize);
 			} catch (Exception e) {}
 		}
-		if (minSize != null) {
-			try {
-				min = Integer.parseInt(minSize);
-			} catch (Exception e) {}
-		}
-		if (max < min) {
-			max = min;
-		}
 		if (max <= 0) {
 			max = defaultMax;
 		}
-		if (min < 0) {
-			min = defaultMin;
-		}
 		
 		// start thread pool
-		threadPoolExecutor = new ScheduledThreadPoolExecutor(min);		
-		threadPoolExecutor.setMaximumPoolSize(max);
-		threadPoolExecutor.setKeepAliveTime(10, TimeUnit.MINUTES);
-		threadPoolExecutor.allowCoreThreadTimeOut(true);
+		threadPoolExecutor = new ScheduledThreadPoolExecutor(max);		
 		
 		Trx.startTrxMonitor();
 	}
