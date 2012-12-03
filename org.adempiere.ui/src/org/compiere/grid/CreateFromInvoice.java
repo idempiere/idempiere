@@ -474,11 +474,11 @@ public abstract class CreateFromInvoice extends CreateFrom
 								break;
 							}
 						}
-						if (inoutLine == null)
-						{
-							inoutLine = lines[0];	//	first as default
-							M_InOutLine_ID = inoutLine.getM_InOutLine_ID();
-						}
+//						if (inoutLine == null)
+//						{
+//							inoutLine = lines[0];	//	first as default
+//							M_InOutLine_ID = inoutLine.getM_InOutLine_ID();
+//						}
 					}
 				}
 				else if (M_RMALine_ID != 0)

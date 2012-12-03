@@ -1825,16 +1825,19 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					MMatchPO po = MMatchPO.create (line, null,
 						getDateInvoiced(), matchQty);
 					boolean isNewMatchPO = false;
-					if (po.get_ID() == 0)
-						isNewMatchPO = true;
-					if (!po.save(get_TrxName()))
+					if (po != null) 
 					{
-						m_processMsg = "Could not create PO Matching";
-						return DocAction.STATUS_Invalid;
+						if (po.get_ID() == 0)
+							isNewMatchPO = true;
+						if (!po.save(get_TrxName()))
+						{
+							m_processMsg = "Could not create PO Matching";
+							return DocAction.STATUS_Invalid;
+						}
+						matchPO++;
+						if (isNewMatchPO)
+							addDocsPostProcess(po);
 					}
-					matchPO++;
-					if (isNewMatchPO)
-						addDocsPostProcess(po);
 				}
 			}
 
