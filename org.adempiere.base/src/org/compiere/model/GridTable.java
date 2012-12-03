@@ -3405,7 +3405,7 @@ public class GridTable extends AbstractTableModel
 			try
 			{
 				m_pstmt = DB.prepareStatement(m_SQL, trxName);
-				if (this.maxRows > 0 && rows > this.maxRows)
+				if (this.maxRows > 0 && rows == this.maxRows)
 				{
 					m_pstmt.setMaxRows(this.maxRows);					
 				}
