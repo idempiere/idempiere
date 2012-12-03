@@ -2358,17 +2358,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				if(cf.isInitOK())
 				{
+					Clients.showBusy(getComponent(), " ");
 					final WCreateFromWindow window = (WCreateFromWindow) cf.getWindow();
-					window.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+					window.setStyle("position: absolute");
 					window.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
+							Clients.clearBusy(getComponent());
 							if (!window.isCancel()) {
 								onRefresh(true, false);
 							}
 						}
 					});
+					getComponent().getParent().appendChild(window);
 					cf.showWindow();
+					LayoutUtils.openOverlappedWindow(getComponent(), window, "middle_center");
 				}
 				return;
 			}
