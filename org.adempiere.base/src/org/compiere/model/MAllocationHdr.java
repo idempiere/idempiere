@@ -419,7 +419,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 				.setClient_ID()
 				.setParameters(line.getC_Invoice_ID(), "Y", X_C_Invoice.DOCSTATUS_Voided, X_C_Invoice.DOCSTATUS_Reversed)
 				.match();
-				if(InvoiceIsPaid)
+				if(InvoiceIsPaid && line.getAmount().signum() > 0)
 					throw new  AdempiereException("@ValidationError@ @C_Invoice_ID@ @IsPaid@");
 			}
 		}	

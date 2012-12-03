@@ -691,11 +691,32 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (m_processMsg != null)
 			return false;
 		
+		MMovement reversal = reverse(false);
+		if (reversal == null)
+			return false;
+		
+		m_processMsg = reversal.getDocumentNo();
+		
+		// After reverseCorrect
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
+		if (m_processMsg != null)
+			return false;
+		
+		return true;
+	}	//	reverseCorrectionIt
+	
+	private MMovement reverse(boolean accrual)
+	{
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
+		if (reversalDate == null) {
+			reversalDate = new Timestamp(System.currentTimeMillis());
+		}
+		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		if (!MPeriod.isOpen(getCtx(), getMovementDate(), dt.getDocBaseType(), getAD_Org_ID()))
+		if (!MPeriod.isOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID()))
 		{
 			m_processMsg = "@PeriodClosed@";
-			return false;
+			return null;
 		}
 
 		//	Deep Copy
@@ -707,6 +728,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		reversal.setIsInTransit (false);
 		reversal.setPosted(false);
 		reversal.setProcessed(false);
+		reversal.setMovementDate(reversalDate);
 		reversal.setDocumentNo(getDocumentNo() + REVERSE_INDICATOR);	//	indicate reversals
 		reversal.addDescription("{->" + getDocumentNo() + ")");
 		//FR [ 1948157  ]
@@ -714,7 +736,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (!reversal.save())
 		{
 			m_processMsg = "Could not create Movement Reversal";
-			return false;
+			return null;
 		}
 		reversal.setReversal(true);
 		//	Reverse Line Qty
@@ -737,7 +759,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			if (!rLine.save())
 			{
 				m_processMsg = "Could not create Movement Reversal Line";
-				return false;
+				return null;
 			}
 			
 			//We need to copy MA
@@ -759,18 +781,12 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (!reversal.processIt(DocAction.ACTION_Complete))
 		{
 			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
-			return false;
+			return null;
 		}
 		reversal.closeIt();
 		reversal.setDocStatus(DOCSTATUS_Reversed);
 		reversal.setDocAction(DOCACTION_None);
 		reversal.saveEx();
-		m_processMsg = reversal.getDocumentNo();
-		
-		// After reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
-		if (m_processMsg != null)
-			return false;
 		
 		//	Update Reversed (this)
 		addDescription("(" + reversal.getDocumentNo() + "<-)");
@@ -779,9 +795,9 @@ public class MMovement extends X_M_Movement implements DocAction
 		setProcessed(true);
 		setDocStatus(DOCSTATUS_Reversed);	//	may come from void
 		setDocAction(DOCACTION_None);
-		
-		return true;
-	}	//	reverseCorrectionIt
+			
+		return reversal;
+	}
 	
 	/**
 	 * 	Reverse Accrual - none
@@ -795,12 +811,18 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (m_processMsg != null)
 			return false;
 		
+		MMovement reversal = reverse(true);
+		if (reversal == null)
+			return false;
+		
+		m_processMsg = reversal.getDocumentNo();
+		
 		// After reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 		
-		return false;
+		return true;
 	}	//	reverseAccrualIt
 	
 	/** 

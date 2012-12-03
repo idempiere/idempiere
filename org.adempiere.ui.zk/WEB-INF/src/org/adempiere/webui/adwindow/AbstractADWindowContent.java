@@ -966,8 +966,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
     		onModalClose(dialog.getProcessInfo());
     		String s = breadCrumb.getStatusLine(); 
+    		boolean b = breadCrumb.getStatusError();
     		onRefresh(true, false);
-    		breadCrumb.setStatusLine(s);
+    		breadCrumb.setStatusLine(s, b);
     	}
     	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
     	{

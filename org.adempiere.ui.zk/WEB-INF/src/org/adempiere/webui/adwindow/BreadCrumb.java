@@ -347,7 +347,7 @@ public class BreadCrumb extends Div implements EventListener<Event>{
     	if (error)
     		image = new Image(ERROR_INDICATOR_IMAGE);
     	else
-			image = new Image(INFO_INDICATOR_IMAGE);
+			image = new Image(INFO_INDICATOR_IMAGE);    	
     	
 		image.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
     	messageContainer.appendChild(image);
@@ -410,6 +410,10 @@ public class BreadCrumb extends Div implements EventListener<Event>{
     public String getStatusLine() {
    		return m_statusText;
    	}
+    
+    public boolean getStatusError() {
+    	return m_statusError;
+    }
 
 	private void createPopup() {
 		msgPopupCnt = new Div();

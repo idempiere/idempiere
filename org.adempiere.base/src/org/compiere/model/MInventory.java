@@ -51,6 +51,9 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	private static final long serialVersionUID = -7137974064086172763L;
 
+	/** Reversal Indicator			*/
+	public static String	REVERSE_INDICATOR = "^";
+	
 	/**
 	 * 	Get Inventory from Cache
 	 *	@param ctx context
@@ -771,6 +774,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		//	Deep Copy
 		MInventory reversal = new MInventory(getCtx(), 0, get_TrxName());
 		copyValues(this, reversal, getAD_Client_ID(), getAD_Org_ID());
+		reversal.setDocumentNo(getDocumentNo() + REVERSE_INDICATOR);	//	indicate reversals
 		reversal.setMovementDate(reversalDate);
 		reversal.setDocStatus(DOCSTATUS_Drafted);
 		reversal.setDocAction(DOCACTION_Complete);
@@ -863,7 +867,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 
 		m_processMsg = reversal.getDocumentNo();
 		
-		return false;
+		return true;
 	}	//	reverseAccrualIt
 	
 	/** 
