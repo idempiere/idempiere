@@ -57,3 +57,7 @@ AS
            ON so.m_warehouse_id = w.m_warehouse_id
   WHERE  so.issotrx = 'N'
 ;
+
+SELECT register_migration_script('201212031501_IDEMPIERE-385.sql') FROM dual
+;
+
