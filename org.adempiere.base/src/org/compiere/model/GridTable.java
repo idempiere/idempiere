@@ -35,8 +35,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
 import javax.swing.event.TableModelListener;
@@ -689,6 +691,23 @@ public class GridTable extends AbstractTableModel
 		return false;
 	}   //  isLoading
 
+	/**
+	 * wait for the loading of data
+	 * @param timeout timeout in milisecond. pass 0 or negative value for infinite wait
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 * @throws TimeoutException 
+	 */
+	public void waitLoading(long timeout) throws InterruptedException, ExecutionException, TimeoutException
+	{
+		if (m_loaderFuture != null && !m_loaderFuture.isDone()) {
+			if (timeout > 0)
+				m_loaderFuture.get(timeout, TimeUnit.MILLISECONDS);
+			else
+				m_loaderFuture.get();
+		}
+	}
+	
 	/**
 	 *	Is it open?
 	 *  @return true if opened

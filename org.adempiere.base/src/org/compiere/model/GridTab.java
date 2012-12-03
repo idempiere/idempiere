@@ -2604,7 +2604,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		{
 			try
 			{
-				Thread.sleep(100);      //  .1 sec
+				m_mTable.waitLoading(100);      //  .1 sec
 			}
 			catch (Exception e) {}
 			count = m_mTable.getRowCount();
