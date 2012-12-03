@@ -2368,6 +2368,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							if (!window.isCancel()) {
 								onRefresh(true, false);
 							}
+							Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, getComponent()));
 						}
 					});
 					getComponent().getParent().appendChild(window);
