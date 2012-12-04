@@ -17,16 +17,20 @@ package org.idempiere.broadcast;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.model.MBroadcastMessage;
+import org.compiere.Adempiere;
 import org.compiere.model.MNote;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.WebUtil;
 
 /**
  * 
@@ -48,6 +52,7 @@ public class BroadcastMsgUtil
 	 * @param trxName
 	 */
 	public static void publishBroadcastMessage(final int messageID, String trxName) {
+		
 		MBroadcastMessage mbMessage = MBroadcastMessage.get(Env.getCtx(), messageID);
 		String broadcastType = mbMessage.getBroadcastType();
 		
@@ -89,26 +94,37 @@ public class BroadcastMsgUtil
 			BroadCastMsg msg = new BroadCastMsg();
 			msg.setIntData(messageID);
 			msg.setEventId(BroadCastUtil.EVENT_BROADCAST_MESSAGE);
-			pushToQueue(msg);
+			
+			pushToQueue(msg,false);
 		}
 	
 	}
 
-	public static void pushToQueue(final BroadCastMsg msg){
-		Runnable runnable = new Runnable() {
-			
-			@Override
-			public void run() {
+	public static void pushToQueue(final BroadCastMsg msg, boolean isLocalOnly) {
 
-				org.osgi.service.event.Event event = EventManager.newEvent(IEventTopics.BROADCAST_MESSAGE, msg);
-				EventManager.getInstance().postEvent(event);
-				
-			}
-		};
-		
-		Thread thread = new Thread(runnable);
-		thread.setName("PublishMessage -" + Env.getContextAsInt(Env.getCtx(), "AD_Session_ID"));
-		thread.start();
+		boolean isPublished = false;
+		if (!isLocalOnly) {
+			msg.setSrc(WebUtil.getServerName());
+			isPublished = BroadCastUtil.publish(msg);
+
+		}
+
+		if (!isPublished) {
+			Runnable runnable = new Runnable() {
+
+				@Override
+				public void run() {
+
+					org.osgi.service.event.Event event = EventManager.newEvent(
+							IEventTopics.BROADCAST_MESSAGE, msg);
+					EventManager.getInstance().postEvent(event);
+				}
+			};
+
+			ScheduledThreadPoolExecutor executer = Adempiere
+					.getThreadPoolExecutor();
+			executer.schedule(runnable, 0, TimeUnit.MILLISECONDS);
+		}
 	}
 	/**
 	 * Test message
@@ -118,11 +134,10 @@ public class BroadcastMsgUtil
 	public static void testBroadcastMessage(int messageID, int AD_Session_ID) {
 		BroadCastMsg msg = new BroadCastMsg();
 		msg.setIntData(messageID);
-		msg.setFromCluster(true);
 		msg.setEventId(BroadCastUtil.EVENT_TEST_BROADCAST_MESSAGE);
 		msg.setTarget(Integer.toString(AD_Session_ID));
 
-		pushToQueue(msg);
+		pushToQueue(msg,true);
 	}
 
 

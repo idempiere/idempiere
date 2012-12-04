@@ -32,16 +32,6 @@ public class BroadCastMsg implements Serializable {
 	private String target;
 	private int eventId;
 	
-	private boolean fromCluster = false;
-	
-	public boolean isFromCluster() {
-		return fromCluster;
-	}
-
-	public void setFromCluster(boolean fromCluster) {
-		this.fromCluster = fromCluster;
-	}
-
 	public int getEventId() {
 		return eventId;
 	}

@@ -48,7 +48,7 @@ public class KillCurrentSession extends SvrProcess {
 		msg.setEventId(BroadCastUtil.EVENT_SESSION_TIMEOUT);
 		msg.setIntData(scndTimeout);
 		msg.setTarget(Integer.toString(getRecord_ID()));
-		BroadcastMsgUtil.pushToQueue(msg);
+		BroadcastMsgUtil.pushToQueue(msg,false);
 		
 		return "Session notified";
 	}

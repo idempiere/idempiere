@@ -65,7 +65,7 @@ public class KillAllSession extends SvrProcess {
 				msg.setEventId(BroadCastUtil.EVENT_SESSION_ONNODE_TIMEOUT);
 				msg.setIntData(scndTimeout);
 				msg.setTarget(rs.getString("servername"));
-				BroadcastMsgUtil.pushToQueue(msg);
+				BroadcastMsgUtil.pushToQueue(msg,false);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "servername could not be retrieved", e);

@@ -325,8 +325,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	 * @param eventManager
 	 */
 	public void bindEventManager() {
-		String topics [] = {IEventTopics.BROADCAST_MESSAGE};
-		EventManager.getInstance().register(topics, this);
+		EventManager.getInstance().register(IEventTopics.BROADCAST_MESSAGE, this);
 	}
 
 	/**

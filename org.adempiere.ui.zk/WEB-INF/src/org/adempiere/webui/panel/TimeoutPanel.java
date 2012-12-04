@@ -14,6 +14,7 @@
 
 package org.adempiere.webui.panel;
 
+import org.adempiere.webui.session.SessionManager;
 import org.zkoss.zhtml.Script;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -140,8 +141,7 @@ public class TimeoutPanel extends Window implements
 		if (event.getName().equals("onTimer")) 
 		{
 				timer.stop();
-				Session session = Sessions.getCurrent();
-				session.invalidate();
+				SessionManager.logoutSession();
 				Executions.sendRedirect("/index.zul");
 		}
 	}
