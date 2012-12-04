@@ -14,7 +14,7 @@ AS
          0 AS qtyordered,
          s.datelastinventory,
          s.m_attributesetinstance_id,
-         s.m_storageonhand_uu
+         s.m_storageonhand_uu AS m_storage_uu
   FROM   m_storageonhand s
   UNION
   SELECT sr.m_product_id,
@@ -31,7 +31,7 @@ AS
          0                     AS qtyordered,
          sr.datelastinventory,
          sr.m_attributesetinstance_id,
-         sr.m_storagereservation_uu
+         sr.m_storagereservation_uu AS m_storage_uu
   FROM   m_storagereservation sr
          JOIN m_warehouse w
            ON sr.m_warehouse_id = w.m_warehouse_id
@@ -51,7 +51,7 @@ AS
          so.qty                AS qtyordered,
          so.datelastinventory,
          so.m_attributesetinstance_id,
-         so.m_storagereservation_uu
+         so.m_storagereservation_uu AS m_storage_uu
   FROM   m_storagereservation so
          JOIN m_warehouse w
            ON so.m_warehouse_id = w.m_warehouse_id

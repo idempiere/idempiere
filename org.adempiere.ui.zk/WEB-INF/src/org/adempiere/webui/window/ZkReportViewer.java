@@ -24,7 +24,6 @@ import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -41,9 +40,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
-import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
-import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
@@ -615,20 +612,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	@Override
 	public void onClose(Tabpanel tabPanel) {
 		Tab tab = tabPanel.getLinkedTab();
-		Tabbox tabbox = (Tabbox) tab.getTabbox();
-		if (tabbox.getSelectedTab() == tab) {
-			Tabs tabs = (Tabs) tabbox.getTabs();
-			List<?> childs = tabs.getChildren();
-			for(int i = 0; i < childs.size(); i++) {
-				if (childs.get(i) == tab) {
-					if (i > 0)
-						tabbox.setSelectedIndex((i-1));
-					break;
-				}
-			}
-		}
-		tabPanel.detach();
-		tab.detach();
+		tab.close();
 		cleanUp();
 	}
 	

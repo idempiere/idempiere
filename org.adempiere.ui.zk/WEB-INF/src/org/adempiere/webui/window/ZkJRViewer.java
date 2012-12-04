@@ -2,7 +2,6 @@ package org.adempiere.webui.window;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.List;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,9 +17,7 @@ import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Listbox;
-import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
-import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
@@ -222,20 +219,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	@Override
 	public void onClose(Tabpanel tabPanel) {
 		Tab tab = tabPanel.getLinkedTab();
-		Tabbox tabbox = (Tabbox) tab.getTabbox();
-		if (tabbox.getSelectedTab() == tab) {
-			Tabs tabs = (Tabs) tabbox.getTabs();
-			List<?> childs = tabs.getChildren();
-			for(int i = 0; i < childs.size(); i++) {
-				if (childs.get(i) == tab) {
-					if (i > 0)
-						tabbox.setSelectedIndex((i-1));
-					break;
-				}
-			}
-		}
-		tabPanel.detach();
-		tab.detach();
+		tab.close();
 		cleanUp();
 	}
 

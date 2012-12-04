@@ -17,8 +17,6 @@
 
 package org.adempiere.webui.component;
 
-import java.util.List;
-
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.zkoss.zul.Tab;
 
@@ -66,20 +64,7 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel
 			onCloseHandler.onClose(this);
 		else {
 			Tab tab = this.getLinkedTab();
-			Tabbox tabbox = (Tabbox) tab.getTabbox();
-			if (tabbox.getSelectedTab() == tab) {
-				Tabs tabs = (Tabs) tabbox.getTabs();
-				List childs = tabs.getChildren();
-				for(int i = 0; i < childs.size(); i++) {
-					if (childs.get(i) == tab) {
-						if (i > 0) 
-							tabbox.setSelectedIndex((i-1));
-						break;
-					}
-				}
-			}
-			this.detach();
-			tab.detach();
+			tab.close();
 		}
 	}
 	
