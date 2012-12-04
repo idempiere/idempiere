@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.util.PaymentUtil;
 import org.compiere.util.CLogger;
 
 /**
@@ -178,7 +179,10 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 		//	maintain routing on bank level
 		if (isACH() && getBank() != null)
 			setRoutingNo(null);
-		//
+		//		
+		if (getCreditCardVV() != null)
+			setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
+		
 		return true;
 	}	//	beforeSave
 	

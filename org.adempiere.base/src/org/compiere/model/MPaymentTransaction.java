@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.IProcessUI;
+import org.adempiere.util.PaymentUtil;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
@@ -73,6 +74,8 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
+		if (getCreditCardVV() != null)
+			setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
 		return true;
 	}
 	
@@ -160,6 +163,11 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	 */
 	public boolean processOnline()
 	{
+		return processOnline(get_TrxName());
+	}
+	
+	public boolean processOnline(String trxName)
+	{
 		log.info ("Amt=" + getPayAmt());
 		//
 		setIsOnline(true);
@@ -213,10 +221,10 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			else
 			{
 				// Validate before trying to process
-				String msg = pp.validate();
-				if (msg!=null && msg.trim().length()>0) {
-					setErrorMessage(Msg.getMsg(getCtx(), msg));
-				} else {
+//				String msg = pp.validate();
+//				if (msg!=null && msg.trim().length()>0) {
+//					setErrorMessage(Msg.getMsg(getCtx(), msg));
+//				} else {
 					// Process if validation succeeds
 					approved = pp.processCC ();
 					setIsApproved(approved);
@@ -234,7 +242,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 								&& !getTrxType().equals(MPaymentTransaction.TRXTYPE_VoiceAuthorization)
 								&& !getTrxType().equals(MPaymentTransaction.TRXTYPE_Void))
 						{
-							MPayment m_mPayment = createPayment();
+							MPayment m_mPayment = createPayment(trxName);
 							m_mPayment.saveEx();
 							setC_Payment_ID(m_mPayment.getC_Payment_ID());
 							processed = m_mPayment.processIt(DocAction.ACTION_Complete);
@@ -247,8 +255,13 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 							processed = true;
 					}
 					else
-						setErrorMessage("From " +  getCreditCardName() + ": " + getR_RespMsg());
-				}
+					{
+						if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
+							setErrorMessage("From " +  getCreditCardName() + ": " + getR_VoidMsg());
+						else
+							setErrorMessage("From " +  getCreditCardName() + ": " + getR_RespMsg());
+					}
+//				}
 			}
 		}
 		catch (Exception e)
@@ -298,15 +311,23 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	{
 		if (getTenderType().equals(TENDERTYPE_CreditCard) && isOnline() && getTrxType().equals(TRXTYPE_Authorization) && !isVoided() && !isDelayedCapture())
 		{
-			MPaymentTransaction m_mPaymentTransaction = copyFrom(this, new Timestamp(System.currentTimeMillis()), TRXTYPE_Void, getR_PnRef(), get_TrxName());
+			Trx trx = Trx.get(Trx.createTrxName("ppt-"), true);
+			
+			MPaymentTransaction m_mPaymentTransaction = copyFrom(this, new Timestamp(System.currentTimeMillis()), TRXTYPE_Void, getR_PnRef(), trx.getTrxName());
 			m_mPaymentTransaction.setIsApproved(false);
 			m_mPaymentTransaction.setIsVoided(false);
 			m_mPaymentTransaction.setIsDelayedCapture(false);
-			boolean ok = m_mPaymentTransaction.processOnline();
+			boolean ok = m_mPaymentTransaction.processOnline(get_TrxName());
 			m_mPaymentTransaction.setRef_PaymentTransaction_ID(getC_PaymentTransaction_ID());
 //			m_mPaymentTransaction.setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
 //			m_mPaymentTransaction.setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
 			m_mPaymentTransaction.saveEx();
+			
+			if (trx != null)
+			{
+				trx.commit();
+				trx.close();
+			}
 			
 			if (ok)
 			{
@@ -330,7 +351,9 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	{
 		if (getTenderType().equals(TENDERTYPE_CreditCard) && isOnline() && getTrxType().equals(TRXTYPE_Authorization) && !isVoided() && !isDelayedCapture())
 		{
-			MPaymentTransaction m_mPaymentTransaction = copyFrom(this, new Timestamp(System.currentTimeMillis()), TRXTYPE_DelayedCapture, getR_PnRef(), get_TrxName());
+			Trx trx = Trx.get(Trx.createTrxName("ppt-"), true);
+			
+			MPaymentTransaction m_mPaymentTransaction = copyFrom(this, new Timestamp(System.currentTimeMillis()), TRXTYPE_DelayedCapture, getR_PnRef(), trx.getTrxName());
 			m_mPaymentTransaction.setIsApproved(false);
 			m_mPaymentTransaction.setIsVoided(false);
 			m_mPaymentTransaction.setIsDelayedCapture(false);
@@ -338,9 +361,15 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			if (C_Invoice_ID != 0)
 				m_mPaymentTransaction.setC_Invoice_ID(C_Invoice_ID);
 
-			boolean ok = m_mPaymentTransaction.processOnline();
+			boolean ok = m_mPaymentTransaction.processOnline(get_TrxName());
 			m_mPaymentTransaction.setRef_PaymentTransaction_ID(getC_PaymentTransaction_ID());
 			m_mPaymentTransaction.saveEx();
+			
+			if (trx != null)
+			{
+				trx.commit();
+				trx.close();
+			}
 			
 			if (ok)
 			{
@@ -397,9 +426,9 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return m_errorMessage;
 	}
 	
-	public MPayment createPayment()
+	public MPayment createPayment(String trxName)
 	{
-		MPayment payment = new MPayment(getCtx(), 0, get_TrxName());
+		MPayment payment = new MPayment(getCtx(), 0, trxName);
 		payment.setA_City(getA_City());
 		payment.setA_Country(getA_Country());
 		payment.setA_EMail(getA_EMail());

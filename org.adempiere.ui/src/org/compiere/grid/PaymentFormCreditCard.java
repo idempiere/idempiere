@@ -16,6 +16,7 @@ package org.compiere.grid;
 import java.math.BigDecimal;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.PaymentUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MDocType;
@@ -98,6 +99,70 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 							if (pt.getC_Order_ID() == C_Order_ID)
 							{
 								m_mPaymentTransaction = new MPaymentTransaction(Env.getCtx(), id, null);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (m_mPayment == null || m_mPayment.getC_Payment_ID() == 0)
+		{
+			int C_Order_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Order_ID");
+			int C_Invoice_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Invoice_ID");
+			if (C_Invoice_ID == 0 && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed))
+				C_Invoice_ID = getInvoiceID (C_Order_ID);
+			BigDecimal grandTotal = (BigDecimal) getGridTab().getValue("GrandTotal");
+			
+			boolean isCreditMemo = false;
+			int doctype = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_DocTypeTarget_ID");
+			if(doctype > 0)
+			{
+				MDocType mDocType = MDocType.get(Env.getCtx(), doctype);
+				if (MDocType.DOCBASETYPE_ARCreditMemo.equals(mDocType.getDocBaseType()))
+					isCreditMemo = true;
+			}
+			
+			boolean found = false;
+			if (C_Order_ID > 0 || C_Invoice_ID > 0)
+			{
+				int[] ids = MPayment.getCompletedPaymentIDs(C_Order_ID, C_Invoice_ID, null);
+				
+				if (ids.length > 0)
+				{
+					if (C_Invoice_ID > 0)
+					{
+						for (int id : ids)
+						{
+							MPayment p = new MPayment(Env.getCtx(), id, null);
+							BigDecimal payAmt = p.getPayAmt();
+							if (isCreditMemo)
+								payAmt = payAmt.negate();
+							if (p.getC_Invoice_ID() == C_Invoice_ID && payAmt.compareTo(grandTotal) >= 0)
+							{
+								m_C_Payment_ID = id;
+								m_mPayment = p;
+								m_mPaymentOriginal = new MPayment(Env.getCtx(), id, null);
+								found = true;
+								break;
+							}
+						}
+					}
+					
+					if (!found)
+					{
+						for (int id : ids)
+						{
+							MPayment p = new MPayment(Env.getCtx(), id, null);
+							BigDecimal payAmt = p.getPayAmt();
+							if (isCreditMemo)
+								payAmt = payAmt.negate();
+							if (p.getC_Order_ID() == C_Order_ID && payAmt.compareTo(grandTotal) >= 0)
+							{
+								m_C_Payment_ID = id;
+								m_mPayment = p;
+								m_mPaymentOriginal = new MPayment(Env.getCtx(), id, null);
 								break;
 							}
 						}
@@ -231,24 +296,9 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		}
 
 		//  Amount sign negative, if ARC (Credit Memo) or API (AP Invoice)
-		boolean negateAmt = false;
-		MInvoice invoice = null;
-		if (C_Invoice_ID != 0)
-		{
-			invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
-			negateAmt = invoice.isCreditMemo();
-		}
-		MOrder order = null;
-		if (invoice == null && C_Order_ID != 0)
-			order = new MOrder (Env.getCtx(), C_Order_ID, null);
-		
 		BigDecimal payAmount = m_Amount;
-		
-
-		if (negateAmt)
+		if (isCreditMemo)
 			payAmount = m_Amount.negate();
-		// Info
-		log.config("C_Order_ID=" + C_Order_ID + ", C_Invoice_ID=" + C_Invoice_ID + ", NegateAmt=" + negateAmt);
 		
 		/***********************
 		 *  Payments
@@ -268,6 +318,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		}
 		else if (C_Invoice_ID != 0)
 		{
+			MInvoice invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
 			if (invoice.isComplete())
 				m_mPayment.setTrxType(MPayment.TRXTYPE_Sales);
 		}
@@ -280,6 +331,13 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 
 		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
 		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
+		
+		MInvoice invoice = null;
+		if (C_Invoice_ID != 0)
+			invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
+		MOrder order = null;
+		if (invoice == null && C_Order_ID != 0)
+			order = new MOrder (Env.getCtx(), C_Order_ID, null);
 		if (order != null)
 		{
 			m_mPayment.setC_Order_ID(C_Order_ID);
@@ -311,7 +369,12 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 			}
 		}
 		else
+		{
 			log.fine("NotDraft " + m_mPayment);
+			m_mPayment.setCreditCardNumber(PaymentUtil.encrpytCreditCard(m_mPayment.getCreditCardNumber()));
+			m_mPayment.setCreditCardVV(PaymentUtil.encrpytCvv(m_mPayment.getCreditCardVV()));
+			m_mPayment.saveEx();
+		}
 		
 		/**********************
 		 *	Save Values to mTab
@@ -356,10 +419,14 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 
 		boolean approved = false;
 		
+		BigDecimal payAmount = m_Amount;
+		if (isCreditMemo)
+			payAmount = m_Amount.negate();
+		
 		MPaymentTransaction mpt = new MPaymentTransaction(Env.getCtx(), 0, null);
 		mpt.setAD_Org_ID(m_AD_Org_ID);
 		mpt.setCreditCard(MPayment.TRXTYPE_Sales, CCType, CCNumber, "", CCExp);
-		mpt.setAmount(m_C_Currency_ID, m_Amount);
+		mpt.setAmount(m_C_Currency_ID, payAmount);
 		mpt.setPaymentProcessor();
 		
 		if (isPOSOrder || isInvoice)
@@ -377,7 +444,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		}
 		else
 		{
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(mpt.getCtx(), mpt.getC_PaymentProcessor_ID(), mpt.get_TrxName());
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(mpt.getCtx(), mpt.getC_PaymentProcessor_ID(), null);
 			if (paymentProcessor.getTrxType() != null)
 				mpt.setTrxType(paymentProcessor.getTrxType());
 		}
@@ -400,7 +467,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 				m_needSave = true;
 				if (mpt.getC_Payment_ID() > 0)
 				{
-					m_mPayment = new MPayment(mpt.getCtx(), mpt.getC_Payment_ID(), mpt.get_TrxName());
+					m_mPayment = new MPayment(mpt.getCtx(), mpt.getC_Payment_ID(), null);
 					String info = m_mPayment.getR_RespMsg() + " (" + m_mPayment.getR_AuthCode() + ") ID=" + m_mPayment.getR_PnRef();
 					processMsg = info + "\n" + m_mPayment.getDocumentNo();
 					saveChanges();

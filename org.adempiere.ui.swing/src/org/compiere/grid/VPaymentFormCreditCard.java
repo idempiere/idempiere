@@ -29,7 +29,6 @@ import org.compiere.grid.ed.VNumber;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MInvoice;
-import org.compiere.model.MPaymentProcessor;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CLabel;
@@ -124,6 +123,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		
 		if (m_C_Payment_ID != 0)
 		{
+			m_CCType = m_mPayment.getCreditCardType();
 			kNumberField.setText(m_mPayment.getCreditCardNumber());
 			kNameField.setText(m_mPayment.getA_Name());
 			kExpField.setText(m_mPayment.getCreditCardExp(null));
@@ -142,6 +142,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		}
 		else if (m_mPaymentTransaction != null)
 		{
+			m_CCType = m_mPaymentTransaction.getCreditCardType();
 			kNumberField.setText(m_mPaymentTransaction.getCreditCardNumber());
 			kNameField.setText(m_mPaymentTransaction.getA_Name());
 			kExpField.setText(PaymentUtil.getCreditCardExp(m_mPaymentTransaction.getCreditCardExpMM(), m_mPaymentTransaction.getCreditCardExpYY(), null));
@@ -231,8 +232,10 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 			kOnline.setEnabled(bankAccountProcessor != null);
 			setBankAccountProcessor(bankAccountProcessor);
 			
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(Env.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), null);
-			kApprovalField.setReadWrite(paymentProcessor.isRequireVV());
+			if (bankAccountProcessor != null)
+				kApprovalField.setReadWrite(bankAccountProcessor.isRequireVV());
+			else
+				kApprovalField.setReadWrite(true);
 		}
 		else
 		{

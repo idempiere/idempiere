@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
+import org.adempiere.util.PaymentUtil;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessCall;
@@ -506,10 +507,10 @@ public final class MPayment extends X_C_Payment
 			else
 			{
 				// Validate before trying to process
-				String msg = pp.validate();
-				if (msg!=null && msg.trim().length()>0) {
-					setErrorMessage(Msg.getMsg(getCtx(), msg));
-				} else {
+//				String msg = pp.validate();
+//				if (msg!=null && msg.trim().length()>0) {
+//					setErrorMessage(Msg.getMsg(getCtx(), msg));
+//				} else {
 					// Process if validation succeeds
 					approved = pp.processCC ();
 					
@@ -522,7 +523,7 @@ public final class MPayment extends X_C_Payment
 						else
 							setErrorMessage("From " +  getCreditCardName() + ": " + getR_RespMsg());							
 					}
-				}
+//				}
 			}
 		}
 		catch (Exception e)
@@ -540,7 +541,9 @@ public final class MPayment extends X_C_Payment
 		
 		setIsApproved(approved);
 		
-		MPaymentTransaction m_mPaymentTransaction = createPaymentTransaction();
+		Trx trx = Trx.get(Trx.createTrxName("ppt-"), true);
+		
+		MPaymentTransaction m_mPaymentTransaction = createPaymentTransaction(trx.getTrxName());
 		m_mPaymentTransaction.setIsApproved(approved);
 		if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
 			m_mPaymentTransaction.setIsVoided(approved);	
@@ -548,7 +551,7 @@ public final class MPayment extends X_C_Payment
 		m_mPaymentTransaction.setC_Payment_ID(getC_Payment_ID());
 		m_mPaymentTransaction.saveEx();
 		
-		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, get_TrxName());
+		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, trx.getTrxName());
 		history.setAD_Table_ID(MPaymentTransaction.Table_ID);
 		history.setRecord_ID(m_mPaymentTransaction.getC_PaymentTransaction_ID());
 		history.setIsError(!approved);
@@ -573,6 +576,12 @@ public final class MPayment extends X_C_Payment
 		history.setTextMsg(msg.toString());
 		
 		history.saveEx();
+		
+		if (trx != null)
+		{
+			trx.commit();
+			trx.close();
+		}
 		
 		if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
 			setIsVoided(approved);
@@ -2761,9 +2770,9 @@ public final class MPayment extends X_C_Payment
 		m_processUI = processMonitor;
 	}
 	
-	public MPaymentTransaction createPaymentTransaction()
+	public MPaymentTransaction createPaymentTransaction(String trxName)
 	{
-		MPaymentTransaction paymentTransaction = new MPaymentTransaction(getCtx(), 0, get_TrxName());
+		MPaymentTransaction paymentTransaction = new MPaymentTransaction(getCtx(), 0, trxName);
 		paymentTransaction.setA_City(getA_City());
 		paymentTransaction.setA_Country(getA_Country());
 		paymentTransaction.setA_EMail(getA_EMail());
@@ -2846,8 +2855,8 @@ public final class MPayment extends X_C_Payment
 		// clear out the cc data when a Void happens since at that point we won't need the card information any longer
 		if (getTenderType().equals(TENDERTYPE_CreditCard))
 		{
-//			setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
-//            setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
+			setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
+			setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
 		}
 
 		if (getC_Invoice_ID() != 0)
@@ -2869,6 +2878,25 @@ public final class MPayment extends X_C_Payment
 	@Override
 	public PO getPO() {
 		return this;
+	}
+	
+	public static int[] getCompletedPaymentIDs(int C_Order_ID, int C_Invoice_ID, String trxName)
+	{
+		StringBuilder whereClause = new StringBuilder();
+		whereClause.append("TenderType='").append(MPayment.TENDERTYPE_CreditCard).append("' ");
+		whereClause.append("AND TrxType IN ('").append(MPayment.TRXTYPE_DelayedCapture).append("', ");
+		whereClause.append("'").append(MPayment.TRXTYPE_Sales).append("', ");
+		whereClause.append("'").append(MPayment.TRXTYPE_CreditPayment).append("') ");
+		if (C_Order_ID > 0 && C_Invoice_ID > 0)
+			whereClause.append(" AND (C_Order_ID=").append(C_Order_ID).append(" OR C_Invoice_ID=").append(C_Invoice_ID).append(")");
+		else if (C_Order_ID > 0)
+			whereClause.append(" AND C_Order_ID=").append(C_Order_ID);
+		else if (C_Invoice_ID > 0)
+			whereClause.append(" AND C_Invoice_ID=").append(C_Invoice_ID);
+		whereClause.append(" AND IsApproved='Y' AND DocStatus IN ('CO','CL') ");
+		whereClause.append("ORDER BY DateTrx DESC");
+
+		return MPaymentTransaction.getAllIDs(Table_Name, whereClause.toString(), trxName);
 	}
 	
 }   //  MPayment
