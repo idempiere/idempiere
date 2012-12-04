@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -40,7 +39,6 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -109,8 +107,6 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	
 	public void showWindow() 
 	{		
-		this.setAttribute(MODE_KEY, MODE_HIGHLIGHTED);
-		AEnv.showWindow(this);
 		newText.focus();
 	}
 

@@ -186,8 +186,6 @@ public class WAttachment extends Window implements EventListener<Event>
 				Clients.response(new AuScript(null, script));
 			}
 
-			//enter modal
-			doHighlighted();
 		}
 		catch (Exception e)
 		{

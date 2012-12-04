@@ -23,13 +23,10 @@
 
 package org.adempiere.webui.adwindow;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
-import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.util.CLogger;
@@ -162,24 +159,9 @@ public class ADWindowContent extends AbstractADWindowContent
 	class TabOnCloseHanlder implements ITabOnCloseHandler {
 
 		public void onClose(Tabpanel tabPanel) {
-			if (ADWindowContent.this.onExit()) {
+			if (ADWindowContent.this.onExit()) {				
 				Tab tab = tabPanel.getLinkedTab();
-				Tabbox tabbox = (Tabbox) tab.getTabbox();
-				if (tabbox.getSelectedTab() == tab) {
-					Tabs tabs = (Tabs) tabbox.getTabs();
-					List<?> childs = tabs.getChildren();
-					for(int i = 0; i < childs.size(); i++) {
-						if (childs.get(i) == tab) {
-							if (i > 0)
-								tabbox.setSelectedIndex((i-1));
-							break;
-						}
-					}
-				} else {
-					tabbox.getSelectedPanel().invalidate();
-				}
-				tabPanel.detach();
-				tab.detach();
+				tab.close();
 				if (getWindowNo() > 0)
 					SessionManager.getAppDesktop().unregisterWindow(getWindowNo());
 			}

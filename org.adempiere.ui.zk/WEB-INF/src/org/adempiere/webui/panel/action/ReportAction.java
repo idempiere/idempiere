@@ -53,6 +53,7 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
@@ -93,6 +94,7 @@ public class ReportAction implements EventListener<Event>
 			winReport.setClosable(true);
 			winReport.setBorder("normal");
 			winReport.setStyle("position:absolute");
+			winReport.addEventListener("onValidate", this);
 			
 			cboPrintFormat.setMold("select");
 			cboPrintFormat.getItems().clear();
@@ -162,7 +164,6 @@ public class ReportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		winReport.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		LayoutUtils.openPopupWindow(panel.getToolbar().getButton("Report"), winReport, "after_start");
 	}
 	
@@ -170,8 +171,11 @@ public class ReportAction implements EventListener<Event>
 	public void onEvent(Event event) throws Exception {
 		if(event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 			winReport.onClose();
-		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK))
-			validate();
+		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
+			winReport.setVisible(false);
+			Clients.showBusy(panel.getComponent(), null);
+			Events.echoEvent("onValidate", winReport, null);
+		}
 		else if(event.getTarget() == cboPrintFormat)
 		{
 			ListItem li = cboPrintFormat.getSelectedItem();
@@ -183,6 +187,10 @@ public class ReportAction implements EventListener<Event>
 		}
 		else if(event.getTarget() == chkExport)
 			cboExportType.setVisible(chkExport.isChecked());
+		else if (event.getName().equals("onValidate")) {
+			validate();
+			Clients.clearBusy(panel.getComponent());
+		}
 	}
 	
 	private void validate()
