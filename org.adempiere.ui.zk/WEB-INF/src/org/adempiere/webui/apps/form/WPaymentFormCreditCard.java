@@ -35,7 +35,6 @@ import org.compiere.grid.PaymentFormCreditCard;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MInvoice;
-import org.compiere.model.MPaymentProcessor;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -80,6 +79,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		kNumberField.setCols(16);
 		kExpField.setCols(4);
 		kApprovalField.setCols(4);
+		kApprovalField.setType("password");
 		kTypeLabel.setText(Msg.translate(Env.getCtx(), "CreditCardType"));
 		kNumberLabel.setText(Msg.translate(Env.getCtx(), "CreditCardNumber"));
 		kExpLabel.setText(Msg.getMsg(Env.getCtx(), "Expires"));
@@ -142,6 +142,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		
 		if (m_C_Payment_ID != 0)
 		{
+			m_CCType = m_mPayment.getCreditCardType();
 			kNumberField.setText(m_mPayment.getCreditCardNumber());
 			kExpField.setText(m_mPayment.getCreditCardExp(null));
 			kApprovalField.setText(m_mPayment.getVoiceAuthCode());
@@ -158,6 +159,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		}
 		else if (m_mPaymentTransaction != null)
 		{
+			m_CCType = m_mPaymentTransaction.getCreditCardType();
 			kNumberField.setText(m_mPaymentTransaction.getCreditCardNumber());
 			kExpField.setText(PaymentUtil.getCreditCardExp(m_mPaymentTransaction.getCreditCardExpMM(), m_mPaymentTransaction.getCreditCardExpYY(), null));
 			kApprovalField.setText(m_mPaymentTransaction.getVoiceAuthCode());
@@ -209,6 +211,8 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 			
 			if (exist)
 				updateOnlineButton();
+			else
+				kApprovalField.setReadonly(false);
 		}
 	}
 	
@@ -232,14 +236,16 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		
 		BigDecimal PayAmt = (BigDecimal) kAmountField.getValue();
 		
-		if (CCType != null && PayAmt != null)
+		if (CCType != null && CCType.length() != 0 && PayAmt != null)
 		{
 			MBankAccountProcessor bankAccountProcessor = getBankAccountProcessor(CCType, PayAmt);
 			kOnline.setEnabled(bankAccountProcessor != null);
 			setBankAccountProcessor(bankAccountProcessor);
 			
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(Env.getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), null);
-			kApprovalField.setReadonly(!paymentProcessor.isRequireVV());
+			if (bankAccountProcessor != null)
+				kApprovalField.setReadonly(!bankAccountProcessor.isRequireVV());
+			else
+				kApprovalField.setReadonly(false);
 		}
 		else
 		{
