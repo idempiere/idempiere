@@ -90,7 +90,7 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		sortList.setVisible(true);
 		sortList.setMultiple(true);
 
-		EventListener sortListMouseMotionListener = new EventListener()
+		EventListener<Event> sortListMouseMotionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				if (event instanceof DropEvent)
@@ -150,7 +150,7 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		
 		hlayout.appendChild(sortList);
 	
-		EventListener actionListener = new EventListener()
+		EventListener<Event> actionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				migrateValueWithinSortList(event);

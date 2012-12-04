@@ -263,7 +263,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesList.setVflex(true);
 		noList.setVflex(true);
 
-		EventListener mouseListener = new EventListener()
+		EventListener<Event> mouseListener = new EventListener<Event>()
 		{
 
 			public void onEvent(Event event) throws Exception
@@ -277,7 +277,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesList.addDoubleClickListener(mouseListener);
 		noList.addDoubleClickListener(mouseListener);
 		//
-		EventListener actionListener = new EventListener()
+		EventListener<Event> actionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				migrateValueAcrossLists(event);
@@ -292,13 +292,13 @@ public class ADSortTab extends Panel implements IADTabpanel
 		bRemove.setImage("images/Previous24.png");
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
-		EventListener crossListMouseListener = new DragListener();
+		EventListener<Event> crossListMouseListener = new DragListener();
 		yesList.addOnDropListener(crossListMouseListener);
 		noList.addOnDropListener(crossListMouseListener);
 		yesList.setItemDraggable(true);
 		noList.setItemDraggable(true);
 
-		actionListener = new EventListener()
+		actionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				migrateValueWithinYesList(event);
@@ -311,7 +311,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		bDown.setImage("images/Detail24.png");
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
 
-		EventListener yesListMouseMotionListener = new EventListener()
+		EventListener<Event> yesListMouseMotionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				if (event instanceof DropEvent)
@@ -525,7 +525,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		SimpleListModel lmFrom = (source == bAdd || source == noList) ?
 				noModel : yesModel;
 		SimpleListModel lmTo = (lmFrom == yesModel) ? noModel : yesModel;
-		Set selectedItems = listFrom.getSelectedItems();
+		Set<?> selectedItems = listFrom.getSelectedItems();
 		List<ListElement> selObjects = new ArrayList<ListElement>();
 		for (Object obj : selectedItems) {
 			ListItem listItem = (ListItem) obj;
@@ -795,7 +795,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	 * @author eslatis
 	 *
 	 */
-	private class DragListener implements EventListener
+	private class DragListener implements EventListener<Event>
 	{
 
 		/**

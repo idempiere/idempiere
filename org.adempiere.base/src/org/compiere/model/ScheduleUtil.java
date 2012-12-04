@@ -433,7 +433,7 @@ public class ScheduleUtil
 		}
 
 		//	Create xy Matrix
-		ArrayList[][] matrix = new ArrayList[maxXslots][maxYslots];
+		ArrayList<Object>[][] matrix = new ArrayList[maxXslots][maxYslots];
 		//	Populate Matrix first column
 		for (int y = 0; y < maxYslots; y++)
 		{

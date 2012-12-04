@@ -139,7 +139,7 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 		
 		try
 		{
-			Class clazz = Class.forName(getClassname());
+			Class<?> clazz = Class.forName(getClassname());
 			SLACriteria retValue = (SLACriteria)clazz.newInstance();
 			return retValue;
 		}

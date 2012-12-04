@@ -41,7 +41,7 @@ import org.zkoss.zul.event.TreeDataEvent;
  * @author Low Heng Sin
  *
  */
-public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements TreeitemRenderer, EventListener {
+public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements TreeitemRenderer<Object>, EventListener<Event> {
 
 	/**
 	 * 
@@ -51,9 +51,9 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	private static final CLogger logger = CLogger.getCLogger(SimpleTreeModel.class);
 	
 	private boolean itemDraggable;
-	private List<EventListener> onDropListners = new ArrayList<EventListener>();
+	private List<EventListener<Event>> onDropListners = new ArrayList<EventListener<Event>>();
 
-	public SimpleTreeModel(DefaultTreeNode root) {
+	public SimpleTreeModel(DefaultTreeNode<Object> root) {
 		super(root);
 	}
 	
@@ -104,13 +104,13 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	 */
 	public static SimpleTreeModel createFrom(MTreeNode root) {
 		SimpleTreeModel model = null;
-		Enumeration nodeEnum = root.children();
+		Enumeration<?> nodeEnum = root.children();
 	    
-		DefaultTreeNode stRoot = new DefaultTreeNode(root, nodeEnum.hasMoreElements() ? new ArrayList() : null);
+		DefaultTreeNode<Object> stRoot = new DefaultTreeNode<Object>(root, nodeEnum.hasMoreElements() ? new ArrayList<TreeNode<Object>>() : null);
         while(nodeEnum.hasMoreElements()) {
         	MTreeNode childNode = (MTreeNode)nodeEnum.nextElement();
-        	DefaultTreeNode stNode = childNode.getChildCount() > 0 ? new DefaultTreeNode(childNode,  new ArrayList()) 
-        		: new DefaultTreeNode(childNode); 
+        	DefaultTreeNode<Object> stNode = childNode.getChildCount() > 0 ? new DefaultTreeNode<Object>(childNode,  new ArrayList<TreeNode<Object>>()) 
+        		: new DefaultTreeNode<Object>(childNode); 
         	stRoot.getChildren().add(stNode);
         	if (childNode.getChildCount() > 0) {
         		populate(stNode, childNode);
@@ -120,12 +120,12 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 		return model;
 	}
 
-	private static void populate(DefaultTreeNode stNode, MTreeNode root) {
-		Enumeration nodeEnum = root.children();
+	private static void populate(DefaultTreeNode<Object> stNode, MTreeNode root) {
+		Enumeration<?> nodeEnum = root.children();
 		while(nodeEnum.hasMoreElements()) {
 			MTreeNode childNode = (MTreeNode)nodeEnum.nextElement();
-			DefaultTreeNode stChildNode = childNode.getChildCount() > 0 ? new DefaultTreeNode(childNode, new ArrayList())
-				: new DefaultTreeNode(childNode);
+			DefaultTreeNode<Object> stChildNode = childNode.getChildCount() > 0 ? new DefaultTreeNode<Object>(childNode, new ArrayList<TreeNode<Object>>())
+				: new DefaultTreeNode<Object>(childNode);
 			stNode.getChildren().add(stChildNode);
 			if (childNode.getChildCount() > 0) {
 				populate(stChildNode, childNode);
@@ -164,32 +164,32 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	 * Add to root
 	 * @param newNode
 	 */
-	public void addNode(DefaultTreeNode newNode) {
-		DefaultTreeNode root = (DefaultTreeNode) getRoot();
+	public void addNode(DefaultTreeNode<Object> newNode) {
+		DefaultTreeNode<Object> root =  getRoot();
 		root.getChildren().add(newNode);
 	}
 
 	@Override
-	public DefaultTreeNode getRoot() {
-		return (DefaultTreeNode) super.getRoot();
+	public DefaultTreeNode<Object> getRoot() {
+		return (DefaultTreeNode<Object>) super.getRoot();
 	}
 
 	@Override
-	public DefaultTreeNode getChild(Object parent, int index) {
-		return (DefaultTreeNode) super.getChild((TreeNode)parent, index);
+	public DefaultTreeNode<Object> getChild(Object parent, int index) {
+		return (DefaultTreeNode<Object>) super.getChild((TreeNode<Object>)parent, index);
 	}
 
 	/**
 	 * @param treeNode
 	 */
-	public void removeNode(DefaultTreeNode treeNode) {
+	public void removeNode(DefaultTreeNode<Object> treeNode) {
 		int path[] = this.getPath(treeNode);
 		
 		if (path != null && path.length > 0) {
-			DefaultTreeNode parentNode = getRoot();
+			DefaultTreeNode<Object> parentNode = getRoot();
 			int index = path.length - 1;
 			for (int i = 0; i < index; i++) {
-				parentNode = (DefaultTreeNode) getChild((TreeNode)parentNode, path[i]);
+				parentNode = (DefaultTreeNode<Object>) getChild((TreeNode<Object>)parentNode, path[i]);
 			}
 			
 			
@@ -214,7 +214,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	/**
 	 * @param listener
 	 */
-	public void addOnDropEventListener(EventListener listener) {
+	public void addOnDropEventListener(EventListener<Event> listener) {
 		onDropListners.add(listener);
 	}
 
@@ -224,7 +224,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	 */
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_DROP.equals(event.getName())) {
-			for (EventListener listener : onDropListners) {
+			for (EventListener<Event> listener : onDropListners) {
 				listener.onEvent(event);
 			}
 		}
@@ -234,14 +234,14 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	 * @param treeNode
 	 * @return DefaultTreeNode
 	 */
-	public DefaultTreeNode getParent(DefaultTreeNode treeNode) {
+	public DefaultTreeNode<Object> getParent(DefaultTreeNode<Object> treeNode) {
 		int path[] = this.getPath(treeNode);
 		
 		if (path != null && path.length > 0) {
-			DefaultTreeNode parentNode = getRoot();
+			DefaultTreeNode<Object> parentNode = getRoot();
 			int index = path.length - 1;
 			for (int i = 0; i < index; i++) {
-				parentNode = (DefaultTreeNode) getChild((TreeNode)parentNode, path[i]);
+				parentNode = (DefaultTreeNode<Object>) getChild((TreeNode<Object>)parentNode, path[i]);
 			}
 						
 			return parentNode;
@@ -255,11 +255,11 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	 * @param newNode
 	 * @param index
 	 */
-	public void addNode(DefaultTreeNode newParent, DefaultTreeNode newNode,
+	public void addNode(DefaultTreeNode<Object> newParent, DefaultTreeNode<Object> newNode,
 			int index) {
-		DefaultTreeNode parent = newParent;
+		DefaultTreeNode<Object> parent = newParent;
 		if (newParent.getChildren() == null) {
-			parent = new DefaultTreeNode(newParent.getData(), new ArrayList());
+			parent = new DefaultTreeNode<Object>(newParent.getData(), new ArrayList<TreeNode<Object>>());
 			newParent.getParent().insert(parent, newParent.getParent().getIndex(newParent));
 			removeNode(newParent);
 		}
@@ -272,7 +272,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	 * @param recordId
 	 * @return DefaultTreeNode
 	 */
-	public DefaultTreeNode find(DefaultTreeNode fromNode, int recordId) {
+	public DefaultTreeNode<Object> find(DefaultTreeNode<Object> fromNode, int recordId) {
 		if (fromNode == null)
 			fromNode = getRoot();
 		MTreeNode data = (MTreeNode) fromNode.getData();
@@ -282,8 +282,8 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 			return null;
 		int cnt = getChildCount(fromNode);
 		for(int i = 0; i < cnt; i++ ) {
-			DefaultTreeNode child = (DefaultTreeNode) getChild(fromNode, i);
-			DefaultTreeNode treeNode = find(child, recordId);
+			DefaultTreeNode<Object> child = (DefaultTreeNode<Object>) getChild(fromNode, i);
+			DefaultTreeNode<Object> treeNode = find(child, recordId);
 			if (treeNode != null)
 				return treeNode;
 		}
@@ -293,8 +293,8 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 	/**
 	 * @param node
 	 */
-	public void nodeUpdated(DefaultTreeNode node) {
-		DefaultTreeNode parent = getParent(node);
+	public void nodeUpdated(DefaultTreeNode<Object> node) {
+		DefaultTreeNode<Object> parent = getParent(node);
 		if (parent != null) {
 			int i = parent.getChildren().indexOf(node);
 			fireEvent(TreeDataEvent.CONTENTS_CHANGED, getPath(parent), i, i);

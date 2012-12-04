@@ -70,7 +70,7 @@ import org.zkoss.zul.Image;
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
-public class RolePanel extends Window implements EventListener, Deferrable
+public class RolePanel extends Window implements EventListener<Event>, Deferrable
 {
 	/**
 	 * 

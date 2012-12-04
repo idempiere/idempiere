@@ -47,7 +47,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.South;
 
-public class WTranslationDialog extends TranslationController implements IFormController, EventListener {
+public class WTranslationDialog extends TranslationController implements IFormController, EventListener<Event> {
 
 	private CustomForm form = new CustomForm();
 	

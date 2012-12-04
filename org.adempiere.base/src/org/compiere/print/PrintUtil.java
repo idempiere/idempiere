@@ -412,7 +412,7 @@ public class PrintUtil
 			for (int j = 0; j < dfs.length; j++)
 				System.out.println("    -> " + dfs[j]);
 			//	Attribute
-			Class[] attCat = pss[i].getSupportedAttributeCategories();
+			Class<?>[] attCat = pss[i].getSupportedAttributeCategories();
 			System.out.println("  - Supported Attribute Categories");
 			for (int j = 0; j < attCat.length; j++)
 				System.out.println("    -> " + attCat[j].getName() 
@@ -517,7 +517,7 @@ public class PrintUtil
 			{
 				System.out.println("----");
 				System.out.println(ps);
-				Class[] cat = ps.getSupportedAttributeCategories();
+				Class<?>[] cat = ps.getSupportedAttributeCategories();
 				for (int j = 0; j < cat.length; j++)
 				{
 					System.out.println("- " + cat[j]);

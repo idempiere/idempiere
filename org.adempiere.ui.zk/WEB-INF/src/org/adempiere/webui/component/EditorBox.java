@@ -117,7 +117,7 @@ public class EditorBox extends Div {
 	 * @param evtnm
 	 * @param listener
 	 */
-	public boolean addEventListener(String evtnm, EventListener listener) {
+	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		if (Events.ON_CLICK.equals(evtnm)) {
 			return btn.addEventListener(evtnm, listener);
 		} else {

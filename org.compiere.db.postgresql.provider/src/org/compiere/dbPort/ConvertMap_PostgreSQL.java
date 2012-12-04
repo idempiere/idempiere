@@ -23,7 +23,7 @@ public final class ConvertMap_PostgreSQL {
 	 *  Return Map for PostgreSQL
 	 *  @return TreeMap with pattern as key and the replacement as value
 	 */
-	public static TreeMap getConvertMap()
+	public static TreeMap<String,String> getConvertMap()
 	{
 		if (s_pg.size() == 0)
 			initConvertMap();

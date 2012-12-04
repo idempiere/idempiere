@@ -80,7 +80,7 @@ import org.zkoss.zul.impl.InputElement;
  *  ZK Port
  *  @author Low Heng Sin
  */
-public class WPAttributeDialog extends Window implements EventListener
+public class WPAttributeDialog extends Window implements EventListener<Event>
 {
 	/**
 	 * 

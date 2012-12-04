@@ -20,9 +20,9 @@ public interface IMiniTable
 	
 	public void addColumn (String header);
 	
-	public void setColumnClass (int index, Class classType, boolean readOnly, String header);
+	public void setColumnClass (int index, Class<?> classType, boolean readOnly, String header);
 	
-	public void setColumnClass (int index, Class classType, boolean readOnly);
+	public void setColumnClass (int index, Class<?> classType, boolean readOnly);
 	
 	public void loadTable(ResultSet rs);
 	

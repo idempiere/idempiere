@@ -34,7 +34,7 @@ import org.zkoss.zul.Vbox;
  * @author Elaine
  * @date November 20, 2008
  */
-public class DPViews extends DashboardPanel implements EventListener {
+public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 	/**
 	 * 

@@ -389,7 +389,7 @@ public class Util
 		AttributedCharacterIterator.Attribute[] relevantAttributes)
 	{
 		AttributedCharacterIterator iter = aString.getIterator();
-		Set set = iter.getAllAttributeKeys();
+		Set<?> set = iter.getAllAttributeKeys();
 	//	System.out.println("AllAttributeKeys=" + set);
 		if (set.size() == 0)
 			return iter;
@@ -407,10 +407,10 @@ public class Util
 		aString = new AttributedString(sb.toString());
 
 		//	copy relevant attributes
-		Iterator it = iter.getAllAttributeKeys().iterator();
+		Iterator<AttributedCharacterIterator.Attribute> it = iter.getAllAttributeKeys().iterator();
 		while (it.hasNext())
 		{
-			AttributedCharacterIterator.Attribute att = (AttributedCharacterIterator.Attribute)it.next();
+			AttributedCharacterIterator.Attribute att = it.next();
 			if (!unwanted.contains(att))
 			{
 				for (char c = iter.first(); c != AttributedCharacterIterator.DONE; c = iter.next())
@@ -437,10 +437,10 @@ public class Util
 	 * Dump a Map (key=value) to out
 	 * @param map Map
 	 */
-	static public void dump (Map map)
+	static public void dump (Map<Object,Object> map)
 	{
 		System.out.println("Dump Map - size=" + map.size());
-		Iterator it = map.keySet().iterator();
+		Iterator<Object> it = map.keySet().iterator();
 		while (it.hasNext())
 		{
 			Object key = it.next();

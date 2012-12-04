@@ -762,9 +762,9 @@ public class M_PriceList_Create extends SvrProcess {
 	 */
 	private String getSubCategoriesString(int productCategoryId, Vector<SimpleTreeNode> categories, int loopIndicatorId) throws AdempiereSystemError {
 		StringBuilder ret = new StringBuilder();
-		final Iterator iter = categories.iterator();
+		final Iterator<SimpleTreeNode> iter = categories.iterator();
 		while (iter.hasNext()) {
-			SimpleTreeNode node = (SimpleTreeNode) iter.next();
+			SimpleTreeNode node = iter.next();
 			if (node.getParentId() == productCategoryId) {
 				if (node.getNodeId() == loopIndicatorId) {
 					throw new AdempiereSystemError("The product category tree contains a loop on categoryId: " + loopIndicatorId);

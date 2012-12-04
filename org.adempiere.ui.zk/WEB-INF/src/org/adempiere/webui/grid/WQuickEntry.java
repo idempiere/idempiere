@@ -54,7 +54,7 @@ import org.zkoss.zul.Vlayout;
  * Author: Carlos Ruiz
  */
 
-public class WQuickEntry extends Window implements EventListener, ValueChangeListener
+public class WQuickEntry extends Window implements EventListener<Event>, ValueChangeListener
 {
 	/**
 	 * 

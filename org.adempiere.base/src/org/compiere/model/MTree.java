@@ -593,7 +593,7 @@ public class MTree extends MTree_Base
 		while (needsTrim)
 		{
 			needsTrim = false;
-			Enumeration en = m_root.preorderEnumeration();
+			Enumeration<?> en = m_root.preorderEnumeration();
 			while (m_root.getChildCount() > 0 && en.hasMoreElements())
 			{
 				MTreeNode nd = (MTreeNode)en.nextElement();
@@ -611,7 +611,7 @@ public class MTree extends MTree_Base
 	 */
 	private void dumpTree()
 	{
-		Enumeration en = m_root.preorderEnumeration();
+		Enumeration<?> en = m_root.preorderEnumeration();
 		int count = 0;
 		while (en.hasMoreElements())
 		{

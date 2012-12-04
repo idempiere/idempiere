@@ -47,7 +47,7 @@ public class FilenameBox extends EditorBox
 	 * @see org.adempiere.webui.component.EditorBox#addEventListener(java.lang.String, org.zkoss.zk.ui.event.EventListener)
 	 */
 	@Override
-	public boolean addEventListener(String evtnm, EventListener listener) {
+	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		if (Events.ON_UPLOAD.equals(evtnm)) {
 			return btn.addEventListener(evtnm, listener);
 		} else {

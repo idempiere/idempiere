@@ -5,7 +5,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
-public class BusyDialogTemplate implements Runnable, EventListener {
+public class BusyDialogTemplate implements Runnable, EventListener<Event> {
 
 	private static final String EVENT_NAME = "onRun";
 

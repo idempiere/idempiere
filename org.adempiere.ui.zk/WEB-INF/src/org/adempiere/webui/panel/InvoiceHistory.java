@@ -55,7 +55,7 @@ import org.zkoss.zul.South;
  * This class is based on org.compiere.apps.search.InvoiceHistory written by Jorg Janke
  * @author <a href="mailto:elaine.tan@idalica.com">Elaine</a>
  */
-public class InvoiceHistory extends Window implements EventListener
+public class InvoiceHistory extends Window implements EventListener<Event>
 {
 	/**
 	 * 

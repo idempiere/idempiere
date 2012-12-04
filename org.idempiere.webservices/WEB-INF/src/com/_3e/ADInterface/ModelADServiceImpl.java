@@ -768,7 +768,7 @@ public class ModelADServiceImpl implements ModelADService {
 	private void setValueAccordingToClass(PO po, POInfo poinfo,
 			DataField field, int idxcol) {
 		// Evaluate the type of the column and assign a proper variable
-		Class columnClass = poinfo.getColumnClass(idxcol);
+		Class<?> columnClass = poinfo.getColumnClass(idxcol);
 		Object value = null;
 		if (field.getVal() == null || field.getVal().length() == 0) {
 			value = null;

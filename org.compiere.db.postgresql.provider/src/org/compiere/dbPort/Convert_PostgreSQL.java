@@ -47,7 +47,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	/** RegEx: insensitive and dot to include line end characters */
 	public static final int REGEX_FLAGS = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
 
-	private TreeMap m_map;
+	private TreeMap<String,String> m_map;
 
 	/** Logger */
 	private static CLogger log = CLogger.getCLogger(Convert_PostgreSQL.class);
@@ -64,7 +64,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	} // isOracle
 	
 	@Override
-	protected Map getConvertMap() {
+	protected Map<String,String> getConvertMap() {
 		return m_map;
 	}
 

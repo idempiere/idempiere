@@ -35,14 +35,14 @@ import org.zkoss.zul.Listitem;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class Listbox extends org.zkoss.zul.Listbox implements EventListener
+public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Event>
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2102597724705225997L;
-	private List<EventListener> doubleClickListeners = new ArrayList<EventListener>();
-    private List<EventListener> onDropListeners = new ArrayList<EventListener>();
+	private List<EventListener<Event>> doubleClickListeners = new ArrayList<EventListener<Event>>();
+    private List<EventListener<Event>> onDropListeners = new ArrayList<EventListener<Event>>();
 	private boolean draggable;
 	private String oddRowSclass;
 	
@@ -142,7 +142,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener
     }
 
 	public int[] getSelectedIndices() {
-		Set selectedItems = this.getSelectedItems();
+		Set<Listitem> selectedItems = this.getSelectedItems();
 		int[] selecteds = new int[this.getSelectedCount()];
 		int i = 0;
 		for (Object obj : selectedItems) {
@@ -164,11 +164,11 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener
 		}
 	}
 
-	public void addOnDropListener(EventListener listener) {
+	public void addOnDropListener(EventListener<Event> listener) {
 		onDropListeners.add(listener);
 	}
 
-	public void addDoubleClickListener(EventListener listener) {
+	public void addDoubleClickListener(EventListener<Event> listener) {
 		doubleClickListeners.add(listener);
 	}
 	
@@ -197,11 +197,11 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener
 
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_DOUBLE_CLICK.equals(event.getName()) && !doubleClickListeners.isEmpty()) {
-			for(EventListener listener : doubleClickListeners) {
+			for(EventListener<Event> listener : doubleClickListeners) {
 				listener.onEvent(event);
 			}
 		} else if (Events.ON_DROP.equals(event.getName()) && !onDropListeners.isEmpty()) {
-			for(EventListener listener : onDropListeners) {
+			for(EventListener<Event> listener : onDropListeners) {
 				listener.onEvent(event);
 			}
 		}
@@ -229,7 +229,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener
 	 * alias for removeEventListener(Events.ON_SELECT, listener), to ease porting of swing form
 	 * @param listener
 	 */
-	public void removeActionListener(EventListener listener) {
+	public void removeActionListener(EventListener<Event> listener) {
 		removeEventListener(Events.ON_SELECT, listener);
 	}
 
@@ -237,7 +237,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener
 	 * alias for addEventListener(Events.ON_SELECT, listener), to ease porting of swing form
 	 * @param listener
 	 */
-	public void addActionListener(EventListener listener) {
+	public void addActionListener(EventListener<Event> listener) {
 		addEventListener(Events.ON_SELECT, listener);
 	}
 

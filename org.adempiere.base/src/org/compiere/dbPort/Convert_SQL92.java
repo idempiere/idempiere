@@ -299,7 +299,7 @@ public abstract class Convert_SQL92 extends Convert {
 			}   //  dependency on first table
 		}
 		//  remaining Tables
-		Iterator it = fromAlias.keySet().iterator();
+		Iterator<String> it = fromAlias.keySet().iterator();
 		while (it.hasNext())
 		{
 			Object alias = it.next();

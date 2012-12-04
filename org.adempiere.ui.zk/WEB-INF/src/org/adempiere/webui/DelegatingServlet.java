@@ -31,7 +31,7 @@ public class DelegatingServlet extends HttpServlet {
 		return delegate.getInitParameter(name);
 	}
 
-	public Enumeration getInitParameterNames() {
+	public Enumeration<String> getInitParameterNames() {
 		return delegate.getInitParameterNames();
 	}
 

@@ -254,8 +254,8 @@ public class ResultTable extends JTable implements MouseListener
 		// Sort the data list - teo_sarca [ 1734327 ]
 		Collections.sort(model.getDataList(), new Comparator<Object>() {
 			public int compare(Object o1, Object o2) {
-				Object item1 = ((ArrayList)o1).get(modelColumnIndex);
-				Object item2 = ((ArrayList)o2).get(modelColumnIndex);
+				Object item1 = ((ArrayList<?>)o1).get(modelColumnIndex);
+				Object item2 = ((ArrayList<?>)o2).get(modelColumnIndex);
 				return sort.compare(item1, item2);
 			}
 		});

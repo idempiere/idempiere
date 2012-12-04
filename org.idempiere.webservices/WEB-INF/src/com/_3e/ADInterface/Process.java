@@ -424,7 +424,7 @@ public class Process {
 		MPInstance pInstance = new MPInstance (process, 0);
 		
 		DataField f[] = dr.getFieldArray();
-		HashMap fmap = new HashMap();
+		HashMap<String,String> fmap = new HashMap<String,String>();
 		for (int i=0; i<f.length; i++)
 			fmap.put(f[i].getColumn(), f[i].getVal());
 		//
@@ -845,7 +845,7 @@ public class Process {
 	
 
 	
-	private static void renderOption(LookupValues lvs, java.util.Hashtable assoc, String idx)
+	private static void renderOption(LookupValues lvs, java.util.Hashtable<String,String> assoc, String idx)
 	{
 		Object ob = assoc.get(idx);
 		if(ob == null) return;
@@ -857,7 +857,7 @@ public class Process {
 	public static void renderDocActionOptions(LookupValues lvs, GridTab tab)
 	{
 		String sql;
-		java.util.Hashtable h = new java.util.Hashtable(); 
+		java.util.Hashtable<String,String> h = new java.util.Hashtable<String,String>(); 
 		if (Env.isBaseLanguage(Env.getCtx(), "AD_Ref_List"))
 			sql = "SELECT Value, Name, Description FROM AD_Ref_List "
 				+ "WHERE AD_Reference_ID=135 ORDER BY Name";

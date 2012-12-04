@@ -310,7 +310,7 @@ public class WGraph extends Div implements IdSpace {
 				count++;
 			}
 
-			myImage.addEventListener(Events.ON_CLICK, new EventListener() {
+			myImage.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					MouseEvent me = (MouseEvent) event;
 					String areaId = me.getArea();
@@ -536,7 +536,7 @@ public class WGraph extends Div implements IdSpace {
 				a.setSclass("pa-hrefNode");
 				td.appendChild(a);
 				a.setId(ZOOM_KEY + k);
-				a.addEventListener(Events.ON_CLICK, new EventListener() {
+				a.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
 						Component comp = event.getTarget();
 						String id = comp.getId();

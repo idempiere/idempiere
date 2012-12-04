@@ -38,7 +38,7 @@ import org.compiere.util.CLogger;
  */
 public class ReportPool
 {
-    private static HashMap   pool   = new HashMap();
+    private static HashMap<Integer, ReportInfo>   pool   = new HashMap<Integer, ReportInfo>();
 
     private static final int MAXNUM = 15;
     private static int 	size = 0;
@@ -82,11 +82,11 @@ public class ReportPool
         {
             while(size > MAXNUM)
             {
-                Set s = pool.keySet();
-                Iterator it = s.iterator();
+                Set<Integer> s = pool.keySet();
+                Iterator<Integer> it = s.iterator();
             	if (it.hasNext())
             	{
-            		Integer key = (Integer)it.next();
+            		Integer key = it.next();
             		log.info("Remove " + key + " from the report pool");
             		pool.remove(key);
             	}

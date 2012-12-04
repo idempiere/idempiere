@@ -168,7 +168,7 @@ public class ExportHelper {
 
 		String javaClass = expProcessor_Type.getJavaClass();
 		try {
-			Class clazz = Class.forName(javaClass);
+			Class<?> clazz = Class.forName(javaClass);
 			IExportProcessor exportProcessor = (IExportProcessor)clazz.newInstance();
 
 			exportProcessor.process(po.getCtx(), mExportProcessor, outDocument, Trx.get( po.get_TrxName(), false ));

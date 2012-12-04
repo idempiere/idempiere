@@ -22,7 +22,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 
-public class ADTabListModel extends AbstractListModel implements ListitemRenderer, ListitemRendererExt {
+public class ADTabListModel extends AbstractListModel<Object> implements ListitemRenderer<Object>, ListitemRendererExt {
 	
 	/**
 	 * 

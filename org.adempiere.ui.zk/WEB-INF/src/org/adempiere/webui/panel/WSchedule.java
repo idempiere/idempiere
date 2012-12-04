@@ -48,7 +48,7 @@ import org.zkoss.zk.ui.event.MouseEvent;
  *  Zk Port
  *  @author Low Heng Sin
  */
-public class WSchedule extends Panel implements EventListener
+public class WSchedule extends Panel implements EventListener<Event>
 {
 	/**
 	 * 

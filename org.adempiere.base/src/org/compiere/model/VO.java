@@ -159,7 +159,7 @@ public class VO
 	 */
 	public void putAll (Map t)
 	{
-		Iterator it = t.keySet().iterator();
+		Iterator<?> it = t.keySet().iterator();
 		while (it.hasNext())
 		{
 			Object key = it.next();
@@ -191,7 +191,7 @@ public class VO
 	 * 	Get Values
 	 *	@return values as collection
 	 */
-	public Collection values ()
+	public Collection<?> values ()
 	{
 		return m_values;
 	}	//	values

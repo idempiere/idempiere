@@ -183,7 +183,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	 *  Put all
 	 * @param t 
 	 */
-	public void putAll(Map t)
+	public void putAll(Map<? extends K,? extends V> t)
 	{
 		throw new java.lang.UnsupportedOperationException("Method putAll() not implemented.");
 	}   //  putAll

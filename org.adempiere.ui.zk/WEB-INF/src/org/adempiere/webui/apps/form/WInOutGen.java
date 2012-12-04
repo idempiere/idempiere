@@ -46,7 +46,7 @@ import org.zkoss.zul.Space;
  * Generate Shipment (manual) view class
  *
  */
-public class WInOutGen extends InOutGen implements IFormController, EventListener, ValueChangeListener
+public class WInOutGen extends InOutGen implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private WGenForm form;
 

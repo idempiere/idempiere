@@ -57,7 +57,7 @@ import org.zkoss.zul.Menuitem;
  * Change History for field
  * @author Low Heng Sin
  */
-public class WFieldRecordInfo extends Window implements EventListener
+public class WFieldRecordInfo extends Window implements EventListener<Event>
 {
  	private static final long serialVersionUID = 3859352394520596098L;
 	private int AD_Table_ID;

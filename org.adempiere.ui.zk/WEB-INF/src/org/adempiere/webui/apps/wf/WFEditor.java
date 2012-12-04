@@ -217,7 +217,7 @@ public class WFEditor extends ADForm {
 		vbox.appendChild(new Separator());
 		final ConfirmPanel panel = new ConfirmPanel(true, false, false, false, false, false, false);
 		vbox.appendChild(panel);
-		panel.addActionListener(Events.ON_CLICK, new EventListener() {
+		panel.addActionListener(Events.ON_CLICK, new EventListener<Event>() {
 
 			public void onEvent(Event event) throws Exception {
 				if (event.getTarget() == panel.getButton(ConfirmPanel.A_CANCEL)) {
@@ -322,7 +322,7 @@ public class WFEditor extends ADForm {
 								image.setTooltiptext(node.getHelp(true));
 							}
 							image.setAttribute("AD_WF_Node_ID", node.getAD_WF_Node_ID());
-							image.addEventListener(Events.ON_CLICK, new EventListener() {
+							image.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 
 								public void onEvent(Event event) throws Exception {
 									showNodeMenu(event.getTarget());

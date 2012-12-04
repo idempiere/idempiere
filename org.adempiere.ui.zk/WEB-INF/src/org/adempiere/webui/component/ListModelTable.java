@@ -69,7 +69,7 @@ public class ListModelTable extends ListModelList implements ListModelExt
 	 *
 	 * @param collection	The collection of objects with which to initialise the list
 	 */
-	public ListModelTable(Collection collection)
+	public ListModelTable(Collection<?> collection)
 	{
 		super(collection);
 
@@ -79,7 +79,7 @@ public class ListModelTable extends ListModelList implements ListModelExt
 		{
 			if (row instanceof List)
 			{
-				m_noColumns = Math.max(m_noColumns, ((List)row).size());
+				m_noColumns = Math.max(m_noColumns, ((List<Object>)row).size());
 			}
 			else
 			{
@@ -117,7 +117,7 @@ public class ListModelTable extends ListModelList implements ListModelExt
 	 */
     private void ensureRowSize()
 	{
-		Iterator<List<Object>> rowIterator = this.getInnerList().iterator();
+		Iterator<List<Object>> rowIterator = (Iterator<List<Object>>)this.getInnerList().iterator();
 
         while (rowIterator.hasNext())
 		{
@@ -173,12 +173,12 @@ public class ListModelTable extends ListModelList implements ListModelExt
      */
 	public Object getDataAt(int rowIndex, int columnIndex)
 	{
-		List modelRow;
+		List<Object> modelRow;
 		Object dataObject;
 
 		try
 		{
-			modelRow = (List)getElementAt(rowIndex);
+			modelRow = (List<Object>)getElementAt(rowIndex);
 
 			dataObject = modelRow.get(columnIndex);
 		}
@@ -259,7 +259,7 @@ public class ListModelTable extends ListModelList implements ListModelExt
 				if (vector)
 				{
 					newRow = new Vector<Object>(getNoColumns());
-					((Vector)newRow).setSize(getNoColumns());
+					((Vector<Object>)newRow).setSize(getNoColumns());
 					add(newRow);
 				}
 				else

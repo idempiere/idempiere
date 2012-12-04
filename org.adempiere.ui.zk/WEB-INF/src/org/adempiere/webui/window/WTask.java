@@ -46,7 +46,7 @@ import org.zkoss.zul.Html;
  *
  *  @author Low Heng Sin
  */
-public class WTask extends Window implements EventListener
+public class WTask extends Window implements EventListener<Event>
 {
 	/**
 	 *

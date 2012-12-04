@@ -240,7 +240,7 @@ public class ImportInventoryMove extends SvrProcess
 	{
 		
 		final StringBuffer whereClause = new StringBuffer();
-		ArrayList<Object> parameters = new ArrayList();
+		ArrayList<Object> parameters = new ArrayList<Object>();
 		
 		MColumn[] cols = getMInventoryMoveColumns();
 		

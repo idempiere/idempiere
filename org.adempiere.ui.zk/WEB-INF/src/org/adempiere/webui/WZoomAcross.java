@@ -71,7 +71,7 @@ public class WZoomAcross
 					+ zoomInfo.query.getRecordCount() + ")";
 
 			final Menuitem menuItem = new Menuitem(label);
-			menuItem.addEventListener(Events.ON_CLICK, new EventListener() {
+			menuItem.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
 					launchZoom(zoomInfo);

@@ -87,7 +87,7 @@ class ALayoutCollection extends HashMap<Object,Object>
 	{
 		int maxRow = -1;
 		//
-		Iterator i = keySet().iterator();
+		Iterator<Object> i = keySet().iterator();
 		while (i.hasNext())
 		{
 			ALayoutConstraint c = (ALayoutConstraint)i.next();
@@ -104,7 +104,7 @@ class ALayoutCollection extends HashMap<Object,Object>
 	{
 		int maxCol = -1;
 		//
-		Iterator i = keySet().iterator();
+		Iterator<Object> i = keySet().iterator();
 		while (i.hasNext())
 		{
 			ALayoutConstraint c = (ALayoutConstraint)i.next();
@@ -122,7 +122,7 @@ class ALayoutCollection extends HashMap<Object,Object>
 	{
 		int maxCol = -1;
 		//
-		Iterator i = keySet().iterator();
+		Iterator<Object> i = keySet().iterator();
 		while (i.hasNext())
 		{
 			ALayoutConstraint c = (ALayoutConstraint)i.next();

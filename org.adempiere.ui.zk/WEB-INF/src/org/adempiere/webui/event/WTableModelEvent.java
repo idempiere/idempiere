@@ -50,7 +50,7 @@ public class WTableModelEvent extends ListDataEvent
 	 *
 	 * @param source	The list model that has changed
 	 */
-	public WTableModelEvent(ListModel source)
+	public WTableModelEvent(ListModel<?> source)
 	{
 		// Use Integer.MAX_VALUE instead of getRowCount() in case rows were
 		// deleted.
@@ -65,7 +65,7 @@ public class WTableModelEvent extends ListDataEvent
 	 * @param source	The list model that has changed
 	 * @param row		Index of the affected row
 	 */
-	public WTableModelEvent(ListModel source, int row)
+	public WTableModelEvent(ListModel<?> source, int row)
 	{
 		this(source, row, row, ALL_COLUMNS, CONTENTS_CHANGED);
 	}
@@ -77,7 +77,7 @@ public class WTableModelEvent extends ListDataEvent
 	 * @param row		Index of the affected row
 	 * @param column	Index of the affected column
 	 */
-	public WTableModelEvent(ListModel source, int row, int column)
+	public WTableModelEvent(ListModel<?> source, int row, int column)
 	{
 		this(source, row, row, column, CONTENTS_CHANGED);
 	}
@@ -96,7 +96,7 @@ public class WTableModelEvent extends ListDataEvent
 	 * @param column	Index of the affected column
 	 * @param type		the type of change
 	 */
-	public WTableModelEvent(ListModel source, int firstRow, int lastRow,
+	public WTableModelEvent(ListModel<?> source, int firstRow, int lastRow,
 			int column, int type)
 	{
 		super(source, type, firstRow, lastRow);

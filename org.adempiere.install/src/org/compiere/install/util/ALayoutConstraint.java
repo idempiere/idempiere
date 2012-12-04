@@ -23,7 +23,7 @@ package org.compiere.install.util;
  *  @author Jorg Janke
  *  @version  $Id: ALayoutConstraint.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
-public class ALayoutConstraint implements Comparable
+public class ALayoutConstraint implements Comparable<Object>
 {
 	/**
 	 *  Layout Constraint to indicate grid position

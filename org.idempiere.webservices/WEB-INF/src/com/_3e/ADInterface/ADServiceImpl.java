@@ -178,7 +178,7 @@ public class ADServiceImpl implements ADService {
     			//if(lookup.size() == 0) - nie robic tego
 				//	System.out.println("lookup refresh ["+fo.ColumnName+"]= "+lookup.refresh());
 				/*if(lookup.getSize() > 0)*/ 
-					ArrayList ar = lookup.getData(ff.isMandatory(false), true, !ff.isReadOnly(), true); // the last was false, 2007-05-11
+					ArrayList<Object> ar = lookup.getData(ff.isMandatory(false), true, !ff.isReadOnly(), true); // the last was false, 2007-05-11
 					if (ar != null && ar.size()>0) {
 					Object[] list = ar.toArray();										
 									
@@ -277,13 +277,13 @@ public class ADServiceImpl implements ADService {
     	
     }
     
-    private HashMap WindowVOCache =new HashMap();
-    private HashMap WindowCache =new HashMap();
+    private HashMap<String,GridWindowVO> WindowVOCache =new HashMap<String,GridWindowVO>();
+    private HashMap<String,WindowDocument> WindowCache =new HashMap<String,WindowDocument>();
     
     
     private GridWindowVO getWindowVO( int WindowNo, int AD_Window_ID, int AD_Menu_ID)
     {		
-    	GridWindowVO w = (GridWindowVO)WindowVOCache.get(""+AD_Window_ID+"_"+AD_Menu_ID+"_"+WindowNo);
+    	GridWindowVO w = WindowVOCache.get(""+AD_Window_ID+"_"+AD_Menu_ID+"_"+WindowNo);
     	if (w != null)
     			return w;
     	w = GridWindowVO.create(m_cs.getM_ctx(), WindowNo, AD_Window_ID, AD_Menu_ID);
@@ -296,7 +296,7 @@ public class ADServiceImpl implements ADService {
     public WindowDocument getADWindow(int WindowNo, int AD_Window_ID, int AD_Menu_ID)  {
     	authenticate(webServiceName, "getADWindow");
     	
-    	WindowDocument wc = (WindowDocument)WindowCache.get(new String(""+AD_Window_ID+"_"+AD_Menu_ID));
+    	WindowDocument wc = WindowCache.get(new String(""+AD_Window_ID+"_"+AD_Menu_ID));
     	//if (wc != null)			return wc;
     	
     	WindowDocument res = WindowDocument.Factory.newInstance();
@@ -343,7 +343,7 @@ public class ADServiceImpl implements ADService {
 	}
 	
 
-	private Map WindowStatusMap = new HashMap(); 
+	private Map<Integer,WWindowStatus> WindowStatusMap = new HashMap<Integer,WWindowStatus>(); 
 
 	/*
 	public WindowTabDataDocument getWindowTabData(int WindowNo, int AD_Window_ID, int AD_Menu_ID, int TabNo, int PrevTabNo, int PrevRecNo, boolean getData)	{
@@ -766,7 +766,7 @@ public class ADServiceImpl implements ADService {
         		boolean error = updateFields( ws, dr0 );
 
         		DataField f[] = dr0.getFieldArray();
-        		HashMap fmap = new HashMap();
+        		HashMap<String,String> fmap = new HashMap<String,String>();
         		for (int i=0; i<f.length; i++)
         			fmap.put(f[i].getColumn(), f[i].getVal());
         		
@@ -847,7 +847,7 @@ public class ADServiceImpl implements ADService {
 	{
 	
 		boolean error = false;
-		Enumeration en = null; //request.getParameterNames();
+		Enumeration<?> en = null; //request.getParameterNames();
 		DataField[] df = dr.getFieldArray();
 		DataField f;
 		for (int i=0; i<df.length; i++)
@@ -1293,13 +1293,13 @@ public class ADServiceImpl implements ADService {
 		MTree tree = new MTree (m_cs.getM_ctx(), AD_Tree_ID, false, false, null);	// Language set in WLogin
 		//	Trim tree
 		MTreeNode root = tree.getRoot();
-		Enumeration en = root.preorderEnumeration();
+		Enumeration<?> en = root.preorderEnumeration();
 		
 		
 		ADMenuItemList itl = null;// menu.addNewItems();
 		ADMenuItem it = menu;//, it_last = null;
 		
-		Stack stack = new Stack();
+		Stack<ADMenuItemList> stack = new Stack<ADMenuItemList>();
 		//stack.push( itl );
 		
 		while (en.hasMoreElements())

@@ -56,10 +56,10 @@ public class ReportInfo
         to the main Report in case of subreports. Marco LOMBARDO
     */
     private JasperReport jasperReport;
-    private HashMap subReport = new HashMap();
+    private HashMap<String, String> subReport = new HashMap<String, String>();
     private boolean hasSubReport = false;
     private boolean hasError = false;
-    private ArrayList errorMsg = new ArrayList();
+    private ArrayList<String> errorMsg = new ArrayList<String>();
     private CLogger log = CLogger.getCLogger(ReportInfo.class);
     
     public ReportInfo ()
@@ -356,7 +356,7 @@ public class ReportInfo
     /**
      * @return Returns the errorMsg.
      */
-    protected ArrayList getErrorMsg()
+    protected ArrayList<String> getErrorMsg()
     {
         return errorMsg;
     }
@@ -377,7 +377,7 @@ public class ReportInfo
     /**
      * @return Returns the subReport.
      */
-    protected HashMap getSubReport()
+    protected HashMap<String, String> getSubReport()
     {
         return subReport;
     }

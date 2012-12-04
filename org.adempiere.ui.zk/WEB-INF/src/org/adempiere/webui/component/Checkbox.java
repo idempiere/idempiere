@@ -73,7 +73,7 @@ public class Checkbox extends org.zkoss.zul.Checkbox
 	 * alias for addEventListener(Events.ON_CHECK, listener), to ease porting of swing form
 	 * @param listener
 	 */
-	public void addActionListener(EventListener listener) {
+	public void addActionListener(EventListener<?> listener) {
 		addEventListener(Events.ON_CHECK, listener);
 	}
 }

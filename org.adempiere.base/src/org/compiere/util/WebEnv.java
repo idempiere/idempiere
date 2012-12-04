@@ -115,12 +115,12 @@ public class WebEnv
 			return true;
 		}
 
-		Enumeration en = config.getInitParameterNames();
+		Enumeration<String> en = config.getInitParameterNames();
 		StringBuffer info = new StringBuffer("Servlet Init Parameter: ")
 			.append(config.getServletName());
 		while (en.hasMoreElements())
 		{
-			String name = en.nextElement().toString();
+			String name = en.nextElement();
 			String value = config.getInitParameter(name);
 			System.setProperty(name, value);
 			info.append("\n").append(name).append("=").append(value);
@@ -148,12 +148,12 @@ public class WebEnv
 		}
 
 		//  Load Environment Variables (serverApps/src/web/WEB-INF/web.xml)
-		Enumeration en = context.getInitParameterNames();
+		Enumeration<String> en = context.getInitParameterNames();
 		StringBuffer info = new StringBuffer("Servlet Context Init Parameters: ")
 			.append(context.getServletContextName());
 		while (en.hasMoreElements())
 		{
-			String name = en.nextElement().toString();
+			String name = en.nextElement();
 			String value = context.getInitParameter(name);
 			System.setProperty(name, value);
 			info.append("\n").append(name).append("=").append(value);
@@ -308,13 +308,13 @@ public class WebEnv
 		if (!CLogMgt.isLevelFiner())
 			return;
 		boolean first = true;
-		Enumeration e = config.getInitParameterNames();
+		Enumeration<String> e = config.getInitParameterNames();
 		while (e.hasMoreElements())
 		{
 			if (first)
 				log.finer("InitParameter:");
 			first = false;
-			String key = (String)e.nextElement();
+			String key = e.nextElement();
 			Object value = config.getInitParameter(key);
 			log.finer("- " + key + " = " + value);
 		}
@@ -331,13 +331,13 @@ public class WebEnv
 		if (!CLogMgt.isLevelFiner())
 			return;
 		boolean first = true;
-		Enumeration e = ctx.getInitParameterNames();
+		Enumeration<String> e = ctx.getInitParameterNames();
 		while (e.hasMoreElements())
 		{
 			if (first)
 				log.finer("InitParameter:");
 			first = false;
-			String key = (String)e.nextElement();
+			String key = e.nextElement();
 			Object value = ctx.getInitParameter(key);
 			log.finer("- " + key + " = " + value);
 		}
@@ -348,7 +348,7 @@ public class WebEnv
 			if (first)
 				log.finer("Attributes:");
 			first = false;
-			String key = (String)e.nextElement();
+			String key = e.nextElement();
 			Object value = ctx.getAttribute(key);
 			log.finer("- " + key + " = " + value);
 		}
@@ -365,13 +365,13 @@ public class WebEnv
 		if (!CLogMgt.isLevelFiner())
 			return;
 		boolean first = true;
-		Enumeration e = session.getAttributeNames();
+		Enumeration<String> e = session.getAttributeNames();
 		while (e.hasMoreElements())
 		{
 			if (first)
 				log.finer("Attributes:");
 			first = false;
-			String key = (String)e.nextElement();
+			String key = e.nextElement();
 			Object value = session.getAttribute(key);
 			log.finer("- " + key + " = " + value);
 		}
@@ -400,7 +400,7 @@ public class WebEnv
 		log.finer("- UserPrincipal=" + request.getUserPrincipal());
 		//
 		boolean first = true;
-		Enumeration e = request.getHeaderNames();
+		Enumeration<?> e = request.getHeaderNames();
 		/** Header Names */
 		while (e.hasMoreElements())
 		{
@@ -527,7 +527,7 @@ public class WebEnv
 	{
 		table table = new table();
 		table.setID("DEBUG");
-		Enumeration e;
+		Enumeration<?> e;
 
 		tr space = new tr().addElement(new td().addElement("."));
 		//	Request Info

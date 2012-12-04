@@ -117,7 +117,7 @@ import org.compiere.impexp.BankStatementLoaderInterface;
 		try
 		{
 			log.info( "MBankStatementLoader Class Name=" + getStmtLoaderClass());
-			Class bsrClass = Class.forName(getStmtLoaderClass());
+			Class<?> bsrClass = Class.forName(getStmtLoaderClass());
 			m_loader = (BankStatementLoaderInterface) bsrClass.newInstance();
 		}
 		catch(Exception e)

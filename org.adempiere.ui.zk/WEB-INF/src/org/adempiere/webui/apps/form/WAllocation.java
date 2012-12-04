@@ -70,7 +70,7 @@ import org.zkoss.zul.Space;
  * Contributor : Fabian Aguilar - OFBConsulting - Multiallocation
  */
 public class WAllocation extends Allocation
-	implements IFormController, EventListener, WTableModelListener, ValueChangeListener
+	implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener
 {
 
 	private CustomForm form = new CustomForm();

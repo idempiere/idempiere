@@ -61,7 +61,7 @@ import org.zkoss.zul.ListitemRendererExt;
  * @author Andrew Kimball
  *
  */
-public class WListItemRenderer implements ListitemRenderer, EventListener, ListitemRendererExt
+public class WListItemRenderer implements ListitemRenderer<Object>, EventListener<Event>, ListitemRendererExt
 {
 	/** Array of listeners for changes in the table components. */
 	protected ArrayList<TableValueChangeListener> m_listeners =
@@ -76,7 +76,7 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
 
     private Listbox listBox;
 
-	private EventListener cellListener;
+	private EventListener<Event> cellListener;
 
 	/**
 	 * Default constructor.
@@ -811,7 +811,7 @@ public class WListItemRenderer implements ListitemRenderer, EventListener, Listi
 		}
 	}
 
-	class CellListener implements EventListener {
+	class CellListener implements EventListener<Event> {
 
 		public CellListener() {
 		}

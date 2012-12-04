@@ -28,7 +28,7 @@ public class Info_Column
 	 *  @param colSQL    SQL select code for column
 	 *  @param colClass  class of column - determines display
 	 */
-	public Info_Column (String colHeader, String colSQL, Class colClass)
+	public Info_Column (String colHeader, String colSQL, Class<?> colClass)
 	{
 		this(colHeader, colSQL, colClass, true, false, null);
 	}   //  Info_Column
@@ -41,7 +41,7 @@ public class Info_Column
 	 *  @param colClass  class of column - determines display
 	 *  @param IDcolSQL  SQL select for the ID of the for the displayed column (KeyNamePair)
 	 */
-	public Info_Column (String colHeader, String colSQL, Class colClass, String IDcolSQL)
+	public Info_Column (String colHeader, String colSQL, Class<?> colClass, String IDcolSQL)
 	{
 		this(colHeader, colSQL, colClass, true, false, IDcolSQL);
 	}   //  Info_Column
@@ -56,7 +56,7 @@ public class Info_Column
 	 *  @param colorColumn   if true, value of column determines foreground color
 	 *  @param IDcolSQL  SQL select for the ID of the for the displayed column
 	 */
-	public Info_Column (String colHeader, String colSQL, Class colClass, 
+	public Info_Column (String colHeader, String colSQL, Class<?> colClass, 
 		boolean readOnly, boolean colorColumn, String IDcolSQL)
 	{
 		setColHeader(colHeader);
@@ -70,12 +70,12 @@ public class Info_Column
 
 	private String      m_colHeader;
 	private String      m_colSQL;
-	private Class       m_colClass;
+	private Class<?>       m_colClass;
 	private boolean     m_readOnly;
 	private boolean     m_colorColumn;
 	private String      m_IDcolSQL = "";
 
-	public Class getColClass()
+	public Class<?> getColClass()
 	{
 		return m_colClass;
 	}
@@ -91,7 +91,7 @@ public class Info_Column
 	{
 		return m_readOnly;
 	}
-	public void setColClass(Class colClass)
+	public void setColClass(Class<?> colClass)
 	{
 		m_colClass = colClass;
 	}

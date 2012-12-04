@@ -76,7 +76,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		yesList.setVflex(true);
 		noList.setVflex(true);
 
-		EventListener mouseListener = new EventListener()
+		EventListener<Event> mouseListener = new EventListener<Event>()
 		{
 
 			public void onEvent(Event event) throws Exception
@@ -90,7 +90,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		yesList.addDoubleClickListener(mouseListener);
 		noList.addDoubleClickListener(mouseListener);
 		//
-		EventListener actionListener = new EventListener()
+		EventListener<Event> actionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				migrateValueAcrossLists(event);
@@ -105,13 +105,13 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		bRemove.setImage("images/Previous24.png");
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
-		EventListener crossListMouseListener = new DragListener();
+		EventListener<Event> crossListMouseListener = new DragListener();
 		yesList.addOnDropListener(crossListMouseListener);
 		noList.addOnDropListener(crossListMouseListener);
 		yesList.setItemDraggable(true);
 		noList.setItemDraggable(true);
 
-		EventListener yesListMouseMotionListener = new EventListener()
+		EventListener<Event> yesListMouseMotionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				if (event instanceof DropEvent)
@@ -193,7 +193,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		hlayout.appendChild(yesList);
 		
 		
-		EventListener actionListener2 = new EventListener()
+		EventListener<Event> actionListener2 = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				migrateValueWithinYesList(event);
@@ -305,7 +305,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		SimpleListModel lmFrom = (source == bAdd || source == noList) ?
 				noModel : yesModel;
 		SimpleListModel lmTo = (lmFrom == yesModel) ? noModel : yesModel;
-		Set selectedItems = listFrom.getSelectedItems();
+		Set<?> selectedItems = listFrom.getSelectedItems();
 		List<ListElement> selObjects = new ArrayList<ListElement>();
 		for (Object obj : selectedItems) {
 			ListItem listItem = (ListItem) obj;
@@ -509,7 +509,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	 * @author eslatis
 	 *
 	 */
-	private class DragListener implements EventListener
+	private class DragListener implements EventListener<Event>
 	{
 
 		/**

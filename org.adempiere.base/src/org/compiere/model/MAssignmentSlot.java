@@ -33,7 +33,7 @@ import org.compiere.util.TimeUtil;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MAssignmentSlot.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MAssignmentSlot implements Comparator
+public class MAssignmentSlot implements Comparator<Object>
 {
 	/**
 	 *	Comparator Constructor

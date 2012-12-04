@@ -51,7 +51,7 @@ public class ReportViewDataSource extends compiereDataSource
 	private PrintData		m_printData = null;
 	private int				m_index	= 0;
 	
-    public ReportViewDataSource(Properties ctx, ProcessInfo pi, HashMap params)
+    public ReportViewDataSource(Properties ctx, ProcessInfo pi, HashMap<String,Object> params)
     {
         ReportEngine re = ReportEngine.get(ctx, pi);
         m_printData = re.getPrintData();        

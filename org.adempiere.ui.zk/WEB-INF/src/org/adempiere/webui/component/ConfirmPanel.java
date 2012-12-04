@@ -420,7 +420,7 @@ public final class ConfirmPanel extends Hbox
      * @param event event
      * @param listener listener
      */
-    public void addActionListener(String event, EventListener listener)
+    public void addActionListener(String event, EventListener<?> listener)
     {
         List<?> list1 = pnlBtnLeft.getChildren();
         List<?> list2 = pnlBtnRight.getChildren();
@@ -443,7 +443,7 @@ public final class ConfirmPanel extends Hbox
      * added to ease porting of swing form
      * @param listener
      */
-	public void addActionListener(EventListener listener) {
+	public void addActionListener(EventListener<?> listener) {
 		addActionListener(Events.ON_CLICK, listener);
 	}
 

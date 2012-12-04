@@ -188,7 +188,7 @@ public class SecureEngine
 		Exception cause = null;
 		try
 		{
-			Class clazz = Class.forName(realClass);
+			Class<?> clazz = Class.forName(realClass);
 			implementation = (SecureInterface)clazz.newInstance();
 		}
 		catch (Exception e)

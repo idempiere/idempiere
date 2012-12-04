@@ -96,7 +96,7 @@ public class CLogger extends Logger implements Serializable
 	 *	@param clazz class name
 	 *	@return Logger
 	 */
-    public static CLogger getCLogger (Class clazz)
+    public static CLogger getCLogger (Class<?> clazz)
     {
     	if (clazz == null)
     		return get();

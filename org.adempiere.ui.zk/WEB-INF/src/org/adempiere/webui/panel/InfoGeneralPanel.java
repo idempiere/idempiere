@@ -40,6 +40,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -54,7 +55,7 @@ import org.zkoss.zul.Vbox;
  * @author Elaine
  * @version	InfoGeneral.java Adempiere Swing UI 3.4.1
  */
-public class InfoGeneralPanel extends InfoPanel implements EventListener
+public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 {
 	/**
 	 *

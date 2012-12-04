@@ -63,7 +63,7 @@ public class ADLookup {
 	}
 	
 	
-	public ArrayList GetLookupData()
+	public ArrayList<?> GetLookupData()
 	{
 		
 		return null;
@@ -73,8 +73,7 @@ public class ADLookup {
 	
 	private String getWhereClause( String keyColumn, DataRow params ) {
 		String whereClause = "IsSummary='N'";
-		String lookupColumn = keyColumn;
-		
+		String lookupColumn = keyColumn;		
 		return whereClause;
 	}
 	

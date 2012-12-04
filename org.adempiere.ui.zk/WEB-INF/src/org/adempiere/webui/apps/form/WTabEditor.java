@@ -84,7 +84,7 @@ import org.zkoss.zul.West;
  * @author Carlos Ruiz
  *
  */
-public class WTabEditor extends TabEditor implements IFormController, EventListener, ValueChangeListener
+public class WTabEditor extends TabEditor implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	// TODO: create messages Property, VisibleFields, NonVisibleField
 

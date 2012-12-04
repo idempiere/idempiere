@@ -69,7 +69,7 @@ import org.zkoss.zul.Space;
 
 
 
-public class WBOMDrop extends ADForm implements EventListener
+public class WBOMDrop extends ADForm implements EventListener<Event>
 {
 	/**
 	 * 
@@ -560,18 +560,18 @@ public class WBOMDrop extends ADForm implements EventListener
 				while (it.hasNext())
 				{
 					Radiogroup group = it.next();
-					Enumeration en = (Enumeration) group.getChildren();
+					Enumeration<?> en = (Enumeration<?>) group.getChildren();
 				
 					while (en.hasMoreElements())
 					{
 						//	We found the group
 						if (source == en.nextElement())
 						{
-							Enumeration info = (Enumeration) group.getChildren();
+							Enumeration<?> info = (Enumeration<?>) group.getChildren();
 							
 							while (info.hasMoreElements())
 							{
-								Object infoObj = info.nextElement();
+								Object infoObj = (Object)info.nextElement();
 								if (source != infoObj)
 									cmd_selection(infoObj);
 							}

@@ -139,7 +139,7 @@ public class MBankStatementMatcher extends X_C_BankStatementMatcher
 		
 		try
 		{
-			Class matcherClass = Class.forName(className);
+			Class<?> matcherClass = Class.forName(className);
 			m_matcher = (BankStatementMatcherInterface)matcherClass.newInstance();
 			m_matcherValid = Boolean.TRUE;
 		}

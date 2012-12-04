@@ -27,7 +27,7 @@ public class WWindowStatus
 		}
 	}
 	
-	public static WWindowStatus get (Map cache, int WinNo, boolean changeTab, int TabNo, boolean changeRow, /*int RowNo*/int RecordID ) //throws AD_WrongTabException 
+	public static WWindowStatus get (Map<Integer,WWindowStatus> cache, int WinNo, boolean changeTab, int TabNo, boolean changeRow, /*int RowNo*/int RecordID ) //throws AD_WrongTabException 
 	{
 		WWindowStatus ws = (WWindowStatus)cache.get(new Integer(WinNo));
 		if (ws != null)

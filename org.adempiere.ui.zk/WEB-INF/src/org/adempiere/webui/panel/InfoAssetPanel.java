@@ -40,6 +40,7 @@ import org.compiere.model.MQuery;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
@@ -61,7 +62,7 @@ import org.zkoss.zul.Vbox;
 * @version	InfoAsset.java Adempiere Swing UI 3.4.1 
 */
 
-public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, EventListener
+public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, EventListener<Event>
 {
 	/**
 	 * 

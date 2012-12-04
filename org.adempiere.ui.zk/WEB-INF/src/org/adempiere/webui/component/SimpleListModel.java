@@ -30,19 +30,19 @@ import org.zkoss.zul.event.ListDataEvent;
  * @author Low Heng Sin
  *
  */
-public class SimpleListModel extends AbstractListModel implements ListitemRenderer, ListitemRendererExt {
+public class SimpleListModel extends AbstractListModel<Object> implements ListitemRenderer<Object>, ListitemRendererExt {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -572148106182756840L;
 
-	protected List list;
+	protected List<Object> list;
 	
 	private int[] maxLength;
 
 	public SimpleListModel() {
-		this(new ArrayList());
+		this(new ArrayList<Object>());
 	}
 	
 	public SimpleListModel(List list) {
@@ -73,7 +73,7 @@ public class SimpleListModel extends AbstractListModel implements ListitemRender
 		if (data instanceof Object[]) {
 			renderArray(item, (Object[])data);
 		} else if (data instanceof Collection) {
-			renderCollection(item, (Collection)data);
+			renderCollection(item, (Collection<?>)data);
 		} else {
 			String value = data != null ? data.toString() : "";
 			renderCell(0, item, value);
@@ -92,7 +92,7 @@ public class SimpleListModel extends AbstractListModel implements ListitemRender
 			listCell.setTooltiptext(tooltip);
 	}
 
-	private void renderCollection(Listitem item, Collection data) {
+	private void renderCollection(Listitem item, Collection<?> data) {
 		int i = 0;
 		for (Object col : data) {
 			String value = (col != null ? col.toString() : "");

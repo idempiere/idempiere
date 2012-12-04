@@ -63,7 +63,7 @@ import org.zkoss.zul.Separator;
  * @version $Id: VTrxMaterial.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WTrxMaterial extends TrxMaterial
-	implements IFormController, EventListener, ValueChangeListener
+	implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	/**
 	 * 

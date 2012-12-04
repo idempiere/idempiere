@@ -368,9 +368,9 @@ public abstract class Convert
 		Matcher m;
 
 		// for each iteration in the conversion map
-		Map convertMap = getConvertMap();
+		Map<String,String> convertMap = getConvertMap();
 		if (convertMap != null) {
-			Iterator iter = convertMap.keySet().iterator();
+			Iterator<?> iter = convertMap.keySet().iterator();
 			while (iter.hasNext()) {
 	
 			    // replace the key on convertmap (i.e.: number by numeric)   
@@ -413,7 +413,7 @@ public abstract class Convert
 	 * Get convert map for use in sql convertion
 	 * @return map
 	 */
-	protected Map getConvertMap() {
+	protected Map<String,String> getConvertMap() {
 		return null;
 	}
 	

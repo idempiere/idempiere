@@ -31,7 +31,7 @@ import org.zkoss.zul.Button;
  * @version $Revision: 0.10 $
  */
 
-public class LogoutPanel extends Panel implements EventListener
+public class LogoutPanel extends Panel implements EventListener<Event>
 {
     /**
 	 * 

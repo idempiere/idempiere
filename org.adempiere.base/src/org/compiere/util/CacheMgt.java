@@ -235,7 +235,7 @@ public class CacheMgt
 			CacheInterface stored = (CacheInterface)m_instances.get(i);
 			if (stored != null && stored instanceof CCache)
 			{
-				CCache cc = (CCache)stored;
+				CCache<?, ?> cc = (CCache<?, ?>)stored;
 				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
 				{
 					{
@@ -266,7 +266,7 @@ public class CacheMgt
 			{
 				log.fine(stored.toString());
 				if (stored instanceof CCache)
-					total += ((CCache)stored).sizeNoExpire();
+					total += ((CCache<?, ?>)stored).sizeNoExpire();
 				else
 					total += stored.size();
 			}

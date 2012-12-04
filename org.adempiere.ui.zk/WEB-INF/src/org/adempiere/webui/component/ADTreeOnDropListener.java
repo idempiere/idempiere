@@ -35,7 +35,7 @@ import org.zkoss.zul.Treerow;
  * @author Low Heng Sin
  *
  */
-public class ADTreeOnDropListener implements EventListener {
+public class ADTreeOnDropListener implements EventListener<Event> {
 	
 	private SimpleTreeModel treeModel;
 	private MTree mTree;
@@ -68,7 +68,7 @@ public class ADTreeOnDropListener implements EventListener {
 			if (de.getDragged() != de.getTarget()) {
 				Treeitem src = (Treeitem) ((Treerow) de.getDragged()).getParent();
 				Treeitem target = (Treeitem) ((Treerow) de.getTarget()).getParent();
-				moveNode((DefaultTreeNode)src.getValue(), (DefaultTreeNode)target.getValue());
+				moveNode((DefaultTreeNode<Object>)src.getValue(), (DefaultTreeNode<Object>)target.getValue());
 			}
 		} 
 	}
@@ -78,7 +78,7 @@ public class ADTreeOnDropListener implements EventListener {
 	 *	@param	movingNode	The node to be moved
 	 *	@param	toNode		The target node
 	 */
-	private void moveNode(DefaultTreeNode movingNode, DefaultTreeNode toNode)
+	private void moveNode(DefaultTreeNode<Object> movingNode, DefaultTreeNode<Object> toNode)
 	{
 		log.info(movingNode.toString() + " to " + toNode.toString());
 
@@ -87,7 +87,7 @@ public class ADTreeOnDropListener implements EventListener {
 		
 		MTreeNode toMNode = (MTreeNode) toNode.getData();
 				
-		DefaultTreeNode newParent;
+		DefaultTreeNode<Object> newParent;
 		int index;
 		if (!toMNode.isSummary())	//	drop on a child node
 		{
@@ -122,13 +122,13 @@ public class ADTreeOnDropListener implements EventListener {
 		
 	}	//	moveNode
 	
-	private void moveNode(DefaultTreeNode movingNode, DefaultTreeNode toNode, boolean moveInto)
+	private void moveNode(DefaultTreeNode<Object> movingNode, DefaultTreeNode<Object> toNode, boolean moveInto)
 	{
-		DefaultTreeNode newParent;
+		DefaultTreeNode<Object> newParent;
 		int index;		
 		
 		//  remove
-		DefaultTreeNode oldParent = treeModel.getParent(movingNode);
+		DefaultTreeNode<Object> oldParent = treeModel.getParent(movingNode);
 		treeModel.removeNode(movingNode);
 		
 		//get new index
@@ -163,7 +163,7 @@ public class ADTreeOnDropListener implements EventListener {
 			MTreeNode oldMParent = (MTreeNode) oldParent.getData();
 			for (int i = 0; i < oldParent.getChildCount(); i++)
 			{
-				DefaultTreeNode nd = (DefaultTreeNode)oldParent.getChildAt(i);
+				DefaultTreeNode<?> nd = (DefaultTreeNode<?>)oldParent.getChildAt(i);
 				MTreeNode md = (MTreeNode) nd.getData();
 				StringBuffer sql = new StringBuffer("UPDATE ");
 				sql.append(mTree.getNodeTableName())
@@ -180,7 +180,7 @@ public class ADTreeOnDropListener implements EventListener {
 				MTreeNode newMParent = (MTreeNode) newParent.getData();
 				for (int i = 0; i < newParent.getChildCount(); i++)
 				{
-					DefaultTreeNode nd = (DefaultTreeNode)newParent.getChildAt(i);
+					DefaultTreeNode<?> nd = (DefaultTreeNode<?>)newParent.getChildAt(i);
 					MTreeNode md = (MTreeNode) nd.getData();
 					StringBuffer sql = new StringBuffer("UPDATE ");
 					sql.append(mTree.getNodeTableName())
@@ -205,10 +205,10 @@ public class ADTreeOnDropListener implements EventListener {
 		trx = null;
 	}
 	
-	class MenuListener implements EventListener {
-		private DefaultTreeNode movingNode;
-		private DefaultTreeNode toNode;
-		MenuListener(DefaultTreeNode movingNode, DefaultTreeNode toNode) {
+	class MenuListener implements EventListener<Event> {
+		private DefaultTreeNode<Object> movingNode;
+		private DefaultTreeNode<Object> toNode;
+		MenuListener(DefaultTreeNode<Object> movingNode, DefaultTreeNode<Object> toNode) {
 			this.movingNode = movingNode;
 			this.toNode = toNode;
 		}

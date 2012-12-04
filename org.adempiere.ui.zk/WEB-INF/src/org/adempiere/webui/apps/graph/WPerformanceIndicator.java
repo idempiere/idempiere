@@ -48,7 +48,7 @@ import org.zkoss.zul.Menupopup;
  *
  *  @author hengsin
  */
-public class WPerformanceIndicator extends Panel implements EventListener
+public class WPerformanceIndicator extends Panel implements EventListener<Event>
 {
 	/**
 	 *

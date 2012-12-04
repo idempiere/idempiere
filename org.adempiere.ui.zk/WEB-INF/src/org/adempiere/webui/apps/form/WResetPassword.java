@@ -55,7 +55,7 @@ import org.zkoss.zul.South;
  * @author Elaine
  * @date September 18, 2012
  */
-public class WResetPassword implements IFormController, EventListener, ValueChangeListener {
+public class WResetPassword implements IFormController, EventListener<Event>, ValueChangeListener {
 
 	private static CLogger log = CLogger.getCLogger(WResetPassword.class);
 

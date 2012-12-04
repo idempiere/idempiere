@@ -51,7 +51,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Andrew Kimball
  *
  */
-public class WSQLProcess extends ADForm implements EventListener
+public class WSQLProcess extends ADForm implements EventListener<Event>
 {
     /**
 	 * 

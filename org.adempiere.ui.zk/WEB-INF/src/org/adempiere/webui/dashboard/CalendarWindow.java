@@ -276,22 +276,22 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 	}
 	
 	private void syncModel() {
-		Hashtable ht = new Hashtable();
+		Hashtable<String,BigDecimal> ht = new Hashtable<String,BigDecimal>();
 		
-		List list = calendars.getModel().get(calendars.getBeginDate(), calendars.getEndDate(), null);
+		List<?> list = calendars.getModel().get(calendars.getBeginDate(), calendars.getEndDate(), null);
 		int size = list.size();
-		for (Iterator it = list.iterator(); it.hasNext();) {
+		for (Iterator<?> it = list.iterator(); it.hasNext();) {
 			String key = ((ADCalendarEvent)it.next()).getR_RequestType_ID() + "";
 					
 			if (!ht.containsKey(key))
 				ht.put(key, BigDecimal.ONE);
 			else {
-				BigDecimal value = (BigDecimal) ht.get(key);
+				BigDecimal value = ht.get(key);
 				ht.put(key, value.add(BigDecimal.ONE));
 			}
 		}
 		
-		Hashtable htTypes = new Hashtable();
+		Hashtable<Object, String> htTypes = new Hashtable<Object, String>();
 		for(int i = 0; i < lbxRequestTypes.getItemCount(); i++)
 		{
 			Listitem li = lbxRequestTypes.getItemAtIndex(i);
@@ -300,10 +300,10 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		}
 		
 		DefaultPieDataset pieDataset = new DefaultPieDataset();
-		Enumeration keys = ht.keys();
+		Enumeration<?> keys = ht.keys();
 		while(keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
-			BigDecimal value = (BigDecimal) ht.get(key);
+			BigDecimal value = ht.get(key);
 			String name = (String) htTypes.get(key);
 			pieDataset.setValue(name == null ? "" : name, new Double(size > 0 ? value.doubleValue()/size*100 : 0));
 		}
@@ -380,9 +380,9 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 	}
 	
 	private void btnSwitchTimeZoneClicked() {
-		Map zone = calendars.getTimeZones();
+		Map<?, ?> zone = calendars.getTimeZones();
 		if (!zone.isEmpty()) {
-			Map.Entry me = (Map.Entry) zone.entrySet().iterator().next();
+			Map.Entry<TimeZone, String> me = (Map.Entry<TimeZone, String>) zone.entrySet().iterator().next();
 			calendars.removeTimeZone((TimeZone) me.getKey());
 			calendars.addTimeZone((String) me.getValue(), (TimeZone) me.getKey());
 		}

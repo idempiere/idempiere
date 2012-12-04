@@ -314,7 +314,7 @@ public class GenerateModelJPA
 		boolean virtualColumn, boolean IsEncrypted)
 	{
 		//	Clazz
-		Class clazz = DisplayType.getClass(displayType, true);
+		Class<?> clazz = DisplayType.getClass(displayType, true);
 		if (defaultValue == null)
 			defaultValue = "";
 		if (DisplayType.isLOB(displayType))		//	No length check for LOBs

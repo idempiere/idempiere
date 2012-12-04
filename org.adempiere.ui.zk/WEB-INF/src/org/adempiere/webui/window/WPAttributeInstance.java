@@ -50,7 +50,7 @@ import org.zkoss.zul.Hbox;
  *  @author     Jorg Janke
  *  @version    $Id: PAttributeInstance.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
  */
-public class WPAttributeInstance extends Window implements EventListener 
+public class WPAttributeInstance extends Window implements EventListener<Event> 
 {
 	/**
 	 * 

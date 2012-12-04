@@ -44,7 +44,7 @@ public class EventManager implements IEventManager {
 
 	private final static Object mutex = new Object();
 
-	private Map<EventHandler, List<ServiceRegistration>> registrations = new HashMap<EventHandler, List<ServiceRegistration>>();
+	private Map<EventHandler, List<ServiceRegistration<?>>> registrations = new HashMap<EventHandler, List<ServiceRegistration<?>>>();
 
 	/**
 	 * @param eventAdmin
@@ -145,11 +145,11 @@ public class EventManager implements IEventManager {
 		d.put(EventConstants.EVENT_TOPIC, topics);
 		if (filter != null)
 			d.put(EventConstants.EVENT_FILTER, filter);
-		ServiceRegistration registration = bundleContext.registerService(EventHandler.class.getName(), eventHandler, d);
+		ServiceRegistration<?> registration = bundleContext.registerService(EventHandler.class.getName(), eventHandler, d);
 		synchronized(registrations) {
-			List<ServiceRegistration> list = registrations.get(eventHandler);
+			List<ServiceRegistration<?>> list = registrations.get(eventHandler);
 			if (list == null) {
-				list = new ArrayList<ServiceRegistration>();
+				list = new ArrayList<ServiceRegistration<?>>();
 				registrations.put(eventHandler, list);
 			}
 			list.add(registration);
@@ -162,13 +162,13 @@ public class EventManager implements IEventManager {
 	 */
 	@Override
 	public boolean unregister(EventHandler eventHandler) {
-		List<ServiceRegistration> serviceRegistrations = null;
+		List<ServiceRegistration<?>> serviceRegistrations = null;
 		synchronized(registrations) {
 			serviceRegistrations = registrations.remove(eventHandler);
 		}
 		if (serviceRegistrations == null)
 			return false;
-		for (ServiceRegistration registration : serviceRegistrations)
+		for (ServiceRegistration<?> registration : serviceRegistrations)
 			registration.unregister();
 		return true;
 	}

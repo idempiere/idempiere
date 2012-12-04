@@ -90,7 +90,7 @@ import org.zkoss.zul.Separator;
  *  @author Low Heng Sin
  */
 
-public class WAcctViewer extends Window implements EventListener
+public class WAcctViewer extends Window implements EventListener<Event>
 {
 	private static final String TITLE = "Posting";
 

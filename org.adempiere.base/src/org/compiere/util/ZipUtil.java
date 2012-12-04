@@ -193,7 +193,7 @@ public class ZipUtil
 	 * 	Get ZipEntries as Enumeration
 	 * 	@return entries
 	 */
-	public Enumeration entries()
+	public Enumeration<?> entries()
 	{
 		if (!isOpen())
 			return null;
@@ -277,7 +277,7 @@ public class ZipUtil
 		ZipEntry retValue = zu.getEntry(entryName);
 		if (retValue == null)
 		{
-			Enumeration e = zu.entries();
+			Enumeration<?> e = zu.entries();
 			while (e.hasMoreElements())
 			{
 				ZipEntry entry = (ZipEntry)e.nextElement();

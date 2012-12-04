@@ -52,7 +52,7 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 public class WFactReconcile extends FactReconcile 
-implements IFormController, EventListener, WTableModelListener, ValueChangeListener{
+implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener{
 	
 	private CustomForm form = new CustomForm();
 

@@ -96,7 +96,7 @@ public class Paymentbox extends Div {
 		return !combo.isReadonly();
 	}
 	
-	public boolean addEventListener(String evtnm, EventListener listener) {
+	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		if (Events.ON_CLICK.equals(evtnm)) {
 			return btn.addEventListener(evtnm, listener);
 		} else {

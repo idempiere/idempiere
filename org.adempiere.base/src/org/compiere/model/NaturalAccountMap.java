@@ -280,7 +280,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	public boolean saveAccounts (int AD_Client_ID, int AD_Org_ID, int C_Element_ID)
 	{
 		log.config("");
-		Iterator iterator = this.values().iterator();
+		Iterator<?> iterator = this.values().iterator();
 		while (iterator.hasNext())
 		{
 			MElementValue na = (MElementValue)iterator.next();

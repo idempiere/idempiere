@@ -72,7 +72,7 @@ import org.zkoss.zul.Html;
  * @author hengsin
  *
  */
-public class WWFActivity extends ADForm implements EventListener
+public class WWFActivity extends ADForm implements EventListener<Event>
 {
 	/**
 	 * 

@@ -110,7 +110,7 @@ public class ALayout implements LayoutManager2
 	{
 		if (!m_data.containsValue(comp))
 			return;
-		Iterator it = m_data.keySet().iterator();
+		Iterator<Object> it = m_data.keySet().iterator();
 		while (it.hasNext())
 		{
 			Object key = it.next();

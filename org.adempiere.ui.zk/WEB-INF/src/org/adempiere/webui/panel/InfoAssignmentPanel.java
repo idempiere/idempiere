@@ -67,7 +67,7 @@ import org.zkoss.zul.Vbox;
 * @version	InfoAssignment.java Adempiere Swing UI 3.4.1
 */
 
-public class InfoAssignmentPanel extends InfoPanel implements EventListener, ValueChangeListener
+public class InfoAssignmentPanel extends InfoPanel implements EventListener<Event>, ValueChangeListener
 {
 	/**
 	 * 

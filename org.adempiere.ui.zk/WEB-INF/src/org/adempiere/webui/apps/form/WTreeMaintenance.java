@@ -51,6 +51,7 @@ import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Splitter;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.TreeNode;
 import org.zkoss.zul.Treeitem;
 
 /**
@@ -59,7 +60,7 @@ import org.zkoss.zul.Treeitem;
  *  @author Jorg Janke
  *  @version $Id: VTreeMaintenance.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
-public class WTreeMaintenance extends TreeMaintenance implements IFormController, EventListener
+public class WTreeMaintenance extends TreeMaintenance implements IFormController, EventListener<Event>
 {
 	/**
 	 * 
@@ -302,7 +303,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		if (selected != null)	//	allow add if not in tree
 		{
 			SimpleTreeModel tm = (SimpleTreeModel) centerTree.getModel();
-			DefaultTreeNode stn = tm.find(tm.getRoot(), selected.id);
+			DefaultTreeNode<?> stn = tm.find(tm.getRoot(), selected.id);
 			if (stn != null) {
 				int[] path = tm.getPath(stn);
 				Treeitem ti = centerTree.renderItemByPath(path);
@@ -319,12 +320,12 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private void onTreeSelection (Event e)
 	{
 		Treeitem ti = centerTree.getSelectedItem();
-		DefaultTreeNode stn = (DefaultTreeNode) ti.getValue();
+		DefaultTreeNode<?> stn = (DefaultTreeNode<?>) ti.getValue();
 		MTreeNode tn = (MTreeNode)stn.getData();
 		log.info(tn.toString());
 		if (tn == null)
 			return;
-		ListModel model = centerList.getModel();
+		ListModel<Object> model = centerList.getModel();
 		int size = model.getSize();
 		int index = -1;
 		for (index = 0; index < size; index++)
@@ -346,7 +347,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		if (item != null)
 		{
 			SimpleTreeModel model = (SimpleTreeModel) centerTree.getModel();
-			DefaultTreeNode stn = model.find(model.getRoot(), item.id);
+			DefaultTreeNode<Object> stn = model.find(model.getRoot(), item.id);
 			if (stn != null) {
 				MTreeNode tNode = (MTreeNode) stn.getData();
 				tNode.setName(item.name);
@@ -356,8 +357,8 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 				Treeitem ti = centerTree.renderItemByPath(model.getPath(stn));
 				ti.setTooltiptext(item.description);
 			} else {
-				stn = new DefaultTreeNode(new MTreeNode(item.id, 0, item.name, item.description, 0, item.isSummary,
-						item.imageIndicator, false, null), new ArrayList<Object>());
+				stn = new DefaultTreeNode<Object>(new MTreeNode(item.id, 0, item.name, item.description, 0, item.isSummary,
+						item.imageIndicator, false, null), new ArrayList<TreeNode<Object>>());
 				model.addNode(stn);
 			}
 			//	May cause Error if in tree
@@ -375,7 +376,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		if (item != null)
 		{
 			SimpleTreeModel model = (SimpleTreeModel) centerTree.getModel();
-			DefaultTreeNode stn = model.find(model.getRoot(), item.id);
+			DefaultTreeNode<Object> stn = model.find(model.getRoot(), item.id);
 			if (stn != null)
 				model.removeNode(stn);
 			
@@ -399,7 +400,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 				if (result)
 				{
 					log.info("");
-					ListModel model = centerList.getModel();
+					ListModel<Object> model = centerList.getModel();
 					int size = model.getSize();
 					int index = -1;
 					for (index = 0; index < size; index++)
@@ -426,7 +427,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 			{
 				if (result)
 				{
-					ListModel model = centerList.getModel();
+					ListModel<Object> model = centerList.getModel();
 					int size = model.getSize();
 					int index = -1;
 					for (index = 0; index < size; index++)

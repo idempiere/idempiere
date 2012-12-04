@@ -44,7 +44,7 @@ import org.zkoss.zul.Html;
  *
  * 	@author Low Heng Sin
  */
-public class WFPanel extends Borderlayout implements EventListener
+public class WFPanel extends Borderlayout implements EventListener<Event>
 {
 	/**
 	 * 

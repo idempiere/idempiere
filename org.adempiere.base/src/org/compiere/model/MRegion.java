@@ -141,10 +141,10 @@ public final class MRegion extends X_C_Region
 		if (s_regions == null || s_regions.size() == 0)
 			loadAllRegions(ctx);
 		ArrayList<MRegion> list = new ArrayList<MRegion>();
-		Iterator it = s_regions.values().iterator();
+		Iterator<MRegion> it = s_regions.values().iterator();
 		while (it.hasNext())
 		{
-			MRegion r = (MRegion)it.next();
+			MRegion r = it.next();
 			if (r.getC_Country_ID() == C_Country_ID)
 				list.add(r);
 		}

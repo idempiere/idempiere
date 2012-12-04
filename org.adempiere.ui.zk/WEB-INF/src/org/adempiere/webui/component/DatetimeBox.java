@@ -83,7 +83,7 @@ public class DatetimeBox extends Panel {
 	}
 	
 	@Override
-	public boolean addEventListener(String evtnm, EventListener listener) {
+	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		return dateBox.addEventListener(evtnm, listener) && timeBox.addEventListener(evtnm, listener);
 	}
 

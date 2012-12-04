@@ -78,7 +78,7 @@ public class RunProcess extends TableFixture {
 		MProcess process = null;
 		MProcessPara[] processParams = null;
 		MPInstance pInstance = null;
-		HashMap fmap = new HashMap();
+		HashMap<String,Object> fmap = new HashMap<String,Object>();
 		int recordID = 0;
 		String docAction = null;
 		for (int i = 0; i < rows; i++) {
@@ -249,7 +249,7 @@ public class RunProcess extends TableFixture {
 		}
 	}
 
-	private String setParams(MProcess process, MPInstancePara[] iParams, HashMap fmap) {
+	private String setParams(MProcess process, MPInstancePara[] iParams, HashMap<String,Object> fmap) {
 		// Code brought from 3E_WebServices Process
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		for (int pi = 0; pi < iParams.length; pi++)

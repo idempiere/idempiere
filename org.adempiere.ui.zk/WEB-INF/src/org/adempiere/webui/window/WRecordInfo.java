@@ -70,7 +70,7 @@ import org.zkoss.zul.Listheader;
  * Zk Port
  * @author Low Heng Sin
  */
-public class WRecordInfo extends Window implements EventListener
+public class WRecordInfo extends Window implements EventListener<Event>
 {
 	/**
 	 * 

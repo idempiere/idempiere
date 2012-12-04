@@ -80,11 +80,11 @@ import org.zkoss.zul.event.ZulEvents;
  *
  *  @author Sendy Yagambrum
  *
- * Zk Port
+ * Zk Port 
  * @author Elaine
  * @version	Info.java Adempiere Swing UI 3.4.1
  */
-public abstract class InfoPanel extends Window implements EventListener, WTableModelListener, ListModelExt
+public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, ListModelExt<Object>
 {
 
 	/**
@@ -647,7 +647,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	}
 
     private void addDoubleClickListener() {
-		Iterator<?> i = contentPanel.getListenerIterator(Events.ON_DOUBLE_CLICK);
+		Iterator<EventListener<? extends Event>> i = contentPanel.getListenerIterator(Events.ON_DOUBLE_CLICK);
 		while (i.hasNext()) {
 			if (i.next() == this)
 				return;
@@ -1227,7 +1227,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	        this.detach();
     }   //  dispose
 
-	public void sort(Comparator cmpr, boolean ascending) {
+	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		WListItemRenderer.ColumnComparator lsc = (WListItemRenderer.ColumnComparator) cmpr;
 		if (m_useDatabasePaging)
 		{
@@ -1301,7 +1301,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
     }
     
 	@Override
-	public String getSortDirection(Comparator cmpr) {
+	public String getSortDirection(Comparator<Object> cmpr) {
 		return "natural";
 	}
 

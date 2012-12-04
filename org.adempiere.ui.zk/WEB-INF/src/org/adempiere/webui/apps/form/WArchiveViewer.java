@@ -71,7 +71,7 @@ import org.zkoss.zul.Iframe;
  * @date	September 28, 2007
 */
 
-public class WArchiveViewer extends Archive implements IFormController, EventListener
+public class WArchiveViewer extends Archive implements IFormController, EventListener<Event>
 {
 	private CustomForm form = new CustomForm();	
 	

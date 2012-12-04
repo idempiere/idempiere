@@ -130,7 +130,7 @@ public class CreateRecord extends TableFixture {
 						// column does not exist in dictionary - anyways try custom column in case it exists in table
 						gpo.set_CustomColumnReturningBoolean(columnName, cell_value);
 					} else {
-						Class columnClass = poinfo.getColumnClass(idxcol);
+						Class<?> columnClass = poinfo.getColumnClass(idxcol);
 						String value_evaluated = Util.evaluate(ctx, windowNo, cell_value, getCell(i, 1));
 						// set value according to class
 						Object value = null;

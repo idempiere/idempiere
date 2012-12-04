@@ -75,7 +75,7 @@ import org.zkoss.zul.Filedownload;
  *  Contributors:
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank 
 */
-public class WPayPrint extends PayPrint implements IFormController, EventListener, ValueChangeListener
+public class WPayPrint extends PayPrint implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private CustomForm form = new CustomForm();
 

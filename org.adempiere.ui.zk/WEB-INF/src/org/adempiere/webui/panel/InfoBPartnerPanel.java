@@ -40,6 +40,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
@@ -61,7 +62,7 @@ import org.zkoss.zul.Vbox;
 */
 
 
-public class InfoBPartnerPanel extends InfoPanel implements EventListener, WTableModelListener
+public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>, WTableModelListener
 {
 	/**
 	 * 

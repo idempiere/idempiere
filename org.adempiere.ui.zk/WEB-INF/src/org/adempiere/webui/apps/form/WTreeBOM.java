@@ -66,12 +66,13 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.TreeNode;
 import org.zkoss.zul.Treecol;
 import org.zkoss.zul.Treecols;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.West;
 
-public class WTreeBOM extends TreeBOM implements IFormController, EventListener {
+public class WTreeBOM extends TreeBOM implements IFormController, EventListener<Event> {
 	
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK, Events.ON_SELECT, Events.ON_SELECTION, Events.ON_DOUBLE_CLICK};
 	private int         	m_WindowNo = 0;
@@ -323,9 +324,9 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener 
 		line.add((BigDecimal) (new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());  //  4 QtyBOM
 
 		// dummy root node, as first node is not displayed in tree  
-		mySimpleTreeNode parent = new mySimpleTreeNode("Root",new ArrayList<Object>());
+		mySimpleTreeNode parent = new mySimpleTreeNode("Root",new ArrayList<TreeNode<Object>>());
 		//m_root = parent;
-		m_root = new mySimpleTreeNode((Vector<Object>)line,new ArrayList<Object>());
+		m_root = new mySimpleTreeNode((Vector<Object>)line,new ArrayList<TreeNode<Object>>());
 		parent.getChildren().add(m_root);
 
 		dataBOM.clear();
@@ -445,7 +446,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener 
 		line.add(uom); //  3 C_UOM_ID
 		line.add((BigDecimal) ((bomline.getBOMQty()!=null) ? bomline.getBOMQty() : new BigDecimal(0)).setScale(4, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());  //  4 QtyBOM
 
-		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<Object>());
+		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<TreeNode<Object>>());
 		parent.getChildren().add(child);
 		
 		if(m_selected_id == bomline.getM_Product_ID() || getM_Product_ID() == bomline.getM_Product_ID())		
@@ -476,7 +477,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener 
 		if(m_selected_id == bom.getM_ProductBOM_ID() || getM_Product_ID() == bom.getM_ProductBOM_ID())		
 			dataBOM.add(line);
 
-		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<Object>()); 
+		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<TreeNode<Object>>()); 
 		parent.getChildren().add(child);
 
 		if(reload)  return;
@@ -536,10 +537,10 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener 
  *  - Override toString method for display
  *  
  */
-class mySimpleTreeNode extends DefaultTreeNode
+class mySimpleTreeNode extends DefaultTreeNode<Object>
 {
 
-	public mySimpleTreeNode(Object data, List<Object> children) {
+	public mySimpleTreeNode(Object data, List<TreeNode<Object>> children) {
 		
 		super(data, children);
 		

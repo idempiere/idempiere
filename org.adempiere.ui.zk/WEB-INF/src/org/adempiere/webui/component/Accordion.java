@@ -32,7 +32,7 @@ import org.zkoss.zul.Vbox;
  * @author hengsin
  *
  */
-public class Accordion extends Borderlayout implements EventListener {
+public class Accordion extends Borderlayout implements EventListener<Event> {
 	
 	private static final long serialVersionUID = 5898232602746332810L;
 	

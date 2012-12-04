@@ -154,7 +154,7 @@ public class PrintDataGroup
 	public char[] getFunctions(String columnName)
 	{
 		ArrayList<String> list = new ArrayList<String>();	//	the final function List
-		Iterator it = m_groupFunction.keySet().iterator();
+		Iterator<String> it = m_groupFunction.keySet().iterator();
 		while(it.hasNext())
 		{
 			String group_function = (String)it.next();	//	=TOTAL=~LoadSeq
@@ -280,7 +280,7 @@ public class PrintDataGroup
 		}
 		if (withData)
 		{
-			Iterator it = m_groupMap.keySet().iterator();
+			Iterator<String> it = m_groupMap.keySet().iterator();
 			while(it.hasNext())
 			{
 				Object key = it.next();
@@ -297,7 +297,7 @@ public class PrintDataGroup
 		}
 		if (withData)
 		{
-			Iterator it = m_groupFunction.keySet().iterator();
+			Iterator<String> it = m_groupFunction.keySet().iterator();
 			while(it.hasNext())
 			{
 				Object key = it.next();

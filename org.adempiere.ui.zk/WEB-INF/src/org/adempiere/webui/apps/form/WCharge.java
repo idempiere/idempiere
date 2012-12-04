@@ -66,7 +66,7 @@ import org.zkoss.zul.Separator;
  * @author Andrew Kimball
  *
  */
-public class WCharge extends Charge implements IFormController, EventListener
+public class WCharge extends Charge implements IFormController, EventListener<Event>
 {
     /**
 	 *

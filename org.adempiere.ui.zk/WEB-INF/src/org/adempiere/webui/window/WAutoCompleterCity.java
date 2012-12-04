@@ -37,7 +37,7 @@ import org.zkoss.zul.Timer;
  * @author Cristina Ghita - www.arhipac.ro
  *
  */
-public class WAutoCompleterCity extends AutoComplete implements EventListener
+public class WAutoCompleterCity extends AutoComplete implements EventListener<Event>
 {
 	/**
 	 * 

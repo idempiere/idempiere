@@ -73,7 +73,7 @@ import org.zkoss.zul.West;
  * @author Carlos Ruiz
  *
  */
-public class WSetupWizard extends SetupWizard implements IFormController, EventListener
+public class WSetupWizard extends SetupWizard implements IFormController, EventListener<Event>
 {
 	private CustomForm form = new CustomForm();	
 	

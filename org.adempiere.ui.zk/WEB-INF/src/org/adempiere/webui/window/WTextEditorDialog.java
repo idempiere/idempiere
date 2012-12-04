@@ -35,7 +35,7 @@ import org.zkoss.zul.Separator;
  * @author Low Heng Sin
  *
  */
-public class WTextEditorDialog extends Window implements EventListener{
+public class WTextEditorDialog extends Window implements EventListener<Event>{
 	
 	/**
 	 * 

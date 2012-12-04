@@ -281,7 +281,7 @@ public final class ImpFormatRow
 			{
 				if (methodStart != -1)      //  no class
 				{
-					Class cClass = Class.forName(callout.substring(0,methodStart));
+					Class<?> cClass = Class.forName(callout.substring(0,methodStart));
 					m_callout = (Callout)cClass.newInstance();
 					m_method = callout.substring(methodStart+1);
 				}

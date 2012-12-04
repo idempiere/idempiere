@@ -422,7 +422,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			winExportFile.appendChild(vb);
 			vb.appendChild(hb);
 			vb.appendChild(confirmPanel);
-			EventListener exportListener= new EventListener()
+			EventListener<Event> exportListener= new EventListener<Event>()
 			{
 				public void onEvent(Event event) throws Exception {
 					if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))

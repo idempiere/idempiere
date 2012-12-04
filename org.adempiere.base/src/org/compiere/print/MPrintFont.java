@@ -176,8 +176,8 @@ public class MPrintFont extends X_AD_PrintFont
 		System.out.println("Style=" + font.getStyle());
 		System.out.println("Size=" + font.getSize());
 		System.out.println("Attributes:");
-		Map map = font.getAttributes();
-		Iterator keys = map.keySet().iterator();
+		Map<?,?> map = font.getAttributes();
+		Iterator<?> keys = map.keySet().iterator();
 		while (keys.hasNext())
 		{
 			Object key = keys.next();

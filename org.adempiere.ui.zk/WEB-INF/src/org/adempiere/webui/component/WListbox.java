@@ -76,7 +76,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	/** Layout set in prepareTable and used in loadTable.    */
 	private ColumnInfo[] m_layout = null;
 	/** column class types (e.g. Boolean) */
-	private ArrayList<Class> m_modelHeaderClass = new ArrayList<Class>();
+	private ArrayList<Class<?>> m_modelHeaderClass = new ArrayList<Class<?>>();
 	/** Color Column Index of Model.     */
 	private int m_colorColumnIndex = -1;
 	/** Color Column compare data.       */
@@ -136,7 +136,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	    return;
 	}
 
-    public void setModel(ListModel model)
+    public void setModel(ListModel<?> model)
     {
         super.setModel(model);
         if (model instanceof ListModelTable)
@@ -451,7 +451,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 *
 	 * @see #setColumnClass(int, Class, boolean)
 	 */
-	public void setColumnClass (int index, Class classType, boolean readOnly, String header)
+	public void setColumnClass (int index, Class<?> classType, boolean readOnly, String header)
 	{
 		WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
 
@@ -481,7 +481,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      *
      * @see #setColumnClass(int, Class, boolean, String)
      */
-    public void setColumnClass (int index, Class classType, boolean readOnly)
+    public void setColumnClass (int index, Class<?> classType, boolean readOnly)
     {
         setColumnReadOnly(index, readOnly);
 
@@ -504,7 +504,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * @see #setColumnClass(int, Class, boolean)
 	 * @see #addColumn(String)
 	 */
-	public void addColumn(Class classType, boolean readOnly, String header)
+	public void addColumn(Class<?> classType, boolean readOnly, String header)
 	{
 		m_modelHeaderClass.add(classType);
 
@@ -541,7 +541,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		Object data = null;
 		int rsColIndex = 0; // index into result set
 		int rsColOffset = 1;  //  result set columns start with 1
-		Class columnClass; // class of the column
+		Class<?> columnClass; // class of the column
 
 		if (getLayout() == null)
 		{
@@ -644,7 +644,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * @param columnClass
 	 * @return
 	 */
-	private boolean isColumnClassMismatch(int col, Class columnClass)
+	private boolean isColumnClassMismatch(int col, Class<?> columnClass)
 	{
 		return !columnClass.equals(m_modelHeaderClass.get(col));
 	}
@@ -660,7 +660,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		int poIndex = 0; // index into the PO array
 		String columnName;
 		Object data;
-		Class columnClass;
+		Class<?> columnClass;
 
 		if (m_layout == null)
 		{

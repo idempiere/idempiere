@@ -137,7 +137,7 @@ public class CustomizeGridViewPanel extends Panel
 		yesList.setVflex(true);
 		noList.setVflex(true);
 
-		EventListener mouseListener = new EventListener()
+		EventListener<Event> mouseListener = new EventListener<Event>()
 		{
 
 			public void onEvent(Event event) throws Exception
@@ -151,7 +151,7 @@ public class CustomizeGridViewPanel extends Panel
 		yesList.addDoubleClickListener(mouseListener);
 		noList.addDoubleClickListener(mouseListener);
 		//
-		EventListener actionListener = new EventListener()
+		EventListener<Event> actionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				migrateValueAcrossLists(event);
@@ -166,13 +166,13 @@ public class CustomizeGridViewPanel extends Panel
 		bRemove.setImage("images/Previous24.png");
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
-		EventListener crossListMouseListener = new DragListener();
+		EventListener<Event> crossListMouseListener = new DragListener();
 		yesList.addOnDropListener(crossListMouseListener);
 		noList.addOnDropListener(crossListMouseListener);
 		yesList.setItemDraggable(true);
 		noList.setItemDraggable(true);
 
-		actionListener = new EventListener()
+		actionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				migrateValueWithinYesList(event);
@@ -185,7 +185,7 @@ public class CustomizeGridViewPanel extends Panel
 		bDown.setImage("images/Detail24.png");
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
 
-		EventListener yesListMouseMotionListener = new EventListener()
+		EventListener<Event> yesListMouseMotionListener = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				if (event instanceof DropEvent)
@@ -274,7 +274,7 @@ public class CustomizeGridViewPanel extends Panel
 		Button bOK = new Button();
 		bOK.setImage("/images/Ok16.png");
 		bOK.setId("Ok");
-		EventListener onClickListener = new EventListener()
+		EventListener<Event> onClickListener = new EventListener<Event>()
 		{
 
 			public void onEvent(Event event) throws Exception
@@ -293,7 +293,7 @@ public class CustomizeGridViewPanel extends Panel
 		Button btn = new Button();
 		btn.setImage("/images/Cancel16.png");
 		btn.setId("Cancel");
-		EventListener onClickCancelListener = new EventListener()
+		EventListener<Event> onClickCancelListener = new EventListener<Event>()
 		{
 
 			public void onEvent(Event event) throws Exception
@@ -398,7 +398,7 @@ public class CustomizeGridViewPanel extends Panel
 		SimpleListModel lmFrom = (source == bAdd || source == noList) ?
 				noModel : yesModel;
 		SimpleListModel lmTo = (lmFrom == yesModel) ? noModel : yesModel;
-		Set selectedItems = listFrom.getSelectedItems();
+		Set<?> selectedItems = listFrom.getSelectedItems();
 		List<ListElement> selObjects = new ArrayList<ListElement>();
 		for (Object obj : selectedItems) {
 			ListItem listItem = (ListItem) obj;
@@ -652,7 +652,7 @@ public class CustomizeGridViewPanel extends Panel
 	 * @author eslatis
 	 *
 	 */
-	private class DragListener implements EventListener
+	private class DragListener implements EventListener<Event>
 	{
 
 		/**

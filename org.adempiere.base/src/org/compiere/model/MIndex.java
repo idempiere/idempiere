@@ -115,7 +115,7 @@ public class MIndex extends X_K_Index
 	 * @return Hashtable with String
 	 *  
 	 */
-	public static Hashtable indexStringBuffer(StringBuffer thisText)
+	public static Hashtable<String,String> indexStringBuffer(StringBuffer thisText)
 	{
 		return indexString(thisText.toString());
 	}
@@ -179,8 +179,8 @@ public class MIndex extends X_K_Index
 		int tableID, int recordID, int CMWebProjectID, Timestamp sourceUpdated) 
 	{
 		if (thisText!=null) {
-			Hashtable keyHash = indexString(thisText);
-	        for (Enumeration e=keyHash.keys(); e.hasMoreElements();) {
+			Hashtable<String,String> keyHash = indexString(thisText);
+	        for (Enumeration<?> e=keyHash.keys(); e.hasMoreElements();) {
 	            String name = (String)e.nextElement();
 	            String value = (String)keyHash.get(name);
 	            MIndex thisIndex = new MIndex(ctx, 0, trxName);

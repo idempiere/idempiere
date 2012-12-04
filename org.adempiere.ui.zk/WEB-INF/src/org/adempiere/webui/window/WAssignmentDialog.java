@@ -67,7 +67,7 @@ import org.zkoss.zul.Timebox;
  *  Zk Port
  *  @author Low Heng Sin
  */
-public class WAssignmentDialog extends Window implements EventListener
+public class WAssignmentDialog extends Window implements EventListener<Event>
 {
 	/**
 	 * 

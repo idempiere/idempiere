@@ -141,7 +141,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         treeNodeItemMap.put(key, treeItem);
     }
 
-    private void addTreeItem(DefaultTreeNode node) {
+    private void addTreeItem(DefaultTreeNode<?> node) {
     	Object data = node.getData();
     	if (data instanceof MTreeNode) {
     		MTreeNode mNode = (MTreeNode) data;
@@ -173,7 +173,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	    	});
 		} else {
 			TreeUtils.traverse(tree.getModel(), new TreeNodeAction() {
-				public void run(DefaultTreeNode treeNode) {
+				public void run(DefaultTreeNode<?> treeNode) {
 					addTreeItem(treeNode);
 				}
 	    	});
@@ -201,7 +201,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         	}
         	else if (value instanceof DefaultTreeNode)
         	{
-        		DefaultTreeNode sNode = (DefaultTreeNode) value;
+        		DefaultTreeNode<?> sNode = (DefaultTreeNode<?>) value;
         		MTreeNode mNode = (MTreeNode) sNode.getData();
         		treeValues[i] = mNode.getName();
         		treeDescription[i] = mNode.getDescription();
@@ -279,7 +279,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
             } else if (node instanceof Treeitem) {
 	            treeItem = (Treeitem) node;
             } else {
-            	DefaultTreeNode sNode = (DefaultTreeNode) node;
+            	DefaultTreeNode<?> sNode = (DefaultTreeNode<?>) node;
             	int[] path = tree.getModel().getPath(sNode);
     			treeItem = tree.renderItemByPath(path);
     			tree.setSelectedItem(treeItem);

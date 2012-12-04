@@ -891,7 +891,7 @@ public class RequestEMailProcessor extends SvrProcess
 		
 		//	All
 		printOut("ALL HEADERs:");
-		Enumeration en = m.getAllHeaders();
+		Enumeration<?> en = m.getAllHeaders();
 		while (en.hasMoreElements())
 		{
 			Header hdr = (Header)en.nextElement();

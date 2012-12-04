@@ -46,7 +46,7 @@ import org.zkoss.zul.Toolbarbutton;
  *  @author <a href="mailto:elaine.tan@idalica.com">Elaine</a>
  *  @date December 9, 2008
  */
-public class WRecordAccessDialog extends Window implements EventListener 
+public class WRecordAccessDialog extends Window implements EventListener<Event> 
 {
 	/**
 	 * 

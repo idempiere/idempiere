@@ -153,7 +153,7 @@ public class AdempiereLookAndFeel extends com.jgoodies.looks.plastic.Plastic3DLo
 		table.put("ComboBox.listBackground", c);
 		
 		// globalqss
-		Class lf = com.jgoodies.looks.plastic.PlasticLookAndFeel.class;
+		Class<PlasticLookAndFeel> lf = com.jgoodies.looks.plastic.PlasticLookAndFeel.class;
 		table.put("Tree.openIcon", makeIcon(lf, "icons/TreeOpen.gif"));
 		table.put("Tree.closedIcon", makeIcon(lf, "icons/TreeClosed.gif"));
 		table.put("Tree.leafIcon", makeIcon(lf, "icons/TreeLeaf.gif"));

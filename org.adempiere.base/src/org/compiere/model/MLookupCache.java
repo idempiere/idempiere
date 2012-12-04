@@ -36,7 +36,7 @@ public class MLookupCache
 	/** Static Logger					*/
 	private static CLogger 		s_log = CLogger.getCLogger(MLookupCache.class);
 	/** Static Lookup data with MLookupInfo -> HashMap  */
-	private static CCache<String,HashMap> s_loadedLookups = new CCache<String,HashMap>(null, "MLookupCache", 50, false);
+	private static CCache<String,HashMap<Object,Object>> s_loadedLookups = new CCache<String,HashMap<Object,Object>>(null, "MLookupCache", 50, false);
 	
 	/**
 	 *  MLookup Loader starts loading - ignore for now
@@ -53,7 +53,7 @@ public class MLookupCache
 	 *  @param info
 	 *  @param lookup
 	 */
-	protected static void loadEnd (MLookupInfo info, HashMap lookup)
+	protected static void loadEnd (MLookupInfo info, HashMap<Object,Object> lookup)
 	{
 		if (info.IsValidated && lookup.size() > 0)
 			s_loadedLookups.put(getKey(info), lookup);
@@ -92,7 +92,7 @@ public class MLookupCache
 	protected static boolean loadFromCache (MLookupInfo info, HashMap<Object,Object> lookupTarget)
 	{
 		String key = getKey(info);
-		HashMap cache = (HashMap)s_loadedLookups.get(key);
+		HashMap<Object,Object> cache = (HashMap<Object,Object>)s_loadedLookups.get(key);
 		if (cache == null)
 			return false;
 		//  Nothing cached
@@ -107,7 +107,7 @@ public class MLookupCache
 
 		//  copy cache
 		//  we can use iterator, as the lookup loading is complete (i.e. no additional entries)
-		Iterator iterator = cache.keySet().iterator();
+		Iterator<Object> iterator = cache.keySet().iterator();
 		while (iterator.hasNext())
 		{
 			Object cacheKey = iterator.next();
@@ -129,7 +129,7 @@ public class MLookupCache
 		int startNo = s_loadedLookups.size();
 		//  find keys of Lookups to delete
 		ArrayList<String> toDelete = new ArrayList<String>();
-		Iterator iterator = s_loadedLookups.keySet().iterator();
+		Iterator<String> iterator = s_loadedLookups.keySet().iterator();
 		while (iterator.hasNext())
 		{
 			String info = (String)iterator.next();

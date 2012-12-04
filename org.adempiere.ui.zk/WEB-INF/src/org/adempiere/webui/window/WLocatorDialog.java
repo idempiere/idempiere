@@ -57,7 +57,7 @@ import org.zkoss.zul.Vbox;
  * @date    Jul 24, 2007
  */
 
-public class WLocatorDialog extends Window implements EventListener 
+public class WLocatorDialog extends Window implements EventListener<Event> 
 {
 	/**
 	 * 

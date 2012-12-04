@@ -35,7 +35,7 @@ import java.util.Comparator;
  *  @author Jorg Janke
  *  @version  $Id: MSort.java,v 1.3 2006/10/06 00:43:09 jjanke Exp $
  */
-public final class MSort implements Comparator, Serializable
+public final class MSort implements Comparator<Object>, Serializable
 {
 	/**
 	 * 

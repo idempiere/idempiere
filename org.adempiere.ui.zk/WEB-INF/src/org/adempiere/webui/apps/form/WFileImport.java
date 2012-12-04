@@ -71,7 +71,7 @@ import org.zkoss.zul.South;
  *  
  */
 
-public class WFileImport extends ADForm implements EventListener
+public class WFileImport extends ADForm implements EventListener<Event>
 {
 	/**
 	 * 

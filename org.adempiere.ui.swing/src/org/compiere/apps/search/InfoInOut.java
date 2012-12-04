@@ -109,13 +109,13 @@ public class InfoInOut extends Info
 	}   //  InfoInOut
 
 	/**  String Array of Column Info    */
-	private Info_Column[] m_generalLayout;
+	//private Info_Column[] m_generalLayout;
 	/** list of query columns           */
-	private ArrayList 	m_queryColumns = new ArrayList();
+	//private ArrayList 	m_queryColumns = new ArrayList();
 	/** Table Name              */
-	private String      m_tableName;
+	//private String      m_tableName;
 	/** Key Column Name         */
-	private String      m_keyColumn;
+	//private String      m_keyColumn;
 
 	//  Static Info
 	private CLabel lDocumentNo = new CLabel(Msg.translate(Env.getCtx(), "DocumentNo"));

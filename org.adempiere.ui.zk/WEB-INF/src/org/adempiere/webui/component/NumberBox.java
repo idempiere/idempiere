@@ -397,7 +397,7 @@ public class NumberBox extends Div
 	}
 	
 	@Override
-	public boolean addEventListener(String evtnm, EventListener listener)
+	public boolean addEventListener(String evtnm, EventListener<?> listener)
 	{
 	     if(Events.ON_CLICK.equals(evtnm))
 	     {

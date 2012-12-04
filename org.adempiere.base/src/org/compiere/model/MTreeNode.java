@@ -436,7 +436,7 @@ public final class MTreeNode extends DefaultMutableTreeNode
 		if (ID == m_lastID && m_lastNode != null)
 			return m_lastNode;
 		//
-		Enumeration en = preorderEnumeration();
+		Enumeration<?> en = preorderEnumeration();
 		while (en.hasMoreElements())
 		{
 			MTreeNode nd = (MTreeNode)en.nextElement();
