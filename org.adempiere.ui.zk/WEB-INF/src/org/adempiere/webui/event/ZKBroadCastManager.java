@@ -14,20 +14,17 @@
 
 package org.adempiere.webui.event;
 
-import org.adempiere.base.event.EventManager;
-import org.adempiere.base.event.IEventTopics;
 import org.compiere.util.WebUtil;
 import org.idempiere.broadcast.BroadCastMsg;
 import org.idempiere.broadcast.BroadCastUtil;
 import org.idempiere.broadcast.BroadcastMsgUtil;
 import org.idempiere.distributed.ITopicSubscriber;
-import org.osgi.service.event.EventHandler;
 /**
  * Class Manages Broadcast Messages across webui cluster
  * @author Deepak Pansheriya
  *
  */
-public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>,EventHandler{
+public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>{
 
 	private static ZKBroadCastManager broadCastMgr = null;
 	
@@ -42,7 +39,6 @@ public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>,EventH
 	}
 	
 	private ZKBroadCastManager(){
-		EventManager.getInstance().register(IEventTopics.BROADCAST_MESSAGE, this);
 		BroadCastUtil.subscribe(this);
 	}
 	
@@ -52,41 +48,19 @@ public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>,EventH
 	 */
 	@Override
 	public void onMessage(BroadCastMsg message) {
-		
-		if(!WebUtil.getServerName().equalsIgnoreCase(message.getSrc())){
-			switch(message.getEventId()){
-			case BroadCastUtil.EVENT_BROADCAST_MESSAGE:
-				message.setFromCluster(true);
-				BroadcastMsgUtil.pushToQueue(message);
-				break;
-			case BroadCastUtil.EVENT_SESSION_TIMEOUT:
-				message.setFromCluster(true);
-				BroadcastMsgUtil.pushToQueue(message);
-				break;
-			case BroadCastUtil.EVENT_SESSION_ONNODE_TIMEOUT:
-				if(WebUtil.getServerName().equalsIgnoreCase(message.getTarget())){
-					message.setFromCluster(true);
-					BroadcastMsgUtil.pushToQueue(message);
-				}
-				break;
-			}
-		}
-	}
 
-	/**
-	 * OSGI Event Handler
-	 */
-	@Override
-	public void handleEvent(org.osgi.service.event.Event event) {
-		BroadCastMsg msg = (BroadCastMsg) event
-				.getProperty(EventManager.EVENT_DATA);
-		// Avoid loop
-		if (msg.isFromCluster())
-			return;
-		if (msg.getEventId() == BroadCastUtil.EVENT_BROADCAST_MESSAGE) {
-			msg.setSrc(WebUtil.getServerName());
-			msg.setEventId(BroadCastUtil.EVENT_BROADCAST_MESSAGE);
-			BroadCastUtil.publish(msg);
+		switch (message.getEventId()) {
+		case BroadCastUtil.EVENT_BROADCAST_MESSAGE:
+			BroadcastMsgUtil.pushToQueue(message, true);
+			break;
+		case BroadCastUtil.EVENT_SESSION_TIMEOUT:
+			BroadcastMsgUtil.pushToQueue(message, true);
+			break;
+		case BroadCastUtil.EVENT_SESSION_ONNODE_TIMEOUT:
+			if (WebUtil.getServerName().equalsIgnoreCase(message.getTarget())) {
+				BroadcastMsgUtil.pushToQueue(message, true);
+			}
+			break;
 		}
 	}
 }

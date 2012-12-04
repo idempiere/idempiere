@@ -49,13 +49,15 @@ public class BroadCastUtil {
 		}
 	}
 	
-	public static void publish(BroadCastMsg msg){
+	public static boolean publish(BroadCastMsg msg){
 		
 		IServiceHolder<IMessageService> holder = Service.locator().locate(IMessageService.class);
 		IMessageService service = holder.getService();
 		if (service != null) {
 			ITopic<BroadCastMsg> topic= service.getTopic(TOPIC_BROADCAST_MESSAGE);
 			topic.publish(msg);
+			return true;
 		}
+		return false;
 	}
 }
