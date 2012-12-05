@@ -129,8 +129,10 @@ public class MSchedule extends X_AD_Schedule
 							retVal = inetAddress.getHostName();
 						}
 						if (ipOnly.equals(retVal)) {
-							log.fine("Allowed here - IP=" + retVal+ " match");
+							log.info("Allowed here - IP=" + retVal+ " match");
 							return true;
+						} else {
+							log.info("Not Allowed here - IP=" + retVal+ " does not match " + ipOnly);
 						}
 					}
 				}

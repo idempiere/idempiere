@@ -198,7 +198,7 @@ public class MStore extends X_W_Store
 	 */
 	public static MStore[] getActive()
 	{
-		s_log.info("");
+		s_log.fine("");
 		try
 		{
 			Collection<?> cc = s_cache.values();
