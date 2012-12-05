@@ -322,9 +322,9 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		Treeitem ti = centerTree.getSelectedItem();
 		DefaultTreeNode<?> stn = (DefaultTreeNode<?>) ti.getValue();
 		MTreeNode tn = (MTreeNode)stn.getData();
-		log.info(tn.toString());
 		if (tn == null)
 			return;
+		log.info(tn.toString());
 		ListModel<Object> model = centerList.getModel();
 		int size = model.getSize();
 		int index = -1;

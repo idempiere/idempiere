@@ -197,12 +197,12 @@ public class Doc_Production extends Doc
 						fl = fact.createLine(line, 
 								account, 
 								as.getC_Currency_ID(), variance.negate()); 
-						fl.setQty(Env.ZERO);
 						if (fl == null) 
 						{ 
 							p_Error = "Couldn't post variance " + line.getLine() + " - " + line; 
 							return null; 
 						}
+						fl.setQty(Env.ZERO);
 					}
 					// costs = bomCost.negate();
 				}
