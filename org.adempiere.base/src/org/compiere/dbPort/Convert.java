@@ -477,51 +477,54 @@ public abstract class Convert
 		}
 	}
 
+
+	private static String [] dontLogTables = new String[] {
+			"AD_ACCESSLOG",
+			"AD_ALERTPROCESSORLOG",
+			"AD_CHANGELOG",
+			"AD_DOCUMENT_ACTION_ACCESS",
+			"AD_FORM_ACCESS",
+			"AD_ISSUE",
+			"AD_LDAPPROCESSORLOG",
+			"AD_PACKAGE_IMP",
+			"AD_PACKAGE_IMP_BACKUP",
+			"AD_PACKAGE_IMP_DETAIL",
+			"AD_PACKAGE_IMP_INST",
+			"AD_PACKAGE_IMP_PROC",
+			"AD_PINSTANCE",
+			"AD_PINSTANCE_LOG",
+			"AD_PINSTANCE_PARA",
+			"AD_PROCESS_ACCESS",
+			"AD_RECENTITEM",
+			"AD_REPLICATION_LOG",
+			"AD_SCHEDULERLOG",
+			"AD_SESSION",
+			"AD_WINDOW_ACCESS",
+			"AD_WORKFLOW_ACCESS",
+			"AD_WORKFLOWPROCESSORLOG",
+			"CM_WEBACCESSLOG",
+			"C_ACCTPROCESSORLOG",
+			"K_INDEXLOG",
+			"R_REQUESTPROCESSORLOG",
+			"T_AGING",
+			"T_ALTER_COLUMN",
+			"T_DISTRIBUTIONRUNDETAIL",
+			"T_INVENTORYVALUE",
+			"T_INVOICEGL",
+			"T_REPLENISH",
+			"T_REPORT",
+			"T_REPORTSTATEMENT",
+			"T_SELECTION",
+			"T_SELECTION2",
+			"T_SPOOL",
+			"T_TRANSACTION",
+			"T_TRIALBALANCE"
+		};
+	
 	private static boolean dontLog(String statement) {
 		// Do not log *Access records - teo_Sarca BF [ 2782095 ]
 		// IDEMPIERE-323 Migration script log AD_Document_Action_Access (nmicoud / CarlosRuiz_globalqss)
-		String [] exceptionTables = new String[] {
-				"AD_ACCESSLOG",
-				"AD_ALERTPROCESSORLOG",
-				"AD_CHANGELOG",
-				"AD_DOCUMENT_ACTION_ACCESS",
-				"AD_FORM_ACCESS",
-				"AD_ISSUE",
-				"AD_LDAPPROCESSORLOG",
-				"AD_PACKAGE_IMP",
-				"AD_PACKAGE_IMP_BACKUP",
-				"AD_PACKAGE_IMP_DETAIL",
-				"AD_PACKAGE_IMP_INST",
-				"AD_PACKAGE_IMP_PROC",
-				"AD_PINSTANCE",
-				"AD_PINSTANCE_LOG",
-				"AD_PINSTANCE_PARA",
-				"AD_PROCESS_ACCESS",
-				"AD_RECENTITEM",
-				"AD_REPLICATION_LOG",
-				"AD_SCHEDULERLOG",
-				"AD_SESSION",
-				"AD_WINDOW_ACCESS",
-				"AD_WORKFLOW_ACCESS",
-				"AD_WORKFLOWPROCESSORLOG",
-				"CM_WEBACCESSLOG",
-				"C_ACCTPROCESSORLOG",
-				"K_INDEXLOG",
-				"R_REQUESTPROCESSORLOG",
-				"T_AGING",
-				"T_ALTER_COLUMN",
-				"T_DISTRIBUTIONRUNDETAIL",
-				"T_INVENTORYVALUE",
-				"T_INVOICEGL",
-				"T_REPLENISH",
-				"T_REPORT",
-				"T_REPORTSTATEMENT",
-				"T_SELECTION",
-				"T_SELECTION2",
-				"T_SPOOL",
-				"T_TRANSACTION",
-				"T_TRIALBALANCE"
-			};
+
 		String uppStmt = statement.toUpperCase().trim();
 		// don't log selects
 		if (uppStmt.startsWith("SELECT "))
@@ -532,16 +535,16 @@ public abstract class Convert
 		// Don't log DELETE FROM Some_Table WHERE AD_Table_ID=? AND Record_ID=?
 		if (uppStmt.startsWith("DELETE FROM ") && uppStmt.endsWith(" WHERE AD_TABLE_ID=? AND RECORD_ID=?"))
 			return true;
-		for (int i = 0; i < exceptionTables.length; i++) {
-			if (uppStmt.startsWith("INSERT INTO " + exceptionTables[i] + " "))
+		for (int i = 0; i < dontLogTables.length; i++) {
+			if (uppStmt.startsWith("INSERT INTO " + dontLogTables[i] + " "))
 				return true;
-			if (uppStmt.startsWith("DELETE FROM " + exceptionTables[i] + " "))
+			if (uppStmt.startsWith("DELETE FROM " + dontLogTables[i] + " "))
 				return true;
-			if (uppStmt.startsWith("DELETE " + exceptionTables[i] + " "))
+			if (uppStmt.startsWith("DELETE " + dontLogTables[i] + " "))
 				return true;
-			if (uppStmt.startsWith("UPDATE " + exceptionTables[i] + " "))
+			if (uppStmt.startsWith("UPDATE " + dontLogTables[i] + " "))
 				return true;
-			if (uppStmt.startsWith("INSERT INTO " + exceptionTables[i] + "("))
+			if (uppStmt.startsWith("INSERT INTO " + dontLogTables[i] + "("))
 				return true;
 		}
 		

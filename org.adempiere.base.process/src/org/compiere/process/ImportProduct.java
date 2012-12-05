@@ -75,6 +75,23 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			m_DateValue = new Timestamp (System.currentTimeMillis());
 	}	//	prepare
 
+	//	Field to copy From Product if Import does not have value
+	private String[] strFieldsToCopy = new String[] {
+			"Value",
+			"Name",
+			"Description",
+			"DocumentNote",
+			"Help",
+			"UPC",
+			"SKU",
+			"Classification",
+			"ProductType",
+			"Discontinued",
+			"DiscontinuedBy",
+			"DiscontinuedAt",
+			"ImageURL",
+			"DescriptionURL"
+		};
 
 	/**
 	 *  Perform process.
@@ -183,20 +200,17 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 
 		
 		//	Copy From Product if Import does not have value
-		String[] strFields = new String[] {"Value","Name","Description","DocumentNote","Help",
-			"UPC","SKU","Classification","ProductType",
-			"Discontinued","DiscontinuedBy","DiscontinuedAt","ImageURL","DescriptionURL"};
-		for (int i = 0; i < strFields.length; i++)
+		for (int i = 0; i < strFieldsToCopy.length; i++)
 		{
 			sql = new StringBuilder ("UPDATE I_Product i ")
-				.append("SET ").append(strFields[i]).append(" = (SELECT ").append(strFields[i]).append(" FROM M_Product p")
+				.append("SET ").append(strFieldsToCopy[i]).append(" = (SELECT ").append(strFieldsToCopy[i]).append(" FROM M_Product p")
 				.append(" WHERE i.M_Product_ID=p.M_Product_ID AND i.AD_Client_ID=p.AD_Client_ID) ")
 				.append("WHERE M_Product_ID IS NOT NULL")
-				.append(" AND ").append(strFields[i]).append(" IS NULL")
+				.append(" AND ").append(strFieldsToCopy[i]).append(" IS NULL")
 				.append(" AND I_IsImported='N'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
-				log.fine(strFields[i] + " - default from existing Product=" + no);
+				log.fine(strFieldsToCopy[i] + " - default from existing Product=" + no);
 		}
 		String[] numFields = new String[] {"C_UOM_ID","M_Product_Category_ID",
 			"Volume","Weight","ShelfWidth","ShelfHeight","ShelfDepth","UnitsPerPallet"};
