@@ -234,8 +234,9 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, "process statement: " + sql + " - " + e.toString());
-			result.append("===> ").append(e.toString());
+			String exception = e.toString();
+			log.log(Level.SEVERE, "process statement: " + sql + " - " + exception);
+			result.append("===> ").append(exception);
 		}
 		
 		//	Clean up
