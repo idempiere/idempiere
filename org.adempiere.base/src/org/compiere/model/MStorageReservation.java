@@ -167,7 +167,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 */
 	private static BigDecimal getQty(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, boolean isSOTrx, String trxName) {
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT SUM(Qty) FROM M_StorageReservation sr")
 			.append(" WHERE sr.M_Product_ID=? AND sr.M_Warehouse_ID=?")
 			.append(" AND sr.IsSOTrx=?");

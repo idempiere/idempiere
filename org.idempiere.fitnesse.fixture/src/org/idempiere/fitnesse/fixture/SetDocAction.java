@@ -106,7 +106,7 @@ public class SetDocAction extends TableFixture {
 				
 				DocumentEngine engine = new DocumentEngine ((DocAction) gpo, ((DocAction)gpo).getDocStatus());
 				if (! engine.isValidAction(docAction)) {
-					StringBuffer msg = new StringBuffer("Not a valid action for docStatus=");
+					StringBuilder msg = new StringBuilder("Not a valid action for docStatus=");
 					msg.append(((DocAction)gpo).getDocStatus())
 					   .append(" valid actions are:");
 					for (String s : engine.getActionOptions())

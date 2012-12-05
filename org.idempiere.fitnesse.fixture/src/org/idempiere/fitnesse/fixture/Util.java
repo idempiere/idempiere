@@ -164,7 +164,7 @@ public class Util {
 					}
 				}
 			}
-			StringBuffer randomstr = new StringBuffer();
+			StringBuilder randomstr = new StringBuilder();
 			if (prefix != null && prefix.length() > 0)
 				randomstr.append(prefix);
 			for (int i = 0; i < length; i++) {
@@ -206,7 +206,7 @@ public class Util {
 
 		String token;
 		String inStr = new String(value);
-		StringBuffer outStr = new StringBuffer();
+		StringBuilder outStr = new StringBuilder();
 
 		int i = inStr.indexOf('@');
 		while (i != -1)
