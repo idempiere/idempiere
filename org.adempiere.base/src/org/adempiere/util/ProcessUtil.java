@@ -219,13 +219,16 @@ public final class ProcessUtil {
 		{
 			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessError") + " " + e.getLocalizedMessage(), true);
 			log.log(Level.SEVERE, pi.getClassName(), e);
+			success = false;
 			return false;
 		}
 		finally
 		{
 			if (trx != null && managedTrx)
 			{
-				trx.rollback();
+				if (!success) {
+					trx.rollback();
+				}
 				trx.close();
 				trx = null;
 			}
