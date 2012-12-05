@@ -199,7 +199,7 @@ public final class WebUtil
 		input button = new input("button", text, "  "+text);		
 		button.setID(text);
 		button.setClass("loginbtn");		
-		StringBuffer cmd = new StringBuffer ("window.top.location.replace('");
+		StringBuilder cmd = new StringBuilder ("window.top.location.replace('");
 		cmd.append(WebEnv.getBaseDirectory("index.html"));
 		cmd.append("');");
 		button.setOnClick(cmd.toString());
@@ -276,7 +276,7 @@ public final class WebUtil
 		
 		//	Convert &#000; to character (JSTL input)
 		String inStr = data;
-		StringBuffer outStr = new StringBuffer();
+		StringBuilder outStr = new StringBuilder();
 		int i = inStr.indexOf("&#");
 		while (i != -1)
 		{
@@ -592,7 +592,7 @@ public final class WebUtil
 	 */
 	public static script getClearFrame (String targetFrame)
 	{
-		StringBuffer cmd = new StringBuffer();
+		StringBuilder cmd = new StringBuilder();
 		cmd.append("// <!-- clear frame\n")
 			.append("var d = parent.").append(targetFrame).append(".document;\n")
 			.append("d.open();\n")
@@ -1059,11 +1059,11 @@ public final class WebUtil
 		MStore wStore = wsc.wstore;
 		MMailMsg mailMsg = wStore.getMailMsg(msgType);
 		//
-		StringBuffer subject = new StringBuffer(mailMsg.getSubject());
+		StringBuilder subject = new StringBuilder(mailMsg.getSubject());
 		if (parameter.length > 0 && parameter[0] != null)
 			subject.append(parameter[0]);
 		//
-		StringBuffer message = new StringBuffer();
+		StringBuilder message = new StringBuilder();
 		String hdr = wStore.getEMailFooter();
 		if (hdr != null && hdr.length() > 0)
 			message.append(hdr).append("\n");
@@ -1191,7 +1191,7 @@ public final class WebUtil
 			wu.setEmail (s.trim());
 		}
 		//
-		StringBuffer mandatory = new StringBuffer();
+		StringBuilder mandatory = new StringBuilder();
 		String s = WebUtil.getParameter (request, "Name");
 		if (s != null && s.length() != 0)
 			wu.setName(s.trim());

@@ -238,7 +238,7 @@ public final class VNumber extends JComponent
 			m_text.setPreferredSize(size);
 			m_text.setMinimumSize(size);
 		} else {
-			StringBuffer s = new StringBuffer();
+			StringBuilder s = new StringBuilder();
 			for(int i = 0; i < SIZE; i++) {
 				s.append("0");
 			}

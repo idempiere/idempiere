@@ -82,7 +82,7 @@ public class MPInstanceLog
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer("PPInstance_Log[");
+		StringBuilder sb = new StringBuilder("PPInstance_Log[");
 		sb.append(m_Log_ID);
 		if (m_P_Date != null)
 			sb.append(",Date=").append(m_P_Date);
@@ -103,7 +103,7 @@ public class MPInstanceLog
 	 */
 	public boolean save ()
 	{
-		StringBuffer sql = new StringBuffer("INSERT INTO AD_PInstance_Log "
+		StringBuilder sql = new StringBuilder("INSERT INTO AD_PInstance_Log "
 			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg)"
 			+ " VALUES (");
 		sql.append(m_AD_PInstance_ID).append(",")

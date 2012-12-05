@@ -67,7 +67,7 @@ public abstract class CreateFromRMA extends CreateFrom {
          * 5 Movement Qty
          * 6 ASI
          */
-        StringBuffer sqlStmt = new StringBuffer();
+        StringBuilder sqlStmt = new StringBuilder();
         
         sqlStmt.append("SELECT iol.M_InOutLine_ID, iol.Line, "); 
         sqlStmt.append("CASE WHEN iol.M_Product_ID IS NOT NULL THEN (Select p.Name from M_Product p where p.M_Product_ID = iol.M_Product_ID) END as ProductName, "); 

@@ -79,7 +79,7 @@ public class MProductionLine extends X_M_ProductionLine {
 			log.log(Level.FINE, "Production Line " + getLine() + " does not require stock movement");
 			return "";
 		}
-		StringBuffer errorString = new StringBuffer();
+		StringBuilder errorString = new StringBuilder();
 		
 		MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
 		String asiString = asi.getDescription();

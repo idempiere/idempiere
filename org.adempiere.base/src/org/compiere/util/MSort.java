@@ -171,7 +171,7 @@ public final class MSort implements Comparator<Object>, Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MSort[");
+		StringBuilder sb = new StringBuilder("MSort[");
 		sb.append("Index=").append(index).append(",Data=").append(data);
 		sb.append("]");
 		return sb.toString();

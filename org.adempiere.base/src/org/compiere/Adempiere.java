@@ -175,7 +175,7 @@ public final class Adempiere
 	 */
 	public static String getSum()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(NAME).append(" ").append(MAIN_VERSION).append(SUB_TITLE);
 		return sb.toString();
 	}	//	getSum
@@ -187,7 +187,7 @@ public final class Adempiere
 	 */
 	public static String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(NAME).append(" ")
 			.append(MAIN_VERSION).append("_").append(DATE_VERSION)
 			.append(" -").append(SUB_TITLE)

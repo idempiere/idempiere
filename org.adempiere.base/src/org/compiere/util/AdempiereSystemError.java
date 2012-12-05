@@ -88,7 +88,7 @@ public class AdempiereSystemError extends Exception
 	public String toString ()
 	{
 		super.toString();
-		StringBuffer sb = new StringBuffer ("SystemError: ");
+		StringBuilder sb = new StringBuilder ("SystemError: ");
 		sb.append(getLocalizedMessage());
 		if (m_detail != null)
 			sb.append(" (").append(m_detail).append (")");

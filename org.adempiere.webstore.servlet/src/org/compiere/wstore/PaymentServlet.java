@@ -308,7 +308,7 @@ public class PaymentServlet  extends HttpServlet
 	 */
 	private boolean processParameter (HttpServletRequest request, Properties ctx, MPayment p, WebUser wu)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		p.setTenderType(MPayment.TENDERTYPE_CreditCard);
 		p.setTrxType(MPayment.TRXTYPE_Sales);
 		p.setA_EMail(wu.getEmail());

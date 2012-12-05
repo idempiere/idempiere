@@ -71,7 +71,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	public String getSelectClause (boolean withSum)
 	{
 		String amountType = getPAAmountType();	//	first character
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (withSum)
 			sb.append("SUM(");
 		if (PAAMOUNTTYPE_BalanceExpectedSign.equals(amountType))
@@ -211,7 +211,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	 * @return
 	 */
 	private String getWhereCombination(int PA_Hierarchy_ID) {
-		StringBuffer whcomb = new StringBuffer();
+		StringBuilder whcomb = new StringBuilder();
 		if (getC_ElementValue_ID() > 0) {
 			String whtree = MReportTree.getWhereClause (getCtx(), PA_Hierarchy_ID, MReportColumn.ELEMENTTYPE_Account, getC_ElementValue_ID());
 			if (isIncludeNullsElementValue())

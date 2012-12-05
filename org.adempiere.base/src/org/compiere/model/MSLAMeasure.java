@@ -108,7 +108,7 @@ public class MSLAMeasure extends X_PA_SLA_Measure
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MSLAMeasure[");
+		StringBuilder sb = new StringBuilder ("MSLAMeasure[");
 		sb.append(get_ID()).append("-PA_SLA_Goal_ID=").append(getPA_SLA_Goal_ID())
 			.append(",").append(getDateTrx())
 			.append(",Actual=").append(getMeasureActual())

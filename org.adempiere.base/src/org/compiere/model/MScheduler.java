@@ -284,7 +284,7 @@ public class MScheduler extends X_AD_Scheduler
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MScheduler[");
+		StringBuilder sb = new StringBuilder ("MScheduler[");
 		sb.append (get_ID ()).append ("-").append (getName()).append ("]");
 		return sb.toString ();
 	}	//	toString

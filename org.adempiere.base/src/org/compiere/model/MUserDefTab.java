@@ -74,7 +74,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 
 		MUserDefTab retValue = null;
 
-		StringBuffer sql = new StringBuffer("SELECT * "
+		StringBuilder sql = new StringBuilder("SELECT * "
 				+ " FROM AD_UserDef_Tab " 
 				+ " WHERE AD_UserDef_Win_ID=? AND IsActive='Y' "
 				+ " AND AD_Tab_ID=? ");

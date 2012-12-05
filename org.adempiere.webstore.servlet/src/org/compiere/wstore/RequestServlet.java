@@ -287,7 +287,7 @@ public class RequestServlet extends HttpServlet
 			if (IsConfidential)
 				req.setConfidentialType(MRequest.CONFIDENTIALTYPE_PartnerConfidential);
 			//
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("From:").append(request.getRemoteHost())
 				.append("-").append(request.getRemoteAddr());
 			sb.append(", Request:").append(requestURL).append("-").append(requestRef);

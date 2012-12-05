@@ -157,7 +157,7 @@ public class ProcessInfoUtil
 		}
 		for (int i = 0; i < logs.length; i++)
 		{
-			StringBuffer sql = new StringBuffer ("INSERT INTO AD_PInstance_Log "
+			StringBuilder sql = new StringBuilder ("INSERT INTO AD_PInstance_Log "
 				+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID,Record_ID)"
 				+ " VALUES (");
 			sql.append(pi.getAD_PInstance_ID()).append(",")

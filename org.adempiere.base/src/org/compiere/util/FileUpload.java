@@ -280,7 +280,7 @@ public class FileUpload
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("FileUpload[");
+		StringBuilder sb = new StringBuilder ("FileUpload[");
 		if (m_fileName != null)
 			sb.append(m_fileName);
 		if (m_error != null)

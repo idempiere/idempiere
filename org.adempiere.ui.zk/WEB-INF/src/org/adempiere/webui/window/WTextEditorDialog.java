@@ -174,7 +174,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	
 	private void updateStatus(int newLength) {
 		if (status != null && maxSize > 0) {
-			StringBuffer msg = new StringBuffer();
+			StringBuilder msg = new StringBuilder();
 			msg.append(newLength);
 			if (newLength == maxSize)
 				msg.append(" = ");

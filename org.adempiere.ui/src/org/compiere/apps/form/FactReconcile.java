@@ -74,7 +74,7 @@ public class FactReconcile {
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		
-		StringBuffer sql = new StringBuffer("SELECT abs(fa.amtacctdr-fa.amtacctcr), (fa.amtacctdr-fa.amtacctcr)," // 1-2
+		StringBuilder sql = new StringBuilder("SELECT abs(fa.amtacctdr-fa.amtacctcr), (fa.amtacctdr-fa.amtacctcr)," // 1-2
 				+ " (CASE WHEN (fa.amtacctdr-fa.amtacctcr) < 0 THEN 'CR' ELSE 'DR' END), fa.Fact_Acct_ID, bp.name, DateAcct,"
 				+ " glc.name, p.name, Qty, fa.Description, r.MatchCode, fa.DateTrx, o.value"
 				+ " FROM Fact_Acct fa"
@@ -86,7 +86,7 @@ public class FactReconcile {
 				+ " WHERE fa.AD_Client_ID=?");
 		
 		// role security
-		sql = new StringBuffer( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "fa", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );
+		sql = new StringBuilder( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "fa", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );
 		
 		// Parameter
 		if(m_AD_Org_ID>0)

@@ -485,7 +485,7 @@ public class Viewer extends CFrame
 
 		//	Report Info
 		setTitle(Msg.getMsg(m_ctx, "Report") + ": " + m_reportEngine.getName() + "  " + Env.getHeader(m_ctx, 0));
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		sb.append(m_viewPanel.getPaper().toString(m_ctx))
 			.append(" - ").append(Msg.getMsg(m_ctx, "DataCols")).append("=")
 			.append(m_reportEngine.getColumnCount())
@@ -1285,7 +1285,7 @@ public class Viewer extends CFrame
 		String AD_Language = pp.getValue();
 		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
 		log.config(AD_Language + " - AD_PrintFormat_ID=" + AD_PrintFormat_ID);
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		//	English
 		if (Language.isBaseLanguage (AD_Language))
 		{

@@ -43,7 +43,7 @@ public class ProductNotOnPriceListException extends AdempiereException
 
 	private static final String buildMessage (MProductPricing pp, int documentLineNo)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (documentLineNo > 0)
 		{
 			if (sb.length() > 0)

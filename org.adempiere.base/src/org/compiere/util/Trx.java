@@ -475,7 +475,7 @@ public class Trx
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("Trx[");
+		StringBuilder sb = new StringBuilder("Trx[");
 		sb.append(getTrxName())
 			.append(",Active=").append(isActive())
 			.append("]");

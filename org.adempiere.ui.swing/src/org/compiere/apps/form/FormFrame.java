@@ -361,7 +361,7 @@ public class FormFrame extends CFrame
 	 */
 	private void actionHelp()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (m_Description != null && m_Description.length() > 0)
 			sb.append("<h2>").append(m_Description).append("</h2>");
 		if (m_Help != null && m_Help.length() > 0)

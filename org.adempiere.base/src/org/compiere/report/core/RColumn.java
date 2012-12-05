@@ -334,7 +334,7 @@ public class RColumn
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("RColumn[");
+		StringBuilder sb = new StringBuilder("RColumn[");
 		sb.append(m_colSQL).append("=").append(m_colHeader)
 			.append("]");
 		return sb.toString();

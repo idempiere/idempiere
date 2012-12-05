@@ -231,7 +231,7 @@ public class PO_LOB implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("PO_LOB[");
+		StringBuilder sb = new StringBuilder("PO_LOB[");
 		sb.append(m_tableName).append(".").append(m_columnName)
 			.append(",DisplayType=").append(m_displayType)
 			.append("]");

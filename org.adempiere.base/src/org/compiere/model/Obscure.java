@@ -168,7 +168,7 @@ public class Obscure extends Object
 		//
 		char[] chars = m_clearValue.toCharArray();
 		int length = chars.length;
-		StringBuffer sb = new StringBuffer(length);
+		StringBuilder sb = new StringBuilder(length);
 		for (int i = 0; i < length; i++)
 		{
 			char c = chars[i];

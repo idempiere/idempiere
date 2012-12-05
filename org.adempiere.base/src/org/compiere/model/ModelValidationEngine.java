@@ -800,7 +800,7 @@ public class ModelValidationEngine
 	*/
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("ModelValidationEngine[");
+		StringBuilder sb = new StringBuilder("ModelValidationEngine[");
 		sb.append("Validators=#").append(m_validators.size())
 			.append(", ModelChange=#").append(m_modelChangeListeners.size())
 			.append(", DocValidate=#").append(m_docValidateListeners.size())

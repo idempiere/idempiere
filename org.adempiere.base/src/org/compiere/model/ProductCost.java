@@ -309,7 +309,7 @@ public class ProductCost
 	 */
 	private BigDecimal getPriceList (MAcctSchema as, boolean onlyPOPriceList)
 	{
-		StringBuffer sql = new StringBuffer (
+		StringBuilder sql = new StringBuilder (
 			"SELECT pl.C_Currency_ID, pp.PriceList, pp.PriceStd, pp.PriceLimit "
 			+ "FROM M_PriceList pl, M_PriceList_Version plv, M_ProductPrice pp "
 			+ "WHERE pl.M_PriceList_ID = plv.M_PriceList_ID"
@@ -422,7 +422,7 @@ public class ProductCost
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("ProductCost[");
+		StringBuilder sb = new StringBuilder ("ProductCost[");
 		sb.append ("M_Product_ID=").append(m_M_Product_ID)
 			.append(",M_AttributeSetInstance_ID").append(m_M_AttributeSetInstance_ID)
 			.append (",Qty=").append(m_qty)

@@ -25,7 +25,7 @@ public class AssetStatusChangedException extends AssetException
 
 	private static String buildMsg(String msg)
 	{
-		StringBuffer sb = new StringBuffer("@AssetStatusChanged@");
+		StringBuilder sb = new StringBuilder("@AssetStatusChanged@");
 		if (!Util.isEmpty(msg))
 			sb.append(" ").append(msg);
 		return sb.toString();

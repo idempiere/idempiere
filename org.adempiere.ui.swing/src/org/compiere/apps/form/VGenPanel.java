@@ -262,7 +262,7 @@ public class VGenPanel extends CPanel implements ActionListener, ChangeListener,
 		tabbedPane.setSelectedIndex(1);
 		//
 		ProcessInfoUtil.setLogFromDB(pi);
-		StringBuffer iText = new StringBuffer();
+		StringBuilder iText = new StringBuilder();
 		iText.append("<b>").append(pi.getSummary())
 			.append("</b><br>(")
 			.append(Msg.getMsg(Env.getCtx(), genForm.getTitle()))

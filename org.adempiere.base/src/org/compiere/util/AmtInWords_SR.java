@@ -190,7 +190,7 @@ public class AmtInWords_SR
 	{
 		if (amount == null)
 			return amount;
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		amount = amount.replaceAll (" ", "").replaceAll ("\u00A0", "");
 		char sep = amount.contains (",") ? ',' : '.'; // Try to determine the
 		// separator either

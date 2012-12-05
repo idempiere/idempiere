@@ -355,7 +355,7 @@ public class SetGetUtil
 			return false;
 		}
 
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		for (String f : includeFields)
 		{
 			if (sql.length() > 0)
@@ -547,7 +547,7 @@ public class SetGetUtil
 		String idColumnName = tableName+"_ID";
 		//
 		Collection<Object> params = new ArrayList<Object>();
-		StringBuffer sql = new StringBuffer("SELECT COALESCE(MAX("+lineColumnName+"),0)+10");
+		StringBuilder sql = new StringBuilder("SELECT COALESCE(MAX("+lineColumnName+"),0)+10");
 		sql.append(" FROM ").append(tableName);
 		// Only active records
 		sql.append(" WHERE IsActive=?");

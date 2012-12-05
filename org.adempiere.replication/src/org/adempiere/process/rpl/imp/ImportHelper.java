@@ -611,7 +611,7 @@ public class ImportHelper {
 		int replication_id = 0;
 		Object[] cols 	= new Object[uniqueFormatLines.size()];
 		Object[] params = new Object[uniqueFormatLines.size()];
-		StringBuffer whereClause= new StringBuffer("");
+		StringBuilder whereClause= new StringBuilder("");
 		int col = 0;
 		String formatLines = "";
 		for (MEXPFormatLine uniqueFormatLine : uniqueFormatLines) 

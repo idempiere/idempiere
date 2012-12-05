@@ -543,7 +543,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 
 		//	Create Grid
 		String orderBy = null;
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		where.append("p.IsActive='Y'");
 		if (M_Warehouse_ID != 0)
 		{
@@ -756,7 +756,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 	 */
 	protected String getSQLWhere()
 	{
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 
 		//	Optional PLV
 		int M_PriceList_Version_ID = 0;
@@ -933,7 +933,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			((DefaultTableModel)p_table.getModel()).setColumnCount(0);
 			int M_Warehouse_ID = ((KeyNamePair)pickWarehouse.getSelectedItem()).getKey();
 			//	Create Grid
-			StringBuffer where = new StringBuffer();
+			StringBuilder where = new StringBuilder();
 			where.append("p.IsActive='Y'");
 			if (M_Warehouse_ID != 0)
 				where.append(" AND p.IsSummary='N'");

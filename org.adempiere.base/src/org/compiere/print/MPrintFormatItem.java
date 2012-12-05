@@ -338,7 +338,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MPrintFormatItem[");
+		StringBuilder sb = new StringBuilder("MPrintFormatItem[");
 		sb.append("ID=").append(get_ID())
 			.append(",Name=").append(getName())
 			.append(",Print=").append(getPrintName())

@@ -159,7 +159,7 @@ public abstract class AdempiereServer extends Thread
 	 */
 	public String getStatistics ()
 	{
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		sb.append("Alive=").append(isAlive())
 			.append(", Start=").append(getStart())
 			.append(", WorkCount=").append(getWorkCount())
@@ -178,7 +178,7 @@ public abstract class AdempiereServer extends Thread
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("AdempiereServer[");
+		StringBuilder sb = new StringBuilder ("AdempiereServer[");
 		sb.append(getStatistics()).append ("]");
 		return sb.toString ();
 	}	//	toString

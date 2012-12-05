@@ -63,7 +63,7 @@ public class IDFinder {
 			return id;
 
 		//construct cache key
-		StringBuffer key = new StringBuffer();
+		StringBuilder key = new StringBuilder();
 		key.append(tableName)
 			.append(".")
 			.append(columnName)
@@ -189,7 +189,7 @@ public class IDFinder {
 	public static int findIdByNameAndParentName (String tableName, String name, String tableNameMaster, String nameMaster, int AD_Client_ID, String trxName) {
 		int id = 0;
 		//construct cache key
-		StringBuffer key = new StringBuffer();
+		StringBuilder key = new StringBuilder();
 		key.append(tableName)
 			.append(".Name=")
 			.append(name)
@@ -338,7 +338,7 @@ public class IDFinder {
 		int id = 0;
 
 		//construct cache key
-		StringBuffer key = new StringBuffer();
+		StringBuilder key = new StringBuilder();
 		key.append(tableName)
 			.append(".Name=")
 			.append(name)
@@ -398,7 +398,7 @@ public class IDFinder {
 		int id = 0;
 
 		//construct cache key
-		StringBuffer key = new StringBuffer();
+		StringBuilder key = new StringBuilder();
 		key.append(tableName)
 			.append(".Name=")
 			.append(name);

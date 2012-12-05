@@ -224,7 +224,7 @@ public class MRecordAccess extends X_AD_Record_Access
 	{
 		String in = Msg.getMsg(ctx, "Include");
 		String ex = Msg.getMsg(ctx, "Exclude");
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Msg.translate(ctx, "AD_Table_ID"))
 				.append("=").append(getTableName(ctx)).append(", ")
 			.append(Msg.translate(ctx, "Record_ID"))

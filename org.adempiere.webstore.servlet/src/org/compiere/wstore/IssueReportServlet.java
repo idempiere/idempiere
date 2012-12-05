@@ -134,7 +134,7 @@ public class IssueReportServlet extends HttpServlet
 		}
 		
 		//
-		StringBuffer answer = new StringBuffer();
+		StringBuilder answer = new StringBuilder();
 		if (issue != null && issue.get_ID() != 0)
 		{
 			answer.append("RECORDID=").append(issue.get_ID())

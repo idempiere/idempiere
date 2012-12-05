@@ -281,7 +281,7 @@ public class MResourceType extends X_S_ResourceType
 	@Override
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("MResourceType[")
 			.append(get_ID())
 			.append(",Value=").append(getValue())

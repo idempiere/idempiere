@@ -166,7 +166,7 @@ public class MWFResponsible extends X_AD_WF_Responsible
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer("MWFResponsible[");
+		StringBuilder sb = new StringBuilder("MWFResponsible[");
 		sb.append (get_ID())
 			.append("-").append(getName())
 			.append(",Type=").append(getResponsibleType());

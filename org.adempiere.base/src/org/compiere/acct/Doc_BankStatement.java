@@ -126,7 +126,7 @@ public class Doc_BankStatement extends Doc
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
-		StringBuffer sb = new StringBuffer (" [");
+		StringBuilder sb = new StringBuilder (" [");
 		//  Total
 		retValue = retValue.add(getAmount(Doc.AMTTYPE_Gross));
 		sb.append(getAmount(Doc.AMTTYPE_Gross));

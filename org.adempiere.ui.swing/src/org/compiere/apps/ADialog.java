@@ -103,7 +103,7 @@ public final class ADialog
 	{
 		log.info(AD_Message + " - " + msg);
 		Properties ctx = Env.getCtx();
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		if (AD_Message != null && !AD_Message.equals(""))
 			out.append(Msg.getMsg(ctx, AD_Message));
 		if (msg != null && msg.length() > 0)
@@ -156,7 +156,7 @@ public final class ADialog
 	{
 		log.info(AD_Message + " - " + msg);
 		Properties ctx = Env.getCtx();
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		if (AD_Message != null && !AD_Message.equals(""))
 			out.append(Msg.getMsg(ctx, AD_Message));
 		if (msg != null && msg.length() > 0)
@@ -211,7 +211,7 @@ public final class ADialog
 		if (CLogMgt.isLevelFinest())
 			Trace.printStack();
 		Properties ctx = Env.getCtx();
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		if (AD_Message != null && !AD_Message.equals(""))
 			out.append(Msg.getMsg(ctx, AD_Message));
 		if (msg != null && msg.length() > 0)
@@ -265,7 +265,7 @@ public final class ADialog
 	{
 		log.info(AD_Message + " - " + msg);
 		Properties ctx = Env.getCtx();
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		if (AD_Message != null && !AD_Message.equals(""))
 			out.append(Msg.getMsg(ctx, AD_Message));
 		if (msg != null && msg.length() > 0)

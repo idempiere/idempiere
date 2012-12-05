@@ -226,7 +226,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>
 		}
 		
 		//	Info Text
-		StringBuffer msg = new StringBuffer("");
+		StringBuilder msg = new StringBuilder("");
 		msg.append("<H2>").append(m_wf.getName(true)).append("</H2>");
 		String s = m_wf.getDescription(true);
 		if (s != null && s.length() > 0)
@@ -244,7 +244,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("WorkflowPanel[");
+		StringBuilder sb = new StringBuilder("WorkflowPanel[");
 		if (m_wf != null)
 			sb.append(m_wf.getAD_Workflow_ID());
 		sb.append("]");

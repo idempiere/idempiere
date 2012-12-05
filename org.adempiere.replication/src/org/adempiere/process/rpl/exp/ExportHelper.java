@@ -378,7 +378,7 @@ public class ExportHelper {
 				MTable tableEmbedded = MTable.get(masterPO.getCtx(), embeddedFormat.getAD_Table_ID());
 				log.info("Table Embedded = " + tableEmbedded);
 
-				final StringBuffer whereClause = new StringBuffer(masterPO.get_KeyColumns()[0] +"=?");
+				final StringBuilder whereClause = new StringBuilder(masterPO.get_KeyColumns()[0] +"=?");
 
 				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause()))
 				{
@@ -414,7 +414,7 @@ public class ExportHelper {
 				MTable tableEmbedded = MTable.get(masterPO.getCtx(), embeddedFormat.getAD_Table_ID());
 				log.info("Table Embedded = " + tableEmbedded);
 
-				final StringBuffer whereClause = new StringBuffer(tableEmbedded.getTableName() + "_ID =?");
+				final StringBuilder whereClause = new StringBuilder(tableEmbedded.getTableName() + "_ID =?");
 				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause()))
 				{
 				    whereClause.append(" AND ").append(embeddedFormat.getWhereClause());

@@ -105,7 +105,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MWFNodeNext[");
+		StringBuilder sb = new StringBuilder ("MWFNodeNext[");
 		sb.append(getSeqNo())
 			.append(":Node=").append(getAD_WF_Node_ID()).append("->Next=").append(getAD_WF_Next_ID());
 		if (m_conditions != null)

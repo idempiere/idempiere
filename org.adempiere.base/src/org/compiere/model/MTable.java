@@ -572,7 +572,7 @@ public class MTable extends X_AD_Table
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MTable[");
+		StringBuilder sb = new StringBuilder ("MTable[");
 		sb.append (get_ID()).append ("-").append (getTableName()).append ("]");
 		return sb.toString ();
 	}	//	toString

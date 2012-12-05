@@ -120,7 +120,7 @@ public class MRequisition extends X_M_Requisition implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRequisition[");
+		StringBuilder sb = new StringBuilder ("MRequisition[");
 		sb.append(get_ID()).append("-").append(getDocumentNo())
 			.append(",Status=").append(getDocStatus()).append(",Action=").append(getDocAction())
 			.append ("]");
@@ -519,7 +519,7 @@ public class MRequisition extends X_M_Requisition implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	 - User
 		sb.append(" - ").append(getUserName());

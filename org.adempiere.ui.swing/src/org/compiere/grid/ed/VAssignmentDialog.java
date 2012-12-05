@@ -354,7 +354,7 @@ public class VAssignmentDialog extends CDialog
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next())
 				{
-					StringBuffer sb = new StringBuffer (rs.getString(2));
+					StringBuilder sb = new StringBuilder (rs.getString(2));
 					if (!"Y".equals(rs.getString(3)))
 						sb.insert(0,'~').append('~');	//	inactive marker
 					//	Key		S_Resource_ID/Name

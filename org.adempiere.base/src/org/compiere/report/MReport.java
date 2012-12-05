@@ -95,7 +95,7 @@ public class MReport extends X_PA_Report
 	public String getWhereClause()
 	{
 		//	AD_Client indirectly via AcctSchema
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		//	Mandatory 	AcctSchema
 		sb.append("C_AcctSchema_ID=").append(getC_AcctSchema_ID());
 		//

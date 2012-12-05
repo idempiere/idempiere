@@ -1313,7 +1313,7 @@ public final class MSetup
 	private void createPreference (String Attribute, String Value, int AD_Window_ID)
 	{
 		int AD_Preference_ID = getNextID(getAD_Client_ID(), "AD_Preference");
-		StringBuffer sqlCmd = new StringBuffer ("INSERT INTO AD_Preference ");
+		StringBuilder sqlCmd = new StringBuilder ("INSERT INTO AD_Preference ");
 		sqlCmd.append("(AD_Preference_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append("Attribute,Value,AD_Window_ID) VALUES (");
 		sqlCmd.append(AD_Preference_ID).append(",").append(m_stdValues).append(",");

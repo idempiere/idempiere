@@ -1240,7 +1240,7 @@ public final class Env
 	 */
 	public static String getHeader(Properties ctx, int WindowNo)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (WindowNo > 0){
 			sb.append(getContext(ctx, WindowNo, "WindowName", false)).append("  ");
 			final String documentNo = getContext(ctx, WindowNo, "DocumentNo", false);
@@ -1346,7 +1346,7 @@ public final class Env
 
 		String token;
 		String inStr = new String(value);
-		StringBuffer outStr = new StringBuffer();
+		StringBuilder outStr = new StringBuilder();
 
 		int i = inStr.indexOf('@');
 		while (i != -1)
@@ -1424,7 +1424,7 @@ public final class Env
 
 		String token;
 		String inStr = new String(expression);
-		StringBuffer outStr = new StringBuffer();
+		StringBuilder outStr = new StringBuilder();
 
 		int i = inStr.indexOf('@');
 		while (i != -1)

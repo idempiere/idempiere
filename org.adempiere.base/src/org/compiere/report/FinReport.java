@@ -344,7 +344,7 @@ public class FinReport extends SvrProcess
 			//	Ignore calculation columns
 			if (m_columns[col].isColumnTypeCalculation())
 				continue;
-			StringBuffer info = new StringBuffer();
+			StringBuilder info = new StringBuilder();
 			info.append("Line=").append(line).append(",Col=").append(col);
 
 			//	SELECT SUM()
@@ -523,7 +523,7 @@ public class FinReport extends SvrProcess
 					oper_1 = oper_2;
 					oper_2 = temp;
 				}
-				StringBuffer sb = new StringBuffer ("UPDATE T_Report SET (");
+				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET (");
 				for (int col = 0; col < m_columns.length; col++)
 				{
 					if (col > 0)
@@ -559,7 +559,7 @@ public class FinReport extends SvrProcess
 			else	//	No Add (subtract, percent)
 			{
 				//	Step 1 - get First Value or 0 in there
-				StringBuffer sb = new StringBuffer ("UPDATE T_Report SET (");
+				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET (");
 				for (int col = 0; col < m_columns.length; col++)
 				{
 					if (col > 0)
@@ -588,7 +588,7 @@ public class FinReport extends SvrProcess
 				}
 
 				//	Step 2 - do Calculation with Second Value
-				sb = new StringBuffer ("UPDATE T_Report r1 SET (");
+				sb = new StringBuilder ("UPDATE T_Report r1 SET (");
 				for (int col = 0; col < m_columns.length; col++)
 				{
 					if (col > 0)
@@ -642,7 +642,7 @@ public class FinReport extends SvrProcess
 			if (!m_columns[col].isColumnTypeCalculation ())
 				continue;
 
-			StringBuffer sb = new StringBuffer ("UPDATE T_Report SET ");
+			StringBuilder sb = new StringBuilder ("UPDATE T_Report SET ");
 			//	Column to set
 			sb.append ("Col_").append (col).append("=");
 			//	First Operand
@@ -739,7 +739,7 @@ public class FinReport extends SvrProcess
 		}
 
 		// add to the list
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(firstPA_ReportLine_ID);
 		boolean addToList = false;
 		for (int line = 0; line < m_lines.length; line++)

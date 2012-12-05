@@ -188,7 +188,7 @@ public class MPrintColor extends X_AD_PrintColor
 	public String getRRGGBB()
 	{
 		Color color = getColor();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Util.toHex((byte)color.getRed()))
 			.append(Util.toHex((byte)color.getGreen()))
 			.append(Util.toHex((byte)color.getBlue()));
@@ -201,7 +201,7 @@ public class MPrintColor extends X_AD_PrintColor
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MPrintColor[");
+		StringBuilder sb = new StringBuilder("MPrintColor[");
 		sb.append("ID=").append(get_ID())
 			.append(",Name=").append(getName())
 			.append(",RGB=").append(getCode())

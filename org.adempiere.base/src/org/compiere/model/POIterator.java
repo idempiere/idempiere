@@ -94,7 +94,7 @@ public class POIterator<T extends PO> implements Iterator<T> {
 			} else {
 				if (keyWhereClause == null) {
 					String[] keys = table.getKeyColumns();
-					StringBuffer sqlBuffer = new StringBuffer();
+					StringBuilder sqlBuffer = new StringBuilder();
 					for (int i = 0; i < keys.length; i++) {
 						if (i > 0)
 							sqlBuffer.append(" AND ");

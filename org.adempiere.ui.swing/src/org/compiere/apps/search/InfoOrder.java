@@ -233,7 +233,7 @@ public class InfoOrder extends Info
 			fBPartner_ID.setValue(new Integer(bp));
 
 		//  prepare table
-		StringBuffer where = new StringBuffer("o.IsActive='Y'");
+		StringBuilder where = new StringBuilder("o.IsActive='Y'");
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(Util.replace(p_whereClause, "C_Order.", "o."));
 		prepareTable(s_invoiceLayout,
@@ -253,7 +253,7 @@ public class InfoOrder extends Info
 	 */
 	protected String getSQLWhere()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		if (fDocumentNo.getText().length() > 0)
 			sql.append(" AND UPPER(o.DocumentNo) LIKE ?");
 		if (fDescription.getText().length() > 0)

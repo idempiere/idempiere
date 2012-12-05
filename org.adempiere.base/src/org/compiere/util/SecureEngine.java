@@ -233,7 +233,7 @@ public class SecureEngine
 	 */
 	private static String test (Object test, Object should)
 	{
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		sb.append(test);
 		if (test == null)
 		{

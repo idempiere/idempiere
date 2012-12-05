@@ -679,7 +679,7 @@ public class MRequest extends X_R_Request
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRequest[");
+		StringBuilder sb = new StringBuilder ("MRequest[");
 		sb.append (get_ID()).append ("-").append(getDocumentNo()).append ("]");
 		return sb.toString ();
 	}	//	toString
@@ -1079,7 +1079,7 @@ public class MRequest extends X_R_Request
 		String subject = Msg.translate(getCtx(), "R_Request_ID") 
 			+ " " + Msg.getMsg(getCtx(), "Updated") + ": " + getDocumentNo();
 		//	Message
-		StringBuffer message = new StringBuffer();
+		StringBuilder message = new StringBuilder();
 		//		UpdatedBy: Joe
 		int UpdatedBy = Env.getAD_User_ID(getCtx());
 		MUser from = MUser.get(getCtx(), UpdatedBy);

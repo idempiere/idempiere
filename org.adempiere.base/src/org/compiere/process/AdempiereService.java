@@ -242,7 +242,7 @@ public class AdempiereService extends StateEngine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("AdempiereService[");
+		StringBuilder sb = new StringBuilder ("AdempiereService[");
 		sb.append(getStateInfo())
 			.append(" - ").append(m_server);
 		sb.append ("]");

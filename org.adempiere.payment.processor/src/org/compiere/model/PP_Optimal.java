@@ -202,7 +202,7 @@ public class PP_Optimal extends PaymentProcessor
 			urlString += ":" + p_mbap.getHostPort();
 		
 		/** General Parameters			*/
-		StringBuffer param = new StringBuffer(200);
+		StringBuilder param = new StringBuilder(200);
 		//	 Merchant username and password.
 		param.append(createPair(MERCHANT_ID, p_mbap.getUserID(), 80))
 			.append(AMP).append(createPair(MERCHANT_PWD, p_mbap.getPassword(), 20))

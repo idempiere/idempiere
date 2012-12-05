@@ -239,7 +239,7 @@ public class ImportInventoryMove extends SvrProcess
 	private MMovementLine getMInventoryMoveLine(MMovement move, X_I_Movement imove)
 	{
 		
-		final StringBuffer whereClause = new StringBuffer();
+		final StringBuilder whereClause = new StringBuilder();
 		ArrayList<Object> parameters = new ArrayList<Object>();
 		
 		MColumn[] cols = getMInventoryMoveColumns();
@@ -360,7 +360,7 @@ public class ImportInventoryMove extends SvrProcess
 			
 			imove.saveEx();
 			
-			StringBuffer err = new StringBuffer("");
+			StringBuilder err = new StringBuilder("");
 			if(imove.getAD_Org_ID() <=0)
 				err.append(" @AD_Org_ID@ @NotFound@,");
 			

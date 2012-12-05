@@ -194,7 +194,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 	
 	public void setStatusLine(int selectedRowCount, String text) 
 	{
-		StringBuffer sb = new StringBuffer(String.valueOf(selectedRowCount));
+		StringBuilder sb = new StringBuilder(String.valueOf(selectedRowCount));
 		if (text != null && text.trim().length() > 0) {
 			sb.append(" - ").append(text);
 		}

@@ -173,7 +173,7 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRfQResponseLine[");
+		StringBuilder sb = new StringBuilder ("MRfQResponseLine[");
 		sb.append(get_ID()).append(",Winner=").append(isSelectedWinner())
 			.append ("]");
 		return sb.toString ();

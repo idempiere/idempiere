@@ -194,7 +194,7 @@ public class TranslationTable
 			sql2.append(",b.").append(columnName);
 		}
 		//
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(sql1).append(sql2)
 			.append(" FROM AD_Language l, " + m_baseTableName
 				+ " b WHERE l.IsActive = 'Y' AND l.IsSystemLanguage = 'Y' AND b."
@@ -216,7 +216,7 @@ public class TranslationTable
 		if (po.get_ID() == 0)
 			throw new IllegalArgumentException("PO ID is 0");
 		//
-		StringBuffer sb = new StringBuffer("UPDATE ");
+		StringBuilder sb = new StringBuilder("UPDATE ");
 		sb.append(m_trlTableName)
 			.append(" SET IsTranslated='N',Updated=SysDate WHERE ")
 			.append(m_baseTableName).append("_ID=").append(po.get_ID());
@@ -237,7 +237,7 @@ public class TranslationTable
 		if (po.get_IDOld() == 0)
 			throw new IllegalArgumentException("PO Old ID is 0");
 		//
-		StringBuffer sb = new StringBuffer("DELETE  FROM  ");
+		StringBuilder sb = new StringBuilder("DELETE  FROM  ");
 		sb.append(m_trlTableName)
 			.append(" WHERE ")
 			.append(m_baseTableName).append("_ID=").append(po.get_IDOld());
@@ -252,7 +252,7 @@ public class TranslationTable
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("TranslationTable[");
+		StringBuilder sb = new StringBuilder ("TranslationTable[");
 		sb.append(m_trlTableName)
 			.append("(").append(m_baseTableName).append(")");
 		for (int i = 0; i < m_columns.size(); i++)

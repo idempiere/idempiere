@@ -242,7 +242,7 @@ public class CLogConsole extends Handler
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("CLogConsole[");
+		StringBuilder sb = new StringBuilder ("CLogConsole[");
 		sb.append("Level=").append(getLevel())
 			.append ("]");
 		return sb.toString ();

@@ -587,7 +587,7 @@ public final class APanel extends CPanel
 	{
 		if (m_mWorkbench != null && m_mWorkbench.getWindowCount() > 1)
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append(m_mWorkbench.getName()).append("  ")
 				.append(Env.getContext(m_ctx, "#AD_User_Name")).append("@")
 				.append(Env.getContext(m_ctx, "#AD_Client_Name")).append(".")
@@ -848,7 +848,7 @@ public final class APanel extends CPanel
 
 					if (!included)	//  Add to TabbedPane
 					{
-						StringBuffer tabName = new StringBuffer ();
+						StringBuilder tabName = new StringBuilder ();
 						tabName.append ("<html>");
 						if (gTab.isReadOnly())
 							tabName.append("<i>");
@@ -1158,7 +1158,7 @@ public final class APanel extends CPanel
 		//	Set Message / Info
 		if (e.getAD_Message() != null || e.getInfo() != null)
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			String msg = e.getMessage();
 			if (msg != null && msg.length() > 0)
 				sb.append(Msg.getMsg(m_ctx, e.getAD_Message()));

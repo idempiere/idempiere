@@ -77,7 +77,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 	    		&& (!element.properties.containsKey(idColumn) || element.properties.get(idColumn).contents == null || element.properties.get(idColumn).contents.toString().trim().length() > 0)) {
 				POInfo info = POInfo.getPOInfo(ctx.ctx, table.getAD_Table_ID());
 				MColumn columns[] = table.getColumns(false);
-				StringBuffer whereClause = new StringBuffer();
+				StringBuilder whereClause = new StringBuilder();
 				List<Object> parameters = new ArrayList<Object>();
 				boolean search = true;
 				for(int i = 0; i < columns.length; i++) {

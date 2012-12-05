@@ -150,7 +150,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 		}
 		
 		//  Fields with ',' are enclosed in "
-		StringBuffer newLine = new StringBuffer();
+		StringBuilder newLine = new StringBuilder();
 		StringTokenizer st = new StringTokenizer(line, "\"", false);
 		if ((st==null )||(st.countTokens()==0)) {
 			log.log(Level.SEVERE, "Parse error: No \\\" found in line: "+lineNo);

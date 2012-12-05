@@ -152,7 +152,7 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MUserOrgAccess[");
+		StringBuilder sb = new StringBuilder("MUserOrgAccess[");
 		sb.append("AD_User_ID=").append(getAD_User_ID())
 			.append(",AD_Client_ID=").append(getAD_Client_ID())
 			.append(",AD_Org_ID=").append(getAD_Org_ID())
@@ -169,7 +169,7 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	 */
 	public String toStringX (Properties ctx)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Msg.translate(ctx, "AD_Client_ID")).append("=").append(getClientName()).append(" - ")
 			.append(Msg.translate(ctx, "AD_Org_ID")).append("=").append(getOrgName());	
 		return sb.toString();

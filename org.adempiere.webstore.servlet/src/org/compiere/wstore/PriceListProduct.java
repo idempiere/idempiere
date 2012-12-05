@@ -88,7 +88,7 @@ public class PriceListProduct
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("PriceListProduct[");
+		StringBuilder sb = new StringBuilder("PriceListProduct[");
 		sb.append(m_Product_ID).append("-").append(m_name)
 			.append("-").append(m_price)
 			.append("]");

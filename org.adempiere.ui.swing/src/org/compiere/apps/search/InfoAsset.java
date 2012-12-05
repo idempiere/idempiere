@@ -172,7 +172,7 @@ public class InfoAsset extends Info
 	private void initInfo (String value, int A_Asset_ID, String whereClause)
 	{
 		//	Create Grid
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		where.append("a.IsActive='Y'");
 		if (whereClause != null && whereClause.length() > 0)
 			where.append(" AND ").append(whereClause);
@@ -199,7 +199,7 @@ public class InfoAsset extends Info
 	 */
 	protected String getSQLWhere()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		//	=> Value
 		String value = fieldValue.getText().toUpperCase();
 		if (!(value.equals("") || value.equals("%")))

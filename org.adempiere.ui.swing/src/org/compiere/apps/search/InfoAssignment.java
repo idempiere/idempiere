@@ -201,7 +201,7 @@ AND rt.C_UOM_ID=uom.C_UOM_ID
 		//  C_BPartner bp, AD_User c, C_BPartner_Location l, C_Location a
 
 		//	Create Grid
-		StringBuffer where = new StringBuffer(s_assignmentWHERE);
+		StringBuilder where = new StringBuilder(s_assignmentWHERE);
 		if (whereClause != null && whereClause.length() > 0)
 			where.append(" AND ").append(whereClause);
 		//
@@ -234,7 +234,7 @@ AND rt.C_UOM_ID=uom.C_UOM_ID
 	 */
 	protected String getSQLWhere()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		//
 		Integer S_ResourceType_ID = (Integer)fieldResourceType.getValue();
 		if (S_ResourceType_ID != null)

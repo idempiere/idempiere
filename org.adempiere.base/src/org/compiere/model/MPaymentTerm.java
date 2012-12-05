@@ -398,7 +398,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MPaymentTerm[");
+		StringBuilder sb = new StringBuilder ("MPaymentTerm[");
 		sb.append(get_ID()).append("-").append(getName())
 			.append(",Valid=").append(isValid())
 			.append ("]");

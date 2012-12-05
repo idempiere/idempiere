@@ -415,7 +415,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     public String toString()
     {
-        StringBuffer sb = new StringBuffer(30);
+        StringBuilder sb = new StringBuilder(30);
         sb.append(this.getClass().getName());
         sb.append("[").append(this.getColumnName());
         sb.append("=");

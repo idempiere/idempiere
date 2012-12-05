@@ -169,7 +169,7 @@ public class Dimension2DImpl extends Dimension2D implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("Dimension2D[w=").append(width).append(",h=").append(height).append("]");
 		return sb.toString();
 	}	//	toString

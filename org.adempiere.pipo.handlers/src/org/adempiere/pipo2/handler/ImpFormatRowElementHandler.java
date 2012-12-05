@@ -102,7 +102,7 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 				}
 			}
 
-			StringBuffer sqlB = new StringBuffer ("SELECT AD_ImpFormat_Row_ID FROM AD_ImpFormat_Row WHERE AD_Column_ID=? AND AD_ImpFormat_ID=?");
+			StringBuilder sqlB = new StringBuilder ("SELECT AD_ImpFormat_Row_ID FROM AD_ImpFormat_Row WHERE AD_Column_ID=? AND AD_ImpFormat_ID=?");
 			int id = DB.getSQLValue(getTrxName(ctx),sqlB.toString(),columnId,impFormatId);
 			mImpFormatRow = new X_AD_ImpFormat_Row(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 

@@ -72,7 +72,7 @@ public class CompiereToolTipUI extends MetalToolTipUI
 			return str;
 		
 		KeyStroke[] keys = comp.getRegisteredKeyStrokes ();
-		StringBuffer controlKeyStr = new StringBuffer();
+		StringBuilder controlKeyStr = new StringBuilder();
 		for (int i = 0; i < keys.length; i++)
 		{
 			int mod = keys[i].getModifiers ();

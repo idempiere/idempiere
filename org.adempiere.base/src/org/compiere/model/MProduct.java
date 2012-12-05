@@ -556,7 +556,7 @@ public class MProduct extends X_M_Product
 	@Override
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MProduct[");
+		StringBuilder sb = new StringBuilder("MProduct[");
 		sb.append(get_ID()).append("-").append(getValue())
 			.append("]");
 		return sb.toString();

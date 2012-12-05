@@ -298,7 +298,7 @@ public class GridField
 		//
 		if (list.size() > 0 && CLogMgt.isLevelFiner())
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < list.size(); i++)
 				sb.append(list.get(i)).append(" ");
 			log.finer("(" + m_vo.ColumnName + ") " + sb.toString());
@@ -1676,7 +1676,7 @@ public class GridField
 	 */
 	public String toStringX()
 	{
-		StringBuffer sb = new StringBuffer("MField[");
+		StringBuilder sb = new StringBuilder("MField[");
 		sb.append(m_vo.ColumnName).append("=").append(m_value)
 			.append(",DisplayType=").append(getDisplayType())
 			.append("]");

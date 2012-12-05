@@ -212,7 +212,7 @@ public class MyValidator implements ModelValidator
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MyValidator[Order@Gardenworld");
+		StringBuilder sb = new StringBuilder ("MyValidator[Order@Gardenworld");
 		sb.append ("]");
 		return sb.toString ();
 	}	//	toString

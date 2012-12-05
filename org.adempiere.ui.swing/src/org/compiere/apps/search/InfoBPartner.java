@@ -223,7 +223,7 @@ public class InfoBPartner extends Info
 		**/
 
 		//	Create Grid
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		where.append("C_BPartner.IsSummary='N' AND C_BPartner.IsActive='Y'");
 		if (whereClause != null && whereClause.length() > 0)
 			where.append(" AND ").append(whereClause);
@@ -300,7 +300,7 @@ public class InfoBPartner extends Info
 		if (!(postal.equals("") || postal.equals("%")))
 			list.add ("UPPER(a.Postal) LIKE ?");
 
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		int size = list.size();
 		//	Just one
 		if (size == 1)

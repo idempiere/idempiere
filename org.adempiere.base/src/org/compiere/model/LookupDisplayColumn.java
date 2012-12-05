@@ -90,7 +90,7 @@ public class LookupDisplayColumn implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("LookupDisplayColumn[");
+		StringBuilder sb = new StringBuilder("LookupDisplayColumn[");
 		sb.append("ColumnName=").append(ColumnName);
 		if (IsVirtual)
 			sb.append(",ColumnSQL=").append(ColumnSQL);

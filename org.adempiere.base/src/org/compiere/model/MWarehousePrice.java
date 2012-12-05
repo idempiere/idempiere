@@ -59,9 +59,9 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 		int M_PriceList_Version_ID, int M_Warehouse_ID,
 		String Value, String Name, String UPC, String SKU, String trxName)
 	{
-		StringBuffer sql = new StringBuffer ("SELECT * FROM RV_WarehousePrice "
+		StringBuilder sql = new StringBuilder ("SELECT * FROM RV_WarehousePrice "
 			+ "WHERE M_PriceList_Version_ID=? AND M_Warehouse_ID=?");
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Value = getFindParameter (Value);
 		if (Value != null)
 			sb.append("UPPER(Value) LIKE ?");

@@ -111,7 +111,7 @@ public class CMemoryUsage extends MemoryUsage
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		sb.append ("Init=").append(format(getInit()))
 			.append (", Used=").append(format(getUsed()))
 			.append (", Free=").append(format(getFree()))

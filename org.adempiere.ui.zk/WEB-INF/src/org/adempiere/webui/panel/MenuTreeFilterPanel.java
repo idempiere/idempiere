@@ -105,7 +105,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 					{
 						if (treeItem.getParentItem() != null && !treeItem.getParentItem().isVisible())
 						{
-							StringBuffer label = new StringBuffer(treeItem.getLabel());
+							StringBuilder label = new StringBuilder(treeItem.getLabel());
 							treeItem.setAttribute("flatView.label", treeItem.getLabel());
 							Treeitem parent = treeItem.getParentItem();
 							treeItem.setAttribute("flatView.parent", parent);

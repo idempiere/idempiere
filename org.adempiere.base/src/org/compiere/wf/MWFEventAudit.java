@@ -67,7 +67,7 @@ public class MWFEventAudit extends X_AD_WF_EventAudit
 	public static MWFEventAudit[] get (Properties ctx, int AD_WF_Process_ID, int AD_WF_Node_ID, String trxName)
 	{
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuffer whereClause = new StringBuffer("AD_WF_Process_ID=?"); 
+		StringBuilder whereClause = new StringBuilder("AD_WF_Process_ID=?"); 
 		params.add(AD_WF_Process_ID);
 		if (AD_WF_Node_ID > 0)
 		{

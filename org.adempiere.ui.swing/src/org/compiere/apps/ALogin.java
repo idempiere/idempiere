@@ -1130,7 +1130,7 @@ public final class ALogin extends CDialog
 			}
 			else if (version != null)
 			{
-				StringBuffer msg = new StringBuffer (">>\n");
+				StringBuilder msg = new StringBuilder (">>\n");
 				msg.append(res.getString("VersionConflict")).append("\n")
 					.append(res.getString("VersionInfo")).append("\n");
 				msg.append(version == null ? "null" : version).append(" <> ")

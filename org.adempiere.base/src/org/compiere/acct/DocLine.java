@@ -1125,7 +1125,7 @@ public class DocLine
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("DocLine=[");
+		StringBuilder sb = new StringBuilder("DocLine=[");
 		sb.append(p_po.get_ID());
 		if (getDescription() != null)
 			sb.append(",").append(getDescription());

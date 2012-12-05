@@ -71,7 +71,7 @@ public class PaymentUtil {
 
 		Integer valueLength = value.length();
 
-		StringBuffer encryptedCC = new StringBuffer();
+		StringBuilder encryptedCC = new StringBuilder();
 
 		for (int i = 0; i < (valueLength - 4); i++) {
 			encryptedCC.append("0");
@@ -88,7 +88,7 @@ public class PaymentUtil {
 		else {
 			Integer valueLength = creditCardVV.length();
 
-			StringBuffer encryptedCC = new StringBuffer();
+			StringBuilder encryptedCC = new StringBuilder();
 
 			for (int i = 0; i < valueLength; i++) {
 				encryptedCC.append("0");
@@ -122,7 +122,7 @@ public class PaymentUtil {
 		String mm = String.valueOf(creditCardExpMM);
 		String yy = String.valueOf(creditCardExpYY);
 
-		StringBuffer retValue = new StringBuffer();
+		StringBuilder retValue = new StringBuilder();
 		if (mm.length() == 1)
 			retValue.append("0");
 		retValue.append(mm);

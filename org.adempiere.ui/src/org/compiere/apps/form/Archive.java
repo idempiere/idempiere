@@ -110,7 +110,7 @@ public class Archive {
 			String name, String description, String help, KeyNamePair createdBy, 
 			Timestamp createdFrom, Timestamp createdTo)
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		MRole role = MRole.getDefault();
 		if (!role.isCanReport())
 		{

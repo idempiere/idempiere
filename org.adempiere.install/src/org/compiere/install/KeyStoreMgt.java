@@ -343,7 +343,7 @@ public class KeyStoreMgt
 		}
 		
 		//	Escape commas
-		StringBuffer dname = new StringBuffer();
+		StringBuilder dname = new StringBuilder();
 		dname.append("CN=").append(escapeCommas(cn));		//	common name
 		dname.append(", OU=").append(escapeCommas(ou));		//	org unit
 		dname.append(", O=").append(escapeCommas(o));		//	org
@@ -364,7 +364,7 @@ public class KeyStoreMgt
 	{
 		if (in == null || in.indexOf(',') == -1)
 			return in;
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		char[] chars = in.toCharArray();
 		for (int i = 0; i < chars.length; i++)
 		{
@@ -385,7 +385,7 @@ public class KeyStoreMgt
 	 */
 	public static void genkey (String alias, char[] password, String fileName, String dname)
 	{
-		StringBuffer cmd = new StringBuffer ("-genkey -keyalg rsa");
+		StringBuilder cmd = new StringBuilder ("-genkey -keyalg rsa");
 		cmd.append(" -alias ").append(alias);
 		cmd.append(" -dname \"").append(dname).append("\"");
 		cmd.append(" -keypass ").append(password).append(" -validity 999");
@@ -405,7 +405,7 @@ public class KeyStoreMgt
 	 */
 	public static void selfcert (String alias, char[] password, String fileName, String dname)
 	{
-		StringBuffer cmd = new StringBuffer ("-selfcert");
+		StringBuilder cmd = new StringBuilder ("-selfcert");
 		cmd.append(" -alias ").append(alias);
 		cmd.append(" -dname \"").append(dname).append("\"");
 		cmd.append(" -keypass ").append(password).append(" -validity 999");

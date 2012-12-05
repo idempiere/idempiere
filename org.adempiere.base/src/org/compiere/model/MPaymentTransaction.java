@@ -284,7 +284,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		history.setIsError(!(approved && processed));
 		history.setProcessed(approved && processed);
 		
-		StringBuffer msg = new StringBuffer();
+		StringBuilder msg = new StringBuilder();
 		if (approved)
 		{
 			if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))

@@ -124,7 +124,7 @@ public abstract class NamePair implements Comparator<Object>, Serializable, Comp
 	 */
 	public String toStringX()
 	{
-		StringBuffer sb = new StringBuffer (getID());
+		StringBuilder sb = new StringBuilder (getID());
 		sb.append("=").append(m_name);
 		return sb.toString();
 	}	//	toStringX

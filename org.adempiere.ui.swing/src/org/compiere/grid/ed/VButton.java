@@ -290,7 +290,7 @@ public final class VButton extends CButton
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("VButton[");
+		StringBuilder sb = new StringBuilder ("VButton[");
 		sb.append(m_columnName);
 		sb.append("=").append(m_value).append("]");
 		return sb.toString();

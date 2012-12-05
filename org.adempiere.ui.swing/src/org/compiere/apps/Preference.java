@@ -114,7 +114,7 @@ public final class Preference extends CDialog
 		}
 		load();
 		//
-		StringBuffer sta = new StringBuffer("#");
+		StringBuilder sta = new StringBuilder("#");
 		sta.append(Env.getCtx().size()).append(" - ")
 			.append(Msg.translate(Env.getCtx(), "AD_Window_ID"))
 			.append("=").append(WindowNo);

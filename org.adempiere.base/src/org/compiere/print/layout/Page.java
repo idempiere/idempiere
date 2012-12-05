@@ -143,7 +143,7 @@ public class Page
 		m_ctx.put (CONTEXT_PAGE, m_pageInfo);
 	//	log.finest( "PrintContext", CONTEXT_PAGE + "=" + m_pageInfo);
 		//
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (m_pageCount != 1)		//	set to "Page 1 of 2"
 			sb.append(Msg.getMsg(m_ctx, "Page")).append(" ")
 				.append(m_pageNo)
@@ -154,7 +154,7 @@ public class Page
 		m_ctx.put(CONTEXT_MULTIPAGE, sb.toString());
 	//	log.finest( "PrintContext", CONTEXT_MULTIPAGE + "=" + sb.toString());
 		//
-		sb = new StringBuffer();
+		sb = new StringBuilder();
 		if (isCopy)					//	set to "(Copy)"
 			sb.append("(")
 				.append(Msg.getMsg(m_ctx, "DocumentCopy"))
@@ -242,7 +242,7 @@ public class Page
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("Page[");
+		StringBuilder sb = new StringBuilder("Page[");
 		sb.append(m_pageNo).append(",Elements=").append(m_elements.size());
 		sb.append("]");
 		return sb.toString();

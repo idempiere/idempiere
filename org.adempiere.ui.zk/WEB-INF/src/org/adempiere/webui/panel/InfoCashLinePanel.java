@@ -293,7 +293,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 	private boolean initInfo ()
 	{
 		// Prepare table
-		StringBuffer where = new StringBuffer("cl.IsActive='Y'");
+		StringBuilder where = new StringBuilder("cl.IsActive='Y'");
 
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(Util.replace(p_whereClause, "C_CashLine.", "cl."));
@@ -314,7 +314,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 
 	protected String getSQLWhere()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 
 		if (fName.getText().length() > 0)
 			sql.append(" AND UPPER(c.Name) LIKE ?");

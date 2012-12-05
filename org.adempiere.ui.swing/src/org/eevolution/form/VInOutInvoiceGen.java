@@ -270,7 +270,7 @@ public class VInOutInvoiceGen extends CPanel
 	private String getOrderSQL()
 	{
 	//  Create SQL
-        StringBuffer sql = new StringBuffer(
+        StringBuilder sql = new StringBuilder(
             "SELECT C_Order_ID, o.Name, dt.Name, DocumentNo, bp.Name, DateOrdered, TotalLines "
             + "FROM M_InOut_Candidate_v ic, AD_Org o, C_BPartner bp, C_DocType dt "
             + "WHERE ic.AD_Org_ID=o.AD_Org_ID"
@@ -307,7 +307,7 @@ public class VInOutInvoiceGen extends CPanel
 	 */
 	private String getRMASql()
 	{
-	    StringBuffer sql = new StringBuffer();
+	    StringBuilder sql = new StringBuilder();
 	    
 	    sql.append("SELECT rma.M_RMA_ID, org.Name, dt.Name, rma.DocumentNo, bp.Name, rma.Created, rma.Amt ");
 	    sql.append("FROM M_RMA rma INNER JOIN AD_Org org ON rma.AD_Org_ID=org.AD_Org_ID ");
@@ -552,7 +552,7 @@ public class VInOutInvoiceGen extends CPanel
 		}
 		
 		//insert selection
-		StringBuffer insert = new StringBuffer();
+		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) ");
 		int counter = 0;
 		for(Integer selectedId : selection)
@@ -576,7 +576,7 @@ public class VInOutInvoiceGen extends CPanel
 					trx.rollback();
 					return;
 				}
-				insert = new StringBuffer();
+				insert = new StringBuilder();
 				insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) ");
 				counter = 0;
 			}
@@ -720,7 +720,7 @@ public class VInOutInvoiceGen extends CPanel
 		
 		//insert selection
 		/*Selection exist from shipment*/
-		StringBuffer insert = new StringBuffer();
+		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) ");
 		int counter = 0;
 		for(Integer selectedId : selection)
@@ -744,7 +744,7 @@ public class VInOutInvoiceGen extends CPanel
 					trx.rollback();
 					return;
 				}
-				insert = new StringBuffer();
+				insert = new StringBuilder();
 				insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) ");
 				counter = 0;
 			}

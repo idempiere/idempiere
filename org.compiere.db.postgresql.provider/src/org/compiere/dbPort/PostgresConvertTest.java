@@ -67,7 +67,7 @@ public class PostgresConvertTest
 			System.exit(1);
 		
 		log.info("start test");
-		StringBuffer sql = new StringBuffer (
+		StringBuilder sql = new StringBuilder (
 				"SELECT 'un DATE en una constante'," +
 				" 'ropa de cache para damas' FROM DUAL");
         try
@@ -129,13 +129,13 @@ public class PostgresConvertTest
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		log.fine("M_Product_PO - Updated=" + no);
 		*/
-		sql = new StringBuffer ("UPDATE I_Order SET M_Warehouse_ID=(SELECT M_Warehouse_ID FROM M_Warehouse w WHERE ROWNUM=1 AND I_Order.AD_Client_ID=w.AD_Client_ID AND I_Order.AD_Org_ID=w.AD_Org_ID) WHERE M_Warehouse_ID IS NULL AND I_IsImported<>'Y' AND AD_Client_ID=11");
+		sql = new StringBuilder ("UPDATE I_Order SET M_Warehouse_ID=(SELECT M_Warehouse_ID FROM M_Warehouse w WHERE ROWNUM=1 AND I_Order.AD_Client_ID=w.AD_Client_ID AND I_Order.AD_Org_ID=w.AD_Org_ID) WHERE M_Warehouse_ID IS NULL AND I_IsImported<>'Y' AND AD_Client_ID=11");
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
                 /*sql = new StringBuffer ("UPDATE I_Order o SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, ' WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0 OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N'))) AND I_IsImported<>'Y'");
 		no = DB.executeUpdate(sql.toString(), getTrxName());
                 sql = new StringBuffer ("UPDATE I_Order o SET C_DocType_ID=(SELECT C_DocType_ID FROM C_DocType d WHERE d.Name=o.DocTypeName AND d.DocBaseType='POO' AND o.AD_Client_ID=d.AD_Client_ID) WHERE C_DocType_ID IS NULL AND IsSOTrx='N' AND DocTypeName IS NOT NULL AND I_IsImported<>'Y'");                 
 		no = DB.executeUpdate(sql.toString(), getTrxName());*/
-                sql = new StringBuffer ("UPDATE I_Order o SET (C_BPartner_ID,AD_User_ID)=(SELECT C_BPartner_ID,AD_User_ID FROM AD_User u WHERE o.ContactName=u.Name AND o.AD_Client_ID=u.AD_Client_ID AND u.C_BPartner_ID IS NOT NULL) WHERE C_BPartner_ID IS NULL AND ContactName IS NOT NULL AND EXISTS (SELECT Name FROM AD_User u WHERE o.ContactName=u.Name AND o.AD_Client_ID=u.AD_Client_ID AND u.C_BPartner_ID IS NOT NULL GROUP BY Name HAVING COUNT(*)=1) AND I_IsImported<>'Y' AND AD_Client_ID=11");                 
+                sql = new StringBuilder ("UPDATE I_Order o SET (C_BPartner_ID,AD_User_ID)=(SELECT C_BPartner_ID,AD_User_ID FROM AD_User u WHERE o.ContactName=u.Name AND o.AD_Client_ID=u.AD_Client_ID AND u.C_BPartner_ID IS NOT NULL) WHERE C_BPartner_ID IS NULL AND ContactName IS NOT NULL AND EXISTS (SELECT Name FROM AD_User u WHERE o.ContactName=u.Name AND o.AD_Client_ID=u.AD_Client_ID AND u.C_BPartner_ID IS NOT NULL GROUP BY Name HAVING COUNT(*)=1) AND I_IsImported<>'Y' AND AD_Client_ID=11");                 
 		no = DB.executeUpdate(sql.toString(), getTrxName());
                 
                 

@@ -252,7 +252,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 				CalendarsEvent evt = (CalendarsEvent) e;
 				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/d");
 				sdf1.setTimeZone(calendars.getDefaultTimeZone());
-				StringBuffer sb = new StringBuffer("Update... from ");
+				StringBuilder sb = new StringBuilder("Update... from ");
 				sb.append(sdf1.format(evt.getCalendarEvent().getBeginDate()));
 				sb.append(" to ");
 				sb.append(sdf1.format(evt.getBeginDate()));

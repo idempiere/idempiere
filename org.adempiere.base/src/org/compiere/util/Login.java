@@ -127,7 +127,7 @@ public class Login
 			return true;
 
 		//  Error Message
-		StringBuffer msg = new StringBuffer();
+		StringBuilder msg = new StringBuilder();
 		msg.append(System.getProperty("java.vm.name")).append(" - ").append(jVersion);
 		msg.append("  <>  1.6.0 | 1.7.0");
 		//
@@ -1306,7 +1306,7 @@ public class Login
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
 		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
 
-		StringBuffer where = new StringBuffer("Password IS NOT NULL AND ");
+		StringBuilder where = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
 			where.append("EMail=?");
 		else
@@ -1408,7 +1408,7 @@ public class Login
 					}
 				}
 												
-				StringBuffer sql= new StringBuffer("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
+				StringBuilder sql= new StringBuilder("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
 			      sql.append(" FROM AD_User_Roles ur")
                    .append(" INNER JOIN AD_User u on (ur.AD_User_ID=u.AD_User_ID)")
                    .append(" INNER JOIN AD_Client cli on (ur.AD_Client_ID=cli.AD_Client_ID)")
@@ -1606,7 +1606,7 @@ public class Login
 		int AD_User_ID = Env.getContextAsInt(m_ctx, "#AD_User_ID");
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
-		StringBuffer sql= new StringBuffer("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
+		StringBuilder sql= new StringBuilder("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
 				      sql.append(" FROM AD_User_Roles ur")
                          .append(" INNER JOIN AD_User u on (ur.AD_User_ID=u.AD_User_ID)")
                          .append(" INNER JOIN AD_Client cli on (ur.AD_Client_ID=cli.AD_Client_ID)")

@@ -179,7 +179,7 @@ public class AmtInWords_BG implements AmtInWords
                 if (amount == null)
                         return amount;
  
-                StringBuffer sb = new StringBuffer ();
+                StringBuilder sb = new StringBuilder ();
                 amount = amount.replaceAll (" ", "").replaceAll("\u00A0", "");
                 char sep = amount.contains(",")?',':'.'; //Try to determine the separator either comma or a full stop       
                 int pos = amount.lastIndexOf (sep);

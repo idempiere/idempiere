@@ -162,7 +162,7 @@ public class MMovementLineMA extends X_M_MovementLineMA
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MMovementLineMA[");
+		StringBuilder sb = new StringBuilder ("MMovementLineMA[");
 		sb.append("M_MovementLine_ID=").append(getM_MovementLine_ID())
 			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
 			.append(", Qty=").append(getMovementQty())

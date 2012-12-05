@@ -642,7 +642,7 @@ public class MPeriod extends X_C_Period
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MPeriod[");
+		StringBuilder sb = new StringBuilder ("MPeriod[");
 		sb.append (get_ID())
 			.append("-").append (getName())
 			.append(", ").append(getStartDate()).append("-").append(getEndDate())

@@ -326,7 +326,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 	//	sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 	//	sb.append(": ")

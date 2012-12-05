@@ -28,7 +28,7 @@ public class InfoBPartner implements ADInfo {
 		params = dr;
 		m_isSOTrx = true; // TODO
 		
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		where.append("C_BPartner.IsSummary='N' AND C_BPartner.IsActive='Y'");
 		if (whereClause != null && whereClause.length() > 0)
 			where.append(" AND ").append(whereClause);
@@ -94,7 +94,7 @@ public class InfoBPartner implements ADInfo {
 		if (!(postal.equals("") || postal.equals("%")))
 			list.add ("UPPER(a.Postal) LIKE ?");
 
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		int size = list.size();
 		//	Just one
 		if (size == 1)
@@ -197,7 +197,7 @@ public class InfoBPartner implements ADInfo {
 	protected void prepareTable ( String from, String staticWhere, String orderBy)
 	{
 		
-		StringBuffer sql = new StringBuffer ("SELECT ");
+		StringBuilder sql = new StringBuilder ("SELECT ");
 		//  add columns & sql
 		sql.append( " C_BPartner.C_BPartner_ID, C_BPartner.Value, C_BPartner.Name, c.Name AS Contact,  " );
 		sql.append( " C_BPartner.SO_CreditLimit-C_BPartner.SO_CreditUsed AS SO_CreditAvailable, ");
@@ -284,7 +284,7 @@ public class InfoBPartner implements ADInfo {
 
 	public String getSQL() {
 		String dynWhere = getSQLWhere();
-		StringBuffer sql = new StringBuffer (m_sqlMain);
+		StringBuilder sql = new StringBuilder (m_sqlMain);
 		if (dynWhere.length() > 0)
 			sql.append(dynWhere);   //  includes first AND
 		sql.append(m_sqlOrder);
@@ -297,7 +297,7 @@ public class InfoBPartner implements ADInfo {
 
 	public String getSQLCount() {
 		String dynWhere = getSQLWhere();
-		StringBuffer sql = new StringBuffer (m_sqlCount);
+		StringBuilder sql = new StringBuilder (m_sqlCount);
 		if (dynWhere.length() > 0)
 			sql.append(dynWhere);   //  includes first AND
 		String countSql = Msg.parseTranslation(Env.getCtx(), sql.toString());	//	Variables

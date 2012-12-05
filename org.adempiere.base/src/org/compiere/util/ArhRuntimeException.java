@@ -70,7 +70,7 @@ public class ArhRuntimeException
 	 */
 	
 	public String getLocalizedMessage() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Properties ctx = Env.getCtx();
 		// Message
 		String msg = getMessage();

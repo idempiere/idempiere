@@ -129,7 +129,7 @@ public class POTest extends AdempiereTestCase
 	public void testTruncatedStrings() {
 		//
 		// Creating a huge string for testing:
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i <= 1000; i++) {
 			sb.append("0123456789");
 		}

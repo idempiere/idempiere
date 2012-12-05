@@ -276,7 +276,7 @@ public class MProjectPhase extends X_C_ProjectPhase
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MProjectPhase[");
+		StringBuilder sb = new StringBuilder ("MProjectPhase[");
 		sb.append (get_ID())
 			.append ("-").append (getSeqNo())
 			.append ("-").append (getName())

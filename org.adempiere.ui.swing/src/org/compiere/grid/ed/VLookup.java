@@ -946,7 +946,7 @@ public class VLookup extends JComponent
 	 */
 	private String getExtraWhereClause (String text)
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		m_tableName = m_columnName.substring(0, m_columnName.length()-3);
 		m_keyColumnName = m_columnName;
 		//

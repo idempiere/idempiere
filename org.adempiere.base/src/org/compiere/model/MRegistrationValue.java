@@ -139,7 +139,7 @@ public class MRegistrationValue extends X_A_RegistrationValue
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getSeqNo()).append(": ")
 			.append(getRegistrationAttribute()).append("=").append(getName());
 		return sb.toString();

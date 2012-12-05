@@ -969,7 +969,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 			approveIt();
 		getLines(true,null);
 		log.info(toString());
-		StringBuffer info = new StringBuffer();		
+		StringBuilder info = new StringBuilder();		
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
@@ -1216,7 +1216,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 			
 		if (m_lines != null)

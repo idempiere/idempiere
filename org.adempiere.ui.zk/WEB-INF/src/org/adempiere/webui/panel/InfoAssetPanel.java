@@ -236,7 +236,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 	private void initInfo (String value, int A_Asset_ID, String whereClause)
 	{
 		//	Create Grid
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		where.append("a.IsActive='Y'");
 		
 		if (whereClause != null && whereClause.length() > 0)
@@ -262,7 +262,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 	
 	protected String getSQLWhere()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 	
 		//	=> Value
 		

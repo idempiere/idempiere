@@ -470,7 +470,7 @@ boolean jedinceBezBroja) {
 		if (amount == null)
 			return amount;
 		//
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 
 		amount = amount.replaceAll (",", "");
 

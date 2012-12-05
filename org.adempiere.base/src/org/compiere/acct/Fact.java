@@ -796,7 +796,7 @@ public final class Fact
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("Fact[");
+		StringBuilder sb = new StringBuilder("Fact[");
 		sb.append(m_doc.toString());
 		sb.append(",").append(m_acctSchema.toString());
 		sb.append(",PostType=").append(m_postingType);
@@ -933,7 +933,7 @@ public final class Fact
 		 */
 		public String toString ()
 		{
-			StringBuffer sb = new StringBuffer ("Balance[");
+			StringBuilder sb = new StringBuilder ("Balance[");
 			sb.append ("DR=").append(DR)
 				.append ("-CR=").append(CR)
 				.append(" = ").append(getBalance())

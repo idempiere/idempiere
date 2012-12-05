@@ -179,7 +179,7 @@ public class AmtInWords_IT implements AmtInWords
 			return amount;
 		
 		// assume rightmost point or comma as decimal separator
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		int pos = amount.lastIndexOf (',');  		
 		int pos2 = amount.lastIndexOf ('.');
 		if (pos2 > pos)

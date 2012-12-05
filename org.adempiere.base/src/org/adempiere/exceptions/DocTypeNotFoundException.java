@@ -51,7 +51,7 @@ public class DocTypeNotFoundException extends AdempiereException
 	{
 		String additionalInfo = super.getMessage();
 		String docBaseTypeName = MRefList.getListName(Env.getCtx(), MDocType.DOCBASETYPE_AD_Reference_ID, getDocBaseType());
-		StringBuffer sb = new StringBuffer("@NotFound@ @C_DocType_ID@");
+		StringBuilder sb = new StringBuilder("@NotFound@ @C_DocType_ID@");
 		sb.append(" - @DocBaseType@ : " + docBaseTypeName);
 		if (!Util.isEmpty(additionalInfo, true))
 		{

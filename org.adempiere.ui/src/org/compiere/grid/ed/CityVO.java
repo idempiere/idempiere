@@ -69,7 +69,7 @@ public class CityVO
 	@Override
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (this.CityName != null)
 		{
 			sb.append(this.CityName);

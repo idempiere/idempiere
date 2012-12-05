@@ -91,7 +91,7 @@ public final class PP_PayFlowPro4 extends PaymentProcessor
 		
 		
 		//
-		StringBuffer param = new StringBuffer();
+		StringBuilder param = new StringBuilder();
 		//  Transaction Type
 		if (p_mp.getTrxType().equals(MPayment.TRXTYPE_Sales))
 			param.append("TRXTYPE=").append(p_mp.getTrxType());
@@ -166,7 +166,7 @@ public final class PP_PayFlowPro4 extends PaymentProcessor
 	public boolean process (String parameter)
 	{
 		long start = System.currentTimeMillis();
-		StringBuffer param = new StringBuffer(parameter);
+		StringBuilder param = new StringBuilder(parameter);
 		//  Usr/Pwd
 		param
 			.append("&PARTNER=").append(p_mbap.getPartnerID())

@@ -538,7 +538,7 @@ public class MSequence extends X_AD_Sequence
 			return null;
 
 		//	create DocumentNo
-		StringBuffer doc = new StringBuffer();
+		StringBuilder doc = new StringBuilder();
 		if (prefix != null && prefix.length() > 0)
 			doc.append(Env.parseVariable(prefix, po, trxName, false));
 		

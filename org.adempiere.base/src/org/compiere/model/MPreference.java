@@ -97,7 +97,7 @@ public class MPreference extends X_AD_Preference
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MPreference[");
+		StringBuilder sb = new StringBuilder ("MPreference[");
 		sb.append (get_ID()).append("-")
 			.append(getAttribute()).append("-").append(getValue())
 			.append ("]");

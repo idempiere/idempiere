@@ -198,7 +198,7 @@ public class Join
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("Join[");
+		StringBuilder sb = new StringBuilder ("Join[");
 		sb.append(m_joinClause)
 			.append(" - Main=").append(m_mainTable).append("/").append(m_mainAlias)
 			.append(", Join=").append(m_joinTable).append("/").append(m_joinAlias)

@@ -294,7 +294,7 @@ public class ExportModelValidator implements ModelValidator
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer (ExportModelValidator.class.getName());
+		StringBuilder sb = new StringBuilder (ExportModelValidator.class.getName());
 		return sb.toString();
 	}
 	

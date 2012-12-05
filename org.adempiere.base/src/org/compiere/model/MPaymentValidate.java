@@ -165,7 +165,7 @@ public class MPaymentValidate
 		String ccNumber1 = checkNumeric(creditCardNumber);
 		int ccLength = ccNumber1.length();
 		//  Reverse string
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (int i = ccLength; i != 0; i--)
 			buf.append(ccNumber1.charAt(i-1));
 		String ccNumber = buf.toString();
@@ -429,7 +429,7 @@ public class MPaymentValidate
 		if (data == null || data.length() == 0)
 			return "";
 		//  Remove all non Digits
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < data.length(); i++)
 		{
 			if (Character.isDigit(data.charAt(i)))

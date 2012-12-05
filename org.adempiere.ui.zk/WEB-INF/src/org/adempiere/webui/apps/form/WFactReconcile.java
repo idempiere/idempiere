@@ -333,7 +333,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		}
 
 		//  Information
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		info.append(m_noSelected).append(" ").append(Msg.getMsg(Env.getCtx(), "Selected")).append(" / ").append(miniTable.getRowCount());
 		
 		differenceField.setText(m_format.format(selectedAmt));

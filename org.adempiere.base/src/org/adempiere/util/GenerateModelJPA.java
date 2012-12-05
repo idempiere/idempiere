@@ -532,7 +532,7 @@ public class GenerateModelJPA
 	private String addListValidation (StringBuffer sb, int AD_Reference_ID, 
 		String columnName, boolean nullable)
 	{
-		StringBuffer retValue = new StringBuffer();
+		StringBuilder retValue = new StringBuilder();
 		retValue.append("\n/** ").append(columnName).append(" AD_Reference_ID=").append(AD_Reference_ID) .append(" */\n")
 			.append("public static final int ").append(columnName.toUpperCase())
 			.append("_AD_Reference_ID=").append(AD_Reference_ID).append(";");

@@ -90,7 +90,7 @@ public class AdempiereUserError extends RuntimeException
 	public String toString ()
 	{
 		super.toString();
-		StringBuffer sb = new StringBuffer ("UserError: ");
+		StringBuilder sb = new StringBuilder ("UserError: ");
 		sb.append(getLocalizedMessage());
 		if (m_fixHint != null && m_fixHint.length() > 0)
 			sb.append(" (").append(m_fixHint).append (")");

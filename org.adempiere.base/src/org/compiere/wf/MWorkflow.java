@@ -589,7 +589,7 @@ public class MWorkflow extends X_AD_Workflow
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MWorkflow[");
+		StringBuilder sb = new StringBuilder ("MWorkflow[");
 		sb.append(get_ID()).append("-").append(getName())
 			.append ("]");
 		return sb.toString ();

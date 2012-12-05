@@ -215,7 +215,7 @@ public class InfoInOut extends Info
 			fBPartner_ID.setValue(new Integer(bp));
 
 		//  prepare table
-		StringBuffer where = new StringBuffer("i.IsActive='Y'");
+		StringBuilder where = new StringBuilder("i.IsActive='Y'");
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(Util.replace(p_whereClause, "M_InOut.", "i."));
 		prepareTable(s_invoiceLayout,
@@ -236,7 +236,7 @@ public class InfoInOut extends Info
 	 */
 	protected String getSQLWhere()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		if (fDocumentNo.getText().length() > 0)
 			sql.append(" AND UPPER(i.DocumentNo) LIKE ?");
 		if (fDescription.getText().length() > 0)

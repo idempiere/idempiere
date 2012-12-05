@@ -116,7 +116,7 @@ public class WTask extends Window implements EventListener<Event>
 						Thread.sleep(500);
 						Executions.activate(desktop, 500);
 						try {
-							StringBuffer sb = new StringBuffer();
+							StringBuilder sb = new StringBuilder();
 							sb.append(osTask.getOut())
 							.append("<br>-----------<br>")
 							.append(osTask.getErr())

@@ -404,7 +404,7 @@ public class InfoPAttribute extends CDialog
 		**/
 		
 		/***	Instance Attributes		*/		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		//	Serial No
 		String s = serNoField.getText();
 		if (s != null && s.length() > 0)

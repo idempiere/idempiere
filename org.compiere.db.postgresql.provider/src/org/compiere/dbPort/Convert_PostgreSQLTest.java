@@ -446,8 +446,8 @@ public final class Convert_PostgreSQLTest extends TestCase{
 				{"cast(NULL as number(10))","cast(NULL as NUMERIC)"},
 		};
 		String sql_end = " FROM AD_Table tbl";
-		StringBuffer sql = new StringBuffer(sql_begin);
-		StringBuffer sqle = new StringBuffer(sql_begin);
+		StringBuilder sql = new StringBuilder(sql_begin);
+		StringBuilder sqle = new StringBuilder(sql_begin);
 		for (int i = 0; i < sql_tests.length; i++) {
 			if (i > 0) {
 				sql.append(",");

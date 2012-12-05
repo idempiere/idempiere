@@ -600,7 +600,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			return;
 		}
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		load(get_TrxName()); // reload workfile
 		MAssetAcct assetacct = getA_AssetAcct(null, get_TrxName()); 
 		// TODO: teo_sarca: need to evaluate what happens when we change Depreciation method !!!

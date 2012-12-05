@@ -480,7 +480,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		
 		getWarehouseInfo(pp.getKey());
 
-		StringBuffer buf = new StringBuffer(m_M_WarehouseValue);
+		StringBuilder buf = new StringBuilder(m_M_WarehouseValue);
 		buf.append(m_Separator).append(txtAisleX.getText());
 		buf.append(m_Separator).append(txtBinY.getText());
 		buf.append(m_Separator).append(txtLevelZ.getText());

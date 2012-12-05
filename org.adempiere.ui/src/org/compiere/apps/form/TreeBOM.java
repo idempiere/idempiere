@@ -49,7 +49,7 @@ public class TreeBOM {
 		String value = product.getValue();
 		String name = product.get_Translation(MProduct.COLUMNNAME_Name);
 		//
-		StringBuffer sb = new StringBuffer(value);
+		StringBuilder sb = new StringBuilder(value);
 		if (name != null && !value.equals(name))
 			sb.append("_").append(product.getName());
 		sb.append(" [").append(uom.get_Translation(MUOM.COLUMNNAME_UOMSymbol)).append("]");
@@ -66,7 +66,7 @@ public class TreeBOM {
 		String value = bom.getValue();
 		String name = bom.get_Translation(MPPProductBOM.COLUMNNAME_Name);
 		//
-		StringBuffer sb = new StringBuffer(value);
+		StringBuilder sb = new StringBuilder(value);
 		if (name != null && !name.equals(value))
 			sb.append("_").append(name);
 		//
