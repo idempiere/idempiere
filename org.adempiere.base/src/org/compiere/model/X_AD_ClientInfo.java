@@ -29,7 +29,7 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121127L;
+	private static final long serialVersionUID = 20121205L;
 
     /** Standard Constructor */
     public X_AD_ClientInfo (Properties ctx, int AD_ClientInfo_ID, String trxName)
@@ -88,8 +88,8 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_Name)
 			.getPO(getAD_StorageProvider_ID(), get_TrxName());	}
 
-	/** Set AD_StorageProvider_ID.
-		@param AD_StorageProvider_ID AD_StorageProvider_ID	  */
+	/** Set Storage Provider.
+		@param AD_StorageProvider_ID Storage Provider	  */
 	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID)
 	{
 		if (AD_StorageProvider_ID < 1) 
@@ -98,8 +98,8 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 			set_Value (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
 	}
 
-	/** Get AD_StorageProvider_ID.
-		@return AD_StorageProvider_ID	  */
+	/** Get Storage Provider.
+		@return Storage Provider	  */
 	public int getAD_StorageProvider_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StorageProvider_ID);
@@ -652,6 +652,31 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	public int getM_ProductFreight_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductFreight_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_StorageProvider getStorageArchive() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_Name)
+			.getPO(getStorageArchive_ID(), get_TrxName());	}
+
+	/** Set StorageArchive_ID.
+		@param StorageArchive_ID StorageArchive_ID	  */
+	public void setStorageArchive_ID (int StorageArchive_ID)
+	{
+		if (StorageArchive_ID < 1) 
+			set_Value (COLUMNNAME_StorageArchive_ID, null);
+		else 
+			set_Value (COLUMNNAME_StorageArchive_ID, Integer.valueOf(StorageArchive_ID));
+	}
+
+	/** Get StorageArchive_ID.
+		@return StorageArchive_ID	  */
+	public int getStorageArchive_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_StorageArchive_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

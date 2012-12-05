@@ -116,9 +116,9 @@ public class MArchive extends X_AD_Archive {
 	/** Logger */
 	private static CLogger s_log = CLogger.getCLogger(MArchive.class);
 
-	private Integer m_inflated = null;
+	public Integer m_inflated = null;
 
-	private Integer m_deflated = null;
+	public Integer m_deflated = null;
 
 	/***************************************************************************
 	 * Standard Constructor
@@ -176,7 +176,7 @@ public class MArchive extends X_AD_Archive {
 	private boolean isStoreArchiveOnFileSystem = false;
 
 	/** archive (root) path - if file system is used */
-	private String m_archivePathRoot = "";
+	public String m_archivePathRoot = "";
 
 	/**
 	 * string replaces the archive root in stored xml file to allow the
@@ -184,6 +184,7 @@ public class MArchive extends X_AD_Archive {
 	 */
 	private final String ARCHIVE_FOLDER_PLACEHOLDER = "%ARCHIVE_FOLDER%";
 
+	public MStorageProvider provider;
 	/**
 	 * Get the isStoreArchiveOnFileSystem and archivePath for the client.
 	 * 
@@ -191,7 +192,22 @@ public class MArchive extends X_AD_Archive {
 	 * @param trxName
 	 */
 	private void initArchiveStoreDetails(Properties ctx, String trxName) {
-		final MClient client = new MClient(ctx, this.getAD_Client_ID(), trxName);
+	
+		MClientInfo clientInfo = MClientInfo.get(ctx);
+		
+		provider=new MStorageProvider(ctx, clientInfo.getStorageArchive_ID(), trxName);		
+		
+		m_archivePathRoot=provider.getFolder();
+		
+		if(m_archivePathRoot == null){
+			log.severe("no attachmentPath defined");
+		} else if (!m_archivePathRoot.endsWith(File.separator)) {
+			log.warning("archive path doesn't end with " + File.separator);
+			m_archivePathRoot = m_archivePathRoot + File.separator;
+			log.fine(m_archivePathRoot);
+		}
+		
+		/*final MClient client = new MClient(ctx, this.getAD_Client_ID(), trxName);
 		isStoreArchiveOnFileSystem = client.isStoreArchiveOnFileSystem();
 		if (isStoreArchiveOnFileSystem) {
 			if (File.separatorChar == '\\') {
@@ -206,7 +222,7 @@ public class MArchive extends X_AD_Archive {
 				m_archivePathRoot = m_archivePathRoot + File.separator;
 				log.fine(m_archivePathRoot);
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -226,12 +242,13 @@ public class MArchive extends X_AD_Archive {
 	} // toString
 
 	public byte[] getBinaryData() {
-		if (isStoreArchiveOnFileSystem) {
-			return getBinaryDataFromFileSystem();
-		}
-		return getBinaryDataFromDB();
+		
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null)
+			return prov.loadLOBData(this,provider);
+		return null;
 	}
-
+                          	
 	/**
 	 * @return attachment data
 	 */
@@ -381,11 +398,17 @@ public class MArchive extends X_AD_Archive {
 	 *            inflated data
 	 */
 	public void setBinaryData(byte[] inflatedData) {
-		if (isStoreArchiveOnFileSystem) {
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null)
+			 prov.save(this,provider,inflatedData);
+		
+		
+		
+		/*if (isStoreArchiveOnFileSystem) {
 			saveBinaryDataIntoFileSystem(inflatedData);
 		} else {
 			saveBinaryDataIntoDB(inflatedData);
-		}
+		}*/
 	}
 
 	/**
@@ -540,7 +563,7 @@ public class MArchive extends X_AD_Archive {
 	 * 
 	 * @return String
 	 */
-	private String getArchivePathSnippet() {
+	public String getArchivePathSnippet() {
 		StringBuilder path = new StringBuilder().append(this.getAD_Client_ID()).append(File.separator).append(this.getAD_Org_ID())
 				.append(File.separator);
 		if (this.getAD_Process_ID() > 0) {
@@ -563,7 +586,7 @@ public class MArchive extends X_AD_Archive {
 	 *            new
 	 * @return true if can be saved
 	 */
-	protected boolean beforeSave(boolean newRecord) {
+	/*protected boolean beforeSave(boolean newRecord) {
 		// Binary Data is Mandatory
 		byte[] data = super.getBinaryData();
 		if (data == null || data.length == 0)
@@ -571,6 +594,15 @@ public class MArchive extends X_AD_Archive {
 		//
 		log.fine(toString());
 		return true;
-	} // beforeSave
+	} // beforeSave*/
+	
+	
+	public byte[] getByteData(){
+		return super.getBinaryData();
+	}
+	
+	public void setByteData(byte[] BinaryData){
+		super.setBinaryData(BinaryData);
+	}
 
 } // MArchive

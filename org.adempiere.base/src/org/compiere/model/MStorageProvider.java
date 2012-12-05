@@ -45,15 +45,29 @@ public class MStorageProvider extends X_AD_StorageProvider {
 		if (method == null)
 			method = "DB";
 		query.put("method", method);
-		List<IAttachmentStore> storelist = Service.locator().list(IAttachmentStore.class, query).getServices();
-
-		IAttachmentStore store = null;		
-		if (storelist == null) {
+		IAttachmentStore store = Service.locator().locate(IAttachmentStore.class, query).getService();			
+		if(store == null){
 			log.saveError("Error", "No storage provider found");
-		} else {
-			store = storelist.get(0);
+
 		}
 		return store;
+	}
+	
+	public IArchiveStore getArchiveStore(){
+		
+		ServiceQuery query=new ServiceQuery();
+		String method = this.getMethod();
+		if (method == null)
+			method = "DB";
+		query.put("storage", method);
+		IArchiveStore store = Service.locator().locate(IArchiveStore.class, query).getService();
+		 
+		if(store == null){
+			log.saveError("Error", "No storage provider found");
+
+		}
+		return store;
+		
 	}
 		
 }

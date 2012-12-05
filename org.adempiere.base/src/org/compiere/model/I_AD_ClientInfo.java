@@ -74,10 +74,10 @@ public interface I_AD_ClientInfo
     /** Column name AD_StorageProvider_ID */
     public static final String COLUMNNAME_AD_StorageProvider_ID = "AD_StorageProvider_ID";
 
-	/** Set AD_StorageProvider_ID	  */
+	/** Set Storage Provider	  */
 	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID);
 
-	/** Get AD_StorageProvider_ID	  */
+	/** Get Storage Provider	  */
 	public int getAD_StorageProvider_ID();
 
 	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException;
@@ -399,6 +399,17 @@ public interface I_AD_ClientInfo
 	public int getM_ProductFreight_ID();
 
 	public org.compiere.model.I_M_Product getM_ProductFreight() throws RuntimeException;
+
+    /** Column name StorageArchive_ID */
+    public static final String COLUMNNAME_StorageArchive_ID = "StorageArchive_ID";
+
+	/** Set StorageArchive_ID	  */
+	public void setStorageArchive_ID (int StorageArchive_ID);
+
+	/** Get StorageArchive_ID	  */
+	public int getStorageArchive_ID();
+
+	public org.compiere.model.I_AD_StorageProvider getStorageArchive() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
