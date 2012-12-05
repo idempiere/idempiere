@@ -735,8 +735,8 @@ public final class WAccountDialog extends Window
 		/**
 		 *	Check completeness (mandatory fields) ... and for duplicates
 		 */
-		StringBuffer sb = new StringBuffer();
-		StringBuffer sql = new StringBuffer ("SELECT C_ValidCombination_ID, Alias FROM C_ValidCombination WHERE ");
+		StringBuilder sb = new StringBuilder();
+		StringBuilder sql = new StringBuilder ("SELECT C_ValidCombination_ID, Alias FROM C_ValidCombination WHERE ");
 		Object value = null;
 		if (s_AcctSchema.isHasAlias())
 		{
@@ -933,7 +933,7 @@ public final class WAccountDialog extends Window
 		if (IDvalue != 0 && s_AcctSchema.isHasAlias()
 			&& !f_Alias.getValue().toString().equals(Alias))
 		{
-			sql = new StringBuffer("UPDATE C_ValidCombination SET Alias=");
+			sql = new StringBuilder("UPDATE C_ValidCombination SET Alias=");
 			if (f_Alias.getValue().toString().length() == 0)
 				sql.append("NULL");
 			else

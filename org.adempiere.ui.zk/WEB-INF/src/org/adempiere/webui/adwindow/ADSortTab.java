@@ -152,7 +152,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	{
 		m_AD_Table_ID = AD_Table_ID;
 		int identifiersCount = 0;
-		StringBuffer identifierSql = new StringBuffer();
+		StringBuilder identifierSql = new StringBuilder();
 		String sql = "SELECT t.TableName, c.AD_Column_ID, c.ColumnName, e.Name,"	//	1..4
 			+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated "				//	4..8
 			+ "FROM AD_Table t, AD_Column c, AD_Element e "
@@ -396,7 +396,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		//	SELECT t.AD_Field_ID,t.Name,t.SeqNo,t.IsDisplayed FROM AD_Field t WHERE t.AD_Tab_ID=? ORDER BY 4 DESC,3,2
 		//	SELECT t.AD_PrintFormatItem_ID,t.Name,t.SeqNo,t.IsPrinted FROM AD_PrintFormatItem t WHERE t.AD_PrintFormat_ID=? ORDER BY 4 DESC,3,2
 		//	SELECT t.AD_PrintFormatItem_ID,t.Name,t.SortNo,t.IsOrderBy FROM AD_PrintFormatItem t WHERE t.AD_PrintFormat_ID=? ORDER BY 4 DESC,3,2
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		//	Columns
 		sql.append("SELECT t.").append(m_KeyColumnName)				//	1
 		.append(",").append(m_IdentifierSql)						//	2
@@ -640,7 +640,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 			return;
 		log.fine("");
 		boolean ok = true;
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		StringBuffer sql = null;
 		//	noList - Set SortColumn to null and optional YesNo Column to 'N'
 		for (int i = 0; i < noModel.getSize(); i++)

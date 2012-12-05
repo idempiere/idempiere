@@ -82,7 +82,7 @@ public class MUserDefField extends X_AD_UserDef_Field
 		
 		MUserDefField retValue = null;
 
-		StringBuffer sql = new StringBuffer("SELECT * "
+		StringBuilder sql = new StringBuilder("SELECT * "
 				+ " FROM AD_UserDef_Field f " 
 				+ " WHERE f.AD_Field_ID=? AND f.IsActive='Y' "
 				+ " AND f.AD_UserDef_Tab_ID=? ");

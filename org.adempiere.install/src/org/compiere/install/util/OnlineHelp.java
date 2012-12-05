@@ -188,7 +188,7 @@ public class OnlineHelp extends JEditorPane implements HyperlinkListener
 	 */
 	protected void displayError (String header, Object url, Object exception)
 	{
-		StringBuffer msg = new StringBuffer ("<HTML><BODY>");
+		StringBuilder msg = new StringBuilder ("<HTML><BODY>");
 		msg.append("<H1>").append(header).append("</H1>")
 			.append("<H3>URL=").append(url).append("</H3>")
 			.append("<H3>Error=").append(exception).append("</H3>")

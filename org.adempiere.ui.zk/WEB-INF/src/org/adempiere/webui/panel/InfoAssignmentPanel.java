@@ -271,7 +271,7 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 
 		//	Create Grid
 		
-		StringBuffer where = new StringBuffer(s_assignmentWHERE);
+		StringBuilder where = new StringBuilder(s_assignmentWHERE);
 		
 		if (whereClause != null && whereClause.length() > 0)
 			where.append(" AND ").append(whereClause);
@@ -305,7 +305,7 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 	
 	protected String getSQLWhere()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 
 		Integer S_ResourceType_ID = (Integer)fieldResourceType.getValue();
 		

@@ -315,7 +315,7 @@ public class PrintUtil
 	 */
 	public static void dump (PrinterJob job)
 	{
-		StringBuffer sb = new StringBuffer(job.getJobName());
+		StringBuilder sb = new StringBuilder(job.getJobName());
 		sb.append("/").append(job.getUserName())
 			.append(" Service=").append(job.getPrintService().getName())
 			.append(" Copies=").append(job.getCopies());
@@ -588,7 +588,7 @@ public class PrintUtil
 	 */
 	static private void updatePrintFormatHeader (int Header_ID, int Line_ID)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE AD_PrintFormatItem SET AD_PrintFormatChild_ID=")
 			.append(Line_ID)
 			.append(" WHERE AD_PrintFormatChild_ID IS NOT NULL AND AD_PrintFormat_ID=")

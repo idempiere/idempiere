@@ -91,7 +91,7 @@ public class MTask extends X_AD_Task
 		m_task = new Task(cmd);
 		m_task.start();
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		while (true)
 		{
 			//  Give it a bit of time
@@ -135,7 +135,7 @@ public class MTask extends X_AD_Task
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MTask[");
+		StringBuilder sb = new StringBuilder ("MTask[");
 		sb.append(get_ID())
 			.append("-").append(getName())
 			.append(";Server=").append(isServerProcess())

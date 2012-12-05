@@ -1202,7 +1202,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	}
         	else
         	{
-	            StringBuffer sb = new StringBuffer();
+	            StringBuilder sb = new StringBuilder();
 	            String msg = e.getMessage();
 	            if (msg != null && msg.length() > 0)
 	            {

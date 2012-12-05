@@ -83,7 +83,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 		String parentTable = tableName.substring(0, tableName.length()-4);
 		ArrayList<String> columns = getTranslatedColumns(parentTable);
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ")
 			.append(tableName)
 			.append(" (")
@@ -136,7 +136,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			PIPOContext ctx, Element element) throws SAXException{
 		String parentTable = tableName.substring(0, tableName.length()-4);
 		ArrayList<String> columns = getTranslatedColumns(parentTable);
-		StringBuffer buffer = new StringBuffer("UPDATE "+tableName+" SET ");
+		StringBuilder buffer = new StringBuilder("UPDATE "+tableName+" SET ");
 		for (String columnName : columns) {
 			buffer.append(columnName).append("=?,");
 		}

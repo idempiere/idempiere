@@ -136,7 +136,7 @@ public class MProductBOM extends X_M_Product_BOM
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MProductBOM[");
+		StringBuilder sb = new StringBuilder("MProductBOM[");
 		sb.append(get_ID()).append(",Line=").append(getLine())
 			.append(",Type=").append(getBOMType()).append(",Qty=").append(getBOMQty());
 		if (m_product == null)

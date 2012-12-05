@@ -119,7 +119,7 @@ public class MPaySelection extends X_C_PaySelection
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MPaySelection[");
+		StringBuilder sb = new StringBuilder("MPaySelection[");
 		sb.append(get_ID()).append(",").append(getName())
 			.append("]");
 		return sb.toString();

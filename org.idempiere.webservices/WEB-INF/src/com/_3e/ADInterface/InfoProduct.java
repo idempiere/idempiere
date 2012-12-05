@@ -68,7 +68,7 @@ public class InfoProduct  implements ADInfo {
 		//	setPriceListVersion (M_PriceList_Version_ID);
 
 		//	Create Grid
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		where.append("p.IsActive='Y'");
 		if (M_Warehouse_ID != 0)
 			where.append(" AND p.IsSummary='N'");
@@ -114,7 +114,7 @@ public class InfoProduct  implements ADInfo {
 	int M_PriceList_ID = 101;
 	
 	String getSQLWhere() {
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		
 		//	Optional PLV
 		//int M_PriceList_Version_ID = 0;
@@ -246,7 +246,7 @@ public class InfoProduct  implements ADInfo {
 	protected void prepareTable ( String from, String staticWhere, String orderBy)
 	{
 		
-		StringBuffer sql = new StringBuffer ("SELECT ");
+		StringBuilder sql = new StringBuilder ("SELECT ");
 		
 		for (int i = 0; i < s_productLayout.length; i++)
 		{
@@ -385,7 +385,7 @@ public class InfoProduct  implements ADInfo {
 
 	public String getSQL() {
 		String dynWhere = getSQLWhere();
-		StringBuffer sql = new StringBuffer (m_sqlMain);
+		StringBuilder sql = new StringBuilder (m_sqlMain);
 		if (dynWhere.length() > 0)
 			sql.append(dynWhere);   //  includes first AND
 		
@@ -401,7 +401,7 @@ public class InfoProduct  implements ADInfo {
 	
 	public String getSQLCount() {
 		String dynWhere = getSQLWhere();
-		StringBuffer sql = new StringBuffer (m_sqlCount);
+		StringBuilder sql = new StringBuilder (m_sqlCount);
 		if (dynWhere.length() > 0)
 			sql.append(dynWhere);   //  includes first AND
 		

@@ -207,7 +207,7 @@ public class PrintData implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("PrintData[");
+		StringBuilder sb = new StringBuilder("PrintData[");
 		sb.append(m_name).append(",Rows=").append(m_matrix.getRowCount());
 		if (m_TableName != null)
 			sb.append(",TableName=").append(m_TableName);

@@ -182,7 +182,7 @@ public class POInfoColumn implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("POInfo.Column[");
+		StringBuilder sb = new StringBuilder("POInfo.Column[");
 		sb.append(ColumnName).append(",ID=").append(AD_Column_ID)
 			.append(",DisplayType=").append(DisplayType)
 			.append(",ColumnClass=").append(ColumnClass);

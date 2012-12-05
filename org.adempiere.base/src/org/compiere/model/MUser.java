@@ -179,7 +179,7 @@ public class MUser extends X_AD_User
 		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
 		MUser retValue = null;
 		
-		StringBuffer where = new StringBuffer("Password IS NOT NULL AND ");
+		StringBuilder where = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
 			where.append("EMail=?");
 		else
@@ -385,7 +385,7 @@ public class MUser extends X_AD_User
 	private String cleanValue (String value)
 	{
 		char[] chars = value.toCharArray();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < chars.length; i++)
 		{
 			char ch = chars[i];

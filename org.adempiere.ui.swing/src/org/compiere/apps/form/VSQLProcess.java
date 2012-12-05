@@ -151,7 +151,7 @@ public class VSQLProcess extends CPanel
 	{
 		if (sqlStatements == null || sqlStatements.length() == 0)
 			return "";
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		//
 		StringTokenizer st = new StringTokenizer(sqlStatements, ";", false);
 		while (st.hasMoreTokens())
@@ -173,7 +173,7 @@ public class VSQLProcess extends CPanel
 	{
 		if (sqlStatement == null)
 			return "";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		char[] chars = sqlStatement.toCharArray();
 		for (int i = 0; i < chars.length; i++)
 		{

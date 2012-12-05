@@ -349,7 +349,7 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	public String toString()
 	{
 		String cn = getClass().getName();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(cn.substring(cn.lastIndexOf('.')+1)).append("[");
 		sb.append("Bounds=").append(getBounds())
 			.append(",Height=").append(p_height).append("(").append(p_maxHeight)

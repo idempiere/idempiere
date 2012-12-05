@@ -1626,7 +1626,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public static void printConfirm (int type, int Record_ID)
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		if (type == ORDER || type == SHIPMENT || type == INVOICE)
 			sql.append("UPDATE ").append(DOC_BASETABLES[type])
 				.append(" SET DatePrinted=SysDate, IsPrinted='Y' WHERE ")

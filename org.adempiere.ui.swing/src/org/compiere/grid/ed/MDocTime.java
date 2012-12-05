@@ -147,7 +147,7 @@ public final class MDocTime extends PlainDocument
 	 */
 	private String getText()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try
 		{
 			sb.append(getContent().getString(0, getContent().length()-1));		//	cr at end

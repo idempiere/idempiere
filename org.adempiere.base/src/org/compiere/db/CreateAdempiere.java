@@ -351,7 +351,7 @@ public class CreateAdempiere
 		//	
 		MColumn[] columns = mTable.getColumns(false);
 		
-		StringBuffer sb = new StringBuffer("CREATE TABLE ");
+		StringBuilder sb = new StringBuilder("CREATE TABLE ");
 		sb.append(tableName).append(" (");
 		try
 		{

@@ -125,7 +125,7 @@ public final class MDocNumber extends PlainDocument
 		//	remove all Thousands
 		if (content.indexOf(m_groupingSeparator) != -1)
 		{
-			StringBuffer result = new StringBuffer();
+			StringBuilder result = new StringBuilder();
 			for (int i = 0; i < content.length(); i++)
 			{
 				if (content.charAt(i) == m_groupingSeparator)
@@ -173,7 +173,7 @@ public final class MDocNumber extends PlainDocument
 			if (pos != 0)
 			{
 				content = getText();
-				StringBuffer result = new StringBuffer();
+				StringBuilder result = new StringBuilder();
 				int correction = 0;
 				for (int i = 0; i < content.length(); i++)
 				{
@@ -281,7 +281,7 @@ public final class MDocNumber extends PlainDocument
 		//	remove all Thousands
 		if (content.indexOf(m_groupingSeparator) != -1)
 		{
-			StringBuffer result = new StringBuffer();
+			StringBuilder result = new StringBuilder();
 			for (int i = 0; i < content.length(); i++)
 			{
 				if (content.charAt(i) == m_groupingSeparator && i != origOffset)

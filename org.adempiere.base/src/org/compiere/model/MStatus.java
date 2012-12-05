@@ -222,7 +222,7 @@ public class MStatus extends X_R_Status
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MStatus[");
+		StringBuilder sb = new StringBuilder ("MStatus[");
 		sb.append(get_ID()).append("-").append(getName())
 			.append ("]");
 		return sb.toString ();

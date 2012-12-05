@@ -156,7 +156,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         }
         else
         {
-            StringBuffer sb = new StringBuffer (" ");
+            StringBuilder sb = new StringBuilder (" ");
             sb.append(text).append(" ");
             statusDB.setValue(sb.toString());
         }

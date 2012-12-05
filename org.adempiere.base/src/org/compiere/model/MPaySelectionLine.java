@@ -173,7 +173,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MPaySelectionLine[");
+		StringBuilder sb = new StringBuilder("MPaySelectionLine[");
 		sb.append(get_ID()).append(",C_Invoice_ID=").append(getC_Invoice_ID())
 			.append(",PayAmt=").append(getPayAmt())
 			.append(",DifferenceAmt=").append(getDifferenceAmt())

@@ -70,7 +70,7 @@ public class MLotCtl extends X_M_LotCtl
 	 */
 	public MLot createLot (int M_Product_ID)
 	{
-		StringBuffer name = new StringBuffer();
+		StringBuilder name = new StringBuilder();
 		if (getPrefix() != null)
 			name.append(getPrefix());
 		int no = getCurrentNext();

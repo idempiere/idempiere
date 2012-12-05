@@ -56,7 +56,7 @@ public class WebBasketLine
 	 */
 	public String toStringX()
 	{
-		StringBuffer sb = new StringBuffer("WebBasketLine[");
+		StringBuilder sb = new StringBuilder("WebBasketLine[");
 		sb.append(m_line).append("-M_Product_ID=") .append(m_M_Product_ID)
 			.append(",Qty=").append(m_Quantity).append(",Price=").append(m_Price)
 			.append(",Total=").append(getTotal())
@@ -70,7 +70,7 @@ public class WebBasketLine
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(m_Quantity).append(" * ").append(m_Name)
 			.append(" = ").append(getTotal());
 		return sb.toString();

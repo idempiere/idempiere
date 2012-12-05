@@ -177,7 +177,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 
 		//
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-		StringBuffer sql = new StringBuffer("SELECT "	//	QtyEntered
+		StringBuilder sql = new StringBuilder("SELECT "	//	QtyEntered
 			+ "l.MovementQty-SUM(NVL(mi.Qty, 0)), l.QtyEntered/l.MovementQty,"
 			+ " l.C_UOM_ID, COALESCE(uom.UOMSymbol, uom.Name),"			//  3..4
 			+ " l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line,"        //  5..9
@@ -251,7 +251,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 //	    MRMA m_rma = new MRMA(Env.getCtx(), M_RMA_ID, null);
 
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-	    StringBuffer sqlStmt = new StringBuffer();
+	    StringBuilder sqlStmt = new StringBuilder();
 	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - COALESCE(rl.QtyInvoiced, 0), iol.M_Product_ID, p.Name, uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
 	    sqlStmt.append("FROM M_RMALine rl INNER JOIN M_InOutLine iol ON rl.M_InOutLine_ID=iol.M_InOutLine_ID ");
 

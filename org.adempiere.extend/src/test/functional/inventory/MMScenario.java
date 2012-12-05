@@ -79,7 +79,7 @@ public class MMScenario
 	@Override
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("__SCENARIO________________________________________________\n");
 		sb.append("   Name : "+this.name).append("\n");
 		sb.append("    Key : "+this.key).append("\n");

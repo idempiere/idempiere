@@ -302,7 +302,7 @@ public class CLogger extends Logger implements Serializable
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("CLogger[");
+		StringBuilder sb = new StringBuilder ("CLogger[");
 		sb.append (getName())
 			.append (",Level=").append (getLevel()).append ("]");
 		return sb.toString ();

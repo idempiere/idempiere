@@ -155,7 +155,7 @@ public class CacheHandler {
 			    urlConn.connect();
 			    Reader stream =             new java.io.InputStreamReader(
 			                                urlConn.getInputStream());
-			    StringBuffer srvOutput = new StringBuffer();
+			    StringBuilder srvOutput = new StringBuilder();
 
 			    	try {
 			    		int c;

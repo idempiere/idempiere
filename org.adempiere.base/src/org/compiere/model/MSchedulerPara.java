@@ -86,7 +86,7 @@ public class MSchedulerPara extends X_AD_Scheduler_Para
 	 */
 	public String toString() 
 	{
-		StringBuffer sb = new StringBuffer("MSchedulerPara[");
+		StringBuilder sb = new StringBuilder("MSchedulerPara[");
 		sb.append(get_ID()).append("-")
 			.append(getColumnName()).append("=").append(getParameterDefault())
 			.append("]");

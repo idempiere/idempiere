@@ -195,7 +195,7 @@ implements DocAction
 	
 	public String getSummary() 
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("@DocumentNo@ #").append(getDocumentNo());
 		return sb.toString();
 	}

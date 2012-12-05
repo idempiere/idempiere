@@ -717,7 +717,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (m_tableElement == null || m_tableElement.getPageXCount() == 1)
 			return "";
 		int pi = m_tableElement.getPageIndex(pageNo);
-		StringBuffer sb = new StringBuffer("(");
+		StringBuilder sb = new StringBuilder("(");
 		sb.append(m_tableElement.getPageYIndex(pi)+1).append(",")
 			.append(m_tableElement.getPageXIndex(pi)+1).append(")");
 		return sb.toString();
@@ -731,7 +731,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	{
 		if (m_tableElement == null || m_tableElement.getPageXCount() == 1)
 			return "";
-		StringBuffer sb = new StringBuffer("(");
+		StringBuilder sb = new StringBuilder("(");
 		sb.append(m_tableElement.getPageYCount()).append(",")
 			.append(m_tableElement.getPageXCount()).append(")");
 		return sb.toString();

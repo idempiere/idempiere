@@ -333,7 +333,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		tabbedPane.setSelectedIndex(1);
 		//
 		ProcessInfoUtil.setLogFromDB(genForm.getProcessInfo());
-		StringBuffer iText = new StringBuffer();
+		StringBuilder iText = new StringBuilder();
 		iText.append("<b>").append(genForm.getProcessInfo().getSummary())
 			.append("</b><br>(")
 			.append(Msg.getMsg(Env.getCtx(), genForm.getTitle()))

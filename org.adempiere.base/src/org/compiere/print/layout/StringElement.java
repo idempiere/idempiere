@@ -608,7 +608,7 @@ public class StringElement extends PrintElement
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("StringElement[");
+		StringBuilder sb = new StringBuilder("StringElement[");
 		sb.append("Bounds=").append(getBounds())
 			.append(",Height=").append(p_height).append("(").append(p_maxHeight)
 			.append("),Width=").append(p_width).append("(").append(p_maxHeight)

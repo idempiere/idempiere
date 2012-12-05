@@ -519,7 +519,7 @@ public class MWFNode extends X_AD_WF_Node
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MWFNode[");
+		StringBuilder sb = new StringBuilder ("MWFNode[");
 		sb.append(get_ID())
 			.append("-").append(getName())
 			.append(",Action=").append(getActionInfo())
@@ -533,7 +533,7 @@ public class MWFNode extends X_AD_WF_Node
 	 */
 	public String toStringX ()
 	{
-		StringBuffer sb = new StringBuffer ("MWFNode[");
+		StringBuilder sb = new StringBuilder ("MWFNode[");
 		sb.append(getName())
 			.append("-").append(getActionInfo())
 			.append("]");

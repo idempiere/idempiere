@@ -261,7 +261,7 @@ public class FileUtil
 			boolean ignore = false;
 			//
 			char[] inLine = line.toCharArray();
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < inLine.length; i++)
 			{
 				char c = inLine[i];

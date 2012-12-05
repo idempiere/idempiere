@@ -160,7 +160,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRfQResponseLineQty[");
+		StringBuilder sb = new StringBuilder ("MRfQResponseLineQty[");
 		sb.append(get_ID()).append(",Rank=").append(getRanking())
 			.append(",Price=").append(getPrice())
 			.append(",Discount=").append(getDiscount())

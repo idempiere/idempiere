@@ -311,7 +311,7 @@ public abstract class Convert_SQL92 extends Convert {
 		if (trace)
 			log.info(newFrom.toString());
 		//
-		StringBuffer retValue = new StringBuffer (sqlStatement.length()+20);
+		StringBuilder retValue = new StringBuilder (sqlStatement.length()+20);
 		retValue.append(selectPart)
 			.append(newFrom).append(" ")
 			.append(newWherePart).append(rest);
@@ -334,7 +334,7 @@ public abstract class Convert_SQL92 extends Convert {
 	{
 	//	log.info("DECODE<== " + sqlStatement);
 		String statement = sqlStatement;
-		StringBuffer sb = new StringBuffer("CASE");
+		StringBuilder sb = new StringBuilder("CASE");
 
 		int index = statement.toUpperCase().indexOf("DECODE", fromIndex);
 		if (index <= 0) return sqlStatement;

@@ -125,7 +125,7 @@ public class VTableExcelAdapter
 				}
 
 				int colscount = table.getColumnCount();
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				GridTable model = (GridTable)table.getModel();
 				GridField[] fields = model.getFields();
 

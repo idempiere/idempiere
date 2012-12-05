@@ -74,7 +74,7 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 				}
 
 				String workflowNodeValue = getStringValue(element, "Value", excludes);
-				StringBuffer sqlB = new StringBuffer(
+				StringBuilder sqlB = new StringBuilder(
 						"SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID=? and Value =?");
 
 				int id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), workflowId, workflowNodeValue);

@@ -258,7 +258,7 @@ public class FDialog
 	 */    
     public static boolean ask(int windowNo, Component comp, String adMessage, String msg, Callback<Boolean> callback)
     {
-    	StringBuffer out = new StringBuffer();
+    	StringBuilder out = new StringBuilder();
 		if (adMessage != null && !adMessage.equals(""))
 			out.append(Msg.getMsg(Env.getCtx(), adMessage));
 		if (msg != null && msg.length() > 0)

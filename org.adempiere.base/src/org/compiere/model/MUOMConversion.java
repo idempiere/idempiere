@@ -736,7 +736,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MUOMConversion[");
+		StringBuilder sb = new StringBuilder ("MUOMConversion[");
 		sb.append(get_ID()).append("-C_UOM_ID=").append(getC_UOM_ID())
 			.append(",C_UOM_To_ID=").append(getC_UOM_To_ID())
 			.append(",M_Product_ID=").append(getM_Product_ID())

@@ -198,7 +198,7 @@ public class MUOM extends X_C_UOM
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("UOM[");
+		StringBuilder sb = new StringBuilder("UOM[");
 		sb.append("ID=").append(get_ID())
 			.append(", Name=").append(getName());
 		return sb.toString();

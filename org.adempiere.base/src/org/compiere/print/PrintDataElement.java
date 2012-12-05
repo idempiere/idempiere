@@ -393,7 +393,7 @@ public class PrintDataElement implements Serializable
 		if (m_value instanceof NamePair)
 		{
 			NamePair pp = (NamePair)m_value;
-			StringBuffer sb = new StringBuffer(m_columnName);
+			StringBuilder sb = new StringBuilder(m_columnName);
 			sb.append("(").append(pp.getID()).append(")")
 				.append("=").append(pp.getName());
 			if (m_isPKey)

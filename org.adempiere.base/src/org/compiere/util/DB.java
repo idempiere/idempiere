@@ -2040,7 +2040,7 @@ public final class DB
 		SQLWarning warn = warning;
 		while (warn != null)
 		{
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			buffer.append(warn.getMessage())
 				.append("; State=").append(warn.getSQLState())
 				.append("; ErrorCode=").append(warn.getErrorCode());
@@ -2135,7 +2135,7 @@ public final class DB
 			text = txt.substring(0, maxLength);
 
 		//  copy characters		(we need to look through anyway)
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		out.append(QUOTE);		//	'
 		for (int i = 0; i < text.length(); i++)
 		{
@@ -2355,7 +2355,7 @@ public final class DB
 	 */
 	public static void createT_Selection(int AD_PInstance_ID, Collection<Integer> selection, String trxName)
 	{
-		StringBuffer insert = new StringBuffer();
+		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) ");
 		int counter = 0;
 		for(Integer selectedId : selection)
@@ -2372,7 +2372,7 @@ public final class DB
 			if (counter >= 1000)
 			{
 				DB.executeUpdateEx(insert.toString(), trxName);
-				insert = new StringBuffer();
+				insert = new StringBuilder();
 				insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) ");
 				counter = 0;
 			}

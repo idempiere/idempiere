@@ -183,7 +183,7 @@ public class MRfQ extends X_C_RfQ
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRfQ[");
+		StringBuilder sb = new StringBuilder ("MRfQ[");
 		sb.append(get_ID()).append(",Name=").append(getName())
 			.append(",QuoteType=").append(getQuoteType())
 			.append("]");

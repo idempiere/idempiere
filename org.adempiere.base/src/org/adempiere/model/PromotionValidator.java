@@ -102,7 +102,7 @@ public class PromotionValidator implements ModelValidator {
 		String warehouseFilter = "M_PromotionPreCondition.M_Warehouse_ID IS NULL OR M_PromotionPreCondition.M_Warehouse_ID = ?";
 		String dateFilter = "M_PromotionPreCondition.StartDate <= ? AND (M_PromotionPreCondition.EndDate >= ? OR M_PromotionPreCondition.EndDate IS NULL)";
 
-		StringBuffer select = new StringBuffer();
+		StringBuilder select = new StringBuilder();
 		select.append(" SELECT M_PromotionPreCondition.M_PromotionPreCondition_ID FROM M_PromotionPreCondition ")
 			.append(" WHERE")
 			.append(" (" + bpFilter + ")")

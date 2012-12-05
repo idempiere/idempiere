@@ -217,7 +217,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("DataStatusEvent - ");
+		StringBuilder sb = new StringBuilder("DataStatusEvent - ");
 		if (m_AD_Message != null)
 			sb.append(m_AD_Message);
 		if (m_info != null)
@@ -240,7 +240,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	 */
 	public String getMessage()
 	{
-		StringBuffer retValue = new StringBuffer();
+		StringBuilder retValue = new StringBuilder();
 		if (m_inserting)
 			retValue.append("+");
 		retValue.append(m_changed ? (m_autoSave ? "*" : "?") : " ");

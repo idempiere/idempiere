@@ -115,7 +115,7 @@ public class JRQueryExecuter
             JRQueryChunk[] chunks = query.getChunks();
             if (chunks != null && chunks.length > 0)
             {
-                StringBuffer sbuffer = new StringBuffer();
+                StringBuilder sbuffer = new StringBuilder();
                 JRQueryChunk chunk = null;
                 for(int i = 0; i < chunks.length; i++)
                 {

@@ -288,7 +288,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MWFNextCondition[");
+		StringBuilder sb = new StringBuilder ("MWFNextCondition[");
 		sb.append(get_ID()).append(",SeqNo=").append(getSeqNo())
 			.append ("]");
 		return sb.toString ();

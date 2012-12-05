@@ -111,7 +111,7 @@ public class MTransaction extends X_M_Transaction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MTransaction[");
+		StringBuilder sb = new StringBuilder ("MTransaction[");
 		sb.append(get_ID()).append(",").append(getMovementType())
 			.append(",Qty=").append(getMovementQty())
 			.append(",M_Product_ID=").append(getM_Product_ID())

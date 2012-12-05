@@ -259,7 +259,7 @@ class AcctViewerData
 	protected String getButtonText (String tableName, String columnName, String selectSQL)
 	{
 		//  SELECT (<embedded>) FROM tableName avd WHERE avd.<selectSQL>
-		StringBuffer sql = new StringBuffer ("SELECT (");
+		StringBuilder sql = new StringBuilder ("SELECT (");
 		Language language = Env.getLanguage(Env.getCtx());
 		sql.append(MLookupFactory.getLookup_TableDirEmbed(language, columnName, "avd"))
 			.append(") FROM ").append(tableName).append(" avd WHERE avd.").append(selectSQL);
@@ -289,7 +289,7 @@ class AcctViewerData
 	protected RModel query()
 	{
 		//  Set Where Clause
-		StringBuffer whereClause = new StringBuffer();
+		StringBuilder whereClause = new StringBuilder();
 		//  Add Organization
 		if (C_AcctSchema_ID != 0)
 			whereClause.append(RModel.TABLE_ALIAS)
@@ -352,7 +352,7 @@ class AcctViewerData
 		RModel rm = getRModel();
 		
 		//  Set Order By Clause
-		StringBuffer orderClause = new StringBuffer();
+		StringBuilder orderClause = new StringBuilder();
 		if (sortBy1.length() > 0)
 		{
 			RColumn col = rm.getRColumn(sortBy1);

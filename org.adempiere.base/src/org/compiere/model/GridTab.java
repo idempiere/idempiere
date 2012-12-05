@@ -473,7 +473,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//
 		if (list.size() > 0 && CLogMgt.isLevelFiner())
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < list.size(); i++)
 				sb.append(list.get(i)).append(" ");
 			log.finer("(" + m_vo.Name + ") " + sb.toString());
@@ -2335,7 +2335,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		e.UpdatedBy = (Integer)getValue("UpdatedBy");
 		e.Record_ID = getValue(m_keyColumnName);
 		//  Info
-		StringBuffer info = new StringBuffer(getTableName());
+		StringBuilder info = new StringBuilder(getTableName());
 		
 		/* get UUID */
 		if (!e.isInserting() && e.getCurrentRow() >= 0 && e.getCurrentRow() < e.getTotalRows())

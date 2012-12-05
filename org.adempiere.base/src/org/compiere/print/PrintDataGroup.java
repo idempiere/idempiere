@@ -270,7 +270,7 @@ public class PrintDataGroup
 	 */
 	public String toString (boolean withData)
 	{
-		StringBuffer sb = new StringBuffer("PrintDataGroup[");
+		StringBuilder sb = new StringBuilder("PrintDataGroup[");
 		sb.append("Groups=");
 		for (int i = 0; i < m_groups.size(); i++)
 		{

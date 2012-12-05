@@ -560,7 +560,7 @@ public final class MRole extends X_AD_Role
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MRole[");
+		StringBuilder sb = new StringBuilder("MRole[");
 		sb.append(getAD_Role_ID()).append(",").append(getName())
 			.append(",UserLevel=").append(getUserLevel())
 			.append(",").append(getClientWhere(false))
@@ -576,7 +576,7 @@ public final class MRole extends X_AD_Role
 	 */
 	public String toStringX (Properties ctx)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Msg.translate(ctx, "AD_Role_ID")).append("=").append(getName())
 			.append(" - ").append(Msg.translate(ctx, "IsCanExport")).append("=").append(isCanExport())
 			.append(" - ").append(Msg.translate(ctx, "IsCanReport")).append("=").append(isCanReport())
@@ -706,7 +706,7 @@ public final class MRole extends X_AD_Role
 		log.fine("#" + m_orgAccess.length + (reload ? " - reload" : "")); 
 		if (Ini.isClient())
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < m_orgAccess.length; i++)
 			{
 				if (i > 0)
@@ -1032,7 +1032,7 @@ public final class MRole extends X_AD_Role
 		for (int i = 0; i < m_orgAccess.length; i++)
 			set.add(String.valueOf(m_orgAccess[i].AD_Client_ID));
 		//
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Iterator<String> it = set.iterator();
 		boolean oneOnly = true;
 		while (it.hasNext())
@@ -1112,7 +1112,7 @@ public final class MRole extends X_AD_Role
 				set.add(String.valueOf(m_orgAccess[i].AD_Org_ID));
 		}
 		//
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Iterator<String> it = set.iterator();
 		boolean oneOnly = true;
 		while (it.hasNext())
@@ -2062,7 +2062,7 @@ public final class MRole extends X_AD_Role
 		if (includes.size() != 0 && excludes.size() != 0)
 			log.warning("Mixing Include and Excluse rules - Will not return values");
 		
-		StringBuffer where = new StringBuffer(" AND ");
+		StringBuilder where = new StringBuilder(" AND ");
 		if (includes.size() == 1)
 			where.append(whereColumnName).append("=").append(includes.get(0));
 		else if (includes.size() > 1)
@@ -2115,7 +2115,7 @@ public final class MRole extends X_AD_Role
 		char c = mainSql.charAt(offset);
 		if (c == '.')
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			while (c != ' ' && c != ',' && c != '(')	//	delimeter
 			{
 				sb.insert(0, c);
@@ -2364,7 +2364,7 @@ public final class MRole extends X_AD_Role
 			}
 		}	//	for all Table Access
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (sbExclude.length() > 0)
 			sb.append(sbExclude).append(")");
 		if (sbInclude.length() > 0)
@@ -2468,7 +2468,7 @@ public final class MRole extends X_AD_Role
 			String orgName = "*";
 			if (AD_Org_ID != 0)
 				orgName = MOrg.get(getCtx(), AD_Org_ID).getName();
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append(Msg.translate(getCtx(), "AD_Client_ID")).append("=")
 				.append(clientName).append(" - ")
 				.append(Msg.translate(getCtx(), "AD_Org_ID")).append("=")
@@ -3032,7 +3032,7 @@ public final class MRole extends X_AD_Role
 	 */
 	public String getIncludedRolesWhereClause(String roleColumnSQL, List<Object> params)
 	{
-		StringBuffer whereClause = new StringBuffer();
+		StringBuilder whereClause = new StringBuilder();
 		if (params != null)
 		{
 			whereClause.append("?");

@@ -86,7 +86,7 @@ public final class PP_PayFlowPro extends PaymentProcessor
 		log.fine(p_mbap.getHostAddress() + " " + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
 			+ "; Proxy=" + p_mbap.getProxyAddress() + " " + p_mbap.getProxyPort() + " " + p_mbap.getProxyLogon() + " " + p_mbap.getProxyPassword());
 		//
-		StringBuffer param = new StringBuffer();
+		StringBuilder param = new StringBuilder();
 		//  Transaction Type
 		if (p_mp.getTrxType().equals(MPayment.TRXTYPE_Sales))
 			param.append("TRXTYPE=").append(p_mp.getTrxType());
@@ -148,7 +148,7 @@ public final class PP_PayFlowPro extends PaymentProcessor
 	public boolean process (String parameter)
 	{
 		long start = System.currentTimeMillis();
-		StringBuffer param = new StringBuffer(parameter);
+		StringBuilder param = new StringBuilder(parameter);
 		//  Usr/Pwd
 		param
 			.append("&PARTNER=").append(p_mbap.getPartnerID())

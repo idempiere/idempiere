@@ -205,7 +205,7 @@ public abstract class Convert
 	public String convertAll (String sqlStatements)
 	{
 		String[] sql = convert (sqlStatements);
-		StringBuffer sb = new StringBuffer (sqlStatements.length() + 10);
+		StringBuilder sb = new StringBuilder (sqlStatements.length() + 10);
 		for (int i = 0; i < sql.length; i++)
 		{
 			//  line.separator
@@ -323,7 +323,7 @@ public abstract class Convert
 	 * @return string
 	 */
 	protected String recoverQuotedStrings(String retValue, Vector<String>retVars) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < retVars.size(); i++) {
 			//hengsin, special character in replacement can cause exception
 			String replacement = (String) retVars.get(i);

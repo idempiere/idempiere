@@ -66,7 +66,7 @@ public class CStatementVO implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("CStatementVO[");
+		StringBuilder sb = new StringBuilder("CStatementVO[");
 		sb.append("SQL="+getSql());
 		if (m_trxName != null)
 			sb.append(" TrxName=" + m_trxName);

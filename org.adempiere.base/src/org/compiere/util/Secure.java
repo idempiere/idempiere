@@ -73,7 +73,7 @@ public class Secure implements SecureInterface
 	{
 		//	see also Util.toHex
 		int size = bytes.length;
-		StringBuffer buffer = new StringBuffer(size*2);
+		StringBuilder buffer = new StringBuilder(size*2);
 		for(int i=0; i<size; i++)
 		{
 			// convert byte to an int
@@ -409,7 +409,7 @@ public class Secure implements SecureInterface
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("Secure[");
+		StringBuilder sb = new StringBuilder ("Secure[");
 		sb.append(m_cipher)
 			.append ("]");
 		return sb.toString ();

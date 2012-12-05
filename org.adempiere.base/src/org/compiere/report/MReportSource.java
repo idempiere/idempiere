@@ -117,7 +117,7 @@ public class MReportSource extends X_PA_ReportSource
 	 * @return
 	 */
 	private String getWhereCombination(int PA_Hierarchy_ID) {
-		StringBuffer whcomb = new StringBuffer();
+		StringBuilder whcomb = new StringBuilder();
 		if (getC_ElementValue_ID() > 0) {
 			String whtree = MReportTree.getWhereClause (getCtx(), PA_Hierarchy_ID, MReportSource.ELEMENTTYPE_Account, getC_ElementValue_ID());
 			if (isIncludeNullsElementValue())

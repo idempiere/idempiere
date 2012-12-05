@@ -59,7 +59,7 @@ public class FinReportPeriod
 	 */
 	public String getPeriodWhere ()
 	{
-		StringBuffer sql = new StringBuffer ("BETWEEN ");
+		StringBuilder sql = new StringBuilder ("BETWEEN ");
 		sql.append(DB.TO_DATE(m_StartDate))
 			.append(" AND ")
 			.append(DB.TO_DATE(m_EndDate));
@@ -72,7 +72,7 @@ public class FinReportPeriod
 	 */
 	public String getYearWhere ()
 	{
-		StringBuffer sql = new StringBuffer ("BETWEEN ");
+		StringBuilder sql = new StringBuilder ("BETWEEN ");
 		sql.append(DB.TO_DATE(m_YearStartDate))
 			  .append(" AND ")
 			  .append(DB.TO_DATE(m_EndDate));
@@ -85,7 +85,7 @@ public class FinReportPeriod
 	 */
 	public String getTotalWhere ()
 	{
-		StringBuffer sql = new StringBuffer ("<= ");
+		StringBuilder sql = new StringBuilder ("<= ");
 		sql.append(DB.TO_DATE(m_EndDate));
 		return sql.toString();
 	}	//	getPeriodWhere

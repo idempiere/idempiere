@@ -557,7 +557,7 @@ public final class MPayment extends X_C_Payment
 		history.setIsError(!approved);
 		history.setProcessed(approved);
 		
-		StringBuffer msg = new StringBuffer();
+		StringBuilder msg = new StringBuilder();
 		if (approved)
 		{
 			if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
@@ -1074,7 +1074,7 @@ public final class MPayment extends X_C_Payment
 		String mm = String.valueOf(getCreditCardExpMM());
 		String yy = String.valueOf(getCreditCardExpYY());
 
-		StringBuffer retValue = new StringBuffer();
+		StringBuilder retValue = new StringBuilder();
 		if (mm.length() == 1)
 			retValue.append("0");
 		retValue.append(mm);
@@ -1935,7 +1935,7 @@ public final class MPayment extends X_C_Payment
 			cl.setDescription("Generated From Payment #" + getDocumentNo());
 			cl.setC_Currency_ID( this.getC_Currency_ID() );
 			cl.setC_Payment_ID( getC_Payment_ID() ); // Set Reference to payment.
-			StringBuffer info=new StringBuffer();
+			StringBuilder info=new StringBuilder();
 			info.append("Cash journal ( ")
 				.append(cash.getDocumentNo()).append(" )");				
 			m_processMsg = info.toString();
@@ -2665,7 +2665,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MPayment[");
+		StringBuilder sb = new StringBuilder ("MPayment[");
 		sb.append(get_ID()).append("-").append(getDocumentNo())
 			.append(",Receipt=").append(isReceipt())
 			.append(",PayAmt=").append(getPayAmt())
@@ -2723,7 +2723,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ")

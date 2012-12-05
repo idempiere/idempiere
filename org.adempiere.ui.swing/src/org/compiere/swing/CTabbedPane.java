@@ -331,7 +331,7 @@ public class CTabbedPane extends JTabbedPane
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("CTabbedPane [");
+		StringBuilder sb = new StringBuilder ("CTabbedPane [");
 		sb.append(super.toString());
 		CompiereColor bg = getBackgroundColor();
 		if (bg != null)

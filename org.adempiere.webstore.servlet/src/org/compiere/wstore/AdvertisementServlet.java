@@ -136,7 +136,7 @@ public class AdvertisementServlet extends HttpServlet
 			WebUtil.createForwardPage(response, "Web Advertisement Not Found", "advertisements.jsp", 0);
 			return;
 		}
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		//
 		String Name = WebUtil.getParameter (request, "Name");
 		if (Name != null && Name.length() > 0 && !Name.equals(ad.getName()))

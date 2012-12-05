@@ -41,7 +41,7 @@ public class ADDataStatusListener implements DataStatusListener {
 		//	Set Message / Info
 		if (e.getAD_Message() != null || e.getInfo() != null)
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			String msg = e.getMessage();
 			if (msg != null && msg.length() > 0)
 				sb.append(Msg.getMsg(m_ctx, e.getAD_Message()));

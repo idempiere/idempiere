@@ -579,7 +579,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 					.list();
 			if (list.size() > 0)
 			{
-				StringBuffer sb = new StringBuffer("You can not create project for this asset,"
+				StringBuilder sb = new StringBuilder("You can not create project for this asset,"
 									+" Project already has assets. View: ");
 				for (MAssetAddition aa : list)
 				{
@@ -922,7 +922,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	public String getSummary()
 	{
 		MAsset asset = getA_Asset(false);
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("@DocumentNo@ #").append(getDocumentNo())
 			.append(": @A_CreateAsset@=@").append(isA_CreateAsset() ? "Y" : "N").append("@")
 		;
@@ -1145,7 +1145,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("@DocumentNo@: " + getDocumentNo());
+		StringBuilder sb = new StringBuilder("@DocumentNo@: " + getDocumentNo());
 		MAsset asset = getA_Asset(false);
 		if(asset != null && asset.get_ID() > 0)
 		{

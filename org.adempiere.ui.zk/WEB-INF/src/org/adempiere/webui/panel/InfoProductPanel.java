@@ -588,7 +588,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 			where.append(" AND ")   //  replace fully qualified name with alias
 				.append(Util.replace(p_whereClause, "M_Product.", "p."));	
 		
-		StringBuffer sqlMain = new StringBuffer("SELECT ");
+		StringBuilder sqlMain = new StringBuilder("SELECT ");
 		int colIndex = 0;
 		ColumnInfo[] layout = getProductLayout();
 		for (colIndex = 0; colIndex < layout.length; colIndex++)
@@ -758,7 +758,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 
 		//	Create Grid
 		String orderBy = null;
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 		where.append("p.IsActive='Y'");
 		if (M_Warehouse_ID != 0)
 		{
@@ -954,7 +954,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 	 */
 	public String getSQLWhere()
 	{
-		StringBuffer where = new StringBuffer();
+		StringBuilder where = new StringBuilder();
 
 		//	Optional PLV
 		int M_PriceList_Version_ID = 0;
@@ -1348,7 +1348,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 			ListItem listitem = pickWarehouse.getSelectedItem();
 			if (listitem != null)
 				M_Warehouse_ID = (Integer)listitem.getValue();
-			StringBuffer where = new StringBuffer();
+			StringBuilder where = new StringBuilder();
 			where.append("p.IsActive='Y'");
 			if (M_Warehouse_ID != 0)
 				where.append(" AND p.IsSummary='N'");

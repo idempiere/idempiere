@@ -391,7 +391,7 @@ public class MTree extends MTree_Base
 	private void getNodeDetails ()
 	{
 		//  SQL for Node Info
-		StringBuffer sqlNode = new StringBuffer();
+		StringBuilder sqlNode = new StringBuilder();
 		String sourceTable = "t";
 		String fromClause = getSourceTableName(false);	//	fully qualified
 		String columnNameX = getSourceTableName(true);
@@ -615,7 +615,7 @@ public class MTree extends MTree_Base
 		int count = 0;
 		while (en.hasMoreElements())
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			MTreeNode nd = (MTreeNode)en.nextElement();
 			for (int i = 0; i < nd.getLevel(); i++)
 				sb.append(" ");
@@ -670,7 +670,7 @@ public class MTree extends MTree_Base
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MTree[");
+		StringBuilder sb = new StringBuilder("MTree[");
 		sb.append("AD_Tree_ID=").append(getAD_Tree_ID())
 			.append(", Name=").append(getName());
 		sb.append("]");

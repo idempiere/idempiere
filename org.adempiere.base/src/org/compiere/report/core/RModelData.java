@@ -102,7 +102,7 @@ public class RModelData
 	{
 		RColumn rc = null;
 		//  Create SQL
-		StringBuffer sql = new StringBuffer ("SELECT ");
+		StringBuilder sql = new StringBuilder ("SELECT ");
 		int size = cols.size();
 		for (int i = 0; i < size; i++)
 		{

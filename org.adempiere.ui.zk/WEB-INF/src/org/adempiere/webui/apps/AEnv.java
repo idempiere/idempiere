@@ -669,7 +669,7 @@ public final class AEnv
 	 */
 	public static String getWindowHeader(Properties ctx, int WindowNo)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (WindowNo > 0){
 			sb.append(Env.getContext(ctx, WindowNo, "WindowName", false)).append("  ");
 			final String documentNo = Env.getContext(ctx, WindowNo, "DocumentNo", false);
@@ -733,7 +733,7 @@ public final class AEnv
 	 * @return dialog header
 	 */
 	public static String getDialogHeader(Properties ctx, int windowNo) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (windowNo > 0){
 			sb.append(Env.getContext(ctx, windowNo, "WindowName", false)).append("  ");
 			final String documentNo = Env.getContext(ctx, windowNo, "DocumentNo", false);

@@ -744,7 +744,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	}
 
 	private String makePrefix(String name) {
-		StringBuffer prefix = new StringBuffer();
+		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
 		for (char ch : nameArray) {
 			if (Character.isLetterOrDigit(ch)) {

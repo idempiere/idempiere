@@ -160,7 +160,7 @@ public class AmtInWords_FA implements AmtInWords {
         if (amount == null)
             return amount;
         //
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int pos = amount.lastIndexOf('.');
         int pos2 = amount.lastIndexOf(',');
         if (pos2 > pos)

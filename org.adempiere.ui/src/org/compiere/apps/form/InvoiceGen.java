@@ -89,7 +89,7 @@ public class InvoiceGen extends GenForm
 	 */
 	private String getOrderSQL()
 	{
-	    StringBuffer sql = new StringBuffer(
+	    StringBuilder sql = new StringBuilder(
 	            "SELECT C_Order_ID, o.Name, dt.Name, DocumentNo, bp.Name, DateOrdered, TotalLines "
 	            + "FROM C_Invoice_Candidate_v ic, AD_Org o, C_BPartner bp, C_DocType dt "
 	            + "WHERE ic.AD_Org_ID=o.AD_Org_ID"
@@ -126,7 +126,7 @@ public class InvoiceGen extends GenForm
 	 */
 	private String getRMASql()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 	    sql.append("SELECT rma.M_RMA_ID, org.Name, dt.Name, rma.DocumentNo, bp.Name, rma.Created, rma.Amt ");
         sql.append("FROM M_RMA rma INNER JOIN AD_Org org ON rma.AD_Org_ID=org.AD_Org_ID ");
         sql.append("INNER JOIN C_DocType dt ON rma.C_DocType_ID=dt.C_DocType_ID ");
@@ -278,7 +278,7 @@ public class InvoiceGen extends GenForm
 		}
 		
 		//insert selection
-		StringBuffer insert = new StringBuffer();
+		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) ");
 		int counter = 0;
 		for(Integer selectedId : getSelection())
@@ -302,7 +302,7 @@ public class InvoiceGen extends GenForm
 					trx.rollback();
 					return info;
 				}
-				insert = new StringBuffer();
+				insert = new StringBuilder();
 				insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID) ");
 				counter = 0;
 			}

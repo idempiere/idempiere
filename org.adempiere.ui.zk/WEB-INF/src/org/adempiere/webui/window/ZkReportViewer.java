@@ -452,7 +452,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	}
 
 	private String makePrefix(String name) {
-		StringBuffer prefix = new StringBuffer();
+		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
 		for (char ch : nameArray) {
 			if (Character.isLetterOrDigit(ch)) {
@@ -591,7 +591,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	{
 		//	Report Info
 		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName() + "  " + Env.getHeader(Env.getCtx(), 0)));
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		sb.append(Msg.getMsg(Env.getCtx(), "DataCols")).append("=")
 			.append(m_reportEngine.getColumnCount())
 			.append(", ").append(Msg.getMsg(Env.getCtx(), "DataRows")).append("=")

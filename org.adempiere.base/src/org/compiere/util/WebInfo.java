@@ -98,7 +98,7 @@ public class WebInfo
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("WebInfo[");
+		StringBuilder sb = new StringBuilder("WebInfo[");
 		sb.append(getC_BPartner_ID());
 		sb.append("]");
 		return sb.toString();

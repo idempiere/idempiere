@@ -31,7 +31,7 @@ public class FillMandatoryException extends AdempiereException
 	
 	private static final String buildMessage(String...fields)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (String f : fields) {
 			if (sb.length() > 0)
 				sb.append(", ");

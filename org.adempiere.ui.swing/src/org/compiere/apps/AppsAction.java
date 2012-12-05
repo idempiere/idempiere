@@ -301,7 +301,7 @@ public final class AppsAction extends AbstractAction
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("AppsAction[");
+		StringBuilder sb = new StringBuilder("AppsAction[");
 		sb.append(m_action);
 		Object oo = getValue(Action.ACCELERATOR_KEY);
 		if (oo != null)

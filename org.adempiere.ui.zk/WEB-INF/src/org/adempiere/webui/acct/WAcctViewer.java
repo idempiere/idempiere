@@ -868,7 +868,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	{
 		//  Parameter Info
 
-		StringBuffer para = new StringBuffer();
+		StringBuilder para = new StringBuilder();
 
 		//  Reset Selection Data
 

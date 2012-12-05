@@ -480,8 +480,8 @@ public class ConfigOracle implements IDatabaseConfig
 	 */
 	private boolean testSQL (String sqlplus)
 	{
-		StringBuffer sbOut = new StringBuffer();
-		StringBuffer sbErr = new StringBuffer();
+		StringBuilder sbOut = new StringBuilder();
+		StringBuilder sbErr = new StringBuilder();
 		int result = -1;
 		try
 		{

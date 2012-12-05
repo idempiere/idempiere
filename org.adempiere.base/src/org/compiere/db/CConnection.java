@@ -968,7 +968,7 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer (m_apps_host);
+		StringBuilder sb = new StringBuilder (m_apps_host);
 		sb.append ("{").append (m_db_host)
 		  .append ("-").append (m_db_name)
 		  .append ("-").append (m_db_uid)
@@ -982,7 +982,7 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	public String toStringDetail ()
 	{
-		StringBuffer sb = new StringBuffer (m_apps_host);
+		StringBuilder sb = new StringBuilder (m_apps_host);
 		sb.append ("{").append (m_db_host)
 		  .append ("-").append (m_db_name)
 		  .append ("-").append (m_db_uid)
@@ -1019,7 +1019,7 @@ public class CConnection implements Serializable, Cloneable
 	{
 		if (m_dbInfo != null)
 			return m_dbInfo;
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		Connection conn = getConnection (true,
 			Connection.TRANSACTION_READ_COMMITTED);
 		if (conn != null)
@@ -1053,7 +1053,7 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	public String toStringLong ()
 	{
-		StringBuffer sb = new StringBuffer ("CConnection[");
+		StringBuilder sb = new StringBuilder ("CConnection[");
 		sb.append ("name=").append (escape(m_name))
 		  .append (",AppsHost=").append (escape(m_apps_host))
 		  .append (",WebPort=").append (m_webPort)
@@ -1197,7 +1197,7 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	public String getInfo ()
 	{
-		StringBuffer sb = new StringBuffer (m_info[0] != null ? m_info[0] : "");
+		StringBuilder sb = new StringBuilder (m_info[0] != null ? m_info[0] : "");
 		sb.append (" - ").append (m_info[1] != null ? m_info[1] : "")
 		  .append ("\n").append (getDatabase ().toString ())
 		  .append ("\nAppsServerOK=").append (isAppsServerOK (false))
@@ -1471,7 +1471,7 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	public String getStatus()
 	{
-		StringBuffer sb = new StringBuffer (m_apps_host);
+		StringBuilder sb = new StringBuilder (m_apps_host);
 		sb.append ("{").append (m_db_host)
 		  .append ("-").append (m_db_name)
 		  .append ("-").append (m_db_uid)

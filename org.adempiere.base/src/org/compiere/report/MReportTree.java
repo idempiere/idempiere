@@ -306,7 +306,7 @@ public class MReportTree
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MReportTree[ElementType=");
+		StringBuilder sb = new StringBuilder("MReportTree[ElementType=");
 		sb.append(m_ElementType).append(",TreeType=").append(m_TreeType)
 			.append(",").append(m_tree)
 			.append("]");

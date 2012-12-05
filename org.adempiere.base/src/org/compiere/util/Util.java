@@ -62,7 +62,7 @@ public class Util
 		//
 		int oldPartLength = oldPart.length();
 		String oldValue = value;
-		StringBuffer retValue = new StringBuffer();
+		StringBuilder retValue = new StringBuilder();
 		int pos = oldValue.indexOf(oldPart);
 		while (pos != -1)
 		{
@@ -85,7 +85,7 @@ public class Util
 	public static String removeCRLF (String in)
 	{
 		char[] inArray = in.toCharArray();
-		StringBuffer out = new StringBuffer (inArray.length);
+		StringBuilder out = new StringBuilder (inArray.length);
 		for (int i = 0; i < inArray.length; i++)
 		{
 			char c = inArray[i];
@@ -106,7 +106,7 @@ public class Util
 	public static String cleanWhitespace (String in)
 	{
 		char[] inArray = in.toCharArray();
-		StringBuffer out = new StringBuffer(inArray.length);
+		StringBuilder out = new StringBuilder(inArray.length);
 		boolean lastWasSpace = false;
 		for (int i = 0; i < inArray.length; i++)
 		{
@@ -153,7 +153,7 @@ public class Util
 		if (content == null)
 			return content;
 		//
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		char[] chars = content.toCharArray();
 		for (int i = 0; i < chars.length; i++)
 		{
@@ -401,7 +401,7 @@ public class Util
 			return iter;
 
 		//	Create new String
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (char c = iter.first(); c != AttributedCharacterIterator.DONE; c = iter.next())
 			sb.append(c);
 		aString = new AttributedString(sb.toString());
@@ -466,7 +466,7 @@ public class Util
 			{
 				Action a = am.get(amKeys[i]);
 
-				StringBuffer sb = new StringBuffer("- ");
+				StringBuilder sb = new StringBuilder("- ");
 				sb.append(a.getValue(Action.NAME));
 				if (a.getValue(Action.ACTION_COMMAND_KEY) != null)
 					sb.append(", Cmd=").append(a.getValue(Action.ACTION_COMMAND_KEY));

@@ -152,7 +152,7 @@ public class MProductPrice extends X_M_ProductPrice
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MProductPrice[");
+		StringBuilder sb = new StringBuilder ("MProductPrice[");
 		sb.append(getM_PriceList_Version_ID())
 			.append(",M_Product_ID=").append (getM_Product_ID())
 			.append(",PriceList=").append(getPriceList())

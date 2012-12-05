@@ -266,7 +266,7 @@ public class PrintInfo
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("PrintInfo[");
+		StringBuilder sb = new StringBuilder("PrintInfo[");
 		sb.append(getName());
 		if (getAD_Process_ID() != 0)
 			sb.append(",AD_Process_ID=").append(getAD_Process_ID());

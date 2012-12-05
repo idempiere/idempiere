@@ -338,7 +338,7 @@ public class PriceList
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("PriceList[");
+		StringBuilder sb = new StringBuilder("PriceList[");
 		sb.append(m_prices.size())
 			.append("]");
 		return sb.toString();

@@ -171,7 +171,7 @@ public class MWFProcess extends X_AD_WF_Process
 			return m_activities;
 		//
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuffer whereClause = new StringBuffer("AD_WF_Process_ID=?");
+		StringBuilder whereClause = new StringBuilder("AD_WF_Process_ID=?");
 		params.add(getAD_WF_Process_ID());
 		if (onlyActive)
 		{
@@ -563,7 +563,7 @@ public class MWFProcess extends X_AD_WF_Process
 		if (obj == null)
 			return;
 		//
-		StringBuffer TextMsg = new StringBuffer ();
+		StringBuilder TextMsg = new StringBuilder ();
 		if (obj instanceof Exception)
 		{
 			Exception ex = (Exception)obj;

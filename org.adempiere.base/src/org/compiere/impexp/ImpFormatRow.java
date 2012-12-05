@@ -441,7 +441,7 @@ public final class ImpFormatRow
 			retValue = retValue.substring(0, m_maxLength);
 
 		//  copy characters		(wee need to look through anyway)
-		StringBuffer out = new StringBuffer(retValue.length());
+		StringBuilder out = new StringBuilder(retValue.length());
 		for (int i = 0; i < retValue.length(); i++)
 		{
 			char c = retValue.charAt(i);
@@ -477,7 +477,7 @@ public final class ImpFormatRow
 
 		//	remove everything but digits & '.' & '-'
 		char[] charArray = info.toCharArray();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < charArray.length; i++)
 			if (Character.isDigit(charArray[i]) || charArray[i] == '.' || charArray[i] == '-')
 				sb.append(charArray[i]);

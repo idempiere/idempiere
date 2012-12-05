@@ -224,7 +224,7 @@ public class RecordAccessDialog extends CDialog
 			setLine(ra);
 		}
 		//	Label
-		StringBuffer txt = new StringBuffer();
+		StringBuilder txt = new StringBuilder();
 		if (newRecord)
 			txt.append("+");
 		txt.append(m_currentRow+1).append("/").append(maxIndex+1);

@@ -324,7 +324,7 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	
 	@Override
 	public String toString() {
-		StringBuffer items = new StringBuffer("[");
+		StringBuilder items = new StringBuilder("[");
 		for (Listitem item : getItems()) {
 			if (items.length() > 1)
 				items.append(", ");

@@ -346,7 +346,7 @@ public class CLogFile extends Handler
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("CLogFile[");
+		StringBuilder sb = new StringBuilder ("CLogFile[");
 		sb.append(getFileName()).append(",Level=").append(getLevel())
 			.append ("]");
 		return sb.toString ();

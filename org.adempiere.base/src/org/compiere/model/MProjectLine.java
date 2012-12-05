@@ -161,7 +161,7 @@ public class MProjectLine extends X_C_ProjectLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MProjectLine[");
+		StringBuilder sb = new StringBuilder ("MProjectLine[");
 			sb.append (get_ID()).append ("-")
 				.append (getLine())
 				.append(",C_Project_ID=").append(getC_Project_ID())

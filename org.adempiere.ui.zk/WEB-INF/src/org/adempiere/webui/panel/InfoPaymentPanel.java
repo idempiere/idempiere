@@ -282,7 +282,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 			fBPartner_ID.setValue(new Integer(bp));
 
 		// Prepare table
-		StringBuffer where = new StringBuffer("p.IsActive='Y'");
+		StringBuilder where = new StringBuilder("p.IsActive='Y'");
 
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(Util.replace(p_whereClause, "C_Payment.", "p."));
@@ -302,7 +302,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 	protected String getSQLWhere()
 	{
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 
 		if (fDocumentNo.getText().length() > 0)
 			sql.append(" AND UPPER(p.DocumentNo) LIKE ?");

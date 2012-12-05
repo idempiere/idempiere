@@ -505,7 +505,7 @@ public class CustomizeGridViewPanel extends Panel
 		//	yesList
 		int index = 0;
 		boolean ok = true;
-		StringBuffer custom = new StringBuffer(); 
+		StringBuilder custom = new StringBuilder(); 
 		for (int i = 0; i < yesModel.getSize(); i++)
 		{
 			ListElement pp = (ListElement)yesModel.getElementAt(i);

@@ -498,7 +498,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 		**/
 		
 		/***	Instance Attributes		*/		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		//	Serial No
 		String s = serNoField.getComponent().getText();
 		if (s != null && s.length() > 0)

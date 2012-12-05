@@ -290,7 +290,7 @@ public class AccessSqlParser
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("AccessSqlParser[");
+		StringBuilder sb = new StringBuilder("AccessSqlParser[");
 		if (m_tableInfo == null)
 			sb.append(m_sqlOriginal);
 		else
@@ -440,7 +440,7 @@ public class AccessSqlParser
 		 */
 		public String toString()
 		{
-			StringBuffer sb = new StringBuffer(m_tableName);
+			StringBuilder sb = new StringBuilder(m_tableName);
 			if (getSynonym().length() > 0)
 				sb.append("=").append(m_synonym);
 			return sb.toString();

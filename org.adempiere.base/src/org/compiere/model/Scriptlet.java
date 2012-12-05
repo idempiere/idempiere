@@ -434,7 +434,7 @@ public class Scriptlet
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer(m_variable);
+		StringBuilder sb = new StringBuilder(m_variable);
 		sb.append(" { ").append(m_script).append(" } = ").append(getResult(true));
 		return sb.toString();
 	}   //  toString

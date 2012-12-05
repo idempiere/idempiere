@@ -334,7 +334,7 @@ public class MRequestType extends X_R_RequestType
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRequestType[");
+		StringBuilder sb = new StringBuilder ("MRequestType[");
 		sb.append(get_ID()).append("-").append(getName())
 			.append ("]");
 		return sb.toString();
@@ -357,7 +357,7 @@ public class MRequestType extends X_R_RequestType
 		String bpColumn = "C_BPartner_ID";
 		String pColumn = "M_Product_ID";
 		//	PlannedAmt -> PlannedQty -> Count
-		StringBuffer sb = new StringBuffer("SELECT COUNT(*) "
+		StringBuilder sb = new StringBuilder("SELECT COUNT(*) "
 			+ "FROM R_Request WHERE R_RequestType_ID=" + getR_RequestType_ID()
 			+ " AND Processed<>'Y'");
 		//	Date Restriction
@@ -409,7 +409,7 @@ public class MRequestType extends X_R_RequestType
 		String bpColumn = "C_BPartner_ID";
 		String pColumn = "M_Product_ID";
 		//
-		StringBuffer sb = new StringBuffer("SELECT COUNT(*), ");
+		StringBuilder sb = new StringBuilder("SELECT COUNT(*), ");
 		String groupBy = null;
 		String orderBy = null;
 		//

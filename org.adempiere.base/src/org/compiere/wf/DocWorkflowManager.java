@@ -203,7 +203,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 	*/
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("DocWorkflowManager[");
+		StringBuilder sb = new StringBuilder("DocWorkflowManager[");
 		sb.append("Called=").append(m_noCalled)
 			.append(",Stated=").append(m_noStarted)
 			.append("]");

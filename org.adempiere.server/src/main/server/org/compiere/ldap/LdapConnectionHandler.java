@@ -159,7 +159,7 @@ public class LdapConnectionHandler extends Thread
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("LdapConnectionHandler[");
+		StringBuilder sb = new StringBuilder ("LdapConnectionHandler[");
 		sb.append (hashCode()).append ("]");
 		return sb.toString ();
 	}	//	toString

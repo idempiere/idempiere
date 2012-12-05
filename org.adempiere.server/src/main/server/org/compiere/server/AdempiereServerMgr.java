@@ -484,7 +484,7 @@ public class AdempiereServerMgr
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("AdempiereServerMgr[");
+		StringBuilder sb = new StringBuilder ("AdempiereServerMgr[");
 		sb.append("Servers=").append(m_servers.size())
 			.append(",ContextSize=").append(m_ctx.size())
 			.append(",Started=").append(m_start)
