@@ -798,7 +798,7 @@ public class MiniTable extends CTable implements IMiniTable
 						if(subtotal == null)
 							subtotal = new Double(0);
 						if(amt == null )
-							subtotal = new Double(0);
+							amt = new Double(0);
 						total[col] = subtotal + amt;
 						
 					}		
@@ -873,7 +873,7 @@ public class MiniTable extends CTable implements IMiniTable
 						if(subtotal == null)
 							subtotal = new Double(0);
 						if(amt == null )
-							subtotal = new Double(0);
+							amt = new Double(0);
 						total[col] = subtotal + amt;
 						
 					}		
