@@ -200,7 +200,7 @@ public class StatusBar extends CPanel implements IStatusBar
 		}
 		else
 		{
-			StringBuffer sb = new StringBuffer (" ");
+			StringBuilder sb = new StringBuilder (" ");
 			sb.append(text).append(" ");
 			statusDB.setText(sb.toString());
 			if (!statusDB.isVisible())

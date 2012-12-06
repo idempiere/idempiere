@@ -163,7 +163,7 @@ public class MProjectType extends X_C_ProjectType
 		String bpColumn = "C_BPartner_ID";
 		String pColumn = null;
 		//	PlannedAmt -> PlannedQty -> Count
-		StringBuffer sb = new StringBuffer("SELECT COALESCE(SUM(PlannedAmt),COALESCE(SUM(PlannedQty),COUNT(*))) "
+		StringBuilder sb = new StringBuilder("SELECT COALESCE(SUM(PlannedAmt),COALESCE(SUM(PlannedQty),COUNT(*))) "
 			+ "FROM C_Project WHERE C_ProjectType_ID=" + getC_ProjectType_ID()
 			+ " AND Processed<>'Y')");
 		//	Date Restriction
@@ -215,7 +215,7 @@ public class MProjectType extends X_C_ProjectType
 		String bpColumn = "C_BPartner_ID";
 		String pColumn = null;
 		//
-		StringBuffer sb = new StringBuffer("SELECT COALESCE(SUM(PlannedAmt),COALESCE(SUM(PlannedQty),COUNT(*))), ");
+		StringBuilder sb = new StringBuilder("SELECT COALESCE(SUM(PlannedAmt),COALESCE(SUM(PlannedQty),COUNT(*))), ");
 		String orderBy = null;
 		String groupBy = null;
 		//

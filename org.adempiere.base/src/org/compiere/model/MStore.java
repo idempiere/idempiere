@@ -294,7 +294,7 @@ public class MStore extends X_W_Store
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("WStore[");
+		StringBuilder sb = new StringBuilder ("WStore[");
 		sb.append(getWebContext(true))
 			.append ("]");
 		return sb.toString ();
@@ -386,7 +386,7 @@ public class MStore extends X_W_Store
 			log.warning("No Message");
 			return false;
 		}
-		StringBuffer msgText = new StringBuffer();
+		StringBuilder msgText = new StringBuilder();
 		if (getEMailHeader() != null)
 			msgText.append(getEMailHeader());
 		msgText.append(message);

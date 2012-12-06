@@ -623,7 +623,7 @@ public class CLogMgt
 	 */
 	private static String getServerInfo()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		CConnection cc = CConnection.get();
 		//  Host
 		sb.append(cc.getAppsHost()).append(" (");
@@ -645,7 +645,7 @@ public class CLogMgt
 	 */
 	private static String getDatabaseInfo()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(CConnection.get().getDbHost()).append(" : ")
 			.append(CConnection.get().getDbPort()).append(" / ")
 			.append(CConnection.get().getDbName());

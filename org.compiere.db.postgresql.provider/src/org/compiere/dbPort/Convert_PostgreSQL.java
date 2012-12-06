@@ -124,7 +124,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	@Override
 	protected String escapeQuotedString(String in)
 	{
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		boolean escape = false;
 		int size = in.length();
 		for(int i = 0; i < size; i++) {
@@ -160,7 +160,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	 */
 	protected String convertComplexStatement(String sqlStatement) {
 		String retValue = sqlStatement;
-		StringBuffer sb = null;
+		StringBuilder sb = null;
 
 		// Convert all decode parts
 		int found = retValue.toUpperCase().indexOf("DECODE"); 
@@ -380,7 +380,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		String targetAlias = null;
 		
 		String sqlUpper = sqlStatement.toUpperCase();
-		StringBuffer token = new StringBuffer();
+		StringBuilder token = new StringBuilder();
 		String previousToken = null;
 		int charIndex = 0;
 		int sqlLength = sqlUpper.length();
@@ -406,7 +406,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 							targetAlias = targetTable;
 					}
 					previousToken = token.toString();
-					token = new StringBuffer();
+					token = new StringBuilder();
 				}
 			}
 			else
@@ -428,7 +428,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			//get the sub query
 			String beforePreviousToken = null;
 			previousToken = null;
-			token = new StringBuffer();
+			token = new StringBuilder();
 			while (charIndex < sqlLength)
 			{
 				char c = sqlUpper.charAt(charIndex);
@@ -490,7 +490,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						}
 						beforePreviousToken = previousToken;
 						previousToken = token.toString();
-						token = new StringBuffer();
+						token = new StringBuilder();
 					}
 				}
 				else{
@@ -522,7 +522,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			String mainWhere = "";
 			String otherUpdateFields = "";
 			//get update where clause
-			token = new StringBuffer();
+			token = new StringBuilder();
 			for(int i = subQueryEnd; i < select.length(); i++)
 			{
 				char c = select.charAt(i);
@@ -536,7 +536,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 							mainWhere = select.substring(i + 1);
 							break;
 						}
-						token = new StringBuffer();
+						token = new StringBuilder();
 					}
 				}
 				else
@@ -550,7 +550,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			//get join table and alias
 			String joinTable = null;
 			String joinAlias = null;
-			token = new StringBuffer();
+			token = new StringBuilder();
 			previousToken = null;
 			int joinFieldsBegin = 0;
 			String joinFields = null;
@@ -584,7 +584,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 							joinAlias = token.toString();
 						}
 						previousToken = token.toString();
-						token = new StringBuffer();
+						token = new StringBuilder();
 					}
 				}
 				else
@@ -607,7 +607,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			if (joinAlias == null) joinAlias = joinTable;
 			
 			//construct update clause
-			StringBuffer Update = new StringBuffer("UPDATE ");
+			StringBuilder Update = new StringBuilder("UPDATE ");
 			Update.append(targetTable);
 			if (!targetAlias.equals(targetTable))
 				Update.append(" " + targetAlias);
@@ -721,7 +721,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	{
 		String fieldsUpper = fields.toUpperCase();
 		int size = fieldsUpper.length();
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String token = null;
 		for (int i = 0; i < size; i++)
 		{
@@ -731,7 +731,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 				if (buffer.length() > 0)
 				{
 					token = buffer.toString();
-					buffer = new StringBuffer();
+					buffer = new StringBuilder();
 				}
 			}
 			else
@@ -741,7 +741,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 					if (buffer.length() > 0)
 					{
 						token = buffer.toString();
-						buffer = new StringBuffer();
+						buffer = new StringBuilder();
 					}
 					else
 					{
@@ -791,7 +791,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 				else 
 				{
 					result = result + " ";
-					StringBuffer t = new StringBuffer();
+					StringBuilder t = new StringBuilder();
 					for (int i = 0; i < token.length(); i++) {
 						char c = token.charAt(i);
 						if(isOperator(c))
@@ -805,7 +805,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 									result = result + alias + "." + t.toString();
 								else
 									result = result + t.toString();
-								t = new StringBuffer();
+								t = new StringBuilder();
 							}
 							result = result + c;
 						}

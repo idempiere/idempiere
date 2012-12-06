@@ -262,7 +262,7 @@ public class MiniTable extends CTable implements IMiniTable
 		m_layout = layout;
 		m_multiSelection = multiSelection;
 		//
-		StringBuffer sql = new StringBuffer ("SELECT ");
+		StringBuilder sql = new StringBuilder ("SELECT ");
 		//  add columns & sql
 		for (int i = 0; i < layout.length; i++)
 		{

@@ -87,7 +87,7 @@ public class CashFlow  extends SvrProcess {
 		
 		log.info("Calculating initial balance");
 		/* initial balance */
-		StringBuffer sqlIni = new StringBuffer ("SELECT SUM(acctBalance(Account_ID,AmtAcctDr,AmtAcctCr)) FROM Fact_Acct WHERE DateAcct<=");
+		StringBuilder sqlIni = new StringBuilder ("SELECT SUM(acctBalance(Account_ID,AmtAcctDr,AmtAcctCr)) FROM Fact_Acct WHERE DateAcct<=");
 		sqlIni.append(DB.TO_DATE(p_dateFrom)).append(" AND PostingType='").append(MFactAcct.POSTINGTYPE_Actual).append("' AND ");
 		// initial balance - the balance of selected account on selected schema on default hierarchy
 		String whereClause = MReportTree.getWhereClause(getCtx(), 0, MAcctSchemaElement.ELEMENTTYPE_Account, p_C_ElementValue_ID);

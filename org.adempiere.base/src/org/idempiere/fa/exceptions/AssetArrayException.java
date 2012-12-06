@@ -23,7 +23,7 @@ public class AssetArrayException extends AssetException
 	
 	private static String buildMessage(List<Exception> errors)
 	{
-		StringBuffer sb = new StringBuffer("The following errors were encountered: "); // TODO: translate
+		StringBuilder sb = new StringBuilder("The following errors were encountered: "); // TODO: translate
 		for (Exception e : errors)
 		{
 			sb.append("\n"+e.getLocalizedMessage());

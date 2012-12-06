@@ -130,7 +130,7 @@ public class GenericPaymentExport implements PaymentExport
 				String bp[] = getBPartnerInfo(mpp.getC_BPartner_ID());
 
 				//  Comment - list of invoice document no
-				StringBuffer comment = new StringBuffer();
+				StringBuilder comment = new StringBuilder();
 				MPaySelectionLine[] psls = mpp.getPaySelectionLines(false);
 				for (int l = 0; l < psls.length; l++)
 				{

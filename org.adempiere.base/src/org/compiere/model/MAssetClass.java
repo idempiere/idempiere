@@ -77,7 +77,7 @@ public class MAssetClass extends X_A_Asset_Class
 	 *
 	 */
 	public void setDescription() {
-		StringBuffer description = new StringBuffer();
+		StringBuilder description = new StringBuilder();
 		String value = getValue();
 		if (value != null) {
 			description.append(value).append(" ");

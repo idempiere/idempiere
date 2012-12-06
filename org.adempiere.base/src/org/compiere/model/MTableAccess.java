@@ -67,7 +67,7 @@ public class MTableAccess extends X_AD_Table_Access
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MTableAccess[");
+		StringBuilder sb = new StringBuilder("MTableAccess[");
 		sb.append("AD_Role_ID=").append(getAD_Role_ID())
 			.append(",AD_Table_ID=").append(getAD_Table_ID())
 			.append(",Exclude=").append(isExclude())
@@ -91,7 +91,7 @@ public class MTableAccess extends X_AD_Table_Access
 	{
 		String in = Msg.getMsg(ctx, "Include");
 		String ex = Msg.getMsg(ctx, "Exclude");
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Msg.translate(ctx, "AD_Table_ID"))
 			.append("=").append(getTableName(ctx));
 		if (ACCESSTYPERULE_Accessing.equals(getAccessTypeRule()))

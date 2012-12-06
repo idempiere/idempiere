@@ -93,7 +93,7 @@ public class MPrintFont extends X_AD_PrintFont
 	public void setFont (Font font)
 	{
 		//	fontfamilyname-style-pointsize
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(font.getFamily()).append("-");
 		int style = font.getStyle();
 		if (style == Font.PLAIN)
@@ -118,7 +118,7 @@ public class MPrintFont extends X_AD_PrintFont
 	static MPrintFont create (Font font)
 	{
 		MPrintFont pf = new MPrintFont(Env.getCtx(), 0, null);
-		StringBuffer name = new StringBuffer (font.getName());
+		StringBuilder name = new StringBuilder (font.getName());
 		if (font.isBold())
 			name.append(" bold");
 		if (font.isItalic())
@@ -136,7 +136,7 @@ public class MPrintFont extends X_AD_PrintFont
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MPrintFont[");
+		StringBuilder sb = new StringBuilder("MPrintFont[");
 		sb.append("ID=").append(get_ID())
 			.append(",Name=").append(getName())
 			.append("PSName=").append(getFont().getPSName())
@@ -152,7 +152,7 @@ public class MPrintFont extends X_AD_PrintFont
 	 */
 	public String toPS()
 	{
-		StringBuffer sb = new StringBuffer("/");
+		StringBuilder sb = new StringBuilder("/");
 		sb.append(getFont().getPSName());
 		if (getFont().isBold())
 			sb.append(" Bold");

@@ -124,7 +124,7 @@ public class PrintDataColumn
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("PrintDataColumn[");
+		StringBuilder sb = new StringBuilder("PrintDataColumn[");
 		sb.append("ID=").append(m_AD_Column_ID)
 			.append("-").append(m_columnName);
 		if (hasAlias())

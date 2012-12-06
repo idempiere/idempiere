@@ -194,7 +194,7 @@ public class CPanel extends JPanel
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("CPanel [");
+		StringBuilder sb = new StringBuilder ("CPanel [");
 		sb.append(super.toString());
 		CompiereColor bg = getBackgroundColor();
 		if (bg != null)

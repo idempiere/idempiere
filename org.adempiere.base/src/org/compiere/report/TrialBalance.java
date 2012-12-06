@@ -298,7 +298,7 @@ public class TrialBalance extends SvrProcess
 	 */
 	private void createBalanceLine()
 	{
-		StringBuffer sql = new StringBuffer (s_insert);
+		StringBuilder sql = new StringBuilder (s_insert);
 		//	(AD_PInstance_ID, Fact_Acct_ID,
 		sql.append("SELECT ").append(getAD_PInstance_ID()).append(",0,");
 		//	AD_Client_ID, AD_Org_ID, Created,CreatedBy, Updated,UpdatedBy,
@@ -425,7 +425,7 @@ public class TrialBalance extends SvrProcess
 	 */
 	private void createDetailLines()
 	{
-		StringBuffer sql = new StringBuffer (s_insert);
+		StringBuilder sql = new StringBuilder (s_insert);
 		//	(AD_PInstance_ID, Fact_Acct_ID,
 		sql.append("SELECT ").append(getAD_PInstance_ID()).append(",Fact_Acct_ID,");
 		//	AD_Client_ID, AD_Org_ID, Created,CreatedBy, Updated,UpdatedBy,

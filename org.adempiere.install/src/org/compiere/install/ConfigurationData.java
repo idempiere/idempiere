@@ -1533,7 +1533,7 @@ public class ConfigurationData
 		String sql = "SELECT WebContext FROM W_Store WHERE IsActive='Y'";
 		Statement stmt = null;
 		ResultSet rs = null;
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		try
 		{
 			stmt = con.createStatement();

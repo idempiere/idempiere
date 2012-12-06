@@ -193,7 +193,7 @@ public class MSystem extends X_AD_System
 								+ " WHERE IsActive='Y' ORDER BY AD_Client_ID DESC";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			try
 			{
 				pstmt = DB.prepareStatement (sql, null);

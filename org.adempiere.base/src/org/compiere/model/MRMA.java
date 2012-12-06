@@ -806,7 +806,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(": ").
@@ -824,7 +824,7 @@ public class MRMA extends X_M_RMA implements DocAction
      */
     public MRMALine[] getChargeLines()
     {
-        StringBuffer whereClause = new StringBuffer();
+        StringBuilder whereClause = new StringBuilder();
         whereClause.append("IsActive='Y' AND M_RMA_ID=");
         whereClause.append(get_ID());
         whereClause.append(" AND C_Charge_ID IS NOT null");

@@ -189,7 +189,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		p_order = new MOrder (Env.getCtx(), C_Order_ID, null);      //  save
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-		StringBuffer sql = new StringBuffer("SELECT "
+		StringBuilder sql = new StringBuilder("SELECT "
 				+ "l.QtyOrdered-SUM(COALESCE(m.Qty,0)),"					//	1
 				+ "CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END,"	//	2
 				+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name),"			//	3..4
@@ -272,7 +272,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		m_rma = new MRMA(Env.getCtx(), M_RMA_ID, null);
 			
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-	    StringBuffer sqlStmt = new StringBuffer();
+	    StringBuilder sqlStmt = new StringBuilder();
 	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - rl.QtyDelivered, iol.M_Product_ID, p.Name, uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
 	    sqlStmt.append("FROM M_RMALine rl INNER JOIN M_InOutLine iol ON rl.M_InOutLine_ID=iol.M_InOutLine_ID ");
 	          
@@ -356,7 +356,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		m_rma = null;
 		
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-		StringBuffer sql = new StringBuffer("SELECT " // Entered UOM
+		StringBuilder sql = new StringBuilder("SELECT " // Entered UOM
 				+ "l.QtyInvoiced-SUM(NVL(mi.Qty,0)),l.QtyEntered/l.QtyInvoiced,"
 				+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name)," // 3..4
 				+ " p.M_Locator_ID, loc.Value, " // 5..6

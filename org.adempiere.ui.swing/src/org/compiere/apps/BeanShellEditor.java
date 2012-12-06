@@ -250,7 +250,7 @@ public class BeanShellEditor extends CDialog implements ActionListener
 		m_origScript = m_script.getScript();
 		editor.setText(m_script.getScript());
 		//
-		StringBuffer sb = new StringBuffer("<HTML><BODY>");
+		StringBuilder sb = new StringBuilder("<HTML><BODY>");
 		HashMap<String,Object> ctx = m_script.getEnvironment();
 		String[] pp = new String[ctx.size()];
 		ctx.keySet().toArray(pp);

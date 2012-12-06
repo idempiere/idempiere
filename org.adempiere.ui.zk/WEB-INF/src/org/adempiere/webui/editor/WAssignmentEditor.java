@@ -119,7 +119,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 			ResultSet rs = m_pstmt.executeQuery();
 			if (rs.next())
 			{
-				StringBuffer sb = new StringBuffer(rs.getString(1));
+				StringBuilder sb = new StringBuilder(rs.getString(1));
 				sb.append(" ").append(m_dateFormat.format(rs.getTimestamp(2)))
 					.append(" ").append(m_qtyFormat.format(rs.getBigDecimal(3)))
 					.append(" ").append(rs.getString(4).trim());

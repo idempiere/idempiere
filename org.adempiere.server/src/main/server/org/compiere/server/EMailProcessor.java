@@ -323,7 +323,7 @@ public class EMailProcessor
 	 */
 	private String getMessage (Part msg)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try
 		{
 			//	Text
@@ -460,7 +460,7 @@ public class EMailProcessor
 		String deliveryMessage = null;
 		if (content instanceof InputStream)
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			InputStream is = (InputStream)content;
 			int c;
 			while ((c = is.read()) != -1)
@@ -531,7 +531,7 @@ public class EMailProcessor
 
 		// FLAGS
 		Flags flags = m.getFlags();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Flags.Flag[] sf = flags.getSystemFlags(); // get the system flags
 
 		boolean first = true;
@@ -575,7 +575,7 @@ public class EMailProcessor
 		String[] hdrs = m.getHeader("X-Mailer");
 		if (hdrs != null)
 		{
-			StringBuffer sb1 = new StringBuffer("X-Mailer: ");
+			StringBuilder sb1 = new StringBuilder("X-Mailer: ");
 			for (int i = 0; i < hdrs.length; i++)
 				sb1.append(hdrs[i]).append("  ");
 			printOut(sb1.toString());
@@ -587,7 +587,7 @@ public class EMailProcessor
 		hdrs = m.getHeader("Message-ID");
 		if (hdrs != null)
 		{
-			StringBuffer sb1 = new StringBuffer("Message-ID: ");
+			StringBuilder sb1 = new StringBuilder("Message-ID: ");
 			for (int i = 0; i < hdrs.length; i++)
 				sb1.append(hdrs[i]).append("  ");
 			printOut(sb1.toString());

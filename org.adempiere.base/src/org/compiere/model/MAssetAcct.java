@@ -93,7 +93,7 @@ public class MAssetAcct extends X_A_Asset_Acct
 		}
 		//
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuffer whereClause = new StringBuffer(COLUMNNAME_A_Asset_ID+"=? AND "+COLUMNNAME_PostingType+"=?");
+		StringBuilder whereClause = new StringBuilder(COLUMNNAME_A_Asset_ID+"=? AND "+COLUMNNAME_PostingType+"=?");
 		params.add(A_Asset_ID);
 		params.add(postingType);
 		if (dateAcct != null)

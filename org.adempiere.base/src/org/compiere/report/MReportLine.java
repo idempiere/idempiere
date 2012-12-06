@@ -180,7 +180,7 @@ public class MReportLine extends X_PA_ReportLine
 	public String getSelectClause (boolean withSum)
 	{
 		String at = getPAAmountType().substring(0,1);	//	first letter
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (withSum)
 			sb.append("SUM(");
 		if (PAAMOUNTTYPE_BalanceExpectedSign.equals(at))
@@ -275,7 +275,7 @@ public class MReportLine extends X_PA_ReportLine
 			else
 			{
 				//	Multiple
-				StringBuffer sb = new StringBuffer ("(");
+				StringBuilder sb = new StringBuilder ("(");
 				for (int i = 0; i < m_sources.length; i++)
 				{
 					if (i > 0)

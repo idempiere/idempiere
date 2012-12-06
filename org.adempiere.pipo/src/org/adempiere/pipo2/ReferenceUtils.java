@@ -150,7 +150,7 @@ public class ReferenceUtils {
 				} finally {
 					DB.close(rs, stmt);
 				}
-				StringBuffer buffer = new StringBuffer();
+				StringBuilder buffer = new StringBuilder();
 				buffer.append(tableName).append(".").append(searchColumn);
 				atts.addAttribute("", "", "reference", "CDATA", "table");
 				atts.addAttribute("", "", "reference-key", "CDATA", buffer.toString());
@@ -159,7 +159,7 @@ public class ReferenceUtils {
 				String sql = "SELECT " + searchColumn + " FROM "
 					+ tableName + " WHERE " + keyColumn + " = ?";
 				String value = DB.getSQLValueString(null, sql, id);
-				StringBuffer buffer = new StringBuffer();
+				StringBuilder buffer = new StringBuilder();
 				buffer.append(tableName).append(".").append(searchColumn);
 				atts.addAttribute("", "", "reference", "CDATA", "table");
 				atts.addAttribute("", "", "reference-key", "CDATA", buffer.toString());

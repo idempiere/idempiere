@@ -345,7 +345,7 @@ public class ProcessParameterPanel extends Panel implements
 		/**
 		 * Mandatory fields see - MTable.getMandatory
 		 */
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int size = m_mFields.size();
 		for (int i = 0; i < size; i++) {
 			GridField field = (GridField) m_mFields.get(i);

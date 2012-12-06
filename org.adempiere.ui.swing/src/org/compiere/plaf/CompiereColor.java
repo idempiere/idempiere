@@ -987,7 +987,7 @@ public class CompiereColor implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("AdempiereColor[");
+		StringBuilder sb = new StringBuilder ("AdempiereColor[");
 		if (isFlat())
 			sb.append("Flat")
 				.append(" ").append(ThemeUtils.getColorAsString(getFlatColor()));

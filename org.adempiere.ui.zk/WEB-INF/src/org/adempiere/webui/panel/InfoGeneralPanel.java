@@ -203,7 +203,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 		//  Prepare table
 
-		StringBuffer where = new StringBuffer("IsActive='Y'");
+		StringBuilder where = new StringBuilder("IsActive='Y'");
 
 		if (p_whereClause.length() > 0)
 			where.append(" AND ").append(p_whereClause);

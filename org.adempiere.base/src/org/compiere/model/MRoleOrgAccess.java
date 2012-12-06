@@ -195,7 +195,7 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MRoleOrgAccess[");
+		StringBuilder sb = new StringBuilder("MRoleOrgAccess[");
 		sb.append("AD_Role_ID=").append(getAD_Role_ID())
 			.append(",AD_Client_ID=").append(getAD_Client_ID())
 			.append(",AD_Org_ID=").append(getAD_Org_ID())
@@ -212,7 +212,7 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	 */
 	public String toStringX (Properties ctx)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Msg.translate(ctx, "AD_Client_ID")).append("=").append(getClientName()).append(" - ")
 			.append(Msg.translate(ctx, "AD_Org_ID")).append("=").append(getOrgName());	
 		return sb.toString();

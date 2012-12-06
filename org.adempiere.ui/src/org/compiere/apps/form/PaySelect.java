@@ -366,7 +366,7 @@ public class PaySelect
 
 		//  Information
 		BigDecimal remaining = m_bankBalance.subtract(invoiceAmt);
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		info.append(m_noSelected).append(" ").append(Msg.getMsg(Env.getCtx(), "Selected")).append(" - ");
 		info.append(m_format.format(invoiceAmt)).append(", ");
 		info.append(Msg.getMsg(Env.getCtx(), "Remaining")).append(" ").append(m_format.format(remaining));

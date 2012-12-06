@@ -108,7 +108,7 @@ public class Doc_GLJournal extends Doc
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
-		StringBuffer sb = new StringBuffer (" [");
+		StringBuilder sb = new StringBuilder (" [");
 		//  Lines
 		for (int i = 0; i < p_lines.length; i++)
 		{

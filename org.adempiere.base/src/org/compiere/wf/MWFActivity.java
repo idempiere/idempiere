@@ -91,7 +91,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	public static MWFActivity[] get (Properties ctx, int AD_Table_ID, int Record_ID, boolean activeOnly)
 	{
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuffer whereClause = new StringBuffer("AD_Table_ID=? AND Record_ID=?");
+		StringBuilder whereClause = new StringBuilder("AD_Table_ID=? AND Record_ID=?");
 		params.add(AD_Table_ID);
 		params.add(Record_ID);
 		if (activeOnly)
@@ -122,7 +122,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		if (acts == null || acts.length == 0)
 			return null;
 		//
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < acts.length; i++)
 		{
 			if (i > 0)
@@ -541,7 +541,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		if (obj == null)
 			return;
 		//
-		StringBuffer TextMsg = new StringBuffer ();
+		StringBuilder TextMsg = new StringBuilder ();
 		if (obj instanceof Exception)
 		{
 			Exception ex = (Exception)obj;
@@ -1740,7 +1740,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	public String getHistoryHTML()
 	{
 		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.DateTime);
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		MWFEventAudit[] events = MWFEventAudit.get(getCtx(), getAD_WF_Process_ID(), get_TrxName());
 		for (int i = 0; i < events.length; i++)
 		{
@@ -1807,7 +1807,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MWFActivity[");
+		StringBuilder sb = new StringBuilder ("MWFActivity[");
 		sb.append(get_ID()).append(",Node=");
 		if (m_node == null)
 			sb.append(getAD_WF_Node_ID());
@@ -1827,7 +1827,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	 */
 	public String toStringX ()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getWFStateText())
 			.append(": ").append(getNode().getName());
 		if (getAD_User_ID() > 0)
@@ -1847,7 +1847,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		PO po = getPO();
 		if (po == null)
 			return null;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String[] keyColumns = po.get_KeyColumns();
 		if ((keyColumns != null) && (keyColumns.length > 0))
 			sb.append(Msg.getElement(getCtx(), keyColumns[0])).append(" ");

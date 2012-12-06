@@ -330,7 +330,7 @@ public final class EMail implements Serializable
 		catch (MessagingException me)
 		{
 			Exception ex = me;
-			StringBuffer sb = new StringBuffer("(ME)");
+			StringBuilder sb = new StringBuilder("(ME)");
 			boolean printed = false;
 			do
 			{
@@ -763,7 +763,7 @@ public final class EMail implements Serializable
 		if (m_messageText == null)
 			return "";
 		char[] chars = m_messageText.toCharArray();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < chars.length; i++)
 		{
 			char c = chars[i];
@@ -1082,7 +1082,7 @@ public final class EMail implements Serializable
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("EMail[");
+		StringBuilder sb = new StringBuilder ("EMail[");
 		sb.append("From:").append(m_from)
 			.append(",To:").append(getTo())
 			.append(",Subject=").append(getSubject())

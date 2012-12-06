@@ -172,7 +172,7 @@ public class MRfQLine extends X_C_RfQLine
 	{
 		if (getM_Product_ID() == 0)
 			return "";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		MProduct product = MProduct.get (getCtx(), getM_Product_ID());
 		sb.append(product.getName());
 		if (product.getDescription() != null && product.getDescription().length() > 0)
@@ -186,7 +186,7 @@ public class MRfQLine extends X_C_RfQLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRfQLine[");
+		StringBuilder sb = new StringBuilder ("MRfQLine[");
 		sb.append(get_ID()).append(",").append(getLine())
 			.append ("]");
 		return sb.toString ();

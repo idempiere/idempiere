@@ -165,7 +165,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			{
 				DefaultTreeNode<?> nd = (DefaultTreeNode<?>)oldParent.getChildAt(i);
 				MTreeNode md = (MTreeNode) nd.getData();
-				StringBuffer sql = new StringBuffer("UPDATE ");
+				StringBuilder sql = new StringBuilder("UPDATE ");
 				sql.append(mTree.getNodeTableName())
 					.append(" SET Parent_ID=").append(oldMParent.getNode_ID())
 					.append(", SeqNo=").append(i)
@@ -182,7 +182,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 				{
 					DefaultTreeNode<?> nd = (DefaultTreeNode<?>)newParent.getChildAt(i);
 					MTreeNode md = (MTreeNode) nd.getData();
-					StringBuffer sql = new StringBuffer("UPDATE ");
+					StringBuilder sql = new StringBuilder("UPDATE ");
 					sql.append(mTree.getNodeTableName())
 						.append(" SET Parent_ID=").append(newMParent.getNode_ID())
 						.append(", SeqNo=").append(i)

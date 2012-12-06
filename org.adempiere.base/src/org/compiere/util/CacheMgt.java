@@ -281,7 +281,7 @@ public class CacheMgt
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("CacheMgt[");
+		StringBuilder sb = new StringBuilder ("CacheMgt[");
 		sb.append("Instances=")
 			.append(m_instances.size())
 			.append("]");
@@ -294,7 +294,7 @@ public class CacheMgt
 	 */
 	public String toStringX ()
 	{
-		StringBuffer sb = new StringBuffer ("CacheMgt[");
+		StringBuilder sb = new StringBuilder ("CacheMgt[");
 		sb.append("Instances=")
 			.append(m_instances.size())
 			.append(", Elements=")

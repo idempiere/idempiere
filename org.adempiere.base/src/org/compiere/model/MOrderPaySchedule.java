@@ -205,7 +205,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MOrderPaySchedule[");
+		StringBuilder sb = new StringBuilder("MOrderPaySchedule[");
 		sb.append(get_ID()).append("-Due=" + getDueDate() + "/" + getDueAmt())
 			.append(";Discount=").append(getDiscountDate() + "/" + getDiscountAmt())
 			.append("]");

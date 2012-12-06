@@ -422,7 +422,7 @@ public class CLogErrorBuffer extends Handler
 		LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
 		LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
 		LinkedList<LogRecord[]>	m_history = (LinkedList<LogRecord[]>) Env.getCtx().get(HISTORY_KEY);
-		StringBuffer sb = new StringBuffer ("CLogErrorBuffer[");
+		StringBuilder sb = new StringBuilder ("CLogErrorBuffer[");
 		sb.append("Errors=").append(m_errors.size())
 			.append(",History=").append(m_history.size())
 			.append(",Logs=").append(m_logs.size())

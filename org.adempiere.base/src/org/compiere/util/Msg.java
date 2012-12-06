@@ -133,7 +133,7 @@ public final class Msg
 			while (rs.next())
 			{
 				String AD_Message = rs.getString(1);
-				StringBuffer MsgText = new StringBuffer();
+				StringBuilder MsgText = new StringBuilder();
 				MsgText.append(rs.getString(2));
 				String MsgTip = rs.getString(3);
 				//
@@ -425,7 +425,7 @@ public final class Msg
 		}
 		
 		//	Fallback
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int pos = amount.lastIndexOf('.');
 		int pos2 = amount.lastIndexOf(',');
 		if (pos2 > pos)
@@ -645,7 +645,7 @@ public final class Msg
 
 		String inStr = text;
 		String token;
-		StringBuffer outStr = new StringBuffer();
+		StringBuilder outStr = new StringBuilder();
 
 		int i = inStr.indexOf('@');
 		while (i != -1)

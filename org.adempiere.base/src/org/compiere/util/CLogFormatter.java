@@ -68,7 +68,7 @@ public class CLogFormatter extends Formatter
 	 */
 	public String format (LogRecord record)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		
 		long ms = record.getMillis();
 		Timestamp ts = null;
@@ -201,7 +201,7 @@ public class CLogFormatter extends Formatter
      */
     public static String getClassMethod (LogRecord record)
     {
-    	StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
     	String className = record.getLoggerName();
     	if (className == null 
 			|| className.indexOf("default") != -1	//	anonymous logger
@@ -232,7 +232,7 @@ public class CLogFormatter extends Formatter
      */
     public static String getParameters (LogRecord record)
     {
-    	StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
 		Object[] parameters = record.getParameters();
 		if (parameters != null && parameters.length > 0)
 		{

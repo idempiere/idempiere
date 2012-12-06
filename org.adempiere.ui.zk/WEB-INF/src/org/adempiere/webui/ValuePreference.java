@@ -409,7 +409,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	private void setExplanation()
 	{
 		/** @todo translation */
-		StringBuffer expl = new StringBuffer("For ");
+		StringBuilder expl = new StringBuilder("For ");
 		if (cbClient.isChecked() && cbOrg.isChecked() )
 			expl.append("this Client and Organization");
 		else if (cbClient.isChecked() && !cbOrg.isChecked())
@@ -446,7 +446,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	{
 		log.info("");
 
-		StringBuffer sql = new StringBuffer ("DELETE FROM AD_Preference WHERE ");
+		StringBuilder sql = new StringBuilder ("DELETE FROM AD_Preference WHERE ");
 		sql.append("AD_Client_ID=").append(cbClient.isChecked() ? m_AD_Client_ID : 0);
 		sql.append(" AND AD_Org_ID=").append(cbOrg.isChecked() ? m_AD_Org_ID : 0);
 		if (cbUser.isChecked())
@@ -507,7 +507,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		int Org_ID = cbOrg.isChecked() ? m_AD_Org_ID : 0;
 		int AD_Preference_ID = DB.getNextID(m_ctx, "AD_Preference", null);
 		//
-		StringBuffer sql = new StringBuffer ("INSERT INTO AD_Preference ("
+		StringBuilder sql = new StringBuilder ("INSERT INTO AD_Preference ("
 			+ "AD_Preference_ID, AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy,Updated,UpdatedBy,"
 			+ "AD_Window_ID, AD_User_ID, Attribute, Value) VALUES (");
 		sql.append(AD_Preference_ID).append(",").append(Client_ID).append(",").append(Org_ID)

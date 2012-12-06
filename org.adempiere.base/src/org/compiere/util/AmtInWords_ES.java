@@ -221,7 +221,7 @@ public class AmtInWords_ES implements AmtInWords
 
 		Language lang = Env.getLanguage(Env.getCtx());
 		//
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		int pos = 0;
 
 		if(lang.isDecimalPoint())

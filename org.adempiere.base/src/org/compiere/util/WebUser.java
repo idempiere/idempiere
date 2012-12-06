@@ -423,7 +423,7 @@ public class WebUser
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer("WebUser[");
+		StringBuilder sb = new StringBuilder("WebUser[");
 		sb.append(getEmail())
 			.append(",LoggedIn=").append(m_loggedIn)
 			.append(",").append(m_bpc)

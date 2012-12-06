@@ -434,7 +434,7 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 			int lastDocumentNo = MPaySelectionCheck.confirmPrint (m_checks, m_batch);
 			if (lastDocumentNo != 0)
 			{
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				sb.append("UPDATE C_BankAccountDoc SET CurrentNext=").append(++lastDocumentNo)
 					.append(" WHERE C_BankAccount_ID=").append(m_C_BankAccount_ID)
 					.append(" AND PaymentRule='").append(PaymentRule).append("'");

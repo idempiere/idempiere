@@ -315,7 +315,7 @@ public class OrderServlet extends HttpServlet
 	 */
 	private void sendEMail (HttpServletRequest request, Properties ctx, WebOrder wo, WebUser wu)
 	{
-		StringBuffer message = new StringBuffer("\n"); 
+		StringBuilder message = new StringBuilder("\n"); 
 		//
 		MOrder mo = wo.getOrder();
 		if (mo != null)

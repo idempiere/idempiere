@@ -175,7 +175,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		int AD_Org_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Org_ID");
 		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		if (add)
 			sql.append("INSERT INTO AD_TreeBar "
 				+ "(AD_Tree_ID,AD_User_ID,Node_ID, "

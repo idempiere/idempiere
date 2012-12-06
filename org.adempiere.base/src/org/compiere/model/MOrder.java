@@ -662,7 +662,7 @@ public class MOrder extends X_C_Order implements DocAction
 	public MOrderLine[] getLines (String whereClause, String orderClause)
 	{
 		//red1 - using new Query class from Teo / Victor's MDDOrder.java implementation
-		StringBuffer whereClauseFinal = new StringBuffer(MOrderLine.COLUMNNAME_C_Order_ID+"=? ");
+		StringBuilder whereClauseFinal = new StringBuilder(MOrderLine.COLUMNNAME_C_Order_ID+"=? ");
 		if (!Util.isEmpty(whereClause, true))
 			whereClauseFinal.append(whereClause);
 		if (orderClause.length() == 0)
@@ -1780,7 +1780,7 @@ public class MOrder extends X_C_Order implements DocAction
 			approveIt();
 		getLines(true,null);
 		log.info(toString());
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		
 		boolean realTimePOS = MSysConfig.getBooleanValue(MSysConfig.REAL_TIME_POS, false , getAD_Client_ID());
 		
@@ -2311,7 +2311,7 @@ public class MOrder extends X_C_Order implements DocAction
 			return true;
 		
 		log.info("createReversals");
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		
 		//	Reverse All *Shipments*
 		info.append("@M_InOut_ID@:");
@@ -2594,7 +2594,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public String getSummary()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getDocumentNo());
 		//	: Grand Total = 123.00 (#1)
 		sb.append(": ").

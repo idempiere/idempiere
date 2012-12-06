@@ -100,7 +100,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 		JFreeChart chart = null;
 
 		//	Set Text
-		StringBuffer text = new StringBuffer(m_goal.getName());
+		StringBuilder text = new StringBuilder(m_goal.getName());
 		if (m_goal.isTarget())
 			text.append(": ").append(m_goal.getPercent()).append("%");
 		else
@@ -109,7 +109,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 		m_text = text.toString();
 
 		//	ToolTip
-		text = new StringBuffer();
+		text = new StringBuilder();
 		if (m_goal.getDescription() != null)
 			text.append(m_goal.getDescription()).append(": ");
 		text.append(s_format.format(m_goal.getMeasureActual()));

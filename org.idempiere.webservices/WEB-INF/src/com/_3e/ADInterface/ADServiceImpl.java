@@ -1318,8 +1318,8 @@ public class ADServiceImpl implements ADService {
 		tree.trimTree();
 		
 		//	Print tree
-		StringBuffer buf = new StringBuffer();
-		StringBuffer barbuf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
+		StringBuilder barbuf = new StringBuilder();
 		en = root.preorderEnumeration();
 		int oldLevel = 0;
 		while (en.hasMoreElements())

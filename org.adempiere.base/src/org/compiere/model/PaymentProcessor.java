@@ -226,7 +226,7 @@ public abstract class PaymentProcessor
 		if (value.length() > maxLength)
 			value = value.substring(0, maxLength);
 
-		StringBuffer retValue = new StringBuffer(name);
+		StringBuilder retValue = new StringBuilder(name);
 		if (m_encoded)
 			try
 			{

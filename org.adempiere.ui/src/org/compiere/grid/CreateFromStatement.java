@@ -77,7 +77,7 @@ public abstract class CreateFromStatement extends CreateFrom
 	public String getSQLWhere(String DocumentNo, Object BPartner, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
 	{
-		StringBuffer sql = new StringBuffer("WHERE p.Processed='Y' AND p.IsReconciled='N'"
+		StringBuilder sql = new StringBuilder("WHERE p.Processed='Y' AND p.IsReconciled='N'"
 		+ " AND p.DocStatus IN ('CO','CL','RE','VO') AND p.PayAmt<>0" 
 		+ " AND p.C_BankAccount_ID = ?");
 		

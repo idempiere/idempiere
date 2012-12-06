@@ -142,7 +142,7 @@ public class PosKeyPanel extends CPanel implements ActionListener {
 			map.put(key.getC_POSKey_ID(), key);
 			Color keyColor = stdColor;
 			Font keyFont = stdFont;
-			StringBuffer buttonHTML = new StringBuffer("<html><p>");
+			StringBuilder buttonHTML = new StringBuilder("<html><p>");
 			if (key.getAD_PrintColor_ID() != 0)
 			{
 				MPrintColor color = MPrintColor.get(Env.getCtx(), key.getAD_PrintColor_ID());

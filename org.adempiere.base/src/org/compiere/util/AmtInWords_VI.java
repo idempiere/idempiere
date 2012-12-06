@@ -269,7 +269,7 @@ public class AmtInWords_VI implements AmtInWords
 		//
 		int numberOfCommas = 0;
 		int numberOfPeriods = 0;
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		int period = amount.lastIndexOf ('.'); 
 		numberOfPeriods = amount.replaceAll("[^\\.]","").length();
 		int comma = amount.lastIndexOf (','); 

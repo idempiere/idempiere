@@ -173,7 +173,7 @@ public class IndentedBOM extends SvrProcess
 	private List<MProductBOM> getBOMs(MProduct product)
 	{
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuffer whereClause = new StringBuffer();
+		StringBuilder whereClause = new StringBuilder();
 		whereClause.append(MProductBOM.COLUMNNAME_M_Product_ID).append("=?");
 		params.add(product.get_ID());
 		

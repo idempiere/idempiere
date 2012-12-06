@@ -325,7 +325,7 @@ public class GridTable extends AbstractTableModel
 			return "";
 
 		//	Create SELECT Part
-		StringBuffer select = new StringBuffer("SELECT ");
+		StringBuilder select = new StringBuilder("SELECT ");
 		for (int i = 0; i < m_fields.size(); i++)
 		{
 			if (i > 0)
@@ -354,7 +354,7 @@ public class GridTable extends AbstractTableModel
 			}	
 		}
 		
-		StringBuffer where = new StringBuffer("");
+		StringBuilder where = new StringBuilder("");
 		//	WHERE
 		if (m_whereClause.length() > 0)
 		{
@@ -1093,7 +1093,7 @@ public class GridTable extends AbstractTableModel
 					start = 0;
 			}
 		}
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(m_SQL_Select)
 			.append(" WHERE ")
 			.append(getKeyColumnName())
@@ -1509,7 +1509,7 @@ public class GridTable extends AbstractTableModel
 		final String INFO  = "Info: ";
 
 		//	Update SQL with specific where clause
-		StringBuffer select = new StringBuffer("SELECT ");
+		StringBuilder select = new StringBuilder("SELECT ");
 		for (int i = 0, addedColumns = 0; i < m_fields.size(); i++)
 		{
 			GridField field = (GridField)m_fields.get(i);
@@ -1522,8 +1522,8 @@ public class GridTable extends AbstractTableModel
 		}
 		//
 		select.append(" FROM ").append(m_tableName);
-		StringBuffer singleRowWHERE = new StringBuffer();
-		StringBuffer multiRowWHERE = new StringBuffer();
+		StringBuilder singleRowWHERE = new StringBuilder();
+		StringBuilder multiRowWHERE = new StringBuilder();
 		//	Create SQL	& RowID
 		if (m_inserting)
 			select.append(" WHERE 1=2");
@@ -1626,7 +1626,7 @@ public class GridTable extends AbstractTableModel
 							createUpdateSql (columnName, DB.TO_STRING (str));
 						else
 							rs.updateString (colRs, str); 						// ***
-						singleRowWHERE = new StringBuffer();	//	overwrite
+						singleRowWHERE = new StringBuilder();	//	overwrite
 						singleRowWHERE.append (columnName).append ("=").append (DB.TO_STRING(str));
 						//
 						is = INFO + columnName + " -> " + str + " (StringKey)";
@@ -1917,7 +1917,7 @@ public class GridTable extends AbstractTableModel
 						singleRowWHERE.append (columnName).append ("=").append (rowData[col]);
 					else
 					{
-						singleRowWHERE = new StringBuffer();	//	overwrite
+						singleRowWHERE = new StringBuilder();	//	overwrite
 						singleRowWHERE.append (columnName).append ("=").append (DB.TO_STRING(rowData[col].toString()));
 					}
 				}
@@ -2316,7 +2316,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	private String createUpdateSql (boolean insert, String whereClause)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (insert)
 		{
 			sb.append("INSERT INTO ").append(m_tableName).append(" (");
@@ -2369,7 +2369,7 @@ public class GridTable extends AbstractTableModel
 	private String getMandatory(Object[] rowData)
 	{
 		//  see also => ProcessParameter.saveParameter
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		//	Check all columns
 		int size = m_fields.size();
@@ -2614,7 +2614,7 @@ public class GridTable extends AbstractTableModel
 		}
 		else	//	Delete via SQL
 		{
-			StringBuffer sql = new StringBuffer("DELETE ");
+			StringBuilder sql = new StringBuilder("DELETE ");
 			sql.append(m_tableName).append(" WHERE ").append(getWhereClause(rowData));
 			int no = 0;
 			PreparedStatement pstmt = null;
@@ -3380,7 +3380,7 @@ public class GridTable extends AbstractTableModel
 			{
 				DB.close(rs, pstmt);				
 			}
-			StringBuffer info = new StringBuffer("Rows=");
+			StringBuilder info = new StringBuilder("Rows=");
 			info.append(rows);
 			if (rows == 0)
 				info.append(" - ").append(m_SQL_Count);

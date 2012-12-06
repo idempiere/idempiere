@@ -115,7 +115,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MProductCategoryAcct[");
+		StringBuilder sb = new StringBuilder ("MProductCategoryAcct[");
 		sb.append (get_ID())
 			.append (",M_Product_Category_ID=").append (getM_Product_Category_ID())
 			.append (",C_AcctSchema_ID=").append(getC_AcctSchema_ID())

@@ -505,7 +505,7 @@ public class TimeUtil
 	{
 		if (elapsedMS == 0)
 			return "0";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (elapsedMS < 0)
 		{
 			elapsedMS = - elapsedMS;

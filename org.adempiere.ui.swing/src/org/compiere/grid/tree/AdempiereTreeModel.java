@@ -67,7 +67,7 @@ public class AdempiereTreeModel extends DefaultTreeModel {
 			for (int i = 0; i < from.getChildCount(); i++)
 			{
 				MTreeNode nd = (MTreeNode)from.getChildAt(i);
-				StringBuffer sql = new StringBuffer("UPDATE ");
+				StringBuilder sql = new StringBuilder("UPDATE ");
 				sql.append(m_MTree.getNodeTableName())
 					.append(" SET Parent_ID=").append(from.getNode_ID())
 					.append(", SeqNo=").append(i)
@@ -80,7 +80,7 @@ public class AdempiereTreeModel extends DefaultTreeModel {
 				for (int i = 0; i < to.getChildCount(); i++)
 				{
 					MTreeNode nd = (MTreeNode)to.getChildAt(i);
-					StringBuffer sql = new StringBuffer("UPDATE ");
+					StringBuilder sql = new StringBuilder("UPDATE ");
 					sql.append(m_MTree.getNodeTableName())
 						.append(" SET Parent_ID=").append(to.getNode_ID())
 						.append(", SeqNo=").append(i)

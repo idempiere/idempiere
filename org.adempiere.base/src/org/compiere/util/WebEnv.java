@@ -199,7 +199,7 @@ public class WebEnv
 	 */
 	public static String getBaseDirectory (String entry)
 	{
-		StringBuffer sb = new StringBuffer (DIR_BASE);
+		StringBuilder sb = new StringBuilder (DIR_BASE);
 		if (!entry.startsWith("/"))
 			sb.append("/");
 		sb.append(entry);
@@ -215,7 +215,7 @@ public class WebEnv
 	 */
 	public static String getImageDirectory(String entry)
 	{
-		StringBuffer sb = new StringBuffer (DIR_BASE);
+		StringBuilder sb = new StringBuilder (DIR_BASE);
 		sb.append("/").append(DIR_IMAGE);
 		if (!entry.startsWith("/"))
 			sb.append("/");
@@ -232,7 +232,7 @@ public class WebEnv
 	 */
 	public static String getStoreDirectory(String entry)
 	{
-		StringBuffer sb = new StringBuffer (DIR_BASE);
+		StringBuilder sb = new StringBuilder (DIR_BASE);
 		sb.append("/").append(DIR_STORE);
 		if (!entry.startsWith("/"))
 			sb.append("/");

@@ -583,7 +583,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			//
 
         String dynWhere = getSQLWhere();
-        StringBuffer sql = new StringBuffer (m_sqlMain);
+        StringBuilder sql = new StringBuilder (m_sqlMain);
         if (dynWhere.length() > 0)
             sql.append(dynWhere);   //  includes first AND
         if (m_sqlUserOrder != null && m_sqlUserOrder.trim().length() > 0)
@@ -677,7 +677,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	{
 		long start = System.currentTimeMillis();
 		String dynWhere = getSQLWhere();
-		StringBuffer sql = new StringBuffer (m_sqlCount);
+		StringBuilder sql = new StringBuilder (m_sqlCount);
 
 		if (dynWhere.length() > 0)
 			sql.append(dynWhere);   //  includes first AND
@@ -857,7 +857,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			return "";
 		}
 		//
-		StringBuffer sb = new StringBuffer(getKeyColumn());
+		StringBuilder sb = new StringBuilder(getKeyColumn());
 		if (keys.length > 1)
 			sb.append(" IN (");
 		else

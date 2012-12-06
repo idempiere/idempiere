@@ -256,7 +256,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
      * @return full path
      */
     public String getPath() {
-    	StringBuffer path = new StringBuffer();
+    	StringBuilder path = new StringBuilder();
     	int s = this.getSelectedIndex();
     	if (s <= 0 ) s = 0;
     	IADTabpanel p = tabPanelList.get(s);

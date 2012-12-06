@@ -100,7 +100,7 @@ public class TimelineEventFeed extends HttpServlet {
 		MAssignmentSlot[] mas = m_model.getAssignmentSlots (resourceId, startDate, endDate, null, true, null);
 		if (mas == null || mas.length == 0) return;
 		
-		StringBuffer xml = new StringBuffer();
+		StringBuilder xml = new StringBuilder();
 		xml.append("<data>").append("\r\n");
 		
 		for (MAssignmentSlot slot : mas) {

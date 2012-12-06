@@ -566,7 +566,7 @@ public class AcctViewer extends CFrame
 	private void actionQuery()
 	{
 		//  Parameter Info
-		StringBuffer para = new StringBuffer();
+		StringBuilder para = new StringBuilder();
 		//  Reset Selection Data
 		m_data.C_AcctSchema_ID = 0;
 		m_data.AD_Org_ID = 0;

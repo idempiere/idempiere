@@ -57,7 +57,7 @@ public class WebBasket
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("WebBasket[Lines=");
+		StringBuilder sb = new StringBuilder("WebBasket[Lines=");
 		sb.append(m_lines.size()).append(",Total=").append(m_total)
 			.append(",M_PriceList_ID=" + m_PriceList_ID)
 			.append("]");

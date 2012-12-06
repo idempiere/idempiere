@@ -76,7 +76,7 @@ public class PORelationException extends AdempiereException {
 		final String msg = Msg.getMsg(po.getCtx(), MSG_ERR_KEY_COLUMNS_2P,
 				msgParams);
 
-		final StringBuffer sb = new StringBuffer(msg);
+		final StringBuilder sb = new StringBuilder(msg);
 
 		for (final String keyCol : po.get_KeyColumns()) {
 			sb.append("\n");

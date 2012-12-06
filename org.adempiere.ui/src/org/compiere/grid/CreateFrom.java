@@ -153,7 +153,7 @@ public abstract class CreateFrom implements ICreateFrom
 		p_order = new MOrder (Env.getCtx(), C_Order_ID, null);
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-		StringBuffer sql = new StringBuffer("SELECT "
+		StringBuilder sql = new StringBuilder("SELECT "
 			+ "l.QtyOrdered-SUM(COALESCE(m.Qty,0)),"					//	1
 			+ "CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END,"	//	2
 			+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name),"			//	3..4

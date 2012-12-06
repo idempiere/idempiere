@@ -143,7 +143,7 @@ public class POInfo implements Serializable
 		m_columnNameMap = new HashMap<String, Integer>();
 		m_columnIdMap = new HashMap<Integer, Integer>();
 		ArrayList<POInfoColumn> list = new ArrayList<POInfoColumn>(15);
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT t.TableName, c.ColumnName,c.AD_Reference_ID,"    //  1..3
 			+ "c.IsMandatory,c.IsUpdateable,c.DefaultValue,"                //  4..6
 			+ "e.Name,e.Description, c.AD_Column_ID, "						//  7..9

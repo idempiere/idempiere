@@ -115,7 +115,7 @@ public class HTMLElement extends PrintElement
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("HTMLElement[");
+		StringBuilder sb = new StringBuilder("HTMLElement[");
 		sb.append("Bounds=").append(getBounds())
 			.append(",Height=").append(p_height).append("(").append(p_maxHeight)
 			.append("),Width=").append(p_width).append("(").append(p_maxHeight)

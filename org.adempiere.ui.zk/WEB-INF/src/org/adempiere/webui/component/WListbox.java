@@ -344,7 +344,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
             String tableName,boolean addAccessSQL)
     {
         int columnIndex = 0;
-        StringBuffer sql = new StringBuffer ("SELECT ");
+        StringBuilder sql = new StringBuilder ("SELECT ");
         setLayout(layout);
 
         clearColumns();

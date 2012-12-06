@@ -229,7 +229,7 @@ public class MStatusCategory extends X_R_StatusCategory
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("RStatusCategory[");
+		StringBuilder sb = new StringBuilder ("RStatusCategory[");
 		sb.append (get_ID()).append ("-").append(getName()).append ("]");
 		return sb.toString ();
 	}	//	toString

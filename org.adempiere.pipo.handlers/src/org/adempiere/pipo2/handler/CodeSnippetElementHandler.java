@@ -165,7 +165,7 @@ public class CodeSnippetElementHandler extends AbstractElementHandler {
      */
     public static int readReplace(String fname, String oldPattern, String replPattern){
     	String line;
-    	StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
 
     	try {
 

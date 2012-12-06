@@ -342,7 +342,7 @@ public class WFPanel extends CPanel
 		}
 		
 		// Info Text
-		StringBuffer msg = new StringBuffer("<HTML>");
+		StringBuilder msg = new StringBuilder("<HTML>");
 		msg.append("<H2>").append(m_wf.getName(true)).append("</H2>");
 		String s = m_wf.getDescription(true);
 		if (s != null && s.length() > 0)
@@ -413,7 +413,7 @@ public class WFPanel extends CPanel
 	{
 		log.fine("Node=" + node);
 		//	Info Text
-		StringBuffer msg = new StringBuffer("<HTML>");
+		StringBuilder msg = new StringBuilder("<HTML>");
 		msg.append("<H2>").append(node.getName(true)).append("</H2>");
 		String s = node.getDescription(true);
 		if (s != null && s.length() > 0)
@@ -503,7 +503,7 @@ public class WFPanel extends CPanel
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("WFPanel[");
+		StringBuilder sb = new StringBuilder("WFPanel[");
 		if (m_wf != null)
 			sb.append(m_wf.getAD_Workflow_ID());
 		sb.append("]");

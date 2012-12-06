@@ -117,7 +117,7 @@ public class StringUtil {
      * @return new String with result
      */
     public static String replaceOne(String original, String search, String replace) {
-        StringBuffer toriginal = new StringBuffer(original);
+        StringBuilder toriginal = new StringBuilder(original);
         if (toriginal.toString().indexOf(search)>=0) {
             toriginal.replace(toriginal.toString().indexOf(search),toriginal.toString().indexOf(search)+search.length(),replace);
         }

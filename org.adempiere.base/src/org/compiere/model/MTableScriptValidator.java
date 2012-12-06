@@ -149,7 +149,7 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 	@Override
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MTableScriptValidator[");
+		StringBuilder sb = new StringBuilder ("MTableScriptValidator[");
 		sb.append(get_ID()).append("-").append(getAD_Table_ID()).append("-")
 				.append(getEventModelValidator()).append("]");
 		return sb.toString ();

@@ -271,7 +271,7 @@ public class Editor extends CDialog
 		if (jc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
 			return;
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try
 		{
 			InputStreamReader in = new InputStreamReader (new FileInputStream (jc.getSelectedFile()));

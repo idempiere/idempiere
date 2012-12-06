@@ -401,7 +401,7 @@ public class PackInHandler extends DefaultHandler {
 				if (!entry.startElement)
 				{
 					Element e = entry.element;
-					StringBuffer s = new StringBuffer(e.qName);
+					StringBuilder s = new StringBuilder(e.qName);
 					s.append(" [");
 					Set<String> keys = e.properties.keySet();
 					int i = 0;

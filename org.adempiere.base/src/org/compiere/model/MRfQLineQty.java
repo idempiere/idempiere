@@ -170,7 +170,7 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRfQLineQty[");
+		StringBuilder sb = new StringBuilder ("MRfQLineQty[");
 		sb.append(get_ID()).append(",Qty=").append(getQty())
 			.append(",Offer=").append(isOfferQty())
 			.append(",Purchase=").append(isPurchaseQty())

@@ -184,7 +184,7 @@ public class MRule extends X_AD_Rule
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MRule[");
+		StringBuilder sb = new StringBuilder ("MRule[");
 		sb.append (get_ID()).append ("-").append (getValue()).append ("]");
 		return sb.toString ();
 	}	//	toString

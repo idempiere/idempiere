@@ -366,7 +366,7 @@ public class AlertProcessor extends AdempiereServer
 	private String getPlainTextReport(MAlertRule rule, String sql, String trxName, Collection<File> attachments)
 	throws Exception
 	{
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		Exception error = null;

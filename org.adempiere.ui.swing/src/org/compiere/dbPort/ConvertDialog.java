@@ -243,7 +243,7 @@ public class ConvertDialog extends CFrame implements ActionListener
 			return;
 		}
 		infoPane.append("Opening file: " + file + "\n");
-		StringBuffer sb = new StringBuffer (1000);
+		StringBuilder sb = new StringBuilder (1000);
 		//
 		try
 		{
@@ -283,7 +283,7 @@ public class ConvertDialog extends CFrame implements ActionListener
 			convert.execute(sb.toString(), conn);
 			if (convert.hasError())
 			{
-				StringBuffer sbb = new StringBuffer ("- Error: ");
+				StringBuilder sbb = new StringBuilder ("- Error: ");
 				if (convert.getConversionError() != null)
 					sbb.append(convert.getConversionError()).append(' ');
 				if (convert.getException() != null)

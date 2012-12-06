@@ -214,7 +214,7 @@ public final class ADialogDialog extends CDialog implements ActionListener
 	 */
 	private void setInfoMessage(String message)
 	{
-		StringBuffer sb = new StringBuffer (message.length()+20);
+		StringBuilder sb = new StringBuilder (message.length()+20);
 		sb.append("<b>");
 		String html = Util.maskHTML(message);
 		char[] chars = html.toCharArray();

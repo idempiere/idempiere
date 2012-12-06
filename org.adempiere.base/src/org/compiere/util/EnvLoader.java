@@ -93,8 +93,8 @@ public class EnvLoader
 		if (DEBUG)
 			System.out.println("** Command executed: " + command);
 
-		StringBuffer bufOut = new StringBuffer();
-		StringBuffer bufErr = new StringBuffer();
+		StringBuilder bufOut = new StringBuilder();
+		StringBuilder bufErr = new StringBuilder();
 		try
 		{
 			InputStream in = cmd.getInputStream();

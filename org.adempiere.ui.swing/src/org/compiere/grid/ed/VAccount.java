@@ -462,7 +462,7 @@ public final class VAccount extends JComponent
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("VAccount[");
+		StringBuilder sb = new StringBuilder ("VAccount[");
 		sb.append (m_value).append ("]");
 		return sb.toString ();
 	}	//	toString

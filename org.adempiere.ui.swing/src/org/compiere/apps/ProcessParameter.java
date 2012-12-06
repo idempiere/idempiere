@@ -407,7 +407,7 @@ public class ProcessParameter extends CDialog
 		 *	Mandatory fields
 		 *  see - MTable.getMandatory
 		 */
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int size = m_mFields.size();
 		for (int i = 0; i < size; i++)
 		{

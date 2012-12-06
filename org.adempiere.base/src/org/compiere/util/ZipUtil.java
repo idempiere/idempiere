@@ -219,7 +219,7 @@ public class ZipUtil
 	 */
 	public String getEntryInfo (String name)
 	{
-		StringBuffer sb = new StringBuffer(name);
+		StringBuilder sb = new StringBuilder(name);
 		ZipEntry e = getEntry(name);
 		if (e == null)
 			sb.append(": -");

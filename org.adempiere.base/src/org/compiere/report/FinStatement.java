@@ -289,7 +289,7 @@ public class FinStatement extends SvrProcess
 	 */
 	private void createBalanceLine()
 	{
-		StringBuffer sb = new StringBuffer ("INSERT INTO T_ReportStatement "
+		StringBuilder sb = new StringBuilder ("INSERT INTO T_ReportStatement "
 			+ "(AD_PInstance_ID, Fact_Acct_ID, LevelNo,"
 			+ "DateAcct, Name, Description,"
 			+ "AmtAcctDr, AmtAcctCr, Balance, Qty) ");

@@ -105,7 +105,7 @@ public class Aging extends SvrProcess
 		//FR 1933937
 		String dateacct = DB.TO_DATE(p_StatementDate);  
 		 
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT bp.C_BP_Group_ID, oi.C_BPartner_ID,oi.C_Invoice_ID,oi.C_InvoicePaySchedule_ID, "  // 1..4 
 			+ "oi.C_Currency_ID, oi.IsSOTrx, "								//	5..6
 			+ "oi.DateInvoiced, oi.NetDays,oi.DueDate,oi.DaysDue, ");		//	7..10

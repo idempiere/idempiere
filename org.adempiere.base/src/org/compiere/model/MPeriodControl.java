@@ -106,7 +106,7 @@ public class MPeriodControl extends X_C_PeriodControl
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MPeriodControl[");
+		StringBuilder sb = new StringBuilder ("MPeriodControl[");
 		sb.append(get_ID()).append(",").append(getDocBaseType())
 			.append(",Status=").append(getPeriodStatus())
 			.append ("]");

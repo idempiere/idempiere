@@ -228,7 +228,7 @@ public class MRfQResponse extends X_C_RfQResponse
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRfQResponse[");
+		StringBuilder sb = new StringBuilder ("MRfQResponse[");
 		sb.append(get_ID())
 			.append(",Complete=").append(isComplete())
 			.append(",Winner=").append(isSelectedWinner())

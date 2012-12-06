@@ -551,7 +551,7 @@ class mySimpleTreeNode extends DefaultTreeNode<Object>
 		
 		Vector <?> userObject = (Vector <?>)getData();
 		// Product
-		StringBuffer sb = new StringBuffer(((KeyNamePair)userObject.elementAt(2)).getName());
+		StringBuilder sb = new StringBuilder(((KeyNamePair)userObject.elementAt(2)).getName());
 		// UOM
 		sb.append(" ["+((KeyNamePair) userObject.elementAt(3)).getName().trim()+"]");
 		// BOMQty

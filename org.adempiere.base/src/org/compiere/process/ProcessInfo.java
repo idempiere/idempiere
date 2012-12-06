@@ -143,7 +143,7 @@ public class ProcessInfo implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("ProcessInfo[");
+		StringBuilder sb = new StringBuilder("ProcessInfo[");
 		sb.append(m_Title)
 			.append(",Process_ID=").append(m_AD_Process_ID);
 		if (m_AD_PInstance_ID != 0)
@@ -269,7 +269,7 @@ public class ProcessInfo implements Serializable
 		if (m_logs == null)
 			return "";
 		//
-		StringBuffer sb = new StringBuffer ();
+		StringBuilder sb = new StringBuilder ();
 		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
 		if (html)
 			sb.append("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"2\">");

@@ -149,7 +149,7 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		m_cities.clear();
 		m_citiesShow.clear();
 		ArrayList<Object> params = new ArrayList<Object>();
-		final StringBuffer sql = new StringBuffer(
+		final StringBuilder sql = new StringBuilder(
 				"SELECT cy.C_City_ID, cy.Name, cy.C_Region_ID, r.Name"
 				+" FROM C_City cy"
 				+" LEFT OUTER JOIN C_Region r ON (r.C_Region_ID=cy.C_Region_ID)"

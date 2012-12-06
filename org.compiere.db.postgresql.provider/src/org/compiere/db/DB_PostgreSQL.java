@@ -266,11 +266,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("DB_PostgreSQL[");
+		StringBuilder sb = new StringBuilder("DB_PostgreSQL[");
         sb.append(m_connectionURL);
         try
         {
-            StringBuffer logBuffer = new StringBuffer(50);
+            StringBuilder logBuffer = new StringBuilder(50);
             logBuffer.append("# Connections: ").append(m_ds.getNumConnections());
             logBuffer.append(" , # Busy Connections: ").append(m_ds.getNumBusyConnections());
             logBuffer.append(" , # Idle Connections: ").append(m_ds.getNumIdleConnections());
@@ -295,7 +295,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
             return null;
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         try
         {
             sb.append("# Connections: ").append(m_ds.getNumConnections());
@@ -398,7 +398,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			return "current_date()";
 		}
 
-		StringBuffer dateString = new StringBuffer("TO_DATE('");
+		StringBuilder dateString = new StringBuilder("TO_DATE('");
 		//  YYYY-MM-DD HH24:MI:SS.mmmm  JDBC Timestamp format
 		String myDate = time.toString();
 		if (dayOnly)
@@ -429,7 +429,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 **/
 	public String TO_CHAR (String columnName, int displayType, String AD_Language)
 	{
-		StringBuffer retValue = new StringBuffer("CAST (");
+		StringBuilder retValue = new StringBuilder("CAST (");
 		retValue.append(columnName);
 		retValue.append(" AS Text)");
 
@@ -986,7 +986,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
     	
     	String[] keyColumns = po.get_KeyColumns();
 		if (keyColumns != null && keyColumns.length > 0 && !po.is_new()) {
-			StringBuffer sqlBuffer = new StringBuffer(" SELECT ");
+			StringBuilder sqlBuffer = new StringBuilder(" SELECT ");
 			sqlBuffer.append(keyColumns[0])
 				.append(" FROM ")
 				.append(po.get_TableName())

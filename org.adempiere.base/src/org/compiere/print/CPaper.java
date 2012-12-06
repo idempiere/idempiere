@@ -344,7 +344,7 @@ public class CPaper extends Paper
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("CPaper[");
+		StringBuilder sb = new StringBuilder("CPaper[");
 		sb.append(getWidth()/72).append("x").append(getHeight()/72).append('"')
 			.append(m_landscape ? " Landscape " : " Portrait ")
 			.append("x=").append(getImageableX())
@@ -362,7 +362,7 @@ public class CPaper extends Paper
 	 */
 	public String toString (Properties ctx)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		//	Print Media size
 		//AA Goodwill : Custom Paper Support
 		if (m_mediaSize != null && m_mediaSize.getMediaSizeName() != null)

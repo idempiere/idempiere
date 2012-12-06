@@ -214,7 +214,7 @@ public final class OFX1ToXML extends InputStream implements Runnable
 		if (text == null)
 			return null;
 		char c;
-		StringBuffer n = new StringBuffer (text.length () * 2);
+		StringBuilder n = new StringBuilder (text.length () * 2);
 		for (int i = 0; i < text.length (); i++)
 		{
 			c = text.charAt (i);

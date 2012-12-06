@@ -136,7 +136,7 @@ public class WebOrder
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("WebOrder[");
+		StringBuilder sb = new StringBuilder("WebOrder[");
 		sb.append(m_order)
 			.append("]");
 		return sb.toString();

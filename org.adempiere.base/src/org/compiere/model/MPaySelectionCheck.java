@@ -520,7 +520,7 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MPaymentCheck[");
+		StringBuilder sb = new StringBuilder("MPaymentCheck[");
 		sb.append(get_ID()).append("-").append(getDocumentNo())
 			.append("-").append(getPayAmt())
 			.append(",PaymetRule=").append(getPaymentRule())
