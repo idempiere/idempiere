@@ -472,9 +472,10 @@ public class MProject extends X_C_Project
 	public MInvoice[] getMInvoices(){
 		StringBuilder sb = new StringBuilder();
 		sb.append(MInvoice.COLUMNNAME_C_Project_ID).append("=?");
-		Query qry = new Query(getCtx(), MInvoice.Table_Name, sb.toString(), get_TrxName());
-		qry.setParameters(getC_Project_ID());		
-		return (MInvoice[]) qry.list().toArray();
+		List<MInvoice> list = new Query(getCtx(), MInvoice.Table_Name, sb.toString(), get_TrxName())
+			.setParameters(getC_Project_ID())
+			.list();
+		return list.toArray(new MInvoice[list.size()]);
 	}
 
 }	//	MProject
