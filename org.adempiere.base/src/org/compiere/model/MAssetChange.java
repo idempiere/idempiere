@@ -28,8 +28,11 @@ import org.compiere.util.CLogger;
  */
 public class MAssetChange extends X_A_Asset_Change
 {
-	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4083373951793617528L;
+
 	/**	Static Logger */
 	private static CLogger s_log = CLogger.getCLogger(MAssetChange.class);
 	
@@ -67,11 +70,6 @@ public class MAssetChange extends X_A_Asset_Change
 		return true;
 	}	//	beforeSave
 
-	/** ARHIPAC: TEO: BEGIN ------------------------------------------------------------------ */
-	public void setSerno(String value)			{	setSerNo(value);		}
-	public void setVersionno(String value)		{	setVersionNo(value);	}
-	public void setAd_User_ID(int value)		{	setAD_User_ID(value);	}
-	
 	public static MAssetChange createAddition(MAssetAddition assetAdd, MDepreciationWorkfile assetwk) {
 		MAssetChange change = new MAssetChange (assetAdd.getCtx(), 0, assetAdd.get_TrxName());
 		change.setAD_Org_ID(assetAdd.getAD_Org_ID()); //@win added
