@@ -42,11 +42,8 @@ public class ADLookup {
 	static final int TYPE_BUISNESS_PARTNER = 002;
 	
 	private String m_columnName;
-	private int m_type;
 	private String m_tableName;
 	private String m_keyColumnName;
-	private Boolean IsQueryJoin;
-	private boolean m_isSOTRX;
 	
 	private final int MAX_PRODUCT_ROWS=500;
 	
@@ -72,8 +69,7 @@ public class ADLookup {
 	
 	
 	private String getWhereClause( String keyColumn, DataRow params ) {
-		String whereClause = "IsSummary='N'";
-		String lookupColumn = keyColumn;		
+		String whereClause = "IsSummary='N'";	
 		return whereClause;
 	}
 	
@@ -131,8 +127,6 @@ public class ADLookup {
 		//String whereClause = getWhere(adr);		
 		String whereClause = getWhereClause(m_columnName, adr);
 		String finalSQL="";		
-		
-		IsQueryJoin = false;
 		
 		String mode = "normal"; 
 		for (int i=0; i< adr.sizeOfFieldArray(); i++) {
@@ -200,16 +194,14 @@ public class ADLookup {
 			//join�w
 			if ((ile==1))
 			{
-			 System.out.println("Znalaz�em 1 rekord wi�c szukam dla bez join. W kliencie zostanie automatycznie uzupe�niona warto�c");
-			 IsQueryJoin = false;				 			 
+			 System.out.println("Znalaz�em 1 rekord wi�c szukam dla bez join. W kliencie zostanie automatycznie uzupe�niona warto�c");				 			 
 			}
 			//Jesli wiecej niz jeden to uzywamy join�w
 			//Spowoduje to wyswietlenie rekord�w spe�niajacych kryterium
 			//w oknie LookUp'a
 			if (ile>1)
 			{
-			 System.out.println("Znalaz�em wi�cej ni� 1 rekord wi�c szukam dla whereClause i z joinami. W kliencie zostanie wy�wietlone LookUpWindow z przefiltrowanymi rekordami.");
-			 IsQueryJoin = true;		 			 
+			 System.out.println("Znalaz�em wi�cej ni� 1 rekord wi�c szukam dla whereClause i z joinami. W kliencie zostanie wy�wietlone LookUpWindow z przefiltrowanymi rekordami.");		 			 
 
 			}	
 			ds = getResult(info, ds, ile, mode);			

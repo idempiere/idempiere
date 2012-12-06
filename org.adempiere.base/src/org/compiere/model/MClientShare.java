@@ -256,7 +256,7 @@ public class MClientShare extends X_AD_ClientShare
 			ResultSet rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
-				int AD_Table_ID = rs.getInt(1);
+				//int AD_Table_ID = rs.getInt(1);
 				String TableName = rs.getString(2);
 				if (info.length() != 0)
 					info.append(", ");

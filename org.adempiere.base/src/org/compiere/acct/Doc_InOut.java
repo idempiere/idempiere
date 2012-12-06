@@ -60,6 +60,7 @@ public class Doc_InOut extends Doc
 	}   //  DocInOut
 
 	private int				m_Reversal_ID = 0;
+	@SuppressWarnings("unused")
 	private String			m_DocStatus = "";
 
 	/**

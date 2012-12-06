@@ -234,6 +234,7 @@ public class ServerReportCtl {
 	 */
 	static public boolean startFinReport (ProcessInfo pi)
 	{
+		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 
 		//  Create Query from Parameters

@@ -94,6 +94,7 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	}	//	MDunningRunEntry
 
 	/** Parent				*/
+	@SuppressWarnings("unused")
 	private MDunningRun		m_parent = null;
 	
 	/**
@@ -279,12 +280,12 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	 * Get Parent
 	 * @return Dunning Run
 	 */
-	private MDunningRun getParent() 
+	/*private MDunningRun getParent() 
 	{
 		if (m_parent == null) 
 			m_parent = new MDunningRun(getCtx(), getC_DunningRun_ID (), get_TrxName());
 		return m_parent;
-	}	//	getParent
+	}	//	getParent*/
 	
 	@Override
 	protected boolean beforeSave (boolean newRecord)

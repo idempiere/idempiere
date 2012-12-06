@@ -173,6 +173,7 @@ public class MProjectType extends X_C_ProjectType
 		{
 			if (reportDate == null)
 				reportDate = new Timestamp(System.currentTimeMillis());
+			@SuppressWarnings("unused")
 			String dateString = DB.TO_DATE(reportDate);
 			String trunc = "D";
 			if (MGoal.MEASUREDISPLAY_Year.equals(MeasureScope))

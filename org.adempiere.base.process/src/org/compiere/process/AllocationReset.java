@@ -197,9 +197,9 @@ public class AllocationReset extends SvrProcess
 	/**
 	 * 	Set BPartner (may not be required
 	 */
-	private void setBPartner()
+	/*private void setBPartner()
 	{
-		/**
+		
 		UPDATE C_AllocationLine al
 		SET C_BPartner_ID=(SELECT C_BPartner_ID FROM C_Payment p WHERE al.C_Payment_ID=p.C_Payment_ID)
 		WHERE C_BPartner_ID IS NULL AND C_Payment_ID IS NOT NULL;
@@ -210,7 +210,6 @@ public class AllocationReset extends SvrProcess
 		SET C_BPartner_ID=(SELECT C_BPartner_ID FROM C_Order o WHERE al.C_Order_ID=o.C_Order_ID)
 		WHERE C_BPartner_ID IS NULL AND C_Order_ID IS NOT NULL;
 		COMMIT
-		**/
-	}	//	setBPartner
+	}	//	setBPartner*/
 
 }	//	AllocationReset

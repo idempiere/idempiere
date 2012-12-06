@@ -238,6 +238,7 @@ public class MWebServiceType extends X_WS_WebServiceType
 	}	//	isOutputColumnNameAllowed
 	
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MWebServiceType.class);
 	
 	/**************************************************************************

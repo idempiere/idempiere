@@ -253,6 +253,7 @@ public class CPaper extends Paper
 	{
 		PrintRequestAttributeSet prats = getPrintRequestAttributeSet();
 		//	Page Dialog
+		@SuppressWarnings("unused")
 		PageFormat pf = job.pageDialog(prats);
 		setPrintRequestAttributeSet(prats);
 		return true;

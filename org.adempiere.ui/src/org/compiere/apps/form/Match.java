@@ -31,7 +31,6 @@ import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MRole;
-import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
@@ -58,7 +57,7 @@ public class Match
 	private static final int		MATCH_ORDER = 2;
 
 	private static final int		MODE_NOTMATCHED = 0;
-	private static final int		MODE_MATCHED = 1;
+	//private static final int		MODE_MATCHED = 1;
 
 	/**	Indexes in Table			*/
 	private static final int		I_BPartner = 3;
@@ -66,7 +65,7 @@ public class Match
 	private static final int		I_Product = 5;
 	private static final int		I_QTY = 6;
 	private static final int		I_MATCHED = 7;
-	private static final int        I_Org = 8; //JAVIER 
+	//private static final int        I_Org = 8; //JAVIER 
 	
 
 

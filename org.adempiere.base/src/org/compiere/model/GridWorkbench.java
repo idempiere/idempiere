@@ -450,7 +450,7 @@ public class GridWorkbench implements Serializable
 	{
 		if (index < 0 || index > m_windows.size())
 			throw new IllegalArgumentException ("Index invalid: " + index);
-		WBWindow win = (WBWindow)m_windows.get(index);
+		//WBWindow win = (WBWindow)m_windows.get(index);
 		int retValue = -1;
 	//	if (win.mWindow != null && win.Type == TYPE_WINDOW)
 	//		return win.mWindow.getAD_Color_ID();

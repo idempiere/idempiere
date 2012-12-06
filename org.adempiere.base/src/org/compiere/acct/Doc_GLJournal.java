@@ -149,6 +149,7 @@ public class Doc_GLJournal extends Doc
 			{
 				if (p_lines[i].getC_AcctSchema_ID () == as.getC_AcctSchema_ID ())
 				{
+					@SuppressWarnings("unused")
 					FactLine line = fact.createLine (p_lines[i],
 									p_lines[i].getAccount (),
 									getC_Currency_ID(),

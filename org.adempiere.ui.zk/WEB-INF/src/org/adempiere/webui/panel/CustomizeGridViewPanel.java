@@ -268,8 +268,9 @@ public class CustomizeGridViewPanel extends Panel
 		south.setStyle("border: none; margin: none");
 		Panel southPanel = new Panel();
 		south.setHeight("35px");
-		southPanel.setAlign("Right");
+		southPanel.setAlign("Right"); 
 		southPanel.setStyle("margin-top: 2px; margin-right: 4px");
+		@SuppressWarnings("unused")
 		String label = Msg.getMsg(Env.getCtx(), "save");
 		Button bOK = new Button();
 		bOK.setImage("/images/Ok16.png");
@@ -503,7 +504,7 @@ public class CustomizeGridViewPanel extends Panel
 	{
 		log.fine("");
 		//	yesList
-		int index = 0;
+		//int index = 0;
 		boolean ok = true;
 		StringBuilder custom = new StringBuilder(); 
 		for (int i = 0; i < yesModel.getSize(); i++)
@@ -511,7 +512,7 @@ public class CustomizeGridViewPanel extends Panel
 			ListElement pp = (ListElement)yesModel.getElementAt(i);
 			if (!pp.isUpdateable())
 				continue;
-			index += 10;
+			//index += 10;
 			
 			custom.append(pp.getKey());
 			custom.append(",");			

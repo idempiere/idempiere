@@ -21,7 +21,6 @@
 package org.adempiere.webui;
 
 import org.adempiere.base.Service;
-import org.adempiere.base.ServiceQuery;
 import org.adempiere.webui.panel.IFormController;
 
 /**

@@ -193,15 +193,15 @@ public class Aging extends SvrProcess
 				int C_Currency_ID = rs.getInt(5);
 				boolean IsSOTrx = "Y".equals(rs.getString(6));
 				//
-				Timestamp DateInvoiced = rs.getTimestamp(7);
-				int NetDays = rs.getInt(8);
+				//Timestamp DateInvoiced = rs.getTimestamp(7);
+				//int NetDays = rs.getInt(8);
 				Timestamp DueDate = rs.getTimestamp(9);
 				//	Days Due
 				int DaysDue = rs.getInt(10)		//	based on today
 					+ m_statementOffset;
 				//
 				BigDecimal GrandTotal = rs.getBigDecimal(11);
-				BigDecimal PaidAmt = rs.getBigDecimal(12);
+				//BigDecimal PaidAmt = rs.getBigDecimal(12);
 				BigDecimal OpenAmt = rs.getBigDecimal(13);
 				//
 				int C_Activity_ID = p_IsListInvoices ? rs.getInt(14) : 0;

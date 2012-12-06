@@ -68,6 +68,7 @@ public class MAchievement extends X_PA_Achievement
 
 
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MAchievement.class);
 	
 	/**************************************************************************

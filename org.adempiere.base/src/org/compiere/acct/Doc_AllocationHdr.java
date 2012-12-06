@@ -28,7 +28,6 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MCashLine;
-import org.compiere.model.MCharge;   // adaxa-pb
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
@@ -200,6 +199,7 @@ public class Doc_AllocationHdr extends Doc
 				.add(line.getWriteOffAmt());
 			BigDecimal allocationSourceForRGL = allocationSource; // for realized gain & loss purposes
 			BigDecimal allocationAccounted = Env.ZERO;	// AR/AP balance corrected
+			@SuppressWarnings("unused")
 			BigDecimal allocationAccountedForRGL = Env.ZERO; // for realized gain & loss purposes
 
 			FactLine fl = null;
@@ -817,6 +817,7 @@ public class Doc_AllocationHdr extends Doc
 		{
 			fact.createLine (line, acct,
 				as.getC_Currency_ID(), acctDifference);
+			@SuppressWarnings("unused")
 			FactLine fl = fact.createLine (line, loss, gain,
 				as.getC_Currency_ID(), acctDifference.negate());
 		}

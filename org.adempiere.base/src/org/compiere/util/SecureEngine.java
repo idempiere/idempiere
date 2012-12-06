@@ -260,7 +260,7 @@ public class SecureEngine
 	{
 		init (System.getProperties());
 		//	Ini Test
-		String ini1 = SecureInterface.CLEARVALUE_START + "test" + SecureInterface.CLEARVALUE_END;
+		//String ini1 = SecureInterface.CLEARVALUE_START + "test" + SecureInterface.CLEARVALUE_END;
 		/**
 		log.info("Decrypt clear test   =" + test(decrypt(ini1), "test"));
 		log.info("Decrypt clear 'test' =" + test(decrypt("'" + ini1 + "'"), "'test'"));

@@ -20,7 +20,6 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.util.Properties;
 
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**

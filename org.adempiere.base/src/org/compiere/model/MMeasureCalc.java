@@ -107,6 +107,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		{
 			if (reportDate == null)
 				reportDate = new Timestamp(System.currentTimeMillis());
+			@SuppressWarnings("unused")
 			String dateString = DB.TO_DATE(reportDate);
 			// http://download-west.oracle.com/docs/cd/B14117_01/server.101/b10759/functions207.htm#i1002084
 			String trunc = "DD";

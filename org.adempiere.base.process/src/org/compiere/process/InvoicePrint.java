@@ -350,6 +350,7 @@ public class InvoicePrint extends SvrProcess
 					StringBuilder sb = new StringBuilder ("UPDATE C_Invoice ")
 						.append("SET DatePrinted=SysDate, IsPrinted='Y' WHERE C_Invoice_ID=")
 						.append (C_Invoice_ID);
+					@SuppressWarnings("unused")
 					int no = DB.executeUpdate(sb.toString(), get_TrxName());
 				}
 			}	//	for all entries						

@@ -41,6 +41,7 @@ public class MRecentItem extends X_AD_RecentItem
 	/**	Recent Item Cache				*/
 	private static CCache<Integer,MRecentItem>	s_cache = new CCache<Integer,MRecentItem>(Table_Name, 10);
 	/**	Logger			*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MRecentItem.class);
 
 	/**************************************************************************

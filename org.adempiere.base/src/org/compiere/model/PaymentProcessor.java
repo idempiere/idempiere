@@ -53,6 +53,7 @@ public abstract class PaymentProcessor
 	/**	Logger							*/
 	protected CLogger			log = CLogger.getCLogger (getClass());
 	/** Payment Processor Logger		*/
+	@SuppressWarnings("unused")
 	static private CLogger		s_log = CLogger.getCLogger (PaymentProcessor.class);
 	/** Encoding (ISO-8859-1 - UTF-8) 		*/
 	public static final String	ENCODING = "UTF-8";

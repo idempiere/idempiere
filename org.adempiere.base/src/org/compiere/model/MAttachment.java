@@ -66,6 +66,7 @@ public class MAttachment extends X_AD_Attachment
 	}	//	get
 	
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MAttachment.class);
 	
 	private MStorageProvider provider;

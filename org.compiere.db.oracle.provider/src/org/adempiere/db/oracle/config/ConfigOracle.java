@@ -31,7 +31,6 @@ import org.adempiere.install.IDBConfigMonitor;
 import org.adempiere.install.IDatabaseConfig;
 import org.compiere.db.Database;
 import org.compiere.install.ConfigurationData;
-import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 
 /**

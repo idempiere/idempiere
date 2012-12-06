@@ -44,7 +44,6 @@ import org.adempiere.webui.panel.WRCTabPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.ZkReportViewer;
-import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.model.MRole;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;

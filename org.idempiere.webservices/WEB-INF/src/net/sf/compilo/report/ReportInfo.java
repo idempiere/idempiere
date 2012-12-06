@@ -50,7 +50,8 @@ public class ReportInfo
 	private String reportFile;
     private boolean directPrint;
     private int ReportViewID = 0;
-    private int PrintFormatID = 0;
+    @SuppressWarnings("unused")
+	private int PrintFormatID = 0;
     private int m_AD_Process_ID;
     /** The field that points to the JasperReport or
         to the main Report in case of subreports. Marco LOMBARDO

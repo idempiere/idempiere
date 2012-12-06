@@ -26,7 +26,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -44,7 +43,6 @@ import javax.swing.border.TitledBorder;
 
 import org.adempiere.install.DBConfigStatus;
 import org.adempiere.install.IDBConfigMonitor;
-import org.apache.tools.ant.Main;
 import org.compiere.util.CLogger;
 
 /**

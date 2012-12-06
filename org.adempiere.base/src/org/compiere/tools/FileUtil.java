@@ -294,8 +294,6 @@ public class FileUtil
 	{
 		String fileName = file.getAbsolutePath();
 		boolean isJava = fileName.endsWith(".java");
-		boolean isJSP = fileName.endsWith(".jsp");
-		boolean other = !(isJava || isJSP); 
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		//
 		File tmpFile = new File(fileName + ".tmp");
@@ -305,10 +303,8 @@ public class FileUtil
 		boolean found = false;
 
 		String line = null;
-		int lineNo = 0;
 		while ((line = in.readLine()) != null)
 		{
-			lineNo++;
 			if (!found)
 			{
 				if (line.startsWith("package ") && isJava)

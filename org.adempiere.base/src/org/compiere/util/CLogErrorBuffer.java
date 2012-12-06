@@ -183,7 +183,7 @@ public class CLogErrorBuffer extends Handler
 				String loggerName = record.getLoggerName();			//	class name
 				if (loggerName == null)
 					loggerName = "";
-				String className = record.getSourceClassName();		//	physical class
+				//String className = record.getSourceClassName();		//	physical class
 				String methodName = record.getSourceMethodName();	//
 				if (DB.isConnected(false)
 					&& !methodName.equals("saveError")

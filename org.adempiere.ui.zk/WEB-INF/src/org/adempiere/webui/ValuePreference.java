@@ -112,6 +112,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		
 		//  Create Editor
+		@SuppressWarnings("unused")
 		ValuePreference vp = new ValuePreference (WindowNo,
 			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID,
 			Attribute, DisplayAttribute, Value, DisplayValue,
@@ -153,7 +154,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	/** The Name of the Editor      */
 	public static final String      NAME = "ValuePreference";
 	/** The Menu Icon               */
-	private static String ICON_URL = "images/VPreference16.png";
+	//private static String ICON_URL = "images/VPreference16.png";
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ValuePreference.class);
 	

@@ -41,6 +41,7 @@ import org.compiere.util.Env;
 public class Doc_Movement extends Doc
 {
 	private int				m_Reversal_ID = 0;
+	@SuppressWarnings("unused")
 	private String			m_DocStatus = "";
 
 	/**

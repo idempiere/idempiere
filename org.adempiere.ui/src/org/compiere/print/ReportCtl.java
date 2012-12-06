@@ -216,6 +216,7 @@ public class ReportCtl
 	 */
 	static public boolean startFinReport (ProcessInfo pi)
 	{
+		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 
 		//  Create Query from Parameters
@@ -342,6 +343,7 @@ public class ReportCtl
 	{
 
 		// afalcone - [ 1871567 ] Wrong value in Payment document
+		@SuppressWarnings("unused")
 		boolean ok = MPaySelectionCheck.deleteGeneratedDraft(Env.getCtx(), C_Payment_ID, null);
 		//
 

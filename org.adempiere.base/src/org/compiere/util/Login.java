@@ -98,6 +98,7 @@ public class Login
 				//  load org
 				if (orgs != null && orgs.length > 0)
 				{
+					@SuppressWarnings("unused")
 					KeyNamePair[] whs = login.getWarehouses(orgs[0]);
 					//
 					login.loadPreferences(orgs[0], null, null, null);
@@ -245,7 +246,7 @@ public class Login
 	{
 		log.info("User=" + app_user);
 		
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		if (app_user == null)
 		{
 			log.warning("No Apps User");
@@ -452,7 +453,7 @@ public class Login
 			rs = null; pstmt = null;
 		}
 	 }
-		long ms = System.currentTimeMillis () - start;
+		//long ms = System.currentTimeMillis () - start;
 		return retValue;
 	}	//	getRoles
 
@@ -711,7 +712,7 @@ public class Login
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
-				int AD_Client_ID = rs.getInt(1);
+				//int AD_Client_ID = rs.getInt(1);
 				int AD_Org_ID = rs.getInt(2);
 				String Name = rs.getString(3);
 				boolean summary = "Y".equals(rs.getString(4));
@@ -895,6 +896,7 @@ public class Login
 		String retValue = "";
 		int AD_Client_ID = Env.getContextAsInt(m_ctx, "#AD_Client_ID");
 		int AD_Org_ID =  org.getKey();
+		@SuppressWarnings("unused")
 		int AD_User_ID =  Env.getContextAsInt(m_ctx, "#AD_User_ID");
 		int AD_Role_ID =  Env.getContextAsInt(m_ctx, "#AD_Role_ID");
 

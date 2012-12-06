@@ -91,13 +91,16 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	
 	private int m_WindowNo;
 	private int m_M_Locator_ID;
+	@SuppressWarnings("unused")
 	private int m_AD_Client_ID;
+	@SuppressWarnings("unused")
 	private int m_AD_Org_ID;
 	private int m_only_Warehouse_ID;
 	private int m_M_Warehouse_ID;
 	
 	private boolean m_mandatory;
 	
+	@SuppressWarnings("unused")
 	private String m_M_WarehouseName;
 	private String m_M_WarehouseValue;
 	private String m_Separator;

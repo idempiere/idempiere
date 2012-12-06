@@ -43,6 +43,7 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	
 	
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MReplicationStrategy.class);
 
 	

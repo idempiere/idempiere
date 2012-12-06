@@ -28,8 +28,8 @@ public class InfoProduct  implements ADInfo {
 		+ " LEFT OUTER JOIN M_AttributeSet pa ON (p.M_AttributeSet_ID=pa.M_AttributeSet_ID)";
 
 	private DataRow params;
-	private boolean m_isSOTrx = true;
-	private String m_tableName = "M_Product";
+	//private boolean m_isSOTrx = true;
+	//private String m_tableName = "M_Product";
 	
 	Properties m_ctx;
 	int p_WindowNo;

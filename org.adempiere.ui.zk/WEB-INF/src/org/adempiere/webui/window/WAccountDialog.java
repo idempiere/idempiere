@@ -153,9 +153,10 @@ public final class WAccountDialog extends Window
 	//
 	private Label f_Description = new Label ("");
 
-	private int					m_line = 0;
+	//private int					m_line = 0;
 	private boolean				m_newRow = true;
 	//
+	@SuppressWarnings("unused")
 	private Vbox panel = new Vbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private StatusBarPanel statusBar = new StatusBarPanel();
@@ -304,8 +305,6 @@ public final class WAccountDialog extends Window
 
 		m_rows = new Rows();
 		m_rows.setParent(parameterLayout);
-
-		int TabNo = 0;
 
 		//	Alias
 		if (s_AcctSchema.isHasAlias())

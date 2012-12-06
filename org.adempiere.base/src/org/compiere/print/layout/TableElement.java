@@ -938,10 +938,10 @@ public class TableElement extends PrintElement
 	 * 	@param pageIndex zero based page index
 	 *  @return page number
 	 */
-	private int getPageNo (int pageIndex)
+	/*private int getPageNo (int pageIndex)
 	{
 		return pageIndex + m_pageNoStart;
-	}	//	getPageNo
+	}	//	getPageNo*/
 
 	
 	/**************************************************************************
@@ -1325,7 +1325,7 @@ public class TableElement extends PrintElement
 				TextLayout layout = measurer.nextLayout(netWidth + 2);
 				if (iter.getEndIndex() != measurer.getPosition())
 					fastDraw = false;
-				float lineHeight = layout.getAscent() + layout.getDescent() + layout.getLeading();
+				//float lineHeight = layout.getAscent() + layout.getDescent() + layout.getLeading();
 				
 				if (alignment.equals(MPrintFormatItem.FIELDALIGNMENTTYPE_Block))
 				{
@@ -1667,10 +1667,10 @@ public class TableElement extends PrintElement
 	 * 	Insert empty Row after current Row
 	 *	@param currentRow
 	 */
-	private void insertRow (int currentRow)
+	/*private void insertRow (int currentRow)
 	{
 		
-	}	//	inserRow
+	}	//	inserRow*/
 	
 	
 	/**

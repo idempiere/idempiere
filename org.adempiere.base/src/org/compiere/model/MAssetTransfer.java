@@ -207,6 +207,7 @@ implements DocAction
 		assetAcct.setValidFrom(getDateAcct());
 		assetAcct.saveEx();
 		
+		@SuppressWarnings("unused")
 		MDepreciationWorkfile wk = MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType(), get_TrxName());
 		/* commented out by @win, deprecating existing design
 		wk.buildDepreciation();

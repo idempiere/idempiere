@@ -165,7 +165,6 @@ public final class PP_PayFlowPro4 extends PaymentProcessor
 	 */
 	public boolean process (String parameter)
 	{
-		long start = System.currentTimeMillis();
 		StringBuilder param = new StringBuilder(parameter);
 		//  Usr/Pwd
 		param

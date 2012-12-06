@@ -60,6 +60,7 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 5797395051958101596L;
 	
 	private WMergeUI form;

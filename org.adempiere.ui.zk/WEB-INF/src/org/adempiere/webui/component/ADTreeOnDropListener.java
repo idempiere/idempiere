@@ -87,8 +87,6 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		
 		MTreeNode toMNode = (MTreeNode) toNode.getData();
 				
-		DefaultTreeNode<Object> newParent;
-		int index;
 		if (!toMNode.isSummary())	//	drop on a child node
 		{
 			moveNode(movingNode, toNode, false);
@@ -159,6 +157,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		Trx trx = Trx.get (Trx.createTrxName("ADTree"), true);
 		try
 		{
+			@SuppressWarnings("unused")
 			int no = 0;
 			MTreeNode oldMParent = (MTreeNode) oldParent.getData();
 			for (int i = 0; i < oldParent.getChildCount(); i++)

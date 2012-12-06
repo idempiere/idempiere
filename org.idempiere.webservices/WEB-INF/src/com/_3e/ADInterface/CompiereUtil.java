@@ -48,7 +48,9 @@ public class CompiereUtil {
 		
 		//
 		Properties ctx = new Properties();
+		@SuppressWarnings("unused")
 		MClient client = MClient.get(ctx, 0);
+		@SuppressWarnings("unused")
 		MSystem system = MSystem.get(ctx);
 		
 		// Env.setContext( ctx, "#AD_Language", "pl_PL" );

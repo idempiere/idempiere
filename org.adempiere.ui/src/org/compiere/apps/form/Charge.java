@@ -56,6 +56,7 @@ public class Charge
 	private int         m_C_TaxCategory_ID = 0;
 	private int         m_AD_Client_ID = 0;
 	private int         m_AD_Org_ID = 0;
+	@SuppressWarnings("unused")
 	private int         m_CreatedBy = 0;
 	private MAcctSchema  m_acctSchema = null;
 	/**	Logger			*/

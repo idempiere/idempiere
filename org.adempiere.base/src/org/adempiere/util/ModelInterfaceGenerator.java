@@ -825,7 +825,6 @@ public class ModelInterfaceGenerator
 		sql.append(" ORDER BY TableName");
 
 		//
-		int count = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -835,7 +834,6 @@ public class ModelInterfaceGenerator
 			while (rs.next())
 			{
 				new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName);
-				count++;
 			}
 		}
 		catch (SQLException e)

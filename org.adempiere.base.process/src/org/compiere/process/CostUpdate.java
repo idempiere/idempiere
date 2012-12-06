@@ -152,7 +152,6 @@ public class CostUpdate extends SvrProcess
 		if (p_SetFutureCostTo.length() == 0)
 			return true;
 		
-		String toTarget = to;
 		if (to.equals(TO_AverageInvoiceHistory))
 			to = TO_AverageInvoice;
 		if (to.equals(TO_AveragePOHistory))

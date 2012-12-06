@@ -92,6 +92,7 @@ public class RecordInfo extends CDialog
 
 
 	private CPanel	mainPanel	= new CPanel (new BorderLayout(0,0));
+	@SuppressWarnings("unused")
 	private CPanel	northPanel	= new CPanel ();
 	private CScrollPane	scrollPane = new CScrollPane ();
 	private VTable table = new VTable ();

@@ -368,7 +368,6 @@ public class CalloutInvoiceBatch extends CalloutEngine
 			LineNetAmt = LineNetAmt.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
 
 		//	Calculate Tax Amount
-		boolean IsSOTrx = "Y".equals(Env.getContext(Env.getCtx(), WindowNo, "IsSOTrx"));
 		boolean IsTaxIncluded = "Y".equals(Env.getContext(Env.getCtx(), WindowNo, "IsTaxIncluded"));
 		
 		BigDecimal TaxAmt = null;

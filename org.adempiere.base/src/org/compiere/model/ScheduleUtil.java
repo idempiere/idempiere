@@ -55,6 +55,7 @@ public class ScheduleUtil
 	private Properties 	m_ctx;
 	private int			m_S_Resource_ID;
 	private boolean 	m_isAvailable = true;
+	@SuppressWarnings("unused")
 	private boolean 	m_isSingleAssignment = true;
 	private int 		m_S_ResourceType_ID = 0;
 	private int 		m_C_UOM_ID = 0;
@@ -776,6 +777,7 @@ public class ScheduleUtil
 			throw new IllegalStateException("ResourceTypeName not set");
 
 		ArrayList<MAssignmentSlot> list = new ArrayList<MAssignmentSlot>();
+		@SuppressWarnings("unused")
 		MUOM uom = MUOM.get (m_ctx, m_C_UOM_ID);
 		int minutes = MUOMConversion.convertToMinutes (m_ctx, m_C_UOM_ID, Env.ONE);
 		log.config("Minutes=" + minutes);

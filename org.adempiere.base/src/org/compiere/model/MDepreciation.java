@@ -412,7 +412,7 @@ public class MDepreciation extends X_A_Depreciation
 	 *	@return coeficient K degressive method for
 	 *	@see #apply_ARH_AD1(int, int, String, int, BigDecimal)
 	 */
-	private static BigDecimal get_AD_K(int A_Life_Year)
+	/*private static BigDecimal get_AD_K(int A_Life_Year)
 	{
 		if (A_Life_Year < 2) {
 			throw new IllegalArgumentException("@A_Life_Year@ = " + A_Life_Year + " < 2");
@@ -429,7 +429,7 @@ public class MDepreciation extends X_A_Depreciation
 		else {
 			return new BigDecimal(2.5);
 		}
-	}
+	}*/
 	
 	/** Calculate the value of depreciation over a month (period). In the last month of the year we add errors from the adjustment calculation
 	 *	@param A_Current_Period		current month's index

@@ -23,6 +23,7 @@ public class MProduction extends X_M_Production {
 	 * 
 	 */
 	/** Log								*/
+	@SuppressWarnings("unused")
 	private static CLogger		m_log = CLogger.getCLogger (MProduction.class);
 	private int lineno;
 	private int count;

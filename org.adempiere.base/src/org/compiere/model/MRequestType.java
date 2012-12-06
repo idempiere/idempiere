@@ -63,6 +63,7 @@ public class MRequestType extends X_R_RequestType
 	}	//	get
 
 	/** Static Logger					*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MRequestType.class);
 	/**	Cache							*/
 	static private CCache<Integer,MRequestType> s_cache = new CCache<Integer,MRequestType>(Table_Name, 10);
@@ -367,6 +368,7 @@ public class MRequestType extends X_R_RequestType
 		{
 			if (reportDate == null)
 				reportDate = new Timestamp(System.currentTimeMillis());
+			@SuppressWarnings("unused")
 			String dateString = DB.TO_DATE(reportDate);
 			String trunc = "D";
 			if (MGoal.MEASUREDISPLAY_Year.equals(MeasureScope))

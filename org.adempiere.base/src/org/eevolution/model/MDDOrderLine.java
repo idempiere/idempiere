@@ -23,7 +23,6 @@ import java.util.Properties;
 
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MCharge;
-import org.compiere.model.MClient;
 import org.compiere.model.MLocator;
 import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
@@ -169,7 +168,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 	private boolean			m_IsSOTrx = true;
 	
 	/** Cached Currency Precision	*/
-	private Integer			m_precision = null;
+	//private Integer			m_precision = null;
 	/**	Product					*/
 	private MProduct 		m_product = null;
 	/** Parent					*/

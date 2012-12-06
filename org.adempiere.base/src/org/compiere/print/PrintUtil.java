@@ -492,7 +492,7 @@ public class PrintUtil
 	/**
 	 * 	Test Stream Print Services
 	 */
-	private static void testSPS()
+	/*private static void testSPS()
 	{
 	//	dump (DocFlavor.INPUT_STREAM.GIF, DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMimeType());
 	//	dump (DocFlavor.SERVICE_FORMATTED.PAGEABLE, DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMimeType());
@@ -529,7 +529,7 @@ public class PrintUtil
 	//	dump (null, DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMediaType());	//	lists PS output
 
 	//	dump(null, null);
-	}	//	testSPS
+	}	//	testSPS*/
 
 
 	/**************************************************************************
@@ -593,6 +593,7 @@ public class PrintUtil
 			.append(Line_ID)
 			.append(" WHERE AD_PrintFormatChild_ID IS NOT NULL AND AD_PrintFormat_ID=")
 			.append(Header_ID);
+		@SuppressWarnings("unused")
 		int no = DB.executeUpdate(sb.toString(), null);
 	}	//	updatePrintFormatHeader
 

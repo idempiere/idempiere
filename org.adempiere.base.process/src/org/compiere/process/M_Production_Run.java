@@ -34,7 +34,6 @@ import org.compiere.model.X_M_ProductionPlan;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
@@ -194,7 +193,8 @@ public class M_Production_Run extends SvrProcess {
 			 
 			 /* Immediate accounting */
 			 if (MClient.isClientAccountingImmediate()) {
-				 String ignoreError = DocumentEngine.postImmediate(getCtx(), getAD_Client_ID(), production.get_Table_ID(), production.get_ID(), true, get_TrxName());						
+				 @SuppressWarnings("unused")
+				String ignoreError = DocumentEngine.postImmediate(getCtx(), getAD_Client_ID(), production.get_Table_ID(), production.get_ID(), true, get_TrxName());						
 			 }
 			 
 		}

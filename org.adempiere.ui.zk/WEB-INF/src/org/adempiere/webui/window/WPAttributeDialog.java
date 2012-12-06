@@ -164,7 +164,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	/** List of Editors				*/
 	private ArrayList<HtmlBasedComponent>		m_editors = new ArrayList<HtmlBasedComponent>();
 	/** Length of Instance value (40)	*/
-	private static final int		INSTANCE_VALUE_LENGTH = 40;
+	//private static final int		INSTANCE_VALUE_LENGTH = 40;
 
 	private Checkbox	cbNewEdit = new Checkbox();
 	private Button		bNewRecord = new Button(Msg.getMsg(Env.getCtx(), "NewRecord"));

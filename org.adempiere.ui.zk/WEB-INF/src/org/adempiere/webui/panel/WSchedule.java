@@ -87,6 +87,7 @@ public class WSchedule extends Panel implements EventListener<Event>
 
 	private Bandinfo mthBand;
 
+	@SuppressWarnings("unused")
 	private Date m_center;
 
 	private MResourceAssignment _assignmentDialogResult;
@@ -202,7 +203,9 @@ public class WSchedule extends Panel implements EventListener<Event>
 			}
 		} else if (event instanceof BandScrollEvent){
 			BandScrollEvent e = (BandScrollEvent) event;
+			@SuppressWarnings("unused")
 			Date end = e.getMax();
+			@SuppressWarnings("unused")
 			Date start = e.getMin();
 			Date mid = e.getCenter();
 			if (mid != null) {

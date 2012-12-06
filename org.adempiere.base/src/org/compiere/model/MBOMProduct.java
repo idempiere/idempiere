@@ -58,6 +58,7 @@ public class MBOMProduct extends X_M_BOMProduct
 	}	//	getOfProduct
 
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MBOMProduct.class);
 	
 	/**************************************************************************

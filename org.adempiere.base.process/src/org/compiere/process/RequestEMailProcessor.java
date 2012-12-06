@@ -280,6 +280,7 @@ public class RequestEMailProcessor extends SvrProcess
 						log.info("message info: Sent -> " + msg.getSentDate() + " From -> " + msg.getFrom()[0].toString());
 						// Delete in InBox
 						msg.setFlag(Flags.Flag.DELETED, true);
+						@SuppressWarnings("unused")
 						Message[] deleted = inbox.expunge();
 						
 						noRequest++;

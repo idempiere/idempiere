@@ -314,12 +314,10 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
-		boolean difference = false;
 		for (int i = 0; i < lines.length; i++)
 		{
 			if (!lines[i].isFullyConfirmed())
 			{
-				difference = true;
 				break;
 			}
 		}

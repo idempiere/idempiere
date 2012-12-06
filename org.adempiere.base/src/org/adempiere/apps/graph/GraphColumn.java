@@ -120,6 +120,7 @@ public class GraphColumn
 	/** Column Data Value			*/
 	private double	m_value = 0;
 	/** Column Label Value			*/
+	@SuppressWarnings("unused")
 	private String	m_labelValue = "";
 	/** Column Data Target Value	*/
 	private double	m_targetValue = 0;
@@ -129,6 +130,7 @@ public class GraphColumn
 	private double	m_height = 0;
 
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger log = CLogger.getCLogger (GraphColumn.class);
 	/** Integer Number Format		*/
 	private static DecimalFormat	s_format = DisplayType.getNumberFormat(DisplayType.Integer);

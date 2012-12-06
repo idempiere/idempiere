@@ -2,8 +2,6 @@ package com._3e.ADInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +14,6 @@ import java.util.logging.Level;
 import net.sf.compilo.report.ReportProcessor;
 import net.sf.jasperreports.engine.JasperPrint;
 
-import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAllocationHdr;
@@ -344,7 +341,7 @@ public class Process {
 					try
 					{
 						boolean ok = false;
-						File file;
+						//File file;
 						String file_type = "pdf"; 
 						if (!jasperreport)
 						{
@@ -670,7 +667,7 @@ public class Process {
 	
 	private static JasperPrint getJasperReportPrint(Properties ctx, ProcessInfo pi)
 	{
-	    boolean local = true;  // lokalnie czy zdalnie
+	   // boolean local = true;  // lokalnie czy zdalnie
 
         try
         {
@@ -818,6 +815,7 @@ public class Process {
 	 */
 	static public ReportEngine startFinReport (ProcessInfo pi)
 	{
+		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 
 		//  Create Query from Parameters
@@ -891,6 +889,7 @@ public class Process {
 		}
 		Object Processing = tab.getValue("Processing");
 		String DocStatus = (String)tab.getValue("DocStatus");
+		@SuppressWarnings("unused")
 		String DocAction = (String)tab.getValue("DocAction");
 		String OrderType = Env.getContext(Env.getCtx(), tab.getWindowNo(), "OrderType");
 		String IsSOTrx = Env.getContext(Env.getCtx(), tab.getWindowNo(), "IsSOTrx");
@@ -1054,9 +1053,9 @@ public class Process {
 
 	}*/
 	
-	public void doPost() throws  IOException {
+	/*public void doPost() throws  IOException {
 		String column_name = "";//WebUtil.getParameter(request, "ColumnName");
-		String action = "";//WebUtil.getParameter(request, "action");
+		//String action = "";//WebUtil.getParameter(request, "action");
 	
 		WWindowStatus ws = null; //WWindowStatus.get(request);
 		
@@ -1072,9 +1071,9 @@ public class Process {
 					//return;
 				}
 	
-			GridField f = ws.curTab.getField( column_name );
-			int process_id = f.getAD_Process_ID();
-			int record_id = ws.curTab.getRecord_ID();
+			//GridField f = ws.curTab.getField( column_name );
+			//int process_id = f.getAD_Process_ID();
+			//int record_id = ws.curTab.getRecord_ID();
 			String qs = 
 				"AD_Process_ID="+Integer.toString(process_id) +"&"+
 				"AD_Record_ID="+Integer.toString(record_id);
@@ -1083,7 +1082,7 @@ public class Process {
 			//disp.forward(request, response);
 
 			return;
-	}   //  doPost
+	}   //  doPost*/
 
 	
 	

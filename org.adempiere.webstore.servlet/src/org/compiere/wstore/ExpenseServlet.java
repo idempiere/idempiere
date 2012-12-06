@@ -131,6 +131,7 @@ public class ExpenseServlet extends HttpServlet
 			response.sendRedirect("loginServlet?ForwardTo=expense.jsp");	//	entry
 			return;
 		}
+		@SuppressWarnings("unused")
 		int W_Expense_ID = WebUtil.getParameterAsInt(request, P_Expense_ID);
 		String method = WebUtil.getParameter(request, P_SubmitType_Name);
 		if(method.startsWith("Save"))

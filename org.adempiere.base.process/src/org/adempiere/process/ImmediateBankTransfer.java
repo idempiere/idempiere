@@ -247,6 +247,7 @@ public class ImmediateBankTransfer extends SvrProcess
 	
 		//	Create Cash & CashLines
 		MCash cash = createCash();
+		@SuppressWarnings("unused")
 		MCashLine cashLines[]= createCashLines(cash);
 		
 		StringBuilder processMsg = new StringBuilder().append(cash.getDocumentNo());

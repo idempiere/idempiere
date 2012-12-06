@@ -144,6 +144,7 @@ public class MContainer extends X_CM_Container
 	} // getContainers
 
 	/** Logger */
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MContainer.class);
 
 	

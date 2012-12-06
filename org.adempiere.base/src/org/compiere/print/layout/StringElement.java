@@ -340,16 +340,16 @@ public class StringElement extends PrintElement
 		//	Enlarge Size when aligned and max size is given
 		if (p_FieldAlignmentType != null)
 		{
-			boolean changed = false;
+			//boolean changed = false;
 			if (p_height < p_maxHeight)
 			{
 				p_height = p_maxHeight;
-				changed = true;
+				//changed = true;
 			}
 			if (p_width < p_maxWidth)
 			{
 				p_width = p_maxWidth;
-				changed = true;
+				//changed = true;
 			}
 		//	if (changed)
 		//		System.out.println("StringElement.calculate size - Width="
@@ -421,7 +421,6 @@ public class StringElement extends PrintElement
 
 		AttributedString aString = null;
 		AttributedCharacterIterator iter = null;
-		AttributedCharacterIterator iter2 = null;
 		float xPos = (float)location.x;
 		float yPos = (float)location.y;
 		float yPen = 0f;

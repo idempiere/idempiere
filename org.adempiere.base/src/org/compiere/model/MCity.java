@@ -61,6 +61,7 @@ public final class MCity extends X_C_City
 	/**	City Cache				*/
 	private static CCache<Integer,MCity> s_Cities =  new CCache<Integer,MCity>(Table_Name, 20);;
 	/**	Static Logger				*/
+	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCity.class);
 
 	/**	Region Cache				*/

@@ -103,7 +103,6 @@ public class Doc_Order extends Doc
 			BigDecimal Qty = line.getQtyOrdered();
 			docLine.setQty(Qty, order.isSOTrx());
 			//
-			BigDecimal PriceActual = line.getPriceActual();
 			BigDecimal PriceCost = null;
 			if (getDocumentType().equals(DOCTYPE_POrder))	//	PO
 				PriceCost = line.getPriceCost();
@@ -344,9 +343,10 @@ public class Doc_Order extends Doc
 		{
 			updateProductPO(as);
 
-			BigDecimal grossAmt = getAmount(Doc.AMTTYPE_Gross);
+			//BigDecimal grossAmt = getAmount(Doc.AMTTYPE_Gross);
 
 			//  Commitment
+			@SuppressWarnings("unused")
 			FactLine fl = null;
 			if (as.isCreatePOCommitment())
 			{
@@ -416,6 +416,7 @@ public class Doc_Order extends Doc
 		else if (getDocumentType().equals(DOCTYPE_SOrder))
 		{
 			//  Commitment
+			@SuppressWarnings("unused")
 			FactLine fl = null;
 			if (as.isCreateSOCommitment())
 			{
@@ -600,6 +601,7 @@ public class Doc_Order extends Doc
 				C_InvoiceLine_ID);
 
 		BigDecimal total = Env.ZERO;
+		@SuppressWarnings("unused")
 		FactLine fl = null;
 		int C_Currency_ID = -1;
 		for (int i = 0; i < commitments.length; i++)
@@ -740,6 +742,7 @@ public class Doc_Order extends Doc
 				M_InOutLine_ID);
 
 		BigDecimal total = Env.ZERO;
+		@SuppressWarnings("unused")
 		FactLine fl = null;
 		int C_Currency_ID = -1;
 		for (int i = 0; i < commitments.length; i++)

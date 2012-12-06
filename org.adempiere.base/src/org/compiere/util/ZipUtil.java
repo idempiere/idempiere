@@ -62,6 +62,7 @@ public class ZipUtil
 		open(file);
 	}	//	ZipUtil
 
+	@SuppressWarnings("unused")
 	private File		m_file;
 	private ZipFile		m_zipFile;
 

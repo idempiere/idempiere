@@ -76,6 +76,7 @@ public class RunProcess extends TableFixture {
 		int windowNo = adempiereInstance.getAdempiereService().getWindowNo();
 
 		MProcess process = null;
+		@SuppressWarnings("unused")
 		MProcessPara[] processParams = null;
 		MPInstance pInstance = null;
 		HashMap<String,Object> fmap = new HashMap<String,Object>();

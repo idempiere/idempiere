@@ -350,7 +350,7 @@ public class AmtInWords_TH implements AmtInWords
          *      Test Print
          *      @param amt amount
          */
-        private void print (String amt, String currency)
+        /*private void print (String amt, String currency)
         {
                 try
                 {
@@ -360,7 +360,7 @@ public class AmtInWords_TH implements AmtInWords
                 {
                         e.printStackTrace();
                 }
-        }       //      print
+        }       //      print*/
 
         /**
          *      Test

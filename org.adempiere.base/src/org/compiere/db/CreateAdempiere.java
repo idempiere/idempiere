@@ -377,9 +377,10 @@ public class CreateAdempiere
 				}
 				sb.append(columnName).append(" ");
 				//	Data Type & Precision
-				int sqlType = sourceColumns.getInt ("DATA_TYPE");		//	sql.Types
+				//int sqlType = sourceColumns.getInt ("DATA_TYPE");		//	sql.Types
 				String typeName = sourceColumns.getString ("TYPE_NAME");	//	DB Dependent
 				int size = sourceColumns.getInt ("COLUMN_SIZE");
+				@SuppressWarnings("unused")
 				int decDigits = sourceColumns.getInt("DECIMAL_DIGITS");
 				if (sourceColumns.wasNull())
 					decDigits = -1;
@@ -494,6 +495,7 @@ public class CreateAdempiere
 		String table = tableName.toUpperCase();
 		try
 		{
+			@SuppressWarnings("unused")
 			ResultSet sourceIndex = md.getIndexInfo(catalog, schema, table, false, false);
 
 		}
