@@ -3,10 +3,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.model.CalloutEngine;
-import org.compiere.model.GridField;
-import org.compiere.model.GridTab;
-import org.compiere.model.Query;
 import org.compiere.util.ArhRuntimeException;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
@@ -17,17 +13,14 @@ import org.compiere.util.Env;
  */
 public class MAssetType extends X_A_Asset_Type
 {
-	private static final long serialVersionUID = 1L;
-	
-	public static final String A_ASSET_TYPE_MFX = "MFX";
-	public static final String A_ASSET_TYPE_INV = "INV";
-	
-	public static final int A_ASSET_TYPE_ID_MFX = 1;
-	public static final int A_ASSET_TYPE_ID_INV = 2;
-	public static final int A_ASSET_TYPE_ID_SUP = 3;
-	/** Obiecte tert */
-	public static final int A_ASSET_TYPE_ID_OIN = 4;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1371478760221357780L;
+
+	private static final String A_ASSET_TYPE_MFX = "MFX"; // HARDCODED - you must create a Asset Type with Value=MFX to indicate is Fixed Asset
+	private static final String A_ASSET_TYPE_INV = "INV"; // HARDCODED - you must create a Asset Type with Value=MFX to indicate is Inventory Object
+
 	public static interface Model
 	{
 		/** Get Context */
@@ -98,17 +91,13 @@ public class MAssetType extends X_A_Asset_Type
 	
 	public static boolean isFixedAsset(int A_Asset_ID)
 	{
-		final String whereClause = MAsset.COLUMNNAME_A_Asset_ID+"=?"
-									+" AND "+MAsset.COLUMNNAME_A_AssetType+"=?";
-		
-		return new Query(Env.getCtx(), MAsset.Table_Name, whereClause, null)
-					.setParameters(new Object[]{A_Asset_ID, A_ASSET_TYPE_MFX})
-					.match();
+		MAsset asset = MAsset.get(Env.getCtx(), A_Asset_ID, null);
+		return isFixedAsset(asset);
 	}
 	
 	public static boolean isFixedAsset(MAsset asset)
 	{
-		return asset != null && A_ASSET_TYPE_MFX.equals(asset.getA_Asset_Type());
+		return asset != null && A_ASSET_TYPE_MFX.equals(asset.getA_Asset_Type().getValue());
 	}
 	
 	public static boolean isFixedAssetGroup(Properties ctx, int A_Asset_Group_ID)
@@ -150,7 +139,7 @@ public class MAssetType extends X_A_Asset_Type
 	/**
 	 * Validate a Model
 	 * @param m model
-	 * @thorows ContextUserException
+	 * @throws ContextUserException
 	 */
 	public static void validate(Model m)
 	{
