@@ -56,7 +56,7 @@ import org.zkoss.zul.Space;
  * @author hengsin
  *
  */
-public class BreadCrumb extends Div implements EventListener<Event>{
+public class BreadCrumb extends Div implements EventListener<Event> {
 
 	private static final String INFO_INDICATOR_IMAGE = "/images/InfoIndicator16.png";
 
@@ -75,6 +75,7 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 	
 	private LinkedHashMap<String, String> links;
 
+	@SuppressWarnings("unused")
 	private int windowNo;
 	
 	private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
@@ -99,6 +100,8 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 	private Hbox messageContainer;
 
 	private Caption msgPopupCaption;
+
+	protected Menupopup linkPopup;
 
 	/**
 	 * 
@@ -192,21 +195,30 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 		this.links = links;
 		final Label pathLabel = (Label) layout.getChildren().get(layout.getChildren().size()-2);
 		pathLabel.setStyle("cursor: pointer; font-weight: bold");
-		pathLabel.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+		EventListener<Event> listener = new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				Menupopup popup = new Menupopup();
+				if (linkPopup != null  ) {
+					System.out.println(linkPopup.getPage());
+					if (linkPopup.getPage() != null && linkPopup.isVisible()) {
+						return;
+					}
+				}
+				
+				linkPopup = new Menupopup();
 				for(Map.Entry<String, String>entry : BreadCrumb.this.links.entrySet()) {
 					final Menuitem item = new Menuitem();
 					item.setLabel(entry.getValue());
 					item.setValue(entry.getKey());
 					item.addEventListener(Events.ON_CLICK, BreadCrumb.this);
-					popup.appendChild(item);
+					linkPopup.appendChild(item);
 				}
-				popup.setPage(pathLabel.getPage());
-				popup.open(pathLabel);
+				linkPopup.setPage(pathLabel.getPage());
+				linkPopup.open(pathLabel);
 			}
-		});
+		};
+		pathLabel.addEventListener(Events.ON_CLICK, listener);
+		pathLabel.addEventListener(Events.ON_MOUSE_OVER, listener);
 	}
 
 	@Override
@@ -443,6 +455,8 @@ public class BreadCrumb extends Div implements EventListener<Event>{
 		super.onPageDetached(page);
 		if (msgPopup != null)
 			msgPopup.detach();
+		if (linkPopup != null)
+			linkPopup.detach();
 	}
 
 	public void setNavigationToolbarVisibility(boolean visible) {
