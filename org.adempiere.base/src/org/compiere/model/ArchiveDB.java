@@ -38,13 +38,10 @@ public class ArchiveDB implements IArchiveStore {
 	@Override
 	public byte[] loadLOBData(MArchive archive, MStorageProvider prov) {
 		byte[] deflatedData = archive.getByteData();
-		archive.m_deflated = null;
-		archive.m_inflated = null;
 		if (deflatedData == null)
 			return null;
 		//
 		log.fine("ZipSize=" + deflatedData.length);
-		archive.m_deflated = new Integer(deflatedData.length);
 		if (deflatedData.length == 0)
 			return null;
 
@@ -67,7 +64,6 @@ public class ArchiveDB implements IArchiveStore {
 				log.fine("Size=" + inflatedData.length + " - zip=" + entry.getCompressedSize()
 						+ "(" + entry.getSize() + ") "
 						+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
-				archive.m_inflated = new Integer(inflatedData.length);
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "", e);
@@ -83,7 +79,6 @@ public class ArchiveDB implements IArchiveStore {
 	public void save(MArchive archive, MStorageProvider prov,byte[] inflatedData) {
 		if (inflatedData == null || inflatedData.length == 0)
 			throw new IllegalArgumentException("InflatedData is NULL");
-		archive.m_inflated = new Integer(inflatedData.length);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ZipOutputStream zip = new ZipOutputStream(out);
 		zip.setMethod(ZipOutputStream.DEFLATED);
@@ -105,11 +100,9 @@ public class ArchiveDB implements IArchiveStore {
 			zip.close();
 			deflatedData = out.toByteArray();
 			log.fine("Length=" + inflatedData.length);
-			archive.m_deflated = new Integer(deflatedData.length);
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "saveLOBData", e);
 			deflatedData = null;
-			archive.m_deflated = null;
 		}
 		archive.setByteData(deflatedData);
 	}

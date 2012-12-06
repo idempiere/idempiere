@@ -168,3 +168,110 @@ UPDATE AD_Ref_Table SET IsValueDisplayed='Y', AD_Display=200961,Updated=TO_DATE(
 UPDATE AD_Ref_Table SET IsValueDisplayed='N',Updated=TO_DATE('2012-11-30 17:34:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Reference_ID=200023
 ;
 
+INSERT INTO ad_storageprovider
+            (ad_client_id,
+             ad_org_id,
+             ad_storageprovider_id,
+             ad_storageprovider_uu,
+             created,
+             createdby,
+             folder,
+             isactive,
+             method,
+             name,
+             password,
+             updated,
+             updatedby,
+             url,
+             username)
+SELECT 
+             ad_client_id,
+             0,
+             nextidfunc(200033,'N'),
+             generate_uuid(),
+             sysdate,
+             100,
+             coalesce(windowsarchivepath, unixarchivepath),
+             'Y',
+             'FileSystem',
+             'Folder',
+             null,
+             sysdate,
+             100,
+             null,
+             null
+FROM ad_client
+WHERE storearchiveonfilesystem='Y' AND (windowsarchivepath is not null or unixarchivepath is not null)
+;
+
+UPDATE ad_clientinfo
+   SET storagearchive_id = (SELECT ad_storageprovider_id FROM ad_storageprovider JOIN ad_client ON ad_client.ad_client_id=ad_storageprovider.ad_client_id
+                                WHERE ad_storageprovider.ad_client_id=ad_clientinfo.ad_client_id
+				  AND coalesce(ad_client.windowsarchivepath, ad_client.unixarchivepath)=ad_storageprovider.folder)
+WHERE ad_clientinfo.ad_client_id IN
+  (SELECT ad_client_id FROM ad_client WHERE storearchiveonfilesystem='Y' AND (windowsarchivepath is not null or unixarchivepath is not null))
+;
+
+-- Dec 5, 2012 6:49:08 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-12-05 18:49:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=50215
+;
+
+-- Dec 5, 2012 6:49:14 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-12-05 18:49:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=50216
+;
+
+-- Dec 5, 2012 6:49:18 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-12-05 18:49:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=50214
+;
+
+-- Dec 5, 2012 6:55:57 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Field SET IsCentrallyMaintained='N', Name='Attachment Store',Updated=TO_DATE('2012-12-05 18:55:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200948
+;
+
+-- Dec 5, 2012 6:55:57 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Field_Trl SET IsTranslated='N' WHERE AD_Field_ID=200948
+;
+
+-- Dec 5, 2012 6:56:36 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Element SET Name='Archive Store', PrintName='Archive Store',Updated=TO_DATE('2012-12-05 18:56:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=200257
+;
+
+-- Dec 5, 2012 6:56:36 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Element_Trl SET IsTranslated='N' WHERE AD_Element_ID=200257
+;
+
+-- Dec 5, 2012 6:56:36 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Column SET ColumnName='StorageArchive_ID', Name='Archive Store', Description=NULL, Help=NULL WHERE AD_Element_ID=200257
+;
+
+-- Dec 5, 2012 6:56:36 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Process_Para SET ColumnName='StorageArchive_ID', Name='Archive Store', Description=NULL, Help=NULL, AD_Element_ID=200257 WHERE UPPER(ColumnName)='STORAGEARCHIVE_ID' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Dec 5, 2012 6:56:36 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Process_Para SET ColumnName='StorageArchive_ID', Name='Archive Store', Description=NULL, Help=NULL WHERE AD_Element_ID=200257 AND IsCentrallyMaintained='Y'
+;
+
+-- Dec 5, 2012 6:56:36 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_Field SET Name='Archive Store', Description=NULL, Help=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=200257) AND IsCentrallyMaintained='Y'
+;
+
+-- Dec 5, 2012 6:56:36 PM COT
+-- IDEMPIERE-390 Attachments/archives on load balancer scenario / Implement archive part
+UPDATE AD_PrintFormatItem pi SET PrintName='Archive Store', Name='Archive Store' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=200257)
+;
+
+SELECT register_migration_script('201212051000_IDEMPIERE_390.sql') FROM dual
+;
+

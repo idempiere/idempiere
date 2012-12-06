@@ -35,6 +35,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -58,12 +59,11 @@ public class ArchiveFileSystem implements IArchiveStore {
 	 */
 	@Override
 	public byte[] loadLOBData(MArchive archive, MStorageProvider prov) {
-		if ("".equals(archive.m_archivePathRoot)) {
+		String archivePathRoot = getArchivePathRoot(prov);
+		if ("".equals(archivePathRoot)) {
 			throw new IllegalArgumentException("no attachmentPath defined");
 		}
 		byte[] data = archive.getByteData();
-		archive.m_deflated = null; 
-		archive.m_inflated = null;
 		if (data == null) {
 			return null;
 		}
@@ -87,7 +87,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 				String filePath = fileNode.getNodeValue();
 				log.fine("filePath: " + filePath);
 				if(filePath!=null){
-					filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, archive.m_archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
+					filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
 					//just to be shure...
 					String replaceSeparator = File.separator;
 					if(!replaceSeparator.equals("/")){
@@ -145,7 +145,8 @@ public class ArchiveFileSystem implements IArchiveStore {
 	 */
 	@Override
 	public void  save(MArchive archive, MStorageProvider prov,byte[] inflatedData) {
-		if ("".equals(archive.m_archivePathRoot)) {
+		String archivePathRoot = getArchivePathRoot(prov);
+		if ("".equals(archivePathRoot)) {
 			throw new IllegalArgumentException("no attachmentPath defined");
 		}
 		if (inflatedData == null || inflatedData.length == 0) {
@@ -162,7 +163,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 		BufferedOutputStream out = null;
 		try {
 			// create destination folder
-			StringBuilder msgfile = new StringBuilder().append(archive.m_archivePathRoot).append(File.separator)
+			StringBuilder msgfile = new StringBuilder().append(archivePathRoot).append(File.separator)
 					.append(archive.getArchivePathSnippet());
 			final File destFolder = new File(msgfile.toString());
 			if (!destFolder.exists()) {
@@ -171,7 +172,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 				}
 			}
 			// write to pdf
-			msgfile = new StringBuilder().append(archive.m_archivePathRoot).append(File.separator)
+			msgfile = new StringBuilder().append(archivePathRoot).append(File.separator)
 					.append(archive.getArchivePathSnippet()).append(archive.get_ID()).append(".pdf");
 			final File destFile = new File(msgfile.toString());
 
@@ -201,7 +202,6 @@ public class ArchiveFileSystem implements IArchiveStore {
 
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "saveLOBData", e);
-			archive.m_deflated = null;
 			archive.setByteData(null);
 		} finally {
 			if(out != null){
@@ -211,6 +211,19 @@ public class ArchiveFileSystem implements IArchiveStore {
 			}
 		}
 
+	}
+
+	private String getArchivePathRoot(MStorageProvider prov) {
+		String archivePathRoot = prov.getFolder();
+		if (archivePathRoot == null)
+			archivePathRoot = "";
+		if (Util.isEmpty(archivePathRoot)) {
+			log.severe("no archivePath defined");
+		} else if (!archivePathRoot.endsWith(File.separator)){
+			archivePathRoot = archivePathRoot + File.separator;
+			log.fine(archivePathRoot);
+		}
+		return archivePathRoot;
 	}
 
 }

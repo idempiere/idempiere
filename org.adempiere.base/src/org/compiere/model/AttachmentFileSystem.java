@@ -35,6 +35,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -50,24 +51,9 @@ public class AttachmentFileSystem implements IAttachmentStore {
 	
 	private final CLogger log = CLogger.getCLogger(getClass());
 	
-	public String m_attachmentPathRoot;
-
 	@Override
 	public boolean save(MAttachment attach,MStorageProvider prov) {
-		
-		/*if(File.separatorChar == '\\'){
-			m_attachmentPathRoot = prov.getWi;
-		} else {
-			m_attachmentPathRoot = prov.getUnixAttachmentPath();
-		}*/
-		m_attachmentPathRoot=prov.getFolder();
-		if("".equals(m_attachmentPathRoot)){
-			log.severe("no attachmentPath defined");
-		} else if (!m_attachmentPathRoot.endsWith(File.separator)){
-			m_attachmentPathRoot = m_attachmentPathRoot + File.separator;
-			log.fine(m_attachmentPathRoot);
-		}
-
+		String attachmentPathRoot = getAttachmentPathRoot(prov);
 		if (attach.m_items == null || attach.m_items.size() == 0) {
 			attach.setBinaryData(null);
 			return true;
@@ -85,21 +71,21 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				File entryFile = attach.m_items.get(i).getFile();
 				final String path = entryFile.getAbsolutePath();
 				// if local file - copy to central attachment folder
-				log.fine(path + " - " + attach.m_attachmentPathRoot);
-				if (!path.startsWith(attach.m_attachmentPathRoot)) {
+				log.fine(path + " - " + attachmentPathRoot);
+				if (!path.startsWith(attachmentPathRoot)) {
 					log.fine("move file: " + path);
 					FileChannel in = null;
 					FileChannel out = null;
 					try {
 						//create destination folder
-						StringBuilder msgfile = new StringBuilder().append(attach.m_attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet(attach));
+						StringBuilder msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet(attach));
 						final File destFolder = new File(msgfile.toString());
 						if(!destFolder.exists()){
 							if(!destFolder.mkdirs()){
 								log.warning("unable to create folder: " + destFolder.getPath());
 							}
 						}
-						msgfile = new StringBuilder().append(attach.m_attachmentPathRoot).append(File.separator)
+						msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator)
 								.append(getAttachmentPathSnippet(attach)).append(File.separator).append(entryFile.getName());
 						final File destFile = new File(msgfile.toString());
 						in = new FileInputStream(entryFile).getChannel();
@@ -117,7 +103,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 					} catch (IOException e) {
 						e.printStackTrace();
 						log.severe("unable to copy file " + entryFile.getAbsolutePath() + " to "
-								+ attach.m_attachmentPathRoot + File.separator + 
+								+ attachmentPathRoot + File.separator + 
 								getAttachmentPathSnippet(attach) + File.separator + entryFile.getName());
 					} finally {
 						if (in != null && in.isOpen()) {
@@ -132,7 +118,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				//entry.setAttribute("name", m_items.get(i).getName());
 				entry.setAttribute("name", attach.getEntryName(i));
 				String filePathToStore = entryFile.getAbsolutePath();
-				filePathToStore = filePathToStore.replaceFirst(attach.m_attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
+				filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
 				log.fine(filePathToStore);
 				entry.setAttribute("file", filePathToStore);
 				root.appendChild(entry);
@@ -158,7 +144,8 @@ public class AttachmentFileSystem implements IAttachmentStore {
 	
 	@Override
 	public boolean loadLOBData(MAttachment attach,MStorageProvider prov) {
-		if("".equals(attach.m_attachmentPathRoot)){
+		String attachmentPathRoot = getAttachmentPathRoot(prov);
+		if (Util.isEmpty(attachmentPathRoot)) {
 			log.severe("no attachmentPath defined");
 			return false;
 		}
@@ -192,7 +179,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				String filePath = fileNode.getNodeValue();
 				log.fine("filePath: " + filePath);
 				if(filePath!=null){
-					filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attach.m_attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
+					filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
 					//just to be shure...
 					String replaceSeparator = File.separator;
 					if(!replaceSeparator.equals("/")){
@@ -271,7 +258,8 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				}
 			}
 		}
-		final File folder = new File(m_attachmentPathRoot + getAttachmentPathSnippet(attach));
+		String attachmentPathRoot = getAttachmentPathRoot(prov);
+		final File folder = new File(attachmentPathRoot + getAttachmentPathSnippet(attach));
 		if (folder.exists()) {
 			if (!folder.delete()) {
 				log.warning("unable to delete " + folder.getAbsolutePath());
@@ -295,5 +283,18 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		log.config("Index=" + index + " - NewSize=" + attach.m_items.size());
 		return true;
 	}
-	
+
+	private String getAttachmentPathRoot(MStorageProvider prov) {
+		String attachmentPathRoot = prov.getFolder();
+		if (attachmentPathRoot == null)
+			attachmentPathRoot = "";
+		if (Util.isEmpty(attachmentPathRoot)) {
+			log.severe("no attachmentPath defined");
+		} else if (!attachmentPathRoot.endsWith(File.separator)){
+			attachmentPathRoot = attachmentPathRoot + File.separator;
+			log.fine(attachmentPathRoot);
+		}
+		return attachmentPathRoot;
+	}
+
 }

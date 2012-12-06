@@ -17,7 +17,6 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.Service;
@@ -27,16 +26,14 @@ public class MStorageProvider extends X_AD_StorageProvider {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1317908636350952835L;
+	private static final long serialVersionUID = -5889682671195395536L;
 
-	public MStorageProvider(Properties ctx, int AD_StorageProvider_ID,
-			String trxName) {
+	public MStorageProvider(Properties ctx, int AD_StorageProvider_ID, String trxName) {
 		super(ctx, AD_StorageProvider_ID, trxName);
 	}
 
 	public MStorageProvider(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		
 	}
 
 	public IAttachmentStore getAttachmentStore() {
@@ -46,32 +43,23 @@ public class MStorageProvider extends X_AD_StorageProvider {
 			method = "DB";
 		query.put("method", method);
 		IAttachmentStore store = Service.locator().locate(IAttachmentStore.class, query).getService();			
-		if(store == null){
-			log.saveError("Error", "No storage provider found");
-
+		if (store == null){
+			log.saveError("Error", "No attachment storage provider found");
 		}
 		return store;
 	}
 	
-	public IArchiveStore getArchiveStore(){
-		
+	public IArchiveStore getArchiveStore() {
 		ServiceQuery query=new ServiceQuery();
 		String method = this.getMethod();
 		if (method == null)
 			method = "DB";
-		query.put("storage", method);
+		query.put("method", method);
 		IArchiveStore store = Service.locator().locate(IArchiveStore.class, query).getService();
-		 
-		if(store == null){
-			log.saveError("Error", "No storage provider found");
-
+		if (store == null){
+			log.saveError("Error", "No archive storage provider found");
 		}
 		return store;
-		
 	}
 		
 }
-	
-	
-
-

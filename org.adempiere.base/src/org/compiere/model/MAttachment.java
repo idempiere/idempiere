@@ -47,7 +47,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4443388991706555942L;
+	private static final long serialVersionUID = -8013716602070647299L;
 
 	/**
 	 * 	Get Attachment (if there are more than one attachment it gets the first in no specific order)
@@ -68,7 +68,7 @@ public class MAttachment extends X_AD_Attachment
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MAttachment.class);
 	
-	public MStorageProvider provider;
+	private MStorageProvider provider;
 
 	
 	/**************************************************************************
@@ -124,9 +124,6 @@ public class MAttachment extends X_AD_Attachment
 	/**	List of Entry Data		*/
 	public ArrayList<MAttachmentEntry> m_items = null;
 
-	/** attachment (root) path - if file system is used */
-	public String m_attachmentPathRoot = "";
-	
 	/** string replaces the attachment root in stored xml file
 	 * to allow the changing of the attachment root. */
 	public final String ATTACHMENT_FOLDER_PLACEHOLDER = "%ATTACHMENT_FOLDER%";
@@ -138,33 +135,8 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	private void initAttachmentStoreDetails(Properties ctx, String trxName)
 	{
-	
 		MClientInfo clientInfo = MClientInfo.get(ctx);
-	
 		provider=new MStorageProvider(ctx, clientInfo.getAD_StorageProvider_ID(), trxName);		
-		
-		m_attachmentPathRoot=provider.getFolder();
-		
-		if(m_attachmentPathRoot == null){
-			log.severe("no attachmentPath defined");
-		}
-		
-		/*	final MClient client = new MClient(ctx, this.getAD_Client_ID(), trxName);
-		isStoreAttachmentsOnFileSystem = client.isStoreAttachmentsOnFileSystem();
-		if(isStoreAttachmentsOnFileSystem){
-			if(File.separatorChar == '\\'){
-				m_attachmentPathRoot = client.getWindowsAttachmentPath();
-			} else {
-				m_attachmentPathRoot = client.getUnixAttachmentPath();
-			}
-			if("".equals(m_attachmentPathRoot)){
-				log.severe("no attachmentPath defined");
-			} else if (!m_attachmentPathRoot.endsWith(File.separator)){
-				log.warning("attachment path doesn't end with " + File.separator);
-				m_attachmentPathRoot = m_attachmentPathRoot + File.separator;
-				log.fine(m_attachmentPathRoot);
-			}
-		}*/
 	}
 	
 	/**
