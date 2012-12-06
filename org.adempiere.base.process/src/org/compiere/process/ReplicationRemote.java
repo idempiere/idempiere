@@ -108,7 +108,7 @@ public class ReplicationRemote extends SvrProcess
 			//	Update Tables	****
 			while (rs.next ())
 			{
-				int AD_Table_ID = rs.getInt(1);
+				//int AD_Table_ID = rs.getInt(1);
 				String ReplicationType = rs.getString(2);
 				String TableName = rs.getString(3);
 				log.fine("setupRemote - " + TableName + " - " + ReplicationType);
@@ -306,7 +306,9 @@ public class ReplicationRemote extends SvrProcess
 	private String exit() throws Exception
 	{
 		log.info ("exit");
+		@SuppressWarnings("unused")
 		ProcessInfo pi = getProcessInfo();
+		@SuppressWarnings("unused")
 		Object result = doIt(ReplicationLocal.START, "exit", null);
 		return "exit";
 	}	//	exit

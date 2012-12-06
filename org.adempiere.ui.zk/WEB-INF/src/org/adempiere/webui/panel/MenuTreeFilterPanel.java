@@ -21,7 +21,9 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 	
 	public static final String MENU_TREE_FILTER_CHECKED_QUEUE = "MENU_TREE_FILTER_CHECKED_QUEUE";
 	
+	@SuppressWarnings("unused")
 	private Tree tree;
+	@SuppressWarnings("unused")
 	private TreeSearchPanel searchPanel;
 
 	public MenuTreeFilterPanel(Tree tree, TreeSearchPanel panel) {

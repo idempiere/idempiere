@@ -65,6 +65,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 3630156132596215136L;
 	
 	private CustomForm form = new CustomForm();	
@@ -80,6 +81,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private Checkbox		cbAllNodes	= new Checkbox ();
 	private Label			treeInfo	= new Label ();
 	//
+	@SuppressWarnings("unused")
 	private Splitter		splitPane	= new Splitter();
 	private Tree			centerTree;
 	private Listbox			centerList	= new Listbox();
@@ -254,9 +256,9 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		bDelete.setEnabled(!m_tree.isAllNodes());
 		bDeleteAll.setEnabled(!m_tree.isAllNodes());
 		//
-		String fromClause = m_tree.getSourceTableName(false);	//	fully qualified
+		/*String fromClause = m_tree.getSourceTableName(false);	//	fully qualified
 		String columnNameX = m_tree.getSourceTableName(true);
-		String actionColor = m_tree.getActionColorName();
+		String actionColor = m_tree.getActionColorName();*/
 		
 		//	List
 		SimpleListModel model = new SimpleListModel();

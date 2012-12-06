@@ -323,7 +323,6 @@ public abstract class Convert
 	 * @return string
 	 */
 	protected String recoverQuotedStrings(String retValue, Vector<String>retVars) {
-		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < retVars.size(); i++) {
 			//hengsin, special character in replacement can cause exception
 			String replacement = (String) retVars.get(i);

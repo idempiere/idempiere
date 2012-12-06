@@ -165,6 +165,7 @@ public final class MCountry extends X_C_Country
 	}	//	setDisplayLanguage
 	
 	/**	Display Language				*/
+	@SuppressWarnings("unused")
 	private static String		s_AD_Language = null;
 	
 	/**	Country Cache					*/

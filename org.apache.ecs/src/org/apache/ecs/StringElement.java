@@ -60,11 +60,11 @@ public class StringElement extends ConcreteElement implements Printable
         addElement(element);
     }
 
-    private StringElement append(String string)
+    /*private StringElement append(String string)
     {
         setTagText(getTagText()+string);
         return this;
-    }
+    }*/
 
     /** 
         Resets the internal string to be empty.

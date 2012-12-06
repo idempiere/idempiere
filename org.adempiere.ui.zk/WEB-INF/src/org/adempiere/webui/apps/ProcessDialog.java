@@ -168,6 +168,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		
 		Div div = new Div();
 		Hbox hbox = new Hbox();
+		@SuppressWarnings("unused")
 		String label = Msg.getMsg(Env.getCtx(), "Start");
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
 		//bOK = new Button(label.replaceAll("&", ""));

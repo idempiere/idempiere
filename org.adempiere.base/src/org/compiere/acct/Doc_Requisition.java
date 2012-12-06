@@ -86,7 +86,7 @@ public class Doc_Requisition extends Doc
 			DocLine docLine = new DocLine (line, this);
 			BigDecimal Qty = line.getQty();
 			docLine.setQty (Qty, false);
-			BigDecimal PriceActual = line.getPriceActual();
+			//BigDecimal PriceActual = line.getPriceActual();
 			BigDecimal LineNetAmt = line.getLineNetAmt();
 			docLine.setAmount (LineNetAmt);	 // DR
 			list.add (docLine);
@@ -125,6 +125,7 @@ public class Doc_Requisition extends Doc
 		Fact fact = new Fact (this, as, Fact.POST_Reservation);
 		setC_Currency_ID(as.getC_Currency_ID());
 		//
+		@SuppressWarnings("unused")
 		BigDecimal grossAmt = getAmount (Doc.AMTTYPE_Gross);
 		// Commitment
 		if (as.isCreateReservation ())

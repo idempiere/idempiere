@@ -414,6 +414,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 
 	public void onShowSchedule() 
 	{
+		@SuppressWarnings("unused")
 		InfoSchedule is = new InfoSchedule (m_mAssignment, true, new Callback<MResourceAssignment>() {			
 			@Override
 			public void onCallback(MResourceAssignment result) {

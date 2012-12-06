@@ -644,14 +644,12 @@ public class Allocation
 		alloc.setAD_Org_ID(AD_Org_ID);
 		alloc.saveEx();
 		//	For all invoices
-		int invoiceLines = 0;
 		BigDecimal unmatchedApplied = Env.ZERO;
 		for (int i = 0; i < iRows; i++)
 		{
 			//  Invoice line is selected
 			if (((Boolean)invoice.getValueAt(i, 0)).booleanValue())
 			{
-				invoiceLines++;
 				KeyNamePair pp = (KeyNamePair)invoice.getValueAt(i, 2);    //  Value
 				//  Invoice variables
 				int C_Invoice_ID = pp.getKey();

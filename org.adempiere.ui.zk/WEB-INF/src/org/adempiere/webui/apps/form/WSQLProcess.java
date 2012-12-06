@@ -223,6 +223,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 		try
 		{
 			stmt = conn.createStatement(); 
+			@SuppressWarnings("unused")
 			boolean OK = stmt.execute(sql);
 			int count = stmt.getUpdateCount();
 			if (count == -1)

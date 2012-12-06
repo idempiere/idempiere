@@ -43,6 +43,7 @@ public class MJournalGenerator extends X_GL_JournalGenerator
 	private static final long serialVersionUID = -8044550395699815424L;
 
 	/**	Logger			*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MJournalGenerator.class);
 
 	/**************************************************************************

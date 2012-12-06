@@ -68,6 +68,7 @@ public class WTrxMaterial extends TrxMaterial
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -2141669182129214237L;
 	
 	private CustomForm form = new CustomForm();	

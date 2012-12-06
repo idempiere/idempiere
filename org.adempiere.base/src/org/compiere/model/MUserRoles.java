@@ -71,6 +71,7 @@ public class MUserRoles extends X_AD_User_Roles
 	}	//	getOfUser
 
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MUserRoles.class);
 
 	

@@ -35,6 +35,7 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	private static final long serialVersionUID = 3897658515979106674L;
 
 	/**	Logger			*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MCashPlanLine.class);
 
 	/**************************************************************************

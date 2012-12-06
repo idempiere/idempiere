@@ -348,7 +348,6 @@ public final class MLocatorLookup extends Lookup implements Serializable
 
 			//	Reset
 			m_lookup.clear();
-			int rows = 0;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try

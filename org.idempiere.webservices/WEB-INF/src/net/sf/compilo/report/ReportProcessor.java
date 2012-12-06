@@ -260,7 +260,7 @@ public class ReportProcessor
     private int m_AD_PInstance_ID = 0;
     private int m_AD_Process_ID = 0;
     private int m_Record_ID = 0;
-    private boolean m_isPrint = false;
+    //private boolean m_isPrint = false;
     private HashMap<String,Object> m_Param = null;
     private Properties m_ctx = null;   
     private JasperPrint m_jasperPrint = null;

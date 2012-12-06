@@ -1295,14 +1295,14 @@ public class CConnection implements Serializable, Cloneable
 		//	if (!Ini.isClient()			//	Server
 		//		&& trxLevel != Connection.TRANSACTION_READ_COMMITTED)		// PO_LOB.save()
 		//	{
-			Exception ee = null;
+			//Exception ee = null;
 			try
 			{
 				conn = m_db.getCachedConnection(this, autoCommit, transactionIsolation);
 			}
 			catch (Exception e)
 			{
-				ee = e;
+				//ee = e;
 			}
 			//	Verify Connection
 			if (conn != null)

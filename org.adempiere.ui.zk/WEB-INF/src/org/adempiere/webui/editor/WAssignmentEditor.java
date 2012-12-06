@@ -169,6 +169,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 			//	Start InfoSchedule directly
 			else
 			{
+				@SuppressWarnings("unused")
 				final InfoSchedule is = new InfoSchedule(ma, true, new Callback<MResourceAssignment>() {
 					@Override
 					public void onCallback(MResourceAssignment ma) {

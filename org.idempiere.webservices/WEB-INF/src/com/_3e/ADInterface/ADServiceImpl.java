@@ -28,7 +28,6 @@ import org.compiere.model.MCountry;
 import org.compiere.model.MLocation;
 import org.compiere.model.MLookup;
 import org.compiere.model.MQuery;
-import org.compiere.model.MRegion;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.CLogger;
@@ -161,7 +160,8 @@ public class ADServiceImpl implements ADService {
     	
     	if (DisplayType.isLookup( fo.displayType ))	{    		
     		GridField ff = new GridField( fo );
-    		ArrayList<String> deps = ff.getDependentOn();
+    		@SuppressWarnings("unused")
+			ArrayList<String> deps = ff.getDependentOn();
     		Lookup lookup = ff.getLookup();
     		
     		LookupInfo li = f.addNewLookupInfo();
@@ -296,7 +296,7 @@ public class ADServiceImpl implements ADService {
     public WindowDocument getADWindow(int WindowNo, int AD_Window_ID, int AD_Menu_ID)  {
     	authenticate(webServiceName, "getADWindow");
     	
-    	WindowDocument wc = WindowCache.get(new String(""+AD_Window_ID+"_"+AD_Menu_ID));
+    	//WindowDocument wc = WindowCache.get(new String(""+AD_Window_ID+"_"+AD_Menu_ID));
     	//if (wc != null)			return wc;
     	
     	WindowDocument res = WindowDocument.Factory.newInstance();
@@ -457,7 +457,7 @@ public class ADServiceImpl implements ADService {
     		} else 
     		{
     			DataRow findDR = req.getFindCriteria();
-    			MQuery currentQuery = ws.curTab.getQuery(); 	
+    			//MQuery currentQuery = ws.curTab.getQuery(); 	
     			MQuery newQuery = createQuery( ws.curTab.getTableName(), findDR );    			
         		if  (findDR.getFieldArray().length>0) { //(!currentQuery.getWhereClause().equals( newQuery.getWhereClause() )) { // change the query for zak�adki
         			ws.curTab.setQuery(newQuery);	
@@ -558,7 +558,9 @@ public class ADServiceImpl implements ADService {
         	if (dr.length == 1)
         	{
         		DataRow dr0 = dr[0];
-        		boolean err = updateFields( ws, dr0 );
+        		@SuppressWarnings("unused")
+        		//variable set to ease debugging (return value ignored) in case you want to check the return of the method
+				boolean err = updateFields( ws, dr0 );
         		
         		if (ws.ads.m_is_error)
         		{        			
@@ -847,7 +849,7 @@ public class ADServiceImpl implements ADService {
 	{
 	
 		boolean error = false;
-		Enumeration<?> en = null; //request.getParameterNames();
+		//Enumeration<?> en = null; //request.getParameterNames();
 		DataField[] df = dr.getFieldArray();
 		DataField f;
 		for (int i=0; i<df.length; i++)
@@ -882,7 +884,7 @@ public class ADServiceImpl implements ADService {
 			    
 				Object dbValue = GridField.getValue();
 				boolean fieldError = false;
-				String columnName = GridField.getColumnName();
+				//String columnName = GridField.getColumnName();
 
 				/*
 				System.out.println( 
@@ -988,7 +990,7 @@ public class ADServiceImpl implements ADService {
 			return null;
 
 		int dt = GridField.getDisplayType();
-		String columnName = GridField.getColumnName();
+		//String columnName = GridField.getColumnName();
 
 		//  BigDecimal
 		if (DisplayType.isNumeric(dt))
@@ -1318,8 +1320,7 @@ public class ADServiceImpl implements ADService {
 		tree.trimTree();
 		
 		//	Print tree
-		StringBuilder buf = new StringBuilder();
-		StringBuilder barbuf = new StringBuilder();
+		//StringBuilder barbuf = new StringBuilder();
 		en = root.preorderEnumeration();
 		int oldLevel = 0;
 		while (en.hasMoreElements())
@@ -1544,7 +1545,7 @@ public class ADServiceImpl implements ADService {
 		return lvs;
 	}   
 
-	private LookupValues getRegion (MLocation location)
+	/*private LookupValues getRegion (MLocation location)
 	{
 		MRegion[] regions =  MRegion.getRegions (location.getCtx(), location.getC_Country_ID());
 		int comp = location.getC_Region_ID();
@@ -1560,7 +1561,7 @@ public class ADServiceImpl implements ADService {
 		}
 
 		return lvs;
-	}   
+	} */  
 
 	public DocActionDocument getDocAction(int WindowNo, int TabNo, int RowNo, String ColName )
 	{

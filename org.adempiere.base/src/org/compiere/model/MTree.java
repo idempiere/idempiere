@@ -520,7 +520,7 @@ public class MTree extends MTree_Base
 					int AD_Form_ID = m_nodeRowSet.getInt(index++);
 					int AD_Workflow_ID = m_nodeRowSet.getInt(index++);
 					int AD_Task_ID = m_nodeRowSet.getInt(index++);
-					int AD_Workbench_ID = m_nodeRowSet.getInt(index++);
+					//int AD_Workbench_ID = m_nodeRowSet.getInt(index++);
 					//
 					MRole role = MRole.getDefault(getCtx(), false);
 					Boolean access = null;
@@ -609,7 +609,7 @@ public class MTree extends MTree_Base
 	/**
 	 *  Diagnostics: Print tree
 	 */
-	private void dumpTree()
+	/*private void dumpTree()
 	{
 		Enumeration<?> en = m_root.preorderEnumeration();
 		int count = 0;
@@ -626,7 +626,7 @@ public class MTree extends MTree_Base
 			count++;
 		}
 		System.out.println("Count=" + count);
-	}   //  diagPrintTree
+	}   //  diagPrintTree*/
 
 	/**
 	 *  Get Root node

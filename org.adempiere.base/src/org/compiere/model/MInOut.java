@@ -1392,6 +1392,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						}
 						if (!sameWarehouse) {
 							//correct qtyOrdered in warehouse of order
+							@SuppressWarnings("unused")
 							MWarehouse wh = MWarehouse.get(getCtx(), oLine.getM_Warehouse_ID());
 							if (reservedDiff.signum() != 0) {
 								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
@@ -1467,6 +1468,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					}
 					if (!sameWarehouse) {
 						//correct qtyOrdered in warehouse of order
+						@SuppressWarnings("unused")
 						MWarehouse wh = MWarehouse.get(getCtx(), oLine.getM_Warehouse_ID());
 						if (QtySO.signum() != 0) {
 							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),

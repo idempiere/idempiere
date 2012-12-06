@@ -43,6 +43,7 @@ public class MEXPProcessorParameter extends X_EXP_ProcessorParameter {
 	 */
 	private static final long serialVersionUID = 2633307385854436092L;
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MEXPProcessorParameter.class);
 	
 	

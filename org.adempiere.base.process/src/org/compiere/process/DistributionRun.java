@@ -71,6 +71,7 @@ public class DistributionRun extends SvrProcess
 	/** Consolidate Document **/
 	private boolean				p_ConsolidateDocument = false;
 	/** Distribution List    **/
+	@SuppressWarnings("unused")
 	private int					p_M_DistributionList_ID = 0;
 	/** Distribute Based in DRP Demand **/
 	private boolean 			p_BasedInDamnd = false;

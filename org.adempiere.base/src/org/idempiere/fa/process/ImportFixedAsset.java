@@ -1,23 +1,14 @@
 package org.idempiere.fa.process;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MAssetAddition;
-import org.compiere.model.MBPartner;
-import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MIFixedAsset;
-import org.compiere.model.MLocation;
-import org.compiere.model.MProduct;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.model.X_I_FixedAsset;
-import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -39,6 +30,7 @@ public class ImportFixedAsset extends SvrProcess
 	private int				p_AD_Org_ID = 0;
 
 	/** Account Date					*/
+	@SuppressWarnings("unused")
 	private Timestamp		p_DateAcct = null;
 
 	/** Validate Only - only validate import data */

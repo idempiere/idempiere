@@ -73,6 +73,7 @@ public class MProductBOM extends X_M_Product_BOM
 	}	//	getBOMLines
 
 	/** Static Logger					*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MProductBOM.class);
 
 	

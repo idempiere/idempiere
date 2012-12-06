@@ -1196,6 +1196,7 @@ public class MSequence extends X_AD_Sequence
 		{
 			m_i = i;
 		}
+		@SuppressWarnings("unused")
 		private int m_i;
 
 		/**

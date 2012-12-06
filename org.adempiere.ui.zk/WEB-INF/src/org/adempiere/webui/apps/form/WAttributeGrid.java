@@ -43,7 +43,6 @@ import org.compiere.model.MAttributeValue;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.MRole;
-import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;

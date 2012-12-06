@@ -16,9 +16,6 @@
  *****************************************************************************/
 package org.compiere.tools;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -71,7 +68,7 @@ public class RMIUtil
 		}
 	}	//	RMIUtil
 
-	private void testPort()
+	/*private void testPort()
 	{
 		try
 		{
@@ -93,7 +90,7 @@ public class RMIUtil
 			ex.printStackTrace();
 		}
 
-	}
+	}*/
 
 	/**
 	 * 	Test

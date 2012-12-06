@@ -57,6 +57,7 @@ public class MEXPFormat extends X_EXP_Format {
 	private static final long serialVersionUID = -5011042965945626099L;
 
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MEXPFormat.class);
 	
 	private static CCache<String,MEXPFormat> s_cache = new CCache<String,MEXPFormat>(MEXPFormat.Table_Name, 50 );

@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import static org.compiere.model.SystemIDs.COLUMN_C_PAYSELECTIONCHECK_C_PAYSELECTION_ID;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -50,7 +52,6 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.ReportEngine;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -58,13 +59,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ValueNamePair;
-import org.python.antlr.ast.Call;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.South;
 
 /**
  *  Payment Print & Export

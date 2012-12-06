@@ -55,6 +55,7 @@ public class MProductPrice extends X_M_ProductPrice
 	}	//	get
 	
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MProductPrice.class);
 	
 	/**

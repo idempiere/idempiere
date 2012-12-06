@@ -67,7 +67,7 @@ public class TimelineEventFeed extends HttpServlet {
 		String uuid = req.getParameter("uuid");
 		if (uuid == null || uuid.trim().length() == 0) return;
 		
-		String timeLineId = req.getParameter("tlid");
+		//String timeLineId = req.getParameter("tlid");
 		
 		Date date = null;
 		String dateParam = req.getParameter("date");

@@ -71,6 +71,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     /**
 	 *
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 4210542409436277344L;
 
 	private CustomForm form = new CustomForm();
@@ -122,7 +123,8 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         EXPENSE(3, "Expense");
 
         /** The column's index. */
-        private final int m_index;
+        @SuppressWarnings("unused")
+		private final int m_index;
         /** The column's name. */
         private final String m_title;
 
@@ -143,10 +145,10 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
          *
          *  @return the column index.
          */
-        public int index()
+        /*public int index()
         {
             return m_index;
-        }
+        }*/
 
         /**
          * Gets the name of the column.
@@ -163,10 +165,10 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
          *
          * @return the number of columns.
          */
-        public static int count()
+        /*public static int count()
         {
             return values().length;
-        }
+        }*/
 
     }
 

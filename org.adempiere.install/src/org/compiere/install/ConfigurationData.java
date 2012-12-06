@@ -1124,7 +1124,7 @@ public class ConfigurationData
 	 *************************************************************************/
 
 	/** Oracle directory	*/
-	private static String	DBTYPE_ORACLE = "Oracle";
+	//private static String	DBTYPE_ORACLE = "Oracle";
 
 	/** PostgreSQL          */
 	private static String	DBTYPE_POSTGRESQL = "PostgreSQL";

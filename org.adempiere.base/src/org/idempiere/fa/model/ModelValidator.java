@@ -3,42 +3,25 @@
  */
 package org.idempiere.fa.model;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.acct.Fact;
 import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAsset;
 import org.compiere.model.MAssetAddition;
-//import org.compiere.model.MAssetType; //commented by @win
 import org.compiere.model.MAssetDisposed;
-import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MClient;
-import org.compiere.model.MCostDetail;
-import org.compiere.model.MDocType;
-import org.compiere.model.MInventory;
-import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
-import org.compiere.model.MPayment;
-import org.compiere.model.MPaymentAllocate;
 import org.compiere.model.MProduct;
-import org.compiere.model.MProject;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.PO;
 import org.compiere.model.SetGetModel;
 import org.compiere.model.SetGetUtil;
-import org.compiere.util.ArhRuntimeException;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.idempiere.fa.exceptions.AssetInvoiceWithMixedLines_LRO;
-import org.idempiere.fa.exceptions.AssetNotImplementedException;
 import org.idempiere.fa.exceptions.AssetProductStockedException;
 
 
@@ -155,6 +138,7 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 		// Set Asset Related Fields:
 		if (-1 == changeType || TYPE_BEFORE_NEW == changeType || TYPE_BEFORE_CHANGE == changeType) {
 			int invoice_id = SetGetUtil.get_AttrValueAsInt(m, MInvoiceLine.COLUMNNAME_C_Invoice_ID);
+			@SuppressWarnings("unused")
 			boolean isSOTrx = DB.isSOTrx(MInvoice.Table_Name, MInvoice.COLUMNNAME_C_Invoice_ID+"="+invoice_id);
 			boolean isAsset = false;
 			/* comment by @win

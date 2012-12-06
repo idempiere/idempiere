@@ -128,13 +128,13 @@ public class MIssueProject extends X_R_IssueProject
 	public void setA_Asset_ID (MIssue issue)
 	{
 		int A_Asset_ID = 0;
-		String sql = "SELECT * FROM A_Asset a "
+		/*String sql = "SELECT * FROM A_Asset a "
 			+ "WHERE EXISTS (SELECT * FROM A_Asset_Group ag "	//	Tracking Assets
 				+ "WHERE a.A_Asset_Group_ID=ag.A_Asset_Group_ID AND ag.IsTrackIssues='Y')"
 			+ " AND EXISTS (SELECT * FROM AD_User u "
 				+ "WHERE (a.C_BPartner_ID=u.C_BPartner_ID OR a.C_BPartnerSR_ID=u.C_BPartner_ID)"
 				+ " AND u.EMail=?)"					//	#1 EMail
-			+ " AND (SerNo IS NULL OR SerNo=?)";	//	#2 Name
+			+ " AND (SerNo IS NULL OR SerNo=?)";	//	#2 Name*/
 		
 		
 		

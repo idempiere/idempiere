@@ -885,7 +885,7 @@ public class MClient extends X_AD_Client
 	 *
 	 *	@return boolean representing if client accounting is enabled and it's on a client
 	 */
-	private static final String CLIENT_ACCOUNTING_DISABLED = "D";
+	//private static final String CLIENT_ACCOUNTING_DISABLED = "D";
 	private static final String CLIENT_ACCOUNTING_QUEUE = "Q";
 	private static final String CLIENT_ACCOUNTING_IMMEDIATE = "I";
 

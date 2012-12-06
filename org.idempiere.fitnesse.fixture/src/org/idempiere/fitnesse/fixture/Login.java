@@ -213,6 +213,7 @@ public class Login extends TableFixture {
 			return "Error logging in - no roles or user/pwd invalid for user " + m_user;
 		}
 		
+		@SuppressWarnings("unused")
 		int windowNo = adempiereInstance.getAdempiereService().nextWindowNo();
 		
 		return null;

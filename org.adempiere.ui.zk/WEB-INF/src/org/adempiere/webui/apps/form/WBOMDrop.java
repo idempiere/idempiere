@@ -83,6 +83,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	private BigDecimal m_qty = Env.ONE;
 	
 	/**	Line Counter				*/
+	@SuppressWarnings("unused")
 	private int m_bomLine = 0;
 	
 	/**	Logger			*/
@@ -100,7 +101,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	/** Alternative Group Lists		*/
 	private HashMap<String, Radiogroup> m_buttonGroups = new HashMap<String,Radiogroup>();
 
-	private static final int WINDOW_WIDTH = 600;	//	width of the window
+	//private static final int WINDOW_WIDTH = 600;	//	width of the window
 	
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Grid selectionPanel = GridFactory.newGridLayout();

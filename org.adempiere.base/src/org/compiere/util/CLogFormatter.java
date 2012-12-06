@@ -283,7 +283,6 @@ public class CLogFormatter extends Formatter
      */
     private static void fillExceptionTrace (StringBuffer sb, String hdr, Throwable thrown)
     {
-    	boolean firstError = hdr.length() == 0;
 		sb.append(hdr)
 			.append(thrown.toString());
 		if (thrown instanceof SQLException)

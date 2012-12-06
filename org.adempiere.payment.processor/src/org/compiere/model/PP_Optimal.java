@@ -246,17 +246,26 @@ public class PP_Optimal extends PaymentProcessor
 				String status = prop.getProperty(STATUS);
 				m_ok = status != null && status.equals("SP");	//	Successful Purchase
 				String authCode = prop.getProperty(AUTH_CODE);
+				@SuppressWarnings("unused")
 				String authTime = prop.getProperty(AUTH_TIME);
 				//
+				@SuppressWarnings("unused")
 				String errCode = prop.getProperty(ERROR_CODE);
 				String errString = prop.getProperty(ERROR_STRING);
+				@SuppressWarnings("unused")
 				String subError = prop.getProperty(SUB_ERROR);
+				@SuppressWarnings("unused")
 				String subErrorString = prop.getProperty(SUB_ERROR_STRING);
+				@SuppressWarnings("unused")
 				String actionCode = prop.getProperty("actionCode");
 				//
+				@SuppressWarnings("unused")
 				String authorisedAmount = prop.getProperty(CURRENT_AMOUNT);
+				@SuppressWarnings("unused")
 				String amount = prop.getProperty(AMOUNT);
+				@SuppressWarnings("unused")
 				String avsInfo = prop.getProperty(AVS_INFO);
+				@SuppressWarnings("unused")
 				String cvdInfo = prop.getProperty(CVD_INFO);
 				
 				log.fine("<- Status=" + status + ", AuthCode=" + authCode + ", Error=" + errString);

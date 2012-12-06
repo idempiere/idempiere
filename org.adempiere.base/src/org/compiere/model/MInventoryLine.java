@@ -348,7 +348,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 	Create Material Allocations for new Instances
 	 */
-	private void createMA()
+	/*private void createMA()
 	{
 		MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), getM_Product_ID(), 
 			getM_Locator_ID(), get_TrxName());
@@ -386,7 +386,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			log.warning("QtyBook=" + getQtyBook() + " corrected to Sum of MA=" + sum);
 			setQtyBook(sum);
 		}
-	}	//	createMA
+	}	//	createMA*/
 	
 	/**
 	 * Is Internal Use Inventory

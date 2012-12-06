@@ -82,6 +82,7 @@ public class ExternalSalesImpl implements ExternalSales {
 			String username, String password) {
 		// TODO Auto-generated method stub
 		UploadOrdersResponseDocument resdoc = UploadOrdersResponseDocument.Factory.newInstance();
+		@SuppressWarnings("unused")
 		UploadOrdersResponse res = resdoc.addNewUploadOrdersResponse();
 
 		authenticate(username, password, webServiceName, "uploadOrders");
@@ -95,6 +96,7 @@ public class ExternalSalesImpl implements ExternalSales {
 		// TODO Auto-generated method stub
 		
 		ProductsCatalogResponseDocument resdoc = ProductsCatalogResponseDocument.Factory.newInstance();
+		@SuppressWarnings("unused")
 		ProductsCatalogResponse res = resdoc.addNewProductsCatalogResponse();
 
 		authenticate(username, password, webServiceName, "getProductsCatalog");
@@ -107,6 +109,7 @@ public class ExternalSalesImpl implements ExternalSales {
 			String username, String password) {
 		// TODO Auto-generated method stub
 		ProductsPlusCatalogResponseDocument resdoc = ProductsPlusCatalogResponseDocument.Factory.newInstance();
+		@SuppressWarnings("unused")
 		ProductsPlusCatalogResponse res = resdoc.addNewProductsPlusCatalogResponse();
 		
 		authenticate(username, password, webServiceName, "getProductsPlusCatalog");

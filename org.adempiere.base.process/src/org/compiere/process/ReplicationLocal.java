@@ -506,6 +506,7 @@ public class ReplicationLocal extends SvrProcess
 	private void exit()
 	{
 		log.info ("exit");
+		@SuppressWarnings("unused")
 		Object result = doIt(START, "exit", null);
 		ProcessInfo pi = new ProcessInfo("Exit", 0);
 		pi.setClassName (REMOTE);

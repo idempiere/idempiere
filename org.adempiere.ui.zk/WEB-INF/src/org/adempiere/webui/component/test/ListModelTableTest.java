@@ -125,6 +125,7 @@ public class ListModelTableTest implements WTableModelListener
 	{	
 		final int invalidRow = 2;
 		final int noColumns = 2;
+		@SuppressWarnings("unused")
 		Object data;
 		
 		assertEquals(noColumns, m_table.getNoColumns());

@@ -307,7 +307,7 @@ public class ProductCost
 	 *  @param onlyPOPriceList use only PO price list
 	 *  @return po price
 	 */
-	private BigDecimal getPriceList (MAcctSchema as, boolean onlyPOPriceList)
+	/*private BigDecimal getPriceList (MAcctSchema as, boolean onlyPOPriceList)
 	{
 		StringBuilder sql = new StringBuilder (
 			"SELECT pl.C_Currency_ID, pp.PriceList, pp.PriceStd, pp.PriceLimit "
@@ -360,14 +360,14 @@ public class ProductCost
 				price, C_Currency_ID, as.getC_Currency_ID(), 
 				as.getAD_Client_ID(), 0);
 		return price;
-	}   //  getPOPrice
+	}   //  getPOPrice*/
 
 	/**
 	 *  Get PO Cost from Purchase Info - and convert it to AcctSchema Currency
 	 *  @param as accounting schema
 	 *  @return po cost
 	 */
-	private BigDecimal getPOCost (MAcctSchema as)
+	/*private BigDecimal getPOCost (MAcctSchema as)
 	{
 		String sql = "SELECT C_Currency_ID, PriceList,PricePO,PriceLastPO "
 			+ "FROM M_Product_PO WHERE M_Product_ID=? "
@@ -414,7 +414,7 @@ public class ProductCost
 			cost = MConversionRate.convert (as.getCtx(),
 				cost, C_Currency_ID, as.getC_Currency_ID(), as.getAD_Client_ID(), as.getAD_Org_ID());
 		return cost;
-	}   //  getPOCost
+	}   //  getPOCost*/
 
 	/**
 	 * 	String Representation

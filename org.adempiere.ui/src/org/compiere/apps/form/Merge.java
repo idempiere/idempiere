@@ -28,6 +28,7 @@ import org.compiere.util.Trx;
 
 public class Merge 
 {
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 149783846292562740L;
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;

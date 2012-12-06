@@ -26,6 +26,7 @@ public class StateChangeEvent extends EventObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 8536782772491762290L;
+	@SuppressWarnings("unused")
 	private int eventType;
 
 	/**

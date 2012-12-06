@@ -266,6 +266,7 @@ public class MCostQueue extends X_M_CostQueue
 			//	Negative Qty i.e. add
 			if (remainingQty.signum() <= 0)
 			{
+				@SuppressWarnings("unused")
 				BigDecimal oldQty = queue.getCurrentQty();
 				lastPrice = queue.getCurrentCostPrice();
 				BigDecimal costBatch = lastPrice.multiply(remainingQty);
@@ -281,6 +282,7 @@ public class MCostQueue extends X_M_CostQueue
 				BigDecimal reduction = remainingQty;
 				if (reduction.compareTo(queue.getCurrentQty()) > 0)
 					reduction = queue.getCurrentQty();
+				@SuppressWarnings("unused")
 				BigDecimal oldQty = queue.getCurrentQty();
 				lastPrice = queue.getCurrentCostPrice();
 				BigDecimal costBatch = lastPrice.multiply(reduction);

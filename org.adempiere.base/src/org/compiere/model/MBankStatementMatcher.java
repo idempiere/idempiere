@@ -52,6 +52,7 @@ public class MBankStatementMatcher extends X_C_BankStatementMatcher
 		String sql = MRole.getDefault(ctx, false).addAccessSQL(
 			"SELECT * FROM C_BankStatementMatcher ORDER BY SeqNo", 
 			"C_BankStatementMatcher", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		PreparedStatement pstmt = null;
 		try

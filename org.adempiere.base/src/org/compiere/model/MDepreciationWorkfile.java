@@ -3,13 +3,10 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.collections.keyvalue.MultiKey;
-import org.compiere.model.Query;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;

@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.compiere.apps.form;
 
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,9 +33,7 @@ import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MRole;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_C_Order;
-import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -52,6 +52,7 @@ public class PaySelect
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 2872767371244295934L;
 
 	/**	Window No			*/

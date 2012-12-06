@@ -104,6 +104,7 @@ public class MCashBook extends X_C_CashBook
 	private static CCache<Integer,MCashBook> s_cache
 		= new CCache<Integer,MCashBook>(Table_Name, 20);
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MCashBook.class);
 	
 	/**************************************************************************

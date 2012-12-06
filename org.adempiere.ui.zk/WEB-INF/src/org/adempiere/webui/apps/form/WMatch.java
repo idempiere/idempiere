@@ -75,6 +75,7 @@ public class WMatch extends Match
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -6383121932802974801L;
 	private CustomForm form = new CustomForm();
 

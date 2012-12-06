@@ -83,6 +83,7 @@ public class MBOM extends X_M_BOM
 	private static CCache<Integer,MBOM>	s_cache	
 		= new CCache<Integer,MBOM>(Table_Name, 20);
 	/**	Logger						*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MBOM.class);
 
 	

@@ -86,8 +86,11 @@ public class M_PriceList_Create extends SvrProcess {
 		int cntu = 0;
 		int cntd = 0;
 		int cnti = 0;
+		@SuppressWarnings("unused")
 		int totu = 0;
+		@SuppressWarnings("unused")
 		int toti = 0;
+		@SuppressWarnings("unused")
 		int totd = 0;
 		int V_temp;
 		int v_NextNo = 0;

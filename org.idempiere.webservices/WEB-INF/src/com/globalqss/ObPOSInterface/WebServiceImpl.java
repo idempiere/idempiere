@@ -66,6 +66,7 @@ public class WebServiceImpl implements WebService {
 	 {
 		// TODO Auto-generated method stub
 		GetCustomersResponseDocument resdoc = GetCustomersResponseDocument.Factory.newInstance();
+		@SuppressWarnings("unused")
 		GetCustomersResponse res = resdoc.addNewGetCustomersResponse();
 
 		ExternalSalesImpl.authenticate(username, password, webServiceName, "getCustomers");

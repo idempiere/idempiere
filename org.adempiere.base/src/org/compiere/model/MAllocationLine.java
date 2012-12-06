@@ -103,6 +103,7 @@ public class MAllocationLine extends X_C_AllocationLine
 	}	//	MAllocationLine
 	
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MAllocationLine.class);
 	/**	Invoice info			*/
 	private MInvoice		m_invoice = null; 

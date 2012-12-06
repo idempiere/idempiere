@@ -22,8 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MConversionRate;
 import org.compiere.model.MProduct;
 import org.compiere.model.MUOMConversion;
 import org.compiere.util.CLogger;
@@ -52,10 +50,13 @@ public class ProductInfo
 	/** The Product Key         */
 	private int             m_M_Product_ID = 0;
 	/** Transaction				*/
+	@SuppressWarnings("unused")
 	private String			m_trxName = null;
 	
 	//  Product Info
+	@SuppressWarnings("unused")
 	private int             m_AD_Client_ID = 0;
+	@SuppressWarnings("unused")
 	private int             m_AD_Org_ID = 0;
 
 	private String			m_productType = null;
@@ -234,7 +235,7 @@ public class ProductInfo
 	 *  @param onlyPOPriceList use only PO price list
 	 *  @return po price
 	 */
-	private BigDecimal getPriceList (MAcctSchema as, boolean onlyPOPriceList)
+	/*private BigDecimal getPriceList (MAcctSchema as, boolean onlyPOPriceList)
 	{
 		StringBuilder sql = new StringBuilder (
 			"SELECT pl.C_Currency_ID, pp.PriceList, pp.PriceStd, pp.PriceLimit ")
@@ -287,14 +288,14 @@ public class ProductInfo
 				price, C_Currency_ID, as.getC_Currency_ID(), 
 				as.getAD_Client_ID(), 0);
 		return price;
-	}   //  getPOPrice
+	}   //  getPOPrice*/
 
 	/**
 	 *  Get PO Cost from Purchase Info - and convert it to AcctSchema Currency
 	 *  @param as accounting schema
 	 *  @return po cost
 	 */
-	private BigDecimal getPOCost (MAcctSchema as)
+	/*private BigDecimal getPOCost (MAcctSchema as)
 	{
 		String sql = "SELECT C_Currency_ID, PriceList,PricePO,PriceLastPO "
 				+ "FROM M_Product_PO WHERE M_Product_ID=? "
@@ -341,6 +342,6 @@ public class ProductInfo
 			cost = MConversionRate.convert (as.getCtx(),
 				cost, C_Currency_ID, as.getC_Currency_ID(), m_AD_Client_ID, m_AD_Org_ID);
 		return cost;
-	}   //  getPOCost
+	}   //  getPOCost*/
 
 }   //  ProductInfo

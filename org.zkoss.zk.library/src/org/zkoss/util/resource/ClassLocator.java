@@ -16,27 +16,26 @@ Copyright (C) 2005 Potix Corporation. All Rights Reserved.
 */
 package org.zkoss.util.resource;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Collections;
-import java.util.Iterator;
-import java.io.InputStream;
-import java.io.IOException;
-import java.net.URL;
+import java.util.Map;
+import java.util.Set;
 
+import org.zkoss.idom.Document;
+import org.zkoss.idom.Element;
+import org.zkoss.idom.input.SAXBuilder;
+import org.zkoss.idom.util.IDOMs;
 import org.zkoss.util.CollectionsX;
 import org.zkoss.util.logging.Log;
 import org.zkoss.zk.library.Activator;
-import org.zkoss.idom.Document;
-import org.zkoss.idom.Element;
-import org.zkoss.idom.util.IDOMs;
-import org.zkoss.idom.input.SAXBuilder;
 
 /**
  * The locator searches the current thread's context class loader,

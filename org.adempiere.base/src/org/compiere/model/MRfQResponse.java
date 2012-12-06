@@ -144,6 +144,7 @@ public class MRfQResponse extends X_C_RfQResponse
 			if (get_ID() == 0)	//	save Response
 				saveEx();
 
+			@SuppressWarnings("unused")
 			MRfQResponseLine line = new MRfQResponseLine (this, lines[i]);
 			//	line is not saved (dumped) if there are no Qtys 
 		}

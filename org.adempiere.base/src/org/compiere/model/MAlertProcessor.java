@@ -56,6 +56,7 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	}	//	getActive
 
 	/**	Static Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MAlertProcessor.class);
 
 	

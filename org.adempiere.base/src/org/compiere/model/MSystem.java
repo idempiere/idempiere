@@ -428,6 +428,7 @@ public class MSystem extends X_AD_System
 	//	log.fine(os.getName() + " " + os.getVersion() + " " + os.getArch() 
 	//		+ " Processors=" + os.getAvailableProcessors());
 		//	Runtime
+		@SuppressWarnings("unused")
 		RuntimeMXBean rt = ManagementFactory.getRuntimeMXBean();
 		// log.fine(rt.getName() + " (" + rt.getVmVersion() + ") Up=" + TimeUtil.formatElapsed(rt.getUptime()));
 		//	Memory
@@ -437,6 +438,7 @@ public class MSystem extends X_AD_System
 			Iterator<MemoryPoolMXBean> it = list.iterator();
 			while (it.hasNext())
 			{
+				@SuppressWarnings("unused")
 				MemoryPoolMXBean pool = (MemoryPoolMXBean)it.next();
 				/*
 				log.finer(pool.getName() + " " + pool.getType() 
@@ -446,11 +448,13 @@ public class MSystem extends X_AD_System
 		}
 		else
 		{
+			@SuppressWarnings("unused")
 			MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
 			// log.fine("VM: " + new CMemoryUsage(memory.getNonHeapMemoryUsage()));
 			// log.fine("Heap: " + new CMemoryUsage(memory.getHeapMemoryUsage()));
 		}
 		//	Thread
+		@SuppressWarnings("unused")
 		ThreadMXBean th = ManagementFactory.getThreadMXBean();
 		/*
 		log.fine("Threads=" + th.getThreadCount()

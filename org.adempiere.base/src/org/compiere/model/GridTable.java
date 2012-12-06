@@ -393,7 +393,7 @@ public class GridTable extends AbstractTableModel
 		m_SQL_Count += where.toString();
 		if (m_withAccessControl)
 		{
-			boolean ro = MRole.SQL_RO;
+		//	boolean ro = MRole.SQL_RO;
 		//	if (!m_readOnly)
 		//		ro = MRole.SQL_RW;
 			m_SQL = MRole.getDefault(m_ctx, false).addAccessSQL(m_SQL, 

@@ -16,11 +16,8 @@
  *****************************************************************************/
 package compiere.model;
 
-import java.math.BigDecimal;
-
 import org.compiere.model.MClient;
 import org.compiere.model.MOrder;
-import org.compiere.model.MOrderLine;
 import org.compiere.model.MRole;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
@@ -89,6 +86,7 @@ public class MyValidator implements ModelValidator
 	{
 		if (po.get_TableName().equals("C_Order") && type == TYPE_CHANGE)
 		{
+			@SuppressWarnings("unused")
 			MOrder order = (MOrder)po;
 			log.info(po.toString());
 		}
@@ -134,7 +132,7 @@ public class MyValidator implements ModelValidator
 	 *	@param order order
 	 *	@return error message or null 
 	 */
-	private String orderDiscount (MOrder order)
+	/*private String orderDiscount (MOrder order)
 	{
 		String DISCOUNT = "Discount";
 		int C_Tax_ID = 0;
@@ -176,7 +174,7 @@ public class MyValidator implements ModelValidator
 		log.info(discountLine.toString());
 		order.getLines(true, null);
 		return null;
-	}	//	orderDiscount
+	}	//	orderDiscount*/
 	
 	
 	
@@ -231,6 +229,7 @@ public class MyValidator implements ModelValidator
 
 		log.info("Setting default Properties");
 
+		@SuppressWarnings("unused")
 		MRole role = MRole.get(Env.getCtx(), m_AD_Role_ID);
 
 		// Example - if you don't want user to select auto commit property

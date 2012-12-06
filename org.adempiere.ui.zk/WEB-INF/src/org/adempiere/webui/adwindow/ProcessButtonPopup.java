@@ -6,7 +6,6 @@ package org.adempiere.webui.adwindow;
 import java.util.List;
 
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.editor.WButtonEditor;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Vbox;
 

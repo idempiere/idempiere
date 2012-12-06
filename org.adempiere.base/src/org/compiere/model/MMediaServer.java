@@ -57,6 +57,7 @@ public class MMediaServer extends X_CM_Media_Server
 	}	//	getMediaServer
 	
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MMediaServer.class);
 	
 	

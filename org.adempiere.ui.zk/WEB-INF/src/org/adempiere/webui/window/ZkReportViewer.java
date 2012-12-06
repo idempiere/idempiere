@@ -170,7 +170,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 	private A reportLink;
 	
-	private static final String REPORT = "org.idempiere.ui.report";
+	//private static final String REPORT = "org.idempiere.ui.report";
 	
 	/**
 	 * 	Static Layout
