@@ -30,7 +30,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121127L;
+	private static final long serialVersionUID = 20121205L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -55,7 +55,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 			setMMPolicy (null);
 // F
 			setName (null);
-			setStoreArchiveOnFileSystem (false);
 			setValue (null);
         } */
     }
@@ -590,41 +589,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Store Archive On File System.
-		@param StoreArchiveOnFileSystem Store Archive On File System	  */
-	public void setStoreArchiveOnFileSystem (boolean StoreArchiveOnFileSystem)
-	{
-		set_Value (COLUMNNAME_StoreArchiveOnFileSystem, Boolean.valueOf(StoreArchiveOnFileSystem));
-	}
-
-	/** Get Store Archive On File System.
-		@return Store Archive On File System	  */
-	public boolean isStoreArchiveOnFileSystem () 
-	{
-		Object oo = get_Value(COLUMNNAME_StoreArchiveOnFileSystem);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Unix Archive Path.
-		@param UnixArchivePath Unix Archive Path	  */
-	public void setUnixArchivePath (String UnixArchivePath)
-	{
-		set_Value (COLUMNNAME_UnixArchivePath, UnixArchivePath);
-	}
-
-	/** Get Unix Archive Path.
-		@return Unix Archive Path	  */
-	public String getUnixArchivePath () 
-	{
-		return (String)get_Value(COLUMNNAME_UnixArchivePath);
-	}
-
 	/** Set Search Key.
 		@param Value 
 		Search key for the record in the format required - must be unique
@@ -640,19 +604,5 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public String getValue () 
 	{
 		return (String)get_Value(COLUMNNAME_Value);
-	}
-
-	/** Set Windows Archive Path.
-		@param WindowsArchivePath Windows Archive Path	  */
-	public void setWindowsArchivePath (String WindowsArchivePath)
-	{
-		set_Value (COLUMNNAME_WindowsArchivePath, WindowsArchivePath);
-	}
-
-	/** Get Windows Archive Path.
-		@return Windows Archive Path	  */
-	public String getWindowsArchivePath () 
-	{
-		return (String)get_Value(COLUMNNAME_WindowsArchivePath);
 	}
 }

@@ -214,10 +214,11 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
         	{
         		currentFieldGroup = fieldGroup;
-        		
-        		if (numCols - actualxpos + 1 > 0) {
-        			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
-        			setLastCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
+  
+          		while(numCols - actualxpos + 1 > 0) {
+        			  row.appendCellChild(createSpacer(), 1);
+        			  setLastCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
+        			  actualxpos++;
         		}
         		row.setGroup(currentGroup);
         		rows.appendChild(row);
@@ -259,9 +260,10 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 			//normal field
         	if (gridField.getXPosition() <= actualxpos) {
         		// Fill right part of the row with spacers until number of columns
-        		if (numCols - actualxpos + 1 > 0) {
-        			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
-        			setLastCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
+        		while(numCols - actualxpos + 1 > 0) {
+        			  row.appendCellChild(createSpacer(), 1);
+        			  setLastCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
+        			  actualxpos++;
         		}
         		row.setGroup(currentGroup);
         		rows.appendChild(row);
@@ -329,10 +331,12 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         	lastseq = field.getSeqNo();
         }
 
-		if (numCols - actualxpos + 1 > 0){
-			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
-			// make last empty space droppable
-		    setLastCellProps(row.getLastCell(), actualxpos, lastseq + 10);
+  		while(numCols - actualxpos + 1 > 0) {
+  			  row.appendCellChild(createSpacer(), 1);
+			  lastseq = lastseq + 10;
+		      // make every empty space droppable at the end 
+			  setLastCellProps(row.getLastCell(), actualxpos, lastseq);
+			  actualxpos++;
 		}
 		row.setGroup(currentGroup);
 		rows.appendChild(row);

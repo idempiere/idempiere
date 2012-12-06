@@ -16,44 +16,18 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Archive Model
@@ -65,7 +39,7 @@ public class MArchive extends X_AD_Archive {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3476918478008050158L;
+	private static final long serialVersionUID = 3217541537768473865L;
 
 	/**
 	 * Get Archives
@@ -116,10 +90,6 @@ public class MArchive extends X_AD_Archive {
 	/** Logger */
 	private static CLogger s_log = CLogger.getCLogger(MArchive.class);
 
-	private Integer m_inflated = null;
-
-	private Integer m_deflated = null;
-
 	/***************************************************************************
 	 * Standard Constructor
 	 * 
@@ -169,21 +139,9 @@ public class MArchive extends X_AD_Archive {
 		setAD_Table_ID(info.getAD_Table_ID());
 		setRecord_ID(info.getRecord_ID());
 		setC_BPartner_ID(info.getC_BPartner_ID());
-		initArchiveStoreDetails(ctx, trxName);
 	} // MArchive
 
-	/** is this client using the file system for archive */
-	private boolean isStoreArchiveOnFileSystem = false;
-
-	/** archive (root) path - if file system is used */
-	private String m_archivePathRoot = "";
-
-	/**
-	 * string replaces the archive root in stored xml file to allow the
-	 * changing of the attachment root.
-	 */
-	private final String ARCHIVE_FOLDER_PLACEHOLDER = "%ARCHIVE_FOLDER%";
-
+	public MStorageProvider provider;
 	/**
 	 * Get the isStoreArchiveOnFileSystem and archivePath for the client.
 	 * 
@@ -191,22 +149,8 @@ public class MArchive extends X_AD_Archive {
 	 * @param trxName
 	 */
 	private void initArchiveStoreDetails(Properties ctx, String trxName) {
-		final MClient client = new MClient(ctx, this.getAD_Client_ID(), trxName);
-		isStoreArchiveOnFileSystem = client.isStoreArchiveOnFileSystem();
-		if (isStoreArchiveOnFileSystem) {
-			if (File.separatorChar == '\\') {
-				m_archivePathRoot = client.getWindowsArchivePath();
-			} else {
-				m_archivePathRoot = client.getUnixArchivePath();
-			}
-			if ("".equals(m_archivePathRoot)) {
-				log.severe("no archivePath defined");
-			} else if (!m_archivePathRoot.endsWith(File.separator)) {
-				log.warning("archive path doesn't end with " + File.separator);
-				m_archivePathRoot = m_archivePathRoot + File.separator;
-				log.fine(m_archivePathRoot);
-			}
-		}
+		MClientInfo clientInfo = MClientInfo.get(ctx);
+		provider=new MStorageProvider(ctx, clientInfo.getStorageArchive_ID(), trxName);		
 	}
 
 	/**
@@ -217,150 +161,17 @@ public class MArchive extends X_AD_Archive {
 	public String toString() {
 		StringBuilder sb = new StringBuilder("MArchive[");
 		sb.append(get_ID()).append(",Name=").append(getName());
-		if (m_inflated != null)
-			sb.append(",Inflated=").append(m_inflated);
-		if (m_deflated != null)
-			sb.append(",Deflated=").append(m_deflated);
 		sb.append("]");
 		return sb.toString();
 	} // toString
 
 	public byte[] getBinaryData() {
-		if (isStoreArchiveOnFileSystem) {
-			return getBinaryDataFromFileSystem();
-		}
-		return getBinaryDataFromDB();
-	}
-
-	/**
-	 * @return attachment data
-	 */
-	private byte[] getBinaryDataFromFileSystem() {
-		if ("".equals(m_archivePathRoot)) {
-			throw new IllegalArgumentException("no attachmentPath defined");
-		}
-		byte[] data = super.getBinaryData();
-		m_deflated = null;
-		m_inflated = null;
-		if (data == null) {
-			return null;
-		}
-
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-		try {
-			final DocumentBuilder builder = factory.newDocumentBuilder();
-			final Document document = builder.parse(new ByteArrayInputStream(data));
-			final NodeList entries = document.getElementsByTagName("entry");
-			if(entries.getLength()!=1){
-				log.severe("no archive entry found");
-			}
-				final Node entryNode = entries.item(0);
-				final NamedNodeMap attributes = entryNode.getAttributes();
-				final Node fileNode = attributes.getNamedItem("file");
-				if(fileNode==null ){
-					log.severe("no filename for entry");
-					return null;
-				}
-				String filePath = fileNode.getNodeValue();
-				log.fine("filePath: " + filePath);
-				if(filePath!=null){
-					filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, m_archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
-					//just to be shure...
-					String replaceSeparator = File.separator;
-					if(!replaceSeparator.equals("/")){
-						replaceSeparator = "\\\\";
-					}
-					filePath = filePath.replaceAll("/", replaceSeparator);
-					filePath = filePath.replaceAll("\\\\", replaceSeparator);
-				}
-				log.fine("filePath: " + filePath);
-				final File file = new File(filePath);
-				if (file.exists()) {
-					// read files into byte[]
-					final byte[] dataEntry = new byte[(int) file.length()];
-					try {
-						final FileInputStream fileInputStream = new FileInputStream(file);
-						fileInputStream.read(dataEntry);
-						fileInputStream.close();
-					} catch (FileNotFoundException e) {
-						log.severe("File Not Found.");
-						e.printStackTrace();
-					} catch (IOException e1) {
-						log.severe("Error Reading The File.");
-						e1.printStackTrace();
-					}
-					return dataEntry;
-				} else {
-					log.severe("file not found: " + file.getAbsolutePath());
-					return null;
-				}
-
-		} catch (SAXException sxe) {
-			// Error generated during parsing)
-			Exception x = sxe;
-			if (sxe.getException() != null)
-				x = sxe.getException();
-			x.printStackTrace();
-			log.severe(x.getMessage());
-
-		} catch (ParserConfigurationException pce) {
-			// Parser with specified options can't be built
-			pce.printStackTrace();
-			log.severe(pce.getMessage());
-
-		} catch (IOException ioe) {
-			// I/O error
-			ioe.printStackTrace();
-			log.severe(ioe.getMessage());
-		}
+		
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null)
+			return prov.loadLOBData(this,provider);
 		return null;
 	}
-
-	/**
-	 * Get Binary Data. (inflate)
-	 * 
-	 * @return inflated data
-	 */
-	private byte[] getBinaryDataFromDB() {
-		byte[] deflatedData = super.getBinaryData();
-		m_deflated = null;
-		m_inflated = null;
-		if (deflatedData == null)
-			return null;
-		//
-		log.fine("ZipSize=" + deflatedData.length);
-		m_deflated = new Integer(deflatedData.length);
-		if (deflatedData.length == 0)
-			return null;
-
-		byte[] inflatedData = null;
-		try {
-			ByteArrayInputStream in = new ByteArrayInputStream(deflatedData);
-			ZipInputStream zip = new ZipInputStream(in);
-			ZipEntry entry = zip.getNextEntry();
-			if (entry != null) // just one entry
-			{
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				byte[] buffer = new byte[2048];
-				int length = zip.read(buffer);
-				while (length != -1) {
-					out.write(buffer, 0, length);
-					length = zip.read(buffer);
-				}
-				//
-				inflatedData = out.toByteArray();
-				log.fine("Size=" + inflatedData.length + " - zip=" + entry.getCompressedSize()
-						+ "(" + entry.getSize() + ") "
-						+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
-				m_inflated = new Integer(inflatedData.length);
-			}
-		} catch (Exception e) {
-			log.log(Level.SEVERE, "", e);
-			inflatedData = null;
-		}
-		return inflatedData;
-	} // getBinaryData
 
 	/**
 	 * Get Data as Input Stream
@@ -381,126 +192,10 @@ public class MArchive extends X_AD_Archive {
 	 *            inflated data
 	 */
 	public void setBinaryData(byte[] inflatedData) {
-		if (isStoreArchiveOnFileSystem) {
-			saveBinaryDataIntoFileSystem(inflatedData);
-		} else {
-			saveBinaryDataIntoDB(inflatedData);
-		}
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null)
+			 prov.save(this,provider,inflatedData);
 	}
-
-	/**
-	 * Save to file system. If the MArchive is not saved yet (id==0) it will
-	 * first save the MArchive object because it uses the id as filename.
-	 * @param inflatedData
-	 */
-	private void saveBinaryDataIntoFileSystem(byte[] inflatedData) {
-		if ("".equals(m_archivePathRoot)) {
-			throw new IllegalArgumentException("no attachmentPath defined");
-		}
-		if (inflatedData == null || inflatedData.length == 0) {
-			throw new IllegalArgumentException("InflatedData is NULL");
-		}
-		if(this.get_ID()==0){
-			//set binary data otherwise save will fail
-			super.setBinaryData(new byte[]{'0'});
-			if(!this.save()) {
-				throw new IllegalArgumentException("unable to save MArchive");
-			}
-		}
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		BufferedOutputStream out = null;
-		try {
-			// create destination folder
-			StringBuilder msgfile = new StringBuilder().append(m_archivePathRoot).append(File.separator)
-					.append(getArchivePathSnippet());
-			final File destFolder = new File(msgfile.toString());
-			if (!destFolder.exists()) {
-				if (!destFolder.mkdirs()) {
-					log.warning("unable to create folder: " + destFolder.getPath());
-				}
-			}
-			// write to pdf
-			msgfile = new StringBuilder().append(m_archivePathRoot).append(File.separator)
-					.append(getArchivePathSnippet()).append(this.get_ID()).append(".pdf");
-			final File destFile = new File(msgfile.toString());
-
-			out = new BufferedOutputStream(new FileOutputStream(destFile));
-			out.write(inflatedData);
-			out.flush();
-
-			//create xml entry
-			final DocumentBuilder builder = factory.newDocumentBuilder();
-			final Document document = builder.newDocument();
-			final Element root = document.createElement("archive");
-			document.appendChild(root);
-			document.setXmlStandalone(true);
-			final Element entry = document.createElement("entry");
-			StringBuilder msgsat = new StringBuilder(ARCHIVE_FOLDER_PLACEHOLDER).append(getArchivePathSnippet()).append(this.get_ID()).append(".pdf");
-			entry.setAttribute("file", msgsat.toString());
-			root.appendChild(entry);
-			final Source source = new DOMSource(document);
-			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			final Result result = new StreamResult(bos);
-			final Transformer xformer = TransformerFactory.newInstance().newTransformer();
-			xformer.transform(source, result);
-			final byte[] xmlData = bos.toByteArray();
-			log.fine(bos.toString());
-			//store xml in db
-			super.setBinaryData(xmlData);
-
-		} catch (Exception e) {
-			log.log(Level.SEVERE, "saveLOBData", e);
-			m_deflated = null;
-			super.setBinaryData(null);
-		} finally {
-			if(out != null){
-				try {
-					out.close();
-				} catch (Exception e) {	}
-			}
-		}
-
-	}
-
-	/**
-	 * Save Binary Data to database.
-	 * 
-	 * @param inflatedData
-	 *            inflated data
-	 */
-	private void saveBinaryDataIntoDB(byte[] inflatedData) {
-		if (inflatedData == null || inflatedData.length == 0)
-			throw new IllegalArgumentException("InflatedData is NULL");
-		m_inflated = new Integer(inflatedData.length);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ZipOutputStream zip = new ZipOutputStream(out);
-		zip.setMethod(ZipOutputStream.DEFLATED);
-		zip.setLevel(Deflater.BEST_COMPRESSION);
-		zip.setComment("adempiere");
-		//
-		byte[] deflatedData = null;
-		try {
-			ZipEntry entry = new ZipEntry("AdempiereArchive");
-			entry.setTime(System.currentTimeMillis());
-			entry.setMethod(ZipEntry.DEFLATED);
-			zip.putNextEntry(entry);
-			zip.write(inflatedData, 0, inflatedData.length);
-			zip.closeEntry();
-			log.fine(entry.getCompressedSize() + " (" + entry.getSize() + ") "
-					+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
-			//
-			// zip.finish();
-			zip.close();
-			deflatedData = out.toByteArray();
-			log.fine("Length=" + inflatedData.length);
-			m_deflated = new Integer(deflatedData.length);
-		} catch (Exception e) {
-			log.log(Level.SEVERE, "saveLOBData", e);
-			deflatedData = null;
-			m_deflated = null;
-		}
-		super.setBinaryData(deflatedData);
-	} // setBinaryData
 
 	/**
 	 * Get Created By (User) Name
@@ -540,7 +235,7 @@ public class MArchive extends X_AD_Archive {
 	 * 
 	 * @return String
 	 */
-	private String getArchivePathSnippet() {
+	public String getArchivePathSnippet() {
 		StringBuilder path = new StringBuilder().append(this.getAD_Client_ID()).append(File.separator).append(this.getAD_Org_ID())
 				.append(File.separator);
 		if (this.getAD_Process_ID() > 0) {
@@ -554,6 +249,14 @@ public class MArchive extends X_AD_Archive {
 		}
 		// path = path + this.get_ID() + ".pdf";
 		return path.toString();
+	}
+
+	public byte[] getByteData(){
+		return super.getBinaryData();
+	}
+	
+	public void setByteData(byte[] BinaryData){
+		super.setBinaryData(BinaryData);
 	}
 
 	/**

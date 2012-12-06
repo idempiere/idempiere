@@ -97,7 +97,7 @@ public class CreateRecord extends TableFixture {
 				} else {
 					if (columnsOK) {
 						if (!gpo.save()) {
-							StringBuffer msg = new StringBuffer();
+							StringBuilder msg = new StringBuilder();
 							Exception e = (Exception) ctx.get("org.compiere.util.CLogger.lastException");
 							if (e != null)
 								msg.append("Exception: "+ e.getMessage());

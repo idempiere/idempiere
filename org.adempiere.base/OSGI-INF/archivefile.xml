@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.base.archive.store.archivefile">
+   <implementation class="org.compiere.model.ArchiveFileSystem"/>
+   <service>
+      <provide interface="org.compiere.model.IArchiveStore"/>
+   </service>
+   <property name="method" type="String" value="FileSystem"/>
+</scr:component>

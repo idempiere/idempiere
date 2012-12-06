@@ -304,9 +304,9 @@ public class MPInstance extends X_AD_PInstance
 			int seconds = (int)(ms / 1000);
 			if (seconds < 1)
 				seconds = 1;
-			MProcess prc = MProcess.get(getCtx(), getAD_Process_ID());
-			prc.addStatistics(seconds);
-			if (prc.get_ID() != 0 && prc.save())
+			String updsql = "UPDATE AD_Process SET Statistic_Count=Statistic_Count+1, Statistic_Seconds=Statistic_Seconds+? WHERE AD_Process_ID=?";
+			int no = DB.executeUpdate(updsql, new Object[] {seconds, getAD_Process_ID()}, true, null); // out of trx
+			if (no == 1)
 				log.fine("afterSave - Process Statistics updated Sec=" + seconds);
 			else
 				log.warning("afterSave - Process Statistics not updated");

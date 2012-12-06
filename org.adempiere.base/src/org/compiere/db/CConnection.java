@@ -871,8 +871,9 @@ public class CConnection implements Serializable, Cloneable
 	//	System.out.println ("CConnection.setDataSource - " + m_ds + " - Client=" + Ini.isClient());
 		if (m_ds == null && Ini.isClient())
 		{
-			if (getDatabase() != null)	//	no db selected
-				m_ds = getDatabase().getDataSource(this);
+			AdempiereDatabase getDB = getDatabase(); 
+			if (getDB != null)	//	no db selected
+				m_ds = getDB.getDataSource(this);
 		//	System.out.println ("CConnection.setDataSource - " + m_ds);
 		}
 		return m_ds != null;

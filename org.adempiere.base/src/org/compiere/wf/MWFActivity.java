@@ -950,7 +950,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	 */
 	private boolean performWork (Trx trx) throws Exception
 	{
-		log.info (m_node + " [" + trx.getTrxName() + "]");
+		log.info (m_node + " [" + (trx!=null ? trx.getTrxName() : "") + "]");
 		m_docStatus = null;
 		if (m_node.getPriority() != 0)		//	overwrite priority if defined
 			setPriority(m_node.getPriority());

@@ -186,8 +186,9 @@ public class ScheduleUtil
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				ma = new MAssignmentSlot (TimeUtil.getDay(rs.getTimestamp(2)),
-					TimeUtil.getNextDay(rs.getTimestamp(2)),	//	user entered date need to convert to not including end time
+				Timestamp date = rs.getTimestamp(2);
+				ma = new MAssignmentSlot (TimeUtil.getDay(date),
+					TimeUtil.getNextDay(date),	//	user entered date need to convert to not including end time
 					Msg.getMsg(m_ctx, "NonBusinessDay"), rs.getString(1),
 					MAssignmentSlot.STATUS_NonBusinessDay);
 				log.finer("- NonBusinessDay " + ma);

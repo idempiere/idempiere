@@ -198,7 +198,7 @@ public class MStore extends X_W_Store
 	 */
 	public static MStore[] getActive()
 	{
-		s_log.info("");
+		s_log.fine("");
 		try
 		{
 			Collection<?> cc = s_cache.values();
@@ -400,7 +400,7 @@ public class MStore extends X_W_Store
 		try
 		{
 			String msg = email.send();
-			if (EMail.SENT_OK.equals (email.send ()))
+			if (EMail.SENT_OK.equals (msg))
 			{
 				log.info("Sent EMail " + subject + " to " + to);
 				return true;
@@ -437,7 +437,7 @@ public class MStore extends X_W_Store
 		try
 		{
 			String msg = email.send();
-			if (EMail.SENT_OK.equals (email.send ()))
+			if (EMail.SENT_OK.equals (msg))
 			{
 				log.info("Sent Test EMail to " + getWStoreEMail());
 				return "OK";

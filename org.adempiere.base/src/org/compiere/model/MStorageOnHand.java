@@ -576,7 +576,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * @return
 	 */
 	public static BigDecimal getQtyOnHand(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)")
 			.append(" WHERE oh.M_Product_ID=?")
 			.append(" AND loc.M_Warehouse_ID=?");

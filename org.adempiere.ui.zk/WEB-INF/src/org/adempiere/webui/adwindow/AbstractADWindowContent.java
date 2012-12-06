@@ -1179,8 +1179,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     	if (!detailTab)
     	{
-	        logger.info(e.getMessage());
 	        String dbInfo = e.getMessage();
+    		logger.info(dbInfo);
 	        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
 	            dbInfo = "[ " + dbInfo + " ]";
 	        breadCrumb.setStatusDB(dbInfo, e);

@@ -341,6 +341,7 @@ public class MProcess extends X_AD_Process
 	/**
 	 * 	Update Statistics
 	 *	@param seconds sec
+	 *  @deprecated - use UPDATE instead
 	 */
 	public void addStatistics (int seconds)
 	{

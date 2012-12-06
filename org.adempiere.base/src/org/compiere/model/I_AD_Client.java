@@ -399,24 +399,6 @@ public interface I_AD_Client
 	  */
 	public int getSMTPPort();
 
-    /** Column name StoreArchiveOnFileSystem */
-    public static final String COLUMNNAME_StoreArchiveOnFileSystem = "StoreArchiveOnFileSystem";
-
-	/** Set Store Archive On File System	  */
-	public void setStoreArchiveOnFileSystem (boolean StoreArchiveOnFileSystem);
-
-	/** Get Store Archive On File System	  */
-	public boolean isStoreArchiveOnFileSystem();
-
-    /** Column name UnixArchivePath */
-    public static final String COLUMNNAME_UnixArchivePath = "UnixArchivePath";
-
-	/** Set Unix Archive Path	  */
-	public void setUnixArchivePath (String UnixArchivePath);
-
-	/** Get Unix Archive Path	  */
-	public String getUnixArchivePath();
-
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -445,13 +427,4 @@ public interface I_AD_Client
 	  * Search key for the record in the format required - must be unique
 	  */
 	public String getValue();
-
-    /** Column name WindowsArchivePath */
-    public static final String COLUMNNAME_WindowsArchivePath = "WindowsArchivePath";
-
-	/** Set Windows Archive Path	  */
-	public void setWindowsArchivePath (String WindowsArchivePath);
-
-	/** Get Windows Archive Path	  */
-	public String getWindowsArchivePath();
 }

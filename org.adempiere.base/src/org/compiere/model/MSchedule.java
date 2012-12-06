@@ -21,7 +21,9 @@ import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.SchedulingPattern;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.sql.ResultSet;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -30,6 +32,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.compiere.util.CCache;
+
 
 public class MSchedule extends X_AD_Schedule 
 {
@@ -107,36 +110,38 @@ public class MSchedule extends X_AD_Schedule
 	 *	@param ipOnly
 	 *	@return true if IP is correct
 	 */
-	private boolean checkIP(String ipOnly)
-	{
-		try
-		{
-			InetAddress box = InetAddress.getLocalHost();
-			String ip = box.getHostAddress();
-			if (chekIPFormat(ipOnly)) {
-				if (ipOnly.indexOf(ip) == -1) {
-					
-					log.fine("Not allowed here - IP=" + ip + " does not match "+ ipOnly);
-					return false;
+	private boolean checkIP(String ipOnly) {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) 
+			{
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) 
+				{
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (   !inetAddress.isLoopbackAddress() 
+						&& !inetAddress.isLinkLocalAddress()
+						&& inetAddress.isSiteLocalAddress()) 
+					{
+						String retVal = inetAddress.getHostAddress().toString();
+						if (chekIPFormat(ipOnly)) {
+							retVal = inetAddress.getHostAddress().toString();
+						} else {
+							retVal = inetAddress.getHostName();
+						}
+						if (ipOnly.equals(retVal)) {
+							log.info("Allowed here - IP=" + retVal+ " match");
+							return true;
+						} else {
+							log.info("Not Allowed here - IP=" + retVal+ " does not match " + ipOnly);
+						}
+					}
 				}
-				log.fine("Allowed here - IP=" + ip + " matches " + ipOnly);
 			}
-			else{
-				String hostname=box.getHostName();
-				if(! ipOnly.equals(hostname)){
-					log.fine("Not Allowed here -hostname " + hostname + " does not match "+ipOnly);
-					return false;
-				}
-				log.fine("Allowed here - hostname=" + hostname + " matches " + ipOnly);
-			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.log(Level.SEVERE, "", e);
-			return false;
 		}
-		return true;
-	}	// checkIP
+		return false;
+	} // checkIP
 
 	public static MSchedule get(Properties ctx, int AD_Schedule_ID) 
 	{

@@ -614,9 +614,10 @@ public class ConfigurationData
 		//
 		try
 		{
+			String admail = adminEMail.toString();
 			EMail email = new EMail (new Properties(),
 					mailServer.getHostName (),
-					adminEMail.toString (), adminEMail.toString(),
+					admail, admail,
 					"Adempiere Server Setup Test",
 					"Test: " + getProperties());
 			email.createAuthenticator (mailUser, mailPassword);

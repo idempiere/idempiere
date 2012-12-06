@@ -494,9 +494,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 						+ taxThisAmt + " Standard Tax Amt: " + taxStdAmt + " Line Net Amt: " + bd);	
 			}
 		}
-		
-		if (bd.scale() > getPrecision())
-			bd = bd.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP);
+		int precision = getPrecision();
+		if (bd.scale() > precision)
+			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
 		super.setLineNetAmt (bd);
 	}	//	setLineNetAmt
 	/**

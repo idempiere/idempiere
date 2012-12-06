@@ -404,9 +404,9 @@ public class MOrderLine extends X_C_OrderLine
 			}
 			
 		}
-		
-		if (bd.scale() > getPrecision())
-			bd = bd.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP);
+		int precision = getPrecision();
+		if (bd.scale() > precision)
+			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
 		super.setLineNetAmt (bd);
 	}	//	setLineNetAmt
 	
